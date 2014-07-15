@@ -7,6 +7,9 @@ using System.Collections.Concurrent;
 
 namespace System.Collections.Concurrent
 {
+    /// <summary>
+    /// Represents a thread-safe collection that can be accessed by multiple threads concurrently.
+    /// </summary>
     public class ConcurrentHashSet<T> : IEnumerable<T>
     {
         private ConcurrentDictionary<T, int> m_entries;
