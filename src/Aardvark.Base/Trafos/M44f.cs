@@ -1,0 +1,632 @@
+using System;
+using System.Text;
+
+namespace Aardvark.Base
+{
+
+    public partial struct M44f : ISquareMatrix<M44f, V4f, V3f, float>
+    {
+        #region Matrix Arithmetics
+
+        /// <summary>
+        /// Multiplacation of a <see cref="M44f"/> with a <see cref="Scale3f"/>.
+        /// </summary>
+        public static M44f Multiply(M44f matrix, Scale3f scale)
+        {
+            return new M44f(
+                    matrix.M00 * scale.X,
+                    matrix.M01 * scale.Y,
+                    matrix.M02 * scale.Z,
+                    matrix.M03,
+
+                    matrix.M10 * scale.X,
+                    matrix.M11 * scale.Y,
+                    matrix.M12 * scale.Z,
+                    matrix.M13,
+
+                    matrix.M20 * scale.X,
+                    matrix.M21 * scale.Y,
+                    matrix.M22 * scale.Z,
+                    matrix.M23,
+
+                    matrix.M30 * scale.X,
+                    matrix.M31 * scale.Y,
+                    matrix.M32 * scale.Z,
+                    matrix.M33
+                    );
+        }
+
+        /// <summary>
+        /// Multiplacation of a <see cref="M44f"/> with a <see cref="Shift3f"/>.
+        /// </summary>
+        public static M44f Multiply(M44f matrix, Shift3f shift)
+        {
+
+            return new M44f(
+                    matrix.M00,
+                    matrix.M01,
+                    matrix.M02,
+                    matrix.M00 * shift.X +
+                    matrix.M01 * shift.Y +
+                    matrix.M02 * shift.Z +
+                    matrix.M03,
+
+                    matrix.M10,
+                    matrix.M11,
+                    matrix.M12,
+                    matrix.M10 * shift.X +
+                    matrix.M11 * shift.Y +
+                    matrix.M12 * shift.Z +
+                    matrix.M13,
+
+                    matrix.M20,
+                    matrix.M21,
+                    matrix.M22,
+                    matrix.M20 * shift.X +
+                    matrix.M21 * shift.Y +
+                    matrix.M22 * shift.Z +
+                    matrix.M23,
+
+                    matrix.M30,
+                    matrix.M31,
+                    matrix.M32,
+                    matrix.M33
+                    );
+        }
+
+        /// <summary>
+        /// A <see cref="M44f"/> is transformed to <see cref="M33f"/> by deleting specified row and column
+        /// </summary>
+        
+        public M33f Minor(int rowToDelete, int columnToDelete)
+        {
+            M33f result = new M33f();
+            int checked_row = 0;
+            for (int actual_row = 0; actual_row < 4; actual_row++)
+            {
+                int checked_column = 0;
+
+                if (actual_row != rowToDelete)
+                {
+                    for (int actual_column = 0; actual_column < 4; actual_column++)
+                    {
+                        if (actual_column != columnToDelete)
+                        {
+                            result[checked_row, checked_column] = this[actual_row, actual_column];
+                            checked_column++;
+                        }
+                    }
+                    checked_row++;
+                }
+            }
+            return result;
+        }
+
+        /// <summary>
+        /// Returns transpose of a <see cref="M44f"/>.
+        /// </summary>
+        public static M44f Transpose(M44f m)
+        {
+            throw new NotImplementedException();
+        }
+
+        /// <summary>
+        /// Transforms a direction <see cref="V4f"/> by a <see cref="M44f"/>.
+        /// </summary>
+        public static V4f Transform(M44f m, V4f v)
+        {
+            return new V4f(
+                m.M00 * v.X + m.M01 * v.Y + m.M02 * v.Z + m.M03 * v.W,
+                m.M10 * v.X + m.M11 * v.Y + m.M12 * v.Z + m.M13 * v.W,
+                m.M20 * v.X + m.M21 * v.Y + m.M22 * v.Z + m.M23 * v.W,
+                m.M30 * v.X + m.M31 * v.Y + m.M32 * v.Z + m.M33 * v.W
+                );
+        }
+
+        /// <summary>
+        /// Transforms a <see cref="V3f"/> position by the transpose of a <see cref="M44f"/>.
+        /// Projective transform is performed.
+        /// </summary>
+        public static V3f TransposedTransformPosProj(M44f matrix, V3f position)
+        {
+            float s = 1 / (matrix.M03 * position.X
+                           + matrix.M13 * position.Y
+                           + matrix.M23 * position.Z + matrix.M33);
+            return (TransposedTransformDir(matrix, position)) * s;
+        }
+
+        #endregion
+
+        #region Coordinate-System Transforms
+
+        /// <summary>
+        /// Computes from a <see cref="V3f"/> point (origin) and
+        /// a <see cref="V3f"/> normal the transformation matrix
+        /// and its inverse.
+        /// </summary>
+        /// <param name="origin">The point which will become the new origin.</param>
+        /// <param name="normal">The normal vector of the new ground plane.</param>
+        /// <param name="local2global">A <see cref="M44f"/>The trafo from local to global system.</param>
+        /// <param name="global2local">A <see cref="M44f"/>The trafofrom global to local system.</param>
+        public static void NormalFrame(V3f origin, V3f normal,
+            out M44f local2global, out M44f global2local
+            )
+        {
+            V3f min;
+            float x = Fun.Abs(normal.X);
+            float y = Fun.Abs(normal.Y);
+            float z = Fun.Abs(normal.Z);
+            
+            if (x < y)
+            {
+                if (x < z) { min = V3f.XAxis; } else { min = V3f.ZAxis; }
+            }
+            else
+            {
+                if (y < z) { min = V3f.YAxis; } else { min = V3f.ZAxis; }
+            }
+
+            V3f xVec = V3f.Cross(normal, min);
+            xVec.Normalize(); // this is now guaranteed to be normal to the input normal
+            V3f yVec = V3f.Cross(normal, xVec);
+            yVec.Normalize();
+            V3f zVec = normal;
+            zVec.Normalize();
+
+            local2global = new M44f(xVec.X, yVec.X, zVec.X, origin.X,
+                                    xVec.Y, yVec.Y, zVec.Y, origin.Y,
+                                    xVec.Z, yVec.Z, zVec.Z, origin.Z,
+                                    0, 0, 0, 1);
+
+            M44f mat = new M44f(xVec.X, xVec.Y, xVec.Z, 0,
+                                yVec.X, yVec.Y, yVec.Z, 0,
+                                zVec.X, zVec.Y, zVec.Z, 0,
+                                0, 0, 0, 1);
+
+            var shift = M44f.Translation(-origin);
+            global2local = mat * shift;
+        }
+
+
+        /// <summary>
+        /// Computes a Coordiante Frame Transformation (Basis) from current CS into
+        /// the (X, Y, Z)-System at a given Origin.
+        /// Note: you can use it, to transform from RH to LH and vice-versa, all depending
+        /// how you will specifie your new basis-vectors.
+        /// </summary>
+        /// <param name="xVec">New X Vector</param>
+        /// <param name="yVec">New Y Vector</param>
+        /// <param name="zVec">New Z vector</param>
+        /// <param name="oVec">New Origin.</param>
+        /// <param name="viewTrafo"></param>
+        /// <param name="viewTrafoInverse"></param>
+        public static void CoordinateFrameTransform(V3f xVec, V3f yVec, V3f zVec, V3f oVec, 
+            out M44f viewTrafo, out M44f viewTrafoInverse)
+        {
+            oVec = -oVec;
+            viewTrafo = new M44f(
+                xVec.X, xVec.Y, xVec.Z, xVec.X * oVec.X + xVec.Y * oVec.Y + xVec.Z * oVec.Z,
+                yVec.X, yVec.Y, yVec.Z, yVec.X * oVec.X + yVec.Y * oVec.Y + yVec.Z * oVec.Z,
+                zVec.X, zVec.Y, zVec.Z, zVec.X * oVec.X + zVec.Y * oVec.Y + zVec.Z * oVec.Z,
+                0, 0, 0, 1
+                );
+            viewTrafoInverse = new M44f(
+                xVec.X, yVec.X, zVec.X, -oVec.X,
+                xVec.Y, yVec.Y, zVec.Y, -oVec.Y,
+                xVec.Z, yVec.Z, zVec.Z, -oVec.Z,
+                0, 0, 0, 1
+                );
+        }
+
+        /// <summary>
+        ///  Provides perspective projection matrix in terms of the vertical field of view angle a and the aspect ratio r.
+        /// </summary>
+        /// <param name="width"></param>
+        /// <param name="hei"></param>
+        public static M44f PerspectiveProjectionTransformRH(float a, float r, float n, float f)
+        {
+            //F / r     0      0      0
+            //  0       F      0      0
+            //  0       0      A      B
+            //  0       0      -1     0
+            float F = 1 / Fun.Tan(a / 2);
+            float A = f / (n - f);
+            float B = f * n / (n - f);
+
+            M44f P = new M44f(
+                F / r, 0, 0, 0,
+                0, F, 0, 0,
+                0, 0, A,  B,
+                0, 0, -1, 0);
+            return P;
+        }
+
+        /// <summary>
+        ///  Provides perspective projection matrix. 
+        ///  The parameters describe the dimensions of the view volume.
+        /// </summary>
+        public static M44f PerspectiveProjectionTransformRH(V2f size, float n, float f)
+        {
+            float w = size.X;
+            float h = size.Y;
+            // Fx      0      0      0
+            //  0      Fy     0      0
+            //  0      0      A      B
+            //  0      0      -1     0
+            float Fx = 2 * n / w;
+            float Fy = 2 * n / h;
+            float A = f / (n - f);
+            float B = n * f / (n - f);
+            M44f P = new M44f(
+                Fx, 0, 0, 0,
+                0, Fy, 0, 0,
+                0, 0, A,  B,
+                0, 0, -1, 0);
+            return P;
+        }
+
+        /// <summary>
+        /// Builds a customized, right-handed perspective Off-Center projection matrix.
+        /// </summary>
+        public static M44f PerspectiveProjectionTransformRH(float l, float r, float t, float b, float n, float f)
+        {
+            // Fx      0      Sx     0
+            //  0      Fy     Sy     0
+            //  0      0      A      B
+            //  0      0      -1     0
+            float Fx = 2 * n / (r - l);
+            float Fy = 2 * n / (t - b);
+            float Sx = (l + r) / (r - l);
+            float Sy = (t + b) / (t - b);
+            float A = f / (n - f);
+            float B = n * f / (n - f);
+
+            M44f P = new M44f(
+                Fx, 0, Sx, 0,
+                0, Fy, Sy, 0,
+                0, 0,  A, B,
+                0, 0, -1, 0);
+            return P;
+        }
+
+
+
+        /// <summary>
+        /// Builds a customized, left-handed perspective Off-Center projection matrix.
+        /// </summary>
+        public static M44f PerspectiveProjectionTransformLH(float l, float r, float t, float b, float n, float f)
+        {
+            //  Fx     0      0     0
+            //  0      Fy     0     0
+            //  Sx     Sy     A     1
+            //  0      0      B     0
+            float Fx = 2 * n / (r - l);
+            float Fy = 2 * n / (t - b);
+            float Sx = (l + r) / (l - r);
+            float Sy = (t + b) / (b - t);
+            float A = f / (f - n);
+            float B = n * f / (n - f);
+
+            M44f P = new M44f(
+                Fx, 0, 0, 0,
+                0, Fy, 0, 0,
+                Sx, Sy, A, 1,
+                0, 0, B, 0);
+            return P;
+        }
+        #endregion
+
+        #region Operators
+
+        /// <summary>
+        /// Multiplication of a <see cref="M44f"/> with a <see cref="QuaternionF"/>.
+        /// </summary>
+
+        /// <summary>
+        /// Calculates the product of a <see cref="M44f"/> with a <see cref="Shift3f"/>.
+        /// </summary>
+        public static M44f operator *(M44f matrix, Shift3f shift)
+        {
+            return M44f.Multiply(matrix, shift);
+        }
+
+        /// <summary>
+        /// Calculates the product of a <see cref="M44f"/> with a <see cref="Scale3f"/>.
+        /// </summary>
+        public static M44f operator *(M44f matrix, Scale3f scale)
+        {
+            return M44f.Multiply(matrix, scale);
+        }
+
+        #endregion
+
+        #region Static creators
+
+        /// <summary>
+        /// Creates new Identity with 3 float values for translation.
+        /// </summary>
+        /// <returns>Translation matrix.</returns>
+        public static M44f Translation(float dx, float dy, float dz)
+        {
+            return new M44f(1, 0, 0, dx,
+                            0, 1, 0, dy,
+                            0, 0, 1, dz,
+                            0, 0, 0, 1);
+        }
+
+        /// <summary>
+        /// Creates new Identity with V3f vector for translation.
+        /// </summary>
+        /// <returns>Translation matrix.</returns>
+        public static M44f Translation(V3f v)
+        {
+            return new M44f(1, 0, 0, v.X,
+                            0, 1, 0, v.Y,
+                            0, 0, 1, v.Z,
+                            0, 0, 0, 1);
+        }
+
+        /// <summary>
+        /// Creates new Identity <see cref="M44f"/> with a <see cref="Shift3f"/> for translation.
+        /// </summary>
+        /// <param name="shift"></param>
+        /// <returns>A <see cref="M44f"/> translation matrix.</returns>
+        public static M44f Translation(Shift3f s)
+        {
+            return new M44f(1, 0, 0, s.X,
+                            0, 1, 0, s.Y,
+                            0, 0, 1, s.Z,
+                            0, 0, 0, 1);
+        }
+
+        /// <summary>
+        /// Creates new Identity with scalar value for uniform-scaling.
+        /// </summary>
+        /// <returns>Uniform-scaling matrix.</returns>
+        public static M44f Scale(float s)
+        {
+            return new M44f(s, 0, 0, 0,
+                            0, s, 0, 0,
+                            0, 0, s, 0,
+                            0, 0, 0, 1);
+        }
+
+        /// <summary>
+        /// Creates new Identity with 3 scalar values for scaling.
+        /// </summary>
+        /// <returns>Scaling matrix.</returns>
+        public static M44f Scale(float sx, float sy, float sz)
+        {
+            return new M44f(sx, 0, 0, 0,
+                            0, sy, 0, 0,
+                            0, 0, sz, 0,
+                            0, 0, 0, 1);
+        }
+
+        /// <summary>
+        /// Creates new Identity with V3f for scaling.
+        /// </summary>
+        /// <returns>Scaling matrix.</returns>
+        public static M44f Scale(V3f v)
+        {
+            return new M44f(v.X, 0, 0, 0,
+                            0, v.Y, 0, 0,
+                            0, 0, v.Z, 0,
+                            0, 0, 0, 1);
+        }
+
+        /// <summary>
+        /// Creates new Identity <see cref="M44f"/> with <see cref="Scale3f"/> for scaling.
+        /// </summary>
+        /// <param name="scale"></param>
+        /// <returns>A <see cref="M44f"/> scaling matrix.</returns>
+        public static M44f Scale(Scale3f scale)
+        {
+            return new M44f(scale.X, 0, 0, 0,
+                            0, scale.Y, 0, 0,
+                            0, 0, scale.Z, 0,
+                            0, 0, 0, 1);
+        }
+
+        /// <summary>
+        /// Creates rotation matrix from axis and angle.
+        /// </summary>
+        public static M44f Rotation(V3f axis, float angleInRadians)
+        {
+            return (M44f)(new Rot3f(axis, angleInRadians));
+        }
+
+        /// <summary>
+        /// Creates rotation matrix from yaw, pitch, and roll. 
+        /// </summary>
+        public static M44f Rotation(
+            float yawInRadians, float pitchInRadians, float rollInRadians
+            )
+        {
+            return (M44f)(new Rot3f(
+                yawInRadians,pitchInRadians, rollInRadians
+                ));
+        }
+
+        /// <summary>
+        /// Creates rotation matrix from yaw, pitch, and roll Vector.
+        /// </summary>
+        public static M44f Rotation(V3f yaw_pitch_roll_inRadians)
+        {
+            return (M44f)(new Rot3f(
+                yaw_pitch_roll_inRadians.X,
+                yaw_pitch_roll_inRadians.Y,
+                yaw_pitch_roll_inRadians.Z));
+        }
+
+        /// <summary>
+        /// Creates rotation matrix which rotates one vector into another.
+        /// </summary>
+        public static M44f Rotation(V3f from, V3f into)
+        {
+            return (M44f)(new Rot3f(from, into));
+        }
+
+        /// <summary>
+        /// Creates rotational matrix from quaternion.
+        /// </summary>
+        /// <returns>Rotational matrix.</returns>
+        public static M44f Rotation(Rot3f r)
+        {
+            return (M44f)r;
+        }
+
+        /// <summary>
+        /// Creates new rotational matrix for "float value"-radians around X-Axis.
+        /// </summary>
+        /// <returns>Rotational matrix.</returns>
+        public static M44f RotationX(float angleRadians)
+        {
+            float cos = Fun.Cos(angleRadians);
+            float sin = Fun.Sin(angleRadians);
+            return new M44f(1, 0, 0, 0,
+                            0, cos, -sin, 0,
+                            0, sin, cos, 0,
+                            0, 0, 0, 1);
+        }
+
+        /// <summary>
+        /// Creates new rotational matrix for "float value"-radians around Y-Axis.
+        /// </summary>
+        /// <returns>Rotational matrix.</returns>
+        public static M44f RotationY(float angleRadians)
+        {
+            float cos = Fun.Cos(angleRadians);
+            float sin = Fun.Sin(angleRadians);
+            return new M44f(cos, 0, -sin, 0,
+                            0, 1, 0, 0,
+                            sin, 0, cos, 0,
+                            0, 0, 0, 1);
+        }
+
+        /// <summary>
+        /// Creates new rotational matrix for "float value"-radians around Z-Axis.
+        /// </summary>
+        /// <returns>Rotational matrix.</returns>
+        public static M44f RotationZ(float angleRadians)
+        {
+            float cos = Fun.Cos(angleRadians);
+            float sin = Fun.Sin(angleRadians);
+            return new M44f(cos, -sin, 0, 0,
+                            sin, cos, 0, 0,
+                            0, 0, 1, 0,
+                            0, 0, 0, 1);
+        }
+
+        public static M44f ShearXY(float factorX, float factorY)
+        {
+            return new M44f(1, 0, factorX, 0,
+                            0, 1, factorY, 0,
+                            0, 0, 1,       0,
+                            0, 0, 0,       1);
+        }
+
+        public static M44f ShearXZ(float factorX, float factorZ)
+        {
+            return new M44f(1, factorX, 0, 0,
+                            0, 1,       0, 0,
+                            0, factorZ, 1, 0,
+                            0, 0,       0, 1);
+        }
+
+        public static M44f ShearYZ(float factorY, float factorZ)
+        {
+            return new M44f(1,       0, 0, 0,
+                            factorY, 1, 0, 0,
+                            factorZ, 0, 1, 0,
+                            0,       0, 0, 1);
+        }
+
+
+        /// <summary>
+        /// Returns the matrix that transforms from the coordinate system
+        /// specified by the basis into the world cordinate system.
+        /// </summary>
+        public static M44f FromBasis(V3f xAxis, V3f yAxis, V3f zAxis, V3f orign)
+        {
+            return new M44f(
+                xAxis.X, yAxis.X, zAxis.X, orign.X,
+                xAxis.Y, yAxis.Y, zAxis.Y, orign.Y,
+                xAxis.Z, yAxis.Z, zAxis.Z, orign.Z,
+                0, 0, 0, 1);
+        }
+
+        #endregion
+
+        #region ITransform<V3f> implementation.
+
+        /// <summary>
+        /// Converts this matrix to its adjoint.
+        /// </summary>
+        /// <returns>This.</returns>
+        public M44f Adjoin()
+        {
+            return this = Adjoint;
+        }
+
+        /// <summary>
+        /// Returns adjoint of this matrix.
+        /// </summary>
+        public M44f Adjoint
+        {
+            get
+            {
+                M44f result = new M44f();
+                for (int row = 0; row < 4; row++)
+                {
+                    for (int col = 0; col < 4; col++)
+                    {
+                        if (((col + row) % 2) == 0)
+                            result[col, row] = Minor(row, col).Det;
+                        else
+                            result[col, row] = -Minor(row, col).Det;
+                    }
+                }
+
+                return result;
+            }
+        }
+
+        /// <summary>
+        /// Transforms vector v.
+        /// </summary>
+        public V4f Transform(V4f v)
+        {
+            return this * v;
+        }
+
+        /// <summary>
+        /// Transforms direction vector v (p.w is presumed 0)
+        /// with the inverse of this transform.
+        /// </summary>
+        public V3f InvTransformDir(V3f v)
+        {
+            throw new NotImplementedException();
+        }
+
+        /// <summary>
+        /// Transforms point p (p.w is presumed 1.0) with the inverse of this transform.
+        /// No projective transform is performed.
+        /// </summary>
+        public V3f InvTransformPos(V3f p)
+        {
+            throw new NotImplementedException();
+        }
+
+        /// <summary>
+        /// Transforms point p (p.w is presumed 1.0) with the inverse of this transform.
+        /// Projective transform is performed.
+        /// </summary>
+        public V3f InvTransformPosProj(V3f p)
+        {
+            throw new NotImplementedException();
+        }
+
+        #endregion
+    }
+}

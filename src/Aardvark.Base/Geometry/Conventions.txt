@@ -1,0 +1,58 @@
+﻿
+General Conventions:
+
+	Intersections:
+		+ All intersects-methods return true if one given object contains the other (or surrounds the other in 3d)
+
+	Contains:
+		+ A contains B only if all points of B are in A
+
+Ray2d:
+
+	Methods:
+		+ The Plane2d-property returns a Plane2d with a "left normal"
+		
+	Intersections:
+		+ The ray is treated both-sided (negative parameters possible)
+		+ If no intersection is found the returned parameter is double.NaN
+		
+Plane2d:
+
+	Methods:
+		+ The Height(V3d)-Method does not return the actual height value if the Normal is not normalized.
+		  The returned value must be divided by Normal.Length to obtain the actual value.
+
+	Intersections:
+		+ The Plane2d-Intersections don't work with unnormalized Plane2ds
+		
+Triangle2d:
+
+	Contains:
+		+ The contains-test only works if the Triangle2d-points are sorted counter-clockwise
+
+Quad2d:
+
+	Contains:
+		+ The contains-test only works if the Quad2d-points are sorted counter-clockwise
+		+ The Quad2d-Contains-Tests don't work properly if the Quad2d has self-intersections
+		
+	Intersects:
+		+ The Quad2d-Intersections don't work properly if the Quad2d has self-intersections
+
+Polygon2d:
+
+	Contains:
+		+ The Polygon2d-Contains-Tests only work properly if the Polygon2d has no self-intersections
+		+ Polygon2d.Contains(V2d) expects the Polygon2d to be sorted counter-clockwise
+		  (if sorted clockwise: Polygon2d.Contains(V2d point, bool CCW can be used) 
+		
+	Intersections:
+		+ The Polygon2d-Intersections only works with Polygon2ds which are sorted counter-clockwise 
+		
+Hull3d:
+
+	Issues:
+		+ The constructor Hull3d(IFrustum3d) uses the inward frustum normals (should point outward)
+
+	Contains:
+		+ The contains-tests expect the Hull3d-normals to point outside

@@ -1,0 +1,18 @@
+﻿M22d_aarp.cs:					M22f.cs
+M33d_aarp.cs:					M33f.cs
+M34d_aarp.cs:					M34f.cs
+M44d_aarp.cs:					M44f.cs
+Euclidean2d_aarp.cs:			Euclidean2f.cs
+Euclidean3d_aarp.cs:			Euclidean3f.cs
+Similarity3d_aarp.cs:			Similarity3f.cs
+Rot2d_aarp.cs:					Rot2f.cs
+Rot3d_aarp.cs:					Rot3f.cs
+Scale3d_aarp.cs:				Scale3f.cs
+Shift3d_aarp.cs:				Shift3f.cs
+        double                          float
+		double							single
+        *1d								*1f
+        *2d								*2f
+        *3d                             *3f
+		*4d								*4f
+		*D								*F
