@@ -576,7 +576,7 @@ namespace Aardvark.Base
 
         }
 
-        public static double ComputeLengthWgs84(V2d[] lonLatArray, params int[] indexArray)
+        public static double ComputeLength(V2d[] lonLatArray, GeoEllipsoid gel, params int[] indexArray)
         {
             var pc = indexArray.Length;
             var p0 = lonLatArray[indexArray[0]];
@@ -584,13 +584,18 @@ namespace Aardvark.Base
             for (int i = 1; i < pc; i++)
             {
                 var p1 = lonLatArray[indexArray[i]];
-                d += DistanceVincentyWgs84(p0, p1);
+                d += DistanceVincenty(p0, p1, gel);
                 p0 = p1;
             }
             return d;
         }
 
-        public static double ComputePerimeterWgs84(V2d[] lonLatArray, params int[] indexArray)
+        public static double ComputeLengthWgs84(V2d[] lonLatArray, params int[] indexArray)
+        {
+            return ComputeLength(lonLatArray, GeoEllipsoid.Wgs84, indexArray);
+        }
+
+        public static double ComputePerimeter(V2d[] lonLatArray, GeoEllipsoid gel, params int[] indexArray)
         {
             var pc = indexArray.Length;
             var p0 = lonLatArray[indexArray[pc - 1]];
@@ -598,10 +603,15 @@ namespace Aardvark.Base
             for (int i = 0; i < pc; i++)
             {
                 var p1 = lonLatArray[indexArray[i]];
-                d += DistanceVincentyWgs84(p0, p1);
+                d += DistanceVincenty(p0, p1, gel);
                 p0 = p1;
             }
             return d;
+        }
+
+        public static double ComputePerimeterWgs84(V2d[] lonLatArray, params int[] indexArray)
+        {
+            return ComputePerimeter(lonLatArray, GeoEllipsoid.Wgs84, indexArray);
         }
 
         #endregion
