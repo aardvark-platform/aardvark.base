@@ -561,7 +561,7 @@ namespace Aardvark.Base
             {
                 var p1 = polygon[i];
                 r += __tvec__.Distance(p0, p1);
-                p1 = p0;
+                p0 = p1;
             }
             return r;
         }
