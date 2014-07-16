@@ -31,8 +31,8 @@ namespace Aardvark.Base
 
         /// <summary>
         /// Global reset of all telemetry probes to zero (or the equivalent).
-        /// This is mainly used for benchmarking(e.g. to cleanly restart telemetry
-        /// after a warmup phase or before a new benchmark iteration).
+        /// This is mainly used for benchmarking, e.g. to cleanly restart telemetry
+        /// after a warm up phase or before a new benchmark iteration.
         /// Custom IProbe implementations must handle the Telemetry.OnReset event.
         /// </summary>
         public static void ResetTelemetrySystem()
