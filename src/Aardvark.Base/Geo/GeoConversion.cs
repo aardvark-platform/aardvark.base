@@ -576,6 +576,34 @@ namespace Aardvark.Base
 
         }
 
+        public static double ComputeLengthWgs84(V2d[] lonLatArray, params int[] indexArray)
+        {
+            var pc = indexArray.Length;
+            var p0 = lonLatArray[indexArray[0]];
+            var d = 0.0;
+            for (int i = 1; i < pc; i++)
+            {
+                var p1 = lonLatArray[indexArray[i]];
+                d += DistanceVincentyWgs84(p0, p1);
+                p0 = p1;
+            }
+            return d;
+        }
+
+        public static double ComputePerimeterWgs84(V2d[] lonLatArray, params int[] indexArray)
+        {
+            var pc = indexArray.Length;
+            var p0 = lonLatArray[indexArray[pc - 1]];
+            var d = 0.0;
+            for (int i = 0; i < pc; i++)
+            {
+                var p1 = lonLatArray[indexArray[i]];
+                d += DistanceVincentyWgs84(p0, p1);
+                p0 = p1;
+            }
+            return d;
+        }
+
         #endregion
     }
 
