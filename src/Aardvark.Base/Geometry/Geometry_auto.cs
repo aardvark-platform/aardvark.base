@@ -374,7 +374,7 @@ namespace Aardvark.Base
             {
                 var p1 = polygon[i];
                 r += V2d.Distance(p0, p1);
-                p1 = p0;
+                p0 = p1;
             }
             return r;
         }
@@ -693,7 +693,7 @@ namespace Aardvark.Base
             {
                 var p1 = polygon[i];
                 r += V2d.Distance(p0, p1);
-                p1 = p0;
+                p0 = p1;
             }
             return r;
         }
@@ -1713,7 +1713,7 @@ namespace Aardvark.Base
             {
                 var p1 = polygon[i];
                 r += V3d.Distance(p0, p1);
-                p1 = p0;
+                p0 = p1;
             }
             return r;
         }
@@ -2033,7 +2033,7 @@ namespace Aardvark.Base
             {
                 var p1 = polygon[i];
                 r += V3d.Distance(p0, p1);
-                p1 = p0;
+                p0 = p1;
             }
             return r;
         }

@@ -7,21 +7,6 @@ namespace Aardvark.Base
 {
     public static partial class Telemetry
     {
-        private struct ProbeDisposable : IDisposable
-        {
-            public Action Action;
-
-            public void Dispose()
-            {
-                Action();
-            }
-
-            public static ProbeDisposable Create(Action a)
-            {
-                return new ProbeDisposable { Action = a };
-            }
-        }
-
         #region Counters
 
         public class Counter : IProbe<long>
@@ -494,128 +479,6 @@ namespace Aardvark.Base
 
         #endregion
 
-        #region Observable probes
-
-        //public class ObservableCpuTimeSpan
-        //    : IObservable<TimeSpan>, IProbe<IObservable<TimeSpan>>
-        //{
-        //    private TimeSpan m_lastValue;
-        //    private Subject<TimeSpan> m_subject = new Subject<TimeSpan>();
-
-        //    public IDisposable Timer
-        //    {
-        //        get
-        //        {
-        //            var stopwatch = new Stopwatch();
-        //            stopwatch.Start();
-        //            return ProbeDisposable.Create(() =>
-        //            {
-        //                stopwatch.Stop();
-        //                var x = stopwatch.Elapsed;
-        //                m_subject.OnNext(x);
-        //                m_lastValue = x;
-        //            });
-        //        }
-        //    }
-
-        //    public IObservable<TimeSpan> Value { get { return m_subject; } }
-        //    public double ValueDouble { get { return m_lastValue.TotalSeconds; } }
-
-        //    public IDisposable Subscribe(IObserver<TimeSpan> observer)
-        //    {
-        //        return m_subject.Subscribe(observer);
-        //    }
-        //}
-
-        //public class ObservableCustomProbeLong
-        //    : IObservable<long>, IProbe<IObservable<long>>
-        //{
-        //    private IObservable<long> m_value;
-        //    private long m_lastValue;
-
-        //    public ObservableCustomProbeLong(IObservable<long> observable)
-        //    {
-        //        Requires.NotNull(observable);
-        //        observable.Subscribe(x => m_lastValue = x);
-        //        m_value = observable;
-        //    }
-
-        //    public IDisposable Subscribe(IObserver<long> observer)
-        //    {
-        //        return m_value.Subscribe(observer);
-        //    }
-
-        //    public IObservable<long> Value
-        //    {
-        //        get { return m_value; }
-        //    }
-
-        //    public double ValueDouble
-        //    {
-        //        get { return m_lastValue; }
-        //    }
-        //}
-
-        //public class ObservableCustomProbeDouble
-        //    : IObservable<double>, IProbe<IObservable<double>>
-        //{
-        //    private IObservable<double> m_value;
-        //    private double m_lastValue;
-
-        //    public ObservableCustomProbeDouble(IObservable<double> observable)
-        //    {
-        //        Requires.NotNull(observable);
-        //        observable.Subscribe(x => m_lastValue = x);
-        //        m_value = observable;
-        //    }
-
-        //    public IDisposable Subscribe(IObserver<double> observer)
-        //    {
-        //        return m_value.Subscribe(observer);
-        //    }
-
-        //    public IObservable<double> Value
-        //    {
-        //        get { return m_value; }
-        //    }
-
-        //    public double ValueDouble
-        //    {
-        //        get { return m_lastValue; }
-        //    }
-        //}
-
-        //public class ObservableCustomProbeTimeSpan
-        //    : IObservable<TimeSpan>, IProbe<IObservable<TimeSpan>>
-        //{
-        //    private IObservable<TimeSpan> m_value;
-        //    private double m_lastValue;
-
-        //    public ObservableCustomProbeTimeSpan(IObservable<TimeSpan> observable)
-        //    {
-        //        Requires.NotNull(observable);
-        //        observable.Subscribe(x => m_lastValue = x.TotalSeconds);
-        //        m_value = observable;
-        //    }
-
-        //    public IDisposable Subscribe(IObserver<TimeSpan> observer)
-        //    {
-        //        return m_value.Subscribe(observer);
-        //    }
-
-        //    public IObservable<TimeSpan> Value
-        //    {
-        //        get { return m_value; }
-        //    }
-
-        //    public double ValueDouble
-        //    {
-        //        get { return m_lastValue; }
-        //    }
-        //}
-
-        #endregion
-
         #region Snapshot probes
 
         public class SnapshotProbeLong : IProbe<long>
@@ -690,6 +553,25 @@ namespace Aardvark.Base
             public double ValueDouble
             {
                 get { return Value.TotalSeconds; }
+            }
+        }
+
+        #endregion
+
+        #region Private
+
+        private struct ProbeDisposable : IDisposable
+        {
+            public Action Action;
+
+            public void Dispose()
+            {
+                Action();
+            }
+
+            public static ProbeDisposable Create(Action a)
+            {
+                return new ProbeDisposable { Action = a };
             }
         }
 

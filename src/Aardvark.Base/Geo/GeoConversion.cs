@@ -84,20 +84,17 @@ namespace Aardvark.Base
             return new V3d(lon, lat, h);
         }
 
-        public const string MapsGoogleComWebServiceKey =
-            "ABQIAAAAk4r0d6x0SCDbJHYjUrVJShSz1LOpcG8SAwxdzXiuGjdF4u3iExRpOB4S6dgElxAkq4aQ_QEUad74oQ";
-
         /// <summary>
         /// Returns WGS84 Longitude/Latitude/Height for given street address,
         /// or null if address not found. Uses maps.google.com webservice.
         /// </summary>
-        public static V3d? Wgs84FromStreetAddress(string address)
+        public static V3d? Wgs84FromStreetAddress(string address, string key)
         {
             var output = "csv";
             var url = @"http://maps.google.com/maps/geo?" 
                         + "q=" + Uri.EscapeDataString(address)
                         + "&output=" + output
-                        + "&key=" + MapsGoogleComWebServiceKey;
+                        + "&key=" + key;
 
             var resp = new WebClient().DownloadString(url);
             var tokens = resp.Split(',');
@@ -107,9 +104,6 @@ namespace Aardvark.Base
                 double.Parse(tokens[2], Localization.FormatEnUS),
                 double.Parse(tokens[3], Localization.FormatEnUS),
                 151.0);
-
-            // sm's key - no more than 50000 queries per day!!!!!!!!!
-            // ABQIAAAAk4r0d6x0SCDbJHYjUrVJShSz1LOpcG8SAwxdzXiuGjdF4u3iExRpOB4S6dgElxAkq4aQ_QEUad74oQ        
         }
 
         /// <summary>
@@ -574,6 +568,44 @@ namespace Aardvark.Base
             finalBrng = revAz * Constant.DegreesPerRadian;
             return new V2d(lon2 * Constant.DegreesPerRadian, lat2 * Constant.DegreesPerRadian);
 
+        }
+
+        public static double ComputeLength(V2d[] lonLatArray, GeoEllipsoid gel, params int[] indexArray)
+        {
+            var pc = indexArray.Length;
+            var p0 = lonLatArray[indexArray[0]];
+            var d = 0.0;
+            for (int i = 1; i < pc; i++)
+            {
+                var p1 = lonLatArray[indexArray[i]];
+                d += DistanceVincenty(p0, p1, gel);
+                p0 = p1;
+            }
+            return d;
+        }
+
+        public static double ComputeLengthWgs84(V2d[] lonLatArray, params int[] indexArray)
+        {
+            return ComputeLength(lonLatArray, GeoEllipsoid.Wgs84, indexArray);
+        }
+
+        public static double ComputePerimeter(V2d[] lonLatArray, GeoEllipsoid gel, params int[] indexArray)
+        {
+            var pc = indexArray.Length;
+            var p0 = lonLatArray[indexArray[pc - 1]];
+            var d = 0.0;
+            for (int i = 0; i < pc; i++)
+            {
+                var p1 = lonLatArray[indexArray[i]];
+                d += DistanceVincenty(p0, p1, gel);
+                p0 = p1;
+            }
+            return d;
+        }
+
+        public static double ComputePerimeterWgs84(V2d[] lonLatArray, params int[] indexArray)
+        {
+            return ComputePerimeter(lonLatArray, GeoEllipsoid.Wgs84, indexArray);
         }
 
         #endregion

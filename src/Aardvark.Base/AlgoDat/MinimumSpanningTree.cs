@@ -92,6 +92,7 @@ namespace Aardvark.Base
                      ;
             Report.Line("number of edges: {0}", es.Count());
 
+            /* unused variable error under mono:
             var edges = new Tup<Pair<string>, int>[]
             {
                 Tup.Create(Pair.Create("A", "B"), 7),
@@ -106,6 +107,7 @@ namespace Aardvark.Base
                 Tup.Create(Pair.Create("F", "G"), 11),
                 Tup.Create(Pair.Create("E", "G"), 9),
             };
+            */
 
             Report.BeginTimed("building mst");
             var mst = MinimumSpanningTree.Create(es).ToArray();

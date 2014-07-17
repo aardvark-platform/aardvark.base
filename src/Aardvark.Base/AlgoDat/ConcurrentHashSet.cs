@@ -7,8 +7,13 @@ using System.Collections.Concurrent;
 
 namespace System.Collections.Concurrent
 {
+    /// <summary>
+    /// Represents a thread-safe collection that can be accessed by multiple threads concurrently.
+    /// </summary>
     public class ConcurrentHashSet<T> : IEnumerable<T>
     {
+		//int does not waste too much memory and might be used for reference-counting 
+		//or similar features. TODO: investigate if this is faster using reference types.
         private ConcurrentDictionary<T, int> m_entries;
 
         #region Constructors

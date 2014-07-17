@@ -1186,16 +1186,6 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Returns true if the absolulte value of the supplied float is
-        /// greater than or equal to 4 times the machine epsilon.
-        /// </summary>
-        [Pure]
-        public static bool IsNotTiny(this float x)
-        {
-            return x.Abs() >= Constant<float>.PositiveTinyValue;
-        }
-
-        /// <summary>
         /// Returns true if the absolulte value of the supplied float <paramref name="x"/> is
         /// smaller than the supplied <paramref name="epsilon"/> .
         /// </summary>
@@ -1203,16 +1193,6 @@ namespace Aardvark.Base
         public static bool IsTiny(this float x, float epsilon)
         {
             return x.Abs() < epsilon;
-        }
-
-        /// <summary>
-        /// Returns true if the absolulte value of the supplied float <paramref name="x"/> is
-        /// greater than or equal to the supplied <paramref name="epsilon"/> .
-        /// </summary>
-        [Pure]
-        public static bool IsNotTiny(this float x, float epsilon)
-        {
-            return x.Abs() >= epsilon;
         }
 
         /// <summary>
@@ -1226,16 +1206,6 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Returns true if the absolulte value of the supplied float is
-        /// greater than or equal to 4 times the machine epsilon.
-        /// </summary>
-        [Pure]
-        public static bool IsNotTiny(this double x)
-        {
-            return x.Abs() >= Constant<double>.PositiveTinyValue;
-        }
-
-        /// <summary>
         /// Returns true if the absolulte value of the supplied float <paramref name="x"/> is
         /// smaller than the supplied <paramref name="epsilon"/> .
         /// </summary>
@@ -1243,16 +1213,6 @@ namespace Aardvark.Base
         public static bool IsTiny(this double x, double epsilon)
         {
             return x.Abs() < epsilon;
-        }
-
-        /// <summary>
-        /// Returns true if the absolulte value of the supplied float <paramref name="x"/> is
-        /// greater than or equal to the supplied <paramref name="epsilon"/> .
-        /// </summary>
-        [Pure]
-        public static bool IsNotTiny(this double x, double epsilon)
-        {
-            return x.Abs() >= epsilon;
         }
 
         #endregion

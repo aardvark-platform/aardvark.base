@@ -24,6 +24,7 @@ namespace Aardvark.Base
         {
             return new Telemetry.RatioView(self, denominator);
         }
+        
         public static Telemetry.SumView Sum(this Telemetry.IProbe self, params Telemetry.IProbe[] others)
         {
             return new Telemetry.SumView(self, others);
@@ -44,6 +45,7 @@ namespace Aardvark.Base
         {
             return new Telemetry.SumView(self, values);
         }
+        
         public static Telemetry.SumView Add(this Telemetry.IProbe self, params Telemetry.IProbe[] others)
         {
             return new Telemetry.SumView(self, others);
@@ -64,6 +66,7 @@ namespace Aardvark.Base
         {
             return new Telemetry.SumView(self, values);
         }
+        
         public static Telemetry.SubtractView Subtract(this Telemetry.IProbe self, params Telemetry.IProbe[] others)
         {
             return new Telemetry.SubtractView(self, others);
@@ -84,6 +87,7 @@ namespace Aardvark.Base
         {
             return new Telemetry.SubtractView(self, values);
         }
+        
         public static Telemetry.MultiplyView Multiply(this Telemetry.IProbe self, Telemetry.IProbe value)
         {
             return new Telemetry.MultiplyView(self, value);
@@ -92,6 +96,7 @@ namespace Aardvark.Base
         {
             return new Telemetry.MultiplyView(self, value);
         }
+        
         public static Telemetry.MinView Min(this Telemetry.IProbe self, params Telemetry.IProbe[] others)
         {
             return new Telemetry.MinView(self, others);
@@ -112,6 +117,7 @@ namespace Aardvark.Base
         {
             return new Telemetry.MinView(self, values);
         }
+        
         public static Telemetry.MaxView Max(this Telemetry.IProbe self, params Telemetry.IProbe[] others)
         {
             return new Telemetry.MaxView(self, others);
@@ -132,6 +138,7 @@ namespace Aardvark.Base
         {
             return new Telemetry.MaxView(self, values);
         }
+        
         public static Telemetry.AvgView Avg(this Telemetry.IProbe self, params Telemetry.IProbe[] others)
         {
             return new Telemetry.AvgView(self, others);

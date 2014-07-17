@@ -24,6 +24,7 @@ namespace Aardvark.Base
                 }
             }
         }
+        
         public static IProbe GetNamedProbe(string name)
         {
             lock (s_namedProbes)
@@ -31,12 +32,14 @@ namespace Aardvark.Base
                 return s_namedProbes.ContainsKey(name) ? s_namedProbes[name] : null;
             }
         }
+        
         private class Disposable : IDisposable
         {
             private Action m_disposeAction;
             public static IDisposable Create(Action disposeAction) { return new Disposable() { m_disposeAction = disposeAction }; }
             public void Dispose() { m_disposeAction(); }
         }
+        
         public static IDisposable Register(string name, IProbe probe)
         {
             Requires.NotEmpty(name);
@@ -49,24 +52,6 @@ namespace Aardvark.Base
                 () => { lock (s_namedProbes) s_namedProbes.Remove(name); }
                 );
         }
-        //public static IDisposable RegisterObservable(string name, IObservable<long> probe)
-        //{
-        //    Requires.NotEmpty(name);
-        //    Requires.NotNull(probe);
-        //    return Register(name, new Telemetry.ObservableCustomProbeLong(probe));
-        //}
-        //public static IDisposable RegisterObservable(string name, IObservable<double> probe)
-        //{
-        //    Requires.NotEmpty(name);
-        //    Requires.NotNull(probe);
-        //    return Register(name, new Telemetry.ObservableCustomProbeDouble(probe));
-        //}
-        //public static IDisposable RegisterObservable(string name, IObservable<TimeSpan> probe)
-        //{
-        //    Requires.NotEmpty(name);
-        //    Requires.NotNull(probe);
-        //    return Register(name, new Telemetry.ObservableCustomProbeTimeSpan(probe));
-        //}
 
         public static void Register(string name, Func<IEnumerable<TimingStats>> provider)
         {
@@ -76,6 +61,7 @@ namespace Aardvark.Base
             lock (s_providersForTimingStats)
                 s_providersForTimingStats[name] = provider;
         }
+        
         public static Tuple<string, Func<IEnumerable<TimingStats>>>[] ProvidersForTimingStats
         {
             get
@@ -89,6 +75,7 @@ namespace Aardvark.Base
                 }
             }
         }
+        
         public static Func<IEnumerable<TimingStats>> GetProviderForTimingStats(string name)
         {
             lock (s_providersForTimingStats)
