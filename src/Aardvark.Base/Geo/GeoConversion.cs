@@ -84,20 +84,17 @@ namespace Aardvark.Base
             return new V3d(lon, lat, h);
         }
 
-        public const string MapsGoogleComWebServiceKey =
-            "ABQIAAAAk4r0d6x0SCDbJHYjUrVJShSz1LOpcG8SAwxdzXiuGjdF4u3iExRpOB4S6dgElxAkq4aQ_QEUad74oQ";
-
         /// <summary>
         /// Returns WGS84 Longitude/Latitude/Height for given street address,
         /// or null if address not found. Uses maps.google.com webservice.
         /// </summary>
-        public static V3d? Wgs84FromStreetAddress(string address)
+        public static V3d? Wgs84FromStreetAddress(string address, string key)
         {
             var output = "csv";
             var url = @"http://maps.google.com/maps/geo?" 
                         + "q=" + Uri.EscapeDataString(address)
                         + "&output=" + output
-                        + "&key=" + MapsGoogleComWebServiceKey;
+                        + "&key=" + key;
 
             var resp = new WebClient().DownloadString(url);
             var tokens = resp.Split(',');
@@ -107,9 +104,6 @@ namespace Aardvark.Base
                 double.Parse(tokens[2], Localization.FormatEnUS),
                 double.Parse(tokens[3], Localization.FormatEnUS),
                 151.0);
-
-            // sm's key - no more than 50000 queries per day!!!!!!!!!
-            // ABQIAAAAk4r0d6x0SCDbJHYjUrVJShSz1LOpcG8SAwxdzXiuGjdF4u3iExRpOB4S6dgElxAkq4aQ_QEUad74oQ        
         }
 
         /// <summary>
