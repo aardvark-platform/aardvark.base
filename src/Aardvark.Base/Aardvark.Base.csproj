@@ -15,14 +15,13 @@
   </PropertyGroup>
   <PropertyGroup>
     <CustomBeforeMicrosoftCommonTargets>$(SolutionDir)\Aardvark.targets</CustomBeforeMicrosoftCommonTargets>
-	
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
     <OutputPath>..\..\Bin\Debug\</OutputPath>
-	<IntermediateOutputPath>..\..\Bin\Debug\obj\</IntermediateOutputPath>
+    <IntermediateOutputPath>..\..\Bin\Debug\obj\</IntermediateOutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
@@ -34,7 +33,33 @@
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
     <OutputPath>..\..\Bin\Release\</OutputPath>
-	<IntermediateOutputPath>..\..\Bin\Release\obj\</IntermediateOutputPath>
+    <IntermediateOutputPath>..\..\Bin\Release\obj\</IntermediateOutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release 4.5|AnyCPU'">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>..\..\Bin\net45\</OutputPath>
+    <IntermediateOutputPath>..\..\Bin\net45\obj\</IntermediateOutputPath>
+	<TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release 4.0|AnyCPU'">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>..\..\Bin\net40\</OutputPath>
+    <IntermediateOutputPath>..\..\Bin\net40\obj\</IntermediateOutputPath>
+	<TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
@@ -240,6 +265,13 @@
     <PreBuildEvent>"$(OutDir)..\AardReplacer.exe" "$(ProjectDir)\Math\Aardreps.aarp"
 "$(OutDir)..\AardReplacer.exe" "$(ProjectDir)\Trafos\Aardreps.aarp"</PreBuildEvent>
   </PropertyGroup>
+  <Target Name="Package">
+	  <!-- Ensure the Package directory exists for this project -->
+	  <RemoveDir Directories="NuGet" />
+	  <MakeDir Directories="NuGet" />
+	  <!-- Package the project -->
+	  <Exec WorkingDirectory="$(BuildDir)" Command="NuGet.exe pack -Verbosity detailed -Symbols -OutputDir &quot;NuGet&quot; -Properties &quot;Configuration=$(Configuration)&quot;" />
+	</Target>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">

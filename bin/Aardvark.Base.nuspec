@@ -1,0 +1,23 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2011/08/nuspec.xsd">
+    <metadata>
+        <id>Aardvark.Base</id>
+        <version>1.0.1</version>
+        <authors>VRVis Research Center</authors>
+        <owners>VRVis Research Center</owners>
+        <licenseUrl>http://opensource.org/licenses/Apache-2.0</licenseUrl>
+        <projectUrl>https://github.com/vrvis/aardvark</projectUrl>
+        <requireLicenseAcceptance>false</requireLicenseAcceptance>
+        <description>Aardvark.Base is a collection of data structures and algorithms for computer graphics and visualization. It is under active development since 2006 as part of a much larger set of libraries at VRVis Research Center.</description>
+        <summary>Data structures and algorithms for computer graphics and visualization.</summary>
+        <copyright>Copyright © 2014 VRVis Zentrum für Virtual Reality und Visualisierung Forschungs-GmbH, Donau-City-Strasse 1, A-1220 Wien, Austria.</copyright>
+        <language>en-US</language>
+        <tags>graphics visualization geometry</tags>
+    </metadata>
+    <files>
+        <file src="net40\Aardvark.Base.dll" target="lib\net40\Aardvark.Base.dll" />
+        <file src="net40\Aardvark.Base.pdb" target="lib\net40\Aardvark.Base.pdb" />
+        <file src="net45\Aardvark.Base.dll" target="lib\net45\Aardvark.Base.dll" />
+        <file src="net45\Aardvark.Base.pdb" target="lib\net45\Aardvark.Base.pdb" />
+    </files>
+</package>
