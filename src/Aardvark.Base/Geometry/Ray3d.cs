@@ -82,7 +82,7 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Gets the <t> of the closest point on the ray for any point <p>.
+        /// Gets the t of the closest point on the ray for any point p.
         /// </summary>
         public double GetTOfProjectedPoint(V3d p)
         {

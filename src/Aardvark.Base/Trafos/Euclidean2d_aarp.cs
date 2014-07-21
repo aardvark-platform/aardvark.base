@@ -18,7 +18,7 @@ namespace Aardvark.Base
         #region Constructors
 
         /// <summary>
-        /// Creates a rigid transformation from a rotation <paramref name="Rot"/> and a (subsequent) translation <paramref name="Trans"/>.
+        /// Creates a rigid transformation from a rotation <paramref name="rot"/> and a (subsequent) translation <paramref name="trans"/>.
         /// </summary>
         public Euclidean2d(Rot2d rot, V2d trans)
         {
@@ -27,7 +27,7 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Creates a rigid transformation from a rotation matrix <paramref name="Rot"/> and a (subsequent) translation <paramref name="Trans"/>.
+        /// Creates a rigid transformation from a rotation matrix <paramref name="rot"/> and a (subsequent) translation <paramref name="trans"/>.
         /// </summary>
         public Euclidean2d(M22d rot, V2d trans)
         {
@@ -36,14 +36,13 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Creates a rigid transformation from a trafo <paramref name="Rot"/> and a (subsequent) translation <paramref name="Trans"/>.
+        /// Creates a rigid transformation from a trafo <paramref name="trafo"/>.
         /// </summary>
         public Euclidean2d(Trafo2d trafo)
         {
             Rot = Rot2d.FromM22d((M22d)trafo.Forward);
             Trans = (V2d)trafo.Forward.C2.XY;
         }
-
 
         #endregion
 

@@ -2101,7 +2101,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Creates a Dictionary(of TKey,TValue) from an IEnumerable(of TSource)
         /// containing all Key Value pairs with distinct keys.
-        /// For duplicate keys, the returned value of <paramref name="duplicateKeyElementSelector"/> is inserted instead.
+        /// For duplicate keys, the returned value of <paramref name="duplicateKeyKeepElement"/> is inserted instead.
         /// </summary>
         /// <typeparam name="TSource">The type of the elements of source.</typeparam>
         /// <typeparam name="TKey">The type of the key returned by keySelector.</typeparam>
@@ -2181,7 +2181,7 @@ namespace Aardvark.Base
         /// </summary>
         /// <returns>An array of size count that contains the elements from the input sequence.</returns>
         /// <param name="source">An <see cref="T:System.Collections.Generic.IEnumerable`1" /> to create an array from.</param>
-        /// <typeparam name="TSource">The type of the elements of <paramref name="source" />.</typeparam>
+        /// <param name="count"></param>
         /// <exception cref="T:System.ArgumentNullException"><paramref name="source" /> is null.</exception>
         /// <exception cref="T:System.ArgumentException"><paramref name="count"/> is different from the number of elements in <paramref name="source" />.</exception>
         public static TElement[] ToArray<TElement>(this IEnumerable<TElement> source, int count)

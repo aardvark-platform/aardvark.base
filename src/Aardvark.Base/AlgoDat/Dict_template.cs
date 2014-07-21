@@ -76,7 +76,6 @@ namespace Aardvark.Base
     /// It is implemented as a hashtable with external linking, that uses
     /// primes as the table size in order to reduce the danger of funneling.
     /// </summary>
-    /// <typeparam name="TItem"></typeparam>
     public class __type__/*# if (isGeneric) { */</*# if (hasKey) { */TKey/*# } if (hasValue) { if (hasKey) { */, /*# } */TValue/*# } */>/*# } */
             //# if (!wrapped) {
             : /*# if (!big) { */IIntCountable, /*# } */__idict__,/*# if (!hasValue) { */ IDictSet<__tkey__>,/*# } else { */ IDict<__tkey__, TValue>,/*# } */
@@ -819,8 +818,6 @@ namespace Aardvark.Base
         /// Adds the supplied item to the __type__. Note that this incurs the
         /// overhead of converting the string key to a symbol.
         /// </summary>
-        /// <param name="key"></param>
-        /// <param name="value"></param>
         public void Add(string key/*# if (hasValue) { */, __tvalue__ value/*# } */)
         {
             //# if (wrapped) {

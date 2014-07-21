@@ -159,8 +159,8 @@ namespace Aardvark.Base
     /// <summary>
     /// IRange enforces a uniform design of all range types.
     /// </summary>
-    /// <typeparam name="T">Type of min and max elements of the range.</typeparam>
-    /// <typeparam name="RANGE_T">Type of the concrete (implementing) range type.</typeparam>
+    /// <typeparam name="TValue">Type of min and max elements of the range.</typeparam>
+    /// <typeparam name="TRange">Type of the concrete (implementing) range type.</typeparam>
     public interface IRange<TValue, TRange> : IRange<TValue, TValue, TRange>
     {
     }

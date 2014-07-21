@@ -19,7 +19,6 @@ namespace Aardvark.Base
     /// It is implemented as a hashtable with external linking, that uses
     /// primes as the table size in order to reduce the danger of funneling.
     /// </summary>
-    /// <typeparam name="TItem"></typeparam>
     public class Dict<TKey, TValue>
             : IIntCountable, ICountableDict, IDict<TKey, TValue>,
               IEnumerable, IEnumerable<KeyValuePair<TKey, TValue>>,
@@ -1760,7 +1759,6 @@ namespace Aardvark.Base
     /// It is implemented as a hashtable with external linking, that uses
     /// primes as the table size in order to reduce the danger of funneling.
     /// </summary>
-    /// <typeparam name="TItem"></typeparam>
     public class DictSet<TKey>
             : IIntCountable, ICountableDictSet, IDictSet<TKey>,
               IEnumerable, IEnumerable<TKey>,
@@ -2638,7 +2636,6 @@ namespace Aardvark.Base
     /// It is implemented as a hashtable with external linking, that uses
     /// primes as the table size in order to reduce the danger of funneling.
     /// </summary>
-    /// <typeparam name="TItem"></typeparam>
     public class IntDict<TValue>
             : IIntCountable, ICountableDict, IDict<int, TValue>,
               IEnumerable, IEnumerable<KeyValuePair<int, TValue>>,
@@ -3879,7 +3876,6 @@ namespace Aardvark.Base
     /// It is implemented as a hashtable with external linking, that uses
     /// primes as the table size in order to reduce the danger of funneling.
     /// </summary>
-    /// <typeparam name="TItem"></typeparam>
     public class IntSet
             : IIntCountable, ICountableDictSet, IDictSet<int>,
               IEnumerable, IEnumerable<int>,
@@ -4542,7 +4538,6 @@ namespace Aardvark.Base
     /// It is implemented as a hashtable with external linking, that uses
     /// primes as the table size in order to reduce the danger of funneling.
     /// </summary>
-    /// <typeparam name="TItem"></typeparam>
     public class SymbolDict<TValue>
             : IIntCountable, ICountableDict, IDict<Symbol, TValue>,
               IEnumerable, IEnumerable<KeyValuePair<Symbol, TValue>>,
@@ -5030,8 +5025,6 @@ namespace Aardvark.Base
         /// Adds the supplied item to the SymbolDict. Note that this incurs the
         /// overhead of converting the string key to a symbol.
         /// </summary>
-        /// <param name="key"></param>
-        /// <param name="value"></param>
         public void Add(string key, TValue value)
         {
             Add(key.ToSymbol(), value);
@@ -5901,7 +5894,6 @@ namespace Aardvark.Base
     /// It is implemented as a hashtable with external linking, that uses
     /// primes as the table size in order to reduce the danger of funneling.
     /// </summary>
-    /// <typeparam name="TItem"></typeparam>
     public class SymbolSet
             : IIntCountable, ICountableDictSet, IDictSet<Symbol>,
               IEnumerable, IEnumerable<Symbol>,
@@ -6207,8 +6199,6 @@ namespace Aardvark.Base
         /// Adds the supplied item to the SymbolSet. Note that this incurs the
         /// overhead of converting the string key to a symbol.
         /// </summary>
-        /// <param name="key"></param>
-        /// <param name="value"></param>
         public void Add(string key)
         {
             Add(key.ToSymbol());
@@ -6586,7 +6576,6 @@ namespace Aardvark.Base
     /// It is implemented as a hashtable with external linking, that uses
     /// primes as the table size in order to reduce the danger of funneling.
     /// </summary>
-    /// <typeparam name="TItem"></typeparam>
     public class BigDict<TKey, TValue>
             : ICountableDict, IDict<TKey, TValue>,
               IEnumerable, IEnumerable<KeyValuePair<TKey, TValue>>
@@ -8317,7 +8306,6 @@ namespace Aardvark.Base
     /// It is implemented as a hashtable with external linking, that uses
     /// primes as the table size in order to reduce the danger of funneling.
     /// </summary>
-    /// <typeparam name="TItem"></typeparam>
     public class BigDictSet<TKey>
             : ICountableDictSet, IDictSet<TKey>,
               IEnumerable, IEnumerable<TKey>
@@ -9180,7 +9168,6 @@ namespace Aardvark.Base
     /// It is implemented as a hashtable with external linking, that uses
     /// primes as the table size in order to reduce the danger of funneling.
     /// </summary>
-    /// <typeparam name="TItem"></typeparam>
     public class LongDict<TValue>
             : ICountableDict, IDict<long, TValue>,
               IEnumerable, IEnumerable<KeyValuePair<long, TValue>>
@@ -10409,7 +10396,6 @@ namespace Aardvark.Base
     /// It is implemented as a hashtable with external linking, that uses
     /// primes as the table size in order to reduce the danger of funneling.
     /// </summary>
-    /// <typeparam name="TItem"></typeparam>
     public class LongSet
             : ICountableDictSet, IDictSet<long>,
               IEnumerable, IEnumerable<long>
@@ -11055,7 +11041,6 @@ namespace Aardvark.Base
     /// It is implemented as a hashtable with external linking, that uses
     /// primes as the table size in order to reduce the danger of funneling.
     /// </summary>
-    /// <typeparam name="TItem"></typeparam>
     public class ConcurrentDict<TKey, TValue>
     {
         private SpinLock m_lock;
@@ -11754,7 +11739,6 @@ namespace Aardvark.Base
     /// It is implemented as a hashtable with external linking, that uses
     /// primes as the table size in order to reduce the danger of funneling.
     /// </summary>
-    /// <typeparam name="TItem"></typeparam>
     public class ConcurrentDictSet<TKey>
     {
         private SpinLock m_lock;
@@ -12036,7 +12020,6 @@ namespace Aardvark.Base
     /// It is implemented as a hashtable with external linking, that uses
     /// primes as the table size in order to reduce the danger of funneling.
     /// </summary>
-    /// <typeparam name="TItem"></typeparam>
     public class ConcurrentIntDict<TValue>
     {
         private SpinLock m_lock;
@@ -12533,7 +12516,6 @@ namespace Aardvark.Base
     /// It is implemented as a hashtable with external linking, that uses
     /// primes as the table size in order to reduce the danger of funneling.
     /// </summary>
-    /// <typeparam name="TItem"></typeparam>
     public class ConcurrentIntSet
     {
         private SpinLock m_lock;
@@ -12739,7 +12721,6 @@ namespace Aardvark.Base
     /// It is implemented as a hashtable with external linking, that uses
     /// primes as the table size in order to reduce the danger of funneling.
     /// </summary>
-    /// <typeparam name="TItem"></typeparam>
     public class ConcurrentSymbolDict<TValue>
     {
         private SpinLock m_lock;
@@ -12867,8 +12848,6 @@ namespace Aardvark.Base
         /// Adds the supplied item to the ConcurrentSymbolDict. Note that this incurs the
         /// overhead of converting the string key to a symbol.
         /// </summary>
-        /// <param name="key"></param>
-        /// <param name="value"></param>
         public void Add(string key, TValue value)
         {
             var locked = false;
@@ -13351,7 +13330,6 @@ namespace Aardvark.Base
     /// It is implemented as a hashtable with external linking, that uses
     /// primes as the table size in order to reduce the danger of funneling.
     /// </summary>
-    /// <typeparam name="TItem"></typeparam>
     public class ConcurrentSymbolSet
     {
         private SpinLock m_lock;
@@ -13453,8 +13431,6 @@ namespace Aardvark.Base
         /// Adds the supplied item to the ConcurrentSymbolSet. Note that this incurs the
         /// overhead of converting the string key to a symbol.
         /// </summary>
-        /// <param name="key"></param>
-        /// <param name="value"></param>
         public void Add(string key)
         {
             var locked = false;
@@ -13574,7 +13550,6 @@ namespace Aardvark.Base
     /// It is implemented as a hashtable with external linking, that uses
     /// primes as the table size in order to reduce the danger of funneling.
     /// </summary>
-    /// <typeparam name="TItem"></typeparam>
     public class ConcurrentBigDict<TKey, TValue>
     {
         private SpinLock m_lock;
@@ -14262,7 +14237,6 @@ namespace Aardvark.Base
     /// It is implemented as a hashtable with external linking, that uses
     /// primes as the table size in order to reduce the danger of funneling.
     /// </summary>
-    /// <typeparam name="TItem"></typeparam>
     public class ConcurrentBigDictSet<TKey>
     {
         private SpinLock m_lock;
@@ -14533,7 +14507,6 @@ namespace Aardvark.Base
     /// It is implemented as a hashtable with external linking, that uses
     /// primes as the table size in order to reduce the danger of funneling.
     /// </summary>
-    /// <typeparam name="TItem"></typeparam>
     public class ConcurrentLongDict<TValue>
     {
         private SpinLock m_lock;
@@ -15019,7 +14992,6 @@ namespace Aardvark.Base
     /// It is implemented as a hashtable with external linking, that uses
     /// primes as the table size in order to reduce the danger of funneling.
     /// </summary>
-    /// <typeparam name="TItem"></typeparam>
     public class ConcurrentLongSet
     {
         private SpinLock m_lock;
@@ -15214,7 +15186,6 @@ namespace Aardvark.Base
     /// It is implemented as a hashtable with external linking, that uses
     /// primes as the table size in order to reduce the danger of funneling.
     /// </summary>
-    /// <typeparam name="TItem"></typeparam>
     public class FastConcurrentDict<TKey, TValue>
             : IIntCountable, ICountableDict, IDict<TKey, TValue>,
               IEnumerable, IEnumerable<KeyValuePair<TKey, TValue>>
@@ -17089,7 +17060,6 @@ namespace Aardvark.Base
     /// It is implemented as a hashtable with external linking, that uses
     /// primes as the table size in order to reduce the danger of funneling.
     /// </summary>
-    /// <typeparam name="TItem"></typeparam>
     public class FastConcurrentDictSet<TKey>
             : IIntCountable, ICountableDictSet, IDictSet<TKey>,
               IEnumerable, IEnumerable<TKey>
@@ -17987,7 +17957,6 @@ namespace Aardvark.Base
     /// It is implemented as a hashtable with external linking, that uses
     /// primes as the table size in order to reduce the danger of funneling.
     /// </summary>
-    /// <typeparam name="TItem"></typeparam>
     public class FastConcurrentIntDict<TValue>
             : IIntCountable, ICountableDict, IDict<int, TValue>,
               IEnumerable, IEnumerable<KeyValuePair<int, TValue>>
@@ -19334,7 +19303,6 @@ namespace Aardvark.Base
     /// It is implemented as a hashtable with external linking, that uses
     /// primes as the table size in order to reduce the danger of funneling.
     /// </summary>
-    /// <typeparam name="TItem"></typeparam>
     public class FastConcurrentIntSet
             : IIntCountable, ICountableDictSet, IDictSet<int>,
               IEnumerable, IEnumerable<int>
@@ -20006,7 +19974,6 @@ namespace Aardvark.Base
     /// It is implemented as a hashtable with external linking, that uses
     /// primes as the table size in order to reduce the danger of funneling.
     /// </summary>
-    /// <typeparam name="TItem"></typeparam>
     public class FastConcurrentSymbolDict<TValue>
             : IIntCountable, ICountableDict, IDict<Symbol, TValue>,
               IEnumerable, IEnumerable<KeyValuePair<Symbol, TValue>>
@@ -20542,8 +20509,6 @@ namespace Aardvark.Base
         /// Adds the supplied item to the FastConcurrentSymbolDict. Note that this incurs the
         /// overhead of converting the string key to a symbol.
         /// </summary>
-        /// <param name="key"></param>
-        /// <param name="value"></param>
         public void Add(string key, TValue value)
         {
             Add(key.ToSymbol(), value);
@@ -21471,7 +21436,6 @@ namespace Aardvark.Base
     /// It is implemented as a hashtable with external linking, that uses
     /// primes as the table size in order to reduce the danger of funneling.
     /// </summary>
-    /// <typeparam name="TItem"></typeparam>
     public class FastConcurrentSymbolSet
             : IIntCountable, ICountableDictSet, IDictSet<Symbol>,
               IEnumerable, IEnumerable<Symbol>
@@ -21785,8 +21749,6 @@ namespace Aardvark.Base
         /// Adds the supplied item to the FastConcurrentSymbolSet. Note that this incurs the
         /// overhead of converting the string key to a symbol.
         /// </summary>
-        /// <param name="key"></param>
-        /// <param name="value"></param>
         public void Add(string key)
         {
             Add(key.ToSymbol());
@@ -22165,7 +22127,6 @@ namespace Aardvark.Base
     /// It is implemented as a hashtable with external linking, that uses
     /// primes as the table size in order to reduce the danger of funneling.
     /// </summary>
-    /// <typeparam name="TItem"></typeparam>
     public class FastConcurrentBigDict<TKey, TValue>
             : ICountableDict, IDict<TKey, TValue>,
               IEnumerable, IEnumerable<KeyValuePair<TKey, TValue>>
@@ -24031,7 +23992,6 @@ namespace Aardvark.Base
     /// It is implemented as a hashtable with external linking, that uses
     /// primes as the table size in order to reduce the danger of funneling.
     /// </summary>
-    /// <typeparam name="TItem"></typeparam>
     public class FastConcurrentBigDictSet<TKey>
             : ICountableDictSet, IDictSet<TKey>,
               IEnumerable, IEnumerable<TKey>
@@ -24920,7 +24880,6 @@ namespace Aardvark.Base
     /// It is implemented as a hashtable with external linking, that uses
     /// primes as the table size in order to reduce the danger of funneling.
     /// </summary>
-    /// <typeparam name="TItem"></typeparam>
     public class FastConcurrentLongDict<TValue>
             : ICountableDict, IDict<long, TValue>,
               IEnumerable, IEnumerable<KeyValuePair<long, TValue>>
@@ -26256,7 +26215,6 @@ namespace Aardvark.Base
     /// It is implemented as a hashtable with external linking, that uses
     /// primes as the table size in order to reduce the danger of funneling.
     /// </summary>
-    /// <typeparam name="TItem"></typeparam>
     public class FastConcurrentLongSet
             : ICountableDictSet, IDictSet<long>,
               IEnumerable, IEnumerable<long>
@@ -26917,7 +26875,6 @@ namespace Aardvark.Base
     /// It is implemented as a hashtable with external linking, that uses
     /// primes as the table size in order to reduce the danger of funneling.
     /// </summary>
-    /// <typeparam name="TItem"></typeparam>
     public class DictIEq<TKey, TValue>
             : IIntCountable, ICountableDict, IDict<TKey, TValue>,
               IEnumerable, IEnumerable<KeyValuePair<TKey, TValue>>,
@@ -28659,7 +28616,6 @@ namespace Aardvark.Base
     /// It is implemented as a hashtable with external linking, that uses
     /// primes as the table size in order to reduce the danger of funneling.
     /// </summary>
-    /// <typeparam name="TItem"></typeparam>
     public class DictSetIEq<TKey>
             : IIntCountable, ICountableDictSet, IDictSet<TKey>,
               IEnumerable, IEnumerable<TKey>,
@@ -29538,7 +29494,6 @@ namespace Aardvark.Base
     /// It is implemented as a hashtable with external linking, that uses
     /// primes as the table size in order to reduce the danger of funneling.
     /// </summary>
-    /// <typeparam name="TItem"></typeparam>
     public class BigDictIEq<TKey, TValue>
             : ICountableDict, IDict<TKey, TValue>,
               IEnumerable, IEnumerable<KeyValuePair<TKey, TValue>>
@@ -31270,7 +31225,6 @@ namespace Aardvark.Base
     /// It is implemented as a hashtable with external linking, that uses
     /// primes as the table size in order to reduce the danger of funneling.
     /// </summary>
-    /// <typeparam name="TItem"></typeparam>
     public class BigDictSetIEq<TKey>
             : ICountableDictSet, IDictSet<TKey>,
               IEnumerable, IEnumerable<TKey>
@@ -32134,7 +32088,6 @@ namespace Aardvark.Base
     /// It is implemented as a hashtable with external linking, that uses
     /// primes as the table size in order to reduce the danger of funneling.
     /// </summary>
-    /// <typeparam name="TItem"></typeparam>
     public class ConcurrentDictIEq<TKey, TValue>
         where TKey : IEquatable<TKey>
     {
@@ -32834,7 +32787,6 @@ namespace Aardvark.Base
     /// It is implemented as a hashtable with external linking, that uses
     /// primes as the table size in order to reduce the danger of funneling.
     /// </summary>
-    /// <typeparam name="TItem"></typeparam>
     public class ConcurrentDictSetIEq<TKey>
         where TKey : IEquatable<TKey>
     {
@@ -33117,7 +33069,6 @@ namespace Aardvark.Base
     /// It is implemented as a hashtable with external linking, that uses
     /// primes as the table size in order to reduce the danger of funneling.
     /// </summary>
-    /// <typeparam name="TItem"></typeparam>
     public class ConcurrentBigDictIEq<TKey, TValue>
         where TKey : IEquatable<TKey>
     {
@@ -33806,7 +33757,6 @@ namespace Aardvark.Base
     /// It is implemented as a hashtable with external linking, that uses
     /// primes as the table size in order to reduce the danger of funneling.
     /// </summary>
-    /// <typeparam name="TItem"></typeparam>
     public class ConcurrentBigDictSetIEq<TKey>
         where TKey : IEquatable<TKey>
     {
@@ -34078,7 +34028,6 @@ namespace Aardvark.Base
     /// It is implemented as a hashtable with external linking, that uses
     /// primes as the table size in order to reduce the danger of funneling.
     /// </summary>
-    /// <typeparam name="TItem"></typeparam>
     public class FastConcurrentDictIEq<TKey, TValue>
             : IIntCountable, ICountableDict, IDict<TKey, TValue>,
               IEnumerable, IEnumerable<KeyValuePair<TKey, TValue>>
@@ -35954,7 +35903,6 @@ namespace Aardvark.Base
     /// It is implemented as a hashtable with external linking, that uses
     /// primes as the table size in order to reduce the danger of funneling.
     /// </summary>
-    /// <typeparam name="TItem"></typeparam>
     public class FastConcurrentDictSetIEq<TKey>
             : IIntCountable, ICountableDictSet, IDictSet<TKey>,
               IEnumerable, IEnumerable<TKey>
@@ -36853,7 +36801,6 @@ namespace Aardvark.Base
     /// It is implemented as a hashtable with external linking, that uses
     /// primes as the table size in order to reduce the danger of funneling.
     /// </summary>
-    /// <typeparam name="TItem"></typeparam>
     public class FastConcurrentBigDictIEq<TKey, TValue>
             : ICountableDict, IDict<TKey, TValue>,
               IEnumerable, IEnumerable<KeyValuePair<TKey, TValue>>
@@ -38720,7 +38667,6 @@ namespace Aardvark.Base
     /// It is implemented as a hashtable with external linking, that uses
     /// primes as the table size in order to reduce the danger of funneling.
     /// </summary>
-    /// <typeparam name="TItem"></typeparam>
     public class FastConcurrentBigDictSetIEq<TKey>
             : ICountableDictSet, IDictSet<TKey>,
               IEnumerable, IEnumerable<TKey>

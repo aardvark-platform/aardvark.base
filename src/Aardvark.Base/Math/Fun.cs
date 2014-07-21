@@ -474,7 +474,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Creates weight function for cubic interpolation according to
         /// "Comparison of Interpolating for Image Resampling" by
-        /// J.A.Parker, R.V.Kenyon & D.E.Troxel, IEEE Transactions on
+        /// J.A.Parker, R.V.Kenyon &amp; D.E.Troxel, IEEE Transactions on
         /// Medical Imaging Vol. 2, 1983. Recommended values for a:
         /// -0.5 for medical/astronomical images, -1.0 for other photos.
         /// </summary>
@@ -495,7 +495,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Creates weight function for cubic interpolation according to
         /// "Comparison of Interpolating for Image Resampling" by
-        /// J.A.Parker, R.V.Kenyon & D.E.Troxel, IEEE Transactions on
+        /// J.A.Parker, R.V.Kenyon &amp; D.E.Troxel, IEEE Transactions on
         /// Medical Imaging Vol. 2, 1983. Recommended values for a:
         /// -0.5 for medical/astronomical images, -1.0 for other photos.
         /// a = -0.5 exactly reconstructs second degree polynomials,

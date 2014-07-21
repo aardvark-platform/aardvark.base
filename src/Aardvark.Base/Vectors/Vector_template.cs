@@ -1126,7 +1126,7 @@ namespace Aardvark.Base
 
         //#     }
         //# }
-        /// Attention: NEVER implement operators <, <=, >=, >, 
+        /// Attention: NEVER implement operators &lt;, &lt;=, &gt;=, &gt;, 
         /// since these are not defined in a Vector space. 
         /// Use AllSmaller() and similar comparators!
         #endregion
@@ -1189,7 +1189,7 @@ namespace Aardvark.Base
         //# if (ft.IsReal) {       
         /// <summary>
         /// Returns whether the given vectors are equal within
-        /// Constant<__ftype__>.PositiveTinyValue.
+        /// Constant{__ftype__}.PositiveTinyValue.
         /// </summary>
         public static bool ApproxEqual(__vtype__ a, __vtype__ b)
         {

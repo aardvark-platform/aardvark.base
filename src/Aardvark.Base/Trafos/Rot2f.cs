@@ -304,25 +304,23 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Transforms a Direction Vector
+        /// Transforms a direction vector.
         /// </summary>
         public static V2f TransformDir(Rot2f rot, V2f v)
         {
             return (M22f)rot * v;
         }
 
-
         /// <summary>
-        /// Inverse Transforms a Direction Vector
+        /// Inverse transforms a direction vector.
         /// </summary>
         public static V2f InvTransformDir(Rot2f rot, V2f v)
         {
             return (M22f)Rot2f.Negate(rot) * v;
         }
 
-
         /// <summary>
-        /// Transforms a Position Vector
+        /// Transforms a position vector.
         /// </summary>
         public static V2f TransformPos(Rot2f rot, V2f v)
         {
@@ -330,7 +328,7 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Transforms a Position Vector
+        /// Transforms a position vector.
         /// </summary>
         public static V2f InvTransformPos(Rot2f rot, V2f v)
         {
@@ -338,7 +336,7 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Transforms a Direction Vector
+        /// Transforms a direction vector.
         /// </summary>
         public V2f TransformDir(V2f v)
         {
@@ -346,15 +344,15 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Transforms a Position Vector
+        /// Transforms a position vector.
         /// </summary>
         public V2f TransformPos(V2f v)
         {
             return Rot2f.TransformPos(this, v);
         }
 
-        // <summary>
-        /// Transforms a Direction Vector
+        /// <summary>
+        /// Transforms a direction vector.
         /// </summary>
         public V2f InvTransformDir(V2f v)
         {
@@ -362,7 +360,7 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Transforms a Position Vector
+        /// Transforms a position vector.
         /// </summary>
         public V2f InvTransformPos(V2f v)
         {

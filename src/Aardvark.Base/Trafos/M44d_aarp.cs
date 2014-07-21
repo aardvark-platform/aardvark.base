@@ -221,8 +221,6 @@ namespace Aardvark.Base
         /// <summary>
         ///  Provides perspective projection matrix in terms of the vertical field of view angle a and the aspect ratio r.
         /// </summary>
-        /// <param name="width"></param>
-        /// <param name="hei"></param>
         public static M44d PerspectiveProjectionTransformRH(double a, double r, double n, double f)
         {
             //D / r     0      0      0
@@ -319,10 +317,6 @@ namespace Aardvark.Base
         #region Operators
 
         /// <summary>
-        /// Multiplication of a <see cref="M44d"/> with a <see cref="QuaternionD"/>.
-        /// </summary>
-
-        /// <summary>
         /// Calculates the product of a <see cref="M44d"/> with a <see cref="Shift3d"/>.
         /// </summary>
         public static M44d operator *(M44d matrix, Shift3d shift)
@@ -369,8 +363,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Creates new Identity <see cref="M44d"/> with a <see cref="Shift3d"/> for translation.
         /// </summary>
-        /// <param name="shift"></param>
-        /// <returns>A <see cref="M44d"/> translation matrix.</returns>
+        /// <returns>Translation matrix.</returns>
         public static M44d Translation(Shift3d s)
         {
             return new M44d(1, 0, 0, s.X,

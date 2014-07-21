@@ -104,7 +104,7 @@ namespace Aardvark.Base
         #region Plane Arithmetics
 
         /// <summary>
-        /// Returns the normalized <see cref="Plane"/> as new <see cref="Plane"/>.
+        /// Returns the normalized <see cref="Plane2d"/> as new <see cref="Plane2d"/>.
         /// </summary>
         public Plane2d Normalized
         {
@@ -116,7 +116,7 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Calculates the nomalized plane of this <see cref="Plane"/>.
+        /// Calculates the nomalized plane of this <see cref="Plane2d"/>.
         /// </summary>
         public void Normalize()
         {
@@ -135,7 +135,7 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Returns <see cref="Plane"/> with normal vector in opposing direction.
+        /// Returns <see cref="Plane2d"/> with normal vector in opposing direction.
         /// </summary>
         /// <returns></returns>
         public Plane2d Reversed

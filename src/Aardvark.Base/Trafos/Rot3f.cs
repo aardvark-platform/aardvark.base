@@ -156,10 +156,10 @@ namespace Aardvark.Base
         #endregion
 
         #region Constants
-
+#if false
         /// NOTE for developers
         /// A Zero-quaternion does not represent a Rot3, so it should not be implemented
-#if false        /// <summary>        /// Zero (0,(0,0,0)).
+        /// <summary>        /// Zero (0,(0,0,0)).
         /// </summary>
         public static readonly Rot3f Zero = new Rot3f(0, V3f.Zero);
 #endif
@@ -188,12 +188,12 @@ namespace Aardvark.Base
 
         #region Quaternion Arithmetics
 
-        /// [todo ISSUE 20090421 andi : andi>
-        /// Operations like Add, Subtract and Multiplication with scalar, Divide, Reciprocal
-        /// should not be defined in a Rot3*.
-        /// These are perfectly valid for a quaternion, but a rotation is defined on a 
-        /// NORMALIZED quaternion. This Norm-Constraint would be violated with above operations.
-        /// <]
+        // [todo ISSUE 20090421 andi : andi>
+        // Operations like Add, Subtract and Multiplication with scalar, Divide, Reciprocal
+        // should not be defined in a Rot3*.
+        // These are perfectly valid for a quaternion, but a rotation is defined on a 
+        // NORMALIZED quaternion. This Norm-Constraint would be violated with above operations.
+        // <]
         // todo andi {
         /// <summary>
         /// Returns the sum of 2 quaternions (a.w + b.w, a.v + b.v).
@@ -749,7 +749,7 @@ namespace Aardvark.Base
         /// Creates a quaternion from a rotation matrix
         /// </summary>
         /// <param name="m"></param>
-        /// <returns></returns>
+        /// <param name="epsilon"></param>
         public static Rot3f FromM33f(M33f m, float epsilon = (float)0.0001)
         {
             Trace.Assert(m.IsOrthonormal(epsilon), "Matrix is not orthonormal.");

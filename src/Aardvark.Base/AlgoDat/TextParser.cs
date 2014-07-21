@@ -238,7 +238,7 @@ namespace Aardvark.Base
         /// Parse the supplied text into the supplied node, starting the
         /// parser in the supplied root state. This function is the entry
         /// call to the parser, it returns when the text has been fully
-        /// parsed, or throws a <see cref="ParserException"/>.
+        /// parsed, or throws a ParserException.
         /// </summary>
         public static TPar Parse<TNode>(
                 Text text,
@@ -949,6 +949,7 @@ namespace Aardvark.Base
         /// Returns the text [pos + offset, pos) if offset is lower than 0,
         /// and the text [start + offset, pos) if offset is greater or equal
         /// to 0.
+        /// </summary>
         public Text PeekFrom(int offset)
         {
             return PeekFromPos(offset < 0

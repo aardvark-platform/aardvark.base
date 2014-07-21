@@ -10,12 +10,30 @@ namespace Aardvark.Base
     /// </summary>
     public enum ImageInterpolation : int
     {
-        SmoothEdge = -2147483648, ///IPPI_SMOOTH_EDGE  = (1 << 31)
-        Near = 1, ///IPPI_INTER_NN
-        Linear = 2, ///IPPI_INTER_LINEAR
-        Cubic = 4, ///IPPI_INTER_CUBIC
-        SuperSample = 8, ///IPPI_INTER_SUPER
-        Lanczos = 16, ///IPPI_INTER_LANCZOS
+        /// <summary>
+        /// IPPI_SMOOTH_EDGE  = (1 &lt;&lt; 31)
+        /// </summary>
+        SmoothEdge = -2147483648,
+        /// <summary>
+        /// IPPI_INTER_NN
+        /// </summary>
+        Near = 1,
+        /// <summary>
+        /// IPPI_INTER_LINEAR
+        /// </summary>
+        Linear = 2,
+        /// <summary>
+        /// IPPI_INTER_CUBIC
+        /// </summary>
+        Cubic = 4,
+        /// <summary>
+        /// IPPI_INTER_SUPER
+        /// </summary>
+        SuperSample = 8,
+        /// <summary>
+        /// IPPI_INTER_LANCZOS
+        /// </summary>
+        Lanczos = 16,
     }
 
     public enum ImageTrafo

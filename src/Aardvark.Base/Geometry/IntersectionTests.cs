@@ -1712,7 +1712,7 @@ namespace Aardvark.Base
         #region Line3d intersects Line3d (haaser)
 
         /// <summary>
-        /// Returns true if the minimal distance between the given lines is smaller than Constant<double>.PositiveTinyValue.
+        /// Returns true if the minimal distance between the given lines is smaller than Constant&lt;double&gt;.PositiveTinyValue.
         /// </summary>
         public static bool Intersects(
             this Line3d l0,
@@ -1830,7 +1830,7 @@ namespace Aardvark.Base
         #region Ray3d intersects Line3d (haaser)
 
         /// <summary>
-        /// Returns true if the minimal distance between the line and the ray is smaller than Constant<double>.PositiveTinyValue
+        /// Returns true if the minimal distance between the line and the ray is smaller than Constant&lt;double&gt;.PositiveTinyValue
         /// </summary>
         public static bool Intersects(
             this Ray3d ray, Line3d line
@@ -1870,7 +1870,7 @@ namespace Aardvark.Base
         #region Ray3d intersects Ray3d (haaser)
 
         /// <summary>
-        /// returns true if the minimal distance between the rays is smaller than Constant<double>.PositiveTinyValue
+        /// returns true if the minimal distance between the rays is smaller than Constant&lt;double&gt;.PositiveTinyValue
         /// </summary>
         public static bool Intersects(
             this Ray3d r0, 
@@ -1882,7 +1882,7 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// returns true if the minimal distance between the rays is smaller than Constant<double>.PositiveTinyValue
+        /// returns true if the minimal distance between the rays is smaller than Constant&lt;double&gt;.PositiveTinyValue
         /// t0 and t1 hold the ray-parameters for the intersection
         /// </summary>
         public static bool Intersects(
@@ -1932,8 +1932,7 @@ namespace Aardvark.Base
 
         /// <summary>
         /// Returns true if the ray and the triangle intersect. If you need
-        /// information about the hit point see the <see cref="Ray3d.Hits"/>
-        /// method.
+        /// information about the hit point see the Ray3d.Hits method.
         /// </summary>
         public static bool Intersects(
             this Ray3d ray,
@@ -1948,7 +1947,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns true if the ray and the triangle intersect within the
         /// supplied parameter interval of the ray. If you need information
-        /// about the hit point see the <see cref="Ray3d.Hits"/> method.
+        /// about the hit point see the Ray3d.Hits method.
         /// </summary>
         public static bool Intersects(
             this Ray3d ray,
@@ -1964,7 +1963,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns true if the ray and the triangle intersect within the
         /// supplied parameter interval of the ray. If you need information
-        /// about the hit point see the <see cref="Ray3d.Hits"/> method.
+        /// about the hit point see the Ray3d.Hits method.
         /// t holds the corresponding ray-parameter
         /// </summary>
         public static bool Intersects(
@@ -1982,7 +1981,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns true if the ray and the triangle intersect within the
         /// supplied parameter interval of the ray. If you need information
-        /// about the hit point see the <see cref="Ray3d.Hits"/> method.
+        /// about the hit point see the Ray3d.Hits method.
         /// </summary>
         public static bool IntersectsTriangle(
             this Ray3d ray,
@@ -1997,7 +1996,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns true if the ray and the triangle intersect within the
         /// supplied parameter interval of the ray. If you need information
-        /// about the hit point see the <see cref="Ray3d.Hits"/> method.
+        /// about the hit point see the Ray3d.Hits method.
         /// t holds the corresponding ray-parameter
         /// </summary>
         public static bool IntersectsTriangle(
@@ -2031,7 +2030,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns true if the ray and the triangle intersect within the
         /// supplied parameter interval of the ray. If you need information
-        /// about the hit point see the <see cref="Ray3d.Hits"/> method.
+        /// about the hit point see the Ray3d.Hits method.
         /// </summary>
         public static bool IntersectsTrianglePointAndEdges(
             this Ray3d ray,
@@ -2046,7 +2045,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns true if the ray and the triangle intersect within the
         /// supplied parameter interval of the ray. If you need information
-        /// about the hit point see the <see cref="Ray3d.Hits"/> method.
+        /// about the hit point see the Ray3d.Hits method.
         /// t holds the corresponding ray-parameter
         /// </summary>
         public static bool IntersectsTrianglePointAndEdges(
@@ -2081,8 +2080,7 @@ namespace Aardvark.Base
 
         /// <summary>
         /// Returns true if the ray and the triangle intersect. If you need
-        /// information about the hit point see the <see cref="Ray3d.Hits"/>
-        /// method.
+        /// information about the hit point see the Ray3d.Hits method.
         /// </summary>
         public static bool Intersects(
             this Ray3d ray,
@@ -2095,7 +2093,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns true if the ray and the quad intersect within the
         /// supplied parameter interval of the ray. If you need information
-        /// about the hit point see the <see cref="Ray3d.Hits"/> method.
+        /// about the hit point see the Ray3d.Hits method.
         /// </summary>
         public static bool Intersects(
             this Ray3d ray,
@@ -2113,7 +2111,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns true if the ray and the quad intersect within the
         /// supplied parameter interval of the ray. If you need information
-        /// about the hit point see the <see cref="Ray3d.Hits"/> method.
+        /// about the hit point see the Ray3d.Hits method.
         /// </summary>
         public static bool IntersectsQuad(
             this Ray3d ray,
@@ -2232,8 +2230,7 @@ namespace Aardvark.Base
 
         /// <summary>
         /// Returns true if the ray and the triangle intersect. If you need
-        /// information about the hit point see the <see cref="Ray3d.Hits"/>
-        /// method.
+        /// information about the hit point see the Ray3d.Hits method.
         /// </summary>
         public static bool Intersects(
             this Ray3d ray,
@@ -2248,7 +2245,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns true if the ray and the triangle intersect within the
         /// supplied parameter interval of the ray. If you need information
-        /// about the hit point see the <see cref="Ray3d.Hits"/> method.
+        /// about the hit point see the Ray3d.Hits method.
         /// </summary>
         public static bool Intersects(
             this Ray3d ray,
@@ -3070,7 +3067,9 @@ namespace Aardvark.Base
         /// Returns true if the given plane and cylinder intersect in an ellipse. 
         /// This is only true if the plane is neither orthogonal nor parallel to the cylinder axis. Otherwise the intersection methods returning a circle or rays have to be used.
         /// </summary>
+        /// <param name="plane"></param>
         /// <param name="cylinder">The cylinder is assumed to have infinite extent along its axis.</param>
+        /// <param name="ellipse"></param>
         public static bool Intersects(this Plane3d plane, Cylinder3d cylinder, out Ellipse3d ellipse)
         {
             if (plane.IsParallelToAxis(cylinder) || plane.IsOrthogonalToAxis(cylinder))
@@ -3100,7 +3099,9 @@ namespace Aardvark.Base
         /// Returns true if the given plane and cylinder intersect in a circle. 
         /// This is only true if the plane is orthogonal to the cylinder axis. Otherwise the intersection methods returning an ellipse or rays have to be used.
         /// </summary>
+        /// <param name="plane"></param>
         /// <param name="cylinder">The cylinder is assumed to have infinite extent along its axis.</param>
+        /// <param name="circle"></param>
         public static bool Intersects(this Plane3d plane, Cylinder3d cylinder, out Circle3d circle)
         {
             if (plane.IsOrthogonalToAxis(cylinder))
@@ -3117,6 +3118,7 @@ namespace Aardvark.Base
         /// Returns true if the given plane and cylinder intersect in one or two rays.
         /// This is only true if the plane is parallel to the cylinder axis. Otherwise the intersection methods returning an ellipse or a circle have to be used.
         /// </summary>
+        /// <param name="plane"></param>
         /// <param name="cylinder">The cylinder is assumed to have infinite extent along its axis.</param>
         /// <param name="rays">Output of intersection rays. The array contains two rays (intersection), one ray (plane is tangent to cylinder) or no ray (no intersection).</param>
         public static bool Intersects(this Plane3d plane, Cylinder3d cylinder, out Ray3d[] rays)
@@ -3758,9 +3760,9 @@ namespace Aardvark.Base
         /// <summary>
         /// returns true if the Box3d and the frustum described by the M44d intersect or the frustum contains the Box3d
         /// Assumes DirectX clip-space:
-        ///     -w < x < w
-        ///     -w < y < w
-        ///      0 < z < w
+        ///     -w &lt; x &lt; w
+        ///     -w &lt; y &lt; w
+        ///      0 &lt; z &lt; w
         /// </summary>
         public static bool IntersectsFrustum(this Box3d box, M44d projection)
         {

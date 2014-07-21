@@ -1001,7 +1001,7 @@ namespace Aardvark.Base
             return new V2i(s / v.X, s / v.Y);
         }
 
-        /// Attention: NEVER implement operators <, <=, >=, >, 
+        /// Attention: NEVER implement operators &lt;, &lt;=, &gt;=, &gt;, 
         /// since these are not defined in a Vector space. 
         /// Use AllSmaller() and similar comparators!
         #endregion
@@ -4141,7 +4141,7 @@ namespace Aardvark.Base
             return new V2l(s / v.X, s / v.Y);
         }
 
-        /// Attention: NEVER implement operators <, <=, >=, >, 
+        /// Attention: NEVER implement operators &lt;, &lt;=, &gt;=, &gt;, 
         /// since these are not defined in a Vector space. 
         /// Use AllSmaller() and similar comparators!
         #endregion
@@ -7526,7 +7526,7 @@ namespace Aardvark.Base
             return new V2f(s / v.X, s / v.Y);
         }
 
-        /// Attention: NEVER implement operators <, <=, >=, >, 
+        /// Attention: NEVER implement operators &lt;, &lt;=, &gt;=, &gt;, 
         /// since these are not defined in a Vector space. 
         /// Use AllSmaller() and similar comparators!
         #endregion
@@ -7588,7 +7588,7 @@ namespace Aardvark.Base
 
         /// <summary>
         /// Returns whether the given vectors are equal within
-        /// Constant<float>.PositiveTinyValue.
+        /// Constant{float}.PositiveTinyValue.
         /// </summary>
         public static bool ApproxEqual(V2f a, V2f b)
         {
@@ -11139,7 +11139,7 @@ namespace Aardvark.Base
             return new V2d(s / v.X, s / v.Y);
         }
 
-        /// Attention: NEVER implement operators <, <=, >=, >, 
+        /// Attention: NEVER implement operators &lt;, &lt;=, &gt;=, &gt;, 
         /// since these are not defined in a Vector space. 
         /// Use AllSmaller() and similar comparators!
         #endregion
@@ -11201,7 +11201,7 @@ namespace Aardvark.Base
 
         /// <summary>
         /// Returns whether the given vectors are equal within
-        /// Constant<double>.PositiveTinyValue.
+        /// Constant{double}.PositiveTinyValue.
         /// </summary>
         public static bool ApproxEqual(V2d a, V2d b)
         {
@@ -14664,7 +14664,7 @@ namespace Aardvark.Base
             return new V3i(s / v.X, s / v.Y, s / v.Z);
         }
 
-        /// Attention: NEVER implement operators <, <=, >=, >, 
+        /// Attention: NEVER implement operators &lt;, &lt;=, &gt;=, &gt;, 
         /// since these are not defined in a Vector space. 
         /// Use AllSmaller() and similar comparators!
         #endregion
@@ -19461,7 +19461,7 @@ namespace Aardvark.Base
             return new V3l(s / v.X, s / v.Y, s / v.Z);
         }
 
-        /// Attention: NEVER implement operators <, <=, >=, >, 
+        /// Attention: NEVER implement operators &lt;, &lt;=, &gt;=, &gt;, 
         /// since these are not defined in a Vector space. 
         /// Use AllSmaller() and similar comparators!
         #endregion
@@ -24617,7 +24617,7 @@ namespace Aardvark.Base
             return new V3f(s / v.X, s / v.Y, s / v.Z);
         }
 
-        /// Attention: NEVER implement operators <, <=, >=, >, 
+        /// Attention: NEVER implement operators &lt;, &lt;=, &gt;=, &gt;, 
         /// since these are not defined in a Vector space. 
         /// Use AllSmaller() and similar comparators!
         #endregion
@@ -24679,7 +24679,7 @@ namespace Aardvark.Base
 
         /// <summary>
         /// Returns whether the given vectors are equal within
-        /// Constant<float>.PositiveTinyValue.
+        /// Constant{float}.PositiveTinyValue.
         /// </summary>
         public static bool ApproxEqual(V3f a, V3f b)
         {
@@ -29939,7 +29939,7 @@ namespace Aardvark.Base
             return new V3d(s / v.X, s / v.Y, s / v.Z);
         }
 
-        /// Attention: NEVER implement operators <, <=, >=, >, 
+        /// Attention: NEVER implement operators &lt;, &lt;=, &gt;=, &gt;, 
         /// since these are not defined in a Vector space. 
         /// Use AllSmaller() and similar comparators!
         #endregion
@@ -30001,7 +30001,7 @@ namespace Aardvark.Base
 
         /// <summary>
         /// Returns whether the given vectors are equal within
-        /// Constant<double>.PositiveTinyValue.
+        /// Constant{double}.PositiveTinyValue.
         /// </summary>
         public static bool ApproxEqual(V3d a, V3d b)
         {
@@ -34887,7 +34887,7 @@ namespace Aardvark.Base
             return new V4i(s / v.X, s / v.Y, s / v.Z, s / v.W);
         }
 
-        /// Attention: NEVER implement operators <, <=, >=, >, 
+        /// Attention: NEVER implement operators &lt;, &lt;=, &gt;=, &gt;, 
         /// since these are not defined in a Vector space. 
         /// Use AllSmaller() and similar comparators!
         #endregion
@@ -42138,7 +42138,7 @@ namespace Aardvark.Base
             return new V4l(s / v.X, s / v.Y, s / v.Z, s / v.W);
         }
 
-        /// Attention: NEVER implement operators <, <=, >=, >, 
+        /// Attention: NEVER implement operators &lt;, &lt;=, &gt;=, &gt;, 
         /// since these are not defined in a Vector space. 
         /// Use AllSmaller() and similar comparators!
         #endregion
@@ -49578,7 +49578,7 @@ namespace Aardvark.Base
             return new V4f(s / v.X, s / v.Y, s / v.Z, s / v.W);
         }
 
-        /// Attention: NEVER implement operators <, <=, >=, >, 
+        /// Attention: NEVER implement operators &lt;, &lt;=, &gt;=, &gt;, 
         /// since these are not defined in a Vector space. 
         /// Use AllSmaller() and similar comparators!
         #endregion
@@ -49640,7 +49640,7 @@ namespace Aardvark.Base
 
         /// <summary>
         /// Returns whether the given vectors are equal within
-        /// Constant<float>.PositiveTinyValue.
+        /// Constant{float}.PositiveTinyValue.
         /// </summary>
         public static bool ApproxEqual(V4f a, V4f b)
         {
@@ -57186,7 +57186,7 @@ namespace Aardvark.Base
             return new V4d(s / v.X, s / v.Y, s / v.Z, s / v.W);
         }
 
-        /// Attention: NEVER implement operators <, <=, >=, >, 
+        /// Attention: NEVER implement operators &lt;, &lt;=, &gt;=, &gt;, 
         /// since these are not defined in a Vector space. 
         /// Use AllSmaller() and similar comparators!
         #endregion
@@ -57248,7 +57248,7 @@ namespace Aardvark.Base
 
         /// <summary>
         /// Returns whether the given vectors are equal within
-        /// Constant<double>.PositiveTinyValue.
+        /// Constant{double}.PositiveTinyValue.
         /// </summary>
         public static bool ApproxEqual(V4d a, V4d b)
         {

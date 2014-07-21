@@ -232,7 +232,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Test hull against intersection of the supplied bounding box
         /// specified by an array of its eight corner vertices, that must
-        /// be ordered as returned by the <see cref="ComputeCorners"/>
+        /// be ordered as returned by the <see pref="corners"/>
         /// call of the axis aligned bounding box. The avaibility of this
         /// corner array slightly improves the performance of the test. 
         /// Note that this is a conservative test, since in some cases

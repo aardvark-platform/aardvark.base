@@ -327,8 +327,9 @@ namespace Aardvark.Base
         /// Rasterizes an array of polygons into a matrix of given size.
         /// First polygon is rasterized with label 1, second polygon with label 2, and so on.
         /// </summary>
-        /// <param name="polys">Polygons to rasterize.</param>
+        /// <param name="polygons">Polygons to rasterize.</param>
         /// <param name="resolution">Resolution of result matrix.</param>
+        /// <param name="bb"></param>
         public static Matrix<int> RasterizeAsLabels(this IEnumerable<Polygon2d> polygons, V2i resolution, Box2d bb)
         {
             var matrix = new Matrix<int>(resolution);

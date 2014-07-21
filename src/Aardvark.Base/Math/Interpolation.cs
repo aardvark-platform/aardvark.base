@@ -36,6 +36,8 @@ namespace Aardvark.Base
         /// This method does interpolate along the shortest arc
         /// between q1 and q2.
         /// </summary>
+        /// <param name="a"></param>
+        /// <param name="b"></param>
         /// <param name="t">[0,1]</param>
         /// <returns>Interpolant</returns>
         public static Rot3d SlerpShortest(
@@ -103,6 +105,8 @@ namespace Aardvark.Base
         /// This method does interpolate along the shortest arc
         /// between q1 and q2.
         /// </summary>
+        /// <param name="q1"></param>
+        /// <param name="q2"></param>
         /// <param name="t">[0,1]</param>
         /// <returns>Interpolant</returns>
         public static Rot3f SlerpShortest(

@@ -26,7 +26,7 @@ namespace Aardvark.Base
         /// Searches for an element that matches the conditions defined by the specified predicate, 
         /// and returns the zero-based index of the first occurrence within the range of elements in the IList(of T) 
         /// that starts at the <paramref name="startIndex"/> and contains <paramref name="count"/> elements.
-        /// If startSearch differs from startIndex, a cyclic search is performed in the range starting at <paramref name="startSearch>.
+        /// If startSearch differs from startIndex, a cyclic search is performed in the range starting at <paramref name="startSearch"/>.
         /// </summary>
         /// <typeparam name="T">The type of the elements of the IList(of T).</typeparam>
         /// <param name="list">The list to search.</param>
@@ -100,7 +100,7 @@ namespace Aardvark.Base
         /// Searches for an element that matches the conditions defined by the specified predicate, 
         /// and returns the zero-based index of the first occurrence within the range of elements in the IList(of T) 
         /// that extends from the <paramref name="startIndex"/> to the end of the list.
-        /// If startSearch differs from startIndex, a cyclic search is performed in the range starting at <paramref name="startSearch>.
+        /// If startSearch differs from startIndex, a cyclic search is performed in the range starting at <paramref name="startSearch"/>.
         /// </summary>
         /// <typeparam name="T">The type of the elements of the IList(of T).</typeparam>
         /// <param name="list">The list to search.</param>
@@ -135,11 +135,11 @@ namespace Aardvark.Base
         /// <summary>
         /// Searches for an element that matches the conditions defined by the specified predicate, 
         /// and returns the zero-based index of the first occurrence.
-        /// If startSearch differs from startIndex, a cyclic search is performed in the range starting at <paramref name="startSearch>.
+        /// If startSearch differs from startIndex, a cyclic search is performed in the range starting at <paramref name="startSearch"/>.
         /// </summary>
         /// <typeparam name="T">The type of the elements of the IList(of T).</typeparam>
         /// <param name="list">The list to search.</param>
-        /// <param name="startSearch">The first element to search in a cyclic manner. Non-cyclick search if this equals <paramref name="startIndex"/></param>
+        /// <param name="startSearch">The first element to search in a cyclic manner.</param>
         /// <param name="forward">If true the search is performed in direction of increasing indices, else in the direction of decreasing indices.</param>
         /// <param name="match">The Predicate(of T) that defines the conditions of the element to search for.</param>
         /// <returns>The zero-based index of the first occurrence of an element that matches the conditions defined by match, if found; otherwise, –1.</returns>
@@ -229,6 +229,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns the index of the n-smallest item.
         /// </summary>
+        /// <param name="self"></param>
         /// <param name="n">[0-self.Count()-1]; n=0 -> index of min element</param>
         public static int NSmallestIndex<T>(this IList<T> self, int n)
             where T : IComparable<T>
@@ -244,6 +245,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns the index of the n-largest item.
         /// </summary>
+        /// <param name="self"></param>
         /// <param name="n">[0-self.Count()-1]; n=0 -> index of max element</param>
         public static int NLargestIndex<T>(this IList<T> self, int n)
             where T : IComparable<T>

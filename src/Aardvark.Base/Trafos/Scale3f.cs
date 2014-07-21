@@ -16,7 +16,7 @@ namespace Aardvark.Base
         #region Constructors
         
         /// <summary>
-        /// Initializes a <see cref=Scale3f/> using three floats.
+        /// Initializes a <see cref="Scale3f"/> using three floats.
         /// </summary>
         public Scale3f(float x, float y, float z)
         {
@@ -29,7 +29,7 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Initializes a <see cref=Scale3f/> using a uniform float value.
+        /// Initializes a <see cref="Scale3f"/> using a uniform float value.
         /// </summary>
         public Scale3f(float uniform)
         {
@@ -37,7 +37,7 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Initializes a <see cref=Scale3f/> class from float-array.
+        /// Initializes a <see cref="Scale3f"/> class from float-array.
         /// </summary>
         public Scale3f(float[] array)
         {
@@ -45,7 +45,7 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Initializes a <see cref=Scale3f/> class from float-array starting from passed index
+        /// Initializes a <see cref="Scale3f"/> class from float-array starting from passed index
         /// </summary>
         public Scale3f(float[] array, int start)
         {
@@ -111,22 +111,22 @@ namespace Aardvark.Base
         public static readonly Scale3f Identity = new Scale3f(1, 1, 1);
 
         /// <summary>
-        /// A <see cref=Scale3f/> single-precision floating point zero shift vector.
+        /// A <see cref="Scale3d"/> single-precision floating point zero shift vector.
         /// </summary>
         public static readonly Scale3f Zero = new Scale3f(0, 0, 0);
 
         /// <summary>
-        /// A <see cref=Scale3f/> single-precision floating point X-Axis shift vector.
+        /// A <see cref="Scale3d"/> single-precision floating point X-Axis shift vector.
         /// </summary>
         public static readonly Scale3f XAxis = new Scale3f(1, 0, 0);
 
         /// <summary>
-        /// A <see cref=Scale3f/> single-precision floating point Y-Axis shift vector.
+        /// A <see cref="Scale3d"/> single-precision floating point Y-Axis shift vector.
         /// </summary>
         public static readonly Scale3f YAxis = new Scale3f(0, 1, 0);
 
         /// <summary>
-        /// A <see cref=Scale3f/> single-precision floating point Z-Axis shift vector.
+        /// A <see cref="Scale3d"/> single-precision floating point Z-Axis shift vector.
         /// </summary>
         public static readonly Scale3f ZAxis = new Scale3f(0, 0, 1);
 
