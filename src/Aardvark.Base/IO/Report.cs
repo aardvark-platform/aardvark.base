@@ -48,7 +48,7 @@ namespace Aardvark.Base
     /// verbosity levels to the console or a stream.
     /// 
     /// In the simplest case, you can start by reporting single line messages
-    /// with a level (<see cref="Report.Line"/>). The level gives an
+    /// with a level Report.Line. The level gives an
     /// indication of how important this message is: a value of 0 indicates
     /// that this is a message of utmost importance that cannot be suppressed.
     /// The higher the level, the lower the importance of the message. In the
@@ -315,9 +315,9 @@ namespace Aardvark.Base
         /// <summary>
         /// Begin a timed block with a formatted message.
         /// All report calls till the call to the next
-        /// <see cref="End"/> are either indented (console/stream) or
+        /// <see cref="End()"/> are either indented (console/stream) or
         /// hierarchical children of this block (treeview).
-        /// At the <see cref="End"/> of the block the run time is reported.
+        /// At the <see cref="End()"/> of the block the run time is reported.
         /// </summary>
         public static ReportJob JobTimed(int level, [Localizable(true)] string message, params object[] args)
         {
@@ -328,9 +328,9 @@ namespace Aardvark.Base
         /// <summary>
         /// Begin a timed block with a formatted message.
         /// All report calls till the call to the next
-        /// <see cref="End"/> are either indented (console/stream) or
+        /// <see cref="End()"/> are either indented (console/stream) or
         /// hierarchical children of this block (treeview).
-        /// At the <see cref="End"/> of the block the run time is reported.
+        /// At the <see cref="End()"/> of the block the run time is reported.
         /// </summary>
         public static ReportJob JobTimed([Localizable(true)] string message, params object[] args)
         {
@@ -341,7 +341,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Begin a block with a formatted message.
         /// All report calls till the call to the next
-        /// <see cref="End"/> are either indented (console/stream) or
+        /// <see cref="End()"/> are either indented (console/stream) or
         /// hierarchical children of this block (treeview).
         /// </summary>
         public static ReportJob Job(int level, [Localizable(true)] string message, params object[] args)
@@ -353,7 +353,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Begin a block with a formatted message.
         /// All report calls till the call to the next
-        /// <see cref="End"/> are either indented (console/stream) or
+        /// <see cref="End()"/> are either indented (console/stream) or
         /// hierarchical children of this block (treeview).
         /// </summary>
         public static ReportJob Job([Localizable(true)] string message, params object[] args)
@@ -366,9 +366,9 @@ namespace Aardvark.Base
         /// <summary>
         /// Begin a timed block with a formatted message.
         /// All report calls till the call to the next
-        /// <see cref="End"/> are either indented (console/stream) or
+        /// <see cref="End()"/> are either indented (console/stream) or
         /// hierarchical children of this block (treeview).
-        /// At the <see cref="End"/> of the block the run time is reported.
+        /// At the <see cref="End()"/> of the block the run time is reported.
         /// </summary>
         public static void BeginTimed(int level, [Localizable(true)] string message, params object[] args)
         {
@@ -379,9 +379,9 @@ namespace Aardvark.Base
         /// <summary>
         /// Begin a timed block with a formatted message.
         /// All report calls till the call to the next
-        /// <see cref="End"/> are either indented (console/stream) or
+        /// <see cref="End()"/> are either indented (console/stream) or
         /// hierarchical children of this block (treeview).
-        /// At the <see cref="End"/> of the block the run time is reported.
+        /// At the <see cref="End()"/> of the block the run time is reported.
         /// </summary>
         public static void BeginTimed([Localizable(true)] string message, params object[] args)
         {
@@ -392,7 +392,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Begin a block with a formatted message.
         /// All report calls till the call to the next
-        /// <see cref="End"/> are either indented (console/stream) or
+        /// <see cref="End()"/> are either indented (console/stream) or
         /// hierarchical children of this block (treeview).
         /// </summary>
         public static void Begin(int level, [Localizable(true)] string message, params object[] args)
@@ -404,7 +404,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Begin a block with a formatted message.
         /// All report calls till the call to the next
-        /// <see cref="End"/> are either indented (console/stream) or
+        /// <see cref="End()"/> are either indented (console/stream) or
         /// hierarchical children of this block (treeview).
         /// </summary>
         public static void Begin([Localizable(true)] string message, params object[] args)
@@ -416,7 +416,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Begin a block without an explicit message.
         /// All report calls till the call to the next
-        /// <see cref="End"/> are either indented (console/stream) or
+        /// <see cref="End()"/> are either indented (console/stream) or
         /// hierarchical children of this block (treeview).
         /// </summary>
         public static void Begin(int level)
@@ -428,7 +428,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Begin a block without an explicit message.
         /// All report calls till the call to the next
-        /// <see cref="End"/> are either indented (console/stream) or
+        /// <see cref="End()"/> are either indented (console/stream) or
         /// hierarchical children of this block (treeview).
         /// </summary>
         public static void Begin()
@@ -508,8 +508,7 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Report an empty line or end the line after using
-        /// <see cref="Text()"/>.
+        /// Report an empty line or end the line after using Text.
         /// </summary>
         public static void Line(int level)
         {
@@ -518,8 +517,7 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Report an empty line or end the line after using
-        /// <see cref="Text()"/>.
+        /// Report an empty line or end the line after using Text.
         /// </summary>
         public static void Line()
         {
@@ -1609,9 +1607,9 @@ namespace Aardvark.Base
     }
 
     /// <summary>
-    /// This small struct helps to optimize the number of calls to
-    /// <see cref="Report.Progress"/>. If you initialize it with a value
-    /// of N, each Nth call of <see cref="Skipper.Do"/> will return true.
+    /// This small struct helps to optimize the number of calls to Report.Progress.
+    /// If you initialize it with a value of N, each Nth call of <see cref="Skipper.Do"/>
+    /// will return true.
     /// </summary>
     public struct Skipper
     {

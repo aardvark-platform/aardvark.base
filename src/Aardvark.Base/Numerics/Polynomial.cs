@@ -101,6 +101,7 @@ namespace Aardvark.Base
         /// supplied array.
         /// Note that double and triple roots are returned as repeated values.
         /// WARNING: currently only polynomials up to the 4th order can be solved.
+        /// </summary>
         public static double[] RealRootsNormed(this double[] coeff)
         {
             switch (coeff.Length)

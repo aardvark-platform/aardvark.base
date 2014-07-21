@@ -84,7 +84,7 @@ namespace Aardvark.Base
         public bool IsInvalid  { get { return Normal == V3d.Zero; } }
 
         /// <summary>
-        /// Returns the normalized <see cref="Plane"/> as new <see cref="Plane"/>.
+        /// Returns the normalized <see cref="Plane3d"/> as new <see cref="Plane3d"/>.
         /// </summary>
         public Plane3d Normalized
         {
@@ -108,7 +108,7 @@ namespace Aardvark.Base
         #region Arithmetics
 
         /// <summary>
-        /// Calculates the nomalized plane of this <see cref="Plane"/>.
+        /// Calculates the nomalized plane of this <see cref="Plane3d"/>.
         /// </summary>
         public void Normalize()
         {
@@ -127,7 +127,7 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Returns <see cref="Plane"/> with normal vector in opposing direction.
+        /// Returns <see cref="Plane3d"/> with normal vector in opposing direction.
         /// </summary>
         /// <returns></returns>
         public Plane3d Reversed

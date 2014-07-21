@@ -24,10 +24,10 @@ namespace Aardvark.Base
             double sin_lam = System.Math.Sin(lam);
             double sin_phi = System.Math.Sin(phi);
 
-            /// eccentricity square
+            // eccentricity square
             double eq = ellipsoid.EQ;
     
-            /// radius of the curvature in prime vertical
+            // radius of the curvature in prime vertical
             double Rv = ellipsoid.A / (1.0 - eq * sin_phi * sin_phi).Sqrt();
 
             V3d result = new V3d();
@@ -46,8 +46,8 @@ namespace Aardvark.Base
         /// <returns>Position vector with Lon,Lat,Hei</returns>
         public static V3d LonLatHeightFromXyz(V3d xyz, GeoEllipsoid ellipsoid)
         {
-            /// this implementation follows the Bowring Method (85).
-            /// It might be extended to the newer Toms Method (99), but is delivers suitable results.
+            // this implementation follows the Bowring Method (85).
+            // It might be extended to the newer Toms Method (99), but is delivers suitable results.
 
             double a = ellipsoid.A;
             double b = ellipsoid.B;
@@ -131,7 +131,9 @@ namespace Aardvark.Base
         /// <summary>
         /// Gauss-Krueger projection from a reference ellipsoid datum (Lon/Lat/Height) to local GK-coordinates (in meters).
         /// </summary>
-        /// <param name="LonLatHeight">V3d with Lon/Lat/Height.</param>
+        /// <param name="lonLatHeight">V3d with Lon/Lat/Height.</param>
+        /// <param name="ellipsoid"></param>
+        /// <param name="zeroMeridian"></param>
         public static V3d GaussKruegerEllipsoidToPlane(
             V3d lonLatHeight, GeoEllipsoid ellipsoid, double zeroMeridian
             )

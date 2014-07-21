@@ -2,7 +2,7 @@
 <package xmlns="http://schemas.microsoft.com/packaging/2011/08/nuspec.xsd">
     <metadata>
         <id>Aardvark.Base</id>
-        <version>1.0.1</version>
+        <version>1.0.2</version>
         <authors>VRVis Research Center</authors>
         <owners>VRVis Research Center</owners>
         <licenseUrl>http://opensource.org/licenses/Apache-2.0</licenseUrl>
@@ -17,7 +17,9 @@
     <files>
         <file src="net40\Aardvark.Base.dll" target="lib\net40\Aardvark.Base.dll" />
         <file src="net40\Aardvark.Base.pdb" target="lib\net40\Aardvark.Base.pdb" />
+        <file src="net40\Aardvark.Base.xml" target="lib\net40\Aardvark.Base.xml" />
         <file src="net45\Aardvark.Base.dll" target="lib\net45\Aardvark.Base.dll" />
         <file src="net45\Aardvark.Base.pdb" target="lib\net45\Aardvark.Base.pdb" />
+        <file src="net45\Aardvark.Base.xml" target="lib\net45\Aardvark.Base.xml" />
     </files>
 </package>

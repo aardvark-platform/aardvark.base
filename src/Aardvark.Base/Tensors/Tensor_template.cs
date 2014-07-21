@@ -226,9 +226,10 @@ namespace Aardvark.Base
         /// <summary>
         /// Construct a __ttn__Info given a complete specification.
         /// </summary>
-        /// <param name="origin">location of [0,0] element within data
-        /// array</param>
+        /// <param name="origin">location of [0,0] element within data array</param>
+        /// <param name="size"></param>
         /// <param name="delta">element and line stride</param>
+        /// <param name="first"></param>
         public __ttn__Info(long origin, __itn__ size, __itn__ delta, __itn__ first)
         {
             Origin = origin;
@@ -240,8 +241,8 @@ namespace Aardvark.Base
         /// <summary>
         /// Construct a __ttn__Info given a complete specification.
         /// </summary>
-        /// <param name="origin">location of [0,0] element within data
-        /// array</param>
+        /// <param name="origin">location of [0,0] element within data array</param>
+        /// <param name="size"></param>
         /// <param name="delta">element and line stride</param>
         public __ttn__Info(long origin, __itn__ size, __itn__ delta)
             : this(origin, size, delta, __itzero__)

@@ -19,7 +19,7 @@ namespace Aardvark.Base
         #region Constructors
 
         /// <summary>
-        /// Creates a rigid transformation from a rotation <paramref name="Rot"/> and a (subsequent) translation <paramref name="Trans"/>.
+        /// Creates a rigid transformation from a rotation <paramref name="rot"/> and a (subsequent) translation <paramref name="trans"/>.
         /// </summary>
         public Euclidean3f(Rot3f rot, V3f trans)
         {
@@ -28,7 +28,7 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Creates a rigid transformation from a rotation matrix <paramref name="Rot"/> and a (subsequent) translation <paramref name="Trans"/>.
+        /// Creates a rigid transformation from a rotation matrix <paramref name="rot"/> and a (subsequent) translation <paramref name="trans"/>.
         /// </summary>
         public Euclidean3f(M33f rot, V3f trans, float epsilon = (float)0.00001)
         {

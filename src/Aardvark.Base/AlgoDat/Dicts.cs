@@ -721,6 +721,7 @@ namespace Aardvark.Base
     /// <summary>
     /// An IDict with Symbol keys where all possible keys return the same
     /// specified value.
+    /// </summary>
     public class UniversalSymbolDict<TValue> : IDict<Symbol, TValue>
     {
         private TValue m_value;

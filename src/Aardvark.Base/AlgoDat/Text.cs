@@ -442,8 +442,8 @@ namespace Aardvark.Base
         /// the split is performed outside the outermost square brackets.
         /// Level 1 means that the split is peformed inside the outermost
         /// square brackets.
-        /// NOTE: The resulting parts are not trimmed. Use the
-        /// <see cref="Trim"/> extension to trim all resulting strings.
+        /// NOTE: The resulting parts are not trimmed. Use the Trim extension
+        /// to trim all resulting strings.
         /// </summary>
         public IEnumerable<Text> NestedBracketSplit(int splitLevel)
         {

@@ -207,6 +207,7 @@ namespace Aardvark.Base
         /// with size S = 2 * radius + 1 and anchor in the center at index 0.
         /// Functions to use as filterKernelFun are available in FilterKernelFun.
         /// </summary>
+        /// <param name="radius"></param>
         /// <param name="filterKernelFun">Function is evaluated at integer coordinates from -radius to +radius.</param>
         public static Vector<float> Create1DKernel(
                 long radius, Func<float, float> filterKernelFun)
@@ -223,6 +224,7 @@ namespace Aardvark.Base
         /// 2 * radius + 1) and anchor in the center at index (0, 0).
         /// Functions to use as filterKernelFun are available in FilterKernelFun.
         /// </summary>
+        /// <param name="radius"></param>
         /// <param name="filterKernelFun">Function is evaluated at integer coordinates from (-radius,-radius) to (+radius,+radius).</param>
         public static Matrix<float> Create2DKernel(
                 long radius, Func<float, float, float> filterKernelFun)

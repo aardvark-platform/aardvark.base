@@ -16,7 +16,7 @@ namespace Aardvark.Base
         #region Constructors
         
         /// <summary>
-        /// Initializes a <see cref=Scale3d/> using three floats.
+        /// Initializes a <see cref="Scale3d"/> using three floats.
         /// </summary>
         public Scale3d(double x, double y, double z)
         {
@@ -29,7 +29,7 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Initializes a <see cref=Scale3d/> using a uniform double value.
+        /// Initializes a <see cref="Scale3d"/> using a uniform double value.
         /// </summary>
         public Scale3d(double uniform)
         {
@@ -37,7 +37,7 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Initializes a <see cref=Scale3d/> class from double-array.
+        /// Initializes a <see cref="Scale3d"/> class from double-array.
         /// </summary>
         public Scale3d(double[] array)
         {
@@ -45,7 +45,7 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Initializes a <see cref=Scale3d/> class from double-array starting from passed index
+        /// Initializes a <see cref="Scale3d"/> class from double-array starting from passed index
         /// </summary>
         public Scale3d(double[] array, int start)
         {
@@ -111,22 +111,22 @@ namespace Aardvark.Base
         public static readonly Scale3d Identity = new Scale3d(1, 1, 1);
 
         /// <summary>
-        /// A <see cref=Scale3d/> double-precision floating point zero shift vector.
+        /// A <see cref="Scale3d"/> double-precision floating point zero shift vector.
         /// </summary>
         public static readonly Scale3d Zero = new Scale3d(0, 0, 0);
 
         /// <summary>
-        /// A <see cref=Scale3d/> double-precision floating point X-Axis shift vector.
+        /// A <see cref="Scale3d"/> double-precision floating point X-Axis shift vector.
         /// </summary>
         public static readonly Scale3d XAxis = new Scale3d(1, 0, 0);
 
         /// <summary>
-        /// A <see cref=Scale3d/> double-precision floating point Y-Axis shift vector.
+        /// A <see cref="Scale3d"/> double-precision floating point Y-Axis shift vector.
         /// </summary>
         public static readonly Scale3d YAxis = new Scale3d(0, 1, 0);
 
         /// <summary>
-        /// A <see cref=Scale3d/> double-precision floating point Z-Axis shift vector.
+        /// A <see cref="Scale3d"/> double-precision floating point Z-Axis shift vector.
         /// </summary>
         public static readonly Scale3d ZAxis = new Scale3d(0, 0, 1);
 

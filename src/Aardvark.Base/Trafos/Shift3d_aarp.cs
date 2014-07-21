@@ -12,7 +12,7 @@ namespace Aardvark.Base
         #region Constructors
         
         /// <summary>
-        /// Initializes a <see cref=Shift3d/> using three floats.
+        /// Initializes a <see cref="Shift3d"/> using three floats.
         /// </summary>
         public Shift3d(double x, double y, double z)
         {
@@ -25,7 +25,7 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Initializes a <see cref=Shift3d/> class from double-array.
+        /// Initializes a <see cref="Shift3d"/> class from double-array.
         /// </summary>
         public Shift3d(double[] array)
         {
@@ -33,7 +33,7 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Initializes a <see cref=Shift3d/> class from double-array starting from passed index
+        /// Initializes a <see cref="Shift3d"/> class from double-array starting from passed index
         /// </summary>
         public Shift3d(double[] array, int start)
         {
@@ -99,23 +99,23 @@ namespace Aardvark.Base
         #region Constants
 
         /// <summary>
-        /// A <see cref=Shift3d/> double-precision floating point zero shift vector.
+        /// A <see cref="Shift3d"/> double-precision floating point zero shift vector.
         /// </summary>
         public static readonly Shift3d Zero = new Shift3d (0, 0, 0);
         public static readonly Shift3d Identity = new Shift3d(0, 0, 0);
 
         /// <summary>
-        /// A <see cref=Shift3d/> double-precision floating point X-Axis shift vector.
+        /// A <see cref="Shift3d"/> double-precision floating point X-Axis shift vector.
         /// </summary>
         public static readonly Shift3d XAxis = new Shift3d(1, 0, 0);
 
         /// <summary>
-        /// A <see cref=Shift3d/> double-precision floating point Y-Axis shift vector.
+        /// A <see cref="Shift3d"/> double-precision floating point Y-Axis shift vector.
         /// </summary>
         public static readonly Shift3d YAxis = new Shift3d(0, 1, 0);
 
         /// <summary>
-        /// A <see cref=Shift3d/> double-precision floating point Z-Axis shift vector.
+        /// A <see cref="Shift3d"/> double-precision floating point Z-Axis shift vector.
         /// </summary>
         public static readonly Shift3d ZAxis = new Shift3d(0, 0, 1);
 
