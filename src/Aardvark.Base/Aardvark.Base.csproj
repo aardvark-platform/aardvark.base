@@ -46,7 +46,7 @@
     <Optimize>true</Optimize>
     <OutputPath>..\..\Bin\net45\</OutputPath>
     <IntermediateOutputPath>..\..\Bin\net45\obj\</IntermediateOutputPath>
-	<TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
@@ -59,7 +59,7 @@
     <Optimize>true</Optimize>
     <OutputPath>..\..\Bin\net40\</OutputPath>
     <IntermediateOutputPath>..\..\Bin\net40\obj\</IntermediateOutputPath>
-	<TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
@@ -101,7 +101,6 @@
     <None Include="Extensions\SequenceExtensions_template.cs" />
     <Compile Include="Geometry\Conic2d.cs" />
     <Compile Include="Geometry\Ellipse2d.cs" />
-    <Compile Include="Geometry\ImmutablePointCloudInterfaces.cs" />
     <Compile Include="Geo\GeoConsts.cs" />
     <Compile Include="Geo\GeoConversion.cs" />
     <Compile Include="IO\Report.cs" />
@@ -266,12 +265,12 @@
 "$(OutDir)..\AardReplacer.exe" "$(ProjectDir)\Trafos\Aardreps.aarp"</PreBuildEvent>
   </PropertyGroup>
   <Target Name="Package">
-	  <!-- Ensure the Package directory exists for this project -->
-	  <RemoveDir Directories="NuGet" />
-	  <MakeDir Directories="NuGet" />
-	  <!-- Package the project -->
-	  <Exec WorkingDirectory="$(BuildDir)" Command="NuGet.exe pack -Verbosity detailed -Symbols -OutputDir &quot;NuGet&quot; -Properties &quot;Configuration=$(Configuration)&quot;" />
-	</Target>
+    <!-- Ensure the Package directory exists for this project -->
+    <RemoveDir Directories="NuGet" />
+    <MakeDir Directories="NuGet" />
+    <!-- Package the project -->
+    <Exec WorkingDirectory="$(BuildDir)" Command="NuGet.exe pack -Verbosity detailed -Symbols -OutputDir &quot;NuGet&quot; -Properties &quot;Configuration=$(Configuration)&quot;" />
+  </Target>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">
