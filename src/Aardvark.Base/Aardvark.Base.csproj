@@ -159,10 +159,10 @@
     <Compile Include="Tensors\Tools.cs" />
     <Compile Include="Trafos\CoordinateSystem.cs" />
     <Compile Include="Trafos\CoordTransforms.cs" />
-    <Compile Include="Trafos\Euclidean2d_aarp.cs" />
-    <Compile Include="Trafos\Euclidean2f.cs" />
-    <Compile Include="Trafos\Euclidean3d_aarp.cs" />
-    <Compile Include="Trafos\Euclidean3f.cs" />
+    <Compile Include="Trafos\Euclidean2_auto.cs" />
+    <None Include="Trafos\Euclidean2_template.cs" />
+    <Compile Include="Trafos\Euclidean3_auto.cs" />
+    <None Include="Trafos\Euclidean3_template.cs" />
     <Compile Include="Trafos\M22d_aarp.cs" />
     <Compile Include="Trafos\M22f.cs" />
     <Compile Include="Trafos\M33d_aarp.cs" />
