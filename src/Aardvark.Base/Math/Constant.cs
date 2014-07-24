@@ -104,7 +104,7 @@ namespace Aardvark.Base
                 Constant<int>.PositiveTinyValue = 4;
                 Constant<int>.NegativeTinyValue = -4;
             }
-            else if (typeof(T) == typeof(ushort))
+            else if (typeof(T) == typeof(long))
             {
                 Constant<long>.ParseableMinValue = long.MinValue;
                 Constant<long>.ParseableMaxValue = long.MaxValue;
