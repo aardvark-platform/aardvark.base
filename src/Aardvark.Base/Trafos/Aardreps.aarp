@@ -2,8 +2,6 @@
 M33d_aarp.cs:					M33f.cs
 M34d_aarp.cs:					M34f.cs
 M44d_aarp.cs:					M44f.cs
-Euclidean2d_aarp.cs:			Euclidean2f.cs
-Euclidean3d_aarp.cs:			Euclidean3f.cs
 Similarity3d_aarp.cs:			Similarity3f.cs
 Rot2d_aarp.cs:					Rot2f.cs
 Rot3d_aarp.cs:					Rot3f.cs

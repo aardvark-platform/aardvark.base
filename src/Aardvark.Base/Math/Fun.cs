@@ -142,9 +142,7 @@ namespace Aardvark.Base
         #region Bitwise Rotation
 
         /// <summary>
-        /// Since f***ing CLR Programmers were to lazy to specify the
-        /// &lt;&lt;&lt; Operator, this simulates the rotate left operator
-        /// natively, but with 4 times more operations needed :(
+        /// Bitwise circular left shift.
         /// </summary>
         public static int BitwiseRotateLeft(this int value, int numberOfBits)
         {
@@ -152,9 +150,7 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Since f***ing CLR Programmers were to lazy to specify the
-        /// &lt;&lt;&lt; Operator, this simulates the rotate left operator
-        /// natively, but with 4 times more operations needed :(
+        /// Bitwise circular left shift.
         /// </summary>
         public static uint BitwiseRotateLeft(this uint value, int numberOfBits)
         {
@@ -162,9 +158,7 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Since f***ing CLR Programmers were to lazy to specify the
-        /// &lt;&lt;&lt; Operator, this simulates the rotate left operator
-        /// natively, but with 4 times more operations needed :(
+        /// Bitwise circular left shift.
         /// </summary>
         public static long BitwiseRotateLeft(this long value, int numberOfBits)
         {
@@ -172,9 +166,7 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Since f***ing CLR Programmers were to lazy to specify the
-        /// &lt;&lt;&lt; Operator, this simulates the rotate left operator
-        /// natively, but with 4 times more operations needed :(
+        /// Bitwise circular left shift.
         /// </summary>
         public static ulong BitwiseRotateLeft(this ulong value, int numberOfBits)
         {

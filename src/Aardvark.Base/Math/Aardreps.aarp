@@ -1,8 +1,0 @@
-ComplexD_aarp.cs:				ComplexF.cs
-        double                          float
-		double							single
-        *1d								*1f
-        *2d								*2f
-        *3d                             *3f
-		*4d								*4f
-		*D								*F

@@ -86,7 +86,7 @@ namespace Aardvark.Base
             return matrix.First == V2l.Zero && matrix.Origin == 0L
                     && matrix.Info.Delta.X == 1L
                     && matrix.Info.Delta.Y == matrix.Info.Size.X
-                    && matrix.Data.LongLength == matrix.Info.Count;
+                    && matrix.Data.LongLength >= matrix.Info.Count;
         }
 
         public static bool HasImageWindowLayout<T>(this Matrix<T> matrix)
@@ -100,7 +100,7 @@ namespace Aardvark.Base
                     && volume.Info.Delta.Z == 1L
                     && volume.Info.Delta.X == volume.Info.Size.Z
                     && volume.Info.Delta.Y == volume.Info.Size.X * volume.Info.Delta.X
-                    && volume.Data.LongLength == volume.Info.Size.Y * volume.Info.Delta.Y;
+                    && volume.Data.LongLength >= volume.Info.Size.Y * volume.Info.Delta.Y;
         }
 
         public static bool HasImageWindowLayout<T>(this Volume<T> vol)
@@ -117,7 +117,7 @@ namespace Aardvark.Base
                     && tensor4.Info.Delta.X == tensor4.Info.Size.W
                     && tensor4.Info.Delta.Y == tensor4.Info.Size.X * tensor4.Info.Delta.X
                     && tensor4.Info.Delta.Z == tensor4.Info.Size.Y * tensor4.Info.Delta.Y
-                    && tensor4.Data.LongLength == tensor4.Info.Size.Z * tensor4.Info.Delta.Z;
+                    && tensor4.Data.LongLength >= tensor4.Info.Size.Z * tensor4.Info.Delta.Z;
         }
 
         public static bool HasImageWindowLayout<T>(this Tensor4<T> tensor4)
