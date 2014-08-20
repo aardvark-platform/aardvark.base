@@ -505,6 +505,9 @@ namespace Aardvark.Base
             return new Euclidean3d(local2global);
         }
 
+        /// <summary>
+        /// ???
+        /// </summary>
         public static V3d[] Project(this Plane3d plane, V3d[] pointArray, int pointCount = 0)
         {
             if (pointCount == 0) pointCount = pointArray.Length;
@@ -519,6 +522,9 @@ namespace Aardvark.Base
             return newPoints;
         }
 
+        /// <summary>
+        /// ???
+        /// </summary>
         public static V3d[] ProjectVectors(this Plane3d plane, V3d[] vectorArray, int vectorCount = 0)
         {
             if (vectorCount == 0) vectorCount = vectorArray.Length;
@@ -533,10 +539,16 @@ namespace Aardvark.Base
             return newVectors;
         }
 
+        /// <summary>
+        /// Projects a point from world space to plane space.
+        /// </summary>
+        public static V2d ProjectToPlane(this Plane3d plane, V3d p)
+        {
+            return plane.GetWorldToPlane().TransformPos(p).XY;
+        }
 
         /// <summary>
-        /// Projects an array of point from 3D world-space to the 2D plane-space
-        /// defined by a normal-frame from Point and Normal of the plane.
+        /// Projects points from world space to plane space.
         /// </summary>
         public static V2d[] ProjectTo2d(this Plane3d plane, V3d[] points)
         {
@@ -545,8 +557,7 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Unprojects an array of points from the 2D plane-space defined by
-        /// a normal-frame from Point and Normal of the plane to 3D.
+        /// Transforms points from plane space to world space.
         /// </summary>
         public static V3d[] Unproject(this Plane3d plane, V2d[] points)
         {
@@ -555,7 +566,7 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Projets the given array of points perpendicular onto the plane.
+        /// Projects points perpendicular onto the plane.
         /// </summary>
         public static V3d[] NearestPoints(this Plane3d plane, V3d[] points)
         {
