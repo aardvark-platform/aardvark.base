@@ -107,6 +107,7 @@
     <Compile Include="Extensions\IListExtensions.cs" />
     <Compile Include="Extensions\SequenceExtensions_auto.cs" />
     <None Include="Extensions\SequenceExtensions_template.cs" />
+    <Compile Include="Extensions\SystemDrawingExtensions.cs" />
     <Compile Include="Geometry\Conic2d.cs" />
     <Compile Include="Geometry\Ellipse2d.cs" />
     <Compile Include="Geo\GeoConsts.cs" />
@@ -249,7 +250,6 @@
     <Compile Include="Geometry\Triangle3d.cs" />
     <Compile Include="Math\Adler32.cs" />
     <Compile Include="Math\Color.cs" />
-    <Compile Include="Math\ColorExtensions.cs" />
     <Compile Include="Math\Color_auto.cs" />
     <None Include="Math\Color_template.cs" />
     <Compile Include="Math\Constant.cs" />

@@ -126,35 +126,5 @@ namespace Aardvark.Base
         }
 
         #endregion
-
-        #region System.Drawing Conversions
-
-        /// <summary>
-        /// Casts the System.Drawing.Point to an Aardvark integer vector.
-        /// </summary>
-        public static V2i ToV2i(this Point p)
-        {
-            return new V2i(p.X, p.Y);
-        }
-
-        /// <summary>
-        /// Casts the System.Drawing.Size to an Aardvark integer vector.
-        /// </summary>
-        public static V2i ToV2i(this Size s)
-        {
-            return new V2i(s.Width, s.Height);
-        }
-
-        public static Point ToPoint(this V2i p)
-        {
-            return new Point(p.X, p.Y);
-        }
-
-        public static Size ToSize(this V2i p)
-        {
-            return new Size(p.X, p.Y);
-        }
-
-        #endregion
     }
 }
