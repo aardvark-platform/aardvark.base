@@ -29,9 +29,9 @@
             return new V2i(s.Width, s.Height);
         }
 
-        public static System.Drawing.Size ToSize(this V2i p)
+        public static System.Drawing.Size ToSize(this V2i v)
         {
-            return new System.Drawing.Size(p.X, p.Y);
+            return new System.Drawing.Size(v.X, v.Y);
         }
 
         #endregion
@@ -41,14 +41,14 @@
         /// <summary>
         /// Casts the System.Drawing.Rectangle to an Aardvark box.
         /// </summary>
-        public static Box2i ToBox2i(this System.Drawing.Rectangle s)
+        public static Box2i ToBox2i(this System.Drawing.Rectangle r)
         {
-            return new Box2i(s.Location.ToV2i(), s.Size.ToV2i());
+            return new Box2i(r.Left, r.Top, r.Right, r.Bottom);
         }
 
         public static System.Drawing.Rectangle ToRectangle(this Box2i p)
         {
-            return new System.Drawing.Rectangle(p.Min.ToPoint(), p.Size.ToSize());
+            return new System.Drawing.Rectangle(p.Min.X, p.Min.Y, p.Max.X, p.Max.Y);
         }
 
         #endregion
