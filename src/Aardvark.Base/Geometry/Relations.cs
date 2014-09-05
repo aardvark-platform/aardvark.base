@@ -20,8 +20,10 @@ namespace Aardvark.Base
 
         public static bool IsParallelTo(this V2d u, V2d v, double epsilon = 0.01)
         {
-            var dirDifference = (u.Normalized - v.Normalized).Length;
-            return (dirDifference < epsilon || dirDifference > (2 - epsilon)) ? true : false;
+            var un = u.Normalized;
+            var vn = v.Normalized;
+
+            return (un - vn).Length < epsilon || (un + vn).Length < epsilon;
         }
 
         #endregion
