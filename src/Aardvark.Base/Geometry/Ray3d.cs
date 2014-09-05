@@ -806,6 +806,135 @@ namespace Aardvark.Base
         }
 
         /// <summary>
+        /// This variant of the intersection method only tests with the
+        /// faces of the box indicated by the supplied boxFlags.
+        /// </summary>
+        public bool Intersects(
+            Box3d box,
+            Box.Flags boxFlags,
+            ref double tmin,
+            ref double tmax
+            )
+        {
+            var dirFlags = DirFlags;
+
+            if ((dirFlags & Vec.DirFlags.PositiveX) != 0)
+            {
+                if ((boxFlags & Box.Flags.MaxX) != 0)
+                {
+                    double t = (box.Max.X - Ray.Origin.X) * InvDir.X;
+                    if (t <= tmin) return false;
+                    if (t < tmax) tmax = t;
+                }
+                if ((boxFlags & Box.Flags.MinX) != 0)
+                {
+                    double t = (box.Min.X - Ray.Origin.X) * InvDir.X;
+                    if (t >= tmax) return false;
+                    if (t > tmin) tmin = t;
+                }
+            }
+            else if ((dirFlags & Vec.DirFlags.NegativeX) != 0)
+            {
+                if ((boxFlags & Box.Flags.MinX) != 0)
+                {
+                    double t = (box.Min.X - Ray.Origin.X) * InvDir.X;
+                    if (t <= tmin) return false;
+                    if (t < tmax) tmax = t;
+                }
+                if ((boxFlags & Box.Flags.MaxX) != 0)
+                {
+                    double t = (box.Max.X - Ray.Origin.X) * InvDir.X;
+                    if (t >= tmax) return false;
+                    if (t > tmin) tmin = t;
+                }
+            }
+            else	// ray parallel to X-plane
+            {
+                if ((boxFlags & Box.Flags.MinX) != 0 && (Ray.Origin.X < box.Min.X) ||
+                    (boxFlags & Box.Flags.MaxX) != 0 && (Ray.Origin.X > box.Max.X))
+                    return false;
+            }
+
+            if ((dirFlags & Vec.DirFlags.PositiveY) != 0)
+            {
+                if ((boxFlags & Box.Flags.MaxY) != 0)
+                {
+                    double t = (box.Max.Y - Ray.Origin.Y) * InvDir.Y;
+                    if (t <= tmin) return false;
+                    if (t < tmax) tmax = t;
+                }
+                if ((boxFlags & Box.Flags.MinY) != 0)
+                {
+                    double t = (box.Min.Y - Ray.Origin.Y) * InvDir.Y;
+                    if (t >= tmax) return false;
+                    if (t > tmin) tmin = t;
+                }
+            }
+            else if ((dirFlags & Vec.DirFlags.NegativeY) != 0)
+            {
+                if ((boxFlags & Box.Flags.MinY) != 0)
+                {
+                    double t = (box.Min.Y - Ray.Origin.Y) * InvDir.Y;
+                    if (t <= tmin) return false;
+                    if (t < tmax) tmax = t;
+                }
+                if ((boxFlags & Box.Flags.MaxY) != 0)
+                {
+                    double t = (box.Max.Y - Ray.Origin.Y) * InvDir.Y;
+                    if (t >= tmax) return false;
+                    if (t > tmin) tmin = t;
+                }
+            }
+            else	// ray parallel to Y-plane
+            {
+                if ((boxFlags & Box.Flags.MinY) != 0 && (Ray.Origin.Y < box.Min.Y) ||
+                    (boxFlags & Box.Flags.MaxY) != 0 && (Ray.Origin.Y > box.Max.Y))
+                    return false;
+            }
+
+            if ((dirFlags & Vec.DirFlags.PositiveZ) != 0)
+            {
+                if ((boxFlags & Box.Flags.MaxZ) != 0)
+                {
+                    double t = (box.Max.Z - Ray.Origin.Z) * InvDir.Z;
+                    if (t <= tmin) return false;
+                    if (t < tmax) tmax = t;
+                }
+                if ((boxFlags & Box.Flags.MinZ) != 0)
+                {
+                    double t = (box.Min.Z - Ray.Origin.Z) * InvDir.Z;
+                    if (t >= tmax) return false;
+                    if (t > tmin) tmin = t;
+                }
+            }
+            else if ((dirFlags & Vec.DirFlags.NegativeZ) != 0)
+            {
+                if ((boxFlags & Box.Flags.MinZ) != 0)
+                {
+                    double t = (box.Min.Z - Ray.Origin.Z) * InvDir.Z;
+                    if (t <= tmin) return false;
+                    if (t < tmax) tmax = t;
+                }
+                if ((boxFlags & Box.Flags.MaxZ) != 0)
+                {
+                    double t = (box.Max.Z - Ray.Origin.Z) * InvDir.Z;
+                    if (t >= tmax) return false;
+                    if (t > tmin) tmin = t;
+                }
+            }
+            else	// ray parallel to Z-plane
+            {
+                if ((boxFlags & Box.Flags.MinZ) != 0 && (Ray.Origin.Z < box.Min.Z) ||
+                    (boxFlags & Box.Flags.MaxZ) != 0 && (Ray.Origin.Z > box.Max.Z))
+                    return false;
+            }
+
+            if (tmin > tmax) return false;
+
+            return true;
+        }
+
+        /// <summary>
         /// This variant of the intersection method returns the affected
         /// planes of the box if the box was hit.
         /// </summary>
