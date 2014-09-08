@@ -104,6 +104,7 @@
     <None Include="AlgoDat\Tuples_template.cs" />
     <Compile Include="AlgoDat\Tuples_auto.cs" />
     <Compile Include="AlgoDat\XmlParser.cs" />
+    <Compile Include="Extensions\ICollectionExtensions.cs" />
     <Compile Include="Extensions\IListExtensions.cs" />
     <Compile Include="Extensions\SequenceExtensions_auto.cs" />
     <None Include="Extensions\SequenceExtensions_template.cs" />
