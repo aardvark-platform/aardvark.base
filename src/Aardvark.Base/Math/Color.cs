@@ -542,6 +542,12 @@ namespace Aardvark.Base
 
         public static uint ColUIntInDoubleToUIntClamped(this double d) { return (uint)(d.Clamp(0.0, (double)uint.MaxValue) + 0.5); }
 
+        public static float ColByteInFloatToFloat(this float f) { return f * c_byteToFloat; }
+        public static float ColFloatToByteInFloat(this float f) { return f * c_floatToByte; }
+
+        public static float ColByteInFloatToFloatClamped(this float f) { return (f * c_byteToFloat).Clamp(0.0f, 1.0f); }
+        public static float ColFloatToByteInFloatClamped(this float f) { return (f * c_floatToByte).Clamp(0.0f, 255.0f); }
+
         // explicit lambda function versions to aid type infererence
 
         public static readonly Func<int, float> FloatFromByteInInt = ColByteInIntToFloat;
@@ -563,6 +569,10 @@ namespace Aardvark.Base
         public static readonly Func<double, ushort> UShortFromUShortInDoubleClamped = ColUShortInDoubleToUShortClamped;
         public static readonly Func<double, uint> UIntFromUIntInDoubleClamped = ColUIntInDoubleToUIntClamped;
 
+        public static readonly Func<float, float> FloatFromByteInFloat = ColByteInFloatToFloat;
+        public static readonly Func<float, float> ByteInFloatFromFloat = ColFloatToByteInFloat;
+        public static readonly Func<float, float> FloatFromByteInFloatClamped = ColByteInFloatToFloatClamped;
+        public static readonly Func<float, float> ByteInFloatFromFloatClamped = ColFloatToByteInFloatClamped;
         #endregion
 
         #region Color to Gray Conversion Constants

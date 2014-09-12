@@ -18,6 +18,14 @@ namespace Aardvark.Base
             return Fun.IsTiny(u.X * v.Y - u.Y * v.X);
         }
 
+        public static bool IsParallelTo(this V2d u, V2d v, double epsilon = 0.01)
+        {
+            var un = u.Normalized;
+            var vn = v.Normalized;
+
+            return (un - vn).Length < epsilon || (un + vn).Length < epsilon;
+        }
+
         #endregion
 
         #region Ray2d - V2d
@@ -27,6 +35,11 @@ namespace Aardvark.Base
             return ray.Direction.IsParallelTo(v);
         }
 
+        public static bool IsParallelTo(this Ray2d ray, V2d v, double epsilon = 0.01)
+        {
+            return ray.Direction.IsParallelTo(v, epsilon);
+        }
+
         #endregion
 
         #region Ray2d - Ray2d
@@ -34,6 +47,25 @@ namespace Aardvark.Base
         public static bool IsParallelTo(this Ray2d r0, Ray2d r1)
         {
             return r0.Direction.IsParallelTo(r1.Direction);
+        }
+
+        public static bool IsParallelTo(this Ray2d r0, Ray2d r1, double epsilon = 0.01)
+        {
+            return r0.Direction.IsParallelTo(r1.Direction, epsilon);
+        }
+
+        #endregion
+
+        #region Line2d - Line2d
+
+        public static bool IsParallelTo(this Line2d l0, Line2d l1)
+        {
+            return l0.Direction.IsParallelTo(l1.Direction);
+        }
+
+        public static bool IsParallelTo(this Line2d l0, Line2d l1, double epsilon = 0.01)
+        {
+            return l0.Direction.IsParallelTo(l1.Direction, epsilon);
         }
 
         #endregion

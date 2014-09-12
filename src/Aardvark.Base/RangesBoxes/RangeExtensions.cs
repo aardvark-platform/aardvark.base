@@ -108,24 +108,6 @@ namespace Aardvark.Base
                 return true;
             }
         }
-
-
-        #region System.Drawing Conversions
-
-        /// <summary>
-        /// Casts the System.Drawing.Rectangle to an Aardvark box.
-        /// </summary>
-        public static Box2i ToBox2i(this Rectangle s)
-        {
-            return new Box2i(s.Location.ToV2i(), s.Size.ToV2i());
-        }
-
-        public static Rectangle ToRectangle(this Box2i p)
-        {
-            return new Rectangle(p.Min.ToPoint(), p.Size.ToSize());
-        }
-
-        #endregion
     }
 
 }
