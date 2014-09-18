@@ -75,6 +75,7 @@
     <NoWarn>1591</NoWarn>
     <DocumentationFile>..\..\Bin\net40\Aardvark.Base.xml</DocumentationFile>
   </PropertyGroup>
+  <Import Project="..\..\..\build\Aardvark.targets" Condition="exists('..\..\..\build\Aardvark.targets')"/>
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Core" />
