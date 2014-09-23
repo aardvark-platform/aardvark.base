@@ -75,7 +75,7 @@
     <NoWarn>1591</NoWarn>
     <DocumentationFile>..\..\Bin\net40\Aardvark.Base.xml</DocumentationFile>
   </PropertyGroup>
-  <Import Project="..\..\..\build\Aardvark.targets" Condition="exists('..\..\..\build\Aardvark.targets')"/>
+  <Import Project="..\..\..\..\build\Aardvark.targets" Condition="exists('..\..\..\..\build\Aardvark.targets')" />
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -269,8 +269,11 @@
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-  <PropertyGroup>
+  <PropertyGroup Condition="exists('$(OutDir)..\AardReplacer.exe')">
     <PreBuildEvent>"$(OutDir)..\AardReplacer.exe" "$(ProjectDir)\Trafos\Aardreps.aarp"</PreBuildEvent>
+  </PropertyGroup>
+  <PropertyGroup Condition="exists('$(OutDir)..\..\AardReplacer.exe')">
+    <PreBuildEvent>"$(OutDir)..\..\AardReplacer.exe" "$(ProjectDir)\Trafos\Aardreps.aarp"</PreBuildEvent>
   </PropertyGroup>
   <Target Name="Package">
     <!-- Ensure the Package directory exists for this project -->
