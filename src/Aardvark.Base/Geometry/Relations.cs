@@ -682,6 +682,9 @@ namespace Aardvark.Base
                 if (l2 < eps2)
                 {
                     polyList.Add(new int[fvc].SetByIndex(i => vertexIndices[fvi + i]));
+                    if (faceBackMap != null)
+                        faceBackMap.Add(fi);
+                    fvi = fve;
                     continue;
                 }
                 M44d local2global, global2local;
@@ -853,15 +856,14 @@ namespace Aardvark.Base
             }
 
             oi = count - 1;
-            var oldEdge = ea[oi];
+            var oldEdge = ea[oi].Normalized;
 
             for (int i = 0; i < count; i++)
             {
-                var edge = ea[i];
-                var normalizedEdge = oldEdge.Normalized;
+                var edge = ea[i].Normalized;
                 if (normalizedEdgeArray != null)
-                    normalizedEdgeArray[oi] = normalizedEdge;
-                straightArray[i] = normalizedEdge.Cross(edge).LengthSquared < eps2;
+                    normalizedEdgeArray[oi] = oldEdge;
+                straightArray[i] = (edge - oldEdge).LengthSquared < eps2;
                 oi = i; oldEdge = edge;
             }
         }
