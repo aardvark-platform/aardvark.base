@@ -20,7 +20,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Creates quaternion (w, (x, y, z)).
         /// </summary>
-        // [todo ISSUE 20090420 andi : sm, rft] Add asserts for unit-length constraint
+        // todo ISSUE 20090420 andi : sm, rft: Add asserts for unit-length constraint
         public Rot3d(double w, double x, double y, double z)
         {
             W = w;
@@ -60,7 +60,7 @@ namespace Aardvark.Base
         /// Creates quaternion representing a rotation around
         /// an axis by an angle.
         /// </summary>
-        // [todo ISSUE 20090420 andi : sm, rft] What about adding an AxisAngle struct?.
+        // todo ISSUE 20090420 andi : sm, rft: What about adding an AxisAngle struct?.
         public Rot3d(V3d axis, double angleInRadians)
         {
             var halfAngle = angleInRadians / 2;
