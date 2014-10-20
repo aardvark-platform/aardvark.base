@@ -20,7 +20,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Creates quaternion (w, (x, y, z)).
         /// </summary>
-        // [todo ISSUE 20090420 andi : sm, rft] Add asserts for unit-length constraint
+        // todo ISSUE 20090420 andi : sm, rft: Add asserts for unit-length constraint
         public Rot3f(float w, float x, float y, float z)
         {
             W = w;
@@ -60,7 +60,7 @@ namespace Aardvark.Base
         /// Creates quaternion representing a rotation around
         /// an axis by an angle.
         /// </summary>
-        // [todo ISSUE 20090420 andi : sm, rft] What about adding an AxisAngle struct?.
+        // todo ISSUE 20090420 andi : sm, rft: What about adding an AxisAngle struct?.
         public Rot3f(V3f axis, float angleInRadians)
         {
             var halfAngle = angleInRadians / 2;

@@ -3,3 +3,9 @@
 /src/Aardvark.Base/obj
 /src/*.suo
 /src/*.userprefs
+/bin/net40
+/bin/net45
+/packages/*
+!/packages/*.config
+*.nupkg
+obj
