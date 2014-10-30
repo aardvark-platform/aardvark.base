@@ -21,7 +21,8 @@
     <OutputPath>..\..\Bin\Debug\</OutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <WarningLevel>3</WarningLevel>
-    <DocumentationFile></DocumentationFile>
+    <DocumentationFile>
+    </DocumentationFile>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -30,7 +31,8 @@
     <OutputPath>..\..\Bin\Release\</OutputPath>
     <DefineConstants>TRACE</DefineConstants>
     <WarningLevel>3</WarningLevel>
-    <DocumentationFile></DocumentationFile>
+    <DocumentationFile>
+    </DocumentationFile>
   </PropertyGroup>
   <PropertyGroup>
     <MinimumVisualStudioVersion Condition="'$(MinimumVisualStudioVersion)' == ''">11</MinimumVisualStudioVersion>
@@ -57,6 +59,7 @@
     <Compile Include="Prelude\FSLibExtensions.fs" />
     <Compile Include="Prelude\FixedSizeArray.fs" />
     <Compile Include="Prelude\HashMap.fs" />
+    <Compile Include="Prelude\HashSet.fs" />
     <Compile Include="Reflection\TypeInfo.fs" />
     <Compile Include="Reflection\FunctionReflection.fs" />
     <Compile Include="Reflection\UnmanagedFunctions.fs" />
@@ -99,7 +102,6 @@
     <Reference Include="System.Drawing" />
     <Reference Include="System.Numerics" />
   </ItemGroup>
-  
   <Choose>
     <When Condition="exists('..\..\..\..\build\Aardvark.targets')">
       <ItemGroup>
@@ -132,7 +134,6 @@
       </Choose>
     </Otherwise>
   </Choose>
-
   <Choose>
     <When Condition="exists('..\..\..\..\build\Aardvark.targets')">
       <ItemGroup>
@@ -143,7 +144,7 @@
         </ProjectReference>
       </ItemGroup>
     </When>
-    <Otherwise>  
+    <Otherwise>
       <Choose>
         <When Condition="'$(AardvarkBaseProjectPath)' == ''">
           <ItemGroup>
@@ -165,6 +166,4 @@
       </Choose>
     </Otherwise>
   </Choose>
-
-
 </Project>
