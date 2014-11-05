@@ -104,15 +104,6 @@
   </ItemGroup>
   <Choose>
     <When Condition="exists('..\..\..\..\build\Aardvark.targets')">
-      <ItemGroup>
-        <ProjectReference Include="..\Aardvark.Base.TypeProviders\Aardvark.Base.TypeProviders.fsproj">
-          <Name>Aardvark.Base.TypeProviders</Name>
-          <Project>{8BFEA4EF-BF0A-4C1A-B7AC-CBDD930306FD}</Project>
-          <Private>False</Private>
-        </ProjectReference>
-      </ItemGroup>
-    </When>
-    <Otherwise>
       <Choose>
         <When Condition="'$(AardvarkBaseTypeProvidersProjectPath)' == ''">
           <ItemGroup>
@@ -132,19 +123,19 @@
           </ItemGroup>
         </Otherwise>
       </Choose>
+    </When>
+    <Otherwise>
+      <ItemGroup>
+        <ProjectReference Include="..\Aardvark.Base.TypeProviders\Aardvark.Base.TypeProviders.fsproj">
+          <Name>Aardvark.Base.TypeProviders</Name>
+          <Project>{8BFEA4EF-BF0A-4C1A-B7AC-CBDD930306FD}</Project>
+          <Private>False</Private>
+        </ProjectReference>
+      </ItemGroup>
     </Otherwise>
   </Choose>
   <Choose>
     <When Condition="exists('..\..\..\..\build\Aardvark.targets')">
-      <ItemGroup>
-        <ProjectReference Include="..\Aardvark.Base\Aardvark.Base.csproj">
-          <Name>Aardvark.Base</Name>
-          <Project>{377DA721-C821-45F6-B803-9C8724C7B37F}</Project>
-          <Private>False</Private>
-        </ProjectReference>
-      </ItemGroup>
-    </When>
-    <Otherwise>
       <Choose>
         <When Condition="'$(AardvarkBaseProjectPath)' == ''">
           <ItemGroup>
@@ -164,6 +155,15 @@
           </ItemGroup>
         </Otherwise>
       </Choose>
+    </When>
+    <Otherwise>
+      <ItemGroup>
+        <ProjectReference Include="..\Aardvark.Base\Aardvark.Base.csproj">
+          <Name>Aardvark.Base</Name>
+          <Project>{377DA721-C821-45F6-B803-9C8724C7B37F}</Project>
+          <Private>False</Private>
+        </ProjectReference>
+      </ItemGroup>
     </Otherwise>
   </Choose>
 </Project>
