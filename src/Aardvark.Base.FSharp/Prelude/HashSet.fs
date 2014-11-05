@@ -4,29 +4,29 @@
 /// using the element's hashcodes and duplicates are handled in linked
 /// lists</summary>
 ///
-/// <remarks>See the HashSet module for further operations on sets.
+/// <remarks>See the PersistentHashSet module for further operations on sets.
 ///
 /// All members of this class are thread-safe and may be used concurrently from multiple threads.</remarks>
 [<StructuredFormatDisplay("{AsString}")>]
-type HashSet<'a> = internal HashSet of Map<int, list<'a>> with
+type PersistentHashSet<'a> = internal PersistentHashSet of Map<int, list<'a>> with
     member x.AsString = 
-        let (HashSet x) = x
+        let (PersistentHashSet x) = x
         let l = x |> Map.toList |> List.collect (fun (_,v) -> v)
         sprintf "set %A" l
        
        
 [<CompilationRepresentation(CompilationRepresentationFlags.ModuleSuffix)>]
 [<RequireQualifiedAccess>]
-/// <summary>Functional programming operators related to the <c>HashSet&lt;_&gt;</c> type.</summary> 
-module HashSet =
-    let inline private (!) (h : HashSet<'a>) =
-        let (HashSet m) = h
+/// <summary>Functional programming operators related to the <c>PersistentHashSet&lt;_&gt;</c> type.</summary> 
+module PersistentHashSet =
+    let inline private (!) (h : PersistentHashSet<'a>) =
+        let (PersistentHashSet m) = h
         m
     
     /// <summary>The empty set for the type 'T.</summary>
     [<GeneralizableValue>]
     [<CompiledName("Empty")>]
-    let empty<'a> : HashSet<'a> = HashSet Map.empty
+    let empty<'a> : PersistentHashSet<'a> = PersistentHashSet Map.empty
 
 
     /// <summary>The set containing the given element.</summary>
@@ -35,7 +35,7 @@ module HashSet =
     [<CompiledName("Singleton")>]
     let singleton (value : 'a) = 
         let hash = value.GetHashCode()
-        [hash, [value]] |> Map.ofList |> HashSet
+        [hash, [value]] |> Map.ofList |> PersistentHashSet
 
     /// <summary>Returns a new set with an element added to the set. No exception is raised if
     /// the set already contains the given element.</summary>
@@ -43,7 +43,7 @@ module HashSet =
     /// <param name="set">The input set.</param>
     /// <returns>A new set containing <c>value</c>.</returns>
     [<CompiledName("Add")>]
-    let add (value : 'a) (set : HashSet<'a>) =
+    let add (value : 'a) (set : PersistentHashSet<'a>) =
         let map = !set
         let hash = value.GetHashCode()
 
@@ -52,9 +52,9 @@ module HashSet =
                 if l |> List.exists (fun e -> e = value) then
                     set
                 else
-                    Map.add hash (value::l) map |> HashSet
+                    Map.add hash (value::l) map |> PersistentHashSet
             | None ->
-                Map.add hash [value] map |> HashSet
+                Map.add hash [value] map |> PersistentHashSet
 
 
     /// <summary>Returns a new set with the given element removed. No exception is raised if 
@@ -63,14 +63,14 @@ module HashSet =
     /// <param name="set">The input set.</param>
     /// <returns>The input set with <c>value</c> removed.</returns>
     [<CompiledName("Remove")>]
-    let remove (value : 'a) (set : HashSet<'a>) =
+    let remove (value : 'a) (set : PersistentHashSet<'a>) =
         let map = !set
         let hash = value.GetHashCode()
 
         match Map.tryFind hash map with
             | Some l ->
                 let newL = l |> List.filter (fun e -> e <> value)
-                Map.add hash newL map |> HashSet
+                Map.add hash newL map |> PersistentHashSet
             | None ->
                 set
 
@@ -80,7 +80,7 @@ module HashSet =
     /// <param name="set">The input set.</param>
     /// <returns>True if <c>element</c> is in <c>set</c>.</returns>
     [<CompiledName("Contains")>]
-    let contains (element : 'a) (set : HashSet<'a>) =
+    let contains (element : 'a) (set : PersistentHashSet<'a>) =
         let map = !set
         let hash = element.GetHashCode()
 
@@ -93,7 +93,7 @@ module HashSet =
     /// <param name="set2">The second input set.</param>
     /// <returns>The union of <c>set1</c> and <c>set2</c>.</returns>
     [<CompiledName("Union")>]
-    let union (set1 : HashSet<'a>) (set2 : HashSet<'a>) =
+    let union (set1 : PersistentHashSet<'a>) (set2 : PersistentHashSet<'a>) =
         let mutable l = !set1
         let r = !set2
 
@@ -107,13 +107,13 @@ module HashSet =
                     l <- Map.add h values l
 
                 | None -> l <- Map.add h vs l
-        HashSet l
+        PersistentHashSet l
 
     /// <summary>Computes the union of a sequence of sets.</summary>
     /// <param name="sets">The sequence of sets to untion.</param>
     /// <returns>The union of the input sets.</returns>
     [<CompiledName("UnionMany")>]
-    let unionMany (sets : seq<HashSet<'a>>) =
+    let unionMany (sets : seq<PersistentHashSet<'a>>) =
         sets |> Seq.fold union empty
 
 
@@ -122,7 +122,7 @@ module HashSet =
     /// <param name="set2">The set whose elements will be removed from <c>set1</c>.</param>
     /// <returns>The set with the elements of <c>set2</c> removed from <c>set1</c>.</returns>
     [<CompiledName("Difference")>]
-    let difference (set1 : HashSet<'a>) (set2 : HashSet<'a>) =
+    let difference (set1 : PersistentHashSet<'a>) (set2 : PersistentHashSet<'a>) =
         let mutable l = !set1
         let r = !set2
 
@@ -136,14 +136,14 @@ module HashSet =
                     l <- Map.add h values l
 
                 | None -> l <- Map.add h vs l
-        HashSet l
+        PersistentHashSet l
 
     /// <summary>Computes the intersection of the two sets.</summary>
     /// <param name="set1">The first input set.</param>
     /// <param name="set2">The second input set.</param>
     /// <returns>The intersection of <c>set1</c> and <c>set2</c>.</returns>
     [<CompiledName("Intersect")>]
-    let intersect (set1 : HashSet<'a>) (set2 : HashSet<'a>) =
+    let intersect (set1 : PersistentHashSet<'a>) (set2 : PersistentHashSet<'a>) =
         let mutable l = !set1
         let r = !set2
 
@@ -154,14 +154,14 @@ module HashSet =
                     let newValues = values |> List.filter (fun v -> vs |> List.exists (fun vi -> vi = v))
                     l <- Map.add h newValues l
         
-        HashSet l
+        PersistentHashSet l
    
    
     /// <summary>Computes the intersection of a sequence of sets. The sequence must be non-empty.</summary>
     /// <param name="sets">The sequence of sets to intersect.</param>
     /// <returns>The intersection of the input sets.</returns>
     [<CompiledName("IntersectMany")>] 
-    let intersectMany (sets : seq<HashSet<'a>>) =
+    let intersectMany (sets : seq<PersistentHashSet<'a>>) =
         sets |> Seq.fold intersect empty
 
 
@@ -195,21 +195,21 @@ module HashSet =
     /// <param name="set">The input set.</param>
     /// <returns>An ordered list of the elements of <c>set</c>.</returns>
     [<CompiledName("ToList")>]
-    let toList (set : HashSet<'a>) =
+    let toList (set : PersistentHashSet<'a>) =
         !set |> Map.toList |> List.collect snd
   
     /// <summary>Returns an ordered view of the collection as an enumerable object.</summary>
     /// <param name="set">The input set.</param>
     /// <returns>An ordered sequence of the elements of <c>set</c>.</returns>
     [<CompiledName("ToSeq")>]
-    let toSeq (set : HashSet<'a>) =
+    let toSeq (set : PersistentHashSet<'a>) =
         !set |> Map.toSeq |> Seq.collect snd      
 
     /// <summary>Builds an array that contains the elements of the set in order.</summary>
     /// <param name="set">The input set.</param>
     /// <returns>An ordered array of the elements of <c>set</c>.</returns>
     [<CompiledName("ToArray")>]
-    let toArray (set : HashSet<'a>) =
+    let toArray (set : PersistentHashSet<'a>) =
         toList set |> List.toArray
 
 
@@ -217,7 +217,7 @@ module HashSet =
     /// <param name="set">The input set.</param>
     /// <returns>True if <c>set</c> is empty.</returns>
     [<CompiledName("IsEmpty")>]
-    let isEmpty (set : HashSet<'a>) =
+    let isEmpty (set : PersistentHashSet<'a>) =
         !set |> Map.isEmpty
 
 
@@ -225,7 +225,7 @@ module HashSet =
     /// <param name="set">The input set.</param>
     /// <returns>The number of elements in the set.</returns>
     [<CompiledName("Count")>]
-    let count (set : HashSet<'a>) =
+    let count (set : PersistentHashSet<'a>) =
         set |> toSeq |> Seq.length
 
     /// <summary>Evaluates to "true" if all elements of the first set are in the second</summary>
@@ -233,7 +233,7 @@ module HashSet =
     /// <param name="set2">The set to test against.</param>
     /// <returns>True if <c>set1</c> is a subset of <c>set2</c>.</returns>
     [<CompiledName("IsSubset")>]
-    let isSubset (set1 : HashSet<'a>) (set2 : HashSet<'a>) =
+    let isSubset (set1 : PersistentHashSet<'a>) (set2 : PersistentHashSet<'a>) =
         set1 |> toSeq |> Seq.forall(fun v -> contains v set2)
 
     /// <summary>Evaluates to "true" if all elements of the first set are in the second, and at least 
@@ -242,7 +242,7 @@ module HashSet =
     /// <param name="set2">The set to test against.</param>
     /// <returns>True if <c>set1</c> is a proper subset of <c>set2</c>.</returns>
     [<CompiledName("IsProperSubset")>]
-    let isProperSubset (set1 : HashSet<'a>) (set2 : HashSet<'a>) =
+    let isProperSubset (set1 : PersistentHashSet<'a>) (set2 : PersistentHashSet<'a>) =
         isSubset set1 set2 && 
         count set1 < count set2
 
@@ -251,7 +251,7 @@ module HashSet =
     /// <param name="set2">The set to test against.</param>
     /// <returns>True if <c>set1</c> is a superset of <c>set2</c>.</returns>
     [<CompiledName("IsSuperset")>]
-    let isSuperset (set1 : HashSet<'a>) (set2 : HashSet<'a>) =
+    let isSuperset (set1 : PersistentHashSet<'a>) (set2 : PersistentHashSet<'a>) =
         isSubset set2 set1
 
     /// <summary>Evaluates to "true" if all elements of the second set are in the first, and at least 
@@ -260,7 +260,7 @@ module HashSet =
     /// <param name="set2">The set to test against.</param>
     /// <returns>True if <c>set1</c> is a proper superset of <c>set2</c>.</returns>
     [<CompiledName("IsProperSuperset")>]
-    let isProperSuperset (set1 : HashSet<'a>) (set2 : HashSet<'a>) =
+    let isProperSuperset (set1 : PersistentHashSet<'a>) (set2 : PersistentHashSet<'a>) =
         isProperSubset set2 set1
 
     /// <summary>Tests if any element of the collection satisfies the given predicate.
@@ -270,7 +270,7 @@ module HashSet =
     /// <param name="set">The input set.</param>
     /// <returns>True if any element of <c>set</c> satisfies <c>predicate</c>.</returns>
     [<CompiledName("Exists")>]
-    let exists (predicate : 'a -> bool) (set : HashSet<'a>) =
+    let exists (predicate : 'a -> bool) (set : PersistentHashSet<'a>) =
         let m = toSeq set
         m |> Seq.exists predicate
 
@@ -281,7 +281,7 @@ module HashSet =
     /// <param name="set">The input set.</param>
     /// <returns>True if all elements of <c>set</c> satisfy <c>predicate</c>.</returns>
     [<CompiledName("ForAll")>]
-    let forall (predicate : 'a -> bool) (set : HashSet<'a>) =
+    let forall (predicate : 'a -> bool) (set : PersistentHashSet<'a>) =
         let m = toSeq set
         m |> Seq.forall predicate
     
@@ -290,7 +290,7 @@ module HashSet =
     /// <param name="action">The function to apply to each element.</param>
     /// <param name="set">The input set.</param>
     [<CompiledName("Iterate")>]    
-    let iter (action : 'a -> unit) (set : HashSet<'a>) =
+    let iter (action : 'a -> unit) (set : PersistentHashSet<'a>) =
         set |> toSeq |> Seq.iter action
 
 
@@ -300,14 +300,14 @@ module HashSet =
     /// <param name="set">The input set.</param>
     /// <returns>A set containing the transformed elements.</returns>
     [<CompiledName("Map")>]
-    let map (mapping : 'a -> 'b) (set : HashSet<'a>) =
+    let map (mapping : 'a -> 'b) (set : PersistentHashSet<'a>) =
         let mutable result = empty
         for e in set |> toSeq do
             result <- add (mapping e) result
 
         result
 
-    let choose (mapping : 'a -> Option<'b>) (set : HashSet<'a>) =
+    let choose (mapping : 'a -> Option<'b>) (set : PersistentHashSet<'a>) =
         let mutable result = empty
         for e in set |> toSeq do
             match mapping e with
@@ -323,7 +323,7 @@ module HashSet =
     /// <param name="set">The input set.</param>
     /// <returns>The set containing only the elements for which <c>predicate</c> returns true.</returns>
     [<CompiledName("Filter")>]
-    let filter (predicate : 'a -> bool) (set : HashSet<'a>) =
+    let filter (predicate : 'a -> bool) (set : PersistentHashSet<'a>) =
         let mutable result = empty
         for e in set |> toSeq do
             if predicate e then
@@ -338,7 +338,7 @@ module HashSet =
     /// <param name="set">The input set.</param>
     /// <returns>The final state.</returns>
     [<CompiledName("Fold")>]
-    let fold (folder : 's -> 'a -> 's) (state : 's) (set : HashSet<'a>) =
+    let fold (folder : 's -> 'a -> 's) (state : 's) (set : PersistentHashSet<'a>) =
         set |> toSeq |> Seq.fold folder state
 
     /// <summary>Applies the given accumulating function to all the elements of the set.</summary>
@@ -347,7 +347,7 @@ module HashSet =
     /// <param name="state">The initial state.</param>
     /// <returns>The final state.</returns>
     [<CompiledName("FoldBack")>]
-    let foldBack (folder : 'a -> 's -> 's) (state : 's) (set : HashSet<'a>) =
+    let foldBack (folder : 'a -> 's -> 's) (state : 's) (set : PersistentHashSet<'a>) =
         List.foldBack folder (set |> toList) state
 
 
@@ -358,7 +358,7 @@ module HashSet =
     /// <returns>A pair of sets with the first containing the elements for which <c>predicate</c> returns
     /// true and the second containing the elements for which <c>predicate</c> returns false.</returns>
     [<CompiledName("Partition")>]
-    let partition (predicate : 'a -> bool) (set : HashSet<'a>) =
+    let partition (predicate : 'a -> bool) (set : PersistentHashSet<'a>) =
         let mutable l = empty
         let mutable r = empty
 
