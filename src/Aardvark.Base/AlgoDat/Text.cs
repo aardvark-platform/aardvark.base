@@ -1152,27 +1152,56 @@ namespace Aardvark.Base
 
         static Text()
         {
-            Text<byte>.Parse = t => t.ParseByte();
-            Text<sbyte>.Parse = t => t.ParseSByte();
-            Text<short>.Parse = t => t.ParseShort();
-            Text<ushort>.Parse = t => t.ParseUShort();
-            Text<int>.Parse = t => t.ParseInt();
-            Text<uint>.Parse = t => t.ParseUInt();
-            Text<long>.Parse = t => t.ParseLong();
-            Text<ulong>.Parse = t => t.ParseULong();
-            Text<float>.Parse = t => t.ParseFloat();
-            Text<double>.Parse = t => t.ParseDouble();
-
-            Text<byte>.ParsedValueAt = (t, i) => t.ParsedValueOfByteAt(i);
-            Text<sbyte>.ParsedValueAt = (t, i) => t.ParsedValueOfSByteAt(i);
-            Text<short>.ParsedValueAt = (t, i) => t.ParsedValueOfShortAt(i);
-            Text<ushort>.ParsedValueAt = (t, i) => t.ParsedValueOfUShortAt(i);
-            Text<int>.ParsedValueAt = (t, i) => t.ParsedValueOfIntAt(i);
-            Text<uint>.ParsedValueAt = (t, i) => t.ParsedValueOfUIntAt(i);
-            Text<long>.ParsedValueAt = (t, i) => t.ParsedValueOfLongAt(i);
-            Text<ulong>.ParsedValueAt = (t, i) => t.ParsedValueOfULongAt(i);
-            Text<float>.ParsedValueAt = (t, i) => t.ParsedValueOfFloatAt(i);
-            Text<double>.ParsedValueAt = (t, i) => t.ParsedValueOfDoubleAt(i);
+            if (typeof(T) == typeof(byte))
+            {
+                Parse = (Func<Text, T>)(object)(Func<Text, byte>)(t => t.ParseByte());
+                ParsedValueAt = (Func<Text, int, ParsedValue<T>>)(object)(Func<Text, int, ParsedValue<byte>>)((t, i) => t.ParsedValueOfByteAt(i));
+            }
+            else if (typeof(T) == typeof(sbyte))
+            {
+                Parse = (Func<Text, T>)(object)(Func<Text, sbyte>)(t => t.ParseSByte());
+                ParsedValueAt = (Func<Text, int, ParsedValue<T>>)(object)(Func<Text, int, ParsedValue<sbyte>>)((t, i) => t.ParsedValueOfSByteAt(i));
+            }
+            else if (typeof(T) == typeof(short))
+            {
+                Parse = (Func<Text, T>)(object)(Func<Text, short>)(t => t.ParseShort());
+                ParsedValueAt = (Func<Text, int, ParsedValue<T>>)(object)(Func<Text, int, ParsedValue<short>>)((t, i) => t.ParsedValueOfShortAt(i));
+            }
+            else if (typeof(T) == typeof(ushort))
+            {
+                Parse = (Func<Text, T>)(object)(Func<Text, ushort>)(t => t.ParseUShort());
+                ParsedValueAt = (Func<Text, int, ParsedValue<T>>)(object)(Func<Text, int, ParsedValue<ushort>>)((t, i) => t.ParsedValueOfUShortAt(i));
+            }
+            else if (typeof(T) == typeof(int))
+            {
+                Parse = (Func<Text, T>)(object)(Func<Text, int>)(t =>t.ParseInt());
+                ParsedValueAt = (Func<Text, int, ParsedValue<T>>)(object)(Func<Text, int, ParsedValue<int>>)((t, i) => t.ParsedValueOfIntAt(i));
+            }
+            else if (typeof(T) == typeof(uint))
+            {
+                Parse = (Func<Text, T>)(object)(Func<Text, uint>)(t => t.ParseUInt());
+                ParsedValueAt = (Func<Text, int, ParsedValue<T>>)(object)(Func<Text, int, ParsedValue<uint>>)((t, i) => t.ParsedValueOfUIntAt(i));
+            }
+            else if (typeof(T) == typeof(long))
+            {
+                Parse = (Func<Text, T>)(object)(Func<Text, long>)(t => t.ParseLong());
+                ParsedValueAt = (Func<Text, int, ParsedValue<T>>)(object)(Func<Text, int, ParsedValue<long>>)((t, i) => t.ParsedValueOfLongAt(i));
+            }
+            else if (typeof(T) == typeof(ulong))
+            {
+                Parse = (Func<Text, T>)(object)(Func<Text, ulong>)(t => t.ParseULong());
+                ParsedValueAt = (Func<Text, int, ParsedValue<T>>)(object)(Func<Text, int, ParsedValue<ulong>>)((t, i) => t.ParsedValueOfULongAt(i));
+            }
+            else if (typeof(T) == typeof(float))
+            {
+                Parse = (Func<Text, T>)(object)(Func<Text, float>)(t => t.ParseFloat());
+                ParsedValueAt = (Func<Text, int, ParsedValue<T>>)(object)(Func<Text, int, ParsedValue<float>>)((t, i) => t.ParsedValueOfFloatAt(i));
+            }
+            else if (typeof(T) == typeof(double))
+            {
+                Parse = (Func<Text, T>)(object)(Func<Text, double>)(t => t.ParseDouble());
+                ParsedValueAt = (Func<Text, int, ParsedValue<T>>)(object)(Func<Text, int, ParsedValue<double>>)((t, i) => t.ParsedValueOfDoubleAt(i));
+            }
         }
 
         #endregion
