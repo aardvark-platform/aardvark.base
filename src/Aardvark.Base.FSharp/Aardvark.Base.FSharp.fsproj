@@ -21,7 +21,8 @@
     <OutputPath>..\..\Bin\Debug\</OutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <WarningLevel>3</WarningLevel>
-    <DocumentationFile></DocumentationFile>
+    <DocumentationFile>
+    </DocumentationFile>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -30,7 +31,8 @@
     <OutputPath>..\..\Bin\Release\</OutputPath>
     <DefineConstants>TRACE</DefineConstants>
     <WarningLevel>3</WarningLevel>
-    <DocumentationFile></DocumentationFile>
+    <DocumentationFile>
+    </DocumentationFile>
   </PropertyGroup>
   <PropertyGroup>
     <MinimumVisualStudioVersion Condition="'$(MinimumVisualStudioVersion)' == ''">11</MinimumVisualStudioVersion>
@@ -57,6 +59,7 @@
     <Compile Include="Prelude\FSLibExtensions.fs" />
     <Compile Include="Prelude\FixedSizeArray.fs" />
     <Compile Include="Prelude\HashMap.fs" />
+    <Compile Include="Prelude\HashSet.fs" />
     <Compile Include="Reflection\TypeInfo.fs" />
     <Compile Include="Reflection\FunctionReflection.fs" />
     <Compile Include="Reflection\UnmanagedFunctions.fs" />
@@ -99,18 +102,8 @@
     <Reference Include="System.Drawing" />
     <Reference Include="System.Numerics" />
   </ItemGroup>
-  
   <Choose>
     <When Condition="exists('..\..\..\..\build\Aardvark.targets')">
-      <ItemGroup>
-        <ProjectReference Include="..\Aardvark.Base.TypeProviders\Aardvark.Base.TypeProviders.fsproj">
-          <Name>Aardvark.Base.TypeProviders</Name>
-          <Project>{8BFEA4EF-BF0A-4C1A-B7AC-CBDD930306FD}</Project>
-          <Private>False</Private>
-        </ProjectReference>
-      </ItemGroup>
-    </When>
-    <Otherwise>
       <Choose>
         <When Condition="'$(AardvarkBaseTypeProvidersProjectPath)' == ''">
           <ItemGroup>
@@ -130,20 +123,19 @@
           </ItemGroup>
         </Otherwise>
       </Choose>
-    </Otherwise>
-  </Choose>
-
-  <Choose>
-    <When Condition="exists('..\..\..\..\build\Aardvark.targets')">
+    </When>
+    <Otherwise>
       <ItemGroup>
-        <ProjectReference Include="..\Aardvark.Base\Aardvark.Base.csproj">
-          <Name>Aardvark.Base</Name>
-          <Project>{377DA721-C821-45F6-B803-9C8724C7B37F}</Project>
+        <ProjectReference Include="..\Aardvark.Base.TypeProviders\Aardvark.Base.TypeProviders.fsproj">
+          <Name>Aardvark.Base.TypeProviders</Name>
+          <Project>{8BFEA4EF-BF0A-4C1A-B7AC-CBDD930306FD}</Project>
           <Private>False</Private>
         </ProjectReference>
       </ItemGroup>
-    </When>
-    <Otherwise>  
+    </Otherwise>
+  </Choose>
+  <Choose>
+    <When Condition="exists('..\..\..\..\build\Aardvark.targets')">
       <Choose>
         <When Condition="'$(AardvarkBaseProjectPath)' == ''">
           <ItemGroup>
@@ -163,8 +155,15 @@
           </ItemGroup>
         </Otherwise>
       </Choose>
+    </When>
+    <Otherwise>
+      <ItemGroup>
+        <ProjectReference Include="..\Aardvark.Base\Aardvark.Base.csproj">
+          <Name>Aardvark.Base</Name>
+          <Project>{377DA721-C821-45F6-B803-9C8724C7B37F}</Project>
+          <Private>False</Private>
+        </ProjectReference>
+      </ItemGroup>
     </Otherwise>
   </Choose>
-
-
 </Project>
