@@ -115,12 +115,30 @@ namespace Aardvark.Base
 
             static Info()
             {
-                Info<bool>.MaxValue = true;
-                Info<byte>.MaxValue = 255;
-                Info<ushort>.MaxValue = ushort.MaxValue;
-                Info<uint>.MaxValue = uint.MaxValue;
-                Info<float>.MaxValue = 1.0f;
-                Info<double>.MaxValue = 1.0;
+                if (typeof(T) == typeof(bool))
+                {
+                    MaxValue = (T)(object)true;
+                }
+                else if (typeof(T) == typeof(byte))
+                {
+                    MaxValue = (T)(object)255;
+                }
+                else if (typeof(T) == typeof(ushort))
+                {
+                    MaxValue = (T)(object)ushort.MaxValue;
+                }
+                else if (typeof(T) == typeof(uint))
+                {
+                    MaxValue = (T)(object)uint.MaxValue;
+                }
+                else if (typeof(T) == typeof(float))
+                {
+                    MaxValue = (T)(object)1.0f;
+                }
+                else if (typeof(T) == typeof(double))
+                {
+                    MaxValue = (T)(object)1.0;
+                }
             }
         };
 
