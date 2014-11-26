@@ -121,7 +121,7 @@ namespace Aardvark.Base
                 }
                 else if (typeof(T) == typeof(byte))
                 {
-                    MaxValue = (T)(object)255;
+                    MaxValue = (T)(object)(byte)255;
                 }
                 else if (typeof(T) == typeof(ushort))
                 {
