@@ -24,7 +24,7 @@ module Amd64 =
         open System.Diagnostics
         open System.IO
 
-        let disasm = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "..\\..\\BinPrebuilt\\Release\\disasm.exe")
+        let disasm = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "..\\..\\..\\libs\\Release\\disasm.exe")
 
         [<StructuredFormatDisplay("{AsString}")>]
         type Instruction = { offset : uint64; size : uint32; code : string; bytes : byte[] } with
