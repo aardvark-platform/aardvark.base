@@ -107,7 +107,25 @@ namespace Aardvark.Base
         /// </summary>
         public static M44f Transpose(M44f m)
         {
-            throw new NotImplementedException();
+            return new M44f
+            {
+                M00 = m.M00,
+                M01 = m.M10,
+                M02 = m.M20,
+                M03 = m.M30,
+                M10 = m.M01,
+                M11 = m.M11,
+                M12 = m.M21,
+                M13 = m.M31,
+                M20 = m.M02,
+                M21 = m.M12,
+                M22 = m.M22,
+                M23 = m.M32,
+                M30 = m.M03,
+                M31 = m.M13,
+                M32 = m.M23,
+                M33 = m.M33
+            };
         }
 
         /// <summary>
