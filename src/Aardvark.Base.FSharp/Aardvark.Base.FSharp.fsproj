@@ -53,7 +53,6 @@
   <Import Project="$(SolutionPath).targets" Condition="exists('$(SolutionPath).targets')" />
   <Import Project="..\..\..\..\build\Aardvark.targets" Condition="exists('..\..\..\..\build\Aardvark.targets')" />
   <Import Project="$(FSharpTargetsPath)" />
-  <Import Project="$(SolutionPath).targets" Condition="exists('$(SolutionPath).targets')" />
   <ItemGroup>
     <Compile Include="Prelude\Logging.fs" />
     <Compile Include="Prelude\FSLibExtensions.fs" />
