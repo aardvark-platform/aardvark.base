@@ -1,3 +1,4 @@
+using System;
 using System.Linq;
 
 namespace Aardvark.Base
@@ -506,7 +507,7 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// ???
+        /// Projects points onto plane (shortest distance).
         /// </summary>
         public static V3d[] Project(this Plane3d plane, V3d[] pointArray, int pointCount = 0)
         {
@@ -523,7 +524,30 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// ???
+        /// Projects points onto plane along given direction.
+        /// </summary>
+        public static V3d[] Project(this Plane3d plane, V3d[] pointArray, V3d direction, int startIndex = 0, int count = 0)
+        {
+            if (count == 0) count = pointArray.Length - startIndex;
+            return pointArray.Copy(p =>
+            {
+                double t = 0.0;
+                var r = new Ray3d(p, direction);
+                if (r.Intersects(plane, out t))
+                {
+                    return r.GetPointOnRay(t);
+                }
+                else
+                {
+                    throw new Exception(string.Format(
+                        "Failed to project point {0} onto plane {1} along direction {2}.", p, plane, direction)
+                        );
+                }
+            });
+        }
+
+        /// <summary>
+        /// Projects vectors into plane.
         /// </summary>
         public static V3d[] ProjectVectors(this Plane3d plane, V3d[] vectorArray, int vectorCount = 0)
         {

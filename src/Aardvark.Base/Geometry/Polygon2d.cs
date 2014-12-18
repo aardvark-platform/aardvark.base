@@ -319,6 +319,30 @@ namespace Aardvark.Base
             return worst;
         }
 
+        /// <summary>
+        /// Returns true if the 'other' polygon is fully contained inside this polygon.
+        /// </summary>
+        public static bool IsFullyContainedInside(this Polygon2d self, Polygon2d other)
+        {
+            // check if all my vertices are inside the other polygon
+            foreach (var v in self.Points)
+            {
+                if (!other.Contains(v)) return false;
+            }
+
+            // check if all my edges do NOT intersect with edges of the other polygon
+            foreach (var e in self.EdgeLines)
+            {
+                foreach (var x in other.EdgeLines)
+                {
+                    if (x.Intersects(e)) return false;
+                }
+            }
+
+            // :-)
+            return true;
+        }
+
         #endregion
 
         #region Rasterization
@@ -481,5 +505,4 @@ namespace Aardvark.Base
 
         #endregion
     }
-
 }
