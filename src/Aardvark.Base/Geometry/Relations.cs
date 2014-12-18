@@ -18,7 +18,7 @@ namespace Aardvark.Base
             return Fun.IsTiny(u.X * v.Y - u.Y * v.X);
         }
 
-        public static bool IsParallelTo(this V2d u, V2d v, double epsilon = 0.01)
+        public static bool IsParallelTo(this V2d u, V2d v, double epsilon = 1e-6)
         {
             var un = u.Normalized;
             var vn = v.Normalized;
@@ -35,7 +35,7 @@ namespace Aardvark.Base
             return ray.Direction.IsParallelTo(v);
         }
 
-        public static bool IsParallelTo(this Ray2d ray, V2d v, double epsilon = 0.01)
+        public static bool IsParallelTo(this Ray2d ray, V2d v, double epsilon = 1e-6)
         {
             return ray.Direction.IsParallelTo(v, epsilon);
         }
@@ -49,7 +49,7 @@ namespace Aardvark.Base
             return r0.Direction.IsParallelTo(r1.Direction);
         }
 
-        public static bool IsParallelTo(this Ray2d r0, Ray2d r1, double epsilon = 0.01)
+        public static bool IsParallelTo(this Ray2d r0, Ray2d r1, double epsilon = 1e-6)
         {
             return r0.Direction.IsParallelTo(r1.Direction, epsilon);
         }
@@ -63,7 +63,7 @@ namespace Aardvark.Base
             return l0.Direction.IsParallelTo(l1.Direction);
         }
 
-        public static bool IsParallelTo(this Line2d l0, Line2d l1, double epsilon = 0.01)
+        public static bool IsParallelTo(this Line2d l0, Line2d l1, double epsilon = 1e-6)
         {
             return l0.Direction.IsParallelTo(l1.Direction, epsilon);
         }
@@ -79,6 +79,14 @@ namespace Aardvark.Base
             return Fun.IsTiny(u.Cross(v).Norm1);
         }
 
+        public static bool IsParallelTo(this V3d u, V3d v, double epsilon = 1e-6)
+        {
+            var un = u.Normalized;
+            var vn = v.Normalized;
+
+            return (un - vn).Length < epsilon || (un + vn).Length < epsilon;
+        }
+
         #endregion
 
         #region Ray3d - V3d
@@ -86,6 +94,11 @@ namespace Aardvark.Base
         public static bool IsParallelTo(this Ray3d ray, V3d vec)
         {
             return ray.Direction.IsParallelTo(vec);
+        }
+
+        public static bool IsParallelTo(this Ray3d ray, V3d vec, double epsilon = 1e-6)
+        {
+            return ray.Direction.IsParallelTo(vec, epsilon);
         }
 
         #endregion
@@ -97,6 +110,11 @@ namespace Aardvark.Base
             return r0.Direction.IsParallelTo(r1.Direction);
         }
 
+        public static bool IsParallelTo(this Ray3d r0, Ray3d r1, double epsilon = 1e-6)
+        {
+            return r0.Direction.IsParallelTo(r1.Direction, epsilon);
+        }
+
         #endregion
 
         #region Plane3d - Plane3d
@@ -104,6 +122,11 @@ namespace Aardvark.Base
         public static bool IsParallelTo(this Plane3d p0, Plane3d p1)
         {
             return p0.Normal.IsParallelTo(p1.Normal);
+        }
+
+        public static bool IsParallelTo(this Plane3d p0, Plane3d p1, double epsilon = 1e-6)
+        {
+            return p0.Normal.IsParallelTo(p1.Normal, epsilon);
         }
 
         #endregion
@@ -115,7 +138,7 @@ namespace Aardvark.Base
             return ray.Direction.IsOrthogonalTo(plane.Normal);
         }
 
-        public static bool IsParallelTo(this Plane3d plane , Ray3d ray)
+        public static bool IsParallelTo(this Plane3d plane, Ray3d ray)
         {
             return ray.Direction.IsOrthogonalTo(plane.Normal);
         }
@@ -127,6 +150,11 @@ namespace Aardvark.Base
         public static bool IsParallelTo(this Line3d l0, Line3d l1)
         {
             return l0.Direction.IsParallelTo(l1.Direction);
+        }
+
+        public static bool IsParallelTo(this Line3d l0, Line3d l1, double epsilon = 1e-6)
+        {
+            return l0.Direction.IsParallelTo(l1.Direction, epsilon);
         }
 
         #endregion
@@ -654,6 +682,9 @@ namespace Aardvark.Base
                 if (l2 < eps2)
                 {
                     polyList.Add(new int[fvc].SetByIndex(i => vertexIndices[fvi + i]));
+                    if (faceBackMap != null)
+                        faceBackMap.Add(fi);
+                    fvi = fve;
                     continue;
                 }
                 M44d local2global, global2local;
@@ -825,15 +856,14 @@ namespace Aardvark.Base
             }
 
             oi = count - 1;
-            var oldEdge = ea[oi];
+            var oldEdge = ea[oi].Normalized;
 
             for (int i = 0; i < count; i++)
             {
-                var edge = ea[i];
-                var normalizedEdge = oldEdge.Normalized;
+                var edge = ea[i].Normalized;
                 if (normalizedEdgeArray != null)
-                    normalizedEdgeArray[oi] = normalizedEdge;
-                straightArray[i] = normalizedEdge.Cross(edge).LengthSquared < eps2;
+                    normalizedEdgeArray[oi] = oldEdge;
+                straightArray[i] = (edge - oldEdge).LengthSquared < eps2;
                 oi = i; oldEdge = edge;
             }
         }

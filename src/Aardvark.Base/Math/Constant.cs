@@ -54,68 +54,69 @@ namespace Aardvark.Base
 
             if (typeof(T) == typeof(byte))
             {
-                Constant<byte>.ParseableMinValue = byte.MinValue;
-                Constant<byte>.ParseableMaxValue = byte.MaxValue;
-                Constant<byte>.MachineEpsilon = (byte)1;
-                Constant<byte>.PositiveTinyValue = (byte)4;
+                ParseableMinValue = (T)(object)byte.MinValue;
+                ParseableMinValue = (T)(object)byte.MinValue;
+                ParseableMaxValue = (T)(object)byte.MaxValue;
+                MachineEpsilon = (T)(object)(byte)1;
+                PositiveTinyValue = (T)(object)(byte)4;
             }
             else if (typeof(T) == typeof(ushort))
             {
-                Constant<ushort>.ParseableMinValue = ushort.MinValue;
-                Constant<ushort>.ParseableMaxValue = ushort.MaxValue;
-                Constant<ushort>.MachineEpsilon = (ushort)1;
-                Constant<ushort>.PositiveTinyValue = (ushort)4;
+                ParseableMinValue = (T)(object)ushort.MinValue;
+                ParseableMaxValue = (T)(object)ushort.MaxValue;
+                MachineEpsilon = (T)(object)(ushort)1;
+                PositiveTinyValue = (T)(object)(ushort)4;
             }
             else if (typeof(T) == typeof(uint))
             {
-                Constant<uint>.ParseableMinValue = uint.MinValue;
-                Constant<uint>.ParseableMaxValue = uint.MaxValue;
-                Constant<uint>.MachineEpsilon = (uint)1;
-                Constant<uint>.PositiveTinyValue = (uint)4;
+                ParseableMinValue = (T)(object)uint.MinValue;
+                ParseableMaxValue = (T)(object)uint.MaxValue;
+                MachineEpsilon = (T)(object)(uint)1;
+                PositiveTinyValue = (T)(object)(uint)4;
             }
             else if (typeof(T) == typeof(ulong))
             {
-                Constant<ulong>.ParseableMinValue = ulong.MinValue;
-                Constant<ulong>.ParseableMaxValue = ulong.MaxValue;
-                Constant<ulong>.MachineEpsilon = (ulong)1;
-                Constant<ulong>.PositiveTinyValue = (ulong)4;
+                ParseableMinValue = (T)(object)ulong.MinValue;
+                ParseableMaxValue = (T)(object)ulong.MaxValue;
+                MachineEpsilon = (T)(object)(ulong)1;
+                PositiveTinyValue = (T)(object)(ulong)4;
             }
             else if (typeof(T) == typeof(sbyte))
             {
-                Constant<sbyte>.ParseableMinValue = sbyte.MinValue;
-                Constant<sbyte>.ParseableMaxValue = sbyte.MaxValue;
-                Constant<sbyte>.MachineEpsilon = (sbyte)1;
-                Constant<sbyte>.PositiveTinyValue = (sbyte)4;
-                Constant<sbyte>.NegativeTinyValue = (sbyte)-4;
+                ParseableMinValue = (T)(object)sbyte.MinValue;
+                ParseableMaxValue = (T)(object)sbyte.MaxValue;
+                MachineEpsilon = (T)(object)1;
+                PositiveTinyValue = (T)(object)(sbyte)4;
+                NegativeTinyValue = (T)(object)(sbyte)-4;
             }
             else if (typeof(T) == typeof(short))
             {
-                Constant<short>.ParseableMinValue = short.MinValue;
-                Constant<short>.ParseableMaxValue = short.MaxValue;
-                Constant<short>.MachineEpsilon = (short)1;
-                Constant<short>.PositiveTinyValue = (short)4;
-                Constant<short>.NegativeTinyValue = (short)-4;
+                ParseableMinValue = (T)(object)short.MinValue;
+                ParseableMaxValue = (T)(object)short.MaxValue;
+                MachineEpsilon = (T)(object)1;
+                PositiveTinyValue = (T)(object)(short)4;
+                NegativeTinyValue = (T)(object)(short)-4;
             }
             else if (typeof(T) == typeof(int))
             {
-                Constant<int>.ParseableMinValue = int.MinValue;
-                Constant<int>.ParseableMaxValue = int.MaxValue;
-                Constant<int>.MachineEpsilon = 1;
-                Constant<int>.PositiveTinyValue = 4;
-                Constant<int>.NegativeTinyValue = -4;
+                ParseableMinValue = (T)(object)int.MinValue;
+                ParseableMaxValue = (T)(object)int.MaxValue;
+                MachineEpsilon = (T)(object)1;
+                PositiveTinyValue = (T)(object)4;
+                NegativeTinyValue = (T)(object)-4;
             }
             else if (typeof(T) == typeof(long))
             {
-                Constant<long>.ParseableMinValue = long.MinValue;
-                Constant<long>.ParseableMaxValue = long.MaxValue;
-                Constant<long>.MachineEpsilon = 1L;
-                Constant<long>.PositiveTinyValue = 4L;
-                Constant<long>.NegativeTinyValue = -4L;
+                ParseableMinValue = (T)(object)long.MinValue;
+                ParseableMaxValue = (T)(object)long.MaxValue;
+                MachineEpsilon = (T)(object)1L;
+                PositiveTinyValue = (T)(object)4L;
+                NegativeTinyValue = (T)(object)-4L;
             }
             else if (typeof(T) == typeof(float))
             {
-                Constant<float>.ParseableMinValue = float.MinValue * 0.999999f;
-                Constant<float>.ParseableMaxValue = float.MaxValue * 0.999999f;
+                ParseableMinValue = (T)(object)(float.MinValue * 0.999999f);
+                ParseableMaxValue = (T)(object)(float.MaxValue * 0.999999f);
                 floatStore = 2.0f;
                 float floatEps = 1.0f;
                 while (floatStore > 1.0f)
@@ -123,14 +124,14 @@ namespace Aardvark.Base
                     floatEps /= 2;
                     floatStore = floatEps + 1.0f;
                 }
-                Constant<float>.MachineEpsilon = 2 * floatEps;
-                Constant<float>.PositiveTinyValue = 8 * floatEps;
-                Constant<float>.NegativeTinyValue = -8 * floatEps;
+                MachineEpsilon = (T)(object)(2 * floatEps);
+                PositiveTinyValue = (T)(object)(8 * floatEps);
+                NegativeTinyValue = (T)(object)(-8 * floatEps);
             }
             else if (typeof(T) == typeof(double))
             {
-                Constant<double>.ParseableMinValue = double.MinValue * 0.999999995;
-                Constant<double>.ParseableMaxValue = double.MaxValue * 0.999999995;
+                ParseableMinValue = (T)(object)(double.MinValue * 0.999999995);
+                ParseableMaxValue = (T)(object)(double.MaxValue * 0.999999995);
                 double doubleStore = 2.0;
                 double doubleEps = 1.0;
                 while (doubleStore > 1.0)
@@ -138,9 +139,9 @@ namespace Aardvark.Base
                     doubleEps /= 2;
                     doubleStore = doubleEps + 1.0;
                 }
-                Constant<double>.MachineEpsilon = 2 * doubleEps;
-                Constant<double>.PositiveTinyValue = 8 * doubleEps;
-                Constant<double>.NegativeTinyValue = -8 * doubleEps;
+                MachineEpsilon = (T)(object)(2 * doubleEps);
+                PositiveTinyValue = (T)(object)(8 * doubleEps);
+                NegativeTinyValue = (T)(object)(-8 * doubleEps);
             }
         }
     }
