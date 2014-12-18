@@ -507,20 +507,51 @@ namespace Aardvark.Base
         }
 
         /// <summary>
+        /// Projects a point onto the plane (shortest distance).
+        /// </summary>
+        public static V3d Project(this Plane3d plane, V3d p)
+        {
+            return p - plane.Height(p) * plane.Normal;
+        }
+
+        /// <summary>
+        /// Projects a point onto the plane along given direction.
+        /// </summary>
+        public static V3d Project(this Plane3d plane, V3d p, V3d direction)
+        {
+            double t = 0.0;
+            var r = new Ray3d(p, direction);
+            if (r.Intersects(plane, out t))
+            {
+                return r.GetPointOnRay(t);
+            }
+            else
+            {
+                throw new Exception(string.Format(
+                    "Failed to project point {0} onto plane {1} along direction {2}.", p, plane, direction)
+                    );
+            }
+        }
+
+        /// <summary>
         /// Projects points onto plane (shortest distance).
         /// </summary>
-        public static V3d[] Project(this Plane3d plane, V3d[] pointArray, int pointCount = 0)
+        public static V3d[] Project(this Plane3d plane, V3d[] pointArray, int startIndex = 0, int count = 0)
         {
-            if (pointCount == 0) pointCount = pointArray.Length;
+            if (pointArray == null) throw new ArgumentNullException();
+            if (startIndex < 0 || startIndex >= pointArray.Length) throw new ArgumentOutOfRangeException();
+            if (count < 0 || startIndex + count >= pointArray.Length) throw new ArgumentOutOfRangeException();
+            if (count == 0) count = pointArray.Length - startIndex;
+
             var normal = plane.Normal;
-            var newPoints = new V3d[pointCount];
-            for (int i = 0; i < pointCount; i++)
+            var result = new V3d[count];
+            for (int i = startIndex, j = 0; j < count; i++, j++)
             {
                 var p = pointArray[i];
                 var height = plane.Height(p);
-                newPoints[i] = p - height * normal;
+                result[j] = p - height * normal;
             }
-            return newPoints;
+            return result;
         }
 
         /// <summary>
@@ -528,56 +559,45 @@ namespace Aardvark.Base
         /// </summary>
         public static V3d[] Project(this Plane3d plane, V3d[] pointArray, V3d direction, int startIndex = 0, int count = 0)
         {
+            if (pointArray == null) throw new ArgumentNullException();
+            if (startIndex < 0 || startIndex >= pointArray.Length) throw new ArgumentOutOfRangeException();
+            if (count < 0 || startIndex + count >= pointArray.Length) throw new ArgumentOutOfRangeException();
             if (count == 0) count = pointArray.Length - startIndex;
-            return pointArray.Copy(p =>
+
+            var result = new V3d[count];
+            for (int i = startIndex, j = 0; j < count; i++, j++)
             {
                 double t = 0.0;
-                var r = new Ray3d(p, direction);
+                var r = new Ray3d(pointArray[i], direction);
                 if (r.Intersects(plane, out t))
                 {
-                    return r.GetPointOnRay(t);
+                    result[j] = r.GetPointOnRay(t);
                 }
                 else
                 {
                     throw new Exception(string.Format(
-                        "Failed to project point {0} onto plane {1} along direction {2}.", p, plane, direction)
+                        "Failed to project point {0} onto plane {1} along direction {2}.", pointArray[i], plane, direction)
                         );
                 }
-            });
+            };
+            return result;
         }
 
         /// <summary>
-        /// Projects vectors into plane.
+        /// Projects a point from world space to plane space (shortest distance).
         /// </summary>
-        public static V3d[] ProjectVectors(this Plane3d plane, V3d[] vectorArray, int vectorCount = 0)
-        {
-            if (vectorCount == 0) vectorCount = vectorArray.Length;
-            var normal = plane.Normal;
-            var newVectors = new V3d[vectorCount];
-            for (int i = 0; i < vectorCount; i++)
-            {
-                var v = vectorArray[i];
-                var height = V3d.Dot(normal, v);
-                newVectors[i] = v - height * normal;
-            }
-            return newVectors;
-        }
-
-        /// <summary>
-        /// Projects a point from world space to plane space.
-        /// </summary>
-        public static V2d ProjectToPlane(this Plane3d plane, V3d p)
+        public static V2d ProjectToPlaneSpace(this Plane3d plane, V3d p)
         {
             return plane.GetWorldToPlane().TransformPos(p).XY;
         }
 
         /// <summary>
-        /// Projects points from world space to plane space.
+        /// Projects points from world space to plane space (shortest distance).
         /// </summary>
-        public static V2d[] ProjectTo2d(this Plane3d plane, V3d[] points)
+        public static V2d[] ProjectToPlaneSpace(this Plane3d plane, V3d[] points)
         {
             var global2local = plane.GetWorldToPlane();
-            return points.Select(p => global2local.TransformPos(p).XY).ToArray();
+            return points.Copy(p => global2local.TransformPos(p).XY);
         }
 
         /// <summary>
@@ -587,14 +607,6 @@ namespace Aardvark.Base
         {
             var local2global = plane.GetPlaneToWorld();
             return points.Select(p => local2global.TransformPos(p.XYO)).ToArray();
-        }
-
-        /// <summary>
-        /// Projects points perpendicular onto the plane.
-        /// </summary>
-        public static V3d[] NearestPoints(this Plane3d plane, V3d[] points)
-        {
-            return points.Copy(p => plane.NearestPoint(p));
         }
     }
 }
