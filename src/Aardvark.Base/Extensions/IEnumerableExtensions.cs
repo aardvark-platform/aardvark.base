@@ -510,11 +510,44 @@ namespace Aardvark.Base
         }
 
         /// <summary>
+        /// wrap = false: A B C D ... -> (0, 1) (1, 2) (2, 3) ...
+        /// wrap = true:  A B C D -> (0, 1) (1, 2) (2, 3) (3, 0)
+        /// </summary>
+        public static IEnumerable<Pair<int>> PairChainIndexed<T>(this IEnumerable<T> self, bool wrap = false)
+        {
+            Requires.NotNull(self);
+
+            using (var e = self.GetEnumerator())
+            {
+                if (e.MoveNext())
+                {
+                    int prev = 0;
+                    while (e.MoveNext())
+                    {
+                        var x = prev + 1;
+                        yield return new Pair<int>(prev, x);
+                        prev = x;
+                    }
+                    if (wrap)
+                        yield return new Pair<int>(prev, 0);
+                }
+            }
+        }
+
+        /// <summary>
         /// A B C D -> (A, B) (B, C) (C, D) (D, A)
         /// </summary>
         public static IEnumerable<Pair<T>> PairChainWrap<T>(this IEnumerable<T> self)
         {
             return PairChain(self, true);
+        }
+
+        /// <summary>
+        /// A B C -> (0, 1) (1, 2) (2, 0)
+        /// </summary>
+        public static IEnumerable<Pair<int>> PairChainWrapIndexed<T>(this IEnumerable<T> self)
+        {
+            return PairChainIndexed(self, true);
         }
 
         /// <summary>
@@ -2259,6 +2292,9 @@ namespace Aardvark.Base
             return !self.Any();
         }
 
+        /// <summary>
+        /// Returns a sequence that contains only distinct contiguous elements.
+        /// </summary>
         public static IEnumerable<T> DistinctUntilChanged<T>(this IEnumerable<T> self)
             where T : IEquatable<T>
         {
@@ -2273,18 +2309,48 @@ namespace Aardvark.Base
             }
         }
 
-        public static int IndexOf<T>(this IEnumerable<T> list, T element_to_find)
+        /// <summary>
+        /// Returns index of first occurence of elementToFind.
+        /// </summary>
+        public static int IndexOf<T>(this IEnumerable<T> list, T elementToFind)
         {
             int i = 0;
             foreach (T element in list)
             {
-                if (element.Equals(element_to_find))
+                if (element.Equals(elementToFind))
                     return i;
                 i++;
             }
             return -1;
         }
         
+        /// <summary>
+        /// Concats single item to sequence. 
+        /// </summary>
+        public static IEnumerable<T> Concat<T>(this IEnumerable<T> sequence, T item)
+        {
+            foreach (var x in sequence) yield return x;
+            yield return item;
+        }
+
+        /// <summary>
+        /// Concats sequence to single item. 
+        /// </summary>
+        public static IEnumerable<T> Concat<T>(this T item, IEnumerable<T> sequence)
+        {
+            yield return item;
+            foreach (var x in sequence) yield return x;
+        }
+
+        /// <summary>
+        /// Returns sequence of indices [0, sequence.Count()-1].
+        /// </summary>
+        public static IEnumerable<int> Indices<T>(this IEnumerable<T> sequence)
+        {
+            var i = 0;
+            foreach (var x in sequence) yield return i++;
+        }
+
         #endregion
 
         #region Math
