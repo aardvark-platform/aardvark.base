@@ -103,6 +103,8 @@ namespace Aardvark.Base
             return GetDistanceToLine(p) <= maxDist;
         }
 
+        public Line2d Flipped { get { return new Line2d(P1, P0); } }
+
         #endregion
     }
 

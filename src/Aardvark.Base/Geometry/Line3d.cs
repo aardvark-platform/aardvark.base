@@ -42,5 +42,7 @@ namespace Aardvark.Base
         }
 
         #endregion
+
+        public Line3d Flipped { get { return new Line3d(P1, P0); } }
     }
 }
