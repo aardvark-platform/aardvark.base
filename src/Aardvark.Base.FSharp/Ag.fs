@@ -227,7 +227,7 @@ module AgHelpers =
         let registered = ref false;
         fun () ->
          if not !registered then
-            printfn "registering Ag"
+            //printfn "registering Ag"
             registered.Value <- true 
             let register (t : System.Type) = 
                 let mi = t.GetMethods(System.Reflection.BindingFlags.Public ||| System.Reflection.BindingFlags.Instance)
