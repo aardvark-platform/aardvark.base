@@ -23,6 +23,11 @@ namespace System.Collections.Concurrent
             m_entries = new ConcurrentDictionary<T, int>();
         }
 
+        public ConcurrentHashSet(int concurrencyLevel, int capacity)
+        {
+            m_entries = new ConcurrentDictionary<T, int>(concurrencyLevel, capacity);
+        }
+
         public ConcurrentHashSet(IEqualityComparer<T> comparer)
         {
             m_entries = new ConcurrentDictionary<T, int>(comparer);
