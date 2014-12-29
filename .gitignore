@@ -9,3 +9,4 @@
 !/packages/*.config
 *.nupkg
 obj
+/src/Aardvark.sln.ide

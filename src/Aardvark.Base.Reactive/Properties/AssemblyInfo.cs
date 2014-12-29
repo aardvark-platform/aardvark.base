@@ -5,15 +5,13 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("CodeGenerator")]
-[assembly: AssemblyDescription("")]
-#if !DEPLOY //(Automatic Code by BuildPatcher.) Removes these AssemblyAttributes for DEPLOY build since these are added with buildDeploy.bat.
+[assembly: AssemblyTitle("Aardvark.Base.Reactive")]
+[assembly: AssemblyDescription("Math, Geometry, Algorithms, and more ...")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("VRVis Zentrum fuer Virtual Reality und Visualisierung Forschungs-GmbH")]
-[assembly: AssemblyProduct("CodeGenerator")]
-[assembly: AssemblyCopyright("Copyright © VRVis 2008-2015")]
+[assembly: AssemblyProduct("Aardvark.Base.Reactive")]
+[assembly: AssemblyCopyright("Copyright © VRVis 2006-2015")]
 [assembly: AssemblyTrademark("")]
-#endif //!DEPLOY (Automatic Code by BuildPatcher.)
 [assembly: AssemblyCulture("")]
 
 // Setting ComVisible to false makes the types in this assembly not visible 
@@ -22,7 +20,7 @@ using System.Runtime.InteropServices;
 [assembly: ComVisible(false)]
 
 // The following GUID is for the ID of the typelib if this project is exposed to COM
-[assembly: Guid("4efcd74b-b15e-4829-a231-af1de2aced89")]
+[assembly: Guid("7fef0693-efc3-4b85-8f42-933b25f353a8")]
 
 // Version information for an assembly consists of the following four values:
 //
@@ -35,6 +33,4 @@ using System.Runtime.InteropServices;
 // by using the '*' as shown below:
 // [assembly: AssemblyVersion("1.0.*")]
 [assembly: AssemblyVersion("1.0.0.0")]
-#if !DEPLOY //(Automatic Code by BuildPatcher.) Removes these AssemblyAttributes for DEPLOY build since these are added with buildDeploy.bat.
 [assembly: AssemblyFileVersion("1.0.0.0")]
-#endif //!DEPLOY (Automatic Code by BuildPatcher.)

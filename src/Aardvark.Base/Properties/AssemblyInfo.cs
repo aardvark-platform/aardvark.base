@@ -11,7 +11,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("VRVis Zentrum fuer Virtual Reality und Visualisierung Forschungs-GmbH")]
 [assembly: AssemblyProduct("Aardvark.Base")]
-[assembly: AssemblyCopyright("Copyright © VRVis 2006-2013")]
+[assembly: AssemblyCopyright("Copyright © VRVis 2006-2015")]
 [assembly: AssemblyTrademark("")]
 #endif //!DEPLOY (Automatic Code by BuildPatcher.)
 [assembly: AssemblyCulture("")]
