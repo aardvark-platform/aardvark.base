@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Reactive;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -12,7 +13,7 @@ namespace Aardvark.Base
     /// we implemeted our own awaitable executing all continuations on 
     /// the thread which they were triggered on.
     /// </summary>
-    public class Awaitable : IAwaitable, IEventEmitter<UnitEvent>
+    public class Awaitable : IAwaitable, IEventEmitter<Unit>
     {
         private int m_isCompleted;
         private List<Action> m_continuations;
@@ -96,7 +97,7 @@ namespace Aardvark.Base
         
         /// <summary>
         /// </summary>
-        public void Emit(UnitEvent value)
+        public void Emit(Unit value)
         {
             Emit();
         }

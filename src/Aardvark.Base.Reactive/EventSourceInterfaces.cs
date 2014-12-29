@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Reactive;
 
 namespace Aardvark.Base
 {
@@ -48,7 +49,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Observable notifications for all values that are emitted.
         /// </summary>
-        IObservable<UnitEvent> Values { get; }
+        IObservable<Unit> Values { get; }
     }
 
     /// <summary>
@@ -60,50 +61,5 @@ namespace Aardvark.Base
         /// Pushes next event.
         /// </summary>
         void Emit();
-    }
-
-    /// <summary>
-    /// See System.Reactive.Unit.
-    /// </summary>
-    public struct UnitEvent : IEquatable<UnitEvent>
-    {
-        /// <summary>
-        /// </summary>
-        public static UnitEvent Default { get { return default(UnitEvent); } }
-
-        /// <summary>
-        /// </summary>
-        public override bool Equals(object obj)
-        {
-            return obj is UnitEvent;
-        }
-
-        /// <summary>
-        /// </summary>
-        public bool Equals(UnitEvent other)
-        {
-            return true;
-        }
-
-        /// <summary>
-        /// </summary>
-        public override int GetHashCode()
-        {
-            return 0;
-        }
-
-        /// <summary>
-        /// </summary>
-        public static bool operator ==(UnitEvent first, UnitEvent second)
-        {
-            return true;
-        }
-
-        /// <summary>
-        /// </summary>
-        public static bool operator !=(UnitEvent first, UnitEvent second)
-        {
-            return false;
-        }
     }
 }

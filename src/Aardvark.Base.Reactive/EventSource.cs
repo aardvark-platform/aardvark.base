@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Reactive;
 using System.Reactive.Linq;
 using System.Reactive.Subjects;
 using System.Threading;
@@ -12,7 +13,7 @@ namespace Aardvark.Base
         /// <summary>
         /// The type used for the Values property in non-generic event sources.
         /// </summary>
-        public static readonly Type UnitEventType = typeof(UnitEvent);
+        public static readonly Type UnitEventType = typeof(Unit);
 
         /// <summary>
         /// Creates new EventSource with given initial value.
@@ -199,9 +200,9 @@ namespace Aardvark.Base
         /// <summary>
         /// Observable notifications for all values that are emitted.
         /// </summary>
-        IObservable<UnitEvent> IEvent.Values
+        IObservable<Unit> IEvent.Values
         {
-            get { return Values.Select(_ => UnitEvent.Default); }
+            get { return Values.Select(_ => Unit.Default); }
         }
 
         IAwaitable IEvent.Next

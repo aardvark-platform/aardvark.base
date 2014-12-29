@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Reactive;
 using System.Reactive.Linq;
 
 namespace Aardvark.Base
@@ -90,9 +91,9 @@ namespace Aardvark.Base
             get { return s_awaitableNonGeneric; }
         }
 
-        IObservable<UnitEvent> IEvent.Values
+        IObservable<Unit> IEvent.Values
         {
-            get { return Observable.Never<UnitEvent>(); }
+            get { return Observable.Never<Unit>(); }
         }
     }
 }
