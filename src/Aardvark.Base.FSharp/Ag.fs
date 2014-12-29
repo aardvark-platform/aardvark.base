@@ -223,11 +223,24 @@ module AgHelpers =
                                                 reg <| Some(SemanticFunction(getSemanticObject(mi.DeclaringType), mi.DeclaringType, mi :?> MethodInfo))
                         | _ -> reg None
 
+    let internal glInit() =
+        try
+            let ass = Assembly.LoadFile (System.IO.Path.Combine(System.Environment.CurrentDirectory, "OpenTK.dll"))
+            let t = ass.GetType("OpenTK.GameWindow")
+
+            let w = System.Activator.CreateInstance(t) |> unbox<System.IDisposable>
+
+            w.Dispose()
+
+        with e ->
+            ()
+
     let internal initializeAg =
         let registered = ref false;
         fun () ->
          if not !registered then
-            //printfn "registering Ag"
+            glInit()
+
             registered.Value <- true 
             let register (t : System.Type) = 
                 let mi = t.GetMethods(System.Reflection.BindingFlags.Public ||| System.Reflection.BindingFlags.Instance)
@@ -245,6 +258,7 @@ module AgHelpers =
                                                      m_semanticMap.[name] <- l
                                                      l
                         list.Add(m)
+
 
 
             let registerAssembly (a : Assembly) =
