@@ -65,7 +65,9 @@
   <ItemGroup>
     <Compile Include="Editing\BehaviorDragAbsolute.cs" />
     <Compile Include="Editing\BehaviorDragRelative.cs" />
+    <Compile Include="Editing\IBehaviorSplittableEdge2d.cs" />
     <Compile Include="Editing\IBehaviorPosition2d.cs" />
+    <Compile Include="Editing\IBehaviorDeletable.cs" />
     <Compile Include="Editing\IBehaviorTransform2d.cs" />
     <Compile Include="Editing\IBehavior.cs" />
     <Compile Include="Geometry\IImmutablePolygon2d.cs" />

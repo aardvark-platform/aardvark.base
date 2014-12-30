@@ -104,6 +104,7 @@
     <Compile Include="AlgoDat\Dicts.cs" />
     <Compile Include="AlgoDat\Dict_auto.cs" />
     <Compile Include="AlgoDat\HigherOrderFunctions.cs" />
+    <Compile Include="AlgoDat\IGenerational.cs" />
     <Compile Include="AlgoDat\Meta.cs" />
     <Compile Include="AlgoDat\MinimumSpanningTree.cs" />
     <Compile Include="AlgoDat\ShortestPath.cs" />
