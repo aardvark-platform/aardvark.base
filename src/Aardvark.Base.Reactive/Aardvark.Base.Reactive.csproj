@@ -63,16 +63,22 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Immutable\IImmutablePolygon2dExtensions.cs" />
-    <Compile Include="Immutable\ImmutablePolygon2d.cs" />
+    <Compile Include="Editing\BehaviorDragAbsolute.cs" />
+    <Compile Include="Editing\BehaviorDragRelative.cs" />
+    <Compile Include="Editing\IBehaviorPosition2d.cs" />
+    <Compile Include="Editing\IBehaviorTransform2d.cs" />
+    <Compile Include="Editing\IBehavior.cs" />
+    <Compile Include="Geometry\IImmutablePolygon2d.cs" />
+    <Compile Include="Geometry\IImmutablePolygon2dExtensions.cs" />
+    <Compile Include="Geometry\ImmutablePolygon2d.cs" />
     <Compile Include="System\Awaitable.cs" />
     <Compile Include="System\Clock.cs" />
     <Compile Include="System\Disposable.cs" />
-    <Compile Include="EventSource\EventSource.cs" />
-    <Compile Include="EventSource\EventSourceExtensions.cs" />
-    <Compile Include="EventSource\EventSourceInterfaces.cs" />
-    <Compile Include="EventSource\EventSourceSpecials.cs" />
-    <Compile Include="EventSource\FilteredEventSource.cs" />
+    <Compile Include="System\EventSource.cs" />
+    <Compile Include="System\EventSourceExtensions.cs" />
+    <Compile Include="System\EventSourceInterfaces.cs" />
+    <Compile Include="System\EventSourceSpecials.cs" />
+    <Compile Include="System\FilteredEventSource.cs" />
     <Compile Include="System\IAwaitable.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="System\Time.cs" />

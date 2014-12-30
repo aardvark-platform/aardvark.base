@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 
 namespace Aardvark.Base
 {
@@ -134,6 +135,22 @@ namespace Aardvark.Base
                 var y = (e.P0.Y + e.P1.Y) * 0.5;
                 return self.SetEdge(index, new Line2d(new V2d(e.P0.X, y), new V2d(e.P1.X, y)));
             }
+        }
+
+        /// <summary>
+        /// Ensures that the outline is oriented counter-clockwise.
+        /// </summary>
+        public static IImmutablePolygon2d ToCounterClockwise(this IImmutablePolygon2d self)
+        {
+            return self.ToPolygon2d().IsCcw() ? self : new ImmutablePolygon2d(self.Points.Reverse());
+        }
+
+        /// <summary>
+        /// Ensures that the outline is oriented clockwise.
+        /// </summary>
+        public static IImmutablePolygon2d ToClockwise(this IImmutablePolygon2d self)
+        {
+            return self.ToPolygon2d().IsCcw() ? new ImmutablePolygon2d(self.Points.Reverse()) : self;
         }
     }
 }
