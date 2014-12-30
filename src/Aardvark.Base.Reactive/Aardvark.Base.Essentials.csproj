@@ -6,8 +6,8 @@
     <ProjectGuid>{7FEF0693-EFC3-4B85-8F42-933B25F353A8}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Aardvark.Base.Reactive</RootNamespace>
-    <AssemblyName>Aardvark.Base.Reactive</AssemblyName>
+    <RootNamespace>Aardvark.Base.Essentials</RootNamespace>
+    <AssemblyName>Aardvark.Base.Essentials</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <TargetFSharpCoreVersion>4.3.1.0</TargetFSharpCoreVersion>
     <FileAlignment>512</FileAlignment>
@@ -22,7 +22,7 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <DocumentationFile>..\..\Bin\Debug\Aardvark.Base.Reactive.xml</DocumentationFile>
+    <DocumentationFile>..\..\Bin\Debug\Aardvark.Base.Essentials.xml</DocumentationFile>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -32,7 +32,7 @@
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <DocumentationFile>..\..\Bin\Release\Aardvark.Base.Reactive.xml</DocumentationFile>
+    <DocumentationFile>..\..\Bin\Release\Aardvark.Base.Essentials.xml</DocumentationFile>
   </PropertyGroup>
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <Import Project="..\..\..\..\build\Aardvark.targets" Condition="exists('..\..\..\..\build\Aardvark.targets')" />
