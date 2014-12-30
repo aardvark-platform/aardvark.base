@@ -40,6 +40,9 @@
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
     <Reference Include="System" />
+    <Reference Include="System.Collections.Immutable">
+      <HintPath>..\..\packages\Microsoft.Bcl.Immutable.1.0.34\lib\portable-net45+win8+wp8+wpa81\System.Collections.Immutable.dll</HintPath>
+    </Reference>
     <Reference Include="System.Core" />
     <Reference Include="System.Reactive.Core">
       <HintPath>..\..\packages\Rx-Core.2.2.5\lib\net45\System.Reactive.Core.dll</HintPath>
@@ -60,18 +63,20 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Awaitable.cs" />
-    <Compile Include="Clock.cs" />
-    <Compile Include="Disposable.cs" />
-    <Compile Include="EventSource.cs" />
-    <Compile Include="EventSourceExtensions.cs" />
-    <Compile Include="EventSourceInterfaces.cs" />
-    <Compile Include="EventSourceSpecials.cs" />
-    <Compile Include="FilteredEventSource.cs" />
-    <Compile Include="IAwaitable.cs" />
+    <Compile Include="Immutable\IImmutablePolygon2dExtensions.cs" />
+    <Compile Include="Immutable\ImmutablePolygon2d.cs" />
+    <Compile Include="System\Awaitable.cs" />
+    <Compile Include="System\Clock.cs" />
+    <Compile Include="System\Disposable.cs" />
+    <Compile Include="EventSource\EventSource.cs" />
+    <Compile Include="EventSource\EventSourceExtensions.cs" />
+    <Compile Include="EventSource\EventSourceInterfaces.cs" />
+    <Compile Include="EventSource\EventSourceSpecials.cs" />
+    <Compile Include="EventSource\FilteredEventSource.cs" />
+    <Compile Include="System\IAwaitable.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Time.cs" />
-    <Compile Include="WithCancellationExtension.cs" />
+    <Compile Include="System\Time.cs" />
+    <Compile Include="System\WithCancellationExtension.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

@@ -124,6 +124,8 @@
     <Compile Include="Geometry\Ellipse2d.cs" />
     <Compile Include="Geo\GeoConsts.cs" />
     <Compile Include="Geo\GeoConversion.cs" />
+    <Compile Include="Immutable\IImmutablePolygon2d.cs" />
+    <Compile Include="Immutable\IImmutablePolygon2dExtensions.cs" />
     <Compile Include="IO\Report.cs" />
     <Compile Include="IO\StreamCodeReader.cs" />
     <Compile Include="IO\StreamCodeReader_auto.cs" />
