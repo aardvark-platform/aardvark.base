@@ -70,6 +70,10 @@
     <Compile Include="Editing\IBehaviorDeletable.cs" />
     <Compile Include="Editing\IBehaviorTransform2d.cs" />
     <Compile Include="Editing\IBehavior.cs" />
+    <Compile Include="Editing\IEditableFace2d.cs" />
+    <Compile Include="Editing\IEditableSequence.cs" />
+    <Compile Include="Editing\IEditableEdge2d.cs" />
+    <Compile Include="Editing\IEditableVertex2d.cs" />
     <Compile Include="Geometry\IImmutablePolygon2d.cs" />
     <Compile Include="Geometry\IImmutablePolygon2dExtensions.cs" />
     <Compile Include="Geometry\ImmutablePolygon2d.cs" />
