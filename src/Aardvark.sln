@@ -11,7 +11,7 @@ Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "Aardvark.Base.FSharp", "Aar
 EndProject
 Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "Aardvark.Base.TypeProviders", "Aardvark.Base.TypeProviders\Aardvark.Base.TypeProviders.fsproj", "{8BFEA4EF-BF0A-4C1A-B7AC-CBDD930306FD}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Aardvark.Base.Reactive", "Aardvark.Base.Reactive\Aardvark.Base.Reactive.csproj", "{7FEF0693-EFC3-4B85-8F42-933B25F353A8}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Aardvark.Base.Essentials", "Aardvark.Base.Essentials\Aardvark.Base.Essentials.csproj", "{7FEF0693-EFC3-4B85-8F42-933B25F353A8}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
