@@ -6,8 +6,7 @@
     public interface IEditableFace2d :
         IBehaviorPosition2d,
         IBehaviorTransform2d,
-        IBehaviorDeletable,
-        IEditableSequence<IImmutablePolygon2d>
+        IBehaviorDeletable
     {
         /// <summary>
         /// Returns index-th vertex as editable vertex.
