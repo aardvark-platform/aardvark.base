@@ -1,8 +1,8 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <package xmlns="http://schemas.microsoft.com/packaging/2011/08/nuspec.xsd">
     <metadata>
-        <id>Aardvark.Base</id>
-        <version>1.0.5</version>
+        <id>Aardvark.Base.Essentials</id>
+        <version>1.0.0</version>
         <authors>VRVis Research Center</authors>
         <owners>VRVis Research Center</owners>
         <licenseUrl>http://opensource.org/licenses/Apache-2.0</licenseUrl>
@@ -17,13 +17,19 @@
         <frameworkAssemblies>
             <frameworkAssembly assemblyName="System.Drawing" />
         </frameworkAssemblies>
+		<dependencies>
+            <dependency id="Aardvark.Base" version="1.0.5" />
+			<dependency id="Microsoft.Bcl.Immutable" version="1.0.34" />
+		    <dependency id="Rx-Core" version="2.2.5" />
+		    <dependency id="Rx-Interfaces" version="2.2.5" />
+		    <dependency id="Rx-Linq" version="2.2.5" />
+		    <dependency id="Rx-Main" version="2.2.5" />
+		    <dependency id="Rx-PlatformServices" version="2.2.5" />
+        </dependencies>
     </metadata>
     <files>
-        <file src="net40\Aardvark.Base.dll" target="lib\net40\Aardvark.Base.dll" />
-        <file src="net40\Aardvark.Base.pdb" target="lib\net40\Aardvark.Base.pdb" />
-        <file src="net40\Aardvark.Base.xml" target="lib\net40\Aardvark.Base.xml" />
-        <file src="net45\Aardvark.Base.dll" target="lib\net45\Aardvark.Base.dll" />
-        <file src="net45\Aardvark.Base.pdb" target="lib\net45\Aardvark.Base.pdb" />
-        <file src="net45\Aardvark.Base.xml" target="lib\net45\Aardvark.Base.xml" />
+        <file src="net45\Aardvark.Base.Essentials.dll" target="lib\net45\Aardvark.Base.Essentials.dll" />
+        <file src="net45\Aardvark.Base.Essentials.pdb" target="lib\net45\Aardvark.Base.Essentials.pdb" />
+        <file src="net45\Aardvark.Base.Essentials.xml" target="lib\net45\Aardvark.Base.Essentials.xml" />
     </files>
 </package>
