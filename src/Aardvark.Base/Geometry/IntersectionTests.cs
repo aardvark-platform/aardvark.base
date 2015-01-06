@@ -2795,6 +2795,18 @@ namespace Aardvark.Base
         }
 
         /// <summary>
+        /// Returns the intersection point with the given plane, or V3d.PositiveInfinity if ray is parallel to plane.
+        /// </summary>
+        public static V3d Intersect(
+             this Ray3d ray, Plane3d plane
+             )
+        {
+            double dot = V3d.Dot(ray.Direction, plane.Normal);
+            if (Fun.IsTiny(dot)) return V3d.PositiveInfinity;
+            return ray.GetPointOnRay(-plane.Height(ray.Origin) / dot);
+        }
+
+        /// <summary>
         /// Returns true if the ray and the plane intersect.
         /// </summary>
         public static bool Intersects(

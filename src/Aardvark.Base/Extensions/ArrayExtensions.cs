@@ -149,9 +149,9 @@ namespace Aardvark.Base
         /// </summary>
         public static T[] Copy<T>(this T[] array)
         {
-            long count = array.LongLength;
+            var count = array.LongLength;
             var result = new T[count];
-            for (long i = 0; i < count; i++) result[i] = array[i];
+            for (var i = 0L; i < count; i++) result[i] = array[i];
             return result;
         }
 
@@ -162,8 +162,8 @@ namespace Aardvark.Base
         public static T[] Copy<T>(this T[] array, long count)
         {
             var result = new T[count];
-            long len = System.Math.Min(count, array.LongLength);
-            for (long i = 0; i < len; i++) result[i] = array[i];
+            var len = System.Math.Min(count, array.LongLength);
+            for (var i = 0L; i < len; i++) result[i] = array[i];
             return result;
         }
 
@@ -174,8 +174,8 @@ namespace Aardvark.Base
         public static T[] Copy<T>(this T[] array, long start, long count)
         {
             var result = new T[count];
-            long len = System.Math.Min(count, array.LongLength - start);
-            for (int i = 0; i < len; i++) result[i] = array[i + start];
+            var len = System.Math.Min(count, array.LongLength - start);
+            for (var i = 0L; i < len; i++) result[i] = array[i + start];
             return result;
         }
 
@@ -186,7 +186,7 @@ namespace Aardvark.Base
         {
             var len = array.LongLength;
             var result = new Tr[len];
-            for (long i = 0; i < len; i++) result[i] = element_fun(array[i]);
+            for (var i = 0L; i < len; i++) result[i] = element_fun(array[i]);
             return result;
         }
 
@@ -198,7 +198,7 @@ namespace Aardvark.Base
         {
             var len = array.LongLength;
             var result = new Tr[len];
-            for (long i = 0; i < len; i++) result[i] = element_index_fun(array[i], i);
+            for (var i = 0L; i < len; i++) result[i] = element_index_fun(array[i], i);
             return result;
         }
 
@@ -212,7 +212,7 @@ namespace Aardvark.Base
         {
             var result = new Tr[count];
             var len = System.Math.Min(count, array.LongLength);
-            for (long i = 0; i < len; i++) result[i] = element_fun(array[i]);
+            for (var i = 0L; i < len; i++) result[i] = element_fun(array[i]);
             return result;
         }
 
@@ -227,7 +227,7 @@ namespace Aardvark.Base
         {
             var result = new Tr[count];
             var len = System.Math.Min(count, array.LongLength);
-            for (long i = 0; i < len; i++) result[i] = element_index_fun(array[i], i);
+            for (var i = 0L; i < len; i++) result[i] = element_index_fun(array[i], i);
             return result;
         }
 
@@ -240,7 +240,7 @@ namespace Aardvark.Base
         {
             var result = new Tr[count];
             var len = System.Math.Min(count, array.LongLength - start);
-            for (long i = 0; i < len; i++) result[i] = element_fun(array[start + i]);
+            for (var i = 0L; i < len; i++) result[i] = element_fun(array[start + i]);
             return result;
         }
 
@@ -255,7 +255,7 @@ namespace Aardvark.Base
         {
             var result = new Tr[count];
             var len = System.Math.Min(count, array.LongLength - start);
-            for (long i = 0; i < len; i++) result[i] = element_index_fun(array[start + i], i);
+            for (var i = 0L; i < len; i++) result[i] = element_index_fun(array[start + i], i);
             return result;
         }
 
@@ -264,7 +264,7 @@ namespace Aardvark.Base
         /// </summary>
         public static void CopyTo<T>(this T[] array, long count, T[] target, long targetStart)
         {
-            for (long i = 0; i < count; i++)
+            for (var i = 0L; i < count; i++)
                 target[targetStart + i] = array[i];
         }
 
@@ -273,7 +273,7 @@ namespace Aardvark.Base
         /// </summary>
         public static void CopyTo<T>(this T[] array, long start, long count, T[] target, long targetStart)
         {
-            for (long i = 0; i < count; i++)
+            for (var i = 0L; i < count; i++)
                 target[targetStart + i] = array[start + i];
         }
 
@@ -297,9 +297,9 @@ namespace Aardvark.Base
 
         public static List<Tr> ToList<T, Tr>(this T[] array, Func<T, Tr> fun)
         {
-            int count = array.Length;
+            var count = array.Length;
             var result = new List<Tr>(count);
-            for (int i = 0; i < count; i++) result.Add(fun(array[i]));
+            for (var i = 0; i < count; i++) result.Add(fun(array[i]));
             return result;
         }
 
@@ -309,7 +309,7 @@ namespace Aardvark.Base
         /// </summary>
         public static void CopyRange<T>(this T[] array, long start, long count, long targetStart)
         {
-            long end = start + count;
+            var end = start + count;
             if (targetStart < start || targetStart >= end)
             {
                 while (start < end) array[targetStart++] = array[start++];

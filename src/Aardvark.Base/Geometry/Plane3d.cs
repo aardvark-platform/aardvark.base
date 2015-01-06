@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace Aardvark.Base
@@ -601,12 +602,33 @@ namespace Aardvark.Base
         }
 
         /// <summary>
+        /// Transforms point from plane space to world space.
+        /// </summary>
+        public static V3d Unproject(this Plane3d plane, V2d point)
+        {
+            var local2global = plane.GetPlaneToWorld();
+            return local2global.TransformPos(point.XYO);
+        }
+
+        /// <summary>
         /// Transforms points from plane space to world space.
         /// </summary>
         public static V3d[] Unproject(this Plane3d plane, V2d[] points)
         {
             var local2global = plane.GetPlaneToWorld();
-            return points.Select(p => local2global.TransformPos(p.XYO)).ToArray();
+            return points.Copy(p => local2global.TransformPos(p.XYO));
+        }
+
+        /// <summary>
+        /// Transforms points from plane space to world space.
+        /// </summary>
+        public static V3d[] Unproject(this Plane3d plane, IReadOnlyList<V2d> points)
+        {
+            var local2global = plane.GetPlaneToWorld();
+            var xs = new V3d[points.Count];
+            for (var i = 0; i < points.Count; i++)
+                xs[i] = local2global.TransformPos(points[i].XYO);
+            return xs;
         }
     }
 }
