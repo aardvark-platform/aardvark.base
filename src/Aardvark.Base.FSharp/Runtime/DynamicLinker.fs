@@ -207,20 +207,20 @@ module private Dl =
 
     let private linker =
         { new IDynamicLinker with
-            member x.LoadLibrary(name : string) = dlopen(name, 0)
+            member x.LoadLibrary(name : string) = dlopen(name, 1) // RTLD_LAZY = 1
             member x.FreeLibrary(address : nativeint) = dlclose(address) |> ignore
             member x.GetProcAddress (handle : nativeint) (name : string) = dlsym(handle, name) }
 
 
     let tryLoadLibrary (path : string) =
-        let ptr = dlopen(path, 0)
+        let ptr = dlopen(path, 1) // RTLD_LAZY = 1
         if ptr <> 0n then
             Some(new Library(ptr, linker))
         else
             None
 
     let loadLibrary (path : string) =
-        new Library (dlopen(path, 0), linker)
+        new Library (dlopen(path, 1), linker) // RTLD_LAZY = 1
 
 /// <summary>
 /// DynamicLinker provides platform independent functions for loading libraries and

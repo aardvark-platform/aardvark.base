@@ -135,7 +135,7 @@ module Amd64Linux =
 
     let private setArg32 (index : int) (value : int) =
         if index < argMovs32.Length then
-            let data = [argMovs64.[index]; BitConverter.GetBytes(value)] |> Array.concat
+            let data = [argMovs32.[index]; BitConverter.GetBytes(value)] |> Array.concat
             { size = data.Length; build = fun i a -> write i a data }
         else
             failwith "linux amd64 assembler currently only supports 6 arguments"
