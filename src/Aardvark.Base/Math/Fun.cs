@@ -399,12 +399,81 @@ namespace Aardvark.Base
 
         #region Shannon Entropy
 
-        public static double ShannonEntropy<T>(this IEnumerable<T> data)
+        /// <summary>
+        /// Shannon entropy of values.
+        /// </summary>
+        public static double Entropy<T>(this IEnumerable<T> xs)
         {
-            double total = data.Count();
-            return data.GroupBy(x => x)
+            double total = xs.Count();
+            return xs.GroupBy(x => x)
                 .Select(g => { double p = g.Count() / total; return p * -p.Log2(); })
                 .Sum();
+        }
+
+        /// <summary>
+        /// Shannon entropy of bipartite set.
+        /// </summary>
+        public static double Entropy<T>(this bool[] xs)
+        {
+            if (xs == null) throw new ArgumentNullException("xs");
+
+            var count = xs.Length;
+            var countPos = 0;
+            var countNeg = 0;
+
+            for (var i = 0; i < count; i++)
+            {
+                if (xs[i])
+                {
+                    countPos++;
+                }
+                else
+                {
+                    countNeg++;
+                }
+            }
+            if (countPos == 0 || countNeg == 0) return 0.0;
+
+            var pPos = countPos / (double)count;
+            var pNeg = countNeg / (double)count;
+            var hPos = -Math.Log(pPos, 2);
+            var hNeg = -Math.Log(pNeg, 2);
+            var H = pPos * hPos + pNeg * hNeg;
+            return H;
+        }
+
+        /// <summary>
+        /// Shannon entropy of weighted bipartite set.
+        /// </summary>
+        public static double Entropy(this bool[] xs, double[] weights)
+        {
+            if (weights == null) throw new ArgumentNullException("weights");
+            if (xs == null) throw new ArgumentNullException("xs");
+            if (weights.Length != xs.Length) throw new ArgumentException("weights.Length != xs.Length");
+
+            var count = xs.Length;
+            var countPos = 0.0;
+            var countNeg = 0.0;
+
+            for (var i = 0; i < count; i++)
+            {
+                if (xs[i])
+                {
+                    countPos += weights[i];
+                }
+                else
+                {
+                    countNeg += weights[i];
+                }
+            }
+            if (countPos == 0 || countNeg == 0) return 0.0;
+
+            var pPos = countPos / (double)count;
+            var pNeg = countNeg / (double)count;
+            var hPos = -Math.Log(pPos, 2);
+            var hNeg = -Math.Log(pNeg, 2);
+            var H = pPos * hPos + pNeg * hNeg;
+            return H;
         }
 
         #endregion
