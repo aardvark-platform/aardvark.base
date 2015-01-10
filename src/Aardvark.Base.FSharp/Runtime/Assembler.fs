@@ -121,7 +121,7 @@ module Amd64Linux =
                                [| 0x41uy; 0xB9uy |]     //mov %r9d
                             |]
 
-    let private setArg64 (index : int) (value : int64) =
+    let private setArg64Internal (index : int) (value : int64) =
         if index < argMovs64.Length then
             let data = [argMovs64.[index]; BitConverter.GetBytes(value)] |> Array.concat
             { size = data.Length; build = fun i a -> write i a data }
@@ -133,20 +133,45 @@ module Amd64Linux =
             //c7 44 24 04 70 00 00 00 = movl   $0x70,0x4(%rsp)
             failwith "linux amd64 assembler currently only supports 6 arguments"
 
-    let private setArg32 (index : int) (value : int) =
+    let private setArg32Internal (index : int) (value : int) =
         if index < argMovs32.Length then
             let data = [argMovs32.[index]; BitConverter.GetBytes(value)] |> Array.concat
             { size = data.Length; build = fun i a -> write i a data }
         else
             failwith "linux amd64 assembler currently only supports 6 arguments"
 
+
+    let setArg32 (index : int) (arg : int32) =
+        { size = if index < 4 then 5 else 6
+          build = fun i arr ->
+            let bytes = BitConverter.GetBytes arg
+
+            if index >= 6 then 
+                failwith "not spported in AMD64 linux assembler ATM"
+            else
+                let mov = argMovs32.[index]
+                write i arr (Array.concat [mov; bytes])
+        }
+
+    let setArg64 (index : int) (arg : int64) =
+        { size = 10
+          build = fun i arr ->
+            let bytes = BitConverter.GetBytes arg
+
+            if index >= 6 then 
+                failwith "not spported in AMD64 linux assembler ATM"
+            else
+                let mov = argMovs64.[index]
+                write i arr (Array.concat [mov; bytes])
+        }
+
     let private compileCallInternal (f : nativeint) (args : obj[]) =
         let argSetters =
             args |> Array.mapi(fun i a ->
                 match a with    
-                    | :? int as a -> setArg32 i a
-                    | :? int64 as a -> setArg64 i a
-                    | :? nativeint as a -> setArg64 i (int64 a)
+                    | :? int as a -> setArg32Internal i a // todo replace by non internal version
+                    | :? int64 as a -> setArg64Internal i a
+                    | :? nativeint as a -> setArg64Internal i (int64 a)
                     | _ -> failwithf "unsupported argument: %A" a
             )
 
@@ -192,7 +217,7 @@ module Amd64Windows =
                                     [| 0x41uy; 0xB9uy  |]   //movd r9, ...
                                  |]
 
-    let private setArg64 (index : int) (arg : int64) =
+    let setArg64 (index : int) (arg : int64) =
         { size = if index < 4 then 10 else 15
           build = fun i arr ->
             let bytes = BitConverter.GetBytes arg
@@ -209,7 +234,7 @@ module Amd64Windows =
                 write i arr (Array.concat [mov; bytes])
         }
 
-    let private setArg32 (index : int) (arg : int) =
+    let setArg32 (index : int) (arg : int) =
         { size = if index < 2 then 5 elif index < 4 then 6 else 8
           build = fun i arr -> 
             let bytes = BitConverter.GetBytes arg
@@ -522,6 +547,21 @@ module Assembler =
             | Linux, AMD64 -> Amd64Linux.functionEpilog
             | Mac, AMD64 -> Amd64Linux.functionEpilog
             | _ -> failwithf "no assembler for: %A / %A" os.Platform cpu        
+
+    let setArg64 =
+        match os, cpu with
+            | Windows, AMD64 -> Amd64Windows.setArg64
+            | Linux, AMD64 -> Amd64Linux.setArg64
+            | Mac, AMD64 -> Amd64Linux.setArg64
+            | _ -> failwithf "no assembler for: %A / %A" os.Platform cpu   
+
+    let setArg32 =
+        match os, cpu with
+            | Windows, AMD64 -> Amd64Windows.setArg32
+            | Linux, AMD64 -> Amd64Linux.setArg32
+            | Mac, AMD64 -> Amd64Linux.setArg32
+            | _ -> failwithf "no assembler for: %A / %A" os.Platform cpu      
+
 
     let compileCall =
         match os, cpu with

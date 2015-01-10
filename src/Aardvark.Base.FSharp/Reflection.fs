@@ -308,55 +308,6 @@ module Amd64 =
         //Marshal.Copy(data, 0, ptr + nativeint index, data.Length)
         data.CopyTo(ptr, index)
 
-    let private prolog (additionalSpace : byte) =
-        { size = 4; build = fun i arr -> write i arr [| 0x48uy; 0x83uy; 0xECuy; 0x20uy + additionalSpace |] }
-
-    let private epilog (additionalSpace : byte) =
-        { size = 5; build = fun i arr -> write i arr [| 0x48uy; 0x83uy; 0xC4uy; 0x20uy + additionalSpace; 0xC3uy|] }
-
-    let private argumentMove64 = [| [| 0x48uy; 0xB9uy |]    //movq rcx, ...
-                                    [| 0x48uy; 0xBAuy |]    //movq rdx, ...
-                                    [| 0x49uy; 0xB8uy |]    //movq r8, ...
-                                    [| 0x49uy; 0xB9uy |]    //movq r9, ...
-                                 |]
-
-    let private argumentMove32 = [| [| 0xB9uy |]            //movd rcx, ...
-                                    [| 0xBAuy |]            //movd rdx, ...
-                                    [| 0x41uy; 0xB8uy  |]   //movd r8, ...
-                                    [| 0x41uy; 0xB9uy  |]   //movd r9, ...
-                                 |]
-
-    let private setArg64 (index : int) (arg : int64) =
-        { size = if index < 4 then 10 else 15
-          build = fun i arr ->
-            let bytes = BitConverter.GetBytes arg
-
-            if index >= 4 then 
-                //push the argument on the stack
-
-                //mov rax, <arg>
-                //mov [rsp+32 + <index>*8], rax
-                let offset = (byte index) * 8uy;
-                write i arr (Array.concat [ [| 0x48uy; 0xB8uy; |]; bytes; [| 0x48uy; 0x89uy; 0x44uy; 0x24uy; offset |] ])
-            else
-                let mov = argumentMove64.[index]
-                write i arr (Array.concat [mov; bytes])
-        }
-
-    let private setArg32 (index : int) (arg : int) =
-        { size = if index < 2 then 5 elif index < 4 then 6 else 8
-          build = fun i arr -> 
-            let bytes = BitConverter.GetBytes arg
-
-            if index >= 4 then
-                //mov [rsp+32 + <index>*8], DWORD <arg>
-                let offset = (byte index) * 8uy;
-                write i arr (Array.concat [ [| 0xC7uy; 0x44uy; 0x24uy; offset |]; bytes])
-            else
-                let mov = argumentMove32.[index]
-                write i arr  (Array.concat [ mov; bytes])
-        }
-
     let private jump  (offset : byte) =
         { size = 2
           build = fun i arr ->
@@ -416,8 +367,8 @@ module Amd64 =
         [<CustomOperation("arg")>]
         member x.SetArg(h : ProgramWriter, index : int, value : obj) : ProgramWriter =
             let self = match value with
-                        | :? int64 as value -> setArg64 index value
-                        | :? int32 as value -> setArg32 index value
+                        | :? int64 as value -> Assembler.setArg64 index value
+                        | :? int32 as value -> Assembler.setArg32 index value
                         | _ -> failwith "unknown argument-type"
 
             { size = h.size + self.size; build = fun i arr -> h.build i arr; self.build (i + h.size) arr }
@@ -428,9 +379,9 @@ module Amd64 =
             let mutable index = 0
             for e in values do
                 let w = match e with
-                            | :? int64 as value -> setArg64 index value
-                            | :? int32 as value -> setArg32 index value
-                            | :? nativeint as value -> if IntPtr.Size = 8 then setArg64 index (int64 value) else setArg32 index (int value)
+                            | :? int64 as value -> Assembler.setArg64 index value
+                            | :? int32 as value -> Assembler.setArg32 index value
+                            | :? nativeint as value -> if IntPtr.Size = 8 then Assembler.setArg64 index (int64 value) else Assembler.setArg32 index (int value)
                             | _ -> failwith "unknown argument-type"
                 let p = result
                 result <- { size = result.size + w.size; build = fun i arr -> p.build i arr; w.build (i + p.size) arr }
@@ -873,10 +824,6 @@ module Amd64 =
             let size = argCount * 8 - 24
             size |> byte
 
-    let functionProlog argCount = prolog (getAdditionalSize argCount) |> toArray
-
-    let functionEpilog argCount = epilog (getAdditionalSize argCount) |> toArray
-
 
     let compileCall (padding : int) (ptr : nativeint, args : obj[]) =
         callFunction padding ptr args |> toArray
@@ -885,8 +832,8 @@ module Amd64 =
     let compileCalls (padding : int) (maxSize : int) (calls : #seq<nativeint * obj[]>) =
         let writers = calls |> Seq.toList |> List.map (fun (ptr,args) -> callFunction padding ptr args)
 
-        let pro = prolog 8uy |> toArray
-        let epi = epilog 8uy |> toArray
+        let pro = Assembler.functionProlog 8
+        let epi = Assembler.functionEpilog 8
 
         let size = pro.Length + epi.Length + maxSize * writers.Length
         let ptr = Kernel32.VirtualAlloc(IntPtr.Zero, UIntPtr(uint32(size)), Kernel32.AllocationType.Commit, Kernel32.MemoryProtection.ExecuteReadWrite)
