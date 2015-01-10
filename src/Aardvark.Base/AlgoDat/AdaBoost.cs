@@ -114,7 +114,7 @@ namespace Aardvark.Base
 
         private struct Classifier<T>
         {
-            private readonly WeightedExample<T>[] m_examples;
+			//private readonly WeightedExample<T>[] m_examples;  // hs: assigned but not used warning in mono, with warning as error this is a build error :(
             private readonly WeakClassifier<T>[] m_weakClassifiers;
 
             public Classifier(
@@ -122,7 +122,7 @@ namespace Aardvark.Base
                 IEnumerable<WeakClassifier<T>> weakClassifiers
                 )
             {
-                m_examples = examples.ToArray();
+				//m_examples = examples.ToArray();
                 m_weakClassifiers = weakClassifiers.ToArray();
             }
 
