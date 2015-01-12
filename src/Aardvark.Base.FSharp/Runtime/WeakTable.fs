@@ -133,12 +133,13 @@ module WeakTable =
     open DependentHandle
 
     type private Weak<'a when 'a : not struct>(value : 'a) =
+        do if value :> obj = null then failwith "created null weak"
         let wr = System.WeakReference<'a>(value)
         let hash = System.Runtime.CompilerServices.RuntimeHelpers.GetHashCode(value)
 
         member x.IsLife =
             match wr.TryGetTarget() with
-                | (true, _) -> true
+                | (true, o) when o :> obj <> null -> true
                 | _ -> false
 
         member x.TargetOption =

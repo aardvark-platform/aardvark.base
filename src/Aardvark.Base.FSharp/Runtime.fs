@@ -111,20 +111,22 @@ module Weak =
     (*============================ Weak Types =================================*)
     [<AllowNullLiteral>]
     type Weak<'a when 'a : not struct and 'a : equality>(obj : 'a) =
+        do if obj :> obj = null then failwith "created null weak"
         let m_weak = System.WeakReference<'a>(obj)
         let m_hashCode = obj.GetHashCode()
 
         member private x.WeakReference = m_weak
 
         member x.IsLife = match m_weak.TryGetTarget() with
-                            | (true,_) -> true
+                            | (true,o) when o :> obj <> null -> true
                             | _ -> false
 
         member x.Target = match m_weak.TryGetTarget() with
-                            | (true,v) -> v
+                            | (true,v) when v :> obj <> null -> v
                             | _ -> failwith "Weak is no longer accessible"
 
-        member x.TryGetTarget() = m_weak.TryGetTarget()
+        member x.TryGetTarget([<System.Runtime.InteropServices.OutAttribute>] a : byref<'a>) = 
+            m_weak.TryGetTarget(&a) && a :> obj <> null
 
         member x.TargetOption = 
             match m_weak.TryGetTarget() with
