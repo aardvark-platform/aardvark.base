@@ -229,7 +229,8 @@ module AgHelpers =
             let t = ass.GetType("OpenTK.GameWindow")
 
             let w = System.Activator.CreateInstance(t) |> unbox<System.IDisposable>
-
+            let m = w.GetType().GetMethod("Close")
+            m.Invoke(w, null) |> ignore
             w.Dispose()
 
         with e ->
@@ -239,7 +240,7 @@ module AgHelpers =
         let registered = ref false;
         fun () ->
          if not !registered then
-            glInit()
+            //glInit()
 
             registered.Value <- true 
             let register (t : System.Type) = 
