@@ -20,5 +20,7 @@ While building, visual studio might prompt for permission to use our type provid
 the build fails immediately afterwards no matter if you granted permission. In this case
 simply rebuild all again and it should work this time.
 
+[![Build Status](https://travis-ci.org/vrvis/aardvark.svg?branch=master)](https://travis-ci.org/vrvis/aardvark)
+
 
 [1] https://visualfsharp.codeplex.com/
