@@ -1,4 +1,10 @@
 language: csharp
 solution: src/Aardvark.sln
-before_install: 
+before_install:
+before_install:
+  # Make sure mono is installed,
+  # pipe stdout to dev/null because qq is still too chatty
+  - sudo apt-get update -qq > /dev/null
+  - sudo apt-get install -qq mono-devel > /dev/null
+  - mozroots --import --sync 
   - ./install.sh
