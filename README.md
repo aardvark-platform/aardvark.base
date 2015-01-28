@@ -9,8 +9,6 @@ Copyright © 2014 VRVis Zentrum für Virtual Reality und Visualisierung Forschun
 How to build:
 ======================
 
-Prerequisites:
-
 Windows:
 - Visual Studio 2013,
 - FSharp 3.1 (least Daily Builds Preview 10-27-2014) [1]
