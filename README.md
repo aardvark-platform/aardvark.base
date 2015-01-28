@@ -27,6 +27,7 @@ the build fails immediately afterwards no matter if you granted permission. In t
 simply rebuild all again and it should work this time.
 
 CI, linux build: [![Build Status](https://travis-ci.org/vrvis/aardvark.svg?branch=master)](https://travis-ci.org/vrvis/aardvark)
+
 CI, windows build: [![Build status](https://ci.appveyor.com/api/projects/status/px8242ird5aa6svs/branch/master?svg=true)](https://ci.appveyor.com/project/haraldsteinlechner/aardvark/branch/master)
 
 
