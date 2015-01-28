@@ -97,6 +97,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AlgoDat\AdaBoost.cs" />
     <Compile Include="AlgoDat\ConcurrentHashSet.cs" />
     <Compile Include="AlgoDat\Delegates.cs" />
     <Compile Include="AlgoDat\Delegates_auto.cs" />
