@@ -2,6 +2,6 @@
 cls
 PUSHD
 cd src
-NuGet.exe restore
+NuGet.exe restore -ConfigFile nuget.config
 POPD
 pause
