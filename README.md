@@ -11,7 +11,7 @@ How to build:
 
 Windows:
 - Visual Studio 2013,
-- FSharp 3.1 (least Daily Builds Preview 10-27-2014) [1]
+- FSharp 3.1 (at least Daily Builds Preview 10-27-2014) [1]
 - run install.bat
 - run msbuild src\Aardvark.sln or use VisualStudio to build the solution
 
