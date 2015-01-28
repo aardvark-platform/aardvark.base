@@ -39,8 +39,8 @@ namespace Aardvark.Base
                 return task.WithCancellationInternal(ct.Value);
         }
 
-        private static readonly Action<object> s_cancellationRegistration =
-            s => ((TaskCompletionSource<bool>)s).TrySetResult(true);
+        //private static readonly Action<object> s_cancellationRegistration =
+        //    s => ((TaskCompletionSource<bool>)s).TrySetResult(true);
 
         private static async Task<T> WithCancellationInternal<T>(this Task<T> task, CancellationToken ct)
         {
