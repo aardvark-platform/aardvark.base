@@ -1,0 +1,4 @@
+language: csharp
+solution: src/Aardvark.sln
+before_install: 
+  - ./setup.sh

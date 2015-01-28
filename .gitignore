@@ -1,5 +1,3 @@
-/bin/Debug
-/bin/Release
 /src/Aardvark.Base/obj
 /src/*.suo
 /src/*.userprefs
@@ -10,3 +8,5 @@
 *.nupkg
 obj
 /src/Aardvark.sln.ide
+*.swp
+Bin
