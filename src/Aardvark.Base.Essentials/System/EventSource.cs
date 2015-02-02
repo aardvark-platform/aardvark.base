@@ -106,6 +106,14 @@ namespace Aardvark.Base
         /// <summary>
         /// Gets latest value emitted by this event source,
         /// or default(T) if no value has been emitted so far.
+        /// Do not set this value! Unless you have multiple
+        /// related event sources you want to 'update'
+        /// simultanously. In this case first set Latest for
+        /// all related event sources to their respective new
+        /// value, and then Emit the same values. A subscriber
+        /// of such an event source which accesses the Latest
+        /// property of a related event source then sees the
+        /// correct value (independent of emit order).
         /// </summary>
         public T Latest
         {
@@ -113,6 +121,10 @@ namespace Aardvark.Base
             {
                 EventSourceTelemetry.CountLatestGet.Increment();
                 return m_latest;
+            }
+            set
+            {
+                m_latest = value;
             }
         }
 
