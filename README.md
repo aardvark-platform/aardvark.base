@@ -31,4 +31,4 @@ CI, linux build: [![Build Status](https://travis-ci.org/vrvis/aardvark.svg?branc
 CI, windows build: [![Build status](https://ci.appveyor.com/api/projects/status/px8242ird5aa6svs/branch/master?svg=true)](https://ci.appveyor.com/project/haraldsteinlechner/aardvark/branch/master)
 
 
-[1] https://visualfsharp.codeplex.com/
+[1] https://visualfsharp.codeplex.com/releases/view/161288
