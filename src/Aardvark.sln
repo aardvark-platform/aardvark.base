@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2013
-VisualStudioVersion = 12.0.30723.0
+VisualStudioVersion = 12.0.31101.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Aardvark.Base", "Aardvark.Base\Aardvark.Base.csproj", "{377DA721-C821-45F6-B803-9C8724C7B37F}"
 EndProject
@@ -12,6 +12,8 @@ EndProject
 Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "Aardvark.Base.TypeProviders", "Aardvark.Base.TypeProviders\Aardvark.Base.TypeProviders.fsproj", "{8BFEA4EF-BF0A-4C1A-B7AC-CBDD930306FD}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Aardvark.Base.Essentials", "Aardvark.Base.Essentials\Aardvark.Base.Essentials.csproj", "{7FEF0693-EFC3-4B85-8F42-933B25F353A8}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Aardvark.Base.Rendering", "Aardvark.Base.Rendering\Aardvark.Base.Rendering.csproj", "{F5EAA1DB-8816-4372-9453-82F4A45A8FFD}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -57,10 +59,18 @@ Global
 		{7FEF0693-EFC3-4B85-8F42-933B25F353A8}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{7FEF0693-EFC3-4B85-8F42-933B25F353A8}.Release 4.0|Any CPU.ActiveCfg = Release|Any CPU
 		{7FEF0693-EFC3-4B85-8F42-933B25F353A8}.Release 4.0|Any CPU.Build.0 = Release|Any CPU
-		{7FEF0693-EFC3-4B85-8F42-933B25F353A8}.Release 4.5|Any CPU.ActiveCfg = Release 4.5|Any CPU
-		{7FEF0693-EFC3-4B85-8F42-933B25F353A8}.Release 4.5|Any CPU.Build.0 = Release 4.5|Any CPU
+		{7FEF0693-EFC3-4B85-8F42-933B25F353A8}.Release 4.5|Any CPU.ActiveCfg = Release|Any CPU
+		{7FEF0693-EFC3-4B85-8F42-933B25F353A8}.Release 4.5|Any CPU.Build.0 = Release|Any CPU
 		{7FEF0693-EFC3-4B85-8F42-933B25F353A8}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{7FEF0693-EFC3-4B85-8F42-933B25F353A8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F5EAA1DB-8816-4372-9453-82F4A45A8FFD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F5EAA1DB-8816-4372-9453-82F4A45A8FFD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F5EAA1DB-8816-4372-9453-82F4A45A8FFD}.Release 4.0|Any CPU.ActiveCfg = Release|Any CPU
+		{F5EAA1DB-8816-4372-9453-82F4A45A8FFD}.Release 4.0|Any CPU.Build.0 = Release|Any CPU
+		{F5EAA1DB-8816-4372-9453-82F4A45A8FFD}.Release 4.5|Any CPU.ActiveCfg = Release|Any CPU
+		{F5EAA1DB-8816-4372-9453-82F4A45A8FFD}.Release 4.5|Any CPU.Build.0 = Release|Any CPU
+		{F5EAA1DB-8816-4372-9453-82F4A45A8FFD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F5EAA1DB-8816-4372-9453-82F4A45A8FFD}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
