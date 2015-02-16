@@ -30,7 +30,7 @@
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <Prefer32Bit>false</Prefer32Bit>
     <NoWarn>1591</NoWarn>
-    <DocumentationFile>..\..\Bin\Debug\Aardvark.Base.xml</DocumentationFile>
+    <DocumentationFile>..\..\..\..\build\Debug\AMD64\Aardvark.Base.XML</DocumentationFile>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -150,6 +150,7 @@
     <Compile Include="RangesBoxes\OrientedBox.cs" />
     <Compile Include="RangesBoxes\Range.cs" />
     <Compile Include="RangesBoxes\RangeExtensions.cs" />
+    <Compile Include="Runtime\Introspection.cs" />
     <Compile Include="Telemetry\Debug.cs" />
     <Compile Include="Telemetry\Environment.cs" />
     <Compile Include="Telemetry\HardwareThread.cs" />

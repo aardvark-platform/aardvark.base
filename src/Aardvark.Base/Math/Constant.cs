@@ -262,37 +262,37 @@ namespace Aardvark.Base
 
         /// <summary>
         /// Used to convert degrees to radians.
-        /// See also <see cref="Aardvark.Base.Conversion"/> class.
+        /// See also <see cref="Conversion"/> class.
         /// </summary>
         public const double RadiansPerDegree = Pi / 180.0;
 
         /// <summary>
         /// Used to convert radians to degrees.
-        /// See also <see cref="Aardvark.Base.Conversion"/> class.
+        /// See also <see cref="Conversion"/> class.
         /// </summary>
         public const double DegreesPerRadian = 180.0 / Pi;
 
         /// <summary>
         /// Used to convert gons to radians.
-        /// See also <see cref="Aardvark.Base.Conversion"/> class.
+        /// See also <see cref="Conversion"/> class.
         /// </summary>
         public const double RadiansPerGon = Pi / 200.0;
 
         /// <summary>
         /// Used to convert radians to gons.
-        /// See also <see cref="Aardvark.Base.Conversion"/> class.
+        /// See also <see cref="Conversion"/> class.
         /// </summary>
         public const double GonsPerRadian = 200.0 / Pi;
 
         /// <summary>
         /// Used to convert gons to degrees.
-        /// See also <see cref="Aardvark.Base.Conversion"/> class.
+        /// See also <see cref="Conversion"/> class.
         /// </summary>
         public const double DegreesPerGon = 180.0 / 200.0;
 
         /// <summary>
         /// Used to convert degrees to gons.
-        /// See also <see cref="Aardvark.Base.Conversion"/> class.
+        /// See also <see cref="Conversion"/> class.
         /// </summary>
         public const double GonsPerDegree = 200.0 / 180.0;
 

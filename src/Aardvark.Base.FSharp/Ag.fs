@@ -236,48 +236,46 @@ module AgHelpers =
         with e ->
             ()
 
+    let internal register (t : System.Type) = 
+        let mi = t.GetMethods(System.Reflection.BindingFlags.Public ||| System.Reflection.BindingFlags.Instance)
+        let attNames = seq {
+                            for m in mi do
+                                if (m.DeclaringType.Equals(t) && m.GetParameters().Length = 1) then
+                                    yield ( m.Name, m.GetParameters().[0].ParameterType, m )
+                        }
+        if t.GetConstructor([||]) <> null then
+            let semObj = Activator.CreateInstance(t)
+            for (name,t,m) in attNames do
+                let list = match m_semanticMap.TryGetValue(name) with
+                                | (true,l) -> l
+                                | (false,_) -> let l = List<MethodBase>()
+                                               m_semanticMap.[name] <- l
+                                               l
+                list.Add(m)
+
+    let internal registerAssembly (a : Assembly) =
+        try 
+            let types = a.GetTypes()
+
+            let rec attTypes (types : Type[]) =
+                seq {
+                    for t in types do
+                        if (t.GetCustomAttributes(false).OfType<Semantic>().Count() > 0) then
+                            yield t 
+                            yield! attTypes ( t.GetNestedTypes() )
+                }
+            let attTypes = attTypes types
+
+            attTypes |> Seq.toList |> Seq.iter register 
+        with
+            | _ -> ()
+
     let internal initializeAg =
-        let registered = ref false;
+        let registered = ref false
         fun () ->
          if not !registered then
             //glInit()
-
             registered.Value <- true 
-            let register (t : System.Type) = 
-                let mi = t.GetMethods(System.Reflection.BindingFlags.Public ||| System.Reflection.BindingFlags.Instance)
-                let attNames = seq {
-                                    for m in mi do
-                                        if (m.DeclaringType.Equals(t) && m.GetParameters().Length = 1) then
-                                          yield ( m.Name, m.GetParameters().[0].ParameterType, m )
-                                }
-                if t.GetConstructor([||]) <> null then
-                    let semObj = Activator.CreateInstance(t)
-                    for (name,t,m) in attNames do
-                        let list = match m_semanticMap.TryGetValue(name) with
-                                      | (true,l) -> l
-                                      | (false,_) -> let l = List<MethodBase>()
-                                                     m_semanticMap.[name] <- l
-                                                     l
-                        list.Add(m)
-
-
-
-            let registerAssembly (a : Assembly) =
-                try 
-                    let types = a.GetTypes()
-
-                    let rec attTypes (types : Type[]) =
-                        seq {
-                            for t in types do
-                                if (t.GetCustomAttributes(false).OfType<Semantic>().Count() > 0) then
-                                  yield t 
-                                  yield! attTypes ( t.GetNestedTypes() )
-                        }
-                    let attTypes = attTypes types
-
-                    attTypes |> Seq.toList |> Seq.iter register 
-                with
-                    | _ -> ()
 
             AppDomain.CurrentDomain.AssemblyLoad.Add(
                 fun loadArgs ->
@@ -393,7 +391,8 @@ module Ag =
         member x.AllChildren = anyObject
 
 
-    let initialize() = initializeAg()
+    [<OnAardvarkInit>]
+    let initialize () : unit =  AgHelpers.initializeAg()
 
     let clearCaches () =    
         rootScope.Dispose()
