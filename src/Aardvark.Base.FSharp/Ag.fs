@@ -275,6 +275,7 @@ module AgHelpers =
         fun () ->
          if not !registered then
             //glInit()
+            Aardvark.Base.Report.BeginTimed "initializing attribute grammar"
             registered.Value <- true 
 
             AppDomain.CurrentDomain.AssemblyLoad.Add(
@@ -283,6 +284,7 @@ module AgHelpers =
 
             let assemblies = AppDomain.CurrentDomain.GetAssemblies() |> Seq.toList
             Seq.iter registerAssembly assemblies
+            Aardvark.Base.Report.End() |> ignore
 
     let mutable public unpack : obj -> obj = id
 
