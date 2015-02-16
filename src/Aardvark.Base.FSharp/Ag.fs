@@ -223,19 +223,6 @@ module AgHelpers =
                                                 reg <| Some(SemanticFunction(getSemanticObject(mi.DeclaringType), mi.DeclaringType, mi :?> MethodInfo))
                         | _ -> reg None
 
-    let internal glInit() =
-        try
-            let ass = Assembly.LoadFile (System.IO.Path.Combine(System.Environment.CurrentDirectory, "OpenTK.dll"))
-            let t = ass.GetType("OpenTK.GameWindow")
-
-            let w = System.Activator.CreateInstance(t) |> unbox<System.IDisposable>
-            let m = w.GetType().GetMethod("Close")
-            m.Invoke(w, null) |> ignore
-            w.Dispose()
-
-        with e ->
-            ()
-
     let internal register (t : System.Type) = 
         let mi = t.GetMethods(System.Reflection.BindingFlags.Public ||| System.Reflection.BindingFlags.Instance)
         let attNames = seq {
@@ -278,12 +265,15 @@ module AgHelpers =
             Aardvark.Base.Report.BeginTimed "initializing attribute grammar"
             registered.Value <- true 
 
-            AppDomain.CurrentDomain.AssemblyLoad.Add(
-                fun loadArgs ->
-                    registerAssembly loadArgs.LoadedAssembly)
+            for t in Introspection.GetAllTypesWithAttribute<Semantic>() do
+                register t.E0
 
-            let assemblies = AppDomain.CurrentDomain.GetAssemblies() |> Seq.toList
-            Seq.iter registerAssembly assemblies
+            //AppDomain.CurrentDomain.AssemblyLoad.Add(
+            //    fun loadArgs ->
+            //        registerAssembly loadArgs.LoadedAssembly)
+
+            //let assemblies = AppDomain.CurrentDomain.GetAssemblies() |> Seq.toList
+            //Seq.iter registerAssembly assemblies
             Aardvark.Base.Report.End() |> ignore
 
     let mutable public unpack : obj -> obj = id
