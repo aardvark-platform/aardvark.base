@@ -444,9 +444,45 @@ namespace Aardvark.Base
         public static void Init()
         {
             Report.BeginTimed("initializing aardvark");
+            var pluginsFile = "plugins.txt";
+            Report.BeginTimed("Loading plugins");
+            if(!File.Exists(pluginsFile))
+            {
+                Report.Warn("Plugin file not found. Assuming you are using no plugins, i.e. everything is referenced and used explicitly.");
+            }
+            else
+            {
+                try
+                {
+                    var plugins = File.ReadAllText(pluginsFile);
+                    foreach(var plugin in plugins)
+                    {
+                        var dll = plugin + ".dll";
+                        var exe = plugin + ".exe";
+                        if (File.Exists(dll))
+                        {
+                            Assembly.Load(dll);
+                        }
+                        else if (File.Exists(exe))
+                        {
+                            Assembly.Load(exe);
+                        }
+                    }
+                } catch
+                {
+                    Report.Warn("Could not read plugins file");
+                }
+            }
+            Report.End();
+            LoadAll();
+            Report.End();
+        }
+
+        private static void LoadAll()
+        {
             foreach (var ass in Introspection.AllAssemblies)
             {
-                foreach(var inits in Introspection.GetAllMethodsWithAttribute<OnAardvarkInitAttribute>(ass))
+                foreach (var inits in Introspection.GetAllMethodsWithAttribute<OnAardvarkInitAttribute>(ass))
                 {
                     var mi = inits.E0;
                     var parameters = mi.GetParameters();
@@ -455,7 +491,6 @@ namespace Aardvark.Base
                     else Report.Warn("Strange aardvark init method found: {0}, should be Init : IEnumberable<Assembly> -> unit or unit -> unit", mi);
                 }
             }
-            Report.End();
         }
     }
 }
