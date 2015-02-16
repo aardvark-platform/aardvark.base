@@ -454,23 +454,26 @@ namespace Aardvark.Base
             {
                 try
                 {
-                    var plugins = File.ReadAllText(pluginsFile);
+                    var plugins = File.ReadLines(pluginsFile);
                     foreach(var plugin in plugins)
                     {
                         var dll = plugin + ".dll";
                         var exe = plugin + ".exe";
                         if (File.Exists(dll))
                         {
+                            Report.Line("loading {0}", dll);
                             Assembly.Load(dll);
                         }
                         else if (File.Exists(exe))
                         {
+                            Report.Line("loading {0}", exe);
                             Assembly.Load(exe);
                         }
+                        else Report.Warn("plugin not found");
                     }
-                } catch
+                } catch(Exception e)
                 {
-                    Report.Warn("Could not read plugins file");
+                    Report.Warn("Could not read plugins file: {0} ({1}", pluginsFile, e.Message);
                 }
             }
             Report.End();
