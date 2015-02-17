@@ -2,17 +2,28 @@
 
 open System
 open Aardvark.Base.Incremental
+open System.Runtime.InteropServices
 
 type ISurface = interface end
+type ITexture = interface end
+type IBuffer = interface end
+
+type ArrayBuffer(data : IMod<Array>) =
+    interface IBuffer
+    member x.Data = data
+
+type BitmapTexture(bmp : System.Drawing.Bitmap) =
+    interface ITexture
+    member x.Bitmap = bmp
 
 
 [<AllowNullLiteral>]
 type IAttributeProvider =
-    abstract member TryGetAttribute : Symbol * byref<IMod<Array>> -> bool
+    abstract member TryGetAttribute : name : Symbol * [<Out>] buffer : byref<IBuffer> -> bool
 
 [<AllowNullLiteral>]
 type IUniformProvider =
-    abstract member TryGetAttribute : Symbol * byref<IMod> -> bool
+    abstract member TryGetUniform : name : Symbol * [<Out>] uniform : byref<IMod> -> bool
 
 
 module private RenderJobIds =

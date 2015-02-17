@@ -76,6 +76,8 @@ module Mod =
 
         new(compute) = EagerMod(compute, None)
 
+    let custom (compute : unit -> 'a) : IMod<'a> =
+        LazyMod(compute) :> IMod<_>
 
     let registerCallback (f : 'a -> unit) (m : IMod<'a>) =
         let self = ref id
@@ -91,9 +93,14 @@ module Mod =
             member x.Dispose() = m.MarkingCallbacks.Remove !self |> ignore
         }
 
+    let change (m : ModRef<'a>) (value : 'a) =
+        m.Value <- value
 
     let initMod (v : 'a) =
         ModRef v
+
+    let initConstant (v : 'a) =
+        ModRef v :> IMod<_>
 
     let map (f : 'a -> 'b) (m : IMod<'a>) =
         let res = LazyMod(fun () -> m.GetValue() |> f)

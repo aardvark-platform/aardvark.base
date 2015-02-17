@@ -2,17 +2,14 @@
 
 
 type TextureDimension =
-    | Texture1d
-    | Texture1dArray
-    | Texture2d
-    | Texture2dArray
-    | Texture3d
-    | TextureCube
+    | Texture1D = 1
+    | Texture2D = 2
+    | TextureCube = 3
+    | Texture3D = 4
 
 type IFramebufferOutput =
     abstract member Samples : int
-
-type ITexture = interface end
+    abstract member Size : V2i
 
 type FramebufferTexture =
     inherit ITexture
@@ -21,21 +18,19 @@ type FramebufferTexture =
     abstract member Dimension : TextureDimension
     abstract member ArraySize : int
     abstract member MipMapLevels : int
-
+    abstract member GetSize : int -> V2i
 
 type IFramebuffer =
+    abstract member Size : V2i
     abstract member Handle : obj
-
-type Framebuffer = { handle : obj; attachments : Map<Symbol, IFramebufferOutput>;  } with
-    interface IFramebuffer with
-        member x.Handle = x.handle
-
+    abstract member Attachments : Map<Symbol, IFramebufferOutput>
 
 type TextureOutputView = { texture : FramebufferTexture; level : int; slice : int } with
     interface IFramebufferOutput with
         member x.Samples = x.texture.Samples
+        member x.Size = x.texture.GetSize x.level
 
-type Renderbuffer =
+type FramebufferRenderbuffer =
     inherit IFramebufferOutput
     abstract member Handle : obj
     

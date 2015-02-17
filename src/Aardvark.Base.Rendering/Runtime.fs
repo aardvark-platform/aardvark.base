@@ -1,4 +1,4 @@
-﻿namespace Aardvark.Base.Rendering
+﻿namespace Aardvark.Base
 
 open System
 open Aardvark.Base
@@ -8,19 +8,17 @@ open System.Collections.Generic
 
 type IRenderTask =
     inherit IAdaptiveObject
-    abstract member Run : Framebuffer -> unit
+    abstract member Run : IFramebuffer -> unit
 
 type IRuntime =
     abstract member CompileClear : IMod<C4f> -> IMod<double> -> IRenderTask
     abstract member CompileRender : aset<RenderJob> -> IRenderTask
 
     abstract member CreateTexture : IMod<V2i> -> IMod<PixFormat> -> IMod<int> -> FramebufferTexture
-    abstract member CreateRenderbuffer : IMod<V2i> -> IMod<PixFormat> -> IMod<int> -> Renderbuffer
+    abstract member CreateRenderbuffer : IMod<V2i> -> IMod<PixFormat> -> IMod<int> -> FramebufferRenderbuffer
 
     abstract member CreateFramebuffer : Map<Symbol, IFramebufferOutput> -> IFramebuffer
 
-
-type ITexture = interface end
 
 type ShaderStage =
     | Vertex = 1
