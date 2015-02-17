@@ -1,0 +1,185 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>9623ae28-1f72-46e9-a3a7-85fc1a321a73</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <RootNamespace>Aardvark.Base.Incremental</RootNamespace>
+    <AssemblyName>Aardvark.Base.Incremental</AssemblyName>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <TargetFSharpCoreVersion>4.3.1.0</TargetFSharpCoreVersion>
+    <Name>Aardvark.Base.Incremental</Name>
+    <AardvarkProject>True</AardvarkProject>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <Tailcalls>false</Tailcalls>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <WarningLevel>3</WarningLevel>
+    <DocumentationFile>
+    </DocumentationFile>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <Tailcalls>true</Tailcalls>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <WarningLevel>3</WarningLevel>
+    <DocumentationFile>
+    </DocumentationFile>
+  </PropertyGroup>
+  <PropertyGroup>
+    <MinimumVisualStudioVersion Condition="'$(MinimumVisualStudioVersion)' == ''">11</MinimumVisualStudioVersion>
+  </PropertyGroup>
+  <Choose>
+    <When Condition="'$(VisualStudioVersion)' == '11.0'">
+      <PropertyGroup Condition="Exists('$(MSBuildExtensionsPath32)\..\Microsoft SDKs\F#\3.0\Framework\v4.0\Microsoft.FSharp.Targets')">
+        <FSharpTargetsPath>$(MSBuildExtensionsPath32)\..\Microsoft SDKs\F#\3.0\Framework\v4.0\Microsoft.FSharp.Targets</FSharpTargetsPath>
+      </PropertyGroup>
+    </When>
+    <Otherwise>
+      <PropertyGroup Condition="Exists('$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\FSharp\Microsoft.FSharp.Targets')">
+        <FSharpTargetsPath>$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\FSharp\Microsoft.FSharp.Targets</FSharpTargetsPath>
+      </PropertyGroup>
+    </Otherwise>
+  </Choose>
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <Import Project="..\..\..\..\build\Aardvark.targets" Condition="exists('..\..\..\..\build\Aardvark.targets')" />
+  <Import Project="$(SolutionPath).targets" Condition="exists('$(SolutionPath).targets')" />
+  <Import Project="$(FSharpTargetsPath)" />
+  <ItemGroup>
+    <Reference Include="mscorlib" />
+    <Reference Include="FSharp.Core, Version=$(TargetFSharpCoreVersion), Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Numerics" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Core\PriorityQueue.fs" />
+    <Compile Include="Core\WeakSet.fs" />
+    <Compile Include="Core\ReferenceCountingSet.fs" />
+    <Compile Include="Core\TimeList.fs" />
+    <Compile Include="Core\Types.fs" />
+    <Compile Include="Core\Cache.fs" />
+    <Compile Include="Core\Core.fs" />
+    <Compile Include="Mod\Mod.fs" />
+    <Compile Include="AdaptiveSet\AdaptiveSetCore.fs" />
+    <Compile Include="AdaptiveSet\ChangeableSet.fs" />
+    <Compile Include="AdaptiveSet\AdaptiveSet.fs" />
+    <Compile Include="AdaptiveList\AdaptiveListCore.fs" />
+    <Compile Include="Builders.fs" />
+    <Compile Include="CSharp.fs" />
+  </ItemGroup>
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+  <Choose>
+    <When Condition="exists('..\..\..\..\build\Aardvark.targets')">
+      <Choose>
+        <When Condition="'$(AardvarkBaseTypeProvidersProjectPath)' == ''">
+          <ItemGroup>
+            <Reference Include="Aardvark.Base.TypeProviders [Binary]">
+              <HintPath>$(OutputPath)\Aardvark.Base.TypeProviders.dll</HintPath>
+              <Private>False</Private>
+            </Reference>
+          </ItemGroup>
+        </When>
+        <Otherwise>
+          <ItemGroup>
+            <ProjectReference Include="$(AardvarkBaseTypeProvidersProjectPath)">
+              <Name>Aardvark.Base.TypeProviders [Project]</Name>
+              <Project>{8bfea4ef-bf0a-4c1a-b7ac-cbdd930306fd}</Project>
+              <Private>False</Private>
+            </ProjectReference>
+          </ItemGroup>
+        </Otherwise>
+      </Choose>
+    </When>
+    <Otherwise>
+      <ItemGroup>
+        <ProjectReference Include="..\Aardvark.Base.TypeProviders\Aardvark.Base.TypeProviders.fsproj">
+          <Name>Aardvark.Base.TypeProviders</Name>
+          <Project>{8bfea4ef-bf0a-4c1a-b7ac-cbdd930306fd}</Project>
+          <Private>False</Private>
+        </ProjectReference>
+      </ItemGroup>
+    </Otherwise>
+  </Choose>
+  <Choose>
+    <When Condition="exists('..\..\..\..\build\Aardvark.targets')">
+      <Choose>
+        <When Condition="'$(AardvarkBaseFSharpProjectPath)' == ''">
+          <ItemGroup>
+            <Reference Include="Aardvark.Base.FSharp [Binary]">
+              <HintPath>$(OutputPath)\Aardvark.Base.FSharp.dll</HintPath>
+              <Private>False</Private>
+            </Reference>
+          </ItemGroup>
+        </When>
+        <Otherwise>
+          <ItemGroup>
+            <ProjectReference Include="$(AardvarkBaseFSharpProjectPath)">
+              <Name>Aardvark.Base.FSharp [Project]</Name>
+              <Project>{692a3617-719b-4ea2-abc1-407ae20094ae}</Project>
+              <Private>False</Private>
+            </ProjectReference>
+          </ItemGroup>
+        </Otherwise>
+      </Choose>
+    </When>
+    <Otherwise>
+      <ItemGroup>
+        <ProjectReference Include="..\Aardvark.Base.FSharp\Aardvark.Base.FSharp.fsproj">
+          <Name>Aardvark.Base.FSharp</Name>
+          <Project>{692a3617-719b-4ea2-abc1-407ae20094ae}</Project>
+          <Private>False</Private>
+        </ProjectReference>
+      </ItemGroup>
+    </Otherwise>
+  </Choose>
+  <Choose>
+    <When Condition="exists('..\..\..\..\build\Aardvark.targets')">
+      <Choose>
+        <When Condition="'$(AardvarkBaseProjectPath)' == ''">
+          <ItemGroup>
+            <Reference Include="Aardvark.Base [Binary]">
+              <HintPath>$(OutputPath)\Aardvark.Base.dll</HintPath>
+              <Private>False</Private>
+            </Reference>
+          </ItemGroup>
+        </When>
+        <Otherwise>
+          <ItemGroup>
+            <ProjectReference Include="$(AardvarkBaseProjectPath)">
+              <Name>Aardvark.Base [Project]</Name>
+              <Project>{377DA721-C821-45F6-B803-9C8724C7B37F}</Project>
+              <Private>False</Private>
+            </ProjectReference>
+          </ItemGroup>
+        </Otherwise>
+      </Choose>
+    </When>
+    <Otherwise>
+      <ItemGroup>
+        <ProjectReference Include="..\Aardvark.Base\Aardvark.Base.csproj">
+          <Name>Aardvark.Base</Name>
+          <Project>{377DA721-C821-45F6-B803-9C8724C7B37F}</Project>
+          <Private>False</Private>
+        </ProjectReference>
+      </ItemGroup>
+    </Otherwise>
+  </Choose>
+</Project>

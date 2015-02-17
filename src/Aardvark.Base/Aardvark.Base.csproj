@@ -150,6 +150,11 @@
     <Compile Include="RangesBoxes\OrientedBox.cs" />
     <Compile Include="RangesBoxes\Range.cs" />
     <Compile Include="RangesBoxes\RangeExtensions.cs" />
+    <Compile Include="Rendering\BlendMode.cs" />
+    <Compile Include="Rendering\Modes.cs" />
+    <Compile Include="Rendering\RasterizerState.cs" />
+    <Compile Include="Rendering\SamplerState.cs" />
+    <Compile Include="Rendering\StencilMode.cs" />
     <Compile Include="Runtime\Introspection.cs" />
     <Compile Include="Telemetry\Debug.cs" />
     <Compile Include="Telemetry\Environment.cs" />

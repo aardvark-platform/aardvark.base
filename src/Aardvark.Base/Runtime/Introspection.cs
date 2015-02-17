@@ -452,9 +452,10 @@ namespace Aardvark.Base
             }
             else
             {
+                var plugins = File.ReadLines(pluginsFile);
                 try
                 {
-                    var plugins = File.ReadLines(pluginsFile);
+                    List<Assembly> pluginsList = new List<Assembly>();
                     foreach(var plugin in plugins)
                     {
                         var dll = plugin + ".dll";
@@ -462,28 +463,29 @@ namespace Aardvark.Base
                         if (File.Exists(dll))
                         {
                             Report.Line("loading {0}", dll);
-                            Assembly.Load(dll);
+                            pluginsList.Add(Assembly.LoadFile(Path.GetFullPath(dll)));
                         }
                         else if (File.Exists(exe))
                         {
                             Report.Line("loading {0}", exe);
-                            Assembly.Load(exe);
+                            pluginsList.Add(Assembly.LoadFile(Path.GetFullPath(exe)));
                         }
                         else Report.Warn("plugin not found");
+
+                        Report.End();
+                        LoadAll(pluginsList);
+                        Report.End();
                     }
                 } catch(Exception e)
                 {
-                    Report.Warn("Could not read plugins file: {0} ({1}", pluginsFile, e.Message);
+                    Report.Warn("Could not load {0} ({1}", pluginsFile, e.Message);
                 }
             }
-            Report.End();
-            LoadAll();
-            Report.End();
         }
 
-        private static void LoadAll()
+        private static void LoadAll(IEnumerable<Assembly> xs)
         {
-            foreach (var ass in Introspection.AllAssemblies)
+            foreach (var ass in Enumerable.Concat(Introspection.AllAssemblies,xs))
             {
                 foreach (var inits in Introspection.GetAllMethodsWithAttribute<OnAardvarkInitAttribute>(ass))
                 {
