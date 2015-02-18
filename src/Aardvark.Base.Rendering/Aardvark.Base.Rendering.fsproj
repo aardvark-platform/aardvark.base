@@ -63,6 +63,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="IndexedGeometry.fs" />
+    <Compile Include="FrameStatistics.fs" />
     <Compile Include="DrawCallInfo.fs" />
     <Compile Include="RenderJob.fs" />
     <Compile Include="GPUVendor.fs" />
