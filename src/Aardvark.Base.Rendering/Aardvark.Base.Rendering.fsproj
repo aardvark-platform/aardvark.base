@@ -62,6 +62,7 @@
     <Reference Include="System.Numerics" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="DefaultSemantic.fs" />
     <Compile Include="IndexedGeometry.fs" />
     <Compile Include="FrameStatistics.fs" />
     <Compile Include="DrawCallInfo.fs" />
