@@ -19,10 +19,12 @@ type BitmapTexture(bmp : System.Drawing.Bitmap) =
 
 [<AllowNullLiteral>]
 type IAttributeProvider =
+    inherit IDisposable
     abstract member TryGetAttribute : name : Symbol * [<Out>] buffer : byref<IBuffer> -> bool
 
 [<AllowNullLiteral>]
 type IUniformProvider =
+    inherit IDisposable
     abstract member TryGetUniform : name : Symbol * [<Out>] uniform : byref<IMod> -> bool
 
 

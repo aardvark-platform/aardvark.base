@@ -1,5 +1,6 @@
 ﻿namespace Aardvark.Base
 
+open System
 
 type TextureDimension =
     | Texture1D = 1
@@ -21,6 +22,7 @@ type FramebufferTexture =
     abstract member GetSize : int -> V2i
 
 type IFramebuffer =
+    inherit IDisposable
     abstract member Size : V2i
     abstract member Handle : obj
     abstract member Attachments : Map<Symbol, IFramebufferOutput>

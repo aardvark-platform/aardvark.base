@@ -6,9 +6,14 @@ open Aardvark.Base.Incremental
 open System.Collections.Generic
 
 
+type RenderingResult(f : IFramebuffer, stats : FrameStatistics) =
+    member x.Framebuffer = f
+    member x.Statistics = stats
+
 type IRenderTask =
+    inherit IDisposable
     inherit IAdaptiveObject
-    abstract member Run : IFramebuffer -> unit
+    abstract member Run : IFramebuffer -> RenderingResult
 
 type IRuntime =
     abstract member CompileClear : IMod<C4f> -> IMod<double> -> IRenderTask
@@ -17,7 +22,7 @@ type IRuntime =
     abstract member CreateTexture : IMod<V2i> -> IMod<PixFormat> -> IMod<int> -> FramebufferTexture
     abstract member CreateRenderbuffer : IMod<V2i> -> IMod<PixFormat> -> IMod<int> -> FramebufferRenderbuffer
 
-    abstract member CreateFramebuffer : Map<Symbol, IFramebufferOutput> -> IFramebuffer
+    abstract member CreateFramebuffer : Map<Symbol, IMod<IFramebufferOutput>> -> IFramebuffer
 
 
 type ShaderStage =

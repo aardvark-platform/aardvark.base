@@ -192,3 +192,16 @@ module Marking =
             x.Outputs.Remove m |> ignore
 
 
+
+    type IAdaptiveObject with
+        member x.AddMarkingCallback(f : unit -> unit) =
+            let self = ref id
+            self := fun () ->
+                f()
+                x.MarkingCallbacks.Add(!self) |> ignore
+
+            x.MarkingCallbacks.Add(!self) |> ignore
+
+            { new IDisposable with member __.Dispose() = x.MarkingCallbacks.Remove !self |> ignore}
+                
+
