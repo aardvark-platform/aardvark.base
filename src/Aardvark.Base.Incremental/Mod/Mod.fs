@@ -34,16 +34,32 @@ type ModRef<'a>(value : 'a) =
             x.Value
 
 module Mod =
-    
+    open Aardvark.Base
+
+    [<OnAardvarkInit>]
+    let initModSystem() =
+        Report.BeginTimed "initializing mod system"
+
+        Aardvark.Base.AgHelpers.unpack <- fun o ->
+            match o with
+                | :? IMod as o -> o.GetValue()
+                | _ -> o
+
+
+        Report.End() |> ignore
+
     type private LazyMod<'a> =
         class
             inherit AdaptiveObject
             val mutable public cache : 'a
             val mutable public compute : unit -> 'a
+            val mutable public scope : Ag.Scope
 
             member x.GetValue() =
                 if x.OutOfDate then
-                    x.cache <- x.compute()
+                    Ag.useScope x.scope (fun () ->
+                        x.cache <- x.compute()
+                    )
                     x.OutOfDate <- false
 
                 x.cache
@@ -56,7 +72,7 @@ module Mod =
                 member x.GetValue() = x.GetValue()
 
             new(compute) =
-                { cache = Unchecked.defaultof<'a>; compute = compute }
+                { cache = Unchecked.defaultof<'a>; compute = compute; scope = Ag.getContext() }
         end
 
     type private EagerMod<'a>(compute : unit -> 'a, eq : Option<'a -> 'a -> bool>) =
@@ -195,3 +211,20 @@ module Mod =
                 m.AddOutput(res)
                 res.GetValue() |> ignore
                 res :> IMod<_>
+
+
+[<AutoOpen>]
+module ModExtensions =
+
+    let rec private extractModTypeArg (t : Type) =
+        if t.IsGenericType && t.GetGenericTypeDefinition() = typedefof<IMod<_>> then
+            Some (t.GetGenericArguments().[0])
+        else
+            let iface = t.GetInterface(typedefof<IMod<_>>.FullName)
+            if iface = null then None
+            else extractModTypeArg iface
+
+    let (|ModOf|_|) (t : Type) =
+        match extractModTypeArg t with
+            | Some t -> ModOf t |> Some
+            | None -> None

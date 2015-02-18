@@ -101,20 +101,25 @@ module ASet =
         m
 
     let map (f : 'a -> 'b) (set : aset<'a>) = 
-        AdaptiveSet(fun () -> set.GetReader() |> map f) :> aset<'b>
+        let scope = Ag.getContext()
+        AdaptiveSet(fun () -> set.GetReader() |> map scope f) :> aset<'b>
 
     let bind (f : 'a -> aset<'b>) (m : IMod<'a>) =
-        AdaptiveSet(fun () -> m |> bind (fun v -> (f v).GetReader())) :> aset<'b>
+        let scope = Ag.getContext()
+        AdaptiveSet(fun () -> m |> bind scope (fun v -> (f v).GetReader())) :> aset<'b>
 
     let bind2 (f : 'a -> 'b -> aset<'c>) (ma : IMod<'a>) (mb : IMod<'b>) =
-        AdaptiveSet(fun () -> bind2 (fun a b -> (f a b).GetReader()) ma mb) :> aset<'c>
+        let scope = Ag.getContext()
+        AdaptiveSet(fun () -> bind2 scope (fun a b -> (f a b).GetReader()) ma mb) :> aset<'c>
 
 
     let collect (f : 'a -> aset<'b>) (set : aset<'a>) = 
-        AdaptiveSet(fun () -> set.GetReader() |> collect (fun v -> (f v).GetReader())) :> aset<'b>
+        let scope = Ag.getContext()
+        AdaptiveSet(fun () -> set.GetReader() |> collect scope (fun v -> (f v).GetReader())) :> aset<'b>
 
     let choose (f : 'a -> Option<'b>) (set : aset<'a>) =
-        AdaptiveSet(fun () -> set.GetReader() |> choose f) :> aset<'b>
+        let scope = Ag.getContext()
+        AdaptiveSet(fun () -> set.GetReader() |> choose scope f) :> aset<'b>
 
     let filter (f : 'a -> bool) (set : aset<'a>) =
         choose (fun v -> if f v then Some v else None) set

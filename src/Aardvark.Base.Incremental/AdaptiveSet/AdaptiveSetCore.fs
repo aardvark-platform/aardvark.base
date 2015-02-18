@@ -85,11 +85,11 @@ module ASetReaders =
             member x.Dispose() = x.Dispose()
  
 
-    type MapReader<'a, 'b>(source : IReader<'a>, f : 'a -> list<'b>) as this =
+    type MapReader<'a, 'b>(scope, source : IReader<'a>, f : 'a -> list<'b>) as this =
         inherit AdaptiveObject()
         do source.AddOutput this  
         
-        let f = Cache(f)
+        let f = Cache(scope, f)
         let content = ReferenceCountingSet<'b>()
 
         member x.Dispose() =
@@ -125,11 +125,11 @@ module ASetReaders =
                 else
                     []       
           
-    type CollectReader<'a, 'b>(source : IReader<'a>, f : 'a -> IReader<'b>) as this =
+    type CollectReader<'a, 'b>(scope, source : IReader<'a>, f : 'a -> IReader<'b>) as this =
         inherit AdaptiveObject()
         do source.AddOutput this
 
-        let f = Cache(f)
+        let f = Cache(scope, f)
         let content = ReferenceCountingSet<'b>()
         let dirtyInner = new DirtyReaderSet<'b>()
 
@@ -204,11 +204,11 @@ module ASetReaders =
                 else
                     []
 
-    type ChooseReader<'a, 'b>(source : IReader<'a>, f : 'a -> Option<'b>) as this =
+    type ChooseReader<'a, 'b>(scope, source : IReader<'a>, f : 'a -> Option<'b>) as this =
         inherit AdaptiveObject()
         do source.AddOutput this
 
-        let f = Cache(f)
+        let f = Cache(scope, f)
         let content = ReferenceCountingSet<'b>()
 
         member x.Dispose() =
@@ -296,11 +296,11 @@ module ASetReaders =
                 else
                     []
 
-    type BindReader<'a, 'b>(source : IMod<'a>, f : 'a -> IReader<'b>) as this =
+    type BindReader<'a, 'b>(scope, source : IMod<'a>, f : 'a -> IReader<'b>) as this =
         inherit AdaptiveObject()
         do source.AddOutput this
 
-        let f = Cache(f)
+        let f = Cache(scope, f)
         let mutable cache = None
         let content = ReferenceCountingSet<'b>()
         let dirtyInner = new DirtyReaderSet<'b>()
@@ -446,22 +446,22 @@ module ASetReaders =
 
             member x.Content = content
 
-    let map (f : 'a -> 'b) (input : IReader<'a>) =
-        new MapReader<_, _>(input, fun c -> [f c]) :> IReader<_>
+    let map scope (f : 'a -> 'b) (input : IReader<'a>) =
+        new MapReader<_, _>(scope, input, fun c -> [f c]) :> IReader<_>
 
-    let collect (f : 'a -> IReader<'b>) (input : IReader<'a>) =
-        new CollectReader<_, _>(input, f) :> IReader<_>
+    let collect scope (f : 'a -> IReader<'b>) (input : IReader<'a>) =
+        new CollectReader<_, _>(scope, input, f) :> IReader<_>
 
-    let bind (f : 'a -> IReader<'b>) (input : IMod<'a>) =
-        new BindReader<_, _>(input, f) :> IReader<_>
+    let bind scope (f : 'a -> IReader<'b>) (input : IMod<'a>) =
+        new BindReader<_, _>(scope, input, f) :> IReader<_>
 
-    let bind2 (f : 'a -> 'b -> IReader<'c>) (ma : IMod<'a>)  (mb : IMod<'b>)=
+    let bind2 scope (f : 'a -> 'b -> IReader<'c>) (ma : IMod<'a>)  (mb : IMod<'b>)=
         let tup = Mod.map2 (fun a b -> (a,b)) ma mb
-        new BindReader<_, _>(tup, fun (a,b) -> f a b) :> IReader<_>
+        new BindReader<_, _>(scope, tup, fun (a,b) -> f a b) :> IReader<_>
 
 
-    let choose (f : 'a -> Option<'b>) (input : IReader<'a>) =
-        new ChooseReader<_, _>(input, f) :> IReader<_>
+    let choose scope (f : 'a -> Option<'b>) (input : IReader<'a>) =
+        new ChooseReader<_, _>(scope, input, f) :> IReader<_>
 
     let ofMod (m : IMod<'a>) =
         new ModReader<_>(m) :> IReader<_>

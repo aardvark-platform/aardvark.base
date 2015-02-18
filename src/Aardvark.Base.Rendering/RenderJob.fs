@@ -96,6 +96,25 @@ type RenderJob =
 
     static member Create() = RenderJob.Create("UNKNWON")
 
+    static member Empty =
+        { Id = -1
+          CreationPath = "EMPTY";
+          AttributeScope = null
+          IsActive = null
+          RenderPass = null
+          DrawCallInfo = null
+          Surface = null
+          DepthTest = null
+          CullMode = null
+          BlendMode = null
+          FillMode = null
+          StencilMode = null
+          Indices = null
+          InstanceAttributes = null
+          VertexAttributes = null
+          Uniforms = null
+        }
+
     override x.GetHashCode() = x.Id
     override x.Equals o =
         match o with

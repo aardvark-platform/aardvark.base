@@ -3,7 +3,7 @@
 open System.Collections.Generic
 
 
-type Cache<'a, 'b>(f : 'a -> 'b) =  
+type Cache<'a, 'b>(scope : Aardvark.Base.Ag.Scope, f : 'a -> 'b) =  
     let cache = Dictionary<obj, 'b * ref<int>>()
 
     member x.Clear(remove : 'b -> unit) =
@@ -16,7 +16,7 @@ type Cache<'a, 'b>(f : 'a -> 'b) =
                 ref := !ref + 1
                 r
             | _ ->
-                let r = f v
+                let r = Aardvark.Base.Ag.useScope scope (fun () -> f v)
                 cache.[v] <- (r, ref 1)
                 r
 

@@ -278,10 +278,10 @@ module AListReaders =
             member x.Dispose() = x.Dispose()
  
 
-    type MapReader<'a, 'b>(f : 'a -> 'b, input : IListReader<'a>) =
+    type MapReader<'a, 'b>(scope, f : 'a -> 'b, input : IListReader<'a>) =
         inherit AdaptiveObject()
         let content = TimeList<'b>()
-        let f = Cache<'a, 'b>(f)
+        let f = Cache<'a, 'b>(scope, f)
 
         member x.Dispose() =
             f.Clear(ignore)
@@ -313,13 +313,13 @@ module AListReaders =
                 else
                     []
 
-    type CollectReader<'a, 'b>(f : 'a -> IListReader<'b>, input : IListReader<'a>) as this =
+    type CollectReader<'a, 'b>(scope, f : 'a -> IListReader<'b>, input : IListReader<'a>) as this =
         inherit AdaptiveObject()
         do input.AddOutput this
 
         let content = TimeList<'b>()
         let dirtyInner = new DirtyListReaderSet<'b>()
-        let f = Cache<'a, IListReader<'b>>(f)
+        let f = Cache<'a, IListReader<'b>>(scope, f)
 
         let mutable rootTime = Time.newRoot()
         let mapping = TimeMappings.NestedTimeMapping.Create(rootTime)
@@ -476,8 +476,8 @@ module AListReaders =
             member x.Content = content
 
 
-    let map (f : 'a -> 'b) (input : IListReader<'a>) =
-        new MapReader<_, _>(f, input) :> IListReader<_>
+    let map (scope) (f : 'a -> 'b) (input : IListReader<'a>) =
+        new MapReader<_, _>(scope, f, input) :> IListReader<_>
 
-    let collect (f : 'a -> IListReader<'b>) (input : IListReader<'a>) =
-        new CollectReader<_, _>(f, input) :> IListReader<_>
+    let collect (scope) (f : 'a -> IListReader<'b>) (input : IListReader<'a>) =
+        new CollectReader<_, _>(scope, f, input) :> IListReader<_>
