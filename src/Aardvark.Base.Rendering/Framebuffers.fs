@@ -12,7 +12,8 @@ type IFramebufferOutput =
     abstract member Samples : int
     abstract member Size : V2i
 
-type FramebufferTexture =
+type IFramebufferTexture =
+    inherit IDisposable
     inherit ITexture
     abstract member Handle : obj
     abstract member Samples : int
@@ -27,12 +28,13 @@ type IFramebuffer =
     abstract member Handle : obj
     abstract member Attachments : Map<Symbol, IFramebufferOutput>
 
-type TextureOutputView = { texture : FramebufferTexture; level : int; slice : int } with
+type TextureOutputView = { texture : IFramebufferTexture; level : int; slice : int } with
     interface IFramebufferOutput with
         member x.Samples = x.texture.Samples
         member x.Size = x.texture.GetSize x.level
 
-type FramebufferRenderbuffer =
+type IFramebufferRenderbuffer =
+    inherit IDisposable
     inherit IFramebufferOutput
     abstract member Handle : obj
     

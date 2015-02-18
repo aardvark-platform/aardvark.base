@@ -16,11 +16,11 @@ type IRenderTask =
     abstract member Run : IFramebuffer -> RenderingResult
 
 type IRuntime =
-    abstract member CompileClear : IMod<C4f> -> IMod<double> -> IRenderTask
+    abstract member CompileClear : IMod<C4f> * IMod<double> -> IRenderTask
     abstract member CompileRender : aset<RenderJob> -> IRenderTask
 
-    abstract member CreateTexture : IMod<V2i> -> IMod<PixFormat> -> IMod<int> -> FramebufferTexture
-    abstract member CreateRenderbuffer : IMod<V2i> -> IMod<PixFormat> -> IMod<int> -> FramebufferRenderbuffer
+    abstract member CreateTexture : IMod<V2i> * IMod<PixFormat> * IMod<int> * IMod<int> -> IFramebufferTexture
+    abstract member CreateRenderbuffer : IMod<V2i> * IMod<PixFormat> * IMod<int> -> IFramebufferRenderbuffer
 
     abstract member CreateFramebuffer : Map<Symbol, IMod<IFramebufferOutput>> -> IFramebuffer
 
