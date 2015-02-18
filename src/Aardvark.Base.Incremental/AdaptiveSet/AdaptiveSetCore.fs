@@ -455,6 +455,10 @@ module ASetReaders =
     let bind (f : 'a -> IReader<'b>) (input : IMod<'a>) =
         new BindReader<_, _>(input, f) :> IReader<_>
 
+    let bind2 (f : 'a -> 'b -> IReader<'c>) (ma : IMod<'a>)  (mb : IMod<'b>)=
+        let tup = Mod.map2 (fun a b -> (a,b)) ma mb
+        new BindReader<_, _>(tup, fun (a,b) -> f a b) :> IReader<_>
+
 
     let choose (f : 'a -> Option<'b>) (input : IReader<'a>) =
         new ChooseReader<_, _>(input, f) :> IReader<_>

@@ -91,11 +91,24 @@ module ASet =
     let ofMod (m : IMod<'a>) =
         AdaptiveSet(fun () -> ofMod m) :> aset<_>
 
+    let toMod (s : aset<'a>) =
+        let r = s.GetReader()
+        let m = Mod.custom (fun () ->
+            r.GetDelta() |> ignore
+            r.Content
+        )
+        r.AddOutput m
+        m
+
     let map (f : 'a -> 'b) (set : aset<'a>) = 
         AdaptiveSet(fun () -> set.GetReader() |> map f) :> aset<'b>
 
     let bind (f : 'a -> aset<'b>) (m : IMod<'a>) =
         AdaptiveSet(fun () -> m |> bind (fun v -> (f v).GetReader())) :> aset<'b>
+
+    let bind2 (f : 'a -> 'b -> aset<'c>) (ma : IMod<'a>) (mb : IMod<'b>) =
+        AdaptiveSet(fun () -> bind2 (fun a b -> (f a b).GetReader()) ma mb) :> aset<'c>
+
 
     let collect (f : 'a -> aset<'b>) (set : aset<'a>) = 
         AdaptiveSet(fun () -> set.GetReader() |> collect (fun v -> (f v).GetReader())) :> aset<'b>
@@ -115,6 +128,10 @@ module ASet =
     let collect' (f : 'a -> aset<'b>) (set : seq<'a>) =
         set |> Seq.map f |> concat'
     
+    let filterM (f : 'a -> IMod<bool>) (s : aset<'a>) =
+        s |> collect (fun v ->
+            v |> f |> bind (fun b -> if b then single v else empty)
+        )
 
 
 

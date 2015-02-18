@@ -33,16 +33,19 @@ type ShaderStage =
     | Pixel = 5
 
 
-type IBackendSurface =
-    inherit ISurface
 
-    abstract member Code : string
-    abstract member EntryPoints : Dictionary<ShaderStage, string>
-    abstract member Uniforms : IUniformProvider
+type BackendSurface(code : string, entryPoints : Dictionary<ShaderStage, string>, uniforms : SymbolDict<IMod>, samplerStates : SymbolDict<SamplerStateDescription>) =
+    interface ISurface
+    member x.Code = code
+    member x.EntryPoints = entryPoints
+    member x.Uniforms = uniforms
+    member x.SamplerStates = uniforms
 
 
+    new(code, entryPoints) = BackendSurface(code, entryPoints, SymDict.empty, SymDict.empty)
+    new(code, entryPoints, uniforms) = BackendSurface(code, entryPoints, uniforms, SymDict.empty)
 
 type IGeneratedSurface =
     inherit ISurface
 
-    abstract member Generate : IRuntime -> IBackendSurface
+    abstract member Generate : IRuntime -> BackendSurface

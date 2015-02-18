@@ -4,7 +4,9 @@ open System
 open Aardvark.Base.Incremental
 open System.Runtime.InteropServices
 
+[<AllowNullLiteral>]
 type ISurface = interface end
+[<AllowNullLiteral>]
 type ITexture = interface end
 type IBuffer = interface end
 

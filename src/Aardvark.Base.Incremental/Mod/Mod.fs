@@ -145,6 +145,42 @@ module Mod =
         m.AddOutput !res |> ignore
         !res :> IMod<_>
 
+    let bind2 (f : 'a -> 'b -> IMod<'c>) (ma : IMod<'a>) (mb : IMod<'b>) =
+        let res = ref <| Unchecked.defaultof<LazyMod<'c>>
+        let inner : ref<Option<'a * 'b * IMod<'c>>> = ref None
+        res := 
+            LazyMod(fun () -> 
+                let a = ma.GetValue()
+                let b = mb.GetValue()
+
+                match !inner with
+                    | Some (va, vb, inner) when Object.Equals(a, va) && Object.Equals(b, vb) ->
+                        inner.GetValue()
+                    | _ ->
+                        let i = f a b
+                        let old = !inner
+                        inner := Some (a, b, i)
+
+                        match old with
+                            | None -> 
+                                i.AddOutput !res |> ignore
+
+                            | Some (_,_,old) when old <> i -> 
+                                old.RemoveOutput !res |> ignore
+                                i.AddOutput !res |> ignore
+
+                            | _ -> ()
+
+                        
+                        i.GetValue()
+                        
+
+            )
+        ma.AddOutput !res |> ignore
+        mb.AddOutput !res |> ignore
+        !res :> IMod<_>
+
+
     let force (m : IMod<'a>) =
         m.GetValue()
 
