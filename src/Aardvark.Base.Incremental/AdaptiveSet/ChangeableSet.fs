@@ -122,3 +122,9 @@ module CSet =
 
     let add (a : 'a) (set : cset<'a>) = set.Add a
     let remove (a : 'a) (set : cset<'a>) = set.Remove a
+
+    let applyDeltas (deltas : list<Delta<'a>>) (xs : cset<'a>) =
+        for d in deltas do
+            match d with 
+              | Add x -> xs.Add x |> ignore
+              | Rem x -> xs.Remove x |> ignore

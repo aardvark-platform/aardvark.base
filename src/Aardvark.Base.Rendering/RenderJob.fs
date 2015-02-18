@@ -7,16 +7,29 @@ open System.Runtime.InteropServices
 [<AllowNullLiteral>]
 type ISurface = interface end
 [<AllowNullLiteral>]
-type ITexture = interface end
+type ITexture = 
+    abstract member WantMipMaps : bool
+
 type IBuffer = interface end
 
 type ArrayBuffer(data : IMod<Array>) =
     interface IBuffer
     member x.Data = data
 
-type BitmapTexture(bmp : System.Drawing.Bitmap) =
-    interface ITexture
+type BitmapTexture(bmp : System.Drawing.Bitmap, wantMipMaps : bool) =
+    member x.WantMipMaps = wantMipMaps
     member x.Bitmap = bmp
+    interface ITexture with
+        member x.WantMipMaps = x.WantMipMaps
+
+
+type FileTexture(fileName : string, wantMipMaps : bool) =
+    do if System.IO.File.Exists fileName |> not then failwithf "File does not exist: %s" fileName
+
+    member x.FileName = fileName
+    member x.WantMipMaps = wantMipMaps
+    interface ITexture with
+        member x.WantMipMaps = x.WantMipMaps
 
 
 [<AllowNullLiteral>]
