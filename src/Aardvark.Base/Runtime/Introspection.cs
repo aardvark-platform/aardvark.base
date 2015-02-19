@@ -470,7 +470,6 @@ namespace Aardvark.Base
                             Report.Line("loading {0}", exe);
                             pluginsList.Add(Assembly.LoadFile(Path.GetFullPath(exe)));
                         }
-                        else Report.Warn("plugin not found");
 
                         Report.End();
                         LoadAll(pluginsList);

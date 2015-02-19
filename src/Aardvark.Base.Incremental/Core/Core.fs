@@ -3,6 +3,7 @@
 open System
 open System.Collections.Generic
 open Aardvark.Base
+open System.Collections.Concurrent
 
 [<AllowNullLiteral>]
 type IAdaptiveObject =
@@ -13,7 +14,7 @@ type IAdaptiveObject =
     abstract member OutOfDate : bool with get, set
     abstract member Inputs : HashSet<IAdaptiveObject>
     abstract member Outputs : WeakSet<IAdaptiveObject>
-    abstract member MarkingCallbacks : HashSet<unit -> unit>
+    abstract member MarkingCallbacks : ConcurrentHashSet<unit -> unit>
 
 
 exception LevelChangedException of IAdaptiveObject
@@ -24,7 +25,7 @@ type Transaction() =
     let q = DuplicatePriorityQueue<IAdaptiveObject, int>(fun o -> o.Level)
     let contained = HashSet<IAdaptiveObject>()
 
-    let getAndClear (set : HashSet<'a>) =
+    let getAndClear (set : ConcurrentHashSet<'a>) =
         let mutable content = []
         for e in set do content <- e::content
         set.Clear()
@@ -80,7 +81,7 @@ type AdaptiveObject() =
     let mutable level = 0
     let inputs = HashSet<IAdaptiveObject>()
     let outputs = WeakSet<IAdaptiveObject>()
-    let callbacks = HashSet<unit -> unit>()
+    let callbacks = ConcurrentHashSet<unit -> unit>()
 
     member x.Id = id
     member x.OutOfDate
@@ -129,7 +130,7 @@ type AdaptiveObject() =
 [<AutoOpen>]
 module Marking =
    
-
+    let changePropagationLock = obj()
 
     let rec private relabel (m : IAdaptiveObject) (minLevel : int) =
         if m.Level < minLevel then
@@ -148,7 +149,7 @@ module Marking =
         current.Value <- Some t
         let r = f()
         current.Value <- old
-        t.Commit()
+        lock changePropagationLock (fun () -> t.Commit())
         r
 
     type TransactionBuilder() =
