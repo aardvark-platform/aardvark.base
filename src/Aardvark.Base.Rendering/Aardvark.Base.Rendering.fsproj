@@ -187,7 +187,7 @@
         </When>
         <Otherwise>
           <ItemGroup>
-            <ProjectReference Include="$(AardvarkBaseProjectPath)">
+            <ProjectReference Include="$(AardvarkBaseIncrementalProjectPath)">
               <Name>Aardvark.Base.Incremental [Project]</Name>
               <Project>{9623ae28-1f72-46e9-a3a7-85fc1a321a73}</Project>
               <Private>False</Private>

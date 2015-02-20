@@ -87,16 +87,39 @@
   <Import Project="$(SolutionPath).targets" Condition="exists('$(SolutionPath).targets')" />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
+    <Reference Include="DevILNet, Version=1.0.0.0, Culture=neutral, processorArchitecture=AMD64">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\libs\DevILNet.dll</HintPath>
+    </Reference>
+    <Reference Include="FreeImageNET, Version=3.15.1.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\libs\FreeImageNET.dll</HintPath>
+    </Reference>
+    <Reference Include="PresentationCore" />
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Drawing" />
+    <Reference Include="System.Xaml" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
+    <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Images\EdgeFilter.cs" />
+    <Compile Include="Images\IPix.cs" />
+    <Compile Include="Images\IPixOld.cs" />
+    <Compile Include="Images\PixImage.cs" />
+    <Compile Include="Images\PixImageCube.cs" />
+    <Compile Include="Images\PixImageDevil.cs" />
+    <Compile Include="Images\PixImageExtensions.cs" />
+    <Compile Include="Images\PixImageFreeImage.cs" />
+    <Compile Include="Images\PixImageLibTiff.cs" />
+    <Compile Include="Images\PixImageMipMap.cs" />
+    <Compile Include="Images\PixImageSystemImage.cs" />
+    <Compile Include="Images\PixImageAndroid.cs" />
     <Compile Include="AlgoDat\AdaBoost.cs" />
     <Compile Include="AlgoDat\ConcurrentHashSet.cs" />
     <Compile Include="AlgoDat\Delegates.cs" />
@@ -126,6 +149,8 @@
     <Compile Include="Geometry\Ellipse2d.cs" />
     <Compile Include="Geo\GeoConsts.cs" />
     <Compile Include="Geo\GeoConversion.cs" />
+    <Compile Include="Images\PixVolume.cs" />
+    <Compile Include="Images\TensorExtensions.cs" />
     <Compile Include="IO\Report.cs" />
     <Compile Include="IO\StreamCodeReader.cs" />
     <Compile Include="IO\StreamCodeReader_auto.cs" />

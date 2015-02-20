@@ -6,6 +6,26 @@ open System.Runtime.InteropServices
 
 [<AllowNullLiteral>]
 type ISurface = interface end
+
+
+//type ITexture =
+//    | FileTexture of path : string * wantMipMaps : bool
+//    | BitmapTexture of bitmap : System.Drawing.Bitmap * wantMipMaps : bool
+//    | PixTexture2d of pixImage : PixImageMipMap * wantMipMaps : bool
+//    | PixTextureCube of pixImage : PixImageCube * wantMipMaps : bool
+//    | PixTexture3d of pixImage : PixVolume * wantMipMaps : bool 
+//    | BackendTexture of obj * bool
+//    with
+//
+//    member x.WantMipMaps =
+//        match x with
+//            | FileTexture(_,w) -> w
+//            | BitmapTexture(_,w) -> w
+//            | PixTexture2d(_,w) -> w
+//            | PixTextureCube(_,w) -> w
+//            | PixTexture3d(_,w) -> w
+//            | BackendTexture(_,w) -> w
+
 [<AllowNullLiteral>]
 type ITexture = 
     abstract member WantMipMaps : bool
@@ -22,11 +42,28 @@ type BitmapTexture(bmp : System.Drawing.Bitmap, wantMipMaps : bool) =
     interface ITexture with
         member x.WantMipMaps = x.WantMipMaps
 
-
 type FileTexture(fileName : string, wantMipMaps : bool) =
     do if System.IO.File.Exists fileName |> not then failwithf "File does not exist: %s" fileName
 
     member x.FileName = fileName
+    member x.WantMipMaps = wantMipMaps
+    interface ITexture with
+        member x.WantMipMaps = x.WantMipMaps
+
+type PixTexture2d(data : PixImageMipMap, wantMipMaps : bool) =
+    member x.PixImageMipMap = data
+    member x.WantMipMaps = wantMipMaps
+    interface ITexture with
+        member x.WantMipMaps = x.WantMipMaps
+
+type PixTextureCube(data : PixImageCube, wantMipMaps : bool) =
+    member x.PixImageCube = data
+    member x.WantMipMaps = wantMipMaps
+    interface ITexture with
+        member x.WantMipMaps = x.WantMipMaps
+
+type PixTexture3d(data : PixVolume, wantMipMaps : bool) =
+    member x.PixVolume = data
     member x.WantMipMaps = wantMipMaps
     interface ITexture with
         member x.WantMipMaps = x.WantMipMaps
