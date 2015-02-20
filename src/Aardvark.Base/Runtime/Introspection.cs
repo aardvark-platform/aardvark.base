@@ -446,16 +446,13 @@ namespace Aardvark.Base
             Report.BeginTimed("initializing aardvark");
             var pluginsFile = "plugins.txt";
             Report.BeginTimed("Loading plugins");
-            if(!File.Exists(pluginsFile))
-            {
-                Report.Warn("Plugin file not found. Assuming you are using no plugins, i.e. everything is referenced and used explicitly.");
-            }
-            else
+            var pluginsList = new List<Assembly>();
+
+            if(File.Exists(pluginsFile))
             {
                 var plugins = File.ReadLines(pluginsFile);
                 try
                 {
-                    List<Assembly> pluginsList = new List<Assembly>();
                     foreach(var plugin in plugins)
                     {
                         var dll = plugin + ".dll";
@@ -471,15 +468,19 @@ namespace Aardvark.Base
                             pluginsList.Add(Assembly.LoadFile(Path.GetFullPath(exe)));
                         }
 
-                        Report.End();
-                        LoadAll(pluginsList);
-                        Report.End();
+                        
                     }
-                } catch(Exception e)
+                } 
+                catch(Exception e)
                 {
                     Report.Warn("Could not load {0} ({1}", pluginsFile, e.Message);
                 }
             }
+
+
+            Report.End();
+            LoadAll(pluginsList);
+            Report.End();
         }
 
         private static void LoadAll(IEnumerable<Assembly> xs)
