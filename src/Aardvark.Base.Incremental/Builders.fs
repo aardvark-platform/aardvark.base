@@ -34,6 +34,8 @@ module ``Computation Expression Builders`` =
         member x.For(s : aset<'a>, f : 'a -> aset<'b>) =
             ASet.collect f s
 
+        member x.For(s : seq<'a>, f : 'a -> aset<'b>) =
+            ASet.collect' f s
 
         member x.Zero() =
             ASet.empty

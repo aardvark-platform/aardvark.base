@@ -122,6 +122,9 @@ module Mod =
     let initConstant (v : 'a) =
         ModRef v :> IMod<_>
 
+    let delay (f : unit -> 'a) =
+        LazyMod(f) :> IMod<_>
+
     let map (f : 'a -> 'b) (m : IMod<'a>) =
         let res = LazyMod(fun () -> m.GetValue() |> f)
         m.AddOutput res
