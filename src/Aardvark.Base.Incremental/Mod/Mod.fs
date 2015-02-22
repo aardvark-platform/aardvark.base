@@ -97,16 +97,20 @@ module Mod =
 
     let registerCallback (f : 'a -> unit) (m : IMod<'a>) =
         let self = ref id
+        let live = ref true
         self := fun () ->
-            try
-                m.GetValue() |> f
-            finally 
-                m.MarkingCallbacks.Add !self |> ignore
+            if !live then
+                try
+                    m.GetValue() |> f
+                finally 
+                    m.MarkingCallbacks.Add !self |> ignore
         
-        !self ()
+        lock m (fun () ->
+            !self ()
+        )
 
         { new IDisposable with
-            member x.Dispose() = m.MarkingCallbacks.Remove !self |> ignore
+            member x.Dispose() = live := false; m.MarkingCallbacks.Remove !self |> ignore
         }
 
     let change (m : ModRef<'a>) (value : 'a) =

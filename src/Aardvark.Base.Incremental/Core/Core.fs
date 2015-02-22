@@ -30,9 +30,10 @@ module IncrementalLog =
 
     let append (op : Operation) (o : IAdaptiveObject) =
         //let mutable taken = false
-        lock log (fun () ->
-            log.Add(op,o)
-        )
+        ()
+//        lock log (fun () ->
+//            log.Add(op,o)
+//        )
 //        
 //        try
 //            logLock.TryEnter(&taken)
@@ -123,6 +124,7 @@ type Transaction() =
                                         Seq.empty
 
                                 with :? LevelChangedException ->
+                                    e.OutOfDate <- false
                                     q.Enqueue e
                                     Seq.empty
                         finally
@@ -292,13 +294,17 @@ module Marking =
 
     type IAdaptiveObject with
         member x.AddMarkingCallback(f : unit -> unit) =
+            let live = ref true
             let self = ref id
             self := fun () ->
-                f()
+                if !live then
+                    f()
+                    x.MarkingCallbacks.Add(!self) |> ignore
+
+            lock x (fun () ->
                 x.MarkingCallbacks.Add(!self) |> ignore
+            )
 
-            x.MarkingCallbacks.Add(!self) |> ignore
-
-            { new IDisposable with member __.Dispose() = x.MarkingCallbacks.Remove !self |> ignore}
+            { new IDisposable with member __.Dispose() = live := false; x.MarkingCallbacks.Remove !self |> ignore}
                 
 

@@ -230,7 +230,7 @@ module AgHelpers =
                                 if (m.DeclaringType.Equals(t) && m.GetParameters().Length = 1) then
                                     yield ( m.Name, m.GetParameters().[0].ParameterType, m )
                         }
-        if t.GetConstructor([||]) <> null then
+        if t.GetConstructor [||] <> null then
             let semObj = Activator.CreateInstance(t)
             for (name,t,m) in attNames do
                 let list = match m_semanticMap.TryGetValue(name) with
@@ -257,9 +257,9 @@ module AgHelpers =
         with
             | _ -> ()
 
-    let internal initializeAg =
-        let registered = ref false
-        fun () ->
+    let private registered = ref false
+
+    let internal initializeAg() =
          if not !registered then
             //glInit()
             Aardvark.Base.Report.BeginTimed "initializing attribute grammar"
@@ -275,6 +275,15 @@ module AgHelpers =
             //let assemblies = AppDomain.CurrentDomain.GetAssemblies() |> Seq.toList
             //Seq.iter registerAssembly assemblies
             Aardvark.Base.Report.End() |> ignore
+
+    let internal reIninitializeAg() =
+        if !registered then
+            m_semanticMap.Clear()
+            m_semanticObjects.Clear()
+            sfCache.Clear()
+            registered := false
+
+        initializeAg()
 
     let mutable public unpack : obj -> obj = id
 
@@ -385,6 +394,13 @@ module Ag =
 
     [<OnAardvarkInit>]
     let initialize () : unit =  AgHelpers.initializeAg()
+
+    let reinitialize () : unit =  
+        AgHelpers.reIninitializeAg()
+        rootScope.Dispose()
+        currentScope.Dispose()
+        rootScope <- new ThreadLocal<Scope>(fun () -> { parent = None; source = null; children = newCWT(); cache = null; path = Some "Root" })
+        currentScope <- new ThreadLocal<Scope>(fun () -> rootScope.Value)
 
     let clearCaches () =    
         rootScope.Dispose()

@@ -191,6 +191,7 @@ namespace Aardvark.Base
                 "SlamToroCli",
                 "System",
                 "WindowsBase",
+                "OpenTK"
             }
             .ForEach(x => s_assembliesThatFailedToLoad.Add(x));
 
@@ -311,7 +312,8 @@ namespace Aardvark.Base
                     name.StartsWith("ScintillaNET") ||
                     name.StartsWith("IKVM") ||
                     name.StartsWith("Super") ||
-                    name.StartsWith("Java")
+                    name.StartsWith("Java") ||
+                    name.StartsWith("OpenTK")
                     )
                 {
                     s_assembliesThatFailedToLoad.Add(name);
