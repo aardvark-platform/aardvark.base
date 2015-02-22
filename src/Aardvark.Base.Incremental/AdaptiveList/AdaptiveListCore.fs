@@ -231,7 +231,7 @@ module AListReaders =
 
                 // if the reader is currently outdated add it to the
                 // dirty set immediately
-                if r.OutOfDate then dirty.Add (t,r) |> ignore
+                lock r (fun () -> if r.OutOfDate then dirty.Add (t,r) |> ignore)
                 true
             else
                 false
@@ -298,8 +298,7 @@ module AListReaders =
             member x.RootTime = input.RootTime
             member x.Content = content
             member x.GetDelta() =
-                if x.OutOfDate then
-                    x.OutOfDate <- false
+                x.EvaluateIfNeeded [] (fun () ->
                     let deltas = input.GetDelta()
 
                     let deltas = 
@@ -310,8 +309,7 @@ module AListReaders =
                         )
 
                     deltas |> apply content
-                else
-                    []
+                )
 
     type CollectReader<'a, 'b>(scope, f : 'a -> IListReader<'b>, input : IListReader<'a>) as this =
         inherit AdaptiveObject()
@@ -355,8 +353,7 @@ module AListReaders =
             member x.RootTime = rootTime
             member x.Content = content
             member x.GetDelta() =
-                if x.OutOfDate then
-                    x.OutOfDate <- false
+                x.EvaluateIfNeeded [] (fun () ->
                     let xs = input.GetDelta()
                 
                     let outerDeltas =
@@ -413,8 +410,7 @@ module AListReaders =
                     let deltas = List.append outerDeltas innerDeltas
 
                     deltas |> apply content
-                else
-                    []
+                )
 
     type BufferedReader<'a>(rootTime : Time, update : unit -> unit, dispose : BufferedReader<'a> -> unit) =
         inherit AdaptiveObject()
@@ -466,12 +462,10 @@ module AListReaders =
             member x.RootTime = rootTime
             member x.GetDelta() =
                 update()
-                if x.OutOfDate then
-                    x.OutOfDate <- false
+                x.EvaluateIfNeeded [] (fun () ->
                     let l = getDeltas()
                     l |> apply content
-                else
-                    []
+                )
 
             member x.Content = content
 

@@ -23,15 +23,16 @@ type ModRef<'a>(value : 'a) =
                 value <- v
                 x.MarkOutdated()
 
+    member x.GetValue() =
+        x.EvaluateIfNeeded x.Value (fun () ->
+            x.Value
+        )
+
     interface IMod with
-        member x.GetValue() = 
-            x.OutOfDate <- false
-            x.Value :> obj
+        member x.GetValue() = x.GetValue() :> obj
 
     interface IMod<'a> with
-        member x.GetValue() = 
-            x.OutOfDate <- false
-            x.Value
+        member x.GetValue() = x.GetValue()
 
 module Mod =
     open Aardvark.Base
@@ -56,13 +57,12 @@ module Mod =
             val mutable public scope : Ag.Scope
 
             member x.GetValue() =
-                if x.OutOfDate then
+                x.EvaluateIfNeeded x.cache (fun () ->
                     Ag.useScope x.scope (fun () ->
                         x.cache <- x.compute()
                     )
-                    x.OutOfDate <- false
-
-                x.cache
+                    x.cache
+                )
 
 
             interface IMod with

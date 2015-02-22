@@ -16,6 +16,52 @@ type IAdaptiveObject =
     abstract member Outputs : WeakSet<IAdaptiveObject>
     abstract member MarkingCallbacks : ConcurrentHashSet<unit -> unit>
 
+module IncrementalLog =
+    open System.Threading
+
+    type Operation =
+        | StartEvaluate = 1
+        | EndEvaluate = 2
+        | StartMark = 3
+        | EndMark = 4
+
+    let private log = List<Operation * IAdaptiveObject>()
+    let private logLock = SpinLock()
+
+    let append (op : Operation) (o : IAdaptiveObject) =
+        //let mutable taken = false
+        lock log (fun () ->
+            log.Add(op,o)
+        )
+//        
+//        try
+//            logLock.TryEnter(&taken)
+//            log.Add(op, o)
+//
+//        finally
+//            if taken then logLock.Exit()
+
+    let inline startEvaluate(o : IAdaptiveObject) =
+        append Operation.StartEvaluate o
+
+    let inline endEvaluate(o : IAdaptiveObject) =
+        append Operation.EndEvaluate o
+
+    let inline startMark(o : IAdaptiveObject) =
+        append Operation.StartMark o
+
+    let inline endMark(o : IAdaptiveObject) =
+        append Operation.EndMark o
+
+    let getLog() =
+        log |> Seq.map (fun (op, o) -> 
+            match op with
+                | Operation.StartEvaluate -> sprintf "S(%d)" o.Id
+                | Operation.EndEvaluate -> sprintf "E(%d)" o.Id
+                | Operation.StartMark -> sprintf "MS(%d)" o.Id
+                | Operation.EndMark -> sprintf "ME(%d)" o.Id
+                | _ -> failwithf "unknown operation: %A" op
+        ) |> String.concat "\r\n"
 
 exception LevelChangedException of IAdaptiveObject
 
@@ -40,8 +86,7 @@ type Transaction() =
 
     member x.Enqueue(e : IAdaptiveObject) =
         if contained.Add e then
-            if not e.OutOfDate then
-                q.Enqueue e
+            q.Enqueue e
 
     member x.Commit() =
         let old = running.Value
@@ -50,27 +95,44 @@ type Transaction() =
             let l, e = q.Dequeue()
             contained.Remove e |> ignore
 
-            if l <> e.Level then
-                q.Enqueue e
-            else
-                e.OutOfDate <- true
+            let outputs = 
+                lock e (fun () ->
+                    if not e.OutOfDate then
+                        try
+                            IncrementalLog.startMark e
+
+                            if l <> e.Level then
+                                q.Enqueue e
+                                Seq.empty
+                            else
+                                e.OutOfDate <- true
                 
-                try 
-                    if e.Mark() then
-                        let mutable failed = false
-                        let callbacks = e.MarkingCallbacks |> getAndClear
-                        for cb in callbacks do 
-                            try cb()
-                            with :? LevelChangedException -> failed <- true
+                                try 
+                                    if e.Mark() then
+                                        let mutable failed = false
+                                        let callbacks = e.MarkingCallbacks |> getAndClear
+                                        for cb in callbacks do 
+                                            try cb()
+                                            with :? LevelChangedException -> failed <- true
 
-                        if failed then raise <| LevelChangedException e
+                                        if failed then raise <| LevelChangedException e
 
-                        for o in e.Outputs do
-                            if not o.OutOfDate then
-                                q.Enqueue o
+                                        e.Outputs :> seq<IAdaptiveObject>
 
-                with :? LevelChangedException ->
-                    q.Enqueue e
+                                    else
+                                        Seq.empty
+
+                                with :? LevelChangedException ->
+                                    q.Enqueue e
+                                    Seq.empty
+                        finally
+                            IncrementalLog.endMark e
+                    else
+                        Seq.empty
+                )
+
+            for o in outputs do
+                q.Enqueue o
 
         running.Value <- old
 
@@ -82,6 +144,28 @@ type AdaptiveObject() =
     let inputs = HashSet<IAdaptiveObject>()
     let outputs = WeakSet<IAdaptiveObject>()
     let callbacks = ConcurrentHashSet<unit -> unit>()
+
+    member x.EvaluateIfNeeded (otherwise : 'a) (f : unit -> 'a) =
+        lock x (fun () ->
+            if x.OutOfDate then
+                IncrementalLog.startEvaluate x
+                let r = f()
+                x.OutOfDate <- false
+                IncrementalLog.endEvaluate x
+                r
+            else
+                otherwise
+        )
+
+    member x.EvaluateAlways (f : unit -> 'a) =
+        lock x (fun () ->
+            IncrementalLog.startEvaluate x
+            let res = f()
+            x.OutOfDate <- false
+            IncrementalLog.endEvaluate x
+            res
+        )
+
 
     member x.Id = id
     member x.OutOfDate
@@ -143,13 +227,22 @@ module Marking =
 
     let private current = new Threading.ThreadLocal<Option<Transaction>>(fun () -> None)
 
+    let getCurrentTransaction() =
+        match Transaction.Running with
+            | Some r -> Some r
+            | None ->
+                match current.Value with
+                    | Some c -> Some c
+                    | None -> None
+
+
     let transact (f : unit -> 'a) =
         let t = Transaction()
         let old = current.Value
         current.Value <- Some t
         let r = f()
         current.Value <- old
-        lock changePropagationLock (fun () -> t.Commit())
+        t.Commit()
         r
 
     type TransactionBuilder() =
@@ -173,14 +266,14 @@ module Marking =
 
     type IAdaptiveObject with
         member x.MarkOutdated () =
-            if not x.OutOfDate then 
-                match Transaction.Running with
-                    | Some t -> t.Enqueue x
-                    | None -> 
-                        match current.Value with
-                            | Some c -> c.Enqueue x
-                            | _ -> 
-                                failwith "cannot mark object without transaction"
+            match getCurrentTransaction() with
+                | Some t -> t.Enqueue x
+                | None -> 
+                    lock x (fun () -> 
+                        if x.OutOfDate then ()
+                        else failwith "cannot mark object without transaction"
+                    )
+                            
 
         member x.AddOutput(m : IAdaptiveObject) =
             m.Inputs.Add x |> ignore

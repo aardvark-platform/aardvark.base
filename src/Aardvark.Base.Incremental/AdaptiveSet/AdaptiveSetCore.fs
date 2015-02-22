@@ -54,7 +54,7 @@ module ASetReaders =
 
             // if the reader is currently outdated add it to the
             // dirty set immediately
-            if r.OutOfDate then dirty.Add r |> ignore
+            lock r (fun () -> if r.OutOfDate then dirty.Add r |> ignore)
             
         member x.Destroy(r : IReader<'a>) =
             // if there exists a subscription we remove and dispose it
@@ -108,8 +108,7 @@ module ASetReaders =
         interface IReader<'b> with
             member x.Content = content
             member x.GetDelta() =
-                if x.OutOfDate then
-                    
+                x.EvaluateIfNeeded [] (fun () ->
                     let input = source.GetDelta()
                     
                     let result = 
@@ -119,11 +118,8 @@ module ASetReaders =
                                 | Rem v -> f.Revoke v |> List.map Rem
                         ) |> apply content
 
-                    x.OutOfDate <- false
                     result
-
-                else
-                    []       
+                )     
           
     type CollectReader<'a, 'b>(scope, source : IReader<'a>, f : 'a -> IReader<'b>) as this =
         inherit AdaptiveObject()
@@ -150,8 +146,7 @@ module ASetReaders =
         interface IReader<'b> with
             member x.Content = content
             member x.GetDelta() =
-                if x.OutOfDate then
-
+                x.EvaluateIfNeeded [] (fun () ->
                     let xs = source.GetDelta()
                     let outerDeltas =
                         xs |> List.collect (fun d ->
@@ -197,12 +192,9 @@ module ASetReaders =
 
                     // concat inner and outer deltas 
                     let deltas = List.append outerDeltas innerDeltas
-
-                    x.OutOfDate <- false
                     deltas |> apply content
 
-                else
-                    []
+                )
 
     type ChooseReader<'a, 'b>(scope, source : IReader<'a>, f : 'a -> Option<'b>) as this =
         inherit AdaptiveObject()
@@ -227,8 +219,7 @@ module ASetReaders =
         interface IReader<'b> with
             member x.Content = content
             member x.GetDelta() =
-                if x.OutOfDate then
-
+                x.EvaluateIfNeeded [] (fun () ->
                     let xs = source.GetDelta()
                     let resultDeltas =
                         xs |> List.choose (fun d ->
@@ -249,11 +240,8 @@ module ASetReaders =
 
                         )
 
-                    x.OutOfDate <- false
                     resultDeltas |> apply content
-
-                else
-                    []
+                )
 
     type ModReader<'a>(source : IMod<'a>) as this =  
         inherit AdaptiveObject()
@@ -275,8 +263,7 @@ module ASetReaders =
         interface IReader<'a> with
             member x.Content = content
             member x.GetDelta() =
-                if x.OutOfDate then
-
+                x.EvaluateIfNeeded [] (fun () ->
                     let v = source.GetValue()
                     let resultDeltas =
                         match cache with
@@ -290,11 +277,8 @@ module ASetReaders =
                                 cache <- Some v
                                 [Add v]
 
-                    x.OutOfDate <- false
-
                     resultDeltas |> apply content
-                else
-                    []
+                )
 
     type BindReader<'a, 'b>(scope, source : IMod<'a>, f : 'a -> IReader<'b>) as this =
         inherit AdaptiveObject()
@@ -321,8 +305,7 @@ module ASetReaders =
         interface IReader<'b> with
             member x.Content = content
             member x.GetDelta() =
-                if x.OutOfDate then
-
+                x.EvaluateIfNeeded [] (fun () ->
                     let v = source.GetValue()
                     let deltas =
                         match cache with
@@ -381,11 +364,9 @@ module ASetReaders =
                     // concat inner and outer deltas 
                     let deltas = List.append outerDeltas innerDeltas
 
-                    x.OutOfDate <- false
                     deltas |> apply content
 
-                else
-                    []
+                )
 
     type BufferedReader<'a>(update : unit -> unit, dispose : BufferedReader<'a> -> unit) =
         inherit AdaptiveObject()
@@ -437,12 +418,10 @@ module ASetReaders =
         interface IReader<'a> with
             member x.GetDelta() =
                 update()
-                if x.OutOfDate then
+                x.EvaluateIfNeeded [] (fun () ->
                     let l = getDeltas()
-                    x.OutOfDate <- false
                     l |> apply content
-                else
-                    []
+                )
 
             member x.Content = content
 

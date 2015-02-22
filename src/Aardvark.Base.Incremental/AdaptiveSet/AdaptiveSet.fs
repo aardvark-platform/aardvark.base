@@ -21,8 +21,8 @@ module ASet =
 
         let bringUpToDate () =
             let r = getReader()
-            if r.OutOfDate then
-                let delta = r.GetDelta ()
+            let delta = r.GetDelta ()
+            if not <| List.isEmpty delta then
                 delta |> apply state |> ignore
                 readers  |> Seq.iter (fun ri ->
                     if ri.IsIncremental then

@@ -13,8 +13,7 @@ type EventSampler(frequency : int) =
     let m_minSampleTime = if m_maxFrequency = 0 then 0 else int (1000.0 / float m_maxFrequency)
     let mutable m_thread = null
     let m_sem = new ManualResetEventSlim()
-    let mutable actions = List<unit -> unit>()
-
+    let mutable actions : list<unit -> unit> = []
 
     member x.Run() =
         let sw = Stopwatch()
@@ -33,7 +32,8 @@ type EventSampler(frequency : int) =
     member x.Process() =    
         m_sem.Wait()
         m_sem.Reset()
-        let myActions = Interlocked.Exchange(&actions, List())
+        let myActions = Interlocked.Exchange(&actions, [])
+
         transact (fun () ->
             for a in myActions do
                 a()
@@ -49,8 +49,20 @@ type EventSampler(frequency : int) =
                 m_thread.Start()
             | _ -> ()
 
-        lock(actions) (fun () -> actions.Add (fun () -> c.Value <- value))
+        let entry = fun () -> c.Value <- value
+
+        let mutable ex = Unchecked.defaultof<_>
+        let mutable current = actions
+
+        while not <| Object.ReferenceEquals(ex, current) do
+            current <- actions
+            let newActions = entry::current
+            ex <- Interlocked.CompareExchange(&actions, newActions, current)
+//
+//        actions <- (fun () -> c.Value <- value)::actions
+//        lock(a) (fun () -> a.Add (fun () -> c.Value <- value))
         m_sem.Set()
+        
 
     member x.Dispose() =
         if m_thread <> null then
@@ -113,6 +125,14 @@ module EventAdapters =
     let private toModMethod = myType.GetMethod("toMod").GetGenericMethodDefinition()
     let private toEventMethod = myType.GetMethod("toEvent").GetGenericMethodDefinition()
 
+    let private change (m : AdapterMod<'a>) (value : 'a) =
+        match Marking.getCurrentTransaction() with
+            | Some r ->
+                // implicitly enqueues the AdapterMod 
+                m.Value <- value
+            | None ->
+                sampler.Enqueue(m, value)
+
     let toMod (e : Aardvark.Base.IEvent<'a>) : IMod<'a> =
         match e with
             | :? AdapterEvent<'a> as a -> a.Mod
@@ -122,7 +142,7 @@ module EventAdapters =
                     | _ ->
                         let r = ref <| Unchecked.defaultof<_>
                         let s = e.Values.Subscribe(fun v ->
-                            sampler.Enqueue(!r, v)
+                            change !r v
                         )
                         r := AdapterMod(e, e.Latest, s)
                         modCache.Add(e, !r)
