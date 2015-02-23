@@ -528,9 +528,14 @@ module Ag =
     let inline private tryGetInhAttribute (o : obj) (name : string) =
         match o with
             | :? Scope as scope -> tryGetInhAttributeScope scope name
-            | _ -> match currentScope.Value.parent with
-                        | Some parent -> tryGetInhAttributeScope (parent.GetChildScope o) name
-                        | None -> None
+            | _ -> 
+                let s = rootScope.Value.GetChildScope(o)
+                match s.cache.TryGetValue name with
+                    | (true, v) -> v
+                    | _ ->
+                        match currentScope.Value.parent with
+                            | Some parent -> tryGetInhAttributeScope (parent.GetChildScope o) name
+                            | None -> None
 
     let private tryGetSynAttribute (o : obj) (name : string) =
         match o with
@@ -541,9 +546,14 @@ module Ag =
     //dynamic operators
     let (?<-) (node : obj) (name : string) (value : obj) : unit =
         if logging then Log.line "top level inh write for sem: %s on syntactic entity: %A" name (node.GetType())
-        //simply write to valueStore since the caller will then get the desired
-        //value from there
-        setValueStore node name value
+        
+        if currentScope.Value = rootScope.Value then
+            let scope = currentScope.Value.GetChildScope(node)
+            scope.AddCache name (Some value) |> ignore
+        else
+            //simply write to valueStore since the caller will then get the desired
+            //value from there
+            setValueStore node name value
 
     let private functions = Dictionary<System.Type, ref<obj> * obj>()
     
