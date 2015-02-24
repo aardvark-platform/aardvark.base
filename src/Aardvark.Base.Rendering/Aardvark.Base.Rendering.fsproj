@@ -66,6 +66,8 @@
     <Compile Include="IndexedGeometry.fs" />
     <Compile Include="FrameStatistics.fs" />
     <Compile Include="DrawCallInfo.fs" />
+    <Compile Include="Buffers.fs" />
+    <Compile Include="Textures.fs" />
     <Compile Include="RenderJob.fs" />
     <Compile Include="GPUVendor.fs" />
     <Compile Include="Framebuffers.fs" />

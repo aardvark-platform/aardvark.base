@@ -8,71 +8,10 @@ open System.Runtime.InteropServices
 type ISurface = interface end
 
 
-//type ITexture =
-//    | FileTexture of path : string * wantMipMaps : bool
-//    | BitmapTexture of bitmap : System.Drawing.Bitmap * wantMipMaps : bool
-//    | PixTexture2d of pixImage : PixImageMipMap * wantMipMaps : bool
-//    | PixTextureCube of pixImage : PixImageCube * wantMipMaps : bool
-//    | PixTexture3d of pixImage : PixVolume * wantMipMaps : bool 
-//    | BackendTexture of obj * bool
-//    with
-//
-//    member x.WantMipMaps =
-//        match x with
-//            | FileTexture(_,w) -> w
-//            | BitmapTexture(_,w) -> w
-//            | PixTexture2d(_,w) -> w
-//            | PixTextureCube(_,w) -> w
-//            | PixTexture3d(_,w) -> w
-//            | BackendTexture(_,w) -> w
-
-[<AllowNullLiteral>]
-type ITexture = 
-    abstract member WantMipMaps : bool
-
-type IBuffer = interface end
-
-type ArrayBuffer(data : IMod<Array>) =
-    interface IBuffer
-    member x.Data = data
-
-type BitmapTexture(bmp : System.Drawing.Bitmap, wantMipMaps : bool) =
-    member x.WantMipMaps = wantMipMaps
-    member x.Bitmap = bmp
-    interface ITexture with
-        member x.WantMipMaps = x.WantMipMaps
-
-type FileTexture(fileName : string, wantMipMaps : bool) =
-    do if System.IO.File.Exists fileName |> not then failwithf "File does not exist: %s" fileName
-
-    member x.FileName = fileName
-    member x.WantMipMaps = wantMipMaps
-    interface ITexture with
-        member x.WantMipMaps = x.WantMipMaps
-
-type PixTexture2d(data : PixImageMipMap, wantMipMaps : bool) =
-    member x.PixImageMipMap = data
-    member x.WantMipMaps = wantMipMaps
-    interface ITexture with
-        member x.WantMipMaps = x.WantMipMaps
-
-type PixTextureCube(data : PixImageCube, wantMipMaps : bool) =
-    member x.PixImageCube = data
-    member x.WantMipMaps = wantMipMaps
-    interface ITexture with
-        member x.WantMipMaps = x.WantMipMaps
-
-type PixTexture3d(data : PixVolume, wantMipMaps : bool) =
-    member x.PixVolume = data
-    member x.WantMipMaps = wantMipMaps
-    interface ITexture with
-        member x.WantMipMaps = x.WantMipMaps
-
-
 [<AllowNullLiteral>]
 type IAttributeProvider =
     inherit IDisposable
-    abstract member TryGetAttribute : name : Symbol * [<Out>] buffer : byref<IBuffer> -> bool
+    abstract member TryGetAttribute : name : Symbol * [<Out>] buffer : byref<BufferView> -> bool
 
 [<AllowNullLiteral>]
 type IUniformProvider =
@@ -133,25 +72,6 @@ type RenderJob =
 
     static member Create() = RenderJob.Create("UNKNWON")
 
-    static member Empty =
-        { Id = -1
-          CreationPath = "EMPTY";
-          AttributeScope = null
-          IsActive = null
-          RenderPass = null
-          DrawCallInfo = null
-          Surface = null
-          DepthTest = null
-          CullMode = null
-          BlendMode = null
-          FillMode = null
-          StencilMode = null
-          Indices = null
-          InstanceAttributes = null
-          VertexAttributes = null
-          Uniforms = null
-        }
-
     override x.GetHashCode() = x.Id
     override x.Equals o =
         match o with
@@ -163,3 +83,49 @@ type RenderJob =
             match o with
                 | :? RenderJob as o -> compare x.Id o.Id
                 | _ -> failwith "uncomparable"
+
+[<AutoOpen>]
+module RenderJobExtensions =
+
+    let private emptyUniforms =
+        { new IUniformProvider with
+            member x.TryGetUniform(name : Symbol, uniform : byref<IMod>) = 
+                false
+            member x.Dispose() =
+                ()
+        }
+
+    let private emptyAttributes =
+        { new IAttributeProvider with
+            member x.TryGetAttribute(name : Symbol, uniform : byref<BufferView>) = 
+                false
+            member x.Dispose() =
+                ()
+        }
+
+    let private empty =
+        { Id = -1
+          CreationPath = "EMPTY";
+          AttributeScope = Ag.emptyScope
+          IsActive = null
+          RenderPass = null
+          DrawCallInfo = null
+          Surface = null
+          DepthTest = null
+          CullMode = null
+          BlendMode = null
+          FillMode = null
+          StencilMode = null
+          Indices = null
+          InstanceAttributes = emptyAttributes
+          VertexAttributes = emptyAttributes
+          Uniforms = emptyUniforms
+        }
+
+
+    type RenderJob with
+        static member Empty =
+            empty
+
+        member x.IsValid =
+            x.Id >= 0
