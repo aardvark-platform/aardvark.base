@@ -6,8 +6,23 @@ open System.Collections
 open System.Collections.Generic
 open System.Collections.Concurrent
 
+
+/// <summary>
+/// represents a set of elements while not introducing
+/// a "garbage-collector-edge". This is desirable in 
+/// scenarios where one needs to enumerate a set of things
+/// which shall be allowed to be garbage-collected.
+/// </summary>
 type WeakSet<'a when 'a : not struct> private(inner : ConcurrentDictionary<Weak<'a>, int>) =
         
+    // we use ConcurrentDictionary here for our implementation
+    // since it can safely be modified while being enumerated
+    // Note that we don't actually need support for concurrency
+    // here but it makes the implementation easier.
+    // Also note that the WeakSet is only pruned during enumeration
+    // which means that all contained Weak objects may leak until the
+    // set is enumerated (this of course doesn't apply to the weak's content)
+
     member internal x.Inner = inner
 
     interface IEnumerable with
@@ -45,7 +60,7 @@ type WeakSet<'a when 'a : not struct> private(inner : ConcurrentDictionary<Weak<
 
     new() = WeakSet(ConcurrentDictionary(1,0))
 
-
+// defines an enumerator cleaning the WeakSet during its enumeration
 and private WeakSetEnumerator<'a when 'a : not struct> =
     struct
         val mutable public inputSet : ConcurrentDictionary<Weak<'a>, int>

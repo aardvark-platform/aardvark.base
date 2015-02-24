@@ -5,6 +5,11 @@ open System
 open System.Collections
 open System.Collections.Generic
 
+/// <summary>
+/// represents a sequence containing values annotated with
+/// a Time (order maintenance). This list can be used to 
+/// efficiently insert/remove timed values.
+/// </summary>
 type TimeList<'a>() =
     let cache = Dictionary<Time, 'a>()
     let mutable rep = Time.newRoot()
