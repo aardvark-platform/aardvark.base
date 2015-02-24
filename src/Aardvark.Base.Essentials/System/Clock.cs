@@ -182,7 +182,7 @@ namespace Aardvark.Base
 
         #region Awaitable
 
-        private struct FutureAwaiter : IAwaiter<Time>
+        private struct FutureAwaiter : IAwaiter<TimeValue>
         {
             private FutureAwaitable m_future;
             private Action m_continuation;
@@ -212,7 +212,7 @@ namespace Aardvark.Base
                 }
             }
 
-            public Time GetResult()
+            public TimeValue GetResult()
             {
                 DateTime current;
                 var span = m_future.Clock.GetTimeSpanForContinuation(m_continuation, out current);
@@ -220,7 +220,7 @@ namespace Aardvark.Base
                 MakeSane(ref span);
 
 
-                return new Time(current, span.TotalSeconds);
+                return new TimeValue(current, span.TotalSeconds);
             }
 
             public void OnCompleted(Action continuation)
@@ -251,7 +251,7 @@ namespace Aardvark.Base
             }
         }
 
-        private class FutureAwaitable : IAwaitable<Time>
+        private class FutureAwaitable : IAwaitable<TimeValue>
         {
             private Clock m_time;
             private int m_timeOut;
@@ -272,7 +272,7 @@ namespace Aardvark.Base
                 get { return m_time; }
             }
 
-            public IAwaiter<Time> GetAwaiter()
+            public IAwaiter<TimeValue> GetAwaiter()
             {
                 return new FutureAwaiter(this);
             }
@@ -282,7 +282,7 @@ namespace Aardvark.Base
                 return new FutureAwaiter(this);
             }
 
-            public Time Result
+            public TimeValue Result
             {
                 get { throw new NotSupportedException(); }
             }
@@ -301,14 +301,14 @@ namespace Aardvark.Base
         /// Awaits a time being approximately "timeout" milliseconds in the future.
         /// If timeout is zero the maximal clock frequency limits the execution.
         /// </summary>
-        public static IAwaitable<Time> Future(this Clock clock, int timeoutInMilliSeconds = 0)
+        public static IAwaitable<TimeValue> Future(this Clock clock, int timeoutInMilliSeconds = 0)
         {
             return new FutureAwaitable(clock, timeoutInMilliSeconds);
         }
 
         /// <summary>
         /// </summary>
-        public static IAwaitable<Time> Tick(this Clock clock)
+        public static IAwaitable<TimeValue> Tick(this Clock clock)
         {
             return new FutureAwaitable(clock, 0);
         }

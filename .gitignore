@@ -10,3 +10,4 @@ obj
 /src/Aardvark.sln.ide
 *.swp
 Bin
+*.*~

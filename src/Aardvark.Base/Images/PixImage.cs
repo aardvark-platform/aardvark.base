@@ -361,7 +361,6 @@ namespace Aardvark.Base
         /// </summary>
         internal static void CompressPixels(PixImage<byte> pixImage, PixImage<byte> bitImage)
         {
-            long sx = pixImage.Size.X, sy = pixImage.Size.Y;
             var bitData = bitImage.Volume.Data; int bi = 0; byte bit = 0x80;
             var pixData = pixImage.Volume.Data;
 
@@ -382,7 +381,6 @@ namespace Aardvark.Base
         /// </summary>
         internal static void ExpandPixels(PixImage<byte> bitImage, PixImage<byte> pixImage)
         {
-            long sx = pixImage.Size.X, sy = pixImage.Size.Y;
             var bitData = bitImage.Volume.Data; int bi = 0; byte bit = 0x80;
             var pixData = pixImage.Volume.Data;
 

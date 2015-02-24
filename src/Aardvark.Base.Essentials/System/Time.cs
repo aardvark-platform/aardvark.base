@@ -4,7 +4,7 @@ namespace Aardvark.Base
 {
     /// <summary>
     /// </summary>
-    public struct Time
+    public struct TimeValue
     {
         /// <summary>
         /// </summary>
@@ -18,7 +18,7 @@ namespace Aardvark.Base
 
         /// <summary>
         /// </summary>
-        public Time(DateTime t, double delta)
+        public TimeValue(DateTime t, double delta)
         {
             T = t;
             Delta = delta;
@@ -30,9 +30,9 @@ namespace Aardvark.Base
 
         /// <summary>
         /// </summary>
-        public static Time Now
+        public static TimeValue Now
         {
-            get { return new Time(DateTime.Now, 0.0); }
+            get { return new TimeValue(DateTime.Now, 0.0); }
         }
 
         #endregion

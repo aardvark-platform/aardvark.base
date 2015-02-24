@@ -649,7 +649,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Creates a task that will complete after a time delay.
         /// </summary>
-        public static IAwaitable<Time> Delay(uint milliseconds, CancellationToken ct)
+        public static IAwaitable<TimeValue> Delay(uint milliseconds, CancellationToken ct)
         {
             return GlobalClock.Future((int)milliseconds).WithCancellation(ct);
         }
@@ -657,7 +657,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Creates a task that will complete after a time delay.
         /// </summary>
-        public static IAwaitable<Time> Delay(uint milliseconds)
+        public static IAwaitable<TimeValue> Delay(uint milliseconds)
         {
             return GlobalClock.Future((int)milliseconds);
         }
@@ -665,7 +665,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Creates a task that will complete after a time delay.
         /// </summary>
-        public static IAwaitable<Time> Delay(TimeSpan delay, CancellationToken ct)
+        public static IAwaitable<TimeValue> Delay(TimeSpan delay, CancellationToken ct)
         {
             return Delay((uint)delay.TotalMilliseconds, ct);
         }
@@ -673,7 +673,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Creates a task that will complete after a time delay.
         /// </summary>
-        public static IAwaitable<Time> Delay(TimeSpan delay)
+        public static IAwaitable<TimeValue> Delay(TimeSpan delay)
         {
             return Delay((uint)delay.TotalMilliseconds);
         }
@@ -681,7 +681,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Creates a task that will complete after the shortest possible time delay.
         /// </summary>
-        public static IAwaitable<Time> Tick
+        public static IAwaitable<TimeValue> Tick
         {
             get { return GlobalClock.Tick(); }
         }
