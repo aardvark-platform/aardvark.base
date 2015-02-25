@@ -25,6 +25,16 @@ type WeakSet<'a when 'a : not struct> private(inner : ConcurrentDictionary<Weak<
 
     member internal x.Inner = inner
 
+    interface ICollection<'a> with
+        member x.Add v = x.Add v |> ignore
+        member x.Remove v = x.Remove v
+        member x.Contains v = x.Contains v
+        member x.Clear() = x.Clear()
+        member x.CopyTo(arr,idx) = x.CopyTo(arr,idx)
+        member x.Count = x.Count
+        member x.IsReadOnly = false
+
+
     interface IEnumerable with
         member x.GetEnumerator() = new WeakSetEnumerator<'a>(x) :> _
 
@@ -33,6 +43,18 @@ type WeakSet<'a when 'a : not struct> private(inner : ConcurrentDictionary<Weak<
 
     override x.ToString() =
         x |> Seq.toList |> sprintf "weakSet %A"
+
+    member x.CopyTo(arr : 'a[], index : int) =
+        let mutable index = index
+        for e in x do
+            arr.[index] <- e
+            index <- index + 1
+
+    member x.Count =
+        inner.Count
+
+    member x.Contains(value : 'a) =
+        inner.ContainsKey (Weak value)
 
     member x.Add (value : 'a) =
         inner.TryAdd (Weak value, 0)
@@ -54,7 +76,7 @@ type WeakSet<'a when 'a : not struct> private(inner : ConcurrentDictionary<Weak<
         let mutable foo = 0
         for r in rem do
             inner.TryRemove (r, &foo) |> ignore
-
+            
     member x.IsEmpty =
         inner.Count = 0
 

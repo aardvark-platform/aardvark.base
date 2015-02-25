@@ -51,28 +51,6 @@
   <Import Project="..\..\..\..\build\Aardvark.targets" Condition="exists('..\..\..\..\build\Aardvark.targets')" />
   <Import Project="$(SolutionPath).targets" Condition="exists('$(SolutionPath).targets')" />
   <Import Project="$(FSharpTargetsPath)" />
-  <ItemGroup>
-    <Reference Include="mscorlib" />
-    <Reference Include="FSharp.Core, Version=$(TargetFSharpCoreVersion), Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="System" />
-    <Reference Include="System.Core" />
-    <Reference Include="System.Drawing" />
-    <Reference Include="System.Numerics" />
-  </ItemGroup>
-  <ItemGroup>
-    <Compile Include="DefaultSemantic.fs" />
-    <Compile Include="IndexedGeometry.fs" />
-    <Compile Include="FrameStatistics.fs" />
-    <Compile Include="DrawCallInfo.fs" />
-    <Compile Include="Buffers.fs" />
-    <Compile Include="Textures.fs" />
-    <Compile Include="RenderJob.fs" />
-    <Compile Include="GPUVendor.fs" />
-    <Compile Include="Framebuffers.fs" />
-    <Compile Include="Runtime.fs" />
-  </ItemGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">
@@ -240,4 +218,27 @@
       </ItemGroup>
     </Otherwise>
   </Choose>
+  <ItemGroup>
+    <Compile Include="DefaultSemantic.fs" />
+    <Compile Include="IndexedGeometry.fs" />
+    <Compile Include="FrameStatistics.fs" />
+    <Compile Include="DrawCallInfo.fs" />
+    <Compile Include="Buffers.fs" />
+    <Compile Include="Textures.fs" />
+    <Compile Include="RenderJob.fs" />
+    <Compile Include="GPUVendor.fs" />
+    <Compile Include="Framebuffers.fs" />
+    <Compile Include="Runtime.fs" />
+    <Content Include="app.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Reference Include="mscorlib" />
+    <Reference Include="FSharp.Core, Version=$(TargetFSharpCoreVersion), Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Numerics" />
+  </ItemGroup>
 </Project>

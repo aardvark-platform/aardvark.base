@@ -5,6 +5,7 @@ open System
 [<AllowNullLiteral>]
 type IMod =
     inherit IAdaptiveObject
+    abstract member IsConstant : bool
     abstract member GetValue : unit -> obj
 
 [<AllowNullLiteral>]
@@ -29,6 +30,7 @@ type ModRef<'a>(value : 'a) =
         )
 
     interface IMod with
+        member x.IsConstant = false
         member x.GetValue() = x.GetValue() :> obj
 
     interface IMod<'a> with
@@ -38,7 +40,7 @@ module Mod =
     open Aardvark.Base
 
     [<OnAardvarkInit>]
-    let initModSystem() =
+    let initialize() =
         Report.BeginTimed "initializing mod system"
 
         Aardvark.Base.AgHelpers.unpack <- fun o ->
@@ -66,6 +68,7 @@ module Mod =
 
 
             interface IMod with
+                member x.IsConstant = false
                 member x.GetValue() = x.GetValue() :> obj
 
             interface IMod<'a> with
@@ -91,6 +94,47 @@ module Mod =
                 true
 
         new(compute) = EagerMod(compute, None)
+
+    type private ConstantMod<'a> =
+        class
+            inherit ConstantObject
+            val mutable public compute : unit -> 'a
+            val mutable public value : Option<'a>
+
+            member x.GetValue() = 
+                match x.value with
+                    | Some v -> v
+                    | None -> 
+                        let v = x.compute()
+                        x.value <- Some v
+                        v
+            
+            interface IMod with
+                member x.IsConstant = true
+                member x.GetValue() = x.GetValue() :> obj
+
+            interface IMod<'a> with
+                member x.GetValue() = x.GetValue()
+
+            
+            override x.GetHashCode() =
+                let v = x.GetValue() :> obj
+                v.GetHashCode()
+
+            override x.Equals o =
+                match o with
+                    | :? IMod<'a> as o when o.IsConstant ->
+                        System.Object.Equals(x.GetValue(), o.GetValue())
+                    | _ -> false
+
+            override x.ToString() =
+                x.GetValue().ToString()
+
+            private new(value : Option<'a>, compute : unit -> 'a) = { value = value; compute = compute }
+
+            static member Value(value : 'a) = ConstantMod(Some value, unbox) :> IMod<_>
+            static member Lazy(compute : unit -> 'a) = ConstantMod(None, compute) :> IMod<_>
+        end
 
     let custom (compute : unit -> 'a) : IMod<'a> =
         LazyMod(compute) :> IMod<_>
@@ -120,88 +164,110 @@ module Mod =
         ModRef v
 
     let initConstant (v : 'a) =
-        ModRef v :> IMod<_>
+        ConstantMod.Value v
 
     let delay (f : unit -> 'a) =
-        LazyMod(f) :> IMod<_>
+        ConstantMod.Lazy f
 
     let map (f : 'a -> 'b) (m : IMod<'a>) =
-        let res = LazyMod(fun () -> m.GetValue() |> f)
-        m.AddOutput res
-        res :> IMod<_>
+        if m.IsConstant then
+            ConstantMod.Lazy (fun () -> m.GetValue() |> f)
+        else
+            let res = LazyMod(fun () -> m.GetValue() |> f)
+            m.AddOutput res
+            res :> IMod<_>
 
     let map2 (f : 'a -> 'b -> 'c) (m1 : IMod<'a>) (m2 : IMod<'b>)=
-        let res = LazyMod(fun () -> f (m1.GetValue()) (m2.GetValue()))
-        m1.AddOutput res
-        m2.AddOutput res
-        res :> IMod<_>
+        match m1.IsConstant, m2.IsConstant with
+            | (true, true) -> 
+                delay (fun () -> f (m1.GetValue()) (m2.GetValue()))
+            | (true, false) -> 
+                map (fun b -> f (m1.GetValue()) b) m2
+            | (false, true) -> 
+                map (fun a -> f a (m2.GetValue())) m1
+            | (false, false) ->
+                let res = LazyMod(fun () -> f (m1.GetValue()) (m2.GetValue()))
+                m1.AddOutput res
+                m2.AddOutput res
+                res :> IMod<_>
 
 
-    let bind (f : 'a -> IMod<'b>) (m : IMod<'a>) =
-        let res = ref <| Unchecked.defaultof<LazyMod<'b>>
-        let inner : ref<Option<'a * IMod<'b>>> = ref None
-        res := 
-            LazyMod(fun () -> 
-                let v = m.GetValue()
+    let bind (f : 'a -> #IMod<'b>) (m : IMod<'a>) =
+        if m.IsConstant then
+            m.GetValue() |> f :> IMod<_>
+        else
+            let res = ref <| Unchecked.defaultof<LazyMod<'b>>
+            let inner : ref<Option<'a * IMod<'b>>> = ref None
+            res := 
+                LazyMod(fun () -> 
+                    let v = m.GetValue()
 
-                match !inner with
-                    | Some (v', inner) when Object.Equals(v, v') ->
-                        inner.GetValue()
-                    | _ ->
-                        let i = f v
-                        let old = !inner
-                        inner := Some (v, i)
+                    match !inner with
+                        | Some (v', inner) when Object.Equals(v, v') ->
+                            inner.GetValue()
+                        | _ ->
+                            let i = f v :> IMod<_>
+                            let old = !inner
+                            inner := Some (v, i)
 
-                        match old with
-                            | None -> i.AddOutput !res |> ignore
-                            | Some (_,old) when old <> i -> 
-                                old.RemoveOutput !res |> ignore
-                                i.AddOutput !res |> ignore
+                            match old with
+                                | None -> i.AddOutput !res |> ignore
+                                | Some (_,old) when old <> i -> 
+                                    old.RemoveOutput !res |> ignore
+                                    i.AddOutput !res |> ignore
 
-                            | _ -> ()
-
-                        
-                        i.GetValue()
-                        
-
-            )
-        m.AddOutput !res |> ignore
-        !res :> IMod<_>
-
-    let bind2 (f : 'a -> 'b -> IMod<'c>) (ma : IMod<'a>) (mb : IMod<'b>) =
-        let res = ref <| Unchecked.defaultof<LazyMod<'c>>
-        let inner : ref<Option<'a * 'b * IMod<'c>>> = ref None
-        res := 
-            LazyMod(fun () -> 
-                let a = ma.GetValue()
-                let b = mb.GetValue()
-
-                match !inner with
-                    | Some (va, vb, inner) when Object.Equals(a, va) && Object.Equals(b, vb) ->
-                        inner.GetValue()
-                    | _ ->
-                        let i = f a b
-                        let old = !inner
-                        inner := Some (a, b, i)
-
-                        match old with
-                            | None -> 
-                                i.AddOutput !res |> ignore
-
-                            | Some (_,_,old) when old <> i -> 
-                                old.RemoveOutput !res |> ignore
-                                i.AddOutput !res |> ignore
-
-                            | _ -> ()
+                                | _ -> ()
 
                         
-                        i.GetValue()
+                            i.GetValue()
                         
 
-            )
-        ma.AddOutput !res |> ignore
-        mb.AddOutput !res |> ignore
-        !res :> IMod<_>
+                )
+            m.AddOutput !res |> ignore
+            !res :> IMod<_>
+
+    let bind2 (f : 'a -> 'b -> #IMod<'c>) (ma : IMod<'a>) (mb : IMod<'b>) =
+        match ma.IsConstant, mb.IsConstant with
+            | (true, true) ->
+                f (ma.GetValue()) (mb.GetValue()) :> IMod<_>
+            | (false, true) ->
+                bind (fun a -> (f a (mb.GetValue())) :> IMod<_>) ma
+            | (true, false) ->
+                bind (fun b -> (f (ma.GetValue()) b) :> IMod<_>) mb
+            | (false, false) ->
+                let res = ref <| Unchecked.defaultof<LazyMod<'c>>
+                let inner : ref<Option<'a * 'b * IMod<'c>>> = ref None
+                res := 
+                    LazyMod(fun () -> 
+                        let a = ma.GetValue()
+                        let b = mb.GetValue()
+
+                        match !inner with
+                            | Some (va, vb, inner) when Object.Equals(a, va) && Object.Equals(b, vb) ->
+                                inner.GetValue()
+                            | _ ->
+                                let i = f a b :> IMod<_>
+                                let old = !inner
+                                inner := Some (a, b, i)
+
+                                match old with
+                                    | None -> 
+                                        i.AddOutput !res |> ignore
+
+                                    | Some (_,_,old) when old <> i -> 
+                                        old.RemoveOutput !res |> ignore
+                                        i.AddOutput !res |> ignore
+
+                                    | _ -> ()
+
+                        
+                                i.GetValue()
+                        
+
+                    )
+                ma.AddOutput !res |> ignore
+                mb.AddOutput !res |> ignore
+                !res :> IMod<_>
 
 
     let force (m : IMod<'a>) =
@@ -211,13 +277,16 @@ module Mod =
         m.OutOfDate
 
     let always (m : IMod<'a>) =
-        match m with
-            | :? EagerMod<'a> -> m
-            | _ ->
-                let res = EagerMod(fun () -> m.GetValue())
-                m.AddOutput(res)
-                res.GetValue() |> ignore
-                res :> IMod<_>
+        if m.IsConstant then 
+            m
+        else
+            match m with
+                | :? EagerMod<'a> -> m
+                | _ ->
+                    let res = EagerMod(fun () -> m.GetValue())
+                    m.AddOutput(res)
+                    res.GetValue() |> ignore
+                    res :> IMod<_>
 
 
 [<AutoOpen>]
@@ -235,3 +304,4 @@ module ModExtensions =
         match extractModTypeArg t with
             | Some t -> ModOf t |> Some
             | None -> None
+
