@@ -24,7 +24,7 @@ type aset<'a> =
 
 
 
-module ASetReaders =
+module private ASetReaders =
 
 
     let apply (set : ReferenceCountingSet<'a>) (deltas : list<Delta<'a>>) =
@@ -280,94 +280,6 @@ module ASetReaders =
                     resultDeltas |> apply content
                 )
 
-    type BindReader<'a, 'b>(scope, source : IMod<'a>, f : 'a -> IReader<'b>) as this =
-        inherit AdaptiveObject()
-        do source.AddOutput this
-
-        let f = Cache(scope, f)
-        let mutable cache = None
-        let content = ReferenceCountingSet<'b>()
-        let dirtyInner = new DirtyReaderSet<'b>()
-
-        member x.Dispose() =
-            source.RemoveOutput this
-            f.Clear(fun r -> r.RemoveOutput this; r.Dispose())
-            content.Clear()
-            dirtyInner.Dispose()
-
-        override x.Finalize() =
-            try x.Dispose() 
-            with _ -> ()
-
-        interface IDisposable with
-            member x.Dispose() = x.Dispose()
-
-        interface IReader<'b> with
-            member x.Content = content
-            member x.GetDelta() =
-                x.EvaluateIfNeeded [] (fun () ->
-                    let v = source.GetValue()
-                    let deltas =
-                        match cache with
-                            | Some c ->
-                                if System.Object.Equals(c,v) then []
-                                else 
-                                    cache <- Some v
-                                    [Add v; Rem c]
-                            | None ->
-                                cache <- Some v
-                                [Add v]
-
-
-                    let outerDeltas =
-                        deltas |> List.collect (fun d ->
-                            match d with
-                                | Add v ->
-                                    let r = f.Invoke v
-
-                                    // we're an output of the new reader
-                                    r.AddOutput this
-
-                                    // bring the reader's content up-to-date by calling GetDelta
-                                    r.GetDelta() |> ignore
-
-                                    // listen to marking of r (reader cannot be OutOfDate due to GetDelta above)
-                                    dirtyInner.Listen r
-                                    
-                                    // since the entire reader is new we add its content
-                                    // which must be up-to-date here (due to calling GetDelta above)
-                                    r.Content |> Seq.map Add |> Seq.toList
-
-                                | Rem v ->
-                                    let r = f.Revoke v
-
-                                    // remove the reader from the listen-set
-                                    dirtyInner.Destroy r
-
-                                    // since the reader is no longer contained we don't want
-                                    // to be notified anymore
-                                    r.RemoveOutput this
-                                    
-                                    // the entire content of the reader is removed
-                                    // Note that the content here might be OutOfDate
-                                    // TODO: think about implications here when we do not "own" the reader
-                                    //       exclusively
-                                    r.Content |> Seq.map Rem |> Seq.toList
-
-                        )
-
-                    // all dirty inner readers must be registered 
-                    // in dirtyInner. Even if the outer set did not change we
-                    // need to collect those inner deltas.
-                    let innerDeltas = dirtyInner.GetDeltas()
-
-                    // concat inner and outer deltas 
-                    let deltas = List.append outerDeltas innerDeltas
-
-                    deltas |> apply content
-
-                )
-
     type BufferedReader<'a>(update : unit -> unit, dispose : BufferedReader<'a> -> unit) =
         inherit AdaptiveObject()
         let deltas = List()
@@ -432,11 +344,11 @@ module ASetReaders =
         new CollectReader<_, _>(scope, input, f) :> IReader<_>
 
     let bind scope (f : 'a -> IReader<'b>) (input : IMod<'a>) =
-        new BindReader<_, _>(scope, input, f) :> IReader<_>
+        new CollectReader<_,_>(scope, new ModReader<_>(input), f) :> IReader<_>
 
     let bind2 scope (f : 'a -> 'b -> IReader<'c>) (ma : IMod<'a>)  (mb : IMod<'b>)=
         let tup = Mod.map2 (fun a b -> (a,b)) ma mb
-        new BindReader<_, _>(scope, tup, fun (a,b) -> f a b) :> IReader<_>
+        new CollectReader<_,_>(scope, new ModReader<_>(tup),  fun (a,b) -> f a b) :> IReader<_>
 
 
     let choose scope (f : 'a -> Option<'b>) (input : IReader<'a>) =

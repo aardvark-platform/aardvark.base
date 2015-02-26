@@ -2,17 +2,47 @@
 
 open System
 
+/// <summary>
+/// IMod is the non-generic base interface for 
+/// modifiable cells. This is needed due to the
+/// lack of existential types in the .NET.
+/// </summary>
 [<AllowNullLiteral>]
 type IMod =
     inherit IAdaptiveObject
+
+    /// <summary>
+    /// returns whether or not the cell's content 
+    /// will remain constant. 
+    /// </summary>
     abstract member IsConstant : bool
+
+    /// <summary>
+    /// returns the cell's content and evaluates
+    /// the respective computation if needed.
+    /// </summary>
     abstract member GetValue : unit -> obj
 
+/// <summary>
+/// IMod<'a> represents the base interface for
+/// modifiable cells and provides a method for
+/// getting the cell's current content.
+/// </summary>
 [<AllowNullLiteral>]
 type IMod<'a> =
     inherit IMod
+
+    /// <summary>
+    /// returns the cell's content and evaluates
+    /// the respective computation if needed.
+    /// </summary>
     abstract member GetValue : unit -> 'a
 
+/// <summary>
+/// ModRef<'a> represents a changeable input
+/// cell which can be changed by the user and
+/// implements IMod<'a>
+/// </summary>
 type ModRef<'a>(value : 'a) =
     inherit AdaptiveObject()
     let mutable value = value
@@ -25,8 +55,8 @@ type ModRef<'a>(value : 'a) =
                 x.MarkOutdated()
 
     member x.GetValue() =
-        x.EvaluateIfNeeded x.Value (fun () ->
-            x.Value
+        x.EvaluateAlways (fun () ->
+            value
         )
 
     interface IMod with
@@ -36,9 +66,16 @@ type ModRef<'a>(value : 'a) =
     interface IMod<'a> with
         member x.GetValue() = x.GetValue()
 
+/// <summary>
+/// defines functions for composing mods and
+/// managing evaluation order, etc.
+/// </summary>
 module Mod =
     open Aardvark.Base
 
+    // the attribute system needs to know how to "unpack"
+    // modifiable cells for inherited attributes.
+    // we therefore need to register a function doing that
     [<OnAardvarkInit>]
     let initialize() =
         Report.BeginTimed "initializing mod system"
@@ -51,6 +88,9 @@ module Mod =
 
         Report.End() |> ignore
 
+    // LazyMod<'a> (as the name suggests) implements IMod<'a>
+    // and will be evaluated lazily (if not forced to be eager
+    // by a callback or subsequent eager computations)
     type private LazyMod<'a> =
         class
             inherit AdaptiveObject
@@ -78,6 +118,12 @@ module Mod =
                 { cache = Unchecked.defaultof<'a>; compute = compute; scope = Ag.getContext() }
         end
 
+    // EagerMod<'a> re-uses LazyMod<'a> and extends it with
+    // a Mark function evaluating the cell whenever it is marked
+    // as outOfDate. Since eager mods might want to "cancel"
+    // the change propagation process when equal values are
+    // observed EagerMod can also be created with a custom 
+    // equality function.
     type private EagerMod<'a>(compute : unit -> 'a, eq : Option<'a -> 'a -> bool>) =
         inherit LazyMod<'a>(compute)
 
@@ -95,6 +141,13 @@ module Mod =
 
         new(compute) = EagerMod(compute, None)
 
+    // ConstantMod<'a> represents a constant mod-cell
+    // and implements IMod<'a> (making use of the core
+    // class ConstantMod). Note that ConstantMod allows
+    // computations to be delayed (which is useful if the
+    // creation of the value is computationally expensive)
+    // Note that constant cells are considered equal whenever
+    // their content is equal.
     type private ConstantMod<'a> =
         class
             inherit ConstantObject
@@ -136,10 +189,34 @@ module Mod =
             static member Lazy(compute : unit -> 'a) = ConstantMod(None, compute) :> IMod<_>
         end
 
-    let custom (compute : unit -> 'a) : IMod<'a> =
-        LazyMod(compute) :> IMod<_>
+    let private scoped (f : 'a -> 'b) =
+        let scope = Ag.getContext()
+        fun v -> Ag.useScope scope (fun () -> f v)
 
+    let private scoped2 (f : 'a -> 'b -> 'c) =
+        let scope = Ag.getContext()
+        fun a b -> Ag.useScope scope (fun () -> f a b)
+
+
+    /// <summary>
+    /// creates a custom modifiable cell using the given
+    /// compute function. If no inputs are added to the
+    /// cell it will actually be constant.
+    /// However the system will not statically assume the
+    /// cell to be constant in any case.
+    /// </summary>
+    let custom (compute : unit -> 'a) : IMod<'a> =
+        LazyMod(scoped compute) :> IMod<_>
+
+    /// <summary>
+    /// registers a callback for execution whenever the
+    /// cells value might have changed and returns a disposable
+    /// subscription in order to unregister the callback.
+    /// Note that the callback will be executed immediately
+    /// once here.
+    /// </summary>
     let registerCallback (f : 'a -> unit) (m : IMod<'a>) =
+        let f = scoped f
         let self = ref id
         let live = ref true
         self := fun () ->
@@ -157,19 +234,37 @@ module Mod =
             member x.Dispose() = live := false; m.MarkingCallbacks.Remove !self |> ignore
         }
 
+    /// <summary>
+    /// changes the value of the given cell. Note that this
+    /// function may only be used inside a current transaction.
+    /// </summary>
     let change (m : ModRef<'a>) (value : 'a) =
         m.Value <- value
 
+    /// <summary>
+    /// initializes a new modifiable input cell using the given value.
+    /// </summary>
     let initMod (v : 'a) =
         ModRef v
 
+    /// <summary>
+    /// initializes a new constant cell using the given value.
+    /// </summary>
     let initConstant (v : 'a) =
         ConstantMod.Value v
 
+    /// <summary>
+    /// initializes a new constant cell using the given lazy value.
+    /// </summary>
     let delay (f : unit -> 'a) =
-        ConstantMod.Lazy f
+        ConstantMod.Lazy (scoped f)
 
+    /// <summary>
+    /// adaptively applies a function to a cell's value
+    /// resulting in a new dependent cell.
+    /// </summary>
     let map (f : 'a -> 'b) (m : IMod<'a>) =
+        let f = scoped f
         if m.IsConstant then
             ConstantMod.Lazy (fun () -> m.GetValue() |> f)
         else
@@ -177,6 +272,10 @@ module Mod =
             m.AddOutput res
             res :> IMod<_>
 
+    /// <summary>
+    /// adaptively applies a function to two cell's values
+    /// resulting in a new dependent cell.
+    /// </summary>
     let map2 (f : 'a -> 'b -> 'c) (m1 : IMod<'a>) (m2 : IMod<'b>)=
         match m1.IsConstant, m2.IsConstant with
             | (true, true) -> 
@@ -186,47 +285,90 @@ module Mod =
             | (false, true) -> 
                 map (fun a -> f a (m2.GetValue())) m1
             | (false, false) ->
+                let f = scoped2 f
                 let res = LazyMod(fun () -> f (m1.GetValue()) (m2.GetValue()))
                 m1.AddOutput res
                 m2.AddOutput res
                 res :> IMod<_>
 
-
+    /// <summary>
+    /// adaptively applies a function to a cell's value
+    /// and returns a new dependent cell holding the inner
+    /// cell's content.
+    /// </summary>
     let bind (f : 'a -> #IMod<'b>) (m : IMod<'a>) =
         if m.IsConstant then
             m.GetValue() |> f :> IMod<_>
         else
-            let res = ref <| Unchecked.defaultof<LazyMod<'b>>
+            let f = scoped f
             let inner : ref<Option<'a * IMod<'b>>> = ref None
+            
+            // just a reference-cell for allowing self-recursive
+            // access in the compute function below.
+            let res = ref <| Unchecked.defaultof<LazyMod<'b>>
             res := 
                 LazyMod(fun () -> 
+                    // whenever the result is outOfDate we
+                    // need to pull the input's value
+                    // Note that the input is not necessarily outOfDate at this point
                     let v = m.GetValue()
 
                     match !inner with
+                        // if the function argument has not changed
+                        // since the last execution we expect f to return
+                        // the identical cell
                         | Some (v', inner) when Object.Equals(v, v') ->
+                            // since the inner cell might be outOfDate we
+                            // simply pull its value and don't touch any in-/outputs.
                             inner.GetValue()
+                        
                         | _ ->
+                            // whenever the argument's value changed we need to 
+                            // re-execute the function and store the new inner cell.
                             let i = f v :> IMod<_>
                             let old = !inner
                             inner := Some (v, i)
 
+
                             match old with
-                                | None -> i.AddOutput !res |> ignore
+                                // if there was no old inner cell
+                                // we simply add ourselves as output
+                                // of the new inner value
+                                | None -> 
+                                    i.AddOutput !res |> ignore
+                                
+                                // if there was an old inner cell which
+                                // is different from the new one we
+                                // remove the resulting cell from the old
+                                // outputs and add it to the new ones. 
                                 | Some (_,old) when old <> i -> 
                                     old.RemoveOutput !res |> ignore
                                     i.AddOutput !res |> ignore
 
+                                // in any other case the graph remained
+                                // constant and we don't change a thing.
                                 | _ -> ()
 
-                        
+                            // finally we pull the value from the
+                            // new inner cell.
                             i.GetValue()
                         
 
                 )
+
+            // since m is statically known to be an input
+            // of the resulting cell we add the edge to the 
+            // dependency graph.
             m.AddOutput !res |> ignore
             !res :> IMod<_>
 
+    /// <summary>
+    /// adaptively applies a function to two cell's values
+    /// and returns a new dependent cell holding the inner
+    /// cell's content.
+    /// </summary>
     let bind2 (f : 'a -> 'b -> #IMod<'c>) (ma : IMod<'a>) (mb : IMod<'b>) =
+        
         match ma.IsConstant, mb.IsConstant with
             | (true, true) ->
                 f (ma.GetValue()) (mb.GetValue()) :> IMod<_>
@@ -235,8 +377,11 @@ module Mod =
             | (true, false) ->
                 bind (fun b -> (f (ma.GetValue()) b) :> IMod<_>) mb
             | (false, false) ->
-                let res = ref <| Unchecked.defaultof<LazyMod<'c>>
+                let f = scoped2 f
                 let inner : ref<Option<'a * 'b * IMod<'c>>> = ref None
+
+                // for a detailed description see bind above
+                let res = ref <| Unchecked.defaultof<LazyMod<'c>>
                 res := 
                     LazyMod(fun () -> 
                         let a = ma.GetValue()
@@ -269,13 +414,16 @@ module Mod =
                 mb.AddOutput !res |> ignore
                 !res :> IMod<_>
 
-
+    /// <summary>
+    /// forces the evaluation of a cell and returns its current value
+    /// </summary>
     let force (m : IMod<'a>) =
         m.GetValue()
 
-    let outOfDate (m : IMod<'a>) =
-        m.OutOfDate
-
+    /// <summary>
+    /// creates a new cell forcing the evaluation of the
+    /// given one during change propagation (making it eager)
+    /// </summary>
     let always (m : IMod<'a>) =
         if m.IsConstant then 
             m
@@ -291,7 +439,9 @@ module Mod =
 
 [<AutoOpen>]
 module ModExtensions =
-
+    
+    // reflect the type argument used by a given
+    // mod-type or return None if no mod type.
     let rec private extractModTypeArg (t : Type) =
         if t.IsGenericType && t.GetGenericTypeDefinition() = typedefof<IMod<_>> then
             Some (t.GetGenericArguments().[0])
@@ -300,6 +450,10 @@ module ModExtensions =
             if iface = null then None
             else extractModTypeArg iface
 
+    /// <summary>
+    /// matches all types implementing IMod<'a> and
+    /// extracts typeof<'a> using reflection.
+    /// </summary>
     let (|ModOf|_|) (t : Type) =
         match extractModTypeArg t with
             | Some t -> ModOf t |> Some
