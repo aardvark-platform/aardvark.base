@@ -189,7 +189,6 @@
     </Otherwise>
   </Choose>
   <ItemGroup>
-    <None Include="Readme.md" />
     <Compile Include="Core\PriorityQueue.fs" />
     <Compile Include="Core\WeakSet.fs" />
     <Compile Include="Core\ReferenceCountingSet.fs" />
