@@ -12,6 +12,7 @@ using System.IO;
 using SdiPixelFormat = System.Drawing.Imaging.PixelFormat;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
+using System.Runtime.InteropServices;
 
 namespace Aardvark.Base
 {
@@ -240,50 +241,6 @@ namespace Aardvark.Base
             }
         }
 
-        protected static PixImage CreateRawSystem(System.Drawing.Bitmap bitmap)
-        {
-            var sdipf = bitmap.PixelFormat;
-            var pfc = s_pixFormatAndCountOfSdiPixelFormat[sdipf];
-
-            var sx = bitmap.Width;
-            var sy = bitmap.Height;
-            var ch = pfc.E1;
-
-            var pixImage = Create(pfc.E0, sx, sy, ch);
-            var array = pixImage.Array;
-
-            if (pfc.E0.Format == Col.Format.BW)
-            {
-                var bitImage = new PixImage<byte>(Col.Format.BW, 1 + (sx - 1) / 8, sy, 1);
-
-                System.Drawing.Imaging.BitmapData bdata = bitmap.LockBits(
-                    new System.Drawing.Rectangle(0, 0, sx, sy),
-                    System.Drawing.Imaging.ImageLockMode.ReadOnly, sdipf);
-
-                var bmp = BitmapSource.Create(
-                    sx, sy,
-                    (double)bitmap.VerticalResolution, (double)bitmap.HorizontalResolution,
-                    s_pixelFormatOfSdiPixelFormat[sdipf],
-                    null, bdata.Scan0, bitImage.Volume.Data.Length, bitImage.IntStride);
-                bmp.CopyPixels(bitImage.Array, bitImage.IntStride, 0);
-                bitmap.UnlockBits(bdata);
-                ExpandPixels(bitImage, pixImage.ToPixImage<byte>());
-            }
-            else
-            {
-                System.Drawing.Imaging.BitmapData bdata = bitmap.LockBits(
-                    new System.Drawing.Rectangle(0, 0, sx, sy),
-                    System.Drawing.Imaging.ImageLockMode.ReadOnly, sdipf);
-                var bmp = BitmapSource.Create(
-                    sx, sy,
-                    (double)bitmap.VerticalResolution, (double)bitmap.HorizontalResolution,
-                    s_pixelFormatOfSdiPixelFormat[sdipf],
-                    null, bdata.Scan0, ch * sx * sy, ch * sx);
-                bmp.CopyPixels(pixImage.Array, pixImage.IntStride, 0);
-                bitmap.UnlockBits(bdata);
-            }
-            return pixImage;
-        }
 
         #endregion
 

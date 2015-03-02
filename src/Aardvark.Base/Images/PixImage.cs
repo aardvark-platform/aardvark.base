@@ -1,5 +1,6 @@
 //#define USE_STORAGESERVICE
 #if !__MonoCS__ && !__ANDROID__
+#define USE_BITMAP
 #define USE_SYSTEMIMAGE
 #define USE_FREEIMAGE
 #define USE_DEVIL
@@ -11,6 +12,7 @@
 #endif
 
 #if __MonoCS__
+#define USE_BITMAP
 #define USE_FREEIMAGE
 #define USE_DEVIL
 #endif
@@ -77,7 +79,8 @@ namespace Aardvark.Base
         UseFreeImage        = 0x02000000,
         UseStorageService   = 0x08000000,
         UseDevil            = 0x10000000,
-        UseLibTiff          = 0x20000000,
+        UseBitmap           = 0x20000000,
+        UseLibTiff          = 0x40000000,
     }
 
     [Flags]
@@ -345,6 +348,17 @@ namespace Aardvark.Base
             }
             #endif
 
+            #if USE_BITMAP
+            if ((options & PixLoadOptions.UseBitmap) != 0)
+            {
+                using (var stream = new FileStream(filename, FileMode.Open, FileAccess.Read))
+                {
+                    var img = CreateRawBitmap(stream, options);
+                    if (img != null) return img;
+                }
+            }
+            #endif
+
 			#if USE_ANDROID
 			if ((options & PixLoadOptions.UseSystemImage) != 0)
 			{
@@ -458,7 +472,7 @@ namespace Aardvark.Base
         public static PixImage Create(System.Drawing.Bitmap bitmap)
         {
             #if USE_SYSTEMIMAGE
-            var loadImage = CreateRawSystem(bitmap);
+            var loadImage = CreateRawBitmap(bitmap);
             return loadImage.ToPixImage(loadImage.Format);
             #else
             throw new NotSupportedException("WPF is not supported");
