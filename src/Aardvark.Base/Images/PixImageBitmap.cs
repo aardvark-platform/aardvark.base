@@ -12,7 +12,7 @@ namespace Aardvark.Base
 {
     public abstract partial class PixImage
     {
-		protected static Dictionary<PixelFormat, Tup<PixFormat, int>> s_pixFormatAndCountOfPixelFormat =
+		protected static Dictionary<PixelFormat, Tup<PixFormat, int>> s_pixFormatAndCountOfPixelFormatBitmap =
 			new Dictionary<PixelFormat, Tup<PixFormat, int>>()
 		{
 			{ PixelFormat.Format1bppIndexed, Tup.Create(PixFormat.ByteBW, 1) },
@@ -38,7 +38,7 @@ namespace Aardvark.Base
         protected static PixImage CreateRawBitmap(System.Drawing.Bitmap bitmap)
         {
             var sdipf = bitmap.PixelFormat;
-			var pfc = s_pixFormatAndCountOfPixelFormat[sdipf];
+			var pfc = s_pixFormatAndCountOfPixelFormatBitmap[sdipf];
 
             var sx = bitmap.Width;
             var sy = bitmap.Height;
