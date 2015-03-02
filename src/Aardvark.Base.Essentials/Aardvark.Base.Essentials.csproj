@@ -105,17 +105,36 @@
   <ItemGroup>
     <None Include="packages.config" />
   </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\Aardvark.Base\Aardvark.Base.csproj">
-      <Project>{377da721-c821-45f6-b803-9c8724c7b37f}</Project>
-      <Name>Aardvark.Base</Name>
-    </ProjectReference>
-  </ItemGroup>
-  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
-       Other similar extension points exist, see Microsoft.Common.targets.
-  <Target Name="BeforeBuild">
-  </Target>
-  <Target Name="AfterBuild">
-  </Target>
-  -->
+  <Choose>
+    <When Condition="exists('..\..\..\..\build\Aardvark.targets')">
+      <Choose>
+        <When Condition="'$(AardvarkBaseProjectPath)' == ''">
+          <ItemGroup>
+            <Reference Include="Aardvark.Base [Binary]">
+              <HintPath>$(OutputPath)\Aardvark.Base.dll</HintPath>
+              <Private>False</Private>
+            </Reference>
+          </ItemGroup>
+        </When>
+        <Otherwise>
+          <ItemGroup>
+            <ProjectReference Include="$(AardvarkBaseProjectPath)">
+              <Name>Aardvark.Base [Project]</Name>
+              <Project>{377DA721-C821-45F6-B803-9C8724C7B37F}</Project>
+              <Private>False</Private>
+            </ProjectReference>
+          </ItemGroup>
+        </Otherwise>
+      </Choose>
+    </When>
+    <Otherwise>
+      <ItemGroup>
+        <ProjectReference Include="..\Aardvark.Base\Aardvark.Base.csproj">
+          <Name>Aardvark.Base</Name>
+          <Project>{377DA721-C821-45F6-B803-9C8724C7B37F}</Project>
+          <Private>False</Private>
+        </ProjectReference>
+      </ItemGroup>
+    </Otherwise>
+  </Choose>
 </Project>

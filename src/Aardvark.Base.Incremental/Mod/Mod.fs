@@ -292,6 +292,17 @@ module Mod =
                 res :> IMod<_>
 
     /// <summary>
+    /// creates a custom modifiable cell using the given
+    /// compute function and adds all given inputs to the
+    /// resulting cell.
+    /// </summary>
+    let mapCustom (f : unit -> 'a) (inputs : list<IAdaptiveObject>) =
+        let r = custom f
+        for i in inputs do
+            i.AddOutput r
+        r
+
+    /// <summary>
     /// adaptively applies a function to a cell's value
     /// and returns a new dependent cell holding the inner
     /// cell's content.
