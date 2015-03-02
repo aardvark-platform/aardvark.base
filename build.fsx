@@ -29,6 +29,11 @@ Target "Clean" (fun () ->
     DeleteDir (Path.Combine("Bin", "Debug"))
 )
 
+Target "CodeGenerator" (fun () ->
+    MSBuildRelease "Bin/Release" "Build" (!!"src/**/CodeGenerator.csproj") |> ignore
+)
+
+
 Target "Compile40" (fun () ->
     MSBuild "Bin/net40" "Build" ["Configuration", "Release 4.0"] net40 |> ignore
 )
@@ -48,11 +53,17 @@ Target "Default" (fun () -> ())
 "Restore" ==> "Compile"
 
 "Restore" ==> 
+    "CodeGenerator" ==>
     "Compile" ==>
     "Default"
 
-"Restore" ==> "Compile40"
-"Restore" ==> "Compile45"
+"Restore" ==> 
+    "CodeGenerator"
+    "Compile40"
+
+"Restore" ==> 
+    "CodeGenerator"
+    "Compile45"
 
 let knownPackages = 
     Set.ofList [
@@ -75,6 +86,7 @@ Target "CreatePackage" (fun () ->
                 { p with OutputPath = "Bin"; 
                          Version = tag; 
                          ReleaseNotes = releaseNotes; 
+                         WorkingDir = "bin"
                          Dependencies = p.Dependencies |> List.map (fun (id,version) -> if Set.contains id knownPackages then (id, tag) else (id,version)) 
                 }) (sprintf "bin/%s.nuspec" id)
     
@@ -97,14 +109,17 @@ Target "Deploy" (fun () ->
             | Some accessKey ->
                 try
                     for id in knownPackages do
-                        NuGet (fun p -> 
-                            { p with OutputPath = "Bin"; 
-                                     Version = tag; 
-                                     ReleaseNotes = releaseNotes; 
-                                     Dependencies = p.Dependencies |> List.map (fun (id,version) -> if Set.contains id knownPackages then (id, tag) else (id,version)) 
-                                     AccessKey = accessKey
-                                     Publish = true
-                            }) (sprintf "bin/%s.nuspec" id)
+                        NuGetPublish (fun p -> 
+                            { p with 
+                                Project = id
+                                OutputPath = "bin"
+                                Version = tag; 
+                                ReleaseNotes = releaseNotes; 
+                                WorkingDir = "bin"
+                                Dependencies = p.Dependencies |> List.map (fun (id,version) -> if Set.contains id knownPackages then (id, tag) else (id,version)) 
+                                AccessKey = accessKey
+                                Publish = true
+                            })
                 with e ->
                     ()
             | None ->
