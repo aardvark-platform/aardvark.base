@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
@@ -104,68 +104,16 @@
     <Reference Include="System.Drawing" />
     <Reference Include="System.Numerics" />
   </ItemGroup>
-  <Choose>
-    <When Condition="exists('..\..\..\..\build\Aardvark.targets')">
-      <Choose>
-        <When Condition="'$(AardvarkBaseTypeProvidersProjectPath)' == ''">
-          <ItemGroup>
-            <Reference Include="Aardvark.Base.TypeProviders [Binary]">
-              <HintPath>$(OutputPath)\Aardvark.Base.TypeProviders.dll</HintPath>
-              <Private>False</Private>
-            </Reference>
-          </ItemGroup>
-        </When>
-        <Otherwise>
-          <ItemGroup>
-            <ProjectReference Include="$(AardvarkBaseTypeProvidersProjectPath)">
-              <Name>Aardvark.Base.TypeProviders [Project]</Name>
-              <Project>{8BFEA4EF-BF0A-4C1A-B7AC-CBDD930306FD}</Project>
-              <Private>False</Private>
-            </ProjectReference>
-          </ItemGroup>
-        </Otherwise>
-      </Choose>
-    </When>
-    <Otherwise>
-      <ItemGroup>
-        <ProjectReference Include="..\Aardvark.Base.TypeProviders\Aardvark.Base.TypeProviders.fsproj">
-          <Name>Aardvark.Base.TypeProviders</Name>
-          <Project>{8BFEA4EF-BF0A-4C1A-B7AC-CBDD930306FD}</Project>
-          <Private>False</Private>
-        </ProjectReference>
-      </ItemGroup>
-    </Otherwise>
-  </Choose>
-  <Choose>
-    <When Condition="exists('..\..\..\..\build\Aardvark.targets')">
-      <Choose>
-        <When Condition="'$(AardvarkBaseProjectPath)' == ''">
-          <ItemGroup>
-            <Reference Include="Aardvark.Base [Binary]">
-              <HintPath>$(OutputPath)\Aardvark.Base.dll</HintPath>
-              <Private>False</Private>
-            </Reference>
-          </ItemGroup>
-        </When>
-        <Otherwise>
-          <ItemGroup>
-            <ProjectReference Include="$(AardvarkBaseProjectPath)">
-              <Name>Aardvark.Base [Project]</Name>
-              <Project>{377DA721-C821-45F6-B803-9C8724C7B37F}</Project>
-              <Private>False</Private>
-            </ProjectReference>
-          </ItemGroup>
-        </Otherwise>
-      </Choose>
-    </When>
-    <Otherwise>
-      <ItemGroup>
-        <ProjectReference Include="..\Aardvark.Base\Aardvark.Base.csproj">
-          <Name>Aardvark.Base</Name>
-          <Project>{377DA721-C821-45F6-B803-9C8724C7B37F}</Project>
-          <Private>False</Private>
-        </ProjectReference>
-      </ItemGroup>
-    </Otherwise>
-  </Choose>
+  <ItemGroup>
+	<ProjectReference Include="..\Aardvark.Base.TypeProviders\Aardvark.Base.TypeProviders.fsproj">
+	  <Name>Aardvark.Base.TypeProviders</Name>
+	  <Project>{8BFEA4EF-BF0A-4C1A-B7AC-CBDD930306FD}</Project>
+	  <Private>False</Private>
+	</ProjectReference>
+	<ProjectReference Include="..\Aardvark.Base\Aardvark.Base.csproj">
+	  <Name>Aardvark.Base</Name>
+	  <Project>{377DA721-C821-45F6-B803-9C8724C7B37F}</Project>
+	  <Private>False</Private>
+	</ProjectReference>
+  </ItemGroup>
 </Project>

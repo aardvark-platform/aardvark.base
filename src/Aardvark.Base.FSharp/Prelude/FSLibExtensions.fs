@@ -108,9 +108,6 @@ module Prelude =
                        | Right of 'b
 
 
-    type Delta<'a> = Add of 'a | Remove of 'a
-
-
     let toFunc (f : 'a -> 'b) : Func<'a, 'b> =
         Func<'a, 'b>(f)
 

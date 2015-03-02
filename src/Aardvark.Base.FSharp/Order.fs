@@ -11,35 +11,34 @@ open Aardvark.Base
 namespace Aardvark.Base
 #endif
 
+
+open System
+
+[<CustomComparison>]
+[<CustomEquality>]
+type Time = { mutable time : uint64; mutable next : Time; mutable prev : Time; mutable rep : Time } with
+    member x.GetTime() = 
+        x.time - x.rep.time
+
+    member x.Prev = x.prev
+    member x.Next = x.next
+    member x.Root = x.rep
+
+    interface IComparable with
+        member x.CompareTo o =
+            match o with
+                | :? Time as o -> x.GetTime().CompareTo (o.GetTime())
+                | _ -> failwith ""
+
+    override x.GetHashCode() = System.Runtime.CompilerServices.RuntimeHelpers.GetHashCode(x) //x.time.GetHashCode()
+    override x.Equals o = System.Object.ReferenceEquals(x,o)
+    override x.ToString() = 
+        sprintf "%.5f" ((float <| x.GetTime()) / (float System.UInt64.MaxValue))
+
+
+[<CompilationRepresentation(CompilationRepresentationFlags.ModuleSuffix)>]
 module Time =
-    open System
-
-    [<CustomComparison>]
-    [<CustomEquality>]
-    type Time = private { mutable time : uint64; mutable next : Time; mutable prev : Time; mutable rep : Time } with
-        member x.GetTime() = 
-            x.time - x.rep.time
-
-        member x.Prev = x.prev
-        member x.Next = x.next
-        member x.Root = x.rep
-
-        interface IComparable with
-            member x.CompareTo o =
-                match o with
-                    | :? Time as o -> x.GetTime().CompareTo (o.GetTime())
-                    | _ -> failwith ""
-
-        override x.GetHashCode() = System.Runtime.CompilerServices.RuntimeHelpers.GetHashCode(x) //x.time.GetHashCode()
-        override x.Equals o = System.Object.ReferenceEquals(x,o)
-        override x.ToString() = 
-            sprintf "%.5f" ((float <| x.GetTime()) / (float System.UInt64.MaxValue))
-//            match o with
-//                | :? Time as o -> x.time = o.time
-//                | _ -> false
-
-
-    let mutable root = { time = 0UL; next = Unchecked.defaultof<Time>; prev = Unchecked.defaultof<Time>; rep = Unchecked.defaultof<Time> }
+    let mutable private root = { time = 0UL; next = Unchecked.defaultof<Time>; prev = Unchecked.defaultof<Time>; rep = Unchecked.defaultof<Time> }
     do root.next <- root
        root.prev <- root
        root.rep <- root
@@ -109,27 +108,3 @@ module Time =
             t.time <- 0UL
         else
             failwith "deleteAll shall only be called on root-times"
-
-    let test() =
-        reset()
-        let times = 
-            [
-                let current = ref root
-                for i in 0..10000 do
-                    yield !current
-                    current := after !current
-            ]
-
-        let timeStamps = (times |> List.map (fun t -> t.time))
-
-        let rec check (times : list<Time>) =
-            match times with
-                | x::y::xs -> x.GetTime() < y.GetTime() && check(y::xs)
-                | _ -> true
-                
-        if check times then
-            printfn "SUCCESS"
-        else
-            printfn "ERROR"
-
-        printfn "%A" (times |> List.map (fun t -> t.time))

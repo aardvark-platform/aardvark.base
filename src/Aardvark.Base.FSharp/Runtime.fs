@@ -110,10 +110,10 @@ module Weak =
 
     (*============================ Weak Types =================================*)
     [<AllowNullLiteral>]
-    type Weak<'a when 'a : not struct and 'a : equality>(obj : 'a) =
+    type Weak<'a when 'a : not struct>(obj : 'a) =
         do if obj :> obj = null then failwith "created null weak"
         let m_weak = System.WeakReference<'a>(obj)
-        let m_hashCode = obj.GetHashCode()
+        let m_hashCode = System.Runtime.CompilerServices.RuntimeHelpers.GetHashCode(obj)
 
         member private x.WeakReference = m_weak
 
@@ -152,7 +152,7 @@ module Weak =
             else
                 match o with
                     | :? Weak<'a> as other -> match (m_weak.TryGetTarget(), other.WeakReference.TryGetTarget()) with
-                                                | ((true, l), (true, r)) -> l = r
+                                                | ((true, l), (true, r)) -> System.Object.ReferenceEquals(l, r)
                                                 | ((false,_), (false,_)) -> true
                                                 | _ -> false 
                     | _ -> false

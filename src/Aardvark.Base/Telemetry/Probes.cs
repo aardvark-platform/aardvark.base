@@ -134,6 +134,9 @@ namespace Aardvark.Base
         {
             private ProcessThread GetCurrentProcessThread()
             {
+                #if __MonoCS__
+                return (ProcessThread)Activator.CreateInstance(typeof(ProcessThread), true);
+                #else
                 var tid = HardwareThread.GetCurrentWin32ThreadId();
                 if (m_threadLocalWin32ThreadId.Value != tid)
                 {
@@ -141,10 +144,14 @@ namespace Aardvark.Base
                     m_threadLocalProcessThread.Value = HardwareThread.GetProcessThread(tid);
                 }
                 return m_threadLocalProcessThread.Value;
+                #endif
             }
+            
+            #if !__MonoCS__
             private ThreadLocal<int> m_threadLocalWin32ThreadId = new ThreadLocal<int>(() => -1);
             private ThreadLocal<ProcessThread> m_threadLocalProcessThread = new ThreadLocal<ProcessThread>();
-
+            #endif
+            
             private ThreadLocal<bool> m_active = new ThreadLocal<bool>(() => false);
 
             private long m_sum = 0;
@@ -178,7 +185,7 @@ namespace Aardvark.Base
 
                     long t0User = 0, t0Privileged = 0;
                     long t1User = 0, t1Privileged = 0;
-                    /* var tid = */ HardwareThread.GetCurrentWin32ThreadId();
+                    
                     var pt = GetCurrentProcessThread();
                     var t0 = pt.TotalProcessorTime.Ticks;
                     if (m_measureUserTime) t0User = pt.UserProcessorTime.Ticks;
@@ -250,6 +257,9 @@ namespace Aardvark.Base
         {
             private ProcessThread GetCurrentProcessThread()
             {
+                #if __MonoCS__
+                return (ProcessThread)Activator.CreateInstance(typeof(ProcessThread), true);
+                #else
                 var tid = HardwareThread.GetCurrentWin32ThreadId();
                 if (m_threadLocalWin32ThreadId.Value != tid)
                 {
@@ -257,9 +267,12 @@ namespace Aardvark.Base
                     m_threadLocalProcessThread.Value = HardwareThread.GetProcessThread(tid);
                 }
                 return m_threadLocalProcessThread.Value;
+                #endif
             }
+            #if !__MonoCS__
             private ThreadLocal<int> m_threadLocalWin32ThreadId = new ThreadLocal<int>(() => -1);
             private ThreadLocal<ProcessThread> m_threadLocalProcessThread = new ThreadLocal<ProcessThread>();
+            #endif
 
             private HashSet<int> m_threadIds = new HashSet<int>();
             private TimeSpan m_sum = TimeSpan.Zero;
@@ -284,7 +297,6 @@ namespace Aardvark.Base
                         }
                         else
                         {
-                            /* var tid = */ HardwareThread.GetCurrentWin32ThreadId();
                             var t0 = GetCurrentProcessThread().UserProcessorTime;
                             m_threadIds.Add(threadId);
                             return ProbeDisposable.Create(() =>

@@ -223,68 +223,67 @@ module AgHelpers =
                                                 reg <| Some(SemanticFunction(getSemanticObject(mi.DeclaringType), mi.DeclaringType, mi :?> MethodInfo))
                         | _ -> reg None
 
-    let internal glInit() =
-        try
-            let ass = Assembly.LoadFile (System.IO.Path.Combine(System.Environment.CurrentDirectory, "OpenTK.dll"))
-            let t = ass.GetType("OpenTK.GameWindow")
+    let internal register (t : System.Type) = 
+        let mi = t.GetMethods(System.Reflection.BindingFlags.Public ||| System.Reflection.BindingFlags.Instance)
+        let attNames = seq {
+                            for m in mi do
+                                if (m.DeclaringType.Equals(t) && m.GetParameters().Length = 1) then
+                                    yield ( m.Name, m.GetParameters().[0].ParameterType, m )
+                        }
+        if t.GetConstructor [||] <> null then
+            let semObj = Activator.CreateInstance(t)
+            for (name,t,m) in attNames do
+                let list = match m_semanticMap.TryGetValue(name) with
+                                | (true,l) -> l
+                                | (false,_) -> let l = List<MethodBase>()
+                                               m_semanticMap.[name] <- l
+                                               l
+                list.Add(m)
 
-            let w = System.Activator.CreateInstance(t) |> unbox<System.IDisposable>
-            let m = w.GetType().GetMethod("Close")
-            m.Invoke(w, null) |> ignore
-            w.Dispose()
+    let internal registerAssembly (a : Assembly) =
+        try 
+            let types = a.GetTypes()
 
-        with e ->
-            ()
+            let rec attTypes (types : Type[]) =
+                seq {
+                    for t in types do
+                        if (t.GetCustomAttributes(false).OfType<Semantic>().Count() > 0) then
+                            yield t 
+                            yield! attTypes ( t.GetNestedTypes() )
+                }
+            let attTypes = attTypes types
 
-    let internal initializeAg =
-        let registered = ref false;
-        fun () ->
+            attTypes |> Seq.toList |> Seq.iter register 
+        with
+            | _ -> ()
+
+    let private registered = ref false
+
+    let internal initializeAg() =
          if not !registered then
             //glInit()
-
+            Aardvark.Base.Report.BeginTimed "initializing attribute grammar"
             registered.Value <- true 
-            let register (t : System.Type) = 
-                let mi = t.GetMethods(System.Reflection.BindingFlags.Public ||| System.Reflection.BindingFlags.Instance)
-                let attNames = seq {
-                                    for m in mi do
-                                        if (m.DeclaringType.Equals(t) && m.GetParameters().Length = 1) then
-                                          yield ( m.Name, m.GetParameters().[0].ParameterType, m )
-                                }
-                if t.GetConstructor([||]) <> null then
-                    let semObj = Activator.CreateInstance(t)
-                    for (name,t,m) in attNames do
-                        let list = match m_semanticMap.TryGetValue(name) with
-                                      | (true,l) -> l
-                                      | (false,_) -> let l = List<MethodBase>()
-                                                     m_semanticMap.[name] <- l
-                                                     l
-                        list.Add(m)
 
+            for t in Introspection.GetAllTypesWithAttribute<Semantic>() do
+                register t.E0
 
+            //AppDomain.CurrentDomain.AssemblyLoad.Add(
+            //    fun loadArgs ->
+            //        registerAssembly loadArgs.LoadedAssembly)
 
-            let registerAssembly (a : Assembly) =
-                try 
-                    let types = a.GetTypes()
+            //let assemblies = AppDomain.CurrentDomain.GetAssemblies() |> Seq.toList
+            //Seq.iter registerAssembly assemblies
+            Aardvark.Base.Report.End() |> ignore
 
-                    let rec attTypes (types : Type[]) =
-                        seq {
-                            for t in types do
-                                if (t.GetCustomAttributes(false).OfType<Semantic>().Count() > 0) then
-                                  yield t 
-                                  yield! attTypes ( t.GetNestedTypes() )
-                        }
-                    let attTypes = attTypes types
+    let internal reIninitializeAg() =
+        if !registered then
+            m_semanticMap.Clear()
+            m_semanticObjects.Clear()
+            sfCache.Clear()
+            registered := false
 
-                    attTypes |> Seq.toList |> Seq.iter register 
-                with
-                    | _ -> ()
-
-            AppDomain.CurrentDomain.AssemblyLoad.Add(
-                fun loadArgs ->
-                    registerAssembly loadArgs.LoadedAssembly)
-
-            let assemblies = AppDomain.CurrentDomain.GetAssemblies() |> Seq.toList
-            Seq.iter registerAssembly assemblies
+        initializeAg()
 
     let mutable public unpack : obj -> obj = id
 
@@ -393,7 +392,15 @@ module Ag =
         member x.AllChildren = anyObject
 
 
-    let initialize() = initializeAg()
+    [<OnAardvarkInit>]
+    let initialize () : unit =  AgHelpers.initializeAg()
+
+    let reinitialize () : unit =  
+        AgHelpers.reIninitializeAg()
+        rootScope.Dispose()
+        currentScope.Dispose()
+        rootScope <- new ThreadLocal<Scope>(fun () -> { parent = None; source = null; children = newCWT(); cache = null; path = Some "Root" })
+        currentScope <- new ThreadLocal<Scope>(fun () -> rootScope.Value)
 
     let clearCaches () =    
         rootScope.Dispose()
@@ -521,9 +528,14 @@ module Ag =
     let inline private tryGetInhAttribute (o : obj) (name : string) =
         match o with
             | :? Scope as scope -> tryGetInhAttributeScope scope name
-            | _ -> match currentScope.Value.parent with
-                        | Some parent -> tryGetInhAttributeScope (parent.GetChildScope o) name
-                        | None -> None
+            | _ -> 
+                let s = rootScope.Value.GetChildScope(o)
+                match s.cache.TryGetValue name with
+                    | (true, v) -> v
+                    | _ ->
+                        match currentScope.Value.parent with
+                            | Some parent -> tryGetInhAttributeScope (parent.GetChildScope o) name
+                            | None -> None
 
     let private tryGetSynAttribute (o : obj) (name : string) =
         match o with
@@ -534,9 +546,14 @@ module Ag =
     //dynamic operators
     let (?<-) (node : obj) (name : string) (value : obj) : unit =
         if logging then Log.line "top level inh write for sem: %s on syntactic entity: %A" name (node.GetType())
-        //simply write to valueStore since the caller will then get the desired
-        //value from there
-        setValueStore node name value
+        
+        if currentScope.Value = rootScope.Value then
+            let scope = currentScope.Value.GetChildScope(node)
+            scope.AddCache name (Some value) |> ignore
+        else
+            //simply write to valueStore since the caller will then get the desired
+            //value from there
+            setValueStore node name value
 
     let private functions = Dictionary<System.Type, ref<obj> * obj>()
     

@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
@@ -21,7 +21,7 @@
     <IntermediateOutputPath>..\..\Bin\Debug\obj\</IntermediateOutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
+    <WarningLevel>3</WarningLevel>
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
     <DocumentationFile>..\..\Bin\Debug\Aardvark.Base.Essentials.xml</DocumentationFile>
   </PropertyGroup>
@@ -32,7 +32,7 @@
     <IntermediateOutputPath>..\..\Bin\Release\obj\</IntermediateOutputPath>
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
+    <WarningLevel>3</WarningLevel>
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
     <DocumentationFile>..\..\Bin\Release\Aardvark.Base.Essentials.xml</DocumentationFile>
   </PropertyGroup>
@@ -65,6 +65,14 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Camera\CameraProjectionOrtho.cs" />
+    <Compile Include="Camera\CameraProjectionPerspective.cs" />
+    <Compile Include="Camera\CameraViewRaw.cs" />
+    <Compile Include="Camera\CameraViewWithSky.cs" />
+    <Compile Include="Camera\ICameraProjection.cs" />
+    <Compile Include="Camera\ICameraProjectionExtensions.cs" />
+    <Compile Include="Camera\ICameraView.cs" />
+    <Compile Include="Camera\ICameraViewExtensions.cs" />
     <Compile Include="Editing\BehaviorDragAbsolute.cs" />
     <Compile Include="Editing\BehaviorDragRelative.cs" />
     <Compile Include="Editing\IBehaviorSplittableEdge2d.cs" />
@@ -79,6 +87,8 @@
     <Compile Include="Geometry\IImmutablePolygon2d.cs" />
     <Compile Include="Geometry\IImmutablePolygon2dExtensions.cs" />
     <Compile Include="Geometry\ImmutablePolygon2d.cs" />
+    <Compile Include="NormalizedDeviceCoordinates.cs" />
+    <Compile Include="PixelPosition.cs" />
     <Compile Include="System\Awaitable.cs" />
     <Compile Include="System\Clock.cs" />
     <Compile Include="System\Disposable.cs" />
@@ -96,16 +106,10 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Aardvark.Base\Aardvark.Base.csproj">
-      <Project>{377da721-c821-45f6-b803-9c8724c7b37f}</Project>
-      <Name>Aardvark.Base</Name>
-    </ProjectReference>
+	<ProjectReference Include="..\Aardvark.Base\Aardvark.Base.csproj">
+	  <Name>Aardvark.Base</Name>
+	  <Project>{377DA721-C821-45F6-B803-9C8724C7B37F}</Project>
+	  <Private>False</Private>
+	</ProjectReference>
   </ItemGroup>
-  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
-       Other similar extension points exist, see Microsoft.Common.targets.
-  <Target Name="BeforeBuild">
-  </Target>
-  <Target Name="AfterBuild">
-  </Target>
-  -->
 </Project>

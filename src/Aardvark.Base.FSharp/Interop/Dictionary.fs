@@ -103,7 +103,8 @@ module Dict =
     let union (dicts : #seq<Dict<'k, 'v>>) =
         let result = Dict()
         for d in dicts do
-            result.AddRange(d) |> ignore
+            for (KeyValue(k,v)) in d do
+                result.[k] <- v
         result
 
     let contains (key : 'k) (d : Dict<'k, 'v>) =
