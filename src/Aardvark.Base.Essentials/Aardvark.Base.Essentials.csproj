@@ -105,36 +105,11 @@
   <ItemGroup>
     <None Include="packages.config" />
   </ItemGroup>
-  <Choose>
-    <When Condition="exists('..\..\..\..\build\Aardvark.targets')">
-      <Choose>
-        <When Condition="'$(AardvarkBaseProjectPath)' == ''">
-          <ItemGroup>
-            <Reference Include="Aardvark.Base [Binary]">
-              <HintPath>$(OutputPath)\Aardvark.Base.dll</HintPath>
-              <Private>False</Private>
-            </Reference>
-          </ItemGroup>
-        </When>
-        <Otherwise>
-          <ItemGroup>
-            <ProjectReference Include="$(AardvarkBaseProjectPath)">
-              <Name>Aardvark.Base [Project]</Name>
-              <Project>{377DA721-C821-45F6-B803-9C8724C7B37F}</Project>
-              <Private>False</Private>
-            </ProjectReference>
-          </ItemGroup>
-        </Otherwise>
-      </Choose>
-    </When>
-    <Otherwise>
-      <ItemGroup>
-        <ProjectReference Include="..\Aardvark.Base\Aardvark.Base.csproj">
-          <Name>Aardvark.Base</Name>
-          <Project>{377DA721-C821-45F6-B803-9C8724C7B37F}</Project>
-          <Private>False</Private>
-        </ProjectReference>
-      </ItemGroup>
-    </Otherwise>
-  </Choose>
+  <ItemGroup>
+	<ProjectReference Include="..\Aardvark.Base\Aardvark.Base.csproj">
+	  <Name>Aardvark.Base</Name>
+	  <Project>{377DA721-C821-45F6-B803-9C8724C7B37F}</Project>
+	  <Private>False</Private>
+	</ProjectReference>
+  </ItemGroup>
 </Project>
