@@ -19,9 +19,14 @@
         </frameworkAssemblies>
     </metadata>
     <files>
+        <file src="net40\FreeImageNET.dll" target="lib\net40\FreeImageNET.dll" />
+        <file src="net40\DevILNet.dll" target="lib\net40\DevILNet.dll" />
         <file src="net40\Aardvark.Base.dll" target="lib\net40\Aardvark.Base.dll" />
         <file src="net40\Aardvark.Base.pdb" target="lib\net40\Aardvark.Base.pdb" />
         <file src="net40\Aardvark.Base.xml" target="lib\net40\Aardvark.Base.xml" />
+        
+        <file src="net45\FreeImageNET.dll" target="lib\net45\FreeImageNET.dll" />
+        <file src="net45\DevILNet.dll" target="lib\net45\DevILNet.dll" />
         <file src="net45\Aardvark.Base.dll" target="lib\net45\Aardvark.Base.dll" />
         <file src="net45\Aardvark.Base.pdb" target="lib\net45\Aardvark.Base.pdb" />
         <file src="net45\Aardvark.Base.xml" target="lib\net45\Aardvark.Base.xml" />

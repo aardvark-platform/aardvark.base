@@ -23,27 +23,27 @@ Target "Restore" (fun () ->
 )
 
 Target "Clean" (fun () ->
-    DeleteDir (Path.Combine("Bin", "Release"))
-    DeleteDir (Path.Combine("Bin", "Release 4.0"))
-    DeleteDir (Path.Combine("Bin", "Release 4.5"))
-    DeleteDir (Path.Combine("Bin", "Debug"))
+    DeleteDir (Path.Combine("bin", "Release"))
+    DeleteDir (Path.Combine("bin", "Release 4.0"))
+    DeleteDir (Path.Combine("bin", "Release 4.5"))
+    DeleteDir (Path.Combine("bin", "Debug"))
 )
 
 Target "CodeGenerator" (fun () ->
-    MSBuildRelease "Bin/Release" "Build" (!!"src/**/CodeGenerator.csproj") |> ignore
+    MSBuildRelease "bin/Release" "Build" (!!"src/**/CodeGenerator.csproj") |> ignore
 )
 
 
 Target "Compile40" (fun () ->
-    MSBuild "Bin/net40" "Build" ["Configuration", "Release 4.0"] net40 |> ignore
+    MSBuild "bin/net40" "Build" ["Configuration", "Release 4.0"] net40 |> ignore
 )
 
 Target "Compile45" (fun () ->
-    MSBuild "Bin/net45" "Build" ["Configuration", "Release 4.5"] net45 |> ignore
+    MSBuild "bin/net45" "Build" ["Configuration", "Release 4.5"] net45 |> ignore
 )
 
 Target "Compile" (fun () ->
-    MSBuildRelease "Bin/Release" "Build" core |> ignore
+    MSBuildRelease "bin/Release" "Build" core |> ignore
 )
 
 
@@ -83,7 +83,7 @@ Target "CreatePackage" (fun () ->
 
         for id in knownPackages do
             NuGetPack (fun p -> 
-                { p with OutputPath = "Bin"; 
+                { p with OutputPath = "bin"; 
                          Version = tag; 
                          ReleaseNotes = releaseNotes; 
                          WorkingDir = "bin"
