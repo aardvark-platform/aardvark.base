@@ -12,6 +12,22 @@ namespace Aardvark.Base
 {
     public abstract partial class PixImage
     {
+		protected static Dictionary<PixelFormat, Tup<PixFormat, int>> s_pixFormatAndCountOfPixelFormat =
+			new Dictionary<PixelFormat, Tup<PixFormat, int>>()
+		{
+			{ PixelFormat.Format1bppIndexed, Tup.Create(PixFormat.ByteBW, 1) },
+
+			{ PixelFormat.Format16bppGrayScale, Tup.Create(PixFormat.UShortGray, 1) },
+
+			{ PixelFormat.Format24bppRgb, Tup.Create(PixFormat.ByteBGR, 3) },
+			{ PixelFormat.Format32bppRgb, Tup.Create(PixFormat.ByteBGR, 4) },
+			{ PixelFormat.Format32bppArgb, Tup.Create(PixFormat.ByteBGRA, 4) },
+			{ PixelFormat.Format32bppPArgb, Tup.Create(PixFormat.ByteBGRP, 4) },
+
+			{ PixelFormat.Format48bppRgb, Tup.Create(PixFormat.UShortBGR, 3) },
+			{ PixelFormat.Format64bppArgb, Tup.Create(PixFormat.UShortBGRA, 4) },
+			{ PixelFormat.Format64bppPArgb, Tup.Create(PixFormat.UShortBGRP, 4) },
+		};
 
         public static Dictionary<PixelFormat, PixFormat> s_formats = new Dictionary<PixelFormat, PixFormat>()
         {
@@ -22,7 +38,7 @@ namespace Aardvark.Base
         protected static PixImage CreateRawBitmap(System.Drawing.Bitmap bitmap)
         {
             var sdipf = bitmap.PixelFormat;
-            var pfc = s_pixFormatAndCountOfSdiPixelFormat[sdipf];
+			var pfc = s_pixFormatAndCountOfPixelFormat[sdipf];
 
             var sx = bitmap.Width;
             var sy = bitmap.Height;
