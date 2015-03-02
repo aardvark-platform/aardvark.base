@@ -46,31 +46,34 @@ namespace Aardvark.Base
             Bounds = Box2i.FromSize(width, height);
         }
 
-        ///// <summary>
-        ///// PixelPosition from normalized device coordinates.
-        ///// </summary>
-        //public PixelPosition(Ndc2d ndc, IRenderTarget renderTarget)
-        //{
-        //    var d = (V2d)renderTarget.Size / 2.0;
-        //    Position = new V2i(
-        //        (ndc.Position.X + 1.0) * d.X,
-        //        (1.0 - ndc.Position.Y) * d.Y
-        //        );
-        //    Bounds = Box2i.FromSize(renderTarget.Size);
-        //}
 
-        ///// <summary>
-        ///// PixelPosition from normalized device coordinates.
-        ///// </summary>
-        //public PixelPosition(Ndc3d ndc, IRenderTarget renderTarget)
-        //{
-        //    var d = (V2d)renderTarget.Size / 2.0;
-        //    Position = new V2i(
-        //        (ndc.Position.X + 1.0) * d.X,
-        //        (1.0 - ndc.Position.Y) * d.Y
-        //        );
-        //    Bounds = Box2i.FromSize(renderTarget.Size);
-        //}
+
+        /// <summary>
+        /// PixelPosition from normalized device coordinates.
+        /// </summary>
+        public PixelPosition(Ndc2d ndc, V2i renderTargetSize)
+        {
+            var d = (V2d)renderTargetSize / 2.0;
+            Position = new V2i(
+                (ndc.Position.X + 1.0) * d.X,
+                (1.0 - ndc.Position.Y) * d.Y
+                );
+            Bounds = Box2i.FromSize(renderTargetSize);
+        }
+
+        /// <summary>
+        /// PixelPosition from normalized device coordinates.
+        /// </summary>
+        public PixelPosition(Ndc3d ndc, V2i renderTargetSize)
+        {
+            var d = (V2d)renderTargetSize / 2.0;
+            Position = new V2i(
+                (ndc.Position.X + 1.0) * d.X,
+                (1.0 - ndc.Position.Y) * d.Y
+                );
+            Bounds = Box2i.FromSize(renderTargetSize);
+        }
+
 
         /// <summary>
         /// Maps integral pixel position to range ](0,0), (1,1)[,

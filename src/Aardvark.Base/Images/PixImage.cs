@@ -74,7 +74,7 @@ namespace Aardvark.Base
     [Flags]
     public enum PixLoadOptions
     {
-		Default             = UseSystemImage | UseFreeImage,
+        Default             = UseSystemImage | UseFreeImage,
         UseSystemImage      = 0x01000000,
         UseFreeImage        = 0x02000000,
         UseStorageService   = 0x08000000,
@@ -86,7 +86,7 @@ namespace Aardvark.Base
     [Flags]
     public enum PixSaveOptions
     {
-		Default             = UseSystemImage | UseFreeImage | NormalizeFilename,
+        Default             = UseSystemImage | UseFreeImage | NormalizeFilename,
         NormalizeFilename   = 0x00010000,
         UseSystemImage      = 0x01000000,
         UseFreeImage        = 0x02000000,
@@ -359,13 +359,13 @@ namespace Aardvark.Base
             }
             #endif
 
-			#if USE_ANDROID
-			if ((options & PixLoadOptions.UseSystemImage) != 0)
-			{
-				var img = CreateRawAndroid(new FileStream(filename, FileMode.Open, FileAccess.Read), options);
-				if (img != null) return img;
-			}
-			#endif
+            #if USE_ANDROID
+            if ((options & PixLoadOptions.UseSystemImage) != 0)
+            {
+                var img = CreateRawAndroid(new FileStream(filename, FileMode.Open, FileAccess.Read), options);
+                if (img != null) return img;
+            }
+            #endif
 
             throw new FileFormatException("could not load PixImage");
         }
@@ -454,17 +454,17 @@ namespace Aardvark.Base
             }
             #endif
 
-			#if USE_ANDROID
-			if ((options & PixLoadOptions.UseSystemImage) != 0)
-			{
-				try
-				{
-					var img = CreateRawAndroid(stream, options);
-					if (img != null) return img;
-				}
-				catch (Exception ex) { if (exception == null) exception = ex; }
-			}
-			#endif
+            #if USE_ANDROID
+            if ((options & PixLoadOptions.UseSystemImage) != 0)
+            {
+                try
+                {
+                    var img = CreateRawAndroid(stream, options);
+                    if (img != null) return img;
+                }
+                catch (Exception ex) { if (exception == null) exception = ex; }
+            }
+            #endif
 
             throw new FileFormatException("could not load image", exception);
         }
