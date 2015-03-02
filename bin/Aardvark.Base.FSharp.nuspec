@@ -17,9 +17,9 @@
         <tags>graphics fsharp visualization geometry math algorithms</tags>
         <dependencies>
             <dependency id="Aardvark.Base" version="1.0.8" />
-            <dependency id="FSharp.Compiler.Service" version="0.0.58" />
-            <dependency id="NUnit" version="2.6.3" />
-            <dependency id="RegexProvider" version="0.0.2" />
+            <dependency id="FSharp.Compiler.Service" version="0.0.85" />
+            <dependency id="NUnit" version="2.6.4" />
+            <dependency id="RegexProvider" version="0.0.4" />
         </dependencies>
     </metadata>
     <files>
