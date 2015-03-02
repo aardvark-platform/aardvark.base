@@ -2,7 +2,7 @@
 <package xmlns="http://schemas.microsoft.com/packaging/2011/08/nuspec.xsd">
     <metadata>
         <id>Aardvark.Base.Essentials</id>
-        <version>1.0.0</version>
+        <version>1.0.6</version>
         <authors>VRVis Research Center</authors>
         <owners>VRVis Research Center</owners>
         <licenseUrl>http://opensource.org/licenses/Apache-2.0</licenseUrl>
@@ -18,7 +18,7 @@
             <frameworkAssembly assemblyName="System.Drawing" />
         </frameworkAssemblies>
 		<dependencies>
-            <dependency id="Aardvark.Base" version="1.0.5" />
+            <dependency id="Aardvark.Base" version="1.0.6" />
 			<dependency id="Microsoft.Bcl.Immutable" version="1.0.34" />
 		    <dependency id="Rx-Core" version="2.2.5" />
 		    <dependency id="Rx-Interfaces" version="2.2.5" />

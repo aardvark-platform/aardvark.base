@@ -1,3 +1,6 @@
+call "C:\Program Files (x86)\Microsoft Visual Studio 12.0\Common7\Tools\VsDevCmd.bat"
+
+
 msbuild ../src/Aardvark.Base/Aardvark.Base.csproj /t:Build /p:Configuration="Release 4.0"
 msbuild ../src/Aardvark.Base/Aardvark.Base.csproj /t:Build /p:Configuration="Release 4.5"
 nuget pack Aardvark.Base.nuspec
