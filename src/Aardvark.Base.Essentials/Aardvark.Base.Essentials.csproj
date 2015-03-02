@@ -17,24 +17,24 @@
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
-    <OutputPath>..\..\Bin\Debug\</OutputPath>
-    <IntermediateOutputPath>..\..\Bin\Debug\obj\</IntermediateOutputPath>
+    <OutputPath>..\..\bin\Debug\</OutputPath>
+    <IntermediateOutputPath>..\..\bin\Debug\obj\</IntermediateOutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>3</WarningLevel>
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
-    <DocumentationFile>..\..\Bin\Debug\Aardvark.Base.Essentials.xml</DocumentationFile>
+    <DocumentationFile>..\..\bin\Debug\Aardvark.Base.Essentials.xml</DocumentationFile>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
-    <OutputPath>..\..\Bin\Release\</OutputPath>
-    <IntermediateOutputPath>..\..\Bin\Release\obj\</IntermediateOutputPath>
+    <OutputPath>..\..\bin\Release\</OutputPath>
+    <IntermediateOutputPath>..\..\bin\Release\obj\</IntermediateOutputPath>
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>3</WarningLevel>
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
-    <DocumentationFile>..\..\Bin\Release\Aardvark.Base.Essentials.xml</DocumentationFile>
+    <DocumentationFile>..\..\bin\Release\Aardvark.Base.Essentials.xml</DocumentationFile>
   </PropertyGroup>
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <Import Project="..\..\..\..\build\Aardvark.targets" Condition="exists('..\..\..\..\build\Aardvark.targets')" />

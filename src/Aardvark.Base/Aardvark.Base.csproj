@@ -21,8 +21,8 @@
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
-    <OutputPath>..\..\Bin\Debug\</OutputPath>
-    <IntermediateOutputPath>..\..\Bin\Debug\obj\</IntermediateOutputPath>
+    <OutputPath>..\..\bin\Debug\</OutputPath>
+    <IntermediateOutputPath>..\..\bin\Debug\obj\</IntermediateOutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
@@ -35,8 +35,8 @@
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
-    <OutputPath>..\..\Bin\Release\</OutputPath>
-    <IntermediateOutputPath>..\..\Bin\Release\obj\</IntermediateOutputPath>
+    <OutputPath>..\..\bin\Release\</OutputPath>
+    <IntermediateOutputPath>..\..\bin\Release\obj\</IntermediateOutputPath>
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
@@ -44,13 +44,13 @@
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <Prefer32Bit>false</Prefer32Bit>
     <NoWarn>1591</NoWarn>
-    <DocumentationFile>..\..\Bin\Release\Aardvark.Base.xml</DocumentationFile>
+    <DocumentationFile>..\..\bin\Release\Aardvark.Base.xml</DocumentationFile>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release 4.5|AnyCPU'">
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
-    <OutputPath>..\..\Bin\net45\</OutputPath>
-    <IntermediateOutputPath>..\..\Bin\net45\obj\</IntermediateOutputPath>
+    <OutputPath>..\..\bin\net45\</OutputPath>
+    <IntermediateOutputPath>..\..\bin\net45\obj\</IntermediateOutputPath>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
@@ -59,13 +59,13 @@
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <Prefer32Bit>false</Prefer32Bit>
     <NoWarn>1591</NoWarn>
-    <DocumentationFile>..\..\Bin\net45\Aardvark.Base.xml</DocumentationFile>
+    <DocumentationFile>..\..\bin\net45\Aardvark.Base.xml</DocumentationFile>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release 4.0|AnyCPU'">
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
-    <OutputPath>..\..\Bin\net40\</OutputPath>
-    <IntermediateOutputPath>..\..\Bin\net40\obj\</IntermediateOutputPath>
+    <OutputPath>..\..\bin\net40\</OutputPath>
+    <IntermediateOutputPath>..\..\bin\net40\obj\</IntermediateOutputPath>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <DefineConstants>TRACE;NET40</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
@@ -74,7 +74,7 @@
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <Prefer32Bit>false</Prefer32Bit>
     <NoWarn>1591</NoWarn>
-    <DocumentationFile>..\..\Bin\net40\Aardvark.Base.xml</DocumentationFile>
+    <DocumentationFile>..\..\bin\net40\Aardvark.Base.xml</DocumentationFile>
   </PropertyGroup>
   <PropertyGroup Condition="exists('$(OutDir)..\AardReplacer.exe')">
     <PreBuildEvent>"$(OutDir)..\AardReplacer.exe" "$(ProjectDir)\Trafos\Aardreps.aarp"</PreBuildEvent>
