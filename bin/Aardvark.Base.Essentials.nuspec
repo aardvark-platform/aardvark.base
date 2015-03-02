@@ -28,8 +28,8 @@
         </dependencies>
     </metadata>
     <files>
-        <file src="net45\Aardvark.Base.Essentials.dll" target="lib\net45\Aardvark.Base.Essentials.dll" />
-        <file src="net45\Aardvark.Base.Essentials.pdb" target="lib\net45\Aardvark.Base.Essentials.pdb" />
-        <file src="net45\Aardvark.Base.Essentials.xml" target="lib\net45\Aardvark.Base.Essentials.xml" />
+        <file src="Release\Aardvark.Base.Essentials.dll" target="lib\net45\Aardvark.Base.Essentials.dll" />
+        <file src="Release\Aardvark.Base.Essentials.pdb" target="lib\net45\Aardvark.Base.Essentials.pdb" />
+        <file src="Release\Aardvark.Base.Essentials.xml" target="lib\net45\Aardvark.Base.Essentials.xml" />
     </files>
 </package>
