@@ -2,7 +2,7 @@
 <package xmlns="http://schemas.microsoft.com/packaging/2011/08/nuspec.xsd">
     <metadata>
         <id>Aardvark.Base.Incremental</id>
-        <version>1.0.6</version>
+        <version>1.0.7</version>
         <authors>VRVis Research Center</authors>
         <owners>VRVis Research Center</owners>
         <licenseUrl>http://opensource.org/licenses/Apache-2.0</licenseUrl>
@@ -16,8 +16,8 @@
         <language>en-US</language>
         <tags>graphics fsharp visualization geometry math algorithms incremental</tags>
         <dependencies>
-            <dependency id="Aardvark.Base" version="1.0.6" />
-			<dependency id="Aardvark.Base.FSharp" version="1.0.6" />
+            <dependency id="Aardvark.Base" version="1.0.7" />
+			<dependency id="Aardvark.Base.FSharp" version="1.0.7" />
 			<dependency id="NUnit" version="2.6.3" />
 			<dependency id="FsUnit" version="1.3.0.1" />
 			<dependency id="Rx-Core" version="2.2.5" />
