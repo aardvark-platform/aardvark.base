@@ -14,19 +14,17 @@
 		<copyright>Copyright © 2014, 2015 VRVis Zentrum für Virtual Reality und Visualisierung Forschungs-GmbH, Donau-City-Strasse 1, A-1220 Wien, Austria.</copyright>
         <language>en-US</language>
         <tags>graphics visualization geometry math algorithms</tags>
+        <dependencies>
+            <dependency id="VVVV.FreeImage" version="3.15.1.1" />
+        </dependencies>
         <frameworkAssemblies>
             <frameworkAssembly assemblyName="System.Drawing" />
         </frameworkAssemblies>
     </metadata>
     <files>
-        <file src="net40\FreeImageNET.dll" target="lib\net40\FreeImageNET.dll" />
-        <file src="net40\DevILNet.dll" target="lib\net40\DevILNet.dll" />
         <file src="net40\Aardvark.Base.dll" target="lib\net40\Aardvark.Base.dll" />
         <file src="net40\Aardvark.Base.pdb" target="lib\net40\Aardvark.Base.pdb" />
         <file src="net40\Aardvark.Base.xml" target="lib\net40\Aardvark.Base.xml" />
-        
-        <file src="net45\FreeImageNET.dll" target="lib\net45\FreeImageNET.dll" />
-        <file src="net45\DevILNet.dll" target="lib\net45\DevILNet.dll" />
         <file src="net45\Aardvark.Base.dll" target="lib\net45\Aardvark.Base.dll" />
         <file src="net45\Aardvark.Base.pdb" target="lib\net45\Aardvark.Base.pdb" />
         <file src="net45\Aardvark.Base.xml" target="lib\net45\Aardvark.Base.xml" />

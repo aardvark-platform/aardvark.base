@@ -2,9 +2,6 @@
 #if !__MonoCS__ && !__ANDROID__
 #define USE_BITMAP
 #define USE_SYSTEMIMAGE
-#define USE_FREEIMAGE
-#define USE_DEVIL
-#define USE_LIBTIFF
 #endif
 
 #if __ANDROID__
@@ -13,8 +10,6 @@
 
 #if __MonoCS__
 #define USE_BITMAP
-#define USE_FREEIMAGE
-#define USE_DEVIL
 #endif
 
 using System;
@@ -74,7 +69,7 @@ namespace Aardvark.Base
     [Flags]
     public enum PixLoadOptions
     {
-        Default             = UseSystemImage | UseFreeImage,
+        Default             = UseBitmap | UseSystemImage | UseFreeImage,
         UseSystemImage      = 0x01000000,
         UseFreeImage        = 0x02000000,
         UseStorageService   = 0x08000000,

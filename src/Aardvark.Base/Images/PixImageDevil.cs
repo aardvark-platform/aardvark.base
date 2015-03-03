@@ -6,6 +6,7 @@ using System.IO;
 
 using System.Runtime.InteropServices;
 
+#if USE_DEVIL
 namespace Aardvark.Base
 {
 	public abstract partial class PixImage
@@ -199,3 +200,4 @@ namespace Aardvark.Base
 		}
 	}
 }
+#endif

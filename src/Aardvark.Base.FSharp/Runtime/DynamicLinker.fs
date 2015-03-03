@@ -251,7 +251,7 @@ module DynamicLinker =
     let tryLoadFunction (name : string) (lib : Library) =
         lib.TryFindFunction name
 
-    let tryLoadEmbeddedLibrary (name : string) =
+    let tryUnpackNativeLibrary (name : string) =
         let resname = name + ".zip"
         let resourceInfo =
             Introspection.AllAssemblies |> Seq.tryPick (fun a ->
@@ -275,23 +275,25 @@ module DynamicLinker =
                     if System.IntPtr.Size = 8 then "AMD64"
                     else "x86"
 
-                let resName = osName + "_" + archName + "_"
+                let resName = osName + "_" + archName + "/"
 
-                let entry = archive.Entries |> Seq.tryFind (fun e -> e.Name.StartsWith resName)
+                let entries = archive.Entries |> Seq.filter (fun e -> e.FullName.StartsWith resName) |> Seq.toList
 
-                match entry with
-                    | Some entry ->
-                        use stream = entry.Open()
-                        let data = Array.zeroCreate (int entry.Length)
-                        let mutable read = 0
-                        while read < data.Length do
-                            let r = stream.Read(data, read, data.Length - read)
-                            read <- read + r
+                match entries with
+                    | [] -> false
+                    | entries ->
+                        for entry in entries do
+                            use stream = entry.Open()
+                            let data = Array.zeroCreate (int entry.Length)
+                            let mutable read = 0
+                            while read < data.Length do
+                                let r = stream.Read(data, read, data.Length - read)
+                                read <- read + r
 
-                        let name = entry.Name.Substring(resName.Length)
-                        System.IO.File.WriteAllBytes(name, data)
-                        tryLoadLibrary name
-                    | None -> 
-                        None
+                            let name = entry.Name
+                            System.IO.File.WriteAllBytes(name, data)
+                        true
+
+
             | None ->
-                None
+                false

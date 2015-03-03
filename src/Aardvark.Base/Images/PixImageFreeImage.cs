@@ -1,13 +1,11 @@
-﻿#if !__ANDROID__
-#define USE_FREEIMAGE
-#endif
-#if USE_FREEIMAGE
+﻿#if USE_FREEIMAGE
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading;
+
 
 using FreeImageAPI;
 

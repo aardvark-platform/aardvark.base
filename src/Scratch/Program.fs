@@ -6,7 +6,7 @@ open Aardvark.Base
 [<EntryPoint>]
 let main argv = 
     
-    let test = DynamicLinker.tryLoadEmbeddedLibrary "Assimp"
+    let test = DynamicLinker.tryUnpackNativeLibrary "Assimp"
 
     
 

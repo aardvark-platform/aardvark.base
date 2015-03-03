@@ -12,33 +12,47 @@ namespace Aardvark.Base
 {
     public abstract partial class PixImage
     {
-		protected static Dictionary<PixelFormat, Tup<PixFormat, int>> s_pixFormatAndCountOfPixelFormatBitmap =
-			new Dictionary<PixelFormat, Tup<PixFormat, int>>()
-		{
-			{ PixelFormat.Format1bppIndexed, Tup.Create(PixFormat.ByteBW, 1) },
-
-			{ PixelFormat.Format16bppGrayScale, Tup.Create(PixFormat.UShortGray, 1) },
-
-			{ PixelFormat.Format24bppRgb, Tup.Create(PixFormat.ByteBGR, 3) },
-			{ PixelFormat.Format32bppRgb, Tup.Create(PixFormat.ByteBGR, 4) },
-			{ PixelFormat.Format32bppArgb, Tup.Create(PixFormat.ByteBGRA, 4) },
-			{ PixelFormat.Format32bppPArgb, Tup.Create(PixFormat.ByteBGRP, 4) },
-
-			{ PixelFormat.Format48bppRgb, Tup.Create(PixFormat.UShortBGR, 3) },
-			{ PixelFormat.Format64bppArgb, Tup.Create(PixFormat.UShortBGRA, 4) },
-			{ PixelFormat.Format64bppPArgb, Tup.Create(PixFormat.UShortBGRP, 4) },
-		};
-
-        public static Dictionary<PixelFormat, PixFormat> s_formats = new Dictionary<PixelFormat, PixFormat>()
+        protected static Dictionary<PixelFormat, Tup<PixFormat, int>> s_pixFormatAndCountOfPixelFormatBitmap =
+            new Dictionary<PixelFormat, Tup<PixFormat, int>>()
         {
-            { PixelFormat.Format24bppRgb, PixFormat.ByteBGR },
-            { PixelFormat.Format32bppArgb, PixFormat.ByteBGRA },
+            { PixelFormat.Format1bppIndexed, Tup.Create(PixFormat.ByteBW, 1) },
+            { PixelFormat.Format8bppIndexed, Tup.Create(PixFormat.ByteBW, 1) },
+
+            { PixelFormat.Format16bppGrayScale, Tup.Create(PixFormat.UShortGray, 1) },
+
+            { PixelFormat.Format24bppRgb, Tup.Create(PixFormat.ByteBGR, 3) },
+            { PixelFormat.Format32bppRgb, Tup.Create(PixFormat.ByteBGR, 4) },
+            { PixelFormat.Format32bppArgb, Tup.Create(PixFormat.ByteBGRA, 4) },
+            { PixelFormat.Format32bppPArgb, Tup.Create(PixFormat.ByteBGRP, 4) },
+
+            { PixelFormat.Format48bppRgb, Tup.Create(PixFormat.UShortBGR, 3) },
+            { PixelFormat.Format64bppArgb, Tup.Create(PixFormat.UShortBGRA, 4) },
+            { PixelFormat.Format64bppPArgb, Tup.Create(PixFormat.UShortBGRP, 4) },
+
         };
+
+        protected static Dictionary<PixelFormat, PixelFormat> s_bitmapLockFormats = new Dictionary<PixelFormat, PixelFormat>() 
+        { 
+            { PixelFormat.Format16bppArgb1555, PixelFormat.Format32bppArgb },
+            { PixelFormat.Format16bppRgb555, PixelFormat.Format24bppRgb },
+            { PixelFormat.Format16bppRgb565, PixelFormat.Format24bppRgb },
+            { PixelFormat.Format4bppIndexed, PixelFormat.Format8bppIndexed }
+        };
+
+
+
+        private static PixelFormat GetLockFormat(PixelFormat format)
+        {
+            if (s_pixFormatAndCountOfPixelFormatBitmap.ContainsKey(format))
+                return format;
+            else
+                return s_bitmapLockFormats[format];
+        }
 
         protected static PixImage CreateRawBitmap(System.Drawing.Bitmap bitmap)
         {
-            var sdipf = bitmap.PixelFormat;
-			var pfc = s_pixFormatAndCountOfPixelFormatBitmap[sdipf];
+            var sdipf = GetLockFormat(bitmap.PixelFormat);
+            var pfc = s_pixFormatAndCountOfPixelFormatBitmap[sdipf];
 
             var sx = bitmap.Width;
             var sy = bitmap.Height;
@@ -83,7 +97,7 @@ namespace Aardvark.Base
 
 
         /// <summary>
-        /// Load image from stream via devil.
+        /// Load image from stream via System.Drawing.
         /// </summary>
         /// <returns>If file could not be read, returns null, otherwise a Piximage.</returns>
         private static PixImage CreateRawBitmap(
@@ -99,7 +113,7 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Save image to stream via devil.
+        /// Save image to stream via System.Drawing.
         /// </summary>
         /// <returns>True if the file was successfully saved.</returns>
         private bool SaveAsImageBitmap(
