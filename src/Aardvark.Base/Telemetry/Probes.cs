@@ -134,23 +134,22 @@ namespace Aardvark.Base
         {
             private ProcessThread GetCurrentProcessThread()
             {
-                #if __MonoCS__
-                return (ProcessThread)Activator.CreateInstance(typeof(ProcessThread), true);
-                #else
-                var tid = HardwareThread.GetCurrentWin32ThreadId();
-                if (m_threadLocalWin32ThreadId.Value != tid)
+                if (Environment.OSVersion.Platform == PlatformID.Unix)
+                    return (ProcessThread)Activator.CreateInstance(typeof(ProcessThread), true);
+                else
                 {
-                    m_threadLocalWin32ThreadId.Value = tid;
-                    m_threadLocalProcessThread.Value = HardwareThread.GetProcessThread(tid);
+                    var tid = HardwareThread.GetCurrentWin32ThreadId();
+                    if (m_threadLocalWin32ThreadId.Value != tid)
+                    {
+                        m_threadLocalWin32ThreadId.Value = tid;
+                        m_threadLocalProcessThread.Value = HardwareThread.GetProcessThread(tid);
+                    }
+                    return m_threadLocalProcessThread.Value;
                 }
-                return m_threadLocalProcessThread.Value;
-                #endif
             }
             
-            #if !__MonoCS__
             private ThreadLocal<int> m_threadLocalWin32ThreadId = new ThreadLocal<int>(() => -1);
             private ThreadLocal<ProcessThread> m_threadLocalProcessThread = new ThreadLocal<ProcessThread>();
-            #endif
             
             private ThreadLocal<bool> m_active = new ThreadLocal<bool>(() => false);
 
@@ -257,22 +256,22 @@ namespace Aardvark.Base
         {
             private ProcessThread GetCurrentProcessThread()
             {
-                #if __MonoCS__
-                return (ProcessThread)Activator.CreateInstance(typeof(ProcessThread), true);
-                #else
-                var tid = HardwareThread.GetCurrentWin32ThreadId();
-                if (m_threadLocalWin32ThreadId.Value != tid)
+                if (Environment.OSVersion.Platform == PlatformID.Unix)
+                    return (ProcessThread)Activator.CreateInstance(typeof(ProcessThread), true);
+                else
                 {
-                    m_threadLocalWin32ThreadId.Value = tid;
-                    m_threadLocalProcessThread.Value = HardwareThread.GetProcessThread(tid);
+                    var tid = HardwareThread.GetCurrentWin32ThreadId();
+                    if (m_threadLocalWin32ThreadId.Value != tid)
+                    {
+                        m_threadLocalWin32ThreadId.Value = tid;
+                        m_threadLocalProcessThread.Value = HardwareThread.GetProcessThread(tid);
+                    }
+                    return m_threadLocalProcessThread.Value;
                 }
-                return m_threadLocalProcessThread.Value;
-                #endif
             }
-            #if !__MonoCS__
+
             private ThreadLocal<int> m_threadLocalWin32ThreadId = new ThreadLocal<int>(() => -1);
             private ThreadLocal<ProcessThread> m_threadLocalProcessThread = new ThreadLocal<ProcessThread>();
-            #endif
 
             private HashSet<int> m_threadIds = new HashSet<int>();
             private TimeSpan m_sum = TimeSpan.Zero;
@@ -335,13 +334,18 @@ namespace Aardvark.Base
         {
             private ProcessThread GetCurrentProcessThread()
             {
-                var tid = HardwareThread.GetCurrentWin32ThreadId();
-                if (m_threadLocalWin32ThreadId.Value != tid)
+                if (Environment.OSVersion.Platform == PlatformID.Unix)
+                    return (ProcessThread)Activator.CreateInstance(typeof(ProcessThread), true);
+                else
                 {
-                    m_threadLocalWin32ThreadId.Value = tid;
-                    m_threadLocalProcessThread.Value = HardwareThread.GetProcessThread(tid);
+                    var tid = HardwareThread.GetCurrentWin32ThreadId();
+                    if (m_threadLocalWin32ThreadId.Value != tid)
+                    {
+                        m_threadLocalWin32ThreadId.Value = tid;
+                        m_threadLocalProcessThread.Value = HardwareThread.GetProcessThread(tid);
+                    }
+                    return m_threadLocalProcessThread.Value;
                 }
-                return m_threadLocalProcessThread.Value;
             }
             private ThreadLocal<int> m_threadLocalWin32ThreadId = new ThreadLocal<int>(() => -1);
             private ThreadLocal<ProcessThread> m_threadLocalProcessThread = new ThreadLocal<ProcessThread>();

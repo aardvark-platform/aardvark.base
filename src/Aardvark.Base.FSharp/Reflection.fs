@@ -294,7 +294,7 @@ module Amd64 =
             x.ptr <- FlatByteArray(0n, 0)
             x.run <- fun () -> failwith "using disposed program"
 
-            Kernel32.VirtualFree(ptr, UIntPtr (uint32 size), Kernel32.FreeType.Decommit) |> ignore
+            Kernel32.Imports.VirtualFree(ptr, UIntPtr (uint32 size), Kernel32.FreeType.Decommit) |> ignore
 
         member x.Code = Disasm.decompile x.ptr.Data |> Seq.map (sprintf "%A") |> String.concat "\r\n"
 
@@ -836,7 +836,7 @@ module Amd64 =
         let epi = Assembler.functionEpilog 8
 
         let size = pro.Length + epi.Length + maxSize * writers.Length
-        let ptr = Kernel32.VirtualAlloc(IntPtr.Zero, UIntPtr(uint32(size)), Kernel32.AllocationType.Commit, Kernel32.MemoryProtection.ExecuteReadWrite)
+        let ptr = Kernel32.Imports.VirtualAlloc(IntPtr.Zero, UIntPtr(uint32(size)), Kernel32.AllocationType.Commit, Kernel32.MemoryProtection.ExecuteReadWrite)
 
         Marshal.Copy(pro, 0, ptr, pro.Length)
         let flat = FlatByteArray(ptr, size)

@@ -12,13 +12,13 @@ module ExecutableMemory =
     let alloc (size : int) =
         match os with
             | Windows -> 
-                Kernel32.VirtualAlloc(0n, UIntPtr (uint32 size), Kernel32.AllocationType.Commit, Kernel32.MemoryProtection.ExecuteReadWrite)
+                Kernel32.Imports.VirtualAlloc(0n, UIntPtr (uint32 size), Kernel32.AllocationType.Commit, Kernel32.MemoryProtection.ExecuteReadWrite)
             | Linux -> 
-                let pageSize = Dl.getpagesize()
+                let pageSize = Dl.Imports.getpagesize()
                 let s = nativeint size
-                let mem = Dl.memalign(nativeint pageSize, s)
+                let mem = Dl.Imports.memalign(nativeint pageSize, s)
 
-                let stat = Dl.mprotect(mem, s, Dl.Protection.ReadWriteExecute)
+                let stat = Dl.Imports.mprotect(mem, s, Dl.Protection.ReadWriteExecute)
                 if stat <> 0 then failwith "mprotect failed"
 
                 mem
@@ -28,9 +28,9 @@ module ExecutableMemory =
     let free (ptr : nativeint) (size : int) =
         match os with
             | Windows -> 
-                Kernel32.VirtualFree(ptr, UIntPtr (uint32 size), Kernel32.FreeType.Decommit) |> ignore
+                Kernel32.Imports.VirtualFree(ptr, UIntPtr (uint32 size), Kernel32.FreeType.Decommit) |> ignore
             | Linux ->
-                Dl.free(ptr)
+                Dl.Imports.free(ptr)
             | Mac ->
                 raise <| NotImplementedException()
 
