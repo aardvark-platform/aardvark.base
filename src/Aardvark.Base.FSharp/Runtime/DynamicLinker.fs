@@ -234,6 +234,8 @@ module DynamicLinker =
 
     let notimp() = raise <| NotImplementedException()
 
+
+
     let tryLoadLibrary (name : string) =
         match os with
             | Windows -> Kernel32.tryLoadLibrary name
@@ -248,3 +250,48 @@ module DynamicLinker =
 
     let tryLoadFunction (name : string) (lib : Library) =
         lib.TryFindFunction name
+
+    let tryLoadEmbeddedLibrary (name : string) =
+        let resname = name + ".zip"
+        let resourceInfo =
+            Introspection.AllAssemblies |> Seq.tryPick (fun a ->
+                let r = a.GetManifestResourceInfo(resname)
+                if r <> null then Some (a,r)
+                else None
+            )
+
+        match resourceInfo with
+            | Some (ass,res) ->
+                use stream = ass.GetManifestResourceStream(resname)
+                use archive = new System.IO.Compression.ZipArchive(stream)
+
+                let osName =
+                    match os with
+                        | Windows -> "Windows"
+                        | Linux -> "Linux"
+                        | Mac -> "Mac"
+
+                let archName =
+                    if System.IntPtr.Size = 8 then "AMD64"
+                    else "x86"
+
+                let resName = osName + "_" + archName + "_"
+
+                let entry = archive.Entries |> Seq.tryFind (fun e -> e.Name.StartsWith resName)
+
+                match entry with
+                    | Some entry ->
+                        use stream = entry.Open()
+                        let data = Array.zeroCreate (int entry.Length)
+                        let mutable read = 0
+                        while read < data.Length do
+                            let r = stream.Read(data, read, data.Length - read)
+                            read <- read + r
+
+                        let name = entry.Name.Substring(resName.Length)
+                        System.IO.File.WriteAllBytes(name, data)
+                        tryLoadLibrary name
+                    | None -> 
+                        None
+            | None ->
+                None

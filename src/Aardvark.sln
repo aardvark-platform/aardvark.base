@@ -15,6 +15,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Aardvark.Base.Essentials", 
 EndProject
 Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "Aardvark.Base.Incremental", "Aardvark.Base.Incremental\Aardvark.Base.Incremental.fsproj", "{9623AE28-1F72-46E9-A3A7-85FC1A321A73}"
 EndProject
+Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "Scratch", "Scratch\Scratch.fsproj", "{2AD2CF0D-9EF7-45C7-BE8D-7F5E8A0C81D5}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -71,6 +73,14 @@ Global
 		{9623AE28-1F72-46E9-A3A7-85FC1A321A73}.Release 4.5|Any CPU.Build.0 = Release|Any CPU
 		{9623AE28-1F72-46E9-A3A7-85FC1A321A73}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{9623AE28-1F72-46E9-A3A7-85FC1A321A73}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2AD2CF0D-9EF7-45C7-BE8D-7F5E8A0C81D5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2AD2CF0D-9EF7-45C7-BE8D-7F5E8A0C81D5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2AD2CF0D-9EF7-45C7-BE8D-7F5E8A0C81D5}.Release 4.0|Any CPU.ActiveCfg = Release|Any CPU
+		{2AD2CF0D-9EF7-45C7-BE8D-7F5E8A0C81D5}.Release 4.0|Any CPU.Build.0 = Release|Any CPU
+		{2AD2CF0D-9EF7-45C7-BE8D-7F5E8A0C81D5}.Release 4.5|Any CPU.ActiveCfg = Release|Any CPU
+		{2AD2CF0D-9EF7-45C7-BE8D-7F5E8A0C81D5}.Release 4.5|Any CPU.Build.0 = Release|Any CPU
+		{2AD2CF0D-9EF7-45C7-BE8D-7F5E8A0C81D5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2AD2CF0D-9EF7-45C7-BE8D-7F5E8A0C81D5}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
