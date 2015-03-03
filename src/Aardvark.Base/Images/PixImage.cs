@@ -1,16 +1,16 @@
-//#define USE_STORAGESERVICE
-#if !__MonoCS__ && !__ANDROID__
-#define USE_BITMAP
-#define USE_SYSTEMIMAGE
-#endif
+#define USE_DEVIL
 
-#if __ANDROID__
-#define USE_ANDROID
-#endif
+//#if !__MonoCS__ && !__ANDROID__
+//#define USE_BITMAP
+//#endif
 
-#if __MonoCS__
-#define USE_BITMAP
-#endif
+//#if __ANDROID__
+//#define USE_ANDROID
+//#endif
+
+//#if __MonoCS__
+//#define USE_BITMAP
+//#endif
 
 using System;
 using System.Collections.Generic;
@@ -69,7 +69,7 @@ namespace Aardvark.Base
     [Flags]
     public enum PixLoadOptions
     {
-        Default             = UseBitmap | UseSystemImage | UseFreeImage,
+        Default             = UseDevil | UseSystemImage | UseFreeImage,
         UseSystemImage      = 0x01000000,
         UseFreeImage        = 0x02000000,
         UseStorageService   = 0x08000000,
@@ -81,7 +81,7 @@ namespace Aardvark.Base
     [Flags]
     public enum PixSaveOptions
     {
-        Default             = UseSystemImage | UseFreeImage | NormalizeFilename,
+        Default             = UseDevil | UseSystemImage | UseFreeImage | NormalizeFilename,
         NormalizeFilename   = 0x00010000,
         UseSystemImage      = 0x01000000,
         UseFreeImage        = 0x02000000,
@@ -165,6 +165,7 @@ namespace Aardvark.Base
         protected static Dictionary<string, PixFileFormat> s_formatOfExtension =
             new Dictionary<string, PixFileFormat>()
         {
+            { ".tga", PixFileFormat.Targa },
             { ".png", PixFileFormat.Png },
             { ".bmp", PixFileFormat.Bmp },
             { ".jpg", PixFileFormat.Jpeg },
@@ -203,7 +204,7 @@ namespace Aardvark.Base
         protected static PixFileFormat GetFormatOfExtension(string filename)
         {
             if (!Path.HasExtension(filename))
-                throw new FileFormatException("File name has no extension: " + filename);
+                throw new ImageLoadException("File name has no extension: " + filename);
 
             var ext = Path.GetExtension(filename).ToLowerInvariant();
             return s_formatOfExtension[ext];
@@ -362,7 +363,7 @@ namespace Aardvark.Base
             }
             #endif
 
-            throw new FileFormatException("could not load PixImage");
+            throw new ImageLoadException("could not load PixImage");
         }
 
         /// <summary>
@@ -461,7 +462,7 @@ namespace Aardvark.Base
             }
             #endif
 
-            throw new FileFormatException("could not load image", exception);
+            throw new ImageLoadException("could not load image", exception);
         }
 
         public static PixImage Create(System.Drawing.Bitmap bitmap)
@@ -636,8 +637,8 @@ namespace Aardvark.Base
             if ((options & PixSaveOptions.UseDevil) != 0
                 && SaveAsImageLibTiff(stream, fileFormat, options, qualityLevel)) return;
             #endif
-            
-            throw new FileFormatException("could not save PixImage");
+
+            throw new ImageLoadException("could not save PixImage");
         }
 
         /// <summary>
@@ -709,6 +710,12 @@ namespace Aardvark.Base
                 return;
             }
             #endif
+
+            #if USE_DEVIL
+            if ((options & PixSaveOptions.UseDevil) != 0 && SaveAsImageDevil(filename, fileFormat, options, qualityLevel))
+                return;
+            #endif
+
             var stream = new FileStream(filename, FileMode.Create);
             SaveAsImage(stream, fileFormat, options, qualityLevel);
             stream.Close();
@@ -798,7 +805,7 @@ namespace Aardvark.Base
             }
             #endif
 
-            throw new FileFormatException("could not load info of image");
+            throw new ImageLoadException("could not load info of image");
         }
 
         #endregion

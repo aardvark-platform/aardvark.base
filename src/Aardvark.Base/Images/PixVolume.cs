@@ -3,10 +3,10 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
-#if !__MonoCS__ && !__ANDROID__
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-#endif
+//#if !__MonoCS__ && !__ANDROID__
+//using System.Windows.Media;
+//using System.Windows.Media.Imaging;
+//#endif
 
 
 namespace Aardvark.Base

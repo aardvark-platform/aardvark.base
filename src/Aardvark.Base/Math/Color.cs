@@ -36,8 +36,10 @@ namespace Aardvark.Base
         public enum Format
         {
             None,
+            Alpha,
             BW,
             Gray,
+            GrayAlpha,
             RGB,
             BGR,
             RGBA,

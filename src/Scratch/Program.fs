@@ -5,10 +5,11 @@ open Aardvark.Base
 
 [<EntryPoint>]
 let main argv = 
-    
-    let test = DynamicLinker.tryUnpackNativeLibrary "Assimp"
 
-    
+    let img = PixImage.Create(@"C:\Users\haaser\Desktop\SixteenBitRGB.tif");
 
-    printfn "%A" test
+    img.SaveAsImage(@"C:\Users\haaser\Desktop\SixteenBitRGB2.tif")
+
+    printfn "%A" img
+
     0 // return an integer exit code

@@ -1,9 +1,4 @@
 //#define USE_STORAGESERVICE
-#if !__MonoCS__
-#if !__ANDROID__
-#define USE_SYSTEMIMAGE
-#endif
-#endif
 #if USE_SYSTEMIMAGE
 using System;
 using System.Collections.Generic;
