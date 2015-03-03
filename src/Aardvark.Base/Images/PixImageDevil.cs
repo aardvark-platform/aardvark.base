@@ -134,9 +134,7 @@ namespace Aardvark.Base
                 var gc = GCHandle.Alloc(pix.Data, GCHandleType.Pinned);
                 var ptr = IL.GetData();
 
-                pix.Data.UnsafeCoercedApply((byte[] arr) => {
-                    Marshal.Copy(ptr, arr, 0, arr.Length);    
-                });
+				ptr.CopyTo (pix.Data, 0, pix.Data.Length);
 
                 gc.Free();
 
@@ -155,8 +153,6 @@ namespace Aardvark.Base
                 Stream stream, PixFileFormat format,
                 PixSaveOptions options, int qualityLevel)
         {
-            var fs = stream as FileStream;
-
             var img = IL.GenImage();
             IL.BindImage(img);
 
@@ -182,8 +178,6 @@ namespace Aardvark.Base
                 IL.BindImage(0);
                 IL.DeleteImage(img);
             }
-
-            
         }
 
 
@@ -205,6 +199,9 @@ namespace Aardvark.Base
             {
                 if (!IL.TexImage(Size.X, Size.Y, 1, (byte)ChannelCount, fmt, type, gc.AddrOfPinnedObject()))
                     return false;
+
+				if(qualityLevel != -1)
+					IL.SetInteger(GetName.JpgQuality, qualityLevel);
 
                 return IL.Save(s_fileFormats[format], file);
             }

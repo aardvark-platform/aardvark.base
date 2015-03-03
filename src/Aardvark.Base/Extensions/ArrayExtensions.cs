@@ -2457,6 +2457,47 @@ namespace Aardvark.Base
             UnsafeCoercedApply(input, action, GetTypeId<TR>());
         }
 
+		private static class Msvcrt
+		{
+			[DllImport("msvcrt.dll")]
+			public static extern int memcpy (IntPtr target, IntPtr src, UIntPtr size);
+		}
+
+		private static class Libc
+		{
+			[DllImport("libc")]
+			public static extern int memcpy (IntPtr target, IntPtr src, UIntPtr size);
+		}
+
+		public static void CopyTo(this Array input, int offset, int length, IntPtr target)
+		{
+			var gc = GCHandle.Alloc (input, GCHandleType.Pinned);
+			var type = input.GetType().GetElementType();
+			var typeSize = Marshal.SizeOf (type);
+
+			if (Environment.OSVersion.Platform == PlatformID.Unix)
+				Libc.memcpy (target, gc.AddrOfPinnedObject () + offset * typeSize, (UIntPtr)(length * typeSize));
+			else
+				Msvcrt.memcpy (target, gc.AddrOfPinnedObject () + offset * typeSize, (UIntPtr)(length * typeSize));
+
+			gc.Free ();
+		}
+
+		public static void CopyTo(this IntPtr input, Array target, int offset, int length)
+		{
+			var gc = GCHandle.Alloc (target, GCHandleType.Pinned);
+			var type = target.GetType().GetElementType();
+			var typeSize = Marshal.SizeOf (type);
+
+			if (Environment.OSVersion.Platform == PlatformID.Unix)
+				Libc.memcpy (gc.AddrOfPinnedObject () + offset * typeSize, input, (UIntPtr)(length * typeSize));
+			else
+				Msvcrt.memcpy (gc.AddrOfPinnedObject () + offset * typeSize, input, (UIntPtr)(length * typeSize));
+
+			gc.Free ();
+		}
+
+
         #endregion
     }
 
