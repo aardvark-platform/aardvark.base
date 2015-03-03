@@ -134,7 +134,7 @@ namespace Aardvark.Base
                 var gc = GCHandle.Alloc(pix.Data, GCHandleType.Pinned);
                 var ptr = IL.GetData();
 
-				ptr.CopyTo (pix.Data, 0, pix.Data.Length);
+                ptr.CopyTo (pix.Data, 0, pix.Data.Length);
 
                 gc.Free();
 
@@ -200,8 +200,8 @@ namespace Aardvark.Base
                 if (!IL.TexImage(Size.X, Size.Y, 1, (byte)ChannelCount, fmt, type, gc.AddrOfPinnedObject()))
                     return false;
 
-				if(qualityLevel != -1)
-					IL.SetInteger(GetName.JpgQuality, qualityLevel);
+                if(qualityLevel != -1)
+                    IL.SetInteger(GetName.JpgQuality, qualityLevel);
 
                 return IL.Save(s_fileFormats[format], file);
             }
