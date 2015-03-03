@@ -85,30 +85,31 @@ module private Kernel32 =
     type FreeType =
         | Decommit = 0x4000u
 
-
-    [<DllImport("kernel32.dll")>]
-    extern bool private FreeLibrary (nativeint handle)
-
-    [<DllImport("kernel32.dll")>]
-    extern nativeint private LoadLibrary (string path)
-
-    [<DllImport("kernel32.dll")>]
-    extern nativeint private LoadLibraryEx (string path, IntPtr hFile, LoadLibraryFlags flags)
-
-    [<DllImport("kernel32.dll")>]
-    extern nativeint private GetProcAddress(nativeint library, string name)
     
-    [<DllImport("kernel32.dll", SetLastError=true)>]
-    extern IntPtr private VirtualAlloc(IntPtr lpAddress, UIntPtr dwSize, AllocationType flAllocationType, MemoryProtection flProtect);
+    module Imports = 
+        [<DllImport("kernel32.dll")>]
+        extern bool private FreeLibrary (nativeint handle)
 
-    [<DllImport("kernel32.dll", SetLastError=true)>]
-    extern bool private VirtualFree(IntPtr lpAddress, UIntPtr dwSize, FreeType freeType);
+        [<DllImport("kernel32.dll")>]
+        extern nativeint private LoadLibrary (string path)
+
+        [<DllImport("kernel32.dll")>]
+        extern nativeint private LoadLibraryEx (string path, IntPtr hFile, LoadLibraryFlags flags)
+
+        [<DllImport("kernel32.dll")>]
+        extern nativeint private GetProcAddress(nativeint library, string name)
+    
+        [<DllImport("kernel32.dll", SetLastError=true)>]
+        extern IntPtr private VirtualAlloc(IntPtr lpAddress, UIntPtr dwSize, AllocationType flAllocationType, MemoryProtection flProtect);
+
+        [<DllImport("kernel32.dll", SetLastError=true)>]
+        extern bool private VirtualFree(IntPtr lpAddress, UIntPtr dwSize, FreeType freeType);
 
     let private linker = 
         { new IDynamicLinker with
-            member x.LoadLibrary(name : string) = LoadLibrary(name)
-            member x.FreeLibrary(address : nativeint) = FreeLibrary(address) |> ignore
-            member x.GetProcAddress (handle : nativeint) (name : string) = GetProcAddress(handle, name) }
+            member x.LoadLibrary(name : string) = Imports.LoadLibrary(name)
+            member x.FreeLibrary(address : nativeint) = Imports.FreeLibrary(address) |> ignore
+            member x.GetProcAddress (handle : nativeint) (name : string) = Imports.GetProcAddress(handle, name) }
 
     module private DelegateTypeBuilder = 
         let assembly = new AssemblyName();
@@ -146,14 +147,14 @@ module private Kernel32 =
             typeBuilder.CreateType()
 
     let tryLoadLibrary (path : string) =
-        let ptr = LoadLibrary(path)
+        let ptr = Imports.LoadLibrary(path)
         if ptr <> 0n then
             Some(new Library(ptr, linker))
         else
             None
 
     let loadLibrary (path : string) =
-        new Library (LoadLibrary(path), linker)
+        new Library (Imports.LoadLibrary(path), linker)
 
     let wrapFunction' (t : Type) (f : Function) =
         let args, ret = FunctionReflection.getMethodSignature t
@@ -179,48 +180,48 @@ module private Dl =
                     | ReadWriteExecute = 0x07
 
     
+    module Imports =
+        [<DllImport("libdl", SetLastError=false, CharSet=CharSet.Ansi)>]
+        extern nativeint dlopen (string path, int flag)
 
-    [<DllImport("libdl", SetLastError=false, CharSet=CharSet.Ansi)>]
-    extern nativeint dlopen (string path, int flag)
+        [<DllImport("libdl", SetLastError=false, CharSet=CharSet.Ansi)>]
+        extern nativeint dlsym(nativeint library, string name)
 
-    [<DllImport("libdl", SetLastError=false, CharSet=CharSet.Ansi)>]
-    extern nativeint dlsym(nativeint library, string name)
-
-    [<DllImport("libdl", SetLastError=false)>]
-    extern int dlclose(nativeint library)
+        [<DllImport("libdl", SetLastError=false)>]
+        extern int dlclose(nativeint library)
     
 
-    [<DllImport("libc", SetLastError=true)>]
-    extern int getpagesize()
+        [<DllImport("libc", SetLastError=true)>]
+        extern int getpagesize()
 
-    [<DllImport("libc", SetLastError=true)>]
-    extern nativeint memalign(nativeint align, nativeint size)
+        [<DllImport("libc", SetLastError=true)>]
+        extern nativeint memalign(nativeint align, nativeint size)
 
-    [<DllImport("libc", SetLastError=true)>]
-    extern int mprotect(IntPtr addr, nativeint size, Protection prot);
+        [<DllImport("libc", SetLastError=true)>]
+        extern int mprotect(IntPtr addr, nativeint size, Protection prot);
 
-    [<DllImport("libc", SetLastError=false)>]
-    extern IntPtr malloc(nativeint size);
+        [<DllImport("libc", SetLastError=false)>]
+        extern IntPtr malloc(nativeint size);
 
-    [<DllImport("libc", SetLastError=false)>]
-    extern void free(nativeint ptr);
+        [<DllImport("libc", SetLastError=false)>]
+        extern void free(nativeint ptr);
 
     let private linker =
         { new IDynamicLinker with
-            member x.LoadLibrary(name : string) = dlopen(name, 1) // RTLD_LAZY = 1
-            member x.FreeLibrary(address : nativeint) = dlclose(address) |> ignore
-            member x.GetProcAddress (handle : nativeint) (name : string) = dlsym(handle, name) }
+            member x.LoadLibrary(name : string) = Imports.dlopen(name, 1) // RTLD_LAZY = 1
+            member x.FreeLibrary(address : nativeint) = Imports.dlclose(address) |> ignore
+            member x.GetProcAddress (handle : nativeint) (name : string) = Imports.dlsym(handle, name) }
 
 
     let tryLoadLibrary (path : string) =
-        let ptr = dlopen(path, 1) // RTLD_LAZY = 1
+        let ptr = Imports.dlopen(path, 1) // RTLD_LAZY = 1
         if ptr <> 0n then
             Some(new Library(ptr, linker))
         else
             None
 
     let loadLibrary (path : string) =
-        new Library (dlopen(path, 1), linker) // RTLD_LAZY = 1
+        new Library (Imports.dlopen(path, 1), linker) // RTLD_LAZY = 1
 
 /// <summary>
 /// DynamicLinker provides platform independent functions for loading libraries and
