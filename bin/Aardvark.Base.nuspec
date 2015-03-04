@@ -22,11 +22,8 @@
         </frameworkAssemblies>
     </metadata>
     <files>
-        <file src="net40\Aardvark.Base.dll" target="lib\net40\Aardvark.Base.dll" />
-        <file src="net40\Aardvark.Base.pdb" target="lib\net40\Aardvark.Base.pdb" />
-        <file src="net40\Aardvark.Base.xml" target="lib\net40\Aardvark.Base.xml" />
-        <file src="net45\Aardvark.Base.dll" target="lib\net45\Aardvark.Base.dll" />
-        <file src="net45\Aardvark.Base.pdb" target="lib\net45\Aardvark.Base.pdb" />
-        <file src="net45\Aardvark.Base.xml" target="lib\net45\Aardvark.Base.xml" />
+        <file src="Release\Aardvark.Base.dll" target="lib\net45\Aardvark.Base.dll" />
+        <file src="Release\Aardvark.Base.pdb" target="lib\net45\Aardvark.Base.pdb" />
+        <file src="Release\Aardvark.Base.xml" target="lib\net45\Aardvark.Base.xml" />
     </files>
 </package>
