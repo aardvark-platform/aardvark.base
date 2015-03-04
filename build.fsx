@@ -5,8 +5,8 @@ open Fake
 open System
 open System.IO
 
-let net40 = ["src/Aardvark.Base/Aardvark.Base.csproj"]
-let net45 = ["src/Aardvark.Base/Aardvark.Base.csproj"]
+let net40 = []
+let net45 = []
 let core = !!"src/**/*.fsproj" ++ "src/**/*.csproj" -- "src/**/CodeGenerator.csproj";
 
 printfn "%A" (core |> Seq.toList)
