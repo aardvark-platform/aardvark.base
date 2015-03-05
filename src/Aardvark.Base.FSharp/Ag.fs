@@ -158,12 +158,12 @@ module AgHelpers =
             match tryMakeApplicable(paramType.ParameterType, argType) with
                 | Some(ass) -> let targs = mi.GetGenericArguments()
                                let map = Dictionary<Type, Type>()
-                               for (a,t) in ass do
-                                map.Add(a, t)
+                               for (a,t) in ass do map.Add(a, t)
 
-                               if mi.ReturnType.IsGenericParameter then failwithf "return types of semantic functions must be non-generic. annotate the semfun: %A" mi
-
-                               let targs = targs |> Array.map (fun t -> map.[t]) // if there is key not found maybe fixup generics
+                               let targs = targs |> Array.map (fun t -> 
+                                    match map.TryGetValue t with
+                                     | (true,v) -> v
+                                     | _ -> failwithf "unbound generic type (might be due to generic return type. MethodInfo: %A)" mi) 
                                if mi.IsGenericMethod && targs.Length > 0 then
                                 Some(mi.MakeGenericMethod(targs))
                                else 
