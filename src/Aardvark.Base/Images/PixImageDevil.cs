@@ -22,16 +22,16 @@ namespace Aardvark.Base
             IL.Enable(EnableCap.AbsoluteOrigin);
         }
 
-        private static Dictionary<Devil.Format, Col.Format> s_pixColorFormats = new Dictionary<Devil.Format, Col.Format>()
+        private static Dictionary<Devil.ChannelFormat, Col.Format> s_pixColorFormats = new Dictionary<Devil.ChannelFormat, Col.Format>()
         {
-            {Devil.Format.Alpha, Col.Format.Alpha},
-            {Devil.Format.BGR, Col.Format.BGR},
-            {Devil.Format.BGRA, Col.Format.BGRA},
-            {Devil.Format.ColorIndex, Col.Format.None},
-            {Devil.Format.Luminance, Col.Format.Gray},
-            {Devil.Format.LuminanceAlpha, Col.Format.GrayAlpha},
-            {Devil.Format.RGB, Col.Format.RGB},
-            {Devil.Format.RGBA, Col.Format.RGBA},
+            {Devil.ChannelFormat.Alpha, Col.Format.Alpha},
+            {Devil.ChannelFormat.BGR, Col.Format.BGR},
+            {Devil.ChannelFormat.BGRA, Col.Format.BGRA},
+            {Devil.ChannelFormat.ColorIndex, Col.Format.None},
+            {Devil.ChannelFormat.Luminance, Col.Format.Gray},
+            {Devil.ChannelFormat.LuminanceAlpha, Col.Format.GrayAlpha},
+            {Devil.ChannelFormat.RGB, Col.Format.RGB},
+            {Devil.ChannelFormat.RGBA, Col.Format.RGBA},
         };
 
 
@@ -61,12 +61,12 @@ namespace Aardvark.Base
         };
 
 
-        private static Dictionary<Col.Format, Devil.Format> s_devilColorFormats = new Dictionary<Col.Format, Devil.Format>()
+        private static Dictionary<Col.Format, Devil.ChannelFormat> s_devilColorFormats = new Dictionary<Col.Format, Devil.ChannelFormat>()
         {
-            { Col.Format.RGB, Devil.Format.RGB },
-            { Col.Format.RGBA, Devil.Format.RGBA },
-            { Col.Format.BGR, Devil.Format.BGR },
-            { Col.Format.BGRA, Devil.Format.BGRA }
+            { Col.Format.RGB, Devil.ChannelFormat.RGB },
+            { Col.Format.RGBA, Devil.ChannelFormat.RGBA },
+            { Col.Format.BGR, Devil.ChannelFormat.BGR },
+            { Col.Format.BGRA, Devil.ChannelFormat.BGRA }
         };
 
 
@@ -117,9 +117,9 @@ namespace Aardvark.Base
                 
                 var dataType = IL.GetDataType();
                 var format = IL.GetFormat();
-                var width = IL.GetInteger(GetName.ImageWidth);
-                var height = IL.GetInteger(GetName.ImageHeight);
-                var channels = IL.GetInteger(GetName.ImageChannels);
+                var width = IL.GetInteger(IntName.ImageWidth);
+                var height = IL.GetInteger(IntName.ImageHeight);
+                var channels = IL.GetInteger(IntName.ImageChannels);
                 Type type;
                 Col.Format fmt;
 
@@ -157,7 +157,7 @@ namespace Aardvark.Base
             IL.BindImage(img);
 
             ChannelType type;
-            Format fmt;
+            ChannelFormat fmt;
 
             if (!s_devilDataTypes.TryGetValue(PixFormat.Type, out type)) return false;
             if (!s_devilColorFormats.TryGetValue(PixFormat.Format, out fmt)) return false;
@@ -189,7 +189,7 @@ namespace Aardvark.Base
             IL.BindImage(img);
 
             ChannelType type;
-            Format fmt;
+            ChannelFormat fmt;
 
             if (!s_devilDataTypes.TryGetValue(PixFormat.Type, out type)) return false;
             if (!s_devilColorFormats.TryGetValue(PixFormat.Format, out fmt)) return false;
@@ -201,7 +201,7 @@ namespace Aardvark.Base
                     return false;
 
                 if(qualityLevel != -1)
-                    IL.SetInteger(GetName.JpgQuality, qualityLevel);
+                    IL.SetInteger(IntName.JpgQuality, qualityLevel);
 
                 return IL.Save(s_fileFormats[format], file);
             }
