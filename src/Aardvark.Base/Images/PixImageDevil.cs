@@ -19,7 +19,10 @@ namespace Aardvark.Base
             Bootstrap.Init();
             IL.Init();
             IL.Enable(EnableCap.OverwriteExistingFile);
+            IL.OriginFunc(OriginMode.UpperLeft);
+            IL.Enable(EnableCap.ConvertPalette);
             IL.Enable(EnableCap.AbsoluteOrigin);
+            
         }
 
         private static Dictionary<Devil.ChannelFormat, Col.Format> s_pixColorFormats = new Dictionary<Devil.ChannelFormat, Col.Format>()
