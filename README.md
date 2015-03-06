@@ -1,3 +1,7 @@
+[![Build Status](https://travis-ci.org/vrvis/aardvark.svg?branch=master)](https://travis-ci.org/vrvis/aardvark)
+[![Build status](https://ci.appveyor.com/api/projects/status/px8242ird5aa6svs/branch/master?svg=true)](https://ci.appveyor.com/project/haraldsteinlechner/aardvark/branch/master)
+
+
 Aardvark.Base is a collection of algorithms and data structures for computer graphics and visualization. It is under active development since 2006 as part of a much larger set of libraries at VRVis Research Center.
 
 Getting started: https://github.com/vrvis/aardvark/wiki
@@ -25,10 +29,5 @@ A visual studio solution is located at: src/Aardvark.sln.
 While building, visual studio might prompt for permission to use our type providers. Unfortunately,
 the build fails immediately afterwards no matter if you granted permission. In this case
 simply rebuild all again and it should work this time.
-
-CI, linux build: [![Build Status](https://travis-ci.org/vrvis/aardvark.svg?branch=master)](https://travis-ci.org/vrvis/aardvark)
-
-CI, windows build: [![Build status](https://ci.appveyor.com/api/projects/status/px8242ird5aa6svs/branch/master?svg=true)](https://ci.appveyor.com/project/haraldsteinlechner/aardvark/branch/master)
-
 
 [1] https://visualfsharp.codeplex.com/releases/view/161288
