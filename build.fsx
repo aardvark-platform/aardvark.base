@@ -87,7 +87,6 @@ Target "CreatePackage" (fun () ->
                          Version = tag; 
                          ReleaseNotes = releaseNotes; 
                          WorkingDir = "bin"
-                         Dependencies = p.Dependencies |> List.map (fun (id,version) -> if Set.contains id knownPackages then (id, tag) else (id,version)) 
                 }) (sprintf "bin/%s.nuspec" id)
     
     else 
@@ -116,7 +115,6 @@ Target "Deploy" (fun () ->
                                 Version = tag; 
                                 ReleaseNotes = releaseNotes; 
                                 WorkingDir = "bin"
-                                Dependencies = p.Dependencies |> List.map (fun (id,version) -> if Set.contains id knownPackages then (id, tag) else (id,version)) 
                                 AccessKey = accessKey
                                 Publish = true
                             })
