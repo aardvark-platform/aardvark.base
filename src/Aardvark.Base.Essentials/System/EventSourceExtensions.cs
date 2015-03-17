@@ -40,7 +40,7 @@ namespace Aardvark.Base
             var next = self.Next;
             while (!next.IsCompleted)
             {
-                await action();
+                await Await.WhenAny(action().AsAwaitable(), next);
             }
 
             if (finallyAction != null)
@@ -56,7 +56,7 @@ namespace Aardvark.Base
             var next = self.Next;
             while (!next.IsCompleted)
             {
-                await action();
+                await Await.WhenAny(action().AsAwaitable(), next);
             }
 
             if (finallyAction != null)
@@ -71,7 +71,7 @@ namespace Aardvark.Base
         {
             while (!self.IsCompleted)
             {
-                await action();
+                await Await.WhenAny(action().AsAwaitable(), self);
             }
 
             if (finallyAction != null)
@@ -86,7 +86,7 @@ namespace Aardvark.Base
         {
             while (!self.IsCompleted)
             {
-                await action();
+                await Await.WhenAny(action().AsAwaitable(), self);
             }
 
             if (finallyAction != null)
@@ -100,7 +100,7 @@ namespace Aardvark.Base
         {
             while (!self.IsCompleted)
             {
-                await action();
+                await Await.WhenAny(action().AsAwaitable(), self);
             }
 
             if (finallyAction != null)
@@ -114,7 +114,7 @@ namespace Aardvark.Base
         {
             while (!self.IsCompleted)
             {
-                await action();
+                await Await.WhenAny(action().AsAwaitable(), self);
             }
 
             if (finallyAction != null)
