@@ -19,9 +19,12 @@ namespace Aardvark.Base
             var obj = self as IBehaviorPosition2d;
             if (obj == null) throw new InvalidOperationException("DragAbsolute requires IBehaviorPosition2d.");
 
-            await stopDragging.RepeatUntilCompleted(
-                async delegate { var p = await positions.Next.WithCancellation(ct); obj.Position = p; }
-                );
+            await stopDragging.RepeatUntilCompleted(async delegate
+            {
+                var p = await positions.Next.WithCancellation(ct);
+                if (stopDragging.IsCompleted) return;
+                obj.Position = p;
+            });
 
             return self;
         }
