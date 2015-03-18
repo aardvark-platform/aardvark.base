@@ -59,8 +59,12 @@ module ASet =
                 r.Emit(content |> List.map Add)
                 r :> IReader<_>
 
+    type private EmptySetImpl<'a> private() =
+        static let emptySet = ConstantSet [] :> aset<'a>
+        static member Instance = emptySet
+
     let empty<'a> : aset<'a> =
-        ConstantSet [] :> aset<_>
+        EmptySetImpl<'a>.Instance
 
     let single (v : 'a) =
         ConstantSet [v] :> aset<_>
@@ -138,6 +142,9 @@ module ASet =
             v |> f |> bind (fun b -> if b then single v else empty)
         )
 
+
+    let union (sets : aset<aset<'a>>) =
+        collect id sets
 
 
     let registerCallback (f : list<Delta<'a>> -> unit) (set : aset<'a>) =

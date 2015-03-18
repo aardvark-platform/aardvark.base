@@ -185,6 +185,7 @@ module EventAdapters =
 
             | _ ->
                 failwithf "could not determine Mod-Type for: %A" m
+
 [<AutoOpen>]
 module FSharpEventExtensions =
     type IEvent<'a> with
@@ -222,9 +223,26 @@ type CSharpEventExtensions private() =
         EventAdapters.toModUntyped this
 
     [<Extension>]
+    static member ToAdaptiveSet(this : IEvent<'a>) : aset<'a> =
+        this |> EventAdapters.toMod |> Mod.toASet
+
+    [<Extension>]
+    static member ToAdaptiveList(this : IEvent<'a>) : alist<'a> =
+        this |> EventAdapters.toMod |> Mod.toAList
+
+
+    [<Extension>]
     static member ToEvent(this : IMod<'a>) : IEvent<'a> =
         EventAdapters.toEvent this
 
     [<Extension>]
     static member ToEvent(this : IMod) : IEvent =
         EventAdapters.toEventUntyped this
+
+    [<Extension>]
+    static member ToEvent(this : aset<'a>) : IEvent<ReferenceCountingSet<'a>> =
+        this |> ASet.toMod |> EventAdapters.toEvent
+
+    [<Extension>]
+    static member ToEvent(this : alist<'a>) : IEvent<TimeList<'a>> =
+        this |> AList.toMod |> EventAdapters.toEvent

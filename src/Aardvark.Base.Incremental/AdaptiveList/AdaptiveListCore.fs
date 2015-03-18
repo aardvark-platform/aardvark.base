@@ -278,14 +278,18 @@ module AListReaders =
             member x.Dispose() = x.Dispose()
  
 
-    type MapReader<'a, 'b>(scope, f : 'a -> 'b, input : IListReader<'a>) =
+    type MapReader<'a, 'b>(scope, f : 'a -> 'b, input : IListReader<'a>) as this =
         inherit AdaptiveObject()
+        do input.AddOutput this
+        
         let content = TimeList<'b>()
         let f = Cache<'a, 'b>(scope, f)
 
         member x.Dispose() =
-            f.Clear(ignore)
+            input.RemoveOutput this
             input.Dispose()
+            content.Clear()
+            f.Clear(ignore)
 
         override x.Finalize() =
             try x.Dispose() 
@@ -311,7 +315,7 @@ module AListReaders =
                     deltas |> apply content
                 )
 
-    type CollectReader<'a, 'b>(scope, f : 'a -> IListReader<'b>, input : IListReader<'a>) as this =
+    type CollectReader<'a, 'b>(scope, input : IListReader<'a>, f : 'a -> IListReader<'b>) as this =
         inherit AdaptiveObject()
         do input.AddOutput this
 
@@ -412,6 +416,99 @@ module AListReaders =
                     deltas |> apply content
                 )
 
+    type ChooseReader<'a, 'b>(scope, input : IListReader<'a>, f : 'a -> Option<'b>) as this =
+        inherit AdaptiveObject()
+
+        do input.AddOutput this
+
+        let content = TimeList<'b>()
+        let f = Cache<'a, Option<'b>>(scope, f)
+
+        member x.Dispose() =
+            input.RemoveOutput this
+            input.Dispose()
+            content.Clear()
+            f.Clear(ignore)
+
+        override x.Finalize() =
+            try x.Dispose() 
+            with _ -> ()
+
+        interface IDisposable with
+            member x.Dispose() = x.Dispose()
+
+        interface IListReader<'b> with
+            member x.RootTime = input.RootTime
+            member x.Content = content
+            member x.GetDelta() =
+                x.EvaluateIfNeeded [] (fun () ->
+                    let deltas = input.GetDelta()
+
+                    let deltas = 
+                        deltas |> List.choose (fun d ->
+                            match d with
+                                | Add(t, v) -> 
+                                    match f.Invoke v with
+                                        | Some v -> Add (t, v) |> Some
+                                        | None -> None
+                                | Rem(t, v) -> 
+                                    match f.Revoke v with
+                                        | Some v -> Rem (t, v) |> Some
+                                        | None -> None
+                        )
+
+                    deltas |> apply content
+                )
+
+    type ModReader<'a>(source : IMod<'a>) as this =  
+        inherit AdaptiveObject()
+        do source.AddOutput this
+        let mutable cache : Option<Time * 'a> = None
+        let content = TimeList()
+        let mutable rootTime = Time.newRoot()
+        
+        member x.Dispose() =
+            source.RemoveOutput x
+            match cache with
+                | Some (t,_) ->
+                    Time.delete t
+                    cache <- None
+                | None -> ()
+            content.Clear()
+            Time.delete rootTime
+            rootTime <- Unchecked.defaultof<Time>
+
+        override x.Finalize() =
+            try x.Dispose() 
+            with _ -> ()
+
+        interface IDisposable with
+            member x.Dispose() = x.Dispose()
+
+        interface IListReader<'a> with
+            member x.RootTime = rootTime
+            member x.Content = content
+            member x.GetDelta() =
+                x.EvaluateIfNeeded [] (fun () ->
+                    let v = source.GetValue()
+                    let resultDeltas =
+                        match cache with
+                            | Some (t,c) ->
+                                if not <| System.Object.Equals(v, c) then
+                                    let tNew = Time.after rootTime
+                                    Time.delete t
+                                    cache <- Some (tNew, v)
+                                    [Rem (t, c); Add (tNew, v)]
+                                else
+                                    []
+                            | None ->
+                                let t = Time.after rootTime
+                                cache <- Some (t,v)
+                                [Add (t,v)]
+
+                    resultDeltas |> apply content
+                )
+
     type BufferedReader<'a>(rootTime : Time, update : unit -> unit, dispose : BufferedReader<'a> -> unit) =
         inherit AdaptiveObject()
         let deltas = List()
@@ -473,5 +570,19 @@ module AListReaders =
     let map (scope) (f : 'a -> 'b) (input : IListReader<'a>) =
         new MapReader<_, _>(scope, f, input) :> IListReader<_>
 
+    let bind scope (f : 'a -> IListReader<'b>) (input : IMod<'a>) =
+        new CollectReader<_,_>(scope, new ModReader<_>(input), f) :> IListReader<_>
+
+    let bind2 scope (f : 'a -> 'b -> IListReader<'c>) (ma : IMod<'a>)  (mb : IMod<'b>)=
+        let tup = Mod.map2 (fun a b -> (a,b)) ma mb
+        new CollectReader<_,_>(scope, new ModReader<_>(tup),  fun (a,b) -> f a b) :> IListReader<_>
+
     let collect (scope) (f : 'a -> IListReader<'b>) (input : IListReader<'a>) =
-        new CollectReader<_, _>(scope, f, input) :> IListReader<_>
+        new CollectReader<_, _>(scope, input, f) :> IListReader<_>
+
+    let choose (scope) (f : 'a -> Option<'b>) (input : IListReader<'a>) =
+        new ChooseReader<_, _>(scope, input, f) :> IListReader<_>
+
+
+    let ofMod (m : IMod<'a>) : IListReader<'a> =
+        new ModReader<'a>(m) :> IListReader<'a>

@@ -337,6 +337,7 @@ module private ASetReaders =
 
             member x.Content = content
 
+
     let map scope (f : 'a -> 'b) (input : IReader<'a>) =
         new MapReader<_, _>(scope, input, fun c -> [f c]) :> IReader<_>
 

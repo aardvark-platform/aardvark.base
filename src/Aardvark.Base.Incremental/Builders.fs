@@ -46,11 +46,43 @@ module ``Computation Expression Builders`` =
         member x.Combine(l : aset<'a>, r : aset<'a>) =
             ASet.concat' [l;r]
 
+    type AListBuilder() =
+        member x.Yield (v : 'a) =
+            AList.single v
+
+        member x.YieldFrom (set : alist<'a>) =
+            set
+
+        member x.Bind(m : IMod<'a> * IMod<'b>, f : 'a * 'b -> alist<'c>) =
+            AList.bind2 (fun a b -> f(a,b)) (fst m) (snd m)
+
+        member x.Bind(m : IMod<'a>, f : 'a -> alist<'b>) =
+            AList.bind f m
+
+        member x.For(s : alist<'a>, f : 'a -> alist<'b>) =
+            AList.collect f s
+
+        member x.For(s : seq<'a>, f : 'a -> alist<'b>) =
+            AList.collect' f s
+
+        member x.Zero() =
+            AList.empty
+
+        member x.Delay(f : unit -> alist<'a>) =
+            f()
+
+        member x.Combine(l : alist<'a>, r : alist<'a>) =
+            AList.concat' [l;r]
+
+
     module Mod =
         let toASet (m : IMod<'a>) =
             ASet.ofMod m
 
+        let toAList (m : IMod<'a>) =
+            AList.ofMod m
 
 
     let adaptive = AdaptiveBuilder()
     let aset = ASetBuilder()
+    let alist = AListBuilder()

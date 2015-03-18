@@ -26,8 +26,11 @@ type TimeList<'a>() =
 
     member x.Contains (t : Time, v : 'a) =
         match cache.TryGetValue t with
-            | (true, v') -> Object.ReferenceEquals(v,v')
+            | (true, v') -> Object.Equals(v,v')
             | _ -> false
+
+    member x.Values =
+        x |> Seq.map snd
 
     interface ICollection<Time * 'a> with
         member x.Add item = x.Add item |> ignore

@@ -77,6 +77,13 @@ type ReferenceCountingSet<'a>(initial : seq<'a>) =
         if res then false
         else !count = store.Count
 
+    /// <summary>
+    /// gets the current reference count for the given element
+    /// </summary>
+    member x.GetReferenceCount(v) =
+        match store.TryGetValue (v :> obj) with
+            | (true, (_,c)) -> !c
+            | _ -> 0
 
     new() = ReferenceCountingSet Seq.empty
 
