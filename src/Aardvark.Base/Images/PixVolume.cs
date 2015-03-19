@@ -155,7 +155,7 @@ namespace Aardvark.Base
         //#endregion    
     }
 
-    public class PixVolume<T> : PixVolume //, IPixImage3d
+    public class PixVolume<T> : PixVolume, IPixImage3d
     {
         public Tensor4<T> Tensor4;
 

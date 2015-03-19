@@ -99,7 +99,7 @@ namespace Aardvark.Base
     }
 
     [Serializable]
-    public abstract partial class PixImage : IPix, IPixOld //, IPixImage2d
+    public abstract partial class PixImage : IPix, IPixOld, IPixImage2d
     {
         public Col.Format Format;
         // TODO: public PixImageMetaData MetaData;
