@@ -8,13 +8,13 @@ Getting started: https://github.com/vrvis/aardvark/wiki
 
 License: http://www.apache.org/licenses/LICENSE-2.0.txt
 
-Copyright © 2014 VRVis Zentrum für Virtual Reality und Visualisierung Forschungs-GmbH, Donau-City-Strasse 1, A-1220 Wien, Austria. http://www.vrvis.at.
+Copyright © 2014,2015 VRVis Zentrum für Virtual Reality und Visualisierung Forschungs-GmbH, Donau-City-Strasse 1, A-1220 Wien, Austria. http://www.vrvis.at.
 
 How to build:
 ======================
 
 Windows:
-- Visual Studio 2013,
+- Visual Studio 2013 or 2015,
 - FSharp 3.1 (at least Daily Builds Preview 10-27-2014) [1]
 - run install.bat
 - run msbuild src\Aardvark.sln or use VisualStudio to build the solution
