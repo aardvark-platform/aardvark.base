@@ -768,12 +768,11 @@ namespace Aardvark.Data.Vrml97
         private static SymMapBase ParseROUTE(Tokenizer t)
         {
             SymMapBase result = new SymMapBase();
-            Tokenizer.Token token;
 
             // nodeNameId.eventOutId
             result["out"] = t.NextNameToken().ToString();
             // "TO"
-            token = t.NextToken();
+            t.NextToken();
             // nodeNameId.eventInId
             result["in"] = t.NextNameToken().ToString();
 
@@ -1201,9 +1200,11 @@ namespace Aardvark.Data.Vrml97
             ExpectBraceOpen(t);
 
             // populate fields with default values
-            info.FieldDefs
-                .Where(kvp => kvp.Value.E1 != null)
-                .ForEach(kvp => result[kvp.Key] = kvp.Value.E1);
+            foreach (var kvp in info.FieldDefs)
+            {
+                if (kvp.Value.E1 == null) continue;
+                result[kvp.Key] = kvp.Value.E1;
+            }
 
             Tokenizer.Token token = t.NextToken();
             while (!token.IsBraceClose)
