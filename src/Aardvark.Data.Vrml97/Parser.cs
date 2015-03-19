@@ -135,7 +135,7 @@ namespace Aardvark.Data.Vrml97
         static Parser()
         {
             FieldParser SFBool = new FieldParser(ParseSFBool);
-            FieldParser MFBool = new FieldParser(ParseMFBool);
+            //FieldParser MFBool = new FieldParser(ParseMFBool);
             FieldParser SFColor = new FieldParser(ParseSFColor);
             FieldParser MFColor = new FieldParser(ParseMFColor);
             FieldParser SFFloat = new FieldParser(ParseSFFloat);
@@ -150,7 +150,7 @@ namespace Aardvark.Data.Vrml97
             FieldParser SFString = new FieldParser(ParseSFString);
             FieldParser MFString = new FieldParser(ParseMFString);
             FieldParser SFTime = new FieldParser(ParseSFFloat);
-            FieldParser MFTime = new FieldParser(ParseMFFloat);
+            //FieldParser MFTime = new FieldParser(ParseMFFloat);
             FieldParser SFVec2f = new FieldParser(ParseSFVec2f);
             FieldParser MFVec2f = new FieldParser(ParseMFVec2f);
             FieldParser SFVec3f = new FieldParser(ParseSFVec3f);
@@ -1201,9 +1201,9 @@ namespace Aardvark.Data.Vrml97
             ExpectBraceOpen(t);
 
             // populate fields with default values
-            (from kvp in info.FieldDefs
-            where kvp.Value.E1 != null
-            select kvp).ForEach(kvp => result[kvp.Key] = kvp.Value.E1);
+            info.FieldDefs
+                .Where(kvp => kvp.Value.E1 != null)
+                .ForEach(kvp => result[kvp.Key] = kvp.Value.E1);
 
             Tokenizer.Token token = t.NextToken();
             while (!token.IsBraceClose)
