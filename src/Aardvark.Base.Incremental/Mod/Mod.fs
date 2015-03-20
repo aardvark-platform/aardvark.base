@@ -172,7 +172,8 @@ module Mod =
             
             override x.GetHashCode() =
                 let v = x.GetValue() :> obj
-                v.GetHashCode()
+                if v = null then 0
+                else v.GetHashCode()
 
             override x.Equals o =
                 match o with
