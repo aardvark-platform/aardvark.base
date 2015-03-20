@@ -6,6 +6,18 @@ open NUnit.Framework
 open FsUnit
 
 module ``Basic Mod Tests`` =
+    open System.Collections.Generic
+
+    type ExecutionTracker() =
+        let ops = List<string>()
+
+        member x.push fmt =
+            Printf.kprintf (fun str -> ops.Add str) fmt
+
+        member x.read() =
+            let l = ops |> Seq.toList
+            ops.Clear()
+            l
     
     [<Test>]
     let ``basic map test``() =
@@ -135,3 +147,69 @@ module ``Basic Mod Tests`` =
         )
         derived.OutOfDate |> should equal true
         derived |> Mod.force |> should equal 5
+
+    [<Test>]
+    let ``level changing bind``() =
+        let ex = ExecutionTracker()
+        let a = ModRef 1 
+        let a0 = a :> IMod<_>
+        let a1 = a |> Mod.map id |> Mod.map id |> Mod.map id |> Mod.map (fun a -> ex.push "%A * 2" a; a * 2)
+        let c = ModRef true
+
+        let res = 
+            c |> Mod.bind (fun c ->
+                ex.push "bind: %A" c
+                if c then a0
+                else a1
+            ) |> Mod.always
+
+        let res = res |> Mod.map (fun a -> ex.push "cont"; a)// |> Mod.always
+
+        let s = res |> Mod.registerCallback (fun v -> printfn "cb: %A" v)
+
+        res.GetValue() |> should equal 1
+        ex.read() |> should equal ["bind: true"; "cont"]
+
+        transact(fun () ->
+            a.Value <- 10
+            c.Value <- false
+        )
+
+        res.GetValue() |> should equal 20
+        ex.read() |> should equal ["bind: false"; "10 * 2"; "cont"]
+
+        s.Dispose()
+
+        transact(fun () ->
+            a.Value <- 20
+            c.Value <- true
+        )
+        res.GetValue() |> should equal 20
+        ex.read() |> should equal ["bind: true"]
+
+
+        ()
+
+    [<Test>]
+    let ``bind in bind``() =
+        let a = Mod.initMod false
+        let b = Mod.initMod 10
+        let c =
+            adaptive {
+                let! a = a 
+                if a then
+                    let! b = b 
+                    return b
+                else
+                    return 0
+            }
+
+        let c = c |> Mod.always
+
+        c.GetValue() |> should equal 0
+
+        transact(fun () -> Mod.change a true)
+        c.GetValue() |> should equal 10
+
+        transact(fun () -> Mod.change a false)
+        c.GetValue() |> should equal 0

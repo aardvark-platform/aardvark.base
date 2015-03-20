@@ -84,7 +84,6 @@
     <Compile Include="Core\Cache.fs" />
     <Compile Include="Core\Core.fs" />
     <Compile Include="Mod\Mod.fs" />
-    <Compile Include="Mod\ModTests.fs" />
     <Compile Include="AdaptiveSet\AdaptiveSetCore.fs" />
     <Compile Include="AdaptiveSet\ChangeableSet.fs" />
     <Compile Include="AdaptiveSet\AdaptiveSet.fs" />
@@ -95,6 +94,10 @@
     <Compile Include="Adapters\EventAdapter.fs" />
     <Content Include="packages.config" />
     <Content Include="app.config" />
+    <Compile Include="Tests\AdaptiveSetReference.fs" />
+    <Compile Include="Tests\ASetUtilities.fs" />
+    <Compile Include="Tests\ModTests.fs" />
+    <Compile Include="Tests\ASetTests.fs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="mscorlib" />

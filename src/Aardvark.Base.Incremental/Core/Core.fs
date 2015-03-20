@@ -145,6 +145,7 @@ type Transaction() =
     // the contained set is useful for determinig if an element has
     // already been enqueued
     let contained = HashSet<IAdaptiveObject>()
+    let mutable current = None
 
     let getAndClear (set : ICollection<'a>) =
         let mutable content = []
@@ -165,6 +166,9 @@ type Transaction() =
         if contained.Add e then
             q.Enqueue e
 
+    member x.CurrentAdapiveObject = current
+        
+
     /// <summary>
     /// performs the entire marking process causing
     /// all affected objects to be made consistent with
@@ -180,7 +184,7 @@ type Transaction() =
         while q.Count > 0 do
             // dequeue the next element (having the minimal level)
             let l, e = q.Dequeue()
-            contained.Remove e |> ignore
+            current <- Some e
 
             let outputs = 
                 // since we're about to access the outOfDate flag
@@ -244,7 +248,11 @@ type Transaction() =
 
             // finally we enqueue all returned outputs
             for o in outputs do
-                q.Enqueue o
+                x.Enqueue o
+
+            contained.Remove e |> ignore
+            current <- None
+            
 
         // when the commit is over we restore the old
         // running transaction (if any)
@@ -398,11 +406,12 @@ module Marking =
     // and might possibly be improved using some kind of order-maintenance
     // structure instead of integers.
     let rec private relabel (m : IAdaptiveObject) (minLevel : int) =
-        if m.Level < minLevel then
+        let old = m.Level
+        if old < minLevel then
             m.Level <- minLevel
             for o in m.Outputs do
                 relabel o (minLevel + 1) |> ignore
-            true
+            old <> -1
         else
             false
 
@@ -471,7 +480,12 @@ module Marking =
             // currently inside a running transaction we need to
             // raise a LevelChangedException.
             if relabel m (x.Level + 1) then
-                if Transaction.HasRunning then raise <| LevelChangedException m
+                match Transaction.Running with
+                    | Some t ->
+                        match t.CurrentAdapiveObject with
+                            | Some m' when m = m' -> raise <| LevelChangedException m
+                            | _ -> ()
+                    | _ -> ()
 
             m.MarkOutdated()
 

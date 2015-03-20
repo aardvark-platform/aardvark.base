@@ -13,7 +13,7 @@ module ``Computation Expression Builders`` =
             Mod.bind f m
 
         member x.Return (v : 'a) =
-            Mod.initMod v :> IMod<_>
+            Mod.initConstant v :> IMod<_>
 
         member x.ReturnFrom(m : IMod<'a>) = 
             m
