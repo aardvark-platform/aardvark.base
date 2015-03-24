@@ -78,19 +78,16 @@ Target "CreatePackage" (fun () ->
     let branch = Fake.Git.Information.getBranchName "."
     let releaseNotes = Fake.Git.Information.getCurrentHash()
 
-    if branch = "master" then
-        let tag = Fake.Git.Information.getLastTag()
+    let tag = Fake.Git.Information.getLastTag()
 
-        for id in knownPackages do
-            NuGetPack (fun p -> 
-                { p with OutputPath = "bin"; 
-                         Version = tag; 
-                         ReleaseNotes = releaseNotes; 
-                         WorkingDir = "bin"
-                }) (sprintf "bin/%s.nuspec" id)
-    
-    else 
-        traceError (sprintf "cannot create package for branch: %A" branch)
+    for id in knownPackages do
+        NuGetPack (fun p -> 
+            { p with OutputPath = "bin"; 
+                     Version = tag; 
+                     ReleaseNotes = releaseNotes; 
+                     WorkingDir = "bin"
+            }) (sprintf "bin/%s.nuspec" id)
+
 )
 
 Target "Deploy" (fun () ->
