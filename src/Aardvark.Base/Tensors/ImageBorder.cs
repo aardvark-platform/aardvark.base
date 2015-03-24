@@ -5,6 +5,34 @@ namespace Aardvark.Base
     /// <summary>
     /// Specifies an image boder, all entries should be positive values.
     /// </summary>
+    public struct Border2i
+    {
+        public V2i Min;
+        public V2i Max;
+
+        #region Constructors
+
+        public Border2i(V2i min, V2i max)
+        {
+            Min = min; Max = max;
+        }
+
+        public Border2i(int minx, int miny, int maxx, int maxy)
+            : this(new V2i(minx, miny), new V2i(maxx, maxy))
+        { }
+
+        public Border2i(int val)
+            : this(new V2i(val, val), new V2i(val, val))
+        { }
+
+        public Border2i Flipped { get { return new Border2i(Max, Min); } }
+
+        #endregion
+    }
+
+    /// <summary>
+    /// Specifies an image boder, all entries should be positive values.
+    /// </summary>
     public struct Border2l
     {
         public V2l Min;
