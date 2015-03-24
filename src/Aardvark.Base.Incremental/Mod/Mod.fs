@@ -1,7 +1,9 @@
 ﻿namespace Aardvark.Base.Incremental
 
 open System
-
+open System.Runtime.CompilerServices
+open System.Collections.Generic
+open System.Collections.Concurrent
 /// <summary>
 /// IMod is the non-generic base interface for 
 /// modifiable cells. This is needed due to the
@@ -91,7 +93,7 @@ module Mod =
     // LazyMod<'a> (as the name suggests) implements IMod<'a>
     // and will be evaluated lazily (if not forced to be eager
     // by a callback or subsequent eager computations)
-    type private LazyMod<'a> =
+    type LazyMod<'a> =
         class
             inherit AdaptiveObject
             val mutable public cache : 'a
@@ -209,6 +211,23 @@ module Mod =
     let custom (compute : unit -> 'a) : IMod<'a> =
         LazyMod(scoped compute) :> IMod<_>
 
+
+    let private callbackTable = ConditionalWeakTable<IMod, ConcurrentHashSet<IDisposable>>()
+    type private CallbackSubscription(m : IMod, cb : unit -> unit, live : ref<bool>, set : ConcurrentHashSet<IDisposable>) =
+        
+        member x.Dispose() = 
+            if !live then
+                live := false
+                m.MarkingCallbacks.Remove cb |> ignore
+                set.Remove x |> ignore
+
+        interface IDisposable with
+            member x.Dispose() = x.Dispose()
+
+        override x.Finalize() =
+            try x.Dispose()
+            with _ -> ()
+
     /// <summary>
     /// registers a callback for execution whenever the
     /// cells value might have changed and returns a disposable
@@ -231,9 +250,12 @@ module Mod =
             !self ()
         )
 
-        { new IDisposable with
-            member x.Dispose() = live := false; m.MarkingCallbacks.Remove !self |> ignore
-        }
+        let set = callbackTable.GetOrCreateValue(m)
+
+        let s = new CallbackSubscription(m, !self, live, set)
+        set.Add s |> ignore
+        s :> IDisposable
+
 
     /// <summary>
     /// changes the value of the given cell. Note that this

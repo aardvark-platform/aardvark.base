@@ -13,7 +13,7 @@ type EventSampler(frequency : int) =
     let m_minSampleTime = if m_maxFrequency = 0 then 0 else int (1000.0 / float m_maxFrequency)
     let mutable m_thread = null
     let m_sem = new ManualResetEventSlim()
-    let mutable actions : list<unit -> unit> = []
+    let mutable actions : Set<IAdaptiveObject> = Set.empty
 
     member x.Run() =
         let sw = Stopwatch()
@@ -29,19 +29,17 @@ type EventSampler(frequency : int) =
                 let wait = m_minSampleTime - Fun.Max(0, int t)
                 if wait > 0 then Thread.Sleep wait
 
-    member x.Process() =    
+    member x.Process() =
         m_sem.Wait()
         m_sem.Reset()
-        let myActions = Interlocked.Exchange(&actions, [])
+        let myActions = Interlocked.Exchange(&actions, Set.empty)
 
         transact (fun () ->
             for a in myActions do
-                a()
+                a.MarkOutdated()
         )
 
-
-
-    member x.Enqueue<'a>(c : ModRef<'a>, value : 'a) : unit =
+    member x.Enqueue<'a>(c : IAdaptiveObject) : unit =
         match m_thread with
             | null -> 
                 m_thread <- Thread(ThreadStart(x.Run))
@@ -49,18 +47,14 @@ type EventSampler(frequency : int) =
                 m_thread.Start()
             | _ -> ()
 
-        let entry = fun () -> c.Value <- value
-
         let mutable ex = Unchecked.defaultof<_>
         let mutable current = actions
 
         while not <| Object.ReferenceEquals(ex, current) do
             current <- actions
-            let newActions = entry::current
+            let newActions = Set.add c current
             ex <- Interlocked.CompareExchange(&actions, newActions, current)
-//
-//        actions <- (fun () -> c.Value <- value)::actions
-//        lock(a) (fun () -> a.Add (fun () -> c.Value <- value))
+
         m_sem.Set()
         
 
@@ -73,9 +67,8 @@ type EventSampler(frequency : int) =
 
 module EventAdapters =
 
-    type private AdapterMod<'a>(e : IEvent<'a>, value : 'a, s : IDisposable) =
-        inherit ModRef<'a>(value)
-
+    type private AdapterMod<'a>(e : IEvent<'a>, s : IDisposable, resubscribe : unit -> unit) =
+        inherit Mod.LazyMod<'a> (fun () -> let res = e.Latest in resubscribe(); res)
         member x.Event = e
 
         override x.Finalize() =
@@ -125,13 +118,35 @@ module EventAdapters =
     let private toModMethod = myType.GetMethod("toMod").GetGenericMethodDefinition()
     let private toEventMethod = myType.GetMethod("toEvent").GetGenericMethodDefinition()
 
-    let private change (m : AdapterMod<'a>) (value : 'a) =
+    let private mark (m : AdapterMod<'a>) =
+        
         match Marking.getCurrentTransaction() with
             | Some r ->
-                // implicitly enqueues the AdapterMod 
-                m.Value <- value
+                r.Enqueue m
             | None ->
-                sampler.Enqueue(m, value)
+                sampler.Enqueue(m)
+
+    let private volatileSubscribe (e : IEvent<'a>) (cb : unit -> unit) =
+        let live = ref true
+        let subscription : ref<IDisposable> = ref null
+        let subscribe() =
+            if !live then
+                subscription := e.Values.Subscribe (fun _ ->
+                    if !live then
+                        cb()
+                    subscription.Value.Dispose()
+                )
+
+        let d =
+            { new IDisposable with
+                member x.Dispose() =
+                    live := false
+                    if !subscription <> null then
+                        subscription.Value.Dispose()
+                        subscription := null
+            }
+
+        subscribe, d
 
     let toMod (e : Aardvark.Base.IEvent<'a>) : IMod<'a> =
         match e with
@@ -141,10 +156,8 @@ module EventAdapters =
                     | (true, m) -> m |> unbox<IMod<_>>
                     | _ ->
                         let r = ref <| Unchecked.defaultof<_>
-                        let s = e.Values.Subscribe(fun v ->
-                            change !r v
-                        )
-                        r := AdapterMod(e, e.Latest, s)
+                        let re,s = volatileSubscribe e (fun () -> mark !r)
+                        r := AdapterMod(e, s, re)
                         modCache.Add(e, !r)
 
                         !r :> IMod<_>

@@ -1,6 +1,8 @@
 ﻿namespace Aardvark.Base.Incremental
 
 open System
+open System.Runtime.CompilerServices
+open System.Collections.Concurrent
 open Aardvark.Base
 open Aardvark.Base.Incremental.AListReaders
 
@@ -62,6 +64,10 @@ module AList =
     type private EmptyListImpl<'a> private() =
         static let emptySet = ConstantList(emptyTime, []) :> alist<'a>
         static member Instance = emptySet
+
+    let private scoped (f : 'a -> 'b) =
+        let scope = Ag.getContext()
+        fun v -> Ag.useScope scope (fun () -> f v)
 
     let empty<'a> : alist<'a> =
         EmptyListImpl<'a>.Instance
@@ -150,19 +156,50 @@ module AList =
             v |> f |> bind (fun b -> if b then single v else empty)
         )
 
-    let registerCallback (f : list<Delta<Time * 'a>> -> unit) (set : alist<'a>) =
-        let reader = set.GetReader()
-        let self = ref id
-        self := fun () ->
-            reader.GetDelta() |> f
-            reader.MarkingCallbacks.Add !self |> ignore
-
-        !self ()
-
-        { new IDisposable with
-            member x.Dispose() = 
+    let private callbackTable = ConditionalWeakTable<IAdaptiveObject, ConcurrentHashSet<IDisposable>>()
+    type private CallbackSubscription(m : IAdaptiveObject, cb : unit -> unit, live : ref<bool>, reader : IDisposable, set : ConcurrentHashSet<IDisposable>) =
+        
+        member x.Dispose() = 
+            if !live then
+                live := false
                 reader.Dispose()
-                reader.MarkingCallbacks.Remove !self |> ignore
-        }    
+                m.MarkingCallbacks.Remove cb |> ignore
+                set.Remove x |> ignore
+
+        interface IDisposable with
+            member x.Dispose() = x.Dispose()
+
+        override x.Finalize() =
+            try x.Dispose()
+            with _ -> ()
+
+
+    /// <summary>
+    /// registers a callback for execution whenever the
+    /// list's value might have changed and returns a disposable
+    /// subscription in order to unregister the callback.
+    /// Note that the callback will be executed immediately
+    /// once here.
+    /// </summary>
+    let registerCallback (f : list<Delta<Time * 'a>> -> unit) (list : alist<'a>) =
+        let m = list.GetReader()
+        let f = scoped f
+        let self = ref id
+        let live = ref true
+        self := fun () ->
+            if !live then
+                try
+                    m.GetDelta() |> f
+                finally 
+                    m.MarkingCallbacks.Add !self |> ignore
+        
+        lock m (fun () ->
+            !self ()
+        )
+
+        let set = callbackTable.GetOrCreateValue(m)
+        let s = new CallbackSubscription(m, !self, live, m, set)
+        set.Add s |> ignore
+        s :> IDisposable 
         
     
