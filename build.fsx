@@ -71,6 +71,7 @@ let knownPackages =
         "Aardvark.Base.FSharp"
         "Aardvark.Base.Essentials"
         "Aardvark.Base.Incremental"
+        "Aardvark.Data.Vrml97"
     ]
 
 
