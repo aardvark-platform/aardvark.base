@@ -75,9 +75,11 @@
     <Compile Include="Images\EdgeFilter.cs" />
     <Compile Include="Images\ImageLoadException.cs" />
     <Compile Include="Images\IPix.cs" />
+    <Compile Include="Images\IPixImage.cs" />
     <Compile Include="Images\IPixOld.cs" />
     <Compile Include="Images\PixImage.cs" />
     <Compile Include="Images\PixImageBitmap.cs" />
+    <Compile Include="Images\PixImageCreators.cs" />
     <Compile Include="Images\PixImageCube.cs" />
     <Compile Include="Images\PixImageDevil.cs" />
     <Compile Include="Images\PixImageExtensions.cs" />

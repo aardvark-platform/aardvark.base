@@ -34,50 +34,50 @@ namespace Aardvark.Base
 
         //#endregion
 
-        //#region IPixImage2d Extensions
+        #region IPixImage2d Extensions
 
-        //public static PixImage<T> ToPixImage<T>(this IPixImage2d image)
-        //{
-        //    var pixImage = image as PixImage<T>;
-        //    if (pixImage != null) return pixImage;
-        //    var size = image.Size;
-        //    var pixFormat = image.PixFormat;
-        //    var data = image.Data as T[];
-        //    if (data != null)
-        //    {
-        //        if (data.GetType().GetElementType() != pixFormat.Type)
-        //            throw new ArgumentException("type mismatch in supplied IPixImage2d");
-        //        var volume = data.CreateImageVolume(new V3l(size.X, size.Y, Col.ChannelCount(pixFormat.Format)));
-        //        return new PixImage<T>(pixFormat.Format, volume);
-        //    }
-        //    return image.ToPixImage().ToPixImage<T>();
-        //}
+        public static PixImage<T> ToPixImage<T>(this IPixImage2d image)
+        {
+            var pixImage = image as PixImage<T>;
+            if (pixImage != null) return pixImage;
+            var size = image.Size;
+            var pixFormat = image.PixFormat;
+            var data = image.Data as T[];
+            if (data != null)
+            {
+                if (data.GetType().GetElementType() != pixFormat.Type)
+                    throw new ArgumentException("type mismatch in supplied IPixImage2d");
+                var volume = data.CreateImageVolume(new V3l(size.X, size.Y, Col.ChannelCount(pixFormat.Format)));
+                return new PixImage<T>(pixFormat.Format, volume);
+            }
+            return image.ToPixImage().ToPixImage<T>();
+        }
 
-        //public static PixImage ToPixImage(this IPixImage2d image)
-        //{
-        //    var pixImage = image as PixImage;
-        //    if (pixImage != null) return pixImage;
-        //    var size = image.Size;
-        //    var pixFormat = image.PixFormat;
-        //    if (image.Data.GetType().GetElementType() != pixFormat.Type)
-        //        throw new ArgumentException("type mismatch in supplied IPixImage2d");
-        //    return PixImage.Create(image.Data, pixFormat.Format, size.X, size.Y);
-        //}
+        public static PixImage ToPixImage(this IPixImage2d image)
+        {
+            var pixImage = image as PixImage;
+            if (pixImage != null) return pixImage;
+            var size = image.Size;
+            var pixFormat = image.PixFormat;
+            if (image.Data.GetType().GetElementType() != pixFormat.Type)
+                throw new ArgumentException("type mismatch in supplied IPixImage2d");
+            return PixImage.Create(image.Data, pixFormat.Format, size.X, size.Y);
+        }
 
-        //#endregion
+        #endregion
 
-        //#region IPixMipMap2d Extensions
+        #region IPixMipMap2d Extensions
 
-        //public static PixImageMipMap ToPixImageMipMap(this IPixMipMap2d mipmap)
-        //{
-        //    var pixImageMipMap = mipmap as PixImageMipMap;
-        //    if (pixImageMipMap != null) return pixImageMipMap;
-        //    var count = mipmap.LevelCount;
-        //    var pixImageArray = new PixImage[count].SetByIndex(i => mipmap[i].ToPixImage());
-        //    return new PixImageMipMap(pixImageArray);
-        //}
+        public static PixImageMipMap ToPixImageMipMap(this IPixMipMap2d mipmap)
+        {
+            var pixImageMipMap = mipmap as PixImageMipMap;
+            if (pixImageMipMap != null) return pixImageMipMap;
+            var count = mipmap.LevelCount;
+            var pixImageArray = new PixImage[count].SetByIndex(i => mipmap[i].ToPixImage());
+            return new PixImageMipMap(pixImageArray);
+        }
 
-        //#endregion
+        #endregion
 
         #region Black and White Conversions
 

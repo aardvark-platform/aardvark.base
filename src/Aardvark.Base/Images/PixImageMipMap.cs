@@ -7,7 +7,7 @@ using System.Text;
 namespace Aardvark.Base
 {
     //[RegisterTypeInfo]
-    public class PixImageMipMap : IPixOld, IPix //, IPixMipMap2d
+    public class PixImageMipMap : IPixOld, IPix, IPixMipMap2d
     {
         public PixImage[] ImageArray;
 
@@ -125,6 +125,14 @@ namespace Aardvark.Base
         public int LevelCount
         {
             get { return ImageArray.Length; }
+        }
+
+        IPixImage2d IPixMipMap2d.this[int level]
+        {
+            get
+            {
+                return ImageArray[level];
+            }
         }
 
         public PixImage this[int level]
