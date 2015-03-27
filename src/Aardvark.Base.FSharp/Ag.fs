@@ -82,7 +82,10 @@ module Ag =
                                                                 | (true,v) -> Some v
                                                                 | _ -> match valueStore.Value.TryGetValue((anyObject, name)) with
                                                                         | (true, v) -> Some v
-                                                                        | _ -> None
+                                                                        | _ -> 
+                                                                            match rootScope.Value.GetChildScope(node).TryFindCacheValue name with
+                                                                                | Some v -> v
+                                                                                | _ -> None
     let private clearValueStore() = valueStore.Value.Clear()
     
     type System.Object with
