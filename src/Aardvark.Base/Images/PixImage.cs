@@ -467,12 +467,8 @@ namespace Aardvark.Base
 
         public static PixImage Create(System.Drawing.Bitmap bitmap)
         {
-            #if USE_SYSTEMIMAGE
             var loadImage = CreateRawBitmap(bitmap);
             return loadImage.ToPixImage(loadImage.Format);
-            #else
-            throw new NotSupportedException("WPF is not supported");
-            #endif
         }
 
         public static Volume<T> CreateVolume<T>(V3l size)
