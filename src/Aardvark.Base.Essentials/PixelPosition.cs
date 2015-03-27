@@ -40,6 +40,16 @@ namespace Aardvark.Base
         /// Pixel position relative to specified bounds.
         /// For example, a typical render window has bounds [(0, 0), (width, height)].
         /// </summary>
+        public PixelPosition(V2i position, int width, int height)
+        {
+            Position = position;
+            Bounds = Box2i.FromSize(width, height);
+        }
+
+        /// <summary>
+        /// Pixel position relative to specified bounds.
+        /// For example, a typical render window has bounds [(0, 0), (width, height)].
+        /// </summary>
         public PixelPosition(int x, int y, int width, int height)
         {
             Position = new V2i(x, y);
