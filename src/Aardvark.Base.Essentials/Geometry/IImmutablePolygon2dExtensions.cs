@@ -4,14 +4,14 @@ using System.Linq;
 namespace Aardvark.Base
 {
     /// <summary>
-    /// Extensions for IImmutablePolygon2d.
+    /// Extensions for IImmutablePolygon(of T).
     /// </summary>
-    public static class IImmutablePolygon2dExtensions
+    public static class IImmutablePolygonExtensions
     {
         /// <summary>
-        /// Converts this IImmutablePolygon2d to a Polygon2d.
+        /// Converts this IImmutablePolygon(of V2d) to a Polygon2d.
         /// </summary>
-        public static Polygon2d ToPolygon2d(this IImmutablePolygon2d self)
+        public static Polygon2d ToPolygon2d(this IImmutablePolygon<V2d> self)
         {
             return new Polygon2d(self.Points);
         }
@@ -19,7 +19,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns the index and distance of the polygon's closest point to the given query point.
         /// </summary>
-        public static Tuple<int, double> QueryNearestVertex(this IImmutablePolygon2d self, V2d queryPoint)
+        public static Tuple<int, double> QueryNearestVertex(this IImmutablePolygon<V2d> self, V2d queryPoint)
         {
             if (self.Count == 0) return null;
 
@@ -37,7 +37,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns new polygon with point moved. 
         /// </summary>
-        public static IImmutablePolygon2d MovePoint(this IImmutablePolygon2d self, int index, V2d delta)
+        public static IImmutablePolygon<V2d> MovePoint(this IImmutablePolygon<V2d> self, int index, V2d delta)
         {
             return self.SetPoint(index, self.Points[index] + delta);
         }
@@ -45,7 +45,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns new polygon with point transformed. 
         /// </summary>
-        public static IImmutablePolygon2d TransformPoint(this IImmutablePolygon2d self, int index, M33d trafo)
+        public static IImmutablePolygon<V2d> TransformPoint(this IImmutablePolygon<V2d> self, int index, M33d trafo)
         {
             return self.SetPoint(index, trafo.TransformPos(self.Points[index]));
         }
@@ -53,7 +53,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Gets the index-th edge of this polygon.
         /// </summary>
-        public static Line2d GetEdge(this IImmutablePolygon2d self, int index)
+        public static Line2d GetEdge(this IImmutablePolygon<V2d> self, int index)
         {
             index = self.RepairIndex(index);
             var p0 = self.Points[index++];
@@ -64,7 +64,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Sets the index-th edge of this polygon.
         /// </summary>
-        public static IImmutablePolygon2d SetEdge(this IImmutablePolygon2d self, int index, Line2d edge)
+        public static IImmutablePolygon<V2d> SetEdge(this IImmutablePolygon<V2d> self, int index, Line2d edge)
         {
             index = self.RepairIndex(index);
             var i0 = index++;
@@ -75,7 +75,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Maps arbitrary index into valid range.
         /// </summary>
-        public static int RepairIndex(this IImmutablePolygon2d self, int index)
+        public static int RepairIndex<T>(this IImmutablePolygon<T> self, int index)
         {
             return RepairIndex(self.Count, index);
         }
@@ -121,7 +121,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Makes index-th edge parallel to x- or y-axis.
         /// </summary>
-        public static IImmutablePolygon2d AlignEdge(this IImmutablePolygon2d self, int index)
+        public static IImmutablePolygon<V2d> AlignEdge(this IImmutablePolygon<V2d> self, int index)
         {
             var e = self.GetEdge(index);
 
@@ -140,17 +140,17 @@ namespace Aardvark.Base
         /// <summary>
         /// Ensures that the outline is oriented counter-clockwise.
         /// </summary>
-        public static IImmutablePolygon2d ToCounterClockwise(this IImmutablePolygon2d self)
+        public static IImmutablePolygon<V2d> ToCounterClockwise(this IImmutablePolygon<V2d> self)
         {
-            return self.ToPolygon2d().IsCcw() ? self : new ImmutablePolygon2d(self.Points.Reverse());
+            return self.ToPolygon2d().IsCcw() ? self : new ImmutablePolygon<V2d>(self.Points.Reverse());
         }
 
         /// <summary>
         /// Ensures that the outline is oriented clockwise.
         /// </summary>
-        public static IImmutablePolygon2d ToClockwise(this IImmutablePolygon2d self)
+        public static IImmutablePolygon<V2d> ToClockwise(this IImmutablePolygon<V2d> self)
         {
-            return self.ToPolygon2d().IsCcw() ? new ImmutablePolygon2d(self.Points.Reverse()) : self;
+            return self.ToPolygon2d().IsCcw() ? new ImmutablePolygon<V2d>(self.Points.Reverse()) : self;
         }
     }
 }

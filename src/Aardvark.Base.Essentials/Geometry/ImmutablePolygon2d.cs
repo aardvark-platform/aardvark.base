@@ -8,22 +8,22 @@ namespace Aardvark.Base
     /// <summary>
     /// An immutable polygon.
     /// </summary>
-    public class ImmutablePolygon2d : IImmutablePolygon2d
+    public class ImmutablePolygon<T>: IImmutablePolygon<T>
     {
         /// <summary>
         /// The empty polygon (no points).
         /// </summary>
-        public static readonly ImmutablePolygon2d Empty = new ImmutablePolygon2d(new V2d[0]);
+        public static readonly IImmutablePolygon<T> Empty = new ImmutablePolygon<T>(new T[0]);
 
         /// <summary>
         /// Vertices.
         /// </summary>
-        private ImmutableList<V2d> m_ps = ImmutableList<V2d>.Empty;
+        private ImmutableList<T> m_ps = ImmutableList<T>.Empty;
 
         /// <summary>
         /// Creates an immutable polygon from given outline.
         /// </summary>
-        public ImmutablePolygon2d(IEnumerable<V2d> outline)
+        public ImmutablePolygon(IEnumerable<T> outline)
         {
             if (outline == null) throw new ArgumentNullException();
             m_ps = ImmutableList.CreateRange(outline);
@@ -32,7 +32,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Creates an immutable polygon from given outline.
         /// </summary>
-        public ImmutablePolygon2d(ImmutableList<V2d> outline)
+        public ImmutablePolygon(ImmutableList<T> outline)
         {
             if (outline == null) throw new ArgumentNullException();
             m_ps = outline;
@@ -42,7 +42,7 @@ namespace Aardvark.Base
         /// Gets index-th point.
         /// Index will be wrapped around if not in range [0, count).
         /// </summary>
-        public V2d GetPoint(int index)
+        public T GetPoint(int index)
         {
             return m_ps[this.RepairIndex(index)];
         }
@@ -60,7 +60,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Polygon outline.
         /// </summary>
-        public IReadOnlyList<V2d> Points { get { return m_ps; } }
+        public IReadOnlyList<T> Points { get { return m_ps; } }
 
         /// <summary>
         /// Gets number of vertices.
@@ -70,62 +70,62 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns new polygon with point added. 
         /// </summary>
-        public IImmutablePolygon2d AddPoint(V2d p)
+        public IImmutablePolygon<T> AddPoint(T p)
         {
-            return new ImmutablePolygon2d(m_ps.Add(p));
+            return new ImmutablePolygon<T>(m_ps.Add(p));
         }
 
         /// <summary>
         /// Returns new polygon with points added. 
         /// </summary>
-        public IImmutablePolygon2d AddPoints(IEnumerable<V2d> points)
+        public IImmutablePolygon<T> AddPoints(IEnumerable<T> points)
         {
-            return new ImmutablePolygon2d(m_ps.AddRange(points));
+            return new ImmutablePolygon<T>(m_ps.AddRange(points));
         }
 
         /// <summary>
         /// Returns new polygon with point replaced. 
         /// </summary>
-        public IImmutablePolygon2d SetPoint(int index, V2d p)
+        public IImmutablePolygon<T> SetPoint(int index, T p)
         {
-            return new ImmutablePolygon2d(m_ps.SetItem(index, p));
+            return new ImmutablePolygon<T>(m_ps.SetItem(index, p));
         }
 
         /// <summary>
         /// Returns new polygon with point p inserted at given index. 
         /// </summary>
-        public IImmutablePolygon2d InsertPoint(int index, V2d p)
+        public IImmutablePolygon<T> InsertPoint(int index, T p)
         {
-            return new ImmutablePolygon2d(m_ps.Insert(index, p));
+            return new ImmutablePolygon<T>(m_ps.Insert(index, p));
         }
 
         /// <summary>
         /// Returns new polygon with point removed. 
         /// </summary>
-        public IImmutablePolygon2d RemovePoint(int index)
+        public IImmutablePolygon<T> RemovePoint(int index)
         {
-            return new ImmutablePolygon2d(m_ps.RemoveAt(index));
+            return new ImmutablePolygon<T>(m_ps.RemoveAt(index));
         }
 
         /// <summary>
         /// Returns new polygon with points removed. 
         /// </summary>
-        public IImmutablePolygon2d RemovePoints(IEnumerable<int> indexes)
+        public IImmutablePolygon<T> RemovePoints(IEnumerable<int> indexes)
         {
             var builder = m_ps.ToBuilder();
             foreach (var index in indexes.OrderByDescending(i => i))
             {
                 builder.RemoveAt(index);
             }
-            return new ImmutablePolygon2d(builder.ToImmutable());
+            return new ImmutablePolygon<T>(builder.ToImmutable());
         }
 
         /// <summary>
         /// Returns new polygon with transformed points.
         /// </summary>
-        public IImmutablePolygon2d Transform(M33d trafo)
+        public IImmutablePolygon<U> Transform<U>(Func<T, U> transform)
         {
-            return new ImmutablePolygon2d(m_ps.Select(x => trafo.TransformPos(x)));
+            return new ImmutablePolygon<U>(m_ps.Select(x => transform(x)));
         }
 
         #endregion

@@ -1,16 +1,17 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 namespace Aardvark.Base
 {
     /// <summary>
     /// An immutable polygon.
     /// </summary>
-    public interface IImmutablePolygon2d
+    public interface IImmutablePolygon<T>
     {
         /// <summary>
         /// Polygon outline.
         /// </summary>
-        IReadOnlyList<V2d> Points { get; }
+        IReadOnlyList<T> Points { get; }
 
         /// <summary>
         /// Gets number of vertices.
@@ -20,36 +21,36 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns new polygon with point added. 
         /// </summary>
-        IImmutablePolygon2d AddPoint(V2d p);
+        IImmutablePolygon<T> AddPoint(T p);
 
         /// <summary>
         /// Returns new polygon with points added. 
         /// </summary>
-        IImmutablePolygon2d AddPoints(IEnumerable<V2d> points);
+        IImmutablePolygon<T> AddPoints(IEnumerable<T> points);
 
         /// <summary>
         /// Returns new polygon with point replaced. 
         /// </summary>
-        IImmutablePolygon2d SetPoint(int index, V2d p);
+        IImmutablePolygon<T> SetPoint(int index, T p);
 
         /// <summary>
         /// Returns new polygon with point p inserted at given index. 
         /// </summary>
-        IImmutablePolygon2d InsertPoint(int index, V2d p);
+        IImmutablePolygon<T> InsertPoint(int index, T p);
 
         /// <summary>
         /// Returns new polygon with point removed. 
         /// </summary>
-        IImmutablePolygon2d RemovePoint(int index);
+        IImmutablePolygon<T> RemovePoint(int index);
 
         /// <summary>
         /// Returns new polygon with points removed. 
         /// </summary>
-        IImmutablePolygon2d RemovePoints(IEnumerable<int> indexes);
+        IImmutablePolygon<T> RemovePoints(IEnumerable<int> indexes);
 
         /// <summary>
         /// Returns new polygon with transformed points.
         /// </summary>
-        IImmutablePolygon2d Transform(M33d trafo);
+        IImmutablePolygon<U> Transform<U>(Func<T, U> transform);
     }
 }
