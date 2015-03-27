@@ -824,13 +824,31 @@ namespace Aardvark.Base
 
         /// <summary>
         /// Moves the first element to the end of the sequence.
+        /// [A B C].AddFirstToEnd() -> [A B C A]
+        /// </summary>
+        public static IEnumerable<T> AddFirstToEnd<T>(this IEnumerable<T> self)
+        {
+            Requires.NotNull(self);
+
+            if (self.IsEmpty()) yield break;
+
+            var first = self.First();
+            foreach (var x in self)
+            {
+                yield return x;
+            }
+            yield return first;
+        }
+
+        /// <summary>
+        /// Moves the first element to the end of the sequence.
         /// [A B C D E].MoveFirstToEnd() -> [B C D E A]
         /// </summary>
         public static IEnumerable<T> WithFirstMovedToEnd<T>(this IEnumerable<T> self)
         {
             Requires.NotNull(self);
 
-            if (self.IsEmptyOrNull()) return self;
+            if (self.IsEmpty()) return self;
             return self.Skip(1).Concat(self.Take(1));
         }
 
