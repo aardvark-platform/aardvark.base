@@ -40,6 +40,34 @@ namespace Aardvark.Base
         };
 
 
+        protected static Dictionary<PixFormat, PixelFormat> s_pixelFormats =
+            new Dictionary<PixFormat, PixelFormat>()
+        {
+            { PixFormat.ByteBGR, PixelFormat.Format24bppRgb },
+            { PixFormat.ByteBGRA, PixelFormat.Format32bppArgb },
+            { PixFormat.ByteBW, PixelFormat.Format8bppIndexed },
+            { PixFormat.ByteRGBP, PixelFormat.Format32bppPArgb },
+            { PixFormat.UShortGray, PixelFormat.Format16bppGrayScale },
+            { PixFormat.UShortBGR, PixelFormat.Format48bppRgb },
+            { PixFormat.UShortBGRA, PixelFormat.Format64bppArgb },
+            { PixFormat.UShortBGRP, PixelFormat.Format64bppPArgb },
+        };
+
+        protected static Dictionary<PixFileFormat, ImageFormat> s_imageFormats =
+            new Dictionary<PixFileFormat, ImageFormat>()
+        {
+            {PixFileFormat.Bmp, ImageFormat.Bmp},
+            {PixFileFormat.Gif, ImageFormat.Gif},
+            {PixFileFormat.Jpeg, ImageFormat.Jpeg},
+            {PixFileFormat.Png, ImageFormat.Png},
+            {PixFileFormat.Tiff, ImageFormat.Tiff},
+            {PixFileFormat.Wmp, ImageFormat.Wmf},
+        };
+
+        protected static Dictionary<Guid, ImageCodecInfo> s_imageCodecInfos =
+            ImageCodecInfo.GetImageEncoders().ToDictionary(c => c.FormatID);
+
+
 
         private static PixelFormat GetLockFormat(PixelFormat format)
         {
@@ -69,9 +97,7 @@ namespace Aardvark.Base
                     new System.Drawing.Rectangle(0, 0, sx, sy),
                     System.Drawing.Imaging.ImageLockMode.ReadOnly, sdipf);
 
-
-                var ptr = bdata.Scan0;
-                Marshal.Copy(ptr, bitImage.Volume.Data, 0, bitImage.Volume.Data.Length);
+                bdata.Scan0.CopyTo(bitImage.Volume.Data);
 
                 bitmap.UnlockBits(bdata);
                 ExpandPixels(bitImage, pixImage.ToPixImage<byte>());
@@ -82,13 +108,7 @@ namespace Aardvark.Base
                     new System.Drawing.Rectangle(0, 0, sx, sy),
                     System.Drawing.Imaging.ImageLockMode.ReadOnly, sdipf);
 
-                var ptr = bdata.Scan0;
-                pixImage.Data.UnsafeCoercedApply((byte[] arr) =>
-                {
-                    Marshal.Copy(ptr, arr, 0, arr.Length);
-                });
-
-
+                bdata.Scan0.CopyTo(array);
                 bitmap.UnlockBits(bdata);
             }
             return pixImage;
@@ -104,12 +124,18 @@ namespace Aardvark.Base
                 Stream stream,
                 PixLoadOptions loadFlags = PixLoadOptions.Default)
         {
-            var bmp = (Bitmap)Bitmap.FromStream(stream);
-
-            var result = CreateRawBitmap(bmp);
-            bmp.Dispose();
-
-            return result;
+            try
+            {
+                using (var bmp = (Bitmap)Bitmap.FromStream(stream))
+                {
+                    var result = CreateRawBitmap(bmp);
+                    return result;
+                }
+            }
+            catch(Exception)
+            {
+                return null;
+            }
         }
 
         /// <summary>
@@ -120,7 +146,41 @@ namespace Aardvark.Base
                 Stream stream, PixFileFormat format,
                 PixSaveOptions options, int qualityLevel)
         {
-            return false;
+            try
+            {
+                var self = this.ToCanonicalDenseLayout();
+                var size = self.Size;
+                var pixelFormat = s_pixelFormats[self.PixFormat];
+                var imageFormat = s_imageFormats[format];
+                
+
+                using (var bmp = new Bitmap(size.X, size.Y, pixelFormat))
+                {
+                    var bdata = bmp.LockBits(new Rectangle(0, 0, size.X, size.Y), ImageLockMode.ReadOnly, pixelFormat);
+                    self.Data.CopyTo(bdata.Scan0);
+                    bmp.UnlockBits(bdata);
+
+                    if(qualityLevel >= 0)
+                    {
+                        var codec = s_imageCodecInfos[imageFormat.Guid];
+                        var parameters = new EncoderParameters(1);
+                        parameters.Param[0] = new EncoderParameter(System.Drawing.Imaging.Encoder.Quality, (long)qualityLevel);
+                        bmp.Save(stream, codec, parameters);
+                        parameters.Dispose();
+                    }
+                    else
+                    {
+                        bmp.Save(stream, imageFormat);
+                    }
+
+                }
+
+                return true;
+            }
+            catch(Exception)
+            {
+                return false;
+            }
         }
 
         /// <summary>

@@ -2527,7 +2527,7 @@ namespace Aardvark.Base
 
 		public static void CopyTo(this IntPtr input, Array target)
 		{
-			CopyTo(input, target, target.Length, length);
+			CopyTo(input, target, target.Length);
 		}
 
 

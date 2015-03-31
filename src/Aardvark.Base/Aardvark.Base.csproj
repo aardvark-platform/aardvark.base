@@ -13,7 +13,7 @@
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkProfile />
     <AardvarkProject>True</AardvarkProject>
-    <NuGetPackageImportStamp>d5c939f2</NuGetPackageImportStamp>
+    <NuGetPackageImportStamp>676e7752</NuGetPackageImportStamp>
   </PropertyGroup>
   <PropertyGroup>
     <CustomBeforeMicrosoftCommonTargets>$(SolutionDir)\Aardvark.targets</CustomBeforeMicrosoftCommonTargets>
@@ -84,10 +84,8 @@
     <Compile Include="Images\PixImageDevil.cs" />
     <Compile Include="Images\PixImageExtensions.cs" />
     <Compile Include="Images\PixImageFreeImage.cs" />
-    <Compile Include="Images\PixImageLibTiff.cs" />
     <Compile Include="Images\PixImageMipMap.cs" />
     <Compile Include="Images\PixImageSystemImage.cs" />
-    <Compile Include="Images\PixImageAndroid.cs" />
     <Compile Include="AlgoDat\AdaBoost.cs" />
     <Compile Include="AlgoDat\ConcurrentHashSet.cs" />
     <Compile Include="AlgoDat\Delegates.cs" />

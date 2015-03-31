@@ -22,7 +22,7 @@ namespace Aardvark.Base
             IL.OriginFunc(OriginMode.UpperLeft);
             IL.Enable(EnableCap.ConvertPalette);
             IL.Enable(EnableCap.AbsoluteOrigin);
-            
+
         }
 
         private static Dictionary<Devil.ChannelFormat, Col.Format> s_pixColorFormats = new Dictionary<Devil.ChannelFormat, Col.Format>()
@@ -165,7 +165,7 @@ namespace Aardvark.Base
             if (!s_devilDataTypes.TryGetValue(PixFormat.Type, out type)) return false;
             if (!s_devilColorFormats.TryGetValue(PixFormat.Format, out fmt)) return false;
 
-            var gc = GCHandle.Alloc(Data, GCHandleType.Pinned);
+            var gc = GCHandle.Alloc(this.Data, GCHandleType.Pinned);
             try
             {
                 if (!IL.TexImage(Size.X, Size.Y, 1, (byte)ChannelCount, fmt, type, gc.AddrOfPinnedObject()))
@@ -174,6 +174,10 @@ namespace Aardvark.Base
                 IL.SaveStream(s_fileFormats[format], stream);
 
                 return true;
+            }
+            catch (Exception)
+            {
+                return false;
             }
             finally
             {
@@ -203,10 +207,14 @@ namespace Aardvark.Base
                 if (!IL.TexImage(Size.X, Size.Y, 1, (byte)ChannelCount, fmt, type, gc.AddrOfPinnedObject()))
                     return false;
 
-                if(qualityLevel != -1)
+                if (qualityLevel != -1)
                     IL.SetInteger(IntName.JpgQuality, qualityLevel);
 
                 return IL.Save(s_fileFormats[format], file);
+            }
+            catch (Exception)
+            {
+                return false;
             }
             finally
             {
@@ -227,8 +235,42 @@ namespace Aardvark.Base
         public static PixImageInfo InfoFromFileNameDevil(
                 string fileName, PixLoadOptions options)
         {
-            // TODO: implement
-            return null;
+            try
+            {
+                var img = IL.GenImage();
+                IL.BindImage(img);
+
+                if (!IL.LoadImage(fileName))
+                    throw new ArgumentException("fileName");
+
+                var dataType = IL.GetDataType();
+                var format = IL.GetFormat();
+                var width = IL.GetInteger(IntName.ImageWidth);
+                var height = IL.GetInteger(IntName.ImageHeight);
+                var channels = IL.GetInteger(IntName.ImageChannels);
+
+                IL.BindImage(0);
+                IL.DeleteImage(img);
+
+
+                Type type;
+                Col.Format fmt;
+
+                if (!s_pixDataTypes.TryGetValue(dataType, out type))
+                    return null;
+
+                if (!s_pixColorFormats.TryGetValue(format, out fmt))
+                    return null;
+
+                var size = new V2i(width, height);
+
+
+                return new PixImageInfo(new PixFormat(type, fmt), size);
+            }
+            catch (Exception)
+            {
+                return null;
+            }
         }
     }
 }

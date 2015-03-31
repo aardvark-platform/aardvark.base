@@ -1,16 +1,5 @@
 #define USE_DEVIL
-
-//#if !__MonoCS__ && !__ANDROID__
-//#define USE_BITMAP
-//#endif
-
-//#if __ANDROID__
-//#define USE_ANDROID
-//#endif
-
-//#if __MonoCS__
-//#define USE_BITMAP
-//#endif
+#define USE_BITMAP
 
 using System;
 using System.Collections.Generic;
@@ -69,7 +58,7 @@ namespace Aardvark.Base
     [Flags]
     public enum PixLoadOptions
     {
-        Default             = UseDevil | UseSystemImage | UseFreeImage,
+        Default             = UseDevil | UseBitmap | UseFreeImage,
         UseSystemImage      = 0x01000000,
         UseFreeImage        = 0x02000000,
         UseStorageService   = 0x08000000,
@@ -81,7 +70,7 @@ namespace Aardvark.Base
     [Flags]
     public enum PixSaveOptions
     {
-        Default             = UseDevil | UseSystemImage | UseFreeImage | NormalizeFilename,
+        Default             = UseDevil | UseBitmap | UseFreeImage | NormalizeFilename,
         NormalizeFilename   = 0x00010000,
         UseSystemImage      = 0x01000000,
         UseFreeImage        = 0x02000000,
@@ -89,6 +78,7 @@ namespace Aardvark.Base
         UseStorageService   = 0x08000000,
         UseDevil            = 0x10000000,
         UseLibTiff          = 0x20000000,
+        UseBitmap           = 0x40000000,
     }
 
     /// <summary>
@@ -103,6 +93,47 @@ namespace Aardvark.Base
     {
         public Col.Format Format;
         // TODO: public PixImageMetaData MetaData;
+
+
+        private static List<Func<string, PixLoadOptions, PixImage>> s_fileLoadFunctions = new List<Func<string,PixLoadOptions,PixImage>>();
+        private static List<Func<Stream, PixLoadOptions, PixImage>> s_streamLoadFunctions = new List<Func<Stream,PixLoadOptions,PixImage>>();
+        private static List<Func<Stream, PixSaveOptions, PixImage, bool>> s_streamSaveFunctions = new List<Func<Stream, PixSaveOptions, PixImage, bool>>();
+        private static List<Func<string, PixSaveOptions, PixImage, bool>> s_fileSaveFunctions = new List<Func<string, PixSaveOptions, PixImage, bool>>();
+        private static List<Func<string, PixImageInfo>> s_infoFunctions = new List<Func<string, PixImageInfo>>();
+
+        public static void RegisterLoadingLib(
+            Func<string, PixLoadOptions, PixImage> fileLoad = null,
+            Func<Stream, PixLoadOptions, PixImage> streamLoad = null,
+            Func<string, PixSaveOptions, PixImage, bool> fileSave = null,
+            Func<Stream, PixSaveOptions, PixImage, bool> streamSave = null,
+            Func<string, PixImageInfo> imageInfo = null)
+        { 
+            Func<string, PixLoadOptions, PixImage> loadFallback = (file, op) =>
+            {
+                using (var stream = new FileStream(file, FileMode.Open, FileAccess.Read))
+                {
+                    return streamLoad(stream, op);
+                }
+            };
+
+            Func<string, PixSaveOptions, PixImage, bool> saveFallback = (file, op, img) =>
+            {
+                using (var stream = new FileStream(file, FileMode.OpenOrCreate, FileAccess.Write))
+                {
+                    return streamSave(stream, op, img);
+                }
+            };
+
+            fileLoad = fileLoad ?? (streamLoad == null ? null : loadFallback);
+            fileSave = fileSave ?? (streamSave == null ? null : saveFallback);
+
+            if (fileLoad != null) s_fileLoadFunctions.Add(fileLoad);
+            if (streamLoad != null) s_streamLoadFunctions.Add(streamLoad);
+            if (fileSave != null) s_fileSaveFunctions.Add(fileSave);
+            if (streamSave != null) s_streamSaveFunctions.Add(streamSave);
+            if (imageInfo != null) s_infoFunctions.Add(imageInfo);
+        }
+
 
         #region Constructors
 
@@ -307,27 +338,6 @@ namespace Aardvark.Base
 
         public static PixImage CreateRaw(string filename, PixLoadOptions options = PixLoadOptions.Default)
         {
-            #if USE_STORAGESERVICE
-            if ((options & PixLoadOptions.UseStorageService) != 0)
-                return CreateRaw(Load.AsMemoryStream(filename), options);
-            #endif
-
-            #if USE_SYSTEMIMAGE
-            if ((options & PixLoadOptions.UseSystemImage) != 0)
-            {
-                var img = CreateRawSystem(filename, options);
-                if (img != null) return img;
-            }
-            #endif
-
-            #if USE_FREEIMAGE
-            if ((options & PixLoadOptions.UseFreeImage) != 0)
-            {
-                var img = CreateRawFreeImage(new FileStream(filename, FileMode.Open, FileAccess.Read), options);
-                if (img != null) return img;
-            }
-            #endif
-
             #if USE_DEVIL
             if ((options & PixLoadOptions.UseDevil) != 0)
             {
@@ -336,32 +346,18 @@ namespace Aardvark.Base
             }
             #endif
 
-            #if USE_LIBTIFF
-            if ((options & PixLoadOptions.UseLibTiff) != 0)
+            foreach (var loader in s_fileLoadFunctions)
             {
-                var img = CreateRawLibTiff(filename, options);
+                var res = loader(filename, options);
+                if (res != null) return res;
+            }
+
+
+            using (var stream = new FileStream(filename, FileMode.Open, FileAccess.Read))
+            {
+                var img = CreateRaw(stream, options);
                 if (img != null) return img;
             }
-            #endif
-
-            #if USE_BITMAP
-            if ((options & PixLoadOptions.UseBitmap) != 0)
-            {
-                using (var stream = new FileStream(filename, FileMode.Open, FileAccess.Read))
-                {
-                    var img = CreateRawBitmap(stream, options);
-                    if (img != null) return img;
-                }
-            }
-            #endif
-
-            #if USE_ANDROID
-            if ((options & PixLoadOptions.UseSystemImage) != 0)
-            {
-                var img = CreateRawAndroid(new FileStream(filename, FileMode.Open, FileAccess.Read), options);
-                if (img != null) return img;
-            }
-            #endif
 
             throw new ImageLoadException("could not load PixImage");
         }
@@ -414,29 +410,6 @@ namespace Aardvark.Base
         public static PixImage CreateRaw(Stream stream, PixLoadOptions options = PixLoadOptions.Default)
         {
             Exception exception = null;
-            #if USE_SYSTEMIMAGE
-            if ((options & PixLoadOptions.UseSystemImage) != 0)
-            {
-                try
-                {
-                    var img = CreateRawSystem(stream, options);
-                    if (img != null) return img;
-                }
-                catch (Exception ex) { if (exception == null) exception = ex; }
-            }
-            #endif
-
-            #if USE_FREEIMAGE
-            if ((options & PixLoadOptions.UseFreeImage) != 0)
-            {
-                try
-                {
-                    var img = CreateRawFreeImage(stream, options);
-                    if (img != null) return img;
-                }
-                catch (Exception ex) { if (exception == null) exception = ex; }
-            }
-            #endif
 
             #if USE_DEVIL
             if ((options & PixLoadOptions.UseDevil) != 0)
@@ -450,17 +423,20 @@ namespace Aardvark.Base
             }
             #endif
 
-            #if USE_ANDROID
-            if ((options & PixLoadOptions.UseSystemImage) != 0)
+            #if USE_BITMAP
+            if ((options & PixLoadOptions.UseBitmap) != 0)
             {
-                try
-                {
-                    var img = CreateRawAndroid(stream, options);
-                    if (img != null) return img;
-                }
-                catch (Exception ex) { if (exception == null) exception = ex; }
+                var img = CreateRawBitmap(stream, options);
+                if (img != null) return img;
             }
             #endif
+
+            foreach (var loader in s_streamLoadFunctions)
+            {
+                var res = loader(stream, options);
+                if (res != null) return res;
+            }
+
 
             throw new ImageLoadException("could not load image", exception);
         }
@@ -617,22 +593,23 @@ namespace Aardvark.Base
         {
             if (SaveAsImagePixImage(stream, fileFormat, options, qualityLevel)) return;
 
-            #if USE_SYSTEMIMAGE
-            if ((options & PixSaveOptions.UseSystemImage) != 0
-                && SaveAsImageSystem(stream, fileFormat, options, qualityLevel)) return;
+
+            #if USE_BITMAP
+            if ((options & PixSaveOptions.UseBitmap) != 0
+                && SaveAsImageBitmap(stream, fileFormat, options, qualityLevel)) return;
             #endif
-            #if USE_FREEIMAGE
-            if ((options & PixSaveOptions.UseFreeImage) != 0
-                && SaveAsImageFreeImage(stream, fileFormat, options, qualityLevel)) return;
-            #endif
+
             #if USE_DEVIL
             if ((options & PixSaveOptions.UseDevil) != 0
                 && SaveAsImageDevil(stream, fileFormat, options, qualityLevel)) return;
             #endif
-            #if USE_LIBTIFF
-            if ((options & PixSaveOptions.UseDevil) != 0
-                && SaveAsImageLibTiff(stream, fileFormat, options, qualityLevel)) return;
-            #endif
+
+            foreach (var saver in s_streamSaveFunctions)
+            {
+                var success = saver(stream, options, this);
+                if (success) return;
+            }
+
 
             throw new ImageLoadException("could not save PixImage");
         }
@@ -688,29 +665,18 @@ namespace Aardvark.Base
         {
             if ((options & PixSaveOptions.NormalizeFilename) != 0)
                 filename = NormalizedFileName(filename, fileFormat);
-            #if USE_STORAGESERVICE
-            if ((options & PixSaveOptions.UseStorageService) != 0)
-            {
-                if ((options & PixSaveOptions.UseChunkedStream) != 0)
-                {
-                    var mstream = new ChunkedMemoryStream(c_writeMemoryChunkSize);
-                    SaveAsImage(mstream, fileFormat, options, qualityLevel);
-                    mstream.ChunkList.Save(mstream.Length, fileName);
-                }
-                else
-                {
-                    var mstream = new MemoryStream();
-                    SaveAsImage(mstream, fileFormat, options, qualityLevel);
-                    mstream.Save(fileName);
-                }
-                return;
-            }
-            #endif
 
             #if USE_DEVIL
             if ((options & PixSaveOptions.UseDevil) != 0 && SaveAsImageDevil(filename, fileFormat, options, qualityLevel))
                 return;
             #endif
+
+            foreach (var saver in s_fileSaveFunctions)
+            {
+                var success = saver(filename, options, this);
+                if (success) return;
+            }
+
 
             var stream = new FileStream(filename, FileMode.Create);
             SaveAsImage(stream, fileFormat, options, qualityLevel);
@@ -769,18 +735,12 @@ namespace Aardvark.Base
         public static PixImageInfo InfoFromFileName(
                 string fileName, PixLoadOptions options = PixLoadOptions.Default)
         {
-            #if USE_SYSTEMIMAGE
-            if ((options & PixLoadOptions.UseSystemImage) != 0)
-            {
-                var info = InfoFromFileNameSystem(fileName, options);
-                if (info != null) return info;
-            }
-            #endif
 
-            #if USE_FREEIMAGE
-            if ((options & PixLoadOptions.UseFreeImage) != 0)
+
+            #if USE_BITMAP
+            if ((options & PixLoadOptions.UseBitmap) != 0)
             {
-                var info = InfoFromFileNameFreeImage(fileName, options);
+                var info = InfoFromFileNameBitmap(fileName, options);
                 if (info != null) return info;
             }
             #endif
@@ -793,13 +753,12 @@ namespace Aardvark.Base
             }
             #endif
 
-            #if USE_LIBTIFF
-            if ((options & PixLoadOptions.UseLibTiff) != 0)
+
+            foreach (var readInfo in s_infoFunctions)
             {
-                var info = InfoFromFileNameLibTiff(fileName, options);
-                if (info != null) return info;
+                var imageInfo = readInfo(fileName);
+                if (imageInfo != null) return imageInfo;
             }
-            #endif
 
             throw new ImageLoadException("could not load info of image");
         }
