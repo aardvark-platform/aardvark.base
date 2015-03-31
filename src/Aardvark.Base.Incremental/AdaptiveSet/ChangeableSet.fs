@@ -66,24 +66,23 @@ type cset<'a>(initial : seq<'a>) =
 
     member x.Clear() =
         let deltas = content |> Seq.map Rem |> Seq.toList
+        content.Clear()
         for r in readers do 
             if r.IsIncremental then r.Emit deltas
             else r.Reset content
 
     member x.Add v =
-        if content.Contains v then 
-            false
-        else
-            content.Add v |> ignore
+        if content.Add v then 
             for r in readers do 
                 if r.IsIncremental then r.Emit [Add v]
                 else r.Reset content
 
             true
+        else
+            false
 
     member x.Remove v =
-        if content.Contains v then 
-            content.Remove v |> ignore
+        if content.Remove v then 
             for r in readers do
                 if r.IsIncremental then r.Emit [Rem v]
                 else r.Reset content

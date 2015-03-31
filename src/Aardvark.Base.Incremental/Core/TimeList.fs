@@ -14,12 +14,17 @@ type TimeList<'a>() =
     let cache = Dictionary<Time, 'a>()
     let mutable rep = Time.newRoot()
 
+    member x.Count = cache.Count
+
     member x.Clear() =
         cache.Clear()
 
     member x.Add(t : Time, v : 'a) =
         rep <- t.rep
         cache.[t] <- v
+         
+    member x.Item
+        with get(t) = cache.[t]
                     
     member x.Remove(t : Time) =
         cache.Remove t
