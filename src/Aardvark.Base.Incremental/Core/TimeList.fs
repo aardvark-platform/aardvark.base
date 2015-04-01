@@ -64,16 +64,16 @@ and private TimeListEnumerator<'a>(t : Time, cache : Dictionary<Time, 'a>) =
     let mutable currentValue = Unchecked.defaultof<Time * 'a>
 
     let rec moveNext() =
-        match cache.TryGetValue current with
-            | (true, v) ->
-                currentValue <- current, v
-                true
-            | _ ->
-                if current.next <> current.rep then
-                    current <- current.next
+        if current.next <> current.rep then
+            current <- current.next
+            match cache.TryGetValue current with
+                | (true, v) ->
+                    currentValue <- current, v
+                    true
+                | _ ->
                     moveNext()
-                else
-                    false
+        else
+            false
 
     interface IEnumerator with
         member x.MoveNext() = moveNext()

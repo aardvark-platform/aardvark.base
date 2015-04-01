@@ -99,6 +99,7 @@
     <Compile Include="Tests\ASetUtilities.fs" />
     <Compile Include="Tests\ModTests.fs" />
     <Compile Include="Tests\ASetTests.fs" />
+    <Compile Include="Tests\AListTests.fs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="mscorlib" />
