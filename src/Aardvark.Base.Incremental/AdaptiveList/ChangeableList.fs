@@ -6,7 +6,7 @@ open System.Collections.Generic
 open Aardvark.Base
 open Aardvark.Base.Incremental.AListReaders
 
-[<CompiledName("ChangeableListKey")>]
+[<CompiledName("ChangeableListKey"); AllowNullLiteral>]
 type clistkey internal (t : Time) =
     member internal x.Time = t
 
@@ -67,6 +67,12 @@ type clist<'a>(initial : seq<'a>) =
         for r in readers do 
             if r.IsIncremental then r.Emit deltas
             else r.Reset content
+
+    member x.Find(item : 'a) =
+        let t = content |> Seq.tryPick (fun (t,v) -> if Object.Equals(v,item) then Some t else None)
+        match t with
+            | Some t -> clistkey t
+            | None -> null
 
     interface System.Collections.IEnumerable with
         member x.GetEnumerator() =
@@ -219,6 +225,9 @@ type corderedset<'a>(initial : seq<'a>) =
 
     member x.Clear() =
         clear()
+
+    member x.Contains item =
+        set.Contains item
 
     interface System.Collections.IEnumerable with
         member x.GetEnumerator() =
