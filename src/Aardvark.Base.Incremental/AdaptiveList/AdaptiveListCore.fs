@@ -16,7 +16,7 @@ type alist<'a> =
     abstract member GetReader : unit -> IListReader<'a>
 
 
-module private TimeMappings =
+module TimeMappings =
 
     type ITimeMapping =
         inherit IDisposable
