@@ -48,7 +48,7 @@
 
         public static System.Drawing.Rectangle ToRectangle(this Box2i p)
         {
-            return new System.Drawing.Rectangle(p.Min.X, p.Min.Y, p.Max.X, p.Max.Y);
+            return new System.Drawing.Rectangle(p.Min.X, p.Min.Y, p.Size.X, p.Size.Y);
         }
 
         #endregion
