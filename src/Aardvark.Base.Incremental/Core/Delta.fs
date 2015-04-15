@@ -26,16 +26,21 @@ module Delta =
             l
         else
             let store = Dictionary<obj, 'a * ref<int>>()
+            let nullCount = ref 0
 
             let inc a =
-                match store.TryGetValue (a :> obj) with
-                    | (true, (_,v)) -> v := !v + 1
-                    | _ -> store.[a] <- (a, ref 1)
+                if a :> obj = null then nullCount := !nullCount + 1
+                else
+                    match store.TryGetValue (a :> obj) with
+                        | (true, (_,v)) -> v := !v + 1
+                        | _ -> store.[a] <- (a, ref 1)
 
             let dec a =
-                match store.TryGetValue (a :> obj) with
-                    | (true, (_,v)) -> v := !v - 1
-                    | _ -> store.[a] <- (a, ref -1)
+                if a :> obj = null then nullCount := !nullCount - 1
+                else
+                    match store.TryGetValue (a :> obj) with
+                        | (true, (_,v)) -> v := !v - 1
+                        | _ -> store.[a] <- (a, ref -1)
 
             for e in l do
                 match e with
@@ -45,6 +50,9 @@ module Delta =
             [ for (KeyValue(_,(k,v))) in store do
                 for i in 1..!v do yield Add k
                 for i in 1..-(!v) do yield Rem k 
+
+              for i in 1..!nullCount do yield Add Unchecked.defaultof<_>
+              for i in 1..-(!nullCount) do yield Rem Unchecked.defaultof<_>
             ]
 
 /// <summary>

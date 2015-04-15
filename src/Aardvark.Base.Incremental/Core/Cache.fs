@@ -13,6 +13,7 @@ open Aardvark.Base
 /// </summary>
 type Cache<'a, 'b>(scope : Ag.Scope, f : 'a -> 'b) =  
     let cache = Dictionary<obj, 'b * ref<int>>()
+    let mutable nullCache = None
 
     /// <summary>
     /// Clear removes all entries from the Cache and
@@ -23,6 +24,11 @@ type Cache<'a, 'b>(scope : Ag.Scope, f : 'a -> 'b) =
     member x.Clear(remove : 'b -> unit) =
         for (KeyValue(_,(v,_))) in cache do remove v
         cache.Clear()
+        match nullCache with
+            | Some (v,_) -> 
+                remove v
+                nullCache <- None
+            | None -> ()
 
     /// <summary>
     /// invoke returns the function value associated
@@ -30,23 +36,42 @@ type Cache<'a, 'b>(scope : Ag.Scope, f : 'a -> 'b) =
     /// and increases the associated reference count.
     /// </summary>
     member x.Invoke (v : 'a) =
-        match cache.TryGetValue v with
-            | (true, (r, ref)) -> 
-                ref := !ref + 1
-                r
-            | _ ->
-                let r = Ag.useScope scope (fun () -> f v)
-                cache.[v] <- (r, ref 1)
-                r
+        if (v :> obj) = null then
+            match nullCache with
+                | Some (r, ref) -> 
+                    ref := !ref + 1
+                    r
+                | None ->
+                    let r = Ag.useScope scope (fun () -> f v)
+                    nullCache <- Some(r, ref 1)
+                    r
+        else
+            match cache.TryGetValue v with
+                | (true, (r, ref)) -> 
+                    ref := !ref + 1
+                    r
+                | _ ->
+                    let r = Ag.useScope scope (fun () -> f v)
+                    cache.[v] <- (r, ref 1)
+                    r
     /// <summary>
     /// revoke returns the function value associated
     /// with the given argument and decreases its reference count.
     /// </summary>
     member x.Revoke (v : 'a) =
-        match cache.TryGetValue v with
-            | (true, (r, ref)) -> 
-                ref := !ref - 1
-                if !ref = 0 then
-                    cache.Remove v |> ignore
-                r
-            | _ -> failwithf "cannot revoke unknown value: %A" v
+        if (v :> obj) = null then
+            match nullCache with
+                | Some (r, ref) -> 
+                    ref := !ref - 1
+                    if !ref = 0 then
+                        nullCache <- None
+                    r
+                | None -> failwithf "cannot revoke null"
+        else
+            match cache.TryGetValue v with
+                | (true, (r, ref)) -> 
+                    ref := !ref - 1
+                    if !ref = 0 then
+                        cache.Remove v |> ignore
+                    r
+                | _ -> failwithf "cannot revoke unknown value: %A" v
