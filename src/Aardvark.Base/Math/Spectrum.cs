@@ -29,7 +29,7 @@ namespace Aardvark.Base
 
     public static class SpectralData
     {
-        #region CIE XYZ 1931 Color Matching Functions 360-830nm in 5nm steps
+        #region CIE XYZ 1931 Color Matching Functions 360-830nm in 1nm steps
 
         public static readonly double[] CieXYZ31_X_360_830_1nm =
         {
@@ -336,9 +336,11 @@ namespace Aardvark.Base
 
         #endregion
 
-        #region Old Data
+        #region Preetham Sky Spectrum to XYZ Conversion
 
-        //spectrum from 380 - 780nm in 10nm steps
+        /// <summary>
+        /// sun color spectrum S0 from 380 - 780nm in 10nm steps (taken from preetham Table 2)
+        /// </summary>
         public static readonly double[] SpecS0_380_780_10nm =
         {
             63.4, 65.8, 94.8, 104.8, 105.9, 96.8, 113.9, 125.6,
@@ -349,6 +351,9 @@ namespace Aardvark.Base
             65.0
         };
 
+        /// <summary>
+        /// sun color spectrum S1 from 380 - 780nm in 10nm steps (taken from preetham Table 2)
+        /// </summary>
         public static readonly double[] SpecS1_380_780_10nm =
         {
             38.5, 35.0, 43.4, 46.3, 43.9, 37.1, 36.7, 35.9,
@@ -359,6 +364,9 @@ namespace Aardvark.Base
             -10.4
         };
 
+        /// <summary>
+        /// sun color spectrum S2 from 380 - 780nm in 10nm steps (taken from preetham Table 2)
+        /// </summary>
         public static readonly double[] SpecS2_380_780_10nm =
         {
             3.0, 1.2, -1.1, -0.5, -0.7, -1.2, -2.6, -2.9,
@@ -369,6 +377,9 @@ namespace Aardvark.Base
             6.8
         };
 
+        /// <summary>
+        /// CIE XYZ standard observer sensitivity function X in 10mn steps.
+        /// </summary>
         public static readonly double[] Ciexyz31X_380_780_10nm = 
         {
             0.001368000000, 0.004243000000, 0.014310000000, 0.043510000000, 0.134380000000,
@@ -382,6 +393,9 @@ namespace Aardvark.Base
             0.000041509940
         };
 
+        /// <summary>
+        /// CIE XYZ standard observer sensitivity function Y in 10mn steps.
+        /// </summary>
         public static readonly double[] Ciexyz31Y_380_780_10nm = 
         {
             0.000039000000, 0.000120000000, 0.000396000000, 0.001210000000, 0.004000000000,
@@ -395,6 +409,9 @@ namespace Aardvark.Base
             0.000014990000
         };
 
+        /// <summary>
+        /// CIE XYZ standard observer sensitivity function Z in 10mn steps.
+        /// </summary>
         public static readonly double[] Ciexyz31Z_380_780_10nm = 
         {
             0.006450001000, 0.020050010000, 0.067850010000, 0.207400000000, 0.645600000000,
@@ -408,26 +425,42 @@ namespace Aardvark.Base
             0.000000000000
         };
 
-        private static double Dot(double[] a0, double[] a1)
+        static M33d CreateConversionMatrix()
         {
-            int length = Fun.Min(a0.Length, a1.Length);
-            double result = 0;
-            for (int i = 0; i < length; i++) result += a0[i] * a1[i];
-            return result;
+            // for spectral to xyz conversion see: http://www.brucelindbloom.com/index.html?Eqn_Spect_to_XYZ.html
+
+            var specS0Vec = new Vector<double>(SpecS0_380_780_10nm);
+            var specS1Vec = new Vector<double>(SpecS1_380_780_10nm);
+            var specS2Vec = new Vector<double>(SpecS2_380_780_10nm);
+
+            var cieXVec = new Vector<double>(Ciexyz31X_380_780_10nm);
+            var cieYVec = new Vector<double>(Ciexyz31Y_380_780_10nm);
+            var cieZVec = new Vector<double>(Ciexyz31Z_380_780_10nm);
+
+            var specM = new M33d
+            (
+                cieXVec.DotProduct(specS0Vec), cieXVec.DotProduct(specS1Vec), cieXVec.DotProduct(specS2Vec),
+                cieYVec.DotProduct(specS0Vec), cieYVec.DotProduct(specS1Vec), cieYVec.DotProduct(specS2Vec),
+                cieZVec.DotProduct(specS0Vec), cieZVec.DotProduct(specS1Vec), cieZVec.DotProduct(specS2Vec)
+            );
+
+            var cieN = 1.0 / cieYVec.Data.Sum(); // cie response curve integral normalization
+
+            // sun spectral radiance (S0, S1, S2) is expressed in micro-meters => 
+            // convert to wavelengthes in nm (unit of color matching functions) -> scale by 1/1000 
+            // the cie response functions are in 10nm steps -> scale by 10
+                        
+            var specN = 1.0 / 1000 * 10;         // spectrum unit converions (1 micro meter to 10 nano meter)
+
+            var norm = cieN * specN;             // normalization of color space conversion matrix
+
+            return specM * norm;
         }
 
-        public static readonly M33d SpecM = new M33d
-        (
-            Dot(SpecS0_380_780_10nm, Ciexyz31X_380_780_10nm),
-                    Dot(SpecS1_380_780_10nm, Ciexyz31X_380_780_10nm),
-                            Dot(SpecS2_380_780_10nm, Ciexyz31X_380_780_10nm),
-            Dot(SpecS0_380_780_10nm, Ciexyz31Y_380_780_10nm),
-                    Dot(SpecS1_380_780_10nm, Ciexyz31Y_380_780_10nm),
-                            Dot(SpecS2_380_780_10nm, Ciexyz31Y_380_780_10nm),
-            Dot(SpecS0_380_780_10nm, Ciexyz31Z_380_780_10nm),
-                    Dot(SpecS1_380_780_10nm, Ciexyz31Z_380_780_10nm),
-                            Dot(SpecS2_380_780_10nm, Ciexyz31Z_380_780_10nm)
-        );
+        /// <summary>
+        /// conversion matrix from sun color spectrum in (S0, S1, S2) to CIE XYZ color space
+        /// </summary>
+        public static readonly M33d SpecM = CreateConversionMatrix();
 
         #endregion
     }
