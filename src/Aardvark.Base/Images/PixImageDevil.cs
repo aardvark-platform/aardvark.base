@@ -247,7 +247,7 @@ namespace Aardvark.Base
                 var format = IL.GetFormat();
                 var width = IL.GetInteger(IntName.ImageWidth);
                 var height = IL.GetInteger(IntName.ImageHeight);
-                var channels = IL.GetInteger(IntName.ImageChannels);
+                //var channels = IL.GetInteger(IntName.ImageChannels);
 
                 IL.BindImage(0);
                 IL.DeleteImage(img);
