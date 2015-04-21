@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Aardvark.Base
+namespace Aardvark.Base.Rendering
 {
     public struct RasterizerState
     {
