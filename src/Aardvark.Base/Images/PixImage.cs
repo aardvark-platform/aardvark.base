@@ -365,7 +365,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Compress BW images from 1 bit per byte to 8 bits per byte.
         /// </summary>
-        internal static void CompressPixels(PixImage<byte> pixImage, PixImage<byte> bitImage)
+        public static void CompressPixels(PixImage<byte> pixImage, PixImage<byte> bitImage)
         {
             var bitData = bitImage.Volume.Data; int bi = 0; byte bit = 0x80;
             var pixData = pixImage.Volume.Data;
@@ -385,7 +385,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Expand BW images from 8 bit per byte to 1 bit per byte.
         /// </summary>
-        internal static void ExpandPixels(PixImage<byte> bitImage, PixImage<byte> pixImage)
+        public static void ExpandPixels(PixImage<byte> bitImage, PixImage<byte> pixImage)
         {
             var bitData = bitImage.Volume.Data; int bi = 0; byte bit = 0x80;
             var pixData = pixImage.Volume.Data;
