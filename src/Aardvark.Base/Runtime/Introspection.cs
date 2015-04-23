@@ -6,6 +6,7 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Runtime.Serialization.Formatters.Binary;
 
 namespace Aardvark.Base
 {
@@ -444,10 +445,50 @@ namespace Aardvark.Base
     [Serializable]
     public class Aardvark
     {
+        private static string CacheFile = "plugins.bin";
+
         public Aardvark() { }
+
+        private Dictionary<string, Tuple<DateTime, bool>> ReadCacheFile()
+        {
+            if (File.Exists(CacheFile))
+            {
+                var formatter = new BinaryFormatter();
+
+                try
+                {
+                    using (var stream = new FileStream(CacheFile, FileMode.Open))
+                    {
+                        return (Dictionary<string, Tuple<DateTime, bool>>)formatter.Deserialize(stream);
+                    }
+                }
+                catch (Exception)
+                {
+                    return new Dictionary<string, Tuple<DateTime, bool>>();
+                }
+
+
+            }
+            else return new Dictionary<string, Tuple<DateTime, bool>>();
+
+        }
+
+        private void WriteCacheFile(Dictionary<string, Tuple<DateTime, bool>> cache)
+        {
+            if (File.Exists(CacheFile)) File.Delete(CacheFile);
+
+            var formatter = new BinaryFormatter();
+            using (var stream = new FileStream(CacheFile, FileMode.CreateNew))
+            {
+                formatter.Serialize(stream, cache);
+            }
+        }
 
         public string[] GetPluginAssemblyPaths()
         {
+            var cache = ReadCacheFile();
+            var newCache = new Dictionary<string, Tuple<DateTime, bool>>();
+
             var verbosity = Report.Verbosity;
             Report.Verbosity = 0;
             var folder = Environment.CurrentDirectory;
@@ -455,21 +496,41 @@ namespace Aardvark.Base
                                       .Where(p => { var ext = Path.GetExtension(p); return ext == ".dll" || ext == ".exe"; })
                                       .ToArray();
 
+            var paths = new List<string>();
 
             foreach (var ass in assemblies)
             {
-                try { Assembly.LoadFile(ass); }
-                catch (Exception) { }
+                var fileName = Path.GetFileName(ass);
+                var lastWrite = File.GetLastWriteTimeUtc(ass);
+
+                Tuple<DateTime, bool> cacheValue;
+                if (!cache.TryGetValue(fileName, out cacheValue) || lastWrite > cacheValue.Item1)
+                {
+                    try
+                    {
+                        var a = Assembly.LoadFile(ass);
+                        var empty = Introspection.GetAllMethodsWithAttribute<OnAardvarkInitAttribute>(a).IsEmpty();
+                        if (!empty) paths.Add(ass);
+
+                        newCache[fileName] = Tuple.Create(lastWrite, !empty);
+                    }
+                    catch (Exception)
+                    {
+                        newCache[fileName] = Tuple.Create(lastWrite, false);
+                    }
+
+                }
+                else
+                {
+                    if (cacheValue.Item2) paths.Add(ass);
+                    newCache[fileName] = cacheValue;
+                }
             }
 
-            var methods = Introspection.GetAllMethodsWithAttribute<OnAardvarkInitAttribute>();
-            var result = methods.Select(tup => { try { return tup.E0.DeclaringType.Assembly.Location; } catch (Exception) { return null; } })
-                          .Where(p => p != null)
-                          .Distinct()
-                          .ToArray();
 
+            WriteCacheFile(newCache);
             Report.Verbosity = verbosity;
-            return result;
+            return paths.ToArray();
         }
 
         public static List<Assembly> LoadPlugins()
