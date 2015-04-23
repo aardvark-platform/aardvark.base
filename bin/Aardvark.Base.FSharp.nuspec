@@ -20,6 +20,7 @@
             <dependency id="FSharp.Compiler.Service" version="0.0.85" />
             <dependency id="NUnit" version="2.6.4" />
             <dependency id="RegexProvider" version="0.0.4" />
+			<dependency id="Microsoft.Bcl.Immutable" version="1.0.34" />
         </dependencies>
     </metadata>
     <files>

@@ -15,7 +15,8 @@
 		<copyright>Copyright (c) 2014, 2015 VRVis Zentrum für Virtual Reality und Visualisierung Forschungs-GmbH, Donau-City-Strasse 1, A-1220 Wien, Austria.</copyright>
         <language>en-US</language>
         <tags>graphics fsharp visualization geometry math algorithms incremental</tags>
-        <dependencies>
+		<dependencies>
+            <dependency id="Aardvark.Base" version="@build.number@" />
         </dependencies>
     </metadata>
     <files>
