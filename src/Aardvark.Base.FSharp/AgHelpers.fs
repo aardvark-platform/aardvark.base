@@ -223,7 +223,7 @@ module AgHelpers =
     let internal initializeAg() =
          if not !registered then
             //glInit()
-            Aardvark.Base.Report.BeginTimed "initializing attribute grammar"
+            //Aardvark.Base.Report.BeginTimed "initializing attribute grammar"
             registered.Value <- true 
 
             for t in Introspection.GetAllTypesWithAttribute<Semantic>() do
@@ -235,7 +235,7 @@ module AgHelpers =
 
             //let assemblies = AppDomain.CurrentDomain.GetAssemblies() |> Seq.toList
             //Seq.iter registerAssembly assemblies
-            Aardvark.Base.Report.End() |> ignore
+            //Aardvark.Base.Report.End() |> ignore
 
     let internal reIninitializeAg() =
         if !registered then

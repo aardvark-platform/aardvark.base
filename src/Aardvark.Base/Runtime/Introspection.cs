@@ -441,43 +441,99 @@ namespace Aardvark.Base
         public OnAardvarkInitAttribute() { }
     }
 
+    [Serializable]
     public class Aardvark
     {
+        public Aardvark() { }
+
+        public string[] GetPluginAssemblyPaths()
+        {
+            var verbosity = Report.Verbosity;
+            Report.Verbosity = 0;
+            var folder = Environment.CurrentDirectory;
+            var assemblies = Directory.EnumerateFiles(folder)
+                                      .Where(p => { var ext = Path.GetExtension(p); return ext == ".dll" || ext == ".exe"; })
+                                      .ToArray();
+
+
+            foreach (var ass in assemblies)
+            {
+                try { Assembly.LoadFile(ass); }
+                catch (Exception) { }
+            }
+
+            var methods = Introspection.GetAllMethodsWithAttribute<OnAardvarkInitAttribute>();
+            var result = methods.Select(tup => { try { return tup.E0.DeclaringType.Assembly.Location; } catch (Exception) { return null; } })
+                          .Where(p => p != null)
+                          .Distinct()
+                          .ToArray();
+
+            Report.Verbosity = verbosity;
+            return result;
+        }
+
+        public static List<Assembly> LoadPlugins()
+        {
+            var setup = new AppDomainSetup();
+            setup.ApplicationBase = Environment.CurrentDirectory;
+
+            var d = AppDomain.CreateDomain("search", null, setup);
+            var aardvark = (Aardvark)d.CreateInstanceAndUnwrap(typeof(Aardvark).Assembly.FullName, typeof(Aardvark).FullName);
+            var paths = aardvark.GetPluginAssemblyPaths();
+            AppDomain.Unload(d);
+
+            var assemblies = new List<Assembly>();
+
+            foreach (var p in paths)
+            {
+                try
+                {
+                    var ass = Assembly.LoadFile(p);
+                    assemblies.Add(ass);
+                }
+                catch (Exception) { }
+            }
+
+            return assemblies;
+        }
+
+
         public static void Init()
         {
             Report.BeginTimed("initializing aardvark");
-            var pluginsFile = "plugins.txt";
+            
             Report.BeginTimed("Loading plugins");
-            var pluginsList = new List<Assembly>();
+            var pluginsList = LoadPlugins();
 
-            if(File.Exists(pluginsFile))
-            {
-                var plugins = File.ReadLines(pluginsFile);
-                try
-                {
-                    foreach(var plugin in plugins)
-                    {
-                        var dll = plugin + ".dll";
-                        var exe = plugin + ".exe";
-                        if (File.Exists(dll))
-                        {
-                            Report.Line("loading {0}", dll);
-                            pluginsList.Add(Assembly.LoadFile(Path.GetFullPath(dll)));
-                        }
-                        else if (File.Exists(exe))
-                        {
-                            Report.Line("loading {0}", exe);
-                            pluginsList.Add(Assembly.LoadFile(Path.GetFullPath(exe)));
-                        }
+            //var pluginsFile = "plugins.txt";
+            //if(File.Exists(pluginsFile))
+            //{
+            //    var plugins = File.ReadLines(pluginsFile);
+            //    try
+            //    {
+            //        foreach(var plugin in plugins)
+            //        {
+            //            var dll = plugin + ".dll";
+            //            var exe = plugin + ".exe";
+            //            if (File.Exists(dll))
+            //            {
+            //                Report.Line("loading {0}", dll);
+            //                pluginsList.Add(Assembly.LoadFile(Path.GetFullPath(dll)));
+            //            }
+            //            else if (File.Exists(exe))
+            //            {
+            //                Report.Line("loading {0}", exe);
+            //                pluginsList.Add(Assembly.LoadFile(Path.GetFullPath(exe)));
+            //            }
 
                         
-                    }
-                } 
-                catch(Exception e)
-                {
-                    Report.Warn("Could not load {0} ({1}", pluginsFile, e.Message);
-                }
-            }
+            //        }
+            //    } 
+            //    catch(Exception e)
+            //    {
+            //        Report.Warn("Could not load {0} ({1}", pluginsFile, e.Message);
+            //    }
+            //}
 
 
             Report.End();
@@ -487,15 +543,30 @@ namespace Aardvark.Base
 
         private static void LoadAll(IEnumerable<Assembly> xs)
         {
-            foreach (var ass in Enumerable.Concat(Introspection.AllAssemblies,xs))
+            var assemblies = Enumerable.Concat(Introspection.AllAssemblies, xs).Distinct().ToArray();
+
+            foreach (var ass in assemblies)
             {
-                foreach (var inits in Introspection.GetAllMethodsWithAttribute<OnAardvarkInitAttribute>(ass))
+                var initMethods = Introspection.GetAllMethodsWithAttribute<OnAardvarkInitAttribute>(ass).Select(t => t.E0).Distinct().ToArray();
+
+                foreach (var mi in initMethods)
                 {
-                    var mi = inits.E0;
                     var parameters = mi.GetParameters();
-                    if (parameters.Length == 0) mi.Invoke(null, null);
-                    else if (parameters.Length == 1 && parameters[0].ParameterType == typeof(IEnumerable<Assembly>)) mi.Invoke(null, new object[] { Introspection.AllAssemblies });
-                    else Report.Warn("Strange aardvark init method found: {0}, should be Init : IEnumberable<Assembly> -> unit or unit -> unit", mi);
+
+                    Report.BeginTimed("initializing {1}", mi.Name, mi.DeclaringType.Name);
+
+                    try
+                    {
+                        if (parameters.Length == 0) mi.Invoke(null, null);
+                        else if (parameters.Length == 1 && parameters[0].ParameterType == typeof(IEnumerable<Assembly>)) mi.Invoke(null, new object[] { Introspection.AllAssemblies });
+                        else Report.Warn("Strange aardvark init method found: {0}, should be Init : IEnumberable<Assembly> -> unit or unit -> unit", mi);
+                    }
+                    catch (Exception e) 
+                    {
+                        Report.Warn("failed: {0}", e);
+                    }
+
+                    Report.End();
                 }
             }
         }
