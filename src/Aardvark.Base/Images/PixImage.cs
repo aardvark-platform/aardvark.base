@@ -338,20 +338,28 @@ namespace Aardvark.Base
 
         public static PixImage CreateRaw(string filename, PixLoadOptions options = PixLoadOptions.Default)
         {
+            foreach (var loader in s_fileLoadFunctions)
+            {
+                try
+                {
+                    var res = loader(filename, options);
+                    if (res != null) return res;
+                }
+                catch (Exception) { }
+            }
+
+
             #if USE_DEVIL
             if ((options & PixLoadOptions.UseDevil) != 0)
             {
-                var img = CreateRawDevil(new FileStream(filename, FileMode.Open, FileAccess.Read), options);
-                if (img != null) return img;
+                try
+                {
+                    var img = CreateRawDevil(new FileStream(filename, FileMode.Open, FileAccess.Read), options);
+                    if (img != null) return img;
+                }
+                catch (Exception) { }
             }
             #endif
-
-            foreach (var loader in s_fileLoadFunctions)
-            {
-                var res = loader(filename, options);
-                if (res != null) return res;
-            }
-
 
             using (var stream = new FileStream(filename, FileMode.Open, FileAccess.Read))
             {
@@ -411,6 +419,16 @@ namespace Aardvark.Base
         {
             Exception exception = null;
 
+            foreach (var loader in s_streamLoadFunctions)
+            {
+                try
+                {
+                    var res = loader(stream, options);
+                    if (res != null) return res;
+                }
+                catch (Exception ex) { if (exception == null) exception = ex; }
+            }
+
             #if USE_DEVIL
             if ((options & PixLoadOptions.UseDevil) != 0)
             {
@@ -431,12 +449,7 @@ namespace Aardvark.Base
             }
             #endif
 
-            foreach (var loader in s_streamLoadFunctions)
-            {
-                var res = loader(stream, options);
-                if (res != null) return res;
-            }
-
+            
 
             throw new ImageLoadException("could not load image", exception);
         }
@@ -593,6 +606,15 @@ namespace Aardvark.Base
         {
             if (SaveAsImagePixImage(stream, fileFormat, options, qualityLevel)) return;
 
+            foreach (var saver in s_streamSaveFunctions)
+            {
+                try
+                {
+                    var success = saver(stream, options, this);
+                    if (success) return;
+                }
+                catch (Exception) { }
+            }
 
             #if USE_BITMAP
             if ((options & PixSaveOptions.UseBitmap) != 0
@@ -604,11 +626,7 @@ namespace Aardvark.Base
                 && SaveAsImageDevil(stream, fileFormat, options, qualityLevel)) return;
             #endif
 
-            foreach (var saver in s_streamSaveFunctions)
-            {
-                var success = saver(stream, options, this);
-                if (success) return;
-            }
+            
 
 
             throw new ImageLoadException("could not save PixImage");
@@ -666,16 +684,21 @@ namespace Aardvark.Base
             if ((options & PixSaveOptions.NormalizeFilename) != 0)
                 filename = NormalizedFileName(filename, fileFormat);
 
+            foreach (var saver in s_fileSaveFunctions)
+            {
+                try
+                {
+                    var success = saver(filename, options, this);
+                    if (success) return;
+                }
+                catch (Exception) { }
+            }
+
+
             #if USE_DEVIL
             if ((options & PixSaveOptions.UseDevil) != 0 && SaveAsImageDevil(filename, fileFormat, options, qualityLevel))
                 return;
             #endif
-
-            foreach (var saver in s_fileSaveFunctions)
-            {
-                var success = saver(filename, options, this);
-                if (success) return;
-            }
 
 
             var stream = new FileStream(filename, FileMode.Create);
@@ -736,6 +759,15 @@ namespace Aardvark.Base
                 string fileName, PixLoadOptions options = PixLoadOptions.Default)
         {
 
+            foreach (var readInfo in s_infoFunctions)
+            {
+                try
+                {
+                    var imageInfo = readInfo(fileName);
+                    if (imageInfo != null) return imageInfo;
+                }
+                catch (Exception) { }
+            }
 
             #if USE_BITMAP
             if ((options & PixLoadOptions.UseBitmap) != 0)
@@ -752,13 +784,6 @@ namespace Aardvark.Base
                 if (info != null) return info;
             }
             #endif
-
-
-            foreach (var readInfo in s_infoFunctions)
-            {
-                var imageInfo = readInfo(fileName);
-                if (imageInfo != null) return imageInfo;
-            }
 
             throw new ImageLoadException("could not load info of image");
         }
