@@ -156,6 +156,10 @@ namespace Aardvark.Base
                 Stream stream, PixFileFormat format,
                 PixSaveOptions options, int qualityLevel)
         {
+            Devil.ImageType imageType;
+            if (!s_fileFormats.TryGetValue(format, out imageType))
+                return false;
+
             var img = IL.GenImage();
             IL.BindImage(img);
 
@@ -171,9 +175,10 @@ namespace Aardvark.Base
                 if (!IL.TexImage(Size.X, Size.Y, 1, (byte)ChannelCount, fmt, type, gc.AddrOfPinnedObject()))
                     return false;
 
-                IL.SaveStream(s_fileFormats[format], stream);
+                if (!ILU.FlipImage())
+                    return false;
 
-                return true;
+                return IL.SaveStream(imageType, stream);
             }
             catch (Exception)
             {
@@ -192,6 +197,10 @@ namespace Aardvark.Base
                 string file, PixFileFormat format,
                 PixSaveOptions options, int qualityLevel)
         {
+            Devil.ImageType imageType;
+            if (!s_fileFormats.TryGetValue(format, out imageType))
+                return false;
+           
             var img = IL.GenImage();
             IL.BindImage(img);
 
@@ -207,10 +216,13 @@ namespace Aardvark.Base
                 if (!IL.TexImage(Size.X, Size.Y, 1, (byte)ChannelCount, fmt, type, gc.AddrOfPinnedObject()))
                     return false;
 
+                if (!ILU.FlipImage())
+                    return false;
+
                 if (qualityLevel != -1)
                     IL.SetInteger(IntName.JpgQuality, qualityLevel);
 
-                return IL.Save(s_fileFormats[format], file);
+                return IL.Save(imageType, file);
             }
             catch (Exception)
             {

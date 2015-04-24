@@ -58,7 +58,7 @@ namespace Aardvark.Base
     [Flags]
     public enum PixLoadOptions
     {
-        Default             = UseDevil | UseBitmap | UseFreeImage,
+        Default             = UseSystemImage | UseDevil | UseBitmap | UseFreeImage,
         UseSystemImage      = 0x01000000,
         UseFreeImage        = 0x02000000,
         UseStorageService   = 0x08000000,
@@ -70,7 +70,7 @@ namespace Aardvark.Base
     [Flags]
     public enum PixSaveOptions
     {
-        Default             = UseDevil | UseBitmap | UseFreeImage | NormalizeFilename,
+        Default             = UseSystemImage | UseDevil | UseBitmap | UseFreeImage | NormalizeFilename,
         NormalizeFilename   = 0x00010000,
         UseSystemImage      = 0x01000000,
         UseFreeImage        = 0x02000000,
@@ -97,35 +97,43 @@ namespace Aardvark.Base
 
         private static List<Func<string, PixLoadOptions, PixImage>> s_fileLoadFunctions = new List<Func<string,PixLoadOptions,PixImage>>();
         private static List<Func<Stream, PixLoadOptions, PixImage>> s_streamLoadFunctions = new List<Func<Stream,PixLoadOptions,PixImage>>();
-        private static List<Func<Stream, PixSaveOptions, PixImage, bool>> s_streamSaveFunctions = new List<Func<Stream, PixSaveOptions, PixImage, bool>>();
-        private static List<Func<string, PixSaveOptions, PixImage, bool>> s_fileSaveFunctions = new List<Func<string, PixSaveOptions, PixImage, bool>>();
+        private static List<Func<Stream, PixSaveOptions, PixFileFormat, int, PixImage, bool>> s_streamSaveFunctions = new List<Func<Stream, PixSaveOptions, PixFileFormat, int, PixImage, bool>>();
+        private static List<Func<string, PixSaveOptions, PixFileFormat, int, PixImage, bool>> s_fileSaveFunctions = new List<Func<string, PixSaveOptions, PixFileFormat, int, PixImage, bool>>();
         private static List<Func<string, PixImageInfo>> s_infoFunctions = new List<Func<string, PixImageInfo>>();
 
         public static void RegisterLoadingLib(
             Func<string, PixLoadOptions, PixImage> fileLoad = null,
             Func<Stream, PixLoadOptions, PixImage> streamLoad = null,
-            Func<string, PixSaveOptions, PixImage, bool> fileSave = null,
-            Func<Stream, PixSaveOptions, PixImage, bool> streamSave = null,
+            Func<string, PixSaveOptions, PixFileFormat, int, PixImage, bool> fileSave = null,
+            Func<Stream, PixSaveOptions, PixFileFormat, int, PixImage, bool> streamSave = null,
             Func<string, PixImageInfo> imageInfo = null)
         { 
-            Func<string, PixLoadOptions, PixImage> loadFallback = (file, op) =>
-            {
-                using (var stream = new FileStream(file, FileMode.Open, FileAccess.Read))
-                {
-                    return streamLoad(stream, op);
-                }
-            };
+            //Func<string, PixLoadOptions, PixImage> loadFallback = (file, op) =>
+            //{
+            //    using (var stream = new FileStream(file, FileMode.Open, FileAccess.Read))
+            //    {
+            //        return streamLoad(stream, op);
+            //    }
+            //};
 
-            Func<string, PixSaveOptions, PixImage, bool> saveFallback = (file, op, img) =>
-            {
-                using (var stream = new FileStream(file, FileMode.OpenOrCreate, FileAccess.Write))
-                {
-                    return streamSave(stream, op, img);
-                }
-            };
+            //Func<string, PixSaveOptions, PixFileFormat, int, PixImage, bool> saveFallback = (file, op, format, quality, img) =>
+            //{
+            //    bool success = false;
+            //    try
+            //    {
+            //        using (var stream = new FileStream(file, FileMode.OpenOrCreate, FileAccess.Write))
+            //        {
+            //            success = streamSave(stream, op, format, quality, img);
+            //        }
+            //    }
+            //    finally
+            //    { 
+            //        if(!success)
+            //    }
+            //};
 
-            fileLoad = fileLoad ?? (streamLoad == null ? null : loadFallback);
-            fileSave = fileSave ?? (streamSave == null ? null : saveFallback);
+            //fileLoad = fileLoad ?? (streamLoad == null ? null : loadFallback);
+            //fileSave = fileSave ?? (streamSave == null ? null : saveFallback);
 
             if (fileLoad != null) s_fileLoadFunctions.Add(fileLoad);
             if (streamLoad != null) s_streamLoadFunctions.Add(streamLoad);
@@ -610,7 +618,7 @@ namespace Aardvark.Base
             {
                 try
                 {
-                    var success = saver(stream, options, this);
+                    var success = saver(stream, options, fileFormat, qualityLevel, this);
                     if (success) return;
                 }
                 catch (Exception) { }
@@ -688,7 +696,7 @@ namespace Aardvark.Base
             {
                 try
                 {
-                    var success = saver(filename, options, this);
+                    var success = saver(filename, options, fileFormat, qualityLevel, this);
                     if (success) return;
                 }
                 catch (Exception) { }
