@@ -76,7 +76,7 @@ let knownPackages =
 
 
 Target "CreatePackage" (fun () ->
-    let branch = Fake.Git.Information.getBranchName "."
+    let branch = try Fake.Git.Information.getBranchName "." with e -> "master"
     let releaseNotes = Fake.Git.Information.getCurrentHash()
 
     let tag = Fake.Git.Information.getLastTag()
