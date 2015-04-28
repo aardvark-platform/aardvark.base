@@ -76,6 +76,11 @@ let knownPackages =
 
 
 Target "CreatePackage" (fun () ->
+    let checkIfGitWorks = try Fake.Git.Information.showStatus "."; true with _ -> false
+    if not checkIfGitWorks 
+    then traceError "could not grab git status. Possible source: no git, not a git working copy" 
+    else trace "git appears to work fine."
+    
     let branch = try Fake.Git.Information.getBranchName "." with e -> "master"
     let releaseNotes = Fake.Git.Information.getCurrentHash()
 
