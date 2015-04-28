@@ -124,7 +124,7 @@ Target "Deploy" (fun () ->
                 with e ->
                     ()
             | None ->
-                ()
+                traceError (sprintf "Could not find nuget access key")
      else 
         traceError (sprintf "cannot deploy branch: %A" branch)
 )
