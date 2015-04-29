@@ -629,6 +629,13 @@ namespace Aardvark.Base
             {
                 var subPoly = poly.ComputeNonConcaveSubPolygon(
                                     ref indices, absoluteEpsilon);
+
+                if (subPoly == null)
+                {
+                    Console.WriteLine("encountered degenerated polygon that cannot be easily triangulated");
+                    break;
+                }
+
                 if (subPoly.Length < 3)
                 {
                     Console.WriteLine("encountered invalid subpolygon");
