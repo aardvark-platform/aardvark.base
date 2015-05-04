@@ -205,6 +205,17 @@ module FSharpEventExtensions =
         member x.Mod =
             EventAdapters.toMod x
 
+        member x.ImmediateMod =
+            let res = Mod.initMod x.Latest
+            
+            let s = x.Values.Subscribe(fun v ->
+                transact (fun () -> Mod.change res v)
+            )
+
+            res.RegisterFinalizer(fun () -> s.Dispose())
+
+            res :> IMod<_>
+
     type IMod<'a> with
         member x.Event =
             EventAdapters.toEvent x
