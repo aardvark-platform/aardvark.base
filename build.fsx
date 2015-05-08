@@ -39,7 +39,7 @@ Target "Restore" (fun () ->
 
     let packageConfigs = !!"src/**/packages.config" |> Seq.toList
 
-    let addtionalSources = (environVarOrDefault "AdditionalNugetSources" "").Split(';') |> Array.toList
+    let addtionalSources = (environVarOrDefault "AdditionalNugetSources" "").Split([|";"|],StringSplitOptions.RemoveEmptyEntries) |> Array.toList
     let defaultNuGetSources = RestorePackageHelper.RestorePackageDefaults.Sources
     for pc in packageConfigs do
         RestorePackage (fun p -> { p with OutputPath = "packages"
