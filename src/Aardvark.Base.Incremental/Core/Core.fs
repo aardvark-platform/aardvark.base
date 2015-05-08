@@ -433,6 +433,9 @@ module Marking =
                     | Some c -> Some c
                     | None -> None
 
+    let setCurrentTransaction t =
+        current.Value <- t
+
     /// <summary>
     /// executes a function "inside" a newly created
     /// transaction and commits the transaction

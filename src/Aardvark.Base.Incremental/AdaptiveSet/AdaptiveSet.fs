@@ -103,7 +103,7 @@ module ASet =
 
     let toMod (s : aset<'a>) =
         let r = s.GetReader()
-        let c = r.Content :> System.Collections.Generic.ICollection<_>
+        let c = r.Content :> System.Collections.Generic.ISet<_>
 
         let m = Mod.custom (fun () ->
             r.GetDelta() |> ignore

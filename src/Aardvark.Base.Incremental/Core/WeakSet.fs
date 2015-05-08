@@ -14,7 +14,31 @@ open System.Collections.Concurrent
 /// which shall be allowed to be garbage-collected.
 /// </summary>
 type WeakSet<'a when 'a : not struct> private(inner : ConcurrentDictionary<Weak<'a>, int>) =
+    
+    let keys() = inner.Keys |> Seq.choose(function (Strong o) -> Some o | _ -> None)
+
+    let contains (item : 'a) = inner.ContainsKey (Weak item)
         
+
+    let compareSeq (other : seq<'a>) =
+        let distinctOther = 
+            match other with
+                | :? HashSet<'a> as o -> o
+                | _ -> HashSet other
+
+        let mutable both = 0
+        let mutable onlyMe = 0
+
+        for o in keys() do
+            if distinctOther.Contains o then
+                both <- both + 1
+            else
+                onlyMe <- onlyMe + 1
+
+        let onlyOther = distinctOther.Count - both
+
+        (both, onlyMe, onlyOther)
+
     // we use ConcurrentDictionary here for our implementation
     // since it can safely be modified while being enumerated
     // Note that we don't actually need support for concurrency
@@ -22,6 +46,8 @@ type WeakSet<'a when 'a : not struct> private(inner : ConcurrentDictionary<Weak<
     // Also note that the WeakSet is only pruned during enumeration
     // which means that all contained Weak objects may leak until the
     // set is enumerated (this of course doesn't apply to the weak's content)
+
+    
 
     member internal x.Inner = inner
 
@@ -34,12 +60,26 @@ type WeakSet<'a when 'a : not struct> private(inner : ConcurrentDictionary<Weak<
         member x.Count = x.Count
         member x.IsReadOnly = false
 
+    interface ISet<'a> with
+        member x.Add item = x.Add item
+        member x.ExceptWith other = x.ExceptWith other
+        member x.IntersectWith other = x.IntersectWith other
+        member x.UnionWith other = x.UnionWith other
+        member x.SymmetricExceptWith other = x.SymmetricExceptWith other
+
+        member x.IsProperSubsetOf other = x.IsProperSubsetOf other
+        member x.IsProperSupersetOf other = x.IsProperSupersetOf other
+        member x.IsSubsetOf other = x.IsSubsetOf other
+        member x.IsSupersetOf other = x.IsSupersetOf other
+        member x.Overlaps other = x.Overlaps other
+        member x.SetEquals other = x.SetEquals other
 
     interface IEnumerable with
         member x.GetEnumerator() = new WeakSetEnumerator<'a>(x) :> _
 
     interface IEnumerable<'a> with
         member x.GetEnumerator() = new WeakSetEnumerator<'a>(x) :> _
+
 
     override x.ToString() =
         x |> Seq.toList |> sprintf "weakSet %A"
@@ -77,6 +117,67 @@ type WeakSet<'a when 'a : not struct> private(inner : ConcurrentDictionary<Weak<
         for r in rem do
             inner.TryRemove (r, &foo) |> ignore
             
+    member x.IntersectWith (other : seq<'a>) =
+        let other =
+            match other with
+                | :? ICollection<'a> as c -> c
+                | _ -> HashSet(other) :> ICollection<_>
+
+        let removals =
+            inner.Keys 
+                |> Seq.choose (fun w ->
+                    match w with
+                        | Strong o ->
+                            if other.Contains o then None
+                            else Some w
+                        | _ -> Some w
+                   )
+                |> Seq.toList
+
+        let mutable foo = 0
+        for w in removals do
+            inner.TryRemove (w, &foo) |> ignore
+
+    member x.SymmetricExceptWith (other : seq<'a>) =
+        let other =
+            match other with
+                | :? ICollection<'a> as c -> c
+                | _ -> HashSet(other) :> ICollection<_>
+
+        for item in other do
+            if not <| x.Remove item then
+                x.Add item |> ignore
+
+
+    member x.IsSubsetOf (other : seq<'a>) =
+        match compareSeq other with
+            | (_, 0, _) -> true
+            | _ -> false
+
+    member x.IsSupersetOf (other : seq<'a>) =
+        match compareSeq other with
+            | (_, _, 0) -> true
+            | _ -> false
+
+    member x.IsProperSubsetOf (other : seq<'a>) =
+        match compareSeq other with
+            | (_, 0, o) -> o > 0
+            | _ -> false
+
+    member x.IsProperSupersetOf (other : seq<'a>) =
+        match compareSeq other with
+            | (_, m, 0) -> m > 0
+            | _ -> false
+
+    member x.Overlaps (other : seq<'a>) =
+        let (b,_,_) = compareSeq other
+        b > 0
+
+    member x.SetEquals (other : seq<'a>) =
+        match compareSeq other with
+            | (_, 0, 0) -> true
+            | _ -> false
+
     member x.IsEmpty =
         inner.Count = 0
 

@@ -13,6 +13,28 @@ type ReferenceCountingSet<'a>(initial : seq<'a>) =
     let mutable nullCount = 0
     let store = Dictionary<obj, 'a * ref<int>>()
 
+    let toCollection (s : seq<'a>) =
+        match s with
+            | :? ICollection<'a> as s -> s
+            | _ -> HashSet s :> ICollection<_>
+
+    let compareSeq (other : seq<'a>) =
+        let distinctOther = toCollection other
+
+        let mutable both = 0
+        let mutable onlyMe = 0
+
+        for (o,_) in store.Values do
+            if distinctOther.Contains o then
+                both <- both + 1
+            else
+                onlyMe <- onlyMe + 1
+
+        let onlyOther = distinctOther.Count - both
+
+        (both, onlyMe, onlyOther)
+
+
     let add (v : 'a) =
         if (v :> obj) = null then
             nullCount <- nullCount + 1
@@ -81,15 +103,6 @@ type ReferenceCountingSet<'a>(initial : seq<'a>) =
     member x.Count = 
         (if nullCount > 0 then 1 else 0) + store.Count
 
-    /// <summary>
-    /// determines if the set is equal (set) to the given sequence
-    /// </summary>
-    member x.SetEquals (other : seq<'a>) =
-        let count = ref 0
-        let res = other |> Seq.exists(fun a -> count := !count + 1; not <| x.Contains a)
-
-        if res then false
-        else !count = store.Count
 
     /// <summary>
     /// gets the current reference count for the given element
@@ -100,6 +113,85 @@ type ReferenceCountingSet<'a>(initial : seq<'a>) =
             match store.TryGetValue (v :> obj) with
                 | (true, (_,c)) -> !c
                 | _ -> 0
+
+    /// <summary>
+    /// Remove items in other from this set. Modifies this set.
+    /// </summary>  
+    member x.ExceptWith (items : seq<'a>) =
+        for o in items do
+            x.Remove o |> ignore
+
+    /// <summary>
+    /// Take the union of this set with other. Modifies this set.
+    /// </summary>
+    member x.UnionWith (other : seq<'a>) =
+        for o in other do
+            x.Add o |> ignore
+
+    /// <summary>
+    /// Takes the intersection of this set with other. Modifies this set.
+    /// </summary>
+    member x.IntersectWith (other : seq<'a>) =
+        let other = toCollection other
+        for (v,r) in store.Values do
+            if not <| other.Contains v then
+                x.Remove v |> ignore
+
+    /// <summary>
+    /// Takes symmetric difference (XOR) with other and this set. Modifies this set.
+    /// </summary>
+    member x.SymmetricExceptWith (other : seq<'a>) =
+        for o in other do
+            if not <| x.Remove o then
+                x.Add o |> ignore
+
+    /// <summary>
+    /// determines if the set is a subset of the given sequence
+    /// </summary>
+    member x.IsSubsetOf (other : seq<'a>) =
+        match compareSeq other with
+            | (_, 0, _) -> true
+            | _ -> false
+
+    /// <summary>
+    /// determines if the set is a superset of the given sequence
+    /// </summary>
+    member x.IsSupersetOf (other : seq<'a>) =
+        match compareSeq other with
+            | (_, _, 0) -> true
+            | _ -> false
+
+    /// <summary>
+    /// determines if the set is a proper subset of the given sequence
+    /// </summary>
+    member x.IsProperSubsetOf (other : seq<'a>) =
+        match compareSeq other with
+            | (_, 0, o) -> o > 0
+            | _ -> false
+
+    /// <summary>
+    /// determines if the set is a proper superset of the given sequence
+    /// </summary>
+    member x.IsProperSupersetOf (other : seq<'a>) =
+        match compareSeq other with
+            | (_, m, 0) -> m > 0
+            | _ -> false
+
+    /// <summary>
+    /// determines if the set and the given sequence overlap
+    /// </summary>
+    member x.Overlaps (other : seq<'a>) =
+        let (b,_,_) = compareSeq other
+        b > 0
+
+    /// <summary>
+    /// determines if the set is equal (set) to the given sequence
+    /// </summary>
+    member x.SetEquals (other : seq<'a>) =
+        match compareSeq other with
+            | (_,0,0) -> true
+            | _ -> false
+
 
     new() = ReferenceCountingSet Seq.empty
 
@@ -122,6 +214,21 @@ type ReferenceCountingSet<'a>(initial : seq<'a>) =
 
         member x.IsReadOnly = false
         member x.Contains v = store.ContainsKey v
+
+    interface ISet<'a> with
+        member x.Add item = x.Add item
+        member x.ExceptWith other = x.ExceptWith other
+        member x.IntersectWith other = x.IntersectWith other
+        member x.UnionWith other = x.UnionWith other
+        member x.SymmetricExceptWith other = x.SymmetricExceptWith other
+
+        member x.IsProperSubsetOf other = x.IsProperSubsetOf other
+        member x.IsProperSupersetOf other = x.IsProperSupersetOf other
+        member x.IsSubsetOf other = x.IsSubsetOf other
+        member x.IsSupersetOf other = x.IsSupersetOf other
+        member x.Overlaps other = x.Overlaps other
+        member x.SetEquals other = x.SetEquals other
+
 
     interface IEnumerable with
         member x.GetEnumerator() =

@@ -72,6 +72,7 @@ type ModRef<'a>(value : 'a) =
 /// defines functions for composing mods and
 /// managing evaluation order, etc.
 /// </summary>
+[<CompilationRepresentation(CompilationRepresentationFlags.ModuleSuffix)>]
 module Mod =
     open Aardvark.Base
 
@@ -469,6 +470,102 @@ module Mod =
                     m.AddOutput(res)
                     res.GetValue() |> ignore
                     res :> IMod<_>
+
+    /// <summary>
+    /// creates a new cell by starting the given async computation.
+    /// until the computation is completed the cell will contain None.
+    /// as soon as the computation is finished it will contain the resulting value.
+    /// </summary>
+    let async (a : Async<'a>) : IMod<Option<'a>> =
+        let task = a |> Async.StartAsTask
+        if task.IsCompleted then
+            initConstant (Some task.Result)
+        else
+            let r = initMod None
+            let a = task.GetAwaiter()
+            a.OnCompleted(fun () -> 
+                transact (fun () -> 
+                    let v = a.GetResult()
+                    change r (Some v)
+                )
+            )
+            r :> IMod<_>
+
+    /// <summary>
+    /// creates a new cell by starting the given async computation.
+    /// until the computation is completed the cell will contain the default value.
+    /// as soon as the computation is finished it will contain the resulting value.
+    /// </summary> 
+    let asyncWithDefault (defaultValue : 'a) (a : Async<'a>) : IMod<'a> =
+        let task = a |> Async.StartAsTask
+        if task.IsCompleted then
+            initConstant task.Result
+        else
+            let r = initMod defaultValue
+            let a = task.GetAwaiter()
+            a.OnCompleted(fun () -> 
+                transact (fun () -> 
+                    let v = a.GetResult()
+                    change r v
+                )
+            )
+            r :> IMod<_>           
+
+    /// <summary>
+    /// creates a new cell starting the given async computation when a value is requested for the first time.
+    /// until the computation is completed the cell will contain None.
+    /// as soon as the computation is finished it will contain the resulting value.
+    /// </summary>
+    let lazyAsync (run : Async<'a>) : IMod<Option<'a>> =
+        let task : ref<Option<System.Threading.Tasks.Task<'a>>> = ref None
+
+        let res = ref Unchecked.defaultof<_>
+        res :=
+            custom (fun () ->
+                match !task with
+                    | Some t ->
+                        if t.IsCompleted then 
+                            let res = t.Result
+                            Some res
+                        else 
+                            None
+                    | None ->
+                        let t = Async.StartAsTask run
+                        task := Some t
+                        t.GetAwaiter().OnCompleted(fun () -> transact (fun () -> res.Value.MarkOutdated()))
+
+                        None
+            )
+
+        !res
+
+    /// <summary>
+    /// creates a new cell starting the given async computation when a value is requested for the first time.
+    /// until the computation is completed the cell will contain the default value.
+    /// as soon as the computation is finished it will contain the resulting value.
+    /// </summary> 
+    let lazyAsyncWithDefault (defaultValue : 'a) (run : Async<'a>) : IMod<'a> =
+        let task : ref<Option<System.Threading.Tasks.Task<'a>>> = ref None
+
+        let res = ref Unchecked.defaultof<_>
+        res :=
+            custom (fun () ->
+                match !task with
+                    | Some t ->
+                        if t.IsCompleted then 
+                            let res = t.Result
+                            res
+                        else 
+                            defaultValue
+                    | None ->
+                        let t = Async.StartAsTask run
+                        task := Some t
+                        t.GetAwaiter().OnCompleted(fun () -> transact (fun () -> res.Value.MarkOutdated()))
+
+                        defaultValue
+            )
+
+        !res
 
 
 [<AutoOpen>]

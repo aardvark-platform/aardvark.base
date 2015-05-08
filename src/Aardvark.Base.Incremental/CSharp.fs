@@ -1,8 +1,62 @@
 ﻿namespace Aardvark.Base.Incremental.CSharp
 
 open System
+open System.Runtime.InteropServices
 open System.Runtime.CompilerServices
 open Aardvark.Base.Incremental
+open Aardvark.Base
+
+[<Extension; AbstractClass; Sealed>]
+type Mod private() =
+    static member Constant (v : 'a) = Mod.initConstant v
+
+    static member LazyConstant (f : Func<'a>) : IMod<'a> =
+        Mod.delay f.Invoke
+
+    static member Custom (f : Func<'a>) : IMod<'a> =
+        Mod.custom f.Invoke
+
+    static member Async(t : System.Threading.Tasks.Task<'a>, defaultValue : 'a) : IMod<'a> =
+        Mod.asyncWithDefault defaultValue (Async.AwaitTask t)
+
+    static member Async(f: Func<'a>, defaultValue : 'a) : IMod<'a> =
+        let a = async { return f.Invoke() }
+        Mod.asyncWithDefault defaultValue a
+
+    static member LazyAsync(f : Func<'a>, defaultValue : 'a) : IMod<'a> =
+        let a = async { return f.Invoke() }
+        Mod.asyncWithDefault defaultValue a
+
+
+[<AbstractClass; Sealed>]
+type Adaptive private() =
+
+    static member TryGetCurrentTransaction([<Out>] transaction : byref<Transaction>) : bool =
+        match getCurrentTransaction() with
+            | Some t -> 
+                transaction <- t
+                true
+            | _ ->
+                false
+
+    static member SetCurrentTransaction(t : Transaction) =
+        setCurrentTransaction (Some t)
+
+    static member ReleaseCurrentTransaction() =
+        setCurrentTransaction None
+
+    static member Transaction =
+        let t = Transaction()
+        let old = getCurrentTransaction()
+        setCurrentTransaction (Some t)
+      
+        { new IDisposable with
+            member x.Dispose() =
+                setCurrentTransaction old
+                t.Commit()
+        }
+
+
 
 [<Extension; AbstractClass; Sealed>]
 type AdaptiveObjectExtensions private() =
@@ -14,6 +68,15 @@ type AdaptiveObjectExtensions private() =
     [<Extension>]
     static member RemoveOutput (this : IAdaptiveObject, o : IAdaptiveObject) =
         this.RemoveOutput(o)
+
+    [<Extension>]
+    static member AddMarkingCallback (this : IAdaptiveObject, o : Action) =
+        this.AddMarkingCallback(o.Invoke)
+
+    [<Extension>]
+    static member MarkOutdated (this : IAdaptiveObject) =
+        this.MarkOutdated()
+
 
 [<Extension; AbstractClass; Sealed>]
 type ModExtensions private() =
@@ -65,6 +128,9 @@ type ModExtensions private() =
     static member ToAdaptiveList(this : IMod<'a>) =
         Mod.toAList this
 
+    [<Extension>]
+    static member RegisterCallback(this : IMod<'a>, callback : Action<'a>) =
+        this |> Mod.registerCallback callback.Invoke
 
 [<Extension; AbstractClass; Sealed>]
 type AdaptiveSetExtensions private() =
@@ -90,6 +156,10 @@ type AdaptiveSetExtensions private() =
         ASet.concat this
 
     [<Extension>]
+    static member Flatten (this : aset<seq<'a>>) =
+        ASet.collect ASet.ofSeq this
+
+    [<Extension>]
     static member Where (this : aset<'a>, f : Func<'a, bool>) =
         ASet.filter f.Invoke this
 
@@ -100,6 +170,33 @@ type AdaptiveSetExtensions private() =
     [<Extension>]
     static member Union (this : aset<'a>, other : aset<'a>) =
         ASet.concat' [this; other]
+
+    [<Extension>]
+    static member ToMod (this : aset<'a>) =
+        ASet.toMod this
+
+    [<Extension>]
+    static member Contains (this : aset<'a>, item : 'a) =
+        ASet.contains item
+
+    [<Extension>]
+    static member Contains (this : aset<'a>, item : seq<'a>) =
+        this |> ASet.containsAll item
+
+    [<Extension>]
+    static member ContainsAny (this : aset<'a>, item : seq<'a>) =
+        this |> ASet.containsAny item
+
+    [<Extension>]
+    static member ContainsAll (this : aset<'a>, item : seq<'a>) =
+        this |> ASet.containsAll item
+
+    [<Extension>]
+    static member RegisterCallback(this : aset<'a>, callback : Action<Delta<'a>[]>) =
+        this |> ASet.registerCallback (fun deltas ->
+            deltas |> List.toArray |> callback.Invoke
+        )
+
 
 [<Extension; AbstractClass; Sealed>]
 type AdaptiveListExtensions private() =
@@ -135,4 +232,8 @@ type AdaptiveListExtensions private() =
     [<Extension>]
     static member Concat (this : alist<'a>, other : alist<'a>) =
         AList.concat' [this; other]
+
+
+
+
 
