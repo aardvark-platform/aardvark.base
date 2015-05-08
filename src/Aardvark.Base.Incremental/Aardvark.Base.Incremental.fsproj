@@ -78,9 +78,9 @@
   <ItemGroup>
     <Compile Include="Core\PriorityQueue.fs" />
     <Compile Include="Core\WeakSet.fs" />
+    <Compile Include="Core\Delta.fs" />
     <Compile Include="Core\ReferenceCountingSet.fs" />
     <Compile Include="Core\TimeList.fs" />
-    <Compile Include="Core\Delta.fs" />
     <Compile Include="Core\Cache.fs" />
     <Compile Include="Core\Core.fs" />
     <Compile Include="Mod\Mod.fs" />

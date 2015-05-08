@@ -14,7 +14,7 @@ type cset<'a>(initial : seq<'a>) =
     interface aset<'a> with
         member x.GetReader() =
             let r = new BufferedReader<'a>(fun r -> readers.Remove r |> ignore)
-            r.Emit (content |> Seq.map Add |> Seq.toList)
+            r.Emit(content, None)
             readers.Add r |> ignore
             r :> _
 
@@ -25,14 +25,12 @@ type cset<'a>(initial : seq<'a>) =
     member x.UnionWith(s : seq<'a>) =
         let res = s |> Seq.filter content.Add |> Seq.map Add |> Seq.toList
         for r in readers do 
-            if r.IsIncremental then r.Emit res
-            else r.Reset content
+            r.Emit(content, Some res)
 
     member x.ExceptWith(s : seq<'a>) =
         let res = s |> Seq.filter content.Remove |> Seq.map Rem |> Seq.toList
         for r in readers do 
-            if r.IsIncremental then r.Emit res
-            else r.Reset content
+            r.Emit(content, Some res)
 
     member x.IntersectWith(s : seq<'a>) =
         let s = HashSet(s)
@@ -42,8 +40,7 @@ type cset<'a>(initial : seq<'a>) =
                     |> List.map (fun a -> content.Remove a |> ignore; Rem a) 
 
         for r in readers do 
-            if r.IsIncremental then r.Emit res
-            else r.Reset content
+            r.Emit(content, Some res)
 
     member x.SymmetricExceptWith(s : seq<'a>) =
         let s = HashSet(s)
@@ -61,21 +58,17 @@ type cset<'a>(initial : seq<'a>) =
         let res = List.append removed added
 
         for r in readers do 
-            if r.IsIncremental then r.Emit res
-            else r.Reset content
+            r.Emit(content, Some res)
 
     member x.Clear() =
-        let deltas = content |> Seq.map Rem |> Seq.toList
         content.Clear()
         for r in readers do 
-            if r.IsIncremental then r.Emit deltas
-            else r.Reset content
+            r.Emit(content, None)
 
     member x.Add v =
         if content.Add v then 
             for r in readers do 
-                if r.IsIncremental then r.Emit [Add v]
-                else r.Reset content
+                r.Emit(content, Some [Add v])
 
             true
         else
@@ -84,8 +77,7 @@ type cset<'a>(initial : seq<'a>) =
     member x.Remove v =
         if content.Remove v then 
             for r in readers do
-                if r.IsIncremental then r.Emit [Rem v]
-                else r.Reset content
+                r.Emit(content, Some [Rem v])
 
             true
         else

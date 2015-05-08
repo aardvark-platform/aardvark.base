@@ -122,8 +122,7 @@ type corderedset<'a>(initial : seq<'a>) =
             else r.Reset content
 
         for r in setReaders do 
-            if r.IsIncremental then r.Emit [Add value]
-            else r.Reset set
+            r.Emit(set, Some [Add value])
 
         setTime value newTime
         newTime
@@ -140,8 +139,7 @@ type corderedset<'a>(initial : seq<'a>) =
                     else r.Reset content
 
                 for r in setReaders do 
-                    if r.IsIncremental then r.Emit [Rem value]
-                    else r.Reset set
+                    r.Emit(set, Some [Rem value])
 
                 true
 
@@ -158,11 +156,9 @@ type corderedset<'a>(initial : seq<'a>) =
             if r.IsIncremental then r.Emit deltas
             else r.Reset content
 
-        let setDeltas = set |> Seq.map Rem |> Seq.toList
         set.Clear()
         for r in setReaders do 
-            if r.IsIncremental then r.Emit setDeltas
-            else r.Reset set
+            r.Emit(set, None)
 
     do  
         let mutable current = rootTime
@@ -179,7 +175,7 @@ type corderedset<'a>(initial : seq<'a>) =
     interface aset<'a> with
         member x.GetReader() =
             let r = new ASetReaders.BufferedReader<'a>(fun r -> setReaders.Remove r |> ignore)
-            r.Emit (set |> Seq.map Add |> Seq.toList)
+            r.Emit(set, None)
             setReaders.Add r |> ignore
             r :> _
 

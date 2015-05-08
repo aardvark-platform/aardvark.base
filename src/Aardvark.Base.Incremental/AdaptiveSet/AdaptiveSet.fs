@@ -27,9 +27,7 @@ module ASet =
             if not <| List.isEmpty delta then
                 delta |> apply state |> ignore
                 readers  |> Seq.iter (fun ri ->
-                    if ri.IsIncremental then
-                        ri.Emit delta
-                    else ri.Reset state
+                    ri.Emit(state, Some delta)
                 )
 
         interface aset<'a> with
@@ -46,19 +44,19 @@ module ASet =
                         inputReader <- None
 
                 let reader = new BufferedReader<'a>(bringUpToDate, remove)
-                reader.Emit (state |> Seq.map Add |> Seq.toList)
+                reader.Emit (state, None)
                 r.AddOutput reader
                 readers.Add reader |> ignore
 
                 reader :> _
 
     type ConstantSet<'a>(content : seq<'a>) =
-        let content = List.ofSeq content
+        let content = ReferenceCountingSet content
 
         interface aset<'a> with
             member x.GetReader () =
                 let r = new BufferedReader<'a>()
-                r.Emit(content |> List.map Add)
+                r.Emit(content, None)
                 r :> IReader<_>
 
     type private EmptySetImpl<'a> private() =

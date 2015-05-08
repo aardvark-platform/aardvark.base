@@ -11,7 +11,10 @@ open System.Collections.Concurrent
 /// </summary>
 type ReferenceCountingSet<'a>(initial : seq<'a>) =
     let mutable nullCount = 0
+
     let store = Dictionary<obj, 'a * ref<int>>()
+
+    
 
     let toCollection (s : seq<'a>) =
         match s with
@@ -67,6 +70,9 @@ type ReferenceCountingSet<'a>(initial : seq<'a>) =
     do for e in initial do
         add e |> ignore
 
+    member private x.Store = store
+    member private x.NullCount = nullCount
+
     /// <summary>
     /// adds an element to the ReferenceCountingSet and returns
     /// true if the element was not contained in the set before
@@ -103,7 +109,6 @@ type ReferenceCountingSet<'a>(initial : seq<'a>) =
     member x.Count = 
         (if nullCount > 0 then 1 else 0) + store.Count
 
-
     /// <summary>
     /// gets the current reference count for the given element
     /// </summary>
@@ -133,7 +138,7 @@ type ReferenceCountingSet<'a>(initial : seq<'a>) =
     /// </summary>
     member x.IntersectWith (other : seq<'a>) =
         let other = toCollection other
-        for (v,r) in store.Values do
+        for (v,_) in store.Values do
             if not <| other.Contains v then
                 x.Remove v |> ignore
 
@@ -144,6 +149,99 @@ type ReferenceCountingSet<'a>(initial : seq<'a>) =
         for o in other do
             if not <| x.Remove o then
                 x.Add o |> ignore
+
+
+    //TODO: implement without modification
+    ///// <summary>
+    ///// Sets the contents of the set to other's contents returning
+    ///// a list of Deltas which need to be performed in order to reproduce
+    ///// the transition.
+    ///// Runtime: O[(LookUp + AddRem) * (this.Count + other.Count)]
+    ///// </summary>
+    //member x.SetTo(other : ReferenceCountingSet<'a>) : list<Delta<'a>> =
+    //    let result = ref []
+    //    let emit n v = 
+    //        for i in 1..n do
+    //            result := v::!result
+    //
+    //    // start by adjusting the null count
+    //    let otherNull = other.NullCount
+    //    if otherNull > nullCount then emit (otherNull - nullCount) (Add Unchecked.defaultof<'a>)
+    //    elif otherNull < nullCount then emit (nullCount - otherNull) (Rem Unchecked.defaultof<'a>)
+    //
+    //
+    //
+    //    // finally we need to check if this contains objects which are
+    //    // not contained in other. 
+    //
+    //    // this loop performs <this.Count> lookups 
+    //    // and (in the worst case) <this.Count> removals
+    //    // and therefore has runtime: O [ (Lookup + AddRem) * this.Count ]
+    //    for (KeyValue(k,(v, myRef))) in store do
+    //        if not <| other.Store.ContainsKey(k) then
+    //            emit !myRef (Rem v)
+    //            store.Remove k |> ignore
+    //
+    //
+    //    // adjust all reference counts for elements in other. 
+    //    // add the elements if they are not contained in this
+    //    // and adjust their reference-count otherwise.
+    //
+    //    // this loop performs <other.Count> lookups
+    //    // and (in the worst case) <other.Count> additions
+    //    // and therefore has runtime: O [ (Lookup + AddRem) * other.Count ]
+    //    for (KeyValue(k,(v,otherRef))) in other.Store do
+    //        match store.TryGetValue k with
+    //            | (true, (_,myRef)) ->
+    //                // if the element was found in both sets
+    //                // we need to emit the difference delta
+    //                // according to the refCounts
+    //                let diff = !otherRef - !myRef
+    //                if diff <> 0 then
+    //                    if diff > 0 then emit diff (Add v)
+    //                    else emit -diff (Rem v)
+    //
+    //                    // we don't need to check for removals here since
+    //                    // otherRef cannot be zero by convention
+    //                    myRef := !otherRef
+    //
+    //            | _ ->
+    //                // other contains a value which is not in this
+    //                emit !otherRef (Add v)
+    //                store.[k] <- (v,ref !otherRef)
+    //
+    //    // The entire procedure has runtime 
+    //    // O [ (LookUp + AddRem) * (this.Count + other.Count) ]
+    //
+    //    !result
+
+    /// <summary>
+    /// Sets the contents of the set to other's contents returning
+    /// a list of Deltas which need to be performed in order to reproduce
+    /// the transition.
+    /// Runtime: O[(LookUp + AddRem) * (this.Count + other.Count)]
+    /// </summary>  
+    member x.SetTo(other : ISet<'a>) : list<Delta<'a>> =
+        match other with
+            | :? ReferenceCountingSet<'a> as r -> x.SetTo(r)
+            | _ ->
+                let result = ref []
+                let removals = ref []
+                let add v = result := (Add v)::!result
+                let rem v = 
+                    removals := v::!removals
+                    result := (Rem v)::!result
+                
+                for e in x do
+                    if not <| other.Contains e then rem e 
+
+                for o in other do
+                    if x.Add o then add o
+
+                for r in !removals do
+                    x.Remove r |> ignore
+
+                !result
 
     /// <summary>
     /// determines if the set is a subset of the given sequence

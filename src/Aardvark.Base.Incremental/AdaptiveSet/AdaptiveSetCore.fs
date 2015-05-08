@@ -283,7 +283,11 @@ module private ASetReaders =
     type BufferedReader<'a>(update : unit -> unit, dispose : BufferedReader<'a> -> unit) =
         inherit AdaptiveObject()
         let deltas = List()
-        let mutable reset : Option<ICollection<'a>> = None
+        let mutable reset : Option<ISet<'a>> = None
+
+        static let mutable resetCount = 0
+        static let mutable incrementalCount = 0
+
 
         let content = ReferenceCountingSet<'a>()
 
@@ -291,28 +295,37 @@ module private ASetReaders =
         let getDeltas() =
             match reset with
                 | Some c ->
+                    Interlocked.Increment(&resetCount) |> ignore
                     reset <- None
                     let add = c |> Seq.filter (not << content.Contains) |> Seq.map Add
                     let rem = content |> Seq.filter (not << c.Contains) |> Seq.map Rem
 
                     Seq.append add rem |> Seq.toList
                 | None ->
+                    Interlocked.Increment(&incrementalCount) |> ignore
                     let res = deltas |> Seq.toList
                     deltas.Clear()
                     res
 
-        member x.IsIncremental = 
-            true
+        member x.Emit (c : ISet<'a>, d : Option<list<Delta<'a>>>) =
+            match d with 
+                | Some d ->
+                    deltas.AddRange d
+//                    let N = c.Count
+//                    let M = content.Count
+//                    let D = deltas.Count + (List.length d)
+//                    if D > N + 2 * M then
+//                        reset <- Some c
+//                        deltas.Clear()
+//                    else
+//                        deltas.AddRange d
 
-        member x.Reset(c : ICollection<'a>) =
-            reset <- Some c
-            deltas.Clear()
+                | None ->
+                    reset <- Some c
+                    deltas.Clear()
+
             x.MarkOutdated()
 
-        member x.Emit (d : list<Delta<'a>>) =
-            deltas.AddRange d
-            
-            x.MarkOutdated()
 
         new(dispose) = new BufferedReader<'a>(id, dispose)
         new() = new BufferedReader<'a>(id, ignore)
