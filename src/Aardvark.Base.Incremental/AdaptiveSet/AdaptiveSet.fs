@@ -103,12 +103,24 @@ module ASet =
 
     let toMod (s : aset<'a>) =
         let r = s.GetReader()
+        let c = r.Content :> System.Collections.Generic.ICollection<_>
+
         let m = Mod.custom (fun () ->
             r.GetDelta() |> ignore
-            r.Content
+            c
         )
         r.AddOutput m
         m
+
+    let contains (elem : 'a) (set : aset<'a>) =
+        set |> toMod |> Mod.map (fun s -> s.Contains elem)
+
+    let containsAll (elems : #seq<'a>) (set : aset<'a>) =
+        set |> toMod |> Mod.map (fun s -> elems |> Seq.forall (fun e -> s.Contains e))
+
+    let containsAny (elems : #seq<'a>) (set : aset<'a>) =
+        set |> toMod |> Mod.map (fun s -> elems |> Seq.exists (fun e -> s.Contains e))
+
 
     let map (f : 'a -> 'b) (set : aset<'a>) = 
         let scope = Ag.getContext()

@@ -119,8 +119,45 @@ type cset<'a>(initial : seq<'a>) =
 module CSet =
     let empty<'a> = cset<'a>()
 
+    let ofSeq (s : seq<'a>) = cset<'a> s
+    let ofList (s : list<'a>) = cset<'a> s
+    let ofArray (s : 'a[]) = cset<'a> s
+
+
     let add (a : 'a) (set : cset<'a>) = set.Add a
+    
     let remove (a : 'a) (set : cset<'a>) = set.Remove a
+
+    let clear (set : cset<'a>) =
+        set.Clear()
+
+    let contains (value : 'a) (set : cset<'a>) =
+        set.Contains value
+
+    let count (set : cset<'a>) =
+        set.Count
+
+    let toSeq (set : cset<'a>) =
+        set :> seq<_>
+
+    let toList (set : cset<'a>) =
+        set |> Seq.toList
+
+    let toArray (set : cset<'a>) =
+        set |> Seq.toArray
+
+
+    let unionWith (elems : seq<'a>) (set : cset<'a>) =
+        set.UnionWith elems
+
+    let exceptWith (elems : seq<'a>) (set : cset<'a>) =
+        set.ExceptWith elems
+
+    let intersectWith (elems : seq<'a>) (set : cset<'a>) =
+        set.IntersectWith elems
+
+    let equals (elems : seq<'a>) (set : cset<'a>) =
+        set.SetEquals(elems)
 
     let applyDeltas (deltas : list<Delta<'a>>) (xs : cset<'a>) =
         for d in deltas do

@@ -264,7 +264,7 @@ type CSharpEventExtensions private() =
         EventAdapters.toEventUntyped this
 
     [<Extension>]
-    static member ToEvent(this : aset<'a>) : IEvent<ReferenceCountingSet<'a>> =
+    static member ToEvent(this : aset<'a>) : IEvent<ICollection<'a>> =
         this |> ASet.toMod |> EventAdapters.toEvent
 
     [<Extension>]
