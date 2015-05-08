@@ -18,7 +18,7 @@ type IReader<'a> =
     abstract member Content : ReferenceCountingSet<'a>
     abstract member GetDelta : unit -> Change<'a>
 
-[<CompiledName("AdaptiveSet")>]
+[<CompiledName("IAdaptiveSet")>]
 type aset<'a> =
     abstract member GetReader : unit -> IReader<'a>
 

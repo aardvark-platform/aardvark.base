@@ -11,7 +11,7 @@ type IListReader<'a> =
     abstract member Content : TimeList<'a>
     abstract member GetDelta : unit -> Change<Time * 'a>
 
-[<CompiledName("AdaptiveList")>]
+[<CompiledName("IAdaptiveList")>]
 type alist<'a> =
     abstract member GetReader : unit -> IListReader<'a>
 

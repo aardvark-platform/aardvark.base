@@ -214,13 +214,14 @@ module Mod =
 
 
     let private callbackTable = ConditionalWeakTable<IMod, ConcurrentHashSet<IDisposable>>()
-    type private CallbackSubscription(m : IMod, cb : unit -> unit, live : ref<bool>, set : ConcurrentHashSet<IDisposable>) =
+    type private CallbackSubscription<'a>(m : IMod, cb : unit -> unit, live : ref<bool>, last : ref<Option<'a>>, set : ConcurrentHashSet<IDisposable>) =
         
         member x.Dispose() = 
             if !live then
                 live := false
                 m.MarkingCallbacks.Remove cb |> ignore
                 set.Remove x |> ignore
+                last := None
 
         interface IDisposable with
             member x.Dispose() = x.Dispose()
@@ -240,10 +241,17 @@ module Mod =
         let f = scoped f
         let self = ref id
         let live = ref true
+        let last = ref None
+
         self := fun () ->
             if !live then
                 try
-                    m.GetValue() |> f
+                    let value = m.GetValue()
+                    match !last with
+                        | Some v when Object.Equals(v, value) -> ()
+                        | _ -> 
+                            f value
+                            last := Some value
                 finally 
                     m.MarkingCallbacks.Add !self |> ignore
         
@@ -253,7 +261,7 @@ module Mod =
 
         let set = callbackTable.GetOrCreateValue(m)
 
-        let s = new CallbackSubscription(m, !self, live, set)
+        let s = new CallbackSubscription<'a>(m, !self, live, last, set)
         set.Add s |> ignore
         s :> IDisposable
 

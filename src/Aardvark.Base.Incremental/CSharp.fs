@@ -5,6 +5,8 @@ open System.Runtime.InteropServices
 open System.Runtime.CompilerServices
 open Aardvark.Base.Incremental
 open Aardvark.Base
+open System.Collections
+open System.Collections.Generic
 
 [<Extension; AbstractClass; Sealed>]
 type Mod private() =
@@ -26,6 +28,40 @@ type Mod private() =
     static member LazyAsync(f : Func<'a>, defaultValue : 'a) : IMod<'a> =
         let a = async { return f.Invoke() }
         Mod.asyncWithDefault defaultValue a
+
+type AdaptiveSet<'a>(content : seq<'a>) =
+    let content = HashSet content
+    let s = lazy (ASet.ofSeq content)
+
+    member x.Count = content.Count
+    
+    member x.Add v = 
+        if s.IsValueCreated then
+            failwith ("cannot add to AdaptiveSet once it has been used by the mod-system.\r\n" +
+                      "add shall only be used in C#'s initializer syntax")
+        content.Add v
+
+    override x.ToString() =
+        sprintf "aset %A" (content |> Seq.toList)
+
+    interface aset<'a> with
+        member x.GetReader() = s.Value.GetReader()
+
+    interface IEnumerable with
+        member x.GetEnumerator() = (content :> IEnumerable).GetEnumerator()
+
+    interface IEnumerable<'a> with
+        member x.GetEnumerator() = content.GetEnumerator() :> IEnumerator<_>
+
+    new([<ParamArray>] values : 'a[]) = AdaptiveSet(values :> seq<_>)
+    new() = AdaptiveSet Seq.empty
+
+//[<Extension; AbstractClass; Sealed>]
+//type AdaptiveSet private() =
+//
+//    static member Empty<'a>() : aset<'a> = ASet.empty
+//
+//    static member Single (v : 'a) = ASet.single v
 
 
 [<AbstractClass; Sealed>]
@@ -176,11 +212,20 @@ type AdaptiveSetExtensions private() =
         ASet.toMod this
 
     [<Extension>]
-    static member Contains (this : aset<'a>, item : 'a) =
-        ASet.contains item
+    static member ContainsMod (this : aset<'a>, [<ParamArray>] item : 'a[]) =
+        this |> ASet.containsAll item
 
     [<Extension>]
-    static member Contains (this : aset<'a>, item : seq<'a>) =
+    static member ContainsAny (this : aset<'a>, [<ParamArray>] item : 'a[]) =
+        this |> ASet.containsAny item
+
+    [<Extension>]
+    static member ContainsAll (this : aset<'a>, [<ParamArray>] item : 'a[]) =
+        this |> ASet.containsAll item
+
+
+    [<Extension>]
+    static member ContainsMod (this : aset<'a>, item : seq<'a>) =
         this |> ASet.containsAll item
 
     [<Extension>]
@@ -191,12 +236,68 @@ type AdaptiveSetExtensions private() =
     static member ContainsAll (this : aset<'a>, item : seq<'a>) =
         this |> ASet.containsAll item
 
+
+    [<Extension>]
+    static member GetReader (this : aset<'a>) =
+        this.GetReader()
+
+    [<Extension>]
+    static member GetDeltas (this : IReader<'a>) =
+        this.GetDelta() |> List.toArray
+
     [<Extension>]
     static member RegisterCallback(this : aset<'a>, callback : Action<Delta<'a>[]>) =
         this |> ASet.registerCallback (fun deltas ->
             deltas |> List.toArray |> callback.Invoke
         )
 
+[<Extension; AbstractClass; Sealed>]
+type ChangeableSetExtensions private() =
+
+    [<Extension>]
+    static member Select (this : cset<'a>, f : Func<'a, 'b>) =
+        ASet.map f.Invoke this
+
+    [<Extension>]
+    static member SelectMany (this : cset<'a>, f : Func<'a, aset<'b>>) =
+        ASet.collect f.Invoke this
+
+    [<Extension>]
+    static member Flatten (this : cset<aset<'a>>) =
+        ASet.concat this
+
+    [<Extension>]
+    static member Flatten (this : cset<seq<'a>>) =
+        ASet.collect ASet.ofSeq this
+
+    [<Extension>]
+    static member Where (this : cset<'a>, f : Func<'a, bool>) =
+        ASet.filter f.Invoke this
+
+    [<Extension>]
+    static member Where (this : cset<'a>, f : Func<'a, IMod<bool>>) =
+        ASet.filterM f.Invoke this
+
+    [<Extension>]
+    static member ContainsMod (this : cset<'a>, [<ParamArray>] item : 'a[]) =
+        this |> ASet.containsAll item
+
+    [<Extension>]
+    static member ContainsAny (this : cset<'a>, [<ParamArray>] item : 'a[]) =
+        this |> ASet.containsAny item
+
+    [<Extension>]
+    static member ContainsAll (this : cset<'a>, [<ParamArray>] item : 'a[]) =
+        this |> ASet.containsAll item
+
+
+    [<Extension>]
+    static member ContainsAny (this : cset<'a>, item : seq<'a>) =
+        this |> ASet.containsAny item
+
+    [<Extension>]
+    static member ContainsAll (this : cset<'a>, item : seq<'a>) =
+        this |> ASet.containsAll item
 
 [<Extension; AbstractClass; Sealed>]
 type AdaptiveListExtensions private() =

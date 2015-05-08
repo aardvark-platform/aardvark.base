@@ -19,7 +19,7 @@ module ``Computation Expression Builders`` =
         member x.ReturnFrom(m : IMod<'a>) = 
             m
 
-        member x.Zero() = Mod.initConstant ()
+        member x.Zero() = constantUnit
 
         member x.Combine(l : IMod<unit>, r : IMod<'a>) =
             Mod.map2 (fun () r -> r) l r

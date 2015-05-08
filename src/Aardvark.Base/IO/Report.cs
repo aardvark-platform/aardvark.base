@@ -301,6 +301,9 @@ namespace Aardvark.Base
 
         private static string Format(string message, params object[] args)
         {
+            if (args.Length == 0) return message;
+            
+
             try
             {
                 return String.Format(Localization.FormatEnUS, message, args);
@@ -389,6 +392,8 @@ namespace Aardvark.Base
             s_reporter.Begin(0, RootTarget, Format(message, args), true);
         }
 
+
+
         /// <summary>
         /// Begin a block with a formatted message.
         /// All report calls till the call to the next
@@ -412,6 +417,7 @@ namespace Aardvark.Base
             CountCallsToBegin.Increment();
             s_reporter.Begin(0, RootTarget, Format(message, args), false);
         }
+
 
         /// <summary>
         /// Begin a block without an explicit message.

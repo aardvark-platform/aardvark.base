@@ -9,7 +9,12 @@ open System.Collections.Generic
 /// </summary>
 type Delta<'a> = 
     | Add of 'a 
-    | Rem of 'a
+    | Rem of 'a with
+
+    member x.Value =
+        match x with
+            | Add v -> v
+            | Rem v -> v
 
 
 module Delta =
