@@ -15,7 +15,7 @@
         <language>en-US</language>
         <tags>graphics visualization geometry math algorithms</tags>
         <dependencies>
-            <dependency id="DevILSharp" version="0.0.7" />
+            <dependency id="DevILSharp" version="0.0.8" />
         </dependencies>
         <frameworkAssemblies>
             <frameworkAssembly assemblyName="System.Drawing" />
