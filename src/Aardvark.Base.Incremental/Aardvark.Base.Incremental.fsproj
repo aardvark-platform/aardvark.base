@@ -52,7 +52,7 @@
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <Import Project="..\..\..\..\build\Aardvark.targets" Condition="exists('..\..\..\..\build\Aardvark.targets')" />
   <Import Project="$(SolutionPath).targets" Condition="exists('$(SolutionPath).targets')" />
-  <Import Project="$(FSharpTargetsPath)" />
+  <Import Project="$(FSharpTargetsPath)" Condition="exists('$(FSharpTargetsPath)')" />
   <ItemGroup>
     <ProjectReference Include="../Aardvark.Base.TypeProviders/Aardvark.Base.TypeProviders.fsproj">
       <Name>Aardvark.Base.TypeProviders</Name>
