@@ -5,6 +5,7 @@ if [ ! -d "packages/FAKE" ]; then
 	mono --runtime=v4.0 bin/nuget.exe install FAKE -OutputDirectory packages -ExcludeVersion
 	mono --runtime=v4.0 bin/nuget.exe install FSharp.Formatting.CommandTool -OutputDirectory packages -ExcludeVersion -Prerelease 
 	mono --runtime=v4.0 bin/nuget.exe install SourceLink.Fake -OutputDirectory packages -ExcludeVersion 
+	mono --runtime=v4.0 bin/nuget.exe install Aardvark.Build -OutputDirectory packages -ExcludeVersion 
 fi
 
 
