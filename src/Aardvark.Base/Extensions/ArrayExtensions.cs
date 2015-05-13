@@ -295,6 +295,14 @@ namespace Aardvark.Base
 			return result;
 		}
 
+        public static List<Tr> CopyToList<T, Tr>(this T[] array, Func<T, long, Tr> fun)
+        {
+            var count = array.Length;
+            var result = new List<Tr>(count);
+            for (int i = 0; i < count; i++) result.Add(fun(array[i], i));
+            return result;
+        }
+
 		public static List<Tr> ToList<T, Tr>(this T[] array, Func<T, Tr> fun)
 		{
 			var count = array.Length;
