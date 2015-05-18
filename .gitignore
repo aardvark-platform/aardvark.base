@@ -12,3 +12,4 @@ obj
 Bin
 *.*~
 /buildLog.log
+/src/.vs/Aardvark/v14
