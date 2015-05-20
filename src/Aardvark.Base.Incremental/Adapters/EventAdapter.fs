@@ -7,13 +7,18 @@ open Aardvark.Base
 open System.Diagnostics
 open System.Runtime.CompilerServices
 
+
+type internal IAdapterMod =
+    inherit IMod
+    inherit IComparable
+
 type EventSampler(frequency : int) =
     let m_lock = obj()
     let m_maxFrequency = frequency
     let m_minSampleTime = if m_maxFrequency = 0 then 0 else int (1000.0 / float m_maxFrequency)
     let mutable m_thread = null
     let m_sem = new ManualResetEventSlim()
-    let mutable actions : Set<IAdaptiveObject> = Set.empty
+    let mutable actions : Set<IAdapterMod> = Set.empty
 
     member x.Run() =
         let sw = Stopwatch()
@@ -39,7 +44,7 @@ type EventSampler(frequency : int) =
                 a.MarkOutdated()
         )
 
-    member x.Enqueue<'a>(c : IAdaptiveObject) : unit =
+    member internal x.Enqueue<'a>(c : IAdapterMod) : unit =
         match m_thread with
             | null -> 
                 m_thread <- Thread(ThreadStart(x.Run))
@@ -70,6 +75,12 @@ module EventAdapters =
     type private AdapterMod<'a>(e : IEvent<'a>, s : IDisposable, resubscribe : unit -> unit) =
         inherit Mod.LazyMod<'a> (fun () -> let res = e.Latest in resubscribe(); res)
         member x.Event = e
+
+        interface IAdapterMod with
+            member x.CompareTo o =
+                match o with
+                 | :? IAdaptiveObject as o -> compare x.Id o.Id
+                 | _ -> failwith "uncomparable"
 
         override x.Finalize() =
             s.Dispose()

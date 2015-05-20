@@ -22,7 +22,6 @@ open System.Collections.Concurrent
 /// </summary>
 [<AllowNullLiteral>]
 type IAdaptiveObject =
-    inherit IComparable
 
     /// <summary>
     /// the globally unique id for the adaptive object
@@ -360,10 +359,9 @@ type AdaptiveObject() =
 type ConstantObject() =
     static let emptySet = EmptyCollection<IAdaptiveObject>() :> ICollection<_>
     static let emptyCallbacks = EmptyCollection<unit -> unit>() :> ICollection<_>
-    let id = newId()
 
     interface IAdaptiveObject with
-        member x.Id = id
+        member x.Id = -1
         member x.Level
             with get() = 0
             and set l = failwith "cannot set level for constant"
@@ -377,12 +375,6 @@ type ConstantObject() =
         member x.Outputs = emptySet
         member x.MarkingCallbacks = emptyCallbacks
 
-        member x.CompareTo(o) =
-            match o with
-                | :? IAdaptiveObject as o ->
-                    compare id o.Id
-                | _ ->
-                    failwith "uncomparable"
 
 and EmptyCollection<'a>() =
     interface ICollection<'a> with

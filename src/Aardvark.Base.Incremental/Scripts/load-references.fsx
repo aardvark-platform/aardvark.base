@@ -1,0 +1,16 @@
+// Warning: generated file; your changes could be lost when a new file is generated.
+#I __SOURCE_DIRECTORY__
+#r @"..\..\..\packages\NUnit.2.6.4\lib\nunit.framework.dll"
+#r @"..\..\..\bin\Debug\Aardvark.Base.dll"
+#r @"..\..\..\bin\Debug\Aardvark.Base.Essentials.dll"
+#r @"..\..\..\bin\Debug\Aardvark.Base.FSharp.dll"
+#r @"..\..\..\bin\Debug\Aardvark.Base.TypeProviders.dll"
+#r @"..\..\..\packages\FsUnit.1.3.0.1\Lib\Net40\FsUnit.NUnit.dll"
+#r @"System.Core.dll"
+#r @"System.dll"
+#r @"System.Drawing.dll"
+#r @"System.Numerics.dll"
+#r @"..\..\..\packages\Rx-Core.2.2.5\lib\net45\System.Reactive.Core.dll"
+#r @"..\..\..\packages\Rx-Interfaces.2.2.5\lib\net45\System.Reactive.Interfaces.dll"
+#r @"..\..\..\packages\Rx-Linq.2.2.5\lib\net45\System.Reactive.Linq.dll"
+#r @"..\..\..\packages\Rx-PlatformServices.2.2.5\lib\net45\System.Reactive.PlatformServices.dll"
