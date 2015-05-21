@@ -3,6 +3,7 @@
 open System.Collections
 open System.Collections.Generic
 open System.Collections.Concurrent
+open System.Threading
 
 /// <summary>
 /// represents a set of elements having a reference count.
@@ -11,6 +12,10 @@ open System.Collections.Concurrent
 /// </summary>
 type ReferenceCountingSet<'a>(initial : seq<'a>) =
     let mutable nullCount = 0
+    let mutable version = 0
+
+    let hasChanged() =
+        Interlocked.Increment &version |> ignore
 
     let store = Dictionary<obj, 'a * ref<int>>()
 
@@ -50,6 +55,7 @@ type ReferenceCountingSet<'a>(initial : seq<'a>) =
                 | _ ->
                     let r = v, ref 1
                     store.[v] <- r
+                    hasChanged()
                     true
 
     let remove (v : 'a) =
@@ -61,6 +67,7 @@ type ReferenceCountingSet<'a>(initial : seq<'a>) =
                 | (true, (_,r)) ->
                     r := !r - 1
                     if !r = 0 then
+                        hasChanged()
                         store.Remove v
                     else
                         false
@@ -99,8 +106,10 @@ type ReferenceCountingSet<'a>(initial : seq<'a>) =
     /// clears the entire set
     /// </summary>
     member x.Clear() =
-        nullCount <- 0
-        store.Clear()
+        if x.Count <> 0 then
+            nullCount <- 0
+            store.Clear()
+            hasChanged()
 
     /// <summary>
     /// returns the number of (distinct) elements contained in
@@ -221,27 +230,28 @@ type ReferenceCountingSet<'a>(initial : seq<'a>) =
     /// the transition.
     /// Runtime: O[(LookUp + AddRem) * (this.Count + other.Count)]
     /// </summary>  
-    member x.SetTo(other : ISet<'a>) : list<Delta<'a>> =
-        match other with
-            | :? ReferenceCountingSet<'a> as r -> x.SetTo(r)
-            | _ ->
-                let result = ref []
-                let removals = ref []
-                let add v = result := (Add v)::!result
-                let rem v = 
-                    removals := v::!removals
-                    result := (Rem v)::!result
-                
-                for e in x do
-                    if not <| other.Contains e then rem e 
-
-                for o in other do
-                    if x.Add o then add o
-
-                for r in !removals do
-                    x.Remove r |> ignore
-
-                !result
+//
+//    member x.SetTo(other : ISet<'a>) : list<Delta<'a>> =
+//        match other with
+//            | :? ReferenceCountingSet<'a> as r -> x.SetTo(r)
+//            | _ ->
+//                let result = ref []
+//                let removals = ref []
+//                let add v = result := (Add v)::!result
+//                let rem v = 
+//                    removals := v::!removals
+//                    result := (Rem v)::!result
+//                
+//                for e in x do
+//                    if not <| other.Contains e then rem e 
+//
+//                for o in other do
+//                    if x.Add o then add o
+//
+//                for r in !removals do
+//                    x.Remove r |> ignore
+//
+//                !result
 
     /// <summary>
     /// determines if the set is a subset of the given sequence
@@ -293,6 +303,9 @@ type ReferenceCountingSet<'a>(initial : seq<'a>) =
 
     new() = ReferenceCountingSet Seq.empty
 
+
+    interface IVersionedSet<'a> with
+        member x.Version = version
 
     interface ICollection<'a> with
         member x.Add v = x.Add v |> ignore

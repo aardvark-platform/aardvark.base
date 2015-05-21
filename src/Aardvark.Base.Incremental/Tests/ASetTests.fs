@@ -232,6 +232,43 @@ module ``collect tests`` =
         )
         r.GetDelta() |> should setEqual [Add 4]
 
+    [<Test>]
+    let ``toMod triggering even with equal set referece``() =
+        
+        let s = CSet.empty
+
+        let triggerCount = ref 0
+        let hasTriggered() =
+            let c = !triggerCount
+            triggerCount := 0
+            c > 0
+
+        let leak = 
+            s |> ASet.toMod |> Mod.registerCallback (fun set ->
+                triggerCount := !triggerCount + 1
+            )
+
+        hasTriggered() |> should equal true
+
+
+        transact(fun () ->
+            CSet.add 1 s |> ignore
+        )
+        hasTriggered() |> should equal true
+
+        transact(fun () ->
+            CSet.add 1 s |> ignore
+        )
+        hasTriggered() |> should equal false
+
+        transact(fun () ->
+            CSet.remove 1 s |> ignore
+        )
+        hasTriggered() |> should equal true
+
+
+        //pretend leak is used
+        ignore leak
 
 
 

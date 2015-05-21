@@ -8,7 +8,7 @@ open Aardvark.Base.Incremental.ASetReaders
 
 [<CompiledName("ChangeableSet")>]
 type cset<'a>(initial : seq<'a>) =
-    let content = HashSet initial
+    let content = VersionedSet (HashSet initial)
     let readers = WeakSet<BufferedReader<'a>>()
 
     interface aset<'a> with

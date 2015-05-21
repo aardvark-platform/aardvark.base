@@ -54,6 +54,7 @@
   <Import Project="$(SolutionPath).targets" Condition="exists('$(SolutionPath).targets')" />
   <Import Project="$(FSharpTargetsPath)" Condition="exists('$(FSharpTargetsPath)')" />
   <ItemGroup>
+    <Compile Include="Core\Utilities.fs" />
     <Compile Include="Core\PriorityQueue.fs" />
     <Compile Include="Core\WeakSet.fs" />
     <Compile Include="Core\Delta.fs" />

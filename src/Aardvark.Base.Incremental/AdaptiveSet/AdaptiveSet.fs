@@ -101,7 +101,7 @@ module ASet =
 
     let toMod (s : aset<'a>) =
         let r = s.GetReader()
-        let c = r.Content :> System.Collections.Generic.ISet<_>
+        let c = r.Content :> IVersionedSet<_>
 
         let m = Mod.custom (fun () ->
             r.GetDelta() |> ignore
