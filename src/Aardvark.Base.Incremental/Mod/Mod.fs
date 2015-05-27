@@ -283,8 +283,7 @@ module Mod =
     /// initializes a new constant cell using the given value.
     /// </summary>
     let initConstant (v : 'a) =
-        //ConstantMod.Value v
-        ModRef v :> IMod<_>
+        ConstantMod.Value v
 
     /// <summary>
     /// initializes a new constant cell using the given lazy value.
