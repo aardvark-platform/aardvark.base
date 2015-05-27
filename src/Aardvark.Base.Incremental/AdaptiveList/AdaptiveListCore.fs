@@ -463,16 +463,17 @@ module AListReaders =
     type ModReader<'a>(source : IMod<'a>) as this =  
         inherit AdaptiveObject()
         do source.AddOutput this
-        let mutable cache : Option<Time * 'a> = None
+        let mutable old : Option<Time * 'a> = None
         let content = TimeList()
         let mutable rootTime = Time.newRoot()
-        
+        let hasChanged = ChangeTracker.track<'a>
+
         member x.Dispose() =
             source.RemoveOutput x
-            match cache with
+            match old with
                 | Some (t,_) ->
                     Time.delete t
-                    cache <- None
+                    old <- None
                 | None -> ()
             content.Clear()
             Time.delete rootTime
@@ -492,19 +493,19 @@ module AListReaders =
                 x.EvaluateIfNeeded [] (fun () ->
                     let v = source.GetValue()
                     let resultDeltas =
-                        match cache with
-                            | Some (t,c) ->
-                                if not <| System.Object.Equals(v, c) then
+                        if hasChanged v then
+                            match old with
+                                | None ->
+                                    let t = Time.after rootTime
+                                    old <- Some (t,v)
+                                    [Add (t,v)]
+                                | Some (t,c) ->
                                     let tNew = Time.after rootTime
                                     Time.delete t
-                                    cache <- Some (tNew, v)
+                                    old <- Some (tNew, v)
                                     [Rem (t, c); Add (tNew, v)]
-                                else
-                                    []
-                            | None ->
-                                let t = Time.after rootTime
-                                cache <- Some (t,v)
-                                [Add (t,v)]
+                        else
+                            []
 
                     resultDeltas |> apply content
                 )

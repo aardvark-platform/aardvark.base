@@ -246,12 +246,13 @@ module private ASetReaders =
     type ModReader<'a>(source : IMod<'a>) as this =  
         inherit AdaptiveObject()
         do source.AddOutput this
-        let mutable cache : Option<'a> = None
         let content = ReferenceCountingSet()
+        let hasChanged = ChangeTracker.track<'a>
+        let mutable old = None
 
         member x.Dispose() =
             source.RemoveOutput this
-            cache <- None
+            old <- None
 
         override x.Finalize() =
             try x.Dispose() 
@@ -266,16 +267,16 @@ module private ASetReaders =
                 x.EvaluateIfNeeded [] (fun () ->
                     let v = source.GetValue()
                     let resultDeltas =
-                        match cache with
-                            | Some c ->
-                                if not <| System.Object.Equals(v, c) then
-                                    cache <- Some v
+                        if hasChanged v then
+                            match old with
+                                | Some c -> 
+                                    old <- Some v
                                     [Rem c; Add v]
-                                else
-                                    []
-                            | None ->
-                                cache <- Some v
-                                [Add v]
+                                | None ->
+                                    old <- Some v
+                                    [Add v]
+                        else
+                            []
 
                     resultDeltas |> apply content
                 )

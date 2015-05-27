@@ -47,12 +47,14 @@ type IMod<'a> =
 /// </summary>
 type ModRef<'a>(value : 'a) =
     inherit AdaptiveObject()
+
     let mutable value = value
+    let tracker = ChangeTracker.trackVersion<'a>
 
     member x.Value
         with get() = value
         and set v =
-            if not <| Object.Equals(v, value) then
+            if tracker v || not <| Object.Equals(v, value) then
                 value <- v
                 x.MarkOutdated()
 
@@ -130,17 +132,17 @@ module Mod =
     type private EagerMod<'a>(compute : unit -> 'a, eq : Option<'a -> 'a -> bool>) =
         inherit LazyMod<'a>(compute)
 
-        let eq = defaultArg eq (fun a b -> System.Object.Equals(a,b))
+        let hasChanged = ChangeTracker.trackCustom<'a> eq
 
         override x.Mark() =
             let newValue = compute()
             x.OutOfDate <- false
 
-            if eq newValue x.cache then
-                false
-            else
+            if hasChanged newValue then
                 x.cache <- newValue
                 true
+            else
+                false
 
         new(compute) = EagerMod(compute, None)
 
@@ -214,14 +216,13 @@ module Mod =
 
 
     let private callbackTable = ConditionalWeakTable<IMod, ConcurrentHashSet<IDisposable>>()
-    type private CallbackSubscription<'a>(m : IMod, cb : unit -> unit, live : ref<bool>, last : ref<Option<'a>>, set : ConcurrentHashSet<IDisposable>) =
+    type private CallbackSubscription<'a>(m : IMod, cb : unit -> unit, live : ref<bool>, set : ConcurrentHashSet<IDisposable>) =
         
         member x.Dispose() = 
             if !live then
                 live := false
                 m.MarkingCallbacks.Remove cb |> ignore
                 set.Remove x |> ignore
-                last := None
 
         interface IDisposable with
             member x.Dispose() = x.Dispose()
@@ -241,17 +242,16 @@ module Mod =
         let f = scoped f
         let self = ref id
         let live = ref true
-        let last = ref None
+        let hasChanged = ChangeTracker.track<'a>
 
         self := fun () ->
             if !live then
                 try
                     let value = m.GetValue()
-                    match !last with
-                        | Some v when Object.Equals(v, value) -> ()
-                        | _ -> 
-                            f value
-                            last := Some value
+                    if hasChanged value then
+                        f value
+                    else
+                        printfn "swallowed"
                 finally 
                     m.MarkingCallbacks.Add !self |> ignore
         
@@ -261,7 +261,7 @@ module Mod =
 
         let set = callbackTable.GetOrCreateValue(m)
 
-        let s = new CallbackSubscription<'a>(m, !self, live, last, set)
+        let s = new CallbackSubscription<'a>(m, !self, live, set)
         set.Add s |> ignore
         s :> IDisposable
 
@@ -345,7 +345,8 @@ module Mod =
         else
             let f = scoped f
             let inner : ref<Option<'a * IMod<'b>>> = ref None
-            
+            let hasChanged = ChangeTracker.track<'a>
+
             // just a reference-cell for allowing self-recursive
             // access in the compute function below.
             let res = ref <| Unchecked.defaultof<LazyMod<'b>>
@@ -355,12 +356,13 @@ module Mod =
                     // need to pull the input's value
                     // Note that the input is not necessarily outOfDate at this point
                     let v = m.GetValue()
+                    let cv = hasChanged v
 
                     match !inner with
                         // if the function argument has not changed
                         // since the last execution we expect f to return
                         // the identical cell
-                        | Some (v', inner) when Object.Equals(v, v') ->
+                        | Some (v', inner) when not cv ->
                             // since the inner cell might be outOfDate we
                             // simply pull its value and don't touch any in-/outputs.
                             inner.GetValue()
@@ -425,13 +427,19 @@ module Mod =
 
                 // for a detailed description see bind above
                 let res = ref <| Unchecked.defaultof<LazyMod<'c>>
+                let aChanged = ChangeTracker.track<'a>
+                let bChanged = ChangeTracker.track<'b>
+
                 res := 
                     LazyMod(fun () -> 
                         let a = ma.GetValue()
                         let b = mb.GetValue()
 
+                        let ca = aChanged a
+                        let cb = bChanged b
+
                         match !inner with
-                            | Some (va, vb, inner) when Object.Equals(a, va) && Object.Equals(b, vb) ->
+                            | Some (va, vb, inner) when not ca && not cb ->
                                 inner.GetValue()
                             | _ ->
                                 let i = f a b :> IMod<_>
