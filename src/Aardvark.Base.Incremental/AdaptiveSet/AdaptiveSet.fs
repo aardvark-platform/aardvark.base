@@ -163,6 +163,106 @@ module ASet =
         collect id sets
 
 
+    let reduce (f : seq<'a> -> 'b) (s : aset<'a>) : IMod<'b> =
+        s |> toMod |> Mod.map f
+
+    let foldSemiGroup (add : 'a -> 'a -> 'a) (zero : 'a) (s : aset<'a>) : IMod<'a> =
+        let r = s.GetReader()
+        let sum = ref zero
+
+        let res =
+            Mod.custom (fun () ->
+                let mutable rem = false
+                let delta = r.GetDelta()
+                for d in delta do
+                    match d with
+                        | Add v -> sum := add !sum v
+                        | Rem v -> rem <- true
+
+                if rem then
+                    sum := r.Content |> Seq.fold add zero
+
+                !sum
+            )
+
+        r.AddOutput res
+        res
+
+    let foldGroup (add : 'a -> 'a -> 'a) (sub : 'a -> 'a -> 'a) (zero : 'a) (s : aset<'a>) : IMod<'a> =
+        let r = s.GetReader()
+        let sum = ref zero
+
+        let res =
+            Mod.custom (fun () ->
+                let delta = r.GetDelta()
+                for d in delta do
+                    match d with
+                        | Add v -> sum := add !sum v
+                        | Rem v -> sum := sub !sum v
+                !sum
+            )
+
+        r.AddOutput res
+        res
+
+    let reduceM (f : seq<'a> -> 'b) (s : aset<IMod<'a>>) : IMod<'b> =
+        s |> toMod |> Mod.bind (Mod.mapN f)
+
+    let foldSemiGroupM (add : 'a -> 'a -> 'a) (zero : 'a) (s : aset<IMod<'a>>) : IMod<'a> =
+        let r = s.GetReader()
+        let sum = ref zero
+
+        let res = ref Unchecked.defaultof<_>
+        res :=
+            Mod.custom (fun () ->
+                let mutable rem = false
+                let delta = r.GetDelta()
+                for d in delta do
+                    match d with
+                        | Add v -> 
+                            v.AddOutput !res
+                            sum := add !sum (v.GetValue())
+                        | Rem v -> 
+                            v.RemoveOutput !res
+                            rem <- true
+
+                if rem then
+                    sum := r.Content |> Seq.fold (fun s v -> add s (v.GetValue())) zero
+
+                !sum
+            )
+
+        r.AddOutput !res
+        !res
+
+    let foldGroupM (add : 'a -> 'a -> 'a) (sub : 'a -> 'a -> 'a) (zero : 'a) (s : aset<IMod<'a>>) : IMod<'a> =
+        let r = s.GetReader()
+        let sum = ref zero
+
+        let res = ref Unchecked.defaultof<_>
+        res :=
+            Mod.custom (fun () ->
+                let delta = r.GetDelta()
+                for d in delta do
+                    match d with
+                        | Add v -> 
+                            v.AddOutput !res
+                            sum := add !sum (v.GetValue())
+                        | Rem v -> 
+                            v.RemoveOutput !res
+                            sum := sub !sum (v.GetValue())
+                !sum
+            )
+
+        r.AddOutput !res
+        !res
+
+
+    let inline sum (s : aset<'a>) = foldGroup (+) (-) LanguagePrimitives.GenericZero s
+    let inline product (s : aset<'a>) = foldGroup (*) (/) LanguagePrimitives.GenericOne s
+    let inline sumM (s : aset<IMod<'a>>) = foldGroupM (+) (-) LanguagePrimitives.GenericZero s
+    let inline productM (s : aset<IMod<'a>>) = foldGroupM (*) (/) LanguagePrimitives.GenericOne s
+
     let private callbackTable = ConditionalWeakTable<IAdaptiveObject, ConcurrentHashSet<IDisposable>>()
     type private CallbackSubscription(m : IAdaptiveObject, cb : unit -> unit, live : ref<bool>, reader : IDisposable, set : ConcurrentHashSet<IDisposable>) =
         

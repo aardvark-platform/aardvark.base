@@ -335,6 +335,18 @@ module Mod =
         r
 
     /// <summary>
+    /// creates a modifiable cell using the given inputs
+    /// and compute function (being evaluated whenever any of
+    /// the inputs changes.
+    /// </summary>
+    let mapN (f : seq<'a> -> 'b) (inputs : seq<#IMod<'a>>) =
+        let objs = inputs |> Seq.cast |> Seq.toList
+        objs |> mapCustom (fun () ->
+            let values = inputs |> Seq.map (fun m -> m.GetValue()) |> Seq.toList
+            f values
+        )
+
+    /// <summary>
     /// adaptively applies a function to a cell's value
     /// and returns a new dependent cell holding the inner
     /// cell's content.
