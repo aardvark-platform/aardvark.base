@@ -10,6 +10,7 @@ open Fake
 open System
 open System.IO
 open Aardvark.Build
+open System.Text.RegularExpressions
 
 let net40 = []
 let net45 = []
@@ -135,6 +136,79 @@ Target "Deploy" (fun () ->
      else 
         traceError (sprintf "cannot deploy branch: %A" branch)
 )
+
+Target "InstallTo" (fun () ->
+    let target = environVar "InstallPath"
+
+    match target with
+        | null | "" -> 
+            traceError "no output path given"
+        | target ->
+            if not <| Directory.Exists target then
+                failwithf "directory %A not found" target
+            let target = Path.GetFullPath target
+            if not <| Directory.Exists target then
+                failwithf "directory %A not found" target
+
+            Run "CreatePackage"
+            
+
+            let tag = Fake.Git.Information.getLastTag()
+            
+            let packageOutputPath = Path.GetFullPath "bin"
+            let packages = !!"bin/*.nupkg" |> Seq.filter (fun str -> str.EndsWith(tag + ".nupkg")) |> Seq.map Path.GetFullPath
+
+            let packageNameRx = Regex @"^(?<name>.*?)\.(?<version>([0-9]+\.)*[0-9]+)$"
+
+            tracefn "found packages: %A" packages
+                      
+            for p in packages do
+                try
+                    
+                    let fileName = Path.GetFileNameWithoutExtension p
+                    let packageName = packageNameRx.Match fileName
+
+                    if packageName.Success then
+                        let name = packageName.Groups.["name"].Value
+                        let version = packageName.Groups.["version"].Value
+
+                        tracefn "installing package %A (%A)" name version
+
+                        let replace = 
+                            Directory.GetDirectories(target) 
+                                |> Array.map Path.GetFileName
+                                |> Array.filter (fun d -> d.StartsWith name)
+                                |> Array.choose (fun d -> 
+                                    let m = packageNameRx.Match d
+                                    if m.Success then Some (m.Groups.["version"].Value)
+                                    else None
+                                   )
+
+                        for (version) in replace do
+                            let installed = Path.Combine(target, name + "." + version)
+                            if Directory.Exists installed then
+                                Directory.Delete(installed, true)
+
+                        RestorePackageId (fun p -> { p with Sources = [packageOutputPath; "\\\\hobel\\NuGet"]; OutputPath = target; }) name
+
+                        let restoredPackageFolder = DirectoryInfo (Path.Combine(target, name + "." + version))
+
+                        for (version) in replace do
+                            let installed = Path.Combine(target, name + "." + version)
+                            if not <| Directory.Exists installed then
+                                tracefn "overriding version %A" version
+                                copyRecursive restoredPackageFolder (Directory.CreateDirectory installed) true |> ignore
+
+                        trace (sprintf "successfully reinstalled %A" p)
+                    else
+                        traceError (sprintf "could not get package name for: %A" fileName)
+
+                with :? UnauthorizedAccessException as e ->
+                    traceImportant (sprintf "could not reinstall %A" p  )
+
+
+)
+
 
 "Compile" ==> "CreatePackage"
 "Compile40" ==> "CreatePackage"
