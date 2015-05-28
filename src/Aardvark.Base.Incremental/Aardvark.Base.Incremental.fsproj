@@ -90,6 +90,7 @@
     <Compile Include="AdaptiveList\AdaptiveListCore.fs" />
     <Compile Include="AdaptiveList\ChangeableList.fs" />
     <Compile Include="AdaptiveList\AdaptiveList.fs" />
+    <Compile Include="AdaptiveMap\AdaptiveMapCore.fs" />
     <Compile Include="Builders.fs" />
     <Compile Include="CSharp.fs" />
     <Compile Include="Adapters\EventAdapter.fs" />
@@ -100,6 +101,7 @@
     <Compile Include="Tests\ModTests.fs" />
     <Compile Include="Tests\ASetTests.fs" />
     <Compile Include="Tests\AListTests.fs" />
+    <Compile Include="Tests\ASetPerformance.fs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="mscorlib" />
