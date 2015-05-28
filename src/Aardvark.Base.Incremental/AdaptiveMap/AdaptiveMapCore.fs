@@ -14,7 +14,7 @@ type MapDelta<'k, 'v> =
 type IMapReader<'k, 'v when 'k : equality> =
     inherit IDisposable
     inherit IAdaptiveObject
-    abstract member Content : Dictionary<'k, 'v>
+    abstract member Content : IVersionedDictionary<'k, 'v>
     abstract member GetDelta : unit -> list<MapDelta<'k, 'v>>
 
 
@@ -23,6 +23,15 @@ type amap<'k, 'v when 'k : equality> =
     abstract member GetReader : unit -> IMapReader<'k, 'v>
 
 module private AMapReaders =
+
+//    let apply (set : Dictionary<'k, 'v>) (deltas : list<MapDelta<'k, 'v>>) =
+//        deltas 
+//            |> List.filter (fun d ->
+//                match d with
+//                    | Set(k,v) -> set.[k] <- v; true
+//                    | Remove(k,v) -> set.Remove k
+//               )
+
     
     let takeNew _ b = b
 
@@ -30,7 +39,7 @@ module private AMapReaders =
         // TODO: implement
         deltas
 
-    let apply (conflict : 'v -> 'v -> 'v) (content : Dictionary<'k, 'v>) (deltas : list<MapDelta<'k, 'v>>) =
+    let apply (conflict : 'v -> 'v -> 'v) (content : IDictionary<'k, 'v>) (deltas : list<MapDelta<'k, 'v>>) =
         deltas 
             |> clean conflict
             |> List.filter (fun d ->
@@ -102,7 +111,7 @@ module private AMapReaders =
         do source.AddOutput this  
 
         let f = Cache2(scope, f)
-        let content = Dictionary<'k, 'v2>()
+        let content = VersionedDictionary(Dictionary<'k, 'v2>())
 
         member x.Dispose() =
             source.RemoveOutput this
@@ -119,7 +128,7 @@ module private AMapReaders =
             member x.Dispose() = x.Dispose()
 
         interface IMapReader<'k, 'v2> with
-            member x.Content = content
+            member x.Content = content :> _
 
             member x.GetDelta() =
                 x.EvaluateIfNeeded [] (fun () ->
@@ -140,7 +149,7 @@ module private AMapReaders =
         do source.AddOutput this  
 
         let f = Cache2(scope, f)
-        let content = Dictionary<'k, 'v2>()
+        let content = VersionedDictionary(Dictionary<'k, 'v2>())
 
         member x.Dispose() =
             source.RemoveOutput this
@@ -157,7 +166,7 @@ module private AMapReaders =
             member x.Dispose() = x.Dispose()
 
         interface IMapReader<'k, 'v2> with
-            member x.Content = content
+            member x.Content = content :> _
 
             member x.GetDelta() =
                 x.EvaluateIfNeeded [] (fun () ->
@@ -185,7 +194,7 @@ module private AMapReaders =
         inherit AdaptiveObject()
         do source.AddOutput this  
 
-        let content = Dictionary<'k, 'v>()
+        let content = VersionedDictionary<'k, 'v>()
         let dirtyInner = new DirtyMapReaderSet<'k, 'v>()
 
         member x.Dispose() =
@@ -201,7 +210,7 @@ module private AMapReaders =
             member x.Dispose() = x.Dispose()
 
         interface IMapReader<'k, 'v> with
-            member x.Content = content
+            member x.Content = content :> _
 
             member x.GetDelta() =
                 x.EvaluateIfNeeded [] (fun () ->
@@ -254,7 +263,7 @@ module private AMapReaders =
         inherit AdaptiveObject()
         do source.AddOutput this
         let mutable cache : Option<'k * 'v> = None
-        let content = Dictionary()
+        let content = VersionedDictionary()
 
         member x.Dispose() =
             source.RemoveOutput this
@@ -268,7 +277,7 @@ module private AMapReaders =
             member x.Dispose() = x.Dispose()
 
         interface IMapReader<'k, 'v> with
-            member x.Content = content
+            member x.Content = content :> _
             member x.GetDelta() =
                 x.EvaluateIfNeeded [] (fun () ->
                     let (k,v) = source.GetValue()
@@ -292,7 +301,7 @@ module private AMapReaders =
         do source.AddOutput this
 
         let mutable cache : Option<'a * IMapReader<'k, 'v>> = None
-        let content = Dictionary<'k, 'v>()
+        let content = VersionedDictionary<'k, 'v>()
 
         member x.Dispose() =
             source.RemoveOutput this
@@ -313,7 +322,7 @@ module private AMapReaders =
             member x.Dispose() = x.Dispose()
 
         interface IMapReader<'k, 'v> with
-            member x.Content = content
+            member x.Content = content :> _
             member x.GetDelta() =
                 x.EvaluateIfNeeded [] (fun () ->
                     let xs = source.GetValue()
@@ -357,7 +366,7 @@ module private AMapReaders =
         static let mutable incrementalCount = 0
 
 
-        let content = Dictionary<'k, 'v>()
+        let content = VersionedDictionary<'k, 'v>()
 
         let contains (kvp : KeyValuePair<'k, 'v>) =
             match content.TryGetValue kvp.Key with
@@ -418,7 +427,7 @@ module private AMapReaders =
                     l |> apply takeNew content
                 )
 
-            member x.Content = content
+            member x.Content = content :> _
 
 
     let map scope (f : 'k -> 'v1 -> 'v2) (input : IMapReader<'k, 'v1>) =

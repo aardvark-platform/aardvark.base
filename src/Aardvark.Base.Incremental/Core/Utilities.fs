@@ -4,6 +4,7 @@ open Aardvark.Base
 open System.Collections
 open System.Collections.Generic
 open System.Threading
+open System.Runtime.InteropServices
 
 type IVersioned =
     abstract member Version : int
@@ -12,6 +13,9 @@ type IVersionedSet<'a> =
     inherit ISet<'a>
     inherit IVersioned
 
+type IVersionedDictionary<'k, 'v> =
+    inherit IDictionary<'k, 'v>
+    inherit IVersioned
 
 type VersionedSet<'a>(s : ISet<'a>) =
     let mutable version = 0
@@ -77,6 +81,67 @@ type VersionedSet<'a>(s : ISet<'a>) =
 
     interface IEnumerable<'a> with
         member x.GetEnumerator() = x.GetEnumerator()
+
+type VersionedDictionary<'k, 'v when 'k : equality> (d : IDictionary<'k, 'v>) =
+    let dcoll = d :> ICollection<_>
+    let mutable version = 0
+    let hasChanged() = Interlocked.Increment &version |> ignore
+  
+  
+    member x.Add(k,v) = d.Add(k,v); hasChanged()
+    member x.Remove(k : 'k) = if d.Remove(k) then hasChanged(); true else false
+    member x.Item
+        with get k = d.[k]
+        and set k v =
+            match d.TryGetValue k with
+                | (true, o) when System.Object.Equals(o, v) ->
+                    ()
+                | _ ->
+                    d.[k] <- v
+                    hasChanged()
+
+
+    member x.TryGetValue(k : 'k,[<Out>] v : byref<'v>) =
+        d.TryGetValue(k, &v)
+
+    member x.ContainsKey(k) = d.ContainsKey k
+    member x.Keys = d.Keys :> ICollection<_>
+    member x.Values = d.Values :> ICollection<_>
+    member x.Version = version     
+    member x.Count = d.Count
+    member x.Clear() = 
+        let oldCount = x.Count
+        d.Clear()
+        if oldCount <> 0 then hasChanged()
+
+    interface ICollection<KeyValuePair<'k, 'v>> with
+        member x.IsReadOnly = d.IsReadOnly
+        member x.Count = x.Count
+        member x.Add(kvp) = dcoll.Add(kvp); hasChanged()
+        member x.Clear() = x.Clear()
+        member x.Contains(kvp) = dcoll.Contains kvp
+        member x.CopyTo(arr, index) = dcoll.CopyTo(arr, index)
+        member x.Remove(kvp) = if dcoll.Remove kvp then hasChanged(); true else false
+        member x.GetEnumerator() = dcoll.GetEnumerator()
+        member x.GetEnumerator() = dcoll.GetEnumerator() :> IEnumerator
+
+    interface IDictionary<'k, 'v> with
+        member x.Add(k,v) = x.Add(k,v)
+        member x.Remove(k) = x.Remove(k)
+        member x.Item
+            with get k = x.[k]
+            and set k v = x.[k] <- v
+
+
+        member x.TryGetValue(k : 'k, v : byref<'v>) = x.TryGetValue(k, &v)
+        member x.ContainsKey(k) = x.ContainsKey k
+        member x.Keys = x.Keys 
+        member x.Values = x.Values
+
+    interface IVersionedDictionary<'k, 'v> with
+        member x.Version = version
+
+    new() = VersionedDictionary<'k, 'v>(Dictionary())
 
 module ChangeTracker =
     type private ChangeTracker<'a>() =
