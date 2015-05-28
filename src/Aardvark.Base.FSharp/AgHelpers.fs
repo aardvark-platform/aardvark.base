@@ -23,6 +23,7 @@ module AgHelpers =
                             Expression.Lambda<Func<obj, obj>>(Expression.Convert(Expression.Call(Expression.Constant(sem), m, [Expression.Convert(param, argType) :> Expression]), typeof<obj>), param) 
         let compiled = expression.Compile()
 
+        member x.ReturnType = m.ReturnType
         member x.Type = semType
         member x.Method = m
         member x.Fun o = compiled.Invoke(o)
@@ -183,6 +184,7 @@ module AgHelpers =
                                            else
                                                 reg <| Some(SemanticFunction(getSemanticObject(mi.DeclaringType), mi.DeclaringType, mi :?> MethodInfo))
                         | _ -> reg None
+
 
     let internal register (t : System.Type) = 
         let mi = t.GetMethods(System.Reflection.BindingFlags.Public ||| System.Reflection.BindingFlags.Instance)

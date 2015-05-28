@@ -243,6 +243,11 @@ module Ag =
             | _ -> tryGetSynAttributeScope (currentScope.Value.GetChildScope o) name
 
 
+    let tryGetAttributeType (attribute : string) (nodeType : System.Type) =
+        match AgHelpers.tryFindSemanticFunction(nodeType, attribute) with
+            | Some sf -> Some sf.ReturnType
+            | None -> None
+
     //dynamic operators
     let (?<-) (node : obj) (name : string) (value : obj) : unit =
         if logging then Log.line "top level inh write for sem: %s on syntactic entity: %A" name (node.GetType())
