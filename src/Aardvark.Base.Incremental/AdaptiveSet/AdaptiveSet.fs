@@ -184,16 +184,23 @@ module ASet =
     /// returns the resulting set.
     /// </summary>
     let bind (f : 'a -> aset<'b>) (m : IMod<'a>) =
-        let scope = Ag.getContext()
-        AdaptiveSet(fun () -> m |> bind scope (fun v -> (f v).GetReader())) :> aset<'b>
+        if m.IsConstant then m |> Mod.force |> f
+        else
+            let scope = Ag.getContext()
+            AdaptiveSet(fun () -> m |> bind scope (fun v -> (f v).GetReader())) :> aset<'b>
 
     /// <summary>
     /// applies the given function to both cells and adaptively
     /// returns the resulting set.
     /// </summary>
     let bind2 (f : 'a -> 'b -> aset<'c>) (ma : IMod<'a>) (mb : IMod<'b>) =
-        let scope = Ag.getContext()
-        AdaptiveSet(fun () -> bind2 scope (fun a b -> (f a b).GetReader()) ma mb) :> aset<'c>
+        match ma.IsConstant, mb.IsConstant with
+            | true, true -> f (Mod.force ma) (Mod.force mb)
+            | true, false -> let va = Mod.force ma in bind (fun b -> f va b) mb
+            | false, true -> let vb = Mod.force mb in bind (fun a -> f a vb) ma
+            | false, false->
+                let scope = Ag.getContext()
+                AdaptiveSet(fun () -> bind2 scope (fun a b -> (f a b).GetReader()) ma mb) :> aset<'c>
 
     /// <summary>
     /// applies the given function to all elements in the set
