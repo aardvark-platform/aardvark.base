@@ -54,35 +54,6 @@
   <Import Project="$(SolutionPath).targets" Condition="exists('$(SolutionPath).targets')" />
   <Import Project="$(FSharpTargetsPath)" Condition="exists('$(FSharpTargetsPath)')" />
   <ItemGroup>
-    <Compile Include="Core\Utilities.fs" />
-    <Compile Include="Core\PriorityQueue.fs" />
-    <Compile Include="Core\WeakSet.fs" />
-    <Compile Include="Core\Delta.fs" />
-    <Compile Include="Core\ReferenceCountingSet.fs" />
-    <Compile Include="Core\TimeList.fs" />
-    <Compile Include="Core\Cache.fs" />
-    <Compile Include="Core\Core.fs" />
-    <Compile Include="Mod\Mod.fs" />
-    <Compile Include="AdaptiveSet\AdaptiveSetCore.fs" />
-    <Compile Include="AdaptiveSet\ChangeableSet.fs" />
-    <Compile Include="AdaptiveSet\AdaptiveSet.fs" />
-    <Compile Include="AdaptiveList\AdaptiveListCore.fs" />
-    <Compile Include="AdaptiveList\ChangeableList.fs" />
-    <Compile Include="AdaptiveList\AdaptiveList.fs" />
-    <Compile Include="Builders.fs" />
-    <Compile Include="CSharp.fs" />
-    <Compile Include="Adapters\EventAdapter.fs" />
-    <Content Include="packages.config" />
-    <Content Include="app.config" />
-    <Compile Include="Tests\AdaptiveSetReference.fs" />
-    <Compile Include="Tests\ASetUtilities.fs" />
-    <Compile Include="Tests\ModTests.fs" />
-    <Compile Include="Tests\ASetTests.fs" />
-    <Compile Include="Tests\AListTests.fs" />
-    <None Include="Scripts\load-references.fsx" />
-    <None Include="Scripts\load-project.fsx" />
-  </ItemGroup>
-  <ItemGroup>
     <ProjectReference Include="../Aardvark.Base.TypeProviders/Aardvark.Base.TypeProviders.fsproj">
       <Name>Aardvark.Base.TypeProviders</Name>
       <Project>{8bfea4ef-bf0a-4c1a-b7ac-cbdd930306fd}</Project>
@@ -103,6 +74,36 @@
       <Project>{7FEF0693-EFC3-4B85-8F42-933B25F353A8}</Project>
       <Private>False</Private>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Core\PriorityQueue.fs" />
+    <Compile Include="Core\WeakSet.fs" />
+    <Compile Include="Core\Delta.fs" />
+    <Compile Include="Core\ReferenceCountingSet.fs" />
+    <Compile Include="Core\TimeList.fs" />
+    <Compile Include="Core\Cache.fs" />
+    <Compile Include="Core\Core.fs" />
+    <Compile Include="Mod\Mod.fs" />
+    <Compile Include="AdaptiveSet\AdaptiveSetCore.fs" />
+    <Compile Include="AdaptiveSet\ChangeableSet.fs" />
+    <Compile Include="AdaptiveSet\AdaptiveSet.fs" />
+    <Compile Include="AdaptiveList\AdaptiveListCore.fs" />
+    <Compile Include="AdaptiveList\ChangeableList.fs" />
+    <Compile Include="AdaptiveList\AdaptiveList.fs" />
+    <Compile Include="AdaptiveMap\AdaptiveMapCore.fs" />
+    <Compile Include="Builders.fs" />
+    <Compile Include="CSharp.fs" />
+    <Compile Include="Adapters\EventAdapter.fs" />
+    <Content Include="packages.config" />
+    <Content Include="app.config" />
+    <Compile Include="Tests\AdaptiveSetReference.fs" />
+    <Compile Include="Tests\ASetUtilities.fs" />
+    <Compile Include="Tests\ModTests.fs" />
+    <Compile Include="Tests\ASetTests.fs" />
+    <Compile Include="Tests\AListTests.fs" />
+    <Compile Include="Tests\ASetPerformance.fs" />
+  </ItemGroup>
+  <ItemGroup>
     <Reference Include="mscorlib" />
     <Reference Include="FSharp.Core, Version=$(TargetFSharpCoreVersion), Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
       <Private>True</Private>
