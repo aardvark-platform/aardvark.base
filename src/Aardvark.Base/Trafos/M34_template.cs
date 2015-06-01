@@ -1,16 +1,20 @@
-using System;
+﻿using System;
 using System.Text;
 
 namespace Aardvark.Base
 {
-    public partial struct M34d : IMatrix<M34d, V4d, V3d, double>
+    //# foreach (var isDouble in new[] { false, true }) {
+    //#   var ft = isDouble ? "double" : "float";
+    //#   var x3t = isDouble ? "3d" : "3f";
+    //#   var x4t = isDouble ? "4d" : "4f";
+    public partial struct M3__x4t__ : IMatrix<M3__x4t__, V__x4t__, V__x3t__, __ft__>
     {
 
         #region Matrix Arithmetics
 
-        public static M44d Add(M34d a, M44d b)
+        public static M4__x4t__ Add(M3__x4t__ a, M4__x4t__ b)
         {
-            return new M44d(
+            return new M4__x4t__(
                 a.M00 + b.M00, a.M01 + b.M01, a.M02 + b.M02, a.M03 + b.M03,
                 a.M10 + b.M10, a.M11 + b.M11, a.M12 + b.M12, a.M13 + b.M13,
                 a.M20 + b.M20, a.M21 + b.M21, a.M22 + b.M22, a.M23 + b.M23,
@@ -18,9 +22,9 @@ namespace Aardvark.Base
                 );
         }
 
-        public static M44d Subtract(M34d a, M44d b)
+        public static M4__x4t__ Subtract(M3__x4t__ a, M4__x4t__ b)
         {
-            return new M44d(
+            return new M4__x4t__(
                 a.M00 - b.M00, a.M01 - b.M01, a.M02 - b.M02, a.M03 - b.M03,
                 a.M10 - b.M10, a.M11 - b.M11, a.M12 - b.M12, a.M13 - b.M13,
                 a.M20 - b.M20, a.M21 - b.M21, a.M22 - b.M22, a.M23 - b.M23,
@@ -28,9 +32,9 @@ namespace Aardvark.Base
                 );
         }
 
-        public static M44d Subtract(M44d a, M34d b)
+        public static M4__x4t__ Subtract(M4__x4t__ a, M3__x4t__ b)
         {
-            return new M44d(
+            return new M4__x4t__(
                 a.M00 - b.M00, a.M01 - b.M01, a.M02 - b.M02, a.M03 - b.M03,
                 a.M10 - b.M10, a.M11 - b.M11, a.M12 - b.M12, a.M13 - b.M13,
                 a.M20 - b.M20, a.M21 - b.M21, a.M22 - b.M22, a.M23 - b.M23,
@@ -38,18 +42,18 @@ namespace Aardvark.Base
                 );
         }
 
-        public static M34d Multiply(M34d m, Scale3d s)
+        public static M3__x4t__ Multiply(M3__x4t__ m, Scale__x3t__ s)
         {
-            return new M34d(
+            return new M3__x4t__(
                 m.M00 * s.X, m.M01 * s.Y, m.M02 * s.Z, m.M03,
                 m.M10 * s.X, m.M11 * s.Y, m.M12 * s.Z, m.M13,
                 m.M20 * s.X, m.M21 * s.Y, m.M22 * s.Z, m.M23
                 );
         }
 
-        public static M34d Multiply(M34d m, Shift3d t)
+        public static M3__x4t__ Multiply(M3__x4t__ m, Shift__x3t__ t)
         {
-            return new M34d(
+            return new M3__x4t__(
                 m.M00, m.M01, m.M02, m.M00 * t.X + m.M01 * t.Y + m.M02 * t.Z + m.M03,
                 m.M10, m.M11, m.M12, m.M10 * t.X + m.M11 * t.Y + m.M12 * t.Z + m.M13,
                 m.M20, m.M21, m.M22, m.M20 * t.X + m.M21 * t.Y + m.M22 * t.Z + m.M23
@@ -57,18 +61,18 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Transforms a <see cref="M34d"/> to a <see cref="M33d"/> by deleting the
-        /// specified row and column. Internally the <see cref="M34d"/> is tarnsformed 
-        /// to a <see cref="M44d"/> to delete the row and column.
+        /// Transforms a <see cref="M3__x4t__"/> to a <see cref="M3__x3t__"/> by deleting the
+        /// specified row and column. Internally the <see cref="M3__x4t__"/> is tarnsformed 
+        /// to a <see cref="M4__x4t__"/> to delete the row and column.
         /// </summary>
         /// <param name="deleted_row">Row to delete.</param>
         /// <param name="deleted_column">Column to delete.</param>
-        /// <returns>A <see cref="M33d"/>.</returns>
-        public M33d Minor(int deleted_row, int deleted_column)
+        /// <returns>A <see cref="M3__x3t__"/>.</returns>
+        public M3__x3t__ Minor(int deleted_row, int deleted_column)
         {
-            M44d temp = (M44d)this;
+            M4__x4t__ temp = (M4__x4t__)this;
 
-            M33d result = new M33d();
+            M3__x3t__ result = new M3__x3t__();
             int checked_row = 0;
 
             for (int actual_row = 0; actual_row < 4; actual_row++)
@@ -93,12 +97,12 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Calculates the determinant of a <see cref="M34d"/>.
+        /// Calculates the determinant of a <see cref="M3__x4t__"/>.
         /// </summary>
-        /// <returns>Determinant as a double.</returns>
-        public double Determinant()
+        /// <returns>Determinant as a __ft__.</returns>
+        public __ft__ Determinant()
         {
-            double determinant = 0.0f;
+            __ft__ determinant = 0.0f;
 
             for (int actual_column = 0; actual_column < 4; actual_column++)
             {
@@ -118,11 +122,11 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Transforms a <see cref="V4d"/> by a <see cref="M34d"/>.
+        /// Transforms a <see cref="V__x4t__"/> by a <see cref="M3__x4t__"/>.
         /// </summary>
-        public static V4d Transform(M34d m, V4d v)
+        public static V__x4t__ Transform(M3__x4t__ m, V__x4t__ v)
         {
-            return new V4d(
+            return new V__x4t__(
                 m.M00 * v.X + m.M01 * v.Y + m.M02 * v.Z + m.M03 * v.W,
                 m.M10 * v.X + m.M11 * v.Y + m.M12 * v.Z + m.M13 * v.W,
                 m.M20 * v.X + m.M21 * v.Y + m.M22 * v.Z + m.M23 * v.W,
@@ -130,11 +134,11 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Transforms <see cref="V3d"/> direction by a transposed <see cref="M34d"/>.
+        /// Transforms <see cref="V__x3t__"/> direction by a transposed <see cref="M3__x4t__"/>.
         /// </summary>
-        public static V3d TransposedTransformDir(M34d m, V3d v)
+        public static V__x3t__ TransposedTransformDir(M3__x4t__ m, V__x3t__ v)
         {
-            return new V3d(
+            return new V__x3t__(
                 m.M00 * v.X + m.M10 * v.Y + m.M20 * v.Z,
                 m.M01 * v.X + m.M11 * v.Y + m.M21 * v.Z,
                 m.M02 * v.X + m.M12 * v.Y + m.M22 * v.Z
@@ -142,11 +146,11 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Transforms <see cref="V3d"/> position by a transposed <see cref="M34d"/>.
+        /// Transforms <see cref="V__x3t__"/> position by a transposed <see cref="M3__x4t__"/>.
         /// </summary>
-        public static V3d TransposedTransformPos(M34d m, V3d p)
+        public static V__x3t__ TransposedTransformPos(M3__x4t__ m, V__x3t__ p)
         {
-            return new V3d(
+            return new V__x3t__(
                 m.M00 * p.X + m.M10 * p.Y + m.M20 * p.Z,
                 m.M01 * p.X + m.M11 * p.Y + m.M21 * p.Z,
                 m.M02 * p.X + m.M12 * p.Y + m.M22 * p.Z
@@ -154,11 +158,11 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Transforms <see cref="V3d"/> position by a transposed <see cref="M34d"/>.
+        /// Transforms <see cref="V__x3t__"/> position by a transposed <see cref="M3__x4t__"/>.
         /// </summary>
-        public static V3d TransposedTransformPosProj(M34d m, V3d p)
+        public static V__x3t__ TransposedTransformPosProj(M3__x4t__ m, V__x3t__ p)
         {
-            double s = 1 / (m.M03 * p.X + m.M13 * p.Y + m.M23 * p.Z + 1);
+            __ft__ s = 1 / (m.M03 * p.X + m.M13 * p.Y + m.M23 * p.Z + 1);
             return (TransposedTransformDir(m, p)) * s;
         }
 
@@ -166,29 +170,29 @@ namespace Aardvark.Base
 
         #region Arithmetic Operators
 
-        public static M44d operator +(M34d a, M44d b)
+        public static M4__x4t__ operator +(M3__x4t__ a, M4__x4t__ b)
         {
-            return M34d.Add(a, b);
+            return M3__x4t__.Add(a, b);
         }
 
-        public static M44d operator -(M34d a, M44d b)
+        public static M4__x4t__ operator -(M3__x4t__ a, M4__x4t__ b)
         {
-            return M34d.Subtract(a, b);
+            return M3__x4t__.Subtract(a, b);
         }
 
-        public static M44d operator -(M44d a, M34d b)
+        public static M4__x4t__ operator -(M4__x4t__ a, M3__x4t__ b)
         {
-            return M34d.Subtract(a, b);
+            return M3__x4t__.Subtract(a, b);
         }
 
-        public static M34d operator *(M34d m, Scale3d s)
+        public static M3__x4t__ operator *(M3__x4t__ m, Scale__x3t__ s)
         {
-            return M34d.Multiply(m, s);
+            return M3__x4t__.Multiply(m, s);
         }
 
-        public static M34d operator *(M34d m, Shift3d t)
+        public static M3__x4t__ operator *(M3__x4t__ m, Shift__x3t__ t)
         {
-            return M34d.Multiply(m, t);
+            return M3__x4t__.Multiply(m, t);
         }
 
         #endregion
@@ -196,38 +200,38 @@ namespace Aardvark.Base
         #region Comparison Operators
 
         /// <summary>
-        /// Checks if a <see cref="M34d"/> and a <see cref="M44d"/> are equal.
+        /// Checks if a <see cref="M3__x4t__"/> and a <see cref="M4__x4t__"/> are equal.
         /// </summary>
-        public static bool operator ==(M34d a, M44d b)
+        public static bool operator ==(M3__x4t__ a, M4__x4t__ b)
         {
             return
                 a.M00 == b.M00 && a.M01 == b.M01 && a.M02 == b.M02 && a.M03 == b.M03 &&
                 a.M10 == b.M10 && a.M11 == b.M11 && a.M12 == b.M12 && a.M13 == b.M13 &&
                 a.M20 == b.M20 && a.M21 == b.M21 && a.M22 == b.M22 && a.M23 == b.M23 &&
-                    0 == b.M30 &&     0 == b.M31 &&     0 == b.M32 &&     1 == b.M33
+                    0 == b.M30 && 0 == b.M31 && 0 == b.M32 && 1 == b.M33
                 ;
         }
 
         /// <summary>
-        /// Checks if a <see cref="M34d"/> and a <see cref="M44d"/> are equal.
+        /// Checks if a <see cref="M3__x4t__"/> and a <see cref="M4__x4t__"/> are equal.
         /// </summary>
-        public static bool operator ==(M44d a, M34d b)
+        public static bool operator ==(M4__x4t__ a, M3__x4t__ b)
         {
             return b == a;
         }
 
         /// <summary>
-        /// Checks if a <see cref="M34d"/> and a <see cref="M44d"/> are different
+        /// Checks if a <see cref="M3__x4t__"/> and a <see cref="M4__x4t__"/> are different
         /// </summary>
-        public static bool operator !=(M34d a, M44d b)
+        public static bool operator !=(M3__x4t__ a, M4__x4t__ b)
         {
             return !(a == b);
         }
 
         /// <summary>
-        /// Checks if a <see cref="M34d"/> and a <see cref="M44d"/> are different
+        /// Checks if a <see cref="M3__x4t__"/> and a <see cref="M4__x4t__"/> are different
         /// </summary>
-        public static bool operator !=(M44d a, M34d b)
+        public static bool operator !=(M4__x4t__ a, M3__x4t__ b)
         {
             return !(a == b);
         }
@@ -236,107 +240,107 @@ namespace Aardvark.Base
 
         #region Static Creators
 
-        public static M34d Translation(double tx, double ty, double tz)
+        public static M3__x4t__ Translation(__ft__ tx, __ft__ ty, __ft__ tz)
         {
-            return new M34d(
+            return new M3__x4t__(
                 1, 0, 0, tx,
                 0, 1, 0, ty,
                 0, 0, 1, tz
                 );
         }
 
-        public static M34d Translation(V3d vector)
+        public static M3__x4t__ Translation(V__x3t__ vector)
         {
-            return new M34d(1, 0, 0, vector.X,
+            return new M3__x4t__(1, 0, 0, vector.X,
                             0, 1, 0, vector.Y,
                             0, 0, 1, vector.Z);
         }
 
-        public static M34d Translation(Shift3d shift)
+        public static M3__x4t__ Translation(Shift__x3t__ shift)
         {
-            return new M34d(1, 0, 0, shift.X,
+            return new M3__x4t__(1, 0, 0, shift.X,
                             0, 1, 0, shift.Y,
                             0, 0, 1, shift.Z);
         }
 
-        public static M34d Scale(double scaleFactor)
+        public static M3__x4t__ Scale(__ft__ scaleFactor)
         {
-            return new M34d(scaleFactor, 0, 0, 0,
+            return new M3__x4t__(scaleFactor, 0, 0, 0,
                             0, scaleFactor, 0, 0,
                             0, 0, scaleFactor, 0);
         }
 
-        public static M34d Scale(double sx, double sy, double sz)
+        public static M3__x4t__ Scale(__ft__ sx, __ft__ sy, __ft__ sz)
         {
-            return new M34d(sx, 0, 0, 0,
+            return new M3__x4t__(sx, 0, 0, 0,
                             0, sy, 0, 0,
                             0, 0, sz, 0);
         }
 
-        public static M34d Scale(V3d scaleFactors)
+        public static M3__x4t__ Scale(V__x3t__ scaleFactors)
         {
-            return new M34d(scaleFactors.X, 0, 0, 0,
+            return new M3__x4t__(scaleFactors.X, 0, 0, 0,
                             0, scaleFactors.Y, 0, 0,
                             0, 0, scaleFactors.Z, 0);
         }
 
-        public static M34d Scale(Scale3d scale)
+        public static M3__x4t__ Scale(Scale__x3t__ scale)
         {
-            return new M34d(scale.X, 0, 0, 0,
+            return new M3__x4t__(scale.X, 0, 0, 0,
                             0, scale.Y, 0, 0,
                             0, 0, scale.Z, 0);
         }
 
-        public static M34d Rotation(V3d axis, double angleRadians)
+        public static M3__x4t__ Rotation(V__x3t__ axis, __ft__ angleRadians)
         {
-            return (M34d)(new Rot3d(axis, angleRadians));
+            return (M3__x4t__)(new Rot__x3t__(axis, angleRadians));
         }
 
-        public static M34d Rotation(Rot3d q)
+        public static M3__x4t__ Rotation(Rot__x3t__ q)
         {
-            return (M34d)q;
+            return (M3__x4t__)q;
         }
 
-        public static M34d RotationX(double angleRadians)
+        public static M3__x4t__ RotationX(__ft__ angleRadians)
         {
-            double cos = (double)System.Math.Cos(angleRadians);
-            double sin = (double)System.Math.Sin(angleRadians);
+            __ft__ cos = (__ft__)System.Math.Cos(angleRadians);
+            __ft__ sin = (__ft__)System.Math.Sin(angleRadians);
 
-            return new M34d(1, 0, 0, 0,
+            return new M3__x4t__(1, 0, 0, 0,
                             0, cos, -sin, 0,
-                            0, sin,  cos, 0);
+                            0, sin, cos, 0);
         }
 
-        public static M34d RotationY(double angleRadians)
+        public static M3__x4t__ RotationY(__ft__ angleRadians)
         {
-            double cos = (double)System.Math.Cos(angleRadians);
-            double sin = (double)System.Math.Sin(angleRadians);
+            __ft__ cos = (__ft__)System.Math.Cos(angleRadians);
+            __ft__ sin = (__ft__)System.Math.Sin(angleRadians);
 
-            return new M34d(cos, 0, -sin, 0,
+            return new M3__x4t__(cos, 0, -sin, 0,
                             0, 1, 0, 0,
-                            sin, 0,  cos, 0);
+                            sin, 0, cos, 0);
         }
 
-        public static M34d RotationZ(double angleRadians)
+        public static M3__x4t__ RotationZ(__ft__ angleRadians)
         {
-            double cos = (double)System.Math.Cos(angleRadians);
-            double sin = (double)System.Math.Sin(angleRadians);
+            __ft__ cos = (__ft__)System.Math.Cos(angleRadians);
+            __ft__ sin = (__ft__)System.Math.Sin(angleRadians);
 
-            return new M34d(cos, -sin, 0, 0,
-                            sin,  cos, 0, 0,
+            return new M3__x4t__(cos, -sin, 0, 0,
+                            sin, cos, 0, 0,
                             0, 0, 1, 0);
         }
 
         #endregion
 
-        #region ITransform<V3d> implementation.
+        #region ITransform<V__x3t__> implementation.
 
         /// <summary>
         /// Returns the trace of this matrix.
         /// The trace is defined as the sum of the diagonal elements,
         /// and is only defined for square matrices.
         /// </summary>
-        public double Trace
+        public __ft__ Trace
         {
             get { return M00 + M11 + M22 + 1; }
         }
@@ -345,7 +349,7 @@ namespace Aardvark.Base
         /// Returns the determinant of this matrix.
         /// The determinant is only defined for square matrices.
         /// </summary>
-        public double Det
+        public __ft__ Det
         {
             get
             {
@@ -386,19 +390,19 @@ namespace Aardvark.Base
         /// Converts this matrix to its adjoint.
         /// </summary>
         /// <returns>This.</returns>
-        public M44d Adjoin()
+        public M4__x4t__ Adjoin()
         {
-            return (M44d)Adjoint;
+            return (M4__x4t__)Adjoint;
         }
 
         /// <summary>
         /// Returns adjoint of this matrix.
         /// </summary>
-        public M44d Adjoint
+        public M4__x4t__ Adjoint
         {
             get
             {
-                M44d result = new M44d();
+                M4__x4t__ result = new M4__x4t__();
                 for (int row = 0; row < 4; row++)
                 {
                     for (int col = 0; col < 4; col++)
@@ -419,30 +423,30 @@ namespace Aardvark.Base
         /// </summary>
         public bool Invert()
         {
-            var mx = (M44d)this;
+            var mx = (M4__x4t__)this;
             var success = mx.Invert();
-            this = (M34d)mx;
+            this = (M3__x4t__)mx;
             return success;
         }
 
         /// <summary>
         /// Returns inverse of this transform.
         /// </summary>
-        public M34d Inverse
+        public M3__x4t__ Inverse
         {
             get
             {
-                var mx = (M44d)this;
-                return (M34d)(mx.Inverse);
+                var mx = (M4__x4t__)this;
+                return (M3__x4t__)(mx.Inverse);
             }
         }
 
         /// <summary>
         /// Transforms vector v.
         /// </summary>
-        public V4d Transform(V4d v)
+        public V__x4t__ Transform(V__x4t__ v)
         {
-            return new V4d(
+            return new V__x4t__(
                 M00 * v.X + M01 * v.Y + M02 * v.Z + M03 * v.W,
                 M10 * v.X + M11 * v.Y + M12 * v.Z + M13 * v.W,
                 M20 * v.X + M21 * v.Y + M22 * v.Z + M23 * v.W,
@@ -453,4 +457,5 @@ namespace Aardvark.Base
         #endregion
 
     }
+    //# } // isDouble
 }

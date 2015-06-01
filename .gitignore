@@ -36,3 +36,5 @@ Bin
 /src/Aardvark.Base/Vectors/VectorTypeConverter_generator.cs
 /src/Aardvark.Base/Vectors/Vector_generator.cs
 /src/Aardvark.Base/Trafos/M22_generator.cs
+/src/Aardvark.Base/Trafos/M34_generator.cs
+/src/Aardvark.Base/Trafos/M44_generator.cs

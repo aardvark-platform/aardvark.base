@@ -1,6 +1,4 @@
-﻿M34d_aarp.cs:					M34f.cs
-M44d_aarp.cs:					M44f.cs
-Similarity3d_aarp.cs:			Similarity3f.cs
+﻿Similarity3d_aarp.cs:			Similarity3f.cs
 Rot2d_aarp.cs:					Rot2f.cs
 Rot3d_aarp.cs:					Rot3f.cs
 Scale3d_aarp.cs:				Scale3f.cs

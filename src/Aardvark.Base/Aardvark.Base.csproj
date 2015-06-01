@@ -180,10 +180,10 @@
     <None Include="Trafos\M22_template.cs" />
     <Compile Include="Trafos\M22_auto.cs" />
     <Compile Include="Trafos\M33_auto.cs" />
-    <Compile Include="Trafos\M34d_aarp.cs" />
-    <Compile Include="Trafos\M34f.cs" />
-    <Compile Include="Trafos\M44d_aarp.cs" />
-    <Compile Include="Trafos\M44f.cs" />
+    <None Include="Trafos\M34_template.cs" />
+    <Compile Include="Trafos\M34_auto.cs" />
+    <None Include="Trafos\M44_template.cs" />
+    <Compile Include="Trafos\M44_auto.cs" />
     <Compile Include="Trafos\Matrix.cs" />
     <Compile Include="Trafos\MatrixArrayExtensions.cs" />
     <Compile Include="Trafos\Matrix_auto.cs" />
