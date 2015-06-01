@@ -1,5 +1,4 @@
 @echo off
-echo %~dp0
 
 PUSHD %~dp0
 REM cls
@@ -13,8 +12,13 @@ echo downloading FAKE
 "bin\nuget.exe" "install" "Aardvark.Build" "-OutputDirectory" "packages" "-ExcludeVersion"
 )
 
-SET TARGET="Default"
+SET TARGET=Default
+IF NOT [%1]==[] (set TARGET=%1)
 
-IF NOT [%1]==[] (set TARGET="%1")
+>tmp ECHO(%*
+SET /P t=<tmp
+SETLOCAL EnableDelayedExpansion
+IF DEFINED t SET "t=!t:%1 =!"
+SET args=!t!
 
-"packages\FAKE\tools\Fake.exe" "build.fsx" "target=%TARGET%"
+"packages\FAKE\tools\Fake.exe" "build.fsx" "target=%TARGET%" %args%

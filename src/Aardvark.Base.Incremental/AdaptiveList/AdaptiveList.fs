@@ -151,10 +151,23 @@ module AList =
         AdaptiveList(fun () -> bind2 scope (fun a b -> (f a b).GetReader()) ma mb) :> alist<'c>
 
 
+    let mapM (f : 'a -> IMod<'b>) (s : alist<'a>) =
+        s |> collect (fun v ->
+            v |> f |> ofMod
+        )
+
     let filterM (f : 'a -> IMod<bool>) (s : alist<'a>) =
         s |> collect (fun v ->
             v |> f |> bind (fun b -> if b then single v else empty)
         )
+
+    let chooseM (f : 'a -> IMod<Option<'b>>) (s : alist<'a>) =
+        s |> collect (fun v ->
+            v |> f |> bind (fun b -> match b with | Some v -> single v | _ -> empty)
+        )
+
+    let flattenM (s : alist<IMod<'a>>) =
+        s |> collect ofMod
 
     let private callbackTable = ConditionalWeakTable<IAdaptiveObject, ConcurrentHashSet<IDisposable>>()
     type private CallbackSubscription(m : IAdaptiveObject, cb : unit -> unit, live : ref<bool>, reader : IDisposable, set : ConcurrentHashSet<IDisposable>) =
