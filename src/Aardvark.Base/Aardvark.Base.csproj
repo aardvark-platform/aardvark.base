@@ -176,10 +176,10 @@
     <None Include="Trafos\Euclidean2_template.cs" />
     <Compile Include="Trafos\Euclidean3_auto.cs" />
     <None Include="Trafos\Euclidean3_template.cs" />
-    <Compile Include="Trafos\M22d_aarp.cs" />
-    <Compile Include="Trafos\M22f.cs" />
-    <Compile Include="Trafos\M33d_aarp.cs" />
-    <Compile Include="Trafos\M33f.cs" />
+    <None Include="Trafos\M33_template.cs" />
+    <None Include="Trafos\M22_template.cs" />
+    <Compile Include="Trafos\M22_auto.cs" />
+    <Compile Include="Trafos\M33_auto.cs" />
     <Compile Include="Trafos\M34d_aarp.cs" />
     <Compile Include="Trafos\M34f.cs" />
     <Compile Include="Trafos\M44d_aarp.cs" />

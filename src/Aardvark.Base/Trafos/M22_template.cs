@@ -1,37 +1,42 @@
-using System;
+﻿using System;
 using System.Text;
 
 namespace Aardvark.Base
 {
-    
-    public partial struct M22f : ISquareMatrix<M22f, V2f, float, float>
+
+    //# foreach (var isDouble in new[] { false, true }) {
+    //#   var ft = isDouble ? "double" : "float";
+    //#   var x2t = isDouble ? "2d" : "2f";
+    //#   var x3t = isDouble ? "3d" : "3f";
+    //#   var x4t = isDouble ? "4d" : "4f";
+    public partial struct M2__x2t__ : ISquareMatrix<M2__x2t__, V__x2t__, __ft__, __ft__>
     {
         #region Matrix Arithmetics
 
         /// <summary>
-        /// Multiplies matrix with a V3f.
+        /// Multiplies matrix with a V__x3t__.
         /// </summary>
-        public static V3f Multiply(M22f mat, V3f vec)
+        public static V__x3t__ Multiply(M2__x2t__ mat, V__x3t__ vec)
         {
-            return new V3f(mat.M00 * vec.X + mat.M01 * vec.Y,
+            return new V__x3t__(mat.M00 * vec.X + mat.M01 * vec.Y,
                            mat.M10 * vec.X + mat.M11 * vec.Y,
                            vec.Z);
         }
 
         /// <summary>
-        /// Multiplies matrix with a V4f.
+        /// Multiplies matrix with a V__x4t__.
         /// </summary>
-        public static V4f Multiply(M22f mat, V4f vec)
+        public static V__x4t__ Multiply(M2__x2t__ mat, V__x4t__ vec)
         {
-            return new V4f(mat.M00 * vec.X + mat.M01 * vec.Y,
+            return new V__x4t__(mat.M00 * vec.X + mat.M01 * vec.Y,
                            mat.M10 * vec.X + mat.M11 * vec.Y,
                            vec.Z,
                            vec.W);
         }
 
-        public static M33f Multiply(M22f matrix, Scale3f scale)
+        public static M3__x3t__ Multiply(M2__x2t__ matrix, Scale__x3t__ scale)
         {
-            return new M33f(matrix.M00 * scale.X,
+            return new M3__x3t__(matrix.M00 * scale.X,
                              matrix.M01 * scale.Y,
                              0,
 
@@ -44,9 +49,9 @@ namespace Aardvark.Base
                              scale.Z);
         }
 
-        public static M34f Multiply(M22f matrix, Shift3f shift)
+        public static M3__x4t__ Multiply(M2__x2t__ matrix, Shift__x3t__ shift)
         {
-            return new M34f(matrix.M00,
+            return new M3__x4t__(matrix.M00,
                              matrix.M01,
                              0,
                              matrix.M00 * shift.X +
@@ -66,17 +71,17 @@ namespace Aardvark.Base
 
         #region Complex.
 
-        public static M33f Enlarge(M22f m)
+        public static M3__x3t__ Enlarge(M2__x2t__ m)
         {
-            return new M33f(m.M00, m.M01, 0, m.M10, m.M11, 0, 0, 0, 1);
+            return new M3__x3t__(m.M00, m.M01, 0, m.M10, m.M11, 0, 0, 0, 1);
         }
 
         /// <summary>
         /// Transforms vector v.
         /// </summary>
-        public static V2f Transform(M22f m, V2f v)
+        public static V__x2t__ Transform(M2__x2t__ m, V__x2t__ v)
         {
-            return new V2f(
+            return new V__x2t__(
                 m.M00 * v.X + m.M01 * v.Y,
                 m.M10 * v.X + m.M11 * v.Y
                 );
@@ -90,49 +95,49 @@ namespace Aardvark.Base
 
         /// <summary>
         /// </summary>
-        public static V3f operator *(M22f m, V3f n)
+        public static V__x3t__ operator *(M2__x2t__ m, V__x3t__ n)
         {
-            return M22f.Multiply(m, n);
+            return M2__x2t__.Multiply(m, n);
         }
 
         /// <summary>
         /// </summary>
-        public static V4f operator *(M22f m, V4f n)
+        public static V__x4t__ operator *(M2__x2t__ m, V__x4t__ n)
         {
-            return M22f.Multiply(m, n);
+            return M2__x2t__.Multiply(m, n);
         }
 
         /// <summary>
         /// </summary>
-        public static M33f operator *(M22f m, Scale3f n)
+        public static M3__x3t__ operator *(M2__x2t__ m, Scale__x3t__ n)
         {
-            return M22f.Multiply(m, n);
+            return M2__x2t__.Multiply(m, n);
         }
 
         /// <summary>
         /// </summary>
-        public static M34f operator *(M22f m, Shift3f n)
+        public static M3__x4t__ operator *(M2__x2t__ m, Shift__x3t__ n)
         {
-            return M22f.Multiply(m, n);
+            return M2__x2t__.Multiply(m, n);
         }
 
         /// <summary>
         /// Multiplies a matrix with given rotation also represented as 2x2 matrix.
         /// </summary>
-        public static M22f operator *(M22f m, Rot2f q)
+        public static M2__x2t__ operator *(M2__x2t__ m, Rot__x2t__ q)
         {
-            return m * (M22f)q;
+            return m * (M2__x2t__)q;
         }
 
         #endregion
 
-        #region ITransform<V3f> implementation.
+        #region ITransform<V__x3t__> implementation.
 
         /// <summary>
         /// Converts this matrix to its adjoint.
         /// </summary>
         /// <returns>This.</returns>
-        public M22f Adjoin()
+        public M2__x2t__ Adjoin()
         {
             return this = Adjoint;
         }
@@ -140,19 +145,19 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns adjoint of this matrix.
         /// </summary>
-        public M22f Adjoint
+        public M2__x2t__ Adjoint
         {
             get
             {
-                return new M22f(  M11, -M10,
-                                - M01,  M00);
+                return new M2__x2t__(M11, -M10,
+                                -M01, M00);
             }
         }
 
         /// <summary>
         /// Transforms vector v.
         /// </summary>
-        public V2f Transform(V2f v)
+        public V__x2t__ Transform(V__x2t__ v)
         {
             return this * v;
         }
@@ -165,11 +170,11 @@ namespace Aardvark.Base
         /// Creates a 2D rotation matrix with the specified angle in radians.
         /// </summary>
         /// <returns>2D Rotation Matrix</returns>
-        public static M22f Rotation(float angleInRadians)
+        public static M2__x2t__ Rotation(__ft__ angleInRadians)
         {
-            float cos = Fun.Cos(angleInRadians);
-            float sin = Fun.Sin(angleInRadians);
-            return new M22f(cos, -sin,
+            __ft__ cos = Fun.Cos(angleInRadians);
+            __ft__ sin = Fun.Sin(angleInRadians);
+            return new M2__x2t__(cos, -sin,
                             sin, cos);
         }
 
@@ -178,16 +183,17 @@ namespace Aardvark.Base
 
     public static partial class M22Extensions
     {
-        #region V2f Extensions
+        #region V__x2t__ Extensions
         /// <summary>
         /// Returns the outer product (tensor-product) of v1 * v2^T as a 3x3 Matrix.
         /// </summary>
-        public static M22f OuterProduct(this V2f v1, V2f v2)
+        public static M2__x2t__ OuterProduct(this V__x2t__ v1, V__x2t__ v2)
         {
-            return new M22f(
-                v2.X * v1.X, v2.Y * v1.X, 
+            return new M2__x2t__(
+                v2.X * v1.X, v2.Y * v1.X,
                 v2.X * v1.Y, v2.Y * v1.Y);
         }
         #endregion
     }
+    //# } // isDouble
 }
