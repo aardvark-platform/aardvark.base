@@ -47,12 +47,6 @@
     <NoWarn>1591</NoWarn>
     <DocumentationFile>..\..\bin\Release\Aardvark.Base.xml</DocumentationFile>
   </PropertyGroup>
-  <PropertyGroup Condition="exists('$(OutDir)..\AardReplacer.exe')">
-    <PreBuildEvent>"$(OutDir)..\AardReplacer.exe" "$(ProjectDir)\Trafos\Aardreps.aarp"</PreBuildEvent>
-  </PropertyGroup>
-  <PropertyGroup Condition="exists('$(OutDir)..\..\AardReplacer.exe')">
-    <PreBuildEvent>"$(OutDir)..\..\AardReplacer.exe" "$(ProjectDir)\Trafos\Aardreps.aarp"</PreBuildEvent>
-  </PropertyGroup>
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <Import Project="..\..\..\..\build\Aardvark.targets" Condition="exists('..\..\..\..\build\Aardvark.targets')" />
   <Import Project="$(SolutionPath).targets" Condition="exists('$(SolutionPath).targets')" />
@@ -192,11 +186,11 @@
     <None Include="Trafos\Rot3_template.cs" />
     <Compile Include="Trafos\Rot2_auto.cs" />
     <Compile Include="Trafos\Rot3_auto.cs" />
-    <Compile Include="Trafos\Scale3d_aarp.cs" />
-    <Compile Include="Trafos\Scale3f.cs" />
-    <Compile Include="Trafos\Shift3d_aarp.cs" />
-    <Compile Include="Trafos\Shift3f.cs" />
+    <None Include="Trafos\Scale3_template.cs" />
     <None Include="Trafos\Similarity3_template.cs" />
+    <None Include="Trafos\Shift3_template.cs" />
+    <Compile Include="Trafos\Scale3_auto.cs" />
+    <Compile Include="Trafos\Shift3_auto.cs" />
     <Compile Include="Trafos\Similarity3_auto.cs" />
     <Compile Include="Trafos\Trafo2d.cs" />
     <Compile Include="Trafos\Trafo3d.cs" />
@@ -275,7 +269,6 @@
     <Compile Include="Math\Mapping.cs" />
     <Compile Include="Math\SampleGrid2d.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <None Include="Trafos\Aardreps.aarp" />
   </ItemGroup>
   <ItemGroup />
   <Target Name="Package">
