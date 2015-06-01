@@ -1,7 +1,4 @@
-﻿Similarity3d_aarp.cs:			Similarity3f.cs
-Rot2d_aarp.cs:					Rot2f.cs
-Rot3d_aarp.cs:					Rot3f.cs
-Scale3d_aarp.cs:				Scale3f.cs
+﻿Scale3d_aarp.cs:				Scale3f.cs
 Shift3d_aarp.cs:				Shift3f.cs
         double                          float
 		double							single
