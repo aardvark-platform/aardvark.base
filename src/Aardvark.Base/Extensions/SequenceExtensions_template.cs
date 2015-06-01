@@ -253,5 +253,115 @@ namespace Aardvark.Base
         #endregion
 
         //# } // foreach t
+
+        #region Sequences of Tups
+
+        //# Action comma = () => Out(", ");
+        //# for (int tc = 2; tc <= 8; tc++) {
+        //#   var Ti = tc.Expand(i => "T" + i).Join(", ");
+        //#   var ei = tc.Expand(i => "e" + i).Join(", ");
+        //#   var tupEi = tc.Expand(i => "tup.E" + i).Join(", ");
+
+
+        public static IEnumerable<T> Select<__Ti__, T>(
+        this IEnumerable<Tup<__Ti__>> sequence, Func<__Ti__, T> selector)
+        {
+            return sequence.Select(tup => selector(__tupEi__));
+        }
+        public static IEnumerable<Tup<__Ti__>> Where<__Ti__>(
+        this IEnumerable<Tup<__Ti__>> sequence, Func<__Ti__, bool> predicate)
+        {
+            return sequence.Where(tup => predicate(__tupEi__));
+        }
+
+        public static void ForEach<__Ti__>(this Tup<__Ti__>[] array, Action<__Ti__> act)
+        {
+            for (int i = 0; i < array.Length; i++)
+            {
+                var tup = array[i]; act(__tupEi__);
+            }
+        }
+
+        public static void ForEach<__Ti__>(this Tup<__Ti__>[] array, Action<__Ti__, int> act)
+        {
+            int index = 0;
+            for (int i = 0; i < array.Length; i++)
+            {
+                var tup = array[i]; act(__tupEi__, index++);
+            }
+        }
+
+        public static void ForEach<__Ti__>(this List<Tup<__Ti__>> list, Action<__Ti__> act)
+        {
+            for (int i = 0; i < list.Count; i++)
+            {
+                var tup = list[i]; act(__tupEi__);
+            }
+        }
+
+        public static void ForEach<__Ti__>(this List<Tup<__Ti__>> list, Action<__Ti__, int> act)
+        {
+            int index = 0;
+            for (int i = 0; i < list.Count; i++)
+            {
+                var tup = list[i]; act(__tupEi__, index++);
+            }
+        }
+
+        public static void ForEach<__Ti__>(this IEnumerable<Tup<__Ti__>> seq, Action<__Ti__> act)
+        {
+            foreach (var tup in seq)
+                act(__tupEi__);
+        }
+
+        public static void ForEach<__Ti__>(this IEnumerable<Tup<__Ti__>> seq, Action<__Ti__, int> act)
+        {
+            int index = 0;
+            foreach (var tup in seq)
+                act(__tupEi__, index++);
+        }
+
+        public static void Add<__Ti__>(this List<Tup<__Ti__>> list, /*# tc.ForEach(i=>{*/T__i__ e__i__/*#}, comma); */)
+        {
+            list.Add(new Tup<__Ti__>(__ei__));
+        }
+
+        public static T[] CopyToArray<__Ti__, T>(this List<Tup<__Ti__>> list, Func<__Ti__, T> fun)
+        {
+            var count = list.Count;
+            var array = new T[count];
+            for (int i = 0; i < count; i++)
+            {
+                var tup = list[i]; array[i] = fun(__tupEi__);
+            }
+            return array;
+        }
+
+        public static T[] Map<__Ti__, T>(this Tup<__Ti__>[] array, Func<__Ti__, T> fun)
+        {
+            var count = array.Length;
+            var result = new T[count];
+            for (int i = 0; i < count; i++)
+            {
+                var tup = array[i]; result[i] = fun(__tupEi__);
+            }
+            return result;
+        }
+
+        public static List<T> Map<__Ti__, T>(this List<Tup<__Ti__>> list, Func<__Ti__, T> fun)
+        {
+            var count = list.Count;
+            var result = new List<T>(count);
+            for (int i = 0; i < count; i++)
+            {
+                var tup = list[i]; result.Add(fun(__tupEi__));
+            }
+            return result;
+        }
+
+        //# } // tc
+
+        #endregion
+
     }
 }

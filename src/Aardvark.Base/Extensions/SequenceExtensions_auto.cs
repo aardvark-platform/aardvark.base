@@ -4327,5 +4327,697 @@ namespace Aardvark.Base
 
         #endregion
 
+
+        #region Sequences of Tups
+
+
+
+        public static IEnumerable<T> Select<T0, T1, T>(
+        this IEnumerable<Tup<T0, T1>> sequence, Func<T0, T1, T> selector)
+        {
+            return sequence.Select(tup => selector(tup.E0, tup.E1));
+        }
+        public static IEnumerable<Tup<T0, T1>> Where<T0, T1>(
+        this IEnumerable<Tup<T0, T1>> sequence, Func<T0, T1, bool> predicate)
+        {
+            return sequence.Where(tup => predicate(tup.E0, tup.E1));
+        }
+
+        public static void ForEach<T0, T1>(this Tup<T0, T1>[] array, Action<T0, T1> act)
+        {
+            for (int i = 0; i < array.Length; i++)
+            {
+                var tup = array[i]; act(tup.E0, tup.E1);
+            }
+        }
+
+        public static void ForEach<T0, T1>(this Tup<T0, T1>[] array, Action<T0, T1, int> act)
+        {
+            int index = 0;
+            for (int i = 0; i < array.Length; i++)
+            {
+                var tup = array[i]; act(tup.E0, tup.E1, index++);
+            }
+        }
+
+        public static void ForEach<T0, T1>(this List<Tup<T0, T1>> list, Action<T0, T1> act)
+        {
+            for (int i = 0; i < list.Count; i++)
+            {
+                var tup = list[i]; act(tup.E0, tup.E1);
+            }
+        }
+
+        public static void ForEach<T0, T1>(this List<Tup<T0, T1>> list, Action<T0, T1, int> act)
+        {
+            int index = 0;
+            for (int i = 0; i < list.Count; i++)
+            {
+                var tup = list[i]; act(tup.E0, tup.E1, index++);
+            }
+        }
+
+        public static void ForEach<T0, T1>(this IEnumerable<Tup<T0, T1>> seq, Action<T0, T1> act)
+        {
+            foreach (var tup in seq)
+                act(tup.E0, tup.E1);
+        }
+
+        public static void ForEach<T0, T1>(this IEnumerable<Tup<T0, T1>> seq, Action<T0, T1, int> act)
+        {
+            int index = 0;
+            foreach (var tup in seq)
+                act(tup.E0, tup.E1, index++);
+        }
+
+        public static void Add<T0, T1>(this List<Tup<T0, T1>> list, T0 e0, T1 e1)
+        {
+            list.Add(new Tup<T0, T1>(e0, e1));
+        }
+
+        public static T[] CopyToArray<T0, T1, T>(this List<Tup<T0, T1>> list, Func<T0, T1, T> fun)
+        {
+            var count = list.Count;
+            var array = new T[count];
+            for (int i = 0; i < count; i++)
+            {
+                var tup = list[i]; array[i] = fun(tup.E0, tup.E1);
+            }
+            return array;
+        }
+
+        public static T[] Map<T0, T1, T>(this Tup<T0, T1>[] array, Func<T0, T1, T> fun)
+        {
+            var count = array.Length;
+            var result = new T[count];
+            for (int i = 0; i < count; i++)
+            {
+                var tup = array[i]; result[i] = fun(tup.E0, tup.E1);
+            }
+            return result;
+        }
+
+        public static List<T> Map<T0, T1, T>(this List<Tup<T0, T1>> list, Func<T0, T1, T> fun)
+        {
+            var count = list.Count;
+            var result = new List<T>(count);
+            for (int i = 0; i < count; i++)
+            {
+                var tup = list[i]; result.Add(fun(tup.E0, tup.E1));
+            }
+            return result;
+        }
+
+
+
+        public static IEnumerable<T> Select<T0, T1, T2, T>(
+        this IEnumerable<Tup<T0, T1, T2>> sequence, Func<T0, T1, T2, T> selector)
+        {
+            return sequence.Select(tup => selector(tup.E0, tup.E1, tup.E2));
+        }
+        public static IEnumerable<Tup<T0, T1, T2>> Where<T0, T1, T2>(
+        this IEnumerable<Tup<T0, T1, T2>> sequence, Func<T0, T1, T2, bool> predicate)
+        {
+            return sequence.Where(tup => predicate(tup.E0, tup.E1, tup.E2));
+        }
+
+        public static void ForEach<T0, T1, T2>(this Tup<T0, T1, T2>[] array, Action<T0, T1, T2> act)
+        {
+            for (int i = 0; i < array.Length; i++)
+            {
+                var tup = array[i]; act(tup.E0, tup.E1, tup.E2);
+            }
+        }
+
+        public static void ForEach<T0, T1, T2>(this Tup<T0, T1, T2>[] array, Action<T0, T1, T2, int> act)
+        {
+            int index = 0;
+            for (int i = 0; i < array.Length; i++)
+            {
+                var tup = array[i]; act(tup.E0, tup.E1, tup.E2, index++);
+            }
+        }
+
+        public static void ForEach<T0, T1, T2>(this List<Tup<T0, T1, T2>> list, Action<T0, T1, T2> act)
+        {
+            for (int i = 0; i < list.Count; i++)
+            {
+                var tup = list[i]; act(tup.E0, tup.E1, tup.E2);
+            }
+        }
+
+        public static void ForEach<T0, T1, T2>(this List<Tup<T0, T1, T2>> list, Action<T0, T1, T2, int> act)
+        {
+            int index = 0;
+            for (int i = 0; i < list.Count; i++)
+            {
+                var tup = list[i]; act(tup.E0, tup.E1, tup.E2, index++);
+            }
+        }
+
+        public static void ForEach<T0, T1, T2>(this IEnumerable<Tup<T0, T1, T2>> seq, Action<T0, T1, T2> act)
+        {
+            foreach (var tup in seq)
+                act(tup.E0, tup.E1, tup.E2);
+        }
+
+        public static void ForEach<T0, T1, T2>(this IEnumerable<Tup<T0, T1, T2>> seq, Action<T0, T1, T2, int> act)
+        {
+            int index = 0;
+            foreach (var tup in seq)
+                act(tup.E0, tup.E1, tup.E2, index++);
+        }
+
+        public static void Add<T0, T1, T2>(this List<Tup<T0, T1, T2>> list, T0 e0, T1 e1, T2 e2)
+        {
+            list.Add(new Tup<T0, T1, T2>(e0, e1, e2));
+        }
+
+        public static T[] CopyToArray<T0, T1, T2, T>(this List<Tup<T0, T1, T2>> list, Func<T0, T1, T2, T> fun)
+        {
+            var count = list.Count;
+            var array = new T[count];
+            for (int i = 0; i < count; i++)
+            {
+                var tup = list[i]; array[i] = fun(tup.E0, tup.E1, tup.E2);
+            }
+            return array;
+        }
+
+        public static T[] Map<T0, T1, T2, T>(this Tup<T0, T1, T2>[] array, Func<T0, T1, T2, T> fun)
+        {
+            var count = array.Length;
+            var result = new T[count];
+            for (int i = 0; i < count; i++)
+            {
+                var tup = array[i]; result[i] = fun(tup.E0, tup.E1, tup.E2);
+            }
+            return result;
+        }
+
+        public static List<T> Map<T0, T1, T2, T>(this List<Tup<T0, T1, T2>> list, Func<T0, T1, T2, T> fun)
+        {
+            var count = list.Count;
+            var result = new List<T>(count);
+            for (int i = 0; i < count; i++)
+            {
+                var tup = list[i]; result.Add(fun(tup.E0, tup.E1, tup.E2));
+            }
+            return result;
+        }
+
+
+
+        public static IEnumerable<T> Select<T0, T1, T2, T3, T>(
+        this IEnumerable<Tup<T0, T1, T2, T3>> sequence, Func<T0, T1, T2, T3, T> selector)
+        {
+            return sequence.Select(tup => selector(tup.E0, tup.E1, tup.E2, tup.E3));
+        }
+        public static IEnumerable<Tup<T0, T1, T2, T3>> Where<T0, T1, T2, T3>(
+        this IEnumerable<Tup<T0, T1, T2, T3>> sequence, Func<T0, T1, T2, T3, bool> predicate)
+        {
+            return sequence.Where(tup => predicate(tup.E0, tup.E1, tup.E2, tup.E3));
+        }
+
+        public static void ForEach<T0, T1, T2, T3>(this Tup<T0, T1, T2, T3>[] array, Action<T0, T1, T2, T3> act)
+        {
+            for (int i = 0; i < array.Length; i++)
+            {
+                var tup = array[i]; act(tup.E0, tup.E1, tup.E2, tup.E3);
+            }
+        }
+
+        public static void ForEach<T0, T1, T2, T3>(this Tup<T0, T1, T2, T3>[] array, Action<T0, T1, T2, T3, int> act)
+        {
+            int index = 0;
+            for (int i = 0; i < array.Length; i++)
+            {
+                var tup = array[i]; act(tup.E0, tup.E1, tup.E2, tup.E3, index++);
+            }
+        }
+
+        public static void ForEach<T0, T1, T2, T3>(this List<Tup<T0, T1, T2, T3>> list, Action<T0, T1, T2, T3> act)
+        {
+            for (int i = 0; i < list.Count; i++)
+            {
+                var tup = list[i]; act(tup.E0, tup.E1, tup.E2, tup.E3);
+            }
+        }
+
+        public static void ForEach<T0, T1, T2, T3>(this List<Tup<T0, T1, T2, T3>> list, Action<T0, T1, T2, T3, int> act)
+        {
+            int index = 0;
+            for (int i = 0; i < list.Count; i++)
+            {
+                var tup = list[i]; act(tup.E0, tup.E1, tup.E2, tup.E3, index++);
+            }
+        }
+
+        public static void ForEach<T0, T1, T2, T3>(this IEnumerable<Tup<T0, T1, T2, T3>> seq, Action<T0, T1, T2, T3> act)
+        {
+            foreach (var tup in seq)
+                act(tup.E0, tup.E1, tup.E2, tup.E3);
+        }
+
+        public static void ForEach<T0, T1, T2, T3>(this IEnumerable<Tup<T0, T1, T2, T3>> seq, Action<T0, T1, T2, T3, int> act)
+        {
+            int index = 0;
+            foreach (var tup in seq)
+                act(tup.E0, tup.E1, tup.E2, tup.E3, index++);
+        }
+
+        public static void Add<T0, T1, T2, T3>(this List<Tup<T0, T1, T2, T3>> list, T0 e0, T1 e1, T2 e2, T3 e3)
+        {
+            list.Add(new Tup<T0, T1, T2, T3>(e0, e1, e2, e3));
+        }
+
+        public static T[] CopyToArray<T0, T1, T2, T3, T>(this List<Tup<T0, T1, T2, T3>> list, Func<T0, T1, T2, T3, T> fun)
+        {
+            var count = list.Count;
+            var array = new T[count];
+            for (int i = 0; i < count; i++)
+            {
+                var tup = list[i]; array[i] = fun(tup.E0, tup.E1, tup.E2, tup.E3);
+            }
+            return array;
+        }
+
+        public static T[] Map<T0, T1, T2, T3, T>(this Tup<T0, T1, T2, T3>[] array, Func<T0, T1, T2, T3, T> fun)
+        {
+            var count = array.Length;
+            var result = new T[count];
+            for (int i = 0; i < count; i++)
+            {
+                var tup = array[i]; result[i] = fun(tup.E0, tup.E1, tup.E2, tup.E3);
+            }
+            return result;
+        }
+
+        public static List<T> Map<T0, T1, T2, T3, T>(this List<Tup<T0, T1, T2, T3>> list, Func<T0, T1, T2, T3, T> fun)
+        {
+            var count = list.Count;
+            var result = new List<T>(count);
+            for (int i = 0; i < count; i++)
+            {
+                var tup = list[i]; result.Add(fun(tup.E0, tup.E1, tup.E2, tup.E3));
+            }
+            return result;
+        }
+
+
+
+        public static IEnumerable<T> Select<T0, T1, T2, T3, T4, T>(
+        this IEnumerable<Tup<T0, T1, T2, T3, T4>> sequence, Func<T0, T1, T2, T3, T4, T> selector)
+        {
+            return sequence.Select(tup => selector(tup.E0, tup.E1, tup.E2, tup.E3, tup.E4));
+        }
+        public static IEnumerable<Tup<T0, T1, T2, T3, T4>> Where<T0, T1, T2, T3, T4>(
+        this IEnumerable<Tup<T0, T1, T2, T3, T4>> sequence, Func<T0, T1, T2, T3, T4, bool> predicate)
+        {
+            return sequence.Where(tup => predicate(tup.E0, tup.E1, tup.E2, tup.E3, tup.E4));
+        }
+
+        public static void ForEach<T0, T1, T2, T3, T4>(this Tup<T0, T1, T2, T3, T4>[] array, Action<T0, T1, T2, T3, T4> act)
+        {
+            for (int i = 0; i < array.Length; i++)
+            {
+                var tup = array[i]; act(tup.E0, tup.E1, tup.E2, tup.E3, tup.E4);
+            }
+        }
+
+        public static void ForEach<T0, T1, T2, T3, T4>(this Tup<T0, T1, T2, T3, T4>[] array, Action<T0, T1, T2, T3, T4, int> act)
+        {
+            int index = 0;
+            for (int i = 0; i < array.Length; i++)
+            {
+                var tup = array[i]; act(tup.E0, tup.E1, tup.E2, tup.E3, tup.E4, index++);
+            }
+        }
+
+        public static void ForEach<T0, T1, T2, T3, T4>(this List<Tup<T0, T1, T2, T3, T4>> list, Action<T0, T1, T2, T3, T4> act)
+        {
+            for (int i = 0; i < list.Count; i++)
+            {
+                var tup = list[i]; act(tup.E0, tup.E1, tup.E2, tup.E3, tup.E4);
+            }
+        }
+
+        public static void ForEach<T0, T1, T2, T3, T4>(this List<Tup<T0, T1, T2, T3, T4>> list, Action<T0, T1, T2, T3, T4, int> act)
+        {
+            int index = 0;
+            for (int i = 0; i < list.Count; i++)
+            {
+                var tup = list[i]; act(tup.E0, tup.E1, tup.E2, tup.E3, tup.E4, index++);
+            }
+        }
+
+        public static void ForEach<T0, T1, T2, T3, T4>(this IEnumerable<Tup<T0, T1, T2, T3, T4>> seq, Action<T0, T1, T2, T3, T4> act)
+        {
+            foreach (var tup in seq)
+                act(tup.E0, tup.E1, tup.E2, tup.E3, tup.E4);
+        }
+
+        public static void ForEach<T0, T1, T2, T3, T4>(this IEnumerable<Tup<T0, T1, T2, T3, T4>> seq, Action<T0, T1, T2, T3, T4, int> act)
+        {
+            int index = 0;
+            foreach (var tup in seq)
+                act(tup.E0, tup.E1, tup.E2, tup.E3, tup.E4, index++);
+        }
+
+        public static void Add<T0, T1, T2, T3, T4>(this List<Tup<T0, T1, T2, T3, T4>> list, T0 e0, T1 e1, T2 e2, T3 e3, T4 e4)
+        {
+            list.Add(new Tup<T0, T1, T2, T3, T4>(e0, e1, e2, e3, e4));
+        }
+
+        public static T[] CopyToArray<T0, T1, T2, T3, T4, T>(this List<Tup<T0, T1, T2, T3, T4>> list, Func<T0, T1, T2, T3, T4, T> fun)
+        {
+            var count = list.Count;
+            var array = new T[count];
+            for (int i = 0; i < count; i++)
+            {
+                var tup = list[i]; array[i] = fun(tup.E0, tup.E1, tup.E2, tup.E3, tup.E4);
+            }
+            return array;
+        }
+
+        public static T[] Map<T0, T1, T2, T3, T4, T>(this Tup<T0, T1, T2, T3, T4>[] array, Func<T0, T1, T2, T3, T4, T> fun)
+        {
+            var count = array.Length;
+            var result = new T[count];
+            for (int i = 0; i < count; i++)
+            {
+                var tup = array[i]; result[i] = fun(tup.E0, tup.E1, tup.E2, tup.E3, tup.E4);
+            }
+            return result;
+        }
+
+        public static List<T> Map<T0, T1, T2, T3, T4, T>(this List<Tup<T0, T1, T2, T3, T4>> list, Func<T0, T1, T2, T3, T4, T> fun)
+        {
+            var count = list.Count;
+            var result = new List<T>(count);
+            for (int i = 0; i < count; i++)
+            {
+                var tup = list[i]; result.Add(fun(tup.E0, tup.E1, tup.E2, tup.E3, tup.E4));
+            }
+            return result;
+        }
+
+
+
+        public static IEnumerable<T> Select<T0, T1, T2, T3, T4, T5, T>(
+        this IEnumerable<Tup<T0, T1, T2, T3, T4, T5>> sequence, Func<T0, T1, T2, T3, T4, T5, T> selector)
+        {
+            return sequence.Select(tup => selector(tup.E0, tup.E1, tup.E2, tup.E3, tup.E4, tup.E5));
+        }
+        public static IEnumerable<Tup<T0, T1, T2, T3, T4, T5>> Where<T0, T1, T2, T3, T4, T5>(
+        this IEnumerable<Tup<T0, T1, T2, T3, T4, T5>> sequence, Func<T0, T1, T2, T3, T4, T5, bool> predicate)
+        {
+            return sequence.Where(tup => predicate(tup.E0, tup.E1, tup.E2, tup.E3, tup.E4, tup.E5));
+        }
+
+        public static void ForEach<T0, T1, T2, T3, T4, T5>(this Tup<T0, T1, T2, T3, T4, T5>[] array, Action<T0, T1, T2, T3, T4, T5> act)
+        {
+            for (int i = 0; i < array.Length; i++)
+            {
+                var tup = array[i]; act(tup.E0, tup.E1, tup.E2, tup.E3, tup.E4, tup.E5);
+            }
+        }
+
+        public static void ForEach<T0, T1, T2, T3, T4, T5>(this Tup<T0, T1, T2, T3, T4, T5>[] array, Action<T0, T1, T2, T3, T4, T5, int> act)
+        {
+            int index = 0;
+            for (int i = 0; i < array.Length; i++)
+            {
+                var tup = array[i]; act(tup.E0, tup.E1, tup.E2, tup.E3, tup.E4, tup.E5, index++);
+            }
+        }
+
+        public static void ForEach<T0, T1, T2, T3, T4, T5>(this List<Tup<T0, T1, T2, T3, T4, T5>> list, Action<T0, T1, T2, T3, T4, T5> act)
+        {
+            for (int i = 0; i < list.Count; i++)
+            {
+                var tup = list[i]; act(tup.E0, tup.E1, tup.E2, tup.E3, tup.E4, tup.E5);
+            }
+        }
+
+        public static void ForEach<T0, T1, T2, T3, T4, T5>(this List<Tup<T0, T1, T2, T3, T4, T5>> list, Action<T0, T1, T2, T3, T4, T5, int> act)
+        {
+            int index = 0;
+            for (int i = 0; i < list.Count; i++)
+            {
+                var tup = list[i]; act(tup.E0, tup.E1, tup.E2, tup.E3, tup.E4, tup.E5, index++);
+            }
+        }
+
+        public static void ForEach<T0, T1, T2, T3, T4, T5>(this IEnumerable<Tup<T0, T1, T2, T3, T4, T5>> seq, Action<T0, T1, T2, T3, T4, T5> act)
+        {
+            foreach (var tup in seq)
+                act(tup.E0, tup.E1, tup.E2, tup.E3, tup.E4, tup.E5);
+        }
+
+        public static void ForEach<T0, T1, T2, T3, T4, T5>(this IEnumerable<Tup<T0, T1, T2, T3, T4, T5>> seq, Action<T0, T1, T2, T3, T4, T5, int> act)
+        {
+            int index = 0;
+            foreach (var tup in seq)
+                act(tup.E0, tup.E1, tup.E2, tup.E3, tup.E4, tup.E5, index++);
+        }
+
+        public static void Add<T0, T1, T2, T3, T4, T5>(this List<Tup<T0, T1, T2, T3, T4, T5>> list, T0 e0, T1 e1, T2 e2, T3 e3, T4 e4, T5 e5)
+        {
+            list.Add(new Tup<T0, T1, T2, T3, T4, T5>(e0, e1, e2, e3, e4, e5));
+        }
+
+        public static T[] CopyToArray<T0, T1, T2, T3, T4, T5, T>(this List<Tup<T0, T1, T2, T3, T4, T5>> list, Func<T0, T1, T2, T3, T4, T5, T> fun)
+        {
+            var count = list.Count;
+            var array = new T[count];
+            for (int i = 0; i < count; i++)
+            {
+                var tup = list[i]; array[i] = fun(tup.E0, tup.E1, tup.E2, tup.E3, tup.E4, tup.E5);
+            }
+            return array;
+        }
+
+        public static T[] Map<T0, T1, T2, T3, T4, T5, T>(this Tup<T0, T1, T2, T3, T4, T5>[] array, Func<T0, T1, T2, T3, T4, T5, T> fun)
+        {
+            var count = array.Length;
+            var result = new T[count];
+            for (int i = 0; i < count; i++)
+            {
+                var tup = array[i]; result[i] = fun(tup.E0, tup.E1, tup.E2, tup.E3, tup.E4, tup.E5);
+            }
+            return result;
+        }
+
+        public static List<T> Map<T0, T1, T2, T3, T4, T5, T>(this List<Tup<T0, T1, T2, T3, T4, T5>> list, Func<T0, T1, T2, T3, T4, T5, T> fun)
+        {
+            var count = list.Count;
+            var result = new List<T>(count);
+            for (int i = 0; i < count; i++)
+            {
+                var tup = list[i]; result.Add(fun(tup.E0, tup.E1, tup.E2, tup.E3, tup.E4, tup.E5));
+            }
+            return result;
+        }
+
+
+
+        public static IEnumerable<T> Select<T0, T1, T2, T3, T4, T5, T6, T>(
+        this IEnumerable<Tup<T0, T1, T2, T3, T4, T5, T6>> sequence, Func<T0, T1, T2, T3, T4, T5, T6, T> selector)
+        {
+            return sequence.Select(tup => selector(tup.E0, tup.E1, tup.E2, tup.E3, tup.E4, tup.E5, tup.E6));
+        }
+        public static IEnumerable<Tup<T0, T1, T2, T3, T4, T5, T6>> Where<T0, T1, T2, T3, T4, T5, T6>(
+        this IEnumerable<Tup<T0, T1, T2, T3, T4, T5, T6>> sequence, Func<T0, T1, T2, T3, T4, T5, T6, bool> predicate)
+        {
+            return sequence.Where(tup => predicate(tup.E0, tup.E1, tup.E2, tup.E3, tup.E4, tup.E5, tup.E6));
+        }
+
+        public static void ForEach<T0, T1, T2, T3, T4, T5, T6>(this Tup<T0, T1, T2, T3, T4, T5, T6>[] array, Action<T0, T1, T2, T3, T4, T5, T6> act)
+        {
+            for (int i = 0; i < array.Length; i++)
+            {
+                var tup = array[i]; act(tup.E0, tup.E1, tup.E2, tup.E3, tup.E4, tup.E5, tup.E6);
+            }
+        }
+
+        public static void ForEach<T0, T1, T2, T3, T4, T5, T6>(this Tup<T0, T1, T2, T3, T4, T5, T6>[] array, Action<T0, T1, T2, T3, T4, T5, T6, int> act)
+        {
+            int index = 0;
+            for (int i = 0; i < array.Length; i++)
+            {
+                var tup = array[i]; act(tup.E0, tup.E1, tup.E2, tup.E3, tup.E4, tup.E5, tup.E6, index++);
+            }
+        }
+
+        public static void ForEach<T0, T1, T2, T3, T4, T5, T6>(this List<Tup<T0, T1, T2, T3, T4, T5, T6>> list, Action<T0, T1, T2, T3, T4, T5, T6> act)
+        {
+            for (int i = 0; i < list.Count; i++)
+            {
+                var tup = list[i]; act(tup.E0, tup.E1, tup.E2, tup.E3, tup.E4, tup.E5, tup.E6);
+            }
+        }
+
+        public static void ForEach<T0, T1, T2, T3, T4, T5, T6>(this List<Tup<T0, T1, T2, T3, T4, T5, T6>> list, Action<T0, T1, T2, T3, T4, T5, T6, int> act)
+        {
+            int index = 0;
+            for (int i = 0; i < list.Count; i++)
+            {
+                var tup = list[i]; act(tup.E0, tup.E1, tup.E2, tup.E3, tup.E4, tup.E5, tup.E6, index++);
+            }
+        }
+
+        public static void ForEach<T0, T1, T2, T3, T4, T5, T6>(this IEnumerable<Tup<T0, T1, T2, T3, T4, T5, T6>> seq, Action<T0, T1, T2, T3, T4, T5, T6> act)
+        {
+            foreach (var tup in seq)
+                act(tup.E0, tup.E1, tup.E2, tup.E3, tup.E4, tup.E5, tup.E6);
+        }
+
+        public static void ForEach<T0, T1, T2, T3, T4, T5, T6>(this IEnumerable<Tup<T0, T1, T2, T3, T4, T5, T6>> seq, Action<T0, T1, T2, T3, T4, T5, T6, int> act)
+        {
+            int index = 0;
+            foreach (var tup in seq)
+                act(tup.E0, tup.E1, tup.E2, tup.E3, tup.E4, tup.E5, tup.E6, index++);
+        }
+
+        public static void Add<T0, T1, T2, T3, T4, T5, T6>(this List<Tup<T0, T1, T2, T3, T4, T5, T6>> list, T0 e0, T1 e1, T2 e2, T3 e3, T4 e4, T5 e5, T6 e6)
+        {
+            list.Add(new Tup<T0, T1, T2, T3, T4, T5, T6>(e0, e1, e2, e3, e4, e5, e6));
+        }
+
+        public static T[] CopyToArray<T0, T1, T2, T3, T4, T5, T6, T>(this List<Tup<T0, T1, T2, T3, T4, T5, T6>> list, Func<T0, T1, T2, T3, T4, T5, T6, T> fun)
+        {
+            var count = list.Count;
+            var array = new T[count];
+            for (int i = 0; i < count; i++)
+            {
+                var tup = list[i]; array[i] = fun(tup.E0, tup.E1, tup.E2, tup.E3, tup.E4, tup.E5, tup.E6);
+            }
+            return array;
+        }
+
+        public static T[] Map<T0, T1, T2, T3, T4, T5, T6, T>(this Tup<T0, T1, T2, T3, T4, T5, T6>[] array, Func<T0, T1, T2, T3, T4, T5, T6, T> fun)
+        {
+            var count = array.Length;
+            var result = new T[count];
+            for (int i = 0; i < count; i++)
+            {
+                var tup = array[i]; result[i] = fun(tup.E0, tup.E1, tup.E2, tup.E3, tup.E4, tup.E5, tup.E6);
+            }
+            return result;
+        }
+
+        public static List<T> Map<T0, T1, T2, T3, T4, T5, T6, T>(this List<Tup<T0, T1, T2, T3, T4, T5, T6>> list, Func<T0, T1, T2, T3, T4, T5, T6, T> fun)
+        {
+            var count = list.Count;
+            var result = new List<T>(count);
+            for (int i = 0; i < count; i++)
+            {
+                var tup = list[i]; result.Add(fun(tup.E0, tup.E1, tup.E2, tup.E3, tup.E4, tup.E5, tup.E6));
+            }
+            return result;
+        }
+
+
+
+        public static IEnumerable<T> Select<T0, T1, T2, T3, T4, T5, T6, T7, T>(
+        this IEnumerable<Tup<T0, T1, T2, T3, T4, T5, T6, T7>> sequence, Func<T0, T1, T2, T3, T4, T5, T6, T7, T> selector)
+        {
+            return sequence.Select(tup => selector(tup.E0, tup.E1, tup.E2, tup.E3, tup.E4, tup.E5, tup.E6, tup.E7));
+        }
+        public static IEnumerable<Tup<T0, T1, T2, T3, T4, T5, T6, T7>> Where<T0, T1, T2, T3, T4, T5, T6, T7>(
+        this IEnumerable<Tup<T0, T1, T2, T3, T4, T5, T6, T7>> sequence, Func<T0, T1, T2, T3, T4, T5, T6, T7, bool> predicate)
+        {
+            return sequence.Where(tup => predicate(tup.E0, tup.E1, tup.E2, tup.E3, tup.E4, tup.E5, tup.E6, tup.E7));
+        }
+
+        public static void ForEach<T0, T1, T2, T3, T4, T5, T6, T7>(this Tup<T0, T1, T2, T3, T4, T5, T6, T7>[] array, Action<T0, T1, T2, T3, T4, T5, T6, T7> act)
+        {
+            for (int i = 0; i < array.Length; i++)
+            {
+                var tup = array[i]; act(tup.E0, tup.E1, tup.E2, tup.E3, tup.E4, tup.E5, tup.E6, tup.E7);
+            }
+        }
+
+        public static void ForEach<T0, T1, T2, T3, T4, T5, T6, T7>(this Tup<T0, T1, T2, T3, T4, T5, T6, T7>[] array, Action<T0, T1, T2, T3, T4, T5, T6, T7, int> act)
+        {
+            int index = 0;
+            for (int i = 0; i < array.Length; i++)
+            {
+                var tup = array[i]; act(tup.E0, tup.E1, tup.E2, tup.E3, tup.E4, tup.E5, tup.E6, tup.E7, index++);
+            }
+        }
+
+        public static void ForEach<T0, T1, T2, T3, T4, T5, T6, T7>(this List<Tup<T0, T1, T2, T3, T4, T5, T6, T7>> list, Action<T0, T1, T2, T3, T4, T5, T6, T7> act)
+        {
+            for (int i = 0; i < list.Count; i++)
+            {
+                var tup = list[i]; act(tup.E0, tup.E1, tup.E2, tup.E3, tup.E4, tup.E5, tup.E6, tup.E7);
+            }
+        }
+
+        public static void ForEach<T0, T1, T2, T3, T4, T5, T6, T7>(this List<Tup<T0, T1, T2, T3, T4, T5, T6, T7>> list, Action<T0, T1, T2, T3, T4, T5, T6, T7, int> act)
+        {
+            int index = 0;
+            for (int i = 0; i < list.Count; i++)
+            {
+                var tup = list[i]; act(tup.E0, tup.E1, tup.E2, tup.E3, tup.E4, tup.E5, tup.E6, tup.E7, index++);
+            }
+        }
+
+        public static void ForEach<T0, T1, T2, T3, T4, T5, T6, T7>(this IEnumerable<Tup<T0, T1, T2, T3, T4, T5, T6, T7>> seq, Action<T0, T1, T2, T3, T4, T5, T6, T7> act)
+        {
+            foreach (var tup in seq)
+                act(tup.E0, tup.E1, tup.E2, tup.E3, tup.E4, tup.E5, tup.E6, tup.E7);
+        }
+
+        public static void ForEach<T0, T1, T2, T3, T4, T5, T6, T7>(this IEnumerable<Tup<T0, T1, T2, T3, T4, T5, T6, T7>> seq, Action<T0, T1, T2, T3, T4, T5, T6, T7, int> act)
+        {
+            int index = 0;
+            foreach (var tup in seq)
+                act(tup.E0, tup.E1, tup.E2, tup.E3, tup.E4, tup.E5, tup.E6, tup.E7, index++);
+        }
+
+        public static void Add<T0, T1, T2, T3, T4, T5, T6, T7>(this List<Tup<T0, T1, T2, T3, T4, T5, T6, T7>> list, T0 e0, T1 e1, T2 e2, T3 e3, T4 e4, T5 e5, T6 e6, T7 e7)
+        {
+            list.Add(new Tup<T0, T1, T2, T3, T4, T5, T6, T7>(e0, e1, e2, e3, e4, e5, e6, e7));
+        }
+
+        public static T[] CopyToArray<T0, T1, T2, T3, T4, T5, T6, T7, T>(this List<Tup<T0, T1, T2, T3, T4, T5, T6, T7>> list, Func<T0, T1, T2, T3, T4, T5, T6, T7, T> fun)
+        {
+            var count = list.Count;
+            var array = new T[count];
+            for (int i = 0; i < count; i++)
+            {
+                var tup = list[i]; array[i] = fun(tup.E0, tup.E1, tup.E2, tup.E3, tup.E4, tup.E5, tup.E6, tup.E7);
+            }
+            return array;
+        }
+
+        public static T[] Map<T0, T1, T2, T3, T4, T5, T6, T7, T>(this Tup<T0, T1, T2, T3, T4, T5, T6, T7>[] array, Func<T0, T1, T2, T3, T4, T5, T6, T7, T> fun)
+        {
+            var count = array.Length;
+            var result = new T[count];
+            for (int i = 0; i < count; i++)
+            {
+                var tup = array[i]; result[i] = fun(tup.E0, tup.E1, tup.E2, tup.E3, tup.E4, tup.E5, tup.E6, tup.E7);
+            }
+            return result;
+        }
+
+        public static List<T> Map<T0, T1, T2, T3, T4, T5, T6, T7, T>(this List<Tup<T0, T1, T2, T3, T4, T5, T6, T7>> list, Func<T0, T1, T2, T3, T4, T5, T6, T7, T> fun)
+        {
+            var count = list.Count;
+            var result = new List<T>(count);
+            for (int i = 0; i < count; i++)
+            {
+                var tup = list[i]; result.Add(fun(tup.E0, tup.E1, tup.E2, tup.E3, tup.E4, tup.E5, tup.E6, tup.E7));
+            }
+            return result;
+        }
+
+
+        #endregion
+
     }
 }
