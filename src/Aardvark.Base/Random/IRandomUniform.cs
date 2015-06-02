@@ -376,7 +376,7 @@ namespace Aardvark.Base
         /// O(subsetCount) for subsetCount &lt;&lt; count.
         /// NOTE: It is assumed that subsetCount is significantly smaller
         /// than count. If this is not the case, use
-        /// <see cref="CreateRandomSubsetOfSize"/> instead.
+        /// CreateRandomSubsetOfSize instead.
         /// WARNING: As subsetCount approaches count execution time
         /// increases significantly.
         /// </summary>
@@ -400,7 +400,7 @@ namespace Aardvark.Base
         /// O(subsetCount * log(subsetCount)) for subsetCount &lt;&lt; count.
         /// NOTE: It is assumed that subsetCount is significantly smaller
         /// than count. If this is not the case, use
-        /// <see cref="CreateRandomSubsetOfSize"/> instead.
+        /// CreateRandomSubsetOfSize instead.
         /// WARNING: As subsetCount approaches count execution time
         /// increases significantly.
         /// </summary>
@@ -418,7 +418,7 @@ namespace Aardvark.Base
         /// O(subsetCount) for subsetCount &lt;&lt; count.
         /// NOTE: It is assumed that subsetCount is significantly smaller
         /// than count. If this is not the case, use
-        /// <see cref="CreateRandomSubsetOfSize"/> instead.
+        /// CreateRandomSubsetOfSize instead.
         /// WARNING: As subsetCount approaches count execution time
         /// increases significantly.
         /// </summary>
@@ -442,7 +442,7 @@ namespace Aardvark.Base
         /// O(subsetCount * log(subsetCount)) for subsetCount &lt;&lt; count.
         /// NOTE: It is assumed that subsetCount is significantly smaller
         /// than count. If this is not the case, use
-        /// <see cref="CreateRandomSubsetOfSize"/> instead.
+        /// CreateRandomSubsetOfSize instead.
         /// WARNING: As subsetCount approaches count execution time
         /// increases significantly.
         /// </summary>
