@@ -130,6 +130,17 @@
     <Compile Include="Numerics\MatrixOperations.cs" />
     <Compile Include="Numerics\Polynomial.cs" />
     <Compile Include="Numerics\QrFactorization.cs" />
+    <Compile Include="Random\HaltonRandomSeries.cs" />
+    <Compile Include="Random\IRandomDistribution.cs" />
+    <Compile Include="Random\IRandomSeries.cs" />
+    <Compile Include="Random\IRandomUniform.cs" />
+    <Compile Include="Random\PerlinNoise.cs" />
+    <Compile Include="Random\Prime.cs" />
+    <Compile Include="Random\Quasi.cs" />
+    <Compile Include="Random\RandomDistributions.cs" />
+    <Compile Include="Random\RandomIEnumerableExtensions.cs" />
+    <Compile Include="Random\RandomSample.cs" />
+    <Compile Include="Random\RandomSystem.cs" />
     <Compile Include="RangesBoxes\Box.cs" />
     <Compile Include="RangesBoxes\Box_auto.cs" />
     <None Include="packages.config" />
