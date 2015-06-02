@@ -21,6 +21,10 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Demo", "Demo", "{864A9013-9
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IncrementalDemo.CSharp", "Demo\IncrementalDemo.CSharp\IncrementalDemo.CSharp.csproj", "{4BFAAF2F-BB67-471E-A956-F533F13EA643}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Aardvark.Base.Tests", "Tests\Aardvark.Base.Tests\Aardvark.Base.Tests.csproj", "{90054DAF-8E70-467A-AF80-3B06EEC527F5}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{A79411F9-60B3-46C8-8981-6905D9B9F74C}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -59,11 +63,16 @@ Global
 		{4BFAAF2F-BB67-471E-A956-F533F13EA643}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{4BFAAF2F-BB67-471E-A956-F533F13EA643}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{4BFAAF2F-BB67-471E-A956-F533F13EA643}.Release|Any CPU.Build.0 = Release|Any CPU
+		{90054DAF-8E70-467A-AF80-3B06EEC527F5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{90054DAF-8E70-467A-AF80-3B06EEC527F5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{90054DAF-8E70-467A-AF80-3B06EEC527F5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{90054DAF-8E70-467A-AF80-3B06EEC527F5}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{4BFAAF2F-BB67-471E-A956-F533F13EA643} = {864A9013-93AC-4073-BB2A-348CE1B00010}
+		{90054DAF-8E70-467A-AF80-3B06EEC527F5} = {A79411F9-60B3-46C8-8981-6905D9B9F74C}
 	EndGlobalSection
 EndGlobal
