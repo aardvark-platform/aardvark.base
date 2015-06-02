@@ -93,11 +93,8 @@ namespace Aardvark.Base
             float a = (float)System.Math.Cos(rot.Angle);
             float b = (float)System.Math.Sin(rot.Angle);
 
-            return new V2f(a * vec.X +
-                            b * vec.Y,
-
-                           -b * vec.X +
-                            a * vec.Y);
+            return new V2f(a * vec.X + b * vec.Y,
+                              -b * vec.X + a * vec.Y);
         }
 
         public static V3f Multiply(Rot2f rot, V3f vec)
@@ -741,11 +738,8 @@ namespace Aardvark.Base
             double a = (double)System.Math.Cos(rot.Angle);
             double b = (double)System.Math.Sin(rot.Angle);
 
-            return new V2d(a * vec.X +
-                            b * vec.Y,
-
-                           -b * vec.X +
-                            a * vec.Y);
+            return new V2d(a * vec.X + b * vec.Y,
+                              -b * vec.X + a * vec.Y);
         }
 
         public static V3d Multiply(Rot2d rot, V3d vec)
