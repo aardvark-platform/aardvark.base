@@ -254,6 +254,13 @@ namespace Aardvark.Base
 
         //# } // foreach t
 
+    }
+}
+
+namespace Aardvark.Base.CSharp
+{
+    public static partial class CSharpSequenceExtensions
+    {
         #region Sequences of Tups
 
         //# Action comma = () => Out(", ");
