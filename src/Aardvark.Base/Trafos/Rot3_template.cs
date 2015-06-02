@@ -7,18 +7,28 @@ namespace Aardvark.Base
 {
     //# foreach (var isDouble in new[] { false, true }) {
     //#   var ft = isDouble ? "double" : "float";
-    //#   var x2t = isDouble ? "2d" : "2f";
-    //#   var x3t = isDouble ? "3d" : "3f";
-    //#   var x4t = isDouble ? "4d" : "4f";
+    //#   var tc = isDouble ? "d" : "f";
+    //#   var v2t = "V2" + tc;
+    //#   var v3t = "V3" + tc;
+    //#   var v4t = "V4" + tc;
+    //#   var rot2t = "Rot2" + tc;
+    //#   var rot3t = "Rot3" + tc;
+    //#   var scale3t = "Scale3" + tc;
+    //#   var shift3t = "Shift3" + tc;
+    //#   var m22t = "M22" + tc;
+    //#   var m23t = "M23" + tc;
+    //#   var m33t = "M33" + tc;
+    //#   var m34t = "M34" + tc;
+    //#   var m44t = "M44" + tc;
     /// <summary>
     /// Represents an arbitrary rotation in three dimensions. Implemented as
     /// a normalized quaternion.
     /// </summary>
     [StructLayout(LayoutKind.Sequential)]
-    public partial struct Rot__x3t__
+    public partial struct __rot3t__
     {
         public __ft__ W;
-        public V__x3t__ V;
+        public __v3t__ V;
 
         #region Constructors
 
@@ -26,16 +36,16 @@ namespace Aardvark.Base
         /// Creates quaternion (w, (x, y, z)).
         /// </summary>
         // todo ISSUE 20090420 andi : sm, rft: Add asserts for unit-length constraint
-        public Rot__x3t__(__ft__ w, __ft__ x, __ft__ y, __ft__ z)
+        public __rot3t__(__ft__ w, __ft__ x, __ft__ y, __ft__ z)
         {
             W = w;
-            V = new V__x3t__(x, y, z);
+            V = new __v3t__(x, y, z);
         }
 
         /// <summary>
         /// Creates quaternion (w, (v.x, v.y, v.z)).
         /// </summary>
-        public Rot__x3t__(__ft__ w, V__x3t__ v)
+        public __rot3t__(__ft__ w, __v3t__ v)
         {
             W = w;
             V = v;
@@ -45,20 +55,20 @@ namespace Aardvark.Base
         /// Creates quaternion from array.
         /// (w = a[0], (x = a[1], y = a[2], z = a[3])).
         /// </summary>
-        public Rot__x3t__(__ft__[] a)
+        public __rot3t__(__ft__[] a)
         {
             W = a[0];
-            V = new V__x3t__(a[1], a[2], a[3]);
+            V = new __v3t__(a[1], a[2], a[3]);
         }
 
         /// <summary>
         /// Creates quaternion from array starting at specified index.
         /// (w = a[start], (x = a[start+1], y = a[start+2], z = a[start+3])).
         /// </summary>
-        public Rot__x3t__(__ft__[] a, int start)
+        public __rot3t__(__ft__[] a, int start)
         {
             W = a[start];
-            V = new V__x3t__(a[start + 1], a[start + 2], a[start + 3]);
+            V = new __v3t__(a[start + 1], a[start + 2], a[start + 3]);
         }
 
         /// <summary>
@@ -66,20 +76,20 @@ namespace Aardvark.Base
         /// an axis by an angle.
         /// </summary>
         // todo ISSUE 20090420 andi : sm, rft: What about adding an AxisAngle struct?.
-        public Rot__x3t__(V__x3t__ axis, __ft__ angleInRadians)
+        public __rot3t__(__v3t__ axis, __ft__ angleInRadians)
         {
             var halfAngle = angleInRadians / 2;
             W = halfAngle.Cos();
             V = axis.Normalized * halfAngle.Sin();
         }
 
-        public Rot__x3t__(
+        public __rot3t__(
             __ft__ yawInRadians, __ft__ pitchInRadians, __ft__ rollInRadians
             )
         {
-            var qx = new Rot__x3t__(V__x3t__.XAxis, yawInRadians);
-            var qy = new Rot__x3t__(V__x3t__.YAxis, pitchInRadians);
-            var qz = new Rot__x3t__(V__x3t__.ZAxis, rollInRadians);
+            var qx = new __rot3t__(__v3t__.XAxis, yawInRadians);
+            var qy = new __rot3t__(__v3t__.YAxis, pitchInRadians);
+            var qz = new __rot3t__(__v3t__.ZAxis, rollInRadians);
             this = qz * qy * qx;
         }
 
@@ -87,14 +97,14 @@ namespace Aardvark.Base
         /// Creates a quaternion representing a rotation from one
         /// vector into another.
         /// </summary>
-        public Rot__x3t__(
-            V__x3t__ from, V__x3t__ into)
+        public __rot3t__(
+            __v3t__ from, __v3t__ into)
         {
             var a = from.Normalized;
             var b = into.Normalized;
-            var angle = Fun.Clamp(V__x3t__.Dot(a, b), -1, 1).Acos();
+            var angle = Fun.Clamp(__v3t__.Dot(a, b), -1, 1).Acos();
             var angleAbs = angle.Abs();
-            V__x3t__ axis;
+            __v3t__ axis;
 
             if (angle.IsTiny())
             {
@@ -104,9 +114,9 @@ namespace Aardvark.Base
             else if ((angleAbs - Constant.Pi).IsTiny())
                 axis = a.AxisAlignedNormal();
             else
-                axis = V__x3t__.Cross(a, b).Normalized;
+                axis = __v3t__.Cross(a, b).Normalized;
 
-            this = new Rot__x3t__(axis, angle);
+            this = new __rot3t__(axis, angle);
         }
 
         #endregion
@@ -166,28 +176,28 @@ namespace Aardvark.Base
         /// A Zero-quaternion does not represent a Rot3, so it should not be implemented
         /// <summary>        /// Zero (0,(0,0,0)).
         /// </summary>
-        public static readonly Rot__x3t__ Zero = new Rot__x3t__(0, V__x3t__.Zero);
+        public static readonly __rot3t__ Zero = new __rot3t__(0, __v3t__.Zero);
 #endif
 
         /// <summary>
         /// Identity (1,(0,0,0)).
         /// </summary>
-        public static readonly Rot__x3t__ Identity = new Rot__x3t__(1, V__x3t__.Zero);
+        public static readonly __rot3t__ Identity = new __rot3t__(1, __v3t__.Zero);
 
         /// <summary>
         /// X-Axis (0, (1,0,0)).
         /// </summary>
-        public static readonly Rot__x3t__ XAxis = new Rot__x3t__(0, V__x3t__.XAxis);
+        public static readonly __rot3t__ XAxis = new __rot3t__(0, __v3t__.XAxis);
 
         /// <summary>
         /// Y-Axis (0, (0,1,0)).
         /// </summary>
-        public static readonly Rot__x3t__ YAxis = new Rot__x3t__(0, V__x3t__.YAxis);
+        public static readonly __rot3t__ YAxis = new __rot3t__(0, __v3t__.YAxis);
 
         /// <summary>
         /// Z-Axis (0, (0,0,1)).
         /// </summary>
-        public static readonly Rot__x3t__ ZAxis = new Rot__x3t__(0, V__x3t__.ZAxis);
+        public static readonly __rot3t__ ZAxis = new __rot3t__(0, __v3t__.ZAxis);
 
         #endregion
 
@@ -203,23 +213,23 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns the sum of 2 quaternions (a.w + b.w, a.v + b.v).
         /// </summary>
-        public static Rot__x3t__ Add(Rot__x3t__ a, Rot__x3t__ b)
+        public static __rot3t__ Add(__rot3t__ a, __rot3t__ b)
         {
-            return new Rot__x3t__(a.W + b.W, a.X + b.X, a.Y + b.Y, a.Z + b.Z);
+            return new __rot3t__(a.W + b.W, a.X + b.X, a.Y + b.Y, a.Z + b.Z);
         }
 
         /// <summary>
         /// Returns (q.w + s, (q.x + s, q.y + s, q.z + s)).
         /// </summary>
-        public static Rot__x3t__ Add(Rot__x3t__ q, __ft__ s)
+        public static __rot3t__ Add(__rot3t__ q, __ft__ s)
         {
-            return new Rot__x3t__(q.W + s, q.X + s, q.Y + s, q.Z + s);
+            return new __rot3t__(q.W + s, q.X + s, q.Y + s, q.Z + s);
         }
 
         /// <summary>
         /// Returns (q.w - s, (q.x - s, q.y - s, q.z - s)).
         /// </summary>
-        public static Rot__x3t__ Subtract(Rot__x3t__ q, __ft__ s)
+        public static __rot3t__ Subtract(__rot3t__ q, __ft__ s)
         {
             return Add(q, -s);
         }
@@ -227,7 +237,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns (s - q.w, (s - q.x, s- q.y, s- q.z)).
         /// </summary>
-        public static Rot__x3t__ Subtract(__ft__ s, Rot__x3t__ q)
+        public static __rot3t__ Subtract(__ft__ s, __rot3t__ q)
         {
             return Add(-q, s);
         }
@@ -235,7 +245,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns (a.w - b.w, a.v - b.v).
         /// </summary>
-        public static Rot__x3t__ Subtract(Rot__x3t__ a, Rot__x3t__ b)
+        public static __rot3t__ Subtract(__rot3t__ a, __rot3t__ b)
         {
             return Add(a, -b);
         }
@@ -243,9 +253,9 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns (q.w * s, q.v * s).
         /// </summary>
-        public static Rot__x3t__ Multiply(Rot__x3t__ q, __ft__ s)
+        public static __rot3t__ Multiply(__rot3t__ q, __ft__ s)
         {
-            return new Rot__x3t__(q.W * s, q.X * s, q.Y * s, q.Z * s);
+            return new __rot3t__(q.W * s, q.X * s, q.Y * s, q.Z * s);
         }
         // todo andi }
 
@@ -254,9 +264,9 @@ namespace Aardvark.Base
         /// This concatenates the two rotations into a single one.
         /// Attention: Multiplication is NOT commutative!
         /// </summary>
-        public static Rot__x3t__ Multiply(Rot__x3t__ a, Rot__x3t__ b)
+        public static __rot3t__ Multiply(__rot3t__ a, __rot3t__ b)
         {
-            return new Rot__x3t__(
+            return new __rot3t__(
                 a.W * b.W - a.X * b.X - a.Y * b.Y - a.Z * b.Z,
                 a.W * b.X + a.X * b.W + a.Y * b.Z - a.Z * b.Y,
                 a.W * b.Y + a.Y * b.W + a.Z * b.X - a.X * b.Z,
@@ -267,14 +277,14 @@ namespace Aardvark.Base
         /// <summary>
         /// Transforms direction vector v (v.w is presumed 0.0) by quaternion q.
         /// </summary>
-        public static V__x3t__ TransformDir(Rot__x3t__ q, V__x3t__ v)
+        public static __v3t__ TransformDir(__rot3t__ q, __v3t__ v)
         {
-            // first transforming quaternion to M3__x3t__ is approximately equal in terms of operations ...
-            return ((M3__x3t__)q).Transform(v);
+            // first transforming quaternion to __m33t__ is approximately equal in terms of operations ...
+            return ((__m33t__)q).Transform(v);
 
             // ... than direct multiplication ...
             //QuaternionF r = q.Conjugated() * new QuaternionF(0, v) * q;
-            //return new V__x3t__(r.X, r.Y, r.Z);
+            //return new __v3t__(r.X, r.Y, r.Z);
         }
 
         /// <summary>
@@ -283,7 +293,7 @@ namespace Aardvark.Base
         /// is made available only to provide a consistent set of operations
         /// for all transforms.
         /// </summary>
-        public static V__x3t__ TransformPos(Rot__x3t__ q, V__x3t__ p)
+        public static __v3t__ TransformPos(__rot3t__ q, __v3t__ p)
         {
             return TransformDir(q, p);
         }
@@ -291,10 +301,10 @@ namespace Aardvark.Base
         /// <summary>
         /// Transforms direction vector v (v.w is presumed 0.0) by the inverse of quaternion q.
         /// </summary>
-        public static V__x3t__ InvTransformDir(Rot__x3t__ q, V__x3t__ v)
+        public static __v3t__ InvTransformDir(__rot3t__ q, __v3t__ v)
         {
             //for Rotation Matrices R^-1 == R^T:
-            return ((M3__x3t__)q).TransposedTransform(v);
+            return ((__m33t__)q).TransposedTransform(v);
         }
 
         /// <summary>
@@ -303,7 +313,7 @@ namespace Aardvark.Base
         /// is made available only to provide a consistent set of operations
         /// for all transforms.
         /// </summary>
-        public static V__x3t__ InvTransformPos(Rot__x3t__ q, V__x3t__ p)
+        public static __v3t__ InvTransformPos(__rot3t__ q, __v3t__ p)
         {
             return InvTransformDir(q, p);
         }
@@ -313,7 +323,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Transforms direction vector v (v.w is presumed 0.0) by this quaternion.
         /// </summary>
-        public V__x3t__ TransformDir(V__x3t__ v)
+        public __v3t__ TransformDir(__v3t__ v)
         {
             return TransformDir(this, v);
         }
@@ -324,7 +334,7 @@ namespace Aardvark.Base
         /// is made available only to provide a consistent set of operations
         /// for all transforms.
         /// </summary>
-        public V__x3t__ TransformPos(V__x3t__ p)
+        public __v3t__ TransformPos(__v3t__ p)
         {
             return TransformDir(this, p);
         }
@@ -332,7 +342,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Transforms direction vector v (v.w is presumed 0.0) by the inverse of this quaternion.
         /// </summary>
-        public V__x3t__ InvTransformDir(V__x3t__ v)
+        public __v3t__ InvTransformDir(__v3t__ v)
         {
             return InvTransformDir(this, v);
         }
@@ -343,15 +353,15 @@ namespace Aardvark.Base
         /// is made available only to provide a consistent set of operations
         /// for all transforms.
         /// </summary>
-        public V__x3t__ InvTransformPos(V__x3t__ p)
+        public __v3t__ InvTransformPos(__v3t__ p)
         {
             return InvTransformDir(this, p);
         }
 
         // todo andi {
-        public static Rot__x3t__ Divide(__ft__ s, Rot__x3t__ q)
+        public static __rot3t__ Divide(__ft__ s, __rot3t__ q)
         {
-            return new Rot__x3t__(
+            return new __rot3t__(
                 s / q.W,
                 s / q.X, s / q.Y, s / q.Z
                 );
@@ -360,7 +370,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns (q.w / s, q.v * (1/s)).
         /// </summary>
-        public static Rot__x3t__ Divide(Rot__x3t__ q, __ft__ s)
+        public static __rot3t__ Divide(__rot3t__ q, __ft__ s)
         {
             return Multiply(q, 1 / s);
         }
@@ -368,7 +378,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Divides 2 quaternions.
         /// </summary>
-        public static Rot__x3t__ Divide(Rot__x3t__ a, Rot__x3t__ b)
+        public static __rot3t__ Divide(__rot3t__ a, __rot3t__ b)
         {
             return Multiply(a, Reciprocal(b));
         }
@@ -378,9 +388,9 @@ namespace Aardvark.Base
         /// Returns the component-wise negation (-q.w, -q.v) of quaternion q.
         /// This represents the same rotation.
         /// </summary>
-        public static Rot__x3t__ Negated(Rot__x3t__ q)
+        public static __rot3t__ Negated(__rot3t__ q)
         {
-            return new Rot__x3t__(-q.W, -q.X, -q.Y, -q.Z);
+            return new __rot3t__(-q.W, -q.X, -q.Y, -q.Z);
         }
 
         // todo andi {
@@ -388,15 +398,15 @@ namespace Aardvark.Base
         /// Returns the component-wise reciprocal (1/q.w, 1/q.x, 1/q.y, 1/q.z)
         /// of quaternion q.
         /// </summary>
-        public static Rot__x3t__ Reciprocal(Rot__x3t__ q)
+        public static __rot3t__ Reciprocal(__rot3t__ q)
         {
-            return new Rot__x3t__(1 / q.W, 1 / q.X, 1 / q.Y, 1 / q.Z);
+            return new __rot3t__(1 / q.W, 1 / q.X, 1 / q.Y, 1 / q.Z);
         }
 
         /// <summary>
         /// Returns the component-wise reciprocal (1/w, 1/x, 1/y, 1/z).
         /// </summary>
-        public Rot__x3t__ OneDividedBy()
+        public __rot3t__ OneDividedBy()
         {
             return Reciprocal(this);
         }
@@ -405,7 +415,7 @@ namespace Aardvark.Base
         /// <summary> 
         /// Returns the dot-product of 2 quaternions.
         /// </summary>
-        public static __ft__ Dot(Rot__x3t__ a, Rot__x3t__ b)
+        public static __ft__ Dot(__rot3t__ a, __rot3t__ b)
         {
             return a.W * b.W + a.X * b.X + a.Y * b.Y + a.Z * b.Z;
         }
@@ -418,9 +428,9 @@ namespace Aardvark.Base
         /// <summary>
         /// Calculates the logarithm of the quaternion.
         /// </summary>
-        public static Rot__x3t__ Log(Rot__x3t__ a)
+        public static __rot3t__ Log(__rot3t__ a)
         {
-            var result = Rot__x3t__.Zero;
+            var result = __rot3t__.Zero;
 
             if (a.W.Abs() < 1)
             {
@@ -435,9 +445,9 @@ namespace Aardvark.Base
         /// <summary>
         /// Calculates exponent of the quaternion.
         /// </summary>
-        public Rot__x3t__ Exp(Rot__x3t__ a)
+        public __rot3t__ Exp(__rot3t__ a)
         {
-            var result = Rot__x3t__.Zero;
+            var result = __rot3t__.Zero;
 
             var angle = (a.X * a.X + a.Y * a.Y + a.Z * a.Z).Sqrt();
             var sin = angle.Sin();
@@ -483,7 +493,7 @@ namespace Aardvark.Base
         {
             var norm = Norm;
             if (norm == 0)
-                this = Rot__x3t__.Identity;
+                this = __rot3t__.Identity;
             else
             {
                 var scale = 1 / norm;
@@ -495,14 +505,14 @@ namespace Aardvark.Base
         /// <summary>
         /// Gets normalized (unit) quaternion from this quaternion.
         /// </summary>
-        public Rot__x3t__ Normalized
+        public __rot3t__ Normalized
         {
             get
             {
                 var norm = Norm;
-                if (norm == 0) return Rot__x3t__.Identity;
+                if (norm == 0) return __rot3t__.Identity;
                 var scale = 1 / norm;
-                return new Rot__x3t__(W * scale, V * scale);
+                return new __rot3t__(W * scale, V * scale);
             }
         }
 
@@ -522,14 +532,14 @@ namespace Aardvark.Base
         /// <summary>
         /// Gets the (multiplicative) inverse of this quaternion.
         /// </summary>
-        public Rot__x3t__ Inverse
+        public __rot3t__ Inverse
         {
             get
             {
                 var norm = NormSquared;
                 if (norm == 0) throw new ArithmeticException("quaternion is not invertible");
                 var scale = 1 / norm;
-                return new Rot__x3t__(W * scale, V * (-scale));
+                return new __rot3t__(W * scale, V * (-scale));
             }
         }
 
@@ -546,9 +556,9 @@ namespace Aardvark.Base
         /// Gets the conjugate of this quaternion.
         /// For normalized rotation-quaternions this is the same as Inverted().
         /// </summary>
-        public Rot__x3t__ Conjugated
+        public __rot3t__ Conjugated
         {
-            get { return new Rot__x3t__(W, -V); }
+            get { return new __rot3t__(W, -V); }
         }
 
         /// <summary>
@@ -571,15 +581,15 @@ namespace Aardvark.Base
             return res;
         }
 
-        public static bool ApproxEqual(Rot__x3t__ r0, Rot__x3t__ r1)
+        public static bool ApproxEqual(__rot3t__ r0, __rot3t__ r1)
         {
             return ApproxEqual(r0, r1, Constant<__ft__>.PositiveTinyValue);
         }
 
         // [todo ISSUE 20090225 andi : andi] Wir sollten auch folgendes beruecksichtigen -q == q, weil es die selbe rotation definiert.
         // [todo ISSUE 20090427 andi : andi] use an angle-tolerance
-        // [todo ISSUE 20090427 andi : andi] add Rot__x3t__.ApproxEqual(Rot__x3t__ other);
-        public static bool ApproxEqual(Rot__x3t__ r0, Rot__x3t__ r1, __ft__ tolerance)
+        // [todo ISSUE 20090427 andi : andi] add __rot3t__.ApproxEqual(__rot3t__ other);
+        public static bool ApproxEqual(__rot3t__ r0, __rot3t__ r1, __ft__ tolerance)
         {
             return (r0.W - r1.W).Abs() <= tolerance &&
                    (r0.X - r1.X).Abs() <= tolerance &&
@@ -591,87 +601,87 @@ namespace Aardvark.Base
 
         #region Arithmetic Operators
 
-        public static Rot__x3t__ operator -(Rot__x3t__ rot)
+        public static __rot3t__ operator -(__rot3t__ rot)
         {
-            return Rot__x3t__.Negated(rot);
+            return __rot3t__.Negated(rot);
         }
 
         // todo andi {
-        public static Rot__x3t__ operator +(Rot__x3t__ a, Rot__x3t__ b)
+        public static __rot3t__ operator +(__rot3t__ a, __rot3t__ b)
         {
-            return Rot__x3t__.Add(a, b);
+            return __rot3t__.Add(a, b);
         }
 
-        public static Rot__x3t__ operator +(Rot__x3t__ rot, __ft__ s)
+        public static __rot3t__ operator +(__rot3t__ rot, __ft__ s)
         {
-            return Rot__x3t__.Add(rot, s);
+            return __rot3t__.Add(rot, s);
         }
 
-        public static Rot__x3t__ operator +(__ft__ s, Rot__x3t__ rot)
+        public static __rot3t__ operator +(__ft__ s, __rot3t__ rot)
         {
-            return Rot__x3t__.Add(rot, s);
+            return __rot3t__.Add(rot, s);
         }
 
-        public static Rot__x3t__ operator -(Rot__x3t__ a, Rot__x3t__ b)
+        public static __rot3t__ operator -(__rot3t__ a, __rot3t__ b)
         {
-            return Rot__x3t__.Subtract(a, b);
+            return __rot3t__.Subtract(a, b);
         }
 
-        public static Rot__x3t__ operator -(Rot__x3t__ rot, __ft__ s)
+        public static __rot3t__ operator -(__rot3t__ rot, __ft__ s)
         {
-            return Rot__x3t__.Subtract(rot, s);
+            return __rot3t__.Subtract(rot, s);
         }
 
-        public static Rot__x3t__ operator -(__ft__ scalar, Rot__x3t__ rot)
+        public static __rot3t__ operator -(__ft__ scalar, __rot3t__ rot)
         {
-            return Rot__x3t__.Subtract(scalar, rot);
+            return __rot3t__.Subtract(scalar, rot);
         }
 
-        public static Rot__x3t__ operator *(Rot__x3t__ rot, __ft__ s)
+        public static __rot3t__ operator *(__rot3t__ rot, __ft__ s)
         {
-            return Rot__x3t__.Multiply(rot, s);
+            return __rot3t__.Multiply(rot, s);
         }
 
-        public static Rot__x3t__ operator *(__ft__ s, Rot__x3t__ rot)
+        public static __rot3t__ operator *(__ft__ s, __rot3t__ rot)
         {
-            return Rot__x3t__.Multiply(rot, s);
+            return __rot3t__.Multiply(rot, s);
         }
         // todo andi }
 
-        public static Rot__x3t__ operator *(Rot__x3t__ a, Rot__x3t__ b)
+        public static __rot3t__ operator *(__rot3t__ a, __rot3t__ b)
         {
-            return Rot__x3t__.Multiply(a, b);
+            return __rot3t__.Multiply(a, b);
         }
 
 #if false //// [todo ISSUE 20090421 andi : andi] check if these are really necessary and comment them what they really do.
         /// <summary>
         /// </summary>
-        public static V__x3t__ operator *(Rot__x3t__ rot, V__x2t__ v)
+        public static __v3t__ operator *(__rot3t__ rot, __v2t__ v)
         {
-            return (M3__x3t__)rot * v;
+            return (__m33t__)rot * v;
         }
 
         /// <summary>
         /// </summary>
-        public static V__x3t__ operator *(Rot__x3t__ rot, V__x3t__ v)
+        public static __v3t__ operator *(__rot3t__ rot, __v3t__ v)
         {
-            return (M3__x3t__)rot * v;
+            return (__m33t__)rot * v;
         }
 
         /// <summary>
         /// </summary>
-        public static V__x4t__ operator *(Rot__x3t__ rot, V__x4t__ v)
+        public static __v4t__ operator *(__rot3t__ rot, __v4t__ v)
         {
-            return (M3__x3t__)rot * v;
+            return (__m33t__)rot * v;
         }
 
         /// <summary>
         /// </summary>
-        public static M3__x3t__ operator *(Rot__x3t__ r3, Rot__x2t__ r2)
+        public static __m33t__ operator *(__rot3t__ r3, __rot2t__ r2)
         {
-            M3__x3t__ m33 = (M3__x3t__)r3;
-            M2__x2t__ m22 = (M2__x2t__)r2;
-            return new M3__x3t__(
+            __m33t__ m33 = (__m33t__)r3;
+            __m22t__ m22 = (__m22t__)r2;
+            return new __m33t__(
                 m33.M00 * m22.M00 + m33.M01 * m22.M10,
                 m33.M00 * m22.M01 + m33.M01 * m22.M11,
                 m33.M02,
@@ -689,37 +699,37 @@ namespace Aardvark.Base
 #endif
         /// <summary>
         /// </summary>
-        public static M3__x3t__ operator *(Rot__x3t__ rot, Scale__x3t__ m)
+        public static __m33t__ operator *(__rot3t__ rot, __scale3t__ m)
         {
-            return (M3__x3t__)rot * m;
+            return (__m33t__)rot * m;
         }
 
         /// <summary>
         /// </summary>
-        public static M3__x4t__ operator *(Rot__x3t__ rot, Shift__x3t__ m)
+        public static __m34t__ operator *(__rot3t__ rot, __shift3t__ m)
         {
-            return (M3__x3t__)rot * m;
+            return (__m33t__)rot * m;
         }
 
-        public static M3__x3t__ operator *(Rot__x3t__ rot, M3__x3t__ m)
+        public static __m33t__ operator *(__rot3t__ rot, __m33t__ m)
         {
-            return (M3__x3t__)rot * m;
+            return (__m33t__)rot * m;
         }
 
-        public static M3__x3t__ operator *(M3__x3t__ m, Rot__x3t__ rot)
+        public static __m33t__ operator *(__m33t__ m, __rot3t__ rot)
         {
-            return m * (M3__x3t__)rot;
+            return m * (__m33t__)rot;
         }
 
         // todo andi {
-        public static Rot__x3t__ operator /(Rot__x3t__ rot, __ft__ s)
+        public static __rot3t__ operator /(__rot3t__ rot, __ft__ s)
         {
-            return Rot__x3t__.Divide(rot, s);
+            return __rot3t__.Divide(rot, s);
         }
 
-        public static Rot__x3t__ operator /(__ft__ s, Rot__x3t__ rot)
+        public static __rot3t__ operator /(__ft__ s, __rot3t__ rot)
         {
-            return Rot__x3t__.Divide(s, rot);
+            return __rot3t__.Divide(s, rot);
         }
         // todo andi }
 
@@ -728,12 +738,12 @@ namespace Aardvark.Base
         #region Comparison Operators
 
         // [todo ISSUE 20090225 andi : andi] Wir sollten auch folgendes beruecksichtigen -q == q, weil es die selbe rotation definiert.
-        public static bool operator ==(Rot__x3t__ r0, Rot__x3t__ r1)
+        public static bool operator ==(__rot3t__ r0, __rot3t__ r1)
         {
             return r0.W == r1.W && r0.V == r1.V;
         }
 
-        public static bool operator !=(Rot__x3t__ r0, Rot__x3t__ r1)
+        public static bool operator !=(__rot3t__ r0, __rot3t__ r1)
         {
             return !(r0 == r1);
         }
@@ -745,9 +755,9 @@ namespace Aardvark.Base
         /// <summary>
         /// WARNING: UNTESTED!!!
         /// </summary>
-        public static Rot__x3t__ FromFrame(V__x3t__ x, V__x3t__ y, V__x3t__ z)
+        public static __rot3t__ FromFrame(__v3t__ x, __v3t__ y, __v3t__ z)
         {
-            return FromM3__x3t__(M3__x3t__.FromCols(x, y, z));
+            return From__m33t__(__m33t__.FromCols(x, y, z));
         }
 
         /// <summary>
@@ -755,7 +765,7 @@ namespace Aardvark.Base
         /// </summary>
         /// <param name="m"></param>
         /// <param name="epsilon"></param>
-        public static Rot__x3t__ FromM3__x3t__(M3__x3t__ m, __ft__ epsilon = (__ft__)0.0001)
+        public static __rot3t__ From__m33t__(__m33t__ m, __ft__ epsilon = (__ft__)0.0001)
         {
             Trace.Assert(m.IsOrthonormal(epsilon), "Matrix is not orthonormal.");
             var t = 1 + m.M00 + m.M11 + m.M22;
@@ -767,7 +777,7 @@ namespace Aardvark.Base
                 __ft__ y = (m.M02 - m.M20) / s;
                 __ft__ z = (m.M10 - m.M01) / s;
                 __ft__ w = s / 4;
-                return new Rot__x3t__(w, x, y, z).Normalized;
+                return new __rot3t__(w, x, y, z).Normalized;
             }
             else
             {
@@ -778,7 +788,7 @@ namespace Aardvark.Base
                     __ft__ y = (m.M01 + m.M10) / s;
                     __ft__ z = (m.M02 + m.M20) / s;
                     __ft__ w = (m.M21 - m.M12) / s;
-                    return new Rot__x3t__(w, x, y, z).Normalized;
+                    return new __rot3t__(w, x, y, z).Normalized;
                 }
                 else if (m.M11 > m.M22)
                 {
@@ -787,7 +797,7 @@ namespace Aardvark.Base
                     __ft__ y = s / 4;
                     __ft__ z = (m.M12 + m.M21) / s;
                     __ft__ w = (m.M20 - m.M02) / s;
-                    return new Rot__x3t__(w, x, y, z).Normalized;
+                    return new __rot3t__(w, x, y, z).Normalized;
                 }
                 else
                 {
@@ -796,7 +806,7 @@ namespace Aardvark.Base
                     __ft__ y = (m.M12 + m.M21) / s;
                     __ft__ z = s / 4;
                     __ft__ w = (m.M01 - m.M10) / s;
-                    return new Rot__x3t__(w, x, y, z).Normalized;
+                    return new __rot3t__(w, x, y, z).Normalized;
                 }
             }
         }
@@ -810,7 +820,7 @@ namespace Aardvark.Base
         /// </summary>
         /// <param name="axis">Output of normalized axis of rotation.</param>
         /// <param name="angleInRadians">Output of angle of rotation about axis (Right Hand Rule).</param>
-        public void ToAxisAngle(ref V__x3t__ axis, ref __ft__ angleInRadians)
+        public void ToAxisAngle(ref __v3t__ axis, ref __ft__ angleInRadians)
         {
             if (!Fun.ApproximateEquals(NormSquared, 1, 0.001))
                 throw new ArgumentException("Quaternion needs to be normalized to represent a rotation.");
@@ -832,10 +842,10 @@ namespace Aardvark.Base
         }
 
         // [todo ISSUE 20090421 andi> caching of the Matrix would greatly improve performance.
-        // Implement Rot__x3t__ as a Matrix-backed Quaternion. Quaternion should be its own class with all Quaternion-operations, 
-        // and Rot__x3t__ only an efficient Rotation (Matrix) that is has its Orthonormalization-Constraint enforced (by a Quaternion).
+        // Implement __rot3t__ as a Matrix-backed Quaternion. Quaternion should be its own class with all Quaternion-operations, 
+        // and __rot3t__ only an efficient Rotation (Matrix) that is has its Orthonormalization-Constraint enforced (by a Quaternion).
         //<]
-        public static explicit operator M3__x3t__(Rot__x3t__ r)
+        public static explicit operator __m33t__(__rot3t__ r)
         {
             //speed up by computing the multiplications only once (each is used 2 times below)
             __ft__ xx = r.X * r.X;
@@ -847,7 +857,7 @@ namespace Aardvark.Base
             __ft__ xw = r.X * r.W;
             __ft__ yw = r.Y * r.W;
             __ft__ zw = r.Z * r.W;
-            return new M3__x3t__(
+            return new __m33t__(
                 1 - 2 * (yy + zz),
                 2 * (xy - zw),
                 2 * (xz + yw),
@@ -862,7 +872,7 @@ namespace Aardvark.Base
                 );
         }
 
-        public static explicit operator M4__x4t__(Rot__x3t__ r)
+        public static explicit operator __m44t__(__rot3t__ r)
         {
             //speed up by computing the multiplications only once (each is used 2 times below)
             __ft__ xx = r.X * r.X;
@@ -874,7 +884,7 @@ namespace Aardvark.Base
             __ft__ xw = r.X * r.W;
             __ft__ yw = r.Y * r.W;
             __ft__ zw = r.Z * r.W;
-            return new M4__x4t__(
+            return new __m44t__(
                 1 - 2 * (yy + zz),
                 2 * (xy - zw),
                 2 * (xz + yw),
@@ -894,7 +904,7 @@ namespace Aardvark.Base
                 );
         }
 
-        public static explicit operator M3__x4t__(Rot__x3t__ r)
+        public static explicit operator __m34t__(__rot3t__ r)
         {
             //speed up by computing the multiplications only once (each is used 2 times below)
             __ft__ xx = r.X * r.X;
@@ -906,7 +916,7 @@ namespace Aardvark.Base
             __ft__ xw = r.X * r.W;
             __ft__ yw = r.Y * r.W;
             __ft__ zw = r.Z * r.W;
-            return new M3__x4t__(
+            return new __m34t__(
                 1 - 2 * (yy + zz),
                 2 * (xy - zw),
                 2 * (xz + yw),
@@ -924,7 +934,7 @@ namespace Aardvark.Base
                 );
         }
 
-        public static explicit operator __ft__[](Rot__x3t__ r)
+        public static explicit operator __ft__[](__rot3t__ r)
         {
             __ft__[] array = new __ft__[4];
             array[0] = r.W;
@@ -945,7 +955,7 @@ namespace Aardvark.Base
 
         public override bool Equals(object other)
         {
-            return (other is Rot__x3t__) ? (this == (Rot__x3t__)other) : false;
+            return (other is __rot3t__) ? (this == (__rot3t__)other) : false;
         }
 
         public override string ToString()
@@ -953,10 +963,10 @@ namespace Aardvark.Base
             return string.Format(Localization.FormatEnUS, "[{0}, {1}]", W, V);
         }
 
-        public static Rot__x3t__ Parse(string s)
+        public static __rot3t__ Parse(string s)
         {
             var x = s.NestedBracketSplitLevelOne().ToArray();
-            return new Rot__x3t__(__ft__.Parse(x[0]), V__x3t__.Parse(x[1]));
+            return new __rot3t__(__ft__.Parse(x[0]), __v3t__.Parse(x[1]));
         }
 
         #endregion
