@@ -254,8 +254,8 @@ namespace Aardvark.Base
             return s_preferredExtensionOfFormat.Value[format];
         }
 
-        private static Dictionary<PixFormat, Func<int, int, int, PixImage>> s_pixImageCreatorMap =
-            new Dictionary<PixFormat, Func<int, int, int, PixImage>>()
+        private static Dictionary<PixFormat, Func<long, long, long, PixImage>> s_pixImageCreatorMap =
+            new Dictionary<PixFormat, Func<long, long, long, PixImage>>()
             {
                 { PixFormat.ByteBW, (x, y, c) => new PixImage<byte>(Col.Format.BW, x, y, c) },
 
@@ -287,8 +287,8 @@ namespace Aardvark.Base
                 { PixFormat.DoubleRGBP, (x, y, c) => new PixImage<double>(Col.Format.RGBP, x, y, c) },
             };
 
-        private static Dictionary<Type, Func<Array, Col.Format, int, int, int, PixImage>> s_pixImageArrayCreatorMap =
-            new Dictionary<Type, Func<Array, Col.Format, int, int, int, PixImage>>()
+        private static Dictionary<Type, Func<Array, Col.Format, long, long, long, PixImage>> s_pixImageArrayCreatorMap =
+            new Dictionary<Type, Func<Array, Col.Format, long, long, long, PixImage>>()
             {
                 { typeof(byte[]), (a, f, x, y, c) =>
                                     new PixImage<byte>(f, ((byte[])a).CreateImageVolume(new V3l(x, y, c))) },
@@ -307,22 +307,22 @@ namespace Aardvark.Base
 
         #region Static Creator Functions
 
-        public static PixImage Create(PixFormat pixFormat, int sx, int sy, int ch)
+        public static PixImage Create(PixFormat pixFormat, long sx, long sy, long ch)
         {
             return s_pixImageCreatorMap[pixFormat](sx, sy, ch);
         }
 
-        public static PixImage Create(PixFormat pixFormat, int sx, int sy)
+        public static PixImage Create(PixFormat pixFormat, long sx, long sy)
         {
             return s_pixImageCreatorMap[pixFormat](sx, sy, pixFormat.Format.ChannelCount());
         }
 
-        public static PixImage Create(Array array, Col.Format format, int sx, int sy, int ch)
+        public static PixImage Create(Array array, Col.Format format, long sx, long sy, long ch)
         {
             return s_pixImageArrayCreatorMap[array.GetType()](array, format, sx, sy, ch);
         }
 
-        public static PixImage Create(Array array, Col.Format format, int sx, int sy)
+        public static PixImage Create(Array array, Col.Format format, long sx, long sy)
         {
             return s_pixImageArrayCreatorMap[array.GetType()](array, format, sx, sy, format.ChannelCount());
         }
@@ -466,6 +466,11 @@ namespace Aardvark.Base
         {
             var loadImage = CreateRawBitmap(bitmap);
             return loadImage.ToPixImage(loadImage.Format);
+        }
+
+        public static Volume<T> CreateVolume<T>(V3i size)
+        {
+            return size.ToV3l().CreateImageVolume<T>();
         }
 
         public static Volume<T> CreateVolume<T>(V3l size)
@@ -841,20 +846,20 @@ namespace Aardvark.Base
         public PixImage() { }
 
         public PixImage(Volume<T> volume)
-            : this(Col.FormatDefaultOf(typeof(T), (int)(volume.SZ)), volume)
+            : this(Col.FormatDefaultOf(typeof(T), volume.SZ), volume)
         { }
 
-        public PixImage(V2i size, int channelCount)
+        public PixImage(V2i size, long channelCount)
             : this(Col.FormatDefaultOf(typeof(T), channelCount),
                    CreateVolume<T>(size.X, size.Y, channelCount))
         { }
 
         public PixImage(V2l size, long channelCount)
-            : this(Col.FormatDefaultOf(typeof(T), (int)channelCount),
+            : this(Col.FormatDefaultOf(typeof(T), channelCount),
                    CreateVolume<T>(size.X, size.Y, channelCount))
         { }
 
-        public PixImage(int sizeX, int sizeY, int channelCount)
+        public PixImage(long sizeX, long sizeY, long channelCount)
             : this(Col.FormatDefaultOf(typeof(T), channelCount),
                    CreateVolume<T>(sizeX, sizeY, channelCount))
         { }
@@ -867,11 +872,11 @@ namespace Aardvark.Base
             : this(format, CreateVolume<T>(size.X, size.Y, format.ChannelCount()))
         { }
 
-        public PixImage(Col.Format format, int sizeX, int sizeY)
+        public PixImage(Col.Format format, long sizeX, long sizeY)
             : this(format, CreateVolume<T>(sizeX, sizeY, format.ChannelCount()))
         { }
 
-        public PixImage(Col.Format format, V2i size, int channelCount)
+        public PixImage(Col.Format format, V2i size, long channelCount)
             : this(format, CreateVolume<T>(size.X, size.Y, channelCount))
         { }
 
@@ -879,7 +884,7 @@ namespace Aardvark.Base
             : this(format, CreateVolume<T>(size.X, size.Y, channelCount))
         { }
 
-        public PixImage(Col.Format format, int sizeX, int sizeY, int channelCount)
+        public PixImage(Col.Format format, long sizeX, long sizeY, long channelCount)
             : this(format, CreateVolume<T>(sizeX, sizeY, channelCount))
         { }
 
@@ -1094,6 +1099,19 @@ namespace Aardvark.Base
             Format = image.Format;
         }
         
+        public PixImage(Stream stream, PixLoadOptions options = PixLoadOptions.Default)
+        {
+            var loadImage = PixImage.CreateRaw(stream, options);
+            var channelCount = loadImage.Format.ChannelCount();
+            var image = loadImage as PixImage<T>;
+
+            if (image == null || image.ChannelCount != channelCount)
+                image = new PixImage<T>(loadImage);
+
+            Volume = image.Volume;
+            Format = image.Format;
+        }
+
         #endregion
 
         #region Static Creator Functions
