@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace Aardvark.Base
@@ -48,36 +49,39 @@ namespace Aardvark.Base
             return Generator.Next();
         }
 
+
+        public static ThreadLocal<byte[]> s_buffer4 = new ThreadLocal<byte[]>(() => new byte[4]);
         /// <summary>
         /// Returns a uniformly distributed uint in the interval [0, 2^63-1].
         /// Constructed using 16 bits of each of two random integers.
         /// </summary>
         public uint UniformUInt()
         {
-            return ((~0x7fffu & (uint)UniformInt()) << 1) // bits 31-16
-                   | ((uint)UniformInt() >> 15); // bits 15-0
+            var array = s_buffer4.Value;
+            Generator.NextBytes(array);
+            return BitConverter.ToUInt32(array, 0);
         }
 
+        public static ThreadLocal<byte[]> s_buffer8 = new ThreadLocal<byte[]>(() => new byte[8]);
         /// <summary>
         /// Returns a uniformly distributed long in the interval [0, 2^63-1].
-        /// Constructed using 21 bits of each of three random integers.
         /// </summary>
         public long UniformLong()
         {
-            return ((~0x3ff & (long)UniformInt()) << 32) // bits 62-42
-                   | ((~0x3ff & (long)UniformInt()) << 11) // bits 41-21  
-                   | ((long)UniformInt() >> 10); // bits 20-0
+            var array = s_buffer8.Value;
+            Generator.NextBytes(array);
+            return (long)(BitConverter.ToUInt64(array, 0) & 0x7ffffffffffffffful);
+
         }
 
         /// <summary>
         /// Returns a uniformly distributed long in the interval [0, 2^64-1].
-        /// Constructed using 21/22/21 bits of three random integers.
         /// </summary>
         public ulong UniformULong()
         {
-            return ((~0x3fful & (ulong)UniformInt()) << 33) // bits 63-43
-                   | ((~0x1fful & (ulong)UniformInt()) << 12) // bits 42-21  
-                   | ((ulong)UniformInt() >> 10); // bits 20-0
+            var array = s_buffer8.Value;
+            Generator.NextBytes(array);
+            return BitConverter.ToUInt64(array, 0);
         }
 
         public float UniformFloat()

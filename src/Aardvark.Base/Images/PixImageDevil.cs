@@ -69,7 +69,9 @@ namespace Aardvark.Base
             { Col.Format.RGB, Devil.ChannelFormat.RGB },
             { Col.Format.RGBA, Devil.ChannelFormat.RGBA },
             { Col.Format.BGR, Devil.ChannelFormat.BGR },
-            { Col.Format.BGRA, Devil.ChannelFormat.BGRA }
+            { Col.Format.BGRA, Devil.ChannelFormat.BGRA },
+            { Col.Format.Gray, Devil.ChannelFormat.Luminance },
+            { Col.Format.GrayAlpha, Devil.ChannelFormat.LuminanceAlpha },
         };
 
 

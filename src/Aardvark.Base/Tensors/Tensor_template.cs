@@ -4593,6 +4593,10 @@ namespace Aardvark.Base
             }
         }
 
+        /// <summary>
+        /// Set all pixels whose square region is intersected by the line from p0 to p1
+        /// to the supplied value. Does not perform any bounds checks.
+        /// </summary>
         public void SetLineAllTouchedRaw(V2d p0, V2d p1, __vtn__ value)
         {
             SetLineAllTouchedRaw(p0.X, p0.Y, p1.X, p1.Y, value);
