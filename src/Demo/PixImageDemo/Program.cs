@@ -11,22 +11,14 @@ namespace PixImageDemo
 
         public static void Main(string[] args)
         {
-            string dir = @"C:\Aardwork\Images";  // WorkDir.FindDir("PixImage");
+            // require a directory of the following name inside the Aardvark workdir.
+            string dir = WorkDir.FindDir("PixImageDemo");
 
             PolygonDemo(dir);
             HowManyColorsIllusion(dir);
             ResampleDemo(dir);
             LinearRampDemo(dir);
             VariousDemos(dir);
-            // Various(dir);
-            // Difference(dir);
-            // CopyTest(dir);
-            // GradientTest(dir);
-            // WriteLinearRampImage(dir);
-            // Interpolation();
-
-            // Overlay();
-
         }
 
 
@@ -354,14 +346,13 @@ namespace PixImageDemo
             var size = c3bmatrix.Size;
 
             // draw a bresenham line
-            c3bmatrix.SetLine(size.X - 50L, 50L, 50L, size.Y - 50L, C3b.Blue);
+            c3bmatrix.SetLine(size.X - 50, 50, 50, size.Y - 50, C3b.Blue);
 
             // draw a bresenham circle
-            c3bmatrix.SetCircle(size.X / 2, size.Y / 2, 50L, C3b.Yellow);
+            c3bmatrix.SetCircle(size.X / 2, size.Y / 2, 50, C3b.Yellow);
 
-            c3bmatrix.SetCircleFilled((size.X * 3) / 4, (size.Y * 3) / 4, 50L, C3b.Yellow);
-            c3bmatrix.SetCircleFilled(25, 25, 75L, C3b.Yellow);
-            c3bmatrix.SetCircleFilled(25, 25, 75L, C3b.Yellow);
+            c3bmatrix.SetCircleFilled((size.X * 3) / 4, (size.Y * 3) / 4, 50, C3b.Yellow);
+            c3bmatrix.SetCircleFilled(25, 25, 75, C3b.Yellow);
 
 
             var cx = size.X / 2; var cy = size.Y / 2;

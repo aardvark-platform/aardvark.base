@@ -120,6 +120,7 @@
     <Compile Include="IO\StreamCodeWriter_auto.cs" />
     <None Include="IO\StreamCodeWriter_template.cs" />
     <None Include="Math\Complex_template.cs" />
+    <Compile Include="IO\WorkDir.cs" />
     <Compile Include="Math\Complex_auto.cs" />
     <Compile Include="Math\Interpolation.cs" />
     <Compile Include="Math\PhysicsConsts.cs" />
