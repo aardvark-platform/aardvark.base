@@ -7,7 +7,7 @@ using System.Text;
 namespace Aardvark.Base
 {
     //[RegisterTypeInfo]
-    public class PixImageMipMap : IPixOld, IPix, IPixMipMap2d
+    public class PixImageMipMap : IPix, IPixMipMap2d
     {
         public PixImage[] ImageArray;
 
@@ -40,10 +40,8 @@ namespace Aardvark.Base
 
         #region Properties
 
-        public PixInfoOld PixInfo { get { return default(PixInfoOld); } }
-        // public IEnumerable<INode> SubNodes { get { foreach (var p in ImageArray) yield return p; } }
-
         public int ImageCount { get { return ImageArray.Length; } }
+
         public IEnumerable<PixImage> Images { get { return ImageArray; } }
         
         #endregion

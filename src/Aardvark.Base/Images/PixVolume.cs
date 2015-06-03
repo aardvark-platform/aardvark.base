@@ -11,7 +11,7 @@ using System.Text;
 
 namespace Aardvark.Base
 {
-    public abstract class PixVolume : IPix, IPixOld
+    public abstract class PixVolume : IPix
     {
         public Col.Format Format;
 
@@ -32,13 +32,7 @@ namespace Aardvark.Base
 
         #region Properties
 
-        public PixInfoOld PixInfo
-        {
-            get
-            {
-                return new PixInfoOld { { PixInfoOld.Property.ColFormat, Format } };
-            }
-        }
+        public PixVolumeInfo Info { get { return new PixVolumeInfo(PixFormat, Size); } }
 
         // public IEnumerable<INode> SubNodes { get { return Enumerable.Empty<INode>(); } }
 
@@ -119,6 +113,8 @@ namespace Aardvark.Base
         public abstract PixFormat PixFormat { get; }
 
         public abstract V3i Size { get; }
+
+        public abstract V3l SizeL { get; }
 
         public abstract int ChannelCount { get; }
 
@@ -326,6 +322,11 @@ namespace Aardvark.Base
             get { return (V3i)Tensor4.Info.Size.XYZ; }
         }
 
+        public override V3l SizeL
+        {
+            get { return Tensor4.Info.Size.XYZ; }
+        }
+
         public override int ChannelCount
         {
             get { return (int)Tensor4.Info.Size.W; }
@@ -362,18 +363,6 @@ namespace Aardvark.Base
         public override Array Array
         {
             get { return Tensor4.Data; }
-        }
-
-        public new PixInfoOld PixInfo
-        {
-            get
-            {
-                return new PixInfoOld
-                {
-                    { PixInfoOld.Property.Type, typeof(T) },
-                    { PixInfoOld.Property.ColFormat, Format },
-                };
-            }
         }
 
         /// <summary>

@@ -270,15 +270,10 @@ namespace Aardvark.Base
                 Type type;
                 Col.Format fmt;
 
-                if (!s_pixDataTypes.TryGetValue(dataType, out type))
-                    return null;
-
-                if (!s_pixColorFormats.TryGetValue(format, out fmt))
-                    return null;
+                if (!s_pixDataTypes.TryGetValue(dataType, out type)) return null;
+                if (!s_pixColorFormats.TryGetValue(format, out fmt)) return null;
 
                 var size = new V2i(width, height);
-
-
                 return new PixImageInfo(new PixFormat(type, fmt), size);
             }
             catch (Exception)

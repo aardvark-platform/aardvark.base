@@ -89,7 +89,7 @@ namespace Aardvark.Base
     }
 
     [Serializable]
-    public abstract partial class PixImage : IPix, IPixOld, IPixImage2d
+    public abstract partial class PixImage : IPix, IPixImage2d
     {
         public Col.Format Format;
         // TODO: public PixImageMetaData MetaData;
@@ -169,21 +169,7 @@ namespace Aardvark.Base
 
         #region Properties
 
-        public PixImageInfo Info
-        {
-            get
-            {
-                return new PixImageInfo(PixFormat, Size);
-            }
-        }
-
-        public PixInfoOld PixInfo
-        {
-            get
-            {
-                return new PixInfoOld { { PixInfoOld.Property.ColFormat, Format } };
-            }
-        }
+        public PixImageInfo Info {  get { return new PixImageInfo(PixFormat, Size); } }
 
         /// <summary>
         /// Size.X * Size.Y.
@@ -830,7 +816,7 @@ namespace Aardvark.Base
     /// is specified as type parameter.
     /// </summary>
     [Serializable]
-    public partial class PixImage<T> : PixImage, IPixOld<T> //, IPixImage2d
+    public partial class PixImage<T> : PixImage //, IPixImage2d
     {
         public Volume<T> Volume;
 
@@ -1217,18 +1203,6 @@ namespace Aardvark.Base
         public override int IntStride
         {
             get { return BytesPerChannel * (int)Volume.DY; }
-        }
-
-        public new PixInfoOld PixInfo
-        {
-            get
-            {
-                return new PixInfoOld
-                {
-                    { PixInfoOld.Property.Type, typeof(T) },
-                    { PixInfoOld.Property.ColFormat, Format },
-                };
-            }
         }
 
         /// <summary>
