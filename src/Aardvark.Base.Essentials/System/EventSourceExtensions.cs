@@ -22,7 +22,7 @@ namespace Aardvark.Base
         {
             self.Next.ContinueWith(t => action(t));
         }
-
+        
         /// <summary>
         /// Executes action when next value arrives.
         /// </summary>
@@ -30,7 +30,7 @@ namespace Aardvark.Base
         {
             self.Next.ContinueWith(t => action());
         }
-
+        
         /// <summary>
         /// Repeats given action until the next value of this event source arrives.
         /// The optional final action gets called with this newly arrived value. 
@@ -45,6 +45,21 @@ namespace Aardvark.Base
 
             if (finallyAction != null)
                 await finallyAction(next.Result);
+        }
+
+        /// <summary>
+        /// Repeats given action until the task completes.
+        /// The optional final action gets called with the task's result. 
+        /// </summary>
+        public static async Task RepeatUntilNext<T>(this Task<T> self, Func<Task> action, Func<T, Task> finallyAction = null)
+        {
+            while (!self.IsCompleted)
+            {
+                await Task.WhenAny(action(), self);
+            }
+
+            if (finallyAction != null)
+                await finallyAction(self.Result);
         }
 
         /// <summary>
@@ -64,6 +79,21 @@ namespace Aardvark.Base
         }
 
         /// <summary>
+        /// Repeats given action until the task completes.
+        /// The optional final action gets called with the task's result. 
+        /// </summary>
+        public static async Task RepeatUntilNext<T>(this Task<T> self, Func<Task> action, Action<T> finallyAction)
+        {
+            while (!self.IsCompleted)
+            {
+                await Task.WhenAny(action(), self);
+            }
+
+            if (finallyAction != null)
+                finallyAction(self.Result);
+        }
+
+        /// <summary>
         /// Repeats given action until the given task/awaitable completes.
         /// The optional final action gets called with the task's result. 
         /// </summary>
@@ -72,6 +102,21 @@ namespace Aardvark.Base
             while (!self.IsCompleted)
             {
                 await Await.WhenAny(action().AsAwaitable(), self);
+            }
+
+            if (finallyAction != null)
+                await finallyAction(self.Result);
+        }
+
+        /// <summary>
+        /// Repeats given action until the given task completes.
+        /// The optional final action gets called with the task's result. 
+        /// </summary>
+        public static async Task RepeatUntilCompleted<T>(this Task<T> self, Func<Task> action, Func<T, Task> finallyAction = null)
+        {
+            while (!self.IsCompleted)
+            {
+                await Task.WhenAny(action(), self);
             }
 
             if (finallyAction != null)
@@ -94,6 +139,21 @@ namespace Aardvark.Base
         }
 
         /// <summary>
+        /// Repeats given action until the given task completes.
+        /// The optional final action gets called with the task's result. 
+        /// </summary>
+        public static async Task RepeatUntilCompleted<T>(this Task<T> self, Func<Task> action, Action<T> finallyAction)
+        {
+            while (!self.IsCompleted)
+            {
+                await Task.WhenAny(action(), self);
+            }
+
+            if (finallyAction != null)
+                finallyAction(self.Result);
+        }
+
+        /// <summary>
         /// Repeats given action until the given task/awaitable completes.
         /// </summary>
         public static async Task RepeatUntilCompleted(this IAwaitable self, Func<Task> action, Func<Task> finallyAction = null)
@@ -108,6 +168,20 @@ namespace Aardvark.Base
         }
 
         /// <summary>
+        /// Repeats given action until the given task completes.
+        /// </summary>
+        public static async Task RepeatUntilCompleted(this Task self, Func<Task> action, Func<Task> finallyAction = null)
+        {
+            while (!self.IsCompleted)
+            {
+                await Task.WhenAny(action(), self);
+            }
+
+            if (finallyAction != null)
+                await finallyAction();
+        }
+
+        /// <summary>
         /// Repeats given action until the given task/awaitable completes.
         /// </summary>
         public static async Task RepeatUntilCompleted(this IAwaitable self, Func<Task> action, Action finallyAction)
@@ -115,6 +189,20 @@ namespace Aardvark.Base
             while (!self.IsCompleted)
             {
                 await Await.WhenAny(action().AsAwaitable(), self);
+            }
+
+            if (finallyAction != null)
+                finallyAction();
+        }
+
+        /// <summary>
+        /// Repeats given action until the given task completes.
+        /// </summary>
+        public static async Task RepeatUntilCompleted(this Task self, Func<Task> action, Action finallyAction)
+        {
+            while (!self.IsCompleted)
+            {
+                await Task.WhenAny(action(), self);
             }
 
             if (finallyAction != null)
