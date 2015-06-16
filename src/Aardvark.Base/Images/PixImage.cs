@@ -348,7 +348,7 @@ namespace Aardvark.Base
             {
                 try
                 {
-                    var img = CreateRawDevil(new FileStream(filename, FileMode.Open, FileAccess.Read), options);
+                    var img = CreateRawDevil(filename, options);
                     if (img != null) return img;
                 }
                 catch (Exception) { }

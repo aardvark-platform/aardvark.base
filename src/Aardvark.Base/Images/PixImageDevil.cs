@@ -119,35 +119,63 @@ namespace Aardvark.Base
                 IL.BindImage(img);
                 if (!IL.LoadStream(stream))
                     throw new ImageLoadException("stream");
-                
-                var dataType = IL.GetDataType();
-                var format = IL.GetFormat();
-                var width = IL.GetInteger(IntName.ImageWidth);
-                var height = IL.GetInteger(IntName.ImageHeight);
-                var channels = IL.GetInteger(IntName.ImageChannels);
-                Type type;
-                Col.Format fmt;
 
-                if (!s_pixDataTypes.TryGetValue(dataType, out type)) return null;
-                if (!s_pixColorFormats.TryGetValue(format, out fmt)) return null;
+                return LoadImage(img);
 
-                var size = new V2i(width, height);
-                var imageType = typeof(PixImage<>).MakeGenericType(type);
-
-
-                var pix = (PixImage)Activator.CreateInstance(imageType, fmt, size, channels);
-                var gc = GCHandle.Alloc(pix.Data, GCHandleType.Pinned);
-                var ptr = IL.GetData();
-
-                ptr.CopyTo (pix.Data, 0, pix.Data.Length);
-
-                gc.Free();
-
-                IL.BindImage(0);
-                IL.DeleteImage(img);
-
-                return pix;
             }            
+        }
+
+        /// <summary>
+        /// Load image from stream via devil.
+        /// </summary>
+        /// <returns>If file could not be read, returns null, otherwise a Piximage.</returns>
+        private static PixImage CreateRawDevil(
+                string fileName,
+                PixLoadOptions loadFlags = PixLoadOptions.Default)
+        {
+            lock (s_devilLock)
+            {
+                var img = IL.GenImage();
+
+                IL.BindImage(img);
+                if (!IL.LoadImage(fileName))
+                    throw new ImageLoadException(string.Format("Could not load image: {0}", fileName));
+
+                return LoadImage(img);
+
+            }
+        }
+
+        private static PixImage LoadImage(int img)
+        {
+
+            var dataType = IL.GetDataType();
+            var format = IL.GetFormat();
+            var width = IL.GetInteger(IntName.ImageWidth);
+            var height = IL.GetInteger(IntName.ImageHeight);
+            var channels = IL.GetInteger(IntName.ImageChannels);
+            Type type;
+            Col.Format fmt;
+
+            if (!s_pixDataTypes.TryGetValue(dataType, out type)) return null;
+            if (!s_pixColorFormats.TryGetValue(format, out fmt)) return null;
+
+            var size = new V2i(width, height);
+            var imageType = typeof(PixImage<>).MakeGenericType(type);
+
+
+            var pix = (PixImage)Activator.CreateInstance(imageType, fmt, size, channels);
+            var gc = GCHandle.Alloc(pix.Data, GCHandleType.Pinned);
+            var ptr = IL.GetData();
+
+            ptr.CopyTo(pix.Data, 0, pix.Data.Length);
+
+            gc.Free();
+
+            IL.BindImage(0);
+            IL.DeleteImage(img);
+
+            return pix;
         }
 
         /// <summary>
