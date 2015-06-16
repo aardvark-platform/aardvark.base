@@ -2769,25 +2769,6 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Set each element to the value of a function of the index of the
-        /// elements of this __ttnl__. The function may access the
-        /// supplied env to compute the new elements of the
-        /// __ttnl__.
-        /// </summary>
-        /// <returns>this</returns>
-        public __ttn__<__dvtn__> SetByIndex<TEnv>(TEnv env, Func<TEnv, long, __vtn__> env_index_elementFun)
-        {
-            //# Loop("", false, () => {
-                    //# if (dt == vt) {
-                    Data[i] = env_index_elementFun(env, i);
-                    //# } else {
-                    Setter(Data, i, env_index_elementFun(env, i));
-                    //# }
-            //# }, false, false);
-            return this;
-        }
-
-        /// <summary>
         /// Set from a tensor that conforms to the corresponding tensor
         /// interface. Note, that this function checks if faster set
         /// operations are available and uses them if appropriate.
@@ -2862,26 +2843,6 @@ namespace Aardvark.Base
             return this;
         }
 
-        /// <summary>
-        /// Set each element to the value of a function of the index of the
-        /// elements of the supplied __ttnl__. The function may access the
-        /// elements of the supplied __ttnl__ to compute the elements of the
-        /// __ttnl__.
-        /// </summary>
-        /// <returns>this</returns>
-        public __ttn__<__dvtn__> SetByIndex<__t1t__, TEnv>(
-                __ttn__<__t1t__> t1, TEnv env, Func<TEnv, long, __vtn__> env_index1_elementFun)
-        {
-            //# LoopN("", false, dt == vt && !t1v, 2, 0, ix => { var i1 = ix ? "i1" : "i";
-                        //# if (dt == vt) {
-                        Data[i] = env_index1_elementFun(env, __i1__);
-                        //# } else {
-                        Setter(Data, i, env_index1_elementFun(env, __i1__));
-                        //# }
-            //# });
-            return this;
-        }
-
         //# }); // t1v
         //# bools.ForEach(t1v => { var t1t = tnt(1, t1v); var t1i = tni(1, t1v); var t1i1 = tnin(1, t1v);
         //# bools.ForEach(t2v => { var t2t = tnt(2, t2v); var t2i = tni(2, t2v); var t2i2 = tnin(2, t2v);
@@ -2924,29 +2885,6 @@ namespace Aardvark.Base
                         Data[i] = index1_index2_elementFun(__i1__, __i2__);
                         //# } else {
                         Setter(Data, i, index1_index2_elementFun(__i1__, __i2__));
-                        //# }
-            //# });
-            return this;
-        }
-
-        /// <summary>
-        /// Set each element to the value of a function of the index of the
-        /// elements of the supplied __ttnl__. The function may access the
-        /// elements of the supplied __ttnl__ to compute the elements of the
-        /// __ttnl__.
-        /// </summary>
-        /// <returns>this</returns>
-        public __ttn__<__dvtn__> SetByIndex<__t1t__, __t2t__, TEnv>(
-                __ttn__<__t1t__> t1, __ttn__<__t2t__> t2,
-                TEnv env, Func<TEnv, long, long, __vtn__> env_index1_index2_elementFun)
-        {
-            //# LoopN("", false, dt == vt && !t1v && !t2v, 3, 0, ix => {
-                        //# var i1 = ix ? "i1" : "i";
-                        //# var i2 = ix ? "i2" : "i";
-                        //# if (dt == vt) {
-                        Data[i] = env_index1_index2_elementFun(env, __i1__, __i2__);
-                        //# } else {
-                        Setter(Data, i, env_index1_index2_elementFun(env, __i1__, __i2__));
                         //# }
             //# });
             return this;
@@ -2997,30 +2935,6 @@ namespace Aardvark.Base
                         Data[i] = index1_index2_index3_elementFun(__i1__, __i2__, __i3__);
                         //# } else {
                         Setter(Data, i, index1_index2_index3_elementFun(__i1__, __i2__, __i3__));
-                        //# }
-            //# });
-            return this;
-        }
-
-        /// <summary>
-        /// Set each element to the value of a function of the index of the
-        /// elements of the supplied __ttnl__. The function may access the
-        /// elements of the supplied __ttnl__ to compute the elements of the
-        /// __ttnl__.
-        /// </summary>
-        /// <returns>this</returns>
-        public __ttn__<__dvtn__> SetByIndex<__t1t__, __t2t__, __t3t__, TEnv>(
-                __ttn__<__t1t__> t1, __ttn__<__t2t__> t2, __ttn__<__t3t__> t3,
-                TEnv env, Func<TEnv, long, long, long, __vtn__> env_index1_index2_index3_elementFun)
-        {
-            //# LoopN("", false, dt == vt && !t1v && !t2v && !t3v, 4, 0, ix => {
-                        //# var i1 = ix ? "i1" : "i";
-                        //# var i2 = ix ? "i2" : "i";
-                        //# var i3 = ix ? "i3" : "i";
-                        //# if (dt == vt) {
-                        Data[i] = env_index1_index2_index3_elementFun(env, __i1__, __i2__, __i3__);
-                        //# } else {
-                        Setter(Data, i, env_index1_index2_index3_elementFun(env, __i1__, __i2__, __i3__));
                         //# }
             //# });
             return this;
@@ -3287,18 +3201,6 @@ namespace Aardvark.Base
             return new __ttn__<__dvtn__>(t1.Info.Size).SetByIndex(t1, index1_elementFun);
         }
 
-        /// <summary>
-        /// Create a new __ttnl__ by applying a function to each index of the
-        /// elements of the supplied __ttnl__. The function may access the
-        /// elements of the supplied __ttnl__ to compute the elements of the new
-        /// __ttnl__.
-        /// </summary>
-        public static __ttn__<__dvtn__> CreateByIndex<__t1t__, TEnv>(
-                __ttn__<__t1t__> t1, TEnv env, Func<TEnv, long, __vtn__> env_index1_elementFun)
-        {
-            return new __ttn__<__dvtn__>(t1.Info.Size).SetByIndex(t1, env, env_index1_elementFun);
-        }
-
         //# }); // t1v
         //# bools.ForEach(t1v => { var t1t = tnt(1, t1v);
         //# bools.ForEach(t2v => { var t2t = tnt(2, t2v);
@@ -3324,19 +3226,6 @@ namespace Aardvark.Base
                 Func<long, long, __vtn__> index1_index2_fun)
         {
             return new __ttn__<__dvtn__>(t1.Info.Size).SetByIndex(t1, t2, index1_index2_fun);
-        }
-
-        /// <summary>
-        /// Create a new __ttnl__ by applying a function to each index of the
-        /// elements of the supplied __ttnl__. The function may access the
-        /// elements of the supplied __ttnl__ to compute the elements of the new
-        /// __ttnl__.
-        /// </summary>
-        public static __ttn__<__dvtn__> CreateByIndex<__t1t__, __t2t__, TEnv>(
-                __ttn__<__t1t__> t1, __ttn__<__t2t__> t2,
-                TEnv env, Func<TEnv, long, long, __vtn__> env_index1_index2_elementFun)
-        {
-            return new __ttn__<__dvtn__>(t1.Info.Size).SetByIndex(t1, t2, env, env_index1_index2_elementFun);
         }
 
         //# }); }); // t2v, t1v
@@ -3365,19 +3254,6 @@ namespace Aardvark.Base
                 Func<long, long, long, __vtn__> index1_index2_index3_elementFun)
         {
             return new __ttn__<__dvtn__>(t1.Info.Size).SetByIndex(t1, t2, t3, index1_index2_index3_elementFun);
-        }
-
-        /// <summary>
-        /// Create a new __ttnl__ by applying a function to each index of the
-        /// elements of the supplied __ttnl__. The function may access the
-        /// elements of the supplied __ttnl__ to compute the elements of the new
-        /// __ttnl__.
-        /// </summary>
-        public static __ttn__<__dvtn__> CreateByIndex<__t1t__, __t2t__, __t3t__, TEnv>(
-                __ttn__<__t1t__> t1, __ttn__<__t2t__> t2, __ttn__<__t3t__> t3,
-                TEnv env, Func<TEnv, long, long, long, __vtn__> env_index1_index2_index3_elementFun)
-        {
-            return new __ttn__<__dvtn__>(t1.Info.Size).SetByIndex(t1, t2, t3, env, env_index1_index2_index3_elementFun);
         }
 
         //# }); }); }); // t3v, t2v, t1v

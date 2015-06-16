@@ -596,7 +596,7 @@ namespace Aardvark.Base
 			return newArray;
 		}
 
-		public static T[] WithRemoved<T>(this T[] array, T item)
+        public static T[] WithRemoved<T>(this T[] array, T item)
 			where T : class
 		{
 			if (array == null) return array;

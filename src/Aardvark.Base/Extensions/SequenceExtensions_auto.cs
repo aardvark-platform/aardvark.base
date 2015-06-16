@@ -4333,11 +4333,13 @@ namespace Aardvark.Base
 
 namespace Aardvark.Base.CSharp
 {
+    /// <summary>
+    /// The following extensions reside in the special namespace
+    /// Aardvark.Base.CSharp as they mess with normal FSharp operation.
+    /// </summary>
     public static partial class CSharpSequenceExtensions
     {
         #region Sequences of Tups
-
-
 
         public static IEnumerable<T> Select<T0, T1, T>(
         this IEnumerable<Tup<T0, T1>> sequence, Func<T0, T1, T> selector)
@@ -4435,8 +4437,6 @@ namespace Aardvark.Base.CSharp
             return result;
         }
 
-
-
         public static IEnumerable<T> Select<T0, T1, T2, T>(
         this IEnumerable<Tup<T0, T1, T2>> sequence, Func<T0, T1, T2, T> selector)
         {
@@ -4532,8 +4532,6 @@ namespace Aardvark.Base.CSharp
             }
             return result;
         }
-
-
 
         public static IEnumerable<T> Select<T0, T1, T2, T3, T>(
         this IEnumerable<Tup<T0, T1, T2, T3>> sequence, Func<T0, T1, T2, T3, T> selector)
@@ -4631,8 +4629,6 @@ namespace Aardvark.Base.CSharp
             return result;
         }
 
-
-
         public static IEnumerable<T> Select<T0, T1, T2, T3, T4, T>(
         this IEnumerable<Tup<T0, T1, T2, T3, T4>> sequence, Func<T0, T1, T2, T3, T4, T> selector)
         {
@@ -4728,8 +4724,6 @@ namespace Aardvark.Base.CSharp
             }
             return result;
         }
-
-
 
         public static IEnumerable<T> Select<T0, T1, T2, T3, T4, T5, T>(
         this IEnumerable<Tup<T0, T1, T2, T3, T4, T5>> sequence, Func<T0, T1, T2, T3, T4, T5, T> selector)
@@ -4827,8 +4821,6 @@ namespace Aardvark.Base.CSharp
             return result;
         }
 
-
-
         public static IEnumerable<T> Select<T0, T1, T2, T3, T4, T5, T6, T>(
         this IEnumerable<Tup<T0, T1, T2, T3, T4, T5, T6>> sequence, Func<T0, T1, T2, T3, T4, T5, T6, T> selector)
         {
@@ -4924,8 +4916,6 @@ namespace Aardvark.Base.CSharp
             }
             return result;
         }
-
-
 
         public static IEnumerable<T> Select<T0, T1, T2, T3, T4, T5, T6, T7, T>(
         this IEnumerable<Tup<T0, T1, T2, T3, T4, T5, T6, T7>> sequence, Func<T0, T1, T2, T3, T4, T5, T6, T7, T> selector)

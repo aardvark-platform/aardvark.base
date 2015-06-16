@@ -259,6 +259,10 @@ namespace Aardvark.Base
 
 namespace Aardvark.Base.CSharp
 {
+    /// <summary>
+    /// The following extensions reside in the special namespace
+    /// Aardvark.Base.CSharp as they mess with normal FSharp operation.
+    /// </summary>
     public static partial class CSharpSequenceExtensions
     {
         #region Sequences of Tups
@@ -268,8 +272,6 @@ namespace Aardvark.Base.CSharp
         //#   var Ti = tc.Expand(i => "T" + i).Join(", ");
         //#   var ei = tc.Expand(i => "e" + i).Join(", ");
         //#   var tupEi = tc.Expand(i => "tup.E" + i).Join(", ");
-
-
         public static IEnumerable<T> Select<__Ti__, T>(
         this IEnumerable<Tup<__Ti__>> sequence, Func<__Ti__, T> selector)
         {

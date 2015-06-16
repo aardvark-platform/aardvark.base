@@ -5,8 +5,74 @@ using System.Text;
 
 namespace Aardvark.Base
 {
+
+
     public static class FuncActionExtensions
     {
+
+        public static TR ExecuteLast<T0, TR>(this Func<T0, TR>[] funArray, T0 e0)
+        {
+            if (funArray == null) Report.Warn("no function registered");
+            return funArray[funArray.Length - 1](e0);
+        }
+
+        public static bool ExecuteDownToTrue<T0>(this Func<T0, bool>[] funArray, T0 e0)
+        {
+            if (funArray == null) Report.Warn("no function registered");
+            var len = funArray.Length;
+            while (--len >= 0) if (funArray[len](e0)) return true;
+            return false;
+        }
+
+        public static bool ExecuteDownToTrueChecked<T0>(this Func<T0, bool>[] funArray, T0 e0)
+        {
+            if (funArray == null) Report.Warn("no function registered");
+            var len = funArray.Length;
+            while (--len >= 0)
+            {
+                try
+                {
+                    if (funArray[len](e0)) return true;
+                }
+                catch (Exception) { }
+            }
+            return false;
+        }
+
+        public static TR ExecuteDownToNotNull<T0, TR>(this Func<T0, TR>[] funArray, T0 e0)
+            where TR: class
+        {
+            if (funArray == null) Report.Warn("no function registered");
+            var len = funArray.Length;
+            while (--len >= 0)
+            {
+                var r = funArray[len](e0);
+                if (r != null) return r;
+            }
+            return null;
+        }
+
+        public static TR ExecuteDownToNotNullChecked<T0, TR>(this Func<T0, TR>[] funArray, T0 e0)
+            where TR : class
+        {
+            if (funArray == null) Report.Warn("no function registered");
+            var len = funArray.Length;
+            while (--len >= 0)
+            {
+                try
+                {
+                    var r = funArray[len](e0);
+                    if (r != null) return r;
+                }
+                catch (Exception) { }
+            }
+            return null;
+        }
+
+
+
+
+
         public static void RunIfNotNull(this Action ax)
         {
             if (ax != null)
