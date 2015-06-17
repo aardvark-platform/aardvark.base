@@ -41,8 +41,20 @@ namespace Aardvark.Base
 
         #region Properties
 
+        /// <summary>
+        /// A ray is valid if its direction is non-zero.
+        /// </summary>
         public bool IsValid { get { return Direction != V2d.Zero; } }
+
+        /// <summary>
+        /// A ray is invalid if its direction is zero.
+        /// </summary>
         public bool IsInvalid { get { return Direction == V2d.Zero; } }
+
+        /// <summary>
+        /// Returns true if either the origin or the direction contains any NaN value.
+        /// </summary>
+        public bool AnyNaN { get { return Origin.AnyNaN || Direction.AnyNaN; } }
 
         public Line2d Line2d
         {
