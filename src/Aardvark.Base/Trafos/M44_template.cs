@@ -514,9 +514,9 @@ namespace Aardvark.Base
         {
             __ft__ cos = Fun.Cos(angleRadians);
             __ft__ sin = Fun.Sin(angleRadians);
-            return new M4__x4t__(cos, 0, -sin, 0,
+            return new M4__x4t__(cos, 0, sin, 0,
                             0, 1, 0, 0,
-                            sin, 0, cos, 0,
+                            -sin, 0, cos, 0,
                             0, 0, 0, 1);
         }
 

@@ -509,9 +509,9 @@ namespace Aardvark.Base
         {
             float cos = Fun.Cos(angleRadians);
             float sin = Fun.Sin(angleRadians);
-            return new M44f(cos, 0, -sin, 0,
+            return new M44f(cos, 0, sin, 0,
                             0, 1, 0, 0,
-                            sin, 0, cos, 0,
+                            -sin, 0, cos, 0,
                             0, 0, 0, 1);
         }
 
@@ -1145,9 +1145,9 @@ namespace Aardvark.Base
         {
             double cos = Fun.Cos(angleRadians);
             double sin = Fun.Sin(angleRadians);
-            return new M44d(cos, 0, -sin, 0,
+            return new M44d(cos, 0, sin, 0,
                             0, 1, 0, 0,
-                            sin, 0, cos, 0,
+                            -sin, 0, cos, 0,
                             0, 0, 0, 1);
         }
 
