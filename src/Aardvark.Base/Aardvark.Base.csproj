@@ -144,7 +144,6 @@
     <Compile Include="Random\RandomSystem.cs" />
     <Compile Include="RangesBoxes\Box.cs" />
     <Compile Include="RangesBoxes\Box_auto.cs" />
-    <None Include="packages.config" />
     <None Include="RangesBoxes\Box_template.cs" />
     <Compile Include="RangesBoxes\OrientedBox.cs" />
     <Compile Include="RangesBoxes\Range.cs" />
@@ -283,7 +282,6 @@
     <Compile Include="Math\SampleGrid2d.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
-  <ItemGroup />
   <Target Name="Package">
     <!-- Ensure the Package directory exists for this project -->
     <RemoveDir Directories="NuGet" />

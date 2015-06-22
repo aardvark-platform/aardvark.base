@@ -80,19 +80,12 @@
       <Project>{377da721-c821-45f6-b803-9c8724c7b37f}</Project>
       <Name>Aardvark.Base</Name>
     </ProjectReference>
+    <ProjectReference Include="$(AardvarkVRVisBaseProjectPath)">
+      <Name>Aardvark.VRVis.Base [Project]</Name>
+      <Project>{05166F50-6529-40B7-942B-5298521B163C}</Project>
+      <Private>False</Private>
+    </ProjectReference>
   </ItemGroup>
-  <Choose>
-    <When Condition="'$(AardvarkVRVisBaseProjectPath)' == ''" />
-    <Otherwise>
-      <ItemGroup>
-        <ProjectReference Include="$(AardvarkVRVisBaseProjectPath)">
-          <Name>Aardvark.VRVis.Base [Project]</Name>
-          <Project>{05166F50-6529-40B7-942B-5298521B163C}</Project>
-          <Private>False</Private>
-        </ProjectReference>
-      </ItemGroup>
-    </Otherwise>
-  </Choose>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">

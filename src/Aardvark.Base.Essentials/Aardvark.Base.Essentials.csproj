@@ -103,13 +103,10 @@
     <Compile Include="System\WithCancellationExtension.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="packages.config" />
-  </ItemGroup>
-  <ItemGroup>
-	<ProjectReference Include="..\Aardvark.Base\Aardvark.Base.csproj">
-	  <Name>Aardvark.Base</Name>
-	  <Project>{377DA721-C821-45F6-B803-9C8724C7B37F}</Project>
-	  <Private>False</Private>
-	</ProjectReference>
+    <ProjectReference Include="..\Aardvark.Base\Aardvark.Base.csproj">
+      <Name>Aardvark.Base</Name>
+      <Project>{377DA721-C821-45F6-B803-9C8724C7B37F}</Project>
+      <Private>False</Private>
+    </ProjectReference>
   </ItemGroup>
 </Project>
