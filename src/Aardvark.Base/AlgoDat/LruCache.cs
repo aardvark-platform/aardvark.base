@@ -121,6 +121,88 @@ namespace Aardvark.Base
             }
         }
 
+        /// <summary>
+        /// Remove the entry with the supplied key from the hash.
+        /// Returns true on success and puts the value of the
+        /// entry into the out parameter.
+        /// </summary>
+        public bool TryRemove(TKey key, out TValue value)
+        {
+            lock (m_lock)
+            {
+                Entry entry;
+                if (m_cache.TryRemove(key, out entry))
+                {
+                    m_size -= entry.Size;
+                    RemoveAt(m_heap, entry.Index);
+                    value = entry.Value;
+                    return true;
+                }
+                value = default(TValue);
+                return false;
+            }
+        }
+
+        /// <summary>
+        /// Remove the entry with the supplied key from the hash.
+        /// Returns true on success.
+        /// </summary>
+        public bool Remove(TKey key)
+        {
+            lock (m_lock)
+            {
+                Entry entry;
+                if (m_cache.TryRemove(key, out entry))
+                {
+                    m_size -= entry.Size;
+                    RemoveAt(m_heap, entry.Index);
+                    return true;
+                }
+                return false;
+            }
+        }
+
+        /// <summary>
+        /// Reomves an arbitrary element from the heap, and maintains the heap
+        /// conditions.
+        /// </summary>
+        private static void RemoveAt(
+            List<Entry> heap, int index)
+        {
+            var count = heap.Count;
+            if (count == 1) { heap.Clear(); return; }
+            var element = heap[--count];
+            heap.RemoveAt(count);
+            if (index == count) return;
+
+            int i = index;
+            while (i > 0)
+            {
+                int i2 = (i - 1) / 2;
+                if (element.Time > heap[i2].Time) break;
+                heap[i] = heap[i2];
+                heap[i].Index = i;
+                i = i2;
+            }
+            if (i == index)
+            {
+                int i1 = 2 * i + 1;
+                while (i1 < count) // at least one child
+                {
+                    int i2 = i1 + 1;
+                    int ni = (i2 < count // two children?
+                        && heap[i1].Time > heap[i2].Time)
+                        ? i2 : i1; // smaller child
+                    if (heap[ni].Time > element.Time) break;
+                    heap[i] = heap[ni];
+                    heap[i].Index = i;
+                    i = ni; i1 = 2 * i + 1;
+                }
+            }
+            heap[i] = element;
+            heap[i].Index = i;
+        }
+
         private static void Enqueue(
             List<Entry> heap, Entry entry)
         {
