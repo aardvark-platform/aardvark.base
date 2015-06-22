@@ -22,3 +22,4 @@ IF DEFINED t SET "t=!t:%1 =!"
 SET args=!t!
 
 "packages\FAKE\tools\Fake.exe" "build.fsx" "target=%TARGET%" %args%
+RM tmp
