@@ -16,6 +16,7 @@ type IReader<'a> =
     inherit IDisposable
     inherit IAdaptiveObject
     abstract member Content : ReferenceCountingSet<'a>
+    abstract member Update : unit -> unit
     abstract member GetDelta : unit -> Change<'a>
 
 [<CompiledName("IAdaptiveSet")>]
@@ -102,24 +103,28 @@ module private ASetReaders =
             try x.Dispose()
             with _ -> ()
 
+        member x.GetDelta() =
+            x.EvaluateIfNeeded [] (fun () ->
+                let input = source.GetDelta()
+                    
+                let result = 
+                    input |> List.collect (fun d ->
+                        match d with
+                            | Add v -> f.Invoke v |> List.map Add
+                            | Rem v -> f.Revoke v |> List.map Rem
+                    ) |> apply content
+
+                result
+            )     
+          
+
         interface IDisposable with
             member x.Dispose() = x.Dispose()
 
         interface IReader<'b> with
             member x.Content = content
-            member x.GetDelta() =
-                x.EvaluateIfNeeded [] (fun () ->
-                    let input = source.GetDelta()
-                    
-                    let result = 
-                        input |> List.collect (fun d ->
-                            match d with
-                                | Add v -> f.Invoke v |> List.map Add
-                                | Rem v -> f.Revoke v |> List.map Rem
-                        ) |> apply content
-
-                    result
-                )     
+            member x.Update() = x.GetDelta() |> ignore 
+            member x.GetDelta() = x.GetDelta()
           
     type CollectReader<'a, 'b>(scope, source : IReader<'a>, f : 'a -> IReader<'b>) as this =
         inherit AdaptiveObject()
@@ -140,61 +145,65 @@ module private ASetReaders =
             try x.Dispose() 
             with _ -> ()
 
+        member x.GetDelta() =
+            x.EvaluateIfNeeded [] (fun () ->
+                let xs = source.GetDelta()
+                let outerDeltas =
+                    xs |> List.collect (fun d ->
+                        match d with
+                            | Add v ->
+                                let r = f.Invoke v
+
+                                // we're an output of the new reader
+                                r.AddOutput this
+
+                                // bring the reader's content up-to-date by calling GetDelta
+                                r.GetDelta() |> ignore
+
+                                // listen to marking of r (reader cannot be OutOfDate due to GetDelta above)
+                                dirtyInner.Listen r
+                                    
+                                // since the entire reader is new we add its content
+                                // which must be up-to-date here (due to calling GetDelta above)
+                                r.Content |> Seq.map Add |> Seq.toList
+
+                            | Rem v ->
+                                let r = f.Revoke v
+
+                                // remove the reader from the listen-set
+                                dirtyInner.Destroy r
+
+                                // since the reader is no longer contained we don't want
+                                // to be notified anymore
+                                r.RemoveOutput this
+                                    
+                                // the entire content of the reader is removed
+                                // Note that the content here might be OutOfDate
+                                // TODO: think about implications here when we do not "own" the reader
+                                //       exclusively
+                                r.Content |> Seq.map Rem |> Seq.toList
+
+                    )
+
+                // all dirty inner readers must be registered 
+                // in dirtyInner. Even if the outer set did not change we
+                // need to collect those inner deltas.
+                let innerDeltas = dirtyInner.GetDeltas()
+
+                // concat inner and outer deltas 
+                let deltas = List.append outerDeltas innerDeltas
+                deltas |> apply content
+
+            )
+
+
         interface IDisposable with
             member x.Dispose() = x.Dispose()
 
         interface IReader<'b> with
             member x.Content = content
-            member x.GetDelta() =
-                x.EvaluateIfNeeded [] (fun () ->
-                    let xs = source.GetDelta()
-                    let outerDeltas =
-                        xs |> List.collect (fun d ->
-                            match d with
-                                | Add v ->
-                                    let r = f.Invoke v
-
-                                    // we're an output of the new reader
-                                    r.AddOutput this
-
-                                    // bring the reader's content up-to-date by calling GetDelta
-                                    r.GetDelta() |> ignore
-
-                                    // listen to marking of r (reader cannot be OutOfDate due to GetDelta above)
-                                    dirtyInner.Listen r
-                                    
-                                    // since the entire reader is new we add its content
-                                    // which must be up-to-date here (due to calling GetDelta above)
-                                    r.Content |> Seq.map Add |> Seq.toList
-
-                                | Rem v ->
-                                    let r = f.Revoke v
-
-                                    // remove the reader from the listen-set
-                                    dirtyInner.Destroy r
-
-                                    // since the reader is no longer contained we don't want
-                                    // to be notified anymore
-                                    r.RemoveOutput this
-                                    
-                                    // the entire content of the reader is removed
-                                    // Note that the content here might be OutOfDate
-                                    // TODO: think about implications here when we do not "own" the reader
-                                    //       exclusively
-                                    r.Content |> Seq.map Rem |> Seq.toList
-
-                        )
-
-                    // all dirty inner readers must be registered 
-                    // in dirtyInner. Even if the outer set did not change we
-                    // need to collect those inner deltas.
-                    let innerDeltas = dirtyInner.GetDeltas()
-
-                    // concat inner and outer deltas 
-                    let deltas = List.append outerDeltas innerDeltas
-                    deltas |> apply content
-
-                )
+            member x.GetDelta() = x.GetDelta()
+            member x.Update() = x.GetDelta() |> ignore
 
     type ChooseReader<'a, 'b>(scope, source : IReader<'a>, f : 'a -> Option<'b>) as this =
         inherit AdaptiveObject()
@@ -213,35 +222,38 @@ module private ASetReaders =
             try x.Dispose() 
             with _ -> ()
 
+        member x.GetDelta() =
+            x.EvaluateIfNeeded [] (fun () ->
+                let xs = source.GetDelta()
+                let resultDeltas =
+                    xs |> List.choose (fun d ->
+                        match d with
+                            | Add v ->
+                                let r = f.Invoke v
+
+                                match r with
+                                    | Some r -> Some (Add r)
+                                    | None -> None
+
+                            | Rem v ->
+                                let r = f.Revoke v
+
+                                match r with
+                                    | Some r -> Some (Rem r)
+                                    | None -> None
+
+                    )
+
+                resultDeltas |> apply content
+            )
+
         interface IDisposable with
             member x.Dispose() = x.Dispose()
 
         interface IReader<'b> with
             member x.Content = content
-            member x.GetDelta() =
-                x.EvaluateIfNeeded [] (fun () ->
-                    let xs = source.GetDelta()
-                    let resultDeltas =
-                        xs |> List.choose (fun d ->
-                            match d with
-                                | Add v ->
-                                    let r = f.Invoke v
-
-                                    match r with
-                                        | Some r -> Some (Add r)
-                                        | None -> None
-
-                                | Rem v ->
-                                    let r = f.Revoke v
-
-                                    match r with
-                                        | Some r -> Some (Rem r)
-                                        | None -> None
-
-                        )
-
-                    resultDeltas |> apply content
-                )
+            member x.GetDelta() = x.GetDelta()
+            member x.Update() = x.GetDelta() |> ignore
 
     type ModReader<'a>(source : IMod<'a>) as this =  
         inherit AdaptiveObject()
@@ -258,28 +270,32 @@ module private ASetReaders =
             try x.Dispose() 
             with _ -> ()
 
+        member x.GetDelta() =
+            x.EvaluateIfNeeded [] (fun () ->
+                let v = source.GetValue()
+                let resultDeltas =
+                    if hasChanged v then
+                        match old with
+                            | Some c -> 
+                                old <- Some v
+                                [Rem c; Add v]
+                            | None ->
+                                old <- Some v
+                                [Add v]
+                    else
+                        []
+
+                resultDeltas |> apply content
+            )
+
+
         interface IDisposable with
             member x.Dispose() = x.Dispose()
 
         interface IReader<'a> with
             member x.Content = content
-            member x.GetDelta() =
-                x.EvaluateIfNeeded [] (fun () ->
-                    let v = source.GetValue()
-                    let resultDeltas =
-                        if hasChanged v then
-                            match old with
-                                | Some c -> 
-                                    old <- Some v
-                                    [Rem c; Add v]
-                                | None ->
-                                    old <- Some v
-                                    [Add v]
-                        else
-                            []
-
-                    resultDeltas |> apply content
-                )
+            member x.GetDelta() = x.GetDelta()
+            member x.Update() = x.GetDelta() |> ignore
 
     type BufferedReader<'a>(update : unit -> unit, dispose : BufferedReader<'a> -> unit) =
         inherit AdaptiveObject()
@@ -338,16 +354,19 @@ module private ASetReaders =
             try x.Dispose()
             with _ -> ()
 
+        member x.GetDelta() =
+            update()
+            x.EvaluateIfNeeded [] (fun () ->
+                let l = getDeltas()
+                l |> apply content
+            )
+
         interface IDisposable with
             member x.Dispose() = x.Dispose()
 
         interface IReader<'a> with
-            member x.GetDelta() =
-                update()
-                x.EvaluateIfNeeded [] (fun () ->
-                    let l = getDeltas()
-                    l |> apply content
-                )
+            member x.GetDelta() = x.GetDelta()
+            member x.Update() = x.GetDelta() |> ignore
 
             member x.Content = content
 

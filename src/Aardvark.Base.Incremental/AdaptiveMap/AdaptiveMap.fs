@@ -147,3 +147,173 @@ module AMap =
         let scope = Ag.getContext()
         AdaptiveMap(fun () -> m.GetReader() |> AMapReaders.choose scope (fun k v -> if f k v then Some v else None))
 
+
+module NewImpl = 
+    type IMapReader<'k, 'v> =
+        inherit IReader<'k * 'v>
+        abstract member Content : IVersionedDictionary<'k, IVersionedSet<'v>>
+
+    [<CompiledName("IAdaptiveMap")>]
+    type amap<'k, 'v when 'k : equality> =
+        abstract member ASet : aset<'k * 'v>
+        abstract member GetReader : unit -> IMapReader<'k, 'v>
+
+    module AMap =
+    
+        type private SetMapReader<'k, 'v when 'k : equality>(r : IReader<'k * 'v>) =
+            let content = VersionedDictionary()
+
+            let add (key : 'k) (v : 'v) =
+                let set = 
+                    match content.TryGetValue key with
+                        | (true, set) -> set
+                        | _ ->
+                            let set = ReferenceCountingSet<'v>() :> IVersionedSet<_>
+                            content.[key] <- set
+                            set
+                set.Add v
+           
+            let remove (key : 'k) (v : 'v) =
+                match content.TryGetValue key with
+                    | (true, set) ->
+                        if set.Remove v then
+                            if set.Count = 0 then content.Remove key |> ignore
+                            true
+                        else
+                            false
+                    | _ ->
+                        false         
+
+            let apply (deltas : list<Delta<'k * 'v>>) =
+                [
+                    for d in deltas do
+                        match d with
+                            | Add (k,v) ->
+                                if add k v then yield d
+                            | Rem (k,v) ->
+                                if remove k v then yield d
+                ]
+
+            interface IAdaptiveObject with
+                member x.Id = r.Id
+                member x.Level
+                    with get() = r.Level
+                    and set v = r.Level <- v
+                member x.Mark() = r.Mark()
+                member x.Inputs = r.Inputs
+                member x.Outputs = r.Outputs
+                member x.MarkingCallbacks = r.MarkingCallbacks
+                member x.OutOfDate
+                    with get() = r.OutOfDate
+                    and set o = r.OutOfDate <- o
+
+            interface IReader<'k * 'v> with
+                member x.Content = r.Content
+                member x.GetDelta() = r.GetDelta() |> apply
+                member x.Dispose() = r.Dispose()
+                member x.Update() = r.Update()
+
+            interface IMapReader<'k, 'v> with
+                member x.Content = content :> IVersionedDictionary<_,_>
+
+        type private SetMap<'k, 'v when 'k : equality>(aset : aset<'k * 'v>) =
+            interface amap<'k, 'v> with
+                member x.ASet = aset
+                member x.GetReader() = new SetMapReader<'k, 'v>(aset.GetReader()) :> IMapReader<_,_>
+
+        type private LookupReader<'k, 'v  when 'k : equality>(input : IMapReader<'k, 'v>, key : 'k) as this =
+            inherit AdaptiveObject()
+            static let emptySet = ReferenceCountingSet<'v>()
+            do input.AddOutput this
+
+            let mutable initial = true
+
+            interface IReader<'v> with
+                member x.Content =
+                    match input.Content.TryGetValue key with
+                        | (true, set) -> set |> unbox<ReferenceCountingSet<_>>
+                        | _ -> emptySet
+
+                member x.GetDelta() = 
+                    x.EvaluateIfNeeded [] (fun () ->
+                        if initial then
+                            initial <- false
+                            input.GetDelta() |> ignore
+                            match input.Content.TryGetValue key with
+                                | (true, set) -> set |> Seq.map Add |> Seq.toList
+                                | _ -> []
+                        else
+                            input.GetDelta() 
+                                |> List.choose (fun d -> 
+                                    match d with
+                                        | Add (k,v) when k = key -> Some (Add v)
+                                        | Rem (k,v) when k = key -> Some (Rem v)
+                                        | _ -> None
+                                   )
+                    )
+
+                member x.Update() =
+                    x.EvaluateIfNeeded () (fun () ->
+                        input.Update()
+                    )   
+
+                member x.Dispose() =
+                    input.RemoveOutput this
+
+        let private wrap (f : 'k -> 'v -> 'a) =
+            fun (k,v) -> (k, f k v)
+
+        let private setmap (set : aset<'k * 'v>) =
+            SetMap(set) :> amap<_,_>
+
+
+        let empty<'k, 'v when 'k : equality> : amap<'k, 'v> = ASet.empty |> setmap
+
+        let single (k : 'k) (v : 'v) = (k,v) |> ASet.single |> setmap
+
+        let ofASet (s : aset<'k * 'v>) = s |> setmap
+
+        let toASet (m : amap<'k, 'v>) = m.ASet
+
+        let ofSeq (s : seq<'k * 'v>) = s |> ASet.ofSeq |> setmap
+        
+        let ofList (s : list<'k * 'v>) = s |> ASet.ofList |> setmap
+    
+        let ofArray (s : array<'k * 'v>) = s |> ASet.ofArray |> setmap
+    
+        let toMod (m : amap<'k, 'v>) =
+            let r = m.GetReader()
+            let res = Mod.custom(fun () ->
+                r.GetDelta() |> ignore
+                r.Content
+            )
+            r.AddOutput res
+            res
+
+        let map (f : 'k -> 'v -> 'a) (m : amap<'k, 'v>) =
+            m.ASet |> ASet.map (wrap f) |> setmap
+
+        let collect (f : 'k -> 'v -> amap<'k1, 'v1>) (m : amap<'k, 'v>) =
+            m.ASet |> ASet.collect (fun (k,v) -> (f k v).ASet) |> setmap
+
+        let choose (f : 'k -> 'v -> Option<'a>) (m : amap<'k, 'v>) =
+            m.ASet |> ASet.choose (fun (k,v) -> match f k v with | Some a -> Some (k,a) | None -> None) |> setmap
+
+        let filter (f : 'k -> 'v -> bool) (m : amap<'k, 'v>) =
+            m.ASet |> ASet.filter (uncurry f) |> setmap
+
+        let union (maps : aset<amap<'k, 'v>>) =
+            maps |> ASet.collect toASet |> setmap
+
+        let tryFindAll (key : 'k) (m : amap<'k, 'v>) =
+            ASet.AdaptiveSet(fun () -> new LookupReader<'k, 'v>(m.GetReader(), key) :> IReader<'v>) :> aset<_>
+
+        let tryFind (key : 'k) (m : amap<'k, 'v>) =
+            tryFindAll key m 
+                |> ASet.toMod 
+                |> Mod.map (fun set -> 
+                    if set.Count = 0 then 
+                        None 
+                    else 
+                        Some (set |> Seq.head)
+                  )
