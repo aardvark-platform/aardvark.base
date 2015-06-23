@@ -14,3 +14,6 @@ NUGET
     Rx-Linq (2.2.5)
       Rx-Core (>= 2.2.5)
       Rx-Interfaces (>= 2.2.5)
+    Rx-PlatformServices (2.2.5)
+      Rx-Core (>= 2.2.5)
+      Rx-Interfaces (>= 2.2.5)
