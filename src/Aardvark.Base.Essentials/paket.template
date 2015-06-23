@@ -1,0 +1,9 @@
+type project
+id Aardvark.Base.Essentials
+authors VRVis Research Center
+description
+    Aardvark.Base is a collection of data structures and algorithms for computer graphics and visualization. It is under active development since 2006 as part of a much larger set of libraries at VRVis Research Center.
+files
+    ..\..\bin\BUILDCONFIG\Aardvark.Base.Essentials.dll ==> lib\net45
+    ..\..\bin\BUILDCONFIG\Aardvark.Base.Essentials.pdb ==> lib\net45
+    ..\..\bin\BUILDCONFIG\Aardvark.Base.Essentials.xml ==> lib\net45

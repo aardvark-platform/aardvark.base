@@ -1,0 +1,8 @@
+type project
+id Aardvark.Base.Incremental
+authors VRVis Research Center
+description
+    Aardvark.Base.Incremental provides a framework for incremental computations
+files
+    ..\..\bin\BUILDCONFIG\Aardvark.Base.Incremental.dll ==> lib\net45
+    ..\..\bin\BUILDCONFIG\Aardvark.Base.Incremental.pdb ==> lib\net45

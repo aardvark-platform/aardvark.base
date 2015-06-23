@@ -1,0 +1,8 @@
+type project
+id Aardvark.Base.TypeProviders
+authors VRVis Research Center
+description
+    Provides TypeProviders for Aardvark libraries.
+files
+    ..\..\bin\BUILDCONFIG\Aardvark.Base.TypeProviders.dll ==> lib\net45
+    ..\..\bin\BUILDCONFIG\Aardvark.Base.TypeProviders.pdb ==> lib\net45

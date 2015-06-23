@@ -1,0 +1,12 @@
+type project
+id Aardvark.Base.FSharp
+authors VRVis Research Center
+description
+    FSharp Extensions for Aardvark.Base
+files
+    ..\..\bin\BUILDCONFIG\Aardvark.Base.FSharp.dll ==> lib\net45
+    ..\..\bin\BUILDCONFIG\Aardvark.Base.FSharp.pdb ==> lib\net45
+    ..\..\bin\BUILDCONFIG\Aardvark.Base.FSharp.xml ==> lib\net45
+    ..\..\bin\BUILDCONFIG\Aardvark.Base.TypeProviders.dll ==> lib\net45
+    ..\..\bin\BUILDCONFIG\Aardvark.Base.TypeProviders.pdb ==> lib\net45
+    ..\..\bin\BUILDCONFIG\Aardvark.Base.TypeProviders.xml ==> lib\net45

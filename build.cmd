@@ -10,6 +10,7 @@ echo downloading FAKE
 "bin\nuget.exe" "install" "SourceLink.Fake" "-OutputDirectory" "packages" "-ExcludeVersion"
 "bin\nuget.exe" "install" "NUnit.Runners" "-OutputDirectory" "packages" "-ExcludeVersion"
 "bin\nuget.exe" "install" "Aardvark.Build" "-OutputDirectory" "packages" "-ExcludeVersion"
+"bin\nuget.exe" "install" "Paket.Core" "-OutputDirectory" "packages" "-ExcludeVersion"
 )
 
 SET TARGET=Default

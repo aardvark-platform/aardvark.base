@@ -1,0 +1,11 @@
+type project
+id Aardvark.Base
+authors VRVis Research Center
+description
+    Aardvark.Base is a collection of data structures and algorithms for computer graphics and visualization. It is under active development since 2006 as part of a much larger set of libraries at VRVis Research Center.
+frameworkAssemblies
+    System.Drawing
+files
+    ..\..\bin\BUILDCONFIG\Aardvark.Base.dll ==> lib\net45
+    ..\..\bin\BUILDCONFIG\Aardvark.Base.pdb ==> lib\net45
+    ..\..\bin\BUILDCONFIG\Aardvark.Base.xml ==> lib\net45
