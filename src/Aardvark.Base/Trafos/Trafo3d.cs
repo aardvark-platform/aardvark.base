@@ -190,8 +190,9 @@ namespace Aardvark.Base
 
         public static Trafo3d RotateInto(V3d from, V3d into)
         {
-            return new Trafo3d(M44d.Rotation(from, into),
-                               M44d.Rotation(into, from));
+            var rot = new Rot3d(from, into);
+            var inv = rot.Inverse;
+            return new Trafo3d((M44d)rot, (M44d)inv);
         }
 
         public static Trafo3d FromNormalFrame(V3d origin, V3d normal)
