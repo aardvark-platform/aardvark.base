@@ -7,7 +7,7 @@
 #r @"Aardvark.Build.dll"
 #r @"Mono.Cecil.dll"
 #r @"Paket.Core.dll"
-#load "bin/addSource.fsx"
+#load "bin/addSources.fsx"
 
 open Fake
 open System

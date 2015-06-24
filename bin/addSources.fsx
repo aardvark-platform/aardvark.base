@@ -28,6 +28,17 @@ module Array =
 [<AutoOpen>]
 module PathHelpers =
 
+    let tryDeleteDir d =
+        if Directory.Exists d then
+            try 
+                Directory.Delete(d, true)
+                true
+            with e -> 
+                traceError (sprintf "could not delete directory %A" d)
+                false
+        else
+            true
+
     let deleteDir d =
         if Directory.Exists d then
             try Directory.Delete(d, true)
@@ -43,6 +54,8 @@ module PathHelpers =
             with e -> traceError (sprintf "could not delete %A" f)
 
 module AdditionalSources =
+
+    // register the logger
     Logging.event.Publish.Subscribe (fun a -> 
         match a.Level with
             | TraceLevel.Error -> traceError a.Text
@@ -52,39 +65,66 @@ module AdditionalSources =
             | _ -> ()
     ) |> ignore
 
-    let packageNameRx = Regex @"(?<name>[a-zA-Z_0-9\.]+?)\.(?<version>([0-9]+\.)*[0-9]+)\.nupkg"
-    let idRegex = Regex @"^id[ \t]+(?<id>.*)$"
-    let versionRx = Regex @"(?<version>([0-9]+\.)*[0-9]+).*"
-    let sourcesFileName = "sources.lock"
+    let private packageNameRx = Regex @"(?<name>[a-zA-Z_0-9\.]+?)\.(?<version>([0-9]+\.)*[0-9]+)\.nupkg"
+    let private templateIdRx = Regex @"^id[ \t]+(?<id>.*)$"
+    let private templateVersionRx = Regex @"^version[ \t]+(?<version>([0-9]+\.)*[0-9]+)$"
+    let private versionRx = Regex @"(?<version>([0-9]+\.)*[0-9]+).*"
+    let private sourcesFileName = "sources.lock"
+
+    // compute a base64 encoded hash for the given string
+    let getHash (str : string) =
+        let bytes = MD5.Create().ComputeHash(UnicodeEncoding.Unicode.GetBytes(str))
+        Convert.ToBase64String(bytes).Replace('/', '_').Replace('\\', '_')
 
     // a hash based on the current path
-    let cacheFile = Path.Combine(Path.GetTempPath(), Convert.ToBase64String(MD5.Create().ComputeHash(UnicodeEncoding.Unicode.GetBytes(Environment.CurrentDirectory))))
-    let paketDependencies = Paket.Dependencies.Locate()
+    let private cacheFile = Path.Combine(Path.GetTempPath(), getHash Environment.CurrentDirectory)
 
+    // since autorestore might overwrite our source-dependencies we simply turn it off
+    let paketDependencies = Paket.Dependencies.Locate()
     do paketDependencies.TurnOffAutoRestore()
 
-    let tryReadPackageId (file : string) =
+    // read a package id and version from a paket.template file
+    let tryReadPackageIdAndVersion (file : string) =
         let lines = file |> File.ReadAllLines
         
-        lines |> Array.tryPick (fun l ->
-            let m = idRegex.Match l
-            if m.Success then Some m.Groups.["id"].Value
-            else None
-        )
+        let id = 
+            lines |> Array.tryPick (fun l ->
+                let m = templateIdRx.Match l
+                if m.Success then Some m.Groups.["id"].Value
+                else None
+            )
 
+        match id with
+            | Some id ->
+                let version =
+                    lines |> Array.tryPick (fun l ->
+                        let m = templateVersionRx.Match l
+                        if m.Success then Some m.Groups.["version"].Value
+                        else None
+                    )
+                Some(id, version)
+            | None -> None
+
+    // find all created packages
     let findCreatedPackages (folder : string) =
-        let files = !!Path.Combine(folder, "**", "paket.template") |> Seq.toList
-        let ids = files |> List.choose tryReadPackageId
+        let files = !!Path.Combine(folder, "**", "*paket.template") |> Seq.toList
+        let ids = files |> List.choose tryReadPackageIdAndVersion
         let tag = 
             try Git.Information.describe folder
             with _ -> ""
 
         let m = versionRx.Match tag
         if m.Success then
-            Some (m.Groups.["version"].Value, ids)
+            let version = m.Groups.["version"].Value
+            ids |> List.map (fun (id,_) -> (id,version))
         else
-            None
+            ids |> List.map (fun (id,v) -> 
+                    match v with
+                        | Some v -> (id,v)
+                        | None -> (id,"")
+                   )
 
+    // unzip a specific package to the local packages folder
     let installPackage (pkgFile : string) =
         let m = pkgFile |> Path.GetFileName |> packageNameRx.Match
         if m.Success then
@@ -99,10 +139,12 @@ module AdditionalSources =
         else
             false
 
+    // get the latest modification date for an entire folder
     let latestModificationDate (folder : string) =
         let file = DirectoryInfo(folder).GetFileSystemInfos("*", SearchOption.AllDirectories) |> Seq.maxBy (fun fi -> fi.LastWriteTime)
         file.LastWriteTime
 
+    // install all packages from source-dependencies
     let installSources () =
         let sourceLines =
             if File.Exists sourcesFileName then 
@@ -157,31 +199,46 @@ module AdditionalSources =
                 let path = Path.Combine(source, "bin", fileName)
                 let installPath = Path.Combine("packages", id)
 
-                deleteDir installPath
-
-                if installPackage path then
+                if tryDeleteDir installPath && installPackage path then
                     tracefn "reinstalled %A" id
                 else
                     traceError <| sprintf "failed to reinstall: %A" id
 
         File.WriteAllLines(cacheFile, !cacheTimes |> Map.toSeq |> Seq.map (fun (a, time) -> sprintf "%s;%d" a time.Ticks))
 
+    // add source-dependencies
+    let addSources (folders : list<string>) = 
+        
+        let folders = folders |> List.filter Directory.Exists
+        match folders with
+            | [] -> 
+                traceImportant "no sources found"
+            | folders ->
+                let taskName = sprintf "adding sources: %A" folders
+                traceStartTask taskName taskName
 
-    let addSources folders = 
+                traceVerbose "reading sources.lock"
+                let sourceFolders =
+                    if File.Exists sourcesFileName then 
+                        File.ReadAllLines sourcesFileName |> Set.ofArray
+                    else 
+                        Set.empty
 
-        let sourceFolders =
-            if File.Exists sourcesFileName then 
-                File.ReadAllLines sourcesFileName |> Set.ofArray
-            else 
-                Set.empty
+                let newSourceFolders = Set.union (Set.ofList folders) sourceFolders
 
-        let newSourceFolders = Set.union (Set.ofList folders) sourceFolders
+                traceVerbose "writing to sources.lock"
+                File.WriteAllLines(sourcesFileName, newSourceFolders)
 
-        File.WriteAllLines(sourcesFileName, newSourceFolders)
-        paketDependencies.Restore()
-        installSources()
+                trace "restoring missing packages"
+                try paketDependencies.Restore()
+                with e -> traceError (sprintf "failed to restore packages: %A" e.Message)
 
-    let removeSources folders =
+                installSources()
+
+                traceEndTask taskName taskName
+
+    // remove source dependencies
+    let removeSources (folders : list<string>) =
         let sourceFolders =
             if File.Exists sourcesFileName then 
                 File.ReadAllLines sourcesFileName |> Set.ofArray
@@ -196,15 +253,11 @@ module AdditionalSources =
             File.WriteAllLines(sourcesFileName, newSourceFolders)
 
         for f in folders do
-            match findCreatedPackages f with
-                | Some(version, ids) ->
+            let packages = findCreatedPackages f
+            for (id,v) in packages do
+                let path = Path.Combine("packages", id)
+                deleteDir path
 
-                    for id in ids do
-                        let path = Path.Combine("packages", id)
-                        deleteDir path
-
-                | None ->
-                    ()
 
         paketDependencies.Restore()
         installSources()
