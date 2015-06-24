@@ -67,6 +67,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AlgoDat\LruCache.cs" />
+    <None Include="Extensions\FuncActionExtensions_template.cs" />
+    <Compile Include="Extensions\FuncActionExtensions_auto.cs" />
     <Compile Include="Extensions\VariousExtensions.cs" />
     <Compile Include="Images\EdgeFilter.cs" />
     <Compile Include="Images\ImageLoadException.cs" />
