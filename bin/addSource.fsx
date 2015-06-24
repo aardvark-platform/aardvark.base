@@ -48,7 +48,7 @@ module AdditionalSources =
             | TraceLevel.Error -> traceError a.Text
             | TraceLevel.Info ->  trace a.Text
             | TraceLevel.Warning -> traceImportant a.Text
-            | TraceLevel.Verbose -> trace a.Text
+            | TraceLevel.Verbose -> traceVerbose a.Text
             | _ -> ()
     ) |> ignore
 
@@ -60,6 +60,8 @@ module AdditionalSources =
     // a hash based on the current path
     let cacheFile = Path.Combine(Path.GetTempPath(), Convert.ToBase64String(MD5.Create().ComputeHash(UnicodeEncoding.Unicode.GetBytes(Environment.CurrentDirectory))))
     let paketDependencies = Paket.Dependencies.Locate()
+
+    do paketDependencies.TurnOffAutoRestore()
 
     let tryReadPackageId (file : string) =
         let lines = file |> File.ReadAllLines
