@@ -129,13 +129,16 @@ module Mod =
     // the change propagation process when equal values are
     // observed EagerMod can also be created with a custom 
     // equality function.
-    type private EagerMod<'a>(compute : unit -> 'a, eq : Option<'a -> 'a -> bool>) =
-        inherit LazyMod<'a>(compute)
+    type private EagerMod<'a>(input : IMod<'a>, eq : Option<'a -> 'a -> bool>) as this=
+        inherit LazyMod<'a>(fun () -> input.GetValue())
+        do input.AddOutput this
 
         let hasChanged = ChangeTracker.trackCustom<'a> eq
 
+        member x.Input = input
+
         override x.Mark() =
-            let newValue = compute()
+            let newValue = input.GetValue()
             x.OutOfDate <- false
 
             if hasChanged newValue then
@@ -145,6 +148,17 @@ module Mod =
                 false
 
         new(compute) = EagerMod(compute, None)
+
+    // LaterMod<'a> is a special construct for forcing lazy
+    // evaluation for a specific cell. Note that this needs to
+    // be "transparent" (knowning its input) since we need to
+    // be able to undo the effect.
+    type private LaterMod<'a>(input : IMod<'a>) as this=
+        inherit LazyMod<'a>(fun () -> input.GetValue())
+        do input.AddOutput this
+
+        member x.Input = input
+
 
     // ConstantMod<'a> represents a constant mod-cell
     // and implements IMod<'a> (making use of the core
@@ -284,6 +298,16 @@ module Mod =
     /// </summary>
     let initConstant (v : 'a) =
         ConstantMod.Value v
+
+    /// <summary>
+    /// initializes a new constant cell using the given value.
+    /// </summary>
+    let inline constant v = initConstant v
+
+    /// <summary>
+    /// initializes a new modifiable input cell using the given value.
+    /// </summary>
+    let inline init v = initMod v
 
     /// <summary>
     /// initializes a new constant cell using the given lazy value.
@@ -487,17 +511,32 @@ module Mod =
     /// creates a new cell forcing the evaluation of the
     /// given one during change propagation (making it eager)
     /// </summary>
-    let always (m : IMod<'a>) =
+    let rec always (m : IMod<'a>) =
         if m.IsConstant then 
             m
         else
             match m with
+                | :? LaterMod<'a> as m -> always m.Input
                 | :? EagerMod<'a> -> m
                 | _ ->
-                    let res = EagerMod(fun () -> m.GetValue())
-                    m.AddOutput(res)
+                    let res = EagerMod(m)
                     res.GetValue() |> ignore
                     res :> IMod<_>
+
+    /// <summary>
+    /// creates a new cell forcing the evaluation of the
+    /// given one to be lazy (on demand)
+    /// NOTE: later does not maintain equality
+    ///       for constant-cells
+    /// </summary>
+    let rec later (m : IMod<'a>) =
+        if m.IsConstant then
+            LaterMod(m) :> IMod<_>
+        else
+            match m with
+                | :? EagerMod<'a> as m ->
+                    later m.Input
+                | _ -> m
 
     /// <summary>
     /// creates a new cell by starting the given async computation.
@@ -595,6 +634,18 @@ module Mod =
 
         !res
 
+    /// <summary>
+    /// creates a new cell by starting the given async computation.
+    /// upon evaluation of the cell it will wait until the async computation has finished
+    /// </summary>
+    let start (run : Async<'a>) =
+        let task = run |> Async.StartAsTask
+        if task.IsCompleted then
+            initConstant task.Result
+        else
+            custom (fun () ->
+                task.Result
+            )
 
 [<AutoOpen>]
 module ModExtensions =
