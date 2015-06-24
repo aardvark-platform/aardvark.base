@@ -7,6 +7,7 @@
 #r @"Aardvark.Build.dll"
 #r @"Mono.Cecil.dll"
 #r @"Paket.Core.dll"
+#load "bin/addSource.fsx"
 
 open Fake
 open System
@@ -14,6 +15,7 @@ open System.IO
 open Aardvark.Build
 open System.Text.RegularExpressions
 open System.Diagnostics
+open AdditionalSources
 
 let net40 = []
 let net45 = []
@@ -21,17 +23,42 @@ let core = !!"src/**/*.fsproj" ++ "src/**/*.csproj" -- "src/**/CodeGenerator.csp
 let paketDependencies = Paket.Dependencies.Locate(__SOURCE_DIRECTORY__)
 Paket.Logging.verbose <- true
 
-Paket.Logging.event.Publish.Subscribe (fun a -> 
-    match a.Level with
-        | TraceLevel.Error -> traceError a.Text
-        | TraceLevel.Info -> trace a.Text
-        | TraceLevel.Warning -> traceImportant a.Text
-        | TraceLevel.Verbose -> trace a.Text
-        | _ -> ()
-) |> ignore
+
+Target "Install" (fun () ->
+    AdditionalSources.paketDependencies.Install(false, false, false, true)
+    AdditionalSources.installSources ()
+)
 
 Target "Restore" (fun () ->
-    paketDependencies.Restore()
+    AdditionalSources.paketDependencies.Restore()
+    AdditionalSources.installSources ()
+)
+
+Target "Update" (fun () ->
+    AdditionalSources.paketDependencies.Update(false, false)
+    AdditionalSources.installSources ()
+)
+
+Target "AddSource" (fun () ->
+    let args = Environment.GetCommandLineArgs()
+    let folders =
+        if args.Length > 3 then
+            Array.skip 3 args
+        else
+            failwith "no source folder given"
+
+    AdditionalSources.addSources (Array.toList folders)
+)
+
+Target "RemoveSource" (fun () ->
+    let args = Environment.GetCommandLineArgs()
+    let folders =
+        if args.Length > 3 then
+            Array.skip 3 args
+        else
+            failwith "no source folder given"
+
+    AdditionalSources.removeSources (Array.toList folders)
 )
 
 Target "Clean" (fun () ->
@@ -87,6 +114,31 @@ Target "CreatePackage" (fun () ->
 
     let tag = Fake.Git.Information.getLastTag()
     paketDependencies.Pack("bin", version = tag, releaseNotes = releaseNotes)
+)
+
+Target "Push" (fun () ->
+    let packages = !!"bin/*.nupkg"
+    let packageNameRx = Regex @"(?<name>[a-zA-Z_0-9\.]+?)\.(?<version>([0-9]+\.)*[0-9]+)\.nupkg"
+    let tag = Fake.Git.Information.getLastTag()
+
+    let myPackages = 
+        packages 
+            |> Seq.choose (fun p ->
+                let m = packageNameRx.Match (Path.GetFileName p)
+                if m.Success then 
+                    Some(m.Groups.["name"].Value)
+                else
+                    None
+            )
+            |> Set.ofSeq
+
+    try
+        for id in myPackages do
+            let source = sprintf "bin/%s.%s.nupkg" id tag
+            let target = sprintf @"\\hobel\NuGet\%s.%s.nupkg" id tag
+            File.Copy(source, target, true)
+    with e ->
+        traceError (string e)
 )
 
 Target "Deploy" (fun () ->

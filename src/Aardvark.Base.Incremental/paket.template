@@ -1,8 +1,15 @@
-type project
+type file
 id Aardvark.Base.Incremental
+version 1.0
 authors VRVis Research Center
 description
     Aardvark.Base.Incremental provides a framework for incremental computations
+dependencies
+    Aardvark.Base = CURRENTVERSION
+    Aardvark.Base.FSharp = CURRENTVERSION
+    Aardvark.Base.Essentials = CURRENTVERSION
+    FsUnit
+    Rx-Core
 files
-    ..\..\bin\BUILDCONFIG\Aardvark.Base.Incremental.dll ==> lib\net45
-    ..\..\bin\BUILDCONFIG\Aardvark.Base.Incremental.pdb ==> lib\net45
+    ..\..\bin\Release\Aardvark.Base.Incremental.dll ==> lib\net45
+    ..\..\bin\Release\Aardvark.Base.Incremental.pdb ==> lib\net45
