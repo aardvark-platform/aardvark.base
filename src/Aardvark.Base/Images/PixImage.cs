@@ -58,7 +58,7 @@ namespace Aardvark.Base
     [Flags]
     public enum PixLoadOptions
     {
-        Default             = UseSystemImage | UseDevil | UseBitmap | UseFreeImage,
+        Default             = UseSystemImage | UseDevil | UseFreeImage,
         UseSystemImage      = 0x01000000,
         UseFreeImage        = 0x02000000,
         UseStorageService   = 0x08000000,
@@ -70,7 +70,7 @@ namespace Aardvark.Base
     [Flags]
     public enum PixSaveOptions
     {
-        Default             = UseSystemImage | UseDevil | UseBitmap | UseFreeImage | NormalizeFilename,
+        Default             = UseSystemImage | UseDevil | UseFreeImage | NormalizeFilename,
         NormalizeFilename   = 0x00010000,
         UseSystemImage      = 0x01000000,
         UseFreeImage        = 0x02000000,
