@@ -3,7 +3,7 @@ source https://nuget.org/api/v2
 source \\hobel\nuget
 
 nuget DevILSharp ~> 0.0.9
-nuget Microsoft.Bcl.Immutable ~> 1.0.34
+nuget System.Collections.Immutable ~> 1.1.36
 nuget Rx-Linq ~> 2.2.5
 nuget Rx-Core ~> 2.2.5
 nuget Rx-PlatformServices ~> 2.2.5
