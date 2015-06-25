@@ -1085,7 +1085,7 @@ namespace Aardvark.Base
         {
             lock (m_reporterArrayLock)
             {
-                m_reporterArray = m_reporterArray.WithAdded(reporter);
+                m_reporterArray = m_reporterArray.WithAppended(reporter);
             }
         }
 
@@ -1321,7 +1321,7 @@ namespace Aardvark.Base
         {
             lock (m_targetArrayLock)
             {
-                m_targetArray = m_targetArray.WithAdded(target);
+                m_targetArray = m_targetArray.WithAppended(target);
             }
         }
 

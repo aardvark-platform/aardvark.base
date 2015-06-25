@@ -19,13 +19,13 @@ namespace Aardvark.Base
         Array Data { get; }
     }
 
-    public interface IPixMipMap2d
+    public interface IPixMipMap2d : IPixImage
     {
         int LevelCount { get; }
         IPixImage2d this[int level] { get; }
     }
 
-    public interface IPixCube
+    public interface IPixCube : IPixImage
     {
         IPixMipMap2d this[CubeSide side] { get; }
     }
@@ -56,6 +56,11 @@ namespace Aardvark.Base
         }
 
         #endregion
+
+        public PixFormat PixFormat
+        {
+            get { if (m_imageArray.IsEmptyOrNull()) new Exception("PixMipMap is empty"); return m_imageArray[0].PixFormat; }
+        }
     }
 
     public class PixCube : IPixCube
@@ -79,5 +84,10 @@ namespace Aardvark.Base
         }
 
         #endregion
+        
+        public PixFormat PixFormat
+        {
+            get { if (MipMapArray.IsEmptyOrNull()) new Exception("PixMipMap is empty"); return MipMapArray[0].PixFormat; }
+        }
     }
 }

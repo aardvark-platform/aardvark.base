@@ -18,6 +18,7 @@ namespace Aardvark.Base
 
         Tr PixImage(PixImage pi);
         Tr PixImageMipMap(PixImageMipMap pimm);
+        Tr PixImageCube(PixImageCube pic);
 
         Tr FileVolume(FileVolume fv);
         Tr PixVolumeInfo(PixVolumeInfo pvi);
@@ -36,6 +37,7 @@ namespace Aardvark.Base
         Tr PixImage(PixImage pi0, PixImage pi1);
         Tr PixVolume(PixVolume pv0, PixVolume pv1);
         Tr PixImageMipMap(PixImageMipMap pimm0, PixImageMipMap pimm1);
+        Tr PixImageCube(PixImageCube pic0, PixImageCube pic1);
         Tr PixImageInfo(PixImageInfo pii0, PixImageInfo pii1);
         Tr PixVolumeInfo(PixVolumeInfo pvi0, PixVolumeInfo pvi1);
 
@@ -200,6 +202,7 @@ namespace Aardvark.Base
         public virtual IPix PixImage(PixImage pi) { return pi; }
         public virtual IPix PixVolume(PixVolume pv) { return pv; }
         public virtual IPix PixImageMipMap(PixImageMipMap pimm) { return pimm; }
+        public virtual IPix PixImageCube(PixImageCube pic) { return pic; }
         public virtual IPix PixImageInfo(PixImageInfo pii) { return pii; }
         public virtual IPix PixVolumeInfo(PixVolumeInfo pvi) { return pvi; }
 
@@ -279,6 +282,16 @@ namespace Aardvark.Base
                 var typedOther = Other as PixImageMipMap;
                 if (typedOther == null) throw new ArgumentException();
                 return ProductOp.PixImageMipMap(pimm, typedOther);
+            };
+        }
+
+        public virtual Func<Tr> PixImageCube(PixImageCube pic)
+        {
+            return () =>
+            {
+                var typedOther = Other as PixImageCube;
+                if (typedOther == null) throw new ArgumentException();
+                return ProductOp.PixImageCube(pic, typedOther);
             };
         }
 
@@ -378,6 +391,12 @@ namespace Aardvark.Base
             return pimm0.ImageArray.AllEqual(pimm1.ImageArray, ImageEqualFun);
         }
 
+        public bool PixImageCube(PixImageCube pic0, PixImageCube pic1)
+        {
+            return pic0.MipMapArray.AllEqual(pic1.MipMapArray, (mm0, mm1) => mm0.ImageArray.AllEqual(mm1.ImageArray,
+                            ImageEqualFun));
+        }
+
         public bool PixImageInfo(PixImageInfo pii0, PixImageInfo pii1)
         {
             return pii0.Format == pii1.Format && pii0.Size == pii1.Size;
@@ -411,6 +430,7 @@ namespace Aardvark.Base
         public int PixImage(PixImage pi) { return 1; }
         public int PixVolume(PixVolume pv) { return 1; }
         public int PixImageMipMap(PixImageMipMap pimm) { return pimm.ImageArray.Length; }
+        public int PixImageCube(PixImageCube pic) { return pic.MipMapArray.Sum(mm =>  mm.ImageArray.Length); }
         public int PixImageInfo(PixImageInfo pii) { return 0; }
         public int PixVolumeInfo(PixVolumeInfo pvi) { return 0; }
 
@@ -445,6 +465,7 @@ namespace Aardvark.Base
         public virtual int PixImage(PixImage pi0, PixImage pi1) { return 0; }
         public virtual int PixVolume(PixVolume pv0, PixVolume pv1) { return 0; }
         public virtual int PixImageMipMap(PixImageMipMap mm0, PixImageMipMap mm1) { return 0; }
+        public virtual int PixImageCube(PixImageCube c0, PixImageCube c1) { return 0; }
         public virtual int PixImageInfo(PixImageInfo ii0, PixImageInfo ii1) { return 0; }
         public virtual int PixVolumeInfo(PixVolumeInfo vi0, PixVolumeInfo vi1) { return 0; }
         public virtual int PixCubeMap(PixCubeMap cm0, PixCubeMap cm1, int[] subArray) { return subArray.Sum(); }
@@ -586,6 +607,11 @@ namespace Aardvark.Base
         public Func<PixImage[]> PixImageMipMap(PixImageMipMap pimm)
         {
             return () => Level == 0 ? pimm.ImageArray[0].IntoArray() : new PixImage[0];
+        }
+
+        public Func<PixImage[]> PixImageCube(PixImageCube pic)
+        {
+            return () => Level == 0 ? pic.MipMapArray.Copy(mm => mm.ImageArray[0]) : new PixImage[0];
         }
 
         public Func<PixImage[]> PixCubeMap(PixCubeMap pcm, Func<PixImage[]>[] subArray)

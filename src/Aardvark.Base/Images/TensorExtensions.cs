@@ -420,6 +420,47 @@ namespace Aardvark.Base
 
         #endregion
 
+        #region Transformed (Matrix, Volume) [CSharp]
+
+        public static Matrix<T> Transformed<T>(
+                this Matrix<T> matrix, ImageTrafo rotation)
+        {
+            long sx = matrix.Size.X, sy = matrix.Size.Y;
+            long dx = matrix.Delta.X, dy = matrix.Delta.Y;
+            switch (rotation)
+            {
+                case ImageTrafo.Rot0: return matrix;
+                case ImageTrafo.Rot90: return matrix.SubMatrix(sx - 1, 0, sy, sx, dy, -dx);
+                case ImageTrafo.Rot180: return matrix.SubMatrix(sx - 1, sy - 1, sx, sy, -dx, -dy);
+                case ImageTrafo.Rot270: return matrix.SubMatrix(0, sy - 1, sy, sx, -dy, dx);
+                case ImageTrafo.MirrorX: return matrix.SubMatrix(sx - 1, 0, sx, sy, -dx, dy);
+                case ImageTrafo.Transpose: return matrix.SubMatrix(0, 0, sy, sx, dy, dx);
+                case ImageTrafo.MirrorY: return matrix.SubMatrix(0, sy - 1, sx, sy, dx, -dy);
+                case ImageTrafo.Transverse: return matrix.SubMatrix(sx - 1, sy - 1, sy, sx, -dy, -dx);
+            }
+            throw new ArgumentException();
+        }
+
+        public static Volume<T> Transformed<T>(
+                this Volume<T> volume, ImageTrafo rotation)
+        {
+            long sx = volume.Size.X, sy = volume.Size.Y, sz = volume.Size.Z;
+            long dx = volume.Delta.X, dy = volume.Delta.Y, dz = volume.Delta.Z;
+            switch (rotation)
+            {
+                case ImageTrafo.Rot0: return volume;
+                case ImageTrafo.Rot90: return volume.SubVolume(sx - 1, 0, 0, sy, sx, sz, dy, -dx, dz);
+                case ImageTrafo.Rot180: return volume.SubVolume(sx - 1, sy - 1, 0, sx, sy, sz, -dx, -dy, dz);
+                case ImageTrafo.Rot270: return volume.SubVolume(0, sy - 1, 0, sy, sx, sz, -dy, dx, dz);
+                case ImageTrafo.MirrorX: return volume.SubVolume(sx - 1, 0, 0, sx, sy, sz, -dx, dy, dz);
+                case ImageTrafo.Transpose: return volume.SubVolume(0, 0, 0, sy, sx, sz, dy, dx, dz);
+                case ImageTrafo.MirrorY: return volume.SubVolume(0, sy - 1, 0, sx, sy, sz, dx, -dy, dz);
+                case ImageTrafo.Transverse: return volume.SubVolume(sx - 1, sy - 1, 0, sy, sx, sz, -dy, -dx, dz);
+            }
+            throw new ArgumentException();
+        }
+
+        #endregion
 
     }
 }

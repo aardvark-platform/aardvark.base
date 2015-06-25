@@ -8,9 +8,7 @@ using System.Threading.Tasks;
 namespace Aardvark.Base
 {
     /// <summary>
-    /// Numerical Recipes Random Generator 0. This generator has only 32-bits
-    /// of state for minimal memory overhead. The state is publically accessible
-    /// in order to quickly access single bits.
+    /// System Random Generator.
     /// </summary>
     public class RandomSystem : IRandomUniform
     {
