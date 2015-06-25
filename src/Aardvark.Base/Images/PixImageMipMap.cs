@@ -149,6 +149,11 @@ namespace Aardvark.Base
 
         //#endregion
 
+        public PixFormat PixFormat
+        {
+            get { if (ImageArray.IsEmptyOrNull()) new Exception("PixMipMap is empty"); return ImageArray[0].PixFormat; }
+        }
+
     }
 
     public class PixImageMipMap<T> : PixImageMipMap

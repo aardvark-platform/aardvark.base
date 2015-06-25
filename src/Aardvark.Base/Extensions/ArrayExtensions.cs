@@ -568,7 +568,10 @@ namespace Aardvark.Base
 			array.ReverseRange(0, array.LongLength);
 		}
 
-		public static T[] With<T>(this T[] array, long index, T item)
+        /// <summary>
+        /// Returns a copy of the array with the specified item replaced.
+        /// </summary>
+		public static T[] With<T>(this T[] array, int index, T item)
 		{
 			if (array == null)
 			{
@@ -584,35 +587,70 @@ namespace Aardvark.Base
 			return newArray;
 		}
 
+        /// <summary>
+        /// Synonym for WithAppended().
+        /// </summary>
 		public static T[] WithAdded<T>(this T[] array, T item)
+			where T : class
+        {
+            return array.WithAppended(item);
+        }
+
+        /// <summary>
+        /// Returns a copy of the array with the specified item appended
+        /// at the end. If the item is already contained in the array,
+        /// the original array is returned.
+        /// </summary>
+		public static T[] WithAppended<T>(this T[] array, T item)
 			where T : class
 		{
 			if (array == null) return new T[] { item };
-			var len = array.LongLength;
-			for (long i = 0; i < len; i++) if (array[i] == item) return array;
+			var len = array.Length;
+			for (int i = 0; i < len; i++) if (array[i] == item) return array;
 			var newArray = new T[len + 1];
-			for (long i = 0; i < len; i++) newArray[i] = array[i];
+			for (int i = 0; i < len; i++) newArray[i] = array[i];
 			newArray[len] = item;
 			return newArray;
 		}
 
+        /// <summary>
+        /// Returns a copy of the array with the specified item prepended
+        /// to the front. If the item is already contained in the array,
+        /// the original array is returned.
+        /// </summary>
+        public static T[] WithPrepended<T>(this T[] array, T item)
+            where T : class
+        {
+            if (array == null) return new T[] { item };
+            var len = array.Length;
+            for (int i = 0; i < len; i++) if (array[i] == item) return array;
+            var newArray = new T[len + 1];
+            for (int i = 0; i < len; i++) newArray[i+1] = array[i];
+            newArray[0] = item;
+            return newArray;
+        }
+
+        /// <summary>
+        /// Returns a copy of the item with the specified item removed. If the
+        /// item is not contained in the array, the original array is returned.
+        /// </summary>
         public static T[] WithRemoved<T>(this T[] array, T item)
 			where T : class
 		{
 			if (array == null) return array;
-			var len = array.LongLength;
+			var len = array.Length;
 			if (len == 1)
 			{
 				if (array[0] == item) return null;
 			}
 			else
 			{
-				for (long i = 0; i < len; i++)
+				for (int i = 0; i < len; i++)
 					if (array[i] == item)
 					{
 						var newArray = new T[len - 1];
-						for (long j = 0; j < i; j++) newArray[j] = array[j];
-						for (long j = i; j < len - 1; j++) newArray[j] = array[j + 1];
+						for (int j = 0; j < i; j++) newArray[j] = array[j];
+						for (int j = i; j < len - 1; j++) newArray[j] = array[j + 1];
 						return newArray;
 					}
 			}
