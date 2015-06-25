@@ -43,4 +43,5 @@ Bin
 /src/Aardvark.Base/Trafos/Similarity3_generator.cs
 /src/Aardvark.Base/Trafos/Scale3_generator.cs
 /src/Aardvark.Base/Trafos/Shift3_generator.cs
-tmp/src/Aardvark.Base/Extensions/FuncActionExtensions_generator.cs
+/src/Aardvark.Base/Extensions/FuncActionExtensions_generator.cs
+tmp

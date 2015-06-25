@@ -58,7 +58,7 @@ namespace Aardvark.Base
     [Flags]
     public enum PixLoadOptions
     {
-        Default             = UseSystemImage | UseDevil | UseBitmap | UseFreeImage,
+        Default             = UseSystemImage | UseDevil | UseFreeImage,
         UseSystemImage      = 0x01000000,
         UseFreeImage        = 0x02000000,
         UseStorageService   = 0x08000000,
@@ -70,7 +70,7 @@ namespace Aardvark.Base
     [Flags]
     public enum PixSaveOptions
     {
-        Default             = UseSystemImage | UseDevil | UseBitmap | UseFreeImage | NormalizeFilename,
+        Default             = UseSystemImage | UseDevil | UseFreeImage | NormalizeFilename,
         NormalizeFilename   = 0x00010000,
         UseSystemImage      = 0x01000000,
         UseFreeImage        = 0x02000000,
@@ -108,33 +108,6 @@ namespace Aardvark.Base
             Func<Stream, PixSaveOptions, PixFileFormat, int, PixImage, bool> streamSave = null,
             Func<string, PixImageInfo> imageInfo = null)
         { 
-            //Func<string, PixLoadOptions, PixImage> loadFallback = (file, op) =>
-            //{
-            //    using (var stream = new FileStream(file, FileMode.Open, FileAccess.Read))
-            //    {
-            //        return streamLoad(stream, op);
-            //    }
-            //};
-
-            //Func<string, PixSaveOptions, PixFileFormat, int, PixImage, bool> saveFallback = (file, op, format, quality, img) =>
-            //{
-            //    bool success = false;
-            //    try
-            //    {
-            //        using (var stream = new FileStream(file, FileMode.OpenOrCreate, FileAccess.Write))
-            //        {
-            //            success = streamSave(stream, op, format, quality, img);
-            //        }
-            //    }
-            //    finally
-            //    { 
-            //        if(!success)
-            //    }
-            //};
-
-            //fileLoad = fileLoad ?? (streamLoad == null ? null : loadFallback);
-            //fileSave = fileSave ?? (streamSave == null ? null : saveFallback);
-
             if (fileLoad != null) s_fileLoadFunctions.Add(fileLoad);
             if (streamLoad != null) s_streamLoadFunctions.Add(streamLoad);
             if (fileSave != null) s_fileSaveFunctions.Add(fileSave);

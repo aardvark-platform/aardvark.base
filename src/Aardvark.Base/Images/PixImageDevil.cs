@@ -19,9 +19,9 @@ namespace Aardvark.Base
             Bootstrap.Init();
             IL.Init();
             IL.Enable(EnableCap.OverwriteExistingFile);
-            IL.OriginFunc(OriginMode.UpperLeft);
+            //IL.OriginFunc(OriginMode.UpperLeft);
             IL.Enable(EnableCap.ConvertPalette);
-            IL.Enable(EnableCap.AbsoluteOrigin);
+            //IL.Enable(EnableCap.AbsoluteOrigin);
 
         }
 
@@ -149,88 +149,51 @@ namespace Aardvark.Base
         private static PixImage LoadImage(int img)
         {
 
+            var size = new V2i(IL.GetInteger(IntName.ImageWidth), IL.GetInteger(IntName.ImageHeight));
             var dataType = IL.GetDataType();
             var format = IL.GetFormat();
-            var width = IL.GetInteger(IntName.ImageWidth);
-            var height = IL.GetInteger(IntName.ImageHeight);
             var channels = IL.GetInteger(IntName.ImageChannels);
             Type type;
             Col.Format fmt;
 
+            // try to get format information
             if (!s_pixDataTypes.TryGetValue(dataType, out type)) return null;
             if (!s_pixColorFormats.TryGetValue(format, out fmt)) return null;
 
-            var size = new V2i(width, height);
+            // if the image has a lower-left origin flip it
+            var mode = (OriginMode)IL.GetInteger((IntName)0x0603);
+            if (mode == OriginMode.LowerLeft && !ILU.FlipImage())
+                return null;
+
+            // create an appropriate PixImage instance
             var imageType = typeof(PixImage<>).MakeGenericType(type);
-
-
             var pix = (PixImage)Activator.CreateInstance(imageType, fmt, size, channels);
+
+            // copy the data to the PixImage
             var gc = GCHandle.Alloc(pix.Data, GCHandleType.Pinned);
-            var ptr = IL.GetData();
+            try
+            {
+                var ptr = IL.GetData();
+                ptr.CopyTo(pix.Data, 0, pix.Data.Length);
+            }
+            finally
+            {
+                gc.Free();
+            }
 
-            ptr.CopyTo(pix.Data, 0, pix.Data.Length);
-
-            gc.Free();
-
+            // unbind and delete the DevIL image
             IL.BindImage(0);
             IL.DeleteImage(img);
 
             return pix;
         }
 
-        /// <summary>
-        /// Save image to stream via devil.
-        /// </summary>
-        /// <returns>True if the file was successfully saved.</returns>
-        private bool SaveAsImageDevil(
-                Stream stream, PixFileFormat format,
-                PixSaveOptions options, int qualityLevel)
+        private bool SaveDevIL(Func<bool> save, int qualityLevel)
         {
-            Devil.ImageType imageType;
-            if (!s_fileFormats.TryGetValue(format, out imageType))
-                return false;
+            //Devil.ImageType imageType;
+            //if (!s_fileFormats.TryGetValue(format, out imageType))
+            //    return false;
 
-            var img = IL.GenImage();
-            IL.BindImage(img);
-
-            ChannelType type;
-            ChannelFormat fmt;
-
-            if (!s_devilDataTypes.TryGetValue(PixFormat.Type, out type)) return false;
-            if (!s_devilColorFormats.TryGetValue(PixFormat.Format, out fmt)) return false;
-
-            var gc = GCHandle.Alloc(this.Data, GCHandleType.Pinned);
-            try
-            {
-                if (!IL.TexImage(Size.X, Size.Y, 1, (byte)ChannelCount, fmt, type, gc.AddrOfPinnedObject()))
-                    return false;
-
-                if (!ILU.FlipImage())
-                    return false;
-
-                return IL.SaveStream(imageType, stream);
-            }
-            catch (Exception)
-            {
-                return false;
-            }
-            finally
-            {
-                gc.Free();
-                IL.BindImage(0);
-                IL.DeleteImage(img);
-            }
-        }
-
-
-        private bool SaveAsImageDevil(
-                string file, PixFileFormat format,
-                PixSaveOptions options, int qualityLevel)
-        {
-            Devil.ImageType imageType;
-            if (!s_fileFormats.TryGetValue(format, out imageType))
-                return false;
-           
             var img = IL.GenImage();
             IL.BindImage(img);
 
@@ -246,13 +209,12 @@ namespace Aardvark.Base
                 if (!IL.TexImage(Size.X, Size.Y, 1, (byte)ChannelCount, fmt, type, gc.AddrOfPinnedObject()))
                     return false;
 
-                if (!ILU.FlipImage())
-                    return false;
+                IL.RegisterOrigin(OriginMode.UpperLeft);
 
                 if (qualityLevel != -1)
                     IL.SetInteger(IntName.JpgQuality, qualityLevel);
 
-                return IL.Save(imageType, file);
+                return save();
             }
             catch (Exception)
             {
@@ -264,9 +226,33 @@ namespace Aardvark.Base
                 IL.BindImage(0);
                 IL.DeleteImage(img);
             }
+        }
+
+        /// <summary>
+        /// Save image to stream via devil.
+        /// </summary>
+        /// <returns>True if the file was successfully saved.</returns>
+        private bool SaveAsImageDevil(
+                Stream stream, PixFileFormat format,
+                PixSaveOptions options, int qualityLevel)
+        {
+            Devil.ImageType imageType;
+            if (!s_fileFormats.TryGetValue(format, out imageType))
+                return false;
+
+            return SaveDevIL(() => IL.SaveStream(imageType, stream), qualityLevel);
+        }
 
 
+        private bool SaveAsImageDevil(
+                string file, PixFileFormat format,
+                PixSaveOptions options, int qualityLevel)
+        {
+            Devil.ImageType imageType;
+            if (!s_fileFormats.TryGetValue(format, out imageType))
+                return false;
 
+            return SaveDevIL(() => IL.Save(imageType, file), qualityLevel);
         }
 
 
