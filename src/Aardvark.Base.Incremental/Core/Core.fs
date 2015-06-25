@@ -261,7 +261,6 @@ type Transaction() =
 /// defines a base class for all adaptive objects implementing
 /// IAdaptiveObject.
 /// </summary>
-[<AbstractClass>]
 type AdaptiveObject() =
     let id = newId()
     let mutable outOfDate = true
@@ -269,6 +268,11 @@ type AdaptiveObject() =
     let inputs = HashSet<IAdaptiveObject>() :> ICollection<_>
     let outputs = WeakSet<IAdaptiveObject>() :> ICollection<_>
     let callbacks = ConcurrentHashSet<unit -> unit>() :> ICollection<_>
+
+    static let isTopLevel = new System.Threading.ThreadLocal<bool>(fun () -> true)
+    static let time = AdaptiveObject() :> IAdaptiveObject
+
+    static member Time = time
 
     /// <summary>
     /// utility function for evaluating an object if
@@ -278,16 +282,30 @@ type AdaptiveObject() =
     /// Note that this function takes care of appropriate locking
     /// </summary>
     member x.EvaluateIfNeeded (otherwise : 'a) (f : unit -> 'a) =
-        lock x (fun () ->
-            if x.OutOfDate then
-                IncrementalLog.startEvaluate x
-                let r = f()
-                x.OutOfDate <- false
-                IncrementalLog.endEvaluate x
-                r
-            else
-                otherwise
-        )
+        let top = isTopLevel.Value
+        if top then isTopLevel.Value <- false
+
+        let res =
+            lock x (fun () ->
+                if x.OutOfDate then
+                    IncrementalLog.startEvaluate x
+                    let r = f()
+                    x.OutOfDate <- false
+                    IncrementalLog.endEvaluate x
+                    r
+                else
+                    otherwise
+            )
+
+        if top then 
+            isTopLevel.Value <- true
+            if time.Outputs.Count > 0 then
+                let t = Transaction()
+                for o in time.Outputs do
+                    t.Enqueue(o)
+                t.Commit()
+
+        res
 
     /// <summary>
     /// utility function for evaluating an object even if it
@@ -295,13 +313,27 @@ type AdaptiveObject() =
     /// Note that this function takes care of appropriate locking
     /// </summary>
     member x.EvaluateAlways (f : unit -> 'a) =
-        lock x (fun () ->
-            IncrementalLog.startEvaluate x
-            let res = f()
-            x.OutOfDate <- false
-            IncrementalLog.endEvaluate x
-            res
-        )
+        let top = isTopLevel.Value
+        if top then isTopLevel.Value <- false
+
+        let res =
+            lock x (fun () ->
+                IncrementalLog.startEvaluate x
+                let res = f()
+                x.OutOfDate <- false
+                IncrementalLog.endEvaluate x
+                res
+            )
+
+        if top then 
+            isTopLevel.Value <- true
+            if time.Outputs.Count > 0 then
+                let t = Transaction()
+                for o in time.Outputs do
+                    t.Enqueue(o)
+                t.Commit()
+
+        res
 
 
     member x.Id = id
