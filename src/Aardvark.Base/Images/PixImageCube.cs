@@ -17,7 +17,7 @@ namespace Aardvark.Base
         NegativeZ = 5,
     }
 
-    public class PixImageCube 
+    public class PixImageCube : IPix
     {
         public PixImageMipMap[] MipMapArray;
 
@@ -39,5 +39,6 @@ namespace Aardvark.Base
 
         #endregion
 
+        public Tr Op<Tr>(IPixOp<Tr> op) { return op.PixImageCube(this); }
     }
 }
