@@ -65,13 +65,18 @@ namespace Aardvark.Base
 
     public class PixCube : IPixCube
     {
-        public IPixMipMap2d[] MipMapArray;
+        public PixMipMap2d[] MipMapArray;
 
         #region Constructor
 
-        public PixCube(IPixMipMap2d[] mipMapArray)
+        public PixCube(PixMipMap2d[] mipMapArray)
         {
             MipMapArray = mipMapArray;
+        }
+
+        public PixCube(PixImage[] cubeFaceArray)
+        {
+            MipMapArray = cubeFaceArray.Copy(x => new PixMipMap2d(x.IntoArray()));
         }
 
         #endregion

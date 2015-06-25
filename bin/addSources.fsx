@@ -173,7 +173,7 @@ module AdditionalSources =
                     0
 
             if code <> 0 then
-                failwith "failed to build: %A" folder
+                failwithf "failed to build: %A" folder
             else
                 cacheTimes := Map.add folder DateTime.Now !cacheTimes
                 let binPath = Path.Combine(folder, "bin", "*.nupkg")

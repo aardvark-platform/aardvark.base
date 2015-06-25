@@ -2,10 +2,9 @@ NUGET
   remote: https://nuget.org/api/v2
   specs:
     DevILSharp (0.0.9)
-    FSharp.Compiler.Service (0.0.85)
+    FSharp.Compiler.Service (0.0.90)
     FsUnit (1.3.0.1)
       NUnit (>= 2.6.3)
-    Microsoft.Bcl.Immutable (1.0.34)
     NUnit (2.6.4)
     RegexProvider (0.0.5)
     Rx-Core (2.2.5)
@@ -17,3 +16,4 @@ NUGET
     Rx-PlatformServices (2.2.5)
       Rx-Core (>= 2.2.5)
       Rx-Interfaces (>= 2.2.5)
+    System.Collections.Immutable (1.1.36)
