@@ -49,6 +49,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
+    <None Include="paket.references" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\Aardvark.Base.Essentials\Aardvark.Base.Essentials.csproj">
@@ -85,6 +86,17 @@
       <ItemGroup>
         <Reference Include="DevILSharp">
           <HintPath>..\..\..\packages\DevILSharp\lib\net45\DevILSharp.dll</HintPath>
+          <Private>True</Private>
+          <Paket>True</Paket>
+        </Reference>
+      </ItemGroup>
+    </When>
+  </Choose>
+  <Choose>
+    <When Condition="($(TargetFrameworkIdentifier) == '.NETFramework' And ($(TargetFrameworkVersion) == 'v4.0' Or $(TargetFrameworkVersion) == 'v4.5' Or $(TargetFrameworkVersion) == 'v4.5.1' Or $(TargetFrameworkVersion) == 'v4.5.2' Or $(TargetFrameworkVersion) == 'v4.5.3' Or $(TargetFrameworkVersion) == 'v4.6')) Or ($(TargetFrameworkIdentifier) == 'MonoAndroid') Or ($(TargetFrameworkIdentifier) == 'MonoTouch')">
+      <ItemGroup>
+        <Reference Include="RegexProvider">
+          <HintPath>..\..\..\packages\RegexProvider\lib\net40\RegexProvider.dll</HintPath>
           <Private>True</Private>
           <Paket>True</Paket>
         </Reference>
