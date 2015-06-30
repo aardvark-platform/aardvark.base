@@ -264,8 +264,6 @@ module Mod =
                     let value = m.GetValue()
                     if hasChanged value then
                         f value
-                    else
-                        printfn "swallowed"
                 finally 
                     m.MarkingCallbacks.Add !self |> ignore
         
