@@ -4,26 +4,76 @@ open System
 open System.Collections.Generic
 open Aardvark.Base
 
+/// <summary>
+/// IListReader is the base interface for all adaptive list-readers.
+/// Readers are stateful and may not be used by multiple callers
+/// since pulling changes mutates the reader internally.
+/// </summary>
 type IListReader<'a> =
     inherit IDisposable
     inherit IAdaptiveObject
+
+    /// <summary>
+    /// The root-time used for all deltas returned by the reader
+    /// NOTE that each time is associated with a value except for the 
+    ///      root-time itself
+    /// </summary>
     abstract member RootTime : Time
+    
+    /// <summary>
+    /// The reader's current content. 
+    /// All changes returned by GetDelta are "relative" to that state.
+    /// NOTE that calling GetDelta modifies the reader's content
+    /// </summary>
     abstract member Content : TimeList<'a>
+
+    /// <summary>
+    /// Pulls the reader's deltas relative to its current content.
+    /// NOTE that GetDelta also "applies" the deltas to the reader's state
+    /// </summary>
     abstract member GetDelta : unit -> Change<Time * 'a>
 
+/// <summary>
+/// alist serves as the base interface for all adaptive lists.
+/// </summary>
 [<CompiledName("IAdaptiveList")>]
 type alist<'a> =
+    /// <summary>
+    /// Returns a NEW reader for the list which will initially return
+    /// the entire list-content as deltas.
+    /// </summary>
     abstract member GetReader : unit -> IListReader<'a>
 
-
+/// <summary>
+/// TimeMappings provides utilities for mapping times to times
+/// NOTE that this is necessary for clean disposal of times
+/// </summary>
 module TimeMappings =
 
+    /// <summary>
+    /// ITimeMapping serves as base-interface for time-mappings
+    /// </summary>
     type ITimeMapping =
         inherit IDisposable
-        abstract member GetTime : Time -> Time
-        abstract member TryGetTime : Time -> Option<Time>
-        abstract member RemoveTime : Time -> unit
 
+        /// <summary>
+        /// Gets or creates an associated time for the input-time
+        /// </summary>
+        abstract member GetTime : Time -> Time
+
+        /// <summary>
+        /// Deletes the associated time for the given one
+        /// and returns the associated one (if one existed)
+        /// </summary>
+        abstract member TryRemoveTime : Time -> Option<Time>
+
+    /// <summary>
+    /// SparseTimeMapping is mapping possibly sparse input-times
+    /// to dense output-times. 
+    /// Since operations like choose, filter, etc. may "drop" times 
+    /// the "sparseness" is required in order ensure that all times are
+    /// still associated with a value in the output.
+    /// </summary>
     type SparseTimeMapping private(root : Time) =
         let mutable tree : AVL.Tree<Time * ref<Time>> = AVL.custom (fun (l,_) (r,_) -> compare l r)
         let cache = Dictionary<Time, Time>()
@@ -55,19 +105,15 @@ module TimeMappings =
         member x.GetTime (t : Time) =
             getTime t
 
-        member x.TryGetTime (t : Time) =
-            match cache.TryGetValue t with
-                | (true,t) -> Some t
-                | _ -> None
-
-        member x.RemoveTime(t : Time) =
+        member x.TryRemoveTime(t : Time) =
             match cache.TryGetValue t with
                 | (true, r) ->
                     AVL.removeCmp tree (fun (_,t) -> compare r !t) |> ignore
                     cache.Remove t |> ignore
                     Time.delete r
-
-                | _ -> ()
+                    Some r
+                | _ ->
+                    None
 
         static member Create (root : Time) =
             new SparseTimeMapping(root)
@@ -75,8 +121,7 @@ module TimeMappings =
         interface ITimeMapping with
             member x.Dispose() = x.Dispose()
             member x.GetTime t = x.GetTime t
-            member x.TryGetTime t = x.TryGetTime t
-            member x.RemoveTime t = x.RemoveTime t
+            member x.TryRemoveTime t = x.TryRemoveTime t
 
     type NestedTimeMapping private(root : Time) =
         let cmp (lo : Time, li : Time) (ro : Time, ri : Time) =
@@ -121,15 +166,16 @@ module TimeMappings =
                 | (true,t) -> Some t
                 | _ -> None
 
-        member x.RemoveTime (outer : Time) (inner : Time) =
+        member x.TryRemoveTime (outer : Time) (inner : Time) =
             let t = (outer, inner)
             match cache.TryGetValue t with
                 | (true, r) ->
                     AVL.removeCmp tree (fun (_,t) -> compare r !t) |> ignore
                     cache.Remove t |> ignore
                     Time.delete r
-
-                | _ -> ()
+                    Some r
+                | _ ->
+                    None
 
         member x.RemoveAllTimes (outer : Time) =
             let allTimes = cache |> Seq.filter (fun (KeyValue((o,i),v)) -> o = outer) |> Seq.toList
@@ -156,8 +202,8 @@ module TimeMappings =
         member x.TryGetTime (t : Time) =
             mapping.TryGetTime outer t
 
-        member x.RemoveTime(t : Time) =
-            mapping.RemoveTime outer t
+        member x.TryRemoveTime(t : Time) =
+            mapping.TryRemoveTime outer t
 
         static member Create (mapping : NestedTimeMapping, outer : Time) =
             new NestedTimeMappingPartial(mapping, outer)  
@@ -165,8 +211,7 @@ module TimeMappings =
         interface ITimeMapping with
             member x.Dispose() = x.Dispose()
             member x.GetTime t = x.GetTime t
-            member x.TryGetTime t = x.TryGetTime t
-            member x.RemoveTime t = x.RemoveTime t
+            member x.TryRemoveTime t = x.TryRemoveTime t
 
 module AListReaders =
 
@@ -330,12 +375,9 @@ module AListReaders =
             mapping.GetTime outer inner
 
         let removeOutputTime (outer : Time) (inner : Time) =
-            match mapping.TryGetTime outer inner with
-                | Some t ->
-                    mapping.RemoveTime outer inner
-                    t
-                | None ->
-                    failwith "unknown time"
+            match mapping.TryRemoveTime outer inner with
+                | Some t -> t
+                | None -> failwith "unknown time"
 
         member x.Dispose() =
             input.RemoveOutput x
@@ -421,6 +463,8 @@ module AListReaders =
 
         do input.AddOutput this
 
+        let root = Time.newRoot()
+        let mapping = TimeMappings.SparseTimeMapping.Create root
         let content = TimeList<'b>()
         let f = Cache<'a, Option<'b>>(scope, f)
 
@@ -428,6 +472,8 @@ module AListReaders =
             input.RemoveOutput this
             input.Dispose()
             content.Clear()
+            Time.delete root
+            mapping.Dispose()
             f.Clear(ignore)
 
         override x.Finalize() =
@@ -438,7 +484,7 @@ module AListReaders =
             member x.Dispose() = x.Dispose()
 
         interface IListReader<'b> with
-            member x.RootTime = input.RootTime
+            member x.RootTime = root
             member x.Content = content
             member x.GetDelta() =
                 x.EvaluateIfNeeded [] (fun () ->
@@ -449,11 +495,16 @@ module AListReaders =
                             match d with
                                 | Add(t, v) -> 
                                     match f.Invoke v with
-                                        | Some v -> Add (t, v) |> Some
+                                        | Some v -> 
+                                            let t' = mapping.GetTime t
+                                            Add (t', v) |> Some
                                         | None -> None
                                 | Rem(t, v) -> 
                                     match f.Revoke v with
-                                        | Some v -> Rem (t, v) |> Some
+                                        | Some v -> 
+                                            match mapping.TryRemoveTime t with
+                                                | Some t' ->  Rem (t', v) |> Some
+                                                | None -> failwith "removal of unknown time"
                                         | None -> None
                         )
 

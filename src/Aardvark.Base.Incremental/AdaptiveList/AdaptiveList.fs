@@ -69,6 +69,24 @@ module AList =
         let scope = Ag.getContext()
         fun v -> Ag.useScope scope (fun () -> f v)
 
+    let private callbackTable = ConditionalWeakTable<IAdaptiveObject, ConcurrentHashSet<IDisposable>>()
+    type private CallbackSubscription(m : IAdaptiveObject, cb : unit -> unit, live : ref<bool>, reader : IDisposable, set : ConcurrentHashSet<IDisposable>) =
+        
+        member x.Dispose() = 
+            if !live then
+                live := false
+                reader.Dispose()
+                m.MarkingCallbacks.Remove cb |> ignore
+                set.Remove x |> ignore
+
+        interface IDisposable with
+            member x.Dispose() = x.Dispose()
+
+        override x.Finalize() =
+            try x.Dispose()
+            with _ -> ()
+
+
     let empty<'a> : alist<'a> =
         EmptyListImpl<'a>.Instance
 
@@ -169,23 +187,7 @@ module AList =
     let flattenM (s : alist<IMod<'a>>) =
         s |> collect ofMod
 
-    let private callbackTable = ConditionalWeakTable<IAdaptiveObject, ConcurrentHashSet<IDisposable>>()
-    type private CallbackSubscription(m : IAdaptiveObject, cb : unit -> unit, live : ref<bool>, reader : IDisposable, set : ConcurrentHashSet<IDisposable>) =
-        
-        member x.Dispose() = 
-            if !live then
-                live := false
-                reader.Dispose()
-                m.MarkingCallbacks.Remove cb |> ignore
-                set.Remove x |> ignore
-
-        interface IDisposable with
-            member x.Dispose() = x.Dispose()
-
-        override x.Finalize() =
-            try x.Dispose()
-            with _ -> ()
-
+    
 
     /// <summary>
     /// registers a callback for execution whenever the

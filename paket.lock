@@ -5,7 +5,7 @@ NUGET
     FSharp.Compiler.Service (0.0.90)
     FsUnit (1.3.0.1)
       NUnit (>= 2.6.3)
-    NUnit (2.6.4)
+    NUnit (2.6.3)
     RegexProvider (0.0.5)
     Rx-Core (2.2.5)
       Rx-Interfaces (>= 2.2.5)

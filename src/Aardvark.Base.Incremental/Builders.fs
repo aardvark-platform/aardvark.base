@@ -5,7 +5,7 @@
 module ``Computation Expression Builders`` =
     
     type AdaptiveBuilder() =
-        let constantUnit = Mod.initConstant ()
+        let constantUnit = Mod.constant ()
 
         member x.Bind(tup : IMod<'a> * IMod<'b>, f : 'a * 'b -> IMod<'c>) : IMod<'c> =
             Mod.bind2 (fun a b -> f(a,b)) (fst tup) (snd tup)
@@ -14,7 +14,7 @@ module ``Computation Expression Builders`` =
             Mod.bind f m
 
         member x.Return (v : 'a) =
-            Mod.initConstant v :> IMod<_>
+            Mod.constant v :> IMod<_>
 
         member x.ReturnFrom(m : IMod<'a>) = 
             m
@@ -55,7 +55,7 @@ module ``Computation Expression Builders`` =
             f()
 
         member x.Combine(l : aset<'a>, r : aset<'a>) =
-            ASet.concat' [l;r]
+            ASet.union' [l;r]
 
     type AListBuilder() =
         member x.Yield (v : 'a) =

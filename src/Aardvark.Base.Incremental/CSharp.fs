@@ -10,7 +10,7 @@ open System.Collections.Generic
 
 [<Extension; AbstractClass; Sealed>]
 type Mod private() =
-    static member Constant (v : 'a) = Mod.initConstant v
+    static member Constant (v : 'a) = Mod.constant v
 
     static member LazyConstant (f : Func<'a>) : IMod<'a> =
         Mod.delay f.Invoke
@@ -185,11 +185,11 @@ type AdaptiveSetExtensions private() =
 
     [<Extension>]
     static member Flatten (this : seq<aset<'a>>) =
-        ASet.concat' this
+        ASet.union' this
 
     [<Extension>]
     static member Flatten (this : aset<aset<'a>>) =
-        ASet.concat this
+        ASet.union this
 
     [<Extension>]
     static member Flatten (this : aset<seq<'a>>) =
@@ -205,7 +205,7 @@ type AdaptiveSetExtensions private() =
 
     [<Extension>]
     static member Union (this : aset<'a>, other : aset<'a>) =
-        ASet.concat' [this; other]
+        ASet.union' [this; other]
 
     [<Extension>]
     static member ToMod (this : aset<'a>) =
@@ -264,7 +264,7 @@ type ChangeableSetExtensions private() =
 
     [<Extension>]
     static member Flatten (this : cset<aset<'a>>) =
-        ASet.concat this
+        ASet.union this
 
     [<Extension>]
     static member Flatten (this : cset<seq<'a>>) =

@@ -8,7 +8,6 @@ dependencies
     Aardvark.Base = CURRENTVERSION
     Aardvark.Base.FSharp = CURRENTVERSION
     Aardvark.Base.Essentials = CURRENTVERSION
-    FsUnit
     Rx-Core
 files
     ..\..\bin\Release\Aardvark.Base.Incremental.dll ==> lib\net45

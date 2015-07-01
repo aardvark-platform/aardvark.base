@@ -358,12 +358,6 @@ type AdaptiveObject() =
             | :? IAdaptiveObject as o -> id = o.Id
             | _ -> false
 
-    interface IComparable with
-        member x.CompareTo o =
-            match o with
-                | :? IAdaptiveObject as o -> compare id o.Id
-                | _ -> failwith "uncomparable"
-
     interface IAdaptiveObject with
         member x.Id = id
         member x.OutOfDate
@@ -379,6 +373,47 @@ type AdaptiveObject() =
 
         member x.Mark () =
             x.Mark ()
+
+/// <summary>
+/// defines a base class for all decorated mods
+/// </summary>
+type AdaptiveDecorator(o : IAdaptiveObject) =
+    let id = newId()
+    
+    member x.Id = id
+    member x.OutOfDate
+        with get() = o.OutOfDate
+        and set v = o.OutOfDate <- v
+
+    member x.Outputs = o.Outputs
+    member x.Inputs = o.Inputs
+    member x.MarkingCallbacks = o.MarkingCallbacks
+    member x.Level 
+        with get() = o.Level
+        and set l = o.Level <- l
+
+    member x.Mark() = o.Mark()
+
+    override x.GetHashCode() = o.GetHashCode()
+    override x.Equals o =
+        match o with
+            | :? IAdaptiveObject as o -> x.Id = o.Id
+            | _ -> false
+
+    interface IAdaptiveObject with
+        member x.Id = id
+        member x.OutOfDate
+            with get() = o.OutOfDate
+            and set v = o.OutOfDate <- v
+
+        member x.Outputs = o.Outputs
+        member x.Inputs = o.Inputs
+        member x.MarkingCallbacks = o.MarkingCallbacks
+        member x.Level 
+            with get() = o.Level
+            and set l = o.Level <- l
+
+        member x.Mark () = o.Mark()
 
 /// <summary>
 /// defines a base class for all adaptive objects which are

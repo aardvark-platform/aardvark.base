@@ -21,7 +21,7 @@ module ``Basic Mod Tests`` =
     
     [<Test>]
     let ``basic map test``() =
-        let cell = Mod.initMod 1
+        let cell = Mod.init 1
 
         let derived = cell |> Mod.map (fun a -> 2 * a)
 
@@ -37,7 +37,7 @@ module ``Basic Mod Tests`` =
 
     [<Test>]
     let ``constant map test``() =
-        let cell = Mod.initConstant 1
+        let cell = Mod.constant 1
 
         let derived = cell |> Mod.map (fun a -> 2 * a)
 
@@ -47,8 +47,8 @@ module ``Basic Mod Tests`` =
 
     [<Test>]
     let ``basic map2 test``() =
-        let cell1 = Mod.initMod 1
-        let cell2 = Mod.initMod 1
+        let cell1 = Mod.init 1
+        let cell2 = Mod.init 1
 
         let derived = Mod.map2 (fun a b -> a + b) cell1 cell2
 
@@ -79,10 +79,10 @@ module ``Basic Mod Tests`` =
 
     [<Test>]
     let ``constant map2 test``() =
-        let c1 = Mod.initConstant 1
-        let c2 = Mod.initConstant 1
-        let m1 = Mod.initMod 1
-        let m2 = Mod.initMod 1
+        let c1 = Mod.constant 1
+        let c2 = Mod.constant 1
+        let m1 = Mod.init 1
+        let m2 = Mod.init 1
 
         let derivedc = Mod.map2 (fun a b -> a + b) c1 c2
         let derived1 = Mod.map2 (fun a b -> a + b) m1 c2
@@ -114,9 +114,9 @@ module ``Basic Mod Tests`` =
 
     [<Test>]
     let ``basic bind test``() =
-        let cell1 = Mod.initMod true
-        let cell2 = Mod.initMod 2
-        let cell3 = Mod.initMod 3
+        let cell1 = Mod.init true
+        let cell2 = Mod.init 2
+        let cell3 = Mod.init 3
 
         let derived =
             Mod.bind (fun v -> if v then cell2 else cell3) cell1
@@ -192,8 +192,8 @@ module ``Basic Mod Tests`` =
 
     [<Test>]
     let ``bind in bind``() =
-        let a = Mod.initMod false
-        let b = Mod.initMod 10
+        let a = Mod.init false
+        let b = Mod.init 10
         let c =
             adaptive {
                 let! a = a 

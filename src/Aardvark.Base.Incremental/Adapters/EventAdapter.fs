@@ -217,7 +217,7 @@ module FSharpEventExtensions =
             EventAdapters.toMod x
 
         member x.ImmediateMod =
-            let res = Mod.initMod x.Latest
+            let res = Mod.init x.Latest
             
             let s = x.Values.Subscribe(fun v ->
                 transact (fun () -> Mod.change res v)

@@ -6,7 +6,9 @@ open System.Collections.Concurrent
 open Aardvark.Base
 open Aardvark.Base.Incremental.ASetReaders
 
-
+/// <summary>
+/// defines functions for composing asets and mods
+/// </summary>
 module ASet =
     type AdaptiveSet<'a>(newReader : unit -> IReader<'a>) =
         let state = ReferenceCountingSet<'a>()
@@ -66,6 +68,27 @@ module ASet =
     let private scoped (f : 'a -> 'b) =
         let scope = Ag.getContext()
         fun v -> Ag.useScope scope (fun () -> f v)
+
+    let private callbackTable = ConditionalWeakTable<obj, ConcurrentHashSet<IDisposable>>()
+    type private CallbackSubscription(m : obj, cb : unit -> unit, live : ref<bool>, reader : IAdaptiveObject, set : ConcurrentHashSet<IDisposable>) =
+        let disposable = reader |> unbox<IDisposable>
+
+        member x.Dispose() = 
+            if !live then
+                live := false
+                disposable.Dispose()
+                reader.MarkingCallbacks.Remove cb |> ignore
+                set.Remove x |> ignore
+                if set.Count = 0 then
+                    callbackTable.Remove(m) |> ignore
+
+        interface IDisposable with
+            member x.Dispose() = x.Dispose()
+
+        override x.Finalize() =
+            try x.Dispose()
+            with _ -> ()
+
 
     /// <summary>
     /// creates an empty set instance being reference
@@ -206,7 +229,7 @@ module ASet =
     /// applies the given function to all elements in the set
     /// and unions all output-sets.
     /// NOTE: duplicates are handled correctly here meaning that
-    ///       the given function may return overlapping sets.
+    ///       the supplied function may return overlapping sets.
     /// </summary>
     let collect (f : 'a -> aset<'b>) (set : aset<'a>) = 
         let scope = Ag.getContext()
@@ -228,44 +251,79 @@ module ASet =
     let filter (f : 'a -> bool) (set : aset<'a>) =
         choose (fun v -> if f v then Some v else None) set
 
-
+    /// <summary>
+    /// adaptively unions the given sets
+    /// </summary>
     let union (set : aset<aset<'a>>) =
         collect id set
 
+    /// <summary>
+    /// adaptively unions the given sets
+    /// </summary>
     let union' (set : seq<aset<'a>>) =
         union (ConstantSet set)
 
+    /// deprecated in favor of union
+    [<Obsolete>]
     let concat (set : aset<aset<'a>>) =
         collect id set
 
+    /// deprecated in favor of union'
+    [<Obsolete>]
     let concat' (set : seq<aset<'a>>) =
-        concat (ConstantSet set)
+        union (ConstantSet set)
 
+    /// <summary>
+    /// applies the given function to all elements in the sequence
+    /// and unions all output-sets.
+    /// NOTE: duplicates are handled correctly here meaning that
+    ///       the supplied function may return overlapping sets.
+    /// </summary>
     let collect' (f : 'a -> aset<'b>) (set : seq<'a>) =
-        set |> Seq.map f |> concat'
+        set |> Seq.map f |> union'
   
+    /// <summary>
+    /// applies the given modifiable function to all elements in the set
+    /// </summary>
     let mapM (f : 'a -> IMod<'b>) (s : aset<'a>) =
         s |> collect (fun v ->
             v |> f |> ofMod
         )
 
+    /// <summary>
+    /// Filters the set by applying the given modifiable function to all elements
+    /// </summary>
     let filterM (f : 'a -> IMod<bool>) (s : aset<'a>) =
         s |> collect (fun v ->
             v |> f |> bind (fun b -> if b then single v else empty)
         )
 
+    /// <summary>
+    /// Applies the given modifiable function f to each element x of the set. 
+    /// Returns the set comprised of the results for each element where the function returns Some(f(x)).
+    /// </summary>
     let chooseM (f : 'a -> IMod<Option<'b>>) (s : aset<'a>) =
         s |> collect (fun v ->
             v |> f |> bind (fun b -> match b with | Some v -> single v | _ -> empty)
         )
 
+    /// <summary>
+    /// Creates a set consisting of all modifiable values in the original set
+    /// </summary>
     let flattenM (s : aset<IMod<'a>>) =
         s |> collect ofMod
 
+    /// <summary>
+    /// Adaptively applies the given function to the entire set-content
+    /// </summary>
     let reduce (f : seq<'a> -> 'b) (s : aset<'a>) : IMod<'b> =
         s |> toMod |> Mod.map f
 
-    let foldSemiGroup (add : 'a -> 'a -> 'a) (zero : 'a) (s : aset<'a>) : IMod<'a> =
+    /// <summary>
+    /// Adaptively projects the set to a value by using an associative add-operation (mappend) and a zero-element (mempty).
+    /// NOTE that removals cause a complete re-evaluation whereas additions can be treated efficiently.
+    /// </summary>
+    let foldMonoid (add : 'a -> 'a -> 'a) (zero : 'a) (s : aset<'a>) : IMod<'a> =
         let r = s.GetReader()
         let sum = ref zero
 
@@ -293,6 +351,9 @@ module ASet =
         r.AddOutput res
         res
 
+    /// <summary>
+    /// Adaptively projects the set to a value by using associative add-operation (+), a sub-operation (-) and a zero-element (0).
+    /// </summary>
     let foldGroup (add : 'a -> 'a -> 'a) (sub : 'a -> 'a -> 'a) (zero : 'a) (s : aset<'a>) : IMod<'a> =
         let r = s.GetReader()
         let sum = ref zero
@@ -310,44 +371,47 @@ module ASet =
         r.AddOutput res
         res
 
-
+    /// <summary>
+    /// Adaptively applies the given modifiable function to the entire set-content
+    /// </summary>
     let reduceM (f : seq<'a> -> 'b) (s : aset<IMod<'a>>) : IMod<'b> =
         reduce f (collect ofMod s)
 
-    let foldSemiGroupM (add : 'a -> 'a -> 'a) (zero : 'a) (s : aset<IMod<'a>>) : IMod<'a> =
+    /// <summary>
+    /// Adaptively projects the set to a value by using an associative add-operation (mappend) and a zero-element (mempty).
+    /// NOTE that removals/changes cause a complete re-evaluation whereas additions can be treated efficiently.
+    /// </summary>
+    let foldMonoidM (add : 'a -> 'a -> 'a) (zero : 'a) (s : aset<IMod<'a>>) : IMod<'a> =
         let s = s |> collect ofMod
-        foldSemiGroup add zero s
+        foldMonoid add zero s
 
+    /// <summary>
+    /// Adaptively projects the set to a value by using associative add-operation (+), a sub-operation (-) and a zero-element (0).
+    /// </summary>
     let foldGroupM (add : 'a -> 'a -> 'a) (sub : 'a -> 'a -> 'a) (zero : 'a) (s : aset<IMod<'a>>) : IMod<'a> =
         let s = s |> collect ofMod
         foldGroup add sub zero s
 
 
+    /// <summary>
+    /// Adaptively calculates the sum of all elements in the set
+    /// </summary>
     let inline sum (s : aset<'a>) = foldGroup (+) (-) LanguagePrimitives.GenericZero s
+
+    /// <summary>
+    /// Adaptively calculates the product of all elements in the set
+    /// </summary>
     let inline product (s : aset<'a>) = foldGroup (*) (/) LanguagePrimitives.GenericOne s
+
+    /// <summary>
+    /// Adaptively calculates the sum of all elements in the set
+    /// </summary>
     let inline sumM (s : aset<IMod<'a>>) = foldGroupM (+) (-) LanguagePrimitives.GenericZero s
+
+    /// <summary>
+    /// Adaptively calculates the product of all elements in the set
+    /// </summary>
     let inline productM (s : aset<IMod<'a>>) = foldGroupM (*) (/) LanguagePrimitives.GenericOne s
-
-    let private callbackTable = ConditionalWeakTable<obj, ConcurrentHashSet<IDisposable>>()
-    type private CallbackSubscription(m : obj, cb : unit -> unit, live : ref<bool>, reader : IAdaptiveObject, set : ConcurrentHashSet<IDisposable>) =
-        let disposable = reader |> unbox<IDisposable>
-
-        member x.Dispose() = 
-            if !live then
-                live := false
-                disposable.Dispose()
-                reader.MarkingCallbacks.Remove cb |> ignore
-                set.Remove x |> ignore
-                if set.Count = 0 then
-                    callbackTable.Remove(m) |> ignore
-
-        interface IDisposable with
-            member x.Dispose() = x.Dispose()
-
-        override x.Finalize() =
-            try x.Dispose()
-            with _ -> ()
-
 
     /// <summary>
     /// registers a callback for execution whenever the

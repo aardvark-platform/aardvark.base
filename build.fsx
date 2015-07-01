@@ -84,6 +84,11 @@ Target "Compile" (fun () ->
     MSBuildRelease "bin/Release" "Build" core |> ignore
 )
 
+
+Target "RunTests" (fun () ->
+    NUnit (fun p -> { p with Framework = "net-4.5"; WorkingDir = Path.GetFullPath "bin\\Release" }) ["Aardvark.Base.Incremental.Tests.dll"]
+)
+
 Target "Default" (fun () -> ())
 
 "Restore" ==> "Compile"
@@ -92,6 +97,8 @@ Target "Default" (fun () -> ())
     "CodeGenerator" ==>
     "Compile" ==>
     "Default"
+
+//"Compile" ==> "RunTests"
 
 "Restore" ==> 
     "CodeGenerator"

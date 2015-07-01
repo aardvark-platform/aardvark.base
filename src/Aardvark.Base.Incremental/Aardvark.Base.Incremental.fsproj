@@ -66,19 +66,11 @@
     <Compile Include="AdaptiveList\AdaptiveListCore.fs" />
     <Compile Include="AdaptiveList\ChangeableList.fs" />
     <Compile Include="AdaptiveList\AdaptiveList.fs" />
-    <Compile Include="AdaptiveMap\AdaptiveMapCore.fs" />
-    <Compile Include="AdaptiveMap\ChangeableMap.fs" />
     <Compile Include="AdaptiveMap\AdaptiveMap.fs" />
     <Compile Include="AdaptiveFunc\AdaptiveFunc.fs" />
     <Compile Include="Builders.fs" />
     <Compile Include="CSharp.fs" />
     <Compile Include="Adapters\EventAdapter.fs" />
-    <Compile Include="Tests\AdaptiveSetReference.fs" />
-    <Compile Include="Tests\ASetUtilities.fs" />
-    <Compile Include="Tests\ModTests.fs" />
-    <Compile Include="Tests\ASetTests.fs" />
-    <Compile Include="Tests\AListTests.fs" />
-    <Compile Include="Tests\ASetPerformance.fs" />
     <None Include="paket.references" />
   </ItemGroup>
   <ItemGroup>
@@ -110,33 +102,6 @@
     <Reference Include="System.Core" />
     <Reference Include="System.Drawing" />
     <Reference Include="System.Numerics" />
-  </ItemGroup>
-  <Choose>
-    <When Condition="$(TargetFrameworkIdentifier) == '.NETFramework' And ($(TargetFrameworkVersion) == 'v2.0' Or $(TargetFrameworkVersion) == 'v3.0' Or $(TargetFrameworkVersion) == 'v3.5')">
-      <ItemGroup>
-        <Reference Include="FsUnit.NUnit">
-          <HintPath>..\..\packages\FsUnit\Lib\Net20\FsUnit.NUnit.dll</HintPath>
-          <Private>True</Private>
-          <Paket>True</Paket>
-        </Reference>
-      </ItemGroup>
-    </When>
-    <When Condition="($(TargetFrameworkIdentifier) == '.NETFramework' And ($(TargetFrameworkVersion) == 'v4.0' Or $(TargetFrameworkVersion) == 'v4.5' Or $(TargetFrameworkVersion) == 'v4.5.1' Or $(TargetFrameworkVersion) == 'v4.5.2' Or $(TargetFrameworkVersion) == 'v4.5.3' Or $(TargetFrameworkVersion) == 'v4.6')) Or ($(TargetFrameworkIdentifier) == 'MonoAndroid') Or ($(TargetFrameworkIdentifier) == 'MonoTouch')">
-      <ItemGroup>
-        <Reference Include="FsUnit.NUnit">
-          <HintPath>..\..\packages\FsUnit\Lib\Net40\FsUnit.NUnit.dll</HintPath>
-          <Private>True</Private>
-          <Paket>True</Paket>
-        </Reference>
-      </ItemGroup>
-    </When>
-  </Choose>
-  <ItemGroup>
-    <Reference Include="nunit.framework">
-      <HintPath>..\..\packages\NUnit\lib\nunit.framework.dll</HintPath>
-      <Private>True</Private>
-      <Paket>True</Paket>
-    </Reference>
   </ItemGroup>
   <Choose>
     <When Condition="$(TargetFrameworkIdentifier) == '.NETCore'">
