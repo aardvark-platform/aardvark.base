@@ -4,6 +4,7 @@ open Aardvark.Base
 open System
 open System.Collections
 open System.Collections.Generic
+open System.Runtime.InteropServices
 
 /// <summary>
 /// represents a sequence containing values annotated with
@@ -26,6 +27,9 @@ type TimeList<'a>() =
     member x.Item
         with get(t) = cache.[t]
                     
+    member x.TryGetValue(t : Time, [<Out>] value : byref<'a>) =
+        cache.TryGetValue(t, &value)
+
     member x.Remove(t : Time) =
         cache.Remove t
 

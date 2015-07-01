@@ -232,3 +232,20 @@ type corderedset<'a>(initial : seq<'a>) =
     interface System.Collections.Generic.IEnumerable<'a> with
         member x.GetEnumerator() =
             (content.Values :> seq<'a>).GetEnumerator()
+
+[<CompiledName("ChangeableIndexedList")>]
+type cilist<'a>(initial : seq<'a>) =
+    let clist = clist (initial)
+
+    let content = AVL.custom (fun (a,_) (b,_) -> compare a b)
+
+    member x.InsertAt(index : int, value : 'a) =
+        ()
+
+    member x.RemoveAt(index : int) =
+        ()
+
+    member x.Item
+        with get (i : int) : 'a = failwith ""
+        and set (i : int) (value : 'a) = ()
+

@@ -8,25 +8,59 @@ open System.Collections.Generic
 open System.Collections.Concurrent
 open System.Runtime.CompilerServices
 
+
 type Change<'a> = list<Delta<'a>>
 
-
-
+/// <summary>
+/// IReader is the base interface for all adaptive set-readers.
+/// Readers are stateful and may not be used by multiple callers
+/// since pulling changes mutates the reader internally.
+/// </summary>
 type IReader<'a> =
     inherit IDisposable
     inherit IAdaptiveObject
+
+    /// <summary>
+    /// The reader's current content. 
+    /// All changes returned by GetDelta are "relative" to that state.
+    /// NOTE that calling GetDelta modifies the reader's content
+    /// </summary>
     abstract member Content : ReferenceCountingSet<'a>
+
+    /// <summary>
+    /// Update brings the reader's content up-to date without
+    /// calculating deltas. 
+    /// All other effects are equal to those caused by calling GetDelta
+    /// NOTE that Update will cause subsequent calls of GetDelta
+    ///      to return empty deltas (as they are always relative to the current content)
+    /// For some readers Update can be implemented more efficiently than GetDelta
+    /// and in some scenarios the real deltas are not needed.
+    /// </summary>
     abstract member Update : unit -> unit
+
+    /// <summary>
+    /// Pulls the reader's deltas relative to its current content.
+    /// NOTE that GetDelta also "applies" the deltas to the reader's state
+    /// </summary>
     abstract member GetDelta : unit -> Change<'a>
 
+/// <summary>
+/// aset serves as the base interface for all adaptive sets.
+/// </summary>
 [<CompiledName("IAdaptiveSet")>]
 type aset<'a> =
+    /// <summary>
+    /// Returns a NEW reader for the set which will initially return
+    /// the entire set-content as deltas.
+    /// </summary>
     abstract member GetReader : unit -> IReader<'a>
 
 
-
+/// <summary>
+/// ASetReaders contains implementations of IReader&lt;a&gt; representing
+/// the available combinators and is used by the aset-system internally (hence private)
+/// </summary>
 module private ASetReaders =
-
 
     let apply (set : ReferenceCountingSet<'a>) (deltas : list<Delta<'a>>) =
         deltas 
@@ -37,10 +71,17 @@ module private ASetReaders =
                     | Rem v -> set.Remove v
                )
 
+    /// <summary>
+    /// A simple datastructure for efficiently pulling changes from
+    /// a set of readers.
+    /// </summary>
     type DirtyReaderSet<'a>() =
         let subscriptions = Dictionary<IReader<'a>, unit -> unit>()
         let dirty = HashSet<IReader<'a>>()
 
+        /// <summary>
+        /// Starts "listening" to changes of a certain reader
+        /// </summary>
         member x.Listen(r : IReader<'a>) =
             // create and register a callback function
             let onMarking () = 
@@ -57,6 +98,9 @@ module private ASetReaders =
             // dirty set immediately
             lock r (fun () -> if r.OutOfDate then dirty.Add r |> ignore)
             
+        /// <summary>
+        /// Stops "listening" to changes of a certain reader
+        /// </summary>
         member x.Destroy(r : IReader<'a>) =
             // if there exists a subscription we remove and dispose it
             match subscriptions.TryGetValue r with
@@ -68,6 +112,9 @@ module private ASetReaders =
             // if the reader is already in the dirty-set remove it from there too
             dirty.Remove r |> ignore
 
+        /// <summary>
+        /// Gets the (concatenated) deltas from all "dirty" readers
+        /// </summary>
         member x.GetDeltas() =
             [ for d in dirty do
                 // get deltas for all dirty readers and re-register
@@ -77,6 +124,9 @@ module private ASetReaders =
                 yield! c
             ]
 
+        /// <summary>
+        /// Releases the entire structure
+        /// </summary>
         member x.Dispose() =
             for (KeyValue(_, d)) in subscriptions do d()
             dirty.Clear()
@@ -85,7 +135,12 @@ module private ASetReaders =
         interface IDisposable with
             member x.Dispose() = x.Dispose()
  
-
+    /// <summary>
+    /// A reader representing "map" operations
+    /// NOTE that the reader actually takes a function "a -> list&lt;b&gt;" instead of the
+    ///      usual "a -> b" since it is convenient for some use-cases and does not make 
+    ///      the implementation harder.
+    /// </summary>
     type MapReader<'a, 'b>(scope, source : IReader<'a>, f : 'a -> list<'b>) as this =
         inherit AdaptiveObject()
         do source.AddOutput this  
@@ -125,7 +180,12 @@ module private ASetReaders =
             member x.Content = content
             member x.Update() = x.GetDelta() |> ignore 
             member x.GetDelta() = x.GetDelta()
-          
+       
+    /// <summary>
+    /// A reader representing "collect" operations
+    /// NOTE that this is THE core implementation of the entire aset-system and every 
+    ///      other reader could be simulated using this one.
+    /// </summary>   
     type CollectReader<'a, 'b>(scope, source : IReader<'a>, f : 'a -> IReader<'b>) as this =
         inherit AdaptiveObject()
         do source.AddOutput this
@@ -205,6 +265,9 @@ module private ASetReaders =
             member x.GetDelta() = x.GetDelta()
             member x.Update() = x.GetDelta() |> ignore
 
+    /// <summary>
+    /// A reader representing "choose" operations
+    /// </summary>   
     type ChooseReader<'a, 'b>(scope, source : IReader<'a>, f : 'a -> Option<'b>) as this =
         inherit AdaptiveObject()
         do source.AddOutput this
@@ -255,6 +318,9 @@ module private ASetReaders =
             member x.GetDelta() = x.GetDelta()
             member x.Update() = x.GetDelta() |> ignore
 
+    /// <summary>
+    /// A reader for using IMod&lt;a&gt; as a single-valued-set
+    /// </summary>   
     type ModReader<'a>(source : IMod<'a>) as this =  
         inherit AdaptiveObject()
         do source.AddOutput this
@@ -297,6 +363,13 @@ module private ASetReaders =
             member x.GetDelta() = x.GetDelta()
             member x.Update() = x.GetDelta() |> ignore
 
+    /// <summary>
+    /// A reader which allows changes to be pushed by the supplied update function.
+    /// NOTE that BufferedReader shall not be used outside the system unless you understand
+    ///      its behaviour very clearly.
+    /// NOTE that atm. BufferedReader may keep very long histories since the code fixing that
+    ///      is mostly untested and will be "activated" on demand (if someone needs it)
+    /// </summary> 
     type BufferedReader<'a>(update : unit -> unit, dispose : BufferedReader<'a> -> unit) =
         inherit AdaptiveObject()
         let deltas = List()
@@ -371,6 +444,7 @@ module private ASetReaders =
             member x.Content = content
 
 
+    // finally some utility functions reducing "noise" in the code using readers
     let map scope (f : 'a -> 'b) (input : IReader<'a>) =
         new MapReader<_, _>(scope, input, fun c -> [f c]) :> IReader<_>
 
@@ -383,7 +457,6 @@ module private ASetReaders =
     let bind2 scope (f : 'a -> 'b -> IReader<'c>) (ma : IMod<'a>)  (mb : IMod<'b>)=
         let tup = Mod.map2 (fun a b -> (a,b)) ma mb
         new CollectReader<_,_>(scope, new ModReader<_>(tup),  fun (a,b) -> f a b) :> IReader<_>
-
 
     let choose scope (f : 'a -> Option<'b>) (input : IReader<'a>) =
         new ChooseReader<_, _>(scope, input, f) :> IReader<_>
