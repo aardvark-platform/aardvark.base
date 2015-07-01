@@ -48,8 +48,6 @@
     <DocumentationFile>..\..\bin\Release\Aardvark.Base.xml</DocumentationFile>
   </PropertyGroup>
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
-  <Import Project="..\..\..\..\build\Aardvark.targets" Condition="exists('..\..\..\..\build\Aardvark.targets')" />
-  <Import Project="$(SolutionPath).targets" Condition="exists('$(SolutionPath).targets')" />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
     <Reference Include="DevILSharp, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
@@ -146,6 +144,7 @@
     <Compile Include="Random\RandomSystem.cs" />
     <Compile Include="RangesBoxes\Box.cs" />
     <Compile Include="RangesBoxes\Box_auto.cs" />
+    <None Include="paket.references" />
     <None Include="RangesBoxes\Box_template.cs" />
     <Compile Include="RangesBoxes\OrientedBox.cs" />
     <Compile Include="RangesBoxes\Range.cs" />

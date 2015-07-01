@@ -52,56 +52,6 @@
   <Import Project="..\..\..\..\build\Aardvark.targets" Condition="exists('..\..\..\..\build\Aardvark.targets')" />
   <Import Project="$(SolutionPath).targets" Condition="exists('$(SolutionPath).targets')" />
   <Import Project="$(FSharpTargetsPath)" Condition="exists('$(FSharpTargetsPath)')" />
-  <ItemGroup>
-    <Compile Include="AVL.fs" />
-    <Compile Include="Order.fs" />
-    <Compile Include="Prelude\Logging.fs" />
-    <Compile Include="Prelude\FSLibExtensions.fs" />
-    <Compile Include="Prelude\FixedSizeArray.fs" />
-    <Compile Include="Prelude\HashMap.fs" />
-    <Compile Include="Prelude\HashSet.fs" />
-    <Compile Include="Reflection\TypeInfo.fs" />
-    <Compile Include="Reflection\FunctionReflection.fs" />
-    <Compile Include="Reflection\UnmanagedFunctions.fs" />
-    <Compile Include="Runtime\DynamicLinker.fs" />
-    <Compile Include="Runtime\MemoryUtilities.fs" />
-    <Compile Include="Runtime\ExecutableMemory.fs" />
-    <Compile Include="Runtime\Assembler.fs" />
-    <Compile Include="Runtime\WeakTable.fs" />
-    <Compile Include="Reflection.fs" />
-    <Compile Include="Runtime.fs" />
-    <Compile Include="AgHelpers.fs" />
-    <Compile Include="Ag.fs" />
-    <Compile Include="Utilities.fs" />
-    <Compile Include="Control.fs" />
-    <Compile Include="Interop\Dictionary.fs" />
-    <Compile Include="Interop\Symbol.fs" />
-    <Compile Include="Interop\Vectors.fs" />
-    <Compile Include="Interop\Matrix.fs" />
-    <Compile Include="Interop\Color.fs" />
-    <Compile Include="Interop\String.fs" />
-  </ItemGroup>
-  <ItemGroup>
-    <Reference Include="mscorlib" />
-    <Reference Include="System" />
-    <Reference Include="System.Core" />
-    <Reference Include="System.Drawing" />
-    <Reference Include="System.IO.Compression" />
-    <Reference Include="System.Numerics" />
-    <ProjectReference Include="..\Aardvark.Base.TypeProviders\Aardvark.Base.TypeProviders.fsproj">
-      <Name>Aardvark.Base.TypeProviders</Name>
-      <Project>{8BFEA4EF-BF0A-4C1A-B7AC-CBDD930306FD}</Project>
-      <Private>False</Private>
-    </ProjectReference>
-    <ProjectReference Include="..\Aardvark.Base\Aardvark.Base.csproj">
-      <Name>Aardvark.Base</Name>
-      <Project>{377DA721-C821-45F6-B803-9C8724C7B37F}</Project>
-      <Private>False</Private>
-    </ProjectReference>
-    <Reference Include="FSharp.Core, Version=$(TargetFSharpCoreVersion), Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
-      <Private>True</Private>
-    </Reference>
-  </ItemGroup>
   <Choose>
     <When Condition="($(TargetFrameworkIdentifier) == '.NETFramework' And ($(TargetFrameworkVersion) == 'v4.5' Or $(TargetFrameworkVersion) == 'v4.5.1' Or $(TargetFrameworkVersion) == 'v4.5.2' Or $(TargetFrameworkVersion) == 'v4.5.3' Or $(TargetFrameworkVersion) == 'v4.6')) Or ($(TargetFrameworkIdentifier) == 'MonoAndroid') Or ($(TargetFrameworkIdentifier) == 'MonoTouch')">
       <ItemGroup>
@@ -133,13 +83,6 @@
       </ItemGroup>
     </When>
   </Choose>
-  <ItemGroup>
-    <Reference Include="nunit.framework">
-      <HintPath>..\..\packages\NUnit\lib\nunit.framework.dll</HintPath>
-      <Private>True</Private>
-      <Paket>True</Paket>
-    </Reference>
-  </ItemGroup>
   <Choose>
     <When Condition="($(TargetFrameworkIdentifier) == '.NETFramework' And ($(TargetFrameworkVersion) == 'v4.0' Or $(TargetFrameworkVersion) == 'v4.5' Or $(TargetFrameworkVersion) == 'v4.5.1' Or $(TargetFrameworkVersion) == 'v4.5.2' Or $(TargetFrameworkVersion) == 'v4.5.3' Or $(TargetFrameworkVersion) == 'v4.6')) Or ($(TargetFrameworkIdentifier) == 'MonoAndroid') Or ($(TargetFrameworkIdentifier) == 'MonoTouch')">
       <ItemGroup>
@@ -151,4 +94,60 @@
       </ItemGroup>
     </When>
   </Choose>
+  <ItemGroup>
+    <Compile Include="AVL.fs" />
+    <Compile Include="Order.fs" />
+    <Compile Include="Prelude\Logging.fs" />
+    <Compile Include="Prelude\FSLibExtensions.fs" />
+    <Compile Include="Prelude\FixedSizeArray.fs" />
+    <Compile Include="Prelude\HashMap.fs" />
+    <Compile Include="Prelude\HashSet.fs" />
+    <Compile Include="Reflection\TypeInfo.fs" />
+    <Compile Include="Reflection\FunctionReflection.fs" />
+    <Compile Include="Reflection\UnmanagedFunctions.fs" />
+    <Compile Include="Runtime\DynamicLinker.fs" />
+    <Compile Include="Runtime\MemoryUtilities.fs" />
+    <Compile Include="Runtime\ExecutableMemory.fs" />
+    <Compile Include="Runtime\Assembler.fs" />
+    <Compile Include="Runtime\WeakTable.fs" />
+    <Compile Include="Reflection.fs" />
+    <Compile Include="Runtime.fs" />
+    <Compile Include="AgHelpers.fs" />
+    <Compile Include="Ag.fs" />
+    <Compile Include="Utilities.fs" />
+    <Compile Include="Control.fs" />
+    <Compile Include="Interop\Dictionary.fs" />
+    <Compile Include="Interop\Symbol.fs" />
+    <Compile Include="Interop\Vectors.fs" />
+    <Compile Include="Interop\Matrix.fs" />
+    <Compile Include="Interop\Color.fs" />
+    <Compile Include="Interop\String.fs" />
+    <None Include="paket.references" />
+  </ItemGroup>
+  <ItemGroup>
+    <Reference Include="mscorlib" />
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.IO.Compression" />
+    <Reference Include="System.Numerics" />
+    <ProjectReference Include="..\Aardvark.Base.TypeProviders\Aardvark.Base.TypeProviders.fsproj">
+      <Name>Aardvark.Base.TypeProviders</Name>
+      <Project>{8BFEA4EF-BF0A-4C1A-B7AC-CBDD930306FD}</Project>
+      <Private>False</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\Aardvark.Base\Aardvark.Base.csproj">
+      <Name>Aardvark.Base</Name>
+      <Project>{377DA721-C821-45F6-B803-9C8724C7B37F}</Project>
+      <Private>False</Private>
+    </ProjectReference>
+    <Reference Include="FSharp.Core, Version=$(TargetFSharpCoreVersion), Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="nunit.framework">
+      <HintPath>..\..\packages\NUnit\lib\nunit.framework.dll</HintPath>
+      <Private>True</Private>
+      <Paket>True</Paket>
+    </Reference>
+  </ItemGroup>
 </Project>
