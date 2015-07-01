@@ -50,6 +50,67 @@
   </Choose>
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <Import Project="$(FSharpTargetsPath)" Condition="exists('$(FSharpTargetsPath)')" />
+  <ItemGroup>
+    <Compile Include="Core\Utilities.fs" />
+    <Compile Include="Core\PriorityQueue.fs" />
+    <Compile Include="Core\WeakSet.fs" />
+    <Compile Include="Core\Delta.fs" />
+    <Compile Include="Core\ReferenceCountingSet.fs" />
+    <Compile Include="Core\TimeList.fs" />
+    <Compile Include="Core\Cache.fs" />
+    <Compile Include="Core\Core.fs" />
+    <Compile Include="Mod\Mod.fs" />
+    <Compile Include="AdaptiveSet\AdaptiveSetCore.fs" />
+    <Compile Include="AdaptiveSet\ChangeableSet.fs" />
+    <Compile Include="AdaptiveSet\AdaptiveSet.fs" />
+    <Compile Include="AdaptiveList\AdaptiveListCore.fs" />
+    <Compile Include="AdaptiveList\ChangeableList.fs" />
+    <Compile Include="AdaptiveList\AdaptiveList.fs" />
+    <Compile Include="AdaptiveMap\AdaptiveMapCore.fs" />
+    <Compile Include="AdaptiveMap\ChangeableMap.fs" />
+    <Compile Include="AdaptiveMap\AdaptiveMap.fs" />
+    <Compile Include="AdaptiveFunc\AdaptiveFunc.fs" />
+    <Compile Include="Builders.fs" />
+    <Compile Include="CSharp.fs" />
+    <Compile Include="Adapters\EventAdapter.fs" />
+    <Compile Include="Tests\AdaptiveSetReference.fs" />
+    <Compile Include="Tests\ASetUtilities.fs" />
+    <Compile Include="Tests\ModTests.fs" />
+    <Compile Include="Tests\ASetTests.fs" />
+    <Compile Include="Tests\AListTests.fs" />
+    <Compile Include="Tests\ASetPerformance.fs" />
+    <None Include="paket.references" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="../Aardvark.Base.TypeProviders/Aardvark.Base.TypeProviders.fsproj">
+      <Name>Aardvark.Base.TypeProviders</Name>
+      <Project>{8bfea4ef-bf0a-4c1a-b7ac-cbdd930306fd}</Project>
+      <Private>False</Private>
+    </ProjectReference>
+    <ProjectReference Include="../Aardvark.Base.FSharp/Aardvark.Base.FSharp.fsproj">
+      <Name>Aardvark.Base.FSharp</Name>
+      <Project>{692a3617-719b-4ea2-abc1-407ae20094ae}</Project>
+      <Private>False</Private>
+    </ProjectReference>
+    <ProjectReference Include="../Aardvark.Base/Aardvark.Base.csproj">
+      <Name>Aardvark.Base</Name>
+      <Project>{377DA721-C821-45F6-B803-9C8724C7B37F}</Project>
+      <Private>False</Private>
+    </ProjectReference>
+    <ProjectReference Include="../Aardvark.Base.Essentials/Aardvark.Base.Essentials.csproj">
+      <Name>Aardvark.Base.Essentials</Name>
+      <Project>{7FEF0693-EFC3-4B85-8F42-933B25F353A8}</Project>
+      <Private>False</Private>
+    </ProjectReference>
+    <Reference Include="mscorlib" />
+    <Reference Include="FSharp.Core, Version=$(TargetFSharpCoreVersion), Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Numerics" />
+  </ItemGroup>
   <Choose>
     <When Condition="$(TargetFrameworkIdentifier) == '.NETFramework' And ($(TargetFrameworkVersion) == 'v2.0' Or $(TargetFrameworkVersion) == 'v3.0' Or $(TargetFrameworkVersion) == 'v3.5')">
       <ItemGroup>
@@ -70,6 +131,13 @@
       </ItemGroup>
     </When>
   </Choose>
+  <ItemGroup>
+    <Reference Include="nunit.framework">
+      <HintPath>..\..\packages\NUnit\lib\nunit.framework.dll</HintPath>
+      <Private>True</Private>
+      <Paket>True</Paket>
+    </Reference>
+  </ItemGroup>
   <Choose>
     <When Condition="$(TargetFrameworkIdentifier) == '.NETCore'">
       <ItemGroup>
@@ -254,70 +322,4 @@
       </ItemGroup>
     </When>
   </Choose>
-  <ItemGroup>
-    <Compile Include="Core\Utilities.fs" />
-    <Compile Include="Core\PriorityQueue.fs" />
-    <Compile Include="Core\WeakSet.fs" />
-    <Compile Include="Core\Delta.fs" />
-    <Compile Include="Core\ReferenceCountingSet.fs" />
-    <Compile Include="Core\TimeList.fs" />
-    <Compile Include="Core\Cache.fs" />
-    <Compile Include="Core\Core.fs" />
-    <Compile Include="Mod\Mod.fs" />
-    <Compile Include="AdaptiveSet\AdaptiveSetCore.fs" />
-    <Compile Include="AdaptiveSet\ChangeableSet.fs" />
-    <Compile Include="AdaptiveSet\AdaptiveSet.fs" />
-    <Compile Include="AdaptiveList\AdaptiveListCore.fs" />
-    <Compile Include="AdaptiveList\ChangeableList.fs" />
-    <Compile Include="AdaptiveList\AdaptiveList.fs" />
-    <Compile Include="AdaptiveMap\AdaptiveMapCore.fs" />
-    <Compile Include="AdaptiveMap\ChangeableMap.fs" />
-    <Compile Include="AdaptiveMap\AdaptiveMap.fs" />
-    <Compile Include="AdaptiveFunc\AdaptiveFunc.fs" />
-    <Compile Include="Builders.fs" />
-    <Compile Include="CSharp.fs" />
-    <Compile Include="Adapters\EventAdapter.fs" />
-    <Compile Include="Tests\AdaptiveSetReference.fs" />
-    <Compile Include="Tests\ASetUtilities.fs" />
-    <Compile Include="Tests\ModTests.fs" />
-    <Compile Include="Tests\ASetTests.fs" />
-    <Compile Include="Tests\AListTests.fs" />
-    <Compile Include="Tests\ASetPerformance.fs" />
-    <None Include="paket.references" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="../Aardvark.Base.TypeProviders/Aardvark.Base.TypeProviders.fsproj">
-      <Name>Aardvark.Base.TypeProviders</Name>
-      <Project>{8bfea4ef-bf0a-4c1a-b7ac-cbdd930306fd}</Project>
-      <Private>False</Private>
-    </ProjectReference>
-    <ProjectReference Include="../Aardvark.Base.FSharp/Aardvark.Base.FSharp.fsproj">
-      <Name>Aardvark.Base.FSharp</Name>
-      <Project>{692a3617-719b-4ea2-abc1-407ae20094ae}</Project>
-      <Private>False</Private>
-    </ProjectReference>
-    <ProjectReference Include="../Aardvark.Base/Aardvark.Base.csproj">
-      <Name>Aardvark.Base</Name>
-      <Project>{377DA721-C821-45F6-B803-9C8724C7B37F}</Project>
-      <Private>False</Private>
-    </ProjectReference>
-    <ProjectReference Include="../Aardvark.Base.Essentials/Aardvark.Base.Essentials.csproj">
-      <Name>Aardvark.Base.Essentials</Name>
-      <Project>{7FEF0693-EFC3-4B85-8F42-933B25F353A8}</Project>
-      <Private>False</Private>
-    </ProjectReference>
-    <Reference Include="mscorlib" />
-    <Reference Include="FSharp.Core, Version=$(TargetFSharpCoreVersion), Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="System" />
-    <Reference Include="System.Core" />
-    <Reference Include="System.Drawing" />
-    <Reference Include="System.Numerics" />
-    <Reference Include="nunit.framework">
-      <HintPath>..\..\packages\NUnit\lib\nunit.framework.dll</HintPath>
-      <Private>True</Private>
-      <Paket>True</Paket>
-    </Reference>
-  </ItemGroup>
 </Project>
