@@ -618,6 +618,59 @@ module AListReaders =
 
             member x.Content = content
 
+    type SortWithReader<'a>(input : IReader<'a>, cmp : 'a -> 'a -> int) as this =
+        inherit AdaptiveObject()
+        do input.AddOutput this
+
+        let root = Time.newRoot()
+        let content = TimeList<'a>()
+        //let times = SortedDictionary<'a, Time>({ new IComparer<'a> with member x.Compare(a,b) = cmp a b)
+        let tree = AVL.custom (fun (a,_) (b,_) -> cmp a b)
+
+        member x.Dispose() =
+            input.RemoveOutput this
+            input.Dispose()
+            content.Clear()
+            Time.delete root
+
+        override x.Finalize() =
+            try x.Dispose() 
+            with _ -> ()
+
+        interface IDisposable with
+            member x.Dispose() = x.Dispose()
+
+        interface IListReader<'a> with
+            member x.RootTime = root
+            member x.Content = content
+            member x.GetDelta() =
+                x.EvaluateIfNeeded [] (fun () ->
+                    let deltas = input.GetDelta()
+
+                    let deltas = 
+                        deltas |> List.map (fun d ->
+                            match d with
+                                | Add v ->
+                                    let before = 
+                                        match AVL.findMaximalWhere (fun (a,_) -> cmp a v < 0) tree with
+                                            | Some (_,t) -> t
+                                            | _ -> root
+
+                                    let t = Time.after before
+                                    AVL.insert tree (v,t) |> ignore
+                                    Add(t, v)
+                                | Rem v -> 
+                                    match AVL.findMaximalWhere (fun (a,_) -> cmp a v <= 0) tree with
+                                        | Some (a,t) when cmp a v = 0 ->
+                                            AVL.remove tree (a,t) |> ignore
+                                            Time.delete t
+                                            Rem (t, v)
+                                        | _ ->
+                                            failwith "removal of unknown value"
+                        )
+
+                    deltas |> apply content
+                )
 
     let map (scope) (f : 'a -> 'b) (input : IListReader<'a>) =
         new MapReader<_, _>(scope, f, input) :> IListReader<_>
@@ -635,6 +688,8 @@ module AListReaders =
     let choose (scope) (f : 'a -> Option<'b>) (input : IListReader<'a>) =
         new ChooseReader<_, _>(scope, input, f) :> IListReader<_>
 
+    let sortWith (cmp : 'a -> 'a -> int) (input : IReader<'a>) =
+        new SortWithReader<'a>(input, cmp) :> IListReader<_>
 
     let ofMod (m : IMod<'a>) : IListReader<'a> =
         new ModReader<'a>(m) :> IListReader<'a>

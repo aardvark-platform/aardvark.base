@@ -216,5 +216,17 @@ module AList =
         let s = new CallbackSubscription(m, !self, live, m, set)
         set.Add s |> ignore
         s :> IDisposable 
-        
+  
+[<AutoOpen>]
+module ``ASet sorting functions`` =      
     
+    module ASet =
+        let sortWith (cmp : 'a -> 'a -> int) (s : aset<'a>) =
+            AList.AdaptiveList(fun () -> s.GetReader() |> sortWith cmp) :> alist<_>
+
+        let sortBy (f : 'a -> 'b) (s : aset<'a>) =
+            let cmp (a : 'a) (b : 'a) = compare (f a) (f b)
+            s |> sortWith cmp
+
+        let sort (s : aset<'a>) =
+            sortWith compare s

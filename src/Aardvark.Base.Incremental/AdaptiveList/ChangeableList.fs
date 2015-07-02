@@ -418,3 +418,6 @@ module CSetOrdered =
 
     let insertBefore (anchor : 'a) (v : 'a) (s : corderedset<'a>) =
         s.InsertBefore(anchor, v)
+//
+//    let insertFirst (v : 'a) (s : corderedset<'a>) =
+//        s.InsertBefore(s.[0], v)

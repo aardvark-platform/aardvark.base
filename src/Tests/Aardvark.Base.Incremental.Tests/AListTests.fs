@@ -270,15 +270,36 @@ module ``simple list tests`` =
         r |> content |> should equal []
         c |> CList.count |> should equal 0
 
-
+        
         CList.empty<int> = CList.empty<int> |> should be False
 
         ()
 
+    [<Test>]
+    let ``set sorting``() =
+        let s = CSet.ofList [4;3;2;1]
 
+        let l = s |> ASet.sort
+        let r = l.GetReader()
 
+        let content (r : IListReader<'a>) = 
+            r.GetDelta() |> ignore
+            r.Content |> Seq.sortBy fst |> Seq.map snd |> Seq.toList
 
+        r |> content |>  should equal [1;2;3;4]
+        
+        transact (fun () -> CSet.add 5 s |> ignore)
+        r |> content |>  should equal [1;2;3;4;5]
 
+        transact (fun () -> CSet.remove 3 s |> ignore)
+        r |> content |>  should equal [1;2;4;5]
+
+        transact (fun () -> CSet.add 3 s |> ignore)
+        r |> content |>  should equal [1;2;3;4;5]
+
+        transact (fun () -> CSet.clear s )
+        r |> content |>  should equal []
+        
 
 
 
