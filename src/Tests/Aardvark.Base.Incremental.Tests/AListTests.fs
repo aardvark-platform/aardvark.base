@@ -3,6 +3,7 @@
 
 open System.Collections
 open System.Collections.Generic
+open Aardvark.Base
 open Aardvark.Base.Incremental
 open NUnit.Framework
 open FsUnit
@@ -128,10 +129,85 @@ module ``simple list tests`` =
         d |> AList.toList |> should equal [2;4;12;6]
         r.GetSetDelta() |> should setEqual [Add 12]
 
+    [<Test>]
+    let ``choose reader time-density``() =
+        let l = corderedset []
+
+        let validateTimeDensity(r : IListReader<'a>) =
+            r.GetDelta() |> ignore
+
+            let mutable t = r.RootTime.Next
+            while t <> r.RootTime do
+                match r.Content.TryGetValue t with
+                    | (true, v) -> ()
+                    | _ -> failwithf "no value associated with time %A" t
+                t <- t.Next
+
+        let add v = l.Add v |> ignore
+        let content (r : IListReader<'a>) = 
+            r.GetDelta() |> ignore
+            r.Content |> Seq.sortBy fst |> Seq.map snd |> Seq.toList
+        // get only those elements being even
+        let m2 = l |> AList.choose (fun a -> if a % 2 = 0 then Some a else None)
+        let r = m2.GetReader()
+
+        r |> validateTimeDensity
+
+        transact (fun () -> add 1; add 2)
+        r |> content |> should equal [2]
+        r |> validateTimeDensity
+
+        transact (fun () -> l.InsertAfter(1, 4) |> ignore)
+        r |> content |> should equal [4; 2]
+        r |> validateTimeDensity
+
+        transact (fun () -> l.InsertBefore(4, 6) |> ignore)
+        r |> content |> should equal [6; 4; 2]
+        r |> validateTimeDensity
+
+        transact (fun () -> l.Remove(4) |> ignore)
+        r |> content |> should equal [6; 2]
+        r |> validateTimeDensity
+
+        transact (fun () -> l.Clear())
+        r |> content |> should equal []
+        r |> validateTimeDensity
 
 
 
+        ()
 
+    [<Test>]
+    let ``callback survive test``() =
+        let subscribe cb (l : alist<'a>) =
+            let s = l |> AList.registerCallback cb
+            // s is ignored here (going out of scope)
+            ()
+
+        let deltaRef = ref []
+        let callback (d  : list<Delta<Time * int>>) = deltaRef := !deltaRef @ (d |> List.map (Delta.map snd))
+
+        let deltas() =
+            let l = !deltaRef
+            deltaRef := []
+            l
+
+        let l = corderedset [1]
+        subscribe callback l
+        System.GC.AddMemoryPressure(1L <<< 30)
+        System.GC.Collect()
+
+
+        deltas() |> should setEqual [Add 1]
+
+        transact (fun () -> l.Add 2 |> ignore; l.Add 3 |> ignore)
+        deltas() |> should setEqual [Add 2; Add 3]
+
+        transact (fun () -> l.Remove 1 |> ignore)
+        deltas() |> should setEqual [Rem 1]
+
+
+        ()
 
 
 

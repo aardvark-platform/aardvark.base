@@ -69,7 +69,7 @@ module AList =
         let scope = Ag.getContext()
         fun v -> Ag.useScope scope (fun () -> f v)
 
-    let private callbackTable = ConditionalWeakTable<IAdaptiveObject, ConcurrentHashSet<IDisposable>>()
+    let private callbackTable = ConditionalWeakTable<obj, ConcurrentHashSet<IDisposable>>()
     type private CallbackSubscription(m : IAdaptiveObject, cb : unit -> unit, live : ref<bool>, reader : IDisposable, set : ConcurrentHashSet<IDisposable>) =
         
         member x.Dispose() = 
@@ -212,7 +212,7 @@ module AList =
             !self ()
         )
 
-        let set = callbackTable.GetOrCreateValue(m)
+        let set = callbackTable.GetOrCreateValue(list)
         let s = new CallbackSubscription(m, !self, live, m, set)
         set.Add s |> ignore
         s :> IDisposable 

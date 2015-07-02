@@ -33,7 +33,7 @@ module ``performance tests`` =
             
                 
 
-        let test = stepN 200 input
+        let test = stepN 50 input
         let r = test.GetReader()
 
         r.GetDelta() |> ignore
