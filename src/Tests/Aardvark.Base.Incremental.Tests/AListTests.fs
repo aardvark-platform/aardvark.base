@@ -209,6 +209,72 @@ module ``simple list tests`` =
 
         ()
 
+    [<Test>]
+    let ``clist indexing test``() =
+        let c = CList.ofList [1;2;3;4]
+        
+        // stupid obfuscated identity
+        let d = c |> AList.collect AList.single |> AList.choose Some
+
+        let r = d.GetReader()
+        let content (r : IListReader<'a>) = 
+            r.GetDelta() |> ignore
+            r.Content |> Seq.sortBy fst |> Seq.map snd |> Seq.toList
+
+        r |> content |> should equal [1;2;3;4]
+        c |> CList.count |> should equal 4
+
+        transact (fun () -> c |> CList.insert 0 0)
+        r |> content |> should equal [0;1;2;3;4]
+        c |> CList.count |> should equal 5
+
+        transact (fun () -> c |> CList.remove 1)
+        r |> content |> should equal [0;2;3;4]
+        c |> CList.count |> should equal 4
+
+        transact (fun () -> c |> CList.insertRange 1 [1;2])
+        r |> content |> should equal [0;1;2;2;3;4]
+        c |> CList.count |> should equal 6
+
+        transact (fun () -> c |> CList.removeRange 1 2)
+        r |> content |> should equal [0;2;3;4]
+        c |> CList.count |> should equal 4
+
+        c.[0] |> should equal 0
+        c.[1] |> should equal 2
+        c.[2] |> should equal 3
+        c.[3] |> should equal 4
+
+        transact (fun () -> c.[0] <- 1)
+        r |> content |> should equal [1;2;3;4]
+        c |> CList.count |> should equal 4
+
+        transact (fun () -> c.[3] <- 1)
+        r |> content |> should equal [1;2;3;1]
+        c |> CList.count |> should equal 4
+
+        transact (fun () -> c |> CList.add 5)
+        r |> content |> should equal [1;2;3;1;5]
+        c |> CList.count |> should equal 5
+
+        transact (fun () -> c |> CList.addRange [6;7])
+        r |> content |> should equal [1;2;3;1;5;6;7]
+        c |> CList.count |> should equal 7
+
+        c |> CList.tryGet -1 |> should equal None
+        c |> CList.tryGet 7 |> should equal None
+        c |> CList.tryGet 0 |> should equal (Some 1)
+        c |> CList.tryGet 6 |> should equal (Some 7)
+
+        transact (fun () -> c |> CList.clear)
+        r |> content |> should equal []
+        c |> CList.count |> should equal 0
+
+
+        CList.empty<int> = CList.empty<int> |> should be False
+
+        ()
+
 
 
 

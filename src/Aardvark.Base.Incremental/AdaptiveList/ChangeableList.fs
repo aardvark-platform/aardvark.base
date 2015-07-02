@@ -88,9 +88,8 @@ type clist<'a>(initial : seq<'a>) =
     member x.InsertRange(index : int, s : seq<'a>) =
         match x.TryGetKey index with
             | (true, k) ->
-                let mutable t = k.Time
                 for e in s do
-                    t <- x.InsertAfter(clistkey t, e).Time
+                    x.InsertBefore(k, e) |> ignore
 
             | _ ->
                 raise <| IndexOutOfRangeException()
@@ -340,7 +339,7 @@ module CList =
         l.InsertRange(index, s)
 
     let remove (index : int) (l : clist<'a>) =
-        l.RemoveAt(index) |> ignore
+        l.RemoveAt(index)
 
     let removeRange (start : int) (count : int) (l : clist<'a>) =
         l.RemoveRange(start, count)
@@ -367,7 +366,46 @@ module CList =
 
     let toArray (c : clist<'a>) = c |> Seq.toArray
 
-module COrderedSet =
+module CListRel =
+    
+    let empty<'a> : clist<'a> = clist()
+    
+    let count (l : clist<'a>) = l.Count
+
+    let add (v : 'a) (l : clist<'a>) =
+        l.Add v
+
+    let insertAfter (key : clistkey) (v : 'a) (l : clist<'a>) =
+        l.InsertAfter(key, v)
+   
+    let insertBefore (key : clistkey) (v : 'a) (l : clist<'a>) =
+        l.InsertBefore(key, v)
+        
+    let remove (key : clistkey) (l : clist<'a>) =
+        l.Remove(key)
+
+    let removeRange (start : int) (keys : seq<clistkey>)  (l : clist<'a>) =
+        keys |> Seq.iter (flip remove l)
+
+    let clear (l : clist<'a>) = l.Clear()
+
+    let get (key : clistkey) (l : clist<'a>) = l.[key]
+
+    let set (key : clistkey) (value : 'a) (l : clist<'a>) = l.[key] <- value
+
+    let ofSeq (s : seq<'a>) = clist s
+
+    let ofList (l : list<'a>) = clist l
+
+    let ofArray (l : 'a[]) = clist l
+
+    let toSeq (c : clist<'a>) = c :> seq<_>
+
+    let toList (c : clist<'a>) = c |> Seq.toList
+
+    let toArray (c : clist<'a>) = c |> Seq.toArray
+
+module CSetOrdered =
     
     let count (s : corderedset<'a>) = s.Count
 
@@ -380,6 +418,3 @@ module COrderedSet =
 
     let insertBefore (anchor : 'a) (v : 'a) (s : corderedset<'a>) =
         s.InsertBefore(anchor, v)
-//
-//    let insertFirst (v : 'a) (s : corderedset<'a>) =
-//        s.InsertBefore(s.[0], v)
