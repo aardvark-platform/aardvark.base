@@ -3,6 +3,7 @@
 open System
 open System.Collections
 open System.Collections.Generic
+open System.Runtime.InteropServices
 open Aardvark.Base
 open Aardvark.Base.Incremental.AListReaders
 
@@ -13,12 +14,14 @@ type clistkey internal (t : Time) =
 [<CompiledName("ChangeableList")>]
 type clist<'a>(initial : seq<'a>) =
     let content = TimeList<'a>()
+    let skip : SkipList<Time> = SkipList.empty
     let rootTime = Time.newRoot()
     let readers = WeakSet<BufferedReader<'a>>()
 
     let insertAfter (t : Time) (value : 'a) =
         let newTime = Time.after t
         content.Add(newTime, value)
+        skip.Add(newTime) |> ignore
 
         for r in readers do 
             if r.IsIncremental then r.Emit [Add (newTime, value)]
@@ -38,29 +41,110 @@ type clist<'a>(initial : seq<'a>) =
             readers.Add r |> ignore
             r :> _
 
+    member x.TryGetKey (index : int, [<Out>] key : byref<clistkey>) =
+        match skip.TryAt index with
+            | Some t ->
+                key <- clistkey t
+                true
+            | None ->
+                false
+
+    member x.Item
+        with get (k : clistkey) =
+            let t = k.Time
+            content.[t]
+        and set (k : clistkey) (value : 'a) =
+            let tOld = k.Time
+            let vOld = content.[tOld]
+            let tNew = Time.after tOld
+
+            content.Remove tOld |> ignore
+            skip.Remove tOld |> ignore
+
+            content.Add(tNew, value)
+            skip.Add tNew |> ignore
+
+            for r in readers do 
+                if r.IsIncremental then r.Emit [Rem (tOld, vOld); Add (tNew, value)]
+                else r.Reset content
+
+    member x.Item
+        with get (index : int) =
+            match skip.TryAt index with
+                | Some t -> x.[clistkey t]
+                | None -> raise <| IndexOutOfRangeException()
+        and set (index : int) (value : 'a) =
+            match skip.TryAt index with
+                | Some t -> x.[clistkey t] <- value
+                | None -> raise <| IndexOutOfRangeException()
+
+    member x.Insert(index : int, value : 'a) =
+        match skip.TryAt index with
+            | Some t ->
+                x.InsertBefore(clistkey t, value)
+            | None ->
+                raise <| IndexOutOfRangeException()
+
+    member x.InsertRange(index : int, s : seq<'a>) =
+        match x.TryGetKey index with
+            | (true, k) ->
+                let mutable t = k.Time
+                for e in s do
+                    t <- x.InsertAfter(clistkey t, e).Time
+
+            | _ ->
+                raise <| IndexOutOfRangeException()
+
+    member x.RemoveAt(index : int) =
+        match skip.TryAt index with
+            | Some t ->
+                x.Remove(clistkey t) |> ignore
+            | None ->
+                raise <| IndexOutOfRangeException()
+
+    member x.RemoveRange (start : int, count : int) =
+        if start + count <= x.Count then
+            match x.TryGetKey start with
+                | (true, k) ->
+                    let mutable t = k.Time
+                    for i in 0..count-1 do
+                        let n = t.Next
+                        x.Remove (clistkey t)
+                        t <- n
+                | _ ->
+                    raise <| IndexOutOfRangeException()
+        else
+            raise <| IndexOutOfRangeException()
+
     member x.Count = content.Count
 
     member x.Remove(key : clistkey) =
         let c = content.[key.Time]
         content.Remove key.Time |> ignore
+        skip.Remove key.Time |> ignore
 
         Time.delete key.Time
         for r in readers do 
             if r.IsIncremental then r.Emit [Rem (key.Time, c)]
             else r.Reset content
 
-    member x.InsertAfter(key : clistkey, value : 'a) =
+    member x.InsertAfter(key : clistkey, value : 'a) : clistkey =
         clistkey (insertAfter key.Time value)
 
-    member x.InsertBefore(key : clistkey, value : 'a) =
+    member x.InsertBefore(key : clistkey, value : 'a) : clistkey =
         x.InsertAfter(clistkey key.Time.prev, value)
 
     member x.Add(value : 'a) =
         x.InsertAfter(clistkey rootTime.prev, value)
 
+    member x.AddRange(s : seq<'a>) =
+        s |> Seq.iter (fun e -> x.Add e |> ignore)
+
     member x.Clear() =
         let deltas = content |> Seq.map Rem |> Seq.toList
         content.Clear()
+        skip.Clear()
+
         rootTime.next <- rootTime
         rootTime.prev <- rootTime
         
@@ -81,6 +165,8 @@ type clist<'a>(initial : seq<'a>) =
     interface System.Collections.Generic.IEnumerable<'a> with
         member x.GetEnumerator() =
             (content.Values :> seq<'a>).GetEnumerator()
+
+    new() = clist Seq.empty
 
 [<CompiledName("ChangeableOrderedSet")>]
 type corderedset<'a>(initial : seq<'a>) =
@@ -233,19 +319,67 @@ type corderedset<'a>(initial : seq<'a>) =
         member x.GetEnumerator() =
             (content.Values :> seq<'a>).GetEnumerator()
 
-[<CompiledName("ChangeableIndexedList")>]
-type cilist<'a>(initial : seq<'a>) =
-    let clist = clist (initial)
+    new() = corderedset Seq.empty
 
-    let content = AVL.custom (fun (a,_) (b,_) -> compare a b)
+module CList =
+    
+    let empty<'a> : clist<'a> = clist()
+    
+    let count (l : clist<'a>) = l.Count
 
-    member x.InsertAt(index : int, value : 'a) =
-        ()
+    let add (v : 'a) (l : clist<'a>) =
+        l.Add v |> ignore
+      
+    let addRange (s : seq<'a>) (l : clist<'a>) =
+        l.AddRange(s)
+        
+    let insert (index : int) (v : 'a) (l : clist<'a>) =
+        l.Insert(index, v) |> ignore
+        
+    let insertRange (index : int) (s : seq<'a>) (l : clist<'a>) =
+        l.InsertRange(index, s)
 
-    member x.RemoveAt(index : int) =
-        ()
+    let remove (index : int) (l : clist<'a>) =
+        l.RemoveAt(index) |> ignore
 
-    member x.Item
-        with get (i : int) : 'a = failwith ""
-        and set (i : int) (value : 'a) = ()
+    let removeRange (start : int) (count : int) (l : clist<'a>) =
+        l.RemoveRange(start, count)
 
+    let clear (l : clist<'a>) = l.Clear()
+
+    let tryGet (index : int) (l : clist<'a>) =
+        if index >= 0 && index < l.Count then Some l.[index]
+        else None
+
+    let get (index : int) (l : clist<'a>) = l.[index]
+
+    let set (index : int) (value : 'a) (l : clist<'a>) = l.[index] <- value
+
+    let ofSeq (s : seq<'a>) = clist s
+
+    let ofList (l : list<'a>) = clist l
+
+    let ofArray (l : 'a[]) = clist l
+
+    let toSeq (c : clist<'a>) = c :> seq<_>
+
+    let toList (c : clist<'a>) = c |> Seq.toList
+
+    let toArray (c : clist<'a>) = c |> Seq.toArray
+
+module COrderedSet =
+    
+    let count (s : corderedset<'a>) = s.Count
+
+    let add (v : 'a) (s : corderedset<'a>) = s.Add v
+
+    let remove (v : 'a) (s : corderedset<'a>) = s.Remove v
+
+    let insertAfter (anchor : 'a) (v : 'a) (s : corderedset<'a>) =
+        s.InsertAfter(anchor, v)
+
+    let insertBefore (anchor : 'a) (v : 'a) (s : corderedset<'a>) =
+        s.InsertBefore(anchor, v)
+//
+//    let insertFirst (v : 'a) (s : corderedset<'a>) =
+//        s.InsertBefore(s.[0], v)

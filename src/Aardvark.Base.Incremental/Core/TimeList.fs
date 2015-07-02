@@ -6,14 +6,16 @@ open System.Collections
 open System.Collections.Generic
 open System.Runtime.InteropServices
 
+
 /// <summary>
 /// represents a sequence containing values annotated with
 /// a Time (order maintenance). This list can be used to 
 /// efficiently insert/remove timed values.
 /// </summary>
 type TimeList<'a>() =
+    static let emptyTime = Time.newRoot()
     let cache = Dictionary<Time, 'a>()
-    let mutable rep = Time.newRoot()
+    let mutable rep = emptyTime
 
     member x.Count = cache.Count
 
