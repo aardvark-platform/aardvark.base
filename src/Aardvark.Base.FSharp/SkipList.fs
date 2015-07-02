@@ -166,15 +166,18 @@ type SkipList<'a>(cmp : 'a -> 'a -> int) =
 
                 let mutable level = 0
                 for (id,p) in prev do
-                    if level < n.Height then
-                        let prevNext = if p <> null then p.Next else root
+                    let prevNext = if p <> null then p.Next else root
+                    let l = prevNext.[level]
 
-                        let l = prevNext.[level]
+                    if level < n.Height then
                         let ti = id + l.Width
                         let si = id
                         //ti - si
                         prevNext.[level] <- Link(n, fi - si)
-                        n.Next.[level] <- Link(l.Target, ti - fi)
+                        n.Next.[level] <- Link(l.Target, 1 + ti - fi)
+                    else
+                        prevNext.[level] <- Link(l.Target, l.Width + 1)
+
                     level <- level + 1
 
                 count <- count + 1
