@@ -51,6 +51,7 @@
   <Import Project="$(FSharpTargetsPath)" Condition="exists('$(FSharpTargetsPath)')" />
   <ItemGroup>
     <Compile Include="AVL.fs" />
+    <Compile Include="SkipList.fs" />
     <Compile Include="Order.fs" />
     <Compile Include="Prelude\Logging.fs" />
     <Compile Include="Prelude\FSLibExtensions.fs" />
