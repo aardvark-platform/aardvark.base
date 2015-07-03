@@ -14,20 +14,22 @@ type clistkey internal (t : Time) =
 [<CompiledName("ChangeableList")>]
 type clist<'a>(initial : seq<'a>) =
     let content = TimeList<'a>()
-    let skip : SkipList<Time> = SkipList.empty
     let rootTime = Time.newRoot()
     let readers = WeakSet<BufferedReader<'a>>()
 
     let insertAfter (t : Time) (value : 'a) =
         let newTime = Time.after t
         content.Add(newTime, value)
-        skip.Add(newTime) |> ignore
 
         for r in readers do 
             if r.IsIncremental then r.Emit [Add (newTime, value)]
             else r.Reset content
 
         newTime
+
+    let tryAt (index : int) =
+        if index < 0 || index >= content.Count then None
+        else rootTime.TryAt (index + 1)
 
     do  
         let mutable current = rootTime
@@ -42,7 +44,7 @@ type clist<'a>(initial : seq<'a>) =
             r :> _
 
     member x.TryGetKey (index : int, [<Out>] key : byref<clistkey>) =
-        match skip.TryAt index with
+        match tryAt index with
             | Some t ->
                 key <- clistkey t
                 true
@@ -59,10 +61,8 @@ type clist<'a>(initial : seq<'a>) =
             let tNew = Time.after tOld
 
             content.Remove tOld |> ignore
-            skip.Remove tOld |> ignore
-
             content.Add(tNew, value)
-            skip.Add tNew |> ignore
+            Time.delete tOld
 
             for r in readers do 
                 if r.IsIncremental then r.Emit [Rem (tOld, vOld); Add (tNew, value)]
@@ -70,16 +70,16 @@ type clist<'a>(initial : seq<'a>) =
 
     member x.Item
         with get (index : int) =
-            match skip.TryAt index with
+            match tryAt index with
                 | Some t -> x.[clistkey t]
                 | None -> raise <| IndexOutOfRangeException()
         and set (index : int) (value : 'a) =
-            match skip.TryAt index with
+            match tryAt index with
                 | Some t -> x.[clistkey t] <- value
                 | None -> raise <| IndexOutOfRangeException()
 
     member x.Insert(index : int, value : 'a) =
-        match skip.TryAt index with
+        match tryAt index with
             | Some t ->
                 x.InsertBefore(clistkey t, value)
             | None ->
@@ -95,7 +95,7 @@ type clist<'a>(initial : seq<'a>) =
                 raise <| IndexOutOfRangeException()
 
     member x.RemoveAt(index : int) =
-        match skip.TryAt index with
+        match tryAt index with
             | Some t ->
                 x.Remove(clistkey t) |> ignore
             | None ->
@@ -120,7 +120,6 @@ type clist<'a>(initial : seq<'a>) =
     member x.Remove(key : clistkey) =
         let c = content.[key.Time]
         content.Remove key.Time |> ignore
-        skip.Remove key.Time |> ignore
 
         Time.delete key.Time
         for r in readers do 
@@ -142,7 +141,6 @@ type clist<'a>(initial : seq<'a>) =
     member x.Clear() =
         let deltas = content |> Seq.map Rem |> Seq.toList
         content.Clear()
-        skip.Clear()
 
         Time.deleteAll rootTime
         

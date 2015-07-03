@@ -27,8 +27,12 @@ type TimeList<'a>() =
         cache.[t] <- v
          
     member x.Item
-        with get(t) = cache.[t]
-                    
+        with get(t) = 
+            cache.[t]
+        and set(t : Time) (value : 'a) =
+            rep <- t.Representant
+            cache.[t] <- value
+
     member x.TryGetValue(t : Time, [<Out>] value : byref<'a>) =
         cache.TryGetValue(t, &value)
 
@@ -57,7 +61,6 @@ type TimeList<'a>() =
         member x.IsReadOnly = false
         member x.Remove((t,_)) = x.Remove t
         member x.Clear() = x.Clear()
-
 
     interface IEnumerable with
         member x.GetEnumerator() = new TimeListEnumerator<'a>(rep, cache) :> IEnumerator
