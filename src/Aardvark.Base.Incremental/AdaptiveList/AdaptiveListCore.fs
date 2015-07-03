@@ -99,7 +99,7 @@ module TimeMappings =
         member x.Dispose() =
             cache.Clear()
             if root.Prev <> root then
-                Time.deleteRangeOpenClosed root root.Prev
+                Time.deleteAll root
             tree <- AVL.custom (fun (l,_) (r,_) -> compare l r)
 
         member x.GetTime (t : Time) =

@@ -29,6 +29,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PixImageDemo", "Demo\PixIma
 EndProject
 Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "Aardvark.Base.Incremental.Tests", "Tests\Aardvark.Base.Incremental.Tests\Aardvark.Base.Incremental.Tests.fsproj", "{B5958171-888E-46A0-BEC9-00FEBA41147F}"
 EndProject
+Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "Aardvark.Base.FSharp.Tests", "Tests\Aardvark.Base.FSharp.Tests\Aardvark.Base.FSharp.Tests.fsproj", "{1B4BEB6E-96A1-4B86-9AC5-F9F5824382AE}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -79,6 +81,10 @@ Global
 		{B5958171-888E-46A0-BEC9-00FEBA41147F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B5958171-888E-46A0-BEC9-00FEBA41147F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B5958171-888E-46A0-BEC9-00FEBA41147F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1B4BEB6E-96A1-4B86-9AC5-F9F5824382AE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1B4BEB6E-96A1-4B86-9AC5-F9F5824382AE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1B4BEB6E-96A1-4B86-9AC5-F9F5824382AE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1B4BEB6E-96A1-4B86-9AC5-F9F5824382AE}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -88,5 +94,6 @@ Global
 		{90054DAF-8E70-467A-AF80-3B06EEC527F5} = {A79411F9-60B3-46C8-8981-6905D9B9F74C}
 		{B4F29FFC-FBA2-4222-AD47-B12B962A14B0} = {864A9013-93AC-4073-BB2A-348CE1B00010}
 		{B5958171-888E-46A0-BEC9-00FEBA41147F} = {A79411F9-60B3-46C8-8981-6905D9B9F74C}
+		{1B4BEB6E-96A1-4B86-9AC5-F9F5824382AE} = {A79411F9-60B3-46C8-8981-6905D9B9F74C}
 	EndGlobalSection
 EndGlobal

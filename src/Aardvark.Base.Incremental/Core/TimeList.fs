@@ -23,7 +23,7 @@ type TimeList<'a>() =
         cache.Clear()
 
     member x.Add(t : Time, v : 'a) =
-        rep <- t.rep
+        rep <- t.Representant
         cache.[t] <- v
          
     member x.Item
@@ -66,12 +66,12 @@ type TimeList<'a>() =
         member x.GetEnumerator() = new TimeListEnumerator<'a>(rep, cache) :> IEnumerator<Time * 'a>
 
 and private TimeListEnumerator<'a>(t : Time, cache : Dictionary<Time, 'a>) =
-    let mutable current = t.rep
+    let mutable current = t.Representant
     let mutable currentValue = Unchecked.defaultof<Time * 'a>
 
     let rec moveNext() =
-        if current.next <> current.rep then
-            current <- current.next
+        if current.Next <> current.Representant then
+            current <- current.Next
             match cache.TryGetValue current with
                 | (true, v) ->
                     currentValue <- current, v
@@ -83,7 +83,7 @@ and private TimeListEnumerator<'a>(t : Time, cache : Dictionary<Time, 'a>) =
 
     interface IEnumerator with
         member x.MoveNext() = moveNext()
-        member x.Reset() = current <- current.rep
+        member x.Reset() = current <- current.Representant
         member x.Current = currentValue :> obj
 
     interface IEnumerator<Time * 'a> with

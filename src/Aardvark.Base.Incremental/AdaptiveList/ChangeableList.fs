@@ -131,10 +131,10 @@ type clist<'a>(initial : seq<'a>) =
         clistkey (insertAfter key.Time value)
 
     member x.InsertBefore(key : clistkey, value : 'a) : clistkey =
-        x.InsertAfter(clistkey key.Time.prev, value)
+        x.InsertAfter(clistkey key.Time.Prev, value)
 
     member x.Add(value : 'a) =
-        x.InsertAfter(clistkey rootTime.prev, value)
+        x.InsertAfter(clistkey rootTime.Prev, value)
 
     member x.AddRange(s : seq<'a>) =
         s |> Seq.iter (fun e -> x.Add e |> ignore)
@@ -144,8 +144,7 @@ type clist<'a>(initial : seq<'a>) =
         content.Clear()
         skip.Clear()
 
-        rootTime.next <- rootTime
-        rootTime.prev <- rootTime
+        Time.deleteAll rootTime
         
         for r in readers do 
             if r.IsIncremental then r.Emit deltas
@@ -234,8 +233,7 @@ type corderedset<'a>(initial : seq<'a>) =
     let clear() =
         let deltas = content |> Seq.map Rem |> Seq.toList
         content.Clear()
-        rootTime.next <- rootTime
-        rootTime.prev <- rootTime
+        Time.deleteAll rootTime
         
         for r in listReaders do 
             if r.IsIncremental then r.Emit deltas
@@ -289,7 +287,7 @@ type corderedset<'a>(initial : seq<'a>) =
         else
             match tryGetTime next with
                 | Some t -> 
-                    insertAfter t.prev value |> ignore
+                    insertAfter t.Prev value |> ignore
                     true
                 | None ->
                     failwithf "set does not contain element: %A" next
@@ -301,7 +299,7 @@ type corderedset<'a>(initial : seq<'a>) =
             match tryGetTime value with
                 | Some t -> false
                 | None -> 
-                    insertAfter rootTime.prev value |> ignore
+                    insertAfter rootTime.Prev value |> ignore
                     true
 
     member x.Clear() =
