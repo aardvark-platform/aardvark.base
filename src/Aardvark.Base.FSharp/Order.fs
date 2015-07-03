@@ -168,6 +168,9 @@ module Time =
 
             // store the distance to the next time
             dn <- step
+
+        let back (n : Time) =
+            n.PrevArray.[n.PrevArray.Length - 1]
         
         // insert the new time with distance (dn / 2) after
         // the given one (there has to be enough room now)
@@ -182,10 +185,8 @@ module Time =
         // by going backward in the list
         let mutable current = t
         let mutable distance = 1
-        for i in 0..h-1 do
-            let back (n : Time) =
-                n.PrevArray.[n.PrevArray.Length - 1]
 
+        for i in 0..h-1 do
             let resize (n : Time) (h : int) =
                 assert (n.Representant = n)
                 if h > n.Height then
@@ -211,13 +212,21 @@ module Time =
             res.PrevArray.[i] <- TimeLink(distance, current)
             res.NextArray.[i] <- TimeLink(1 + d - distance, n)
             n.PrevArray.[i] <- TimeLink(1 + d - distance, res)
-        
-        // since the previous
-        for i in h..t.Height-1 do
-            let (TimeLink(d,n)) = t.NextArray.[i]
-            t.NextArray.[i] <- TimeLink(d + 1, n)
-            n.PrevArray.[i] <- TimeLink(d + 1, t)
 
+        // since the predecessor and the new node might be
+        // smaller than the total height we need to increment
+        // the width of all pointers "passing" the new node (above)
+        let mutable current = t
+        for i in h..t.Representant.Height-1 do
+            while i >= current.Height && current <> t.Representant do
+                let (TimeLink(d,l)) = back current
+                current <- l
+
+            let (TimeLink(d,n)) = current.NextArray.[i]
+            current.NextArray.[i] <- TimeLink(d + 1, n)
+            n.PrevArray.[i] <- TimeLink(d + 1, current)
+
+        // finally increment the count and return the node
         t.Representant.Count <- t.Representant.Count + 1
         res
 
