@@ -213,6 +213,40 @@ module TimeMappings =
             member x.GetTime t = x.GetTime t
             member x.TryRemoveTime t = x.TryRemoveTime t
 
+
+    type TimeProducer<'a>(root : Time, cmp : 'a -> 'a -> int) =
+        
+        let tree : SortedDictionaryExt<'a, Time> = SortedDictionary.custom cmp
+
+        member x.Invoke (v : 'a) =
+            tree |> SortedDictionary.setWithNeighbours v (fun l s r ->
+                match s with
+                    | Some t -> failwithf "duplicated entry: %A" v
+                    | None ->
+                        match l,r with
+                            | Some (_,tl),_ ->
+                                Time.after tl
+                            | _,Some (_,tr) ->
+                                Time.before tr
+                            | _ ->
+                                Time.after root
+            )
+   
+        member x.Revoke(v : 'a) =
+            match SortedDictionary.tryFind v tree with
+                | Some t ->
+                    Time.delete t
+                    SortedDictionary.remove v tree |> ignore
+                    t
+                | _ ->
+                    failwith ""
+
+
+
+
+
+
+
 module AListReaders =
 
     let apply (set : TimeList<'a>) (deltas : list<Delta<Time * 'a>>) =
@@ -624,8 +658,9 @@ module AListReaders =
 
         let root = Time.newRoot()
         let content = TimeList<'a>()
+        let tree = TimeMappings.TimeProducer<'a>(root, cmp)
         //let times = SortedDictionary<'a, Time>({ new IComparer<'a> with member x.Compare(a,b) = cmp a b)
-        let tree = AVL.custom (fun (a,_) (b,_) -> cmp a b)
+        //let tree = AVL.custom (fun (a,_) (b,_) -> cmp a b)
 
         member x.Dispose() =
             input.RemoveOutput this
@@ -651,22 +686,11 @@ module AListReaders =
                         deltas |> List.map (fun d ->
                             match d with
                                 | Add v ->
-                                    let before = 
-                                        match AVL.findMaximalWhere (fun (a,_) -> cmp a v < 0) tree with
-                                            | Some (_,t) -> t
-                                            | _ -> root
-
-                                    let t = Time.after before
-                                    AVL.insert tree (v,t) |> ignore
+                                    let t = tree.Invoke v
                                     Add(t, v)
                                 | Rem v -> 
-                                    match AVL.findMaximalWhere (fun (a,_) -> cmp a v <= 0) tree with
-                                        | Some (a,t) when cmp a v = 0 ->
-                                            AVL.remove tree (a,t) |> ignore
-                                            Time.delete t
-                                            Rem (t, v)
-                                        | _ ->
-                                            failwith "removal of unknown value"
+                                    let t = tree.Revoke v
+                                    Rem (t, v)
                         )
 
                     deltas |> apply content

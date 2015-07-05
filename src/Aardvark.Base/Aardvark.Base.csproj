@@ -64,6 +64,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AlgoDat\ExtendedCore\BitHelpers.cs" />
+    <Compile Include="AlgoDat\ExtendedCore\SortedSetExt.cs" />
     <Compile Include="AlgoDat\LruCache.cs" />
     <None Include="Extensions\FuncActionExtensions_template.cs" />
     <Compile Include="Extensions\FuncActionExtensions_auto.cs" />

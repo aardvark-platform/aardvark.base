@@ -78,6 +78,7 @@
     <Compile Include="Interop\Matrix.fs" />
     <Compile Include="Interop\Color.fs" />
     <Compile Include="Interop\String.fs" />
+    <Compile Include="Interop\SortedSet.fs" />
     <None Include="paket.references" />
   </ItemGroup>
   <ItemGroup>
