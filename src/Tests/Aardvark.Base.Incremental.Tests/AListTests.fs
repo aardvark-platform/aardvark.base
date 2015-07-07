@@ -101,7 +101,8 @@ module ``simple list tests`` =
         d |> AList.toList |> should equal []
 
         let k21 = transact (fun () -> l2.Add 1)
-        d |> AList.toList |> should equal [1]
+        let ll = d |> AList.toList
+        ll |> should equal [1]
 
         let k01 = transact (fun () -> l0.Add 1)
         d |> AList.toList |> should equal [1; 1]
@@ -136,8 +137,8 @@ module ``simple list tests`` =
         let validateTimeDensity(r : IListReader<'a>) =
             r.GetDelta() |> ignore
 
-            let mutable t = r.RootTime.Next
-            while t <> r.RootTime do
+            let mutable t = r.RootTime.Root.Next
+            while t <> r.RootTime.Root do
                 match r.Content.TryGetValue t with
                     | (true, v) -> ()
                     | _ -> failwithf "no value associated with time %A" t
@@ -185,7 +186,7 @@ module ``simple list tests`` =
             ()
 
         let deltaRef = ref []
-        let callback (d  : list<Delta<Time * int>>) = deltaRef := !deltaRef @ (d |> List.map (Delta.map snd))
+        let callback (d  : list<Delta<ISortKey * int>>) = deltaRef := !deltaRef @ (d |> List.map (Delta.map snd))
 
         let deltas() =
             let l = !deltaRef

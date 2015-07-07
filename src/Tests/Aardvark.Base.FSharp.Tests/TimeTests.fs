@@ -1,4 +1,5 @@
 ﻿namespace Aardvark.Base.FSharp.Tests
+#nowarn "44"
 
 open System
 open Aardvark.Base

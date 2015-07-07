@@ -18,7 +18,7 @@ type IListReader<'a> =
     /// NOTE that each time is associated with a value except for the 
     ///      root-time itself
     /// </summary>
-    abstract member RootTime : Time
+    abstract member RootTime : IOrder
     
     /// <summary>
     /// The reader's current content. 
@@ -31,7 +31,7 @@ type IListReader<'a> =
     /// Pulls the reader's deltas relative to its current content.
     /// NOTE that GetDelta also "applies" the deltas to the reader's state
     /// </summary>
-    abstract member GetDelta : unit -> Change<Time * 'a>
+    abstract member GetDelta : unit -> Change<ISortKey * 'a>
 
 /// <summary>
 /// alist serves as the base interface for all adaptive lists.
@@ -44,212 +44,10 @@ type alist<'a> =
     /// </summary>
     abstract member GetReader : unit -> IListReader<'a>
 
-/// <summary>
-/// TimeMappings provides utilities for mapping times to times
-/// NOTE that this is necessary for clean disposal of times
-/// </summary>
-module TimeMappings =
-
-    /// <summary>
-    /// ITimeMapping serves as base-interface for time-mappings
-    /// </summary>
-    type ITimeMapping =
-        inherit IDisposable
-
-        /// <summary>
-        /// Gets or creates an associated time for the input-time
-        /// </summary>
-        abstract member GetTime : Time -> Time
-
-        /// <summary>
-        /// Deletes the associated time for the given one
-        /// and returns the associated one (if one existed)
-        /// </summary>
-        abstract member TryRemoveTime : Time -> Option<Time>
-
-    /// <summary>
-    /// SparseTimeMapping is mapping possibly sparse input-times
-    /// to dense output-times. 
-    /// Since operations like choose, filter, etc. may "drop" times 
-    /// the "sparseness" is required in order ensure that all times are
-    /// still associated with a value in the output.
-    /// </summary>
-    type SparseTimeMapping private(root : Time) =
-        let mutable tree : AVL.Tree<Time * ref<Time>> = AVL.custom (fun (l,_) (r,_) -> compare l r)
-        let cache = Dictionary<Time, Time>()
-
-        let getTime (t : Time) =
-            match cache.TryGetValue t with
-                | (true, r) -> r
-                | _ ->
-                    let result = ref (Unchecked.defaultof<Time>)
-                    let value = (t, result)
-
-                    AVL.insertNeighbourhood tree value (fun l r -> 
-                        result :=
-                            match l with
-                                | Some (_,l) -> Time.after !l
-                                | None -> Time.after root
-                    ) |> ignore
-
-                    cache.Add(t, !result)
-
-                    !result
-
-        member x.Dispose() =
-            cache.Clear()
-            if root.Prev <> root then
-                Time.deleteAll root
-            tree <- AVL.custom (fun (l,_) (r,_) -> compare l r)
-
-        member x.GetTime (t : Time) =
-            getTime t
-
-        member x.TryRemoveTime(t : Time) =
-            match cache.TryGetValue t with
-                | (true, r) ->
-                    AVL.removeCmp tree (fun (_,t) -> compare r !t) |> ignore
-                    cache.Remove t |> ignore
-                    Time.delete r
-                    Some r
-                | _ ->
-                    None
-
-        static member Create (root : Time) =
-            new SparseTimeMapping(root)
-
-        interface ITimeMapping with
-            member x.Dispose() = x.Dispose()
-            member x.GetTime t = x.GetTime t
-            member x.TryRemoveTime t = x.TryRemoveTime t
-
-    type NestedTimeMapping private(root : Time) =
-        let cmp (lo : Time, li : Time) (ro : Time, ri : Time) =
-            let o = compare lo ro
-            if o = 0 then
-                compare li ri
-            else
-                o
-
-        let mutable tree : AVL.Tree<(Time * Time) * ref<Time>> = AVL.custom (fun (l,_) (r,_) -> cmp l r)
-
-        let cache = Dictionary<Time * Time, Time>()
-
-        let getTime (outer : Time) (inner : Time) =
-            let t = (outer, inner)
-            match cache.TryGetValue t with
-                | (true, r) -> r
-                | _ ->
-                    let result = ref (Unchecked.defaultof<Time>)
-                    let value = (t, result)
-
-                    AVL.insertNeighbourhood tree value (fun l r -> 
-                        result :=
-                            match l with
-                                | Some (_,l) -> Time.after !l
-                                | None -> Time.after root
-                    ) |> ignore
-
-                    cache.Add(t, !result)
-
-                    !result
-
-        member x.Dispose() =
-            cache.Clear()
-            tree <- AVL.custom (fun (l,_) (r,_) -> cmp l r)
-
-        member x.GetTime (outer : Time) (inner : Time) =
-            getTime outer inner
-
-        member x.TryGetTime (outer : Time) (inner : Time) =
-            match cache.TryGetValue( (outer, inner) ) with
-                | (true,t) -> Some t
-                | _ -> None
-
-        member x.TryRemoveTime (outer : Time) (inner : Time) =
-            let t = (outer, inner)
-            match cache.TryGetValue t with
-                | (true, r) ->
-                    AVL.removeCmp tree (fun (_,t) -> compare r !t) |> ignore
-                    cache.Remove t |> ignore
-                    Time.delete r
-                    Some r
-                | _ ->
-                    None
-
-        member x.RemoveAllTimes (outer : Time) =
-            let allTimes = cache |> Seq.filter (fun (KeyValue((o,i),v)) -> o = outer) |> Seq.toList
-
-            if not <| List.isEmpty allTimes then
-                for (KeyValue(t, r)) in allTimes do
-                    cache.Remove t |> ignore
-                    AVL.removeCmp tree (fun (_,t) -> compare r !t) |> ignore
-                    cache.Remove t |> ignore
-                    Time.delete r
-
-        member x.GetPartial (outer : Time) =
-            NestedTimeMappingPartial.Create(x, outer)
-
-        static member Create (root : Time) =
-            NestedTimeMapping(root)  
-
-    and NestedTimeMappingPartial private (mapping : NestedTimeMapping, outer : Time) =
-        member x.Dispose() = mapping.RemoveAllTimes outer
-
-        member x.GetTime (t : Time) =
-            mapping.GetTime outer t
-
-        member x.TryGetTime (t : Time) =
-            mapping.TryGetTime outer t
-
-        member x.TryRemoveTime(t : Time) =
-            mapping.TryRemoveTime outer t
-
-        static member Create (mapping : NestedTimeMapping, outer : Time) =
-            new NestedTimeMappingPartial(mapping, outer)  
-             
-        interface ITimeMapping with
-            member x.Dispose() = x.Dispose()
-            member x.GetTime t = x.GetTime t
-            member x.TryRemoveTime t = x.TryRemoveTime t
-
-
-    type TimeProducer<'a>(root : Time, cmp : 'a -> 'a -> int) =
-        
-        let tree : SortedDictionaryExt<'a, Time> = SortedDictionary.custom cmp
-
-        member x.Invoke (v : 'a) =
-            tree |> SortedDictionary.setWithNeighbours v (fun l s r ->
-                match s with
-                    | Some t -> failwithf "duplicated entry: %A" v
-                    | None ->
-                        match l,r with
-                            | Some (_,tl),_ ->
-                                Time.after tl
-                            | _,Some (_,tr) ->
-                                Time.before tr
-                            | _ ->
-                                Time.after root
-            )
-   
-        member x.Revoke(v : 'a) =
-            match SortedDictionary.tryFind v tree with
-                | Some t ->
-                    Time.delete t
-                    SortedDictionary.remove v tree |> ignore
-                    t
-                | _ ->
-                    failwith ""
-
-
-
-
-
-
 
 module AListReaders =
 
-    let apply (set : TimeList<'a>) (deltas : list<Delta<Time * 'a>>) =
+    let apply (set : TimeList<'a>) (deltas : list<Delta<ISortKey * 'a>>) =
         deltas 
             |> Delta.clean 
             |> List.map (fun d ->
@@ -262,10 +60,10 @@ module AListReaders =
 
     type DirtyListReaderSet<'a>() =
         let subscriptions = Dictionary<IListReader<'a>, unit -> unit>()
-        let dirty = HashSet<Time * IListReader<'a>>()
-        let occurances = Dictionary<IListReader<'a>, HashSet<Time>>()
+        let dirty = HashSet<ISortKey * IListReader<'a>>()
+        let occurances = Dictionary<IListReader<'a>, HashSet<ISortKey>>()
 
-        let addOccurance (r : IListReader<'a>) (t : Time) =
+        let addOccurance (r : IListReader<'a>) (t : ISortKey) =
             match occurances.TryGetValue r with
                 | (true, times) ->
                     times.Add t |> ignore
@@ -275,7 +73,7 @@ module AListReaders =
                     occurances.[r] <- times
                     true
 
-        let removeOccurance (r : IListReader<'a>) (t : Time) =
+        let removeOccurance (r : IListReader<'a>) (t : ISortKey) =
             match occurances.TryGetValue r with
                 | (true, times) ->
                     if times.Remove t then
@@ -291,10 +89,10 @@ module AListReaders =
 
         let allOccurances (r : IListReader<'a>) =
             match occurances.TryGetValue r with
-                | (true, times) -> times :> seq<Time>
+                | (true, times) -> times :> seq<ISortKey>
                 | _ -> Seq.empty
 
-        let start (r : IListReader<'a>) (t : Time) =
+        let start (r : IListReader<'a>) (t : ISortKey) =
             if addOccurance r t then
                 // create and register a callback function
                 let onMarking () =
@@ -315,7 +113,7 @@ module AListReaders =
             else
                 false
 
-        let stop (r : IListReader<'a>) (t : Time) =
+        let stop (r : IListReader<'a>) (t : ISortKey) =
             if removeOccurance r t then
                 // if there exists a subscription we remove and dispose it
                 match subscriptions.TryGetValue r with
@@ -330,9 +128,9 @@ module AListReaders =
             else
                 false
 
-        member x.Listen(t : Time, r : IListReader<'a>) = start r t
+        member x.Listen(t : ISortKey, r : IListReader<'a>) = start r t
             
-        member x.Destroy(t : Time, r : IListReader<'a>) = stop r t
+        member x.Destroy(t : ISortKey, r : IListReader<'a>) = stop r t
 
         member x.GetDeltas() =
             [ for (t,d) in dirty do
@@ -402,16 +200,14 @@ module AListReaders =
         let dirtyInner = new DirtyListReaderSet<'b>()
         let f = Cache<'a, IListReader<'b>>(scope, f)
 
-        let mutable rootTime = Time.newRoot()
-        let mapping = TimeMappings.NestedTimeMapping.Create(rootTime)
+        let mutable mapping = NestedOrderMapping()
+        let mutable rootTime = mapping.Root
 
-        let outputTime (outer : Time) (inner : Time) =
-            mapping.GetTime outer inner
-
-        let removeOutputTime (outer : Time) (inner : Time) =
-            match mapping.TryRemoveTime outer inner with
-                | Some t -> t
-                | None -> failwith "unknown time"
+//        let outputTime (outer : ISortKey) (inner : ISortKey) =
+//            mapping.Invoke(outer, inner)
+//
+//        let removeOutputTime (outer : ISortKey) (inner : ISortKey) =
+//            mapping.Revoke(outer, inner)
 
         member x.Dispose() =
             input.RemoveOutput x
@@ -419,8 +215,8 @@ module AListReaders =
             f.Clear(fun r -> r.RemoveOutput x; r.Dispose())
             content.Clear()
             dirtyInner.Dispose()
-            mapping.Dispose()
-            rootTime <- Unchecked.defaultof<Time>
+            mapping.Clear()
+            rootTime <- Unchecked.defaultof<ISortKey>
 
         override x.Finalize() =
             try x.Dispose() 
@@ -430,7 +226,7 @@ module AListReaders =
             member x.Dispose() = x.Dispose()
 
         interface IListReader<'b> with
-            member x.RootTime = rootTime
+            member x.RootTime = mapping.Order
             member x.Content = content
             member x.GetDelta() =
                 x.EvaluateIfNeeded [] (fun () ->
@@ -452,7 +248,7 @@ module AListReaders =
 
                                     // since the entire reader is new we add its content
                                     // which must be up-to-date here (due to calling GetDelta above)
-                                    let additions = r.Content |> Seq.map (fun (i,v) -> Add(outputTime t i, v)) |> Seq.toList
+                                    let additions = r.Content |> Seq.map (fun (i,v) -> Add(mapping.Invoke(t, i), v)) |> Seq.toList
                                     additions
 
                                 | Rem (t,v) ->
@@ -468,10 +264,10 @@ module AListReaders =
                                     // Note that the content here might be OutOfDate
                                     // TODO: think about implications here when we do not "own" the reader
                                     //       exclusively
-                                    let removals = r.Content |> Seq.map (fun (i,v) -> Rem(outputTime t i, v))  |> Seq.toList
+                                    let removals = r.Content |> Seq.map (fun (i,v) -> Rem(mapping.Revoke(t, i), v))  |> Seq.toList
 
                                     // remove all times created for this specific occurance of r
-                                    mapping.RemoveAllTimes t
+                                    mapping.RevokeAll t |> ignore
                                     removals
                         )
 
@@ -481,8 +277,8 @@ module AListReaders =
                     let innerDeltas = 
                         dirtyInner.GetDeltas() |> List.map (fun d ->
                             match d with
-                                | Add (o,i,v) -> Add(outputTime o i, v)
-                                | Rem (o,i,v) -> Rem(removeOutputTime o i, v)
+                                | Add (o,i,v) -> Add(mapping.Invoke(o, i), v)
+                                | Rem (o,i,v) -> Rem(mapping.Revoke(o, i), v)
                                 
                         )
 
@@ -497,8 +293,9 @@ module AListReaders =
 
         do input.AddOutput this
 
-        let root = Time.newRoot()
-        let mapping = TimeMappings.SparseTimeMapping.Create root
+        
+        let mapping = OrderMapping()
+        let root = mapping.Root
         let content = TimeList<'b>()
         let f = Cache<'a, Option<'b>>(scope, f)
 
@@ -506,8 +303,7 @@ module AListReaders =
             input.RemoveOutput this
             input.Dispose()
             content.Clear()
-            Time.delete root
-            mapping.Dispose()
+            mapping.Clear()
             f.Clear(ignore)
 
         override x.Finalize() =
@@ -518,7 +314,7 @@ module AListReaders =
             member x.Dispose() = x.Dispose()
 
         interface IListReader<'b> with
-            member x.RootTime = root
+            member x.RootTime = mapping.Order
             member x.Content = content
             member x.GetDelta() =
                 x.EvaluateIfNeeded [] (fun () ->
@@ -530,15 +326,14 @@ module AListReaders =
                                 | Add(t, v) -> 
                                     match f.Invoke v with
                                         | Some v -> 
-                                            let t' = mapping.GetTime t
+                                            let t' = mapping.Invoke t
                                             Add (t', v) |> Some
                                         | None -> None
                                 | Rem(t, v) -> 
                                     match f.Revoke v with
                                         | Some v -> 
-                                            match mapping.TryRemoveTime t with
-                                                | Some t' ->  Rem (t', v) |> Some
-                                                | None -> failwith "removal of unknown time"
+                                            let t' = mapping.Revoke t
+                                            Rem (t', v) |> Some
                                         | None -> None
                         )
 
@@ -548,21 +343,20 @@ module AListReaders =
     type ModReader<'a>(source : IMod<'a>) as this =  
         inherit AdaptiveObject()
         do source.AddOutput this
-        let mutable old : Option<Time * 'a> = None
+        let mutable old : Option<SimpleOrder.SortKey * 'a> = None
         let content = TimeList()
-        let mutable rootTime = Time.newRoot()
+        let mutable order = SimpleOrder.create()
         let hasChanged = ChangeTracker.track<'a>
 
         member x.Dispose() =
             source.RemoveOutput x
             match old with
                 | Some (t,_) ->
-                    Time.delete t
+                    order.Delete t
                     old <- None
                 | None -> ()
             content.Clear()
-            Time.delete rootTime
-            rootTime <- Unchecked.defaultof<Time>
+
 
         override x.Finalize() =
             try x.Dispose() 
@@ -572,7 +366,7 @@ module AListReaders =
             member x.Dispose() = x.Dispose()
 
         interface IListReader<'a> with
-            member x.RootTime = rootTime
+            member x.RootTime = order :> IOrder
             member x.Content = content
             member x.GetDelta() =
                 x.EvaluateIfNeeded [] (fun () ->
@@ -581,24 +375,24 @@ module AListReaders =
                         if hasChanged v then
                             match old with
                                 | None ->
-                                    let t = Time.after rootTime
+                                    let t = order.After order.Root //Time.after rootTime
                                     old <- Some (t,v)
-                                    [Add (t,v)]
+                                    [Add (t :> ISortKey,v)]
                                 | Some (t,c) ->
-                                    let tNew = Time.after rootTime
-                                    Time.delete t
+                                    let tNew = order.After order.Root
+                                    order.Delete t
                                     old <- Some (tNew, v)
-                                    [Rem (t, c); Add (tNew, v)]
+                                    [Rem (t :> ISortKey, c); Add (tNew :> ISortKey, v)]
                         else
                             []
 
                     resultDeltas |> apply content
                 )
 
-    type BufferedReader<'a>(rootTime : Time, update : unit -> unit, dispose : BufferedReader<'a> -> unit) =
+    type BufferedReader<'a>(rootTime : IOrder, update : unit -> unit, dispose : BufferedReader<'a> -> unit) =
         inherit AdaptiveObject()
         let deltas = List()
-        let mutable reset : Option<ICollection<Time * 'a>> = None
+        let mutable reset : Option<ICollection<ISortKey * 'a>> = None
 
         let content = TimeList<'a>()
 
@@ -619,12 +413,12 @@ module AListReaders =
         member x.IsIncremental = 
             true
 
-        member x.Reset(c : ICollection<Time * 'a>) =
+        member x.Reset(c : ICollection<ISortKey * 'a>) =
             reset <- Some c
             deltas.Clear()
             x.MarkOutdated()
 
-        member x.Emit (d : list<Delta<Time * 'a>>) =
+        member x.Emit (d : list<Delta<ISortKey * 'a>>) =
             deltas.AddRange d
             x.MarkOutdated()
 
@@ -652,21 +446,19 @@ module AListReaders =
 
             member x.Content = content
 
-    type SortWithReader<'a>(input : IReader<'a>, cmp : 'a -> 'a -> int) as this =
+    type SortWithReader<'a when 'a : equality>(input : IReader<'a>, cmp : 'a -> 'a -> int) as this =
         inherit AdaptiveObject()
         do input.AddOutput this
 
-        let root = Time.newRoot()
         let content = TimeList<'a>()
-        let tree = TimeMappings.TimeProducer<'a>(root, cmp)
-        //let times = SortedDictionary<'a, Time>({ new IComparer<'a> with member x.Compare(a,b) = cmp a b)
-        //let tree = AVL.custom (fun (a,_) (b,_) -> cmp a b)
+        let tree = OrderMaintenance<'a>(cmp)
+        let root = tree.Root
 
         member x.Dispose() =
             input.RemoveOutput this
             input.Dispose()
             content.Clear()
-            Time.delete root
+            
 
         override x.Finalize() =
             try x.Dispose() 
@@ -676,7 +468,7 @@ module AListReaders =
             member x.Dispose() = x.Dispose()
 
         interface IListReader<'a> with
-            member x.RootTime = root
+            member x.RootTime = tree.Order
             member x.Content = content
             member x.GetDelta() =
                 x.EvaluateIfNeeded [] (fun () ->

@@ -8,37 +8,37 @@ open Aardvark.Base
 open Aardvark.Base.Incremental.AListReaders
 
 [<CompiledName("ChangeableListKey"); AllowNullLiteral>]
-type clistkey internal (t : Time) =
+type clistkey internal (t : SkipOrder.SortKey) =
     member internal x.Time = t
 
 [<CompiledName("ChangeableList")>]
 type clist<'a>(initial : seq<'a>) =
     let content = TimeList<'a>()
-    let rootTime = Time.newRoot()
+    let order = SkipOrder.create()
     let readers = WeakSet<BufferedReader<'a>>()
 
-    let insertAfter (t : Time) (value : 'a) =
-        let newTime = Time.after t
+    let insertAfter (t : SkipOrder.SortKey) (value : 'a) =
+        let newTime = order.After t
         content.Add(newTime, value)
 
         for r in readers do 
-            if r.IsIncremental then r.Emit [Add (newTime, value)]
+            if r.IsIncremental then r.Emit [Add (newTime :> ISortKey, value)]
             else r.Reset content
 
         newTime
 
     let tryAt (index : int) =
         if index < 0 || index >= content.Count then None
-        else rootTime.TryAt (index + 1)
+        else order.TryAt (index + 1)
 
     do  
-        let mutable current = rootTime
+        let mutable current = order.Root
         for e in initial do
             current <- insertAfter current e
 
     interface alist<'a> with
         member x.GetReader() =
-            let r = new BufferedReader<'a>(rootTime, fun r -> readers.Remove r |> ignore)
+            let r = new BufferedReader<'a>(order, fun r -> readers.Remove r |> ignore)
             r.Emit (content |> Seq.map Add |> Seq.toList)
             readers.Add r |> ignore
             r :> _
@@ -58,14 +58,14 @@ type clist<'a>(initial : seq<'a>) =
         and set (k : clistkey) (value : 'a) =
             let tOld = k.Time
             let vOld = content.[tOld]
-            let tNew = Time.after tOld
+            let tNew = order.After tOld
 
             content.Remove tOld |> ignore
             content.Add(tNew, value)
-            Time.delete tOld
+            order.Delete tOld
 
             for r in readers do 
-                if r.IsIncremental then r.Emit [Rem (tOld, vOld); Add (tNew, value)]
+                if r.IsIncremental then r.Emit [Rem (tOld :> ISortKey, vOld); Add (tNew :> ISortKey, value)]
                 else r.Reset content
 
     member x.Item
@@ -121,9 +121,9 @@ type clist<'a>(initial : seq<'a>) =
         let c = content.[key.Time]
         content.Remove key.Time |> ignore
 
-        Time.delete key.Time
+        order.Delete key.Time
         for r in readers do 
-            if r.IsIncremental then r.Emit [Rem (key.Time, c)]
+            if r.IsIncremental then r.Emit [Rem (key.Time :> ISortKey, c)]
             else r.Reset content
 
     member x.InsertAfter(key : clistkey, value : 'a) : clistkey =
@@ -133,7 +133,7 @@ type clist<'a>(initial : seq<'a>) =
         x.InsertAfter(clistkey key.Time.Prev, value)
 
     member x.Add(value : 'a) =
-        x.InsertAfter(clistkey rootTime.Prev, value)
+        x.InsertAfter(clistkey order.Root.Prev, value)
 
     member x.AddRange(s : seq<'a>) =
         s |> Seq.iter (fun e -> x.Add e |> ignore)
@@ -141,8 +141,7 @@ type clist<'a>(initial : seq<'a>) =
     member x.Clear() =
         let deltas = content |> Seq.map Rem |> Seq.toList
         content.Clear()
-
-        Time.deleteAll rootTime
+        order.Clear()
         
         for r in readers do 
             if r.IsIncremental then r.Emit deltas
@@ -151,7 +150,7 @@ type clist<'a>(initial : seq<'a>) =
     member x.Find(item : 'a) =
         let t = content |> Seq.tryPick (fun (t,v) -> if Object.Equals(v,item) then Some t else None)
         match t with
-            | Some t -> clistkey t
+            | Some t -> clistkey (unbox t)
             | None -> null
 
     interface System.Collections.IEnumerable with
@@ -167,11 +166,11 @@ type clist<'a>(initial : seq<'a>) =
 [<CompiledName("ChangeableOrderedSet")>]
 type corderedset<'a>(initial : seq<'a>) =
     let content = TimeList<'a>()
-    let rootTime = Time.newRoot()
+    let order = SimpleOrder.create()
     let listReaders = WeakSet<BufferedReader<'a>>()
     let setReaders = WeakSet<ASetReaders.BufferedReader<'a>>()
     let set = HashSet<'a>()
-    let times = Dict<'a, Time>()
+    let times = Dict<'a, SimpleOrder.SortKey>()
 
     let tryGetTime (value : 'a) =
         match times.TryGetValue value with
@@ -188,19 +187,19 @@ type corderedset<'a>(initial : seq<'a>) =
                 Some t
             | _ -> None
 
-    let setTime (value : 'a) (t : Time) =
+    let setTime (value : 'a) (t : SimpleOrder.SortKey) =
         match times.TryGetValue value with
             | (true, t) -> failwith "duplicate time"
             | _ -> times.[value] <- t
 
 
-    let insertAfter (t : Time) (value : 'a) =
-        let newTime = Time.after t
+    let insertAfter (t : SimpleOrder.SortKey) (value : 'a) =
+        let newTime = order.After t
         content.Add(newTime, value)
         set.Add value |> ignore
 
         for r in listReaders do 
-            if r.IsIncremental then r.Emit [Add (newTime, value)]
+            if r.IsIncremental then r.Emit [Add (newTime :> ISortKey, value)]
             else r.Reset content
 
         for r in setReaders do 
@@ -215,9 +214,9 @@ type corderedset<'a>(initial : seq<'a>) =
                 content.Remove t |> ignore
                 set.Remove value |> ignore
 
-                Time.delete t
+                order.Delete t
                 for r in listReaders do 
-                    if r.IsIncremental then r.Emit [Rem (t, value)]
+                    if r.IsIncremental then r.Emit [Rem (t :> ISortKey, value)]
                     else r.Reset content
 
                 for r in setReaders do 
@@ -231,7 +230,7 @@ type corderedset<'a>(initial : seq<'a>) =
     let clear() =
         let deltas = content |> Seq.map Rem |> Seq.toList
         content.Clear()
-        Time.deleteAll rootTime
+        order.Clear()
         
         for r in listReaders do 
             if r.IsIncremental then r.Emit deltas
@@ -242,13 +241,13 @@ type corderedset<'a>(initial : seq<'a>) =
             r.Emit(set, None)
 
     do  
-        let mutable current = rootTime
+        let mutable current = order.Root
         for e in initial do
             current <- insertAfter current e
 
     interface alist<'a> with
         member x.GetReader() =
-            let r = new BufferedReader<'a>(rootTime, fun r -> listReaders.Remove r |> ignore)
+            let r = new BufferedReader<'a>(order, fun r -> listReaders.Remove r |> ignore)
             r.Emit (content |> Seq.map Add |> Seq.toList)
             listReaders.Add r |> ignore
             r :> _
@@ -297,7 +296,7 @@ type corderedset<'a>(initial : seq<'a>) =
             match tryGetTime value with
                 | Some t -> false
                 | None -> 
-                    insertAfter rootTime.Prev value |> ignore
+                    insertAfter order.Root.Prev value |> ignore
                     true
 
     member x.Clear() =

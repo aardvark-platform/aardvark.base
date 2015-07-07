@@ -8,6 +8,11 @@ module Prelude =
     let inc (a:byref<int>) = a <- a + 1
     let dec (a:byref<int>) = a <- a - 1
     
+    let inline isNull (a : 'a) =
+        match a with
+            | null -> true
+            | _ -> false
+
     module Map =
         let union (l : Map<'k, 'v>) (r : Map<'k, 'v>) =
             let mutable result = l

@@ -11,12 +11,14 @@ open Aardvark.Base
 namespace Aardvark.Base
 #endif
 
+#nowarn "44"
 
 open System
 
 /// Time represents a order-maintenance structure
 /// providing operations "after" and "delete"
 /// maintaining O(1) comparisons between times
+[<Obsolete>]
 [<AllowNullLiteral>]
 type Time =
     class
@@ -90,6 +92,7 @@ type Time =
 
     end
 
+
 and TimeLink =
     struct
         val mutable public Width : int
@@ -98,7 +101,7 @@ and TimeLink =
         new(w,t) = { Width = w; Target = t }
     end
 
-
+[<Obsolete>]
 [<CompilationRepresentation(CompilationRepresentationFlags.ModuleSuffix)>]
 module Time =
     let private random = Random()

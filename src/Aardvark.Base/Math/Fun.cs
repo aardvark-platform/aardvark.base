@@ -737,7 +737,7 @@ namespace Aardvark.Base
         {
             fixed (double* ptr = &v)
             {
-                ulong* a = (ulong*)ptr;
+                var a = (ulong*)ptr;
                 var shift = 1022;
 
                 if ((*a & DoubleMantissaMask) == 0)
@@ -751,7 +751,7 @@ namespace Aardvark.Base
         {
             fixed (float* ptr = &v)
             {
-                uint* a = (uint*)ptr;
+                var a = (uint*)ptr;
                 var shift = 126;
 
                 if ((*a & FloatMantissaMask) == 0)
@@ -766,8 +766,7 @@ namespace Aardvark.Base
         /// </summary>
         public static unsafe int Log2Int(this double v)
         {
-            var dummy = v;
-            return Log2IntRef(ref dummy);
+            return Log2IntRef(ref v);
         }
 
         /// <summary>
@@ -775,8 +774,7 @@ namespace Aardvark.Base
         /// </summary>
         private static unsafe int Log2Int(this float v)
         {
-            var dummy = v;
-            return Log2IntRef(ref dummy);
+            return Log2IntRef(ref v);
         }
 
         #endregion

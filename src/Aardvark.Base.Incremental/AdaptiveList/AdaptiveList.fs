@@ -52,7 +52,7 @@ module AList =
 
                 reader :> _
 
-    type ConstantList<'a>(rootTime : Time, content : seq<Time * 'a>) =
+    type ConstantList<'a>(rootTime : IOrder, content : seq<ISortKey * 'a>) =
         let content = List.ofSeq content
         interface alist<'a> with
             member x.GetReader () =
@@ -60,7 +60,7 @@ module AList =
                 r.Emit(content |> List.map Add)
                 r :> IListReader<_>
 
-    let private emptyTime = Time.newRoot()
+    let private emptyTime = SimpleOrder.create()
     type private EmptyListImpl<'a> private() =
         static let emptySet = ConstantList(emptyTime, []) :> alist<'a>
         static member Instance = emptySet
@@ -91,18 +91,18 @@ module AList =
         EmptyListImpl<'a>.Instance
 
     let single (v : 'a) =
-        let r = Time.newRoot()
-        ConstantList(r, [Time.after r, v]) :> alist<_>
+        let r = SimpleOrder.create()
+        ConstantList(r, [r.After r.Root :> ISortKey, v]) :> alist<_>
 
     let ofSeq (s : seq<'a>) =
-        let r = Time.newRoot()
-        let current = ref r
+        let r = SimpleOrder.create()
+        let current = ref r.Root
         let elements =
             s |> Seq.toList
               |> List.map (fun e ->
-                    let t = Time.after !current
+                    let t = r.After !current
                     current := t
-                    t,e
+                    t :> ISortKey,e
                  )
 
         ConstantList(r, elements) :> alist<_>
@@ -116,7 +116,7 @@ module AList =
     let toSeq (set : alist<'a>) =
         use r = set.GetReader()
         r.GetDelta() |> ignore
-        r.Content.Values
+        r.Content.Values |> Seq.toArray :> seq<_>
 
     let toList (set : alist<'a>) =
         set |> toSeq |> Seq.toList
@@ -196,7 +196,7 @@ module AList =
     /// Note that the callback will be executed immediately
     /// once here.
     /// </summary>
-    let registerCallback (f : list<Delta<Time * 'a>> -> unit) (list : alist<'a>) =
+    let registerCallback (f : list<Delta<ISortKey * 'a>> -> unit) (list : alist<'a>) =
         let m = list.GetReader()
         let f = scoped f
         let self = ref id
