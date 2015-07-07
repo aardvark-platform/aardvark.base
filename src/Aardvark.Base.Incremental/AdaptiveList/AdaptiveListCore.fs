@@ -203,12 +203,6 @@ module AListReaders =
         let mutable mapping = NestedOrderMapping()
         let mutable rootTime = mapping.Root
 
-//        let outputTime (outer : ISortKey) (inner : ISortKey) =
-//            mapping.Invoke(outer, inner)
-//
-//        let removeOutputTime (outer : ISortKey) (inner : ISortKey) =
-//            mapping.Revoke(outer, inner)
-
         member x.Dispose() =
             input.RemoveOutput x
             input.Dispose()

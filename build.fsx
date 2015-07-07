@@ -89,6 +89,29 @@ Target "RunTests" (fun () ->
     NUnit (fun p -> { p with Framework = "net-4.5"; WorkingDir = Path.GetFullPath "bin\\Release" }) ["Aardvark.Base.Incremental.Tests.dll"]
 )
 
+Target "GenerateDocs" (fun _ ->
+    let source = "./help"
+    let template = "./help/literate/templates/template-project.html"
+    let templatesDir = "./help/templates/reference/" 
+    let projInfo =
+      [ "page-description", "Aardvark.Base"
+        "page-author", "VRVis"
+        "project-author", "VRVis"
+        "github-link", "http://github.com/vrvis"
+        "project-github", "http://github.com/vrvis"
+        "project-nuget", "https://www.nuget.org/packages/FAKE"
+        "root", "http://fsharp.github.io/FAKE"
+        "project-name", "Aardvark.Base" ]
+
+
+    FSharpFormatting.CreateDocs source "docs" template projInfo
+
+    WriteStringToFile false "./docs/.nojekyll" ""
+
+    CopyDir ("docs" @@ "content") "help/content" allFiles
+    CopyDir ("docs" @@ "pics") "help/pics" allFiles
+)
+
 Target "Default" (fun () -> ())
 
 "Restore" ==> "Compile"
