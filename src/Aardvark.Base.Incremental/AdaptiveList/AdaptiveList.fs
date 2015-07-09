@@ -140,6 +140,10 @@ module AList =
         let scope = Ag.getContext()
         AdaptiveList(fun () -> set.GetReader() |> map scope f) :> alist<'b>
 
+    let mapKey (f : ISortKey -> 'a -> 'b) (set : alist<'a>) = 
+        let scope = Ag.getContext()
+        AdaptiveList(fun () -> set.GetReader() |> mapKey scope f) :> alist<'b>
+
     let collect (f : 'a -> alist<'b>) (set : alist<'a>) = 
         let scope = Ag.getContext()
         AdaptiveList(fun () -> set.GetReader() |> collect scope (fun v -> (f v).GetReader())) :> alist<'b>

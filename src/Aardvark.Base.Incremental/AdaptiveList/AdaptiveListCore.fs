@@ -192,6 +192,45 @@ module AListReaders =
                     deltas |> apply content
                 )
 
+    type MapKeyReader<'a, 'b>(scope, f : ISortKey -> 'a -> 'b, input : IListReader<'a>) as this =
+        inherit AdaptiveObject()
+        do input.AddOutput this
+        
+        let content = TimeList<'b>()
+        let f = Cache<ISortKey * 'a, 'b>(scope, fun (k,v) -> f k v)
+
+        member x.Dispose() =
+            input.RemoveOutput this
+            input.Dispose()
+            content.Clear()
+            f.Clear(ignore)
+
+        override x.Finalize() =
+            try x.Dispose() 
+            with _ -> ()
+
+        interface IDisposable with
+            member x.Dispose() = x.Dispose()
+
+        interface IListReader<'b> with
+            member x.RootTime = input.RootTime
+            member x.Content = content
+            member x.GetDelta() =
+                x.EvaluateIfNeeded [] (fun () ->
+                    let deltas = input.GetDelta()
+
+                    let deltas = 
+                        deltas |> List.map (fun d ->
+                            match d with
+                                | Add(t, v) -> Add (t, f.Invoke (t,v))
+                                | Rem(t, v) -> Rem (t, f.Revoke (t,v))
+                        )
+
+                    deltas |> apply content
+                )
+
+
+
     type CollectReader<'a, 'b>(scope, input : IListReader<'a>, f : 'a -> IListReader<'b>) as this =
         inherit AdaptiveObject()
         do input.AddOutput this
@@ -484,6 +523,10 @@ module AListReaders =
 
     let map (scope) (f : 'a -> 'b) (input : IListReader<'a>) =
         new MapReader<_, _>(scope, f, input) :> IListReader<_>
+
+    let mapKey (scope) (f : ISortKey -> 'a -> 'b) (input : IListReader<'a>) =
+        new MapKeyReader<_, _>(scope, f, input) :> IListReader<_>
+
 
     let bind scope (f : 'a -> IListReader<'b>) (input : IMod<'a>) =
         new CollectReader<_,_>(scope, new ModReader<_>(input), f) :> IListReader<_>
