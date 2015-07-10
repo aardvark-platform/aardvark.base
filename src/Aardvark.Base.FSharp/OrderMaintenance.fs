@@ -833,6 +833,11 @@ type OrderMaintenance<'a when 'a : equality>(comparer : IComparer<'a>) =
         nodes.[t] <- res
         res :> ISortKey
 
+    member x.TryGet(t : 'a) =
+        match nodes.TryGetValue t with
+            | (true,v) -> Some v
+            | _ -> None
+
     member x.Revoke(t : 'a) =
         match nodes.TryGetValue t with
             | (true, d) ->

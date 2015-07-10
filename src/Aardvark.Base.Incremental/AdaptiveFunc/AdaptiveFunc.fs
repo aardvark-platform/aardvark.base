@@ -21,7 +21,7 @@ module AFun =
 
         new(f) = AdaptiveFun (Mod.constant f)
 
-    type ConstantFun<'a, 'b>(value : IMod<'b>) as this =
+    type ConstantFun<'a, 'b>(value : IMod<'b>) =
         inherit AdaptiveObject()
 
         member x.Evaluate (v : 'a) = Mod.force value
