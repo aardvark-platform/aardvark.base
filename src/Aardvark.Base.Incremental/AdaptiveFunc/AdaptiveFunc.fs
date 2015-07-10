@@ -13,6 +13,7 @@ module AFun =
 
         member x.Evaluate v = 
             base.EvaluateAlways (fun () ->
+                this.OutOfDate <- true
                 Mod.force f v
             )
 
@@ -90,6 +91,23 @@ module AFun =
 
     let runChain l initial =
         l |> chain |> run initial
+
+    let integrate (f : afun<'a, 'a>) (initial : 'a) =
+        let input = Mod.init initial
+        let inputChanged = ChangeTracker.track<'a>
+        initial |> inputChanged |> ignore
+
+        [f :> IAdaptiveObject; input :> IAdaptiveObject] 
+            |> Mod.mapCustom (fun () -> 
+                AdaptiveObject.Time.Outputs.Remove input |> ignore
+                let v = Mod.force input
+                let res = f.Evaluate v
+                if inputChanged res then
+                    input.UnsafeCache <- res
+                    AdaptiveObject.Time.Outputs.Add input
+
+                res
+               )
 
 [<AutoOpen>]
 module ``AFun Builder`` =
@@ -201,6 +219,11 @@ module AState =
         let run = AFun.ofMod(m |> Mod.map (fun v s -> (s,v)))
         { runState = run }
 
+    let ofAFun (m : afun<'a, 'b>) : astate<'s, 'a -> 'b> =
+        let run = AFun.create (fun s -> (s,m.Evaluate))
+        m.AddOutput run
+        { runState = run }
+
     let getState<'s> = { runState = AFun.create (fun s -> (s,s)) }
     let putState (s : 's) = { runState = AFun.create (fun _ -> (s,())) }
     let modifyState (f : 's -> 's) = { runState = AFun.create (fun s -> (f s,())) }
@@ -230,21 +253,14 @@ type Controller<'a> = astate<ControllerState, 'a>
 module ``Controller Builder`` =
     open AState
 
+    module Mod =
+        let time = [AdaptiveObject.Time] |> Mod.mapCustom (fun () -> System.DateTime.Now)
 
     let preWith (f : 'a -> 'a -> 'b) (m : IMod<'a>) =
         if m.IsConstant then
             let v = m.GetValue()
             AState.create (f v v)
         else
-//            astate {
-//                let! v = m
-//                let! s = modifyState' (fun s -> { s with pulled = Map.add m.Id (v :> obj) s.pulled })
-//                let last =
-//                    match Map.tryFind m.Id s.prev with
-//                        | Some (:? 'a as v) -> v
-//                        | _ -> v
-//                return f last v
-//            }
             m |> AState.bindMod (fun v ->
                 modifyState' (fun s -> { s with pulled = Map.add m.Id (v :> obj) s.pulled })
                     |> AState.map (fun s ->
@@ -260,12 +276,12 @@ module ``Controller Builder`` =
 
     let inline pre (m : IMod<'a>) = preWith (fun a _ -> a) m
 
-    let inline differentiate (m : IMod<'a>) = preWith (-) m
+    let inline differentiate (m : IMod<'a>) = preWith (fun o n -> n - o) m
 
 
 
     type ControllerBuilder() =
-        let time = [AdaptiveObject.Time] |> Mod.mapCustom (fun () -> ())
+
         member x.Bind(m : Controller<'a>, f : 'a -> Controller<'b>) : Controller<'b> =
             AState.bind f m
 
@@ -278,6 +294,12 @@ module ``Controller Builder`` =
         member x.ReturnFrom(v : IMod<'a -> 'b>) : Controller<'a -> 'b> =
             AState.ofMod v
 
+        member x.ReturnFrom(v : afun<'a, 'b>) : Controller<'a -> 'b> =
+            AState.ofAFun v
+
+        member x.Zero() : Controller<'a -> 'a> =
+            AState.create id
+
         member x.Run(c : Controller<'a -> 'b>) : afun<'a, 'b> =
             let initial = { prev = Map.empty; pulled = Map.empty }
             let state = Mod.init initial
@@ -287,49 +309,14 @@ module ``Controller Builder`` =
 
             let mf =
                 res |> Mod.map (fun (newState, v) ->
-                    time.GetValue()
+                    AdaptiveObject.Time.Outputs.Remove state |> ignore
 
-                    if stateChanged newState then
-                        time.MarkingCallbacks.Add (fun () ->
-                            Mod.change state { prev = newState.pulled; pulled = Map.empty }
-                        ) |> ignore
+                    if newState.pulled <> newState.prev then
+                        state.UnsafeCache <-  { prev = newState.pulled; pulled = Map.empty }
+                        AdaptiveObject.Time.Outputs.Add state
 
                     v
                 )
             AFun.ofMod mf
 
     let controller = ControllerBuilder()
-
-    open System
-
-
-module TestController =
-
-    let cc (m : IMod<bool>) (p : IMod<int>) =
-        controller {
-            let! d = m
-            if d then
-                let! dp = differentiate p
-                return (fun s -> s + 0.02 * float dp)
-            else
-                return id
-        }
-
-    let wsad (dir : IMod<int>) (t : IMod<float>) =
-        controller {
-            let! d = dir
-            if d <> 0 then
-                let! dt = differentiate t
-                return (fun s -> s + dt * 0.01)
-            else
-                return id
-        }
-
-    let integrate l initial =
-        l |> AFun.chain |> AFun.run initial
-
-    let test  =
-        AFun.runChain [ 
-            cc    (Mod.init false)    (Mod.init 10)
-            wsad  (Mod.init 0)        (Mod.init 0.0)
-        ] 
