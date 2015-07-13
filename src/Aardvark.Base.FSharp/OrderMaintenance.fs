@@ -815,7 +815,7 @@ type private SortKeyTuple =
     end
 
 type OrderMaintenance<'a when 'a : equality>(comparer : IComparer<'a>) =
-    let derived = DerivedOrder.create(Comparer<'a>.Default)
+    let derived = DerivedOrder.create(comparer)
     let nodes = Dictionary<'a, DerivedOrder.SortKey<'a>>()
 
     member x.Count = derived.Count
