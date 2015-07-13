@@ -153,8 +153,12 @@ type ModExtensions private() =
         AList.bind2 (fun l r -> f.Invoke(l,r)) this other
 
     [<Extension>]
-    static member Always(this : IMod<'a>) =
-        Mod.always this
+    static member Eager(this : IMod<'a>) =
+        Mod.onPush this
+
+    [<Extension>]
+    static member Lazy(this : IMod<'a>) =
+        Mod.onPull this
 
     [<Extension>]
     static member ToAdaptiveSet(this : IMod<'a>) =

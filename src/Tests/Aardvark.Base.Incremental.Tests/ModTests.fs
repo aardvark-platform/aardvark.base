@@ -161,7 +161,7 @@ module ``Basic Mod Tests`` =
                 ex.push "bind: %A" c
                 if c then a0
                 else a1
-            ) |> Mod.always
+            ) |> Mod.onPush
 
         let res = res |> Mod.map (fun a -> ex.push "cont"; a)// |> Mod.always
 
@@ -204,7 +204,7 @@ module ``Basic Mod Tests`` =
                     return 0
             }
 
-        let c = c |> Mod.always
+        let c = c |> Mod.onPush
 
         c.GetValue() |> should equal 0
 

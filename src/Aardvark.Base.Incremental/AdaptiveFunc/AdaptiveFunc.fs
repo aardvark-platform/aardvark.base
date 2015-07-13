@@ -253,9 +253,6 @@ type Controller<'a> = astate<ControllerState, 'a>
 module ``Controller Builder`` =
     open AState
 
-    module Mod =
-        let time = [AdaptiveObject.Time] |> Mod.mapCustom (fun () -> System.DateTime.Now)
-
     let preWith (f : 'a -> 'a -> 'b) (m : IMod<'a>) =
         if m.IsConstant then
             let v = m.GetValue()

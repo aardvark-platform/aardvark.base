@@ -214,6 +214,32 @@ module Mod =
 
         member x.Input = input
 
+    // TimeMod represents a changeable cell which will always
+    // be outdated as soon as control-flow leaves the mod system.
+    // Its value will always be the time when pulled.
+    // NOTE that this cannot be implemented using the other mod-types
+    //      since caching (of the current time) is not desired here.
+    type internal TimeMod private() as this =
+        inherit AdaptiveObject()
+        do AdaptiveObject.Time.AddOutput this
+
+        static let instance = TimeMod() :> IMod<DateTime>
+        static member Instance = instance
+
+        member x.GetValue() =
+            base.EvaluateAlways (fun () ->
+                DateTime.Now
+            )
+
+        interface IMod with
+            member x.IsConstant = false
+            member x.GetValue() = x.GetValue() :> obj
+
+        interface IMod<DateTime> with
+            member x.GetValue() = x.GetValue()
+            
+
+
     let private scoped (f : 'a -> 'b) =
         let scope = Ag.getContext()
         fun v -> Ag.useScope scope (fun () -> f v)
@@ -290,19 +316,6 @@ module Mod =
     let change (m : ModRef<'a>) (value : 'a) =
         m.Value <- value
 
-    /// <summary>
-    /// deprecated in favor of Mod.init
-    /// </summary>
-    [<Obsolete>]
-    let initMod (v : 'a) =
-        ModRef v
-
-    /// <summary>
-    /// deprecated in favor of Mod.constant
-    /// </summary>
-    [<Obsolete>]
-    let initConstant (v : 'a) =
-        ConstantMod<'a>(v) :> IMod<_>
 
     /// <summary>
     /// initializes a new constant cell using the given value.
@@ -549,13 +562,13 @@ module Mod =
     /// creates a new cell forcing the evaluation of the
     /// given one during change propagation (making it eager)
     /// </summary>
-    let rec always (m : IMod<'a>) =
+    let rec onPush (m : IMod<'a>) =
         if m.IsConstant then 
             m.GetValue() |> ignore
             m
         else
             match m with
-                | :? LaterMod<'a> as m -> always m.Input
+                | :? LaterMod<'a> as m -> onPush m.Input
                 | :? EagerMod<'a> -> m
                 | _ ->
                     let res = EagerMod(m)
@@ -565,17 +578,18 @@ module Mod =
     /// <summary>
     /// creates a new cell forcing the evaluation of the
     /// given one to be lazy (on demand)
-    /// NOTE: later does not maintain equality
+    /// NOTE: onPull does not maintain equality
     ///       for constant-cells
     /// </summary>
-    let rec later (m : IMod<'a>) =
+    let rec onPull (m : IMod<'a>) =
         if m.IsConstant then
             LaterMod(m) :> IMod<_>
         else
             match m with
                 | :? EagerMod<'a> as m ->
-                    later m.Input
+                    onPull m.Input
                 | _ -> m
+
 
     /// <summary>
     /// creates a new cell by starting the given async computation.
@@ -685,6 +699,28 @@ module Mod =
             custom (fun () ->
                 task.Result
             )
+
+    /// <summary>
+    /// a changeable cell which will always be outdated when control-flow leaves
+    /// the mod-system. Its value will always hold the current time (DateTime.Now) 
+    /// </summary>
+    let time = TimeMod.Instance
+
+
+
+    [<Obsolete("Use Mod.init instead")>]
+    let inline initMod (v : 'a) = init v
+
+    [<Obsolete("Use Mod.constant instead")>]
+    let inline initConstant (v : 'a) = constant v
+
+    [<Obsolete("Use Mod.onPush instead")>]
+    let inline always (m : IMod<'a>) = onPush m
+
+    [<Obsolete("Use Mod.onPull instead")>]
+    let inline later (m : IMod<'a>) = onPull m
+
+
 
 [<AutoOpen>]
 module ModExtensions =
