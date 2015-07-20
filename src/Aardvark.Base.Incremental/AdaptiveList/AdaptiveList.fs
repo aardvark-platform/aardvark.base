@@ -113,6 +113,12 @@ module AList =
     let ofArray (a : 'a[]) =
         ofSeq a
 
+    let ofASet (s : aset<'a>) =
+        AdaptiveList(fun () -> ofSet s) :> alist<_>
+
+    let toASet (l : alist<'a>) =
+        ASet.AdaptiveSet(fun () -> toSetReader l) :> aset<_>
+
     let toSeq (set : alist<'a>) =
         use r = set.GetReader()
         r.GetDelta() |> ignore
@@ -234,3 +240,9 @@ module ``ASet sorting functions`` =
 
         let sort (s : aset<'a>) =
             sortWith compare s
+
+        let toAList (s : aset<'a>) =
+            AList.ofASet s
+
+        let ofAList (l : alist<'a>) =
+            AList.toASet l

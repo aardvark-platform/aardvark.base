@@ -422,6 +422,52 @@ module AListReaders =
                     resultDeltas |> apply content
                 )
 
+    type SetReader<'a>(input : IReader<'a>) as this =
+        inherit AdaptiveObject()
+        do input.AddOutput this
+        
+        let order = SimpleOrder.create()
+        let times = Dictionary<obj, SimpleOrder.SortKey>()
+        let content = TimeList()
+
+        member x.Dispose() =
+            input.RemoveOutput x
+            order.Clear()
+            content.Clear()
+
+        override x.Finalize() =
+            try x.Dispose() 
+            with _ -> ()
+
+        member x.GetDelta() =
+            x.EvaluateIfNeeded [] (fun () ->
+                let deltas = input.GetDelta()
+
+                let listDeltas =
+                    deltas |> List.map (fun d ->
+                        match d with
+                            | Add v -> 
+                                let t = order.After order.Root.Prev
+                                times.Add(d, t)
+                                Add(t :> ISortKey, v)
+                            | Rem v ->
+                                match times.TryGetValue v with
+                                    | (true, t) ->
+                                        order.Delete t
+                                        Rem(t :> ISortKey, v)
+                                    | _ -> 
+                                        failwith "removal of unknown value"
+                    )
+
+                listDeltas |> apply content
+            )
+
+        interface IListReader<'a> with
+            member x.GetDelta() = x.GetDelta()
+            member x.Content = content
+            member x.RootTime = order :> IOrder
+            member x.Dispose() = x.Dispose()
+
     type BufferedReader<'a>(rootTime : IOrder, update : unit -> unit, dispose : BufferedReader<'a> -> unit) =
         inherit AdaptiveObject()
         let deltas = List()
@@ -521,6 +567,46 @@ module AListReaders =
                     deltas |> apply content
                 )
 
+    type ListSetReader<'a>(input : IListReader<'a>) as this =
+        inherit AdaptiveObject()
+
+        do input.AddOutput this
+        let content = ReferenceCountingSet()
+
+        member x.Dispose() =
+            input.RemoveOutput x
+            content.Clear()
+
+        override x.Finalize() =
+            try x.Dispose() 
+            with _ -> ()
+
+        member x.GetDelta() =
+            x.EvaluateIfNeeded [] (fun () ->
+                let deltas = input.GetDelta()
+
+                let setDeltas =
+                    deltas |> List.map (fun d ->
+                        match d with
+                            | Add (_,v) -> 
+                                Add v
+                            | Rem (_,v) ->
+                                Rem v
+                    )
+
+                setDeltas 
+                    |> Delta.clean 
+                    |> ASetReaders.apply content
+            )
+
+        interface IReader<'a> with
+            member x.Update() = x.GetDelta() |> ignore
+            member x.GetDelta() = x.GetDelta()
+            member x.Content = content
+            member x.Dispose() = x.Dispose()
+
+
+
     let map (scope) (f : 'a -> 'b) (input : IListReader<'a>) =
         new MapReader<_, _>(scope, f, input) :> IListReader<_>
 
@@ -546,3 +632,9 @@ module AListReaders =
 
     let ofMod (m : IMod<'a>) : IListReader<'a> =
         new ModReader<'a>(m) :> IListReader<'a>
+
+    let ofSet (m : aset<'a>) : IListReader<'a> =
+        new SetReader<'a>(m.GetReader()) :> IListReader<'a>
+
+    let toSetReader (m : alist<'a>) : IReader<'a> =
+        new ListSetReader<'a>(m.GetReader()) :> IReader<'a>
