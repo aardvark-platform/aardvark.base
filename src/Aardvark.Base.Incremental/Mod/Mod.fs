@@ -238,6 +238,32 @@ module Mod =
         interface IMod<DateTime> with
             member x.GetValue() = x.GetValue()
             
+    type internal DecoratorMod<'b>(m : IMod, f : obj -> 'b) =
+        inherit AdaptiveDecorator(m)
+
+        member x.GetValue() =
+            m.GetValue() |> f
+
+        interface IMod with
+            member x.IsConstant = m.IsConstant
+            member x.GetValue() = x.GetValue() :> obj
+
+        interface IMod<'b> with
+            member x.GetValue() = x.GetValue()
+
+    type internal DecoratorMod<'a, 'b>(m : IMod<'a>, f : 'a -> 'b) =
+        inherit AdaptiveDecorator(m)
+
+        member x.GetValue() =
+            m.GetValue() |> f
+
+        interface IMod with
+            member x.IsConstant = m.IsConstant
+            member x.GetValue() = x.GetValue() :> obj
+
+        interface IMod<'b> with
+            member x.GetValue() = x.GetValue()
+
 
 
     let private scoped (f : 'a -> 'b) =
@@ -377,6 +403,35 @@ module Mod =
         for i in inputs do
             i.AddOutput r
         r
+
+    /// <summary>
+    /// adaptively applies a function to a cell's value
+    /// without creating a new cell (maintaining equality, id, etc.)
+    /// NOTE: this combinator assumes that the given function 
+    ///       is really cheap (e.g. field-access, cast, etc.)
+    /// </summary>
+    let mapFast (f : 'a -> 'b) (m : IMod<'a>) =
+        DecoratorMod<'a, 'b>(m, f) :> IMod<_>
+
+    /// <summary>
+    /// adaptively applies a function to a cell's value
+    /// without creating a new cell (maintaining equality, id, etc.)
+    /// NOTE: this combinator assumes that the given function 
+    ///       is really cheap (e.g. field-access, cast, etc.)
+    /// </summary>
+    let mapFastObj (f : obj -> 'b) (m : IMod) =
+        DecoratorMod<'b>(m, f) :> IMod<_>
+
+    /// <summary>
+    /// adaptively casts a value to the desired type
+    /// and fails if the cast is invalid.
+    /// NOTE that this does not create a new cell but instead
+    ///      "decorates" the given cell.
+    /// </summary>
+    let inline cast (m : IMod) : IMod<'b> =
+        mapFastObj unbox m
+
+    
 
     /// <summary>
     /// creates a modifiable cell using the given inputs

@@ -125,6 +125,18 @@ type ModExtensions private() =
         Mod.map f.Invoke this
 
     [<Extension>]
+    static member SelectFast (this : IMod<'a>, f : Func<'a, 'b>) =
+        Mod.mapFast f.Invoke this
+
+    [<Extension>]
+    static member SelectFast (this : IMod, f : Func<obj, 'b>) =
+        Mod.mapFastObj f.Invoke this
+
+    [<Extension>]
+    static member Cast (this : IMod) =
+        Mod.cast this
+
+    [<Extension>]
     static member Compose (this : IMod<'a>, other : IMod<'b>, f : Func<'a, 'b, 'c>) =
         Mod.map2 (fun a b -> f.Invoke(a,b)) this other
 
@@ -255,6 +267,18 @@ type AdaptiveSetExtensions private() =
             deltas |> List.toArray |> callback.Invoke
         )
 
+    [<Extension>]
+    static member OrderBy (this : aset<'a>, f : Func<'a, 'b>) =
+        this |> ASet.sortBy f.Invoke
+
+    [<Extension>]
+    static member OrderWith (this : aset<'a>, cmp : IComparer<'a>) =
+        this |> ASet.sortWith (curry cmp.Compare)
+
+    [<Extension>]
+    static member ToAdaptiveList (this : aset<'a>) =
+        this |> ASet.toAList
+
 [<Extension; AbstractClass; Sealed>]
 type ChangeableSetExtensions private() =
 
@@ -303,6 +327,19 @@ type ChangeableSetExtensions private() =
     static member ContainsAll (this : cset<'a>, item : seq<'a>) =
         this |> ASet.containsAll item
 
+    [<Extension>]
+    static member OrderBy (this : cset<'a>, f : Func<'a, 'b>) =
+        this |> ASet.sortBy f.Invoke
+
+    [<Extension>]
+    static member OrderWith (this : cset<'a>, cmp : IComparer<'a>) =
+        this |> ASet.sortWith (curry cmp.Compare)
+
+    [<Extension>]
+    static member ToAdaptiveList (this : cset<'a>) =
+        this |> ASet.toAList
+
+
 [<Extension; AbstractClass; Sealed>]
 type AdaptiveListExtensions private() =
 
@@ -338,7 +375,9 @@ type AdaptiveListExtensions private() =
     static member Concat (this : alist<'a>, other : alist<'a>) =
         AList.concat' [this; other]
 
-
+    [<Extension>]
+    static member ToAdaptiveSet (this : alist<'a>) =
+        this |> AList.toASet
 
 
 
