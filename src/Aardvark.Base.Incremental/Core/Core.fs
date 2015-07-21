@@ -126,6 +126,10 @@ module IncrementalLog =
 /// </summary>
 exception LevelChangedException of IAdaptiveObject
 
+[<AutoOpen>]
+module private AdaptiveSystemState =
+    let isTopLevel = new System.Threading.ThreadLocal<bool>(fun () -> true)
+
 /// <summary>
 /// Transaction holds a set of adaptive objects which
 /// have been changed and shall therefore be marked as outOfDate.
@@ -174,6 +178,10 @@ type Transaction() =
     /// the enqueued changes.
     /// </summary>
     member x.Commit() =
+        let top = isTopLevel.Value
+        isTopLevel.Value <- false
+
+
         // cache the currently running transaction (if any)
         // and make tourselves current.
         let old = running.Value
@@ -256,6 +264,7 @@ type Transaction() =
         // when the commit is over we restore the old
         // running transaction (if any)
         running.Value <- old
+        isTopLevel.Value <- top
 
 /// <summary>
 /// defines a base class for all adaptive objects implementing
@@ -269,7 +278,6 @@ type AdaptiveObject() =
     let outputs = WeakSet<IAdaptiveObject>() :> ICollection<_>
     let callbacks = ConcurrentHashSet<unit -> unit>() :> ICollection<_>
 
-    static let isTopLevel = new System.Threading.ThreadLocal<bool>(fun () -> true)
     static let time = AdaptiveObject() :> IAdaptiveObject
 
     static member Time = time
