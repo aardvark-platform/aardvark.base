@@ -116,6 +116,7 @@ module private ASetReaders =
         /// Gets the (concatenated) deltas from all "dirty" readers
         /// </summary>
         member x.GetDeltas() =
+            let dirty = dirty |> Seq.toArray
             [ for d in dirty do
                 // get deltas for all dirty readers and re-register
                 // marking callbacks
