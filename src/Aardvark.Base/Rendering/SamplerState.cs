@@ -29,6 +29,7 @@ namespace Aardvark.Base.Rendering
 
     public enum SamplerComparisonFunction
     { 
+        None            = 0,
         Never           = 1,
         Less            = 2,
         Equal           = 3,
@@ -123,7 +124,7 @@ namespace Aardvark.Base.Rendering
             MaxLod = float.MaxValue;
             MipLodBias = 0.0f;
 
-            ComparisonFunction = SamplerComparisonFunction.Never;
+            ComparisonFunction = SamplerComparisonFunction.None;
             BorderColor = C4f.Black;
         }
 

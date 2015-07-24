@@ -85,7 +85,7 @@ module private ASetReaders =
         member x.Listen(r : IReader<'a>) =
             // create and register a callback function
             let onMarking () = 
-                dirty.Add r |> ignore
+                lock dirty (fun () -> dirty.Add r |> ignore)
                 subscriptions.Remove r |> ignore
 
             r.MarkingCallbacks.Add onMarking |> ignore
@@ -96,7 +96,10 @@ module private ASetReaders =
 
             // if the reader is currently outdated add it to the
             // dirty set immediately
-            lock r (fun () -> if r.OutOfDate then dirty.Add r |> ignore)
+            lock r (fun () -> 
+                if r.OutOfDate 
+                then lock dirty (fun () -> dirty.Add r |> ignore)
+            )
             
         /// <summary>
         /// Stops "listening" to changes of a certain reader
@@ -110,27 +113,30 @@ module private ASetReaders =
                 | _ -> ()
 
             // if the reader is already in the dirty-set remove it from there too
-            dirty.Remove r |> ignore
+            lock dirty (fun () -> dirty.Remove r |> ignore)
 
         /// <summary>
         /// Gets the (concatenated) deltas from all "dirty" readers
         /// </summary>
         member x.GetDeltas() =
-            let dirty = dirty |> Seq.toArray
-            [ for d in dirty do
-                // get deltas for all dirty readers and re-register
-                // marking callbacks
-                let c = d.GetDelta()
-                x.Listen d
-                yield! c
-            ]
+            lock dirty (fun () ->
+                [ for d in dirty do
+                    // get deltas for all dirty readers and re-register
+                    // marking callbacks
+                    yield! lock d (fun () ->
+                        let c = d.GetDelta()
+                        x.Listen d
+                        c
+                    )
+                ]
+            )
 
         /// <summary>
         /// Releases the entire structure
         /// </summary>
         member x.Dispose() =
             for (KeyValue(_, d)) in subscriptions do d()
-            dirty.Clear()
+            lock dirty (fun () -> dirty.Clear())
             subscriptions.Clear()
 
         interface IDisposable with
