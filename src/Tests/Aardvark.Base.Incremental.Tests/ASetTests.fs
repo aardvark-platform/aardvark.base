@@ -1,6 +1,8 @@
 ﻿namespace Aardvark.Base.Incremental.Tests
 
 
+open System.Threading
+open System.Threading.Tasks
 open System.Collections
 open System.Collections.Generic
 open Aardvark.Base.Incremental
@@ -269,6 +271,56 @@ module ``collect tests`` =
 
         //pretend leak is used
         ignore leak
+
+
+
+    [<Test>]
+    let ``concurrency collect test``() =
+
+        let l = obj()
+        let set = CSet.empty
+        let derived = set |> ASet.collect id
+        use reader = derived.GetReader()
+        let numbers = [0..9999]
+
+        use sem = new SemaphoreSlim(0)
+        use cancel = new CancellationTokenSource()
+        let ct = cancel.Token
+
+        // pull from the system
+        Task.Factory.StartNew(fun () ->
+            while true do
+                ct.ThrowIfCancellationRequested()
+                let delta = reader.GetDelta()
+                //Thread.Sleep(10)
+                ()
+        ) |> ignore
+
+
+        // submit into the system
+        for n in numbers do
+            let s = ASet.single n
+            Task.Factory.StartNew(fun () ->
+                lock l (fun () ->
+                    transact (fun () ->
+                        set.Add(s) |> ignore
+                    )
+                )
+                sem.Release() |> ignore
+            ) |> ignore
+
+        // wait for all submissions to be done
+        for n in numbers do
+            sem.Wait()
+
+        cancel.Cancel()
+
+        reader.GetDelta() |> ignore
+
+
+        let content = reader.Content |> Seq.toList |> List.sort
+
+        content |> should equal numbers
 
 
 
