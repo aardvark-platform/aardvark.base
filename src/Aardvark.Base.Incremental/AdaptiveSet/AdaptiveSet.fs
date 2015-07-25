@@ -11,6 +11,7 @@ open Aardvark.Base.Incremental.ASetReaders
 /// </summary>
 module ASet =
     type AdaptiveSet<'a>(newReader : unit -> IReader<'a>) =
+        let l = obj()
         let state = ReferenceCountingSet<'a>()
         let readers = WeakSet<BufferedReader<'a>>()
 
@@ -24,33 +25,37 @@ module ASet =
                     r
 
         let bringUpToDate () =
-            let r = getReader()
-            let delta = r.GetDelta ()
-            if not <| List.isEmpty delta then
-                delta |> apply state |> ignore
-                readers  |> Seq.iter (fun ri ->
-                    ri.Emit(state, Some delta)
-                )
+            lock l (fun () ->
+                let r = getReader()
+                let delta = r.GetDelta ()
+                if not <| List.isEmpty delta then
+                    delta |> apply state |> ignore
+                    readers  |> Seq.iter (fun ri ->
+                        ri.Emit(state, Some delta)
+                    )
+            )
 
         interface aset<'a> with
             member x.GetReader () =
-                bringUpToDate()
-                let r = getReader()
+                lock l (fun () ->
+                    bringUpToDate()
+                    let r = getReader()
 
-                let remove ri =
-                    r.RemoveOutput ri
-                    readers.Remove ri |> ignore
+                    let remove ri =
+                        r.RemoveOutput ri
+                        readers.Remove ri |> ignore
 
-                    if readers.IsEmpty then
-                        r.Dispose()
-                        inputReader <- None
+                        if readers.IsEmpty then
+                            r.Dispose()
+                            inputReader <- None
 
-                let reader = new BufferedReader<'a>(bringUpToDate, remove)
-                reader.Emit (state, None)
-                r.AddOutput reader
-                readers.Add reader |> ignore
+                    let reader = new BufferedReader<'a>(bringUpToDate, remove)
+                    reader.Emit (state, None)
+                    r.AddOutput reader
+                    readers.Add reader |> ignore
 
-                reader :> _
+                    reader :> _
+                )
 
     type ConstantSet<'a>(content : seq<'a>) =
         let content = ReferenceCountingSet content
