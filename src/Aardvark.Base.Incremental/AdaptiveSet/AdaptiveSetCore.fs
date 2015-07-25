@@ -435,10 +435,14 @@ module private ASetReaders =
             with _ -> ()
 
         member x.GetDelta() =
-            update()
-            x.EvaluateIfNeeded [] (fun () ->
-                let l = getDeltas()
-                l |> apply content
+            x.EvaluateAlways (fun () ->
+                update()
+                if x.OutOfDate then
+                    let l = getDeltas()
+                    l |> apply content
+                else
+                    []
+            
             )
 
         interface IDisposable with
