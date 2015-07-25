@@ -76,7 +76,7 @@ module private ASetReaders =
     /// a set of readers.
     /// </summary>
     type DirtyReaderSet<'a>() =
-        let subscriptions = Dictionary<IReader<'a>, unit -> unit>()
+        let subscriptions = ConcurrentDictionary<IReader<'a>, unit -> unit>()
         let dirty = HashSet<IReader<'a>>()
 
         /// <summary>
@@ -85,8 +85,9 @@ module private ASetReaders =
         member x.Listen(r : IReader<'a>) =
             // create and register a callback function
             let onMarking () = 
-                lock dirty (fun () -> dirty.Add r |> ignore)
-                subscriptions.Remove r |> ignore
+                lock dirty (fun () -> dirty.Add r |> ignore )
+                subscriptions.TryRemove r |> ignore
+
 
             r.MarkingCallbacks.Add onMarking |> ignore
 
@@ -97,19 +98,16 @@ module private ASetReaders =
             // if the reader is currently outdated add it to the
             // dirty set immediately
             lock r (fun () -> 
-                if r.OutOfDate 
-                then lock dirty (fun () -> dirty.Add r |> ignore)
+                if r.OutOfDate then lock dirty (fun () -> dirty.Add r |> ignore)
             )
             
         /// <summary>
         /// Stops "listening" to changes of a certain reader
         /// </summary>
-        member x.Destroy(r : IReader<'a>) =
+        member x.Unlisten(r : IReader<'a>) =
             // if there exists a subscription we remove and dispose it
-            match subscriptions.TryGetValue r with
-                | (true, d) -> 
-                    subscriptions.Remove r |> ignore
-                    d()
+            match subscriptions.TryRemove r with
+                | (true, d) -> d()
                 | _ -> ()
 
             // if the reader is already in the dirty-set remove it from there too
@@ -141,7 +139,9 @@ module private ASetReaders =
 
         interface IDisposable with
             member x.Dispose() = x.Dispose()
- 
+
+
+
     /// <summary>
     /// A reader representing "map" operations
     /// NOTE that the reader actually takes a function "a -> list&lt;b&gt;" instead of the
@@ -238,7 +238,7 @@ module private ASetReaders =
                                 let r = f.Revoke v
 
                                 // remove the reader from the listen-set
-                                dirtyInner.Destroy r
+                                dirtyInner.Unlisten r
 
                                 // since the reader is no longer contained we don't want
                                 // to be notified anymore
