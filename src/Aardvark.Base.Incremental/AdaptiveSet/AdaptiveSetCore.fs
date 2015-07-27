@@ -117,16 +117,21 @@ module private ASetReaders =
         /// Gets the (concatenated) deltas from all "dirty" readers
         /// </summary>
         member x.GetDeltas() =
-            lock dirty (fun () ->
-                [ for d in dirty do
-                    // get deltas for all dirty readers and re-register
-                    // marking callbacks
-                    yield! lock d (fun () ->
-                        let c = d.GetDelta()
-                        x.Listen d
-                        c
-                    )
-                ]
+            let mine = 
+                lock dirty (fun () -> 
+                    let arr = dirty |> Seq.toList
+                    dirty.Clear()
+                    arr
+                )
+
+            mine |> List.collect (fun d ->
+                // get deltas for all dirty readers and re-register
+                // marking callbacks
+                lock d (fun () ->
+                    let c = d.GetDelta()
+                    x.Listen d
+                    c
+                )
             )
 
         /// <summary>
