@@ -382,7 +382,7 @@ module private ASetReaders =
     /// NOTE that atm. BufferedReader may keep very long histories since the code fixing that
     ///      is mostly untested and will be "activated" on demand (if someone needs it)
     /// </summary> 
-    type BufferedReader<'a>(update : unit -> unit, dispose : BufferedReader<'a> -> unit) =
+    type BufferedReader<'a>(set : aset<'a>, update : unit -> unit, dispose : BufferedReader<'a> -> unit) =
         inherit AdaptiveObject()
         let deltas = List()
         let mutable reset : Option<ISet<'a>> = None
@@ -427,12 +427,19 @@ module private ASetReaders =
                         reset <- Some c
                         deltas.Clear()
 
-                x.MarkOutdated()
+                if not x.OutOfDate then
+                    match getCurrentTransaction() with
+                        | Some t ->
+                            t.Enqueue x
+                        | _ ->
+                            let t = Transaction()
+                            t.Enqueue(x)
+                            t.Commit()
             )
 
 
-        new(dispose) = new BufferedReader<'a>(id, dispose)
-        new() = new BufferedReader<'a>(id, ignore)
+        new(set,dispose) = new BufferedReader<'a>(set, id, dispose)
+        new(set) = new BufferedReader<'a>(set, id, ignore)
 
         member x.Dispose() =
             dispose(x)
@@ -442,14 +449,10 @@ module private ASetReaders =
             with _ -> ()
 
         member x.GetDelta() =
-            x.EvaluateAlways (fun () ->
-                update()
-                if x.OutOfDate then
-                    let l = getDeltas()
-                    l |> apply content
-                else
-                    []
-            
+            lock set update
+            x.EvaluateIfNeeded [] (fun () ->
+                let l = getDeltas()
+                l |> apply content
             )
 
         interface IDisposable with

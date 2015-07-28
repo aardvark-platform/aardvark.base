@@ -1,6 +1,6 @@
 ﻿namespace Aardvark.Base.Incremental.Tests
 
-
+open System
 open System.Threading
 open System.Threading.Tasks
 open System.Collections
@@ -321,6 +321,57 @@ module ``collect tests`` =
         let content = reader.Content |> Seq.toList |> List.sort
 
         content |> should equal numbers
+
+    [<Test>]
+    let ``concurrency multi reader test``() =
+
+        let l = obj()
+        let set = CSet.empty
+        let derived = set |> ASet.collect id
+        let numbers = [0..9999]
+
+        use sem = new SemaphoreSlim(0)
+        use cancel = new CancellationTokenSource()
+        let ct = cancel.Token
+
+
+        let readers = [0..7] |> List.map (fun _ -> derived.GetReader())
+        // pull from the system
+
+        for r in readers do
+            Task.Factory.StartNew(fun () ->
+                while true do
+                    ct.ThrowIfCancellationRequested()
+                    let delta = r.GetDelta()
+                    if not (List.isEmpty delta) then
+                        Console.WriteLine("delta: {0}", List.length delta)
+                    //Thread.Sleep(1)
+                    ()
+            ) |> ignore
+
+
+        // submit into the system
+        for n in numbers do
+            let s = ASet.single n
+            Task.Factory.StartNew(fun () ->
+                lock l (fun () ->
+                    transact (fun () ->
+                        set.Add(s) |> ignore
+                    )
+                )
+                sem.Release() |> ignore
+            ) |> ignore
+
+        // wait for all submissions to be done
+        for n in numbers do
+            sem.Wait()
+
+        cancel.Cancel()
+
+        for r in readers do
+            r.GetDelta() |> ignore
+            let content = r.Content |> Seq.toList |> List.sort
+            content |> should equal numbers
 
 
 

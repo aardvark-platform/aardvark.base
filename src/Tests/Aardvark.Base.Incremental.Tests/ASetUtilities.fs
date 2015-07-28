@@ -107,12 +107,15 @@ module FsUnitExtensions =
             base.Matches(o) |> ignore
             match o with
                 | :? list<list<'a>> as o ->
-                    let zip = List.zip ref o
+                    if List.length ref = List.length o then
+                        let zip = List.zip ref o
 
-                    zip |> List.forall (fun (r,o) -> 
-                        let s = HashSet(o)
-                        s.SetEquals r
-                    )
+                        zip |> List.forall (fun (r,o) -> 
+                            let s = HashSet(o)
+                            s.SetEquals r
+                        )
+                    else
+                        false
 
                 | _ ->
                     false

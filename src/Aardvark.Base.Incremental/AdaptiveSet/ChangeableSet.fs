@@ -18,7 +18,7 @@ type cset<'a>(initial : seq<'a>) =
 
     interface aset<'a> with
         member x.GetReader() =
-            let r = new BufferedReader<'a>(fun r -> readers.Remove r |> ignore)
+            let r = new BufferedReader<'a>(x, fun r -> readers.Remove r |> ignore)
             r.Emit(content, None)
             readers.Add r |> ignore
             r :> _

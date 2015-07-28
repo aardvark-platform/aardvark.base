@@ -254,7 +254,7 @@ type corderedset<'a>(initial : seq<'a>) =
 
     interface aset<'a> with
         member x.GetReader() =
-            let r = new ASetReaders.BufferedReader<'a>(fun r -> setReaders.Remove r |> ignore)
+            let r = new ASetReaders.BufferedReader<'a>(x, fun r -> setReaders.Remove r |> ignore)
             r.Emit(set, None)
             setReaders.Add r |> ignore
             r :> _

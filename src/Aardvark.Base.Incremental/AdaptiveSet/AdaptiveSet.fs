@@ -49,7 +49,7 @@ module ASet =
                             r.Dispose()
                             inputReader <- None
 
-                    let reader = new BufferedReader<'a>(bringUpToDate, remove)
+                    let reader = new BufferedReader<'a>(x,bringUpToDate, remove)
                     reader.Emit (state, None)
                     r.AddOutput reader
                     readers.Add reader |> ignore
@@ -62,7 +62,7 @@ module ASet =
 
         interface aset<'a> with
             member x.GetReader () =
-                let r = new BufferedReader<'a>()
+                let r = new BufferedReader<'a>(x)
                 r.Emit(content, None)
                 r :> IReader<_>
 
