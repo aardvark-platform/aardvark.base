@@ -410,23 +410,25 @@ module private ASetReaders =
                     res
 
         member x.Emit (c : ISet<'a>, d : Option<list<Delta<'a>>>) =
-            match d with 
-                | Some d ->
-                    deltas.AddRange d
-//                    let N = c.Count
-//                    let M = content.Count
-//                    let D = deltas.Count + (List.length d)
-//                    if D > N + 2 * M then
-//                        reset <- Some c
-//                        deltas.Clear()
-//                    else
-//                        deltas.AddRange d
+            lock x (fun () ->
+                match d with 
+                    | Some d ->
+                        deltas.AddRange d
+//                        let N = c.Count
+//                        let M = content.Count
+//                        let D = deltas.Count + (List.length d)
+//                        if D > N + 2 * M then
+//                            reset <- Some c
+//                            deltas.Clear()
+//                        else
+//                            deltas.AddRange d
 
-                | None ->
-                    reset <- Some c
-                    deltas.Clear()
+                    | None ->
+                        reset <- Some c
+                        deltas.Clear()
 
-            x.MarkOutdated()
+                x.MarkOutdated()
+            )
 
 
         new(dispose) = new BufferedReader<'a>(id, dispose)
