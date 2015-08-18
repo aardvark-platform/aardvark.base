@@ -316,10 +316,10 @@ module ``simple list tests`` =
             r.Content |> Seq.sortBy fst |> Seq.map snd |> Seq.toList
 
         transact (fun () -> CSet.add 12 set |> ignore)
-        r |> content |> should equal [ 1; 2; 3; 12]
+        r |> content |> should equal [  1; 2; 3; 12; ]
 
         transact (fun () -> CSet.remove 3 set |> ignore)
-        r |> content |> should equal [ 1; 2; 12]
+        r |> content |> should equal [  1; 2; 12 ]
 
 
     [<Test>]
