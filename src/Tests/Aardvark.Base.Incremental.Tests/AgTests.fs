@@ -21,13 +21,23 @@ module AgTests =
                 children <- value
         member x.Name = name
         member x.Garbage = Array.zeroCreate(1 <<< 10)
+
+    type SynTreeNode(n : TreeNode, s : Ag.Scope) =
+        member x.Node = n
+        member x.Scope = s
         
     [<Semantic>]
     type AgTestSemantics() =
        
         //let fakeChild = obj()
 
-
+        member x.SynTree(node : TreeNode) : SynTreeNode[] =
+            let sn = SynTreeNode(node, Ag.getContext())
+            let mutable temp = sn.IntoArray()
+            for x in node.Children do
+                let sub : SynTreeNode[] = x?SynTree()
+                temp <- Array.append temp sub
+            temp
 
         member x.FlattenTree(node : TreeNode) : TreeNode[] =
             let mutable temp = [ node ]
@@ -52,9 +62,9 @@ module AgTests =
             temp
 
         member x.DoAnyObjectStuff(node : TreeNode) : string =
-            //let fakeChildScope = Ag.getContext().GetChildScope(node)
-            let temp : string = node.AllChildren?ConcatName
-            //let temp : string = node?ConcatName
+            let fakeChildScope = Ag.getContext().GetChildScope(node)
+            let temp : string = fakeChildScope?ConcatName
+            //let temp : string = node.AllChildren?ConcatName
             printfn "concatName: %s" temp
             for c in node.Children do
                 let foo : string = c?DoAnyObjectStuff()
@@ -67,6 +77,15 @@ module AgTests =
         member x.ConcatName(node : TreeNode) : unit =
             x.AllChildren?ConcatName <- node?ConcatName + "|" + node.Name
 
+        member x.SynName(r : Root) : string =
+            "0"
+
+        member x.SynName(n : SynTreeNode) : string =
+            n.Node.Name
+
+        member x.ScopeName(n : TreeNode) : string =
+            n.Name
+
 //        member x.ConcatName(node : TreeNode) : string =
 //            node?ConcatNameInh + "|" + node.Name
 
@@ -74,10 +93,14 @@ module AgTests =
         let someNode = TreeNode ("node" + gen.ToString())
         let someOther = TreeNode ("other" + gen.ToString())
         let child = TreeNode ("child" + gen.ToString())
+        let subchild = TreeNode ("subchild" + gen.ToString())
 
         nodeRegistry.Add (WeakReference<TreeNode>(someNode)) |> ignore
         nodeRegistry.Add (WeakReference<TreeNode>(someOther)) |> ignore
         nodeRegistry.Add (WeakReference<TreeNode>(child)) |> ignore
+        nodeRegistry.Add (WeakReference<TreeNode>(subchild)) |> ignore
+
+        child.Children <- [ subchild ]
 
         someOther.Children <- [ child ]
 
@@ -106,22 +129,27 @@ module AgTests =
             //i <- i + 1
             generateNewStuff(root, nodeRegistry, i)
 
-            let foo = root?DoAnyObjectStuff()
-            //let foo = root?FlattenTree()
+            //let foo = root?DoAnyObjectStuff()
+            let st : SynTreeNode[] = root?SynTree()
             
             GC.Collect()
-            Thread.Sleep(1)
+//            Thread.Sleep(1000)
 //
 //            GC.AddMemoryPressure(1L <<< 20);
 //            GC.Collect()
 //            Thread.Sleep(1000)
 
+            for x in st do
+                //printfn "%s" (Ag.useScope (x.Scope.GetChildScope x.Node) (fun () -> x?ConcatName))
+                //printfn "%s" (x?SynName())
+                printfn "%s" (x.Scope?ScopeName())
+
             let aliveCount = nodeRegistry |> (Seq.filter (fun w ->  match w.TryGetTarget() with
                                                                     | (true, v) -> true
                                                                     | _ -> false)) |> Seq.toArray |> Array.length
 
-            printfn "Tree:"
-            printTree root
+            //printfn "Tree:"
+            //printTree root
 
             //let flatTree : list<TreeNode> = root?FlattenTree()
             //let nameList : list<string> = root?ConcatNameList()
@@ -130,7 +158,7 @@ module AgTests =
 //            printfn "flatNodeCount=%d" flatTree.Length
             printfn "generated=%d alive=%d" nodeRegistry.Count aliveCount
 
-            //let xxx = Console.ReadLine()
+            let xxx = Console.ReadLine()
 
             ()
 
