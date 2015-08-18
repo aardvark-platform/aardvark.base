@@ -80,6 +80,8 @@ namespace Aardvark.Base
                 {
                     if (m_deleteAct != null)
                         m_deleteAct(removeKey, entry.Value);
+                    var disposable = entry.Value as IDisposable;
+                    if (disposable != null) disposable.Dispose();
                     size -= entry.Size;
                 }
                 else
@@ -121,6 +123,33 @@ namespace Aardvark.Base
             }
         }
 
+        public TValue GetOrAdd(TKey key, long size, Func<TValue> valueFun)
+        {
+            Entry entry;
+            lock (m_lock)
+            {
+                if (m_cache.TryGetValue(key, out entry))
+                {
+                    entry.Time = ++m_time;
+                    Sink(m_heap, entry.Index);
+                }
+                else
+                {
+                    Shrink(m_size + size);
+                    entry = new Entry
+                    {
+                        Time = ++m_time,
+                        Size = size,
+                        Key = key,
+                        Value = valueFun(),
+                    };
+                    m_cache[key] = entry;
+                    Enqueue(m_heap, entry);
+                }
+                return entry.Value;
+            }
+        }
+
         /// <summary>
         /// Remove the entry with the supplied key from the hash.
         /// Returns true on success and puts the value of the
@@ -135,6 +164,8 @@ namespace Aardvark.Base
                 {
                     m_size -= entry.Size;
                     RemoveAt(m_heap, entry.Index);
+                    if (m_deleteAct != null)
+                        m_deleteAct(key, entry.Value);
                     value = entry.Value;
                     return true;
                 }
@@ -156,6 +187,10 @@ namespace Aardvark.Base
                 {
                     m_size -= entry.Size;
                     RemoveAt(m_heap, entry.Index);
+                    if (m_deleteAct != null)
+                        m_deleteAct(key, entry.Value);
+                    var disposable = entry.Value as IDisposable;
+                    if (disposable != null) disposable.Dispose();
                     return true;
                 }
                 return false;
