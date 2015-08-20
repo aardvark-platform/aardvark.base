@@ -302,5 +302,43 @@ module ``simple list tests`` =
         r |> content |>  should equal []
         
 
+    [<Test>]
+    let ``alist construction of aset``() =
+
+        let set = CSet.ofList [ 1; 2; 3 ]
+
+        let list = AList.ofASet set
+
+
+        let r = list.GetReader()
+        let content (r : IListReader<'a>) = 
+            r.GetDelta() |> ignore
+            r.Content |> Seq.sortBy fst |> Seq.map snd |> Seq.toList
+
+        transact (fun () -> CSet.add 12 set |> ignore)
+        r |> content |> should equal [  1; 2; 3; 12; ]
+
+        transact (fun () -> CSet.remove 3 set |> ignore)
+        r |> content |> should equal [  1; 2; 12 ]
+
+
+    [<Test>]
+    let ``alist construction of aset with selection``() =
+
+        let set = CSet.ofList [ 1; 2; 3 ]
+        
+        let list =
+            alist {
+                for x in AList.ofASet set do
+                    yield x * 2
+            }
+
+        let r = list.GetReader()
+        let content (r : IListReader<'a>) = 
+            r.GetDelta() |> ignore
+            r.Content |> Seq.sortBy fst |> Seq.map snd |> Seq.toList
+
+        transact (fun () -> CSet.add 12 set |> ignore)
+        r |> content |> should equal [ 2; 4; 6; 24]
 
 

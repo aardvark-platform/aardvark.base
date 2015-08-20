@@ -113,8 +113,10 @@ module AList =
     let ofArray (a : 'a[]) =
         ofSeq a
 
+    // TODO: fix this crazy implementation
     let ofASet (s : aset<'a>) =
-        AdaptiveList(fun () -> ofSet s) :> alist<_>
+        AdaptiveList(fun () -> s.GetReader() |> sortWith (fun a b -> a.GetHashCode().CompareTo(b.GetHashCode()))) :> alist<_>
+        //AdaptiveList(fun () -> ofSet s) :> alist<_>
 
     let toASet (l : alist<'a>) =
         ASet.AdaptiveSet(fun () -> toSetReader l) :> aset<_>
