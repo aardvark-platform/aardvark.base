@@ -284,10 +284,24 @@ module Ag =
                 | Some v -> getFunction v
                 | None -> failwithf "synthesized attribute %A for type %A not found on path: %s \ncandidates: %s" name (node.GetType()) currentScope.Value.Path (AgHelpers.sprintSemanticFunctions name)
         else
-            if logging then Log.line "top level inh seach for sem: %s on syntactic entity: %A" name ( node.GetType() )
-            match tryGetInhAttribute node name with
-                | Some v -> v |> unbox<'a>
-                | None -> failwithf "inherited attribute %A for type %A not found on path: %s\ncandidates: %s" name (node.GetType()) currentScope.Value.Path (AgHelpers.sprintSemanticFunctions name)
+            // in the case of an inherited attribute, check if the query is on the anyObject
+            // e.g.: x.AllChildren?AttName this way an inherited attribute can be queried directly on the
+            // applicator node (conversely to x.AllChildren?AttName <- att) in that case a temporary child scope 
+            // is used before the inherited attribute is queried, which will at first pop that scope again, 
+            // but uses the supplied scope for storage. since the attribute itself is given by the local object, 
+            // it is also used as scope in order to allow the garbage collection to dispose the attribute together with the object
+            // NOTE: does not work on <scope>.AllChildren?AttName, either use Ag.useScope or manually build the temporary child scope
+            if System.Object.ReferenceEquals(node, anyObject) then
+                let local = currentScope.Value
+                let fakeChild = local.GetChildScope(local.source)
+                match tryGetInhAttribute fakeChild name with
+                    | Some v -> v |> unbox<'a>
+                    | None -> failwithf "inherited attribute %A for type %A not found on path: %s\ncandidates: %s" name (node.GetType()) currentScope.Value.Path (AgHelpers.sprintSemanticFunctions name)
+            else
+                if logging then Log.line "top level inh seach for sem: %s on syntactic entity: %A" name ( node.GetType() )
+                match tryGetInhAttribute node name with
+                    | Some v -> v |> unbox<'a>
+                    | None -> failwithf "inherited attribute %A for type %A not found on path: %s\ncandidates: %s" name (node.GetType()) currentScope.Value.Path (AgHelpers.sprintSemanticFunctions name)
 
 
     //public entry points            

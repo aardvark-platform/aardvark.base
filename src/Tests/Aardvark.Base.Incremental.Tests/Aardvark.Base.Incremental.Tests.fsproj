@@ -66,6 +66,7 @@
     <Compile Include="ASetTests.fs" />
     <Compile Include="AListTests.fs" />
     <Compile Include="ASetPerformance.fs" />
+    <Compile Include="AgTests.fs" />
     <Content Include="app.config" />
   </ItemGroup>
   <ItemGroup>

@@ -382,7 +382,7 @@ module private ASetReaders =
     /// NOTE that atm. BufferedReader may keep very long histories since the code fixing that
     ///      is mostly untested and will be "activated" on demand (if someone needs it)
     /// </summary> 
-    type BufferedReader<'a>(set : aset<'a>, update : unit -> unit, dispose : BufferedReader<'a> -> unit) =
+    type BufferedReader<'a>(set : aset<'a>, update : unit -> unit, dispose : BufferedReader<'a> -> unit) as this =
         inherit AdaptiveObject()
         let deltas = List()
         let mutable reset : Option<ISet<'a>> = None
@@ -404,10 +404,12 @@ module private ASetReaders =
 
                     Seq.append add rem |> Seq.toList
                 | None ->
-                    Interlocked.Increment(&incrementalCount) |> ignore
-                    let res = deltas |> Seq.toList
-                    deltas.Clear()
-                    res
+                    lock this (fun () ->
+                        Interlocked.Increment(&incrementalCount) |> ignore
+                        let res = deltas |> Seq.toList
+                        deltas.Clear()
+                        res
+                    )
 
         member x.Emit (c : ISet<'a>, d : Option<list<Delta<'a>>>) =
             lock x (fun () ->
