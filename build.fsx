@@ -172,7 +172,7 @@ let push url =
 
 Target "Push" (fun () -> push @"\\hobel.ra1.vrvis.lan\NuGet\")
 
-let deploy (url : string) (keyName : Option<string>) push =
+let deploy (url : string) (keyName : Option<string>) =
 
     let packages = !!"bin/*.nupkg"
     let packageNameRx = Regex @"(?<name>[a-zA-Z_0-9\.]+?)\.(?<version>([0-9]+\.)*[0-9]+)\.nupkg"
@@ -215,7 +215,7 @@ let deploy (url : string) (keyName : Option<string>) push =
                         for id in myPackages do
                             let packageName = sprintf "bin/%s.%s.nupkg" id tag
                             tracefn "pushing: %s" packageName
-                            push packageName accessKey url 
+                            Paket.Dependencies.Push(packageName, apiKey = accessKey, url = url)
                     with e ->
                         traceError (string e)
                 | None ->
@@ -223,21 +223,12 @@ let deploy (url : string) (keyName : Option<string>) push =
          else 
             traceError (sprintf "cannot deploy branch: %A" branch)
 
-let pushPaket packageName apiKey url = 
-    Paket.Dependencies.Push(packageName, apiKey = apiKey, url = url)
-
-let pushNugetCmdLine packageName apiKey url =
-    Fake.NuGetHelper.NuGetPublish(fun p -> 
-        { p with AccessKey = apiKey;  PublishUrl = url ; OutputPath = packageName   
-                 WorkingDir = __SOURCE_DIRECTORY__})
-
 Target "Deploy" (fun () -> 
-    deploy "https://www.nuget.org/api/v2/" (Some "nuget.key") pushPaket
+    deploy "https://www.nuget.org/api/v2/" (Some "nuget.key") 
 )
 Target "MyGetDeploy" (fun () -> 
-    deploy "https://vrvis.myget.org/F/aardvark/api/v2" (Some "myget.key") pushPaket
+    deploy "https://vrvis.myget.org/F/aardvark/api/v2" (Some "myget.key") 
 )
-
 
 "Compile" ==> "CreatePackage"
 "Compile40" ==> "CreatePackage"
