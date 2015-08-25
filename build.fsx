@@ -146,7 +146,8 @@ Target "CreatePackage" (fun () ->
     paketDependencies.Pack("bin", version = tag, releaseNotes = releaseNotes)
 )
 
-Target "Push" (fun () ->
+
+let push url =
     let packages = !!"bin/*.nupkg"
     let packageNameRx = Regex @"(?<name>[a-zA-Z_0-9\.]+?)\.(?<version>([0-9]+\.)*[0-9]+)\.nupkg"
     let tag = Fake.Git.Information.getLastTag()
@@ -165,13 +166,15 @@ Target "Push" (fun () ->
     try
         for id in myPackages do
             let source = sprintf "bin/%s.%s.nupkg" id tag
-            let target = sprintf @"\\hobel.ra1.vrvis.lan\NuGet\%s.%s.nupkg" id tag
+            let target = sprintf @"%s%s.%s.nupkg" url id tag
             File.Copy(source, target, true)
     with e ->
         traceError (string e)
-)
 
-Target "Deploy" (fun () ->
+Target "Push" (fun () -> push @"\\hobel.ra1.vrvis.lan\NuGet\")
+
+
+let deploy (url : string) (endPoint : string) (keyName : Option<string>) =
 
     let packages = !!"bin/*.nupkg"
     let packageNameRx = Regex @"(?<name>[a-zA-Z_0-9\.]+?)\.(?<version>([0-9]+\.)*[0-9]+)\.nupkg"
@@ -187,28 +190,51 @@ Target "Deploy" (fun () ->
             )
             |> Set.ofSeq
 
-    let accessKeyPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), ".ssh", "nuget.key")
+   
     let accessKey =
-        if File.Exists accessKeyPath then Some (File.ReadAllText accessKeyPath)
-        else None
+        match keyName with
+         | Some keyName -> 
+            let accessKeyPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), ".ssh", keyName)
+            if File.Exists accessKeyPath then 
+                let r = Some (File.ReadAllText accessKeyPath)
+                tracefn "key: %A" r.Value
+                r
+            else None
+         | None -> None
+
 
     let branch = Fake.Git.Information.getBranchName "."
     let releaseNotes = Fake.Git.Information.getCurrentHash()
-    if branch = "master" then
-        let tag = Fake.Git.Information.getLastTag()
-        match accessKey with
-            | Some accessKey ->
-                try
-                    for id in myPackages do
-                        Paket.Dependencies.Push(sprintf "bin/%s.%s.nupkg" id tag, apiKey = accessKey)
-                with e ->
-                    traceError (string e)
-            | None ->
-                traceError (sprintf "Could not find nuget access key")
-     else 
-        traceError (sprintf "cannot deploy branch: %A" branch)
-)
+    if branch <> "master" then
+        tracefn "are you really sure you want do deploy a non-master branch? (Y/N)"
+        let l = Console.ReadLine().Trim().ToLower()
+        if l = "y"
+        then
+            let tag = Fake.Git.Information.getLastTag()
+            match accessKey with
+                | Some accessKey ->
+                    try
+                        for id in myPackages do
+                            let packageName = sprintf "bin/%s.%s.nupkg" id tag
+                            tracefn "pushing: %s" packageName
+                            Paket.Dependencies.Push(packageName, 
+                                                    apiKey = accessKey,
+                                                    url = url,
+                                                    endPoint = endPoint )
+                    with e ->
+                        traceError (string e)
+                | None ->
+                    traceError (sprintf "Could not find nuget access key")
+         else 
+            traceError (sprintf "cannot deploy branch: %A" branch)
 
+
+Target "Deploy" (fun () -> 
+    deploy "https://www.nuget.org/api/v2" "/api/v2/package" (Some "nuget.key")
+)
+Target "MyGetDeploy" (fun () -> 
+    deploy "https://vrvis.myget.org/" "/F/aardvark/api/v2/package" (Some "myget.key")
+)
 
 
 "Compile" ==> "CreatePackage"
