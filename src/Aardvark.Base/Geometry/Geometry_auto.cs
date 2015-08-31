@@ -150,6 +150,18 @@ namespace Aardvark.Base
             return pa;
         }
 
+        /// <summary>
+        /// Returns a copy of the polygons point array.
+        /// </summary>
+        public V2d[] GetPointArrayWithRepeatedFirstPoint()
+        {
+            var pc = m_pointCount;
+            var pa = new V2d[pc + 1];
+            for (int pi = 0; pi < pc; pi++) pa[pi] = m_pointArray[pi];
+            pa[pc] = pa[0];
+            return pa;
+        }
+
         public T[] GetPointArray<T>(Func<V2d, T> point_copyFun)
         {
             var pc = m_pointCount;
@@ -1486,6 +1498,18 @@ namespace Aardvark.Base
             var pc = m_pointCount;
             var pa = new V3d[pc];
             for (int pi = 0; pi < pc; pi++) pa[pi] = m_pointArray[pi];
+            return pa;
+        }
+
+        /// <summary>
+        /// Returns a copy of the polygons point array.
+        /// </summary>
+        public V3d[] GetPointArrayWithRepeatedFirstPoint()
+        {
+            var pc = m_pointCount;
+            var pa = new V3d[pc + 1];
+            for (int pi = 0; pi < pc; pi++) pa[pi] = m_pointArray[pi];
+            pa[pc] = pa[0];
             return pa;
         }
 

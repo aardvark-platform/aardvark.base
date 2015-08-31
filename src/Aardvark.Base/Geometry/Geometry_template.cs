@@ -187,6 +187,18 @@ namespace Aardvark.Base
             return pa;
         }
 
+        /// <summary>
+        /// Returns a copy of the polygons point array.
+        /// </summary>
+        public __tvec__[] GetPointArrayWithRepeatedFirstPoint()
+        {
+            var pc = m_pointCount;
+            var pa = new __tvec__[pc + 1];
+            for (int pi = 0; pi < pc; pi++) pa[pi] = m_pointArray[pi];
+            pa[pc] = pa[0];
+            return pa;
+        }
+
         public T[] GetPointArray<T>(Func<__tvec__, T> point_copyFun)
         {
             var pc = m_pointCount;
