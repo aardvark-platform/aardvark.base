@@ -2232,7 +2232,7 @@ namespace Aardvark.Base
         /// </summary>
         /// <returns>An array of size count that contains the elements from the input sequence.</returns>
         /// <param name="source">An <see cref="T:System.Collections.Generic.IEnumerable`1" /> to create an array from.</param>
-        /// <param name="count"></param>
+        /// <param name="count">The known size of the result-array.</param>
         /// <exception cref="T:System.ArgumentNullException"><paramref name="source" /> is null.</exception>
         /// <exception cref="T:System.ArgumentException"><paramref name="count"/> is different from the number of elements in <paramref name="source" />.</exception>
         public static TElement[] ToArray<TElement>(this IEnumerable<TElement> source, int count)

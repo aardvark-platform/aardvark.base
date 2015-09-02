@@ -123,8 +123,16 @@ namespace Aardvark.Base
         /// </summary>
         public __type__(__ltype__[] points, long start, long count)
         {
-            Min = Max = points[start];
-            for (long i = start + 1, e = start + count; i < e; i++) ExtendBy(points[i]);
+            if (count <= 0)
+            {
+                Min = Invalid.Min;
+                Max = Invalid.Max;
+            }
+            else
+            {
+                Min = Max = points[start];
+                for (long i = start + 1, e = start + count; i < e; i++) ExtendBy(points[i]);
+            }
         }
 
         /// <summary>

@@ -159,6 +159,8 @@ namespace Aardvark.Base
         public static bool Contains(this Polygon2d poly, V2d point, bool CCW)
         {
             int pc = poly.PointCount;
+            if (pc < 3)
+                return false;
             int counter = 0;
             V2d p0 = poly[0], p1 = poly[1], p2 = poly[2];
             V3i temp = InsideTriangleFlags(ref p0, ref p1, ref p2, ref point);

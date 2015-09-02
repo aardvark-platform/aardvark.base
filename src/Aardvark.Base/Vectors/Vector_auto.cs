@@ -388,6 +388,42 @@ namespace Aardvark.Base
         #region Properties and Indexers
 
         /// <summary>
+        /// Property for the field X.
+        /// Useful when properties are required, but the field X is recommended for general use.
+        /// </summary>
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
+        public int P_X
+        {
+            get
+            {
+                return X;
+            }
+            set
+            {
+                X = value;
+            }
+        }
+
+        /// <summary>
+        /// Property for the field Y.
+        /// Useful when properties are required, but the field Y is recommended for general use.
+        /// </summary>
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
+        public int P_Y
+        {
+            get
+            {
+                return Y;
+            }
+            set
+            {
+                Y = value;
+            }
+        }
+
+        /// <summary>
         /// Enumerates all elements of this vector.
         /// </summary>
         public IEnumerable<int> Elements
@@ -3526,6 +3562,42 @@ namespace Aardvark.Base
         #endregion
 
         #region Properties and Indexers
+
+        /// <summary>
+        /// Property for the field X.
+        /// Useful when properties are required, but the field X is recommended for general use.
+        /// </summary>
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
+        public long P_X
+        {
+            get
+            {
+                return X;
+            }
+            set
+            {
+                X = value;
+            }
+        }
+
+        /// <summary>
+        /// Property for the field Y.
+        /// Useful when properties are required, but the field Y is recommended for general use.
+        /// </summary>
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
+        public long P_Y
+        {
+            get
+            {
+                return Y;
+            }
+            set
+            {
+                Y = value;
+            }
+        }
 
         /// <summary>
         /// Enumerates all elements of this vector.
@@ -6708,6 +6780,42 @@ namespace Aardvark.Base
         #endregion
 
         #region Properties and Indexers
+
+        /// <summary>
+        /// Property for the field X.
+        /// Useful when properties are required, but the field X is recommended for general use.
+        /// </summary>
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
+        public float P_X
+        {
+            get
+            {
+                return X;
+            }
+            set
+            {
+                X = value;
+            }
+        }
+
+        /// <summary>
+        /// Property for the field Y.
+        /// Useful when properties are required, but the field Y is recommended for general use.
+        /// </summary>
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
+        public float P_Y
+        {
+            get
+            {
+                return Y;
+            }
+            set
+            {
+                Y = value;
+            }
+        }
 
         /// <summary>
         /// Enumerates all elements of this vector.
@@ -10321,6 +10429,42 @@ namespace Aardvark.Base
         #endregion
 
         #region Properties and Indexers
+
+        /// <summary>
+        /// Property for the field X.
+        /// Useful when properties are required, but the field X is recommended for general use.
+        /// </summary>
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
+        public double P_X
+        {
+            get
+            {
+                return X;
+            }
+            set
+            {
+                X = value;
+            }
+        }
+
+        /// <summary>
+        /// Property for the field Y.
+        /// Useful when properties are required, but the field Y is recommended for general use.
+        /// </summary>
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
+        public double P_Y
+        {
+            get
+            {
+                return Y;
+            }
+            set
+            {
+                Y = value;
+            }
+        }
 
         /// <summary>
         /// Enumerates all elements of this vector.
@@ -14016,6 +14160,60 @@ namespace Aardvark.Base
         #endregion
 
         #region Properties and Indexers
+
+        /// <summary>
+        /// Property for the field X.
+        /// Useful when properties are required, but the field X is recommended for general use.
+        /// </summary>
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
+        public int P_X
+        {
+            get
+            {
+                return X;
+            }
+            set
+            {
+                X = value;
+            }
+        }
+
+        /// <summary>
+        /// Property for the field Y.
+        /// Useful when properties are required, but the field Y is recommended for general use.
+        /// </summary>
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
+        public int P_Y
+        {
+            get
+            {
+                return Y;
+            }
+            set
+            {
+                Y = value;
+            }
+        }
+
+        /// <summary>
+        /// Property for the field Z.
+        /// Useful when properties are required, but the field Z is recommended for general use.
+        /// </summary>
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
+        public int P_Z
+        {
+            get
+            {
+                return Z;
+            }
+            set
+            {
+                Z = value;
+            }
+        }
 
         /// <summary>
         /// Enumerates all elements of this vector.
@@ -18811,6 +19009,60 @@ namespace Aardvark.Base
         #endregion
 
         #region Properties and Indexers
+
+        /// <summary>
+        /// Property for the field X.
+        /// Useful when properties are required, but the field X is recommended for general use.
+        /// </summary>
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
+        public long P_X
+        {
+            get
+            {
+                return X;
+            }
+            set
+            {
+                X = value;
+            }
+        }
+
+        /// <summary>
+        /// Property for the field Y.
+        /// Useful when properties are required, but the field Y is recommended for general use.
+        /// </summary>
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
+        public long P_Y
+        {
+            get
+            {
+                return Y;
+            }
+            set
+            {
+                Y = value;
+            }
+        }
+
+        /// <summary>
+        /// Property for the field Z.
+        /// Useful when properties are required, but the field Z is recommended for general use.
+        /// </summary>
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
+        public long P_Z
+        {
+            get
+            {
+                return Z;
+            }
+            set
+            {
+                Z = value;
+            }
+        }
 
         /// <summary>
         /// Enumerates all elements of this vector.
@@ -23671,6 +23923,60 @@ namespace Aardvark.Base
         #endregion
 
         #region Properties and Indexers
+
+        /// <summary>
+        /// Property for the field X.
+        /// Useful when properties are required, but the field X is recommended for general use.
+        /// </summary>
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
+        public float P_X
+        {
+            get
+            {
+                return X;
+            }
+            set
+            {
+                X = value;
+            }
+        }
+
+        /// <summary>
+        /// Property for the field Y.
+        /// Useful when properties are required, but the field Y is recommended for general use.
+        /// </summary>
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
+        public float P_Y
+        {
+            get
+            {
+                return Y;
+            }
+            set
+            {
+                Y = value;
+            }
+        }
+
+        /// <summary>
+        /// Property for the field Z.
+        /// Useful when properties are required, but the field Z is recommended for general use.
+        /// </summary>
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
+        public float P_Z
+        {
+            get
+            {
+                return Z;
+            }
+            set
+            {
+                Z = value;
+            }
+        }
 
         /// <summary>
         /// Enumerates all elements of this vector.
@@ -28995,6 +29301,60 @@ namespace Aardvark.Base
         #region Properties and Indexers
 
         /// <summary>
+        /// Property for the field X.
+        /// Useful when properties are required, but the field X is recommended for general use.
+        /// </summary>
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
+        public double P_X
+        {
+            get
+            {
+                return X;
+            }
+            set
+            {
+                X = value;
+            }
+        }
+
+        /// <summary>
+        /// Property for the field Y.
+        /// Useful when properties are required, but the field Y is recommended for general use.
+        /// </summary>
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
+        public double P_Y
+        {
+            get
+            {
+                return Y;
+            }
+            set
+            {
+                Y = value;
+            }
+        }
+
+        /// <summary>
+        /// Property for the field Z.
+        /// Useful when properties are required, but the field Z is recommended for general use.
+        /// </summary>
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
+        public double P_Z
+        {
+            get
+            {
+                return Z;
+            }
+            set
+            {
+                Z = value;
+            }
+        }
+
+        /// <summary>
         /// Enumerates all elements of this vector.
         /// </summary>
         public IEnumerable<double> Elements
@@ -34232,6 +34592,78 @@ namespace Aardvark.Base
         #endregion
 
         #region Properties and Indexers
+
+        /// <summary>
+        /// Property for the field X.
+        /// Useful when properties are required, but the field X is recommended for general use.
+        /// </summary>
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
+        public int P_X
+        {
+            get
+            {
+                return X;
+            }
+            set
+            {
+                X = value;
+            }
+        }
+
+        /// <summary>
+        /// Property for the field Y.
+        /// Useful when properties are required, but the field Y is recommended for general use.
+        /// </summary>
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
+        public int P_Y
+        {
+            get
+            {
+                return Y;
+            }
+            set
+            {
+                Y = value;
+            }
+        }
+
+        /// <summary>
+        /// Property for the field Z.
+        /// Useful when properties are required, but the field Z is recommended for general use.
+        /// </summary>
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
+        public int P_Z
+        {
+            get
+            {
+                return Z;
+            }
+            set
+            {
+                Z = value;
+            }
+        }
+
+        /// <summary>
+        /// Property for the field W.
+        /// Useful when properties are required, but the field W is recommended for general use.
+        /// </summary>
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
+        public int P_W
+        {
+            get
+            {
+                return W;
+            }
+            set
+            {
+                W = value;
+            }
+        }
 
         /// <summary>
         /// Enumerates all elements of this vector.
@@ -41483,6 +41915,78 @@ namespace Aardvark.Base
         #region Properties and Indexers
 
         /// <summary>
+        /// Property for the field X.
+        /// Useful when properties are required, but the field X is recommended for general use.
+        /// </summary>
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
+        public long P_X
+        {
+            get
+            {
+                return X;
+            }
+            set
+            {
+                X = value;
+            }
+        }
+
+        /// <summary>
+        /// Property for the field Y.
+        /// Useful when properties are required, but the field Y is recommended for general use.
+        /// </summary>
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
+        public long P_Y
+        {
+            get
+            {
+                return Y;
+            }
+            set
+            {
+                Y = value;
+            }
+        }
+
+        /// <summary>
+        /// Property for the field Z.
+        /// Useful when properties are required, but the field Z is recommended for general use.
+        /// </summary>
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
+        public long P_Z
+        {
+            get
+            {
+                return Z;
+            }
+            set
+            {
+                Z = value;
+            }
+        }
+
+        /// <summary>
+        /// Property for the field W.
+        /// Useful when properties are required, but the field W is recommended for general use.
+        /// </summary>
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
+        public long P_W
+        {
+            get
+            {
+                return W;
+            }
+            set
+            {
+                W = value;
+            }
+        }
+
+        /// <summary>
         /// Enumerates all elements of this vector.
         /// </summary>
         public IEnumerable<long> Elements
@@ -48727,6 +49231,78 @@ namespace Aardvark.Base
         #endregion
 
         #region Properties and Indexers
+
+        /// <summary>
+        /// Property for the field X.
+        /// Useful when properties are required, but the field X is recommended for general use.
+        /// </summary>
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
+        public float P_X
+        {
+            get
+            {
+                return X;
+            }
+            set
+            {
+                X = value;
+            }
+        }
+
+        /// <summary>
+        /// Property for the field Y.
+        /// Useful when properties are required, but the field Y is recommended for general use.
+        /// </summary>
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
+        public float P_Y
+        {
+            get
+            {
+                return Y;
+            }
+            set
+            {
+                Y = value;
+            }
+        }
+
+        /// <summary>
+        /// Property for the field Z.
+        /// Useful when properties are required, but the field Z is recommended for general use.
+        /// </summary>
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
+        public float P_Z
+        {
+            get
+            {
+                return Z;
+            }
+            set
+            {
+                Z = value;
+            }
+        }
+
+        /// <summary>
+        /// Property for the field W.
+        /// Useful when properties are required, but the field W is recommended for general use.
+        /// </summary>
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
+        public float P_W
+        {
+            get
+            {
+                return W;
+            }
+            set
+            {
+                W = value;
+            }
+        }
 
         /// <summary>
         /// Enumerates all elements of this vector.
@@ -56335,6 +56911,78 @@ namespace Aardvark.Base
         #endregion
 
         #region Properties and Indexers
+
+        /// <summary>
+        /// Property for the field X.
+        /// Useful when properties are required, but the field X is recommended for general use.
+        /// </summary>
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
+        public double P_X
+        {
+            get
+            {
+                return X;
+            }
+            set
+            {
+                X = value;
+            }
+        }
+
+        /// <summary>
+        /// Property for the field Y.
+        /// Useful when properties are required, but the field Y is recommended for general use.
+        /// </summary>
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
+        public double P_Y
+        {
+            get
+            {
+                return Y;
+            }
+            set
+            {
+                Y = value;
+            }
+        }
+
+        /// <summary>
+        /// Property for the field Z.
+        /// Useful when properties are required, but the field Z is recommended for general use.
+        /// </summary>
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
+        public double P_Z
+        {
+            get
+            {
+                return Z;
+            }
+            set
+            {
+                Z = value;
+            }
+        }
+
+        /// <summary>
+        /// Property for the field W.
+        /// Useful when properties are required, but the field W is recommended for general use.
+        /// </summary>
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
+        public double P_W
+        {
+            get
+            {
+                return W;
+            }
+            set
+            {
+                W = value;
+            }
+        }
 
         /// <summary>
         /// Enumerates all elements of this vector.
