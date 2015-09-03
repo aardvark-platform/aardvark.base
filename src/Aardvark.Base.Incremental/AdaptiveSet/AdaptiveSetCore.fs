@@ -146,6 +146,13 @@ module private ASetReaders =
             member x.Dispose() = x.Dispose()
 
 
+    type NewDirtyReaderSet<'a>() =
+        inherit DirtySet<IReader<'a>, list<Delta<'a>>>(fun readers -> readers |> Seq.collect (fun r -> r.GetDelta()) |> Seq.toList)
+
+        member x.Listen r = x.Add r
+        member x.Unlisten r = x.Remove r
+        member x.GetDeltas() = x.Evaluate()
+        
 
     /// <summary>
     /// A reader representing "map" operations
