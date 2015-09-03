@@ -195,6 +195,7 @@ module SkipOrder =
             val mutable public Tag : uint64
             val mutable public NextArray : SortKeyLink[]
             val mutable public PrevArray : SortKeyLink[]
+            val mutable public IsDeleted : bool
 
             member x.Time =
                 x.Tag - x.Clock.Root.Tag
@@ -211,7 +212,7 @@ module SkipOrder =
                 else null
 
             member x.CompareTo (o : SortKey) =
-                if isNull o.NextArray || isNull x.NextArray then
+                if o.IsDeleted || x.IsDeleted then
                     failwith "cannot compare deleted times"
 
                 if o.Clock <> x.Clock then
@@ -236,10 +237,10 @@ module SkipOrder =
 
             interface ISortKey with
                 member x.Clock = x.Clock :> IOrder
-                member x.IsDeleted = isNull x.NextArray
+                member x.IsDeleted = x.IsDeleted
                 member x.Next = x.Next :> ISortKey
 
-            new(c, h) = { Clock = c; Tag = 0UL; NextArray = Array.zeroCreate h; PrevArray = Array.zeroCreate h }
+            new(c, h) = { Clock = c; Tag = 0UL; NextArray = Array.zeroCreate h; PrevArray = Array.zeroCreate h; IsDeleted = false }
         end
 
     and SortKeyLink =
@@ -402,10 +403,11 @@ module SkipOrder =
                         rep.PrevArray <- Array.sub rep.PrevArray 0 repHeight
         
                     x.Count <- x.Count - 1
-                    t.NextArray <- null
-                    t.PrevArray <- null
-                    t.Tag <- 0UL
-                    t.Clock <- Unchecked.defaultof<_>      
+                    t.IsDeleted <- true
+//                    t.NextArray <- null
+//                    t.PrevArray <- null
+//                    t.Tag <- 0UL
+//                    t.Clock <- Unchecked.defaultof<_>      
 
             member x.Clear() =
                 let r = SortKey(x, 1)
@@ -484,6 +486,7 @@ module DerivedOrder =
             val mutable public Item : 'a
             val mutable public NextArray : SortKeyLink<'a>[]
             val mutable public PrevArray : SortKeyLink<'a>[]
+            val mutable public IsDeleted : bool
 
             member x.Time =
                 x.Tag - x.Clock.Root.Tag
@@ -500,7 +503,7 @@ module DerivedOrder =
                 else null
 
             member x.CompareTo (o : SortKey<'a>) =
-                if isNull o.NextArray || isNull x.NextArray then
+                if o.IsDeleted || x.IsDeleted then
                     failwith "cannot compare deleted times"
 
                 if o.Clock <> x.Clock then
@@ -525,10 +528,10 @@ module DerivedOrder =
 
             interface ISortKey with
                 member x.Clock = x.Clock :> IOrder
-                member x.IsDeleted = isNull x.NextArray
+                member x.IsDeleted = x.IsDeleted
                 member x.Next = x.Next :> ISortKey
 
-            new(c, h) = { Clock = c; Tag = 0UL; NextArray = Array.zeroCreate h; PrevArray = Array.zeroCreate h; Item = Unchecked.defaultof<_> }
+            new(c, h) = { Clock = c; Tag = 0UL; NextArray = Array.zeroCreate h; PrevArray = Array.zeroCreate h; Item = Unchecked.defaultof<_>; IsDeleted = false }
         end
 
     and SortKeyLink<'a> =
@@ -651,26 +654,30 @@ module DerivedOrder =
                 if x.IsDeleted value then
                     failwith "cannot get time for deleted input-value"
 
-                let rec findPrevAcc (acc : array<_>) (index : int) (level : int) (v : 'a) (n : SortKey<'a>) (links : SortKeyLink<'a>[]) =
+                let rec findPrevAcc (acc : array<_>) (index : int) (level : int) (v : 'a) (n : SortKey<'a>) =
                     if level < 0 then 
                         (index, acc)
                     else
-                        let link = links.[level]
-                        if x.IsDeleted link.Target.Item then
-                            x.Delete link.Target
-                            findPrevAcc acc index level v n links
+                        let link = n.NextArray.[level]
+                        if link.Target = x.Root then
+                            acc.[level] <- SortKeyLink(index, n)
+                            findPrevAcc acc index (level - 1) v n 
                         else
-                            if link.Target <> x.Root && x.Comparer.Compare(v, link.Target.Item) > 0 then
-                                let t = links.[level].Target
-
-                                let level = min level (t.NextArray.Length-1)
-                                findPrevAcc acc (index + link.Width) level v t t.NextArray
+                            if x.IsDeleted link.Target.Item then
+                                x.Delete link.Target
+                                findPrevAcc acc index (min (x.Root.Height-1) level) v n
                             else
-                                acc.[level] <- SortKeyLink(index, n)
-                                findPrevAcc acc index (level - 1) v n links
+                                if link.Target <> x.Root && x.Comparer.Compare(v, link.Target.Item) > 0 then
+                                    let t = n.NextArray.[level].Target
+
+                                    let level = min level (t.NextArray.Length-1)
+                                    findPrevAcc acc (index + link.Width) level v t 
+                                else
+                                    acc.[level] <- SortKeyLink(index, n)
+                                    findPrevAcc acc index (level - 1) v n 
 
                 let ptr = Array.zeroCreate x.Root.Height
-                let (index, prev) = findPrevAcc ptr 0 (x.Root.Height-1) value x.Root x.Root.NextArray
+                let (index, prev) = findPrevAcc ptr 0 (x.Root.Height-1) value x.Root
 
                 let next = prev.[0].Target
                 if next <> x.Root && x.Comparer.Compare(next.Item, value) = 0 then
@@ -681,7 +688,8 @@ module DerivedOrder =
                     tn
             
             member x.Delete (t : SortKey<'a>) = 
-                if not (isNull t.NextArray) then 
+                if t = x.Root then failwith "tried to delete root"
+                if t.IsDeleted |> not then 
                     if t.Clock <> x then
                         failwith "cannot delete time from different clock"
 
@@ -701,7 +709,7 @@ module DerivedOrder =
                             (l.Width, l.Target)
                         // go backwards until a node with sufficient height is found
                         // or until we've reached the representant
-                        while i >= current.Height && current <> x.Root do
+                        while current.Height <= i && current <> x.Root do
                             let (d,l) = back current
                             current <- l
                             distance <- distance + d
@@ -723,10 +731,11 @@ module DerivedOrder =
                         rep.PrevArray <- Array.sub rep.PrevArray 0 repHeight
         
                     x.Count <- x.Count - 1
-                    t.NextArray <- null
-                    t.PrevArray <- null
-                    t.Tag <- 0UL
-                    t.Clock <- Unchecked.defaultof<_>      
+                    t.IsDeleted <- true
+//                    t.NextArray <- null
+//                    t.PrevArray <- null
+//                    t.Tag <- 0UL
+//                    t.Clock <- Unchecked.defaultof<_>      
 
             member x.Clear() =
                 let r = SortKey(x, 1)

@@ -83,6 +83,41 @@ module ``simple list tests`` =
         )
         r.GetSetDelta() |> should setEqual [Rem 5]
 
+
+    [<Test>]
+    let ``alist collect outer reomve``() =
+        let l0 = AList.ofList [ 1; 2 ]
+        let l1 = AList.ofList [ 3; 4 ]
+        let l2 = AList.ofList []
+        let l = clist [l0]
+
+        let d = l |> AList.concat
+        let r = d.GetReader()
+
+        r.GetSetDelta() |> should setEqual [ Add 1 ; Add 2]
+        r.Content |> Seq.forall (fun (k,v) -> not k.IsDeleted) |> should be True
+        r.Content.Count |> should equal 2
+
+        transact (fun () -> l.Add l1 |> ignore; l.RemoveAt 0)
+        r.GetSetDelta() |> should setEqual [Add 3; Add 4; Rem 1; Rem 2]
+        r.Content |> Seq.forall (fun (k,v) -> not k.IsDeleted) |> should be True
+        r.Content.Count |> should equal 2
+
+        transact (fun () -> l.Add l0 |> ignore; l.RemoveAt 0)
+        r.GetSetDelta() |> should setEqual [Rem 3; Rem 4; Add 1; Add 2]
+        r.Content |> Seq.forall (fun (k,v) -> not k.IsDeleted) |> should be True
+        r.Content.Count |> should equal 2
+
+        transact (fun () -> l.Add l1 |> ignore; l.RemoveAt 0)
+        r.GetSetDelta() |> should setEqual [Add 3; Add 4; Rem 1; Rem 2]
+        r.Content |> Seq.forall (fun (k,v) -> not k.IsDeleted) |> should be True
+        r.Content.Count |> should equal 2
+
+        transact (fun () -> l.Add l2 |> ignore; l.RemoveAt 0)
+        r.GetSetDelta() |> should setEqual [Rem 3; Rem 4]
+        r.Content |> Seq.forall (fun (k,v) -> not k.IsDeleted) |> should be True
+        r.Content.Count |> should equal 0
+
     [<Test>]
     let ``alist order``() =
         let l0 = clist []
