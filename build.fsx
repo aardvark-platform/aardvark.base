@@ -229,11 +229,16 @@ Target "MyGetDeploy" (fun () ->
     deploy "https://vrvis.myget.org/F/aardvark/api/v2" (Some "myget.key") 
 )
 
+Target "InternalDeploy" id
+
+"MyGetDeploy" ==> "Push" ==> "InternalDeploy"
+
 "Compile" ==> "CreatePackage"
 "Compile40" ==> "CreatePackage"
 "Compile45" ==> "CreatePackage"
 "CreatePackage" ==> "Deploy"
 "CreatePackage" ==> "MyGetDeploy"
+
 "CreatePackage" ==> "Push"
 
 // start build
