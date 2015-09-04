@@ -206,22 +206,21 @@ let deploy (url : string) (keyName : Option<string>) =
     if branch <> "master" then
         tracefn "are you really sure you want do deploy a non-master branch? (Y/N)"
         let l = Console.ReadLine().Trim().ToLower()
-        if l = "y"
-        then
-            let tag = Fake.Git.Information.getLastTag()
-            match accessKey with
-                | Some accessKey ->
-                    try
-                        for id in myPackages do
-                            let packageName = sprintf "bin/%s.%s.nupkg" id tag
-                            tracefn "pushing: %s" packageName
-                            Paket.Dependencies.Push(packageName, apiKey = accessKey, url = url)
-                    with e ->
-                        traceError (string e)
-                | None ->
-                    traceError (sprintf "Could not find nuget access key")
-         else 
-            traceError (sprintf "cannot deploy branch: %A" branch)
+        if l <> "y" then failwithf "could not deploy branch: %A" branch
+
+    let tag = Fake.Git.Information.getLastTag()
+    match accessKey with
+        | Some accessKey ->
+            try
+                for id in myPackages do
+                    let packageName = sprintf "bin/%s.%s.nupkg" id tag
+                    tracefn "pushing: %s" packageName
+                    Paket.Dependencies.Push(packageName, apiKey = accessKey, url = url)
+            with e ->
+                traceError (string e)
+        | None ->
+            traceError (sprintf "Could not find nuget access key")
+
 
 Target "Deploy" (fun () -> 
     deploy "https://www.nuget.org/api/v2/" (Some "nuget.key") 
