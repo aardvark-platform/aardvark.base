@@ -209,17 +209,15 @@ let deploy (url : string) (keyName : Option<string>) =
         if l <> "y" then failwithf "could not deploy branch: %A" branch
 
     let tag = Fake.Git.Information.getLastTag()
-    match accessKey with
-        | Some accessKey ->
-            try
-                for id in myPackages do
-                    let packageName = sprintf "bin/%s.%s.nupkg" id tag
-                    tracefn "pushing: %s" packageName
-                    Paket.Dependencies.Push(packageName, apiKey = accessKey, url = url)
-            with e ->
-                traceError (string e)
-        | None ->
-            traceError (sprintf "Could not find nuget access key")
+
+    for id in myPackages do
+        let packageName = sprintf "bin/%s.%s.nupkg" id tag
+        tracefn "pushing: %s" packageName
+        match accessKey with
+            | Some accessKey -> 
+                Paket.Dependencies.Push(packageName, apiKey = accessKey, url = url)
+            | None -> Paket.Dependencies.Push(packageName, url = url)
+
 
 
 Target "Deploy" (fun () -> 
