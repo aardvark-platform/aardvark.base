@@ -104,6 +104,10 @@ module Prelude =
         let forany (f : 'a -> bool) (a : 'a[]) =
             forany' f 0 a
     
+    module Disposable =
+
+        let inline dispose v = (^a : (member Dispose : unit -> unit) v)
+
     (* Error datastructure *)
     type Error<'a> = Success of 'a
                    | Error of string

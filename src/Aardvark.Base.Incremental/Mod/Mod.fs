@@ -651,8 +651,7 @@ module Mod =
     /// until the computation is completed the cell will contain None.
     /// as soon as the computation is finished it will contain the resulting value.
     /// </summary>
-    let async (a : Async<'a>) : IMod<Option<'a>> =
-        let task = a |> Async.StartAsTask
+    let asyncTask (task : System.Threading.Tasks.Task<'a>) : IMod<Option<'a>> =
         if task.IsCompleted then
             constant (Some task.Result)
         else
@@ -665,6 +664,15 @@ module Mod =
                 )
             )
             r :> IMod<_>
+
+    /// <summary>
+    /// creates a new cell by starting the given async computation.
+    /// until the computation is completed the cell will contain None.
+    /// as soon as the computation is finished it will contain the resulting value.
+    /// </summary>
+    let async (a : Async<'a>) : IMod<Option<'a>> =
+        let task = a |> Async.StartAsTask
+        asyncTask task
 
     /// <summary>
     /// creates a new cell by starting the given async computation.
