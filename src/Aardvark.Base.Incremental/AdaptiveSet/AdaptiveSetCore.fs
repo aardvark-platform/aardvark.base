@@ -432,7 +432,7 @@ module ASetReaders =
         let mutable reset = Some (inputReader.Content :> ISet<_>)
 
         let emit (d : list<Delta<'a>>) =
-            lock this (fun () ->
+            lock deltas (fun () ->
                 if reset.IsNone then
                     deltas.AddRange d
             )
@@ -442,19 +442,22 @@ module ASetReaders =
 
         override x.ComputeDelta() =
             inputReader.Update()
-            match reset with
-                | Some c ->
-                    let content = x.Content
-                    reset <- None
-                    deltas.Clear()
-                    let add = c |> Seq.filter (not << content.Contains) |> Seq.map Add
-                    let rem = content |> Seq.filter (not << c.Contains) |> Seq.map Rem
 
-                    Seq.append add rem |> Seq.toList
-                | None ->
-                    let res = deltas |> Seq.toList
-                    deltas.Clear()
-                    res
+            lock deltas (fun () ->
+                match reset with
+                    | Some c ->
+                        let content = x.Content
+                        reset <- None
+                        deltas.Clear()
+                        let add = c |> Seq.filter (not << content.Contains) |> Seq.map Add
+                        let rem = content |> Seq.filter (not << c.Contains) |> Seq.map Rem
+
+                        Seq.append add rem |> Seq.toList
+                    | None ->
+                        let res = deltas |> Seq.toList
+                        deltas.Clear()
+                        res
+            )
 
         override x.Release() =
             inputReader.RemoveOutput x

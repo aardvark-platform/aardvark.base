@@ -301,8 +301,8 @@ module ``collect tests`` =
         for n in numbers do
             let s = ASet.single n
             Task.Factory.StartNew(fun () ->
-                lock l (fun () ->
-                    transact (fun () ->
+                transact (fun () ->
+                    lock l (fun () ->
                         set.Add(s) |> ignore
                     )
                 )
@@ -354,8 +354,8 @@ module ``collect tests`` =
         for n in numbers do
             let s = ASet.single n
             Task.Factory.StartNew(fun () ->
-                lock l (fun () ->
-                    transact (fun () ->
+                transact (fun () ->
+                    lock l (fun () ->
                         set.Add(s) |> ignore
                     )
                 )
@@ -402,8 +402,8 @@ module ``collect tests`` =
         for n in numbers do
             let s = ASet.single n
             Task.Factory.StartNew(fun () ->
-                lock l (fun () ->
-                    transact (fun () ->
+                transact (fun () ->
+                    lock l (fun () ->
                         set.Add(s) |> ignore
                     )
                 )
