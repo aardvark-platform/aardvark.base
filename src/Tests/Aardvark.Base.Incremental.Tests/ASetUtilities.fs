@@ -42,16 +42,16 @@ type aset_check_reader<'a> = { realReader : IReader<'a>; simReader : ASetReferen
         let s = HashSet(x.simReader.GetDelta())
 
         if not <| x.realReader.Content.SetEquals x.simReader.Content then
-            failwith "inconsistent set content (is %A but should be %A)" x.realReader.Content x.simReader.Content
+            failwithf "inconsistent set content (is %A but should be %A)" x.realReader.Content x.simReader.Content
 
         if not <| r.SetEquals s then
-            failwith "inconsistent set delta (is %A but should be %A)" r s
+            failwithf "inconsistent set delta (is %A but should be %A)" r s
 
         r |> Seq.toList
 
     member x.Content =
         if not <| x.realReader.Content.SetEquals x.simReader.Content then
-            failwith "inconsistent set content (is %A but should be %A)" x.realReader.Content x.simReader.Content
+            failwithf "inconsistent set content (is %A but should be %A)" x.realReader.Content x.simReader.Content
 
         x.realReader.Content
 
