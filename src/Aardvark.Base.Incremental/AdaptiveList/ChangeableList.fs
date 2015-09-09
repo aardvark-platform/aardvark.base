@@ -245,6 +245,7 @@ type corderedset<'a>(initial : seq<'a>) =
             r :> _
 
     interface aset<'a> with
+        member x.IsConstant = false
         member x.GetReader() =
             let r = new ASetReaders.EmitReader<'a>(fun r -> setReaders.Remove r |> ignore)
             r.Emit(set, None)

@@ -59,6 +59,7 @@ type aset<'a> =
     /// </summary>
     abstract member GetReader : unit -> IReader<'a>
 
+    abstract member IsConstant : bool
 
 /// <summary>
 /// ASetReaders contains implementations of IReader&lt;a&gt; representing
@@ -490,97 +491,29 @@ module ASetReaders =
         override x.Release() =
             deltas <- []
 
-//    /// <summary>
-//    /// A reader which allows changes to be pushed by the supplied update function.
-//    /// NOTE that BufferedReader shall not be used outside the system unless you understand
-//    ///      its behaviour very clearly.
-//    /// NOTE that atm. BufferedReader may keep very long histories since the code fixing that
-//    ///      is mostly untested and will be "activated" on demand (if someone needs it)
-//    /// </summary> 
-//    type BufferedReader<'a>(set : aset<'a>, update : unit -> unit, dispose : BufferedReader<'a> -> unit) as this =
-//        inherit AdaptiveObject()
-//        let deltas = List()
-//        let mutable reset : Option<ISet<'a>> = None
-//
-//        static let mutable resetCount = 0
-//        static let mutable incrementalCount = 0
-//
-//
-//        let content = ReferenceCountingSet<'a>()
-//
-//        
-//        let getDeltas() =
-//            match reset with
-//                | Some c ->
-//                    Interlocked.Increment(&resetCount) |> ignore
-//                    reset <- None
-//                    let add = c |> Seq.filter (not << content.Contains) |> Seq.map Add
-//                    let rem = content |> Seq.filter (not << c.Contains) |> Seq.map Rem
-//
-//                    Seq.append add rem |> Seq.toList
-//                | None ->
-//                    lock this (fun () ->
-//                        Interlocked.Increment(&incrementalCount) |> ignore
-//                        let res = deltas |> Seq.toList
-//                        deltas.Clear()
-//                        res
-//                    )
-//
-//        member x.Emit (c : ISet<'a>, d : Option<list<Delta<'a>>>) =
-//            lock x (fun () ->
-//                match d with 
-//                    | Some d ->
-//                        deltas.AddRange d
-////                        let N = c.Count
-////                        let M = content.Count
-////                        let D = deltas.Count + (List.length d)
-////                        if D > N + 2 * M then
-////                            reset <- Some c
-////                            deltas.Clear()
-////                        else
-////                            deltas.AddRange d
-//
-//                    | None ->
-//                        reset <- Some c
-//                        deltas.Clear()
-//
-//                if not x.OutOfDate then
-//                    match getCurrentTransaction() with
-//                        | Some t ->
-//                            t.Enqueue x
-//                        | _ ->
-//                            let t = Transaction()
-//                            t.Enqueue(x)
-//                            t.Commit()
-//            )
-//
-//
-//        new(set,dispose) = new BufferedReader<'a>(set, id, dispose)
-//        new(set) = new BufferedReader<'a>(set, id, ignore)
-//
-//        member x.Dispose() =
-//            dispose(x)
-//
-//        override x.Finalize() = 
-//            try x.Dispose()
-//            with _ -> ()
-//
-//        member x.GetDelta() =
-//            lock set update
-//            x.EvaluateIfNeeded [] (fun () ->
-//                let l = getDeltas()
-//                l |> apply content
-//            )
-//
-//        interface IDisposable with
-//            member x.Dispose() = x.Dispose()
-//
-//        interface IReader<'a> with
-//            member x.GetDelta() = x.GetDelta()
-//            member x.Update() = x.GetDelta() |> ignore
-//
-//            member x.Content = content
-//            member x.SubscribeOnEvaluate cb = { new IDisposable with member x.Dispose() = () }
+
+    type UseReader<'a when 'a :> IDisposable>(inputReader : IReader<'a>) as this =
+        inherit AbstractReader<'a>()
+        do inputReader.AddOutput this
+
+        override x.Release() =
+            for c in x.Content do
+                c.Dispose()
+            inputReader.RemoveOutput x
+            inputReader.Dispose()
+
+        override x.ComputeDelta() =
+            let deltas = inputReader.GetDelta()
+
+            for d in deltas do
+                match d with
+                    | Rem v -> v.Dispose()
+                    | _ -> ()
+
+            deltas
+
+
+
 
     // finally some utility functions reducing "noise" in the code using readers
     let map scope (f : 'a -> 'b) (input : IReader<'a>) =
@@ -601,3 +534,6 @@ module ASetReaders =
 
     let ofMod (m : IMod<'a>) =
         new ModReader<_>(m) :> IReader<_>
+
+    let using (r : IReader<'a>) =
+        new UseReader<'a>(r) :> IReader<_>
