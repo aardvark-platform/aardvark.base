@@ -33,6 +33,10 @@ type IListReader<'a> =
     /// </summary>
     abstract member GetDelta : unit -> Change<ISortKey * 'a>
 
+    abstract member Update : unit -> unit
+
+    abstract member SubscribeOnEvaluate : (Change<ISortKey * 'a> -> unit) -> IDisposable
+
 /// <summary>
 /// alist serves as the base interface for all adaptive lists.
 /// </summary>
@@ -57,6 +61,63 @@ module AListReaders =
 
                 d
                )
+
+    [<AbstractClass>]
+    type AbstractReader<'a>() =
+        inherit AdaptiveObject()
+
+        let content = TimeList<'a>()
+        let callbacks = HashSet<Change<ISortKey * 'a> -> unit>()
+
+        abstract member Order : IOrder
+        abstract member Release : unit -> unit
+        abstract member ComputeDelta : unit -> Change<ISortKey * 'a>
+        abstract member Update : unit -> unit        
+
+        member x.Content = content
+
+        member x.GetDelta() =
+            x.EvaluateIfNeeded [] (fun () ->
+                let deltas = x.ComputeDelta()
+                let finalDeltas = deltas |> apply content
+
+                for cb in callbacks do cb finalDeltas
+
+                finalDeltas
+            )
+
+        default x.Update() = x.GetDelta() |> ignore
+
+        override x.Finalize() =
+            try x.Dispose()
+            with _ -> ()
+
+        member x.Dispose() =
+            x.Release()
+            content.Clear()
+
+        member x.SubscribeOnEvaluate (cb : Change<ISortKey * 'a> -> unit) =
+            lock x (fun () ->
+                if callbacks.Add cb then
+                    { new IDisposable with 
+                        member __.Dispose() = 
+                            lock x (fun () ->
+                                callbacks.Remove cb |> ignore 
+                            )
+                    }
+                else
+                    { new IDisposable with member __.Dispose() = () }
+            )
+
+        interface IDisposable with
+            member x.Dispose() = x.Dispose()
+
+        interface IListReader<'a> with
+            member x.Update() = x.Update()
+            member x.RootTime = x.Order
+            member x.Content = content
+            member x.GetDelta() = x.GetDelta()
+            member x.SubscribeOnEvaluate cb = x.SubscribeOnEvaluate cb
 
     type DirtyListReaderSet<'a>() =
         let subscriptions = Dictionary<IListReader<'a>, unit -> unit>()
@@ -96,9 +157,11 @@ module AListReaders =
             if addOccurance r t then
                 // create and register a callback function
                 let onMarking () =
-                    for t in allOccurances r do 
-                        dirty.Add(t,r) |> ignore
-                        subscriptions.Remove r |> ignore
+                    lock dirty (fun () ->
+                        for t in allOccurances r do 
+                            dirty.Add(t,r) |> ignore
+                            subscriptions.Remove r |> ignore
+                    )
 
                 r.MarkingCallbacks.Add onMarking |> ignore
 
@@ -114,33 +177,46 @@ module AListReaders =
                 false
 
         let stop (r : IListReader<'a>) (t : ISortKey) =
-            if removeOccurance r t then
-                // if there exists a subscription we remove and dispose it
-                match subscriptions.TryGetValue r with
-                    | (true, d) -> 
-                        subscriptions.Remove r |> ignore
-                        d()
-                    | _ -> ()
+            lock dirty (fun () ->
+                if removeOccurance r t then
+                    // if there exists a subscription we remove and dispose it
+                    match subscriptions.TryGetValue r with
+                        | (true, d) -> 
+                            subscriptions.Remove r |> ignore
+                            d()
+                        | _ -> ()
 
-                // if the reader is already in the dirty-set remove it from there too
-                dirty.Remove(t,r) |> ignore
-                true
-            else
-                false
+                    // if the reader is already in the dirty-set remove it from there too
+                    dirty.Remove(t,r) |> ignore
+                    true
+                else
+                    false
+            )
 
         member x.Listen(t : ISortKey, r : IListReader<'a>) = start r t
             
         member x.Destroy(t : ISortKey, r : IListReader<'a>) = stop r t
 
         member x.GetDeltas() =
-            [ for (t,d) in dirty do
+            let mine = 
+                lock dirty (fun () -> 
+                    let arr = dirty |> Seq.toList
+                    dirty.Clear()
+                    arr
+                )
+            [ for (t,d) in mine do
                 // get deltas for all dirty readers and re-register
                 // marking callbacks
-                let c = d.GetDelta()
-                x.Listen(t,d) |> ignore
+                let c = 
+                    lock d (fun () ->
+                        let res = d.GetDelta()
+                        x.Listen(t,d) |> ignore
+                        res
+                    )
+
                 yield! c |> List.map (fun d -> 
                                 match d with
-                                    | Add(i,v) -> Add(t, i,v)
+                                    | Add(i,v) -> Add(t,i,v)
                                     | Rem(i,v) -> Rem(t,i,v)
                             )
             ]
@@ -156,420 +232,439 @@ module AListReaders =
  
 
     type MapReader<'a, 'b>(scope, f : 'a -> 'b, input : IListReader<'a>) as this =
-        inherit AdaptiveObject()
+        inherit AbstractReader<'b>()
         do input.AddOutput this
         
-        let content = TimeList<'b>()
         let f = Cache<'a, 'b>(scope, f)
 
-        member x.Dispose() =
+        override x.Order = input.RootTime
+
+        override x.Release() =
             input.RemoveOutput this
             input.Dispose()
-            content.Clear()
             f.Clear(ignore)
 
-        override x.Finalize() =
-            try x.Dispose() 
-            with _ -> ()
-
-        interface IDisposable with
-            member x.Dispose() = x.Dispose()
-
-        interface IListReader<'b> with
-            member x.RootTime = input.RootTime
-            member x.Content = content
-            member x.GetDelta() =
-                x.EvaluateIfNeeded [] (fun () ->
-                    let deltas = input.GetDelta()
-
-                    let deltas = 
-                        deltas |> List.map (fun d ->
-                            match d with
-                                | Add(t, v) -> Add (t, f.Invoke v)
-                                | Rem(t, v) -> Rem (t, f.Revoke v)
-                        )
-
-                    deltas |> apply content
-                )
+        override x.ComputeDelta() =
+            let deltas = input.GetDelta()
+            deltas |> List.map (fun d ->
+                match d with
+                    | Add(t, v) -> Add (t, f.Invoke v)
+                    | Rem(t, v) -> Rem (t, f.Revoke v)
+            )
 
     type MapKeyReader<'a, 'b>(scope, f : ISortKey -> 'a -> 'b, input : IListReader<'a>) as this =
-        inherit AdaptiveObject()
+        inherit AbstractReader<'b>()
         do input.AddOutput this
         
-        let content = TimeList<'b>()
         let f = Cache<ISortKey * 'a, 'b>(scope, fun (k,v) -> f k v)
 
-        member x.Dispose() =
+        override x.Order = input.RootTime
+
+        override x.Release() =
             input.RemoveOutput this
             input.Dispose()
-            content.Clear()
             f.Clear(ignore)
 
-        override x.Finalize() =
-            try x.Dispose() 
-            with _ -> ()
-
-        interface IDisposable with
-            member x.Dispose() = x.Dispose()
-
-        interface IListReader<'b> with
-            member x.RootTime = input.RootTime
-            member x.Content = content
-            member x.GetDelta() =
-                x.EvaluateIfNeeded [] (fun () ->
-                    let deltas = input.GetDelta()
-
-                    let deltas = 
-                        deltas |> List.map (fun d ->
-                            match d with
-                                | Add(t, v) -> Add (t, f.Invoke (t,v))
-                                | Rem(t, v) -> Rem (t, f.Revoke (t,v))
-                        )
-
-                    deltas |> apply content
-                )
+        override x.ComputeDelta() =
+            let deltas = input.GetDelta() 
+            deltas |> List.map (fun d ->
+                match d with
+                    | Add(t, v) -> Add (t, f.Invoke (t,v))
+                    | Rem(t, v) -> Rem (t, f.Revoke (t,v))
+            )
 
 
 
     type CollectReader<'a, 'b>(scope, input : IListReader<'a>, f : 'a -> IListReader<'b>) as this =
-        inherit AdaptiveObject()
+        inherit AbstractReader<'b>()
         do input.AddOutput this
 
-        let content = TimeList<'b>()
         let dirtyInner = new DirtyListReaderSet<'b>()
         let f = Cache<'a, IListReader<'b>>(scope, f)
 
         let mutable mapping = NestedOrderMapping()
         let mutable rootTime = mapping.Root
 
-        member x.Dispose() =
+        override x.Release() =
             input.RemoveOutput x
             input.Dispose()
             f.Clear(fun r -> r.RemoveOutput x; r.Dispose())
-            content.Clear()
             dirtyInner.Dispose()
             mapping.Clear()
             rootTime <- Unchecked.defaultof<ISortKey>
 
-        override x.Finalize() =
-            try x.Dispose() 
-            with _ -> ()
+        override x.Order = mapping.Order
 
-        interface IDisposable with
-            member x.Dispose() = x.Dispose()
-
-        interface IListReader<'b> with
-            member x.RootTime = mapping.Order
-            member x.Content = content
-            member x.GetDelta() =
-                x.EvaluateIfNeeded [] (fun () ->
-                    let xs = input.GetDelta()
+        override x.ComputeDelta() =
+            let xs = input.GetDelta()
                 
-                    let outerDeltas =
-                        xs |> List.collect (fun d ->
-                            match d with
-                                | Add (t,v) ->
-                                    let r = f.Invoke v
+            let outerDeltas =
+                xs |> List.collect (fun d ->
+                    match d with
+                        | Add (t,v) ->
+                            let r = f.Invoke v
 
-                                    // bring the reader's content up-to-date by calling GetDelta
-                                    r.GetDelta() |> ignore
+                            // bring the reader's content up-to-date by calling GetDelta
+                            r.GetDelta() |> ignore
 
-                                    // listen to marking of r (reader cannot be OutOfDate due to GetDelta above)
-                                    if dirtyInner.Listen(t, r) then
-                                        // we're an output of the new reader
-                                        r.AddOutput x
+                            // listen to marking of r (reader cannot be OutOfDate due to GetDelta above)
+                            if dirtyInner.Listen(t, r) then
+                                // we're an output of the new reader
+                                r.AddOutput x
 
-                                    // since the entire reader is new we add its content
-                                    // which must be up-to-date here (due to calling GetDelta above)
-                                    let additions = r.Content |> Seq.map (fun (i,v) -> Add(mapping.Invoke(t, i), v)) |> Seq.toList
-                                    additions
+                            // since the entire reader is new we add its content
+                            // which must be up-to-date here (due to calling GetDelta above)
+                            let additions = r.Content |> Seq.map (fun (i,v) -> Add(mapping.Invoke(t, i), v)) |> Seq.toList
+                            additions
 
-                                | Rem (t,v) ->
-                                    let r = f.Revoke v
+                        | Rem (t,v) ->
+                            let r = f.Revoke v
                                 
-                                    // remove the reader-occurance from the listen-set
-                                    if dirtyInner.Destroy(t, r) then
-                                        // since the reader is no longer contained we don't want
-                                        // to be notified anymore
-                                        r.RemoveOutput x
+                            // remove the reader-occurance from the listen-set
+                            if dirtyInner.Destroy(t, r) then
+                                // since the reader is no longer contained we don't want
+                                // to be notified anymore
+                                r.RemoveOutput x
 
-                                    // the entire content of the reader is removed
-                                    // Note that the content here might be OutOfDate
-                                    // TODO: think about implications here when we do not "own" the reader
-                                    //       exclusively
-                                    let removals = r.Content |> Seq.map (fun (i,v) -> Rem(mapping.Revoke(t, i), v))  |> Seq.toList
+                            // the entire content of the reader is removed
+                            // Note that the content here might be OutOfDate
+                            // TODO: think about implications here when we do not "own" the reader
+                            //       exclusively
+                            let removals = r.Content |> Seq.map (fun (i,v) -> Rem(mapping.Revoke(t, i), v))  |> Seq.toList
 
-                                    // remove all times created for this specific occurance of r
-                                    mapping.RevokeAll t |> ignore
-                                    removals
-                        )
-
-                    // all dirty inner readers must be registered 
-                    // in dirtyInner. Even if the outer set did not change we
-                    // need to collect those inner deltas.
-                    let innerDeltas = 
-                        dirtyInner.GetDeltas() |> List.map (fun d ->
-                            match d with
-                                | Add (o,i,v) -> Add(mapping.Invoke(o, i), v)
-                                | Rem (o,i,v) -> Rem(mapping.Revoke(o, i), v)
-                                
-                        )
-
-                    // concat inner and outer deltas 
-                    let deltas = List.append outerDeltas innerDeltas
-
-                    deltas |> apply content
+                            // remove all times created for this specific occurance of r
+                            mapping.RevokeAll t |> ignore
+                            removals
                 )
 
-    type ChooseReader<'a, 'b>(scope, input : IListReader<'a>, f : 'a -> Option<'b>) as this =
-        inherit AdaptiveObject()
+            // all dirty inner readers must be registered 
+            // in dirtyInner. Even if the outer set did not change we
+            // need to collect those inner deltas.
+            let innerDeltas = 
+                dirtyInner.GetDeltas() |> List.map (fun d ->
+                    match d with
+                        | Add (o,i,v) -> Add(mapping.Invoke(o, i), v)
+                        | Rem (o,i,v) -> Rem(mapping.Revoke(o, i), v)
+                                
+                )
 
+            // concat inner and outer deltas 
+            List.append outerDeltas innerDeltas
+
+
+    type ChooseReader<'a, 'b>(scope, input : IListReader<'a>, f : 'a -> Option<'b>) as this =
+        inherit AbstractReader<'b>()
         do input.AddOutput this
 
-        
         let mapping = OrderMapping()
         let root = mapping.Root
-        let content = TimeList<'b>()
         let f = Cache<'a, Option<'b>>(scope, f)
 
-        member x.Dispose() =
+        override x.Release() =
             input.RemoveOutput this
             input.Dispose()
-            content.Clear()
             mapping.Clear()
             f.Clear(ignore)
 
-        override x.Finalize() =
-            try x.Dispose() 
-            with _ -> ()
+        override x.Order = mapping.Order
 
-        interface IDisposable with
-            member x.Dispose() = x.Dispose()
+        override x.ComputeDelta() =
+            let deltas = input.GetDelta()
 
-        interface IListReader<'b> with
-            member x.RootTime = mapping.Order
-            member x.Content = content
-            member x.GetDelta() =
-                x.EvaluateIfNeeded [] (fun () ->
-                    let deltas = input.GetDelta()
+            deltas |> List.choose (fun d ->
+                match d with
+                    | Add(t, v) -> 
+                        match f.Invoke v with
+                            | Some v -> 
+                                let t' = mapping.Invoke t
+                                Add (t', v) |> Some
+                            | None -> None
+                    | Rem(t, v) -> 
+                        match f.Revoke v with
+                            | Some v -> 
+                                let t' = mapping.Revoke t
+                                Rem (t', v) |> Some
+                            | None -> None
+            )
 
-                    let deltas = 
-                        deltas |> List.choose (fun d ->
-                            match d with
-                                | Add(t, v) -> 
-                                    match f.Invoke v with
-                                        | Some v -> 
-                                            let t' = mapping.Invoke t
-                                            Add (t', v) |> Some
-                                        | None -> None
-                                | Rem(t, v) -> 
-                                    match f.Revoke v with
-                                        | Some v -> 
-                                            let t' = mapping.Revoke t
-                                            Rem (t', v) |> Some
-                                        | None -> None
-                        )
-
-                    deltas |> apply content
-                )
 
     type ModReader<'a>(source : IMod<'a>) as this =  
-        inherit AdaptiveObject()
+        inherit AbstractReader<'a>()
         do source.AddOutput this
         let mutable old : Option<SimpleOrder.SortKey * 'a> = None
-        let content = TimeList()
         let mutable order = SimpleOrder.create()
         let hasChanged = ChangeTracker.track<'a>
 
-        member x.Dispose() =
+        override x.Release() =
             source.RemoveOutput x
             match old with
                 | Some (t,_) ->
                     order.Delete t
                     old <- None
                 | None -> ()
-            content.Clear()
 
 
-        override x.Finalize() =
-            try x.Dispose() 
-            with _ -> ()
+        override x.Order = order :> IOrder
 
-        interface IDisposable with
-            member x.Dispose() = x.Dispose()
+        override x.ComputeDelta() =
+            let v = source.GetValue()
+                
+            if hasChanged v then
+                match old with
+                    | None ->
+                        let t = order.After order.Root //Time.after rootTime
+                        old <- Some (t,v)
+                        [Add (t :> ISortKey,v)]
+                    | Some (t,c) ->
+                        let tNew = order.After order.Root
+                        order.Delete t
+                        old <- Some (tNew, v)
+                        [Rem (t :> ISortKey, c); Add (tNew :> ISortKey, v)]
+            else
+                []
 
-        interface IListReader<'a> with
-            member x.RootTime = order :> IOrder
-            member x.Content = content
-            member x.GetDelta() =
-                x.EvaluateIfNeeded [] (fun () ->
-                    let v = source.GetValue()
-                    let resultDeltas =
-                        if hasChanged v then
-                            match old with
-                                | None ->
-                                    let t = order.After order.Root //Time.after rootTime
-                                    old <- Some (t,v)
-                                    [Add (t :> ISortKey,v)]
-                                | Some (t,c) ->
-                                    let tNew = order.After order.Root
-                                    order.Delete t
-                                    old <- Some (tNew, v)
-                                    [Rem (t :> ISortKey, c); Add (tNew :> ISortKey, v)]
-                        else
-                            []
-
-                    resultDeltas |> apply content
-                )
 
     type SetReader<'a>(input : IReader<'a>) as this =
-        inherit AdaptiveObject()
+        inherit AbstractReader<'a>()
         do input.AddOutput this
         
         let order = SimpleOrder.create()
         let times = Dictionary<obj, SimpleOrder.SortKey>()
-        let content = TimeList()
 
-        member x.Dispose() =
+        override x.Order = order :> IOrder
+
+        override x.Release() =
             input.RemoveOutput x
             order.Clear()
-            content.Clear()
+            times.Clear()
 
-        override x.Finalize() =
-            try x.Dispose() 
-            with _ -> ()
+        override x.ComputeDelta() =
+            let deltas = input.GetDelta()
 
-        member x.GetDelta() =
-            x.EvaluateIfNeeded [] (fun () ->
-                let deltas = input.GetDelta()
-
-                let listDeltas =
-                    deltas |> List.map (fun d ->
-                        match d with
-                            | Add v -> 
-                                let t = order.After order.Root.Prev
-                                times.Add(d, t)
-                                Add(t :> ISortKey, v)
-                            | Rem v ->
-                                match times.TryGetValue v with
-                                    | (true, t) ->
-                                        order.Delete t
-                                        Rem(t :> ISortKey, v)
-                                    | _ -> 
-                                        failwith "removal of unknown value"
-                    )
-
-                listDeltas |> apply content
+            deltas |> List.map (fun d ->
+                match d with
+                    | Add v -> 
+                        let t = order.After order.Root.Prev
+                        times.Add(d, t)
+                        Add(t :> ISortKey, v)
+                    | Rem v ->
+                        match times.TryGetValue v with
+                            | (true, t) ->
+                                order.Delete t
+                                Rem(t :> ISortKey, v)
+                            | _ -> 
+                                failwith "removal of unknown value"
             )
 
-        interface IListReader<'a> with
-            member x.GetDelta() = x.GetDelta()
-            member x.Content = content
-            member x.RootTime = order :> IOrder
-            member x.Dispose() = x.Dispose()
+    type EmitReader<'a>(order : IOrder, dispose : EmitReader<'a> -> unit) =
+        inherit AbstractReader<'a>()
 
-    type BufferedReader<'a>(rootTime : IOrder, update : unit -> unit, dispose : BufferedReader<'a> -> unit) =
-        inherit AdaptiveObject()
-        let deltas = List()
-        let mutable reset : Option<ICollection<ISortKey * 'a>> = None
+        let deltas = List<Delta<ISortKey * 'a>>()
+        let mutable reset : Option<TimeList<'a>> = None
 
-        let content = TimeList<'a>()
+        member x.Emit (c : TimeList<'a>, d : Option<list<Delta<ISortKey * 'a>>>) =
+            lock x (fun () ->
+                match d with 
+                    | Some d ->
+                        deltas.AddRange d
+//                        let N = c.Count
+//                        let M = content.Count
+//                        let D = deltas.Count + (List.length d)
+//                        if D > N + 2 * M then
+//                            reset <- Some c
+//                            deltas.Clear()
+//                        else
+//                            deltas.AddRange d
 
-        
-        let getDeltas() =
+                    | None ->
+                        reset <- Some c
+                        deltas.Clear()
+
+                if not x.OutOfDate then
+                    match getCurrentTransaction() with
+                        | Some t ->
+                            t.Enqueue x
+                        | _ ->
+                            failwith "[EmitReader] cannot emit without transaction"
+            )
+
+        override x.Order = order
+
+        override x.Release() =
+            dispose x
+            deltas.Clear()
+            reset <- None
+
+        override x.ComputeDelta() =
+            let content = x.Content
             match reset with
                 | Some c ->
+                    //Interlocked.Increment(&resetCount) |> ignore
                     reset <- None
-                    let add = c |> Seq.filter (not << content.Contains) |> Seq.map Add
-                    let rem = content |> Seq.filter (not << c.Contains) |> Seq.map Rem
+                    let add = c.All |> Seq.filter (not << content.Contains) |> Seq.map Add
+                    let rem = content.All |> Seq.filter (not << c.Contains) |> Seq.map Rem
 
                     Seq.append add rem |> Seq.toList
                 | None ->
+                    //Interlocked.Increment(&incrementalCount) |> ignore
                     let res = deltas |> Seq.toList
                     deltas.Clear()
                     res
 
-        member x.IsIncremental = 
-            true
+    type CopyReader<'a>(inputReader : IListReader<'a>, dispose : CopyReader<'a> -> unit) as this =
+        inherit AbstractReader<'a>()
+        
+        let deltas = List()
+        let mutable reset = Some inputReader.Content
 
-        member x.Reset(c : ICollection<ISortKey * 'a>) =
-            reset <- Some c
-            deltas.Clear()
-            x.MarkOutdated()
+        let emit (d : list<Delta<ISortKey * 'a>>) =
+            lock deltas (fun () ->
+                if reset.IsNone then
+                    deltas.AddRange d
+            )
 
-        member x.Emit (d : list<Delta<ISortKey * 'a>>) =
-            deltas.AddRange d
-            x.MarkOutdated()
+        do inputReader.AddOutput this
+        let subscription = inputReader.SubscribeOnEvaluate emit
 
-        new(rootTime, dispose) = new BufferedReader<'a>(rootTime, id, dispose)
-        new(rootTime) = new BufferedReader<'a>(rootTime, id, ignore)
+        override x.ComputeDelta() =
+            inputReader.Update()
 
-        member x.Dispose() =
+            lock deltas (fun () ->
+                match reset with
+                    | Some c ->
+                        let content = x.Content
+                        reset <- None
+                        deltas.Clear()
+                        let add = c |> Seq.filter (not << content.Contains) |> Seq.map Add
+                        let rem = content |> Seq.filter (not << c.Contains) |> Seq.map Rem
+
+                        Seq.append add rem |> Seq.toList
+                    | None ->
+                        let res = deltas |> Seq.toList
+                        deltas.Clear()
+                        res
+            )
+
+        override x.Release() =
+            inputReader.RemoveOutput x
+            subscription.Dispose()
             dispose(x)
 
-        override x.Finalize() = 
-            try x.Dispose()
-            with _ -> ()
+        override x.Order = inputReader.RootTime
 
-        interface IDisposable with
-            member x.Dispose() = x.Dispose()
+    type OneShotReader<'a>(order : IOrder, deltas : Change<ISortKey * 'a>) =  
+        inherit AbstractReader<'a>()
+        
+        let mutable order = order
+        let mutable deltas = deltas
 
-        interface IListReader<'a> with
-            member x.RootTime = rootTime
-            member x.GetDelta() =
-                update()
-                x.EvaluateIfNeeded [] (fun () ->
-                    let l = getDeltas()
-                    l |> apply content
-                )
+        override x.Order = order
 
-            member x.Content = content
+        override x.ComputeDelta() =
+            let res = deltas
+            deltas <- []
+            order <- Unchecked.defaultof<_>
+            res
+
+        override x.Release() =
+            deltas <- []
+            order <- Unchecked.defaultof<_>
+
+//    type BufferedReader<'a>(rootTime : IOrder, update : unit -> unit, dispose : BufferedReader<'a> -> unit) =
+//        inherit AdaptiveObject()
+//        let deltas = List()
+//        let mutable reset : Option<ICollection<ISortKey * 'a>> = None
+//
+//        let content = TimeList<'a>()
+//
+//        
+//        let getDeltas() =
+//            match reset with
+//                | Some c ->
+//                    reset <- None
+//                    let add = c |> Seq.filter (not << content.Contains) |> Seq.map Add
+//                    let rem = content |> Seq.filter (not << c.Contains) |> Seq.map Rem
+//
+//                    Seq.append add rem |> Seq.toList
+//                | None ->
+//                    let res = deltas |> Seq.toList
+//                    deltas.Clear()
+//                    res
+//
+//        member x.IsIncremental = 
+//            true
+//
+//        member x.Reset(c : ICollection<ISortKey * 'a>) =
+//            reset <- Some c
+//            deltas.Clear()
+//            x.MarkOutdated()
+//
+//        member x.Emit (d : list<Delta<ISortKey * 'a>>) =
+//            deltas.AddRange d
+//            x.MarkOutdated()
+//
+//        new(rootTime, dispose) = new BufferedReader<'a>(rootTime, id, dispose)
+//        new(rootTime) = new BufferedReader<'a>(rootTime, id, ignore)
+//
+//        member x.Dispose() =
+//            dispose(x)
+//
+//        override x.Finalize() = 
+//            try x.Dispose()
+//            with _ -> ()
+//
+//        interface IDisposable with
+//            member x.Dispose() = x.Dispose()
+//
+//        interface IListReader<'a> with
+//            member x.RootTime = rootTime
+//            member x.GetDelta() =
+//                update()
+//                x.EvaluateIfNeeded [] (fun () ->
+//                    let l = getDeltas()
+//                    l |> apply content
+//                )
+//
+//            member x.Update() =
+//                failwith "dead"
+//
+//            member x.Content = content
+//            member x.SubscribeOnEvaluate cb = failwith "dead"
+//
+//
+
+
 
     type SortWithReader<'a when 'a : equality>(input : IReader<'a>, cmp : 'a -> 'a -> int) as this =
-        inherit AdaptiveObject()
+        inherit AbstractReader<'a>()
         do input.AddOutput this
 
-        let content = TimeList<'a>()
         let tree = OrderMaintenance<'a>(cmp)
         let root = tree.Root
 
-        member x.Dispose() =
+        override x.Release() =
             input.RemoveOutput this
             input.Dispose()
-            content.Clear()
+            tree.Clear()
             
+        override x.Order = tree.Order
 
-        override x.Finalize() =
-            try x.Dispose() 
-            with _ -> ()
+        override x.ComputeDelta() =
+            let deltas = input.GetDelta()
 
-        interface IDisposable with
-            member x.Dispose() = x.Dispose()
+            deltas |> List.map (fun d ->
+                match d with
+                    | Add v ->
+                        let t = tree.Invoke v
+                        Add(t, v)
+                    | Rem v -> 
+                        let t = tree.Revoke v
+                        Rem (t, v)
+            )
 
-        interface IListReader<'a> with
-            member x.RootTime = tree.Order
-            member x.Content = content
-            member x.GetDelta() =
-                x.EvaluateIfNeeded [] (fun () ->
-                    let deltas = input.GetDelta()
-
-                    let deltas = 
-                        deltas |> List.map (fun d ->
-                            match d with
-                                | Add v ->
-                                    let t = tree.Invoke v
-                                    Add(t, v)
-                                | Rem v -> 
-                                    let t = tree.Revoke v
-                                    Rem (t, v)
-                        )
-
-                    deltas |> apply content
-                )
 
     type ListSetReader<'a>(input : IListReader<'a>) as this =
         inherit ASetReaders.AbstractReader<'a>()
-
         do input.AddOutput this
 
         override x.Release() =

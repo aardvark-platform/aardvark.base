@@ -407,6 +407,8 @@ module ASetReaders =
 
         override x.Release() =
             dispose x
+            deltas.Clear()
+            reset <- None
 
         override x.ComputeDelta() =
             let content = x.Content
