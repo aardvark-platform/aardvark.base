@@ -47,6 +47,8 @@ type TimeList<'a>() =
     member x.Values =
         x |> Seq.map snd
 
+    member x.All = cache |> Seq.map (fun (KeyValue(k,v)) -> k,v)
+
     interface ICollection<ISortKey * 'a> with
         member x.Add item = x.Add item |> ignore
         member x.Contains item = x.Contains item

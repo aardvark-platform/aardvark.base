@@ -301,8 +301,8 @@ module ``collect tests`` =
         for n in numbers do
             let s = ASet.single n
             Task.Factory.StartNew(fun () ->
-                lock l (fun () ->
-                    transact (fun () ->
+                transact (fun () ->
+                    lock l (fun () ->
                         set.Add(s) |> ignore
                     )
                 )
@@ -335,7 +335,7 @@ module ``collect tests`` =
         let ct = cancel.Token
 
 
-        let readers = [0..7] |> List.map (fun _ -> derived.GetReader())
+        let readers = [0..2] |> List.map (fun _ -> derived.GetReader())
         // pull from the system
 
         for r in readers do
@@ -354,8 +354,8 @@ module ``collect tests`` =
         for n in numbers do
             let s = ASet.single n
             Task.Factory.StartNew(fun () ->
-                lock l (fun () ->
-                    transact (fun () ->
+                transact (fun () ->
+                    lock l (fun () ->
                         set.Add(s) |> ignore
                     )
                 )
@@ -402,8 +402,8 @@ module ``collect tests`` =
         for n in numbers do
             let s = ASet.single n
             Task.Factory.StartNew(fun () ->
-                lock l (fun () ->
-                    transact (fun () ->
+                transact (fun () ->
+                    lock l (fun () ->
                         set.Add(s) |> ignore
                     )
                 )

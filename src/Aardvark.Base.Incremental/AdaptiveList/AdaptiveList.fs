@@ -9,8 +9,8 @@ open Aardvark.Base.Incremental.AListReaders
 
 module AList =
     type AdaptiveList<'a>(newReader : unit -> IListReader<'a>) =
-        let state = TimeList<'a>()
-        let readers = WeakSet<BufferedReader<'a>>()
+//        let state = TimeList<'a>()
+        let readers = WeakSet<CopyReader<'a>>()
 
         let mutable inputReader = None
         let getReader() =
@@ -20,21 +20,21 @@ module AList =
                     let r = newReader()
                     inputReader <- Some r
                     r
-
-        let bringUpToDate () =
-            let r = getReader()
-            let delta = r.GetDelta ()
-            if not <| List.isEmpty delta then
-                delta |> apply state |> ignore
-                readers  |> Seq.iter (fun ri ->
-                    if ri.IsIncremental then
-                        ri.Emit delta
-                    else ri.Reset state
-                )
+//
+//        let bringUpToDate () =
+//            let r = getReader()
+//            let delta = r.GetDelta ()
+//            if not <| List.isEmpty delta then
+//                delta |> apply state |> ignore
+//                readers  |> Seq.iter (fun ri ->
+//                    if ri.IsIncremental then
+//                        ri.Emit delta
+//                    else ri.Reset state
+//                )
 
         interface alist<'a> with
             member x.GetReader () =
-                bringUpToDate()
+                //bringUpToDate()
                 let r = getReader()
 
                 let remove ri =
@@ -45,9 +45,7 @@ module AList =
                         r.Dispose()
                         inputReader <- None
 
-                let reader = new BufferedReader<'a>(r.RootTime, bringUpToDate, remove)
-                reader.Emit (state |> Seq.map Add |> Seq.toList)
-                r.AddOutput reader
+                let reader = new CopyReader<'a>(r, remove)
                 readers.Add reader |> ignore
 
                 reader :> _
@@ -56,8 +54,7 @@ module AList =
         let content = List.ofSeq content
         interface alist<'a> with
             member x.GetReader () =
-                let r = new BufferedReader<'a>(rootTime)
-                r.Emit(content |> List.map Add)
+                let r = new OneShotReader<'a>(rootTime, content |> List.map Add)
                 r :> IListReader<_>
 
     let private emptyTime = SimpleOrder.create()

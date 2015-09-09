@@ -2,6 +2,7 @@
 
 open System
 open System.Runtime.CompilerServices
+open System.Collections.Generic
 open System.Collections.Concurrent
 open Aardvark.Base
 open Aardvark.Base.Incremental.ASetReaders
@@ -12,8 +13,7 @@ open Aardvark.Base.Incremental.ASetReaders
 module ASet =
     type AdaptiveSet<'a>(newReader : unit -> IReader<'a>) =
         let l = obj()
-        let state = ReferenceCountingSet<'a>()
-        let readers = WeakSet<BufferedReader<'a>>()
+        let readers = WeakSet<CopyReader<'a>>()
 
         let mutable inputReader = None
         let getReader() =
@@ -24,21 +24,11 @@ module ASet =
                     inputReader <- Some r
                     r
 
-        let bringUpToDate () =
-            lock l (fun () ->
-                let r = getReader()
-                let delta = r.GetDelta ()
-                if not <| List.isEmpty delta then
-                    delta |> apply state |> ignore
-                    readers  |> Seq.iter (fun ri ->
-                        ri.Emit(state, Some delta)
-                    )
-            )
 
         interface aset<'a> with
+            member x.IsConstant = false
             member x.GetReader () =
                 lock l (fun () ->
-                    bringUpToDate()
                     let r = getReader()
 
                     let remove ri =
@@ -49,22 +39,23 @@ module ASet =
                             r.Dispose()
                             inputReader <- None
 
-                    let reader = new BufferedReader<'a>(x,bringUpToDate, remove)
-                    reader.Emit (state, None)
-                    r.AddOutput reader
+                    let reader = new CopyReader<'a>(r, remove)
                     readers.Add reader |> ignore
 
                     reader :> _
                 )
 
-    type ConstantSet<'a>(content : seq<'a>) =
-        let content = ReferenceCountingSet content
+    type ConstantSet<'a>(content : Lazy<HashSet<'a>>) =
+        let content = lazy ( HashSet content.Value )
 
         interface aset<'a> with
+            member x.IsConstant = true
             member x.GetReader () =
-                let r = new BufferedReader<'a>(x)
-                r.Emit(content, None)
+                let r = new OneShotReader<'a>(content.Value |> Seq.toList |> List.map Add)
                 r :> IReader<_>
+
+        new(l : seq<'a>) = ConstantSet<'a>(lazy (HashSet l))
+        new(content : Lazy<list<'a>>) = ConstantSet<'a>(lazy (HashSet content.Value))
 
     type private EmptySetImpl<'a> private() =
         static let emptySet = ConstantSet [] :> aset<'a>
@@ -129,6 +120,10 @@ module ASet =
     let ofArray (a : 'a[]) =
         ConstantSet(a) :> aset<_>
 
+    let delay (f : unit -> seq<'a>) =
+        let scope = Ag.getContext()
+        ConstantSet(lazy (Ag.useScope scope (fun () -> f() |> Seq.toList))) :> aset<_>
+
     /// <summary>
     /// returns a list of all elements currently in the adaptive set. 
     /// NOTE: will force the evaluation of the set.
@@ -160,7 +155,18 @@ module ASet =
     /// the latest value of the given mod-cell.
     /// </summary>
     let ofMod (m : IMod<'a>) =
-        AdaptiveSet(fun () -> ofMod m) :> aset<_>
+        if m.IsConstant then
+            ConstantSet [m.GetValue()] :> aset<_>
+        else
+            AdaptiveSet(fun () -> ofMod m) :> aset<_>
+
+
+    /// <summary>
+    /// creates an aset containing all element from the
+    /// original one but disposing them as they are removed
+    /// </summary>
+    let using (s : aset<'a>) =
+        AdaptiveSet(fun () -> using <| s.GetReader()) :> aset<_>
 
     /// <summary>
     /// creates a mod-cell containing the set's content
@@ -204,15 +210,23 @@ module ASet =
     ///       that the function may be non-injective
     /// </summary>
     let map (f : 'a -> 'b) (set : aset<'a>) = 
-        let scope = Ag.getContext()
-        AdaptiveSet(fun () -> set.GetReader() |> map scope f) :> aset<'b>
+        if set.IsConstant then
+            delay (fun () ->
+                use r = set.GetReader()
+                r.Update()
+                r.Content |> Seq.map f
+            )
+        else
+            let scope = Ag.getContext()
+            AdaptiveSet(fun () -> set.GetReader() |> map scope f) :> aset<'b>
 
     /// <summary>
     /// applies the given function to a cell and adaptively
     /// returns the resulting set.
     /// </summary>
     let bind (f : 'a -> aset<'b>) (m : IMod<'a>) =
-        if m.IsConstant then m |> Mod.force |> f
+        if m.IsConstant then 
+            m |> Mod.force |> f
         else
             let scope = Ag.getContext()
             AdaptiveSet(fun () -> m |> bind scope (fun v -> (f v).GetReader())) :> aset<'b>
@@ -247,8 +261,15 @@ module ASet =
     ///       that the function may be non-injective
     /// </summary>
     let choose (f : 'a -> Option<'b>) (set : aset<'a>) =
-        let scope = Ag.getContext()
-        AdaptiveSet(fun () -> set.GetReader() |> choose scope f) :> aset<'b>
+        if set.IsConstant then
+            delay (fun () ->
+                use r = set.GetReader()
+                r.Update()
+                r.Content |> Seq.choose f
+            )
+        else
+            let scope = Ag.getContext()
+            AdaptiveSet(fun () -> set.GetReader() |> choose scope f) :> aset<'b>
 
     /// <summary>
     /// filters the elements in the set using the given predicate
