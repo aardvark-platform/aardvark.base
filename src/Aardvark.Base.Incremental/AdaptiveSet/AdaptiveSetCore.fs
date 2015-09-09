@@ -435,6 +435,17 @@ module ASetReaders =
 
         let emit (d : list<Delta<'a>>) =
             lock deltas (fun () ->
+//                if reset.IsNone then
+//                    let N = inputReader.Content.Count
+//                    let M = this.Content.Count
+//                    let D = deltas.Count + (List.length d)
+//                    if D > N + 2 * M then
+//                        reset <- Some (inputReader.Content :> _)
+//                        deltas.Clear()
+//                    else
+//                        deltas.AddRange d
+
+
                 if reset.IsNone then
                     deltas.AddRange d
             )
