@@ -568,42 +568,26 @@ module AListReaders =
                 )
 
     type ListSetReader<'a>(input : IListReader<'a>) as this =
-        inherit AdaptiveObject()
+        inherit ASetReaders.AbstractReader<'a>()
 
         do input.AddOutput this
-        let content = ReferenceCountingSet()
 
-        member x.Dispose() =
+        override x.Release() =
             input.RemoveOutput x
-            content.Clear()
 
-        override x.Finalize() =
-            try x.Dispose() 
-            with _ -> ()
+        override x.ComputeDelta() =
+            let deltas = input.GetDelta()
 
-        member x.GetDelta() =
-            x.EvaluateIfNeeded [] (fun () ->
-                let deltas = input.GetDelta()
+            let setDeltas =
+                deltas |> List.map (fun d ->
+                    match d with
+                        | Add (_,v) -> 
+                            Add v
+                        | Rem (_,v) ->
+                            Rem v
+                )
 
-                let setDeltas =
-                    deltas |> List.map (fun d ->
-                        match d with
-                            | Add (_,v) -> 
-                                Add v
-                            | Rem (_,v) ->
-                                Rem v
-                    )
-
-                setDeltas 
-                    |> Delta.clean 
-                    |> ASetReaders.apply content
-            )
-
-        interface IReader<'a> with
-            member x.Update() = x.GetDelta() |> ignore
-            member x.GetDelta() = x.GetDelta()
-            member x.Content = content
-            member x.Dispose() = x.Dispose()
+            setDeltas |> Delta.clean 
 
 
 

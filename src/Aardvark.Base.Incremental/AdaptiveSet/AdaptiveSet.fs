@@ -12,8 +12,7 @@ open Aardvark.Base.Incremental.ASetReaders
 module ASet =
     type AdaptiveSet<'a>(newReader : unit -> IReader<'a>) =
         let l = obj()
-        let state = ReferenceCountingSet<'a>()
-        let readers = WeakSet<BufferedReader<'a>>()
+        let readers = WeakSet<CopyReader<'a>>()
 
         let mutable inputReader = None
         let getReader() =
@@ -24,21 +23,10 @@ module ASet =
                     inputReader <- Some r
                     r
 
-        let bringUpToDate () =
-            lock l (fun () ->
-                let r = getReader()
-                let delta = r.GetDelta ()
-                if not <| List.isEmpty delta then
-                    delta |> apply state |> ignore
-                    readers  |> Seq.iter (fun ri ->
-                        ri.Emit(state, Some delta)
-                    )
-            )
 
         interface aset<'a> with
             member x.GetReader () =
                 lock l (fun () ->
-                    bringUpToDate()
                     let r = getReader()
 
                     let remove ri =
@@ -49,9 +37,7 @@ module ASet =
                             r.Dispose()
                             inputReader <- None
 
-                    let reader = new BufferedReader<'a>(x,bringUpToDate, remove)
-                    reader.Emit (state, None)
-                    r.AddOutput reader
+                    let reader = new CopyReader<'a>(r, remove)
                     readers.Add reader |> ignore
 
                     reader :> _
@@ -62,8 +48,7 @@ module ASet =
 
         interface aset<'a> with
             member x.GetReader () =
-                let r = new BufferedReader<'a>(x)
-                r.Emit(content, None)
+                let r = new OneShotReader<'a>(content |> Seq.toList |> List.map Add)
                 r :> IReader<_>
 
     type private EmptySetImpl<'a> private() =

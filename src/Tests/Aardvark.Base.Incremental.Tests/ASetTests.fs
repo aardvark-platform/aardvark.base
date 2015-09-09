@@ -335,7 +335,7 @@ module ``collect tests`` =
         let ct = cancel.Token
 
 
-        let readers = [0..7] |> List.map (fun _ -> derived.GetReader())
+        let readers = [0..2] |> List.map (fun _ -> derived.GetReader())
         // pull from the system
 
         for r in readers do
