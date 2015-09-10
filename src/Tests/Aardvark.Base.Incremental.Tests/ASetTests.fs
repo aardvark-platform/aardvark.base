@@ -424,3 +424,56 @@ module ``collect tests`` =
         content |> should equal numbers
 
 
+    [<Test>]
+    let ``concurrency overkill test``() =
+
+        let l = obj()
+        let set = CSet.empty
+
+        let derived = set |> ASet.collect id |> ASet.map id |> ASet.choose Some |> ASet.collect ASet.single |> ASet.collect ASet.single
+        let readers = [1..10] |> List.map (fun _ -> derived.GetReader())
+        let numbers = [0..9999]
+
+        use sem = new SemaphoreSlim(0)
+        use cancel = new CancellationTokenSource()
+        let ct = cancel.Token
+
+
+        for r in readers do
+            // pull from the system
+            Task.Factory.StartNew(fun () ->
+                while true do
+                    ct.ThrowIfCancellationRequested()
+                    let delta = r.GetDelta()
+                    //Thread.Sleep(10)
+                    ()
+            ) |> ignore
+
+
+        // submit into the system
+        for n in numbers do
+            let s = CSet.ofList [n]
+            Task.Factory.StartNew(fun () ->
+                transact (fun () ->
+                    lock l (fun () ->
+                        set.Add(s) |> ignore
+                    )
+                )
+                sem.Release() |> ignore
+            ) |> ignore
+
+        // wait for all submissions to be done
+        for n in numbers do
+            sem.Wait()
+
+        cancel.Cancel()
+
+        for r in readers do
+            r.GetDelta() |> ignore
+
+
+        for r in readers do
+            let content = r.Content |> Seq.toList |> List.sort
+
+            content |> should equal numbers
+
