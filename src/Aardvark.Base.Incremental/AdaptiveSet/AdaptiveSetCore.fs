@@ -498,7 +498,7 @@ module ASetReaders =
 
         override x.Release() =
             for c in x.Content do
-                c.Dispose()
+                try c.Dispose() with _ -> ()
             inputReader.RemoveOutput x
             inputReader.Dispose()
 

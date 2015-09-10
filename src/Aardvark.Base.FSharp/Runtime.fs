@@ -318,35 +318,37 @@ module ReflectionHelpers =
         else
             str
 
-    let private cache (t : Type) (name : string) =
-        prettyTypeNames.Add(t, name)
-        name
-
     [<CompiledName("GetPrettyName")>]
     [<System.Runtime.CompilerServices.Extension>]
     let rec getPrettyName (t : Type) =
-        match prettyTypeNames.TryGetValue t with
-            | (true, n) -> n
-            | _ -> 
-                if t.IsGenericType then
+        let inline cache (t : Type) (name : string) =
+            prettyTypeNames.Add(t, name)
+            name
+
+        lock prettyTypeNames (fun () -> 
+            match prettyTypeNames.TryGetValue t with
+                | (true, n) -> n
+                | _ -> 
+                    if t.IsGenericType then
                     
-                    if typeof<Aardvark.Base.INatural>.IsAssignableFrom t then
-                        let size = Aardvark.Base.Peano.getSize t
-                        if size <= 16 then
-                            let result = sprintf "N%d" size
-                            cache t result
-                        else 
-                            let inner = getPrettyName (t.GetGenericArguments().[0])
-                            let result = sprintf "S<%s>" inner
+                        if typeof<Aardvark.Base.INatural>.IsAssignableFrom t then
+                            let size = Aardvark.Base.Peano.getSize t
+                            if size <= 16 then
+                                let result = sprintf "N%d" size
+                                cache t result
+                            else 
+                                let inner = getPrettyName (t.GetGenericArguments().[0])
+                                let result = sprintf "S<%s>" inner
+                                cache t result
+                        else
+                            let paramNames = t.GetGenericArguments() |> Array.map getPrettyName   
+                            let cleanName = cleanGenericName t.Name
+
+                            let result = sprintf "%s<%s>" cleanName (String.Join(", ", paramNames))
                             cache t result
                     else
-                        let paramNames = t.GetGenericArguments() |> Array.map getPrettyName   
-                        let cleanName = cleanGenericName t.Name
-
-                        let result = sprintf "%s<%s>" cleanName (String.Join(", ", paramNames))
-                        cache t result
-                else
-                    cache t t.Name
+                        cache t t.Name
+        )
 
     type System.Type with
         member x.PrettyName = getPrettyName x
