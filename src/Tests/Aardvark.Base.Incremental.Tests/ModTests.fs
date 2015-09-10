@@ -224,7 +224,7 @@ module ``Basic Mod Tests`` =
 
         let input = Mod.init 1
 
-        let derived = input |> Mod.map id |> Mod.bind Mod.constant |> Mod.map id |> Mod.bind Mod.constant
+        let derived = input |> Mod.map id //|> Mod.map id 
 
         let sem = new SemaphoreSlim(0)
         let trigger = new ManualResetEventSlim()
@@ -244,5 +244,7 @@ module ``Basic Mod Tests`` =
             sem.Wait()
 
 
-        pulledValues |> Set.ofSeq |> should setEqual [1]
+        let values = pulledValues |> Seq.countBy id |> Map.ofSeq
+        System.Console.WriteLine("{0}", sprintf "%A" values)
+        values |> Map.toSeq |> Seq.map fst |> should equal [1]
         
