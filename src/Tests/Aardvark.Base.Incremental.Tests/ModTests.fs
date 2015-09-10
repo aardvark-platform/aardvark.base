@@ -4,6 +4,8 @@ open Aardvark.Base
 open Aardvark.Base.Incremental
 open NUnit.Framework
 open FsUnit
+open System.Threading
+open System.Threading.Tasks
 
 module ``Basic Mod Tests`` =
     open System.Collections.Generic
@@ -213,3 +215,34 @@ module ``Basic Mod Tests`` =
 
         transact(fun () -> Mod.change a false)
         c.GetValue() |> should equal 0
+
+
+    [<Test>]
+    let ``mod concurrency test``() =
+        
+        let pulledValues = List<int>()
+
+        let input = Mod.init 1
+
+        let derived = input |> Mod.map id |> Mod.bind Mod.constant |> Mod.map id |> Mod.bind Mod.constant
+
+        let sem = new SemaphoreSlim(0)
+        let trigger = new ManualResetEventSlim()
+        for t in 1..1000 do
+            Task.Factory.StartNew(fun () ->
+                trigger.Wait()
+                let v = derived |> Mod.force
+
+                lock pulledValues (fun () -> pulledValues.Add v)
+
+                sem.Release() |> ignore
+            ) |> ignore
+
+        trigger.Set()
+
+        for i in 1..1000 do
+            sem.Wait()
+
+
+        pulledValues |> Set.ofSeq |> should setEqual [1]
+        
