@@ -159,10 +159,11 @@ module Mod =
             val mutable public scope : Ag.Scope
 
             member x.GetValue() =
-                x.EvaluateIfNeeded x.cache (fun () ->
-                    Ag.useScope x.scope (fun () ->
-                        x.cache <- x.compute()
-                    )
+                x.EvaluateAlways (fun () ->
+                    if x.OutOfDate then
+                        Ag.useScope x.scope (fun () ->
+                            x.cache <- x.compute()
+                        )
                     x.cache
                 )
 
