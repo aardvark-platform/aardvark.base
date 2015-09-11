@@ -73,10 +73,12 @@ module AListReaders =
         abstract member Release : unit -> unit
         abstract member ComputeDelta : unit -> Change<ISortKey * 'a>
         abstract member Update : unit -> unit        
+        abstract member GetDelta : unit -> Change<ISortKey * 'a>
 
         member x.Content = content
+        member x.Callbacks = callbacks
 
-        member x.GetDelta() =
+        default x.GetDelta() =
             x.EvaluateIfNeeded [] (fun () ->
                 let deltas = x.ComputeDelta()
                 let finalDeltas = deltas |> apply content
@@ -518,39 +520,82 @@ module AListReaders =
         let mutable reset = Some inputReader.Content
 
         let emit (d : list<Delta<ISortKey * 'a>>) =
-            lock deltas (fun () ->
+            lock this (fun () ->
+//                if reset.IsNone then
+//                    let N = inputReader.Content.Count
+//                    let M = this.Content.Count
+//                    let D = deltas.Count + (List.length d)
+//                    if D > N + 2 * M then
+//                        reset <- Some (inputReader.Content :> _)
+//                        deltas.Clear()
+//                    else
+//                        deltas.AddRange d
+
+
                 if reset.IsNone then
                     deltas.AddRange d
+            
+                if not this.OutOfDate then 
+                    // TODO: why is that happening sometimes?
+
+                    // A good case: 
+                    //     Suppose the inputReader and this one have been marked and
+                    //     a "neighbour" reader (of this one) has not yet been marked.
+                    //     In that case the neighbouring reader will not be OutOfDate when
+                    //     its emit function is called.
+                    //     However it should be on the marking-queue since the input was
+                    //     marked and therefore the reader should get "eventually consistent"
+                    // Thoughts:
+                    //     Since the CopyReader's GetDelta starts with acquiring the lock
+                    //     to the inputReader only one CopyReader will be able to call its ComputeDelta
+                    //     at a time. Therefore only one can call inputReader.Update() at a time and 
+                    //     again therefore only one thread may call emit here.
+                    // To conclude I could find one good case and couldn't come up with
+                    // a bad one. Nevertheless this is not really a proof of its inexistence (hence the print)
+                    Aardvark.Base.Log.warn "[ASetReaders.CopyReader] potentially bad emit with: %A" d
             )
+
+
 
         do inputReader.AddOutput this
         let subscription = inputReader.SubscribeOnEvaluate emit
 
+        override x.Order = inputReader.RootTime
+
+        override x.GetDelta() =
+            lock inputReader (fun () ->
+                x.EvaluateIfNeeded [] (fun () ->
+                    let deltas = x.ComputeDelta()
+                    let finalDeltas = deltas |> apply x.Content
+
+                    if not (List.isEmpty finalDeltas) then
+                        for cb in x.Callbacks do cb finalDeltas
+
+                    finalDeltas
+                )
+            )
+
         override x.ComputeDelta() =
             inputReader.Update()
 
-            lock deltas (fun () ->
-                match reset with
-                    | Some c ->
-                        let content = x.Content
-                        reset <- None
-                        deltas.Clear()
-                        let add = c |> Seq.filter (not << content.Contains) |> Seq.map Add
-                        let rem = content |> Seq.filter (not << c.Contains) |> Seq.map Rem
+            match reset with
+                | Some c ->
+                    let content = x.Content
+                    reset <- None
+                    deltas.Clear()
+                    let add = c |> Seq.filter (not << content.Contains) |> Seq.map Add
+                    let rem = content |> Seq.filter (not << c.Contains) |> Seq.map Rem
 
-                        Seq.append add rem |> Seq.toList
-                    | None ->
-                        let res = deltas |> Seq.toList
-                        deltas.Clear()
-                        res
-            )
+                    Seq.append add rem |> Seq.toList
+                | None ->
+                    let res = deltas |> Seq.toList
+                    deltas.Clear()
+                    res
 
         override x.Release() =
             inputReader.RemoveOutput x
             subscription.Dispose()
             dispose(x)
-
-        override x.Order = inputReader.RootTime
 
     type OneShotReader<'a>(order : IOrder, deltas : Change<ISortKey * 'a>) =  
         inherit AbstractReader<'a>()
