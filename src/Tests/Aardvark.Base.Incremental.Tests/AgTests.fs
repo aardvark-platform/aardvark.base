@@ -107,7 +107,7 @@ module AgTests =
         root.Children <- [ someNode; someOther ]
 
     [<Test>]
-    let AnyObjectTest() =
+    let ``[Ag] AnyObjectTest``() =
 
         Ag.initialize()
 

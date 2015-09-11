@@ -20,7 +20,7 @@ module ``performance tests`` =
         r
 
     [<Test>]
-    let ``collect performance``() =
+    let ``[ASet] collect performance``() =
         
         let input = CSet.ofList []
 

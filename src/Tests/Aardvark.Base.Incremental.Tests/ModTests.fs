@@ -22,7 +22,7 @@ module ``Basic Mod Tests`` =
             l
     
     [<Test>]
-    let ``basic map test``() =
+    let ``[Mod] basic map test``() =
         let cell = Mod.init 1
 
         let derived = cell |> Mod.map (fun a -> 2 * a)
@@ -38,7 +38,7 @@ module ``Basic Mod Tests`` =
         derived |> Mod.force |> should equal 4
 
     [<Test>]
-    let ``constant map test``() =
+    let ``[Mod] constant map test``() =
         let cell = Mod.constant 1
 
         let derived = cell |> Mod.map (fun a -> 2 * a)
@@ -48,7 +48,7 @@ module ``Basic Mod Tests`` =
 
 
     [<Test>]
-    let ``basic map2 test``() =
+    let ``[Mod] basic map2 test``() =
         let cell1 = Mod.init 1
         let cell2 = Mod.init 1
 
@@ -80,7 +80,7 @@ module ``Basic Mod Tests`` =
         derived |> Mod.force |> should equal 3
 
     [<Test>]
-    let ``constant map2 test``() =
+    let ``[Mod] constant map2 test``() =
         let c1 = Mod.constant 1
         let c2 = Mod.constant 1
         let m1 = Mod.init 1
@@ -115,7 +115,7 @@ module ``Basic Mod Tests`` =
 
 
     [<Test>]
-    let ``basic bind test``() =
+    let ``[Mod] basic bind test``() =
         let cell1 = Mod.init true
         let cell2 = Mod.init 2
         let cell3 = Mod.init 3
@@ -151,7 +151,7 @@ module ``Basic Mod Tests`` =
         derived |> Mod.force |> should equal 5
 
     [<Test>]
-    let ``level changing bind``() =
+    let ``[Mod] level changing bind``() =
         let ex = ExecutionTracker()
         let a = ModRef 1 
         let a0 = a :> IMod<_>
@@ -193,7 +193,7 @@ module ``Basic Mod Tests`` =
         ()
 
     [<Test>]
-    let ``bind in bind``() =
+    let ``[Mod] bind in bind``() =
         let a = Mod.init false
         let b = Mod.init 10
         let c =
@@ -218,7 +218,7 @@ module ``Basic Mod Tests`` =
 
 
     [<Test>]
-    let ``mod concurrency test``() =
+    let ``[Mod] mod concurrency test``() =
         
         let pulledValues = List<int>()
 

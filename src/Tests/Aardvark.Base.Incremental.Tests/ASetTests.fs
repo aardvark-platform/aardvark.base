@@ -25,7 +25,7 @@ module ``collect tests`` =
 
 
     [<Test>]
-    let ``duplicate handling in collect``() =
+    let ``[ASet] duplicate handling in collect``() =
         let i0 = CSetCheck.ofList [1;2;3]
         let i1 = CSetCheck.ofList [3;4;5]
         let s = CSetCheck.ofList [i0 :> aset_check<_>]
@@ -86,7 +86,7 @@ module ``collect tests`` =
         r.Content |> should setEqual [1;2;4;5]
 
     [<Test>]
-    let ``move test``() =
+    let ``[ASet] move test``() =
         let c0 = CSetCheck.ofList [1]
         let c1 = CSetCheck.ofList [2]
 
@@ -110,7 +110,7 @@ module ``collect tests`` =
         r.Content |> should setEqual [1;2]
     
     [<Test>]
-    let ``tree flatten test``() =
+    let ``[ASet] tree flatten test``() =
         let rec flatten (t : Tree<'a>) =
             match t with
                 | Node children -> children |> ASetCheck.collect (flatten)
@@ -164,7 +164,7 @@ module ``collect tests`` =
         ()
 
     [<Test>]
-    let ``callback test``() =
+    let ``[ASet] callback test``() =
 
         let deltas = DeltaList<int>()
 
@@ -209,7 +209,7 @@ module ``collect tests`` =
         ()
 
     [<Test>]
-    let ``callback changing other list``() =
+    let ``[ASet] callback changing other list``() =
         
         let set = cset [1;2]
 
@@ -235,7 +235,7 @@ module ``collect tests`` =
         r.GetDelta() |> should setEqual [Add 4]
 
     [<Test>]
-    let ``toMod triggering even with equal set referece``() =
+    let ``[ASet] toMod triggering even with equal set referece``() =
         
         let s = CSet.empty
 
@@ -275,7 +275,7 @@ module ``collect tests`` =
 
 
     [<Test>]
-    let ``concurrency collect test``() =
+    let ``[ASet] concurrency collect test``() =
 
         let l = obj()
         let set = CSet.empty
@@ -323,7 +323,7 @@ module ``collect tests`` =
         content |> should equal numbers
 
     [<Test>]
-    let ``concurrency multi reader test``() =
+    let ``[ASet] concurrency multi reader test``() =
 
         let l = obj()
         let set = CSet.empty
@@ -335,7 +335,7 @@ module ``collect tests`` =
         let ct = cancel.Token
 
 
-        let readers = [0..2] |> List.map (fun _ -> derived.GetReader())
+        let readers = [0..10] |> List.map (fun _ -> derived.GetReader())
         // pull from the system
 
         for r in readers do
@@ -375,7 +375,7 @@ module ``collect tests`` =
 
 
     [<Test>]
-    let ``concurrency buffered reader test``() =
+    let ``[ASet] concurrency buffered reader test``() =
 
         let l = obj()
         let set = CSet.empty
@@ -425,7 +425,7 @@ module ``collect tests`` =
 
 
     [<Test>]
-    let ``concurrency overkill test``() =
+    let ``[ASet] concurrency overkill test``() =
 
         let l = obj()
         let set = CSet.empty
@@ -477,3 +477,89 @@ module ``collect tests`` =
 
             content |> should equal numbers
 
+    [<Test>]
+    let ``[ASet] stacked deltas test`` () =
+
+        let set = CSet.empty
+
+        let derived = set |> ASet.collect id |> ASet.map id |> ASet.choose Some |> ASet.collect ASet.single |> ASet.collect ASet.single
+
+        let readers = Array.init 10 (fun _ -> derived.GetReader())
+
+        for r in readers do
+            r.Update()
+            r.Content |> Seq.toList |> should equal []
+
+
+        transact (fun () ->
+            
+            set.Add (ASet.ofList [1;3;4]) |> ignore
+            set.Add (ASet.single 2) |> ignore
+        )
+
+        for r in readers do
+            r.GetDelta() |> should setEqual [Add 1; Add 2; Add 3; Add 4]
+            r.Content |> Seq.sort |> Seq.toList |> should equal [1; 2; 3; 4]
+
+
+        transact (fun () ->
+            
+            set.Add (ASet.ofList [5;6;7]) |> ignore
+            set.Add (ASet.single 8) |> ignore
+        )
+
+        for r in readers do
+            r.GetDelta() |> should setEqual [Add 5; Add 6; Add 7; Add 8]
+            r.Content |> Seq.sort |> Seq.toList |> should equal [1; 2; 3; 4; 5; 6; 7; 8]
+
+
+
+
+
+        ()
+
+
+    [<Test>]
+    let ``[ASet] concurrent readers``() =
+
+        let l = obj()
+        let set = CSet.empty
+        let derived = set |> ASet.collect id
+        let numbers = [0..9999]
+
+        use cancel = new CancellationTokenSource()
+        let ct = cancel.Token
+
+
+        let readers = [0..10] |> List.map (fun _ -> derived.GetReader())
+        // pull from the system
+
+        for r in readers do
+            Task.Factory.StartNew(fun () ->
+                while true do
+                    ct.ThrowIfCancellationRequested()
+                    let delta = r.GetDelta()
+                    if not (List.isEmpty delta) then
+                        Console.WriteLine("delta: {0}", List.length delta)
+                    //Thread.Sleep(1)
+                    ()
+            ) |> ignore
+
+
+        // submit into the system
+        for n in numbers do
+            if n % 2 = 0 then
+                let s = ASet.single n
+                transact (fun () ->
+                    lock l (fun () ->
+                        set.Add(s) |> ignore
+                        set.Add(ASet.single (n+1)) |> ignore
+                    )
+                )
+
+        cancel.Cancel()
+
+        for r in readers do
+            r.Update()
+            let content = r.Content |> Seq.toList |> List.sort
+            content |> should equal numbers

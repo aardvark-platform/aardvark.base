@@ -87,16 +87,18 @@ module ASetReaders =
         abstract member Release : unit -> unit
         abstract member ComputeDelta : unit -> Change<'a>
         abstract member Update : unit -> unit
-        
-        
+        abstract member GetDelta : unit -> Change<'a>
+ 
         member x.Content = content
+        member x.Callbacks = callbacks
 
-        member x.GetDelta() =
+        default x.GetDelta() =
             x.EvaluateIfNeeded [] (fun () ->
                 let deltas = x.ComputeDelta()
                 let finalDeltas = deltas |> apply content
 
-                for cb in callbacks do cb finalDeltas
+                if not (List.isEmpty finalDeltas) then
+                    for cb in callbacks do cb finalDeltas
 
                 finalDeltas
             )
@@ -435,7 +437,7 @@ module ASetReaders =
         let mutable reset = Some (inputReader.Content :> ISet<_>)
 
         let emit (d : list<Delta<'a>>) =
-            lock deltas (fun () ->
+            lock this (fun () ->
 //                if reset.IsNone then
 //                    let N = inputReader.Content.Count
 //                    let M = this.Content.Count
@@ -449,29 +451,61 @@ module ASetReaders =
 
                 if reset.IsNone then
                     deltas.AddRange d
+            
+                if not this.OutOfDate then 
+                    // TODO: why is that happening sometimes?
+
+                    // A good case: 
+                    //     Suppose the inputReader and this one have been marked and
+                    //     a "neighbour" reader (of this one) has not yet been marked.
+                    //     In that case the neighbouring reader will not be OutOfDate when
+                    //     its emit function is called.
+                    //     However it should be on the marking-queue since the input was
+                    //     marked and therefore the reader should get "eventually consistent"
+                    // Thoughts:
+                    //     Since the CopyReader's GetDelta starts with acquiring the lock
+                    //     to the inputReader only one CopyReader will be able to call its ComputeDelta
+                    //     at a time. Therefore only one can call inputReader.Update() at a time and 
+                    //     again therefore only one thread may call emit here.
+                    // To conclude I could find one good case and couldn't come up with
+                    // a bad one. Nevertheless this is not really a proof of its inexistence (hence the print)
+                    Aardvark.Base.Log.warn "[ASetReaders.CopyReader] potentially bad emit with: %A" d
             )
+
+
 
         do inputReader.AddOutput this
         let subscription = inputReader.SubscribeOnEvaluate emit
 
+        override x.GetDelta() =
+            lock inputReader (fun () ->
+                x.EvaluateIfNeeded [] (fun () ->
+                    let deltas = x.ComputeDelta()
+                    let finalDeltas = deltas |> apply x.Content
+
+                    if not (List.isEmpty finalDeltas) then
+                        for cb in x.Callbacks do cb finalDeltas
+
+                    finalDeltas
+                )
+            )
+
         override x.ComputeDelta() =
             inputReader.Update()
 
-            lock deltas (fun () ->
-                match reset with
-                    | Some c ->
-                        let content = x.Content
-                        reset <- None
-                        deltas.Clear()
-                        let add = c |> Seq.filter (not << content.Contains) |> Seq.map Add
-                        let rem = content |> Seq.filter (not << c.Contains) |> Seq.map Rem
+            match reset with
+                | Some c ->
+                    let content = x.Content
+                    reset <- None
+                    deltas.Clear()
+                    let add = c |> Seq.filter (not << content.Contains) |> Seq.map Add
+                    let rem = content |> Seq.filter (not << c.Contains) |> Seq.map Rem
 
-                        Seq.append add rem |> Seq.toList
-                    | None ->
-                        let res = deltas |> Seq.toList
-                        deltas.Clear()
-                        res
-            )
+                    Seq.append add rem |> Seq.toList
+                | None ->
+                    let res = deltas |> Seq.toList
+                    deltas.Clear()
+                    res
 
         override x.Release() =
             inputReader.RemoveOutput x

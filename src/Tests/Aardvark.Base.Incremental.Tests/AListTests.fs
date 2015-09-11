@@ -21,7 +21,7 @@ module ``simple list tests`` =
             x.GetDelta() |> List.map (Delta.map snd)
 
     [<Test>]
-    let ``clist add / remove``() =
+    let ``[AList] clist add / remove``() =
         let l = clist [1;2;3]
 
         let d = l |> AList.map (fun a -> 2 * a)
@@ -55,7 +55,7 @@ module ``simple list tests`` =
         d |> should setEqual [Rem 8]
 
     [<Test>]
-    let ``alist collect``() =
+    let ``[AList] collect``() =
         let l0 = clist []
         let l1 = clist []
         let l2 = clist []
@@ -85,7 +85,7 @@ module ``simple list tests`` =
 
 
     [<Test>]
-    let ``alist collect outer reomve``() =
+    let ``[AList] alist collect outer reomve``() =
         let l0 = AList.ofList [ 1; 2 ]
         let l1 = AList.ofList [ 3; 4 ]
         let l2 = AList.ofList []
@@ -119,7 +119,7 @@ module ``simple list tests`` =
         r.Content.Count |> should equal 0
 
     [<Test>]
-    let ``alist order``() =
+    let ``[AList] alist order``() =
         let l0 = clist []
         let l1 = clist []
         let l2 = clist []
@@ -152,7 +152,7 @@ module ``simple list tests`` =
         d |> AList.toList |> should equal [1; 1]
 
     [<Test>]
-    let ``ordered set test``() =
+    let ``[AList] ordered set test``() =
         let s = corderedset [1;2;3]
         let d = s |> AList.map (fun a -> 2 * a)
 
@@ -166,7 +166,7 @@ module ``simple list tests`` =
         r.GetSetDelta() |> should setEqual [Add 12]
 
     [<Test>]
-    let ``choose reader time-density``() =
+    let ``[AList] choose reader time-density``() =
         let l = corderedset []
 
         let validateTimeDensity(r : IListReader<'a>) =
@@ -214,7 +214,7 @@ module ``simple list tests`` =
         ()
 
     [<Test>]
-    let ``callback survive test``() =
+    let ``[AList] callback survive test``() =
         let subscribe cb (l : alist<'a>) =
             let s = l |> AList.registerCallback cb
             // s is ignored here (going out of scope)
@@ -246,7 +246,7 @@ module ``simple list tests`` =
         ()
 
     [<Test>]
-    let ``clist indexing test``() =
+    let ``[AList] clist indexing test``() =
         let c = CList.ofList [1;2;3;4]
         
         // stupid obfuscated identity
@@ -312,7 +312,7 @@ module ``simple list tests`` =
         ()
 
     [<Test>]
-    let ``set sorting``() =
+    let ``[AList] set sorting``() =
         let s = CSet.ofList [4;3;2;1]
 
         let l = s |> ASet.sort
@@ -338,7 +338,7 @@ module ``simple list tests`` =
         
 
     [<Test>]
-    let ``alist construction of aset``() =
+    let ``[AList] alist construction of aset``() =
 
         let set = CSet.ofList [ 1; 2; 3 ]
 
@@ -358,7 +358,7 @@ module ``simple list tests`` =
 
 
     [<Test>]
-    let ``alist construction of aset with selection``() =
+    let ``[AList] alist construction of aset with selection``() =
 
         let set = CSet.ofList [ 1; 2; 3 ]
         
