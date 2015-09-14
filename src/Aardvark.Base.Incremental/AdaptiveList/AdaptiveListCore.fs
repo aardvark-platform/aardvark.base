@@ -320,7 +320,7 @@ module AListReaders =
                             additions
 
                         | Rem (t,v) ->
-                            let r = f.Revoke v
+                            let (last, r) = f.RevokeAndGetDeleted v
                                 
                             // remove the reader-occurance from the listen-set
                             if dirtyInner.Destroy(t, r) then
@@ -336,6 +336,11 @@ module AListReaders =
 
                             // remove all times created for this specific occurance of r
                             mapping.RevokeAll t |> ignore
+
+                            // if the reader's reference count got 0 we dispose it 
+                            // since no one can ever reference it again
+                            if last then r.Dispose()
+
                             removals
                 )
 

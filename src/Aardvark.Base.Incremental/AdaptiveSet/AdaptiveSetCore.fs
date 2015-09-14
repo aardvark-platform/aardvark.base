@@ -286,7 +286,7 @@ module ASetReaders =
                             r.Content |> Seq.map Add |> Seq.toList
 
                         | Rem v ->
-                            let r = f.Revoke v
+                            let (last, r) = f.RevokeAndGetDeleted v
 
                             // remove the reader from the listen-set
                             dirtyInner.Unlisten r
@@ -294,13 +294,18 @@ module ASetReaders =
                             // since the reader is no longer contained we don't want
                             // to be notified anymore
                             r.RemoveOutput this
-                                    
+   
                             // the entire content of the reader is removed
                             // Note that the content here might be OutOfDate
                             // TODO: think about implications here when we do not "own" the reader
                             //       exclusively
-                            r.Content |> Seq.map Rem |> Seq.toList
+                            let res = r.Content |> Seq.map Rem |> Seq.toList
 
+                            // if the reader's reference count got 0 we dispose it 
+                            // since no one can ever reference it again
+                            if last then r.Dispose()
+
+                            res
                 )
 
             // all dirty inner readers must be registered 
