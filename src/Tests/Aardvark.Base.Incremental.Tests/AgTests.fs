@@ -158,8 +158,6 @@ module AgTests =
 //            printfn "flatNodeCount=%d" flatTree.Length
             printfn "generated=%d alive=%d" nodeRegistry.Count aliveCount
 
-            let xxx = Console.ReadLine()
-
             ()
 
         ()
