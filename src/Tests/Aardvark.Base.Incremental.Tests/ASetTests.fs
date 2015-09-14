@@ -563,3 +563,43 @@ module ``collect tests`` =
             r.Update()
             let content = r.Content |> Seq.toList |> List.sort
             content |> should equal numbers
+
+
+    [<Test>]
+    let ``[ASet] reader disposal``() =
+        
+        let input = CSet.ofList [1;2]
+        let level0 = input |> ASet.map id |> ASet.choose Some |> ASet.collect ASet.single
+
+        let a = level0 |> ASet.map id
+        let b = level0 |> ASet.collect ASet.single
+
+        level0.ReaderCount |> should equal 0
+        input.Readers |> Seq.length |> should equal 0
+
+        let ra = a.GetReader()
+        level0.ReaderCount |> should equal 1
+        input.Readers |> Seq.length |> should equal 1
+
+        let rb = b.GetReader()
+        level0.ReaderCount |> should equal 2
+        input.Readers |> Seq.length |> should equal 1
+
+
+        ra.Dispose()
+        level0.ReaderCount |> should equal 1
+        input.Readers |> Seq.length |> should equal 1
+
+
+        rb.Dispose()
+        level0.ReaderCount |> should equal 0
+        input.Readers |> Seq.length |> should equal 0
+
+
+        ()
+        
+
+
+
+
+

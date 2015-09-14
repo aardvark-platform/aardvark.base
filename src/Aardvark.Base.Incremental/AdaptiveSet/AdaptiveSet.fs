@@ -26,6 +26,7 @@ module ASet =
 
 
         interface aset<'a> with
+            member x.ReaderCount = readers.Count
             member x.IsConstant = false
             member x.GetReader () =
                 lock l (fun () ->
@@ -49,6 +50,7 @@ module ASet =
         let content = lazy ( HashSet content.Value )
 
         interface aset<'a> with
+            member x.ReaderCount = 0
             member x.IsConstant = true
             member x.GetReader () =
                 let r = new OneShotReader<'a>(content.Value |> Seq.toList |> List.map Add)

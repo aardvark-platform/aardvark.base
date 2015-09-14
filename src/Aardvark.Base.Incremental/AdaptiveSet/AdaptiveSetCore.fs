@@ -61,6 +61,8 @@ type aset<'a> =
 
     abstract member IsConstant : bool
 
+    abstract member ReaderCount : int
+
 /// <summary>
 /// ASetReaders contains implementations of IReader&lt;a&gt; representing
 /// the available combinators and is used by the aset-system internally (hence private)

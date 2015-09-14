@@ -45,6 +45,7 @@ type AdaptiveSet<'a>(content : seq<'a>) =
         sprintf "aset %A" (content |> Seq.toList)
 
     interface aset<'a> with
+        member x.ReaderCount = 0
         member x.IsConstant = s.Value.IsConstant
         member x.GetReader() = s.Value.GetReader()
 
