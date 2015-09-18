@@ -888,6 +888,29 @@ namespace Aardvark.Base
             return new __vectn__Info(Origin, SX * SY, DX);
         }
 
+        //# for (int ai = 0; ai < d; ai++) {
+        //#     var a = iaa[ai];
+        //#     var fa = ""; ifa.ForEach((f,i) => { if (i != ai) fa = fa + f; });
+        //#     var fn = fa == "X" ? "Row" : "Col";
+        //#     var da = ""; ifa.ForEach((f,i) => { if (i != ai) da = da + f; else da = da + "O"; });
+        //#     foreach (var win in new bool[] { false, true }) { var winstr = win ? "Window" : "";
+        /// <summary>
+        /// Return a full __fa__ __ttsub1nl__ slice of the __ttnl__.
+        //# if (win) {
+        /// This method retains the coordinates of the parent __ttnl__.
+        //# } else {
+        /// This methods returns a __ttsub1nl__ with zero as first coordinates.
+        //# }
+        /// </summary>
+        public __ttsub1n__Info __fn____winstr__(long __a__)
+        {
+            return new __ttsub1n__Info(Index(/*# ifa.ForEach((f,i) => { var ff = i != ai ? "F" + f : a; */__ff__/*# }, comma);
+                            */), S.__fa__, D.__fa__)/*# if (win) { */
+            { F = F.__fa__ }/*# } */;
+        }
+
+        //# } // win
+        //# } // ai
         //# } // (d == 2)
         //# if (d == 3) {
         /// <summary>
@@ -2284,6 +2307,29 @@ namespace Aardvark.Base
                                     { Getter = Getter, Setter = Setter }/*# } */;
         }
 
+        //# if (d == 2) {
+        //# for (int ai = 0; ai < d; ai++) {var a = iaa[ai];
+        //#     var fa = ""; ifa.ForEach((f,i) => { if (i != ai) fa = fa + f; });
+        //#     var fn = fa == "X" ? "Row" : "Col";
+        //#     foreach (var win in new bool[] { false, true }) { var winstr = win ? "Window" : "";
+        /// <summary>
+        /// Return a full __fa__ __ttsub1nl__ slice of the __ttnl__.
+        //# if (win) {
+        /// This method retains the coordinates of the parent __ttnl__.
+        //# } else {
+        /// This methods returns a __ttsub1nl__ with zero as first coordinates.
+        //# }
+        /// </summary>
+        public __ttsub1n__<__dvt1tn__> __fn____winstr____pt1__(long __a__)
+        {
+            return new __ttsub1n__<__dvt1tn__>(Data, Info.__fn____winstr__(__a__))/*#
+                            if (dt != vt && pt1 == "") { */
+            { Getter = Getter, Setter = Setter }/*# } */;
+        }
+
+        //# } // win
+        //# } // ai
+        //# } // d == 2
         //# if (d == 3) {
         /// <summary>
         /// If the lines of the volume are stored consecutively without gaps,
