@@ -4301,7 +4301,34 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Draws a rectangular frame.
+        /// Draws a rectangular frame. The corner positions are
+        /// rounded to the nearest integer coordinates.
+        /// </summary>
+        public void SetRectangle(V2d p0, V2d p1, __vtn__ value)
+        {
+            SetRectangle((long)(p0.X + 0.5), (long)(p0.Y + 0.5),
+                         (long)(p1.X + 0.5), (long)(p1.Y + 0.5), value);
+        }
+        /// <summary>
+        /// Draws a rectangular frame. The parameters x0, x1, y0, and y1 are
+        /// rounded to the nearest integer coordinates.
+        /// </summary>
+        public void SetRectangle(double x0, double y0, double x1, double y1, __vtn__ value)
+        {
+            SetRectangle((long)(x0 + 0.5), (long)(y0 + 0.5),
+                         (long)(x1 + 0.5), (long)(y1 + 0.5), value);
+        }
+
+        /// <summary>
+        /// Draws a rectangular frame given the coordinates of two opposing corners.
+        /// </summary>
+        public void SetRectangle(V2i p0, V2i p1, __vtn__ value)
+        {
+            SetRectangle((long)p0.X, (long)p0.Y, (long)p1.X, (long)p1.Y, value);
+        }
+
+        /// <summary>
+        /// Draws a rectangular frame given the coordinates of two opposing corners.
         /// </summary>
         public void SetRectangle(V2l v0, V2l v1, __vtn__ value)
         {
@@ -4309,18 +4336,9 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Draws a rectangular frame. The parameters x0, x1, y0, and y1 are
-        /// rounded to the nearest integer coordinates.
+        /// Draws a rectangular frame given the coordinates of two opposing corners.
         /// </summary>
-        public void SetRectangle(
-                double x0, double y0, double x1, double y1, __vtn__ value)
-        {
-            SetRectangle((long)(x0 + 0.5), (long)(y0 + 0.5),
-                         (long)(x1 + 0.5), (long)(y1 + 0.5), value);
-        }
-
-        public void SetRectangle(
-                long x0, long y0, long x1, long y1, __vtn__ value)
+        public void SetRectangle(long x0, long y0, long x1, long y1, __vtn__ value)
         {
             long ymin = Fun.Min(y0, y1), ymax = Fun.Max(y0, y1);
             SetLineX(x0, x1, ymin, value);
@@ -4330,21 +4348,20 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Sets the supplied rectangle given by its minimal and maximal pixel
-        /// position vectors and its interior to the supplied value.
+        /// Sets the supplied rectangle and its interior to the supplied value.
+        /// Note that the coordinates are rounded to the nearest integer coordinate.
         /// </summary>
-        public void SetRectangleFilled(
-                V2l v0, V2l v1, __vtn__ value)
+        public void SetRectangleFilled(V2d p0, V2d p1, __vtn__ value)
         {
-            SetRectangleFilled(v0.X, v0.Y, v1.X, v1.Y, value);
+            SetRectangleFilled((long)(p0.X + 0.5), (long)(p0.Y + 0.5),
+                               (long)(p1.X + 0.5), (long)(p1.Y + 0.5), value);
         }
 
         /// <summary>
         /// Sets the supplied rectangle and its interior to the supplied value.
         /// Note that the coordinates are rounded to the nearest integer coordinate.
         /// </summary>
-        public void SetRectangleFilled(
-                double x0, double y0, double x1, double y1, __vtn__ value)
+        public void SetRectangleFilled(double x0, double y0, double x1, double y1, __vtn__ value)
         {
             SetRectangleFilled((long)(x0 + 0.5), (long)(y0 + 0.5),
                                (long)(x1 + 0.5), (long)(y1 + 0.5), value);
@@ -4352,58 +4369,129 @@ namespace Aardvark.Base
 
         /// <summary>
         /// Sets the supplied rectangle given by its minimal and maximal pixel
+        /// position vectors and its interior to the supplied value.
+        /// </summary>
+        public void SetRectangleFilled(V2i p0, V2i p1, __vtn__ value)
+        {
+            SetRectangleFilled((long)p0.X, (long)p0.Y, (long)p1.X, (long)p1.Y, value);
+        }
+
+        /// <summary>
+        /// Sets the supplied rectangle given by its minimal and maximal pixel
+        /// position vectors and its interior to the supplied value.
+        /// </summary>
+        public void SetRectangleFilled(V2l p0, V2l p1, __vtn__ value)
+        {
+            SetRectangleFilled(p0.X, p0.Y, p1.X, p1.Y, value);
+        }
+
+        /// <summary>
+        /// Sets the supplied rectangle given by its minimal and maximal pixel
         /// coordinates and its interior to the supplied value.
         /// </summary>
-        public void SetRectangleFilled(
-                long x0, long y0, long x1, long y1, __vtn__ value)
+        public void SetRectangleFilled(long x0, long y0, long x1, long y1, __vtn__ value)
         {
+            long xmin = Fun.Max(Fun.Min(x0, x1), Info.First.X);
+            long xmax = Fun.Min(Fun.Max(x0, x1), Info.First.X + Info.Size.X - 1);
+            if (xmin > xmax) return;
+            long ymin = Fun.Max(Fun.Min(y0, y1), Info.First.Y);
+            long ymax = Fun.Min(Fun.Max(y0, y1), Info.First.Y + Info.Size.Y - 1);
+            if (ymin > ymax) return;
+
             SubMatrix(x0, y0, 1 + x1 - x0, 1 + y1 - y0).Set(value);
         }
 
-        public void SetCross(V2l v, long radius, __vtn__ value)
+        /// <summary>
+        /// Draws a vertical/horizontal cross around p. 
+        /// </summary>
+        public void SetCross(V2d p, double radius, __vtn__ value)
         {
-            SetCross(v.X, v.Y, radius, value);
-        }
-
-        public void SetCross(V2i v, int radius, __vtn__ value)
-        {
-            SetCross(v.X, v.Y, radius, value);
-        }
-
-        public void SetCross(
-                double x, double y, double radius, __vtn__ value)
-        {
-            SetCross((long)(x + 0.5), (long)(y + 0.5),
-                     (long)(radius + 0.5), value);
+            SetCross((long)(p.X + 0.5), (long)(p.Y + 0.5), (long)(radius + 0.5), value);
         }
 
         /// <summary>
-        /// Draws a cross around [x, y]. The beams will only be drawn up to
-        /// the image border.
+        /// Draws a vertical/horizontal cross around [x,y].
         /// </summary>
-        public void SetCross(
-                long x, long y, long radius, __vtn__ value)
+        public void SetCross(double x, double y, double radius, __vtn__ value)
         {
-            SetLineX(Fun.Max(x - radius, FX), Fun.Min(x + radius, EX - 1), y, value);
-            SetLineY(x, Fun.Max(y - radius, FY), Fun.Min(y + radius, EY - 1), value);
+            SetCross((long)(x + 0.5), (long)(y + 0.5), (long)(radius + 0.5), value);
         }
 
         /// <summary>
-        /// Draws a cross around [x, y]. The beams may be drawn outside the
-        /// image border, so you have to make sure, that you draw into a sub-
-        /// matrix of a bigger matrix.
+        /// Draws a vertical/horizontal cross around p.
         /// </summary>
-        public void SetCrossRaw(
-                long x, long y, long radius, __vtn__ value)
+        public void SetCross(V2i p, int radius, __vtn__ value)
+        {
+            SetCross((long)p.X, (long)p.Y, (long)radius, value);
+        }
+
+        /// <summary>
+        /// Draws a vertical/horizontal cross around p.
+        /// </summary>
+        public void SetCross(V2l p, long radius, __vtn__ value)
+        {
+            SetCross(p.X, p.Y, radius, value);
+        }
+
+        /// <summary>
+        /// Draws a vertical/horizontal cross around [x, y].
+        /// </summary>
+        public void SetCross(long x, long y, long radius, __vtn__ value)
         {
             SetLineX(x - radius, x + radius, y, value);
             SetLineY(x, y - radius, y + radius, value);
         }
 
-        public void SetSquare(
-                V2l v, long radius, __vtn__ value)
+        /// <summary>
+        /// Draws a X-style cross around [x, y]. Note that radius
+        /// is the horizontal/vertical distance of the corner.
+        /// </summary>
+        public void SetCrossX(V2d p, double radius, __vtn__ value)
         {
-            SetSquare(v.X, v.Y, radius, value);
+            SetCrossX((long)(p.X + 0.5), (long)(p.Y + 0.5), (long)(radius + 0.5), value);
+        }
+
+        /// <summary>
+        /// Draws a X-style cross around [x, y]. Note that radius
+        /// is the horizontal/vertical distance of the corner.
+        /// </summary>
+        public void SetCrossX(double x, double y, double radius, __vtn__ value)
+        {
+            SetCrossX((long)(x + 0.5), (long)(y + 0.5), (long)(radius + 0.5), value);
+        }
+
+        /// <summary>
+        /// Draws a X-style cross around [x, y]. Note that radius
+        /// is the horizontal/vertical distance of the corner.
+        /// </summary>
+        public void SetCrossX(V2i p, int radius, __vtn__ value)
+        {
+            SetCrossX((long)p.X, (long)p.Y, (long)radius, value);
+        }
+
+        /// <summary>
+        /// Draws a X-style cross around [x, y]. Note that radius
+        /// is the horizontal/vertical distance of the corner.
+        /// </summary>
+        public void SetCrossX(V2l p, long radius, __vtn__ value)
+        {
+            SetCrossX(p.X, p.Y, radius, value);
+        }
+
+        /// <summary>
+        /// Draws a X-style cross around [x, y]. Note that radius
+        /// is the horizontal/vertical distance of the corner.
+        /// </summary>
+        public void SetCrossX(long x, long y, long radius, __vtn__ value)
+        {
+            SetLine(x - radius, y - radius, x + radius, y + radius, value);
+            SetLine(x + radius, y - radius, x - radius, y + radius, value);
+        }
+
+        public void SetSquare(
+                V2d p, double radius, __vtn__ value)
+        {
+            SetSquare((long)(p.X + 0.5), (long)(p.Y + 0.5), (long)(radius + 0.5), value);
         }
 
         public void SetSquare(
@@ -4413,28 +4501,75 @@ namespace Aardvark.Base
         }
 
         public void SetSquare(
+                V2i p, int radius, __vtn__ value)
+        {
+            SetSquare((long)p.X, (long)p.Y, (long)radius, value);
+        }
+
+        public void SetSquare(
+                V2l p, long radius, __vtn__ value)
+        {
+            SetSquare(p.X, p.Y, radius, value);
+        }
+
+        public void SetSquare(
                 long x, long y, long radius, __vtn__ value)
         {
-            SetRectangle(x - radius, y - radius,
-                         x + radius, y + radius, value);
+            SetRectangle(x - radius, y - radius, x + radius, y + radius, value);
+        }
+
+        public void SetSquareFilled(
+                V2d p, double radius, __vtn__ value)
+        {
+            SetSquareFilled((long)(p.X + 0.5), (long)(p.Y + 0.5), (long)(radius + 0.5), value);
+        }
+
+        public void SetSquareFilled(
+                double x, double y, double radius, __vtn__ value)
+        {
+            SetSquareFilled((long)(x + 0.5), (long)(y + 0.5), (long)(radius + 0.5), value);
+        }
+
+        public void SetSquareFilled(
+                V2i p, int radius, __vtn__ value)
+        {
+            SetSquareFilled((long)p.X, (long)p.Y, (long)radius, value);
+        }
+
+        public void SetSquareFilled(
+                V2l p, long radius, __vtn__ value)
+        {
+            SetSquareFilled(p.X, p.Y, radius, value);
+        }
+
+        public void SetSquareFilled(
+                long x, long y, long radius, __vtn__ value)
+        {
+            SetRectangleFilled(x - radius, y - radius, x + radius, y + radius, value);
         }
 
         public void SetLine(
-                V2l v0, V2l v1, __vtn__ value)
+                V2d p0, V2d p1, __vtn__ value)
         {
-            SetLine(v0.X, v0.Y, v1.X, v1.Y, value);
-        }
-
-        public void SetLine(
-                V2d v0, V2d v1, __vtn__ value)
-        {
-            SetLine(v0.X, v0.Y, v1.X, v1.Y, value);
+            SetLine((long)(p0.X + 0.5), (long)(p0.Y + 0.5), (long)(p1.X + 0.5), (long)(p1.Y + 0.5), value);
         }
 
         public void SetLine(
                 double x0, double y0, double x1, double y1, __vtn__ value)
         {
             SetLine((long)(x0 + 0.5), (long)(y0 + 0.5), (long)(x1 + 0.5), (long)(y1 + 0.5), value);
+        }
+
+        public void SetLine(
+                V2i p0, V2i p1, __vtn__ value)
+        {
+            SetLine((long)p0.X, (long)p0.Y, (long)p1.X, (long)p1.Y, value);
+        }
+
+        public void SetLine(
+                V2l p0, V2l p1, __vtn__ value)
+        {
+            SetLine(p0.X, p0.Y, p1.X, p1.Y, value);
         }
 
         /// <summary>
@@ -4565,15 +4700,27 @@ namespace Aardvark.Base
         }
 
         public void SetCircle(
-                V2l v, long radius, __vtn__ value)
+                V2d p, double radius, __vtn__ value)
         {
-            SetCircle(v.X, v.Y, radius, value);
+            SetCircle((long)(p.X + 0.5), (long)(p.Y + 0.5), (long)(radius + 0.5), value);
         }
 
         public void SetCircle(
                 double x, double y, double radius, __vtn__ value)
         {
             SetCircle((long)(x + 0.5), (long)(y + 0.5), (long)(radius + 0.5), value);
+        }
+
+        public void SetCircle(
+                V2i p, int radius, __vtn__ value)
+        {
+            SetCircle((long)p.X, (long)p.Y, (long)radius, value);
+        }
+
+        public void SetCircle(
+                V2l p, long radius, __vtn__ value)
+        {
+            SetCircle(p.X, p.Y, radius, value);
         }
 
         public void SetCircle(
@@ -4640,15 +4787,27 @@ namespace Aardvark.Base
         }
 
         public void SetCircleFilled(
-                V2l v, long radius, __vtn__ value)
+                V2d p, double radius, __vtn__ value)
         {
-            SetCircleFilled(v.X, v.Y, radius, value);
+            SetCircleFilled((long)(p.X + 0.5), (long)(p.Y + 0.5), (long)(radius + 0.5), value);
         }
 
         public void SetCircleFilled(
                 double x, double y, double radius, __vtn__ value)
         {
             SetCircleFilled((long)(x + 0.5), (long)(y + 0.5), (long)(radius + 0.5), value);
+        }
+
+        public void SetCircleFilled(
+                V2i p, int radius, __vtn__ value)
+        {
+            SetCircleFilled((long)p.X, (long)p.Y, (long)radius, value);
+        }
+
+        public void SetCircleFilled(
+                V2l p, long radius, __vtn__ value)
+        {
+            SetCircleFilled(p.X, p.Y, radius, value);
         }
 
         public void SetCircleFilled(
