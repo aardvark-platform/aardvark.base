@@ -107,7 +107,7 @@ module AgTests =
         root.Children <- [ someNode; someOther ]
 
     [<Test>]
-    let AnyObjectTest() =
+    let ``[Ag] AnyObjectTest``() =
 
         Ag.initialize()
 
@@ -157,8 +157,6 @@ module AgTests =
             // do ag queries
 //            printfn "flatNodeCount=%d" flatTree.Length
             printfn "generated=%d alive=%d" nodeRegistry.Count aliveCount
-
-            let xxx = Console.ReadLine()
 
             ()
 

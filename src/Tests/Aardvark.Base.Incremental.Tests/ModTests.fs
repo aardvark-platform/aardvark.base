@@ -4,6 +4,8 @@ open Aardvark.Base
 open Aardvark.Base.Incremental
 open NUnit.Framework
 open FsUnit
+open System.Threading
+open System.Threading.Tasks
 
 module ``Basic Mod Tests`` =
     open System.Collections.Generic
@@ -20,7 +22,7 @@ module ``Basic Mod Tests`` =
             l
     
     [<Test>]
-    let ``basic map test``() =
+    let ``[Mod] basic map test``() =
         let cell = Mod.init 1
 
         let derived = cell |> Mod.map (fun a -> 2 * a)
@@ -36,7 +38,7 @@ module ``Basic Mod Tests`` =
         derived |> Mod.force |> should equal 4
 
     [<Test>]
-    let ``constant map test``() =
+    let ``[Mod] constant map test``() =
         let cell = Mod.constant 1
 
         let derived = cell |> Mod.map (fun a -> 2 * a)
@@ -46,7 +48,7 @@ module ``Basic Mod Tests`` =
 
 
     [<Test>]
-    let ``basic map2 test``() =
+    let ``[Mod] basic map2 test``() =
         let cell1 = Mod.init 1
         let cell2 = Mod.init 1
 
@@ -78,7 +80,7 @@ module ``Basic Mod Tests`` =
         derived |> Mod.force |> should equal 3
 
     [<Test>]
-    let ``constant map2 test``() =
+    let ``[Mod] constant map2 test``() =
         let c1 = Mod.constant 1
         let c2 = Mod.constant 1
         let m1 = Mod.init 1
@@ -113,7 +115,7 @@ module ``Basic Mod Tests`` =
 
 
     [<Test>]
-    let ``basic bind test``() =
+    let ``[Mod] basic bind test``() =
         let cell1 = Mod.init true
         let cell2 = Mod.init 2
         let cell3 = Mod.init 3
@@ -149,7 +151,7 @@ module ``Basic Mod Tests`` =
         derived |> Mod.force |> should equal 5
 
     [<Test>]
-    let ``level changing bind``() =
+    let ``[Mod] level changing bind``() =
         let ex = ExecutionTracker()
         let a = ModRef 1 
         let a0 = a :> IMod<_>
@@ -191,7 +193,7 @@ module ``Basic Mod Tests`` =
         ()
 
     [<Test>]
-    let ``bind in bind``() =
+    let ``[Mod] bind in bind``() =
         let a = Mod.init false
         let b = Mod.init 10
         let c =
@@ -213,3 +215,36 @@ module ``Basic Mod Tests`` =
 
         transact(fun () -> Mod.change a false)
         c.GetValue() |> should equal 0
+
+
+    [<Test>]
+    let ``[Mod] mod concurrency test``() =
+        
+        let pulledValues = List<int>()
+
+        let input = Mod.init 1
+
+        let derived = input |> Mod.map id //|> Mod.map id 
+
+        let sem = new SemaphoreSlim(0)
+        let trigger = new ManualResetEventSlim()
+        for t in 1..1000 do
+            Task.Factory.StartNew(fun () ->
+                trigger.Wait()
+                let v = derived |> Mod.force
+
+                lock pulledValues (fun () -> pulledValues.Add v)
+
+                sem.Release() |> ignore
+            ) |> ignore
+
+        trigger.Set()
+
+        for i in 1..1000 do
+            sem.Wait()
+
+
+        let values = pulledValues |> Seq.countBy id |> Map.ofSeq
+        System.Console.WriteLine("{0}", sprintf "%A" values)
+        values |> Map.toSeq |> Seq.map fst |> should equal [1]
+        

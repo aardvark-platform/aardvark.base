@@ -15,15 +15,14 @@ type clistkey internal (t : SkipOrder.SortKey) =
 type clist<'a>(initial : seq<'a>) =
     let content = TimeList<'a>()
     let order = SkipOrder.create()
-    let readers = WeakSet<BufferedReader<'a>>()
+    let readers = WeakSet<EmitReader<'a>>()
 
     let insertAfter (t : SkipOrder.SortKey) (value : 'a) =
         let newTime = order.After t
         content.Add(newTime, value)
 
         for r in readers do 
-            if r.IsIncremental then r.Emit [Add (newTime :> ISortKey, value)]
-            else r.Reset content
+            r.Emit(content, Some [Add (newTime :> ISortKey, value)])
 
         newTime
 
@@ -38,8 +37,8 @@ type clist<'a>(initial : seq<'a>) =
 
     interface alist<'a> with
         member x.GetReader() =
-            let r = new BufferedReader<'a>(order, fun r -> readers.Remove r |> ignore)
-            r.Emit (content |> Seq.map Add |> Seq.toList)
+            let r = new EmitReader<'a>(order, fun r -> readers.Remove r |> ignore)
+            r.Emit (content, None)
             readers.Add r |> ignore
             r :> _
 
@@ -65,8 +64,7 @@ type clist<'a>(initial : seq<'a>) =
             order.Delete tOld
 
             for r in readers do 
-                if r.IsIncremental then r.Emit [Rem (tOld :> ISortKey, vOld); Add (tNew :> ISortKey, value)]
-                else r.Reset content
+                r.Emit(content, Some [Rem (tOld :> ISortKey, vOld); Add (tNew :> ISortKey, value)])
 
     member x.Item
         with get (index : int) =
@@ -123,8 +121,7 @@ type clist<'a>(initial : seq<'a>) =
 
         order.Delete key.Time
         for r in readers do 
-            if r.IsIncremental then r.Emit [Rem (key.Time :> ISortKey, c)]
-            else r.Reset content
+            r.Emit(content, Some [Rem (key.Time :> ISortKey, c)])
 
     member x.InsertAfter(key : clistkey, value : 'a) : clistkey =
         clistkey (insertAfter key.Time value)
@@ -139,13 +136,11 @@ type clist<'a>(initial : seq<'a>) =
         s |> Seq.iter (fun e -> x.Add e |> ignore)
 
     member x.Clear() =
-        let deltas = content |> Seq.map Rem |> Seq.toList
         content.Clear()
         order.Clear()
         
         for r in readers do 
-            if r.IsIncremental then r.Emit deltas
-            else r.Reset content
+            r.Emit(content, None)
 
     member x.Find(item : 'a) =
         let t = content |> Seq.tryPick (fun (t,v) -> if Object.Equals(v,item) then Some t else None)
@@ -167,8 +162,8 @@ type clist<'a>(initial : seq<'a>) =
 type corderedset<'a>(initial : seq<'a>) =
     let content = TimeList<'a>()
     let order = SimpleOrder.create()
-    let listReaders = WeakSet<BufferedReader<'a>>()
-    let setReaders = WeakSet<ASetReaders.BufferedReader<'a>>()
+    let listReaders = WeakSet<EmitReader<'a>>()
+    let setReaders = WeakSet<ASetReaders.EmitReader<'a>>()
     let set = HashSet<'a>()
     let times = Dict<'a, SimpleOrder.SortKey>()
 
@@ -199,8 +194,7 @@ type corderedset<'a>(initial : seq<'a>) =
         set.Add value |> ignore
 
         for r in listReaders do 
-            if r.IsIncremental then r.Emit [Add (newTime :> ISortKey, value)]
-            else r.Reset content
+            r.Emit(content, Some [Add (newTime :> ISortKey, value)])
 
         for r in setReaders do 
             r.Emit(set, Some [Add value])
@@ -216,8 +210,7 @@ type corderedset<'a>(initial : seq<'a>) =
 
                 order.Delete t
                 for r in listReaders do 
-                    if r.IsIncremental then r.Emit [Rem (t :> ISortKey, value)]
-                    else r.Reset content
+                    r.Emit(content, Some [Rem (t :> ISortKey, value)])
 
                 for r in setReaders do 
                     r.Emit(set, Some [Rem value])
@@ -233,8 +226,7 @@ type corderedset<'a>(initial : seq<'a>) =
         order.Clear()
         
         for r in listReaders do 
-            if r.IsIncremental then r.Emit deltas
-            else r.Reset content
+            r.Emit(content, None)
 
         set.Clear()
         for r in setReaders do 
@@ -247,14 +239,16 @@ type corderedset<'a>(initial : seq<'a>) =
 
     interface alist<'a> with
         member x.GetReader() =
-            let r = new BufferedReader<'a>(order, fun r -> listReaders.Remove r |> ignore)
-            r.Emit (content |> Seq.map Add |> Seq.toList)
+            let r = new EmitReader<'a>(order, fun r -> listReaders.Remove r |> ignore)
+            r.Emit (content, None)
             listReaders.Add r |> ignore
             r :> _
 
     interface aset<'a> with
+        member x.ReaderCount = setReaders.Count
+        member x.IsConstant = false
         member x.GetReader() =
-            let r = new ASetReaders.BufferedReader<'a>(x, fun r -> setReaders.Remove r |> ignore)
+            let r = new ASetReaders.EmitReader<'a>(fun r -> setReaders.Remove r |> ignore)
             r.Emit(set, None)
             setReaders.Add r |> ignore
             r :> _

@@ -64,6 +64,7 @@ type private SetMapReader<'k, 'v when 'k : equality>(r : IReader<'k * 'v>) =
         member x.GetDelta() = r.GetDelta() |> apply
         member x.Dispose() = r.Dispose()
         member x.Update() = r.Update()
+        member x.SubscribeOnEvaluate cb = r.SubscribeOnEvaluate cb
 
     interface IMapReader<'k, 'v> with
         member x.Content = content :> IVersionedDictionary<_,_>
@@ -201,6 +202,7 @@ module AMap =
         do input.AddOutput this
 
         let mutable initial = true
+        let callbacks = HashSet<Change<'v> -> unit>()
 
         interface IReader<'v> with
             member x.Content =
@@ -233,6 +235,19 @@ module AMap =
 
             member x.Dispose() =
                 input.RemoveOutput this
+
+            member x.SubscribeOnEvaluate (cb : Change<'v> -> unit) =
+                lock x (fun () ->
+                    if callbacks.Add cb then
+                        { new IDisposable with 
+                            member __.Dispose() = 
+                                lock x (fun () ->
+                                    callbacks.Remove cb |> ignore 
+                                )
+                        }
+                    else
+                        { new IDisposable with member __.Dispose() = () }
+                )
 
     let private wrap (f : 'k -> 'v -> 'a) =
         fun (k,v) -> (k, f k v)

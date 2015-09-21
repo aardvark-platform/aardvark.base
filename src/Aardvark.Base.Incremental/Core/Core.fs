@@ -464,6 +464,66 @@ and EmptyCollection<'a>() =
         member x.GetEnumerator() : System.Collections.IEnumerator = Seq.empty.GetEnumerator() :> _
 
 
+type DirtySet<'a, 'b when 'a :> IAdaptiveObject and 'a : not struct>(evaluate : seq<'a> -> 'b) =
+    let l = obj()
+    let all = HashSet<'a>()
+    let mutable dirty = HashSet<'a>()
+    let subscriptions = Dictionary<IAdaptiveObject, unit -> unit>()
+
+
+    let addDirty (v : 'a) () =
+        lock l (fun () ->
+            dirty.Add v |> ignore
+        )
+
+    member x.Evaluate() =
+        let mine = 
+            lock l (fun () ->
+                let arr = dirty |> Seq.toArray
+                dirty <- HashSet<'a>()
+                arr
+            )
+
+        evaluate mine
+
+
+    member x.Add(v : 'a) =
+        lock v (fun () ->
+            lock l (fun () ->
+                if all.Add v && v.OutOfDate then
+                    dirty.Add v |> ignore
+                else
+                    let cb = addDirty v
+                    v.MarkingCallbacks.Add cb
+                    subscriptions.Add(v, cb)
+            )   
+        )
+
+    member x.Remove(v : 'a) =
+        lock v (fun () ->
+            lock l (fun () ->
+                if all.Remove v then
+                    dirty.Remove v |> ignore
+                    match subscriptions.TryGetValue v with
+                        | (true, cb) -> v.MarkingCallbacks.Remove cb |> ignore
+                        | _ -> ()
+            )   
+        )
+
+    member x.Dispose() =
+        lock l (fun () ->
+            all.Clear()
+            dirty.Clear()
+            for (KeyValue(k,v)) in subscriptions do
+                k.MarkingCallbacks.Remove v |> ignore
+        )
+
+    interface IDisposable with
+        member x.Dispose() = x.Dispose()
+
+
+
+
 [<AutoOpen>]
 module Marking =
 

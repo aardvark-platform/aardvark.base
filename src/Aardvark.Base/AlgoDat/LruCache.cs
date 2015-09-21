@@ -18,6 +18,7 @@ namespace Aardvark.Base
             public int Index;
             public TKey Key;
             public TValue Value;
+            public Action DeleteAct;
         }
 
         private object m_lock;
@@ -54,6 +55,24 @@ namespace Aardvark.Base
             m_size = 0;
         }
 
+        public LruCache(
+            long capacity
+        )
+        {
+            m_lock = new object();
+            m_cache = new Dict<TKey, Entry>();
+            m_heap = new List<Entry>();
+            m_sizeFun = null;
+            m_readFun = null;
+            m_deleteAct = null;
+            m_capacity = capacity;
+            m_time = 0;
+            m_size = 0;
+        }
+
+
+
+
         public long Capacity
         {
             get
@@ -80,6 +99,8 @@ namespace Aardvark.Base
                 {
                     if (m_deleteAct != null)
                         m_deleteAct(removeKey, entry.Value);
+                    if (entry.DeleteAct != null)
+                        entry.DeleteAct();
                     size -= entry.Size;
                 }
                 else
@@ -121,6 +142,34 @@ namespace Aardvark.Base
             }
         }
 
+        public TValue GetOrAdd(TKey key, long size, Func<TValue> valueFun, Action deleteAct = null)
+        {
+            Entry entry;
+            lock (m_lock)
+            {
+                if (m_cache.TryGetValue(key, out entry))
+                {
+                    entry.Time = ++m_time;
+                    Sink(m_heap, entry.Index);
+                }
+                else
+                {
+                    Shrink(m_size + size);
+                    entry = new Entry
+                    {
+                        Time = ++m_time,
+                        Size = size,
+                        Key = key,
+                        Value = valueFun(),
+                        DeleteAct = deleteAct,
+                    };
+                    m_cache[key] = entry;
+                    Enqueue(m_heap, entry);
+                }
+                return entry.Value;
+            }
+        }
+
         /// <summary>
         /// Remove the entry with the supplied key from the hash.
         /// Returns true on success and puts the value of the
@@ -135,6 +184,8 @@ namespace Aardvark.Base
                 {
                     m_size -= entry.Size;
                     RemoveAt(m_heap, entry.Index);
+                    if (m_deleteAct != null)
+                        m_deleteAct(key, entry.Value);
                     value = entry.Value;
                     return true;
                 }
@@ -156,6 +207,10 @@ namespace Aardvark.Base
                 {
                     m_size -= entry.Size;
                     RemoveAt(m_heap, entry.Index);
+                    if (m_deleteAct != null)
+                        m_deleteAct(key, entry.Value);
+                    if (entry.DeleteAct != null)
+                        entry.DeleteAct();
                     return true;
                 }
                 return false;

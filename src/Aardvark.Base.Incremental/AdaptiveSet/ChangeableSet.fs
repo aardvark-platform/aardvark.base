@@ -14,14 +14,18 @@ open Aardvark.Base.Incremental.ASetReaders
 [<CompiledName("ChangeableSet")>]
 type cset<'a>(initial : seq<'a>) =
     let content = VersionedSet (HashSet initial)
-    let readers = WeakSet<BufferedReader<'a>>()
+    let readers = WeakSet<EmitReader<'a>>()
 
     interface aset<'a> with
+        member x.ReaderCount = readers.Count
+        member x.IsConstant = false
         member x.GetReader() =
-            let r = new BufferedReader<'a>(x, fun r -> readers.Remove r |> ignore)
+            let r = new EmitReader<'a>(fun r -> readers.Remove r |> ignore)
             r.Emit(content, None)
             readers.Add r |> ignore
             r :> _
+
+    member x.Readers = readers :> seq<_>
 
     /// Gets the number of elements contained in the cset.
     member x.Count = content.Count
