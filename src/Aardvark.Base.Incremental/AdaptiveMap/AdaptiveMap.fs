@@ -336,3 +336,9 @@ module AMap =
 
     let registerCallback (f : list<Delta<'k * 'v>> -> unit) (set : aset<'k * 'v>) =
         set |> ASet.registerCallback f
+
+[<AutoOpen>]
+module ``ASet grouping`` =
+    module ASet =
+        let groupBy (f : 'v -> 'k) (xs : aset<'v>) : amap<'k,'v> = 
+            xs |> ASet.map (fun v -> (f v, v)) |> AMap.ofASet

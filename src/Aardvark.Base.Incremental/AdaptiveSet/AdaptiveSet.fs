@@ -188,6 +188,12 @@ module ASet =
         m
 
     /// <summary>
+    /// adaptively computes whether the given aset is empty.
+    /// </summary>
+    let isEmpty (s : aset<'a>) =
+        s |> toMod |> Mod.map (fun s -> s.Count = 0)
+
+    /// <summary>
     /// adaptively checks if the set contains the given element
     /// </summary>
     let contains (elem : 'a) (set : aset<'a>) =
