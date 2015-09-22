@@ -8,72 +8,10 @@ open System.Collections.Concurrent
 open Aardvark.Base
 open System.Collections.Generic
 
-type IMapReader<'k, 'v> =
-    inherit IReader<'k * 'v>
-    abstract member Content : IVersionedDictionary<'k, IVersionedSet<'v>>
-
-type private SetMapReader<'k, 'v when 'k : equality>(r : IReader<'k * 'v>) =
-    let content = VersionedDictionary()
-
-    let add (key : 'k) (v : 'v) =
-        let set = 
-            match content.TryGetValue key with
-                | (true, set) -> set
-                | _ ->
-                    let set = ReferenceCountingSet<'v>() :> IVersionedSet<_>
-                    content.[key] <- set
-                    set
-        set.Add v
-           
-    let remove (key : 'k) (v : 'v) =
-        match content.TryGetValue key with
-            | (true, set) ->
-                if set.Remove v then
-                    if set.Count = 0 then content.Remove key |> ignore
-                    true
-                else
-                    false
-            | _ ->
-                false         
-
-    let apply (deltas : list<Delta<'k * 'v>>) =
-        [
-            for d in deltas do
-                match d with
-                    | Add (k,v) ->
-                        if add k v then yield d
-                    | Rem (k,v) ->
-                        if remove k v then yield d
-        ]
-
-    interface IAdaptiveObject with
-        member x.Id = r.Id
-        member x.Level
-            with get() = r.Level
-            and set v = r.Level <- v
-        member x.Mark() = r.Mark()
-        member x.Inputs = r.Inputs
-        member x.Outputs = r.Outputs
-        member x.MarkingCallbacks = r.MarkingCallbacks
-        member x.OutOfDate
-            with get() = r.OutOfDate
-            and set o = r.OutOfDate <- o
-
-    interface IReader<'k * 'v> with
-        member x.Content = r.Content
-        member x.GetDelta() = r.GetDelta() |> apply
-        member x.Dispose() = r.Dispose()
-        member x.Update() = r.Update()
-        member x.SubscribeOnEvaluate cb = r.SubscribeOnEvaluate cb
-
-    interface IMapReader<'k, 'v> with
-        member x.Content = content :> IVersionedDictionary<_,_>
-
-
 [<CompiledName("IAdaptiveMap")>]
 type amap<'k, 'v when 'k : equality> =
     abstract member ASet : aset<'k * 'v>
-    abstract member GetReader : unit -> IMapReader<'k, 'v>
+    //abstract member GetReader : unit -> IMapReader<'k, 'v>
 
 [<CompiledName("ChangeableMap")>]
 type cmap<'k, 'v when 'k : equality>(initial : seq<'k * 'v>) =
@@ -125,8 +63,6 @@ type cmap<'k, 'v when 'k : equality>(initial : seq<'k * 'v>) =
     member x.TryGetValue(k : 'k, [<Out>] v : byref<'v>) =
         content.TryGetValue(k, &v)
 
-    member x.GetReader() = new SetMapReader<'k, 'v>(set.GetReader()) :> IMapReader<'k, 'v>
-
     interface IEnumerable with
         member x.GetEnumerator() = content.GetEnumerator() :> IEnumerator
 
@@ -150,9 +86,41 @@ type cmap<'k, 'v when 'k : equality>(initial : seq<'k * 'v>) =
 
     interface amap<'k, 'v> with
         member x.ASet = set 
-        member x.GetReader() = x.GetReader()
-                
+
     new() = cmap Seq.empty
+
+module private AMapUtils =
+    
+    let add (content : VersionedDictionary<_,_>) (key : 'k) (v : 'v) =
+        let set = 
+            match content.TryGetValue key with
+                | (true, set) -> set
+                | _ ->
+                    let set = ReferenceCountingSet<'v>() :> IVersionedSet<_>
+                    content.[key] <- set
+                    set
+        set.Add v
+           
+    let remove (content : VersionedDictionary<_,IVersionedSet<_>>) (key : 'k) (v : 'v) =
+        match content.TryGetValue key with
+            | (true, set) ->
+                if set.Remove v then
+                    if set.Count = 0 then content.Remove key |> ignore
+                    true
+                else
+                    false
+            | _ ->
+                false         
+
+    let apply (content : VersionedDictionary<_,_>) (deltas : list<Delta<'k * 'v>>) =
+        [
+            for d in deltas do
+                match d with
+                    | Add (k,v) ->
+                        if add content k v then yield d
+                    | Rem (k,v) ->
+                        if remove content k v then yield d
+        ]
 
 module CMap =
     let empty<'k, 'v when 'k : equality> : cmap<'k, 'v> = cmap []
@@ -194,60 +162,25 @@ module AMap =
     type private SetMap<'k, 'v when 'k : equality>(aset : aset<'k * 'v>) =
         interface amap<'k, 'v> with
             member x.ASet = aset
-            member x.GetReader() = new SetMapReader<'k, 'v>(aset.GetReader()) :> IMapReader<_,_>
+            //member x.GetReader() = new SetMapReader<'k, 'v>(aset.GetReader()) :> IMapReader<_,_>
 
-    type private LookupReader<'k, 'v  when 'k : equality>(input : IMapReader<'k, 'v>, key : 'k) as this =
-        inherit AdaptiveObject()
-        static let emptySet = ReferenceCountingSet<'v>()
+    type private LookupReader<'k, 'v  when 'k : equality>(input : IReader<'k * 'v>, key : 'k) as this =
+        inherit ASetReaders.AbstractReader<'v>()
         do input.AddOutput this
 
-        let mutable initial = true
-        let callbacks = HashSet<Change<'v> -> unit>()
+        override x.ComputeDelta() = 
+            input.GetDelta() 
+                |> List.choose (fun d -> 
+                    match d with
+                        | Add (k,v) when k = key -> Some (Add v)
+                        | Rem (k,v) when k = key -> Some (Rem v)
+                        | _ -> None
+                    )
 
-        interface IReader<'v> with
-            member x.Content =
-                match input.Content.TryGetValue key with
-                    | (true, set) -> set |> unbox<ReferenceCountingSet<_>>
-                    | _ -> emptySet
+        override x.Release() =
+            input.RemoveOutput x
+            input.Dispose()
 
-            member x.GetDelta() = 
-                x.EvaluateIfNeeded [] (fun () ->
-                    if initial then
-                        initial <- false
-                        input.Update()
-                        match input.Content.TryGetValue key with
-                            | (true, set) -> set |> Seq.map Add |> Seq.toList
-                            | _ -> []
-                    else
-                        input.GetDelta() 
-                            |> List.choose (fun d -> 
-                                match d with
-                                    | Add (k,v) when k = key -> Some (Add v)
-                                    | Rem (k,v) when k = key -> Some (Rem v)
-                                    | _ -> None
-                                )
-                )
-
-            member x.Update() =
-                x.EvaluateIfNeeded () (fun () ->
-                    input.Update()
-                )   
-
-            member x.Dispose() =
-                input.RemoveOutput this
-
-            member x.SubscribeOnEvaluate (cb : Change<'v> -> unit) =
-                lock x (fun () ->
-                    if callbacks.Add cb then
-                        { new IDisposable with 
-                            member __.Dispose() = 
-                                lock x (fun () ->
-                                    callbacks.Remove cb |> ignore 
-                                )
-                        }
-                    else
-                        { new IDisposable with member __.Dispose() = () }
-                )
 
     let private wrap (f : 'k -> 'v -> 'a) =
         fun (k,v) -> (k, f k v)
@@ -277,10 +210,11 @@ module AMap =
         m |> ASet.ofMod |> setmap
 
     let toMod (m : amap<'k, 'v>) =
-        let r = m.GetReader()
+        let r = m.ASet.GetReader()
+        let content = VersionedDictionary<'k,IVersionedSet<'v>>()
         let res = Mod.custom(fun () ->
-            r.GetDelta() |> ignore
-            r.Content
+            r.GetDelta() |> AMapUtils.apply content |> ignore
+            content :> IVersionedDictionary<_,_>
         )
         r.AddOutput res
         res
@@ -322,7 +256,7 @@ module AMap =
         m |> toASet |> ASet.chooseM ( fun (k, v) -> f k v |> Mod.map (fun v -> match v with | Some v -> Some(k,v) | None -> None) ) |> setmap
 
     let tryFindAll (key : 'k) (m : amap<'k, 'v>) =
-        ASet.AdaptiveSet(fun () -> new LookupReader<'k, 'v>(m.GetReader(), key) :> IReader<'v>) :> aset<_>
+        ASet.AdaptiveSet(fun () -> new LookupReader<'k, 'v>(m.ASet.GetReader(), key) :> IReader<'v>) :> aset<_>
 
     let tryFind (key : 'k) (m : amap<'k, 'v>) =
         tryFindAll key m 
@@ -334,8 +268,8 @@ module AMap =
                     Some (set |> Seq.head)
                 )
 
-    let registerCallback (f : list<Delta<'k * 'v>> -> unit) (set : aset<'k * 'v>) =
-        set |> ASet.registerCallback f
+    let registerCallback (f : list<Delta<'k * 'v>> -> unit) (map : amap<'k,'v>) =
+        map.ASet |> ASet.registerCallback f
 
 [<AutoOpen>]
 module ``ASet grouping`` =
