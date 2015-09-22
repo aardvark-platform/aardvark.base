@@ -12,6 +12,8 @@ open System.Collections.Generic
 type Mod private() =
     static member Constant (v : 'a) = Mod.constant v
 
+    static member Init(v : 'a) = Mod.init v
+
     static member LazyConstant (f : Func<'a>) : IMod<'a> =
         Mod.delay f.Invoke
 
@@ -28,7 +30,7 @@ type Mod private() =
     static member LazyAsync(f : Func<'a>, defaultValue : 'a) : IMod<'a> =
         let a = async { return f.Invoke() }
         Mod.asyncWithDefault defaultValue a
-
+        
 type AdaptiveSet<'a>(content : seq<'a>) =
     let content = HashSet content
     let s = lazy (ASet.ofSeq content)
