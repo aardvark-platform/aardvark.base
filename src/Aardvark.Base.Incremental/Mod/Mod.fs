@@ -47,6 +47,18 @@ type IMod<'a> =
 /// cell which can be changed by the user and
 /// implements IMod<'a>
 /// </summary>
+type IModRef<'a> =
+    inherit IMod<'a>
+
+    /// Gets or sets the refs value.
+    /// Note: can only be set inside an active transaction.
+    abstract member Value : 'a with get,set
+
+/// <summary>
+/// ModRef<'a> represents a changeable input
+/// cell which can be changed by the user and
+/// implements IMod<'a>
+/// </summary>
 type ModRef<'a>(value : 'a) =
     inherit AdaptiveObject()
 
@@ -75,6 +87,11 @@ type ModRef<'a>(value : 'a) =
 
     interface IMod<'a> with
         member x.GetValue() = x.GetValue()
+
+    interface IModRef<'a> with
+        member x.Value 
+            with get () = x.Value
+            and set v = x.Value <- v
 
 
 // ConstantMod<'a> represents a constant mod-cell
@@ -125,6 +142,65 @@ type ConstantMod<'a> =
     end
 
 
+/// DefaultingModRef<'a> represents a mod ref with an adaptive
+/// default value. The resulting IMod corresponds to the default
+/// value unless a custom value is set to the ref.
+/// By calling Reset (), the initial behaviour can be restored,
+/// i.e. the resulting value is dependent on the adaptive default
+/// value.
+type DefaultingModRef<'a>(computed : IMod<'a>) as this =
+    inherit AdaptiveObject()
+    do computed.AddOutput this
+
+    let mutable cache = Unchecked.defaultof<'a>
+    let mutable isComputed = true
+    let mutable tracker = ChangeTracker.trackVersion<'a>
+
+
+    member x.GetValue() =
+        x.EvaluateAlways (fun () ->
+            if x.OutOfDate && isComputed then
+                let v = computed.GetValue()
+                cache <- v
+                v
+            else
+                cache
+        )
+
+    member x.Reset() =
+        if not isComputed then
+            tracker <- ChangeTracker.trackVersion<'a>
+            isComputed <- true
+            computed.AddOutput x
+
+    member x.Value 
+        with get() = 
+            if isComputed then x.GetValue()
+            else cache
+        and set v =
+            let changed =
+                if isComputed then 
+                    computed.RemoveOutput x
+                    isComputed <- false
+                    true
+                else 
+                    tracker v || not <| Object.Equals(v, cache)
+            if changed then
+                cache <- v
+                x.MarkOutdated()
+
+    interface IMod with
+        member x.IsConstant = false
+        member x.GetValue() = x.GetValue() :> obj
+            
+    interface IMod<'a> with
+        member x.GetValue () = x.GetValue()
+
+    interface IModRef<'a> with
+        member x.Value 
+            with get () = x.Value
+            and set v = x.Value <- v
+    
 
 /// <summary>
 /// defines functions for composing mods and
@@ -340,7 +416,7 @@ module Mod =
     /// changes the value of the given cell. Note that this
     /// function may only be used inside a current transaction.
     /// </summary>
-    let change (m : ModRef<'a>) (value : 'a) =
+    let change (m : IModRef<'a>) (value : 'a) =
         m.Value <- value
 
 
@@ -355,6 +431,10 @@ module Mod =
     /// </summary>
     let init (v : 'a) =
         ModRef v
+
+    /// see DefaultingModRef
+    let initDefault (initial : IMod<'a>) =
+        DefaultingModRef initial
 
     /// <summary>
     /// initializes a new constant cell using the given lazy value.
