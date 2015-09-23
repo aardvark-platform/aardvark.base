@@ -83,7 +83,7 @@ namespace Aardvark.Base
         /// are selected by an index array.
         /// </summary>
         public Polygon2d(int[] indexArray, V2d[] pointArray)
-            : this(indexArray.Copy(i => pointArray[i]))
+            : this(indexArray.Map(i => pointArray[i]))
         { }
 
         /// <summary>
@@ -651,17 +651,17 @@ namespace Aardvark.Base
         public V2d[] GetPointArray()
         {
             var pa = m_pointArray;
-            return m_indexArray.Copy(m_firstIndex, m_pointCount, i => pa[i]);
+            return m_indexArray.Map(m_firstIndex, m_pointCount, i => pa[i]);
         }
 
         public T[] GetPointArray<T>(T[] pointArray)
         {
-            return m_indexArray.Copy(m_firstIndex, m_pointCount, i => pointArray[i]);
+            return m_indexArray.Map(m_firstIndex, m_pointCount, i => pointArray[i]);
         }
 
         public T[] GetPointArray<T>(List<T> pointList)
         {
-            return m_indexArray.Copy(m_firstIndex, m_pointCount, i => pointList[i]);
+            return m_indexArray.Map(m_firstIndex, m_pointCount, i => pointList[i]);
         }
 
         #endregion
@@ -1434,7 +1434,7 @@ namespace Aardvark.Base
         /// are selected by an index array.
         /// </summary>
         public Polygon3d(int[] indexArray, V3d[] pointArray)
-            : this(indexArray.Copy(i => pointArray[i]))
+            : this(indexArray.Map(i => pointArray[i]))
         { }
 
         /// <summary>
@@ -2003,17 +2003,17 @@ namespace Aardvark.Base
         public V3d[] GetPointArray()
         {
             var pa = m_pointArray;
-            return m_indexArray.Copy(m_firstIndex, m_pointCount, i => pa[i]);
+            return m_indexArray.Map(m_firstIndex, m_pointCount, i => pa[i]);
         }
 
         public T[] GetPointArray<T>(T[] pointArray)
         {
-            return m_indexArray.Copy(m_firstIndex, m_pointCount, i => pointArray[i]);
+            return m_indexArray.Map(m_firstIndex, m_pointCount, i => pointArray[i]);
         }
 
         public T[] GetPointArray<T>(List<T> pointList)
         {
-            return m_indexArray.Copy(m_firstIndex, m_pointCount, i => pointList[i]);
+            return m_indexArray.Map(m_firstIndex, m_pointCount, i => pointList[i]);
         }
 
         #endregion

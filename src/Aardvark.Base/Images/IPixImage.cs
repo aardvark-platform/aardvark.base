@@ -76,7 +76,7 @@ namespace Aardvark.Base
 
         public PixCube(PixImage[] cubeFaceArray)
         {
-            MipMapArray = cubeFaceArray.Copy(x => new PixMipMap2d(x.IntoArray()));
+            MipMapArray = cubeFaceArray.Map(x => new PixMipMap2d(x.IntoArray()));
         }
 
         #endregion

@@ -700,7 +700,7 @@ namespace Aardvark.Base
                         i => global2local.TransformPos(vertexArray[vertexIndices[fvi + i]]).XY);
                 var subPolyList = polygon.ComputeNonConcaveSubPolygons(absoluteEpsilon);
                 foreach (var poly in subPolyList)
-                    polyList.Add(poly.Copy(i => fvi + i));
+                    polyList.Add(poly.Map(i => fvi + i));
                 if (faceBackMap != null)
                     for (int i = 0; i < subPolyList.Count; i++)
                         faceBackMap.Add(fi);

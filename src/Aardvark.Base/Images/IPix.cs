@@ -161,7 +161,7 @@ namespace Aardvark.Base
             PixArray = pixArray;
         }
 
-        public Tr Op<Tr>(IPixOp<Tr> op) { return op.PixCubeMap(this, PixArray.Copy(p => p.Op(op))); }
+        public Tr Op<Tr>(IPixOp<Tr> op) { return op.PixCubeMap(this, PixArray.Map(p => p.Op(op))); }
 
         //public IEnumerable<FieldCoder> GetFieldCoders(int coderVersion)
         //{
@@ -181,7 +181,7 @@ namespace Aardvark.Base
         public PixStack() { }
         public PixStack(params IPix[] pixArray) { PixArray = pixArray; }
 
-        public Tr Op<Tr>(IPixOp<Tr> op) { return op.PixStack(this, PixArray.Copy(p => p.Op(op))); }
+        public Tr Op<Tr>(IPixOp<Tr> op) { return op.PixStack(this, PixArray.Map(p => p.Op(op))); }
 
         //public IEnumerable<FieldCoder> GetFieldCoders(int coderVersion)
         //{
@@ -518,7 +518,7 @@ namespace Aardvark.Base
 
         public override IPix PixImageMipMap(PixImageMipMap pimm)
         {
-            var newImageArray = pimm.ImageArray.Copy(p => p.ToPixImage<T>());
+            var newImageArray = pimm.ImageArray.Map(p => p.ToPixImage<T>());
             return newImageArray.AllEqual(pimm.ImageArray, (a, b) => a == b)
                                 ? pimm : new PixImageMipMap(newImageArray);
         }
@@ -611,17 +611,17 @@ namespace Aardvark.Base
 
         public Func<PixImage[]> PixImageCube(PixImageCube pic)
         {
-            return () => Level == 0 ? pic.MipMapArray.Copy(mm => mm.ImageArray[0]) : new PixImage[0];
+            return () => Level == 0 ? pic.MipMapArray.Map(mm => mm.ImageArray[0]) : new PixImage[0];
         }
 
         public Func<PixImage[]> PixCubeMap(PixCubeMap pcm, Func<PixImage[]>[] subArray)
         {
-            return () => { --Level; var subImages = subArray.Copy(f => f()); ++Level; return subImages.FlatCopy(); };
+            return () => { --Level; var subImages = subArray.Map(f => f()); ++Level; return subImages.FlatCopy(); };
         }
 
         public Func<PixImage[]> PixStack(PixStack ps, Func<PixImage[]>[] subArray)
         {
-            return () => { ++Level; var subImages = subArray.Copy(f => f()); --Level; return subImages.FlatCopy(); };
+            return () => { ++Level; var subImages = subArray.Map(f => f()); --Level; return subImages.FlatCopy(); };
         }
 
     }

@@ -489,9 +489,9 @@ namespace Aardvark.Base
             long mid = pa.Length / 2;
             long lo = mid - offset, hi = mid + offset;
 
-            var xa = pa.Copy(v => v.X); xa.QuickSortAscending();
-            var ya = pa.Copy(v => v.Y); ya.QuickSortAscending();
-            var za = pa.Copy(v => v.Z); za.QuickSortAscending();
+            var xa = pa.Map(v => v.X); xa.QuickSortAscending();
+            var ya = pa.Map(v => v.Y); ya.QuickSortAscending();
+            var za = pa.Map(v => v.Z); za.QuickSortAscending();
 
             return new Box3d(new V3d(xa[lo], ya[lo], za[lo]),
                              new V3d(xa[hi], ya[hi], za[hi]));

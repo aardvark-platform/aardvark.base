@@ -120,7 +120,7 @@ namespace Aardvark.Base
         /// are selected by an index array.
         /// </summary>
         public __tpolygon__(int[] indexArray, __tvec__[] pointArray)
-            : this(indexArray.Copy(i => pointArray[i]))
+            : this(indexArray.Map(i => pointArray[i]))
         { }
 
         /// <summary>
@@ -516,17 +516,17 @@ namespace Aardvark.Base
         public __tvec__[] GetPointArray()
         {
             var pa = m_pointArray;
-            return m_indexArray.Copy(m_firstIndex, m_pointCount, i => pa[i]);
+            return m_indexArray.Map(m_firstIndex, m_pointCount, i => pa[i]);
         }
 
         public T[] GetPointArray<T>(T[] pointArray)
         {
-            return m_indexArray.Copy(m_firstIndex, m_pointCount, i => pointArray[i]);
+            return m_indexArray.Map(m_firstIndex, m_pointCount, i => pointArray[i]);
         }
 
         public T[] GetPointArray<T>(List<T> pointList)
         {
-            return m_indexArray.Copy(m_firstIndex, m_pointCount, i => pointList[i]);
+            return m_indexArray.Map(m_firstIndex, m_pointCount, i => pointList[i]);
         }
 
         #endregion
@@ -586,13 +586,13 @@ namespace Aardvark.Base
         public static __tpolygon__ Scaled(
                 this __tpolygon__ polygon, double scale)
         {
-            return polygon.Copy(p => p * scale);
+            return polygon.Map(p => p * scale);
         }
 
         public static __tpolygon__ Scaled(
                 this __tpolygon__ polygon, __tvec__ center, double scale)
         {
-            return polygon.Copy(p => center + (p - center) * scale);
+            return polygon.Map(p => center + (p - center) * scale);
         }
 
         public static __tpolygon__ ScaledAboutVertexCentroid(
@@ -604,13 +604,13 @@ namespace Aardvark.Base
         public static __tpolygon__ Scaled(
                 this __tpolygon__ polygon, __tvec__ scale)
         {
-            return polygon.Copy(p => p * scale);
+            return polygon.Map(p => p * scale);
         }
 
         public static __tpolygon__ Scaled(
                 this __tpolygon__ polygon, __tvec__ center, __tvec__ scale)
         {
-            return polygon.Copy(p => center + (p - center) * scale);
+            return polygon.Map(p => center + (p - center) * scale);
         }
 
         public static __tpolygon__ ScaledAboutVertexCentroid(
@@ -622,13 +622,13 @@ namespace Aardvark.Base
         public static __tpolygon__ Transformed(
                 this __tpolygon__ polygon, __tmat__ m)
         {
-            return polygon.Copy(p => m.Transform(p));
+            return polygon.Map(p => m.Transform(p));
         }
 
         public static __tpolygon__ Transformed(
                 this __tpolygon__ polygon, __tmat1__ m)
         {
-            return polygon.Copy(p => m.TransformPos(p));
+            return polygon.Map(p => m.TransformPos(p));
         }
 
         public static __tpolygon__ WithoutMultiplePoints(

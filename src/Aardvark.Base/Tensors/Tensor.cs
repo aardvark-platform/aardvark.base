@@ -194,7 +194,7 @@ namespace Aardvark.Base
         }
 
         public Tensor(int[] size)
-            : this(size.Copy(x => (long)x))
+            : this(size.Map(x => (long)x))
         { }
 
         public Tensor(long[] size, T value)
@@ -209,7 +209,7 @@ namespace Aardvark.Base
         }
 
         public Tensor(int[] size, T value)
-            : this(size.Copy(x => (long)x), value)
+            : this(size.Map(x => (long)x), value)
         { }
 
         public Tensor(T[] data, long origin, int[] size)
@@ -217,7 +217,7 @@ namespace Aardvark.Base
             m_data = data;
             m_rank = (int)size.Length;
             m_origin = origin;
-            m_size = size.Copy(x => (long)x);
+            m_size = size.Map(x => (long)x);
             long total;
             m_delta = Tools.DenseDelta(m_size, out total);
         }

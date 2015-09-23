@@ -114,12 +114,12 @@ namespace Aardvark.Base
 
         public static string[] ToLower(this string[] self)
         {
-            return self.Copy(s => s.ToLower());
+            return self.Map(s => s.ToLower());
         }
 
         public static string[] ToUpper(this string[] self)
         {
-            return self.Copy(s => s.ToUpper());
+            return self.Map(s => s.ToUpper());
         }
 
         public static IEnumerable<string> ToLower(this IEnumerable<string> self)

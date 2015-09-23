@@ -1241,7 +1241,7 @@ namespace Aardvark.Base
 
         public static List<string> ToListOfString(this List<Text> textList)
         {
-            return textList.Copy(t => t.ToString());
+            return textList.Map(t => t.ToString());
         }
 
         public static string[] ToStringArray(this List<Text> textList)
@@ -1251,7 +1251,7 @@ namespace Aardvark.Base
 
         public static string JoinToString(this List<Text> textList, string delimiter)
         {
-            return textList.Copy(t => t.ToString()).Join(delimiter);
+            return textList.Map(t => t.ToString()).Join(delimiter);
         }
 
         #endregion
@@ -1260,12 +1260,12 @@ namespace Aardvark.Base
 
         public static string[] ToStringArray(this Text[] textArray)
         {
-            return textArray.Copy(t => t.ToString());
+            return textArray.Map(t => t.ToString());
         }
 
         public static List<string> ToListOfString(this Text[] textArray)
         {
-            return textArray.ToList(t => t.ToString());
+            return textArray.MapToList(t => t.ToString());
         }
 
 

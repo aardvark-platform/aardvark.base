@@ -26,8 +26,8 @@ namespace Aardvark.Tests
                 Report.BeginTimed("create color arrays");
                 var c3bVol = new Volume<C3b>(17, 17, 17).SetByCoord((r, g, b) => new C3b(15 * r, 15 * g, 15 * b));
                 var c3bArray = c3bVol.Data;
-                var c3fArray = c3bArray.Copy(C3f.FromC3b);
-                var cieXYZArray = c3fArray.Copy(c => c.SRGBToCieXYZf());
+                var c3fArray = c3bArray.Map(C3f.FromC3b);
+                var cieXYZArray = c3fArray.Map(c => c.SRGBToCieXYZf());
                 Report.End();
 
                 var count = c3bArray.Length;

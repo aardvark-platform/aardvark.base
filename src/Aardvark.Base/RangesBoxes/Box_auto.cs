@@ -8070,7 +8070,7 @@ namespace Aardvark.Base
         public Box2d Transformed(M33d trafo)
         {
             return IsInvalid ? Box2d.Invalid
-                             : new Box2d(ComputeCorners().Copy(
+                             : new Box2d(ComputeCorners().Map(
                                             p => trafo.TransformPos((V2d)p)));
         }
 
@@ -9281,7 +9281,7 @@ namespace Aardvark.Base
         public Box2d Transformed(M33d trafo)
         {
             return IsInvalid ? Box2d.Invalid
-                             : new Box2d(ComputeCorners().Copy(
+                             : new Box2d(ComputeCorners().Map(
                                             p => trafo.TransformPos((V2d)p)));
         }
 
@@ -10593,7 +10593,7 @@ namespace Aardvark.Base
         public Box2d Transformed(M33d trafo)
         {
             return IsInvalid ? Box2d.Invalid
-                             : new Box2d(ComputeCorners().Copy(
+                             : new Box2d(ComputeCorners().Map(
                                             p => trafo.TransformPos((V2d)p)));
         }
 
@@ -11894,7 +11894,7 @@ namespace Aardvark.Base
         public Box2d Transformed(M33d trafo)
         {
             return IsInvalid ? Box2d.Invalid
-                             : new Box2d(ComputeCorners().Copy(
+                             : new Box2d(ComputeCorners().Map(
                                             p => trafo.TransformPos((V2d)p)));
         }
 
@@ -13108,7 +13108,7 @@ namespace Aardvark.Base
         public Box3d Transformed(M44d trafo)
         {
             return IsInvalid ? Box3d.Invalid
-                             : new Box3d(ComputeCorners().Copy(
+                             : new Box3d(ComputeCorners().Map(
                                             p => trafo.TransformPos((V3d)p)));
         }
 
@@ -14339,7 +14339,7 @@ namespace Aardvark.Base
         public Box3d Transformed(M44d trafo)
         {
             return IsInvalid ? Box3d.Invalid
-                             : new Box3d(ComputeCorners().Copy(
+                             : new Box3d(ComputeCorners().Map(
                                             p => trafo.TransformPos((V3d)p)));
         }
 
@@ -15677,7 +15677,7 @@ namespace Aardvark.Base
         public Box3d Transformed(M44d trafo)
         {
             return IsInvalid ? Box3d.Invalid
-                             : new Box3d(ComputeCorners().Copy(
+                             : new Box3d(ComputeCorners().Map(
                                             p => trafo.TransformPos((V3d)p)));
         }
 
@@ -17003,7 +17003,7 @@ namespace Aardvark.Base
         public Box3d Transformed(M44d trafo)
         {
             return IsInvalid ? Box3d.Invalid
-                             : new Box3d(ComputeCorners().Copy(
+                             : new Box3d(ComputeCorners().Map(
                                             p => trafo.TransformPos((V3d)p)));
         }
 

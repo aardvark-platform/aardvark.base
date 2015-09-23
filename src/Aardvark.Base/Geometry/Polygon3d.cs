@@ -174,7 +174,7 @@ namespace Aardvark.Base
             if (h0p && hbn || h0n && hbp)
                 cpa[cc++] = p0 + (pb - p0) * (h0 / (h0 - hb));
 
-            var cpr = cpa.Copy(cc, v => v.Length);
+            var cpr = cpa.Map(cc, v => v.Length);
 
             var cv = V3d.Cross(cpa[0], cpa[cc - 1]);
             double ff = V3d.Dot(n, cv)

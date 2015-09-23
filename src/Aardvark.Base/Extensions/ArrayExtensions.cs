@@ -179,35 +179,95 @@ namespace Aardvark.Base
 			return result;
 		}
 
-		/// <summary>
-		/// Create a copy with the elements piped through a function.
-		/// </summary>
-		public static Tr[] Copy<T, Tr>(this T[] array, Func<T, Tr> element_fun)
+        // [Obsolete("Use 'Map' instead")]
+        public static Tr[] Copy<T, Tr>(this T[] array, Func<T, Tr> element_fun)
+        {
+            return array.Map(element_fun);
+        }
+
+        /// <summary>
+        /// Create a copy with the elements piped through a function.
+        /// </summary>
+        public static Tr[] Map<T, Tr>(this T[] array, Func<T, Tr> item_fun)
 		{
 			var len = array.LongLength;
 			var result = new Tr[len];
-			for (var i = 0L; i < len; i++) result[i] = element_fun(array[i]);
+			for (var i = 0L; i < len; i++) result[i] = item_fun(array[i]);
 			return result;
 		}
 
-		/// <summary>
-		/// Create a copy with the elements piped through a function.
-		/// The function gets the index of the element as a second argument.
-		/// </summary>
-		public static Tr[] Copy<T, Tr>(this T[] array, Func<T, long, Tr> element_index_fun)
+        public static Tr[] Map2<T0, T1, Tr>(
+                this T0[] array0, T1[] array1, Func<T0, T1, Tr> item0_item1_fun)
+        {
+            var len = Fun.Min(array0.LongLength, array1.LongLength);
+            var result = new Tr[len];
+            for (var i = 0L; i < len; i++) result[i] = item0_item1_fun(array0[i], array1[i]);
+            return result;
+        }
+
+        public static Tr[] Map3<T0, T1, T2, Tr>(
+                this T0[] array0, T1[] array1, T2[] array2, Func<T0, T1, T2, Tr> item0_item1_item2_fun)
+        {
+            var len = Fun.Min(array0.LongLength, array1.LongLength, array2.LongLength);
+            var result = new Tr[len];
+            for (var i = 0L; i < len; i++)
+                result[i] = item0_item1_item2_fun(array0[i], array1[i], array2[i]);
+            return result;
+        }
+
+
+        // [Obsolete("Use 'Map' instead")]
+        public static Tr[] Copy<T, Tr>(this T[] array, Func<T, long, Tr> element_index_fun)
+        {
+            return array.Map(element_index_fun);
+        }
+
+        /// <summary>
+        /// Create a copy with the elements piped through a function.
+        /// The function gets the index of the element as a second argument.
+        /// </summary>
+        public static Tr[] Map<T, Tr>(this T[] array, Func<T, long, Tr> item_index_fun)
 		{
 			var len = array.LongLength;
 			var result = new Tr[len];
-			for (var i = 0L; i < len; i++) result[i] = element_index_fun(array[i], i);
+			for (var i = 0L; i < len; i++) result[i] = item_index_fun(array[i], i);
 			return result;
 		}
 
-		/// <summary>
-		/// Create a copy of count elements with the elements piped through a
-		/// function. count may be longer than the array, in this case the
-		/// result array has default elements at the end.
-		/// </summary>
-		public static Tr[] Copy<T, Tr>(
+        public static Tr[] Map2<T0, T1, Tr>(
+                this T0[] array0, T1[] array1, Func<T0, T1, long, Tr> item0_item1_index_fun)
+        {
+            var len = Fun.Min(array0.LongLength, array1.LongLength);
+            var result = new Tr[len];
+            for (var i = 0L; i < len; i++)
+                result[i] = item0_item1_index_fun(array0[i], array1[i], i);
+            return result;
+        }
+
+        public static Tr[] Map3<T0, T1, T2, Tr>(
+                this T0[] array0, T1[] array1, T2[] array2,
+                Func<T0, T1, T2, long, Tr> item0_item1_item2_index_fun)
+        {
+            var len = Fun.Min(array0.LongLength, array1.LongLength, array2.LongLength);
+            var result = new Tr[len];
+            for (var i = 0L; i < len; i++)
+                result[i] = item0_item1_item2_index_fun(array0[i], array1[i], array2[i], i);
+            return result;
+        }
+
+        // [Obsolete("Use 'Map' instead")]
+        public static Tr[] Copy<T, Tr>(
+                this T[] array, long count, Func<T, Tr> element_fun)
+        {
+            return array.Map(count, element_fun);
+        }
+
+        /// <summary>
+        /// Create a copy of count elements with the elements piped through a
+        /// function. count may be longer than the array, in this case the
+        /// result array has default elements at the end.
+        /// </summary>
+        public static Tr[] Map<T, Tr>(
 				this T[] array, long count, Func<T, Tr> element_fun)
 		{
 			var result = new Tr[count];
@@ -216,13 +276,20 @@ namespace Aardvark.Base
 			return result;
 		}
 
-		/// <summary>
-		/// Create a copy of count elements with the elements piped through a
-		/// function. count may be longer than the array, in this case the
-		/// result array has default elements at the end.
-		/// The function gets the index of the element as a second argument.
-		/// </summary>
-		public static Tr[] Copy<T, Tr>(
+        // [Obsolete("Use 'Map' instead")]
+        public static Tr[] Copy<T, Tr>(
+                this T[] array, long count, Func<T, long, Tr> element_index_fun)
+        {
+            return array.Map(count, element_index_fun);
+        }
+
+        /// <summary>
+        /// Create a copy of count elements with the elements piped through a
+        /// function. count may be longer than the array, in this case the
+        /// result array has default elements at the end.
+        /// The function gets the index of the element as a second argument.
+        /// </summary>
+        public static Tr[] Map<T, Tr>(
 				this T[] array, long count, Func<T, long, Tr> element_index_fun)
 		{
 			var result = new Tr[count];
@@ -231,11 +298,18 @@ namespace Aardvark.Base
 			return result;
 		}
 
-		/// <summary>
-		/// Create a copy of specified length starting at the specified
-		/// offset with the elements piped through a function.
-		/// </summary>
-		public static Tr[] Copy<T, Tr>(
+        // [Obsolete("Use 'Map' instead")]
+        public static Tr[] Copy<T, Tr>(
+                this T[] array, long start, long count, Func<T, Tr> element_fun)
+        {
+            return array.Map(start, count, element_fun);
+        }
+
+        /// <summary>
+        /// Create a copy of specified length starting at the specified
+        /// offset with the elements piped through a function.
+        /// </summary>
+        public static Tr[] Map<T, Tr>(
 				this T[] array, long start, long count, Func<T, Tr> element_fun)
 		{
 			var result = new Tr[count];
@@ -244,13 +318,20 @@ namespace Aardvark.Base
 			return result;
 		}
 
-		/// <summary>
-		/// Create a copy of specified length starting at the specified
-		/// offset with the elements piped through a function.
-		/// The function gets the target index of the element as a second
-		/// argument.
-		/// </summary>
-		public static Tr[] Copy<T, Tr>(
+        // [Obsolete("Use 'Map' instead")]
+        public static Tr[] Copy<T, Tr>(
+                this T[] array, long start, long count, Func<T, long, Tr> element_index_fun)
+        {
+            return array.Map(start, count, element_index_fun);
+        }
+
+        /// <summary>
+        /// Create a copy of specified length starting at the specified
+        /// offset with the elements piped through a function.
+        /// The function gets the target index of the element as a second
+        /// argument.
+        /// </summary>
+        public static Tr[] Map<T, Tr>(
 				this T[] array, long start, long count, Func<T, long, Tr> element_index_fun)
 		{
 			var result = new Tr[count];
@@ -287,29 +368,40 @@ namespace Aardvark.Base
 			return result;
 		}
 
-		public static List<Tr> CopyToList<T, Tr>(this T[] array, Func<T, Tr> fun)
+
+        // [Obsolete("Use 'MapToList' instead")]
+        public static List<Tr> CopyToList<T, Tr>(this T[] array, Func<T, Tr> element_fun)
+        {
+            return array.MapToList(element_fun);
+        }
+
+        // [Obsolete("Use 'MapToList' instead")]
+        public static List<Tr> ToList<T, Tr>(this T[] array, Func<T, Tr> fun)
+        {
+            return array.MapToList(fun);
+        }
+
+        public static List<Tr> MapToList<T, Tr>(this T[] array, Func<T, Tr> element_fun)
 		{
 			var count = array.Length;
 			var result = new List<Tr>(count);
-			for (int i = 0; i < count; i++) result.Add(fun(array[i]));
+			for (int i = 0; i < count; i++) result.Add(element_fun(array[i]));
 			return result;
 		}
 
-        public static List<Tr> CopyToList<T, Tr>(this T[] array, Func<T, long, Tr> fun)
+        // [Obsolete("Use 'MapToList' instead")]
+        public static List<Tr> CopyToList<T, Tr>(this T[] array, Func<T, long, Tr> item_index_fun)
+        {
+            return array.MapToList(item_index_fun);
+        }
+
+        public static List<Tr> MapToList<T, Tr>(this T[] array, Func<T, long, Tr> item_index_fun)
         {
             var count = array.Length;
             var result = new List<Tr>(count);
-            for (int i = 0; i < count; i++) result.Add(fun(array[i], i));
+            for (int i = 0; i < count; i++) result.Add(item_index_fun(array[i], i));
             return result;
         }
-
-		public static List<Tr> ToList<T, Tr>(this T[] array, Func<T, Tr> fun)
-		{
-			var count = array.Length;
-			var result = new List<Tr>(count);
-			for (var i = 0; i < count; i++) result.Add(fun(array[i]));
-			return result;
-		}
 
 		/// <summary>
 		/// Copies the specified range of elements to the specified destination
@@ -1945,38 +2037,38 @@ namespace Aardvark.Base
 		public static Dictionary<Type, Func<Array, object, Array>> CopyFunFunMap =
 			new Dictionary<Type, Func<Array, object, Array>>
 			{
-				{ typeof(byte[]), (a, f) => ((byte[])a).Copy((Func<byte,byte>)f) },
-				{ typeof(sbyte[]), (a, f) => ((sbyte[])a).Copy((Func<sbyte,sbyte>)f) },
-				{ typeof(ushort[]), (a, f) => ((ushort[])a).Copy((Func<ushort,ushort>)f) },
-				{ typeof(short[]), (a, f) => ((short[])a).Copy((Func<short,short>)f) },
-				{ typeof(uint[]), (a, f) => ((uint[])a).Copy((Func<uint,uint>)f) },
-				{ typeof(int[]), (a, f) => ((int[])a).Copy((Func<int,int>)f) },
-				{ typeof(ulong[]), (a, f) => ((ulong[])a).Copy((Func<ulong,ulong>)f) },
-				{ typeof(long[]), (a, f) => ((long[])a).Copy((Func<long,long>)f) },
-				{ typeof(float[]), (a, f) => ((float[])a).Copy((Func<float,float>)f) },
-				{ typeof(double[]), (a, f) => ((double[])a).Copy((Func<double,double>)f) },
-				{ typeof(C3b[]), (a, f) => ((C3b[])a).Copy((Func<C3b,C3b>)f) },
-				{ typeof(C3us[]), (a, f) => ((C3us[])a).Copy((Func<C3us,C3us>)f) },
-				{ typeof(C3ui[]), (a, f) => ((C3ui[])a).Copy((Func<C3ui,C3ui>)f) },
-				{ typeof(C3f[]), (a, f) => ((C3f[])a).Copy((Func<C3f,C3f>)f) },
-				{ typeof(C3d[]), (a, f) => ((C3d[])a).Copy((Func<C3d,C3d>)f) },
-				{ typeof(C4b[]), (a, f) => ((C4b[])a).Copy((Func<C4b,C4b>)f) },
-				{ typeof(C4us[]), (a, f) => ((C4us[])a).Copy((Func<C4us,C4us>)f) },
-				{ typeof(C4ui[]), (a, f) => ((C4ui[])a).Copy((Func<C4ui,C4ui>)f) },
-				{ typeof(C4f[]), (a, f) => ((C4f[])a).Copy((Func<C4f,C4f>)f) },
-				{ typeof(C4d[]), (a, f) => ((C4d[])a).Copy((Func<C4d,C4d>)f) },
-				{ typeof(V2i[]), (a, f) => ((V2i[])a).Copy((Func<V2i,V2i>)f) },
-				{ typeof(V2l[]), (a, f) => ((V2l[])a).Copy((Func<V2l,V2l>)f) },
-				{ typeof(V2f[]), (a, f) => ((V2f[])a).Copy((Func<V2f,V2f>)f) },
-				{ typeof(V2d[]), (a, f) => ((V2d[])a).Copy((Func<V2d,V2d>)f) },
-				{ typeof(V3i[]), (a, f) => ((V3i[])a).Copy((Func<V3i,V3i>)f) },
-				{ typeof(V3l[]), (a, f) => ((V3l[])a).Copy((Func<V3l,V3l>)f) },
-				{ typeof(V3f[]), (a, f) => ((V3f[])a).Copy((Func<V3f,V3f>)f) },
-				{ typeof(V3d[]), (a, f) => ((V3d[])a).Copy((Func<V3d,V3d>)f) },
-				{ typeof(V4i[]), (a, f) => ((V4i[])a).Copy((Func<V4i,V4i>)f) },
-				{ typeof(V4l[]), (a, f) => ((V4l[])a).Copy((Func<V4l,V4l>)f) },
-				{ typeof(V4f[]), (a, f) => ((V4f[])a).Copy((Func<V4f,V4f>)f) },
-				{ typeof(V4d[]), (a, f) => ((V4d[])a).Copy((Func<V4d,V4d>)f) },
+				{ typeof(byte[]), (a, f) => ((byte[])a).Map((Func<byte,byte>)f) },
+				{ typeof(sbyte[]), (a, f) => ((sbyte[])a).Map((Func<sbyte,sbyte>)f) },
+				{ typeof(ushort[]), (a, f) => ((ushort[])a).Map((Func<ushort,ushort>)f) },
+				{ typeof(short[]), (a, f) => ((short[])a).Map((Func<short,short>)f) },
+				{ typeof(uint[]), (a, f) => ((uint[])a).Map((Func<uint,uint>)f) },
+				{ typeof(int[]), (a, f) => ((int[])a).Map((Func<int,int>)f) },
+				{ typeof(ulong[]), (a, f) => ((ulong[])a).Map((Func<ulong,ulong>)f) },
+				{ typeof(long[]), (a, f) => ((long[])a).Map((Func<long,long>)f) },
+				{ typeof(float[]), (a, f) => ((float[])a).Map((Func<float,float>)f) },
+				{ typeof(double[]), (a, f) => ((double[])a).Map((Func<double,double>)f) },
+				{ typeof(C3b[]), (a, f) => ((C3b[])a).Map((Func<C3b,C3b>)f) },
+				{ typeof(C3us[]), (a, f) => ((C3us[])a).Map((Func<C3us,C3us>)f) },
+				{ typeof(C3ui[]), (a, f) => ((C3ui[])a).Map((Func<C3ui,C3ui>)f) },
+				{ typeof(C3f[]), (a, f) => ((C3f[])a).Map((Func<C3f,C3f>)f) },
+				{ typeof(C3d[]), (a, f) => ((C3d[])a).Map((Func<C3d,C3d>)f) },
+				{ typeof(C4b[]), (a, f) => ((C4b[])a).Map((Func<C4b,C4b>)f) },
+				{ typeof(C4us[]), (a, f) => ((C4us[])a).Map((Func<C4us,C4us>)f) },
+				{ typeof(C4ui[]), (a, f) => ((C4ui[])a).Map((Func<C4ui,C4ui>)f) },
+				{ typeof(C4f[]), (a, f) => ((C4f[])a).Map((Func<C4f,C4f>)f) },
+				{ typeof(C4d[]), (a, f) => ((C4d[])a).Map((Func<C4d,C4d>)f) },
+				{ typeof(V2i[]), (a, f) => ((V2i[])a).Map((Func<V2i,V2i>)f) },
+				{ typeof(V2l[]), (a, f) => ((V2l[])a).Map((Func<V2l,V2l>)f) },
+				{ typeof(V2f[]), (a, f) => ((V2f[])a).Map((Func<V2f,V2f>)f) },
+				{ typeof(V2d[]), (a, f) => ((V2d[])a).Map((Func<V2d,V2d>)f) },
+				{ typeof(V3i[]), (a, f) => ((V3i[])a).Map((Func<V3i,V3i>)f) },
+				{ typeof(V3l[]), (a, f) => ((V3l[])a).Map((Func<V3l,V3l>)f) },
+				{ typeof(V3f[]), (a, f) => ((V3f[])a).Map((Func<V3f,V3f>)f) },
+				{ typeof(V3d[]), (a, f) => ((V3d[])a).Map((Func<V3d,V3d>)f) },
+				{ typeof(V4i[]), (a, f) => ((V4i[])a).Map((Func<V4i,V4i>)f) },
+				{ typeof(V4l[]), (a, f) => ((V4l[])a).Map((Func<V4l,V4l>)f) },
+				{ typeof(V4f[]), (a, f) => ((V4f[])a).Map((Func<V4f,V4f>)f) },
+				{ typeof(V4d[]), (a, f) => ((V4d[])a).Map((Func<V4d,V4d>)f) },
 			};
 
 		public static Array Copy<T>(this Array array,

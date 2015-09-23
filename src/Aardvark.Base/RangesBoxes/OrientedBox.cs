@@ -33,7 +33,7 @@
             get
             {
                 var m = (M33d)Trafo;
-                return Box.ComputeCorners().Copy(p => m.TransformPos(p));
+                return Box.ComputeCorners().Map(p => m.TransformPos(p));
             }
         }
 
@@ -42,7 +42,7 @@
             get
             {
                 var m = (M33d)Trafo;
-                return Box.ComputeCornersCCW().Copy(p => m.TransformPos(p));
+                return Box.ComputeCornersCCW().Map(p => m.TransformPos(p));
             }
         }
     }
@@ -80,7 +80,7 @@
             get
             {
                 var m = (M44d)Trafo;
-                return Box.ComputeCorners().Copy(p => m.TransformPos(p));
+                return Box.ComputeCorners().Map(p => m.TransformPos(p));
             }
         }
     }
