@@ -629,10 +629,49 @@ namespace Aardvark.Base
 			self[targetIndex] = help;
 		}
 
-		/// <summary>
-		/// Swap the two elements specified by their indices.
-		/// </summary>
-		public static void Swap<T>(this T[] self, int i, int j)
+
+        /// <summary>
+        /// Sets the array items to a mapped version of the items of array0.
+        /// </summary>
+        public static void SetMap<T, T0>(
+                this T[] array, T0[] array0, Func<T0, T> item0_fun)
+        {
+            var count = Fun.Min(array.LongLength, array0.LongLength);
+            for (long i = 0; i < count; i++)
+                array[i] = item0_fun(array0[i]);
+        }
+
+        /// <summary>
+        /// Sets the array items to a mapped version of corresponding
+        /// pairs of items of array0 and array1.
+        /// </summary>
+        public static void SetMap2<T, T0, T1>(
+                this T[] array, T0[] array0, T1[] array1,
+                Func<T0, T1, T> item0_item1_fun)
+        {
+            var count = Fun.Min(array.LongLength, array0.LongLength, array1.LongLength);
+            for (long i = 0; i < count; i++)
+                array[i] = item0_item1_fun(array0[i], array1[i]);
+        }
+
+        /// <summary>
+        /// Sets the array items to a mapped version of corresponding
+        /// triples of  items of array0, array1, and array2.
+        /// </summary>
+        public static void SetMap3<T, T0, T1, T2>(
+                this T[] array, T0[] array0, T1[] array1, T2[] array2,
+                Func<T0, T1, T2, T> item0_item1_item2_fun)
+        {
+            var count = Fun.Min(array.LongLength, array0.LongLength,
+                                array1.LongLength, array2.LongLength);
+            for (long i = 0; i < count; i++)
+                array[i] = item0_item1_item2_fun(array0[i], array1[i], array2[i]);
+        }
+
+        /// <summary>
+        /// Swap the two elements specified by their indices.
+        /// </summary>
+        public static void Swap<T>(this T[] self, int i, int j)
 		{
 			T help = self[i]; self[i] = self[j]; self[j] = help;
 		}
@@ -760,41 +799,81 @@ namespace Aardvark.Base
 		/// initial supplied left sum, and returns the aggregated result.
 		/// </summary>
 		public static TSum FoldLeft<TVal, TSum>(
-				this TVal[] array, TSum leftSum, Func<TSum, TVal, TSum> sum_val_addFun)
+				this TVal[] array, TSum seed, Func<TSum, TVal, TSum> sum_item_fun)
 		{
 			long count = array.LongLength;
 			for (long i = 0; i < count; i++)
-				leftSum = sum_val_addFun(leftSum, array[i]);
-			return leftSum;
+				seed = sum_item_fun(seed, array[i]);
+			return seed;
 		}
 
-		/// <summary>
-		/// Performs an aggregation of all elements in an array with the
-		/// supplied aggregation function starting from the right and with the
-		/// initial supplied right sum, and returns the aggregated result.
-		/// </summary>
-		public static TSum FoldRight<TVal, TSum>(
-				this TVal[] array, Func<TVal, TSum, TSum> val_sum_addFun, TSum rightSum)
+        public static TSum FoldLeft2<T0, T1, TSum>(
+                this T0[] array0, T1[] array1,
+                TSum seed, Func<TSum, T0, T1, TSum> sum_item0_item1_fun)
+        {
+            long count = Fun.Min(array0.LongLength, array1.LongLength);
+            for (long i = 0; i < count; i++)
+                seed = sum_item0_item1_fun(seed, array0[i], array1[i]);
+            return seed;
+        }
+
+        public static TSum FoldLeft3<T0, T1, T2, TSum>(
+                this T0[] array0, T1[] array1, T2[] array2,
+                TSum seed, Func<TSum, T0, T1, T2, TSum> sum_item0_item1_item2_fun)
+        {
+            long count = Fun.Min(array0.LongLength, array1.LongLength, array2.LongLength);
+            for (long i = 0; i < count; i++)
+                seed = sum_item0_item1_item2_fun(seed, array0[i], array1[i], array2[i]);
+            return seed;
+        }
+
+        /// <summary>
+        /// Performs an aggregation of all elements in an array with the
+        /// supplied aggregation function starting from the right and with the
+        /// initial supplied right sum, and returns the aggregated result.
+        /// </summary>
+        public static TSum FoldRight<TVal, TSum>(
+				this TVal[] array, Func<TVal, TSum, TSum> item_sum_fun, TSum seed)
 		{
 			long count = array.LongLength;
 			for (long i = count - 1; i >= 0; i--)
-				rightSum = val_sum_addFun(array[i], rightSum);
-			return rightSum;
+				seed = item_sum_fun(array[i], seed);
+			return seed;
 		}
 
-		/// <summary>
-		/// Performs an aggregation of the specified slice of elements in an
-		/// array with the supplied aggregation function starting from the
-		/// left and with the initial supplied left sum, and returns the
-		/// aggregated result.
-		/// </summary>
-		public static TSum FoldLeft<TVal, TSum>(
+        public static TSum FoldRight2<T0, T1, TSum>(
+                this T0[] array0, T1[] array1,
+                Func<T0, T1, TSum, TSum> item0_item1_sum_fun, TSum seed)
+        {
+            long count = Fun.Min(array0.LongLength, array1.LongLength);
+            for (long i = count - 1; i >= 0; i--)
+                seed = item0_item1_sum_fun(array0[i], array1[i], seed);
+            return seed;
+        }
+
+        public static TSum FoldRight3<T0, T1, T2, TSum>(
+                this T0[] array0, T1[] array1, T2[] array2,
+                Func<T0, T1, T2, TSum, TSum> item0_item1_item2_sum_fun, TSum seed)
+        {
+            long count = Fun.Min(array0.LongLength, array1.LongLength, array2.LongLength);
+            for (long i = count - 1; i >= 0; i--)
+                seed = item0_item1_item2_sum_fun(array0[i], array1[i], array2[i], seed);
+            return seed;
+        }
+
+        /// <summary>
+        /// Performs an aggregation of the specified slice of elements in an
+        /// array with the supplied aggregation function starting from the
+        /// left and with the initial supplied left sum, and returns the
+        /// aggregated result.
+        /// </summary>
+        public static TSum FoldLeft<TVal, TSum>(
 				this TVal[] array, long start, long count,
-				TSum leftSum, Func<TSum, TVal, TSum> sum_val_addFun)
+				TSum seed, Func<TSum, TVal, TSum> sum_item_fun)
 		{
 			for (long i = start, e = start + count; i < e; i++)
-				leftSum = sum_val_addFun(leftSum, array[i]);
-			return leftSum;
+				seed = sum_item_fun(seed, array[i]);
+			return seed;
 		}
 
 		/// <summary>
@@ -805,11 +884,11 @@ namespace Aardvark.Base
 		/// </summary>
 		public static TSum FoldRight<TVal, TSum>(
 				this TVal[] array, long start, long count,
-				Func<TVal, TSum, TSum> val_sum_addFun, TSum rightSum)
+				Func<TVal, TSum, TSum> item_sum_fun, TSum seed)
 		{
 			for (long i = start + count - 1; i >= start; i--)
-				rightSum = val_sum_addFun(array[i], rightSum);
-			return rightSum;
+				seed = item_sum_fun(array[i], seed);
+			return seed;
 		}
 
 		/// <summary>
