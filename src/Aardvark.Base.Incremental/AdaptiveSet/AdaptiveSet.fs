@@ -188,6 +188,12 @@ module ASet =
         m
 
     /// <summary>
+    /// adaptively computes whether the given aset is empty.
+    /// </summary>
+    let isEmpty (s : aset<'a>) =
+        s |> toMod |> Mod.map (fun s -> s.Count = 0)
+
+    /// <summary>
     /// adaptively checks if the set contains the given element
     /// </summary>
     let contains (elem : 'a) (set : aset<'a>) =
@@ -347,11 +353,8 @@ module ASet =
     let reduce (f : seq<'a> -> 'b) (s : aset<'a>) : IMod<'b> =
         s |> toMod |> Mod.map f
 
-    /// <summary>
-    /// Adaptively projects the set to a value by using an associative add-operation (mappend) and a zero-element (mempty).
-    /// NOTE that removals cause a complete re-evaluation whereas additions can be treated efficiently.
-    /// </summary>
-    let foldMonoid (add : 'a -> 'a -> 'a) (zero : 'a) (s : aset<'a>) : IMod<'a> =
+
+    let fold (add : 'b -> 'a -> 'b) (zero : 'b) (s : aset<'a>) : IMod<'b> =
         let r = s.GetReader()
         let sum = ref zero
 
@@ -378,6 +381,13 @@ module ASet =
 
         r.AddOutput res
         res
+
+    /// <summary>
+    /// Adaptively projects the set to a value by using an associative add-operation (mappend) and a zero-element (mempty).
+    /// NOTE that removals cause a complete re-evaluation whereas additions can be treated efficiently.
+    /// </summary>
+    let foldMonoid (add : 'a -> 'a -> 'a) (zero : 'a) (s : aset<'a>) : IMod<'a> =
+        fold add zero s
 
     /// <summary>
     /// Adaptively projects the set to a value by using associative add-operation (+), a sub-operation (-) and a zero-element (0).

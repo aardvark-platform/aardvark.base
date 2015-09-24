@@ -65,6 +65,7 @@
     <Compile Include="ModTests.fs" />
     <Compile Include="ASetTests.fs" />
     <Compile Include="AListTests.fs" />
+    <Compile Include="AMapTests.fs" />
     <Compile Include="ASetPerformance.fs" />
     <Compile Include="AgTests.fs" />
     <Content Include="app.config" />

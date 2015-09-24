@@ -248,3 +248,24 @@ module ``Basic Mod Tests`` =
         System.Console.WriteLine("{0}", sprintf "%A" values)
         values |> Map.toSeq |> Seq.map fst |> should equal [1]
         
+    [<Test>]
+    let ``[Mod] DefaultingModRef can be set`` () =
+
+        let source = Mod.init 10
+        let x = Mod.initDefault source
+
+        x |> Mod.force |> should equal 10
+
+        transact (fun () -> Mod.change source 5)
+        x |> Mod.force |> should equal 5
+
+        transact (fun () -> Mod.change x 100)
+        x |> Mod.force |> should equal 100
+
+        transact (fun () -> Mod.change source 7)
+
+        x.OutOfDate |> should be False
+        x |> Mod.force |> should equal 100
+
+        transact (fun () -> x.Reset())
+        x |> Mod.force |> should equal 7
