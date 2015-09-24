@@ -608,7 +608,7 @@ namespace Aardvark.Base
                 }
             }
 
-            Report.End();
+            Report.End(2);
         }
 
 
