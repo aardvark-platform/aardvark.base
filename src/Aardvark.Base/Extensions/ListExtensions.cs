@@ -7,19 +7,22 @@ namespace Aardvark.Base
     {
         #region Conversions
 
+        [Obsolete("Use 'MapToArray' instead (same functionality and parameters)", false)]
         public static Tr[] ToArray<T, Tr>(this List<T> self, Func<T, Tr> fun)
         {
-            return self.CopyToArray(self.Count, fun);
+            return self.MapToArray(self.Count, fun);
         }
 
+        [Obsolete("Use 'MapToArray' instead (same functionality and parameters)", false)]
         public static Tr[] ToArray<T, Tr>(this List<T> self, int count, Func<T, Tr> fun)
         {
-            return self.CopyToArray(count, fun);
+            return self.MapToArray(count, fun);
         }
 
+        [Obsolete("Use 'MapToArray' instead (same functionality and parameters)", false)]
         public static Tr[] ToArray<T, Tr>(this List<T> self, int start, int count, Func<T, Tr> fun)
         {
-            return self.CopyToArray(start, count, fun);
+            return self.MapToArray(start, count, fun);
         }
 
         #endregion
@@ -34,7 +37,7 @@ namespace Aardvark.Base
         }
 
 
-        // [Obsolete("Use 'Map' instead")]
+        [Obsolete("Use 'Map' instead (same functionality and parameters)", false)]
         public static List<Tr> Copy<T, Tr>(this List<T> list, Func<T, Tr> fun)
         {
             return list.Map(fun);
@@ -73,7 +76,7 @@ namespace Aardvark.Base
         }
 
 
-        // [Obsolete("Use 'Map' instead")]
+        [Obsolete("Use 'Map' instead (same functionality and parameters)", false)]
         public static List<Tr> Copy<T, Tr>(this List<T> list, Func<T, int, Tr> fun)
         {
             return list.Map(fun);
@@ -123,6 +126,7 @@ namespace Aardvark.Base
             return result;
         }
 
+        [Obsolete("Use 'MapToArray' instead (same functionality and parameters)", false)]
         public static Tr[] CopyToArray<T, Tr>(this List<T> list, Func<T, Tr> item_fun)
         {
             return list.MapToArray(list.Count, item_fun);
@@ -133,6 +137,7 @@ namespace Aardvark.Base
             return list.MapToArray(list.Count, item_fun);
         }
 
+        [Obsolete("Use 'MapToArray' instead (same functionality and parameters)", false)]
         public static Tr[] CopyToArray<T, Tr>(this List<T> list, int count, Func<T, Tr> item_fun)
         {
             return list.MapToArray(count, item_fun);
@@ -145,6 +150,7 @@ namespace Aardvark.Base
             return result;
         }
 
+        [Obsolete("Use 'MapToArray' instead (same functionality and parameters)", false)]
         public static Tr[] CopyToArray<T, Tr>(
                 this List<T> list, int start, int count, Func<T, Tr> item_fun)
         {

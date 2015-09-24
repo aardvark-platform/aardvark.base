@@ -1246,7 +1246,7 @@ namespace Aardvark.Base
 
         public static string[] ToStringArray(this List<Text> textList)
         {
-            return textList.ToArray(t => t.ToString());
+            return textList.MapToArray(t => t.ToString());
         }
 
         public static string JoinToString(this List<Text> textList, string delimiter)

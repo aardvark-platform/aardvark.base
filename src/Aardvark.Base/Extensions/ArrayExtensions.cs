@@ -179,7 +179,7 @@ namespace Aardvark.Base
 			return result;
 		}
 
-        // [Obsolete("Use 'Map' instead")]
+        [Obsolete("Use 'Map' instead (same functionality and parameters)", false)]
         public static Tr[] Copy<T, Tr>(this T[] array, Func<T, Tr> element_fun)
         {
             return array.Map(element_fun);
@@ -196,6 +196,11 @@ namespace Aardvark.Base
 			return result;
 		}
 
+        /// <summary>
+        /// Create an array of reulting items by applying a supplied binary function
+        /// to corresponding pairs of the supplied arrays.
+        /// </summary>
+        /// <returns></returns>
         public static Tr[] Map2<T0, T1, Tr>(
                 this T0[] array0, T1[] array1, Func<T0, T1, Tr> item0_item1_fun)
         {
@@ -205,6 +210,11 @@ namespace Aardvark.Base
             return result;
         }
 
+        /// <summary>
+        /// Create an array of resulting items by applying a supplied ternary function
+        /// to corresponding triples of the supplied arrays.
+        /// </summary>
+        /// <returns></returns>
         public static Tr[] Map3<T0, T1, T2, Tr>(
                 this T0[] array0, T1[] array1, T2[] array2, Func<T0, T1, T2, Tr> item0_item1_item2_fun)
         {
@@ -215,8 +225,7 @@ namespace Aardvark.Base
             return result;
         }
 
-
-        // [Obsolete("Use 'Map' instead")]
+        [Obsolete("Use 'Map' instead (same functionality and parameters)", false)]
         public static Tr[] Copy<T, Tr>(this T[] array, Func<T, long, Tr> element_index_fun)
         {
             return array.Map(element_index_fun);
@@ -255,7 +264,7 @@ namespace Aardvark.Base
             return result;
         }
 
-        // [Obsolete("Use 'Map' instead")]
+        [Obsolete("Use 'Map' instead (same functionality and parameters)", false)]
         public static Tr[] Copy<T, Tr>(
                 this T[] array, long count, Func<T, Tr> element_fun)
         {
@@ -276,7 +285,7 @@ namespace Aardvark.Base
 			return result;
 		}
 
-        // [Obsolete("Use 'Map' instead")]
+        [Obsolete("Use 'Map' instead (same functionality and parameters)", false)]
         public static Tr[] Copy<T, Tr>(
                 this T[] array, long count, Func<T, long, Tr> element_index_fun)
         {
@@ -298,7 +307,7 @@ namespace Aardvark.Base
 			return result;
 		}
 
-        // [Obsolete("Use 'Map' instead")]
+        [Obsolete("Use 'Map' instead (same functionality and parameters)", false)]
         public static Tr[] Copy<T, Tr>(
                 this T[] array, long start, long count, Func<T, Tr> element_fun)
         {
@@ -318,7 +327,7 @@ namespace Aardvark.Base
 			return result;
 		}
 
-        // [Obsolete("Use 'Map' instead")]
+        [Obsolete("Use 'Map' instead (same functionality and parameters)", false)]
         public static Tr[] Copy<T, Tr>(
                 this T[] array, long start, long count, Func<T, long, Tr> element_index_fun)
         {
@@ -368,14 +377,13 @@ namespace Aardvark.Base
 			return result;
 		}
 
-
-        // [Obsolete("Use 'MapToList' instead")]
+        [Obsolete("Use 'MapToList' instead (same functionality and parameters)", false)]
         public static List<Tr> CopyToList<T, Tr>(this T[] array, Func<T, Tr> element_fun)
         {
             return array.MapToList(element_fun);
         }
 
-        // [Obsolete("Use 'MapToList' instead")]
+        [Obsolete("Use 'MapToList' instead (same functionality and parameters)", false)]
         public static List<Tr> ToList<T, Tr>(this T[] array, Func<T, Tr> fun)
         {
             return array.MapToList(fun);
@@ -389,7 +397,7 @@ namespace Aardvark.Base
 			return result;
 		}
 
-        // [Obsolete("Use 'MapToList' instead")]
+        [Obsolete("Use 'MapToList' instead (same functionality and parameters)", false)]
         public static List<Tr> CopyToList<T, Tr>(this T[] array, Func<T, long, Tr> item_index_fun)
         {
             return array.MapToList(item_index_fun);
@@ -794,9 +802,9 @@ namespace Aardvark.Base
 		#region Generic Array Functional Programming Standard Operations
 
 		/// <summary>
-		/// Performs an aggregation of all elements in an array with the
+		/// Performs an aggregation of all items in an array with the
 		/// supplied aggregation function starting from the left and with the
-		/// initial supplied left sum, and returns the aggregated result.
+		/// supplied seed, and returns the aggregated result.
 		/// </summary>
 		public static TSum FoldLeft<TVal, TSum>(
 				this TVal[] array, TSum seed, Func<TSum, TVal, TSum> sum_item_fun)
@@ -807,6 +815,12 @@ namespace Aardvark.Base
 			return seed;
 		}
 
+        /// <summary>
+        /// Performs an aggregation of all corresponding pairs of items of
+        /// the supplied arrays with the supplied aggregation function
+        /// starting from the left and with the  supplied seed, and returns
+        /// the aggregated result.
+        /// </summary>
         public static TSum FoldLeft2<T0, T1, TSum>(
                 this T0[] array0, T1[] array1,
                 TSum seed, Func<TSum, T0, T1, TSum> sum_item0_item1_fun)
@@ -817,6 +831,12 @@ namespace Aardvark.Base
             return seed;
         }
 
+        /// <summary>
+        /// Performs an aggregation of all corresponding triples of items of
+        /// the supplied arrays with the supplied aggregation function
+        /// starting from the left and with the  supplied seed, and returns
+        /// the aggregated result.
+        /// </summary>
         public static TSum FoldLeft3<T0, T1, T2, TSum>(
                 this T0[] array0, T1[] array1, T2[] array2,
                 TSum seed, Func<TSum, T0, T1, T2, TSum> sum_item0_item1_item2_fun)
@@ -828,9 +848,9 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Performs an aggregation of all elements in an array with the
+        /// Performs an aggregation of all items in an array with the
         /// supplied aggregation function starting from the right and with the
-        /// initial supplied right sum, and returns the aggregated result.
+        /// supplied seed, and returns the aggregated result.
         /// </summary>
         public static TSum FoldRight<TVal, TSum>(
 				this TVal[] array, Func<TVal, TSum, TSum> item_sum_fun, TSum seed)
@@ -841,6 +861,12 @@ namespace Aardvark.Base
 			return seed;
 		}
 
+        /// <summary>
+        /// Performs an aggregation of all corresponding pairs of items of
+        /// the supplied arrays with the supplied aggregation function
+        /// starting from the rigth and with the  supplied seed, and returns
+        /// the aggregated result.
+        /// </summary>
         public static TSum FoldRight2<T0, T1, TSum>(
                 this T0[] array0, T1[] array1,
                 Func<T0, T1, TSum, TSum> item0_item1_sum_fun, TSum seed)
@@ -851,6 +877,12 @@ namespace Aardvark.Base
             return seed;
         }
 
+        /// <summary>
+        /// Performs an aggregation of all corresponding triples of items of
+        /// the supplied arrays with the supplied aggregation function
+        /// starting from the rigth and with the  supplied seed, and returns
+        /// the aggregated result.
+        /// </summary>
         public static TSum FoldRight3<T0, T1, T2, TSum>(
                 this T0[] array0, T1[] array1, T2[] array2,
                 Func<T0, T1, T2, TSum, TSum> item0_item1_item2_sum_fun, TSum seed)
@@ -862,7 +894,7 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Performs an aggregation of the specified slice of elements in an
+        /// Performs an aggregation of the specified slice of items in an
         /// array with the supplied aggregation function starting from the
         /// left and with the initial supplied left sum, and returns the
         /// aggregated result.
@@ -877,7 +909,7 @@ namespace Aardvark.Base
 		}
 
 		/// <summary>
-		/// Performs an aggregation of the specified slice of elements in an
+		/// Performs an aggregation of the specified slice of items in an
 		/// array with the supplied aggregation function starting from the
 		/// right and with the initial supplied right sum, and returns the
 		/// aggregated result.
