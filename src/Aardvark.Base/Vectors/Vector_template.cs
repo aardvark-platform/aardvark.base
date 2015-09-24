@@ -363,6 +363,27 @@ namespace Aardvark.Base
         //# }
         #region Properties and Indexers
 
+        //# fields.ForEach(f => {
+        //# var pf = "P_" + f;
+        /// <summary>
+        /// Property for the field __f__.
+        /// Useful when properties are required, but the field __f__ is recommended for general use.
+        /// </summary>
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
+        public __ftype__ __pf__
+        {
+            get
+            {
+                return __f__;
+            }
+            set
+            {
+                __f__ = value;
+            }
+        }
+
+        //# });
         /// <summary>
         /// Enumerates all elements of this vector.
         /// </summary>

@@ -417,22 +417,27 @@ namespace Aardvark.Base
             new Dict<Tup<Type, long>, Format>
             {
                 { Tup.Create(typeof(byte), 1L), Format.Gray },
+                { Tup.Create(typeof(byte), 2L), Format.NormalUV },
                 { Tup.Create(typeof(byte), 3L), Format.BGR },
                 { Tup.Create(typeof(byte), 4L), Format.BGRA },
 
                 { Tup.Create(typeof(ushort), 1L), Format.Gray },
+                { Tup.Create(typeof(ushort), 2L), Format.NormalUV },
                 { Tup.Create(typeof(ushort), 3L), Format.RGB },
                 { Tup.Create(typeof(ushort), 4L), Format.RGBA },
 
                 { Tup.Create(typeof(uint), 1L), Format.Gray },
+                { Tup.Create(typeof(uint), 2L), Format.NormalUV },
                 { Tup.Create(typeof(uint), 3L), Format.RGB },
                 { Tup.Create(typeof(uint), 4L), Format.RGBA },
 
                 { Tup.Create(typeof(float), 1L), Format.Gray },
+                { Tup.Create(typeof(float), 2L), Format.NormalUV },
                 { Tup.Create(typeof(float), 3L), Format.RGB },
                 { Tup.Create(typeof(float), 4L), Format.RGBA },
 
                 { Tup.Create(typeof(double), 1L), Format.Gray },
+                { Tup.Create(typeof(double), 2L), Format.NormalUV },
                 { Tup.Create(typeof(double), 3L), Format.RGB },
                 { Tup.Create(typeof(double), 4L), Format.RGBA },
             };

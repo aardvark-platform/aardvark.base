@@ -125,12 +125,22 @@ namespace Aardvark.Base
             return query.GetClosestPointOn(ray);
         }
 
+        /// <summary>
+        /// Returns the t-parameter along <paramref name="ray"/> at which the closest point to <paramref name="query"/> is.
+        /// </summary>
+        /// <param name="query">Find the closest point on the ray to this point.</param>
+        /// <param name="ray">Find the closest point on this ray.</param>
+        public static double GetClosestPointTOn(this V2d query, Ray2d ray)
+        {
+            return V2d.Dot(query - ray.Origin, ray.Direction)
+                        / ray.Direction.LengthSquared;
+        }
+
         public static V2d GetClosestPointOn(
             this V2d query, Ray2d ray, out double t
             )
         {
-            t = V2d.Dot(query - ray.Origin, ray.Direction)
-                        / ray.Direction.LengthSquared;
+            t = GetClosestPointTOn(query, ray);
             return ray.Origin + t * ray.Direction;
         }
 
@@ -139,6 +149,16 @@ namespace Aardvark.Base
             )
         {
             return query.GetClosestPointOn(ray, out t);
+        }
+
+        /// <summary>
+        /// Returns the t-parameter along <paramref name="ray"/> at which the closest point to <paramref name="query"/> is.
+        /// </summary>
+        /// <param name="query">Find the closest point on the ray to this point.</param>
+        /// <param name="ray">Find the closest point on this ray.</param>
+        public static double GetClosestPointTOn(this Ray2d ray, V2d query)
+        {
+            return query.GetClosestPointTOn(ray);
         }
 
         #endregion

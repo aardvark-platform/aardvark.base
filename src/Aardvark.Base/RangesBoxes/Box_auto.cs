@@ -7211,8 +7211,16 @@ namespace Aardvark.Base
         /// </summary>
         public Box2i(V2i[] points, long start, long count)
         {
-            Min = Max = points[start];
-            for (long i = start + 1, e = start + count; i < e; i++) ExtendBy(points[i]);
+            if (count <= 0)
+            {
+                Min = Invalid.Min;
+                Max = Invalid.Max;
+            }
+            else
+            {
+                Min = Max = points[start];
+                for (long i = start + 1, e = start + count; i < e; i++) ExtendBy(points[i]);
+            }
         }
 
         /// <summary>
@@ -8422,8 +8430,16 @@ namespace Aardvark.Base
         /// </summary>
         public Box2l(V2l[] points, long start, long count)
         {
-            Min = Max = points[start];
-            for (long i = start + 1, e = start + count; i < e; i++) ExtendBy(points[i]);
+            if (count <= 0)
+            {
+                Min = Invalid.Min;
+                Max = Invalid.Max;
+            }
+            else
+            {
+                Min = Max = points[start];
+                for (long i = start + 1, e = start + count; i < e; i++) ExtendBy(points[i]);
+            }
         }
 
         /// <summary>
@@ -9633,8 +9649,16 @@ namespace Aardvark.Base
         /// </summary>
         public Box2f(V2f[] points, long start, long count)
         {
-            Min = Max = points[start];
-            for (long i = start + 1, e = start + count; i < e; i++) ExtendBy(points[i]);
+            if (count <= 0)
+            {
+                Min = Invalid.Min;
+                Max = Invalid.Max;
+            }
+            else
+            {
+                Min = Max = points[start];
+                for (long i = start + 1, e = start + count; i < e; i++) ExtendBy(points[i]);
+            }
         }
 
         /// <summary>
@@ -10934,8 +10958,16 @@ namespace Aardvark.Base
         /// </summary>
         public Box2d(V2d[] points, long start, long count)
         {
-            Min = Max = points[start];
-            for (long i = start + 1, e = start + count; i < e; i++) ExtendBy(points[i]);
+            if (count <= 0)
+            {
+                Min = Invalid.Min;
+                Max = Invalid.Max;
+            }
+            else
+            {
+                Min = Max = points[start];
+                for (long i = start + 1, e = start + count; i < e; i++) ExtendBy(points[i]);
+            }
         }
 
         /// <summary>
@@ -12237,8 +12269,16 @@ namespace Aardvark.Base
         /// </summary>
         public Box3i(V3i[] points, long start, long count)
         {
-            Min = Max = points[start];
-            for (long i = start + 1, e = start + count; i < e; i++) ExtendBy(points[i]);
+            if (count <= 0)
+            {
+                Min = Invalid.Min;
+                Max = Invalid.Max;
+            }
+            else
+            {
+                Min = Max = points[start];
+                for (long i = start + 1, e = start + count; i < e; i++) ExtendBy(points[i]);
+            }
         }
 
         /// <summary>
@@ -13468,8 +13508,16 @@ namespace Aardvark.Base
         /// </summary>
         public Box3l(V3l[] points, long start, long count)
         {
-            Min = Max = points[start];
-            for (long i = start + 1, e = start + count; i < e; i++) ExtendBy(points[i]);
+            if (count <= 0)
+            {
+                Min = Invalid.Min;
+                Max = Invalid.Max;
+            }
+            else
+            {
+                Min = Max = points[start];
+                for (long i = start + 1, e = start + count; i < e; i++) ExtendBy(points[i]);
+            }
         }
 
         /// <summary>
@@ -14699,8 +14747,16 @@ namespace Aardvark.Base
         /// </summary>
         public Box3f(V3f[] points, long start, long count)
         {
-            Min = Max = points[start];
-            for (long i = start + 1, e = start + count; i < e; i++) ExtendBy(points[i]);
+            if (count <= 0)
+            {
+                Min = Invalid.Min;
+                Max = Invalid.Max;
+            }
+            else
+            {
+                Min = Max = points[start];
+                for (long i = start + 1, e = start + count; i < e; i++) ExtendBy(points[i]);
+            }
         }
 
         /// <summary>
@@ -16025,8 +16081,16 @@ namespace Aardvark.Base
         /// </summary>
         public Box3d(V3d[] points, long start, long count)
         {
-            Min = Max = points[start];
-            for (long i = start + 1, e = start + count; i < e; i++) ExtendBy(points[i]);
+            if (count <= 0)
+            {
+                Min = Invalid.Min;
+                Max = Invalid.Max;
+            }
+            else
+            {
+                Min = Max = points[start];
+                for (long i = start + 1, e = start + count; i < e; i++) ExtendBy(points[i]);
+            }
         }
 
         /// <summary>
