@@ -1,8 +1,7 @@
 source https://nuget.org/api/v2
+source https://vrvis.myget.org/F/aardvark_public/api/v2
 
-source \\hobel\nuget
-
-nuget DevILSharp ~> 0.0.9
+nuget DevILSharp ~> 0.0.11
 nuget Rx-Linq ~> 2.2.5
 nuget Rx-Core ~> 2.2.5
 nuget Rx-PlatformServices ~> 2.2.5
