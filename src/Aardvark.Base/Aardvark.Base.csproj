@@ -48,17 +48,17 @@
     <DocumentationFile>..\..\bin\Release\Aardvark.Base.xml</DocumentationFile>
   </PropertyGroup>
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
-  <Import Project="..\..\..\..\build\Aardvark.targets" Condition="exists('..\..\..\..\build\Aardvark.targets')" />
-  <Import Project="$(SolutionPath).targets" Condition="exists('$(SolutionPath).targets')" />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
     <Reference Include="DevILSharp, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\packages\DevILSharp.0.0.9\lib\net45\DevILSharp.dll</HintPath>
+      <HintPath>..\..\packages\DevILSharp\lib\net45\DevILSharp.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Drawing" />
+    <Reference Include="System.IO.Compression" />
+    <Reference Include="System.IO.Compression.FileSystem" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -66,6 +66,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AlgoDat\ExtendedCore\BitHelpers.cs" />
+    <Compile Include="AlgoDat\ExtendedCore\SortedSetExt.cs" />
     <Compile Include="AlgoDat\LruCache.cs" />
     <None Include="Extensions\FuncActionExtensions_template.cs" />
     <Compile Include="Extensions\FuncActionExtensions_auto.cs" />
@@ -146,7 +148,7 @@
     <Compile Include="Random\RandomSystem.cs" />
     <Compile Include="RangesBoxes\Box.cs" />
     <Compile Include="RangesBoxes\Box_auto.cs" />
-    <None Include="packages.config" />
+    <None Include="paket.references" />
     <None Include="RangesBoxes\Box_template.cs" />
     <Compile Include="RangesBoxes\OrientedBox.cs" />
     <Compile Include="RangesBoxes\Range.cs" />
@@ -285,7 +287,6 @@
     <Compile Include="Math\SampleGrid2d.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
-  <ItemGroup />
   <Target Name="Package">
     <!-- Ensure the Package directory exists for this project -->
     <RemoveDir Directories="NuGet" />

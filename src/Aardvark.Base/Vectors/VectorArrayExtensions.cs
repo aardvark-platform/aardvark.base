@@ -305,12 +305,12 @@ namespace Aardvark.Base
 
         public static V3d[] Transformed(this V3d[] points, M33d matrix)
         {
-            return points.Copy(p => matrix.Transform(p));
+            return points.Map(p => matrix.Transform(p));
         }
 
         public static V3d[] TransformedPos(this V3d[] points, M44d matrix)
         {
-            return points.Copy(p => matrix.TransformPos(p));
+            return points.Map(p => matrix.TransformPos(p));
         }
     }
 

@@ -18,6 +18,7 @@ namespace Aardvark.Base
             public int Index;
             public TKey Key;
             public TValue Value;
+            public Action DeleteAct;
         }
 
         private object m_lock;
@@ -54,6 +55,24 @@ namespace Aardvark.Base
             m_size = 0;
         }
 
+        public LruCache(
+            long capacity
+        )
+        {
+            m_lock = new object();
+            m_cache = new Dict<TKey, Entry>();
+            m_heap = new List<Entry>();
+            m_sizeFun = null;
+            m_readFun = null;
+            m_deleteAct = null;
+            m_capacity = capacity;
+            m_time = 0;
+            m_size = 0;
+        }
+
+
+
+
         public long Capacity
         {
             get
@@ -80,8 +99,8 @@ namespace Aardvark.Base
                 {
                     if (m_deleteAct != null)
                         m_deleteAct(removeKey, entry.Value);
-                    var disposable = entry.Value as IDisposable;
-                    if (disposable != null) disposable.Dispose();
+                    if (entry.DeleteAct != null)
+                        entry.DeleteAct();
                     size -= entry.Size;
                 }
                 else
@@ -123,7 +142,7 @@ namespace Aardvark.Base
             }
         }
 
-        public TValue GetOrAdd(TKey key, long size, Func<TValue> valueFun)
+        public TValue GetOrAdd(TKey key, long size, Func<TValue> valueFun, Action deleteAct = null)
         {
             Entry entry;
             lock (m_lock)
@@ -142,6 +161,7 @@ namespace Aardvark.Base
                         Size = size,
                         Key = key,
                         Value = valueFun(),
+                        DeleteAct = deleteAct,
                     };
                     m_cache[key] = entry;
                     Enqueue(m_heap, entry);
@@ -189,8 +209,8 @@ namespace Aardvark.Base
                     RemoveAt(m_heap, entry.Index);
                     if (m_deleteAct != null)
                         m_deleteAct(key, entry.Value);
-                    var disposable = entry.Value as IDisposable;
-                    if (disposable != null) disposable.Dispose();
+                    if (entry.DeleteAct != null)
+                        entry.DeleteAct();
                     return true;
                 }
                 return false;

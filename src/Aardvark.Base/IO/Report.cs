@@ -1068,7 +1068,7 @@ namespace Aardvark.Base
 
         public void Values(int level, ILogTarget target, string name, string separator, object[] values)
         {
-            var text = values.Length == 1 ? values[0].ToString() : values.Copy(o => o.ToString()).Join(separator);
+            var text = values.Length == 1 ? values[0].ToString() : values.Map(o => o.ToString()).Join(separator);
             target.Log(m_ti, new LogMsg(LogType.Info, LogOpt.EndLine, level,
                                         m_jobStack.Count * m_indent, name, 40, text));
             var reporterArray = m_reporterArray;

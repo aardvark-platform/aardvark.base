@@ -7,19 +7,22 @@ namespace Aardvark.Base
     {
         #region Conversions
 
+        [Obsolete("Use 'MapToArray' instead (same functionality and parameters)", false)]
         public static Tr[] ToArray<T, Tr>(this List<T> self, Func<T, Tr> fun)
         {
-            return self.CopyToArray(self.Count, fun);
+            return self.MapToArray(self.Count, fun);
         }
 
+        [Obsolete("Use 'MapToArray' instead (same functionality and parameters)", false)]
         public static Tr[] ToArray<T, Tr>(this List<T> self, int count, Func<T, Tr> fun)
         {
-            return self.CopyToArray(count, fun);
+            return self.MapToArray(count, fun);
         }
 
+        [Obsolete("Use 'MapToArray' instead (same functionality and parameters)", false)]
         public static Tr[] ToArray<T, Tr>(this List<T> self, int start, int count, Func<T, Tr> fun)
         {
-            return self.CopyToArray(start, count, fun);
+            return self.MapToArray(start, count, fun);
         }
 
         #endregion
@@ -33,24 +36,81 @@ namespace Aardvark.Base
             return result;
         }
 
-        /// <summary>
-        /// Create a copy with the elements piped through a function.
-        /// </summary>
-        public static List<Tr> Copy<T, Tr>(this List<T> self, Func<T, Tr> fun)
+
+        [Obsolete("Use 'Map' instead (same functionality and parameters)", false)]
+        public static List<Tr> Copy<T, Tr>(this List<T> list, Func<T, Tr> fun)
         {
-            var result = new List<Tr>(self.Count);
-            foreach (var item in self) result.Add(fun(item));
-            return result;
+            return list.Map(fun);
         }
 
         /// <summary>
         /// Create a copy with the elements piped through a function.
         /// </summary>
-        public static List<Tr> Copy<T, Tr>(this List<T> self, Func<T, int, Tr> fun)
+        public static List<Tr> Map<T, Tr>(this List<T> list, Func<T, Tr> item_fun)
         {
-            var result = new List<Tr>(self.Count);
-            for (int i = 0; i < self.Count; i++)
-                result.Add(fun(self[i], i));
+            var count = list.Count;
+            var result = new List<Tr>(count);
+            for (var i = 0; i < count; i++) result.Add(item_fun(list[i]));
+            return result;
+        }
+
+        public static List<Tr> Map2<T0, T1, Tr>(
+                this List<T0> list0, List<T1> list1, Func<T0, T1, Tr> item0_item1_fun)
+        {
+            var count = Fun.Min(list0.Count, list1.Count);
+            var result = new List<Tr>(count);
+            for (var i = 0; i < count; i++)
+                result.Add(item0_item1_fun(list0[i], list1[i]));
+            return result;
+        }
+
+        public static List<Tr> Map3<T0, T1, T2, Tr>(
+                this List<T0> list0, List<T1> list1, List<T2> list2,
+                Func<T0, T1, T2, Tr> item0_item1_item2_fun)
+        {
+            var count = Fun.Min(list0.Count, list1.Count);
+            var result = new List<Tr>(count);
+            for (var i = 0; i < count; i++)
+                result.Add(item0_item1_item2_fun(list0[i], list1[i], list2[i]));
+            return result;
+        }
+
+
+        [Obsolete("Use 'Map' instead (same functionality and parameters)", false)]
+        public static List<Tr> Copy<T, Tr>(this List<T> list, Func<T, int, Tr> fun)
+        {
+            return list.Map(fun);
+        }
+
+        /// <summary>
+        /// Create a copy with the elements piped through a function.
+        /// </summary>
+        public static List<Tr> Map<T, Tr>(this List<T> list, Func<T, int, Tr> item_index_fun)
+        {
+            var count = list.Count;
+            var result = new List<Tr>(count);
+            for (int i = 0; i < count; i++) result.Add(item_index_fun(list[i], i));
+            return result;
+        }
+
+        public static List<Tr> Map2<T0, T1, Tr>(
+                this List<T0> list0, List<T1> list1, Func<T0, T1, int, Tr> item0_item1_index_fun)
+        {
+            var count = Fun.Min(list0.Count, list1.Count);
+            var result = new List<Tr>(count);
+            for (var i = 0; i < count; i++)
+                result.Add(item0_item1_index_fun(list0[i], list1[i], i));
+            return result;
+        }
+
+        public static List<Tr> Map3<T0, T1, T2, Tr>(
+                this List<T0> list0, List<T1> list1, List<T2> list2,
+                Func<T0, T1, T2, int, Tr> item0_item1_item2_index_fun)
+        {
+            var count = Fun.Min(list0.Count, list1.Count);
+            var result = new List<Tr>(count);
+            for (var i = 0; i < count; i++)
+                result.Add(item0_item1_item2_index_fun(list0[i], list1[i], list2[i], i));
             return result;
         }
 
@@ -66,23 +126,42 @@ namespace Aardvark.Base
             return result;
         }
 
-        public static Tr[] CopyToArray<T, Tr>(this List<T> self, Func<T, Tr> fun)
+        [Obsolete("Use 'MapToArray' instead (same functionality and parameters)", false)]
+        public static Tr[] CopyToArray<T, Tr>(this List<T> list, Func<T, Tr> item_fun)
         {
-            return self.CopyToArray(self.Count, fun);
+            return list.MapToArray(list.Count, item_fun);
         }
 
-        public static Tr[] CopyToArray<T, Tr>(this List<T> self, int count, Func<T, Tr> fun)
+        public static Tr[] MapToArray<T, Tr>(this List<T> list, Func<T, Tr> item_fun)
+        {
+            return list.MapToArray(list.Count, item_fun);
+        }
+
+        [Obsolete("Use 'MapToArray' instead (same functionality and parameters)", false)]
+        public static Tr[] CopyToArray<T, Tr>(this List<T> list, int count, Func<T, Tr> item_fun)
+        {
+            return list.MapToArray(count, item_fun);
+        }
+
+        public static Tr[] MapToArray<T, Tr>(this List<T> list, int count, Func<T, Tr> item_fun)
         {
             var result = new Tr[count];
-            for (int i = 0; i < count; i++) result[i] = fun(self[i]);
+            for (int i = 0; i < count; i++) result[i] = item_fun(list[i]);
             return result;
         }
 
+        [Obsolete("Use 'MapToArray' instead (same functionality and parameters)", false)]
         public static Tr[] CopyToArray<T, Tr>(
-                this List<T> self, int start, int count, Func<T, Tr> fun)
+                this List<T> list, int start, int count, Func<T, Tr> item_fun)
+        {
+            return list.MapToArray(start, count, item_fun);
+        }
+
+        public static Tr[] MapToArray<T, Tr>(
+                this List<T> list, int start, int count, Func<T, Tr> item_fun)
         {
             var result = new Tr[count];
-            for (int i = 0; i < count; i++) result[i] = fun(self[i + start]);
+            for (int i = 0; i < count; i++) result[i] = item_fun(list[i + start]);
             return result;
         }
 

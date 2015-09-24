@@ -32,46 +32,51 @@ namespace Aardvark.Base
 
     public class PixMipMap2d : IPixMipMap2d
     {
-        protected IPixImage2d[] m_imageArray;
+        public IPixImage2d[] MipArray;
 
         #region Constructor
 
-        public PixMipMap2d(IPixImage2d[] imageArray)
+        public PixMipMap2d(IPixImage2d[] mipArray)
         {
-            m_imageArray = imageArray;
+            MipArray = mipArray;
         }
 
         #endregion
 
         #region IPixMipMap2d
 
-        public virtual int LevelCount
+        public int LevelCount
         {
-            get { return m_imageArray.Length; }
+            get { return MipArray.Length; }
         }
 
-        public virtual IPixImage2d this[int level]
+        public IPixImage2d this[int level] 
         {
-            get { return m_imageArray[level]; }
+            get { return MipArray[level]; }
         }
 
         #endregion
 
         public PixFormat PixFormat
         {
-            get { if (m_imageArray.IsEmptyOrNull()) new Exception("PixMipMap is empty"); return m_imageArray[0].PixFormat; }
+            get { if (MipArray.IsEmptyOrNull()) new Exception("PixMipMap is empty"); return MipArray[0].PixFormat; }
         }
     }
 
     public class PixCube : IPixCube
     {
-        public IPixMipMap2d[] MipMapArray;
+        public PixMipMap2d[] MipMapArray;
 
         #region Constructor
 
-        public PixCube(IPixMipMap2d[] mipMapArray)
+        public PixCube(PixMipMap2d[] mipMapArray)
         {
             MipMapArray = mipMapArray;
+        }
+
+        public PixCube(PixImage[] cubeFaceArray)
+        {
+            MipMapArray = cubeFaceArray.Map(x => new PixMipMap2d(x.IntoArray()));
         }
 
         #endregion

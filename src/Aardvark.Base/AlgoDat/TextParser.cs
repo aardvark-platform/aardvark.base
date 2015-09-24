@@ -39,7 +39,7 @@ namespace Aardvark.Base
             Cases = cases;
             TextAct = textAct;
 
-            var pattern = cases.Copy(
+            var pattern = cases.Map(
                 (c, i) => c.Pattern != null
                             ? "(?<" + (i + 1) + ">" + c.Pattern + ")"
                             : "(?<" + (i + 1) + ">.|\r)"

@@ -22,7 +22,8 @@ type Cache<'a, 'b>(scope : Ag.Scope, f : 'a -> 'b) =
     /// are (for example) disposable resources.
     /// </summary>
     member x.Clear(remove : 'b -> unit) =
-        for (KeyValue(_,(v,_))) in cache do remove v
+        for (KeyValue(_,(v,_))) in cache do 
+            remove v
         cache.Clear()
         match nullCache with
             | Some (v,_) -> 
@@ -58,14 +59,16 @@ type Cache<'a, 'b>(scope : Ag.Scope, f : 'a -> 'b) =
     /// revoke returns the function value associated
     /// with the given argument and decreases its reference count.
     /// </summary>
-    member x.Revoke (v : 'a) =
+    member x.RevokeAndGetDeleted (v : 'a) =
         if (v :> obj) = null then
             match nullCache with
                 | Some (r, ref) -> 
                     ref := !ref - 1
                     if !ref = 0 then
                         nullCache <- None
-                    r
+                        (true, r)
+                    else
+                        (false, r)
                 | None -> failwithf "cannot revoke null"
         else
             match cache.TryGetValue v with
@@ -73,8 +76,13 @@ type Cache<'a, 'b>(scope : Ag.Scope, f : 'a -> 'b) =
                     ref := !ref - 1
                     if !ref = 0 then
                         cache.Remove v |> ignore
-                    r
+                        (true, r)
+                    else
+                        (false, r)
                 | _ -> failwithf "cannot revoke unknown value: %A" v
+
+    member x.Revoke (v : 'a) =
+        x.RevokeAndGetDeleted v |> snd
 
 
 

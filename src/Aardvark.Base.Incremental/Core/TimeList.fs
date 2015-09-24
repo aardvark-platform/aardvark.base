@@ -4,6 +4,8 @@ open Aardvark.Base
 open System
 open System.Collections
 open System.Collections.Generic
+open System.Runtime.InteropServices
+
 
 /// <summary>
 /// represents a sequence containing values annotated with
@@ -11,25 +13,33 @@ open System.Collections.Generic
 /// efficiently insert/remove timed values.
 /// </summary>
 type TimeList<'a>() =
-    let cache = Dictionary<Time, 'a>()
-    let mutable rep = Time.newRoot()
+    static let emptyOrder = SimpleOrder.create() :> IOrder
+    let cache = Dictionary<ISortKey, 'a>()
+    let mutable rep = emptyOrder
 
     member x.Count = cache.Count
 
     member x.Clear() =
         cache.Clear()
 
-    member x.Add(t : Time, v : 'a) =
-        rep <- t.rep
+    member x.Add(t : ISortKey, v : 'a) =
+        rep <- t.Clock
         cache.[t] <- v
          
     member x.Item
-        with get(t) = cache.[t]
-                    
-    member x.Remove(t : Time) =
+        with get(t) = 
+            cache.[t]
+        and set(t : ISortKey) (value : 'a) =
+            rep <- t.Clock
+            cache.[t] <- value
+
+    member x.TryGetValue(t : ISortKey, [<Out>] value : byref<'a>) =
+        cache.TryGetValue(t, &value)
+
+    member x.Remove(t : ISortKey) =
         cache.Remove t
 
-    member x.Contains (t : Time, v : 'a) =
+    member x.Contains (t : ISortKey, v : 'a) =
         match cache.TryGetValue t with
             | (true, v') -> Object.Equals(v,v')
             | _ -> false
@@ -37,7 +47,9 @@ type TimeList<'a>() =
     member x.Values =
         x |> Seq.map snd
 
-    interface ICollection<Time * 'a> with
+    member x.All = cache |> Seq.map (fun (KeyValue(k,v)) -> k,v)
+
+    interface ICollection<ISortKey * 'a> with
         member x.Add item = x.Add item |> ignore
         member x.Contains item = x.Contains item
         
@@ -52,20 +64,19 @@ type TimeList<'a>() =
         member x.Remove((t,_)) = x.Remove t
         member x.Clear() = x.Clear()
 
-
     interface IEnumerable with
         member x.GetEnumerator() = new TimeListEnumerator<'a>(rep, cache) :> IEnumerator
 
-    interface IEnumerable<Time * 'a> with
-        member x.GetEnumerator() = new TimeListEnumerator<'a>(rep, cache) :> IEnumerator<Time * 'a>
+    interface IEnumerable<ISortKey * 'a> with
+        member x.GetEnumerator() = new TimeListEnumerator<'a>(rep, cache) :> IEnumerator<ISortKey * 'a>
 
-and private TimeListEnumerator<'a>(t : Time, cache : Dictionary<Time, 'a>) =
-    let mutable current = t.rep
-    let mutable currentValue = Unchecked.defaultof<Time * 'a>
+and private TimeListEnumerator<'a>(t : IOrder, cache : Dictionary<ISortKey, 'a>) =
+    let mutable current = t.Root
+    let mutable currentValue = Unchecked.defaultof<ISortKey * 'a>
 
     let rec moveNext() =
-        if current.next <> current.rep then
-            current <- current.next
+        if current.Next <> t.Root then
+            current <- current.Next
             match cache.TryGetValue current with
                 | (true, v) ->
                     currentValue <- current, v
@@ -77,12 +88,12 @@ and private TimeListEnumerator<'a>(t : Time, cache : Dictionary<Time, 'a>) =
 
     interface IEnumerator with
         member x.MoveNext() = moveNext()
-        member x.Reset() = current <- current.rep
+        member x.Reset() = current <- t.Root
         member x.Current = currentValue :> obj
 
-    interface IEnumerator<Time * 'a> with
+    interface IEnumerator<ISortKey * 'a> with
         member x.Current = currentValue
         member x.Dispose() =
             current <- Unchecked.defaultof<_>
-            currentValue <- Unchecked.defaultof<Time * 'a>
+            currentValue <- Unchecked.defaultof<ISortKey * 'a>
 

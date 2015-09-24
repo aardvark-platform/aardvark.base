@@ -10,7 +10,9 @@ open System.Collections.Generic
 
 [<Extension; AbstractClass; Sealed>]
 type Mod private() =
-    static member Constant (v : 'a) = Mod.initConstant v
+    static member Constant (v : 'a) = Mod.constant v
+
+    static member Init(v : 'a) = Mod.init v
 
     static member LazyConstant (f : Func<'a>) : IMod<'a> =
         Mod.delay f.Invoke
@@ -28,7 +30,7 @@ type Mod private() =
     static member LazyAsync(f : Func<'a>, defaultValue : 'a) : IMod<'a> =
         let a = async { return f.Invoke() }
         Mod.asyncWithDefault defaultValue a
-
+        
 type AdaptiveSet<'a>(content : seq<'a>) =
     let content = HashSet content
     let s = lazy (ASet.ofSeq content)
@@ -45,6 +47,8 @@ type AdaptiveSet<'a>(content : seq<'a>) =
         sprintf "aset %A" (content |> Seq.toList)
 
     interface aset<'a> with
+        member x.ReaderCount = 0
+        member x.IsConstant = s.Value.IsConstant
         member x.GetReader() = s.Value.GetReader()
 
     interface IEnumerable with
@@ -125,6 +129,18 @@ type ModExtensions private() =
         Mod.map f.Invoke this
 
     [<Extension>]
+    static member SelectFast (this : IMod<'a>, f : Func<'a, 'b>) =
+        Mod.mapFast f.Invoke this
+
+    [<Extension>]
+    static member SelectFast (this : IMod, f : Func<obj, 'b>) =
+        Mod.mapFastObj f.Invoke this
+
+    [<Extension>]
+    static member Cast (this : IMod) =
+        Mod.cast this
+
+    [<Extension>]
     static member Compose (this : IMod<'a>, other : IMod<'b>, f : Func<'a, 'b, 'c>) =
         Mod.map2 (fun a b -> f.Invoke(a,b)) this other
 
@@ -153,8 +169,12 @@ type ModExtensions private() =
         AList.bind2 (fun l r -> f.Invoke(l,r)) this other
 
     [<Extension>]
-    static member Always(this : IMod<'a>) =
-        Mod.always this
+    static member Eager(this : IMod<'a>) =
+        Mod.onPush this
+
+    [<Extension>]
+    static member Lazy(this : IMod<'a>) =
+        Mod.onPull this
 
     [<Extension>]
     static member ToAdaptiveSet(this : IMod<'a>) =
@@ -185,11 +205,11 @@ type AdaptiveSetExtensions private() =
 
     [<Extension>]
     static member Flatten (this : seq<aset<'a>>) =
-        ASet.concat' this
+        ASet.union' this
 
     [<Extension>]
     static member Flatten (this : aset<aset<'a>>) =
-        ASet.concat this
+        ASet.union this
 
     [<Extension>]
     static member Flatten (this : aset<seq<'a>>) =
@@ -205,7 +225,7 @@ type AdaptiveSetExtensions private() =
 
     [<Extension>]
     static member Union (this : aset<'a>, other : aset<'a>) =
-        ASet.concat' [this; other]
+        ASet.union' [this; other]
 
     [<Extension>]
     static member ToMod (this : aset<'a>) =
@@ -251,6 +271,18 @@ type AdaptiveSetExtensions private() =
             deltas |> List.toArray |> callback.Invoke
         )
 
+    [<Extension>]
+    static member OrderBy (this : aset<'a>, f : Func<'a, 'b>) =
+        this |> ASet.sortBy f.Invoke
+
+    [<Extension>]
+    static member OrderWith (this : aset<'a>, cmp : IComparer<'a>) =
+        this |> ASet.sortWith (curry cmp.Compare)
+
+    [<Extension>]
+    static member ToAdaptiveList (this : aset<'a>) =
+        this |> ASet.toAList
+
 [<Extension; AbstractClass; Sealed>]
 type ChangeableSetExtensions private() =
 
@@ -264,7 +296,7 @@ type ChangeableSetExtensions private() =
 
     [<Extension>]
     static member Flatten (this : cset<aset<'a>>) =
-        ASet.concat this
+        ASet.union this
 
     [<Extension>]
     static member Flatten (this : cset<seq<'a>>) =
@@ -298,6 +330,19 @@ type ChangeableSetExtensions private() =
     [<Extension>]
     static member ContainsAll (this : cset<'a>, item : seq<'a>) =
         this |> ASet.containsAll item
+
+    [<Extension>]
+    static member OrderBy (this : cset<'a>, f : Func<'a, 'b>) =
+        this |> ASet.sortBy f.Invoke
+
+    [<Extension>]
+    static member OrderWith (this : cset<'a>, cmp : IComparer<'a>) =
+        this |> ASet.sortWith (curry cmp.Compare)
+
+    [<Extension>]
+    static member ToAdaptiveList (this : cset<'a>) =
+        this |> ASet.toAList
+
 
 [<Extension; AbstractClass; Sealed>]
 type AdaptiveListExtensions private() =
@@ -334,7 +379,9 @@ type AdaptiveListExtensions private() =
     static member Concat (this : alist<'a>, other : alist<'a>) =
         AList.concat' [this; other]
 
-
+    [<Extension>]
+    static member ToAdaptiveSet (this : alist<'a>) =
+        this |> AList.toASet
 
 
 

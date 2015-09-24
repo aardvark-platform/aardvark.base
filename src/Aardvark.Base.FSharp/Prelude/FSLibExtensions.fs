@@ -8,6 +8,11 @@ module Prelude =
     let inc (a:byref<int>) = a <- a + 1
     let dec (a:byref<int>) = a <- a - 1
     
+    let inline isNull (a : 'a) =
+        match a with
+            | null -> true
+            | _ -> false
+
     module Map =
         let union (l : Map<'k, 'v>) (r : Map<'k, 'v>) =
             let mutable result = l
@@ -99,6 +104,17 @@ module Prelude =
         let forany (f : 'a -> bool) (a : 'a[]) =
             forany' f 0 a
     
+    module Disposable =
+
+        let inline dispose v = (^a : (member Dispose : unit -> unit) v)
+
+    module Option =
+        
+        let inline defaultValue (fallback : 'a) (option : Option<'a>) = 
+            match option with
+             | Some value ->  value
+             | None -> fallback
+
     (* Error datastructure *)
     type Error<'a> = Success of 'a
                    | Error of string
@@ -113,8 +129,6 @@ module Prelude =
 
     let fromFunc (f : Func<'a, 'b>) : 'a -> 'b =
         fun x -> f.Invoke(x)
-
-
 
     let dowhile (f : unit -> bool) =
         while f() do ()

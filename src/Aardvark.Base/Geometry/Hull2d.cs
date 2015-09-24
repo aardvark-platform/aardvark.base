@@ -88,7 +88,7 @@ namespace Aardvark.Base
 
         public Hull2d Reversed()
         {
-            return new Hull2d(PlaneArray.Copy(p => p.Reversed));
+            return new Hull2d(PlaneArray.Map(p => p.Reversed));
         }
 
         public void Reverse()

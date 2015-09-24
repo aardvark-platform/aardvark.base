@@ -144,7 +144,7 @@ namespace Aardvark.Base
 
         public Hull3d Reversed()
         {
-            return new Hull3d(PlaneArray.Copy(p => p.Reversed));
+            return new Hull3d(PlaneArray.Map(p => p.Reversed));
         }
 
         public void Reverse()

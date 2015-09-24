@@ -598,7 +598,7 @@ namespace Aardvark.Base
         public static V2d[] ProjectToPlaneSpace(this Plane3d plane, V3d[] points)
         {
             var global2local = plane.GetWorldToPlane();
-            return points.Copy(p => global2local.TransformPos(p).XY);
+            return points.Map(p => global2local.TransformPos(p).XY);
         }
 
         /// <summary>
@@ -616,7 +616,7 @@ namespace Aardvark.Base
         public static V3d[] Unproject(this Plane3d plane, V2d[] points)
         {
             var local2global = plane.GetPlaneToWorld();
-            return points.Copy(p => local2global.TransformPos(p.XYO));
+            return points.Map(p => local2global.TransformPos(p.XYO));
         }
 
 #if NET40

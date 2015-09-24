@@ -699,6 +699,85 @@ namespace Aardvark.Base
         }
 
         #endregion IsNaN
+
+        #region Log2Int
+
+        /// <summary>
+        /// the number of bits used for storing the double-mantissa
+        /// </summary>
+        public const int DoubleMantissaBits = 52;
+
+        /// <summary>
+        /// the bitmask used for the double exponent
+        /// </summary>
+        public const ulong DoubleExponentMask = 0x7FF0000000000000;
+
+        /// <summary>
+        /// the bitmask used for the double mantissa
+        /// </summary>
+        public const ulong DoubleMantissaMask = 0x000FFFFFFFFFFFFF;
+
+        /// <summary>
+        /// the number of bits used for storing the float-mantissa
+        /// </summary>
+        public const int FloatMantissaBits = 23;
+
+        /// <summary>
+        /// the bitmask used for the float exponent
+        /// </summary>
+        public const uint FloatExponentMask = 0x7F000000;
+
+        /// <summary>
+        /// the bitmask used for the float mantissa
+        /// </summary>
+        public const uint FloatMantissaMask = 0x00FFFFFF;
+
+
+        private static unsafe int Log2IntRef(ref double v)
+        {
+            fixed (double* ptr = &v)
+            {
+                var a = (ulong*)ptr;
+                var shift = 1022;
+
+                if ((*a & DoubleMantissaMask) == 0)
+                    shift = 1023;
+
+                return (int)(((*a & DoubleExponentMask) >> DoubleMantissaBits)) - shift;
+            }
+        }
+
+        private static unsafe int Log2IntRef(ref float v)
+        {
+            fixed (float* ptr = &v)
+            {
+                var a = (uint*)ptr;
+                var shift = 126;
+
+                if ((*a & FloatMantissaMask) == 0)
+                    shift = 127;
+
+                return (int)(((*a & FloatExponentMask) >> FloatMantissaBits)) - shift;
+            }
+        }
+
+        /// <summary>
+        /// efficiently computes the Log2 for the given value rounded to the next integer towards -inf
+        /// </summary>
+        public static unsafe int Log2Int(this double v)
+        {
+            return Log2IntRef(ref v);
+        }
+
+        /// <summary>
+        /// efficiently computes the Log2 for the given value rounded to the next integer towards -inf
+        /// </summary>
+        private static unsafe int Log2Int(this float v)
+        {
+            return Log2IntRef(ref v);
+        }
+
+        #endregion
     }
 
     #region KahanSum

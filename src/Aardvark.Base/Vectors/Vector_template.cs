@@ -1820,7 +1820,7 @@ namespace Aardvark.Base
             switch (index)
             {
                 //# fields.ForEach((f, i) => {
-                case __i__: return self.Copy(v => v.__f__);
+                case __i__: return self.Map(v => v.__f__);
                 //# });
                 default: throw new IndexOutOfRangeException();
             }

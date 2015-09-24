@@ -14,13 +14,12 @@
     <SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">..\..\Solutions\</SolutionDir>
     <RestorePackages>true</RestorePackages>
     <TargetFrameworkProfile />
-    <AardvarkProject>True</AardvarkProject>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
-    <OutputPath>..\..\Bin\Debug\</OutputPath>
+    <OutputPath>..\..\..\Bin\Debug\</OutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
@@ -29,23 +28,20 @@
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
-    <OutputPath>..\..\Bin\Release\</OutputPath>
+    <OutputPath>..\..\..\Bin\Release\</OutputPath>
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
-  <Import Project="..\..\..\build\Aardvark.targets" Condition="exists('..\..\..\build\Aardvark.targets')" />
-  <Import Project="$(SolutionPath).targets" Condition="exists('$(SolutionPath).targets')" />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-  <Import Project="$(SolutionDir)\.nuget\NuGet.targets" Condition="Exists('$(SolutionDir)\.nuget\NuGet.targets')" />
   <ItemGroup>
     <Reference Include="DevILSharp">
-      <HintPath>..\..\..\packages\DevILSharp.0.0.9\lib\net45\DevILSharp.dll</HintPath>
+      <HintPath>..\..\..\packages\DevILSharp\lib\net45\DevILSharp.dll</HintPath>
     </Reference>
-    <Reference Include="nunit.framework, Version=2.6.4.14350, Culture=neutral, PublicKeyToken=96d09a1eb7f44a77, processorArchitecture=MSIL">
-      <HintPath>..\..\..\packages\NUnit.2.6.4\lib\nunit.framework.dll</HintPath>
+    <Reference Include="nunit.framework">
+      <HintPath>..\..\..\packages\NUnit\lib\nunit.framework.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -70,9 +66,6 @@
     <Compile Include="Vectors\V3fCoderTests.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="packages.config" />
-  </ItemGroup>
-  <ItemGroup>
     <Service Include="{82A7F48D-3B50-4B1E-B82E-3ADA8210C358}" />
   </ItemGroup>
   <ItemGroup>
@@ -80,19 +73,12 @@
       <Project>{377da721-c821-45f6-b803-9c8724c7b37f}</Project>
       <Name>Aardvark.Base</Name>
     </ProjectReference>
+    <ProjectReference Include="$(AardvarkVRVisBaseProjectPath)">
+      <Name>Aardvark.VRVis.Base [Project]</Name>
+      <Project>{05166F50-6529-40B7-942B-5298521B163C}</Project>
+      <Private>False</Private>
+    </ProjectReference>
   </ItemGroup>
-  <Choose>
-    <When Condition="'$(AardvarkVRVisBaseProjectPath)' == ''" />
-    <Otherwise>
-      <ItemGroup>
-        <ProjectReference Include="$(AardvarkVRVisBaseProjectPath)">
-          <Name>Aardvark.VRVis.Base [Project]</Name>
-          <Project>{05166F50-6529-40B7-942B-5298521B163C}</Project>
-          <Private>False</Private>
-        </ProjectReference>
-      </ItemGroup>
-    </Otherwise>
-  </Choose>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">

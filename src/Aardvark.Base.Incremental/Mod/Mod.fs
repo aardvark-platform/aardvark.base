@@ -4,6 +4,8 @@ open System
 open System.Runtime.CompilerServices
 open System.Collections.Generic
 open System.Collections.Concurrent
+open Aardvark.Base
+
 /// <summary>
 /// IMod is the non-generic base interface for 
 /// modifiable cells. This is needed due to the
@@ -45,11 +47,27 @@ type IMod<'a> =
 /// cell which can be changed by the user and
 /// implements IMod<'a>
 /// </summary>
+type IModRef<'a> =
+    inherit IMod<'a>
+
+    /// Gets or sets the refs value.
+    /// Note: can only be set inside an active transaction.
+    abstract member Value : 'a with get,set
+
+/// <summary>
+/// ModRef<'a> represents a changeable input
+/// cell which can be changed by the user and
+/// implements IMod<'a>
+/// </summary>
 type ModRef<'a>(value : 'a) =
     inherit AdaptiveObject()
 
     let mutable value = value
     let tracker = ChangeTracker.trackVersion<'a>
+
+    member x.UnsafeCache
+        with get() = value
+        and set v = value <- v
 
     member x.Value
         with get() = value
@@ -70,13 +88,126 @@ type ModRef<'a>(value : 'a) =
     interface IMod<'a> with
         member x.GetValue() = x.GetValue()
 
+    interface IModRef<'a> with
+        member x.Value 
+            with get () = x.Value
+            and set v = x.Value <- v
+
+
+// ConstantMod<'a> represents a constant mod-cell
+// and implements IMod<'a> (making use of the core
+// class ConstantObject). Note that ConstantMod<'a> allows
+// computations to be delayed (which is useful if the
+// creation of the value is computationally expensive)
+// Note that constant cells are considered equal whenever
+// their content is equal. Therefore equality checks will 
+// force the evaluation of a constant cell.
+type ConstantMod<'a> =
+    class
+        inherit ConstantObject
+        val mutable private value : Lazy<'a>
+
+        member x.Value =
+            x.value.Value
+
+        member x.GetValue() = 
+            x.value.Value
+            
+        interface IMod with
+            member x.IsConstant = true
+            member x.GetValue() = x.GetValue() :> obj
+
+        interface IMod<'a> with
+            member x.GetValue() = x.GetValue()
+
+            
+        override x.GetHashCode() =
+            let v = x.GetValue() :> obj
+            if v = null then 0
+            else v.GetHashCode()
+
+        override x.Equals o =
+            match o with
+                | :? IMod<'a> as o when o.IsConstant ->
+                    System.Object.Equals(x.GetValue(), o.GetValue())
+                | _ -> false
+
+        override x.ToString() =
+            x.GetValue().ToString()
+
+        new(value : 'a) = ConstantMod<'a>(lazy value)
+        new(compute : unit -> 'a) = ConstantMod<'a>( lazy (compute()) )
+        new(l : Lazy<'a>) = { value = l }
+
+    end
+
+
+/// DefaultingModRef<'a> represents a mod ref with an adaptive
+/// default value. The resulting IMod corresponds to the default
+/// value unless a custom value is set to the ref.
+/// By calling Reset (), the initial behaviour can be restored,
+/// i.e. the resulting value is dependent on the adaptive default
+/// value.
+type DefaultingModRef<'a>(computed : IMod<'a>) as this =
+    inherit AdaptiveObject()
+    do computed.AddOutput this
+
+    let mutable cache = Unchecked.defaultof<'a>
+    let mutable isComputed = true
+    let mutable tracker = ChangeTracker.trackVersion<'a>
+
+
+    member x.GetValue() =
+        x.EvaluateAlways (fun () ->
+            if x.OutOfDate && isComputed then
+                let v = computed.GetValue()
+                cache <- v
+                v
+            else
+                cache
+        )
+
+    member x.Reset() =
+        if not isComputed then
+            tracker <- ChangeTracker.trackVersion<'a>
+            isComputed <- true
+            computed.AddOutput x
+
+    member x.Value 
+        with get() = 
+            if isComputed then x.GetValue()
+            else cache
+        and set v =
+            let changed =
+                if isComputed then 
+                    computed.RemoveOutput x
+                    isComputed <- false
+                    true
+                else 
+                    tracker v || not <| Object.Equals(v, cache)
+            if changed then
+                cache <- v
+                x.MarkOutdated()
+
+    interface IMod with
+        member x.IsConstant = false
+        member x.GetValue() = x.GetValue() :> obj
+            
+    interface IMod<'a> with
+        member x.GetValue () = x.GetValue()
+
+    interface IModRef<'a> with
+        member x.Value 
+            with get () = x.Value
+            and set v = x.Value <- v
+    
+
 /// <summary>
 /// defines functions for composing mods and
 /// managing evaluation order, etc.
 /// </summary>
 [<CompilationRepresentation(CompilationRepresentationFlags.ModuleSuffix)>]
 module Mod =
-    open Aardvark.Base
 
     // the attribute system needs to know how to "unpack"
     // modifiable cells for inherited attributes.
@@ -96,7 +227,7 @@ module Mod =
     // LazyMod<'a> (as the name suggests) implements IMod<'a>
     // and will be evaluated lazily (if not forced to be eager
     // by a callback or subsequent eager computations)
-    type LazyMod<'a> =
+    type internal LazyMod<'a> =
         class
             inherit AdaptiveObject
             val mutable public cache : 'a
@@ -104,10 +235,11 @@ module Mod =
             val mutable public scope : Ag.Scope
 
             member x.GetValue() =
-                x.EvaluateIfNeeded x.cache (fun () ->
-                    Ag.useScope x.scope (fun () ->
-                        x.cache <- x.compute()
-                    )
+                x.EvaluateAlways (fun () ->
+                    if x.OutOfDate then
+                        Ag.useScope x.scope (fun () ->
+                            x.cache <- x.compute()
+                        )
                     x.cache
                 )
 
@@ -129,13 +261,16 @@ module Mod =
     // the change propagation process when equal values are
     // observed EagerMod can also be created with a custom 
     // equality function.
-    type private EagerMod<'a>(compute : unit -> 'a, eq : Option<'a -> 'a -> bool>) =
-        inherit LazyMod<'a>(compute)
+    type internal EagerMod<'a>(input : IMod<'a>, eq : Option<'a -> 'a -> bool>) as this=
+        inherit LazyMod<'a>(fun () -> input.GetValue())
+        do input.AddOutput this
 
         let hasChanged = ChangeTracker.trackCustom<'a> eq
 
+        member x.Input = input
+
         override x.Mark() =
-            let newValue = compute()
+            let newValue = input.GetValue()
             x.OutOfDate <- false
 
             if hasChanged newValue then
@@ -146,54 +281,67 @@ module Mod =
 
         new(compute) = EagerMod(compute, None)
 
-    // ConstantMod<'a> represents a constant mod-cell
-    // and implements IMod<'a> (making use of the core
-    // class ConstantMod). Note that ConstantMod allows
-    // computations to be delayed (which is useful if the
-    // creation of the value is computationally expensive)
-    // Note that constant cells are considered equal whenever
-    // their content is equal.
-    type private ConstantMod<'a> =
-        class
-            inherit ConstantObject
-            val mutable public compute : unit -> 'a
-            val mutable public value : Option<'a>
+    // LaterMod<'a> is a special construct for forcing lazy
+    // evaluation for a specific cell. Note that this needs to
+    // be "transparent" (knowning its input) since we need to
+    // be able to undo the effect.
+    type internal LaterMod<'a>(input : IMod<'a>) as this=
+        inherit LazyMod<'a>(fun () -> input.GetValue())
+        do input.AddOutput this
 
-            member x.GetValue() = 
-                match x.value with
-                    | Some v -> v
-                    | None -> 
-                        let v = x.compute()
-                        x.value <- Some v
-                        v
+        member x.Input = input
+
+    // TimeMod represents a changeable cell which will always
+    // be outdated as soon as control-flow leaves the mod system.
+    // Its value will always be the time when pulled.
+    // NOTE that this cannot be implemented using the other mod-types
+    //      since caching (of the current time) is not desired here.
+    type internal TimeMod private() as this =
+        inherit AdaptiveObject()
+        do AdaptiveObject.Time.AddOutput this
+
+        static let instance = TimeMod() :> IMod<DateTime>
+        static member Instance = instance
+
+        member x.GetValue() =
+            base.EvaluateAlways (fun () ->
+                DateTime.Now
+            )
+
+        interface IMod with
+            member x.IsConstant = false
+            member x.GetValue() = x.GetValue() :> obj
+
+        interface IMod<DateTime> with
+            member x.GetValue() = x.GetValue()
             
-            interface IMod with
-                member x.IsConstant = true
-                member x.GetValue() = x.GetValue() :> obj
+    type internal DecoratorMod<'b>(m : IMod, f : obj -> 'b) =
+        inherit AdaptiveDecorator(m)
 
-            interface IMod<'a> with
-                member x.GetValue() = x.GetValue()
+        member x.GetValue() =
+            m.GetValue() |> f
 
-            
-            override x.GetHashCode() =
-                let v = x.GetValue() :> obj
-                if v = null then 0
-                else v.GetHashCode()
+        interface IMod with
+            member x.IsConstant = m.IsConstant
+            member x.GetValue() = x.GetValue() :> obj
 
-            override x.Equals o =
-                match o with
-                    | :? IMod<'a> as o when o.IsConstant ->
-                        System.Object.Equals(x.GetValue(), o.GetValue())
-                    | _ -> false
+        interface IMod<'b> with
+            member x.GetValue() = x.GetValue()
 
-            override x.ToString() =
-                x.GetValue().ToString()
+    type internal DecoratorMod<'a, 'b>(m : IMod<'a>, f : 'a -> 'b) =
+        inherit AdaptiveDecorator(m)
 
-            private new(value : Option<'a>, compute : unit -> 'a) = { value = value; compute = compute }
+        member x.GetValue() =
+            m.GetValue() |> f
 
-            static member Value(value : 'a) = ConstantMod(Some value, unbox) :> IMod<_>
-            static member Lazy(compute : unit -> 'a) = ConstantMod(None, compute) :> IMod<_>
-        end
+        interface IMod with
+            member x.IsConstant = m.IsConstant
+            member x.GetValue() = x.GetValue() :> obj
+
+        interface IMod<'b> with
+            member x.GetValue() = x.GetValue()
+
+
 
     let private scoped (f : 'a -> 'b) =
         let scope = Ag.getContext()
@@ -202,18 +350,6 @@ module Mod =
     let private scoped2 (f : 'a -> 'b -> 'c) =
         let scope = Ag.getContext()
         fun a b -> Ag.useScope scope (fun () -> f a b)
-
-
-    /// <summary>
-    /// creates a custom modifiable cell using the given
-    /// compute function. If no inputs are added to the
-    /// cell it will actually be constant.
-    /// However the system will not statically assume the
-    /// cell to be constant in any case.
-    /// </summary>
-    let custom (compute : unit -> 'a) : IMod<'a> =
-        LazyMod(scoped compute) :> IMod<_>
-
 
     let private callbackTable = ConditionalWeakTable<IMod, ConcurrentHashSet<IDisposable>>()
     type private CallbackSubscription<'a>(m : IMod, cb : unit -> unit, live : ref<bool>, set : ConcurrentHashSet<IDisposable>) =
@@ -231,6 +367,18 @@ module Mod =
             try x.Dispose()
             with _ -> ()
 
+
+    /// <summary>
+    /// creates a custom modifiable cell using the given
+    /// compute function. If no inputs are added to the
+    /// cell it will actually be constant.
+    /// However the system will not statically assume the
+    /// cell to be constant in any case.
+    /// </summary>
+    let custom (compute : unit -> 'a) : IMod<'a> =
+        LazyMod(scoped compute) :> IMod<_>
+
+    
     /// <summary>
     /// registers a callback for execution whenever the
     /// cells value might have changed and returns a disposable
@@ -250,8 +398,6 @@ module Mod =
                     let value = m.GetValue()
                     if hasChanged value then
                         f value
-                    else
-                        printfn "swallowed"
                 finally 
                     m.MarkingCallbacks.Add !self |> ignore
         
@@ -270,26 +416,31 @@ module Mod =
     /// changes the value of the given cell. Note that this
     /// function may only be used inside a current transaction.
     /// </summary>
-    let change (m : ModRef<'a>) (value : 'a) =
+    let change (m : IModRef<'a>) (value : 'a) =
         m.Value <- value
 
-    /// <summary>
-    /// initializes a new modifiable input cell using the given value.
-    /// </summary>
-    let initMod (v : 'a) =
-        ModRef v
 
     /// <summary>
     /// initializes a new constant cell using the given value.
     /// </summary>
-    let initConstant (v : 'a) =
-        ConstantMod.Value v
+    let constant (v : 'a)  =
+        ConstantMod<'a>(v) :> IMod<_>
+
+    /// <summary>
+    /// initializes a new modifiable input cell using the given value.
+    /// </summary>
+    let init (v : 'a) =
+        ModRef v
+
+    /// see DefaultingModRef
+    let initDefault (initial : IMod<'a>) =
+        DefaultingModRef initial
 
     /// <summary>
     /// initializes a new constant cell using the given lazy value.
     /// </summary>
     let delay (f : unit -> 'a) =
-        ConstantMod.Lazy (scoped f)
+        ConstantMod<'a> (scoped f) :> IMod<_>
 
     /// <summary>
     /// adaptively applies a function to a cell's value
@@ -298,7 +449,7 @@ module Mod =
     let map (f : 'a -> 'b) (m : IMod<'a>) =
         let f = scoped f
         if m.IsConstant then
-            ConstantMod.Lazy (fun () -> m.GetValue() |> f)
+            delay (fun () -> m.GetValue() |> f)
         else
             let res = LazyMod(fun () -> m.GetValue() |> f)
             m.AddOutput res
@@ -311,7 +462,7 @@ module Mod =
     let map2 (f : 'a -> 'b -> 'c) (m1 : IMod<'a>) (m2 : IMod<'b>)=
         match m1.IsConstant, m2.IsConstant with
             | (true, true) -> 
-                delay (fun () -> f (m1.GetValue()) (m2.GetValue()))
+                delay (fun () -> f (m1.GetValue()) (m2.GetValue())) 
             | (true, false) -> 
                 map (fun b -> f (m1.GetValue()) b) m2
             | (false, true) -> 
@@ -333,6 +484,35 @@ module Mod =
         for i in inputs do
             i.AddOutput r
         r
+
+    /// <summary>
+    /// adaptively applies a function to a cell's value
+    /// without creating a new cell (maintaining equality, id, etc.)
+    /// NOTE: this combinator assumes that the given function 
+    ///       is really cheap (e.g. field-access, cast, etc.)
+    /// </summary>
+    let mapFast (f : 'a -> 'b) (m : IMod<'a>) =
+        DecoratorMod<'a, 'b>(m, f) :> IMod<_>
+
+    /// <summary>
+    /// adaptively applies a function to a cell's value
+    /// without creating a new cell (maintaining equality, id, etc.)
+    /// NOTE: this combinator assumes that the given function 
+    ///       is really cheap (e.g. field-access, cast, etc.)
+    /// </summary>
+    let mapFastObj (f : obj -> 'b) (m : IMod) =
+        DecoratorMod<'b>(m, f) :> IMod<_>
+
+    /// <summary>
+    /// adaptively casts a value to the desired type
+    /// and fails if the cast is invalid.
+    /// NOTE that this does not create a new cell but instead
+    ///      "decorates" the given cell.
+    /// </summary>
+    let inline cast (m : IMod) : IMod<'b> =
+        mapFastObj unbox m
+
+    
 
     /// <summary>
     /// creates a modifiable cell using the given inputs
@@ -357,7 +537,10 @@ module Mod =
         else
             let f = scoped f
             let inner : ref<Option<'a * IMod<'b>>> = ref None
-            let hasChanged = ChangeTracker.track<'a>
+
+            let mChanged = ref true
+            let callback() =
+                mChanged := true
 
             // just a reference-cell for allowing self-recursive
             // access in the compute function below.
@@ -368,18 +551,22 @@ module Mod =
                     // need to pull the input's value
                     // Note that the input is not necessarily outOfDate at this point
                     let v = m.GetValue()
-                    let cv = hasChanged v
+                    //let cv = hasChanged v
 
                     match !inner with
                         // if the function argument has not changed
                         // since the last execution we expect f to return
                         // the identical cell
-                        | Some (v', inner) when not cv ->
+                        | Some (v', inner) when not !mChanged ->
                             // since the inner cell might be outOfDate we
                             // simply pull its value and don't touch any in-/outputs.
                             inner.GetValue()
                         
                         | _ ->
+                            if !mChanged then
+                                mChanged := false
+                                m.MarkingCallbacks.Add callback |> ignore
+
                             // whenever the argument's value changed we need to 
                             // re-execute the function and store the new inner cell.
                             let i = f v :> IMod<_>
@@ -425,7 +612,6 @@ module Mod =
     /// cell's content.
     /// </summary>
     let bind2 (f : 'a -> 'b -> #IMod<'c>) (ma : IMod<'a>) (mb : IMod<'b>) =
-        
         match ma.IsConstant, mb.IsConstant with
             | (true, true) ->
                 f (ma.GetValue()) (mb.GetValue()) :> IMod<_>
@@ -439,21 +625,31 @@ module Mod =
 
                 // for a detailed description see bind above
                 let res = ref <| Unchecked.defaultof<LazyMod<'c>>
-                let aChanged = ChangeTracker.track<'a>
-                let bChanged = ChangeTracker.track<'b>
+                let aChanged = ref true
+                let bChanged = ref true
+                let cba () = aChanged := true
+                let cbb () = bChanged := true
 
                 res := 
                     LazyMod(fun () -> 
                         let a = ma.GetValue()
                         let b = mb.GetValue()
 
-                        let ca = aChanged a
-                        let cb = bChanged b
+                        let ca = !aChanged
+                        let cb = !bChanged
 
                         match !inner with
                             | Some (va, vb, inner) when not ca && not cb ->
                                 inner.GetValue()
                             | _ ->
+                                if !aChanged then
+                                    aChanged := false
+                                    ma.MarkingCallbacks.Add cba |> ignore
+                                
+                                if !bChanged then
+                                    bChanged := false
+                                    mb.MarkingCallbacks.Add cbb |> ignore
+
                                 let i = f a b :> IMod<_>
                                 let old = !inner
                                 inner := Some (a, b, i)
@@ -478,6 +674,21 @@ module Mod =
                 !res :> IMod<_>
 
     /// <summary>
+    /// creates a dynamic cell using the given function
+    /// while maintaining lazy evaluation.
+    /// </summary>
+    let dynamic (f : unit -> IMod<'a>) =
+        let m = lazy (f())
+        let self = ref null
+        self :=
+            custom (fun () ->
+                if not m.IsValueCreated then
+                    m.Value.AddOutput !self
+                m.Value.GetValue()
+            )
+        !self
+
+    /// <summary>
     /// forces the evaluation of a cell and returns its current value
     /// </summary>
     let force (m : IMod<'a>) =
@@ -487,29 +698,45 @@ module Mod =
     /// creates a new cell forcing the evaluation of the
     /// given one during change propagation (making it eager)
     /// </summary>
-    let always (m : IMod<'a>) =
+    let rec onPush (m : IMod<'a>) =
         if m.IsConstant then 
+            m.GetValue() |> ignore
             m
         else
             match m with
+                | :? LaterMod<'a> as m -> onPush m.Input
                 | :? EagerMod<'a> -> m
                 | _ ->
-                    let res = EagerMod(fun () -> m.GetValue())
-                    m.AddOutput(res)
+                    let res = EagerMod(m)
                     res.GetValue() |> ignore
                     res :> IMod<_>
+
+    /// <summary>
+    /// creates a new cell forcing the evaluation of the
+    /// given one to be lazy (on demand)
+    /// NOTE: onPull does not maintain equality
+    ///       for constant-cells
+    /// </summary>
+    let rec onPull (m : IMod<'a>) =
+        if m.IsConstant then
+            LaterMod(m) :> IMod<_>
+        else
+            match m with
+                | :? EagerMod<'a> as m ->
+                    onPull m.Input
+                | _ -> m
+
 
     /// <summary>
     /// creates a new cell by starting the given async computation.
     /// until the computation is completed the cell will contain None.
     /// as soon as the computation is finished it will contain the resulting value.
     /// </summary>
-    let async (a : Async<'a>) : IMod<Option<'a>> =
-        let task = a |> Async.StartAsTask
+    let asyncTask (task : System.Threading.Tasks.Task<'a>) : IMod<Option<'a>> =
         if task.IsCompleted then
-            initConstant (Some task.Result)
+            constant (Some task.Result)
         else
-            let r = initMod None
+            let r = init None
             let a = task.GetAwaiter()
             a.OnCompleted(fun () -> 
                 transact (fun () -> 
@@ -521,15 +748,24 @@ module Mod =
 
     /// <summary>
     /// creates a new cell by starting the given async computation.
+    /// until the computation is completed the cell will contain None.
+    /// as soon as the computation is finished it will contain the resulting value.
+    /// </summary>
+    let async (a : Async<'a>) : IMod<Option<'a>> =
+        let task = a |> Async.StartAsTask
+        asyncTask task
+
+    /// <summary>
+    /// creates a new cell by starting the given async computation.
     /// until the computation is completed the cell will contain the default value.
     /// as soon as the computation is finished it will contain the resulting value.
     /// </summary> 
     let asyncWithDefault (defaultValue : 'a) (a : Async<'a>) : IMod<'a> =
         let task = a |> Async.StartAsTask
         if task.IsCompleted then
-            initConstant task.Result
+            constant task.Result
         else
-            let r = initMod defaultValue
+            let r = init defaultValue
             let a = task.GetAwaiter()
             a.OnCompleted(fun () -> 
                 transact (fun () -> 
@@ -594,6 +830,40 @@ module Mod =
             )
 
         !res
+
+    /// <summary>
+    /// creates a new cell by starting the given async computation.
+    /// upon evaluation of the cell it will wait until the async computation has finished
+    /// </summary>
+    let start (run : Async<'a>) =
+        let task = run |> Async.StartAsTask
+        if task.IsCompleted then
+            constant task.Result
+        else
+            custom (fun () ->
+                task.Result
+            )
+
+    /// <summary>
+    /// a changeable cell which will always be outdated when control-flow leaves
+    /// the mod-system. Its value will always hold the current time (DateTime.Now) 
+    /// </summary>
+    let time = TimeMod.Instance
+
+
+
+    [<Obsolete("Use Mod.init instead")>]
+    let inline initMod (v : 'a) = init v
+
+    [<Obsolete("Use Mod.constant instead")>]
+    let inline initConstant (v : 'a) = constant v
+
+    [<Obsolete("Use Mod.onPush instead")>]
+    let inline always (m : IMod<'a>) = onPush m
+
+    [<Obsolete("Use Mod.onPull instead")>]
+    let inline later (m : IMod<'a>) = onPull m
+
 
 
 [<AutoOpen>]

@@ -736,9 +736,10 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Returns a uniformly distributed vecctor (corresponds to a
-        /// uniformly distributed point on the unit sphere). Note however,
-        /// that the returned vector will never be equal to [0, 0, -1].
+        /// Returns a uniformly distributed vector (corresponds to a
+        /// uniformly distributed point on the surface of the unit sphere).
+        /// Note however, that the returned vector will never be equal to
+        /// [0, 0, -1].
         /// </summary>
         public static V3d UniformV3dDirection(this IRandomUniform rnd)
         {
@@ -748,12 +749,54 @@ namespace Aardvark.Base
             return new V3d(System.Math.Cos(phi) * s, System.Math.Sin(phi) * s, z);
         }
 
+        /// <summary>
+        /// Returns a fully uniformly distributed vector (corresponds to a
+        /// uniformly distributed point on the surface of the unit sphere).
+        /// Note however, that the returned vector will never be equal to
+        /// [0, 0, -1].
+        /// </summary>
         public static V3d UniformV3dFullDirection(this IRandomUniform rnd)
         {
             double phi = rnd.UniformDoubleFull() * Constant.PiTimesTwo;
             double z = 1.0 - rnd.UniformDoubleFull() * 2.0;
             double s = System.Math.Sqrt(1.0 - z * z);
             return new V3d(System.Math.Cos(phi) * s, System.Math.Sin(phi) * s, z);
+        }
+
+        private static readonly V3d c_shift = new V3d(-0.5, -0.5, -0.5);
+
+        /// <summary>
+        /// Uniform vector inside the open unit sphere (i.e. no vector
+        /// ends on the surface of the sphere).
+        /// </summary>
+        public static V3d UniformV3dOpenSphere(this IRandomUniform rnd)
+        {
+            double r2;
+            V3d p;
+            do
+            {
+                p = (rnd.UniformV3dOpen() + c_shift) * 2.0;
+                r2 = p.LengthSquared;
+            }
+            while (r2 >= 1.0);
+            return p;
+        }
+
+        /// <summary>
+        /// Uniform vector in the closed unit sphere (i.e vectors to
+        /// the surface of the sphere may be generated).
+        /// </summary>
+        public static V3d UniformV3dClosedSphere(this IRandomUniform rnd)
+        {
+            double r2;
+            V3d p;
+            do
+            {
+                p = (rnd.UniformV3dClosed() + c_shift) * 2.0;
+                r2 = p.LengthSquared;
+            }
+            while (r2 > 1.0);
+            return p;
         }
 
         #endregion

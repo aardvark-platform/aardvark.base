@@ -3138,8 +3138,8 @@ namespace Aardvark.Base
         {
             switch (index)
             {
-                case 0: return self.Copy(v => v.X);
-                case 1: return self.Copy(v => v.Y);
+                case 0: return self.Map(v => v.X);
+                case 1: return self.Map(v => v.Y);
                 default: throw new IndexOutOfRangeException();
             }
         }
@@ -6278,8 +6278,8 @@ namespace Aardvark.Base
         {
             switch (index)
             {
-                case 0: return self.Copy(v => v.X);
-                case 1: return self.Copy(v => v.Y);
+                case 0: return self.Map(v => v.X);
+                case 1: return self.Map(v => v.Y);
                 default: throw new IndexOutOfRangeException();
             }
         }
@@ -9882,8 +9882,8 @@ namespace Aardvark.Base
         {
             switch (index)
             {
-                case 0: return self.Copy(v => v.X);
-                case 1: return self.Copy(v => v.Y);
+                case 0: return self.Map(v => v.X);
+                case 1: return self.Map(v => v.Y);
                 default: throw new IndexOutOfRangeException();
             }
         }
@@ -13489,8 +13489,8 @@ namespace Aardvark.Base
         {
             switch (index)
             {
-                case 0: return self.Copy(v => v.X);
-                case 1: return self.Copy(v => v.Y);
+                case 0: return self.Map(v => v.X);
+                case 1: return self.Map(v => v.Y);
                 default: throw new IndexOutOfRangeException();
             }
         }
@@ -18244,9 +18244,9 @@ namespace Aardvark.Base
         {
             switch (index)
             {
-                case 0: return self.Copy(v => v.X);
-                case 1: return self.Copy(v => v.Y);
-                case 2: return self.Copy(v => v.Z);
+                case 0: return self.Map(v => v.X);
+                case 1: return self.Map(v => v.Y);
+                case 2: return self.Map(v => v.Z);
                 default: throw new IndexOutOfRangeException();
             }
         }
@@ -23041,9 +23041,9 @@ namespace Aardvark.Base
         {
             switch (index)
             {
-                case 0: return self.Copy(v => v.X);
-                case 1: return self.Copy(v => v.Y);
-                case 2: return self.Copy(v => v.Z);
+                case 0: return self.Map(v => v.X);
+                case 1: return self.Map(v => v.Y);
+                case 2: return self.Map(v => v.Z);
                 default: throw new IndexOutOfRangeException();
             }
         }
@@ -28354,9 +28354,9 @@ namespace Aardvark.Base
         {
             switch (index)
             {
-                case 0: return self.Copy(v => v.X);
-                case 1: return self.Copy(v => v.Y);
-                case 2: return self.Copy(v => v.Z);
+                case 0: return self.Map(v => v.X);
+                case 1: return self.Map(v => v.Y);
+                case 2: return self.Map(v => v.Z);
                 default: throw new IndexOutOfRangeException();
             }
         }
@@ -33670,9 +33670,9 @@ namespace Aardvark.Base
         {
             switch (index)
             {
-                case 0: return self.Copy(v => v.X);
-                case 1: return self.Copy(v => v.Y);
-                case 2: return self.Copy(v => v.Z);
+                case 0: return self.Map(v => v.X);
+                case 1: return self.Map(v => v.Y);
+                case 2: return self.Map(v => v.Z);
                 default: throw new IndexOutOfRangeException();
             }
         }
@@ -40876,10 +40876,10 @@ namespace Aardvark.Base
         {
             switch (index)
             {
-                case 0: return self.Copy(v => v.X);
-                case 1: return self.Copy(v => v.Y);
-                case 2: return self.Copy(v => v.Z);
-                case 3: return self.Copy(v => v.W);
+                case 0: return self.Map(v => v.X);
+                case 1: return self.Map(v => v.Y);
+                case 2: return self.Map(v => v.Z);
+                case 3: return self.Map(v => v.W);
                 default: throw new IndexOutOfRangeException();
             }
         }
@@ -48127,10 +48127,10 @@ namespace Aardvark.Base
         {
             switch (index)
             {
-                case 0: return self.Copy(v => v.X);
-                case 1: return self.Copy(v => v.Y);
-                case 2: return self.Copy(v => v.Z);
-                case 3: return self.Copy(v => v.W);
+                case 0: return self.Map(v => v.X);
+                case 1: return self.Map(v => v.Y);
+                case 2: return self.Map(v => v.Z);
+                case 3: return self.Map(v => v.W);
                 default: throw new IndexOutOfRangeException();
             }
         }
@@ -55726,10 +55726,10 @@ namespace Aardvark.Base
         {
             switch (index)
             {
-                case 0: return self.Copy(v => v.X);
-                case 1: return self.Copy(v => v.Y);
-                case 2: return self.Copy(v => v.Z);
-                case 3: return self.Copy(v => v.W);
+                case 0: return self.Map(v => v.X);
+                case 1: return self.Map(v => v.Y);
+                case 2: return self.Map(v => v.Z);
+                case 3: return self.Map(v => v.W);
                 default: throw new IndexOutOfRangeException();
             }
         }
@@ -63328,10 +63328,10 @@ namespace Aardvark.Base
         {
             switch (index)
             {
-                case 0: return self.Copy(v => v.X);
-                case 1: return self.Copy(v => v.Y);
-                case 2: return self.Copy(v => v.Z);
-                case 3: return self.Copy(v => v.W);
+                case 0: return self.Map(v => v.X);
+                case 1: return self.Map(v => v.Y);
+                case 2: return self.Map(v => v.Z);
+                case 3: return self.Map(v => v.W);
                 default: throw new IndexOutOfRangeException();
             }
         }

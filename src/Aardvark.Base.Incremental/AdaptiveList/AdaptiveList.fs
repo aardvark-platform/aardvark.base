@@ -9,8 +9,8 @@ open Aardvark.Base.Incremental.AListReaders
 
 module AList =
     type AdaptiveList<'a>(newReader : unit -> IListReader<'a>) =
-        let state = TimeList<'a>()
-        let readers = WeakSet<BufferedReader<'a>>()
+//        let state = TimeList<'a>()
+        let readers = WeakSet<CopyReader<'a>>()
 
         let mutable inputReader = None
         let getReader() =
@@ -20,21 +20,21 @@ module AList =
                     let r = newReader()
                     inputReader <- Some r
                     r
-
-        let bringUpToDate () =
-            let r = getReader()
-            let delta = r.GetDelta ()
-            if not <| List.isEmpty delta then
-                delta |> apply state |> ignore
-                readers  |> Seq.iter (fun ri ->
-                    if ri.IsIncremental then
-                        ri.Emit delta
-                    else ri.Reset state
-                )
+//
+//        let bringUpToDate () =
+//            let r = getReader()
+//            let delta = r.GetDelta ()
+//            if not <| List.isEmpty delta then
+//                delta |> apply state |> ignore
+//                readers  |> Seq.iter (fun ri ->
+//                    if ri.IsIncremental then
+//                        ri.Emit delta
+//                    else ri.Reset state
+//                )
 
         interface alist<'a> with
             member x.GetReader () =
-                bringUpToDate()
+                //bringUpToDate()
                 let r = getReader()
 
                 let remove ri =
@@ -45,22 +45,19 @@ module AList =
                         r.Dispose()
                         inputReader <- None
 
-                let reader = new BufferedReader<'a>(r.RootTime, bringUpToDate, remove)
-                reader.Emit (state |> Seq.map Add |> Seq.toList)
-                r.AddOutput reader
+                let reader = new CopyReader<'a>(r, remove)
                 readers.Add reader |> ignore
 
                 reader :> _
 
-    type ConstantList<'a>(rootTime : Time, content : seq<Time * 'a>) =
+    type ConstantList<'a>(rootTime : IOrder, content : seq<ISortKey * 'a>) =
         let content = List.ofSeq content
         interface alist<'a> with
             member x.GetReader () =
-                let r = new BufferedReader<'a>(rootTime)
-                r.Emit(content |> List.map Add)
+                let r = new OneShotReader<'a>(rootTime, content |> List.map Add)
                 r :> IListReader<_>
 
-    let private emptyTime = Time.newRoot()
+    let private emptyTime = SimpleOrder.create()
     type private EmptyListImpl<'a> private() =
         static let emptySet = ConstantList(emptyTime, []) :> alist<'a>
         static member Instance = emptySet
@@ -69,22 +66,40 @@ module AList =
         let scope = Ag.getContext()
         fun v -> Ag.useScope scope (fun () -> f v)
 
+    let private callbackTable = ConditionalWeakTable<obj, ConcurrentHashSet<IDisposable>>()
+    type private CallbackSubscription(m : IAdaptiveObject, cb : unit -> unit, live : ref<bool>, reader : IDisposable, set : ConcurrentHashSet<IDisposable>) =
+        
+        member x.Dispose() = 
+            if !live then
+                live := false
+                reader.Dispose()
+                m.MarkingCallbacks.Remove cb |> ignore
+                set.Remove x |> ignore
+
+        interface IDisposable with
+            member x.Dispose() = x.Dispose()
+
+        override x.Finalize() =
+            try x.Dispose()
+            with _ -> ()
+
+
     let empty<'a> : alist<'a> =
         EmptyListImpl<'a>.Instance
 
     let single (v : 'a) =
-        let r = Time.newRoot()
-        ConstantList(r, [Time.after r, v]) :> alist<_>
+        let r = SimpleOrder.create()
+        ConstantList(r, [r.After r.Root :> ISortKey, v]) :> alist<_>
 
     let ofSeq (s : seq<'a>) =
-        let r = Time.newRoot()
-        let current = ref r
+        let r = SimpleOrder.create()
+        let current = ref r.Root
         let elements =
             s |> Seq.toList
               |> List.map (fun e ->
-                    let t = Time.after !current
+                    let t = r.After !current
                     current := t
-                    t,e
+                    t :> ISortKey,e
                  )
 
         ConstantList(r, elements) :> alist<_>
@@ -95,10 +110,18 @@ module AList =
     let ofArray (a : 'a[]) =
         ofSeq a
 
+    // TODO: fix this crazy implementation
+    let ofASet (s : aset<'a>) =
+        AdaptiveList(fun () -> s.GetReader() |> sortWith (fun a b -> a.GetHashCode().CompareTo(b.GetHashCode()))) :> alist<_>
+        //AdaptiveList(fun () -> ofSet s) :> alist<_>
+
+    let toASet (l : alist<'a>) =
+        ASet.AdaptiveSet(fun () -> toSetReader l) :> aset<_>
+
     let toSeq (set : alist<'a>) =
         use r = set.GetReader()
         r.GetDelta() |> ignore
-        r.Content.Values
+        r.Content.Values |> Seq.toArray :> seq<_>
 
     let toList (set : alist<'a>) =
         set |> toSeq |> Seq.toList
@@ -121,6 +144,10 @@ module AList =
     let map (f : 'a -> 'b) (set : alist<'a>) = 
         let scope = Ag.getContext()
         AdaptiveList(fun () -> set.GetReader() |> map scope f) :> alist<'b>
+
+    let mapKey (f : ISortKey -> 'a -> 'b) (set : alist<'a>) = 
+        let scope = Ag.getContext()
+        AdaptiveList(fun () -> set.GetReader() |> mapKey scope f) :> alist<'b>
 
     let collect (f : 'a -> alist<'b>) (set : alist<'a>) = 
         let scope = Ag.getContext()
@@ -169,23 +196,7 @@ module AList =
     let flattenM (s : alist<IMod<'a>>) =
         s |> collect ofMod
 
-    let private callbackTable = ConditionalWeakTable<IAdaptiveObject, ConcurrentHashSet<IDisposable>>()
-    type private CallbackSubscription(m : IAdaptiveObject, cb : unit -> unit, live : ref<bool>, reader : IDisposable, set : ConcurrentHashSet<IDisposable>) =
-        
-        member x.Dispose() = 
-            if !live then
-                live := false
-                reader.Dispose()
-                m.MarkingCallbacks.Remove cb |> ignore
-                set.Remove x |> ignore
-
-        interface IDisposable with
-            member x.Dispose() = x.Dispose()
-
-        override x.Finalize() =
-            try x.Dispose()
-            with _ -> ()
-
+    
 
     /// <summary>
     /// registers a callback for execution whenever the
@@ -194,7 +205,7 @@ module AList =
     /// Note that the callback will be executed immediately
     /// once here.
     /// </summary>
-    let registerCallback (f : list<Delta<Time * 'a>> -> unit) (list : alist<'a>) =
+    let registerCallback (f : list<Delta<ISortKey * 'a>> -> unit) (list : alist<'a>) =
         let m = list.GetReader()
         let f = scoped f
         let self = ref id
@@ -210,9 +221,27 @@ module AList =
             !self ()
         )
 
-        let set = callbackTable.GetOrCreateValue(m)
+        let set = callbackTable.GetOrCreateValue(list)
         let s = new CallbackSubscription(m, !self, live, m, set)
         set.Add s |> ignore
         s :> IDisposable 
-        
+  
+[<AutoOpen>]
+module ``ASet sorting functions`` =      
     
+    module ASet =
+        let sortWith (cmp : 'a -> 'a -> int) (s : aset<'a>) =
+            AList.AdaptiveList(fun () -> s.GetReader() |> sortWith cmp) :> alist<_>
+
+        let sortBy (f : 'a -> 'b) (s : aset<'a>) =
+            let cmp (a : 'a) (b : 'a) = compare (f a) (f b)
+            s |> sortWith cmp
+
+        let sort (s : aset<'a>) =
+            sortWith compare s
+
+        let toAList (s : aset<'a>) =
+            AList.ofASet s
+
+        let ofAList (l : alist<'a>) =
+            AList.toASet l

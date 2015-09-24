@@ -75,7 +75,7 @@ namespace Aardvark.Base
                 bool taken = false;
                 try
                 {
-                    m_continuationLock.TryEnter(ref taken);
+                    m_continuationLock.Enter(ref taken);
                     actions = m_continuations;
                     m_continuations = null;
                 }
@@ -86,11 +86,12 @@ namespace Aardvark.Base
 
                 if (actions != null)
                 {
-                    //Run all registered Continuations
-                    foreach (var c in actions) c();
-
-                    //Clear all continuations (memory efficiency)
-                    actions.Clear();
+                    var acts = Interlocked.Exchange(ref actions, new List<Action>());
+                    foreach (var c in acts)
+                    {
+                        try { c(); }
+                        catch { }
+                    }
                 }
             }
         }
@@ -110,7 +111,7 @@ namespace Aardvark.Base
             bool taken = false;
             try
             {
-                m_continuationLock.TryEnter(ref taken);
+                m_continuationLock.Enter(ref taken);
 
                 if (m_isCompleted == 1)
                     execute = true;
@@ -271,7 +272,7 @@ namespace Aardvark.Base
                 bool taken = false;
                 try
                 {
-                    m_continuationLock.TryEnter(ref taken);
+                    m_continuationLock.Enter(ref taken);
                     actions = m_continuations;
                     m_continuations = null;
                 }
@@ -283,14 +284,12 @@ namespace Aardvark.Base
                 if (actions != null)
                 {
                     //Run all registered Continuations
-                    foreach (var c in actions)
+                    var acts = Interlocked.Exchange(ref actions, new List<Action>());
+                    foreach (var c in acts)
                     {
                         try { c(); }
                         catch { }
                     }
-
-                    //Clear all continuations (memory efficiency)
-                    actions.Clear();
                 }
 
                 if (m_onPush != null)
@@ -310,7 +309,7 @@ namespace Aardvark.Base
             bool taken = false;
             try
             {
-                m_continuationLock.TryEnter(ref taken);
+                m_continuationLock.Enter(ref taken);
 
                 if (m_isCompleted == 1)
                     execute = true;
@@ -340,7 +339,7 @@ namespace Aardvark.Base
                 bool taken = false;
                 try
                 {
-                    m_continuationLock.TryEnter(ref taken);
+                    m_continuationLock.Enter(ref taken);
                     m_continuations.Add(() => continuation(m_result));
                 }
                 finally

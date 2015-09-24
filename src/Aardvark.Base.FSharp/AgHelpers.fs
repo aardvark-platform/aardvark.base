@@ -142,20 +142,24 @@ module AgHelpers =
     let private sfCache = Dictionary<Type, Dictionary<string, Option<SemanticFunction>>>()
 
     let private addSemanticFunction (nodeType : Type, name : string) (sf : Option<SemanticFunction>) =
-        match sfCache.TryGetValue(nodeType) with
-            | (true, c) -> c.[name] <- sf
-                           sf
-            | _ -> let c = Dictionary<string, Option<SemanticFunction>>()
-                   sfCache.[nodeType] <- c
-                   c.[name] <- sf
-                   sf
+        lock sfCache (fun () ->
+            match sfCache.TryGetValue(nodeType) with
+                | (true, c) -> c.[name] <- sf
+                               sf
+                | _ -> let c = Dictionary<string, Option<SemanticFunction>>()
+                       sfCache.[nodeType] <- c
+                       c.[name] <- sf
+                       sf
+        )
 
     let private tryGetSemanticFunction (nodeType : Type, name : string) =
-        match sfCache.TryGetValue nodeType with
-            | (true, c) -> match c.TryGetValue name with
-                              | (true,v) -> Some v
-                              | _ -> None
-            | _ -> None
+        lock sfCache (fun () ->
+            match sfCache.TryGetValue nodeType with
+                | (true, c) -> match c.TryGetValue name with
+                                  | (true,v) -> Some v
+                                  | _ -> None
+                | _ -> None
+        )
 
     let internal tryFindSemanticFunction(nodeType : Type, name : string) =
         
@@ -243,7 +247,7 @@ module AgHelpers =
         if !registered then
             m_semanticMap.Clear()
             m_semanticObjects.Clear()
-            sfCache.Clear()
+            lock sfCache (fun () -> sfCache.Clear())
             registered := false
 
         initializeAg()

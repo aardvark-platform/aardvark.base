@@ -2,15 +2,18 @@
 
 open System
 open System.Runtime.CompilerServices
+open System.Collections.Generic
 open System.Collections.Concurrent
 open Aardvark.Base
 open Aardvark.Base.Incremental.ASetReaders
 
-
+/// <summary>
+/// defines functions for composing asets and mods
+/// </summary>
 module ASet =
     type AdaptiveSet<'a>(newReader : unit -> IReader<'a>) =
-        let state = ReferenceCountingSet<'a>()
-        let readers = WeakSet<BufferedReader<'a>>()
+        let l = obj()
+        let readers = WeakSet<CopyReader<'a>>()
 
         let mutable inputReader = None
         let getReader() =
@@ -21,43 +24,40 @@ module ASet =
                     inputReader <- Some r
                     r
 
-        let bringUpToDate () =
-            let r = getReader()
-            let delta = r.GetDelta ()
-            if not <| List.isEmpty delta then
-                delta |> apply state |> ignore
-                readers  |> Seq.iter (fun ri ->
-                    ri.Emit(state, Some delta)
+
+        interface aset<'a> with
+            member x.ReaderCount = readers.Count
+            member x.IsConstant = false
+            member x.GetReader () =
+                lock l (fun () ->
+                    let r = getReader()
+
+                    let remove ri =
+                        r.RemoveOutput ri
+                        readers.Remove ri |> ignore
+
+                        if readers.IsEmpty then
+                            r.Dispose()
+                            inputReader <- None
+
+                    let reader = new CopyReader<'a>(r, remove)
+                    readers.Add reader |> ignore
+
+                    reader :> _
                 )
 
-        interface aset<'a> with
-            member x.GetReader () =
-                bringUpToDate()
-                let r = getReader()
-
-                let remove ri =
-                    r.RemoveOutput ri
-                    readers.Remove ri |> ignore
-
-                    if readers.IsEmpty then
-                        r.Dispose()
-                        inputReader <- None
-
-                let reader = new BufferedReader<'a>(bringUpToDate, remove)
-                reader.Emit (state, None)
-                r.AddOutput reader
-                readers.Add reader |> ignore
-
-                reader :> _
-
-    type ConstantSet<'a>(content : seq<'a>) =
-        let content = ReferenceCountingSet content
+    type ConstantSet<'a>(content : Lazy<HashSet<'a>>) =
+        let content = lazy ( HashSet content.Value )
 
         interface aset<'a> with
+            member x.ReaderCount = 0
+            member x.IsConstant = true
             member x.GetReader () =
-                let r = new BufferedReader<'a>()
-                r.Emit(content, None)
+                let r = new OneShotReader<'a>(content.Value |> Seq.toList |> List.map Add)
                 r :> IReader<_>
+
+        new(l : seq<'a>) = ConstantSet<'a>(lazy (HashSet l))
+        new(content : Lazy<list<'a>>) = ConstantSet<'a>(lazy (HashSet content.Value))
 
     type private EmptySetImpl<'a> private() =
         static let emptySet = ConstantSet [] :> aset<'a>
@@ -66,6 +66,27 @@ module ASet =
     let private scoped (f : 'a -> 'b) =
         let scope = Ag.getContext()
         fun v -> Ag.useScope scope (fun () -> f v)
+
+    let private callbackTable = ConditionalWeakTable<obj, ConcurrentHashSet<IDisposable>>()
+    type private CallbackSubscription(m : obj, cb : unit -> unit, live : ref<bool>, reader : IAdaptiveObject, set : ConcurrentHashSet<IDisposable>) =
+        let disposable = reader |> unbox<IDisposable>
+
+        member x.Dispose() = 
+            if !live then
+                live := false
+                disposable.Dispose()
+                reader.MarkingCallbacks.Remove cb |> ignore
+                set.Remove x |> ignore
+                if set.Count = 0 then
+                    callbackTable.Remove(m) |> ignore
+
+        interface IDisposable with
+            member x.Dispose() = x.Dispose()
+
+        override x.Finalize() =
+            try x.Dispose()
+            with _ -> ()
+
 
     /// <summary>
     /// creates an empty set instance being reference
@@ -101,6 +122,10 @@ module ASet =
     let ofArray (a : 'a[]) =
         ConstantSet(a) :> aset<_>
 
+    let delay (f : unit -> seq<'a>) =
+        let scope = Ag.getContext()
+        ConstantSet(lazy (Ag.useScope scope (fun () -> f() |> Seq.toList))) :> aset<_>
+
     /// <summary>
     /// returns a list of all elements currently in the adaptive set. 
     /// NOTE: will force the evaluation of the set.
@@ -132,7 +157,18 @@ module ASet =
     /// the latest value of the given mod-cell.
     /// </summary>
     let ofMod (m : IMod<'a>) =
-        AdaptiveSet(fun () -> ofMod m) :> aset<_>
+        if m.IsConstant then
+            ConstantSet [m.GetValue()] :> aset<_>
+        else
+            AdaptiveSet(fun () -> ofMod m) :> aset<_>
+
+
+    /// <summary>
+    /// creates an aset containing all element from the
+    /// original one but disposing them as they are removed
+    /// </summary>
+    let using (s : aset<'a>) =
+        AdaptiveSet(fun () -> using <| s.GetReader()) :> aset<_>
 
     /// <summary>
     /// creates a mod-cell containing the set's content
@@ -150,6 +186,12 @@ module ASet =
         )
         r.AddOutput m
         m
+
+    /// <summary>
+    /// adaptively computes whether the given aset is empty.
+    /// </summary>
+    let isEmpty (s : aset<'a>) =
+        s |> toMod |> Mod.map (fun s -> s.Count = 0)
 
     /// <summary>
     /// adaptively checks if the set contains the given element
@@ -176,15 +218,23 @@ module ASet =
     ///       that the function may be non-injective
     /// </summary>
     let map (f : 'a -> 'b) (set : aset<'a>) = 
-        let scope = Ag.getContext()
-        AdaptiveSet(fun () -> set.GetReader() |> map scope f) :> aset<'b>
+        if set.IsConstant then
+            delay (fun () ->
+                use r = set.GetReader()
+                r.Update()
+                r.Content |> Seq.map f
+            )
+        else
+            let scope = Ag.getContext()
+            AdaptiveSet(fun () -> set.GetReader() |> map scope f) :> aset<'b>
 
     /// <summary>
     /// applies the given function to a cell and adaptively
     /// returns the resulting set.
     /// </summary>
     let bind (f : 'a -> aset<'b>) (m : IMod<'a>) =
-        if m.IsConstant then m |> Mod.force |> f
+        if m.IsConstant then 
+            m |> Mod.force |> f
         else
             let scope = Ag.getContext()
             AdaptiveSet(fun () -> m |> bind scope (fun v -> (f v).GetReader())) :> aset<'b>
@@ -206,7 +256,7 @@ module ASet =
     /// applies the given function to all elements in the set
     /// and unions all output-sets.
     /// NOTE: duplicates are handled correctly here meaning that
-    ///       the given function may return overlapping sets.
+    ///       the supplied function may return overlapping sets.
     /// </summary>
     let collect (f : 'a -> aset<'b>) (set : aset<'a>) = 
         let scope = Ag.getContext()
@@ -219,8 +269,15 @@ module ASet =
     ///       that the function may be non-injective
     /// </summary>
     let choose (f : 'a -> Option<'b>) (set : aset<'a>) =
-        let scope = Ag.getContext()
-        AdaptiveSet(fun () -> set.GetReader() |> choose scope f) :> aset<'b>
+        if set.IsConstant then
+            delay (fun () ->
+                use r = set.GetReader()
+                r.Update()
+                r.Content |> Seq.choose f
+            )
+        else
+            let scope = Ag.getContext()
+            AdaptiveSet(fun () -> set.GetReader() |> choose scope f) :> aset<'b>
 
     /// <summary>
     /// filters the elements in the set using the given predicate
@@ -228,44 +285,76 @@ module ASet =
     let filter (f : 'a -> bool) (set : aset<'a>) =
         choose (fun v -> if f v then Some v else None) set
 
-
+    /// <summary>
+    /// adaptively unions the given sets
+    /// </summary>
     let union (set : aset<aset<'a>>) =
         collect id set
 
+    /// <summary>
+    /// adaptively unions the given sets
+    /// </summary>
     let union' (set : seq<aset<'a>>) =
         union (ConstantSet set)
 
+    /// deprecated in favor of union
+    [<Obsolete>]
     let concat (set : aset<aset<'a>>) =
         collect id set
 
+    /// deprecated in favor of union'
+    [<Obsolete>]
     let concat' (set : seq<aset<'a>>) =
-        concat (ConstantSet set)
+        union (ConstantSet set)
 
+    /// <summary>
+    /// applies the given function to all elements in the sequence
+    /// and unions all output-sets.
+    /// NOTE: duplicates are handled correctly here meaning that
+    ///       the supplied function may return overlapping sets.
+    /// </summary>
     let collect' (f : 'a -> aset<'b>) (set : seq<'a>) =
-        set |> Seq.map f |> concat'
+        set |> Seq.map f |> union'
   
+    /// <summary>
+    /// applies the given modifiable function to all elements in the set
+    /// </summary>
     let mapM (f : 'a -> IMod<'b>) (s : aset<'a>) =
         s |> collect (fun v ->
             v |> f |> ofMod
         )
 
+    /// <summary>
+    /// Filters the set by applying the given modifiable function to all elements
+    /// </summary>
     let filterM (f : 'a -> IMod<bool>) (s : aset<'a>) =
         s |> collect (fun v ->
             v |> f |> bind (fun b -> if b then single v else empty)
         )
 
+    /// <summary>
+    /// Applies the given modifiable function f to each element x of the set. 
+    /// Returns the set comprised of the results for each element where the function returns Some(f(x)).
+    /// </summary>
     let chooseM (f : 'a -> IMod<Option<'b>>) (s : aset<'a>) =
         s |> collect (fun v ->
             v |> f |> bind (fun b -> match b with | Some v -> single v | _ -> empty)
         )
 
+    /// <summary>
+    /// Creates a set consisting of all modifiable values in the original set
+    /// </summary>
     let flattenM (s : aset<IMod<'a>>) =
         s |> collect ofMod
 
+    /// <summary>
+    /// Adaptively applies the given function to the entire set-content
+    /// </summary>
     let reduce (f : seq<'a> -> 'b) (s : aset<'a>) : IMod<'b> =
         s |> toMod |> Mod.map f
 
-    let foldSemiGroup (add : 'a -> 'a -> 'a) (zero : 'a) (s : aset<'a>) : IMod<'a> =
+
+    let fold (add : 'b -> 'a -> 'b) (zero : 'b) (s : aset<'a>) : IMod<'b> =
         let r = s.GetReader()
         let sum = ref zero
 
@@ -293,6 +382,16 @@ module ASet =
         r.AddOutput res
         res
 
+    /// <summary>
+    /// Adaptively projects the set to a value by using an associative add-operation (mappend) and a zero-element (mempty).
+    /// NOTE that removals cause a complete re-evaluation whereas additions can be treated efficiently.
+    /// </summary>
+    let foldMonoid (add : 'a -> 'a -> 'a) (zero : 'a) (s : aset<'a>) : IMod<'a> =
+        fold add zero s
+
+    /// <summary>
+    /// Adaptively projects the set to a value by using associative add-operation (+), a sub-operation (-) and a zero-element (0).
+    /// </summary>
     let foldGroup (add : 'a -> 'a -> 'a) (sub : 'a -> 'a -> 'a) (zero : 'a) (s : aset<'a>) : IMod<'a> =
         let r = s.GetReader()
         let sum = ref zero
@@ -310,44 +409,47 @@ module ASet =
         r.AddOutput res
         res
 
-
+    /// <summary>
+    /// Adaptively applies the given modifiable function to the entire set-content
+    /// </summary>
     let reduceM (f : seq<'a> -> 'b) (s : aset<IMod<'a>>) : IMod<'b> =
         reduce f (collect ofMod s)
 
-    let foldSemiGroupM (add : 'a -> 'a -> 'a) (zero : 'a) (s : aset<IMod<'a>>) : IMod<'a> =
+    /// <summary>
+    /// Adaptively projects the set to a value by using an associative add-operation (mappend) and a zero-element (mempty).
+    /// NOTE that removals/changes cause a complete re-evaluation whereas additions can be treated efficiently.
+    /// </summary>
+    let foldMonoidM (add : 'a -> 'a -> 'a) (zero : 'a) (s : aset<IMod<'a>>) : IMod<'a> =
         let s = s |> collect ofMod
-        foldSemiGroup add zero s
+        foldMonoid add zero s
 
+    /// <summary>
+    /// Adaptively projects the set to a value by using associative add-operation (+), a sub-operation (-) and a zero-element (0).
+    /// </summary>
     let foldGroupM (add : 'a -> 'a -> 'a) (sub : 'a -> 'a -> 'a) (zero : 'a) (s : aset<IMod<'a>>) : IMod<'a> =
         let s = s |> collect ofMod
         foldGroup add sub zero s
 
 
+    /// <summary>
+    /// Adaptively calculates the sum of all elements in the set
+    /// </summary>
     let inline sum (s : aset<'a>) = foldGroup (+) (-) LanguagePrimitives.GenericZero s
+
+    /// <summary>
+    /// Adaptively calculates the product of all elements in the set
+    /// </summary>
     let inline product (s : aset<'a>) = foldGroup (*) (/) LanguagePrimitives.GenericOne s
+
+    /// <summary>
+    /// Adaptively calculates the sum of all elements in the set
+    /// </summary>
     let inline sumM (s : aset<IMod<'a>>) = foldGroupM (+) (-) LanguagePrimitives.GenericZero s
+
+    /// <summary>
+    /// Adaptively calculates the product of all elements in the set
+    /// </summary>
     let inline productM (s : aset<IMod<'a>>) = foldGroupM (*) (/) LanguagePrimitives.GenericOne s
-
-    let private callbackTable = ConditionalWeakTable<obj, ConcurrentHashSet<IDisposable>>()
-    type private CallbackSubscription(m : obj, cb : unit -> unit, live : ref<bool>, reader : IAdaptiveObject, set : ConcurrentHashSet<IDisposable>) =
-        let disposable = reader |> unbox<IDisposable>
-
-        member x.Dispose() = 
-            if !live then
-                live := false
-                disposable.Dispose()
-                reader.MarkingCallbacks.Remove cb |> ignore
-                set.Remove x |> ignore
-                if set.Count = 0 then
-                    callbackTable.Remove(m) |> ignore
-
-        interface IDisposable with
-            member x.Dispose() = x.Dispose()
-
-        override x.Finalize() =
-            try x.Dispose()
-            with _ -> ()
-
 
     /// <summary>
     /// registers a callback for execution whenever the

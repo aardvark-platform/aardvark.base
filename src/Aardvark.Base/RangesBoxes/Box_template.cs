@@ -1328,7 +1328,7 @@ namespace Aardvark.Base
         public Box__dim__d Transformed(M__dplus1____dplus1__d trafo)
         {
             return IsInvalid ? Box__dim__d.Invalid
-                             : new Box__dim__d(ComputeCorners().Copy(
+                             : new Box__dim__d(ComputeCorners().Map(
                                             p => trafo.TransformPos((V__dim__d)p)));
         }
 

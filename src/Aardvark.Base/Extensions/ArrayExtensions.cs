@@ -179,35 +179,104 @@ namespace Aardvark.Base
 			return result;
 		}
 
-		/// <summary>
-		/// Create a copy with the elements piped through a function.
-		/// </summary>
-		public static Tr[] Copy<T, Tr>(this T[] array, Func<T, Tr> element_fun)
+        [Obsolete("Use 'Map' instead (same functionality and parameters)", false)]
+        public static Tr[] Copy<T, Tr>(this T[] array, Func<T, Tr> element_fun)
+        {
+            return array.Map(element_fun);
+        }
+
+        /// <summary>
+        /// Create a copy with the elements piped through a function.
+        /// </summary>
+        public static Tr[] Map<T, Tr>(this T[] array, Func<T, Tr> item_fun)
 		{
 			var len = array.LongLength;
 			var result = new Tr[len];
-			for (var i = 0L; i < len; i++) result[i] = element_fun(array[i]);
+			for (var i = 0L; i < len; i++) result[i] = item_fun(array[i]);
 			return result;
 		}
 
-		/// <summary>
-		/// Create a copy with the elements piped through a function.
-		/// The function gets the index of the element as a second argument.
-		/// </summary>
-		public static Tr[] Copy<T, Tr>(this T[] array, Func<T, long, Tr> element_index_fun)
+        /// <summary>
+        /// Create an array of reulting items by applying a supplied binary function
+        /// to corresponding pairs of the supplied arrays.
+        /// </summary>
+        /// <returns></returns>
+        public static Tr[] Map2<T0, T1, Tr>(
+                this T0[] array0, T1[] array1, Func<T0, T1, Tr> item0_item1_fun)
+        {
+            var len = Fun.Min(array0.LongLength, array1.LongLength);
+            var result = new Tr[len];
+            for (var i = 0L; i < len; i++) result[i] = item0_item1_fun(array0[i], array1[i]);
+            return result;
+        }
+
+        /// <summary>
+        /// Create an array of resulting items by applying a supplied ternary function
+        /// to corresponding triples of the supplied arrays.
+        /// </summary>
+        /// <returns></returns>
+        public static Tr[] Map3<T0, T1, T2, Tr>(
+                this T0[] array0, T1[] array1, T2[] array2, Func<T0, T1, T2, Tr> item0_item1_item2_fun)
+        {
+            var len = Fun.Min(array0.LongLength, array1.LongLength, array2.LongLength);
+            var result = new Tr[len];
+            for (var i = 0L; i < len; i++)
+                result[i] = item0_item1_item2_fun(array0[i], array1[i], array2[i]);
+            return result;
+        }
+
+        [Obsolete("Use 'Map' instead (same functionality and parameters)", false)]
+        public static Tr[] Copy<T, Tr>(this T[] array, Func<T, long, Tr> element_index_fun)
+        {
+            return array.Map(element_index_fun);
+        }
+
+        /// <summary>
+        /// Create a copy with the elements piped through a function.
+        /// The function gets the index of the element as a second argument.
+        /// </summary>
+        public static Tr[] Map<T, Tr>(this T[] array, Func<T, long, Tr> item_index_fun)
 		{
 			var len = array.LongLength;
 			var result = new Tr[len];
-			for (var i = 0L; i < len; i++) result[i] = element_index_fun(array[i], i);
+			for (var i = 0L; i < len; i++) result[i] = item_index_fun(array[i], i);
 			return result;
 		}
 
-		/// <summary>
-		/// Create a copy of count elements with the elements piped through a
-		/// function. count may be longer than the array, in this case the
-		/// result array has default elements at the end.
-		/// </summary>
-		public static Tr[] Copy<T, Tr>(
+        public static Tr[] Map2<T0, T1, Tr>(
+                this T0[] array0, T1[] array1, Func<T0, T1, long, Tr> item0_item1_index_fun)
+        {
+            var len = Fun.Min(array0.LongLength, array1.LongLength);
+            var result = new Tr[len];
+            for (var i = 0L; i < len; i++)
+                result[i] = item0_item1_index_fun(array0[i], array1[i], i);
+            return result;
+        }
+
+        public static Tr[] Map3<T0, T1, T2, Tr>(
+                this T0[] array0, T1[] array1, T2[] array2,
+                Func<T0, T1, T2, long, Tr> item0_item1_item2_index_fun)
+        {
+            var len = Fun.Min(array0.LongLength, array1.LongLength, array2.LongLength);
+            var result = new Tr[len];
+            for (var i = 0L; i < len; i++)
+                result[i] = item0_item1_item2_index_fun(array0[i], array1[i], array2[i], i);
+            return result;
+        }
+
+        [Obsolete("Use 'Map' instead (same functionality and parameters)", false)]
+        public static Tr[] Copy<T, Tr>(
+                this T[] array, long count, Func<T, Tr> element_fun)
+        {
+            return array.Map(count, element_fun);
+        }
+
+        /// <summary>
+        /// Create a copy of count elements with the elements piped through a
+        /// function. count may be longer than the array, in this case the
+        /// result array has default elements at the end.
+        /// </summary>
+        public static Tr[] Map<T, Tr>(
 				this T[] array, long count, Func<T, Tr> element_fun)
 		{
 			var result = new Tr[count];
@@ -216,13 +285,20 @@ namespace Aardvark.Base
 			return result;
 		}
 
-		/// <summary>
-		/// Create a copy of count elements with the elements piped through a
-		/// function. count may be longer than the array, in this case the
-		/// result array has default elements at the end.
-		/// The function gets the index of the element as a second argument.
-		/// </summary>
-		public static Tr[] Copy<T, Tr>(
+        [Obsolete("Use 'Map' instead (same functionality and parameters)", false)]
+        public static Tr[] Copy<T, Tr>(
+                this T[] array, long count, Func<T, long, Tr> element_index_fun)
+        {
+            return array.Map(count, element_index_fun);
+        }
+
+        /// <summary>
+        /// Create a copy of count elements with the elements piped through a
+        /// function. count may be longer than the array, in this case the
+        /// result array has default elements at the end.
+        /// The function gets the index of the element as a second argument.
+        /// </summary>
+        public static Tr[] Map<T, Tr>(
 				this T[] array, long count, Func<T, long, Tr> element_index_fun)
 		{
 			var result = new Tr[count];
@@ -231,11 +307,18 @@ namespace Aardvark.Base
 			return result;
 		}
 
-		/// <summary>
-		/// Create a copy of specified length starting at the specified
-		/// offset with the elements piped through a function.
-		/// </summary>
-		public static Tr[] Copy<T, Tr>(
+        [Obsolete("Use 'Map' instead (same functionality and parameters)", false)]
+        public static Tr[] Copy<T, Tr>(
+                this T[] array, long start, long count, Func<T, Tr> element_fun)
+        {
+            return array.Map(start, count, element_fun);
+        }
+
+        /// <summary>
+        /// Create a copy of specified length starting at the specified
+        /// offset with the elements piped through a function.
+        /// </summary>
+        public static Tr[] Map<T, Tr>(
 				this T[] array, long start, long count, Func<T, Tr> element_fun)
 		{
 			var result = new Tr[count];
@@ -244,13 +327,20 @@ namespace Aardvark.Base
 			return result;
 		}
 
-		/// <summary>
-		/// Create a copy of specified length starting at the specified
-		/// offset with the elements piped through a function.
-		/// The function gets the target index of the element as a second
-		/// argument.
-		/// </summary>
-		public static Tr[] Copy<T, Tr>(
+        [Obsolete("Use 'Map' instead (same functionality and parameters)", false)]
+        public static Tr[] Copy<T, Tr>(
+                this T[] array, long start, long count, Func<T, long, Tr> element_index_fun)
+        {
+            return array.Map(start, count, element_index_fun);
+        }
+
+        /// <summary>
+        /// Create a copy of specified length starting at the specified
+        /// offset with the elements piped through a function.
+        /// The function gets the target index of the element as a second
+        /// argument.
+        /// </summary>
+        public static Tr[] Map<T, Tr>(
 				this T[] array, long start, long count, Func<T, long, Tr> element_index_fun)
 		{
 			var result = new Tr[count];
@@ -287,29 +377,39 @@ namespace Aardvark.Base
 			return result;
 		}
 
-		public static List<Tr> CopyToList<T, Tr>(this T[] array, Func<T, Tr> fun)
+        [Obsolete("Use 'MapToList' instead (same functionality and parameters)", false)]
+        public static List<Tr> CopyToList<T, Tr>(this T[] array, Func<T, Tr> element_fun)
+        {
+            return array.MapToList(element_fun);
+        }
+
+        [Obsolete("Use 'MapToList' instead (same functionality and parameters)", false)]
+        public static List<Tr> ToList<T, Tr>(this T[] array, Func<T, Tr> fun)
+        {
+            return array.MapToList(fun);
+        }
+
+        public static List<Tr> MapToList<T, Tr>(this T[] array, Func<T, Tr> element_fun)
 		{
 			var count = array.Length;
 			var result = new List<Tr>(count);
-			for (int i = 0; i < count; i++) result.Add(fun(array[i]));
+			for (int i = 0; i < count; i++) result.Add(element_fun(array[i]));
 			return result;
 		}
 
-        public static List<Tr> CopyToList<T, Tr>(this T[] array, Func<T, long, Tr> fun)
+        [Obsolete("Use 'MapToList' instead (same functionality and parameters)", false)]
+        public static List<Tr> CopyToList<T, Tr>(this T[] array, Func<T, long, Tr> item_index_fun)
+        {
+            return array.MapToList(item_index_fun);
+        }
+
+        public static List<Tr> MapToList<T, Tr>(this T[] array, Func<T, long, Tr> item_index_fun)
         {
             var count = array.Length;
             var result = new List<Tr>(count);
-            for (int i = 0; i < count; i++) result.Add(fun(array[i], i));
+            for (int i = 0; i < count; i++) result.Add(item_index_fun(array[i], i));
             return result;
         }
-
-		public static List<Tr> ToList<T, Tr>(this T[] array, Func<T, Tr> fun)
-		{
-			var count = array.Length;
-			var result = new List<Tr>(count);
-			for (var i = 0; i < count; i++) result.Add(fun(array[i]));
-			return result;
-		}
 
 		/// <summary>
 		/// Copies the specified range of elements to the specified destination
@@ -537,10 +637,49 @@ namespace Aardvark.Base
 			self[targetIndex] = help;
 		}
 
-		/// <summary>
-		/// Swap the two elements specified by their indices.
-		/// </summary>
-		public static void Swap<T>(this T[] self, int i, int j)
+
+        /// <summary>
+        /// Sets the array items to a mapped version of the items of array0.
+        /// </summary>
+        public static void SetMap<T, T0>(
+                this T[] array, T0[] array0, Func<T0, T> item0_fun)
+        {
+            var count = Fun.Min(array.LongLength, array0.LongLength);
+            for (long i = 0; i < count; i++)
+                array[i] = item0_fun(array0[i]);
+        }
+
+        /// <summary>
+        /// Sets the array items to a mapped version of corresponding
+        /// pairs of items of array0 and array1.
+        /// </summary>
+        public static void SetMap2<T, T0, T1>(
+                this T[] array, T0[] array0, T1[] array1,
+                Func<T0, T1, T> item0_item1_fun)
+        {
+            var count = Fun.Min(array.LongLength, array0.LongLength, array1.LongLength);
+            for (long i = 0; i < count; i++)
+                array[i] = item0_item1_fun(array0[i], array1[i]);
+        }
+
+        /// <summary>
+        /// Sets the array items to a mapped version of corresponding
+        /// triples of  items of array0, array1, and array2.
+        /// </summary>
+        public static void SetMap3<T, T0, T1, T2>(
+                this T[] array, T0[] array0, T1[] array1, T2[] array2,
+                Func<T0, T1, T2, T> item0_item1_item2_fun)
+        {
+            var count = Fun.Min(array.LongLength, array0.LongLength,
+                                array1.LongLength, array2.LongLength);
+            for (long i = 0; i < count; i++)
+                array[i] = item0_item1_item2_fun(array0[i], array1[i], array2[i]);
+        }
+
+        /// <summary>
+        /// Swap the two elements specified by their indices.
+        /// </summary>
+        public static void Swap<T>(this T[] self, int i, int j)
 		{
 			T help = self[i]; self[i] = self[j]; self[j] = help;
 		}
@@ -663,61 +802,125 @@ namespace Aardvark.Base
 		#region Generic Array Functional Programming Standard Operations
 
 		/// <summary>
-		/// Performs an aggregation of all elements in an array with the
+		/// Performs an aggregation of all items in an array with the
 		/// supplied aggregation function starting from the left and with the
-		/// initial supplied left sum, and returns the aggregated result.
+		/// supplied seed, and returns the aggregated result.
 		/// </summary>
 		public static TSum FoldLeft<TVal, TSum>(
-				this TVal[] array, TSum leftSum, Func<TSum, TVal, TSum> sum_val_addFun)
+				this TVal[] array, TSum seed, Func<TSum, TVal, TSum> sum_item_fun)
 		{
 			long count = array.LongLength;
 			for (long i = 0; i < count; i++)
-				leftSum = sum_val_addFun(leftSum, array[i]);
-			return leftSum;
+				seed = sum_item_fun(seed, array[i]);
+			return seed;
 		}
 
-		/// <summary>
-		/// Performs an aggregation of all elements in an array with the
-		/// supplied aggregation function starting from the right and with the
-		/// initial supplied right sum, and returns the aggregated result.
-		/// </summary>
-		public static TSum FoldRight<TVal, TSum>(
-				this TVal[] array, Func<TVal, TSum, TSum> val_sum_addFun, TSum rightSum)
+        /// <summary>
+        /// Performs an aggregation of all corresponding pairs of items of
+        /// the supplied arrays with the supplied aggregation function
+        /// starting from the left and with the  supplied seed, and returns
+        /// the aggregated result.
+        /// </summary>
+        public static TSum FoldLeft2<T0, T1, TSum>(
+                this T0[] array0, T1[] array1,
+                TSum seed, Func<TSum, T0, T1, TSum> sum_item0_item1_fun)
+        {
+            long count = Fun.Min(array0.LongLength, array1.LongLength);
+            for (long i = 0; i < count; i++)
+                seed = sum_item0_item1_fun(seed, array0[i], array1[i]);
+            return seed;
+        }
+
+        /// <summary>
+        /// Performs an aggregation of all corresponding triples of items of
+        /// the supplied arrays with the supplied aggregation function
+        /// starting from the left and with the  supplied seed, and returns
+        /// the aggregated result.
+        /// </summary>
+        public static TSum FoldLeft3<T0, T1, T2, TSum>(
+                this T0[] array0, T1[] array1, T2[] array2,
+                TSum seed, Func<TSum, T0, T1, T2, TSum> sum_item0_item1_item2_fun)
+        {
+            long count = Fun.Min(array0.LongLength, array1.LongLength, array2.LongLength);
+            for (long i = 0; i < count; i++)
+                seed = sum_item0_item1_item2_fun(seed, array0[i], array1[i], array2[i]);
+            return seed;
+        }
+
+        /// <summary>
+        /// Performs an aggregation of all items in an array with the
+        /// supplied aggregation function starting from the right and with the
+        /// supplied seed, and returns the aggregated result.
+        /// </summary>
+        public static TSum FoldRight<TVal, TSum>(
+				this TVal[] array, Func<TVal, TSum, TSum> item_sum_fun, TSum seed)
 		{
 			long count = array.LongLength;
 			for (long i = count - 1; i >= 0; i--)
-				rightSum = val_sum_addFun(array[i], rightSum);
-			return rightSum;
+				seed = item_sum_fun(array[i], seed);
+			return seed;
 		}
 
-		/// <summary>
-		/// Performs an aggregation of the specified slice of elements in an
-		/// array with the supplied aggregation function starting from the
-		/// left and with the initial supplied left sum, and returns the
-		/// aggregated result.
-		/// </summary>
-		public static TSum FoldLeft<TVal, TSum>(
+        /// <summary>
+        /// Performs an aggregation of all corresponding pairs of items of
+        /// the supplied arrays with the supplied aggregation function
+        /// starting from the rigth and with the  supplied seed, and returns
+        /// the aggregated result.
+        /// </summary>
+        public static TSum FoldRight2<T0, T1, TSum>(
+                this T0[] array0, T1[] array1,
+                Func<T0, T1, TSum, TSum> item0_item1_sum_fun, TSum seed)
+        {
+            long count = Fun.Min(array0.LongLength, array1.LongLength);
+            for (long i = count - 1; i >= 0; i--)
+                seed = item0_item1_sum_fun(array0[i], array1[i], seed);
+            return seed;
+        }
+
+        /// <summary>
+        /// Performs an aggregation of all corresponding triples of items of
+        /// the supplied arrays with the supplied aggregation function
+        /// starting from the rigth and with the  supplied seed, and returns
+        /// the aggregated result.
+        /// </summary>
+        public static TSum FoldRight3<T0, T1, T2, TSum>(
+                this T0[] array0, T1[] array1, T2[] array2,
+                Func<T0, T1, T2, TSum, TSum> item0_item1_item2_sum_fun, TSum seed)
+        {
+            long count = Fun.Min(array0.LongLength, array1.LongLength, array2.LongLength);
+            for (long i = count - 1; i >= 0; i--)
+                seed = item0_item1_item2_sum_fun(array0[i], array1[i], array2[i], seed);
+            return seed;
+        }
+
+        /// <summary>
+        /// Performs an aggregation of the specified slice of items in an
+        /// array with the supplied aggregation function starting from the
+        /// left and with the initial supplied left sum, and returns the
+        /// aggregated result.
+        /// </summary>
+        public static TSum FoldLeft<TVal, TSum>(
 				this TVal[] array, long start, long count,
-				TSum leftSum, Func<TSum, TVal, TSum> sum_val_addFun)
+				TSum seed, Func<TSum, TVal, TSum> sum_item_fun)
 		{
 			for (long i = start, e = start + count; i < e; i++)
-				leftSum = sum_val_addFun(leftSum, array[i]);
-			return leftSum;
+				seed = sum_item_fun(seed, array[i]);
+			return seed;
 		}
 
 		/// <summary>
-		/// Performs an aggregation of the specified slice of elements in an
+		/// Performs an aggregation of the specified slice of items in an
 		/// array with the supplied aggregation function starting from the
 		/// right and with the initial supplied right sum, and returns the
 		/// aggregated result.
 		/// </summary>
 		public static TSum FoldRight<TVal, TSum>(
 				this TVal[] array, long start, long count,
-				Func<TVal, TSum, TSum> val_sum_addFun, TSum rightSum)
+				Func<TVal, TSum, TSum> item_sum_fun, TSum seed)
 		{
 			for (long i = start + count - 1; i >= start; i--)
-				rightSum = val_sum_addFun(array[i], rightSum);
-			return rightSum;
+				seed = item_sum_fun(array[i], seed);
+			return seed;
 		}
 
 		/// <summary>
@@ -1945,38 +2148,38 @@ namespace Aardvark.Base
 		public static Dictionary<Type, Func<Array, object, Array>> CopyFunFunMap =
 			new Dictionary<Type, Func<Array, object, Array>>
 			{
-				{ typeof(byte[]), (a, f) => ((byte[])a).Copy((Func<byte,byte>)f) },
-				{ typeof(sbyte[]), (a, f) => ((sbyte[])a).Copy((Func<sbyte,sbyte>)f) },
-				{ typeof(ushort[]), (a, f) => ((ushort[])a).Copy((Func<ushort,ushort>)f) },
-				{ typeof(short[]), (a, f) => ((short[])a).Copy((Func<short,short>)f) },
-				{ typeof(uint[]), (a, f) => ((uint[])a).Copy((Func<uint,uint>)f) },
-				{ typeof(int[]), (a, f) => ((int[])a).Copy((Func<int,int>)f) },
-				{ typeof(ulong[]), (a, f) => ((ulong[])a).Copy((Func<ulong,ulong>)f) },
-				{ typeof(long[]), (a, f) => ((long[])a).Copy((Func<long,long>)f) },
-				{ typeof(float[]), (a, f) => ((float[])a).Copy((Func<float,float>)f) },
-				{ typeof(double[]), (a, f) => ((double[])a).Copy((Func<double,double>)f) },
-				{ typeof(C3b[]), (a, f) => ((C3b[])a).Copy((Func<C3b,C3b>)f) },
-				{ typeof(C3us[]), (a, f) => ((C3us[])a).Copy((Func<C3us,C3us>)f) },
-				{ typeof(C3ui[]), (a, f) => ((C3ui[])a).Copy((Func<C3ui,C3ui>)f) },
-				{ typeof(C3f[]), (a, f) => ((C3f[])a).Copy((Func<C3f,C3f>)f) },
-				{ typeof(C3d[]), (a, f) => ((C3d[])a).Copy((Func<C3d,C3d>)f) },
-				{ typeof(C4b[]), (a, f) => ((C4b[])a).Copy((Func<C4b,C4b>)f) },
-				{ typeof(C4us[]), (a, f) => ((C4us[])a).Copy((Func<C4us,C4us>)f) },
-				{ typeof(C4ui[]), (a, f) => ((C4ui[])a).Copy((Func<C4ui,C4ui>)f) },
-				{ typeof(C4f[]), (a, f) => ((C4f[])a).Copy((Func<C4f,C4f>)f) },
-				{ typeof(C4d[]), (a, f) => ((C4d[])a).Copy((Func<C4d,C4d>)f) },
-				{ typeof(V2i[]), (a, f) => ((V2i[])a).Copy((Func<V2i,V2i>)f) },
-				{ typeof(V2l[]), (a, f) => ((V2l[])a).Copy((Func<V2l,V2l>)f) },
-				{ typeof(V2f[]), (a, f) => ((V2f[])a).Copy((Func<V2f,V2f>)f) },
-				{ typeof(V2d[]), (a, f) => ((V2d[])a).Copy((Func<V2d,V2d>)f) },
-				{ typeof(V3i[]), (a, f) => ((V3i[])a).Copy((Func<V3i,V3i>)f) },
-				{ typeof(V3l[]), (a, f) => ((V3l[])a).Copy((Func<V3l,V3l>)f) },
-				{ typeof(V3f[]), (a, f) => ((V3f[])a).Copy((Func<V3f,V3f>)f) },
-				{ typeof(V3d[]), (a, f) => ((V3d[])a).Copy((Func<V3d,V3d>)f) },
-				{ typeof(V4i[]), (a, f) => ((V4i[])a).Copy((Func<V4i,V4i>)f) },
-				{ typeof(V4l[]), (a, f) => ((V4l[])a).Copy((Func<V4l,V4l>)f) },
-				{ typeof(V4f[]), (a, f) => ((V4f[])a).Copy((Func<V4f,V4f>)f) },
-				{ typeof(V4d[]), (a, f) => ((V4d[])a).Copy((Func<V4d,V4d>)f) },
+				{ typeof(byte[]), (a, f) => ((byte[])a).Map((Func<byte,byte>)f) },
+				{ typeof(sbyte[]), (a, f) => ((sbyte[])a).Map((Func<sbyte,sbyte>)f) },
+				{ typeof(ushort[]), (a, f) => ((ushort[])a).Map((Func<ushort,ushort>)f) },
+				{ typeof(short[]), (a, f) => ((short[])a).Map((Func<short,short>)f) },
+				{ typeof(uint[]), (a, f) => ((uint[])a).Map((Func<uint,uint>)f) },
+				{ typeof(int[]), (a, f) => ((int[])a).Map((Func<int,int>)f) },
+				{ typeof(ulong[]), (a, f) => ((ulong[])a).Map((Func<ulong,ulong>)f) },
+				{ typeof(long[]), (a, f) => ((long[])a).Map((Func<long,long>)f) },
+				{ typeof(float[]), (a, f) => ((float[])a).Map((Func<float,float>)f) },
+				{ typeof(double[]), (a, f) => ((double[])a).Map((Func<double,double>)f) },
+				{ typeof(C3b[]), (a, f) => ((C3b[])a).Map((Func<C3b,C3b>)f) },
+				{ typeof(C3us[]), (a, f) => ((C3us[])a).Map((Func<C3us,C3us>)f) },
+				{ typeof(C3ui[]), (a, f) => ((C3ui[])a).Map((Func<C3ui,C3ui>)f) },
+				{ typeof(C3f[]), (a, f) => ((C3f[])a).Map((Func<C3f,C3f>)f) },
+				{ typeof(C3d[]), (a, f) => ((C3d[])a).Map((Func<C3d,C3d>)f) },
+				{ typeof(C4b[]), (a, f) => ((C4b[])a).Map((Func<C4b,C4b>)f) },
+				{ typeof(C4us[]), (a, f) => ((C4us[])a).Map((Func<C4us,C4us>)f) },
+				{ typeof(C4ui[]), (a, f) => ((C4ui[])a).Map((Func<C4ui,C4ui>)f) },
+				{ typeof(C4f[]), (a, f) => ((C4f[])a).Map((Func<C4f,C4f>)f) },
+				{ typeof(C4d[]), (a, f) => ((C4d[])a).Map((Func<C4d,C4d>)f) },
+				{ typeof(V2i[]), (a, f) => ((V2i[])a).Map((Func<V2i,V2i>)f) },
+				{ typeof(V2l[]), (a, f) => ((V2l[])a).Map((Func<V2l,V2l>)f) },
+				{ typeof(V2f[]), (a, f) => ((V2f[])a).Map((Func<V2f,V2f>)f) },
+				{ typeof(V2d[]), (a, f) => ((V2d[])a).Map((Func<V2d,V2d>)f) },
+				{ typeof(V3i[]), (a, f) => ((V3i[])a).Map((Func<V3i,V3i>)f) },
+				{ typeof(V3l[]), (a, f) => ((V3l[])a).Map((Func<V3l,V3l>)f) },
+				{ typeof(V3f[]), (a, f) => ((V3f[])a).Map((Func<V3f,V3f>)f) },
+				{ typeof(V3d[]), (a, f) => ((V3d[])a).Map((Func<V3d,V3d>)f) },
+				{ typeof(V4i[]), (a, f) => ((V4i[])a).Map((Func<V4i,V4i>)f) },
+				{ typeof(V4l[]), (a, f) => ((V4l[])a).Map((Func<V4l,V4l>)f) },
+				{ typeof(V4f[]), (a, f) => ((V4f[])a).Map((Func<V4f,V4f>)f) },
+				{ typeof(V4d[]), (a, f) => ((V4d[])a).Map((Func<V4d,V4d>)f) },
 			};
 
 		public static Array Copy<T>(this Array array,

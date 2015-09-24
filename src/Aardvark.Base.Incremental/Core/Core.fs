@@ -126,6 +126,10 @@ module IncrementalLog =
 /// </summary>
 exception LevelChangedException of IAdaptiveObject
 
+[<AutoOpen>]
+module private AdaptiveSystemState =
+    let isTopLevel = new System.Threading.ThreadLocal<bool>(fun () -> true)
+
 /// <summary>
 /// Transaction holds a set of adaptive objects which
 /// have been changed and shall therefore be marked as outOfDate.
@@ -174,6 +178,10 @@ type Transaction() =
     /// the enqueued changes.
     /// </summary>
     member x.Commit() =
+        let top = isTopLevel.Value
+        isTopLevel.Value <- false
+
+
         // cache the currently running transaction (if any)
         // and make tourselves current.
         let old = running.Value
@@ -256,12 +264,12 @@ type Transaction() =
         // when the commit is over we restore the old
         // running transaction (if any)
         running.Value <- old
+        isTopLevel.Value <- top
 
 /// <summary>
 /// defines a base class for all adaptive objects implementing
 /// IAdaptiveObject.
 /// </summary>
-[<AbstractClass>]
 type AdaptiveObject() =
     let id = newId()
     let mutable outOfDate = true
@@ -269,6 +277,10 @@ type AdaptiveObject() =
     let inputs = HashSet<IAdaptiveObject>() :> ICollection<_>
     let outputs = WeakSet<IAdaptiveObject>() :> ICollection<_>
     let callbacks = ConcurrentHashSet<unit -> unit>() :> ICollection<_>
+
+    static let time = AdaptiveObject() :> IAdaptiveObject
+
+    static member Time = time
 
     /// <summary>
     /// utility function for evaluating an object if
@@ -278,16 +290,30 @@ type AdaptiveObject() =
     /// Note that this function takes care of appropriate locking
     /// </summary>
     member x.EvaluateIfNeeded (otherwise : 'a) (f : unit -> 'a) =
-        lock x (fun () ->
-            if x.OutOfDate then
-                IncrementalLog.startEvaluate x
-                let r = f()
-                x.OutOfDate <- false
-                IncrementalLog.endEvaluate x
-                r
-            else
-                otherwise
-        )
+        let top = isTopLevel.Value
+        if top then isTopLevel.Value <- false
+
+        let res =
+            lock x (fun () ->
+                if x.OutOfDate then
+                    IncrementalLog.startEvaluate x
+                    let r = f()
+                    x.OutOfDate <- false
+                    IncrementalLog.endEvaluate x
+                    r
+                else
+                    otherwise
+            )
+
+        if top then 
+            isTopLevel.Value <- true
+            if time.Outputs.Count > 0 then
+                let t = Transaction()
+                for o in time.Outputs do
+                    t.Enqueue(o)
+                t.Commit()
+
+        res
 
     /// <summary>
     /// utility function for evaluating an object even if it
@@ -295,13 +321,27 @@ type AdaptiveObject() =
     /// Note that this function takes care of appropriate locking
     /// </summary>
     member x.EvaluateAlways (f : unit -> 'a) =
-        lock x (fun () ->
-            IncrementalLog.startEvaluate x
-            let res = f()
-            x.OutOfDate <- false
-            IncrementalLog.endEvaluate x
-            res
-        )
+        let top = isTopLevel.Value
+        if top then isTopLevel.Value <- false
+
+        let res =
+            lock x (fun () ->
+                IncrementalLog.startEvaluate x
+                let res = f()
+                x.OutOfDate <- false
+                IncrementalLog.endEvaluate x
+                res
+            )
+
+        if top then 
+            isTopLevel.Value <- true
+            if time.Outputs.Count > 0 then
+                let t = Transaction()
+                for o in time.Outputs do
+                    t.Enqueue(o)
+                t.Commit()
+
+        res
 
 
     member x.Id = id
@@ -326,12 +366,6 @@ type AdaptiveObject() =
             | :? IAdaptiveObject as o -> id = o.Id
             | _ -> false
 
-    interface IComparable with
-        member x.CompareTo o =
-            match o with
-                | :? IAdaptiveObject as o -> compare id o.Id
-                | _ -> failwith "uncomparable"
-
     interface IAdaptiveObject with
         member x.Id = id
         member x.OutOfDate
@@ -347,6 +381,47 @@ type AdaptiveObject() =
 
         member x.Mark () =
             x.Mark ()
+
+/// <summary>
+/// defines a base class for all decorated mods
+/// </summary>
+type AdaptiveDecorator(o : IAdaptiveObject) =
+    let id = newId()
+    
+    member x.Id = id
+    member x.OutOfDate
+        with get() = o.OutOfDate
+        and set v = o.OutOfDate <- v
+
+    member x.Outputs = o.Outputs
+    member x.Inputs = o.Inputs
+    member x.MarkingCallbacks = o.MarkingCallbacks
+    member x.Level 
+        with get() = o.Level
+        and set l = o.Level <- l
+
+    member x.Mark() = o.Mark()
+
+    override x.GetHashCode() = o.GetHashCode()
+    override x.Equals o =
+        match o with
+            | :? IAdaptiveObject as o -> x.Id = o.Id
+            | _ -> false
+
+    interface IAdaptiveObject with
+        member x.Id = id
+        member x.OutOfDate
+            with get() = o.OutOfDate
+            and set v = o.OutOfDate <- v
+
+        member x.Outputs = o.Outputs
+        member x.Inputs = o.Inputs
+        member x.MarkingCallbacks = o.MarkingCallbacks
+        member x.Level 
+            with get() = o.Level
+            and set l = o.Level <- l
+
+        member x.Mark () = o.Mark()
 
 /// <summary>
 /// defines a base class for all adaptive objects which are
@@ -387,6 +462,66 @@ and EmptyCollection<'a>() =
         member x.IsReadOnly = false
         member x.GetEnumerator() : IEnumerator<'a> = Seq.empty.GetEnumerator()
         member x.GetEnumerator() : System.Collections.IEnumerator = Seq.empty.GetEnumerator() :> _
+
+
+type DirtySet<'a, 'b when 'a :> IAdaptiveObject and 'a : not struct>(evaluate : seq<'a> -> 'b) =
+    let l = obj()
+    let all = HashSet<'a>()
+    let mutable dirty = HashSet<'a>()
+    let subscriptions = Dictionary<IAdaptiveObject, unit -> unit>()
+
+
+    let addDirty (v : 'a) () =
+        lock l (fun () ->
+            dirty.Add v |> ignore
+        )
+
+    member x.Evaluate() =
+        let mine = 
+            lock l (fun () ->
+                let arr = dirty |> Seq.toArray
+                dirty <- HashSet<'a>()
+                arr
+            )
+
+        evaluate mine
+
+
+    member x.Add(v : 'a) =
+        lock v (fun () ->
+            lock l (fun () ->
+                if all.Add v && v.OutOfDate then
+                    dirty.Add v |> ignore
+                else
+                    let cb = addDirty v
+                    v.MarkingCallbacks.Add cb
+                    subscriptions.Add(v, cb)
+            )   
+        )
+
+    member x.Remove(v : 'a) =
+        lock v (fun () ->
+            lock l (fun () ->
+                if all.Remove v then
+                    dirty.Remove v |> ignore
+                    match subscriptions.TryGetValue v with
+                        | (true, cb) -> v.MarkingCallbacks.Remove cb |> ignore
+                        | _ -> ()
+            )   
+        )
+
+    member x.Dispose() =
+        lock l (fun () ->
+            all.Clear()
+            dirty.Clear()
+            for (KeyValue(k,v)) in subscriptions do
+                k.MarkingCallbacks.Remove v |> ignore
+        )
+
+    interface IDisposable with
+        member x.Dispose() = x.Dispose()
+
+
 
 
 [<AutoOpen>]
