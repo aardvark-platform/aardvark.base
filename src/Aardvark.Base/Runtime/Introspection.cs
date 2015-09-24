@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Globalization;
 using System.IO;
+using System.IO.Compression;
 using System.Linq;
 using System.Reflection;
 using System.Runtime.Serialization.Formatters.Binary;
@@ -558,11 +559,74 @@ namespace Aardvark.Base
             return assemblies;
         }
 
+        private static void UnpackNativeDependencies(Assembly a)
+        {
+            var info = a.GetManifestResourceInfo("native.zip");
+            if (info == null) return;
+
+            Report.Begin(2, "Unpacking native dependencies for {0}", a.FullName);
+
+            using (var s = a.GetManifestResourceStream("native.zip"))
+            {
+                using (var archive = new ZipArchive(s))
+                {
+                    var arch = IntPtr.Size == 8 ? "AMD64" : "x86";
+                    var platform = "windows";
+                    if (Environment.OSVersion.Platform == PlatformID.MacOSX) platform = "mac";
+                    else if (Environment.OSVersion.Platform == PlatformID.Unix) platform = "linux";
+
+                    var copyPaths = platform + "/" + arch;
+
+                    foreach (var e in archive.Entries)
+                    {
+                        var name = e.FullName.Replace('\\', '/');
+
+                        if(name.StartsWith(copyPaths))
+                        {
+                            name = name.Substring(copyPaths.Length);
+                            var localComponents = name.Split(new[] { '/', '\\' }, StringSplitOptions.RemoveEmptyEntries);
+
+                            if(localComponents.Length != 0)
+                            {
+                                var localTarget = Path.Combine(localComponents);
+                                var outputPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, localTarget);
+
+                                var d = Path.GetDirectoryName(outputPath);
+                                if (!Directory.Exists(Path.GetDirectoryName(outputPath)))
+                                {
+                                    Directory.CreateDirectory(d);
+                                }
+
+                                if(!File.Exists(outputPath))
+                                {
+                                    e.ExtractToFile(outputPath);
+                                    Report.Line(2, "unpacked: {0}", outputPath);
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+
+            Report.End();
+        }
+
 
         public static void Init()
         {
             Report.BeginTimed("initializing aardvark");
-            
+
+            Report.BeginTimed("Unpacking native dependencies");
+            foreach(var a in AppDomain.CurrentDomain.GetAssemblies())
+            {
+                UnpackNativeDependencies(a);
+            }
+            AppDomain.CurrentDomain.AssemblyLoad += (s, e) =>
+            {
+                UnpackNativeDependencies(e.LoadedAssembly);
+            };
+            Report.End();
+
             Report.BeginTimed("Loading plugins");
             var pluginsList = LoadPlugins();
 
@@ -600,6 +664,11 @@ namespace Aardvark.Base
             Report.End();
             LoadAll(pluginsList);
             Report.End();
+        }
+
+        private static void CurrentDomain_AssemblyLoad(object sender, AssemblyLoadEventArgs args)
+        {
+            throw new NotImplementedException();
         }
 
         private static void LoadAll(IEnumerable<Assembly> xs)
