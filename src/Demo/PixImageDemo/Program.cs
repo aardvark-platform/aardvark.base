@@ -218,6 +218,14 @@ namespace PixImageDemo
 
             var colorImage = CreateHowManyColorsIllusion(1024);
 
+
+            var scaledColorImage = new PixImage<byte>(1024, 768, 3);
+
+            scaledColorImage.GetMatrix<C4b>().SetScaledHermite(colorImage.GetMatrix<C4b>());
+
+            scaledColorImage.SaveAsImage(Path.Combine(dir, "v-scaled-image.png"));
+
+
             // writing a color png image
             colorImage.SaveAsImage(Path.Combine(dir, "v-color-image.png"));
 
