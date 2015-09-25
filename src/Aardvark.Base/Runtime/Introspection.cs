@@ -561,54 +561,63 @@ namespace Aardvark.Base
 
         private static void UnpackNativeDependencies(Assembly a)
         {
-            var info = a.GetManifestResourceInfo("native.zip");
-            if (info == null) return;
+            if (a.IsDynamic) return;
 
-            Report.Begin(2, "Unpacking native dependencies for {0}", a.FullName);
-
-            using (var s = a.GetManifestResourceStream("native.zip"))
+            try
             {
-                using (var archive = new ZipArchive(s))
+                var info = a.GetManifestResourceInfo("native.zip");
+                if (info == null) return;
+
+                Report.Begin(3, "Unpacking native dependencies for {0}", a.FullName);
+
+                using (var s = a.GetManifestResourceStream("native.zip"))
                 {
-                    var arch = IntPtr.Size == 8 ? "AMD64" : "x86";
-                    var platform = "windows";
-                    if (Environment.OSVersion.Platform == PlatformID.MacOSX) platform = "mac";
-                    else if (Environment.OSVersion.Platform == PlatformID.Unix) platform = "linux";
-
-                    var copyPaths = platform + "/" + arch;
-
-                    foreach (var e in archive.Entries)
+                    using (var archive = new ZipArchive(s))
                     {
-                        var name = e.FullName.Replace('\\', '/');
+                        var arch = IntPtr.Size == 8 ? "AMD64" : "x86";
+                        var platform = "windows";
+                        if (Environment.OSVersion.Platform == PlatformID.MacOSX) platform = "mac";
+                        else if (Environment.OSVersion.Platform == PlatformID.Unix) platform = "linux";
 
-                        if(name.StartsWith(copyPaths))
+                        var copyPaths = platform + "/" + arch;
+
+                        foreach (var e in archive.Entries)
                         {
-                            name = name.Substring(copyPaths.Length);
-                            var localComponents = name.Split(new[] { '/', '\\' }, StringSplitOptions.RemoveEmptyEntries);
+                            var name = e.FullName.Replace('\\', '/');
 
-                            if(localComponents.Length != 0)
+                            if (name.StartsWith(copyPaths))
                             {
-                                var localTarget = Path.Combine(localComponents);
-                                var outputPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, localTarget);
+                                name = name.Substring(copyPaths.Length);
+                                var localComponents = name.Split(new[] { '/', '\\' }, StringSplitOptions.RemoveEmptyEntries);
 
-                                var d = Path.GetDirectoryName(outputPath);
-                                if (!Directory.Exists(Path.GetDirectoryName(outputPath)))
+                                if (localComponents.Length != 0)
                                 {
-                                    Directory.CreateDirectory(d);
-                                }
+                                    var localTarget = Path.Combine(localComponents);
+                                    var outputPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, localTarget);
 
-                                if(!File.Exists(outputPath))
-                                {
-                                    e.ExtractToFile(outputPath);
-                                    Report.Line(2, "unpacked: {0}", outputPath);
+                                    var d = Path.GetDirectoryName(outputPath);
+                                    if (!Directory.Exists(Path.GetDirectoryName(outputPath)))
+                                    {
+                                        Directory.CreateDirectory(d);
+                                    }
+
+                                    if (!File.Exists(outputPath))
+                                    {
+                                        e.ExtractToFile(outputPath);
+                                        Report.Line(3, "unpacked: {0}", outputPath);
+                                    }
                                 }
                             }
                         }
                     }
                 }
+                Report.End(3);
             }
-
-            Report.End(2);
+            catch (Exception e)
+            {
+                Report.Warn("could not unpack native dependencies for {0}: {1}", a.FullName, e);
+                Report.End(3);
+            }
         }
 
 
