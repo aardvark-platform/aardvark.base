@@ -26,7 +26,14 @@ namespace Aardvark.Base
         //# intConfigs.ForEach((dt, ct, dtn, fct) => {
         //#     var clamp = dtn != "";
         //#     var rfct = dtn != "" ? "Raw" + fct : "";
-        public static void SetScaledHermite(this Matrix<__dt__, __ct__> targetMat, Matrix<__dt__, __ct__> sourceMat,
+        /// <summary>
+        /// Use Cubic Spline interpolation to scale the source matrix into the target matrix.
+        /// The supplied parameter selects the spline to use. The default value of -0.5 generates
+        /// Hermite Splines. If you call this repeatedly with the same selection parameter,
+        /// build the cubic weighting function with 'Fun.CreateCubicTup4f(par)' and use the
+        /// result as a paramter to the function call.
+        /// </summary>
+        public static void SetScaledCubic(this Matrix<__dt__, __ct__> targetMat, Matrix<__dt__, __ct__> sourceMat,
                                             double par = -0.5)
         {
             // create the cubic weighting function. Parameter a=-0.5 results in the cubic Hermite spline.
@@ -34,6 +41,10 @@ namespace Aardvark.Base
             targetMat.SetScaledCubic(sourceMat, hermiteSpline);
         }
 
+        /// <summary>
+        /// Use Cubic Spline interpolation to scale the source matrix into the target matrix
+        /// using the supplied cubic interpolator.
+        /// </summary>
         public static void SetScaledCubic(this Matrix<__dt__, __ct__> targetMat, Matrix<__dt__, __ct__> sourceMat,
                                           Func<double, Tup4<float>> interpolator)
         {
@@ -50,6 +61,9 @@ namespace Aardvark.Base
                                         if (clamp) { */.Copy(Col.__dtn__From__dtn__InFloatClamped)/*# } */);
         }
 
+        /// <summary>
+        /// Use Lanczos Interpoation to scale the source matrix into the target matrix.
+        /// </summary>
         public static void SetScaledLanczos(this Matrix<__dt__, __ct__> targetMat, Matrix<__dt__, __ct__> sourceMat)
         {
             var scale = sourceMat.Size.ToV2d() / targetMat.Size.ToV2d();

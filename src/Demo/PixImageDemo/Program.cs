@@ -221,7 +221,7 @@ namespace PixImageDemo
 
             var scaledColorImage = new PixImage<byte>(1024, 768, 3);
 
-            scaledColorImage.GetMatrix<C4b>().SetScaledHermite(colorImage.GetMatrix<C4b>());
+            scaledColorImage.GetMatrix<C4b>().SetScaledCubic(colorImage.GetMatrix<C4b>());
 
             scaledColorImage.SaveAsImage(Path.Combine(dir, "v-scaled-image.png"));
 
