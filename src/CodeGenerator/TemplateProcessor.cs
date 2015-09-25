@@ -156,49 +156,38 @@ public static class SourceGenerator
         private class Nd { }
 
         private static readonly State<TemplateProcessor, Nd> State
-                                    = new State<TemplateProcessor, Nd>(
-            new[] {
-                new Case<TemplateProcessor, Nd>(@"/\*CLASS#",
-                    (p, n) => { p.Skip(); p.Class.Append(p.GetToStartOf("*/"));
-                                p.Skip(); return State; }),
-                new Case<TemplateProcessor, Nd>(@"/\*USING#",
-                    (p, n) => { p.Skip(); p.Using.Append(p.GetToStartOf("*/"));
-                                p.Skip(); return State; }),
-                new Case<TemplateProcessor, Nd>(@"/\*#",
-                    (p, n) => { p.Skip(); p.Active.Append(p.GetToStartOf("*/"));
-                                p.Skip(); return State; }),
-                new Case<TemplateProcessor, Nd>(@"//BEGIN\sCLASS#",
-                    (p, n) => { p.Skip(); p.SkipToEndOfOrEnd('\n');
-                                p.Active = p.Class; return State; },
-                    (p, n, t) => t.TrimmedAtEnd(CharFun.IsSpaceOrTab)),
-                new Case<TemplateProcessor, Nd>(@"//END\sCLASS#",
-                    (p, n) => { p.Skip(); p.SkipToEndOfOrEnd('\n');
-                                p.Active = p.Code; return State; },
-                    (p, n, t) => t.TrimmedAtEnd(CharFun.IsSpaceOrTab)),
-                new Case<TemplateProcessor, Nd>(@"//#",
-                    (p, n) => { p.Skip();
-                                p.Active.Append(p.GetToEndOfOrEnd('\n'));
-                                return State; },
-                    // indented //# comments eat the preceeding indentation
-                    // by trimming it from the preceeding text:
-                    (p, n, t) => t.TrimmedAtEnd(CharFun.IsSpaceOrTab)),
-                new Case<TemplateProcessor, Nd>(@"__",
-                    (p, n) => { p.Skip();
-                                p.Active.Append(string.Format(
-                                    "___sb.Append(({0}).ToString());",
-                                    p.GetToStartOf("__")));
-                                p.Skip(); return State; }),
-            },
-            (p, n, t) =>
+                                    = new Cases<TemplateProcessor, Nd>
             {
-                if (!t.IsEmpty)
-                {
-                    p.Active.Append(
-                        string.Format("___sb.Append(___Filter(@\"{0}\"));",
-                                      t.ToString().Replace("\"", "\"\"")));
-                }
-            }
-        );
+                { @"/\*CLASS#", (p, n) => { p.Skip(); p.Class.Append(p.GetToStartOf("*/"));
+                                            p.Skip(); return State; } },
+                { @"/\*USING#", (p, n) => { p.Skip(); p.Using.Append(p.GetToStartOf("*/"));
+                                            p.Skip(); return State; } },
+                { @"/\*#",      (p, n) => { p.Skip(); p.Active.Append(p.GetToStartOf("*/"));
+                                            p.Skip(); return State; } },
+                { @"//BEGIN\sCLASS#", (p, n) => { p.Skip(); p.SkipToEndOfOrEnd('\n');
+                                                  p.Active = p.Class; return State; },
+                                        (p, n, t) => t.TrimmedAtEnd(CharFun.IsSpaceOrTab) },
+                { @"//END\sCLASS#",   (p, n) => { p.Skip(); p.SkipToEndOfOrEnd('\n');
+                                                  p.Active = p.Code; return State; },
+                                        (p, n, t) => t.TrimmedAtEnd(CharFun.IsSpaceOrTab) },
+                { @"//#",       (p, n) => { p.Skip(); p.Active.Append(p.GetToEndOfOrEnd('\n'));
+                                            return State; },
+                                // indented //# comments eat the preceeding indentation
+                                // by trimming it from the preceeding text:
+                                (p, n, t) => t.TrimmedAtEnd(CharFun.IsSpaceOrTab) },
+                { @"__",        (p, n) => { p.Skip();
+                                            p.Active.Append(string.Format(
+                                                "___sb.Append(({0}).ToString());",
+                                                p.GetToStartOf("__")));
+                                            p.Skip(); return State; } },
+            }.ToState(  (p, n, t) =>    {
+                                            if (!t.IsEmpty)
+                                            {
+                                                p.Active.Append(
+                                                    string.Format("___sb.Append(___Filter(@\"{0}\"));",
+                                                                    t.ToString().Replace("\"", "\"\"")));
+                                            }
+                                        });
 
         #endregion
     }

@@ -6,14 +6,14 @@ using System.Text.RegularExpressions;
 
 namespace Aardvark.Base
 {
-    #region State
+    #region Old State
 
     /// <summary>
     /// State of a generic recursive descent parser.
     /// </summary>
     /// <typeparam name="TPar">Parser class containing static state variables.</typeparam>
     /// <typeparam name="TNode">Node class for building parse trees.</typeparam>
-    public class State<TPar, TNode>
+    public class State<TPar, TNode> : IEnumerable<Case<TPar, TNode>>
         where TPar : TextParser<TPar>
     {
         public readonly Action<TPar, TNode, Text> TextAct;
@@ -59,17 +59,19 @@ namespace Aardvark.Base
                         for (int i = 1; i <= caseCount; i++)
                             if (m.Groups[i].Success)
                             {
+                                var c = i - 1;
                                 var index = m.Groups[i].Index;
                                 if (par.Pos < index)
                                 {
                                     var t = par.PeekToPos(index);
-                                    var adj = state.Cases[i - 1].AdjustFun;
+                                    var adj = state.Cases[c].AdjustFun;
                                     if (adj != null) t = adj(par, node, t);
                                     state.TextAct(par, node, t);
                                     par.SetPosAndCountLines(index);
                                 }
                                 par.LastEnd = index + m.Groups[i].Length;
-                                return i - 1;
+                                par.LastCase = c;
+                                return c;
                             }
                     if (par.Pos < par.Text.End)
                     {
@@ -93,7 +95,7 @@ namespace Aardvark.Base
                             if (m.Groups[i].Success)
                             {
                                 par.LastEnd = m.Groups[i].Index + m.Groups[i].Length;
-                                return i - 1;
+                                return par.LastCase = i - 1;
                             }
                     return -1;
                 };
@@ -101,11 +103,31 @@ namespace Aardvark.Base
         }
 
         #endregion
+
+        public IEnumerable<Case<TPar, TNode>> Items { get { foreach (var c in Cases) yield return c; } }
+
+        #region IEnumerable implementation
+
+        public IEnumerator<Case<TPar, TNode>> GetEnumerator()
+        {
+            return Items.GetEnumerator();
+        }
+
+        #endregion
+
+        #region IEnumerable implementation
+
+        System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
+        {
+            return Items.GetEnumerator();
+        }
+
+        #endregion
     }
 
     #endregion
 
-    #region Case
+    #region Old Case
 
     /// <summary>
     /// Case represents a state transition of a generic recursive descent parser.
@@ -121,32 +143,40 @@ namespace Aardvark.Base
 
         #region Constructors
 
-        public Case(Func<TPar, TNode, State<TPar, TNode>> matchedFun)
-            : this(null, matchedFun)
-        { }
-
-        public Case(Rx rx, Func<TPar, TNode, State<TPar, TNode>> matchedFun)
-            : this(rx.Pattern, matchedFun)
-        { }
-
-        public Case(string pattern, Func<TPar, TNode, State<TPar, TNode>> matchedFun)
-            : this(pattern, matchedFun, null)
-        { }
-
+        /// <summary>
+        /// A supplied adjustFun can modify the text preceeding the match 
+        /// of the case in a searching state, before it is handed to the
+        /// TextAct of the state.
+        /// </summary>
         public Case(string pattern, Func<TPar, TNode, State<TPar, TNode>> matchedFun,
-                    Func<TPar, TNode, Text, Text> adjustFun)
+            Func<TPar, TNode, Text, Text> adjustFun = null)
         {
             MatchedFun = matchedFun;
             AdjustFun = adjustFun;
             Pattern = pattern;
         }
 
+        public Case(Func<TPar, TNode, State<TPar, TNode>> matchedFun,
+            Func<TPar, TNode, Text, Text> adjustFun = null)
+            : this((string)null, matchedFun, adjustFun)
+        { }
+
+        public Case(Regex regex, Func<TPar, TNode, State<TPar, TNode>> matchedFun,
+                    Func<TPar, TNode, Text, Text> adjustFun = null)
+            : this(regex.ToString(), matchedFun, adjustFun)
+        { }
+
+        public Case(Rx rx, Func<TPar, TNode, State<TPar, TNode>> matchedFun,
+            Func<TPar, TNode, Text, Text> adjustFun = null)
+            : this(rx.Pattern, matchedFun, adjustFun)
+        { }
+
         #endregion
     }
 
     #endregion
 
-    #region Cases
+    #region Old Cases
 
     /// <summary>
     /// The Cases class makes it possible to build a single state transition
@@ -190,9 +220,299 @@ namespace Aardvark.Base
             foreach (var c in cases.Array) CaseList.Add(c);
         }
 
+        public void Add(string pattern, Func<TPar, TNode, State<TPar, TNode>> matchedFun,
+            Func<TPar, TNode, Text, Text> adjustFun = null)
+        {
+            CaseList.Add(new Case<TPar, TNode>(pattern, matchedFun, adjustFun));
+        }
+
+        public void Add(Regex regex, Func<TPar, TNode, State<TPar, TNode>> matchedFun,
+            Func<TPar, TNode, Text, Text> adjustFun = null)
+        {
+            CaseList.Add(new Case<TPar, TNode>(regex.ToString(), matchedFun, adjustFun));
+        }
+
+        public void Add(Rx rx, Func<TPar, TNode, State<TPar, TNode>> matchedFun,
+            Func<TPar, TNode, Text, Text> adjustFun = null)
+        {
+            CaseList.Add(new Case<TPar, TNode>(rx.Pattern, matchedFun, adjustFun));
+        }
+
+        public void Add(Func<TPar, TNode, State<TPar, TNode>> matchedFun,
+            Func<TPar, TNode, Text, Text> adjustFun = null)
+        {
+            CaseList.Add(new Case<TPar, TNode>(matchedFun, adjustFun));
+        }
+
+        public State<TPar, TNode> ToState(Action<TPar, TNode, Text> textAct = null)
+        {
+            return new State<TPar, TNode>(this, textAct);
+        }
+
+
         #region IEnumerable<Case<TPar,TNode>> Members
 
         public IEnumerator<Case<TPar, TNode>> GetEnumerator()
+        {
+            return CaseList.GetEnumerator();
+        }
+
+        #endregion
+
+        #region IEnumerable Members
+
+        System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
+        {
+            return CaseList.GetEnumerator();
+        }
+
+        #endregion
+    }
+
+    #endregion
+
+    #region ParserState
+
+    /// <summary>
+    /// State of a generic recursive descent parser.
+    /// </summary>
+    /// <typeparam name="TNode">Node class for building parse trees.</typeparam>
+    public class ParserState<TNode> : IEnumerable<ParserCase<TNode>>
+    {
+        public readonly Action<TextParser, TNode, Text> TextAct;
+        public readonly ParserCase<TNode>[] Cases;
+        public readonly Func<TextParser, ParserState<TNode>, TNode, int> Match;
+
+        #region Constructors
+
+        public ParserState(ParserCases<TNode> cases)
+            : this(cases.Array, null)
+        { }
+
+        public ParserState(ParserCase<TNode>[] cases)
+            : this(cases, null)
+        { }
+
+        public ParserState(ParserCases<TNode> cases, Action<TextParser, TNode, Text> textAct)
+            : this(cases.Array, textAct)
+        { }
+
+        public ParserState(ParserCase<TNode>[] cases, Action<TextParser, TNode, Text> textAct)
+        {
+            Cases = cases;
+            TextAct = textAct;
+
+            var pattern = cases.Map(
+                (c, i) => c.Pattern != null
+                ? "(?<" + (i + 1) + ">" + c.Pattern + ")"
+                : "(?<" + (i + 1) + ">.|\r)"
+            ).Join("|");
+
+            var regex = new Regex(pattern, RegexOptions.Singleline
+                | RegexOptions.ExplicitCapture
+                | RegexOptions.Compiled);
+            var caseCount = cases.Length;
+
+            if (textAct != null)
+            {
+                Match = (par, state, node) =>
+                {
+                    var m = regex.Match(par.Text.String, par.Pos, par.Text.End - par.Pos);
+                    if (m.Success)
+                        for (int i = 1; i <= caseCount; i++)
+                            if (m.Groups[i].Success)
+                            {
+                                var c = i - 1;
+                                var index = m.Groups[i].Index;
+                                if (par.Pos < index)
+                                {
+                                    var t = par.PeekToPos(index);
+                                    var adj = state.Cases[c].AdjustFun;
+                                    if (adj != null) t = adj(par, node, t);
+                                    state.TextAct(par, node, t);
+                                    par.SetPosAndCountLines(index);
+                                }
+                                par.LastEnd = index + m.Groups[i].Length;
+                                par.LastCase = c;
+                                return c;
+                            }
+                    if (par.Pos < par.Text.End)
+                    {
+                        state.TextAct(par, node, par.PeekToPos(par.Text.End));
+                        par.SetPosAndCountLines(par.Text.End);
+                    }
+                    return -1;
+                };
+            }
+            else
+            {
+                if (cases[caseCount - 1].Pattern != null)
+                    throw new ArgumentException(
+                        "either a text action or a default case needs to be specified");
+
+                Match = (par, state, node) =>
+                {
+                    var m = regex.Match(par.Text.String, par.Pos, par.Text.End - par.Pos);
+                    if (m.Success)
+                        for (int i = 1; i <= caseCount; i++)
+                            if (m.Groups[i].Success)
+                            {
+                                par.LastEnd = m.Groups[i].Index + m.Groups[i].Length;
+                                return par.LastCase = i - 1;
+                            }
+                    return -1;
+                };
+            }
+        }
+
+        #endregion
+
+        public IEnumerable<ParserCase<TNode>> Items { get { foreach (var c in Cases) yield return c; } }
+
+        #region IEnumerable implementation
+
+        public IEnumerator<ParserCase<TNode>> GetEnumerator()
+        {
+            return Items.GetEnumerator();
+        }
+
+        #endregion
+
+        #region IEnumerable implementation
+
+        System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
+        {
+            return Items.GetEnumerator();
+        }
+
+        #endregion
+    }
+
+    #endregion
+
+    #region ParserCase
+
+    /// <summary>
+    /// Case represents a state transition of a generic recursive descent parser.
+    /// </summary>
+    /// <typeparam name="TNode">Node class for building parse trees.</typeparam>
+    public struct ParserCase<TNode>
+    {
+        public readonly Func<TextParser, TNode, ParserState<TNode>> MatchedFun;
+        public readonly Func<TextParser, TNode, Text, Text> AdjustFun;
+        public readonly string Pattern;
+
+        #region Constructors
+
+        /// <summary>
+        /// A supplied adjustFun can modify the text preceeding the match 
+        /// of the case in a searching state, before it is handed to the
+        /// TextAct of the state.
+        /// </summary>
+        public ParserCase(string pattern, Func<TextParser, TNode, ParserState<TNode>> matchedFun,
+            Func<TextParser, TNode, Text, Text> adjustFun = null)
+        {
+            MatchedFun = matchedFun;
+            AdjustFun = adjustFun;
+            Pattern = pattern;
+        }
+
+        public ParserCase(Func<TextParser, TNode, ParserState<TNode>> matchedFun,
+            Func<TextParser, TNode, Text, Text> adjustFun = null)
+            : this((string)null, matchedFun, adjustFun)
+        { }
+
+        public ParserCase(Regex regex, Func<TextParser, TNode, ParserState<TNode>> matchedFun,
+            Func<TextParser, TNode, Text, Text> adjustFun = null)
+            : this(regex.ToString(), matchedFun, adjustFun)
+        { }
+
+        public ParserCase(Rx rx, Func<TextParser, TNode, ParserState<TNode>> matchedFun,
+            Func<TextParser, TNode, Text, Text> adjustFun = null)
+            : this(rx.Pattern, matchedFun, adjustFun)
+        { }
+
+        #endregion
+    }
+
+    #endregion
+
+    #region ParserCases
+
+    /// <summary>
+    /// The Cases class makes it possible to build a single state transition
+    /// table by combining already defined case arrays. This makes it possible
+    /// to avoid re-specifying cases that appear in multiple states.
+    /// </summary>
+    public class ParserCases<TNode> : IEnumerable<ParserCase<TNode>>
+    {
+        private List<ParserCase<TNode>> CaseList;
+
+        public ParserCase<TNode>[] Array
+        {
+            get { return CaseList.ToArray(); }
+        }
+
+        public ParserCases()
+        {
+            CaseList = new List<ParserCase<TNode>>();
+        }
+
+        public ParserCases(Rx[] rxs, Func<TextParser, TNode, ParserState<TNode>> matchedFun)
+            : this()
+        {
+            foreach (var rx in rxs)
+                CaseList.Add(new ParserCase<TNode>(rx, matchedFun));
+        }
+
+        public void Add(ParserCase<TNode> singleCase)
+        {
+            CaseList.Add(singleCase);
+        }
+
+        public void Add(ParserCase<TNode>[] caseArray)
+        {
+            foreach (var c in caseArray) CaseList.Add(c);
+        }
+
+        public void Add(ParserCases<TNode> cases)
+        {
+            foreach (var c in cases.Array) CaseList.Add(c);
+        }
+
+        public void Add(string pattern, Func<TextParser, TNode, ParserState<TNode>> matchedFun,
+            Func<TextParser, TNode, Text, Text> adjustFun = null)
+        {
+            CaseList.Add(new ParserCase<TNode>(pattern, matchedFun, adjustFun));
+        }
+
+        public void Add(Regex regex, Func<TextParser, TNode, ParserState<TNode>> matchedFun,
+            Func<TextParser, TNode, Text, Text> adjustFun = null)
+        {
+            CaseList.Add(new ParserCase<TNode>(regex.ToString(), matchedFun, adjustFun));
+        }
+
+        public void Add(Rx rx, Func<TextParser, TNode, ParserState<TNode>> matchedFun,
+            Func<TextParser, TNode, Text, Text> adjustFun = null)
+        {
+            CaseList.Add(new ParserCase<TNode>(rx.Pattern, matchedFun, adjustFun));
+        }
+
+        public void Add(Func<TextParser, TNode, ParserState<TNode>> matchedFun,
+            Func<TextParser, TNode, Text, Text> adjustFun = null)
+        {
+            CaseList.Add(new ParserCase<TNode>(matchedFun, adjustFun));
+        }
+
+        public ParserState<TNode> ToState(Action<TextParser, TNode, Text> textAct = null)
+        {
+            return new ParserState<TNode>(this, textAct);
+        }
+
+
+        #region IEnumerable<Case<TPar,TNode>> Members
+
+        public IEnumerator<ParserCase<TNode>> GetEnumerator()
         {
             return CaseList.GetEnumerator();
         }
@@ -228,9 +548,10 @@ namespace Aardvark.Base
         public Text Text;
         public int Pos;
         public int LastEnd;
+        public int LastCase;
         public Text.Line Line;
         public int LastWhiteSpace;
-        private int m_currentCaseIndex;
+        protected int m_currentCaseIndex;
 
         #region Static Parsing Methods
 
@@ -241,14 +562,15 @@ namespace Aardvark.Base
         /// parsed, or throws a ParserException.
         /// </summary>
         public static TPar Parse<TNode>(
-                Text text,
-                TPar parser, State<TPar, TNode> rootState, TNode rootNode)
+            Text text,
+            TPar parser, State<TPar, TNode> rootState, TNode rootNode)
         {
             parser.Text = text;
             parser.Pos = text.Start;
             parser.LastEnd = text.Start;
             parser.Line = new Text.Line(0, text.Start);
             parser.LastWhiteSpace = -1;
+            parser.LastCase = -1;
             parser.m_currentCaseIndex = -1;
 
             return Parse(parser, rootState, rootNode);
@@ -259,7 +581,7 @@ namespace Aardvark.Base
         /// This function can be called to implement recursive descent.
         /// </summary>
         public static TPar Parse<TNode>(
-                TPar parser, State<TPar, TNode> state, TNode node)
+            TPar parser, State<TPar, TNode> state, TNode node)
         {
             int end = parser.Text.End;
             var match = state.Match(parser, state, node);
@@ -293,7 +615,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Users start counting at 1.
         /// </summary>
-        public int UserColumn { get { return 1 + Pos - Line.Start; } }
+        public int UserColumn { get { return Pos - Line.Start; } }
 
         /// <summary>
         /// The index of the current case within the state table.
@@ -304,7 +626,7 @@ namespace Aardvark.Base
         {
             get { return m_currentCaseIndex; }
         }
-        
+
         #endregion
 
         #region Current State Query Methods
@@ -935,9 +1257,20 @@ namespace Aardvark.Base
             get { return Text.String[Pos]; }
         }
 
+        public Text PeekGet()
+        {
+            var text = new Text(Pos, LastEnd, Text.String);
+            return text;
+        }
+
         public Text PeekFromStart
         {
             get { return PeekFromPos(Text.Start); }
+        }
+
+        public Text PeekLastLine
+        {
+            get { return PeekFromPos(Line.Start); }
         }
 
         public Text PeekToEnd
@@ -1025,37 +1358,40 @@ namespace Aardvark.Base
         #endregion
     }
 
-    #endregion
 
-    #region StackTextParser
-
-    public class StackTextParser<TPar, TNode> : TextParser<TPar>
-        where TPar : StackTextParser<TPar, TNode>
+    public class TextParser : TextParser<TextParser>
     {
-        public List<TNode> NodeStack;
 
-        public static TPar StackParse(
-                Text text,
-                TPar parser, State<TPar, TNode> rootState, TNode rootNode)
+        public void Parse<TNode>(Text text, ParserState<TNode> rootState, TNode rootNode)
         {
-            parser.NodeStack = rootNode.IntoList();
-            var p = TextParser<TPar>.Parse(text, parser, rootState, rootNode);
-            parser.NodeStack = null;
-            return p;
+            Text = text;
+            Pos = text.Start;
+            LastEnd = text.Start;
+            Line = new Text.Line(0, text.Start);
+            LastWhiteSpace = -1;
+            LastCase = -1;
+            m_currentCaseIndex = -1;
+
+            Parse(rootState, rootNode);
         }
 
         /// <summary>
         /// Parse a part of the input into the supplied node.
         /// This function can be called to implement recursive descent.
         /// </summary>
-        public static TPar StackParse(
-                TPar parser, State<TPar, TNode> state, TNode node)
+        public void Parse<TNode>(ParserState<TNode> state, TNode node)
         {
-            parser.NodeStack.Add(node);
-            var p = TextParser<TPar>.Parse(parser, state, node);
-            parser.NodeStack.RemoveAt(parser.NodeStack.Count - 1);
-            return p;
+            int end = Text.End;
+            var match = state.Match(this, state, node);
+            while (Pos < end)
+            {
+                m_currentCaseIndex = match;
+                state = state.Cases[match].MatchedFun(this, node);
+                if (state == null) break;
+                match = state.Match(this, state, node);
+            }
         }
+
     }
 
     #endregion
@@ -1094,5 +1430,132 @@ namespace Aardvark.Base
         #endregion
     }
 
+    public class ParserException : ParserException<TextParser>
+    {
+        #region Constructors
+
+        public ParserException(TextParser parser, string message)
+            : base(parser, message)
+        { }
+
+        public ParserException(TextParser parser, int pos, string message)
+            : base(parser, pos, message)
+        { }
+
+        public ParserException(TextParser parser, string message, Exception inner)
+            : base(parser, message, inner)
+        { }
+
+        #endregion
+    }
+
+
     #endregion
+
+    #region VerbatimString TextParser Extension
+
+    public static class VerbatimStringTextParserExtension
+    {
+        public static string GetVerbatimString(this TextParser parser, bool alreadyInside = false)
+        {
+            var sb = new StringBuilder();
+            parser.Parse(alreadyInside ? s_stringState : s_quoteState, sb);
+            return sb.ToString();
+        }
+
+        private static readonly ParserState<StringBuilder> s_quoteState = new ParserCases<StringBuilder> {
+            { "@\"",        (p, b) => { p.Skip(); return s_stringState; } },
+            { /* default */ (p, b) => { throw new ParserException(p, "no @ and double quote at start of verbatim string"); } }
+        }.ToState();
+
+        private static readonly ParserState<StringBuilder> s_stringState = new ParserCases<StringBuilder> {
+            { "\"\"",   (p, b) => { p.Skip(); b.Append('"'); return s_stringState; } }, // escape
+            { "\"",     (p, b) => { p.Skip(); return null; } }, // string end
+        }.ToState((p, b, t) => { b.Append(t.String, t.Start, t.Count); }); // process
+
+    }
+
+    #endregion
+
+    #region CSharpString TextParser Extension
+
+    internal struct Esc
+    {
+        public readonly string Pattern;
+        public readonly Func<string, char> EscFun;
+        public Esc(string pattern, Func<string, char> escFun) { Pattern = pattern; EscFun = escFun; }
+    }
+
+    internal static class EscDictExtension
+    {
+        public static void Add(this Dict<char, Esc> escMap, char escStart, string pattern, Func<string, char> escFun)
+        {
+            escMap.Add(escStart, new Esc(pattern, escFun));
+        }
+    }
+
+    public static class CSharpStringTextParserExtension
+    {
+        public static string GetCSharpString(this TextParser parser, bool alreadyInside = false)
+        {
+            var sb = new StringBuilder();
+            parser.Parse(alreadyInside ? s_stringState : s_quoteState, sb);
+            return sb.ToString();
+        }
+
+        private static readonly ParserState<StringBuilder> s_quoteState = new ParserCases<StringBuilder> {
+            { "\"",         (p, b) => { p.Skip(); return s_stringState; } },
+            { /* default */ (p, b) => { throw new ParserException(p, "no double quote at start of string"); } }
+        }.ToState();
+
+        /// <summary>
+        /// This is a searching state, that searches for string end, escape start, or new lines and processes
+        /// all characters in between these events in chunks.
+        /// </summary>
+        private static readonly ParserState<StringBuilder> s_stringState = new ParserCases<StringBuilder> {
+            { "\"",         (p, b) => { p.Skip(); return null; } }, // string end
+            { @"\\",        (p, b) => { p.Skip(); return s_escapeState; } }, // escape
+            { @"\n|\r",     (p, b) => { throw new ParserException(p, "newline in string"); } }
+        }.ToState((p, b, t) => { b.Append(t.String, t.Start, t.Count); }); // process
+
+
+        private static readonly Esc s_octalEsc = new Esc(
+            "[0-3][0-7][0-7]",
+            esc => (char)(((((int)esc[0]) - (int)'0') * 8 + (((int)esc[1]) - (int)'0')) * 8 + (((int)esc[2]) - (int)'0'))
+        );
+
+        private static int HexOfOrd(int ord)
+        {
+            return ord >= (int)'a' ? 10 + ord - (int)'a' : ord >= (int)'A' ? ord - (int)'A' : ord - (int)'0';
+        }
+
+        private static char HexOfExcape(string esc)
+        {
+            return (char)(HexOfOrd((int)esc[1]) * 16 + HexOfOrd((int)esc[2]));
+        }
+
+        /// <summary>
+        /// Decide what to do, based on the first character of the escape sequence.
+        /// </summary>
+        private static Dict<char, Esc> s_escapeMap = new Dict<char, Esc> {
+            { 'a', "a", esc => '\a' },  { 'b', "b", esc => '\b' },  { 'f', "f", esc => '\f' },
+            { 'n', "n", esc => '\n' },  { 'r', "r", esc => '\r' },  { 't', "t", esc => '\t' },
+            { 'v', "v", esc => '\v' },
+            { '\'', "\'", esc => '\'' }, { '\"', "\"", esc => '\"' }, { '\\', @"\\", esc => '\\' },
+            { '0', s_octalEsc }, { '1', s_octalEsc }, { '2', s_octalEsc }, { '3', s_octalEsc },
+            { 'x', "x[0-9a-fA-F][0-9a-fA-F]", HexOfExcape },
+        };
+
+        private static string s_escapePattern = String.Join("|", s_escapeMap.Values.Select(esc => esc.Pattern).Distinct());
+
+        private static readonly ParserState<StringBuilder> s_escapeState = new ParserCases<StringBuilder> {
+            { s_escapePattern, (p, b) => {
+                    var esc = p.Get().ToString(); b.Append(s_escapeMap[esc[0]].EscFun(esc)); return s_stringState; }},
+            { /* default */ (p, b) => { throw new ParserException(p, "invalid escape sequence in string"); }}
+        }.ToState();
+
+    }
+
+    #endregion
+
 }
