@@ -12,6 +12,45 @@ namespace Aardvark.Base
     public static partial class TensorExtensions
     {
 
+        #region Cubic Image Scaling
+
+        public static void SetScaledHermite(this Matrix<byte, C4b> targetMat, Matrix<byte, C4b> sourceMat,
+                                            double par = -0.5)
+        {
+            var hermiteSpline = Fun.CreateCubicTup4f(par);
+            targetMat.SetScaledCubic(sourceMat, hermiteSpline);
+        }
+
+        public static void SetScaledCubic(this Matrix<byte, C4b> targetMat, Matrix<byte, C4b> sourceMat,
+                                          Func<double, Tup4<float>> interpolator)
+        {
+
+            // create the cubic weighting function. Parameter a=-0.5 results in the cubic Hermite spline.
+            var hermiteSpline = Fun.CreateCubicTup4f(-0.5);
+
+            var scale = sourceMat.Size.ToV2d() / targetMat.Size.ToV2d();
+
+            double scaleX = scale.X, shiftX = 0.5 * scale.X - 0.5;
+            double scaleY = scale.Y, shiftY = 0.5 * scale.Y - 0.5;
+
+            targetMat.ForeachIndex((x, y, i) =>
+            {
+                // Note: LinComRawC4f in x direction results in a byte color (range 0-255) stored
+                // in a C4f. The second C4f.LinCom for the y direction does not perform any additional
+                // scaling, thus we need to copy the "ByteInFloat" color back to a byte color at the
+                // end (this perfoms clamping). Tensor.Tensor.Index6SamplesClamped clamps to the border
+                // region and allows any double pixel address.
+                targetMat[i] = sourceMat.Sample16(x * scaleX + shiftX, y * scaleX + shiftX,
+                                               interpolator, interpolator,
+                                               C4b.LinComRawC4f, C4f.LinCom,
+                                               Tensor.Index4SamplesClamped, Tensor.Index4SamplesClamped)
+                                                .Copy(Col.ByteFromByteInFloatClamped);
+            });
+        }
+
+        #endregion
+
+
         #region Conversions (Matrix, Volume) to PixImage<T>
 
         public static PixImage<T> ToPixImage<T>(this Matrix<T> matrix)
