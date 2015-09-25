@@ -49,6 +49,7 @@ using System.IO;
 using System.Xml.Linq;
 using CodeGenerator;
 using Aardvark.Base;
+using Aardvark.Base.CSharp;
 ";
 
         public string Prologue = @"

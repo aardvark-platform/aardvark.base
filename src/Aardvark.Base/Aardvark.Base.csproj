@@ -116,6 +116,8 @@
     <Compile Include="Geo\GeoConversion.cs" />
     <Compile Include="Images\PixVolume.cs" />
     <Compile Include="Images\TensorExtensions.cs" />
+    <None Include="Images\TensorExtensions_template.cs" />
+    <Compile Include="Images\TensorExtensions_auto.cs" />
     <Compile Include="IO\Report.cs" />
     <Compile Include="IO\StreamCodeReader.cs" />
     <Compile Include="IO\StreamCodeReader_auto.cs" />

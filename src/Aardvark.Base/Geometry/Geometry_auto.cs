@@ -287,11 +287,17 @@ namespace Aardvark.Base
             return new Polygon2d(m_pointArray.Copy());
         }
 
-        public Polygon2d Copy(Func<V2d, V2d> point_copyFun)
+        [Obsolete("Use 'Map' instead (same functionality and parameters)", false)]
+        public Polygon2d Copy(Func<V2d, V2d> point_fun)
+        {
+            return Map(point_fun);
+        }
+
+        public Polygon2d Map(Func<V2d, V2d> point_fun)
         {
             var pc = m_pointCount;
             V2d[] opa = m_pointArray, npa = new V2d[pc];
-            for (int pi = 0; pi < pc; pi++) npa[pi] = point_copyFun(opa[pi]);
+            for (int pi = 0; pi < pc; pi++) npa[pi] = point_fun(opa[pi]);
             return new Polygon2d(npa, pc);
         }
 
@@ -398,13 +404,13 @@ namespace Aardvark.Base
         public static Polygon2d Scaled(
                 this Polygon2d polygon, double scale)
         {
-            return polygon.Copy(p => p * scale);
+            return polygon.Map(p => p * scale);
         }
 
         public static Polygon2d Scaled(
                 this Polygon2d polygon, V2d center, double scale)
         {
-            return polygon.Copy(p => center + (p - center) * scale);
+            return polygon.Map(p => center + (p - center) * scale);
         }
 
         public static Polygon2d ScaledAboutVertexCentroid(
@@ -416,13 +422,13 @@ namespace Aardvark.Base
         public static Polygon2d Scaled(
                 this Polygon2d polygon, V2d scale)
         {
-            return polygon.Copy(p => p * scale);
+            return polygon.Map(p => p * scale);
         }
 
         public static Polygon2d Scaled(
                 this Polygon2d polygon, V2d center, V2d scale)
         {
-            return polygon.Copy(p => center + (p - center) * scale);
+            return polygon.Map(p => center + (p - center) * scale);
         }
 
         public static Polygon2d ScaledAboutVertexCentroid(
@@ -434,13 +440,13 @@ namespace Aardvark.Base
         public static Polygon2d Transformed(
                 this Polygon2d polygon, M22d m)
         {
-            return polygon.Copy(p => m.Transform(p));
+            return polygon.Map(p => m.Transform(p));
         }
 
         public static Polygon2d Transformed(
                 this Polygon2d polygon, M33d m)
         {
-            return polygon.Copy(p => m.TransformPos(p));
+            return polygon.Map(p => m.TransformPos(p));
         }
 
         public static Polygon2d WithoutMultiplePoints(
@@ -1638,11 +1644,17 @@ namespace Aardvark.Base
             return new Polygon3d(m_pointArray.Copy());
         }
 
-        public Polygon3d Copy(Func<V3d, V3d> point_copyFun)
+        [Obsolete("Use 'Map' instead (same functionality and parameters)", false)]
+        public Polygon3d Copy(Func<V3d, V3d> point_fun)
+        {
+            return Map(point_fun);
+        }
+
+        public Polygon3d Map(Func<V3d, V3d> point_fun)
         {
             var pc = m_pointCount;
             V3d[] opa = m_pointArray, npa = new V3d[pc];
-            for (int pi = 0; pi < pc; pi++) npa[pi] = point_copyFun(opa[pi]);
+            for (int pi = 0; pi < pc; pi++) npa[pi] = point_fun(opa[pi]);
             return new Polygon3d(npa, pc);
         }
 
@@ -1749,13 +1761,13 @@ namespace Aardvark.Base
         public static Polygon3d Scaled(
                 this Polygon3d polygon, double scale)
         {
-            return polygon.Copy(p => p * scale);
+            return polygon.Map(p => p * scale);
         }
 
         public static Polygon3d Scaled(
                 this Polygon3d polygon, V3d center, double scale)
         {
-            return polygon.Copy(p => center + (p - center) * scale);
+            return polygon.Map(p => center + (p - center) * scale);
         }
 
         public static Polygon3d ScaledAboutVertexCentroid(
@@ -1767,13 +1779,13 @@ namespace Aardvark.Base
         public static Polygon3d Scaled(
                 this Polygon3d polygon, V3d scale)
         {
-            return polygon.Copy(p => p * scale);
+            return polygon.Map(p => p * scale);
         }
 
         public static Polygon3d Scaled(
                 this Polygon3d polygon, V3d center, V3d scale)
         {
-            return polygon.Copy(p => center + (p - center) * scale);
+            return polygon.Map(p => center + (p - center) * scale);
         }
 
         public static Polygon3d ScaledAboutVertexCentroid(
@@ -1785,13 +1797,13 @@ namespace Aardvark.Base
         public static Polygon3d Transformed(
                 this Polygon3d polygon, M33d m)
         {
-            return polygon.Copy(p => m.Transform(p));
+            return polygon.Map(p => m.Transform(p));
         }
 
         public static Polygon3d Transformed(
                 this Polygon3d polygon, M44d m)
         {
-            return polygon.Copy(p => m.TransformPos(p));
+            return polygon.Map(p => m.TransformPos(p));
         }
 
         public static Polygon3d WithoutMultiplePoints(

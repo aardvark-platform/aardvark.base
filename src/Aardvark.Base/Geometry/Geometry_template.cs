@@ -324,11 +324,17 @@ namespace Aardvark.Base
             return new __tpolygon__(m_pointArray.Copy());
         }
 
-        public __tpolygon__ Copy(Func<__tvec__, __tvec__> point_copyFun)
+        [Obsolete("Use 'Map' instead (same functionality and parameters)", false)]
+        public __tpolygon__ Copy(Func<__tvec__, __tvec__> point_fun)
+        {
+            return Map(point_fun);
+        }
+
+        public __tpolygon__ Map(Func<__tvec__, __tvec__> point_fun)
         {
             var pc = m_pointCount;
             __tvec__[] opa = m_pointArray, npa = new __tvec__[pc];
-            for (int pi = 0; pi < pc; pi++) npa[pi] = point_copyFun(opa[pi]);
+            for (int pi = 0; pi < pc; pi++) npa[pi] = point_fun(opa[pi]);
             return new __tpolygon__(npa, pc);
         }
 
