@@ -6,7 +6,7 @@ using System.Text.RegularExpressions;
 
 namespace Aardvark.Base
 {
-    #region Old State
+    #region State with Parser as Generic Parameter
 
     /// <summary>
     /// State of a generic recursive descent parser.
@@ -127,7 +127,7 @@ namespace Aardvark.Base
 
     #endregion
 
-    #region Old Case
+    #region Case with Parser as Generic Parameter
 
     /// <summary>
     /// Case represents a state transition of a generic recursive descent parser.
@@ -176,7 +176,7 @@ namespace Aardvark.Base
 
     #endregion
 
-    #region Old Cases
+    #region Cases with Parser as Generic Parameter
 
     /// <summary>
     /// The Cases class makes it possible to build a single state transition
@@ -1464,8 +1464,8 @@ namespace Aardvark.Base
         }
 
         private static readonly ParserState<StringBuilder> s_quoteState = new ParserCases<StringBuilder> {
-            { "@\"",        (p, b) => { p.Skip(); return s_stringState; } },
-            { /* default */ (p, b) => { throw new ParserException(p, "no @ and double quote at start of verbatim string"); } }
+            { "@\"",    (p, b) => { p.Skip(); return s_stringState; } },
+            { /* def. */(p, b) => { throw new ParserException(p, "no @\" at start of verbatim string"); } }
         }.ToState();
 
         private static readonly ParserState<StringBuilder> s_stringState = new ParserCases<StringBuilder> {
@@ -1499,59 +1499,48 @@ namespace Aardvark.Base
         public static string GetCSharpString(this TextParser parser, bool alreadyInside = false)
         {
             var sb = new StringBuilder();
-            parser.Parse(alreadyInside ? s_stringState : s_quoteState, sb);
+            parser.Parse(alreadyInside ? s_strState : s_quoteState, sb);
             return sb.ToString();
         }
 
         private static readonly ParserState<StringBuilder> s_quoteState = new ParserCases<StringBuilder> {
-            { "\"",         (p, b) => { p.Skip(); return s_stringState; } },
-            { /* default */ (p, b) => { throw new ParserException(p, "no double quote at start of string"); } }
+            { "\"", (p, b) => { p.Skip(); return s_strState; } },
+            {       (p, b) => { throw new ParserException(p, "no \" at start of string"); } }
         }.ToState();
 
-        /// <summary>
-        /// This is a searching state, that searches for string end, escape start, or new lines and processes
-        /// all characters in between these events in chunks.
-        /// </summary>
-        private static readonly ParserState<StringBuilder> s_stringState = new ParserCases<StringBuilder> {
-            { "\"",         (p, b) => { p.Skip(); return null; } }, // string end
-            { @"\\",        (p, b) => { p.Skip(); return s_escapeState; } }, // escape
+        private static readonly ParserState<StringBuilder> s_strState = new ParserCases<StringBuilder> {
+            { "\"",         (p, b) => { p.Skip(); return null; } }, // search string end
+            { @"\\",        (p, b) => { p.Skip(); return s_escState; } }, // search escape
             { @"\n|\r",     (p, b) => { throw new ParserException(p, "newline in string"); } }
-        }.ToState((p, b, t) => { b.Append(t.String, t.Start, t.Count); }); // process
+        }.ToState((p, b, t) => { b.Append(t.String, t.Start, t.Count); }); // process text inbetween
 
-
+        private const int c_a = (int)'a', c_A = (int)'A', c_0 = (int)'0';
         private static readonly Esc s_octalEsc = new Esc(
             "[0-3][0-7][0-7]",
-            esc => (char)(((((int)esc[0]) - (int)'0') * 8 + (((int)esc[1]) - (int)'0')) * 8 + (((int)esc[2]) - (int)'0'))
+            str => (char)(((((int)str[0]) - c_0) * 8 + (((int)str[1]) - c_0)) * 8 + (((int)str[2]) - c_0))
         );
-
         private static int HexOfOrd(int ord)
-        {
-            return ord >= (int)'a' ? 10 + ord - (int)'a' : ord >= (int)'A' ? ord - (int)'A' : ord - (int)'0';
-        }
+                => ord >= c_a ? 10 + ord - c_a : ord >= c_A ? ord - c_A : ord - c_0;
+        private static char HexOfEscString(string str)
+                => (char)(HexOfOrd((int)str[1]) * 16 + HexOfOrd((int)str[2]));
 
-        private static char HexOfExcape(string esc)
-        {
-            return (char)(HexOfOrd((int)esc[1]) * 16 + HexOfOrd((int)esc[2]));
-        }
-
-        /// <summary>
-        /// Decide what to do, based on the first character of the escape sequence.
-        /// </summary>
-        private static Dict<char, Esc> s_escapeMap = new Dict<char, Esc> {
-            { 'a', "a", esc => '\a' },  { 'b', "b", esc => '\b' },  { 'f', "f", esc => '\f' },
-            { 'n', "n", esc => '\n' },  { 'r', "r", esc => '\r' },  { 't', "t", esc => '\t' },
-            { 'v', "v", esc => '\v' },
-            { '\'', "\'", esc => '\'' }, { '\"', "\"", esc => '\"' }, { '\\', @"\\", esc => '\\' },
+        // Decide what to do, based on the first character of the escape sequence.
+        private static Dict<char, Esc> s_escMap = new Dict<char, Esc> {
+            { 'a', "a", str => '\a' },  { 'b', "b", str => '\b' },  { 'f', "f", str => '\f' },
+            { 'n', "n", str => '\n' },  { 'r', "r", str => '\r' },  { 't', "t", str => '\t' },
+            { 'v', "v", str => '\v' },
+            { '\'', "\'", str => '\'' }, { '\"', "\"", str => '\"' }, { '\\', @"\\", str => '\\' },
             { '0', s_octalEsc }, { '1', s_octalEsc }, { '2', s_octalEsc }, { '3', s_octalEsc },
-            { 'x', "x[0-9a-fA-F][0-9a-fA-F]", HexOfExcape },
+            { 'x', "x[0-9a-fA-F][0-9a-fA-F]", HexOfEscString },
         };
 
-        private static string s_escapePattern = String.Join("|", s_escapeMap.Values.Select(esc => esc.Pattern).Distinct());
+        private static string s_escapes
+                = String.Join("|", s_escMap.Values.Select(e => e.Pattern).Distinct());
 
-        private static readonly ParserState<StringBuilder> s_escapeState = new ParserCases<StringBuilder> {
-            { s_escapePattern, (p, b) => {
-                    var esc = p.Get().ToString(); b.Append(s_escapeMap[esc[0]].EscFun(esc)); return s_stringState; }},
-            { /* default */ (p, b) => { throw new ParserException(p, "invalid escape sequence in string"); }}
+        private static readonly ParserState<StringBuilder> s_escState = new ParserCases<StringBuilder> {
+            { s_escapes, (p, b) => { var esc = p.Get().ToString();
+                                     b.Append(s_escMap[esc[0]].EscFun(esc)); return s_strState; }},
+            { /* def. */ (p, b) => { throw new ParserException(p, "invalid escape sequence in string"); }}
         }.ToState();
 
     }
