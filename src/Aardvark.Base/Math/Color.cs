@@ -955,9 +955,48 @@ namespace Aardvark.Base
             var l = (c.L + 16.0) / 116.0;
             return new CieXYZf(white.Y * s_labFinv(l), white.X * s_labFinv(l + c.a * 0.002), white.Z * s_labFinv(l - c.b * 0.005));
         }
+        
+        public static Trafo2d ConeResponseDomain_XYZScaling = new Trafo2d(M33d.Identity, M33d.Identity);
 
-        public static readonly CieXYZf CieXYZfD65White = new CieXYZf(95.05, 100.00, 108.90);
+        public static Trafo2d ConeResponseDomain_Bradford = new Trafo2d(new M33d(0.8951000, 0.2664000, -0.1614000,
+                                                                                -0.7502000, 1.7135000, 0.0367000,
+                                                                                 0.0389000, -0.0685000, 1.0296000),
+                                                                        new M33d(0.9869929, -0.1470543, 0.1599627,
+                                                                                 0.4323053, 0.5183603, 0.0492912,
+                                                                                -0.0085287, 0.0400428, 0.9684867));
 
+        public static Trafo2d ConeResponseDomain_VonKries = new Trafo2d(new M33d(0.4002400, 0.7076000, -0.0808100,
+                                                                                -0.2263000, 1.1653200, 0.0457000,
+                                                                                 0.0000000, 0.0000000, 0.9182200),
+                                                                        new M33d(1.8599364, -1.1293816, 0.2198974,
+                                                                                 0.3611914, 0.6388125, -0.0000064,
+                                                                                 0.0000000, 0.0000000, 1.0890636));
+
+        public static readonly CieXYZf CieXYZfAWhite = new CieXYZf(109.85, 100.0, 35.585);
+        public static readonly CieXYZf CieXYZfBWhite = new CieXYZf(99.072, 100.0, 85.223);
+        public static readonly CieXYZf CieXYZfCWhite = new CieXYZf(98.074, 100.0, 118.232);
+        public static readonly CieXYZf CieXYZfD50White = new CieXYZf(96.422, 100.0, 82.521);
+        public static readonly CieXYZf CieXYZfD55White = new CieXYZf(95.682, 100.0, 92.149);
+        public static readonly CieXYZf CieXYZfD65White = new CieXYZf(95.047, 100.0, 108.883);
+        public static readonly CieXYZf CieXYZfD75White = new CieXYZf(94.972, 100.0, 122.638);
+        public static readonly CieXYZf CieXYZfEWhite = new CieXYZf(100.0, 100.0, 100.0);
+        public static readonly CieXYZf CieXYZfF2White = new CieXYZf(99.186, 100.00, 67.393);
+        public static readonly CieXYZf CieXYZfF7White = new CieXYZf(95.041, 100.00, 108.747);
+        public static readonly CieXYZf CieXYZfF11White = new CieXYZf(100.962, 100.00, 64.350);
+
+        public static M33d BuildChromaticAdaptationMatrix(CieXYZf whiteFrom, CieXYZf whiteTo, Trafo2d coneResponseDomain)
+        {
+            // see: http://www.brucelindbloom.com/index.html?Eqn_ChromAdapt.html
+
+            var responseSource = coneResponseDomain.Forward * new V3d(whiteFrom.X, whiteFrom.Y, whiteFrom.Z);
+            var responseTarget = coneResponseDomain.Forward * new V3d(whiteTo.X, whiteTo.Y, whiteTo.Z);
+            var det = responseTarget / responseSource;
+            var scaleMat = new M33d(det.X, 0, 0,
+                                    0, det.Y, 0,
+                                    0, 0, det.Z);
+            return coneResponseDomain.Backward * scaleMat * coneResponseDomain.Forward;
+        }
+        
         public static CieLabf ToCieLabfD65(this CieXYZf c) { return ToCieLabf(c, CieXYZfD65White); }
         public static CieXYZf ToCieXYZfD65(this CieLabf c) { return ToCieXYZf(c, CieXYZfD65White); }
         
