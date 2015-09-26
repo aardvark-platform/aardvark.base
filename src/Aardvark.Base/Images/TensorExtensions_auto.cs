@@ -21,7 +21,7 @@ namespace Aardvark.Base
         /// build the cubic weighting function with 'Fun.CreateCubicTup4f(par)' and use the
         /// result as a paramter to the function call.
         /// </summary>
-        public static void SetScaledCubic(this Matrix<byte, C4b> targetMat, Matrix<byte, C4b> sourceMat,
+        public static void SetScaledCubic(this Matrix<byte> targetMat, Matrix<byte> sourceMat,
                                             double par = -0.5)
         {
             // create the cubic weighting function. Parameter a=-0.5 results in the cubic Hermite spline.
@@ -33,7 +33,7 @@ namespace Aardvark.Base
         /// Use Cubic Spline interpolation to scale the source matrix into the target matrix
         /// using the supplied cubic interpolator.
         /// </summary>
-        public static void SetScaledCubic(this Matrix<byte, C4b> targetMat, Matrix<byte, C4b> sourceMat,
+        public static void SetScaledCubic(this Matrix<byte> targetMat, Matrix<byte> sourceMat,
                                           Func<double, Tup4<float>> interpolator)
         {
             var scale = sourceMat.Size.ToV2d() / targetMat.Size.ToV2d();
@@ -44,14 +44,15 @@ namespace Aardvark.Base
             targetMat.ForeachIndex((x, y, i) =>
                 targetMat[i] = sourceMat.Sample16(x * scaleX + shiftX, y * scaleY + shiftY,
                                                   interpolator, interpolator,
-                                                  C4b.LinComRawC4f, C4f.LinCom,
-                                                  Tensor.Index4SamplesClamped, Tensor.Index4SamplesClamped).Copy(Col.ByteFromByteInFloatClamped));
+                                                  Fun.LinComRawF, Fun.LinCom,
+                                                  Tensor.Index4SamplesClamped, Tensor.Index4SamplesClamped)
+                                        .ColByteInFloatToByteClamped());
         }
 
         /// <summary>
         /// Use Lanczos Interpoation to scale the source matrix into the target matrix.
         /// </summary>
-        public static void SetScaledLanczos(this Matrix<byte, C4b> targetMat, Matrix<byte, C4b> sourceMat)
+        public static void SetScaledLanczos(this Matrix<byte> targetMat, Matrix<byte> sourceMat)
         {
             var scale = sourceMat.Size.ToV2d() / targetMat.Size.ToV2d();
 
@@ -61,8 +62,113 @@ namespace Aardvark.Base
             targetMat.ForeachIndex((x, y, i) =>
                 targetMat[i] = sourceMat.Sample36(x * scaleX + shiftX, y * scaleY + shiftY,
                                                   Fun.Lanczos3f, Fun.Lanczos3f,
-                                                  C4b.LinComRawC4f, C4f.LinCom,
-                                                  Tensor.Index6SamplesClamped, Tensor.Index6SamplesClamped).Copy(Col.ByteFromByteInFloatClamped));
+                                                  Fun.LinComRawF, Fun.LinCom,
+                                                  Tensor.Index6SamplesClamped, Tensor.Index6SamplesClamped)
+                                        .ColByteInFloatToByteClamped());
+        }
+
+        /// <summary>
+        /// Use Cubic Spline interpolation to scale the source matrix into the target matrix.
+        /// The supplied parameter selects the spline to use. The default value of -0.5 generates
+        /// Hermite Splines. If you call this repeatedly with the same selection parameter,
+        /// build the cubic weighting function with 'Fun.CreateCubicTup4f(par)' and use the
+        /// result as a paramter to the function call.
+        /// </summary>
+        public static void SetScaledCubic(this Matrix<ushort> targetMat, Matrix<ushort> sourceMat,
+                                            double par = -0.5)
+        {
+            // create the cubic weighting function. Parameter a=-0.5 results in the cubic Hermite spline.
+            var hermiteSpline = Fun.CreateCubicTup4f(par);
+            targetMat.SetScaledCubic(sourceMat, hermiteSpline);
+        }
+
+        /// <summary>
+        /// Use Cubic Spline interpolation to scale the source matrix into the target matrix
+        /// using the supplied cubic interpolator.
+        /// </summary>
+        public static void SetScaledCubic(this Matrix<ushort> targetMat, Matrix<ushort> sourceMat,
+                                          Func<double, Tup4<float>> interpolator)
+        {
+            var scale = sourceMat.Size.ToV2d() / targetMat.Size.ToV2d();
+
+            double scaleX = scale.X, shiftX = 0.5 * scale.X - 0.5;
+            double scaleY = scale.Y, shiftY = 0.5 * scale.Y - 0.5;
+
+            targetMat.ForeachIndex((x, y, i) =>
+                targetMat[i] = sourceMat.Sample16(x * scaleX + shiftX, y * scaleY + shiftY,
+                                                  interpolator, interpolator,
+                                                  Fun.LinComRawF, Fun.LinCom,
+                                                  Tensor.Index4SamplesClamped, Tensor.Index4SamplesClamped)
+                                        .ColUShortInFloatToUShortClamped());
+        }
+
+        /// <summary>
+        /// Use Lanczos Interpoation to scale the source matrix into the target matrix.
+        /// </summary>
+        public static void SetScaledLanczos(this Matrix<ushort> targetMat, Matrix<ushort> sourceMat)
+        {
+            var scale = sourceMat.Size.ToV2d() / targetMat.Size.ToV2d();
+
+            double scaleX = scale.X, shiftX = 0.5 * scale.X - 0.5;
+            double scaleY = scale.Y, shiftY = 0.5 * scale.Y - 0.5;
+
+            targetMat.ForeachIndex((x, y, i) =>
+                targetMat[i] = sourceMat.Sample36(x * scaleX + shiftX, y * scaleY + shiftY,
+                                                  Fun.Lanczos3f, Fun.Lanczos3f,
+                                                  Fun.LinComRawF, Fun.LinCom,
+                                                  Tensor.Index6SamplesClamped, Tensor.Index6SamplesClamped)
+                                        .ColUShortInFloatToUShortClamped());
+        }
+
+        /// <summary>
+        /// Use Cubic Spline interpolation to scale the source matrix into the target matrix.
+        /// The supplied parameter selects the spline to use. The default value of -0.5 generates
+        /// Hermite Splines. If you call this repeatedly with the same selection parameter,
+        /// build the cubic weighting function with 'Fun.CreateCubicTup4f(par)' and use the
+        /// result as a paramter to the function call.
+        /// </summary>
+        public static void SetScaledCubic(this Matrix<float> targetMat, Matrix<float> sourceMat,
+                                            double par = -0.5)
+        {
+            // create the cubic weighting function. Parameter a=-0.5 results in the cubic Hermite spline.
+            var hermiteSpline = Fun.CreateCubicTup4f(par);
+            targetMat.SetScaledCubic(sourceMat, hermiteSpline);
+        }
+
+        /// <summary>
+        /// Use Cubic Spline interpolation to scale the source matrix into the target matrix
+        /// using the supplied cubic interpolator.
+        /// </summary>
+        public static void SetScaledCubic(this Matrix<float> targetMat, Matrix<float> sourceMat,
+                                          Func<double, Tup4<float>> interpolator)
+        {
+            var scale = sourceMat.Size.ToV2d() / targetMat.Size.ToV2d();
+
+            double scaleX = scale.X, shiftX = 0.5 * scale.X - 0.5;
+            double scaleY = scale.Y, shiftY = 0.5 * scale.Y - 0.5;
+
+            targetMat.ForeachIndex((x, y, i) =>
+                targetMat[i] = sourceMat.Sample16(x * scaleX + shiftX, y * scaleY + shiftY,
+                                                  interpolator, interpolator,
+                                                  Fun.LinCom, Fun.LinCom,
+                                                  Tensor.Index4SamplesClamped, Tensor.Index4SamplesClamped));
+        }
+
+        /// <summary>
+        /// Use Lanczos Interpoation to scale the source matrix into the target matrix.
+        /// </summary>
+        public static void SetScaledLanczos(this Matrix<float> targetMat, Matrix<float> sourceMat)
+        {
+            var scale = sourceMat.Size.ToV2d() / targetMat.Size.ToV2d();
+
+            double scaleX = scale.X, shiftX = 0.5 * scale.X - 0.5;
+            double scaleY = scale.Y, shiftY = 0.5 * scale.Y - 0.5;
+
+            targetMat.ForeachIndex((x, y, i) =>
+                targetMat[i] = sourceMat.Sample36(x * scaleX + shiftX, y * scaleY + shiftY,
+                                                  Fun.Lanczos3f, Fun.Lanczos3f,
+                                                  Fun.LinCom, Fun.LinCom,
+                                                  Tensor.Index6SamplesClamped, Tensor.Index6SamplesClamped));
         }
 
         /// <summary>
@@ -96,7 +202,8 @@ namespace Aardvark.Base
                 targetMat[i] = sourceMat.Sample16(x * scaleX + shiftX, y * scaleY + shiftY,
                                                   interpolator, interpolator,
                                                   C3b.LinComRawC3f, C3f.LinCom,
-                                                  Tensor.Index4SamplesClamped, Tensor.Index4SamplesClamped).Copy(Col.ByteFromByteInFloatClamped));
+                                                  Tensor.Index4SamplesClamped, Tensor.Index4SamplesClamped)
+                                        .Copy(Col.ByteFromByteInFloatClamped));
         }
 
         /// <summary>
@@ -113,58 +220,8 @@ namespace Aardvark.Base
                 targetMat[i] = sourceMat.Sample36(x * scaleX + shiftX, y * scaleY + shiftY,
                                                   Fun.Lanczos3f, Fun.Lanczos3f,
                                                   C3b.LinComRawC3f, C3f.LinCom,
-                                                  Tensor.Index6SamplesClamped, Tensor.Index6SamplesClamped).Copy(Col.ByteFromByteInFloatClamped));
-        }
-
-        /// <summary>
-        /// Use Cubic Spline interpolation to scale the source matrix into the target matrix.
-        /// The supplied parameter selects the spline to use. The default value of -0.5 generates
-        /// Hermite Splines. If you call this repeatedly with the same selection parameter,
-        /// build the cubic weighting function with 'Fun.CreateCubicTup4f(par)' and use the
-        /// result as a paramter to the function call.
-        /// </summary>
-        public static void SetScaledCubic(this Matrix<ushort, C4us> targetMat, Matrix<ushort, C4us> sourceMat,
-                                            double par = -0.5)
-        {
-            // create the cubic weighting function. Parameter a=-0.5 results in the cubic Hermite spline.
-            var hermiteSpline = Fun.CreateCubicTup4f(par);
-            targetMat.SetScaledCubic(sourceMat, hermiteSpline);
-        }
-
-        /// <summary>
-        /// Use Cubic Spline interpolation to scale the source matrix into the target matrix
-        /// using the supplied cubic interpolator.
-        /// </summary>
-        public static void SetScaledCubic(this Matrix<ushort, C4us> targetMat, Matrix<ushort, C4us> sourceMat,
-                                          Func<double, Tup4<float>> interpolator)
-        {
-            var scale = sourceMat.Size.ToV2d() / targetMat.Size.ToV2d();
-
-            double scaleX = scale.X, shiftX = 0.5 * scale.X - 0.5;
-            double scaleY = scale.Y, shiftY = 0.5 * scale.Y - 0.5;
-
-            targetMat.ForeachIndex((x, y, i) =>
-                targetMat[i] = sourceMat.Sample16(x * scaleX + shiftX, y * scaleY + shiftY,
-                                                  interpolator, interpolator,
-                                                  C4us.LinComRawC4f, C4f.LinCom,
-                                                  Tensor.Index4SamplesClamped, Tensor.Index4SamplesClamped).Copy(Col.UShortFromUShortInFloatClamped));
-        }
-
-        /// <summary>
-        /// Use Lanczos Interpoation to scale the source matrix into the target matrix.
-        /// </summary>
-        public static void SetScaledLanczos(this Matrix<ushort, C4us> targetMat, Matrix<ushort, C4us> sourceMat)
-        {
-            var scale = sourceMat.Size.ToV2d() / targetMat.Size.ToV2d();
-
-            double scaleX = scale.X, shiftX = 0.5 * scale.X - 0.5;
-            double scaleY = scale.Y, shiftY = 0.5 * scale.Y - 0.5;
-
-            targetMat.ForeachIndex((x, y, i) =>
-                targetMat[i] = sourceMat.Sample36(x * scaleX + shiftX, y * scaleY + shiftY,
-                                                  Fun.Lanczos3f, Fun.Lanczos3f,
-                                                  C4us.LinComRawC4f, C4f.LinCom,
-                                                  Tensor.Index6SamplesClamped, Tensor.Index6SamplesClamped).Copy(Col.UShortFromUShortInFloatClamped));
+                                                  Tensor.Index6SamplesClamped, Tensor.Index6SamplesClamped)
+                                        .Copy(Col.ByteFromByteInFloatClamped));
         }
 
         /// <summary>
@@ -198,7 +255,8 @@ namespace Aardvark.Base
                 targetMat[i] = sourceMat.Sample16(x * scaleX + shiftX, y * scaleY + shiftY,
                                                   interpolator, interpolator,
                                                   C3us.LinComRawC3f, C3f.LinCom,
-                                                  Tensor.Index4SamplesClamped, Tensor.Index4SamplesClamped).Copy(Col.UShortFromUShortInFloatClamped));
+                                                  Tensor.Index4SamplesClamped, Tensor.Index4SamplesClamped)
+                                        .Copy(Col.UShortFromUShortInFloatClamped));
         }
 
         /// <summary>
@@ -215,7 +273,8 @@ namespace Aardvark.Base
                 targetMat[i] = sourceMat.Sample36(x * scaleX + shiftX, y * scaleY + shiftY,
                                                   Fun.Lanczos3f, Fun.Lanczos3f,
                                                   C3us.LinComRawC3f, C3f.LinCom,
-                                                  Tensor.Index6SamplesClamped, Tensor.Index6SamplesClamped).Copy(Col.UShortFromUShortInFloatClamped));
+                                                  Tensor.Index6SamplesClamped, Tensor.Index6SamplesClamped)
+                                        .Copy(Col.UShortFromUShortInFloatClamped));
         }
 
         /// <summary>
@@ -267,6 +326,112 @@ namespace Aardvark.Base
                                                   Fun.Lanczos3f, Fun.Lanczos3f,
                                                   C3f.LinCom, C3f.LinCom,
                                                   Tensor.Index6SamplesClamped, Tensor.Index6SamplesClamped));
+        }
+
+        /// <summary>
+        /// Use Cubic Spline interpolation to scale the source matrix into the target matrix.
+        /// The supplied parameter selects the spline to use. The default value of -0.5 generates
+        /// Hermite Splines. If you call this repeatedly with the same selection parameter,
+        /// build the cubic weighting function with 'Fun.CreateCubicTup4f(par)' and use the
+        /// result as a paramter to the function call.
+        /// </summary>
+        public static void SetScaledCubic(this Matrix<byte, C4b> targetMat, Matrix<byte, C4b> sourceMat,
+                                            double par = -0.5)
+        {
+            // create the cubic weighting function. Parameter a=-0.5 results in the cubic Hermite spline.
+            var hermiteSpline = Fun.CreateCubicTup4f(par);
+            targetMat.SetScaledCubic(sourceMat, hermiteSpline);
+        }
+
+        /// <summary>
+        /// Use Cubic Spline interpolation to scale the source matrix into the target matrix
+        /// using the supplied cubic interpolator.
+        /// </summary>
+        public static void SetScaledCubic(this Matrix<byte, C4b> targetMat, Matrix<byte, C4b> sourceMat,
+                                          Func<double, Tup4<float>> interpolator)
+        {
+            var scale = sourceMat.Size.ToV2d() / targetMat.Size.ToV2d();
+
+            double scaleX = scale.X, shiftX = 0.5 * scale.X - 0.5;
+            double scaleY = scale.Y, shiftY = 0.5 * scale.Y - 0.5;
+
+            targetMat.ForeachIndex((x, y, i) =>
+                targetMat[i] = sourceMat.Sample16(x * scaleX + shiftX, y * scaleY + shiftY,
+                                                  interpolator, interpolator,
+                                                  C4b.LinComRawC4f, C4f.LinCom,
+                                                  Tensor.Index4SamplesClamped, Tensor.Index4SamplesClamped)
+                                        .Copy(Col.ByteFromByteInFloatClamped));
+        }
+
+        /// <summary>
+        /// Use Lanczos Interpoation to scale the source matrix into the target matrix.
+        /// </summary>
+        public static void SetScaledLanczos(this Matrix<byte, C4b> targetMat, Matrix<byte, C4b> sourceMat)
+        {
+            var scale = sourceMat.Size.ToV2d() / targetMat.Size.ToV2d();
+
+            double scaleX = scale.X, shiftX = 0.5 * scale.X - 0.5;
+            double scaleY = scale.Y, shiftY = 0.5 * scale.Y - 0.5;
+
+            targetMat.ForeachIndex((x, y, i) =>
+                targetMat[i] = sourceMat.Sample36(x * scaleX + shiftX, y * scaleY + shiftY,
+                                                  Fun.Lanczos3f, Fun.Lanczos3f,
+                                                  C4b.LinComRawC4f, C4f.LinCom,
+                                                  Tensor.Index6SamplesClamped, Tensor.Index6SamplesClamped)
+                                        .Copy(Col.ByteFromByteInFloatClamped));
+        }
+
+        /// <summary>
+        /// Use Cubic Spline interpolation to scale the source matrix into the target matrix.
+        /// The supplied parameter selects the spline to use. The default value of -0.5 generates
+        /// Hermite Splines. If you call this repeatedly with the same selection parameter,
+        /// build the cubic weighting function with 'Fun.CreateCubicTup4f(par)' and use the
+        /// result as a paramter to the function call.
+        /// </summary>
+        public static void SetScaledCubic(this Matrix<ushort, C4us> targetMat, Matrix<ushort, C4us> sourceMat,
+                                            double par = -0.5)
+        {
+            // create the cubic weighting function. Parameter a=-0.5 results in the cubic Hermite spline.
+            var hermiteSpline = Fun.CreateCubicTup4f(par);
+            targetMat.SetScaledCubic(sourceMat, hermiteSpline);
+        }
+
+        /// <summary>
+        /// Use Cubic Spline interpolation to scale the source matrix into the target matrix
+        /// using the supplied cubic interpolator.
+        /// </summary>
+        public static void SetScaledCubic(this Matrix<ushort, C4us> targetMat, Matrix<ushort, C4us> sourceMat,
+                                          Func<double, Tup4<float>> interpolator)
+        {
+            var scale = sourceMat.Size.ToV2d() / targetMat.Size.ToV2d();
+
+            double scaleX = scale.X, shiftX = 0.5 * scale.X - 0.5;
+            double scaleY = scale.Y, shiftY = 0.5 * scale.Y - 0.5;
+
+            targetMat.ForeachIndex((x, y, i) =>
+                targetMat[i] = sourceMat.Sample16(x * scaleX + shiftX, y * scaleY + shiftY,
+                                                  interpolator, interpolator,
+                                                  C4us.LinComRawC4f, C4f.LinCom,
+                                                  Tensor.Index4SamplesClamped, Tensor.Index4SamplesClamped)
+                                        .Copy(Col.UShortFromUShortInFloatClamped));
+        }
+
+        /// <summary>
+        /// Use Lanczos Interpoation to scale the source matrix into the target matrix.
+        /// </summary>
+        public static void SetScaledLanczos(this Matrix<ushort, C4us> targetMat, Matrix<ushort, C4us> sourceMat)
+        {
+            var scale = sourceMat.Size.ToV2d() / targetMat.Size.ToV2d();
+
+            double scaleX = scale.X, shiftX = 0.5 * scale.X - 0.5;
+            double scaleY = scale.Y, shiftY = 0.5 * scale.Y - 0.5;
+
+            targetMat.ForeachIndex((x, y, i) =>
+                targetMat[i] = sourceMat.Sample36(x * scaleX + shiftX, y * scaleY + shiftY,
+                                                  Fun.Lanczos3f, Fun.Lanczos3f,
+                                                  C4us.LinComRawC4f, C4f.LinCom,
+                                                  Tensor.Index6SamplesClamped, Tensor.Index6SamplesClamped)
+                                        .Copy(Col.UShortFromUShortInFloatClamped));
         }
 
         /// <summary>
