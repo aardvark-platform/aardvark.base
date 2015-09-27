@@ -562,7 +562,7 @@ namespace Aardvark.Base
         public static byte ColByteInFloatToByteClamped(this float f) { return (byte)(f.Clamp(0.0f, 255.0f) + 0.5f); }
         public static byte ColByteInDoubleToByteClamped(this double d) { return (byte)(d.Clamp(0.0, 255.0) + 0.5); }
 
-        public static ushort ColUShortInFloaToUShortClamped(this float f) { return (ushort)(f.Clamp(0.0f, 65535.0f) + 0.5f); }
+        public static ushort ColUShortInFloatToUShortClamped(this float f) { return (ushort)(f.Clamp(0.0f, 65535.0f) + 0.5f); }
         public static ushort ColUShortInDoubleToUShortClamped(this double d) { return (ushort)(d.Clamp(0.0, 65535.0) + 0.5); }
 
         public static uint ColUIntInDoubleToUIntClamped(this double d) { return (uint)(d.Clamp(0.0, (double)uint.MaxValue) + 0.5); }
@@ -572,6 +572,10 @@ namespace Aardvark.Base
 
         public static float ColByteInFloatToFloatClamped(this float f) { return (f * c_byteToFloat).Clamp(0.0f, 1.0f); }
         public static float ColFloatToByteInFloatClamped(this float f) { return (f * c_floatToByte).Clamp(0.0f, 255.0f); }
+
+        [Obsolete("(Typo) Use 'ColByteInFloatToByteClamped' instead", false)]
+        public static ushort ColUShortInFloaToUShortClamped(this float f) { return (ushort)(f.Clamp(0.0f, 65535.0f) + 0.5f); }
+
 
         // explicit lambda function versions to aid type infererence
 
@@ -590,7 +594,7 @@ namespace Aardvark.Base
         public static readonly Func<double, int> UShortInIntFromDoubleClamped = ColDoubleToUShortInIntClamped;
         public static readonly Func<float, byte> ByteFromByteInFloatClamped = ColByteInFloatToByteClamped;
         public static readonly Func<double, byte> ByteFromByteInDoubleClamped = ColByteInDoubleToByteClamped;
-        public static readonly Func<float, ushort> UShortFromUShortInFloatClamped = ColUShortInFloaToUShortClamped;
+        public static readonly Func<float, ushort> UShortFromUShortInFloatClamped = ColUShortInFloatToUShortClamped;
         public static readonly Func<double, ushort> UShortFromUShortInDoubleClamped = ColUShortInDoubleToUShortClamped;
         public static readonly Func<double, uint> UIntFromUIntInDoubleClamped = ColUIntInDoubleToUIntClamped;
 
