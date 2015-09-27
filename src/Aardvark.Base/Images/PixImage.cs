@@ -989,13 +989,13 @@ namespace Aardvark.Base
         public PixImage<T> CopyToImageLayout()
         {
             if (Volume.HasImageLayout())
-                return new PixImage<T>(Format, Volume.CopyImage());
+                return new PixImage<T>(Format, Volume.CopyToImage());
             return new PixImage<T>(this);
         }
 
         public PixImage<T> Copy()
         {
-            return new PixImage<T>(Format, Volume.CopyImageWindow());
+            return new PixImage<T>(Format, Volume.CopyToImageWindow());
         }
 
         public override PixImage CopyToPixImage()
@@ -1036,7 +1036,7 @@ namespace Aardvark.Base
         /// <returns></returns>
         public PixImage<T> Copy<Tv>(Func<Tv, Tv> fun, Col.Format format)
         {
-            var mat = GetMatrix<Tv>().CopyWindow(fun);
+            var mat = GetMatrix<Tv>().MapWindow(fun);
             var vol = new Volume<T>(mat.Data, Volume.Info);
             return new PixImage<T>(format, vol);
         }

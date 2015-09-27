@@ -264,13 +264,13 @@ namespace Aardvark.Base
         public PixVolume<T> CopyToImageLayout()
         {
             if (Tensor4.HasImageLayout())
-                return new PixVolume<T>(Format, Tensor4.CopyImage());
+                return new PixVolume<T>(Format, Tensor4.CopyToImage());
             return new PixVolume<T>(this);
         }
 
         public PixVolume<T> Copy()
         {
-            return new PixVolume<T>(Format, Tensor4.CopyImageWindow());
+            return new PixVolume<T>(Format, Tensor4.CopyToImageWindow());
         }
 
         public override PixVolume CopyToPixVolume()
@@ -306,7 +306,7 @@ namespace Aardvark.Base
         /// <returns></returns>
         public PixImage<T> Copy<Tv>(Func<Tv, Tv> fun, Col.Format format)
         {
-            var mat = GetVolume<Tv>().CopyWindow(fun);
+            var mat = GetVolume<Tv>().MapWindow(fun);
             var vol = new Volume<T>(mat.Data, Volume.Info);
             return new PixImage<T>(format, vol);
         }

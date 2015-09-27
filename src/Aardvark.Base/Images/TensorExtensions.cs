@@ -189,102 +189,102 @@ namespace Aardvark.Base
 
         internal static Volume<ushort> ToUShortColor(this Volume<byte> volume)
         {
-            return volume.CopyImageWindow(Col.UShortFromByte);
+            return volume.MapToImageWindow(Col.UShortFromByte);
         }
 
         internal static Volume<uint> ToUIntColor(this Volume<byte> volume)
         {
-            return volume.CopyImageWindow(Col.UIntFromByte);
+            return volume.MapToImageWindow(Col.UIntFromByte);
         }
 
         internal static Volume<float> ToFloatColor(this Volume<byte> volume)
         {
-            return volume.CopyImageWindow(Col.FloatFromByte);
+            return volume.MapToImageWindow(Col.FloatFromByte);
         }
 
         internal static Volume<double> ToDoubleColor(this Volume<byte> volume)
         {
-            return volume.CopyImageWindow(Col.DoubleFromByte);
+            return volume.MapToImageWindow(Col.DoubleFromByte);
         }
 
         internal static Volume<byte> ToByteColor(this Volume<ushort> volume)
         {
-            return volume.CopyImageWindow(Col.ByteFromUShort);
+            return volume.MapToImageWindow(Col.ByteFromUShort);
         }
 
         internal static Volume<uint> ToUIntColor(this Volume<ushort> volume)
         {
-            return volume.CopyImageWindow(Col.UIntFromUShort);
+            return volume.MapToImageWindow(Col.UIntFromUShort);
         }
 
         internal static Volume<float> ToFloatColor(this Volume<ushort> volume)
         {
-            return volume.CopyImageWindow(Col.FloatFromUShort);
+            return volume.MapToImageWindow(Col.FloatFromUShort);
         }
 
         internal static Volume<double> ToDoubleColor(this Volume<ushort> volume)
         {
-            return volume.CopyImageWindow(Col.DoubleFromUShort);
+            return volume.MapToImageWindow(Col.DoubleFromUShort);
         }
 
         internal static Volume<byte> ToByteColor(this Volume<uint> volume)
         {
-            return volume.CopyImageWindow(Col.ByteFromUInt);
+            return volume.MapToImageWindow(Col.ByteFromUInt);
         }
 
         internal static Volume<ushort> ToUShortColor(this Volume<uint> volume)
         {
-            return volume.CopyImageWindow(Col.UShortFromUInt);
+            return volume.MapToImageWindow(Col.UShortFromUInt);
         }
 
         internal static Volume<float> ToFloatColor(this Volume<uint> volume)
         {
-            return volume.CopyImageWindow(Col.FloatFromUInt);
+            return volume.MapToImageWindow(Col.FloatFromUInt);
         }
 
         internal static Volume<double> ToDoubleColor(this Volume<uint> volume)
         {
-            return volume.CopyImageWindow(Col.DoubleFromUInt);
+            return volume.MapToImageWindow(Col.DoubleFromUInt);
         }
 
         internal static Volume<byte> ToByteColor(this Volume<float> volume)
         {
-            return volume.CopyImageWindow(Col.ByteFromFloat);
+            return volume.MapToImageWindow(Col.ByteFromFloat);
         }
 
         internal static Volume<ushort> ToUShortColor(this Volume<float> volume)
         {
-            return volume.CopyImageWindow(Col.UShortFromFloat);
+            return volume.MapToImageWindow(Col.UShortFromFloat);
         }
 
         internal static Volume<uint> ToUIntColor(this Volume<float> volume)
         {
-            return volume.CopyImageWindow(Col.UIntFromFloat);
+            return volume.MapToImageWindow(Col.UIntFromFloat);
         }
 
         internal static Volume<double> ToDoubleColor(this Volume<float> volume)
         {
-            return volume.CopyImageWindow(Col.DoubleFromFloat);
+            return volume.MapToImageWindow(Col.DoubleFromFloat);
         }
 
         internal static Volume<byte> ToByteColor(this Volume<double> volume)
         {
-            return volume.CopyImageWindow(Col.ByteFromDouble);
+            return volume.MapToImageWindow(Col.ByteFromDouble);
         }
 
         internal static Volume<ushort> ToUShortColor(this Volume<double> volume)
         {
-            return volume.CopyImageWindow(Col.UShortFromDouble);
+            return volume.MapToImageWindow(Col.UShortFromDouble);
         }
 
         internal static Volume<uint> ToUIntColor(this Volume<double> volume)
         {
-            return volume.CopyImageWindow(Col.UIntFromDouble);
+            return volume.MapToImageWindow(Col.UIntFromDouble);
         }
 
         internal static Volume<float> ToFloatColor(this Volume<double> volume)
         {
-            return volume.CopyImageWindow(Col.FloatFromDouble);
+            return volume.MapToImageWindow(Col.FloatFromDouble);
         }
         
         #endregion
@@ -297,102 +297,102 @@ namespace Aardvark.Base
 
         internal static Tensor4<ushort> ToUShortColor(this Tensor4<byte> tensor4)
         {
-            return tensor4.CopyImageWindow(Col.UShortFromByte);
+            return tensor4.MapToImageWindow(Col.UShortFromByte);
         }
 
         internal static Tensor4<uint> ToUIntColor(this Tensor4<byte> tensor4)
         {
-            return tensor4.CopyImageWindow(Col.UIntFromByte);
+            return tensor4.MapToImageWindow(Col.UIntFromByte);
         }
 
         internal static Tensor4<float> ToFloatColor(this Tensor4<byte> tensor4)
         {
-            return tensor4.CopyImageWindow(Col.FloatFromByte);
+            return tensor4.MapToImageWindow(Col.FloatFromByte);
         }
 
         internal static Tensor4<double> ToDoubleColor(this Tensor4<byte> tensor4)
         {
-            return tensor4.CopyImageWindow(Col.DoubleFromByte);
+            return tensor4.MapToImageWindow(Col.DoubleFromByte);
         }
 
         internal static Tensor4<byte> ToByteColor(this Tensor4<ushort> tensor4)
         {
-            return tensor4.CopyImageWindow(Col.ByteFromUShort);
+            return tensor4.MapToImageWindow(Col.ByteFromUShort);
         }
 
         internal static Tensor4<uint> ToUIntColor(this Tensor4<ushort> tensor4)
         {
-            return tensor4.CopyImageWindow(Col.UIntFromUShort);
+            return tensor4.MapToImageWindow(Col.UIntFromUShort);
         }
 
         internal static Tensor4<float> ToFloatColor(this Tensor4<ushort> tensor4)
         {
-            return tensor4.CopyImageWindow(Col.FloatFromUShort);
+            return tensor4.MapToImageWindow(Col.FloatFromUShort);
         }
 
         internal static Tensor4<double> ToDoubleColor(this Tensor4<ushort> tensor4)
         {
-            return tensor4.CopyImageWindow(Col.DoubleFromUShort);
+            return tensor4.MapToImageWindow(Col.DoubleFromUShort);
         }
 
         internal static Tensor4<byte> ToByteColor(this Tensor4<uint> tensor4)
         {
-            return tensor4.CopyImageWindow(Col.ByteFromUInt);
+            return tensor4.MapToImageWindow(Col.ByteFromUInt);
         }
 
         internal static Tensor4<ushort> ToUShortColor(this Tensor4<uint> tensor4)
         {
-            return tensor4.CopyImageWindow(Col.UShortFromUInt);
+            return tensor4.MapToImageWindow(Col.UShortFromUInt);
         }
 
         internal static Tensor4<float> ToFloatColor(this Tensor4<uint> tensor4)
         {
-            return tensor4.CopyImageWindow(Col.FloatFromUInt);
+            return tensor4.MapToImageWindow(Col.FloatFromUInt);
         }
 
         internal static Tensor4<double> ToDoubleColor(this Tensor4<uint> tensor4)
         {
-            return tensor4.CopyImageWindow(Col.DoubleFromUInt);
+            return tensor4.MapToImageWindow(Col.DoubleFromUInt);
         }
 
         internal static Tensor4<byte> ToByteColor(this Tensor4<float> tensor4)
         {
-            return tensor4.CopyImageWindow(Col.ByteFromFloat);
+            return tensor4.MapToImageWindow(Col.ByteFromFloat);
         }
 
         internal static Tensor4<ushort> ToUShortColor(this Tensor4<float> tensor4)
         {
-            return tensor4.CopyImageWindow(Col.UShortFromFloat);
+            return tensor4.MapToImageWindow(Col.UShortFromFloat);
         }
 
         internal static Tensor4<uint> ToUIntColor(this Tensor4<float> tensor4)
         {
-            return tensor4.CopyImageWindow(Col.UIntFromFloat);
+            return tensor4.MapToImageWindow(Col.UIntFromFloat);
         }
 
         internal static Tensor4<double> ToDoubleColor(this Tensor4<float> tensor4)
         {
-            return tensor4.CopyImageWindow(Col.DoubleFromFloat);
+            return tensor4.MapToImageWindow(Col.DoubleFromFloat);
         }
 
         internal static Tensor4<byte> ToByteColor(this Tensor4<double> tensor4)
         {
-            return tensor4.CopyImageWindow(Col.ByteFromDouble);
+            return tensor4.MapToImageWindow(Col.ByteFromDouble);
         }
 
         internal static Tensor4<ushort> ToUShortColor(this Tensor4<double> tensor4)
         {
-            return tensor4.CopyImageWindow(Col.UShortFromDouble);
+            return tensor4.MapToImageWindow(Col.UShortFromDouble);
         }
 
         internal static Tensor4<uint> ToUIntColor(this Tensor4<double> tensor4)
         {
-            return tensor4.CopyImageWindow(Col.UIntFromDouble);
+            return tensor4.MapToImageWindow(Col.UIntFromDouble);
         }
 
         internal static Tensor4<float> ToFloatColor(this Tensor4<double> tensor4)
         {
-            return tensor4.CopyImageWindow(Col.FloatFromDouble);
+            return tensor4.MapToImageWindow(Col.FloatFromDouble);
         }
 
         #endregion

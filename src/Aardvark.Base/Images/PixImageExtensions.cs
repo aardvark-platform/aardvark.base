@@ -84,7 +84,7 @@ namespace Aardvark.Base
         public static Matrix<byte> ToBlackAndWhiteMatrix(this PixImage<byte> pixImage, int threshold)
         {
             Requires.That(pixImage.ChannelCount == 1);
-            return pixImage.GetChannel(Col.Channel.Gray).CopyWindow<byte>(b => (byte)(b < threshold ? 0 : 255));
+            return pixImage.GetChannel(Col.Channel.Gray).MapWindow<byte>(b => (byte)(b < threshold ? 0 : 255));
         }
 
         public static Matrix<byte> ToBlackAndWhiteMatrix(this PixImage<byte> pixImage)
@@ -113,7 +113,7 @@ namespace Aardvark.Base
                 if (pixImage.Format == Col.Format.BW || pixImage.Format == Col.Format.Gray)
                     return pixImage.Volume.AsMatrixWindow();
             }
-            return pixImage.GetMatrix<C3b>().CopyWindow<byte>(Col.GrayByteFromC3b);
+            return pixImage.GetMatrix<C3b>().MapWindow<byte>(Col.GrayByteFromC3b);
         }
 
         public static PixImage<byte> ToGrayscalePixImage(this PixImage<byte> pixImage)
@@ -127,7 +127,7 @@ namespace Aardvark.Base
         {
             if (pixImage.ChannelCount == 1L && pixImage.Format == Col.Format.Gray)
                 return pixImage.Volume.AsMatrixWindow();
-            return pixImage.GetMatrix<C3us>().CopyWindow<ushort>(Col.GrayUShortFromC3us);
+            return pixImage.GetMatrix<C3us>().MapWindow<ushort>(Col.GrayUShortFromC3us);
         }
 
         public static PixImage<ushort> ToGrayscalePixImage(this PixImage<ushort> pixImage)
@@ -144,7 +144,7 @@ namespace Aardvark.Base
                 if (pixImage.Format == Col.Format.BW || pixImage.Format == Col.Format.Gray)
                     return pixImage.Volume.AsMatrixWindow();
             }
-            return pixImage.GetMatrix<C3f>().CopyWindow<float>(Col.GrayFloatFromC3f);
+            return pixImage.GetMatrix<C3f>().MapWindow<float>(Col.GrayFloatFromC3f);
         }
 
         public static PixImage<float> ToGrayscalePixImage(this PixImage<float> pixImage)
@@ -158,7 +158,7 @@ namespace Aardvark.Base
         {
             if (pixImage.ChannelCount == 1L && pixImage.Format == Col.Format.Gray)
                 return pixImage.Volume.AsMatrixWindow();
-            return pixImage.GetMatrix<C3f>().CopyWindow<float>(Col.GrayFloatClampedFromC3f);
+            return pixImage.GetMatrix<C3f>().MapWindow<float>(Col.GrayFloatClampedFromC3f);
         }
 
         public static PixImage<float> ToClampedGrayscalePixImage(this PixImage<float> pixImage)
@@ -174,27 +174,27 @@ namespace Aardvark.Base
 
         public static PixImage<byte> Inverted(this PixImage<byte> pixImage)
         {
-            return new PixImage<byte>(pixImage.Volume.CopyImageWindow(b => (byte)(255 - b)));
+            return new PixImage<byte>(pixImage.Volume.MapToImageWindow(b => (byte)(255 - b)));
         }
 
         public static PixImage<ushort> Inverted(this PixImage<ushort> pixImage)
         {
-            return new PixImage<ushort>(pixImage.Volume.CopyImageWindow(us => (ushort)(65535 - us)));
+            return new PixImage<ushort>(pixImage.Volume.MapToImageWindow(us => (ushort)(65535 - us)));
         }
 
         public static PixImage<uint> Inverted(this PixImage<uint> pixImage)
         {
-            return new PixImage<uint>(pixImage.Volume.CopyImageWindow(ui => (uint)(0xffffffffu - ui)));
+            return new PixImage<uint>(pixImage.Volume.MapToImageWindow(ui => (uint)(0xffffffffu - ui)));
         }
 
         public static PixImage<float> Inverted(this PixImage<float> pixImage)
         {
-            return new PixImage<float>(pixImage.Volume.CopyImageWindow(f => (float)(1.0f - f)));
+            return new PixImage<float>(pixImage.Volume.MapToImageWindow(f => (float)(1.0f - f)));
         }
 
         public static PixImage<double> Inverted(this PixImage<double> pixImage)
         {
-            return new PixImage<double>(pixImage.Volume.CopyImageWindow(d => 1.0 - d));
+            return new PixImage<double>(pixImage.Volume.MapToImageWindow(d => 1.0 - d));
         }
 
         /// <summary>

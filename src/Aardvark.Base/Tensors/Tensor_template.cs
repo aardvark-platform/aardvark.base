@@ -2486,18 +2486,37 @@ namespace Aardvark.Base
         /// Elementwise copy with function application.
         /// This methods returns a __ttn__ with zero as first coordinates.
         /// </summary>
+        [Obsolete("Use 'Map' instead (same functionality and parameters)", false)]
         public __ttn__<T1> Copy<T1>(Func<__vtn__, T1> fun)
         {
-            return new __ttn__<T1>(Info.S).Set(this, fun);
+            return new __ttn__<T1>(Info.S).SetMap(this, fun);
+        }
+        /// <summary>
+        /// Elementwise copy with function application.
+        /// This methods returns a __ttn__ with zero as first coordinates.
+        /// </summary>
+        public __ttn__<T1> Map<T1>(Func<__vtn__, T1> fun)
+        {
+            return new __ttn__<T1>(Info.S).SetMap(this, fun);
         }
 
         /// <summary>
         /// Elementwise copy with function application.
         /// This method retains the coordinates of the original __ttn__.
         /// </summary>
+        [Obsolete("Use 'MapWindow' instead (same functionality and parameters)", false)]
         public __ttn__<T1> CopyWindow<T1>(Func<__vtn__, T1> fun)
         {
-            return new __ttn__<T1>(Info.S) { F = F }.Set(this, fun);
+            return new __ttn__<T1>(Info.S) { F = F }.SetMap(this, fun);
+        }
+
+        /// <summary>
+        /// Elementwise copy with function application.
+        /// This method retains the coordinates of the original __ttn__.
+        /// </summary>
+        public __ttn__<T1> MapWindow<T1>(Func<__vtn__, T1> fun)
+        {
+            return new __ttn__<T1>(Info.S) { F = F }.SetMap(this, fun);
         }
 
         //# if (dt != vt) {
@@ -2515,19 +2534,40 @@ namespace Aardvark.Base
         /// Elementwise copy with function application.
         /// This methods returns a __ttn__ with zero as first coordinates.
         /// </summary>
+        [Obsolete("Use 'Map' instead (same functionality and parameters)", false)]
         public __ttn__<__dvtn__> Copy(Func<__vtn__, __vtn__> fun)
         {
-            return new __ttn__<__dvtn__>(new Td[Data.LongLength], Info) { Getter = Getter, Setter = Setter }.Set(this, fun);
+            return new __ttn__<__dvtn__>(new Td[Data.LongLength], Info) { Getter = Getter, Setter = Setter }.SetMap(this, fun);
+        }
+
+        /// <summary>
+        /// Elementwise copy with function application.
+        /// This methods returns a __ttn__ with zero as first coordinates.
+        /// </summary>
+        public __ttn__<__dvtn__> Map(Func<__vtn__, __vtn__> fun)
+        {
+            return new __ttn__<__dvtn__>(new Td[Data.LongLength], Info) { Getter = Getter, Setter = Setter }.SetMap(this, fun);
         }
 
         /// <summary>
         /// Elementwise copy with function application.
         /// This method retains the complete layout of the original __ttn__.
         /// </summary>
+        [Obsolete("Use 'MapWindow' instead (same functionality and parameters)", false)]
         public __ttn__<__dvtn__> CopyWindow(Func<__vtn__, __vtn__> fun)
         {
             return new __ttn__<__dvtn__>(new Td[Data.LongLength], Info)
-                        { F = F, Getter = Getter, Setter = Setter }.Set(this, fun);
+            { F = F, Getter = Getter, Setter = Setter }.SetMap(this, fun);
+        }
+
+        /// <summary>
+        /// Elementwise copy with function application.
+        /// This method retains the complete layout of the original __ttn__.
+        /// </summary>
+        public __ttn__<__dvtn__> MapWindow(Func<__vtn__, __vtn__> fun)
+        {
+            return new __ttn__<__dvtn__>(new Td[Data.LongLength], Info)
+                        { F = F, Getter = Getter, Setter = Setter }.SetMap(this, fun);
         }
 
         //# } // dt != vt
@@ -2856,7 +2896,26 @@ namespace Aardvark.Base
         /// the elements of the supplied __ttnl__.
         /// </summary>
         /// <returns>this</returns>
+        [Obsolete("Use 'SetMap' instead (same functionality and parameters)", false)]
         public __ttn__<__dvtn__> Set<__t1t__>(
+                __ttn__<__t1t__> t1, Func<T1, __vtn__> element1_elementFun)
+        {
+            //# LoopN("", false, dt == vt && !t1v, 2, 0, ix => { var t1ix = ix ? t1i1 : t1i;
+            //# if (dt == vt) {
+            Data[i] = element1_elementFun(__t1ix__);
+            //# } else {
+            Setter(Data, i, element1_elementFun(__t1ix__));
+            //# }
+            //# });
+            return this;
+        }
+
+        /// <summary>
+        /// Set the elements of a __ttnl__ to the result of a function of
+        /// the elements of the supplied __ttnl__.
+        /// </summary>
+        /// <returns>this</returns>
+        public __ttn__<__dvtn__> SetMap<__t1t__>(
                 __ttn__<__t1t__> t1, Func<T1, __vtn__> element1_elementFun)
         {
             //# LoopN("", false, dt == vt && !t1v, 2, 0, ix => { var t1ix = ix ? t1i1 : t1i;
@@ -2897,6 +2956,7 @@ namespace Aardvark.Base
         /// corresponding pairs of elements of the two supplied tensors.
         /// </summary>
         /// <returns>this</returns>
+        [Obsolete("Use 'SetMap2' instead (same functionality and parameters)", false)]
         public __ttn__<__dvtn__> Set<__t1t__, __t2t__>(
                     __ttn__<__t1t__> t1, __ttn__<__t2t__> t2,
                     Func<T1, T2, __vtn__> element1_element2_elementFun)
@@ -2909,6 +2969,27 @@ namespace Aardvark.Base
                         //# } else {
                         Setter(Data, i, element1_element2_elementFun(__t1ix__, __t2ix__));
                         //# }
+            //# });
+            return this;
+        }
+
+        /// <summary>
+        /// Set the elements of a __ttnl__ to the result of a function of
+        /// corresponding pairs of elements of the two supplied tensors.
+        /// </summary>
+        /// <returns>this</returns>
+        public __ttn__<__dvtn__> SetMap2<__t1t__, __t2t__>(
+                    __ttn__<__t1t__> t1, __ttn__<__t2t__> t2,
+                    Func<T1, T2, __vtn__> element1_element2_elementFun)
+        {
+            //# LoopN("", false, dt == vt && !t1v && !t2v, 3, 0, ix => {
+            //# var t1ix = ix ? t1i1 : t1i;
+            //# var t2ix = ix ? t2i2 : t2i;
+            //# if (dt == vt) {
+            Data[i] = element1_element2_elementFun(__t1ix__, __t2ix__);
+            //# } else {
+            Setter(Data, i, element1_element2_elementFun(__t1ix__, __t2ix__));
+            //# }
             //# });
             return this;
         }
@@ -2945,6 +3026,7 @@ namespace Aardvark.Base
         /// corresponding triples of elements of the three supplied tensors.
         /// </summary>
         /// <returns>this</returns>
+        [Obsolete("Use 'SetMap3' instead (same functionality and parameters)", false)]
         public __ttn__<__dvtn__> Set<__t1t__, __t2t__, __t3t__>(
                 __ttn__<__t1t__> t1, __ttn__<__t2t__> t2, __ttn__<__t3t__> t3,
                 Func<T1, T2, T3, __vtn__> element1_element2_element3_elementFun)
@@ -2958,6 +3040,28 @@ namespace Aardvark.Base
                         //# } else {
                         Setter(Data, i, element1_element2_element3_elementFun(__t1ix__, __t2ix__, __t3ix__));
                         //# }
+            //# });
+            return this;
+        }
+
+        /// <summary>
+        /// Set the elements of a tensor to the result of a function of
+        /// corresponding triples of elements of the three supplied tensors.
+        /// </summary>
+        /// <returns>this</returns>
+        public __ttn__<__dvtn__> SetMap3<__t1t__, __t2t__, __t3t__>(
+                __ttn__<__t1t__> t1, __ttn__<__t2t__> t2, __ttn__<__t3t__> t3,
+                Func<T1, T2, T3, __vtn__> element1_element2_element3_elementFun)
+        {
+            //# LoopN("", false, dt == vt && !t1v && !t2v && !t3v, 4, 0, ix => {
+            //# var t1ix = ix ? t1i1 : t1i;
+            //# var t2ix = ix ? t2i2 : t2i;
+            //# var t3ix = ix ? t3i3 : t3i;
+            //# if (dt == vt) {
+            Data[i] = element1_element2_element3_elementFun(__t1ix__, __t2ix__, __t3ix__);
+            //# } else {
+            Setter(Data, i, element1_element2_element3_elementFun(__t1ix__, __t2ix__, __t3ix__));
+            //# }
             //# });
             return this;
         }
@@ -3229,10 +3333,21 @@ namespace Aardvark.Base
         /// Create a new __ttnl__ by applying a function on each element of
         /// the supplied __ttnl__.
         /// </summary>
+        [Obsolete("Use 'Map' instead (same functionality and parameters)", false)]
         public static __ttn__<__dvtn__> Create<__t1t__>(
                 __ttn__<__t1t__> t1, Func<T1, __vtn__> element1_elementFun)
         {
-            return new __ttn__<__dvtn__>(t1.Info.Size).Set(t1, element1_elementFun);
+            return new __ttn__<__dvtn__>(t1.Info.Size).SetMap(t1, element1_elementFun);
+        }
+
+        /// <summary>
+        /// Create a new __ttnl__ by applying a function on each element of
+        /// the supplied __ttnl__.
+        /// </summary>
+        public static __ttn__<__dvtn__> Map<__t1t__>(
+                __ttn__<__t1t__> t1, Func<T1, __vtn__> element1_elementFun)
+        {
+            return new __ttn__<__dvtn__>(t1.Info.Size).SetMap(t1, element1_elementFun);
         }
 
         /// <summary>
@@ -3254,11 +3369,23 @@ namespace Aardvark.Base
         /// Create a new __ttnl__ by applying a function on each element of
         /// the supplied __ttnl__.
         /// </summary>
+        [Obsolete("Use 'Map2' instead (same functionality and parameters)", false)]
         public static __ttn__<__dvtn__> Create<__t1t__, __t2t__>(
                 __ttn__<__t1t__> t1, __ttn__<__t2t__> t2,
                 Func<T1, T2, __vtn__> element1_element2_elementFun)
         {
-            return new __ttn__<__dvtn__>(t1.Info.Size).Set(t1, t2, element1_element2_elementFun);
+            return new __ttn__<__dvtn__>(t1.Info.Size).SetMap2(t1, t2, element1_element2_elementFun);
+        }
+
+        /// <summary>
+        /// Create a new __ttnl__ by applying a function on each element of
+        /// the supplied __ttnl__.
+        /// </summary>
+        public static __ttn__<__dvtn__> Map2<__t1t__, __t2t__>(
+                __ttn__<__t1t__> t1, __ttn__<__t2t__> t2,
+                Func<T1, T2, __vtn__> element1_element2_elementFun)
+        {
+            return new __ttn__<__dvtn__>(t1.Info.Size).SetMap2(t1, t2, element1_element2_elementFun);
         }
 
         /// <summary>
@@ -3282,11 +3409,23 @@ namespace Aardvark.Base
         /// Create a new __ttnl__ by applying a function on each element of
         /// the supplied __ttnl__.
         /// </summary>
+        [Obsolete("Use 'Map3' instead (same functionality and parameters)", false)]
         public static __ttn__<__dvtn__> Create<__t1t__, __t2t__, __t3t__>(
                 __ttn__<__t1t__> t1, __ttn__<__t2t__> t2, __ttn__<__t3t__> t3,
                 Func<T1, T2, T3, __vtn__> element1_element2_element3_elementFun)
         {
-            return new __ttn__<__dvtn__>(t1.Info.Size).Set(t1, t2, t3, element1_element2_element3_elementFun);
+            return new __ttn__<__dvtn__>(t1.Info.Size).SetMap3(t1, t2, t3, element1_element2_element3_elementFun);
+        }
+
+        /// <summary>
+        /// Create a new __ttnl__ by applying a function on each element of
+        /// the supplied __ttnl__.
+        /// </summary>
+        public static __ttn__<__dvtn__> Map3<__t1t__, __t2t__, __t3t__>(
+                __ttn__<__t1t__> t1, __ttn__<__t2t__> t2, __ttn__<__t3t__> t3,
+                Func<T1, T2, T3, __vtn__> element1_element2_element3_elementFun)
+        {
+            return new __ttn__<__dvtn__>(t1.Info.Size).SetMap3(t1, t2, t3, element1_element2_element3_elementFun);
         }
 
         /// <summary>

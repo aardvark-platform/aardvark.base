@@ -344,7 +344,17 @@ namespace Aardvark.Base
         /// Copy this volume to image memory layout.
         /// Retains the coordinates of the original image.
         /// </summary>
+        [Obsolete("Use 'CopyToImageWindow' instead (same functionality and parameters)", false)]
         public static Volume<T> CopyImageWindow<T>(this Volume<T> volume)
+        {
+            return volume.CopyToImageWindow();
+        }
+
+        /// <summary>
+        /// Copy this volume to image memory layout.
+        /// Retains the coordinates of the original image.
+        /// </summary>
+        public static Volume<T> CopyToImageWindow<T>(this Volume<T> volume)
         {
             var copy = CreateImageVolume<T>(volume.S);
             copy.F = volume.F;
@@ -356,7 +366,17 @@ namespace Aardvark.Base
         /// Copy this volume to image memory layout.
         /// Coordinates of the result start at [0, 0, 0].
         /// </summary>
+        [Obsolete("Use 'CopyToImage' instead (same functionality and parameters)", false)]
         public static Volume<T> CopyImage<T>(this Volume<T> volume)
+        {
+            return volume.CopyToImage();
+        }
+
+        /// <summary>
+        /// Copy this volume to image memory layout.
+        /// Coordinates of the result start at [0, 0, 0].
+        /// </summary>
+        public static Volume<T> CopyToImage<T>(this Volume<T> volume)
         {
             var copy = CreateImageVolume<T>(volume.S);
             copy.Set(volume);
@@ -368,11 +388,22 @@ namespace Aardvark.Base
         /// through the supplied function.
         /// Retains the coordinates of the original image.
         /// </summary>
+        [Obsolete("Use 'MapImageWindow' instead (same functionality and parameters)", false)]
         public static Volume<T1> CopyImageWindow<T, T1>(this Volume<T> volume, Func<T, T1> fun)
+        {
+            return volume.MapToImageWindow(fun);
+        }
+
+        /// <summary>
+        /// Copy this volume to image memory layout, while piping all elements
+        /// through the supplied function.
+        /// Retains the coordinates of the original image.
+        /// </summary>
+        public static Volume<T1> MapToImageWindow<T, T1>(this Volume<T> volume, Func<T, T1> fun)
         {
             var copy = CreateImageVolume<T1>(volume.S);
             copy.F = volume.F;
-            copy.Set(volume, fun);
+            copy.SetMap(volume, fun);
             return copy;
         }
 
@@ -381,10 +412,21 @@ namespace Aardvark.Base
         /// through the supplied function.
         /// Coordinates of the result start at [0, 0, 0].
         /// </summary>
+        [Obsolete("Use 'MapToImage' instead (same functionality and parameters)", false)]
         public static Volume<T1> CopyImage<T, T1>(this Volume<T> volume, Func<T, T1> fun)
         {
+            return volume.MapToImage(fun);
+        }
+
+        /// <summary>
+        /// Copy this volume to image memory layout, while piping all elements
+        /// through the supplied function.
+        /// Coordinates of the result start at [0, 0, 0].
+        /// </summary>
+        public static Volume<T1> MapToImage<T, T1>(this Volume<T> volume, Func<T, T1> fun)
+        {
             var copy = CreateImageVolume<T1>(volume.S);
-            copy.Set(volume, fun);
+            copy.SetMap(volume, fun);
             return copy;
         }
 
@@ -392,8 +434,18 @@ namespace Aardvark.Base
         /// Copy this tensor4 to image memory layout.
         /// Retains the coordinates of the original image.
         /// </summary>
+        [Obsolete("Use 'CopyToImageWindow' instead (same functionality and parameters)", false)]
         public static Tensor4<T> CopyImageWindow<T>(this Tensor4<T> tensor4)
         {
+            return tensor4.CopyToImageWindow();
+        }
+
+        /// <summary>
+        /// Copy this tensor4 to image memory layout.
+        /// Retains the coordinates of the original image.
+        /// </summary>
+        public static Tensor4<T> CopyToImageWindow<T>(this Tensor4<T> tensor4)
+        {
             var copy = CreateImageTensor4<T>(tensor4.S);
             copy.F = tensor4.F;
             copy.Set(tensor4);
@@ -404,7 +456,17 @@ namespace Aardvark.Base
         /// Copy this tensor4 to image memory layout.
         /// Coordinates of the result start at [0, 0, 0, 0].
         /// </summary>
+        [Obsolete("Use 'CopyToImage' instead (same functionality and parameters)", false)]
         public static Tensor4<T> CopyImage<T>(this Tensor4<T> tensor4)
+        {
+            return tensor4.CopyToImage();
+        }
+
+        /// <summary>
+        /// Copy this tensor4 to image memory layout.
+        /// Coordinates of the result start at [0, 0, 0, 0].
+        /// </summary>
+        public static Tensor4<T> CopyToImage<T>(this Tensor4<T> tensor4)
         {
             var copy = CreateImageTensor4<T>(tensor4.S);
             copy.Set(tensor4);
@@ -416,11 +478,22 @@ namespace Aardvark.Base
         /// through the supplied function.
         /// Retains the coordinates of the original image.
         /// </summary>
+        [Obsolete("Use 'MapToImageWindow' instead (same functionality and parameters)", false)]
         public static Tensor4<T1> CopyImageWindow<T, T1>(this Tensor4<T> tensor4, Func<T, T1> fun)
+        {
+            return tensor4.MapToImageWindow(fun);
+        }
+
+        /// <summary>
+        /// Copy this tensor4 to image memory layout, while piping all elements
+        /// through the supplied function.
+        /// Retains the coordinates of the original image.
+        /// </summary>
+        public static Tensor4<T1> MapToImageWindow<T, T1>(this Tensor4<T> tensor4, Func<T, T1> fun)
         {
             var copy = CreateImageTensor4<T1>(tensor4.S);
             copy.F = tensor4.F;
-            copy.Set(tensor4, fun);
+            copy.SetMap(tensor4, fun);
             return copy;
         }
 
@@ -429,10 +502,21 @@ namespace Aardvark.Base
         /// through the supplied function.
         /// Coordinates of the result start at [0, 0, 0, 0].
         /// </summary>
+        [Obsolete("Use 'MapToImage' instead (same functionality and parameters)", false)]
         public static Tensor4<T1> CopyImage<T, T1>(this Tensor4<T> tensor4, Func<T, T1> fun)
         {
+            return tensor4.MapToImage(fun);
+        }
+
+        /// <summary>
+        /// Copy this tensor4 to image memory layout, while piping all elements
+        /// through the supplied function.
+        /// Coordinates of the result start at [0, 0, 0, 0].
+        /// </summary>
+        public static Tensor4<T1> MapToImage<T, T1>(this Tensor4<T> tensor4, Func<T, T1> fun)
+        {
             var copy = CreateImageTensor4<T1>(tensor4.S);
-            copy.Set(tensor4, fun);
+            copy.SetMap(tensor4, fun);
             return copy;
         }
 
@@ -467,7 +551,7 @@ namespace Aardvark.Base
         public static Volume<T> ToImage<T>(this Volume<T> volume)
         {
             if (volume.HasImageLayout()) return volume;
-            return volume.CopyImage();
+            return volume.CopyToImage();
         }
 
         /// <summary>
@@ -477,7 +561,7 @@ namespace Aardvark.Base
         public static Volume<T> ToImageWindow<T>(this Volume<T> volume)
         {
             if (volume.HasImageWindowLayout()) return volume;
-            return volume.CopyImageWindow();
+            return volume.CopyToImageWindow();
         }
 
         #endregion
@@ -589,102 +673,102 @@ namespace Aardvark.Base
 
         public static Matrix<ushort> ToUShortColor(this Matrix<byte> matrix)
         {
-            return matrix.CopyWindow(Col.UShortFromByte);
+            return matrix.MapWindow(Col.UShortFromByte);
         }
 
         public static Matrix<uint> ToUIntColor(this Matrix<byte> matrix)
         {
-            return matrix.CopyWindow(Col.UIntFromByte);
+            return matrix.MapWindow(Col.UIntFromByte);
         }
 
         public static Matrix<float> ToFloatColor(this Matrix<byte> matrix)
         {
-            return matrix.CopyWindow(Col.FloatFromByte);
+            return matrix.MapWindow(Col.FloatFromByte);
         }
 
         public static Matrix<double> ToDoubleColor(this Matrix<byte> matrix)
         {
-            return matrix.CopyWindow(Col.DoubleFromByte);
+            return matrix.MapWindow(Col.DoubleFromByte);
         }
 
         public static Matrix<byte> ToByteColor(this Matrix<ushort> matrix)
         {
-            return matrix.CopyWindow(Col.ByteFromUShort);
+            return matrix.MapWindow(Col.ByteFromUShort);
         }
 
         public static Matrix<uint> ToUIntColor(this Matrix<ushort> matrix)
         {
-            return matrix.CopyWindow(Col.UIntFromUShort);
+            return matrix.MapWindow(Col.UIntFromUShort);
         }
 
         public static Matrix<float> ToFloatColor(this Matrix<ushort> matrix)
         {
-            return matrix.CopyWindow(Col.FloatFromUShort);
+            return matrix.MapWindow(Col.FloatFromUShort);
         }
 
         public static Matrix<double> ToDoubleColor(this Matrix<ushort> matrix)
         {
-            return matrix.CopyWindow(Col.DoubleFromUShort);
+            return matrix.MapWindow(Col.DoubleFromUShort);
         }
 
         public static Matrix<byte> ToByteColor(this Matrix<uint> matrix)
         {
-            return matrix.CopyWindow(Col.ByteFromUInt);
+            return matrix.MapWindow(Col.ByteFromUInt);
         }
 
         public static Matrix<ushort> ToUShortColor(this Matrix<uint> matrix)
         {
-            return matrix.CopyWindow(Col.UShortFromUInt);
+            return matrix.MapWindow(Col.UShortFromUInt);
         }
 
         public static Matrix<float> ToFloatColor(this Matrix<uint> matrix)
         {
-            return matrix.CopyWindow(Col.FloatFromUInt);
+            return matrix.MapWindow(Col.FloatFromUInt);
         }
 
         public static Matrix<double> ToDoubleColor(this Matrix<uint> matrix)
         {
-            return matrix.CopyWindow(Col.DoubleFromUInt);
+            return matrix.MapWindow(Col.DoubleFromUInt);
         }
 
         public static Matrix<byte> ToByteColor(this Matrix<float> matrix)
         {
-            return matrix.CopyWindow(Col.ByteFromFloat);
+            return matrix.MapWindow(Col.ByteFromFloat);
         }
 
         public static Matrix<ushort> ToUShortColor(this Matrix<float> matrix)
         {
-            return matrix.CopyWindow(Col.UShortFromFloat);
+            return matrix.MapWindow(Col.UShortFromFloat);
         }
 
         public static Matrix<uint> ToUIntColor(this Matrix<float> matrix)
         {
-            return matrix.CopyWindow(Col.UIntFromFloat);
+            return matrix.MapWindow(Col.UIntFromFloat);
         }
 
         public static Matrix<double> ToDoubleColor(this Matrix<float> matrix)
         {
-            return matrix.CopyWindow(Col.DoubleFromFloat);
+            return matrix.MapWindow(Col.DoubleFromFloat);
         }
 
         public static Matrix<byte> ToByteColor(this Matrix<double> matrix)
         {
-            return matrix.CopyWindow(Col.ByteFromDouble);
+            return matrix.MapWindow(Col.ByteFromDouble);
         }
 
         public static Matrix<ushort> ToUShortColor(this Matrix<double> matrix)
         {
-            return matrix.CopyWindow(Col.UShortFromDouble);
+            return matrix.MapWindow(Col.UShortFromDouble);
         }
 
         public static Matrix<uint> ToUIntColor(this Matrix<double> matrix)
         {
-            return matrix.CopyWindow(Col.UIntFromDouble);
+            return matrix.MapWindow(Col.UIntFromDouble);
         }
 
         public static Matrix<float> ToFloatColor(this Matrix<double> matrix)
         {
-            return matrix.CopyWindow(Col.FloatFromDouble);
+            return matrix.MapWindow(Col.FloatFromDouble);
         }
 
         #endregion

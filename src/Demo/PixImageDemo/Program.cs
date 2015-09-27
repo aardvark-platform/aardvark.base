@@ -218,9 +218,8 @@ namespace PixImageDemo
 
             var colorImage = CreateHowManyColorsIllusion(1024);
 
-
-            var scaledColorImage = new PixImage<byte>(1024, 768, 3);
-
+            // scaling an image
+            var scaledColorImage = new PixImage<byte>(1280, 800, 3);
             scaledColorImage.GetMatrix<C4b>().SetScaledCubic(colorImage.GetMatrix<C4b>());
 
             scaledColorImage.SaveAsImage(Path.Combine(dir, "v-scaled-image.png"));
@@ -230,6 +229,13 @@ namespace PixImageDemo
             colorImage.SaveAsImage(Path.Combine(dir, "v-color-image.png"));
 
             var grayImage = colorImage.ToGrayscalePixImage();
+
+
+            // scaling a grayscale image
+            var scaledGrayImage = new PixImage<byte>(1280, 800, 1);
+            scaledGrayImage.Matrix.SetScaledLanczos(grayImage.Matrix);
+
+            scaledGrayImage.SaveAsImage(Path.Combine(dir, "v-scaled-gray-image.png"));
 
             // for grayscale and black/white images the Matrix property works
             grayImage.Matrix.SetLineY(16, 0, 100, 0);
@@ -394,7 +400,7 @@ namespace PixImageDemo
 
             var diffImg = new PixImage<float>(Col.Format.RGB, hiliteImg.Size);
 
-            diffImg.Volume.Set(hiliteImg.Volume, luxImg.Volume, (a, b) => Fun.Abs(b - a));
+            diffImg.Volume.SetMap2(hiliteImg.Volume, luxImg.Volume, (a, b) => Fun.Abs(b - a));
 
             var outImg = diffImg.ToPixImage<ushort>();
 
@@ -410,7 +416,7 @@ namespace PixImageDemo
             var image = new PixImage<byte>(src.Format, src.Size);
             var srcvolume = src.Volume;
             // var copyvol = srcvolume.Copy(); // does not work, creates default volume layout!
-            var copyvol = srcvolume.CopyImage(); // works since it creates default image layout!
+            var copyvol = srcvolume.CopyToImage(); // works since it creates default image layout!
             image.Volume = copyvol;
             image.SaveAsImage(Path.Combine(idir, "rgb8-copied.jpg"));
         }
