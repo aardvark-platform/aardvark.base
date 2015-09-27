@@ -338,7 +338,7 @@ namespace Aardvark.Base
 
         #endregion
 
-        #region CopyImage
+        #region Copy/Map Image
 
         /// <summary>
         /// Copy this volume to image memory layout.
@@ -388,7 +388,7 @@ namespace Aardvark.Base
         /// through the supplied function.
         /// Retains the coordinates of the original image.
         /// </summary>
-        [Obsolete("Use 'MapImageWindow' instead (same functionality and parameters)", false)]
+        [Obsolete("Use 'MapToImageWindow' instead (same functionality and parameters)", false)]
         public static Volume<T1> CopyImageWindow<T, T1>(this Volume<T> volume, Func<T, T1> fun)
         {
             return volume.MapToImageWindow(fun);
