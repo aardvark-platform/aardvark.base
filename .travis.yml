@@ -1,6 +1,5 @@
 language: csharp
 solution: src/Aardvark.sln
-sudo: false
 before_install:
 before_install:
   # Make sure mono is installed,
