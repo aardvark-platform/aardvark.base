@@ -129,6 +129,38 @@ namespace PixImageDemo
 
         }
 
+        public static void SetScaledCubicFast(this Matrix<float, C3f> targetMat, Matrix<float, C3f> sourceMat,
+                                          Func<double, Tup4<float>> interpolator)
+        {
+            var dxa = new Tup4<long>[targetMat.SX];
+            var wxa = new Tup4<float>[targetMat.SX];
+            long fx = sourceMat.FX, ex = sourceMat.EX, dx1 = sourceMat.DX;
+            var scaleX = (double)sourceMat.SX / (double)targetMat.SX;
+            double x = 0.5 * scaleX - 0.5;
+            for (long tix = 0, tsx = targetMat.SX; tix < tsx; tix++, x += scaleX)
+            {
+                double xid = Fun.Floor(x); long xi = (long)xid; double xf = x - xid;
+                var dx = Tensor.Index4SamplesClamped(xi, fx, ex, dx1);
+                var dxi = xi * dx1; dx.E0 += dxi; dx.E1 += dxi; dx.E2 += dxi; dx.E3 += dxi;
+                dxa[tix] = dx; wxa[tix] = interpolator(xf);
+            }
+            var dya = new Tup4<long>[targetMat.SY];
+            var wya = new Tup4<float>[targetMat.SY];
+            long o = sourceMat.Origin, fy = sourceMat.FY, ey = sourceMat.EY, dy1 = sourceMat.DY;
+            var scaleY = (double)sourceMat.SY / (double)targetMat.SY;
+            double y = 0.5 * scaleY - 0.5;
+            for (long tiy = 0, tsy = targetMat.SY; tiy < tsy; tiy++, y += scaleY)
+            {
+                double yid = Fun.Floor(y); long yi = (long)yid; double yf = y - yid;
+                var dy = Tensor.Index4SamplesClamped(yi, fy, ey, dy1);
+                var dyi = o + yi * dy1; dy.E0 += dyi; dy.E1 += dyi; dy.E2 += dyi; dy.E3 += dyi;
+                dya[tiy] = dy; wya[tiy] = interpolator(yf);
+            }
+            targetMat.ForeachIndex((tix, tiy, i) =>
+                targetMat[i] = sourceMat.Sample16(dxa[tix], dya[tiy], wxa[tix], wya[tiy],
+                                                  C3f.LinCom, C3f.LinCom));
+        }
+
         /// <summary>
         /// Perform image resampling in software. Shows how to use higher order
         /// resampling (e.g. Lanczos or Bicubic) on matrices. This is not a very
@@ -220,9 +252,14 @@ namespace PixImageDemo
 
             // scaling an image
             var scaledColorImage = new PixImage<byte>(1280, 800, 3);
-            scaledColorImage.GetMatrix<C4b>().SetScaledCubic(colorImage.GetMatrix<C4b>());
+            scaledColorImage.GetMatrix<C3b>().SetScaledCubic(colorImage.GetMatrix<C3b>());
 
             scaledColorImage.SaveAsImage(Path.Combine(dir, "v-scaled-image.png"));
+
+            var scaledColorImage2 = new PixImage<byte>(1280, 800, 3);
+            scaledColorImage2.GetMatrix<C3b>().SetScaledLanczos(colorImage.GetMatrix<C3b>());
+            scaledColorImage.SaveAsImage(Path.Combine(dir, "v-scaled-lanczos-image.png"));
+
 
 
             // writing a color png image

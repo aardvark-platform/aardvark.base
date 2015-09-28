@@ -27,7 +27,7 @@ namespace Aardvark.Base
         //#     Tup.Create("float",     "",         "C4f",  "C4f"),
         //# };
         //# intConfigs.ForEach((dt, dtn, ct, fct) => {
-        //#     var clamp = dtn != "" && ct == "Fun";
+        //#     var clampVal = dtn != "" && ct == "Fun";
         //#     var clampMap = dtn != "" && ct != "Fun";
         //#     var rfct = dtn == "" ? "" : ct == "Fun" ? "RawF" : "Raw" + fct ;
         //#     var dtct = ct == "Fun" ? dt : dt + ", " + ct;
@@ -54,18 +54,13 @@ namespace Aardvark.Base
                                           Func<double, Tup4<float>> interpolator)
         {
             var scale = sourceMat.Size.ToV2d() / targetMat.Size.ToV2d();
-
-            double scaleX = scale.X, shiftX = 0.5 * scale.X - 0.5;
-            double scaleY = scale.Y, shiftY = 0.5 * scale.Y - 0.5;
-
-            targetMat.ForeachIndex((x, y, i) =>
-                targetMat[i] = sourceMat.Sample16(x * scaleX + shiftX, y * scaleY + shiftY,
-                                                  interpolator, interpolator,
-                                                  __ct__.LinCom__rfct__, __fct__.LinCom,
-                                                  Tensor.Index4SamplesClamped, Tensor.Index4SamplesClamped)/*#
-                                        if (clamp) { */
-                                        .Col__dtn__InFloatTo__dtn__Clamped()/*# } else if (clampMap) { */
-                                        .Copy(Col.__dtn__From__dtn__InFloatClamped)/*# } */);
+            targetMat.SetScaled16(sourceMat, scale.X, scale.Y, 0.5 * scale.X - 0.5, 0.5 * scale.Y - 0.5,
+                                 interpolator, interpolator, __ct__.LinCom__rfct__, __fct__.LinCom,
+                                 Tensor.Index4SamplesClamped, Tensor.Index4SamplesClamped/*#
+                                  if (clampVal) { */,
+                                  Col.__dtn__From__dtn__InFloatClamped/*#
+                                  } else if (clampMap) { */,
+                                  col => col.Copy(Col.__dtn__From__dtn__InFloatClamped)/*# } */);
         }
 
         /// <summary>
@@ -74,18 +69,13 @@ namespace Aardvark.Base
         public static void SetScaledLanczos(this Matrix<__dtct__> targetMat, Matrix<__dtct__> sourceMat)
         {
             var scale = sourceMat.Size.ToV2d() / targetMat.Size.ToV2d();
-
-            double scaleX = scale.X, shiftX = 0.5 * scale.X - 0.5;
-            double scaleY = scale.Y, shiftY = 0.5 * scale.Y - 0.5;
-
-            targetMat.ForeachIndex((x, y, i) =>
-                targetMat[i] = sourceMat.Sample36(x * scaleX + shiftX, y * scaleY + shiftY,
-                                                  Fun.Lanczos3f, Fun.Lanczos3f,
-                                                  __ct__.LinCom__rfct__, __fct__.LinCom,
-                                                  Tensor.Index6SamplesClamped, Tensor.Index6SamplesClamped)/*#
-                                        if (clamp) { */
-                                        .Col__dtn__InFloatTo__dtn__Clamped()/*# } else if (clampMap) { */
-                                        .Copy(Col.__dtn__From__dtn__InFloatClamped)/*# } */);
+            targetMat.SetScaled36(sourceMat, scale.X, scale.Y, 0.5 * scale.X - 0.5, 0.5 * scale.Y - 0.5,
+                                  Fun.Lanczos3f, Fun.Lanczos3f, __ct__.LinCom__rfct__, __fct__.LinCom,
+                                  Tensor.Index6SamplesClamped, Tensor.Index6SamplesClamped/*#
+                                  if (clampVal) { */,
+                                  Col.__dtn__From__dtn__InFloatClamped/*#
+                                  } else if (clampMap) { */,
+                                  col => col.Copy(Col.__dtn__From__dtn__InFloatClamped)/*# } */);
         }
 
         //# }); // configs
