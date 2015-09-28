@@ -8,6 +8,7 @@ if [ ! -d "packages/FAKE" ]; then
 	mono --runtime=v4.0 bin/nuget.exe install Aardvark.Build -OutputDirectory packages -ExcludeVersion 
 fi
 
+wget -q --no-check-certificate https://github.com/vrvis/Aardvark.Fake/raw/master/bin/Aardvark.Fake.dll -O bin/Aardvark.Fake.dll
 
 mono packages/FAKE/tools/FAKE.exe "build.fsx"  $@
 
