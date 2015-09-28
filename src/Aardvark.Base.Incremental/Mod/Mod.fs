@@ -711,6 +711,25 @@ module Mod =
                     res.GetValue() |> ignore
                     res :> IMod<_>
 
+
+    /// <summary>
+    /// creates a new cell forcing the evaluation of the
+    /// given one during change propagation (making it eager)
+    /// using a 
+    /// </summary>
+    let rec onPushCustomEq (eq : 'a -> 'a -> bool) (m : IMod<'a>) =
+        if m.IsConstant then 
+            m.GetValue() |> ignore
+            m
+        else
+            match m with
+                | :? LaterMod<'a> as m -> onPush m.Input
+                | :? EagerMod<'a> -> m
+                | _ ->
+                    let res = EagerMod(m, Some eq)
+                    res.GetValue() |> ignore
+                    res :> IMod<_>
+
     /// <summary>
     /// creates a new cell forcing the evaluation of the
     /// given one to be lazy (on demand)

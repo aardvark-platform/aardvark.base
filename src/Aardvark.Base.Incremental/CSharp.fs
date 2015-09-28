@@ -173,6 +173,10 @@ type ModExtensions private() =
         Mod.onPush this
 
     [<Extension>]
+    static member Eager(eq : Func<'a, 'a, bool>, this : IMod<'a>) =
+        Mod.onPushCustomEq (fun a b -> eq.Invoke(a,b)) this
+
+    [<Extension>]
     static member Lazy(this : IMod<'a>) =
         Mod.onPull this
 
@@ -382,6 +386,30 @@ type AdaptiveListExtensions private() =
     [<Extension>]
     static member ToAdaptiveSet (this : alist<'a>) =
         this |> AList.toASet
+
+
+[<Extension; AbstractClass; Sealed>]
+type CListExtensions private() =
+
+    [<Extension>]
+    static member Select (this : clist<'a>, f : Func<'a, 'b>) =
+        AList.map f.Invoke this
+
+    [<Extension>]
+    static member SelectMany (this : clist<'a>, f : Func<'a, alist<'b>>) =
+        AList.collect f.Invoke this
+
+    [<Extension>]
+    static member Where (this : clist<'a>, f : Func<'a, bool>) =
+        AList.filter f.Invoke this
+
+    [<Extension>]
+    static member Where (this : clist<'a>, f : Func<'a, IMod<bool>>) =
+        AList.filterM f.Invoke this
+
+    [<Extension>]
+    static member Concat (this : clist<'a>, other : alist<'a>) =
+        AList.concat' [this; other]
 
 
 
