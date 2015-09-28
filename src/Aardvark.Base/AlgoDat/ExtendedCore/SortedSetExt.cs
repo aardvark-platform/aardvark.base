@@ -2347,7 +2347,7 @@ namespace Aardvark.Base
 
             private Stack<SortedSetExt<T>.Node> _stack;
             private SortedSetExt<T>.Node _current;
-            private static SortedSetExt<T>.Node s_dummyNode = new SortedSetExt<T>.Node(default(T));
+            //private static SortedSetExt<T>.Node s_dummyNode = new SortedSetExt<T>.Node(default(T));
 
             private bool _reverse;
 
