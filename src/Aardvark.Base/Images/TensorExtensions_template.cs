@@ -60,7 +60,7 @@ namespace Aardvark.Base
                                   if (clampVal) { */,
                                   Col.__dtn__From__dtn__InFloatClamped/*#
                                   } else if (clampMap) { */,
-                                  col => col.Copy(Col.__dtn__From__dtn__InFloatClamped)/*# } */);
+                                  col => col.Map(Col.__dtn__From__dtn__InFloatClamped)/*# } */);
         }
 
         /// <summary>
@@ -75,7 +75,7 @@ namespace Aardvark.Base
                                   if (clampVal) { */,
                                   Col.__dtn__From__dtn__InFloatClamped/*#
                                   } else if (clampMap) { */,
-                                  col => col.Copy(Col.__dtn__From__dtn__InFloatClamped)/*# } */);
+                                  col => col.Map(Col.__dtn__From__dtn__InFloatClamped)/*# } */);
         }
 
         //# }); // configs

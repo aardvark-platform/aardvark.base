@@ -273,9 +273,18 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns a copy with all elements transformed by the supplied function.
         /// </summary>
-        public __type1__ Copy(Func<__ftype__, __ftype1__> fun)
+        [Obsolete("Use 'Map' instead (same functionality and parameters)", false)]
+        public __type1__ Copy(Func<__ftype__, __ftype1__> channel_fun)
         {
-            return new __type1__(/*# fields.ForEach(f => { */fun(__f__)/*# }, comma); */);
+            return Map(channel_fun);
+        }
+
+        /// <summary>
+        /// Returns a copy with all elements transformed by the supplied function.
+        /// </summary>
+        public __type1__ Map(Func<__ftype__, __ftype1__> channel_fun)
+        {
+            return new __type1__(/*# fields.ForEach(f => { */channel_fun(__f__)/*# }, comma); */);
         }
 
         //# }

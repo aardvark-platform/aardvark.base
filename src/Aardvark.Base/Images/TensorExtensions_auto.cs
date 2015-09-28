@@ -161,7 +161,7 @@ namespace Aardvark.Base
             targetMat.SetScaled16(sourceMat, scale.X, scale.Y, 0.5 * scale.X - 0.5, 0.5 * scale.Y - 0.5,
                                  interpolator, interpolator, C3b.LinComRawC3f, C3f.LinCom,
                                  Tensor.Index4SamplesClamped, Tensor.Index4SamplesClamped,
-                                  col => col.Copy(Col.ByteFromByteInFloatClamped));
+                                  col => col.Map(Col.ByteFromByteInFloatClamped));
         }
 
         /// <summary>
@@ -173,7 +173,7 @@ namespace Aardvark.Base
             targetMat.SetScaled36(sourceMat, scale.X, scale.Y, 0.5 * scale.X - 0.5, 0.5 * scale.Y - 0.5,
                                   Fun.Lanczos3f, Fun.Lanczos3f, C3b.LinComRawC3f, C3f.LinCom,
                                   Tensor.Index6SamplesClamped, Tensor.Index6SamplesClamped,
-                                  col => col.Copy(Col.ByteFromByteInFloatClamped));
+                                  col => col.Map(Col.ByteFromByteInFloatClamped));
         }
 
         /// <summary>
@@ -202,7 +202,7 @@ namespace Aardvark.Base
             targetMat.SetScaled16(sourceMat, scale.X, scale.Y, 0.5 * scale.X - 0.5, 0.5 * scale.Y - 0.5,
                                  interpolator, interpolator, C3us.LinComRawC3f, C3f.LinCom,
                                  Tensor.Index4SamplesClamped, Tensor.Index4SamplesClamped,
-                                  col => col.Copy(Col.UShortFromUShortInFloatClamped));
+                                  col => col.Map(Col.UShortFromUShortInFloatClamped));
         }
 
         /// <summary>
@@ -214,7 +214,7 @@ namespace Aardvark.Base
             targetMat.SetScaled36(sourceMat, scale.X, scale.Y, 0.5 * scale.X - 0.5, 0.5 * scale.Y - 0.5,
                                   Fun.Lanczos3f, Fun.Lanczos3f, C3us.LinComRawC3f, C3f.LinCom,
                                   Tensor.Index6SamplesClamped, Tensor.Index6SamplesClamped,
-                                  col => col.Copy(Col.UShortFromUShortInFloatClamped));
+                                  col => col.Map(Col.UShortFromUShortInFloatClamped));
         }
 
         /// <summary>
@@ -282,7 +282,7 @@ namespace Aardvark.Base
             targetMat.SetScaled16(sourceMat, scale.X, scale.Y, 0.5 * scale.X - 0.5, 0.5 * scale.Y - 0.5,
                                  interpolator, interpolator, C4b.LinComRawC4f, C4f.LinCom,
                                  Tensor.Index4SamplesClamped, Tensor.Index4SamplesClamped,
-                                  col => col.Copy(Col.ByteFromByteInFloatClamped));
+                                  col => col.Map(Col.ByteFromByteInFloatClamped));
         }
 
         /// <summary>
@@ -294,7 +294,7 @@ namespace Aardvark.Base
             targetMat.SetScaled36(sourceMat, scale.X, scale.Y, 0.5 * scale.X - 0.5, 0.5 * scale.Y - 0.5,
                                   Fun.Lanczos3f, Fun.Lanczos3f, C4b.LinComRawC4f, C4f.LinCom,
                                   Tensor.Index6SamplesClamped, Tensor.Index6SamplesClamped,
-                                  col => col.Copy(Col.ByteFromByteInFloatClamped));
+                                  col => col.Map(Col.ByteFromByteInFloatClamped));
         }
 
         /// <summary>
@@ -323,7 +323,7 @@ namespace Aardvark.Base
             targetMat.SetScaled16(sourceMat, scale.X, scale.Y, 0.5 * scale.X - 0.5, 0.5 * scale.Y - 0.5,
                                  interpolator, interpolator, C4us.LinComRawC4f, C4f.LinCom,
                                  Tensor.Index4SamplesClamped, Tensor.Index4SamplesClamped,
-                                  col => col.Copy(Col.UShortFromUShortInFloatClamped));
+                                  col => col.Map(Col.UShortFromUShortInFloatClamped));
         }
 
         /// <summary>
@@ -335,7 +335,7 @@ namespace Aardvark.Base
             targetMat.SetScaled36(sourceMat, scale.X, scale.Y, 0.5 * scale.X - 0.5, 0.5 * scale.Y - 0.5,
                                   Fun.Lanczos3f, Fun.Lanczos3f, C4us.LinComRawC4f, C4f.LinCom,
                                   Tensor.Index6SamplesClamped, Tensor.Index6SamplesClamped,
-                                  col => col.Copy(Col.UShortFromUShortInFloatClamped));
+                                  col => col.Map(Col.UShortFromUShortInFloatClamped));
         }
 
         /// <summary>

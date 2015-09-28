@@ -192,25 +192,25 @@ namespace PixImageDemo
                 {
                     /// Note: LinComRawC3f in x direction results in a byte color (range 0-255) stored
                     /// in a C3f. The second C3f.LinCom for the y direction does not perform any additional
-                    /// scaling, thus we need to copy the "ByteInFloat" color back to a byte color at the
+                    /// scaling, thus we need to map the "ByteInFloat" color back to a byte color at the
                     /// end (this perfoms clamping). Tensor.Tensor.Index6SamplesClamped clamps to the border
                     /// region and allows any double pixel address.
                     outMat0[i] = inMat.Sample36(x * scale + shift, y * scale + shift,
                                                Fun.Lanczos3f, Fun.Lanczos3f,
                                                C3b.LinComRawC3f, C3f.LinCom,
                                                Tensor.Index6SamplesClamped, Tensor.Index6SamplesClamped)
-                                                .Copy(Col.ByteFromByteInFloatClamped);
+                                                .Map(Col.ByteFromByteInFloatClamped);
 
                     /// Note: LinComRawC3f in x direction results in a byte color (range 0-255) stored
                     /// in a C3f. The second C3f.LinCom for the y direction does not perform any additional
-                    /// scaling, thus we need to copy the "ByteInFloat" color back to a byte color at the
+                    /// scaling, thus we need to map the "ByteInFloat" color back to a byte color at the
                     /// end (this perfoms clamping). Tensor.Index4SamplesClamped clamps to the border
                     /// region and allows any double pixel address.
                     outMat1[i] = inMat.Sample16(x * scale + shift, y * scale + shift,
                                                hermiteSpline, hermiteSpline,
                                                C3b.LinComRawC3f, C3f.LinCom,
                                                Tensor.Index4SamplesClamped, Tensor.Index4SamplesClamped)
-                                                .Copy(Col.ByteFromByteInFloatClamped);
+                                                .Map(Col.ByteFromByteInFloatClamped);
 
 
                     /// Note here the two C3b.LinCom calls perform the clamping immediately. Thus we have
@@ -225,7 +225,8 @@ namespace PixImageDemo
                                                Tensor.Index4SamplesCyclic1, Tensor.Index4SamplesCyclic1);
 
                     // outMat3[i] = inMat.Sample4Clamped(x * scale + shift, y * scale + shift, ColFun.Lerp, ColFun.Lerp);
-                    outMat3[i] = inMat.Sample4Clamped(x * scale + shift, y * scale + shift, ColFun.LerpC3f, ColFun.Lerp).Copy(Col.ByteFromByteInFloatClamped);
+                    outMat3[i] = inMat.Sample4Clamped(x * scale + shift, y * scale + shift, ColFun.LerpC3f, ColFun.Lerp)
+                                            .Map(Col.ByteFromByteInFloatClamped);
                 });
 
             outImg0.SaveAsImage(Path.Combine(dir, "resample-36clamped.tif"));

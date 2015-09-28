@@ -276,41 +276,86 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns a copy with all elements transformed by the supplied function.
         /// </summary>
-        public C3b Copy(Func<byte, byte> fun)
+        [Obsolete("Use 'Map' instead (same functionality and parameters)", false)]
+        public C3b Copy(Func<byte, byte> channel_fun)
         {
-            return new C3b(fun(R), fun(G), fun(B));
+            return Map(channel_fun);
         }
 
         /// <summary>
         /// Returns a copy with all elements transformed by the supplied function.
         /// </summary>
-        public C3us Copy(Func<byte, ushort> fun)
+        public C3b Map(Func<byte, byte> channel_fun)
         {
-            return new C3us(fun(R), fun(G), fun(B));
+            return new C3b(channel_fun(R), channel_fun(G), channel_fun(B));
         }
 
         /// <summary>
         /// Returns a copy with all elements transformed by the supplied function.
         /// </summary>
-        public C3ui Copy(Func<byte, uint> fun)
+        [Obsolete("Use 'Map' instead (same functionality and parameters)", false)]
+        public C3us Copy(Func<byte, ushort> channel_fun)
         {
-            return new C3ui(fun(R), fun(G), fun(B));
+            return Map(channel_fun);
         }
 
         /// <summary>
         /// Returns a copy with all elements transformed by the supplied function.
         /// </summary>
-        public C3f Copy(Func<byte, float> fun)
+        public C3us Map(Func<byte, ushort> channel_fun)
         {
-            return new C3f(fun(R), fun(G), fun(B));
+            return new C3us(channel_fun(R), channel_fun(G), channel_fun(B));
         }
 
         /// <summary>
         /// Returns a copy with all elements transformed by the supplied function.
         /// </summary>
-        public C3d Copy(Func<byte, double> fun)
+        [Obsolete("Use 'Map' instead (same functionality and parameters)", false)]
+        public C3ui Copy(Func<byte, uint> channel_fun)
         {
-            return new C3d(fun(R), fun(G), fun(B));
+            return Map(channel_fun);
+        }
+
+        /// <summary>
+        /// Returns a copy with all elements transformed by the supplied function.
+        /// </summary>
+        public C3ui Map(Func<byte, uint> channel_fun)
+        {
+            return new C3ui(channel_fun(R), channel_fun(G), channel_fun(B));
+        }
+
+        /// <summary>
+        /// Returns a copy with all elements transformed by the supplied function.
+        /// </summary>
+        [Obsolete("Use 'Map' instead (same functionality and parameters)", false)]
+        public C3f Copy(Func<byte, float> channel_fun)
+        {
+            return Map(channel_fun);
+        }
+
+        /// <summary>
+        /// Returns a copy with all elements transformed by the supplied function.
+        /// </summary>
+        public C3f Map(Func<byte, float> channel_fun)
+        {
+            return new C3f(channel_fun(R), channel_fun(G), channel_fun(B));
+        }
+
+        /// <summary>
+        /// Returns a copy with all elements transformed by the supplied function.
+        /// </summary>
+        [Obsolete("Use 'Map' instead (same functionality and parameters)", false)]
+        public C3d Copy(Func<byte, double> channel_fun)
+        {
+            return Map(channel_fun);
+        }
+
+        /// <summary>
+        /// Returns a copy with all elements transformed by the supplied function.
+        /// </summary>
+        public C3d Map(Func<byte, double> channel_fun)
+        {
+            return new C3d(channel_fun(R), channel_fun(G), channel_fun(B));
         }
 
         public void CopyTo<T>(T[] array, int start, Func<byte, T> element_fun)
@@ -1705,41 +1750,86 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns a copy with all elements transformed by the supplied function.
         /// </summary>
-        public C3b Copy(Func<ushort, byte> fun)
+        [Obsolete("Use 'Map' instead (same functionality and parameters)", false)]
+        public C3b Copy(Func<ushort, byte> channel_fun)
         {
-            return new C3b(fun(R), fun(G), fun(B));
+            return Map(channel_fun);
         }
 
         /// <summary>
         /// Returns a copy with all elements transformed by the supplied function.
         /// </summary>
-        public C3us Copy(Func<ushort, ushort> fun)
+        public C3b Map(Func<ushort, byte> channel_fun)
         {
-            return new C3us(fun(R), fun(G), fun(B));
+            return new C3b(channel_fun(R), channel_fun(G), channel_fun(B));
         }
 
         /// <summary>
         /// Returns a copy with all elements transformed by the supplied function.
         /// </summary>
-        public C3ui Copy(Func<ushort, uint> fun)
+        [Obsolete("Use 'Map' instead (same functionality and parameters)", false)]
+        public C3us Copy(Func<ushort, ushort> channel_fun)
         {
-            return new C3ui(fun(R), fun(G), fun(B));
+            return Map(channel_fun);
         }
 
         /// <summary>
         /// Returns a copy with all elements transformed by the supplied function.
         /// </summary>
-        public C3f Copy(Func<ushort, float> fun)
+        public C3us Map(Func<ushort, ushort> channel_fun)
         {
-            return new C3f(fun(R), fun(G), fun(B));
+            return new C3us(channel_fun(R), channel_fun(G), channel_fun(B));
         }
 
         /// <summary>
         /// Returns a copy with all elements transformed by the supplied function.
         /// </summary>
-        public C3d Copy(Func<ushort, double> fun)
+        [Obsolete("Use 'Map' instead (same functionality and parameters)", false)]
+        public C3ui Copy(Func<ushort, uint> channel_fun)
         {
-            return new C3d(fun(R), fun(G), fun(B));
+            return Map(channel_fun);
+        }
+
+        /// <summary>
+        /// Returns a copy with all elements transformed by the supplied function.
+        /// </summary>
+        public C3ui Map(Func<ushort, uint> channel_fun)
+        {
+            return new C3ui(channel_fun(R), channel_fun(G), channel_fun(B));
+        }
+
+        /// <summary>
+        /// Returns a copy with all elements transformed by the supplied function.
+        /// </summary>
+        [Obsolete("Use 'Map' instead (same functionality and parameters)", false)]
+        public C3f Copy(Func<ushort, float> channel_fun)
+        {
+            return Map(channel_fun);
+        }
+
+        /// <summary>
+        /// Returns a copy with all elements transformed by the supplied function.
+        /// </summary>
+        public C3f Map(Func<ushort, float> channel_fun)
+        {
+            return new C3f(channel_fun(R), channel_fun(G), channel_fun(B));
+        }
+
+        /// <summary>
+        /// Returns a copy with all elements transformed by the supplied function.
+        /// </summary>
+        [Obsolete("Use 'Map' instead (same functionality and parameters)", false)]
+        public C3d Copy(Func<ushort, double> channel_fun)
+        {
+            return Map(channel_fun);
+        }
+
+        /// <summary>
+        /// Returns a copy with all elements transformed by the supplied function.
+        /// </summary>
+        public C3d Map(Func<ushort, double> channel_fun)
+        {
+            return new C3d(channel_fun(R), channel_fun(G), channel_fun(B));
         }
 
         public void CopyTo<T>(T[] array, int start, Func<ushort, T> element_fun)
@@ -3097,41 +3187,86 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns a copy with all elements transformed by the supplied function.
         /// </summary>
-        public C3b Copy(Func<uint, byte> fun)
+        [Obsolete("Use 'Map' instead (same functionality and parameters)", false)]
+        public C3b Copy(Func<uint, byte> channel_fun)
         {
-            return new C3b(fun(R), fun(G), fun(B));
+            return Map(channel_fun);
         }
 
         /// <summary>
         /// Returns a copy with all elements transformed by the supplied function.
         /// </summary>
-        public C3us Copy(Func<uint, ushort> fun)
+        public C3b Map(Func<uint, byte> channel_fun)
         {
-            return new C3us(fun(R), fun(G), fun(B));
+            return new C3b(channel_fun(R), channel_fun(G), channel_fun(B));
         }
 
         /// <summary>
         /// Returns a copy with all elements transformed by the supplied function.
         /// </summary>
-        public C3ui Copy(Func<uint, uint> fun)
+        [Obsolete("Use 'Map' instead (same functionality and parameters)", false)]
+        public C3us Copy(Func<uint, ushort> channel_fun)
         {
-            return new C3ui(fun(R), fun(G), fun(B));
+            return Map(channel_fun);
         }
 
         /// <summary>
         /// Returns a copy with all elements transformed by the supplied function.
         /// </summary>
-        public C3f Copy(Func<uint, float> fun)
+        public C3us Map(Func<uint, ushort> channel_fun)
         {
-            return new C3f(fun(R), fun(G), fun(B));
+            return new C3us(channel_fun(R), channel_fun(G), channel_fun(B));
         }
 
         /// <summary>
         /// Returns a copy with all elements transformed by the supplied function.
         /// </summary>
-        public C3d Copy(Func<uint, double> fun)
+        [Obsolete("Use 'Map' instead (same functionality and parameters)", false)]
+        public C3ui Copy(Func<uint, uint> channel_fun)
         {
-            return new C3d(fun(R), fun(G), fun(B));
+            return Map(channel_fun);
+        }
+
+        /// <summary>
+        /// Returns a copy with all elements transformed by the supplied function.
+        /// </summary>
+        public C3ui Map(Func<uint, uint> channel_fun)
+        {
+            return new C3ui(channel_fun(R), channel_fun(G), channel_fun(B));
+        }
+
+        /// <summary>
+        /// Returns a copy with all elements transformed by the supplied function.
+        /// </summary>
+        [Obsolete("Use 'Map' instead (same functionality and parameters)", false)]
+        public C3f Copy(Func<uint, float> channel_fun)
+        {
+            return Map(channel_fun);
+        }
+
+        /// <summary>
+        /// Returns a copy with all elements transformed by the supplied function.
+        /// </summary>
+        public C3f Map(Func<uint, float> channel_fun)
+        {
+            return new C3f(channel_fun(R), channel_fun(G), channel_fun(B));
+        }
+
+        /// <summary>
+        /// Returns a copy with all elements transformed by the supplied function.
+        /// </summary>
+        [Obsolete("Use 'Map' instead (same functionality and parameters)", false)]
+        public C3d Copy(Func<uint, double> channel_fun)
+        {
+            return Map(channel_fun);
+        }
+
+        /// <summary>
+        /// Returns a copy with all elements transformed by the supplied function.
+        /// </summary>
+        public C3d Map(Func<uint, double> channel_fun)
+        {
+            return new C3d(channel_fun(R), channel_fun(G), channel_fun(B));
         }
 
         public void CopyTo<T>(T[] array, int start, Func<uint, T> element_fun)
@@ -4487,41 +4622,86 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns a copy with all elements transformed by the supplied function.
         /// </summary>
-        public C3b Copy(Func<float, byte> fun)
+        [Obsolete("Use 'Map' instead (same functionality and parameters)", false)]
+        public C3b Copy(Func<float, byte> channel_fun)
         {
-            return new C3b(fun(R), fun(G), fun(B));
+            return Map(channel_fun);
         }
 
         /// <summary>
         /// Returns a copy with all elements transformed by the supplied function.
         /// </summary>
-        public C3us Copy(Func<float, ushort> fun)
+        public C3b Map(Func<float, byte> channel_fun)
         {
-            return new C3us(fun(R), fun(G), fun(B));
+            return new C3b(channel_fun(R), channel_fun(G), channel_fun(B));
         }
 
         /// <summary>
         /// Returns a copy with all elements transformed by the supplied function.
         /// </summary>
-        public C3ui Copy(Func<float, uint> fun)
+        [Obsolete("Use 'Map' instead (same functionality and parameters)", false)]
+        public C3us Copy(Func<float, ushort> channel_fun)
         {
-            return new C3ui(fun(R), fun(G), fun(B));
+            return Map(channel_fun);
         }
 
         /// <summary>
         /// Returns a copy with all elements transformed by the supplied function.
         /// </summary>
-        public C3f Copy(Func<float, float> fun)
+        public C3us Map(Func<float, ushort> channel_fun)
         {
-            return new C3f(fun(R), fun(G), fun(B));
+            return new C3us(channel_fun(R), channel_fun(G), channel_fun(B));
         }
 
         /// <summary>
         /// Returns a copy with all elements transformed by the supplied function.
         /// </summary>
-        public C3d Copy(Func<float, double> fun)
+        [Obsolete("Use 'Map' instead (same functionality and parameters)", false)]
+        public C3ui Copy(Func<float, uint> channel_fun)
         {
-            return new C3d(fun(R), fun(G), fun(B));
+            return Map(channel_fun);
+        }
+
+        /// <summary>
+        /// Returns a copy with all elements transformed by the supplied function.
+        /// </summary>
+        public C3ui Map(Func<float, uint> channel_fun)
+        {
+            return new C3ui(channel_fun(R), channel_fun(G), channel_fun(B));
+        }
+
+        /// <summary>
+        /// Returns a copy with all elements transformed by the supplied function.
+        /// </summary>
+        [Obsolete("Use 'Map' instead (same functionality and parameters)", false)]
+        public C3f Copy(Func<float, float> channel_fun)
+        {
+            return Map(channel_fun);
+        }
+
+        /// <summary>
+        /// Returns a copy with all elements transformed by the supplied function.
+        /// </summary>
+        public C3f Map(Func<float, float> channel_fun)
+        {
+            return new C3f(channel_fun(R), channel_fun(G), channel_fun(B));
+        }
+
+        /// <summary>
+        /// Returns a copy with all elements transformed by the supplied function.
+        /// </summary>
+        [Obsolete("Use 'Map' instead (same functionality and parameters)", false)]
+        public C3d Copy(Func<float, double> channel_fun)
+        {
+            return Map(channel_fun);
+        }
+
+        /// <summary>
+        /// Returns a copy with all elements transformed by the supplied function.
+        /// </summary>
+        public C3d Map(Func<float, double> channel_fun)
+        {
+            return new C3d(channel_fun(R), channel_fun(G), channel_fun(B));
         }
 
         public void CopyTo<T>(T[] array, int start, Func<float, T> element_fun)
@@ -5915,41 +6095,86 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns a copy with all elements transformed by the supplied function.
         /// </summary>
-        public C3b Copy(Func<double, byte> fun)
+        [Obsolete("Use 'Map' instead (same functionality and parameters)", false)]
+        public C3b Copy(Func<double, byte> channel_fun)
         {
-            return new C3b(fun(R), fun(G), fun(B));
+            return Map(channel_fun);
         }
 
         /// <summary>
         /// Returns a copy with all elements transformed by the supplied function.
         /// </summary>
-        public C3us Copy(Func<double, ushort> fun)
+        public C3b Map(Func<double, byte> channel_fun)
         {
-            return new C3us(fun(R), fun(G), fun(B));
+            return new C3b(channel_fun(R), channel_fun(G), channel_fun(B));
         }
 
         /// <summary>
         /// Returns a copy with all elements transformed by the supplied function.
         /// </summary>
-        public C3ui Copy(Func<double, uint> fun)
+        [Obsolete("Use 'Map' instead (same functionality and parameters)", false)]
+        public C3us Copy(Func<double, ushort> channel_fun)
         {
-            return new C3ui(fun(R), fun(G), fun(B));
+            return Map(channel_fun);
         }
 
         /// <summary>
         /// Returns a copy with all elements transformed by the supplied function.
         /// </summary>
-        public C3f Copy(Func<double, float> fun)
+        public C3us Map(Func<double, ushort> channel_fun)
         {
-            return new C3f(fun(R), fun(G), fun(B));
+            return new C3us(channel_fun(R), channel_fun(G), channel_fun(B));
         }
 
         /// <summary>
         /// Returns a copy with all elements transformed by the supplied function.
         /// </summary>
-        public C3d Copy(Func<double, double> fun)
+        [Obsolete("Use 'Map' instead (same functionality and parameters)", false)]
+        public C3ui Copy(Func<double, uint> channel_fun)
         {
-            return new C3d(fun(R), fun(G), fun(B));
+            return Map(channel_fun);
+        }
+
+        /// <summary>
+        /// Returns a copy with all elements transformed by the supplied function.
+        /// </summary>
+        public C3ui Map(Func<double, uint> channel_fun)
+        {
+            return new C3ui(channel_fun(R), channel_fun(G), channel_fun(B));
+        }
+
+        /// <summary>
+        /// Returns a copy with all elements transformed by the supplied function.
+        /// </summary>
+        [Obsolete("Use 'Map' instead (same functionality and parameters)", false)]
+        public C3f Copy(Func<double, float> channel_fun)
+        {
+            return Map(channel_fun);
+        }
+
+        /// <summary>
+        /// Returns a copy with all elements transformed by the supplied function.
+        /// </summary>
+        public C3f Map(Func<double, float> channel_fun)
+        {
+            return new C3f(channel_fun(R), channel_fun(G), channel_fun(B));
+        }
+
+        /// <summary>
+        /// Returns a copy with all elements transformed by the supplied function.
+        /// </summary>
+        [Obsolete("Use 'Map' instead (same functionality and parameters)", false)]
+        public C3d Copy(Func<double, double> channel_fun)
+        {
+            return Map(channel_fun);
+        }
+
+        /// <summary>
+        /// Returns a copy with all elements transformed by the supplied function.
+        /// </summary>
+        public C3d Map(Func<double, double> channel_fun)
+        {
+            return new C3d(channel_fun(R), channel_fun(G), channel_fun(B));
         }
 
         public void CopyTo<T>(T[] array, int start, Func<double, T> element_fun)
@@ -7369,41 +7594,86 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns a copy with all elements transformed by the supplied function.
         /// </summary>
-        public C4b Copy(Func<byte, byte> fun)
+        [Obsolete("Use 'Map' instead (same functionality and parameters)", false)]
+        public C4b Copy(Func<byte, byte> channel_fun)
         {
-            return new C4b(fun(R), fun(G), fun(B), fun(A));
+            return Map(channel_fun);
         }
 
         /// <summary>
         /// Returns a copy with all elements transformed by the supplied function.
         /// </summary>
-        public C4us Copy(Func<byte, ushort> fun)
+        public C4b Map(Func<byte, byte> channel_fun)
         {
-            return new C4us(fun(R), fun(G), fun(B), fun(A));
+            return new C4b(channel_fun(R), channel_fun(G), channel_fun(B), channel_fun(A));
         }
 
         /// <summary>
         /// Returns a copy with all elements transformed by the supplied function.
         /// </summary>
-        public C4ui Copy(Func<byte, uint> fun)
+        [Obsolete("Use 'Map' instead (same functionality and parameters)", false)]
+        public C4us Copy(Func<byte, ushort> channel_fun)
         {
-            return new C4ui(fun(R), fun(G), fun(B), fun(A));
+            return Map(channel_fun);
         }
 
         /// <summary>
         /// Returns a copy with all elements transformed by the supplied function.
         /// </summary>
-        public C4f Copy(Func<byte, float> fun)
+        public C4us Map(Func<byte, ushort> channel_fun)
         {
-            return new C4f(fun(R), fun(G), fun(B), fun(A));
+            return new C4us(channel_fun(R), channel_fun(G), channel_fun(B), channel_fun(A));
         }
 
         /// <summary>
         /// Returns a copy with all elements transformed by the supplied function.
         /// </summary>
-        public C4d Copy(Func<byte, double> fun)
+        [Obsolete("Use 'Map' instead (same functionality and parameters)", false)]
+        public C4ui Copy(Func<byte, uint> channel_fun)
         {
-            return new C4d(fun(R), fun(G), fun(B), fun(A));
+            return Map(channel_fun);
+        }
+
+        /// <summary>
+        /// Returns a copy with all elements transformed by the supplied function.
+        /// </summary>
+        public C4ui Map(Func<byte, uint> channel_fun)
+        {
+            return new C4ui(channel_fun(R), channel_fun(G), channel_fun(B), channel_fun(A));
+        }
+
+        /// <summary>
+        /// Returns a copy with all elements transformed by the supplied function.
+        /// </summary>
+        [Obsolete("Use 'Map' instead (same functionality and parameters)", false)]
+        public C4f Copy(Func<byte, float> channel_fun)
+        {
+            return Map(channel_fun);
+        }
+
+        /// <summary>
+        /// Returns a copy with all elements transformed by the supplied function.
+        /// </summary>
+        public C4f Map(Func<byte, float> channel_fun)
+        {
+            return new C4f(channel_fun(R), channel_fun(G), channel_fun(B), channel_fun(A));
+        }
+
+        /// <summary>
+        /// Returns a copy with all elements transformed by the supplied function.
+        /// </summary>
+        [Obsolete("Use 'Map' instead (same functionality and parameters)", false)]
+        public C4d Copy(Func<byte, double> channel_fun)
+        {
+            return Map(channel_fun);
+        }
+
+        /// <summary>
+        /// Returns a copy with all elements transformed by the supplied function.
+        /// </summary>
+        public C4d Map(Func<byte, double> channel_fun)
+        {
+            return new C4d(channel_fun(R), channel_fun(G), channel_fun(B), channel_fun(A));
         }
 
         public void CopyTo<T>(T[] array, int start, Func<byte, T> element_fun)
@@ -8871,41 +9141,86 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns a copy with all elements transformed by the supplied function.
         /// </summary>
-        public C4b Copy(Func<ushort, byte> fun)
+        [Obsolete("Use 'Map' instead (same functionality and parameters)", false)]
+        public C4b Copy(Func<ushort, byte> channel_fun)
         {
-            return new C4b(fun(R), fun(G), fun(B), fun(A));
+            return Map(channel_fun);
         }
 
         /// <summary>
         /// Returns a copy with all elements transformed by the supplied function.
         /// </summary>
-        public C4us Copy(Func<ushort, ushort> fun)
+        public C4b Map(Func<ushort, byte> channel_fun)
         {
-            return new C4us(fun(R), fun(G), fun(B), fun(A));
+            return new C4b(channel_fun(R), channel_fun(G), channel_fun(B), channel_fun(A));
         }
 
         /// <summary>
         /// Returns a copy with all elements transformed by the supplied function.
         /// </summary>
-        public C4ui Copy(Func<ushort, uint> fun)
+        [Obsolete("Use 'Map' instead (same functionality and parameters)", false)]
+        public C4us Copy(Func<ushort, ushort> channel_fun)
         {
-            return new C4ui(fun(R), fun(G), fun(B), fun(A));
+            return Map(channel_fun);
         }
 
         /// <summary>
         /// Returns a copy with all elements transformed by the supplied function.
         /// </summary>
-        public C4f Copy(Func<ushort, float> fun)
+        public C4us Map(Func<ushort, ushort> channel_fun)
         {
-            return new C4f(fun(R), fun(G), fun(B), fun(A));
+            return new C4us(channel_fun(R), channel_fun(G), channel_fun(B), channel_fun(A));
         }
 
         /// <summary>
         /// Returns a copy with all elements transformed by the supplied function.
         /// </summary>
-        public C4d Copy(Func<ushort, double> fun)
+        [Obsolete("Use 'Map' instead (same functionality and parameters)", false)]
+        public C4ui Copy(Func<ushort, uint> channel_fun)
         {
-            return new C4d(fun(R), fun(G), fun(B), fun(A));
+            return Map(channel_fun);
+        }
+
+        /// <summary>
+        /// Returns a copy with all elements transformed by the supplied function.
+        /// </summary>
+        public C4ui Map(Func<ushort, uint> channel_fun)
+        {
+            return new C4ui(channel_fun(R), channel_fun(G), channel_fun(B), channel_fun(A));
+        }
+
+        /// <summary>
+        /// Returns a copy with all elements transformed by the supplied function.
+        /// </summary>
+        [Obsolete("Use 'Map' instead (same functionality and parameters)", false)]
+        public C4f Copy(Func<ushort, float> channel_fun)
+        {
+            return Map(channel_fun);
+        }
+
+        /// <summary>
+        /// Returns a copy with all elements transformed by the supplied function.
+        /// </summary>
+        public C4f Map(Func<ushort, float> channel_fun)
+        {
+            return new C4f(channel_fun(R), channel_fun(G), channel_fun(B), channel_fun(A));
+        }
+
+        /// <summary>
+        /// Returns a copy with all elements transformed by the supplied function.
+        /// </summary>
+        [Obsolete("Use 'Map' instead (same functionality and parameters)", false)]
+        public C4d Copy(Func<ushort, double> channel_fun)
+        {
+            return Map(channel_fun);
+        }
+
+        /// <summary>
+        /// Returns a copy with all elements transformed by the supplied function.
+        /// </summary>
+        public C4d Map(Func<ushort, double> channel_fun)
+        {
+            return new C4d(channel_fun(R), channel_fun(G), channel_fun(B), channel_fun(A));
         }
 
         public void CopyTo<T>(T[] array, int start, Func<ushort, T> element_fun)
@@ -10334,41 +10649,86 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns a copy with all elements transformed by the supplied function.
         /// </summary>
-        public C4b Copy(Func<uint, byte> fun)
+        [Obsolete("Use 'Map' instead (same functionality and parameters)", false)]
+        public C4b Copy(Func<uint, byte> channel_fun)
         {
-            return new C4b(fun(R), fun(G), fun(B), fun(A));
+            return Map(channel_fun);
         }
 
         /// <summary>
         /// Returns a copy with all elements transformed by the supplied function.
         /// </summary>
-        public C4us Copy(Func<uint, ushort> fun)
+        public C4b Map(Func<uint, byte> channel_fun)
         {
-            return new C4us(fun(R), fun(G), fun(B), fun(A));
+            return new C4b(channel_fun(R), channel_fun(G), channel_fun(B), channel_fun(A));
         }
 
         /// <summary>
         /// Returns a copy with all elements transformed by the supplied function.
         /// </summary>
-        public C4ui Copy(Func<uint, uint> fun)
+        [Obsolete("Use 'Map' instead (same functionality and parameters)", false)]
+        public C4us Copy(Func<uint, ushort> channel_fun)
         {
-            return new C4ui(fun(R), fun(G), fun(B), fun(A));
+            return Map(channel_fun);
         }
 
         /// <summary>
         /// Returns a copy with all elements transformed by the supplied function.
         /// </summary>
-        public C4f Copy(Func<uint, float> fun)
+        public C4us Map(Func<uint, ushort> channel_fun)
         {
-            return new C4f(fun(R), fun(G), fun(B), fun(A));
+            return new C4us(channel_fun(R), channel_fun(G), channel_fun(B), channel_fun(A));
         }
 
         /// <summary>
         /// Returns a copy with all elements transformed by the supplied function.
         /// </summary>
-        public C4d Copy(Func<uint, double> fun)
+        [Obsolete("Use 'Map' instead (same functionality and parameters)", false)]
+        public C4ui Copy(Func<uint, uint> channel_fun)
         {
-            return new C4d(fun(R), fun(G), fun(B), fun(A));
+            return Map(channel_fun);
+        }
+
+        /// <summary>
+        /// Returns a copy with all elements transformed by the supplied function.
+        /// </summary>
+        public C4ui Map(Func<uint, uint> channel_fun)
+        {
+            return new C4ui(channel_fun(R), channel_fun(G), channel_fun(B), channel_fun(A));
+        }
+
+        /// <summary>
+        /// Returns a copy with all elements transformed by the supplied function.
+        /// </summary>
+        [Obsolete("Use 'Map' instead (same functionality and parameters)", false)]
+        public C4f Copy(Func<uint, float> channel_fun)
+        {
+            return Map(channel_fun);
+        }
+
+        /// <summary>
+        /// Returns a copy with all elements transformed by the supplied function.
+        /// </summary>
+        public C4f Map(Func<uint, float> channel_fun)
+        {
+            return new C4f(channel_fun(R), channel_fun(G), channel_fun(B), channel_fun(A));
+        }
+
+        /// <summary>
+        /// Returns a copy with all elements transformed by the supplied function.
+        /// </summary>
+        [Obsolete("Use 'Map' instead (same functionality and parameters)", false)]
+        public C4d Copy(Func<uint, double> channel_fun)
+        {
+            return Map(channel_fun);
+        }
+
+        /// <summary>
+        /// Returns a copy with all elements transformed by the supplied function.
+        /// </summary>
+        public C4d Map(Func<uint, double> channel_fun)
+        {
+            return new C4d(channel_fun(R), channel_fun(G), channel_fun(B), channel_fun(A));
         }
 
         public void CopyTo<T>(T[] array, int start, Func<uint, T> element_fun)
@@ -11797,41 +12157,86 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns a copy with all elements transformed by the supplied function.
         /// </summary>
-        public C4b Copy(Func<float, byte> fun)
+        [Obsolete("Use 'Map' instead (same functionality and parameters)", false)]
+        public C4b Copy(Func<float, byte> channel_fun)
         {
-            return new C4b(fun(R), fun(G), fun(B), fun(A));
+            return Map(channel_fun);
         }
 
         /// <summary>
         /// Returns a copy with all elements transformed by the supplied function.
         /// </summary>
-        public C4us Copy(Func<float, ushort> fun)
+        public C4b Map(Func<float, byte> channel_fun)
         {
-            return new C4us(fun(R), fun(G), fun(B), fun(A));
+            return new C4b(channel_fun(R), channel_fun(G), channel_fun(B), channel_fun(A));
         }
 
         /// <summary>
         /// Returns a copy with all elements transformed by the supplied function.
         /// </summary>
-        public C4ui Copy(Func<float, uint> fun)
+        [Obsolete("Use 'Map' instead (same functionality and parameters)", false)]
+        public C4us Copy(Func<float, ushort> channel_fun)
         {
-            return new C4ui(fun(R), fun(G), fun(B), fun(A));
+            return Map(channel_fun);
         }
 
         /// <summary>
         /// Returns a copy with all elements transformed by the supplied function.
         /// </summary>
-        public C4f Copy(Func<float, float> fun)
+        public C4us Map(Func<float, ushort> channel_fun)
         {
-            return new C4f(fun(R), fun(G), fun(B), fun(A));
+            return new C4us(channel_fun(R), channel_fun(G), channel_fun(B), channel_fun(A));
         }
 
         /// <summary>
         /// Returns a copy with all elements transformed by the supplied function.
         /// </summary>
-        public C4d Copy(Func<float, double> fun)
+        [Obsolete("Use 'Map' instead (same functionality and parameters)", false)]
+        public C4ui Copy(Func<float, uint> channel_fun)
         {
-            return new C4d(fun(R), fun(G), fun(B), fun(A));
+            return Map(channel_fun);
+        }
+
+        /// <summary>
+        /// Returns a copy with all elements transformed by the supplied function.
+        /// </summary>
+        public C4ui Map(Func<float, uint> channel_fun)
+        {
+            return new C4ui(channel_fun(R), channel_fun(G), channel_fun(B), channel_fun(A));
+        }
+
+        /// <summary>
+        /// Returns a copy with all elements transformed by the supplied function.
+        /// </summary>
+        [Obsolete("Use 'Map' instead (same functionality and parameters)", false)]
+        public C4f Copy(Func<float, float> channel_fun)
+        {
+            return Map(channel_fun);
+        }
+
+        /// <summary>
+        /// Returns a copy with all elements transformed by the supplied function.
+        /// </summary>
+        public C4f Map(Func<float, float> channel_fun)
+        {
+            return new C4f(channel_fun(R), channel_fun(G), channel_fun(B), channel_fun(A));
+        }
+
+        /// <summary>
+        /// Returns a copy with all elements transformed by the supplied function.
+        /// </summary>
+        [Obsolete("Use 'Map' instead (same functionality and parameters)", false)]
+        public C4d Copy(Func<float, double> channel_fun)
+        {
+            return Map(channel_fun);
+        }
+
+        /// <summary>
+        /// Returns a copy with all elements transformed by the supplied function.
+        /// </summary>
+        public C4d Map(Func<float, double> channel_fun)
+        {
+            return new C4d(channel_fun(R), channel_fun(G), channel_fun(B), channel_fun(A));
         }
 
         public void CopyTo<T>(T[] array, int start, Func<float, T> element_fun)
@@ -13294,41 +13699,86 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns a copy with all elements transformed by the supplied function.
         /// </summary>
-        public C4b Copy(Func<double, byte> fun)
+        [Obsolete("Use 'Map' instead (same functionality and parameters)", false)]
+        public C4b Copy(Func<double, byte> channel_fun)
         {
-            return new C4b(fun(R), fun(G), fun(B), fun(A));
+            return Map(channel_fun);
         }
 
         /// <summary>
         /// Returns a copy with all elements transformed by the supplied function.
         /// </summary>
-        public C4us Copy(Func<double, ushort> fun)
+        public C4b Map(Func<double, byte> channel_fun)
         {
-            return new C4us(fun(R), fun(G), fun(B), fun(A));
+            return new C4b(channel_fun(R), channel_fun(G), channel_fun(B), channel_fun(A));
         }
 
         /// <summary>
         /// Returns a copy with all elements transformed by the supplied function.
         /// </summary>
-        public C4ui Copy(Func<double, uint> fun)
+        [Obsolete("Use 'Map' instead (same functionality and parameters)", false)]
+        public C4us Copy(Func<double, ushort> channel_fun)
         {
-            return new C4ui(fun(R), fun(G), fun(B), fun(A));
+            return Map(channel_fun);
         }
 
         /// <summary>
         /// Returns a copy with all elements transformed by the supplied function.
         /// </summary>
-        public C4f Copy(Func<double, float> fun)
+        public C4us Map(Func<double, ushort> channel_fun)
         {
-            return new C4f(fun(R), fun(G), fun(B), fun(A));
+            return new C4us(channel_fun(R), channel_fun(G), channel_fun(B), channel_fun(A));
         }
 
         /// <summary>
         /// Returns a copy with all elements transformed by the supplied function.
         /// </summary>
-        public C4d Copy(Func<double, double> fun)
+        [Obsolete("Use 'Map' instead (same functionality and parameters)", false)]
+        public C4ui Copy(Func<double, uint> channel_fun)
         {
-            return new C4d(fun(R), fun(G), fun(B), fun(A));
+            return Map(channel_fun);
+        }
+
+        /// <summary>
+        /// Returns a copy with all elements transformed by the supplied function.
+        /// </summary>
+        public C4ui Map(Func<double, uint> channel_fun)
+        {
+            return new C4ui(channel_fun(R), channel_fun(G), channel_fun(B), channel_fun(A));
+        }
+
+        /// <summary>
+        /// Returns a copy with all elements transformed by the supplied function.
+        /// </summary>
+        [Obsolete("Use 'Map' instead (same functionality and parameters)", false)]
+        public C4f Copy(Func<double, float> channel_fun)
+        {
+            return Map(channel_fun);
+        }
+
+        /// <summary>
+        /// Returns a copy with all elements transformed by the supplied function.
+        /// </summary>
+        public C4f Map(Func<double, float> channel_fun)
+        {
+            return new C4f(channel_fun(R), channel_fun(G), channel_fun(B), channel_fun(A));
+        }
+
+        /// <summary>
+        /// Returns a copy with all elements transformed by the supplied function.
+        /// </summary>
+        [Obsolete("Use 'Map' instead (same functionality and parameters)", false)]
+        public C4d Copy(Func<double, double> channel_fun)
+        {
+            return Map(channel_fun);
+        }
+
+        /// <summary>
+        /// Returns a copy with all elements transformed by the supplied function.
+        /// </summary>
+        public C4d Map(Func<double, double> channel_fun)
+        {
+            return new C4d(channel_fun(R), channel_fun(G), channel_fun(B), channel_fun(A));
         }
 
         public void CopyTo<T>(T[] array, int start, Func<double, T> element_fun)
