@@ -173,7 +173,7 @@ type ModExtensions private() =
         Mod.onPush this
 
     [<Extension>]
-    static member Eager(eq : Func<'a, 'a, bool>, this : IMod<'a>) =
+    static member Eager(this : IMod<'a>, eq : Func<'a, 'a, bool>) =
         Mod.onPushCustomEq (fun a b -> eq.Invoke(a,b)) this
 
     [<Extension>]
