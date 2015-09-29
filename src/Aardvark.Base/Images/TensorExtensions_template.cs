@@ -31,6 +31,26 @@ namespace Aardvark.Base
         //#     var clampMap = dtn != "" && ct != "Fun";
         //#     var rfct = dtn == "" ? "" : ct == "Fun" ? "RawF" : "Raw" + fct ;
         //#     var dtct = ct == "Fun" ? dt : dt + ", " + ct;
+        //#     var it = ct == "Fun" ? dt : ct;
+        public static void SetScaledNearest(this Matrix<__dtct__> targetMat, Matrix<__dtct__> sourceMat)
+        {
+            targetMat.SetScaledLinear(sourceMat, (x, a, b) => x < 0.5 ? a : b,
+                                                 (x, a, b) => x < 0.5 ? a : b);
+        }
+        /// <summary>
+        /// Use supplied linear interpolators in x and y to scale the source matrix into the target
+        /// matrix.
+        /// </summary>
+        public static void SetScaledLinear<T1>(this Matrix<__dtct__> targetMat, Matrix<__dtct__> sourceMat,
+                                           Func<double, __it__, __it__, T1> xinterpolator,
+                                           Func<double, T1, T1, __it__> yinterpolator)
+        {
+            var scale = sourceMat.Size.ToV2d() / targetMat.Size.ToV2d();
+            targetMat.SetScaled4(sourceMat, scale.X, scale.Y, 0.5 * scale.X - 0.5, 0.5 * scale.Y - 0.5,
+                                 xinterpolator, yinterpolator,
+                                 Tensor.Index2SamplesClamped, Tensor.Index2SamplesClamped);
+        }
+
         /// <summary>
         /// Use Cubic Spline interpolation to scale the source matrix into the target matrix.
         /// The supplied parameter selects the spline to use. The default value of -0.5 generates
@@ -46,9 +66,13 @@ namespace Aardvark.Base
             targetMat.SetScaledCubic(sourceMat, hermiteSpline);
         }
 
+        public static void SetScaledBSpline3(this Matrix<__dtct__> targetMat, Matrix<__dtct__> sourceMat)
+        {
+            targetMat.SetScaledCubic(sourceMat, Fun.BSpline3f);
+        }
+
         /// <summary>
-        /// Use Cubic Spline interpolation to scale the source matrix into the target matrix
-        /// using the supplied cubic interpolator.
+        /// Use a supplied cubic interpolator to scale the source matrix into the target matrix.
         /// </summary>
         public static void SetScaledCubic(this Matrix<__dtct__> targetMat, Matrix<__dtct__> sourceMat,
                                           Func<double, Tup4<float>> interpolator)
@@ -63,14 +87,25 @@ namespace Aardvark.Base
                                   col => col.Map(Col.__dtn__From__dtn__InFloatClamped)/*# } */);
         }
 
+        public static void SetScaledBSpline5(this Matrix<__dtct__> targetMat, Matrix<__dtct__> sourceMat)
+        {
+            targetMat.SetScaledOrder5(sourceMat, Fun.BSpline5f);
+        }
+
         /// <summary>
         /// Use Lanczos Interpoation to scale the source matrix into the target matrix.
         /// </summary>
         public static void SetScaledLanczos(this Matrix<__dtct__> targetMat, Matrix<__dtct__> sourceMat)
         {
+            targetMat.SetScaledOrder5(sourceMat, Fun.Lanczos3f);
+        }
+
+        public static void SetScaledOrder5(this Matrix<__dtct__> targetMat, Matrix<__dtct__> sourceMat,
+                                           Func<double, Tup6<float>> interpolator)
+        {
             var scale = sourceMat.Size.ToV2d() / targetMat.Size.ToV2d();
             targetMat.SetScaled36(sourceMat, scale.X, scale.Y, 0.5 * scale.X - 0.5, 0.5 * scale.Y - 0.5,
-                                  Fun.Lanczos3f, Fun.Lanczos3f, __ct__.LinCom__rfct__, __fct__.LinCom,
+                                  interpolator, interpolator, __ct__.LinCom__rfct__, __fct__.LinCom,
                                   Tensor.Index6SamplesClamped, Tensor.Index6SamplesClamped/*#
                                   if (clampVal) { */,
                                   Col.__dtn__From__dtn__InFloatClamped/*#

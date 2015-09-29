@@ -251,16 +251,28 @@ namespace PixImageDemo
 
             var colorImage = CreateHowManyColorsIllusion(1024);
 
+
             // scaling an image
             var scaledColorImage = new PixImage<byte>(1280, 800, 3);
             scaledColorImage.GetMatrix<C3b>().SetScaledCubic(colorImage.GetMatrix<C3b>());
-
             scaledColorImage.SaveAsImage(Path.Combine(dir, "v-scaled-image.png"));
+
+            // For shrinking images, interpoation of image values is not the optimal
+            // resampling filter. Here BSpline3 or BSpline5 approximation can be used
+            // which are 3rd order or 5th order approximations of a Gauss filter.
+            var shrunkColorImage = new PixImage<byte>(512, 512, 3);
+            shrunkColorImage.GetMatrix<C3b>().SetScaledBSpline5(colorImage.GetMatrix<C3b>());
+            shrunkColorImage.SaveAsImage(Path.Combine(dir, "v-shrunk-image.png"));
 
             var scaledColorImage2 = new PixImage<byte>(1280, 800, 3);
             scaledColorImage2.GetMatrix<C3b>().SetScaledLanczos(colorImage.GetMatrix<C3b>());
             scaledColorImage.SaveAsImage(Path.Combine(dir, "v-scaled-lanczos-image.png"));
 
+            var smallColorImage = CreateHowManyColorsIllusion(256);
+
+            var nearestScaledImage = new PixImage<byte>(1024, 768, 3);
+            nearestScaledImage.GetMatrix<C3b>().SetScaledNearest(smallColorImage.GetMatrix<C3b>());
+            nearestScaledImage.SaveAsImage(Path.Combine(dir, "v-scaled-nearest-image.png"));
 
 
             // writing a color png image

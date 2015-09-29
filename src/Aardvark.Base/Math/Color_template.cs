@@ -838,6 +838,26 @@ namespace Aardvark.Base
         #region Interpolation
 
         /// <summary>
+        /// Returns the linearly interpolated color between a and b stored in a  __flttype__.
+        /// </summary>
+        public static __flttype__ LerpRaw__flttype__(this double x, __type__ a, __type__ b)
+        {
+            return new __flttype__(/*# fields.ForEach(f => { */
+                        (float)a.__f__ + ((float)x * (float)((__htype__)b.__f__ - (__htype__)a.__f__))/*#
+                        }, comma); */);
+        }
+
+        /// <summary>
+        /// Returns the linearly interpolated color between a and b stored in a __dbltype__.
+        /// </summary>
+        public static __dbltype__ LerpRaw__dbltype__(this double x, __type__ a, __type__ b)
+        {
+            return new __dbltype__(/*# fields.ForEach(f => { */
+                        (double)a.__f__ + (x * (double)((__htype__)b.__f__ - (__htype__)a.__f__))/*#
+                        }, comma); */);
+        }
+
+        /// <summary>
         /// Returns the linearly interpolated color between a and b.
         /// </summary>
         public static __type__ Lerp(this double x, __type__ a, __type__ b)
