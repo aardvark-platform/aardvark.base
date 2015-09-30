@@ -538,6 +538,11 @@ namespace Aardvark.Base
         /// J.A.Parker, R.V.Kenyon &amp; D.E.Troxel, IEEE Transactions on
         /// Medical Imaging Vol. 2, 1983. Recommended values for a:
         /// -0.5 for medical/astronomical images, -1.0 for other photos.
+        /// a = -0.5 exactly reconstructs second degree polynomials,
+        /// a = -0.75 results in a continuous second derivative of the 
+        /// two polynomials used
+        /// a = -1.0 matches the slope of the sinc function at 1
+        /// (amplifying frequencies just below the cutoff frequency)
         /// </summary>
         public static Func<double, Tup4<double>> CreateCubicTup4d(double a)
         {
@@ -550,6 +555,11 @@ namespace Aardvark.Base
                 double ttap3stttap2 = tt * (ap3 - t * ap2);
                 return new Tup4<double>(tastta - ttasttta, 1 - ttap3stttap2,
                                          ttap3stttap2 - tastta, ttasttta);
+                // Weights:
+                // a t^3 - 2 a t^2 + a t            = t ( a - a t (2 - t))
+                // (a+2) t^3 - (a+3) t^2 + 1        = 1 - t^2 ((a+3) - (a+2) t)
+                // -(a+2) t^3 + (2a+3) t^2 - a t    = t ( -a + t ((2a + 3) - (a+2) t))
+                // -a t^3 + a t^2                   = t^2 a (1 - t)
             };
         }
 
@@ -576,14 +586,36 @@ namespace Aardvark.Base
                 double ttap3stttap2 = tt * (ap3 - t * ap2);
                 return new Tup4<float>((float)(tastta - ttasttta), (float)(1 - ttap3stttap2),
                                        (float)(ttap3stttap2 - tastta), (float)ttasttta);
-
-                // Weights:
-                // a t^3 - 2 a t^2 + a t            = t ( a - a t (2 - t))
-                // (a+2) t^3 - (a+3) t^2 + 1        = 1 - t^2 ((a+3) - (a+2) t)
-                // -(a+2) t^3 + (2a+3) t^2 - a t    = t ( -a + t ((2a + 3) - (a+2) t))
-                // -a t^3 + a t^2                   = t^2 a (1 - t)
             };
         }
+
+        public static Tup4<double> BSpline3d(double t) => new Tup4<double>(
+            t*(t*(t*(-1/6.0) + 3/6.0) - 3/6.0) + 1/6.0,
+            t*(t*(t*( 3/6.0) - 6/6.0)        ) + 4/6.0,
+            t*(t*(t*(-3/6.0) + 3/6.0) + 3/6.0) + 1/6.0,
+            t*(t*(t*( 1/6.0)        )        )        );
+
+        public static Tup4<float> BSpline3f(double t) => new Tup4<float>(
+            (float)(t*(t*(t*(-1/6.0) + 3/6.0) - 3/6.0) + 1/6.0),
+            (float)(t*(t*(t*( 3/6.0) - 6/6.0)        ) + 4/6.0),
+            (float)(t*(t*(t*(-3/6.0) + 3/6.0) + 3/6.0) + 1/6.0),
+            (float)(t*(t*(t*( 1/6.0)        )        )        ));
+
+        public static Tup6<double> BSpline5d(double t) => new Tup6<double>(
+            t*(t*(t*(t*(t*( -1/120.0)  +5/120.0) -10/120.0) +10/120.0)  -5/120.0)  +1/120.0,
+            t*(t*(t*(t*(t*(  5/120.0) -20/120.0) +20/120.0) +20/120.0) -50/120.0) +26/120.0,
+            t*(t*(t*(t*(t*(-10/120.0) +30/120.0)          ) -60/120.0)          ) +66/120.0,
+            t*(t*(t*(t*(t*( 10/120.0) -20/120.0) -20/120.0) +20/120.0) +50/120.0) +26/120.0,
+            t*(t*(t*(t*(t*( -5/120.0)  +5/120.0) +10/120.0) +10/120.0)  +5/120.0)  +1/120.0,
+            t*(t*(t*(t*(t*(  1/120.0) 		   ) 		  ) 	         ) 	        )          );
+
+        public static Tup6<float> BSpline5f(double t) => new Tup6<float>(
+            (float)(t*(t*(t*(t*(t*( -1/120.0)  +5/120.0) -10/120.0) +10/120.0)  -5/120.0)  +1/120.0),
+            (float)(t*(t*(t*(t*(t*(  5/120.0) -20/120.0) +20/120.0) +20/120.0) -50/120.0) +26/120.0),
+            (float)(t*(t*(t*(t*(t*(-10/120.0) +30/120.0)          ) -60/120.0)          ) +66/120.0),
+            (float)(t*(t*(t*(t*(t*( 10/120.0) -20/120.0) -20/120.0) +20/120.0) +50/120.0) +26/120.0),
+            (float)(t*(t*(t*(t*(t*( -5/120.0)  +5/120.0) +10/120.0) +10/120.0)  +5/120.0)  +1/120.0),
+            (float)(t*(t*(t*(t*(t*(  1/120.0) 		   ) 		  ) 	         ) 	        )          ));
 
         public static Tup6<double> Lanczos3d(double x)
         {

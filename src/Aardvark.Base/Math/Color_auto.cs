@@ -276,41 +276,86 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns a copy with all elements transformed by the supplied function.
         /// </summary>
-        public C3b Copy(Func<byte, byte> fun)
+        [Obsolete("Use 'Map' instead (same functionality and parameters)", false)]
+        public C3b Copy(Func<byte, byte> channel_fun)
         {
-            return new C3b(fun(R), fun(G), fun(B));
+            return Map(channel_fun);
         }
 
         /// <summary>
         /// Returns a copy with all elements transformed by the supplied function.
         /// </summary>
-        public C3us Copy(Func<byte, ushort> fun)
+        public C3b Map(Func<byte, byte> channel_fun)
         {
-            return new C3us(fun(R), fun(G), fun(B));
+            return new C3b(channel_fun(R), channel_fun(G), channel_fun(B));
         }
 
         /// <summary>
         /// Returns a copy with all elements transformed by the supplied function.
         /// </summary>
-        public C3ui Copy(Func<byte, uint> fun)
+        [Obsolete("Use 'Map' instead (same functionality and parameters)", false)]
+        public C3us Copy(Func<byte, ushort> channel_fun)
         {
-            return new C3ui(fun(R), fun(G), fun(B));
+            return Map(channel_fun);
         }
 
         /// <summary>
         /// Returns a copy with all elements transformed by the supplied function.
         /// </summary>
-        public C3f Copy(Func<byte, float> fun)
+        public C3us Map(Func<byte, ushort> channel_fun)
         {
-            return new C3f(fun(R), fun(G), fun(B));
+            return new C3us(channel_fun(R), channel_fun(G), channel_fun(B));
         }
 
         /// <summary>
         /// Returns a copy with all elements transformed by the supplied function.
         /// </summary>
-        public C3d Copy(Func<byte, double> fun)
+        [Obsolete("Use 'Map' instead (same functionality and parameters)", false)]
+        public C3ui Copy(Func<byte, uint> channel_fun)
         {
-            return new C3d(fun(R), fun(G), fun(B));
+            return Map(channel_fun);
+        }
+
+        /// <summary>
+        /// Returns a copy with all elements transformed by the supplied function.
+        /// </summary>
+        public C3ui Map(Func<byte, uint> channel_fun)
+        {
+            return new C3ui(channel_fun(R), channel_fun(G), channel_fun(B));
+        }
+
+        /// <summary>
+        /// Returns a copy with all elements transformed by the supplied function.
+        /// </summary>
+        [Obsolete("Use 'Map' instead (same functionality and parameters)", false)]
+        public C3f Copy(Func<byte, float> channel_fun)
+        {
+            return Map(channel_fun);
+        }
+
+        /// <summary>
+        /// Returns a copy with all elements transformed by the supplied function.
+        /// </summary>
+        public C3f Map(Func<byte, float> channel_fun)
+        {
+            return new C3f(channel_fun(R), channel_fun(G), channel_fun(B));
+        }
+
+        /// <summary>
+        /// Returns a copy with all elements transformed by the supplied function.
+        /// </summary>
+        [Obsolete("Use 'Map' instead (same functionality and parameters)", false)]
+        public C3d Copy(Func<byte, double> channel_fun)
+        {
+            return Map(channel_fun);
+        }
+
+        /// <summary>
+        /// Returns a copy with all elements transformed by the supplied function.
+        /// </summary>
+        public C3d Map(Func<byte, double> channel_fun)
+        {
+            return new C3d(channel_fun(R), channel_fun(G), channel_fun(B));
         }
 
         public void CopyTo<T>(T[] array, int start, Func<byte, T> element_fun)
@@ -1422,6 +1467,28 @@ namespace Aardvark.Base
         #region Interpolation
 
         /// <summary>
+        /// Returns the linearly interpolated color between a and b stored in a  C3f.
+        /// </summary>
+        public static C3f LerpRawC3f(this double x, C3b a, C3b b)
+        {
+            return new C3f(
+                        (float)a.R + ((float)x * (float)((int)b.R - (int)a.R)), 
+                        (float)a.G + ((float)x * (float)((int)b.G - (int)a.G)), 
+                        (float)a.B + ((float)x * (float)((int)b.B - (int)a.B)));
+        }
+
+        /// <summary>
+        /// Returns the linearly interpolated color between a and b stored in a C3d.
+        /// </summary>
+        public static C3d LerpRawC3d(this double x, C3b a, C3b b)
+        {
+            return new C3d(
+                        (double)a.R + (x * (double)((int)b.R - (int)a.R)), 
+                        (double)a.G + (x * (double)((int)b.G - (int)a.G)), 
+                        (double)a.B + (x * (double)((int)b.B - (int)a.B)));
+        }
+
+        /// <summary>
         /// Returns the linearly interpolated color between a and b.
         /// </summary>
         public static C3b Lerp(this double x, C3b a, C3b b)
@@ -1705,41 +1772,86 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns a copy with all elements transformed by the supplied function.
         /// </summary>
-        public C3b Copy(Func<ushort, byte> fun)
+        [Obsolete("Use 'Map' instead (same functionality and parameters)", false)]
+        public C3b Copy(Func<ushort, byte> channel_fun)
         {
-            return new C3b(fun(R), fun(G), fun(B));
+            return Map(channel_fun);
         }
 
         /// <summary>
         /// Returns a copy with all elements transformed by the supplied function.
         /// </summary>
-        public C3us Copy(Func<ushort, ushort> fun)
+        public C3b Map(Func<ushort, byte> channel_fun)
         {
-            return new C3us(fun(R), fun(G), fun(B));
+            return new C3b(channel_fun(R), channel_fun(G), channel_fun(B));
         }
 
         /// <summary>
         /// Returns a copy with all elements transformed by the supplied function.
         /// </summary>
-        public C3ui Copy(Func<ushort, uint> fun)
+        [Obsolete("Use 'Map' instead (same functionality and parameters)", false)]
+        public C3us Copy(Func<ushort, ushort> channel_fun)
         {
-            return new C3ui(fun(R), fun(G), fun(B));
+            return Map(channel_fun);
         }
 
         /// <summary>
         /// Returns a copy with all elements transformed by the supplied function.
         /// </summary>
-        public C3f Copy(Func<ushort, float> fun)
+        public C3us Map(Func<ushort, ushort> channel_fun)
         {
-            return new C3f(fun(R), fun(G), fun(B));
+            return new C3us(channel_fun(R), channel_fun(G), channel_fun(B));
         }
 
         /// <summary>
         /// Returns a copy with all elements transformed by the supplied function.
         /// </summary>
-        public C3d Copy(Func<ushort, double> fun)
+        [Obsolete("Use 'Map' instead (same functionality and parameters)", false)]
+        public C3ui Copy(Func<ushort, uint> channel_fun)
         {
-            return new C3d(fun(R), fun(G), fun(B));
+            return Map(channel_fun);
+        }
+
+        /// <summary>
+        /// Returns a copy with all elements transformed by the supplied function.
+        /// </summary>
+        public C3ui Map(Func<ushort, uint> channel_fun)
+        {
+            return new C3ui(channel_fun(R), channel_fun(G), channel_fun(B));
+        }
+
+        /// <summary>
+        /// Returns a copy with all elements transformed by the supplied function.
+        /// </summary>
+        [Obsolete("Use 'Map' instead (same functionality and parameters)", false)]
+        public C3f Copy(Func<ushort, float> channel_fun)
+        {
+            return Map(channel_fun);
+        }
+
+        /// <summary>
+        /// Returns a copy with all elements transformed by the supplied function.
+        /// </summary>
+        public C3f Map(Func<ushort, float> channel_fun)
+        {
+            return new C3f(channel_fun(R), channel_fun(G), channel_fun(B));
+        }
+
+        /// <summary>
+        /// Returns a copy with all elements transformed by the supplied function.
+        /// </summary>
+        [Obsolete("Use 'Map' instead (same functionality and parameters)", false)]
+        public C3d Copy(Func<ushort, double> channel_fun)
+        {
+            return Map(channel_fun);
+        }
+
+        /// <summary>
+        /// Returns a copy with all elements transformed by the supplied function.
+        /// </summary>
+        public C3d Map(Func<ushort, double> channel_fun)
+        {
+            return new C3d(channel_fun(R), channel_fun(G), channel_fun(B));
         }
 
         public void CopyTo<T>(T[] array, int start, Func<ushort, T> element_fun)
@@ -2851,6 +2963,28 @@ namespace Aardvark.Base
         #region Interpolation
 
         /// <summary>
+        /// Returns the linearly interpolated color between a and b stored in a  C3f.
+        /// </summary>
+        public static C3f LerpRawC3f(this double x, C3us a, C3us b)
+        {
+            return new C3f(
+                        (float)a.R + ((float)x * (float)((int)b.R - (int)a.R)), 
+                        (float)a.G + ((float)x * (float)((int)b.G - (int)a.G)), 
+                        (float)a.B + ((float)x * (float)((int)b.B - (int)a.B)));
+        }
+
+        /// <summary>
+        /// Returns the linearly interpolated color between a and b stored in a C3d.
+        /// </summary>
+        public static C3d LerpRawC3d(this double x, C3us a, C3us b)
+        {
+            return new C3d(
+                        (double)a.R + (x * (double)((int)b.R - (int)a.R)), 
+                        (double)a.G + (x * (double)((int)b.G - (int)a.G)), 
+                        (double)a.B + (x * (double)((int)b.B - (int)a.B)));
+        }
+
+        /// <summary>
         /// Returns the linearly interpolated color between a and b.
         /// </summary>
         public static C3us Lerp(this double x, C3us a, C3us b)
@@ -3097,41 +3231,86 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns a copy with all elements transformed by the supplied function.
         /// </summary>
-        public C3b Copy(Func<uint, byte> fun)
+        [Obsolete("Use 'Map' instead (same functionality and parameters)", false)]
+        public C3b Copy(Func<uint, byte> channel_fun)
         {
-            return new C3b(fun(R), fun(G), fun(B));
+            return Map(channel_fun);
         }
 
         /// <summary>
         /// Returns a copy with all elements transformed by the supplied function.
         /// </summary>
-        public C3us Copy(Func<uint, ushort> fun)
+        public C3b Map(Func<uint, byte> channel_fun)
         {
-            return new C3us(fun(R), fun(G), fun(B));
+            return new C3b(channel_fun(R), channel_fun(G), channel_fun(B));
         }
 
         /// <summary>
         /// Returns a copy with all elements transformed by the supplied function.
         /// </summary>
-        public C3ui Copy(Func<uint, uint> fun)
+        [Obsolete("Use 'Map' instead (same functionality and parameters)", false)]
+        public C3us Copy(Func<uint, ushort> channel_fun)
         {
-            return new C3ui(fun(R), fun(G), fun(B));
+            return Map(channel_fun);
         }
 
         /// <summary>
         /// Returns a copy with all elements transformed by the supplied function.
         /// </summary>
-        public C3f Copy(Func<uint, float> fun)
+        public C3us Map(Func<uint, ushort> channel_fun)
         {
-            return new C3f(fun(R), fun(G), fun(B));
+            return new C3us(channel_fun(R), channel_fun(G), channel_fun(B));
         }
 
         /// <summary>
         /// Returns a copy with all elements transformed by the supplied function.
         /// </summary>
-        public C3d Copy(Func<uint, double> fun)
+        [Obsolete("Use 'Map' instead (same functionality and parameters)", false)]
+        public C3ui Copy(Func<uint, uint> channel_fun)
         {
-            return new C3d(fun(R), fun(G), fun(B));
+            return Map(channel_fun);
+        }
+
+        /// <summary>
+        /// Returns a copy with all elements transformed by the supplied function.
+        /// </summary>
+        public C3ui Map(Func<uint, uint> channel_fun)
+        {
+            return new C3ui(channel_fun(R), channel_fun(G), channel_fun(B));
+        }
+
+        /// <summary>
+        /// Returns a copy with all elements transformed by the supplied function.
+        /// </summary>
+        [Obsolete("Use 'Map' instead (same functionality and parameters)", false)]
+        public C3f Copy(Func<uint, float> channel_fun)
+        {
+            return Map(channel_fun);
+        }
+
+        /// <summary>
+        /// Returns a copy with all elements transformed by the supplied function.
+        /// </summary>
+        public C3f Map(Func<uint, float> channel_fun)
+        {
+            return new C3f(channel_fun(R), channel_fun(G), channel_fun(B));
+        }
+
+        /// <summary>
+        /// Returns a copy with all elements transformed by the supplied function.
+        /// </summary>
+        [Obsolete("Use 'Map' instead (same functionality and parameters)", false)]
+        public C3d Copy(Func<uint, double> channel_fun)
+        {
+            return Map(channel_fun);
+        }
+
+        /// <summary>
+        /// Returns a copy with all elements transformed by the supplied function.
+        /// </summary>
+        public C3d Map(Func<uint, double> channel_fun)
+        {
+            return new C3d(channel_fun(R), channel_fun(G), channel_fun(B));
         }
 
         public void CopyTo<T>(T[] array, int start, Func<uint, T> element_fun)
@@ -4204,6 +4383,28 @@ namespace Aardvark.Base
         #region Interpolation
 
         /// <summary>
+        /// Returns the linearly interpolated color between a and b stored in a  C3f.
+        /// </summary>
+        public static C3f LerpRawC3f(this double x, C3ui a, C3ui b)
+        {
+            return new C3f(
+                        (float)a.R + ((float)x * (float)((long)b.R - (long)a.R)), 
+                        (float)a.G + ((float)x * (float)((long)b.G - (long)a.G)), 
+                        (float)a.B + ((float)x * (float)((long)b.B - (long)a.B)));
+        }
+
+        /// <summary>
+        /// Returns the linearly interpolated color between a and b stored in a C3d.
+        /// </summary>
+        public static C3d LerpRawC3d(this double x, C3ui a, C3ui b)
+        {
+            return new C3d(
+                        (double)a.R + (x * (double)((long)b.R - (long)a.R)), 
+                        (double)a.G + (x * (double)((long)b.G - (long)a.G)), 
+                        (double)a.B + (x * (double)((long)b.B - (long)a.B)));
+        }
+
+        /// <summary>
         /// Returns the linearly interpolated color between a and b.
         /// </summary>
         public static C3ui Lerp(this double x, C3ui a, C3ui b)
@@ -4487,41 +4688,86 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns a copy with all elements transformed by the supplied function.
         /// </summary>
-        public C3b Copy(Func<float, byte> fun)
+        [Obsolete("Use 'Map' instead (same functionality and parameters)", false)]
+        public C3b Copy(Func<float, byte> channel_fun)
         {
-            return new C3b(fun(R), fun(G), fun(B));
+            return Map(channel_fun);
         }
 
         /// <summary>
         /// Returns a copy with all elements transformed by the supplied function.
         /// </summary>
-        public C3us Copy(Func<float, ushort> fun)
+        public C3b Map(Func<float, byte> channel_fun)
         {
-            return new C3us(fun(R), fun(G), fun(B));
+            return new C3b(channel_fun(R), channel_fun(G), channel_fun(B));
         }
 
         /// <summary>
         /// Returns a copy with all elements transformed by the supplied function.
         /// </summary>
-        public C3ui Copy(Func<float, uint> fun)
+        [Obsolete("Use 'Map' instead (same functionality and parameters)", false)]
+        public C3us Copy(Func<float, ushort> channel_fun)
         {
-            return new C3ui(fun(R), fun(G), fun(B));
+            return Map(channel_fun);
         }
 
         /// <summary>
         /// Returns a copy with all elements transformed by the supplied function.
         /// </summary>
-        public C3f Copy(Func<float, float> fun)
+        public C3us Map(Func<float, ushort> channel_fun)
         {
-            return new C3f(fun(R), fun(G), fun(B));
+            return new C3us(channel_fun(R), channel_fun(G), channel_fun(B));
         }
 
         /// <summary>
         /// Returns a copy with all elements transformed by the supplied function.
         /// </summary>
-        public C3d Copy(Func<float, double> fun)
+        [Obsolete("Use 'Map' instead (same functionality and parameters)", false)]
+        public C3ui Copy(Func<float, uint> channel_fun)
         {
-            return new C3d(fun(R), fun(G), fun(B));
+            return Map(channel_fun);
+        }
+
+        /// <summary>
+        /// Returns a copy with all elements transformed by the supplied function.
+        /// </summary>
+        public C3ui Map(Func<float, uint> channel_fun)
+        {
+            return new C3ui(channel_fun(R), channel_fun(G), channel_fun(B));
+        }
+
+        /// <summary>
+        /// Returns a copy with all elements transformed by the supplied function.
+        /// </summary>
+        [Obsolete("Use 'Map' instead (same functionality and parameters)", false)]
+        public C3f Copy(Func<float, float> channel_fun)
+        {
+            return Map(channel_fun);
+        }
+
+        /// <summary>
+        /// Returns a copy with all elements transformed by the supplied function.
+        /// </summary>
+        public C3f Map(Func<float, float> channel_fun)
+        {
+            return new C3f(channel_fun(R), channel_fun(G), channel_fun(B));
+        }
+
+        /// <summary>
+        /// Returns a copy with all elements transformed by the supplied function.
+        /// </summary>
+        [Obsolete("Use 'Map' instead (same functionality and parameters)", false)]
+        public C3d Copy(Func<float, double> channel_fun)
+        {
+            return Map(channel_fun);
+        }
+
+        /// <summary>
+        /// Returns a copy with all elements transformed by the supplied function.
+        /// </summary>
+        public C3d Map(Func<float, double> channel_fun)
+        {
+            return new C3d(channel_fun(R), channel_fun(G), channel_fun(B));
         }
 
         public void CopyTo<T>(T[] array, int start, Func<float, T> element_fun)
@@ -5682,6 +5928,28 @@ namespace Aardvark.Base
         #region Interpolation
 
         /// <summary>
+        /// Returns the linearly interpolated color between a and b stored in a  C3f.
+        /// </summary>
+        public static C3f LerpRawC3f(this double x, C3f a, C3f b)
+        {
+            return new C3f(
+                        (float)a.R + ((float)x * (float)((double)b.R - (double)a.R)), 
+                        (float)a.G + ((float)x * (float)((double)b.G - (double)a.G)), 
+                        (float)a.B + ((float)x * (float)((double)b.B - (double)a.B)));
+        }
+
+        /// <summary>
+        /// Returns the linearly interpolated color between a and b stored in a C3d.
+        /// </summary>
+        public static C3d LerpRawC3d(this double x, C3f a, C3f b)
+        {
+            return new C3d(
+                        (double)a.R + (x * (double)((double)b.R - (double)a.R)), 
+                        (double)a.G + (x * (double)((double)b.G - (double)a.G)), 
+                        (double)a.B + (x * (double)((double)b.B - (double)a.B)));
+        }
+
+        /// <summary>
         /// Returns the linearly interpolated color between a and b.
         /// </summary>
         public static C3f Lerp(this double x, C3f a, C3f b)
@@ -5915,41 +6183,86 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns a copy with all elements transformed by the supplied function.
         /// </summary>
-        public C3b Copy(Func<double, byte> fun)
+        [Obsolete("Use 'Map' instead (same functionality and parameters)", false)]
+        public C3b Copy(Func<double, byte> channel_fun)
         {
-            return new C3b(fun(R), fun(G), fun(B));
+            return Map(channel_fun);
         }
 
         /// <summary>
         /// Returns a copy with all elements transformed by the supplied function.
         /// </summary>
-        public C3us Copy(Func<double, ushort> fun)
+        public C3b Map(Func<double, byte> channel_fun)
         {
-            return new C3us(fun(R), fun(G), fun(B));
+            return new C3b(channel_fun(R), channel_fun(G), channel_fun(B));
         }
 
         /// <summary>
         /// Returns a copy with all elements transformed by the supplied function.
         /// </summary>
-        public C3ui Copy(Func<double, uint> fun)
+        [Obsolete("Use 'Map' instead (same functionality and parameters)", false)]
+        public C3us Copy(Func<double, ushort> channel_fun)
         {
-            return new C3ui(fun(R), fun(G), fun(B));
+            return Map(channel_fun);
         }
 
         /// <summary>
         /// Returns a copy with all elements transformed by the supplied function.
         /// </summary>
-        public C3f Copy(Func<double, float> fun)
+        public C3us Map(Func<double, ushort> channel_fun)
         {
-            return new C3f(fun(R), fun(G), fun(B));
+            return new C3us(channel_fun(R), channel_fun(G), channel_fun(B));
         }
 
         /// <summary>
         /// Returns a copy with all elements transformed by the supplied function.
         /// </summary>
-        public C3d Copy(Func<double, double> fun)
+        [Obsolete("Use 'Map' instead (same functionality and parameters)", false)]
+        public C3ui Copy(Func<double, uint> channel_fun)
         {
-            return new C3d(fun(R), fun(G), fun(B));
+            return Map(channel_fun);
+        }
+
+        /// <summary>
+        /// Returns a copy with all elements transformed by the supplied function.
+        /// </summary>
+        public C3ui Map(Func<double, uint> channel_fun)
+        {
+            return new C3ui(channel_fun(R), channel_fun(G), channel_fun(B));
+        }
+
+        /// <summary>
+        /// Returns a copy with all elements transformed by the supplied function.
+        /// </summary>
+        [Obsolete("Use 'Map' instead (same functionality and parameters)", false)]
+        public C3f Copy(Func<double, float> channel_fun)
+        {
+            return Map(channel_fun);
+        }
+
+        /// <summary>
+        /// Returns a copy with all elements transformed by the supplied function.
+        /// </summary>
+        public C3f Map(Func<double, float> channel_fun)
+        {
+            return new C3f(channel_fun(R), channel_fun(G), channel_fun(B));
+        }
+
+        /// <summary>
+        /// Returns a copy with all elements transformed by the supplied function.
+        /// </summary>
+        [Obsolete("Use 'Map' instead (same functionality and parameters)", false)]
+        public C3d Copy(Func<double, double> channel_fun)
+        {
+            return Map(channel_fun);
+        }
+
+        /// <summary>
+        /// Returns a copy with all elements transformed by the supplied function.
+        /// </summary>
+        public C3d Map(Func<double, double> channel_fun)
+        {
+            return new C3d(channel_fun(R), channel_fun(G), channel_fun(B));
         }
 
         public void CopyTo<T>(T[] array, int start, Func<double, T> element_fun)
@@ -7046,6 +7359,28 @@ namespace Aardvark.Base
         #region Interpolation
 
         /// <summary>
+        /// Returns the linearly interpolated color between a and b stored in a  C3f.
+        /// </summary>
+        public static C3f LerpRawC3f(this double x, C3d a, C3d b)
+        {
+            return new C3f(
+                        (float)a.R + ((float)x * (float)((double)b.R - (double)a.R)), 
+                        (float)a.G + ((float)x * (float)((double)b.G - (double)a.G)), 
+                        (float)a.B + ((float)x * (float)((double)b.B - (double)a.B)));
+        }
+
+        /// <summary>
+        /// Returns the linearly interpolated color between a and b stored in a C3d.
+        /// </summary>
+        public static C3d LerpRawC3d(this double x, C3d a, C3d b)
+        {
+            return new C3d(
+                        (double)a.R + (x * (double)((double)b.R - (double)a.R)), 
+                        (double)a.G + (x * (double)((double)b.G - (double)a.G)), 
+                        (double)a.B + (x * (double)((double)b.B - (double)a.B)));
+        }
+
+        /// <summary>
         /// Returns the linearly interpolated color between a and b.
         /// </summary>
         public static C3d Lerp(this double x, C3d a, C3d b)
@@ -7369,41 +7704,86 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns a copy with all elements transformed by the supplied function.
         /// </summary>
-        public C4b Copy(Func<byte, byte> fun)
+        [Obsolete("Use 'Map' instead (same functionality and parameters)", false)]
+        public C4b Copy(Func<byte, byte> channel_fun)
         {
-            return new C4b(fun(R), fun(G), fun(B), fun(A));
+            return Map(channel_fun);
         }
 
         /// <summary>
         /// Returns a copy with all elements transformed by the supplied function.
         /// </summary>
-        public C4us Copy(Func<byte, ushort> fun)
+        public C4b Map(Func<byte, byte> channel_fun)
         {
-            return new C4us(fun(R), fun(G), fun(B), fun(A));
+            return new C4b(channel_fun(R), channel_fun(G), channel_fun(B), channel_fun(A));
         }
 
         /// <summary>
         /// Returns a copy with all elements transformed by the supplied function.
         /// </summary>
-        public C4ui Copy(Func<byte, uint> fun)
+        [Obsolete("Use 'Map' instead (same functionality and parameters)", false)]
+        public C4us Copy(Func<byte, ushort> channel_fun)
         {
-            return new C4ui(fun(R), fun(G), fun(B), fun(A));
+            return Map(channel_fun);
         }
 
         /// <summary>
         /// Returns a copy with all elements transformed by the supplied function.
         /// </summary>
-        public C4f Copy(Func<byte, float> fun)
+        public C4us Map(Func<byte, ushort> channel_fun)
         {
-            return new C4f(fun(R), fun(G), fun(B), fun(A));
+            return new C4us(channel_fun(R), channel_fun(G), channel_fun(B), channel_fun(A));
         }
 
         /// <summary>
         /// Returns a copy with all elements transformed by the supplied function.
         /// </summary>
-        public C4d Copy(Func<byte, double> fun)
+        [Obsolete("Use 'Map' instead (same functionality and parameters)", false)]
+        public C4ui Copy(Func<byte, uint> channel_fun)
         {
-            return new C4d(fun(R), fun(G), fun(B), fun(A));
+            return Map(channel_fun);
+        }
+
+        /// <summary>
+        /// Returns a copy with all elements transformed by the supplied function.
+        /// </summary>
+        public C4ui Map(Func<byte, uint> channel_fun)
+        {
+            return new C4ui(channel_fun(R), channel_fun(G), channel_fun(B), channel_fun(A));
+        }
+
+        /// <summary>
+        /// Returns a copy with all elements transformed by the supplied function.
+        /// </summary>
+        [Obsolete("Use 'Map' instead (same functionality and parameters)", false)]
+        public C4f Copy(Func<byte, float> channel_fun)
+        {
+            return Map(channel_fun);
+        }
+
+        /// <summary>
+        /// Returns a copy with all elements transformed by the supplied function.
+        /// </summary>
+        public C4f Map(Func<byte, float> channel_fun)
+        {
+            return new C4f(channel_fun(R), channel_fun(G), channel_fun(B), channel_fun(A));
+        }
+
+        /// <summary>
+        /// Returns a copy with all elements transformed by the supplied function.
+        /// </summary>
+        [Obsolete("Use 'Map' instead (same functionality and parameters)", false)]
+        public C4d Copy(Func<byte, double> channel_fun)
+        {
+            return Map(channel_fun);
+        }
+
+        /// <summary>
+        /// Returns a copy with all elements transformed by the supplied function.
+        /// </summary>
+        public C4d Map(Func<byte, double> channel_fun)
+        {
+            return new C4d(channel_fun(R), channel_fun(G), channel_fun(B), channel_fun(A));
         }
 
         public void CopyTo<T>(T[] array, int start, Func<byte, T> element_fun)
@@ -8547,6 +8927,30 @@ namespace Aardvark.Base
         #region Interpolation
 
         /// <summary>
+        /// Returns the linearly interpolated color between a and b stored in a  C4f.
+        /// </summary>
+        public static C4f LerpRawC4f(this double x, C4b a, C4b b)
+        {
+            return new C4f(
+                        (float)a.R + ((float)x * (float)((int)b.R - (int)a.R)), 
+                        (float)a.G + ((float)x * (float)((int)b.G - (int)a.G)), 
+                        (float)a.B + ((float)x * (float)((int)b.B - (int)a.B)), 
+                        (float)a.A + ((float)x * (float)((int)b.A - (int)a.A)));
+        }
+
+        /// <summary>
+        /// Returns the linearly interpolated color between a and b stored in a C4d.
+        /// </summary>
+        public static C4d LerpRawC4d(this double x, C4b a, C4b b)
+        {
+            return new C4d(
+                        (double)a.R + (x * (double)((int)b.R - (int)a.R)), 
+                        (double)a.G + (x * (double)((int)b.G - (int)a.G)), 
+                        (double)a.B + (x * (double)((int)b.B - (int)a.B)), 
+                        (double)a.A + (x * (double)((int)b.A - (int)a.A)));
+        }
+
+        /// <summary>
         /// Returns the linearly interpolated color between a and b.
         /// </summary>
         public static C4b Lerp(this double x, C4b a, C4b b)
@@ -8871,41 +9275,86 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns a copy with all elements transformed by the supplied function.
         /// </summary>
-        public C4b Copy(Func<ushort, byte> fun)
+        [Obsolete("Use 'Map' instead (same functionality and parameters)", false)]
+        public C4b Copy(Func<ushort, byte> channel_fun)
         {
-            return new C4b(fun(R), fun(G), fun(B), fun(A));
+            return Map(channel_fun);
         }
 
         /// <summary>
         /// Returns a copy with all elements transformed by the supplied function.
         /// </summary>
-        public C4us Copy(Func<ushort, ushort> fun)
+        public C4b Map(Func<ushort, byte> channel_fun)
         {
-            return new C4us(fun(R), fun(G), fun(B), fun(A));
+            return new C4b(channel_fun(R), channel_fun(G), channel_fun(B), channel_fun(A));
         }
 
         /// <summary>
         /// Returns a copy with all elements transformed by the supplied function.
         /// </summary>
-        public C4ui Copy(Func<ushort, uint> fun)
+        [Obsolete("Use 'Map' instead (same functionality and parameters)", false)]
+        public C4us Copy(Func<ushort, ushort> channel_fun)
         {
-            return new C4ui(fun(R), fun(G), fun(B), fun(A));
+            return Map(channel_fun);
         }
 
         /// <summary>
         /// Returns a copy with all elements transformed by the supplied function.
         /// </summary>
-        public C4f Copy(Func<ushort, float> fun)
+        public C4us Map(Func<ushort, ushort> channel_fun)
         {
-            return new C4f(fun(R), fun(G), fun(B), fun(A));
+            return new C4us(channel_fun(R), channel_fun(G), channel_fun(B), channel_fun(A));
         }
 
         /// <summary>
         /// Returns a copy with all elements transformed by the supplied function.
         /// </summary>
-        public C4d Copy(Func<ushort, double> fun)
+        [Obsolete("Use 'Map' instead (same functionality and parameters)", false)]
+        public C4ui Copy(Func<ushort, uint> channel_fun)
         {
-            return new C4d(fun(R), fun(G), fun(B), fun(A));
+            return Map(channel_fun);
+        }
+
+        /// <summary>
+        /// Returns a copy with all elements transformed by the supplied function.
+        /// </summary>
+        public C4ui Map(Func<ushort, uint> channel_fun)
+        {
+            return new C4ui(channel_fun(R), channel_fun(G), channel_fun(B), channel_fun(A));
+        }
+
+        /// <summary>
+        /// Returns a copy with all elements transformed by the supplied function.
+        /// </summary>
+        [Obsolete("Use 'Map' instead (same functionality and parameters)", false)]
+        public C4f Copy(Func<ushort, float> channel_fun)
+        {
+            return Map(channel_fun);
+        }
+
+        /// <summary>
+        /// Returns a copy with all elements transformed by the supplied function.
+        /// </summary>
+        public C4f Map(Func<ushort, float> channel_fun)
+        {
+            return new C4f(channel_fun(R), channel_fun(G), channel_fun(B), channel_fun(A));
+        }
+
+        /// <summary>
+        /// Returns a copy with all elements transformed by the supplied function.
+        /// </summary>
+        [Obsolete("Use 'Map' instead (same functionality and parameters)", false)]
+        public C4d Copy(Func<ushort, double> channel_fun)
+        {
+            return Map(channel_fun);
+        }
+
+        /// <summary>
+        /// Returns a copy with all elements transformed by the supplied function.
+        /// </summary>
+        public C4d Map(Func<ushort, double> channel_fun)
+        {
+            return new C4d(channel_fun(R), channel_fun(G), channel_fun(B), channel_fun(A));
         }
 
         public void CopyTo<T>(T[] array, int start, Func<ushort, T> element_fun)
@@ -10049,6 +10498,30 @@ namespace Aardvark.Base
         #region Interpolation
 
         /// <summary>
+        /// Returns the linearly interpolated color between a and b stored in a  C4f.
+        /// </summary>
+        public static C4f LerpRawC4f(this double x, C4us a, C4us b)
+        {
+            return new C4f(
+                        (float)a.R + ((float)x * (float)((int)b.R - (int)a.R)), 
+                        (float)a.G + ((float)x * (float)((int)b.G - (int)a.G)), 
+                        (float)a.B + ((float)x * (float)((int)b.B - (int)a.B)), 
+                        (float)a.A + ((float)x * (float)((int)b.A - (int)a.A)));
+        }
+
+        /// <summary>
+        /// Returns the linearly interpolated color between a and b stored in a C4d.
+        /// </summary>
+        public static C4d LerpRawC4d(this double x, C4us a, C4us b)
+        {
+            return new C4d(
+                        (double)a.R + (x * (double)((int)b.R - (int)a.R)), 
+                        (double)a.G + (x * (double)((int)b.G - (int)a.G)), 
+                        (double)a.B + (x * (double)((int)b.B - (int)a.B)), 
+                        (double)a.A + (x * (double)((int)b.A - (int)a.A)));
+        }
+
+        /// <summary>
         /// Returns the linearly interpolated color between a and b.
         /// </summary>
         public static C4us Lerp(this double x, C4us a, C4us b)
@@ -10334,41 +10807,86 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns a copy with all elements transformed by the supplied function.
         /// </summary>
-        public C4b Copy(Func<uint, byte> fun)
+        [Obsolete("Use 'Map' instead (same functionality and parameters)", false)]
+        public C4b Copy(Func<uint, byte> channel_fun)
         {
-            return new C4b(fun(R), fun(G), fun(B), fun(A));
+            return Map(channel_fun);
         }
 
         /// <summary>
         /// Returns a copy with all elements transformed by the supplied function.
         /// </summary>
-        public C4us Copy(Func<uint, ushort> fun)
+        public C4b Map(Func<uint, byte> channel_fun)
         {
-            return new C4us(fun(R), fun(G), fun(B), fun(A));
+            return new C4b(channel_fun(R), channel_fun(G), channel_fun(B), channel_fun(A));
         }
 
         /// <summary>
         /// Returns a copy with all elements transformed by the supplied function.
         /// </summary>
-        public C4ui Copy(Func<uint, uint> fun)
+        [Obsolete("Use 'Map' instead (same functionality and parameters)", false)]
+        public C4us Copy(Func<uint, ushort> channel_fun)
         {
-            return new C4ui(fun(R), fun(G), fun(B), fun(A));
+            return Map(channel_fun);
         }
 
         /// <summary>
         /// Returns a copy with all elements transformed by the supplied function.
         /// </summary>
-        public C4f Copy(Func<uint, float> fun)
+        public C4us Map(Func<uint, ushort> channel_fun)
         {
-            return new C4f(fun(R), fun(G), fun(B), fun(A));
+            return new C4us(channel_fun(R), channel_fun(G), channel_fun(B), channel_fun(A));
         }
 
         /// <summary>
         /// Returns a copy with all elements transformed by the supplied function.
         /// </summary>
-        public C4d Copy(Func<uint, double> fun)
+        [Obsolete("Use 'Map' instead (same functionality and parameters)", false)]
+        public C4ui Copy(Func<uint, uint> channel_fun)
         {
-            return new C4d(fun(R), fun(G), fun(B), fun(A));
+            return Map(channel_fun);
+        }
+
+        /// <summary>
+        /// Returns a copy with all elements transformed by the supplied function.
+        /// </summary>
+        public C4ui Map(Func<uint, uint> channel_fun)
+        {
+            return new C4ui(channel_fun(R), channel_fun(G), channel_fun(B), channel_fun(A));
+        }
+
+        /// <summary>
+        /// Returns a copy with all elements transformed by the supplied function.
+        /// </summary>
+        [Obsolete("Use 'Map' instead (same functionality and parameters)", false)]
+        public C4f Copy(Func<uint, float> channel_fun)
+        {
+            return Map(channel_fun);
+        }
+
+        /// <summary>
+        /// Returns a copy with all elements transformed by the supplied function.
+        /// </summary>
+        public C4f Map(Func<uint, float> channel_fun)
+        {
+            return new C4f(channel_fun(R), channel_fun(G), channel_fun(B), channel_fun(A));
+        }
+
+        /// <summary>
+        /// Returns a copy with all elements transformed by the supplied function.
+        /// </summary>
+        [Obsolete("Use 'Map' instead (same functionality and parameters)", false)]
+        public C4d Copy(Func<uint, double> channel_fun)
+        {
+            return Map(channel_fun);
+        }
+
+        /// <summary>
+        /// Returns a copy with all elements transformed by the supplied function.
+        /// </summary>
+        public C4d Map(Func<uint, double> channel_fun)
+        {
+            return new C4d(channel_fun(R), channel_fun(G), channel_fun(B), channel_fun(A));
         }
 
         public void CopyTo<T>(T[] array, int start, Func<uint, T> element_fun)
@@ -11473,6 +11991,30 @@ namespace Aardvark.Base
         #region Interpolation
 
         /// <summary>
+        /// Returns the linearly interpolated color between a and b stored in a  C4f.
+        /// </summary>
+        public static C4f LerpRawC4f(this double x, C4ui a, C4ui b)
+        {
+            return new C4f(
+                        (float)a.R + ((float)x * (float)((long)b.R - (long)a.R)), 
+                        (float)a.G + ((float)x * (float)((long)b.G - (long)a.G)), 
+                        (float)a.B + ((float)x * (float)((long)b.B - (long)a.B)), 
+                        (float)a.A + ((float)x * (float)((long)b.A - (long)a.A)));
+        }
+
+        /// <summary>
+        /// Returns the linearly interpolated color between a and b stored in a C4d.
+        /// </summary>
+        public static C4d LerpRawC4d(this double x, C4ui a, C4ui b)
+        {
+            return new C4d(
+                        (double)a.R + (x * (double)((long)b.R - (long)a.R)), 
+                        (double)a.G + (x * (double)((long)b.G - (long)a.G)), 
+                        (double)a.B + (x * (double)((long)b.B - (long)a.B)), 
+                        (double)a.A + (x * (double)((long)b.A - (long)a.A)));
+        }
+
+        /// <summary>
         /// Returns the linearly interpolated color between a and b.
         /// </summary>
         public static C4ui Lerp(this double x, C4ui a, C4ui b)
@@ -11797,41 +12339,86 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns a copy with all elements transformed by the supplied function.
         /// </summary>
-        public C4b Copy(Func<float, byte> fun)
+        [Obsolete("Use 'Map' instead (same functionality and parameters)", false)]
+        public C4b Copy(Func<float, byte> channel_fun)
         {
-            return new C4b(fun(R), fun(G), fun(B), fun(A));
+            return Map(channel_fun);
         }
 
         /// <summary>
         /// Returns a copy with all elements transformed by the supplied function.
         /// </summary>
-        public C4us Copy(Func<float, ushort> fun)
+        public C4b Map(Func<float, byte> channel_fun)
         {
-            return new C4us(fun(R), fun(G), fun(B), fun(A));
+            return new C4b(channel_fun(R), channel_fun(G), channel_fun(B), channel_fun(A));
         }
 
         /// <summary>
         /// Returns a copy with all elements transformed by the supplied function.
         /// </summary>
-        public C4ui Copy(Func<float, uint> fun)
+        [Obsolete("Use 'Map' instead (same functionality and parameters)", false)]
+        public C4us Copy(Func<float, ushort> channel_fun)
         {
-            return new C4ui(fun(R), fun(G), fun(B), fun(A));
+            return Map(channel_fun);
         }
 
         /// <summary>
         /// Returns a copy with all elements transformed by the supplied function.
         /// </summary>
-        public C4f Copy(Func<float, float> fun)
+        public C4us Map(Func<float, ushort> channel_fun)
         {
-            return new C4f(fun(R), fun(G), fun(B), fun(A));
+            return new C4us(channel_fun(R), channel_fun(G), channel_fun(B), channel_fun(A));
         }
 
         /// <summary>
         /// Returns a copy with all elements transformed by the supplied function.
         /// </summary>
-        public C4d Copy(Func<float, double> fun)
+        [Obsolete("Use 'Map' instead (same functionality and parameters)", false)]
+        public C4ui Copy(Func<float, uint> channel_fun)
         {
-            return new C4d(fun(R), fun(G), fun(B), fun(A));
+            return Map(channel_fun);
+        }
+
+        /// <summary>
+        /// Returns a copy with all elements transformed by the supplied function.
+        /// </summary>
+        public C4ui Map(Func<float, uint> channel_fun)
+        {
+            return new C4ui(channel_fun(R), channel_fun(G), channel_fun(B), channel_fun(A));
+        }
+
+        /// <summary>
+        /// Returns a copy with all elements transformed by the supplied function.
+        /// </summary>
+        [Obsolete("Use 'Map' instead (same functionality and parameters)", false)]
+        public C4f Copy(Func<float, float> channel_fun)
+        {
+            return Map(channel_fun);
+        }
+
+        /// <summary>
+        /// Returns a copy with all elements transformed by the supplied function.
+        /// </summary>
+        public C4f Map(Func<float, float> channel_fun)
+        {
+            return new C4f(channel_fun(R), channel_fun(G), channel_fun(B), channel_fun(A));
+        }
+
+        /// <summary>
+        /// Returns a copy with all elements transformed by the supplied function.
+        /// </summary>
+        [Obsolete("Use 'Map' instead (same functionality and parameters)", false)]
+        public C4d Copy(Func<float, double> channel_fun)
+        {
+            return Map(channel_fun);
+        }
+
+        /// <summary>
+        /// Returns a copy with all elements transformed by the supplied function.
+        /// </summary>
+        public C4d Map(Func<float, double> channel_fun)
+        {
+            return new C4d(channel_fun(R), channel_fun(G), channel_fun(B), channel_fun(A));
         }
 
         public void CopyTo<T>(T[] array, int start, Func<float, T> element_fun)
@@ -13029,6 +13616,30 @@ namespace Aardvark.Base
         #region Interpolation
 
         /// <summary>
+        /// Returns the linearly interpolated color between a and b stored in a  C4f.
+        /// </summary>
+        public static C4f LerpRawC4f(this double x, C4f a, C4f b)
+        {
+            return new C4f(
+                        (float)a.R + ((float)x * (float)((double)b.R - (double)a.R)), 
+                        (float)a.G + ((float)x * (float)((double)b.G - (double)a.G)), 
+                        (float)a.B + ((float)x * (float)((double)b.B - (double)a.B)), 
+                        (float)a.A + ((float)x * (float)((double)b.A - (double)a.A)));
+        }
+
+        /// <summary>
+        /// Returns the linearly interpolated color between a and b stored in a C4d.
+        /// </summary>
+        public static C4d LerpRawC4d(this double x, C4f a, C4f b)
+        {
+            return new C4d(
+                        (double)a.R + (x * (double)((double)b.R - (double)a.R)), 
+                        (double)a.G + (x * (double)((double)b.G - (double)a.G)), 
+                        (double)a.B + (x * (double)((double)b.B - (double)a.B)), 
+                        (double)a.A + (x * (double)((double)b.A - (double)a.A)));
+        }
+
+        /// <summary>
         /// Returns the linearly interpolated color between a and b.
         /// </summary>
         public static C4f Lerp(this double x, C4f a, C4f b)
@@ -13294,41 +13905,86 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns a copy with all elements transformed by the supplied function.
         /// </summary>
-        public C4b Copy(Func<double, byte> fun)
+        [Obsolete("Use 'Map' instead (same functionality and parameters)", false)]
+        public C4b Copy(Func<double, byte> channel_fun)
         {
-            return new C4b(fun(R), fun(G), fun(B), fun(A));
+            return Map(channel_fun);
         }
 
         /// <summary>
         /// Returns a copy with all elements transformed by the supplied function.
         /// </summary>
-        public C4us Copy(Func<double, ushort> fun)
+        public C4b Map(Func<double, byte> channel_fun)
         {
-            return new C4us(fun(R), fun(G), fun(B), fun(A));
+            return new C4b(channel_fun(R), channel_fun(G), channel_fun(B), channel_fun(A));
         }
 
         /// <summary>
         /// Returns a copy with all elements transformed by the supplied function.
         /// </summary>
-        public C4ui Copy(Func<double, uint> fun)
+        [Obsolete("Use 'Map' instead (same functionality and parameters)", false)]
+        public C4us Copy(Func<double, ushort> channel_fun)
         {
-            return new C4ui(fun(R), fun(G), fun(B), fun(A));
+            return Map(channel_fun);
         }
 
         /// <summary>
         /// Returns a copy with all elements transformed by the supplied function.
         /// </summary>
-        public C4f Copy(Func<double, float> fun)
+        public C4us Map(Func<double, ushort> channel_fun)
         {
-            return new C4f(fun(R), fun(G), fun(B), fun(A));
+            return new C4us(channel_fun(R), channel_fun(G), channel_fun(B), channel_fun(A));
         }
 
         /// <summary>
         /// Returns a copy with all elements transformed by the supplied function.
         /// </summary>
-        public C4d Copy(Func<double, double> fun)
+        [Obsolete("Use 'Map' instead (same functionality and parameters)", false)]
+        public C4ui Copy(Func<double, uint> channel_fun)
         {
-            return new C4d(fun(R), fun(G), fun(B), fun(A));
+            return Map(channel_fun);
+        }
+
+        /// <summary>
+        /// Returns a copy with all elements transformed by the supplied function.
+        /// </summary>
+        public C4ui Map(Func<double, uint> channel_fun)
+        {
+            return new C4ui(channel_fun(R), channel_fun(G), channel_fun(B), channel_fun(A));
+        }
+
+        /// <summary>
+        /// Returns a copy with all elements transformed by the supplied function.
+        /// </summary>
+        [Obsolete("Use 'Map' instead (same functionality and parameters)", false)]
+        public C4f Copy(Func<double, float> channel_fun)
+        {
+            return Map(channel_fun);
+        }
+
+        /// <summary>
+        /// Returns a copy with all elements transformed by the supplied function.
+        /// </summary>
+        public C4f Map(Func<double, float> channel_fun)
+        {
+            return new C4f(channel_fun(R), channel_fun(G), channel_fun(B), channel_fun(A));
+        }
+
+        /// <summary>
+        /// Returns a copy with all elements transformed by the supplied function.
+        /// </summary>
+        [Obsolete("Use 'Map' instead (same functionality and parameters)", false)]
+        public C4d Copy(Func<double, double> channel_fun)
+        {
+            return Map(channel_fun);
+        }
+
+        /// <summary>
+        /// Returns a copy with all elements transformed by the supplied function.
+        /// </summary>
+        public C4d Map(Func<double, double> channel_fun)
+        {
+            return new C4d(channel_fun(R), channel_fun(G), channel_fun(B), channel_fun(A));
         }
 
         public void CopyTo<T>(T[] array, int start, Func<double, T> element_fun)
@@ -14460,6 +15116,30 @@ namespace Aardvark.Base
     public static partial class ColFun
     {
         #region Interpolation
+
+        /// <summary>
+        /// Returns the linearly interpolated color between a and b stored in a  C4f.
+        /// </summary>
+        public static C4f LerpRawC4f(this double x, C4d a, C4d b)
+        {
+            return new C4f(
+                        (float)a.R + ((float)x * (float)((double)b.R - (double)a.R)), 
+                        (float)a.G + ((float)x * (float)((double)b.G - (double)a.G)), 
+                        (float)a.B + ((float)x * (float)((double)b.B - (double)a.B)), 
+                        (float)a.A + ((float)x * (float)((double)b.A - (double)a.A)));
+        }
+
+        /// <summary>
+        /// Returns the linearly interpolated color between a and b stored in a C4d.
+        /// </summary>
+        public static C4d LerpRawC4d(this double x, C4d a, C4d b)
+        {
+            return new C4d(
+                        (double)a.R + (x * (double)((double)b.R - (double)a.R)), 
+                        (double)a.G + (x * (double)((double)b.G - (double)a.G)), 
+                        (double)a.B + (x * (double)((double)b.B - (double)a.B)), 
+                        (double)a.A + (x * (double)((double)b.A - (double)a.A)));
+        }
 
         /// <summary>
         /// Returns the linearly interpolated color between a and b.

@@ -3747,6 +3747,70 @@ namespace Aardvark.Base
             //# }
         }
 
+        //# foreach (var clampFun in new[] { false, true }) {
+        public void SetScaled4<T1/*# if (clampFun) { */, T2/*# } */>(Matrix<__dvtn__> sourceMat,
+                double xScale, double yScale, double xShift, double yShift,
+                Func<double, __vtn__, __vtn__, T1> xipl,
+                Func<double, T1, T1/*# if (clampFun) { */, T2/*# }
+                                                         else { */, __vtn__/*# } */> yipl,
+                Func<long, long, long, long, Tup2<long>> index_min_max_delta_xIndexFun,
+                Func<long, long, long, long, Tup2<long>> index_min_max_delta_yIndexFun/*#
+                if (clampFun) { */,
+                Func<T2, __vtn__> clampFun/*# } */)
+        {
+            var dxa = new Tup2<long>[SX];
+            var xfa = new double[SX];
+            long fx = sourceMat.FX, ex = sourceMat.EX, dx1 = sourceMat.DX;
+            for (long tix = 0, tsx = SX; tix < tsx; tix++, xShift += xScale)
+            {
+                double xid = Fun.Floor(xShift); long xi = (long)xid; double xf = xShift - xid;
+                var dx = index_min_max_delta_xIndexFun(xi, fx, ex, dx1);
+                var dxi = xi * dx1; dx.E0 += dxi; dx.E1 += dxi;
+                dxa[tix] = dx; xfa[tix] = xf;
+            }
+            var dya = new Tup2<long>[SY];
+            var yfa = new double[SY];
+            long o = sourceMat.Origin, fy = sourceMat.FY, ey = sourceMat.EY, dy1 = sourceMat.DY;
+            for (long tiy = 0, tsy = SY; tiy < tsy; tiy++, yShift += yScale)
+            {
+                double yid = Fun.Floor(yShift); long yi = (long)yid; double yf = yShift - yid;
+                var dy = index_min_max_delta_yIndexFun(yi, fy, ey, dy1);
+                var dyi = o + yi * dy1; dy.E0 += dyi; dy.E1 += dyi;
+                dya[tiy] = dy; yfa[tiy] = yf;
+            }
+            var data = Data;
+            //# Loop("", false, () => {
+                //# if (dt == vt) {
+                    //# if (clampFun) {
+                    data[i] = clampFun(sourceMat.Sample4(dxa[x], dya[y], xfa[x], yfa[y], xipl, yipl));
+                    //# } else {
+                    data[i] = sourceMat.Sample4(dxa[x], dya[y], xfa[x], yfa[y], xipl, yipl);
+                    //# }
+                //# } else {
+                    //# if (clampFun) {
+                    Setter(data, i, clampFun(sourceMat.Sample4(dxa[x], dya[y], xfa[x], yfa[y], xipl, yipl)));
+                    //# } else {
+                    Setter(data, i, sourceMat.Sample4(dxa[x], dya[y], xfa[x], yfa[y], xipl, yipl));
+                    //# }
+                //# }
+            //# }, true, false);
+        }
+
+        //# } // clampFun
+        public TRes Sample4<T1, TRes>(
+                Tup2<long> dx, Tup2<long> dy, double xf, double yf,
+                Func<double, __vtn__, __vtn__, T1> xipl,
+                Func<double, T1, T1, TRes> yipl)
+        {
+            //# if (dt == vt) {
+            return yipl(yf, xipl(xf, Data[dx.E0 + dy.E0], Data[dx.E1 + dy.E0]),
+                            xipl(xf, Data[dx.E0 + dy.E1], Data[dx.E1 + dy.E1]));
+            //# } else {
+            return yipl(yf, xipl(xf, Getter(Data, dx.E0 + dy.E0), Getter(Data, dx.E1 + dy.E0)),
+                            xipl(xf, Getter(Data, dx.E0 + dy.E1), Getter(Data, dx.E1 + dy.E1)));
+            //# }
+        }
+
         public TRes SampleRaw16<T1, T2, T3, TRes>(
                 V2d v,
                 Func<double, Tup4<T1>> xipl,
@@ -3834,6 +3898,76 @@ namespace Aardvark.Base
             dx.E0 += i; dx.E1 += i; dx.E2 += i; dx.E3 += i;
             var dy = index_min_max_delta_yIndexFun(yi, FY, EY, dy1);
             var wx = xipl(xf); var wy = yipl(yf);
+            //# if (dt == vt) {
+            return ysmp(xsmp(Data[dx.E0 + dy.E0], Data[dx.E1 + dy.E0], Data[dx.E2 + dy.E0], Data[dx.E3 + dy.E0], ref wx),
+                        xsmp(Data[dx.E0 + dy.E1], Data[dx.E1 + dy.E1], Data[dx.E2 + dy.E1], Data[dx.E3 + dy.E1], ref wx),
+                        xsmp(Data[dx.E0 + dy.E2], Data[dx.E1 + dy.E2], Data[dx.E2 + dy.E2], Data[dx.E3 + dy.E2], ref wx),
+                        xsmp(Data[dx.E0 + dy.E3], Data[dx.E1 + dy.E3], Data[dx.E2 + dy.E3], Data[dx.E3 + dy.E3], ref wx), ref wy);
+            //# } else {
+            return ysmp(xsmp(Getter(Data, dx.E0 + dy.E0), Getter(Data, dx.E1 + dy.E0), Getter(Data, dx.E2 + dy.E0), Getter(Data, dx.E3 + dy.E0), ref wx),
+                        xsmp(Getter(Data, dx.E0 + dy.E1), Getter(Data, dx.E1 + dy.E1), Getter(Data, dx.E2 + dy.E1), Getter(Data, dx.E3 + dy.E1), ref wx),
+                        xsmp(Getter(Data, dx.E0 + dy.E2), Getter(Data, dx.E1 + dy.E2), Getter(Data, dx.E2 + dy.E2), Getter(Data, dx.E3 + dy.E2), ref wx),
+                        xsmp(Getter(Data, dx.E0 + dy.E3), Getter(Data, dx.E1 + dy.E3), Getter(Data, dx.E2 + dy.E3), Getter(Data, dx.E3 + dy.E3), ref wx), ref wy);
+            //# }
+        }
+
+        //# foreach (var clampFun in new[] { false, true }) {
+        public void SetScaled16<T1,T2, T3/*# if (clampFun) { */, T4/*# } */>(Matrix<__dvtn__> sourceMat,
+                double xScale, double yScale, double xShift, double yShift,
+                Func<double, Tup4<T1>> xipl,
+                Func<double, Tup4<T2>> yipl,
+                FuncRef1<__vtn__, __vtn__, __vtn__, __vtn__, Tup4<T1>, T3> xsmp,
+                FuncRef1<T3, T3, T3, T3, Tup4<T2>/*# if (clampFun) { */, T4/*# }
+                                                         else { */, __vtn__/*# } */> ysmp,
+                Func<long, long, long, long, Tup4<long>> index_min_max_delta_xIndexFun,
+                Func<long, long, long, long, Tup4<long>> index_min_max_delta_yIndexFun/*#
+                if (clampFun) { */,
+                Func<T4, __vtn__> clampFun/*# } */)
+        {
+            var dxa = new Tup4<long>[SX];
+            var wxa = new Tup4<T1>[SX];
+            long fx = sourceMat.FX, ex = sourceMat.EX, dx1 = sourceMat.DX;
+            for (long tix = 0, tsx = SX; tix < tsx; tix++, xShift += xScale)
+            {
+                double xid = Fun.Floor(xShift); long xi = (long)xid; double xf = xShift - xid;
+                var dx = index_min_max_delta_xIndexFun(xi, fx, ex, dx1);
+                var dxi = xi * dx1; dx.E0 += dxi; dx.E1 += dxi; dx.E2 += dxi; dx.E3 += dxi;
+                dxa[tix] = dx; wxa[tix] = xipl(xf);
+            }
+            var dya = new Tup4<long>[SY];
+            var wya = new Tup4<T2>[SY];
+            long o = sourceMat.Origin, fy = sourceMat.FY, ey = sourceMat.EY, dy1 = sourceMat.DY;
+            for (long tiy = 0, tsy = SY; tiy < tsy; tiy++, yShift += yScale)
+            {
+                double yid = Fun.Floor(yShift); long yi = (long)yid; double yf = yShift - yid;
+                var dy = index_min_max_delta_yIndexFun(yi, fy, ey, dy1);
+                var dyi = o + yi * dy1; dy.E0 += dyi; dy.E1 += dyi; dy.E2 += dyi; dy.E3 += dyi;
+                dya[tiy] = dy; wya[tiy] = yipl(yf);
+            }
+            var data = Data;
+            //# Loop("", false, () => {
+                //# if (dt == vt) {
+                //# if (clampFun) {
+                    data[i] = clampFun(sourceMat.Sample16(dxa[x], dya[y], wxa[x], wya[y], xsmp, ysmp));
+                //# } else {
+                    data[i] = sourceMat.Sample16(dxa[x], dya[y], wxa[x], wya[y], xsmp, ysmp);
+                //# }
+                //# } else {
+                //# if (clampFun) {
+                    Setter(data, i, clampFun(sourceMat.Sample16(dxa[x], dya[y], wxa[x], wya[y], xsmp, ysmp)));
+                //# } else {
+                    Setter(data, i, sourceMat.Sample16(dxa[x], dya[y], wxa[x], wya[y], xsmp, ysmp));
+                //# }
+                //# }
+            //# }, true, false);
+        }
+
+        //# } // clampFun
+        public TRes Sample16<T1, T2, T3, TRes>(
+                Tup4<long> dx, Tup4<long> dy, Tup4<T1> wx, Tup4<T2> wy,
+                FuncRef1<__vtn__, __vtn__, __vtn__, __vtn__, Tup4<T1>, T3> xsmp,
+                FuncRef1<T3, T3, T3, T3, Tup4<T2>, TRes> ysmp)
+        {
             //# if (dt == vt) {
             return ysmp(xsmp(Data[dx.E0 + dy.E0], Data[dx.E1 + dy.E0], Data[dx.E2 + dy.E0], Data[dx.E3 + dy.E0], ref wx),
                         xsmp(Data[dx.E0 + dy.E1], Data[dx.E1 + dy.E1], Data[dx.E2 + dy.E1], Data[dx.E3 + dy.E1], ref wx),
@@ -3956,6 +4090,83 @@ namespace Aardvark.Base
             //# }
         }
 
+        //# foreach (var clampFun in new[] { false, true }) {
+        public void SetScaled36<T1, T2, T3/*# if (clampFun) { */, T4/*# } */>(Matrix<__dvtn__> sourceMat,
+                double xScale, double yScale, double xShift, double yShift,
+                Func<double, Tup6<T1>> xipl,
+                Func<double, Tup6<T2>> yipl,
+                FuncRef1<__vtn__, __vtn__, __vtn__, __vtn__, __vtn__, __vtn__, Tup6<T1>, T3> xsmp,
+                FuncRef1<T3, T3, T3, T3, T3, T3, Tup6<T2>/*# if (clampFun) { */, T4/*# }
+                                                         else { */, __vtn__/*# } */> ysmp,
+                Func<long, long, long, long, Tup6<long>> index_min_max_delta_xIndexFun,
+                Func<long, long, long, long, Tup6<long>> index_min_max_delta_yIndexFun/*#
+                if (clampFun) { */,
+                Func<T4, __vtn__> clampFun/*# } */)
+        {
+            var dxa = new Tup6<long>[SX];
+            var wxa = new Tup6<T1>[SX];
+            long fx = sourceMat.FX, ex = sourceMat.EX, dx1 = sourceMat.DX;
+            for (long tix = 0, tsx = SX; tix < tsx; tix++, xShift += xScale)
+            {
+                double xid = Fun.Floor(xShift); long xi = (long)xid; double xf = xShift - xid;
+                var dx = index_min_max_delta_xIndexFun(xi, fx, ex, dx1);
+                var dxi = xi * dx1;
+                dx.E0 += dxi; dx.E1 += dxi; dx.E2 += dxi;
+                dx.E3 += dxi; dx.E4 += dxi; dx.E5 += dxi;
+                dxa[tix] = dx; wxa[tix] = xipl(xf);
+            }
+            var dya = new Tup6<long>[SY];
+            var wya = new Tup6<T2>[SY];
+            long o = sourceMat.Origin, fy = sourceMat.FY, ey = sourceMat.EY, dy1 = sourceMat.DY;
+            for (long tiy = 0, tsy = SY; tiy < tsy; tiy++, yShift += yScale)
+            {
+                double yid = Fun.Floor(yShift); long yi = (long)yid; double yf = yShift - yid;
+                var dy = index_min_max_delta_yIndexFun(yi, fy, ey, dy1);
+                var dyi = o + yi * dy1;
+                dy.E0 += dyi; dy.E1 += dyi; dy.E2 += dyi;
+                dy.E3 += dyi; dy.E4 += dyi; dy.E5 += dyi;
+                dya[tiy] = dy; wya[tiy] = yipl(yf);
+            }
+            var data = Data;
+            //# Loop("", false, () => {
+                //# if (dt == vt) {
+                //# if (clampFun) {
+                    data[i] = clampFun(sourceMat.Sample36(dxa[x], dya[y], wxa[x], wya[y], xsmp, ysmp));
+                //# } else {
+                    data[i] = sourceMat.Sample36(dxa[x], dya[y], wxa[x], wya[y], xsmp, ysmp);
+                //# }
+                //# } else {
+                //# if (clampFun) {
+                    Setter(data, i, clampFun(sourceMat.Sample36(dxa[x], dya[y], wxa[x], wya[y], xsmp, ysmp)));
+                //# } else {
+                    Setter(data, i, sourceMat.Sample36(dxa[x], dya[y], wxa[x], wya[y], xsmp, ysmp));
+                //# }
+                //# }
+            //# }, true, false);
+        }
+
+        //# } // clampFun
+        public TRes Sample36<T1, T2, T3, TRes>(
+                Tup6<long> dx, Tup6<long> dy, Tup6<T1> wx, Tup6<T2> wy, 
+                FuncRef1<__vtn__, __vtn__, __vtn__, __vtn__, __vtn__, __vtn__, Tup6<T1>, T3> xsmp,
+                FuncRef1<T3, T3, T3, T3, T3, T3, Tup6<T2>, TRes> ysmp)
+        {
+            //# if (dt == vt) {
+            return ysmp(xsmp(Data[dx.E0 + dy.E0], Data[dx.E1 + dy.E0], Data[dx.E2 + dy.E0], Data[dx.E3 + dy.E0], Data[dx.E4 + dy.E0], Data[dx.E5 + dy.E0], ref wx),
+                        xsmp(Data[dx.E0 + dy.E1], Data[dx.E1 + dy.E1], Data[dx.E2 + dy.E1], Data[dx.E3 + dy.E1], Data[dx.E4 + dy.E1], Data[dx.E5 + dy.E1], ref wx),
+                        xsmp(Data[dx.E0 + dy.E2], Data[dx.E1 + dy.E2], Data[dx.E2 + dy.E2], Data[dx.E3 + dy.E2], Data[dx.E4 + dy.E2], Data[dx.E5 + dy.E2], ref wx),
+                        xsmp(Data[dx.E0 + dy.E3], Data[dx.E1 + dy.E3], Data[dx.E2 + dy.E3], Data[dx.E3 + dy.E3], Data[dx.E4 + dy.E3], Data[dx.E5 + dy.E3], ref wx),
+                        xsmp(Data[dx.E0 + dy.E4], Data[dx.E1 + dy.E4], Data[dx.E2 + dy.E4], Data[dx.E3 + dy.E4], Data[dx.E4 + dy.E4], Data[dx.E5 + dy.E4], ref wx),
+                        xsmp(Data[dx.E0 + dy.E5], Data[dx.E1 + dy.E5], Data[dx.E2 + dy.E5], Data[dx.E3 + dy.E5], Data[dx.E4 + dy.E5], Data[dx.E5 + dy.E5], ref wx), ref wy);
+            //# } else {
+            return ysmp(xsmp(Getter(Data, dx.E0 + dy.E0), Getter(Data, dx.E1 + dy.E0), Getter(Data, dx.E2 + dy.E0), Getter(Data, dx.E3 + dy.E0), Getter(Data, dx.E4 + dy.E0), Getter(Data, dx.E5 + dy.E0), ref wx),
+                        xsmp(Getter(Data, dx.E0 + dy.E1), Getter(Data, dx.E1 + dy.E1), Getter(Data, dx.E2 + dy.E1), Getter(Data, dx.E3 + dy.E1), Getter(Data, dx.E4 + dy.E1), Getter(Data, dx.E5 + dy.E1), ref wx),
+                        xsmp(Getter(Data, dx.E0 + dy.E2), Getter(Data, dx.E1 + dy.E2), Getter(Data, dx.E2 + dy.E2), Getter(Data, dx.E3 + dy.E2), Getter(Data, dx.E4 + dy.E2), Getter(Data, dx.E5 + dy.E2), ref wx),
+                        xsmp(Getter(Data, dx.E0 + dy.E3), Getter(Data, dx.E1 + dy.E3), Getter(Data, dx.E2 + dy.E3), Getter(Data, dx.E3 + dy.E3), Getter(Data, dx.E4 + dy.E3), Getter(Data, dx.E5 + dy.E3), ref wx),
+                        xsmp(Getter(Data, dx.E0 + dy.E4), Getter(Data, dx.E1 + dy.E4), Getter(Data, dx.E2 + dy.E4), Getter(Data, dx.E3 + dy.E4), Getter(Data, dx.E4 + dy.E4), Getter(Data, dx.E5 + dy.E4), ref wx),
+                        xsmp(Getter(Data, dx.E0 + dy.E5), Getter(Data, dx.E1 + dy.E5), Getter(Data, dx.E2 + dy.E5), Getter(Data, dx.E3 + dy.E5), Getter(Data, dx.E4 + dy.E5), Getter(Data, dx.E5 + dy.E5), ref wx), ref wy);
+            //# }
+        }
         //# } // d == 2
         //# if (d == 3) {
 

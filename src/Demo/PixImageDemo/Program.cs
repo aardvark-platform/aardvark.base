@@ -129,6 +129,38 @@ namespace PixImageDemo
 
         }
 
+        public static void SetScaledCubicFast(this Matrix<float, C3f> targetMat, Matrix<float, C3f> sourceMat,
+                                          Func<double, Tup4<float>> interpolator)
+        {
+            var dxa = new Tup4<long>[targetMat.SX];
+            var wxa = new Tup4<float>[targetMat.SX];
+            long fx = sourceMat.FX, ex = sourceMat.EX, dx1 = sourceMat.DX;
+            var scaleX = (double)sourceMat.SX / (double)targetMat.SX;
+            double x = 0.5 * scaleX - 0.5;
+            for (long tix = 0, tsx = targetMat.SX; tix < tsx; tix++, x += scaleX)
+            {
+                double xid = Fun.Floor(x); long xi = (long)xid; double xf = x - xid;
+                var dx = Tensor.Index4SamplesClamped(xi, fx, ex, dx1);
+                var dxi = xi * dx1; dx.E0 += dxi; dx.E1 += dxi; dx.E2 += dxi; dx.E3 += dxi;
+                dxa[tix] = dx; wxa[tix] = interpolator(xf);
+            }
+            var dya = new Tup4<long>[targetMat.SY];
+            var wya = new Tup4<float>[targetMat.SY];
+            long o = sourceMat.Origin, fy = sourceMat.FY, ey = sourceMat.EY, dy1 = sourceMat.DY;
+            var scaleY = (double)sourceMat.SY / (double)targetMat.SY;
+            double y = 0.5 * scaleY - 0.5;
+            for (long tiy = 0, tsy = targetMat.SY; tiy < tsy; tiy++, y += scaleY)
+            {
+                double yid = Fun.Floor(y); long yi = (long)yid; double yf = y - yid;
+                var dy = Tensor.Index4SamplesClamped(yi, fy, ey, dy1);
+                var dyi = o + yi * dy1; dy.E0 += dyi; dy.E1 += dyi; dy.E2 += dyi; dy.E3 += dyi;
+                dya[tiy] = dy; wya[tiy] = interpolator(yf);
+            }
+            targetMat.ForeachIndex((tix, tiy, i) =>
+                targetMat[i] = sourceMat.Sample16(dxa[tix], dya[tiy], wxa[tix], wya[tiy],
+                                                  C3f.LinCom, C3f.LinCom));
+        }
+
         /// <summary>
         /// Perform image resampling in software. Shows how to use higher order
         /// resampling (e.g. Lanczos or Bicubic) on matrices. This is not a very
@@ -160,25 +192,25 @@ namespace PixImageDemo
                 {
                     /// Note: LinComRawC3f in x direction results in a byte color (range 0-255) stored
                     /// in a C3f. The second C3f.LinCom for the y direction does not perform any additional
-                    /// scaling, thus we need to copy the "ByteInFloat" color back to a byte color at the
+                    /// scaling, thus we need to map the "ByteInFloat" color back to a byte color at the
                     /// end (this perfoms clamping). Tensor.Tensor.Index6SamplesClamped clamps to the border
                     /// region and allows any double pixel address.
                     outMat0[i] = inMat.Sample36(x * scale + shift, y * scale + shift,
                                                Fun.Lanczos3f, Fun.Lanczos3f,
                                                C3b.LinComRawC3f, C3f.LinCom,
                                                Tensor.Index6SamplesClamped, Tensor.Index6SamplesClamped)
-                                                .Copy(Col.ByteFromByteInFloatClamped);
+                                                .Map(Col.ByteFromByteInFloatClamped);
 
                     /// Note: LinComRawC3f in x direction results in a byte color (range 0-255) stored
                     /// in a C3f. The second C3f.LinCom for the y direction does not perform any additional
-                    /// scaling, thus we need to copy the "ByteInFloat" color back to a byte color at the
+                    /// scaling, thus we need to map the "ByteInFloat" color back to a byte color at the
                     /// end (this perfoms clamping). Tensor.Index4SamplesClamped clamps to the border
                     /// region and allows any double pixel address.
                     outMat1[i] = inMat.Sample16(x * scale + shift, y * scale + shift,
                                                hermiteSpline, hermiteSpline,
                                                C3b.LinComRawC3f, C3f.LinCom,
                                                Tensor.Index4SamplesClamped, Tensor.Index4SamplesClamped)
-                                                .Copy(Col.ByteFromByteInFloatClamped);
+                                                .Map(Col.ByteFromByteInFloatClamped);
 
 
                     /// Note here the two C3b.LinCom calls perform the clamping immediately. Thus we have
@@ -193,7 +225,8 @@ namespace PixImageDemo
                                                Tensor.Index4SamplesCyclic1, Tensor.Index4SamplesCyclic1);
 
                     // outMat3[i] = inMat.Sample4Clamped(x * scale + shift, y * scale + shift, ColFun.Lerp, ColFun.Lerp);
-                    outMat3[i] = inMat.Sample4Clamped(x * scale + shift, y * scale + shift, ColFun.LerpC3f, ColFun.Lerp).Copy(Col.ByteFromByteInFloatClamped);
+                    outMat3[i] = inMat.Sample4Clamped(x * scale + shift, y * scale + shift, ColFun.LerpC3f, ColFun.Lerp)
+                                            .Map(Col.ByteFromByteInFloatClamped);
                 });
 
             outImg0.SaveAsImage(Path.Combine(dir, "resample-36clamped.tif"));
@@ -218,11 +251,28 @@ namespace PixImageDemo
 
             var colorImage = CreateHowManyColorsIllusion(1024);
 
+
             // scaling an image
             var scaledColorImage = new PixImage<byte>(1280, 800, 3);
-            scaledColorImage.GetMatrix<C4b>().SetScaledCubic(colorImage.GetMatrix<C4b>());
-
+            scaledColorImage.GetMatrix<C3b>().SetScaledCubic(colorImage.GetMatrix<C3b>());
             scaledColorImage.SaveAsImage(Path.Combine(dir, "v-scaled-image.png"));
+
+            // For shrinking images, interpoation of image values is not the optimal
+            // resampling filter. Here BSpline3 or BSpline5 approximation can be used
+            // which are 3rd order or 5th order approximations of a Gauss filter.
+            var shrunkColorImage = new PixImage<byte>(512, 512, 3);
+            shrunkColorImage.GetMatrix<C3b>().SetScaledBSpline5(colorImage.GetMatrix<C3b>());
+            shrunkColorImage.SaveAsImage(Path.Combine(dir, "v-shrunk-image.png"));
+
+            var scaledColorImage2 = new PixImage<byte>(1280, 800, 3);
+            scaledColorImage2.GetMatrix<C3b>().SetScaledLanczos(colorImage.GetMatrix<C3b>());
+            scaledColorImage.SaveAsImage(Path.Combine(dir, "v-scaled-lanczos-image.png"));
+
+            var smallColorImage = CreateHowManyColorsIllusion(256);
+
+            var nearestScaledImage = new PixImage<byte>(1024, 768, 3);
+            nearestScaledImage.GetMatrix<C3b>().SetScaledNearest(smallColorImage.GetMatrix<C3b>());
+            nearestScaledImage.SaveAsImage(Path.Combine(dir, "v-scaled-nearest-image.png"));
 
 
             // writing a color png image

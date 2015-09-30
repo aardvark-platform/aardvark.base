@@ -436,6 +436,19 @@ module SkipOrder =
                 else
                     None
 
+            member x.TryGetIndex (t : SortKey) =
+                if t.Clock <> x || t.IsDeleted then
+                    -1
+                else
+                    let mutable index = 0
+                    let mutable current = t
+                    while current <> x.Root do
+                        let link = t.PrevArray.[t.PrevArray.Length - 1]
+
+                        index <- index + link.Width
+                        current <- link.Target
+                    index
+
             member x.Item
                 with get (index : int) =
                     match x.TryAt index with

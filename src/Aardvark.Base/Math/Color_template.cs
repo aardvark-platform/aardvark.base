@@ -273,9 +273,18 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns a copy with all elements transformed by the supplied function.
         /// </summary>
-        public __type1__ Copy(Func<__ftype__, __ftype1__> fun)
+        [Obsolete("Use 'Map' instead (same functionality and parameters)", false)]
+        public __type1__ Copy(Func<__ftype__, __ftype1__> channel_fun)
         {
-            return new __type1__(/*# fields.ForEach(f => { */fun(__f__)/*# }, comma); */);
+            return Map(channel_fun);
+        }
+
+        /// <summary>
+        /// Returns a copy with all elements transformed by the supplied function.
+        /// </summary>
+        public __type1__ Map(Func<__ftype__, __ftype1__> channel_fun)
+        {
+            return new __type1__(/*# fields.ForEach(f => { */channel_fun(__f__)/*# }, comma); */);
         }
 
         //# }
@@ -827,6 +836,26 @@ namespace Aardvark.Base
     public static partial class ColFun
     {
         #region Interpolation
+
+        /// <summary>
+        /// Returns the linearly interpolated color between a and b stored in a  __flttype__.
+        /// </summary>
+        public static __flttype__ LerpRaw__flttype__(this double x, __type__ a, __type__ b)
+        {
+            return new __flttype__(/*# fields.ForEach(f => { */
+                        (float)a.__f__ + ((float)x * (float)((__htype__)b.__f__ - (__htype__)a.__f__))/*#
+                        }, comma); */);
+        }
+
+        /// <summary>
+        /// Returns the linearly interpolated color between a and b stored in a __dbltype__.
+        /// </summary>
+        public static __dbltype__ LerpRaw__dbltype__(this double x, __type__ a, __type__ b)
+        {
+            return new __dbltype__(/*# fields.ForEach(f => { */
+                        (double)a.__f__ + (x * (double)((__htype__)b.__f__ - (__htype__)a.__f__))/*#
+                        }, comma); */);
+        }
 
         /// <summary>
         /// Returns the linearly interpolated color between a and b.
