@@ -7,6 +7,7 @@ open Aardvark.Base
 open Aardvark.Base.Incremental
 open NUnit.Framework
 open FsUnit
+open System.Threading.Tasks
 
 module ``simple list tests`` =
 
@@ -377,3 +378,40 @@ module ``simple list tests`` =
         r |> content |> should equal [ 2; 4; 6; 24]
 
 
+    [<Test>]
+    let ``[CList] concurrent reader-reset``() =
+        
+        let list = CList.ofList [1..10]
+
+        let r = (list :> alist<_>).GetReader()
+        let running = ref true
+
+        Task.Factory.StartNew(fun () ->
+            while !running do
+                list.Clear() // causing reset
+                list.AddRange [1..10] // changing content
+        ) |> ignore
+
+        for i in 0..100 do
+            r.GetDelta() |> ignore
+
+        running := false
+
+    [<Test>]
+    let ``[COrderedSet] concurrent reader-reset``() =
+        
+        let set = COrderedSet.ofList [1..10]
+
+        let r = (set :> alist<_>).GetReader()
+        let running = ref true
+
+        Task.Factory.StartNew(fun () ->
+            while !running do
+                set.Clear() // causing reset
+                set.UnionWith [1..10] // changing content
+        ) |> ignore
+
+        for i in 0..100 do
+            r.GetDelta() |> ignore
+
+        running := false
