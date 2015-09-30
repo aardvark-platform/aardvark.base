@@ -287,6 +287,14 @@ type AdaptiveSetExtensions private() =
     static member ToAdaptiveList (this : aset<'a>) =
         this |> ASet.toAList
 
+    [<Extension>]
+    static member GroupBy(this : aset<'a>, f : Func<'a, 'b>) =
+        this |> ASet.groupBy f.Invoke
+
+    [<Extension>]
+    static member ToAMap(this : aset<'k*'v>) =
+        this |> AMap.ofASet
+
 [<Extension; AbstractClass; Sealed>]
 type ChangeableSetExtensions private() =
 
@@ -411,5 +419,12 @@ type CListExtensions private() =
     static member Concat (this : clist<'a>, other : alist<'a>) =
         AList.concat' [this; other]
 
+
+[<Extension; AbstractClass; Sealed>]
+type AdaptiveMapExtensions private() =
+
+    [<Extension>]
+    static member ToMod (this : amap<'k, 'v>) =
+        AMap.toMod this
 
 

@@ -531,7 +531,7 @@ module ``collect tests`` =
         let ct = cancel.Token
 
 
-        let readers = [0..10] |> List.map (fun _ -> derived.GetReader())
+        let readers = [0..5] |> List.map (fun _ -> derived.GetReader())
         // pull from the system
 
         for r in readers do
@@ -563,6 +563,34 @@ module ``collect tests`` =
             r.Update()
             let content = r.Content |> Seq.toList |> List.sort
             content |> should equal numbers
+
+    [<Test>]
+    let ``[CSet] concurrent reader-reset``() =
+        
+        let set = CSet.ofList [1..100]
+
+        let r = (set :> aset<_>).GetReader()
+        let running = ref true
+
+        Task.Factory.StartNew(fun () ->
+            while !running do
+                set.Clear() // causing reset
+                set.UnionWith [1..100] // changing content
+        ) |> ignore
+
+        for i in 0..1000 do
+            r.GetDelta() |> ignore
+
+        running := false
+
+
+
+
+
+
+
+
+
 
 
     [<Test>]
