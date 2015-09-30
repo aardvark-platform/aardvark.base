@@ -9,8 +9,9 @@ open Aardvark.Base.Incremental.AListReaders
 
 [<CompiledName("ChangeableListKey"); AllowNullLiteral>]
 type clistkey internal (t : SkipOrder.SortKey) =
-    member internal x.Time = t
-
+    member x.SortKey = t
+    member x.IsDeleted = t.IsDeleted
+    
 [<CompiledName("ChangeableList")>]
 type clist<'a>(initial : seq<'a>) =
     let content = TimeList<'a>()
@@ -37,116 +38,175 @@ type clist<'a>(initial : seq<'a>) =
 
     interface alist<'a> with
         member x.GetReader() =
-            let r = new EmitReader<'a>(order, fun r -> readers.Remove r |> ignore)
-            r.Emit (content, None)
-            readers.Add r |> ignore
-            r :> _
+            lock x (fun () ->
+                let r = new EmitReader<'a>(x, order, fun r -> readers.Remove r |> ignore)
+                r.Emit (content, None)
+                readers.Add r |> ignore
+                r :> _
+            )
 
-    member x.TryGetKey (index : int, [<Out>] key : byref<clistkey>) =
-        match tryAt index with
+    /// gets a unique key associated with the element at the given index which will
+    /// not be changed when inserting/removing other elements. [runtime: O(log N)]
+    member x.TryGetKey (index : int, [<Out>] key : byref<clistkey>) = 
+        match lock x (fun () -> tryAt index) with
             | Some t ->
                 key <- clistkey t
                 true
             | None ->
                 false
 
+    /// gets or sets the element associated with the given unique key [runtime: O(1)]
     member x.Item
         with get (k : clistkey) =
-            let t = k.Time
-            content.[t]
+            lock x (fun () ->
+                let t = k.SortKey
+                content.[t]
+            )
         and set (k : clistkey) (value : 'a) =
-            let tOld = k.Time
-            let vOld = content.[tOld]
-            let tNew = order.After tOld
+            lock x (fun () ->
+                let tOld = k.SortKey
+                let vOld = content.[tOld]
+                let tNew = order.After tOld
 
-            content.Remove tOld |> ignore
-            content.Add(tNew, value)
-            order.Delete tOld
+                content.Remove tOld |> ignore
+                content.Add(tNew, value)
+                order.Delete tOld
 
-            for r in readers do 
-                r.Emit(content, Some [Rem (tOld :> ISortKey, vOld); Add (tNew :> ISortKey, value)])
+                for r in readers do 
+                    r.Emit(content, Some [Rem (tOld :> ISortKey, vOld); Add (tNew :> ISortKey, value)])
+            )
 
+    /// gets or sets the element at the given index [runtime: O(log N)]
     member x.Item
         with get (index : int) =
-            match tryAt index with
-                | Some t -> x.[clistkey t]
-                | None -> raise <| IndexOutOfRangeException()
+            lock x (fun () ->
+                match tryAt index with
+                    | Some t -> x.[clistkey t]
+                    | None -> raise <| IndexOutOfRangeException()
+            )
         and set (index : int) (value : 'a) =
-            match tryAt index with
-                | Some t -> x.[clistkey t] <- value
-                | None -> raise <| IndexOutOfRangeException()
+            lock x (fun () ->
+                match tryAt index with
+                    | Some t -> x.[clistkey t] <- value
+                    | None -> raise <| IndexOutOfRangeException()
+            )
 
+    /// inserts the given element at the given index [runtime: O(log N)]
     member x.Insert(index : int, value : 'a) =
-        match tryAt index with
-            | Some t ->
-                x.InsertBefore(clistkey t, value)
-            | None ->
-                raise <| IndexOutOfRangeException()
+        lock x (fun () ->
+            match tryAt index with
+                | Some t ->
+                    x.InsertBefore(clistkey t, value)
+                | None ->
+                    raise <| IndexOutOfRangeException()
+        )
 
+    /// inserts a sequence of elements at the given index [runtime O(m * log N)]
     member x.InsertRange(index : int, s : seq<'a>) =
-        match x.TryGetKey index with
-            | (true, k) ->
-                for e in s do
-                    x.InsertBefore(k, e) |> ignore
+        lock x (fun () ->
+            match tryAt index with
+                | Some k ->
+                    let mutable current = 
+                        if k = order.Root then k
+                        else k.Prev
 
-            | _ ->
-                raise <| IndexOutOfRangeException()
+                    for e in s do
+                        current <- insertAfter current e
 
-    member x.RemoveAt(index : int) =
-        match tryAt index with
-            | Some t ->
-                x.Remove(clistkey t) |> ignore
-            | None ->
-                raise <| IndexOutOfRangeException()
-
-    member x.RemoveRange (start : int, count : int) =
-        if start + count <= x.Count then
-            match x.TryGetKey start with
-                | (true, k) ->
-                    let mutable t = k.Time
-                    for i in 0..count-1 do
-                        let n = t.Next
-                        x.Remove (clistkey t)
-                        t <- n
                 | _ ->
                     raise <| IndexOutOfRangeException()
-        else
-            raise <| IndexOutOfRangeException()
+        )
 
-    member x.Count = content.Count
+    /// removes the element at the given index [runtime: O(log N)]
+    member x.RemoveAt(index : int) =
+        lock x (fun () ->
+            match tryAt index with
+                | Some t ->
+                    x.Remove(clistkey t) |> ignore
+                | None ->
+                    raise <| IndexOutOfRangeException()
+        )
+
+    /// removes the given range of indices 
+    member x.RemoveRange (start : int, count : int) =
+        lock x (fun () ->
+            if start >= 0 && count >= 0 && start + count <= x.Count then
+                match x.TryGetKey start with
+                    | (true, k) ->
+                        let mutable t = k.SortKey
+                        for i in 0..count-1 do
+                            let n = t.Next
+                            x.Remove (clistkey t)
+                            t <- n
+                    | _ ->
+                        raise <| IndexOutOfRangeException()
+            else
+                raise <| IndexOutOfRangeException()
+        )
+
+    member x.Count = lock x (fun () -> content.Count)
 
     member x.Remove(key : clistkey) =
-        let c = content.[key.Time]
-        content.Remove key.Time |> ignore
+        lock x (fun () ->
+            let c = content.[key.SortKey]
+            content.Remove key.SortKey |> ignore
 
-        order.Delete key.Time
-        for r in readers do 
-            r.Emit(content, Some [Rem (key.Time :> ISortKey, c)])
+            order.Delete key.SortKey
+            for r in readers do 
+                r.Emit(content, Some [Rem (key.SortKey :> ISortKey, c)])
+        )
 
     member x.InsertAfter(key : clistkey, value : 'a) : clistkey =
-        clistkey (insertAfter key.Time value)
+        lock x (fun () ->
+            clistkey (insertAfter key.SortKey value)
+        )
 
     member x.InsertBefore(key : clistkey, value : 'a) : clistkey =
-        x.InsertAfter(clistkey key.Time.Prev, value)
+        lock x (fun () ->
+            x.InsertAfter(clistkey key.SortKey.Prev, value)
+        )
 
     member x.Add(value : 'a) =
-        x.InsertAfter(clistkey order.Root.Prev, value)
+        lock x (fun () ->
+            x.InsertAfter(clistkey order.Root.Prev, value)
+        )
 
     member x.AddRange(s : seq<'a>) =
-        s |> Seq.iter (fun e -> x.Add e |> ignore)
+        lock x (fun () ->
+            s |> Seq.iter (fun e -> x.Add e |> ignore)
+        )
 
     member x.Clear() =
-        content.Clear()
-        order.Clear()
+        lock x (fun () ->
+            content.Clear()
+            order.Clear()
         
-        for r in readers do 
-            r.Emit(content, None)
+            for r in readers do 
+                r.Emit(content, None)
+        )
 
     member x.Find(item : 'a) =
-        let t = content |> Seq.tryPick (fun (t,v) -> if Object.Equals(v,item) then Some t else None)
-        match t with
-            | Some t -> clistkey (unbox t)
-            | None -> null
+        lock x (fun () ->
+            let t = content |> Seq.tryPick (fun (t,v) -> if Object.Equals(v,item) then Some t else None)
+            match t with
+                | Some t -> clistkey (unbox t)
+                | None -> null
+        )
+
+    member x.IndexOf (item : 'a) =
+        lock x (fun () ->
+            match x.Find item with
+                | null -> -1
+                | k -> order.TryGetIndex k.SortKey
+        )
+
+    member x.CopyTo(arr : 'a[], index : int) =
+        lock x (fun () ->
+            let mutable i = index
+            for e in content.Values do
+                arr.[i] <- e
+                i <- i + 1
+        )
 
     interface System.Collections.IEnumerable with
         member x.GetEnumerator() =
@@ -155,6 +215,21 @@ type clist<'a>(initial : seq<'a>) =
     interface System.Collections.Generic.IEnumerable<'a> with
         member x.GetEnumerator() =
             (content.Values :> seq<'a>).GetEnumerator()
+
+    interface IList<'a> with
+        member x.Add v = x.Add v |> ignore
+        member x.Item
+            with get (i : int) = x.[i]
+            and set (i : int) (v : 'a) = x.[i] <- v
+        member x.IndexOf v = x.IndexOf v
+        member x.Insert(index, item) = x.Insert(index, item) |> ignore
+        member x.RemoveAt(index) = x.RemoveAt index
+        member x.Clear() = x.Clear()
+        member x.Count = x.Count
+        member x.IsReadOnly = false
+        member x.Contains(item) = lock x (fun () -> content |> Seq.exists(fun (_,i) -> System.Object.Equals(i, item)))
+        member x.CopyTo(arr, index) = x.CopyTo(arr, index)
+        member x.Remove(item) = lock x (fun () -> match x.Find item with | null -> false | key -> x.Remove key; true)
 
     new() = clist Seq.empty
 
@@ -239,7 +314,7 @@ type corderedset<'a>(initial : seq<'a>) =
 
     interface alist<'a> with
         member x.GetReader() =
-            let r = new EmitReader<'a>(order, fun r -> listReaders.Remove r |> ignore)
+            let r = new EmitReader<'a>(x, order, fun r -> listReaders.Remove r |> ignore)
             r.Emit (content, None)
             listReaders.Add r |> ignore
             r :> _
@@ -248,7 +323,7 @@ type corderedset<'a>(initial : seq<'a>) =
         member x.ReaderCount = setReaders.Count
         member x.IsConstant = false
         member x.GetReader() =
-            let r = new ASetReaders.EmitReader<'a>(fun r -> setReaders.Remove r |> ignore)
+            let r = new ASetReaders.EmitReader<'a>(x, fun r -> setReaders.Remove r |> ignore)
             r.Emit(set, None)
             setReaders.Add r |> ignore
             r :> _

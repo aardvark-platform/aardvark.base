@@ -20,86 +20,102 @@ type cset<'a>(initial : seq<'a>) =
         member x.ReaderCount = readers.Count
         member x.IsConstant = false
         member x.GetReader() =
-            let r = new EmitReader<'a>(fun r -> readers.Remove r |> ignore)
-            r.Emit(content, None)
-            readers.Add r |> ignore
-            r :> _
+            lock x (fun () ->
+                let r = new EmitReader<'a>(x, fun r -> readers.Remove r |> ignore)
+                r.Emit(content, None)
+                readers.Add r |> ignore
+                r :> _
+            )
 
-    member x.Readers = readers :> seq<_>
+    member x.Readers = readers |> Seq.toList :> seq<_>
 
     /// Gets the number of elements contained in the cset.
-    member x.Count = content.Count
+    member x.Count = lock x (fun () ->  content.Count)
 
     /// Determines whether a cset contains a specified element by using the default equality comparer.
-    member x.Contains v = content.Contains v
+    member x.Contains v = lock x (fun () -> content.Contains v)
 
     /// Modifies the current set so that it contains all elements that are present in either the current set or the specified collection.
     member x.UnionWith(s : seq<'a>) =
-        let res = s |> Seq.filter content.Add |> Seq.map Add |> Seq.toList
-        for r in readers do 
-            r.Emit(content, Some res)
+        lock x (fun () ->
+            let res = s |> Seq.filter content.Add |> Seq.map Add |> Seq.toList
+            for r in readers do 
+                r.Emit(content, Some res)
+        )
 
     /// Removes all elements in the specified collection from the current set.
     member x.ExceptWith(s : seq<'a>) =
-        let res = s |> Seq.filter content.Remove |> Seq.map Rem |> Seq.toList
-        for r in readers do 
-            r.Emit(content, Some res)
+        lock x (fun () ->
+            let res = s |> Seq.filter content.Remove |> Seq.map Rem |> Seq.toList
+            for r in readers do 
+                r.Emit(content, Some res)
+        )
 
     /// Modifies the current set so that it contains only elements that are also in a specified collection.
     member x.IntersectWith(s : seq<'a>) =
         let s = HashSet(s)
-        let res = 
-            content |> Seq.toList
-                    |> List.filter (not << s.Contains) 
-                    |> List.map (fun a -> content.Remove a |> ignore; Rem a) 
+        lock x (fun () ->
+            let res = 
+                content |> Seq.toList
+                        |> List.filter (not << s.Contains) 
+                        |> List.map (fun a -> content.Remove a |> ignore; Rem a) 
 
-        for r in readers do 
-            r.Emit(content, Some res)
+            for r in readers do 
+                r.Emit(content, Some res)
+        )
 
     /// Modifies the current set so that it contains only elements that are present either in the current set or in the specified collection, but not both.
     member x.SymmetricExceptWith(s : seq<'a>) =
         let s = HashSet(s)
-        let removed = 
-            content |> Seq.toList
-                    |> List.choose (fun a -> 
-                            if s.Contains a then 
-                                content.Remove a |> ignore
-                                s.Remove a |> ignore
-                                Some (Rem a)
-                            else None
-                        ) 
+        lock x (fun () ->
+            let removed = 
+                content |> Seq.toList
+                        |> List.choose (fun a -> 
+                                if s.Contains a then 
+                                    content.Remove a |> ignore
+                                    s.Remove a |> ignore
+                                    Some (Rem a)
+                                else None
+                            ) 
 
-        let added = s |> Seq.filter content.Add |> Seq.map Add |> Seq.toList
-        let res = List.append removed added
+            let added = s |> Seq.filter content.Add |> Seq.map Add |> Seq.toList
+            let res = List.append removed added
 
-        for r in readers do 
-            r.Emit(content, Some res)
+            for r in readers do 
+                r.Emit(content, Some res)
+        )
 
     /// Removes all items from the set.
     member x.Clear() =
-        content.Clear()
-        for r in readers do 
-            r.Emit(content, None)
+        lock x (fun () ->
+            let res = content |> Seq.map Rem |> Seq.toList
+            content.Clear()
+            for r in readers do 
+                r.Emit(content, Some res)
+        )
 
     /// Adds an element to the current set and returns a value to indicate if the element was successfully added.
     member x.Add v =
-        if content.Add v then 
-            for r in readers do 
-                r.Emit(content, Some [Add v])
-
-            true
-        else
-            false
+        lock x (fun () ->
+            if content.Add v then 
+                for r in readers do 
+                    r.Emit(content, Some [Add v])
+                true
+            else
+                false
+        )
 
     /// Removes an element from the current set and returns a value to indicate if the element was successfully removed.
     member x.Remove v =
-        if content.Remove v then 
-            for r in readers do
-                r.Emit(content, Some [Rem v])
+        lock x (fun () ->
+            if content.Remove v then 
+                for r in readers do
+                    r.Emit(content, Some [Rem v])
 
-            true
-        else
-            false
+                true
+            else
+                false
+        )
 
     /// Creates a new empty set.
     new() = cset Seq.empty
@@ -109,20 +125,20 @@ type cset<'a>(initial : seq<'a>) =
         member x.Add(item: 'a): unit = x.Add item |> ignore
         member x.Clear(): unit = x.Clear()
         member x.Contains(item: 'a): bool = x.Contains item
-        member x.CopyTo(array: 'a [], arrayIndex: int): unit = content.CopyTo(array, arrayIndex)
+        member x.CopyTo(array: 'a [], arrayIndex: int): unit = lock x (fun () -> content.CopyTo(array, arrayIndex))
         member x.Count: int = x.Count
         member x.ExceptWith(other: IEnumerable<'a>): unit = x.ExceptWith other
         member x.GetEnumerator(): IEnumerator = content.GetEnumerator() :> IEnumerator
         member x.GetEnumerator(): IEnumerator<'a> = content.GetEnumerator() :> IEnumerator<'a>
         member x.IntersectWith(other: IEnumerable<'a>): unit = x.IntersectWith other
-        member x.IsProperSubsetOf(other: IEnumerable<'a>): bool = content.IsProperSubsetOf other
-        member x.IsProperSupersetOf(other: IEnumerable<'a>): bool = content.IsProperSupersetOf other
+        member x.IsProperSubsetOf(other: IEnumerable<'a>): bool = lock x (fun () -> content.IsProperSubsetOf other)
+        member x.IsProperSupersetOf(other: IEnumerable<'a>): bool = lock x (fun () -> content.IsProperSupersetOf other)
         member x.IsReadOnly: bool = false
-        member x.IsSubsetOf(other: IEnumerable<'a>): bool = content.IsSubsetOf other
-        member x.IsSupersetOf(other: IEnumerable<'a>): bool = content.IsSubsetOf other
-        member x.Overlaps(other: IEnumerable<'a>): bool = content.Overlaps other
+        member x.IsSubsetOf(other: IEnumerable<'a>): bool = lock x (fun () -> content.IsSubsetOf other)
+        member x.IsSupersetOf(other: IEnumerable<'a>): bool = lock x (fun () -> content.IsSupersetOf other)
+        member x.Overlaps(other: IEnumerable<'a>): bool = lock x (fun () -> content.Overlaps other)
         member x.Remove(item: 'a): bool = x.Remove item
-        member x.SetEquals(other: IEnumerable<'a>): bool = content.SetEquals other
+        member x.SetEquals(other: IEnumerable<'a>): bool = lock x (fun () -> content.SetEquals other)
         member x.SymmetricExceptWith(other: IEnumerable<'a>): unit = x.SymmetricExceptWith other
         member x.UnionWith(other: IEnumerable<'a>): unit = x.UnionWith other
 
