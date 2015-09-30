@@ -10,154 +10,166 @@ namespace Aardvark.Base
         /// <summary>
         /// Raw sample access without checks.
         /// </summary>
-        public static readonly Func<long, long, long, long, Tup2<long>>
-            Index2SamplesRaw = (i, min, max, d) => new Tup2<long>(0L, d);
+        public static Tup2<long> Index2SamplesRaw(long i, long first, long end, long d)
+                => new Tup2<long>(0L, d);
 
         /// <summary>
         /// Provides sample clamping to the border value.
         /// </summary>
-        public static readonly Func<long, long, long, long, Tup2<long>>
-            Index2SamplesClamped = (i, min, max, d) =>
-            {
-                long i0 = i - min;
-                if (i0 < 0) return new Tup2<long>(-i0 * d);
-                long i1 = i - max + 1;
-                if (i1 >= 0) return new Tup2<long>(-i1 * d);
-                return new Tup2<long>(0L, d);
-            };
+        public static Tup2<long>Index2SamplesClamped(long i, long first, long end, long d)
+        {
+            long i0 = i - first;
+            if (i0 < 0) return new Tup2<long>(-i0 * d);
+            long i1 = i - end + 1;
+            if (i1 >= 0) return new Tup2<long>(-i1 * d);
+            return new Tup2<long>(0L, d);
+        }
 
         /// <summary>
         /// Provides cyclic handling within one cycle of the original.
         /// </summary>
-        public static readonly Func<long, long, long, long, Tup2<long>>
-            Index2SamplesCyclic1 = (i, min, max, d) =>
+        public static Tup2<long> Index2SamplesCyclic1(long i, long first, long end, long d)
+        {
+            long i0 = i - first;
+            if (i0 < 0)
             {
-                long i0 = i - min;
-                if (i0 < 0)
-                {
-                    var s = (max - min) * d;
-                    if (i0 < -1) return new Tup2<long>(s, s + d);
-                    return new Tup2<long>(s, d);
-                }
-                long i1 = i - max + 1;
-                if (i1 >= 0)
-                {
-                    var s = (min - max) * d;
-                    if (i1 >= 1) return new Tup2<long>(s, s + d);
-                    return new Tup2<long>(0, s + d);
-                }
-                return new Tup2<long>(0L, d);
-            };
+                var s = (end - first) * d;
+                if (i0 < -1) return new Tup2<long>(s, s + d);
+                return new Tup2<long>(s, d);
+            }
+            long i1 = i - end + 1;
+            if (i1 >= 0)
+            {
+                var s = (first - end) * d;
+                if (i1 >= 1) return new Tup2<long>(s, s + d);
+                return new Tup2<long>(0, s + d);
+            }
+            return new Tup2<long>(0L, d);
+        }
 
         /// <summary>
         /// Raw sample access without checks.
         /// </summary>
-        public static readonly Func<long, long, long, long, Tup4<long>>
-            Index4SamplesRaw = (i, min, max, d) => new Tup4<long>(-d, 0L, d, d + d);
+        public static Tup3<long> Index3SamplesRaw(long i, long first, long end, long d)
+                => new Tup3<long>(-d, 0L, d);
 
         /// <summary>
         /// Provides sample clamping to the border value.
         /// </summary>
-        public static readonly Func<long, long, long, long, Tup4<long>>
-            Index4SamplesClamped = (i, min, max, d) =>
+        public static Tup3<long> Index3SamplesClamped(long i, long first, long end, long d)
+        {
+            long i0 = i - first, i1 = i - end + 1;
+            return i0 > 0   ? (i1 < 0   ? new Tup3<long>(-d, 0L, d) 
+                                        : (i1 == 0  ? new Tup3<long>(-d, 0L, 0L)
+                                                    : new Tup3<long>(-i1 * d)))
+                            : (i0 == 0  ? (i1 < 0   ? new Tup3<long>(0L, 0L, d)
+                                                    : new Tup3<long>(0L)) 
+                                        : new Tup3<long>(-i0 * d));
+        }
+
+        /// <summary>
+        /// Raw sample access without checks.
+        /// </summary>
+        public static Tup4<long> Index4SamplesRaw(long i, long first, long end, long d)
+                => new Tup4<long>(-d, 0L, d, d + d);
+
+        /// <summary>
+        /// Provides sample clamping to the border value.
+        /// </summary>
+        public static Tup4<long> Index4SamplesClamped (long i, long first, long end, long d)
+        {
+            long i0 = i - first, i1 = i - end + 1;
+            if (i0 < 1)
             {
-                long i0 = i - min, i1 = i - max + 1;
-                if (i0 < 1)
+                if (i0 < 0)
                 {
-                    if (i0 < 0)
-                    {
-                        if (i0 < -1) return new Tup4<long>(-i0 * d);
-                        if (i1 >= -1) return new Tup4<long>(d);
-                        return new Tup4<long>(d, d, d, d + d); 
-                    }
-                    if (i1 >= -1)
-                    {
-                        if (i1 >= 0) return new Tup4<long>(0L);
-                        return new Tup4<long>(0L, 0L, d, d);
-                    }
-                    return new Tup4<long>(0L, 0L, d, d + d);
+                    if (i0 < -1) return new Tup4<long>(-i0 * d);
+                    if (i1 >= -1) return new Tup4<long>(d);
+                    return new Tup4<long>(d, d, d, d + d); 
                 }
                 if (i1 >= -1)
                 {
-                    if (i1 >= 0)
-                    {
-                        if (i1 >= 1) return new Tup4<long>(-i1 * d);
-                        return new Tup4<long>(-d, 0L, 0L, 0L);
-                    }
-                    return new Tup4<long>(-d, 0L, d, d);
+                    if (i1 >= 0) return new Tup4<long>(0L);
+                    return new Tup4<long>(0L, 0L, d, d);
                 }
-                return new Tup4<long>(-d, 0L, d, d + d);
-            };
+                return new Tup4<long>(0L, 0L, d, d + d);
+            }
+            if (i1 >= -1)
+            {
+                if (i1 >= 0)
+                {
+                    if (i1 >= 1) return new Tup4<long>(-i1 * d);
+                    return new Tup4<long>(-d, 0L, 0L, 0L);
+                }
+                return new Tup4<long>(-d, 0L, d, d);
+            }
+            return new Tup4<long>(-d, 0L, d, d + d);
+        }
 
         /// <summary>
         /// Provides cyclic handling within one cycle of the original.
         /// Note that this does not handle regions with less than four
         /// samples.
         /// </summary>
-        public static readonly Func<long, long, long, long, Tup4<long>>
-            Index4SamplesCyclic1 = (i, min, max, d) =>
+        public static Tup4<long>Index4SamplesCyclic1(long i, long first, long end, long d)
+        {
+            long i0 = i - first, i1 = i - end + 1;
+            if (i0 < 1)
             {
-                long i0 = i - min, i1 = i - max + 1;
-                if (i0 < 1)
+                var s = (end - first) * d;
+                if (i0 < -1)
                 {
-                    var s = (max - min) * d;
-                    if (i0 < -1)
-                    {
-                        if (i0 < -2) return new Tup4<long>(s - d, s, s + d, s + d + d);
-                        return new Tup4<long>(s - d, s, s + d, d + d);
-                    }
-                    if (i0 < 0) return new Tup4<long>(s - d, s, d, d + d);
-                    return new Tup4<long>(s - d, 0L, d, d + d);
+                    if (i0 < -2) return new Tup4<long>(s - d, s, s + d, s + d + d);
+                    return new Tup4<long>(s - d, s, s + d, d + d);
                 }
-                if (i1 >= -1)
+                if (i0 < 0) return new Tup4<long>(s - d, s, d, d + d);
+                return new Tup4<long>(s - d, 0L, d, d + d);
+            }
+            if (i1 >= -1)
+            {
+                var s = (first - end) * d;
+                if (i1 >= 1)
                 {
-                    var s = (min - max) * d;
-                    if (i1 >= 1)
-                    {
-                        if (i1 >= 2) return new Tup4<long>(s - d, s, s + d, s + d + d);
-                        return new Tup4<long>(-d, s, s + d, s + d + d);
-                    }
-                    if (i1 >= 0) return new Tup4<long>(-d, 0L, s + d, s + d + d);
-                    return new Tup4<long>(-d, 0L, d, s + d + d);
+                    if (i1 >= 2) return new Tup4<long>(s - d, s, s + d, s + d + d);
+                    return new Tup4<long>(-d, s, s + d, s + d + d);
                 }
-                return new Tup4<long>(-d, 0L, d, d + d);
-            };
+                if (i1 >= 0) return new Tup4<long>(-d, 0L, s + d, s + d + d);
+                return new Tup4<long>(-d, 0L, d, s + d + d);
+            }
+            return new Tup4<long>(-d, 0L, d, d + d);
+        }
 
         /// <summary>
         /// Raw sample access without checks.
         /// </summary>
-        public static readonly Func<long, long, long, long, Tup6<long>>
-            Index6SamplesRaw = (i, min, max, d) =>
-            {
-                var d2 = d + d;
-                return new Tup6<long>(-d2, -d, 0L, d, d2, d2 + d);
-            };
+        public static Tup6<long> Index6SamplesRaw(long i, long first, long end, long d)
+        {
+            var d2 = d + d; return new Tup6<long>(-d2, -d, 0L, d, d2, d2 + d);
+        }
 
         /// <summary>
         /// Provides sample clamping to the border value. Note that this
         /// function currently requires that max - min >= 5! i.e. it 
         /// does not work for too small source tensors.
         /// </summary>
-        public static readonly Func<long, long, long, long, Tup6<long>>
-            Index6SamplesClamped = (i, min, max, d) =>
+        public static Tup6<long> Index6SamplesClamped(long i, long first, long end, long d)
+        {
+            long i0 = i - first, i1 = i - end + 1;
+            long d2 = d + d;
+            if (i0 < 2)
             {
-                long i0 = i - min, i1 = i - max + 1;
-                long d2 = d + d;
-                if (i0 < 2)
-                {
-                    if (i0 < 0) return new Tup6<long>(-i0 * d);
-                    if (i0 < 1) return new Tup6<long>(0L, 0L, 0L, d, d2, d2 + d);
-                    return new Tup6<long>(-d, -d, 0L, d, d2, d2 + d);
-                }
-                if (i1 >= -2)
-                {
-                    if (i1 >= 0) return new Tup6<long>(-i1 * d);
-                    if (i1 >= -1) return new Tup6<long>(-d2, d, 0L, d, d, d);
-                    return new Tup6<long>(-d2, -d, 0L, d, d2, d2);
-                }
-                return new Tup6<long>(-d2, -d, 0L, d, d2, d2 + d);
-            };
-
+                if (i0 < 0) return new Tup6<long>(-i0 * d);
+                if (i0 < 1) return new Tup6<long>(0L, 0L, 0L, d, d2, d2 + d);
+                return new Tup6<long>(-d, -d, 0L, d, d2, d2 + d);
+            }
+            if (i1 >= -2)
+            {
+                if (i1 >= 0) return new Tup6<long>(-i1 * d);
+                if (i1 >= -1) return new Tup6<long>(-d2, d, 0L, d, d, d);
+                return new Tup6<long>(-d2, -d, 0L, d, d2, d2);
+            }
+            return new Tup6<long>(-d2, -d, 0L, d, d2, d2 + d);
+        }
 
     }
     
@@ -778,5 +790,110 @@ namespace Aardvark.Base
         }
 
         #endregion    
+    }
+
+    public partial struct Matrix<Td>
+    {
+        public TRes Sample4<T1, TRes>(
+                long d0, Tup4<long> d1, Tup4<T1> w,
+                FuncRef1<Td, Td, Td, Td, Tup4<T1>, TRes> smp) =>
+            smp(Data[d0 + d1.E0], Data[d0 + d1.E1],Data[d0 + d1.E2], Data[d0 + d1.E3], ref w);
+    }
+
+    public partial struct Matrix<Td, Tv>
+    {
+
+        public TRes Sample4<T1, TRes>(
+                long d0, Tup4<long> d1, Tup4<T1> w,
+                FuncRef1<Tv, Tv, Tv, Tv, Tup4<T1>, TRes> smp) =>
+            smp(Getter(Data, d0 + d1.E0), Getter(Data, d0 + d1.E1),
+                Getter(Data, d0 + d1.E2), Getter(Data, d0 + d1.E3), ref w);
+
+
+        public void SetScaled16InDevelopment<T1, T2, T3>(Matrix<Td, Tv> sourceMat,
+                double xScale, double yScale, double xShift, double yShift,
+                Func<double, Tup4<T1>> xipl,
+                Func<double, Tup4<T2>> yipl,
+                FuncRef1<Tv, Tv, Tv, Tv, Tup4<T1>, T3> xsmp,
+                FuncRef1<T3, T3, T3, T3, Tup4<T2>, Tv> ysmp,
+                Func<long, long, long, long, Tup4<long>> index_min_max_delta_xIndexFun,
+                Func<long, long, long, long, Tup4<long>> index_min_max_delta_yIndexFun)
+        {
+            var dxa = new Tup4<long>[SX];
+            var wxa = new Tup4<T1>[SX];
+            long fx = sourceMat.FX, ex = sourceMat.EX, dx1 = sourceMat.DX;
+            for (long tix = 0, tsx = SX; tix < tsx; tix++, xShift += xScale)
+            {
+                double xid = Fun.Floor(xShift); long xi = (long)xid; double xf = xShift - xid;
+                var dx = index_min_max_delta_xIndexFun(xi, fx, ex, dx1);
+                var dxi = xi * dx1; dx.E0 += dxi; dx.E1 += dxi; dx.E2 += dxi; dx.E3 += dxi;
+                dxa[tix] = dx; wxa[tix] = xipl(xf);
+            }
+
+            var mat = new Matrix<T3>(SX, sourceMat.SY);
+
+            {
+                var srcdy = sourceMat.DY;
+                var data = mat.Data;
+                long i = mat.FirstIndex;
+                long ys = mat.Info.DSY, yj = mat.Info.JY;
+                long xs = mat.Info.SX;
+                for (long ye = i + ys, y = FY, dy = sourceMat.Origin; i != ye; i += yj, y++, dy += srcdy)
+                    for (long xe = i + xs, x = FX; i != xe; i++, x++)
+                        data[i] = sourceMat.Sample4(dy, dxa[x], wxa[x], xsmp);
+            }
+
+            var dya = new Tup4<long>[SY];
+            var wya = new Tup4<T2>[SY];
+            long fy = mat.FY, ey = mat.EY, dy1 = mat.DY;
+            for (long tiy = 0, tsy = SY; tiy < tsy; tiy++, yShift += yScale)
+            {
+                double yid = Fun.Floor(yShift); long yi = (long)yid; double yf = yShift - yid;
+                var dy = index_min_max_delta_yIndexFun(yi, fy, ey, dy1);
+                var dyi = yi * dy1; dy.E0 += dyi; dy.E1 += dyi; dy.E2 += dyi; dy.E3 += dyi;
+                dya[tiy] = dy; wya[tiy] = yipl(yf);
+            }
+            {
+                var matdx = mat.DX;
+                var data = Data;
+                long i = FirstIndex;
+                if (Info.DX == 1)
+                {
+                    long ys = Info.DSY, yj = Info.JY;
+                    long xs = Info.SX;
+                    for (long ye = i + ys, y = FY; i != ye; i += yj, y++)
+                    {
+                        for (long xe = i + xs, x = FX, dx = 0; i != xe; i++, x++, dx += matdx)
+                        {
+                            Setter(data, i, mat.Sample4(dx, dya[y], wya[y], ysmp));
+                        }
+                    }
+                }
+                else if (Info.DY == 1)
+                {
+                    long xs = Info.DSX, xj = Info.JXY;
+                    long ys = Info.SY;
+                    for (long xe = i + xs, x = FX, dx = 0; i != xe; i += xj, x++, dx += matdx)
+                    {
+                        for (long ye = i + ys, y = FY; i != ye; i++, y++)
+                        {
+                            Setter(data, i, mat.Sample4(dx, dya[y], wya[y], ysmp));
+                        }
+                    }
+                }
+                else
+                {
+                    long ys = Info.DSY, yj = Info.JY;
+                    long xs = Info.DSX, xj = Info.JX;
+                    for (long ye = i + ys, y = FY; i != ye; i += yj, y++)
+                    {
+                        for (long xe = i + xs, x = FX, dx = 0; i != xe; i += xj, x++, dx += matdx)
+                        {
+                            Setter(data, i, mat.Sample4(dx, dya[y], wya[y], ysmp));
+                        }
+                    }
+                }
+            }
+        }
     }
 }
