@@ -307,6 +307,7 @@ type corderedset<'a>(initial : seq<'a>) =
         for r in setReaders do 
             r.Emit(set, None)
 
+
     do  
         let mutable current = order.Root
         for e in initial do
@@ -314,65 +315,121 @@ type corderedset<'a>(initial : seq<'a>) =
 
     interface alist<'a> with
         member x.GetReader() =
-            let r = new EmitReader<'a>(x, order, fun r -> listReaders.Remove r |> ignore)
-            r.Emit (content, None)
-            listReaders.Add r |> ignore
-            r :> _
+            lock x (fun () ->
+                let r = new EmitReader<'a>(x, order, fun r -> listReaders.Remove r |> ignore)
+                r.Emit (content, None)
+                listReaders.Add r |> ignore
+                r :> _
+            )
 
     interface aset<'a> with
-        member x.ReaderCount = setReaders.Count
+        member x.ReaderCount = lock x (fun () -> setReaders.Count)
         member x.IsConstant = false
         member x.GetReader() =
-            let r = new ASetReaders.EmitReader<'a>(x, fun r -> setReaders.Remove r |> ignore)
-            r.Emit(set, None)
-            setReaders.Add r |> ignore
-            r :> _
+            lock x (fun () ->
+                let r = new ASetReaders.EmitReader<'a>(x, fun r -> setReaders.Remove r |> ignore)
+                r.Emit(set, None)
+                setReaders.Add r |> ignore
+                r :> _
+            )
 
-    member x.Count = content.Count
+    member x.Count = lock x (fun () -> content.Count)
 
     member x.Remove(item : 'a) =
-        if set.Contains item then
-            remove item
-        else
-            false
+        lock x (fun () -> 
+            if set.Contains item then
+                remove item
+            else
+                false
+        )
 
     member x.InsertAfter(prev : 'a, value : 'a) =
-        if set.Contains value then
-            false
-        else
-            match tryGetTime prev with
-                | Some t -> 
-                    insertAfter t value |> ignore
-                    true
-                | None ->
-                    failwithf "set does not contain element: %A" prev
+        lock x (fun () -> 
+            if set.Contains value then
+                false
+            else
+                match tryGetTime prev with
+                    | Some t -> 
+                        insertAfter t value |> ignore
+                        true
+                    | None ->
+                        failwithf "set does not contain element: %A" prev
+        )
 
     member x.InsertBefore(next : 'a, value : 'a) =
-        if set.Contains value then
-            false
-        else
-            match tryGetTime next with
-                | Some t -> 
-                    insertAfter t.Prev value |> ignore
-                    true
-                | None ->
-                    failwithf "set does not contain element: %A" next
+        lock x (fun () -> 
+            if set.Contains value then
+                false
+            else
+                match tryGetTime next with
+                    | Some t -> 
+                        insertAfter t.Prev value |> ignore
+                        true
+                    | None ->
+                        failwithf "set does not contain element: %A" next
+        )
 
     member x.Add(value : 'a) =
-        if set.Contains value then
-            false
-        else
-            match tryGetTime value with
-                | Some t -> false
-                | None -> 
-                    insertAfter order.Root.Prev value |> ignore
-                    true
+        lock x (fun () -> 
+            if set.Contains value then
+                false
+            else
+                match tryGetTime value with
+                    | Some t -> false
+                    | None -> 
+                        insertAfter order.Root.Prev value |> ignore
+                        true
+        )
+
+    member x.UnionWith(values : seq<'a>) =
+        lock x (fun () ->
+            for e in values do
+                match tryGetTime e with
+                    | Some t -> ()
+                    | None -> insertAfter order.Root.Prev e |> ignore
+                            
+        )
+
+    member x.ExceptWith(values : seq<'a>) =
+        lock x (fun () ->
+            for e in values do
+                remove e |> ignore
+                            
+        )  
+
+    member x.IntersectWith(values : seq<'a>) : unit =
+        failwith "not implemented"
+
+    member x.SymmetricExceptWith(values : seq<'a>) : unit =
+        failwith "not implemented"
+
+
+    member x.CopyTo(arr : 'a[], index : int) =
+        lock x (fun () ->
+            let mutable i = index
+            let mutable t = order.Root.Next
+
+            while t <> order.Root do
+                match content.TryGetValue t with
+                    | (true, v) -> arr.[i] <- v
+                    | _ -> failwith "[COrderedSet] invalid state in CopyTo('a[],int)"
+
+                i <- i + 1
+                t <- t.Next
+        )
 
     member x.Clear() =
-        clear()
+        lock x (fun () -> clear())
 
     member x.Contains item =
-        set.Contains item
+        lock x (fun () -> set.Contains item)
+
+    member x.IsProperSubsetOf(other: IEnumerable<'a>): bool = lock x (fun () -> set.IsProperSubsetOf other)
+    member x.IsProperSupersetOf(other: IEnumerable<'a>): bool = lock x (fun () -> set.IsProperSupersetOf other)
+    member x.IsSubsetOf(other: IEnumerable<'a>): bool = lock x (fun () -> set.IsSubsetOf other)
+    member x.IsSupersetOf(other: IEnumerable<'a>): bool = lock x (fun () -> set.IsSupersetOf other)
+    member x.Overlaps(other: IEnumerable<'a>): bool = lock x (fun () -> set.Overlaps other)
+    member x.SetEquals(other: IEnumerable<'a>): bool = lock x (fun () -> set.SetEquals other)
 
     interface System.Collections.IEnumerable with
         member x.GetEnumerator() =
@@ -383,6 +440,28 @@ type corderedset<'a>(initial : seq<'a>) =
             (content.Values :> seq<'a>).GetEnumerator()
 
     new() = corderedset Seq.empty
+
+    interface ISet<'a> with
+        member x.Add(item: 'a): bool = x.Add item
+        member x.Add(item: 'a): unit = x.Add item |> ignore
+        member x.Clear(): unit = x.Clear()
+        member x.Contains(item: 'a): bool = x.Contains item
+        member x.CopyTo(array: 'a [], arrayIndex: int): unit = x.CopyTo(array, arrayIndex)
+        member x.Count: int = x.Count
+        member x.ExceptWith(other: IEnumerable<'a>): unit = x.ExceptWith other
+        member x.IntersectWith(other: IEnumerable<'a>): unit = x.IntersectWith other
+        member x.IsProperSubsetOf(other: IEnumerable<'a>): bool = x.IsProperSubsetOf other
+        member x.IsProperSupersetOf(other: IEnumerable<'a>): bool = x.IsProperSupersetOf other
+        member x.IsSubsetOf(other: IEnumerable<'a>): bool = x.IsSubsetOf other
+        member x.IsSupersetOf(other: IEnumerable<'a>): bool = x.IsSupersetOf other
+        member x.Overlaps(other: IEnumerable<'a>): bool = x.Overlaps other
+        member x.IsReadOnly: bool = false
+        member x.Remove(item: 'a): bool = x.Remove item
+        member x.SetEquals(other: IEnumerable<'a>): bool = x.SetEquals other
+        member x.SymmetricExceptWith(other: IEnumerable<'a>): unit = x.SymmetricExceptWith other
+        member x.UnionWith(other: IEnumerable<'a>): unit = x.UnionWith other
+
+
 
 module CList =
     
@@ -469,19 +548,42 @@ module CListRel =
 
     let toArray (c : clist<'a>) = c |> Seq.toArray
 
-module CSetOrdered =
+module COrderedSet =
     
+    let empty<'a> : corderedset<'a> = corderedset []
+
+    let ofSeq (s : seq<'a>) = corderedset s
+    let ofList (s : list<'a>) = corderedset s
+    let ofArray (s : 'a[]) = corderedset s
+
+    let toSeq (s : corderedset<'a>) = s :> seq<_>
+    let toList (s : corderedset<'a>) = lock s (fun () -> s |> Seq.toList)
+    let toArray (s : corderedset<'a>) = lock s (fun () -> s |> Seq.toArray)
+
     let count (s : corderedset<'a>) = s.Count
+
+    let contains (e : 'a) (s : corderedset<'a>) = s.Contains e
 
     let add (v : 'a) (s : corderedset<'a>) = s.Add v
 
     let remove (v : 'a) (s : corderedset<'a>) = s.Remove v
+
+    let clear (s : corderedset<'a>) = s.Clear()
+
+    let unionWith (other : seq<'a>) (s : corderedset<'a>) = s.UnionWith other
+
+    let exceptWith (other : seq<'a>) (s : corderedset<'a>) = s.ExceptWith other
 
     let insertAfter (anchor : 'a) (v : 'a) (s : corderedset<'a>) =
         s.InsertAfter(anchor, v)
 
     let insertBefore (anchor : 'a) (v : 'a) (s : corderedset<'a>) =
         s.InsertBefore(anchor, v)
+
+    let equals (other : seq<'a>) (s : corderedset<'a>) = s.SetEquals other
+
+
+
 //
 //    let insertFirst (v : 'a) (s : corderedset<'a>) =
 //        s.InsertBefore(s.[0], v)

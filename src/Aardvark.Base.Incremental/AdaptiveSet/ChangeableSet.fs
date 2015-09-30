@@ -180,11 +180,11 @@ module CSet =
 
     /// Gets a list containing all elements from the cset.
     let toList (set : cset<'a>) =
-        set |> Seq.toList
+        lock (fun () -> set |> Seq.toList)
 
     /// Gets an array containing all elements from the cset.
     let toArray (set : cset<'a>) =
-        set |> Seq.toArray
+        lock (fun () -> set |> Seq.toArray)
 
     /// Modifies the set so that it contains all elements that are present in either the current set or the specified collection.
     let unionWith (elems : seq<'a>) (set : cset<'a>) =
@@ -204,7 +204,9 @@ module CSet =
 
     /// Modifies the set by performing all delta operations given.
     let applyDeltas (deltas : list<Delta<'a>>) (xs : cset<'a>) =
-        for d in deltas do
-            match d with 
-              | Add x -> xs.Add x |> ignore
-              | Rem x -> xs.Remove x |> ignore
+        lock xs (fun () ->
+            for d in deltas do
+                match d with 
+                  | Add x -> xs.Add x |> ignore
+                  | Rem x -> xs.Remove x |> ignore
+        )
