@@ -1382,7 +1382,7 @@ namespace Aardvark.Base
     /// <typeparam name="__vtn__">view element type</typeparam>
     //# }
     [Serializable]
-    public struct __ttn__<__dvtn__> : IValidity, I__ttn__<__vtn__>, IArray__ttn__
+    public partial struct __ttn__<__dvtn__> : IValidity, I__ttn__<__vtn__>, IArray__ttn__
     {
         public __dtn__[] Data;
         //# if (dt != vt) {

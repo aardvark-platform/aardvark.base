@@ -251,7 +251,6 @@ namespace PixImageDemo
 
             var colorImage = CreateHowManyColorsIllusion(1024);
 
-
             // scaling an image
             var scaledColorImage = new PixImage<byte>(1280, 800, 3);
             scaledColorImage.GetMatrix<C3b>().SetScaledCubic(colorImage.GetMatrix<C3b>());
@@ -263,6 +262,12 @@ namespace PixImageDemo
             var shrunkColorImage = new PixImage<byte>(512, 512, 3);
             shrunkColorImage.GetMatrix<C3b>().SetScaledBSpline5(colorImage.GetMatrix<C3b>());
             shrunkColorImage.SaveAsImage(Path.Combine(dir, "v-shrunk-image.png"));
+
+            var largeColorImage = new PixImage<byte>(4096, 4096, 3);
+            largeColorImage.GetMatrix<C3b>().SetScaledLanczos(colorImage.GetMatrix<C3b>());
+            largeColorImage.SaveAsImage(Path.Combine(dir, "v-large-lanczos-image.png"));
+
+
 
             var scaledColorImage2 = new PixImage<byte>(1280, 800, 3);
             scaledColorImage2.GetMatrix<C3b>().SetScaledLanczos(colorImage.GetMatrix<C3b>());

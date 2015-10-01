@@ -589,18 +589,36 @@ namespace Aardvark.Base
             };
         }
 
+        /// <summary>
+        /// Returns the weights of the cubic B-Spline function for four
+        /// equally distant function points to approximate. The supplied
+        /// parameter t in the range [0..1] traverses the approximation
+        /// between the two center points.
+        /// </summary>
         public static Tup4<double> BSpline3d(double t) => new Tup4<double>(
             t*(t*(t*(-1/6.0) + 3/6.0) - 3/6.0) + 1/6.0,
             t*(t*(t*( 3/6.0) - 6/6.0)        ) + 4/6.0,
             t*(t*(t*(-3/6.0) + 3/6.0) + 3/6.0) + 1/6.0,
             t*(t*(t*( 1/6.0)        )        )        );
 
+        /// <summary>
+        /// Returns the weights of the cubic B-Spline function for four
+        /// equally distant function points to approximate. The supplied
+        /// parameter t in the range [0..1] traverses the approximation
+        /// between the two center points.
+        /// </summary>
         public static Tup4<float> BSpline3f(double t) => new Tup4<float>(
             (float)(t*(t*(t*(-1/6.0) + 3/6.0) - 3/6.0) + 1/6.0),
             (float)(t*(t*(t*( 3/6.0) - 6/6.0)        ) + 4/6.0),
             (float)(t*(t*(t*(-3/6.0) + 3/6.0) + 3/6.0) + 1/6.0),
             (float)(t*(t*(t*( 1/6.0)        )        )        ));
 
+        /// <summary>
+        /// Returns the weights of the order 5 B-Spline function for six
+        /// equally distant function points to approximate. The supplied
+        /// parameter t in the range [0..1] traverses the approximation
+        /// between the two center points.
+        /// </summary>
         public static Tup6<double> BSpline5d(double t) => new Tup6<double>(
             t*(t*(t*(t*(t*( -1/120.0)  +5/120.0) -10/120.0) +10/120.0)  -5/120.0)  +1/120.0,
             t*(t*(t*(t*(t*(  5/120.0) -20/120.0) +20/120.0) +20/120.0) -50/120.0) +26/120.0,
@@ -609,6 +627,12 @@ namespace Aardvark.Base
             t*(t*(t*(t*(t*( -5/120.0)  +5/120.0) +10/120.0) +10/120.0)  +5/120.0)  +1/120.0,
             t*(t*(t*(t*(t*(  1/120.0) 		   ) 		  ) 	         ) 	        )          );
 
+        /// <summary>
+        /// Returns the weights of the order 5 B-Spline function for six
+        /// equally distant function points to approximate. The supplied
+        /// parameter t in the range [0..1] traverses the approximation
+        /// between the two center points.
+        /// </summary>
         public static Tup6<float> BSpline5f(double t) => new Tup6<float>(
             (float)(t*(t*(t*(t*(t*( -1/120.0)  +5/120.0) -10/120.0) +10/120.0)  -5/120.0)  +1/120.0),
             (float)(t*(t*(t*(t*(t*(  5/120.0) -20/120.0) +20/120.0) +20/120.0) -50/120.0) +26/120.0),
@@ -620,53 +644,43 @@ namespace Aardvark.Base
         public static Tup6<double> Lanczos3d(double x)
         {
             const double a = 1.0/3.0;
-            double px = Constant.Pi * x;
-            double pxa = px * a;
+            double px = Constant.Pi * x, pxa = px * a;
             if (pxa.IsTiny()) return new Tup6<double>(0.0, 0.0, 1.0, 0.0, 0.0, 0.0);
+            double p1mx = Constant.Pi - px, p1mxa = p1mx * a;
+            if (p1mxa.IsTiny()) return new Tup6<double>(0.0, 0.0, 0.0, 1.0, 0.0, 0.0);
 
-            double p1px = Constant.Pi + px;
-            double p2px = Constant.PiTimesTwo + px;
-            double p1sx = Constant.Pi - px;
-            double p2sx = Constant.PiTimesTwo - px;
-            double p3sx = Constant.PiTimesThree - px;
-            double spx = Fun.Sin(px);
-            double spxa = Fun.Sin(px * a);
-            double sp1pxa = Fun.Sin(p1px * a);
-            double sp2pxa = Fun.Sin(p2px * a);
+            double p1px = Constant.Pi + px, p2px = Constant.PiTimesTwo + px;
+            double p2mx = Constant.PiTimesTwo - px, p3mx = Constant.PiTimesThree - px;
+            double spx = Fun.Sin(px), spxa = Fun.Sin(pxa);
+            double sp1pxa = Fun.Sin(p1px * a), sp2pxa = Fun.Sin(p2px * a);
 
-            return new Tup6<double>(
-                    spx * sp2pxa / (p2px * p2px * a),
-                    -spx * sp1pxa / (p1px * p1px * a),
-                    (spx / px) * (spxa / (px * a)),
-                    (spx / p1sx) * (sp2pxa / (p1sx * a)),
-                    -spx * sp1pxa / (p2sx * p2sx * a),
-                    spx * spxa / (p3sx * p3sx * a));
+            return new Tup6<double>(spx * sp2pxa / (p2px * p2px * a),
+                                    -spx * sp1pxa / (p1px * p1px * a),
+                                    (spx / px) * (spxa / pxa),
+                                    (spx / p1mx) * (sp2pxa / p1mxa),
+                                    -spx * sp1pxa / (p2mx * p2mx * a),
+                                    spx * spxa / (p3mx * p3mx * a));
         }
 
         public static Tup6<float> Lanczos3f(double x)
         {
             const double a = 1.0 / 3.0;
-            double px = Constant.Pi * x;
-            double pxa = px * a;
+            double px = Constant.Pi * x, pxa = px * a;
             if (pxa.IsTiny()) return new Tup6<float>(0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 0.0f);
+            double p1mx = Constant.Pi - px, p1mxa = p1mx * a;
+            if (p1mxa.IsTiny()) return new Tup6<float>(0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f);
 
-            double p1px = Constant.Pi + px;
-            double p2px = Constant.PiTimesTwo + px;
-            double p1sx = Constant.Pi - px;
-            double p2sx = Constant.PiTimesTwo - px;
-            double p3sx = Constant.PiTimesThree - px;
-            double spx = Fun.Sin(px);
-            double spxa = Fun.Sin(px * a);
-            double sp1pxa = Fun.Sin(p1px * a);
-            double sp2pxa = Fun.Sin(p2px * a);
+            double p1px =   Constant.Pi + px,           p2px =  Constant.PiTimesTwo + px;
+            double p2mx =   Constant.PiTimesTwo - px,   p3mx =  Constant.PiTimesThree - px;
+            double spx =    Fun.Sin(px),                spxa =  Fun.Sin(pxa);
+            double sp1pxa = Fun.Sin(p1px * a),          sp2pxa = Fun.Sin(p2px * a);
 
-            return new Tup6<float>(
-                    (float)(spx * sp2pxa / (p2px * p2px * a)),
-                    (float)(-spx * sp1pxa / (p1px * p1px * a)),
-                    (float)((spx / px) * (spxa / (px * a))),
-                    (float)((spx / p1sx) * (sp2pxa / (p1sx * a))),
-                    (float)(-spx * sp1pxa / (p2sx * p2sx * a)),
-                    (float)(spx * spxa / (p3sx * p3sx * a)));
+            return new Tup6<float>( (float)(spx * sp2pxa / (p2px * p2px * a)),
+                                    (float)(-spx * sp1pxa / (p1px * p1px * a)),
+                                    (float)((spx / px) * (spxa / pxa)),
+                                    (float)((spx / p1mx) * (sp2pxa / p1mxa)),
+                                    (float)(-spx * sp1pxa / (p2mx * p2mx * a)),
+                                    (float)(spx * spxa / (p3mx * p3mx * a)));
         }
 
         #endregion
