@@ -377,6 +377,34 @@ module ``simple list tests`` =
         transact (fun () -> CSet.add 12 set |> ignore)
         r |> content |> should equal [ 2; 4; 6; 24]
 
+    [<Test>]
+    let ``[AList] ASet -> sortWith -> AList``() =
+
+        let input = CSet.ofList [ 1..10 ]
+
+        let set = input |> ASet.map id
+
+        let alist = set |> ASet.sortWith (fun _ _ -> 0)
+
+        let mapped = alist |> AList.map id
+
+        let r = mapped.GetReader()
+        let delta (r : IListReader<'a>) = r.GetDelta() |> List.map (Delta.map snd)
+
+        r |> delta |> should setEqual  [ for i in 1 .. 10 do yield Add i] 
+
+        transact (fun () -> CSet.add 11 input |> ignore )
+
+        r |> delta |> should setEqual  [ Add 11 ] 
+
+        transact (fun () -> CSet.add 12 input |> ignore )
+        transact (fun () -> CSet.add 13 input |> ignore )
+
+        r |> delta |> should setEqual  [ Add 12; Add 13 ] 
+
+        r.Content |> Seq.sortBy fst |> Seq.map snd |> Seq.toList |> should setEqual [ 1..13 ]
+
+
 
     [<Test>]
     let ``[CList] concurrent reader-reset``() =
