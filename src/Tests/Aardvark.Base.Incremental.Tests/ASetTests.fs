@@ -627,7 +627,54 @@ module ``collect tests`` =
         ()
         
 
+    module GCHelper =
 
+        let createListAndMakeSureTheStackframeIsDead () =
+            let cset = CSet.ofList [ ]
+            let mutable x = cset |> ASet.map ((*)2) |> ASet.filter ((>)(-1000)) |> ASet.groupBy id |> AMap.toASet
+        
+            let called = ref (-2)
+            let mutable y = ASet.registerCallback (fun _ -> called := !called + 1; ) x
+
+            y <- null
+            x <- Unchecked.defaultof<_>
+            called, cset
+            
+
+    [<Test>]
+    let ``[ASet] registerCallback holds gc root``() =
+        let called, inputSet = GCHelper.createListAndMakeSureTheStackframeIsDead ()
+
+        let cnt = 1000
+        for i in 0 .. cnt do
+            transact (fun () -> CSet.add i inputSet |> ignore)
+            //printfn "should equal i=%d called=%d" i !called
+            should equal  i !called
+            Thread.Sleep 5
+            if i % 100 = 0 then printfn "done: %d/%d" i cnt; GC.Collect()
+
+    [<Test>]
+    let ``[ASet] markingCallback holds gc root``() =
+        let cset = CSet.ofList [ ]
+        let mutable x = cset |> ASet.map ((*)2) |> ASet.filter ((>)(-1000)) |> ASet.groupBy id |> AMap.toASet
+        
+        let called = ref 0
+        let reader = x.GetReader()
+        let mutable y = reader.AddMarkingCallback (fun _ -> called := !called + 1; ) 
+
+        y <- null
+        x <- Unchecked.defaultof<_>
+
+        let cnt = 1000
+        for i in 0 .. cnt do
+            transact (fun () -> CSet.add i cset |> ignore)
+            //printfn "should equal i=%d called=%d" i !called
+            reader.GetDelta() |> ignore
+            should equal  i !called
+            Thread.Sleep 5
+            if i % 100 = 0 then printfn "done: %d/%d" i cnt; GC.Collect()
+
+        //printfn "%A" (y,x)
 
 
 
