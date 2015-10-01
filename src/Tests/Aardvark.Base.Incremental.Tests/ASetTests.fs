@@ -629,7 +629,7 @@ module ``collect tests`` =
 
     module GCHelper =
 
-        let createListAndMakeSureTheStackframeIsDead () =
+        let ``create, register callback and return and make sure that the stack frame dies``  () =
             let cset = CSet.ofList [ ]
             let mutable x = cset |> ASet.map ((*)2) |> ASet.filter ((>)(-1000)) |> ASet.groupBy id |> AMap.toASet
         
@@ -639,11 +639,23 @@ module ``collect tests`` =
             y <- null
             x <- Unchecked.defaultof<_>
             called, cset
+
+        let ``create, register marking and return and make sure that the stack frame dies`` () =
+            let cset = CSet.ofList [ ]
+            let mutable x = cset |> ASet.map ((*)2) |> ASet.filter ((>)(-1000)) |> ASet.groupBy id |> AMap.toASet
+        
+            let called = ref 0
+            let reader = x.GetReader()
+            let mutable y = reader.AddMarkingCallback (fun _ -> called := !called + 1; ) 
+
+            y <- null
+            x <- Unchecked.defaultof<_>
+            called, cset, reader
             
 
     [<Test>]
     let ``[ASet] registerCallback holds gc root``() =
-        let called, inputSet = GCHelper.createListAndMakeSureTheStackframeIsDead ()
+        let called, inputSet = GCHelper.``create, register callback and return and make sure that the stack frame dies`` ()
 
         let cnt = 1000
         for i in 0 .. cnt do
@@ -655,19 +667,11 @@ module ``collect tests`` =
 
     [<Test>]
     let ``[ASet] markingCallback holds gc root``() =
-        let cset = CSet.ofList [ ]
-        let mutable x = cset |> ASet.map ((*)2) |> ASet.filter ((>)(-1000)) |> ASet.groupBy id |> AMap.toASet
-        
-        let called = ref 0
-        let reader = x.GetReader()
-        let mutable y = reader.AddMarkingCallback (fun _ -> called := !called + 1; ) 
-
-        y <- null
-        x <- Unchecked.defaultof<_>
+        let called, inputSet, reader = GCHelper.``create, register marking and return and make sure that the stack frame dies`` ()
 
         let cnt = 1000
         for i in 0 .. cnt do
-            transact (fun () -> CSet.add i cset |> ignore)
+            transact (fun () -> CSet.add i inputSet |> ignore)
             //printfn "should equal i=%d called=%d" i !called
             reader.GetDelta() |> ignore
             should equal  i !called
