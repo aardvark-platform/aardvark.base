@@ -681,4 +681,42 @@ module ``collect tests`` =
         //printfn "%A" (y,x)
 
 
+    [<Test>]
+    let ``[ASet] async registerCallback``() =
+        
+        let inputSet = CSet.ofSeq [0; 1; 2; 3]
+        let adaptive = inputSet |> ASet.map ((*)2)
+
+        let mutable threadCount = 0
+        let cnt = 1000
+        for i in 0 .. cnt do
+            Task.Factory.StartNew(fun () ->
+                
+                    printfn "thread In";
+                    let foo = adaptive |> ASet.registerCallback (fun d -> printfn "fun")
+                    printfn "thread Out";
+
+                    System.Threading.Interlocked.Increment(&threadCount) |> ignore
+                    
+                    ()
+                ) |> ignore
+        ()
+
+        printfn "all threads started...."
+
+        let maxWait = 10
+        let mutable waitCnt = 0
+        while (threadCount <> cnt && waitCnt < maxWait) do
+            printfn "wating for threads to finish %d / %d" threadCount cnt
+            waitCnt <- waitCnt + 1
+            Thread.Sleep(1000)
+
+        let passed = threadCount = cnt || waitCnt < maxWait
+        printfn "passed %A" passed
+
+        should equal passed true
+
+        ()
+            
+
 
