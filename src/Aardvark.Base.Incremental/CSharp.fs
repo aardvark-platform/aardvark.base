@@ -188,9 +188,21 @@ type ModExtensions private() =
     static member ToAdaptiveList(this : IMod<'a>) =
         Mod.toAList this
 
+    /// <summary> see Mod/ModModule.unsafeRegisterCallbackNoGcRoot </summary>
     [<Extension>]
+    [<Obsolete("use UnsafeRegisterCallbackNoGcRoot or UnsafeRegisterCallbackKeepDisposable instead")>]
     static member RegisterCallback(this : IMod<'a>, callback : Action<'a>) =
-        this |> Mod.registerCallback callback.Invoke
+        this |> Mod.unsafeRegisterCallbackNoGcRoot callback.Invoke
+
+    /// <summary> see Mod/ModModule.unsafeRegisterCallbackKeepDisposable </summary>
+    [<Extension>]
+    static member UnsafeRegisterCallbackKeepDisposable(this : IMod<'a>, callback : Action<'a>) =
+        this |> Mod.unsafeRegisterCallbackKeepDisposable callback.Invoke
+
+    /// <summary> see Mod/ModModule.unsafeRegisterCallbackNoGcRoot </summary>
+    [<Extension>]
+    static member UnsafeRegisterCallbackNoGcRoot(this : IMod<'a>, callback : Action<'a>) =
+        this |> Mod.unsafeRegisterCallbackNoGcRoot callback.Invoke
 
 [<Extension; AbstractClass; Sealed>]
 type AdaptiveSetExtensions private() =
@@ -269,9 +281,25 @@ type AdaptiveSetExtensions private() =
     static member GetDeltas (this : IReader<'a>) =
         this.GetDelta() |> List.toArray
 
+    /// <summary> see ASet/ASetModule.unsafeRegisterCallbackNoGcRoot </summary>
     [<Extension>]
+    static member UnsafeRegisterCallbackNoGcRoot(this : aset<'a>, callback : Action<Delta<'a>[]>) =
+        this |> ASet.unsafeRegisterCallbackNoGcRoot (fun deltas ->
+            deltas |> List.toArray |> callback.Invoke
+        )
+
+    /// <summary> see ASet/ASetModule.unsafeRegisterCallbackNoGcRoot </summary>
+    [<Extension>]
+    [<Obsolete("use UnsafeRegisterCallbackNoGcRoot or UnsafeRegisterCallbackKeepDisposable instead")>]
     static member RegisterCallback(this : aset<'a>, callback : Action<Delta<'a>[]>) =
-        this |> ASet.registerCallback (fun deltas ->
+        this |> ASet.unsafeRegisterCallbackNoGcRoot (fun deltas ->
+            deltas |> List.toArray |> callback.Invoke
+        )
+
+    /// <summary> see ASet/ASetModule.unsafeRegisterCallbackKeepDisposable </summary>
+    [<Extension>]
+    static member UnsafeRegisterCallbackKeepDisposable(this : aset<'a>, callback : Action<Delta<'a>[]>) =
+        this |> ASet.unsafeRegisterCallbackKeepDisposable (fun deltas ->
             deltas |> List.toArray |> callback.Invoke
         )
 

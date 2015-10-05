@@ -217,7 +217,7 @@ module ``simple list tests`` =
     [<Test>]
     let ``[AList] callback survive test``() =
         let subscribe cb (l : alist<'a>) =
-            let s = l |> AList.registerCallback cb
+            let s = l |> AList.unsafeRegisterCallbackNoGcRoot cb
             // s is ignored here (going out of scope)
             ()
 

@@ -170,7 +170,7 @@ module ``collect tests`` =
 
         let set = cset [1;2;3;4]
         let m = set |> ASet.map (fun a -> 2 * a)
-        let s = m |> ASet.registerCallback deltas.push
+        let s = m |> ASet.unsafeRegisterCallbackNoGcRoot deltas.push
 
         // { 1, 2, 3, 4 } -> [Add 2; Add 4; Add 6; Add 8]
         deltas.read() |> should deltaListEqual [[Add 2; Add 4; Add 6; Add 8]]
@@ -216,7 +216,7 @@ module ``collect tests`` =
         let derived = set |> ASet.map (fun a -> 1 + a)
         let inner = cset []
 
-        let s = derived |> ASet.registerCallback (fun delta ->
+        let s = derived |> ASet.unsafeRegisterCallbackNoGcRoot (fun delta ->
             for d in delta do
                 match d with
                     | Add v -> inner.Add v |> ignore
@@ -246,7 +246,7 @@ module ``collect tests`` =
             c > 0
 
         let leak = 
-            s |> ASet.toMod |> Mod.registerCallback (fun set ->
+            s |> ASet.toMod |> Mod.unsafeRegisterCallbackNoGcRoot (fun set ->
                 triggerCount := !triggerCount + 1
             )
 
@@ -629,14 +629,23 @@ module ``collect tests`` =
 
     module GCHelper =
 
-        let ``create, register callback and return and make sure that the stack frame dies``  () =
+        let ``create, registerCallback and return and make sure that the stack frame dies``  () =
             let cset = CSet.ofList [ ]
             let mutable x = cset |> ASet.map ((*)2) |> ASet.filter ((>)(-1000)) |> ASet.groupBy id |> AMap.toASet
         
             let called = ref (-2)
-            let mutable y = ASet.registerCallback (fun _ -> called := !called + 1; ) x
+            let y = ASet.unsafeRegisterCallbackNoGcRoot (fun _ -> called := !called + 1; ) x
 
-            y <- null
+            x <- Unchecked.defaultof<_>
+            called, cset, y
+
+        let ``create, registerCallbackAndKeepDisposable and return and make sure that the stack frame dies``  () =
+            let cset = CSet.ofList [ ]
+            let mutable x = cset |> ASet.map ((*)2) |> ASet.filter ((>)(-1000)) |> ASet.groupBy id |> AMap.toASet
+        
+            let called = ref (-2)
+            let y = ASet.unsafeRegisterCallbackKeepDisposable (fun _ -> called := !called + 1; ) x
+
             x <- Unchecked.defaultof<_>
             called, cset
 
@@ -654,8 +663,22 @@ module ``collect tests`` =
             
 
     [<Test>]
-    let ``[ASet] registerCallback holds gc root``() =
-        let called, inputSet = GCHelper.``create, register callback and return and make sure that the stack frame dies`` ()
+    let ``[ASet] registerCallback holds no gc root``() =
+        let called, inputSet, d = GCHelper.``create, registerCallback and return and make sure that the stack frame dies`` ()
+
+        let cnt = 1000
+        for i in 0 .. cnt do
+            transact (fun () -> CSet.add i inputSet |> ignore)
+            //printfn "should equal i=%d called=%d" i !called
+            should equal  i !called
+            Thread.Sleep 5
+            if i % 100 = 0 then printfn "done: %d/%d" i cnt; GC.Collect()
+
+        printfn "%A" d
+
+    [<Test>]
+    let ``[ASet] registerCallbackKeepDisposable holds gc root``() =
+        let called, inputSet = GCHelper.``create, registerCallbackAndKeepDisposable and return and make sure that the stack frame dies`` ()
 
         let cnt = 1000
         for i in 0 .. cnt do
@@ -677,8 +700,5 @@ module ``collect tests`` =
             should equal  i !called
             Thread.Sleep 5
             if i % 100 = 0 then printfn "done: %d/%d" i cnt; GC.Collect()
-
-        //printfn "%A" (y,x)
-
 
 
