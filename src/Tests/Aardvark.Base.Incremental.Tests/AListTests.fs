@@ -1,6 +1,6 @@
 ﻿namespace Aardvark.Base.Incremental.Tests
 
-
+open System
 open System.Collections
 open System.Collections.Generic
 open Aardvark.Base
@@ -443,3 +443,41 @@ module ``simple list tests`` =
             r.GetDelta() |> ignore
 
         running := false
+
+    [<Test>]
+    let ``[COrderedSet] add remove clear test``() =
+        
+        let objects = [Object; Object; Object; Object; Object; Object; Object; Object; Object; Object;]
+        let set = COrderedSet.empty
+        
+        let rnd = Random()
+
+        for i in 0..100 do
+            if (i % 10) = 0 then
+                transact ( fun () -> COrderedSet.clear set )
+                should equal 0 set.Count
+            else
+                let add = rnd.NextDouble() < 0.5
+                let mutable suc = false
+                let origCnt = set.Count
+                //let n = rnd.Next(10)
+                let o = objects.[rnd.Next(9)]
+                let contains = set.Contains o
+                transact ( fun () ->
+                    if add then
+                        suc <- set.Add o
+                    else
+                        suc <- set.Remove o
+                        )
+
+                if add then
+                    // contains = true -> suc = false
+                    // contains = false -> suc = true
+                    should equal (contains <> suc) true
+                else // if rem
+                    // contains = true -> suc = true
+                    // contains = false -> suc = false
+                    should equal contains suc
+
+
+

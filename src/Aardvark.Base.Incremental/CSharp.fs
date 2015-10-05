@@ -323,6 +323,17 @@ type AdaptiveSetExtensions private() =
     static member ToAMap(this : aset<'k*'v>) =
         this |> AMap.ofASet
 
+    [<Extension>]
+    static member Fold(this : aset<'a>, add : Func<'a, 'b, 'b>, zero : 'b) : IMod<'b> =
+        let addFun = fun b -> fun a -> add.Invoke(a, b)
+        this |> ASet.fold addFun zero
+
+    [<Extension>]
+    static member FoldGroup(this : aset<'a>, add : Func<'a, 'b, 'b>, sub : Func<'a, 'b, 'b>, zero : 'b) : IMod<'b> =
+        let addFun = fun b -> fun a -> add.Invoke(a, b)
+        let subFun = fun b -> fun a -> sub.Invoke(a, b)
+        this |> ASet.foldGroup addFun subFun zero
+
 [<Extension; AbstractClass; Sealed>]
 type ChangeableSetExtensions private() =
 

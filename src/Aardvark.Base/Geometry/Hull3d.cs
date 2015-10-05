@@ -58,9 +58,8 @@ namespace Aardvark.Base
     }
 
     /// <summary>
-    /// A hull is a set of planes that bounds a convex polyhedron. Notably
-    /// a frustum can be represented as a hull.
-    /// known issue: Hull3d.Intersects() expect the normals to point outside, but Hull3d(Frustum3d)-Normals point inside
+    /// A hull is a set of planes that bounds a convex polyhedron.
+    /// Normals are expected to point outside.
     /// </summary>
     public struct Hull3d
     {
@@ -81,6 +80,7 @@ namespace Aardvark.Base
             PlaneArray = planes;
         }
 
+        [Obsolete("Inconsistent implementation (normals point inside). Use Hull3d.Create(Box3d) instead.")]
         public Hull3d(Box3d box)
         {
             PlaneArray = new[]
@@ -92,6 +92,19 @@ namespace Aardvark.Base
                 new Plane3d(-V3d.YAxis, box.Max),
                 new Plane3d(-V3d.ZAxis, box.Max)
             };
+        }
+
+        public static Hull3d Create(Box3d box)
+        {
+            return new Hull3d(new[]
+            {
+                new Plane3d(-V3d.XAxis, box.Min),
+                new Plane3d(-V3d.YAxis, box.Min),
+                new Plane3d(-V3d.ZAxis, box.Min),
+                new Plane3d(V3d.XAxis, box.Max),
+                new Plane3d(V3d.YAxis, box.Max),
+                new Plane3d(V3d.ZAxis, box.Max)
+            });
         }
 
         public Hull3d(Hull3d hull)

@@ -392,7 +392,7 @@ module ASet =
     /// <summary>
     /// Adaptively projects the set to a value by using associative add-operation (+), a sub-operation (-) and a zero-element (0).
     /// </summary>
-    let foldGroup (add : 'a -> 'a -> 'a) (sub : 'a -> 'a -> 'a) (zero : 'a) (s : aset<'a>) : IMod<'a> =
+    let foldGroup (add : 'b -> 'a -> 'b) (sub : 'b -> 'a -> 'b) (zero : 'b) (s : aset<'a>) : IMod<'b> =
         let r = s.GetReader()
         let sum = ref zero
 

@@ -64,6 +64,8 @@ namespace Aardvark.Base
 
         #endregion
 
+        #region Box3d contains Cylinder3d
+
         public static bool Contains(
             this Box3d box, Cylinder3d cylinder
            )
@@ -72,15 +74,19 @@ namespace Aardvark.Base
                     && !box.Intersects(cylinder);
         }
 
+        #endregion
 
         #region Hull3d contains V3d
 
+        /// <summary>
+        /// Hull normals are expected to point outside.
+        /// </summary>
         public static bool Contains(this Hull3d hull, V3d point)
         {
             var planes = hull.PlaneArray;
             for (int i = planes.Length - 1; i >= 0; i--)
             {
-                if (planes[i].Height(point) < 0)
+                if (planes[i].Height(point) > 0)
                     return false;
             }
             return true;

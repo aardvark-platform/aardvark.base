@@ -25,7 +25,20 @@ namespace Aardvark.Base
             : this(new V2i(val, val), new V2i(val, val))
         { }
 
+        #endregion
+
+        #region Properties
+
         public Border2i Flipped { get { return new Border2i(Max, Min); } }
+
+        #endregion
+
+        #region Operations
+
+        public Border2l ToBorder2l()
+        {
+            return new Border2l(Min.ToV2l(), Max.ToV2l());
+        }
 
         #endregion
     }
@@ -53,7 +66,20 @@ namespace Aardvark.Base
             : this(new V2l(val, val), new V2l(val, val))
         { }
 
+        #endregion
+
+        #region Properties
+
         public Border2l Flipped { get { return new Border2l(Max, Min); } }
+
+        #endregion
+
+        #region Operations
+
+        public Border2i ToBorder2i()
+        {
+            return new Border2i(Min.ToV2i(), Max.ToV2i());
+        }
 
         #endregion
     }
@@ -585,6 +611,21 @@ namespace Aardvark.Base
 
         /// <summary>
         /// Creates a new matrix with a border of the supplied size around the supplied matrix.
+        /// The resulting matrix retains the coordinates of the original matrix.
+        /// </summary>
+        public static Matrix<T1> MapWithBorderWindow<T, T1>(
+                this Matrix<T> matrix, Border2l border,
+                Func<T, T1> item_fun)
+        {
+            var bm = new Matrix<T1>(matrix.SX + border.Min.X + border.Max.X,
+                                    matrix.SY + border.Min.Y + border.Max.Y)
+            { F = new V2l(matrix.FX - border.Min.X, matrix.FY - border.Min.Y) };
+            bm.SubCenter(border).SetMap(matrix, item_fun);
+            return bm;
+        }
+
+        /// <summary>
+        /// Creates a new matrix with a border of the supplied size around the supplied matrix.
         /// the resulting matrix starts at zero coordinates.
         /// </summary>
         public static Matrix<T> CopyWithBorder<T>(this Matrix<T> matrix, Border2l border)
@@ -595,6 +636,19 @@ namespace Aardvark.Base
             return bm;
         }
 
+        /// <summary>
+        /// Creates a new matrix with a border of the supplied size around the supplied matrix.
+        /// the resulting matrix starts at zero coordinates.
+        /// </summary>
+        public static Matrix<T1> MapWithBorder<T, T1>(
+                this Matrix<T> matrix, Border2l border,
+                Func<T, T1> item_fun)
+        {
+            var bm = new Matrix<T1>(matrix.SX + border.Min.X + border.Max.X,
+                                   matrix.SY + border.Min.Y + border.Max.Y);
+            bm.SubCenter(border).SetMap(matrix, item_fun);
+            return bm;
+        }
 
         /// <summary>
         /// Set the border of a matrix to a specific value.
@@ -706,12 +760,43 @@ namespace Aardvark.Base
         /// Creates a new image volume with a border of the supplied size
         /// around the supplied image volume.
         /// </summary>
+        public static Volume<T1> MapWithBorderWindow<T, T1>(
+                this Volume<T> volume, Border2l border,
+                Func<T, T1> item_fun)
+        {
+            var iv = new V3l(volume.SX + border.Min.X + border.Max.X,
+                             volume.SY + border.Min.Y + border.Max.Y,
+                             volume.SZ).CreateImageVolume<T1>();
+            iv.F = new V3l(volume.FX - border.Min.X, volume.FY - border.Min.Y, volume.FZ);
+            iv.SubCenter(border).SetMap(volume, item_fun);
+            return iv;
+        }
+
+        /// <summary>
+        /// Creates a new image volume with a border of the supplied size
+        /// around the supplied image volume.
+        /// </summary>
         public static Volume<T> CopyWithBorder<T>(this Volume<T> volume, Border2l border)
         {
             var iv = new V3l(volume.SX + border.Min.X + border.Max.X,
                              volume.SY + border.Min.Y + border.Max.Y,
                              volume.SZ).CreateImageVolume<T>();
             iv.SubCenter(border).Set(volume);
+            return iv;
+        }
+
+        /// <summary>
+        /// Creates a new image volume with a border of the supplied size
+        /// around the supplied image volume.
+        /// </summary>
+        public static Volume<T1> MapWithBorder<T, T1>(
+                this Volume<T> volume, Border2l border,
+                Func<T, T1> item_fun)
+        {
+            var iv = new V3l(volume.SX + border.Min.X + border.Max.X,
+                             volume.SY + border.Min.Y + border.Max.Y,
+                             volume.SZ).CreateImageVolume<T1>();
+            iv.SubCenter(border).SetMap(volume, item_fun);
             return iv;
         }
 
