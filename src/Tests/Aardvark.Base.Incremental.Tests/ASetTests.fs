@@ -689,7 +689,7 @@ module ``collect tests`` =
 
         let mutable threadCount = 0
         let cnt = 1000
-        for i in 0 .. cnt do
+        for i in 1 .. cnt do
             Task.Factory.StartNew(fun () ->
                 
                     printfn "thread In";
@@ -700,8 +700,7 @@ module ``collect tests`` =
                     
                     ()
                 ) |> ignore
-        ()
-
+        
         printfn "all threads started...."
 
         let maxWait = 10

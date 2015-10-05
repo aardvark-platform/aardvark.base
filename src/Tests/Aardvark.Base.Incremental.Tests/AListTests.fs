@@ -452,10 +452,18 @@ module ``simple list tests`` =
         
         let rnd = Random()
 
-        for i in 0..100 do
+        let mutable readerCount = 0
+        let foo = set |> ASet.map id |> ASet.registerCallback (fun dl -> for d in dl do
+                                                                            match d with
+                                                                            | Add _ -> readerCount <- readerCount + 1
+                                                                            | Rem _ -> readerCount <- readerCount - 1
+                                                                )
+
+        for i in 0..1000 do
             if (i % 10) = 0 then
                 transact ( fun () -> COrderedSet.clear set )
                 should equal 0 set.Count
+                should equal 0 readerCount
             else
                 let add = rnd.NextDouble() < 0.5
                 let mutable suc = false
@@ -478,6 +486,8 @@ module ``simple list tests`` =
                     // contains = true -> suc = true
                     // contains = false -> suc = false
                     should equal contains suc
+
+                should equal set.Count readerCount
 
 
 
