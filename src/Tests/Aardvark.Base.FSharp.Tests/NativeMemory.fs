@@ -10,9 +10,9 @@ open System.Diagnostics
 
 module MemoryManagerTests =
     
-    let create() = MemoryManager(16, Marshal.AllocHGlobal, fun ptr _ -> Marshal.FreeHGlobal ptr)
+    let create() = new MemoryManager(16, Marshal.AllocHGlobal, fun ptr _ -> Marshal.FreeHGlobal ptr)
 
-    let rec validateBlocks (last : Block) (current : Block) =
+    let rec validateBlocks (last : MemoryBlock) (current : MemoryBlock) =
         let mutable last = last
         let mutable current = current
         while current <> null do
