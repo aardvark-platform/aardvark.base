@@ -216,9 +216,6 @@ and MemoryManager(capacity : int, malloc : int -> nativeint, mfree : nativeint -
         Fun.Swap(&l.Next, &r.Next)
         Fun.Swap(&l.Free, &r.Free)
 
-
-
-
     let free (b : MemoryBlock) : unit =
         assert (not (isNull b))
 
@@ -438,7 +435,20 @@ and MemoryManager(capacity : int, malloc : int -> nativeint, mfree : nativeint -
             lastBlock <- null
 
     member x.Alloc (size : int) = lock l (fun () -> alloc size)
-    member x.Free (block : MemoryBlock) = lock l (fun () -> free block)
+    member x.Free (block : MemoryBlock) = 
+        lock l (fun () -> 
+            let b = MemoryBlock(this, 0n, 0, block.Prev, block.Next, true)
+            swap b block
+
+            if isNull b.Prev then firstBlock <- b
+            else b.Prev.Next <- b
+
+            if isNull b.Next then lastBlock <- b
+            else b.Next.Prev <- b
+
+            free b
+        )
+
     member x.Realloc (block : MemoryBlock, size : int) = lock l (fun () -> realloc block size)
     member x.Spill (block : MemoryBlock) = lock l (fun () -> spill block)
 
