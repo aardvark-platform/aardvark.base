@@ -627,7 +627,96 @@ module ``collect tests`` =
         ()
         
 
+    module GCHelper =
+
+        let ``create, register callback and return and make sure that the stack frame dies``  () =
+            let cset = CSet.ofList [ ]
+            let mutable x = cset |> ASet.map ((*)2) |> ASet.filter ((>)(-1000)) |> ASet.groupBy id |> AMap.toASet
+        
+            let called = ref (-2)
+            let mutable y = ASet.registerCallback (fun _ -> called := !called + 1; ) x
+
+            y <- null
+            x <- Unchecked.defaultof<_>
+            called, cset
+
+        let ``create, register marking and return and make sure that the stack frame dies`` () =
+            let cset = CSet.ofList [ ]
+            let mutable x = cset |> ASet.map ((*)2) |> ASet.filter ((>)(-1000)) |> ASet.groupBy id |> AMap.toASet
+        
+            let called = ref 0
+            let reader = x.GetReader()
+            let mutable y = reader.AddMarkingCallback (fun _ -> called := !called + 1; ) 
+
+            y <- null
+            x <- Unchecked.defaultof<_>
+            called, cset, reader
+            
+
+    [<Test>]
+    let ``[ASet] registerCallback holds gc root``() =
+        let called, inputSet = GCHelper.``create, register callback and return and make sure that the stack frame dies`` ()
+
+        let cnt = 1000
+        for i in 0 .. cnt do
+            transact (fun () -> CSet.add i inputSet |> ignore)
+            //printfn "should equal i=%d called=%d" i !called
+            should equal  i !called
+            Thread.Sleep 5
+            if i % 100 = 0 then printfn "done: %d/%d" i cnt; GC.Collect()
+
+    [<Test>]
+    let ``[ASet] markingCallback holds gc root``() =
+        let called, inputSet, reader = GCHelper.``create, register marking and return and make sure that the stack frame dies`` ()
+
+        let cnt = 1000
+        for i in 0 .. cnt do
+            transact (fun () -> CSet.add i inputSet |> ignore)
+            //printfn "should equal i=%d called=%d" i !called
+            reader.GetDelta() |> ignore
+            should equal  i !called
+            Thread.Sleep 5
+            if i % 100 = 0 then printfn "done: %d/%d" i cnt; GC.Collect()
+
+        //printfn "%A" (y,x)
 
 
+    [<Test>]
+    let ``[ASet] async registerCallback``() =
+        
+        let inputSet = CSet.ofSeq [0; 1; 2; 3]
+        let adaptive = inputSet |> ASet.map ((*)2)
+
+        let mutable threadCount = 0
+        let cnt = 1000
+        for i in 0 .. cnt do
+            Task.Factory.StartNew(fun () ->
+                
+                    printfn "thread In";
+                    let foo = adaptive |> ASet.registerCallback (fun d -> printfn "fun")
+                    printfn "thread Out";
+
+                    System.Threading.Interlocked.Increment(&threadCount) |> ignore
+                    
+                    ()
+                ) |> ignore
+        ()
+
+        printfn "all threads started...."
+
+        let maxWait = 10
+        let mutable waitCnt = 0
+        while (threadCount <> cnt && waitCnt < maxWait) do
+            printfn "wating for threads to finish %d / %d" threadCount cnt
+            waitCnt <- waitCnt + 1
+            Thread.Sleep(1000)
+
+        let passed = threadCount = cnt || waitCnt < maxWait
+        printfn "passed %A" passed
+
+        should equal passed true
+
+        ()
+            
 
 

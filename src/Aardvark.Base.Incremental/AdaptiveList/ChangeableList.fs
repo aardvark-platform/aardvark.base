@@ -299,7 +299,8 @@ type corderedset<'a>(initial : seq<'a>) =
         let deltas = content |> Seq.map Rem |> Seq.toList
         content.Clear()
         order.Clear()
-        
+        times.Clear()
+
         for r in listReaders do 
             r.Emit(content, None)
 

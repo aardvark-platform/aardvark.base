@@ -1,6 +1,6 @@
 ﻿namespace Aardvark.Base.Incremental.Tests
 
-
+open System
 open System.Collections
 open System.Collections.Generic
 open Aardvark.Base
@@ -377,6 +377,34 @@ module ``simple list tests`` =
         transact (fun () -> CSet.add 12 set |> ignore)
         r |> content |> should equal [ 2; 4; 6; 24]
 
+    [<Test>]
+    let ``[AList] ASet -> sortWith -> AList``() =
+
+        let input = CSet.ofList [ 1..10 ]
+
+        let set = input |> ASet.map id
+
+        let alist = set |> ASet.sortWith (fun _ _ -> 0)
+
+        let mapped = alist |> AList.map id
+
+        let r = mapped.GetReader()
+        let delta (r : IListReader<'a>) = r.GetDelta() |> List.map (Delta.map snd)
+
+        r |> delta |> should setEqual  [ for i in 1 .. 10 do yield Add i] 
+
+        transact (fun () -> CSet.add 11 input |> ignore )
+
+        r |> delta |> should setEqual  [ Add 11 ] 
+
+        transact (fun () -> CSet.add 12 input |> ignore )
+        transact (fun () -> CSet.add 13 input |> ignore )
+
+        r |> delta |> should setEqual  [ Add 12; Add 13 ] 
+
+        r.Content |> Seq.sortBy fst |> Seq.map snd |> Seq.toList |> should setEqual [ 1..13 ]
+
+
 
     [<Test>]
     let ``[CList] concurrent reader-reset``() =
@@ -415,3 +443,41 @@ module ``simple list tests`` =
             r.GetDelta() |> ignore
 
         running := false
+
+    [<Test>]
+    let ``[COrderedSet] add remove clear test``() =
+        
+        let objects = [Object; Object; Object; Object; Object; Object; Object; Object; Object; Object;]
+        let set = COrderedSet.empty
+        
+        let rnd = Random()
+
+        for i in 0..100 do
+            if (i % 10) = 0 then
+                transact ( fun () -> COrderedSet.clear set )
+                should equal 0 set.Count
+            else
+                let add = rnd.NextDouble() < 0.5
+                let mutable suc = false
+                let origCnt = set.Count
+                //let n = rnd.Next(10)
+                let o = objects.[rnd.Next(9)]
+                let contains = set.Contains o
+                transact ( fun () ->
+                    if add then
+                        suc <- set.Add o
+                    else
+                        suc <- set.Remove o
+                        )
+
+                if add then
+                    // contains = true -> suc = false
+                    // contains = false -> suc = true
+                    should equal (contains <> suc) true
+                else // if rem
+                    // contains = true -> suc = true
+                    // contains = false -> suc = false
+                    should equal contains suc
+
+
+
