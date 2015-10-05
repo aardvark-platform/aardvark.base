@@ -113,30 +113,40 @@ type MemoryBlock =
         val mutable public Free : bool
 
         member x.Write(offset : int, source : nativeint, size : int) =
+            if offset + size > x.Size then failwith "[Memory] write exceeding size"
+
             ReaderWriterLock.read x.Parent.PointerLock (fun () ->
                 let target = x.Parent.Pointer + x.Offset
                 Marshal.Copy(source, target, size)
             )
 
         member x.Read(offset : int, target : nativeint, size : int) =
+            if offset + size > x.Size then failwith "[Memory] read exceeding size"
+
             ReaderWriterLock.read x.Parent.PointerLock (fun () ->
                 let source = x.Parent.Pointer + x.Offset
                 Marshal.Copy(source, target, size)
             )
 
         member x.Write(offset : int, data : 'a) =
+            if offset + sizeof<'a> > x.Size then failwith "[Memory] write exceeding size"
+
             ReaderWriterLock.read x.Parent.PointerLock (fun () ->
                 let ptr = x.Parent.Pointer + x.Offset |> NativePtr.ofNativeInt
                 NativePtr.write ptr data
             )
 
         member x.Read(offset : int) : 'a =
+            if offset + sizeof<'a> > x.Size then failwith "[Memory] read exceeding size"
+
             ReaderWriterLock.read x.Parent.PointerLock (fun () ->
                 let ptr = x.Parent.Pointer + x.Offset |> NativePtr.ofNativeInt
                 NativePtr.read ptr
             )
 
         member x.Write(offset : int, data : 'a[]) =
+            if offset + sizeof<'a> * data.Length > x.Size then failwith "[Memory] write exceeding size"
+
             ReaderWriterLock.read x.Parent.PointerLock (fun () ->
                 let mutable ptr = x.Parent.Pointer + x.Offset |> NativePtr.ofNativeInt
                 for i in 0..data.Length-1 do
@@ -144,6 +154,8 @@ type MemoryBlock =
             )
 
         member x.Read(offset : int, data : 'a[]) =
+            if offset + sizeof<'a> * data.Length > x.Size then failwith "[Memory] read exceeding size"
+
             ReaderWriterLock.read x.Parent.PointerLock (fun () ->
                 let mutable ptr = x.Parent.Pointer + x.Offset |> NativePtr.ofNativeInt
                 for i in 0..data.Length-1 do
@@ -151,6 +163,8 @@ type MemoryBlock =
             )
 
         member x.Read(offset : int, count : int) : 'a[] =
+            if offset + sizeof<'a> * count > x.Size then failwith "[Memory] read exceeding size"
+
             let arr = Array.zeroCreate count
             x.Read(offset, arr)
             arr
