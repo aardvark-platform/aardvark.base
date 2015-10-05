@@ -224,9 +224,7 @@ module AList =
                 finally 
                     m.MarkingCallbacks.Add !self |> ignore
         
-        lock m (fun () ->
-            !self ()
-        )
+        !self ()
 
         let set = callbackTable.GetOrCreateValue(list)
         let s = new CallbackSubscription(m, !self, live, m, set)

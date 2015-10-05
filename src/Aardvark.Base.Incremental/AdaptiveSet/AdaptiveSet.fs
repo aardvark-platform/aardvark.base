@@ -477,9 +477,7 @@ module ASet =
                 finally 
                     m.MarkingCallbacks.Add !self |> ignore
         
-        lock m (fun () ->
-            !self ()
-        )
+        !self ()
 
         let callbackSet = callbackTable.GetOrCreateValue(set)
         let s = new CallbackSubscription(set, !self, live, m, callbackSet)

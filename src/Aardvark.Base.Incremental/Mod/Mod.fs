@@ -408,9 +408,7 @@ module Mod =
                 finally 
                     m.MarkingCallbacks.Add !self |> ignore
         
-        lock m (fun () ->
-            !self ()
-        )
+        !self ()
 
         let set = callbackTable.GetOrCreateValue(m)
 
