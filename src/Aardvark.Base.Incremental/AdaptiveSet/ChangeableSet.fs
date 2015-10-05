@@ -27,7 +27,7 @@ type cset<'a>(initial : seq<'a>) =
         member x.IsConstant = false
         member x.GetReader() =
             lock readers (fun () ->
-                let r = new EmitReader<'a>(fun r -> readers.Remove r |> ignore)
+                let r = new EmitReader<'a>(content, fun r -> lock readers (fun () -> readers.Remove r |> ignore))
                 r.Emit(content, None)
                 readers.Add r |> ignore
                 r :> _
