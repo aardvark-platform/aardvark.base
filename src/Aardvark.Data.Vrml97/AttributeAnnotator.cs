@@ -195,6 +195,22 @@ namespace Aardvark.Data.Vrml97
     public static class VrmlHelpers
     {
         /// <summary>
+        /// Build a texture coordinate transformation from the given parameters as specified in TextureTransform
+        /// http://gun.teipir.gr/VRML-amgem/spec/part1/nodesRef.html#TextureTransform
+        /// </summary>
+        public static Trafo2d BuildVrmlTextureTrafo(V2d center, double rotation, V2d scale, V2d translation)
+        {
+            M33d C = M33d.Translation(center), Ci = M33d.Translation(-center);
+            M33d R = M33d.Rotation(rotation), Ri = M33d.Rotation(-rotation);
+            M33d S = M33d.Scale(scale), Si = M33d.Scale(1 / scale);
+            M33d T = M33d.Translation(translation), Ti = M33d.Translation(-translation);
+
+            return new Trafo2d(
+                            Ci * S * R * C * T,
+                            Ti * Ci * Ri * Si * C);
+        }
+
+        /// <summary>
         /// Extracts texture transform from given node.
         /// </summary>
         public static Trafo2d ExtractVrmlTextureTrafo(this SymMapBase m)
@@ -218,6 +234,33 @@ namespace Aardvark.Data.Vrml97
         }
 
         /// <summary>
+        /// Build a geometry transformation from the given parameters as specified in Transform
+        /// http://gun.teipir.gr/VRML-amgem/spec/part1/nodesRef.html#Transform
+        /// </summary>
+        public static Trafo3d BuildVrmlGeometryTrafo(V3d center, V4d rotation, V3d scale, V4d scaleOrientation, V3d translation)
+        {
+            // create composite trafo (naming taken from vrml97 spec)
+            M44d C = M44d.Translation(center), Ci = M44d.Translation(-center);
+            M44d SR = M44d.Rotation(scaleOrientation.XYZ, scaleOrientation.W),
+                                    SRi = M44d.Rotation(scaleOrientation.XYZ, -scaleOrientation.W);
+            M44d T = M44d.Translation(translation), Ti = M44d.Translation(-translation);
+
+            //if (m_aveCompatibilityMode) r.W = -r.W;
+            M44d R = M44d.Rotation(rotation.XYZ, rotation.W),
+                                        Ri = M44d.Rotation(rotation.XYZ, -rotation.W);
+
+            // in case some axis scales by 0 the best thing for the inverse scale is also 0
+            var si = new V3d(scale.X.IsTiny() ? 0 : 1 / scale.X,
+                             scale.Y.IsTiny() ? 0 : 1 / scale.Y,
+                             scale.Z.IsTiny() ? 0 : 1 / scale.Z);
+            M44d S = M44d.Scale(scale), Si = M44d.Scale(si);
+
+            return new Trafo3d(
+                            T * C * R * SR * S * SRi * Ci,
+                            C * SR * Si * SRi * Ri * Ci * Ti);
+        }
+
+        /// <summary>
         /// Returns geometry transform from given node.
         /// </summary>
         public static Trafo3d ExtractVrmlGeometryTrafo(this SymMapBase m)
@@ -235,25 +278,7 @@ namespace Aardvark.Data.Vrml97
 
             var t = (V3d)m.Get<V3f>(Vrml97Sym.translation, V3f.Zero);
 
-            // create composite trafo (naming taken from vrml97 spec)
-            M44d C = M44d.Translation(c), Ci = M44d.Translation(-c);
-            M44d SR = M44d.Rotation(sr.XYZ, sr.W),
-                                    SRi = M44d.Rotation(sr.XYZ, -sr.W);
-            M44d T = M44d.Translation(t), Ti = M44d.Translation(-t);
-
-            //if (m_aveCompatibilityMode) r.W = -r.W;
-            M44d R = M44d.Rotation(r.XYZ, r.W),
-                                        Ri = M44d.Rotation(r.XYZ, -r.W);
-
-            // in case some axis scales by 0 the best thing for the inverse scale is also 0
-            var si = new V3d(s.X.IsTiny() ? 0 : 1 / s.X, 
-                             s.Y.IsTiny() ? 0 : 1 / s.Y, 
-                             s.Z.IsTiny() ? 0 : 1/ s.Z);
-            M44d S = M44d.Scale(s), Si = M44d.Scale(si);
-
-            return new Trafo3d(
-                            T * C * R * SR * S * SRi * Ci,
-                            C * SR * Si * SRi * Ri * Ci * Ti);
+            return BuildVrmlGeometryTrafo(c, r, s, sr, t);
         }
     }
 }
