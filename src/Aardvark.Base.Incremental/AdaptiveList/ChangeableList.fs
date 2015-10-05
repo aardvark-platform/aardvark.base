@@ -38,9 +38,7 @@ type clist<'a>(initial : seq<'a>) =
         newTime, [Add (newTime :> ISortKey, value)]
 
     let insertRange (t : SkipOrder.SortKey) (values : seq<'a>) =
-        let mutable current = 
-            if t = order.Root then t
-            else t.Prev
+        let mutable current = t
 
         let deltas = List()
         for e in values do
@@ -134,14 +132,14 @@ type clist<'a>(initial : seq<'a>) =
                     | Some t ->  insertAfter t.Prev value 
                     | None -> raise <| IndexOutOfRangeException()
             )
-        res |> submitDeltas |> clistkey
+        clistkey(res |> submitDeltas)
 
     /// inserts a sequence of elements at the given index [runtime O(m * log N)]
     member x.InsertRange(index : int, s : seq<'a>) =
         let res = 
             lock content (fun () ->
                 match tryAt index with
-                    | Some k -> insertRange k s
+                    | Some k -> insertRange k.Prev s
                     | _ -> raise <| IndexOutOfRangeException()
             )
         res |> submitDeltas |> ignore
@@ -177,16 +175,16 @@ type clist<'a>(initial : seq<'a>) =
 
     member x.InsertAfter(key : clistkey, value : 'a) : clistkey =
         let res = lock content (fun () -> insertAfter key.SortKey value)
-        res |> submitDeltas |> clistkey
+        clistkey(res |> submitDeltas)
 
     member x.InsertBefore(key : clistkey, value : 'a) : clistkey =
         let res = lock content (fun () -> insertAfter key.SortKey.Prev value)
-        res |> submitDeltas |> clistkey
+        clistkey(res |> submitDeltas)
 
 
     member x.Add(value : 'a) =
-        let res = lock content (fun () ->insertAfter order.Root.Prev value)
-        res |> submitDeltas |> clistkey
+        let res = lock content (fun () -> insertAfter order.Root.Prev value)
+        clistkey(res |> submitDeltas)
 
     member x.AddRange(s : seq<'a>) =
         let res = lock content (fun () -> insertRange order.Root.Prev s)
@@ -322,6 +320,7 @@ type corderedset<'a>(initial : seq<'a>) =
             if set.Add e then
                 let newTime = order.After current
                 content.Add(newTime, e)
+                setTime e newTime
 
                 setDeltas.Add(Add e)
                 listDeltas.Add(Add (newTime :> ISortKey, e))
@@ -363,7 +362,6 @@ type corderedset<'a>(initial : seq<'a>) =
 
 
     let clear() =
-        let deltas = content |> Seq.map Rem |> Seq.toList
         content.Clear()
         order.Clear()
         times.Clear()
