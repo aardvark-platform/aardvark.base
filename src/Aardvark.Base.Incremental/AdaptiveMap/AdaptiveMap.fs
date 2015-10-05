@@ -268,8 +268,15 @@ module AMap =
                     Some (set |> Seq.head)
                 )
 
+    [<Obsolete("use unsafeRegisterCallbackNoGcRoot or unsafeRegisterCallbackKeepDisposable instead")>]
     let registerCallback (f : list<Delta<'k * 'v>> -> unit) (map : amap<'k,'v>) =
-        map.ASet |> ASet.registerCallback f
+        map.ASet |> ASet.unsafeRegisterCallbackNoGcRoot f
+
+    let unsafeRegisterCallbackKeepDisposable (f : list<Delta<'k * 'v>> -> unit) (map : amap<'k,'v>) =
+        map.ASet |> ASet.unsafeRegisterCallbackKeepDisposable f
+
+    let unsafeRegisterCallbackNoGcRoot (f : list<Delta<'k * 'v>> -> unit) (map : amap<'k,'v>) =
+        map.ASet |> ASet.unsafeRegisterCallbackNoGcRoot f
 
 [<AutoOpen>]
 module ``ASet grouping`` =

@@ -167,7 +167,7 @@ module ``Basic Mod Tests`` =
 
         let res = res |> Mod.map (fun a -> ex.push "cont"; a)// |> Mod.always
 
-        let s = res |> Mod.registerCallback (fun v -> printfn "cb: %A" v)
+        let s = res |> Mod.unsafeRegisterCallbackNoGcRoot (fun v -> printfn "cb: %A" v)
 
         res.GetValue() |> should equal 1
         ex.read() |> should equal ["bind: true"; "cont"]

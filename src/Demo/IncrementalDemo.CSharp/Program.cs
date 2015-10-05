@@ -18,7 +18,7 @@ namespace IncrementalDemo.CSharp
             var d = m.Select(a => 2 * a);
 
             Report.Begin("m = 0");
-            var s = d.RegisterCallback(v =>
+            var s = d.UnsafeRegisterCallbackNoGcRoot(v =>
             {
                 Report.Line("m * 2 = {0}", v);
             });
@@ -54,7 +54,7 @@ namespace IncrementalDemo.CSharp
 
 
             Report.Begin("set = {1,2,3,4}");
-            greater1.RegisterCallback(deltas =>
+            greater1.UnsafeRegisterCallbackNoGcRoot(deltas =>
             {
                 foreach(var d in deltas)
                 {
@@ -63,8 +63,8 @@ namespace IncrementalDemo.CSharp
                 }
             });
 
-            contains5.RegisterCallback(c => Report.Line("contains 5 = {0}", c));
-            contains2And4.RegisterCallback(c => Report.Line("contains [2,4] = {0}", c));
+            contains5.UnsafeRegisterCallbackNoGcRoot(c => Report.Line("contains 5 = {0}", c));
+            contains2And4.UnsafeRegisterCallbackNoGcRoot(c => Report.Line("contains [2,4] = {0}", c));
             Report.End();
 
             
