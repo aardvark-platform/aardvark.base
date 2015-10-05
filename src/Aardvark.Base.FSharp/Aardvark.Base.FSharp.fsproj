@@ -67,6 +67,7 @@
     <Compile Include="Runtime\ExecutableMemory.fs" />
     <Compile Include="Runtime\Assembler.fs" />
     <Compile Include="Runtime\WeakTable.fs" />
+    <Compile Include="Runtime\NativeMemory.fs" />
     <Compile Include="Reflection.fs" />
     <Compile Include="Runtime.fs" />
     <Compile Include="AgHelpers.fs" />
