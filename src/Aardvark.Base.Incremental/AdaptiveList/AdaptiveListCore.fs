@@ -463,7 +463,7 @@ module AListReaders =
                                 failwith "removal of unknown value"
             )
 
-    type EmitReader<'a>(parent : alist<'a>, order : IOrder, dispose : EmitReader<'a> -> unit) =
+    type EmitReader<'a>(order : IOrder, dispose : EmitReader<'a> -> unit) =
         inherit AbstractReader<'a>()
 
         let deltas = List<Delta<ISortKey * 'a>>()
@@ -506,7 +506,7 @@ module AListReaders =
             let content = x.Content
             match reset with
                 | Some c ->
-                    lock parent (fun () ->
+                    lock c (fun () ->
                         //Interlocked.Increment(&resetCount) |> ignore
                         reset <- None
                         let add = c.All |> Seq.filter (not << content.Contains) |> Seq.map Add

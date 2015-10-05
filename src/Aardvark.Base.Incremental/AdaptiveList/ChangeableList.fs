@@ -18,28 +18,75 @@ type clist<'a>(initial : seq<'a>) =
     let order = SkipOrder.create()
     let readers = WeakSet<EmitReader<'a>>()
 
+    let submitDeltas (a, deltas : Change<ISortKey * 'a>) =
+        lock readers (fun () ->
+            for r in readers do 
+                r.Emit(content, Some deltas)
+        )
+        a
+
+    let submit () =
+        lock readers (fun () ->
+            for r in readers do 
+                r.Emit(content, None)
+        )
+
     let insertAfter (t : SkipOrder.SortKey) (value : 'a) =
         let newTime = order.After t
         content.Add(newTime, value)
 
-        for r in readers do 
-            r.Emit(content, Some [Add (newTime :> ISortKey, value)])
+        newTime, [Add (newTime :> ISortKey, value)]
 
-        newTime
+    let insertRange (t : SkipOrder.SortKey) (values : seq<'a>) =
+        let mutable current = 
+            if t = order.Root then t
+            else t.Prev
+
+        let deltas = List()
+        for e in values do
+            let newTime = order.After current
+            content.Add(newTime, e)
+            current <- newTime
+            deltas.Add(Add(newTime :> ISortKey, e))
+
+        (), Seq.toList deltas
+
+    let remove (t : SkipOrder.SortKey) =
+        let c = content.[t]
+        content.Remove t |> ignore
+
+        order.Delete t
+        (), [Rem (t :> ISortKey, c)]
+
+    let set (tOld : SkipOrder.SortKey) (value : 'a) =
+        let vOld = content.[tOld]
+        let tNew = order.After tOld
+
+        content.Remove tOld |> ignore
+        content.Add(tNew, value)
+        order.Delete tOld
+        (), [Rem (tOld :> ISortKey, vOld); Add (tNew :> ISortKey, value)]
+
+    let removeRange (t : SkipOrder.SortKey) (count : int) =
+        let list = List()
+        let mutable current = t
+        for i in 1..count do
+            let next = current.Next
+            remove current |> snd |> list.AddRange
+            current <- next
+
+        (), Seq.toList list
 
     let tryAt (index : int) =
         if index < 0 || index >= content.Count then None
         else order.TryAt (index + 1)
 
-    do  
-        let mutable current = order.Root
-        for e in initial do
-            current <- insertAfter current e
+    do insertRange order.Root initial |> ignore
 
     interface alist<'a> with
         member x.GetReader() =
-            lock x (fun () ->
-                let r = new EmitReader<'a>(x, order, fun r -> readers.Remove r |> ignore)
+            lock readers (fun () ->
+                let r = new EmitReader<'a>(order, fun r -> readers.Remove r |> ignore)
                 r.Emit (content, None)
                 readers.Add r |> ignore
                 r :> _
@@ -48,7 +95,7 @@ type clist<'a>(initial : seq<'a>) =
     /// gets a unique key associated with the element at the given index which will
     /// not be changed when inserting/removing other elements. [runtime: O(log N)]
     member x.TryGetKey (index : int, [<Out>] key : byref<clistkey>) = 
-        match lock x (fun () -> tryAt index) with
+        match lock content (fun () -> tryAt index) with
             | Some t ->
                 key <- clistkey t
                 true
@@ -57,136 +104,103 @@ type clist<'a>(initial : seq<'a>) =
 
     /// gets or sets the element associated with the given unique key [runtime: O(1)]
     member x.Item
-        with get (k : clistkey) =
-            lock x (fun () ->
-                let t = k.SortKey
-                content.[t]
-            )
+        with get (k : clistkey) = lock content (fun () -> content.[k.SortKey])
         and set (k : clistkey) (value : 'a) =
-            lock x (fun () ->
-                let tOld = k.SortKey
-                let vOld = content.[tOld]
-                let tNew = order.After tOld
-
-                content.Remove tOld |> ignore
-                content.Add(tNew, value)
-                order.Delete tOld
-
-                for r in readers do 
-                    r.Emit(content, Some [Rem (tOld :> ISortKey, vOld); Add (tNew :> ISortKey, value)])
-            )
+            lock content (fun () ->  set k.SortKey value) |> submitDeltas |> ignore
+ 
 
     /// gets or sets the element at the given index [runtime: O(log N)]
     member x.Item
         with get (index : int) =
-            lock x (fun () ->
+            lock content (fun () ->
                 match tryAt index with
                     | Some t -> x.[clistkey t]
                     | None -> raise <| IndexOutOfRangeException()
             )
         and set (index : int) (value : 'a) =
-            lock x (fun () ->
-                match tryAt index with
-                    | Some t -> x.[clistkey t] <- value
-                    | None -> raise <| IndexOutOfRangeException()
-            )
+            let res = 
+                lock content (fun () ->
+                    match tryAt index with
+                        | Some t -> set t value
+                        | None -> raise <| IndexOutOfRangeException()
+                )
+            res |> submitDeltas |> ignore
 
     /// inserts the given element at the given index [runtime: O(log N)]
     member x.Insert(index : int, value : 'a) =
-        lock x (fun () ->
-            match tryAt index with
-                | Some t ->
-                    x.InsertBefore(clistkey t, value)
-                | None ->
-                    raise <| IndexOutOfRangeException()
-        )
+        let res = 
+            lock content (fun () ->
+                match tryAt index with
+                    | Some t ->  insertAfter t.Prev value 
+                    | None -> raise <| IndexOutOfRangeException()
+            )
+        res |> submitDeltas |> clistkey
 
     /// inserts a sequence of elements at the given index [runtime O(m * log N)]
     member x.InsertRange(index : int, s : seq<'a>) =
-        lock x (fun () ->
-            match tryAt index with
-                | Some k ->
-                    let mutable current = 
-                        if k = order.Root then k
-                        else k.Prev
-
-                    for e in s do
-                        current <- insertAfter current e
-
-                | _ ->
-                    raise <| IndexOutOfRangeException()
-        )
+        let res = 
+            lock content (fun () ->
+                match tryAt index with
+                    | Some k -> insertRange k s
+                    | _ -> raise <| IndexOutOfRangeException()
+            )
+        res |> submitDeltas |> ignore
 
     /// removes the element at the given index [runtime: O(log N)]
     member x.RemoveAt(index : int) =
-        lock x (fun () ->
-            match tryAt index with
-                | Some t ->
-                    x.Remove(clistkey t) |> ignore
-                | None ->
-                    raise <| IndexOutOfRangeException()
-        )
+        let res = 
+            lock content (fun () ->
+                match tryAt index with
+                    | Some t -> remove t
+                    | None ->raise <| IndexOutOfRangeException()
+            )
+        res |> submitDeltas
 
     /// removes the given range of indices 
     member x.RemoveRange (start : int, count : int) =
-        lock x (fun () ->
-            if start >= 0 && count >= 0 && start + count <= x.Count then
-                match x.TryGetKey start with
-                    | (true, k) ->
-                        let mutable t = k.SortKey
-                        for i in 0..count-1 do
-                            let n = t.Next
-                            x.Remove (clistkey t)
-                            t <- n
-                    | _ ->
-                        raise <| IndexOutOfRangeException()
-            else
-                raise <| IndexOutOfRangeException()
-        )
+        let res = 
+            lock content (fun () ->
+                if start >= 0 && count >= 0 && start + count <= x.Count then
+                    match tryAt start with
+                        | Some k -> removeRange k count
+                        | _ -> raise <| IndexOutOfRangeException()
+                else
+                    raise <| IndexOutOfRangeException()
+            )
+        res |> submitDeltas
 
-    member x.Count = lock x (fun () -> content.Count)
+    member x.Count = lock content (fun () -> content.Count)
 
     member x.Remove(key : clistkey) =
-        lock x (fun () ->
-            let c = content.[key.SortKey]
-            content.Remove key.SortKey |> ignore
-
-            order.Delete key.SortKey
-            for r in readers do 
-                r.Emit(content, Some [Rem (key.SortKey :> ISortKey, c)])
-        )
+        let res = lock content (fun () -> remove key.SortKey)
+        res |> submitDeltas
 
     member x.InsertAfter(key : clistkey, value : 'a) : clistkey =
-        lock x (fun () ->
-            clistkey (insertAfter key.SortKey value)
-        )
+        let res = lock content (fun () -> insertAfter key.SortKey value)
+        res |> submitDeltas |> clistkey
 
     member x.InsertBefore(key : clistkey, value : 'a) : clistkey =
-        lock x (fun () ->
-            x.InsertAfter(clistkey key.SortKey.Prev, value)
-        )
+        let res = lock content (fun () -> insertAfter key.SortKey.Prev value)
+        res |> submitDeltas |> clistkey
+
 
     member x.Add(value : 'a) =
-        lock x (fun () ->
-            x.InsertAfter(clistkey order.Root.Prev, value)
-        )
+        let res = lock content (fun () ->insertAfter order.Root.Prev value)
+        res |> submitDeltas |> clistkey
 
     member x.AddRange(s : seq<'a>) =
-        lock x (fun () ->
-            s |> Seq.iter (fun e -> x.Add e |> ignore)
-        )
+        let res = lock content (fun () -> insertRange order.Root.Prev s)
+        res |> submitDeltas
 
     member x.Clear() =
-        lock x (fun () ->
+        lock content (fun () ->
             content.Clear()
             order.Clear()
-        
-            for r in readers do 
-                r.Emit(content, None)
         )
+        submit()
 
     member x.Find(item : 'a) =
-        lock x (fun () ->
+        lock content (fun () ->
             let t = content |> Seq.tryPick (fun (t,v) -> if Object.Equals(v,item) then Some t else None)
             match t with
                 | Some t -> clistkey (unbox t)
@@ -194,14 +208,14 @@ type clist<'a>(initial : seq<'a>) =
         )
 
     member x.IndexOf (item : 'a) =
-        lock x (fun () ->
+        lock content (fun () ->
             match x.Find item with
                 | null -> -1
                 | k -> order.TryGetIndex k.SortKey
         )
 
     member x.CopyTo(arr : 'a[], index : int) =
-        lock x (fun () ->
+        lock content (fun () ->
             let mutable i = index
             for e in content.Values do
                 arr.[i] <- e
@@ -227,9 +241,9 @@ type clist<'a>(initial : seq<'a>) =
         member x.Clear() = x.Clear()
         member x.Count = x.Count
         member x.IsReadOnly = false
-        member x.Contains(item) = lock x (fun () -> content |> Seq.exists(fun (_,i) -> System.Object.Equals(i, item)))
+        member x.Contains(item) = lock content (fun () -> content |> Seq.exists(fun (_,i) -> System.Object.Equals(i, item)))
         member x.CopyTo(arr, index) = x.CopyTo(arr, index)
-        member x.Remove(item) = lock x (fun () -> match x.Find item with | null -> false | key -> x.Remove key; true)
+        member x.Remove(item) = lock content (fun () -> match x.Find item with | null -> false | key -> x.Remove key; true)
 
     new() = clist Seq.empty
 
@@ -269,9 +283,11 @@ type corderedset<'a>(initial : seq<'a>) =
         set.Add value |> ignore
 
         for r in listReaders do 
+            //listDeltas.Add(Add (newTime :> ISortKey, value))
             r.Emit(content, Some [Add (newTime :> ISortKey, value)])
 
         for r in setReaders do 
+            //setDeltas.Add(Add value)
             r.Emit(set, Some [Add value])
 
         setTime value newTime
@@ -317,7 +333,7 @@ type corderedset<'a>(initial : seq<'a>) =
     interface alist<'a> with
         member x.GetReader() =
             lock x (fun () ->
-                let r = new EmitReader<'a>(x, order, fun r -> listReaders.Remove r |> ignore)
+                let r = new EmitReader<'a>(order, fun r -> listReaders.Remove r |> ignore)
                 r.Emit (content, None)
                 listReaders.Add r |> ignore
                 r :> _
@@ -328,7 +344,7 @@ type corderedset<'a>(initial : seq<'a>) =
         member x.IsConstant = false
         member x.GetReader() =
             lock x (fun () ->
-                let r = new ASetReaders.EmitReader<'a>(x, fun r -> setReaders.Remove r |> ignore)
+                let r = new ASetReaders.EmitReader<'a>(fun r -> setReaders.Remove r |> ignore)
                 r.Emit(set, None)
                 setReaders.Add r |> ignore
                 r :> _

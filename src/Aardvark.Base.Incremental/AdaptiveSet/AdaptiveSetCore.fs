@@ -383,7 +383,7 @@ module ASetReaders =
     ///      is mostly untested and will be "activated" on demand (if someone needs it)
     /// NOTE that it is safe to call Emit from various threads since it is synchronized internally
     /// </summary>   
-    type EmitReader<'a>(parent : aset<'a>, dispose : EmitReader<'a> -> unit) =
+    type EmitReader<'a>(dispose : EmitReader<'a> -> unit) =
         inherit AbstractReader<'a>()
 
         let deltas = List<Delta<'a>>()
@@ -424,7 +424,7 @@ module ASetReaders =
             let content = x.Content
             match reset with
                 | Some c ->
-                    lock parent (fun () ->
+                    lock c (fun () ->
                         //Interlocked.Increment(&resetCount) |> ignore
                         reset <- None
                         let add = c |> Seq.filter (not << content.Contains) |> Seq.map Add

@@ -24,8 +24,12 @@ type cmap<'k, 'v when 'k : equality>(initial : seq<'k * 'v>) =
     member x.ContainsKey key = content.ContainsKey key
 
     member x.Add(k,v) =
-        content.Add(k,v)
-        CSet.add (k,v) cset |> ignore
+        // TODO: asdasdasd1
+        1
+        lock x (fun () ->
+            content.Add(k,v)
+            CSet.add (k,v) cset |> ignore
+        )
 
     member x.Remove(k) =
         match content.TryRemove k with
