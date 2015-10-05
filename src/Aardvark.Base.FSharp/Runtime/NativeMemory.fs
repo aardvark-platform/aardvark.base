@@ -241,6 +241,8 @@ and MemoryManager(capacity : int, malloc : int -> nativeint, mfree : nativeint -
         else
             match writeStructure (fun () -> freeList.TryGetGreaterOrEqual(size)) with
                 | Some block ->
+                    block.Free <- false
+
                     if block.Size > size then
                         writeStructure (fun () ->
                             let rest = Block(block.Offset + nativeint size, block.Size - size, block, block.Next, false)
@@ -254,7 +256,6 @@ and MemoryManager(capacity : int, malloc : int -> nativeint, mfree : nativeint -
                             free rest
                         )
 
-                    block.Free <- false
                     block
                 | None ->
                     // if there was no block of sufficient size resize the entire
@@ -270,7 +271,23 @@ and MemoryManager(capacity : int, malloc : int -> nativeint, mfree : nativeint -
 
             elif size = 0 then
                 // if a block gets re-allocated with size 0 it is now free
-                free b
+                
+                let n = Block(b.Offset, b.Size, b.Prev, b.Next, b.Free)
+
+                if isNull b.Prev then firstBlock <- n
+                else b.Prev.Next <- n
+                if isNull b.Next then lastBlock <- n
+                else b.Next.Prev <- n
+
+                free n
+
+                b.Offset <- 0n
+                b.Size <- 0
+                b.Prev <- null
+                b.Next <- null
+                b.Free <- false
+
+
                 false
 
             elif size > b.Size then
@@ -317,7 +334,7 @@ and MemoryManager(capacity : int, malloc : int -> nativeint, mfree : nativeint -
             elif size < b.Size then
                 // if the block "shrinked" we can simply create and free the
                 // leftover memory
-                let rest = Block(b.Offset + nativeint size, size - b.Size, b, b.Next, false)
+                let rest = Block(b.Offset + nativeint size, b.Size - size, b, b.Next, false)
                 b.Size <- size
 
                 b.Next <- rest
