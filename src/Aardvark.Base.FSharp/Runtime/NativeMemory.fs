@@ -220,7 +220,7 @@ and MemoryManager(capacity : int, malloc : int -> nativeint, mfree : nativeint -
         let newCapacity = Fun.NextPowerOfTwo(capacity + additional)
         writePointer (fun () ->
             let n = malloc newCapacity
-            Marshal.Copy(ptr, n, newCapacity)
+            Marshal.Copy(ptr, n, oldCapacity)
 
             mfree ptr capacity
             ptr <- n
