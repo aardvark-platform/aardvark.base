@@ -453,11 +453,14 @@ module ``simple list tests`` =
         let rnd = Random()
 
         let mutable readerCount = 0
-        let foo = set |> ASet.map id |> ASet.registerCallback (fun dl -> for d in dl do
-                                                                            match d with
-                                                                            | Add _ -> readerCount <- readerCount + 1
-                                                                            | Rem _ -> readerCount <- readerCount - 1
-                                                                )
+        let foo = 
+            set |> ASet.map id 
+                |> ASet.unsafeRegisterCallbackNoGcRoot (fun dl -> 
+                    for d in dl do
+                        match d with
+                            | Add _ -> readerCount <- readerCount + 1
+                            | Rem _ -> readerCount <- readerCount - 1
+                   )
 
         for i in 0..1000 do
             if (i % 10) = 0 then
@@ -466,17 +469,15 @@ module ``simple list tests`` =
                 should equal 0 readerCount
             else
                 let add = rnd.NextDouble() < 0.5
-                let mutable suc = false
                 let origCnt = set.Count
                 //let n = rnd.Next(10)
                 let o = objects.[rnd.Next(9)]
                 let contains = set.Contains o
-                transact ( fun () ->
-                    if add then
-                        suc <- set.Add o
-                    else
-                        suc <- set.Remove o
-                        )
+                let suc = 
+                    transact ( fun () ->
+                        if add then set.Add o
+                        else set.Remove o
+                    )
 
                 if add then
                     // contains = true -> suc = false
@@ -490,4 +491,4 @@ module ``simple list tests`` =
                 should equal set.Count readerCount
 
 
-
+        foo.Dispose()
