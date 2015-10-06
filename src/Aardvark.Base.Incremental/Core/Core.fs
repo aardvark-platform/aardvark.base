@@ -501,67 +501,6 @@ and EmptyCollection<'a>() =
         member x.GetEnumerator() : System.Collections.IEnumerator = Seq.empty.GetEnumerator() :> _
 
 
-type DirtySet<'a, 'b when 'a :> IAdaptiveObject and 'a : not struct>(evaluate : seq<'a> -> 'b) =
-    let l = obj()
-    let all = HashSet<'a>()
-    let mutable dirty = HashSet<'a>()
-    let subscriptions = Dictionary<IAdaptiveObject, unit -> unit>()
-
-
-    let addDirty (v : 'a) () =
-        lock l (fun () ->
-            dirty.Add v |> ignore
-        )
-
-    member x.Evaluate() =
-        let mine = 
-            lock l (fun () ->
-                let arr = dirty |> Seq.toArray
-                dirty <- HashSet<'a>()
-                arr
-            )
-
-        evaluate mine
-
-
-    member x.Add(v : 'a) =
-        lock v (fun () ->
-            lock l (fun () ->
-                if all.Add v && v.OutOfDate then
-                    dirty.Add v |> ignore
-                else
-                    let cb = addDirty v
-                    v.MarkingCallbacks.Add cb
-                    subscriptions.Add(v, cb)
-            )   
-        )
-
-    member x.Remove(v : 'a) =
-        lock v (fun () ->
-            lock l (fun () ->
-                if all.Remove v then
-                    dirty.Remove v |> ignore
-                    match subscriptions.TryGetValue v with
-                        | (true, cb) -> v.MarkingCallbacks.Remove cb |> ignore
-                        | _ -> ()
-            )   
-        )
-
-    member x.Dispose() =
-        lock l (fun () ->
-            all.Clear()
-            dirty.Clear()
-            for (KeyValue(k,v)) in subscriptions do
-                k.MarkingCallbacks.Remove v |> ignore
-        )
-
-    interface IDisposable with
-        member x.Dispose() = x.Dispose()
-
-
-
-
-
 
 [<AutoOpen>]
 module Marking =
@@ -775,67 +714,6 @@ type VolatileTaggedDirtySet<'a, 'b, 't when 'a :> IAdaptiveObject and 'a : equal
     member x.Clear() =
         tagDict.Clear()
         Interlocked.Exchange(&set, PersistentHashSet.empty) |> ignore
-
-
-type DirtySetNewWithData<'a, 'b, 'x when 'a :> IAdaptiveObject and 'a : equality and 'a : not struct>(eval : 'a -> 'b) =
-    inherit AdaptiveObject()
-
-    let mutable data = Dict<'a, HashSet<'x>>()
-    let mutable set : PersistentHashSet<'a> = PersistentHashSet.empty
-
-    member x.Evaluate() =
-        x.EvaluateIfNeeded [] (fun () ->
-            let local = Interlocked.Exchange(&set, PersistentHashSet.empty) 
-            try
-                local |> PersistentHashSet.toList
-                      |> List.filter (fun o -> lock o (fun () -> o.OutOfDate))
-                      |> List.map (fun o -> 
-                        match data.TryGetValue o with
-                            | (true, v) -> (eval o,Seq.toList v)
-                            | _ -> (eval o, [])
-                      )
-            with :? LevelChangedException as l ->
-                Interlocked.Change(&set, PersistentHashSet.union local)
-                raise l
-        )
-
-    override x.InputChanged (o : IAdaptiveObject) =
-        match o with
-            | :? 'a as a -> Interlocked.Change(&set, PersistentHashSet.add a)
-            | _ -> failwithf "unexpected input-change: %A" o
-
-    member x.Listen (tag : 'x, i : 'a)  =
-        lock x (fun () ->
-            match data.TryGetValue i with
-                | (true, tags) -> tags.Add tag |> ignore
-                | _ ->
-                    let tags = HashSet [tag]
-                    data.[i] <- tags
-
-                    i.AddOutput x
-                    lock i (fun () ->
-                        if i.OutOfDate then
-                            Interlocked.Change(&set, PersistentHashSet.add i)
-                    )
-        )
-
-    member x.Unlisten (tag : 'x, i : 'a) =
-        lock x (fun () ->
-            match data.TryGetValue i with
-                | (true, tags) ->
-                    if not <| tags.Remove tag then failwith "DirtySet: could not remove tag"
-
-                    if tags.Count = 0 then
-                        data.Remove i |> ignore
-                        i.RemoveOutput x
-                        Interlocked.Change(&set, PersistentHashSet.remove i)
-
-                | _ -> failwith "DirtySet: could not remove input"
-        )
-                
-    member x.Dispose() =
-        let ips = x.Inputs |> Seq.toList
-        for i in ips do i.RemoveOutput x
 
 module Validation =
     
