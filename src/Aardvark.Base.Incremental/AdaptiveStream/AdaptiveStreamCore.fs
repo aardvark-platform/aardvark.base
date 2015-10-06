@@ -101,7 +101,12 @@ module EventHistory =
             | History l, History r ->
                 History (concatTimeLists l r)
             
-
+    let rec concat (histories : list<EventHistory<'a>>) =
+        match histories with
+            | [] -> empty
+            | [h] -> h
+            | f::rest ->
+                union f (concat rest)
 
 type IStreamReader<'a> =
     inherit IDisposable
@@ -190,82 +195,6 @@ module AStreamReaders =
             cache.Clear()
             history.Clear()
 
-    /// <summary>
-    /// A simple datastructure for efficiently pulling changes from
-    /// a set of readers.
-    /// </summary>
-    type DirtyReaderSet<'a>() =
-        let subscriptions = ConcurrentDictionary<IStreamReader<'a>, unit -> unit>()
-        let dirty = HashSet<IStreamReader<'a>>()
-
-        /// <summary>
-        /// Starts "listening" to changes of a certain reader
-        /// </summary>
-        member x.Listen(r : IStreamReader<'a>) =
-            // create and register a callback function
-            let onMarking () = 
-                lock dirty (fun () -> dirty.Add r |> ignore )
-                subscriptions.TryRemove r |> ignore
-
-
-            r.MarkingCallbacks.Add onMarking |> ignore
-
-            // store the "subscription" for each reader in order
-            // to allow removals of readers
-            subscriptions.[r] <- fun () -> r.MarkingCallbacks.Remove onMarking |> ignore
-
-            // if the reader is currently outdated add it to the
-            // dirty set immediately
-            lock r (fun () -> 
-                if r.OutOfDate then lock dirty (fun () -> dirty.Add r |> ignore)
-            )
-            
-        /// <summary>
-        /// Stops "listening" to changes of a certain reader
-        /// </summary>
-        member x.Unlisten(r : IStreamReader<'a>) =
-            // if there exists a subscription we remove and dispose it
-            match subscriptions.TryRemove r with
-                | (true, d) -> d()
-                | _ -> ()
-
-            // if the reader is already in the dirty-set remove it from there too
-            lock dirty (fun () -> dirty.Remove r |> ignore)
-
-        /// <summary>
-        /// Gets the (concatenated) deltas from all "dirty" readers
-        /// </summary>
-        member x.GetHistory() =
-            let mine = 
-                lock dirty (fun () -> 
-                    let arr = dirty |> Seq.toList
-                    dirty.Clear()
-                    arr
-                )
-
-            mine |> EventHistory.collectSeq (fun d ->
-                // get deltas for all dirty readers and re-register
-                // marking callbacks
-                lock d (fun () ->
-                    let c = d.GetHistory()
-                    x.Listen d
-                    c
-                )
-            )
-
-        /// <summary>
-        /// Releases the entire structure
-        /// </summary>
-        member x.Dispose() =
-            for (KeyValue(_, d)) in subscriptions do d()
-            lock dirty (fun () -> dirty.Clear())
-            subscriptions.Clear()
-
-        interface IDisposable with
-            member x.Dispose() = x.Dispose()
-
-
-
 
     type MapReader<'a, 'b>(scope : Ag.Scope, source : IStreamReader<'a>, f : 'a -> 'b) as this =
         inherit AbstractReader<'b>()
@@ -287,14 +216,19 @@ module AStreamReaders =
         inherit AbstractReader<'b>()
         do source.AddOutput this
 
-        let dirtyInner = new DirtyReaderSet<_>()
+        let dirtyInner = VolatileDirtySet(fun (r : IStreamReader<'b>) -> r.GetHistory())
         let f = Cache(scope, f)
 
         override x.Release() =
             source.RemoveOutput this
             source.Dispose()
             f.Clear(fun r -> r.RemoveOutput this; r.Dispose())
-            dirtyInner.Dispose()
+            dirtyInner.Clear()
+
+        override x.InputChanged(o : IAdaptiveObject) =
+            match o with
+                | :? IStreamReader<'b> as o -> dirtyInner.Push o
+                | _ -> ()
 
         override x.ComputeHistory() =
             for d in source.GetDelta() do
@@ -306,14 +240,14 @@ module AStreamReaders =
                         r.AddOutput this
 
                         // listen to marking of r (reader cannot be OutOfDate due to GetDelta above)
-                        dirtyInner.Listen r
+                        dirtyInner.Add r
 
 
                     | Rem v ->
                         let (last,r) = f.RevokeAndGetDeleted v
 
                         // remove the reader from the listen-set
-                        dirtyInner.Unlisten r
+                        dirtyInner.Remove r
 
                         // since the reader is no longer contained we don't want
                         // to be notified anymore
@@ -323,7 +257,7 @@ module AStreamReaders =
                         // since no one can ever reference it again
                         if last then r.Dispose()
 
-            dirtyInner.GetHistory()
+            dirtyInner.Evaluate() |> EventHistory.concat
 
     type ChooseReader<'a, 'b>(scope : Ag.Scope, source : IStreamReader<'a>, f : 'a -> Option<'b>) as this =
         inherit AbstractReader<'b>()

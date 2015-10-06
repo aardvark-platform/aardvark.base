@@ -121,117 +121,6 @@ module AListReaders =
             member x.GetDelta() = x.GetDelta()
             member x.SubscribeOnEvaluate cb = x.SubscribeOnEvaluate cb
 
-    type DirtyListReaderSet<'a>() =
-        let subscriptions = Dictionary<IListReader<'a>, unit -> unit>()
-        let dirty = HashSet<ISortKey * IListReader<'a>>()
-        let occurances = Dictionary<IListReader<'a>, HashSet<ISortKey>>()
-
-        let addOccurance (r : IListReader<'a>) (t : ISortKey) =
-            match occurances.TryGetValue r with
-                | (true, times) ->
-                    times.Add t |> ignore
-                    false
-                | _ ->
-                    let times = HashSet [t]
-                    occurances.[r] <- times
-                    true
-
-        let removeOccurance (r : IListReader<'a>) (t : ISortKey) =
-            match occurances.TryGetValue r with
-                | (true, times) ->
-                    if times.Remove t then
-                        if times.Count = 0 then
-                            occurances.Remove r |> ignore
-                            true
-                        else
-                            false
-                    else
-                        false
-                | _ ->
-                    false
-
-        let allOccurances (r : IListReader<'a>) =
-            match occurances.TryGetValue r with
-                | (true, times) -> times :> seq<ISortKey>
-                | _ -> Seq.empty
-
-        let start (r : IListReader<'a>) (t : ISortKey) =
-            if addOccurance r t then
-                // create and register a callback function
-                let onMarking () =
-                    lock dirty (fun () ->
-                        for t in allOccurances r do 
-                            dirty.Add(t,r) |> ignore
-                            subscriptions.Remove r |> ignore
-                    )
-
-                r.MarkingCallbacks.Add onMarking |> ignore
-
-                // store the "subscription" for each reader in order
-                // to allow removals of readers
-                subscriptions.[r] <- fun () -> r.MarkingCallbacks.Remove onMarking |> ignore
-
-                // if the reader is currently outdated add it to the
-                // dirty set immediately
-                lock r (fun () -> if r.OutOfDate then dirty.Add (t,r) |> ignore)
-                true
-            else
-                false
-
-        let stop (r : IListReader<'a>) (t : ISortKey) =
-            lock dirty (fun () ->
-                if removeOccurance r t then
-                    // if there exists a subscription we remove and dispose it
-                    match subscriptions.TryGetValue r with
-                        | (true, d) -> 
-                            subscriptions.Remove r |> ignore
-                            d()
-                        | _ -> ()
-
-                    // if the reader is already in the dirty-set remove it from there too
-                    dirty.Remove(t,r) |> ignore
-                    true
-                else
-                    false
-            )
-
-        member x.Listen(t : ISortKey, r : IListReader<'a>) = start r t
-            
-        member x.Destroy(t : ISortKey, r : IListReader<'a>) = stop r t
-
-        member x.GetDeltas() =
-            let mine = 
-                lock dirty (fun () -> 
-                    let arr = dirty |> Seq.toList
-                    dirty.Clear()
-                    arr
-                )
-            [ for (t,d) in mine do
-                // get deltas for all dirty readers and re-register
-                // marking callbacks
-                let c = 
-                    lock d (fun () ->
-                        let res = d.GetDelta()
-                        x.Listen(t,d) |> ignore
-                        res
-                    )
-
-                yield! c |> List.map (fun d -> 
-                                match d with
-                                    | Add(i,v) -> Add(t,i,v)
-                                    | Rem(i,v) -> Rem(t,i,v)
-                            )
-            ]
-
-        member x.Dispose() =
-            occurances.Clear()
-            for (KeyValue(_, d)) in subscriptions do d()
-            dirty.Clear()
-            subscriptions.Clear()
-
-        interface IDisposable with
-            member x.Dispose() = x.Dispose()
- 
 
     type MapReader<'a, 'b>(scope, f : 'a -> 'b, input : IListReader<'a>) as this =
         inherit AbstractReader<'b>()
@@ -281,7 +170,7 @@ module AListReaders =
         inherit AbstractReader<'b>()
         do input.AddOutput this
 
-        let dirtyInner = new DirtyListReaderSet<'b>()
+        let dirtyInner = VolatileTaggedDirtySet(fun (r : IListReader<_>) -> r.GetDelta())
         let f = Cache<'a, IListReader<'b>>(scope, f)
 
         let mutable mapping = NestedOrderMapping()
@@ -291,11 +180,16 @@ module AListReaders =
             input.RemoveOutput x
             input.Dispose()
             f.Clear(fun r -> r.RemoveOutput x; r.Dispose())
-            dirtyInner.Dispose()
+            dirtyInner.Clear()
             mapping.Clear()
             rootTime <- Unchecked.defaultof<ISortKey>
 
         override x.Order = mapping.Order
+
+        override x.InputChanged (o : IAdaptiveObject) = 
+            match o with
+                | :? IListReader<'b> as o -> dirtyInner.Push o
+                | _ -> ()
 
         override x.ComputeDelta() =
             let xs = input.GetDelta()
@@ -310,10 +204,13 @@ module AListReaders =
                             r.GetDelta() |> ignore
 
                             // listen to marking of r (reader cannot be OutOfDate due to GetDelta above)
-                            if dirtyInner.Listen(t, r) then
+                            if dirtyInner.Add(t, r) then
                                 // we're an output of the new reader
                                 r.AddOutput x
 
+                            // bring the reader's content up-to-date by calling GetDelta
+                            r.GetDelta() |> ignore
+                            
                             // since the entire reader is new we add its content
                             // which must be up-to-date here (due to calling GetDelta above)
                             let additions = r.Content |> Seq.map (fun (i,v) -> Add(mapping.Invoke(t, i), v)) |> Seq.toList
@@ -323,7 +220,7 @@ module AListReaders =
                             let (last, r) = f.RevokeAndGetDeleted v
                                 
                             // remove the reader-occurance from the listen-set
-                            if dirtyInner.Destroy(t, r) then
+                            if dirtyInner.Remove(t, r) then
                                 // since the reader is no longer contained we don't want
                                 // to be notified anymore
                                 r.RemoveOutput x
@@ -348,11 +245,14 @@ module AListReaders =
             // in dirtyInner. Even if the outer set did not change we
             // need to collect those inner deltas.
             let innerDeltas = 
-                dirtyInner.GetDeltas() |> List.map (fun d ->
-                    match d with
-                        | Add (o,i,v) -> Add(mapping.Invoke(o, i), v)
-                        | Rem (o,i,v) -> Rem(mapping.Revoke(o, i), v)
-                                
+                dirtyInner.Evaluate() |> List.collect (fun (delta, times) ->
+                    [
+                        for o in times do
+                            for d in delta do
+                                match d with
+                                    | Add (i,v) -> yield Add(mapping.Invoke(o, i), v)
+                                    | Rem (i,v) -> yield Rem(mapping.Revoke(o, i), v)
+                    ]
                 )
 
             // concat inner and outer deltas 
