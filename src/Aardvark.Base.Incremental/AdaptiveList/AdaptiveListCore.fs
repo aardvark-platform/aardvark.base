@@ -281,7 +281,7 @@ module AListReaders =
         inherit AbstractReader<'b>()
         do input.AddOutput this
 
-        let dirtyInner = new DirtyListReaderSet<'b>()
+        let dirtyInner = VolatileTaggedDirtySet(fun (r : IListReader<_>) -> r.GetDelta())
         let f = Cache<'a, IListReader<'b>>(scope, f)
 
         let mutable mapping = NestedOrderMapping()
@@ -291,11 +291,16 @@ module AListReaders =
             input.RemoveOutput x
             input.Dispose()
             f.Clear(fun r -> r.RemoveOutput x; r.Dispose())
-            dirtyInner.Dispose()
+            dirtyInner.Clear()
             mapping.Clear()
             rootTime <- Unchecked.defaultof<ISortKey>
 
         override x.Order = mapping.Order
+
+        override x.InputChanged (o : IAdaptiveObject) = 
+            match o with
+                | :? IListReader<'b> as o -> dirtyInner.Push o
+                | _ -> ()
 
         override x.ComputeDelta() =
             let xs = input.GetDelta()
@@ -310,7 +315,7 @@ module AListReaders =
                             r.GetDelta() |> ignore
 
                             // listen to marking of r (reader cannot be OutOfDate due to GetDelta above)
-                            if dirtyInner.Listen(t, r) then
+                            if dirtyInner.Add(t, r) then
                                 // we're an output of the new reader
                                 r.AddOutput x
 
@@ -326,7 +331,7 @@ module AListReaders =
                             let (last, r) = f.RevokeAndGetDeleted v
                                 
                             // remove the reader-occurance from the listen-set
-                            if dirtyInner.Destroy(t, r) then
+                            if dirtyInner.Remove(t, r) then
                                 // since the reader is no longer contained we don't want
                                 // to be notified anymore
                                 r.RemoveOutput x
@@ -351,11 +356,14 @@ module AListReaders =
             // in dirtyInner. Even if the outer set did not change we
             // need to collect those inner deltas.
             let innerDeltas = 
-                dirtyInner.GetDeltas() |> List.map (fun d ->
-                    match d with
-                        | Add (o,i,v) -> Add(mapping.Invoke(o, i), v)
-                        | Rem (o,i,v) -> Rem(mapping.Revoke(o, i), v)
-                                
+                dirtyInner.Evaluate() |> List.collect (fun (delta, times) ->
+                    [
+                        for o in times do
+                            for d in delta do
+                                match d with
+                                    | Add (i,v) -> yield Add(mapping.Invoke(o, i), v)
+                                    | Rem (i,v) -> yield Rem(mapping.Revoke(o, i), v)
+                    ]
                 )
 
             // concat inner and outer deltas 

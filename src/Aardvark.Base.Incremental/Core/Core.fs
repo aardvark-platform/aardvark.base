@@ -692,7 +692,7 @@ open System.Threading
  
 
  
- type VolatileSet<'a, 'b when 'a :> IAdaptiveObject and 'a : equality and 'a : not struct>(eval : 'a -> 'b) =
+type VolatileDirtySet<'a, 'b when 'a :> IAdaptiveObject and 'a : equality and 'a : not struct>(eval : 'a -> 'b) =
     let mutable set : PersistentHashSet<'a> = PersistentHashSet.empty
 
     member x.Evaluate() =
@@ -706,17 +706,76 @@ open System.Threading
             Interlocked.Change(&set, PersistentHashSet.union local)
             raise l
 
-    member x.Add(i : 'a) =
+    member x.Push(i : 'a) =
         lock i (fun () ->
             if i.OutOfDate then
                 Interlocked.Change(&set, PersistentHashSet.add i)
         )
+
+    member x.Add(i : 'a) =
+        x.Push(i)
 
     member x.Remove(i : 'a) =
         Interlocked.Change(&set, PersistentHashSet.remove i)
  
     member x.Clear() =
         Interlocked.Exchange(&set, PersistentHashSet.empty) |> ignore
+
+type VolatileTaggedDirtySet<'a, 'b, 't when 'a :> IAdaptiveObject and 'a : equality and 'a : not struct>(eval : 'a -> 'b) =
+    let mutable set : PersistentHashSet<'a> = PersistentHashSet.empty
+    let tagDict = Dictionary<'a, HashSet<'t>>()
+
+    member x.Evaluate() =
+        let local = Interlocked.Exchange(&set, PersistentHashSet.empty) 
+        try
+            local |> PersistentHashSet.toList
+                  |> List.filter (fun o -> lock o (fun () -> o.OutOfDate))
+                  |> List.map (fun o ->
+                        match tagDict.TryGetValue o with
+                            | (true, tags) -> o, Seq.toList tags
+                            | _ -> o, []
+                     )
+                  |> List.map (fun (o, tags) -> eval o, tags)
+
+        with :? LevelChangedException as l ->
+            Interlocked.Change(&set, PersistentHashSet.union local)
+            raise l
+
+    member x.Push(i : 'a) =
+        lock i (fun () ->
+            if i.OutOfDate then
+                Interlocked.Change(&set, PersistentHashSet.add i)
+        )
+
+    member x.Add(tag : 't, i : 'a) =
+        match tagDict.TryGetValue i with
+            | (true, set) -> 
+                set.Add tag |> ignore
+                false
+            | _ ->
+                tagDict.[i] <- HashSet [tag]
+                x.Push i
+                true
+
+    member x.Remove(tag : 't, i : 'a) =
+        match tagDict.TryGetValue i with
+            | (true, tags) -> 
+                if tags.Remove tag then
+                    if tags.Count = 0 then
+                        Interlocked.Change(&set, PersistentHashSet.remove i)  
+                        true
+                    else
+                        false
+                else
+                    failwithf "[VolatileTaggedDirtySet] could not remove tag %A for element %A" tag i
+                                      
+            | _ ->
+                failwithf "[VolatileTaggedDirtySet] could not remove element: %A" i
+
+    member x.Clear() =
+        tagDict.Clear()
+        Interlocked.Exchange(&set, PersistentHashSet.empty) |> ignore
+
 
 type DirtySetNewWithData<'a, 'b, 'x when 'a :> IAdaptiveObject and 'a : equality and 'a : not struct>(eval : 'a -> 'b) =
     inherit AdaptiveObject()
