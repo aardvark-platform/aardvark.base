@@ -116,7 +116,7 @@ type MemoryBlock =
             if offset + size > x.Size then failwith "[Memory] write exceeding size"
 
             ReaderWriterLock.read x.Parent.PointerLock (fun () ->
-                let target = x.Parent.Pointer + x.Offset
+                let target = x.Parent.Pointer + x.Offset + nativeint offset
                 Marshal.Copy(source, target, size)
             )
 
@@ -124,7 +124,7 @@ type MemoryBlock =
             if offset + size > x.Size then failwith "[Memory] read exceeding size"
 
             ReaderWriterLock.read x.Parent.PointerLock (fun () ->
-                let source = x.Parent.Pointer + x.Offset
+                let source = x.Parent.Pointer + x.Offset + nativeint offset
                 Marshal.Copy(source, target, size)
             )
 
@@ -132,7 +132,7 @@ type MemoryBlock =
             if offset + sizeof<'a> > x.Size then failwith "[Memory] write exceeding size"
 
             ReaderWriterLock.read x.Parent.PointerLock (fun () ->
-                let ptr = x.Parent.Pointer + x.Offset |> NativePtr.ofNativeInt
+                let ptr = x.Parent.Pointer + x.Offset + nativeint offset |> NativePtr.ofNativeInt
                 NativePtr.write ptr data
             )
 
@@ -140,7 +140,7 @@ type MemoryBlock =
             if offset + sizeof<'a> > x.Size then failwith "[Memory] read exceeding size"
 
             ReaderWriterLock.read x.Parent.PointerLock (fun () ->
-                let ptr = x.Parent.Pointer + x.Offset |> NativePtr.ofNativeInt
+                let ptr = x.Parent.Pointer + x.Offset + nativeint offset |> NativePtr.ofNativeInt
                 NativePtr.read ptr
             )
 
@@ -148,7 +148,7 @@ type MemoryBlock =
             if offset + sizeof<'a> * data.Length > x.Size then failwith "[Memory] write exceeding size"
 
             ReaderWriterLock.read x.Parent.PointerLock (fun () ->
-                let mutable ptr = x.Parent.Pointer + x.Offset |> NativePtr.ofNativeInt
+                let mutable ptr = x.Parent.Pointer + x.Offset + nativeint offset |> NativePtr.ofNativeInt
                 for i in 0..data.Length-1 do
                     NativePtr.set ptr i data.[i]
             )
@@ -157,7 +157,7 @@ type MemoryBlock =
             if offset + sizeof<'a> * data.Length > x.Size then failwith "[Memory] read exceeding size"
 
             ReaderWriterLock.read x.Parent.PointerLock (fun () ->
-                let mutable ptr = x.Parent.Pointer + x.Offset |> NativePtr.ofNativeInt
+                let mutable ptr = x.Parent.Pointer + x.Offset + nativeint offset |> NativePtr.ofNativeInt
                 for i in 0..data.Length-1 do
                     data.[i] <- NativePtr.get ptr i
             )
@@ -505,3 +505,15 @@ module MemoryBlock =
 
     let inline spill (b : MemoryBlock) =
         b.Parent.Spill(b)
+
+    let inline write (offset : int) (value : 'a) (b : MemoryBlock) =
+        b.Write(offset, value)
+
+    let inline writeArray (offset : int) (value : 'a[]) (b : MemoryBlock) =
+        b.Write(offset, value)
+
+    let inline read (offset : int) (b : MemoryBlock) =
+        b.Read(offset)
+
+    let inline readArray (offset : int) (b : MemoryBlock) : 'a[] =
+        b.Read(offset, b.Size / sizeof<'a>)

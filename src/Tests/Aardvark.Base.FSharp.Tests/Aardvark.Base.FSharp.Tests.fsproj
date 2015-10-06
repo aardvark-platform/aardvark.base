@@ -61,6 +61,7 @@
   <ItemGroup>
     <Compile Include="TimeTests.fs" />
     <Compile Include="NativeMemory.fs" />
+    <Compile Include="Fragments.fs" />
     <Content Include="app.config" />
   </ItemGroup>
   <ItemGroup>
