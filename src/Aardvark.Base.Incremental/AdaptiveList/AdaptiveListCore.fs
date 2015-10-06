@@ -314,6 +314,9 @@ module AListReaders =
                                 // we're an output of the new reader
                                 r.AddOutput x
 
+                            // bring the reader's content up-to-date by calling GetDelta
+                            r.GetDelta() |> ignore
+                            
                             // since the entire reader is new we add its content
                             // which must be up-to-date here (due to calling GetDelta above)
                             let additions = r.Content |> Seq.map (fun (i,v) -> Add(mapping.Invoke(t, i), v)) |> Seq.toList

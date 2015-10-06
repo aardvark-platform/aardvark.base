@@ -141,7 +141,7 @@ module ASetReaders =
     /// A simple datastructure for efficiently pulling changes from
     /// a set of readers.
     /// </summary>
-    type DirtyReaderSet<'a>() =
+    type OldDirtyReaderSet<'a>() =
         let subscriptions = ConcurrentDictionary<IReader<'a>, unit -> unit>()
         let dirty = HashSet<IReader<'a>>()
 
@@ -211,14 +211,14 @@ module ASetReaders =
         interface IDisposable with
             member x.Dispose() = x.Dispose()
 
-
-    type NewDirtyReaderSet<'a>() =
-        inherit DirtySet<IReader<'a>, list<Delta<'a>>>(fun readers -> readers |> Seq.collect (fun r -> r.GetDelta()) |> Seq.toList)
-
-        member x.Listen r = x.Add r
-        member x.Unlisten r = x.Remove r
-        member x.GetDeltas() = x.Evaluate()
-        
+//
+//    type DirtyReaderSet<'a>() =
+//        inherit DirtySet<IReader<'a>, list<Delta<'a>>>(fun reader -> reader.GetDelta())
+//
+//        member x.Listen r = base.Listen r
+//        member x.Unlisten r = base.Unlisten r
+//        member x.GetDeltas() = x.Evaluate() |> List.concat
+//        
 
     /// <summary>
     /// A reader representing "map" operations
@@ -256,13 +256,19 @@ module ASetReaders =
         do source.AddOutput this
 
         let f = Cache(scope, f)
-        let dirtyInner = new DirtyReaderSet<'b>()
+        let dirtyInner = VolatileSet(fun (r : IReader<_>) -> r.GetDelta())
+
+        override x.InputChanged (o : IAdaptiveObject) = 
+            match o with
+                | :? IReader<'b> as o -> dirtyInner.Add o
+                | _ -> ()
+
 
         override x.Release() =
             source.RemoveOutput this
             source.Dispose()
             f.Clear(fun r -> r.RemoveOutput this; r.Dispose())
-            dirtyInner.Dispose()
+            dirtyInner.Clear()
 
         override x.ComputeDelta() =
             let xs = source.GetDelta()
@@ -279,7 +285,7 @@ module ASetReaders =
                             r.GetDelta() |> ignore
 
                             // listen to marking of r (reader cannot be OutOfDate due to GetDelta above)
-                            dirtyInner.Listen r
+                            dirtyInner.Add r
                                     
                             // since the entire reader is new we add its content
                             // which must be up-to-date here (due to calling GetDelta above)
@@ -289,7 +295,7 @@ module ASetReaders =
                             let (last, r) = f.RevokeAndGetDeleted v
 
                             // remove the reader from the listen-set
-                            dirtyInner.Unlisten r
+                            dirtyInner.Remove r
 
                             // since the reader is no longer contained we don't want
                             // to be notified anymore
@@ -311,7 +317,7 @@ module ASetReaders =
             // all dirty inner readers must be registered 
             // in dirtyInner. Even if the outer set did not change we
             // need to collect those inner deltas.
-            let innerDeltas = dirtyInner.GetDeltas()
+            let innerDeltas = dirtyInner.Evaluate() |> List.concat
 
             // concat inner and outer deltas 
             List.append outerDeltas innerDeltas

@@ -328,14 +328,14 @@ module ``collect tests`` =
         let l = obj()
         let set = CSet.empty
         let derived = set |> ASet.collect id
-        let numbers = [0..9999]
+        let numbers = [0..1000]
 
         use sem = new SemaphoreSlim(0)
         use cancel = new CancellationTokenSource()
         let ct = cancel.Token
 
 
-        let readers = [0..3] |> List.map (fun _ -> derived.GetReader())
+        let readers = [1..3] |> List.map (fun _ -> derived.GetReader())
         // pull from the system
 
         for r in readers do
@@ -343,8 +343,9 @@ module ``collect tests`` =
                 while true do
                     ct.ThrowIfCancellationRequested()
                     let delta = r.GetDelta()
-                    if not (List.isEmpty delta) then
-                        Console.WriteLine("delta: {0}", List.length delta)
+                    
+                    //if not (List.isEmpty delta) then
+                    //    Console.WriteLine("delta: {0}", List.length delta)
                     //Thread.Sleep(1)
                     ()
             ) |> ignore
@@ -431,8 +432,8 @@ module ``collect tests`` =
         let set = CSet.empty
 
         let derived = set |> ASet.collect id |> ASet.map id |> ASet.choose Some |> ASet.collect ASet.single |> ASet.collect ASet.single
-        let readers = [1..10] |> List.map (fun _ -> derived.GetReader())
-        let numbers = [0..9999]
+        let readers = [1..3] |> List.map (fun _ -> derived.GetReader())
+        let numbers = [0..1000]
 
         use sem = new SemaphoreSlim(0)
         use cancel = new CancellationTokenSource()
@@ -445,9 +446,9 @@ module ``collect tests`` =
                 while true do
                     ct.ThrowIfCancellationRequested()
                     let delta = r.GetDelta()
-                    //Thread.Sleep(10)
+                    //Thread.Sleep(1)
                     ()
-            ) |> ignore
+            , TaskCreationOptions.LongRunning) |> ignore
 
 
         // submit into the system
@@ -460,7 +461,7 @@ module ``collect tests`` =
                     )
                 )
                 sem.Release() |> ignore
-            ) |> ignore
+            , TaskCreationOptions.LongRunning) |> ignore
 
         // wait for all submissions to be done
         for n in numbers do
@@ -666,13 +667,13 @@ module ``collect tests`` =
     let ``[ASet] registerCallback holds no gc root``() =
         let called, inputSet, d = GCHelper.``create, registerCallback and return and make sure that the stack frame dies`` ()
 
-        let cnt = 1000
+        let cnt = 100
         for i in 0 .. cnt do
             transact (fun () -> CSet.add i inputSet |> ignore)
             //printfn "should equal i=%d called=%d" i !called
             should equal  i !called
             Thread.Sleep 5
-            if i % 100 = 0 then printfn "done: %d/%d" i cnt; GC.Collect()
+            if i % 10 = 0 then printfn "done: %d/%d" i cnt; GC.Collect()
 
         printfn "%A" d
 
@@ -680,26 +681,26 @@ module ``collect tests`` =
     let ``[ASet] registerCallbackKeepDisposable holds gc root``() =
         let called, inputSet = GCHelper.``create, registerCallbackAndKeepDisposable and return and make sure that the stack frame dies`` ()
 
-        let cnt = 1000
+        let cnt = 100
         for i in 0 .. cnt do
             transact (fun () -> CSet.add i inputSet |> ignore)
             //printfn "should equal i=%d called=%d" i !called
             should equal  i !called
             Thread.Sleep 5
-            if i % 100 = 0 then printfn "done: %d/%d" i cnt; GC.Collect()
+            if i % 10 = 0 then printfn "done: %d/%d" i cnt; GC.Collect()
 
     [<Test>]
     let ``[ASet] markingCallback holds gc root``() =
         let called, inputSet, reader = GCHelper.``create, register marking and return and make sure that the stack frame dies`` ()
 
-        let cnt = 1000
+        let cnt = 100
         for i in 0 .. cnt do
             transact (fun () -> CSet.add i inputSet |> ignore)
             //printfn "should equal i=%d called=%d" i !called
             reader.GetDelta() |> ignore
             should equal  i !called
             Thread.Sleep 5
-            if i % 100 = 0 then printfn "done: %d/%d" i cnt; GC.Collect()
+            if i % 10 = 0 then printfn "done: %d/%d" i cnt; GC.Collect()
 
 
     [<Test>]

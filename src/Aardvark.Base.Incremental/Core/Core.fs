@@ -72,6 +72,9 @@ type IAdaptiveObject =
     /// </summary>
     abstract member MarkingCallbacks : ICollection<unit -> unit>
 
+    abstract member InputChanged : IAdaptiveObject -> unit
+    
+
 /// <summary>
 /// IncrementalLog logs a the sequence of fundamental adaptive operations
 /// performed by the system. This allows to investigate bugs and concurrency
@@ -140,10 +143,11 @@ module private AdaptiveSystemState =
 type Transaction() =
 
     // each thread may have its own running transaction
-    static let running = new Threading.ThreadLocal<Option<Transaction>>(fun () -> None)
+    static let running = new Threading.ThreadLocal<Option<Transaction>>((fun () -> None),true)
     
     // we use a duplicate-queue here since we expect levels to be very similar 
     let q = DuplicatePriorityQueue<IAdaptiveObject, int>(fun o -> o.Level)
+    let causes = Dict<IAdaptiveObject, HashSet<IAdaptiveObject>>()
 
     // the contained set is useful for determinig if an element has
     // already been enqueued
@@ -156,18 +160,37 @@ type Transaction() =
         set.Clear()
         content
 
+    member x.IsContained e = contained.Contains e
+    static member InAnyOfTheTransactionsInternal e =     
+        let values = running.Values
+        let b = List.init values.Count (fun i -> values.[i])
+        b |> List.choose id |> List.exists (fun t -> t.IsContained e)
+
     static member Running =
         running.Value
 
     static member HasRunning =
         running.Value.IsSome
-        
+       
     /// <summary>
     /// enqueues an adaptive object for marking
     /// </summary>
     member x.Enqueue(e : IAdaptiveObject) =
         if contained.Add e then
             q.Enqueue e
+
+    member x.Enqueue(e : IAdaptiveObject, cause : Option<IAdaptiveObject>) =
+        if contained.Add e then
+            q.Enqueue e
+            match cause with
+                | Some cause ->
+                    match causes.TryGetValue e with
+                        | (true, set) -> 
+                            set.Add cause |> ignore
+                        | _ ->
+                            let set = HashSet [cause]
+                            causes.[e] <- set
+                | None -> ()
 
     member x.CurrentAdapiveObject = current
         
@@ -192,6 +215,8 @@ type Transaction() =
             // dequeue the next element (having the minimal level)
             let l, e = q.Dequeue()
             current <- Some e
+
+            
 
             let outputs = 
                 // since we're about to access the outOfDate flag
@@ -218,6 +243,10 @@ type Transaction() =
                                 q.Enqueue e
                                 Seq.empty
                             else
+                                match causes.TryRemove e with
+                                    | (true, causes) -> causes |> Seq.iter e.InputChanged
+                                    | _ -> ()
+
                                 // however if the level is consistent we may proceed
                                 // by marking the object as outOfDate
                                 e.OutOfDate <- true
@@ -255,6 +284,7 @@ type Transaction() =
 
             // finally we enqueue all returned outputs
             for o in outputs do
+                o.InputChanged e
                 x.Enqueue o
 
             contained.Remove e |> ignore
@@ -359,6 +389,8 @@ type AdaptiveObject() =
     abstract member Mark : unit -> bool
     default x.Mark () = true
     
+    abstract member InputChanged : IAdaptiveObject -> unit
+    default x.InputChanged ip = ()
 
     override x.GetHashCode() = id
     override x.Equals o =
@@ -381,6 +413,8 @@ type AdaptiveObject() =
 
         member x.Mark () =
             x.Mark ()
+
+        member x.InputChanged ip = x.InputChanged ip
 
 /// <summary>
 /// defines a base class for all decorated mods
@@ -423,6 +457,8 @@ type AdaptiveDecorator(o : IAdaptiveObject) =
 
         member x.Mark () = o.Mark()
 
+        member x.InputChanged ip = o.InputChanged ip
+
 /// <summary>
 /// defines a base class for all adaptive objects which are
 /// actually constant.
@@ -449,6 +485,7 @@ type ConstantObject() =
         member x.Inputs = emptySet
         member x.Outputs = emptySet
         member x.MarkingCallbacks = emptyCallbacks
+        member x.InputChanged ip = ()
 
 
 and EmptyCollection<'a>() =
@@ -524,6 +561,8 @@ type DirtySet<'a, 'b when 'a :> IAdaptiveObject and 'a : not struct>(evaluate : 
 
 
 
+
+
 [<AutoOpen>]
 module Marking =
 
@@ -532,7 +571,7 @@ module Marking =
     // Note that this implementation has very poor runtime performance
     // and might possibly be improved using some kind of order-maintenance
     // structure instead of integers.
-    let rec private relabel (m : IAdaptiveObject) (minLevel : int) =
+    let rec relabel (m : IAdaptiveObject) (minLevel : int) =
         let old = m.Level
         if old < minLevel then
             m.Level <- minLevel
@@ -587,14 +626,17 @@ module Marking =
         /// However objects which are already outOfDate might
         /// also be "marked" when not having a current transaction.
         /// </summary>
-        member x.MarkOutdated () =
+        member x.MarkOutdated (cause : Option<IAdaptiveObject>) =
             match getCurrentTransaction() with
-                | Some t -> t.Enqueue x
+                | Some t -> t.Enqueue(x, cause)
                 | None -> 
                     lock x (fun () -> 
                         if x.OutOfDate then ()
                         else failwith "cannot mark object without transaction"
                     )
+
+        member x.MarkOutdated () =
+            x.MarkOutdated None
                             
         /// <summary>
         /// utility for adding an output to the object.
@@ -617,7 +659,7 @@ module Marking =
                             | _ -> ()
                     | _ -> ()
 
-            m.MarkOutdated()
+            m.MarkOutdated ( Some x )
 
         /// <summary>
         /// utility for removing an output from the object
@@ -644,5 +686,143 @@ module Marking =
             )
 
             { new IDisposable with member __.Dispose() = live := false; x.MarkingCallbacks.Remove !self |> ignore}
-                
+ 
 
+open System.Threading
+ 
+
+ 
+ type VolatileSet<'a, 'b when 'a :> IAdaptiveObject and 'a : equality and 'a : not struct>(eval : 'a -> 'b) =
+    let mutable set : PersistentHashSet<'a> = PersistentHashSet.empty
+
+    member x.Evaluate() =
+        let local = Interlocked.Exchange(&set, PersistentHashSet.empty) 
+        try
+            local |> PersistentHashSet.toList
+                    |> List.filter (fun o -> lock o (fun () -> o.OutOfDate))
+                    |> List.map (fun o -> eval o)
+
+        with :? LevelChangedException as l ->
+            Interlocked.Change(&set, PersistentHashSet.union local)
+            raise l
+
+    member x.Add(i : 'a) =
+        lock i (fun () ->
+            if i.OutOfDate then
+                Interlocked.Change(&set, PersistentHashSet.add i)
+        )
+
+    member x.Remove(i : 'a) =
+        Interlocked.Change(&set, PersistentHashSet.remove i)
+ 
+    member x.Clear() =
+        Interlocked.Exchange(&set, PersistentHashSet.empty) |> ignore
+
+type DirtySetNewWithData<'a, 'b, 'x when 'a :> IAdaptiveObject and 'a : equality and 'a : not struct>(eval : 'a -> 'b) =
+    inherit AdaptiveObject()
+
+    let mutable data = Dict<'a, HashSet<'x>>()
+    let mutable set : PersistentHashSet<'a> = PersistentHashSet.empty
+
+    member x.Evaluate() =
+        x.EvaluateIfNeeded [] (fun () ->
+            let local = Interlocked.Exchange(&set, PersistentHashSet.empty) 
+            try
+                local |> PersistentHashSet.toList
+                      |> List.filter (fun o -> lock o (fun () -> o.OutOfDate))
+                      |> List.map (fun o -> 
+                        match data.TryGetValue o with
+                            | (true, v) -> (eval o,Seq.toList v)
+                            | _ -> (eval o, [])
+                      )
+            with :? LevelChangedException as l ->
+                Interlocked.Change(&set, PersistentHashSet.union local)
+                raise l
+        )
+
+    override x.InputChanged (o : IAdaptiveObject) =
+        match o with
+            | :? 'a as a -> Interlocked.Change(&set, PersistentHashSet.add a)
+            | _ -> failwithf "unexpected input-change: %A" o
+
+    member x.Listen (tag : 'x, i : 'a)  =
+        lock x (fun () ->
+            match data.TryGetValue i with
+                | (true, tags) -> tags.Add tag |> ignore
+                | _ ->
+                    let tags = HashSet [tag]
+                    data.[i] <- tags
+
+                    i.AddOutput x
+                    lock i (fun () ->
+                        if i.OutOfDate then
+                            Interlocked.Change(&set, PersistentHashSet.add i)
+                    )
+        )
+
+    member x.Unlisten (tag : 'x, i : 'a) =
+        lock x (fun () ->
+            match data.TryGetValue i with
+                | (true, tags) ->
+                    if not <| tags.Remove tag then failwith "DirtySet: could not remove tag"
+
+                    if tags.Count = 0 then
+                        data.Remove i |> ignore
+                        i.RemoveOutput x
+                        Interlocked.Change(&set, PersistentHashSet.remove i)
+
+                | _ -> failwith "DirtySet: could not remove input"
+        )
+                
+    member x.Dispose() =
+        let ips = x.Inputs |> Seq.toList
+        for i in ips do i.RemoveOutput x
+
+module Validation =
+    
+    open System.Threading
+
+//    member x.EvaluateAlways (f : unit -> 'a) =
+//        let top = isTopLevel.Value
+//        if top then isTopLevel.Value <- false
+//
+//        let res =
+//            lock x (fun () ->
+//                IncrementalLog.startEvaluate x
+//                let res = f()
+//                x.OutOfDate <- false
+//                IncrementalLog.endEvaluate x
+//                res
+//            )
+//
+//        if top then 
+//            isTopLevel.Value <- true
+//            if time.Outputs.Count > 0 then
+//                let t = Transaction()
+//                for o in time.Outputs do
+//                    t.Enqueue(o)
+//                t.Commit()
+//
+//        res
+
+    type IAdaptiveObject with
+        
+        member x.Validate() =
+            lock x (fun () ->
+                try
+                    x.Inputs |> Seq.iter Monitor.Enter
+
+                    if not x.OutOfDate then
+                        let invalid = x.Inputs |> Seq.exists (fun i -> i.OutOfDate) && not x.OutOfDate
+                        if invalid then
+                            let iAmInTransaction = Transaction.InAnyOfTheTransactionsInternal x
+                            //let inTransacList.exists Transaction.AllRunning.
+                            if not iAmInTransaction then
+                                System.Diagnostics.Debugger.Break()
+                                failwith "invalid state" 
+
+
+                finally
+                    x.Inputs |> Seq.iter Monitor.Exit
+            )
+            x.Inputs |> Seq.iter (fun i -> i.Validate())
