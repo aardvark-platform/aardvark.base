@@ -14,20 +14,19 @@ module MemoryManagerTests =
     
     let create() = new MemoryManager(16, Marshal.AllocHGlobal, fun ptr _ -> Marshal.FreeHGlobal ptr)
 
-    let rec validateBlocks (last : MemoryBlock) (current : MemoryBlock) =
-        let mutable last = last
-        let mutable current = current
-        while current <> null do
-            current.Prev |> should equal last
+    type Interlocked with
+        static member Change(location : byref<int>, f : int -> int) =
+            let mutable v = location
+            let mutable res = f v
+            let mutable r = Interlocked.CompareExchange(&location, res, v)
 
-            current.Size |> should greaterThan 0
-            current.Offset |> int |> should greaterThanOrEqualTo 0
+            while v <> r do
+                v <- r
+                res <- f v
+                r <- Interlocked.CompareExchange(&location, res, v)
 
-            if not (isNull last) then
-                last.Offset + nativeint last.Size |> should equal current.Offset
+            res
 
-            last <- current
-            current <- current.Next
 
 
     [<Test>]
@@ -37,9 +36,7 @@ module MemoryManagerTests =
         let b0 = m.Alloc(10)
         let b1 = m.Alloc(6)
 
-        validateBlocks null m.FirstBlock
-        m.FirstBlock |> should equal b0
-        m.LastBlock |> should equal b1
+        m.Validate()
 
     [<Test>]
     let ``[Memory] simple free test``() =
@@ -51,9 +48,7 @@ module MemoryManagerTests =
 
         let b1 = m.Alloc(16)
         
-        validateBlocks null m.FirstBlock
-        m.FirstBlock |> should equal b1
-        m.LastBlock |> should equal b1
+        m.Validate()
 
     [<Test>]
     let ``[Memory] free collapse left``() =
@@ -66,10 +61,7 @@ module MemoryManagerTests =
         m.Free b1
 
         
-        validateBlocks null m.FirstBlock
-        m.FirstBlock.Size |> should equal 4
-        m.FirstBlock.Next |> should equal b2
-        m.LastBlock.Prev |> should equal b2
+        m.Validate()
 
     [<Test>]
     let ``[Memory] free collapse right``() =
@@ -83,10 +75,7 @@ module MemoryManagerTests =
         m.Free b1
 
         
-        validateBlocks null m.FirstBlock
-        m.FirstBlock |> should equal b0
-        b0.Next.Size |> should equal 4
-        m.LastBlock |> should equal b0.Next.Next
+        m.Validate()
 
     [<Test>]
     let ``[Memory] free collapse both``() =
@@ -101,11 +90,7 @@ module MemoryManagerTests =
         m.Free b1
 
         
-        validateBlocks null m.FirstBlock
-        m.FirstBlock.Size |> should equal 6
-        m.FirstBlock.Offset |> should equal 0n
-        m.FirstBlock.Next |> should equal r
-        m.LastBlock |> should equal r
+        m.Validate()
 
 
     [<Test>]
@@ -116,17 +101,11 @@ module MemoryManagerTests =
         let b1 = m.Alloc(2)
         
         m.Realloc(b0, 4) |> should be True
-        validateBlocks null m.FirstBlock
+        m.Validate()
 
         b0.Size |> should equal 4
         b0.Offset |> should equal 4n
-        b0.Prev |> should equal b1
 
-        b1.Prev.Size |> should equal 2
-        b1.Prev.Offset |> should equal 0n
-
-        m.FirstBlock.Next |> should equal b1
-        m.LastBlock.Prev |> should equal b0
 
     [<Test>]
     let ``[Memory] realloc exact space left``() =
@@ -139,10 +118,8 @@ module MemoryManagerTests =
         m.Free(b1)
 
         m.Realloc(b0, 6) |> should be False
-        validateBlocks null m.FirstBlock
+        m.Validate()
 
-        b0.Next |> should equal b2
-        m.FirstBlock |> should equal b0
 
     [<Test>]
     let ``[Memory] realloc more space left``() =
@@ -155,10 +132,8 @@ module MemoryManagerTests =
         m.Free(b1)
 
         m.Realloc(b0, 6) |> should be False
-        validateBlocks null m.FirstBlock
+        m.Validate()
 
-        b0.Next.Next |> should equal b2
-        m.FirstBlock |> should equal b0
 
     [<Test>]
     let ``[Memory] realloc shrink``() =
@@ -168,10 +143,8 @@ module MemoryManagerTests =
         let b1 = m.Alloc(4)
 
         m.Realloc(b0, 1) |> should be False
-        validateBlocks null m.FirstBlock
+        m.Validate()
 
-        b0.Next.Next |> should equal b1
-        m.FirstBlock |> should equal b0
 
     [<Test>]
     let ``[Memory] realloc 0``() =
@@ -181,12 +154,9 @@ module MemoryManagerTests =
         let b1 = m.Alloc(4)
 
         m.Realloc(b0, 0) |> should be False
-        validateBlocks null m.FirstBlock
+        m.Validate()
 
         b0.Size |> should equal 0
-        m.FirstBlock |> should not' (equal b0)
-        m.FirstBlock.Size |> should equal 2
-        m.FirstBlock.Offset |> should equal 0n
 
 
     [<Test>]
@@ -196,9 +166,7 @@ module MemoryManagerTests =
         let b0 = m.Alloc(10)
         let b1 = m.Alloc(100)
 
-        validateBlocks null m.FirstBlock
-        m.FirstBlock |> should equal b0
-        m.LastBlock.Prev |> should equal b1
+        m.Validate()
 
 
     [<Test>]
@@ -308,15 +276,22 @@ module MemoryManagerTests =
     let startTask (f : unit -> unit) =
         Task.Factory.StartNew(f, TaskCreationOptions.LongRunning) |> ignore
 
+    let run (f : unit -> unit) =
+        f()
+
+
     [<Test>]
     let ``[Memory] concurrent allocations``() =
-        let cnt = 100uy
+        let cnt = 200uy
         let mem = MemoryManager.createHGlobal()
 
         let r = Random()
         let start = new ManualResetEventSlim(false)
         let finished = new SemaphoreSlim(0)
         let allblocks = ref Map.empty
+        let currentWrites = ref 0
+        let maxParallelWrites = ref 0
+
         for i in 0uy..cnt - 1uy do
             startTask (fun () ->
                 let size = r.Next 100 + 1
@@ -324,17 +299,240 @@ module MemoryManagerTests =
 
                 let b = mem |> MemoryManager.alloc size
 
+                let current = Interlocked.Increment(&currentWrites.contents)
+                Interlocked.Change(&maxParallelWrites.contents, max current) |> ignore
                 b.Write(0, Array.create size i)
+                Interlocked.Decrement(&currentWrites.contents) |> ignore
 
-                Interlocked.Change(&allblocks.contents, Map.add i b)
+                
+
+                Interlocked.Change(&allblocks.contents, Map.add i b) |> ignore
 
                 finished.Release() |> ignore
             )
 
+        start.Set()
+
         for i in 1uy..cnt do
             finished.Wait()
 
+        mem.Validate()
+
+        for (i,b) in Map.toSeq !allblocks do
+            let data : byte[] = b |> ManagedPtr.readArray 0 
+            data |> should equal (Array.create b.Size i)
+
+        Console.WriteLine("parallel writes: {0}", !maxParallelWrites)
+        allblocks.Value.Count |> should equal (int cnt)
+        !maxParallelWrites |> should greaterThan 1
+
+
+    [<Test>]
+    let ``[Memory] concurrent allocations / frees``() =
+        let cnt = 200uy
+        let mem = MemoryManager.createHGlobal()
+
+        let r = Random()
+        let start = new ManualResetEventSlim(false)
+        let finished = new SemaphoreSlim(0)
+        let allblocks = ref Map.empty
+
+
+
+        for i in 0uy..cnt - 1uy do
+            startTask (fun () ->
+                let size = r.Next 100 + 1
+                start.Wait()
+
+                let b = mem |> MemoryManager.alloc size
+                b.Write(0, Array.create size i)
+
+                Interlocked.Change(&allblocks.contents, Map.add i b) |> ignore
+
+                finished.Release() |> ignore
+            )
+
+        start.Set()
+
+        for i in 1uy..cnt do
+            finished.Wait()
+
+        mem.Validate()
+
+
+
         
+        start.Reset()
+
+        for i in 0uy..cnt - 1uy do
+            startTask (fun () ->
+                let free = r.Next(1) = 0
+                let b = Map.find i !allblocks
+                start.Wait()
+
+                if free then
+                    ManagedPtr.free b
+                else
+                    b |> ManagedPtr.realloc (b.Size + 2) |> ignore
+                    b |> ManagedPtr.writeArray (b.Size-2) [|i;i|]
+
+                finished.Release() |> ignore
+            )
+
+        start.Set()
+
+        for i in 1uy..cnt do
+            finished.Wait()
+
+        mem.Validate()
+
+        for (i,b) in Map.toSeq !allblocks do
+            if not b.Free then
+                let data : byte[] = b |> ManagedPtr.readArray 0 
+                data |> should equal (Array.create b.Size i)
+            else
+                b.Size |> should equal 0
+
+        allblocks.Value.Count |> should equal (int cnt)
 
 
+    [<Test>]
+    let ``[Memory] concurrent random operations``() =
+        let mem = MemoryManager.createHGlobal()
+        let r = Random()
+
+        let blocks = ref []
+
+        let removeAny (s : list<managedptr>) =
+            match s with
+                | h::t -> t, Some h
+                | _ -> [], None
+
+        let add (ptr : managedptr) (l : list<managedptr>) =
+            ptr::l
+
+        let cnt = 2000
+        let exns = ref []
+        let sem = new SemaphoreSlim(0)
+
+        for i in 1..cnt do
+            startTask (fun () ->
+            
+                let op = r.Next(6)
+
+                try
+                    try
+                        match op with
+                            | 0 | 1 | 2 -> 
+                                let b = mem.Alloc (r.Next(100) + 1)
+                                Interlocked.Change(&blocks.contents, add b) |> ignore
+
+                            | 3 -> 
+                                let b = Interlocked.Change(&blocks.contents, removeAny)
+                                match b with
+                                    | Some b -> b |> ManagedPtr.free
+                                    | None -> ()
+
+                            | 4 -> 
+                                let b = Interlocked.Change(&blocks.contents, removeAny)
+                                match b with
+                                    | Some b -> 
+                                        b |> ManagedPtr.realloc (r.Next(100) + 1) |> ignore
+                                        if b.Size > 0 then
+                                            Interlocked.Change(&blocks.contents, add b) |> ignore
+                                    | _ -> ()
+
+                            | _ ->
+                                let b = Interlocked.Change(&blocks.contents, removeAny)
+                                match b with
+                                    | Some b -> 
+                                        let newBlock = ManagedPtr.spill b
+
+                                        Interlocked.Change(&blocks.contents, add b >> add newBlock) |> ignore
+                                    | _ -> 
+                                        ()
+
+                    with e ->
+                        Interlocked.Change(&exns.contents, fun l -> e::l) |> ignore
+                finally 
+                    sem.Release() |> ignore
+            )
+
+        for i in 1..cnt do
+            sem.Wait()
+
+        for e in !exns do
+            Console.WriteLine("{0}", e)
+
+        !exns |> should equal []
+
+    [<Test>]
+    let ``[Memory] random operations``() =
+        let mem = MemoryManager.createHGlobal()
+        let r = Random()
+
+        let blocks = ref []
+
+        let removeAny (s : list<managedptr>) =
+            match s with
+                | h::t -> t, Some h
+                | _ -> [], None
+
+        let add (ptr : managedptr) (l : list<managedptr>) =
+            ptr::l
+
+        let cnt = 2000
+        let exns = ref []
+        let sem = new SemaphoreSlim(0)
+
+        for i in 1..cnt do
+            run (fun () ->
+            
+                let op = r.Next(6)
+
+                try
+                    try
+                        match op with
+                            | 0 | 1 | 2 -> 
+                                let b = mem.Alloc (r.Next(100) + 1)
+                                Interlocked.Change(&blocks.contents, add b) |> ignore
+
+                            | 3 -> 
+                                let b = Interlocked.Change(&blocks.contents, removeAny)
+                                match b with
+                                    | Some b -> b |> ManagedPtr.free
+                                    | None -> ()
+
+                            | 4 -> 
+                                let b = Interlocked.Change(&blocks.contents, removeAny)
+                                match b with
+                                    | Some b -> 
+                                        b |> ManagedPtr.realloc (r.Next(100) + 1) |> ignore
+                                        if b.Size > 0 then
+                                            Interlocked.Change(&blocks.contents, add b) |> ignore
+                                    | _ -> ()
+
+                            | _ ->
+                                let b = Interlocked.Change(&blocks.contents, removeAny)
+                                match b with
+                                    | Some b -> 
+                                        let newBlock = ManagedPtr.spill b
+
+                                        Interlocked.Change(&blocks.contents, add b >> add newBlock) |> ignore
+                                    | _ -> 
+                                        ()
+
+                    with e ->
+                        Interlocked.Change(&exns.contents, fun l -> e::l) |> ignore
+                finally 
+                    sem.Release() |> ignore
+            )
+
+        for i in 1..cnt do
+            sem.Wait()
+
+        for e in !exns do
+            Console.WriteLine("{0}", e)
+
+        !exns |> should equal []
 

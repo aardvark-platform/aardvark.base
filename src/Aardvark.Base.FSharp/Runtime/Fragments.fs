@@ -525,7 +525,7 @@ type Fragment(manager : MemoryManager, content : byte[]) =
     let mutable containsJmp = false
     let mutable prev : Fragment = null
     let mutable next : Fragment = null
-    do memory |> MemoryBlock.writeArray 0 content
+    do memory |> ManagedPtr.writeArray 0 content
 
     let nonAlignedJumpOffset() =
         memory.Size - encodedJumpSize
@@ -537,7 +537,7 @@ type Fragment(manager : MemoryManager, content : byte[]) =
 
     member x.Calls =
         memory 
-            |> MemoryBlock.readArray 0
+            |> ManagedPtr.readArray 0
             |> ASM.disassemble
 
     member x.Offset =
@@ -559,7 +559,7 @@ type Fragment(manager : MemoryManager, content : byte[]) =
     member x.NextPointer
         with get() : nativeint =
             let jmpArgOffset = alignedJumpArgumentOffset()
-            let jmpArg : int = memory |> MemoryBlock.read jmpArgOffset
+            let jmpArg : int = memory |> ManagedPtr.read jmpArgOffset
                 
             let nextPtr = 
                 memory.Offset +                             // where am i located
@@ -576,7 +576,7 @@ type Fragment(manager : MemoryManager, content : byte[]) =
 
             if containsJmp then
                 // atomic write here since the offset is 4-byte aligned
-                memory |> MemoryBlock.write jmpArgOffset (int jmpArg)
+                memory |> ManagedPtr.write jmpArgOffset (int jmpArg)
             else
                 // if (for some reason) the fragment does currently not end
                 // with a jmp instruction we need to re-create it
@@ -584,7 +584,7 @@ type Fragment(manager : MemoryManager, content : byte[]) =
                 let nopSize = (jmpArgOffset - 1) - jmpStart
 
                 let jmp = ASM.assembleJump nopSize (int jmpArg)
-                memory |> MemoryBlock.writeArray jmpStart jmp
+                memory |> ManagedPtr.writeArray jmpStart jmp
                 containsJmp <- true
 
     member x.Write (calls : NativeCall[]) =
@@ -594,7 +594,7 @@ type Fragment(manager : MemoryManager, content : byte[]) =
         let size = binary.Length + encodedJumpSize
 
         if size <> memory.Size then
-            let moved =  memory |> MemoryBlock.realloc size
+            let moved =  memory |> ManagedPtr.realloc size
 
             // patch our own next-pointer since its location was changed
             containsJmp <- false
@@ -605,12 +605,12 @@ type Fragment(manager : MemoryManager, content : byte[]) =
             if moved && not (isNull prev) then 
                 prev.NextPointer <- x.Memory.Offset
 
-        memory |> MemoryBlock.writeArray 0 binary
+        memory |> ManagedPtr.writeArray 0 binary
 
 
     member x.Dispose() =
         if memory <> null then
-            MemoryBlock.free memory
+            ManagedPtr.free memory
             memory <- null
             if not <| isNull next then next.Prev <- prev
             if not <| isNull prev then prev.Next <- x.Next
