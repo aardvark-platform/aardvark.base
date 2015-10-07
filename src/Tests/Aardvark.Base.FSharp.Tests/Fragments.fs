@@ -27,39 +27,33 @@ module FragmentTests =
         let manager = MemoryManager.createExecutable()
 
         let maxArgs = 6
-        let additionalSize =
-            if maxArgs < 5 then 8uy
-            else 8 * maxArgs - 24 |> byte
+        let prolog = manager |> Fragment.prolog maxArgs 
+        let epilog = manager |> Fragment.epilog maxArgs 
 
-
-        let prolog = Fragment(manager, [| 0x48uy; 0x83uy; 0xECuy; 0x20uy + additionalSize |])
-        let epilog = Fragment(manager, [| 0x48uy; 0x83uy; 0xC4uy; 0x20uy + additionalSize; 0xC3uy|])
-        
-        let f = Fragment(manager)
-
-        f.Write [|
-            myfunPtr, [|1 :> obj; 2 :> obj; 3 :> obj; 4 :> obj; 5 :> obj|]
-            myfunPtr, [|4 :> obj; 3 :> obj; 2 :> obj; 1 :> obj; 0 :> obj|]
-        |]
+        let frag = 
+            manager |> Fragment.ofCalls [
+                myfunPtr, [|1 :> obj; 2 :> obj; 3 :> obj; 4 :> obj; 5 :> obj|]
+                myfunPtr, [|4 :> obj; 3 :> obj; 2 :> obj; 1 :> obj; 0 :> obj|]
+            ]
 
             
-        prolog.Next <- f
-        f.Prev <- prolog
+        prolog.Next <- frag
+        frag.Prev <- prolog
 
-        epilog.Prev <- f
-        f.Next <- epilog
+        epilog.Prev <- frag
+        frag.Next <- epilog
 
 
-        f.NextPointer |> should equal epilog.EntryPointer
-        prolog.NextPointer |> should equal f.EntryPointer
+        frag.NextPointer |> should equal epilog.Offset
+        prolog.NextPointer |> should equal frag.Offset
 
         Console.WriteLine("Code:")
-        let instructions = f.Instructions
-        for i in instructions do
-            Console.WriteLine("  {0}", sprintf "%A" i)
+        let instructions = frag.Calls
+        for (ptr, args) in instructions do
+            Console.WriteLine("  {0}({1})", sprintf "%A" ptr, sprintf "%A" args)
 
-        let run : unit -> unit = UnmanagedFunctions.wrap (manager.Pointer + prolog.EntryPointer)
-
+ 
+        let run = Fragment.wrap prolog
         run()
 
         calls |> Seq.toList 

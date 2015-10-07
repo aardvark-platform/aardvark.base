@@ -27,7 +27,7 @@ module ``Time tests`` =
                     failwithf "could not get time for index: %A" i
 
     [<Test>]
-    let ``indexing test``() =
+    let ``[Time] indexing test``() =
         
         let r = Time.newRoot()
         r |> Time.nth 0 |> should equal (Some r)
@@ -63,7 +63,7 @@ module ``Time tests`` =
         all |> checkTime r
 
     [<Test>]
-    let ``delete all``() =
+    let ``[Time] delete all``() =
         let r = Time.newRoot()
         let someTimes = createTimesAfter r 100
 
@@ -80,7 +80,7 @@ module ``Time tests`` =
         r |> Time.nth -1 |> should equal None
 
     [<Test>]
-    let ``insert order test``() =
+    let ``[Time] insert order test``() =
         let r = Time.newRoot()
 
         let t0 = Time.after r
@@ -103,7 +103,7 @@ module ``Time tests`` =
         t1 |> should be (lessThan t2)
 
     [<Test>]
-    let ``delete test``() =
+    let ``[Time] delete test``() =
         let r = Time.newRoot()
         let t0 = Time.after r
         let t1 = Time.after t0

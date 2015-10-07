@@ -127,7 +127,7 @@ module MemoryManagerTests =
         m.LastBlock.Prev |> should equal b0
 
     [<Test>]
-    let ``[Memory] realloc space left``() =
+    let ``[Memory] realloc exact space left``() =
         let m = create()
 
         let b0 = m.Alloc(2)
@@ -140,6 +140,22 @@ module MemoryManagerTests =
         validateBlocks null m.FirstBlock
 
         b0.Next |> should equal b2
+        m.FirstBlock |> should equal b0
+
+    [<Test>]
+    let ``[Memory] realloc more space left``() =
+        let m = create()
+
+        let b0 = m.Alloc(2)
+        let b1 = m.Alloc(5)
+        let b2 = m.Alloc(2)
+        
+        m.Free(b1)
+
+        m.Realloc(b0, 6) |> should be False
+        validateBlocks null m.FirstBlock
+
+        b0.Next.Next |> should equal b2
         m.FirstBlock |> should equal b0
 
     [<Test>]

@@ -8,85 +8,7 @@ open Microsoft.FSharp.NativeInterop
 
 #nowarn "9"
 
-type FlatList<'a>() =
-    let mutable content = List<'a>()
-    let mutable offsets = List<int>()
-
-    let getOffsetAndCount (id : int) =
-        let offset = offsets.[id]
-        if id < offsets.Count-1 then
-            (offset, offsets.[id+1] - offset)
-        else
-            (offset, content.Count - offset)
-
-    member x.Append(values : seq<'a>) =
-        let arr = Seq.toArray values
-        let id = offsets.Count
-        offsets.Add(content.Count)
-
-        content.AddRange values
-
-        id
-
-    member x.Update(id : int, values : seq<'a>) =
-        let arr = Seq.toArray values
-
-        if id >= 0 && id < offsets.Count then
-            let offset, count = getOffsetAndCount id
-            if arr.Length < count then
-                // adjust content to match our new size
-                let shrinked = count - arr.Length
-                content.RemoveRange(offset + arr.Length, shrinked)
-
-                // copy the contents
-                let mutable ci = offset
-                for i in 0..arr.Length-1 do
-                    content.[ci] <- arr.[i]
-                    ci <- ci + 1
-
-                // adjust all following offsets
-                for id' in (id + 1)..(offsets.Count - 1) do
-                    offsets.[id'] <- offsets.[id'] - shrinked
-
-            elif arr.Length > count then
-                // adjust content to match our new size
-                let grow = arr.Length - count
-                content.InsertRange(offset, Array.zeroCreate grow)
-
-                // copy the contents
-                let mutable ci = offset
-                for i in 0..arr.Length-1 do
-                    content.[ci] <- arr.[i]
-                    ci <- ci + 1
-
-                // adjust all following offsets
-                for id' in (id + 1)..(offsets.Count - 1) do
-                    offsets.[id'] <- offsets.[id'] + grow
-
-
-            else
-                let mutable ci = offset
-                for i in 0..arr.Length-1 do
-                    content.[ci] <- arr.[i]
-                    ci <- ci + 1
-
-
-        else
-            failwithf "[FlatList] could not get offset for id: %A" id
-
-    member x.Clear() =
-        content.Clear()
-        offsets.Clear()
-
-    member x.Clear(id : int) =
-        x.Update(id, [||])
-    
-    interface System.Collections.IEnumerable with
-        member x.GetEnumerator() = content.GetEnumerator() :> System.Collections.IEnumerator
-
-    interface System.Collections.Generic.IEnumerable<'a> with
-        member x.GetEnumerator() = content.GetEnumerator() :> System.Collections.Generic.IEnumerator<'a>
-
+type NativeCall = nativeint * obj[]
 
 
 module AMD64 =
@@ -195,6 +117,53 @@ module AMD64 =
 
         let compileCall (cc : CallingConvention) (f : nativeint) (args : array<obj>) =
             compileCalls cc [f,args]
+
+    module Decompiler =
+        let rec private decompileAcc (cc : CallingConvention) (rax : Option<Value>) (args : Map<int, Value>) (calls : list<NativeCall>) (l : list<Instruction>) =
+            
+            match l with
+                
+                | CallRax::rest ->
+                    let ptr = 
+                        match rax with
+                            | Some (Qword q) -> nativeint q
+                            |_ -> failwith "[Decompiler] function pointer must be a QWORD"
+
+                    let args =
+                        args |> Map.toList 
+                             |> List.map (fun (_,a) ->
+                                match a with
+                                    | Qword q -> q :> obj
+                                    | Dword d -> d :> obj
+                                )
+                             |> List.toArray
+
+                    decompileAcc cc None Map.empty ((ptr, args)::calls) rest
+
+                | Mov(Register.Rax, value)::rest ->
+                    decompileAcc cc (Some value) args calls rest
+
+                | Mov(reg, value)::rest ->
+                    let argIndex = cc.registers |> Array.findIndex (fun r -> r = reg)
+                    if argIndex >= 0 then
+                        decompileAcc cc rax (Map.add argIndex value args) calls rest
+                    else
+                        decompileAcc cc rax args calls rest
+
+                | Push(offset, value)::rest ->
+                    let index = cc.registers.Length + offset / 8
+                    decompileAcc cc rax (Map.add index value args) calls rest
+
+                | Nop(_)::rest ->
+                    decompileAcc cc rax args calls rest
+
+                | [] | (Jmp(_) | Ret)::_ ->
+                    calls
+
+        let decompile (cc : CallingConvention) (instructions : Instruction[]) =
+            let res = decompileAcc cc None Map.empty [] (Array.toList instructions) |> List.toArray
+            Array.Reverse res
+            res
 
     module Assembler =
 
@@ -319,110 +288,6 @@ module AMD64 =
             s.Flush()
             s.ToArray()
 
-
-    module DisassemblerOld =
-        let disassemble (stream : BinaryReader) =
-            let b = stream.ReadByte()
-
-            let instructions = List<Instruction>()
-            try
-                while stream.BaseStream.Position < stream.BaseStream.Length do
-                    let instruction = 
-                        match b with
-                            | 0x48uy ->
-                                let n = stream.ReadBytes(6)
-                                match n with
-                                    | [|0x89uy; 0x44uy; 0x24uy; stackOffset; 0x44uy; 0x24uy|] ->
-                                        let stackOffset = stream.ReadByte() |> int
-                                        match instructions.[instructions.Count - 1] with
-                                            | Mov(Register.Rax, v) ->
-                                                instructions.RemoveAt(instructions.Count - 1)
-                                                Push(stackOffset, v)
-                                            | _ ->
-                                                failwith "push without write to rax"
-                                    | arr ->
-      
-                                        let r = arr.[0] - 0xB8uy |> int |> unbox<Register>
-
-                                        let rest = stream.ReadBytes(3)
-                                        let v = System.BitConverter.ToUInt64(Array.append arr.[1..] rest, 0)
-    
-                                        Mov(r, Qword(v))
-
-                            | 0x49uy ->
-                                let rid = stream.ReadByte() - 0xB8uy |> int
-                                let r = rid + 8 |> unbox<Register>
-                                Mov(r, Qword(stream.ReadUInt64()))
-
-                            | 0x41uy ->
-                                let rid = stream.ReadByte() - 0xB8uy |> int
-                                let r = rid + 8 |> unbox<Register>
-                                Mov(r, Dword(stream.ReadUInt32()))
-
-                            | v when v >= 0xB8uy && v <= 0xBFuy ->
-                                let r = int (v - 0xB8uy) + 8 |> unbox<Register>
-                                Mov(r, Dword(stream.ReadUInt32()))
-
-                            | 0xFFuy ->
-                                match stream.ReadByte() with
-                                    | 0xD0uy -> CallRax
-                                    | _ -> failwith "invalid instruction"
-
-                            | 0xE9uy ->
-                                let offset = stream.ReadInt32()
-                                Jmp(offset)
-
-                            | 0x90uy ->
-                                Nop 1
-
-                            | 0x66uy ->
-                                match stream.ReadByte() with
-                                    | 0x90uy -> Nop 2
-                                    | _ -> failwith "invalid instruction"
-
-                            | 0x0Fuy ->
-                                match stream.ReadByte() with
-                                    | 0x1Fuy -> 
-                                        match stream.ReadByte() with
-                                            | 0x00uy -> Nop 3
-                                            | 0x40uy -> 
-                                                if stream.ReadByte() <> 0x00uy then failwith "invalid instruction"
-                                                Nop 4
-
-                                            | 0x44uy ->
-                                                if stream.ReadBytes(2) <> [|0x00uy; 0x00uy|] then failwith "invalid instruction"
-                                                Nop 5
-                                            | 0x84uy ->
-                                                if stream.ReadBytes(5) <> [|0x00uy; 0x00uy; 0x00uy; 0x00uy; 0x00uy|] then failwith "invalid instruction"
-                                                Nop 8
-                                            | _ ->
-                                                failwith "invalid instruction"
-                                    | _ ->
-                                        failwith "invalid instruction"
-
-                            | 0xC3uy ->
-                                Ret
-
-                            | _ -> failwith "invalid instruction"
-//
-//                    let rec mergeNops (width : int) =
-//                        match instructions.[instructions.Count - 1] with
-//                            | Nop w -> 
-//                                instructions.RemoveAt(instructions.Count - 1)
-//                                mergeNops (width + w)
-//                            | _ ->
-//                                Nop width
-//
-//                    let instruction =
-//                        match instruction with
-//                            | Nop w -> mergeNops w
-//                            | _ -> instruction
-
-                    instructions.Add instruction
-            with e ->
-                ()
-            instructions.ToArray()
-
     module Disassembler =
         
         let fail() = failwith "asdlmsadlm"
@@ -532,12 +397,127 @@ module AMD64 =
             disassembleFrom reader
 
 
-type NativeCall = nativeint * obj[]
+module ASM =
+    let os = System.Environment.OSVersion
+    type Architecture = AMD64 | X86 | ARM
+
+    let (|Windows|Linux|Mac|) (p : System.OperatingSystem) =
+        match p.Platform with
+            | System.PlatformID.Unix -> Linux
+            | System.PlatformID.MacOSX -> Mac
+            | _ -> Windows
+
+    let private getLinuxCpuArchitecture() =
+        
+        let ps = System.Diagnostics.ProcessStartInfo("lscpu", "")
+        ps.UseShellExecute <- false
+        ps.RedirectStandardOutput <- true
+        let proc = System.Diagnostics.Process.Start(ps)
+        proc.WaitForExit()
+        let cpu = proc.StandardOutput.ReadToEnd()
+        let rx = System.Text.RegularExpressions.Regex @"Architecture[ \t]*:[ \t]*(?<arch>.*)"
+        let m = rx.Match cpu
+
+        if m.Success then
+            let arch = m.Groups.["arch"].Value
+            match arch with
+                | "x86_64" -> AMD64
+                | "x86" -> AMD64
+                | _ -> 
+                    if arch.Contains "arm" then ARM
+                    else failwithf "unknown architecture: %A" arch
+        else
+            failwith "could not determine cpu info"
+    
+    let cpu = 
+        match os with
+            | Windows -> 
+                match System.Environment.GetEnvironmentVariable("PROCESSOR_ARCHITECTURE") with
+                    | "AMD64" -> AMD64
+                    | _ -> X86
+            | Linux ->
+                getLinuxCpuArchitecture()
+            | Mac ->
+                failwith "mac currently not supported" 
+
+    let functionProlog =
+        match os, cpu with
+            | Windows, AMD64 -> 
+                fun (maxArgs : int) ->
+                    let additionalSize =
+                        if maxArgs < 5 then 8uy
+                        else 8 * maxArgs - 24 |> byte
+                    [| 0x48uy; 0x83uy; 0xECuy; 0x20uy + additionalSize |]
+
+            | Linux, AMD64 -> fun (maxArgs : int) -> [||]
+            | Mac, AMD64 -> fun (maxArgs : int) -> [||]
+            | _ -> failwithf "no assembler for: %A / %A" os.Platform cpu    
+                
+    let functionEpilog =
+        match os, cpu with
+            | Windows, AMD64 ->
+                fun (maxArgs : int) ->
+                    let additionalSize =
+                        if maxArgs < 5 then 8uy
+                        else 8 * maxArgs - 24 |> byte
+                    [| 0x48uy; 0x83uy; 0xC4uy; 0x20uy + additionalSize; 0xC3uy|]
+            | Linux, AMD64 -> fun (maxArgs : int) -> [|0xC3uy|]
+            | Mac, AMD64 -> fun (maxArgs : int) -> [|0xC3uy|]
+            | _ -> failwithf "no assembler for: %A / %A" os.Platform cpu      
+
+    let private compileCallsNative : seq<NativeCall> -> byte[] =
+         match os, cpu with
+            | Windows, AMD64 -> AMD64.Compiler.compileCalls AMD64.windows >> AMD64.Assembler.assemble
+            | Linux, AMD64 -> AMD64.Compiler.compileCalls AMD64.linux >> AMD64.Assembler.assemble
+            | Mac, AMD64 -> AMD64.Compiler.compileCalls AMD64.linux >> AMD64.Assembler.assemble
+            | _ -> failwithf "no assembler for: %A / %A" os.Platform cpu      
+
+    let jumpSize =
+        match cpu with
+            | AMD64 -> 5
+            | _ -> failwithf "no assembler for: %A / %A" os.Platform cpu      
+
+    let jumpArgumentOffset =
+        match cpu with
+            | AMD64 -> 1
+            | _ -> failwithf "no assembler for: %A / %A" os.Platform cpu      
+
+    let jumpArgumentAlign =
+        match cpu with
+            | AMD64 -> 4
+            | _ -> failwithf "no assembler for: %A / %A" os.Platform cpu      
+
+    let assembleJump (nopBytes : int) (offset : int) =
+         match cpu with
+            | AMD64 -> AMD64.Assembler.assemble [|AMD64.Nop nopBytes; AMD64.Jmp offset|]
+            | _ -> failwithf "no assembler for: %A / %A" os.Platform cpu      
+
+    let assembleCalls (calls : #seq<NativeCall>) =
+        calls |> compileCallsNative 
+
+    let disassemble : byte[] -> NativeCall[] =
+        match cpu with
+            | AMD64 -> 
+                let cc =
+                    match os with
+                        | Windows -> AMD64.windows
+                        | Linux -> AMD64.linux
+                        | Mac -> AMD64.linux
+
+                fun (data : byte[]) ->
+                    data |> AMD64.Disassembler.disassemble |> AMD64.Decompiler.decompile cc
+
+
+            | _ -> failwithf "no disassembler for: %A / %A" os.Platform cpu      
+
+
+
+    
 
 [<AutoOpen>]
 module private FragmentConstants =
-    let encodedJumpSize = 8
-    let jumpSize = 5
+    let jumpSize = ASM.jumpSize
+    let encodedJumpSize = ASM.jumpSize + (ASM.jumpArgumentAlign - 1)
     
 [<AllowNullLiteral>]
 type Fragment(manager : MemoryManager, content : byte[]) =
@@ -551,15 +531,16 @@ type Fragment(manager : MemoryManager, content : byte[]) =
         memory.Size - encodedJumpSize
         
     let alignedJumpArgumentOffset() =
-        let jmpStart = 1 + nonAlignedJumpOffset()
-        (jmpStart + 3) &&& ~~~3
+        let jmpStart = ASM.jumpArgumentOffset + nonAlignedJumpOffset()
+        let a = ASM.jumpArgumentAlign - 1
+        (jmpStart + a) &&& ~~~a
 
-    member x.Instructions =
+    member x.Calls =
         memory 
             |> MemoryBlock.readArray 0
-            |> AMD64.Disassembler.disassemble
+            |> ASM.disassemble
 
-    member x.EntryPointer =
+    member x.Offset =
         memory.Offset
 
     member x.Memory =
@@ -573,7 +554,7 @@ type Fragment(manager : MemoryManager, content : byte[]) =
         with get() = next
         and set n = 
             next <- n
-            x.NextPointer <- n.EntryPointer
+            x.NextPointer <- n.Offset
 
     member x.NextPointer
         with get() : nativeint =
@@ -581,9 +562,9 @@ type Fragment(manager : MemoryManager, content : byte[]) =
             let jmpArg : int = memory |> MemoryBlock.read jmpArgOffset
                 
             let nextPtr = 
-                memory.Offset +                 // where am i located
-                nativeint (jmpArgOffset + 4) +  // where is the jmp instruction
-                nativeint jmpArg                // what's the argument of the jmp instruction
+                memory.Offset +                             // where am i located
+                nativeint (jmpArgOffset + sizeof<int>) +    // where is the jmp instruction
+                nativeint jmpArg                            // what's the argument of the jmp instruction
 
             nextPtr
 
@@ -591,7 +572,6 @@ type Fragment(manager : MemoryManager, content : byte[]) =
             let jmpArgOffset = alignedJumpArgumentOffset()
 
             let jmpEndLocation = memory.Offset + nativeint (jmpArgOffset + 4)
-
             let jmpArg = ptr - jmpEndLocation
 
             if containsJmp then
@@ -603,17 +583,12 @@ type Fragment(manager : MemoryManager, content : byte[]) =
                 let jmpStart = nonAlignedJumpOffset()
                 let nopSize = (jmpArgOffset - 1) - jmpStart
 
-                let jmp = AMD64.Assembler.assemble [| AMD64.Instruction.Nop(nopSize); AMD64.Instruction.Jmp(int jmpArg) |]
+                let jmp = ASM.assembleJump nopSize (int jmpArg)
                 memory |> MemoryBlock.writeArray jmpStart jmp
                 containsJmp <- true
 
     member x.Write (calls : NativeCall[]) =
-        // assemble the calls
-        let binary = 
-            calls |> AMD64.Compiler.compileCalls AMD64.windows
-                  |> AMD64.Assembler.assemble
-
-        x.Write binary
+        calls |> ASM.assembleCalls |> x.Write
 
     member x.Write (binary : byte[]) =
         let size = binary.Length + encodedJumpSize
@@ -644,10 +619,70 @@ type Fragment(manager : MemoryManager, content : byte[]) =
             containsJmp <- false
 
 
-    new(manager : MemoryManager, calls : NativeCall[]) = new Fragment(manager, calls |> AMD64.Compiler.compileCalls AMD64.windows |> AMD64.Assembler.assemble)
+    new(manager : MemoryManager, calls : NativeCall[]) = new Fragment(manager, calls |> ASM.assembleCalls)
     new(manager : MemoryManager) = new Fragment(manager, ([||] : byte[]))
 
 
+[<CompilationRepresentation(CompilationRepresentationFlags.ModuleSuffix)>]
+module Fragment =
 
+    let inline prolog (maxArgs : int) (m : MemoryManager) =
+        new Fragment(m, ASM.functionProlog maxArgs)
+
+    let inline epilog (maxArgs : int) (m : MemoryManager) =
+        new Fragment(m, ASM.functionEpilog maxArgs)
+
+    let inline ofCalls (calls : seq<NativeCall>) (m : MemoryManager) =
+        new Fragment(m, Seq.toArray calls)
+
+    let inline update (calls : seq<NativeCall>) (f : Fragment) =
+        f.Write (Seq.toArray calls)
+
+    let inline next (f : Fragment) =
+        f.Next
+
+    let inline prev (f : Fragment) =
+        f.Prev
+
+    let inline destroy (f : Fragment) =
+        f.Dispose()
+
+    let inline offset (f : Fragment) =
+        f.Offset
+
+    let usePointer (f : Fragment) (func : nativeint -> 'a) =
+        let manager = f.Memory.Parent
+        ReaderWriterLock.read manager.PointerLock (fun () ->
+            let ptr = manager.Pointer + f.Offset
+            func ptr
+        )
+
+    let wrap (f : Fragment) : unit -> unit =
+        let current = ref 0n
+        let run = ref id
+
+        fun () ->
+            usePointer f (fun p ->
+                if p <> !current then
+                    current := p
+                    run := UnmanagedFunctions.wrap p
+
+                (!run)()
+            )
+
+
+
+    let inline insertAfter (ref : Fragment) (r : Fragment) =
+        r.Prev <- ref
+        r.Next <- ref.Next
+        
+        if not (isNull ref.Next) then ref.Next.Prev <- r
+        ref.Next <- r
+
+    let inline insertBefore (ref : Fragment) (r : Fragment) =
+        if isNull ref.Prev then
+            failwith "[Fragment] cannot insert before prolog"
+        else
+            insertAfter ref.Prev r
 
 
