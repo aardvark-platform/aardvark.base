@@ -2,11 +2,13 @@
 #nowarn "44"
 
 open System
-open Aardvark.Base
 open FsUnit
 open NUnit.Framework
 open System.Runtime.InteropServices
 open System.Diagnostics
+open System.Threading
+open System.Threading.Tasks
+open Aardvark.Base
 
 module MemoryManagerTests =
     
@@ -301,3 +303,38 @@ module MemoryManagerTests =
         let microseconds = sw.Elapsed.TotalMilliseconds * 1000.0
 
         Console.WriteLine("{0} µs/realloc (next free)", microseconds / float blocks.Length)
+
+
+    let startTask (f : unit -> unit) =
+        Task.Factory.StartNew(f, TaskCreationOptions.LongRunning) |> ignore
+
+    [<Test>]
+    let ``[Memory] concurrent allocations``() =
+        let cnt = 100uy
+        let mem = MemoryManager.createHGlobal()
+
+        let r = Random()
+        let start = new ManualResetEventSlim(false)
+        let finished = new SemaphoreSlim(0)
+        let allblocks = ref Map.empty
+        for i in 0uy..cnt - 1uy do
+            startTask (fun () ->
+                let size = r.Next 100 + 1
+                start.Wait()
+
+                let b = mem |> MemoryManager.alloc size
+
+                b.Write(0, Array.create size i)
+
+                Interlocked.Change(&allblocks.contents, Map.add i b)
+
+                finished.Release() |> ignore
+            )
+
+        for i in 1uy..cnt do
+            finished.Wait()
+
+        
+
+
+

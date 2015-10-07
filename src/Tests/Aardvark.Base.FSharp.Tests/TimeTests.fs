@@ -79,7 +79,6 @@ module ``Time tests`` =
         r |> Time.nth 1 |> should equal None
         r |> Time.nth -1 |> should equal None
 
-    [<Test>]
     let ``[Time] insert order test``() =
         let r = Time.newRoot()
 
@@ -102,7 +101,6 @@ module ``Time tests`` =
         t0 |> should be (lessThan t1)
         t1 |> should be (lessThan t2)
 
-    [<Test>]
     let ``[Time] delete test``() =
         let r = Time.newRoot()
         let t0 = Time.after r
@@ -110,11 +108,13 @@ module ``Time tests`` =
         let t2 = Time.after t1
 
         Time.delete t1
+        let mutable failed = false
         try
             compare t1 r |> ignore
-            failwith "compare should not work on deleted time"
-        with _ -> ()
+        with _ -> 
+            failed <- true
 
+        if not failed then failwith "compare should not work on deleted time"
         t0.Next |> should equal t2
         t2.Prev |> should equal t0
 

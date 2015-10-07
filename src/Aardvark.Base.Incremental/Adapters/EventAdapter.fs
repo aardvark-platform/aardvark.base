@@ -182,7 +182,7 @@ module EventAdapters =
                     | _ ->
                         let a = AdapterEvent(m, Unchecked.defaultof<_>) 
 
-                        let s = m |> Mod.registerCallback (fun v ->
+                        let s = m |> Mod.unsafeRegisterCallbackNoGcRoot (fun v ->
                             a.Emit v
                         )
 

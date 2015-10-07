@@ -137,88 +137,6 @@ module ASetReaders =
             member x.GetDelta() = x.GetDelta()
             member x.SubscribeOnEvaluate cb = x.SubscribeOnEvaluate cb
 
-    /// <summary>
-    /// A simple datastructure for efficiently pulling changes from
-    /// a set of readers.
-    /// </summary>
-    type DirtyReaderSet<'a>() =
-        let subscriptions = ConcurrentDictionary<IReader<'a>, unit -> unit>()
-        let dirty = HashSet<IReader<'a>>()
-
-        /// <summary>
-        /// Starts "listening" to changes of a certain reader
-        /// </summary>
-        member x.Listen(r : IReader<'a>) =
-            // create and register a callback function
-            let onMarking () = 
-                lock dirty (fun () -> dirty.Add r |> ignore )
-                subscriptions.TryRemove r |> ignore
-
-
-            r.MarkingCallbacks.Add onMarking |> ignore
-
-            // store the "subscription" for each reader in order
-            // to allow removals of readers
-            subscriptions.[r] <- fun () -> r.MarkingCallbacks.Remove onMarking |> ignore
-
-            // if the reader is currently outdated add it to the
-            // dirty set immediately
-            lock r (fun () -> 
-                if r.OutOfDate then lock dirty (fun () -> dirty.Add r |> ignore)
-            )
-            
-        /// <summary>
-        /// Stops "listening" to changes of a certain reader
-        /// </summary>
-        member x.Unlisten(r : IReader<'a>) =
-            // if there exists a subscription we remove and dispose it
-            match subscriptions.TryRemove r with
-                | (true, d) -> d()
-                | _ -> ()
-
-            // if the reader is already in the dirty-set remove it from there too
-            lock dirty (fun () -> dirty.Remove r |> ignore)
-
-        /// <summary>
-        /// Gets the (concatenated) deltas from all "dirty" readers
-        /// </summary>
-        member x.GetDeltas() =
-            let mine = 
-                lock dirty (fun () -> 
-                    let arr = dirty |> Seq.toList
-                    dirty.Clear()
-                    arr
-                )
-
-            mine |> List.collect (fun d ->
-                // get deltas for all dirty readers and re-register
-                // marking callbacks
-                lock d (fun () ->
-                    let c = d.GetDelta()
-                    x.Listen d
-                    c
-                )
-            )
-
-        /// <summary>
-        /// Releases the entire structure
-        /// </summary>
-        member x.Dispose() =
-            for (KeyValue(_, d)) in subscriptions do d()
-            lock dirty (fun () -> dirty.Clear())
-            subscriptions.Clear()
-
-        interface IDisposable with
-            member x.Dispose() = x.Dispose()
-
-
-    type NewDirtyReaderSet<'a>() =
-        inherit DirtySet<IReader<'a>, list<Delta<'a>>>(fun readers -> readers |> Seq.collect (fun r -> r.GetDelta()) |> Seq.toList)
-
-        member x.Listen r = x.Add r
-        member x.Unlisten r = x.Remove r
-        member x.GetDeltas() = x.Evaluate()
-        
 
     /// <summary>
     /// A reader representing "map" operations
@@ -256,13 +174,19 @@ module ASetReaders =
         do source.AddOutput this
 
         let f = Cache(scope, f)
-        let dirtyInner = new DirtyReaderSet<'b>()
+        let dirtyInner = VolatileDirtySet(fun (r : IReader<'b>) -> r.GetDelta())
+
+        override x.InputChanged (o : IAdaptiveObject) = 
+            match o with
+                | :? IReader<'b> as o -> dirtyInner.Add o
+                | _ -> ()
+
 
         override x.Release() =
             source.RemoveOutput this
             source.Dispose()
             f.Clear(fun r -> r.RemoveOutput this; r.Dispose())
-            dirtyInner.Dispose()
+            dirtyInner.Clear()
 
         override x.ComputeDelta() =
             let xs = source.GetDelta()
@@ -279,7 +203,7 @@ module ASetReaders =
                             r.GetDelta() |> ignore
 
                             // listen to marking of r (reader cannot be OutOfDate due to GetDelta above)
-                            dirtyInner.Listen r
+                            dirtyInner.Add r
                                     
                             // since the entire reader is new we add its content
                             // which must be up-to-date here (due to calling GetDelta above)
@@ -289,7 +213,7 @@ module ASetReaders =
                             let (last, r) = f.RevokeAndGetDeleted v
 
                             // remove the reader from the listen-set
-                            dirtyInner.Unlisten r
+                            dirtyInner.Remove r
 
                             // since the reader is no longer contained we don't want
                             // to be notified anymore
@@ -311,7 +235,7 @@ module ASetReaders =
             // all dirty inner readers must be registered 
             // in dirtyInner. Even if the outer set did not change we
             // need to collect those inner deltas.
-            let innerDeltas = dirtyInner.GetDeltas()
+            let innerDeltas = dirtyInner.Evaluate() |> List.concat
 
             // concat inner and outer deltas 
             List.append outerDeltas innerDeltas
@@ -383,7 +307,7 @@ module ASetReaders =
     ///      is mostly untested and will be "activated" on demand (if someone needs it)
     /// NOTE that it is safe to call Emit from various threads since it is synchronized internally
     /// </summary>   
-    type EmitReader<'a>(parent : aset<'a>, dispose : EmitReader<'a> -> unit) =
+    type EmitReader<'a>(lockObj : obj, dispose : EmitReader<'a> -> unit) =
         inherit AbstractReader<'a>()
 
         let deltas = List<Delta<'a>>()
@@ -424,7 +348,7 @@ module ASetReaders =
             let content = x.Content
             match reset with
                 | Some c ->
-                    lock parent (fun () ->
+                    lock lockObj (fun () ->
                         //Interlocked.Increment(&resetCount) |> ignore
                         reset <- None
                         let add = c |> Seq.filter (not << content.Contains) |> Seq.map Add
