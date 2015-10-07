@@ -198,11 +198,15 @@ module Threading =
     type Interlocked with
         static member Change(location : byref<'a>, f : 'a -> 'a) =
             let mutable v = location
-            let mutable r = Interlocked.CompareExchange(&location, f v, v)
+            let mutable res = f v
+            let mutable r = Interlocked.CompareExchange(&location, res, v)
 
             while not (System.Object.ReferenceEquals(v,r)) do
                 v <- r
-                r <- Interlocked.CompareExchange(&location, f v, v)
+                res <- f v
+                r <- Interlocked.CompareExchange(&location, res, v)
+
+            res
 
 
 module GenericValues =

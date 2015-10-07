@@ -133,6 +133,34 @@ exception LevelChangedException of IAdaptiveObject
 module private AdaptiveSystemState =
     let isTopLevel = new System.Threading.ThreadLocal<bool>(fun () -> true)
 
+
+type TrackAllThreadLocal<'a>(creator : unit -> 'a) =
+    let mutable values : Map<int, 'a> = Map.empty
+
+    let create() =
+        let v = creator()
+        Threading.Interlocked.Change(&values, Map.add Threading.Thread.CurrentThread.ManagedThreadId v) |> ignore
+        v
+
+    let inner = new Threading.ThreadLocal<'a>(create)
+
+    member x.Value
+        with get() = inner.Value
+        and set v =
+            inner.Value <- v
+            Threading.Interlocked.Change(&values, Map.add Threading.Thread.CurrentThread.ManagedThreadId v) |> ignore
+
+    member x.Values =
+        values |> Map.toSeq |> Seq.map snd
+
+    member x.Dispose() =
+        values <- Map.empty
+        inner.Dispose()
+
+    interface IDisposable with
+        member x.Dispose() = x.Dispose()
+
+
 /// <summary>
 /// Transaction holds a set of adaptive objects which
 /// have been changed and shall therefore be marked as outOfDate.
@@ -143,7 +171,7 @@ module private AdaptiveSystemState =
 type Transaction() =
 
     // each thread may have its own running transaction
-    static let running = new Threading.ThreadLocal<Option<Transaction>>((fun () -> None),true)
+    static let running = new TrackAllThreadLocal<Option<Transaction>>(fun () -> None)
     
     // we use a duplicate-queue here since we expect levels to be very similar 
     let q = DuplicatePriorityQueue<IAdaptiveObject, int>(fun o -> o.Level)
@@ -161,10 +189,11 @@ type Transaction() =
         content
 
     member x.IsContained e = contained.Contains e
-    static member InAnyOfTheTransactionsInternal e =     
-        let values = running.Values
-        let b = List.init values.Count (fun i -> values.[i])
-        b |> List.choose id |> List.exists (fun t -> t.IsContained e)
+    static member internal InAnyOfTheTransactionsInternal e =
+        running.Values 
+            |> Seq.toList 
+            |> List.choose id 
+            |> List.exists (fun t -> t.IsContained e)
 
     static member Running =
         running.Value
@@ -642,20 +671,20 @@ type VolatileDirtySet<'a, 'b when 'a :> IAdaptiveObject and 'a : equality and 'a
                     |> List.map (fun o -> eval o)
 
         with :? LevelChangedException as l ->
-            Interlocked.Change(&set, PersistentHashSet.union local)
+            Interlocked.Change(&set, PersistentHashSet.union local) |> ignore
             raise l
 
     member x.Push(i : 'a) =
         lock i (fun () ->
             if i.OutOfDate then
-                Interlocked.Change(&set, PersistentHashSet.add i)
+                Interlocked.Change(&set, PersistentHashSet.add i) |> ignore
         )
 
     member x.Add(i : 'a) =
         x.Push(i)
 
     member x.Remove(i : 'a) =
-        Interlocked.Change(&set, PersistentHashSet.remove i)
+        Interlocked.Change(&set, PersistentHashSet.remove i) |> ignore
  
     member x.Clear() =
         Interlocked.Exchange(&set, PersistentHashSet.empty) |> ignore
@@ -677,13 +706,13 @@ type VolatileTaggedDirtySet<'a, 'b, 't when 'a :> IAdaptiveObject and 'a : equal
                   |> List.map (fun (o, tags) -> eval o, tags)
 
         with :? LevelChangedException as l ->
-            Interlocked.Change(&set, PersistentHashSet.union local)
+            Interlocked.Change(&set, PersistentHashSet.union local) |> ignore
             raise l
 
     member x.Push(i : 'a) =
         lock i (fun () ->
             if i.OutOfDate then
-                Interlocked.Change(&set, PersistentHashSet.add i)
+                Interlocked.Change(&set, PersistentHashSet.add i) |> ignore
         )
 
     member x.Add(tag : 't, i : 'a) =
@@ -701,7 +730,7 @@ type VolatileTaggedDirtySet<'a, 'b, 't when 'a :> IAdaptiveObject and 'a : equal
             | (true, tags) -> 
                 if tags.Remove tag then
                     if tags.Count = 0 then
-                        Interlocked.Change(&set, PersistentHashSet.remove i)  
+                        Interlocked.Change(&set, PersistentHashSet.remove i) |> ignore
                         true
                     else
                         false
@@ -714,52 +743,3 @@ type VolatileTaggedDirtySet<'a, 'b, 't when 'a :> IAdaptiveObject and 'a : equal
     member x.Clear() =
         tagDict.Clear()
         Interlocked.Exchange(&set, PersistentHashSet.empty) |> ignore
-
-module Validation =
-    
-    open System.Threading
-
-//    member x.EvaluateAlways (f : unit -> 'a) =
-//        let top = isTopLevel.Value
-//        if top then isTopLevel.Value <- false
-//
-//        let res =
-//            lock x (fun () ->
-//                IncrementalLog.startEvaluate x
-//                let res = f()
-//                x.OutOfDate <- false
-//                IncrementalLog.endEvaluate x
-//                res
-//            )
-//
-//        if top then 
-//            isTopLevel.Value <- true
-//            if time.Outputs.Count > 0 then
-//                let t = Transaction()
-//                for o in time.Outputs do
-//                    t.Enqueue(o)
-//                t.Commit()
-//
-//        res
-
-    type IAdaptiveObject with
-        
-        member x.Validate() =
-            lock x (fun () ->
-                try
-                    x.Inputs |> Seq.iter Monitor.Enter
-
-                    if not x.OutOfDate then
-                        let invalid = x.Inputs |> Seq.exists (fun i -> i.OutOfDate) && not x.OutOfDate
-                        if invalid then
-                            let iAmInTransaction = Transaction.InAnyOfTheTransactionsInternal x
-                            //let inTransacList.exists Transaction.AllRunning.
-                            if not iAmInTransaction then
-                                System.Diagnostics.Debugger.Break()
-                                failwith "invalid state" 
-
-
-                finally
-                    x.Inputs |> Seq.iter Monitor.Exit
-            )
-            x.Inputs |> Seq.iter (fun i -> i.Validate())

@@ -284,74 +284,97 @@ module Weak =
 
 [<System.Runtime.CompilerServices.Extension>]
 module ReflectionHelpers =
-    open System.Collections.Generic
-    open System
-    open System.Text.RegularExpressions
+    open Microsoft.FSharp.Reflection
 
-    let private prettyTypeNames = Dictionary<Type, string>()
+    let private lockObj = obj()
 
-    do prettyTypeNames.Add(typeof<System.Void>, "void")
-       prettyTypeNames.Add(typeof<unit>, "unit")
-    
-       prettyTypeNames.Add(typeof<byte>, "byte")
-       prettyTypeNames.Add(typeof<sbyte>, "sbyte")
-       prettyTypeNames.Add(typeof<int16>, "short")
-       prettyTypeNames.Add(typeof<uint16>, "ushort")
-       prettyTypeNames.Add(typeof<int32>, "int")
-       prettyTypeNames.Add(typeof<uint32>, "uint")
-       prettyTypeNames.Add(typeof<int64>, "long")
-       prettyTypeNames.Add(typeof<uint64>, "ulong")
+    let private prettyNames =
+        Dict.ofList [
+            typeof<sbyte>, "sbyte"
+            typeof<byte>, "byte"
+            typeof<int16>, "int16"
+            typeof<uint16>, "uint16"
+            typeof<int>, "int"
+            typeof<uint32>, "uint32"
+            typeof<int64>, "int64"
+            typeof<uint64>, "uint64"
+            typeof<nativeint>, "nativeint"
+            typeof<unativeint>, "unativeint"
 
-       prettyTypeNames.Add(typeof<float32>, "float")
-       prettyTypeNames.Add(typeof<double>, "double")
-       prettyTypeNames.Add(typeof<decimal>, "decimal")
+            typeof<char>, "char"
+            typeof<string>, "string"
 
-       prettyTypeNames.Add(typeof<char>, "char")
-       prettyTypeNames.Add(typeof<string>, "string")
 
-    let private genericRegex = Regex("(?<name>[a-zA-Z_0-9]+)`[0-9]+")
+            typeof<float32>, "float32"
+            typeof<float>, "float"
+            typeof<decimal>, "decimal"
 
-    let private cleanGenericName (str : string) =
-        let m = genericRegex.Match str
-        if m.Success then
-            m.Groups.["name"].Value
-        else
-            str
+            typeof<obj>, "obj"
+            typeof<unit>, "unit"
+            typeof<System.Void>, "void"
 
-    [<CompiledName("GetPrettyName")>]
-    [<System.Runtime.CompilerServices.Extension>]
-    let rec getPrettyName (t : Type) =
-        let inline cache (t : Type) (name : string) =
-            prettyTypeNames.Add(t, name)
-            name
+        ]
 
-        lock prettyTypeNames (fun () -> 
-            match prettyTypeNames.TryGetValue t with
+    let private genericPrettyNames =
+        Dict.ofList [
+            typedefof<list<_>>, "list"
+            typedefof<Option<_>>, "Option"
+            typedefof<Set<_>>, "Set"
+            typedefof<Map<_,_>>, "Map"
+            typedefof<seq<_>>, "seq"
+
+        ]
+
+    let private idRx = System.Text.RegularExpressions.Regex @"[a-zA-Z_][a-zA-Z_0-9]*"
+
+    let rec private getPrettyNameInternal (t : Type) =
+        let res = 
+            match prettyNames.TryGetValue t with
                 | (true, n) -> n
-                | _ -> 
-                    if t.IsGenericType then
-                    
-                        if typeof<Aardvark.Base.INatural>.IsAssignableFrom t then
-                            let size = Aardvark.Base.Peano.getSize t
-                            if size <= 16 then
-                                let result = sprintf "N%d" size
-                                cache t result
-                            else 
-                                let inner = getPrettyName (t.GetGenericArguments().[0])
-                                let result = sprintf "S<%s>" inner
-                                cache t result
-                        else
-                            let paramNames = t.GetGenericArguments() |> Array.map getPrettyName   
-                            let cleanName = cleanGenericName t.Name
+                | _ ->
+                    if t.IsArray then
+                        t.GetElementType() |> getPrettyNameInternal |> sprintf "%s[]"
 
-                            let result = sprintf "%s<%s>" cleanName (String.Join(", ", paramNames))
-                            cache t result
+                    elif FSharpType.IsTuple t then
+                        FSharpType.GetTupleElements t |> Seq.map getPrettyNameInternal |> String.concat " * "
+
+                    elif FSharpType.IsFunction t then
+                        let (arg, res) = FSharpType.GetFunctionElements t
+
+                        sprintf "%s -> %s" (getPrettyNameInternal arg) (getPrettyNameInternal res)
+
+                    elif typeof<Aardvark.Base.INatural>.IsAssignableFrom t then
+                        let s = Aardvark.Base.Peano.getSize t
+                        sprintf "N%d" s
+
+                    elif t.IsGenericType then
+                        let args = t.GetGenericArguments() |> Seq.map getPrettyNameInternal |> String.concat ", "
+                        let bt = t.GetGenericTypeDefinition()
+                        match genericPrettyNames.TryGetValue bt with
+                            | (true, gen) ->
+                                sprintf "%s<%s>" gen args
+                            | _ ->
+                                let gen = idRx.Match bt.Name
+                                sprintf "%s<%s>" gen.Value args
+
+
                     else
-                        cache t t.Name
+                        t.Name
+
+        prettyNames.[t] <- res
+        res
+
+    [<System.Runtime.CompilerServices.Extension; CompiledName("GetPrettyName")>]
+    let getPrettyName(t : Type) =
+        lock lockObj (fun () ->
+            getPrettyNameInternal t
         )
 
-    type System.Type with
-        member x.PrettyName = getPrettyName x
+    type Type with
+        member x.PrettyName =
+            lock lockObj (fun () ->
+                getPrettyNameInternal x
+            )
 
 
 [<AutoOpen>]
