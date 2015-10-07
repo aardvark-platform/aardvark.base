@@ -17,27 +17,35 @@ module private ValidationModule =
     let str (a : IAdaptiveObject) =
         sprintf "%s { id = %d; level = %d }" (a.GetType().PrettyName) a.Id a.Level
 
-    let rec dumpTree (x : IAdaptiveObject) =
-        lock x (fun () ->
-            try
-                x.Inputs |> Seq.iter Monitor.Enter
+    let rec dumpTree (depth : int) (x : IAdaptiveObject) =
+        if depth < 0 then 
+            "..."
+        else
+            lock x (fun () ->
+                try
+                    x.Inputs |> Seq.iter Monitor.Enter
 
-                if x.Inputs.Count > 0 then
-                    let inputStr = x.Inputs |> Seq.map dumpTree |> String.concat "\r\n"|> String.indent 2
-                    sprintf "%s {\r\n    id = %d\r\n    level = %d\r\n    inputs = [\r\n%s\r\n    ]\r\n}" (x.GetType().PrettyName) x.Id x.Level inputStr
-                else
-                    sprintf "%s {\r\n    id = %d\r\n    level = %d\r\n}" (x.GetType().PrettyName) x.Id x.Level
+                    if x.Inputs.Count > 0 then
+                        let inputStr = x.Inputs |> Seq.map (dumpTree (depth - 1)) |> String.concat "\r\n"|> String.indent 2
+                        sprintf "%s {\r\n    id = %d\r\n    level = %d\r\n    inputs = [\r\n%s\r\n    ]\r\n}" (x.GetType().PrettyName) x.Id x.Level inputStr
+                    else
+                        sprintf "%s {\r\n    id = %d\r\n    level = %d\r\n}" (x.GetType().PrettyName) x.Id x.Level
 
-            finally
-                x.Inputs |> Seq.iter Monitor.Exit
-        )
+                finally
+                    x.Inputs |> Seq.iter Monitor.Exit
+            )
 
-    let dump (x : IAdaptiveObject) =
-        let str = dumpTree x
+    let dump (level : int) (x : IAdaptiveObject) =
+        let str = dumpTree level x
+
         let fileName = System.DateTime.Now.ToString("yyyy_MM_dd_hh_mm_ss") + ".crashdump"
         let desktop = Environment.GetFolderPath(Environment.SpecialFolder.Desktop)
 
-        let file = Path.Combine(desktop, fileName)
+        let folder = Path.Combine(desktop, "incremental-dumps")
+        if not <| Directory.Exists folder then
+            Directory.CreateDirectory folder |> ignore
+
+        let file = Path.Combine(folder, fileName)
         File.WriteAllText(file, str)
         file
 
@@ -47,6 +55,7 @@ module private ValidationModule =
             try
                 x.Inputs |> Seq.iter Monitor.Enter
 
+                // validate OutOfDate stuff
                 if not x.OutOfDate then
                     let invalid = x.Inputs |> Seq.exists (fun i -> i.OutOfDate) && not x.OutOfDate
                     if invalid then
@@ -59,7 +68,7 @@ module private ValidationModule =
                                     |> String.concat "; "
                                     |> sprintf "[%s]"
 
-                            let dumpFile = dump x
+                            let dumpFile = dump Int32.MaxValue x
 
                             Log.error "inpus %s are out-of-date but their output %s is up-to-date" outdatedInputs (str x)
                             Log.error "  therefore the system will \"miss\" changes!"
@@ -69,11 +78,13 @@ module private ValidationModule =
 
                             if Debugger.IsAttached then Debugger.Break()
 
+
+                // validate levels
                 if x.Inputs.Count > 0 then
                     let maxLevel = x.Inputs |> Seq.map (fun i -> i.Level) |> Seq.max
                     if x.Level <= maxLevel then
                             
-                        let dumpFile = dump x
+                        let dumpFile = dump Int32.MaxValue x
 
                         let badInputs = 
                             x.Inputs 
@@ -89,6 +100,9 @@ module private ValidationModule =
 
 
                         if Debugger.IsAttached then Debugger.Break()
+
+
+                
 
             finally
                 x.Inputs |> Seq.iter Monitor.Exit
@@ -107,4 +121,8 @@ type IAdaptiveObjectValidationExtensions() =
 
     [<Extension>]
     static member Dump(x : IAdaptiveObject) =
-        dump x
+        dump Int32.MaxValue x
+
+    [<Extension>]
+    static member Dump(x : IAdaptiveObject, depth : int) =
+        dump depth x
