@@ -217,6 +217,16 @@ and [<AllowNullLiteral>] managedptr internal(block : Block) =
         x.Read(offset, arr)
         arr
 
+    member x.Move(sourceOffset : int, targetOffset : int, length : int) =
+        check()
+        ReaderWriterLock.read block.Parent.PointerLock (fun () ->
+            Marshal.Move(
+                x.Parent.Pointer + x.Offset + nativeint sourceOffset,
+                x.Parent.Pointer + x.Offset + nativeint targetOffset,
+                length
+            )
+        )
+
     member x.Int8Array      : int8[]    = x.Read(0, block.Size)
     member x.Int16Array     : int16[]   = x.Read(0, block.Size / 2)
     member x.Int32Array     : int[]     = x.Read(0, block.Size / 4)
@@ -561,6 +571,8 @@ module ManagedPtr =
     let inline readArray (offset : int) (b : managedptr) : 'a[] =
         b.Read(offset, b.Size / sizeof<'a>)
 
+    let inline move (sourceOffset : int) (targetOffset : int) (length : int) (b : managedptr) =
+        b.Move(sourceOffset, targetOffset, length)
 
 
 

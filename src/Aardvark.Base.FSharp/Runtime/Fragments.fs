@@ -290,7 +290,7 @@ module AMD64 =
 
     module Disassembler =
         
-        let fail() = failwith "asdlmsadlm"
+        let fail (current : list<Instruction>) = current
 
         let rec private disassembleAcc (current : list<Instruction>) (r : BinaryReader) =
             if r.BaseStream.Position = r.BaseStream.Length then
@@ -305,7 +305,7 @@ module AMD64 =
 
                     | 0x66uy ->
                         if r.ReadByte() = 0x90uy then disassembleAcc ((Nop 2)::current) r
-                        else fail()
+                        else fail current
 
                     | 0x0Fuy ->
                         let b = r.ReadBytes(2)
@@ -326,7 +326,7 @@ module AMD64 =
                                 disassembleAcc ((Nop 8)::current) r
 
                             | _ ->
-                                fail()
+                                fail current
 
                     // MOVQ lo registers
                     | 0x48uy -> 
@@ -339,10 +339,10 @@ module AMD64 =
                                         | Mov(Register.Rax, v)::rest ->
                                             disassembleAcc (Push(stackOffset, v)::rest) r
                                         | _ ->
-                                            fail()
+                                            fail current
 
                                 else
-                                    fail()
+                                    fail current
                             | _ ->
                                 let reg = b1 - 0xB8uy |> int |> unbox<Register>
                                 let arg = r.ReadUInt64() |> Qword
@@ -369,14 +369,14 @@ module AMD64 =
                     // CALL
                     | 0xFFuy ->
                         if r.ReadByte() = 0xD0uy then disassembleAcc (CallRax::current) r
-                        else fail()
+                        else fail current
 
                     | 0xE9uy ->
                         let dist = r.ReadInt32()
                         (Jmp(dist)::current)
 
                     | _ ->
-                        fail()
+                        fail current
 
 
         let disassembleFrom (r : BinaryReader) =
@@ -510,30 +510,41 @@ module ASM =
 
             | _ -> failwithf "no disassembler for: %A / %A" os.Platform cpu      
 
+    let encodedJumpSize = jumpSize + (jumpArgumentAlign - 1)
+ 
 
-
-    
-
-[<AutoOpen>]
-module private FragmentConstants =
-    let jumpSize = ASM.jumpSize
-    let encodedJumpSize = ASM.jumpSize + (ASM.jumpArgumentAlign - 1)
-    
 [<AllowNullLiteral>]
-type Fragment(manager : MemoryManager, content : byte[]) =
-    let mutable memory = manager |> MemoryManager.alloc (content.Length + encodedJumpSize)
+type CodeFragment(manager : MemoryManager, content : byte[]) =
+    let mutable memory = manager |> MemoryManager.alloc (content.Length + ASM.encodedJumpSize)
     let mutable containsJmp = false
-    let mutable prev : Fragment = null
-    let mutable next : Fragment = null
-    do memory |> ManagedPtr.writeArray 0 content
+    let mutable prev : CodeFragment = null
+    let mutable next : CodeFragment = null
+
+    let startOffsets = List<int>()
+
+    let resetStartOffsets() =
+        startOffsets.[0] <- 0
+        if startOffsets.Count > 1 then
+            startOffsets.RemoveRange(1, startOffsets.Count - 1)
+
+    do startOffsets.Add(0)
+       memory |> ManagedPtr.writeArray 0 content
 
     let nonAlignedJumpOffset() =
-        memory.Size - encodedJumpSize
+        memory.Size - ASM.encodedJumpSize
         
     let alignedJumpArgumentOffset() =
         let jmpStart = ASM.jumpArgumentOffset + nonAlignedJumpOffset()
         let a = ASM.jumpArgumentAlign - 1
         (jmpStart + a) &&& ~~~a
+
+    member private x.FixJumps(moved : bool) =
+        if isNull x.Next then ()
+        else x.NextPointer <- x.Next.Memory.Offset
+
+        // if the memory was moved we need to patch the prev's jmp-distance
+        if moved && not (isNull x.Prev) then 
+            x.Prev.NextPointer <- x.Memory.Offset
 
     member x.Calls =
         memory 
@@ -543,15 +554,15 @@ type Fragment(manager : MemoryManager, content : byte[]) =
     member x.Offset =
         memory.Offset
 
-    member x.Memory =
+    member x.Memory : managedptr =
         memory
 
     member x.Prev 
-        with get() = prev
+        with get() : CodeFragment = prev
         and set p = prev <- p
 
     member x.Next 
-        with get() = next
+        with get() : CodeFragment = next
         and set n = 
             next <- n
             x.NextPointer <- n.Offset
@@ -588,76 +599,135 @@ type Fragment(manager : MemoryManager, content : byte[]) =
                 containsJmp <- true
 
     member x.Write (calls : NativeCall[]) =
+        resetStartOffsets()
         calls |> ASM.assembleCalls |> x.Write
 
     member x.Write (binary : byte[]) =
-        let size = binary.Length + encodedJumpSize
+        resetStartOffsets()
+        let size = binary.Length + ASM.encodedJumpSize
 
         if size <> memory.Size then
             let moved =  memory |> ManagedPtr.realloc size
 
             // patch our own next-pointer since its location was changed
             containsJmp <- false
-            if isNull next then ()
-            else x.NextPointer <- next.Memory.Offset
-
-            // if the memory was moved we need to patch the prev's jmp-distance
-            if moved && not (isNull prev) then 
-                prev.NextPointer <- x.Memory.Offset
+            x.FixJumps moved
 
         memory |> ManagedPtr.writeArray 0 binary
 
 
+    member x.Append (data : byte[]) =
+        let id = startOffsets.Count - 1
+        let oldSize = memory.Size
+        let newSize = oldSize + data.Length
+
+        // realloc the memory
+        let moved = memory |> ManagedPtr.realloc newSize
+        containsJmp <- false
+
+        // write the data to the new region
+        memory |> ManagedPtr.writeArray (oldSize - ASM.encodedJumpSize) data
+
+        // if the block moved update the jump
+        x.FixJumps moved
+
+        startOffsets.Add (newSize - ASM.encodedJumpSize)
+        id
+
+    member x.Update(id : int, data : byte[]) =
+        let startOffset = startOffsets.[id]
+        let endOffset = startOffsets.[id + 1]
+        let length = endOffset - startOffset
+
+        if length = data.Length then
+            // if the length did not change simply write the new data
+            memory |> ManagedPtr.writeArray startOffset data
+        else
+            let restSize = memory.Size - endOffset
+            let delta = length - data.Length
+
+
+            let moved = 
+                if delta > 0 then
+                    let moved = memory |> ManagedPtr.realloc (memory.Size + delta)
+                    // move all subsequent sub-blocks to the right (making space for data)
+                    memory |> ManagedPtr.move endOffset (endOffset + delta) restSize
+                    moved
+                else
+                    // move all subsequent sub-blocks to the left
+                    memory |> ManagedPtr.move endOffset (endOffset + delta) restSize
+                    memory |> ManagedPtr.realloc (memory.Size + delta)
+            containsJmp <- false
+
+            // write the data
+            memory |> ManagedPtr.writeArray startOffset data
+
+            // adjust all subsequent offsets
+            for i in id+1..startOffsets.Count-1 do
+                startOffsets.[i] <- startOffsets.[i] + delta
+
+            // if the block moved fix the jump
+            x.FixJumps moved
+
+    member x.Remove(id : int) =
+        x.Update(id, [||])
+
+    member x.Clear() =
+        resetStartOffsets()
+        let moved = memory |> ManagedPtr.realloc ASM.encodedJumpSize 
+        containsJmp <- false
+        x.FixJumps moved
+
     member x.Dispose() =
         if memory <> null then
+            if not <| isNull prev then prev.Next <- x.Next
+            if not <| isNull next then next.Prev <- prev
             ManagedPtr.free memory
             memory <- null
-            if not <| isNull next then next.Prev <- prev
-            if not <| isNull prev then prev.Next <- x.Next
             next <- null
             prev <- null
             containsJmp <- false
 
 
-    new(manager : MemoryManager, calls : NativeCall[]) = new Fragment(manager, calls |> ASM.assembleCalls)
-    new(manager : MemoryManager) = new Fragment(manager, ([||] : byte[]))
+    new(manager : MemoryManager, calls : NativeCall[]) = new CodeFragment(manager, calls |> ASM.assembleCalls)
+    new(manager : MemoryManager) = new CodeFragment(manager, ([||] : byte[]))
 
 
 [<CompilationRepresentation(CompilationRepresentationFlags.ModuleSuffix)>]
-module Fragment =
+module CodeFragment =
 
     let inline prolog (maxArgs : int) (m : MemoryManager) =
-        new Fragment(m, ASM.functionProlog maxArgs)
+        new CodeFragment(m, ASM.functionProlog maxArgs)
 
     let inline epilog (maxArgs : int) (m : MemoryManager) =
-        new Fragment(m, ASM.functionEpilog maxArgs)
+        new CodeFragment(m, ASM.functionEpilog maxArgs)
 
     let inline ofCalls (calls : seq<NativeCall>) (m : MemoryManager) =
-        new Fragment(m, Seq.toArray calls)
+        new CodeFragment(m, Seq.toArray calls)
 
-    let inline update (calls : seq<NativeCall>) (f : Fragment) =
+    let inline update (calls : seq<NativeCall>) (f : CodeFragment) =
         f.Write (Seq.toArray calls)
 
-    let inline next (f : Fragment) =
+    let inline next (f : CodeFragment) =
         f.Next
 
-    let inline prev (f : Fragment) =
+    let inline prev (f : CodeFragment) =
         f.Prev
 
-    let inline destroy (f : Fragment) =
+    let inline destroy (f : CodeFragment) =
         f.Dispose()
 
-    let inline offset (f : Fragment) =
+    let inline offset (f : CodeFragment) =
         f.Offset
 
-    let usePointer (f : Fragment) (func : nativeint -> 'a) =
+    let usePointer (f : CodeFragment) (func : nativeint -> 'a) =
         let manager = f.Memory.Parent
         ReaderWriterLock.read manager.PointerLock (fun () ->
             let ptr = manager.Pointer + f.Offset
             func ptr
         )
 
-    let wrap (f : Fragment) : unit -> unit =
+    let wrap (f : CodeFragment) : unit -> unit =
         let current = ref 0n
         let run = ref id
 
@@ -672,14 +742,14 @@ module Fragment =
 
 
 
-    let inline insertAfter (ref : Fragment) (r : Fragment) =
+    let inline insertAfter (ref : CodeFragment) (r : CodeFragment) =
         r.Prev <- ref
         r.Next <- ref.Next
         
         if not (isNull ref.Next) then ref.Next.Prev <- r
         ref.Next <- r
 
-    let inline insertBefore (ref : Fragment) (r : Fragment) =
+    let inline insertBefore (ref : CodeFragment) (r : CodeFragment) =
         if isNull ref.Prev then
             failwith "[Fragment] cannot insert before prolog"
         else

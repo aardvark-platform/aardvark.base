@@ -27,11 +27,11 @@ module FragmentTests =
         let manager = MemoryManager.createExecutable()
 
         let maxArgs = 6
-        let prolog = manager |> Fragment.prolog maxArgs 
-        let epilog = manager |> Fragment.epilog maxArgs 
+        let prolog = manager |> CodeFragment.prolog maxArgs 
+        let epilog = manager |> CodeFragment.epilog maxArgs 
 
         let frag = 
-            manager |> Fragment.ofCalls [
+            manager |> CodeFragment.ofCalls [
                 myfunPtr, [|1 :> obj; 2 :> obj; 3 :> obj; 4 :> obj; 5 :> obj|]
                 myfunPtr, [|4 :> obj; 3 :> obj; 2 :> obj; 1 :> obj; 0 :> obj|]
             ]
@@ -53,7 +53,7 @@ module FragmentTests =
             Console.WriteLine("  {0}({1})", sprintf "%A" ptr, sprintf "%A" args)
 
  
-        let run = Fragment.wrap prolog
+        let run = CodeFragment.wrap prolog
         run()
 
         calls |> Seq.toList 
