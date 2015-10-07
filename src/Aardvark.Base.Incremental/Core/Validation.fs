@@ -15,7 +15,7 @@ open Aardvark.Base.Incremental
 [<AutoOpen>]
 module private ValidationModule =
     let str (a : IAdaptiveObject) =
-        sprintf "%s { id = %d; level = %d }" (a.GetType().PrettyName) a.Id a.Level
+        sprintf "%s { id = %d; level = %d; outOfDate = %A }" (a.GetType().PrettyName) a.Id a.Level a.OutOfDate
 
     let rec dumpTree (depth : int) (x : IAdaptiveObject) =
         if depth < 0 then 
@@ -27,9 +27,9 @@ module private ValidationModule =
 
                     if x.Inputs.Count > 0 then
                         let inputStr = x.Inputs |> Seq.map (dumpTree (depth - 1)) |> String.concat "\r\n"|> String.indent 2
-                        sprintf "%s {\r\n    id = %d\r\n    level = %d\r\n    inputs = [\r\n%s\r\n    ]\r\n}" (x.GetType().PrettyName) x.Id x.Level inputStr
+                        sprintf "%s {\r\n    id = %d\r\n    level = %d\r\n    outOfDate = %A\r\n    inputs = [\r\n%s\r\n    ]\r\n}" (x.GetType().PrettyName) x.Id x.Level x.OutOfDate inputStr
                     else
-                        sprintf "%s {\r\n    id = %d\r\n    level = %d\r\n}" (x.GetType().PrettyName) x.Id x.Level
+                        sprintf "%s {\r\n    id = %d\r\n    level = %d\r\n    outOfDate = %A\r\n}" (x.GetType().PrettyName) x.Id x.Level x.OutOfDate
 
                 finally
                     x.Inputs |> Seq.iter Monitor.Exit

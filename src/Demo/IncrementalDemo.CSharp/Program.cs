@@ -164,9 +164,6 @@ namespace IncrementalDemo.CSharp
 
 
             reader.Dump();
-
-
-
         }
 
 
