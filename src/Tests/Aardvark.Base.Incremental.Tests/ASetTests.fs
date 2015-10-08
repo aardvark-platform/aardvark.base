@@ -8,6 +8,7 @@ open System.Collections.Generic
 open Aardvark.Base.Incremental
 open NUnit.Framework
 open FsUnit
+open Aardvark.Base
 
 module ``collect tests`` =
     type Tree<'a> = Node of aset_check<Tree<'a>> | Leaf of aset_check<'a>
@@ -739,3 +740,182 @@ module ``collect tests`` =
         should equal passed true
 
         ()
+
+
+module ASetPerformance =
+    open System.Diagnostics
+
+
+    let printfn fmt = Printf.kprintf (fun str -> Console.WriteLine("{0}", str)) fmt
+
+
+    type IProbe =
+        abstract member Start : unit -> unit
+        abstract member Stop : unit -> unit
+        
+    [<Struct>]
+    type DeltaTime(ticks : float) =
+        static let ticksPerSecond = float TimeSpan.TicksPerSecond
+        static let ticksPerMillisecond = float TimeSpan.TicksPerMillisecond
+        static let ticksPerMicrosecond = ticksPerMillisecond / 1000.0
+
+        member x.Ticks = ticks
+        member x.Seconds = ticks / ticksPerSecond
+        member x.Milliseconds = ticks / ticksPerMillisecond
+        member x.Microseconds = ticks / ticksPerMicrosecond
+
+
+        override x.ToString() =
+            if x.Seconds >= 0.2 then sprintf "%.3fs" x.Seconds
+            elif x.Milliseconds >= 2.0 then sprintf "%.3fms" x.Milliseconds
+            else sprintf "%.1fµs" x.Microseconds
+
+        static member (+) (l : DeltaTime, r : DeltaTime) =
+            DeltaTime(l.Ticks + r.Ticks)
+
+        static member (-) (l : DeltaTime, r : DeltaTime) =
+            DeltaTime(l.Ticks - r.Ticks)
+
+        static member (*) (l : DeltaTime, r : float) =
+            DeltaTime(l.Ticks * r)
+
+        static member (*) (l : float, r : DeltaTime) =
+            DeltaTime(l * r.Ticks)
+
+        static member (*) (l : DeltaTime, r : int) =
+            DeltaTime(l.Ticks * float r)
+
+        static member (*) (l : int, r : DeltaTime) =
+            DeltaTime(float l * r.Ticks)
+
+        static member (/) (l : DeltaTime, r : float) =
+            DeltaTime(l.Ticks / r)
+
+        static member (/) (l : DeltaTime, r : int) =
+            DeltaTime(l.Ticks / float r)
+
+    type TimeProbe() =
+        let sw = Stopwatch()
+
+        member x.Start() = sw.Start()
+        member x.Stop() = sw.Stop()
+        member x.Reset() = sw.Reset()
+        
+        member x.Elapsed = DeltaTime(float sw.Elapsed.Ticks)
+
+
+        interface IProbe with
+            member x.Start() = x.Start()
+            member x.Stop() = x.Stop()
+
+    module Probe =
+        let private current = new ThreadLocal<Option<IProbe>>(fun _ -> None)
+
+        let time() = TimeProbe()
+
+        let using (f : unit -> 'a) (x : IProbe) =
+            let old =
+                match current.Value with
+                    | Some c -> 
+                        c.Stop()
+                        Some c
+                    | _ -> None
+            try
+                current.Value <- Some x
+                x.Start()
+                f()
+            finally
+                x.Stop()
+                match old with
+                    | Some o -> 
+                        current.Value <- Some o
+                        o.Start()
+                    | _ ->
+                        current.Value <- None
+
+
+
+    [<Test>]
+    let ``[ASet Performance] map``() =
+        
+        for s in 1000..1000..10000 do
+            System.GC.Collect()
+            System.GC.WaitForFullGCApproach() |> ignore
+        
+            printfn "size: %d" s
+            let tTransact = Probe.time()
+            let tSubmit = Probe.time()
+            let tPull = Probe.time()
+
+
+            let input = CSet.empty
+            let mapped = input |> ASet.map id
+            let r = mapped.GetReader()
+
+            transact (fun () ->
+                CSet.add 0 input |> ignore
+            )
+            r.Update()
+
+            let cnt = 10000
+            for i in 1..cnt do
+                tTransact |> Probe.using (fun () ->
+                    transact (fun () ->
+                        tSubmit |> Probe.using (fun () ->
+                            CSet.add i input |> ignore
+                        )
+                    )
+                )
+
+                tPull |> Probe.using (fun _ ->
+                    r.Update()
+                )
+
+            printfn "  submit:   %A" (tSubmit.Elapsed / cnt)
+            printfn "  transact: %A" (tTransact.Elapsed / cnt)
+            printfn "  pull:     %A" (tPull.Elapsed / cnt)
+
+
+    [<Test>]
+    let ``[ASet Performance] collect``() =
+        
+        for s in 1000..1000..10000 do
+            System.GC.Collect()
+            System.GC.WaitForFullGCApproach() |> ignore
+        
+            printfn "size: %d" s
+            let tTransact = Probe.time()
+            let tSubmit = Probe.time()
+            let tPull = Probe.time()
+
+
+            let input = CSet.empty
+            let mapped = input |> ASet.collect ASet.single
+            let r = mapped.GetReader()
+
+            transact (fun () ->
+                CSet.add 0 input |> ignore
+            )
+            r.Update()
+
+            let cnt = 10000
+            for i in 1..cnt do
+                tTransact |> Probe.using (fun () ->
+                    transact (fun () ->
+                        tSubmit |> Probe.using (fun () ->
+                            CSet.add i input |> ignore
+                        )
+                    )
+                )
+
+                tPull |> Probe.using (fun _ ->
+                    r.Update()
+                )
+
+            printfn "  submit:   %A" (tSubmit.Elapsed / cnt)
+            printfn "  transact: %A" (tTransact.Elapsed / cnt)
+            printfn "  pull:     %A" (tPull.Elapsed / cnt)
+
+
+
+
