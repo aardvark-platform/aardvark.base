@@ -147,6 +147,40 @@ namespace Aardvark.Base
             var d2 = d + d; return new Tup6<long>(-d2, -d, 0L, d, d2, d2 + d);
         }
 
+
+        /// <summary>
+        /// Provides sample clamping to the border value. Note that this
+        /// function currently requires that max - min >= 5! i.e. it 
+        /// does not work for too small source tensors.
+        /// </summary>
+        public static Tup5<long> Index5SamplesClamped(long i, long first, long end, long d)
+        {
+            long i0 = i - first, i1 = i - end + 1;
+            long d2 = d + d;
+            if (i0 < 2)
+            {
+                switch (i0)
+                {
+                    case  1: return new Tup5<long>(-d, -d, 0L, d, d2);
+                    case  0: return new Tup5<long>(0L, 0L, 0L, d, d2);
+                    case -1: return new Tup5<long>( d,  d,  d, d, d2);
+                    default: return new Tup5<long>(-i0 * d);
+                }
+            }
+            if (i1 > -2)
+            {
+                switch (i1)
+                {
+                    case -1: return new Tup5<long>(-d2,  d, 0L,  d,  d);
+                    case  0: return new Tup5<long>(-d2,  d, 0L, 0L, 0L);
+                    case  1: return new Tup5<long>(-d2, -d, -d, -d, -d);
+                    default: return new Tup5<long>(-i1 * d);
+                }
+            }
+            return new Tup5<long>(-d2, -d, 0L, d, d2);
+        }
+
+
         /// <summary>
         /// Provides sample clamping to the border value. Note that this
         /// function currently requires that max - min >= 5! i.e. it 
@@ -158,21 +192,67 @@ namespace Aardvark.Base
             long d2 = d + d;
             if (i0 < 2)
             {
-                if (i0 < 0) return new Tup6<long>(-i0 * d);
-                if (i0 < 1) return new Tup6<long>(0L, 0L, 0L, d, d2, d2 + d);
-                return new Tup6<long>(-d, -d, 0L, d, d2, d2 + d);
+                switch (i0)
+                {
+                    case  1: return new Tup6<long>(-d, -d, 0L,  d, d2, d2 + d);
+                    case  0: return new Tup6<long>(0L, 0L, 0L,  d, d2, d2 + d);
+                    case -1: return new Tup6<long>( d,  d,  d,  d, d2, d2 + d);
+                    case -2: return new Tup6<long>(d2, d2, d2, d2, d2, d2 + d);
+                    default: return new Tup6<long>(-i0 * d);
+                }
             }
-            if (i1 >= -2)
+            if (i1 > -3)
             {
-                if (i1 >= 0) return new Tup6<long>(-i1 * d);
-                if (i1 >= -1) return new Tup6<long>(-d2, d, 0L, d, d, d);
-                return new Tup6<long>(-d2, -d, 0L, d, d2, d2);
+                switch (i1)
+                {
+                    case -2: return new Tup6<long>(-d2, -d, 0L,  d, d2, d2);
+                    case -1: return new Tup6<long>(-d2, -d, 0L,  d,  d,  d);
+                    case  0: return new Tup6<long>(-d2, -d, 0L, 0L, 0L, 0L);
+                    case  1: return new Tup6<long>(-d2, -d, -d, -d, -d, -d);
+                    default: return new Tup6<long>(-i1 * d);
+                }
             }
             return new Tup6<long>(-d2, -d, 0L, d, d2, d2 + d);
         }
 
+        /// <summary>
+        /// Provides sample clamping to the border value. Note that this
+        /// function currently requires that max - min >= 5! i.e. it 
+        /// does not work for too small source tensors.
+        /// </summary>
+        public static Tup7<long> Index7SamplesClamped(long i, long first, long end, long d)
+        {
+            long i0 = i - first, i1 = i - end + 1;
+            long d2 = d + d;
+            if (i0 < 3)
+            {
+                switch (i0)
+                {
+                    case  2: return new Tup7<long>(-d2, -d2, -d, 0L,  d, d2, d2 + d);
+                    case  1: return new Tup7<long>( -d,  -d, -d, 0L,  d, d2, d2 + d);
+                    case  0: return new Tup7<long>( 0L,  0L, 0L, 0L,  d, d2, d2 + d);
+                    case -1: return new Tup7<long>(  d,   d,  d,  d,  d, d2, d2 + d);
+                    case -2: return new Tup7<long>( d2,  d2, d2, d2, d2, d2, d2 + d);
+                    default: return new Tup7<long>(-i0 * d);
+                }
+            }
+            if (i1 > -3)
+            {
+                switch (i1)
+                {
+                    case -2: return new Tup7<long>(-d2 - d, -d2,  -d,  0L,   d,  d2,  d2);
+                    case -1: return new Tup7<long>(-d2 - d, -d2,  -d,  0L,   d,   d,   d);
+                    case  0: return new Tup7<long>(-d2 - d, -d2,  -d,  0L,  0L,  0L,  0L);
+                    case  1: return new Tup7<long>(-d2 - d, -d2,  -d,  -d,  -d,  -d,  -d);
+                    case  2: return new Tup7<long>(-d2 - d, -d2, -d2, -d2, -d2, -d2, -d2);
+                    default: return new Tup7<long>(-i1 * d);
+                }
+            }
+            return new Tup7<long>(-d2 - d, -d2, -d, 0L, d, d2, d2 + d);
+        }
+
     }
-    
+
     /// <summary>
     /// Generic tensor of elements in r dimensons, each of arbitrary size
     /// with arbitrary strides in each dimension. All sizes are given as
