@@ -19,49 +19,67 @@ type cmap<'k, 'v when 'k : equality>(initial : seq<'k * 'v>) =
     let set = cset :> aset<_>
     let content = Dict.ofSeq initial
 
-    member x.Count = content.Count
+    member x.Count = lock content (fun () -> content.Count)
 
-    member x.ContainsKey key = content.ContainsKey key
+    member x.ContainsKey key = lock content (fun () -> content.ContainsKey key)
 
     member x.Add(k,v) =
-        content.Add(k,v)
-        CSet.add (k,v) cset |> ignore
+        lock content (fun () -> 
+            content.Add(k,v)
+            CSet.add (k,v) cset |> ignore
+        )
 
     member x.Remove(k) =
-        match content.TryRemove k with
-            | (true, v) ->
-                CSet.remove (k,v) cset
-            | _ ->
-                false
+        lock content (fun () -> 
+            match content.TryRemove k with
+                | (true, v) ->
+                    CSet.remove (k,v) cset
+                | _ ->
+                    false
+        )
 
     member x.TryRemove(k : 'k, [<Out>] res : byref<'v>) =
-        match content.TryRemove k with
-            | (true, v) ->
-                res <- v
-                CSet.remove (k,v) cset
-            | _ ->
-                false
+        let w,r = 
+            lock content (fun () -> 
+                match content.TryRemove k with
+                    | (true, v) ->
+                        CSet.remove (k,v) cset, v
+                    | _ ->
+                        false, Unchecked.defaultof<_>
+            )
+        res <- r
+        w
 
     member x.Item
-        with get k = content.[k]
+        with get k = lock content (fun () -> content.[k])
         and set k v =
-            match content.TryGetValue k with
-                | (true, old) ->
-                    CSet.applyDeltas [Add (k,v); Rem (k,old)] cset
-                | _ ->
-                    CSet.add (k,v) cset |> ignore
+            lock content (fun () -> 
+                match content.TryGetValue k with
+                    | (true, old) ->
+                        CSet.applyDeltas [Add (k,v); Rem (k,old)] cset
+                    | _ ->
+                        CSet.add (k,v) cset |> ignore
 
-            content.[k] <- v
+                content.[k] <- v
+            )
 
     member x.Clear() =
-        content.Clear()
-        CSet.clear cset
+        lock content (fun () -> 
+            content.Clear()
+            CSet.clear cset
+        )
 
-    member x.Keys = content.Keys
-    member x.Values = content.Values
+    member x.Keys = lock content (fun () -> content.Keys)
+    member x.Values = lock content (fun () -> content.Values)
 
     member x.TryGetValue(k : 'k, [<Out>] v : byref<'v>) =
-        content.TryGetValue(k, &v)
+        let (w,value) =
+            lock content (fun () -> 
+                content.TryGetValue(k)
+            )
+        v <- value
+        w
+
 
     interface IEnumerable with
         member x.GetEnumerator() = content.GetEnumerator() :> IEnumerator
@@ -268,8 +286,15 @@ module AMap =
                     Some (set |> Seq.head)
                 )
 
+    [<Obsolete("use unsafeRegisterCallbackNoGcRoot or unsafeRegisterCallbackKeepDisposable instead")>]
     let registerCallback (f : list<Delta<'k * 'v>> -> unit) (map : amap<'k,'v>) =
-        map.ASet |> ASet.registerCallback f
+        map.ASet |> ASet.unsafeRegisterCallbackNoGcRoot f
+
+    let unsafeRegisterCallbackKeepDisposable (f : list<Delta<'k * 'v>> -> unit) (map : amap<'k,'v>) =
+        map.ASet |> ASet.unsafeRegisterCallbackKeepDisposable f
+
+    let unsafeRegisterCallbackNoGcRoot (f : list<Delta<'k * 'v>> -> unit) (map : amap<'k,'v>) =
+        map.ASet |> ASet.unsafeRegisterCallbackNoGcRoot f
 
 [<AutoOpen>]
 module ``ASet grouping`` =

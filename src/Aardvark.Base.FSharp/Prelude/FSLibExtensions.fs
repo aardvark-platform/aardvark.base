@@ -191,6 +191,22 @@ module Prelude =
             | _ -> Windows
 
 
+[<AutoOpen>]
+module Threading =
+    open System.Threading
+
+    type Interlocked with
+        static member Change(location : byref<'a>, f : 'a -> 'a) =
+            let mutable v = location
+            let mutable res = f v
+            let mutable r = Interlocked.CompareExchange(&location, res, v)
+
+            while not (System.Object.ReferenceEquals(v,r)) do
+                v <- r
+                res <- f v
+                r <- Interlocked.CompareExchange(&location, res, v)
+
+            res
 
 
 module GenericValues =

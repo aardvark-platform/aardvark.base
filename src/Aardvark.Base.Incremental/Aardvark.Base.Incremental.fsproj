@@ -59,6 +59,7 @@
     <Compile Include="Core\TimeList.fs" />
     <Compile Include="Core\Cache.fs" />
     <Compile Include="Core\Core.fs" />
+    <Compile Include="Core\Validation.fs" />
     <Compile Include="Mod\Mod.fs" />
     <Compile Include="AdaptiveSet\AdaptiveSetCore.fs" />
     <Compile Include="AdaptiveSet\ChangeableSet.fs" />

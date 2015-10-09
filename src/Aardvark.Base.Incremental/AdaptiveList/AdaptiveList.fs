@@ -204,8 +204,15 @@ module AList =
     /// subscription in order to unregister the callback.
     /// Note that the callback will be executed immediately
     /// once here.
+    /// Note that this function does not hold on to the created disposable, i.e.
+    /// if the disposable as well as the source dies, the callback dies as well.
+    /// If you use callbacks to propagate changed to other mods by using side-effects
+    /// (which you should not do), use registerCallbackKeepDisposable in order to
+    /// create a gc to the fresh disposable.
+    /// registerCallbackKeepDisposable only destroys the callback, iff the associated
+    /// disposable is disposed.
     /// </summary>
-    let registerCallback (f : list<Delta<ISortKey * 'a>> -> unit) (list : alist<'a>) =
+    let unsafeRegisterCallbackNoGcRoot (f : list<Delta<ISortKey * 'a>> -> unit) (list : alist<'a>) =
         let m = list.GetReader()
         let f = scoped f
         let self = ref id
@@ -217,14 +224,39 @@ module AList =
                 finally 
                     m.MarkingCallbacks.Add !self |> ignore
         
-        lock m (fun () ->
-            !self ()
-        )
+        !self ()
 
         let set = callbackTable.GetOrCreateValue(list)
         let s = new CallbackSubscription(m, !self, live, m, set)
         set.Add s |> ignore
         s :> IDisposable 
+
+    [<Obsolete("use unsafeRegisterCallbackNoGcRoot or unsafeRegisterCallbackKeepDisposable instead")>]
+    let registerCallback f set = unsafeRegisterCallbackNoGcRoot f set
+
+    let private undyingCallbacks = ConcurrentHashSet<IDisposable>()
+
+    /// <summary>
+    /// registers a callback for execution whenever the
+    /// set's value might have changed and returns a disposable
+    /// subscription in order to unregister the callback.
+    /// Note that the callback will be executed immediately
+    /// once here.
+    /// In contrast to registerCallbackNoGcRoot, this function holds on to the
+    /// fresh disposable, i.e. even if the input set goes out of scope,
+    /// the disposable still forces the complete computation to exist.
+    /// When disposing the assosciated disposable, the gc root disappears and
+    /// the computation can be collected.
+    /// </summary>
+    let unsafeRegisterCallbackKeepDisposable f list =
+        let d = unsafeRegisterCallbackNoGcRoot f list
+        undyingCallbacks.Add d |> ignore
+        { new IDisposable with
+            member x.Dispose() =
+                d.Dispose()
+                undyingCallbacks.Remove d |> ignore
+        }
+
   
 [<AutoOpen>]
 module ``ASet sorting functions`` =      

@@ -167,7 +167,7 @@ module ``Basic Mod Tests`` =
 
         let res = res |> Mod.map (fun a -> ex.push "cont"; a)// |> Mod.always
 
-        let s = res |> Mod.registerCallback (fun v -> printfn "cb: %A" v)
+        let s = res |> Mod.unsafeRegisterCallbackNoGcRoot (fun v -> printfn "cb: %A" v)
 
         res.GetValue() |> should equal 1
         ex.read() |> should equal ["bind: true"; "cont"]
@@ -269,3 +269,20 @@ module ``Basic Mod Tests`` =
 
         transact (fun () -> x.Reset())
         x |> Mod.force |> should equal 7
+
+    [<AutoOpen>]
+    module Validation =
+        open Aardvark.Base.Incremental.Validation
+        [<Test>]
+        let ``[Mod] DotSerialization`` () =
+            let x = Mod.init 10
+            let y = Mod.init 20
+            let z = Mod.map2 ((+)) x y
+            z.DumpDotFile (1000, "test.dot") |> ignore
+
+        [<Test>]
+        let ``[Mod] DgmlSerialization`` () =
+            let x = Mod.init 10
+            let y = Mod.init 20
+            let z = Mod.map2 ((+)) x y
+            z.DumpDgml (1000, "test.dgml") |> ignore

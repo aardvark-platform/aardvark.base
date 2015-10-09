@@ -59,6 +59,13 @@
     <Compile Include="OrderMaintenance.fs" />
     <Compile Include="SkipList.fs" />
     <Compile Include="AVL.fs" />
+    <Compile Include="Interop\Dictionary.fs" />
+    <Compile Include="Interop\Symbol.fs" />
+    <Compile Include="Interop\Vectors.fs" />
+    <Compile Include="Interop\Matrix.fs" />
+    <Compile Include="Interop\Color.fs" />
+    <Compile Include="Interop\String.fs" />
+    <Compile Include="Interop\SortedSet.fs" />
     <Compile Include="Reflection\TypeInfo.fs" />
     <Compile Include="Reflection\FunctionReflection.fs" />
     <Compile Include="Reflection\UnmanagedFunctions.fs" />
@@ -73,13 +80,6 @@
     <Compile Include="Ag.fs" />
     <Compile Include="Utilities.fs" />
     <Compile Include="Control.fs" />
-    <Compile Include="Interop\Dictionary.fs" />
-    <Compile Include="Interop\Symbol.fs" />
-    <Compile Include="Interop\Vectors.fs" />
-    <Compile Include="Interop\Matrix.fs" />
-    <Compile Include="Interop\Color.fs" />
-    <Compile Include="Interop\String.fs" />
-    <Compile Include="Interop\SortedSet.fs" />
     <None Include="paket.references" />
   </ItemGroup>
   <ItemGroup>
