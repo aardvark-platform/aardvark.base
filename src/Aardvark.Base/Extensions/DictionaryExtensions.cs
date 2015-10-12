@@ -112,16 +112,7 @@ namespace Aardvark.Base
                 self.Remove(key);
             return value;
         }
-
-        public static bool TryRemove<TK, TV>(this IDictionary<TK, TV> self, TK key)
-        {
-            var cont = self.ContainsKey(key);
-            if (cont)
-                self.Remove(key);
-            return cont;
-        }
-
-
+        
         public static T1v[] CopyToArray<Tk, Tv, T1v>(this IDictionary<Tk, Tv> self, Func<KeyValuePair<Tk, Tv>, T1v> fun)
         {
             var r = new T1v[self.Count];
