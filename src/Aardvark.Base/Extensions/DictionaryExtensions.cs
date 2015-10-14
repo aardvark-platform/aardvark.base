@@ -9,60 +9,6 @@ namespace Aardvark.Base
 
     public static class DictionaryFun
     {
-        public static Tv Get<Tk, Tv>(
-            this Dictionary<Tk, Tv> self, Tk key)
-        {
-            Tv value;
-            if (self.TryGetValue(key, out value)) return value;
-            return default(Tv);
-        }
-
-        public static Tv Get<Tk, Tv>(
-            this Dictionary<Tk, Tv> self, Tk key, Tv defaultValue)
-        {
-            Tv value;
-            if (self.TryGetValue(key, out value)) return value;
-            return defaultValue;
-        }
-
-        public static TV GetCreate<TK, TV>(this Dictionary<TK, TV> self, TK key, Func<TK, TV> creator = null)
-        {
-            TV value;
-            if (!self.TryGetValue(key, out value))
-            {
-                value = creator.RunIfNotNull(key, default(TV));
-                self[key] = value;
-            }
-            return value;
-        }
-
-        public static TV Pop<TK, TV>(this Dictionary<TK, TV> self, TK key)
-        {
-            TV value;
-            if (self.TryGetValue(key, out value))
-            {
-                self.Remove(key);
-                return value;
-            }
-            throw new ArgumentException("key not found");
-        }
-
-        public static TV TryPop<TK, TV>(this Dictionary<TK, TV> self, TK key)
-        {
-            TV value = default(TV);
-            if (self.TryGetValue(key, out value))
-                self.Remove(key);
-            return value;
-        }
-
-        public static bool TryRemove<TK, TV>(this Dictionary<TK, TV> self, TK key)
-        {
-            var cont = self.ContainsKey(key);
-            if (cont)
-                self.Remove(key);
-            return cont;
-        }
-
         public static Dictionary<Tk, Tv> Copy<Tk, Tv>(
             this Dictionary<Tk, Tv> self)
         {
@@ -99,28 +45,6 @@ namespace Aardvark.Base
             return r;
         }
 
-        public static T1v[] CopyToArray<Tk, Tv, T1v>(
-            this Dictionary<Tk, Tv> self,
-            Func<KeyValuePair<Tk, Tv>, T1v> fun)
-        {
-            var r = new T1v[self.Count];
-            var i = 0L;
-            foreach (var kvp in self)
-                r[i++] = fun(kvp);
-            return r;
-        }
-
-        public static T1v[] CopyToArray<Tk, Tv, T1v>(
-            this Dictionary<Tk, Tv> self,
-            Func<Tk, Tv, T1v> fun)
-        {
-            var r = new T1v[self.Count];
-            var i = 0L;
-            foreach (var kvp in self)
-                r[i++] = fun(kvp.Key, kvp.Value);
-            return r;
-        }
-
         /// <summary>
         /// Combines the dictionary with another one. Duplicate keys
         /// are overwritten.
@@ -134,19 +58,95 @@ namespace Aardvark.Base
                 result[kvp.Key] = kvp.Value;
             return result;
         }
+    }
 
-        public static Dictionary<Tk, Tv> AddRange<Tk, Tv>(
-            this Dictionary<Tk, Tv> self,
-            IEnumerable<KeyValuePair<Tk, Tv>> keyValuePairs)
+
+    #endregion
+
+    #region IDictionaryExt
+
+    public static class IDictionaryExtensions
+    { 
+        public static Tv Get<Tk, Tv>(
+            this IDictionary<Tk, Tv> self, Tk key)
+        {
+            Tv value;
+            if (self.TryGetValue(key, out value)) return value;
+            return default(Tv);
+        }
+
+        public static Tv Get<Tk, Tv>(
+            this IDictionary<Tk, Tv> self, Tk key, Tv defaultValue)
+        {
+            Tv value;
+            if (self.TryGetValue(key, out value)) return value;
+            return defaultValue;
+        }
+
+        public static TV GetCreate<TK, TV>(this IDictionary<TK, TV> self, TK key, Func<TK, TV> creator = null)
+        {
+            TV value;
+            if (!self.TryGetValue(key, out value))
+            {
+                value = creator.RunIfNotNull(key, default(TV));
+                self[key] = value;
+            }
+            return value;
+        }
+
+        public static TV Pop<TK, TV>(this IDictionary<TK, TV> self, TK key)
+        {
+            TV value;
+            if (self.TryGetValue(key, out value))
+            {
+                self.Remove(key);
+                return value;
+            }
+            throw new ArgumentException("key not found");
+        }
+
+        public static TV TryPop<TK, TV>(this IDictionary<TK, TV> self, TK key)
+        {
+            TV value = default(TV);
+            if (self.TryGetValue(key, out value))
+                self.Remove(key);
+            return value;
+        }
+        
+        public static T1v[] CopyToArray<Tk, Tv, T1v>(this IDictionary<Tk, Tv> self, Func<KeyValuePair<Tk, Tv>, T1v> fun)
+        {
+            var r = new T1v[self.Count];
+            var i = 0L;
+            foreach (var kvp in self)
+                r[i++] = fun(kvp);
+            return r;
+        }
+
+        public static T1v[] CopyToArray<Tk, Tv, T1v>(this IDictionary<Tk, Tv> self, Func<Tk, Tv, T1v> fun)
+        {
+            var r = new T1v[self.Count];
+            var i = 0L;
+            foreach (var kvp in self)
+                r[i++] = fun(kvp.Key, kvp.Value);
+            return r;
+        }
+
+        /// <summary>
+        /// Adds a range of KeyValuePairs, will throw DuplicateKeyException
+        /// </summary>
+        public static Td AddRange<Td, Tk, Tv>(this Td self, IEnumerable<KeyValuePair<Tk, Tv>> keyValuePairs)
+            where Td: IDictionary<Tk, Tv>
         {
             foreach (var kvp in keyValuePairs)
                 self.Add(kvp.Key, kvp.Value);
             return self;
         }
 
-        public static Dictionary<Tk, Tv> AddRange<Tk, Tv>(
-            this Dictionary<Tk, Tv> self,
-            IEnumerable<Tup<Tk, Tv>> keyValueTuples)
+        /// <summary>
+        /// Adds a range of KeyValuePairs as Tup, will throw DuplicateKeyException
+        /// </summary>
+        public static Td AddRange<Td, Tk, Tv>(this Td self, IEnumerable<Tup<Tk, Tv>> keyValueTuples)
+            where Td : IDictionary<Tk, Tv>
         {
             foreach (var kvp in keyValueTuples)
                 self.Add(kvp.E0, kvp.E1);
@@ -154,9 +154,31 @@ namespace Aardvark.Base
         }
 
         /// <summary>
+        /// Adds a range of KeyValuePairs, duplicate keys will be overwritten
+        /// </summary>
+        public static Td SetRange<Td, Tk, Tv>(this Td self, IEnumerable<KeyValuePair<Tk, Tv>> keyValuePairs)
+            where Td : IDictionary<Tk, Tv>
+        {
+            foreach (var kvp in keyValuePairs)
+                self[kvp.Key] = kvp.Value;
+            return self;
+        }
+
+        /// <summary>
+        /// Adds a range of KeyValuePairs, duplicate keys will be overwritten
+        /// </summary>
+        public static Td SetRange<Td, Tk, Tv>(this Td self, IEnumerable<Tup<Tk, Tv>> keyValueTuples)
+            where Td : IDictionary<Tk, Tv>
+        {
+            foreach (var kvp in keyValueTuples)
+                self[kvp.E0] = kvp.E1;
+            return self;
+        }
+
+        /// <summary>
         /// Compares the key value pairs of two dictionaries using Equals to compare the values.
         /// </summary>
-        public static bool DictionaryEquals<Tk, Tv>(this Dictionary<Tk, Tv> self, Dictionary<Tk, Tv> other)
+        public static bool DictionaryEquals<Tk, Tv>(this IDictionary<Tk, Tv> self, IDictionary<Tk, Tv> other)
         {
             return DictionaryEquals(self, other, (valueA, valueB) => valueA.Equals(valueB));
         }
@@ -165,7 +187,7 @@ namespace Aardvark.Base
         /// Compares the key value pairs of two dictionaries using a custom valueComparisonFunc
         /// (which returns true if both are equal).
         /// </summary>
-        public static bool DictionaryEquals<Tk, Tv>(this Dictionary<Tk, Tv> self, Dictionary<Tk, Tv> other, Func<Tv, Tv, bool> valueComparisonFunc)
+        public static bool DictionaryEquals<Tk, Tv>(this IDictionary<Tk, Tv> self, IDictionary<Tk, Tv> other, Func<Tv, Tv, bool> valueComparisonFunc)
         {
             if (self.Count != other.Count)
                 return false;
@@ -183,14 +205,7 @@ namespace Aardvark.Base
             }
             return true;
         }
-    }
-
-    #endregion
-
-    #region IDictionaryExtensions
-
-    public static class IDictionaryExtensions
-    {
+  
         public static TValue GetValueOrDefault<TKey, TValue>(this IDictionary<TKey, TValue> self, TKey key, TValue default_value)
         {
             //return dic.ContainsKey(key) ? self[key] : default_value;
