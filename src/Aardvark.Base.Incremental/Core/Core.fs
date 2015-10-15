@@ -5,6 +5,25 @@ open System.Collections.Generic
 open Aardvark.Base
 open System.Collections.Concurrent
 
+type VolatileCollection<'a>() =
+    let set = HashSet<'a>()
+
+    member x.IsEmpty = set.Count = 0
+
+    member x.Consume() : seq<'a> =
+//        let arr = set.ToArray(set.Count)
+//        set.Clear()
+//        arr :> _
+        set :> _
+
+    member x.Add(value : 'a) : bool =
+        set.Add value
+
+    member x.Remove(value : 'a) : bool =
+        set.Remove value
+
+    member x.Seq = set :> seq<'a>
+
 /// <summary>
 /// IAdaptiveObject represents the core interface for all
 /// adaptive objects and contains everything necessary for
@@ -61,7 +80,7 @@ type IAdaptiveObject =
     /// to be represented by Weak references in order to allow for
     /// unused parts of the graph to be garbage collected.
     /// </summary>
-    abstract member Outputs : ICollection<IAdaptiveObject>
+    abstract member Outputs : VolatileCollection<IAdaptiveObject>
 
     /// <summary>
     /// a set of callbacks which shall be executed when the object
@@ -294,7 +313,7 @@ type Transaction() =
 
                                         // if everything succeeded we return all current outputs
                                         // which will cause them to be enqueued 
-                                        e.Outputs :> seq<IAdaptiveObject>
+                                        e.Outputs.Consume()
 
                                     else
                                         // if Mark told us not to continue we're done here
@@ -334,7 +353,7 @@ type AdaptiveObject() =
     let mutable outOfDate = true
     let mutable level = 0
     let inputs = HashSet<IAdaptiveObject>() :> ICollection<_>
-    let outputs = WeakSet<IAdaptiveObject>() :> ICollection<_>
+    let outputs = VolatileCollection<IAdaptiveObject>()
     let callbacks = ConcurrentHashSet<unit -> unit>() :> ICollection<_>
 
     static let time = AdaptiveObject() :> IAdaptiveObject
@@ -366,9 +385,9 @@ type AdaptiveObject() =
 
         if top then 
             isTopLevel.Value <- true
-            if time.Outputs.Count > 0 then
+            if not time.Outputs.IsEmpty then
                 let t = Transaction()
-                for o in time.Outputs do
+                for o in time.Outputs.Consume() do
                     t.Enqueue(o)
                 t.Commit()
 
@@ -394,11 +413,12 @@ type AdaptiveObject() =
 
         if top then 
             isTopLevel.Value <- true
-            if time.Outputs.Count > 0 then
+            if not time.Outputs.IsEmpty then
                 let t = Transaction()
-                for o in time.Outputs do
+                for o in time.Outputs.Consume() do
                     t.Enqueue(o)
                 t.Commit()
+
 
         res
 
@@ -512,7 +532,7 @@ type ConstantObject() =
             and set o = failwith "cannot mark constant outOfDate"
 
         member x.Inputs = emptySet
-        member x.Outputs = emptySet
+        member x.Outputs = VolatileCollection()
         member x.MarkingCallbacks = emptyCallbacks
         member x.InputChanged ip = ()
 
@@ -543,7 +563,7 @@ module Marking =
         let old = m.Level
         if old < minLevel then
             m.Level <- minLevel
-            for o in m.Outputs do
+            for o in m.Outputs.Seq do
                 relabel o (minLevel + 1) |> ignore
             old <> -1
         else

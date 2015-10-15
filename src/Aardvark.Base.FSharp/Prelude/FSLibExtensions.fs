@@ -195,19 +195,85 @@ module Prelude =
 module Threading =
     open System.Threading
 
+    let inline private (==) (l : 'a) (r : 'a) =
+        Object.ReferenceEquals(l,r)
+
+    let inline private (!=) (l : 'a) (r : 'a) =
+        not <| Object.ReferenceEquals(l,r)
+
     type Interlocked with
         static member Change(location : byref<'a>, f : 'a -> 'a) =
-            let mutable v = location
-            let mutable res = f v
-            let mutable r = Interlocked.CompareExchange(&location, res, v)
+            let mutable initial = location
+            let mutable computed = f initial
 
-            while not (System.Object.ReferenceEquals(v,r)) do
-                v <- r
-                res <- f v
-                r <- Interlocked.CompareExchange(&location, res, v)
+            while Interlocked.CompareExchange(&location, computed, initial) != initial do
+                initial <- location
+                computed <- f initial
 
-            res
+            computed
 
+        static member Change(location : byref<'a>, f : 'a -> 'a * 'b) =
+            let mutable initial = location
+            let (n,r) = f initial
+            let mutable computed = n
+            let mutable result = r
+
+            while Interlocked.CompareExchange(&location, computed, initial) != initial do
+                initial <- location
+                let (n,r) = f initial
+                computed <- n
+                result <- r
+
+            result
+
+
+        static member Change(location : byref<int>, f : int -> int) =
+            let mutable initial = location
+            let mutable computed = f initial
+
+            while Interlocked.CompareExchange(&location, computed, initial) <> initial do
+                initial <- location
+                computed <- f initial
+
+            computed
+
+        static member Change(location : byref<int>, f : int -> int * 'b) =
+            let mutable initial = location
+            let (n,r) = f initial
+            let mutable computed = n
+            let mutable result = r
+
+            while Interlocked.CompareExchange(&location, computed, initial) <> initial do
+                initial <- location
+                let (n,r) = f initial
+                computed <- n
+                result <- r
+
+            result
+
+        static member Change(location : byref<int64>, f : int64 -> int64) =
+            let mutable initial = location
+            let mutable computed = f initial
+
+            while Interlocked.CompareExchange(&location, computed, initial) <> initial do
+                initial <- location
+                computed <- f initial
+
+            computed
+
+        static member Change(location : byref<int64>, f : int64 -> int64 * 'b) =
+            let mutable initial = location
+            let (n,r) = f initial
+            let mutable computed = n
+            let mutable result = r
+
+            while Interlocked.CompareExchange(&location, computed, initial) <> initial do
+                initial <- location
+                let (n,r) = f initial
+                computed <- n
+                result <- r
+
+            result
 
 module GenericValues =
     open System.Reflection
