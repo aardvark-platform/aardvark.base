@@ -6,25 +6,75 @@ open Aardvark.Base
 open System.Collections.Concurrent
 open System.Threading
 
-type VolatileCollection<'a when 'a : not struct>() =
-    let set = HashSet<'a>()
+type VolatileCollection<'a>() =
+    let mutable set : HashSet<'a> = null
+    let mutable pset = []
 
-    member x.IsEmpty = lock set (fun () -> set.Count = 0)
+    let rec slowContains (v : 'a) (count : int) (l : list<'a>) =
+        match l with
+            | [] -> count
+            | x::xs ->
+                if System.Object.Equals(x, v) then -1
+                else slowContains v (count + 1) xs
+
+    let rec slowRemove (v : 'a) (acc : list<'a>) (l : list<'a>) =
+        match l with
+            | [] -> (false, acc)
+            | x::xs ->
+                if Object.Equals(x, v) then
+                    (true, acc @ xs)
+                else
+                    slowRemove v (x::acc) xs
+
+    member x.IsEmpty = 
+        lock x (fun () ->
+            if isNull set then List.isEmpty pset
+            else set.Count = 0
+        )
 
     member x.Consume() : seq<'a> =
-        lock set (fun () -> 
-            let arr = set |> Seq.toArray
-            set.Clear()
-            arr :> _
+        lock x (fun () -> 
+            if isNull set then
+                let res = pset
+                pset <- []
+                res :> seq<_>
+            else
+                let res = set
+                set <- null
+                res :> _
         )
 
     member x.Add(value : 'a) : bool =
-        lock set (fun () -> set.Add value)
+        lock x (fun () -> 
+            if isNull set then 
+                let count = slowContains value 0 pset
+                if count < 0 then
+                    false
+                else
+                    pset <- value::pset
+
+                    if count >= 7 then
+                        set <- HashSet pset
+                        pset <- []
+
+                    true
+            else
+                set.Add value
+        )
 
     member x.Remove(value : 'a) : bool =
-        lock set (fun () -> set.Remove value)
+        lock x (fun () -> 
+            if isNull set then 
+                let (removed, newList) = slowRemove value [] pset
+                if removed then
+                    pset <- newList
+                    true
+                else
+                    false
+            else
+                set.Remove value
+        )
 
-    member x.Seq = set |> Seq.toList :> seq<'a>
 
 /// <summary>
 /// IAdaptiveObject represents the core interface for all
@@ -329,6 +379,7 @@ type AdaptiveObject() =
                             // This property must therefore be maintained for every
                             // path in the entire system.
                             let r = f()
+                            outOfDate <- false
 
                             // if the object's level just got greater than or equal to
                             // the level of the running transaction (if any)
@@ -340,7 +391,7 @@ type AdaptiveObject() =
                                 else Transaction.RunningLevel
 
                             if level > maxAllowedLevel then
-                                // i am a pull from the future   
+                                // all greater pulls would be from the future
                                 raise <| LevelChangedException(this, level, stack.Count - 1)
 
 
@@ -350,7 +401,7 @@ type AdaptiveObject() =
                                     o.Level <- max o.Level (level + 1)
                                 | _ -> ()
 
-                            outOfDate <- false
+                            
                             r
                         finally
                             stack.Pop() |> ignore
@@ -515,21 +566,6 @@ and EmptyCollection<'a>() =
 module Marking =
 
 
-
-    // changes the level of an adaptive object if it is below
-    // minLevel and transitively changes all outputs if needed.
-    // Note that this implementation has very poor runtime performance
-    // and might possibly be improved using some kind of order-maintenance
-    // structure instead of integers.
-    let rec relabel (m : IAdaptiveObject) (minLevel : int) =
-        let old = m.Level
-        if old < minLevel then
-            m.Level <- minLevel
-            for o in m.Outputs.Seq do
-                relabel o (minLevel + 1) |> ignore
-            old <> -1
-        else
-            false
 
     // since changeable inputs need a transaction
     // for enqueing their changes we use a thread local 
