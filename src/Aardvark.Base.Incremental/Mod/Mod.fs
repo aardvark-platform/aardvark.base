@@ -384,9 +384,6 @@ module Mod =
         let scope = Ag.getContext()
         fun v -> Ag.useScope scope (fun () -> f v)
 
-    let private scoped2 (f : 'a -> 'b -> 'c) =
-        let scope = Ag.getContext()
-        fun a b -> Ag.useScope scope (fun () -> f a b)
 
     let private callbackTable = ConditionalWeakTable<IMod, ConcurrentHashSet<IDisposable>>()
     /// <summary>
@@ -397,7 +394,7 @@ module Mod =
     /// cell to be constant in any case.
     /// </summary>
     let custom (compute : unit -> 'a) : IMod<'a> =
-        LazyMod(scoped compute) :> IMod<_>
+        LazyMod(compute) :> IMod<_>
 
     
     /// <summary>
@@ -508,7 +505,6 @@ module Mod =
             | (false, true) -> 
                 map (fun a -> f a (m2.GetValue())) m1
             | (false, false) ->
-                let f = scoped2 f
                 let res = LazyMod(fun () -> f (m1.GetValue()) (m2.GetValue()))
                 m1.AddOutput res
                 m2.AddOutput res
@@ -575,7 +571,6 @@ module Mod =
         if m.IsConstant then
             m.GetValue() |> f :> IMod<_>
         else
-            let f = scoped f
             let inner : ref<Option<'a * IMod<'b>>> = ref None
 
 
@@ -655,7 +650,6 @@ module Mod =
             | (true, false) ->
                 bind (fun b -> (f (ma.GetValue()) b) :> IMod<_>) mb
             | (false, false) ->
-                let f = scoped2 f
                 let inner : ref<Option<'a * 'b * IMod<'c>>> = ref None
 
                 // for a detailed description see bind above
