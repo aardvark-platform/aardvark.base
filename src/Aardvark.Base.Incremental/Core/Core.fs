@@ -92,12 +92,11 @@ type IAdaptiveObject =
 /// LevelChangedException is internally used by the system
 /// to handle level changes during the change propagation.
 /// </summary>
-exception LevelChangedException of IAdaptiveObject
+exception LevelChangedException of changedObject : IAdaptiveObject * newLevel : int * distanceFromRoot : int
 
 [<AutoOpen>]
 module private AdaptiveSystemState =
-    let currentEvaluationObject = new ThreadLocal<Option<IAdaptiveObject>>(fun _ -> None)
-
+    let currentEvaluationPath = new ThreadLocal<Stack<IAdaptiveObject>>(fun _ -> Stack())
 
 type TrackAllThreadLocal<'a>(creator : unit -> 'a) =
     let mutable values : Map<int, 'a> = Map.empty
@@ -146,6 +145,7 @@ type Transaction() =
     // already been enqueued
     let contained = HashSet<IAdaptiveObject>()
     let mutable current = None
+    let mutable currentLevel = 0
 
     let getAndClear (set : ICollection<'a>) =
         let mutable content = []
@@ -166,6 +166,14 @@ type Transaction() =
     static member HasRunning =
         running.Value.IsSome
        
+    static member RunningLevel =
+        match running.Value with
+            | Some t -> t.CurrentLevel
+            | _ -> Int32.MaxValue - 1
+
+
+    member x.CurrentLevel = currentLevel
+
     /// <summary>
     /// enqueues an adaptive object for marking
     /// </summary>
@@ -204,6 +212,7 @@ type Transaction() =
         while q.Count > 0 do
             // dequeue the next element (having the minimal level)
             let l, e = q.Dequeue()
+            currentLevel <- l
             current <- Some e
 
             
@@ -258,10 +267,11 @@ type Transaction() =
                                     // if Mark told us not to continue we're done here
                                     Seq.empty
 
-                            with :? LevelChangedException ->
+                            with LevelChangedException(obj, objLevel, distance) ->
                                 // if the level was changed either by a callback
                                 // or Mark we re-enqueue the object with the new level and
                                 // mark it upToDate again (since it would otherwise not be processed again)
+                                e.Level <- max e.Level (objLevel + distance)
                                 e.OutOfDate <- false
                                 q.Enqueue e
                                 Seq.empty
@@ -279,6 +289,7 @@ type Transaction() =
         // when the commit is over we restore the old
         // running transaction (if any)
         running.Value <- old
+        currentLevel <- 0
 
 /// <summary>
 /// defines a base class for all adaptive objects implementing
@@ -294,9 +305,10 @@ type AdaptiveObject() =
     static let time = AdaptiveObject() :> IAdaptiveObject
     
     let evaluate (this : IAdaptiveObject) (otherwise : Option<'a>) (f : unit -> 'a) =
-        let top = 
-            currentEvaluationObject.Value.IsNone && not Transaction.HasRunning
+        let stack = currentEvaluationPath.Value
+        let top = stack.Count = 0 && not Transaction.HasRunning
 
+        
         let res =
             lock this (fun () ->
                 
@@ -307,19 +319,41 @@ type AdaptiveObject() =
                 match value with
                     | Some v -> v
                     | None ->
-                        let old = currentEvaluationObject.Value
-                        currentEvaluationObject.Value <- Some this
+                        let parent = if stack.Count > 0 then stack.Peek() |> Some else None
+                        stack.Push this
+                       
                         try
+                            // this evaluation is performed optimistically
+                            // meaning that the "top-level" object needs to be allowed to
+                            // pull at least one value on every path.
+                            // This property must therefore be maintained for every
+                            // path in the entire system.
                             let r = f()
-                            match old with
+
+                            // if the object's level just got greater than or equal to
+                            // the level of the running transaction (if any)
+                            // we raise an exception since the evaluation
+                            // could be inconsistent atm.
+                            // the only exception to that is the top-level object itself
+                            let maxAllowedLevel =
+                                if stack.Count > 1 then Transaction.RunningLevel - 1
+                                else Transaction.RunningLevel
+
+                            if level > maxAllowedLevel then
+                                // i am a pull from the future   
+                                raise <| LevelChangedException(this, level, stack.Count - 1)
+
+
+                            match parent with
                                 | Some o when o.Inputs.Contains this ->
                                     outputs.Add o |> ignore
+                                    o.Level <- max o.Level (level + 1)
                                 | _ -> ()
 
                             outOfDate <- false
                             r
                         finally
-                            currentEvaluationObject.Value <- old
+                            stack.Pop() |> ignore
             )
 
         if top then 
@@ -565,16 +599,18 @@ module Marking =
             m.Inputs.Add x |> ignore
             x.Outputs.Add m |> ignore
 
-            // if the element was actually relabeled and we're
-            // currently inside a running transaction we need to
-            // raise a LevelChangedException.
-            if relabel m (x.Level + 1) then
-                match Transaction.Running with
-                    | Some t ->
-                        match t.CurrentAdapiveObject with
-                            | Some m' when m = m' -> raise <| LevelChangedException m
-                            | _ -> ()
-                    | _ -> ()
+            //m.Level <- max m.Level (x.Level + 1)
+
+//            // if the element was actually relabeled and we're
+//            // currently inside a running transaction we need to
+//            // raise a LevelChangedException.
+//            if relabel m (x.Level + 1) then
+//                match Transaction.Running with
+//                    | Some t ->
+//                        match t.CurrentAdapiveObject with
+//                            | Some m' when m = m' -> raise <| LevelChangedException m
+//                            | _ -> ()
+//                    | _ -> ()
 
             m.MarkOutdated ( Some x )
 
@@ -642,7 +678,7 @@ module CallbackExtensions =
                     try
                         f()
                     finally 
-                        x.AddOutput !self
+                        x.Outputs.Add !self |> ignore
                 )
 
             x.AddOutput !self

@@ -178,7 +178,9 @@ module ``Basic Mod Tests`` =
         )
 
         res.GetValue() |> should equal 20
-        ex.read() |> should equal ["bind: false"; "10 * 2"; "cont"]
+        
+        let read = ex.read()
+        read |> should equal ["bind: false"; "10 * 2"; "cont"]
 
         s.Dispose()
 

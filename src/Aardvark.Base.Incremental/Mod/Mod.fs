@@ -182,6 +182,7 @@ type DefaultingModRef<'a>(computed : IMod<'a>) as this =
                 if isComputed then 
                     computed.RemoveOutput x
                     isComputed <- false
+                    x.Level <- 0
                     true
                 else 
                     tracker v || not <| Object.Equals(v, cache)
@@ -274,8 +275,9 @@ module Mod =
                             Ag.useScope x.scope (fun () ->
                                 x.cache <- x.compute changed
                             )
-                        with :? LevelChangedException as ex ->
-                            System.Threading.Interlocked.Change(&x.changedInputs, PersistentHashSet.union changed) |> ignore
+                        with LevelChangedException(t,_,_) as ex ->
+                            if t.Id = x.Id then
+                                System.Threading.Interlocked.Change(&x.changedInputs, PersistentHashSet.union changed) |> ignore
                             raise ex
                     x.cache
                 )
