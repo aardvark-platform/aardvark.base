@@ -620,7 +620,7 @@ module Marking =
                 | None -> 
                     lock x (fun () -> 
                         if x.OutOfDate then ()
-                        elif x.Outputs.Count = 0 then x.OutOfDate <- true
+                        elif x.Outputs.IsEmpty then x.OutOfDate <- true
                         else failwith "cannot mark object without transaction"
                     )
 
