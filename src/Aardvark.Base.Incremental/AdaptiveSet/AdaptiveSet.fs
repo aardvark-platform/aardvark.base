@@ -68,25 +68,6 @@ module ASet =
         fun v -> Ag.useScope scope (fun () -> f v)
 
     let private callbackTable = ConditionalWeakTable<obj, ConcurrentHashSet<IDisposable>>()
-    type private CallbackSubscription(m : obj, cb : unit -> unit, live : ref<bool>, reader : IAdaptiveObject, set : ConcurrentHashSet<IDisposable>) =
-        let disposable = reader |> unbox<IDisposable>
-
-        member x.Dispose() = 
-            if !live then
-                live := false
-                disposable.Dispose()
-                reader.MarkingCallbacks.Remove cb |> ignore
-                set.Remove x |> ignore
-                if set.Count = 0 then
-                    callbackTable.Remove(m) |> ignore
-
-        interface IDisposable with
-            member x.Dispose() = x.Dispose()
-
-        override x.Finalize() =
-            try x.Dispose()
-            with _ -> ()
-
 
     /// <summary>
     /// creates an empty set instance being reference
@@ -467,22 +448,17 @@ module ASet =
     /// </summary>
     let unsafeRegisterCallbackNoGcRoot (f : list<Delta<'a>> -> unit) (set : aset<'a>) =
         let m = set.GetReader()
-        let f = scoped f
-        let self = ref id
-        let live = ref true
-        self := fun () ->
-            if !live then
-                try
-                    m.GetDelta() |> f
-                finally 
-                    m.MarkingCallbacks.Add !self |> ignore
-        
-        !self ()
+
+        let result =
+            m.AddMarkingCallback(fun () ->
+                m.GetDelta() |> f
+            )
+
+        m.GetDelta() |> f
 
         let callbackSet = callbackTable.GetOrCreateValue(set)
-        let s = new CallbackSubscription(set, !self, live, m, callbackSet)
-        callbackSet.Add s |> ignore
-        s :> IDisposable
+        callbackSet.Add result |> ignore
+        result
 
     [<Obsolete("use unsafeRegisterCallbackNoGcRoot or unsafeRegisterCallbackKeepDisposable instead")>]
     let registerCallback f set = unsafeRegisterCallbackNoGcRoot f set

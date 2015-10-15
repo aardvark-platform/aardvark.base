@@ -243,7 +243,6 @@ module Mod =
                     x.cache
                 )
 
-
             interface IMod with
                 member x.IsConstant = false
                 member x.GetValue() = x.GetValue() :> obj
@@ -254,6 +253,44 @@ module Mod =
             new(compute) =
                 { cache = Unchecked.defaultof<'a>; compute = compute; scope = Ag.getContext() }
         end
+
+    type internal LazyModWithChangedInputs<'a> =
+        class
+            inherit AdaptiveObject
+            val mutable public cache : 'a
+            val mutable public compute : PersistentHashSet<IAdaptiveObject> -> 'a
+            val mutable public scope : Ag.Scope
+            val mutable changedInputs : PersistentHashSet<IAdaptiveObject>
+
+            override x.InputChanged i =
+                System.Threading.Interlocked.Change(&x.changedInputs, PersistentHashSet.add i) |> ignore
+
+            member x.GetValue() =
+                x.EvaluateAlways (fun () ->
+                    if x.OutOfDate then
+                        let changed = System.Threading.Interlocked.Exchange(&x.changedInputs, PersistentHashSet.empty)
+                        
+                        try
+                            Ag.useScope x.scope (fun () ->
+                                x.cache <- x.compute changed
+                            )
+                        with :? LevelChangedException as ex ->
+                            System.Threading.Interlocked.Change(&x.changedInputs, PersistentHashSet.union changed) |> ignore
+                            raise ex
+                    x.cache
+                )
+
+            interface IMod with
+                member x.IsConstant = false
+                member x.GetValue() = x.GetValue() :> obj
+
+            interface IMod<'a> with
+                member x.GetValue() = x.GetValue()
+
+            new(compute) =
+                { cache = Unchecked.defaultof<'a>; compute = compute; scope = Ag.getContext(); changedInputs = PersistentHashSet.empty }
+        end
+
 
     // EagerMod<'a> re-uses LazyMod<'a> and extends it with
     // a Mark function evaluating the cell whenever it is marked
@@ -352,22 +389,6 @@ module Mod =
         fun a b -> Ag.useScope scope (fun () -> f a b)
 
     let private callbackTable = ConditionalWeakTable<IMod, ConcurrentHashSet<IDisposable>>()
-    type private CallbackSubscription<'a>(m : IMod, cb : unit -> unit, live : ref<bool>, set : ConcurrentHashSet<IDisposable>) =
-        
-        member x.Dispose() = 
-            if !live then
-                live := false
-                m.MarkingCallbacks.Remove cb |> ignore
-                set.Remove x |> ignore
-
-        interface IDisposable with
-            member x.Dispose() = x.Dispose()
-
-        override x.Finalize() =
-            try x.Dispose()
-            with _ -> ()
-
-
     /// <summary>
     /// creates a custom modifiable cell using the given
     /// compute function. If no inputs are added to the
@@ -394,27 +415,16 @@ module Mod =
     /// disposable is disposed.
     /// </summary>
     let unsafeRegisterCallbackNoGcRoot (f : 'a -> unit) (m : IMod<'a>) =
-        let f = scoped f
-        let self = ref id
-        let live = ref true
-        let hasChanged = ChangeTracker.track<'a>
+        let result =
+            m.AddMarkingCallback(fun () ->
+                m.GetValue() |> f
+            )
 
-        self := fun () ->
-            if !live then
-                try
-                    let value = m.GetValue()
-                    if hasChanged value then
-                        f value
-                finally 
-                    m.MarkingCallbacks.Add !self |> ignore
-        
-        !self ()
+        m.GetValue() |> f
 
         let set = callbackTable.GetOrCreateValue(m)
-
-        let s = new CallbackSubscription<'a>(m, !self, live, set)
-        set.Add s |> ignore
-        s :> IDisposable
+        set.Add result |> ignore
+        result
 
     [<Obsolete("use unsafeRegisterCallbackNoGcRoot or unsafeRegisterCallbackKeepDisposable instead")>]
     let registerCallback f m = unsafeRegisterCallbackNoGcRoot f m
@@ -568,35 +578,30 @@ module Mod =
             let f = scoped f
             let inner : ref<Option<'a * IMod<'b>>> = ref None
 
-            let mChanged = ref true
-            let callback() =
-                mChanged := true
 
             // just a reference-cell for allowing self-recursive
             // access in the compute function below.
-            let res = ref <| Unchecked.defaultof<LazyMod<'b>>
+            let res = ref <| Unchecked.defaultof<_>
             res := 
-                LazyMod(fun () -> 
+                LazyModWithChangedInputs(fun changed -> 
                     // whenever the result is outOfDate we
                     // need to pull the input's value
                     // Note that the input is not necessarily outOfDate at this point
                     let v = m.GetValue()
                     //let cv = hasChanged v
 
+                    let mChanged = PersistentHashSet.contains (m :> IAdaptiveObject) changed
+
                     match !inner with
                         // if the function argument has not changed
                         // since the last execution we expect f to return
                         // the identical cell
-                        | Some (v', inner) when not !mChanged ->
+                        | Some (v', inner) when not mChanged ->
                             // since the inner cell might be outOfDate we
                             // simply pull its value and don't touch any in-/outputs.
                             inner.GetValue()
                         
                         | _ ->
-                            if !mChanged then
-                                mChanged := false
-                                m.MarkingCallbacks.Add callback |> ignore
-
                             // whenever the argument's value changed we need to 
                             // re-execute the function and store the new inner cell.
                             let i = f v :> IMod<_>
@@ -654,31 +659,20 @@ module Mod =
                 let inner : ref<Option<'a * 'b * IMod<'c>>> = ref None
 
                 // for a detailed description see bind above
-                let res = ref <| Unchecked.defaultof<LazyMod<'c>>
-                let aChanged = ref true
-                let bChanged = ref true
-                let cba () = aChanged := true
-                let cbb () = bChanged := true
+                let res = ref <| Unchecked.defaultof<_>
 
                 res := 
-                    LazyMod(fun () -> 
+                    LazyModWithChangedInputs(fun changed -> 
                         let a = ma.GetValue()
                         let b = mb.GetValue()
 
-                        let ca = !aChanged
-                        let cb = !bChanged
+                        let ca = PersistentHashSet.contains (a :> IAdaptiveObject) changed
+                        let cb = PersistentHashSet.contains (b :> IAdaptiveObject) changed
 
                         match !inner with
                             | Some (va, vb, inner) when not ca && not cb ->
                                 inner.GetValue()
                             | _ ->
-                                if !aChanged then
-                                    aChanged := false
-                                    ma.MarkingCallbacks.Add cba |> ignore
-                                
-                                if !bChanged then
-                                    bChanged := false
-                                    mb.MarkingCallbacks.Add cbb |> ignore
 
                                 let i = f a b :> IMod<_>
                                 let old = !inner

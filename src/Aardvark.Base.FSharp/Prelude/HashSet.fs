@@ -22,11 +22,15 @@ module PersistentHashSet =
     let inline private (!) (h : PersistentHashSet<'a>) =
         let (PersistentHashSet m) = h
         m
-    
+
+    type private EmptyImpl<'a>() =
+        static let instance : PersistentHashSet<'a> = PersistentHashSet Map.empty
+        static member Instance = instance
+
     /// <summary>The empty set for the type 'T.</summary>
     [<GeneralizableValue>]
     [<CompiledName("Empty")>]
-    let empty<'a> : PersistentHashSet<'a> = PersistentHashSet Map.empty
+    let empty<'a> : PersistentHashSet<'a> = EmptyImpl<'a>.Instance
 
 
     /// <summary>The set containing the given element.</summary>

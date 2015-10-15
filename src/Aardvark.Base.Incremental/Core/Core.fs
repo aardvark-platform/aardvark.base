@@ -84,14 +84,6 @@ type IAdaptiveObject =
     /// </summary>
     abstract member Outputs : VolatileCollection<IAdaptiveObject>
 
-    /// <summary>
-    /// a set of callbacks which shall be executed when the object
-    /// is marked as OutOfDate for the next time. Note that this set 
-    /// will be cleared once the callbacks have been executed.
-    /// "persistent" callbacks must therefore re-subscribe themselves 
-    /// upon every execution.
-    /// </summary>
-    abstract member MarkingCallbacks : ICollection<unit -> unit>
 
     abstract member InputChanged : IAdaptiveObject -> unit
     
@@ -251,12 +243,12 @@ type Transaction() =
                                 // the adaptive object but must expect any call to AddOutput to 
                                 // raise a LevelChangedException whenever a level has been changed
                                 if e.Mark() then
-                                    let mutable failed = false
-                                    let callbacks = e.MarkingCallbacks |> getAndClear
-                                    for cb in callbacks do 
-                                        try cb()
-                                        with :? LevelChangedException -> failed <- true
-                                    if failed then raise <| LevelChangedException e
+//                                    let mutable failed = false
+//                                    let callbacks = e.MarkingCallbacks |> getAndClear
+//                                    for cb in callbacks do 
+//                                        try cb()
+//                                        with :? LevelChangedException -> failed <- true
+//                                    if failed then raise <| LevelChangedException e
 
                                     // if everything succeeded we return all current outputs
                                     // which will cause them to be enqueued 
@@ -298,7 +290,6 @@ type AdaptiveObject() =
     let mutable level = 0
     let inputs = HashSet<IAdaptiveObject>() :> ICollection<_>
     let outputs = VolatileCollection<IAdaptiveObject>()
-    let callbacks = ConcurrentHashSet<unit -> unit>() :> ICollection<_>
 
     static let time = AdaptiveObject() :> IAdaptiveObject
     
@@ -370,7 +361,6 @@ type AdaptiveObject() =
 
     member x.Outputs = outputs
     member x.Inputs = inputs
-    member x.MarkingCallbacks = callbacks
     member x.Level 
         with get() = level
         and set l = level <- l
@@ -395,7 +385,6 @@ type AdaptiveObject() =
 
         member x.Outputs = outputs
         member x.Inputs = inputs
-        member x.MarkingCallbacks = callbacks
         member x.Level 
             with get() = level
             and set l = level <- l
@@ -404,6 +393,8 @@ type AdaptiveObject() =
             x.Mark ()
 
         member x.InputChanged ip = x.InputChanged ip
+
+
 
 /// <summary>
 /// defines a base class for all decorated mods
@@ -418,7 +409,6 @@ type AdaptiveDecorator(o : IAdaptiveObject) =
 
     member x.Outputs = o.Outputs
     member x.Inputs = o.Inputs
-    member x.MarkingCallbacks = o.MarkingCallbacks
     member x.Level 
         with get() = o.Level
         and set l = o.Level <- l
@@ -439,7 +429,6 @@ type AdaptiveDecorator(o : IAdaptiveObject) =
 
         member x.Outputs = o.Outputs
         member x.Inputs = o.Inputs
-        member x.MarkingCallbacks = o.MarkingCallbacks
         member x.Level 
             with get() = o.Level
             and set l = o.Level <- l
@@ -458,8 +447,6 @@ type AdaptiveDecorator(o : IAdaptiveObject) =
 [<AbstractClass>]
 type ConstantObject() =
     static let emptySet = EmptyCollection<IAdaptiveObject>() :> ICollection<_>
-    static let emptyCallbacks = EmptyCollection<unit -> unit>() :> ICollection<_>
-
     interface IAdaptiveObject with
         member x.Id = -1
         member x.Level
@@ -473,7 +460,6 @@ type ConstantObject() =
 
         member x.Inputs = emptySet
         member x.Outputs = VolatileCollection()
-        member x.MarkingCallbacks = emptyCallbacks
         member x.InputChanged ip = ()
 
 
@@ -493,6 +479,8 @@ and EmptyCollection<'a>() =
 
 [<AutoOpen>]
 module Marking =
+
+
 
     // changes the level of an adaptive object if it is below
     // minLevel and transitively changes all outputs if needed.
@@ -597,24 +585,69 @@ module Marking =
             m.Inputs.Remove x |> ignore
             x.Outputs.Remove m |> ignore
 
+
+[<AutoOpen>]
+module CallbackExtensions =
+    
+    type private CallbackObject(inner : IAdaptiveObject, callback : unit -> unit) as this =
+        static let emptySet = EmptyCollection<IAdaptiveObject>() :> ICollection<_>
+
+        let modId = newId()
+        let mutable level = inner.Level + 1
+
+        let inputs = HashSet<IAdaptiveObject>() :> ICollection<_>
+        let mutable scope = Ag.getContext()
+        let mutable inner = inner
+        let mutable callback = fun () -> Ag.useScope scope callback
+        do inner.AddOutput this
+
+
+        interface IAdaptiveObject with
+            member x.Id = modId
+            member x.Level
+                with get() = level
+                and set l = level <- l
+
+            member x.Mark() =
+                callback()
+                false
+
+            member x.OutOfDate
+                with get() = false
+                and set o = ()
+
+            member x.Inputs = inputs
+            member x.Outputs = VolatileCollection()
+            member x.InputChanged ip = ()
+
+        interface IDisposable with
+            member x.Dispose() =
+                inner.RemoveOutput x
+                callback <- id
+                scope <- Unchecked.defaultof<_>
+                inner <- null
+
+
+    type IAdaptiveObject with
+
         /// <summary>
         /// utility for adding a "persistent" callback to
         /// the object. returns a disposable "subscription" which
         /// allows to destroy the callback.
         /// </summary>
         member x.AddMarkingCallback(f : unit -> unit) =
-            let live = ref true
-            let self = ref id
-            self := fun () ->
-                if !live then
-                    f()
-                    x.MarkingCallbacks.Add(!self) |> ignore
+            let self = ref Unchecked.defaultof<_>
+            self := 
+                new CallbackObject(x, fun () ->
+                    try
+                        f()
+                    finally 
+                        x.AddOutput !self
+                )
 
-            lock x (fun () ->
-                x.MarkingCallbacks.Add(!self) |> ignore
-            )
+            x.AddOutput !self
 
-            { new IDisposable with member __.Dispose() = live := false; x.MarkingCallbacks.Remove !self |> ignore}
+            !self :> IDisposable //{ new IDisposable with member __.Dispose() = live := false; x.MarkingCallbacks.Remove !self |> ignore}
  
 
 open System.Threading
@@ -704,3 +737,5 @@ type VolatileTaggedDirtySet<'a, 'b, 't when 'a :> IAdaptiveObject and 'a : equal
     member x.Clear() =
         tagDict.Clear()
         Interlocked.Exchange(&set, PersistentHashSet.empty) |> ignore
+
+
