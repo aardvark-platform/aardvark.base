@@ -76,6 +76,7 @@ type VolatileCollection<'a>() =
         )
 
 
+
 /// <summary>
 /// IAdaptiveObject represents the core interface for all
 /// adaptive objects and contains everything necessary for
@@ -341,15 +342,31 @@ type Transaction() =
         running.Value <- old
         currentLevel <- 0
 
+
+type private EmptyCollection<'a>() =
+    interface ICollection<'a> with
+        member x.Add _ = ()
+        member x.Clear() = ()
+        member x.Count = 0
+        member x.Contains _ = false
+        member x.Remove _ = false
+        member x.CopyTo(arr, idx) = ()
+        member x.IsReadOnly = false
+        member x.GetEnumerator() : IEnumerator<'a> = Seq.empty.GetEnumerator()
+        member x.GetEnumerator() : System.Collections.IEnumerator = Seq.empty.GetEnumerator() :> _
+
+
 /// <summary>
 /// defines a base class for all adaptive objects implementing
 /// IAdaptiveObject.
 /// </summary>
 type AdaptiveObject() =
+    static let inputs = EmptyCollection<IAdaptiveObject>() :> ICollection<_>
+
     let id = newId()
     let mutable outOfDate = true
     let mutable level = 0
-    let inputs = HashSet<IAdaptiveObject>() :> ICollection<_>
+    //let inputs = HashSet<IAdaptiveObject>() :> ICollection<_>
     let outputs = VolatileCollection<IAdaptiveObject>()
 
     static let time = AdaptiveObject() :> IAdaptiveObject
@@ -396,7 +413,7 @@ type AdaptiveObject() =
 
 
                             match parent with
-                                | Some o when o.Inputs.Contains this ->
+                                | Some o (* when o.Inputs.Contains this *) ->
                                     outputs.Add o |> ignore
                                     o.Level <- max o.Level (level + 1)
                                 | _ -> ()
@@ -417,7 +434,6 @@ type AdaptiveObject() =
         res
 
     static member Time = time
-
 
 
     /// <summary>
@@ -548,18 +564,6 @@ type ConstantObject() =
         member x.InputChanged ip = ()
 
 
-and EmptyCollection<'a>() =
-    interface ICollection<'a> with
-        member x.Add _ = ()
-        member x.Clear() = ()
-        member x.Count = 0
-        member x.Contains _ = false
-        member x.Remove _ = false
-        member x.CopyTo(arr, idx) = ()
-        member x.IsReadOnly = false
-        member x.GetEnumerator() : IEnumerator<'a> = Seq.empty.GetEnumerator()
-        member x.GetEnumerator() : System.Collections.IEnumerator = Seq.empty.GetEnumerator() :> _
-
 
 
 [<AutoOpen>]
@@ -662,7 +666,6 @@ module Marking =
 module CallbackExtensions =
     
     type private CallbackObject(inner : IAdaptiveObject, callback : unit -> unit) as this =
-        static let emptySet = EmptyCollection<IAdaptiveObject>() :> ICollection<_>
 
         let modId = newId()
         let mutable level = inner.Level + 1
@@ -721,6 +724,27 @@ module CallbackExtensions =
 
             !self :> IDisposable //{ new IDisposable with member __.Dispose() = live := false; x.MarkingCallbacks.Remove !self |> ignore}
  
+        /// <summary>
+        /// utility for adding a "persistent" callback to
+        /// the object. returns a disposable "subscription" which
+        /// allows to destroy the callback.
+        /// </summary>
+        member x.AddVolatileMarkingCallback(f : unit -> unit) =
+            let self = ref Unchecked.defaultof<_>
+            self := 
+                new CallbackObject(x, fun () ->
+                    try
+                        f()
+                    with :? LevelChangedException as ex ->
+                        x.Outputs.Add !self |> ignore
+                        raise ex
+                )
+
+            x.AddOutput !self
+
+            !self :> IDisposable //{ new IDisposable with member __.Dispose() = live := false; x.MarkingCallbacks.Remove !self |> ignore}
+ 
+
 
 open System.Threading
  

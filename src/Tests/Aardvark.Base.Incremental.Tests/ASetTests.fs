@@ -753,13 +753,13 @@ module ``collect tests`` =
         // (bytes)
         let t = Thread(ThreadStart(fun () ->
             
-            let mem = System.GC.GetTotalMemory(true)
-
             let mutable m = CSet.ofList [0] :> aset<_>
+
+            let mem = System.GC.GetTotalMemory(true)
 
             let size = 1000
 
-            for i in 2 .. size do
+            for i in 1 .. size do
                 m <- ASet.map id m
 
             let r = m.GetReader()
@@ -767,9 +767,9 @@ module ``collect tests`` =
 
             let memAfter = System.GC.GetTotalMemory(true)
             let diff = memAfter - mem
-            let sizePerMod = float diff / float size
+            let sizePerMod = float diff / float (2 * size)
 
-            printfn "total: %A, per aset: %A (bytes)" diff sizePerMod
+            printfn "total: %A, per reader: %A (bytes)" diff sizePerMod
 
             r.Update()
             r.Dispose()

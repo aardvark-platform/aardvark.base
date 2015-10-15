@@ -284,25 +284,31 @@ module ``Basic Mod Tests`` =
         //1728.70528
         // (bytes)
         //10
+
         let t = Thread(ThreadStart(fun () ->
             
             let mutable m = Mod.init 10 :> IMod<_>
-            let f = id
-
+            let mutable f = id
+            let mutable m = Mod.map f m
+            
+            let size = 10000
+            ignore (Mod.force m)
+            let mutable i = 0
+            System.GC.Collect(3, System.GCCollectionMode.Forced, true)
             let mem = System.GC.GetTotalMemory(true)
 
-            let size = 100000
-
-            for i in 1 .. size do
+            while i < size do
                 m <- Mod.map f m
+                i <- i + 1
 
-            Mod.force m |> ignore
+            ignore (Mod.force m)
 
+            System.GC.Collect(3, System.GCCollectionMode.Forced, true)
             let memAfter = System.GC.GetTotalMemory(true)
             let diff = memAfter - mem
             let sizePerMod = float diff / float size
 
-            printfn "total: %A, per mod: %A (bytes)" diff sizePerMod
+            printfn "per mod:   %Abyte" sizePerMod
 
             printfn "%A" (Mod.force m)
         ), 100000000)
@@ -310,6 +316,27 @@ module ``Basic Mod Tests`` =
         t.Join()
 
 
+    [<Test>]
+    let ``[VolatileCollection] memory test``() =
+        let count = 10000
+        let arr = Array.zeroCreate count
+        let objects = Array.init count (fun _ -> obj())
+
+        let before = System.GC.GetTotalMemory(true)
+
+        for i in 0..count-1 do
+            arr.[i] <- VolatileCollection()
+            ignore (arr.[i].Add(objects.[i]))
+
+        let after = System.GC.GetTotalMemory(true)
+
+        let mem = after - before
+        let perInstance = float mem / float count
+        System.Console.WriteLine("real:      {0}", perInstance)
+
+        let dummy = arr |> Array.exists (fun c -> c.IsEmpty)
+        if dummy then
+            printfn "asdlkasndksajmdlkasmdl"
 
     [<AutoOpen>]
     module Validation =

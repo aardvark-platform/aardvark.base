@@ -225,15 +225,17 @@ module Mod =
 
         Report.End() |> ignore
 
+    open System.Reflection
     // LazyMod<'a> (as the name suggests) implements IMod<'a>
     // and will be evaluated lazily (if not forced to be eager
     // by a callback or subsequent eager computations)
-    type internal LazyMod<'a> =
+    type LazyMod<'a> =
         class
             inherit AdaptiveObject
             val mutable public cache : 'a
             val mutable public compute : unit -> 'a
             val mutable public scope : Ag.Scope
+
 
             member x.GetValue() =
                 x.EvaluateAlways (fun () ->
@@ -662,8 +664,8 @@ module Mod =
                         let a = ma.GetValue()
                         let b = mb.GetValue()
 
-                        let ca = PersistentHashSet.contains (a :> IAdaptiveObject) changed
-                        let cb = PersistentHashSet.contains (b :> IAdaptiveObject) changed
+                        let ca = PersistentHashSet.contains (ma :> IAdaptiveObject) changed
+                        let cb = PersistentHashSet.contains (mb :> IAdaptiveObject) changed
 
                         match !inner with
                             | Some (va, vb, inner) when not ca && not cb ->
