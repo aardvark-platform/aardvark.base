@@ -401,7 +401,7 @@ namespace Aardvark.Base
             if (ei == 0)
             {
                 ++m_count;
-                m_firstArray[fi].Next = -1;
+               m_firstArray[fi].Next = -1;
                 m_firstArray[fi].Item.Hash = hash;
                 m_firstArray[fi].Item.Key = key;
                 m_firstArray[fi].Item.Value = value;
@@ -456,7 +456,7 @@ namespace Aardvark.Base
             if (ei == 0)
             {
                 ++m_count;
-                m_firstArray[fi].Next = -1;
+               m_firstArray[fi].Next = -1;
                 m_firstArray[fi].Item.Hash = hash;
                 m_firstArray[fi].Item.Key = key;
                 m_firstArray[fi].Item.Value = value;
@@ -512,7 +512,7 @@ namespace Aardvark.Base
             if (ei == 0)
             {
                 ++m_count;
-                m_firstArray[fi].Next = -1;
+               m_firstArray[fi].Next = -1;
                 m_firstArray[fi].Item.Hash = hash;
                 m_firstArray[fi].Item.Key = key;
                 m_firstArray[fi].Item.Value = value;
@@ -568,7 +568,7 @@ namespace Aardvark.Base
             if (ei == 0)
             {
                 ++m_count;
-                m_firstArray[fi].Next = -1;
+               m_firstArray[fi].Next = -1;
                 m_firstArray[fi].Item.Hash = hash;
                 m_firstArray[fi].Item.Key = key;
                 m_firstArray[fi].Item.Value = value;
@@ -867,18 +867,17 @@ namespace Aardvark.Base
 
         void AddCreated(TKey key, int hash, TValue value)
         {
+            ++m_count;
             var fi = ((uint)hash) % m_capacity;
             var ei = m_firstArray[fi].Next;
             if (ei == 0)
             {
-                ++m_count;
                 m_firstArray[fi].Next = -1;
                 m_firstArray[fi].Item.Hash = hash;
                 m_firstArray[fi].Item.Key = key;
                 m_firstArray[fi].Item.Value = value;
                 return;
             }
-            ++m_count;
             ++m_extraCount;
             if (m_freeIndex < 0)
             {
@@ -2021,7 +2020,7 @@ namespace Aardvark.Base
             if (ei == 0)
             {
                 ++m_count;
-                m_firstArray[fi].Next = -1;
+               m_firstArray[fi].Next = -1;
                 m_firstArray[fi].Item.Hash = hash;
                 m_firstArray[fi].Item.Key = key;
                 return true;
@@ -2074,7 +2073,7 @@ namespace Aardvark.Base
             if (ei == 0)
             {
                 ++m_count;
-                m_firstArray[fi].Next = -1;
+               m_firstArray[fi].Next = -1;
                 m_firstArray[fi].Item.Hash = hash;
                 m_firstArray[fi].Item.Key = key;
                 return true;
@@ -2128,7 +2127,7 @@ namespace Aardvark.Base
             if (ei == 0)
             {
                 ++m_count;
-                m_firstArray[fi].Next = -1;
+               m_firstArray[fi].Next = -1;
                 m_firstArray[fi].Item.Hash = hash;
                 m_firstArray[fi].Item.Key = key;
                 return true;
@@ -2181,7 +2180,7 @@ namespace Aardvark.Base
             if (ei == 0)
             {
                 ++m_count;
-                m_firstArray[fi].Next = -1;
+               m_firstArray[fi].Next = -1;
                 m_firstArray[fi].Item.Hash = hash;
                 m_firstArray[fi].Item.Key = key;
                 return true;
@@ -3071,7 +3070,7 @@ namespace Aardvark.Base
             if (ei == 0)
             {
                 ++m_count;
-                m_firstArray[fi].Next = -1;
+               m_firstArray[fi].Next = -1;
                 m_firstArray[fi].Item.Key = key;
                 m_firstArray[fi].Item.Value = value;
                 return;
@@ -3123,7 +3122,7 @@ namespace Aardvark.Base
             if (ei == 0)
             {
                 ++m_count;
-                m_firstArray[fi].Next = -1;
+               m_firstArray[fi].Next = -1;
                 m_firstArray[fi].Item.Key = key;
                 m_firstArray[fi].Item.Value = value;
                 return true;
@@ -3338,17 +3337,16 @@ namespace Aardvark.Base
 
         void AddCreated(int key, int hash, TValue value)
         {
+            ++m_count;
             var fi = ((uint)hash) % m_capacity;
             var ei = m_firstArray[fi].Next;
             if (ei == 0)
             {
-                ++m_count;
                 m_firstArray[fi].Next = -1;
                 m_firstArray[fi].Item.Key = key;
                 m_firstArray[fi].Item.Value = value;
                 return;
             }
-            ++m_count;
             ++m_extraCount;
             if (m_freeIndex < 0)
             {
@@ -4181,7 +4179,7 @@ namespace Aardvark.Base
             if (ei == 0)
             {
                 ++m_count;
-                m_firstArray[fi].Next = -1;
+               m_firstArray[fi].Next = -1;
                 m_firstArray[fi].Item = key;
                 return true;
             }
@@ -4231,7 +4229,7 @@ namespace Aardvark.Base
             if (ei == 0)
             {
                 ++m_count;
-                m_firstArray[fi].Next = -1;
+               m_firstArray[fi].Next = -1;
                 m_firstArray[fi].Item = key;
                 return true;
             }
@@ -5031,7 +5029,7 @@ namespace Aardvark.Base
             if (ei == 0)
             {
                 ++m_count;
-                m_firstArray[fi].Next = -1;
+               m_firstArray[fi].Next = -1;
                 m_firstArray[fi].Item.Key = key;
                 m_firstArray[fi].Item.Value = value;
                 return;
@@ -5083,7 +5081,7 @@ namespace Aardvark.Base
             if (ei == 0)
             {
                 ++m_count;
-                m_firstArray[fi].Next = -1;
+               m_firstArray[fi].Next = -1;
                 m_firstArray[fi].Item.Key = key;
                 m_firstArray[fi].Item.Value = value;
                 return true;
@@ -5316,17 +5314,16 @@ namespace Aardvark.Base
 
         void AddCreated(Symbol key, int hash, TValue value)
         {
+            ++m_count;
             var fi = ((uint)hash) % m_capacity;
             var ei = m_firstArray[fi].Next;
             if (ei == 0)
             {
-                ++m_count;
                 m_firstArray[fi].Next = -1;
                 m_firstArray[fi].Item.Key = key;
                 m_firstArray[fi].Item.Value = value;
                 return;
             }
-            ++m_count;
             ++m_extraCount;
             if (m_freeIndex < 0)
             {
@@ -6253,7 +6250,7 @@ namespace Aardvark.Base
             if (ei == 0)
             {
                 ++m_count;
-                m_firstArray[fi].Next = -1;
+               m_firstArray[fi].Next = -1;
                 m_firstArray[fi].Item = key;
                 return true;
             }
@@ -6303,7 +6300,7 @@ namespace Aardvark.Base
             if (ei == 0)
             {
                 ++m_count;
-                m_firstArray[fi].Next = -1;
+               m_firstArray[fi].Next = -1;
                 m_firstArray[fi].Item = key;
                 return true;
             }
@@ -7093,7 +7090,7 @@ namespace Aardvark.Base
             if (ei == 0)
             {
                 ++m_count;
-                m_firstArray[fi].Next = -1;
+               m_firstArray[fi].Next = -1;
                 m_firstArray[fi].Item.Hash = hash;
                 m_firstArray[fi].Item.Key = key;
                 m_firstArray[fi].Item.Value = value;
@@ -7148,7 +7145,7 @@ namespace Aardvark.Base
             if (ei == 0)
             {
                 ++m_count;
-                m_firstArray[fi].Next = -1;
+               m_firstArray[fi].Next = -1;
                 m_firstArray[fi].Item.Hash = hash;
                 m_firstArray[fi].Item.Key = key;
                 m_firstArray[fi].Item.Value = value;
@@ -7204,7 +7201,7 @@ namespace Aardvark.Base
             if (ei == 0)
             {
                 ++m_count;
-                m_firstArray[fi].Next = -1;
+               m_firstArray[fi].Next = -1;
                 m_firstArray[fi].Item.Hash = hash;
                 m_firstArray[fi].Item.Key = key;
                 m_firstArray[fi].Item.Value = value;
@@ -7260,7 +7257,7 @@ namespace Aardvark.Base
             if (ei == 0)
             {
                 ++m_count;
-                m_firstArray[fi].Next = -1;
+               m_firstArray[fi].Next = -1;
                 m_firstArray[fi].Item.Hash = hash;
                 m_firstArray[fi].Item.Key = key;
                 m_firstArray[fi].Item.Value = value;
@@ -7559,18 +7556,17 @@ namespace Aardvark.Base
 
         void AddCreated(TKey key, long hash, TValue value)
         {
+            ++m_count;
             var fi = ((ulong)hash) % m_capacity;
             var ei = m_firstArray[fi].Next;
             if (ei == 0)
             {
-                ++m_count;
                 m_firstArray[fi].Next = -1;
                 m_firstArray[fi].Item.Hash = hash;
                 m_firstArray[fi].Item.Key = key;
                 m_firstArray[fi].Item.Value = value;
                 return;
             }
-            ++m_count;
             ++m_extraCount;
             if (m_freeIndex < 0)
             {
@@ -8698,7 +8694,7 @@ namespace Aardvark.Base
             if (ei == 0)
             {
                 ++m_count;
-                m_firstArray[fi].Next = -1;
+               m_firstArray[fi].Next = -1;
                 m_firstArray[fi].Item.Hash = hash;
                 m_firstArray[fi].Item.Key = key;
                 return true;
@@ -8751,7 +8747,7 @@ namespace Aardvark.Base
             if (ei == 0)
             {
                 ++m_count;
-                m_firstArray[fi].Next = -1;
+               m_firstArray[fi].Next = -1;
                 m_firstArray[fi].Item.Hash = hash;
                 m_firstArray[fi].Item.Key = key;
                 return true;
@@ -8805,7 +8801,7 @@ namespace Aardvark.Base
             if (ei == 0)
             {
                 ++m_count;
-                m_firstArray[fi].Next = -1;
+               m_firstArray[fi].Next = -1;
                 m_firstArray[fi].Item.Hash = hash;
                 m_firstArray[fi].Item.Key = key;
                 return true;
@@ -8858,7 +8854,7 @@ namespace Aardvark.Base
             if (ei == 0)
             {
                 ++m_count;
-                m_firstArray[fi].Next = -1;
+               m_firstArray[fi].Next = -1;
                 m_firstArray[fi].Item.Hash = hash;
                 m_firstArray[fi].Item.Key = key;
                 return true;
@@ -9736,7 +9732,7 @@ namespace Aardvark.Base
             if (ei == 0)
             {
                 ++m_count;
-                m_firstArray[fi].Next = -1;
+               m_firstArray[fi].Next = -1;
                 m_firstArray[fi].Item.Key = key;
                 m_firstArray[fi].Item.Value = value;
                 return;
@@ -9788,7 +9784,7 @@ namespace Aardvark.Base
             if (ei == 0)
             {
                 ++m_count;
-                m_firstArray[fi].Next = -1;
+               m_firstArray[fi].Next = -1;
                 m_firstArray[fi].Item.Key = key;
                 m_firstArray[fi].Item.Value = value;
                 return true;
@@ -10003,17 +9999,16 @@ namespace Aardvark.Base
 
         void AddCreated(long key, long hash, TValue value)
         {
+            ++m_count;
             var fi = ((ulong)hash) % m_capacity;
             var ei = m_firstArray[fi].Next;
             if (ei == 0)
             {
-                ++m_count;
                 m_firstArray[fi].Next = -1;
                 m_firstArray[fi].Item.Key = key;
                 m_firstArray[fi].Item.Value = value;
                 return;
             }
-            ++m_count;
             ++m_extraCount;
             if (m_freeIndex < 0)
             {
@@ -10829,7 +10824,7 @@ namespace Aardvark.Base
             if (ei == 0)
             {
                 ++m_count;
-                m_firstArray[fi].Next = -1;
+               m_firstArray[fi].Next = -1;
                 m_firstArray[fi].Item = key;
                 return true;
             }
@@ -10879,7 +10874,7 @@ namespace Aardvark.Base
             if (ei == 0)
             {
                 ++m_count;
-                m_firstArray[fi].Next = -1;
+               m_firstArray[fi].Next = -1;
                 m_firstArray[fi].Item = key;
                 return true;
             }
@@ -15853,14 +15848,15 @@ namespace Aardvark.Base
         public void Add(TKey key, TValue value)
         {
             var hash = key.GetHashCode();
-            var locked = false; try { m_lock.Enter(ref locked); ++m_version;
+            var locked = false; try { m_lock.Enter(ref locked);
             if (m_count >= m_increaseThreshold) IncreaseCapacity();
             var fi = ((uint)hash) % m_capacity;
             var ei = m_firstArray[fi].Next;
             if (ei == 0)
             {
                 ++m_count;
-                m_firstArray[fi].Next = -1;
+                ++m_version;
+               m_firstArray[fi].Next = -1;
                 m_firstArray[fi].Item.Hash = hash;
                 m_firstArray[fi].Item.Key = key;
                 m_firstArray[fi].Item.Value = value;
@@ -15886,6 +15882,7 @@ namespace Aardvark.Base
                 ei = m_firstArray[fi].Next;
             }
             ++m_count;
+            ++m_version;
             ++m_extraCount;
             if (m_freeIndex < 0)
             {
@@ -15910,14 +15907,15 @@ namespace Aardvark.Base
         /// </summary>
         public void Add(TKey key, int hash, TValue value)
         {
-            var locked = false; try { m_lock.Enter(ref locked); ++m_version;
+            var locked = false; try { m_lock.Enter(ref locked);
             if (m_count >= m_increaseThreshold) IncreaseCapacity();
             var fi = ((uint)hash) % m_capacity;
             var ei = m_firstArray[fi].Next;
             if (ei == 0)
             {
                 ++m_count;
-                m_firstArray[fi].Next = -1;
+                ++m_version;
+               m_firstArray[fi].Next = -1;
                 m_firstArray[fi].Item.Hash = hash;
                 m_firstArray[fi].Item.Key = key;
                 m_firstArray[fi].Item.Value = value;
@@ -15943,6 +15941,7 @@ namespace Aardvark.Base
                 ei = m_firstArray[fi].Next;
             }
             ++m_count;
+            ++m_version;
             ++m_extraCount;
             if (m_freeIndex < 0)
             {
@@ -15968,14 +15967,15 @@ namespace Aardvark.Base
         public bool TryAdd(TKey key, TValue value)
         {
             var hash = key.GetHashCode();
-            var locked = false; try { m_lock.Enter(ref locked); ++m_version;
+            var locked = false; try { m_lock.Enter(ref locked);
             if (m_count >= m_increaseThreshold) IncreaseCapacity();
             var fi = ((uint)hash) % m_capacity;
             var ei = m_firstArray[fi].Next;
             if (ei == 0)
             {
                 ++m_count;
-                m_firstArray[fi].Next = -1;
+                ++m_version;
+               m_firstArray[fi].Next = -1;
                 m_firstArray[fi].Item.Hash = hash;
                 m_firstArray[fi].Item.Key = key;
                 m_firstArray[fi].Item.Value = value;
@@ -16001,6 +16001,7 @@ namespace Aardvark.Base
                 ei = m_firstArray[fi].Next;
             }
             ++m_count;
+            ++m_version;
             ++m_extraCount;
             if (m_freeIndex < 0)
             {
@@ -16026,14 +16027,15 @@ namespace Aardvark.Base
         /// </summary>
         public bool TryAdd(TKey key, int hash, TValue value)
         {
-            var locked = false; try { m_lock.Enter(ref locked); ++m_version;
+            var locked = false; try { m_lock.Enter(ref locked);
             if (m_count >= m_increaseThreshold) IncreaseCapacity();
             var fi = ((uint)hash) % m_capacity;
             var ei = m_firstArray[fi].Next;
             if (ei == 0)
             {
                 ++m_count;
-                m_firstArray[fi].Next = -1;
+                ++m_version;
+               m_firstArray[fi].Next = -1;
                 m_firstArray[fi].Item.Hash = hash;
                 m_firstArray[fi].Item.Key = key;
                 m_firstArray[fi].Item.Value = value;
@@ -16059,6 +16061,7 @@ namespace Aardvark.Base
                 ei = m_firstArray[fi].Next;
             }
             ++m_count;
+            ++m_version;
             ++m_extraCount;
             if (m_freeIndex < 0)
             {
@@ -16301,6 +16304,7 @@ namespace Aardvark.Base
                     return v0;
                 }
                 ++m_count;
+                ++m_version;
                 m_firstArray[fi].Next = -1;
                 m_firstArray[fi].Item.Hash = hash;
                 m_firstArray[fi].Item.Key = key;
@@ -16327,6 +16331,7 @@ namespace Aardvark.Base
             }
             ei = m_firstArray[fi].Next;
             ++m_count;
+            ++m_version;
             ++m_extraCount;
             if (m_freeIndex < 0)
             {
@@ -16349,18 +16354,18 @@ namespace Aardvark.Base
 
         void AddCreated(TKey key, int hash, TValue value)
         {
+            ++m_count;
+            ++m_version;
             var fi = ((uint)hash) % m_capacity;
             var ei = m_firstArray[fi].Next;
             if (ei == 0)
             {
-                ++m_count;
                 m_firstArray[fi].Next = -1;
                 m_firstArray[fi].Item.Hash = hash;
                 m_firstArray[fi].Item.Key = key;
                 m_firstArray[fi].Item.Value = value;
                 return;
             }
-            ++m_count;
             ++m_extraCount;
             if (m_freeIndex < 0)
             {
@@ -16449,6 +16454,7 @@ namespace Aardvark.Base
                     return v0;
                 }
                 ++m_count;
+                ++m_version;
                 m_firstArray[fi].Next = -1;
                 m_firstArray[fi].Item.Hash = hash;
                 m_firstArray[fi].Item.Key = key;
@@ -16475,6 +16481,7 @@ namespace Aardvark.Base
             }
             ei = m_firstArray[fi].Next;
             ++m_count;
+            ++m_version;
             ++m_extraCount;
             if (m_freeIndex < 0)
             {
@@ -17567,14 +17574,15 @@ namespace Aardvark.Base
         public bool Add(TKey key)
         {
             var hash = key.GetHashCode();
-            var locked = false; try { m_lock.Enter(ref locked); ++m_version;
+            var locked = false; try { m_lock.Enter(ref locked);
             if (m_count >= m_increaseThreshold) IncreaseCapacity();
             var fi = ((uint)hash) % m_capacity;
             var ei = m_firstArray[fi].Next;
             if (ei == 0)
             {
                 ++m_count;
-                m_firstArray[fi].Next = -1;
+                ++m_version;
+               m_firstArray[fi].Next = -1;
                 m_firstArray[fi].Item.Hash = hash;
                 m_firstArray[fi].Item.Key = key;
                 return true;
@@ -17598,6 +17606,7 @@ namespace Aardvark.Base
                 ei = m_firstArray[fi].Next;
             }
             ++m_count;
+            ++m_version;
             ++m_extraCount;
             if (m_freeIndex < 0)
             {
@@ -17622,14 +17631,15 @@ namespace Aardvark.Base
         /// </summary>
         public bool Add(TKey key, int hash)
         {
-            var locked = false; try { m_lock.Enter(ref locked); ++m_version;
+            var locked = false; try { m_lock.Enter(ref locked);
             if (m_count >= m_increaseThreshold) IncreaseCapacity();
             var fi = ((uint)hash) % m_capacity;
             var ei = m_firstArray[fi].Next;
             if (ei == 0)
             {
                 ++m_count;
-                m_firstArray[fi].Next = -1;
+                ++m_version;
+               m_firstArray[fi].Next = -1;
                 m_firstArray[fi].Item.Hash = hash;
                 m_firstArray[fi].Item.Key = key;
                 return true;
@@ -17653,6 +17663,7 @@ namespace Aardvark.Base
                 ei = m_firstArray[fi].Next;
             }
             ++m_count;
+            ++m_version;
             ++m_extraCount;
             if (m_freeIndex < 0)
             {
@@ -17678,14 +17689,15 @@ namespace Aardvark.Base
         public bool TryAdd(TKey key)
         {
             var hash = key.GetHashCode();
-            var locked = false; try { m_lock.Enter(ref locked); ++m_version;
+            var locked = false; try { m_lock.Enter(ref locked);
             if (m_count >= m_increaseThreshold) IncreaseCapacity();
             var fi = ((uint)hash) % m_capacity;
             var ei = m_firstArray[fi].Next;
             if (ei == 0)
             {
                 ++m_count;
-                m_firstArray[fi].Next = -1;
+                ++m_version;
+               m_firstArray[fi].Next = -1;
                 m_firstArray[fi].Item.Hash = hash;
                 m_firstArray[fi].Item.Key = key;
                 return true;
@@ -17709,6 +17721,7 @@ namespace Aardvark.Base
                 ei = m_firstArray[fi].Next;
             }
             ++m_count;
+            ++m_version;
             ++m_extraCount;
             if (m_freeIndex < 0)
             {
@@ -17733,14 +17746,15 @@ namespace Aardvark.Base
         /// </summary>
         public bool TryAdd(TKey key, int hash)
         {
-            var locked = false; try { m_lock.Enter(ref locked); ++m_version;
+            var locked = false; try { m_lock.Enter(ref locked);
             if (m_count >= m_increaseThreshold) IncreaseCapacity();
             var fi = ((uint)hash) % m_capacity;
             var ei = m_firstArray[fi].Next;
             if (ei == 0)
             {
                 ++m_count;
-                m_firstArray[fi].Next = -1;
+                ++m_version;
+               m_firstArray[fi].Next = -1;
                 m_firstArray[fi].Item.Hash = hash;
                 m_firstArray[fi].Item.Key = key;
                 return true;
@@ -17764,6 +17778,7 @@ namespace Aardvark.Base
                 ei = m_firstArray[fi].Next;
             }
             ++m_count;
+            ++m_version;
             ++m_extraCount;
             if (m_freeIndex < 0)
             {
@@ -18677,14 +18692,15 @@ namespace Aardvark.Base
         public void Add(int key, TValue value)
         {
             var hash = key;
-            var locked = false; try { m_lock.Enter(ref locked); ++m_version;
+            var locked = false; try { m_lock.Enter(ref locked);
             if (m_count >= m_increaseThreshold) IncreaseCapacity();
             var fi = ((uint)hash) % m_capacity;
             var ei = m_firstArray[fi].Next;
             if (ei == 0)
             {
                 ++m_count;
-                m_firstArray[fi].Next = -1;
+                ++m_version;
+               m_firstArray[fi].Next = -1;
                 m_firstArray[fi].Item.Key = key;
                 m_firstArray[fi].Item.Value = value;
                 return;
@@ -18707,6 +18723,7 @@ namespace Aardvark.Base
                 ei = m_firstArray[fi].Next;
             }
             ++m_count;
+            ++m_version;
             ++m_extraCount;
             if (m_freeIndex < 0)
             {
@@ -18731,14 +18748,15 @@ namespace Aardvark.Base
         public bool TryAdd(int key, TValue value)
         {
             var hash = key;
-            var locked = false; try { m_lock.Enter(ref locked); ++m_version;
+            var locked = false; try { m_lock.Enter(ref locked);
             if (m_count >= m_increaseThreshold) IncreaseCapacity();
             var fi = ((uint)hash) % m_capacity;
             var ei = m_firstArray[fi].Next;
             if (ei == 0)
             {
                 ++m_count;
-                m_firstArray[fi].Next = -1;
+                ++m_version;
+               m_firstArray[fi].Next = -1;
                 m_firstArray[fi].Item.Key = key;
                 m_firstArray[fi].Item.Value = value;
                 return true;
@@ -18761,6 +18779,7 @@ namespace Aardvark.Base
                 ei = m_firstArray[fi].Next;
             }
             ++m_count;
+            ++m_version;
             ++m_extraCount;
             if (m_freeIndex < 0)
             {
@@ -18920,6 +18939,7 @@ namespace Aardvark.Base
                     return v0;
                 }
                 ++m_count;
+                ++m_version;
                 m_firstArray[fi].Next = -1;
                 m_firstArray[fi].Item.Key = key;
                 var value = creator(key);
@@ -18943,6 +18963,7 @@ namespace Aardvark.Base
             }
             ei = m_firstArray[fi].Next;
             ++m_count;
+            ++m_version;
             ++m_extraCount;
             if (m_freeIndex < 0)
             {
@@ -18964,17 +18985,17 @@ namespace Aardvark.Base
 
         void AddCreated(int key, int hash, TValue value)
         {
+            ++m_count;
+            ++m_version;
             var fi = ((uint)hash) % m_capacity;
             var ei = m_firstArray[fi].Next;
             if (ei == 0)
             {
-                ++m_count;
                 m_firstArray[fi].Next = -1;
                 m_firstArray[fi].Item.Key = key;
                 m_firstArray[fi].Item.Value = value;
                 return;
             }
-            ++m_count;
             ++m_extraCount;
             if (m_freeIndex < 0)
             {
@@ -19853,14 +19874,15 @@ namespace Aardvark.Base
         public bool Add(int key)
         {
             var hash = key;
-            var locked = false; try { m_lock.Enter(ref locked); ++m_version;
+            var locked = false; try { m_lock.Enter(ref locked);
             if (m_count >= m_increaseThreshold) IncreaseCapacity();
             var fi = ((uint)hash) % m_capacity;
             var ei = m_firstArray[fi].Next;
             if (ei == 0)
             {
                 ++m_count;
-                m_firstArray[fi].Next = -1;
+                ++m_version;
+               m_firstArray[fi].Next = -1;
                 m_firstArray[fi].Item = key;
                 return true;
             }
@@ -19881,6 +19903,7 @@ namespace Aardvark.Base
                 ei = m_firstArray[fi].Next;
             }
             ++m_count;
+            ++m_version;
             ++m_extraCount;
             if (m_freeIndex < 0)
             {
@@ -19905,14 +19928,15 @@ namespace Aardvark.Base
         public bool TryAdd(int key)
         {
             var hash = key;
-            var locked = false; try { m_lock.Enter(ref locked); ++m_version;
+            var locked = false; try { m_lock.Enter(ref locked);
             if (m_count >= m_increaseThreshold) IncreaseCapacity();
             var fi = ((uint)hash) % m_capacity;
             var ei = m_firstArray[fi].Next;
             if (ei == 0)
             {
                 ++m_count;
-                m_firstArray[fi].Next = -1;
+                ++m_version;
+               m_firstArray[fi].Next = -1;
                 m_firstArray[fi].Item = key;
                 return true;
             }
@@ -19933,6 +19957,7 @@ namespace Aardvark.Base
                 ei = m_firstArray[fi].Next;
             }
             ++m_count;
+            ++m_version;
             ++m_extraCount;
             if (m_freeIndex < 0)
             {
@@ -20752,14 +20777,15 @@ namespace Aardvark.Base
         public void Add(Symbol key, TValue value)
         {
             var hash = key.Id;
-            var locked = false; try { m_lock.Enter(ref locked); ++m_version;
+            var locked = false; try { m_lock.Enter(ref locked);
             if (m_count >= m_increaseThreshold) IncreaseCapacity();
             var fi = ((uint)hash) % m_capacity;
             var ei = m_firstArray[fi].Next;
             if (ei == 0)
             {
                 ++m_count;
-                m_firstArray[fi].Next = -1;
+                ++m_version;
+               m_firstArray[fi].Next = -1;
                 m_firstArray[fi].Item.Key = key;
                 m_firstArray[fi].Item.Value = value;
                 return;
@@ -20782,6 +20808,7 @@ namespace Aardvark.Base
                 ei = m_firstArray[fi].Next;
             }
             ++m_count;
+            ++m_version;
             ++m_extraCount;
             if (m_freeIndex < 0)
             {
@@ -20806,14 +20833,15 @@ namespace Aardvark.Base
         public bool TryAdd(Symbol key, TValue value)
         {
             var hash = key.Id;
-            var locked = false; try { m_lock.Enter(ref locked); ++m_version;
+            var locked = false; try { m_lock.Enter(ref locked);
             if (m_count >= m_increaseThreshold) IncreaseCapacity();
             var fi = ((uint)hash) % m_capacity;
             var ei = m_firstArray[fi].Next;
             if (ei == 0)
             {
                 ++m_count;
-                m_firstArray[fi].Next = -1;
+                ++m_version;
+               m_firstArray[fi].Next = -1;
                 m_firstArray[fi].Item.Key = key;
                 m_firstArray[fi].Item.Value = value;
                 return true;
@@ -20836,6 +20864,7 @@ namespace Aardvark.Base
                 ei = m_firstArray[fi].Next;
             }
             ++m_count;
+            ++m_version;
             ++m_extraCount;
             if (m_freeIndex < 0)
             {
@@ -21013,6 +21042,7 @@ namespace Aardvark.Base
                     return v0;
                 }
                 ++m_count;
+                ++m_version;
                 m_firstArray[fi].Next = -1;
                 m_firstArray[fi].Item.Key = key;
                 var value = creator(key);
@@ -21036,6 +21066,7 @@ namespace Aardvark.Base
             }
             ei = m_firstArray[fi].Next;
             ++m_count;
+            ++m_version;
             ++m_extraCount;
             if (m_freeIndex < 0)
             {
@@ -21057,17 +21088,17 @@ namespace Aardvark.Base
 
         void AddCreated(Symbol key, int hash, TValue value)
         {
+            ++m_count;
+            ++m_version;
             var fi = ((uint)hash) % m_capacity;
             var ei = m_firstArray[fi].Next;
             if (ei == 0)
             {
-                ++m_count;
                 m_firstArray[fi].Next = -1;
                 m_firstArray[fi].Item.Key = key;
                 m_firstArray[fi].Item.Value = value;
                 return;
             }
-            ++m_count;
             ++m_extraCount;
             if (m_freeIndex < 0)
             {
@@ -22040,14 +22071,15 @@ namespace Aardvark.Base
         public bool Add(Symbol key)
         {
             var hash = key.Id;
-            var locked = false; try { m_lock.Enter(ref locked); ++m_version;
+            var locked = false; try { m_lock.Enter(ref locked);
             if (m_count >= m_increaseThreshold) IncreaseCapacity();
             var fi = ((uint)hash) % m_capacity;
             var ei = m_firstArray[fi].Next;
             if (ei == 0)
             {
                 ++m_count;
-                m_firstArray[fi].Next = -1;
+                ++m_version;
+               m_firstArray[fi].Next = -1;
                 m_firstArray[fi].Item = key;
                 return true;
             }
@@ -22068,6 +22100,7 @@ namespace Aardvark.Base
                 ei = m_firstArray[fi].Next;
             }
             ++m_count;
+            ++m_version;
             ++m_extraCount;
             if (m_freeIndex < 0)
             {
@@ -22092,14 +22125,15 @@ namespace Aardvark.Base
         public bool TryAdd(Symbol key)
         {
             var hash = key.Id;
-            var locked = false; try { m_lock.Enter(ref locked); ++m_version;
+            var locked = false; try { m_lock.Enter(ref locked);
             if (m_count >= m_increaseThreshold) IncreaseCapacity();
             var fi = ((uint)hash) % m_capacity;
             var ei = m_firstArray[fi].Next;
             if (ei == 0)
             {
                 ++m_count;
-                m_firstArray[fi].Next = -1;
+                ++m_version;
+               m_firstArray[fi].Next = -1;
                 m_firstArray[fi].Item = key;
                 return true;
             }
@@ -22120,6 +22154,7 @@ namespace Aardvark.Base
                 ei = m_firstArray[fi].Next;
             }
             ++m_count;
+            ++m_version;
             ++m_extraCount;
             if (m_freeIndex < 0)
             {
@@ -22930,14 +22965,15 @@ namespace Aardvark.Base
         public void Add(TKey key, TValue value)
         {
             var hash = m_hfun(key);
-            var locked = false; try { m_lock.Enter(ref locked); ++m_version;
+            var locked = false; try { m_lock.Enter(ref locked);
             if (m_count >= m_increaseThreshold) IncreaseCapacity();
             var fi = ((ulong)hash) % m_capacity;
             var ei = m_firstArray[fi].Next;
             if (ei == 0)
             {
                 ++m_count;
-                m_firstArray[fi].Next = -1;
+                ++m_version;
+               m_firstArray[fi].Next = -1;
                 m_firstArray[fi].Item.Hash = hash;
                 m_firstArray[fi].Item.Key = key;
                 m_firstArray[fi].Item.Value = value;
@@ -22963,6 +22999,7 @@ namespace Aardvark.Base
                 ei = m_firstArray[fi].Next;
             }
             ++m_count;
+            ++m_version;
             ++m_extraCount;
             if (m_freeIndex < 0)
             {
@@ -22987,14 +23024,15 @@ namespace Aardvark.Base
         /// </summary>
         public void Add(TKey key, long hash, TValue value)
         {
-            var locked = false; try { m_lock.Enter(ref locked); ++m_version;
+            var locked = false; try { m_lock.Enter(ref locked);
             if (m_count >= m_increaseThreshold) IncreaseCapacity();
             var fi = ((ulong)hash) % m_capacity;
             var ei = m_firstArray[fi].Next;
             if (ei == 0)
             {
                 ++m_count;
-                m_firstArray[fi].Next = -1;
+                ++m_version;
+               m_firstArray[fi].Next = -1;
                 m_firstArray[fi].Item.Hash = hash;
                 m_firstArray[fi].Item.Key = key;
                 m_firstArray[fi].Item.Value = value;
@@ -23020,6 +23058,7 @@ namespace Aardvark.Base
                 ei = m_firstArray[fi].Next;
             }
             ++m_count;
+            ++m_version;
             ++m_extraCount;
             if (m_freeIndex < 0)
             {
@@ -23045,14 +23084,15 @@ namespace Aardvark.Base
         public bool TryAdd(TKey key, TValue value)
         {
             var hash = m_hfun(key);
-            var locked = false; try { m_lock.Enter(ref locked); ++m_version;
+            var locked = false; try { m_lock.Enter(ref locked);
             if (m_count >= m_increaseThreshold) IncreaseCapacity();
             var fi = ((ulong)hash) % m_capacity;
             var ei = m_firstArray[fi].Next;
             if (ei == 0)
             {
                 ++m_count;
-                m_firstArray[fi].Next = -1;
+                ++m_version;
+               m_firstArray[fi].Next = -1;
                 m_firstArray[fi].Item.Hash = hash;
                 m_firstArray[fi].Item.Key = key;
                 m_firstArray[fi].Item.Value = value;
@@ -23078,6 +23118,7 @@ namespace Aardvark.Base
                 ei = m_firstArray[fi].Next;
             }
             ++m_count;
+            ++m_version;
             ++m_extraCount;
             if (m_freeIndex < 0)
             {
@@ -23103,14 +23144,15 @@ namespace Aardvark.Base
         /// </summary>
         public bool TryAdd(TKey key, long hash, TValue value)
         {
-            var locked = false; try { m_lock.Enter(ref locked); ++m_version;
+            var locked = false; try { m_lock.Enter(ref locked);
             if (m_count >= m_increaseThreshold) IncreaseCapacity();
             var fi = ((ulong)hash) % m_capacity;
             var ei = m_firstArray[fi].Next;
             if (ei == 0)
             {
                 ++m_count;
-                m_firstArray[fi].Next = -1;
+                ++m_version;
+               m_firstArray[fi].Next = -1;
                 m_firstArray[fi].Item.Hash = hash;
                 m_firstArray[fi].Item.Key = key;
                 m_firstArray[fi].Item.Value = value;
@@ -23136,6 +23178,7 @@ namespace Aardvark.Base
                 ei = m_firstArray[fi].Next;
             }
             ++m_count;
+            ++m_version;
             ++m_extraCount;
             if (m_freeIndex < 0)
             {
@@ -23378,6 +23421,7 @@ namespace Aardvark.Base
                     return v0;
                 }
                 ++m_count;
+                ++m_version;
                 m_firstArray[fi].Next = -1;
                 m_firstArray[fi].Item.Hash = hash;
                 m_firstArray[fi].Item.Key = key;
@@ -23404,6 +23448,7 @@ namespace Aardvark.Base
             }
             ei = m_firstArray[fi].Next;
             ++m_count;
+            ++m_version;
             ++m_extraCount;
             if (m_freeIndex < 0)
             {
@@ -23426,18 +23471,18 @@ namespace Aardvark.Base
 
         void AddCreated(TKey key, long hash, TValue value)
         {
+            ++m_count;
+            ++m_version;
             var fi = ((ulong)hash) % m_capacity;
             var ei = m_firstArray[fi].Next;
             if (ei == 0)
             {
-                ++m_count;
                 m_firstArray[fi].Next = -1;
                 m_firstArray[fi].Item.Hash = hash;
                 m_firstArray[fi].Item.Key = key;
                 m_firstArray[fi].Item.Value = value;
                 return;
             }
-            ++m_count;
             ++m_extraCount;
             if (m_freeIndex < 0)
             {
@@ -23526,6 +23571,7 @@ namespace Aardvark.Base
                     return v0;
                 }
                 ++m_count;
+                ++m_version;
                 m_firstArray[fi].Next = -1;
                 m_firstArray[fi].Item.Hash = hash;
                 m_firstArray[fi].Item.Key = key;
@@ -23552,6 +23598,7 @@ namespace Aardvark.Base
             }
             ei = m_firstArray[fi].Next;
             ++m_count;
+            ++m_version;
             ++m_extraCount;
             if (m_freeIndex < 0)
             {
@@ -24635,14 +24682,15 @@ namespace Aardvark.Base
         public bool Add(TKey key)
         {
             var hash = m_hfun(key);
-            var locked = false; try { m_lock.Enter(ref locked); ++m_version;
+            var locked = false; try { m_lock.Enter(ref locked);
             if (m_count >= m_increaseThreshold) IncreaseCapacity();
             var fi = ((ulong)hash) % m_capacity;
             var ei = m_firstArray[fi].Next;
             if (ei == 0)
             {
                 ++m_count;
-                m_firstArray[fi].Next = -1;
+                ++m_version;
+               m_firstArray[fi].Next = -1;
                 m_firstArray[fi].Item.Hash = hash;
                 m_firstArray[fi].Item.Key = key;
                 return true;
@@ -24666,6 +24714,7 @@ namespace Aardvark.Base
                 ei = m_firstArray[fi].Next;
             }
             ++m_count;
+            ++m_version;
             ++m_extraCount;
             if (m_freeIndex < 0)
             {
@@ -24690,14 +24739,15 @@ namespace Aardvark.Base
         /// </summary>
         public bool Add(TKey key, long hash)
         {
-            var locked = false; try { m_lock.Enter(ref locked); ++m_version;
+            var locked = false; try { m_lock.Enter(ref locked);
             if (m_count >= m_increaseThreshold) IncreaseCapacity();
             var fi = ((ulong)hash) % m_capacity;
             var ei = m_firstArray[fi].Next;
             if (ei == 0)
             {
                 ++m_count;
-                m_firstArray[fi].Next = -1;
+                ++m_version;
+               m_firstArray[fi].Next = -1;
                 m_firstArray[fi].Item.Hash = hash;
                 m_firstArray[fi].Item.Key = key;
                 return true;
@@ -24721,6 +24771,7 @@ namespace Aardvark.Base
                 ei = m_firstArray[fi].Next;
             }
             ++m_count;
+            ++m_version;
             ++m_extraCount;
             if (m_freeIndex < 0)
             {
@@ -24746,14 +24797,15 @@ namespace Aardvark.Base
         public bool TryAdd(TKey key)
         {
             var hash = m_hfun(key);
-            var locked = false; try { m_lock.Enter(ref locked); ++m_version;
+            var locked = false; try { m_lock.Enter(ref locked);
             if (m_count >= m_increaseThreshold) IncreaseCapacity();
             var fi = ((ulong)hash) % m_capacity;
             var ei = m_firstArray[fi].Next;
             if (ei == 0)
             {
                 ++m_count;
-                m_firstArray[fi].Next = -1;
+                ++m_version;
+               m_firstArray[fi].Next = -1;
                 m_firstArray[fi].Item.Hash = hash;
                 m_firstArray[fi].Item.Key = key;
                 return true;
@@ -24777,6 +24829,7 @@ namespace Aardvark.Base
                 ei = m_firstArray[fi].Next;
             }
             ++m_count;
+            ++m_version;
             ++m_extraCount;
             if (m_freeIndex < 0)
             {
@@ -24801,14 +24854,15 @@ namespace Aardvark.Base
         /// </summary>
         public bool TryAdd(TKey key, long hash)
         {
-            var locked = false; try { m_lock.Enter(ref locked); ++m_version;
+            var locked = false; try { m_lock.Enter(ref locked);
             if (m_count >= m_increaseThreshold) IncreaseCapacity();
             var fi = ((ulong)hash) % m_capacity;
             var ei = m_firstArray[fi].Next;
             if (ei == 0)
             {
                 ++m_count;
-                m_firstArray[fi].Next = -1;
+                ++m_version;
+               m_firstArray[fi].Next = -1;
                 m_firstArray[fi].Item.Hash = hash;
                 m_firstArray[fi].Item.Key = key;
                 return true;
@@ -24832,6 +24886,7 @@ namespace Aardvark.Base
                 ei = m_firstArray[fi].Next;
             }
             ++m_count;
+            ++m_version;
             ++m_extraCount;
             if (m_freeIndex < 0)
             {
@@ -25734,14 +25789,15 @@ namespace Aardvark.Base
         public void Add(long key, TValue value)
         {
             var hash = key;
-            var locked = false; try { m_lock.Enter(ref locked); ++m_version;
+            var locked = false; try { m_lock.Enter(ref locked);
             if (m_count >= m_increaseThreshold) IncreaseCapacity();
             var fi = ((ulong)hash) % m_capacity;
             var ei = m_firstArray[fi].Next;
             if (ei == 0)
             {
                 ++m_count;
-                m_firstArray[fi].Next = -1;
+                ++m_version;
+               m_firstArray[fi].Next = -1;
                 m_firstArray[fi].Item.Key = key;
                 m_firstArray[fi].Item.Value = value;
                 return;
@@ -25764,6 +25820,7 @@ namespace Aardvark.Base
                 ei = m_firstArray[fi].Next;
             }
             ++m_count;
+            ++m_version;
             ++m_extraCount;
             if (m_freeIndex < 0)
             {
@@ -25788,14 +25845,15 @@ namespace Aardvark.Base
         public bool TryAdd(long key, TValue value)
         {
             var hash = key;
-            var locked = false; try { m_lock.Enter(ref locked); ++m_version;
+            var locked = false; try { m_lock.Enter(ref locked);
             if (m_count >= m_increaseThreshold) IncreaseCapacity();
             var fi = ((ulong)hash) % m_capacity;
             var ei = m_firstArray[fi].Next;
             if (ei == 0)
             {
                 ++m_count;
-                m_firstArray[fi].Next = -1;
+                ++m_version;
+               m_firstArray[fi].Next = -1;
                 m_firstArray[fi].Item.Key = key;
                 m_firstArray[fi].Item.Value = value;
                 return true;
@@ -25818,6 +25876,7 @@ namespace Aardvark.Base
                 ei = m_firstArray[fi].Next;
             }
             ++m_count;
+            ++m_version;
             ++m_extraCount;
             if (m_freeIndex < 0)
             {
@@ -25977,6 +26036,7 @@ namespace Aardvark.Base
                     return v0;
                 }
                 ++m_count;
+                ++m_version;
                 m_firstArray[fi].Next = -1;
                 m_firstArray[fi].Item.Key = key;
                 var value = creator(key);
@@ -26000,6 +26060,7 @@ namespace Aardvark.Base
             }
             ei = m_firstArray[fi].Next;
             ++m_count;
+            ++m_version;
             ++m_extraCount;
             if (m_freeIndex < 0)
             {
@@ -26021,17 +26082,17 @@ namespace Aardvark.Base
 
         void AddCreated(long key, long hash, TValue value)
         {
+            ++m_count;
+            ++m_version;
             var fi = ((ulong)hash) % m_capacity;
             var ei = m_firstArray[fi].Next;
             if (ei == 0)
             {
-                ++m_count;
                 m_firstArray[fi].Next = -1;
                 m_firstArray[fi].Item.Key = key;
                 m_firstArray[fi].Item.Value = value;
                 return;
             }
-            ++m_count;
             ++m_extraCount;
             if (m_freeIndex < 0)
             {
@@ -26899,14 +26960,15 @@ namespace Aardvark.Base
         public bool Add(long key)
         {
             var hash = key;
-            var locked = false; try { m_lock.Enter(ref locked); ++m_version;
+            var locked = false; try { m_lock.Enter(ref locked);
             if (m_count >= m_increaseThreshold) IncreaseCapacity();
             var fi = ((ulong)hash) % m_capacity;
             var ei = m_firstArray[fi].Next;
             if (ei == 0)
             {
                 ++m_count;
-                m_firstArray[fi].Next = -1;
+                ++m_version;
+               m_firstArray[fi].Next = -1;
                 m_firstArray[fi].Item = key;
                 return true;
             }
@@ -26927,6 +26989,7 @@ namespace Aardvark.Base
                 ei = m_firstArray[fi].Next;
             }
             ++m_count;
+            ++m_version;
             ++m_extraCount;
             if (m_freeIndex < 0)
             {
@@ -26951,14 +27014,15 @@ namespace Aardvark.Base
         public bool TryAdd(long key)
         {
             var hash = key;
-            var locked = false; try { m_lock.Enter(ref locked); ++m_version;
+            var locked = false; try { m_lock.Enter(ref locked);
             if (m_count >= m_increaseThreshold) IncreaseCapacity();
             var fi = ((ulong)hash) % m_capacity;
             var ei = m_firstArray[fi].Next;
             if (ei == 0)
             {
                 ++m_count;
-                m_firstArray[fi].Next = -1;
+                ++m_version;
+               m_firstArray[fi].Next = -1;
                 m_firstArray[fi].Item = key;
                 return true;
             }
@@ -26979,6 +27043,7 @@ namespace Aardvark.Base
                 ei = m_firstArray[fi].Next;
             }
             ++m_count;
+            ++m_version;
             ++m_extraCount;
             if (m_freeIndex < 0)
             {
@@ -27752,7 +27817,7 @@ namespace Aardvark.Base
             if (ei == 0)
             {
                 ++m_count;
-                m_firstArray[fi].Next = -1;
+               m_firstArray[fi].Next = -1;
                 m_firstArray[fi].Item.Hash = hash;
                 m_firstArray[fi].Item.Key = key;
                 m_firstArray[fi].Item.Value = value;
@@ -27807,7 +27872,7 @@ namespace Aardvark.Base
             if (ei == 0)
             {
                 ++m_count;
-                m_firstArray[fi].Next = -1;
+               m_firstArray[fi].Next = -1;
                 m_firstArray[fi].Item.Hash = hash;
                 m_firstArray[fi].Item.Key = key;
                 m_firstArray[fi].Item.Value = value;
@@ -27863,7 +27928,7 @@ namespace Aardvark.Base
             if (ei == 0)
             {
                 ++m_count;
-                m_firstArray[fi].Next = -1;
+               m_firstArray[fi].Next = -1;
                 m_firstArray[fi].Item.Hash = hash;
                 m_firstArray[fi].Item.Key = key;
                 m_firstArray[fi].Item.Value = value;
@@ -27919,7 +27984,7 @@ namespace Aardvark.Base
             if (ei == 0)
             {
                 ++m_count;
-                m_firstArray[fi].Next = -1;
+               m_firstArray[fi].Next = -1;
                 m_firstArray[fi].Item.Hash = hash;
                 m_firstArray[fi].Item.Key = key;
                 m_firstArray[fi].Item.Value = value;
@@ -28218,18 +28283,17 @@ namespace Aardvark.Base
 
         void AddCreated(TKey key, int hash, TValue value)
         {
+            ++m_count;
             var fi = ((uint)hash) % m_capacity;
             var ei = m_firstArray[fi].Next;
             if (ei == 0)
             {
-                ++m_count;
                 m_firstArray[fi].Next = -1;
                 m_firstArray[fi].Item.Hash = hash;
                 m_firstArray[fi].Item.Key = key;
                 m_firstArray[fi].Item.Value = value;
                 return;
             }
-            ++m_count;
             ++m_extraCount;
             if (m_freeIndex < 0)
             {
@@ -29373,7 +29437,7 @@ namespace Aardvark.Base
             if (ei == 0)
             {
                 ++m_count;
-                m_firstArray[fi].Next = -1;
+               m_firstArray[fi].Next = -1;
                 m_firstArray[fi].Item.Hash = hash;
                 m_firstArray[fi].Item.Key = key;
                 return true;
@@ -29426,7 +29490,7 @@ namespace Aardvark.Base
             if (ei == 0)
             {
                 ++m_count;
-                m_firstArray[fi].Next = -1;
+               m_firstArray[fi].Next = -1;
                 m_firstArray[fi].Item.Hash = hash;
                 m_firstArray[fi].Item.Key = key;
                 return true;
@@ -29480,7 +29544,7 @@ namespace Aardvark.Base
             if (ei == 0)
             {
                 ++m_count;
-                m_firstArray[fi].Next = -1;
+               m_firstArray[fi].Next = -1;
                 m_firstArray[fi].Item.Hash = hash;
                 m_firstArray[fi].Item.Key = key;
                 return true;
@@ -29533,7 +29597,7 @@ namespace Aardvark.Base
             if (ei == 0)
             {
                 ++m_count;
-                m_firstArray[fi].Next = -1;
+               m_firstArray[fi].Next = -1;
                 m_firstArray[fi].Item.Hash = hash;
                 m_firstArray[fi].Item.Key = key;
                 return true;
@@ -30420,7 +30484,7 @@ namespace Aardvark.Base
             if (ei == 0)
             {
                 ++m_count;
-                m_firstArray[fi].Next = -1;
+               m_firstArray[fi].Next = -1;
                 m_firstArray[fi].Item.Hash = hash;
                 m_firstArray[fi].Item.Key = key;
                 m_firstArray[fi].Item.Value = value;
@@ -30475,7 +30539,7 @@ namespace Aardvark.Base
             if (ei == 0)
             {
                 ++m_count;
-                m_firstArray[fi].Next = -1;
+               m_firstArray[fi].Next = -1;
                 m_firstArray[fi].Item.Hash = hash;
                 m_firstArray[fi].Item.Key = key;
                 m_firstArray[fi].Item.Value = value;
@@ -30531,7 +30595,7 @@ namespace Aardvark.Base
             if (ei == 0)
             {
                 ++m_count;
-                m_firstArray[fi].Next = -1;
+               m_firstArray[fi].Next = -1;
                 m_firstArray[fi].Item.Hash = hash;
                 m_firstArray[fi].Item.Key = key;
                 m_firstArray[fi].Item.Value = value;
@@ -30587,7 +30651,7 @@ namespace Aardvark.Base
             if (ei == 0)
             {
                 ++m_count;
-                m_firstArray[fi].Next = -1;
+               m_firstArray[fi].Next = -1;
                 m_firstArray[fi].Item.Hash = hash;
                 m_firstArray[fi].Item.Key = key;
                 m_firstArray[fi].Item.Value = value;
@@ -30886,18 +30950,17 @@ namespace Aardvark.Base
 
         void AddCreated(TKey key, long hash, TValue value)
         {
+            ++m_count;
             var fi = ((ulong)hash) % m_capacity;
             var ei = m_firstArray[fi].Next;
             if (ei == 0)
             {
-                ++m_count;
                 m_firstArray[fi].Next = -1;
                 m_firstArray[fi].Item.Hash = hash;
                 m_firstArray[fi].Item.Key = key;
                 m_firstArray[fi].Item.Value = value;
                 return;
             }
-            ++m_count;
             ++m_extraCount;
             if (m_freeIndex < 0)
             {
@@ -32026,7 +32089,7 @@ namespace Aardvark.Base
             if (ei == 0)
             {
                 ++m_count;
-                m_firstArray[fi].Next = -1;
+               m_firstArray[fi].Next = -1;
                 m_firstArray[fi].Item.Hash = hash;
                 m_firstArray[fi].Item.Key = key;
                 return true;
@@ -32079,7 +32142,7 @@ namespace Aardvark.Base
             if (ei == 0)
             {
                 ++m_count;
-                m_firstArray[fi].Next = -1;
+               m_firstArray[fi].Next = -1;
                 m_firstArray[fi].Item.Hash = hash;
                 m_firstArray[fi].Item.Key = key;
                 return true;
@@ -32133,7 +32196,7 @@ namespace Aardvark.Base
             if (ei == 0)
             {
                 ++m_count;
-                m_firstArray[fi].Next = -1;
+               m_firstArray[fi].Next = -1;
                 m_firstArray[fi].Item.Hash = hash;
                 m_firstArray[fi].Item.Key = key;
                 return true;
@@ -32186,7 +32249,7 @@ namespace Aardvark.Base
             if (ei == 0)
             {
                 ++m_count;
-                m_firstArray[fi].Next = -1;
+               m_firstArray[fi].Next = -1;
                 m_firstArray[fi].Item.Hash = hash;
                 m_firstArray[fi].Item.Key = key;
                 return true;
@@ -35061,14 +35124,15 @@ namespace Aardvark.Base
         public void Add(TKey key, TValue value)
         {
             var hash = key.GetHashCode();
-            var locked = false; try { m_lock.Enter(ref locked); ++m_version;
+            var locked = false; try { m_lock.Enter(ref locked);
             if (m_count >= m_increaseThreshold) IncreaseCapacity();
             var fi = ((uint)hash) % m_capacity;
             var ei = m_firstArray[fi].Next;
             if (ei == 0)
             {
                 ++m_count;
-                m_firstArray[fi].Next = -1;
+                ++m_version;
+               m_firstArray[fi].Next = -1;
                 m_firstArray[fi].Item.Hash = hash;
                 m_firstArray[fi].Item.Key = key;
                 m_firstArray[fi].Item.Value = value;
@@ -35094,6 +35158,7 @@ namespace Aardvark.Base
                 ei = m_firstArray[fi].Next;
             }
             ++m_count;
+            ++m_version;
             ++m_extraCount;
             if (m_freeIndex < 0)
             {
@@ -35118,14 +35183,15 @@ namespace Aardvark.Base
         /// </summary>
         public void Add(TKey key, int hash, TValue value)
         {
-            var locked = false; try { m_lock.Enter(ref locked); ++m_version;
+            var locked = false; try { m_lock.Enter(ref locked);
             if (m_count >= m_increaseThreshold) IncreaseCapacity();
             var fi = ((uint)hash) % m_capacity;
             var ei = m_firstArray[fi].Next;
             if (ei == 0)
             {
                 ++m_count;
-                m_firstArray[fi].Next = -1;
+                ++m_version;
+               m_firstArray[fi].Next = -1;
                 m_firstArray[fi].Item.Hash = hash;
                 m_firstArray[fi].Item.Key = key;
                 m_firstArray[fi].Item.Value = value;
@@ -35151,6 +35217,7 @@ namespace Aardvark.Base
                 ei = m_firstArray[fi].Next;
             }
             ++m_count;
+            ++m_version;
             ++m_extraCount;
             if (m_freeIndex < 0)
             {
@@ -35176,14 +35243,15 @@ namespace Aardvark.Base
         public bool TryAdd(TKey key, TValue value)
         {
             var hash = key.GetHashCode();
-            var locked = false; try { m_lock.Enter(ref locked); ++m_version;
+            var locked = false; try { m_lock.Enter(ref locked);
             if (m_count >= m_increaseThreshold) IncreaseCapacity();
             var fi = ((uint)hash) % m_capacity;
             var ei = m_firstArray[fi].Next;
             if (ei == 0)
             {
                 ++m_count;
-                m_firstArray[fi].Next = -1;
+                ++m_version;
+               m_firstArray[fi].Next = -1;
                 m_firstArray[fi].Item.Hash = hash;
                 m_firstArray[fi].Item.Key = key;
                 m_firstArray[fi].Item.Value = value;
@@ -35209,6 +35277,7 @@ namespace Aardvark.Base
                 ei = m_firstArray[fi].Next;
             }
             ++m_count;
+            ++m_version;
             ++m_extraCount;
             if (m_freeIndex < 0)
             {
@@ -35234,14 +35303,15 @@ namespace Aardvark.Base
         /// </summary>
         public bool TryAdd(TKey key, int hash, TValue value)
         {
-            var locked = false; try { m_lock.Enter(ref locked); ++m_version;
+            var locked = false; try { m_lock.Enter(ref locked);
             if (m_count >= m_increaseThreshold) IncreaseCapacity();
             var fi = ((uint)hash) % m_capacity;
             var ei = m_firstArray[fi].Next;
             if (ei == 0)
             {
                 ++m_count;
-                m_firstArray[fi].Next = -1;
+                ++m_version;
+               m_firstArray[fi].Next = -1;
                 m_firstArray[fi].Item.Hash = hash;
                 m_firstArray[fi].Item.Key = key;
                 m_firstArray[fi].Item.Value = value;
@@ -35267,6 +35337,7 @@ namespace Aardvark.Base
                 ei = m_firstArray[fi].Next;
             }
             ++m_count;
+            ++m_version;
             ++m_extraCount;
             if (m_freeIndex < 0)
             {
@@ -35509,6 +35580,7 @@ namespace Aardvark.Base
                     return v0;
                 }
                 ++m_count;
+                ++m_version;
                 m_firstArray[fi].Next = -1;
                 m_firstArray[fi].Item.Hash = hash;
                 m_firstArray[fi].Item.Key = key;
@@ -35535,6 +35607,7 @@ namespace Aardvark.Base
             }
             ei = m_firstArray[fi].Next;
             ++m_count;
+            ++m_version;
             ++m_extraCount;
             if (m_freeIndex < 0)
             {
@@ -35557,18 +35630,18 @@ namespace Aardvark.Base
 
         void AddCreated(TKey key, int hash, TValue value)
         {
+            ++m_count;
+            ++m_version;
             var fi = ((uint)hash) % m_capacity;
             var ei = m_firstArray[fi].Next;
             if (ei == 0)
             {
-                ++m_count;
                 m_firstArray[fi].Next = -1;
                 m_firstArray[fi].Item.Hash = hash;
                 m_firstArray[fi].Item.Key = key;
                 m_firstArray[fi].Item.Value = value;
                 return;
             }
-            ++m_count;
             ++m_extraCount;
             if (m_freeIndex < 0)
             {
@@ -35657,6 +35730,7 @@ namespace Aardvark.Base
                     return v0;
                 }
                 ++m_count;
+                ++m_version;
                 m_firstArray[fi].Next = -1;
                 m_firstArray[fi].Item.Hash = hash;
                 m_firstArray[fi].Item.Key = key;
@@ -35683,6 +35757,7 @@ namespace Aardvark.Base
             }
             ei = m_firstArray[fi].Next;
             ++m_count;
+            ++m_version;
             ++m_extraCount;
             if (m_freeIndex < 0)
             {
@@ -36776,14 +36851,15 @@ namespace Aardvark.Base
         public bool Add(TKey key)
         {
             var hash = key.GetHashCode();
-            var locked = false; try { m_lock.Enter(ref locked); ++m_version;
+            var locked = false; try { m_lock.Enter(ref locked);
             if (m_count >= m_increaseThreshold) IncreaseCapacity();
             var fi = ((uint)hash) % m_capacity;
             var ei = m_firstArray[fi].Next;
             if (ei == 0)
             {
                 ++m_count;
-                m_firstArray[fi].Next = -1;
+                ++m_version;
+               m_firstArray[fi].Next = -1;
                 m_firstArray[fi].Item.Hash = hash;
                 m_firstArray[fi].Item.Key = key;
                 return true;
@@ -36807,6 +36883,7 @@ namespace Aardvark.Base
                 ei = m_firstArray[fi].Next;
             }
             ++m_count;
+            ++m_version;
             ++m_extraCount;
             if (m_freeIndex < 0)
             {
@@ -36831,14 +36908,15 @@ namespace Aardvark.Base
         /// </summary>
         public bool Add(TKey key, int hash)
         {
-            var locked = false; try { m_lock.Enter(ref locked); ++m_version;
+            var locked = false; try { m_lock.Enter(ref locked);
             if (m_count >= m_increaseThreshold) IncreaseCapacity();
             var fi = ((uint)hash) % m_capacity;
             var ei = m_firstArray[fi].Next;
             if (ei == 0)
             {
                 ++m_count;
-                m_firstArray[fi].Next = -1;
+                ++m_version;
+               m_firstArray[fi].Next = -1;
                 m_firstArray[fi].Item.Hash = hash;
                 m_firstArray[fi].Item.Key = key;
                 return true;
@@ -36862,6 +36940,7 @@ namespace Aardvark.Base
                 ei = m_firstArray[fi].Next;
             }
             ++m_count;
+            ++m_version;
             ++m_extraCount;
             if (m_freeIndex < 0)
             {
@@ -36887,14 +36966,15 @@ namespace Aardvark.Base
         public bool TryAdd(TKey key)
         {
             var hash = key.GetHashCode();
-            var locked = false; try { m_lock.Enter(ref locked); ++m_version;
+            var locked = false; try { m_lock.Enter(ref locked);
             if (m_count >= m_increaseThreshold) IncreaseCapacity();
             var fi = ((uint)hash) % m_capacity;
             var ei = m_firstArray[fi].Next;
             if (ei == 0)
             {
                 ++m_count;
-                m_firstArray[fi].Next = -1;
+                ++m_version;
+               m_firstArray[fi].Next = -1;
                 m_firstArray[fi].Item.Hash = hash;
                 m_firstArray[fi].Item.Key = key;
                 return true;
@@ -36918,6 +36998,7 @@ namespace Aardvark.Base
                 ei = m_firstArray[fi].Next;
             }
             ++m_count;
+            ++m_version;
             ++m_extraCount;
             if (m_freeIndex < 0)
             {
@@ -36942,14 +37023,15 @@ namespace Aardvark.Base
         /// </summary>
         public bool TryAdd(TKey key, int hash)
         {
-            var locked = false; try { m_lock.Enter(ref locked); ++m_version;
+            var locked = false; try { m_lock.Enter(ref locked);
             if (m_count >= m_increaseThreshold) IncreaseCapacity();
             var fi = ((uint)hash) % m_capacity;
             var ei = m_firstArray[fi].Next;
             if (ei == 0)
             {
                 ++m_count;
-                m_firstArray[fi].Next = -1;
+                ++m_version;
+               m_firstArray[fi].Next = -1;
                 m_firstArray[fi].Item.Hash = hash;
                 m_firstArray[fi].Item.Key = key;
                 return true;
@@ -36973,6 +37055,7 @@ namespace Aardvark.Base
                 ei = m_firstArray[fi].Next;
             }
             ++m_count;
+            ++m_version;
             ++m_extraCount;
             if (m_freeIndex < 0)
             {
@@ -37884,14 +37967,15 @@ namespace Aardvark.Base
         public void Add(TKey key, TValue value)
         {
             var hash = m_hfun(key);
-            var locked = false; try { m_lock.Enter(ref locked); ++m_version;
+            var locked = false; try { m_lock.Enter(ref locked);
             if (m_count >= m_increaseThreshold) IncreaseCapacity();
             var fi = ((ulong)hash) % m_capacity;
             var ei = m_firstArray[fi].Next;
             if (ei == 0)
             {
                 ++m_count;
-                m_firstArray[fi].Next = -1;
+                ++m_version;
+               m_firstArray[fi].Next = -1;
                 m_firstArray[fi].Item.Hash = hash;
                 m_firstArray[fi].Item.Key = key;
                 m_firstArray[fi].Item.Value = value;
@@ -37917,6 +38001,7 @@ namespace Aardvark.Base
                 ei = m_firstArray[fi].Next;
             }
             ++m_count;
+            ++m_version;
             ++m_extraCount;
             if (m_freeIndex < 0)
             {
@@ -37941,14 +38026,15 @@ namespace Aardvark.Base
         /// </summary>
         public void Add(TKey key, long hash, TValue value)
         {
-            var locked = false; try { m_lock.Enter(ref locked); ++m_version;
+            var locked = false; try { m_lock.Enter(ref locked);
             if (m_count >= m_increaseThreshold) IncreaseCapacity();
             var fi = ((ulong)hash) % m_capacity;
             var ei = m_firstArray[fi].Next;
             if (ei == 0)
             {
                 ++m_count;
-                m_firstArray[fi].Next = -1;
+                ++m_version;
+               m_firstArray[fi].Next = -1;
                 m_firstArray[fi].Item.Hash = hash;
                 m_firstArray[fi].Item.Key = key;
                 m_firstArray[fi].Item.Value = value;
@@ -37974,6 +38060,7 @@ namespace Aardvark.Base
                 ei = m_firstArray[fi].Next;
             }
             ++m_count;
+            ++m_version;
             ++m_extraCount;
             if (m_freeIndex < 0)
             {
@@ -37999,14 +38086,15 @@ namespace Aardvark.Base
         public bool TryAdd(TKey key, TValue value)
         {
             var hash = m_hfun(key);
-            var locked = false; try { m_lock.Enter(ref locked); ++m_version;
+            var locked = false; try { m_lock.Enter(ref locked);
             if (m_count >= m_increaseThreshold) IncreaseCapacity();
             var fi = ((ulong)hash) % m_capacity;
             var ei = m_firstArray[fi].Next;
             if (ei == 0)
             {
                 ++m_count;
-                m_firstArray[fi].Next = -1;
+                ++m_version;
+               m_firstArray[fi].Next = -1;
                 m_firstArray[fi].Item.Hash = hash;
                 m_firstArray[fi].Item.Key = key;
                 m_firstArray[fi].Item.Value = value;
@@ -38032,6 +38120,7 @@ namespace Aardvark.Base
                 ei = m_firstArray[fi].Next;
             }
             ++m_count;
+            ++m_version;
             ++m_extraCount;
             if (m_freeIndex < 0)
             {
@@ -38057,14 +38146,15 @@ namespace Aardvark.Base
         /// </summary>
         public bool TryAdd(TKey key, long hash, TValue value)
         {
-            var locked = false; try { m_lock.Enter(ref locked); ++m_version;
+            var locked = false; try { m_lock.Enter(ref locked);
             if (m_count >= m_increaseThreshold) IncreaseCapacity();
             var fi = ((ulong)hash) % m_capacity;
             var ei = m_firstArray[fi].Next;
             if (ei == 0)
             {
                 ++m_count;
-                m_firstArray[fi].Next = -1;
+                ++m_version;
+               m_firstArray[fi].Next = -1;
                 m_firstArray[fi].Item.Hash = hash;
                 m_firstArray[fi].Item.Key = key;
                 m_firstArray[fi].Item.Value = value;
@@ -38090,6 +38180,7 @@ namespace Aardvark.Base
                 ei = m_firstArray[fi].Next;
             }
             ++m_count;
+            ++m_version;
             ++m_extraCount;
             if (m_freeIndex < 0)
             {
@@ -38332,6 +38423,7 @@ namespace Aardvark.Base
                     return v0;
                 }
                 ++m_count;
+                ++m_version;
                 m_firstArray[fi].Next = -1;
                 m_firstArray[fi].Item.Hash = hash;
                 m_firstArray[fi].Item.Key = key;
@@ -38358,6 +38450,7 @@ namespace Aardvark.Base
             }
             ei = m_firstArray[fi].Next;
             ++m_count;
+            ++m_version;
             ++m_extraCount;
             if (m_freeIndex < 0)
             {
@@ -38380,18 +38473,18 @@ namespace Aardvark.Base
 
         void AddCreated(TKey key, long hash, TValue value)
         {
+            ++m_count;
+            ++m_version;
             var fi = ((ulong)hash) % m_capacity;
             var ei = m_firstArray[fi].Next;
             if (ei == 0)
             {
-                ++m_count;
                 m_firstArray[fi].Next = -1;
                 m_firstArray[fi].Item.Hash = hash;
                 m_firstArray[fi].Item.Key = key;
                 m_firstArray[fi].Item.Value = value;
                 return;
             }
-            ++m_count;
             ++m_extraCount;
             if (m_freeIndex < 0)
             {
@@ -38480,6 +38573,7 @@ namespace Aardvark.Base
                     return v0;
                 }
                 ++m_count;
+                ++m_version;
                 m_firstArray[fi].Next = -1;
                 m_firstArray[fi].Item.Hash = hash;
                 m_firstArray[fi].Item.Key = key;
@@ -38506,6 +38600,7 @@ namespace Aardvark.Base
             }
             ei = m_firstArray[fi].Next;
             ++m_count;
+            ++m_version;
             ++m_extraCount;
             if (m_freeIndex < 0)
             {
@@ -39590,14 +39685,15 @@ namespace Aardvark.Base
         public bool Add(TKey key)
         {
             var hash = m_hfun(key);
-            var locked = false; try { m_lock.Enter(ref locked); ++m_version;
+            var locked = false; try { m_lock.Enter(ref locked);
             if (m_count >= m_increaseThreshold) IncreaseCapacity();
             var fi = ((ulong)hash) % m_capacity;
             var ei = m_firstArray[fi].Next;
             if (ei == 0)
             {
                 ++m_count;
-                m_firstArray[fi].Next = -1;
+                ++m_version;
+               m_firstArray[fi].Next = -1;
                 m_firstArray[fi].Item.Hash = hash;
                 m_firstArray[fi].Item.Key = key;
                 return true;
@@ -39621,6 +39717,7 @@ namespace Aardvark.Base
                 ei = m_firstArray[fi].Next;
             }
             ++m_count;
+            ++m_version;
             ++m_extraCount;
             if (m_freeIndex < 0)
             {
@@ -39645,14 +39742,15 @@ namespace Aardvark.Base
         /// </summary>
         public bool Add(TKey key, long hash)
         {
-            var locked = false; try { m_lock.Enter(ref locked); ++m_version;
+            var locked = false; try { m_lock.Enter(ref locked);
             if (m_count >= m_increaseThreshold) IncreaseCapacity();
             var fi = ((ulong)hash) % m_capacity;
             var ei = m_firstArray[fi].Next;
             if (ei == 0)
             {
                 ++m_count;
-                m_firstArray[fi].Next = -1;
+                ++m_version;
+               m_firstArray[fi].Next = -1;
                 m_firstArray[fi].Item.Hash = hash;
                 m_firstArray[fi].Item.Key = key;
                 return true;
@@ -39676,6 +39774,7 @@ namespace Aardvark.Base
                 ei = m_firstArray[fi].Next;
             }
             ++m_count;
+            ++m_version;
             ++m_extraCount;
             if (m_freeIndex < 0)
             {
@@ -39701,14 +39800,15 @@ namespace Aardvark.Base
         public bool TryAdd(TKey key)
         {
             var hash = m_hfun(key);
-            var locked = false; try { m_lock.Enter(ref locked); ++m_version;
+            var locked = false; try { m_lock.Enter(ref locked);
             if (m_count >= m_increaseThreshold) IncreaseCapacity();
             var fi = ((ulong)hash) % m_capacity;
             var ei = m_firstArray[fi].Next;
             if (ei == 0)
             {
                 ++m_count;
-                m_firstArray[fi].Next = -1;
+                ++m_version;
+               m_firstArray[fi].Next = -1;
                 m_firstArray[fi].Item.Hash = hash;
                 m_firstArray[fi].Item.Key = key;
                 return true;
@@ -39732,6 +39832,7 @@ namespace Aardvark.Base
                 ei = m_firstArray[fi].Next;
             }
             ++m_count;
+            ++m_version;
             ++m_extraCount;
             if (m_freeIndex < 0)
             {
@@ -39756,14 +39857,15 @@ namespace Aardvark.Base
         /// </summary>
         public bool TryAdd(TKey key, long hash)
         {
-            var locked = false; try { m_lock.Enter(ref locked); ++m_version;
+            var locked = false; try { m_lock.Enter(ref locked);
             if (m_count >= m_increaseThreshold) IncreaseCapacity();
             var fi = ((ulong)hash) % m_capacity;
             var ei = m_firstArray[fi].Next;
             if (ei == 0)
             {
                 ++m_count;
-                m_firstArray[fi].Next = -1;
+                ++m_version;
+               m_firstArray[fi].Next = -1;
                 m_firstArray[fi].Item.Hash = hash;
                 m_firstArray[fi].Item.Key = key;
                 return true;
@@ -39787,6 +39889,7 @@ namespace Aardvark.Base
                 ei = m_firstArray[fi].Next;
             }
             ++m_count;
+            ++m_version;
             ++m_extraCount;
             if (m_freeIndex < 0)
             {
@@ -40499,8 +40602,8 @@ namespace Aardvark.Base
         {
             /*    prime no.           prime */
             /*           2                3,       +  1 = 2^2 */
-            /*           4                7,       +  1 = 2^3 */
-            /*           6 */            13,    // +  3 = 2^4, minimal size
+            /*           4 */             7,    // +  1 = 2^3, minimal size
+            /*           6 */            13,    // +  3 = 2^4
             /*          11 */            31,    // +  1 = 2^5
             /*          18 */            61,    // +  3 = 2^6
             /*          31 */           127,    // +  1 = 2^7
@@ -40535,8 +40638,8 @@ namespace Aardvark.Base
         {
             /*        prime no.               prime */
             /*               2                    3,       +  1 = 2^2 */
-            /*               4                    7,       +  1 = 2^3 */
-            /*               6 */                13,    // +  3 = 2^4, minimal size
+            /*               4 */                 7,    // +  1 = 2^3, minimal size
+            /*               6 */                13,    // +  3 = 2^4
             /*              11 */                31,    // +  1 = 2^5
             /*              18 */                61,    // +  3 = 2^6
             /*              31 */               127,    // +  1 = 2^7

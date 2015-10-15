@@ -735,7 +735,7 @@ namespace Aardvark.Base
             var hash = __HashFun__key__GetHash__;
             //# }
             //# if (concurrent) {
-            var locked = false; try { m_lock.Enter(ref locked); ++m_version;
+            var locked = false; try { m_lock.Enter(ref locked);
             //# }
             if (m_count >= m_increaseThreshold) IncreaseCapacity();
             var fi = ((__uitype__)hash) % m_capacity;
@@ -743,7 +743,10 @@ namespace Aardvark.Base
             if (ei == 0)
             {
                 ++m_count;
-                m_firstArray[fi].Next = -1;
+                //# if (concurrent) {
+                ++m_version;
+                //# }
+               m_firstArray[fi].Next = -1;
                 //# if (hasKey) {
                 m_firstArray[fi].Item.Hash = hash;
                 //# }
@@ -783,6 +786,9 @@ namespace Aardvark.Base
                 ei = m_firstArray[fi].Next;
             }
             ++m_count;
+            //# if (concurrent) {
+            ++m_version;
+            //# }
             ++m_extraCount;
             if (m_freeIndex < 0)
             {
@@ -1052,6 +1058,9 @@ namespace Aardvark.Base
                     return v0;
                 }
                 ++m_count;
+                //# if (concurrent) {
+                ++m_version;
+                //# }
                 m_firstArray[fi].Next = -1;
                 //# if (hasKey) {
                 m_firstArray[fi].Item.Hash = hash;
@@ -1086,6 +1095,9 @@ namespace Aardvark.Base
             }
             ei = m_firstArray[fi].Next;
             ++m_count;
+            //# if (concurrent) {
+            ++m_version;
+            //# }
             ++m_extraCount;
             if (m_freeIndex < 0)
             {
@@ -1120,11 +1132,14 @@ namespace Aardvark.Base
         //# if (!wrapped && isCreate && !hasHashPar) {
         void AddCreated(__tkey__ key, __itype__ hash, __tvalue__ value)
         {
+            ++m_count;
+            //# if (concurrent) {
+            ++m_version;
+            //# }
             var fi = ((__uitype__)hash) % m_capacity;
             var ei = m_firstArray[fi].Next;
             if (ei == 0)
             {
-                ++m_count;
                 m_firstArray[fi].Next = -1;
                 //# if (hasKey) {
                 m_firstArray[fi].Item.Hash = hash;
@@ -1133,7 +1148,6 @@ namespace Aardvark.Base
                 m_firstArray[fi].Item.Value = value;
                 return;
             }
-            ++m_count;
             ++m_extraCount;
             if (m_freeIndex < 0)
             {
@@ -2265,8 +2279,8 @@ namespace Aardvark.Base
         {
             /*    prime no.           prime */
             /*           2                3,       +  1 = 2^2 */
-            /*           4                7,       +  1 = 2^3 */
-            /*           6 */            13,    // +  3 = 2^4, minimal size
+            /*           4 */             7,    // +  1 = 2^3, minimal size
+            /*           6 */            13,    // +  3 = 2^4
             /*          11 */            31,    // +  1 = 2^5
             /*          18 */            61,    // +  3 = 2^6
             /*          31 */           127,    // +  1 = 2^7
@@ -2301,8 +2315,8 @@ namespace Aardvark.Base
         {
             /*        prime no.               prime */
             /*               2                    3,       +  1 = 2^2 */
-            /*               4                    7,       +  1 = 2^3 */
-            /*               6 */                13,    // +  3 = 2^4, minimal size
+            /*               4 */                 7,    // +  1 = 2^3, minimal size
+            /*               6 */                13,    // +  3 = 2^4
             /*              11 */                31,    // +  1 = 2^5
             /*              18 */                61,    // +  3 = 2^6
             /*              31 */               127,    // +  1 = 2^7
