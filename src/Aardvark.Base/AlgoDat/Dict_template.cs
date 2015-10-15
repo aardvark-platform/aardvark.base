@@ -1044,6 +1044,13 @@ namespace Aardvark.Base
             if (ei == 0)
             //# if (isCreate) {
             {
+                if (m_count >= m_increaseThreshold)
+                {
+                    IncreaseCapacity();
+                    var v0 = creator(key);
+                    AddCreated(key, hash, v0);
+                    return v0;
+                }
                 ++m_count;
                 m_firstArray[fi].Next = -1;
                 //# if (hasKey) {
@@ -1070,6 +1077,13 @@ namespace Aardvark.Base
                 ei = m_extraArray[ei].Next;
             }
             //# if (isCreate) {
+            if (m_count >= m_increaseThreshold)
+            {
+                IncreaseCapacity();
+                var v1 = creator(key);
+                AddCreated(key, hash, v1);
+                return v1;
+            }
             ei = m_firstArray[fi].Next;
             ++m_count;
             ++m_extraCount;
@@ -1103,6 +1117,43 @@ namespace Aardvark.Base
             //# } // !wrapped
         }
 
+        //# if (!wrapped && isCreate && !hasHashPar) {
+        void AddCreated(__tkey__ key, __itype__ hash, __tvalue__ value)
+        {
+            var fi = ((__uitype__)hash) % m_capacity;
+            var ei = m_firstArray[fi].Next;
+            if (ei == 0)
+            {
+                ++m_count;
+                m_firstArray[fi].Next = -1;
+                //# if (hasKey) {
+                m_firstArray[fi].Item.Hash = hash;
+                //# }
+                m_firstArray[fi].Item__Key__ = key;
+                m_firstArray[fi].Item.Value = value;
+                return;
+            }
+            ++m_count;
+            ++m_extraCount;
+            if (m_freeIndex < 0)
+            {
+                var length = m_extraArray.Length;
+                m_extraArray = m_extraArray.Resized(length * 2);
+                m_freeIndex = AddSlotsToFreeList(m_extraArray, length);
+            }
+            var ni = m_freeIndex;
+            m_freeIndex = m_extraArray[ni].Next;
+            m_extraArray[ni].Item = m_firstArray[fi].Item;
+            m_extraArray[ni].Next = ei;
+            m_firstArray[fi].Next = ni;
+            //# if (hasKey) {
+            m_firstArray[fi].Item.Hash = hash;
+            //# }
+            m_firstArray[fi].Item__Key__ = key;
+            m_firstArray[fi].Item.Value = value;
+        }
+
+        //# } // !wrapped && isCreate && hasHashPar
         //# } // isCreate
         //# } // hasDefault
         //# } // hasHashPar

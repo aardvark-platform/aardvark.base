@@ -270,6 +270,42 @@ module ``Basic Mod Tests`` =
         transact (fun () -> x.Reset())
         x |> Mod.force |> should equal 7
 
+
+
+    open System.Threading
+    [<Test>]
+    let ``[Mod] memory test`` () =
+
+        //total e9206773e69bfe38e737c434d5496c9d56332160: 
+        //172870528L
+        //, per mod: 
+        //1728.70528
+        // (bytes)
+        //10
+        let t = Thread(ThreadStart(fun () ->
+            
+            let mem = System.GC.GetTotalMemory(true)
+
+            let mutable m = Mod.init 10 :> IMod<_>
+
+            let size = 100000
+
+            for i in 2 .. size do
+                m <- Mod.map id m
+
+            printfn "%A" (Mod.force m)
+
+            let memAfter = System.GC.GetTotalMemory(true)
+            let diff = memAfter - mem
+            let sizePerMod = float diff / float size
+
+            printfn "total: %A, per mod: %A (bytes)" diff sizePerMod
+
+            printfn "%A" (Mod.force m)
+        ), 100000000)
+        t.Start()
+        t.Join()
+
     [<AutoOpen>]
     module Validation =
         open Aardvark.Base.Incremental.Validation
