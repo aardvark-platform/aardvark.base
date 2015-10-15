@@ -4,8 +4,9 @@ open System
 open System.Collections.Generic
 open Aardvark.Base
 open System.Collections.Concurrent
+open System.Threading
 
-type VolatileCollection<'a>() =
+type VolatileCollection<'a when 'a : not struct>() =
     let set = HashSet<'a>()
 
     member x.IsEmpty = set.Count = 0
@@ -95,54 +96,6 @@ type IAdaptiveObject =
     
 
 /// <summary>
-/// IncrementalLog logs a the sequence of fundamental adaptive operations
-/// performed by the system. This allows to investigate bugs and concurrency
-/// issues. Since this logging is relatively expensive it is disabled by default.
-/// </summary>
-module IncrementalLog =
-    open System.Threading
-
-    type Operation =
-        | StartEvaluate = 1
-        | EndEvaluate = 2
-        | StartMark = 3
-        | EndMark = 4
-
-    let private log = List<Operation * int>()
-    let private logLock = SpinLock()
-
-    let append (op : Operation) (o : IAdaptiveObject) =
-        #if DEBUG
-        lock log (fun () ->
-            log.Add(op,o.Id)
-        )
-        #else
-        ()
-        #endif
-
-    let inline startEvaluate(o : IAdaptiveObject) =
-        append Operation.StartEvaluate o
-
-    let inline endEvaluate(o : IAdaptiveObject) =
-        append Operation.EndEvaluate o
-
-    let inline startMark(o : IAdaptiveObject) =
-        append Operation.StartMark o
-
-    let inline endMark(o : IAdaptiveObject) =
-        append Operation.EndMark o
-
-    let getLog() =
-        log |> Seq.map (fun (op, o) -> 
-            match op with
-                | Operation.StartEvaluate -> sprintf "S(%d)" o
-                | Operation.EndEvaluate -> sprintf "E(%d)" o
-                | Operation.StartMark -> sprintf "MS(%d)" o
-                | Operation.EndMark -> sprintf "ME(%d)" o
-                | _ -> failwithf "unknown operation: %A" op
-        ) |> String.concat "\r\n"
-
-/// <summary>
 /// LevelChangedException is internally used by the system
 /// to handle level changes during the change propagation.
 /// </summary>
@@ -150,7 +103,7 @@ exception LevelChangedException of IAdaptiveObject
 
 [<AutoOpen>]
 module private AdaptiveSystemState =
-    let isTopLevel = new System.Threading.ThreadLocal<bool>(fun () -> true)
+    let currentEvaluationObject = new ThreadLocal<Option<IAdaptiveObject>>(fun _ -> None)
 
 
 type TrackAllThreadLocal<'a>(creator : unit -> 'a) =
@@ -249,10 +202,6 @@ type Transaction() =
     /// the enqueued changes.
     /// </summary>
     member x.Commit() =
-        let top = isTopLevel.Value
-        isTopLevel.Value <- false
-
-
         // cache the currently running transaction (if any)
         // and make tourselves current.
         let old = running.Value
@@ -278,56 +227,51 @@ type Transaction() =
                         Seq.empty
 
                     else
-                        try
-                            IncrementalLog.startMark e
+                        // if the object's level has changed since it
+                        // was added to the queue we re-enqueue it with the new level
+                        // Note that this may of course cause runtime overhead and
+                        // might even change the asymptotic runtime behaviour of the entire
+                        // system in the worst case but we opted for this approach since
+                        // it is relatively simple to implement.
+                        if l <> e.Level then
+                            q.Enqueue e
+                            Seq.empty
+                        else
+                            match causes.TryRemove e with
+                                | (true, causes) -> causes |> Seq.iter e.InputChanged
+                                | _ -> ()
 
-                            // if the object's level has changed since it
-                            // was added to the queue we re-enqueue it with the new level
-                            // Note that this may of course cause runtime overhead and
-                            // might even change the asymptotic runtime behaviour of the entire
-                            // system in the worst case but we opted for this approach since
-                            // it is relatively simple to implement.
-                            if l <> e.Level then
+                            // however if the level is consistent we may proceed
+                            // by marking the object as outOfDate
+                            e.OutOfDate <- true
+                
+                            try 
+                                // here mark and the callbacks are allowed to evaluate
+                                // the adaptive object but must expect any call to AddOutput to 
+                                // raise a LevelChangedException whenever a level has been changed
+                                if e.Mark() then
+                                    let mutable failed = false
+                                    let callbacks = e.MarkingCallbacks |> getAndClear
+                                    for cb in callbacks do 
+                                        try cb()
+                                        with :? LevelChangedException -> failed <- true
+                                    if failed then raise <| LevelChangedException e
+
+                                    // if everything succeeded we return all current outputs
+                                    // which will cause them to be enqueued 
+                                    e.Outputs.Consume()
+
+                                else
+                                    // if Mark told us not to continue we're done here
+                                    Seq.empty
+
+                            with :? LevelChangedException ->
+                                // if the level was changed either by a callback
+                                // or Mark we re-enqueue the object with the new level and
+                                // mark it upToDate again (since it would otherwise not be processed again)
+                                e.OutOfDate <- false
                                 q.Enqueue e
                                 Seq.empty
-                            else
-                                match causes.TryRemove e with
-                                    | (true, causes) -> causes |> Seq.iter e.InputChanged
-                                    | _ -> ()
-
-                                // however if the level is consistent we may proceed
-                                // by marking the object as outOfDate
-                                e.OutOfDate <- true
-                
-                                try 
-                                    // here mark and the callbacks are allowed to evaluate
-                                    // the adaptive object but must expect any call to AddOutput to 
-                                    // raise a LevelChangedException whenever a level has been changed
-                                    if e.Mark() then
-                                        let mutable failed = false
-                                        let callbacks = e.MarkingCallbacks |> getAndClear
-                                        for cb in callbacks do 
-                                            try cb()
-                                            with :? LevelChangedException -> failed <- true
-                                        if failed then raise <| LevelChangedException e
-
-                                        // if everything succeeded we return all current outputs
-                                        // which will cause them to be enqueued 
-                                        e.Outputs.Consume()
-
-                                    else
-                                        // if Mark told us not to continue we're done here
-                                        Seq.empty
-
-                                with :? LevelChangedException ->
-                                    // if the level was changed either by a callback
-                                    // or Mark we re-enqueue the object with the new level and
-                                    // mark it upToDate again (since it would otherwise not be processed again)
-                                    e.OutOfDate <- false
-                                    q.Enqueue e
-                                    Seq.empty
-                        finally
-                            IncrementalLog.endMark e
                 )
 
             // finally we enqueue all returned outputs
@@ -342,7 +286,6 @@ type Transaction() =
         // when the commit is over we restore the old
         // running transaction (if any)
         running.Value <- old
-        isTopLevel.Value <- top
 
 /// <summary>
 /// defines a base class for all adaptive objects implementing
@@ -357,8 +300,47 @@ type AdaptiveObject() =
     let callbacks = ConcurrentHashSet<unit -> unit>() :> ICollection<_>
 
     static let time = AdaptiveObject() :> IAdaptiveObject
+    
+    let evaluate (this : IAdaptiveObject) (otherwise : Option<'a>) (f : unit -> 'a) =
+        let top = 
+            currentEvaluationObject.Value.IsNone && not Transaction.HasRunning
+
+        let res =
+            lock this (fun () ->
+                
+                let value =
+                    if outOfDate then None
+                    else otherwise
+
+                match value with
+                    | Some v -> v
+                    | None ->
+                        let old = currentEvaluationObject.Value
+                        currentEvaluationObject.Value <- Some this
+                        let r = f()
+                        currentEvaluationObject.Value <- old
+
+                        match old with
+                            | Some o when o.Inputs.Contains this ->
+                                outputs.Add o |> ignore
+                            | _ -> ()
+
+                        outOfDate <- false
+                        r
+            )
+
+        if top then 
+            if not time.Outputs.IsEmpty then
+                let t = Transaction()
+                for o in time.Outputs.Consume() do
+                    t.Enqueue(o)
+                t.Commit()
+
+        res
 
     static member Time = time
+
+
 
     /// <summary>
     /// utility function for evaluating an object if
@@ -368,30 +350,7 @@ type AdaptiveObject() =
     /// Note that this function takes care of appropriate locking
     /// </summary>
     member x.EvaluateIfNeeded (otherwise : 'a) (f : unit -> 'a) =
-        let top = isTopLevel.Value
-        if top then isTopLevel.Value <- false
-
-        let res =
-            lock x (fun () ->
-                if x.OutOfDate then
-                    IncrementalLog.startEvaluate x
-                    let r = f()
-                    x.OutOfDate <- false
-                    IncrementalLog.endEvaluate x
-                    r
-                else
-                    otherwise
-            )
-
-        if top then 
-            isTopLevel.Value <- true
-            if not time.Outputs.IsEmpty then
-                let t = Transaction()
-                for o in time.Outputs.Consume() do
-                    t.Enqueue(o)
-                t.Commit()
-
-        res
+        evaluate x (Some otherwise) f
 
     /// <summary>
     /// utility function for evaluating an object even if it
@@ -399,28 +358,7 @@ type AdaptiveObject() =
     /// Note that this function takes care of appropriate locking
     /// </summary>
     member x.EvaluateAlways (f : unit -> 'a) =
-        let top = isTopLevel.Value
-        if top then isTopLevel.Value <- false
-
-        let res =
-            lock x (fun () ->
-                IncrementalLog.startEvaluate x
-                let res = f()
-                x.OutOfDate <- false
-                IncrementalLog.endEvaluate x
-                res
-            )
-
-        if top then 
-            isTopLevel.Value <- true
-            if not time.Outputs.IsEmpty then
-                let t = Transaction()
-                for o in time.Outputs.Consume() do
-                    t.Enqueue(o)
-                t.Commit()
-
-
-        res
+        evaluate x None f
 
 
     member x.Id = id
