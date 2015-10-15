@@ -487,8 +487,8 @@ module Mod =
     /// resulting in a new dependent cell.
     /// </summary>
     let map (f : 'a -> 'b) (m : IMod<'a>) =
-        let f = scoped f
         if m.IsConstant then
+            let f = scoped f
             delay (fun () -> m.GetValue() |> f)
         else
             let res = LazyMod(fun () -> m.GetValue() |> f)
