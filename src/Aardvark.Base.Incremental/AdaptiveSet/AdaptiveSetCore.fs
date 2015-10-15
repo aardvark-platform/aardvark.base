@@ -425,6 +425,7 @@ module ASetReaders =
 
         override x.ComputeDelta() =
             inputReader.Update()
+            inputReader.Outputs.Add x |> ignore
 
             match reset with
                 | Some c ->

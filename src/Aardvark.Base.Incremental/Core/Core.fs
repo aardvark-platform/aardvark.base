@@ -9,21 +9,22 @@ open System.Threading
 type VolatileCollection<'a when 'a : not struct>() =
     let set = HashSet<'a>()
 
-    member x.IsEmpty = set.Count = 0
+    member x.IsEmpty = lock set (fun () -> set.Count = 0)
 
     member x.Consume() : seq<'a> =
-//        let arr = set.ToArray(set.Count)
-//        set.Clear()
-//        arr :> _
-        set :> _
+        lock set (fun () -> 
+            let arr = set |> Seq.toArray
+            set.Clear()
+            arr :> _
+        )
 
     member x.Add(value : 'a) : bool =
-        set.Add value
+        lock set (fun () -> set.Add value)
 
     member x.Remove(value : 'a) : bool =
-        set.Remove value
+        lock set (fun () -> set.Remove value)
 
-    member x.Seq = set :> seq<'a>
+    member x.Seq = set |> Seq.toList :> seq<'a>
 
 /// <summary>
 /// IAdaptiveObject represents the core interface for all
@@ -317,16 +318,17 @@ type AdaptiveObject() =
                     | None ->
                         let old = currentEvaluationObject.Value
                         currentEvaluationObject.Value <- Some this
-                        let r = f()
-                        currentEvaluationObject.Value <- old
+                        try
+                            let r = f()
+                            match old with
+                                | Some o when o.Inputs.Contains this ->
+                                    outputs.Add o |> ignore
+                                | _ -> ()
 
-                        match old with
-                            | Some o when o.Inputs.Contains this ->
-                                outputs.Add o |> ignore
-                            | _ -> ()
-
-                        outOfDate <- false
-                        r
+                            outOfDate <- false
+                            r
+                        finally
+                            currentEvaluationObject.Value <- old
             )
 
         if top then 

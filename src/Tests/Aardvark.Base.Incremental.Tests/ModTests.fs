@@ -284,16 +284,16 @@ module ``Basic Mod Tests`` =
         //10
         let t = Thread(ThreadStart(fun () ->
             
-            let mem = System.GC.GetTotalMemory(true)
-
             let mutable m = Mod.init 10 :> IMod<_>
+
+            let mem = System.GC.GetTotalMemory(true)
 
             let size = 100000
 
-            for i in 2 .. size do
+            for i in 1 .. size do
                 m <- Mod.map id m
 
-            printfn "%A" (Mod.force m)
+            Mod.force m |> ignore
 
             let memAfter = System.GC.GetTotalMemory(true)
             let diff = memAfter - mem

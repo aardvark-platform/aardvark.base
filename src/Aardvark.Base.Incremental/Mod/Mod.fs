@@ -270,7 +270,7 @@ module Mod =
         member x.Input = input
 
         override x.Mark() =
-            let newValue = input.GetValue()
+            let newValue = x.GetValue()
             x.OutOfDate <- false
 
             if hasChanged newValue then
