@@ -192,10 +192,13 @@ module AgHelpers =
 
 
     let rec getallInterfaces (t : Type) =
-        seq {
-            yield! t.GetInterfaces()
+        [
+            let directInterfaces = t.GetInterfaces()
             if t.BaseType <> null then yield! getallInterfaces t.BaseType
-        }
+            for i in directInterfaces do
+                yield! getallInterfaces i
+                yield i
+        ]
 
     // finds the semantic function s for Root<S when S :> callerType) and returns s,S where S is
     // the interface of the syntactic family.
@@ -211,8 +214,9 @@ module AgHelpers =
              | _ ->
                 // get all Root<S> candidates
                 let interfaces = getallInterfaces callerType
+                let filtered = HashSet(interfaces)
                 let instantiatedRoots = 
-                    [ for i in interfaces do
+                    [ for i in filtered do
                         let concreteRoot = genericRoot.MakeGenericType([|i|])      
                         yield concreteRoot,i    
                     ]
@@ -221,7 +225,7 @@ module AgHelpers =
                 let possibleSemanticFunctions = instantiatedRoots |> List.map (fun (concrete,interfaceType) -> tryFindSemanticFunction(concrete,name), interfaceType)
                 let s = 
                     match possibleSemanticFunctions with
-                        | [Some (singleSem),baseInterfaceType] -> 
+                        | (Some (singleSem),baseInterfaceType) :: _ -> 
                             let rootInstanceType = genericRoot.MakeGenericType([|baseInterfaceType|])
                             let ctor = rootInstanceType.GetConstructor([|typeof<obj>|])
                             let parameter = Expression.Parameter(typeof<obj>) 
