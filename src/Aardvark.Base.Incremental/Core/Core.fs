@@ -4,6 +4,78 @@ open System
 open System.Collections.Generic
 open Aardvark.Base
 open System.Collections.Concurrent
+open System.Threading
+
+type VolatileCollection<'a>() =
+    let mutable set : HashSet<'a> = null
+    let mutable pset = []
+
+    let rec slowContains (v : 'a) (count : int) (l : list<'a>) =
+        match l with
+            | [] -> count
+            | x::xs ->
+                if System.Object.Equals(x, v) then -1
+                else slowContains v (count + 1) xs
+
+    let rec slowRemove (v : 'a) (acc : list<'a>) (l : list<'a>) =
+        match l with
+            | [] -> (false, acc)
+            | x::xs ->
+                if Object.Equals(x, v) then
+                    (true, acc @ xs)
+                else
+                    slowRemove v (x::acc) xs
+
+    member x.IsEmpty = 
+        lock x (fun () ->
+            if isNull set then List.isEmpty pset
+            else set.Count = 0
+        )
+
+    member x.Consume() : seq<'a> =
+        lock x (fun () -> 
+            if isNull set then
+                let res = pset
+                pset <- []
+                res :> seq<_>
+            else
+                let res = set
+                set <- null
+                res :> _
+        )
+
+    member x.Add(value : 'a) : bool =
+        lock x (fun () -> 
+            if isNull set then 
+                let count = slowContains value 0 pset
+                if count < 0 then
+                    false
+                else
+                    pset <- value::pset
+
+                    if count >= 7 then
+                        set <- HashSet pset
+                        pset <- []
+
+                    true
+            else
+                set.Add value
+        )
+
+    member x.Remove(value : 'a) : bool =
+        lock x (fun () -> 
+            if isNull set then 
+                let (removed, newList) = slowRemove value [] pset
+                if removed then
+                    pset <- newList
+                    true
+                else
+                    false
+            else
+                set.Remove value
+        )
+
+
 
 /// <summary>
 /// IAdaptiveObject represents the core interface for all
@@ -61,78 +133,21 @@ type IAdaptiveObject =
     /// to be represented by Weak references in order to allow for
     /// unused parts of the graph to be garbage collected.
     /// </summary>
-    abstract member Outputs : ICollection<IAdaptiveObject>
+    abstract member Outputs : VolatileCollection<IAdaptiveObject>
 
-    /// <summary>
-    /// a set of callbacks which shall be executed when the object
-    /// is marked as OutOfDate for the next time. Note that this set 
-    /// will be cleared once the callbacks have been executed.
-    /// "persistent" callbacks must therefore re-subscribe themselves 
-    /// upon every execution.
-    /// </summary>
-    abstract member MarkingCallbacks : ICollection<unit -> unit>
 
     abstract member InputChanged : IAdaptiveObject -> unit
     
 
 /// <summary>
-/// IncrementalLog logs a the sequence of fundamental adaptive operations
-/// performed by the system. This allows to investigate bugs and concurrency
-/// issues. Since this logging is relatively expensive it is disabled by default.
-/// </summary>
-module IncrementalLog =
-    open System.Threading
-
-    type Operation =
-        | StartEvaluate = 1
-        | EndEvaluate = 2
-        | StartMark = 3
-        | EndMark = 4
-
-    let private log = List<Operation * int>()
-    let private logLock = SpinLock()
-
-    let append (op : Operation) (o : IAdaptiveObject) =
-        #if DEBUG
-        lock log (fun () ->
-            log.Add(op,o.Id)
-        )
-        #else
-        ()
-        #endif
-
-    let inline startEvaluate(o : IAdaptiveObject) =
-        append Operation.StartEvaluate o
-
-    let inline endEvaluate(o : IAdaptiveObject) =
-        append Operation.EndEvaluate o
-
-    let inline startMark(o : IAdaptiveObject) =
-        append Operation.StartMark o
-
-    let inline endMark(o : IAdaptiveObject) =
-        append Operation.EndMark o
-
-    let getLog() =
-        log |> Seq.map (fun (op, o) -> 
-            match op with
-                | Operation.StartEvaluate -> sprintf "S(%d)" o
-                | Operation.EndEvaluate -> sprintf "E(%d)" o
-                | Operation.StartMark -> sprintf "MS(%d)" o
-                | Operation.EndMark -> sprintf "ME(%d)" o
-                | _ -> failwithf "unknown operation: %A" op
-        ) |> String.concat "\r\n"
-
-/// <summary>
 /// LevelChangedException is internally used by the system
 /// to handle level changes during the change propagation.
 /// </summary>
-exception LevelChangedException of IAdaptiveObject
+exception LevelChangedException of changedObject : IAdaptiveObject * newLevel : int * distanceFromRoot : int
 
 [<AutoOpen>]
 module private AdaptiveSystemState =
-    let isTopLevel = new System.Threading.ThreadLocal<bool>(fun () -> true)
-
+    let currentEvaluationPath = new ThreadLocal<Stack<IAdaptiveObject>>(fun _ -> Stack())
 
 type TrackAllThreadLocal<'a>(creator : unit -> 'a) =
     let mutable values : Map<int, 'a> = Map.empty
@@ -181,6 +196,7 @@ type Transaction() =
     // already been enqueued
     let contained = HashSet<IAdaptiveObject>()
     let mutable current = None
+    let mutable currentLevel = 0
 
     let getAndClear (set : ICollection<'a>) =
         let mutable content = []
@@ -201,6 +217,14 @@ type Transaction() =
     static member HasRunning =
         running.Value.IsSome
        
+    static member RunningLevel =
+        match running.Value with
+            | Some t -> t.CurrentLevel
+            | _ -> Int32.MaxValue - 1
+
+
+    member x.CurrentLevel = currentLevel
+
     /// <summary>
     /// enqueues an adaptive object for marking
     /// </summary>
@@ -230,10 +254,6 @@ type Transaction() =
     /// the enqueued changes.
     /// </summary>
     member x.Commit() =
-        let top = isTopLevel.Value
-        isTopLevel.Value <- false
-
-
         // cache the currently running transaction (if any)
         // and make tourselves current.
         let old = running.Value
@@ -243,6 +263,7 @@ type Transaction() =
         while q.Count > 0 do
             // dequeue the next element (having the minimal level)
             let l, e = q.Dequeue()
+            currentLevel <- l
             current <- Some e
 
             
@@ -259,56 +280,52 @@ type Transaction() =
                         Seq.empty
 
                     else
-                        try
-                            IncrementalLog.startMark e
+                        // if the object's level has changed since it
+                        // was added to the queue we re-enqueue it with the new level
+                        // Note that this may of course cause runtime overhead and
+                        // might even change the asymptotic runtime behaviour of the entire
+                        // system in the worst case but we opted for this approach since
+                        // it is relatively simple to implement.
+                        if l <> e.Level then
+                            q.Enqueue e
+                            Seq.empty
+                        else
+                            match causes.TryRemove e with
+                                | (true, causes) -> causes |> Seq.iter e.InputChanged
+                                | _ -> ()
 
-                            // if the object's level has changed since it
-                            // was added to the queue we re-enqueue it with the new level
-                            // Note that this may of course cause runtime overhead and
-                            // might even change the asymptotic runtime behaviour of the entire
-                            // system in the worst case but we opted for this approach since
-                            // it is relatively simple to implement.
-                            if l <> e.Level then
+                            // however if the level is consistent we may proceed
+                            // by marking the object as outOfDate
+                            e.OutOfDate <- true
+                
+                            try 
+                                // here mark and the callbacks are allowed to evaluate
+                                // the adaptive object but must expect any call to AddOutput to 
+                                // raise a LevelChangedException whenever a level has been changed
+                                if e.Mark() then
+//                                    let mutable failed = false
+//                                    let callbacks = e.MarkingCallbacks |> getAndClear
+//                                    for cb in callbacks do 
+//                                        try cb()
+//                                        with :? LevelChangedException -> failed <- true
+//                                    if failed then raise <| LevelChangedException e
+
+                                    // if everything succeeded we return all current outputs
+                                    // which will cause them to be enqueued 
+                                    e.Outputs.Consume()
+
+                                else
+                                    // if Mark told us not to continue we're done here
+                                    Seq.empty
+
+                            with LevelChangedException(obj, objLevel, distance) ->
+                                // if the level was changed either by a callback
+                                // or Mark we re-enqueue the object with the new level and
+                                // mark it upToDate again (since it would otherwise not be processed again)
+                                e.Level <- max e.Level (objLevel + distance)
+                                e.OutOfDate <- false
                                 q.Enqueue e
                                 Seq.empty
-                            else
-                                match causes.TryRemove e with
-                                    | (true, causes) -> causes |> Seq.iter e.InputChanged
-                                    | _ -> ()
-
-                                // however if the level is consistent we may proceed
-                                // by marking the object as outOfDate
-                                e.OutOfDate <- true
-                
-                                try 
-                                    // here mark and the callbacks are allowed to evaluate
-                                    // the adaptive object but must expect any call to AddOutput to 
-                                    // raise a LevelChangedException whenever a level has been changed
-                                    if e.Mark() then
-                                        let mutable failed = false
-                                        let callbacks = e.MarkingCallbacks |> getAndClear
-                                        for cb in callbacks do 
-                                            try cb()
-                                            with :? LevelChangedException -> failed <- true
-                                        if failed then raise <| LevelChangedException e
-
-                                        // if everything succeeded we return all current outputs
-                                        // which will cause them to be enqueued 
-                                        e.Outputs :> seq<IAdaptiveObject>
-
-                                    else
-                                        // if Mark told us not to continue we're done here
-                                        Seq.empty
-
-                                with :? LevelChangedException ->
-                                    // if the level was changed either by a callback
-                                    // or Mark we re-enqueue the object with the new level and
-                                    // mark it upToDate again (since it would otherwise not be processed again)
-                                    e.OutOfDate <- false
-                                    q.Enqueue e
-                                    Seq.empty
-                        finally
-                            IncrementalLog.endMark e
                 )
 
             // finally we enqueue all returned outputs
@@ -323,23 +340,107 @@ type Transaction() =
         // when the commit is over we restore the old
         // running transaction (if any)
         running.Value <- old
-        isTopLevel.Value <- top
+        currentLevel <- 0
+
+
+type private EmptyCollection<'a>() =
+    interface ICollection<'a> with
+        member x.Add _ = ()
+        member x.Clear() = ()
+        member x.Count = 0
+        member x.Contains _ = false
+        member x.Remove _ = false
+        member x.CopyTo(arr, idx) = ()
+        member x.IsReadOnly = false
+        member x.GetEnumerator() : IEnumerator<'a> = Seq.empty.GetEnumerator()
+        member x.GetEnumerator() : System.Collections.IEnumerator = Seq.empty.GetEnumerator() :> _
+
 
 /// <summary>
 /// defines a base class for all adaptive objects implementing
 /// IAdaptiveObject.
 /// </summary>
 type AdaptiveObject() =
+    #if DEBUG
+    let inputs = HashSet<IAdaptiveObject>() :> ICollection<_>
+    #else
+    static let inputs = EmptyCollection<IAdaptiveObject>() :> ICollection<_>
+    #endif
+
     let id = newId()
     let mutable outOfDate = true
     let mutable level = 0
-    let inputs = HashSet<IAdaptiveObject>() :> ICollection<_>
-    let outputs = WeakSet<IAdaptiveObject>() :> ICollection<_>
-    let callbacks = ConcurrentHashSet<unit -> unit>() :> ICollection<_>
+    let outputs = VolatileCollection<IAdaptiveObject>()
 
     static let time = AdaptiveObject() :> IAdaptiveObject
+    
+    let evaluate (this : IAdaptiveObject) (otherwise : Option<'a>) (f : unit -> 'a) =
+        let stack = currentEvaluationPath.Value
+        let top = stack.Count = 0 && not Transaction.HasRunning
+
+        
+        let res =
+            lock this (fun () ->
+                
+                let value =
+                    if outOfDate then None
+                    else otherwise
+
+                match value with
+                    | Some v -> v
+                    | None ->
+                        let parent = if stack.Count > 0 then stack.Peek() |> Some else None
+                        stack.Push this
+                       
+                        try
+                            // this evaluation is performed optimistically
+                            // meaning that the "top-level" object needs to be allowed to
+                            // pull at least one value on every path.
+                            // This property must therefore be maintained for every
+                            // path in the entire system.
+                            let r = f()
+                            outOfDate <- false
+
+                            // if the object's level just got greater than or equal to
+                            // the level of the running transaction (if any)
+                            // we raise an exception since the evaluation
+                            // could be inconsistent atm.
+                            // the only exception to that is the top-level object itself
+                            let maxAllowedLevel =
+                                if stack.Count > 1 then Transaction.RunningLevel - 1
+                                else Transaction.RunningLevel
+
+
+
+                            match parent with
+                                | Some o ->
+                                    outputs.Add o |> ignore
+                                    o.Level <- max o.Level (level + 1)
+                                | _ -> ()
+
+
+                            if level > maxAllowedLevel then
+                                let top = (stack |> Seq.last)
+                                //printfn "%A tried to pull from level %A but has level %A" top.Id level top.Level
+                                // all greater pulls would be from the future
+                                raise <| LevelChangedException(this, level, stack.Count - 1)
+                            
+                            r
+                        finally
+                            stack.Pop() |> ignore
+            )
+
+        if top then 
+            if not time.Outputs.IsEmpty then
+                let t = Transaction()
+                for o in time.Outputs.Consume() do
+                    t.Enqueue(o)
+                t.Commit()
+
+        res
 
     static member Time = time
+
 
     /// <summary>
     /// utility function for evaluating an object if
@@ -349,30 +450,7 @@ type AdaptiveObject() =
     /// Note that this function takes care of appropriate locking
     /// </summary>
     member x.EvaluateIfNeeded (otherwise : 'a) (f : unit -> 'a) =
-        let top = isTopLevel.Value
-        if top then isTopLevel.Value <- false
-
-        let res =
-            lock x (fun () ->
-                if x.OutOfDate then
-                    IncrementalLog.startEvaluate x
-                    let r = f()
-                    x.OutOfDate <- false
-                    IncrementalLog.endEvaluate x
-                    r
-                else
-                    otherwise
-            )
-
-        if top then 
-            isTopLevel.Value <- true
-            if time.Outputs.Count > 0 then
-                let t = Transaction()
-                for o in time.Outputs do
-                    t.Enqueue(o)
-                t.Commit()
-
-        res
+        evaluate x (Some otherwise) f
 
     /// <summary>
     /// utility function for evaluating an object even if it
@@ -380,27 +458,7 @@ type AdaptiveObject() =
     /// Note that this function takes care of appropriate locking
     /// </summary>
     member x.EvaluateAlways (f : unit -> 'a) =
-        let top = isTopLevel.Value
-        if top then isTopLevel.Value <- false
-
-        let res =
-            lock x (fun () ->
-                IncrementalLog.startEvaluate x
-                let res = f()
-                x.OutOfDate <- false
-                IncrementalLog.endEvaluate x
-                res
-            )
-
-        if top then 
-            isTopLevel.Value <- true
-            if time.Outputs.Count > 0 then
-                let t = Transaction()
-                for o in time.Outputs do
-                    t.Enqueue(o)
-                t.Commit()
-
-        res
+        evaluate x None f
 
 
     member x.Id = id
@@ -410,7 +468,6 @@ type AdaptiveObject() =
 
     member x.Outputs = outputs
     member x.Inputs = inputs
-    member x.MarkingCallbacks = callbacks
     member x.Level 
         with get() = level
         and set l = level <- l
@@ -435,7 +492,6 @@ type AdaptiveObject() =
 
         member x.Outputs = outputs
         member x.Inputs = inputs
-        member x.MarkingCallbacks = callbacks
         member x.Level 
             with get() = level
             and set l = level <- l
@@ -445,48 +501,8 @@ type AdaptiveObject() =
 
         member x.InputChanged ip = x.InputChanged ip
 
-/// <summary>
-/// defines a base class for all decorated mods
-/// </summary>
-type AdaptiveDecorator(o : IAdaptiveObject) =
-    let id = newId()
-    
-    member x.Id = id
-    member x.OutOfDate
-        with get() = o.OutOfDate
-        and set v = o.OutOfDate <- v
 
-    member x.Outputs = o.Outputs
-    member x.Inputs = o.Inputs
-    member x.MarkingCallbacks = o.MarkingCallbacks
-    member x.Level 
-        with get() = o.Level
-        and set l = o.Level <- l
 
-    member x.Mark() = o.Mark()
-
-    override x.GetHashCode() = o.GetHashCode()
-    override x.Equals o =
-        match o with
-            | :? IAdaptiveObject as o -> x.Id = o.Id
-            | _ -> false
-
-    interface IAdaptiveObject with
-        member x.Id = id
-        member x.OutOfDate
-            with get() = o.OutOfDate
-            and set v = o.OutOfDate <- v
-
-        member x.Outputs = o.Outputs
-        member x.Inputs = o.Inputs
-        member x.MarkingCallbacks = o.MarkingCallbacks
-        member x.Level 
-            with get() = o.Level
-            and set l = o.Level <- l
-
-        member x.Mark () = o.Mark()
-
-        member x.InputChanged ip = o.InputChanged ip
 
 /// <summary>
 /// defines a base class for all adaptive objects which are
@@ -498,8 +514,6 @@ type AdaptiveDecorator(o : IAdaptiveObject) =
 [<AbstractClass>]
 type ConstantObject() =
     static let emptySet = EmptyCollection<IAdaptiveObject>() :> ICollection<_>
-    static let emptyCallbacks = EmptyCollection<unit -> unit>() :> ICollection<_>
-
     interface IAdaptiveObject with
         member x.Id = -1
         member x.Level
@@ -512,42 +526,16 @@ type ConstantObject() =
             and set o = failwith "cannot mark constant outOfDate"
 
         member x.Inputs = emptySet
-        member x.Outputs = emptySet
-        member x.MarkingCallbacks = emptyCallbacks
+        member x.Outputs = VolatileCollection()
         member x.InputChanged ip = ()
 
-
-and EmptyCollection<'a>() =
-    interface ICollection<'a> with
-        member x.Add _ = ()
-        member x.Clear() = ()
-        member x.Count = 0
-        member x.Contains _ = false
-        member x.Remove _ = false
-        member x.CopyTo(arr, idx) = ()
-        member x.IsReadOnly = false
-        member x.GetEnumerator() : IEnumerator<'a> = Seq.empty.GetEnumerator()
-        member x.GetEnumerator() : System.Collections.IEnumerator = Seq.empty.GetEnumerator() :> _
 
 
 
 [<AutoOpen>]
 module Marking =
 
-    // changes the level of an adaptive object if it is below
-    // minLevel and transitively changes all outputs if needed.
-    // Note that this implementation has very poor runtime performance
-    // and might possibly be improved using some kind of order-maintenance
-    // structure instead of integers.
-    let rec relabel (m : IAdaptiveObject) (minLevel : int) =
-        let old = m.Level
-        if old < minLevel then
-            m.Level <- minLevel
-            for o in m.Outputs do
-                relabel o (minLevel + 1) |> ignore
-            old <> -1
-        else
-            false
+
 
     // since changeable inputs need a transaction
     // for enqueing their changes we use a thread local 
@@ -600,7 +588,7 @@ module Marking =
                 | None -> 
                     lock x (fun () -> 
                         if x.OutOfDate then ()
-                        elif x.Outputs.Count = 0 then x.OutOfDate <- true
+                        elif x.Outputs.IsEmpty then x.OutOfDate <- true
                         else failwith "cannot mark object without transaction"
                     )
 
@@ -617,16 +605,18 @@ module Marking =
             m.Inputs.Add x |> ignore
             x.Outputs.Add m |> ignore
 
-            // if the element was actually relabeled and we're
-            // currently inside a running transaction we need to
-            // raise a LevelChangedException.
-            if relabel m (x.Level + 1) then
-                match Transaction.Running with
-                    | Some t ->
-                        match t.CurrentAdapiveObject with
-                            | Some m' when m = m' -> raise <| LevelChangedException m
-                            | _ -> ()
-                    | _ -> ()
+            //m.Level <- max m.Level (x.Level + 1)
+
+//            // if the element was actually relabeled and we're
+//            // currently inside a running transaction we need to
+//            // raise a LevelChangedException.
+//            if relabel m (x.Level + 1) then
+//                match Transaction.Running with
+//                    | Some t ->
+//                        match t.CurrentAdapiveObject with
+//                            | Some m' when m = m' -> raise <| LevelChangedException m
+//                            | _ -> ()
+//                    | _ -> ()
 
             m.MarkOutdated ( Some x )
 
@@ -637,28 +627,180 @@ module Marking =
             m.Inputs.Remove x |> ignore
             x.Outputs.Remove m |> ignore
 
+
+[<AutoOpen>]
+module CallbackExtensions =
+    
+    type private CallbackObject(inner : IAdaptiveObject, callback : unit -> unit) as this =
+
+        let modId = newId()
+        let mutable level = inner.Level + 1
+
+        let inputs = HashSet<IAdaptiveObject>() :> ICollection<_>
+        let mutable scope = Ag.getContext()
+        let mutable inner = inner
+        let mutable callback = fun () -> Ag.useScope scope callback
+        do inner.AddOutput this
+
+        member x.Mark() =
+            callback()
+            false
+
+        interface IAdaptiveObject with
+            member x.Id = modId
+            member x.Level
+                with get() = System.Int32.MaxValue - 1
+                and set l = failwith "callbacks cannot be given a level"
+
+            member x.Mark() =
+                x.Mark()
+
+            member x.OutOfDate
+                with get() = false
+                and set o = ()
+
+            member x.Inputs = inputs
+            member x.Outputs = VolatileCollection()
+            member x.InputChanged ip = ()
+
+        interface IDisposable with
+            member x.Dispose() =
+                inner.RemoveOutput x
+                callback <- id
+                scope <- Unchecked.defaultof<_>
+                inner <- null
+
+
+    type IAdaptiveObject with
+
         /// <summary>
         /// utility for adding a "persistent" callback to
         /// the object. returns a disposable "subscription" which
         /// allows to destroy the callback.
         /// </summary>
         member x.AddMarkingCallback(f : unit -> unit) =
-            let live = ref true
-            let self = ref id
-            self := fun () ->
-                if !live then
-                    f()
-                    x.MarkingCallbacks.Add(!self) |> ignore
+            let self = ref Unchecked.defaultof<_>
+            self := 
+                new CallbackObject(x, fun () ->
+                    try
+                        f()
+                    finally 
+                        x.Outputs.Add !self |> ignore
+                )
 
-            lock x (fun () ->
-                x.MarkingCallbacks.Add(!self) |> ignore
-            )
+            x.AddOutput !self
 
-            { new IDisposable with member __.Dispose() = live := false; x.MarkingCallbacks.Remove !self |> ignore}
+            !self :> IDisposable //{ new IDisposable with member __.Dispose() = live := false; x.MarkingCallbacks.Remove !self |> ignore}
  
+        /// <summary>
+        /// utility for adding a "persistent" callback to
+        /// the object. returns a disposable "subscription" which
+        /// allows to destroy the callback.
+        /// </summary>
+        member x.AddVolatileMarkingCallback(f : unit -> unit) =
+            let self = ref Unchecked.defaultof<_>
+            self := 
+                new CallbackObject(x, fun () ->
+                    try
+                        f()
+                    with :? LevelChangedException as ex ->
+                        x.Outputs.Add !self |> ignore
+                        raise ex
+                )
+
+            x.AddOutput !self
+
+            !self :> IDisposable //{ new IDisposable with member __.Dispose() = live := false; x.MarkingCallbacks.Remove !self |> ignore}
+ 
+
+        member x.AddEvaluationCallback(f : unit -> unit) =
+            let self = ref Unchecked.defaultof<_>
+            self := 
+                new CallbackObject(x, fun () ->
+                    try
+                        f()
+                    finally 
+                        x.Outputs.Add !self |> ignore
+                )
+
+            x.AddOutput !self
+            self.Value.Mark() |> ignore
+
+            !self :> IDisposable //{ new IDisposable with member __.Dispose() = live := false; x.MarkingCallbacks.Remove !self |> ignore}
+ 
+
 
 open System.Threading
  
+/// <summary>
+/// defines a base class for all decorated mods
+/// </summary>
+type AdaptiveDecorator(o : IAdaptiveObject) =
+    let mutable o = o
+    let id = newId()
+    
+    member x.SetInner(no : IAdaptiveObject) =
+        let mark = 
+            lock o (fun () ->
+                let outputs = o.Outputs.Consume()
+
+                assert(no.OutOfDate)
+
+
+                // attach all outputs of old to new
+                let outputs = o.Outputs.Consume()
+                for o in outputs do
+                    no.Outputs.Add o |> ignore
+
+                // if old was not outdated mark all its outputs
+                // since new is outDated
+                not o.OutOfDate
+
+                // levels are irrelevant here since all
+                // dependent cells are outDated
+
+
+            )
+
+        if mark then
+            transact (fun () -> no.MarkOutdated())
+
+        o <- no
+
+    member x.Id = id
+    member x.OutOfDate
+        with get() = o.OutOfDate
+        and set v = o.OutOfDate <- v
+
+    member x.Outputs = o.Outputs
+    member x.Inputs = o.Inputs
+    member x.Level 
+        with get() = o.Level
+        and set l = o.Level <- l
+
+    member x.Mark() = o.Mark()
+
+    override x.GetHashCode() = id
+    override x.Equals o =
+        match o with
+            | :? IAdaptiveObject as o -> x.Id = id
+            | _ -> false
+
+    interface IAdaptiveObject with
+        member x.Id = id
+        member x.OutOfDate
+            with get() = o.OutOfDate
+            and set v = o.OutOfDate <- v
+
+        member x.Outputs = o.Outputs
+        member x.Inputs = o.Inputs
+        member x.Level 
+            with get() = o.Level
+            and set l = o.Level <- l
+
+        member x.Mark () = o.Mark()
+
+        member x.InputChanged ip = o.InputChanged ip
 
  
 type VolatileDirtySet<'a, 'b when 'a :> IAdaptiveObject and 'a : equality and 'a : not struct>(eval : 'a -> 'b) =
@@ -744,3 +886,5 @@ type VolatileTaggedDirtySet<'a, 'b, 't when 'a :> IAdaptiveObject and 'a : equal
     member x.Clear() =
         tagDict.Clear()
         Interlocked.Exchange(&set, PersistentHashSet.empty) |> ignore
+
+

@@ -217,7 +217,7 @@ module ``collect tests`` =
         let derived = set |> ASet.map (fun a -> 1 + a)
         let inner = cset []
 
-        let s = derived |> ASet.unsafeRegisterCallbackNoGcRoot (fun delta ->
+        let s = derived |> ASet.unsafeRegisterCallbackKeepDisposable (fun delta ->
             for d in delta do
                 match d with
                     | Add v -> inner.Add v |> ignore
@@ -533,14 +533,22 @@ module ``collect tests`` =
         let ct = cancel.Token
 
 
-        let readers = [0..5] |> List.map (fun _ -> derived.GetReader())
+        let readers = [|0..5|] |> Array.map (fun _ -> derived.GetReader())
         // pull from the system
 
-        for r in readers do
+        let lists = Array.init readers.Length (fun _ -> System.Collections.Generic.List())
+
+
+        for i in 0..readers.Length-1 do
+            let r = readers.[i]
+            let deltas = lists.[i]
             Task.Factory.StartNew(fun () ->
                 while true do
                     ct.ThrowIfCancellationRequested()
                     let delta = r.GetDelta()
+
+
+                    deltas.AddRange delta
                     if not (List.isEmpty delta) then
                         Console.WriteLine("delta: {0}", List.length delta)
                     //Thread.Sleep(1)
@@ -561,10 +569,16 @@ module ``collect tests`` =
 
         cancel.Cancel()
 
-        for r in readers do
-            r.Update()
+        for i in 0..readers.Length-1 do
+            let r = readers.[i]
+            let deltas = lists.[i]
+            r.GetDelta() |> deltas.AddRange
+
             let content = r.Content |> Seq.toList |> List.sort
             content |> should equal numbers
+
+            let deltas = deltas |> Seq.toList |> List.sort
+            deltas |> should equal (numbers |> List.map Add)
 
     [<Test>]
     let ``[CSet] concurrent reader-reset``() =
@@ -672,7 +686,7 @@ module ``collect tests`` =
         for i in 0 .. cnt do
             transact (fun () -> CSet.add i inputSet |> ignore)
             //printfn "should equal i=%d called=%d" i !called
-            should equal  i !called
+            !called |> should equal i
             Thread.Sleep 5
             if i % 10 = 0 then printfn "done: %d/%d" i cnt; GC.Collect()
 
@@ -753,13 +767,13 @@ module ``collect tests`` =
         // (bytes)
         let t = Thread(ThreadStart(fun () ->
             
-            let mem = System.GC.GetTotalMemory(true)
-
             let mutable m = CSet.ofList [0] :> aset<_>
+
+            let mem = System.GC.GetTotalMemory(true)
 
             let size = 1000
 
-            for i in 2 .. size do
+            for i in 1 .. size do
                 m <- ASet.map id m
 
             let r = m.GetReader()
@@ -767,9 +781,11 @@ module ``collect tests`` =
 
             let memAfter = System.GC.GetTotalMemory(true)
             let diff = memAfter - mem
-            let sizePerMod = float diff / float size
+            let sizePerMod = float diff / float (2 * size)
 
-            printfn "total: %A, per aset: %A (bytes)" diff sizePerMod
+            printfn "per aset: %A (bytes)" (float diff / float size)
+
+            printfn "per reader: %A (bytes)" sizePerMod
 
             r.Update()
             r.Dispose()

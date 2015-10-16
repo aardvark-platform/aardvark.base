@@ -67,22 +67,22 @@ module AList =
         fun v -> Ag.useScope scope (fun () -> f v)
 
     let private callbackTable = ConditionalWeakTable<obj, ConcurrentHashSet<IDisposable>>()
-    type private CallbackSubscription(m : IAdaptiveObject, cb : unit -> unit, live : ref<bool>, reader : IDisposable, set : ConcurrentHashSet<IDisposable>) =
-        
-        member x.Dispose() = 
-            if !live then
-                live := false
-                reader.Dispose()
-                m.MarkingCallbacks.Remove cb |> ignore
-                set.Remove x |> ignore
-
-        interface IDisposable with
-            member x.Dispose() = x.Dispose()
-
-        override x.Finalize() =
-            try x.Dispose()
-            with _ -> ()
-
+//    type private CallbackSubscription(m : IAdaptiveObject, cb : unit -> unit, live : ref<bool>, reader : IDisposable, set : ConcurrentHashSet<IDisposable>) =
+//        
+//        member x.Dispose() = 
+//            if !live then
+//                live := false
+//                reader.Dispose()
+//                m.MarkingCallbacks.Remove cb |> ignore
+//                set.Remove x |> ignore
+//
+//        interface IDisposable with
+//            member x.Dispose() = x.Dispose()
+//
+//        override x.Finalize() =
+//            try x.Dispose()
+//            with _ -> ()
+//
 
     let empty<'a> : alist<'a> =
         EmptyListImpl<'a>.Instance
@@ -214,22 +214,16 @@ module AList =
     /// </summary>
     let unsafeRegisterCallbackNoGcRoot (f : list<Delta<ISortKey * 'a>> -> unit) (list : alist<'a>) =
         let m = list.GetReader()
-        let f = scoped f
-        let self = ref id
-        let live = ref true
-        self := fun () ->
-            if !live then
-                try
-                    m.GetDelta() |> f
-                finally 
-                    m.MarkingCallbacks.Add !self |> ignore
-        
-        !self ()
+
+        let result = 
+            m.AddEvaluationCallback(fun () ->
+                m.GetDelta() |> f
+            )
+
 
         let set = callbackTable.GetOrCreateValue(list)
-        let s = new CallbackSubscription(m, !self, live, m, set)
-        set.Add s |> ignore
-        s :> IDisposable 
+        set.Add result |> ignore
+        result
 
     [<Obsolete("use unsafeRegisterCallbackNoGcRoot or unsafeRegisterCallbackKeepDisposable instead")>]
     let registerCallback f set = unsafeRegisterCallbackNoGcRoot f set

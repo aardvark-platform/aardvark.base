@@ -13,11 +13,11 @@ open System.Threading
 type ReferenceCountingSet<'a>(initial : seq<'a>) =
     let mutable nullCount = 0
     let mutable version = 0
+    let mutable store = Dictionary<obj, 'a * ref<int>>(1)
 
     let hasChanged() =
         Interlocked.Increment &version |> ignore
 
-    let store = Dictionary<obj, 'a * ref<int>>()
 
     
 
@@ -77,8 +77,18 @@ type ReferenceCountingSet<'a>(initial : seq<'a>) =
     do for e in initial do
         add e |> ignore
 
+    member private x.Version = version
     member private x.Store = store
     member private x.NullCount = nullCount
+
+
+    member internal x.SetTo(other : ReferenceCountingSet<'a>) =
+        nullCount <- other.NullCount
+        version <- other.Version
+
+        store <- Dictionary(other.Store.Count)
+        for (KeyValue(k,(v,r))) in other.Store do
+            store.[k] <- (v, ref !r)
 
     /// <summary>
     /// adds an element to the ReferenceCountingSet and returns
