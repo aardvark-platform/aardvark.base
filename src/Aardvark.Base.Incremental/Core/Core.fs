@@ -643,20 +643,14 @@ module CallbackExtensions =
         do inner.AddOutput this
 
         member x.Mark() =
-            let stack = currentEvaluationPath.Value
-
-            stack.Push x
-            try
-                callback()
-                false
-            finally
-                stack.Pop() |> ignore
+            callback()
+            false
 
         interface IAdaptiveObject with
             member x.Id = modId
             member x.Level
-                with get() = level
-                and set l = level <- l
+                with get() = System.Int32.MaxValue - 1
+                and set l = failwith "callbacks cannot be given a level"
 
             member x.Mark() =
                 x.Mark()
