@@ -190,6 +190,13 @@ module AgHelpers =
                                                 reg <| Some(SemanticFunction(getSemanticObject(mi.DeclaringType), mi.DeclaringType, mi :?> MethodInfo))
                         | _ -> reg None
 
+
+    let rec getallInterfaces (t : Type) =
+        seq {
+            yield! t.GetInterfaces()
+            if t.BaseType <> null then yield! getallInterfaces t.BaseType
+        }
+
     // finds the semantic function s for Root<S when S :> callerType) and returns s,S where S is
     // the interface of the syntactic family.
     // Note that, due to OOPness the lookup might be expensive if a type implements many interfaces
@@ -203,7 +210,7 @@ module AgHelpers =
              | (true,v) -> v
              | _ ->
                 // get all Root<S> candidates
-                let interfaces = callerType.GetInterfaces() 
+                let interfaces = getallInterfaces callerType
                 let instantiatedRoots = 
                     [ for i in interfaces do
                         let concreteRoot = genericRoot.MakeGenericType([|i|])      
