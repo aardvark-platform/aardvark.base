@@ -140,7 +140,7 @@ module AgHelpers =
                    v
 
     let private sfCache = Dictionary<Type, Dictionary<string, Option<SemanticFunction>>>()
-    let private rootSfCache = Dictionary<Type * string, Option<SemanticFunction*Type>>()
+    let private rootSfCache = Dictionary<Type * string, Option<SemanticFunction*Func<obj,obj>>>()
 
     let private addSemanticFunction (nodeType : Type, name : string) (sf : Option<SemanticFunction>) =
         lock sfCache (fun () ->
@@ -196,7 +196,7 @@ module AgHelpers =
     // which are required for querying a syntax base type.
     // This is not too bad, since there should not be to many of them. Additionally the result is 
     // cached and occurs only when querying the root inh semantics the first time.
-    let internal tryFindRootSemantics(genericRoot : Type, callerType : Type, name : string) : Option<SemanticFunction * Type> =
+    let internal tryFindRootSemantics(genericRoot : Type, callerType : Type, name : string) : Option<SemanticFunction * Func<obj,obj>> =
         let key = callerType,name
         lock rootSfCache (fun () ->
             match rootSfCache.TryGetValue key with
@@ -214,7 +214,13 @@ module AgHelpers =
                 let possibleSemanticFunctions = instantiatedRoots |> List.map (fun (concrete,interfaceType) -> tryFindSemanticFunction(concrete,name), interfaceType)
                 let s = 
                     match possibleSemanticFunctions with
-                        | [Some (singleSem),baseInterfaceType] -> Some (singleSem, baseInterfaceType)
+                        | [Some (singleSem),baseInterfaceType] -> 
+                            let rootInstanceType = genericRoot.MakeGenericType([|baseInterfaceType|])
+                            let ctor = rootInstanceType.GetConstructor([|typeof<obj>|])
+                            let parameter = Expression.Parameter(typeof<obj>) 
+                            let creatorE = Expression.Lambda<Func<obj,obj>>(Expression.New(ctor,parameter),parameter)
+                            let creatorCompiled = creatorE.Compile()
+                            Some (singleSem, creatorCompiled)
                         | [single] -> failwith "ambigous root semantics for type %s of semantic: %s" callerType.FullName name
                         | _ -> None
                 rootSfCache.[key] <- s

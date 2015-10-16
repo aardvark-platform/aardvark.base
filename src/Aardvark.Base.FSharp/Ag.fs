@@ -180,12 +180,11 @@ module Ag =
                             // find root semantic function by querying Root<S>, where S :> sourceType.
                             let sourceType = node.GetType()
                             match tryFindRootSemantics(rootType,sourceType, name) with
-                                | Some(f,baseInterface) -> 
+                                | Some(f,rootCreator) -> 
                                     if logging then Log.line "invoking sem: %A" f
                                     // TODO: further optimize this
-                                    let rootInstanceType = rootType.MakeGenericType([|baseInterface|])
-                                    let root = System.Activator.CreateInstance(rootInstanceType, [| scope.source |])
-                                    f.Fun(root) |> ignore
+                                    let rootInstance = rootCreator.Invoke scope.source 
+                                    f.Fun(rootInstance) |> ignore
                                     match getValueStore scope.source name with
                                         | Some v -> clearValueStore()
                                                     if logging then Log.stop "no cache, searched attrib, found inh sem, adding to scope cache"
