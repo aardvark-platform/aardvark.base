@@ -303,6 +303,8 @@ namespace Aardvark.Base
 
         public void AddLog10(double value) { Add(Fun.Log10(value)); }
 
+        public void AddLog2(double value) { Add(Fun.Log2(value)); }
+
         public void Add(double value)
         {
             m_dataRange.ExtendBy(value);
@@ -428,7 +430,13 @@ namespace Aardvark.Base
             Stats.Add(value, data);
         }
 
-        public void AddHist(double value, T data)
+        public void AddLog2Hist(double value, T data)
+        {
+            Histogram.AddLog2(value);
+            Stats.Add(value, data);
+        }
+
+        public void Add(double value, T data)
         {
             Histogram.Add(value);
             Stats.Add(value, data);
@@ -438,6 +446,12 @@ namespace Aardvark.Base
         {
             Histogram.Add(hs.Histogram);
             Stats.Add(hs.Stats);
+        }
+
+        [Obsolete("Use 'Add' instead (same functionality and parameters)", false)]
+        public void AddHist(double value, T data)
+        {
+            Add(value, data);
         }
 
         public static HistogramAndStats<T> operator +(HistogramAndStats<T> hs0, HistogramAndStats<T> hs1)
