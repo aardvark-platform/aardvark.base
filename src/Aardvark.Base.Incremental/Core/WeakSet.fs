@@ -13,11 +13,12 @@ open System.Collections.Concurrent
 /// scenarios where one needs to enumerate a set of things
 /// which shall be allowed to be garbage-collected.
 /// </summary>
-type WeakSet<'a when 'a : not struct> private(inner : ConcurrentDictionary<Weak<'a>, int>) =
-    
-    let keys() = inner.Keys |> Seq.choose(function (Strong o) -> Some o | _ -> None)
+type WeakSet<'a when 'a : not struct> private(inner : HashSet<Weak<'a>>) =
+    let lockObj = obj()
 
-    let contains (item : 'a) = inner.ContainsKey (Weak item)
+    let keys() = inner |> Seq.choose(function (Strong o) -> Some o | _ -> None)
+
+    let contains (item : 'a) = inner.Contains (Weak item)
         
 
     let compareSeq (other : seq<'a>) =
@@ -82,122 +83,119 @@ type WeakSet<'a when 'a : not struct> private(inner : ConcurrentDictionary<Weak<
 
 
     override x.ToString() =
-        x |> Seq.toList |> sprintf "weakSet %A"
+        lock lockObj (fun () -> x |> Seq.toList |> sprintf "weakSet %A")
+
+    member x.ToWeakArray() =
+        lock lockObj (fun () -> 
+            inner |> Seq.toArray
+        )
 
     member x.CopyTo(arr : 'a[], index : int) =
-        let mutable index = index
-        for e in x do
-            arr.[index] <- e
-            index <- index + 1
+        lock lockObj (fun () -> 
+            let mutable index = index
+            for e in x do
+                arr.[index] <- e
+                index <- index + 1
+        )
 
     member x.Count =
-        inner.Count
+        lock lockObj (fun () -> inner.Count)
 
     member x.Contains(value : 'a) =
-        inner.ContainsKey (Weak value)
+        lock lockObj (fun () -> inner.Contains (Weak value))
 
     member x.Add (value : 'a) =
-        inner.TryAdd (Weak value, 0)
+        lock lockObj (fun () -> inner.Add (Weak value))
 
     member x.Remove (value : 'a) =
-        let mutable foo = 0
-        inner.TryRemove (Weak value, &foo)
+        lock lockObj (fun () -> inner.Remove (Weak value))
 
     member x.Clear() =
-        inner.Clear()
+        lock lockObj (fun () -> inner.Clear())
 
     member x.UnionWith (elements : #seq<'a>) =
-        let add = elements |> Seq.map (fun e -> Weak e)
-        for r in add do
-            inner.TryAdd(r, 0) |> ignore
+        lock lockObj (fun () -> 
+            let add = elements |> Seq.map (fun e -> Weak e)
+            inner.UnionWith add
+        )
             
     member x.ExceptWith (elements : #seq<'a>) =
-        let rem = elements |> Seq.map (fun e -> Weak e)
-        let mutable foo = 0
-        for r in rem do
-            inner.TryRemove (r, &foo) |> ignore
+        lock lockObj (fun () -> 
+            let rem = elements |> Seq.map (fun e -> Weak e)
+            inner.ExceptWith rem
+        )
             
     member x.IntersectWith (other : seq<'a>) =
-        let other =
-            match other with
-                | :? ICollection<'a> as c -> c
-                | _ -> HashSet(other) :> ICollection<_>
-
-        let removals =
-            inner.Keys 
-                |> Seq.choose (fun w ->
-                    match w with
-                        | Strong o ->
-                            if other.Contains o then None
-                            else Some w
-                        | _ -> Some w
-                   )
-                |> Seq.toList
-
-        let mutable foo = 0
-        for w in removals do
-            inner.TryRemove (w, &foo) |> ignore
+        lock lockObj (fun () -> 
+            inner.IntersectWith(other |> Seq.map (fun e -> Weak e))
+        )
 
     member x.SymmetricExceptWith (other : seq<'a>) =
-        let other =
-            match other with
-                | :? ICollection<'a> as c -> c
-                | _ -> HashSet(other) :> ICollection<_>
-
-        for item in other do
-            if not <| x.Remove item then
-                x.Add item |> ignore
-
+        lock lockObj (fun () -> 
+            inner.SymmetricExceptWith(other |> Seq.map (fun e -> Weak e))
+        )
 
     member x.IsSubsetOf (other : seq<'a>) =
-        match compareSeq other with
-            | (_, 0, _) -> true
-            | _ -> false
+        lock lockObj (fun () -> 
+            match compareSeq other with
+                | (_, 0, _) -> true
+                | _ -> false
+        )
 
     member x.IsSupersetOf (other : seq<'a>) =
-        match compareSeq other with
-            | (_, _, 0) -> true
-            | _ -> false
+        lock lockObj (fun () -> 
+            match compareSeq other with
+                | (_, _, 0) -> true
+                | _ -> false
+        )
 
     member x.IsProperSubsetOf (other : seq<'a>) =
-        match compareSeq other with
-            | (_, 0, o) -> o > 0
-            | _ -> false
+        lock lockObj (fun () -> 
+            match compareSeq other with
+                | (_, 0, o) -> o > 0
+                | _ -> false
+        )
 
     member x.IsProperSupersetOf (other : seq<'a>) =
-        match compareSeq other with
-            | (_, m, 0) -> m > 0
-            | _ -> false
+        lock lockObj (fun () -> 
+            match compareSeq other with
+                | (_, m, 0) -> m > 0
+                | _ -> false
+        )
 
     member x.Overlaps (other : seq<'a>) =
-        let (b,_,_) = compareSeq other
-        b > 0
+        lock lockObj (fun () -> 
+            let (b,_,_) = compareSeq other
+            b > 0
+        )
 
     member x.SetEquals (other : seq<'a>) =
-        match compareSeq other with
-            | (_, 0, 0) -> true
-            | _ -> false
+        lock lockObj (fun () -> 
+            match compareSeq other with
+                | (_, 0, 0) -> true
+                | _ -> false
+        )
 
     member x.IsEmpty =
-        inner.Count = 0
+        lock lockObj (fun () -> inner.Count = 0)
 
-    new() = WeakSet(ConcurrentDictionary(1,0))
+    new() = WeakSet(HashSet())
 
 // defines an enumerator cleaning the WeakSet during its enumeration
 and private WeakSetEnumerator<'a when 'a : not struct> =
     struct
-        val mutable public inputSet : ConcurrentDictionary<Weak<'a>, int>
-        val mutable public e : IEnumerator<KeyValuePair<Weak<'a>, int>>
+        val mutable public inputSet : HashSet<Weak<'a>>
+        val mutable public e : IEnumerator<Weak<'a>>
         val mutable public current : 'a
 
         member x.MoveNext() =
             if x.e.MoveNext() then
-                match x.e.Current.Key with
+                match x.e.Current with
                     | Strong v -> 
                         x.current <- v
                         true
                     | _ ->
-                        x.inputSet.TryRemove x.e.Current.Key |> ignore
+                        x.inputSet.Remove x.e.Current |> ignore
                         x.MoveNext()
             else
                 false
@@ -220,6 +218,6 @@ and private WeakSetEnumerator<'a when 'a : not struct> =
 
         new (w : WeakSet<'a>) =
             let inner = w.Inner
-            { inputSet = inner; e = inner.GetEnumerator(); current = Unchecked.defaultof<'a> }
+            { inputSet = inner; e = (w.ToWeakArray() :> seq<_>).GetEnumerator(); current = Unchecked.defaultof<'a> }
     end
      

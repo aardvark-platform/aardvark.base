@@ -11,8 +11,11 @@ open Aardvark.Base.Incremental.ASetReaders
 /// defines functions for composing asets and mods
 /// </summary>
 module ASet =
+
+
     type AdaptiveSet<'a>(newReader : unit -> IReader<'a>) =
         let l = obj()
+        let mutable readerCount = 0
         let readers = WeakSet<CopyReader<'a>>()
 
         let mutable inputReader = None
@@ -24,24 +27,35 @@ module ASet =
                     inputReader <- Some r
                     r
 
+        let remove (r : IReader<'a>) (ri : CopyReader<'a>) =
+            r.RemoveOutput ri
+            readers.Remove ri |> ignore
+            readerCount <- readerCount - 1
+
+            if readers.IsEmpty then
+                r.Dispose()
+                inputReader <- None
 
         interface aset<'a> with
-            member x.ReaderCount = readers.Count
+            member x.ReaderCount = readerCount
             member x.IsConstant = false
             member x.GetReader () =
                 lock l (fun () ->
                     let r = getReader()
 
-                    let remove ri =
-                        r.RemoveOutput ri
-                        readers.Remove ri |> ignore
+                    
 
-                        if readers.IsEmpty then
-                            r.Dispose()
-                            inputReader <- None
-
-                    let reader = new CopyReader<'a>(r, remove)
+                    let reader = new CopyReader<'a>(r, remove r)
                     readers.Add reader |> ignore
+                    readerCount <- readerCount + 1
+
+                    if readerCount > 1 then
+                        for r in readers do
+                            r.SetPassThru(false)
+                    else
+                        let r = readers |> Seq.exactlyOne
+                        r.SetPassThru(true)
+
 
                     reader :> _
                 )
@@ -67,8 +81,7 @@ module ASet =
         let scope = Ag.getContext()
         fun v -> Ag.useScope scope (fun () -> f v)
 
-    let private callbackTable = ConditionalWeakTable<obj, ConcurrentHashSet<IDisposable>>()
-
+    
     /// <summary>
     /// creates an empty set instance being reference
     /// equal to all other empty sets of the same type.
@@ -446,15 +459,16 @@ module ASet =
     /// registerCallbackKeepDisposable only destroys the callback, iff the associated
     /// disposable is disposed.
     /// </summary>
+    let private callbackTable = ConditionalWeakTable<obj, ConcurrentHashSet<IDisposable>>()
+
     let unsafeRegisterCallbackNoGcRoot (f : list<Delta<'a>> -> unit) (set : aset<'a>) =
         let m = set.GetReader()
 
         let result =
-            m.AddMarkingCallback(fun () ->
+            m.AddEvaluationCallback(fun () ->
                 m.GetDelta() |> f
             )
 
-        m.GetDelta() |> f
 
         let callbackSet = callbackTable.GetOrCreateValue(set)
         callbackSet.Add result |> ignore

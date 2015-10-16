@@ -361,12 +361,15 @@ type private EmptyCollection<'a>() =
 /// IAdaptiveObject.
 /// </summary>
 type AdaptiveObject() =
+    #if DEBUG
+    let inputs = HashSet<IAdaptiveObject>() :> ICollection<_>
+    #else
     static let inputs = EmptyCollection<IAdaptiveObject>() :> ICollection<_>
+    #endif
 
     let id = newId()
     let mutable outOfDate = true
     let mutable level = 0
-    //let inputs = HashSet<IAdaptiveObject>() :> ICollection<_>
     let outputs = VolatileCollection<IAdaptiveObject>()
 
     static let time = AdaptiveObject() :> IAdaptiveObject
@@ -407,17 +410,20 @@ type AdaptiveObject() =
                                 if stack.Count > 1 then Transaction.RunningLevel - 1
                                 else Transaction.RunningLevel
 
-                            if level > maxAllowedLevel then
-                                // all greater pulls would be from the future
-                                raise <| LevelChangedException(this, level, stack.Count - 1)
 
 
                             match parent with
-                                | Some o (* when o.Inputs.Contains this *) ->
+                                | Some o ->
                                     outputs.Add o |> ignore
                                     o.Level <- max o.Level (level + 1)
                                 | _ -> ()
 
+
+                            if level > maxAllowedLevel then
+                                let top = (stack |> Seq.last)
+                                //printfn "%A tried to pull from level %A but has level %A" top.Id level top.Level
+                                // all greater pulls would be from the future
+                                raise <| LevelChangedException(this, level, stack.Count - 1)
                             
                             r
                         finally
@@ -497,46 +503,6 @@ type AdaptiveObject() =
 
 
 
-/// <summary>
-/// defines a base class for all decorated mods
-/// </summary>
-type AdaptiveDecorator(o : IAdaptiveObject) =
-    let id = newId()
-    
-    member x.Id = id
-    member x.OutOfDate
-        with get() = o.OutOfDate
-        and set v = o.OutOfDate <- v
-
-    member x.Outputs = o.Outputs
-    member x.Inputs = o.Inputs
-    member x.Level 
-        with get() = o.Level
-        and set l = o.Level <- l
-
-    member x.Mark() = o.Mark()
-
-    override x.GetHashCode() = o.GetHashCode()
-    override x.Equals o =
-        match o with
-            | :? IAdaptiveObject as o -> x.Id = o.Id
-            | _ -> false
-
-    interface IAdaptiveObject with
-        member x.Id = id
-        member x.OutOfDate
-            with get() = o.OutOfDate
-            and set v = o.OutOfDate <- v
-
-        member x.Outputs = o.Outputs
-        member x.Inputs = o.Inputs
-        member x.Level 
-            with get() = o.Level
-            and set l = o.Level <- l
-
-        member x.Mark () = o.Mark()
-
-        member x.InputChanged ip = o.InputChanged ip
 
 /// <summary>
 /// defines a base class for all adaptive objects which are
@@ -676,6 +642,15 @@ module CallbackExtensions =
         let mutable callback = fun () -> Ag.useScope scope callback
         do inner.AddOutput this
 
+        member x.Mark() =
+            let stack = currentEvaluationPath.Value
+
+            stack.Push x
+            try
+                callback()
+                false
+            finally
+                stack.Pop() |> ignore
 
         interface IAdaptiveObject with
             member x.Id = modId
@@ -684,8 +659,7 @@ module CallbackExtensions =
                 and set l = level <- l
 
             member x.Mark() =
-                callback()
-                false
+                x.Mark()
 
             member x.OutOfDate
                 with get() = false
@@ -745,9 +719,94 @@ module CallbackExtensions =
             !self :> IDisposable //{ new IDisposable with member __.Dispose() = live := false; x.MarkingCallbacks.Remove !self |> ignore}
  
 
+        member x.AddEvaluationCallback(f : unit -> unit) =
+            let self = ref Unchecked.defaultof<_>
+            self := 
+                new CallbackObject(x, fun () ->
+                    try
+                        f()
+                    finally 
+                        x.Outputs.Add !self |> ignore
+                )
+
+            x.AddOutput !self
+            self.Value.Mark() |> ignore
+
+            !self :> IDisposable //{ new IDisposable with member __.Dispose() = live := false; x.MarkingCallbacks.Remove !self |> ignore}
+ 
+
 
 open System.Threading
  
+/// <summary>
+/// defines a base class for all decorated mods
+/// </summary>
+type AdaptiveDecorator(o : IAdaptiveObject) =
+    let mutable o = o
+    let id = newId()
+    
+    member x.SetInner(no : IAdaptiveObject) =
+        let mark = 
+            lock o (fun () ->
+                let outputs = o.Outputs.Consume()
+
+                assert(no.OutOfDate)
+
+
+                // attach all outputs of old to new
+                let outputs = o.Outputs.Consume()
+                for o in outputs do
+                    no.Outputs.Add o |> ignore
+
+                // if old was not outdated mark all its outputs
+                // since new is outDated
+                not o.OutOfDate
+
+                // levels are irrelevant here since all
+                // dependent cells are outDated
+
+
+            )
+
+        if mark then
+            transact (fun () -> no.MarkOutdated())
+
+        o <- no
+
+    member x.Id = id
+    member x.OutOfDate
+        with get() = o.OutOfDate
+        and set v = o.OutOfDate <- v
+
+    member x.Outputs = o.Outputs
+    member x.Inputs = o.Inputs
+    member x.Level 
+        with get() = o.Level
+        and set l = o.Level <- l
+
+    member x.Mark() = o.Mark()
+
+    override x.GetHashCode() = id
+    override x.Equals o =
+        match o with
+            | :? IAdaptiveObject as o -> x.Id = id
+            | _ -> false
+
+    interface IAdaptiveObject with
+        member x.Id = id
+        member x.OutOfDate
+            with get() = o.OutOfDate
+            and set v = o.OutOfDate <- v
+
+        member x.Outputs = o.Outputs
+        member x.Inputs = o.Inputs
+        member x.Level 
+            with get() = o.Level
+            and set l = o.Level <- l
+
+        member x.Mark () = o.Mark()
+
+        member x.InputChanged ip = o.InputChanged ip
 
  
 type VolatileDirtySet<'a, 'b when 'a :> IAdaptiveObject and 'a : equality and 'a : not struct>(eval : 'a -> 'b) =

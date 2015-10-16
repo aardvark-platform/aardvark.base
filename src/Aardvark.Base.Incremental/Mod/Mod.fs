@@ -417,11 +417,9 @@ module Mod =
     /// </summary>
     let unsafeRegisterCallbackNoGcRoot (f : 'a -> unit) (m : IMod<'a>) =
         let result =
-            m.AddMarkingCallback(fun () ->
+            m.AddEvaluationCallback(fun () ->
                 m.GetValue() |> f
             )
-
-        m.GetValue() |> f
 
         let set = callbackTable.GetOrCreateValue(m)
         set.Add result |> ignore

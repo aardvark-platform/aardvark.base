@@ -216,11 +216,10 @@ module AList =
         let m = list.GetReader()
 
         let result = 
-            m.AddMarkingCallback(fun () ->
+            m.AddEvaluationCallback(fun () ->
                 m.GetDelta() |> f
             )
 
-        m.GetDelta() |> f
 
         let set = callbackTable.GetOrCreateValue(list)
         set.Add result |> ignore

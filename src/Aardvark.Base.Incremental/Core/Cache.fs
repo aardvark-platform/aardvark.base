@@ -12,7 +12,7 @@ open Aardvark.Base
 /// the reference count is 0.
 /// </summary>
 type Cache<'a, 'b>(scope : Ag.Scope, f : 'a -> 'b) =  
-    let cache = Dictionary<obj, 'b * ref<int>>()
+    let cache = Dictionary<obj, 'b * ref<int>>(1)
     let mutable nullCache = None
 
     /// <summary>
