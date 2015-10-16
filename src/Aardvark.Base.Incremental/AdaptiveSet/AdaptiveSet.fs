@@ -11,8 +11,11 @@ open Aardvark.Base.Incremental.ASetReaders
 /// defines functions for composing asets and mods
 /// </summary>
 module ASet =
+
+
     type AdaptiveSet<'a>(newReader : unit -> IReader<'a>) =
         let l = obj()
+        let mutable readerCount = 0
         let readers = WeakSet<CopyReader<'a>>()
 
         let mutable inputReader = None
@@ -24,24 +27,35 @@ module ASet =
                     inputReader <- Some r
                     r
 
+        let remove (r : IReader<'a>) (ri : CopyReader<'a>) =
+            r.RemoveOutput ri
+            readers.Remove ri |> ignore
+            readerCount <- readerCount - 1
+
+            if readers.IsEmpty then
+                r.Dispose()
+                inputReader <- None
 
         interface aset<'a> with
-            member x.ReaderCount = readers.Count
+            member x.ReaderCount = readerCount
             member x.IsConstant = false
             member x.GetReader () =
                 lock l (fun () ->
                     let r = getReader()
 
-                    let remove ri =
-                        r.RemoveOutput ri
-                        readers.Remove ri |> ignore
+                    
 
-                        if readers.IsEmpty then
-                            r.Dispose()
-                            inputReader <- None
-
-                    let reader = new CopyReader<'a>(r, remove)
+                    let reader = new CopyReader<'a>(r, remove r)
                     readers.Add reader |> ignore
+                    readerCount <- readerCount + 1
+
+                    if readerCount > 1 then
+                        for r in readers do
+                            r.SetPassThru(false)
+                    else
+                        let r = readers |> Seq.exactlyOne
+                        r.SetPassThru(true)
+
 
                     reader :> _
                 )
@@ -67,27 +81,7 @@ module ASet =
         let scope = Ag.getContext()
         fun v -> Ag.useScope scope (fun () -> f v)
 
-    let private callbackTable = ConditionalWeakTable<obj, ConcurrentHashSet<IDisposable>>()
-    type private CallbackSubscription(m : obj, cb : unit -> unit, live : ref<bool>, reader : IAdaptiveObject, set : ConcurrentHashSet<IDisposable>) =
-        let disposable = reader |> unbox<IDisposable>
-
-        member x.Dispose() = 
-            if !live then
-                live := false
-                disposable.Dispose()
-                reader.MarkingCallbacks.Remove cb |> ignore
-                set.Remove x |> ignore
-                if set.Count = 0 then
-                    callbackTable.Remove(m) |> ignore
-
-        interface IDisposable with
-            member x.Dispose() = x.Dispose()
-
-        override x.Finalize() =
-            try x.Dispose()
-            with _ -> ()
-
-
+    
     /// <summary>
     /// creates an empty set instance being reference
     /// equal to all other empty sets of the same type.
@@ -465,24 +459,20 @@ module ASet =
     /// registerCallbackKeepDisposable only destroys the callback, iff the associated
     /// disposable is disposed.
     /// </summary>
+    let private callbackTable = ConditionalWeakTable<obj, ConcurrentHashSet<IDisposable>>()
+
     let unsafeRegisterCallbackNoGcRoot (f : list<Delta<'a>> -> unit) (set : aset<'a>) =
         let m = set.GetReader()
-        let f = scoped f
-        let self = ref id
-        let live = ref true
-        self := fun () ->
-            if !live then
-                try
-                    m.GetDelta() |> f
-                finally 
-                    m.MarkingCallbacks.Add !self |> ignore
-        
-        !self ()
+
+        let result =
+            m.AddEvaluationCallback(fun () ->
+                m.GetDelta() |> f
+            )
+
 
         let callbackSet = callbackTable.GetOrCreateValue(set)
-        let s = new CallbackSubscription(set, !self, live, m, callbackSet)
-        callbackSet.Add s |> ignore
-        s :> IDisposable
+        callbackSet.Add result |> ignore
+        result
 
     [<Obsolete("use unsafeRegisterCallbackNoGcRoot or unsafeRegisterCallbackKeepDisposable instead")>]
     let registerCallback f set = unsafeRegisterCallbackNoGcRoot f set

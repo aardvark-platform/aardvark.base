@@ -104,7 +104,7 @@ module AFun =
                 let res = f.Evaluate v
                 if inputChanged res then
                     input.UnsafeCache <- res
-                    AdaptiveObject.Time.Outputs.Add input
+                    AdaptiveObject.Time.Outputs.Add input |> ignore
 
                 res
                )
@@ -310,7 +310,7 @@ module ``Controller Builder`` =
 
                     if newState.pulled <> newState.prev then
                         state.UnsafeCache <-  { prev = newState.pulled; pulled = Map.empty }
-                        AdaptiveObject.Time.Outputs.Add state
+                        AdaptiveObject.Time.Outputs.Add state |> ignore
 
                     v
                 )

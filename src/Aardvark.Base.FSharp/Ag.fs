@@ -57,9 +57,10 @@ module Ag =
 
 
     
+    type Root<'a>(child : obj) =
+        member x.Child = child
 
-
-    type Root = { Child : obj }
+    let rootType = typeof<Root<_>>.GetGenericTypeDefinition()
 
     //since some use-cases may need to deferr attribute-evaluation we provide a
     //mechanism to capture the state needed therefore. this is realized by simply
@@ -136,7 +137,7 @@ module Ag =
 
     //given a scope we can search for inherited attributes by navigating to parent scopes 
     //when needed.
-    let rec private tryGetInhAttributeScopeInternal (cacheScopes : List<Scope>) (scope : Scope) (name : string) : Option<obj> =
+    let rec private tryGetInhAttributeScopeInternal (node : obj) (cacheScopes : List<Scope>) (scope : Scope) (name : string) : Option<obj> =
         if logging then Log.start "tryGetInhAttributeScopeInternal %s on scope: %A " name scope.Path
         match scope.TryFindCacheValue name with
             //if the current scope contains a cache-value for <name> we may simply return it
@@ -170,16 +171,20 @@ module Ag =
                                     //the tree. (auto-inherit)
                                     | _ -> cacheScopes.Add(scope)
                                            if logging then Log.line "autoinh."
-                                           let r = tryGetInhAttributeScopeInternal cacheScopes parent name
+                                           let r = tryGetInhAttributeScopeInternal parent.source cacheScopes parent name
                                            if logging then Log.stop ()
                                            r
 
                         //otherwise the attribute could not be found
                         | _ -> 
-                            match tryFindSemanticFunction(typeof<Root>, name) with
-                                | Some(f) -> 
+                            // find root semantic function by querying Root<S>, where S :> sourceType.
+                            let sourceType = node.GetType()
+                            match tryFindRootSemantics(rootType,sourceType, name) with
+                                | Some(f,rootCreator) -> 
                                     if logging then Log.line "invoking sem: %A" f
-                                    f.Fun({ Child = scope.source }) |> ignore
+                                    // TODO: further optimize this
+                                    let rootInstance = rootCreator.Invoke scope.source 
+                                    f.Fun(rootInstance) |> ignore
                                     match getValueStore scope.source name with
                                         | Some v -> clearValueStore()
                                                     if logging then Log.stop "no cache, searched attrib, found inh sem, adding to scope cache"
@@ -189,10 +194,10 @@ module Ag =
                                     if logging then Log.stop "sem fun not found. adding none."
                                     scope.AddCache name None
 
-    let inline private tryGetInhAttributeScope (scope : Scope) (name : string) : Option<obj> =
+    let inline private tryGetInhAttributeScope (node : obj) (scope : Scope) (name : string) : Option<obj> =
         if logging then Log.start "tryGetInhAttributeScope %s on scope: %A " name scope.Path
         let l = List<Scope>()
-        let r = tryGetInhAttributeScopeInternal l scope name
+        let r = tryGetInhAttributeScopeInternal node l scope name
         l |> Seq.iter (fun si -> si.AddCache name r |> ignore)
         if logging then if r.IsNone then Log.stop " --> result: none" else Log.stop " --> result: some"
         r 
@@ -225,16 +230,16 @@ module Ag =
 
     //when not given a scope we need to use the currentScope
     //these functions are called by the ?-operator
-    let inline private tryGetInhAttribute (o : obj) (name : string) =
-        match o with
-            | :? Scope as scope -> tryGetInhAttributeScope scope name
+    let private tryGetInhAttribute (node : obj) (name : string) =
+        match node with
+            | :? Scope as scope -> tryGetInhAttributeScope node scope name
             | _ -> 
-                let s = rootScope.Value.GetChildScope(o)
+                let s = rootScope.Value.GetChildScope node
                 match s.cache.TryGetValue name with
                     | (true, v) -> v
                     | _ ->
                         match currentScope.Value.parent with
-                            | Some parent -> tryGetInhAttributeScope (parent.GetChildScope o) name
+                            | Some parent -> tryGetInhAttributeScope node (parent.GetChildScope node) name
                             | None -> None
 
     let private tryGetSynAttribute (o : obj) (name : string) =
@@ -322,6 +327,6 @@ module Ag =
             member x.TryGetAttributeValue(name : string) : Error<'a> =
                 match tryGetSynAttributeScope x name with
                     | Some v -> Success (v |> unbox<'a>)
-                    | None -> match tryGetInhAttributeScope x name with
+                    | None -> match tryGetInhAttributeScope null x name with
                                 | Some v -> Success (v |> unbox<'a>)
                                 | None -> Error "not found"

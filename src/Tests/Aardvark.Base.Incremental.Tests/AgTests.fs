@@ -13,8 +13,10 @@ open FsUnit
 
 module AgTests =
     
+    type ITreeNode = interface end
     type TreeNode(name : string) =
         let mutable children = List.empty<TreeNode>
+        interface ITreeNode
         member x.Children 
             with get() = children
             and set value =
@@ -71,13 +73,13 @@ module AgTests =
                 ()
             temp
 
-        member x.ConcatName(r : Root) =
+        member x.ConcatName(r : Root<ITreeNode>) =
             x.AllChildren?ConcatName <- "0"
 
         member x.ConcatName(node : TreeNode) : unit =
             x.AllChildren?ConcatName <- node?ConcatName + "|" + node.Name
 
-        member x.SynName(r : Root) : string =
+        member x.SynName(r : Root<ITreeNode>) : string =
             "0"
 
         member x.SynName(n : SynTreeNode) : string =
