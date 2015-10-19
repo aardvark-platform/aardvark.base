@@ -68,7 +68,7 @@ type DuplicatePriorityQueue<'a, 'k when 'k : comparison>(extract : 'a -> 'k) =
     /// <summary>
     /// dequeues the current minimal value (and its key)
     /// </summary>   
-    member x.Dequeue() =
+    member x.Dequeue(key : byref<'k>) =
         let k = q.Min
 
         match values.TryGetValue k with
@@ -78,7 +78,9 @@ type DuplicatePriorityQueue<'a, 'k when 'k : comparison>(extract : 'a -> 'k) =
                 if inner.Count = 0 then
                     q.Dequeue() |> ignore
                     values.Remove k |> ignore
-                k, res
+
+                key <- k
+                res
             | _ ->
                 failwith "inconsistent state in DuplicatePriorityQueue"
 

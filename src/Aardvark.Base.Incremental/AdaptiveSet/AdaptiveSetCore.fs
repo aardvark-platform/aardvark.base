@@ -180,7 +180,7 @@ module ASetReaders =
         do source.AddOutput this
 
         let f = Cache(scope, f)
-        let dirtyInner = VolatileDirtySet(fun (r : IReader<'b>) -> r.GetDelta())
+        let dirtyInner = MutableVolatileDirtySet(fun (r : IReader<'b>) -> r.GetDelta())
 
         override x.InputChanged (o : IAdaptiveObject) = 
             match o with

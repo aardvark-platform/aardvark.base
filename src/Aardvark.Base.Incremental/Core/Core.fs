@@ -258,12 +258,12 @@ type Transaction() =
         // and make tourselves current.
         let old = running.Value
         running.Value <- Some x
-
+        let mutable level = 0
+        let myCauses = ref null
         
         while q.Count > 0 do
             // dequeue the next element (having the minimal level)
-            let l, e = q.Dequeue()
-            currentLevel <- l
+            let e = q.Dequeue(&currentLevel)
             current <- Some e
 
             
@@ -286,13 +286,12 @@ type Transaction() =
                         // might even change the asymptotic runtime behaviour of the entire
                         // system in the worst case but we opted for this approach since
                         // it is relatively simple to implement.
-                        if l <> e.Level then
+                        if currentLevel <> e.Level then
                             q.Enqueue e
                             Seq.empty
                         else
-                            match causes.TryRemove e with
-                                | (true, causes) -> causes |> Seq.iter e.InputChanged
-                                | _ -> ()
+                            if causes.TryRemove(e, &myCauses.contents) then
+                                !myCauses |> Seq.iter e.InputChanged
 
                             // however if the level is consistent we may proceed
                             // by marking the object as outOfDate
@@ -831,6 +830,44 @@ type VolatileDirtySet<'a, 'b when 'a :> IAdaptiveObject and 'a : equality and 'a
  
     member x.Clear() =
         Interlocked.Exchange(&set, PersistentHashSet.empty) |> ignore
+
+type MutableVolatileDirtySet<'a, 'b when 'a :> IAdaptiveObject and 'a : equality and 'a : not struct>(eval : 'a -> 'b) =
+    let lockObj = obj()
+    let set = HashSet<'a>()
+
+    member x.Evaluate() =
+        lock lockObj (fun () ->
+            let res = 
+                set |> Seq.filter (fun o -> lock o (fun () -> o.OutOfDate))
+                    |> Seq.map (fun o -> eval o)
+                    |> Seq.toList
+
+            set.Clear()
+
+            res
+        )
+
+    member x.Push(i : 'a) =
+        lock lockObj (fun () ->
+            lock i (fun () ->
+                if i.OutOfDate then
+                    set.Add i |> ignore
+            )
+        )
+
+    member x.Add(i : 'a) =
+        x.Push(i)
+
+    member x.Remove(i : 'a) =
+        lock lockObj (fun () ->
+            set.Remove i |> ignore
+        )
+ 
+    member x.Clear() =
+        lock lockObj (fun () ->
+            set.Clear()
+        )
+
 
 type VolatileTaggedDirtySet<'a, 'b, 't when 'a :> IAdaptiveObject and 'a : equality and 'a : not struct>(eval : 'a -> 'b) =
     let mutable set : PersistentHashSet<'a> = PersistentHashSet.empty
