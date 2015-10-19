@@ -25,6 +25,7 @@ module AgHelpers =
 
         member x.ReturnType = m.ReturnType
         member x.Type = semType
+        member x.ArgType = argType
         member x.Method = m
         member x.Fun o = compiled.Invoke(o)
         override x.ToString() = sprintf "semType: %A, member name: %s, argType: %s" semType m.Name argType.Name
@@ -200,43 +201,89 @@ module AgHelpers =
                 yield i
         ]
 
+    let internal tryGetSemanticFunctionDirect(nodeType : Type, name : string) =
+        
+        match m_semanticMap.TryGetValue(name) with
+            | (true, v) -> 
+                let applicable = 
+                    seq {
+                        for a in v do
+                            match trySpecialize(a :?> MethodInfo,nodeType) with
+                                | Some(v) -> yield v :> MethodBase
+                                | None -> ()
+                    } 
+                let arr = applicable |> Seq.toArray
+                if arr.Length = 0 then
+                    None
+                else 
+                    let mi = Type.DefaultBinder.SelectMethod(
+                                BindingFlags.Instance ||| BindingFlags.Public ||| BindingFlags.NonPublic ||| BindingFlags.InvokeMethod,
+                                arr,
+                                [|nodeType|],
+                                [|ParameterModifier(1)|])
+
+                    if mi = null then
+                        None
+                    else
+                        Some(SemanticFunction(getSemanticObject(mi.DeclaringType), mi.DeclaringType, mi :?> MethodInfo))
+            | _ -> None
+
     // finds the semantic function s for Root<S when S :> callerType) and returns s,S where S is
     // the interface of the syntactic family.
     // Note that, due to OOPness the lookup might be expensive if a type implements many interfaces
     // which are required for querying a syntax base type.
     // This is not too bad, since there should not be to many of them. Additionally the result is 
     // cached and occurs only when querying the root inh semantics the first time.
-    let internal tryFindRootSemantics(genericRoot : Type, callerType : Type, name : string) : Option<SemanticFunction * Func<obj,obj>> =
-        let key = callerType,name
-        lock rootSfCache (fun () ->
-            match rootSfCache.TryGetValue key with
-             | (true,v) -> v
-             | _ ->
-                // get all Root<S> candidates
-                let interfaces = getallInterfaces callerType
-                let filtered = HashSet(interfaces)
-                let instantiatedRoots = 
-                    [ for i in filtered do
-                        let concreteRoot = genericRoot.MakeGenericType([|i|])      
-                        yield concreteRoot,i    
-                    ]
-                // use tryFindSemanticFunction to select the proper concrete Root<concreteType :> S> method.
-                // also return the chosen S in order to create root objects afterwards
-                let possibleSemanticFunctions = instantiatedRoots |> List.map (fun (concrete,interfaceType) -> tryFindSemanticFunction(concrete,name), interfaceType)
-                let s = 
-                    match possibleSemanticFunctions with
-                        | (Some (singleSem),baseInterfaceType) :: _ -> 
-                            let rootInstanceType = genericRoot.MakeGenericType([|baseInterfaceType|])
-                            let ctor = rootInstanceType.GetConstructor([|typeof<obj>|])
-                            let parameter = Expression.Parameter(typeof<obj>) 
-                            let creatorE = Expression.Lambda<Func<obj,obj>>(Expression.New(ctor,parameter),parameter)
-                            let creatorCompiled = creatorE.Compile()
-                            Some (singleSem, creatorCompiled)
-                        | [single] -> failwith "ambigous root semantics for type %s of semantic: %s" callerType.FullName name
-                        | _ -> None
-                rootSfCache.[key] <- s
-                s
-        )
+    let rec internal tryFindRootSemantics(genericRoot : Type, callerType : Type, name : string) : Option<SemanticFunction * Func<obj,obj>> =
+           
+        let wrap (v : SemanticFunction) =
+            let concreteRootType = v.ArgType
+            let ctor = concreteRootType.GetConstructor([|typeof<obj>|])
+            let parameter = Expression.Parameter(typeof<obj>) 
+            let creatorE = Expression.Lambda<Func<obj,obj>>(Expression.New(ctor,parameter),parameter)
+            let creatorCompiled = creatorE.Compile()
+            (v, creatorCompiled)
+
+        if isNull callerType then None
+        else
+            let key = callerType,name
+            lock rootSfCache (fun () ->
+                match rootSfCache.TryGetValue key with
+                 | (true,v) -> v
+                 | _ ->
+                    let concreteRootType = genericRoot.MakeGenericType([|callerType|])    
+                    match tryGetSemanticFunctionDirect(concreteRootType, name) with
+                     | Some v -> 
+                         let result = Some (wrap v)
+                         rootSfCache.[key] <- result
+                         result
+                     | None ->  
+                        let res = 
+                            if isNull callerType.BaseType |> not then
+                                let concreteRootType = genericRoot.MakeGenericType([|callerType.BaseType|])  
+                                match tryGetSemanticFunctionDirect(concreteRootType,name) with
+                                    | Some v -> 
+                                        let result = Some (wrap v)
+                                        rootSfCache.[key] <- result
+                                        result
+                                    | None ->
+                                        None
+                            else None
+                        match res with
+                         | None ->
+                            match callerType.GetInterfaces() |> Seq.tryPick (fun t -> tryFindRootSemantics(genericRoot, t, name)) with
+                                | Some v -> 
+                                    rootSfCache.[key] <- Some v
+                                    Some v
+                                | None when isNull callerType.BaseType |> not ->
+                                    let result = tryFindRootSemantics(genericRoot, callerType.BaseType,name)
+                                    rootSfCache.[key] <- result
+                                    result     
+                                | _ -> 
+                                    rootSfCache.[key] <- None
+                                    None
+                         | Some v -> Some v
+        )       
 
 
     let internal register (t : System.Type) = 
