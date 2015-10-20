@@ -471,6 +471,7 @@ module ASetReaders =
         let mutable callbacks       : HashSet<Change<'a> -> unit>   = null
 
 
+
         let emit (d : list<Delta<'a>>) =
             lock this (fun () ->
 //                if reset.IsNone then
@@ -509,7 +510,7 @@ module ASetReaders =
 
 
 
-        member x.SetPassThru(active : bool) =
+        member x.SetPassThru(active : bool, copyContent : bool) =
             lock inputReader (fun () ->
                 lock x (fun () ->
                     if active <> passThru then
@@ -521,9 +522,12 @@ module ASetReaders =
                             content <- Unchecked.defaultof<_>
                         else
                             deltas <- List()
-                            reset <- None
                             content <- ReferenceCountingSet()
-                            content.SetTo(inputReader.Content)
+                            if copyContent then
+                                reset <- None
+                                content.SetTo(inputReader.Content)
+                            else
+                                reset <- Some (inputReader.Content :> ISet<_>)
                             subscription <- inputReader.SubscribeOnEvaluate(emit)
                             ()
                 )

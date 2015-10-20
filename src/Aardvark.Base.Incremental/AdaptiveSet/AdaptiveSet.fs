@@ -16,6 +16,9 @@ module ASet =
     type AdaptiveSet<'a>(newReader : unit -> IReader<'a>) =
         let l = obj()
         let mutable readerCount = 0
+
+
+        let mutable onlyReader : Option<CopyReader<'a>> = None
         let readers = WeakSet<CopyReader<'a>>()
 
         let mutable inputReader = None
@@ -28,13 +31,25 @@ module ASet =
                     r
 
         let remove (r : IReader<'a>) (ri : CopyReader<'a>) =
-            r.RemoveOutput ri
-            readers.Remove ri |> ignore
-            readerCount <- readerCount - 1
+            match onlyReader with
+                | Some o ->
+                    if o = ri then
+                        r.Dispose()
+                        inputReader <- None
+                        onlyReader <- None
+                    else
+                        failwith "[ASet] removed unknown reader"
 
-            if readers.IsEmpty then
-                r.Dispose()
-                inputReader <- None
+                | None ->
+                    r.RemoveOutput ri
+                    readers.Remove ri |> ignore
+
+                    if readerCount = 2 then
+                        let r = readers |> Seq.exactlyOne
+                        r.SetPassThru(true, false)
+                        onlyReader <- Some r
+
+            readerCount <- readerCount - 1
 
         interface aset<'a> with
             member x.ReaderCount = readerCount
@@ -43,21 +58,41 @@ module ASet =
                 lock l (fun () ->
                     let r = getReader()
 
-                    
+                    if readerCount = 0 then
+                        let reader = new CopyReader<'a>(r, remove r)
 
-                    let reader = new CopyReader<'a>(r, remove r)
-                    readers.Add reader |> ignore
-                    readerCount <- readerCount + 1
+                        onlyReader <- Some reader
 
-                    if readerCount > 1 then
-                        for r in readers do
-                            r.SetPassThru(false)
+                        readerCount <- readerCount + 1
+                        reader :> _
                     else
-                        let r = readers |> Seq.exactlyOne
-                        r.SetPassThru(true)
+                        match onlyReader with
+                            | Some r ->
+                                r.SetPassThru(false, true)
+                                readers.Add r |> ignore
+                                onlyReader <- None
+                            | None -> ()
 
 
-                    reader :> _
+                        let reader = new CopyReader<'a>(r, remove r)
+                        reader.SetPassThru(false, false)
+                        readers.Add reader |> ignore
+
+                        readerCount <- readerCount + 1
+                        reader :> _
+
+//                    readers.Add reader |> ignore
+//                    readerCount <- readerCount + 1
+//
+//                    if readerCount > 1 then
+//                        for r in readers do
+//                            r.SetPassThru(false)
+//                    else
+//                        let r = readers |> Seq.exactlyOne
+//                        r.SetPassThru(true)
+//
+//
+//                    reader :> _
                 )
 
     type ConstantSet<'a>(content : Lazy<HashSet<'a>>) =
