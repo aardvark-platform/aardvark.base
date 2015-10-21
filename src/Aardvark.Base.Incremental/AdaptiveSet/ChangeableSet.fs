@@ -93,7 +93,8 @@ type cset<'a>(initial : seq<'a>) =
             content.Clear()
             res
         )
-        emit (Some res)
+        if res.IsEmpty = false then
+            emit (Some res)
 
     /// Adds an element to the current set and returns a value to indicate if the element was successfully added.
     member x.Add v =

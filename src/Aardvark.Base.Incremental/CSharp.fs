@@ -434,6 +434,20 @@ type AdaptiveListExtensions private() =
     static member ToAdaptiveSet (this : alist<'a>) =
         this |> AList.toASet
 
+    /// <summary> see AList/AListModule.unsafeRegisterCallbackNoGcRoot </summary>
+    [<Extension>]
+    static member UnsafeRegisterCallbackNoGcRoot(this : alist<'a>, callback : Action<Delta<ISortKey*'a>[]>) =
+        this |> AList.unsafeRegisterCallbackNoGcRoot (fun deltas ->
+            deltas |> List.toArray |> callback.Invoke
+        )
+        
+    /// <summary> see AList/AListModule.unsafeRegisterCallbackKeepDisposable </summary>
+    [<Extension>]
+    static member UnsafeRegisterCallbackKeepDisposable(this : alist<'a>, callback : Action<Delta<ISortKey*'a>[]>) =
+        this |> AList.unsafeRegisterCallbackKeepDisposable (fun deltas ->
+            deltas |> List.toArray |> callback.Invoke
+        )
+
 
 [<Extension; AbstractClass; Sealed>]
 type CListExtensions private() =

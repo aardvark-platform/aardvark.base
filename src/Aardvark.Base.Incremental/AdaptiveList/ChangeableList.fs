@@ -191,11 +191,15 @@ type clist<'a>(initial : seq<'a>) =
         res |> submitDeltas
 
     member x.Clear() =
-        lock content (fun () ->
-            content.Clear()
-            order.Clear()
+        let change = lock content (fun () -> if content.Count > 0 then
+                                                content.Clear();
+                                                order.Clear();
+                                                true
+                                             else
+                                                false
         )
-        submit()
+        if change then
+            submit()
 
     member x.Find(item : 'a) =
         lock content (fun () ->
@@ -362,10 +366,14 @@ type corderedset<'a>(initial : seq<'a>) =
 
 
     let clear() =
-        content.Clear()
-        order.Clear()
-        times.Clear()
-        set.Clear()
+        if content.Count > 0 then
+            content.Clear()
+            order.Clear()
+            times.Clear()
+            set.Clear()
+            true
+        else
+            false
 
 
     do insertRangeAfter order.Root initial |> ignore
@@ -452,8 +460,8 @@ type corderedset<'a>(initial : seq<'a>) =
         )
 
     member x.Clear() =
-        lock content (fun () -> clear())
-        submit()
+        if lock content (fun () -> clear()) then
+            submit()
 
     member x.Contains item =
         lock content (fun () -> set.Contains item)
