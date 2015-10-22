@@ -837,14 +837,10 @@ type MutableVolatileDirtySet<'a, 'b when 'a :> IAdaptiveObject and 'a : equality
 
     member x.Evaluate() =
         lock lockObj (fun () ->
-            let res = 
-                set |> Seq.filter (fun o -> lock o (fun () -> o.OutOfDate))
-                    |> Seq.map (fun o -> eval o)
-                    |> Seq.toList
-
+            let res = set |> Seq.toList
             set.Clear()
-
-            res
+            res |> List.filter (fun o -> lock o (fun () -> o.OutOfDate))
+                |> List.map (fun o -> eval o)
         )
 
     member x.Push(i : 'a) =

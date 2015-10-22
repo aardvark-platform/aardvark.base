@@ -23,33 +23,39 @@ module ASet =
 
         let mutable inputReader = None
         let getReader() =
-            match inputReader with
-                | Some r -> r
-                | None ->
-                    let r = newReader()
-                    inputReader <- Some r
-                    r
+            lock l (fun () -> 
+                match inputReader with
+                    | Some r -> r
+                    | None ->
+                        let r = newReader()
+                        inputReader <- Some r
+                        r
+            )
 
         let remove (r : IReader<'a>) (ri : CopyReader<'a>) =
-            match onlyReader with
-                | Some o ->
-                    if o = ri then
-                        r.Dispose()
-                        inputReader <- None
-                        onlyReader <- None
-                    else
-                        failwith "[ASet] removed unknown reader"
+            lock l (fun () ->
+                match onlyReader with
+                    | Some o ->
+                        if o = ri then
+                            r.Dispose()
+                            inputReader <- None
+                            onlyReader <- None
+                            readerCount <- 0
+                        else
+                            // removed failwith since finalizers try to dispose totally crazy superold readers?
+                            Report.Warn "[ASet] removed unknown reader"
 
-                | None ->
-                    r.RemoveOutput ri
-                    readers.Remove ri |> ignore
+                    | None ->
+                        r.RemoveOutput ri
+                        if readers.Remove ri then // only decrement if reader is not evil
+                           readerCount <- readerCount - 1 
+                        else Report.Warn("[ASet] could not remove reader")
 
-                    if readerCount = 2 then
-                        let r = readers |> Seq.exactlyOne
-                        r.SetPassThru(true, false)
-                        onlyReader <- Some r
-
-            readerCount <- readerCount - 1
+                        if readerCount = 1 then
+                            let r = readers |> Seq.exactlyOne
+                            r.SetPassThru(true, false)
+                            onlyReader <- Some r
+            )
 
         interface aset<'a> with
             member x.ReaderCount = readerCount

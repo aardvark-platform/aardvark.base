@@ -582,7 +582,7 @@ module ASetReaders =
 
         override x.Finalize() =
             try x.Dispose()
-            with _ -> ()
+            with e -> Report.Warn("finalizer faulted: {0}", e.Message)
 
         member x.Dispose() =
             inputReader.RemoveOutput x
