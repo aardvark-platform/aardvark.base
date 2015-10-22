@@ -317,7 +317,7 @@ module ``Basic Mod Tests`` =
 
 
     [<Test>]
-    let ``[VolatileCollection] memory test``() =
+    let ``[VolatileCollection] memory test`` () =
         let count = 10000
         let arr = Array.zeroCreate count
         let objects = Array.init count (fun _ -> obj())
@@ -337,6 +337,48 @@ module ``Basic Mod Tests`` =
         let dummy = arr |> Array.exists (fun c -> c.IsEmpty)
         if dummy then
             printfn "asdlkasndksajmdlkasmdl"
+
+    [<Test>]
+    let ``[Mod] deep hierarchy test`` () =
+
+        let root = Mod.init (Trafo3d.Translation(1.0, 2.0, 3.0))
+
+        let rec buildTree (m, l, c) =
+            
+            [for i in 1..c do
+                let x = Mod.init (Trafo3d.RotationX 360.0)
+                let foo = Mod.map2 ((*)) m x 
+
+                if l < 2 then
+                    yield foo
+                else
+                    yield! buildTree(foo, l - 1, c)
+            ]
+
+        let tree = buildTree(root, 9, 4)
+
+        let sw = System.Diagnostics.Stopwatch()
+        
+        printfn "LeafCount=%A" tree.Length
+
+        for j in 1..10 do
+            
+            sw.Restart()
+            transact(fun () -> 
+                root.Value <- Trafo3d.RotationX (float j)
+                )
+            sw.Stop()
+            printfn "marking:  %As" sw.Elapsed.TotalSeconds
+
+            sw.Restart()
+            for leaf in tree do
+                leaf.GetValue() |> ignore
+            sw.Stop()
+            printfn "evaluate:  %As" sw.Elapsed.TotalSeconds
+            
+        ()
+
+        
 
     [<AutoOpen>]
     module Validation =
