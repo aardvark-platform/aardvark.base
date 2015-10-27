@@ -399,6 +399,10 @@ type ChangeableSetExtensions private() =
 type AdaptiveListExtensions private() =
 
     [<Extension>]
+    static member ToMod (this : alist<'a>) =
+        AList.toMod this
+
+    [<Extension>]
     static member Select (this : alist<'a>, f : Func<'a, 'b>) =
         AList.map f.Invoke this
 
@@ -471,6 +475,27 @@ type CListExtensions private() =
     [<Extension>]
     static member Concat (this : clist<'a>, other : alist<'a>) =
         AList.concat' [this; other]
+
+
+ 
+[<Extension; AbstractClass; Sealed>]
+type COrderedSetExtensions private() =       
+    
+    // directly provide set view as callback, otherwise a cast to either aset or alist is necessary
+
+    /// <summary> see AList/AListModule.unsafeRegisterCallbackNoGcRoot </summary>
+    [<Extension>]
+    static member UnsafeRegisterCallbackNoGcRoot(this : corderedset<'a>, callback : Action<Delta<'a>[]>) =
+        this |> ASet.unsafeRegisterCallbackNoGcRoot (fun deltas ->
+            deltas |> List.toArray |> callback.Invoke
+        )
+
+    /// <summary> see AList/AListModule.unsafeRegisterCallbackKeepDisposable </summary>
+    [<Extension>]
+    static member UnsafeRegisterCallbackKeepDisposable(this : corderedset<'a>, callback : Action<Delta<'a>[]>) =
+        this |> ASet.unsafeRegisterCallbackKeepDisposable (fun deltas ->
+            deltas |> List.toArray |> callback.Invoke
+        )
 
 
 [<Extension; AbstractClass; Sealed>]

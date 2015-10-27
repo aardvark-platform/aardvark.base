@@ -61,7 +61,7 @@ namespace Aardvark.Base
         Default             = UseSystemImage | UseDevil | UseFreeImage,
         UseSystemImage      = 0x01000000,
         UseFreeImage        = 0x02000000,
-        UseStorageService   = 0x08000000,
+        UseStorageService   = 0x08000000,   // deprecated
         UseDevil            = 0x10000000,
         UseBitmap           = 0x20000000,
         UseLibTiff          = 0x40000000,
@@ -75,7 +75,7 @@ namespace Aardvark.Base
         UseSystemImage      = 0x01000000,
         UseFreeImage        = 0x02000000,
         UseChunkedStream    = 0x04000000,
-        UseStorageService   = 0x08000000,
+        UseStorageService   = 0x08000000, // deprecated
         UseDevil            = 0x10000000,
         UseLibTiff          = 0x20000000,
         UseBitmap           = 0x40000000,
