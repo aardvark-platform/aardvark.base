@@ -272,7 +272,7 @@ namespace Aardvark.Base
         public readonly static TextLogTarget LogTarget
                  = new TextLogTarget((firstThreadIndex, firstType, firstLevel, firstMessage) =>
                         {
-                            StreamWriter writer = CreateLogFileWriter(LogFileName,0)
+                            StreamWriter writer = CreateLogFileWriter(LogFileName, 0);
                             LogTarget.WriteAct = (i, t, l, m) => 
                                 {
                                     try
