@@ -82,6 +82,7 @@ module ASetReaders =
     type AbstractReader<'a>() =
         inherit AdaptiveObject()
 
+        let mutable isDisposed = 0
         let content = ReferenceCountingSet<'a>()
         let mutable callbacks : HashSet<Change<'a> -> unit> = null
 
@@ -109,12 +110,14 @@ module ASetReaders =
         default x.Update() = x.GetDelta() |> ignore
 
         override x.Finalize() =
-            try x.Dispose()
-            with _ -> ()
+            if System.Threading.Interlocked.Change(&isDisposed,fun _ -> 1) = 0 then
+                try x.Dispose()
+                with _ -> ()
 
         member x.Dispose() =
-            x.Release()
-            content.Clear()
+            if System.Threading.Interlocked.Change(&isDisposed,fun _ -> 1) = 0 then
+                x.Release()
+                content.Clear()
 
         member x.SubscribeOnEvaluate (cb : Change<'a> -> unit) =
             lock x (fun () ->
@@ -470,7 +473,7 @@ module ASetReaders =
         let mutable content         : ReferenceCountingSet<'a>      = Unchecked.defaultof<_>
         let mutable callbacks       : HashSet<Change<'a> -> unit>   = null
 
-
+        let mutable isDisposed = 0
 
         let emit (d : list<Delta<'a>>) =
             lock this (fun () ->
@@ -581,16 +584,18 @@ module ASetReaders =
         member x.Update() = x.GetDelta() |> ignore
 
         override x.Finalize() =
-            try x.Dispose()
-            with e -> Report.Warn("finalizer faulted: {0}", e.Message)
+            if System.Threading.Interlocked.Change(&isDisposed,fun _ -> 1) = 0 then
+                try x.Dispose()
+                with e -> Report.Warn("finalizer faulted: {0}", e.Message)
 
         member x.Dispose() =
-            inputReader.RemoveOutput x
-            if not passThru then
-                subscription.Dispose()
-                content.Clear()
+            if System.Threading.Interlocked.Change(&isDisposed,fun _ -> 1) = 0 then
+                inputReader.RemoveOutput x
+                if not passThru then
+                    subscription.Dispose()
+                    content.Clear()
 
-            dispose(x)
+                dispose(x)
 
         member x.SubscribeOnEvaluate (cb : Change<'a> -> unit) =
             lock x (fun () ->
