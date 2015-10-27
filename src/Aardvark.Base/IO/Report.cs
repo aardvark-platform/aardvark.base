@@ -239,7 +239,30 @@ namespace Aardvark.Base
         /// <summary>
         /// The LogFileName may be modified before the first log message is written.
         /// </summary>
-        public static string LogFileName = @"Aardvark.log";
+        public static string LogFileName = @"Aardvark";
+
+        /// <summary>
+        /// Creates a stream writer writing to LogFileName but retries, if file is
+        /// already open by another instance.
+        /// </summary>
+        private static StreamWriter CreateLogFileWriter(string fileName, int cnt)
+        {
+            if (cnt > 5)
+                throw new Exception("Could not create writer (many instances running?)");
+
+            StreamWriter writer = null;
+            try
+            {
+                writer = new StreamWriter(
+                    new FileStream(fileName + ".log",
+                               FileMode.Create, FileAccess.Write, FileShare.Read));
+                return writer;
+            }
+            catch (IOException)
+            {
+                return CreateLogFileWriter(string.Format("{0}_{1}", fileName, cnt), cnt + 1);
+            }
+        }
 
         /// <summary>
         /// The LogTarget opens the log file on the first logging write, so that it can
@@ -249,10 +272,15 @@ namespace Aardvark.Base
         public readonly static TextLogTarget LogTarget
                  = new TextLogTarget((firstThreadIndex, firstType, firstLevel, firstMessage) =>
                         {
-                            var writer = new StreamWriter(
-                                new FileStream(LogFileName,
-                                           FileMode.Create, FileAccess.Write, FileShare.Read));
-                            LogTarget.WriteAct = (i, t, l, m) => { writer.Write(m); writer.Flush(); };
+                            StreamWriter writer = CreateLogFileWriter(LogFileName,0)
+                            LogTarget.WriteAct = (i, t, l, m) => 
+                                {
+                                    try
+                                    {
+                                        writer.Write(m); writer.Flush();
+                                    } catch(ObjectDisposedException) // in finalization, finalizers which perform logging fail due to non deterministic finalization order
+                                    {}
+                                };
                             LogTarget.WriteAct(firstThreadIndex, firstType, firstLevel, firstMessage);
                         })
                     { Width = 100, Verbosity = 9 };
