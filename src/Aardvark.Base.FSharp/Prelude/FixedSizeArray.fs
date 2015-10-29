@@ -8,7 +8,7 @@ module Arrays =
 
     [<StructuredFormatDisplay("{AsString}")>]
     type Arr<'d, 'a when 'd :> INatural>(elements : seq<'a>) =
-        static let size = size<'d>
+        static let size = typeSize<'d>
         let data = Array.zeroCreate size
         do let elements = elements |> Seq.toArray
            let l = min elements.Length size

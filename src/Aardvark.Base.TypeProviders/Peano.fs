@@ -20,7 +20,7 @@ module Peano =
         else
             0
 
-    let rec size<'d> =
+    let rec typeSize<'d> =
         getSize typeof<'d>
         
 type N0 = Z
