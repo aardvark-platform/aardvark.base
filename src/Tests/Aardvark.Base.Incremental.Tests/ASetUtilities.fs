@@ -87,9 +87,16 @@ module ASetCheck =
 [<AutoOpen>]
 module FsUnitExtensions =
     open NUnit.Framework
+    open NUnit.Framework.Constraints
+    open System.Text
 
     type SetEqualityConstraint<'a>(ref : seq<'a>) =
         inherit Constraints.EqualConstraint(ref)
+
+        let str (v : seq<'a>) = 
+            v |> Seq.map (sprintf "%A")
+              |> String.concat "; "
+              |> sprintf "set [%s]"
 
         override x.Matches (o : obj) =
             base.Matches(o) |> ignore
@@ -100,8 +107,26 @@ module FsUnitExtensions =
                 | _ ->
                     false
 
+
+        override this.WriteActualValueTo(writer: MessageWriter): unit =
+            let v = this.actual |> unbox<seq<'a>>
+            writer.WriteActualValue(str v)
+
+        override this.WriteDescriptionTo(writer: MessageWriter): unit =
+            writer.WritePredicate("setEquals")
+
+            writer.WriteExpectedValue(str ref)
+
+        override this.WriteMessageTo(writer: MessageWriter): unit =
+            writer.WriteMessageLine(sprintf "Expected: %A, but was %A" (str ref) (str (unbox this.actual)))
+
     type DeltaListEqual<'a>(ref : list<list<'a>>) =
         inherit Constraints.EqualConstraint(ref)
+
+        let str (v : seq<#seq<'a>>) = 
+            v |> Seq.map (Seq.map (sprintf "%A") >> String.concat "; " >> sprintf "set [%s]")
+              |> String.concat "; "
+              |> sprintf "[%s]"
 
         override x.Matches (o : obj) =
             base.Matches(o) |> ignore
@@ -120,6 +145,17 @@ module FsUnitExtensions =
                 | _ ->
                     false
 
+        override this.WriteActualValueTo(writer: MessageWriter): unit =
+            let v = this.actual |> unbox<seq<seq<'a>>>
+            writer.WriteActualValue(str v)
+
+        override this.WriteDescriptionTo(writer: MessageWriter): unit =
+            writer.WritePredicate("deltaListEqual")
+
+            writer.WriteExpectedValue(str ref)
+
+        override this.WriteMessageTo(writer: MessageWriter): unit =
+            writer.WriteMessageLine(sprintf "Expected: %A, but was %A" (str ref) (str (unbox this.actual)))
 
     let setEqual<'a> a = SetEqualityConstraint<'a> a
     let deltaListEqual<'a> a = DeltaListEqual<'a> a

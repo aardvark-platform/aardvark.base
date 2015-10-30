@@ -661,6 +661,70 @@ module ``collect tests`` =
         reader.Dispose()
 
 
+
+    [<Test>]
+    let ``[ASet] reader creation after pull without change``() =
+        let input = CSet.ofList [1;2]
+
+        let derived = input |> ASet.map id
+
+
+        let r0 = derived.GetReader()
+        r0.GetDelta() |> should setEqual [Add 1; Add 2]
+
+        let r1 = derived.GetReader()
+        r1.GetDelta() |> should setEqual [Add 1; Add 2]
+        r0.GetDelta() |> should setEqual []
+
+    [<Test>]
+    let ``[ASet] reader creation after pull with change``() =
+        let input = CSet.ofList [1;2]
+
+        let derived = input |> ASet.map id
+
+
+        let r0 = derived.GetReader()
+        r0.GetDelta() |> should setEqual [Add 1; Add 2]
+
+
+        transact (fun () -> CSet.add 3 input |> ignore)
+        let r1 = derived.GetReader()
+        r1.GetDelta() |> should setEqual [Add 1; Add 2; Add 3]
+        r0.GetDelta() |> should setEqual [Add 3]
+
+    [<Test>]
+    let ``[ASet] reader creation after pull dispose original``() =
+        let input = CSet.ofList [1;2]
+
+        let derived = input |> ASet.map id
+
+
+        let r0 = derived.GetReader()
+        r0.GetDelta() |> should setEqual [Add 1; Add 2]
+
+
+        transact (fun () -> CSet.add 3 input |> ignore)
+        let r1 = derived.GetReader()
+        r0.Dispose()
+        r1.GetDelta() |> should setEqual [Add 1; Add 2; Add 3]
+
+    [<Test>]
+    let ``[ASet] reader creation after pull dispose new one``() =
+        let input = CSet.ofList [1;2]
+
+        let derived = input |> ASet.map id
+
+
+        let r0 = derived.GetReader()
+        r0.GetDelta() |> should setEqual [Add 1; Add 2]
+
+
+        transact (fun () -> CSet.add 3 input |> ignore)
+        let r1 = derived.GetReader()
+        r1.Dispose()
+        r0.GetDelta() |> should setEqual [Add 3]
+
+
     module GCHelper =
 
         let ``create, registerCallback and return and make sure that the stack frame dies``  () =
