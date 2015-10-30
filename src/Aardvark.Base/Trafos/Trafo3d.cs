@@ -431,8 +431,15 @@ namespace Aardvark.Base
             translation = trafo.GetModelOrigin();
             
             var rt = trafo.GetOrthoNormalOrientation();
-            var rot = Rot3d.FromFrame(rt.Forward.C0.XYZ, rt.Forward.C1.XYZ, rt.Forward.C2.XYZ);
-            rotation = rot.GetEulerAngles();
+            if (rt.Forward.Det.IsTiny())
+            {
+                rotation = V3d.Zero;
+            }
+            else
+            {
+                var rot = Rot3d.FromFrame(rt.Forward.C0.XYZ, rt.Forward.C1.XYZ, rt.Forward.C2.XYZ);
+                rotation = rot.GetEulerAngles();
+            }
 
             scale = trafo.GetScaleVector();
 
