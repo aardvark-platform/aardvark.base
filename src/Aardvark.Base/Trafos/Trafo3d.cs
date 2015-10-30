@@ -202,6 +202,16 @@ namespace Aardvark.Base
             return new Trafo3d(forward, backward);
         }
 
+        /// <summary>
+        /// Builds a transformation matrix using the scale, rotation and translation componets.
+        /// NOTE: Uses the Scale * Rotation * Translation notion. 
+        ///       The rotation is in Euler-Angles (yaw, pitch, roll).
+        /// </summary>
+        public static Trafo3d FromComponents(V3d scale, V3d rotation, V3d translation)
+        {
+            return Trafo3d.Scale(scale) * Trafo3d.Rotation(rotation) * Trafo3d.Translation(translation);
+        }
+
         public static Trafo3d ShearYZ(double factorY, double factorZ)
         {
             return new Trafo3d(M44d.ShearYZ(factorY, factorZ),
@@ -334,50 +344,71 @@ namespace Aardvark.Base
 
     public static class Trafo3dExtensions
     {
+        /// <summary>
+        /// Approximates the uniform scale value of the given transformation (average length of basis vectors).
+        /// </summary>
         public static double GetScale(this M44d trafo)
         {
             return (trafo.C0.XYZ.Length + trafo.C1.XYZ.Length + trafo.C2.XYZ.Length) / 3;
         }
 
+        /// <summary>
+        /// Extracts a scale vector from the given matrix by calculating the lengths of the basis vectors.
+        /// NOTE: The extraction only gives absolute value (negative scale will be ignored)
+        /// </summary>
         public static V3d GetScaleVector(this M44d trafo)
         {
             return new V3d(trafo.C0.XYZ.Length, trafo.C1.XYZ.Length, trafo.C2.XYZ.Length);
         }
 
         /// <summary>
-        /// Approximates the uniform scale value of the given transformation.
+        /// Approximates the uniform scale value of the given transformation (average length of basis vectors).
         /// </summary>
         public static double GetScale(this Trafo3d trafo)
         {
             return trafo.Forward.GetScale();
         }
 
+        /// <summary>
+        /// Extracts a scale vector from the given matrix by calculating the lengths of the basis vectors. 
+        /// </summary>
         public static V3d GetScaleVector(this Trafo3d trafo)
         {
             return trafo.Forward.GetScaleVector();
         }
 
         /// <summary>
-        /// Extracts the origin of the given view transformation.
+        /// Extracts the inverse/backward translation component of the given transformation, which when given 
+        /// a view transformation represents the location of the camera in world space.
         /// </summary>
         public static V3d GetViewPosition(this Trafo3d trafo)
         {
             return trafo.Backward.C3.XYZ;
         }
 
+        /// <summary>
+        /// Extracts the Z-Axis from the given transformation.
+        /// NOTE: In a right-handed coordinates system, the view direction pusually oints opposit the forward vector.
+        /// </summary>
         public static V3d GetViewDirection(this Trafo3d trafo)
         {
             return trafo.Forward.R2.XYZ.Normalized;
         }
         
         /// <summary>
-        /// Extracts the world origin of the given model transformation.
+        /// Extracts the translation component of the given transformation, which when given 
+        /// a model transformation represents the model origin in world position.
         /// </summary>
         public static V3d GetModelOrigin(this Trafo3d trafo)
         {
             return trafo.Forward.C3.XYZ;
         }
 
+        /// <summary>
+        /// Builds an ortho-normal orientation transformation form the given transform.
+        /// Scale and Translation will be removed and basis vectors will be ortho-normalized.
+        /// NOTE: The X-Axis is untouched and Y/Z are forced to a normal-angle.
+        /// </summary>
         public static Trafo3d GetOrthoNormalOrientation(this Trafo3d trafo)
         {
             var x = trafo.Forward.C0.XYZ.Normalized; // TransformDir(V3d.XAxis)
@@ -388,6 +419,27 @@ namespace Aardvark.Base
             z = x.Cross(y).Normalized;
 
             return Trafo3d.FromBasis(x, y, z, V3d.Zero);
+        }
+
+        /// <summary>
+        /// Decomposes a transformation into a scale, rotation and translation component.
+        /// NOTE: The input is assumed to be a valid affine transformation.
+        ///       The rotation output is in Euler-Angles (yaw, pitch, roll).
+        /// </summary>
+        public static void Decompose(this Trafo3d trafo, out V3d scale, out V3d rotation, out V3d translation)
+        {
+            translation = trafo.GetModelOrigin();
+            
+            var rt = trafo.GetOrthoNormalOrientation();
+            var rot = Rot3d.FromFrame(rt.Forward.C0.XYZ, rt.Forward.C1.XYZ, rt.Forward.C2.XYZ);
+            rotation = rot.GetEulerAngles();
+
+            scale = trafo.GetScaleVector();
+
+            // if matrix is left-handed there must be some negative scale
+            // since rotation remains the x-axis, the y-axis must be flipped
+            if (trafo.Forward.Det < 0)
+                scale.Y = -scale.Y;
         }
     }
 }

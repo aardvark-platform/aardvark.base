@@ -63,6 +63,7 @@
     <Compile Include="Telemetry\TelemetryTests.cs" />
     <Compile Include="TestSuite\TestSuite.cs" />
     <Compile Include="Trafos\MatrixTests.cs" />
+    <Compile Include="Trafos\TrafoTests.cs" />
     <Compile Include="Vectors\V3fCoderTests.cs" />
   </ItemGroup>
   <ItemGroup>

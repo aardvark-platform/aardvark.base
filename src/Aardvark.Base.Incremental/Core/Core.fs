@@ -261,12 +261,16 @@ type Transaction() =
         let mutable level = 0
         let myCauses = ref null
         
+        let markCount = ref 0
+        let traverseCount = ref 0
+        let levelChangeCount = ref 0
+
         while q.Count > 0 do
             // dequeue the next element (having the minimal level)
             let e = q.Dequeue(&currentLevel)
             current <- Some e
 
-            
+            traverseCount := !traverseCount + 1
 
             let outputs = 
                 // since we're about to access the outOfDate flag
@@ -296,6 +300,8 @@ type Transaction() =
                             // however if the level is consistent we may proceed
                             // by marking the object as outOfDate
                             e.OutOfDate <- true
+
+                            markCount := !markCount + 1
                 
                             try 
                                 // here mark and the callbacks are allowed to evaluate
@@ -323,6 +329,9 @@ type Transaction() =
                                 // mark it upToDate again (since it would otherwise not be processed again)
                                 e.Level <- max e.Level (objLevel + distance)
                                 e.OutOfDate <- false
+
+                                levelChangeCount := !levelChangeCount + 1
+
                                 q.Enqueue e
                                 Seq.empty
                 )
@@ -335,6 +344,10 @@ type Transaction() =
             contained.Remove e |> ignore
             current <- None
             
+
+        printfn "markCount=%d" !markCount
+        printfn "traverseCount=%d" !traverseCount
+        printfn "levelChangeCount=%d" !levelChangeCount
 
         // when the commit is over we restore the old
         // running transaction (if any)
