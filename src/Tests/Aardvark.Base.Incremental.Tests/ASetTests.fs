@@ -642,6 +642,24 @@ module ``collect tests`` =
 
         ()
         
+    [<Test>]
+    let ``[ASet] finalizers working``() =
+        let input = CSet.empty
+        let test() =
+            let r = input |> ASet.map id |> ASet.map id
+
+            r
+
+        let set = test()
+        let reader = set.GetReader()
+
+        System.GC.Collect()
+        System.GC.WaitForFullGCComplete() |> ignore
+
+        reader.GetDelta() |> should equal []
+
+        reader.Dispose()
+
 
     module GCHelper =
 
@@ -789,7 +807,7 @@ module ``collect tests`` =
 
             r.Update()
             r.Dispose()
-        ), 1000000000)
+        ), 100000000)
         t.Start()
         t.Join()
 

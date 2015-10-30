@@ -12,94 +12,21 @@ open Aardvark.Base.Incremental.ASetReaders
 /// </summary>
 module ASet =
 
+    
 
     type AdaptiveSet<'a>(newReader : unit -> IReader<'a>) =
-        let l = obj()
-        let mutable readerCount = 0
+        let mutable inputReader = ReferenceCountedReader(newReader)
 
-
-        let mutable onlyReader : Option<CopyReader<'a>> = None
-        let readers = WeakSet<CopyReader<'a>>()
-
-        let mutable inputReader = None
-        let getReader() =
-            lock l (fun () -> 
-                match inputReader with
-                    | Some r -> r
-                    | None ->
-                        let r = newReader()
-                        inputReader <- Some r
-                        r
-            )
-
-        let remove (r : IReader<'a>) (ri : CopyReader<'a>) =
-            lock l (fun () ->
-                match onlyReader with
-                    | Some o ->
-                        if o = ri then
-                            r.Dispose()
-                            inputReader <- None
-                            onlyReader <- None
-                            readerCount <- 0
-                        else
-                            // removed failwith since finalizers try to dispose totally crazy superold readers?
-                            Report.Warn "[ASet] removed unknown reader"
-
-                    | None ->
-                        r.RemoveOutput ri
-                        if readers.Remove ri then // only decrement if reader is not evil
-                           readerCount <- readerCount - 1 
-                        else Report.Warn("[ASet] could not remove reader")
-
-                        if readerCount = 1 then
-                            let r = readers |> Seq.exactlyOne
-                            r.SetPassThru(true, false)
-                            onlyReader <- Some r
-            )
+        override x.Finalize() =
+            try inputReader.ContainingSetDied()
+            with _ -> ()
 
         interface aset<'a> with
-            member x.ReaderCount = readerCount
+            member x.ReaderCount = inputReader.ReferenceCount
             member x.IsConstant = false
             member x.GetReader () =
-                lock l (fun () ->
-                    let r = getReader()
-
-                    if readerCount = 0 then
-                        let reader = new CopyReader<'a>(r, remove r)
-
-                        onlyReader <- Some reader
-
-                        readerCount <- readerCount + 1
-                        reader :> _
-                    else
-                        match onlyReader with
-                            | Some r ->
-                                r.SetPassThru(false, true)
-                                readers.Add r |> ignore
-                                onlyReader <- None
-                            | None -> ()
-
-
-                        let reader = new CopyReader<'a>(r, remove r)
-                        reader.SetPassThru(false, false)
-                        readers.Add reader |> ignore
-
-                        readerCount <- readerCount + 1
-                        reader :> _
-
-//                    readers.Add reader |> ignore
-//                    readerCount <- readerCount + 1
-//
-//                    if readerCount > 1 then
-//                        for r in readers do
-//                            r.SetPassThru(false)
-//                    else
-//                        let r = readers |> Seq.exactlyOne
-//                        r.SetPassThru(true)
-//
-//
-//                    reader :> _
-                )
+                let reader = new CopyReader<'a>(inputReader)
+                reader :> _
 
     type ConstantSet<'a>(content : Lazy<HashSet<'a>>) =
         let content = lazy ( HashSet content.Value )

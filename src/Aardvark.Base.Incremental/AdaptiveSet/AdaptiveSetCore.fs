@@ -110,12 +110,11 @@ module ASetReaders =
         default x.Update() = x.GetDelta() |> ignore
 
         override x.Finalize() =
-            if System.Threading.Interlocked.Change(&isDisposed,fun _ -> 1) = 0 then
-                try x.Dispose()
-                with _ -> ()
+            try x.Dispose()
+            with _ -> ()
 
         member x.Dispose() =
-            if System.Threading.Interlocked.Change(&isDisposed,fun _ -> 1) = 0 then
+            if Interlocked.Exchange(&isDisposed,1) = 0 then
                 x.Release()
                 content.Clear()
 
@@ -377,6 +376,7 @@ module ASetReaders =
         
         let deltas = List()
         let mutable reset = Some (inputReader.Content :> ISet<_>)
+        let mutable initial = true
 
         let emit (d : list<Delta<'a>>) =
             lock this (fun () ->
@@ -434,6 +434,7 @@ module ASetReaders =
                         if not (List.isEmpty finalDeltas) then
                             for cb in x.Callbacks do cb finalDeltas
 
+                    initial <- false
                     finalDeltas
                 )
             )
@@ -462,8 +463,54 @@ module ASetReaders =
             dispose(x)
 
 
-    type CopyReader<'a>(inputReader : IReader<'a>, dispose : CopyReader<'a> -> unit) as this =
+    type ReferenceCountedReader<'a>(newReader : unit -> IReader<'a>) =
+        static let noNewReader : unit -> IReader<'a> = 
+            fun () -> failwith "[ASet] implementation claimed that no new readers would be allocated"
+
+        let lockObj = obj()
+        let mutable newReader = newReader
+        let mutable reader = None
+        let mutable refCount = 0
+        let mutable refCountMayIncrease = true
+
+        member x.ContainingSetDied() =
+            lock lockObj (fun () ->
+                refCountMayIncrease <- false
+                newReader <- noNewReader
+            )
+
+        member x.ReferenceCount = 
+            lock lockObj (fun () -> refCount)
+
+        member x.ReferenceCountMayIncrease =
+            lock lockObj (fun () -> refCountMayIncrease)
+
+        member x.GetReference() =
+            lock lockObj (fun () ->
+                let reader = 
+                    match reader with
+                        | None ->
+                            let r = newReader()
+                            reader <- Some r
+                            r
+                        | Some r -> r
+
+                refCount <- refCount + 1
+                reader
+            )
+
+        member x.RemoveReference() =
+            lock lockObj (fun () ->
+                refCount <- refCount - 1
+                if refCount = 0 then
+                    reader.Value.Dispose()
+                    reader <- None
+            )
+
+
+    type CopyReader<'a>(input : ReferenceCountedReader<'a>) as this =
         inherit AdaptiveObject()
+        let inputReader = input.GetReference()
         do inputReader.AddOutput this
 
         let mutable passThru        : bool                          = true
@@ -474,6 +521,7 @@ module ASetReaders =
         let mutable callbacks       : HashSet<Change<'a> -> unit>   = null
 
         let mutable isDisposed = 0
+        let mutable initial = true
 
         let emit (d : list<Delta<'a>>) =
             lock this (fun () ->
@@ -511,9 +559,10 @@ module ASetReaders =
                     Aardvark.Base.Log.warn "[ASetReaders.CopyReader] potentially bad emit with: %A" d
             )
 
+        member x.WillAlwaysBePassThru =
+            passThru && not input.ReferenceCountMayIncrease
 
-
-        member x.SetPassThru(active : bool, copyContent : bool) =
+        member private x.SetPassThru(active : bool, copyContent : bool) =
             lock inputReader (fun () ->
                 lock x (fun () ->
                     if active <> passThru then
@@ -536,7 +585,9 @@ module ASetReaders =
                 )
             )
                     
-
+        member private x.Optimize() =
+            if x.WillAlwaysBePassThru then
+                printfn "optimization possible"
 
 
         member x.Content = 
@@ -570,7 +621,12 @@ module ASetReaders =
 
         member x.GetDelta() =
             lock inputReader (fun () ->
+                if input.ReferenceCount = 1 then x.SetPassThru(true, false)
+                else x.SetPassThru(false, not initial)
+
+                initial <- false
                 x.EvaluateIfNeeded [] (fun () ->
+                    //x.Optimize()
                     let deltas = x.ComputeDelta()
 
                     if not (isNull callbacks) then
@@ -584,18 +640,19 @@ module ASetReaders =
         member x.Update() = x.GetDelta() |> ignore
 
         override x.Finalize() =
-            if System.Threading.Interlocked.Change(&isDisposed,fun _ -> 1) = 0 then
-                try x.Dispose()
-                with e -> Report.Warn("finalizer faulted: {0}", e.Message)
+            try x.Dispose()
+            with e -> Report.Warn("finalizer faulted: {0}", e.Message)
 
         member x.Dispose() =
-            if System.Threading.Interlocked.Change(&isDisposed,fun _ -> 1) = 0 then
+            if Interlocked.Exchange(&isDisposed, 1) = 0 then
                 inputReader.RemoveOutput x
                 if not passThru then
                     subscription.Dispose()
                     content.Clear()
 
-                dispose(x)
+
+                input.RemoveReference()
+                //dispose(x)
 
         member x.SubscribeOnEvaluate (cb : Change<'a> -> unit) =
             lock x (fun () ->
