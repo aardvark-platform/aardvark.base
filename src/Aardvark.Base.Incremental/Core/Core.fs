@@ -254,6 +254,9 @@ type Transaction() =
     /// the enqueued changes.
     /// </summary>
     member x.Commit() =
+        #if DEBUG
+        Log.startTimed "Transaction.Commit"
+        #endif
         // cache the currently running transaction (if any)
         // and make tourselves current.
         let old = running.Value
@@ -345,14 +348,24 @@ type Transaction() =
             current <- None
             
 
-        printfn "markCount=%d" !markCount
-        printfn "traverseCount=%d" !traverseCount
-        printfn "levelChangeCount=%d" !levelChangeCount
+        #if DEBUG
+        if !markCount > 0 then
+            Log.line "markCount=%d" !markCount
 
+        if !traverseCount > 0 then
+            Log.line "traverseCount=%d" !traverseCount
+
+        if !levelChangeCount > 0 then
+            Log.line "levelChangeCount=%d" !levelChangeCount
+        #endif
         // when the commit is over we restore the old
         // running transaction (if any)
         running.Value <- old
         currentLevel <- 0
+
+        #if DEBUG
+        Log.stop()
+        #endif
 
 
 type private EmptyCollection<'a>() =
