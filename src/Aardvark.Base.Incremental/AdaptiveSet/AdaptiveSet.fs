@@ -26,6 +26,8 @@ module ASet =
             member x.IsConstant = false
             member x.GetReader () =
                 let reader = new CopyReader<'a>(inputReader)
+                if inputReader.ReferenceCount > 1 then reader.SetPassThru(false, false)
+
                 reader :> _
 
     type ConstantSet<'a>(content : Lazy<HashSet<'a>>) =

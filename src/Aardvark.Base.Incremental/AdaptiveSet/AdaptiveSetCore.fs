@@ -472,12 +472,15 @@ module ASetReaders =
         let mutable reader = None
         let mutable refCount = 0
         let mutable refCountMayIncrease = true
+        let onlyReader = EventSource true
 
         member x.ContainingSetDied() =
             lock lockObj (fun () ->
                 refCountMayIncrease <- false
                 newReader <- noNewReader
             )
+
+        member x.OnlyReader = onlyReader :> IEvent<bool>
 
         member x.ReferenceCount = 
             lock lockObj (fun () -> refCount)
@@ -496,13 +499,17 @@ module ASetReaders =
                         | Some r -> r
 
                 refCount <- refCount + 1
+                if refCount = 1 then onlyReader.Emit(true)
+                else onlyReader.Emit(false)
                 reader
             )
 
         member x.RemoveReference() =
             lock lockObj (fun () ->
                 refCount <- refCount - 1
-                if refCount = 0 then
+
+                if refCount = 1 then onlyReader.Emit(true)
+                elif refCount = 0 then
                     reader.Value.Dispose()
                     reader <- None
             )
@@ -510,9 +517,11 @@ module ASetReaders =
 
     type CopyReader<'a>(input : ReferenceCountedReader<'a>) as this =
         inherit AdaptiveObject()
+           
         let inputReader = input.GetReference()
         do inputReader.AddOutput this
 
+        let mutable initial = true
         let mutable passThru        : bool                          = true
         let mutable deltas          : List<Delta<'a>>               = null
         let mutable reset           : Option<ISet<'a>>              = None 
@@ -521,8 +530,8 @@ module ASetReaders =
         let mutable callbacks       : HashSet<Change<'a> -> unit>   = null
 
         let mutable isDisposed = 0
-        let mutable initial = true
-
+        let onlySubscription = input.OnlyReader.Values.Subscribe(fun pass -> this.SetPassThru(pass, passThru))
+        
         let emit (d : list<Delta<'a>>) =
             lock this (fun () ->
 //                if reset.IsNone then
@@ -562,7 +571,7 @@ module ASetReaders =
         member x.WillAlwaysBePassThru =
             passThru && not input.ReferenceCountMayIncrease
 
-        member private x.SetPassThru(active : bool, copyContent : bool) =
+        member x.SetPassThru(active : bool, copyContent : bool) =
             lock inputReader (fun () ->
                 lock x (fun () ->
                     if active <> passThru then
@@ -570,6 +579,7 @@ module ASetReaders =
                         if passThru then
                             deltas <- null
                             reset <- None
+                            subscription.Dispose()
                             subscription <- null
                             content <- Unchecked.defaultof<_>
                         else
@@ -600,7 +610,11 @@ module ASetReaders =
 
         member x.ComputeDelta() =
             if passThru then
-                inputReader.GetDelta()
+                if initial then
+                    inputReader.Update()
+                    inputReader.Content |> Seq.map Add |> Seq.toList
+                else
+                    inputReader.GetDelta()
 
             else
                 inputReader.Update()
@@ -621,10 +635,6 @@ module ASetReaders =
 
         member x.GetDelta() =
             lock inputReader (fun () ->
-                if input.ReferenceCount = 1 then x.SetPassThru(true, false)
-                else x.SetPassThru(false, not initial)
-
-                initial <- false
                 x.EvaluateIfNeeded [] (fun () ->
                     //x.Optimize()
                     let deltas = x.ComputeDelta()
@@ -633,6 +643,7 @@ module ASetReaders =
                         if not (List.isEmpty deltas) then
                             for cb in callbacks do cb deltas
 
+                    initial <- false
                     deltas
                 )
             )
@@ -645,6 +656,7 @@ module ASetReaders =
 
         member x.Dispose() =
             if Interlocked.Exchange(&isDisposed, 1) = 0 then
+                onlySubscription.Dispose()
                 inputReader.RemoveOutput x
                 if not passThru then
                     subscription.Dispose()
