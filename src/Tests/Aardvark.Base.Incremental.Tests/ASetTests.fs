@@ -661,6 +661,13 @@ module ``collect tests`` =
         reader.Dispose()
 
 
+    let isPassThru (r : IReader<'a>) =
+        match r with
+            | :? ASetReaders.CopyReader<int> as r ->    
+                r.PassThru
+            | _ ->
+                failwith "not a copy-reader"    
+
 
     [<Test>]
     let ``[ASet] reader creation after pull without change``() =
@@ -672,7 +679,14 @@ module ``collect tests`` =
         let r0 = derived.GetReader()
         r0.GetDelta() |> should setEqual [Add 1; Add 2]
 
+        r0 |> isPassThru |> should be True
+
         let r1 = derived.GetReader()
+
+        r0 |> isPassThru |> should be False
+        r1 |> isPassThru |> should be False
+
+
         r1.GetDelta() |> should setEqual [Add 1; Add 2]
         r0.GetDelta() |> should setEqual []
 
@@ -685,10 +699,15 @@ module ``collect tests`` =
 
         let r0 = derived.GetReader()
         r0.GetDelta() |> should setEqual [Add 1; Add 2]
+        r0 |> isPassThru |> should be True
 
 
         transact (fun () -> CSet.add 3 input |> ignore)
         let r1 = derived.GetReader()
+        r0 |> isPassThru |> should be False
+        r1 |> isPassThru |> should be False
+
+
         r1.GetDelta() |> should setEqual [Add 1; Add 2; Add 3]
         r0.GetDelta() |> should setEqual [Add 3]
 
@@ -701,11 +720,18 @@ module ``collect tests`` =
 
         let r0 = derived.GetReader()
         r0.GetDelta() |> should setEqual [Add 1; Add 2]
+        r0 |> isPassThru |> should be True
 
 
         transact (fun () -> CSet.add 3 input |> ignore)
         let r1 = derived.GetReader()
+        r0 |> isPassThru |> should be False
+        r1 |> isPassThru |> should be False
+
         r0.Dispose()
+        r1 |> isPassThru |> should be True
+
+
         r1.GetDelta() |> should setEqual [Add 1; Add 2; Add 3]
 
     [<Test>]
@@ -717,14 +743,79 @@ module ``collect tests`` =
 
         let r0 = derived.GetReader()
         r0.GetDelta() |> should setEqual [Add 1; Add 2]
+        r0 |> isPassThru |> should be True
 
 
         transact (fun () -> CSet.add 3 input |> ignore)
         let r1 = derived.GetReader()
+        r0 |> isPassThru |> should be False
+        r1 |> isPassThru |> should be False
+
         r1.Dispose()
+        r0 |> isPassThru |> should be True
         r0.GetDelta() |> should setEqual [Add 3]
 
+    [<Test>]
+    let ``[ASet] reader modification/creation/disposal/pull``() =
+        let input = CSet.empty
+        let derived = input |> ASet.map id
 
+        let mutable readers = []
+        let random = Random()
+
+        for i in 0..10000 do
+            
+            let op = random.Next(6)
+
+            match op with
+                | 0|1|2 ->
+                    let r = derived.GetReader()
+                    Interlocked.Change(&readers, fun l -> r::l) |> ignore
+                | 3 ->
+                    let v = random.Next()
+                    transact (fun () -> CSet.add v input |> ignore)
+                | 4 ->
+                    let reader =
+                        Interlocked.Change(&readers, fun l ->
+                            match l with
+                                | r::rest -> (rest, Some r)
+                                | _ -> l, None
+                        )
+
+                    match reader with
+                        | Some r -> r.Dispose()
+                        | None -> ()
+                | _ ->
+                    match readers with
+                        | [] -> ()
+                        | _ ->
+                            let r = List.nth readers (random.Next(readers.Length))
+                            let old = HashSet r.Content
+                            let deltas = r.GetDelta()
+
+                            for d in deltas do
+                                match d with
+                                    | Add v -> old.Add v |> ignore
+                                    | Rem v -> old.Remove v |> ignore
+
+                            old |> should setEqual r.Content
+                            r.Content |> should setEqual input
+
+
+            let rc = readers.Length
+            if rc > 0 then
+                input.Readers |> Seq.length |> should equal 1
+            else
+                input.Readers |> Seq.length |> should equal 0
+
+            derived.ReaderCount |> should equal rc
+            ()
+
+
+
+        ()
+
+        
     module GCHelper =
 
         let ``create, registerCallback and return and make sure that the stack frame dies``  () =

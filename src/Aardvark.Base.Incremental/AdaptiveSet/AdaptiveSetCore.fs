@@ -568,6 +568,9 @@ module ASetReaders =
                     Aardvark.Base.Log.warn "[ASetReaders.CopyReader] potentially bad emit with: %A" d
             )
 
+        member x.PassThru =
+            passThru
+
         member x.WillAlwaysBePassThru =
             passThru && not input.ReferenceCountMayIncrease
 
