@@ -56,14 +56,17 @@ module ASet =
             member x.Copy = x :> aset<_>
 
             member x.GetReader () =
-                let r = new OneShotReader<'a>(content.Value |> Seq.toList |> List.map Add)
+                let r = new OneShotReader<'a>(content.Value |> Seq.map Add |> Seq.toList)
                 r :> IReader<_>
 
-        new(l : seq<'a>) = ConstantSet<'a>(lazy (HashSet l))
         new(content : Lazy<list<'a>>) = ConstantSet<'a>(lazy (HashSet content.Value))
+        new(content : Lazy<seq<'a>>) = ConstantSet<'a>(lazy (HashSet content.Value))
+        new(l : list<'a>) = ConstantSet<'a> (lazy (HashSet l))
+        new(l : array<'a>) = ConstantSet<'a> (lazy (HashSet l))
+        new(l : seq<'a>) = ConstantSet<'a> (lazy (HashSet l))
 
     type private EmptySetImpl<'a> private() =
-        static let emptySet = ConstantSet [] :> aset<'a>
+        static let emptySet = ConstantSet (lazy ([])) :> aset<'a>
         static member Instance = emptySet
 
     let private scoped (f : 'a -> 'b) =
@@ -89,7 +92,7 @@ module ASet =
     /// elements in the given sequence
     /// </summary>
     let ofSeq (s : seq<'a>) =
-        ConstantSet(s) :> aset<_>
+        ConstantSet(lazy (HashSet s)) :> aset<_>
     
     /// <summary>
     /// creates a set containing all distinct 
@@ -105,9 +108,9 @@ module ASet =
     let ofArray (a : 'a[]) =
         ConstantSet(a) :> aset<_>
 
-    let delay (f : unit -> seq<'a>) =
+    let delay (f : unit -> list<'a>) =
         let scope = Ag.getContext()
-        ConstantSet(lazy (Ag.useScope scope (fun () -> f() |> Seq.toList))) :> aset<_>
+        ConstantSet(lazy (Ag.useScope scope f)) :> aset<_>
 
     /// <summary>
     /// returns a list of all elements currently in the adaptive set. 
@@ -207,7 +210,7 @@ module ASet =
             delay (fun () ->
                 use r = set.GetReader()
                 r.Update(null)
-                r.Content |> Seq.map f
+                r.Content |> Seq.map f |> Seq.toList
             )
         else
             let scope = Ag.getContext()
@@ -260,7 +263,7 @@ module ASet =
             delay (fun () ->
                 use r = set.GetReader()
                 r.Update(null)
-                r.Content |> Seq.choose f
+                r.Content |> Seq.toList |> List.choose f
             )
         else
             let scope = Ag.getContext()
