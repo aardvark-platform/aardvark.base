@@ -184,7 +184,7 @@ module AMap =
 
     type private LookupReader<'k, 'v  when 'k : equality>(input : IReader<'k * 'v>, key : 'k) as this =
         inherit ASetReaders.AbstractReader<'v>()
-        do input.AddOutput this
+        do input.AddOutputNew this
 
         override x.ComputeDelta() = 
             input.GetDelta(x) 
@@ -234,7 +234,7 @@ module AMap =
             r.GetDelta(s) |> AMapUtils.apply content |> ignore
             content :> IVersionedDictionary<_,_>
         )
-        r.AddOutput res
+        r.AddOutputNew res
         res
 
     let map (f : 'k -> 'v -> 'a) (m : amap<'k, 'v>) =

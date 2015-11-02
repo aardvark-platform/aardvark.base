@@ -135,10 +135,10 @@ module AList =
     let toMod (s : alist<'a>) =
         let r = s.GetReader()
         let m = Mod.custom (fun s ->
-            r.GetDelta(null) |> ignore
+            r.GetDelta(s) |> ignore
             r.Content
         )
-        r.AddOutput m
+        r.AddOutputNew m
         m
 
     let map (f : 'a -> 'b) (set : alist<'a>) = 

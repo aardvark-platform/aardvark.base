@@ -139,6 +139,11 @@ open System.Runtime.CompilerServices
 
 [<AbstractClass; Sealed; Extension>]
 type EvaluationExtensions() =
+
+    [<Extension>]
+    static member inline GetValue(x : IMod) = x.GetValue(null)
+
+
     [<Extension>]
     static member inline GetValue(x : IMod<'a>) = x.GetValue(null)
 
@@ -154,3 +159,6 @@ type EvaluationExtensions() =
 
     [<Extension>]
     static member inline GetHistory(x : IStreamReader<'a>) = x.GetHistory(null)
+
+    [<Extension>]
+    static member inline Evaluate(x : afun<'a, 'b>, v : 'a) = x.Evaluate(null, v)

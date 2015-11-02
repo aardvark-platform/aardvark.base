@@ -9,7 +9,7 @@ module AFun =
 
     type AdaptiveFun<'a, 'b>(f : IMod<'a -> 'b>) as this =
         inherit AdaptiveObject()
-        do f.AddOutput this
+        do f.AddOutputNew this
 
         member x.Evaluate (caller, v) = 
             x.EvaluateAlways caller (fun () ->
@@ -65,28 +65,28 @@ module AFun =
                 match !inner with
                     | Some f' when f' <> f ->
                         f'.RemoveOutput !self
-                        f.AddOutput !self
+                        f.AddOutputNew !self
                     | None ->
-                        f.AddOutput !self
+                        f.AddOutputNew !self
                     | _ ->
                         ()
-                mf.GetValue(!self).Evaluate x
+                mf.GetValue(!self).Evaluate(!self, x)
             )
-        mf.AddOutput !self
+        mf.AddOutputNew !self
         !self :> afun<_,_>
 
     let compose (g : afun<'b, 'c>) (f : afun<'a, 'b>) =
         let res = ref Unchecked.defaultof<_>
         res := AdaptiveFun(fun v -> g.Evaluate(!res, f.Evaluate(!res, v))) :> afun<_,_>
-        f.AddOutput !res
-        g.AddOutput !res
+        f.AddOutputNew !res
+        g.AddOutputNew !res
         !res
 
     let zipWith (combine : 'b -> 'c -> 'd) (f : afun<'a,'b>) (g : afun<'a, 'c>) =
         let res = ref Unchecked.defaultof<_>
         res := AdaptiveFun(fun v -> combine (f.Evaluate(!res, v)) (g.Evaluate(!res, v))) :> afun<_,_>
-        f.AddOutput !res
-        g.AddOutput !res
+        f.AddOutputNew !res
+        g.AddOutputNew !res
         !res
 
     let zip (f : afun<'a,'b>) (g : afun<'a, 'c>) =
@@ -187,13 +187,13 @@ module AState =
                         match !cache with
                             | Some old -> old.RemoveOutput !self
                             | None -> ()
-                        inner.AddOutput !self
+                        inner.AddOutputNew !self
                         cache := Some inner
 
                         inner.Evaluate (!self, s)
             )
 
-        m.runState.AddOutput !self
+        m.runState.AddOutputNew !self
 
         { runState = !self }
 
@@ -209,11 +209,11 @@ module AState =
                 match !inner with
                     | Some old when old <> run ->
                         old.RemoveOutput !self
-                        run.AddOutput !self
+                        run.AddOutputNew !self
                         inner := Some run
 
                     | None ->
-                        run.AddOutput !self
+                        run.AddOutputNew !self
                         inner := Some run 
 
                     | _ -> ()
@@ -221,7 +221,7 @@ module AState =
                 run.Evaluate (!self, s)
             )
 
-        mf.AddOutput !self
+        mf.AddOutputNew !self
         { runState = !self :> afun<_,_> }
 
     let ofMod (m : IMod<'a>) : astate<'s, 'a> =
@@ -231,7 +231,7 @@ module AState =
     let ofAFun (m : afun<'a, 'b>) : astate<'s, 'a -> 'b> =
         let run = ref Unchecked.defaultof<_>
         run := AFun.create (fun s -> (s,fun v -> m.Evaluate(!run,v)))
-        m.AddOutput !run
+        m.AddOutputNew !run
         { runState = !run }
 
     let getState<'s> = { runState = AFun.create (fun s -> (s,s)) }

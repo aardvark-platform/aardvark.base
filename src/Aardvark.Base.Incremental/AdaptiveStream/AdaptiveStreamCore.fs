@@ -198,7 +198,7 @@ module AStreamReaders =
 
     type MapReader<'a, 'b>(scope : Ag.Scope, source : IStreamReader<'a>, f : 'a -> 'b) as this =
         inherit AbstractReader<'b>()
-        do source.AddOutput this  
+        do source.AddOutputNew this  
 
         let cache = FixedSizeCache(scope, 32, f)
 
@@ -214,7 +214,7 @@ module AStreamReaders =
 
     type CollectSetReader<'a, 'b>(scope : Ag.Scope, source : IReader<'a>, f : 'a -> IStreamReader<'b>) as this =
         inherit AbstractReader<'b>()
-        do source.AddOutput this
+        do source.AddOutputNew this
 
         let dirtyInner = VolatileDirtySet(fun (r : IStreamReader<'b>) -> r.GetHistory(this))
         let f = Cache(scope, f)
@@ -237,7 +237,7 @@ module AStreamReaders =
                         let r = f.Invoke v
 
                         // we're an output of the new reader
-                        r.AddOutput this
+                        r.AddOutputNew this
 
                         // listen to marking of r (reader cannot be OutOfDate due to GetDelta above)
                         dirtyInner.Add r
@@ -261,7 +261,7 @@ module AStreamReaders =
 
     type ChooseReader<'a, 'b>(scope : Ag.Scope, source : IStreamReader<'a>, f : 'a -> Option<'b>) as this =
         inherit AbstractReader<'b>()
-        do source.AddOutput this  
+        do source.AddOutputNew this  
 
         let cache = FixedSizeCache(scope, 32, f)
 
@@ -277,7 +277,7 @@ module AStreamReaders =
 
     type ModReader<'a>(source : IMod<'a>) as this =
         inherit AbstractReader<'a>()
-        do source.AddOutput this
+        do source.AddOutputNew this
 
         override x.Release() = ()
 
@@ -337,7 +337,7 @@ module AStreamReaders =
                     Aardvark.Base.Log.warn "[AStreamReaders.CopyReader] potentially bad emit with: %A" d
             )
 
-        do inputReader.AddOutput this
+        do inputReader.AddOutputNew this
         let subscription = inputReader.SubscribeOnEvaluate emit
 
         override x.GetHistory(caller) =

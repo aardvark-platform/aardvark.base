@@ -150,7 +150,7 @@ type ConstantMod<'a> =
 /// value.
 type DefaultingModRef<'a>(computed : IMod<'a>) as this =
     inherit AdaptiveObject()
-    do computed.AddOutput this
+    do computed.AddOutputNew this
 
     let mutable cache = Unchecked.defaultof<'a>
     let mutable isComputed = true
@@ -171,7 +171,7 @@ type DefaultingModRef<'a>(computed : IMod<'a>) as this =
         if not isComputed then
             tracker <- ChangeTracker.trackVersion<'a>
             isComputed <- true
-            computed.AddOutput x
+            computed.AddOutputNew x
 
     member x.Value 
         with get() = 
@@ -305,7 +305,7 @@ module Mod =
     // equality function.
     type internal EagerMod<'a>(input : IMod<'a>, eq : Option<'a -> 'a -> bool>) as this=
         inherit LazyMod<'a>(fun s -> input.GetValue(s))
-        do input.AddOutput this
+        do input.AddOutputNew this
 
         let hasChanged = ChangeTracker.trackCustom<'a> eq
 
@@ -329,7 +329,7 @@ module Mod =
     // be able to undo the effect.
     type internal LaterMod<'a>(input : IMod<'a>) as this=
         inherit LazyMod<'a>(fun s -> input.GetValue(s))
-        do input.AddOutput this
+        do input.AddOutputNew this
 
         member x.Input = input
 
@@ -338,15 +338,15 @@ module Mod =
     // Its value will always be the time when pulled.
     // NOTE that this cannot be implemented using the other mod-types
     //      since caching (of the current time) is not desired here.
-    type internal TimeMod private() as this =
+    type internal TimeMod private() =
         inherit AdaptiveObject()
-        do AdaptiveObject.Time.AddOutput this
 
         static let instance = TimeMod() :> IMod<DateTime>
         static member Instance = instance
 
         member x.GetValue(caller : IAdaptiveObject) =
             x.EvaluateAlways caller (fun () ->
+                AdaptiveObject.Time.Outputs.Add x |> ignore
                 DateTime.Now
             )
 
@@ -492,7 +492,7 @@ module Mod =
             delay (fun () -> m.GetValue(null) |> f)
         else
             let res = LazyMod(fun s -> m.GetValue s |> f)
-            m.AddOutput res
+            m.AddOutputNew res
             res :> IMod<_>
 
     /// <summary>
@@ -509,8 +509,8 @@ module Mod =
                 map (fun a -> f a (m2.GetValue(null))) m1
             | (false, false) ->
                 let res = LazyMod(fun s -> f (m1.GetValue s) (m2.GetValue s))
-                m1.AddOutput res
-                m2.AddOutput res
+                m1.AddOutputNew res
+                m2.AddOutputNew res
                 res :> IMod<_>
 
     /// <summary>
@@ -521,7 +521,7 @@ module Mod =
     let mapCustom (f : IMod<'a> -> 'a) (inputs : list<IAdaptiveObject>) =
         let r = custom f
         for i in inputs do
-            i.AddOutput r
+            i.AddOutputNew r
         r
 
     /// <summary>
@@ -612,7 +612,7 @@ module Mod =
                                 // we simply add ourselves as output
                                 // of the new inner value
                                 | None -> 
-                                    i.AddOutput !res |> ignore
+                                    i.AddOutputNew !res |> ignore
                                 
                                 // if there was an old inner cell which
                                 // is different from the new one we
@@ -620,7 +620,7 @@ module Mod =
                                 // outputs and add it to the new ones. 
                                 | Some (_,old) when old <> i -> 
                                     old.RemoveOutput !res |> ignore
-                                    i.AddOutput !res |> ignore
+                                    i.AddOutputNew !res |> ignore
 
                                 // in any other case the graph remained
                                 // constant and we don't change a thing.
@@ -636,7 +636,7 @@ module Mod =
             // since m is statically known to be an input
             // of the resulting cell we add the edge to the 
             // dependency graph.
-            m.AddOutput !res |> ignore
+            m.AddOutputNew !res |> ignore
             !res :> IMod<_>
 
     /// <summary>
@@ -677,11 +677,11 @@ module Mod =
 
                                 match old with
                                     | None -> 
-                                        i.AddOutput !res |> ignore
+                                        i.AddOutputNew !res |> ignore
 
                                     | Some (_,_,old) when old <> i -> 
                                         old.RemoveOutput !res |> ignore
-                                        i.AddOutput !res |> ignore
+                                        i.AddOutputNew !res |> ignore
 
                                     | _ -> ()
 
@@ -690,8 +690,8 @@ module Mod =
                         
 
                     )
-                ma.AddOutput !res |> ignore
-                mb.AddOutput !res |> ignore
+                ma.AddOutputNew !res |> ignore
+                mb.AddOutputNew !res |> ignore
                 !res :> IMod<_>
 
     /// <summary>
@@ -704,7 +704,7 @@ module Mod =
         self :=
             custom (fun s ->
                 if not m.IsValueCreated then
-                    m.Value.AddOutput !self
+                    m.Value.AddOutputNew !self
                 m.Value.GetValue s
             )
         !self

@@ -414,7 +414,7 @@ type AdaptiveObject() =
                 let parent = 
                     if not (isNull caller) then 
                         if stack.Count > 0 && stack.Peek() <> caller then
-                            failwithf "user lied about calling cell: {real = %A; given: %A }" (stack.Peek()) caller
+                            Log.warn "user lied about calling cell: {real = %A; given: %A }" (stack.Peek()) caller
 
                         Some caller
                     else 
@@ -635,6 +635,7 @@ module Marking =
         /// using MarkOutdated and may therefore only be used
         /// on objects being outOfDate or inside a transaction.
         /// </summary>
+        [<Obsolete("Just use MarkOutdated instead")>]
         member x.AddOutput(m : IAdaptiveObject) =
             m.Inputs.Add x |> ignore
             //x.Outputs.Add m |> ignore
@@ -653,6 +654,11 @@ module Marking =
 //                    | _ -> ()
 
             m.MarkOutdated ( Some x )
+
+        member x.AddOutputNew(m : IAdaptiveObject) =
+            m.Inputs.Add x |> ignore
+            m.MarkOutdated ( Some x )
+
 
         /// <summary>
         /// utility for removing an output from the object

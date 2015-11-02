@@ -148,7 +148,7 @@ module ASet =
             r.GetDelta(s) |> ignore
             c
         )
-        r.AddOutput m
+        r.AddOutputNew m
         m
 
     /// <summary>
@@ -343,7 +343,7 @@ module ASet =
                 !sum
             )
 
-        r.AddOutput res
+        r.AddOutputNew res
         res
 
     /// <summary>
@@ -370,7 +370,7 @@ module ASet =
                 !sum
             )
 
-        r.AddOutput res
+        r.AddOutputNew res
         res
 
     /// <summary>
