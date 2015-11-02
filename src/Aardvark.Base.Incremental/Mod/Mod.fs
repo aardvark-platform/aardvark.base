@@ -385,7 +385,7 @@ module Mod =
         inherit AbstractMod<'b>()
         let a = Seq.toList a
 
-        let mutable dirty : PersistentHashSet<IMod<'a>> = PersistentHashSet.empty
+        let mutable dirty : PersistentHashSet<IMod<'a>> = PersistentHashSet.ofSeq a
         let store = Dictionary<IMod<'a>, 'a>()
 
         override x.InputChanged i =
