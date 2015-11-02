@@ -11,6 +11,8 @@ module AFun =
         inherit AdaptiveObject()
         do f.AddOutput this
 
+        override x.Inputs = Seq.singleton (f :> IAdaptiveObject)
+
         member x.Evaluate (caller, v) = 
             x.EvaluateAlways caller (fun () ->
                 this.OutOfDate <- true
@@ -24,6 +26,8 @@ module AFun =
 
     type ConstantFun<'a, 'b>(value : IMod<'b>) =
         inherit AdaptiveObject()
+
+        override x.Inputs = Seq.singleton (value :> IAdaptiveObject)
 
         member x.Evaluate (caller : IAdaptiveObject, v : 'a) = 
             x.EvaluateAlways caller (fun () ->

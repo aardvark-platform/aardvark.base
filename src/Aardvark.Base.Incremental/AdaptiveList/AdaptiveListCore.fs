@@ -128,6 +128,8 @@ module AListReaders =
         
         let f = Cache<'a, 'b>(scope, f)
 
+        override x.Inputs = Seq.singleton (input :> IAdaptiveObject)
+
         override x.Order = input.RootTime
 
         override x.Release() =
@@ -148,6 +150,8 @@ module AListReaders =
         do input.AddOutput this
         
         let f = Cache<ISortKey * 'a, 'b>(scope, fun (k,v) -> f k v)
+
+        override x.Inputs = Seq.singleton (input :> IAdaptiveObject)
 
         override x.Order = input.RootTime
 
@@ -175,6 +179,14 @@ module AListReaders =
 
         let mutable mapping = NestedOrderMapping()
         let mutable rootTime = mapping.Root
+
+        override x.Inputs =
+            seq {
+                yield input :> IAdaptiveObject
+                for v in f.Values do
+                    yield v :> IAdaptiveObject
+            }
+
 
         override x.Release() =
             input.RemoveOutput x
@@ -267,6 +279,8 @@ module AListReaders =
         let root = mapping.Root
         let f = Cache<'a, Option<'b>>(scope, f)
 
+        override x.Inputs = Seq.singleton (input :> IAdaptiveObject)
+
         override x.Release() =
             input.RemoveOutput this
             input.Dispose()
@@ -301,6 +315,9 @@ module AListReaders =
         let mutable old : Option<SimpleOrder.SortKey * 'a> = None
         let mutable order = SimpleOrder.create()
         let hasChanged = ChangeTracker.track<'a>
+
+        override x.Inputs = Seq.singleton (source :> IAdaptiveObject)
+
 
         override x.Release() =
             source.RemoveOutput x
@@ -337,6 +354,9 @@ module AListReaders =
         
         let order = SimpleOrder.create()
         let times = Dictionary<obj, SimpleOrder.SortKey>()
+
+
+        override x.Inputs = Seq.singleton (input :> IAdaptiveObject)
 
         override x.Order = order :> IOrder
 
@@ -467,6 +487,8 @@ module AListReaders =
         do inputReader.AddOutput this
         let subscription = inputReader.SubscribeOnEvaluate emit
 
+        override x.Inputs = Seq.singleton (inputReader :> IAdaptiveObject)
+
         override x.Order = inputReader.RootTime
 
         override x.GetDelta(caller) =
@@ -594,6 +616,8 @@ module AListReaders =
         let tree = OrderMaintenance<'a>(cmp)
         let root = tree.Root
 
+        override x.Inputs = Seq.singleton (input :> IAdaptiveObject)
+
         override x.Release() =
             input.RemoveOutput this
             input.Dispose()
@@ -618,6 +642,8 @@ module AListReaders =
     type ListSetReader<'a>(input : IListReader<'a>) as this =
         inherit ASetReaders.AbstractReader<'a>()
         do input.AddOutput this
+
+        override x.Inputs = Seq.singleton (input :> IAdaptiveObject)
 
         override x.Release() =
             input.RemoveOutput x

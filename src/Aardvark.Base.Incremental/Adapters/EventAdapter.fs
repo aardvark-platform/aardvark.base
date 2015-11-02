@@ -73,7 +73,7 @@ type EventSampler(frequency : int) =
 module EventAdapters =
 
     type private AdapterMod<'a>(e : IEvent<'a>, s : IDisposable, resubscribe : unit -> unit) =
-        inherit Mod.LazyMod<'a> (fun s -> let res = e.Latest in resubscribe(); res)
+        inherit Mod.LazyMod<'a> ([], fun s -> let res = e.Latest in resubscribe(); res)
         member x.Event = e
 
         interface IAdapterMod with
