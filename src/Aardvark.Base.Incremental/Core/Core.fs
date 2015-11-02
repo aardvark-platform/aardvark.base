@@ -398,8 +398,8 @@ type AdaptiveObject() =
 
                 let parent = 
                     if not (isNull caller) then 
-                        if stack.Count > 0 && stack.Peek() <> caller then
-                            Log.warn "user lied about calling cell: {real = %A; given: %A }" (stack.Peek()) caller
+//                        if stack.Count > 0 && stack.Peek() <> caller then
+//                            Log.warn "user lied about calling cell: {real = %A; given: %A }" (stack.Peek()) caller
 
                         Some caller
                     else 
