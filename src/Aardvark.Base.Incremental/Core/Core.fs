@@ -126,7 +126,7 @@ type IAdaptiveObject =
     /// <summary>
     /// the adaptive inputs for the object
     /// </summary>
-    abstract member Inputs : ICollection<IAdaptiveObject>
+    abstract member Inputs : seq<IAdaptiveObject>
 
     /// <summary>
     /// the adaptive outputs for the object which are recommended
@@ -371,11 +371,6 @@ type private EmptyCollection<'a>() =
 /// IAdaptiveObject.
 /// </summary>
 type AdaptiveObject() =
-    #if DEBUG
-    let inputs = HashSet<IAdaptiveObject>() :> ICollection<_>
-    #else
-    static let inputs = EmptyCollection<IAdaptiveObject>() :> ICollection<_>
-    #endif
 
     let id = newId()
     let mutable outOfDate = true
@@ -486,7 +481,6 @@ type AdaptiveObject() =
         and set v = outOfDate <- v
 
     member x.Outputs = outputs
-    member x.Inputs = inputs
     member x.Level 
         with get() = level
         and set l = level <- l
@@ -496,6 +490,9 @@ type AdaptiveObject() =
     
     abstract member InputChanged : IAdaptiveObject -> unit
     default x.InputChanged ip = ()
+
+    abstract member Inputs : seq<IAdaptiveObject>
+    default x.Inputs = Seq.empty
 
     override x.GetHashCode() = id
     override x.Equals o =
@@ -510,7 +507,7 @@ type AdaptiveObject() =
             and set v = outOfDate <- v
 
         member x.Outputs = outputs
-        member x.Inputs = inputs
+        member x.Inputs = x.Inputs
         member x.Level 
             with get() = level
             and set l = level <- l
@@ -532,7 +529,6 @@ type AdaptiveObject() =
 /// </summary>
 [<AbstractClass>]
 type ConstantObject() =
-    static let emptySet = EmptyCollection<IAdaptiveObject>() :> ICollection<_>
     interface IAdaptiveObject with
         member x.Id = -1
         member x.Level
@@ -544,7 +540,7 @@ type ConstantObject() =
             with get() = false
             and set o = failwith "cannot mark constant outOfDate"
 
-        member x.Inputs = emptySet
+        member x.Inputs = Seq.empty
         member x.Outputs = VolatileCollection()
         member x.InputChanged ip = ()
 
@@ -620,36 +616,13 @@ module Marking =
         /// using MarkOutdated and may therefore only be used
         /// on objects being outOfDate or inside a transaction.
         /// </summary>
-        [<Obsolete("Just use MarkOutdated instead")>]
         member x.AddOutput(m : IAdaptiveObject) =
-            m.Inputs.Add x |> ignore
-            //x.Outputs.Add m |> ignore
-
-            //m.Level <- max m.Level (x.Level + 1)
-
-//            // if the element was actually relabeled and we're
-//            // currently inside a running transaction we need to
-//            // raise a LevelChangedException.
-//            if relabel m (x.Level + 1) then
-//                match Transaction.Running with
-//                    | Some t ->
-//                        match t.CurrentAdapiveObject with
-//                            | Some m' when m = m' -> raise <| LevelChangedException m
-//                            | _ -> ()
-//                    | _ -> ()
-
             m.MarkOutdated ( Some x )
-
-        member x.AddOutputNew(m : IAdaptiveObject) =
-            m.Inputs.Add x |> ignore
-            m.MarkOutdated ( Some x )
-
 
         /// <summary>
         /// utility for removing an output from the object
         /// </summary>
         member x.RemoveOutput (m : IAdaptiveObject) =
-            m.Inputs.Remove x |> ignore
             x.Outputs.Remove m |> ignore
 
 
@@ -661,7 +634,6 @@ module CallbackExtensions =
         let modId = newId()
         let mutable level = inner.Level + 1
 
-        let inputs = HashSet<IAdaptiveObject>() :> ICollection<_>
         let mutable scope = Ag.getContext()
         let mutable inner = inner
         let mutable callback = fun () -> Ag.useScope scope callback
@@ -685,7 +657,7 @@ module CallbackExtensions =
                 with get() = false
                 and set o = ()
 
-            member x.Inputs = inputs
+            member x.Inputs = Seq.singleton inner
             member x.Outputs = VolatileCollection()
             member x.InputChanged ip = ()
 

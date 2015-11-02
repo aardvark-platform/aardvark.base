@@ -138,7 +138,7 @@ module AList =
             r.GetDelta(s) |> ignore
             r.Content
         )
-        r.AddOutputNew m
+        r.AddOutput m
         m
 
     let map (f : 'a -> 'b) (set : alist<'a>) = 

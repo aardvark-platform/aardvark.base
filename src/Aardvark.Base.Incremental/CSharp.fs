@@ -102,8 +102,8 @@ type Adaptive private() =
 type AdaptiveObjectExtensions private() =
 
     [<Extension>]
-    static member AddOutputNew (this : IAdaptiveObject, o : IAdaptiveObject) =
-        this.AddOutputNew(o)
+    static member AddOutput (this : IAdaptiveObject, o : IAdaptiveObject) =
+        this.AddOutput(o)
 
     [<Extension>]
     static member RemoveOutput (this : IAdaptiveObject, o : IAdaptiveObject) =

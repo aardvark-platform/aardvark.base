@@ -124,7 +124,7 @@ module AListReaders =
 
     type MapReader<'a, 'b>(scope, f : 'a -> 'b, input : IListReader<'a>) as this =
         inherit AbstractReader<'b>()
-        do input.AddOutputNew this
+        do input.AddOutput this
         
         let f = Cache<'a, 'b>(scope, f)
 
@@ -145,7 +145,7 @@ module AListReaders =
 
     type MapKeyReader<'a, 'b>(scope, f : ISortKey -> 'a -> 'b, input : IListReader<'a>) as this =
         inherit AbstractReader<'b>()
-        do input.AddOutputNew this
+        do input.AddOutput this
         
         let f = Cache<ISortKey * 'a, 'b>(scope, fun (k,v) -> f k v)
 
@@ -168,7 +168,7 @@ module AListReaders =
 
     type CollectReader<'a, 'b>(scope, input : IListReader<'a>, f : 'a -> IListReader<'b>) as this =
         inherit AbstractReader<'b>()
-        do input.AddOutputNew this
+        do input.AddOutput this
 
         let dirtyInner = VolatileTaggedDirtySet(fun (r : IListReader<_>) -> r.GetDelta(this))
         let f = Cache<'a, IListReader<'b>>(scope, f)
@@ -206,7 +206,7 @@ module AListReaders =
                             // listen to marking of r (reader cannot be OutOfDate due to GetDelta above)
                             if dirtyInner.Add(t, r) then
                                 // we're an output of the new reader
-                                r.AddOutputNew x
+                                r.AddOutput x
 
                             // bring the reader's content up-to-date by calling GetDelta
                             r.GetDelta(x) |> ignore
@@ -261,7 +261,7 @@ module AListReaders =
 
     type ChooseReader<'a, 'b>(scope, input : IListReader<'a>, f : 'a -> Option<'b>) as this =
         inherit AbstractReader<'b>()
-        do input.AddOutputNew this
+        do input.AddOutput this
 
         let mapping = OrderMapping()
         let root = mapping.Root
@@ -297,7 +297,7 @@ module AListReaders =
 
     type ModReader<'a>(source : IMod<'a>) as this =  
         inherit AbstractReader<'a>()
-        do source.AddOutputNew this
+        do source.AddOutput this
         let mutable old : Option<SimpleOrder.SortKey * 'a> = None
         let mutable order = SimpleOrder.create()
         let hasChanged = ChangeTracker.track<'a>
@@ -333,7 +333,7 @@ module AListReaders =
 
     type SetReader<'a>(input : IReader<'a>) as this =
         inherit AbstractReader<'a>()
-        do input.AddOutputNew this
+        do input.AddOutput this
         
         let order = SimpleOrder.create()
         let times = Dictionary<obj, SimpleOrder.SortKey>()
@@ -464,7 +464,7 @@ module AListReaders =
 
 
 
-        do inputReader.AddOutputNew this
+        do inputReader.AddOutput this
         let subscription = inputReader.SubscribeOnEvaluate emit
 
         override x.Order = inputReader.RootTime
@@ -589,7 +589,7 @@ module AListReaders =
 
     type SortWithReader<'a when 'a : equality>(input : IReader<'a>, cmp : 'a -> 'a -> int) as this =
         inherit AbstractReader<'a>()
-        do input.AddOutputNew this
+        do input.AddOutput this
 
         let tree = OrderMaintenance<'a>(cmp)
         let root = tree.Root
@@ -617,7 +617,7 @@ module AListReaders =
 
     type ListSetReader<'a>(input : IListReader<'a>) as this =
         inherit ASetReaders.AbstractReader<'a>()
-        do input.AddOutputNew this
+        do input.AddOutput this
 
         override x.Release() =
             input.RemoveOutput x

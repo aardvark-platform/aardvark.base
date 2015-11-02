@@ -154,7 +154,7 @@ module ASetReaders =
     /// </summary>
     type MapReader<'a, 'b>(scope, source : IReader<'a>, f : 'a -> list<'b>) as this =
         inherit AbstractReader<'b>()
-        do source.AddOutputNew this  
+        do source.AddOutput this  
         
         let f = Cache(scope, f)
 
@@ -179,7 +179,7 @@ module ASetReaders =
     /// </summary>   
     type CollectReader<'a, 'b>(scope, source : IReader<'a>, f : 'a -> IReader<'b>) as this =
         inherit AbstractReader<'b>()
-        do source.AddOutputNew this
+        do source.AddOutput this
 
         let f = Cache(scope, f)
         let dirtyInner = MutableVolatileDirtySet(fun (r : IReader<'b>) -> r.GetDelta(this))
@@ -205,7 +205,7 @@ module ASetReaders =
                             let r = f.Invoke v
 
                             // we're an output of the new reader
-                            r.AddOutputNew this
+                            r.AddOutput this
 
                             // bring the reader's content up-to-date by calling GetDelta
                             r.GetDelta x |> ignore
@@ -254,7 +254,7 @@ module ASetReaders =
     /// </summary>   
     type ChooseReader<'a, 'b>(scope, source : IReader<'a>, f : 'a -> Option<'b>) as this =
         inherit AbstractReader<'b>()
-        do source.AddOutputNew this
+        do source.AddOutput this
 
         let f = Cache(scope, f)
 
@@ -288,7 +288,7 @@ module ASetReaders =
     /// </summary>   
     type ModReader<'a>(source : IMod<'a>) as this =  
         inherit AbstractReader<'a>()
-        do source.AddOutputNew this
+        do source.AddOutput this
         let hasChanged = ChangeTracker.track<'a>
         let mutable old = None
 
@@ -427,7 +427,7 @@ module ASetReaders =
         inherit AdaptiveObject()
            
         let inputReader = input.GetReference()
-        do inputReader.AddOutputNew this
+        do inputReader.AddOutput this
 
         let mutable initial = true
         let mutable passThru        : bool                          = true
@@ -620,7 +620,7 @@ module ASetReaders =
 
     type UseReader<'a when 'a :> IDisposable>(inputReader : IReader<'a>) as this =
         inherit AbstractReader<'a>()
-        do inputReader.AddOutputNew this
+        do inputReader.AddOutput this
 
         override x.Release() =
             for c in x.Content do

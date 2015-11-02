@@ -45,7 +45,7 @@ module private ValidationModule =
                             for i in x.Inputs do
                                 stream.WriteLine(sprintf "\t%d -> %d;" x.Id i.Id)
 
-                            if x.Inputs.Count > 0 then
+                            if not (Seq.isEmpty x.Inputs) then
                                 x.Inputs |> Seq.iter (dumpTreeDot' stream seen (depth - 1)) 
   
                         finally
@@ -74,7 +74,7 @@ module private ValidationModule =
                             for i in x.Inputs do
                                 links.AppendLine(sprintf "\t\t<Link Source=\"%d\" Target=\"%d\"/>" x.Id i.Id) |> ignore
 
-                            if x.Inputs.Count > 0 then
+                            if not (Seq.isEmpty x.Inputs) then
                                 x.Inputs |> Seq.iter (dumpDgml' nodes links seen (depth - 1)) 
   
                         finally
@@ -115,7 +115,7 @@ module private ValidationModule =
                     try
                         x.Inputs |> Seq.iter Monitor.Enter
 
-                        if x.Inputs.Count > 0 then
+                        if not (Seq.isEmpty x.Inputs) then
                             let inputStr = x.Inputs |> Seq.map (dumpTree (depth - 1)) |> String.concat "\r\n"|> String.indent 2
                             sprintf "%s {\r\n    id = %d\r\n    level = %d\r\n    outOfDate = %A\r\n    inputs = [\r\n%s\r\n    ]\r\n}" (x.GetType().PrettyName) x.Id x.Level x.OutOfDate inputStr
                         else
@@ -162,7 +162,7 @@ module private ValidationModule =
 
 
                 // validate levels
-                if x.Inputs.Count > 0 then
+                if not (Seq.isEmpty x.Inputs) then
                     let maxLevel = x.Inputs |> Seq.map (fun i -> i.Level) |> Seq.max
                     if x.Level <= maxLevel then
                             
