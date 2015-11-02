@@ -369,6 +369,7 @@ module Amd64 =
             let self = match value with
                         | :? int64 as value -> Assembler.setArg64 index value
                         | :? int32 as value -> Assembler.setArg32 index value
+                        | :? float32 as value -> Assembler.setArg32f index value
                         | _ -> failwith "unknown argument-type"
 
             { size = h.size + self.size; build = fun i arr -> h.build i arr; self.build (i + h.size) arr }
@@ -382,6 +383,7 @@ module Amd64 =
                             | :? int64 as value -> Assembler.setArg64 index value
                             | :? int32 as value -> Assembler.setArg32 index value
                             | :? nativeint as value -> if IntPtr.Size = 8 then Assembler.setArg64 index (int64 value) else Assembler.setArg32 index (int value)
+                            | :? float32 as value -> Assembler.setArg32f index value
                             | _ -> failwith "unknown argument-type"
                 let p = result
                 result <- { size = result.size + w.size; build = fun i arr -> p.build i arr; w.build (i + p.size) arr }

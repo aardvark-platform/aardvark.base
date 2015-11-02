@@ -217,6 +217,14 @@ module Amd64Windows =
                                     [| 0x41uy; 0xB9uy  |]   //movd r9, ...
                                  |]
 
+    let private floatMoves32 =
+        [| [|0x66uy; 0x0Fuy; 0x6Euy; 0xC1uy |]          //movd xmm0, ecx
+           [|0x66uy; 0x0Fuy; 0x6Euy; 0xCAuy |]          //movd xmm1, edx
+           [|0x66uy; 0x41uy; 0x0Fuy; 0x6Euy; 0xD0uy |]  //movd xmm2, r8d
+           [|0x66uy; 0x41uy; 0x0Fuy; 0x6Euy; 0xD9uy |]  //movd xmm3, r9d
+           
+        |]
+
     let setArg64 (index : int) (arg : int64) =
         { size = if index < 4 then 10 else 15
           build = fun i arr ->
@@ -248,6 +256,21 @@ module Amd64Windows =
                 write i arr  (Array.concat [ mov; bytes])
         }
 
+    let setArg32f (index : int) (arg : float32) =
+        { size = if index < 2 then 9 elif index < 4 then 11 else 8
+          build = fun i arr -> 
+            let bytes = BitConverter.GetBytes arg
+
+            if index >= 4 then
+                //mov [rsp+32 + <index>*8], DWORD <arg>
+                let offset = (byte index) * 8uy;
+                write i arr (Array.concat [ [| 0xC7uy; 0x44uy; 0x24uy; offset |]; bytes])
+            else
+                let mov = argumentMove32.[index]
+                let toXMM = floatMoves32.[index]
+                write i arr  (Array.concat [ mov; bytes; toXMM])
+        }
+
 
     let private compileCallInternal (f : nativeint) (args : obj[]) =
         let argSetters =
@@ -256,6 +279,7 @@ module Amd64Windows =
                     | :? int as a -> setArg32 i a
                     | :? int64 as a -> setArg64 i a
                     | :? nativeint as a -> setArg64 i (int64 a)
+                    | :? float32 as a -> setArg32f i a
                     | _ -> failwithf "unsupported argument: %A" a
             )
 
@@ -561,6 +585,11 @@ module Assembler =
             | Linux, AMD64 -> Amd64Linux.setArg32
             | Mac, AMD64 -> Amd64Linux.setArg32
             | _ -> failwithf "no assembler for: %A / %A" os.Platform cpu      
+
+    let setArg32f =
+        match os, cpu with
+            | Windows, AMD64 -> Amd64Windows.setArg32f
+            | _ -> failwithf "float arguments not implemented for: %A / %A" os.Platform cpu  
 
 
     let compileCall =
