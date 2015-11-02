@@ -148,7 +148,7 @@ type ConstantMod<'a> =
 /// By calling Reset (), the initial behaviour can be restored,
 /// i.e. the resulting value is dependent on the adaptive default
 /// value.
-type DefaultingModRef<'a>(computed : IMod<'a>) as this =
+type DefaultingModRef<'a>(computed : IMod<'a>) =
     inherit AdaptiveObject()
 
     let mutable cache = Unchecked.defaultof<'a>
@@ -281,7 +281,7 @@ module Mod =
     // the change propagation process when equal values are
     // observed EagerMod can also be created with a custom 
     // equality function.
-    type internal EagerMod<'a>(input : IMod<'a>, eq : Option<'a -> 'a -> bool>) as this=
+    type internal EagerMod<'a>(input : IMod<'a>, eq : Option<'a -> 'a -> bool>) =
         inherit LazyMod<'a>(Seq.singleton (input :> IAdaptiveObject), fun s -> input.GetValue(s))
 
         let hasChanged = ChangeTracker.trackCustom<'a> eq
@@ -304,7 +304,7 @@ module Mod =
     // evaluation for a specific cell. Note that this needs to
     // be "transparent" (knowning its input) since we need to
     // be able to undo the effect.
-    type internal LaterMod<'a>(input : IMod<'a>) as this=
+    type internal LaterMod<'a>(input : IMod<'a>) =
         inherit LazyMod<'a>(Seq.singleton (input :> IAdaptiveObject), fun s -> input.GetValue(s))
 
         override x.Inputs = Seq.singleton (input :> IAdaptiveObject)
