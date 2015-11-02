@@ -38,13 +38,13 @@ type IReader<'a> =
     /// For some readers Update can be implemented more efficiently than GetDelta
     /// and in some scenarios the real deltas are not needed.
     /// </summary>
-    abstract member Update : unit -> unit
+    abstract member Update : IAdaptiveObject -> unit
 
     /// <summary>
     /// Pulls the reader's deltas relative to its current content.
     /// NOTE that GetDelta also "applies" the deltas to the reader's state
     /// </summary>
-    abstract member GetDelta : unit -> Change<'a>
+    abstract member GetDelta : IAdaptiveObject -> Change<'a>
 
     abstract member SubscribeOnEvaluate : (Change<'a> -> unit) -> IDisposable
 
@@ -89,14 +89,14 @@ module ASetReaders =
 
         abstract member Release : unit -> unit
         abstract member ComputeDelta : unit -> Change<'a>
-        abstract member Update : unit -> unit
-        abstract member GetDelta : unit -> Change<'a>
+        abstract member Update : IAdaptiveObject -> unit
+        abstract member GetDelta : IAdaptiveObject -> Change<'a>
  
         member x.Content = content
         member internal x.Callbacks = callbacks
 
-        default x.GetDelta() =
-            x.EvaluateIfNeeded [] (fun () ->
+        default x.GetDelta(caller) =
+            x.EvaluateIfNeeded caller [] (fun () ->
                 let deltas = x.ComputeDelta()
                 let finalDeltas = deltas |> apply content
 
@@ -107,7 +107,7 @@ module ASetReaders =
                 finalDeltas
             )
 
-        default x.Update() = x.GetDelta() |> ignore
+        default x.Update(caller) = x.GetDelta(caller) |> ignore
 
         override x.Finalize() =
             try x.Dispose()
@@ -141,8 +141,8 @@ module ASetReaders =
 
         interface IReader<'a> with
             member x.Content = content
-            member x.Update() = x.Update()
-            member x.GetDelta() = x.GetDelta()
+            member x.Update(caller) = x.Update(caller)
+            member x.GetDelta(caller) = x.GetDelta(caller)
             member x.SubscribeOnEvaluate cb = x.SubscribeOnEvaluate cb
 
 
@@ -164,7 +164,7 @@ module ASetReaders =
             f.Clear(ignore)
 
         override x.ComputeDelta() =
-            source.GetDelta() 
+            source.GetDelta x 
                 |> List.collect (fun d ->
                     match d with
                         | Add v -> f.Invoke v |> List.map Add
@@ -182,7 +182,7 @@ module ASetReaders =
         do source.AddOutput this
 
         let f = Cache(scope, f)
-        let dirtyInner = MutableVolatileDirtySet(fun (r : IReader<'b>) -> r.GetDelta())
+        let dirtyInner = MutableVolatileDirtySet(fun (r : IReader<'b>) -> r.GetDelta(this))
 
         override x.InputChanged (o : IAdaptiveObject) = 
             match o with
@@ -197,7 +197,7 @@ module ASetReaders =
             dirtyInner.Clear()
 
         override x.ComputeDelta() =
-            let xs = source.GetDelta()
+            let xs = source.GetDelta x
             let outerDeltas =
                 xs |> List.collect (fun d ->
                     match d with
@@ -208,7 +208,7 @@ module ASetReaders =
                             r.AddOutput this
 
                             // bring the reader's content up-to-date by calling GetDelta
-                            r.GetDelta() |> ignore
+                            r.GetDelta x |> ignore
 
                             // listen to marking of r (reader cannot be OutOfDate due to GetDelta above)
                             dirtyInner.Add r
@@ -264,7 +264,7 @@ module ASetReaders =
             f.Clear(ignore)
 
         override x.ComputeDelta() =
-            let xs = source.GetDelta()
+            let xs = source.GetDelta x
             xs |> List.choose (fun d ->
                 match d with
                     | Add v ->
@@ -297,7 +297,7 @@ module ASetReaders =
             old <- None
 
         override x.ComputeDelta() =
-            let v = source.GetValue()
+            let v = source.GetValue(x)
             if hasChanged v then
                 match old with
                     | Some c -> 
@@ -369,98 +369,6 @@ module ASetReaders =
                     let res = deltas |> Seq.toList
                     deltas.Clear()
                     res
-
-    
-    type CopyReaderOld<'a>(inputReader : IReader<'a>, dispose : CopyReaderOld<'a> -> unit) as this =
-        inherit AbstractReader<'a>()
-        
-        let deltas = List()
-        let mutable reset = Some (inputReader.Content :> ISet<_>)
-        let mutable initial = true
-
-        let emit (d : list<Delta<'a>>) =
-            lock this (fun () ->
-//                if reset.IsNone then
-//                    let N = inputReader.Content.Count
-//                    let M = this.Content.Count
-//                    let D = deltas.Count + (List.length d)
-//                    if D > N + 2 * M then
-//                        reset <- Some (inputReader.Content :> _)
-//                        deltas.Clear()
-//                    else
-//                        deltas.AddRange d
-
-
-                if reset.IsNone then
-                    deltas.AddRange d
-            
-                if not this.OutOfDate then 
-                    // TODO: why is that happening sometimes?
-
-                    // A good case: 
-                    //     Suppose the inputReader and this one have been marked and
-                    //     a "neighbour" reader (of this one) has not yet been marked.
-                    //     In that case the neighbouring reader will not be OutOfDate when
-                    //     its emit function is called.
-                    //     However it should be on the marking-queue since the input was
-                    //     marked and therefore the reader should get "eventually consistent"
-                    // Thoughts:
-                    //     Since the CopyReader's GetDelta starts with acquiring the lock
-                    //     to the inputReader only one CopyReader will be able to call its ComputeDelta
-                    //     at a time. Therefore only one can call inputReader.Update() at a time and 
-                    //     again therefore only one thread may call emit here.
-                    // To conclude I could find one good case and couldn't come up with
-                    // a bad one. Nevertheless this is not really a proof of its inexistence (hence the print)
-                    Aardvark.Base.Log.warn "[ASetReaders.CopyReader] potentially bad emit with: %A" d
-            )
-
-
-
-        do inputReader.AddOutput this
-        let subscription = inputReader.SubscribeOnEvaluate emit
-
-        member x.SetState(r : IReader<'a>) =
-            x.Content.SetTo(r.Content)
-            reset <- None
-            deltas.Clear()
-
-        override x.GetDelta() =
-            lock inputReader (fun () ->
-                x.EvaluateIfNeeded [] (fun () ->
-                    let deltas = x.ComputeDelta()
-                    let finalDeltas = deltas |> apply x.Content
-
-                    if not (isNull x.Callbacks) then
-                        if not (List.isEmpty finalDeltas) then
-                            for cb in x.Callbacks do cb finalDeltas
-
-                    initial <- false
-                    finalDeltas
-                )
-            )
-
-        override x.ComputeDelta() =
-            inputReader.Update()
-            inputReader.Outputs.Add x |> ignore
-
-            match reset with
-                | Some c ->
-                    let content = x.Content
-                    reset <- None
-                    deltas.Clear()
-                    let add = c |> Seq.filter (not << content.Contains) |> Seq.map Add
-                    let rem = content |> Seq.filter (not << c.Contains) |> Seq.map Rem
-
-                    Seq.append add rem |> Seq.toList
-                | None ->
-                    let res = deltas |> Seq.toList
-                    deltas.Clear()
-                    res
-
-        override x.Release() =
-            inputReader.RemoveOutput x
-            subscription.Dispose()
-            dispose(x)
 
 
     type ReferenceCountedReader<'a>(newReader : unit -> IReader<'a>) =
@@ -614,13 +522,13 @@ module ASetReaders =
         member x.ComputeDelta() =
             if passThru then
                 if initial then
-                    inputReader.Update()
+                    inputReader.Update x
                     inputReader.Content |> Seq.map Add |> Seq.toList
                 else
-                    inputReader.GetDelta()
+                    inputReader.GetDelta x
 
             else
-                inputReader.Update()
+                inputReader.Update x
                 inputReader.Outputs.Add x |> ignore
 
                 match reset with
@@ -636,9 +544,9 @@ module ASetReaders =
                         deltas.Clear()
                         res |> apply content
 
-        member x.GetDelta() =
+        member x.GetDelta(caller) =
             lock inputReader (fun () ->
-                x.EvaluateIfNeeded [] (fun () ->
+                x.EvaluateIfNeeded caller [] (fun () ->
                     //x.Optimize()
                     let deltas = x.ComputeDelta()
 
@@ -651,7 +559,7 @@ module ASetReaders =
                 )
             )
 
-        member x.Update() = x.GetDelta() |> ignore
+        member x.Update(caller) = x.GetDelta(caller) |> ignore
 
         override x.Finalize() =
             try x.Dispose()
@@ -692,8 +600,8 @@ module ASetReaders =
 
         interface IReader<'a> with
             member x.Content = x.Content
-            member x.Update() = x.Update()
-            member x.GetDelta() = x.GetDelta()
+            member x.Update(caller) = x.Update(caller)
+            member x.GetDelta(caller) = x.GetDelta(caller)
             member x.SubscribeOnEvaluate cb = x.SubscribeOnEvaluate cb
 
     type OneShotReader<'a>(deltas : Change<'a>) =  
@@ -721,7 +629,7 @@ module ASetReaders =
             inputReader.Dispose()
 
         override x.ComputeDelta() =
-            let deltas = inputReader.GetDelta()
+            let deltas = inputReader.GetDelta(x)
 
             for d in deltas do
                 match d with

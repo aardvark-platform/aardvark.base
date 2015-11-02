@@ -120,7 +120,7 @@ module AList =
 
     let toSeq (set : alist<'a>) =
         use r = set.GetReader()
-        r.GetDelta() |> ignore
+        r.GetDelta(null) |> ignore
         r.Content.Values |> Seq.toArray :> seq<_>
 
     let toList (set : alist<'a>) =
@@ -134,8 +134,8 @@ module AList =
 
     let toMod (s : alist<'a>) =
         let r = s.GetReader()
-        let m = Mod.custom (fun () ->
-            r.GetDelta() |> ignore
+        let m = Mod.custom (fun s ->
+            r.GetDelta(null) |> ignore
             r.Content
         )
         r.AddOutput m
@@ -217,7 +217,7 @@ module AList =
 
         let result = 
             m.AddEvaluationCallback(fun () ->
-                m.GetDelta() |> f
+                m.GetDelta(null) |> f
             )
 
 

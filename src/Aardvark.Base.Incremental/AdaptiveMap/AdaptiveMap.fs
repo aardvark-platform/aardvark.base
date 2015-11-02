@@ -187,7 +187,7 @@ module AMap =
         do input.AddOutput this
 
         override x.ComputeDelta() = 
-            input.GetDelta() 
+            input.GetDelta(x) 
                 |> List.choose (fun d -> 
                     match d with
                         | Add (k,v) when k = key -> Some (Add v)
@@ -230,8 +230,8 @@ module AMap =
     let toMod (m : amap<'k, 'v>) =
         let r = m.ASet.GetReader()
         let content = VersionedDictionary<'k,IVersionedSet<'v>>()
-        let res = Mod.custom(fun () ->
-            r.GetDelta() |> AMapUtils.apply content |> ignore
+        let res = Mod.custom(fun s ->
+            r.GetDelta(s) |> AMapUtils.apply content |> ignore
             content :> IVersionedDictionary<_,_>
         )
         r.AddOutput res

@@ -3,7 +3,7 @@
 [<CompiledName("IAdaptiveFunc")>]
 type afun<'a, 'b> =
     inherit IAdaptiveObject
-    abstract member Evaluate : 'a -> 'b
+    abstract member Evaluate : IAdaptiveObject -> 'a -> 'b
 
 module AFun =
 
@@ -11,31 +11,38 @@ module AFun =
         inherit AdaptiveObject()
         do f.AddOutput this
 
-        member x.Evaluate v = 
-            base.EvaluateAlways (fun () ->
+        member x.Evaluate caller v = 
+            x.EvaluateAlways caller (fun () ->
                 this.OutOfDate <- true
-                Mod.force f v
+                f.GetValue x v
             )
 
         interface afun<'a, 'b> with
-            member x.Evaluate v = x.Evaluate v
+            member x.Evaluate c v = x.Evaluate c v
 
         new(f) = AdaptiveFun (Mod.constant f)
 
     type ConstantFun<'a, 'b>(value : IMod<'b>) =
         inherit AdaptiveObject()
 
-        member x.Evaluate (v : 'a) = Mod.force value
+        member x.Evaluate (caller : IAdaptiveObject) (v : 'a) = 
+            x.EvaluateAlways caller (fun () ->
+                value.GetValue x
+            )
 
         interface afun<'a, 'b> with
-            member x.Evaluate v = x.Evaluate v
+            member x.Evaluate caller v = x.Evaluate caller v
 
     let run (v : 'a) (f : afun<'a, 'b>) =
-        [f :> IAdaptiveObject] |> Mod.mapCustom (fun () -> f.Evaluate v)
+        [f :> IAdaptiveObject] |> Mod.mapCustom (fun s -> 
+            f.Evaluate s v
+        )
 
     let apply (v : IMod<'a>) (f : afun<'a, 'b>) =
         [v :> IAdaptiveObject; f :> IAdaptiveObject]
-            |> Mod.mapCustom (fun () -> f.Evaluate (Mod.force v))
+            |> Mod.mapCustom (fun s -> 
+                f.Evaluate s (v.GetValue s)
+            )
 
     let create (f : 'a -> 'b) =
         AdaptiveFun(f) :> afun<_,_>
@@ -53,7 +60,7 @@ module AFun =
         let self = ref Unchecked.defaultof<_>
         self :=
             AdaptiveFun(fun x ->
-                let f = mf.GetValue()
+                let f = mf.GetValue(!self)
 
                 match !inner with
                     | Some f' when f' <> f ->
@@ -63,22 +70,24 @@ module AFun =
                         f.AddOutput !self
                     | _ ->
                         ()
-                mf.GetValue().Evaluate x
+                mf.GetValue(!self).Evaluate x
             )
         mf.AddOutput !self
         !self :> afun<_,_>
 
     let compose (g : afun<'b, 'c>) (f : afun<'a, 'b>) =
-        let res = AdaptiveFun(fun v -> g.Evaluate (f.Evaluate v)) :> afun<_,_>
-        f.AddOutput res
-        g.AddOutput res
-        res
+        let res = ref Unchecked.defaultof<_>
+        res := AdaptiveFun(fun v -> g.Evaluate !res (f.Evaluate !res v)) :> afun<_,_>
+        f.AddOutput !res
+        g.AddOutput !res
+        !res
 
     let zipWith (combine : 'b -> 'c -> 'd) (f : afun<'a,'b>) (g : afun<'a, 'c>) =
-        let res = AdaptiveFun(fun v -> combine (f.Evaluate v) (g.Evaluate v)) :> afun<_,_>
-        f.AddOutput res
-        g.AddOutput res
-        res
+        let res = ref Unchecked.defaultof<_>
+        res := AdaptiveFun(fun v -> combine (f.Evaluate !res v) (g.Evaluate !res v)) :> afun<_,_>
+        f.AddOutput !res
+        g.AddOutput !res
+        !res
 
     let zip (f : afun<'a,'b>) (g : afun<'a, 'c>) =
         zipWith (fun a b -> (a,b)) f g
@@ -98,10 +107,10 @@ module AFun =
         initial |> inputChanged |> ignore
 
         [f :> IAdaptiveObject; input :> IAdaptiveObject] 
-            |> Mod.mapCustom (fun () -> 
+            |> Mod.mapCustom (fun s -> 
                 AdaptiveObject.Time.Outputs.Remove input |> ignore
-                let v = Mod.force input
-                let res = f.Evaluate v
+                let v = input.GetValue s
+                let res = f.Evaluate s v
                 if inputChanged res then
                     input.UnsafeCache <- res
                     AdaptiveObject.Time.Outputs.Add input |> ignore
@@ -167,12 +176,12 @@ module AState =
 
         self := 
             AFun.AdaptiveFun(fun s ->
-                let (s, v) = m.runState.Evaluate s
+                let (s, v) = m.runState.Evaluate !self s
 
                 let c = tracker v
                 match !cache with
                     | Some old when not c ->
-                        old.Evaluate s
+                        old.Evaluate !self s
                     | _ ->
                         let inner = (f v).runState
                         match !cache with
@@ -181,7 +190,7 @@ module AState =
                         inner.AddOutput !self
                         cache := Some inner
 
-                        inner.Evaluate s
+                        inner.Evaluate !self s
             )
 
         m.runState.AddOutput !self
@@ -195,7 +204,7 @@ module AState =
         let self = ref Unchecked.defaultof<_>
         self :=
             AFun.AdaptiveFun(fun s -> 
-                let run = mf.GetValue().runState
+                let run = mf.GetValue(!self).runState
                 
                 match !inner with
                     | Some old when old <> run ->
@@ -209,7 +218,7 @@ module AState =
 
                     | _ -> ()
 
-                run.Evaluate s
+                run.Evaluate !self s
             )
 
         mf.AddOutput !self
@@ -220,9 +229,10 @@ module AState =
         { runState = run }
 
     let ofAFun (m : afun<'a, 'b>) : astate<'s, 'a -> 'b> =
-        let run = AFun.create (fun s -> (s,m.Evaluate))
-        m.AddOutput run
-        { runState = run }
+        let run = ref Unchecked.defaultof<_>
+        run := AFun.create (fun s -> (s,m.Evaluate !run))
+        m.AddOutput !run
+        { runState = !run }
 
     let getState<'s> = { runState = AFun.create (fun s -> (s,s)) }
     let putState (s : 's) = { runState = AFun.create (fun _ -> (s,())) }
@@ -255,7 +265,7 @@ module ``Controller Builder`` =
 
     let preWith (f : 'a -> 'a -> 'b) (m : IMod<'a>) =
         if m.IsConstant then
-            let v = m.GetValue()
+            let v = m.GetValue(null)
             AState.create (f v v)
         else
             m |> AState.bindMod (fun v ->

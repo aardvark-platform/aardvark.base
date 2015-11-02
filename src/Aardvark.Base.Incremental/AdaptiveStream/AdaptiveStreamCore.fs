@@ -111,7 +111,7 @@ module EventHistory =
 type IStreamReader<'a> =
     inherit IDisposable
     inherit IAdaptiveObject
-    abstract member GetHistory : unit -> EventHistory<'a>
+    abstract member GetHistory : IAdaptiveObject -> EventHistory<'a>
     abstract member SubscribeOnEvaluate : (EventHistory<'a> -> unit) -> IDisposable
 
 [<CompiledName("IAdaptiveStream")>]
@@ -130,10 +130,10 @@ module AStreamReaders =
 
         abstract member Release : unit -> unit
         abstract member ComputeHistory : unit -> EventHistory<'a>
-        abstract member GetHistory : unit -> EventHistory<'a>
+        abstract member GetHistory : IAdaptiveObject -> EventHistory<'a>
  
-        default x.GetHistory() =
-            x.EvaluateIfNeeded EventHistory.empty (fun () ->
+        default x.GetHistory(caller) =
+            x.EvaluateIfNeeded caller EventHistory.empty (fun () ->
                 let deltas = x.ComputeHistory()
 
                 if not (EventHistory.isEmpty deltas) then
@@ -167,7 +167,7 @@ module AStreamReaders =
             member x.Dispose() = x.Dispose()
 
         interface IStreamReader<'a> with
-            member x.GetHistory() = x.GetHistory()
+            member x.GetHistory(caller) = x.GetHistory(caller)
             member x.SubscribeOnEvaluate cb = x.SubscribeOnEvaluate cb
 
 
@@ -208,7 +208,7 @@ module AStreamReaders =
             cache.Clear(ignore)
 
         override x.ComputeHistory() =
-            source.GetHistory() |> EventHistory.map (fun a ->
+            source.GetHistory(x) |> EventHistory.map (fun a ->
                 cache.Invoke a
             )
 
@@ -216,7 +216,7 @@ module AStreamReaders =
         inherit AbstractReader<'b>()
         do source.AddOutput this
 
-        let dirtyInner = VolatileDirtySet(fun (r : IStreamReader<'b>) -> r.GetHistory())
+        let dirtyInner = VolatileDirtySet(fun (r : IStreamReader<'b>) -> r.GetHistory(this))
         let f = Cache(scope, f)
 
         override x.Release() =
@@ -231,7 +231,7 @@ module AStreamReaders =
                 | _ -> ()
 
         override x.ComputeHistory() =
-            for d in source.GetDelta() do
+            for d in source.GetDelta(x) do
                 match d with
                     | Add v ->
                         let r = f.Invoke v
@@ -271,7 +271,7 @@ module AStreamReaders =
             cache.Clear(ignore)
 
         override x.ComputeHistory() =
-            source.GetHistory() |> EventHistory.choose (fun a ->
+            source.GetHistory(x) |> EventHistory.choose (fun a ->
                 cache.Invoke a
             )
 
@@ -282,7 +282,7 @@ module AStreamReaders =
         override x.Release() = ()
 
         override x.ComputeHistory() =
-            History [(DateTime.Now, source.GetValue())]
+            History [(DateTime.Now, source.GetValue(this))]
 
     type OneShotReader<'a>(deltas : EventHistory<'a>) =  
         inherit AbstractReader<'a>()
@@ -340,9 +340,9 @@ module AStreamReaders =
         do inputReader.AddOutput this
         let subscription = inputReader.SubscribeOnEvaluate emit
 
-        override x.GetHistory() =
+        override x.GetHistory(caller) =
             lock inputReader (fun () ->
-                x.EvaluateIfNeeded EventHistory.empty (fun () ->
+                x.EvaluateIfNeeded caller EventHistory.empty (fun () ->
                     let deltas = x.ComputeHistory()
 
                     if not (EventHistory.isEmpty deltas) then
@@ -353,7 +353,7 @@ module AStreamReaders =
             )
 
         override x.ComputeHistory() =
-            inputReader.GetHistory() |> ignore
+            inputReader.GetHistory(x) |> ignore
 
             let res = deltas
             deltas <- EventHistory.empty

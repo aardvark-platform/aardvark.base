@@ -96,7 +96,7 @@ module ASet =
     /// </summary>
     let toList (set : aset<'a>) =
         use r = set.GetReader()
-        r.GetDelta() |> ignore
+        r.GetDelta(null) |> ignore
         r.Content |> Seq.toList
 
     /// <summary>
@@ -113,7 +113,7 @@ module ASet =
     /// </summary>
     let toArray (set : aset<'a>) =
         use r = set.GetReader()
-        r.GetDelta() |> ignore
+        r.GetDelta(null) |> ignore
         r.Content |> Seq.toArray
 
     /// <summary>
@@ -122,7 +122,7 @@ module ASet =
     /// </summary>
     let ofMod (m : IMod<'a>) =
         if m.IsConstant then
-            ConstantSet [m.GetValue()] :> aset<_>
+            ConstantSet [m.GetValue(null)] :> aset<_>
         else
             AdaptiveSet(fun () -> ofMod m) :> aset<_>
 
@@ -144,8 +144,8 @@ module ASet =
         let r = s.GetReader()
         let c = r.Content :> IVersionedSet<_>
 
-        let m = Mod.custom (fun () ->
-            r.GetDelta() |> ignore
+        let m = Mod.custom (fun s ->
+            r.GetDelta(s) |> ignore
             c
         )
         r.AddOutput m
@@ -185,7 +185,7 @@ module ASet =
         if set.IsConstant then
             delay (fun () ->
                 use r = set.GetReader()
-                r.Update()
+                r.Update(null)
                 r.Content |> Seq.map f
             )
         else
@@ -236,7 +236,7 @@ module ASet =
         if set.IsConstant then
             delay (fun () ->
                 use r = set.GetReader()
-                r.Update()
+                r.Update(null)
                 r.Content |> Seq.choose f
             )
         else
@@ -333,9 +333,9 @@ module ASet =
                     true
 
         let res =
-            Mod.custom (fun () ->
+            Mod.custom (fun s ->
                 let mutable rem = false
-                let delta = r.GetDelta()
+                let delta = r.GetDelta(s)
 
                 if not <| processDeltas delta then
                     sum := r.Content |> Seq.fold add zero
@@ -361,8 +361,8 @@ module ASet =
         let sum = ref zero
 
         let res =
-            Mod.custom (fun () ->
-                let delta = r.GetDelta()
+            Mod.custom (fun s ->
+                let delta = r.GetDelta(s)
                 for d in delta do
                     match d with
                         | Add v -> sum := add !sum v
@@ -436,7 +436,7 @@ module ASet =
 
         let result =
             m.AddEvaluationCallback(fun () ->
-                m.GetDelta() |> f
+                m.GetDelta(null) |> f
             )
 
 

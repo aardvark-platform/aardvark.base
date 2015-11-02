@@ -31,9 +31,9 @@ type IListReader<'a> =
     /// Pulls the reader's deltas relative to its current content.
     /// NOTE that GetDelta also "applies" the deltas to the reader's state
     /// </summary>
-    abstract member GetDelta : unit -> Change<ISortKey * 'a>
+    abstract member GetDelta : IAdaptiveObject -> Change<ISortKey * 'a>
 
-    abstract member Update : unit -> unit
+    abstract member Update : IAdaptiveObject -> unit
 
     abstract member SubscribeOnEvaluate : (Change<ISortKey * 'a> -> unit) -> IDisposable
 
@@ -72,14 +72,14 @@ module AListReaders =
         abstract member Order : IOrder
         abstract member Release : unit -> unit
         abstract member ComputeDelta : unit -> Change<ISortKey * 'a>
-        abstract member Update : unit -> unit        
-        abstract member GetDelta : unit -> Change<ISortKey * 'a>
+        abstract member Update : IAdaptiveObject -> unit        
+        abstract member GetDelta : IAdaptiveObject -> Change<ISortKey * 'a>
 
         member x.Content = content
         member x.Callbacks = callbacks
 
-        default x.GetDelta() =
-            x.EvaluateIfNeeded [] (fun () ->
+        default x.GetDelta(caller) =
+            x.EvaluateIfNeeded caller [] (fun () ->
                 let deltas = x.ComputeDelta()
                 let finalDeltas = deltas |> apply content
 
@@ -88,7 +88,7 @@ module AListReaders =
                 finalDeltas
             )
 
-        default x.Update() = x.GetDelta() |> ignore
+        default x.Update(caller) = x.GetDelta(caller) |> ignore
 
         override x.Finalize() =
             try x.Dispose()
@@ -115,10 +115,10 @@ module AListReaders =
             member x.Dispose() = x.Dispose()
 
         interface IListReader<'a> with
-            member x.Update() = x.Update()
+            member x.Update(caller) = x.Update(caller)
             member x.RootTime = x.Order
             member x.Content = content
-            member x.GetDelta() = x.GetDelta()
+            member x.GetDelta(caller) = x.GetDelta(caller)
             member x.SubscribeOnEvaluate cb = x.SubscribeOnEvaluate cb
 
 
@@ -136,7 +136,7 @@ module AListReaders =
             f.Clear(ignore)
 
         override x.ComputeDelta() =
-            let deltas = input.GetDelta()
+            let deltas = input.GetDelta(x)
             deltas |> List.map (fun d ->
                 match d with
                     | Add(t, v) -> Add (t, f.Invoke v)
@@ -157,7 +157,7 @@ module AListReaders =
             f.Clear(ignore)
 
         override x.ComputeDelta() =
-            let deltas = input.GetDelta() 
+            let deltas = input.GetDelta(x) 
             deltas |> List.map (fun d ->
                 match d with
                     | Add(t, v) -> Add (t, f.Invoke (t,v))
@@ -170,7 +170,7 @@ module AListReaders =
         inherit AbstractReader<'b>()
         do input.AddOutput this
 
-        let dirtyInner = VolatileTaggedDirtySet(fun (r : IListReader<_>) -> r.GetDelta())
+        let dirtyInner = VolatileTaggedDirtySet(fun (r : IListReader<_>) -> r.GetDelta(this))
         let f = Cache<'a, IListReader<'b>>(scope, f)
 
         let mutable mapping = NestedOrderMapping()
@@ -192,7 +192,7 @@ module AListReaders =
                 | _ -> ()
 
         override x.ComputeDelta() =
-            let xs = input.GetDelta()
+            let xs = input.GetDelta(x)
                 
             let outerDeltas =
                 xs |> List.collect (fun d ->
@@ -201,7 +201,7 @@ module AListReaders =
                             let r = f.Invoke v
 
                             // bring the reader's content up-to-date by calling GetDelta
-                            r.GetDelta() |> ignore
+                            r.GetDelta(x) |> ignore
 
                             // listen to marking of r (reader cannot be OutOfDate due to GetDelta above)
                             if dirtyInner.Add(t, r) then
@@ -209,7 +209,7 @@ module AListReaders =
                                 r.AddOutput x
 
                             // bring the reader's content up-to-date by calling GetDelta
-                            r.GetDelta() |> ignore
+                            r.GetDelta(x) |> ignore
                             
                             // since the entire reader is new we add its content
                             // which must be up-to-date here (due to calling GetDelta above)
@@ -276,7 +276,7 @@ module AListReaders =
         override x.Order = mapping.Order
 
         override x.ComputeDelta() =
-            let deltas = input.GetDelta()
+            let deltas = input.GetDelta(x)
 
             deltas |> List.choose (fun d ->
                 match d with
@@ -314,7 +314,7 @@ module AListReaders =
         override x.Order = order :> IOrder
 
         override x.ComputeDelta() =
-            let v = source.GetValue()
+            let v = source.GetValue(this)
                 
             if hasChanged v then
                 match old with
@@ -346,7 +346,7 @@ module AListReaders =
             times.Clear()
 
         override x.ComputeDelta() =
-            let deltas = input.GetDelta()
+            let deltas = input.GetDelta(x)
 
             deltas |> List.map (fun d ->
                 match d with
@@ -469,9 +469,9 @@ module AListReaders =
 
         override x.Order = inputReader.RootTime
 
-        override x.GetDelta() =
+        override x.GetDelta(caller) =
             lock inputReader (fun () ->
-                x.EvaluateIfNeeded [] (fun () ->
+                x.EvaluateIfNeeded caller [] (fun () ->
                     let deltas = x.ComputeDelta()
                     let finalDeltas = deltas |> apply x.Content
 
@@ -483,7 +483,7 @@ module AListReaders =
             )
 
         override x.ComputeDelta() =
-            inputReader.Update()
+            inputReader.Update(x)
 
             match reset with
                 | Some c ->
@@ -602,7 +602,7 @@ module AListReaders =
         override x.Order = tree.Order
 
         override x.ComputeDelta() =
-            let deltas = input.GetDelta()
+            let deltas = input.GetDelta(x)
 
             deltas |> List.map (fun d ->
                 match d with
@@ -623,7 +623,7 @@ module AListReaders =
             input.RemoveOutput x
 
         override x.ComputeDelta() =
-            let deltas = input.GetDelta()
+            let deltas = input.GetDelta(x)
 
             let setDeltas =
                 deltas |> List.map (fun d ->

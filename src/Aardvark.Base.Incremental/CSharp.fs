@@ -17,7 +17,7 @@ type Mod private() =
     static member LazyConstant (f : Func<'a>) : IMod<'a> =
         Mod.delay f.Invoke
 
-    static member Custom (f : Func<'a>) : IMod<'a> =
+    static member Custom (f : Func<IMod<'a>, 'a>) : IMod<'a> =
         Mod.custom f.Invoke
 
     static member Async(t : System.Threading.Tasks.Task<'a>, defaultValue : 'a) : IMod<'a> =
@@ -279,7 +279,7 @@ type AdaptiveSetExtensions private() =
 
     [<Extension>]
     static member GetDeltas (this : IReader<'a>) =
-        this.GetDelta() |> List.toArray
+        this.GetDelta(null) |> List.toArray
 
     /// <summary> see ASet/ASetModule.unsafeRegisterCallbackNoGcRoot </summary>
     [<Extension>]

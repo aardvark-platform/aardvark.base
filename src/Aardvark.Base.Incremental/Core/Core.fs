@@ -399,7 +399,7 @@ type AdaptiveObject() =
 
     static let time = AdaptiveObject() :> IAdaptiveObject
     
-    let evaluate (this : IAdaptiveObject) (otherwise : Option<'a>) (f : unit -> 'a) =
+    let evaluate (this : IAdaptiveObject) (caller : IAdaptiveObject) (otherwise : Option<'a>) (f : unit -> 'a) =
         let stack = currentEvaluationPath.Value
         let top = stack.Count = 0 && not Transaction.HasRunning
 
@@ -411,10 +411,23 @@ type AdaptiveObject() =
                     if outOfDate then None
                     else otherwise
 
+                let parent = 
+                    if not (isNull caller) then 
+                        if stack.Count > 0 && stack.Peek() <> caller then
+                            failwithf "user lied about calling cell: {real = %A; given: %A }" (stack.Peek()) caller
+
+                        Some caller
+                    else 
+                        None
+                match parent with
+                    | Some o ->
+                        outputs.Add o |> ignore
+                        o.Level <- max o.Level (level + 1)
+                    | _ -> ()
+
                 match value with
                     | Some v -> v
                     | None ->
-                        let parent = if stack.Count > 0 then stack.Peek() |> Some else None
                         stack.Push this
                        
                         try
@@ -437,11 +450,7 @@ type AdaptiveObject() =
 
 
 
-                            match parent with
-                                | Some o ->
-                                    outputs.Add o |> ignore
-                                    o.Level <- max o.Level (level + 1)
-                                | _ -> ()
+
 
 
                             if level > maxAllowedLevel then
@@ -474,16 +483,16 @@ type AdaptiveObject() =
     /// the given default value is returned.
     /// Note that this function takes care of appropriate locking
     /// </summary>
-    member x.EvaluateIfNeeded (otherwise : 'a) (f : unit -> 'a) =
-        evaluate x (Some otherwise) f
+    member x.EvaluateIfNeeded (caller : IAdaptiveObject) (otherwise : 'a) (f : unit -> 'a) =
+        evaluate x caller (Some otherwise) f
 
     /// <summary>
     /// utility function for evaluating an object even if it
     /// is not marked as outOfDate.
     /// Note that this function takes care of appropriate locking
     /// </summary>
-    member x.EvaluateAlways (f : unit -> 'a) =
-        evaluate x None f
+    member x.EvaluateAlways (caller : IAdaptiveObject) (f : unit -> 'a) =
+        evaluate x caller None f
 
 
     member x.Id = id
@@ -628,7 +637,7 @@ module Marking =
         /// </summary>
         member x.AddOutput(m : IAdaptiveObject) =
             m.Inputs.Add x |> ignore
-            x.Outputs.Add m |> ignore
+            //x.Outputs.Add m |> ignore
 
             //m.Level <- max m.Level (x.Level + 1)
 
@@ -665,17 +674,18 @@ module CallbackExtensions =
         let mutable scope = Ag.getContext()
         let mutable inner = inner
         let mutable callback = fun () -> Ag.useScope scope callback
-        do inner.AddOutput this
+        do inner.Outputs.Add this |> ignore
 
         member x.Mark() =
-            callback()
+            callback ()
             false
+
 
         interface IAdaptiveObject with
             member x.Id = modId
             member x.Level
                 with get() = System.Int32.MaxValue - 1
-                and set l = failwith "callbacks cannot be given a level"
+                and set l = ()
 
             member x.Mark() =
                 x.Mark()
@@ -691,7 +701,7 @@ module CallbackExtensions =
         interface IDisposable with
             member x.Dispose() =
                 inner.RemoveOutput x
-                callback <- id
+                callback <- ignore
                 scope <- Unchecked.defaultof<_>
                 inner <- null
 
@@ -708,12 +718,12 @@ module CallbackExtensions =
             self := 
                 new CallbackObject(x, fun () ->
                     try
-                        f()
+                        f ()
                     finally 
                         x.Outputs.Add !self |> ignore
                 )
 
-            x.AddOutput !self
+            x.Outputs.Add !self |> ignore
 
             !self :> IDisposable //{ new IDisposable with member __.Dispose() = live := false; x.MarkingCallbacks.Remove !self |> ignore}
  
@@ -725,15 +735,15 @@ module CallbackExtensions =
         member x.AddVolatileMarkingCallback(f : unit -> unit) =
             let self = ref Unchecked.defaultof<_>
             self := 
-                new CallbackObject(x, fun () ->
+                new CallbackObject(x, fun s ->
                     try
-                        f()
+                        f ()
                     with :? LevelChangedException as ex ->
                         x.Outputs.Add !self |> ignore
                         raise ex
                 )
 
-            x.AddOutput !self
+            x.Outputs.Add !self |> ignore
 
             !self :> IDisposable //{ new IDisposable with member __.Dispose() = live := false; x.MarkingCallbacks.Remove !self |> ignore}
  
@@ -741,14 +751,13 @@ module CallbackExtensions =
         member x.AddEvaluationCallback(f : unit -> unit) =
             let self = ref Unchecked.defaultof<_>
             self := 
-                new CallbackObject(x, fun () ->
+                new CallbackObject(x, fun s ->
                     try
-                        f()
+                        f ()
                     finally 
                         x.Outputs.Add !self |> ignore
                 )
 
-            x.AddOutput !self
             self.Value.Mark() |> ignore
 
             !self :> IDisposable //{ new IDisposable with member __.Dispose() = live := false; x.MarkingCallbacks.Remove !self |> ignore}

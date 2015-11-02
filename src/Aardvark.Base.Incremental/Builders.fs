@@ -134,3 +134,23 @@ module ``Computation Expression Builders`` =
     let adaptive = AdaptiveBuilder()
     let aset = ASetBuilder()
     let alist = AListBuilder()
+
+    open System.Runtime.CompilerServices
+
+    [<AbstractClass; Sealed; Extension>]
+    type EvaluationExtensions() =
+        [<Extension>]
+        static member inline GetValue(x : IMod<'a>) = x.GetValue(null)
+
+        [<Extension>]
+        static member inline GetDelta(x : IReader<'a>) = x.GetDelta(null)
+        [<Extension>]
+        static member inline Update(x : IReader<'a>) = x.Update(null)
+
+        [<Extension>]
+        static member inline GetDelta(x : IListReader<'a>) = x.GetDelta(null)
+        [<Extension>]
+        static member inline Update(x : IListReader<'a>) = x.Update(null)
+
+        [<Extension>]
+        static member inline GetHistory(x : IStreamReader<'a>) = x.GetHistory(null)

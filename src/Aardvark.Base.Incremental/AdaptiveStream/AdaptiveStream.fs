@@ -64,7 +64,7 @@ module AStream =
 
     let ofMod (m : IMod<'a>) =
         if m.IsConstant then
-            ConstantStream [m.GetValue()] :> astream<_>
+            ConstantStream [m.GetValue(null)] :> astream<_>
         else
             AdaptiveStream(fun () -> ofMod m) :> astream<_>
 
