@@ -708,11 +708,9 @@ module Mod =
     /// compute function and adds all given inputs to the
     /// resulting cell.
     /// </summary>
+    [<Obsolete("use Mod.custom instead")>]
     let mapCustom (f : IMod<'a> -> 'a) (inputs : list<IAdaptiveObject>) =
-        let r = custom f
-        for i in inputs do
-            i.AddOutput r
-        r
+        custom f
 
     /// <summary>
     /// adaptively applies a function to a cell's value
