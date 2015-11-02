@@ -170,6 +170,7 @@ type DefaultingModRef<'a>(computed : IMod<'a>) as this =
         if not isComputed then
             tracker <- ChangeTracker.trackVersion<'a>
             isComputed <- true
+            x.MarkOutdated()
 
     member x.Value 
         with get() = 
