@@ -91,7 +91,7 @@ module ASetReaders =
         abstract member ComputeDelta : unit -> Change<'a>
         abstract member Update : IAdaptiveObject -> unit
         abstract member GetDelta : IAdaptiveObject -> Change<'a>
- 
+
         member x.Content = content
         member internal x.Callbacks = callbacks
 
@@ -158,6 +158,8 @@ module ASetReaders =
         
         let f = Cache(scope, f)
 
+        override x.Inputs = Seq.singleton (source :> IAdaptiveObject)
+
         override x.Release() =
             source.RemoveOutput this
             source.Dispose()
@@ -183,6 +185,13 @@ module ASetReaders =
 
         let f = Cache(scope, f)
         let dirtyInner = MutableVolatileDirtySet(fun (r : IReader<'b>) -> r.GetDelta(this))
+
+        override x.Inputs =
+            seq {
+                yield source :> IAdaptiveObject
+                for c in f.Values do yield c :> IAdaptiveObject
+            }
+
 
         override x.InputChanged (o : IAdaptiveObject) = 
             match o with
@@ -258,6 +267,8 @@ module ASetReaders =
 
         let f = Cache(scope, f)
 
+        override x.Inputs = Seq.singleton (source :> IAdaptiveObject)
+
         override x.Release() =
             source.RemoveOutput this
             source.Dispose()
@@ -292,6 +303,8 @@ module ASetReaders =
         let hasChanged = ChangeTracker.track<'a>
         let mutable old = None
 
+        override x.Inputs = Seq.singleton (source :> IAdaptiveObject)
+
         override x.Release() =
             source.RemoveOutput this
             old <- None
@@ -320,6 +333,8 @@ module ASetReaders =
 
         let deltas = List<Delta<'a>>()
         let mutable reset : Option<ISet<'a>> = None
+
+        override x.Inputs : seq<IAdaptiveObject> = Seq.empty
 
         member x.Emit (c : ISet<'a>, d : Option<list<Delta<'a>>>) =
             lock x (fun () ->
@@ -476,6 +491,8 @@ module ASetReaders =
                     Aardvark.Base.Log.warn "[ASetReaders.CopyReader] potentially bad emit with: %A" d
             )
 
+        override x.Inputs = Seq.singleton (inputReader :> IAdaptiveObject)
+
         member x.PassThru =
             passThru
 
@@ -609,6 +626,8 @@ module ASetReaders =
         
         let mutable deltas = deltas
 
+        override x.Inputs : seq<IAdaptiveObject> = Seq.empty
+
         override x.ComputeDelta() =
             let res = deltas
             deltas <- []
@@ -621,6 +640,8 @@ module ASetReaders =
     type UseReader<'a when 'a :> IDisposable>(inputReader : IReader<'a>) as this =
         inherit AbstractReader<'a>()
         do inputReader.AddOutput this
+
+        override x.Inputs = Seq.singleton (inputReader :> IAdaptiveObject)
 
         override x.Release() =
             for c in x.Content do

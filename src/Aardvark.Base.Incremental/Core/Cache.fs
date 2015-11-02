@@ -84,6 +84,7 @@ type Cache<'a, 'b>(scope : Ag.Scope, f : 'a -> 'b) =
     member x.Revoke (v : 'a) =
         x.RevokeAndGetDeleted v |> snd
 
+    member x.Values = cache.Values |> Seq.map fst
 
 
 /// <summary>
