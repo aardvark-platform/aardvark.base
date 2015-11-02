@@ -642,22 +642,24 @@ module ``collect tests`` =
 
         ()
         
+
     [<Test>]
     let ``[ASet] finalizers working``() =
-        let input = CSet.empty
-        let test() =
+        let input = CSet.ofList [1]
+
+        let getDerivedReader(input : aset<'a>) =
             let r = input |> ASet.map id |> ASet.map id
 
-            r
-
-        let set = test()
-        let reader = set.GetReader()
+            r.GetReader()
+        let reader = getDerivedReader input
+        //let reader = set.GetReader()
 
         System.GC.Collect()
         System.GC.WaitForFullGCComplete() |> ignore
+        System.GC.Collect()
+        System.GC.WaitForFullGCComplete() |> ignore
 
-        reader.GetDelta() |> should equal []
-
+        reader.GetDelta() |> should setEqual [Add 1]
         reader.Dispose()
 
 

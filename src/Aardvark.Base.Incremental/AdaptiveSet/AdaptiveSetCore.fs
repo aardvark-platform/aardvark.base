@@ -48,6 +48,9 @@ type IReader<'a> =
 
     abstract member SubscribeOnEvaluate : (Change<'a> -> unit) -> IDisposable
 
+
+
+
 /// <summary>
 /// aset serves as the base interface for all adaptive sets.
 /// </summary>
@@ -57,6 +60,8 @@ type aset<'a> =
     /// Returns a NEW reader for the set which will initially return
     /// the entire set-content as deltas.
     /// </summary>
+    abstract member Copy : aset<'a>
+
     abstract member GetReader : unit -> IReader<'a>
 
     abstract member IsConstant : bool
@@ -394,13 +399,14 @@ module ASetReaders =
         let mutable newReader = newReader
         let mutable reader = None
         let mutable refCount = 0
-        let mutable refCountMayIncrease = true
+        let containgSetDied = EventSource ()
         let onlyReader = EventSource true
 
         member x.ContainingSetDied() =
             lock lockObj (fun () ->
-                refCountMayIncrease <- false
+                containgSetDied.Emit ()
                 newReader <- noNewReader
+                
             )
 
         member x.OnlyReader = onlyReader :> IEvent<bool>
@@ -408,8 +414,7 @@ module ASetReaders =
         member x.ReferenceCount = 
             lock lockObj (fun () -> refCount)
 
-        member x.ReferenceCountMayIncrease =
-            lock lockObj (fun () -> refCountMayIncrease)
+        member x.ContainingSetDiedEvent = containgSetDied :> IEvent<_>
 
         member x.GetReference() =
             lock lockObj (fun () ->
@@ -438,12 +443,14 @@ module ASetReaders =
             )
 
 
+
     type CopyReader<'a>(input : ReferenceCountedReader<'a>) as this =
         inherit AdaptiveObject()
            
         let inputReader = input.GetReference()
         do inputReader.AddOutput this
 
+        let mutable containgSetDead = false
         let mutable initial = true
         let mutable passThru        : bool                          = true
         let mutable deltas          : List<Delta<'a>>               = null
@@ -453,8 +460,9 @@ module ASetReaders =
         let mutable callbacks       : HashSet<Change<'a> -> unit>   = null
 
         let mutable isDisposed = 0
-        let onlySubscription = input.OnlyReader.Values.Subscribe(fun pass -> this.SetPassThru(pass, passThru))
-        
+        let mutable onlySubscription = input.OnlyReader.Values.Subscribe(fun pass -> this.SetPassThru(pass, passThru))
+        let mutable deadSubscription = input.ContainingSetDiedEvent.Values.Subscribe this.ContainingSetDied
+
         let emit (d : list<Delta<'a>>) =
             lock this (fun () ->
 //                if reset.IsNone then
@@ -496,9 +504,6 @@ module ASetReaders =
         member x.PassThru =
             passThru
 
-        member x.WillAlwaysBePassThru =
-            passThru && not input.ReferenceCountMayIncrease
-
         member x.SetPassThru(active : bool, copyContent : bool) =
             lock inputReader (fun () ->
                 lock x (fun () ->
@@ -522,10 +527,17 @@ module ASetReaders =
                             ()
                 )
             )
-                    
+                 
+        member x.ContainingSetDied() =
+            deadSubscription.Dispose()
+            if not input.OnlyReader.Latest then
+                deadSubscription <- input.OnlyReader.Values.Subscribe(fun pass -> if pass then x.ContainingSetDied())
+            else
+                containgSetDead <- true
+                x.Optimize()
+
         member private x.Optimize() =
-            if x.WillAlwaysBePassThru then
-                printfn "optimization possible"
+            Log.line "optimize: input: %A -> %A" inputReader.Inputs inputReader
 
 
         member x.Content = 
@@ -585,6 +597,7 @@ module ASetReaders =
         member x.Dispose() =
             if Interlocked.Exchange(&isDisposed, 1) = 0 then
                 onlySubscription.Dispose()
+                deadSubscription.Dispose()
                 inputReader.RemoveOutput x
                 if not passThru then
                     subscription.Dispose()

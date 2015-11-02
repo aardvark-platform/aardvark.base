@@ -49,6 +49,7 @@ type AdaptiveSet<'a>(content : seq<'a>) =
     interface aset<'a> with
         member x.ReaderCount = 0
         member x.IsConstant = s.Value.IsConstant
+        member x.Copy = s.Value.Copy 
         member x.GetReader() = s.Value.GetReader()
 
     interface IEnumerable with

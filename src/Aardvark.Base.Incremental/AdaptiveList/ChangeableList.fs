@@ -390,6 +390,9 @@ type corderedset<'a>(initial : seq<'a>) =
     interface aset<'a> with
         member x.ReaderCount = lock setReaders (fun () -> setReaders.Count)
         member x.IsConstant = false
+
+        member x.Copy = x :> aset<_> 
+
         member x.GetReader() =
             lock setReaders (fun () ->
                 let r = new ASetReaders.EmitReader<'a>(content, fun r -> lock setReaders (fun () -> setReaders.Remove r |> ignore))

@@ -12,7 +12,20 @@ open Aardvark.Base.Incremental.ASetReaders
 /// </summary>
 module ASet =
 
-    
+    type private NoRefASet<'a>(inputReader : ReferenceCountedReader<'a>) =
+        let mutable inputReader = inputReader
+
+        interface aset<'a> with
+            member x.ReaderCount = inputReader.ReferenceCount
+            member x.IsConstant = false
+
+            member x.Copy = x :> aset<_>
+
+            member x.GetReader () =
+                let reader = new CopyReader<'a>(inputReader)
+                if inputReader.ReferenceCount > 1 then reader.SetPassThru(false, false)
+
+                reader :> _
 
     type AdaptiveSet<'a>(newReader : unit -> IReader<'a>) =
         let mutable inputReader = ReferenceCountedReader(newReader)
@@ -24,6 +37,9 @@ module ASet =
         interface aset<'a> with
             member x.ReaderCount = inputReader.ReferenceCount
             member x.IsConstant = false
+
+            member x.Copy = NoRefASet inputReader :> aset<_>
+
             member x.GetReader () =
                 let reader = new CopyReader<'a>(inputReader)
                 if inputReader.ReferenceCount > 1 then reader.SetPassThru(false, false)
@@ -36,6 +52,9 @@ module ASet =
         interface aset<'a> with
             member x.ReaderCount = 0
             member x.IsConstant = true
+
+            member x.Copy = x :> aset<_>
+
             member x.GetReader () =
                 let r = new OneShotReader<'a>(content.Value |> Seq.toList |> List.map Add)
                 r :> IReader<_>
@@ -132,7 +151,8 @@ module ASet =
     /// original one but disposing them as they are removed
     /// </summary>
     let using (s : aset<'a>) =
-        AdaptiveSet(fun () -> using <| s.GetReader()) :> aset<_>
+        let noRef = s.Copy
+        AdaptiveSet(fun () -> using <| noRef.GetReader()) :> aset<_>
 
     /// <summary>
     /// creates a mod-cell containing the set's content
@@ -191,7 +211,8 @@ module ASet =
             )
         else
             let scope = Ag.getContext()
-            AdaptiveSet(fun () -> set.GetReader() |> map scope f) :> aset<'b>
+            let noRef = set.Copy
+            AdaptiveSet(fun () -> noRef.GetReader() |> map scope f) :> aset<'b>
 
     /// <summary>
     /// applies the given function to a cell and adaptively
@@ -225,7 +246,8 @@ module ASet =
     /// </summary>
     let collect (f : 'a -> aset<'b>) (set : aset<'a>) = 
         let scope = Ag.getContext()
-        AdaptiveSet(fun () -> set.GetReader() |> collect scope (fun v -> (f v).GetReader())) :> aset<'b>
+        let noRef = set.Copy
+        AdaptiveSet(fun () -> noRef.GetReader() |> collect scope (fun v -> (f v).GetReader())) :> aset<'b>
 
     /// <summary>
     /// applies the given function to all elements in the set
@@ -242,7 +264,8 @@ module ASet =
             )
         else
             let scope = Ag.getContext()
-            AdaptiveSet(fun () -> set.GetReader() |> choose scope f) :> aset<'b>
+            let noRef = set.Copy
+            AdaptiveSet(fun () -> noRef.GetReader() |> choose scope f) :> aset<'b>
 
     /// <summary>
     /// filters the elements in the set using the given predicate
