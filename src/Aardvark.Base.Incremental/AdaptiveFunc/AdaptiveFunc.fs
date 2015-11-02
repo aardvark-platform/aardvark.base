@@ -3,7 +3,7 @@
 [<CompiledName("IAdaptiveFunc")>]
 type afun<'a, 'b> =
     inherit IAdaptiveObject
-    abstract member Evaluate : IAdaptiveObject -> 'a -> 'b
+    abstract member Evaluate : IAdaptiveObject * 'a -> 'b
 
 module AFun =
 
@@ -11,37 +11,37 @@ module AFun =
         inherit AdaptiveObject()
         do f.AddOutput this
 
-        member x.Evaluate caller v = 
+        member x.Evaluate (caller, v) = 
             x.EvaluateAlways caller (fun () ->
                 this.OutOfDate <- true
                 f.GetValue x v
             )
 
         interface afun<'a, 'b> with
-            member x.Evaluate c v = x.Evaluate c v
+            member x.Evaluate (c, v) = x.Evaluate(c, v)
 
         new(f) = AdaptiveFun (Mod.constant f)
 
     type ConstantFun<'a, 'b>(value : IMod<'b>) =
         inherit AdaptiveObject()
 
-        member x.Evaluate (caller : IAdaptiveObject) (v : 'a) = 
+        member x.Evaluate (caller : IAdaptiveObject, v : 'a) = 
             x.EvaluateAlways caller (fun () ->
                 value.GetValue x
             )
 
         interface afun<'a, 'b> with
-            member x.Evaluate caller v = x.Evaluate caller v
+            member x.Evaluate (caller, v) = x.Evaluate (caller, v)
 
     let run (v : 'a) (f : afun<'a, 'b>) =
         [f :> IAdaptiveObject] |> Mod.mapCustom (fun s -> 
-            f.Evaluate s v
+            f.Evaluate (s, v)
         )
 
     let apply (v : IMod<'a>) (f : afun<'a, 'b>) =
         [v :> IAdaptiveObject; f :> IAdaptiveObject]
             |> Mod.mapCustom (fun s -> 
-                f.Evaluate s (v.GetValue s)
+                f.Evaluate (s, v.GetValue s)
             )
 
     let create (f : 'a -> 'b) =
@@ -77,14 +77,14 @@ module AFun =
 
     let compose (g : afun<'b, 'c>) (f : afun<'a, 'b>) =
         let res = ref Unchecked.defaultof<_>
-        res := AdaptiveFun(fun v -> g.Evaluate !res (f.Evaluate !res v)) :> afun<_,_>
+        res := AdaptiveFun(fun v -> g.Evaluate(!res, f.Evaluate(!res, v))) :> afun<_,_>
         f.AddOutput !res
         g.AddOutput !res
         !res
 
     let zipWith (combine : 'b -> 'c -> 'd) (f : afun<'a,'b>) (g : afun<'a, 'c>) =
         let res = ref Unchecked.defaultof<_>
-        res := AdaptiveFun(fun v -> combine (f.Evaluate !res v) (g.Evaluate !res v)) :> afun<_,_>
+        res := AdaptiveFun(fun v -> combine (f.Evaluate(!res, v)) (g.Evaluate(!res, v))) :> afun<_,_>
         f.AddOutput !res
         g.AddOutput !res
         !res
@@ -110,7 +110,7 @@ module AFun =
             |> Mod.mapCustom (fun s -> 
                 AdaptiveObject.Time.Outputs.Remove input |> ignore
                 let v = input.GetValue s
-                let res = f.Evaluate s v
+                let res = f.Evaluate(s, v)
                 if inputChanged res then
                     input.UnsafeCache <- res
                     AdaptiveObject.Time.Outputs.Add input |> ignore
@@ -176,12 +176,12 @@ module AState =
 
         self := 
             AFun.AdaptiveFun(fun s ->
-                let (s, v) = m.runState.Evaluate !self s
+                let (s, v) = m.runState.Evaluate (!self, s)
 
                 let c = tracker v
                 match !cache with
                     | Some old when not c ->
-                        old.Evaluate !self s
+                        old.Evaluate (!self, s)
                     | _ ->
                         let inner = (f v).runState
                         match !cache with
@@ -190,7 +190,7 @@ module AState =
                         inner.AddOutput !self
                         cache := Some inner
 
-                        inner.Evaluate !self s
+                        inner.Evaluate (!self, s)
             )
 
         m.runState.AddOutput !self
@@ -218,7 +218,7 @@ module AState =
 
                     | _ -> ()
 
-                run.Evaluate !self s
+                run.Evaluate (!self, s)
             )
 
         mf.AddOutput !self
@@ -230,7 +230,7 @@ module AState =
 
     let ofAFun (m : afun<'a, 'b>) : astate<'s, 'a -> 'b> =
         let run = ref Unchecked.defaultof<_>
-        run := AFun.create (fun s -> (s,m.Evaluate !run))
+        run := AFun.create (fun s -> (s,fun v -> m.Evaluate(!run,v)))
         m.AddOutput !run
         { runState = !run }
 
