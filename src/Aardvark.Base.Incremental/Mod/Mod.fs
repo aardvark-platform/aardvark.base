@@ -262,69 +262,16 @@ module Mod =
     // by a callback or subsequent eager computations)
     type LazyMod<'a> =
         class
-            inherit AdaptiveObject
-            val mutable public cache : 'a
+            inherit AbstractMod<'a>
+            val mutable public inputs : seq<IAdaptiveObject>
             val mutable public compute : IMod<'a> -> 'a
-            val mutable public scope : Ag.Scope
 
+            override x.Inputs = x.inputs
 
-            member x.GetValue(caller) =
-                x.EvaluateAlways caller (fun () ->
-                    if x.OutOfDate then
-                        Ag.useScope x.scope (fun () ->
-                            x.cache <- x.compute (x :> _)
-                        )
-                    x.cache
-                )
+            override x.Compute() = x.compute(x :> IMod<_>)
 
-            interface IMod with
-                member x.IsConstant = false
-                member x.GetValue(caller) = x.GetValue(caller) :> obj
-
-            interface IMod<'a> with
-                member x.GetValue(caller) = x.GetValue(caller)
-
-            new(compute) =
-                { cache = Unchecked.defaultof<'a>; compute = compute; scope = Ag.getContext() }
-        end
-
-    type internal LazyModWithChangedInputs<'a> =
-        class
-            inherit AdaptiveObject
-            val mutable public cache : 'a
-            val mutable public compute : IMod<'a> -> PersistentHashSet<IAdaptiveObject> -> 'a
-            val mutable public scope : Ag.Scope
-            val mutable changedInputs : PersistentHashSet<IAdaptiveObject>
-
-            override x.InputChanged i =
-                System.Threading.Interlocked.Change(&x.changedInputs, PersistentHashSet.add i) |> ignore
-
-            member x.GetValue(caller : IAdaptiveObject) =
-                x.EvaluateAlways caller (fun () ->
-                    if x.OutOfDate then
-                        let changed = System.Threading.Interlocked.Exchange(&x.changedInputs, PersistentHashSet.empty)
-                        
-                        try
-                            Ag.useScope x.scope (fun () ->
-                                x.cache <- x.compute (x :> _) changed
-                            )
-                        with LevelChangedException(t,_,_) as ex ->
-                            if t.Id = x.Id then
-                                System.Threading.Interlocked.Change(&x.changedInputs, PersistentHashSet.union changed) |> ignore
-                            raise ex
-
-                    x.cache
-                )
-
-            interface IMod with
-                member x.IsConstant = false
-                member x.GetValue(caller) = x.GetValue(caller) :> obj
-
-            interface IMod<'a> with
-                member x.GetValue(caller) = x.GetValue(caller)
-
-            new(compute) =
-                { cache = Unchecked.defaultof<'a>; compute = compute; scope = Ag.getContext(); changedInputs = PersistentHashSet.empty }
+            new(inputs : seq<IAdaptiveObject>, compute) =
+                { inputs = inputs; compute = compute }
         end
 
 
@@ -335,13 +282,11 @@ module Mod =
     // observed EagerMod can also be created with a custom 
     // equality function.
     type internal EagerMod<'a>(input : IMod<'a>, eq : Option<'a -> 'a -> bool>) as this=
-        inherit LazyMod<'a>(fun s -> input.GetValue(s))
+        inherit LazyMod<'a>(Seq.singleton (input :> IAdaptiveObject), fun s -> input.GetValue(s))
 
         let hasChanged = ChangeTracker.trackCustom<'a> eq
 
         member x.Input = input
-
-        override x.Inputs = Seq.singleton (input :> IAdaptiveObject)
 
         override x.Mark() =
             let newValue = x.GetValue(null)
@@ -360,7 +305,7 @@ module Mod =
     // be "transparent" (knowning its input) since we need to
     // be able to undo the effect.
     type internal LaterMod<'a>(input : IMod<'a>) as this=
-        inherit LazyMod<'a>(fun s -> input.GetValue(s))
+        inherit LazyMod<'a>(Seq.singleton (input :> IAdaptiveObject), fun s -> input.GetValue(s))
 
         override x.Inputs = Seq.singleton (input :> IAdaptiveObject)
 
@@ -594,7 +539,7 @@ module Mod =
     /// cell to be constant in any case.
     /// </summary>
     let custom (compute : IMod<'a> -> 'a) : IMod<'a> =
-        LazyMod(compute) :> IMod<_>
+        LazyMod(Seq.empty, compute) :> IMod<_>
 
     
     /// <summary>
@@ -708,9 +653,8 @@ module Mod =
     /// compute function and adds all given inputs to the
     /// resulting cell.
     /// </summary>
-    [<Obsolete("use Mod.custom instead")>]
     let mapCustom (f : IMod<'a> -> 'a) (inputs : list<IAdaptiveObject>) =
-        custom f
+        LazyMod(inputs, f) :> IMod<_>
 
     /// <summary>
     /// adaptively applies a function to a cell's value

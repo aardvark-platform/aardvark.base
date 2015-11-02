@@ -134,10 +134,11 @@ module AList =
 
     let toMod (s : alist<'a>) =
         let r = s.GetReader()
-        let m = Mod.custom (fun s ->
-            r.GetDelta(s) |> ignore
-            r.Content
-        )
+        let m = 
+            [r :> IAdaptiveObject] |> Mod.mapCustom (fun s ->
+                r.GetDelta(s) |> ignore
+                r.Content
+            )
         r.AddOutput m
         m
 

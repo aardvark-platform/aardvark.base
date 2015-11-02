@@ -144,10 +144,11 @@ module ASet =
         let r = s.GetReader()
         let c = r.Content :> IVersionedSet<_>
 
-        let m = Mod.custom (fun s ->
-            r.GetDelta(s) |> ignore
-            c
-        )
+        let m = 
+            [r :> IAdaptiveObject] |> Mod.mapCustom (fun s ->
+                r.GetDelta(s) |> ignore
+                c
+            )
         r.AddOutput m
         m
 
@@ -333,7 +334,7 @@ module ASet =
                     true
 
         let res =
-            Mod.custom (fun s ->
+            [r :> IAdaptiveObject] |> Mod.mapCustom (fun s ->
                 let mutable rem = false
                 let delta = r.GetDelta(s)
 
@@ -361,7 +362,7 @@ module ASet =
         let sum = ref zero
 
         let res =
-            Mod.custom (fun s ->
+            [r :> IAdaptiveObject] |> Mod.mapCustom (fun s ->
                 let delta = r.GetDelta(s)
                 for d in delta do
                     match d with

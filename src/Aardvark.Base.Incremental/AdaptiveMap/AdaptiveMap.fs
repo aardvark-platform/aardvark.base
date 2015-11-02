@@ -230,10 +230,11 @@ module AMap =
     let toMod (m : amap<'k, 'v>) =
         let r = m.ASet.GetReader()
         let content = VersionedDictionary<'k,IVersionedSet<'v>>()
-        let res = Mod.custom(fun s ->
-            r.GetDelta(s) |> AMapUtils.apply content |> ignore
-            content :> IVersionedDictionary<_,_>
-        )
+        let res = 
+            [r :> IAdaptiveObject] |> Mod.mapCustom(fun s ->
+                r.GetDelta(s) |> AMapUtils.apply content |> ignore
+                content :> IVersionedDictionary<_,_>
+            )
         r.AddOutput res
         res
 
