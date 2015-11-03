@@ -7,15 +7,14 @@ type afun<'a, 'b> =
 
 module AFun =
 
-    type AdaptiveFun<'a, 'b>(f : IMod<'a -> 'b>) as this =
+    type AdaptiveFun<'a, 'b>(f : IMod<'a -> 'b>) =
         inherit AdaptiveObject()
-        do f.AddOutput this
 
         override x.Inputs = Seq.singleton (f :> IAdaptiveObject)
 
         member x.Evaluate (caller, v) = 
             x.EvaluateAlways caller (fun () ->
-                this.OutOfDate <- true
+                x.OutOfDate <- true
                 f.GetValue x v
             )
 
@@ -38,12 +37,12 @@ module AFun =
             member x.Evaluate (caller, v) = x.Evaluate (caller, v)
 
     let run (v : 'a) (f : afun<'a, 'b>) =
-        [f :> IAdaptiveObject] |> Mod.mapCustom (fun s -> 
+        [f] |> Mod.mapCustom (fun s -> 
             f.Evaluate (s, v)
         )
 
     let apply (v : IMod<'a>) (f : afun<'a, 'b>) =
-        [v :> IAdaptiveObject; f :> IAdaptiveObject]
+        [v :> IAdaptiveObject; f :> _]
             |> Mod.mapCustom (fun s -> 
                 f.Evaluate (s, v.GetValue s)
             )
@@ -69,28 +68,21 @@ module AFun =
                 match !inner with
                     | Some f' when f' <> f ->
                         f'.RemoveOutput !self
-                        f.AddOutput !self
-                    | None ->
-                        f.AddOutput !self
                     | _ ->
                         ()
                 mf.GetValue(!self).Evaluate(!self, x)
             )
-        mf.AddOutput !self
+
         !self :> afun<_,_>
 
     let compose (g : afun<'b, 'c>) (f : afun<'a, 'b>) =
         let res = ref Unchecked.defaultof<_>
         res := AdaptiveFun(fun v -> g.Evaluate(!res, f.Evaluate(!res, v))) :> afun<_,_>
-        f.AddOutput !res
-        g.AddOutput !res
         !res
 
     let zipWith (combine : 'b -> 'c -> 'd) (f : afun<'a,'b>) (g : afun<'a, 'c>) =
         let res = ref Unchecked.defaultof<_>
         res := AdaptiveFun(fun v -> combine (f.Evaluate(!res, v)) (g.Evaluate(!res, v))) :> afun<_,_>
-        f.AddOutput !res
-        g.AddOutput !res
         !res
 
     let zip (f : afun<'a,'b>) (g : afun<'a, 'c>) =
@@ -110,7 +102,7 @@ module AFun =
         let inputChanged = ChangeTracker.track<'a>
         initial |> inputChanged |> ignore
 
-        [f :> IAdaptiveObject; input :> IAdaptiveObject] 
+        [f :> IAdaptiveObject; input :> _] 
             |> Mod.mapCustom (fun s -> 
                 AdaptiveObject.Time.Outputs.Remove input |> ignore
                 let v = input.GetValue s
@@ -191,13 +183,10 @@ module AState =
                         match !cache with
                             | Some old -> old.RemoveOutput !self
                             | None -> ()
-                        inner.AddOutput !self
                         cache := Some inner
 
                         inner.Evaluate (!self, s)
             )
-
-        m.runState.AddOutput !self
 
         { runState = !self }
 
@@ -213,19 +202,13 @@ module AState =
                 match !inner with
                     | Some old when old <> run ->
                         old.RemoveOutput !self
-                        run.AddOutput !self
-                        inner := Some run
-
-                    | None ->
-                        run.AddOutput !self
-                        inner := Some run 
 
                     | _ -> ()
 
+                inner := Some run 
                 run.Evaluate (!self, s)
             )
 
-        mf.AddOutput !self
         { runState = !self :> afun<_,_> }
 
     let ofMod (m : IMod<'a>) : astate<'s, 'a> =
@@ -235,7 +218,6 @@ module AState =
     let ofAFun (m : afun<'a, 'b>) : astate<'s, 'a -> 'b> =
         let run = ref Unchecked.defaultof<_>
         run := AFun.create (fun s -> (s,fun v -> m.Evaluate(!run,v)))
-        m.AddOutput !run
         { runState = !run }
 
     let getState<'s> = { runState = AFun.create (fun s -> (s,s)) }

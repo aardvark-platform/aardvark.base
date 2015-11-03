@@ -235,7 +235,16 @@ module Mod =
             val mutable public scope : Ag.Scope
 
             abstract member Compute : unit -> 'a
-            
+            abstract member Release : unit -> unit
+            default x.Release() = ()
+
+            override x.Finalize() =
+                try
+                    x.Release()
+                    x.cache <- Unchecked.defaultof<_>
+                    x.scope <- Ag.emptyScope
+                with e ->
+                    ()
 
             member x.GetValue(caller) =
                 x.EvaluateAlways caller (fun () ->
@@ -366,6 +375,9 @@ module Mod =
     type internal MapMod<'a, 'b>(inner : IMod<'a>, f : 'a -> 'b) =
         inherit AbstractMod<'b>()
 
+        member x.Inner = inner
+        member x.F = f
+
         override x.Inputs = 
             Seq.singleton (inner :> IAdaptiveObject)
 
@@ -375,35 +387,49 @@ module Mod =
     type internal Map2Mod<'a, 'b, 'c>(a : IMod<'a>, b : IMod<'b>, f : 'a -> 'b -> 'c) =
         inherit AbstractMod<'c>()
 
+        member x.Left = a
+        member x.Right = a
+        member x.F = f
+
         override x.Inputs = 
             Seq.ofList [a :> IAdaptiveObject; b :> IAdaptiveObject]
         
         override x.Compute() =
             f (a.GetValue x) (b.GetValue x)
 
-    type internal MapNMod<'a, 'b>(a : seq<IMod<'a>>, f : list<'a> -> 'b) =
+    type internal MapNMod<'a, 'b>(a : seq<IMod<'a>>, f : list<'a> -> 'b) as this =
         inherit AbstractMod<'b>()
-        let a = Seq.toList a
+        let a = Seq.toArray a
 
-        let mutable dirty : PersistentHashSet<IMod<'a>> = PersistentHashSet.ofSeq a
-        let store = Dictionary<IMod<'a>, 'a>()
+        let store = lazy ( a |> Array.map (fun v -> v.GetValue this) )
+        let dirtySet = MutableVolatileTaggedDirtySet(fun (m : IMod<'a>) -> m.GetValue this)
+
+        do a |> Array.iteri (fun i m ->
+            dirtySet.Add(i, m) |> ignore
+           )
+
+        override x.Release() = 
+            dirtySet.Clear()
 
         override x.InputChanged i =
             match i with
-                | :? IMod<'a> as i -> System.Threading.Interlocked.Change(&dirty, PersistentHashSet.add i) |> ignore
+                | :? IMod<'a> as i -> dirtySet.Push(i)
                 | _ -> ()
 
         override x.Inputs = 
-            a |> Seq.cast
+            a |> Array.toSeq |> Seq.cast
         
         override x.Compute() =
-            let dirty = System.Threading.Interlocked.Exchange(&dirty, PersistentHashSet.empty)
+            let dirty = dirtySet.Evaluate()
+            if not store.IsValueCreated then
+                store.Value |> Array.toList |> f
+            else
+                let store = store.Value
+                for (v,indices) in dirty do
+                    for i in indices do
+                        store.[i] <- v
 
-            for d in PersistentHashSet.toSeq dirty do
-                store.[d] <- d.GetValue x
-
-            a |> List.map (fun v -> store.[v]) |> f
-
+                store |> Array.toList |> f
 
     type internal BindMod<'a, 'b>(m : IMod<'a>, f : 'a -> IMod<'b>) =
         inherit AbstractMod<'b>()
@@ -653,8 +679,9 @@ module Mod =
     /// compute function and adds all given inputs to the
     /// resulting cell.
     /// </summary>
-    let mapCustom (f : IMod<'a> -> 'a) (inputs : list<IAdaptiveObject>) =
-        LazyMod(inputs, f) :> IMod<_>
+    let mapCustom (f : IMod<'a> -> 'a) (inputs : list<#IAdaptiveObject>) =
+        LazyMod(List.map (fun a -> a :> IAdaptiveObject) inputs, f) :> IMod<_>
+
 
     /// <summary>
     /// adaptively applies a function to a cell's value

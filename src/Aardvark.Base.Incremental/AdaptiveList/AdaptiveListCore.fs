@@ -122,9 +122,8 @@ module AListReaders =
             member x.SubscribeOnEvaluate cb = x.SubscribeOnEvaluate cb
 
 
-    type MapReader<'a, 'b>(scope, f : 'a -> 'b, input : IListReader<'a>) as this =
+    type MapReader<'a, 'b>(scope, f : 'a -> 'b, input : IListReader<'a>) =
         inherit AbstractReader<'b>()
-        do input.AddOutput this
         
         let f = Cache<'a, 'b>(scope, f)
 
@@ -133,7 +132,7 @@ module AListReaders =
         override x.Order = input.RootTime
 
         override x.Release() =
-            input.RemoveOutput this
+            input.RemoveOutput x
             input.Dispose()
             f.Clear(ignore)
 
@@ -145,10 +144,9 @@ module AListReaders =
                     | Rem(t, v) -> Rem (t, f.Revoke v)
             )
 
-    type MapKeyReader<'a, 'b>(scope, f : ISortKey -> 'a -> 'b, input : IListReader<'a>) as this =
+    type MapKeyReader<'a, 'b>(scope, f : ISortKey -> 'a -> 'b, input : IListReader<'a>) =
         inherit AbstractReader<'b>()
-        do input.AddOutput this
-        
+
         let f = Cache<ISortKey * 'a, 'b>(scope, fun (k,v) -> f k v)
 
         override x.Inputs = Seq.singleton (input :> IAdaptiveObject)
@@ -156,7 +154,7 @@ module AListReaders =
         override x.Order = input.RootTime
 
         override x.Release() =
-            input.RemoveOutput this
+            input.RemoveOutput x
             input.Dispose()
             f.Clear(ignore)
 
@@ -172,7 +170,6 @@ module AListReaders =
 
     type CollectReader<'a, 'b>(scope, input : IListReader<'a>, f : 'a -> IListReader<'b>) as this =
         inherit AbstractReader<'b>()
-        do input.AddOutput this
 
         let dirtyInner = VolatileTaggedDirtySet(fun (r : IListReader<_>) -> r.GetDelta(this))
         let f = Cache<'a, IListReader<'b>>(scope, f)
@@ -216,9 +213,7 @@ module AListReaders =
                             r.GetDelta(x) |> ignore
 
                             // listen to marking of r (reader cannot be OutOfDate due to GetDelta above)
-                            if dirtyInner.Add(t, r) then
-                                // we're an output of the new reader
-                                r.AddOutput x
+                            dirtyInner.Add(t, r) |> ignore
 
                             // bring the reader's content up-to-date by calling GetDelta
                             r.GetDelta(x) |> ignore
@@ -271,9 +266,8 @@ module AListReaders =
             List.append outerDeltas innerDeltas
 
 
-    type ChooseReader<'a, 'b>(scope, input : IListReader<'a>, f : 'a -> Option<'b>) as this =
+    type ChooseReader<'a, 'b>(scope, input : IListReader<'a>, f : 'a -> Option<'b>) =
         inherit AbstractReader<'b>()
-        do input.AddOutput this
 
         let mapping = OrderMapping()
         let root = mapping.Root
@@ -282,7 +276,7 @@ module AListReaders =
         override x.Inputs = Seq.singleton (input :> IAdaptiveObject)
 
         override x.Release() =
-            input.RemoveOutput this
+            input.RemoveOutput x
             input.Dispose()
             mapping.Clear()
             f.Clear(ignore)
@@ -309,9 +303,9 @@ module AListReaders =
             )
 
 
-    type ModReader<'a>(source : IMod<'a>) as this =  
+    type ModReader<'a>(source : IMod<'a>) =  
         inherit AbstractReader<'a>()
-        do source.AddOutput this
+
         let mutable old : Option<SimpleOrder.SortKey * 'a> = None
         let mutable order = SimpleOrder.create()
         let hasChanged = ChangeTracker.track<'a>
@@ -348,9 +342,8 @@ module AListReaders =
                 []
 
 
-    type SetReader<'a>(input : IReader<'a>) as this =
+    type SetReader<'a>(input : IReader<'a>) =
         inherit AbstractReader<'a>()
-        do input.AddOutput this
         
         let order = SimpleOrder.create()
         let times = Dictionary<obj, SimpleOrder.SortKey>()
@@ -484,7 +477,6 @@ module AListReaders =
 
 
 
-        do inputReader.AddOutput this
         let subscription = inputReader.SubscribeOnEvaluate emit
 
         override x.Inputs = Seq.singleton (inputReader :> IAdaptiveObject)
@@ -609,9 +601,8 @@ module AListReaders =
 
 
 
-    type SortWithReader<'a when 'a : equality>(input : IReader<'a>, cmp : 'a -> 'a -> int) as this =
+    type SortWithReader<'a when 'a : equality>(input : IReader<'a>, cmp : 'a -> 'a -> int) =
         inherit AbstractReader<'a>()
-        do input.AddOutput this
 
         let tree = OrderMaintenance<'a>(cmp)
         let root = tree.Root
@@ -619,7 +610,7 @@ module AListReaders =
         override x.Inputs = Seq.singleton (input :> IAdaptiveObject)
 
         override x.Release() =
-            input.RemoveOutput this
+            input.RemoveOutput x
             input.Dispose()
             tree.Clear()
             
@@ -639,9 +630,8 @@ module AListReaders =
             )
 
 
-    type ListSetReader<'a>(input : IListReader<'a>) as this =
+    type ListSetReader<'a>(input : IListReader<'a>) =
         inherit ASetReaders.AbstractReader<'a>()
-        do input.AddOutput this
 
         override x.Inputs = Seq.singleton (input :> IAdaptiveObject)
 

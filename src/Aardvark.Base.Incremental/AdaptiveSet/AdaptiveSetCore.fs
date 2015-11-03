@@ -157,16 +157,15 @@ module ASetReaders =
     ///      usual "a -> b" since it is convenient for some use-cases and does not make 
     ///      the implementation harder.
     /// </summary>
-    type MapReader<'a, 'b>(scope, source : IReader<'a>, f : 'a -> list<'b>) as this =
-        inherit AbstractReader<'b>()
-        do source.AddOutput this  
+    type MapReader<'a, 'b>(scope, source : IReader<'a>, f : 'a -> list<'b>) =
+        inherit AbstractReader<'b>() 
         
         let f = Cache(scope, f)
 
         override x.Inputs = Seq.singleton (source :> IAdaptiveObject)
 
         override x.Release() =
-            source.RemoveOutput this
+            source.RemoveOutput x
             source.Dispose()
             f.Clear(ignore)
 
@@ -186,7 +185,6 @@ module ASetReaders =
     /// </summary>   
     type CollectReader<'a, 'b>(scope, source : IReader<'a>, f : 'a -> IReader<'b>) as this =
         inherit AbstractReader<'b>()
-        do source.AddOutput this
 
         let f = Cache(scope, f)
         let dirtyInner = MutableVolatileDirtySet(fun (r : IReader<'b>) -> r.GetDelta(this))
@@ -205,9 +203,9 @@ module ASetReaders =
 
 
         override x.Release() =
-            source.RemoveOutput this
+            source.RemoveOutput x
             source.Dispose()
-            f.Clear(fun r -> r.RemoveOutput this; r.Dispose())
+            f.Clear(fun r -> r.RemoveOutput x; r.Dispose())
             dirtyInner.Clear()
 
         override x.ComputeDelta() =
@@ -219,8 +217,6 @@ module ASetReaders =
                             let r = f.Invoke v
 
                             // we're an output of the new reader
-                            r.AddOutput this
-
                             // bring the reader's content up-to-date by calling GetDelta
                             r.GetDelta x |> ignore
 
@@ -239,7 +235,7 @@ module ASetReaders =
 
                             // since the reader is no longer contained we don't want
                             // to be notified anymore
-                            r.RemoveOutput this
+                            r.RemoveOutput x
    
                             // the entire content of the reader is removed
                             // Note that the content here might be OutOfDate
@@ -266,16 +262,15 @@ module ASetReaders =
     /// <summary>
     /// A reader representing "choose" operations
     /// </summary>   
-    type ChooseReader<'a, 'b>(scope, source : IReader<'a>, f : 'a -> Option<'b>) as this =
+    type ChooseReader<'a, 'b>(scope, source : IReader<'a>, f : 'a -> Option<'b>) =
         inherit AbstractReader<'b>()
-        do source.AddOutput this
 
         let f = Cache(scope, f)
 
         override x.Inputs = Seq.singleton (source :> IAdaptiveObject)
 
         override x.Release() =
-            source.RemoveOutput this
+            source.RemoveOutput x
             source.Dispose()
             f.Clear(ignore)
 
@@ -302,16 +297,15 @@ module ASetReaders =
     /// <summary>
     /// A reader for using IMod&lt;a&gt; as a single-valued-set
     /// </summary>   
-    type ModReader<'a>(source : IMod<'a>) as this =  
+    type ModReader<'a>(source : IMod<'a>) =  
         inherit AbstractReader<'a>()
-        do source.AddOutput this
         let hasChanged = ChangeTracker.track<'a>
         let mutable old = None
 
         override x.Inputs = Seq.singleton (source :> IAdaptiveObject)
 
         override x.Release() =
-            source.RemoveOutput this
+            source.RemoveOutput x
             old <- None
 
         override x.ComputeDelta() =
@@ -448,7 +442,6 @@ module ASetReaders =
         inherit AdaptiveObject()
            
         let inputReader = input.GetReference()
-        do inputReader.AddOutput this
 
         let mutable containgSetDead = false
         let mutable initial = true
@@ -459,6 +452,7 @@ module ASetReaders =
         let mutable content         : ReferenceCountingSet<'a>      = Unchecked.defaultof<_>
         let mutable callbacks       : HashSet<Change<'a> -> unit>   = null
 
+                 
         let mutable isDisposed = 0
         let mutable onlySubscription = input.OnlyReader.Values.Subscribe(fun pass -> this.SetPassThru(pass, passThru))
         let mutable deadSubscription = input.ContainingSetDiedEvent.Values.Subscribe this.ContainingSetDied
@@ -499,14 +493,9 @@ module ASetReaders =
                     Aardvark.Base.Log.warn "[ASetReaders.CopyReader] potentially bad emit with: %A" d
             )
 
-        override x.Inputs = Seq.singleton (inputReader :> IAdaptiveObject)
-
-        member x.PassThru =
-            passThru
-
         member x.SetPassThru(active : bool, copyContent : bool) =
             lock inputReader (fun () ->
-                lock x (fun () ->
+                lock this (fun () ->
                     if active <> passThru then
                         passThru <- active
                         if passThru then
@@ -527,8 +516,8 @@ module ASetReaders =
                             ()
                 )
             )
-                 
-        member x.ContainingSetDied() =
+
+        member private x.ContainingSetDied() =
             deadSubscription.Dispose()
             if not input.OnlyReader.Latest then
                 deadSubscription <- input.OnlyReader.Values.Subscribe(fun pass -> if pass then x.ContainingSetDied())
@@ -536,9 +525,13 @@ module ASetReaders =
                 containgSetDead <- true
                 x.Optimize()
 
+        member x.PassThru =
+            passThru
+
         member private x.Optimize() =
             Log.line "optimize: input: %A -> %A" inputReader.Inputs inputReader
 
+        override x.Inputs = Seq.singleton (inputReader :> IAdaptiveObject)
 
         member x.Content = 
             lock x (fun () ->
@@ -650,9 +643,8 @@ module ASetReaders =
             deltas <- []
 
 
-    type UseReader<'a when 'a :> IDisposable>(inputReader : IReader<'a>) as this =
+    type UseReader<'a when 'a :> IDisposable>(inputReader : IReader<'a>) =
         inherit AbstractReader<'a>()
-        do inputReader.AddOutput this
 
         override x.Inputs = Seq.singleton (inputReader :> IAdaptiveObject)
 

@@ -182,9 +182,8 @@ module AMap =
             member x.ASet = aset
             //member x.GetReader() = new SetMapReader<'k, 'v>(aset.GetReader()) :> IMapReader<_,_>
 
-    type private LookupReader<'k, 'v  when 'k : equality>(input : IReader<'k * 'v>, key : 'k) as this =
+    type private LookupReader<'k, 'v  when 'k : equality>(input : IReader<'k * 'v>, key : 'k) =
         inherit ASetReaders.AbstractReader<'v>()
-        do input.AddOutput this
 
         override x.ComputeDelta() = 
             input.GetDelta(x) 
@@ -231,11 +230,10 @@ module AMap =
         let r = m.ASet.GetReader()
         let content = VersionedDictionary<'k,IVersionedSet<'v>>()
         let res = 
-            [r :> IAdaptiveObject] |> Mod.mapCustom(fun s ->
+            [r] |> Mod.mapCustom(fun s ->
                 r.GetDelta(s) |> AMapUtils.apply content |> ignore
                 content :> IVersionedDictionary<_,_>
             )
-        r.AddOutput res
         res
 
     let map (f : 'k -> 'v -> 'a) (m : amap<'k, 'v>) =

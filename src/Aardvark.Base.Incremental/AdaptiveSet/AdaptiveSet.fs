@@ -168,11 +168,10 @@ module ASet =
         let c = r.Content :> IVersionedSet<_>
 
         let m = 
-            [r :> IAdaptiveObject] |> Mod.mapCustom (fun s ->
+            [r] |> Mod.mapCustom (fun s ->
                 r.GetDelta(s) |> ignore
                 c
             )
-        r.AddOutput m
         m
 
     /// <summary>
@@ -360,7 +359,7 @@ module ASet =
                     true
 
         let res =
-            [r :> IAdaptiveObject] |> Mod.mapCustom (fun s ->
+            [r] |> Mod.mapCustom (fun s ->
                 let mutable rem = false
                 let delta = r.GetDelta(s)
 
@@ -370,7 +369,6 @@ module ASet =
                 !sum
             )
 
-        r.AddOutput res
         res
 
     /// <summary>
@@ -388,7 +386,7 @@ module ASet =
         let sum = ref zero
 
         let res =
-            [r :> IAdaptiveObject] |> Mod.mapCustom (fun s ->
+            [r] |> Mod.mapCustom (fun s ->
                 let delta = r.GetDelta(s)
                 for d in delta do
                     match d with
@@ -397,7 +395,6 @@ module ASet =
                 !sum
             )
 
-        r.AddOutput res
         res
 
     /// <summary>
