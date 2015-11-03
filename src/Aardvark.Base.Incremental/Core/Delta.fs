@@ -2,6 +2,7 @@
 
 open System.Threading
 open System.Collections.Generic
+open Aardvark.Base
 
 /// <summary>
 /// Delta defines the two basic set-operations
@@ -27,41 +28,41 @@ module Delta =
     /// removals for the same value.
     /// </summary>
     let clean (l : list<Delta<'a>>) =
-        if List.isEmpty l then 
-            l
-        else
-            match l with
-                | [_] -> l
-                | _ -> 
-                    let store = Dictionary<obj, 'a * ref<int>>()
-                    let nullCount = ref 0
+        match l with
+            | [] -> []
+            | [_] -> l
+            | _ -> 
+                let store = Dictionary<obj, 'a * ref<int>>()
+                let nullCount = ref 0
 
-                    let inc a =
-                        if a :> obj = null then nullCount := !nullCount + 1
-                        else
-                            match store.TryGetValue (a :> obj) with
-                                | (true, (_,v)) -> v := !v + 1
-                                | _ -> store.[a] <- (a, ref 1)
+                let inc a =
+                    if isNull (a :> obj) then 
+                        nullCount := !nullCount + 1
+                    else
+                        match store.TryGetValue (a :> obj) with
+                            | (true, (_,v)) -> v := !v + 1
+                            | _ -> store.[a] <- (a, ref 1)
 
-                    let dec a =
-                        if a :> obj = null then nullCount := !nullCount - 1
-                        else
-                            match store.TryGetValue (a :> obj) with
-                                | (true, (_,v)) -> v := !v - 1
-                                | _ -> store.[a] <- (a, ref -1)
+                let dec a =
+                    if isNull (a :> obj) then 
+                        nullCount := !nullCount - 1
+                    else
+                        match store.TryGetValue (a :> obj) with
+                            | (true, (_,v)) -> v := !v - 1
+                            | _ -> store.[a] <- (a, ref -1)
 
-                    for e in l do
-                        match e with
-                            | Add v -> inc v
-                            | Rem v -> dec v
+                for e in l do
+                    match e with
+                        | Add v -> inc v
+                        | Rem v -> dec v
 
-                    [ for (KeyValue(_,(k,v))) in store do
-                        for i in 1..!v do yield Add k
-                        for i in 1..-(!v) do yield Rem k 
+                [ for (KeyValue(_,(k,v))) in store do
+                    for i in 1..!v do yield Add k
+                    for i in 1..-(!v) do yield Rem k 
 
-                      for i in 1..!nullCount do yield Add Unchecked.defaultof<_>
-                      for i in 1..-(!nullCount) do yield Rem Unchecked.defaultof<_>
-                    ]
+                    for i in 1..!nullCount do yield Add Unchecked.defaultof<_>
+                    for i in 1..-(!nullCount) do yield Rem Unchecked.defaultof<_>
+                ]
 
 /// <summary>
 /// a simple module for creating unique ids
