@@ -184,6 +184,8 @@ type TrackAllThreadLocal<'a>(creator : unit -> 'a) =
 /// for all objects affected.
 /// </summary>
 type Transaction() =
+    static let EnqueueProbe = Symbol.Create "[Transaction] Enqueue"
+    static let CommitProbe = Symbol.Create "[Transaction] Commit"
 
     // each thread may have its own running transaction
     static let running = new TrackAllThreadLocal<Option<Transaction>>(fun () -> None)
@@ -229,21 +231,25 @@ type Transaction() =
     /// enqueues an adaptive object for marking
     /// </summary>
     member x.Enqueue(e : IAdaptiveObject) =
-        if contained.Add e then
-            q.Enqueue e
+        Telemetry.timed EnqueueProbe (fun () ->
+            if contained.Add e then
+                q.Enqueue e
+        )
 
     member x.Enqueue(e : IAdaptiveObject, cause : Option<IAdaptiveObject>) =
-        if contained.Add e then
-            q.Enqueue e
-            match cause with
-                | Some cause ->
-                    match causes.TryGetValue e with
-                        | (true, set) -> 
-                            set.Add cause |> ignore
-                        | _ ->
-                            let set = HashSet [cause]
-                            causes.[e] <- set
-                | None -> ()
+        Telemetry.timed EnqueueProbe (fun () ->
+            if contained.Add e then
+                q.Enqueue e
+                match cause with
+                    | Some cause ->
+                        match causes.TryGetValue e with
+                            | (true, set) -> 
+                                set.Add cause |> ignore
+                            | _ ->
+                                let set = HashSet [cause]
+                                causes.[e] <- set
+                    | None -> ()
+        )
 
     member x.CurrentAdapiveObject = current
         
@@ -254,102 +260,104 @@ type Transaction() =
     /// the enqueued changes.
     /// </summary>
     member x.Commit() =
-        // cache the currently running transaction (if any)
-        // and make tourselves current.
-        let old = running.Value
-        running.Value <- Some x
-        let mutable level = 0
-        let myCauses = ref null
+        Telemetry.timed CommitProbe (fun () ->
+            // cache the currently running transaction (if any)
+            // and make tourselves current.
+            let old = running.Value
+            running.Value <- Some x
+            let mutable level = 0
+            let myCauses = ref null
         
-        let markCount = ref 0
-        let traverseCount = ref 0
-        let levelChangeCount = ref 0
+            let markCount = ref 0
+            let traverseCount = ref 0
+            let levelChangeCount = ref 0
 
-        while q.Count > 0 do
-            // dequeue the next element (having the minimal level)
-            let e = q.Dequeue(&currentLevel)
-            current <- Some e
+            while q.Count > 0 do
+                // dequeue the next element (having the minimal level)
+                let e = q.Dequeue(&currentLevel)
+                current <- Some e
 
-            traverseCount := !traverseCount + 1
+                traverseCount := !traverseCount + 1
 
-            let outputs = 
-                // since we're about to access the outOfDate flag
-                // for this object we must acquire a lock here.
-                // Note that the transaction will at most hold one
-                // lock at a time.
-                lock e (fun () ->
-                    // if the element is already outOfDate we
-                    // do not traverse the graph further.
-                    if e.OutOfDate then
-                        Seq.empty
-
-                    else
-                        // if the object's level has changed since it
-                        // was added to the queue we re-enqueue it with the new level
-                        // Note that this may of course cause runtime overhead and
-                        // might even change the asymptotic runtime behaviour of the entire
-                        // system in the worst case but we opted for this approach since
-                        // it is relatively simple to implement.
-                        if currentLevel <> e.Level then
-                            q.Enqueue e
+                let outputs = 
+                    // since we're about to access the outOfDate flag
+                    // for this object we must acquire a lock here.
+                    // Note that the transaction will at most hold one
+                    // lock at a time.
+                    lock e (fun () ->
+                        // if the element is already outOfDate we
+                        // do not traverse the graph further.
+                        if e.OutOfDate then
                             Seq.empty
+
                         else
-                            if causes.TryRemove(e, &myCauses.contents) then
-                                !myCauses |> Seq.iter e.InputChanged
-
-                            // however if the level is consistent we may proceed
-                            // by marking the object as outOfDate
-                            e.OutOfDate <- true
-
-                            markCount := !markCount + 1
-                
-                            try 
-                                // here mark and the callbacks are allowed to evaluate
-                                // the adaptive object but must expect any call to AddOutput to 
-                                // raise a LevelChangedException whenever a level has been changed
-                                if e.Mark() then
-//                                    let mutable failed = false
-//                                    let callbacks = e.MarkingCallbacks |> getAndClear
-//                                    for cb in callbacks do 
-//                                        try cb()
-//                                        with :? LevelChangedException -> failed <- true
-//                                    if failed then raise <| LevelChangedException e
-
-                                    // if everything succeeded we return all current outputs
-                                    // which will cause them to be enqueued 
-                                    e.Outputs.Consume()
-
-                                else
-                                    // if Mark told us not to continue we're done here
-                                    Seq.empty
-
-                            with LevelChangedException(obj, objLevel, distance) ->
-                                // if the level was changed either by a callback
-                                // or Mark we re-enqueue the object with the new level and
-                                // mark it upToDate again (since it would otherwise not be processed again)
-                                e.Level <- max e.Level (objLevel + distance)
-                                e.OutOfDate <- false
-
-                                levelChangeCount := !levelChangeCount + 1
-
+                            // if the object's level has changed since it
+                            // was added to the queue we re-enqueue it with the new level
+                            // Note that this may of course cause runtime overhead and
+                            // might even change the asymptotic runtime behaviour of the entire
+                            // system in the worst case but we opted for this approach since
+                            // it is relatively simple to implement.
+                            if currentLevel <> e.Level then
                                 q.Enqueue e
                                 Seq.empty
-                )
+                            else
+                                if causes.TryRemove(e, &myCauses.contents) then
+                                    !myCauses |> Seq.iter e.InputChanged
 
-            // finally we enqueue all returned outputs
-            for o in outputs do
-                o.InputChanged e
-                x.Enqueue o
+                                // however if the level is consistent we may proceed
+                                // by marking the object as outOfDate
+                                e.OutOfDate <- true
 
-            contained.Remove e |> ignore
-            current <- None
+                                markCount := !markCount + 1
+                
+                                try 
+                                    // here mark and the callbacks are allowed to evaluate
+                                    // the adaptive object but must expect any call to AddOutput to 
+                                    // raise a LevelChangedException whenever a level has been changed
+                                    if e.Mark() then
+    //                                    let mutable failed = false
+    //                                    let callbacks = e.MarkingCallbacks |> getAndClear
+    //                                    for cb in callbacks do 
+    //                                        try cb()
+    //                                        with :? LevelChangedException -> failed <- true
+    //                                    if failed then raise <| LevelChangedException e
+
+                                        // if everything succeeded we return all current outputs
+                                        // which will cause them to be enqueued 
+                                        e.Outputs.Consume()
+
+                                    else
+                                        // if Mark told us not to continue we're done here
+                                        Seq.empty
+
+                                with LevelChangedException(obj, objLevel, distance) ->
+                                    // if the level was changed either by a callback
+                                    // or Mark we re-enqueue the object with the new level and
+                                    // mark it upToDate again (since it would otherwise not be processed again)
+                                    e.Level <- max e.Level (objLevel + distance)
+                                    e.OutOfDate <- false
+
+                                    levelChangeCount := !levelChangeCount + 1
+
+                                    q.Enqueue e
+                                    Seq.empty
+                    )
+
+                // finally we enqueue all returned outputs
+                for o in outputs do
+                    o.InputChanged e
+                    x.Enqueue o
+
+                contained.Remove e |> ignore
+                current <- None
             
 
 
-        // when the commit is over we restore the old
-        // running transaction (if any)
-        running.Value <- old
-        currentLevel <- 0
+            // when the commit is over we restore the old
+            // running transaction (if any)
+            running.Value <- old
+            currentLevel <- 0
+        )
 
 
 
@@ -371,7 +379,7 @@ type private EmptyCollection<'a>() =
 /// IAdaptiveObject.
 /// </summary>
 type AdaptiveObject() =
-
+    static let EvaluationOverheadProbe = Symbol.Create "[Adaptive] eval"
     let id = newId()
     let mutable outOfDate = true
     let mutable level = 0
@@ -380,78 +388,60 @@ type AdaptiveObject() =
     static let time = AdaptiveObject() :> IAdaptiveObject
     
     let evaluate (this : IAdaptiveObject) (caller : IAdaptiveObject) (otherwise : Option<'a>) (f : unit -> 'a) =
-        let stack = currentEvaluationPath.Value
-        let top = stack.Count = 0 && not Transaction.HasRunning
+        Telemetry.timed EvaluationOverheadProbe (fun () ->
+            let stack = currentEvaluationPath.Value
+            let top = isNull caller && stack.Count = 0 && not Transaction.HasRunning
 
         
-        let res =
-            lock this (fun () ->
-                
-                let value =
-                    if outOfDate then None
-                    else otherwise
+            let res =
+                lock this (fun () ->
+                    if not (isNull caller) then
+                        outputs.Add caller |> ignore
+                        caller.Level <- max caller.Level (level + 1)
 
-                let parent = 
-                    if not (isNull caller) then 
-//                        if stack.Count > 0 && stack.Peek() <> caller then
-//                            Log.warn "user lied about calling cell: {real = %A; given: %A }" (stack.Peek()) caller
-
-                        Some caller
-                    else 
-                        None
-                match parent with
-                    | Some o ->
-                        outputs.Add o |> ignore
-                        o.Level <- max o.Level (level + 1)
-                    | _ -> ()
-
-                match value with
-                    | Some v -> v
-                    | None ->
-                        stack.Push this
+                    match otherwise with
+                        | Some v when not outOfDate -> v
+                        | _ ->
+                            stack.Push this
                        
-                        try
-                            // this evaluation is performed optimistically
-                            // meaning that the "top-level" object needs to be allowed to
-                            // pull at least one value on every path.
-                            // This property must therefore be maintained for every
-                            // path in the entire system.
-                            let r = f()
-                            outOfDate <- false
+                            try
+                                // this evaluation is performed optimistically
+                                // meaning that the "top-level" object needs to be allowed to
+                                // pull at least one value on every path.
+                                // This property must therefore be maintained for every
+                                // path in the entire system.
+                                let r = f()
+                                outOfDate <- false
 
-                            // if the object's level just got greater than or equal to
-                            // the level of the running transaction (if any)
-                            // we raise an exception since the evaluation
-                            // could be inconsistent atm.
-                            // the only exception to that is the top-level object itself
-                            let maxAllowedLevel =
-                                if stack.Count > 1 then Transaction.RunningLevel - 1
-                                else Transaction.RunningLevel
+                                // if the object's level just got greater than or equal to
+                                // the level of the running transaction (if any)
+                                // we raise an exception since the evaluation
+                                // could be inconsistent atm.
+                                // the only exception to that is the top-level object itself
+                                let maxAllowedLevel =
+                                    if stack.Count > 1 then Transaction.RunningLevel - 1
+                                    else Transaction.RunningLevel
 
-
-
-
-
-
-                            if level > maxAllowedLevel then
-                                let top = (stack |> Seq.last)
-                                //printfn "%A tried to pull from level %A but has level %A" top.Id level top.Level
-                                // all greater pulls would be from the future
-                                raise <| LevelChangedException(this, level, stack.Count - 1)
+                                if level > maxAllowedLevel then
+                                    let top = (stack |> Seq.last)
+                                    //printfn "%A tried to pull from level %A but has level %A" top.Id level top.Level
+                                    // all greater pulls would be from the future
+                                    raise <| LevelChangedException(this, level, stack.Count - 1)
                             
-                            r
-                        finally
-                            stack.Pop() |> ignore
-            )
+                                r
+                            finally
+                                stack.Pop() |> ignore
+                )
 
-        if top then 
-            if not time.Outputs.IsEmpty then
-                let t = Transaction()
-                for o in time.Outputs.Consume() do
-                    t.Enqueue(o)
-                t.Commit()
+            if top then 
+                if not time.Outputs.IsEmpty then
+                    let t = Transaction()
+                    for o in time.Outputs.Consume() do
+                        t.Enqueue(o)
+                    t.Commit()
 
-        res
+            res
+        )
 
     static member Time = time
 

@@ -208,6 +208,8 @@ type DefaultingModRef<'a>(computed : IMod<'a>) =
 /// </summary>
 [<CompilationRepresentation(CompilationRepresentationFlags.ModuleSuffix)>]
 module Mod =
+    let private modEvaluateProbe = Symbol.Create "[Mod] evaluation"
+    let private modComputeProbe = Symbol.Create "[Mod] compute"
 
     // the attribute system needs to know how to "unpack"
     // modifiable cells for inherited attributes.
@@ -247,12 +249,14 @@ module Mod =
                     ()
 
             member x.GetValue(caller) =
-                x.EvaluateAlways caller (fun () ->
-                    if x.OutOfDate then
-                        Ag.useScope x.scope (fun () ->
-                            x.cache <- x.Compute()
-                        )
-                    x.cache
+                Telemetry.timed modEvaluateProbe (fun () ->
+                    x.EvaluateAlways caller (fun () ->
+                        if x.OutOfDate then
+                            Ag.useScope x.scope (fun () ->
+                                x.cache <- Telemetry.timed modComputeProbe x.Compute
+                            )
+                        x.cache
+                    )
                 )
 
             interface IMod with

@@ -73,15 +73,21 @@ type aset<'a> =
 /// the available combinators and is used by the aset-system internally (hence private)
 /// </summary>
 module ASetReaders =
+    let private ReaderEvaluateProbe = Symbol.Create "[ASet] evaluation"
+    let private ReaderComputeProbe = Symbol.Create "[ASet] compute"
+    let private ReaderCallbackProbe = Symbol.Create "[ASet] eval callback"
+    let private ApplyDeltaProbe = Symbol.Create "[ASet] apply deltas"
 
     let apply (set : ReferenceCountingSet<'a>) (deltas : list<Delta<'a>>) =
-        deltas 
-            |> Delta.clean 
-            |> List.filter (fun d ->
-                match d with
-                    | Add v -> set.Add v
-                    | Rem v -> set.Remove v
-               )
+        Telemetry.timed ApplyDeltaProbe (fun () ->
+            deltas 
+                |> Delta.clean 
+                |> List.filter (fun d ->
+                    match d with
+                        | Add v -> set.Add v
+                        | Rem v -> set.Remove v
+                   )
+        )
 
     [<AbstractClass>]
     type AbstractReader<'a>() =
@@ -95,21 +101,24 @@ module ASetReaders =
         abstract member Release : unit -> unit
         abstract member ComputeDelta : unit -> Change<'a>
         abstract member Update : IAdaptiveObject -> unit
-        abstract member GetDelta : IAdaptiveObject -> Change<'a>
 
         member x.Content = content
         member internal x.Callbacks = callbacks
 
-        default x.GetDelta(caller) =
-            x.EvaluateIfNeeded caller [] (fun () ->
-                let deltas = x.ComputeDelta()
-                let finalDeltas = deltas |> apply content
+        member x.GetDelta(caller) =
+            Telemetry.timed ReaderEvaluateProbe (fun () ->
+                x.EvaluateIfNeeded caller [] (fun () ->
+                    let deltas = Telemetry.timed ReaderComputeProbe x.ComputeDelta
+                    let finalDeltas = deltas |> apply content
 
-                if not (isNull callbacks) then
-                    if not (List.isEmpty finalDeltas) then
-                        for cb in callbacks do cb finalDeltas
+                    if not (isNull callbacks) then
+                        Telemetry.timed ReaderCallbackProbe (fun () ->
+                            if not (List.isEmpty finalDeltas) then
+                                for cb in callbacks do cb finalDeltas
+                        )
 
-                finalDeltas
+                    finalDeltas
+                )
             )
 
         default x.Update(caller) = x.GetDelta(caller) |> ignore
@@ -529,7 +538,7 @@ module ASetReaders =
             passThru
 
         member private x.Optimize() =
-            Log.line "optimize: input: %A -> %A" inputReader.Inputs inputReader
+            () //Log.line "optimize: input: %A -> %A" inputReader.Inputs inputReader
 
         override x.Inputs = Seq.singleton (inputReader :> IAdaptiveObject)
 
@@ -567,17 +576,18 @@ module ASetReaders =
                         res |> apply content
 
         member x.GetDelta(caller) =
-            lock inputReader (fun () ->
-                x.EvaluateIfNeeded caller [] (fun () ->
-                    //x.Optimize()
-                    let deltas = x.ComputeDelta()
+            Telemetry.timed ReaderEvaluateProbe (fun () ->
+                lock inputReader (fun () ->
+                    x.EvaluateIfNeeded caller [] (fun () ->
+                        let deltas = Telemetry.timed ReaderComputeProbe x.ComputeDelta
 
-                    if not (isNull callbacks) then
-                        if not (List.isEmpty deltas) then
-                            for cb in callbacks do cb deltas
+                        if not (isNull callbacks) then
+                            if not (List.isEmpty deltas) then
+                                for cb in callbacks do cb deltas
 
-                    initial <- false
-                    deltas
+                        initial <- false
+                        deltas
+                    )
                 )
             )
 
