@@ -115,7 +115,7 @@ module Telemetry =
                     
         if restartCurrent then
             current.Value.Stop()
-            running.Value <- Some sw
+        running.Value <- Some sw
 
 
             

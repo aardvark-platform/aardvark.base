@@ -93,6 +93,8 @@ module ASetReaders =
     type AbstractReader<'a>() =
         inherit AdaptiveObject()
 
+
+
         let mutable isDisposed = 0
         let content = ReferenceCountingSet<'a>()
         let mutable callbacks : HashSet<Change<'a> -> unit> = null
@@ -106,10 +108,10 @@ module ASetReaders =
         member internal x.Callbacks = callbacks
 
         member x.GetDelta(caller) =
-            Telemetry.timed ReaderEvaluateProbe (fun () ->
-                x.EvaluateIfNeeded caller [] (fun () ->
+            x.EvaluateIfNeeded caller [] (fun () ->
+                Telemetry.timed ReaderEvaluateProbe (fun () ->
                     let deltas = Telemetry.timed ReaderComputeProbe x.ComputeDelta
-                    let finalDeltas = deltas |> apply content
+                    let finalDeltas = Telemetry.timed ApplyDeltaProbe (fun () -> deltas |> apply content)
 
                     if not (isNull callbacks) then
                         Telemetry.timed ReaderCallbackProbe (fun () ->
@@ -569,21 +571,23 @@ module ASetReaders =
                         let add = c |> Seq.filter (not << content.Contains) |> Seq.map Add
                         let rem = content |> Seq.filter (not << c.Contains) |> Seq.map Rem
 
-                        Seq.append add rem |> Seq.toList |> apply content
+                        Telemetry.timed ApplyDeltaProbe (fun () -> Seq.append add rem |> Seq.toList |> apply content)
                     | None ->
                         let res = deltas |> Seq.toList
                         deltas.Clear()
-                        res |> apply content
+                        Telemetry.timed ApplyDeltaProbe (fun () -> res |> apply content)
 
         member x.GetDelta(caller) =
-            Telemetry.timed ReaderEvaluateProbe (fun () ->
-                lock inputReader (fun () ->
-                    x.EvaluateIfNeeded caller [] (fun () ->
+            lock inputReader (fun () ->
+                x.EvaluateIfNeeded caller [] (fun () ->
+                    Telemetry.timed ReaderEvaluateProbe (fun () ->
                         let deltas = Telemetry.timed ReaderComputeProbe x.ComputeDelta
-
+          
                         if not (isNull callbacks) then
-                            if not (List.isEmpty deltas) then
-                                for cb in callbacks do cb deltas
+                            Telemetry.timed ReaderCallbackProbe (fun () ->
+                                if not (List.isEmpty deltas) then
+                                    for cb in callbacks do cb deltas
+                            )
 
                         initial <- false
                         deltas
