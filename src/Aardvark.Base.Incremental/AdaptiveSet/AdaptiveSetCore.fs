@@ -81,13 +81,14 @@ module ASetReaders =
 
     let apply (set : ReferenceCountingSet<'a>) (deltas : list<Delta<'a>>) =
         Telemetry.timed ApplyDeltaProbe (fun () ->
-            deltas 
-                |> Delta.clean 
-                |> List.filter (fun d ->
-                    match d with
-                        | Add v -> set.Add v
-                        | Rem v -> set.Remove v
-                   )
+            set.Apply deltas
+//            deltas 
+//                |> Delta.clean 
+//                |> List.filter (fun d ->
+//                    match d with
+//                        | Add v -> set.Add v
+//                        | Rem v -> set.Remove v
+//                   )
         )
 
     [<AbstractClass>]

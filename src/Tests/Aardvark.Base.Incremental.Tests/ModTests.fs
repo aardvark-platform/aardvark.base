@@ -355,7 +355,7 @@ module ``Basic Mod Tests`` =
                     yield! buildTree(foo, l - 1, c)
             ]
 
-        let tree = buildTree(root, 8, 5)
+        let tree = buildTree(root, 5, 5)
 
         let sw = System.Diagnostics.Stopwatch()
         
