@@ -147,7 +147,7 @@ exception LevelChangedException of changedObject : IAdaptiveObject * newLevel : 
 
 [<AutoOpen>]
 module private AdaptiveSystemState =
-    let currentEvaluationPath = new ThreadLocal<Stack<IAdaptiveObject>>(fun _ -> Stack())
+    let currentEvaluationPath = new ThreadLocal<Stack<IAdaptiveObject>>(fun _ -> Stack(100))
 
 type TrackAllThreadLocal<'a>(creator : unit -> 'a) =
     let mutable values : Map<int, 'a> = Map.empty

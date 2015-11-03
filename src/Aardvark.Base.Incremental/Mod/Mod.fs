@@ -249,8 +249,8 @@ module Mod =
                     ()
 
             member x.GetValue(caller) =
-                Telemetry.timed modEvaluateProbe (fun () ->
-                    x.EvaluateAlways caller (fun () ->
+                x.EvaluateAlways caller (fun () ->
+                    Telemetry.timed modEvaluateProbe (fun () ->
                         if x.OutOfDate then
                             Ag.useScope x.scope (fun () ->
                                 x.cache <- Telemetry.timed modComputeProbe x.Compute

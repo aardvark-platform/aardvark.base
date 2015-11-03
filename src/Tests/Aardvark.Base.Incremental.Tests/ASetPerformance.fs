@@ -122,3 +122,103 @@ module ``performance tests`` =
         Console.WriteLine("change: {0}ms", changeTime.Elapsed.TotalMilliseconds / float iter )
         Console.WriteLine("eval:   {0}ms", evalTime.Elapsed.TotalMilliseconds / float iter)
         ()
+
+    [<Test>]
+    let ``[Mod] bind performance``() =
+        
+        let input = Mod.init 0
+
+        let step (s : IMod<'a>) =
+            s |> Mod.bind (Mod.constant)
+
+        let rec stepN n s =
+            if n <= 0 then s
+            else stepN (n-1) (step s)
+            
+                
+
+        let test = stepN 100 input
+        
+        Mod.force test |> ignore
+
+        for i in 0..100 do
+            transact (fun () ->
+                Mod.change input i
+            )
+            Mod.force test |> ignore
+
+        transact (fun () ->
+            Mod.change input -1
+        )
+        Mod.force test |> ignore
+
+
+        let changeTime = Stopwatch()
+        let evalTime = Stopwatch()
+        Telemetry.reset() |> ignore
+        let iter = 1000
+        for i in 1..iter do
+            changeTime.Start()
+            transact (fun () ->
+                Mod.change input i
+            )
+            changeTime.Stop()
+
+            evalTime.Start()
+            Mod.force test |> ignore
+            evalTime.Stop()
+
+        Telemetry.resetAndPrint()
+        Console.WriteLine("change: {0}ms", changeTime.Elapsed.TotalMilliseconds / float iter )
+        Console.WriteLine("eval:   {0}ms", evalTime.Elapsed.TotalMilliseconds / float iter)
+        ()
+
+    [<Test>]
+    let ``[Mod] map performance``() =
+        
+        let input = Mod.init 0
+
+        let step (s : IMod<'a>) =
+            s |> Mod.map id
+
+        let rec stepN n s =
+            if n <= 0 then s
+            else stepN (n-1) (step s)
+            
+                
+
+        let test = stepN 100 input
+        
+        Mod.force test |> ignore
+
+        for i in 0..100 do
+            transact (fun () ->
+                Mod.change input i
+            )
+            Mod.force test |> ignore
+
+        transact (fun () ->
+            Mod.change input -1
+        )
+        Mod.force test |> ignore
+
+
+        let changeTime = Stopwatch()
+        let evalTime = Stopwatch()
+        Telemetry.reset() |> ignore
+        let iter = 1000
+        for i in 1..iter do
+            changeTime.Start()
+            transact (fun () ->
+                Mod.change input i
+            )
+            changeTime.Stop()
+
+            evalTime.Start()
+            Mod.force test |> ignore
+            evalTime.Stop()
+
+        Telemetry.resetAndPrint()
+        Console.WriteLine("change: {0}ms", changeTime.Elapsed.TotalMilliseconds / float iter )
+        Console.WriteLine("eval:   {0}ms", evalTime.Elapsed.TotalMilliseconds / float iter)
+        ()

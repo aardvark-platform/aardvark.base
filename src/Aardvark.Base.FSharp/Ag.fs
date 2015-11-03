@@ -71,7 +71,7 @@ module Ag =
     
     let mutable private rootScope = new ThreadLocal<Scope>(fun () -> { parent = None; source = null; children = newCWT(); cache = null; path = Some "Root" })
 
-    let mutable private currentScope = new ThreadLocal<Scope>(fun () -> rootScope.Value)
+    let mutable currentScope = new ThreadLocal<Scope>(fun () -> rootScope.Value)
 
     //temporary storage for inherited values
     let private anyObject = obj()
@@ -126,7 +126,7 @@ module Ag =
     //correctly since the ?-operators used inside the function need to know
     //their current scope. therefore useScope executes a function in the given 
     //scope and restores everything afterwards.
-    let useScope (s : Scope) (f : unit -> 'a) : 'a =
+    let inline useScope (s : Scope) (f : unit -> 'a) : 'a =
         let oldScope = currentScope.Value
         currentScope.Value <- s
         let r = f()
