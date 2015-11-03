@@ -53,7 +53,59 @@ module ``performance tests`` =
 
         let changeTime = Stopwatch()
         let evalTime = Stopwatch()
-        Telemetry.resetAndGetReport() |> ignore
+        Telemetry.reset() |> ignore
+        let iter = 1000
+        for i in 1..iter do
+            changeTime.Start()
+            transact (fun () ->
+                input.Add i |> ignore
+            )
+            changeTime.Stop()
+
+            evalTime.Start()
+            r.GetDelta() |> ignore
+            evalTime.Stop()
+
+        Telemetry.resetAndPrint()
+        Console.WriteLine("change: {0}ms", changeTime.Elapsed.TotalMilliseconds / float iter )
+        Console.WriteLine("eval:   {0}ms", evalTime.Elapsed.TotalMilliseconds / float iter)
+        ()
+
+    [<Test>]
+    let ``[ASet] map performance``() =
+        
+        let input = CSet.ofList []
+
+        let step (s : aset<'a>) =
+            s |> ASet.map id
+
+        let rec stepN n s =
+            if n <= 0 then s
+            else stepN (n-1) (step s)
+            
+                
+
+        let test = stepN 50 input
+        let r = test.GetReader()
+
+        r.GetDelta() |> ignore
+
+
+        for i in 0..100 do
+            transact (fun () ->
+                input.UnionWith [i]
+            )
+            r.GetDelta() |> ignore
+
+        transact (fun () ->
+            input.Clear()
+        )
+        r.GetDelta() |> ignore
+
+
+        let changeTime = Stopwatch()
+        let evalTime = Stopwatch()
+        Telemetry.reset() |> ignore
         let iter = 1000
         for i in 1..iter do
             changeTime.Start()

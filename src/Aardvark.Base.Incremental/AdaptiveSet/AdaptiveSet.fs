@@ -11,6 +11,8 @@ open Aardvark.Base.Incremental.ASetReaders
 /// defines functions for composing asets and mods
 /// </summary>
 module ASet =
+    let GetReaderProbe = Symbol.Create "[ASet] GetReader"
+    let GetConstantReaderProbe = Symbol.Create "[ASet] GetConstantReader"
 
     type private NoRefASet<'a>(inputReader : ReferenceCountedReader<'a>) =
         let mutable inputReader = inputReader
@@ -22,10 +24,12 @@ module ASet =
             member x.Copy = x :> aset<_>
 
             member x.GetReader () =
-                let reader = new CopyReader<'a>(inputReader)
-                if inputReader.ReferenceCount > 1 then reader.SetPassThru(false, false)
+                Telemetry.timed GetReaderProbe (fun () ->
+                    let reader = new CopyReader<'a>(inputReader)
+                    if inputReader.ReferenceCount > 1 then reader.SetPassThru(false, false)
 
-                reader :> _
+                    reader :> _
+                )
 
     type AdaptiveSet<'a>(newReader : unit -> IReader<'a>) =
         let mutable inputReader = ReferenceCountedReader(newReader)
@@ -46,9 +50,7 @@ module ASet =
 
                 reader :> _
 
-    type ConstantSet<'a>(content : Lazy<HashSet<'a>>) =
-        let content = lazy ( HashSet content.Value )
-
+    type ConstantSet<'a>(content : Lazy<ReferenceCountingSet<'a>>) =
         interface aset<'a> with
             member x.ReaderCount = 0
             member x.IsConstant = true
@@ -56,14 +58,16 @@ module ASet =
             member x.Copy = x :> aset<_>
 
             member x.GetReader () =
-                let r = new OneShotReader<'a>(content.Value |> Seq.map Add |> Seq.toList)
-                r :> IReader<_>
+                Telemetry.timed GetConstantReaderProbe (fun () ->
+                    let r = new OneShotReader<'a>(content.Value)
+                    r :> IReader<_>
+                )
 
-        new(content : Lazy<list<'a>>) = ConstantSet<'a>(lazy (HashSet content.Value))
-        new(content : Lazy<seq<'a>>) = ConstantSet<'a>(lazy (HashSet content.Value))
-        new(l : list<'a>) = ConstantSet<'a> (lazy (HashSet l))
-        new(l : array<'a>) = ConstantSet<'a> (lazy (HashSet l))
-        new(l : seq<'a>) = ConstantSet<'a> (lazy (HashSet l))
+        new(content : Lazy<list<'a>>) = ConstantSet<'a>(lazy (ReferenceCountingSet content.Value))
+        new(content : Lazy<seq<'a>>) = ConstantSet<'a>(lazy (ReferenceCountingSet content.Value))
+        new(l : list<'a>) = ConstantSet<'a> (lazy (ReferenceCountingSet l))
+        new(l : array<'a>) = ConstantSet<'a> (lazy (ReferenceCountingSet l))
+        new(l : seq<'a>) = ConstantSet<'a> (lazy (ReferenceCountingSet l))
 
     type private EmptySetImpl<'a> private() =
         static let emptySet = ConstantSet (lazy ([])) :> aset<'a>
@@ -92,7 +96,7 @@ module ASet =
     /// elements in the given sequence
     /// </summary>
     let ofSeq (s : seq<'a>) =
-        ConstantSet(lazy (HashSet s)) :> aset<_>
+        ConstantSet(lazy (ReferenceCountingSet s)) :> aset<_>
     
     /// <summary>
     /// creates a set containing all distinct 

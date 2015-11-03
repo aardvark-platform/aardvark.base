@@ -73,6 +73,7 @@ type aset<'a> =
 /// the available combinators and is used by the aset-system internally (hence private)
 /// </summary>
 module ASetReaders =
+    let private OneShotReaderEvaluateProbe = Symbol.Create "[ASet] oneshot eval"
     let private ReaderEvaluateProbe = Symbol.Create "[ASet] evaluation"
     let private ReaderComputeProbe = Symbol.Create "[ASet] compute"
     let private ReaderCallbackProbe = Symbol.Create "[ASet] eval callback"
@@ -641,21 +642,43 @@ module ASetReaders =
             member x.GetDelta(caller) = x.GetDelta(caller)
             member x.SubscribeOnEvaluate cb = x.SubscribeOnEvaluate cb
 
-    type OneShotReader<'a>(deltas : Change<'a>) =  
-        inherit AbstractReader<'a>()
+
+    type OneShotReader<'a>(content : ReferenceCountingSet<'a>) =  
+        inherit ConstantObject()
         
-        let mutable deltas = deltas
+        static let empty = ReferenceCountingSet<'a>()
 
-        override x.Inputs : seq<IAdaptiveObject> = Seq.empty
+        let toDeltaList (set : ReferenceCountingSet<'a>) =
+            match set.Count with
+                | 0 -> []
+                | 1 -> [Add (set.FirstOrDefault(Unchecked.defaultof<_>))]
+                | _ -> 
+                    set.ToArray(set.Count) |> Array.toList |> List.map Add
 
-        override x.ComputeDelta() =
-            let res = deltas
-            deltas <- []
-            res
+        let mutable initial = true
 
-        override x.Release() =
-            deltas <- []
+        member x.SubscribeOnEvaluate(cb : list<Delta<'a>> -> unit) =
+            { new IDisposable with member x.Dispose() = () }
 
+        member x.GetDelta(caller : IAdaptiveObject) =
+            Telemetry.timed OneShotReaderEvaluateProbe (fun () ->
+                lock x (fun () ->
+                    if initial then
+                        initial <- false
+                        toDeltaList content
+                    else
+                        []
+                )
+            )
+
+        interface IReader<'a> with
+            member x.GetDelta(caller) = x.GetDelta(caller)
+            member x.SubscribeOnEvaluate(cb) = x.SubscribeOnEvaluate cb
+            member x.Update(caller) = initial <- false
+            member x.Dispose() = ()
+            member x.Content = 
+                if initial then empty
+                else content
 
     type UseReader<'a when 'a :> IDisposable>(inputReader : IReader<'a>) =
         inherit AbstractReader<'a>()

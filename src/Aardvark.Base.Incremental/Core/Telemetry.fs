@@ -156,6 +156,11 @@ module Telemetry =
         { totalTime = TimeDiff.Zero; probeTimes = Map.empty }
         #endif
 
+    let inline reset() =
+        lock probes (fun () ->
+            probes.Clear()
+        )
+
     let inline print (r : TelemetryReport) =
         #if TRACE
         Log.start "Telemetry"
