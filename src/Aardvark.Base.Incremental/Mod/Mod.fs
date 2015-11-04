@@ -337,8 +337,9 @@ module Mod =
         static member Instance = instance
 
         member x.GetValue(caller : IAdaptiveObject) =
+            let ti = AdaptiveObject.Time
             x.EvaluateAlways caller (fun () ->
-                AdaptiveObject.Time.Outputs.Add x |> ignore
+                lock ti (fun () -> ti.Outputs.Add x |> ignore)
                 DateTime.Now
             )
 

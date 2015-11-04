@@ -27,40 +27,35 @@ type VolatileCollection<'a>() =
                     slowRemove v (x::acc) xs
 
     member x.IsEmpty = 
-        lock x (fun () ->
-            if isNull set then List.isEmpty pset
-            else set.Count = 0
-        )
+        if isNull set then List.isEmpty pset
+        else set.Count = 0
 
-    member x.Consume() : seq<'a> =
-        lock x (fun () -> 
-            if isNull set then
-                let res = pset
-                pset <- []
-                res :> seq<_>
-            else
-                let res = set
-                set <- null
-                res :> _
-        )
+    member x.Consume() : array<'a> =
+        if isNull set then
+            let res = pset
+            pset <- []
+            res |> List.toArray
+        else
+            let res = set.ToArray(set.Count)
+            set.Clear()
+            res
 
     member x.Add(value : 'a) : bool =
-        lock x (fun () -> 
-            if isNull set then 
-                let count = slowContains value 0 pset
-                if count < 0 then
-                    false
-                else
-                    pset <- value::pset
-
-                    if count >= 7 then
-                        set <- HashSet pset
-                        pset <- []
-
-                    true
+        if isNull set then 
+            let count = slowContains value 0 pset
+            if count < 0 then
+                false
             else
-                set.Add value
-        )
+                pset <- value::pset
+
+                if count >= 7 then
+                    set <- HashSet pset
+                    pset <- []
+
+                true
+        else
+            set.Add value
+        
 
     member x.Remove(value : 'a) : bool =
         lock x (fun () -> 
@@ -187,6 +182,7 @@ type TrackAllThreadLocal<'a>(creator : unit -> 'a) =
 type Transaction() =
     static let EnqueueProbe = Symbol.Create "[Transaction] Enqueue"
     static let CommitProbe = Symbol.Create "[Transaction] Commit"
+    static let emptyArray : IAdaptiveObject[] = Array.empty
 
     // each thread may have its own running transaction
     static let running = new TrackAllThreadLocal<Option<Transaction>>(fun () -> None)
@@ -289,7 +285,7 @@ type Transaction() =
                         // if the element is already outOfDate we
                         // do not traverse the graph further.
                         if e.OutOfDate then
-                            Seq.empty
+                            emptyArray
 
                         else
                             // if the object's level has changed since it
@@ -300,7 +296,7 @@ type Transaction() =
                             // it is relatively simple to implement.
                             if currentLevel <> e.Level then
                                 q.Enqueue e
-                                Seq.empty
+                                emptyArray
                             else
                                 if causes.TryRemove(e, &myCauses.contents) then
                                     !myCauses |> Seq.iter e.InputChanged
@@ -329,7 +325,7 @@ type Transaction() =
 
                                     else
                                         // if Mark told us not to continue we're done here
-                                        Seq.empty
+                                        emptyArray
 
                                 with LevelChangedException(obj, objLevel, distance) ->
                                     // if the level was changed either by a callback
@@ -341,7 +337,7 @@ type Transaction() =
                                     levelChangeCount := !levelChangeCount + 1
 
                                     q.Enqueue e
-                                    Seq.empty
+                                    emptyArray
                     )
 
                 // finally we enqueue all returned outputs
@@ -393,13 +389,15 @@ type AdaptiveObject() =
             let depth = curerntEvaluationDepth.Value
             let top = isNull caller && !depth = 0 && not Transaction.HasRunning
 
-            if not (isNull caller) then
-                outputs.Add caller |> ignore
-                caller.Level <- max caller.Level (level + 1)
 
             let mutable res = Unchecked.defaultof<_>
             Monitor.Enter this
             depth := !depth + 1
+
+            if not (isNull caller) then
+                outputs.Add caller |> ignore
+                caller.Level <- max caller.Level (level + 1)
+
             try
                 match otherwise with
                     | Some v when not outOfDate -> 
@@ -436,11 +434,17 @@ type AdaptiveObject() =
                 Monitor.Exit this
 
             if top then 
+                Monitor.Enter time
                 if not time.Outputs.IsEmpty then
+                    let outputs = time.Outputs.Consume()
+                    Monitor.Exit time
+
                     let t = Transaction()
-                    for o in time.Outputs.Consume() do
+                    for o in outputs do
                         t.Enqueue(o)
                     t.Commit()
+                else
+                    Monitor.Exit time
 
             res
         )
@@ -617,7 +621,6 @@ module Marking =
         member x.RemoveOutput (m : IAdaptiveObject) =
             x.Outputs.Remove m |> ignore
 
-
 [<AutoOpen>]
 module CallbackExtensions =
     
@@ -629,7 +632,7 @@ module CallbackExtensions =
         let mutable scope = Ag.getContext()
         let mutable inner = inner
         let mutable callback = fun () -> Ag.useScope scope callback
-        do inner.Outputs.Add this |> ignore
+        do lock inner (fun () -> inner.Outputs.Add this |> ignore)
 
         member x.Mark() =
             callback ()
@@ -672,13 +675,14 @@ module CallbackExtensions =
             let self = ref Unchecked.defaultof<_>
             self := 
                 new CallbackObject(x, fun () ->
+                    
                     try
                         f ()
                     finally 
-                        x.Outputs.Add !self |> ignore
+                        lock x (fun () -> x.Outputs.Add !self |> ignore)
                 )
 
-            x.Outputs.Add !self |> ignore
+            lock x (fun () -> x.Outputs.Add !self |> ignore)
 
             !self :> IDisposable //{ new IDisposable with member __.Dispose() = live := false; x.MarkingCallbacks.Remove !self |> ignore}
  
@@ -694,11 +698,11 @@ module CallbackExtensions =
                     try
                         f ()
                     with :? LevelChangedException as ex ->
-                        x.Outputs.Add !self |> ignore
+                        lock x (fun () -> x.Outputs.Add !self |> ignore)
                         raise ex
                 )
 
-            x.Outputs.Add !self |> ignore
+            lock x (fun () -> x.Outputs.Add !self |> ignore)
 
             !self :> IDisposable //{ new IDisposable with member __.Dispose() = live := false; x.MarkingCallbacks.Remove !self |> ignore}
  
@@ -710,7 +714,7 @@ module CallbackExtensions =
                     try
                         f ()
                     finally 
-                        x.Outputs.Add !self |> ignore
+                        lock x (fun () -> x.Outputs.Add !self |> ignore)
                 )
 
             self.Value.Mark() |> ignore
