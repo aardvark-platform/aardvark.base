@@ -147,7 +147,8 @@ exception LevelChangedException of changedObject : IAdaptiveObject * newLevel : 
 
 [<AutoOpen>]
 module private AdaptiveSystemState =
-    let currentEvaluationPath = new ThreadLocal<Stack<IAdaptiveObject>>(fun _ -> Stack(100))
+    let curerntEvaluationDepth = new ThreadLocal<ref<int>>(fun _ -> ref 0)
+    //let currentEvaluationPath = new ThreadLocal<Stack<IAdaptiveObject>>(fun _ -> Stack(100))
 
 type TrackAllThreadLocal<'a>(creator : unit -> 'a) =
     let mutable values : Map<int, 'a> = Map.empty
@@ -389,49 +390,50 @@ type AdaptiveObject() =
     
     let evaluate (this : IAdaptiveObject) (caller : IAdaptiveObject) (otherwise : Option<'a>) (f : unit -> 'a) =
         Telemetry.timed EvaluationOverheadProbe (fun () ->
-            let stack = currentEvaluationPath.Value
-            let top = isNull caller && stack.Count = 0 && not Transaction.HasRunning
+            let depth = curerntEvaluationDepth.Value
+            let top = isNull caller && !depth = 0 && not Transaction.HasRunning
 
-        
-            let res =
-                lock this (fun () ->
-                    if not (isNull caller) then
-                        outputs.Add caller |> ignore
-                        caller.Level <- max caller.Level (level + 1)
+            if not (isNull caller) then
+                outputs.Add caller |> ignore
+                caller.Level <- max caller.Level (level + 1)
 
-                    match otherwise with
-                        | Some v when not outOfDate -> v
-                        | _ ->
-                            stack.Push this
-                       
-                            try
-                                // this evaluation is performed optimistically
-                                // meaning that the "top-level" object needs to be allowed to
-                                // pull at least one value on every path.
-                                // This property must therefore be maintained for every
-                                // path in the entire system.
-                                let r = f()
-                                outOfDate <- false
+            let mutable res = Unchecked.defaultof<_>
+            Monitor.Enter this
+            depth := !depth + 1
+            try
+                match otherwise with
+                    | Some v when not outOfDate -> 
+                        res <- v
+                    | _ ->
+                        // this evaluation is performed optimistically
+                        // meaning that the "top-level" object needs to be allowed to
+                        // pull at least one value on every path.
+                        // This property must therefore be maintained for every
+                        // path in the entire system.
+                        let r = f()
+                        outOfDate <- false
 
-                                // if the object's level just got greater than or equal to
-                                // the level of the running transaction (if any)
-                                // we raise an exception since the evaluation
-                                // could be inconsistent atm.
-                                // the only exception to that is the top-level object itself
-                                let maxAllowedLevel =
-                                    if stack.Count > 1 then Transaction.RunningLevel - 1
-                                    else Transaction.RunningLevel
+                        // if the object's level just got greater than or equal to
+                        // the level of the running transaction (if any)
+                        // we raise an exception since the evaluation
+                        // could be inconsistent atm.
+                        // the only exception to that is the top-level object itself
+                        let maxAllowedLevel =
+                            if !depth > 1 then Transaction.RunningLevel - 1
+                            else Transaction.RunningLevel
 
-                                if level > maxAllowedLevel then
-                                    let top = (stack |> Seq.last)
-                                    //printfn "%A tried to pull from level %A but has level %A" top.Id level top.Level
-                                    // all greater pulls would be from the future
-                                    raise <| LevelChangedException(this, level, stack.Count - 1)
+                        if level > maxAllowedLevel then
+                            //printfn "%A tried to pull from level %A but has level %A" top.Id level top.Level
+                            // all greater pulls would be from the future
+                            raise <| LevelChangedException(this, level, !depth - 1)
                             
-                                r
-                            finally
-                                stack.Pop() |> ignore
-                )
+                        res <- r
+
+
+
+            finally
+                depth := !depth - 1
+                Monitor.Exit this
 
             if top then 
                 if not time.Outputs.IsEmpty then

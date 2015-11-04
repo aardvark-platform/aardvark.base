@@ -101,7 +101,7 @@ module Telemetry =
     let probes = SymbolDict<Stopwatch>()
 
     let inline timed (s : Symbol) (f : unit -> 'a) =
-        #if TRACE
+        #if DEBUG
         let sw = lock probes (fun () -> probes.GetOrCreate(s, fun s -> Stopwatch()))
 
         let current = running.Value
@@ -133,7 +133,7 @@ module Telemetry =
         #endif
 
     let inline resetAndGetReport() =
-        #if TRACE
+        #if DEBUG
 
         let mine =
             lock probes (fun () -> 
@@ -157,12 +157,16 @@ module Telemetry =
         #endif
 
     let inline reset() =
+        #if DEBUG
         lock probes (fun () ->
             probes.Clear()
         )
+        #else
+        ()
+        #endif
 
     let inline print (r : TelemetryReport) =
-        #if TRACE
+        #if DEBUG
         Log.start "Telemetry"
 
         let entries = 
@@ -182,7 +186,7 @@ module Telemetry =
         #endif
 
     let inline resetAndPrint() =
-        #if TRACE
+        #if DEBUG
         let r = resetAndGetReport()
         print r
         #else
