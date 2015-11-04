@@ -58,17 +58,15 @@ type VolatileCollection<'a>() =
         
 
     member x.Remove(value : 'a) : bool =
-        lock x (fun () -> 
-            if isNull set then 
-                let (removed, newList) = slowRemove value [] pset
-                if removed then
-                    pset <- newList
-                    true
-                else
-                    false
+        if isNull set then 
+            let (removed, newList) = slowRemove value [] pset
+            if removed then
+                pset <- newList
+                true
             else
-                set.Remove value
-        )
+                false
+        else
+            set.Remove value
 
 
 
