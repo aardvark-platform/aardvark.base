@@ -192,7 +192,7 @@ type Transaction() =
     // the contained set is useful for determinig if an element has
     // already been enqueued
     let contained = HashSet<IAdaptiveObject>()
-    let mutable current = None
+    let mutable current : IAdaptiveObject = null
     let mutable currentLevel = 0
 
     let getAndClear (set : ICollection<'a>) =
@@ -246,7 +246,9 @@ type Transaction() =
                     | None -> ()
         )
 
-    member x.CurrentAdapiveObject = current
+    member x.CurrentAdapiveObject = 
+        if isNull current then None
+        else Some current
         
 
     /// <summary>
@@ -270,7 +272,7 @@ type Transaction() =
             while q.Count > 0 do
                 // dequeue the next element (having the minimal level)
                 let e = q.Dequeue(&currentLevel)
-                current <- Some e
+                current <- e
 
                 traverseCount := !traverseCount + 1
 
@@ -310,13 +312,6 @@ type Transaction() =
                                     // the adaptive object but must expect any call to AddOutput to 
                                     // raise a LevelChangedException whenever a level has been changed
                                     if e.Mark() then
-    //                                    let mutable failed = false
-    //                                    let callbacks = e.MarkingCallbacks |> getAndClear
-    //                                    for cb in callbacks do 
-    //                                        try cb()
-    //                                        with :? LevelChangedException -> failed <- true
-    //                                    if failed then raise <| LevelChangedException e
-
                                         // if everything succeeded we return all current outputs
                                         // which will cause them to be enqueued 
                                         e.Outputs.Consume()
@@ -344,7 +339,7 @@ type Transaction() =
                     x.Enqueue o
 
                 contained.Remove e |> ignore
-                current <- None
+                current <- null
             
 
 
