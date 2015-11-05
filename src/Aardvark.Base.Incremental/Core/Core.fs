@@ -5,66 +5,47 @@ open System.Collections.Generic
 open Aardvark.Base
 open System.Collections.Concurrent
 open System.Threading
+open System.Linq
 
 type VolatileCollection<'a>() =
     let mutable set : HashSet<'a> = null
-    let mutable pset = []
+    let mutable pset : List<'a> = List()
 
-    let rec slowContains (v : 'a) (count : int) (l : list<'a>) =
-        match l with
-            | [] -> count
-            | x::xs ->
-                if System.Object.Equals(x, v) then -1
-                else slowContains v (count + 1) xs
-
-    let rec slowRemove (v : 'a) (acc : list<'a>) (l : list<'a>) =
-        match l with
-            | [] -> (false, acc)
-            | x::xs ->
-                if Object.Equals(x, v) then
-                    (true, acc @ xs)
-                else
-                    slowRemove v (x::acc) xs
 
     member x.IsEmpty = 
-        if isNull set then List.isEmpty pset
+        if isNull set then pset.Count = 0
         else set.Count = 0
 
-    member x.Consume() : array<'a> =
+    member x.Consume(length : byref<int>) : array<'a> =
         if isNull set then
-            let res = pset
-            pset <- []
-            res |> List.toArray
+            let res = pset.ToArray()
+            pset.Clear()
+            length <- res.Length
+            res
         else
-            let res = set.ToArray(set.Count)
+            let res = set.ToArray()
             set.Clear()
+            length <- res.Length
             res
 
     member x.Add(value : 'a) : bool =
         if isNull set then 
-            let count = slowContains value 0 pset
-            if count < 0 then
-                false
-            else
-                pset <- value::pset
-
-                if count >= 7 then
+            let id = pset.IndexOf(value)
+            if id < 0 then 
+                pset.Add(value)
+                if pset.Count > 8 then
                     set <- HashSet pset
-                    pset <- []
-
+                    pset <- null
                 true
+            else 
+                false
         else
             set.Add value
         
 
     member x.Remove(value : 'a) : bool =
         if isNull set then 
-            let (removed, newList) = slowRemove value [] pset
-            if removed then
-                pset <- newList
-                true
-            else
-                false
+            pset.Remove(value)
         else
             set.Remove value
 
@@ -268,13 +249,15 @@ type Transaction() =
             let markCount = ref 0
             let traverseCount = ref 0
             let levelChangeCount = ref 0
-
+            let outputCount = ref 0
             while q.Count > 0 do
                 // dequeue the next element (having the minimal level)
                 let e = q.Dequeue(&currentLevel)
                 current <- e
 
                 traverseCount := !traverseCount + 1
+
+                outputCount := 0
 
                 // since we're about to access the outOfDate flag
                 // for this object we must acquire a lock here.
@@ -285,7 +268,7 @@ type Transaction() =
                     // if the element is already outOfDate we
                     // do not traverse the graph further.
                     if e.OutOfDate then
-                        outputs <- emptyArray
+                        outputCount := 0
 
                     else
                         // if the object's level has changed since it
@@ -296,7 +279,7 @@ type Transaction() =
                         // it is relatively simple to implement.
                         if currentLevel <> e.Level then
                             q.Enqueue e
-                            outputs <- emptyArray
+                            outputCount := 0
                         else
                             if causes.TryRemove(e, &myCauses.contents) then
                                 !myCauses |> Seq.iter e.InputChanged
@@ -314,11 +297,11 @@ type Transaction() =
                                 if e.Mark() then
                                     // if everything succeeded we return all current outputs
                                     // which will cause them to be enqueued 
-                                    outputs <- e.Outputs.Consume()
+                                    outputs <- e.Outputs.Consume(outputCount)
 
                                 else
                                     // if Mark told us not to continue we're done here
-                                    outputs <- emptyArray
+                                    outputCount := 0
 
                             with LevelChangedException(obj, objLevel, distance) ->
                                 // if the level was changed either by a callback
@@ -330,13 +313,14 @@ type Transaction() =
                                 levelChangeCount := !levelChangeCount + 1
 
                                 q.Enqueue e
-                                outputs <- emptyArray
+                                outputCount := 0
                 
                 finally 
                     Monitor.Exit e
 
                 // finally we enqueue all returned outputs
-                for o in outputs do
+                for i in 0..!outputCount - 1 do
+                    let o = outputs.[i]
                     o.InputChanged e
                     x.Enqueue o
 
@@ -436,11 +420,13 @@ type AdaptiveObject =
                 let time = AdaptiveObject.Time
                 Monitor.Enter time
                 if not time.Outputs.IsEmpty then
-                    let outputs = time.Outputs.Consume()
+                    let mutable outputCount = 0
+                    let outputs = time.Outputs.Consume(&outputCount)
                     Monitor.Exit time
 
                     let t = Transaction()
-                    for o in outputs do
+                    for i in 0..outputCount-1 do
+                        let o = outputs.[i]
                         t.Enqueue(o)
                     t.Commit()
                 else
@@ -725,34 +711,6 @@ type AdaptiveDecorator(o : IAdaptiveObject) =
     let mutable o = o
     let id = newId()
     
-    member x.SetInner(no : IAdaptiveObject) =
-        let mark = 
-            lock o (fun () ->
-                let outputs = o.Outputs.Consume()
-
-                assert(no.OutOfDate)
-
-
-                // attach all outputs of old to new
-                let outputs = o.Outputs.Consume()
-                for o in outputs do
-                    no.Outputs.Add o |> ignore
-
-                // if old was not outdated mark all its outputs
-                // since new is outDated
-                not o.OutOfDate
-
-                // levels are irrelevant here since all
-                // dependent cells are outDated
-
-
-            )
-
-        if mark then
-            transact (fun () -> no.MarkOutdated())
-
-        o <- no
-
     member x.Id = id
     member x.OutOfDate
         with get() = o.OutOfDate
