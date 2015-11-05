@@ -138,8 +138,7 @@ type IAdaptiveObject =
 /// </summary>
 exception LevelChangedException of changedObject : IAdaptiveObject * newLevel : int * distanceFromRoot : int
 
-[<AutoOpen>]
-module private AdaptiveSystemState =
+module AdaptiveSystemState =
     let curerntEvaluationDepth = new ThreadLocal<ref<int>>(fun _ -> ref 0)
     //let currentEvaluationPath = new ThreadLocal<Stack<IAdaptiveObject>>(fun _ -> Stack(100))
 
@@ -181,6 +180,7 @@ type Transaction() =
     static let EnqueueProbe = Symbol.Create "[Transaction] Enqueue"
     static let CommitProbe = Symbol.Create "[Transaction] Commit"
     static let emptyArray : IAdaptiveObject[] = Array.empty
+    let mutable outputs = emptyArray
 
     // each thread may have its own running transaction
     static let running = new TrackAllThreadLocal<Option<Transaction>>(fun () -> None)
@@ -276,62 +276,64 @@ type Transaction() =
 
                 traverseCount := !traverseCount + 1
 
-                let outputs = 
-                    // since we're about to access the outOfDate flag
-                    // for this object we must acquire a lock here.
-                    // Note that the transaction will at most hold one
-                    // lock at a time.
-                    lock e (fun () ->
-                        // if the element is already outOfDate we
-                        // do not traverse the graph further.
-                        if e.OutOfDate then
-                            emptyArray
+                // since we're about to access the outOfDate flag
+                // for this object we must acquire a lock here.
+                // Note that the transaction will at most hold one
+                // lock at a time.
+                Monitor.Enter e
+                try
+                    // if the element is already outOfDate we
+                    // do not traverse the graph further.
+                    if e.OutOfDate then
+                        outputs <- emptyArray
 
+                    else
+                        // if the object's level has changed since it
+                        // was added to the queue we re-enqueue it with the new level
+                        // Note that this may of course cause runtime overhead and
+                        // might even change the asymptotic runtime behaviour of the entire
+                        // system in the worst case but we opted for this approach since
+                        // it is relatively simple to implement.
+                        if currentLevel <> e.Level then
+                            q.Enqueue e
+                            outputs <- emptyArray
                         else
-                            // if the object's level has changed since it
-                            // was added to the queue we re-enqueue it with the new level
-                            // Note that this may of course cause runtime overhead and
-                            // might even change the asymptotic runtime behaviour of the entire
-                            // system in the worst case but we opted for this approach since
-                            // it is relatively simple to implement.
-                            if currentLevel <> e.Level then
-                                q.Enqueue e
-                                emptyArray
-                            else
-                                if causes.TryRemove(e, &myCauses.contents) then
-                                    !myCauses |> Seq.iter e.InputChanged
+                            if causes.TryRemove(e, &myCauses.contents) then
+                                !myCauses |> Seq.iter e.InputChanged
 
-                                // however if the level is consistent we may proceed
-                                // by marking the object as outOfDate
-                                e.OutOfDate <- true
+                            // however if the level is consistent we may proceed
+                            // by marking the object as outOfDate
+                            e.OutOfDate <- true
 
-                                markCount := !markCount + 1
+                            markCount := !markCount + 1
                 
-                                try 
-                                    // here mark and the callbacks are allowed to evaluate
-                                    // the adaptive object but must expect any call to AddOutput to 
-                                    // raise a LevelChangedException whenever a level has been changed
-                                    if e.Mark() then
-                                        // if everything succeeded we return all current outputs
-                                        // which will cause them to be enqueued 
-                                        e.Outputs.Consume()
+                            try 
+                                // here mark and the callbacks are allowed to evaluate
+                                // the adaptive object but must expect any call to AddOutput to 
+                                // raise a LevelChangedException whenever a level has been changed
+                                if e.Mark() then
+                                    // if everything succeeded we return all current outputs
+                                    // which will cause them to be enqueued 
+                                    outputs <- e.Outputs.Consume()
 
-                                    else
-                                        // if Mark told us not to continue we're done here
-                                        emptyArray
+                                else
+                                    // if Mark told us not to continue we're done here
+                                    outputs <- emptyArray
 
-                                with LevelChangedException(obj, objLevel, distance) ->
-                                    // if the level was changed either by a callback
-                                    // or Mark we re-enqueue the object with the new level and
-                                    // mark it upToDate again (since it would otherwise not be processed again)
-                                    e.Level <- max e.Level (objLevel + distance)
-                                    e.OutOfDate <- false
+                            with LevelChangedException(obj, objLevel, distance) ->
+                                // if the level was changed either by a callback
+                                // or Mark we re-enqueue the object with the new level and
+                                // mark it upToDate again (since it would otherwise not be processed again)
+                                e.Level <- max e.Level (objLevel + distance)
+                                e.OutOfDate <- false
 
-                                    levelChangeCount := !levelChangeCount + 1
+                                levelChangeCount := !levelChangeCount + 1
 
-                                    q.Enqueue e
-                                    emptyArray
-                    )
+                                q.Enqueue e
+                                outputs <- emptyArray
+                
+                finally 
+                    Monitor.Exit e
 
                 // finally we enqueue all returned outputs
                 for o in outputs do
@@ -368,18 +370,22 @@ type private EmptyCollection<'a>() =
 /// defines a base class for all adaptive objects implementing
 /// IAdaptiveObject.
 /// </summary>
-type AdaptiveObject() =
-    static let EvaluationOverheadProbe = Symbol.Create "[Adaptive] eval"
-    let id = newId()
-    let mutable outOfDate = true
-    let mutable level = 0
-    let outputs = VolatileCollection<IAdaptiveObject>()
+type AdaptiveObject =
+    class
+        [<DefaultValue>]
+        static val mutable private time : IAdaptiveObject 
+        val mutable public Id : int
+        val mutable public OutOfDate : bool
+        val mutable public Level : int 
+        val mutable public Outputs : VolatileCollection<IAdaptiveObject>
 
-    static let time = AdaptiveObject() :> IAdaptiveObject
+        new() =
+            { Id = newId(); OutOfDate = true; 
+              Level = 0; Outputs = VolatileCollection<IAdaptiveObject>() }
+
     
-    member inline private this.evaluate (caller : IAdaptiveObject) (otherwise : Option<'a>) (f : unit -> 'a) =
-        Telemetry.timed EvaluationOverheadProbe (fun () ->
-            let depth = curerntEvaluationDepth.Value
+        member inline this.evaluate (caller : IAdaptiveObject) (otherwise : Option<'a>) (f : unit -> 'a) =
+            let depth = AdaptiveSystemState.curerntEvaluationDepth.Value
             let top = isNull caller && !depth = 0 && not Transaction.HasRunning
 
 
@@ -388,12 +394,12 @@ type AdaptiveObject() =
             depth := !depth + 1
 
             if not (isNull caller) then
-                outputs.Add caller |> ignore
-                caller.Level <- max caller.Level (level + 1)
+                this.Outputs.Add caller |> ignore
+                caller.Level <- max caller.Level (this.Level + 1)
 
             try
                 match otherwise with
-                    | Some v when not outOfDate -> 
+                    | Some v when not this.OutOfDate -> 
                         res <- v
                     | _ ->
                         // this evaluation is performed optimistically
@@ -402,7 +408,7 @@ type AdaptiveObject() =
                         // This property must therefore be maintained for every
                         // path in the entire system.
                         let r = f()
-                        outOfDate <- false
+                        this.OutOfDate <- false
 
                         // if the object's level just got greater than or equal to
                         // the level of the running transaction (if any)
@@ -413,10 +419,10 @@ type AdaptiveObject() =
                             if !depth > 1 then Transaction.RunningLevel - 1
                             else Transaction.RunningLevel
 
-                        if level > maxAllowedLevel then
+                        if this.Level > maxAllowedLevel then
                             //printfn "%A tried to pull from level %A but has level %A" top.Id level top.Level
                             // all greater pulls would be from the future
-                            raise <| LevelChangedException(this, level, !depth - 1)
+                            raise <| LevelChangedException(this, this.Level, !depth - 1)
                             
                         res <- r
 
@@ -427,6 +433,7 @@ type AdaptiveObject() =
                 Monitor.Exit this
 
             if top then 
+                let time = AdaptiveObject.Time
                 Monitor.Enter time
                 if not time.Outputs.IsEmpty then
                     let outputs = time.Outputs.Consume()
@@ -440,71 +447,64 @@ type AdaptiveObject() =
                     Monitor.Exit time
 
             res
-        )
-
-    static member Time = time
 
 
-    /// <summary>
-    /// utility function for evaluating an object if
-    /// it is marked as outOfDate. If the object is actually
-    /// outOfDate the given function is executed and otherwise
-    /// the given default value is returned.
-    /// Note that this function takes care of appropriate locking
-    /// </summary>
-    member x.EvaluateIfNeeded (caller : IAdaptiveObject) (otherwise : 'a) (f : unit -> 'a) =
-        x.evaluate caller (Some otherwise) f
-
-    /// <summary>
-    /// utility function for evaluating an object even if it
-    /// is not marked as outOfDate.
-    /// Note that this function takes care of appropriate locking
-    /// </summary>
-    member x.EvaluateAlways (caller : IAdaptiveObject) (f : unit -> 'a) =
-        x.evaluate caller None f
+        static member Time : IAdaptiveObject = 
+            if isNull AdaptiveObject.time then
+                AdaptiveObject.time <- AdaptiveObject() :> IAdaptiveObject
+            AdaptiveObject.time
 
 
-    member x.Id = id
-    member x.OutOfDate
-        with get() = outOfDate
-        and set v = outOfDate <- v
+        /// <summary>
+        /// utility function for evaluating an object if
+        /// it is marked as outOfDate. If the object is actually
+        /// outOfDate the given function is executed and otherwise
+        /// the given default value is returned.
+        /// Note that this function takes care of appropriate locking
+        /// </summary>
+        member inline x.EvaluateIfNeeded (caller : IAdaptiveObject) (otherwise : 'a) (f : unit -> 'a) =
+            x.evaluate caller (Some otherwise) f
 
-    member x.Outputs = outputs
-    member x.Level 
-        with get() = level
-        and set l = level <- l
+        /// <summary>
+        /// utility function for evaluating an object even if it
+        /// is not marked as outOfDate.
+        /// Note that this function takes care of appropriate locking
+        /// </summary>
+        member inline x.EvaluateAlways (caller : IAdaptiveObject) (f : unit -> 'a) =
+            x.evaluate caller None f
 
-    abstract member Mark : unit -> bool
-    default x.Mark () = true
+        abstract member Mark : unit -> bool
+        default x.Mark () = true
     
-    abstract member InputChanged : IAdaptiveObject -> unit
-    default x.InputChanged ip = ()
+        abstract member InputChanged : IAdaptiveObject -> unit
+        default x.InputChanged ip = ()
 
-    abstract member Inputs : seq<IAdaptiveObject>
-    default x.Inputs = Seq.empty
+        abstract member Inputs : seq<IAdaptiveObject>
+        default x.Inputs = Seq.empty
 
-    override x.GetHashCode() = id
-    override x.Equals o =
-        match o with
-            | :? IAdaptiveObject as o -> id = o.Id
-            | _ -> false
+        override x.GetHashCode() = x.Id
+        override x.Equals o =
+            match o with
+                | :? IAdaptiveObject as o -> x.Id = o.Id
+                | _ -> false
 
-    interface IAdaptiveObject with
-        member x.Id = id
-        member x.OutOfDate
-            with get() = outOfDate
-            and set v = outOfDate <- v
+        interface IAdaptiveObject with
+            member x.Id = x.Id
+            member x.OutOfDate
+                with get() = x.OutOfDate
+                and set v = x.OutOfDate <- v
 
-        member x.Outputs = outputs
-        member x.Inputs = x.Inputs
-        member x.Level 
-            with get() = level
-            and set l = level <- l
+            member x.Outputs = x.Outputs
+            member x.Inputs = x.Inputs
+            member x.Level 
+                with get() = x.Level
+                and set l = x.Level <- l
 
-        member x.Mark () =
-            x.Mark ()
+            member x.Mark () =
+                x.Mark ()
 
-        member x.InputChanged ip = x.InputChanged ip
+            member x.InputChanged ip = x.InputChanged ip
+    end
 
 
 
