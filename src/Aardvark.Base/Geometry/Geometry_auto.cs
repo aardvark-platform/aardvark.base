@@ -26,6 +26,9 @@ namespace Aardvark.Base
 
         #region Constructors
 
+        /// <summary>
+        /// Creates a polygon from given points.
+        /// </summary>
         public Polygon2d(V2d[] pointArray, int pointCount)
         {
             if (pointArray != null)
@@ -47,7 +50,7 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Creates a polygon from points in ccw order.
+        /// Creates a polygon from given points.
         /// </summary>
         public Polygon2d(params V2d[] pointArray)
         {
@@ -56,7 +59,7 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Creates a polygon from points in ccw order.
+        /// Creates a polygon from given points.
         /// </summary>
         public Polygon2d(V2d[] pointArray, int startIndex, int count)
         {
@@ -67,6 +70,9 @@ namespace Aardvark.Base
             for (int i = 0; i < count; i++) m_pointArray[i] = pointArray[startIndex + i];
         }
 
+        /// <summary>
+        /// Creates a polygon from point count and point creator function.
+        /// </summary>
         public Polygon2d(int pointCount, Func<int, V2d> index_pointCreator)
             : this(new V2d[pointCount].SetByIndex(index_pointCreator))
         { }
@@ -114,18 +120,19 @@ namespace Aardvark.Base
 
         public static readonly Polygon2d Invalid = new Polygon2d(null, 0);
 
+        public bool IsValid => m_pointArray != null;
+
+        public bool IsInvalid => m_pointArray == null;
+
         #endregion
 
         #region Properties
-
-        public bool IsValid { get { return m_pointArray != null; } }
-        public bool IsInvalid { get { return m_pointArray == null; } }
 
         /// <summary>
         /// The number of points in the polygon. If this is 0, the polygon
         /// is invalid.
         /// </summary>
-        public int PointCount { get { return m_pointCount; } }
+        public int PointCount => m_pointCount;
 
         /// <summary>
         /// Enumerates points.
@@ -151,7 +158,7 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Returns a copy of the polygons point array.
+        /// [P0, P1, P2] -> [P0, P1, P2, P0].
         /// </summary>
         public V2d[] GetPointArrayWithRepeatedFirstPoint()
         {
@@ -162,6 +169,9 @@ namespace Aardvark.Base
             return pa;
         }
 
+        /// <summary>
+        /// Returns a transformed copy of the polygons point array.
+        /// </summary>
         public T[] GetPointArray<T>(Func<V2d, T> point_copyFun)
         {
             var pc = m_pointCount;
@@ -170,6 +180,9 @@ namespace Aardvark.Base
             return pa;
         }
 
+        /// <summary>
+        /// Returns a transformed copy of the polygons point array.
+        /// </summary>
         public T[] GetPointArray<T>(Func<V2d, int, T> point_index_copyFun)
         {
             var pc = m_pointCount;
@@ -195,6 +208,9 @@ namespace Aardvark.Base
 
         #region Edges and Lines
 
+        /// <summary>
+        /// Index-th edge as vector (edgeEndPos - edgeBeginPos).
+        /// </summary>
         public V2d Edge(int index)
         {
             var p0 = m_pointArray[index++];
@@ -202,6 +218,9 @@ namespace Aardvark.Base
             return p1 - p0;
         }
 
+        /// <summary>
+        /// Edges as vectors (edgeEndPos - edgeBeginPos).
+        /// </summary>
         public IEnumerable<V2d> Edges
         {
             get
@@ -219,6 +238,9 @@ namespace Aardvark.Base
             }
         }
 
+        /// <summary>
+        /// Index-th edge as line segment (edgeBeginPos, edgeEndPos).
+        /// </summary>
         public Line2d EdgeLine(int index)
         {
             var p0 = m_pointArray[index++];
@@ -226,6 +248,9 @@ namespace Aardvark.Base
             return new Line2d(p0, p1);
         }
 
+        /// <summary>
+        /// Edges as line segments (edgeBeginPos, edgeEndPos).
+        /// </summary>
         public IEnumerable<Line2d> EdgeLines
         {
             get
@@ -244,6 +269,9 @@ namespace Aardvark.Base
             }
         }
 
+        /// <summary>
+        /// Edges as vectors (edgeEndPos - edgeBeginPos).
+        /// </summary>
         public V2d[] GetEdgeArray()
         {
             var pc = m_pointCount;
@@ -261,6 +289,9 @@ namespace Aardvark.Base
             return edgeArray;
         }
 
+        /// <summary>
+        /// Edges as line segments (edgeBeginPos, edgeEndPos).
+        /// </summary>
         public Line2d[] GetEdgeLineArray()
         {
             var pc = PointCount;
@@ -282,17 +313,26 @@ namespace Aardvark.Base
 
         #region Transformations
 
+        /// <summary>
+        /// Returns copy of polygon. Same as Map(p => p).
+        /// </summary>
         public Polygon2d Copy()
         {
             return new Polygon2d(m_pointArray.Copy());
         }
 
-        [Obsolete("Use 'Map' instead (same functionality and parameters)", false)]
+        /// <summary>
+        /// Obsolete. Use 'Map' instead (same functionality and parameters).
+        /// </summary>
+        [Obsolete("Use 'Map' instead (same functionality and parameters).", false)]
         public Polygon2d Copy(Func<V2d, V2d> point_fun)
         {
             return Map(point_fun);
         }
 
+        /// <summary>
+        /// Returns transformed copy of this polygon.
+        /// </summary>
         public Polygon2d Map(Func<V2d, V2d> point_fun)
         {
             var pc = m_pointCount;
@@ -301,6 +341,9 @@ namespace Aardvark.Base
             return new Polygon2d(npa, pc);
         }
 
+        /// <summary>
+        /// Gets copy with reversed order of vertices. 
+        /// </summary>
         public Polygon2d Reversed
         {
             get
@@ -312,7 +355,16 @@ namespace Aardvark.Base
             }
         }
 
-        public void Revert()
+        /// <summary>
+        /// Obsolete. Use 'Reverse' instead..
+        /// </summary>
+        [Obsolete("Use 'Reverse' instead.", false)]
+        public void Revert() => Reverse();
+
+        /// <summary>
+        /// Reverses order of vertices in-place. 
+        /// </summary>
+        public void Reverse()
         {
             var pa = m_pointArray;
             for (int pi = 0, pj = m_pointCount - 1; pi < pj; pi++, pj--)
@@ -355,6 +407,9 @@ namespace Aardvark.Base
 
         #region IBoundingBox2d Members
 
+        /// <summary>
+        /// Bounding box of polygon.
+        /// </summary>
         public Box2d BoundingBox2d
         {
             get { return new Box2d(m_pointArray, 0, m_pointCount); }
@@ -1383,6 +1438,9 @@ namespace Aardvark.Base
 
         #region Constructors
 
+        /// <summary>
+        /// Creates a polygon from given points.
+        /// </summary>
         public Polygon3d(V3d[] pointArray, int pointCount)
         {
             if (pointArray != null)
@@ -1404,7 +1462,7 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Creates a polygon from points in ccw order.
+        /// Creates a polygon from given points.
         /// </summary>
         public Polygon3d(params V3d[] pointArray)
         {
@@ -1413,7 +1471,7 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Creates a polygon from points in ccw order.
+        /// Creates a polygon from given points.
         /// </summary>
         public Polygon3d(V3d[] pointArray, int startIndex, int count)
         {
@@ -1424,6 +1482,9 @@ namespace Aardvark.Base
             for (int i = 0; i < count; i++) m_pointArray[i] = pointArray[startIndex + i];
         }
 
+        /// <summary>
+        /// Creates a polygon from point count and point creator function.
+        /// </summary>
         public Polygon3d(int pointCount, Func<int, V3d> index_pointCreator)
             : this(new V3d[pointCount].SetByIndex(index_pointCreator))
         { }
@@ -1471,18 +1532,19 @@ namespace Aardvark.Base
 
         public static readonly Polygon3d Invalid = new Polygon3d(null, 0);
 
+        public bool IsValid => m_pointArray != null;
+
+        public bool IsInvalid => m_pointArray == null;
+
         #endregion
 
         #region Properties
-
-        public bool IsValid { get { return m_pointArray != null; } }
-        public bool IsInvalid { get { return m_pointArray == null; } }
 
         /// <summary>
         /// The number of points in the polygon. If this is 0, the polygon
         /// is invalid.
         /// </summary>
-        public int PointCount { get { return m_pointCount; } }
+        public int PointCount => m_pointCount;
 
         /// <summary>
         /// Enumerates points.
@@ -1508,7 +1570,7 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Returns a copy of the polygons point array.
+        /// [P0, P1, P2] -> [P0, P1, P2, P0].
         /// </summary>
         public V3d[] GetPointArrayWithRepeatedFirstPoint()
         {
@@ -1519,6 +1581,9 @@ namespace Aardvark.Base
             return pa;
         }
 
+        /// <summary>
+        /// Returns a transformed copy of the polygons point array.
+        /// </summary>
         public T[] GetPointArray<T>(Func<V3d, T> point_copyFun)
         {
             var pc = m_pointCount;
@@ -1527,6 +1592,9 @@ namespace Aardvark.Base
             return pa;
         }
 
+        /// <summary>
+        /// Returns a transformed copy of the polygons point array.
+        /// </summary>
         public T[] GetPointArray<T>(Func<V3d, int, T> point_index_copyFun)
         {
             var pc = m_pointCount;
@@ -1552,6 +1620,9 @@ namespace Aardvark.Base
 
         #region Edges and Lines
 
+        /// <summary>
+        /// Index-th edge as vector (edgeEndPos - edgeBeginPos).
+        /// </summary>
         public V3d Edge(int index)
         {
             var p0 = m_pointArray[index++];
@@ -1559,6 +1630,9 @@ namespace Aardvark.Base
             return p1 - p0;
         }
 
+        /// <summary>
+        /// Edges as vectors (edgeEndPos - edgeBeginPos).
+        /// </summary>
         public IEnumerable<V3d> Edges
         {
             get
@@ -1576,6 +1650,9 @@ namespace Aardvark.Base
             }
         }
 
+        /// <summary>
+        /// Index-th edge as line segment (edgeBeginPos, edgeEndPos).
+        /// </summary>
         public Line3d EdgeLine(int index)
         {
             var p0 = m_pointArray[index++];
@@ -1583,6 +1660,9 @@ namespace Aardvark.Base
             return new Line3d(p0, p1);
         }
 
+        /// <summary>
+        /// Edges as line segments (edgeBeginPos, edgeEndPos).
+        /// </summary>
         public IEnumerable<Line3d> EdgeLines
         {
             get
@@ -1601,6 +1681,9 @@ namespace Aardvark.Base
             }
         }
 
+        /// <summary>
+        /// Edges as vectors (edgeEndPos - edgeBeginPos).
+        /// </summary>
         public V3d[] GetEdgeArray()
         {
             var pc = m_pointCount;
@@ -1618,6 +1701,9 @@ namespace Aardvark.Base
             return edgeArray;
         }
 
+        /// <summary>
+        /// Edges as line segments (edgeBeginPos, edgeEndPos).
+        /// </summary>
         public Line3d[] GetEdgeLineArray()
         {
             var pc = PointCount;
@@ -1639,17 +1725,26 @@ namespace Aardvark.Base
 
         #region Transformations
 
+        /// <summary>
+        /// Returns copy of polygon. Same as Map(p => p).
+        /// </summary>
         public Polygon3d Copy()
         {
             return new Polygon3d(m_pointArray.Copy());
         }
 
-        [Obsolete("Use 'Map' instead (same functionality and parameters)", false)]
+        /// <summary>
+        /// Obsolete. Use 'Map' instead (same functionality and parameters).
+        /// </summary>
+        [Obsolete("Use 'Map' instead (same functionality and parameters).", false)]
         public Polygon3d Copy(Func<V3d, V3d> point_fun)
         {
             return Map(point_fun);
         }
 
+        /// <summary>
+        /// Returns transformed copy of this polygon.
+        /// </summary>
         public Polygon3d Map(Func<V3d, V3d> point_fun)
         {
             var pc = m_pointCount;
@@ -1658,6 +1753,9 @@ namespace Aardvark.Base
             return new Polygon3d(npa, pc);
         }
 
+        /// <summary>
+        /// Gets copy with reversed order of vertices. 
+        /// </summary>
         public Polygon3d Reversed
         {
             get
@@ -1669,7 +1767,16 @@ namespace Aardvark.Base
             }
         }
 
-        public void Revert()
+        /// <summary>
+        /// Obsolete. Use 'Reverse' instead..
+        /// </summary>
+        [Obsolete("Use 'Reverse' instead.", false)]
+        public void Revert() => Reverse();
+
+        /// <summary>
+        /// Reverses order of vertices in-place. 
+        /// </summary>
+        public void Reverse()
         {
             var pa = m_pointArray;
             for (int pi = 0, pj = m_pointCount - 1; pi < pj; pi++, pj--)
@@ -1712,6 +1819,9 @@ namespace Aardvark.Base
 
         #region IBoundingBox3d Members
 
+        /// <summary>
+        /// Bounding box of polygon.
+        /// </summary>
         public Box3d BoundingBox3d
         {
             get { return new Box3d(m_pointArray, 0, m_pointCount); }

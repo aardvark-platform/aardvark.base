@@ -63,6 +63,9 @@ namespace Aardvark.Base
 
         #region Constructors
 
+        /// <summary>
+        /// Creates a polygon from given points.
+        /// </summary>
         public __tpolygon__(__tvec__[] pointArray, int pointCount)
         {
             if (pointArray != null)
@@ -84,7 +87,7 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Creates a polygon from points in ccw order.
+        /// Creates a polygon from given points.
         /// </summary>
         public __tpolygon__(params __tvec__[] pointArray)
         {
@@ -93,7 +96,7 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Creates a polygon from points in ccw order.
+        /// Creates a polygon from given points.
         /// </summary>
         public __tpolygon__(__tvec__[] pointArray, int startIndex, int count)
         {
@@ -104,6 +107,9 @@ namespace Aardvark.Base
             for (int i = 0; i < count; i++) m_pointArray[i] = pointArray[startIndex + i];
         }
 
+        /// <summary>
+        /// Creates a polygon from point count and point creator function.
+        /// </summary>
         public __tpolygon__(int pointCount, Func<int, __tvec__> index_pointCreator)
             : this(new __tvec__[pointCount].SetByIndex(index_pointCreator))
         { }
@@ -151,18 +157,19 @@ namespace Aardvark.Base
 
         public static readonly __tpolygon__ Invalid = new __tpolygon__(null, 0);
 
+        public bool IsValid => m_pointArray != null;
+
+        public bool IsInvalid => m_pointArray == null;
+
         #endregion
 
         #region Properties
-
-        public bool IsValid { get { return m_pointArray != null; } }
-        public bool IsInvalid { get { return m_pointArray == null; } }
 
         /// <summary>
         /// The number of points in the polygon. If this is 0, the polygon
         /// is invalid.
         /// </summary>
-        public int PointCount { get { return m_pointCount; } }
+        public int PointCount => m_pointCount;
 
         /// <summary>
         /// Enumerates points.
@@ -188,7 +195,7 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Returns a copy of the polygons point array.
+        /// [P0, P1, P2] -> [P0, P1, P2, P0].
         /// </summary>
         public __tvec__[] GetPointArrayWithRepeatedFirstPoint()
         {
@@ -199,6 +206,9 @@ namespace Aardvark.Base
             return pa;
         }
 
+        /// <summary>
+        /// Returns a transformed copy of the polygons point array.
+        /// </summary>
         public T[] GetPointArray<T>(Func<__tvec__, T> point_copyFun)
         {
             var pc = m_pointCount;
@@ -207,6 +217,9 @@ namespace Aardvark.Base
             return pa;
         }
 
+        /// <summary>
+        /// Returns a transformed copy of the polygons point array.
+        /// </summary>
         public T[] GetPointArray<T>(Func<__tvec__, int, T> point_index_copyFun)
         {
             var pc = m_pointCount;
@@ -232,6 +245,9 @@ namespace Aardvark.Base
 
         #region Edges and Lines
 
+        /// <summary>
+        /// Index-th edge as vector (edgeEndPos - edgeBeginPos).
+        /// </summary>
         public __tvec__ Edge(int index)
         {
             var p0 = m_pointArray[index++];
@@ -239,6 +255,9 @@ namespace Aardvark.Base
             return p1 - p0;
         }
 
+        /// <summary>
+        /// Edges as vectors (edgeEndPos - edgeBeginPos).
+        /// </summary>
         public IEnumerable<__tvec__> Edges
         {
             get
@@ -256,6 +275,9 @@ namespace Aardvark.Base
             }
         }
 
+        /// <summary>
+        /// Index-th edge as line segment (edgeBeginPos, edgeEndPos).
+        /// </summary>
         public __tline__ EdgeLine(int index)
         {
             var p0 = m_pointArray[index++];
@@ -263,6 +285,9 @@ namespace Aardvark.Base
             return new __tline__(p0, p1);
         }
 
+        /// <summary>
+        /// Edges as line segments (edgeBeginPos, edgeEndPos).
+        /// </summary>
         public IEnumerable<__tline__> EdgeLines
         {
             get
@@ -281,6 +306,9 @@ namespace Aardvark.Base
             }
         }
 
+        /// <summary>
+        /// Edges as vectors (edgeEndPos - edgeBeginPos).
+        /// </summary>
         public __tvec__[] GetEdgeArray()
         {
             var pc = m_pointCount;
@@ -298,6 +326,9 @@ namespace Aardvark.Base
             return edgeArray;
         }
 
+        /// <summary>
+        /// Edges as line segments (edgeBeginPos, edgeEndPos).
+        /// </summary>
         public __tline__[] GetEdgeLineArray()
         {
             var pc = PointCount;
@@ -319,17 +350,26 @@ namespace Aardvark.Base
 
         #region Transformations
 
+        /// <summary>
+        /// Returns copy of polygon. Same as Map(p => p).
+        /// </summary>
         public __tpolygon__ Copy()
         {
             return new __tpolygon__(m_pointArray.Copy());
         }
 
-        [Obsolete("Use 'Map' instead (same functionality and parameters)", false)]
+        /// <summary>
+        /// Obsolete. Use 'Map' instead (same functionality and parameters).
+        /// </summary>
+        [Obsolete("Use 'Map' instead (same functionality and parameters).", false)]
         public __tpolygon__ Copy(Func<__tvec__, __tvec__> point_fun)
         {
             return Map(point_fun);
         }
 
+        /// <summary>
+        /// Returns transformed copy of this polygon.
+        /// </summary>
         public __tpolygon__ Map(Func<__tvec__, __tvec__> point_fun)
         {
             var pc = m_pointCount;
@@ -338,6 +378,9 @@ namespace Aardvark.Base
             return new __tpolygon__(npa, pc);
         }
 
+        /// <summary>
+        /// Gets copy with reversed order of vertices. 
+        /// </summary>
         public __tpolygon__ Reversed
         {
             get
@@ -349,7 +392,16 @@ namespace Aardvark.Base
             }
         }
 
-        public void Revert()
+        /// <summary>
+        /// Obsolete. Use 'Reverse' instead..
+        /// </summary>
+        [Obsolete("Use 'Reverse' instead.", false)]
+        public void Revert() => Reverse();
+
+        /// <summary>
+        /// Reverses order of vertices in-place. 
+        /// </summary>
+        public void Reverse()
         {
             var pa = m_pointArray;
             for (int pi = 0, pj = m_pointCount - 1; pi < pj; pi++, pj--)
@@ -392,6 +444,9 @@ namespace Aardvark.Base
 
         #region IBounding__tbox__ Members
 
+        /// <summary>
+        /// Bounding box of polygon.
+        /// </summary>
         public __tbox__ Bounding__tbox__
         {
             get { return new __tbox__(m_pointArray, 0, m_pointCount); }
