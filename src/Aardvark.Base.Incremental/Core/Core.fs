@@ -377,7 +377,7 @@ type AdaptiveObject() =
 
     static let time = AdaptiveObject() :> IAdaptiveObject
     
-    let evaluate (this : IAdaptiveObject) (caller : IAdaptiveObject) (otherwise : Option<'a>) (f : unit -> 'a) =
+    member inline private this.evaluate (caller : IAdaptiveObject) (otherwise : Option<'a>) (f : unit -> 'a) =
         Telemetry.timed EvaluationOverheadProbe (fun () ->
             let depth = curerntEvaluationDepth.Value
             let top = isNull caller && !depth = 0 && not Transaction.HasRunning
@@ -453,7 +453,7 @@ type AdaptiveObject() =
     /// Note that this function takes care of appropriate locking
     /// </summary>
     member x.EvaluateIfNeeded (caller : IAdaptiveObject) (otherwise : 'a) (f : unit -> 'a) =
-        evaluate x caller (Some otherwise) f
+        x.evaluate caller (Some otherwise) f
 
     /// <summary>
     /// utility function for evaluating an object even if it
@@ -461,7 +461,7 @@ type AdaptiveObject() =
     /// Note that this function takes care of appropriate locking
     /// </summary>
     member x.EvaluateAlways (caller : IAdaptiveObject) (f : unit -> 'a) =
-        evaluate x caller None f
+        x.evaluate caller None f
 
 
     member x.Id = id
