@@ -412,7 +412,7 @@ module ASetReaders =
         member x.ContainingSetDied() =
             lock lockObj (fun () ->
                 containgSetDied.Emit ()
-                newReader <- noNewReader
+                //newReader <- noNewReader
                 
             )
 
