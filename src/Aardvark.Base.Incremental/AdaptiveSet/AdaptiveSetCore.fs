@@ -721,7 +721,7 @@ module ASetReaders =
 
     type OneShotReader<'a>(content : ReferenceCountingSet<'a>) =  
         inherit ConstantObject()
-        
+        let mutable callbacks : HashSet<list<Delta<'a>> -> unit> = null
         static let empty = ReferenceCountingSet<'a>()
 
         let toDeltaList (set : ReferenceCountingSet<'a>) =
@@ -734,14 +734,35 @@ module ASetReaders =
         let mutable initial = true
 
         member x.SubscribeOnEvaluate(cb : list<Delta<'a>> -> unit) =
-            { new IDisposable with member x.Dispose() = () }
+            lock x (fun () ->
+                if isNull callbacks then
+                    callbacks <- HashSet()
 
+                if callbacks.Add cb then
+                    { new IDisposable with 
+                        member __.Dispose() = 
+                            lock x (fun () ->
+                                callbacks.Remove cb |> ignore 
+                                if callbacks.Count = 0 then
+                                    callbacks <- null
+                            )
+                    }
+                else
+                    { new IDisposable with member __.Dispose() = () }
+            )
         member x.GetDelta(caller : IAdaptiveObject) =
             Telemetry.timed OneShotReaderEvaluateProbe (fun () ->
                 lock x (fun () ->
                     if initial then
                         initial <- false
-                        toDeltaList content
+                        let deltas = toDeltaList content
+
+                        if not (isNull callbacks) then
+                            for cb in callbacks do
+                                cb deltas
+                            callbacks <- null
+
+                        deltas
                     else
                         []
                 )
