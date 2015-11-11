@@ -87,11 +87,9 @@ namespace Aardvark.Base
         //# }
     {
         //# if (wrapped) {
-        private SpinLock m_lock;
         private __nctype____tpar__ m_dict;
         //# } else { // !wrapped
         //# if (concurrent) { 
-        private SpinLock m_lock;
         private long m_version;
         //# }
         //# if (fun) {
@@ -123,7 +121,6 @@ namespace Aardvark.Base
         /// </summary>
         public __type__(__nctype____tpar__ dict)
         {
-            m_lock = new SpinLock();
             m_dict = dict;
         }
 
@@ -210,7 +207,6 @@ namespace Aardvark.Base
                 bool stackDuplicateKeys = false/*# } */)
         {
             //# if (concurrent) {
-            m_lock = new SpinLock();
             m_version = 0;
             //# }
             //# if (fun) {
@@ -290,12 +286,12 @@ namespace Aardvark.Base
             set
             {
                 //# if (concurrent) {
-                var locked = false; try { m_lock.Enter(ref locked);
+                Monitor.Enter(this); try {
                 //# }
                 m_maxFillFactor = value;
                 m_increaseThreshold = ComputeIncreaseThreshold(m_capacity);
                 //# if (concurrent) {
-                } finally { if (locked) m_lock.Exit(); }
+                } finally { Monitor.Exit(this); }
                 //# }
             }
         }
@@ -312,12 +308,12 @@ namespace Aardvark.Base
             set
             {
                 //# if (concurrent) {
-                var locked = false; try { m_lock.Enter(ref locked);
+                Monitor.Enter(this); try {
                 //# }
                 m_minFillFactor = value;
                 m_decreaseThreshold = ComputeDecreaseThreshold(m_capacity);
                 //# if (concurrent) {
-                } finally { if (locked) m_lock.Exit(); }
+                } finally { Monitor.Exit(this); }
                 //# }
             }
         }
@@ -349,7 +345,7 @@ namespace Aardvark.Base
             get
             {
                 //# if (concurrent) {
-                var locked = false; try { m_lock.Enter(ref locked); var version = m_version;
+                Monitor.Enter(this); try { var version = m_version;
                 //# }
                 for (__uitype__ fi = 0; fi < m_capacity; fi++)
                 {
@@ -359,7 +355,7 @@ namespace Aardvark.Base
                     yield return m_firstArray[fi].Item__Key__;
                     //# } else {
                     var k = m_firstArray[fi].Item__Key__;
-                    m_lock.Exit(); locked = false; yield return k; m_lock.Enter(ref locked);
+                    Monitor.Exit(this); yield return k; Monitor.Enter(this);
                     if (version != m_version)
                         throw new ConcurrentDataModifiedException();
                     //# }
@@ -369,7 +365,7 @@ namespace Aardvark.Base
                         yield return m_extraArray[ei].Item__Key__;
                         //# } else {
                         k = m_extraArray[ei].Item__Key__;
-                        m_lock.Exit(); locked = false; yield return k; m_lock.Enter(ref locked);
+                        Monitor.Exit(this); yield return k; Monitor.Enter(this);
                         if (version != m_version)
                             throw new ConcurrentDataModifiedException();
                         //# }
@@ -377,7 +373,7 @@ namespace Aardvark.Base
                     }
                 }
                 //# if (concurrent) {
-                } finally { if (locked) m_lock.Exit(); }
+                } finally { Monitor.Exit(this); }
                 //# }
             }
         }
@@ -408,7 +404,7 @@ namespace Aardvark.Base
             get
             {
                 //# if (concurrent) {
-                var locked = false; try { m_lock.Enter(ref locked); var version = m_version;
+                Monitor.Enter(this); try { var version = m_version;
                 //# }
                 for (__uitype__ fi = 0; fi < m_capacity; fi++)
                 {
@@ -418,7 +414,7 @@ namespace Aardvark.Base
                     yield return m_firstArray[fi].Item.Value;
                     //# } else {
                     var v = m_firstArray[fi].Item.Value;
-                    m_lock.Exit(); locked = false; yield return v; m_lock.Enter(ref locked);
+                    Monitor.Exit(this); yield return v; Monitor.Enter(this);
                     if (version != m_version)
                         throw new ConcurrentDataModifiedException();
                     //# }
@@ -428,7 +424,7 @@ namespace Aardvark.Base
                         yield return m_extraArray[ei].Item.Value;
                         //# } else {
                         v = m_extraArray[ei].Item.Value;
-                        m_lock.Exit(); locked = false; yield return v; m_lock.Enter(ref locked);
+                        Monitor.Exit(this); yield return v; Monitor.Enter(this);
                         if (version != m_version)
                             throw new ConcurrentDataModifiedException();
                         //# }
@@ -436,7 +432,7 @@ namespace Aardvark.Base
                     }
                 }
                 //# if (concurrent) {
-                } finally { if (locked) m_lock.Exit(); }
+                } finally { Monitor.Exit(this); }
                 //# }
             }
         }
@@ -455,7 +451,7 @@ namespace Aardvark.Base
             get
             {
                 //# if (concurrent) {
-                var locked = false; try { m_lock.Enter(ref locked); var version = m_version;
+                Monitor.Enter(this); try { var version = m_version;
                 //# }
                 for (__uitype__ fi = 0; fi < m_capacity; fi++)
                 {
@@ -467,7 +463,7 @@ namespace Aardvark.Base
                     //# } else {
                     var kvp = new KeyValuePair<__tkey__, TValue>(
                             m_firstArray[fi].Item__Key__, m_firstArray[fi].Item.Value);
-                    m_lock.Exit(); locked = false; yield return kvp; m_lock.Enter(ref locked);
+                    Monitor.Exit(this); yield return kvp; Monitor.Enter(this);
                     if (version != m_version)
                         throw new ConcurrentDataModifiedException();
                     //# }
@@ -479,7 +475,7 @@ namespace Aardvark.Base
                         //# } else {
                         kvp = new KeyValuePair<__tkey__, TValue>(
                                 m_extraArray[ei].Item__Key__, m_extraArray[ei].Item.Value);
-                        m_lock.Exit(); locked = false; yield return kvp; m_lock.Enter(ref locked);
+                        Monitor.Exit(this); yield return kvp; Monitor.Enter(this);
                         if (version != m_version)
                             throw new ConcurrentDataModifiedException();
                         //# }
@@ -487,7 +483,7 @@ namespace Aardvark.Base
                     }
                 }
                 //# if (concurrent) {
-                } finally { if (locked) m_lock.Exit(); }
+                } finally { Monitor.Exit(this); }
                 //# }
             }
         }
@@ -506,7 +502,7 @@ namespace Aardvark.Base
             get
             {
                 //# if (concurrent) {
-                var locked = false; try { m_lock.Enter(ref locked); var version = m_version;
+                Monitor.Enter(this); try { var version = m_version;
                 //# }
                 var stack = new Stack<__itype__>();
                 for (__uitype__ fi = 0; fi < m_capacity; fi++)
@@ -526,7 +522,7 @@ namespace Aardvark.Base
                         //# } else {
                         kvp = new KeyValuePair<__tkey__, TValue>(
                                 m_extraArray[ei].Item__Key__, m_extraArray[ei].Item.Value);
-                        m_lock.Exit(); locked = false; yield return kvp; m_lock.Enter(ref locked);
+                        Monitor.Exit(this); yield return kvp; Monitor.Enter(this);
                         if (version != m_version)
                             throw new ConcurrentDataModifiedException();
                         //# }
@@ -537,13 +533,13 @@ namespace Aardvark.Base
                     //# } else {
                     kvp = new KeyValuePair<__tkey__, TValue>(
                             m_firstArray[fi].Item__Key__, m_firstArray[fi].Item.Value);
-                    m_lock.Exit(); locked = false; yield return kvp; m_lock.Enter(ref locked);
+                    Monitor.Exit(this); yield return kvp; Monitor.Enter(this);
                     if (version != m_version)
                         throw new ConcurrentDataModifiedException();
                     //# }
                 }
                 //# if (concurrent) {
-                } finally { if (locked) m_lock.Exit(); }
+                } finally { Monitor.Exit(this); }
                 //# }
             }
         }
@@ -585,13 +581,11 @@ namespace Aardvark.Base
             get
             {
                 //# if (wrapped) {
-                var locked = false;
-                try {  m_lock.Enter(ref locked); return m_dict[key]; }
-                finally { if (locked) m_lock.Exit(); }
+                Monitor.Enter(this); try { return m_dict[key]; } finally { Monitor.Exit(this); }
                 //# } else { // !wrapped
                 var hash = __HashFun__key__GetHash__;
                 //# if (concurrent) {
-                var locked = false; try { m_lock.Enter(ref locked);
+                Monitor.Enter(this); try {
                 //# }
                 var fi = ((__uitype__)hash) % m_capacity;
                 var ei = m_firstArray[fi].Next;
@@ -608,7 +602,7 @@ namespace Aardvark.Base
                     ei = m_extraArray[ei].Next;
                 }
                 //# if (concurrent) {
-                } finally { if (locked) m_lock.Exit(); }
+                } finally { Monitor.Exit(this); }
                 //# }
                 throw new KeyNotFoundException();
                 //# } // !wrapped
@@ -616,13 +610,11 @@ namespace Aardvark.Base
             set
             {
                 //# if (wrapped) {
-                var locked = false;
-                try { m_lock.Enter(ref locked); m_dict[key] = value; }
-                finally { if (locked) m_lock.Exit(); }
+                Monitor.Enter(this); try { m_dict[key] = value; } finally { Monitor.Exit(this); }
                 //# } else { // !wrapped
                 var hash = __HashFun__key__GetHash__;
                 //# if (concurrent) {
-                var locked = false; try { m_lock.Enter(ref locked); ++m_version;
+                Monitor.Enter(this); try { ++m_version;
                 //# }
                 if (m_count >= m_increaseThreshold) IncreaseCapacity();
                 var fi = ((__uitype__)hash) % m_capacity;
@@ -679,7 +671,7 @@ namespace Aardvark.Base
                 m_firstArray[fi].Item__Key__ = key;
                 m_firstArray[fi].Item.Value = value;
                 //# if (concurrent) {
-                } finally { if (locked) m_lock.Exit(); }
+                } finally { Monitor.Exit(this); }
                 //# }
                 //# } // !wrapped
             }
@@ -722,20 +714,18 @@ namespace Aardvark.Base
                 if (hasValue) { */, __tvalue__ value/*# } */)
         {
             //# if (wrapped) {
-            var locked = false;
-            try
+            Monitor.Enter(this); try
             {
-                m_lock.Enter(ref locked);
                 /*# if (isTry || !hasValue) { */return /*# } */m_dict.__tryPrefix__Add(key/*#
                         if (hasHashPar) { */, hash/*# } if (hasValue) { */, value/*# } */);
             }
-            finally { if (locked) m_lock.Exit(); }
+            finally { Monitor.Exit(this); }
             //# } else { // !wrapped
             //# if (!hasHashPar) {
             var hash = __HashFun__key__GetHash__;
             //# }
             //# if (concurrent) {
-            var locked = false; try { m_lock.Enter(ref locked);
+            Monitor.Enter(this); try {
             //# }
             if (m_count >= m_increaseThreshold) IncreaseCapacity();
             var fi = ((__uitype__)hash) % m_capacity;
@@ -809,7 +799,7 @@ namespace Aardvark.Base
             m_firstArray[fi].Item.Value = value;
             //# }
             //# if (concurrent) {
-            } finally { if (locked) m_lock.Exit(); }
+            } finally { Monitor.Exit(this); }
             //# }
             //# if (isTry || !hasValue) {
             return true;
@@ -827,13 +817,11 @@ namespace Aardvark.Base
         public void Add(string key/*# if (hasValue) { */, __tvalue__ value/*# } */)
         {
             //# if (wrapped) {
-            var locked = false;
-            try
+            Monitor.Enter(this); try
             {
-                m_lock.Enter(ref locked);
                 m_dict.Add(key.ToSymbol()/*# if (hasValue) { */, value/*# } */);
             }
-            finally { if (locked) m_lock.Exit(); }
+            finally { Monitor.Exit(this); }
             //# } else { // !wrapped
             Add(key.ToSymbol()/*# if (hasValue) { */, value/*# } */);
             //# } // !wrapped
@@ -847,13 +835,11 @@ namespace Aardvark.Base
         public void Add(KeyValuePair<string, TValue> item)
         {
             //# if (wrapped) {
-            var locked = false;
-            try
+            Monitor.Enter(this); try
             {
-                m_lock.Enter(ref locked);
                 m_dict.Add(item.Key.ToSymbol(), item.Value);
             }
-            finally { if (locked) m_lock.Exit(); }
+            finally { Monitor.Exit(this); }
             //# } else { // !wrapped
             Add(item.Key.ToSymbol(), item.Value);
             //# } // !wrapped
@@ -868,13 +854,11 @@ namespace Aardvark.Base
         public void Add(KeyValuePair<__tkey__, TValue> item)
         {
             //# if (wrapped) {
-            var locked = false;
-            try
+            Monitor.Enter(this); try
             {
-                m_lock.Enter(ref locked);
                 m_dict.Add(item.Key, item.Value);
             }
-            finally { if (locked) m_lock.Exit(); }
+            finally { Monitor.Exit(this); }
             //# } else { // !wrapped
             Add(item.Key, item.Value);
             //# } // !wrapped
@@ -907,19 +891,13 @@ namespace Aardvark.Base
         public bool Contains__keyStr__(__tkey__ key/*# if (hasHashPar) { */, __itype__ hash/*# } */)
         {
             //# if (wrapped) {
-            var locked = false;
-            try
-            {
-                m_lock.Enter(ref locked);
-                return m_dict.Contains(key);
-            }
-            finally { if (locked) m_lock.Exit(); }
+            Monitor.Enter(this); try { return m_dict.Contains(key); } finally { Monitor.Exit(this); }
             //# } else { // !wrapped
             //# if (!hasHashPar) {
             var hash = __HashFun__key__GetHash__;
             //# }
             //# if (concurrent) {
-            var locked = false; try { m_lock.Enter(ref locked);
+            Monitor.Enter(this); try {
             //# }
             var fi = ((__uitype__)hash) % m_capacity;
             var ei = m_firstArray[fi].Next;
@@ -935,7 +913,7 @@ namespace Aardvark.Base
                 ei = m_extraArray[ei].Next;
             }
             //# if (concurrent) {
-            } finally { if (locked) m_lock.Exit(); }
+            } finally { Monitor.Exit(this); }
             //# }
             return false;
             //# } // !wrapped
@@ -952,19 +930,13 @@ namespace Aardvark.Base
         public bool Contains(__tkey__ key/*# if (hasHashPar) { */, __itype__ hash/*# } */, TValue value)
         {
             //# if (wrapped) {
-            var locked = false;
-            try
-            {
-                m_lock.Enter(ref locked);
-                return m_dict.Contains(key, value);
-            }
-            finally { if (locked) m_lock.Exit(); }
+            Monitor.Enter(this); try { return m_dict.Contains(key, value); } finally { Monitor.Exit(this); }
             //# } else { // !wrapped
             //# if (!hasHashPar) {
             var hash = __HashFun__key__GetHash__;
             //# }
             //# if (concurrent) {
-            var locked = false; try { m_lock.Enter(ref locked);
+            Monitor.Enter(this); try {
             //# }
             var fi = ((__uitype__)hash) % m_capacity;
             var ei = m_firstArray[fi].Next;
@@ -982,7 +954,7 @@ namespace Aardvark.Base
                 ei = m_extraArray[ei].Next;
             }
             //# if (concurrent) {
-            } finally { if (locked) m_lock.Exit(); }
+            } finally { Monitor.Exit(this); }
             //# }
             return false;
             //# } // !wrapped
@@ -996,13 +968,11 @@ namespace Aardvark.Base
         public bool Contains(KeyValuePair<__tkey__, TValue> item)
         {
             //# if (wrapped) {
-            var locked = false;
-            try
+            Monitor.Enter(this); try
             {
-                m_lock.Enter(ref locked);
                 return m_dict.Contains(item.Key, item.Value);
             }
-            finally { if (locked) m_lock.Exit(); }
+            finally { Monitor.Exit(this); }
             //# } else { // !wrapped
             return Contains(item.Key, item.Value);
             //# } // !wrapped
@@ -1030,20 +1000,18 @@ namespace Aardvark.Base
                 if (hasDefault) { */, TValue defaultValue/*# } */)
         {
             //# if (wrapped) {
-            var locked = false;
-            try
+            Monitor.Enter(this); try
             {
-                m_lock.Enter(ref locked);
                 return m_dict.Get__orCreate__(key/*#
                             if (hasHashPar) { */, hash/*# } if (isCreate) { */, creator/*# } */);
             }
-            finally { if (locked) m_lock.Exit(); }
+            finally { Monitor.Exit(this); }
             //# } else { // !wrapped
             //# if (!hasHashPar) {
             var hash = __HashFun__key__GetHash__;
             //# }
             //# if (concurrent) {
-            var locked = false; try { m_lock.Enter(ref locked);
+            Monitor.Enter(this); try {
             //# }
             var fi = ((__uitype__)hash) % m_capacity;
             var ei = m_firstArray[fi].Next;
@@ -1121,7 +1089,7 @@ namespace Aardvark.Base
             return defaultValue;
             //# }
             //# if (concurrent) {
-            } finally { if (locked) m_lock.Exit(); }
+            } finally { Monitor.Exit(this); }
             //# }
             //# if (!isCreate && !hasDefault) {
             throw new KeyNotFoundException();
@@ -1189,20 +1157,18 @@ namespace Aardvark.Base
                 if (hasHashPar) { */__itype__ hash, /*# } */out TValue value)
         {
             //# if (wrapped) {
-            var locked = false;
-            try
+            Monitor.Enter(this); try
             {
-                m_lock.Enter(ref locked);
                 return m_dict.TryGetValue(key, /*#
                         if (hasHashPar) { */hash, /*# } */out value);
             }
-            finally { if (locked) m_lock.Exit(); }
+            finally { Monitor.Exit(this); }
             //# } else { // !wrapped
             //# if (!hasHashPar) {
             var hash = __HashFun__key__GetHash__;
             //# }
             //# if (concurrent) {
-            var locked = false; try { m_lock.Enter(ref locked);
+            Monitor.Enter(this); try {
             //# }
             var fi = ((__uitype__)hash) % m_capacity;
             var ei = m_firstArray[fi].Next;
@@ -1225,7 +1191,7 @@ namespace Aardvark.Base
             }
             value = default(TValue);
             //# if (concurrent) {
-            } finally { if (locked) m_lock.Exit(); }
+            } finally { Monitor.Exit(this); }
             //# }
             return false;
             //# } // !wrapped
@@ -1241,7 +1207,7 @@ namespace Aardvark.Base
         {
             var hash = __HashFun__key__GetHash__;
             //# if (concurrent) {
-            var locked = false; try { m_lock.Enter(ref locked); var version = m_version;
+            Monitor.Enter(this); try { var version = m_version;
             //# }
             var fi = ((__uitype__)hash) % m_capacity;
             var ei = m_firstArray[fi].Next;
@@ -1253,7 +1219,7 @@ namespace Aardvark.Base
             //# } else {
             {
                 var v = m_firstArray[fi].Item.Value;
-                m_lock.Exit(); locked = false; yield return v; m_lock.Enter(ref locked);
+                Monitor.Exit(this); yield return v; Monitor.Enter(this);
                 if (version != m_version)
                     throw new ConcurrentDataModifiedException();
             }
@@ -1267,7 +1233,7 @@ namespace Aardvark.Base
                 //# } else {
                 {
                     var v = m_extraArray[ei].Item.Value;
-                    m_lock.Exit(); locked = false; yield return v; m_lock.Enter(ref locked);
+                    Monitor.Exit(this); yield return v; Monitor.Enter(this);
                     if (version != m_version)
                         throw new ConcurrentDataModifiedException();
                 }
@@ -1275,7 +1241,7 @@ namespace Aardvark.Base
                 ei = m_extraArray[ei].Next;
             }
             //# if (concurrent) {
-            } finally { if (locked) m_lock.Exit(); }
+            } finally { Monitor.Exit(this); }
             //# }
         }
 
@@ -1288,17 +1254,15 @@ namespace Aardvark.Base
         public TValue ValueWithKeySkip(__tkey__ key, __itype__ skip)
         {
             //# if (wrapped) {
-            var locked = false;
-            try
+            Monitor.Enter(this); try
             {
-                m_lock.Enter(ref locked);
                 return m_dict.ValueWithKeySkip(key, skip);
             }
-            finally { if (locked) m_lock.Exit(); }
+            finally { Monitor.Exit(this); }
             //# } else { // !wrapped
             var hash = __HashFun__key__GetHash__;
             //# if (concurrent) {
-            var locked = false; try { m_lock.Enter(ref locked);
+            Monitor.Enter(this); try {
             //# }
             var fi = ((__uitype__)hash) % m_capacity;
             var ei = m_firstArray[fi].Next;
@@ -1321,7 +1285,7 @@ namespace Aardvark.Base
                 ei = m_extraArray[ei].Next;
             }
             //# if (concurrent) {
-            } finally { if (locked) m_lock.Exit(); }
+            } finally { Monitor.Exit(this); }
             //# }
             throw new KeyNotFoundException();
             //# } // !wrapped
@@ -1336,13 +1300,11 @@ namespace Aardvark.Base
         public TValue GetAndRemove(__tkey__ key)
         {
             //# if (wrapped) {
-            var locked = false;
-            try
+            Monitor.Enter(this); try
             {
-                m_lock.Enter(ref locked);
                 return m_dict.GetAndRemove(key);
             }
-            finally { if (locked) m_lock.Exit(); }
+            finally { Monitor.Exit(this); }
             //# } else { // !wrapped
             TValue value;
             if (!TryRemove(key, out value))
@@ -1362,13 +1324,11 @@ namespace Aardvark.Base
         {
             TValue value;
             //# if (wrapped) {
-            var locked = false;
-            try
+            Monitor.Enter(this); try
             {
-                m_lock.Enter(ref locked);
                 return m_dict.TryRemove(key/*# if (hasHashPar) { */, hash/*# } */, out value);
             }
-            finally { if (locked) m_lock.Exit(); }
+            finally { Monitor.Exit(this); }
             //# } else { // !wrapped
             return TryRemove(key/*# if (hasHashPar) { */, hash/*# } */, out value);
             //# } // !wrapped
@@ -1384,13 +1344,11 @@ namespace Aardvark.Base
         public bool Remove(__tkey__ key/*# if (hasHashPar) { */, __itype__ hash/*# } if (hasValue) { */, TValue value/*# } */)
         {
             //# if (wrapped) {
-            var locked = false;
-            try
+            Monitor.Enter(this); try
             {
-                m_lock.Enter(ref locked);
                 return m_dict.TryRemove(key/*# if (hasHashPar) { */, hash/*# } if (hasValue) { */, value/*# } */);
             }
-            finally { if (locked) m_lock.Exit(); }
+            finally { Monitor.Exit(this); }
             //# } else { // !wrapped
             return TryRemove(key/*# if (hasHashPar) { */, hash/*# } if (hasValue) { */, value/*# } */);
             //# } // !wrapped
@@ -1405,13 +1363,11 @@ namespace Aardvark.Base
         public bool Remove(KeyValuePair<__tkey__, TValue> item)
         {
             //# if (wrapped) {
-            var locked = false;
-            try
+            Monitor.Enter(this); try
             {
-                m_lock.Enter(ref locked);
                 return m_dict.TryRemove(item.Key, item.Value);
             }
-            finally { if (locked) m_lock.Exit(); }
+            finally { Monitor.Exit(this); }
             //# } else { // !wrapped
             return TryRemove(item.Key, item.Value);
             //# } // !wrapped
@@ -1428,19 +1384,17 @@ namespace Aardvark.Base
         public bool TryRemove(__tkey__ key/*# if (hasHashPar) { */, __itype__ hash/*# } if (hasValue) { */, out TValue value/*# } */)
         {
             //# if (wrapped) {
-            var locked = false;
-            try
+            Monitor.Enter(this); try
             {
-                m_lock.Enter(ref locked);
                 return m_dict.TryRemove(key/*# if (hasHashPar) { */, hash/*# } if (hasValue) { */, out value/*# } */);
             }
-            finally { if (locked) m_lock.Exit(); }
+            finally { Monitor.Exit(this); }
             //# } else { // !wrapped
             //# if (!hasHashPar) {
             var hash = __HashFun__key__GetHash__;
             //# }
             //# if (concurrent) {
-            var locked = false; try { m_lock.Enter(ref locked);
+            Monitor.Enter(this); try {
             //# }
             var fi = ((__uitype__)hash) % m_capacity;
             var ei = m_firstArray[fi].Next;
@@ -1519,7 +1473,7 @@ namespace Aardvark.Base
             value = default(TValue);
             //# }
             //# if (concurrent) {
-            } finally { if (locked) m_lock.Exit(); }
+            } finally { Monitor.Exit(this); }
             //# }
             return false;
             //# } // !wrapped
@@ -1536,19 +1490,17 @@ namespace Aardvark.Base
         public bool TryRemove(__tkey__ key/*# if (hasHashPar) { */, __itype__ hash/*# } */, TValue value)
         {
             //# if (wrapped) {
-            var locked = false;
-            try
+            Monitor.Enter(this); try
             {
-                m_lock.Enter(ref locked);
                 return m_dict.TryRemove(key/*# if (hasHashPar) { */, hash/*# } */, value);
             }
-            finally { if (locked) m_lock.Exit(); }
+            finally { Monitor.Exit(this); }
             //# } else { // !wrapped
             //# if (!hasHashPar) {
             var hash = __HashFun__key__GetHash__;
             //# }
             //# if (concurrent) {
-            var locked = false; try { m_lock.Enter(ref locked);
+            Monitor.Enter(this); try {
             //# }
             var fi = ((__uitype__)hash) % m_capacity;
             var ei = m_firstArray[fi].Next;
@@ -1615,7 +1567,7 @@ namespace Aardvark.Base
                 }
             }
             //# if (concurrent) {
-            } finally { if (locked) m_lock.Exit(); }
+            } finally { Monitor.Exit(this); }
             //# }
             return false;
             //# } // !wrapped
@@ -1674,16 +1626,10 @@ namespace Aardvark.Base
         public void Clear()
         {
             //# if (wrapped) {
-            var locked = false;
-            try
-            {
-                m_lock.Enter(ref locked);
-                m_dict.Clear();
-            }
-            finally { if (locked) m_lock.Exit(); }
+            Monitor.Enter(this); try { m_dict.Clear(); } finally { Monitor.Exit(this); }
             //# } else { // !wrapped
             //# if (concurrent) {
-            var locked = false; try { m_lock.Enter(ref locked); ++m_version;
+            Monitor.Enter(this); try { ++m_version;
             //# }
             m_firstArray.Set(default(__NextHashItem__));
             m_extraArray.Set(default(__HashItemNext__));
@@ -1691,7 +1637,7 @@ namespace Aardvark.Base
             m_count = 0;
             m_extraCount = 0;
             //# if (concurrent) {
-            } finally { if (locked) m_lock.Exit(); }
+            } finally { Monitor.Exit(this); }
             //# }
             //# } // !wrapped
         }
@@ -1713,45 +1659,28 @@ namespace Aardvark.Base
         public void Copy__KeysValues__To(__tkeyvalue__[] array, __itype__ index)
         {
             //# if (wrapped) {
-            var locked = false;
-            try
+            Monitor.Enter(this); try
             {
-                m_lock.Enter(ref locked);
                 m_dict.Copy__KeysValues__To(array, index);
             }
-            finally { if (locked) m_lock.Exit(); }
+            finally { Monitor.Exit(this); }
             //# } else { // !wrapped
             //# if (concurrent) {
-            var locked = false; try
-            {
-            m_lock.Enter(ref locked); var version = m_version;
+            Monitor.Enter(this); try {
             //# }
             for (__uitype__ fi = 0; fi < m_capacity; fi++)
             {
                 var ei = m_firstArray[fi].Next;
                 if (ei == 0) continue;
-                //# if (!concurrent) {
                 array[index++] = m_firstArray[fi].Item__KeyValue__;
-                //# } else {
-                var k = m_firstArray[fi].Item__KeyValue__;
-                m_lock.Exit(); locked = false; array[index++] = k; m_lock.Enter(ref locked);
-                if (version != m_version) throw new ConcurrentDataModifiedException();
-                //# }
                 while (ei > 0)
                 {
-                    //# if (!concurrent) {
                     array[index++] = m_extraArray[ei].Item__KeyValue__;
-                    //# } else {
-                    k = m_extraArray[ei].Item__KeyValue__;
-                    m_lock.Exit(); locked = false; array[index++] = k; m_lock.Enter(ref locked);
-                    if (version != m_version) throw new ConcurrentDataModifiedException();
-                    //# }
                     ei = m_extraArray[ei].Next;
                 }
             }
             //# if (concurrent) {
-            }
-            finally { if (locked) m_lock.Exit(); }
+            } finally { Monitor.Exit(this); }
             //# }
             //# } // !wrapped
         }
@@ -1769,49 +1698,26 @@ namespace Aardvark.Base
         public void CopyTo(KeyValuePair<__tkey__, TValue>[] array, __itype__ index)
         {
             //# if (wrapped) {
-            var locked = false;
-            try
-            {
-                m_lock.Enter(ref locked);
-                m_dict.CopyTo(array, index);
-            }
-            finally { if (locked) m_lock.Exit(); }
+            Monitor.Enter(this); try { m_dict.CopyTo(array, index); } finally { Monitor.Exit(this); }
             //# } else { // !wrapped
             //# if (concurrent) {
-            var locked = false; try
-            {
-            m_lock.Enter(ref locked); var version = m_version;
+            Monitor.Enter(this); try {
             //# }
             for (__uitype__ fi = 0; fi < m_capacity; fi++)
             {
                 var ei = m_firstArray[fi].Next;
                 if (ei == 0) continue;
-                //# if (!concurrent) {
                 array[index++] = new KeyValuePair<__tkey__, TValue>(
                                 m_firstArray[fi].Item__Key__, m_firstArray[fi].Item.Value);
-                //# } else {
-                var k = new KeyValuePair<__tkey__, TValue>(
-                            m_firstArray[fi].Item__Key__, m_firstArray[fi].Item.Value);
-                m_lock.Exit(); locked = false; array[index++] = k; m_lock.Enter(ref locked);
-                if (version != m_version) throw new ConcurrentDataModifiedException();
-                //# }
                 while (ei > 0)
                 {
-                    //# if (!concurrent) {
                     array[index++] = new KeyValuePair<__tkey__, TValue>(
                                     m_extraArray[ei].Item__Key__, m_extraArray[ei].Item.Value);
-                    //# } else {
-                    k = new KeyValuePair<__tkey__, TValue>(
-                            m_extraArray[ei].Item__Key__, m_extraArray[ei].Item.Value);
-                    m_lock.Exit(); locked = false; array[index++] = k; m_lock.Enter(ref locked);
-                    if (version != m_version) throw new ConcurrentDataModifiedException();
-                    //# }
                     ei = m_extraArray[ei].Next;
                 }
             }
             //# if (concurrent) {
-            }
-            finally { if (locked) m_lock.Exit(); }
+            } finally { Monitor.Exit(this); }
             //# }
             //# } // !wrapped
         }
