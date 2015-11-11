@@ -168,15 +168,22 @@ module ASet =
     /// prepared to track changes using the version.
     /// </summary>
     let toMod (s : aset<'a>) =
-        let r = s.GetReader()
-        let c = r.Content :> IVersionedSet<_>
-
-        let m = 
-            [r] |> Mod.mapCustom (fun s ->
-                r.GetDelta(s) |> ignore
-                c
+        if s.IsConstant then
+            Mod.delay (fun () ->
+                let r = s.GetReader()
+                r.GetDelta(null) |> ignore
+                r.Content :> IVersionedSet<_>
             )
-        m
+        else
+            let r = s.GetReader()
+            let c = r.Content :> IVersionedSet<_>
+
+            let m = 
+                [r] |> Mod.mapCustom (fun s ->
+                    r.GetDelta(s) |> ignore
+                    c
+                )
+            m
 
     /// <summary>
     /// adaptively computes whether the given aset is empty.
@@ -245,15 +252,40 @@ module ASet =
                 AdaptiveSet(fun () -> bind2 scope (fun a b -> (f a b).GetReader()) ma mb) :> aset<'c>
 
     /// <summary>
+    /// adaptively unions the given sets
+    /// </summary>
+    let union' (set : seq<aset<'a>>) : aset<'a> =
+        AdaptiveSet(fun () -> union (set |> Seq.map (fun s -> s.GetReader()) |> Seq.toList)) :> aset<_>
+
+    /// <summary>
     /// applies the given function to all elements in the set
     /// and unions all output-sets.
     /// NOTE: duplicates are handled correctly here meaning that
     ///       the supplied function may return overlapping sets.
     /// </summary>
     let collect (f : 'a -> aset<'b>) (set : aset<'a>) = 
-        let scope = Ag.getContext()
-        let noRef = set.Copy
-        AdaptiveSet(fun () -> noRef.GetReader() |> collect scope (fun v -> (f v).GetReader())) :> aset<'b>
+        if set.IsConstant then
+            let r = set.GetReader()
+            r.GetDelta(null) |> ignore
+            
+            let innerSets = r.Content |> Seq.map f |> Seq.toList
+
+            if innerSets |> List.forall (fun s -> s.IsConstant) then
+                delay (fun () ->
+                    innerSets |> List.collect (fun s ->
+                        let r = s.GetReader()
+                        r.Update(null)
+                        r.Content |> Seq.toList
+                    )
+                )
+            else
+                innerSets |> union'
+        else
+            let scope = Ag.getContext()
+            let noRef = set.Copy
+            AdaptiveSet(fun () -> noRef.GetReader() |> collect scope (fun v -> (f v).GetReader())) :> aset<'b>
+
+
 
     /// <summary>
     /// applies the given function to all elements in the set
@@ -285,11 +317,7 @@ module ASet =
     let union (set : aset<aset<'a>>) =
         collect id set
 
-    /// <summary>
-    /// adaptively unions the given sets
-    /// </summary>
-    let union' (set : seq<aset<'a>>) =
-        union (ConstantSet set)
+
 
     /// deprecated in favor of union
     [<Obsolete>]
