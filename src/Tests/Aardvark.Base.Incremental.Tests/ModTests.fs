@@ -274,7 +274,6 @@ module ``Basic Mod Tests`` =
 
 
 
-    open System.Threading
     [<Test>]
     let ``[Mod] memory test`` () =
 

@@ -930,6 +930,41 @@ module ``collect tests`` =
 
         ()
 
+    [<Test>]
+    let ``[ASet] Mod.async supports zombie mods`` () =
+        
+        let AwaitTaskVoid : (Task -> Async<unit>) =
+            Async.AwaitIAsyncResult >> Async.Ignore
+
+        let set = CSet.ofList [ 1 .. 100 ]
+
+        let result =
+            aset {
+                for x in set :> aset<_> do
+                    let! r = 
+                        Mod.async <| 
+                            async {
+                                let! _ = AwaitTaskVoid <| Task.Delay 1
+                                return x * 10
+                            }
+                    yield r
+            }
+
+        let result = ASet.map id result
+
+        let resultReader = result.GetReader()
+
+        let t = Task.Factory.StartNew(fun () ->
+            for i in 101 .. 200 do
+                transact (fun () -> CSet.add i set |> ignore)
+                transact (fun () -> CSet.remove (i-100) set |> ignore)
+                System.Threading.Thread.Sleep 2
+                if i % 100 = 0 then resultReader.GetDelta() |> ignore
+        )
+        t.Wait()
+
+        //result |> ASet.unsafeRegisterCallbackKeepDisposable (printfn "%A") |> ignore
+        ()
 
     [<Test>]
     let ``[ASet] memory test`` () =

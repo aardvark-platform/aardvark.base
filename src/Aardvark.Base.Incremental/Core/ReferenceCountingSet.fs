@@ -425,25 +425,30 @@ type ReferenceCountingSet<'a>(initial : seq<'a>) =
 and private ReferenceCountingSetEnumerator<'a>(containsNull : bool, store : Dictionary<obj, 'a * ref<int>>) =
     let mutable emitNull = containsNull
     let mutable e = store.GetEnumerator() :> IEnumerator<KeyValuePair<obj, 'a * ref<int>>>
+    let mutable currentIsNull = Unchecked.defaultof<bool> // does not matter here
+
+    member x.Current =
+         if currentIsNull then
+            Unchecked.defaultof<_>
+         else
+            e.Current.Value |> fst
 
     interface IEnumerator with
         member x.MoveNext() = 
             if emitNull then
                 emitNull <- false
+                currentIsNull <- true
                 true
             else 
+                currentIsNull <- false
                 e.MoveNext()
 
         member x.Reset() = 
             emitNull <- containsNull
             e.Reset()
 
-        member x.Current = 
-            if emitNull then
-                Unchecked.defaultof<_>
-            else
-                e.Current.Key
+        member x.Current = x.Current :> obj
 
     interface IEnumerator<'a> with
-        member x.Current = e.Current.Value |> fst
+        member x.Current = x.Current 
         member x.Dispose() = e.Dispose()
