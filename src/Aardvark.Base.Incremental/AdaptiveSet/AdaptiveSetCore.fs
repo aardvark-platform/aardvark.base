@@ -735,21 +735,25 @@ module ASetReaders =
 
         member x.SubscribeOnEvaluate(cb : list<Delta<'a>> -> unit) =
             lock x (fun () ->
-                if isNull callbacks then
-                    callbacks <- HashSet()
+                if initial then
+                    if isNull callbacks then
+                        callbacks <- HashSet()
 
-                if callbacks.Add cb then
-                    { new IDisposable with 
-                        member __.Dispose() = 
-                            lock x (fun () ->
-                                callbacks.Remove cb |> ignore 
-                                if callbacks.Count = 0 then
-                                    callbacks <- null
-                            )
-                    }
+                    if callbacks.Add cb then
+                        { new IDisposable with 
+                            member __.Dispose() = 
+                                lock x (fun () ->
+                                    callbacks.Remove cb |> ignore 
+                                    if callbacks.Count = 0 then
+                                        callbacks <- null
+                                )
+                        }
+                    else
+                        { new IDisposable with member __.Dispose() = () }
                 else
                     { new IDisposable with member __.Dispose() = () }
             )
+
         member x.GetDelta(caller : IAdaptiveObject) =
             Telemetry.timed OneShotReaderEvaluateProbe (fun () ->
                 lock x (fun () ->
@@ -771,7 +775,7 @@ module ASetReaders =
         interface IReader<'a> with
             member x.GetDelta(caller) = x.GetDelta(caller)
             member x.SubscribeOnEvaluate(cb) = x.SubscribeOnEvaluate cb
-            member x.Update(caller) = initial <- false
+            member x.Update(caller) = lock x (fun () -> initial <- false)
             member x.Dispose() = ()
             member x.Content = 
                 if initial then empty
