@@ -59,6 +59,7 @@
     <Compile Include="OrderMaintenance.fs" />
     <Compile Include="SkipList.fs" />
     <Compile Include="AVL.fs" />
+    <Compile Include="StableSet.fs" />
     <Compile Include="Interop\Dictionary.fs" />
     <Compile Include="Interop\Symbol.fs" />
     <Compile Include="Interop\Vectors.fs" />

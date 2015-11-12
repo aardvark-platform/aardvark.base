@@ -118,16 +118,25 @@ module AList =
     let toASet (l : alist<'a>) =
         ASet.AdaptiveSet(fun () -> toSetReader l) :> aset<_>
 
-    let toSeq (set : alist<'a>) =
+    let toArray (set : alist<'a>) =
         use r = set.GetReader()
         r.GetDelta(null) |> ignore
-        r.Content.Values |> Seq.toArray :> seq<_>
+        r.Content.All 
+            |> Seq.toArray
+            |> Array.sortBy fst 
+            |> Array.map snd 
+
+    let toSeq (set : alist<'a>) =
+        set |> toArray :> seq<_>
 
     let toList (set : alist<'a>) =
-        set |> toSeq |> Seq.toList
+        use r = set.GetReader()
+        r.GetDelta(null) |> ignore
+        r.Content.All 
+            |> Seq.toList
+            |> List.sortBy fst 
+            |> List.map snd 
 
-    let toArray (set : alist<'a>) =
-        set |> toSeq |> Seq.toArray
 
     let ofMod (m : IMod<'a>) =
         AdaptiveList(fun () -> ofMod m) :> alist<_>

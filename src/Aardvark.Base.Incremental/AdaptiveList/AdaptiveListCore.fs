@@ -220,7 +220,7 @@ module AListReaders =
                             
                             // since the entire reader is new we add its content
                             // which must be up-to-date here (due to calling GetDelta above)
-                            let additions = r.Content |> Seq.map (fun (i,v) -> Add(mapping.Invoke(t, i), v)) |> Seq.toList
+                            let additions = r.Content.All |> Seq.map (fun (i,v) -> Add(mapping.Invoke(t, i), v)) |> Seq.toList
                             additions
 
                         | Rem (t,v) ->
@@ -236,7 +236,7 @@ module AListReaders =
                             // Note that the content here might be OutOfDate
                             // TODO: think about implications here when we do not "own" the reader
                             //       exclusively
-                            let removals = r.Content |> Seq.map (fun (i,v) -> Rem(mapping.Revoke(t, i), v))  |> Seq.toList
+                            let removals = r.Content.All |> Seq.map (fun (i,v) -> Rem(mapping.Revoke(t, i), v))  |> Seq.toList
 
                             // remove all times created for this specific occurance of r
                             mapping.RevokeAll t |> ignore
@@ -504,8 +504,8 @@ module AListReaders =
                     let content = x.Content
                     reset <- None
                     deltas.Clear()
-                    let add = c |> Seq.filter (not << content.Contains) |> Seq.map Add
-                    let rem = content |> Seq.filter (not << c.Contains) |> Seq.map Rem
+                    let add = c.All |> Seq.filter (not << content.Contains) |> Seq.map Add
+                    let rem = content.All |> Seq.filter (not << c.Contains) |> Seq.map Rem
 
                     Seq.append add rem |> Seq.toList
                 | None ->

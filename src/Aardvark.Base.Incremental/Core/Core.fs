@@ -354,6 +354,7 @@ type private EmptyCollection<'a>() =
 /// defines a base class for all adaptive objects implementing
 /// IAdaptiveObject.
 /// </summary>
+[<AllowNullLiteral>]
 type AdaptiveObject =
     class
         [<DefaultValue>]

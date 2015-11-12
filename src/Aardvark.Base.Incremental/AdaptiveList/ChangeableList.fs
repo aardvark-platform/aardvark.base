@@ -79,6 +79,21 @@ type clist<'a>(initial : seq<'a>) =
         if index < 0 || index >= content.Count then None
         else order.TryAt (index + 1)
 
+    let toSeq() =
+        let rec toSeq(start : SkipOrder.SortKey) =
+            if start = order.Root then 
+                Seq.empty
+            else
+                seq {
+                    match content.TryGetValue start with
+                        | (true, v) -> yield v
+                        | _ -> ()
+
+                    yield! toSeq start.Next
+                }
+
+        toSeq order.Root.Next
+
     do insertRange order.Root initial |> ignore
 
     interface alist<'a> with
@@ -203,7 +218,7 @@ type clist<'a>(initial : seq<'a>) =
 
     member x.Find(item : 'a) =
         lock content (fun () ->
-            let t = content |> Seq.tryPick (fun (t,v) -> if Object.Equals(v,item) then Some t else None)
+            let t = content.All |> Seq.tryPick (fun (t,v) -> if Object.Equals(v,item) then Some t else None)
             match t with
                 | Some t -> clistkey (unbox t)
                 | None -> null
@@ -219,18 +234,18 @@ type clist<'a>(initial : seq<'a>) =
     member x.CopyTo(arr : 'a[], index : int) =
         lock content (fun () ->
             let mutable i = index
-            for e in content.Values do
-                arr.[i] <- e
+            for v in toSeq() do
+                arr.[i] <- v
                 i <- i + 1
         )
 
     interface System.Collections.IEnumerable with
         member x.GetEnumerator() =
-            (content.Values :> System.Collections.IEnumerable).GetEnumerator()
+            (toSeq() :> System.Collections.IEnumerable).GetEnumerator()
 
     interface System.Collections.Generic.IEnumerable<'a> with
         member x.GetEnumerator() =
-            (content.Values :> seq<'a>).GetEnumerator()
+            (toSeq() :> seq<'a>).GetEnumerator()
 
     interface IList<'a> with
         member x.Add v = x.Add v |> ignore
@@ -243,7 +258,7 @@ type clist<'a>(initial : seq<'a>) =
         member x.Clear() = x.Clear()
         member x.Count = x.Count
         member x.IsReadOnly = false
-        member x.Contains(item) = lock content (fun () -> content |> Seq.exists(fun (_,i) -> System.Object.Equals(i, item)))
+        member x.Contains(item) = lock content (fun () -> content.All |> Seq.exists(fun (_,i) -> System.Object.Equals(i, item)))
         member x.CopyTo(arr, index) = x.CopyTo(arr, index)
         member x.Remove(item) = lock content (fun () -> match x.Find item with | null -> false | key -> x.Remove key; true)
 
@@ -375,6 +390,20 @@ type corderedset<'a>(initial : seq<'a>) =
         else
             false
 
+    let toSeq() =
+        let rec toSeq(start : SimpleOrder.SortKey) =
+            if start = order.Root then 
+                Seq.empty
+            else
+                seq {
+                    match content.TryGetValue start with
+                        | (true, v) -> yield v
+                        | _ -> ()
+
+                    yield! toSeq start.Next
+                }
+
+        toSeq order.Root.Next
 
     do insertRangeAfter order.Root initial |> ignore
 
@@ -478,11 +507,11 @@ type corderedset<'a>(initial : seq<'a>) =
 
     interface System.Collections.IEnumerable with
         member x.GetEnumerator() =
-            (content.Values :> System.Collections.IEnumerable).GetEnumerator()
+            (toSeq() :> System.Collections.IEnumerable).GetEnumerator()
 
     interface System.Collections.Generic.IEnumerable<'a> with
         member x.GetEnumerator() =
-            (content.Values :> seq<'a>).GetEnumerator()
+            (toSeq() :> seq<'a>).GetEnumerator()
 
     new() = corderedset Seq.empty
 
