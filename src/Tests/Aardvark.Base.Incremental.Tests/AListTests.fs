@@ -172,15 +172,13 @@ module ``simple list tests`` =
 
         let validateTimeDensity(r : IListReader<'a>) =
             r.GetDelta() |> ignore
-
-            // TODO
+            ()
 //            let mutable t = r.RootTime.Root.Next
 //            while t <> r.RootTime.Root do
 //                match r.Content.TryGetValue t with
 //                    | (true, v) -> ()
 //                    | _ -> failwithf "no value associated with time %A" t
 //                t <- t.Next
-            ()
 
         let add v = l.Add v |> ignore
         let content (r : IListReader<'a>) = 

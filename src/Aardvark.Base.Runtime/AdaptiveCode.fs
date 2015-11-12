@@ -10,6 +10,7 @@ open Aardvark.Base.Incremental
 
 type NativeCalls = list<NativeCall>
 
+[<AllowNullLiteral>]
 type AdaptiveCode(content : list<IMod<NativeCalls>>) =
     member x.Content = content
 
@@ -19,110 +20,143 @@ type AdaptiveCode(content : list<IMod<NativeCalls>>) =
     interface IDisposable with
         member x.Dispose() = x.Dispose()
 
-type CompileDelta<'a> = Option<'a> -> 'a -> Option<'a> -> AdaptiveCode
+type DynamicProgramDescription<'k, 'a when 'k : equality> =
+    {
+        input : amap<'k, 'a>
+        maxArgumentCount : int
+        keyComparer : IComparer<'k>
+        compileDelta : Option<'a> -> 'a -> Option<'a> -> AdaptiveCode
+    }
+
+type DynamicFragmentContext<'a> =
+    {
+        compileDelta : Option<'a> -> 'a -> Option<'a> -> AdaptiveCode
+        memory : MemoryManager
+    }
+
 
 [<AllowNullLiteral>]
 type DynamicFragment<'a> =
     class
         inherit AdaptiveObject
 
+        val mutable public Context : DynamicFragmentContext<'a>
         val mutable public Storage : CodeFragment
-        val mutable public Tag : 'a
-        val mutable public Code : AdaptiveCode
-        val mutable public CompileDelta : CompileDelta<'a>
-        val mutable public Next : DynamicFragment<'a>
+        val mutable public Tag : Option<'a>
         val mutable public Prev : DynamicFragment<'a>
-        
-        val mutable private lastPrevTag : 'a
+        val mutable public Next : DynamicFragment<'a>
+        val mutable public Code : AdaptiveCode
+        val mutable public CodePrevTag : Option<'a>
 
+        member x.Recompile (caller : IAdaptiveObject) =
+            let hasCode = not (isNull x.Code)
+            let upToDate = hasCode && Object.Equals(x.CodePrevTag, x.Prev.Tag)
+
+            if not upToDate then
+                if hasCode then x.Code.Dispose()
+                x.Code <- x.Context.compileDelta x.Prev.Tag x.Tag.Value x.Next.Tag
+                x.CodePrevTag <- x.Prev.Tag
+                true
+            else
+                false
 
         member x.WriteContent (caller : IAdaptiveObject) =
             x.EvaluateAlways caller (fun () ->
-                let nextFragment = x.Next.Storage
-                let myFragment = x.Storage
-                let ptr = myFragment.Offset
-
-                if not <| System.Object.ReferenceEquals(x.lastPrevTag, x.Prev.Tag) then
-                    x.Code <- x.CompileDelta (Some x.Prev.Tag) x.Tag (Some x.Next.Tag)
-
                 let code =
                     x.Code.Content
                         |> List.collect (fun c -> c.GetValue x)
                         |> List.toArray
 
-                // TODO: maybe partial updates here
-                myFragment.Write(code)
-                ptr <> myFragment.Offset
+                if isNull x.Storage then
+                    x.Storage <- CodeFragment(x.Context.memory, code)
+                    true
+                else
+                    let ptr = x.Storage.Offset
+
+                    // TODO: maybe partial updates here
+                    x.Storage.Write(code)
+                    ptr <> x.Storage.Offset
             )
 
         member x.Link(caller : IAdaptiveObject) =
-            x.EvaluateAlways caller  (fun () ->
+            x.EvaluateAlways caller (fun () ->
                 let prevFragment = x.Prev.Storage
                 let myFragment = x.Storage
 
-                if prevFragment.Next <> myFragment then
-                    prevFragment.Next <- myFragment
-                    myFragment.Prev <- prevFragment
+                if prevFragment.NextPointer <> myFragment.Offset then
+                    prevFragment.NextPointer <- myFragment.Offset
             )
 
         member x.Dispose() =
-            x.Code.Dispose()
-            x.Storage.Dispose()
+            x.Prev <- null
+            x.Next <- null
+
+            if not (isNull x.Storage) then
+                x.Storage.Dispose()
+                x.Storage <- null
+            
+            if not (isNull x.Code) then
+                x.Code.Dispose()
+                x.CodePrevTag <- None
+                x.Code <- null
 
         interface IDisposable with
             member x.Dispose() = x.Dispose()
 
 
-        new(storage, tag, compileDelta) = 
-            { Storage = storage; Next = null; 
-              Prev = null; lastPrevTag = Unchecked.defaultof<_>;
-              Tag = tag; 
-              Code = Unchecked.defaultof<_>;
-              CompileDelta = compileDelta }
+        new(context, tag) = 
+            { Context = context
+              Storage = null; Next = null; 
+              Prev = null; Tag = Some tag; 
+              Code = null; CodePrevTag = None }
 
+        new(context, storage) = 
+            { Context = context
+              Storage = storage; Next = null; 
+              Prev = null; Tag = None; 
+              Code = null; CodePrevTag = None }
     end
 
 type ProgramUpdateStatistics =
     {
-        structureChangeTime : TimeSpan
+        recompileTime : TimeSpan
+        addRemoveTime : TimeSpan
         writeTime : TimeSpan
+
+
+        recompiled : int
+        jumpAdjusted : int
+        updated : int
         added : int
         removed : int
-        changed : int
-        moved : int
     }
 
 [<CompilationRepresentation(CompilationRepresentationFlags.ModuleSuffix)>]
 module ProgramUpdateStatistics =
     let zero =
         {
-            structureChangeTime = TimeSpan.Zero
+            recompileTime = TimeSpan.Zero
+            addRemoveTime = TimeSpan.Zero
             writeTime = TimeSpan.Zero
+            recompiled = 0
+            jumpAdjusted = 0
+            updated = 0
             added = 0
             removed = 0
-            changed = 0
-            moved = 0
         }
 
    
 
 module DynamicFragment =
 
-    let create (memory : MemoryManager) (tag : 'a) (compileDelta : CompileDelta<'a>) : DynamicFragment<'a> =
-       let store = CodeFragment(memory)
-       new DynamicFragment<_>(store, tag, compileDelta)
+    let create (context : DynamicFragmentContext<'a>) (tag : 'a) : DynamicFragment<'a> =
+       new DynamicFragment<_>(context, tag)
 
     let inline tag (f : DynamicFragment<'a>) =
         f.Tag
 
 
-type DynamicProgramDescription<'k, 'a when 'k : equality> =
-    {
-        maxArgs : int
-        compileDelta : CompileDelta<'a>
-        input : amap<'k, 'a>
-        comparer : IComparer<'k>
-    }
+
 
 type DynamicProgram<'k, 'a when 'k : equality>(desc : DynamicProgramDescription<'k, 'a>) =
     inherit AdaptiveObject()
@@ -131,10 +165,14 @@ type DynamicProgram<'k, 'a when 'k : equality>(desc : DynamicProgramDescription<
     let memory = MemoryManager.createExecutable()
 
     let cache = Dict<'k * 'a, DynamicFragment<'a>>()
-    let fragments = SortedDictionaryExt<'k, StableSet<DynamicFragment<'a>>> (curry desc.comparer.Compare)
+    let fragments = SortedDictionaryExt<'k, StableSet<DynamicFragment<'a>>>(desc.keyComparer)
 
-    let prolog : DynamicFragment<'a> = new DynamicFragment<_>(CodeFragment(memory, Assembler.functionProlog desc.maxArgs), Unchecked.defaultof<_>, desc.compileDelta)
-    let epilog : DynamicFragment<'a> = new DynamicFragment<_>(CodeFragment(memory, Assembler.functionEpilog desc.maxArgs), Unchecked.defaultof<_>, desc.compileDelta)
+    let context = { memory = memory; compileDelta = desc.compileDelta }
+    let prolog : DynamicFragment<'a> = new DynamicFragment<_>(context, CodeFragment(memory, Assembler.functionProlog desc.maxArgumentCount))
+    let epilog : DynamicFragment<'a> = new DynamicFragment<_>(context, CodeFragment(memory, Assembler.functionEpilog desc.maxArgumentCount))
+
+    do prolog.Next <- epilog
+       epilog.Prev <- prolog
 
     let dirtyLock = obj()
     let mutable dirtySet = HashSet<DynamicFragment<'a>>()
@@ -142,6 +180,11 @@ type DynamicProgram<'k, 'a when 'k : equality>(desc : DynamicProgramDescription<
     let run = CodeFragment.wrap prolog.Storage
 
     let sw = System.Diagnostics.Stopwatch()
+
+
+
+
+
 
     override x.InputChanged(o : IAdaptiveObject) =
         match o with
@@ -151,7 +194,9 @@ type DynamicProgram<'k, 'a when 'k : equality>(desc : DynamicProgramDescription<
                 ()
 
     member x.Run() =
-        run()
+        lock x (fun () ->        
+            run()
+        )
 
     member x.Update caller = 
         x.EvaluateIfNeeded caller ProgramUpdateStatistics.zero (fun v ->
@@ -164,30 +209,49 @@ type DynamicProgram<'k, 'a when 'k : equality>(desc : DynamicProgramDescription<
                     set
                 )
 
+            let recompileSet = HashSet()
+            let relinkSet = HashSet()
+
             let mutable added = 0
             let mutable removed = 0
             let mutable changed = 0
             let mutable moveCount = 0
             
+            let prologNextPtr = 
+                let store = prolog.Next.Storage
+                if isNull store then -1n
+                else store.Offset
+
+            let epilogPrevPtr = 
+                let store = epilog.Prev.Storage
+                if isNull store then -1n
+                else store.Offset
+
+
+            let createBetween (prev : Option<DynamicFragment<'a>>) (v : 'a) (next : Option<DynamicFragment<'a>>)  =
+
+                match next with
+                    | Some n -> recompileSet.Add n |> ignore
+                    | _ -> ()
+
+                //let code = desc.compileDelta (Option.map DynamicFragment.tag prev) v (Option.map DynamicFragment.tag next)
+                let fragment = DynamicFragment.create context v
+
+                let l = match prev with | Some l -> l | None -> prolog
+                let r = match next with | Some r -> r | None -> epilog
+
+                r.Prev <- fragment
+                fragment.Prev <- l
+                fragment.Next <- r
+                l.Next <- fragment
+
+                fragment
+
             sw.Restart()
             for d in deltas do
                 match d with
                     | Add (k,v) ->
                         added <- added + 1
-                        let createBetween (prev : Option<DynamicFragment<'a>>) (next : Option<DynamicFragment<'a>>)  =
-
-                            //let code = desc.compileDelta (Option.map DynamicFragment.tag prev) v (Option.map DynamicFragment.tag next)
-                            let fragment = DynamicFragment.create memory v desc.compileDelta
-
-                            let l = match prev with | Some l -> l | None -> prolog
-                            let r = match next with | Some r -> r | None -> epilog
-
-                            r.Prev <- fragment
-                            fragment.Prev <- l
-                            fragment.Next <- r
-                            l.Next <- fragment
-
-                            fragment
 
                         let l,s,r = SortedDictionary.neighbourhood k fragments
 
@@ -205,21 +269,21 @@ type DynamicProgram<'k, 'a when 'k : equality>(desc : DynamicProgramDescription<
                             match s with
                                 | Some self ->
                                     let created =
-                                        self.AddWithPrev (fun p -> createBetween p next) 
+                                        self.AddWithPrev (fun p -> createBetween p v next) 
 
                                     match created with
                                         | Some f -> f
                                         | None -> failwithf "duplicated key: %A" k
 
                                 | None ->
-                                    let frag = createBetween prev next
+                                    let frag = createBetween prev v next
                                     let set = StableSet()
                                     set.Add frag |> ignore
                                     fragments.[k] <- set
                                     frag
 
                         cache.[(k,v)] <- fragment
-                        dirtySet.Add fragment |> ignore
+                        recompileSet.Add fragment |> ignore
 
                     | Rem (k,v) ->
                         
@@ -233,44 +297,71 @@ type DynamicProgram<'k, 'a when 'k : equality>(desc : DynamicProgramDescription<
                                             fragment.Next.Prev <- fragment.Prev
                                             fragment.Prev.Next <- fragment.Next
 
-                                            fragment.Dispose()
+                                            recompileSet.Add fragment.Next |> ignore
 
-                                            // next needs to be recompiled
-                                            dirtySet.Add fragment.Next |> ignore
+                                            fragment.Dispose()
                                             dirtySet.Remove fragment |> ignore
+                                            recompileSet.Remove fragment |> ignore
 
                                             if set.Count = 0 then
                                                 fragments.Remove k |> ignore
 
-                                        else failwith  "could remove fragment from stable set: %A" k
+                                        ()
                                     | _ ->
                                         failwithf "could not find Fragment for: %A" k
                             | _ -> 
                                 failwithf "could not find container for: %A" k
             sw.Stop()
-            let structuralTime = sw.Elapsed
+            let addRemoveTime = sw.Elapsed
+
+
+
 
             sw.Restart()
-            let moved = HashSet()
+            for r in recompileSet do
+                if r.Recompile x then
+                    relinkSet.Add r |> ignore
+                    dirtySet.Add r |> ignore
+
+            sw.Stop()
+            let recompileTime = sw.Elapsed
+
+
+            sw.Restart()
+            
             for d in dirtySet do
                 changed <- changed + 1
                 if d.WriteContent x then
-                    moved.Add d |> ignore
+                    relinkSet.Add d |> ignore
 
-            for d in moved do
+            for d in relinkSet do
                 moveCount <- moveCount + 1
                 d.Link x
-            epilog.Link x
+
+
+            if prolog.Next.Storage.Offset <> prologNextPtr then
+                moveCount <- moveCount + 1
+                prolog.Storage.NextPointer <- prolog.Next.Storage.Offset
+
+            if epilog.Prev.Storage.Offset <> epilogPrevPtr then
+                moveCount <- moveCount + 1
+                epilog.Prev.Storage.NextPointer <- epilog.Storage.Offset
+
 
             sw.Stop()
+            let writeTime = sw.Elapsed
+
 
             {
-                structureChangeTime = structuralTime
-                writeTime = sw.Elapsed
+                recompileTime = recompileTime
+                addRemoveTime = addRemoveTime
+                writeTime = writeTime
+
+                recompiled = recompileSet.Count
+                jumpAdjusted = relinkSet.Count
+                updated = changed
                 added = added
                 removed = removed
-                changed = changed
-                moved = moveCount
             }
         ) 
 
@@ -287,16 +378,8 @@ type DynamicProgram<'k, 'a when 'k : equality>(desc : DynamicProgramDescription<
 
 module Tests =
     
-    let mutable deltaResults = List<int>()
-
-    let check (l : list<int>) =
-        let c = Seq.toList deltaResults
-        if c <> l then failwithf "should be: %A, was %A" l c
-        deltaResults.Clear()
-
     let printFunction (v : int) =
-        deltaResults.Add v
-        printfn "%A" v
+        printf "%A " v
 
     type Print = delegate of int -> unit
     let dPrint = Print printFunction
@@ -304,7 +387,7 @@ module Tests =
 
     let run() =
         let calls  = 
-            CMap.ofList [
+            CSet.ofList [
                 0,0
                 3,3
                 2,6
@@ -313,25 +396,42 @@ module Tests =
 
         let desc =
             {
-                maxArgs = 6
+                input = AMap.ofASet calls
+                maxArgumentCount = 6
+                keyComparer = Comparer.Default
                 compileDelta = fun p s _ -> 
                     match p with
                         | Some p -> new AdaptiveCode([Mod.constant [pPrint, [|s - p :> obj|]]])
                         | None -> new AdaptiveCode([Mod.constant [pPrint, [|s :> obj|]]])
-                input = calls
-                comparer = Comparer.Default
             }
 
         let prog = new DynamicProgram<_,_>(desc)
 
         prog.Update(null) |> printfn "update: %A"
+        prog.Run(); printfn ""
 
-        prog.Run()
+        transact (fun () ->
+            calls |> CSet.remove (0,0) |> ignore
+        )
 
-        check [0; 9; -3; -3] 
+        prog.Update(null) |> printfn "update: %A"
+        prog.Run(); printfn ""
 
-        ()
 
+        transact (fun () ->
+            calls |> CSet.add (1,10) |> ignore
+        )
+        prog.Update(null) |> printfn "update: %A"
+        prog.Run(); printfn ""
+
+
+        transact (fun () ->
+            calls |> CSet.unionWith (List.init 1000 (fun i -> (-1, i)))
+        )
+
+
+        prog.Update(null) |> printfn "update: %A"
+        prog.Run(); printfn ""
 
 
 

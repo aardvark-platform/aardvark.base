@@ -37,11 +37,8 @@ module FragmentTests =
             ]
 
             
-        prolog.Next <- frag
-        frag.Prev <- prolog
-
-        epilog.Prev <- frag
-        frag.Next <- epilog
+        prolog.NextPointer <- frag.Offset
+        frag.NextPointer <- epilog.Offset
 
 
         frag.NextPointer |> should equal epilog.Offset
