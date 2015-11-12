@@ -565,39 +565,74 @@ type CodeFragment(manager : MemoryManager, content : byte[]) =
 //            next <- n
 //            x.NextPointer <- n.Offset
 
-    member x.NextPointer
-        with get() : nativeint =
-            if containsJmp then
-                let jmpArgOffset = alignedJumpArgumentOffset()
-                let jmpArg : int = memory |> ManagedPtr.read jmpArgOffset
-                
-                let nextPtr = 
-                    memory.Offset +                             // where am i located
-                    nativeint (jmpArgOffset + sizeof<int>) +    // where is the jmp instruction
-                    nativeint jmpArg                            // what's the argument of the jmp instruction
+    member x.WriteNextPointer(target : nativeint) =
+        let jmpArgOffset = alignedJumpArgumentOffset()
 
-                nextPtr
-            else
-                -1n
+        let jmpEndLocation = memory.Offset + nativeint (jmpArgOffset + 4)
+        let jmpArg = int (target - jmpEndLocation)
 
-        and set (ptr : nativeint) : unit =
+        if containsJmp then
+            // atomic write here since the offset is 4-byte aligned
+            memory |> ManagedPtr.write jmpArgOffset jmpArg
+        else
+            // if (for some reason) the fragment does currently not end
+            // with a jmp instruction we need to re-create it
+            let jmpStart = nonAlignedJumpOffset()
+            let nopSize = (jmpArgOffset - 1) - jmpStart
+
+            let jmp = ASM.assembleJump nopSize jmpArg
+            memory |> ManagedPtr.writeArray jmpStart jmp
+            containsJmp <- true
+
+        abs jmpArg
+
+    member x.ReadNextPointer() =
+        if containsJmp then
             let jmpArgOffset = alignedJumpArgumentOffset()
+            let jmpArg : int = memory |> ManagedPtr.read jmpArgOffset
+                
+            let nextPtr = 
+                memory.Offset +                             // where am i located
+                nativeint (jmpArgOffset + sizeof<int>) +    // where is the jmp instruction
+                nativeint jmpArg                            // what's the argument of the jmp instruction
 
-            let jmpEndLocation = memory.Offset + nativeint (jmpArgOffset + 4)
-            let jmpArg = ptr - jmpEndLocation
-
-            if containsJmp then
-                // atomic write here since the offset is 4-byte aligned
-                memory |> ManagedPtr.write jmpArgOffset (int jmpArg)
-            else
-                // if (for some reason) the fragment does currently not end
-                // with a jmp instruction we need to re-create it
-                let jmpStart = nonAlignedJumpOffset()
-                let nopSize = (jmpArgOffset - 1) - jmpStart
-
-                let jmp = ASM.assembleJump nopSize (int jmpArg)
-                memory |> ManagedPtr.writeArray jmpStart jmp
-                containsJmp <- true
+            nextPtr
+        else
+            -1n
+//
+//    member x.NextPointer
+//        with get() : nativeint =
+//            if containsJmp then
+//                let jmpArgOffset = alignedJumpArgumentOffset()
+//                let jmpArg : int = memory |> ManagedPtr.read jmpArgOffset
+//                
+//                let nextPtr = 
+//                    memory.Offset +                             // where am i located
+//                    nativeint (jmpArgOffset + sizeof<int>) +    // where is the jmp instruction
+//                    nativeint jmpArg                            // what's the argument of the jmp instruction
+//
+//                nextPtr
+//            else
+//                -1n
+//
+//        and set (ptr : nativeint) : unit =
+//            let jmpArgOffset = alignedJumpArgumentOffset()
+//
+//            let jmpEndLocation = memory.Offset + nativeint (jmpArgOffset + 4)
+//            let jmpArg = ptr - jmpEndLocation
+//
+//            if containsJmp then
+//                // atomic write here since the offset is 4-byte aligned
+//                memory |> ManagedPtr.write jmpArgOffset (int jmpArg)
+//            else
+//                // if (for some reason) the fragment does currently not end
+//                // with a jmp instruction we need to re-create it
+//                let jmpStart = nonAlignedJumpOffset()
+//                let nopSize = (jmpArgOffset - 1) - jmpStart
+//
+//                let jmp = ASM.assembleJump nopSize (int jmpArg)
+//                memory |> ManagedPtr.writeArray jmpStart jmp
+//                containsJmp <- true
 
     member x.Write (calls : NativeCall[]) =
         resetStartOffsets()

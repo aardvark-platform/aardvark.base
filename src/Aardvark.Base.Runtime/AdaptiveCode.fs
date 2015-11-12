@@ -20,33 +20,111 @@ type AdaptiveCode(content : list<IMod<NativeCalls>>) =
     interface IDisposable with
         member x.Dispose() = x.Dispose()
 
-type DynamicProgramDescription<'k, 'a when 'k : equality> =
-    {
-        input : amap<'k, 'a>
-        maxArgumentCount : int
-        keyComparer : IComparer<'k>
-        compileDelta : Option<'a> -> 'a -> Option<'a> -> AdaptiveCode
-    }
 
-type DynamicFragmentContext<'a> =
+type DynamicProgramStatistics =
+    struct
+        val mutable public DeltaProcessTime : TimeSpan
+        val mutable public CompileTime : TimeSpan
+        val mutable public WriteTime : TimeSpan
+        
+        val mutable public AddedFragmentCount : int
+        val mutable public RemovedFragmentCount : int
+        val mutable public CompiledFragmentCount : int
+        val mutable public UpdatedFragmentCount : int
+        val mutable public UpdatedJumpCount : int
+
+        static member Zero =
+            DynamicProgramStatistics(
+                DeltaProcessTime = TimeSpan.Zero,
+                CompileTime = TimeSpan.Zero,
+                WriteTime = TimeSpan.Zero,
+                AddedFragmentCount = 0,
+                RemovedFragmentCount = 0,
+                CompiledFragmentCount = 0,
+                UpdatedFragmentCount = 0,
+                UpdatedJumpCount = 0
+            )
+
+        static member (+) (l : DynamicProgramStatistics, r : DynamicProgramStatistics) =
+            DynamicProgramStatistics(
+                DeltaProcessTime = l.DeltaProcessTime + r.DeltaProcessTime,
+                CompileTime = l.CompileTime + r.CompileTime,
+                WriteTime = l.WriteTime + r.WriteTime,
+                AddedFragmentCount = l.AddedFragmentCount + r.AddedFragmentCount,
+                RemovedFragmentCount = l.RemovedFragmentCount + r.RemovedFragmentCount,
+                CompiledFragmentCount = l.CompiledFragmentCount + r.CompiledFragmentCount,
+                UpdatedFragmentCount = l.UpdatedFragmentCount + r.UpdatedFragmentCount,
+                UpdatedJumpCount = l.UpdatedJumpCount + r.UpdatedJumpCount
+            )
+
+        static member (-) (l : DynamicProgramStatistics, r : DynamicProgramStatistics) =
+            DynamicProgramStatistics(
+                DeltaProcessTime = l.DeltaProcessTime - r.DeltaProcessTime,
+                CompileTime = l.CompileTime - r.CompileTime,
+                WriteTime = l.WriteTime - r.WriteTime,
+                AddedFragmentCount = l.AddedFragmentCount - r.AddedFragmentCount,
+                RemovedFragmentCount = l.RemovedFragmentCount - r.RemovedFragmentCount,
+                CompiledFragmentCount = l.CompiledFragmentCount - r.CompiledFragmentCount,
+                UpdatedFragmentCount = l.UpdatedFragmentCount - r.UpdatedFragmentCount,
+                UpdatedJumpCount = l.UpdatedJumpCount - r.UpdatedJumpCount
+            )
+
+
+        override x.ToString() =
+            String.concat "\r\n" [
+                "DynamicProgramStatistics {"
+                sprintf "   DeltaProcessTime = %A" x.DeltaProcessTime
+                sprintf "   CompileTime = %A" x.CompileTime
+                sprintf "   WriteTime = %A" x.WriteTime
+                sprintf "   AddedFragmentCount = %A" x.AddedFragmentCount
+                sprintf "   RemovedFragmentCount = %A" x.RemovedFragmentCount
+                sprintf "   CompiledFragmentCount = %A" x.CompiledFragmentCount
+                sprintf "   UpdatedFragmentCount = %A" x.UpdatedFragmentCount
+                sprintf "   UpdatedJumpCount = %A" x.UpdatedJumpCount
+                "}"
+            ]
+
+    end
+
+   
+
+type IDynamicProgram =
+    inherit IAdaptiveObject
+    inherit IDisposable
+    
+    abstract member Update : IAdaptiveObject -> DynamicProgramStatistics
+    abstract member Run : unit -> unit
+
+    abstract member NativeCallCount : int
+    abstract member FragmentCount : int
+    abstract member ProgramSizeInBytes : int64
+    abstract member TotalJumpDistanceInBytes : int64
+
+
+
+
+type private OptimizedDynamicFragmentContext<'a> =
     {
-        compileDelta : Option<'a> -> 'a -> Option<'a> -> AdaptiveCode
+        compileDelta : Option<'a> -> 'a -> AdaptiveCode
         memory : MemoryManager
+        nativeCallCount : ref<int>
+        jumpDistance : ref<int>
     }
-
 
 [<AllowNullLiteral>]
-type DynamicFragment<'a> =
+type private OptimizedDynamicFragment<'a> =
     class
         inherit AdaptiveObject
 
-        val mutable public Context : DynamicFragmentContext<'a>
+        val mutable public Context : OptimizedDynamicFragmentContext<'a>
         val mutable public Storage : CodeFragment
         val mutable public Tag : Option<'a>
-        val mutable public Prev : DynamicFragment<'a>
-        val mutable public Next : DynamicFragment<'a>
+        val mutable public Prev : OptimizedDynamicFragment<'a>
+        val mutable public Next : OptimizedDynamicFragment<'a>
         val mutable public Code : AdaptiveCode
         val mutable public CodePrevTag : Option<'a>
+        val mutable public CallCount : int
+        val mutable public JumpDistance : int
 
         member x.Recompile (caller : IAdaptiveObject) =
             let hasCode = not (isNull x.Code)
@@ -54,7 +132,7 @@ type DynamicFragment<'a> =
 
             if not upToDate then
                 if hasCode then x.Code.Dispose()
-                x.Code <- x.Context.compileDelta x.Prev.Tag x.Tag.Value x.Next.Tag
+                x.Code <- x.Context.compileDelta x.Prev.Tag x.Tag.Value
                 x.CodePrevTag <- x.Prev.Tag
                 true
             else
@@ -67,6 +145,9 @@ type DynamicFragment<'a> =
                         |> List.collect (fun c -> c.GetValue x)
                         |> List.toArray
 
+                Interlocked.Add(x.Context.nativeCallCount, code.Length - x.CallCount) |> ignore
+                x.CallCount <- code.Length
+
                 if isNull x.Storage then
                     x.Storage <- CodeFragment(x.Context.memory, code)
                     true
@@ -78,18 +159,37 @@ type DynamicFragment<'a> =
                     ptr <> x.Storage.Offset
             )
 
-        member x.Link(caller : IAdaptiveObject) =
+        member x.LinkPrev(caller : IAdaptiveObject) =
             x.EvaluateAlways caller (fun () ->
                 let prevFragment = x.Prev.Storage
                 let myFragment = x.Storage
 
-                if prevFragment.NextPointer <> myFragment.Offset then
-                    prevFragment.NextPointer <- myFragment.Offset
+                if prevFragment.ReadNextPointer() <> myFragment.Offset then
+                    let distance = prevFragment.WriteNextPointer(myFragment.Offset)
+                    Interlocked.Add(x.Context.jumpDistance, distance - x.JumpDistance) |> ignore
+                    x.JumpDistance <- distance
+            )
+
+        member x.LinkNext(caller : IAdaptiveObject) =
+            x.EvaluateAlways caller (fun () ->
+                let nextFragment = x.Next.Storage
+                let myFragment = x.Storage
+
+                if myFragment.ReadNextPointer() <> nextFragment.Offset then
+                    let distance = myFragment.WriteNextPointer(nextFragment.Offset)
+                    Interlocked.Add(x.Context.jumpDistance, distance - x.JumpDistance) |> ignore
+                    x.JumpDistance <- distance
             )
 
         member x.Dispose() =
             x.Prev <- null
             x.Next <- null
+
+            Interlocked.Add(x.Context.jumpDistance, -x.JumpDistance) |> ignore
+            x.JumpDistance <- 0
+
+            Interlocked.Add(x.Context.nativeCallCount, -x.CallCount) |> ignore
+            x.CallCount <- 0
 
             if not (isNull x.Storage) then
                 x.Storage.Dispose()
@@ -108,87 +208,53 @@ type DynamicFragment<'a> =
             { Context = context
               Storage = null; Next = null; 
               Prev = null; Tag = Some tag; 
-              Code = null; CodePrevTag = None }
+              Code = null; CodePrevTag = None
+              CallCount = 0; JumpDistance = 0 }
 
         new(context, storage) = 
             { Context = context
               Storage = storage; Next = null; 
               Prev = null; Tag = None; 
-              Code = null; CodePrevTag = None }
+              Code = null; CodePrevTag = None
+              CallCount = 0; JumpDistance = 0 }
     end
 
-type ProgramUpdateStatistics =
-    {
-        recompileTime : TimeSpan
-        addRemoveTime : TimeSpan
-        writeTime : TimeSpan
 
-
-        recompiled : int
-        jumpAdjusted : int
-        updated : int
-        added : int
-        removed : int
-    }
-
-[<CompilationRepresentation(CompilationRepresentationFlags.ModuleSuffix)>]
-module ProgramUpdateStatistics =
-    let zero =
-        {
-            recompileTime = TimeSpan.Zero
-            addRemoveTime = TimeSpan.Zero
-            writeTime = TimeSpan.Zero
-            recompiled = 0
-            jumpAdjusted = 0
-            updated = 0
-            added = 0
-            removed = 0
-        }
-
-   
-
-module DynamicFragment =
-
-    let create (context : DynamicFragmentContext<'a>) (tag : 'a) : DynamicFragment<'a> =
-       new DynamicFragment<_>(context, tag)
-
-    let inline tag (f : DynamicFragment<'a>) =
-        f.Tag
-
-
-
-
-type DynamicProgram<'k, 'a when 'k : equality>(desc : DynamicProgramDescription<'k, 'a>) =
+type private OptimizedDynamicProgram<'k, 'a when 'k : equality>(input : amap<'k, 'a>, maxArgumentCount : int,
+                                                                keyComparer : IComparer<'k>, 
+                                                                compileDelta : Option<'a> -> 'a -> AdaptiveCode ) =
     inherit AdaptiveObject()
 
-    let reader = desc.input.ASet.GetReader()
+    let reader = input.ASet.GetReader()
     let memory = MemoryManager.createExecutable()
 
-    let cache = Dict<'k * 'a, DynamicFragment<'a>>()
-    let fragments = SortedDictionaryExt<'k, StableSet<DynamicFragment<'a>>>(desc.keyComparer)
+    let cache = Dict<'k * 'a, OptimizedDynamicFragment<'a>>()
+    let fragments = SortedDictionaryExt<'k, StableSet<OptimizedDynamicFragment<'a>>>(keyComparer)
 
-    let context = { memory = memory; compileDelta = desc.compileDelta }
-    let prolog : DynamicFragment<'a> = new DynamicFragment<_>(context, CodeFragment(memory, Assembler.functionProlog desc.maxArgumentCount))
-    let epilog : DynamicFragment<'a> = new DynamicFragment<_>(context, CodeFragment(memory, Assembler.functionEpilog desc.maxArgumentCount))
+    let nativeCallCount = ref 0
+    let jumpDistance = ref 0
+    let context = { memory = memory; compileDelta = compileDelta; nativeCallCount = nativeCallCount; jumpDistance = jumpDistance }
+    let prolog = new OptimizedDynamicFragment<_>(context, CodeFragment(memory, Assembler.functionProlog maxArgumentCount))
+    let epilog = new OptimizedDynamicFragment<_>(context, CodeFragment(memory, Assembler.functionEpilog maxArgumentCount))
 
     do prolog.Next <- epilog
        epilog.Prev <- prolog
 
     let dirtyLock = obj()
-    let mutable dirtySet = HashSet<DynamicFragment<'a>>()
+    let mutable dirtySet = HashSet<OptimizedDynamicFragment<'a>>()
 
     let run = CodeFragment.wrap prolog.Storage
 
-    let sw = System.Diagnostics.Stopwatch()
 
-
-
+    let deltaProcessWatch = System.Diagnostics.Stopwatch()
+    let compileWatch = System.Diagnostics.Stopwatch()
+    let writeWatch = System.Diagnostics.Stopwatch()
 
 
 
     override x.InputChanged(o : IAdaptiveObject) =
         match o with
-            | :? DynamicFragment<'a> as o ->
+            | :? OptimizedDynamicFragment<'a> as o ->
                 lock dirtyLock (fun () -> dirtySet.Add o |> ignore)
             | _ ->
                 ()
@@ -199,7 +265,7 @@ type DynamicProgram<'k, 'a when 'k : equality>(desc : DynamicProgramDescription<
         )
 
     member x.Update caller = 
-        x.EvaluateIfNeeded caller ProgramUpdateStatistics.zero (fun v ->
+        x.EvaluateIfNeeded caller DynamicProgramStatistics.Zero (fun v ->
             let deltas = reader.GetDelta x
 
             let dirtySet = 
@@ -228,14 +294,14 @@ type DynamicProgram<'k, 'a when 'k : equality>(desc : DynamicProgramDescription<
                 else store.Offset
 
 
-            let createBetween (prev : Option<DynamicFragment<'a>>) (v : 'a) (next : Option<DynamicFragment<'a>>)  =
+            let createBetween (prev : Option<OptimizedDynamicFragment<'a>>) (v : 'a) (next : Option<OptimizedDynamicFragment<'a>>)  =
 
                 match next with
                     | Some n -> recompileSet.Add n |> ignore
                     | _ -> ()
 
                 //let code = desc.compileDelta (Option.map DynamicFragment.tag prev) v (Option.map DynamicFragment.tag next)
-                let fragment = DynamicFragment.create context v
+                let fragment = new OptimizedDynamicFragment<_>(context, v)
 
                 let l = match prev with | Some l -> l | None -> prolog
                 let r = match next with | Some r -> r | None -> epilog
@@ -247,7 +313,7 @@ type DynamicProgram<'k, 'a when 'k : equality>(desc : DynamicProgramDescription<
 
                 fragment
 
-            sw.Restart()
+            deltaProcessWatch.Restart()
             for d in deltas do
                 match d with
                     | Add (k,v) ->
@@ -311,24 +377,21 @@ type DynamicProgram<'k, 'a when 'k : equality>(desc : DynamicProgramDescription<
                                         failwithf "could not find Fragment for: %A" k
                             | _ -> 
                                 failwithf "could not find container for: %A" k
-            sw.Stop()
-            let addRemoveTime = sw.Elapsed
+            deltaProcessWatch.Stop()
 
 
 
 
-            sw.Restart()
+
+            compileWatch.Restart()
             for r in recompileSet do
                 if r.Recompile x then
                     relinkSet.Add r |> ignore
                     dirtySet.Add r |> ignore
 
-            sw.Stop()
-            let recompileTime = sw.Elapsed
+            compileWatch.Stop()
 
-
-            sw.Restart()
-            
+            writeWatch.Restart()
             for d in dirtySet do
                 changed <- changed + 1
                 if d.WriteContent x then
@@ -336,33 +399,24 @@ type DynamicProgram<'k, 'a when 'k : equality>(desc : DynamicProgramDescription<
 
             for d in relinkSet do
                 moveCount <- moveCount + 1
-                d.Link x
+                d.LinkPrev x
 
 
-            if prolog.Next.Storage.Offset <> prologNextPtr then
-                moveCount <- moveCount + 1
-                prolog.Storage.NextPointer <- prolog.Next.Storage.Offset
+            prolog.LinkNext x
+            epilog.LinkPrev x
+            writeWatch.Stop()
 
-            if epilog.Prev.Storage.Offset <> epilogPrevPtr then
-                moveCount <- moveCount + 1
-                epilog.Prev.Storage.NextPointer <- epilog.Storage.Offset
+            DynamicProgramStatistics (
+                DeltaProcessTime = deltaProcessWatch.Elapsed,
+                CompileTime = compileWatch.Elapsed,
+                WriteTime = writeWatch.Elapsed,
 
-
-            sw.Stop()
-            let writeTime = sw.Elapsed
-
-
-            {
-                recompileTime = recompileTime
-                addRemoveTime = addRemoveTime
-                writeTime = writeTime
-
-                recompiled = recompileSet.Count
-                jumpAdjusted = relinkSet.Count
-                updated = changed
-                added = added
-                removed = removed
-            }
+                AddedFragmentCount = added,
+                RemovedFragmentCount = removed,
+                CompiledFragmentCount = recompileSet.Count,
+                UpdatedFragmentCount = changed,
+                UpdatedJumpCount = moveCount
+            )
         ) 
 
     member x.Dispose() =
@@ -374,6 +428,31 @@ type DynamicProgram<'k, 'a when 'k : equality>(desc : DynamicProgramDescription<
 
     interface IDisposable with
         member x.Dispose() = x.Dispose()
+
+    interface IDynamicProgram with
+        member x.Update(caller) = x.Update(caller)
+        member x.Run() = x.Run()
+
+        member x.FragmentCount = cache.Count
+        member x.NativeCallCount = !nativeCallCount
+        member x.ProgramSizeInBytes = int64 (memory.AllocatedBytes - prolog.Storage.Memory.Size - epilog.Storage.Memory.Size)
+        member x.TotalJumpDistanceInBytes = int64 (!jumpDistance - prolog.JumpDistance - epilog.JumpDistance)
+
+
+
+module DynamicProgram =
+    
+    let optimized (maxArgs : int) (comparer : IComparer<'k>) (compileDelta : Option<'v> -> 'v -> AdaptiveCode) (input : amap<'k, 'v>) =
+        new OptimizedDynamicProgram<_,_>(input, maxArgs, comparer, compileDelta) :> IDynamicProgram
+
+    let inline run (p : IDynamicProgram) =
+        p.Run()
+
+    let inline update (p : IDynamicProgram) =
+        p.Update(null)
+
+
+
 
 
 module Tests =
@@ -394,18 +473,16 @@ module Tests =
                 1,9
             ]
 
-        let desc =
-            {
-                input = AMap.ofASet calls
-                maxArgumentCount = 6
-                keyComparer = Comparer.Default
-                compileDelta = fun p s _ -> 
-                    match p with
-                        | Some p -> new AdaptiveCode([Mod.constant [pPrint, [|s - p :> obj|]]])
-                        | None -> new AdaptiveCode([Mod.constant [pPrint, [|s :> obj|]]])
-            }
 
-        let prog = new DynamicProgram<_,_>(desc)
+        let compile =
+            let compileDelta p s =
+                match p with
+                    | Some p -> new AdaptiveCode([Mod.constant [pPrint, [|s - p :> obj|]]])
+                    | None -> new AdaptiveCode([Mod.constant [pPrint, [|s :> obj|]]])
+
+            DynamicProgram.optimized 6 Comparer.Default compileDelta
+
+        let prog = calls |> AMap.ofASet |> compile
 
         prog.Update(null) |> printfn "update: %A"
         prog.Run(); printfn ""
@@ -426,12 +503,19 @@ module Tests =
 
 
         transact (fun () ->
-            calls |> CSet.unionWith (List.init 1000 (fun i -> (-1, i)))
+            calls |> CSet.unionWith (List.init 10000 (fun i -> (-1, i)))
         )
 
 
         prog.Update(null) |> printfn "update: %A"
         prog.Run(); printfn ""
+
+
+        printfn "fragments:         %A" prog.FragmentCount
+        printfn "calls:             %A" prog.NativeCallCount
+        printfn "jump distance:     %A" prog.TotalJumpDistanceInBytes
+        printfn "program size:      %A" prog.ProgramSizeInBytes
+
 
 
 

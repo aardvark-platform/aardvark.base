@@ -37,12 +37,12 @@ module FragmentTests =
             ]
 
             
-        prolog.NextPointer <- frag.Offset
-        frag.NextPointer <- epilog.Offset
+        prolog.WriteNextPointer frag.Offset |> ignore
+        frag.WriteNextPointer epilog.Offset |> ignore
 
 
-        frag.NextPointer |> should equal epilog.Offset
-        prolog.NextPointer |> should equal frag.Offset
+        frag.ReadNextPointer() |> should equal epilog.Offset
+        prolog.ReadNextPointer() |> should equal frag.Offset
 
         Console.WriteLine("Code:")
         let instructions = frag.Calls

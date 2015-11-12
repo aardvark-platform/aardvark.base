@@ -239,6 +239,8 @@ and [<AllowNullLiteral>] managedptr internal(block : Block) =
 
 and MemoryManager(capacity : int, malloc : int -> nativeint, mfree : nativeint -> int -> unit) as this =
     let mutable capacity = capacity
+    let mutable allocated = 0
+
     let mutable ptr = malloc capacity
     let freeList = FreeList<int, Block>()
     let l = obj()
@@ -276,6 +278,7 @@ and MemoryManager(capacity : int, malloc : int -> nativeint, mfree : nativeint -
         assert (not (isNull b))
 
         if not b.Free && b.Size > 0 then
+            allocated <- allocated - b.Size
             // merge b with its prev (if it's free)
             let prev = b.Prev
             if not (isNull prev) && prev.Free then 
@@ -343,6 +346,7 @@ and MemoryManager(capacity : int, malloc : int -> nativeint, mfree : nativeint -
         let newMemory = Block(this, nativeint oldCapacity, newCapacity - oldCapacity, lastBlock, null, false)
         lastBlock.Next <- newMemory
         lastBlock <- newMemory
+        allocated <- allocated + newMemory.Size
 
         free newMemory
 
@@ -354,6 +358,7 @@ and MemoryManager(capacity : int, malloc : int -> nativeint, mfree : nativeint -
             match freeList.TryGetGreaterOrEqual(size) with
                 | Some block ->
                     block.Free <- false
+                    allocated <- allocated + block.Size
 
                     if block.Size > size then
                         let rest = Block(this, block.Offset + nativeint size, block.Size - size, block, block.Next, false)
@@ -399,10 +404,12 @@ and MemoryManager(capacity : int, malloc : int -> nativeint, mfree : nativeint -
                 assert(next.Offset = b.Offset + nativeint b.Size)
 
                 if freeList.Remove(next.Size, next) then
+                    allocated <- allocated + next.Size
                     next.Free <- false
 
                     let additionalSize = size - b.Size
                     b.Size <- size
+
 
                     if next.Size > additionalSize then
                         // if next is larger than needed we free the rest
@@ -454,11 +461,16 @@ and MemoryManager(capacity : int, malloc : int -> nativeint, mfree : nativeint -
     member x.Pointer : nativeint = ptr
     member x.PointerLock : ReaderWriterLockSlim = pointerLock
 
+    member x.Capacity = capacity
+    member x.AllocatedBytes = allocated
+    member x.FreeBytes = capacity - allocated
+
     member x.Dispose() =
         if ptr <> 0n then
             mfree ptr capacity
             ptr <- 0n
             capacity <- 0
+            allocated <- 0
             freeList.Clear()
             pointerLock.Dispose()
             firstBlock <- null
