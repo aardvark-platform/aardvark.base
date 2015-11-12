@@ -376,148 +376,86 @@ module ReflectionHelpers =
                 getPrettyNameInternal x
             )
 
+module QuotationReflectionHelpers =
+    open Microsoft.FSharp.Quotations
 
+    //extracts the (optional) top-most method call from an expression
+    let rec tryGetMethodInfo (e : Expr) =
+        match e with
+            | Patterns.Call(_,mi,_) -> 
+                if mi.IsGenericMethod then mi.GetGenericMethodDefinition() |> Some
+                else mi |> Some
+            | ExprShape.ShapeCombination(_, args) -> 
+                args |> List.tryPick tryGetMethodInfo
+            | ExprShape.ShapeLambda(_,b) ->
+                tryGetMethodInfo b
+            | _ -> None
+
+
+    /// <summary>
+    /// extracts the top-most method-call from an expression.
+    /// When no method-call is found the method will raise an exception
+    /// </summary>
+    /// <param name="e"></param>
+    let getMethodInfo (e : Expr) =
+        match tryGetMethodInfo e with
+            | Some mi -> mi
+            | None -> failwith "could not find a method-call in expression"
+
+/// <summary>
+/// Defines a number of active patterns for matching expressions. Includes some
+/// functionality missing in F#.
+/// </summary>
 [<AutoOpen>]
-module Unique =
-    type private Id = Id of int
-    type Unique<'a when 'a : not struct>(value : 'a) =
-        static let mutable currentId = 0
-        static let table = System.Runtime.CompilerServices.ConditionalWeakTable<'a, Id>()
-        static let getId (value : 'a) =
-            match table.TryGetValue value with
-                | (true,Id v) -> v
-                | _ -> let v = Interlocked.Increment(&currentId)
-                       table.Add(value, Id v)
-                       v
+module ReflectionPatterns =
+    open System.Reflection
+    open Microsoft.FSharp.Quotations
+    open QuotationReflectionHelpers
 
-        let id = getId value
-        member x.Id = id
-        member x.Value = value
+    let private typePrefixPattern = System.Text.RegularExpressions.Regex @"^.*\.(?<methodName>.*)$"
+    let (|Method|_|)  (mi : MethodInfo) =
+        let args = mi.GetParameters() |> Seq.map(fun p -> p.ParameterType)
+        let parameters = if mi.IsStatic then
+                            args
+                            else
+                            seq { yield mi.DeclaringType; yield! args }
 
-        override x.Equals o =
-            match o with
-                | :? Unique<'a> as o -> x.Id = o.Id
-                | _ -> false
+        let m = typePrefixPattern.Match mi.Name
+        let name =
+            if m.Success then m.Groups.["methodName"].Value
+            else mi.Name
 
-        override x.GetHashCode() =
-            x.Id.GetHashCode()
+        Method (name, parameters |> Seq.toList) |> Some
 
-        interface IComparable with
-            member x.CompareTo o =
-                match o with
-                    | :? Unique<'a> as o -> x.Id.CompareTo(o.Id)
-                    | _ -> failwith ""
+    let private compareMethods (template : MethodInfo) (m : MethodInfo) =
+        if template.IsGenericMethod && m.IsGenericMethod then
+            if template.GetGenericMethodDefinition() = m.GetGenericMethodDefinition() then
+                let targs = template.GetGenericArguments() |> Array.toList
+                let margs = m.GetGenericArguments() |> Array.toList
 
-    let unique (x : 'a) : Unique<'a> = Unique(x)
+                let zip = List.zip targs margs
 
-//something with stackalloc
-#nowarn "9"
-module RuntimeExtensions =
-    open Microsoft.FSharp.NativeInterop
+                let args = zip |> List.filter(fun (l,r) -> l.IsGenericParameter) |> List.map (fun (_,a) -> a)
 
-    let getStackAddress() = 
-        let ptr : nativeptr<byte> = NativePtr.stackalloc(1) 
-        ptr |> NativePtr.toNativeInt |> int64
-
-    let stackBasePtr = getStackAddress()
-    let getStackSize () = 
-       Aardvark.Base.Fun.Abs(stackBasePtr - getStackAddress())
-
-
-    open System
-    open System.Threading
-    open System.Threading.Tasks
-
-    let concurrentAcc = ref 0
-    let locks = new System.Runtime.CompilerServices.ConditionalWeakTable<obj,ref<int>>()    
-    let sl = new SpinLock()
-
-    let inline spinLocked (obj : SpinLock) (f : unit -> 'b) : 'b =
-            let locked = ref false
-            let mutable result = Unchecked.defaultof<'b>
-            try
-                obj.Enter locked
-                result <- f ()
-            finally
-                if !locked then
-                    obj.Exit()
-            result
-
-    let checkConcurrency lockObj : IDisposable =
-        let mkDisposable r = { new IDisposable with member x.Dispose() = spinLocked sl (fun () -> r := !r - 1) }
-        spinLocked sl (fun () ->
-            match locks.TryGetValue lockObj with
-                | (true,r) -> r := !r + 1
-                              concurrentAcc := System.Math.Max(!r,!concurrentAcc)
-                              mkDisposable r
-                | _ -> let r = ref 0
-                       locks.Add (lockObj, ref 0)
-                       mkDisposable r
-        )
-
-
-    let inline getSourceLocation() = __SOURCE_FILE__ + __LINE__
-
-module Arr =
-    type ArrayWriter<'a> = int * ('a[] -> int -> unit)
-    type ArrayBuilder() =
-        member x.YieldFrom(e : 'a[]) : ArrayWriter<'a> =
-            (e.Length, fun arr i -> e.CopyTo(arr, i))
-
-        member x.Yield(e : 'a) : ArrayWriter<'a> =
-            (1, fun arr i -> arr.[i] <- e)
-
-        member x.Combine((lc,l) : ArrayWriter<'a>, (rc,r) : ArrayWriter<'a>) =
-            (lc + rc, fun arr i -> l arr i
-                                   r arr (i + lc))
-
-        member x.Zero() = (0, fun arr i -> ())
-
-        member x.Delay(f : unit -> ArrayWriter<'a>) = f()
-
-        member x.For(s : seq<'a>, f : 'a -> ArrayWriter<'b>) : ArrayWriter<'b> =
-            let mapped = s |> Seq.map f |> Seq.toArray
-            let count = mapped |> Array.sumBy fst
-
-            (count, fun arr i -> 
-                let mutable c = i
-                for (ci,ei) in mapped do
-                    ei arr c
-                    c <- c + ci)
-
-    let arr = ArrayBuilder()
-
-    let padToLength (l : int) (f : int -> ArrayWriter<'a>) (b : ArrayWriter<'a>) : ArrayWriter<'a> =
-        let (bc,b) = b
-        (l, fun arr i -> 
-            b arr i; 
-            let (fc,f) = f (l - bc)
-            f arr (i + bc)
-            )
-
-    let padToLengthValue (l : int) (v : 'a) (b : ArrayWriter<'a>) : ArrayWriter<'a> =
-        padToLength l (fun m -> arr { yield! Array.create m v }) b
-
-    let padToLengthZero (l : int) (b : ArrayWriter<'a>) : ArrayWriter<'a> =
-        padToLength l (fun m -> arr { yield! Array.create m (Unchecked.defaultof<'a>) }) b
-
-    
-    let create ((count,writer) : ArrayWriter<'a>) =
-        let arr = Array.zeroCreate count
-        writer arr 0
-        arr
-
-    let update (data : 'a[]) (start : int) ((count, writer) : ArrayWriter<'a>) =
-        if start + count > data.Length then
-            raise <| IndexOutOfRangeException()
+                Some args
+            else
+                None
+        elif template = m then
+            Some []
         else
-            writer data start 
+            None          
 
-    let updatePtr (data : IntPtr) (m : ArrayWriter<'a>) =
-        let arr = create m
-        arr.UnsafeCoercedApply<byte>(fun byteArr ->
-            System.Runtime.InteropServices.Marshal.Copy(byteArr, 0, data, byteArr.Length)
-        )
+    let (|MethodQuote|_|) (e : Expr) (mi : MethodInfo) =
+        let m = tryGetMethodInfo e
+        match m with
+            | Some m -> match compareMethods m mi with
+                            | Some a -> MethodQuote(a) |> Some
+                            | None -> None
+            | _ -> None
+
+
+    let (|Create|_|) (c : ConstructorInfo) =
+        Create(c.DeclaringType, c.GetParameters() |> Seq.toList) |> Some
 
 [<AutoOpen>]
 module MarshalDelegateExtensions =
@@ -545,3 +483,36 @@ module MarshalDelegateExtensions =
 
         static member PinFunction(f : 'a -> 'b -> 'c -> 'd) =
             Marshal.PinDelegate(Func<'a, 'b, 'c, 'd>(f))
+
+
+module ConversionHelpers =
+    open System.Collections.Generic
+
+    let lookupTableOption (l : list<'a * 'b>) =
+        let d = Dictionary()
+        for (k,v) in l do
+
+            match d.TryGetValue k with
+                | (true, vo) -> failwithf "duplicated lookup-entry: %A (%A vs %A)" k vo v
+                | _ -> ()
+
+            d.[k] <- v
+
+        fun (key : 'a) ->
+            match d.TryGetValue key with
+                | (true, v) -> Some v
+                | _ -> None
+
+    let lookupTable (l : list<'a * 'b>) =
+        let tryLookup = lookupTableOption l
+        fun (key : 'a) ->
+            match tryLookup key with
+             | Some v -> v
+             | _ -> failwithf "unsupported %A: %A" typeof<'a> key
+
+    let inline convertEnum< ^a, ^b when ^a : (static member op_Explicit : ^a -> int)> (fmt : ^a) : ^b =
+        let v = int fmt
+        if Enum.IsDefined(typeof< ^b >, v) then
+            unbox< ^b > v
+        else
+            failwithf "cannot convert %s %A to %s" typeof< ^a >.Name fmt typeof< ^b >.Name

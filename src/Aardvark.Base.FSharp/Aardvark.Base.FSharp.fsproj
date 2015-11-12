@@ -54,7 +54,7 @@
     <Compile Include="Prelude\FSLibExtensions.fs" />
     <Compile Include="Prelude\FixedSizeArray.fs" />
     <Compile Include="Prelude\HashMap.fs" />
-    <Compile Include="Prelude\HashSet.fs" />
+    <Compile Include="Prelude\PersistentHashSet.fs" />
     <Compile Include="Order.fs" />
     <Compile Include="OrderMaintenance.fs" />
     <Compile Include="SkipList.fs" />
@@ -66,6 +66,7 @@
     <Compile Include="Interop\Color.fs" />
     <Compile Include="Interop\String.fs" />
     <Compile Include="Interop\SortedSet.fs" />
+    <Compile Include="Interop\HashSet.fs" />
     <Compile Include="Reflection\TypeInfo.fs" />
     <Compile Include="Reflection\FunctionReflection.fs" />
     <Compile Include="Reflection\UnmanagedFunctions.fs" />
@@ -80,7 +81,6 @@
     <Compile Include="Runtime.fs" />
     <Compile Include="AgHelpers.fs" />
     <Compile Include="Ag.fs" />
-    <Compile Include="Utilities.fs" />
     <Compile Include="Control.fs" />
     <None Include="paket.references" />
   </ItemGroup>

@@ -8,11 +8,17 @@ open Aardvark.Base
 open System.Threading
 open AgHelpers
 
+
 // Implementation of an embedded domain specific language for attribute grammars. The library works with any types,
 // semantic functions can be added by defining modules annotated with [<Semantic>] attributes.
 // More information can be found here: https://github.com/vrvis/attribute-grammars-for-incremental-scenegraph-rendering and
 // the paper if accepted ;)
 module Ag =
+
+    type Semantic() =
+        inherit System.Attribute()
+
+    let mutable unpack : obj -> obj = id
 
     [<ReferenceEquality>]
     type Scope = { parent       : Option<Scope>
@@ -94,10 +100,10 @@ module Ag =
 
 
     [<OnAardvarkInit>]
-    let initialize () : unit =  AgHelpers.initializeAg()
+    let initialize () : unit =  AgHelpers.initializeAg<Semantic>()
 
     let reinitialize () : unit =  
-        AgHelpers.reIninitializeAg()
+        AgHelpers.reIninitializeAg<Semantic>()
         rootScope.Dispose()
         currentScope.Dispose()
         rootScope <- new ThreadLocal<Scope>(fun () -> { parent = None; source = null; children = newCWT(); cache = null; path = Some "Root" })

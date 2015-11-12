@@ -1,6 +1,7 @@
 ﻿namespace Aardvark.Base
 
-module AgHelpers =
+
+module internal AgHelpers =
     open System.Runtime.CompilerServices
     open Microsoft.FSharp.Reflection
     open System.Reflection
@@ -11,8 +12,6 @@ module AgHelpers =
     open System.Collections.Generic   
     open System.Linq.Expressions
 
-    type Semantic() =
-        inherit System.Attribute()
 
     type internal SemanticFunction(sem : obj, semType : Type, m : MethodInfo) =
         let argType = m.GetParameters().[0].ParameterType
@@ -303,32 +302,32 @@ module AgHelpers =
                                                l
                 list.Add(m)
 
-    let internal registerAssembly (a : Assembly) =
-        try 
-            let types = a.GetTypes()
-
-            let rec attTypes (types : Type[]) =
-                seq {
-                    for t in types do
-                        if (t.GetCustomAttributes(false).OfType<Semantic>().Count() > 0) then
-                            yield t 
-                            yield! attTypes ( t.GetNestedTypes() )
-                }
-            let attTypes = attTypes types
-
-            attTypes |> Seq.toList |> Seq.iter register 
-        with
-            | _ -> ()
+//    let internal registerAssembly (a : Assembly) =
+//        try 
+//            let types = a.GetTypes()
+//
+//            let rec attTypes (types : Type[]) =
+//                seq {
+//                    for t in types do
+//                        if (t.GetCustomAttributes(false).OfType<Semantic>().Count() > 0) then
+//                            yield t 
+//                            yield! attTypes ( t.GetNestedTypes() )
+//                }
+//            let attTypes = attTypes types
+//
+//            attTypes |> Seq.toList |> Seq.iter register 
+//        with
+//            | _ -> ()
 
     let private registered = ref false
 
-    let internal initializeAg() =
+    let internal initializeAg<'semanticType when 'semanticType :> Attribute> ()  =
          if not !registered then
             //glInit()
             //Aardvark.Base.Report.BeginTimed "initializing attribute grammar"
             registered.Value <- true 
 
-            for t in Introspection.GetAllTypesWithAttribute<Semantic>() do
+            for t in Introspection.GetAllTypesWithAttribute<'semanticType>() do
                 register t.E0
 
             //AppDomain.CurrentDomain.AssemblyLoad.Add(
@@ -339,16 +338,14 @@ module AgHelpers =
             //Seq.iter registerAssembly assemblies
             //Aardvark.Base.Report.End() |> ignore
 
-    let internal reIninitializeAg() =
+    let internal reIninitializeAg<'semanticType when 'semanticType :> Attribute>() =
         if !registered then
             m_semanticMap.Clear()
             m_semanticObjects.Clear()
             lock sfCache (fun () -> sfCache.Clear())
             registered := false
 
-        initializeAg()
-
-    let mutable public unpack : obj -> obj = id
+        initializeAg<'semanticType>()
 
     [<Literal>]
     let logging = false

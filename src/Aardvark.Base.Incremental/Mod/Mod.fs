@@ -218,7 +218,7 @@ module Mod =
     let initialize() =
         Report.BeginTimed "initializing mod system"
 
-        Aardvark.Base.AgHelpers.unpack <- fun o ->
+        Aardvark.Base.Ag.unpack <- fun o ->
             match o with
                 | :? IMod as o -> o.GetValue(null)
                 | _ -> o
