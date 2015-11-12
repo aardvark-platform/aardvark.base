@@ -127,16 +127,18 @@ type private OptimizedDynamicFragment<'a> =
         val mutable public JumpDistance : int
 
         member x.Recompile (caller : IAdaptiveObject) =
-            let hasCode = not (isNull x.Code)
-            let upToDate = hasCode && Object.Equals(x.CodePrevTag, x.Prev.Tag)
+            x.EvaluateAlways caller (fun () ->
+                let hasCode = not (isNull x.Code)
+                let upToDate = hasCode && Object.Equals(x.CodePrevTag, x.Prev.Tag)
 
-            if not upToDate then
-                if hasCode then x.Code.Dispose()
-                x.Code <- x.Context.compileDelta x.Prev.Tag x.Tag.Value
-                x.CodePrevTag <- x.Prev.Tag
-                true
-            else
-                false
+                if not upToDate then
+                    if hasCode then x.Code.Dispose()
+                    x.Code <- x.Context.compileDelta x.Prev.Tag x.Tag.Value
+                    x.CodePrevTag <- x.Prev.Tag
+                    true
+                else
+                    false
+            )
 
         member x.WriteContent (caller : IAdaptiveObject) =
             x.EvaluateAlways caller (fun () ->
@@ -280,8 +282,6 @@ type private OptimizedDynamicProgram<'k, 'a when 'k : equality>(input : amap<'k,
 
             let mutable added = 0
             let mutable removed = 0
-            let mutable changed = 0
-            let mutable moveCount = 0
             
             let prologNextPtr = 
                 let store = prolog.Next.Storage
@@ -381,8 +381,6 @@ type private OptimizedDynamicProgram<'k, 'a when 'k : equality>(input : amap<'k,
 
 
 
-
-
             compileWatch.Restart()
             for r in recompileSet do
                 if r.Recompile x then
@@ -391,16 +389,15 @@ type private OptimizedDynamicProgram<'k, 'a when 'k : equality>(input : amap<'k,
 
             compileWatch.Stop()
 
+
+
             writeWatch.Restart()
             for d in dirtySet do
-                changed <- changed + 1
                 if d.WriteContent x then
                     relinkSet.Add d |> ignore
 
             for d in relinkSet do
-                moveCount <- moveCount + 1
                 d.LinkPrev x
-
 
             prolog.LinkNext x
             epilog.LinkPrev x
@@ -414,8 +411,8 @@ type private OptimizedDynamicProgram<'k, 'a when 'k : equality>(input : amap<'k,
                 AddedFragmentCount = added,
                 RemovedFragmentCount = removed,
                 CompiledFragmentCount = recompileSet.Count,
-                UpdatedFragmentCount = changed,
-                UpdatedJumpCount = moveCount
+                UpdatedFragmentCount = dirtySet.Count,
+                UpdatedJumpCount = relinkSet.Count
             )
         ) 
 
@@ -452,7 +449,10 @@ module DynamicProgram =
         p.Update(null)
 
 
-
+    let inline nativeCallCount (p : IDynamicProgram) = p.NativeCallCount
+    let inline fragmentCount (p : IDynamicProgram) = p.FragmentCount
+    let inline programSizeInBytes (p : IDynamicProgram) = p.ProgramSizeInBytes
+    let inline totalJumpDistanceInBytes (p : IDynamicProgram) = p.TotalJumpDistanceInBytes
 
 
 module Tests =
