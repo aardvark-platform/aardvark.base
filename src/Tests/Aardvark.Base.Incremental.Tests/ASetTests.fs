@@ -905,7 +905,7 @@ module ``collect tests`` =
             Task.Factory.StartNew(fun () ->
                 
                     //printfn "thread In";
-                    let foo = adaptive |> ASet.unsafeRegisterCallbackKeepDisposable (fun d -> ())
+                    let foo = adaptive |> ASet.unsafeRegisterCallbackNoGcRoot (fun d -> ())
                     //printfn "thread Out";
 
                     System.Threading.Interlocked.Increment(&threadCount) |> ignore

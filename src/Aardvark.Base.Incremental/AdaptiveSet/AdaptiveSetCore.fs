@@ -534,8 +534,6 @@ module ASetReaders =
     type CopyReader<'a>(input : ReferenceCountedReader<'a>) as this =
         inherit AdaptiveObject()
           
-        let mutable initialized = false
-        //do printfn "getting ref for: %d" this.Id
         let inputReader = input.GetReference()
 
         let mutable containgSetDead = false
@@ -546,11 +544,6 @@ module ASetReaders =
         let mutable subscription    : IDisposable                   = null
         let mutable content         : ReferenceCountingSet<'a>      = Unchecked.defaultof<_>
         let mutable callbacks       : HashSet<Change<'a> -> unit>   = null
-
-                 
-        let mutable isDisposed = 0
-        let mutable onlySubscription = input.OnlyReader.Values.Subscribe(fun pass -> this.SetPassThru(pass, passThru))
-        let mutable deadSubscription = input.ContainingSetDiedEvent.Values.Subscribe this.ContainingSetDied
 
         let emit (d : list<Delta<'a>>) =
             lock this (fun () ->
@@ -587,12 +580,13 @@ module ASetReaders =
                     // a bad one. Nevertheless this is not really a proof of its inexistence (hence the print)
                     Aardvark.Base.Log.warn "[ASetReaders.CopyReader] potentially bad emit with: %A" d
             )
+ 
+        let mutable isDisposed = 0
+        let mutable deadSubscription = input.ContainingSetDiedEvent.Values.Subscribe this.ContainingSetDied
+        let mutable onlySubscription = input.OnlyReader.Values.Subscribe(fun pass -> this.SetPassThru(pass, passThru))
 
-        do initialized <- true
 
         member x.SetPassThru(active : bool, copyContent : bool) =
-            if not initialized then System.Diagnostics.Debugger.Break()
-            //printfn "set pass through: %d" this.Id
             lock inputReader (fun () ->
                 lock this (fun () ->
                     if active <> passThru then
