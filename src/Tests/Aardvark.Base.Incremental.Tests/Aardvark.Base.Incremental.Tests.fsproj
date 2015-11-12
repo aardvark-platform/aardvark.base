@@ -6,7 +6,7 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>b5958171-888e-46a0-bec9-00feba41147f</ProjectGuid>
-    <OutputType>Library</OutputType>
+    <OutputType>Exe</OutputType>
     <RootNamespace>Aardvark.Base.Incremental.Tests</RootNamespace>
     <AssemblyName>Aardvark.Base.Incremental.Tests</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
@@ -70,6 +70,7 @@
     <Compile Include="AgTests.fs" />
     <Compile Include="Performance.fs" />
     <Content Include="app.config" />
+    <Compile Include="Program.fs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="mscorlib" />
