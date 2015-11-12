@@ -28,10 +28,13 @@ type DynamicFragment<'a> =
 
         val mutable public Storage : CodeFragment
         val mutable public Tag : 'a
-        val mutable public Prev : DynamicFragment<'a>
-        val mutable public Next : DynamicFragment<'a>
         val mutable public Code : AdaptiveCode
         val mutable public CompileDelta : CompileDelta<'a>
+        val mutable public Next : DynamicFragment<'a>
+        val mutable public Prev : DynamicFragment<'a>
+        
+        val mutable private lastPrevTag : 'a
+
 
         member x.WriteContent (caller : IAdaptiveObject) =
             x.EvaluateAlways caller (fun () ->
@@ -39,7 +42,8 @@ type DynamicFragment<'a> =
                 let myFragment = x.Storage
                 let ptr = myFragment.Offset
 
-                x.Code <- x.CompileDelta (Some x.Prev.Tag) x.Tag (Some x.Next.Tag)
+                if not <| System.Object.ReferenceEquals(x.lastPrevTag, x.Prev.Tag) then
+                    x.Code <- x.CompileDelta (Some x.Prev.Tag) x.Tag (Some x.Next.Tag)
 
                 let code =
                     x.Code.Content
@@ -71,7 +75,8 @@ type DynamicFragment<'a> =
 
         new(storage, tag, compileDelta) = 
             { Storage = storage; Next = null; 
-              Prev = null; Tag = tag; 
+              Prev = null; lastPrevTag = Unchecked.defaultof<_>;
+              Tag = tag; 
               Code = Unchecked.defaultof<_>;
               CompileDelta = compileDelta }
 
@@ -229,12 +234,15 @@ type DynamicProgram<'k, 'a when 'k : equality>(desc : DynamicProgramDescription<
                                             fragment.Prev.Next <- fragment.Next
 
                                             fragment.Dispose()
+
+                                            // next needs to be recompiled
+                                            dirtySet.Add fragment.Next |> ignore
                                             dirtySet.Remove fragment |> ignore
 
                                             if set.Count = 0 then
                                                 fragments.Remove k |> ignore
 
-                                        ()
+                                        else failwith  "could remove fragment from stable set: %A" k
                                     | _ ->
                                         failwithf "could not find Fragment for: %A" k
                             | _ -> 
@@ -279,7 +287,15 @@ type DynamicProgram<'k, 'a when 'k : equality>(desc : DynamicProgramDescription<
 
 module Tests =
     
+    let mutable deltaResults = List<int>()
+
+    let check (l : list<int>) =
+        let c = Seq.toList deltaResults
+        if c <> l then failwithf "should be: %A, was %A" l c
+        deltaResults.Clear()
+
     let printFunction (v : int) =
+        deltaResults.Add v
         printfn "%A" v
 
     type Print = delegate of int -> unit
@@ -311,6 +327,10 @@ module Tests =
         prog.Update(null) |> printfn "update: %A"
 
         prog.Run()
+
+        check [0; 9; -3; -3] 
+
+        ()
 
 
 
