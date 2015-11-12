@@ -1,0 +1,14 @@
+type file
+id Aardvark.Base.Runtime
+version 1.0
+authors VRVis Research Center
+description
+    Aardvark.Base.Runtime provides a runtime utilities based Aardvark.Base.FSharp and Aardvark.Base.Incremental
+dependencies
+    Aardvark.Base = CURRENTVERSION
+    Aardvark.Base.FSharp = CURRENTVERSION
+    Aardvark.Base.Essentials = CURRENTVERSION
+    Aardvark.Base.Incremental = CURRENTVERSION
+files
+    ..\..\bin\Release\Aardvark.Base.Runtime.dll ==> lib\net45
+    ..\..\bin\Release\Aardvark.Base.Runtime.pdb ==> lib\net45
