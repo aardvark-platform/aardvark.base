@@ -14,7 +14,7 @@ open FsUnit
 
 module DynamicCodeTests =
     
-    type TestProgram<'i, 'a>(program : IDynamicProgram<'i>, getCalls : unit -> list<'a>) =
+    type TestProgram<'i, 'a>(program : IAdaptiveProgram<'i>, getCalls : unit -> list<'a>) =
         inherit AdaptiveObject()
 
         member x.NativeCallCount = program.NativeCallCount
@@ -58,9 +58,9 @@ module DynamicCodeTests =
 
     type TestStruct =
         struct
-            val mutable public Handle : int
+            val mutable public Handle : int64
 
-            new(h) = { Handle = h }
+            new(h : int) = { Handle = int64 h }
         end
 
     [<CompilationRepresentation(CompilationRepresentationFlags.ModuleSuffix)>]
@@ -94,7 +94,7 @@ module DynamicCodeTests =
                 new AdaptiveCode([Mod.constant [pAppend, [|l :> obj; r :> obj|]]])
 
             let program =
-                input |> AMap.ofASet |> DynamicProgram.optimized 6 Comparer.Default compileDelta
+                input |> AMap.ofASet |> AdaptiveProgram.differential 6 Comparer.Default compileDelta
 
             program.AutoDefragmentation <- false
 
@@ -107,7 +107,7 @@ module DynamicCodeTests =
                 new AdaptiveCode([call])
 
             let program =
-                input |> AMap.ofASet |> DynamicProgram.optimized 6 Comparer.Default compileDelta
+                input |> AMap.ofASet |> AdaptiveProgram.differential 6 Comparer.Default compileDelta
             program.AutoDefragmentation <- false
 
             new TestProgram<_,_>(program, getCalls)
@@ -119,7 +119,7 @@ module DynamicCodeTests =
                 new AdaptiveCode([Mod.constant [pAppend, [|l :> obj; r :> obj|]]])
 
             let program =
-                input |> ASet.map (fun i -> i,i) |> AMap.ofASet |> DynamicProgram.optimized 6 Comparer.Default compileDelta
+                input |> ASet.map (fun i -> i,i) |> AMap.ofASet |> AdaptiveProgram.differential 6 Comparer.Default compileDelta
 
             program.AutoDefragmentation <- false
 
@@ -129,13 +129,11 @@ module DynamicCodeTests =
 
 
         let createDynamic (input : aset<int>) =
-            let compileDelta (l : Option<int>) (r : int) =
-                let l = match l with | Some l -> l | None -> 0
-
+            let compile (r : int) =
                 new AdaptiveCode([Mod.constant [pAppend, [|r :> obj|]]])
 
             let program =
-                input |> ASet.map (fun i -> i,i) |> AMap.ofASet |> DynamicProgram.optimized 6 Comparer.Default compileDelta
+                input |> ASet.map (fun i -> i,i) |> AMap.ofASet |> AdaptiveProgram.simple 6 Comparer.Default compile
 
             program.AutoDefragmentation <- false
 
@@ -307,6 +305,10 @@ module DynamicCodeTests =
 
         transact (fun () -> calls.Add 3 |> ignore)
         prog.Run (TestStruct 20) |> should equal [20,1; 20,2; 20,3]
+
+
+        transact (fun () -> calls.Clear())
+        prog.Run (TestStruct 20) |> should equal []
 
 
         ()
