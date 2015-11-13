@@ -56,6 +56,13 @@ module DynamicCodeTests =
         interface IDisposable with
             member x.Dispose() = x.Dispose()
 
+    type TestStruct =
+        struct
+            val mutable public Handle : int
+
+            new(h) = { Handle = h }
+        end
+
     [<CompilationRepresentation(CompilationRepresentationFlags.ModuleSuffix)>]
     module TestProgram =
         open System.Runtime.InteropServices
@@ -118,6 +125,9 @@ module DynamicCodeTests =
 
             new TestProgram<_,_>(program, getCallsSelf)
 
+
+
+
         let createDynamic (input : aset<int>) =
             let compileDelta (l : Option<int>) (r : int) =
                 let l = match l with | Some l -> l | None -> 0
@@ -129,7 +139,7 @@ module DynamicCodeTests =
 
             program.AutoDefragmentation <- false
 
-            new TestProgram<int,_>(program, getCalls)
+            new TestProgram<TestStruct,_>(program, getCalls)
 
 
 
@@ -288,11 +298,15 @@ module DynamicCodeTests =
         let calls = [1] |> CSet.ofList
         use prog = TestProgram.createDynamic calls
 
-        prog.Run 5 |> should equal [5,1]
-        prog.Run 7 |> should equal [7,1]
+        prog.Run (TestStruct 5) |> should equal [5,1]
+        prog.Run (TestStruct 7) |> should equal [7,1]
 
         transact (fun () -> calls.Add 2 |> ignore)
-        prog.Run 5 |> should equal [5,1; 5,2]
+        prog.Run (TestStruct 5) |> should equal [5,1; 5,2]
+
+
+        transact (fun () -> calls.Add 3 |> ignore)
+        prog.Run (TestStruct 20) |> should equal [20,1; 20,2; 20,3]
 
 
         ()
