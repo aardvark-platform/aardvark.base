@@ -22,6 +22,8 @@ module DynamicCodeTests =
         member x.TotalJumpDistanceInBytes = program.TotalJumpDistanceInBytes
         member x.ProgramSizeInBytes = program.ProgramSizeInBytes
 
+        member x.Disassemble() = program.Disassemble() |> unbox<AMD64.Instruction[]>
+
         member x.AutoDefragmentation
             with get() = program.AutoDefragmentation
             and set d = program.AutoDefragmentation <- d
@@ -99,6 +101,7 @@ module DynamicCodeTests =
 
             let program =
                 input |> AMap.ofASet |> DynamicProgram.optimized 6 Comparer.Default compileDelta
+            program.AutoDefragmentation <- false
 
             new TestProgram<_>(program, getCalls)
 
@@ -225,6 +228,9 @@ module DynamicCodeTests =
         transact (fun () -> input |> CSet.remove (1,v1 :> IMod<_>)) |> should be True
         prog.Run() |> should equal [0,3; 3,2] 
 
+        prog.StartDefragmentation().Wait()
+        prog.Disassemble() |> Array.mapi (fun i a -> sprintf "%d: %A" i a) |> String.concat "\r\n" |> Console.WriteLine
+        
 
     [<Test>]
     let ``[DynamicCode] defragmentation``() =
@@ -256,7 +262,6 @@ module DynamicCodeTests =
         prog.StartDefragmentation().Wait()
         prog.TotalJumpDistanceInBytes |> should equal 0L
         prog.Run() |> should equal ([1..1000])
-
 
 
         ()

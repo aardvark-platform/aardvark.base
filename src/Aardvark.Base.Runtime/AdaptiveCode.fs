@@ -96,6 +96,7 @@ type IDynamicProgram =
     abstract member Update : IAdaptiveObject -> DynamicProgramStatistics
     abstract member Run : unit -> unit
     
+    abstract member Disassemble : unit -> obj
     abstract member AutoDefragmentation : bool with get, set
     abstract member StartDefragmentation : unit -> Task<TimeSpan>
     abstract member DefragmentationStarted : IEvent<unit>
@@ -375,6 +376,21 @@ module private OptimizedProgram =
                 run()
             )
 
+        member x.Disassemble() =
+            lock x (fun () ->
+                let result = List()
+                let mutable current = prolog.Next
+                while current <> epilog do
+                    let mem = current.Storage.Memory
+
+                    let data = mem.UInt8Array
+                    let instructions = AMD64.Disassembler.disassemble data
+                    result.AddRange instructions
+                    current <- current.Next
+
+                result.ToArray()
+            )
+
         member x.Update caller = 
             x.EvaluateIfNeeded caller DynamicProgramStatistics.Zero (fun v ->
                 Interlocked.Increment(&version) |> ignore
@@ -564,7 +580,7 @@ module private OptimizedProgram =
             member x.NativeCallCount = !nativeCallCount
             member x.ProgramSizeInBytes = int64 (memory.AllocatedBytes - prolog.Storage.Memory.Size - epilog.Storage.Memory.Size)
             member x.TotalJumpDistanceInBytes = int64 (!jumpDistance - prolog.JumpDistance - epilog.JumpDistance)
-
+            member x.Disassemble() = x.Disassemble() :> obj
 
 
 module DynamicProgram =
