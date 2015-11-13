@@ -514,9 +514,9 @@ module ASM =
  
 
 [<AllowNullLiteral>]
-type CodeFragment(manager : MemoryManager, content : byte[]) =
-    let mutable memory = manager |> MemoryManager.alloc (content.Length + ASM.encodedJumpSize)
-    let mutable containsJmp = false
+type CodeFragment(memory : managedptr, containsJmp : bool) = 
+    let mutable memory = memory
+    let mutable containsJmp = containsJmp
 
     let startOffsets = List<int>()
 
@@ -526,7 +526,6 @@ type CodeFragment(manager : MemoryManager, content : byte[]) =
             startOffsets.RemoveRange(1, startOffsets.Count - 1)
 
     do startOffsets.Add(0)
-       memory |> ManagedPtr.writeArray 0 content
 
     let nonAlignedJumpOffset() =
         memory.Size - ASM.encodedJumpSize
@@ -535,14 +534,6 @@ type CodeFragment(manager : MemoryManager, content : byte[]) =
         let jmpStart = ASM.jumpArgumentOffset + nonAlignedJumpOffset()
         let a = ASM.jumpArgumentAlign - 1
         (jmpStart + a) &&& ~~~a
-
-//    member private x.FixJumps(moved : bool) =
-//        if isNull x.Next then ()
-//        else x.NextPointer <- x.Next.Memory.Offset
-//
-//        // if the memory was moved we need to patch the prev's jmp-distance
-//        if moved && not (isNull x.Prev) then 
-//            x.Prev.NextPointer <- x.Memory.Offset
 
     member x.Calls =
         memory 
@@ -555,15 +546,8 @@ type CodeFragment(manager : MemoryManager, content : byte[]) =
     member x.Memory : managedptr =
         memory
 
-//    member x.Prev 
-//        with get() : CodeFragment = prev
-//        and set p = prev <- p
-//
-//    member x.Next 
-//        with get() : CodeFragment = next
-//        and set n = 
-//            next <- n
-//            x.NextPointer <- n.Offset
+    member x.ContainsJmp = containsJmp
+
 
     member x.WriteNextPointer(target : nativeint) =
         let jmpArgOffset = alignedJumpArgumentOffset()
@@ -584,7 +568,8 @@ type CodeFragment(manager : MemoryManager, content : byte[]) =
             memory |> ManagedPtr.writeArray jmpStart jmp
             containsJmp <- true
 
-        abs jmpArg
+        let distance = target - (memory.Offset + nativeint memory.Size) |> int
+        abs distance
 
     member x.ReadNextPointer() =
         if containsJmp then
@@ -599,40 +584,6 @@ type CodeFragment(manager : MemoryManager, content : byte[]) =
             nextPtr
         else
             -1n
-//
-//    member x.NextPointer
-//        with get() : nativeint =
-//            if containsJmp then
-//                let jmpArgOffset = alignedJumpArgumentOffset()
-//                let jmpArg : int = memory |> ManagedPtr.read jmpArgOffset
-//                
-//                let nextPtr = 
-//                    memory.Offset +                             // where am i located
-//                    nativeint (jmpArgOffset + sizeof<int>) +    // where is the jmp instruction
-//                    nativeint jmpArg                            // what's the argument of the jmp instruction
-//
-//                nextPtr
-//            else
-//                -1n
-//
-//        and set (ptr : nativeint) : unit =
-//            let jmpArgOffset = alignedJumpArgumentOffset()
-//
-//            let jmpEndLocation = memory.Offset + nativeint (jmpArgOffset + 4)
-//            let jmpArg = ptr - jmpEndLocation
-//
-//            if containsJmp then
-//                // atomic write here since the offset is 4-byte aligned
-//                memory |> ManagedPtr.write jmpArgOffset (int jmpArg)
-//            else
-//                // if (for some reason) the fragment does currently not end
-//                // with a jmp instruction we need to re-create it
-//                let jmpStart = nonAlignedJumpOffset()
-//                let nopSize = (jmpArgOffset - 1) - jmpStart
-//
-//                let jmp = ASM.assembleJump nopSize (int jmpArg)
-//                memory |> ManagedPtr.writeArray jmpStart jmp
-//                containsJmp <- true
 
     member x.Write (calls : NativeCall[]) =
         resetStartOffsets()
@@ -702,8 +653,6 @@ type CodeFragment(manager : MemoryManager, content : byte[]) =
             for i in id+1..startOffsets.Count-1 do
                 startOffsets.[i] <- startOffsets.[i] + delta
 
-            // if the block moved fix the jump
-            //x.FixJumps moved
 
     member x.Remove(id : int) =
         x.Update(id, [||])
@@ -712,18 +661,19 @@ type CodeFragment(manager : MemoryManager, content : byte[]) =
         resetStartOffsets()
         let moved = memory |> ManagedPtr.realloc ASM.encodedJumpSize 
         containsJmp <- false
-        //x.FixJumps moved
 
     member x.Dispose() =
         if memory <> null then
-//            if not <| isNull prev then prev.Next <- x.Next
-//            if not <| isNull next then next.Prev <- prev
             ManagedPtr.free memory
             memory <- null
-//            next <- null
-//            prev <- null
             containsJmp <- false
 
+
+
+    new(manager : MemoryManager, content : byte[]) =
+        let ptr = manager.Alloc(content.Length + ASM.encodedJumpSize)
+        ptr |> ManagedPtr.writeArray 0 content
+        CodeFragment(ptr, false)
 
     new(manager : MemoryManager, calls : NativeCall[]) = new CodeFragment(manager, calls |> ASM.assembleCalls)
     new(manager : MemoryManager) = new CodeFragment(manager, ([||] : byte[]))
@@ -743,12 +693,6 @@ module CodeFragment =
 
     let inline update (calls : seq<NativeCall>) (f : CodeFragment) =
         f.Write (Seq.toArray calls)
-
-//    let inline next (f : CodeFragment) =
-//        f.Next
-//
-//    let inline prev (f : CodeFragment) =
-//        f.Prev
 
     let inline destroy (f : CodeFragment) =
         f.Dispose()
@@ -775,20 +719,3 @@ module CodeFragment =
 
                 (!run)()
             )
-
-
-
-//    let inline insertAfter (ref : CodeFragment) (r : CodeFragment) =
-//        r.Prev <- ref
-//        r.Next <- ref.Next
-//        
-//        if not (isNull ref.Next) then ref.Next.Prev <- r
-//        ref.Next <- r
-//
-//    let inline insertBefore (ref : CodeFragment) (r : CodeFragment) =
-//        if isNull ref.Prev then
-//            failwith "[Fragment] cannot insert before prolog"
-//        else
-//            insertAfter ref.Prev r
-//
-

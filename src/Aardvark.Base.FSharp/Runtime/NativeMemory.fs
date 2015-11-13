@@ -137,8 +137,13 @@ type internal Block =
 and [<AllowNullLiteral>] managedptr internal(block : Block) =
     let mutable block = block
 
+    #if DEBUG
     let check() =
         if isNull block then raise <| ObjectDisposedException("MemoryBlock")
+    #else
+    let check() = ()
+    #endif
+
 
     member x.Parent = check(); block.Parent
     member x.Size = if isNull block then 0 else block.Size
@@ -224,6 +229,18 @@ and [<AllowNullLiteral>] managedptr internal(block : Block) =
                 x.Parent.Pointer + x.Offset + nativeint sourceOffset,
                 x.Parent.Pointer + x.Offset + nativeint targetOffset,
                 length
+            )
+        )
+
+    member x.CopyTo(target : managedptr) =
+        check()
+        ReaderWriterLock.read target.Parent.PointerLock (fun () ->
+            ReaderWriterLock.read block.Parent.PointerLock (fun () ->
+                Marshal.Move(
+                    block.Parent.Pointer + block.Offset,
+                    target.Parent.Pointer + target.Offset,
+                    min block.Size target.Size
+                )
             )
         )
 
