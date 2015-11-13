@@ -89,12 +89,12 @@ type DynamicProgramStatistics =
 
    
 
-type IDynamicProgram =
+type IDynamicProgram<'i> =
     inherit IAdaptiveObject
     inherit IDisposable
     
     abstract member Update : IAdaptiveObject -> DynamicProgramStatistics
-    abstract member Run : unit -> unit
+    abstract member Run : 'i -> unit
     
     abstract member Disassemble : unit -> obj
     abstract member AutoDefragmentation : bool with get, set
@@ -111,6 +111,7 @@ type IDynamicProgram =
 module private OptimizedProgram =
     type FragmentContext<'a> =
         {
+            dynamicArguments : int
             compileDelta : Option<'a> -> 'a -> AdaptiveCode
             mutable memory : MemoryManager
             nativeCallCount : ref<int>
@@ -153,17 +154,20 @@ module private OptimizedProgram =
                             |> List.collect (fun c -> c.GetValue x)
                             |> List.toArray
 
+                    let asm =
+                        code |> ASM.assembleCalls x.Context.dynamicArguments
+
                     Interlocked.Add(x.Context.nativeCallCount, code.Length - x.CallCount) |> ignore
                     x.CallCount <- code.Length
 
                     if isNull x.Storage then
-                        x.Storage <- CodeFragment(x.Context.memory, code)
+                        x.Storage <- CodeFragment(x.Context.memory, asm)
                         true
                     else
                         let ptr = x.Storage.Offset
 
                         // TODO: maybe partial updates here
-                        x.Storage.Write(code)
+                        x.Storage.Write(asm)
                         ptr <> x.Storage.Offset
                 )
 
@@ -282,23 +286,28 @@ module private OptimizedProgram =
                 false
 
 
-    type Program<'k, 'a when 'k : equality>(input : amap<'k, 'a>, maxArgumentCount : int,
-                                            keyComparer : IComparer<'k>, 
-                                            compileDelta : Option<'a> -> 'a -> AdaptiveCode ) =
+    type Program<'i, 'k, 'a when 'k : equality>(input : amap<'k, 'a>, maxArgumentCount : int,
+                                                keyComparer : IComparer<'k>, 
+                                                compileDelta : Option<'a> -> 'a -> AdaptiveCode ) =
         inherit AdaptiveObject()
 
         let reader = input.ASet.GetReader()
         let mutable memory = MemoryManager.createExecutable()
         let mutable version = -1
 
+        let dynamicArguments = 
+            if typeof<'i> = typeof<unit> then 0
+            elif typeof<'i>.IsValueType then 1
+            else failwith "not implemented"
+
         let cache = Dict<'k * 'a, Fragment<'a>>()
         let fragments = SortedDictionaryExt<'k, StableSet<Fragment<'a>>>(keyComparer)
 
         let nativeCallCount = ref 0
         let jumpDistance = ref 0
-        let context = { memory = memory; compileDelta = compileDelta; nativeCallCount = nativeCallCount; jumpDistance = jumpDistance }
-        let prolog = new Fragment<_>(context, CodeFragment(memory, ASM.functionProlog maxArgumentCount))
-        let epilog = new Fragment<_>(context, CodeFragment(memory, ASM.functionEpilog maxArgumentCount))
+        let context = { dynamicArguments = dynamicArguments; memory = memory; compileDelta = compileDelta; nativeCallCount = nativeCallCount; jumpDistance = jumpDistance }
+        let prolog = new Fragment<_>(context, CodeFragment(memory, ASM.functionProlog dynamicArguments maxArgumentCount))
+        let epilog = new Fragment<_>(context, CodeFragment(memory, ASM.functionEpilog dynamicArguments maxArgumentCount))
 
         do prolog.Next <- epilog
            epilog.Prev <- prolog
@@ -319,7 +328,7 @@ module private OptimizedProgram =
         let mutable defragRunning = 0
         let mutable currentDefragTask = null
 
-        let issueDefragmentation (this : Program<'k, 'a>) =
+        let issueDefragmentation (this : Program<'i, 'k, 'a>) =
             let startTask (f : unit -> 'x) =
                 Task.Factory.StartNew(f, TaskCreationOptions.LongRunning)
 
@@ -349,9 +358,9 @@ module private OptimizedProgram =
 
         let run = 
             let mutable currentPtr = 0n
-            let mutable currentRun = id
+            let mutable currentRun = ignore
 
-            fun () ->
+            fun v ->
                 ReaderWriterLock.read memory.PointerLock (fun () ->
                     let ptr = memory.Pointer + prolog.Storage.Offset
 
@@ -360,7 +369,7 @@ module private OptimizedProgram =
                         currentRun <- UnmanagedFunctions.wrap ptr
 
 
-                    currentRun()
+                    currentRun v
                 )
 
 
@@ -371,9 +380,9 @@ module private OptimizedProgram =
                 | _ ->
                     ()
 
-        member x.Run() =
+        member x.Run (v : 'i) =
             lock x (fun () ->        
-                run()
+                run v
             )
 
         member x.Disassemble() =
@@ -558,7 +567,7 @@ module private OptimizedProgram =
         interface IDisposable with
             member x.Dispose() = x.Dispose()
 
-        interface IDynamicProgram with
+        interface IDynamicProgram<'i> with
             member x.DefragmentationStarted = defragStartEvent :> IEvent<_>
             member x.DefragmentationDone = defragDoneEvent :> IEvent<_>
 
@@ -574,7 +583,7 @@ module private OptimizedProgram =
                 else Task.FromResult TimeSpan.Zero
 
             member x.Update(caller) = x.Update(caller)
-            member x.Run() = x.Run()
+            member x.Run v = x.Run v
 
             member x.FragmentCount = cache.Count
             member x.NativeCallCount = !nativeCallCount
@@ -586,19 +595,19 @@ module private OptimizedProgram =
 module DynamicProgram =
     
     let optimized (maxArgs : int) (comparer : IComparer<'k>) (compileDelta : Option<'v> -> 'v -> AdaptiveCode) (input : amap<'k, 'v>) =
-        new OptimizedProgram.Program<_,_>(input, maxArgs, comparer, compileDelta) :> IDynamicProgram
+        new OptimizedProgram.Program<_,_,_>(input, maxArgs, comparer, compileDelta) :> IDynamicProgram<'i>
 
-    let inline run (p : IDynamicProgram) =
+    let inline run (p : IDynamicProgram<unit>) =
         p.Run()
 
-    let inline update (p : IDynamicProgram) =
+    let inline update (p : IDynamicProgram<'a>) =
         p.Update(null)
 
 
-    let inline nativeCallCount (p : IDynamicProgram) = p.NativeCallCount
-    let inline fragmentCount (p : IDynamicProgram) = p.FragmentCount
-    let inline programSizeInBytes (p : IDynamicProgram) = p.ProgramSizeInBytes
-    let inline totalJumpDistanceInBytes (p : IDynamicProgram) = p.TotalJumpDistanceInBytes
+    let inline nativeCallCount (p : IDynamicProgram<'i>) = p.NativeCallCount
+    let inline fragmentCount (p : IDynamicProgram<'i>) = p.FragmentCount
+    let inline programSizeInBytes (p : IDynamicProgram<'i>) = p.ProgramSizeInBytes
+    let inline totalJumpDistanceInBytes (p : IDynamicProgram<'i>) = p.TotalJumpDistanceInBytes
 
 
 module Tests =

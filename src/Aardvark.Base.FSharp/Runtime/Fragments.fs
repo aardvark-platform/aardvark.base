@@ -36,11 +36,14 @@ module AMD64 =
     type Value =
         | Dword of uint32
         | Qword of uint64
+        | Register of Register
 
     type Instruction =
         | Mov of Register * Value
         | CallRax
         | Push of offset : int * Value
+        | PushReg of Register
+        | PopReg of Register
         | Jmp of offset : int
         | Nop of width : int
         | Ret
@@ -49,7 +52,7 @@ module AMD64 =
         | RegisterArgument of Register
         | StackArgument
 
-    type CallingConvention = { registers : Register[] }
+    type CallingConvention = { registers : Register[]; calleeSaved : Register[] }
 
     [<CompilationRepresentation(CompilationRepresentationFlags.ModuleSuffix)>]
     module CallingConvention =
@@ -66,8 +69,17 @@ module AMD64 =
             if arg >= cc.registers.Length then Some (arg - cc.registers.Length)
             else None
 
-    let windows = { registers = [| Register.Rcx; Register.Rdx; Register.R8; Register.R9 |] }
-    let linux = { registers = [| Register.Rdi; Register.Rsi; Register.Rdx; Register.Rcx; Register.R8; Register.R9 |] }
+    let windows = 
+        { 
+            registers = [| Register.Rcx; Register.Rdx; Register.R8; Register.R9 |] 
+            calleeSaved = [|Register.R12; Register.R13; Register.R14; Register.R15 |]
+        }
+
+    let linux = 
+        { 
+            registers = [| Register.Rdi; Register.Rsi; Register.Rdx; Register.Rcx; Register.R8; Register.R9 |] 
+            calleeSaved = [|Register.R12; Register.R13; Register.R14; Register.R15 |]
+        }
 
     module Compiler =
         let value (o : obj) =
@@ -78,12 +90,14 @@ module AMD64 =
                 | :? unativeint as o -> Qword(uint64 o)
                 | :? uint64 as o -> Qword(o)
                 | :? uint32 as o -> Dword(o)
+                | :? Register as o -> Register(o)
                 | _ -> failwithf "unsupported argument-type: %A" (o.GetType())
 
         let stackSize(v : Value) =
             match v with
                 | Qword _ -> 8
                 | Dword _ -> 8
+                | Register _ -> 8
 
         let setArg (cc : CallingConvention) (index : int) (stackOffset : int) (arg : obj) =
             match CallingConvention.getArgumentLocation index cc with
@@ -100,14 +114,19 @@ module AMD64 =
                 CallRax
             ]
 
-        let compileCalls (cc : CallingConvention) (calls : seq<nativeint * obj[]>) =
+        let compileCalls (cc : CallingConvention) (dynamicArguments : int) (calls : seq<nativeint * obj[]>) =
             let res = List<Instruction>()
 
             for f,args in calls do
                 let mutable stackOffset = 32
 
+                for i in 0..dynamicArguments-1 do
+                    let source = cc.calleeSaved.[i]
+                    let target = cc.registers.[i]
+                    res.Add(Mov(target, Register source))
+
                 for i in 0..args.Length-1 do
-                    let (newOffset,code) = setArg cc i stackOffset args.[i]
+                    let (newOffset,code) = setArg cc (dynamicArguments + i) stackOffset args.[i]
                     stackOffset <- newOffset
                     res.AddRange(code)
 
@@ -115,14 +134,42 @@ module AMD64 =
 
             res.ToArray()
 
-        let compileCall (cc : CallingConvention) (f : nativeint) (args : array<obj>) =
-            compileCalls cc [f,args]
+        let compileCall (cc : CallingConvention) (dynamicArguments : int) (f : nativeint) (args : array<obj>) =
+            compileCalls cc dynamicArguments [f,args]
+
+        let functionProlog (cc : CallingConvention) (dynamicArguments : int) =
+            if dynamicArguments > 0 then
+                let pushTempArgs = 
+                    List.init dynamicArguments (fun i -> [PushReg(cc.calleeSaved.[i]); Mov(cc.calleeSaved.[i], Register cc.registers.[i])])
+                        |> List.concat
+                    
+                let pushRsp = PushReg(Register.Rsp)
+
+                pushRsp::pushTempArgs |> List.toArray
+            else
+                [||]
+
+        let functionEpilog (cc : CallingConvention) (dynamicArguments : int) =
+            if dynamicArguments > 0 then
+                let popTempArgs = 
+                    List.init dynamicArguments (fun i -> PopReg(cc.calleeSaved.[i]))
+                    
+                let popRsp = PopReg(Register.Rsp)
+
+                popTempArgs @ [popRsp] |> List.toArray
+            else
+                [||]
 
     module Decompiler =
         let rec private decompileAcc (cc : CallingConvention) (rax : Option<Value>) (args : Map<int, Value>) (calls : list<NativeCall>) (l : list<Instruction>) =
             
             match l with
-                
+                | PushReg _:: rest ->
+                    decompileAcc cc rax args calls rest
+
+                | PopReg _:: rest ->
+                    decompileAcc cc rax args calls rest
+
                 | CallRax::rest ->
                     let ptr = 
                         match rax with
@@ -135,6 +182,7 @@ module AMD64 =
                                 match a with
                                     | Qword q -> q :> obj
                                     | Dword d -> d :> obj
+                                    | Register r -> r :> obj
                                 )
                              |> List.toArray
 
@@ -233,6 +281,78 @@ module AMD64 =
                 (* Register.R15 *) [| 0x41uy; 0xBFuy |]  
             |]
       
+        // 41 89 FF     mov r15d,edi
+
+        // 49 89 F6     mov r14,rsi
+        // 4C 89 F6     mov rsi,r14
+        // 48 89 E5     mov rbp,rsp
+        // 49 89 D1     mov r9,rdx
+        // 49 89 D5     mov r13,rdx
+        // 4C 89 EA     mov rdx,r13
+        // 48 89 C2     mov rdx,rax 
+
+
+        // 49 89 D1     mov r9,rdx
+        // 49 89 D5     mov r13,rdx
+        // D1 => 11 010(rdx) 001
+        // D5 => 11 010(rdx) 101
+
+        let private rexPrefix (wide : bool) (r : byte) (b : byte) =
+            let w = if wide then 1uy else 0uy
+
+            0x40uy ||| (w <<< 3) ||| (r <<< 2) ||| b
+
+        let private assembleRegMov (wide : bool) (left : Register) (right : Register) (stream : BinaryWriter) =
+            let left = int left |> byte
+            let right = int right |> byte
+
+            let r, left = if left >= 8uy then 1uy,left-8uy else 0uy,left
+            let b, right = if right >= 8uy then 1uy,right-8uy else 0uy,right
+            let w = if wide then 1uy else 0uy
+
+            // MOV   reg/mem64, reg64       89/r
+            // MOV   reg64, reg/mem64       8B/r
+
+            // AMD Manual Volume 3 Page 21
+            // ModRM layout:
+            // mod |  left  | right
+            // 7 6    5 4 3   2 1 0
+
+            // REX prefix:
+            // [- 4 -] w r x b | [- 0xB8 + id -]
+            // 7 6 5 4 3 2 1 0 | 7 6 5 4 3 2 1 0
+
+            let opCode = 0x40uy ||| (w <<< 3) ||| (r <<< 2) ||| b
+            let modRM = 0xC0uy ||| (left <<< 3) ||| right
+
+
+            stream.Write [|opCode; 0x89uy; modRM|]
+
+        let private asssemblePushReg (wide : bool) (reg : Register) (stream : BinaryWriter) =
+            let reg = reg |> int |> byte
+            let w = if wide then 1uy else 0uy
+            let b, reg = if reg >= 8uy then 1uy,reg-8uy else 0uy,reg
+
+            let code = 0x50uy + reg
+            let rex = rexPrefix wide 0uy b
+
+            stream.Write [|rex; code|]
+
+        let private asssemblePopReg (wide : bool) (reg : Register) (stream : BinaryWriter) =
+            let reg = reg |> int |> byte
+            let w = if wide then 1uy else 0uy
+            let b, reg = if reg >= 8uy then 1uy,reg-8uy else 0uy,reg
+
+            let code = 0x58uy + reg
+            let rex = rexPrefix wide 0uy b
+
+            stream.Write [|rex; code|]
+
+
+        // base -> base: 
+        // 0x48uy 0x89uy
+
+
         let assembleMov (target : Register) (value : Value) (stream : BinaryWriter) =
             match value with
                 | Qword q -> 
@@ -241,6 +361,8 @@ module AMD64 =
                 | Dword d ->
                     stream.Write immediateMov32.[int target]
                     stream.Write d
+                | Register r ->
+                    stream |> assembleRegMov true r target
 
         let assemblePush (stackOffset : int) (value : Value) (stream : BinaryWriter) =
             stream |> assembleMov Register.Rax value
@@ -276,6 +398,8 @@ module AMD64 =
                 | Ret                 -> stream |> assembleRet
                 | Jmp o               -> stream |> assembleJmp o
                 | Nop w               -> stream |> assembleNop w
+                | PushReg r           -> stream |> asssemblePushReg true r
+                | PopReg r            -> stream |> asssemblePopReg true r
 
         let assembleTo (stream : Stream) (instructions : Instruction[]) =
             let writer = new BinaryWriter(stream, Text.ASCIIEncoding.ASCII, true)
@@ -441,35 +565,64 @@ module ASM =
                 failwith "mac currently not supported" 
 
     let functionProlog =
-        match os, cpu with
-            | Windows, AMD64 -> 
-                fun (maxArgs : int) ->
-                    let additionalSize =
-                        if maxArgs < 5 then 8uy
-                        else 8 * maxArgs - 24 |> byte
-                    [| 0x48uy; 0x83uy; 0xECuy; 0x20uy + additionalSize |]
+        let specific =
+            match os, cpu with
+                | Windows, AMD64 -> 
+                    fun  (maxArgs : int) ->
+                        let additionalSize =
+                            if maxArgs < 5 then 8uy
+                            else 8 * maxArgs - 24 |> byte
+                        [| 0x48uy; 0x83uy; 0xECuy; 0x20uy + additionalSize |]
 
-            | Linux, AMD64 -> fun (maxArgs : int) -> [||]
-            | Mac, AMD64 -> fun (maxArgs : int) -> [||]
-            | _ -> failwithf "no assembler for: %A / %A" os.Platform cpu    
+                | Linux, AMD64 -> fun (maxArgs : int) -> [||]
+                | Mac, AMD64 -> fun (maxArgs : int) -> [||]
+                | _ -> failwithf "no assembler for: %A / %A" os.Platform cpu    
+              
+        match cpu with  
+            | AMD64 ->
+                let cc = match os with | Windows -> AMD64.windows | _ -> AMD64.linux
+
+                fun (dynamicArgs : int) (maxArgs : int) ->
+                    let real = specific maxArgs
+                    let prefix = AMD64.Compiler.functionProlog cc dynamicArgs |> AMD64.Assembler.assemble
+                    Array.append real prefix
+
+            | _ ->
+                failwithf "no assembler for: %A / %A" os.Platform cpu    
                 
     let functionEpilog =
-        match os, cpu with
-            | Windows, AMD64 ->
-                fun (maxArgs : int) ->
-                    let additionalSize =
-                        if maxArgs < 5 then 8uy
-                        else 8 * maxArgs - 24 |> byte
-                    [| 0x48uy; 0x83uy; 0xC4uy; 0x20uy + additionalSize; 0xC3uy|]
-            | Linux, AMD64 -> fun (maxArgs : int) -> [|0xC3uy|]
-            | Mac, AMD64 -> fun (maxArgs : int) -> [|0xC3uy|]
-            | _ -> failwithf "no assembler for: %A / %A" os.Platform cpu      
+        let specific =
+            match os, cpu with
+                | Windows, AMD64 ->
+                    fun (maxArgs : int) ->
+                        let additionalSize =
+                            if maxArgs < 5 then 8uy
+                            else 8 * maxArgs - 24 |> byte
+                        [| 0x48uy; 0x83uy; 0xC4uy; 0x20uy + additionalSize; 0xC3uy|]
+                | Linux, AMD64 -> fun (maxArgs : int) -> [|0xC3uy|]
+                | Mac, AMD64 -> fun (maxArgs : int) -> [|0xC3uy|]
+                | _ -> failwithf "no assembler for: %A / %A" os.Platform cpu     
+                 
+        match cpu with  
+            | AMD64 ->
+                let cc = match os with | Windows -> AMD64.windows | _ -> AMD64.linux
 
-    let private compileCallsNative : seq<NativeCall> -> byte[] =
+                fun (dynamicArgs : int) (maxArgs : int) ->
+                    let real = specific maxArgs
+                    let prefix = AMD64.Compiler.functionEpilog cc dynamicArgs |> AMD64.Assembler.assemble
+                    Array.append prefix real
+
+            | _ ->
+                failwithf "no assembler for: %A / %A" os.Platform cpu    
+
+    let private compileCallsNative : int -> seq<NativeCall> -> byte[] =
          match os, cpu with
-            | Windows, AMD64 -> AMD64.Compiler.compileCalls AMD64.windows >> AMD64.Assembler.assemble
-            | Linux, AMD64 -> AMD64.Compiler.compileCalls AMD64.linux >> AMD64.Assembler.assemble
-            | Mac, AMD64 -> AMD64.Compiler.compileCalls AMD64.linux >> AMD64.Assembler.assemble
+            | Windows, AMD64 -> 
+                fun dyn calls -> 
+                    AMD64.Compiler.compileCalls AMD64.windows dyn calls |> AMD64.Assembler.assemble
+            | (Linux | Mac), AMD64 -> 
+                fun dyn calls -> 
+                    AMD64.Compiler.compileCalls AMD64.linux dyn calls |> AMD64.Assembler.assemble
             | _ -> failwithf "no assembler for: %A / %A" os.Platform cpu      
 
     let jumpSize =
@@ -492,8 +645,8 @@ module ASM =
             | AMD64 -> AMD64.Assembler.assemble [|AMD64.Nop nopBytes; AMD64.Jmp offset|]
             | _ -> failwithf "no assembler for: %A / %A" os.Platform cpu      
 
-    let assembleCalls (calls : #seq<NativeCall>) =
-        calls |> compileCallsNative 
+    let assembleCalls (dynamicArguments : int) (calls : #seq<NativeCall>) =
+        calls |> compileCallsNative dynamicArguments
 
     let disassemble : byte[] -> NativeCall[] =
         match cpu with
@@ -587,7 +740,7 @@ type CodeFragment(memory : managedptr, containsJmp : bool) =
 
     member x.Write (calls : NativeCall[]) =
         resetStartOffsets()
-        calls |> ASM.assembleCalls |> x.Write
+        calls |> ASM.assembleCalls 0 |> x.Write
 
     member x.Write (binary : byte[]) =
         resetStartOffsets()
@@ -675,7 +828,7 @@ type CodeFragment(memory : managedptr, containsJmp : bool) =
         ptr |> ManagedPtr.writeArray 0 content
         CodeFragment(ptr, false)
 
-    new(manager : MemoryManager, calls : NativeCall[]) = new CodeFragment(manager, calls |> ASM.assembleCalls)
+    new(manager : MemoryManager, calls : NativeCall[]) = new CodeFragment(manager, calls |> ASM.assembleCalls 0)
     new(manager : MemoryManager) = new CodeFragment(manager, ([||] : byte[]))
 
 
@@ -683,10 +836,10 @@ type CodeFragment(memory : managedptr, containsJmp : bool) =
 module CodeFragment =
 
     let inline prolog (maxArgs : int) (m : MemoryManager) =
-        new CodeFragment(m, ASM.functionProlog maxArgs)
+        new CodeFragment(m, ASM.functionProlog 0 maxArgs)
 
     let inline epilog (maxArgs : int) (m : MemoryManager) =
-        new CodeFragment(m, ASM.functionEpilog maxArgs)
+        new CodeFragment(m, ASM.functionEpilog 0 maxArgs)
 
     let inline ofCalls (calls : seq<NativeCall>) (m : MemoryManager) =
         new CodeFragment(m, Seq.toArray calls)

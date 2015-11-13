@@ -14,7 +14,7 @@ open FsUnit
 
 module DynamicCodeTests =
     
-    type TestProgram<'a>(program : IDynamicProgram, getCalls : unit -> list<'a>) =
+    type TestProgram<'i, 'a>(program : IDynamicProgram<'i>, getCalls : unit -> list<'a>) =
         inherit AdaptiveObject()
 
         member x.NativeCallCount = program.NativeCallCount
@@ -42,11 +42,11 @@ module DynamicCodeTests =
                 program.Update x
             )
 
-        member x.Run() =
+        member x.Run v =
             x.EvaluateIfNeeded null () (fun () ->
                 program.Update(x) |> ignore
             )
-            program.Run()
+            program.Run v
             getCalls()
 
         member x.Dispose() =
@@ -91,7 +91,7 @@ module DynamicCodeTests =
 
             program.AutoDefragmentation <- false
 
-            new TestProgram<_>(program, getCalls)
+            new TestProgram<_,_>(program, getCalls)
 
         let createMod (input : aset<'k * IMod<int>>) =
             let compileDelta (l : Option<IMod<int>>) (r : IMod<int>) =
@@ -103,7 +103,7 @@ module DynamicCodeTests =
                 input |> AMap.ofASet |> DynamicProgram.optimized 6 Comparer.Default compileDelta
             program.AutoDefragmentation <- false
 
-            new TestProgram<_>(program, getCalls)
+            new TestProgram<_,_>(program, getCalls)
 
         let createSimple (input : aset<int>) =
             let compileDelta (l : Option<int>) (r : int) =
@@ -116,7 +116,22 @@ module DynamicCodeTests =
 
             program.AutoDefragmentation <- false
 
-            new TestProgram<_>(program, getCallsSelf)
+            new TestProgram<_,_>(program, getCallsSelf)
+
+        let createDynamic (input : aset<int>) =
+            let compileDelta (l : Option<int>) (r : int) =
+                let l = match l with | Some l -> l | None -> 0
+
+                new AdaptiveCode([Mod.constant [pAppend, [|r :> obj|]]])
+
+            let program =
+                input |> ASet.map (fun i -> i,i) |> AMap.ofASet |> DynamicProgram.optimized 6 Comparer.Default compileDelta
+
+            program.AutoDefragmentation <- false
+
+            new TestProgram<int,_>(program, getCalls)
+
+
 
 
     [<Test>]
@@ -262,6 +277,22 @@ module DynamicCodeTests =
         prog.StartDefragmentation().Wait()
         prog.TotalJumpDistanceInBytes |> should equal 0L
         prog.Run() |> should equal ([1..1000])
+
+
+        ()
+
+
+    [<Test>]
+    let ``[DynamicCode] dynamic arguments``() =
+        
+        let calls = [1] |> CSet.ofList
+        use prog = TestProgram.createDynamic calls
+
+        prog.Run 5 |> should equal [5,1]
+        prog.Run 7 |> should equal [7,1]
+
+        transact (fun () -> calls.Add 2 |> ignore)
+        prog.Run 5 |> should equal [5,1; 5,2]
 
 
         ()
