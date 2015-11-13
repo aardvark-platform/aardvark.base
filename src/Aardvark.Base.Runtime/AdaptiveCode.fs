@@ -98,6 +98,8 @@ type IDynamicProgram =
     
     abstract member AutoDefragmentation : bool with get, set
     abstract member StartDefragmentation : unit -> Task<TimeSpan>
+    abstract member DefragmentationStarted : IEvent<unit>
+    abstract member DefragmentationDone : IEvent<TimeSpan>
     abstract member NativeCallCount : int
     abstract member FragmentCount : int
     abstract member ProgramSizeInBytes : int64
@@ -310,6 +312,8 @@ module private OptimizedProgram =
         let mutable dirtySet = HashSet<Fragment<'a>>()
 
 
+        let defragStartEvent = EventSource()
+        let defragDoneEvent = EventSource()
         let mutable autoDefragmentation = 1
         let mutable defragRunning = 0
         let mutable currentDefragTask = null
@@ -326,12 +330,14 @@ module private OptimizedProgram =
                 let task = 
                     startTask (fun () ->
                         Log.startTimed "defragmentation"
+                        defragStartEvent.Emit()
                         defragmentWatch.Restart()
                         while not (tryDefragment()) do
                             Log.line "retry"
                         defragmentWatch.Stop()
                         Log.stop()
 
+                        defragDoneEvent.Emit defragmentWatch.Elapsed
                         Interlocked.Exchange(&defragRunning, 0) |> ignore
                         defragmentWatch.Elapsed
                     )
@@ -382,6 +388,7 @@ module private OptimizedProgram =
                         set
                     )
 
+                let deadSet = HashSet()
                 let recompileSet = HashSet()
                 let relinkSet = HashSet()
 
@@ -468,11 +475,11 @@ module private OptimizedProgram =
                                                 fragment.Next.Prev <- fragment.Prev
                                                 fragment.Prev.Next <- fragment.Next
 
-                                                recompileSet.Add fragment.Next |> ignore
+                                                if fragment.Next <> epilog then
+                                                    recompileSet.Add fragment.Next |> ignore
 
                                                 fragment.Dispose()
-                                                dirtySet.Remove fragment |> ignore
-                                                recompileSet.Remove fragment |> ignore
+                                                deadSet.Add fragment |> ignore
 
                                                 if set.Count = 0 then
                                                     fragments.Remove k |> ignore
@@ -484,7 +491,8 @@ module private OptimizedProgram =
                                     failwithf "could not find container for: %A" k
                 deltaProcessWatch.Stop()
 
-
+                dirtySet.ExceptWith deadSet
+                recompileSet.ExceptWith deadSet
 
                 compileWatch.Restart()
                 for r in recompileSet do
@@ -535,6 +543,8 @@ module private OptimizedProgram =
             member x.Dispose() = x.Dispose()
 
         interface IDynamicProgram with
+            member x.DefragmentationStarted = defragStartEvent :> IEvent<_>
+            member x.DefragmentationDone = defragDoneEvent :> IEvent<_>
 
             member x.AutoDefragmentation
                 with get() = autoDefragmentation = 1
