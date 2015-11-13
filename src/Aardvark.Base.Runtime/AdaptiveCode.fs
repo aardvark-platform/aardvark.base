@@ -294,8 +294,8 @@ module private OptimizedProgram =
         let nativeCallCount = ref 0
         let jumpDistance = ref 0
         let context = { memory = memory; compileDelta = compileDelta; nativeCallCount = nativeCallCount; jumpDistance = jumpDistance }
-        let prolog = new Fragment<_>(context, CodeFragment(memory, Assembler.functionProlog maxArgumentCount))
-        let epilog = new Fragment<_>(context, CodeFragment(memory, Assembler.functionEpilog maxArgumentCount))
+        let prolog = new Fragment<_>(context, CodeFragment(memory, ASM.functionProlog maxArgumentCount))
+        let epilog = new Fragment<_>(context, CodeFragment(memory, ASM.functionEpilog maxArgumentCount))
 
         do prolog.Next <- epilog
            epilog.Prev <- prolog
