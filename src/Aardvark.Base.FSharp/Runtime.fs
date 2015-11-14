@@ -26,7 +26,7 @@ module Weak =
     let mutable private statisticsNone = 0
 
     let convertArray (f : ('a -> 'b)) (arr : Array) =
-        if arr = null || arr.GetType().GetElementType() = typeof<'b> then
+        if isNull arr || arr.GetType().GetElementType() = typeof<'b> then
             arr
         else
             let result = Array.CreateInstance(typeof<'b>, arr.Length)
@@ -36,7 +36,7 @@ module Weak =
 
     let private registerInStatistics(data : Option<obj>) =
         match data with
-            | Some(key) -> if key <> null then
+            | Some(key) -> if not (isNull key) then
                                  Monitor.Enter(statistics)
                                  match statistics.TryGetValue(key) with
                                      | (true,v) -> statistics.[key] <- v + 1
@@ -111,22 +111,22 @@ module Weak =
     (*============================ Weak Types =================================*)
     [<AllowNullLiteral>]
     type Weak<'a when 'a : not struct>(obj : 'a) =
-        do if obj :> obj = null then failwith "created null weak"
+        do if isNull (obj :> obj) then failwith "created null weak"
         let m_weak = System.WeakReference<'a>(obj)
         let m_hashCode = System.Runtime.CompilerServices.RuntimeHelpers.GetHashCode(obj)
 
         member private x.WeakReference = m_weak
 
         member x.IsLife = match m_weak.TryGetTarget() with
-                            | (true,o) when o :> obj <> null -> true
+                            | (true,o) when not (isNull (o :> obj)) -> true
                             | _ -> false
 
         member x.Target = match m_weak.TryGetTarget() with
-                            | (true,v) when v :> obj <> null -> v
+                            | (true,v) when not (isNull (v :> obj)) -> v
                             | _ -> failwith "Weak is no longer accessible"
 
         member x.TryGetTarget([<System.Runtime.InteropServices.OutAttribute>] a : byref<'a>) = 
-            m_weak.TryGetTarget(&a) && a :> obj <> null
+            m_weak.TryGetTarget(&a) && not (isNull (a :> obj))
 
         member x.TargetOption = 
             match m_weak.TryGetTarget() with

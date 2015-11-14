@@ -305,7 +305,7 @@ module Fsi =
                 match session.EvalExpression(getAss) with
                     | Some value ->
                         let ass = value.ReflectionValue |> unbox<System.Reflection.Assembly>
-                        match ass.GetTypes() |> Array.rev |> Array.tryPick (fun t -> let t = t.GetNestedType(moduleName) in if t <> null then Some t else None) with
+                        match ass.GetTypes() |> Array.rev |> Array.tryPick (fun t -> let t = t.GetNestedType(moduleName) in if not (isNull t) then Some t else None) with
                             | Some t -> FsiSuccess t
                             | None -> FsiSuccess null
                     | _ -> 

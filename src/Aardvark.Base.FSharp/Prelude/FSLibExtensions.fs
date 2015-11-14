@@ -338,8 +338,8 @@ module GenericValues =
         let pi = t.GetProperty("Zero", BindingFlags.Static ||| BindingFlags.Public)
         let fi = t.GetField("Zero", BindingFlags.Static ||| BindingFlags.Public)
 
-        if pi <> null then pi.GetValue(null) |> unbox
-        elif fi <> null then fi.GetValue(null) |> unbox
+        if not (isNull pi) then pi.GetValue(null) |> unbox
+        elif not (isNull fi) then fi.GetValue(null) |> unbox
         else Unchecked.defaultof< ^a>
 
 module Caching =

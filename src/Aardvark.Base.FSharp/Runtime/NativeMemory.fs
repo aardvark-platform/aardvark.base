@@ -274,7 +274,7 @@ and MemoryManager(capacity : int, malloc : int -> nativeint, mfree : nativeint -
     let validation () =
         let mutable last = null
         let mutable current = firstBlock
-        while current <> null do
+        while not (isNull current) do
             assert (current.Prev = last)
 
             assert(current.Size > 0)

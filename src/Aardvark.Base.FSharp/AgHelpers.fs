@@ -92,7 +92,7 @@ module internal AgHelpers =
         let direct = tryMakeApplicableDirect(argType, concrete)
         match direct with
             | Some(r) -> Some(r)
-            | None    -> if concrete.BaseType <> null && concrete.BaseType <> concrete then
+            | None    -> if not (isNull concrete.BaseType) && concrete.BaseType <> concrete then
                             tryMakeApplicable(argType, concrete.BaseType)
                          else
                             None
@@ -184,7 +184,7 @@ module internal AgHelpers =
                                                         [|nodeType|],
                                                         [|ParameterModifier(1)|])
 
-                                           if mi = null then
+                                           if isNull mi then
                                                 reg None
                                            else
                                                 reg <| Some(SemanticFunction(getSemanticObject(mi.DeclaringType), mi.DeclaringType, mi :?> MethodInfo))
@@ -194,7 +194,7 @@ module internal AgHelpers =
     let rec getallInterfaces (t : Type) =
         [
             let directInterfaces = t.GetInterfaces()
-            if t.BaseType <> null then yield! getallInterfaces t.BaseType
+            if not (isNull t.BaseType) then yield! getallInterfaces t.BaseType
             for i in directInterfaces do
                 yield! getallInterfaces i
                 yield i
@@ -221,7 +221,7 @@ module internal AgHelpers =
                                 [|nodeType|],
                                 [|ParameterModifier(1)|])
 
-                    if mi = null then
+                    if isNull mi then
                         None
                     else
                         Some(SemanticFunction(getSemanticObject(mi.DeclaringType), mi.DeclaringType, mi :?> MethodInfo))
@@ -292,7 +292,7 @@ module internal AgHelpers =
                                 if (m.DeclaringType.Equals(t) && m.GetParameters().Length = 1) then
                                     yield ( m.Name, m.GetParameters().[0].ParameterType, m )
                         }
-        if t.GetConstructor [||] <> null then
+        if not (isNull (t.GetConstructor [||])) then
             let semObj = Activator.CreateInstance(t)
             for (name,t,m) in attNames do
                 let list = match m_semanticMap.TryGetValue(name) with

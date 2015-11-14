@@ -123,7 +123,7 @@ type ConstantMod<'a> =
             
         override x.GetHashCode() =
             let v = x.GetValue(null) :> obj
-            if v = null then 0
+            if isNull v then 0
             else v.GetHashCode()
 
         override x.Equals o =
@@ -973,7 +973,7 @@ module ModExtensions =
             Some (t.GetGenericArguments().[0])
         else
             let iface = t.GetInterface(typedefof<IMod<_>>.FullName)
-            if iface = null then None
+            if isNull iface then None
             else extractModTypeArg iface
 
     /// <summary>

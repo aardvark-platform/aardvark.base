@@ -154,7 +154,7 @@ module Ag =
             | _ -> let parent = scope.parent
                    match parent with
                         //if there is a valid parent-scope we continue the search
-                        | Some(parent) when parent.source <> null ->
+                        | Some(parent) when not (isNull parent.source) ->
                                 let parentType = parent.source.GetType()
                                 match tryFindSemanticFunction(parentType, name) with
                                     //if there is a semantic-function applicable to the parent-node

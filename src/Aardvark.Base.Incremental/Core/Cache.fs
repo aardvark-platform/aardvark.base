@@ -37,7 +37,7 @@ type Cache<'a, 'b>(scope : Ag.Scope, f : 'a -> 'b) =
     /// and increases the associated reference count.
     /// </summary>
     member x.Invoke (v : 'a) =
-        if (v :> obj) = null then
+        if isNull (v :> obj) then
             match nullCache with
                 | Some (r, ref) -> 
                     ref := !ref + 1
@@ -60,7 +60,7 @@ type Cache<'a, 'b>(scope : Ag.Scope, f : 'a -> 'b) =
     /// with the given argument and decreases its reference count.
     /// </summary>
     member x.RevokeAndGetDeleted (v : 'a) =
-        if (v :> obj) = null then
+        if isNull (v :> obj) then
             match nullCache with
                 | Some (r, ref) -> 
                     ref := !ref - 1
@@ -122,7 +122,7 @@ type Cache2<'a, 'b, 'c>(scope : Ag.Scope, f : 'a -> 'b -> 'c) =
     member x.Invoke (a : 'a, b : 'b) =
         let ao = a :> obj
         let bo = b :> obj
-        if ao = null && bo = null then
+        if isNull ao && isNull bo then
             match nullCache with
                 | Some (r, ref) -> 
                     ref := !ref + 1
@@ -133,8 +133,8 @@ type Cache2<'a, 'b, 'c>(scope : Ag.Scope, f : 'a -> 'b -> 'c) =
                     r
         else
             let key =
-                if ao = null then bo
-                elif bo = null then ao
+                if isNull ao then bo
+                elif isNull bo then ao
                 else (ao,bo) :> obj
 
             match cache.TryGetValue key with
@@ -153,7 +153,7 @@ type Cache2<'a, 'b, 'c>(scope : Ag.Scope, f : 'a -> 'b -> 'c) =
     member x.Revoke (a : 'a, b : 'b) =
         let ao = a :> obj
         let bo = b :> obj
-        if ao = null && bo = null then
+        if isNull ao && isNull bo then
             match nullCache with
                 | Some (r, ref) -> 
                     ref := !ref - 1
@@ -163,8 +163,8 @@ type Cache2<'a, 'b, 'c>(scope : Ag.Scope, f : 'a -> 'b -> 'c) =
                 | None -> failwithf "cannot revoke null"
         else
             let key =
-                if ao = null then bo
-                elif bo = null then ao
+                if isNull ao then bo
+                elif isNull bo then ao
                 else (ao,bo) :> obj
 
             match cache.TryGetValue key with

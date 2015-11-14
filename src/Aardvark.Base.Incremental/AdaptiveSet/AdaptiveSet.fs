@@ -227,6 +227,20 @@ module ASet =
             let noRef = set.Copy
             AdaptiveSet(fun () -> noRef.GetReader() |> map scope f) :> aset<'b>
 
+
+    let mapUse (f : 'a -> 'b) (set : aset<'a>) = 
+        if set.IsConstant then
+            delay (fun () ->
+                use r = set.GetReader()
+                r.Update(null)
+                r.Content |> Seq.map f |> Seq.toList
+            )
+        else
+            let scope = Ag.getContext()
+            let noRef = set.Copy
+            AdaptiveSet(fun () -> noRef.GetReader() |> mapUsing scope f) :> aset<'b>
+
+
     /// <summary>
     /// applies the given function to a cell and adaptively
     /// returns the resulting set.
@@ -255,7 +269,16 @@ module ASet =
     /// adaptively unions the given sets
     /// </summary>
     let union' (set : seq<aset<'a>>) : aset<'a> =
-        AdaptiveSet(fun () -> union (set |> Seq.map (fun s -> s.GetReader()) |> Seq.toList)) :> aset<_>
+        if set |> Seq.forall (fun s -> s.IsConstant) then
+            let allElements =
+                set |> Seq.collect (fun s ->
+                    let r = s.GetReader()
+                    r.Update(null)
+                    r.Content
+                )
+            ConstantSet(lazy (ReferenceCountingSet(allElements))) :> aset<_>
+        else
+            AdaptiveSet(fun () -> union (set |> Seq.map (fun s -> s.GetReader()) |> Seq.toList)) :> aset<_>
 
     /// <summary>
     /// applies the given function to all elements in the set
@@ -337,6 +360,15 @@ module ASet =
     /// </summary>
     let collect' (f : 'a -> aset<'b>) (set : seq<'a>) =
         set |> Seq.map f |> union'
+
+    let collect'' (f : 'a -> seq<'b>) (set : aset<'a>) =
+        let scope = Ag.getContext()
+        if set.IsConstant then
+            let r = set.GetReader()
+            r.Update(null)
+            ConstantSet(lazy (ReferenceCountingSet(r.Content |> Seq.collect f))) :> aset<_>
+        else
+            AdaptiveSet(fun () -> set.GetReader() |> ASetReaders.collect' scope f) :> aset<_>
   
     /// <summary>
     /// applies the given modifiable function to all elements in the set

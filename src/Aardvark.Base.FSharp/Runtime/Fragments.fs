@@ -816,7 +816,7 @@ type CodeFragment(memory : managedptr, containsJmp : bool) =
         containsJmp <- false
 
     member x.Dispose() =
-        if memory <> null then
+        if not (isNull memory) then
             ManagedPtr.free memory
             memory <- null
             containsJmp <- false

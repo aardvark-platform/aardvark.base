@@ -203,11 +203,11 @@ module SkipOrder =
                 x.NextArray.Length
 
             member x.Next = 
-                if x.NextArray <> null then x.NextArray.[0].Target
+                if not (isNull x.NextArray) then x.NextArray.[0].Target
                 else null
 
             member x.Prev =
-                if x.PrevArray <> null then x.PrevArray.[0].Target
+                if not (isNull x.PrevArray) then x.PrevArray.[0].Target
                 else null
 
             member x.CompareTo (o : SortKey) =
@@ -483,7 +483,7 @@ module DerivedOrder =
             if typeof<IDeletableComparable>.IsAssignableFrom(typeof<'a>) then
                 fun (a : 'a) -> 
                     let t = unbox<IDeletableComparable> a
-                    if t <> null then t.IsDeleted
+                    if not (isNull t) then t.IsDeleted
                     else false
             else
                 fun (a : 'a) -> false
@@ -507,11 +507,11 @@ module DerivedOrder =
                 x.NextArray.Length
 
             member x.Next = 
-                if x.NextArray <> null then x.NextArray.[0].Target
+                if not (isNull x.NextArray) then x.NextArray.[0].Target
                 else null
 
             member x.Prev =
-                if x.PrevArray <> null then x.PrevArray.[0].Target
+                if not (isNull x.PrevArray) then x.PrevArray.[0].Target
                 else null
 
             member x.CompareTo (o : SortKey<'a>) =

@@ -239,9 +239,66 @@ module ASetReaders =
                     current <- Some r
                     r.GetDelta x
                 
+    type MultiConstantCollectReader<'a, 'b>(scope : Ag.Scope, sources : seq<IReader<'a>>, f : 'a -> seq<'b>) as this =
+        inherit AbstractReader<'b>()
+        let sources = Seq.toList sources
 
+        let mutable initial = true
+        let cache = Cache(scope, f >> Seq.toList)
+        let dirty = MutableVolatileDirtySet<IReader<'a>, list<Delta<'a>>>(fun r -> r.GetDelta this)
 
+        override x.Inputs =
+            sources |> Seq.cast
 
+        override x.InputChanged(i : IAdaptiveObject) =
+            match i with
+                | :? IReader<'a> as r -> dirty.Push r
+                | _ -> ()
+
+        override x.Release() =
+            for s in sources do s.Dispose()
+            cache.Clear ignore
+            dirty.Clear()
+
+        override x.ComputeDelta() =
+            if initial then
+                initial <- false
+                sources |> List.collect (fun r ->
+                    r.GetDelta x 
+                        |> List.collect (fun d ->
+                            match d with
+                                | Add v -> cache.Invoke v |> List.map Add
+                                | Rem v -> cache.Revoke v |> List.map Rem
+                        )
+                )
+            else
+                dirty.Evaluate() 
+                    |> List.concat
+                    |> List.collect (fun d ->
+                        match d with
+                            | Add v -> cache.Invoke v |> List.map Add
+                            | Rem v -> cache.Revoke v |> List.map Rem
+                    )
+
+    type ConstantCollectReader<'a, 'b>(scope, source : IReader<'a>, f : 'a -> seq<'b>) =
+        inherit AbstractReader<'b>()
+
+        let cache = Cache(scope, f >> Seq.toList)
+
+        override x.Inputs =
+            Seq.singleton (source :> IAdaptiveObject)
+
+        override x.Release() =
+            source.Dispose()
+            cache.Clear ignore
+
+        override x.ComputeDelta() =
+            source.GetDelta x
+                |> List.collect (fun v ->
+                    match v with
+                        | Add v -> cache.Invoke v |> List.map Add
+                        | Rem v -> cache.Revoke v |> List.map Rem
+                )
 
 
     /// <summary>
@@ -804,6 +861,32 @@ module ASetReaders =
 
             deltas
 
+    type MapUseReader<'a, 'b when 'b :> IDisposable>(scope, source : IReader<'a>, f : 'a -> list<'b>) =
+        inherit AbstractReader<'b>() 
+        
+        let f = Cache(scope, f)
+
+        override x.Inputs = Seq.singleton (source :> IAdaptiveObject)
+
+        override x.Release() =
+            source.RemoveOutput x
+            source.Dispose()
+            f.Clear(fun (b : list<'b>) -> b |> List.iter (fun b -> b.Dispose()))
+
+        override x.ComputeDelta() =
+            source.GetDelta x 
+                |> List.collect (fun d ->
+                    match d with
+                        | Add v -> 
+                            f.Invoke v |> List.map Add
+                        | Rem v -> 
+                            let last, rem = f.RevokeAndGetDeleted v 
+                            
+                            if last then
+                                rem |> List.iter (fun d -> d.Dispose())
+                            
+                            rem |> List.map Rem
+                )
 
 
 
@@ -813,6 +896,11 @@ module ASetReaders =
 
     let collect scope (f : 'a -> IReader<'b>) (input : IReader<'a>) =
         new CollectReader<_, _>(scope, input, f) :> IReader<_>
+
+    let collect' scope (f : 'a -> seq<'b>) (input : IReader<'a>) =
+        new ConstantCollectReader<_, _>(scope, input, f) :> IReader<_>
+
+
 
     let union (input : list<IReader<'a>>) =
         new UnionReader<_>(input) :> IReader<_>
@@ -832,3 +920,6 @@ module ASetReaders =
 
     let using (r : IReader<'a>) =
         new UseReader<'a>(r) :> IReader<_>
+
+    let mapUsing scope (f : 'a -> 'b) (r : IReader<'a>) =
+        new MapUseReader<'a, 'b>(scope, r, fun v -> [f v]) :> IReader<_>

@@ -169,7 +169,7 @@ type ReferenceCountingSet<'a>(initial : seq<'a>) =
     /// checks if the set contains a specific element
     /// </summary>
     member x.Contains (v : 'a) =
-        if (v :> obj) = null then
+        if isNull (v :> obj) then
             nullCount > 0
         else
             store.ContainsKey v
@@ -194,7 +194,7 @@ type ReferenceCountingSet<'a>(initial : seq<'a>) =
     /// gets the current reference count for the given element
     /// </summary>
     member x.GetReferenceCount(v) =
-        if (v :> obj) = null then nullCount
+        if isNull (v :> obj) then nullCount
         else
             match store.TryGetValue (v :> obj) with
                 | (true, (_,c)) -> !c

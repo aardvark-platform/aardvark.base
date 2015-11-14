@@ -22,7 +22,7 @@ type AdaptiveCode(content : list<IMod<NativeCalls>>) =
         member x.Dispose() = x.Dispose()
 
 
-type DynamicProgramStatistics =
+type AdaptiveProgramStatistics =
     struct
         val mutable public DeltaProcessTime : TimeSpan
         val mutable public CompileTime : TimeSpan
@@ -35,7 +35,7 @@ type DynamicProgramStatistics =
         val mutable public UpdatedJumpCount : int
 
         static member Zero =
-            DynamicProgramStatistics(
+            AdaptiveProgramStatistics(
                 DeltaProcessTime = TimeSpan.Zero,
                 CompileTime = TimeSpan.Zero,
                 WriteTime = TimeSpan.Zero,
@@ -46,8 +46,8 @@ type DynamicProgramStatistics =
                 UpdatedJumpCount = 0
             )
 
-        static member (+) (l : DynamicProgramStatistics, r : DynamicProgramStatistics) =
-            DynamicProgramStatistics(
+        static member (+) (l : AdaptiveProgramStatistics, r : AdaptiveProgramStatistics) =
+            AdaptiveProgramStatistics(
                 DeltaProcessTime = l.DeltaProcessTime + r.DeltaProcessTime,
                 CompileTime = l.CompileTime + r.CompileTime,
                 WriteTime = l.WriteTime + r.WriteTime,
@@ -58,8 +58,8 @@ type DynamicProgramStatistics =
                 UpdatedJumpCount = l.UpdatedJumpCount + r.UpdatedJumpCount
             )
 
-        static member (-) (l : DynamicProgramStatistics, r : DynamicProgramStatistics) =
-            DynamicProgramStatistics(
+        static member (-) (l : AdaptiveProgramStatistics, r : AdaptiveProgramStatistics) =
+            AdaptiveProgramStatistics(
                 DeltaProcessTime = l.DeltaProcessTime - r.DeltaProcessTime,
                 CompileTime = l.CompileTime - r.CompileTime,
                 WriteTime = l.WriteTime - r.WriteTime,
@@ -93,14 +93,16 @@ type IAdaptiveProgram<'i> =
     inherit IAdaptiveObject
     inherit IDisposable
     
-    abstract member Update : IAdaptiveObject -> DynamicProgramStatistics
+    abstract member Update : IAdaptiveObject -> AdaptiveProgramStatistics
     abstract member Run : 'i -> unit
     
     abstract member Disassemble : unit -> obj
+
     abstract member AutoDefragmentation : bool with get, set
     abstract member StartDefragmentation : unit -> Task<TimeSpan>
     abstract member DefragmentationStarted : IEvent<unit>
     abstract member DefragmentationDone : IEvent<TimeSpan>
+
     abstract member NativeCallCount : int
     abstract member FragmentCount : int
     abstract member ProgramSizeInBytes : int64
@@ -401,7 +403,7 @@ module private DifferentialProgram =
             )
 
         member x.Update caller = 
-            x.EvaluateIfNeeded caller DynamicProgramStatistics.Zero (fun v ->
+            x.EvaluateIfNeeded caller AdaptiveProgramStatistics.Zero (fun v ->
                 Interlocked.Increment(&version) |> ignore
 
                 let deltas = reader.GetDelta x
@@ -544,7 +546,7 @@ module private DifferentialProgram =
                 if autoDefragmentation = 1 && relinkSet.Count > 0 && !jumpDistance > 0 then
                     issueDefragmentation x |> ignore
 
-                DynamicProgramStatistics (
+                AdaptiveProgramStatistics (
                     DeltaProcessTime = deltaProcessWatch.Elapsed,
                     CompileTime = compileWatch.Elapsed,
                     WriteTime = writeWatch.Elapsed,
@@ -880,7 +882,7 @@ module private SimpleProgram =
             )
 
         member x.Update caller = 
-            x.EvaluateIfNeeded caller DynamicProgramStatistics.Zero (fun v ->
+            x.EvaluateIfNeeded caller AdaptiveProgramStatistics.Zero (fun v ->
                 Interlocked.Increment(&version) |> ignore
 
                 let deltas = reader.GetDelta x
@@ -1014,7 +1016,7 @@ module private SimpleProgram =
                 if autoDefragmentation = 1 && relinkSet.Count > 0 && !jumpDistance > 0 then
                     issueDefragmentation x |> ignore
 
-                DynamicProgramStatistics (
+                AdaptiveProgramStatistics (
                     DeltaProcessTime = deltaProcessWatch.Elapsed,
                     CompileTime = compileWatch.Elapsed,
                     WriteTime = writeWatch.Elapsed,
@@ -1062,6 +1064,7 @@ module private SimpleProgram =
             member x.Disassemble() = x.Disassemble() :> obj
 
 
+
 module AdaptiveProgram =
     
     let differential (maxArgs : int) (comparer : IComparer<'k>) (compileDelta : Option<'v> -> 'v -> AdaptiveCode) (input : amap<'k, 'v>) =
@@ -1084,7 +1087,7 @@ module AdaptiveProgram =
     let inline totalJumpDistanceInBytes (p : IAdaptiveProgram<'i>) = p.TotalJumpDistanceInBytes
 
 
-module Tests =
+module internal Tests =
     
     let calls = List<int * int>()
 
