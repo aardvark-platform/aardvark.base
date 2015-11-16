@@ -7,6 +7,7 @@ open System.Runtime.InteropServices
 open Microsoft.FSharp.NativeInterop
 
 #nowarn "9"
+#nowarn "51"
 
 type NativeCall = nativeint * obj[]
 
@@ -33,6 +34,24 @@ module AMD64 =
         | R14 = 14
         | R15 = 15
 
+        | XMM0 = 16
+        | XMM1 = 17
+        | XMM2 = 18
+        | XMM3 = 19
+        | XMM4 = 20
+        | XMM5 = 21
+        | XMM6 = 22
+        | XMM7 = 23
+        | XMM8 = 24
+        | XMM9 = 25
+        | XMM10 = 26
+        | XMM11 = 27
+        | XMM12 = 28
+        | XMM13 = 29
+        | XMM14 = 30
+        | XMM15 = 31
+
+
     type Value =
         | Dword of uint32
         | Qword of uint64
@@ -52,14 +71,19 @@ module AMD64 =
         | RegisterArgument of Register
         | StackArgument
 
-    type CallingConvention = { registers : Register[]; calleeSaved : Register[] }
+    type CallingConvention = { registers : Register[]; floatRegisters : Register[]; calleeSaved : Register[] }
 
     [<CompilationRepresentation(CompilationRepresentationFlags.ModuleSuffix)>]
     module CallingConvention =
         
-        let getArgumentLocation (arg : int) (cc : CallingConvention) =
-            if arg < cc.registers.Length then RegisterArgument cc.registers.[arg]
-            else StackArgument
+        let getArgumentLocation (arg : int) (argType : Type) (cc : CallingConvention) =
+            match argType with
+                | TypeInfo.Patterns.Fractional -> 
+                    if arg < cc.floatRegisters.Length then RegisterArgument cc.floatRegisters.[arg]
+                    else StackArgument
+                | _ -> 
+                    if arg < cc.registers.Length then RegisterArgument cc.registers.[arg]
+                    else StackArgument
 
         let tryFindRegister (arg : int) (cc : CallingConvention) =
             if arg < cc.registers.Length then Some cc.registers.[arg]
@@ -72,16 +96,22 @@ module AMD64 =
     let windows = 
         { 
             registers = [| Register.Rcx; Register.Rdx; Register.R8; Register.R9 |] 
+            floatRegisters = [| Register.XMM0; Register.XMM1; Register.XMM2; Register.XMM3 |]
             calleeSaved = [|Register.R12; Register.R13; Register.R14; Register.R15 |]
         }
 
     let linux = 
         { 
             registers = [| Register.Rdi; Register.Rsi; Register.Rdx; Register.Rcx; Register.R8; Register.R9 |] 
+            floatRegisters = [||]
             calleeSaved = [|Register.R12; Register.R13; Register.R14; Register.R15 |]
         }
 
     module Compiler =
+        let private cast (v : 'a) : 'b =
+            let mutable v = v
+            &&v |> NativePtr.cast |> NativePtr.read
+             
         let value (o : obj) =
             match o with
                 | :? nativeint as o -> Qword(uint64 o)
@@ -90,6 +120,8 @@ module AMD64 =
                 | :? unativeint as o -> Qword(uint64 o)
                 | :? uint64 as o -> Qword(o)
                 | :? uint32 as o -> Dword(o)
+                | :? float32 as o -> Dword(cast o)
+                | :? float as o -> Qword(cast o)
                 | :? Register as o -> Register(o)
                 | _ -> failwithf "unsupported argument-type: %A" (o.GetType())
 
@@ -100,7 +132,7 @@ module AMD64 =
                 | Register _ -> 8
 
         let setArg (cc : CallingConvention) (index : int) (stackOffset : int) (arg : obj) =
-            match CallingConvention.getArgumentLocation index cc with
+            match cc |> CallingConvention.getArgumentLocation index (arg.GetType()) with
                 | RegisterArgument reg -> 
                     stackOffset, [ Mov(reg, value arg) ]
                 | StackArgument -> 
@@ -230,88 +262,24 @@ module AMD64 =
             arr |> Seq.iter printSingleBits
             printfn ""
 
-        let private immediateMov64 =
-            [|
-            
-                // MOVQ encoding (according to AMD manual)
-                // TODO: not quite clear why b=1 and w=1 for [R8:R15]
-                // [- 4 -] w r x b | [- 0xB8 + id -]
-                // 7 6 5 4 3 2 1 0 | 7 6 5 4 3 2 1 0
-                (* Register.Rax *) [| 0x48uy; 0xB8uy |]
-                (* Register.Rcx *) [| 0x48uy; 0xB9uy |]
-                (* Register.Rdx *) [| 0x48uy; 0xBAuy |]
-                (* Register.Rbx *) [| 0x48uy; 0xBBuy |]
-                (* Register.Rsp *) [| 0x48uy; 0xBCuy |]
-                (* Register.Rbp *) [| 0x48uy; 0xBDuy |]
-                (* Register.Rsi *) [| 0x48uy; 0xBEuy |]
-                (* Register.Rdi *) [| 0x48uy; 0xBFuy |]
-                (* Register.R8  *) [| 0x49uy; 0xB8uy |]
-                (* Register.R9  *) [| 0x49uy; 0xB9uy |]
-                (* Register.R10 *) [| 0x49uy; 0xBAuy |]
-                (* Register.R11 *) [| 0x49uy; 0xBBuy |]
-                (* Register.R12 *) [| 0x49uy; 0xBCuy |]
-                (* Register.R13 *) [| 0x49uy; 0xBDuy |]
-                (* Register.R14 *) [| 0x49uy; 0xBEuy |]
-                (* Register.R15 *) [| 0x49uy; 0xBFuy |]
-            |]
-
-        let private immediateMov32 =
-            [|
-                // MOVD encoding (according to AMD manual)
-                // TODO: not quite clear why b=1 for [r8d:r15d]
-                // [- 4 -] w r x b | [- 0xB8 + id -]
-                // 7 6 5 4 3 2 1 0 | 7 6 5 4 3 2 1 0
-
-                (* Register.Rax *) [| 0xB8uy |]          
-                (* Register.Rcx *) [| 0xB9uy |]          
-                (* Register.Rdx *) [| 0xBAuy |]          
-                (* Register.Rbx *) [| 0xBBuy |]          
-                (* Register.Rsp *) [| 0xBCuy |]          
-                (* Register.Rbp *) [| 0xBDuy |]          
-                (* Register.Rsi *) [| 0xBEuy |]          
-                (* Register.Rdi *) [| 0xBFuy |]          
-                                                 
-                (* Register.R8  *) [| 0x41uy; 0xB8uy |]  
-                (* Register.R9  *) [| 0x41uy; 0xB9uy |]  
-                (* Register.R10 *) [| 0x41uy; 0xBAuy |]  
-                (* Register.R11 *) [| 0x41uy; 0xBBuy |]  
-                (* Register.R12 *) [| 0x41uy; 0xBCuy |]  
-                (* Register.R13 *) [| 0x41uy; 0xBDuy |]  
-                (* Register.R14 *) [| 0x41uy; 0xBEuy |]  
-                (* Register.R15 *) [| 0x41uy; 0xBFuy |]  
-            |]
-      
-        // 41 89 FF     mov r15d,edi
-
-        // 49 89 F6     mov r14,rsi
-        // 4C 89 F6     mov rsi,r14
-        // 48 89 E5     mov rbp,rsp
-        // 49 89 D1     mov r9,rdx
-        // 49 89 D5     mov r13,rdx
-        // 4C 89 EA     mov rdx,r13
-        // 48 89 C2     mov rdx,rax 
-
-
-        // 49 89 D1     mov r9,rdx
-        // 49 89 D5     mov r13,rdx
-        // D1 => 11 010(rdx) 001
-        // D5 => 11 010(rdx) 101
-
         let private rexPrefix (wide : bool) (r : byte) (b : byte) =
-            let w = if wide then 1uy else 0uy
+            assert(r < 2uy)
+            assert(b < 2uy)
 
+            let w = if wide then 1uy else 0uy
             0x40uy ||| (w <<< 3) ||| (r <<< 2) ||| b
 
-        let private assembleRegMov (wide : bool) (left : Register) (right : Register) (stream : BinaryWriter) =
-            let left = int left |> byte
-            let right = int right |> byte
+        let private modRM (l : byte) (r : byte) =
+            assert (l < 8uy)
+            assert (r < 8uy)
+            0xC0uy ||| (l <<< 3) ||| r
+
+        let private rexAndModRM (wide : bool) (left : Register) (right : Register) =
+            let left = int left % 16 |> byte
+            let right = int right % 16 |> byte
 
             let r, left = if left >= 8uy then 1uy,left-8uy else 0uy,left
             let b, right = if right >= 8uy then 1uy,right-8uy else 0uy,right
-            let w = if wide then 1uy else 0uy
-
-            // MOV   reg/mem64, reg64       89/r
-            // MOV   reg64, reg/mem64       8B/r
 
             // AMD Manual Volume 3 Page 21
             // ModRM layout:
@@ -322,11 +290,42 @@ module AMD64 =
             // [- 4 -] w r x b | [- 0xB8 + id -]
             // 7 6 5 4 3 2 1 0 | 7 6 5 4 3 2 1 0
 
-            let opCode = 0x40uy ||| (w <<< 3) ||| (r <<< 2) ||| b
-            let modRM = 0xC0uy ||| (left <<< 3) ||| right
+            rexPrefix wide r b, modRM left right
+
+        let private assembleImmediateMov (wide : bool) (target : Register) (stream : BinaryWriter) =
+            assert (target < Register.XMM0)
+
+            let tb = target |> int |> byte
+
+            let b, tb = if tb >= 8uy then 1uy,tb-8uy else 0uy,tb
+            let rex = rexPrefix wide 0uy b
+            if rex = 0x40uy then stream.Write (0xB8uy + tb)
+            else stream.Write [|rex; 0xB8uy + tb|]
 
 
-            stream.Write [|opCode; 0x89uy; modRM|]
+        let private assembleRegisterMov (wide : bool) (target : Register) (source : Register) (stream : BinaryWriter) =
+            
+            let rex, modRM = rexAndModRM wide target source
+            let targetMedia = target >= Register.XMM0
+            let sourceMedia = source >= Register.XMM0
+
+            if targetMedia && sourceMedia then
+                failwith "movd xmm, xmm  not implemented"
+
+            elif sourceMedia then
+                // MOVD  reg/mem32, xmm         66 0F 7E /r
+                // MOVD  reg/mem64, xmm         66 0F 7E /r
+                stream.Write [|0x66uy; rex; 0x0Fuy; 0x7Euy; modRM|] 
+
+            elif targetMedia then
+                // MOVD  xmm, reg/mem32         66 0F 6E /r
+                // MOVD  xmm, reg/mem64         66 0F 6E /r
+                stream.Write [|0x66uy; rex; 0x0Fuy; 0x6Euy; modRM|]   
+
+            else
+                // MOV   reg/mem64, reg64       89/r
+                // MOV   reg64, reg/mem64       8B/r
+                stream.Write [|rex; 0x8Buy; modRM|]
 
         let private asssemblePushReg (wide : bool) (reg : Register) (stream : BinaryWriter) =
             let reg = reg |> int |> byte
@@ -349,20 +348,41 @@ module AMD64 =
             stream.Write [|rex; code|]
 
 
-        // base -> base: 
-        // 0x48uy 0x89uy
-
 
         let assembleMov (target : Register) (value : Value) (stream : BinaryWriter) =
-            match value with
-                | Qword q -> 
-                    stream.Write immediateMov64.[int target]
-                    stream.Write q 
-                | Dword d ->
-                    stream.Write immediateMov32.[int target]
-                    stream.Write d
-                | Register r ->
-                    stream |> assembleRegMov true r target
+            if target < Register.XMM0 then
+                // general purpose registers
+                match value with
+                    | Qword q -> 
+                        stream |> assembleImmediateMov true target
+                        stream.Write q 
+                    | Dword d ->
+                        stream |> assembleImmediateMov false target
+                        stream.Write d
+                    | Register r ->
+                        stream |> assembleRegisterMov true target r
+            else
+                // media registers
+                match value with
+                    | Qword q -> 
+                        // mov rax, <value>
+                        // mov xmm, rax
+                        stream |> assembleImmediateMov true Register.Rax
+                        stream.Write q 
+                        stream |> assembleRegisterMov true target Register.Rax
+                    | Dword d ->
+                        // mov eax, <value>
+                        // mov xmm, eax
+                        stream |> assembleImmediateMov false Register.Rax
+                        stream.Write d
+                        stream |> assembleRegisterMov false target Register.Rax
+                    | Register r ->
+                        // mov xmm, reg
+                        stream |> assembleRegisterMov true target r
+
+                
+                ()
+
 
         let assemblePush (stackOffset : int) (value : Value) (stream : BinaryWriter) =
             stream |> assembleMov Register.Rax value
@@ -383,8 +403,8 @@ module AMD64 =
                     | 3 -> stream.Write threeByteNop
                     | 4 -> stream.Write fourByteNop
                     | 5 -> stream.Write fiveByteNop
-                    | 6 -> stream.Write threeByteNop; stream.Write threeByteNop // TODO: find good 6 byte nop sequence
-                    | 7 -> stream.Write fourByteNop; stream.Write threeByteNop // TODO: find good 7 byte nop sequence
+                    | 6 -> stream.Write fiveByteNop; assembleNop (width - 5) stream // TODO: find good 6 byte nop sequence
+                    | 7 -> stream.Write fiveByteNop; assembleNop (width - 5) stream // TODO: find good 7 byte nop sequence
                     | _ -> stream.Write eightByteNop; assembleNop (width - 8) stream
 
         let assembleRet (stream : BinaryWriter) =

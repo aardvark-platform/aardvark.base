@@ -25,6 +25,7 @@
     <WarningLevel>3</WarningLevel>
     <DocumentationFile>
     </DocumentationFile>
+    <PlatformTarget>x64</PlatformTarget>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>

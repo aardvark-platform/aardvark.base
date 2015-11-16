@@ -69,22 +69,40 @@ module DynamicCodeTests =
         open System.Linq
 
         type private AppendDelegate = delegate of int * int -> unit
+        type private AppendFDelegate = delegate of float32 * float32 -> unit
         let private calls = new ThreadLocal<List<int * int>>(fun () -> List<int * int>())
+        let private callsF = new ThreadLocal<List<float32 * float32>>(fun () -> List<float32 * float32>())
 
         let private append (arg0 : int) (arg1 : int) =
             calls.Value.Add(arg0, arg1)
 
+        let private appendF (arg0 : float32) (arg1 : float32) =
+            callsF.Value.Add(arg0, arg1)
+
         let private dAppend = AppendDelegate append
         let private pAppend = Marshal.GetFunctionPointerForDelegate dAppend
+
+        let private dAppendF = AppendFDelegate appendF
+        let private pAppendF = Marshal.GetFunctionPointerForDelegate dAppendF
         
         let private getCalls() =
             let arr = calls.Value.ToArray()
             calls.Value.Clear()
             arr |> Array.toList
 
+        let private getCallsF() =
+            let arr = callsF.Value.ToArray()
+            callsF.Value.Clear()
+            arr |> Array.toList
+
         let private getCallsSelf() =
             let arr = calls.Value.ToArray()
             calls.Value.Clear()
+            arr |> Array.toList |> List.map snd
+
+        let private getCallsSelfF() =
+            let arr = callsF.Value.ToArray()
+            callsF.Value.Clear()
             arr |> Array.toList |> List.map snd
 
         let create (input : aset<'k * int>) =
@@ -113,18 +131,31 @@ module DynamicCodeTests =
             new TestProgram<_,_>(program, getCalls)
 
         let createSimple (input : aset<int>) =
-            let compileDelta (l : Option<int>) (r : int) =
-                let l = match l with | Some l -> l | None -> 0
+            let compile (r : int) =
+                new AdaptiveCode([Mod.constant [pAppend, [|r :> obj; r :> obj|]]])
 
-                new AdaptiveCode([Mod.constant [pAppend, [|l :> obj; r :> obj|]]])
+            let program =
+                input 
+                    |> ASet.map (fun i -> i,i) 
+                    |> AMap.ofASet 
+                    |> AdaptiveProgram.simple 6 Comparer.Default compile
+
+            program.AutoDefragmentation <- false
+
+            new TestProgram<_,_>(program, getCallsSelf)
+
+        let createSimpleFloat (input : aset<float32>) =
+            let compileDelta (l : Option<float32>) (r : float32) =
+                let l = match l with | Some l -> l | None -> 0.0f
+
+                new AdaptiveCode([Mod.constant [pAppendF, [|l :> obj; r :> obj|]]])
 
             let program =
                 input |> ASet.map (fun i -> i,i) |> AMap.ofASet |> AdaptiveProgram.differential 6 Comparer.Default compileDelta
 
             program.AutoDefragmentation <- false
 
-            new TestProgram<_,_>(program, getCallsSelf)
-
+            new TestProgram<_,_>(program, getCallsSelfF)
 
 
 
@@ -314,3 +345,14 @@ module DynamicCodeTests =
         ()
 
 
+    [<Test>]
+    let ``[DynamicCode] float arguments``() =
+        let calls = [1.0f; 2.0f] |> CSet.ofList
+        use prog = TestProgram.createSimpleFloat calls
+
+        prog.Update(null) |> ignore
+        let res = prog.Run()
+        res |> should equal [1.0f; 2.0f]
+
+
+    
