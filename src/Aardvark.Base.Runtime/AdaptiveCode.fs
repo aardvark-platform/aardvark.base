@@ -108,7 +108,7 @@ type AdaptiveCode<'instruction>(content : list<IMod<list<'instruction>>>) =
 
 [<AllowNullLiteral>]
 type IFragment<'store> =
-    abstract member Storage : 'store with get, set
+    abstract member Storage : 'store
     abstract member Next : IFragment<'store>
     abstract member JumpDistance : int with get, set
 
@@ -152,9 +152,7 @@ module internal GenericProgram =
 
             interface IFragment<'fragment> with
                 member x.Next = x.Next :> IFragment<_>
-                member x.Storage
-                    with get() = x.Storage.Value
-                    and set s = x.Storage <- Some s
+                member x.Storage = x.Storage.Value
 
                 member x.JumpDistance
                     with get() = x.JumpDistance
@@ -652,6 +650,52 @@ module FragmentHandler =
         let desc = nativeOptimized maxArgs (fun _ v -> compile v) ()
         { desc with compileNeedsPrev = false }
 
+
+
+    [<AllowNullLiteral>]
+    type ManagedFragment<'a>(values : array<'a>) =
+        let mutable next = null
+        let mutable values = values
+
+        member x.Values
+            with get() = values
+            and set v = values <- v
+
+        member x.Next
+            with get() : ManagedFragment<'a> = next
+            and set (n : ManagedFragment<'a>) = next <- n
+
+
+    let managedOptimized (compileDelta : Option<'v> -> 'v -> IAdaptiveCode<'i -> unit>) () : FragmentHandler<'i, 'v, 'i -> unit, ManagedFragment<'i -> unit>> =
+        let prolog = ManagedFragment [||]
+        let epilog = ManagedFragment [||]
+
+        let rec run (l : ManagedFragment<'i -> unit>) (v : 'i) =
+            for f in l.Values do f v
+            if not (isNull l.Next) then
+                run l.Next v
+
+        {
+            compileNeedsPrev = true
+            nativeCallCount = ref 0
+            jumpDistance = ref 0
+            prolog = prolog
+            epilog = epilog
+            compileDelta = compileDelta
+            startDefragmentation = fun _ _ _ -> Task.FromResult TimeSpan.Zero
+            run = run prolog
+            memorySize = fun () -> 0L
+            alloc = fun code -> ManagedFragment<'i -> unit>(code)
+            free = ignore
+            write = fun frag code -> frag.Values <- code; false
+            writeNext = fun prev next -> prev.Next <- next; 0
+            isNext = fun prev frag -> prev.Next = frag
+            dispose = fun () -> ()
+        }
+
+    let managedSimple (compile : 'v -> IAdaptiveCode<'i -> unit>) () =
+        { managedOptimized (fun _ v -> compile v) () with compileNeedsPrev = false }
+
 module AdaptiveProgram =
     
     let nativeDifferential (maxArgs : int) (comparer : IComparer<'k>) (compileDelta : Option<'v> -> 'v -> IAdaptiveCode<NativeCall>) (input : aset<'k * 'v>) =
@@ -659,6 +703,12 @@ module AdaptiveProgram =
 
     let nativeSimple (maxArgs : int) (comparer : IComparer<'k>) (compile : 'v -> IAdaptiveCode<NativeCall>) (input : aset<'k * 'v>) =
         new GenericProgram.Program<_,_,_,_,_>(input, comparer, FragmentHandler.nativeUnoptimized maxArgs compile) :> IAdaptiveProgram<'i>
+
+    let managedDifferential (comparer : IComparer<'k>) (compileDelta : Option<'v> -> 'v -> IAdaptiveCode<_>) (input : aset<'k * 'v>) =
+        new GenericProgram.Program<_,_,_,_,_>(input, comparer, FragmentHandler.managedOptimized compileDelta) :> IAdaptiveProgram<'i>
+
+    let managedSimple (comparer : IComparer<'k>) (compile : 'v -> IAdaptiveCode<_>) (input : aset<'k * 'v>) =
+        new GenericProgram.Program<_,_,_,_,_>(input, comparer, FragmentHandler.managedSimple compile) :> IAdaptiveProgram<'i>
 
     let custom (comparer : IComparer<'k>) (createHandler : unit -> FragmentHandler<'i, 'value, 'instruction, 'fragment>) (input : aset<'k * 'value>) =
         new GenericProgram.Program<_,_,_,_,_>(input, comparer, createHandler) :> IAdaptiveProgram<'i>
