@@ -11,17 +11,6 @@ open Aardvark.Base.Incremental
 
 type NativeCalls = list<NativeCall>
 
-[<AllowNullLiteral>]
-type AdaptiveCode(content : list<IMod<NativeCalls>>) =
-    member x.Content = content
-
-    abstract member Dispose : unit -> unit
-    default x.Dispose() = ()
-
-    interface IDisposable with
-        member x.Dispose() = x.Dispose()
-
-
 type AdaptiveProgramStatistics =
     struct
         val mutable public DeltaProcessTime : TimeSpan
@@ -98,41 +87,78 @@ type IAdaptiveProgram<'i> =
 
     abstract member AutoDefragmentation : bool with get, set
     abstract member StartDefragmentation : unit -> Task<TimeSpan>
-    abstract member DefragmentationStarted : IEvent<unit>
-    abstract member DefragmentationDone : IEvent<TimeSpan>
 
     abstract member NativeCallCount : int
     abstract member FragmentCount : int
     abstract member ProgramSizeInBytes : int64
     abstract member TotalJumpDistanceInBytes : int64
 
+[<AllowNullLiteral>]
+type IAdaptiveCode<'instruction> =
+    inherit IDisposable
+    abstract member Content : list<IMod<list<'instruction>>>
 
+type AdaptiveCode<'instruction>(content : list<IMod<list<'instruction>>>) =
+    interface IDisposable with
+        member x.Dispose() = ()
 
-module private DifferentialProgram =
-    type FragmentContext<'a> =
-        {
-            compileNeedsPrev : bool
-            dynamicArguments : int
-            compileDelta : Option<'a> -> 'a -> AdaptiveCode
-            mutable memory : MemoryManager
-            nativeCallCount : ref<int>
-            jumpDistance : ref<int>
-        }
+    member x.Content = content
+    interface IAdaptiveCode<'instruction> with
+        member x.Content = content
+
+[<AllowNullLiteral>]
+type IFragment<'store> =
+    abstract member Storage : 'store with get, set
+    abstract member Next : IFragment<'store>
+    abstract member JumpDistance : int with get, set
+
+type FragmentHandler<'i, 'value, 'instruction, 'fragment> =
+    {
+        compileNeedsPrev : bool
+        nativeCallCount : ref<int>
+        jumpDistance : ref<int>
+        run : 'i -> unit
+
+        memorySize : unit -> int64
+
+        compileDelta : Option<'value> -> 'value -> IAdaptiveCode<'instruction>
+        prolog : 'fragment
+        epilog : 'fragment
+        startDefragmentation : obj -> ref<int> -> IFragment<'fragment> -> Task<TimeSpan>
+        alloc : array<'instruction> -> 'fragment
+        free : 'fragment -> unit
+        write : 'fragment -> array<'instruction> -> bool
+        writeNext : 'fragment -> 'fragment -> int
+        isNext : 'fragment -> 'fragment -> bool
+        dispose : unit -> unit
+    }
+
+module internal GenericProgram =
 
     [<AllowNullLiteral>]
-    type Fragment<'a> =
+    type Fragment<'i, 'a, 'instruction, 'fragment> =
         class
             inherit AdaptiveObject
 
-            val mutable public Context : FragmentContext<'a>
-            val mutable public Storage : CodeFragment
+            val mutable public Context : FragmentHandler<'i, 'a, 'instruction, 'fragment>
+            val mutable public Storage : Option<'fragment>
             val mutable public Tag : Option<'a>
-            val mutable public Prev : Fragment<'a>
-            val mutable public Next : Fragment<'a>
-            val mutable public Code : AdaptiveCode
+            val mutable public Prev : Fragment<'i, 'a, 'instruction, 'fragment>
+            val mutable public Next : Fragment<'i, 'a, 'instruction, 'fragment>
+            val mutable public Code : IAdaptiveCode<'instruction>
             val mutable public CodePrevTag : Option<'a>
             val mutable public CallCount : int
             val mutable public JumpDistance : int
+
+            interface IFragment<'fragment> with
+                member x.Next = x.Next :> IFragment<_>
+                member x.Storage
+                    with get() = x.Storage.Value
+                    and set s = x.Storage <- Some s
+
+                member x.JumpDistance
+                    with get() = x.JumpDistance
+                    and set d = x.JumpDistance <- d
 
             member x.Recompile (caller : IAdaptiveObject) =
                 x.EvaluateAlways caller (fun () ->
@@ -165,43 +191,37 @@ module private DifferentialProgram =
                                 |> List.collect (fun c -> c.GetValue x)
                                 |> List.toArray
 
-                        let asm =
-                            code |> ASM.assembleCalls x.Context.dynamicArguments
 
                         Interlocked.Add(x.Context.nativeCallCount, code.Length - x.CallCount) |> ignore
                         x.CallCount <- code.Length
 
-                        if isNull x.Storage then
-                            x.Storage <- CodeFragment(x.Context.memory, asm)
+                        if Option.isNone x.Storage then
+                            x.Storage <- Some <| x.Context.alloc code
                             true
                         else
-                            let ptr = x.Storage.Offset
-
-                            // TODO: maybe partial updates here
-                            x.Storage.Write(asm)
-                            ptr <> x.Storage.Offset
+                            x.Context.write x.Storage.Value code
                     else
                         false
                 )
 
             member x.LinkPrev(caller : IAdaptiveObject) =
                 x.EvaluateAlways caller (fun () ->
-                    let prevFragment = x.Prev.Storage
-                    let myFragment = x.Storage
+                    let prevFragment = x.Prev.Storage.Value
+                    let myFragment = x.Storage.Value
 
-                    if prevFragment.ReadNextPointer() <> myFragment.Offset then
-                        let distance = prevFragment.WriteNextPointer(myFragment.Offset)
+                    if not (x.Context.isNext prevFragment myFragment) then
+                        let distance = x.Context.writeNext prevFragment myFragment
                         Interlocked.Add(x.Context.jumpDistance, distance - x.JumpDistance) |> ignore
                         x.JumpDistance <- distance
                 )
 
             member x.LinkNext(caller : IAdaptiveObject) =
                 x.EvaluateAlways caller (fun () ->
-                    let nextFragment = x.Next.Storage
-                    let myFragment = x.Storage
+                    let nextFragment = x.Next.Storage.Value
+                    let myFragment = x.Storage.Value
 
-                    if myFragment.ReadNextPointer() <> nextFragment.Offset then
-                        let distance = myFragment.WriteNextPointer(nextFragment.Offset)
+                    if not (x.Context.isNext myFragment nextFragment) then
+                        let distance = x.Context.writeNext myFragment nextFragment
                         Interlocked.Add(x.Context.jumpDistance, distance - x.JumpDistance) |> ignore
                         x.JumpDistance <- distance
                 )
@@ -216,9 +236,9 @@ module private DifferentialProgram =
                 Interlocked.Add(x.Context.nativeCallCount, -x.CallCount) |> ignore
                 x.CallCount <- 0
 
-                if not (isNull x.Storage) then
-                    x.Storage.Dispose()
-                    x.Storage <- null
+                if Option.isSome x.Storage then
+                    x.Context.free x.Storage.Value
+                    x.Storage <- None
             
                 if not (isNull x.Code) then
                     x.Code.Dispose()
@@ -231,96 +251,35 @@ module private DifferentialProgram =
 
             new(context, tag) = 
                 { Context = context
-                  Storage = null; Next = null; 
+                  Storage = None; Next = null; 
                   Prev = null; Tag = Some tag; 
                   Code = null; CodePrevTag = None
                   CallCount = 0; JumpDistance = 0 }
 
             new(context, storage) = 
                 { Context = context
-                  Storage = storage; Next = null; 
+                  Storage = Some storage; Next = null; 
                   Prev = null; Tag = None; 
                   Code = null; CodePrevTag = None
                   CallCount = 0; JumpDistance = 0 }
         end
 
-
-
-    module Defragmentation =
-        let rec private evacuateKernel (startVersion : int) (version : byref<int>) (mem : MemoryManager) (results : List<Fragment<'a> * CodeFragment>) (last : CodeFragment) (current : Fragment<'a>) =
-            if isNull current then 
-                true
-            else
-                let currentMem = current.Storage.Memory
-                let ptr = mem.Alloc(currentMem.Size)
-                currentMem.CopyTo(ptr)
-
-                let frag = CodeFragment(ptr, current.Storage.ContainsJmp)
-
-                if not (isNull last) then
-                    last.WriteNextPointer(ptr.Offset) |> ignore
-
-                results.Add(current, frag)
-
-                if version <> startVersion then false
-                else evacuateKernel startVersion &version mem results frag current.Next
-
-        let evacuate (lockObj : obj) (version : byref<int>) (context : FragmentContext<'a>) (memory : byref<MemoryManager>) (prolog : Fragment<'a>) =
-            let startVersion = version
-            let results = List()
-            let mem = new MemoryManager(memory.Capacity, ExecutableMemory.alloc, ExecutableMemory.free)
-
-            let worked =
-                try evacuateKernel startVersion &version mem results null prolog
-                with _ -> false
-
-            if worked then
-                Monitor.Enter lockObj
-                try
-                    if version = startVersion then
-                        for (frag,code) in results do
-                            frag.Storage <- code
-                            context.jumpDistance := !context.jumpDistance - frag.JumpDistance
-                            frag.JumpDistance <- 0
-
-                        let old = memory
-                        memory <- mem
-                        context.memory <- mem
-                        old.Dispose()
-
-                        true
-                    else
-                        mem.Dispose()
-                        false
-                finally
-                    Monitor.Exit lockObj
-            else
-                mem.Dispose()
-                false
-
-
-    type Program<'i, 'k, 'a when 'k : equality>(compileNeedsPrev : bool, input : amap<'k, 'a>, maxArgumentCount : int,
-                                                keyComparer : IComparer<'k>, 
-                                                compileDelta : Option<'a> -> 'a -> AdaptiveCode ) =
+    type Program<'i, 'k, 'instruction, 'fragment, 'a>
+        (input : aset<'k * 'a>,
+         keyComparer : IComparer<'k>,
+         newHandler : unit -> FragmentHandler<'i, 'a, 'instruction, 'fragment>) =
         inherit AdaptiveObject()
 
-        let reader = input.ASet.GetReader()
-        let mutable memory = MemoryManager.createExecutable()
-        let mutable version = -1
+        let reader = input.GetReader()
+        let version = ref -1
 
-        let dynamicArguments = 
-            if typeof<'i> = typeof<unit> then 0
-            elif typeof<'i>.IsValueType then 1
-            else failwith "not implemented"
+        let cache = Dict<'k * 'a, Fragment<'i, 'a, 'instruction, 'fragment>>()
+        let fragments = SortedDictionaryExt<'k, StableSet<Fragment<'i, 'a, 'instruction, 'fragment>>>(keyComparer)
 
-        let cache = Dict<'k * 'a, Fragment<'a>>()
-        let fragments = SortedDictionaryExt<'k, StableSet<Fragment<'a>>>(keyComparer)
+        let handler = newHandler()
 
-        let nativeCallCount = ref 0
-        let jumpDistance = ref 0
-        let context = { compileNeedsPrev = compileNeedsPrev; dynamicArguments = dynamicArguments; memory = memory; compileDelta = compileDelta; nativeCallCount = nativeCallCount; jumpDistance = jumpDistance }
-        let prolog = new Fragment<_>(context, CodeFragment(memory, ASM.functionProlog dynamicArguments maxArgumentCount))
-        let epilog = new Fragment<_>(context, CodeFragment(memory, ASM.functionEpilog dynamicArguments maxArgumentCount))
+        let prolog = new Fragment<_,_,_,_>(handler, handler.prolog)
+        let epilog = new Fragment<_,_,_,_>(handler, handler.epilog)
 
         do prolog.Next <- epilog
            epilog.Prev <- prolog
@@ -328,93 +287,29 @@ module private DifferentialProgram =
         let deltaProcessWatch = System.Diagnostics.Stopwatch()
         let compileWatch = System.Diagnostics.Stopwatch()
         let writeWatch = System.Diagnostics.Stopwatch()
-        let defragmentWatch = System.Diagnostics.Stopwatch()
 
         let dirtyLock = obj()
-        let mutable dirtySet = HashSet<Fragment<'a>>()
+        let mutable dirtySet = HashSet<Fragment<'i, 'a, 'instruction, 'fragment>>()
 
-
-        let defragStartEvent = EventSource()
-        let defragDoneEvent = EventSource()
         let mutable autoDefragmentation = 1
-        let mutable defragRunning = 0
-        let mutable currentDefragTask = null
-
-        let issueDefragmentation (this : Program<'i, 'k, 'a>) =
-            let startTask (f : unit -> 'x) =
-                Task.Factory.StartNew(f, TaskCreationOptions.LongRunning)
-
-            let tryDefragment () =
-                Defragmentation.evacuate (this :> obj) &version context &memory prolog
-
-            let start = Interlocked.Exchange(&defragRunning, 1)
-            if start = 0 then
-                let task = 
-                    startTask (fun () ->
-                        Log.startTimed "defragmentation"
-                        defragStartEvent.Emit()
-                        defragmentWatch.Restart()
-                        while not (tryDefragment()) do
-                            Log.line "retry"
-                        defragmentWatch.Stop()
-                        Log.stop()
-
-                        defragDoneEvent.Emit defragmentWatch.Elapsed
-                        Interlocked.Exchange(&defragRunning, 0) |> ignore
-                        defragmentWatch.Elapsed
-                    )
-                currentDefragTask <- task
-                task
-            else
-                currentDefragTask
-
-        let run = 
-            let mutable currentPtr = 0n
-            let mutable currentRun = ignore
-
-            fun v ->
-                ReaderWriterLock.read memory.PointerLock (fun () ->
-                    let ptr = memory.Pointer + prolog.Storage.Offset
-
-                    if currentPtr <> ptr then
-                        currentPtr <- ptr
-                        currentRun <- UnmanagedFunctions.wrap ptr
-
-
-                    currentRun v
-                )
-
 
         override x.InputChanged(o : IAdaptiveObject) =
             match o with
-                | :? Fragment<'a> as o ->
+                | :? Fragment<'i, 'a, 'instruction, 'fragment> as o ->
                     lock dirtyLock (fun () -> dirtySet.Add o |> ignore)
                 | _ ->
                     ()
 
         member x.Run (v : 'i) =
             lock x (fun () ->        
-                run v
+                handler.run v
             )
 
-        member x.Disassemble() =
-            lock x (fun () ->
-                let result = List()
-                let mutable current = prolog.Next
-                while current <> epilog do
-                    let mem = current.Storage.Memory
-
-                    let data = mem.UInt8Array
-                    let instructions = AMD64.Disassembler.disassemble data
-                    result.AddRange instructions
-                    current <- current.Next
-
-                result.ToArray()
-            )
+        member x.Disassemble() = null
 
         member x.Update caller = 
             x.EvaluateIfNeeded caller AdaptiveProgramStatistics.Zero (fun v ->
-                Interlocked.Increment(&version) |> ignore
+                Interlocked.Increment(version) |> ignore
 
                 let deltas = reader.GetDelta x
 
@@ -432,26 +327,22 @@ module private DifferentialProgram =
                 let mutable added = 0
                 let mutable removed = 0
             
-                let prologNextPtr = 
-                    let store = prolog.Next.Storage
-                    if isNull store then -1n
-                    else store.Offset
+                let prologNext = 
+                    prolog.Next.Storage
 
-                let epilogPrevPtr = 
-                    let store = epilog.Prev.Storage
-                    if isNull store then -1n
-                    else store.Offset
+                let epilogPrev = 
+                    epilog.Prev.Storage
 
 
-                let createBetween (prev : Option<Fragment<'a>>) (v : 'a) (next : Option<Fragment<'a>>)  =
+                let createBetween (prev : Option<Fragment<'i, 'a, 'instruction, 'fragment>>) (v : 'a) (next : Option<Fragment<'i, 'a, 'instruction, 'fragment>>)  =
 
-                    if compileNeedsPrev then
+                    if handler.compileNeedsPrev then
                         match next with
                             | Some n -> recompileSet.Add n |> ignore
                             | _ -> ()
 
                     //let code = desc.compileDelta (Option.map DynamicFragment.tag prev) v (Option.map DynamicFragment.tag next)
-                    let fragment = new Fragment<_>(context, v)
+                    let fragment = new Fragment<'i, 'a, 'instruction, 'fragment>(handler, v)
 
                     let l = match prev with | Some l -> l | None -> prolog
                     let r = match next with | Some r -> r | None -> epilog
@@ -514,7 +405,7 @@ module private DifferentialProgram =
                                                 fragment.Prev.Next <- fragment.Next
 
 
-                                                if compileNeedsPrev && fragment.Next <> epilog then
+                                                if handler.compileNeedsPrev && fragment.Next <> epilog then
                                                     recompileSet.Add fragment.Next |> ignore
 
                                                 fragment.Dispose()
@@ -555,8 +446,8 @@ module private DifferentialProgram =
                 epilog.LinkPrev x
                 writeWatch.Stop()
 
-                if autoDefragmentation = 1 && relinkSet.Count > 0 && !jumpDistance > 0 then
-                    issueDefragmentation x |> ignore
+                if autoDefragmentation = 1 && relinkSet.Count > 0 && !handler.jumpDistance > 0 then
+                    handler.startDefragmentation (x :> obj) version |> ignore
 
                 AdaptiveProgramStatistics (
                     DeltaProcessTime = deltaProcessWatch.Elapsed,
@@ -572,48 +463,205 @@ module private DifferentialProgram =
             ) 
 
         member x.Dispose() =
+            for f in fragments do
+                for f in f.Value do
+                    f.Dispose()
+
+            fragments.Clear()
             dirtySet.Clear()
             reader.Dispose()
-            memory.Dispose()
+            handler.dispose()
             cache.Clear()
-            fragments.Clear()
 
         interface IDisposable with
             member x.Dispose() = x.Dispose()
 
         interface IAdaptiveProgram<'i> with
-            member x.DefragmentationStarted = defragStartEvent :> IEvent<_>
-            member x.DefragmentationDone = defragDoneEvent :> IEvent<_>
-
             member x.AutoDefragmentation
                 with get() = autoDefragmentation = 1
                 and set d =
                     autoDefragmentation <- if d then 1 else 0
-                    if d && !jumpDistance > 0 then
-                        issueDefragmentation x |> ignore
+                    if d && !handler.jumpDistance > 0 then
+                        handler.startDefragmentation (x :> obj) version |> ignore
 
             member x.StartDefragmentation() = 
-                if !jumpDistance > 0 then issueDefragmentation x
+                if !handler.jumpDistance > 0 then handler.startDefragmentation (x :> obj) version (prolog :> IFragment<_>)
                 else Task.FromResult TimeSpan.Zero
 
             member x.Update(caller) = x.Update(caller)
             member x.Run v = x.Run v
 
             member x.FragmentCount = cache.Count
-            member x.NativeCallCount = !nativeCallCount
-            member x.ProgramSizeInBytes = int64 (memory.AllocatedBytes - prolog.Storage.Memory.Size - epilog.Storage.Memory.Size)
-            member x.TotalJumpDistanceInBytes = int64 (!jumpDistance - prolog.JumpDistance - epilog.JumpDistance)
+            member x.NativeCallCount = !handler.nativeCallCount
+            member x.ProgramSizeInBytes = handler.memorySize() //int64 (memory.AllocatedBytes - prolog.Storage.Memory.Size - epilog.Storage.Memory.Size)
+            member x.TotalJumpDistanceInBytes = int64 (!handler.jumpDistance - prolog.JumpDistance - epilog.JumpDistance)
             member x.Disassemble() = x.Disassemble() :> obj
 
+module FragmentHandler =
+    
 
+    module private Defragmentation =
+
+        let rec private evacuateKernel (startVersion : int) (version : byref<int>) (mem : MemoryManager) (results : List<IFragment<CodeFragment> * managedptr>) (last : CodeFragment) (current : IFragment<CodeFragment>) =
+            if isNull current then 
+                true
+            else
+                let currentMem = current.Storage.Memory
+                let ptr = mem.Alloc(currentMem.Size)
+                currentMem.CopyTo(ptr)
+
+                let frag = CodeFragment(ptr, current.Storage.ContainsJmp)
+
+                if not (isNull last) then
+                    last.WriteNextPointer(ptr.Offset) |> ignore
+
+                results.Add(current, ptr)
+
+                if version <> startVersion then false
+                else evacuateKernel startVersion &version mem results frag current.Next
+
+        let evacuate (lockObj : obj) (version : byref<int>) (jumpDistance : ref<int>) (memory : byref<MemoryManager>) (prolog : IFragment<_>) =
+            let startVersion = version
+            let results = List()
+            let mem = new MemoryManager(memory.Capacity, ExecutableMemory.alloc, ExecutableMemory.free)
+
+            let worked =
+                try evacuateKernel startVersion &version mem results null prolog
+                with _ -> false
+
+            if worked then
+                Monitor.Enter lockObj
+                try
+                    if version = startVersion then
+                        for (frag,code) in results do
+                            frag.Storage.Memory <- code
+                            jumpDistance := !jumpDistance - frag.JumpDistance
+                            frag.JumpDistance <- 0
+
+                        let old = memory
+                        memory <- mem
+                        old.Dispose()
+
+                        true
+                    else
+                        mem.Dispose()
+                        false
+                finally
+                    Monitor.Exit lockObj
+            else
+                mem.Dispose()
+                false
+
+
+
+    let nativeOptimized (maxArgs : int) (compileDelta : Option<'value> -> 'value -> IAdaptiveCode<NativeCall>) () : FragmentHandler<'i, 'value, NativeCall, CodeFragment>=
+        
+        let dynamicArgs =
+            if typeof<'i> = typeof<unit> then 0
+            else 1
+
+        let memory = ref <| MemoryManager.createExecutable ()
+        
+        let prolog = CodeFragment(!memory, ASM.functionProlog dynamicArgs maxArgs)
+        let epilog = CodeFragment(!memory, ASM.functionEpilog dynamicArgs maxArgs)
+
+
+        let jumpDistance = ref 0
+        let nativeCallCount = ref 0
+        let defragmentWatch = System.Diagnostics.Stopwatch()
+        let mutable currentDefragTask = Task.FromResult TimeSpan.Zero
+
+        let mutable defragRunning = 0
+        let startDefragmentation (parent : obj) (version : ref<int>) (first : IFragment<_>) =
+            let startTask (f : unit -> 'x) =
+                Task.Factory.StartNew(f, TaskCreationOptions.LongRunning)
+
+            let tryDefragment () =
+                Defragmentation.evacuate parent &version.contents jumpDistance &memory.contents first
+
+            let start = Interlocked.Exchange(&defragRunning, 1)
+            if start = 0 then
+                let task = 
+                    startTask (fun () ->
+                        Log.startTimed "defragmentation"
+                        defragmentWatch.Restart()
+                        while not (tryDefragment()) do
+                            Log.line "retry"
+                        defragmentWatch.Stop()
+                        Log.stop()
+
+                        Interlocked.Exchange(&defragRunning, 0) |> ignore
+                        defragmentWatch.Elapsed
+                    )
+                currentDefragTask <- task
+                task
+            else
+                currentDefragTask
+
+        let mutable currentPtr = 0n
+        let mutable wrapped = ignore
+        let run arg =
+            ReaderWriterLock.read memory.Value.PointerLock (fun () ->
+                let entry = memory.Value.Pointer + prolog.Offset
+                if entry <> currentPtr then
+                    currentPtr <- entry
+                    wrapped <- UnmanagedFunctions.wrap entry
+
+                wrapped arg
+
+            )
+
+        {
+            compileNeedsPrev = true
+            nativeCallCount = nativeCallCount
+            jumpDistance = jumpDistance
+            prolog = prolog
+            epilog = epilog
+
+            compileDelta = compileDelta
+            startDefragmentation = startDefragmentation
+            run = run
+
+            memorySize = fun () -> 
+                memory.Value.AllocatedBytes |> int64
+
+            alloc = fun code -> 
+                let code = ASM.assembleCalls dynamicArgs code
+                CodeFragment(!memory, code)
+
+            free = fun frag -> 
+                frag.Dispose()
+
+            write = fun frag code -> 
+                let code = ASM.assembleCalls dynamicArgs code
+                let ptr = frag.Offset
+                frag.Write code
+                ptr <> frag.Offset
+
+            writeNext = fun prev next -> 
+                prev.WriteNextPointer next.Offset
+
+            isNext = fun prev frag ->
+                prev.ReadNextPointer() = frag.Offset
+
+            dispose = fun () ->
+                memory.Value.Dispose()
+        }
+
+    let nativeUnoptimized (maxArgs : int) (compile : 'value -> IAdaptiveCode<NativeCall>) ()  =
+        let desc = nativeOptimized maxArgs (fun _ v -> compile v) ()
+        { desc with compileNeedsPrev = false }
 
 module AdaptiveProgram =
     
-    let differential (maxArgs : int) (comparer : IComparer<'k>) (compileDelta : Option<'v> -> 'v -> AdaptiveCode) (input : amap<'k, 'v>) =
-        new DifferentialProgram.Program<_,_,_>(true, input, maxArgs, comparer, compileDelta) :> IAdaptiveProgram<'i>
+    let nativeDifferential (maxArgs : int) (comparer : IComparer<'k>) (compileDelta : Option<'v> -> 'v -> IAdaptiveCode<NativeCall>) (input : aset<'k * 'v>) =
+        new GenericProgram.Program<_,_,_,_,_>(input, comparer, FragmentHandler.nativeOptimized maxArgs compileDelta) :> IAdaptiveProgram<'i>
 
-    let simple (maxArgs : int) (comparer : IComparer<'k>) (compile : 'v -> AdaptiveCode) (input : amap<'k, 'v>) =
-        new DifferentialProgram.Program<_,_,_>(false, input, maxArgs, comparer, fun _ s -> compile s) :> IAdaptiveProgram<'i>
+    let nativeSimple (maxArgs : int) (comparer : IComparer<'k>) (compile : 'v -> IAdaptiveCode<NativeCall>) (input : aset<'k * 'v>) =
+        new GenericProgram.Program<_,_,_,_,_>(input, comparer, FragmentHandler.nativeUnoptimized maxArgs compile) :> IAdaptiveProgram<'i>
+
+    let custom (comparer : IComparer<'k>) (createHandler : unit -> FragmentHandler<'i, 'value, 'instruction, 'fragment>) (input : aset<'k * 'value>) =
+        new GenericProgram.Program<_,_,_,_,_>(input, comparer, createHandler) :> IAdaptiveProgram<'i>
 
 
     let inline run (p : IAdaptiveProgram<unit>) =
@@ -668,11 +716,11 @@ module internal Tests =
                     else 
                         Mod.map2 (fun s p -> [pPrint, [|p :> obj; s :> obj|]]) self prev
 
-                new AdaptiveCode([call])
+                new AdaptiveCode<_>([call]) :> IAdaptiveCode<_>
 
-            AdaptiveProgram.differential 1 Comparer.Default compileDelta
+            AdaptiveProgram.nativeDifferential 1 Comparer.Default compileDelta
 
-        let prog = calls |> AMap.ofASet |> compile
+        let prog = calls |> compile
         prog.AutoDefragmentation <- false
 
         prog.Update(null) |> printfn "update: %A"

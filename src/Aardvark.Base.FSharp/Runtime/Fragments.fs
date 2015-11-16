@@ -716,8 +716,9 @@ type CodeFragment(memory : managedptr, containsJmp : bool) =
     member x.Offset =
         memory.Offset
 
-    member x.Memory : managedptr =
-        memory
+    member x.Memory
+        with get() = memory
+        and set m = memory <- m
 
     member x.ContainsJmp = containsJmp
 

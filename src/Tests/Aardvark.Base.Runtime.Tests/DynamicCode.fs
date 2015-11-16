@@ -28,11 +28,6 @@ module DynamicCodeTests =
             with get() = program.AutoDefragmentation
             and set d = program.AutoDefragmentation <- d
 
-        member x.DefragmentationStarted =
-            program.DefragmentationStarted
-
-        member x.DefragmentationDone =
-            program.DefragmentationDone
 
         member x.StartDefragmentation() =
             program.StartDefragmentation()
@@ -109,10 +104,10 @@ module DynamicCodeTests =
             let compileDelta (l : Option<int>) (r : int) =
                 let l = match l with | Some l -> l | None -> 0
 
-                new AdaptiveCode([Mod.constant [pAppend, [|l :> obj; r :> obj|]]])
+                new AdaptiveCode<_>([Mod.constant [pAppend, [|l :> obj; r :> obj|]]]) :> IAdaptiveCode<_>
 
             let program =
-                input |> AMap.ofASet |> AdaptiveProgram.differential 6 Comparer.Default compileDelta
+                input |> AdaptiveProgram.nativeDifferential 6 Comparer.Default compileDelta
 
             program.AutoDefragmentation <- false
 
@@ -122,23 +117,22 @@ module DynamicCodeTests =
             let compileDelta (l : Option<IMod<int>>) (r : IMod<int>) =
                 let l = match l with | Some l -> l | None -> Mod.constant 0
                 let call = Mod.map2 (fun l r -> [pAppend, [|l :> obj; r :> obj|]]) l r
-                new AdaptiveCode([call])
+                new AdaptiveCode<_>([call]) :> IAdaptiveCode<_>
 
             let program =
-                input |> AMap.ofASet |> AdaptiveProgram.differential 6 Comparer.Default compileDelta
+                input |> AdaptiveProgram.nativeDifferential 6 Comparer.Default compileDelta
             program.AutoDefragmentation <- false
 
             new TestProgram<_,_>(program, getCalls)
 
         let createSimple (input : aset<int>) =
             let compile (r : int) =
-                new AdaptiveCode([Mod.constant [pAppend, [|r :> obj; r :> obj|]]])
+                new AdaptiveCode<_>([Mod.constant [pAppend, [|r :> obj; r :> obj|]]]) :> IAdaptiveCode<_>
 
             let program =
                 input 
                     |> ASet.map (fun i -> i,i) 
-                    |> AMap.ofASet 
-                    |> AdaptiveProgram.simple 6 Comparer.Default compile
+                    |> AdaptiveProgram.nativeSimple 6 Comparer.Default compile
 
             program.AutoDefragmentation <- false
 
@@ -148,10 +142,10 @@ module DynamicCodeTests =
             let compileDelta (l : Option<float32>) (r : float32) =
                 let l = match l with | Some l -> l | None -> 0.0f
 
-                new AdaptiveCode([Mod.constant [pAppendF, [|l :> obj; r :> obj|]]])
+                new AdaptiveCode<_>([Mod.constant [pAppendF, [|l :> obj; r :> obj|]]]) :> IAdaptiveCode<_>
 
             let program =
-                input |> ASet.map (fun i -> i,i) |> AMap.ofASet |> AdaptiveProgram.differential 6 Comparer.Default compileDelta
+                input |> ASet.map (fun i -> i,i) |> AdaptiveProgram.nativeDifferential 6 Comparer.Default compileDelta
 
             program.AutoDefragmentation <- false
 
@@ -161,10 +155,10 @@ module DynamicCodeTests =
 
         let createDynamic (input : aset<int>) =
             let compile (r : int) =
-                new AdaptiveCode([Mod.constant [pAppend, [|r :> obj|]]])
+                new AdaptiveCode<_>([Mod.constant [pAppend, [|r :> obj|]]]) :> IAdaptiveCode<_>
 
             let program =
-                input |> ASet.map (fun i -> i,i) |> AMap.ofASet |> AdaptiveProgram.simple 6 Comparer.Default compile
+                input |> ASet.map (fun i -> i,i) |> AdaptiveProgram.nativeSimple 6 Comparer.Default compile
 
             program.AutoDefragmentation <- false
 
@@ -283,8 +277,7 @@ module DynamicCodeTests =
         prog.Run() |> should equal [0,3; 3,2] 
 
         prog.StartDefragmentation().Wait()
-        prog.Disassemble() |> Array.mapi (fun i a -> sprintf "%d: %A" i a) |> String.concat "\r\n" |> Console.WriteLine
-        
+
 
     [<Test>]
     let ``[DynamicCode] defragmentation``() =
