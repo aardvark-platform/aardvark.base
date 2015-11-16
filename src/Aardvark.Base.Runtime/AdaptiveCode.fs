@@ -112,6 +112,7 @@ type IFragment<'store> =
     abstract member Next : IFragment<'store>
     abstract member JumpDistance : int with get, set
 
+
 type FragmentHandler<'i, 'value, 'instruction, 'fragment> =
     {
         compileNeedsPrev : bool
@@ -132,6 +133,7 @@ type FragmentHandler<'i, 'value, 'instruction, 'fragment> =
         isNext : 'fragment -> 'fragment -> bool
         dispose : unit -> unit
     }
+
 
 module internal GenericProgram =
 
@@ -552,7 +554,7 @@ module FragmentHandler =
 
 
 
-    let nativeOptimized (maxArgs : int) (compileDelta : Option<'value> -> 'value -> IAdaptiveCode<NativeCall>) () : FragmentHandler<'i, 'value, NativeCall, CodeFragment>=
+    let nativeDifferential (maxArgs : int) (compileDelta : Option<'value> -> 'value -> IAdaptiveCode<NativeCall>) () : FragmentHandler<'i, 'value, NativeCall, CodeFragment>=
         
         let dynamicArgs =
             if typeof<'i> = typeof<unit> then 0
@@ -646,10 +648,54 @@ module FragmentHandler =
                 memory.Value.Dispose()
         }
 
-    let nativeUnoptimized (maxArgs : int) (compile : 'value -> IAdaptiveCode<NativeCall>) ()  =
-        let desc = nativeOptimized maxArgs (fun _ v -> compile v) ()
+    let nativeSimple (maxArgs : int) (compile : 'value -> IAdaptiveCode<NativeCall>) ()  =
+        let desc = nativeDifferential maxArgs (fun _ v -> compile v) ()
         { desc with compileNeedsPrev = false }
 
+    let native (maxArgs : int) () =
+        nativeDifferential maxArgs (fun _ _ -> failwith "no compileDelta given") ()
+
+    let warpDifferential (mapping : 'a -> 'b) (compile : Option<'v> -> 'v -> IAdaptiveCode<'a>) (newInner : unit -> FragmentHandler<'i, 'v, 'b, 'frag>) =
+        fun () ->
+            let inner = newInner()
+            {
+                compileNeedsPrev = true
+                nativeCallCount = inner.nativeCallCount
+                jumpDistance = inner.jumpDistance
+                prolog = inner.prolog
+                epilog = inner.epilog
+                compileDelta = compile
+                startDefragmentation = inner.startDefragmentation
+                run = inner.run
+                memorySize = inner.memorySize
+                alloc = fun code -> inner.alloc(code |> Array.map mapping)
+                free = ignore
+                write = fun frag code -> inner.write frag (code |> Array.map mapping)
+                writeNext = fun prev next -> inner.writeNext prev next
+                isNext = fun prev frag -> inner.isNext prev frag
+                dispose = inner.dispose
+            }
+    
+    let wrapSimple (mapping : 'a -> 'b) (compile : 'v -> IAdaptiveCode<'a>) (newInner : unit -> FragmentHandler<'i, 'v, 'b, 'frag>) =
+        fun () ->
+            let inner = newInner()
+            {
+                compileNeedsPrev = false
+                nativeCallCount = inner.nativeCallCount
+                jumpDistance = inner.jumpDistance
+                prolog = inner.prolog
+                epilog = inner.epilog
+                compileDelta = fun _ v -> compile v
+                startDefragmentation = inner.startDefragmentation
+                run = inner.run
+                memorySize = inner.memorySize
+                alloc = fun code -> inner.alloc(code |> Array.map mapping)
+                free = ignore
+                write = fun frag code -> inner.write frag (code |> Array.map mapping)
+                writeNext = fun prev next -> inner.writeNext prev next
+                isNext = fun prev frag -> inner.isNext prev frag
+                dispose = inner.dispose
+            }
 
 
     [<AllowNullLiteral>]
@@ -665,8 +711,10 @@ module FragmentHandler =
             with get() : ManagedFragment<'a> = next
             and set (n : ManagedFragment<'a>) = next <- n
 
+    let test (translate : float32 -> NativeCall) (compile : int -> float32) =
+        native 6 |> wrapSimple translate (fun l -> new AdaptiveCode<_>([Mod.constant [compile l]]) :> IAdaptiveCode<_>)
 
-    let managedOptimized (compileDelta : Option<'v> -> 'v -> IAdaptiveCode<'i -> unit>) () : FragmentHandler<'i, 'v, 'i -> unit, ManagedFragment<'i -> unit>> =
+    let managedDifferential (compileDelta : Option<'v> -> 'v -> IAdaptiveCode<'i -> unit>) () : FragmentHandler<'i, 'v, 'i -> unit, ManagedFragment<'i -> unit>> =
         let prolog = ManagedFragment [||]
         let epilog = ManagedFragment [||]
 
@@ -694,18 +742,18 @@ module FragmentHandler =
         }
 
     let managedSimple (compile : 'v -> IAdaptiveCode<'i -> unit>) () =
-        { managedOptimized (fun _ v -> compile v) () with compileNeedsPrev = false }
+        { managedDifferential (fun _ v -> compile v) () with compileNeedsPrev = false }
 
 module AdaptiveProgram =
     
     let nativeDifferential (maxArgs : int) (comparer : IComparer<'k>) (compileDelta : Option<'v> -> 'v -> IAdaptiveCode<NativeCall>) (input : aset<'k * 'v>) =
-        new GenericProgram.Program<_,_,_,_,_>(input, comparer, FragmentHandler.nativeOptimized maxArgs compileDelta) :> IAdaptiveProgram<'i>
+        new GenericProgram.Program<_,_,_,_,_>(input, comparer, FragmentHandler.nativeDifferential maxArgs compileDelta) :> IAdaptiveProgram<'i>
 
     let nativeSimple (maxArgs : int) (comparer : IComparer<'k>) (compile : 'v -> IAdaptiveCode<NativeCall>) (input : aset<'k * 'v>) =
-        new GenericProgram.Program<_,_,_,_,_>(input, comparer, FragmentHandler.nativeUnoptimized maxArgs compile) :> IAdaptiveProgram<'i>
+        new GenericProgram.Program<_,_,_,_,_>(input, comparer, FragmentHandler.nativeSimple maxArgs compile) :> IAdaptiveProgram<'i>
 
     let managedDifferential (comparer : IComparer<'k>) (compileDelta : Option<'v> -> 'v -> IAdaptiveCode<_>) (input : aset<'k * 'v>) =
-        new GenericProgram.Program<_,_,_,_,_>(input, comparer, FragmentHandler.managedOptimized compileDelta) :> IAdaptiveProgram<'i>
+        new GenericProgram.Program<_,_,_,_,_>(input, comparer, FragmentHandler.managedDifferential compileDelta) :> IAdaptiveProgram<'i>
 
     let managedSimple (comparer : IComparer<'k>) (compile : 'v -> IAdaptiveCode<_>) (input : aset<'k * 'v>) =
         new GenericProgram.Program<_,_,_,_,_>(input, comparer, FragmentHandler.managedSimple compile) :> IAdaptiveProgram<'i>
