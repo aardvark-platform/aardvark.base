@@ -340,6 +340,10 @@ module internal GenericProgram =
                         match next with
                             | Some n -> recompileSet.Add n |> ignore
                             | _ -> ()
+                    else
+                        match next with
+                            | Some n -> relinkSet.Add n |> ignore
+                            | _ -> ()
 
                     //let code = desc.compileDelta (Option.map DynamicFragment.tag prev) v (Option.map DynamicFragment.tag next)
                     let fragment = new Fragment<'i, 'a, 'instruction, 'fragment>(handler, v)
@@ -407,6 +411,8 @@ module internal GenericProgram =
 
                                                 if handler.compileNeedsPrev && fragment.Next <> epilog then
                                                     recompileSet.Add fragment.Next |> ignore
+                                                else
+                                                    relinkSet.Add fragment.Next |> ignore
 
                                                 fragment.Dispose()
                                                 deadSet.Add fragment |> ignore
