@@ -429,6 +429,9 @@ module internal GenericProgram =
 
                 dirtySet.ExceptWith deadSet
                 recompileSet.ExceptWith deadSet
+                relinkSet.ExceptWith deadSet
+                relinkSet.Remove prolog |> ignore
+                relinkSet.Remove epilog |> ignore
 
                 compileWatch.Restart()
                 for r in recompileSet do
