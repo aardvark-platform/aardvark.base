@@ -274,13 +274,15 @@ module Ag =
     let private functions = Dictionary<System.Type, ref<obj> * obj>()
     
     let getFunction (value : obj) : 'a =
-        match functions.TryGetValue typeof<'a> with
-            | (true, (r,f)) -> r := value
-                               f |> unbox
-            | _ -> let r = ref value
-                   let f = FSharpValue.MakeFunction(typeof<'a>, fun _ -> let res = !r in r := null; res)
-                   functions.[typeof<'a>] <- (r, f)
-                   f |> unbox
+        lock functions (fun () -> 
+            match functions.TryGetValue typeof<'a> with
+                | (true, (r,f)) -> r := value
+                                   f |> unbox
+                | _ -> let r = ref value
+                       let f = FSharpValue.MakeFunction(typeof<'a>, fun _ -> let res = !r in r := null; res)
+                       functions.[typeof<'a>] <- (r, f)
+                       f |> unbox
+        )
 
 
     let (?) (node : obj) (name : string) : 'a =
