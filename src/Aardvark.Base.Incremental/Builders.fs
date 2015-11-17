@@ -158,7 +158,4 @@ type EvaluationExtensions() =
     static member inline Update(x : IListReader<'a>) = x.Update(null)
 
     [<Extension>]
-    static member inline GetHistory(x : IStreamReader<'a>) = x.GetHistory(null)
-
-    [<Extension>]
     static member inline Evaluate(x : afun<'a, 'b>, v : 'a) = x.Evaluate(null, v)

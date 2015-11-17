@@ -23,20 +23,20 @@ module AVL =
 
         member x.Height =
             if x.height < 0 then
-                let l = if x.Left <> null then x.Left.Height else 0
-                let r = if x.Right <> null then x.Right.Height else 0 
+                let l = if not (isNull x.Left) then x.Left.Height else 0
+                let r = if not (isNull x.Right) then x.Right.Height else 0 
                 x.height <- 1 + Fun.Max(l,r)
             x.height
 
         member x.Balance =
-            let l = if x.Left <> null then x.Left.Height else 0
-            let r = if x.Right <> null then x.Right.Height else 0 
+            let l = if not (isNull x.Left) then x.Left.Height else 0
+            let r = if not (isNull x.Right) then x.Right.Height else 0 
             l - r
 
         member x.AsString =
-            if x.Left <> null || x.Right <> null then
-                let l = if x.Left <> null then x.Left.AsString else "Nil"
-                let r = if x.Right <> null then x.Right.AsString else "Nil"
+            if not (isNull x.Left) || not (isNull x.Right) then
+                let l = if not (isNull x.Left) then x.Left.AsString else "Nil"
+                let r = if not (isNull x.Right) then x.Right.AsString else "Nil"
                 sprintf "Node(%A, %s, %s)" x.Value l r
             else
                 sprintf "Leaf(%A)" x.Value
@@ -52,16 +52,16 @@ module AVL =
             new(cmp) = { cmp = cmp; Root = null }
 
 
-            member x.AsString = if x.Root <> null then x.Root.AsString else "Nil"
+            member x.AsString = if not (isNull x.Root) then x.Root.AsString else "Nil"
 
         end
 
     let private (|Nil|Node|) (n : Node<'a>) =
-        if n = null then Nil
+        if isNull n then Nil
         else Node(n.Value)
 
     let private rebalance (n : byref<Node<'a>>) =
-        let b = if n <> null then n.Balance else 0
+        let b = if not (isNull n) then n.Balance else 0
         if b = 2 then
             let l = n.Left
             if l.Balance >= 0 then
@@ -157,7 +157,7 @@ module AVL =
         match n with
             | Nil -> None
             | _ -> 
-                if n.Left = null then
+                if isNull n.Left then
                     let v = n.Value
                     n <- n.Right
                     Some v
@@ -172,7 +172,7 @@ module AVL =
         match n with
             | Nil -> None
             | _ -> 
-                if n.Right = null then
+                if isNull n.Right then
                     let v = n.Value
                     n <- n.Left
                     Some v
@@ -242,7 +242,7 @@ module AVL =
             | Node(v) ->
                 let c = condition v
                 if c then
-                    if n.Left = null then 
+                    if isNull n.Left then 
                         let v = n.Value
                         n <- n.Right
                         Some v
@@ -255,7 +255,7 @@ module AVL =
                         else
                             let v = n.Value
                                 
-                            if n.Right = null then
+                            if isNull n.Right then
                                 n <- n.Left
                             else
                                 match nextractLeftmost' &n.Right with
@@ -271,7 +271,7 @@ module AVL =
 
                             Some v
                 else
-                    if n.Right = null then 
+                    if isNull n.Right then 
                         None
                     else
                         let r = nextractMinimalWhere' condition &n.Right
@@ -286,7 +286,7 @@ module AVL =
             | Node(v) ->
                 let c = condition v
                 if c then
-                    if n.Left = null then 
+                    if isNull n.Left then 
                         Some n.Value
                     else
                         let r = nfindMinimalWhere' condition n.Left
@@ -295,7 +295,7 @@ module AVL =
                         else
                             Some n.Value
                 else
-                    if n.Right = null then 
+                    if isNull n.Right then 
                         None
                     else
                         nfindMinimalWhere' condition n.Right
@@ -306,7 +306,7 @@ module AVL =
             | Node(v) ->
                 let c = condition v
                 if c then
-                    if n.Right = null then 
+                    if isNull n.Right then 
                         Some n.Value
                     else
                         let r = nfindMaximalWhere' condition n.Right
@@ -315,7 +315,7 @@ module AVL =
                         else
                             Some n.Value
                 else
-                    if n.Left = null then 
+                    if isNull n.Left then 
                         None
                     else
                         nfindMaximalWhere' condition n.Left
@@ -327,7 +327,7 @@ module AVL =
             | Node(v) ->
                 let c = condition v
                 if c then
-                    if n.Right = null then 
+                    if isNull n.Right then 
                         let v = n.Value
                         n <- n.Left
                         Some v
@@ -340,7 +340,7 @@ module AVL =
                         else
                             let v = n.Value
                                 
-                            if n.Left = null then
+                            if isNull n.Left then
                                 n <- n.Right
                             else
                                 match nextractLeftmost' &n.Right with
@@ -356,7 +356,7 @@ module AVL =
 
                             Some v
                 else
-                    if n.Left = null then 
+                    if isNull n.Left then 
                         None
                     else
                         let r = nextractMaximalWhere' condition &n.Left
@@ -375,7 +375,7 @@ module AVL =
                 else nfind' cmp n.Right
 
     let private nprint' (n : Node<'a>) =
-        if n = null then printfn "Nil"
+        if isNull n then printfn "Nil"
         else
             let h = n.Height + 1
             let data = System.Collections.Generic.Dictionary<int, Option<'a>[]>()
@@ -389,7 +389,7 @@ module AVL =
             let rec dump (l : int) (x : int) (n : Node<'a>) =
                 match n with
                     | Node _ ->
-                        if n.Left <> null || n.Right <> null then
+                        if not (isNull n.Left) || not (isNull n.Right) then
                             set x l n.Value
                             dump (l + 1) (x - (1 <<< (1 + h - l))) n.Left
                             dump (l + 1) (x + (1 <<< (1 + h - l))) n.Right
@@ -549,7 +549,7 @@ module AVL =
     /// prints the tree to the console for debugging purposes.
     /// </summary>
     let print (t : Tree<'a>) =
-        if t.Root = null then printfn "Nil"
+        if isNull t.Root then printfn "Nil"
         else nprint' t.Root
 
     /// <summary>
@@ -593,12 +593,12 @@ module AVL =
                 match n with
                     | Nil -> 0
                     | Node _ ->
-                        let l = if n.Left <> null then h n.Left else 0
-                        let r = if n.Right <> null then h n.Right else 0
+                        let l = if not (isNull n.Left) then h n.Left else 0
+                        let r = if not (isNull n.Right) then h n.Right else 0
                         1 + Fun.Max(l,r)
 
             let rec balanceAndHeightValid(n : Node<int>) =
-                if n <> null then
+                if not (isNull n) then
                     let mine = h n
                     let cache = n.Height
                     if mine <> cache then false

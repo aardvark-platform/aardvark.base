@@ -1,7 +1,8 @@
-﻿namespace Aardvark.Base.Incremental
+﻿namespace Aardvark.Base.Incremental.Experimental
 
 open System
 open Aardvark.Base
+open Aardvark.Base.Incremental
 
 module AStream =
     open AStreamReaders

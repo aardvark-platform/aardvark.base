@@ -62,8 +62,14 @@ module SortedSet =
         let res = f p n
         s.Add res |> ignore
 
-type SortedDictionaryExt<'k, 'v>(cmp : 'k -> 'k -> int) =
-    let set = SortedSetExt<'k * ref<'v>>({ new IComparer<'k * ref<'v>> with member x.Compare((l,_),(r,_)) = cmp l r })
+type SortedDictionaryExt<'k, 'v> private (comparer : IComparer<'k * ref<'v>>) =
+    let set = SortedSetExt<'k * ref<'v>> comparer
+
+    new(cmp : 'k -> 'k -> int) =
+        SortedDictionaryExt<'k, 'v>({ new IComparer<'k * ref<'v>> with member x.Compare((l,_),(r,_)) = cmp l r })
+
+    new(comparer : IComparer<'k>) =
+        SortedDictionaryExt<'k, 'v>({ new IComparer<'k * ref<'v>> with member x.Compare((l,_),(r,_)) = comparer.Compare(l, r) })
 
     member internal x.Set = set
 

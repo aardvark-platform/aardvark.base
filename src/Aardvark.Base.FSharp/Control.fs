@@ -318,39 +318,54 @@ module Monads =
         let test() =
             b() |> toSeq 5 |> printfn "%A"
 
-    module Maybe =
-        type Maybe<'a> = Just of 'a | Nothing
+    module Option = 
+        open System.Collections.Generic
 
-        type MaybeBuilder() =
-            member x.Bind(m : Maybe<'a>, f : 'a -> Maybe<'b>) : Maybe<'b> =
+        type OptionBuilder() =
+            member x.Bind(m : Option<'a>, f : 'a -> Option<'b>) : Option<'b> =
                 match m with
-                    | Just v -> f v
-                    | Nothing -> Nothing
+                    | Some v -> f v
+                    | None -> None
 
             member x.Return(v : 'a) =
-                Just v
+                Some v
 
-            member x.ReturnFrom(m : Maybe<'a>) =
+            member x.ReturnFrom(m : Option<'a>) =
                 m
 
-            member x.Zero() : Maybe<unit> =
-                Just ()
+            member x.Zero() : Option<unit> =
+                Some ()
 
-            member x.Combine(l : Maybe<unit>, r : Maybe<'a>) : Maybe<'a> =
+            member x.Combine(l : Option<unit>, r : unit -> Option<'a>) : Option<'a> =
                 match l with
-                    | Just () -> r
-                    | Nothing -> Nothing
+                    | Some () -> r ()
+                    | None -> None
 
-            member x.For(elements : seq<'a>, f : 'a -> Maybe<unit>) : Maybe<unit> =
-                let mutable r = Just ()
-                for e in elements do
-                    match r, f e with
-                        | Nothing,_ -> ()
-                        | _, Just () -> ()
-                        | _, Nothing -> r <- Nothing
-                r
+            member x.For(elements : seq<'a>, f : 'a -> Option<unit>) : Option<unit> =
+                use enumerator = elements.GetEnumerator()
+                let rec fold (e : IEnumerator<_>) =
+                    if e.MoveNext() then
+                        match f e.Current with
+                         | Some v -> fold e
+                         | None -> None
+                    else Some ()
+                fold enumerator
 
-        let maybe = MaybeBuilder()
+            member x.Delay(f : unit -> Option<'a>) =
+                f
+
+            member x.Run(f : unit -> Option<'a>) = f ()
+
+            member x.While(g : unit -> bool, b : unit -> Option<unit>) =
+                let rec run () =
+                    if g () then
+                        match b () with
+                         | Some v -> run ()
+                         | None -> None
+                    else Some ()
+                run ()
+
+        let option = OptionBuilder()
 
     
 
@@ -365,6 +380,9 @@ module Monads =
 
             member x.Yield(v : string) : BuilderType =
                 fun b -> b.Append v
+
+            member x.YieldFrom(v : seq<string>) : BuilderType =
+                fun b -> v |> Seq.iter (ignore << b.Append); b
 
             member x.For(s : #seq<'a>, f : 'a -> BuilderType) : BuilderType =
                 fun b ->
@@ -385,22 +403,16 @@ module Monads =
                 output.ToString()
 
         let string = StringBuilderType()
-
-
-        let test() =
-            string {
-                yield "asdsd"
-            }
         
 
     let cont = Cont.cont
     let state = State.state
     let scont = StateCont.scont
-    let maybe = Maybe.maybe
+    let option = Option.option
     let sopt = StateOpt.state
     let sseq = StateSeq.sseq
     
-    let test() = 
+    let private test() = 
         let a = state { return 1; }
         let b = state { return 3;}
         let c = state {

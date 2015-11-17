@@ -7,7 +7,6 @@ open System.Collections
 open System.Collections.Generic
 open Aardvark.Base
 open Aardvark.Base.Ag
-open Aardvark.Base.AgHelpers
 open NUnit.Framework
 open FsUnit
 

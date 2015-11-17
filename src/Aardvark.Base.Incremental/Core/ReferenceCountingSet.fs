@@ -1,5 +1,6 @@
 ﻿namespace Aardvark.Base.Incremental
 
+open Aardvark.Base
 open System.Collections
 open System.Collections.Generic
 open System.Collections.Concurrent
@@ -44,7 +45,7 @@ type ReferenceCountingSet<'a>(initial : seq<'a>) =
 
 
     let add (v : 'a) =
-        if (v :> obj) = null then
+        if isNull (v :> obj) then
             nullCount <- nullCount + 1
             nullCount = 1
         else 
@@ -59,7 +60,7 @@ type ReferenceCountingSet<'a>(initial : seq<'a>) =
                     true
 
     let remove (v : 'a) =
-        if (v :> obj) = null then
+        if isNull (v :> obj) then
             nullCount <- nullCount - 1
             nullCount = 0
         else 
@@ -90,6 +91,67 @@ type ReferenceCountingSet<'a>(initial : seq<'a>) =
         for (KeyValue(k,(v,r))) in other.Store do
             store.[k] <- (v, ref !r)
 
+    member internal x.Apply(deltas : list<Delta<'a>>) =
+        match deltas with
+            | [] -> []
+            | [v] -> 
+                match v with
+                    | Add v -> 
+                        if x.Add v then [Add v]
+                        else []
+                    | Rem v ->
+                        if x.Remove v then [Rem v]
+                        else []
+
+            | _ -> 
+                let mutable originalNullRefs = nullCount
+                let touched = Dictionary<obj, 'a * bool * ref<int>>()
+                for d in deltas do
+                    match d with
+                        | Add v ->
+                            let o = v :> obj
+                            if isNull o then
+                                nullCount <- nullCount + 1
+                            else
+                                match store.TryGetValue o with
+                                    | (true, (_,r)) -> 
+                                        r := !r + 1
+                                    | _ ->
+                                        let r = ref 1
+                                        touched.[o] <- (v, false, r)
+                                        store.[o] <- (v, r)
+                        | Rem v ->
+                            let o = v :> obj
+                            if isNull o then
+                                nullCount <- nullCount + 1
+                            else
+                                match store.TryGetValue o with
+                                    | (true, (_,r)) ->
+                                        r := !r - 1 
+                                        if !r = 0 then touched.[o] <- (v, true, r)
+                                    | _ -> ()
+                                
+                            ()
+
+                let valueDeltas = 
+                    touched.Values
+                        |> Seq.choose (fun (value, existing, refCount) ->
+                            let r = !refCount
+                            if r = 0 && existing then 
+                                store.Remove value |> ignore
+                                Some (Rem value)
+                            elif r > 0 && not existing then Some (Add value)
+                            else None
+                           )
+                        |> Seq.toList
+
+                if nullCount = 0 && originalNullRefs > 0 then
+                    (Rem Unchecked.defaultof<_>)::valueDeltas
+                elif nullCount > 0 && originalNullRefs = 0 then
+                    (Add Unchecked.defaultof<_>)::valueDeltas
+                else
+                    valueDeltas
+
     /// <summary>
     /// adds an element to the ReferenceCountingSet and returns
     /// true if the element was not contained in the set before
@@ -107,7 +169,7 @@ type ReferenceCountingSet<'a>(initial : seq<'a>) =
     /// checks if the set contains a specific element
     /// </summary>
     member x.Contains (v : 'a) =
-        if (v :> obj) = null then
+        if isNull (v :> obj) then
             nullCount > 0
         else
             store.ContainsKey v
@@ -132,7 +194,7 @@ type ReferenceCountingSet<'a>(initial : seq<'a>) =
     /// gets the current reference count for the given element
     /// </summary>
     member x.GetReferenceCount(v) =
-        if (v :> obj) = null then nullCount
+        if isNull (v :> obj) then nullCount
         else
             match store.TryGetValue (v :> obj) with
                 | (true, (_,c)) -> !c
@@ -363,25 +425,30 @@ type ReferenceCountingSet<'a>(initial : seq<'a>) =
 and private ReferenceCountingSetEnumerator<'a>(containsNull : bool, store : Dictionary<obj, 'a * ref<int>>) =
     let mutable emitNull = containsNull
     let mutable e = store.GetEnumerator() :> IEnumerator<KeyValuePair<obj, 'a * ref<int>>>
+    let mutable currentIsNull = Unchecked.defaultof<bool> // does not matter here
+
+    member x.Current =
+         if currentIsNull then
+            Unchecked.defaultof<_>
+         else
+            e.Current.Value |> fst
 
     interface IEnumerator with
         member x.MoveNext() = 
             if emitNull then
                 emitNull <- false
+                currentIsNull <- true
                 true
             else 
+                currentIsNull <- false
                 e.MoveNext()
 
         member x.Reset() = 
             emitNull <- containsNull
             e.Reset()
 
-        member x.Current = 
-            if emitNull then
-                Unchecked.defaultof<_>
-            else
-                e.Current.Key
+        member x.Current = x.Current :> obj
 
     interface IEnumerator<'a> with
-        member x.Current = e.Current.Value |> fst
+        member x.Current = x.Current 
         member x.Dispose() = e.Dispose()

@@ -274,7 +274,6 @@ module ``Basic Mod Tests`` =
 
 
 
-    open System.Threading
     [<Test>]
     let ``[Mod] memory test`` () =
 
@@ -355,26 +354,26 @@ module ``Basic Mod Tests`` =
                     yield! buildTree(foo, l - 1, c)
             ]
 
-        let tree = buildTree(root, 8, 5)
+        let tree = buildTree(root, 5, 5)
 
         let sw = System.Diagnostics.Stopwatch()
         
-        printfn "LeafCount=%A" tree.Length
+        Log.line "LeafCount=%A" tree.Length
 
-        for j in 1..10 do
+        for j in 1..4 do
             
             sw.Restart()
             transact(fun () -> 
                 root.Value <- Trafo3d.RotationX (float j)
                 )
             sw.Stop()
-            printfn "marking:  %As" sw.Elapsed.TotalSeconds
+            Log.line "marking:  %As" sw.Elapsed.TotalSeconds
 
             sw.Restart()
             for leaf in tree do
                 leaf.GetValue() |> ignore
             sw.Stop()
-            printfn "evaluate:  %As" sw.Elapsed.TotalSeconds
+            Log.line "evaluate:  %As" sw.Elapsed.TotalSeconds
             
         ()
 

@@ -1,4 +1,6 @@
 ﻿namespace Aardvark.Base
+#nowarn "9"
+#nowarn "51"
 
 open System
 
@@ -57,15 +59,6 @@ module Prelude =
 
     module List = 
 
-        let rec forany (f : 'a -> bool) (l : list<'a>) =
-            match l with
-                | [] -> false
-                | x::xs ->
-                    if f x then
-                        true
-                    else
-                        forany f xs
-
         //Experimental Results show that this implementation is faster than all other ones maintaining the list's order
         let rec private partitionAcc (f : 'a -> bool) (source : list<'a>) (l : System.Collections.Generic.List<'a>) (r : System.Collections.Generic.List<'a>) =
              match source with
@@ -114,6 +107,66 @@ module Prelude =
             match option with
              | Some value ->  value
              | None -> fallback
+    
+    type Async with
+        static member AwaitTask(t : System.Threading.Tasks.Task) =
+            t |> Async.AwaitIAsyncResult |> Async.Ignore
+
+    module NativePtr =
+        open Microsoft.FSharp.NativeInterop
+        open System.Runtime.InteropServices
+        open System.IO
+
+        [<GeneralizableValue>]
+        let inline zero<'a when 'a : unmanaged> : nativeptr<'a> = NativePtr.ofNativeInt 0n
+
+        let inline cast (ptr : nativeptr<'a>) : nativeptr<'b> =
+            ptr |> NativePtr.toNativeInt |> NativePtr.ofNativeInt
+
+        let inline step (count : int) (ptr : nativeptr<'a>) =
+            NativePtr.add ptr count
+
+        let inline toArray (cnt : int) (ptr : nativeptr<'a>) =
+            Array.init cnt (NativePtr.get ptr)
+
+        let inline toSeq (cnt : int) (ptr : nativeptr<'a>) =
+            Seq.init cnt (NativePtr.get ptr)
+
+        let inline toList (cnt : int) (ptr : nativeptr<'a>) =
+            List.init cnt (NativePtr.get ptr)
+
+        let inline isNull (ptr : nativeptr<'a>) =
+            ptr |> NativePtr.toNativeInt = 0n
+
+        let alloc<'a when 'a: unmanaged> (size : int) =
+            size * sizeof<'a> |> Marshal.AllocHGlobal |> NativePtr.ofNativeInt<'a>
+
+        let free (ptr : nativeptr<'a>) =
+            ptr |> NativePtr.toNativeInt |> Marshal.FreeHGlobal
+
+        let inline stackUse (elements : seq<'a>) =
+            let arr = elements |> Seq.toArray
+            let ptr = NativePtr.stackalloc arr.Length
+            for i in 0..arr.Length-1 do
+                NativePtr.set ptr i arr.[i]
+            ptr
+
+        let toStream (count : int) (ptr : nativeptr<'a>) : Stream =
+            let l = int64 <| sizeof<'a> * count
+            new System.IO.UnmanagedMemoryStream(cast ptr, l,l, FileAccess.ReadWrite) :> _
+
+        module Operators =
+    
+            let ( &+ ) (ptr : nativeptr<'a>) (count : int) =
+                ptr |> step count
+
+            let ( &- ) (ptr : nativeptr<'a>) (count : int) =
+                ptr |> step (-count)
+
+            let ( !* ) (ptr : nativeptr<'a>) =
+                NativePtr.read ptr
+
+
 
     (* Error datastructure *)
     type Error<'a> = Success of 'a
@@ -146,6 +199,8 @@ module Prelude =
     let ಠ_ಠ str = failwith str
 
     let inline flip f a b = f b a
+
+    let inline constF v = fun _ -> v
 
     let private BinaryDynamicImpl mn : ('T -> 'U -> 'V) =
         let aty = typeof<'T>
@@ -283,8 +338,8 @@ module GenericValues =
         let pi = t.GetProperty("Zero", BindingFlags.Static ||| BindingFlags.Public)
         let fi = t.GetField("Zero", BindingFlags.Static ||| BindingFlags.Public)
 
-        if pi <> null then pi.GetValue(null) |> unbox
-        elif fi <> null then fi.GetValue(null) |> unbox
+        if not (isNull pi) then pi.GetValue(null) |> unbox
+        elif not (isNull fi) then fi.GetValue(null) |> unbox
         else Unchecked.defaultof< ^a>
 
 module Caching =
@@ -299,7 +354,7 @@ module IO =
 
     let alterFileName str f = Path.Combine (Path.GetDirectoryName str, f (Path.GetFileName str))
 
-    let openStreamStrong path = 
+    let createFileStream path = 
         if File.Exists path 
         then File.Delete path
         new FileStream(path, FileMode.CreateNew)

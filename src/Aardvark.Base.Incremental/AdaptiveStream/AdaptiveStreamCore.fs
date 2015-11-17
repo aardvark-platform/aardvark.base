@@ -1,9 +1,10 @@
-namespace Aardvark.Base.Incremental
+namespace Aardvark.Base.Incremental.Experimental
 
 open System
 open System.Collections.Generic
 open System.Collections.Concurrent
 open Aardvark.Base
+open Aardvark.Base.Incremental
 
 type EventHistory<'a> =
     | Cancel
@@ -198,7 +199,7 @@ module AStreamReaders =
 
     type MapReader<'a, 'b>(scope : Ag.Scope, source : IStreamReader<'a>, f : 'a -> 'b) as this =
         inherit AbstractReader<'b>()
-        do source.AddOutputNew this  
+        do source.AddOutput this  
 
         let cache = FixedSizeCache(scope, 32, f)
 
@@ -214,7 +215,7 @@ module AStreamReaders =
 
     type CollectSetReader<'a, 'b>(scope : Ag.Scope, source : IReader<'a>, f : 'a -> IStreamReader<'b>) as this =
         inherit AbstractReader<'b>()
-        do source.AddOutputNew this
+        do source.AddOutput this
 
         let dirtyInner = VolatileDirtySet(fun (r : IStreamReader<'b>) -> r.GetHistory(this))
         let f = Cache(scope, f)
@@ -237,7 +238,7 @@ module AStreamReaders =
                         let r = f.Invoke v
 
                         // we're an output of the new reader
-                        r.AddOutputNew this
+                        r.AddOutput this
 
                         // listen to marking of r (reader cannot be OutOfDate due to GetDelta above)
                         dirtyInner.Add r
@@ -261,7 +262,7 @@ module AStreamReaders =
 
     type ChooseReader<'a, 'b>(scope : Ag.Scope, source : IStreamReader<'a>, f : 'a -> Option<'b>) as this =
         inherit AbstractReader<'b>()
-        do source.AddOutputNew this  
+        do source.AddOutput this  
 
         let cache = FixedSizeCache(scope, 32, f)
 
@@ -277,7 +278,7 @@ module AStreamReaders =
 
     type ModReader<'a>(source : IMod<'a>) as this =
         inherit AbstractReader<'a>()
-        do source.AddOutputNew this
+        do source.AddOutput this
 
         override x.Release() = ()
 
@@ -337,7 +338,7 @@ module AStreamReaders =
                     Aardvark.Base.Log.warn "[AStreamReaders.CopyReader] potentially bad emit with: %A" d
             )
 
-        do inputReader.AddOutputNew this
+        do inputReader.AddOutput this
         let subscription = inputReader.SubscribeOnEvaluate emit
 
         override x.GetHistory(caller) =

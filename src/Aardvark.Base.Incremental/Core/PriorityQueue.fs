@@ -49,6 +49,7 @@ type DuplicatePriorityQueue<'a, 'k when 'k : comparison>(extract : 'a -> 'k) =
     let q = PriorityQueue<'k> compare
     let values = Dictionary<'k, Queue<'a>>()
     let mutable count = 0
+    let mutable currentQueue = Unchecked.defaultof<_>
 
     /// <summary>
     /// enqueues a new element
@@ -57,13 +58,14 @@ type DuplicatePriorityQueue<'a, 'k when 'k : comparison>(extract : 'a -> 'k) =
         let k = extract v
         count <- count + 1
 
-        match values.TryGetValue k with
-            | (true, q) -> q.Enqueue v
-            | _ -> 
-                let inner = Queue<'a>()
-                inner.Enqueue v
-                values.[k] <- inner
-                q.Enqueue k
+        if values.TryGetValue(k, &currentQueue) then
+            currentQueue.Enqueue v
+        else
+            let inner = Queue<'a>()
+            inner.Enqueue v
+            values.[k] <- inner
+            q.Enqueue k
+
              
     /// <summary>
     /// dequeues the current minimal value (and its key)
@@ -71,18 +73,17 @@ type DuplicatePriorityQueue<'a, 'k when 'k : comparison>(extract : 'a -> 'k) =
     member x.Dequeue(key : byref<'k>) =
         let k = q.Min
 
-        match values.TryGetValue k with
-            | (true, inner) ->
-                let res = inner.Dequeue()
-                count <- count - 1
-                if inner.Count = 0 then
-                    q.Dequeue() |> ignore
-                    values.Remove k |> ignore
+        if values.TryGetValue(k, &currentQueue) then
+            let res = currentQueue.Dequeue()
+            count <- count - 1
+            if currentQueue.Count = 0 then
+                q.Dequeue() |> ignore
+                values.Remove k |> ignore
 
-                key <- k
-                res
-            | _ ->
-                failwith "inconsistent state in DuplicatePriorityQueue"
+            key <- k
+            res
+        else
+            failwith "inconsistent state in DuplicatePriorityQueue"
 
     /// <summary>
     /// returns the number of elements currently contained in the queue

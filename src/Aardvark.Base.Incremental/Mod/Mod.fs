@@ -123,7 +123,7 @@ type ConstantMod<'a> =
             
         override x.GetHashCode() =
             let v = x.GetValue(null) :> obj
-            if v = null then 0
+            if isNull v then 0
             else v.GetHashCode()
 
         override x.Equals o =
@@ -148,9 +148,8 @@ type ConstantMod<'a> =
 /// By calling Reset (), the initial behaviour can be restored,
 /// i.e. the resulting value is dependent on the adaptive default
 /// value.
-type DefaultingModRef<'a>(computed : IMod<'a>) as this =
+type DefaultingModRef<'a>(computed : IMod<'a>) =
     inherit AdaptiveObject()
-    do computed.AddOutputNew this
 
     let mutable cache = Unchecked.defaultof<'a>
     let mutable isComputed = true
@@ -171,7 +170,7 @@ type DefaultingModRef<'a>(computed : IMod<'a>) as this =
         if not isComputed then
             tracker <- ChangeTracker.trackVersion<'a>
             isComputed <- true
-            computed.AddOutputNew x
+            x.MarkOutdated()
 
     member x.Value 
         with get() = 
@@ -209,6 +208,8 @@ type DefaultingModRef<'a>(computed : IMod<'a>) as this =
 /// </summary>
 [<CompilationRepresentation(CompilationRepresentationFlags.ModuleSuffix)>]
 module Mod =
+    let private modEvaluateProbe = Symbol.Create "[Mod] evaluation"
+    let private modComputeProbe = Symbol.Create "[Mod] compute"
 
     // the attribute system needs to know how to "unpack"
     // modifiable cells for inherited attributes.
@@ -217,7 +218,7 @@ module Mod =
     let initialize() =
         Report.BeginTimed "initializing mod system"
 
-        Aardvark.Base.AgHelpers.unpack <- fun o ->
+        Aardvark.Base.Ag.unpack <- fun o ->
             match o with
                 | :? IMod as o -> o.GetValue(null)
                 | _ -> o
@@ -226,74 +227,64 @@ module Mod =
         Report.End() |> ignore
 
     open System.Reflection
+
+
+    [<AbstractClass>]
+    type AbstractMod<'a> =
+        class
+            inherit AdaptiveObject
+            val mutable public cache : 'a
+            val mutable public scope : Ag.Scope
+
+            abstract member Compute : unit -> 'a
+            abstract member Release : unit -> unit
+            default x.Release() = ()
+
+            override x.Finalize() =
+                try
+                    x.Release()
+                    x.cache <- Unchecked.defaultof<_>
+                    x.scope <- Ag.emptyScope
+                with e ->
+                    ()
+
+            member x.GetValue(caller) =
+                x.EvaluateAlways caller (fun () ->
+                    Telemetry.timed modEvaluateProbe (fun () ->
+                        if x.OutOfDate then
+                            Ag.useScope x.scope (fun () ->
+                                x.cache <- Telemetry.timed modComputeProbe x.Compute
+                            )
+                        x.cache
+                    )
+                )
+
+            interface IMod with
+                member x.IsConstant = false
+                member x.GetValue(caller) = x.GetValue(caller) :> obj
+
+            interface IMod<'a> with
+                member x.GetValue(caller) = x.GetValue(caller)
+
+            new() =
+                { cache = Unchecked.defaultof<'a>; scope = Ag.getContext() }
+        end
+
     // LazyMod<'a> (as the name suggests) implements IMod<'a>
     // and will be evaluated lazily (if not forced to be eager
     // by a callback or subsequent eager computations)
     type LazyMod<'a> =
         class
-            inherit AdaptiveObject
-            val mutable public cache : 'a
+            inherit AbstractMod<'a>
+            val mutable public inputs : seq<IAdaptiveObject>
             val mutable public compute : IMod<'a> -> 'a
-            val mutable public scope : Ag.Scope
 
+            override x.Inputs = x.inputs
 
-            member x.GetValue(caller) =
-                x.EvaluateAlways caller (fun () ->
-                    if x.OutOfDate then
-                        Ag.useScope x.scope (fun () ->
-                            x.cache <- x.compute (x :> _)
-                        )
-                    x.cache
-                )
+            override x.Compute() = x.compute(x :> IMod<_>)
 
-            interface IMod with
-                member x.IsConstant = false
-                member x.GetValue(caller) = x.GetValue(caller) :> obj
-
-            interface IMod<'a> with
-                member x.GetValue(caller) = x.GetValue(caller)
-
-            new(compute) =
-                { cache = Unchecked.defaultof<'a>; compute = compute; scope = Ag.getContext() }
-        end
-
-    type internal LazyModWithChangedInputs<'a> =
-        class
-            inherit AdaptiveObject
-            val mutable public cache : 'a
-            val mutable public compute : IMod<'a> -> PersistentHashSet<IAdaptiveObject> -> 'a
-            val mutable public scope : Ag.Scope
-            val mutable changedInputs : PersistentHashSet<IAdaptiveObject>
-
-            override x.InputChanged i =
-                System.Threading.Interlocked.Change(&x.changedInputs, PersistentHashSet.add i) |> ignore
-
-            member x.GetValue(caller : IAdaptiveObject) =
-                x.EvaluateAlways caller (fun () ->
-                    if x.OutOfDate then
-                        let changed = System.Threading.Interlocked.Exchange(&x.changedInputs, PersistentHashSet.empty)
-                        
-                        try
-                            Ag.useScope x.scope (fun () ->
-                                x.cache <- x.compute (x :> _) changed
-                            )
-                        with LevelChangedException(t,_,_) as ex ->
-                            if t.Id = x.Id then
-                                System.Threading.Interlocked.Change(&x.changedInputs, PersistentHashSet.union changed) |> ignore
-                            raise ex
-
-                    x.cache
-                )
-
-            interface IMod with
-                member x.IsConstant = false
-                member x.GetValue(caller) = x.GetValue(caller) :> obj
-
-            interface IMod<'a> with
-                member x.GetValue(caller) = x.GetValue(caller)
-
-            new(compute) =
-                { cache = Unchecked.defaultof<'a>; compute = compute; scope = Ag.getContext(); changedInputs = PersistentHashSet.empty }
+            new(inputs : seq<IAdaptiveObject>, compute) =
+                { inputs = inputs; compute = compute }
         end
 
 
@@ -303,9 +294,8 @@ module Mod =
     // the change propagation process when equal values are
     // observed EagerMod can also be created with a custom 
     // equality function.
-    type internal EagerMod<'a>(input : IMod<'a>, eq : Option<'a -> 'a -> bool>) as this=
-        inherit LazyMod<'a>(fun s -> input.GetValue(s))
-        do input.AddOutputNew this
+    type internal EagerMod<'a>(input : IMod<'a>, eq : Option<'a -> 'a -> bool>) =
+        inherit LazyMod<'a>(Seq.singleton (input :> IAdaptiveObject), fun s -> input.GetValue(s))
 
         let hasChanged = ChangeTracker.trackCustom<'a> eq
 
@@ -327,9 +317,11 @@ module Mod =
     // evaluation for a specific cell. Note that this needs to
     // be "transparent" (knowning its input) since we need to
     // be able to undo the effect.
-    type internal LaterMod<'a>(input : IMod<'a>) as this=
-        inherit LazyMod<'a>(fun s -> input.GetValue(s))
-        do input.AddOutputNew this
+    type internal LaterMod<'a>(input : IMod<'a>) =
+        inherit LazyMod<'a>(Seq.singleton (input :> IAdaptiveObject), fun s -> input.GetValue(s))
+
+        override x.Inputs = Seq.singleton (input :> IAdaptiveObject)
+
 
         member x.Input = input
 
@@ -345,8 +337,9 @@ module Mod =
         static member Instance = instance
 
         member x.GetValue(caller : IAdaptiveObject) =
+            let ti = AdaptiveObject.Time
             x.EvaluateAlways caller (fun () ->
-                AdaptiveObject.Time.Outputs.Add x |> ignore
+                lock ti (fun () -> ti.Outputs.Add x |> ignore)
                 DateTime.Now
             )
 
@@ -384,6 +377,184 @@ module Mod =
             member x.GetValue(caller) = x.GetValue(caller)
 
 
+    type internal MapMod<'a, 'b>(inner : IMod<'a>, f : 'a -> 'b) =
+        inherit AbstractMod<'b>()
+
+        member x.Inner = inner
+        member x.F = f
+
+        override x.Inputs = 
+            Seq.singleton (inner :> IAdaptiveObject)
+
+        override x.Compute() =
+            inner.GetValue x |> f
+
+    type internal Map2Mod<'a, 'b, 'c>(a : IMod<'a>, b : IMod<'b>, f : 'a -> 'b -> 'c) =
+        inherit AbstractMod<'c>()
+
+        member x.Left = a
+        member x.Right = a
+        member x.F = f
+
+        override x.Inputs = 
+            Seq.ofList [a :> IAdaptiveObject; b :> IAdaptiveObject]
+        
+        override x.Compute() =
+            f (a.GetValue x) (b.GetValue x)
+
+    type internal MapNMod<'a, 'b>(a : seq<IMod<'a>>, f : list<'a> -> 'b) as this =
+        inherit AbstractMod<'b>()
+        let a = Seq.toArray a
+
+        let store = lazy ( a |> Array.map (fun v -> v.GetValue this) )
+        let dirtySet = MutableVolatileTaggedDirtySet(fun (m : IMod<'a>) -> m.GetValue this)
+
+        do a |> Array.iteri (fun i m ->
+            dirtySet.Add(i, m) |> ignore
+           )
+
+        override x.Release() = 
+            dirtySet.Clear()
+
+        override x.InputChanged i =
+            match i with
+                | :? IMod<'a> as i -> dirtySet.Push(i)
+                | _ -> ()
+
+        override x.Inputs = 
+            a |> Array.toSeq |> Seq.cast
+        
+        override x.Compute() =
+            let dirty = dirtySet.Evaluate()
+            if not store.IsValueCreated then
+                store.Value |> Array.toList |> f
+            else
+                let store = store.Value
+                for (v,indices) in dirty do
+                    for i in indices do
+                        store.[i] <- v
+
+                store |> Array.toList |> f
+
+    type internal BindMod<'a, 'b>(m : IMod<'a>, f : 'a -> IMod<'b>) =
+        inherit AbstractMod<'b>()
+
+        let mutable inner : Option<'a * IMod<'b>> = None
+        let mutable changedInputs = PersistentHashSet.empty
+
+        override x.Inputs =
+            seq {
+                yield m :> IAdaptiveObject
+                match inner with
+                    | Some (_,i) -> yield i :> IAdaptiveObject
+                    | None -> ()
+            }
+
+        override x.InputChanged i =
+            System.Threading.Interlocked.Change(&changedInputs, PersistentHashSet.add i) |> ignore
+
+        override x.Compute() =
+            let changed = System.Threading.Interlocked.Exchange(&changedInputs, PersistentHashSet.empty)
+
+            // whenever the result is outOfDate we
+            // need to pull the input's value
+            // Note that the input is not necessarily outOfDate at this point
+            let v = m.GetValue x
+            //let cv = hasChanged v
+
+            let mChanged = PersistentHashSet.contains (m :> IAdaptiveObject) changed
+
+            match inner with
+                // if the function argument has not changed
+                // since the last execution we expect f to return
+                // the identical cell
+                | Some (v', inner) when not mChanged ->
+                    // since the inner cell might be outOfDate we
+                    // simply pull its value and don't touch any in-/outputs.
+                    inner.GetValue x
+                        
+                | _ ->
+                    // whenever the argument's value changed we need to 
+                    // re-execute the function and store the new inner cell.
+                    let i = f v :> IMod<_>
+                    let old = inner
+                    inner <- Some (v, i)
+
+
+                    match old with
+                        // if there was an old inner cell which
+                        // is different from the new one we
+                        // remove the resulting cell from the old
+                        // outputs and add it to the new ones. 
+                        | Some (_,old) when old <> i -> 
+                            old.RemoveOutput x |> ignore
+
+                        // in any other case the graph remained
+                        // constant and we don't change a thing.
+                        | _ -> ()
+
+                    // finally we pull the value from the
+                    // new inner cell.
+                    i.GetValue x
+
+    type internal Bind2Mod<'a, 'b, 'c>(ma : IMod<'a>, mb : IMod<'b>, f : 'a -> 'b -> IMod<'c>) =
+        inherit AbstractMod<'c>()
+
+        let mutable inner : Option<'a * 'b * IMod<'c>> = None
+        let mutable changedInputs = PersistentHashSet.empty
+
+        override x.Inputs =
+            seq {
+                yield ma :> IAdaptiveObject
+                yield mb :> IAdaptiveObject
+                match inner with
+                    | Some (_,_,i) -> yield i :> IAdaptiveObject
+                    | None -> ()
+            }
+
+        override x.InputChanged i =
+            System.Threading.Interlocked.Change(&changedInputs, PersistentHashSet.add i) |> ignore
+
+        override x.Compute() =
+            let changed = System.Threading.Interlocked.Exchange(&changedInputs, PersistentHashSet.empty)
+            let a = ma.GetValue x
+            let b = mb.GetValue x
+
+            let ca = PersistentHashSet.contains (ma :> IAdaptiveObject) changed
+            let cb = PersistentHashSet.contains (mb :> IAdaptiveObject) changed
+
+            match inner with
+                | Some (va, vb, inner) when not ca && not cb ->
+                    inner.GetValue x
+                | _ ->
+
+                    let i = f a b :> IMod<_>
+                    let old = inner
+                    inner <- Some (a, b, i)
+
+                    match old with
+                        | Some (_,_,old) when old <> i -> 
+                            old.RemoveOutput x |> ignore
+
+                        | _ -> ()
+
+                        
+                    i.GetValue x 
+ 
+    type internal DynamicMod<'a>(f : unit -> IMod<'a>) =
+        inherit AbstractMod<'a>()
+
+        let inner = lazy (f())
+
+        override x.Inputs =
+            if inner.IsValueCreated then Seq.singleton (inner.Value :> IAdaptiveObject)
+            else Seq.empty
+
+        override x.Compute() =
+            inner.Value.GetValue x
+
+
+
 
     let private scoped (f : 'a -> 'b) =
         let scope = Ag.getContext()
@@ -399,7 +570,7 @@ module Mod =
     /// cell to be constant in any case.
     /// </summary>
     let custom (compute : IMod<'a> -> 'a) : IMod<'a> =
-        LazyMod(compute) :> IMod<_>
+        LazyMod(Seq.empty, compute) :> IMod<_>
 
     
     /// <summary>
@@ -491,9 +662,7 @@ module Mod =
             let f = scoped f
             delay (fun () -> m.GetValue(null) |> f)
         else
-            let res = LazyMod(fun s -> m.GetValue s |> f)
-            m.AddOutputNew res
-            res :> IMod<_>
+            MapMod(m, f) :> IMod<_>
 
     /// <summary>
     /// adaptively applies a function to two cell's values
@@ -508,21 +677,16 @@ module Mod =
             | (false, true) -> 
                 map (fun a -> f a (m2.GetValue(null))) m1
             | (false, false) ->
-                let res = LazyMod(fun s -> f (m1.GetValue s) (m2.GetValue s))
-                m1.AddOutputNew res
-                m2.AddOutputNew res
-                res :> IMod<_>
+                Map2Mod(m1, m2, f) :> IMod<_>
 
     /// <summary>
     /// creates a custom modifiable cell using the given
     /// compute function and adds all given inputs to the
     /// resulting cell.
     /// </summary>
-    let mapCustom (f : IMod<'a> -> 'a) (inputs : list<IAdaptiveObject>) =
-        let r = custom f
-        for i in inputs do
-            i.AddOutputNew r
-        r
+    let mapCustom (f : IMod<'a> -> 'a) (inputs : list<#IAdaptiveObject>) =
+        LazyMod(List.map (fun a -> a :> IAdaptiveObject) inputs, f) :> IMod<_>
+
 
     /// <summary>
     /// adaptively applies a function to a cell's value
@@ -559,11 +723,12 @@ module Mod =
     /// the inputs changes.
     /// </summary>
     let mapN (f : seq<'a> -> 'b) (inputs : seq<#IMod<'a>>) =
-        let objs = inputs |> Seq.cast |> Seq.toList
-        objs |> mapCustom (fun s ->
-            let values = inputs |> Seq.map (fun m -> m.GetValue s) |> Seq.toList
-            f values
-        )
+        MapNMod(Seq.toList (Seq.cast inputs), List.toSeq >> f) :> IMod<_>
+//        let objs = inputs |> Seq.cast |> Seq.toList
+//        objs |> mapCustom (fun s ->
+//            let values = inputs |> Seq.map (fun m -> m.GetValue s) |> Seq.toList
+//            f values
+//        )
 
     /// <summary>
     /// adaptively applies a function to a cell's value
@@ -574,70 +739,8 @@ module Mod =
         if m.IsConstant then
             m.GetValue(null) |> f :> IMod<_>
         else
-            let inner : ref<Option<'a * IMod<'b>>> = ref None
-
-
-            // just a reference-cell for allowing self-recursive
-            // access in the compute function below.
-            let res = ref <| Unchecked.defaultof<_>
-            res := 
-                LazyModWithChangedInputs(fun s changed -> 
-                    // whenever the result is outOfDate we
-                    // need to pull the input's value
-                    // Note that the input is not necessarily outOfDate at this point
-                    let v = m.GetValue s
-                    //let cv = hasChanged v
-
-                    let mChanged = PersistentHashSet.contains (m :> IAdaptiveObject) changed
-
-                    match !inner with
-                        // if the function argument has not changed
-                        // since the last execution we expect f to return
-                        // the identical cell
-                        | Some (v', inner) when not mChanged ->
-                            // since the inner cell might be outOfDate we
-                            // simply pull its value and don't touch any in-/outputs.
-                            inner.GetValue s
-                        
-                        | _ ->
-                            // whenever the argument's value changed we need to 
-                            // re-execute the function and store the new inner cell.
-                            let i = f v :> IMod<_>
-                            let old = !inner
-                            inner := Some (v, i)
-
-
-                            match old with
-                                // if there was no old inner cell
-                                // we simply add ourselves as output
-                                // of the new inner value
-                                | None -> 
-                                    i.AddOutputNew !res |> ignore
-                                
-                                // if there was an old inner cell which
-                                // is different from the new one we
-                                // remove the resulting cell from the old
-                                // outputs and add it to the new ones. 
-                                | Some (_,old) when old <> i -> 
-                                    old.RemoveOutput !res |> ignore
-                                    i.AddOutputNew !res |> ignore
-
-                                // in any other case the graph remained
-                                // constant and we don't change a thing.
-                                | _ -> ()
-
-                            // finally we pull the value from the
-                            // new inner cell.
-                            i.GetValue s
-                        
-
-                )
-
-            // since m is statically known to be an input
-            // of the resulting cell we add the edge to the 
-            // dependency graph.
-            m.AddOutputNew !res |> ignore
-            !res :> IMod<_>
+            BindMod(m, fun v -> f v :> _) :> IMod<_>
+      
 
     /// <summary>
     /// adaptively applies a function to two cell's values
@@ -653,61 +756,15 @@ module Mod =
             | (true, false) ->
                 bind (fun b -> (f (ma.GetValue(null)) b) :> IMod<_>) mb
             | (false, false) ->
-                let inner : ref<Option<'a * 'b * IMod<'c>>> = ref None
-
-                // for a detailed description see bind above
-                let res = ref <| Unchecked.defaultof<_>
-
-                res := 
-                    LazyModWithChangedInputs(fun s changed -> 
-                        let a = ma.GetValue s
-                        let b = mb.GetValue s
-
-                        let ca = PersistentHashSet.contains (ma :> IAdaptiveObject) changed
-                        let cb = PersistentHashSet.contains (mb :> IAdaptiveObject) changed
-
-                        match !inner with
-                            | Some (va, vb, inner) when not ca && not cb ->
-                                inner.GetValue s
-                            | _ ->
-
-                                let i = f a b :> IMod<_>
-                                let old = !inner
-                                inner := Some (a, b, i)
-
-                                match old with
-                                    | None -> 
-                                        i.AddOutputNew !res |> ignore
-
-                                    | Some (_,_,old) when old <> i -> 
-                                        old.RemoveOutput !res |> ignore
-                                        i.AddOutputNew !res |> ignore
-
-                                    | _ -> ()
-
-                        
-                                i.GetValue s
-                        
-
-                    )
-                ma.AddOutputNew !res |> ignore
-                mb.AddOutputNew !res |> ignore
-                !res :> IMod<_>
+                Bind2Mod(ma, mb, fun a b -> (f a b) :> _) :> IMod<_>
 
     /// <summary>
     /// creates a dynamic cell using the given function
     /// while maintaining lazy evaluation.
     /// </summary>
     let dynamic (f : unit -> IMod<'a>) =
-        let m = lazy (f())
-        let self = ref null
-        self :=
-            custom (fun s ->
-                if not m.IsValueCreated then
-                    m.Value.AddOutputNew !self
-                m.Value.GetValue s
-            )
-        !self
+        DynamicMod(f) :> IMod<_>
+
 
     /// <summary>
     /// forces the evaluation of a cell and returns its current value
@@ -916,7 +973,7 @@ module ModExtensions =
             Some (t.GetGenericArguments().[0])
         else
             let iface = t.GetInterface(typedefof<IMod<_>>.FullName)
-            if iface = null then None
+            if isNull iface then None
             else extractModTypeArg iface
 
     /// <summary>

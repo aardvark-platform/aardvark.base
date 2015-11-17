@@ -48,6 +48,9 @@ type IReader<'a> =
 
     abstract member SubscribeOnEvaluate : (Change<'a> -> unit) -> IDisposable
 
+
+
+
 /// <summary>
 /// aset serves as the base interface for all adaptive sets.
 /// </summary>
@@ -57,6 +60,8 @@ type aset<'a> =
     /// Returns a NEW reader for the set which will initially return
     /// the entire set-content as deltas.
     /// </summary>
+    abstract member Copy : aset<'a>
+
     abstract member GetReader : unit -> IReader<'a>
 
     abstract member IsConstant : bool
@@ -68,19 +73,29 @@ type aset<'a> =
 /// the available combinators and is used by the aset-system internally (hence private)
 /// </summary>
 module ASetReaders =
+    let private OneShotReaderEvaluateProbe = Symbol.Create "[ASet] oneshot eval"
+    let private ReaderEvaluateProbe = Symbol.Create "[ASet] evaluation"
+    let private ReaderComputeProbe = Symbol.Create "[ASet] compute"
+    let private ReaderCallbackProbe = Symbol.Create "[ASet] eval callback"
+    let private ApplyDeltaProbe = Symbol.Create "[ASet] apply deltas"
 
     let apply (set : ReferenceCountingSet<'a>) (deltas : list<Delta<'a>>) =
-        deltas 
-            |> Delta.clean 
-            |> List.filter (fun d ->
-                match d with
-                    | Add v -> set.Add v
-                    | Rem v -> set.Remove v
-               )
+        Telemetry.timed ApplyDeltaProbe (fun () ->
+            set.Apply deltas
+//            deltas 
+//                |> Delta.clean 
+//                |> List.filter (fun d ->
+//                    match d with
+//                        | Add v -> set.Add v
+//                        | Rem v -> set.Remove v
+//                   )
+        )
 
     [<AbstractClass>]
     type AbstractReader<'a>() =
         inherit AdaptiveObject()
+
+
 
         let mutable isDisposed = 0
         let content = ReferenceCountingSet<'a>()
@@ -90,21 +105,24 @@ module ASetReaders =
         abstract member Release : unit -> unit
         abstract member ComputeDelta : unit -> Change<'a>
         abstract member Update : IAdaptiveObject -> unit
-        abstract member GetDelta : IAdaptiveObject -> Change<'a>
- 
+
         member x.Content = content
         member internal x.Callbacks = callbacks
 
-        default x.GetDelta(caller) =
+        member x.GetDelta(caller) =
             x.EvaluateIfNeeded caller [] (fun () ->
-                let deltas = x.ComputeDelta()
-                let finalDeltas = deltas |> apply content
+                Telemetry.timed ReaderEvaluateProbe (fun () ->
+                    let deltas = Telemetry.timed ReaderComputeProbe x.ComputeDelta
+                    let finalDeltas = Telemetry.timed ApplyDeltaProbe (fun () -> deltas |> apply content)
 
-                if not (isNull callbacks) then
-                    if not (List.isEmpty finalDeltas) then
-                        for cb in callbacks do cb finalDeltas
+                    if not (isNull callbacks) then
+                        Telemetry.timed ReaderCallbackProbe (fun () ->
+                            if not (List.isEmpty finalDeltas) then
+                                for cb in callbacks do cb finalDeltas
+                        )
 
-                finalDeltas
+                    finalDeltas
+                )
             )
 
         default x.Update(caller) = x.GetDelta(caller) |> ignore
@@ -145,6 +163,143 @@ module ASetReaders =
             member x.GetDelta(caller) = x.GetDelta(caller)
             member x.SubscribeOnEvaluate cb = x.SubscribeOnEvaluate cb
 
+    type UnionReader<'a>(readers : list<IReader<'a>>) as this =
+        inherit AbstractReader<'a>()
+
+        let dirty = MutableVolatileDirtySet<IReader<'a>, list<Delta<'a>>>(fun r -> r.GetDelta(this))
+        
+        let mutable initial = true
+
+        override x.InputChanged(i : IAdaptiveObject) =
+            match i with
+                | :? IReader<'a> as r -> dirty.Push r
+                | _ -> ()
+
+        override x.Inputs =
+            readers |> Seq.cast
+
+        override x.ComputeDelta() =
+            if initial then 
+                initial <- false
+                readers |> List.collect (fun r -> r.GetDelta x)
+            else 
+                dirty.Evaluate() |> List.concat
+
+        override x.Release() =
+            dirty.Clear()
+
+    type BindReader<'a, 'b>(scope : Ag.Scope, m : IMod<'a>, f : 'a -> IReader<'b>) =
+        inherit AbstractReader<'b>()
+
+        let f v = Ag.useScope scope (fun () -> f v)
+        let hasChanged = ChangeTracker.track<'a>
+        let mutable current : Option<IReader<'b>> = None
+        let mutable mChanged = true
+
+        override x.InputChanged(o : IAdaptiveObject) =
+            mChanged <- Object.ReferenceEquals(o, m)
+
+        override x.Inputs =
+            seq {
+                yield m :> _
+                match current with 
+                    | Some o -> yield o :> _ 
+                    | _ -> ()
+            }
+
+        override x.Release() =
+            match current with
+                | Some c -> 
+                    c.Dispose()
+                    current <- None
+                | _ -> ()
+
+        override x.ComputeDelta() =
+            let moutdated = mChanged
+            mChanged <- false
+            
+            match current with
+                | Some old ->
+                    if moutdated then
+                        let v = m.GetValue x
+                        if hasChanged v then
+                            let removal = old.Content |> Seq.map Rem |> Seq.toList
+                            old.Dispose()
+                            let r = f v 
+                            current <- Some r
+                            removal @ r.GetDelta x
+                        else
+                            old.GetDelta x
+                    else
+                        old.GetDelta x
+                | None ->
+                    let v = m.GetValue x
+                    v |> hasChanged |> ignore
+                    let r = f v
+                    current <- Some r
+                    r.GetDelta x
+                
+    type MultiConstantCollectReader<'a, 'b>(scope : Ag.Scope, sources : seq<IReader<'a>>, f : 'a -> seq<'b>) as this =
+        inherit AbstractReader<'b>()
+        let sources = Seq.toList sources
+
+        let mutable initial = true
+        let cache = Cache(scope, f >> Seq.toList)
+        let dirty = MutableVolatileDirtySet<IReader<'a>, list<Delta<'a>>>(fun r -> r.GetDelta this)
+
+        override x.Inputs =
+            sources |> Seq.cast
+
+        override x.InputChanged(i : IAdaptiveObject) =
+            match i with
+                | :? IReader<'a> as r -> dirty.Push r
+                | _ -> ()
+
+        override x.Release() =
+            for s in sources do s.Dispose()
+            cache.Clear ignore
+            dirty.Clear()
+
+        override x.ComputeDelta() =
+            if initial then
+                initial <- false
+                sources |> List.collect (fun r ->
+                    r.GetDelta x 
+                        |> List.collect (fun d ->
+                            match d with
+                                | Add v -> cache.Invoke v |> List.map Add
+                                | Rem v -> cache.Revoke v |> List.map Rem
+                        )
+                )
+            else
+                dirty.Evaluate() 
+                    |> List.concat
+                    |> List.collect (fun d ->
+                        match d with
+                            | Add v -> cache.Invoke v |> List.map Add
+                            | Rem v -> cache.Revoke v |> List.map Rem
+                    )
+
+    type ConstantCollectReader<'a, 'b>(scope, source : IReader<'a>, f : 'a -> seq<'b>) =
+        inherit AbstractReader<'b>()
+
+        let cache = Cache(scope, f >> Seq.toList)
+
+        override x.Inputs =
+            Seq.singleton (source :> IAdaptiveObject)
+
+        override x.Release() =
+            source.Dispose()
+            cache.Clear ignore
+
+        override x.ComputeDelta() =
+            source.GetDelta x
+                |> List.collect (fun v ->
+                    match v with
+                        | Add v -> cache.Invoke v |> List.map Add
+                        | Rem v -> cache.Revoke v |> List.map Rem
+                )
+
 
     /// <summary>
     /// A reader representing "map" operations
@@ -152,14 +307,15 @@ module ASetReaders =
     ///      usual "a -> b" since it is convenient for some use-cases and does not make 
     ///      the implementation harder.
     /// </summary>
-    type MapReader<'a, 'b>(scope, source : IReader<'a>, f : 'a -> list<'b>) as this =
-        inherit AbstractReader<'b>()
-        do source.AddOutputNew this  
+    type MapReader<'a, 'b>(scope, source : IReader<'a>, f : 'a -> list<'b>) =
+        inherit AbstractReader<'b>() 
         
         let f = Cache(scope, f)
 
+        override x.Inputs = Seq.singleton (source :> IAdaptiveObject)
+
         override x.Release() =
-            source.RemoveOutput this
+            source.RemoveOutput x
             source.Dispose()
             f.Clear(ignore)
 
@@ -179,10 +335,16 @@ module ASetReaders =
     /// </summary>   
     type CollectReader<'a, 'b>(scope, source : IReader<'a>, f : 'a -> IReader<'b>) as this =
         inherit AbstractReader<'b>()
-        do source.AddOutputNew this
 
         let f = Cache(scope, f)
         let dirtyInner = MutableVolatileDirtySet(fun (r : IReader<'b>) -> r.GetDelta(this))
+
+        override x.Inputs =
+            seq {
+                yield source :> IAdaptiveObject
+                for c in f.Values do yield c :> IAdaptiveObject
+            }
+
 
         override x.InputChanged (o : IAdaptiveObject) = 
             match o with
@@ -191,9 +353,9 @@ module ASetReaders =
 
 
         override x.Release() =
-            source.RemoveOutput this
+            source.RemoveOutput x
             source.Dispose()
-            f.Clear(fun r -> r.RemoveOutput this; r.Dispose())
+            f.Clear(fun r -> r.RemoveOutput x; r.Dispose())
             dirtyInner.Clear()
 
         override x.ComputeDelta() =
@@ -205,8 +367,6 @@ module ASetReaders =
                             let r = f.Invoke v
 
                             // we're an output of the new reader
-                            r.AddOutputNew this
-
                             // bring the reader's content up-to-date by calling GetDelta
                             r.GetDelta x |> ignore
 
@@ -225,7 +385,7 @@ module ASetReaders =
 
                             // since the reader is no longer contained we don't want
                             // to be notified anymore
-                            r.RemoveOutput this
+                            r.RemoveOutput x
    
                             // the entire content of the reader is removed
                             // Note that the content here might be OutOfDate
@@ -252,14 +412,15 @@ module ASetReaders =
     /// <summary>
     /// A reader representing "choose" operations
     /// </summary>   
-    type ChooseReader<'a, 'b>(scope, source : IReader<'a>, f : 'a -> Option<'b>) as this =
+    type ChooseReader<'a, 'b>(scope, source : IReader<'a>, f : 'a -> Option<'b>) =
         inherit AbstractReader<'b>()
-        do source.AddOutputNew this
 
         let f = Cache(scope, f)
 
+        override x.Inputs = Seq.singleton (source :> IAdaptiveObject)
+
         override x.Release() =
-            source.RemoveOutput this
+            source.RemoveOutput x
             source.Dispose()
             f.Clear(ignore)
 
@@ -286,14 +447,15 @@ module ASetReaders =
     /// <summary>
     /// A reader for using IMod&lt;a&gt; as a single-valued-set
     /// </summary>   
-    type ModReader<'a>(source : IMod<'a>) as this =  
+    type ModReader<'a>(source : IMod<'a>) =  
         inherit AbstractReader<'a>()
-        do source.AddOutputNew this
         let hasChanged = ChangeTracker.track<'a>
         let mutable old = None
 
+        override x.Inputs = Seq.singleton (source :> IAdaptiveObject)
+
         override x.Release() =
-            source.RemoveOutput this
+            source.RemoveOutput x
             old <- None
 
         override x.ComputeDelta() =
@@ -320,6 +482,8 @@ module ASetReaders =
 
         let deltas = List<Delta<'a>>()
         let mutable reset : Option<ISet<'a>> = None
+
+        override x.Inputs : seq<IAdaptiveObject> = Seq.empty
 
         member x.Emit (c : ISet<'a>, d : Option<list<Delta<'a>>>) =
             lock x (fun () ->
@@ -379,13 +543,14 @@ module ASetReaders =
         let mutable newReader = newReader
         let mutable reader = None
         let mutable refCount = 0
-        let mutable refCountMayIncrease = true
+        let containgSetDied = EventSource ()
         let onlyReader = EventSource true
 
         member x.ContainingSetDied() =
             lock lockObj (fun () ->
-                refCountMayIncrease <- false
-                newReader <- noNewReader
+                containgSetDied.Emit ()
+                //newReader <- noNewReader
+                
             )
 
         member x.OnlyReader = onlyReader :> IEvent<bool>
@@ -393,8 +558,7 @@ module ASetReaders =
         member x.ReferenceCount = 
             lock lockObj (fun () -> refCount)
 
-        member x.ReferenceCountMayIncrease =
-            lock lockObj (fun () -> refCountMayIncrease)
+        member x.ContainingSetDiedEvent = containgSetDied :> IEvent<_>
 
         member x.GetReference() =
             lock lockObj (fun () ->
@@ -423,12 +587,13 @@ module ASetReaders =
             )
 
 
+
     type CopyReader<'a>(input : ReferenceCountedReader<'a>) as this =
         inherit AdaptiveObject()
-           
+          
         let inputReader = input.GetReference()
-        do inputReader.AddOutputNew this
 
+        let mutable containgSetDead = false
         let mutable initial = true
         let mutable passThru        : bool                          = true
         let mutable deltas          : List<Delta<'a>>               = null
@@ -437,9 +602,6 @@ module ASetReaders =
         let mutable content         : ReferenceCountingSet<'a>      = Unchecked.defaultof<_>
         let mutable callbacks       : HashSet<Change<'a> -> unit>   = null
 
-        let mutable isDisposed = 0
-        let onlySubscription = input.OnlyReader.Values.Subscribe(fun pass -> this.SetPassThru(pass, passThru))
-        
         let emit (d : list<Delta<'a>>) =
             lock this (fun () ->
 //                if reset.IsNone then
@@ -475,16 +637,15 @@ module ASetReaders =
                     // a bad one. Nevertheless this is not really a proof of its inexistence (hence the print)
                     Aardvark.Base.Log.warn "[ASetReaders.CopyReader] potentially bad emit with: %A" d
             )
+ 
+        let mutable isDisposed = 0
+        let mutable deadSubscription = input.ContainingSetDiedEvent.Values.Subscribe this.ContainingSetDied
+        let mutable onlySubscription = input.OnlyReader.Values.Subscribe(fun pass -> this.SetPassThru(pass, passThru))
 
-        member x.PassThru =
-            passThru
-
-        member x.WillAlwaysBePassThru =
-            passThru && not input.ReferenceCountMayIncrease
 
         member x.SetPassThru(active : bool, copyContent : bool) =
             lock inputReader (fun () ->
-                lock x (fun () ->
+                lock this (fun () ->
                     if active <> passThru then
                         passThru <- active
                         if passThru then
@@ -505,11 +666,22 @@ module ASetReaders =
                             ()
                 )
             )
-                    
-        member private x.Optimize() =
-            if x.WillAlwaysBePassThru then
-                printfn "optimization possible"
 
+        member private x.ContainingSetDied() =
+            deadSubscription.Dispose()
+            if not input.OnlyReader.Latest then
+                deadSubscription <- input.OnlyReader.Values.Subscribe(fun pass -> if pass then x.ContainingSetDied())
+            else
+                containgSetDead <- true
+                x.Optimize()
+
+        member x.PassThru =
+            passThru
+
+        member private x.Optimize() =
+            () //Log.line "optimize: input: %A -> %A" inputReader.Inputs inputReader
+
+        override x.Inputs = Seq.singleton (inputReader :> IAdaptiveObject)
 
         member x.Content = 
             lock x (fun () ->
@@ -538,24 +710,27 @@ module ASetReaders =
                         let add = c |> Seq.filter (not << content.Contains) |> Seq.map Add
                         let rem = content |> Seq.filter (not << c.Contains) |> Seq.map Rem
 
-                        Seq.append add rem |> Seq.toList |> apply content
+                        Telemetry.timed ApplyDeltaProbe (fun () -> Seq.append add rem |> Seq.toList |> apply content)
                     | None ->
                         let res = deltas |> Seq.toList
                         deltas.Clear()
-                        res |> apply content
+                        Telemetry.timed ApplyDeltaProbe (fun () -> res |> apply content)
 
         member x.GetDelta(caller) =
             lock inputReader (fun () ->
                 x.EvaluateIfNeeded caller [] (fun () ->
-                    //x.Optimize()
-                    let deltas = x.ComputeDelta()
+                    Telemetry.timed ReaderEvaluateProbe (fun () ->
+                        let deltas = Telemetry.timed ReaderComputeProbe x.ComputeDelta
+          
+                        if not (isNull callbacks) then
+                            Telemetry.timed ReaderCallbackProbe (fun () ->
+                                if not (List.isEmpty deltas) then
+                                    for cb in callbacks do cb deltas
+                            )
 
-                    if not (isNull callbacks) then
-                        if not (List.isEmpty deltas) then
-                            for cb in callbacks do cb deltas
-
-                    initial <- false
-                    deltas
+                        initial <- false
+                        deltas
+                    )
                 )
             )
 
@@ -568,6 +743,7 @@ module ASetReaders =
         member x.Dispose() =
             if Interlocked.Exchange(&isDisposed, 1) = 0 then
                 onlySubscription.Dispose()
+                deadSubscription.Dispose()
                 inputReader.RemoveOutput x
                 if not passThru then
                     subscription.Dispose()
@@ -604,23 +780,70 @@ module ASetReaders =
             member x.GetDelta(caller) = x.GetDelta(caller)
             member x.SubscribeOnEvaluate cb = x.SubscribeOnEvaluate cb
 
-    type OneShotReader<'a>(deltas : Change<'a>) =  
+
+    type OneShotReader<'a>(content : ReferenceCountingSet<'a>) =  
+        inherit ConstantObject()
+        let mutable callbacks : HashSet<list<Delta<'a>> -> unit> = null
+        static let empty = ReferenceCountingSet<'a>()
+
+        let toDeltaList (set : ReferenceCountingSet<'a>) =
+            match set.Count with
+                | 0 -> []
+                | 1 -> [Add (set.FirstOrDefault(Unchecked.defaultof<_>))]
+                | _ -> 
+                    set.ToArray(set.Count) |> Array.toList |> List.map Add
+
+        let mutable initial = true
+
+        member x.SubscribeOnEvaluate(cb : list<Delta<'a>> -> unit) =
+            lock x (fun () ->
+                if isNull callbacks then
+                    callbacks <- HashSet()
+
+                if callbacks.Add cb then
+                    { new IDisposable with 
+                        member __.Dispose() = 
+                            lock x (fun () ->
+                                callbacks.Remove cb |> ignore 
+                                if callbacks.Count = 0 then
+                                    callbacks <- null
+                            )
+                    }
+                else
+                    { new IDisposable with member __.Dispose() = () }
+            )
+        member x.GetDelta(caller : IAdaptiveObject) =
+            Telemetry.timed OneShotReaderEvaluateProbe (fun () ->
+                lock x (fun () ->
+                    if initial then
+                        initial <- false
+                        let deltas = toDeltaList content
+
+                        if not (isNull callbacks) then
+                            for cb in callbacks do
+                                cb deltas
+                            callbacks <- null
+
+                        deltas
+                    else
+                        []
+                )
+            )
+
+        interface IReader<'a> with
+            member x.GetDelta(caller) = x.GetDelta(caller)
+            member x.SubscribeOnEvaluate(cb) = x.SubscribeOnEvaluate cb
+            member x.Update(caller) = 
+                x.GetDelta(caller) |> ignore
+            member x.Dispose() = ()
+            member x.Content = 
+                if initial then empty
+                else content
+
+    type UseReader<'a when 'a :> IDisposable>(inputReader : IReader<'a>) =
         inherit AbstractReader<'a>()
-        
-        let mutable deltas = deltas
 
-        override x.ComputeDelta() =
-            let res = deltas
-            deltas <- []
-            res
-
-        override x.Release() =
-            deltas <- []
-
-
-    type UseReader<'a when 'a :> IDisposable>(inputReader : IReader<'a>) as this =
-        inherit AbstractReader<'a>()
-        do inputReader.AddOutputNew this
+        override x.Inputs = Seq.singleton (inputReader :> IAdaptiveObject)
 
         override x.Release() =
             for c in x.Content do
@@ -638,6 +861,32 @@ module ASetReaders =
 
             deltas
 
+    type MapUseReader<'a, 'b when 'b :> IDisposable>(scope, source : IReader<'a>, f : 'a -> list<'b>) =
+        inherit AbstractReader<'b>() 
+        
+        let f = Cache(scope, f)
+
+        override x.Inputs = Seq.singleton (source :> IAdaptiveObject)
+
+        override x.Release() =
+            source.RemoveOutput x
+            source.Dispose()
+            f.Clear(fun (b : list<'b>) -> b |> List.iter (fun b -> b.Dispose()))
+
+        override x.ComputeDelta() =
+            source.GetDelta x 
+                |> List.collect (fun d ->
+                    match d with
+                        | Add v -> 
+                            f.Invoke v |> List.map Add
+                        | Rem v -> 
+                            let last, rem = f.RevokeAndGetDeleted v 
+                            
+                            if last then
+                                rem |> List.iter (fun d -> d.Dispose())
+                            
+                            rem |> List.map Rem
+                )
 
 
 
@@ -648,12 +897,20 @@ module ASetReaders =
     let collect scope (f : 'a -> IReader<'b>) (input : IReader<'a>) =
         new CollectReader<_, _>(scope, input, f) :> IReader<_>
 
+    let collect' scope (f : 'a -> seq<'b>) (input : IReader<'a>) =
+        new ConstantCollectReader<_, _>(scope, input, f) :> IReader<_>
+
+
+
+    let union (input : list<IReader<'a>>) =
+        new UnionReader<_>(input) :> IReader<_>
+
     let bind scope (f : 'a -> IReader<'b>) (input : IMod<'a>) =
         new CollectReader<_,_>(scope, new ModReader<_>(input), f) :> IReader<_>
 
     let bind2 scope (f : 'a -> 'b -> IReader<'c>) (ma : IMod<'a>)  (mb : IMod<'b>)=
         let tup = Mod.map2 (fun a b -> (a,b)) ma mb
-        new CollectReader<_,_>(scope, new ModReader<_>(tup),  fun (a,b) -> f a b) :> IReader<_>
+        new BindReader<_,_>(scope, tup,  fun (a,b) -> f a b) :> IReader<_>
 
     let choose scope (f : 'a -> Option<'b>) (input : IReader<'a>) =
         new ChooseReader<_, _>(scope, input, f) :> IReader<_>
@@ -663,3 +920,6 @@ module ASetReaders =
 
     let using (r : IReader<'a>) =
         new UseReader<'a>(r) :> IReader<_>
+
+    let mapUsing scope (f : 'a -> 'b) (r : IReader<'a>) =
+        new MapUseReader<'a, 'b>(scope, r, fun v -> [f v]) :> IReader<_>

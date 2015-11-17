@@ -54,11 +54,12 @@
     <Compile Include="Prelude\FSLibExtensions.fs" />
     <Compile Include="Prelude\FixedSizeArray.fs" />
     <Compile Include="Prelude\HashMap.fs" />
-    <Compile Include="Prelude\HashSet.fs" />
+    <Compile Include="Prelude\PersistentHashSet.fs" />
     <Compile Include="Order.fs" />
     <Compile Include="OrderMaintenance.fs" />
     <Compile Include="SkipList.fs" />
     <Compile Include="AVL.fs" />
+    <Compile Include="StableSet.fs" />
     <Compile Include="Interop\Dictionary.fs" />
     <Compile Include="Interop\Symbol.fs" />
     <Compile Include="Interop\Vectors.fs" />
@@ -66,6 +67,7 @@
     <Compile Include="Interop\Color.fs" />
     <Compile Include="Interop\String.fs" />
     <Compile Include="Interop\SortedSet.fs" />
+    <Compile Include="Interop\HashSet.fs" />
     <Compile Include="Reflection\TypeInfo.fs" />
     <Compile Include="Reflection\FunctionReflection.fs" />
     <Compile Include="Reflection\UnmanagedFunctions.fs" />
@@ -74,11 +76,12 @@
     <Compile Include="Runtime\ExecutableMemory.fs" />
     <Compile Include="Runtime\Assembler.fs" />
     <Compile Include="Runtime\WeakTable.fs" />
+    <Compile Include="Runtime\NativeMemory.fs" />
+    <Compile Include="Runtime\Fragments.fs" />
     <Compile Include="Reflection.fs" />
     <Compile Include="Runtime.fs" />
     <Compile Include="AgHelpers.fs" />
     <Compile Include="Ag.fs" />
-    <Compile Include="Utilities.fs" />
     <Compile Include="Control.fs" />
     <None Include="paket.references" />
   </ItemGroup>

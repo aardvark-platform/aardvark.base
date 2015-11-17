@@ -6,7 +6,6 @@ open Aardvark.Base
 open FsUnit
 open NUnit.Framework
 open Aardvark.Base.Ag
-open Aardvark.Base.AgHelpers
 
 module ``Ag Tests`` =
 

@@ -8,11 +8,17 @@ open Aardvark.Base
 open System.Threading
 open AgHelpers
 
+
 // Implementation of an embedded domain specific language for attribute grammars. The library works with any types,
 // semantic functions can be added by defining modules annotated with [<Semantic>] attributes.
 // More information can be found here: https://github.com/vrvis/attribute-grammars-for-incremental-scenegraph-rendering and
 // the paper if accepted ;)
 module Ag =
+
+    type Semantic() =
+        inherit System.Attribute()
+
+    let mutable unpack : obj -> obj = id
 
     [<ReferenceEquality>]
     type Scope = { parent       : Option<Scope>
@@ -71,7 +77,7 @@ module Ag =
     
     let mutable private rootScope = new ThreadLocal<Scope>(fun () -> { parent = None; source = null; children = newCWT(); cache = null; path = Some "Root" })
 
-    let mutable private currentScope = new ThreadLocal<Scope>(fun () -> rootScope.Value)
+    let mutable currentScope = new ThreadLocal<Scope>(fun () -> rootScope.Value)
 
     //temporary storage for inherited values
     let private anyObject = obj()
@@ -94,10 +100,10 @@ module Ag =
 
 
     [<OnAardvarkInit>]
-    let initialize () : unit =  AgHelpers.initializeAg()
+    let initialize () : unit =  AgHelpers.initializeAg<Semantic>()
 
     let reinitialize () : unit =  
-        AgHelpers.reIninitializeAg()
+        AgHelpers.reIninitializeAg<Semantic>()
         rootScope.Dispose()
         currentScope.Dispose()
         rootScope <- new ThreadLocal<Scope>(fun () -> { parent = None; source = null; children = newCWT(); cache = null; path = Some "Root" })
@@ -126,7 +132,7 @@ module Ag =
     //correctly since the ?-operators used inside the function need to know
     //their current scope. therefore useScope executes a function in the given 
     //scope and restores everything afterwards.
-    let useScope (s : Scope) (f : unit -> 'a) : 'a =
+    let inline useScope (s : Scope) (f : unit -> 'a) : 'a =
         let oldScope = currentScope.Value
         currentScope.Value <- s
         let r = f()
@@ -148,7 +154,7 @@ module Ag =
             | _ -> let parent = scope.parent
                    match parent with
                         //if there is a valid parent-scope we continue the search
-                        | Some(parent) when parent.source <> null ->
+                        | Some(parent) when not (isNull parent.source) ->
                                 let parentType = parent.source.GetType()
                                 match tryFindSemanticFunction(parentType, name) with
                                     //if there is a semantic-function applicable to the parent-node

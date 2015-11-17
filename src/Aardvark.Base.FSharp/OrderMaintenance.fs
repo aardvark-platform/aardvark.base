@@ -12,33 +12,32 @@ type IDeletableComparable =
 type ISortKey =
     inherit IDeletableComparable
     abstract member Clock : IOrder
-    abstract member Next : ISortKey
 
 and IOrder =
     abstract member Count : int
     abstract member Root : ISortKey
 
 module Order =
-    let toSeq (c : IOrder) =
-        let rec toSeq (t : ISortKey) =
-            seq {
-                yield t
-                if t.Next <> c.Root then
-                    yield! toSeq t
-            }
+//    let toSeq (c : IOrder) =
+//        let rec toSeq (t : ISortKey) =
+//            seq {
+//                yield t
+//                if t.Next <> c.Root then
+//                    yield! toSeq t
+//            }
+//
+//        toSeq c.Root.Next
+//        
+//    let toArray (c : IOrder) =
+//        let mutable current = c.Root.Next
+//        let arr = Array.zeroCreate (c.Count-1)
+//        for i in 0..c.Count-2 do
+//            arr.[i] <- current
+//            current <- current.Next
+//        arr
 
-        toSeq c.Root.Next
-        
-    let toArray (c : IOrder) =
-        let mutable current = c.Root.Next
-        let arr = Array.zeroCreate (c.Count-1)
-        for i in 0..c.Count-2 do
-            arr.[i] <- current
-            current <- current.Next
-        arr
-
-    let toList (c : IOrder) =
-        c |> toArray |> Array.toList
+//    let toList (c : IOrder) =
+//        c |> toArray |> Array.toList
 
     let inline count (c : IOrder) =
         c.Count
@@ -87,7 +86,7 @@ module SimpleOrder =
             interface ISortKey with
                 member x.Clock = x.Clock :> IOrder
                 member x.IsDeleted = isNull x.Next
-                member x.Next = x.Next :> ISortKey
+                //member x.Next = x.Next :> ISortKey
 
             new(c) = { Clock = c; Tag = 0UL; Next = null; Prev = null }
         end
@@ -204,11 +203,11 @@ module SkipOrder =
                 x.NextArray.Length
 
             member x.Next = 
-                if x.NextArray <> null then x.NextArray.[0].Target
+                if not (isNull x.NextArray) then x.NextArray.[0].Target
                 else null
 
             member x.Prev =
-                if x.PrevArray <> null then x.PrevArray.[0].Target
+                if not (isNull x.PrevArray) then x.PrevArray.[0].Target
                 else null
 
             member x.CompareTo (o : SortKey) =
@@ -238,7 +237,7 @@ module SkipOrder =
             interface ISortKey with
                 member x.Clock = x.Clock :> IOrder
                 member x.IsDeleted = x.IsDeleted
-                member x.Next = x.Next :> ISortKey
+                //member x.Next = x.Next :> ISortKey
 
             new(c, h) = { Clock = c; Tag = 0UL; NextArray = Array.zeroCreate h; PrevArray = Array.zeroCreate h; IsDeleted = false }
         end
@@ -484,7 +483,7 @@ module DerivedOrder =
             if typeof<IDeletableComparable>.IsAssignableFrom(typeof<'a>) then
                 fun (a : 'a) -> 
                     let t = unbox<IDeletableComparable> a
-                    if t <> null then t.IsDeleted
+                    if not (isNull t) then t.IsDeleted
                     else false
             else
                 fun (a : 'a) -> false
@@ -508,11 +507,11 @@ module DerivedOrder =
                 x.NextArray.Length
 
             member x.Next = 
-                if x.NextArray <> null then x.NextArray.[0].Target
+                if not (isNull x.NextArray) then x.NextArray.[0].Target
                 else null
 
             member x.Prev =
-                if x.PrevArray <> null then x.PrevArray.[0].Target
+                if not (isNull x.PrevArray) then x.PrevArray.[0].Target
                 else null
 
             member x.CompareTo (o : SortKey<'a>) =
@@ -542,7 +541,7 @@ module DerivedOrder =
             interface ISortKey with
                 member x.Clock = x.Clock :> IOrder
                 member x.IsDeleted = x.IsDeleted
-                member x.Next = x.Next :> ISortKey
+                //member x.Next = x.Next :> ISortKey
 
             new(c, h) = { Clock = c; Tag = 0UL; NextArray = Array.zeroCreate h; PrevArray = Array.zeroCreate h; Item = Unchecked.defaultof<_>; IsDeleted = false }
         end

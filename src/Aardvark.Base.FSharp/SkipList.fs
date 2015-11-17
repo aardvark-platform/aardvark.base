@@ -58,7 +58,7 @@ type SkipList<'a>(cmp : 'a -> 'a -> int) =
             let link = links.[level]
 
             let vCmp = 
-                if link.Target = null then -1
+                if isNull link.Target then -1
                 else cmp v link.Target.Value
 
             if vCmp <= 0 then
@@ -75,7 +75,7 @@ type SkipList<'a>(cmp : 'a -> 'a -> int) =
             let link = links.[level]
 
             let vCmp = 
-                if link.Target = null then -1
+                if isNull link.Target then -1
                 else compare id (currentIndex + link.Width)//link.Target.Value
 
             if vCmp <= 0 then
@@ -86,7 +86,7 @@ type SkipList<'a>(cmp : 'a -> 'a -> int) =
 
     let print (l : SkipList<'a>) =
         let rec cnt (n : Node<'a>) =
-            if n = null then 1
+            if isNull n then 1
             else 1 + cnt n.Next.[0].Target
 
         let rec dist (l : Node<'a>) (r : Node<'a>) =
@@ -100,7 +100,7 @@ type SkipList<'a>(cmp : 'a -> 'a -> int) =
         for y in 0..h-1 do
             let mutable current = root.[y].Target
             let mutable x = root.[y].Width
-            while current <> null do
+            while not (isNull current) do
 
                 arr.[x,y] <- sprintf "%A" current.Value
 
@@ -116,7 +116,7 @@ type SkipList<'a>(cmp : 'a -> 'a -> int) =
     let removePtr (prev : list<int * Node<'a>>) (n : Node<'a>)  =
         let mutable level = 0
         for (id,p) in prev do
-            let prevNext = if p <> null then p.Next else root
+            let prevNext = if not (isNull p) then p.Next else root
             let leftLink = prevNext.[level]
             if level < n.Height then
                 let rightLink = n.Next.[level]
@@ -130,7 +130,7 @@ type SkipList<'a>(cmp : 'a -> 'a -> int) =
 
     let toSeq() =
         let rec toSeq (n : Node<'a>) =
-            if n = null then 
+            if isNull n then 
                 Seq.empty
             else
                 seq {
@@ -156,17 +156,17 @@ type SkipList<'a>(cmp : 'a -> 'a -> int) =
 
             let (_,p) = prev |> List.head
             let on = 
-                if p = null then root.[0].Target 
+                if isNull p then root.[0].Target 
                 else p.Next.[0].Target
 
-            if on <> null && cmp on.Value v = 0 then
+            if not (isNull on) && cmp on.Value v = 0 then
                 false
             else
                 let fi = index + 1
 
                 let mutable level = 0
                 for (id,p) in prev do
-                    let prevNext = if p <> null then p.Next else root
+                    let prevNext = if not (isNull p) then p.Next else root
                     let l = prevNext.[level]
 
                     if level < n.Height then
@@ -201,9 +201,9 @@ type SkipList<'a>(cmp : 'a -> 'a -> int) =
             let (index, prev) = findPrev [] cmp 0 (height - 1) v null root
 
             let (_,p) = prev |> List.head
-            let n = if p = null then root.[0].Target else p.Next.[0].Target
+            let n = if isNull p then root.[0].Target else p.Next.[0].Target
 
-            if n <> null && cmp n.Value v = 0 then
+            if not (isNull n) && cmp n.Value v = 0 then
                 removePtr prev n
                 true
             else
@@ -221,9 +221,9 @@ type SkipList<'a>(cmp : 'a -> 'a -> int) =
             let (_, prev) = findPrevIndex [] 0 (height - 1) (index + 1) null root
 
             let (_,p) = prev |> List.head
-            let n = if p = null then root.[0].Target else p.Next.[0].Target
+            let n = if isNull p then root.[0].Target else p.Next.[0].Target
 
-            if n <> null then
+            if not (isNull n) then
                 removePtr prev n
                 true
             else
@@ -240,10 +240,10 @@ type SkipList<'a>(cmp : 'a -> 'a -> int) =
             let (id,n) = ptr |> List.head
 
             let link = 
-                if n = null then root.[0] 
+                if isNull n then root.[0] 
                 else n.Next.[0]
 
-            if link.Target <> null && link.Width + id = index + 1 then
+            if not (isNull link.Target) && link.Width + id = index + 1 then
                 Some link.Target.Value
             else
                 None
@@ -254,9 +254,9 @@ type SkipList<'a>(cmp : 'a -> 'a -> int) =
             let (index, prev) = findPrev [] cmp 0 (height - 1) v null root
 
             let (_,p) = prev |> List.head
-            let n = if p = null then root.[0].Target else p.Next.[0].Target
+            let n = if isNull p then root.[0].Target else p.Next.[0].Target
 
-            if n <> null && cmp n.Value v = 0 then
+            if not (isNull n) && cmp n.Value v = 0 then
                 true
             else
                 false

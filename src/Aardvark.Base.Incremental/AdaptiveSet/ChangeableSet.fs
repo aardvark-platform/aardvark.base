@@ -25,6 +25,9 @@ type cset<'a>(initial : seq<'a>) =
     interface aset<'a> with
         member x.ReaderCount = lock readers (fun () -> readers.Count)
         member x.IsConstant = false
+
+        member x.Copy = x :> aset<_>
+
         member x.GetReader() =
             lock readers (fun () ->
                 let r = new EmitReader<'a>(content, fun r -> lock readers (fun () -> readers.Remove r |> ignore))

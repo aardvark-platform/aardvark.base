@@ -257,7 +257,7 @@ module DynamicLinker =
         let resourceInfo =
             Introspection.AllAssemblies |> Seq.tryPick (fun a ->
                 let r = a.GetManifestResourceInfo(resname)
-                if r <> null then Some (a,r)
+                if not (isNull r) then Some (a,r)
                 else None
             )
 

@@ -64,7 +64,7 @@ type EventSampler(frequency : int) =
         
 
     member x.Dispose() =
-        if m_thread <> null then
+        if not (isNull m_thread) then
             m_thread.Abort()
 
     interface IDisposable with
@@ -73,7 +73,7 @@ type EventSampler(frequency : int) =
 module EventAdapters =
 
     type private AdapterMod<'a>(e : IEvent<'a>, s : IDisposable, resubscribe : unit -> unit) =
-        inherit Mod.LazyMod<'a> (fun s -> let res = e.Latest in resubscribe(); res)
+        inherit Mod.LazyMod<'a> ([], fun s -> let res = e.Latest in resubscribe(); res)
         member x.Event = e
 
         interface IAdapterMod with
@@ -97,7 +97,7 @@ module EventAdapters =
         member x.Mod = m
 
         override x.Finalize() =
-            if s <> null then
+            if not (isNull s) then
                 s.Dispose()
 
     let (|EventOf|_|) (t : Type) =
@@ -105,7 +105,7 @@ module EventAdapters =
             Some (t.GetGenericArguments().[0])
         else
             let iface = t.GetInterface(typedefof<IEvent<_>>.FullName)
-            if iface <> null then
+            if not (isNull iface) then
                 Some (iface.GetGenericArguments().[0])
             else
                 None
@@ -115,7 +115,7 @@ module EventAdapters =
             Some (t.GetGenericArguments().[0])
         else
             let iface = t.GetInterface(typedefof<IMod<_>>.FullName)
-            if iface <> null then
+            if not (isNull iface) then
                 Some (iface.GetGenericArguments().[0])
             else
                 None
@@ -152,7 +152,7 @@ module EventAdapters =
             { new IDisposable with
                 member x.Dispose() =
                     live := false
-                    if !subscription <> null then
+                    if not (isNull !subscription) then
                         subscription.Value.Dispose()
                         subscription := null
             }

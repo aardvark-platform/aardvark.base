@@ -74,7 +74,10 @@ module PersistentHashSet =
         match Map.tryFind hash map with
             | Some l ->
                 let newL = l |> List.filter (fun e -> e <> value)
-                Map.add hash newL map |> PersistentHashSet
+                if List.isEmpty newL then
+                    Map.remove hash map |> PersistentHashSet
+                else
+                    Map.add hash newL map |> PersistentHashSet
             | None ->
                 set
 

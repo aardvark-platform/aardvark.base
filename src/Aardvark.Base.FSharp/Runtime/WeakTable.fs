@@ -78,7 +78,7 @@ module DependentHandle =
             if handle <> 0n then
                 let mutable prim = null
                 Api.nGetPrimary(handle, &prim)
-                if prim = null then 
+                if isNull prim then 
                     None
                 else
                     Some (prim |> unbox<'k>)
@@ -91,7 +91,7 @@ module DependentHandle =
                 let mutable sec = null
                 Api.nGetPrimaryAndSecondary(handle, &prim, &sec)
 
-                if prim <> null && sec <> null then
+                if not (isNull prim) && not (isNull sec) then
                     Some (prim |> unbox<'k>, sec |> unbox<'v>)
                 else
                     None
@@ -133,13 +133,13 @@ module WeakTable =
     open DependentHandle
 
     type private Weak<'a when 'a : not struct>(value : 'a) =
-        do if value :> obj = null then failwith "created null weak"
+        do if isNull (value :> obj) then failwith "created null weak"
         let wr = System.WeakReference<'a>(value)
         let hash = System.Runtime.CompilerServices.RuntimeHelpers.GetHashCode(value)
 
         member x.IsLife =
             match wr.TryGetTarget() with
-                | (true, o) when o :> obj <> null -> true
+                | (true, o) when not (isNull (o :> obj)) -> true
                 | _ -> false
 
         member x.TargetOption =
@@ -271,7 +271,7 @@ module WeakTable =
 //        System.GC.Collect()
 //        printfn "%A" table
 //
-//        b <- if a <> null then b else null
+//        b <- if not (isNull a) then b else null
 //        System.GC.Collect()
 //        printfn "%A" table
 //

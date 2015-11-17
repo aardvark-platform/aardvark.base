@@ -28,7 +28,7 @@ module FunctionReflection =
         if FSharpType.IsTuple p.Type then
             let name = sprintf "Item%d" (i+1)
             let pi = p.Type.GetProperty(name)
-            if pi <> null then
+            if not (isNull pi) then
                 Expression.Property(p, pi.GetMethod) :> Expression
             else
                 failwithf "property %A was not fount for type %A" name p.Type
@@ -75,7 +75,7 @@ module FunctionReflection =
                        let tupleArgs = x |> List.mapi (fun i xi -> tupleGet v i)
                        buildLambda (v::args) (List.concat [callArgs; tupleArgs]) target xs mi
             | [] -> let args = List.rev args
-                    let call = if target = null then Expression.Call(mi, callArgs)
+                    let call = if isNull target then Expression.Call(mi, callArgs)
                                else Expression.Call(Expression.Constant(target), mi, callArgs)
 
                     Expression.Lambda(
