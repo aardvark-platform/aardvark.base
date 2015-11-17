@@ -52,3 +52,53 @@ module ``Ag Tests`` =
         resultF |> should equal 1
         resultG |> should equal 0
 
+
+    type I = interface end
+    type Trafo(t : ref<int>, child : I) =
+        member x.T = t
+        member x.Child = child
+        interface I
+
+    type Leaf() =
+        interface I
+
+    [<Semantic>]
+    type SomeSem() =
+
+        member x.Ts(y : Root<I>) =
+            y.Child?Ts <- List.empty<ref<int>>
+
+        member x.Ts(t : Trafo) =
+            t.Child?Ts <- t.T :: t?Ts
+
+        member x.T(y : I) : list<ref<int>> =
+            y?Ts
+
+        member x.T(t : Trafo) =
+            ()
+
+//        member x.T(leaf : Leaf) =
+//            ()
+
+        member x.Scope(l : Leaf) : Ag.Scope  = 
+            Ag.getContext()
+
+        member x.Scope(t : Trafo) : Ag.Scope =
+            t.Child?Scope()
+        
+    [<Test>]
+    let ``[Ag] same attrib inh and syn``() =
+        Aardvark.Init()
+
+        let t = Trafo(ref 1, Trafo (ref 2, Trafo (ref 3, Leaf ())))
+
+        let s : Ag.Scope = t?Scope()
+
+        let ob : obj = s?T()
+        let theT : list<ref<int>> = unbox ob
+
+        assert (theT :> obj <> null)
+        ()
+
+
+
