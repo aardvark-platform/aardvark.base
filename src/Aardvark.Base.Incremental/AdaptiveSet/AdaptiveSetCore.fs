@@ -543,8 +543,8 @@ module ASetReaders =
         let mutable newReader = newReader
         let mutable reader = None
         let mutable refCount = 0
-        let containgSetDied = EventSource ()
-        let onlyReader = EventSource true
+        let containgSetDied = EventSourceSlim ()
+        let onlyReader = EventSourceSlim true
 
         member x.ContainingSetDied() =
             lock lockObj (fun () ->

@@ -6,6 +6,70 @@ using System.Threading;
 
 namespace Aardvark.Base
 {
+    public class EventSourceSlim<T> : IEvent<T>
+    {
+        private Subject<T> m_subject;
+        private T m_latest;
+        public EventSourceSlim(T defaultValue)
+        {
+            m_subject = new Subject<T>();
+            m_subject.OnNext(defaultValue);
+            m_latest = defaultValue;
+        }
+
+        public void Emit(T v)
+        {
+            lock(this)
+            {
+                m_latest = v;
+                m_subject.OnNext(v);
+            }
+        }
+
+        public T Latest
+        {
+            get
+            {
+                lock(this)
+                {
+                    return m_latest;
+                }
+            }
+        }
+
+        public IAwaitable<T> Next
+        {
+            get
+            {
+                throw new NotImplementedException();
+            }
+        }
+
+        public IObservable<T> Values
+        {
+            get
+            {
+                return m_subject;
+            }
+        }
+
+        IAwaitable IEvent.Next
+        {
+            get
+            {
+                throw new NotImplementedException();
+            }
+        }
+
+        IObservable<Unit> IEvent.Values
+        {
+            get
+            {
+                throw new NotImplementedException();
+            }
+        }
+    }
+
     /// <summary>
     /// </summary>
     public static class EventSource
