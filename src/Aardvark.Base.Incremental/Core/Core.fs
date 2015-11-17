@@ -599,7 +599,7 @@ module Marking =
         /// utility for removing an output from the object
         /// </summary>
         member x.RemoveOutput (m : IAdaptiveObject) =
-            x.Outputs.Remove m |> ignore
+            lock x (fun () -> x.Outputs.Remove m |> ignore)
 
 [<AutoOpen>]
 module CallbackExtensions =
