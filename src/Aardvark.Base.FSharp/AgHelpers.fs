@@ -367,3 +367,38 @@ module internal AgHelpers =
         //c.Clear()
         //tablePool.Enqueue (c :> obj)
         ()
+
+
+    module Delay =
+
+        open System
+        open System.Reflection
+        open System.Collections.Generic
+        open Microsoft.FSharp.Reflection
+
+        type FSharpFuncConst<'a>(value) =
+            inherit FSharpFunc<unit, 'a>()
+
+            override x.Invoke(u : unit) =
+                value
+
+        let ctorCache = Dictionary<Type, ConstructorInfo>()
+
+        let getCtor (fType : Type) =
+            lock ctorCache (fun () ->
+                match ctorCache.TryGetValue fType with
+                    | (true, ctor) -> ctor
+                    | _ ->
+                        let (ta, tr) = FSharpType.GetFunctionElements fType
+                        if ta <> typeof<unit> then 
+                            failwithf "unexpected arg-type: %A" ta
+                        let t = typedefof<FSharpFuncConst<_>>.MakeGenericType [|tr|]
+                        let ctor = t.GetConstructor [|tr|]
+                        ctorCache.[fType] <- ctor
+                        ctor
+            )
+
+
+        let delay (value : obj) : 'a =
+            let ctor = getCtor typeof<'a>
+            ctor.Invoke [|value|] |> unbox<'a>

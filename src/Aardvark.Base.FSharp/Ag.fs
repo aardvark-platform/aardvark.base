@@ -271,19 +271,7 @@ module Ag =
             //value from there
             setValueStore node name value
 
-    let private functions = Dictionary<System.Type, ref<obj> * obj>()
-    
-    let getFunction (value : obj) : 'a =
-        lock functions (fun () -> 
-            match functions.TryGetValue typeof<'a> with
-                | (true, (r,f)) -> r := value
-                                   f |> unbox
-                | _ -> let r = ref value
-                       let f = FSharpValue.MakeFunction(typeof<'a>, fun _ -> let res = !r in r := null; res)
-                       functions.[typeof<'a>] <- (r, f)
-                       f |> unbox
-        )
-
+   
 
     let (?) (node : obj) (name : string) : 'a =
         let t = typeof<'a>
@@ -294,7 +282,7 @@ module Ag =
         if t.Name.StartsWith "FSharpFunc" then
             if logging then Log.line "top level syn seach for sem: %s on syntactic entity: %A" name ( node.GetType() )
             match tryGetSynAttribute node name with
-                | Some v -> getFunction v
+                | Some v -> Delay.delay v
                 | None -> failwithf "synthesized attribute %A for type %A not found on path: %s \ncandidates: %s" name (node.GetType()) currentScope.Value.Path (AgHelpers.sprintSemanticFunctions name)
         else
             // in the case of an inherited attribute, check if the query is on the anyObject
