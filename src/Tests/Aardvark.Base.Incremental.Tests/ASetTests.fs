@@ -599,7 +599,18 @@ module ``collect tests`` =
 
         running := false
 
+    [<Test>]
+    let ``[CSet] delta elimination``() =
+        
+        let set = CSet.empty
+        let r = (set :> aset<_>).GetReader()
 
+        r.Update()
+
+        transact (fun () -> set.Add 1 |> ignore; set.Remove 1 |> ignore)
+
+        r.GetDelta() |> should equal []
+        r.Content.Count |> should equal 0
 
 
 

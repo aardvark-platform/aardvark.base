@@ -16,6 +16,18 @@ type ReferenceCountingSet<'a>(initial : seq<'a>) =
     let mutable version = 0
     let mutable store = Dictionary<obj, 'a * ref<int>>(1)
 
+
+    static let rec checkDeltas (l : list<Delta<'a>>) =
+        let set = HashSet<obj>()
+        for d in l do
+            let value = 
+                match d with
+                    | Add v -> v
+                    | Rem v -> v
+
+            if not (set.Add value) then
+                failwith "found duplicate value %A in delta-list: %A" value l
+
     let hasChanged() =
         Interlocked.Increment &version |> ignore
 
@@ -128,7 +140,8 @@ type ReferenceCountingSet<'a>(initial : seq<'a>) =
                                 match store.TryGetValue o with
                                     | (true, (_,r)) ->
                                         r := !r - 1 
-                                        if !r = 0 then touched.[o] <- (v, true, r)
+                                        if !r = 0 && not (touched.ContainsKey o) then 
+                                            touched.[o] <- (v, true, r)
                                     | _ ->  
                                         let r = ref -1
                                         touched.[o] <- (v, false, r)
@@ -160,6 +173,9 @@ type ReferenceCountingSet<'a>(initial : seq<'a>) =
 
                 if not (List.isEmpty result) then
                     hasChanged()
+
+
+                checkDeltas result
 
                 result
 
