@@ -13,6 +13,7 @@ type HashMap<'k, 'v> = internal HashMap of Map<int, list<'k * 'v>> with
 /// each containing a linked list of key-value-pairs. For "good" hash-codes
 /// the runtime of all operations should be similar to the corresponding Map-functions.
 /// </summary>
+[<CompilationRepresentation(CompilationRepresentationFlags.ModuleSuffix)>]
 module HashMap =
     
     // Tools:

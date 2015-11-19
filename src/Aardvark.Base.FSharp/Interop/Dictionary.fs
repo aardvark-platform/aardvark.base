@@ -1,5 +1,6 @@
 ﻿namespace Aardvark.Base
 
+[<CompilationRepresentation(CompilationRepresentationFlags.ModuleSuffix)>]
 module Dictionary =
     open System.Collections.Generic
 
@@ -72,6 +73,7 @@ module Dictionary =
     let inline toMap (d : Dictionary<'k, 'v>) =
         d |> toSeq |> Map.ofSeq
 
+[<CompilationRepresentation(CompilationRepresentationFlags.ModuleSuffix)>]
 module Dict =
 
     let empty<'k, 'v when 'k : equality> = Dict<'k, 'v>()
@@ -143,6 +145,7 @@ module Dict =
     let inline toMap (d : Dict<'k, 'v>) =
         d |> toSeq |> Map.ofSeq
 
+[<CompilationRepresentation(CompilationRepresentationFlags.ModuleSuffix)>]
 module SymDict =
 
     let empty<'v> = SymbolDict<'v>()

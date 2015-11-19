@@ -1,5 +1,6 @@
 ﻿namespace Aardvark.Base
 
+[<CompilationRepresentation(CompilationRepresentationFlags.ModuleSuffix)>]
 module Vec =
 
     let inline dot< ^a, ^b when ^a : (static member Dot : ^a -> ^a -> ^b)> (a : ^a) (b : ^a) =

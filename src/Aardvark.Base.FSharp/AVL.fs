@@ -7,6 +7,7 @@ namespace Aardvark.Base
 
 open Aardvark.Base
 
+[<CompilationRepresentation(CompilationRepresentationFlags.ModuleSuffix)>]
 module AVL =
 
     [<AllowNullLiteral>]

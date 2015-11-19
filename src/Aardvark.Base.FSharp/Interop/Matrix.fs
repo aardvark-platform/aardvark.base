@@ -1,5 +1,6 @@
 ﻿namespace Aardvark.Base
 
+[<CompilationRepresentation(CompilationRepresentationFlags.ModuleSuffix)>]
 module Mat =
     let inline transpose (m : ^a) : ^b =
         (^a : (member Transposed : ^b) m)
@@ -19,7 +20,7 @@ module Mat =
     let inline transformPosProj (m : ^a) (v : ^b) : ^b =
         (^a : (member TransformPosProj : ^b -> ^b) (m,v))
 
-
+[<CompilationRepresentation(CompilationRepresentationFlags.ModuleSuffix)>]
 module Trafo =
     
     let inline forward (t : Trafo3d) = t.Forward

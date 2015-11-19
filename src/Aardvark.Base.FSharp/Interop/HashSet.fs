@@ -1,5 +1,6 @@
 ﻿namespace Aardvark.Base
 
+[<CompilationRepresentation(CompilationRepresentationFlags.ModuleSuffix)>]
 module HashSet =
     open System.Collections.Generic
     open System.Linq

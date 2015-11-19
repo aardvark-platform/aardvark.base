@@ -1,5 +1,6 @@
 ﻿namespace Aardvark.Base
 
+[<CompilationRepresentation(CompilationRepresentationFlags.ModuleSuffix)>]
 module ColorConv =
     
     type private ColorConversion<'a, 'b>() =

@@ -277,6 +277,7 @@ type SkipList<'a>(cmp : 'a -> 'a -> int) =
     interface IEnumerable<'a> with
         member x.GetEnumerator() = toSeq().GetEnumerator()
 
+[<CompilationRepresentation(CompilationRepresentationFlags.ModuleSuffix)>]
 module SkipList =
 
     let empty<'a when 'a : comparison> : SkipList<'a> = SkipList<'a>(compare)

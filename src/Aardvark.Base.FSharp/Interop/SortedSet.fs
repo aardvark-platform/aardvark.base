@@ -6,6 +6,7 @@ open System.Collections.Generic
 open System.Runtime.InteropServices
 open System.Linq
 
+[<CompilationRepresentation(CompilationRepresentationFlags.ModuleSuffix)>]
 module SortedSet =
     
     let inline private optionalToOpt (o : Optional<'a>) =
@@ -115,6 +116,7 @@ type SortedDictionaryExt<'k, 'v> private (comparer : IComparer<'k * ref<'v>>) =
     interface IEnumerable<KeyValuePair<'k, 'v>> with
         member x.GetEnumerator() = (set |> Seq.map (fun (k,v) -> KeyValuePair(k,!v))).GetEnumerator() :> IEnumerator<_>
 
+[<CompilationRepresentation(CompilationRepresentationFlags.ModuleSuffix)>]
 module SortedDictionary =
   
     let inline private optionalToOpt (o : Optional<'k * ref<'v>>) =
