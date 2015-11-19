@@ -123,34 +123,45 @@ type ReferenceCountingSet<'a>(initial : seq<'a>) =
                         | Rem v ->
                             let o = v :> obj
                             if isNull o then
-                                nullCount <- nullCount + 1
+                                nullCount <- nullCount - 1
                             else
                                 match store.TryGetValue o with
                                     | (true, (_,r)) ->
                                         r := !r - 1 
                                         if !r = 0 then touched.[o] <- (v, true, r)
-                                    | _ -> ()
+                                    | _ ->  
+                                        let r = ref -1
+                                        touched.[o] <- (v, false, r)
+                                        store.[o] <- (v, r)
                                 
                             ()
 
                 let valueDeltas = 
                     touched.Values
-                        |> Seq.choose (fun (value, existing, refCount) ->
+                        |> Seq.choose (fun (value, wasContained, refCount) ->
                             let r = !refCount
-                            if r = 0 && existing then 
+                            if r > 0 then
+                                if wasContained then None
+                                else Some (Add value)
+                            else
                                 store.Remove value |> ignore
-                                Some (Rem value)
-                            elif r > 0 && not existing then Some (Add value)
-                            else None
+                                if wasContained then Some (Rem value)
+                                else None
                            )
                         |> Seq.toList
 
-                if nullCount = 0 && originalNullRefs > 0 then
-                    (Rem Unchecked.defaultof<_>)::valueDeltas
-                elif nullCount > 0 && originalNullRefs = 0 then
-                    (Add Unchecked.defaultof<_>)::valueDeltas
-                else
-                    valueDeltas
+                let result = 
+                    if nullCount = 0 && originalNullRefs > 0 then
+                        (Rem Unchecked.defaultof<_>)::valueDeltas
+                    elif nullCount > 0 && originalNullRefs = 0 then
+                        (Add Unchecked.defaultof<_>)::valueDeltas
+                    else
+                        valueDeltas
+
+                if not (List.isEmpty result) then
+                    hasChanged()
+
+                result
 
     /// <summary>
     /// adds an element to the ReferenceCountingSet and returns
