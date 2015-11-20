@@ -131,6 +131,7 @@ type FragmentHandler<'i, 'value, 'instruction, 'fragment> =
         write : 'fragment -> array<'instruction> -> bool
         writeNext : 'fragment -> 'fragment -> int
         isNext : 'fragment -> 'fragment -> bool
+        disassemble : 'fragment -> list<'instruction>
         dispose : unit -> unit
     }
 
@@ -283,6 +284,10 @@ module internal GenericProgram =
 
         do prolog.Next <- epilog
            epilog.Prev <- prolog
+           prolog.WriteContent(null) |> ignore
+           epilog.WriteContent(null) |> ignore
+           handler.writeNext prolog.Storage.Value epilog.Storage.Value |> ignore
+
 
         let deltaProcessWatch = System.Diagnostics.Stopwatch()
         let compileWatch = System.Diagnostics.Stopwatch()
@@ -305,7 +310,23 @@ module internal GenericProgram =
                 handler.run v
             )
 
-        member x.Disassemble() = null
+        member x.Disassemble() =
+            let code = List()
+            let mutable current = prolog
+            while current <> epilog do
+                if current <> prolog then
+                    match current.Storage with
+                        | None -> code.Add [||]
+                        | Some s -> code.Add(handler.disassemble s |> List.toArray)
+
+                match current.Storage, current.Next.Storage with
+                    | Some l, Some r -> 
+                        if not (handler.isNext l r) then
+                            failwith "bad pointers"
+                    | _ -> ()
+
+                current <- current.Next
+            code.ToArray()
 
         member x.Update caller = 
             x.EvaluateIfNeeded caller AdaptiveProgramStatistics.Zero (fun v ->
@@ -335,21 +356,23 @@ module internal GenericProgram =
 
 
                 let createBetween (prev : Option<Fragment<'i, 'a, 'instruction, 'fragment>>) (v : 'a) (next : Option<Fragment<'i, 'a, 'instruction, 'fragment>>)  =
-
-                    if handler.compileNeedsPrev then
-                        match next with
-                            | Some n -> recompileSet.Add n |> ignore
-                            | _ -> ()
-                    else
-                        match next with
-                            | Some n -> relinkSet.Add n |> ignore
-                            | _ -> ()
-
                     //let code = desc.compileDelta (Option.map DynamicFragment.tag prev) v (Option.map DynamicFragment.tag next)
                     let fragment = new Fragment<'i, 'a, 'instruction, 'fragment>(handler, v)
 
-                    let l = match prev with | Some l -> l | None -> prolog
-                    let r = match next with | Some r -> r | None -> epilog
+                    let l = 
+                        match prev with 
+                            | Some l -> l 
+                            | None -> prolog
+
+                    let r = 
+                        match next with 
+                            | Some r -> 
+                                if handler.compileNeedsPrev then recompileSet.Add r |> ignore
+                                r 
+                            | None -> epilog
+                    
+                    relinkSet.Add l |> ignore
+                    relinkSet.Add fragment |> ignore
 
                     r.Prev <- fragment
                     fragment.Prev <- l
@@ -408,11 +431,9 @@ module internal GenericProgram =
                                                 fragment.Next.Prev <- fragment.Prev
                                                 fragment.Prev.Next <- fragment.Next
 
-
+                                                relinkSet.Add fragment.Prev |> ignore
                                                 if handler.compileNeedsPrev && fragment.Next <> epilog then
                                                     recompileSet.Add fragment.Next |> ignore
-                                                else
-                                                    relinkSet.Add fragment.Next |> ignore
 
                                                 fragment.Dispose()
                                                 deadSet.Add fragment |> ignore
@@ -430,8 +451,6 @@ module internal GenericProgram =
                 dirtySet.ExceptWith deadSet
                 recompileSet.ExceptWith deadSet
                 relinkSet.ExceptWith deadSet
-                relinkSet.Remove prolog |> ignore
-                relinkSet.Remove epilog |> ignore
 
                 compileWatch.Restart()
                 for r in recompileSet do
@@ -446,13 +465,16 @@ module internal GenericProgram =
                 writeWatch.Restart()
                 for d in dirtySet do
                     if d.WriteContent x then
-                        relinkSet.Add d |> ignore
+                        relinkSet.Add d.Prev |> ignore
+
+
+                relinkSet.UnionWith(fragments |> Seq.collect (fun (KeyValue(_,v)) -> v))
 
                 for d in relinkSet do
-                    d.LinkPrev x
+                    d.LinkNext x
 
-                prolog.LinkNext x
-                epilog.LinkPrev x
+//                prolog.LinkNext x
+//                epilog.LinkPrev x
                 writeWatch.Stop()
 
                 if autoDefragmentation = 1 && relinkSet.Count > 0 && !handler.jumpDistance > 0 then
@@ -655,6 +677,9 @@ module FragmentHandler =
 
             dispose = fun () ->
                 memory.Value.Dispose()
+
+            disassemble = fun f ->
+                f.Calls |> Array.toList
         }
 
     let nativeSimple (maxArgs : int) (compile : 'value -> IAdaptiveCode<NativeCall>) ()  =
@@ -664,7 +689,7 @@ module FragmentHandler =
     let native (maxArgs : int) () =
         nativeDifferential maxArgs (fun _ _ -> failwith "no compileDelta given") ()
 
-    let warpDifferential (mapping : 'a -> 'b) (compile : Option<'v> -> 'v -> IAdaptiveCode<'a>) (newInner : unit -> FragmentHandler<'i, 'v, 'b, 'frag>) =
+    let warpDifferential (mapping : 'a -> 'b) (backward : 'b -> 'a) (compile : Option<'v> -> 'v -> IAdaptiveCode<'a>) (newInner : unit -> FragmentHandler<'i, 'v, 'b, 'frag>) =
         fun () ->
             let inner = newInner()
             {
@@ -683,9 +708,10 @@ module FragmentHandler =
                 writeNext = fun prev next -> inner.writeNext prev next
                 isNext = fun prev frag -> inner.isNext prev frag
                 dispose = inner.dispose
+                disassemble = fun f -> f |> inner.disassemble |> List.map backward
             }
     
-    let wrapSimple (mapping : 'a -> 'b) (compile : 'v -> IAdaptiveCode<'a>) (newInner : unit -> FragmentHandler<'i, 'v, 'b, 'frag>) =
+    let wrapSimple (mapping : 'a -> 'b) (backward : 'b -> 'a) (compile : 'v -> IAdaptiveCode<'a>) (newInner : unit -> FragmentHandler<'i, 'v, 'b, 'frag>) =
         fun () ->
             let inner = newInner()
             {
@@ -704,6 +730,7 @@ module FragmentHandler =
                 writeNext = fun prev next -> inner.writeNext prev next
                 isNext = fun prev frag -> inner.isNext prev frag
                 dispose = inner.dispose
+                disassemble = fun f -> f |> inner.disassemble |> List.map backward
             }
 
 
@@ -719,9 +746,6 @@ module FragmentHandler =
         member x.Next
             with get() : ManagedFragment<'a> = next
             and set (n : ManagedFragment<'a>) = next <- n
-
-    let test (translate : float32 -> NativeCall) (compile : int -> float32) =
-        native 6 |> wrapSimple translate (fun l -> new AdaptiveCode<_>([Mod.constant [compile l]]) :> IAdaptiveCode<_>)
 
     let managedDifferential (compileDelta : Option<'v> -> 'v -> IAdaptiveCode<'i -> unit>) () : FragmentHandler<'i, 'v, 'i -> unit, ManagedFragment<'i -> unit>> =
         let prolog = ManagedFragment [||]
@@ -748,6 +772,7 @@ module FragmentHandler =
             writeNext = fun prev next -> prev.Next <- next; 0
             isNext = fun prev frag -> prev.Next = frag
             dispose = fun () -> ()
+            disassemble = fun f -> f.Values |> Array.toList
         }
 
     let managedSimple (compile : 'v -> IAdaptiveCode<'i -> unit>) () =
