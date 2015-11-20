@@ -62,7 +62,7 @@ type AdaptiveProgramStatistics =
 
         override x.ToString() =
             String.concat "\r\n" [
-                "DynamicProgramStatistics {"
+                "AdaptiveProgramStatistics {"
                 sprintf "   DeltaProcessTime = %A" x.DeltaProcessTime
                 sprintf "   CompileTime = %A" x.CompileTime
                 sprintf "   WriteTime = %A" x.WriteTime
@@ -80,17 +80,34 @@ type IAdaptiveProgram<'i> =
     inherit IAdaptiveObject
     inherit IDisposable
     
+    /// updates the program representation if needed and returns some statistics
     abstract member Update : IAdaptiveObject -> AdaptiveProgramStatistics
+
+    /// runs the program with the given input argument
+    /// NOTE: that no updates are performed here
     abstract member Run : 'i -> unit
     
+    /// disassembles the underlying program and returns
+    /// an implementation specific representation
     abstract member Disassemble : unit -> obj
 
+    /// gets or sets a flag indicating whether or not the program should automatically
+    /// be defragmented whenever the jump-distance is non-zero
     abstract member AutoDefragmentation : bool with get, set
+
+    /// explicitly starts a defragmentation task if needed
     abstract member StartDefragmentation : unit -> Task<TimeSpan>
 
+    /// gets the number of native calls currently performed by the program
     abstract member NativeCallCount : int
+
+    /// gets the number of elements currently contained in the program
     abstract member FragmentCount : int
+
+    /// gets a total size for the underlying program data
     abstract member ProgramSizeInBytes : int64
+
+    /// gets a total jump distance for the underlying program (if applicable)
     abstract member TotalJumpDistanceInBytes : int64
 
 [<AllowNullLiteral>]
@@ -305,35 +322,60 @@ module internal GenericProgram =
                 | _ ->
                     ()
 
+        
         member x.Run (v : 'i) =
             lock x (fun () ->        
                 handler.run v
             )
 
         member x.Disassemble() =
-            let code = List()
-            let mutable current = prolog
-            while current <> epilog do
-                if current <> prolog then
-                    match current.Storage with
-                        | None -> code.Add [||]
-                        | Some s -> code.Add(handler.disassemble s |> List.toArray)
+            lock x (fun () ->        
+                let code = List()
+                let mutable current = prolog
+                while current <> epilog do
+                    if current <> prolog then
+                        match current.Storage with
+                            | None -> code.Add [||]
+                            | Some s -> code.Add(handler.disassemble s |> List.toArray)
 
-                match current.Storage, current.Next.Storage with
-                    | Some l, Some r -> 
-                        if not (handler.isNext l r) then
-                            failwith "bad pointers"
-                    | _ -> ()
+                    match current.Storage, current.Next.Storage with
+                        | Some l, Some r -> 
+                            if not (handler.isNext l r) then
+                                failwith "bad pointers"
+                        | _ -> ()
 
-                current <- current.Next
-            code.ToArray()
+                    current <- current.Next
+                code.ToArray()
+            )
 
         member x.Update caller = 
+            // update basically runs in 4 stages:
+            //  1) process input deltas adding/removing fragments
+            //  2) create code for fragments which need to be recompiled.
+            //     recompile can be triggered either because they're new or their 
+            //     predecessor changed and compileDelta depends on the it.
+            //  3) write the code for all changed fragments to their underlying 
+            //     (possibly native) representation. This is obviously needed for new
+            //     fragments but also for the ones where some inner-instruction changed.
+            //  4) link fragments appropriately where needed. Fragments must obviously be
+            //     linked whenever Next changes but also when WriteContent() returns true
+            //     (which is the case when the underlying representation has been moved)
+            // known issues:
+            //   - whenver an instruction changes the entire fragment is re-assembled and written
+            //     as a whole. The write itself may not be too bad but the assemble-step 
+            //     (at least in the native implementation) might be expensive
+            //   - core-implementations (like CodeFragment) provide Append/Update/Clear function which
+            //     are no longer optimal for this new implementation. 
+            //     a possibly better API would be (where bool indicates if the fragment was moved)
+            //       Write : list<list<Instruction>> -> bool * list<Handle>
+            //       Update : Handle -> list<Instruction> -> bool
             x.EvaluateIfNeeded caller AdaptiveProgramStatistics.Zero (fun v ->
                 Interlocked.Increment(version) |> ignore
 
+                // start by getting the deltas from our input-set
                 let deltas = reader.GetDelta x
 
+                // get all fragments whose inner code-representation changed. 
                 let dirtySet = 
                     lock dirtyLock (fun () ->
                         let set = dirtySet
@@ -341,6 +383,7 @@ module internal GenericProgram =
                         set
                     )
 
+                // TODO: move to class-fields
                 let deadSet = HashSet()
                 let recompileSet = HashSet()
                 let relinkSet = HashSet()
@@ -348,138 +391,201 @@ module internal GenericProgram =
                 let mutable added = 0
                 let mutable removed = 0
             
-                let prologNext = 
-                    prolog.Next.Storage
 
-                let epilogPrev = 
-                    epilog.Prev.Storage
-
-
+                // utility function for creating a new fragment
+                // between two given ones.
+                // prev = None encodes for prolog
+                // next = None encodes for epilog
                 let createBetween (prev : Option<Fragment<'i, 'a, 'instruction, 'fragment>>) (v : 'a) (next : Option<Fragment<'i, 'a, 'instruction, 'fragment>>)  =
-                    //let code = desc.compileDelta (Option.map DynamicFragment.tag prev) v (Option.map DynamicFragment.tag next)
+                    // create the new fragment
                     let fragment = new Fragment<'i, 'a, 'instruction, 'fragment>(handler, v)
 
-                    let l = 
+                    // get the predecessor
+                    let prev = 
                         match prev with 
                             | Some l -> l 
                             | None -> prolog
 
-                    let r = 
+                    // get the successor and add it to the
+                    // recompile-set whenever compileDelta depends on
+                    // predecessors (since next's prev will be changed)
+                    let next = 
                         match next with 
                             | Some r -> 
                                 if handler.compileNeedsPrev then recompileSet.Add r |> ignore
                                 r 
                             | None -> epilog
                     
-                    relinkSet.Add l |> ignore
-                    relinkSet.Add fragment |> ignore
+                    // prev's successor was changed so we need to relink it
+                    // NOTE that the new fragment must not be added here
+                    //      since it will be processed by stages 1-4 anyway.
+                    relinkSet.Add prev |> ignore
 
-                    r.Prev <- fragment
-                    fragment.Prev <- l
-                    fragment.Next <- r
-                    l.Next <- fragment
+                    // insert the new fragment in the linked list.
+                    next.Prev <- fragment
+                    fragment.Prev <- prev
+                    fragment.Next <- next
+                    prev.Next <- fragment
 
+                    // finally return the new fragment
                     fragment
 
+                // stage 1: process all the deltas 
                 deltaProcessWatch.Restart()
                 for d in deltas do
                     match d with
                         | Add (k,v) ->
                             added <- added + 1
 
-                            let l,s,r = SortedDictionary.neighbourhood k fragments
+                            // for new fragments we need to find the neighbouring ones
+                            // when possible which is achieved by searching for buckets
+                            // in our top-level trie.
+                            let left,self,right = SortedDictionary.neighbourhood k fragments
 
+                            // when the right bucket is existing (and therefore non-empty)
+                            // the new fragment's next will be the first element from that bucket
                             let next =
-                                match r with
+                                match right with
                                     | Some(_,r) -> r.First
                                     | None -> None
 
+                            // when the left bucket is existing (and therefore non-empty)
+                            // the new fragment's prev will be the last element from that bucket
                             let prev =
-                                match l with
+                                match left with
                                     | Some(_,l) -> l.Last
                                     | None -> None
 
+                            // create and insert the new fragment at the appropriate
+                            // position in the linked list.
                             let fragment = 
-                                match s with
+                                match self with
                                     | Some self ->
+                                        // if a bucket exists for the exact same key we add the new fragment
+                                        // at the end of the bucket. The fragment's next will be the first one
+                                        // in the right bucket (given by next)
                                         let created =
                                             self.AddWithPrev (fun p -> createBetween p v next) 
 
-                                        match created with
-                                            | Some f -> f
-                                            | None -> failwithf "duplicated key: %A" k
+                                        // the creation cannot fail here since we always create
+                                        // a new fragment here (which cannot have been in the bucket)
+                                        created.Value
 
                                     | None ->
+                                        // if no bucket was created for the fragment's key yet
+                                        // the fragments neighbours are prev and next (as defined above).
                                         let frag = createBetween prev v next
+
+
+                                        // we obviously need to create a new bucket which will
+                                        // simply contain the created fragment and add it to the 
+                                        // top-level trie.
                                         let set = StableSet()
                                         set.Add frag |> ignore
                                         fragments.[k] <- set
                                         frag
 
+                            // store the fragment in the cache (which is needed for removal)
                             cache.[(k,v)] <- fragment
+
+                            // since the fragment was just created it must obviously be
+                            // recompiled.
                             recompileSet.Add fragment |> ignore
 
                         | Rem (k,v) ->
-                        
+                            // when an element is removed we first need
+                            // to find its associated bucket in the top-level
+                            // trie using its key.
                             match fragments.TryGetValue k with
                                 | (true, set) ->
+                                    // furthermore we need to find the associated
+                                    // fragment for the given element and remove it
+                                    // from the cache.
                                     match cache.TryRemove ((k,v)) with
                                         | (true, fragment) ->
-
+                                            
+                                            // finally we can remove the fragment from the
+                                            // associated bucket and the linked list.
                                             if set.Remove fragment then
                                                 removed <- removed + 1 
+
+                                                // remove the fragment from the linked list
                                                 fragment.Next.Prev <- fragment.Prev
                                                 fragment.Prev.Next <- fragment.Next
 
+                                                // the fragment's prev needs to be relinked since
+                                                // its successor was just changed
                                                 relinkSet.Add fragment.Prev |> ignore
+
+
+                                                // the fragment's next needs to be recompiled whenever
+                                                // compileDelta depends on predecessors.
                                                 if handler.compileNeedsPrev && fragment.Next <> epilog then
                                                     recompileSet.Add fragment.Next |> ignore
 
+                                                // release all resources associated with the fragment
                                                 fragment.Dispose()
+
+                                                // since the fragment may be added to the recompileSet
+                                                // by a subsequent change it is not sufficient to remove it
+                                                // from recompile/relink/dirtySet but instead we need to
+                                                // maintain a "persistent" deadSet.
                                                 deadSet.Add fragment |> ignore
 
+
+                                                // if the bucket just got empty remove it
+                                                // from the top-level trie.
                                                 if set.Count = 0 then
                                                     fragments.Remove k |> ignore
-
-                                            ()
+                                            else
+                                                failwithf "[AdaptiveProgram] failed to remove fragment from containing bucket: %A %A" fragment set
                                         | _ ->
-                                            failwithf "could not find Fragment for: %A" k
+                                            failwithf "[AdaptiveProgram] could not find Fragment for: %A / %A" k v
                                 | _ -> 
-                                    failwithf "could not find container for: %A" k
+                                    failwithf "[AdaptiveProgram] could not find bucket for: %A" k
                 deltaProcessWatch.Stop()
 
+                // remove all dead fragments from the
+                // update-sets
                 dirtySet.ExceptWith deadSet
                 recompileSet.ExceptWith deadSet
                 relinkSet.ExceptWith deadSet
 
+
+                // stage 2: recompile
                 compileWatch.Restart()
                 for r in recompileSet do
+                    // create new code and if the code actually changed
+                    // add the fragment to dirty/relinkSet.
                     if r.Recompile x then
                         relinkSet.Add r |> ignore
                         dirtySet.Add r |> ignore
-
                 compileWatch.Stop()
 
 
-
+                // stage 3: write
                 writeWatch.Restart()
                 for d in dirtySet do
+                    // each dirty fragment needs to be written
+                    // to its underlying representation.
                     if d.WriteContent x then
+                        // whenever the fragment's location changed
+                        // it needs to be relinked.
                         relinkSet.Add d.Prev |> ignore
 
-
-                relinkSet.UnionWith(fragments |> Seq.collect (fun (KeyValue(_,v)) -> v))
-
+                // stage 4: relink
                 for d in relinkSet do
                     d.LinkNext x
 
-//                prolog.LinkNext x
-//                epilog.LinkPrev x
                 writeWatch.Stop()
 
+
+                // if AutoDefragmentation is enabled and the total jumpDistance is non-zero
+                // start a new defragmentation-task.
                 if autoDefragmentation = 1 && relinkSet.Count > 0 && !handler.jumpDistance > 0 then
                     handler.startDefragmentation (x :> obj) version |> ignore
 
+                // finally return some update-statistics
                 AdaptiveProgramStatistics (
                     DeltaProcessTime = deltaProcessWatch.Elapsed,
                     CompileTime = compileWatch.Elapsed,
