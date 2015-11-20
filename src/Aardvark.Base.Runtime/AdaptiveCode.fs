@@ -169,6 +169,7 @@ module internal GenericProgram =
             val mutable public CodePrevTag : Option<'a>
             val mutable public CallCount : int
             val mutable public JumpDistance : int
+            val mutable public IsDisposed : bool
 
             interface IFragment<'fragment> with
                 member x.Next = x.Next :> IFragment<_>
@@ -222,31 +223,30 @@ module internal GenericProgram =
                         false
                 )
 
-            member x.LinkPrev(caller : IAdaptiveObject) =
-                x.EvaluateAlways caller (fun () ->
-                    let prevFragment = x.Prev.Storage.Value
-                    let myFragment = x.Storage.Value
-
-                    if not (x.Context.isNext prevFragment myFragment) then
-                        let distance = x.Context.writeNext prevFragment myFragment
-                        Interlocked.Add(x.Context.jumpDistance, distance - x.JumpDistance) |> ignore
-                        x.JumpDistance <- distance
-                )
-
             member x.LinkNext(caller : IAdaptiveObject) =
                 x.EvaluateAlways caller (fun () ->
-                    let nextFragment = x.Next.Storage.Value
-                    let myFragment = x.Storage.Value
+                    if x.IsDisposed then
+                        Log.warn "[AdaptiveCode] tried to link disposed fragment"
+                    elif isNull x.Next || x.Next.IsDisposed then
+                        failwith "[AdaptiveCode] tried to link fragment with disposed next"
+                    elif Option.isNone x.Storage then
+                        failwith "[AdaptiveCode] tried to link uninitialized fragment"
+                    elif Option.isNone x.Next.Storage then
+                        failwith "[AdaptiveCode] tried to link fragment with uninitialized next"
+                    else
+                        let myFragment = x.Storage.Value
+                        let nextFragment = x.Next.Storage.Value
 
-                    if not (x.Context.isNext myFragment nextFragment) then
-                        let distance = x.Context.writeNext myFragment nextFragment
-                        Interlocked.Add(x.Context.jumpDistance, distance - x.JumpDistance) |> ignore
-                        x.JumpDistance <- distance
+                        if not (x.Context.isNext myFragment nextFragment) then
+                            let distance = x.Context.writeNext myFragment nextFragment
+                            Interlocked.Add(x.Context.jumpDistance, distance - x.JumpDistance) |> ignore
+                            x.JumpDistance <- distance
                 )
 
             member x.Dispose() =
                 x.Prev <- null
                 x.Next <- null
+                x.IsDisposed <- true
 
                 Interlocked.Add(x.Context.jumpDistance, -x.JumpDistance) |> ignore
                 x.JumpDistance <- 0
@@ -272,14 +272,14 @@ module internal GenericProgram =
                   Storage = None; Next = null; 
                   Prev = null; Tag = Some tag; 
                   Code = null; CodePrevTag = None
-                  CallCount = 0; JumpDistance = 0 }
+                  CallCount = 0; JumpDistance = 0; IsDisposed = false }
 
             new(context, storage) = 
                 { Context = context
                   Storage = Some storage; Next = null; 
                   Prev = null; Tag = None; 
                   Code = null; CodePrevTag = None
-                  CallCount = 0; JumpDistance = 0 }
+                  CallCount = 0; JumpDistance = 0; IsDisposed = false }
         end
 
     type Program<'i, 'k, 'instruction, 'fragment, 'a>
@@ -422,9 +422,9 @@ module internal GenericProgram =
                     relinkSet.Add prev |> ignore
 
                     // insert the new fragment in the linked list.
-                    next.Prev <- fragment
                     fragment.Prev <- prev
                     fragment.Next <- next
+                    next.Prev <- fragment
                     prev.Next <- fragment
 
                     // finally return the new fragment
