@@ -61,7 +61,8 @@ type StableSet<'a>() =
 
     member x.Add(v : 'a) =
         let n = Linked(v, last, null)
-        if content.TryAdd(v, n) then
+        if not (content.ContainsKey v) then
+            content.[v] <- n
 
             if isNull last then first <- n
             else last.Next <- n
@@ -80,6 +81,9 @@ type StableSet<'a>() =
 
                 if isNull n.Next then last <- n.Prev
                 else n.Next.Prev <- n.Prev
+
+                n.Prev <- null
+                n.Next <- null
 
                 true
             | _ ->

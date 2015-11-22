@@ -225,9 +225,11 @@ module internal GenericProgram =
 
             member x.LinkNext(caller : IAdaptiveObject) =
                 x.EvaluateAlways caller (fun () ->
-                    if x.IsDisposed then
+                    if isNull x.Next && isNull x.Prev then
+                        Log.warn "[AdaptiveCode] tried to link detached fragment { prev = %A; next = %A }" x.Prev x.Next
+                    elif x.IsDisposed then
                         Log.warn "[AdaptiveCode] tried to link disposed fragment"
-                    elif isNull x.Next || x.Next.IsDisposed then
+                    elif x.Next.IsDisposed then
                         failwith "[AdaptiveCode] tried to link fragment with disposed next"
                     elif Option.isNone x.Storage then
                         failwith "[AdaptiveCode] tried to link uninitialized fragment"
@@ -291,7 +293,7 @@ module internal GenericProgram =
         let reader = input.GetReader()
         let version = ref -1
 
-        let cache = Dict<'k * 'a, Fragment<'i, 'a, 'instruction, 'fragment>>()
+        let cache = Dictionary<obj, Fragment<'i, 'a, 'instruction, 'fragment>>()
         let fragments = SortedDictionaryExt<'k, StableSet<Fragment<'i, 'a, 'instruction, 'fragment>>>(keyComparer)
 
         let handler = newHandler()
@@ -315,10 +317,60 @@ module internal GenericProgram =
 
         let mutable autoDefragmentation = 1
 
+        #if DEBUG
+        let validateCurrentState(deltas : list<Delta<'k * 'v>>) =
+            let mutable hasErrors = false
+            let mutable cnt = 0
+            let mutable last = null
+            let mutable current = prolog
+            let all = HashSet()
+            while not (isNull current) do
+                all.Add current |> ignore
+                if current.IsDisposed then
+                    hasErrors <- true
+                    Log.warn "found disposed fragment in list: %A" current.Id
+
+                if current.Prev <> last then
+                    hasErrors <- true
+                    let lastId = if isNull last then "(null)" else string last.Id
+                    Log.warn "found invalid prev-pointer from %A to %s" current.Id lastId
+
+                last <- current
+                current <- current.Next
+
+                cnt <- cnt + 1
+
+            if cnt - 2 <> cache.Count then
+                hasErrors <- true
+                Log.warn "unexpected fragment count: { real = %A; cache = %A }" (cnt - 2) cache.Count
+
+            for (KeyValue(o, c)) in cache do
+                let k,t = unbox<'k * 'a> o
+                if not (cache.ContainsKey o) then
+                    Log.warn "fun fact: enumerated values does not exist in dict"
+
+                if c.IsDisposed then
+                    hasErrors <- true
+                    Log.warn "found disposed fragment in cache: { Id = %A; Key = %A; Tag = %A }" c.Id k t
+
+                if not (all.Contains c) then
+                    hasErrors <- true
+                    Log.warn "found cached fragment which is not reachable: { Id = %A; Key = %A; Tag = %A }" c.Id k t
+
+            if hasErrors then
+                for d in deltas do
+                    match d with
+                        | Add (k,v) -> Log.warn "Add %A" k
+                        | Rem (k,v) -> Log.warn "Rem %A" k
+                failwith "[AdaptiveCode] validation failed"
+        #else
+        let validateCurrentState(deltas : list<Delta<'k * 'v>>) = ()
+        #endif
         override x.InputChanged(o : IAdaptiveObject) =
             match o with
                 | :? Fragment<'i, 'a, 'instruction, 'fragment> as o ->
-                    lock dirtyLock (fun () -> dirtySet.Add o |> ignore)
+                    if not o.IsDisposed then
+                        lock dirtyLock (fun () -> dirtySet.Add o |> ignore)
                 | _ ->
                     ()
 
@@ -416,6 +468,10 @@ module internal GenericProgram =
                                 r 
                             | None -> epilog
                     
+                    if prev.Next <> next || next.Prev <> prev then
+                        Log.warn "[AdaptiveCode] possibly bad fragment creation"
+
+
                     // prev's successor was changed so we need to relink it
                     // NOTE that the new fragment must not be added here
                     //      since it will be processed by stages 1-4 anyway.
@@ -435,122 +491,142 @@ module internal GenericProgram =
                 for d in deltas do
                     match d with
                         | Add (k,v) ->
-                            added <- added + 1
+                            if cache.ContainsKey((k,v)) then
+                                Log.warn "[AdaptiveCode] duplicate addition of element %A" k
+                            else
+                                added <- added + 1
 
-                            // for new fragments we need to find the neighbouring ones
-                            // when possible which is achieved by searching for buckets
-                            // in our top-level trie.
-                            let left,self,right = SortedDictionary.neighbourhood k fragments
+                                // for new fragments we need to find the neighbouring ones
+                                // when possible which is achieved by searching for buckets
+                                // in our top-level trie.
+                                let left,self,right = SortedDictionary.neighbourhood k fragments
 
-                            // when the right bucket is existing (and therefore non-empty)
-                            // the new fragment's next will be the first element from that bucket
-                            let next =
-                                match right with
-                                    | Some(_,r) -> r.First
-                                    | None -> None
+                                // when the right bucket is existing (and therefore non-empty)
+                                // the new fragment's next will be the first element from that bucket
+                                let next =
+                                    match right with
+                                        | Some(_,r) -> r.First
+                                        | None -> None
 
-                            // when the left bucket is existing (and therefore non-empty)
-                            // the new fragment's prev will be the last element from that bucket
-                            let prev =
-                                match left with
-                                    | Some(_,l) -> l.Last
-                                    | None -> None
+                                // when the left bucket is existing (and therefore non-empty)
+                                // the new fragment's prev will be the last element from that bucket
+                                let prev =
+                                    match left with
+                                        | Some(_,l) -> l.Last
+                                        | None -> None
 
-                            // create and insert the new fragment at the appropriate
-                            // position in the linked list.
-                            let fragment = 
-                                match self with
-                                    | Some self ->
-                                        // if a bucket exists for the exact same key we add the new fragment
-                                        // at the end of the bucket. The fragment's next will be the first one
-                                        // in the right bucket (given by next)
-                                        let created =
-                                            self.AddWithPrev (fun p -> createBetween p v next) 
+                                // create and insert the new fragment at the appropriate
+                                // position in the linked list.
+                                let fragment = 
+                                    match self with
+                                        | Some self ->
+                                            // if a bucket exists for the exact same key we add the new fragment
+                                            // at the end of the bucket. The fragment's next will be the first one
+                                            // in the right bucket (given by next)
+                                            let prev =
+                                                match self.Last with    
+                                                    | Some last -> Some last
+                                                    | None -> prev
 
-                                        // the creation cannot fail here since we always create
-                                        // a new fragment here (which cannot have been in the bucket)
-                                        created.Value
+                                            let fragment = createBetween prev v next
+                                            self.Add fragment |> ignore
 
-                                    | None ->
-                                        // if no bucket was created for the fragment's key yet
-                                        // the fragments neighbours are prev and next (as defined above).
-                                        let frag = createBetween prev v next
+                                            // the creation cannot fail here since we always create
+                                            // a new fragment here (which cannot have been in the bucket)
+                                            //created.Value
+                                            fragment
+
+                                        | None ->
+                                            // if no bucket was created for the fragment's key yet
+                                            // the fragments neighbours are prev and next (as defined above).
+                                            let frag = createBetween prev v next
 
 
-                                        // we obviously need to create a new bucket which will
-                                        // simply contain the created fragment and add it to the 
-                                        // top-level trie.
-                                        let set = StableSet()
-                                        set.Add frag |> ignore
-                                        fragments.[k] <- set
-                                        frag
+                                            // we obviously need to create a new bucket which will
+                                            // simply contain the created fragment and add it to the 
+                                            // top-level trie.
+                                            let set = StableSet()
+                                            set.Add frag |> ignore
+                                            fragments.[k] <- set
+                                            frag
 
-                            // store the fragment in the cache (which is needed for removal)
-                            cache.[(k,v)] <- fragment
+                                // store the fragment in the cache (which is needed for removal)
+                                cache.[(k,v)] <- fragment
 
-                            // since the fragment was just created it must obviously be
-                            // recompiled.
-                            recompileSet.Add fragment |> ignore
+                                // since the fragment was just created it must obviously be
+                                // recompiled.
+                                recompileSet.Add fragment |> ignore
+
+                                validateCurrentState deltas
 
                         | Rem (k,v) ->
+                            let mutable set = Unchecked.defaultof<_>
+                            let mutable fragment = Unchecked.defaultof<_>
+                            
                             // when an element is removed we first need
                             // to find its associated bucket in the top-level
                             // trie using its key.
-                            match fragments.TryGetValue k with
-                                | (true, set) ->
-                                    // furthermore we need to find the associated
-                                    // fragment for the given element and remove it
-                                    // from the cache.
-                                    match cache.TryRemove ((k,v)) with
-                                        | (true, fragment) ->
-                                            
-                                            // finally we can remove the fragment from the
-                                            // associated bucket and the linked list.
-                                            if set.Remove fragment then
-                                                removed <- removed + 1 
+                            if not (fragments.TryGetValue(k, &set)) then
+                                failwithf "[AdaptiveProgram] failed to get containing bucket for %A" k
 
-                                                // remove the fragment from the linked list
-                                                fragment.Next.Prev <- fragment.Prev
-                                                fragment.Prev.Next <- fragment.Next
+                            // furthermore we need to find the associated
+                            // fragment for the given element and remove it
+                            // from the cache.
+                            if not (cache.TryGetValue((k,v), &fragment)) then
+                                failwithf "[AdaptiveProgram] failed to get fragment from cache: %A" k
 
-                                                // the fragment's prev needs to be relinked since
-                                                // its successor was just changed
-                                                relinkSet.Add fragment.Prev |> ignore
+                            if not (cache.Remove (k,v)) then
+                                failwithf "[AdaptiveProgram] failed to remove fragment from cache: %A" k
 
+                            if not (set.Remove fragment) then
+                                failwithf "[AdaptiveProgram] failed to remove fragment from containing bucket: %A %A" fragment set
 
-                                                // the fragment's next needs to be recompiled whenever
-                                                // compileDelta depends on predecessors.
-                                                if handler.compileNeedsPrev && fragment.Next <> epilog then
-                                                    recompileSet.Add fragment.Next |> ignore
+                            // finally we can remove the fragment from the
+                            // associated bucket and the linked list.
+                            removed <- removed + 1 
 
-                                                // release all resources associated with the fragment
-                                                fragment.Dispose()
+                            // remove the fragment from the linked list
+                            fragment.Next.Prev <- fragment.Prev
+                            fragment.Prev.Next <- fragment.Next
 
-                                                // since the fragment may be added to the recompileSet
-                                                // by a subsequent change it is not sufficient to remove it
-                                                // from recompile/relink/dirtySet but instead we need to
-                                                // maintain a "persistent" deadSet.
-                                                deadSet.Add fragment |> ignore
+                            // the fragment's prev needs to be relinked since
+                            // its successor was just changed
+                            relinkSet.Add fragment.Prev |> ignore
 
 
-                                                // if the bucket just got empty remove it
-                                                // from the top-level trie.
-                                                if set.Count = 0 then
-                                                    fragments.Remove k |> ignore
-                                            else
-                                                failwithf "[AdaptiveProgram] failed to remove fragment from containing bucket: %A %A" fragment set
-                                        | _ ->
-                                            failwithf "[AdaptiveProgram] could not find Fragment for: %A / %A" k v
-                                | _ -> 
-                                    failwithf "[AdaptiveProgram] could not find bucket for: %A" k
+                            // the fragment's next needs to be recompiled whenever
+                            // compileDelta depends on predecessors.
+                            if handler.compileNeedsPrev && fragment.Next <> epilog then
+                                recompileSet.Add fragment.Next |> ignore
+
+                            // release all resources associated with the fragment
+                            fragment.Dispose()
+
+                            // since the fragment may be added to the recompileSet
+                            // by a subsequent change it is not sufficient to remove it
+                            // from recompile/relink/dirtySet but instead we need to
+                            // maintain a "persistent" deadSet.
+                            deadSet.Add fragment |> ignore
+
+
+                            // if the bucket just got empty remove it
+                            // from the top-level trie.
+                            if set.Count = 0 then
+                                if not (fragments.Remove k) then
+                                    failwith "[AdaptiveProgram] failed to remove bucket: %A" k
+
+                            validateCurrentState deltas
+
                 deltaProcessWatch.Stop()
+
+                validateCurrentState deltas
 
                 // remove all dead fragments from the
                 // update-sets
                 dirtySet.ExceptWith deadSet
                 recompileSet.ExceptWith deadSet
                 relinkSet.ExceptWith deadSet
-
+                recompileSet.ExceptWith [prolog; epilog]
 
                 // stage 2: recompile
                 compileWatch.Restart()
@@ -575,7 +651,20 @@ module internal GenericProgram =
 
                 // stage 4: relink
                 for d in relinkSet do
-                    d.LinkNext x
+                    try
+                        d.LinkNext x
+                    with _ ->
+                        let mutable index = -1
+                        let mutable current = prolog
+                        while current <> null && current <> d do
+                            current <- current.Next
+                            index <- index + 1
+                        let reachable = current = d
+                        if not reachable then
+                            failwith "[AdaptiveCode] unreachable fragment not disposed"
+                        else
+                            Log.error "fragment reachable at index: %A" index
+                            reraise ()
 
                 writeWatch.Stop()
 

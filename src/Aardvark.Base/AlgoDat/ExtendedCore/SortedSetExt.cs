@@ -940,19 +940,34 @@ namespace Aardvark.Base
                 {
                     self = current;
 
-                    if (left == null && current.Left != null)
+                    //if (left == null && current.Left != null)
+                    //{
+                    //    left = current.Left;
+                    //    while (left.Right != null)
+                    //        left = left.Right;
+                    //}
+
+                    //if (right == null && current.Right != null)
+                    //{
+                    //    right = current.Right;
+                    //    while (right.Left != null)
+                    //        right = right.Left;
+                    //}
+
+                    if (current.Left != null)
                     {
                         left = current.Left;
-                        while (left.Right != null)
-                            left = left.Right;
                     }
+                    while (left != null && left.Right != null)
+                        left = left.Right;
 
-                    if (right == null && current.Right != null)
+                    if (current.Right != null)
                     {
                         right = current.Right;
-                        while (right.Left != null)
-                            right = right.Left;
                     }
+                    while (right != null && right.Left != null)
+                        right = right.Left;
+
                     break;
                 }
             }
