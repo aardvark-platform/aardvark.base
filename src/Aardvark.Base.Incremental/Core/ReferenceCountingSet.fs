@@ -175,7 +175,7 @@ type ReferenceCountingSet<'a>(initial : seq<'a>) =
                     hasChanged()
 
 
-                checkDeltas result
+                // checkDeltas result
 
                 result
 

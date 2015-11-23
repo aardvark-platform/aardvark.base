@@ -461,15 +461,18 @@ module internal GenericProgram =
                     // get the successor and add it to the
                     // recompile-set whenever compileDelta depends on
                     // predecessors (since next's prev will be changed)
-                    let next = 
+                    let mutable next = 
                         match next with 
                             | Some r -> 
                                 if handler.compileNeedsPrev then recompileSet.Add r |> ignore
                                 r 
                             | None -> epilog
                     
-                    if prev.Next <> next || next.Prev <> prev then
-                        Log.warn "[AdaptiveCode] possibly bad fragment creation"
+                    if prev.Next <> next then
+                        Log.warn "[AdaptiveCode] bad fragment creation: prev.Next <> next"
+                        Log.warn "               using prev as anchor (next = prev.Next)"
+                        next <- prev.Next
+
 
 
                     // prev's successor was changed so we need to relink it

@@ -940,33 +940,19 @@ namespace Aardvark.Base
                 {
                     self = current;
 
-                    //if (left == null && current.Left != null)
-                    //{
-                    //    left = current.Left;
-                    //    while (left.Right != null)
-                    //        left = left.Right;
-                    //}
-
-                    //if (right == null && current.Right != null)
-                    //{
-                    //    right = current.Right;
-                    //    while (right.Left != null)
-                    //        right = right.Left;
-                    //}
-
                     if (current.Left != null)
                     {
                         left = current.Left;
+                        while (left.Right != null)
+                            left = left.Right;
                     }
-                    while (left != null && left.Right != null)
-                        left = left.Right;
 
                     if (current.Right != null)
                     {
                         right = current.Right;
+                        while (right.Left != null)
+                            right = right.Left;
                     }
-                    while (right != null && right.Left != null)
-                        right = right.Left;
 
                     break;
                 }
@@ -2006,12 +1992,12 @@ namespace Aardvark.Base
         public void FindNeighbours(T value, out Optional<T> lower, out Optional<T> self, out Optional<T> upper)
         {
             var tup = FindNeighbours(value);
+
             if (tup.Item1 != null) lower = new Optional<T>(tup.Item1.Item);
             else lower = Optional<T>.None;
 
             if (tup.Item2 != null) self = new Optional<T>(tup.Item2.Item);
             else self = Optional<T>.None;
-
 
             if (tup.Item3 != null) upper = new Optional<T>(tup.Item3.Item);
             else upper = Optional<T>.None;

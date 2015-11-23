@@ -3,6 +3,8 @@
 
 open System.Collections
 open System.Collections.Generic
+open System.Runtime.InteropServices
+open System.Runtime.CompilerServices
 
 [<AllowNullLiteral>]
 type private Linked<'a> =
@@ -35,7 +37,8 @@ type private LinkedEnumerator<'a>(l : Linked<'a>) =
     interface IEnumerator<'a> with
         member x.Current = current.Value
         member x.Dispose() = current <- null
-                
+  
+[<AllowNullLiteral>]              
 type StableSet<'a>() =
     let content = Dict<'a, Linked<'a>>()
     let mutable first : Linked<'a> = null
@@ -130,4 +133,109 @@ type StableSet<'a>() =
         member x.GetEnumerator() = 
             new LinkedEnumerator<'a>(first) :> IEnumerator<'a>
 
+[<AllowNullLiteral>]
+type StableDict<'k, 'v>() =
+    let content = Dict<'k, Linked<'k * 'v>>()
+    let mutable first : Linked<'k * 'v> = null
+    let mutable last : Linked<'k * 'v> = null
+
+    member x.Count = content.Count
+
+    member x.First = 
+        if isNull first then None
+        else Some first.Value
+
+    member x.Last = 
+        if isNull last then None
+        else Some last.Value
+
+    member x.ContainsKey(v : 'k) =
+        content.ContainsKey v
+
+    member x.TryGetValue(k : 'k, [<Out>] value : byref<'v>) =
+        match content.TryGetValue k with
+            | (true, l) ->
+                value <- snd l.Value
+                true
+            | _ ->
+                false
+
+    member x.TryAdd(k : 'k, value : 'v) =
+        let n = Linked((k,value), last, null)
+        if content.TryAdd(k, n) then
+            if isNull last then first <- n
+            else last.Next <- n
+            last <- n
+            true
+        else
+            false
+
+    member x.TryRemove(k : 'k, [<Out>] value : byref<'v>) =
+        match content.TryRemove k with
+            | (true, n) ->
+                if isNull n.Prev then first <- n.Next
+                else n.Prev.Next <- n.Next
+
+                if isNull n.Next then last <- n.Prev
+                else n.Next.Prev <- n.Prev
+
+                value <- snd n.Value
+                true
+            | _ ->
+                false
+
+    member x.GetOrAdd(k : 'k, f : 'k -> 'v) =
+        let isNew = ref false
+        let node = 
+            content.GetOrCreate(k, fun k ->
+                isNew := true
+                Linked((k, f k), last, null)
+            )
+        
+        if !isNew then
+            if isNull last then first <- node
+            else last.Next <- node
+
+            last <- node
+
+        node.Value |> snd
+        
+    member x.Remove(k : 'k) =
+        match content.TryRemove k with
+            | (true, n) ->
+                
+                if isNull n.Prev then first <- n.Next
+                else n.Prev.Next <- n.Next
+
+                if isNull n.Next then last <- n.Prev
+                else n.Next.Prev <- n.Prev
+
+
+                true
+            | _ ->
+                false
+    
+    member x.TryGetPrev(v : 'k) =
+        match content.TryGetValue v with
+            | (true, n) ->
+                if isNull n.Prev then None
+                else Some n.Prev.Value
+            | _ ->
+                None
+
+    member x.TryGetNext(v : 'k) =
+        match content.TryGetValue v with
+            | (true, n) ->
+                if isNull n.Next then None
+                else Some n.Next.Value
+            | _ ->
+                None 
+
+    interface IEnumerable with
+        member x.GetEnumerator() = 
+            new LinkedEnumerator<'k * 'v>(first) :> IEnumerator
+
+    interface IEnumerable<'k * 'v> with
+        member x.GetEnumerator() = 
+            new LinkedEnumerator<'k * 'v>(first) :> IEnumerator<'k * 'v>
 
