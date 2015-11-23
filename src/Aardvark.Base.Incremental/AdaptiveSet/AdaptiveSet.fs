@@ -14,7 +14,7 @@ module ASet =
     let GetReaderProbe = Symbol.Create "[ASet] GetReader"
     let GetConstantReaderProbe = Symbol.Create "[ASet] GetConstantReader"
 
-    type private NoRefASet<'a>(inputReader : ReferenceCountedReader<'a>) =
+    type NoRefASet<'a>(inputReader : ReferenceCountedReader<'a>) =
         let mutable inputReader = inputReader
 
         interface aset<'a> with
