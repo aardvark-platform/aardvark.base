@@ -454,12 +454,13 @@ module Mod =
             System.Threading.Interlocked.Change(&changedInputs, PersistentHashSet.add i) |> ignore
 
         override x.Compute() =
-            let changed = System.Threading.Interlocked.Exchange(&changedInputs, PersistentHashSet.empty)
-
             // whenever the result is outOfDate we
             // need to pull the input's value
             // Note that the input is not necessarily outOfDate at this point
             let v = m.GetValue x
+
+            let changed = System.Threading.Interlocked.Exchange(&changedInputs, PersistentHashSet.empty)
+
             //let cv = hasChanged v
 
             let mChanged = PersistentHashSet.contains (m :> IAdaptiveObject) changed
