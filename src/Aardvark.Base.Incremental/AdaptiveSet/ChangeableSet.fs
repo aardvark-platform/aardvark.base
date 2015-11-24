@@ -190,11 +190,11 @@ module CSet =
 
     /// Gets a list containing all elements from the cset.
     let toList (set : cset<'a>) =
-        lock (fun () -> set |> Seq.toList)
+        lock set (fun () -> set |> Seq.toList)
 
     /// Gets an array containing all elements from the cset.
     let toArray (set : cset<'a>) =
-        lock (fun () -> set |> Seq.toArray)
+        lock set (fun () -> set |> Seq.toArray)
 
     /// Modifies the set so that it contains all elements that are present in either the current set or the specified collection.
     let unionWith (elems : seq<'a>) (set : cset<'a>) =

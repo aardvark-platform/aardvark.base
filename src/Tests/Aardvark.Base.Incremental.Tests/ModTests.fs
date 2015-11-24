@@ -275,44 +275,20 @@ module ``Basic Mod Tests`` =
 
 
     [<Test>]
-    let ``[Mod] memory test`` () =
+    let ``[Mod] bind bind`` () =
 
-        //total e9206773e69bfe38e737c434d5496c9d56332160: 
-        //172870528L
-        //, per mod: 
-        //1728.70528
-        // (bytes)
-        //10
+        let otherInner = Mod.init 3
+        let inner = Mod.init 10
+        let x = Mod.init inner
 
-        let t = Thread(ThreadStart(fun () ->
-            
-            let mutable m = Mod.init 10 :> IMod<_>
-            let mutable f = id
-            let mutable m = Mod.map f m
-            
-            let size = 10000
-            ignore (Mod.force m)
-            let mutable i = 0
-            System.GC.Collect(3, System.GCCollectionMode.Forced, true)
-            let mem = System.GC.GetTotalMemory(true)
+        let r = Mod.bind id x
 
-            while i < size do
-                m <- Mod.map f m
-                i <- i + 1
+        r |> Mod.force |> should equal 10
 
-            ignore (Mod.force m)
+        transact (fun () -> Mod.change inner 11)
+        transact (fun () -> Mod.change x otherInner)
 
-            System.GC.Collect(3, System.GCCollectionMode.Forced, true)
-            let memAfter = System.GC.GetTotalMemory(true)
-            let diff = memAfter - mem
-            let sizePerMod = float diff / float size
-
-            printfn "per mod:   %Abyte" sizePerMod
-
-            printfn "%A" (Mod.force m)
-        ), 100000000)
-        t.Start()
-        t.Join()
+        r |> Mod.force |> should equal 3
 
 
     [<Test>]
