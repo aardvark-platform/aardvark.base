@@ -252,6 +252,21 @@ module ``Basic Mod Tests`` =
         
 
     [<Test>]
+    let ``[Mod] fan out, different eval strategy``() =
+
+        let input = Mod.init 10
+
+        let middle = input |> Mod.map id
+        let outputA = middle |> Mod.map id
+        let outputB = middle |> Mod.map id
+        let mutable marked = false
+        outputB.AddMarkingCallback(fun () -> marked <- true) |> ignore
+
+        outputA |> Mod.force |> should equal 10
+        marked |> should equal true
+
+
+    [<Test>]
     let ``[Mod] mod concurrency test super crazy callbacks``() =
         
         let pulledValues = List<int>()
@@ -261,14 +276,18 @@ module ``Basic Mod Tests`` =
 
         let derived = middle |> Mod.map id |> Mod.map (fun s -> Thread.Sleep 5; s) 
 
+        let maxCnt = 400
         let mutable abort = false
         let mutable currentValue = 0
         let inputThread = System.Threading.Thread(ThreadStart(fun _ ->
-            for i in 0 ..400 do
+            for i in 1 ..maxCnt do
                 let newValue = Interlocked.Increment(&currentValue)
                 transact (fun () -> Mod.change input newValue)
             abort <- true
         ))
+
+        let mutable marked = 0
+        let d = derived.AddMarkingCallback (fun _ -> Interlocked.Increment(&marked) |> ignore)
 
         let collection = new System.Collections.Concurrent.BlockingCollection<int>()
 
@@ -283,16 +302,17 @@ module ``Basic Mod Tests`` =
              collection.Add v |> ignore
         ) |> ignore
 
-//        let mutable result = 0
-//        let resultCb = derived |>  Mod.unsafeRegisterCallbackKeepDisposable (fun v ->
-//            result <- v
-//        )
+        let mutable result = 0
+        let resultCb = derived |>  Mod.unsafeRegisterCallbackKeepDisposable (fun v ->
+            result <- v
+        )
 
         let mutable r = 0
         let puller = System.Threading.Thread(ThreadStart(fun _ ->
             while not abort do
                 r <- derived |> Mod.force
         ))
+
 
         puller.Start()
         middle.Start()
@@ -304,7 +324,7 @@ module ``Basic Mod Tests`` =
 
         //collection.Count |> should equal 0
         printfn "awaited"
-        //result |> should equal currentValue
+        result |> should equal currentValue
         derived |> Mod.force |> should equal currentValue
         printfn "done"
 
