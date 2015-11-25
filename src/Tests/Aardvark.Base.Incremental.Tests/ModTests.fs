@@ -250,6 +250,65 @@ module ``Basic Mod Tests`` =
         System.Console.WriteLine("{0}", sprintf "%A" values)
         values |> Map.toSeq |> Seq.map fst |> should equal [1]
         
+
+    [<Test>]
+    let ``[Mod] mod concurrency test super crazy callbacks``() =
+        
+        let pulledValues = List<int>()
+
+        let input = Mod.init 1
+        let middle = Mod.init 1
+
+        let derived = middle |> Mod.map id |> Mod.map (fun s -> Thread.Sleep 5; s) 
+
+        let mutable abort = false
+        let mutable currentValue = 0
+        let inputThread = System.Threading.Thread(ThreadStart(fun _ ->
+            for i in 0 ..400 do
+                let newValue = Interlocked.Increment(&currentValue)
+                transact (fun () -> Mod.change input newValue)
+            abort <- true
+        ))
+
+        let collection = new System.Collections.Concurrent.BlockingCollection<int>()
+
+        let middle = System.Threading.Thread(ThreadStart(fun _ ->
+            let result = ref Unchecked.defaultof<_>
+            while collection.Count > 0 || not abort do
+                if collection.TryTake(result, 10) then
+                    transact (fun () -> Mod.change middle !result)
+        ))
+
+        input |> Mod.unsafeRegisterCallbackKeepDisposable (fun v ->
+             collection.Add v |> ignore
+        ) |> ignore
+
+//        let mutable result = 0
+//        let resultCb = derived |>  Mod.unsafeRegisterCallbackKeepDisposable (fun v ->
+//            result <- v
+//        )
+
+        let mutable r = 0
+        let puller = System.Threading.Thread(ThreadStart(fun _ ->
+            while not abort do
+                r <- derived |> Mod.force
+        ))
+
+        puller.Start()
+        middle.Start()
+        inputThread.Start()
+
+        inputThread.Join()
+        middle.Join()
+        puller.Join()
+
+        //collection.Count |> should equal 0
+        printfn "awaited"
+        //result |> should equal currentValue
+        derived |> Mod.force |> should equal currentValue
+        printfn "done"
+
+
     [<Test>]
     let ``[Mod] DefaultingModRef can be set`` () =
 
