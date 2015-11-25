@@ -262,7 +262,11 @@ module ``Basic Mod Tests`` =
         let mutable marked = false
         outputB.AddMarkingCallback(fun () -> marked <- true) |> ignore
 
-        outputA |> Mod.force |> should equal 10
+        outputB |> Mod.force |> ignore // comment and reactivate the one after transact
+        transact (fun () -> Mod.change input 11)
+        //outputB |> Mod.force |> ignore
+
+        outputA |> Mod.force |> should equal 11
         marked |> should equal true
 
 
