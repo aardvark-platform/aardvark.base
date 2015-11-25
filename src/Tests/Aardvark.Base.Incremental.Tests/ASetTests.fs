@@ -376,6 +376,31 @@ module ``collect tests`` =
             content |> should equal numbers
 
 
+    type Leak(cnt : ref<int>) =
+        do cnt := !cnt + 1
+        override x.Finalize() = cnt := !cnt - 1
+
+    [<Test>]
+    let ``[ASet] memory leak test`` () =
+        let independenSource = Mod.init 10
+        let cnt = ref 0
+        let mutable leak = Leak(cnt)
+        let normalSource = CSet.ofList [ leak ]
+        let mapped = 
+            normalSource 
+                |> ASet.map (fun l -> 
+                    let m = independenSource |> Mod.map (fun i -> l)
+                    Mod.force m |> ignore
+                    m
+                ) 
+        mapped |> ASet.toArray |> ignore
+        transact (fun () -> normalSource |> CSet.remove leak |> should be True)
+        leak <- Unchecked.defaultof<_>
+        GC.Collect ()
+        // enable this to see potential problem
+        //!cnt |> should equal 0   
+        ()
+
     [<Test>]
     let ``[ASet] concurrency buffered reader test``() =
 
