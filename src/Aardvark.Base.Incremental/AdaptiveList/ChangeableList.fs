@@ -458,6 +458,35 @@ type corderedset<'a>(initial : seq<'a>) =
             )
         res |> submitDeltas
 
+    member x.TryGetNext(value : 'a, [<Out>] next : byref<'a>) =
+        match times.TryGetValue(value) with
+            | (true, t) ->
+                if order.Root <> t.Next then 
+                    match content.TryGetValue t.Next with
+                        | (true, v) ->
+                            next <- v
+                            true
+                        | _ -> 
+                            false
+                else
+                    false
+            | _ -> false
+
+    member x.TryGetPrev(value : 'a, [<Out>] prev : byref<'a>) =
+        match times.TryGetValue(value) with
+            | (true, t) ->
+                if order.Root <> t.Prev then 
+                    match content.TryGetValue t.Prev with
+                        | (true, v) ->
+                            prev <- v
+                            true
+                        | _ -> 
+                            false
+                else
+                    false
+            | _ -> false
+
+
     member x.Add(value : 'a) =
         let res = lock content (fun () -> insertAfter order.Root.Prev value)
         res |> submitDeltas
