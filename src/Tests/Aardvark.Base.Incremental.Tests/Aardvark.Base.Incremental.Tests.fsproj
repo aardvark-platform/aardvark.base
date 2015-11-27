@@ -70,6 +70,7 @@
     <Compile Include="AgTests.fs" />
     <Compile Include="Performance.fs" />
     <Content Include="app.config" />
+    <Compile Include="UndoRedo.fs" />
     <Compile Include="Program.fs" />
   </ItemGroup>
   <ItemGroup>
