@@ -221,6 +221,10 @@ type AdaptiveSetExtensions private() =
         ASet.collect' f.Invoke this
 
     [<Extension>]
+    static member Choose (this : aset<'a>, f : Func<'a, Option<'b>>) =
+        ASet.choose f.Invoke this
+
+    [<Extension>]
     static member Flatten (this : seq<aset<'a>>) =
         ASet.union' this
 
