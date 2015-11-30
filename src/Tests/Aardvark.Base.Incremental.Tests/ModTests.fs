@@ -437,6 +437,24 @@ module ``Basic Mod Tests`` =
         ()
 
         
+    [<Test>]
+    let ``[Mod] mapN test``() =
+        
+        let mods = Array.init 10 (fun i -> Mod.init i)
+
+        let sum = mods |> Mod.mapN Seq.sum
+        sum |> Mod.force |> should equal 45
+
+        transact (fun () -> Mod.change (mods.[0]) 100)
+        sum |> Mod.force |> should equal 145
+
+        transact (fun () -> Mod.change (mods.[5]) 100)
+        sum |> Mod.force |> should equal 240
+
+
+
+
+
 
     [<AutoOpen>]
     module Validation =

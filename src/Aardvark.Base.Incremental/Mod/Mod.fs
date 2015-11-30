@@ -436,6 +436,21 @@ module Mod =
 
                 store |> Array.toList |> f
 
+    type internal MapNModBruteForce<'a, 'b>(a : seq<IMod<'a>>, f : list<'a> -> 'b) =
+        inherit AbstractMod<'b>()
+        let a = Seq.toList a
+
+
+        override x.Inputs = 
+            a |> List.toSeq |> Seq.cast
+
+        override x.Compute() =
+            let values = a |> List.map (fun m -> m.GetValue x)
+            f values
+
+
+
+
     type internal BindMod<'a, 'b>(m : IMod<'a>, f : 'a -> IMod<'b>) =
         inherit AbstractMod<'b>()
 
@@ -724,7 +739,8 @@ module Mod =
     /// the inputs changes.
     /// </summary>
     let mapN (f : seq<'a> -> 'b) (inputs : seq<#IMod<'a>>) =
-        MapNMod(Seq.toList (Seq.cast inputs), List.toSeq >> f) :> IMod<_>
+        MapNModBruteForce(Seq.cast inputs, List.toSeq >> f) :> IMod<_>
+        //MapNMod(Seq.toList (Seq.cast inputs), List.toSeq >> f) :> IMod<_>
 //        let objs = inputs |> Seq.cast |> Seq.toList
 //        objs |> mapCustom (fun s ->
 //            let values = inputs |> Seq.map (fun m -> m.GetValue s) |> Seq.toList
