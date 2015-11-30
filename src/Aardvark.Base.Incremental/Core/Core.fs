@@ -189,8 +189,9 @@ type Transaction() =
             |> List.choose id 
             |> List.exists (fun t -> t.IsContained e)
 
-    static member Running =
-        running.Value
+    static member Running
+        with get() = running.Value
+        and set r = running.Value <- r
 
     static member HasRunning =
         running.Value.IsSome
