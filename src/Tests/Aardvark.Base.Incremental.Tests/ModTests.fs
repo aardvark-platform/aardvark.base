@@ -452,6 +452,43 @@ module ``Basic Mod Tests`` =
         sum |> Mod.force |> should equal 240
 
 
+    [<Test>]
+    let ``[Mod] toObservable test``() =
+        let m = Mod.init 10
+        let mutable exec = 0
+        let cnt() =
+            let v = exec
+            exec <- 0
+            v
+
+        let d = m |> Mod.map (fun a -> exec <- exec + 1; a)
+
+
+        let obs = d |> Mod.toObservable
+
+        let s0 = obs.Subscribe (fun v -> v |> should equal m.Value)
+        cnt() |> should equal 1
+
+        let s1 = obs.Subscribe (fun v -> v |> should equal m.Value)
+        cnt() |> should equal 0
+
+
+        transact (fun () -> Mod.change m 11)
+        cnt() |> should equal 1
+
+        s0.Dispose()
+        cnt() |> should equal 0
+
+        s1.Dispose()
+        cnt() |> should equal 0
+
+        transact (fun () -> Mod.change m 11)
+        cnt() |> should equal 0
+
+
+
+        ()
+
 
 
 
