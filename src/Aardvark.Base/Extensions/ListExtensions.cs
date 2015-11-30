@@ -146,6 +146,7 @@ namespace Aardvark.Base
         public static Tr[] MapToArray<T, Tr>(this List<T> list, int count, Func<T, Tr> item_fun)
         {
             var result = new Tr[count];
+            if (list.Count < count) count = list.Count;
             for (int i = 0; i < count; i++) result[i] = item_fun(list[i]);
             return result;
         }
@@ -161,6 +162,7 @@ namespace Aardvark.Base
                 this List<T> list, int start, int count, Func<T, Tr> item_fun)
         {
             var result = new Tr[count];
+            if (start + count > list.Count) count = list.Count - start;
             for (int i = 0; i < count; i++) result[i] = item_fun(list[i + start]);
             return result;
         }
