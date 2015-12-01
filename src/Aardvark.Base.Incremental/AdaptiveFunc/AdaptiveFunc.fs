@@ -94,6 +94,9 @@ module AFun =
             | [f] -> f
             | f::fs -> compose (chain fs) f
 
+    let chainM (l : IMod<list<afun<'a, 'a>>>) =
+        l |> Mod.map chain |> bind id
+
     let runChain l initial =
         l |> chain |> run initial
 
