@@ -489,45 +489,71 @@ module ``Basic Mod Tests`` =
 
         ()
 
+    open System
+    open System.Reactive
+    open System.Reactive.Linq
     [<Test>]
     let ``[Mod] observable builder``() =
         
         let down = Mod.init false
         let pos = Mod.init V2i.Zero
 
+
+
         let test =
             obs {
-                let polygon = List<V2i>()
-                // wait for down to become true
-                while down do
+                while true do
+                    System.Console.WriteLine("new polygon")
+                    let polygon = List<V2i>()
+
+                    // wait for down to become true
+                    while down do
+                        System.Console.WriteLine("in while")
                     
-                    System.Console.WriteLine("in while")
-                     
-                    let! p = pos
+                        // while down accumulate all points in polygon and
+                        // yield intermediate representations.
+                        for p in pos do
+                            polygon.Add p
+                            yield Left (Seq.toList polygon)
 
-                    polygon.Add p
-                    yield Left (Seq.toList polygon)
+                    // when the button is up again yield the final polygon
+                    yield Right (Seq.toList polygon)
+                    System.Console.WriteLine("finished polygon ({0} points)", polygon.Count)
 
-
-
-                yield Right (Seq.toList polygon)
             }
-
 
 
         let l = List<_>()
         let s = test.Subscribe(fun v -> l.Add v)
+//        let latest = 
+//            test 
+//                |> Observable.choose (fun v -> match v with | Left i -> Some i | _ -> None) 
+//                |> Observable.latest
+
+        
 
         transact (fun () -> Mod.change down true)
         transact (fun () -> Mod.change pos V2i.II)
         transact (fun () -> Mod.change pos V2i.IO)
         transact (fun () -> Mod.change down false)
         transact (fun () -> Mod.change pos V2i.Zero)
+        transact (fun () -> Mod.change pos V2i.OI)
+
+        pos.OutOfDate |> should be True
 
         let all = l |> Seq.toList
-        
-        all |> should equal [Left [V2i.II]; Left [V2i.II; V2i.IO]; Right [V2i.II; V2i.IO]]
+        all |> should equal [Left [V2i.Zero]; Left [V2i.Zero; V2i.II]; Left [V2i.Zero; V2i.II; V2i.IO]; Right [V2i.Zero; V2i.II; V2i.IO]]
         l.Clear()
+
+
+        transact (fun () -> Mod.change down true)
+        transact (fun () -> Mod.change pos V2i.II)
+        transact (fun () -> Mod.change pos V2i.IO)
+        transact (fun () -> Mod.change down false)
+        let all = l |> Seq.toList
+        all |> should equal [Left [V2i.OI]; Left [V2i.OI; V2i.II]; Left [V2i.OI; V2i.II; V2i.IO]; Right [V2i.OI; V2i.II; V2i.IO]]
+        l.Clear()
+
 
 
         ()

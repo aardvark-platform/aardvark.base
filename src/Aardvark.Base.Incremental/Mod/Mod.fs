@@ -584,10 +584,7 @@ module Mod =
                 member x.Subscribe(obs : IObserver<'a>) =
                     lock x (fun () ->
                         if callbacks.Add obs then
-                            lock input (fun () ->
-                                if input.OutOfDate then
-                                    obs.OnNext (x.GetValue null)
-                            )
+                            obs.OnNext (x.GetValue null)
                         
                             { new IDisposable with 
                                 member y.Dispose() = 

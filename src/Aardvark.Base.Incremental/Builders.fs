@@ -51,23 +51,24 @@ module ``Observable extensions`` =
 
         member x.Delay(f : unit -> IObservable<'a>) = f
 
-        member x.Bind(m : IMod<'a>, f : 'a -> IObservable<'b>) =
+        member x.For(m : IMod<'a>, f : 'a -> IObservable<'b>) =
             let mo = m |> Mod.toObservable
-            mo.Skip(1).SelectMany f
+            mo.SelectMany f
 
         member x.Combine(l : IObservable<'a>, r : unit -> IObservable<'a>) =
             l.Concat (Observable.Defer(r))
 
+
         member x.Zero() = 
             Observable.Empty()
 
-        member x.While(guard : unit -> #IMod<bool>, body : unit -> IObservable<'a>) =
-            let guard = guard() |> Mod.toObservable
+        member x.While(guard : unit -> #IMod<bool>, body : unit -> IObservable<'b>) : IObservable<'b>  =
+            let guard = guard() :> IMod<bool> |> Mod.toObservable
 
-            Observable.Create(fun (obs : IObserver<'a>) ->
+            Observable.Create(fun (obs : IObserver<'b>) ->
                 let active = ref false
                 let inner = ref { new IDisposable with member x.Dispose() = () }
-
+ 
                 let rec run() =
                     body().Subscribe(fun v ->
                         obs.OnNext(v)
@@ -77,7 +78,7 @@ module ``Observable extensions`` =
 
                     )
 
-                let guardSub = 
+                let guardSub =
                     guard.Subscribe (fun v ->
                         if v then
                             if not !active then
@@ -100,11 +101,39 @@ module ``Observable extensions`` =
             )
 
         member x.While(guard : unit -> bool, body : unit -> IObservable<'a>) =
-            Observable.Defer(body).TakeWhile(fun _ -> guard())
-
+            if guard() then
+                body().Concat(Observable.Defer(fun () -> x.While(guard, body)))
+            else
+                Observable.Empty()
             
-        member x.Run(f : unit -> IObservable<'a>) = f()
+        member x.Run(f : unit -> IObservable<'a>) = 
+            f()
 
+
+    module Observable =
+        let private noDisposable = { new IDisposable with member x.Dispose() = () }
+
+        let latest (o : IObservable<'a>) : IMod<Option<'a>> =
+            let r = Mod.init None
+            let subscription = ref noDisposable
+            subscription :=
+                o.Subscribe (
+                    { new IObserver<'a> with
+                        member x.OnNext(v) = 
+                            r.UnsafeCache <- Some v
+                            let mark = lock r (fun () -> not r.OutOfDate)
+                            if mark then
+                                transact(fun () -> r.MarkOutdated())
+                        member x.OnCompleted() =
+                            subscription.Value.Dispose()
+                            subscription := noDisposable
+                        member x.OnError e =
+                            subscription.Value.Dispose()
+                            subscription := noDisposable
+                    }      
+                )
+
+            r :> IMod<_>
 
     let obs = ObservableBuilder()
 
