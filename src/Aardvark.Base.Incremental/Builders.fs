@@ -36,6 +36,77 @@ module Operators =
     /// creates a changeable cell containing the given value
     let inline mref (v : 'a) = Mod.init v
 
+[<AutoOpen>]
+module ``Observable extensions`` =
+    open System
+    open System.Reactive
+    open System.Reactive.Linq
+    
+    type ObservableBuilder() =
+        member x.For(o : IObservable<'a>, f : 'a -> IObservable<'b>) =
+            o.SelectMany f
+
+        member x.Yield(v) = 
+            Observable.Return(v)
+
+        member x.Delay(f : unit -> IObservable<'a>) = f
+
+        member x.Bind(m : IMod<'a>, f : 'a -> IObservable<'b>) =
+            let mo = m |> Mod.toObservable
+            mo.Skip(1).SelectMany f
+
+        member x.Combine(l : IObservable<'a>, r : unit -> IObservable<'a>) =
+            l.Concat (Observable.Defer(r))
+
+        member x.Zero() = 
+            Observable.Empty()
+
+        member x.While(guard : unit -> #IMod<bool>, body : unit -> IObservable<'a>) =
+            let guard = guard() |> Mod.toObservable
+
+            Observable.Create(fun (obs : IObserver<'a>) ->
+                let active = ref false
+                let inner = ref { new IDisposable with member x.Dispose() = () }
+
+                let rec run() =
+                    body().Subscribe(fun v ->
+                        obs.OnNext(v)
+                        let old = !inner
+                        inner := run()
+                        old.Dispose()
+
+                    )
+
+                let guardSub = 
+                    guard.Subscribe (fun v ->
+                        if v then
+                            if not !active then
+                                inner := Observable.Defer(body).Repeat().Subscribe obs
+
+                            active := true
+                        else
+                            if !active then
+                                inner.Value.Dispose()
+                                obs.OnCompleted()
+                                ()
+
+                            active := false
+                    )
+                { new IDisposable with
+                    member x.Dispose() =
+                        guardSub.Dispose()
+                        inner.Value.Dispose()
+                }
+            )
+
+        member x.While(guard : unit -> bool, body : unit -> IObservable<'a>) =
+            Observable.Defer(body).TakeWhile(fun _ -> guard())
+
+            
+        member x.Run(f : unit -> IObservable<'a>) = f()
+
+
+    let obs = ObservableBuilder()
 
 
 [<AutoOpen>]

@@ -584,8 +584,10 @@ module Mod =
                 member x.Subscribe(obs : IObserver<'a>) =
                     lock x (fun () ->
                         if callbacks.Add obs then
-                            if callbacks.Count = 1 then
-                                obs.OnNext (x.GetValue null)
+                            lock input (fun () ->
+                                if input.OutOfDate then
+                                    obs.OnNext (x.GetValue null)
+                            )
                         
                             { new IDisposable with 
                                 member y.Dispose() = 
@@ -613,7 +615,9 @@ module Mod =
             override x.Mark() =
                 if callbacks.Count > 0 then
                     let v = x.GetValue null
-                    for c in callbacks do
+                    let current = callbacks |> Seq.toArray
+
+                    for c in current do
                         c.OnNext(v)
 
                 true

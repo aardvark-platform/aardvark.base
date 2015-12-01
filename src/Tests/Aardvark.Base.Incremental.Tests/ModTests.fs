@@ -489,6 +489,49 @@ module ``Basic Mod Tests`` =
 
         ()
 
+    [<Test>]
+    let ``[Mod] observable builder``() =
+        
+        let down = Mod.init false
+        let pos = Mod.init V2i.Zero
+
+        let test =
+            obs {
+                let polygon = List<V2i>()
+                // wait for down to become true
+                while down do
+                    
+                    System.Console.WriteLine("in while")
+                     
+                    let! p = pos
+
+                    polygon.Add p
+                    yield Left (Seq.toList polygon)
+
+
+
+                yield Right (Seq.toList polygon)
+            }
+
+
+
+        let l = List<_>()
+        let s = test.Subscribe(fun v -> l.Add v)
+
+        transact (fun () -> Mod.change down true)
+        transact (fun () -> Mod.change pos V2i.II)
+        transact (fun () -> Mod.change pos V2i.IO)
+        transact (fun () -> Mod.change down false)
+        transact (fun () -> Mod.change pos V2i.Zero)
+
+        let all = l |> Seq.toList
+        
+        all |> should equal [Left [V2i.II]; Left [V2i.II; V2i.IO]; Right [V2i.II; V2i.IO]]
+        l.Clear()
+
+
+        ()
+
 
 
 
