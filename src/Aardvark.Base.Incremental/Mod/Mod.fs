@@ -1021,6 +1021,7 @@ module Mod =
 
 
 
+
     [<Obsolete("Use Mod.init instead")>]
     let inline initMod (v : 'a) = init v
 
@@ -1057,4 +1058,21 @@ module ModExtensions =
             | Some t -> ModOf t |> Some
             | None -> None
 
+
+[<AutoOpen>]
+module EvaluationUtilities =
+
+    let evaluateTopLevel (f : unit -> 'a) : 'a =
+
+        let ctx = Ag.getContext()
+        Ag.setContext Ag.emptyScope
+
+        let currentTransaction = Transaction.Running
+        Transaction.Running <- None
+
+        try
+            f ()
+        finally
+            Ag.setContext ctx
+            Transaction.Running <- currentTransaction
 
