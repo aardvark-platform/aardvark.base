@@ -78,6 +78,7 @@
     <Compile Include="Runtime\WeakTable.fs" />
     <Compile Include="Runtime\NativeMemory.fs" />
     <Compile Include="Runtime\Fragments.fs" />
+    <Compile Include="Runtime\CustomSchedulers.fs" />
     <Compile Include="Reflection.fs" />
     <Compile Include="Runtime.fs" />
     <Compile Include="AgHelpers.fs" />
