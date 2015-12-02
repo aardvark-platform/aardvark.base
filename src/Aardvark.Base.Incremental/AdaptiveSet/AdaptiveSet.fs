@@ -252,6 +252,16 @@ module ASet =
             let scope = Ag.getContext()
             AdaptiveSet(fun () -> m |> bind scope (fun v -> (f v).GetReader())) :> aset<'b>
 
+
+    /// <summary>
+    /// applies the given function to a task-result and adaptively
+    /// returns the resulting set. (the resulting set is empty until
+    /// the task completes)
+    /// </summary>
+    let bindTask (f : 'a -> aset<'b>) (t : System.Threading.Tasks.Task<'a>) =
+        let scope = Ag.getContext()
+        AdaptiveSet(fun () -> t |> bindTask scope (fun v -> (f v).GetReader())) :> aset<'b>
+
     /// <summary>
     /// applies the given function to both cells and adaptively
     /// returns the resulting set.

@@ -238,6 +238,56 @@ module ASetReaders =
                     let r = f v
                     current <- Some r
                     r.GetDelta x
+       
+    type BindTaskReader<'a, 'b>(scope : Ag.Scope, m : System.Threading.Tasks.Task<'a>, f : 'a -> IReader<'b>) as this =
+        inherit AbstractReader<'b>()
+
+        let mutable f = fun v -> Ag.useScope scope (fun () -> f v)
+        let mutable current : Option<IReader<'b>> = None
+        let mutable completed = false
+        let mutable awaiter = m.GetAwaiter()
+
+        do 
+            if m.IsCompleted then
+                completed <- true
+            else
+                awaiter.OnCompleted(fun () -> 
+                    completed <- true
+                    transact (fun () -> this.MarkOutdated())
+                )
+
+        override x.Inputs =
+            seq {
+                match current with 
+                    | Some o -> yield o :> _ 
+                    | _ -> ()
+            }
+
+        override x.Release() =
+            
+            match current with
+                | Some c -> 
+                    c.Dispose()
+                    current <- None
+                | _ -> ()
+
+        override x.ComputeDelta() =
+            if completed then
+                let r = 
+                    match current with
+                        | Some c -> c
+                        | None ->
+                            let v = awaiter.GetResult()
+                            let c = f v
+                            current <- Some c
+                            awaiter <- Unchecked.defaultof<_>
+                            f <- Unchecked.defaultof<_>
+                            c
+
+                r.GetDelta x
+            else
+                []
+           
                 
     type MultiConstantCollectReader<'a, 'b>(scope : Ag.Scope, sources : seq<IReader<'a>>, f : 'a -> seq<'b>) as this =
         inherit AbstractReader<'b>()
@@ -911,6 +961,10 @@ module ASetReaders =
     let bind2 scope (f : 'a -> 'b -> IReader<'c>) (ma : IMod<'a>)  (mb : IMod<'b>)=
         let tup = Mod.map2 (fun a b -> (a,b)) ma mb
         new BindReader<_,_>(scope, tup,  fun (a,b) -> f a b) :> IReader<_>
+
+    let bindTask scope (f : 'a -> IReader<'b>) (input : System.Threading.Tasks.Task<'a>) =
+        new BindTaskReader<_,_>(scope, input, f) :> IReader<_>
+
 
     let choose scope (f : 'a -> Option<'b>) (input : IReader<'a>) =
         new ChooseReader<_, _>(scope, input, f) :> IReader<_>

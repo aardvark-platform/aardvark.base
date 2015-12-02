@@ -179,6 +179,12 @@ module ``Computation Expression Builders`` =
         member x.Bind(m : IMod<'a>, f : 'a -> aset<'b>) =
             ASet.bind f m
 
+        member x.Bind(m : System.Threading.Tasks.Task<'a>, f : 'a -> aset<'b>) =
+            ASet.bindTask f m
+
+        member x.Bind(m : Async<'a>, f : 'a -> aset<'b>) =
+            ASet.bindTask f (Async.StartAsTask m)
+
         member x.For(s : aset<'a>, f : 'a -> aset<'b>) =
             ASet.collect f s
 
