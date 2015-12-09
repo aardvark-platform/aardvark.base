@@ -537,21 +537,25 @@ module ASetReaders =
 
         member x.Emit (c : ISet<'a>, d : Option<list<Delta<'a>>>) =
             lock x (fun () ->
-                match d with 
-                    | Some d ->
-                        deltas.AddRange d
-//                        let N = c.Count
-//                        let M = content.Count
-//                        let D = deltas.Count + (List.length d)
-//                        if D > N + 2 * M then
-//                            reset <- Some c
-//                            deltas.Clear()
-//                        else
-//                            deltas.AddRange d
-
-                    | None ->
+                match reset with
+                    | Some r ->
                         reset <- Some c
-                        deltas.Clear()
+                    | None -> 
+                        match d with 
+                            | Some d ->
+                                deltas.AddRange d
+        //                        let N = c.Count
+        //                        let M = content.Count
+        //                        let D = deltas.Count + (List.length d)
+        //                        if D > N + 2 * M then
+        //                            reset <- Some c
+        //                            deltas.Clear()
+        //                        else
+        //                            deltas.AddRange d
+
+                            | None ->
+                                reset <- Some c
+                                deltas.Clear()
 
                 if not x.OutOfDate then
                     match getCurrentTransaction() with
