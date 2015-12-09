@@ -279,7 +279,8 @@ module ASet =
     /// adaptively unions the given sets
     /// </summary>
     let union' (set : seq<aset<'a>>) : aset<'a> =
-        if set |> Seq.forall (fun s -> s.IsConstant) then
+        let set = set |> Seq.toList
+        if set |> List.forall (fun s -> s.IsConstant) then
             let allElements =
                 set |> Seq.collect (fun s ->
                     let r = s.GetReader()
