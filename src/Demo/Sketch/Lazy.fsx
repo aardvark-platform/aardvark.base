@@ -30,11 +30,6 @@ module Time =
     let maxValue : Time = DateTime.MaxValue
     let minValue : Time = DateTime.MinValue
 
-type EndReason =
-    | Error of Exception
-    | Finished
-    | Continue
-
 type History<'a> = { values : list<Time * 'a>; finished : bool }
 
 [<CompilationRepresentation(CompilationRepresentationFlags.ModuleSuffix)>]
@@ -73,7 +68,7 @@ module History =
         { values = List.map (fun (t,v) -> t, f v) h.values; finished = h.finished }      
 
 
-
+[<AllowNullLiteral>]
 type IEventReader<'a> =
     inherit IAdaptiveObject
     inherit IDisposable
@@ -406,6 +401,50 @@ module EventReaders =
             buffer <- History.empty
             remove x
 
+    type WhileReader<'a>(guard : IMod<bool>, body : IEventReader<'a>) =
+        inherit AbstractReader<'a>()
+
+        let mutable guard = new ModReader<_>(guard) :> IEventReader<_>
+        let mutable inner : IEventReader<'a> = null
+        let mutable startTime = None
+        let mutable endTime = None
+
+
+        override x.IsFinished = Option.isSome endTime
+
+        override x.ComputeHistory() =
+            if not (isNull guard) then
+                let guardHistory = guard.GetHistory x
+
+                for (t,v) in guardHistory.values do
+                    if v && Option.isNone startTime then
+                        inner <- body
+                        startTime <- Some t
+                    elif not v && Option.isSome startTime then
+                        guard.Outputs.Remove x |> ignore
+                        guard.Dispose()
+                        guard <- null
+                        endTime <- Some t
+
+            if isNull inner then
+                History.empty
+            else
+                match startTime, endTime with
+                    | Some st, Some et ->
+                        let all = inner.GetHistory x 
+                        inner.Outputs.Remove x |> ignore
+                        inner.Dispose()
+                        { values = List.filter (fun (t,_) -> t >= st && t <= et) all.values; finished = true}
+                    | Some st, None ->
+                        let all = inner.GetHistory x 
+                        { all with values = List.filter (fun (t,_) -> t >= st) all.values }
+                    | _ -> 
+                        History.empty
+
+        override x.Release() =
+            if not (isNull inner) then inner.Dispose()
+            if not (isNull guard) then guard.Dispose()
+
 
 
 
@@ -423,7 +462,7 @@ module Evt =
         let newReader () =
             lock readers (fun () ->
                 let r = new EventReaders.EmitReader<'a>(remove)
-                readers.Add r
+                readers.Add r |> ignore
 
                 r :> IEventReader<_>
             )
@@ -545,7 +584,9 @@ module Evt =
                 | None -> empty
         )
 
-
+    let takeWhile (guard : IMod<bool>) (body : evt<'a>) =
+        evt (fun scope -> new EventReaders.WhileReader<_>(guard, body.GetReader()))
+ 
 module Test =
     
 
