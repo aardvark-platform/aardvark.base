@@ -221,6 +221,8 @@ module Obs =
     let all (values : IObservable<'a>) : aset<'a> =
         values.Select Add |> toASet
 
+    
+    
 
     // higher order combinators
     let map (f : 'a -> 'b) (o : IObservable<'a>) =
@@ -351,6 +353,25 @@ module Obs =
             { new IDisposable with member x.Dispose() = modSub.Value.Dispose(); innerSub.Value.Dispose() }
         )
 
+    let bind (f : 'a -> IObservable<'b>) (m : IMod<'a>) =
+        let m = valuesOf m
+        Observable.Create(fun (obs : IObserver<'b>) ->
+            let latest : ref<Option<IDisposable>> = ref None
+            let outer = 
+                m.Subscribe (fun v -> 
+                    match !latest with
+                        | Some l -> l.Dispose()
+                        | None -> ()
+
+                    let inner = f v
+                    latest := Some (inner.Subscribe obs)
+                )
+
+            { new IDisposable with
+                member x.Dispose() = outer.Dispose()
+            }
+        )
+
 
     // ground combinators
     let append (l : IObservable<'a>) (r : IObservable<'a>) =
@@ -434,6 +455,9 @@ module ``Observable builder`` =
         member x.For(m : IMod<'a>, f : 'a -> IObservable<'b>) =
             m |> Obs.valuesOf |> Obs.collect f
 
+
+        member x.Bind(m : IMod<'a>, f : 'a -> IObservable<'b>) =
+            m |> Obs.bind f
 
         member x.While(guard : unit -> bool, body : unit -> IObservable<'a>) =
             if guard() then
