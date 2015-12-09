@@ -437,6 +437,130 @@ module ``Basic Mod Tests`` =
         ()
 
         
+    [<Test>]
+    let ``[Mod] mapN test``() =
+        
+        let mods = Array.init 10 (fun i -> Mod.init i)
+
+        let sum = mods |> Mod.mapN Seq.sum
+        sum |> Mod.force |> should equal 45
+
+        transact (fun () -> Mod.change (mods.[0]) 100)
+        sum |> Mod.force |> should equal 145
+
+        transact (fun () -> Mod.change (mods.[5]) 100)
+        sum |> Mod.force |> should equal 240
+
+
+    [<Test>]
+    let ``[Mod] toObservable test``() =
+        let m = Mod.init 10
+        let mutable exec = 0
+        let cnt() =
+            let v = exec
+            exec <- 0
+            v
+
+        let d = m |> Mod.map (fun a -> exec <- exec + 1; a)
+
+
+        let obs = d |> Mod.toObservable
+
+        let s0 = obs.Subscribe (fun v -> v |> should equal m.Value)
+        cnt() |> should equal 1
+
+        let s1 = obs.Subscribe (fun v -> v |> should equal m.Value)
+        cnt() |> should equal 0
+
+
+        transact (fun () -> Mod.change m 11)
+        cnt() |> should equal 1
+
+        s0.Dispose()
+        cnt() |> should equal 0
+
+        s1.Dispose()
+        cnt() |> should equal 0
+
+        transact (fun () -> Mod.change m 11)
+        cnt() |> should equal 0
+
+
+
+        ()
+
+    open System
+    open System.Reactive
+    open System.Reactive.Linq
+    [<Test>]
+    let ``[Mod] observable builder``() =
+        
+        let down = Mod.init false
+        let pos = Mod.init V2i.Zero
+
+
+
+        let test =
+            obs {
+                while true do
+                    System.Console.WriteLine("new polygon")
+                    let polygon = List<V2i>()
+
+                    // wait for down to become true
+                    while down do
+                        System.Console.WriteLine("in while")
+                    
+                        // while down accumulate all points in polygon and
+                        // yield intermediate representations.
+                        for p in pos do
+                            polygon.Add p
+                            yield Left (Seq.toList polygon)
+
+                    // when the button is up again yield the final polygon
+                    yield Right (Seq.toList polygon)
+                    System.Console.WriteLine("finished polygon ({0} points)", polygon.Count)
+
+            }
+
+
+        let l = List<_>()
+        let s = test.Subscribe(fun v -> l.Add v)
+//        let latest = 
+//            test 
+//                |> Observable.choose (fun v -> match v with | Left i -> Some i | _ -> None) 
+//                |> Observable.latest
+
+        
+
+        transact (fun () -> Mod.change down true)
+        transact (fun () -> Mod.change pos V2i.II)
+        transact (fun () -> Mod.change pos V2i.IO)
+        transact (fun () -> Mod.change down false)
+        transact (fun () -> Mod.change pos V2i.Zero)
+        transact (fun () -> Mod.change pos V2i.OI)
+
+        pos.OutOfDate |> should be True
+
+        let all = l |> Seq.toList
+        all |> should equal [Left [V2i.Zero]; Left [V2i.Zero; V2i.II]; Left [V2i.Zero; V2i.II; V2i.IO]; Right [V2i.Zero; V2i.II; V2i.IO]]
+        l.Clear()
+
+
+        transact (fun () -> Mod.change down true)
+        transact (fun () -> Mod.change pos V2i.II)
+        transact (fun () -> Mod.change pos V2i.IO)
+        transact (fun () -> Mod.change down false)
+        let all = l |> Seq.toList
+        all |> should equal [Left [V2i.OI]; Left [V2i.OI; V2i.II]; Left [V2i.OI; V2i.II; V2i.IO]; Right [V2i.OI; V2i.II; V2i.IO]]
+        l.Clear()
+
+
+
+        ()
+
+
+
+
 
     [<AutoOpen>]
     module Validation =

@@ -436,6 +436,21 @@ module Mod =
 
                 store |> Array.toList |> f
 
+    type internal MapNModBruteForce<'a, 'b>(a : seq<IMod<'a>>, f : list<'a> -> 'b) =
+        inherit AbstractMod<'b>()
+        let a = Seq.toList a
+
+
+        override x.Inputs = 
+            a |> List.toSeq |> Seq.cast
+
+        override x.Compute() =
+            let values = a |> List.map (fun m -> m.GetValue x)
+            f values
+
+
+
+
     type internal BindMod<'a, 'b>(m : IMod<'a>, f : 'a -> IMod<'b>) =
         inherit AbstractMod<'b>()
 
@@ -555,6 +570,55 @@ module Mod =
             inner.Value.GetValue x
 
 
+    [<AutoOpen>]
+    module private RxAdapters =
+         
+
+        type EventMod<'a>(input : IMod<'a>) =
+            inherit AbstractMod<'a>()
+            static let noDisposable = { new IDisposable with member x.Dispose() = () }
+            let mutable callbacks = HashSet<IObserver<'a>>()
+            let mutable next : Awaitable<'a> = null
+
+            interface IObservable<'a> with
+                member x.Subscribe(obs : IObserver<'a>) =
+                    lock x (fun () ->
+                        if callbacks.Add obs then
+                            obs.OnNext (x.GetValue null)
+                        
+                            { new IDisposable with 
+                                member y.Dispose() = 
+                                    lock x (fun () ->
+                                        callbacks.Remove obs |> ignore
+                                    )
+                            }
+                        else
+                            noDisposable
+                    )
+
+
+            interface IEvent with
+                member x.Next = failwith "not implemented"
+                member x.Values = x |> Observable.map (fun _ -> System.Reactive.Unit.Default)
+
+            interface IEvent<'a> with
+                member x.Next = failwith "not implemented"
+                member x.Latest = x.GetValue null
+                member x.Values = x :> IObservable<'a>
+
+            override x.Compute() =
+                input.GetValue x
+
+            override x.Mark() =
+                if callbacks.Count > 0 then
+                    let v = x.GetValue null
+                    let current = callbacks |> Seq.toArray
+
+                    for c in current do
+                        c.OnNext(v)
+
+                true
+
 
 
     let private scoped (f : 'a -> 'b) =
@@ -573,6 +637,9 @@ module Mod =
     let custom (compute : IMod<'a> -> 'a) : IMod<'a> =
         LazyMod(Seq.empty, compute) :> IMod<_>
 
+
+    let toObservable (m : IMod<'a>) : IObservable<'a> =
+        EventMod(m) :> IObservable<_>
     
     /// <summary>
     /// registers a callback for execution whenever the
@@ -724,7 +791,8 @@ module Mod =
     /// the inputs changes.
     /// </summary>
     let mapN (f : seq<'a> -> 'b) (inputs : seq<#IMod<'a>>) =
-        MapNMod(Seq.toList (Seq.cast inputs), List.toSeq >> f) :> IMod<_>
+        MapNModBruteForce(Seq.cast inputs, List.toSeq >> f) :> IMod<_>
+        //MapNMod(Seq.toList (Seq.cast inputs), List.toSeq >> f) :> IMod<_>
 //        let objs = inputs |> Seq.cast |> Seq.toList
 //        objs |> mapCustom (fun s ->
 //            let values = inputs |> Seq.map (fun m -> m.GetValue s) |> Seq.toList
@@ -950,6 +1018,7 @@ module Mod =
 
 
 
+
     [<Obsolete("Use Mod.init instead")>]
     let inline initMod (v : 'a) = init v
 
@@ -986,4 +1055,21 @@ module ModExtensions =
             | Some t -> ModOf t |> Some
             | None -> None
 
+
+[<AutoOpen>]
+module EvaluationUtilities =
+
+    let evaluateTopLevel (f : unit -> 'a) : 'a =
+
+        let ctx = Ag.getContext()
+        Ag.setContext Ag.emptyScope
+
+        let currentTransaction = Transaction.Running
+        Transaction.Running <- None
+
+        try
+            f ()
+        finally
+            Ag.setContext ctx
+            Transaction.Running <- currentTransaction
 

@@ -1039,6 +1039,45 @@ module ``collect tests`` =
         t.Start()
         t.Join()
 
+
+    [<Test>]
+    let ``[ASet] task bindings``() =
+        
+        let start = new ManualResetEventSlim()
+        let rand = Random()
+        let tasks =
+            Array.init 100 (fun i ->
+                Async.StartAsTask <| 
+                    async {
+                        let! _ =  Async.AwaitWaitHandle start.WaitHandle
+                        let t = rand.Next(1000)
+                        do! Async.Sleep t
+                        return i
+                    }
+            )
+
+        let sets =
+            tasks |> Array.map (fun t ->
+                aset {
+                    let! v = t
+                    yield v
+                }
+            )
+
+        let all = sets |> ASet.union'
+        let r = all.GetReader()
+        start.Set()
+
+        while r.Content.Count < 100 do
+            let deltas = r.GetDelta()
+            ()
+
+        r.Content |> Seq.toList |> List.sort |> should equal [0..99]
+
+
+
+
+
 module ASetPerformance =
     open System.Diagnostics
 

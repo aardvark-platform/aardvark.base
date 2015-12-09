@@ -68,6 +68,7 @@
     <Compile Include="Interop\String.fs" />
     <Compile Include="Interop\SortedSet.fs" />
     <Compile Include="Interop\HashSet.fs" />
+    <Compile Include="Interop\CSharpList.fs" />
     <Compile Include="Reflection\TypeInfo.fs" />
     <Compile Include="Reflection\FunctionReflection.fs" />
     <Compile Include="Reflection\UnmanagedFunctions.fs" />
@@ -78,6 +79,7 @@
     <Compile Include="Runtime\WeakTable.fs" />
     <Compile Include="Runtime\NativeMemory.fs" />
     <Compile Include="Runtime\Fragments.fs" />
+    <Compile Include="Runtime\CustomSchedulers.fs" />
     <Compile Include="Reflection.fs" />
     <Compile Include="Runtime.fs" />
     <Compile Include="AgHelpers.fs" />

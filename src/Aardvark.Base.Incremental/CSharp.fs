@@ -511,3 +511,9 @@ type AdaptiveMapExtensions private() =
         AMap.toMod this
 
 
+[<Extension; AbstractClass; Sealed>]
+type EvaluationExtensions private() =
+
+    [<Extension>]
+    static member EvaluateTopLevel (this : Func<'a>) =
+        EvaluationUtilities.evaluateTopLevel this.Invoke

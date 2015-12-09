@@ -1,0 +1,58 @@
+My little Event adventure
+
+I came up with four different implementations for our event-system in the last few days, each of which has more
+cons than pros sadly. 
+After all i decided to write it all down to get an overview.
+
+Basically we're at a bad point here. 
+For the first time in the history of ever the scientific monster does not seem to be the best solution here.
+From a scientific point of view the lazy implementation seems interesting (due to its novelty).
+However from a pragmatic point of view the observable implementation might be the thing we need.
+
+
+lazy (like aset/alist/etc.) [implementation: Lazy.fsx]
+	pro:
+		+ fits into our system
+		+ pattern matching is easy
+		+ state should be fairly easy to integrate (although order is sometimes undefined)
+	con:
+		- adapters force eager evaluation (for mods/asets/etc.)
+		- completion hard to handle
+		- unexpected behaviour due to lazy reader-creation (missing events where no reader exists)
+		
+async-like [implementation: FutureList.fsx]
+	pro:
+		+ supports state: 
+			type FutureList<'s, 'a> = { run : 's -> Future<'s * FutureListValue<'s, a>> }
+			and  FutureListValue<'s, 'a> = 
+				| Nil
+				| Error of Exception
+				| Cons of 'a * FutureList<'s, 'a>
+		+ seems to be natural for people which are not in too deep (since sm/msc/etc. invented it that way)
+		+ no space-leaks for input adapters
+	con:
+		- may leak events (when run is not subscribing to the cont immediately)
+		- hard to implement from first principles
+		- output-adapters leaking subscriptions
+		- unexpected re-execution of functions due to different state
+		
+observable [implementation: Observable.fsx]
+	pro:
+		+ simple semantics (users understand effects easily)
+		+ cannot miss events
+		+ no conceptual space-leakage
+		+ combinators are engineering monsters (thats a con too)
+	con:
+		- adapters leaking subscriptions (at least for mods => need to resort to finalizers)
+		- cannot think of state-support atm.
+		- hard to get your head around subscription-things
+		- combinators are engineering monsters (thats a pro too)
+		
+yampa [no implementation atm.]
+	pro:
+		+ easy to implement
+		+ pure
+	con:
+		- does not compose with the rest of the system
+		- re-execution of everything all the time
+		- lots of closure allocations
