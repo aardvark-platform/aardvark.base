@@ -206,13 +206,15 @@ type clist<'a>(initial : seq<'a>) =
         res |> submitDeltas
 
     member x.Clear() =
-        let change = lock content (fun () -> if content.Count > 0 then
-                                                content.Clear();
-                                                order.Clear();
-                                                true
-                                             else
-                                                false
-        )
+        let change = 
+            lock content (fun () -> 
+                if content.Count > 0 then
+                    content.Clear();
+                    order.Clear();
+                    true
+                else
+                    false
+            )
         if change then
             submit()
 

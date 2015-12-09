@@ -408,6 +408,7 @@ module ``simple list tests`` =
     let ``[AList] toASet test``() =
         let list = CList.empty
 
+        let lm = AList.toMod list
         let set = AList.toASet list
         let setMod = ASet.toMod set
 
@@ -417,10 +418,12 @@ module ``simple list tests`` =
         let test() =
             let lc = list.Count 
             let sc = setMod.GetValue().Count
+            let rc = lm.GetValue().Count
             //reader.GetDelta() |> ignore
             //let sc = reader.Content.Count
-            printfn "ListCount=%d SetCount=%d" lc sc
-            should equal lc sc
+            sprintf "ListCount=%d SetCount=%d ReaderCount=%d" lc sc rc |> Console.WriteLine
+            rc |> should equal lc
+            sc |> should equal lc
 
         test()
 
@@ -448,36 +451,20 @@ module ``simple list tests`` =
         test()
 
         transact (fun () -> 
-        list.Clear() 
-        list.Clear() 
-        list.Add(new Object()) |> ignore
-        list.Add(new Object()) |> ignore
-        list.Add(new Object()) |> ignore
+            list.Clear() 
+            list.Clear() 
+            list.Add(new Object()) |> ignore
+            list.Add(new Object()) |> ignore
+            list.Add(new Object()) |> ignore
         )
 
         test()
 
         transact (fun () -> 
-        list.Clear() 
-        list.Add(new Object()) |> ignore
-        list.Add(new Object()) |> ignore
-        list.Add(new Object()) |> ignore
-        )
-
-        test()
-
-        transact (fun () -> list.Clear() )
-
-        transact (fun () -> 
-        list.Add(new Object()) |> ignore
-        list.Add(new Object()) |> ignore
-        list.Add(new Object()) |> ignore
-        )
-
-        test()
-
-        transact (fun () -> 
-        list.Add(new Object()) |> ignore
+            list.Clear() 
+            list.Add(new Object()) |> ignore
+            list.Add(new Object()) |> ignore
+            list.Add(new Object()) |> ignore
         )
 
         test()
@@ -485,7 +472,23 @@ module ``simple list tests`` =
         transact (fun () -> list.Clear() )
 
         transact (fun () -> 
-        list.Add(new Object()) |> ignore
+            list.Add(new Object()) |> ignore
+            list.Add(new Object()) |> ignore
+            list.Add(new Object()) |> ignore
+        )
+
+        test()
+
+        transact (fun () -> 
+            list.Add(new Object()) |> ignore
+        )
+
+        test()
+
+        transact (fun () -> list.Clear() )
+
+        transact (fun () -> 
+            list.Add(new Object()) |> ignore
         )
 
         test()
