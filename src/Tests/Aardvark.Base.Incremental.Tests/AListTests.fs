@@ -404,6 +404,92 @@ module ``simple list tests`` =
 
         r.Content.All |> Seq.sortBy fst |> Seq.map snd |> Seq.toList |> should setEqual [ 1..13 ]
 
+    [<Test>]
+    let ``[AList] toASet test``() =
+        let list = CList.empty
+
+        let set = AList.toASet list
+        let setMod = ASet.toMod set
+
+        //let setReader = ASetReaders.ReferenceCountedReader(fun () -> set.GetReader())
+        //let reader = setReader.GetReference()
+
+        let test() =
+            let lc = list.Count 
+            let sc = setMod.GetValue().Count
+            //reader.GetDelta() |> ignore
+            //let sc = reader.Content.Count
+            printfn "ListCount=%d SetCount=%d" lc sc
+            should equal lc sc
+
+        test()
+
+        transact (fun () -> list.Add(new Object()) |> ignore )
+
+        test()
+
+        transact (fun () -> list.Add(new Object()) |> ignore )
+
+        test()
+
+        transact (fun () -> list.Clear() )
+
+        test()
+
+        transact (fun () -> list.Add(new Object()) |> ignore )
+        transact (fun () -> list.Add(new Object()) |> ignore )
+        transact (fun () -> list.Add(new Object()) |> ignore )
+        transact (fun () -> list.Add(new Object()) |> ignore )
+
+        test()
+        
+        transact (fun () -> list.Clear() )
+
+        test()
+
+        transact (fun () -> 
+        list.Clear() 
+        list.Clear() 
+        list.Add(new Object()) |> ignore
+        list.Add(new Object()) |> ignore
+        list.Add(new Object()) |> ignore
+        )
+
+        test()
+
+        transact (fun () -> 
+        list.Clear() 
+        list.Add(new Object()) |> ignore
+        list.Add(new Object()) |> ignore
+        list.Add(new Object()) |> ignore
+        )
+
+        test()
+
+        transact (fun () -> list.Clear() )
+
+        transact (fun () -> 
+        list.Add(new Object()) |> ignore
+        list.Add(new Object()) |> ignore
+        list.Add(new Object()) |> ignore
+        )
+
+        test()
+
+        transact (fun () -> 
+        list.Add(new Object()) |> ignore
+        )
+
+        test()
+
+        transact (fun () -> list.Clear() )
+
+        transact (fun () -> 
+        list.Add(new Object()) |> ignore
+        )
+
+        test()
+
 
 
     [<Test>]
