@@ -40,6 +40,8 @@ type Context(caller : IAdaptiveObject) =
     let buffers = Dict<Token, IBuffer>()
     let mutable containsTime = false
 
+    member x.Caller = caller
+
     member x.IsEmpty =
         not containsTime && lock buffers (fun () -> buffers.Values |> Seq.forall (fun b -> b.IsEmpty))
 
@@ -82,6 +84,8 @@ type sf<'a, 'b> =
     abstract member dependencies : list<Token>
 
 module SF =
+
+    exception private EndExn
 
     type private ModBuffer<'a>(m : IMod<'a>) as this =
         inherit AdaptiveObject()
@@ -215,10 +219,23 @@ module SF =
             member x.run ctx v = f ctx v
             member x.dependencies = deps
      
-            
+    type private EndSignal<'a, 'b> private() =
+        static let instance = EndSignal<'a,'b>() :> sf<'a, 'b>
+        
+        static member Instance = instance
+
+
+        interface sf<'a, 'b> with
+            member x.run _ _ = raise EndExn
+            member x.dependencies = []   
+
+
+    let stop<'a, 'b> = EndSignal<'a, 'b>.Instance
 
     let ofMod (m : IMod<'a>) : sf<'x, Event<'a>> =
         ModSignal(m) :> _
+
+
 
     let ofObservable (m : IObservable<'a>) : sf<'x, Event<'a>> =
         EventSignal(m) :> _
@@ -265,6 +282,28 @@ module SF =
             s, integrate s acc mc
         )
 
+    let rec switchTrue (guard : sf<'a, bool>) (ifTrue : sf<'a, 'b>) (ifFalse : sf<'a, 'b>) =
+        let deps = List.concat [guard.dependencies; ifTrue.dependencies; ifFalse.dependencies]
+        custom deps (fun _ ctx a ->
+            let (gv, gc) = guard.run ctx a
+            if gv then
+                let (ev, ec) = ifTrue.run ctx a
+                ev, switchTrue gc ec ifFalse
+
+            else
+                let (nv, nc) = ifFalse.run ctx a
+                nv, switchTrue gc ifTrue nc
+        )
+ 
+
+
+    let latest (m : IMod<'a>) : sf<'x, 'a> =
+        custom [] (fun self ctx _ ->
+            let latestValue = m.GetValue ctx.Caller
+
+            latestValue, self
+        )
+
     type private Reactimator<'a, 'b>(sf : sf<'a, 'b>, input : 'a, output : 'b -> unit) as this =
         inherit AdaptiveObject()
 
@@ -281,23 +320,32 @@ module SF =
 
         member x.Step() =
             x.EvaluateAlways null (fun () ->
-                let (v, newSf) = current.run ctx input
-                output v
+                let res = 
+                    try current.run ctx input |> Some
+                    with EndExn -> None
+                    
+                match res with
+                    | Some(v, newSf) ->
+                        output v
 
-                let newDeps = newSf.dependencies |> HashSet
+                        let newDeps = newSf.dependencies |> HashSet
 
-                let added = newDeps |> Seq.filter (currentDeps.Contains >> not)
-                let removed = currentDeps |> Seq.filter (newDeps.Contains >> not)
+                        let added = newDeps |> Seq.filter (currentDeps.Contains >> not)
+                        let removed = currentDeps |> Seq.filter (newDeps.Contains >> not)
 
-                for r in removed do ctx.Unlisten r
-                for a in added do ctx.Listen a
+                        for r in removed do ctx.Unlisten r
+                        for a in added do ctx.Listen a
 
-                if ctx.IsEmpty then
-                    evt.Reset()
+                        if ctx.IsEmpty then
+                            evt.Reset()
 
 
-                current <- newSf
-                currentDeps <- newDeps
+                        current <- newSf
+                        currentDeps <- newDeps
+                        true
+                    | None ->
+                        // todo: cleanup
+                        false
             )
 
         override x.Mark() =
@@ -307,21 +355,27 @@ module SF =
     let reactimate (input : 'a) (output : 'b -> unit) (sf : sf<'a, 'b>) =
         
         let r = Reactimator(sf, input, output)
-        r.Step()
+        if r.Step() then
 
-        let rec run() =
-            async {
-                let! worked = Async.AwaitWaitHandle r.StepEvent.WaitHandle
+            let rec run() =
+                async {
+                    do! Async.SwitchToThreadPool()
 
-                if not worked then
-                    printfn "reactimate failed"
-                else
-                    r.Step()
-                    return! run()
+                    let! worked = Async.AwaitWaitHandle r.StepEvent.WaitHandle
 
-            }
+                    if not worked then
+                        printfn "reactimate failed"
+                    else
+                        if r.Step() then
+                            return! run()
+                        else
+                            printfn "finished"
 
-        run()
+                }
+
+            run()
+        else
+            async { return () }
 
 
 [<AutoOpen>]
@@ -350,6 +404,7 @@ module Operators =
 
 let test () = 
     let step = Mod.init 0
+    let cancel = Mod.init false
 
     // whenever we have a step use it otherwise step by 0
     let delta = 
@@ -359,10 +414,18 @@ let test () =
 
     // integrate all steps
     let res = 
-        delta |> SF.integrate [] (List.append)
+        delta 
+            |> SF.integrate [] (fun l e -> l @ e)
+            ||> List.rev
+            
+
+    let withCancel =
+        SF.switchTrue (SF.latest cancel)
+            SF.stop
+            (SF.arr id)
 
     // start the sf as task
-    res |> SF.reactimate () (printfn "out: %A") |> Async.Start
+    (res >>> withCancel) |> SF.reactimate () (printfn "out: %A") |> Async.Start
 
     
 
@@ -377,7 +440,8 @@ let test () =
             | (true, i) -> 
                 transact(fun () -> Mod.change step i)
             | _ -> 
-                if l.StartsWith "q" then finish <- true
+                if l.StartsWith "c" then transact (fun () -> Mod.change cancel true)
+                elif l.StartsWith "q" then finish <- true
                 else ()
 
     ()
