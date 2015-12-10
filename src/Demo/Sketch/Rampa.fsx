@@ -21,6 +21,7 @@ open System.Reactive
 open System.Reactive.Linq
 
 
+
 type IBuffer =
     inherit IAdaptiveObject
     inherit IDisposable
@@ -31,112 +32,13 @@ type IBuffer<'a> =
     abstract member Dequeue : IAdaptiveObject -> Option<'a>
 
 
-type ModBuffer<'a>(m : IMod<'a>) as this =
-    inherit AdaptiveObject()
-
-    let mutable live = 1
-    let q = Queue<'a> [m.GetValue this]
-        
-
-    override x.Mark() =
-        if live = 1 then
-            let v = m.GetValue x
-            q.Enqueue v
-
-        true
-
-    member x.Dispose() =
-        let wasLive = Interlocked.Exchange(&live,0)
-        if wasLive = 1 then
-            lock x (fun () ->
-                m.RemoveOutput x
-                q.Clear()
-            )
-
-
-    member x.IsEmpty = lock x (fun () -> q.Count = 0)
-
-    member x.Dequeue(caller : IAdaptiveObject) =
-        x.EvaluateAlways caller (fun () ->
-            if live = 1 then 
-                if q.Count = 0 then None
-                else q.Dequeue() |> Some
-            else 
-                None
-        )
-
-    interface IDisposable with
-        member x.Dispose() = x.Dispose()
-
-    interface IBuffer with
-        member x.IsEmpty = x.IsEmpty
-
-    interface IBuffer<'a> with
-        member x.Dequeue caller = x.Dequeue caller
-
-type ObservableBuffer<'a>(o : IObservable<'a>) as this =
-    inherit AdaptiveObject()
-
-    let mutable live = 1
-    let mutable markingPending = 0
-    let q = Queue<'a>()
-
-
-
-    let push (v : 'a) =
-        lock this (fun () ->
-            q.Enqueue v
-        )
-
-        let alreadyMarking = Interlocked.Exchange(&markingPending, 1)
-        if alreadyMarking = 0 then
-            transact (fun () -> this.MarkOutdated())
-
-    let sub = o.Subscribe push
-
-    member x.Dispose() =
-        let wasLive = Interlocked.Exchange(&live,0)
-        if wasLive = 1 then
-            sub.Dispose()
-            lock x (fun () -> q.Clear())
-
-
-    member x.IsEmpty = lock q (fun () -> q.Count = 0)
-
-    member x.Dequeue(caller : IAdaptiveObject) =
-        x.EvaluateAlways caller (fun () ->
-            if live = 1 then 
-                if q.Count = 0 then None
-                else q.Dequeue() |> Some
-            else 
-                None
-        )
-
-    interface IDisposable with
-        member x.Dispose() = x.Dispose()
-
-    interface IBuffer with
-        member x.IsEmpty = x.IsEmpty
-
-    interface IBuffer<'a> with
-        member x.Dequeue caller = x.Dequeue caller
-
-
-
-
 type Token =
     | Time
     | Reactive of (unit -> IBuffer)
 
-
 type Context(caller : IAdaptiveObject) =
     let buffers = Dict<Token, IBuffer>()
     let mutable containsTime = false
-
-//        let markIfNeeded() =
-//            let wasPending = Interlocked.Exchange(&executionPending, 1)
-//            if wasPending = 0 then
-//                transact(fun () -> caller.MarkOutdated())
 
     member x.IsEmpty =
         not containsTime && lock buffers (fun () -> buffers.Values |> Seq.forall (fun b -> b.IsEmpty))
@@ -180,6 +82,99 @@ type sf<'a, 'b> =
     abstract member dependencies : list<Token>
 
 module SF =
+
+    type private ModBuffer<'a>(m : IMod<'a>) as this =
+        inherit AdaptiveObject()
+
+        let mutable live = 1
+        let q = Queue<'a> [m.GetValue this]
+        
+
+        override x.Mark() =
+            if live = 1 then
+                let v = m.GetValue x
+                q.Enqueue v
+
+            true
+
+        member x.Dispose() =
+            let wasLive = Interlocked.Exchange(&live,0)
+            if wasLive = 1 then
+                lock x (fun () ->
+                    m.RemoveOutput x
+                    q.Clear()
+                )
+
+
+        member x.IsEmpty = lock x (fun () -> q.Count = 0)
+
+        member x.Dequeue(caller : IAdaptiveObject) =
+            x.EvaluateAlways caller (fun () ->
+                if live = 1 then 
+                    if q.Count = 0 then None
+                    else q.Dequeue() |> Some
+                else 
+                    None
+            )
+
+        interface IDisposable with
+            member x.Dispose() = x.Dispose()
+
+        interface IBuffer with
+            member x.IsEmpty = x.IsEmpty
+
+        interface IBuffer<'a> with
+            member x.Dequeue caller = x.Dequeue caller
+
+    type private ObservableBuffer<'a>(o : IObservable<'a>) as this =
+        inherit AdaptiveObject()
+
+        let mutable live = 1
+        let mutable markingPending = 0
+        let q = Queue<'a>()
+
+
+
+        let push (v : 'a) =
+            lock this (fun () ->
+                q.Enqueue v
+            )
+
+            let alreadyMarking = Interlocked.Exchange(&markingPending, 1)
+            if alreadyMarking = 0 then
+                transact (fun () -> this.MarkOutdated())
+
+        let sub = o.Subscribe push
+
+        member x.Dispose() =
+            let wasLive = Interlocked.Exchange(&live,0)
+            if wasLive = 1 then
+                sub.Dispose()
+                lock x (fun () -> q.Clear())
+
+
+        member x.IsEmpty = lock q (fun () -> q.Count = 0)
+
+        member x.Dequeue(caller : IAdaptiveObject) =
+            x.EvaluateAlways caller (fun () ->
+                if live = 1 then 
+                    if q.Count = 0 then None
+                    else q.Dequeue() |> Some
+                else 
+                    None
+            )
+
+        interface IDisposable with
+            member x.Dispose() = x.Dispose()
+
+        interface IBuffer with
+            member x.IsEmpty = x.IsEmpty
+
+        interface IBuffer<'a> with
+            member x.Dequeue caller = x.Dequeue caller
+
+
+
     type private ModSignal<'a, 'b>(e : IMod<'b>) =
         let token = Reactive (fun () -> new ModBuffer<'b>(e) :> IBuffer)
 
@@ -359,12 +354,12 @@ let test () =
     // whenever we have a step use it otherwise step by 0
     let delta = 
         SF.switch (SF.ofMod step) 
-            (SF.arr id)
-            (SF.constant 0)
+            (SF.arr (fun v -> [v]))
+            (SF.constant [])
 
     // integrate all steps
     let res = 
-        delta |> SF.integrate 0 (+)
+        delta |> SF.integrate [] (List.append)
 
     // start the sf as task
     res |> SF.reactimate () (printfn "out: %A") |> Async.Start
