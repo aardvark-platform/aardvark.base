@@ -229,6 +229,17 @@ module SF =
             member x.run _ _ = raise EndExn
             member x.dependencies = []   
 
+    type private TimeSignal<'a> private() =
+        static let instance = TimeSignal<'a>() :> sf<'a, DateTime>
+
+        static member Instance = instance
+
+        interface sf<'a, DateTime> with
+            member x.run ctx _ = DateTime.Now, instance
+            member x.dependencies = [Time]
+
+
+    let time<'a> = TimeSignal<'a>.Instance
 
     let stop<'a, 'b> = EndSignal<'a, 'b>.Instance
 
@@ -275,27 +286,62 @@ module SF =
                     nv, switch gc onEvent nc
         )
 
-    let rec integrate (seed : 's) (acc : 's -> 'a -> 's) (m : sf<'x, 'a>) =
+    let rec fold (seed : 's) (acc : 's -> 'a -> 's) (m : sf<'x, 'a>) =
         custom m.dependencies (fun _ ctx x ->
             let (mv,mc) = m.run ctx x
             let s = acc seed mv
-            s, integrate s acc mc
+            s, fold s acc mc
         )
 
-    let rec switchTrue (guard : sf<'a, bool>) (ifTrue : sf<'a, 'b>) (ifFalse : sf<'a, 'b>) =
-        let deps = List.concat [guard.dependencies; ifTrue.dependencies; ifFalse.dependencies]
-        custom deps (fun _ ctx a ->
-            let (gv, gc) = guard.run ctx a
-            if gv then
-                let (ev, ec) = ifTrue.run ctx a
-                ev, switchTrue gc ec ifFalse
+    let rec zip (l : sf<'a, 'b>) (r : sf<'a, 'c>) =
+        custom (l.dependencies @ r.dependencies) (fun self ctx a ->
+            let (lv, lc) = l.run ctx a
+            let (rv, rc) = r.run ctx a
 
-            else
-                let (nv, nc) = ifFalse.run ctx a
-                nv, switchTrue gc ifTrue nc
+            (lv,rv), zip lc rc
+
         )
+
+    let inline integrate (f : sf<'a, 'b>) =
+        f |> fold LanguagePrimitives.GenericZero (+)
+
+    let inline differentiate (y : sf<'a, 'y>) (x : sf<'a, 'x>) =
+        zip y x 
+            |> fold None (fun last (y,x) ->
+                match last with
+                    | Some (_, oy,ox) ->
+                        let v = (y - oy) / (x - ox)
+                        Some(v, y, x)
+                    | None ->
+                        Some(LanguagePrimitives.GenericZero, y, x)
+               ) 
+            |> mapOut (fun o ->
+                match o with
+                    | Some(v,_,_) -> v
+                    | _ -> LanguagePrimitives.GenericZero
+               )
+
+
+    let switchTrue (guard : sf<'a, bool>) (ifTrue : sf<'a, 'b>) (ifFalse : sf<'a, 'b>) =
+        let rec run (currentlyTrue : Option<bool>) (guard : sf<'a, bool>) (ifTrue : sf<'a, 'b>) (ifFalse : sf<'a, 'b>) =
+            let deps = 
+                match currentlyTrue with
+                    | Some true -> guard.dependencies @ ifTrue.dependencies
+                    | Some false -> guard.dependencies @ ifFalse.dependencies
+                    | None -> List.concat [guard.dependencies; ifTrue.dependencies; ifFalse.dependencies]
+
+            custom deps (fun _ ctx a ->
+                let (gv, gc) = guard.run ctx a
+                if gv then
+                    let (ev, ec) = ifTrue.run ctx a
+                    ev, run (Some true) gc ec ifFalse
+
+                else
+                    let (nv, nc) = ifFalse.run ctx a
+                    nv, run (Some false) gc ifTrue nc
+            )
  
-
+        run None guard ifTrue ifFalse
 
     let latest (m : IMod<'a>) : sf<'x, 'a> =
         custom [] (fun self ctx _ ->
@@ -303,6 +349,16 @@ module SF =
 
             latestValue, self
         )
+
+    let withCancellation (ct : CancellationToken) =
+        let m = Mod.init false
+        let reg = ct.Register(fun () -> transact (fun () -> Mod.change m true))
+
+        switchTrue (latest m)
+            (stop |> mapIn (fun _ -> reg.Dispose()))
+            (arr id)
+
+
 
     type private Reactimator<'a, 'b>(sf : sf<'a, 'b>, input : 'a, output : 'b -> unit) as this =
         inherit AdaptiveObject()
@@ -404,7 +460,6 @@ module Operators =
 
 let test () = 
     let step = Mod.init 0
-    let cancel = Mod.init false
 
     // whenever we have a step use it otherwise step by 0
     let delta = 
@@ -415,17 +470,16 @@ let test () =
     // integrate all steps
     let res = 
         delta 
-            |> SF.integrate [] (fun l e -> l @ e)
+            |> SF.fold [] (fun l e -> l @ e)
             ||> List.rev
             
 
-    let withCancel =
-        SF.switchTrue (SF.latest cancel)
-            SF.stop
-            (SF.arr id)
+    let cts = new CancellationTokenSource()
+
 
     // start the sf as task
-    (res >>> withCancel) |> SF.reactimate () (printfn "out: %A") |> Async.Start
+    res >>> SF.withCancellation cts.Token
+        |> SF.reactimate () (printfn "out: %A") |> Async.Start
 
     
 
@@ -440,10 +494,38 @@ let test () =
             | (true, i) -> 
                 transact(fun () -> Mod.change step i)
             | _ -> 
-                if l.StartsWith "c" then transact (fun () -> Mod.change cancel true)
-                elif l.StartsWith "q" then finish <- true
+                if l.StartsWith "c" then 
+                    cts.Cancel()
+                elif l.StartsWith "q" then 
+                    finish <- true
                 else ()
 
     ()
 
+let test2 () = 
+    let active = Mod.init false
 
+    let time = SF.time ||> (fun t -> float t.Ticks / float TimeSpan.TicksPerSecond)
+    let step = SF.constant 1.0 |> SF.integrate
+    let dt = SF.differentiate time step
+
+
+    let delta =
+        SF.switchTrue (SF.latest active)
+            dt
+            (SF.constant 0.0)
+
+    let result = SF.integrate delta
+
+
+    let cts = new CancellationTokenSource()
+
+
+    // start the sf as task
+    result >>> SF.withCancellation cts.Token
+        |> SF.reactimate () (printfn "out: %A") |> Async.Start
+
+
+    while true do
+        Console.ReadLine() |> ignore
+        transact(fun () -> Mod.change active (not active.Value))
