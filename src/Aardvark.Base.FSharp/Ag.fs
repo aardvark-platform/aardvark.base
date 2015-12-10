@@ -236,7 +236,7 @@ module Ag =
 
     //when not given a scope we need to use the currentScope
     //these functions are called by the ?-operator
-    let private tryGetInhAttribute (node : obj) (name : string) =
+    let tryGetInhAttribute (node : obj) (name : string) =
         match node with
             | :? Scope as scope -> tryGetInhAttributeScope node scope name
             | _ -> 
@@ -248,7 +248,7 @@ module Ag =
                             | Some parent -> tryGetInhAttributeScope node (parent.GetChildScope node) name
                             | None -> None
 
-    let private tryGetSynAttribute (o : obj) (name : string) =
+    let tryGetSynAttribute (o : obj) (name : string) =
         match o with
             | :? Scope as scope -> tryGetSynAttributeScope scope name
             | _ -> tryGetSynAttributeScope (currentScope.Value.GetChildScope o) name
