@@ -10,10 +10,10 @@
 #r "System.Reactive.Linq.dll"
 
 (*
-Goal: implement tree like structure
+Challenge:
 
-a) provide operations for modifying the tree.
-b) provide some traversal which extracts leaf nodes from the tree.
+a) create a binary tree which stores single elements in leafs.
+b) provide a traversal function which extracts leaf nodes from the tree (fold).
 c) leaf node extraction should be incremental
 d) provide functional snapshots
 e) undelimited undo/redo while maintainging efficient updates.
@@ -47,7 +47,7 @@ test ((testTree1 |> leafNodesP |> Seq.toList) = [1;2;3;4])
                          
 // (b) done.
 
-// Let us convert the tree to a adaptive one
+// Let us convert the tree to an adaptive one
 type Tree<'a> = Node of left : IMod<Tree<'a>> * right : IMod<Tree<'a>> 
               | Leaf of IMod<'a>
 
@@ -56,9 +56,10 @@ let rec leafNodes t =
     aset {
         match t with 
          | Node(l,r) -> 
-            let! l = l
+            let! l = l // children are mod, read them adaptively
             let! r = r
-            yield! leafNodes l
+            yield! leafNodes l // then recurse and use yield! 
+                               // since the rec call returns an aset
             yield! leafNodes r
          | Leaf v ->
             yield v
@@ -88,7 +89,7 @@ transact (fun () -> Mod.change l2 (leaf 10))
 
 test (resultingLeafNodes |> setEqual [1;2;10])
 
-// (c) done. (incremental extraction of modifiable trees)
+// (c) done. (incremental fold for adaptive binary trees)
 
 // Okay, we have incremental updates to trees. But what if we want functional snapshots?
 // let us adaptively convert our mod tree to a persistent one!
@@ -110,7 +111,7 @@ let rec buildPeristent t =
 let testTree2InPersistent = testTree2 |> buildPeristent
 test ((Mod.force testTree2InPersistent) = PNode(PNode(PLeaf(1),PLeaf(2)), PLeaf 10))
 
-// let us modify the mod tree and see how the persistent one looks like
+// let us modify the mod tree and see how the persistent representation looks like
 transact (fun () -> Mod.change l2 l2Original)
 
 test ((Mod.force testTree2InPersistent) = PNode(PNode(PLeaf 1, PLeaf 2), PNode(PLeaf 3, PLeaf 4)))
@@ -120,18 +121,17 @@ test ((Mod.force testTree2InPersistent) = PNode(PNode(PLeaf 1, PLeaf 2), PNode(P
 // by the way, our modification also updated our leaf list
 test (testTree2 |> leafNodes |> setEqual [1;2;3;4])
 
-// since i want to use the same variable names as before i use a fresh module.... here
-// (just for presentation purpose)
+// (just for presentation purpose i use a separate module which allows me to reuse variable names for top level bindings)
 module UndoRedo =
-    // lets go move on to undo redo
-    // in order to implement undo redo generically, we need a way to tell some undo/redo
-    // scope what mods should be tracked (e.g. camera moves shall not be tracked globally)
-    // please note that undo redo here was just a 40 line sketch by gh. But as you will see,
+    // lets go on and move on to undo-redo
+    // in order to implement undo redo generically, but not globally we introduce
+    // a scope (e.g. camera moves shall not be tracked globally).
+    // the undo redo scope acts as factory for IModRef values but tracks snapshots for them.
+    // please note that the undo-redo s<stem here was just a 40 line sketch by gh. But as you will see,
     // this solution is so beautiful, concise, efficient and awesome.
 
-    // let us now create a tree just as before but we use special mod ctors 
-
     let scope = UndoRedoScope()
+    // let us now create a tree just as before but we use special mod ctors 
 
     // let us now create the tree just like before but by using the undo redo scope
     let leaf v = Leaf (scope.initMod v)
