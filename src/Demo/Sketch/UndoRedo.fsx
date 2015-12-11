@@ -175,3 +175,7 @@ module UndoRedo =
     transact (fun () -> project3.Restore())
     printfn "%A" (adaptiveLeafNodes |> ASet.toList |> List.map Mod.force)
     test (adaptiveLeafNodes |> setEqual [11;10])
+
+    // as you can see, adaptively synthesized leaf nodes automatically update,
+    // functional snapshots automatically update and we have time travel.
+    // this completes challange (d).
