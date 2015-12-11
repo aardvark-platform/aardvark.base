@@ -1444,13 +1444,13 @@ namespace Aardvark.Base
 
         #region Swizzle Methods
 
-        //# var snames  = new string[] { "O", "I", "X", "Y", "Z", "W" };
-        //# var svalues = new string[] { "0", "1", "X", "Y", "Z", "W" };
-        //# var s = d + 2;
+        //# var snames  = new string[] { "O", "I", "P", "N", "X", "Y", "Z", "W" };
+        //# var svalues = new string[] { "0", "1", "1", "-1","X", "Y", "Z", "W" };
+        //# var s = d + 4;
         //# for (int xi = 0; xi < s; xi++) { var x = svalues[xi];
         //#     for (int yi = 0; yi < s; yi++) { var y = svalues[yi];
         //#         var name = snames[xi] + snames[yi];
-        //#         if (xi < 2 && yi < 2) {
+        //#         if (xi < 4 && yi < 4) {
         //#             if (d == 2) {
         [EditorBrowsable(EditorBrowsableState.Never)]
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
@@ -1468,7 +1468,7 @@ namespace Aardvark.Base
         //#     for (int yi = 0; yi < s; yi++) { var y = svalues[yi];
         //#         for (int zi = 0; zi < s; zi++) { var z = svalues[zi];
         //#             var name = snames[xi] + snames[yi] + snames[zi];
-        //#             if (xi < 2 && yi < 2 && zi < 2) {
+        //#             if (xi < 4 && yi < 4 && zi < 4) {
         //#                 if (d == 3) {
         [EditorBrowsable(EditorBrowsableState.Never)]
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
@@ -1489,7 +1489,7 @@ namespace Aardvark.Base
         //#             for (int zi = 0; zi < s; zi++) { var z = svalues[zi];
         //#                 for (int wi = 0; wi < s; wi++) { var w = svalues[wi];
         //#                     var name = snames[xi] + snames[yi] + snames[zi] + snames[wi];
-        //#                     if (xi < 2 && yi < 2 && zi < 2 && wi < 2) {
+        //#                     if (xi < 4 && yi < 4 && zi < 4 && wi < 4) {
         [EditorBrowsable(EditorBrowsableState.Never)]
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
         public static readonly __v4type__ __name__ = new __v4type__(__x__, __y__, __z__, __w__);
