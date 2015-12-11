@@ -37,13 +37,23 @@ type Token =
     | Reactive of (unit -> IBuffer)
 
 type Context(caller : IAdaptiveObject) =
+    static let startTicks = DateTime.Now.Ticks
     let buffers = Dict<Token, IBuffer>()
     let mutable containsTime = false
-
+    let mutable timePulled = false
+    let mutable lastTime = DateTime.MinValue
+    let mutable timeIndex = 0
     member x.Caller = caller
 
+    member x.Restart() =
+        timePulled <- false
+
+    member x.TimePulled =
+        timePulled
+
     member x.IsEmpty =
-        not containsTime && lock buffers (fun () -> buffers.Values |> Seq.forall (fun b -> b.IsEmpty))
+        lock buffers (fun () -> buffers.Values |> Seq.forall (fun b -> b.IsEmpty))
+
 
     member x.Listen(t : Token) =
         match t with
@@ -51,7 +61,6 @@ type Context(caller : IAdaptiveObject) =
                 containsTime <- true
             | Reactive create ->
                 lock buffers (fun () -> buffers.[t] <- create())
-
 
     member x.Unlisten(t : Token) =
         match t with
@@ -64,8 +73,20 @@ type Context(caller : IAdaptiveObject) =
 
     member x.DequeValue<'a>(t : Token) : Option<'a> =
         match t with
-            | Time -> 
-                DateTime.Now |> unbox |> Some
+            | Time ->
+                let now = DateTime.Now
+
+                let ticks = 
+                    if now = lastTime then
+                        let ti = Interlocked.Increment(&timeIndex)
+                        float (now.Ticks - startTicks) + (float ti * (1.0 / 4000.0))
+                    else
+                        timeIndex <- 0
+                        lastTime <- now
+                        float (now.Ticks - startTicks)
+
+                timePulled <- true
+                (float ticks / float TimeSpan.TicksPerSecond) |> unbox |> Some
             | _ ->
                 match lock buffers (fun () -> buffers.TryGetValue t) with
                     | (true, (:? IBuffer<'a> as b)) ->
@@ -230,13 +251,17 @@ module SF =
             member x.dependencies = []   
 
     type private TimeSignal<'a> private() =
-        static let instance = TimeSignal<'a>() :> sf<'a, DateTime>
+        static let instance = TimeSignal<'a>() :> sf<'a, float>
+        let token = Time
 
         static member Instance = instance
 
-        interface sf<'a, DateTime> with
-            member x.run ctx _ = DateTime.Now, instance
+        interface sf<'a, float> with
+            member x.run ctx _ = ctx.DequeValue<float>(token).Value, instance
             member x.dependencies = [Time]
+
+   
+
 
 
     let time<'a> = TimeSignal<'a>.Instance
@@ -285,6 +310,21 @@ module SF =
                     let (nv, nc) = noEvent.run ctx a
                     nv, switch gc onEvent nc
         )
+
+    let rec switch2 (guard : sf<'x, Event<'b>>) (onEvent : 'b -> sf<'x, 'c>) (noEvent : sf<'x, 'c>) : sf<'x, 'c> =
+        let deps = List.concat [guard.dependencies; onEvent.dependencies; noEvent.dependencies]
+        custom deps (fun _ ctx a ->
+            let (gv, gc) = guard.run ctx a
+            match gv with
+                | Event b ->
+                    let (ev, ec) = onEvent(b).run ctx a
+                    ev, switch2 gc (fun _ -> ec) noEvent
+
+                | NoEvent ->
+                    let (nv, nc) = noEvent.run ctx a
+                    nv, switch2 gc onEvent nc
+        )
+
 
     let rec fold (seed : 's) (acc : 's -> 'a -> 's) (m : sf<'x, 'a>) =
         custom m.dependencies (fun _ ctx x ->
@@ -343,6 +383,30 @@ module SF =
  
         run None guard ifTrue ifFalse
 
+    let bind (f : 'a -> sf<'x, 'y>) (m : IMod<'a>) : sf<'x, 'y> =
+        let rec run (oldA : Option<'a * sf<'x, 'y>>) =
+            let deps =
+                match oldA with 
+                    | Some(_,old) -> old.dependencies
+                    | None -> []
+
+            custom deps (fun self ctx x ->
+                let a = m.GetValue ctx.Caller
+                match oldA with
+                    | Some(oa,old) when System.Object.Equals(oa, a) ->
+                        let (v,cont) = old.run ctx x
+                        v, run (Some(a, cont))
+                    | _ ->
+                        let inner = f a
+                        let (y, cont) = inner.run ctx x
+
+                        y, run (Some(a, cont))
+
+            )
+
+
+        run None 
+
     let latest (m : IMod<'a>) : sf<'x, 'a> =
         custom [] (fun self ctx _ ->
             let latestValue = m.GetValue ctx.Caller
@@ -350,14 +414,18 @@ module SF =
             latestValue, self
         )
 
-    let withCancellation (ct : CancellationToken) =
+    let withCancellation (ct : CancellationToken) (inner : sf<'a, 'b>) : sf<'a, 'b> =
         let m = Mod.init false
         let reg = ct.Register(fun () -> transact (fun () -> Mod.change m true))
 
         switchTrue (latest m)
             (stop |> mapIn (fun _ -> reg.Dispose()))
-            (arr id)
+            inner
 
+    //loop :: a (b, d) (c, d) -> a b c
+
+    //loop : sf<'b * 'd, 'c * 'd> -> sf<'b, 'c>
+    // sf<a * c, b * c> -> sf<a, b>
 
 
     type private Reactimator<'a, 'b>(sf : sf<'a, 'b>, input : 'a, output : 'b -> unit) as this =
@@ -365,7 +433,8 @@ module SF =
 
         let ctx = Context(this)
         let evt = new ManualResetEventSlim(true)
-
+        let mutable initial = true
+        let mutable oldValue = None
         let mutable current = sf
         let mutable currentDeps =
             let res = sf.dependencies |> HashSet
@@ -376,41 +445,58 @@ module SF =
 
         member x.Step() =
             x.EvaluateAlways null (fun () ->
-                let res = 
-                    try current.run ctx input |> Some
-                    with EndExn -> None
-                    
-                match res with
-                    | Some(v, newSf) ->
-                        output v
+                
+                ctx.Restart()
 
-                        let newDeps = newSf.dependencies |> HashSet
+                let rec run (top : bool) (latest : Option<'b>) =
+                    if not top && ctx.IsEmpty then
+                        if not ctx.TimePulled then
+                            match oldValue, latest with
+                                | Some o, Some l  when System.Object.Equals(o,l) ->
+                                    evt.Reset()
+                                | None, None ->
+                                    evt.Reset()
+                                | _ -> ()
 
-                        let added = newDeps |> Seq.filter (currentDeps.Contains >> not)
-                        let removed = currentDeps |> Seq.filter (newDeps.Contains >> not)
-
-                        for r in removed do ctx.Unlisten r
-                        for a in added do ctx.Listen a
-
-                        if ctx.IsEmpty then
-                            evt.Reset()
-
-
-                        current <- newSf
-                        currentDeps <- newDeps
+                        oldValue <- latest
                         true
-                    | None ->
-                        // todo: cleanup
-                        false
+                    else
+                        let res = 
+                            try current.run ctx input |> Some
+                            with EndExn -> None
+                    
+                        match res with
+                            | Some(v, newSf) ->
+                                output v
+
+                        
+                                let newDeps = newSf.dependencies |> HashSet
+
+                                let added = newDeps |> Seq.filter (currentDeps.Contains >> not)
+                                let removed = currentDeps |> Seq.filter (newDeps.Contains >> not)
+
+                                for r in removed do ctx.Unlisten r
+                                for a in added do ctx.Listen a
+
+
+                                current <- newSf
+                                currentDeps <- newDeps
+                                run false (Some v)
+
+                            | None ->
+                                // todo: cleanup
+                                false
+
+                run true oldValue
             )
 
         override x.Mark() =
             evt.Set()
             true
 
-    let reactimate (input : 'a) (output : 'b -> unit) (sf : sf<'a, 'b>) =
+    let reactimate (output : 'b -> unit) (sf : sf<unit, 'b>) =
         
-        let r = Reactimator(sf, input, output)
+        let r = Reactimator(sf, (), output)
         if r.Step() then
 
             let rec run() =
@@ -433,9 +519,65 @@ module SF =
         else
             async { return () }
 
+    let flatten (f : 'a -> sf<'x, 'y>) : sf<'a * 'x, 'y> =
+        let rec run (old : Option<sf<'x, 'y>>) =
+            let deps = 
+                match old with
+                    | Some old -> old.dependencies
+                    | _ -> []
+            
+            custom deps (fun self ctx (a,x) ->
+                let(y,cont) = (f a).run ctx x
+                y, run (Some cont)
+            )
+
+        run None
+
 
 [<AutoOpen>]
 module Operators =
+
+    type SFBuilder() =
+        member x.Bind(m : IMod<'a>, f : 'a -> sf<'x, 'y>) =
+            m |> SF.bind f
+
+        member x.For(o : IMod<'a>, f : 'a -> sf<'x, 'x>) =
+            SF.switch2 (SF.ofMod o)
+                (SF.flatten f)
+                (SF.arr id)
+
+        member x.For(o : IObservable<'a>, f : 'a -> sf<'x, 'x>) =
+            SF.switch2 (SF.ofObservable o)
+                (SF.flatten f)
+                (SF.arr id)
+
+        member x.Return(f : 'a -> 'b) =
+            SF.arr f
+
+        member x.ReturnFrom(f : sf<'a, 'b>) =
+            f
+
+        member x.Yield(f : 'a -> 'b) =
+            SF.arr f
+
+        member x.Zero() = SF.arr id
+
+    let sf = SFBuilder()
+
+
+    let test (active : IMod<bool>) (clicks : IObservable<V2i>) =
+        sf {
+            let! a = active
+            if a then
+                for p in clicks do
+                    if p.X > 1000 then
+                        return! SF.stop
+                    else
+                        return fun (l : list<V2i>) ->
+                            p::l
+        }
+
+
     let rec (>>>) (l : sf<'a, 'b>) (r : sf<'b, 'c>) : sf<'a, 'c> =
         SF.custom (l.dependencies @ r.dependencies) (fun self ctx a ->
             let (lv, lc) = l.run ctx a
@@ -451,9 +593,6 @@ module Operators =
 
     let (<||) (r : 'b -> 'c) (l : sf<'a, 'b>) : sf<'a, 'c> =
         l |> SF.mapOut r
-
-
-
 
 
 
@@ -478,8 +617,10 @@ let test () =
 
 
     // start the sf as task
-    res >>> SF.withCancellation cts.Token
-        |> SF.reactimate () (printfn "out: %A") |> Async.Start
+    res
+        |> SF.withCancellation cts.Token
+        |> SF.reactimate (printfn "out: %A") 
+        |> Async.Start
 
     
 
@@ -504,16 +645,23 @@ let test () =
 
 let test2 () = 
     let active = Mod.init false
+    let noStep = Mod.init 0.0
 
-    let time = SF.time ||> (fun t -> float t.Ticks / float TimeSpan.TicksPerSecond)
-    let step = SF.constant 1.0 |> SF.integrate
-    let dt = SF.differentiate time step
+    let stepper = SF.constant 1.0 |> SF.integrate
+    let dt = SF.differentiate SF.time stepper
 
+//    let delta =
+//        SF.switchTrue (SF.latest active)
+//            (dt ||> fun v -> if v > 0.1 then 0.0 else v)
+//            (SF.constant 0.0)
 
     let delta =
-        SF.switchTrue (SF.latest active)
-            dt
-            (SF.constant 0.0)
+        active |> SF.bind (fun v ->
+            if v then 
+                dt ||> fun v -> if v > 0.1 then 0.0 else v
+            else 
+                SF.constant 0.0
+        )
 
     let result = SF.integrate delta
 
@@ -522,8 +670,10 @@ let test2 () =
 
 
     // start the sf as task
-    result >>> SF.withCancellation cts.Token
-        |> SF.reactimate () (printfn "out: %A") |> Async.Start
+    result 
+        |> SF.withCancellation cts.Token
+        |> SF.reactimate (printfn "out: %A") 
+        |> Async.Start
 
 
     while true do
