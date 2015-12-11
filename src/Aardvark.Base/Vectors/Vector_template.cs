@@ -499,6 +499,13 @@ namespace Aardvark.Base
         /// </summary>
         public static readonly __vtype__ Zero = new __vtype__(/*# d.ForEach(i => { */0/*# }, comma); */);
 
+        //# if (ft.IsReal) {
+        /// <summary>
+        /// All elements zero.
+        /// </summary>
+        public static readonly __vtype__ Half = new __vtype__(/*# d.ForEach(i => { */0.5/*# }, comma); */);
+
+        //# } // ft.IsReal
         /// <summary>
         /// All elements one.
         /// </summary>

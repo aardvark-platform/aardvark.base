@@ -6972,6 +6972,11 @@ namespace Aardvark.Base
         public static readonly V2f Zero = new V2f(0, 0);
 
         /// <summary>
+        /// All elements zero.
+        /// </summary>
+        public static readonly V2f Half = new V2f(0.5, 0.5);
+
+        /// <summary>
         /// All elements one.
         /// </summary>
         public static readonly V2f One = new V2f(1, 1);
@@ -10619,6 +10624,11 @@ namespace Aardvark.Base
         /// All elements zero.
         /// </summary>
         public static readonly V2d Zero = new V2d(0, 0);
+
+        /// <summary>
+        /// All elements zero.
+        /// </summary>
+        public static readonly V2d Half = new V2d(0.5, 0.5);
 
         /// <summary>
         /// All elements one.
@@ -24136,6 +24146,11 @@ namespace Aardvark.Base
         public static readonly V3f Zero = new V3f(0, 0, 0);
 
         /// <summary>
+        /// All elements zero.
+        /// </summary>
+        public static readonly V3f Half = new V3f(0.5, 0.5, 0.5);
+
+        /// <summary>
         /// All elements one.
         /// </summary>
         public static readonly V3f One = new V3f(1, 1, 1);
@@ -29510,6 +29525,11 @@ namespace Aardvark.Base
         /// All elements zero.
         /// </summary>
         public static readonly V3d Zero = new V3d(0, 0, 0);
+
+        /// <summary>
+        /// All elements zero.
+        /// </summary>
+        public static readonly V3d Half = new V3d(0.5, 0.5, 0.5);
 
         /// <summary>
         /// All elements one.
@@ -49469,6 +49489,11 @@ namespace Aardvark.Base
         public static readonly V4f Zero = new V4f(0, 0, 0, 0);
 
         /// <summary>
+        /// All elements zero.
+        /// </summary>
+        public static readonly V4f Half = new V4f(0.5, 0.5, 0.5, 0.5);
+
+        /// <summary>
         /// All elements one.
         /// </summary>
         public static readonly V4f One = new V4f(1, 1, 1, 1);
@@ -57147,6 +57172,11 @@ namespace Aardvark.Base
         /// All elements zero.
         /// </summary>
         public static readonly V4d Zero = new V4d(0, 0, 0, 0);
+
+        /// <summary>
+        /// All elements zero.
+        /// </summary>
+        public static readonly V4d Half = new V4d(0.5, 0.5, 0.5, 0.5);
 
         /// <summary>
         /// All elements one.
