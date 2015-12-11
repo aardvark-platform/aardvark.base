@@ -275,6 +275,37 @@ module CSharpInterop =
 module Threading =
     open System.Threading
 
+    type MVar<'a>() =
+        let mutable content = Unchecked.defaultof<ref<'a>>
+        // feel free to replace atomic + sem by appropriate .net synchronization data type
+        let sem = new SemaphoreSlim(0)
+        let mutable cnt = 0
+        member x.Put v = 
+            content <- ref v
+            if Interlocked.Exchange(&cnt, 1) = 0 then
+                sem.Release() |> ignore
+        member x.Take () =
+            sem.Wait()
+            cnt <- 0
+            !Interlocked.Exchange(&content,Unchecked.defaultof<_>)
+        member x.TakeAsync () =
+            async {
+                let! ct = Async.CancellationToken
+                do! Async.AwaitTask(sem.WaitAsync(ct))
+                cnt <- 0
+                return !Interlocked.Exchange(&content,Unchecked.defaultof<_>)
+            }
+        
+    [<CompilationRepresentation(CompilationRepresentationFlags.ModuleSuffix)>]
+    module MVar =
+        let empty () = MVar<'a>()
+        let create a =
+            let v = empty()
+            v.Put a
+        let put (m : MVar<'a>) v = m.Put v
+        let take (m : MVar<'a>) = m.Take()
+        let takeAsync (m : MVar<'a>) = m.TakeAsync ()
+
     let inline private (==) (l : 'a) (r : 'a) =
         Object.ReferenceEquals(l,r)
 
@@ -373,7 +404,7 @@ module Caching =
     let cacheFunction (f : 'a -> 'b) (a : 'a) :  'b =
         memoTable.GetOrAdd((a,f) :> obj, fun (o:obj) -> f a :> obj)  |> unbox<'b>
             
-
+[<CompilationRepresentation(CompilationRepresentationFlags.ModuleSuffix)>]
 module IO =
     open System.IO
 
@@ -383,3 +414,24 @@ module IO =
         if File.Exists path 
         then File.Delete path
         new FileStream(path, FileMode.CreateNew)
+
+
+[<CompilationRepresentation(CompilationRepresentationFlags.ModuleSuffix)>]
+module Path =
+    open System.IO
+
+    let combine (paths : seq<string>) = Path.Combine(paths |> Seq.toArray)
+
+    let andPath first second = combine [| first; second |]
+
+[<CompilationRepresentation(CompilationRepresentationFlags.ModuleSuffix)>]
+module File =
+    open System.IO
+
+    let writeAllLines p lines = File.WriteAllLines (p,lines)
+    let writeAllText  p text  = File.WriteAllText  (p,text)
+    let writeAllBytes p bytes = File.WriteAllBytes (p,bytes)
+
+    let readAllLines p = File.ReadAllLines p
+    let readAllText  p = File.ReadAllText  p
+    let readAllBytes p = File.ReadAllBytes p
