@@ -113,6 +113,14 @@ module ReaderWriterLock =
                     l.ExitWriteLock()
 
 
+type MemoryManagerConfig =
+    {
+        malloc : int -> nativeint
+        mfree : nativeint -> int -> unit
+        mcopy : nativeint -> nativeint -> int -> unit
+
+    }
+
 
 [<AllowNullLiteral>]
 type internal Block =
@@ -254,11 +262,11 @@ and [<AllowNullLiteral>] managedptr internal(block : Block) =
     member x.UInt32Array    : uint32[]  = x.Read(0, block.Size / 4)
     member x.UInt64Array    : uint64[]  = x.Read(0, block.Size / 8)
 
-and MemoryManager(capacity : int, malloc : int -> nativeint, mfree : nativeint -> int -> unit) as this =
+and MemoryManager(capacity : int, config : MemoryManagerConfig) as this =
     let mutable capacity = capacity
     let mutable allocated = 0
 
-    let mutable ptr = malloc capacity
+    let mutable ptr = config.malloc capacity
     let freeList = FreeList<int, Block>()
     let l = obj()
     let pointerLock = new ReaderWriterLockSlim()
@@ -352,10 +360,10 @@ and MemoryManager(capacity : int, malloc : int -> nativeint, mfree : nativeint -
         let oldCapacity = capacity
         let newCapacity = Fun.NextPowerOfTwo(capacity + additional)
         writePointer (fun () ->
-            let n = malloc newCapacity
-            Marshal.Copy(ptr, n, oldCapacity)
+            let n = config.malloc newCapacity
+            config.mcopy ptr n oldCapacity
 
-            mfree ptr capacity
+            config.mfree ptr capacity
             ptr <- n
             capacity <- newCapacity
         )
@@ -410,7 +418,7 @@ and MemoryManager(capacity : int, malloc : int -> nativeint, mfree : nativeint -
             if isNull b.Next || not b.Next.Free || b.Next.Size + b.Size < size then
                 // alloc a completely new block and copy the contents there
                 let n = alloc size
-                readPointer (fun () -> Marshal.Copy(ptr + b.Offset, ptr + n.Offset, b.Size))
+                readPointer (fun () -> config.mcopy (ptr + b.Offset) (ptr + n.Offset) b.Size)
 
                 free b
 
@@ -484,7 +492,7 @@ and MemoryManager(capacity : int, malloc : int -> nativeint, mfree : nativeint -
 
     member x.Dispose() =
         if ptr <> 0n then
-            mfree ptr capacity
+            config.mfree ptr capacity
             ptr <- 0n
             capacity <- 0
             allocated <- 0
@@ -540,6 +548,8 @@ and MemoryManager(capacity : int, malloc : int -> nativeint, mfree : nativeint -
 
     member x.Lock = l
 
+    new(cap,malloc,mfree) = new MemoryManager(cap, { malloc = malloc; mfree = mfree; mcopy = fun a b s -> Marshal.Copy(a, b, s)})
+
     interface IDisposable with
         member x.Dispose() = x.Dispose()
 
@@ -547,10 +557,12 @@ and MemoryManager(capacity : int, malloc : int -> nativeint, mfree : nativeint -
 
 [<CompilationRepresentation(CompilationRepresentationFlags.ModuleSuffix)>]
 module MemoryManager =
-    
     let createHGlobal() = new MemoryManager(16, Marshal.AllocHGlobal, fun ptr _ -> Marshal.FreeHGlobal ptr)
     let createCoTaskMem() = new MemoryManager(16, Marshal.AllocCoTaskMem, fun ptr _ -> Marshal.FreeCoTaskMem ptr)
     let createExecutable() = new MemoryManager(16, ExecutableMemory.alloc, ExecutableMemory.free)
+
+    let private nopConfig = { malloc = (fun _ -> 0n); mfree = (fun _ _ -> ()); mcopy = (fun _ _ _ -> ()) }
+    let createNop() = new MemoryManager(16, nopConfig)
 
     let inline alloc (size : int) (m : MemoryManager) =
         m.Alloc size
