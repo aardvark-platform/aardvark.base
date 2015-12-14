@@ -379,10 +379,6 @@ type AdaptiveObject =
             Monitor.Enter this
             depth := !depth + 1
 
-            if not (isNull caller) then
-                this.Outputs.Add caller |> ignore
-                caller.Level <- max caller.Level (this.Level + 1)
-
             try
                 match otherwise with
                     | Some v when not this.OutOfDate -> 
@@ -412,6 +408,10 @@ type AdaptiveObject =
                             
                         res <- r
 
+
+                if not (isNull caller) then
+                    this.Outputs.Add caller |> ignore
+                    caller.Level <- max caller.Level (this.Level + 1)
 
 
             finally
