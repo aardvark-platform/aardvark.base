@@ -8,6 +8,8 @@
 #r "System.Reactive.Core.dll"
 #r "System.Reactive.Interfaces.dll"
 #r "System.Reactive.Linq.dll"
+#r @"..\..\..\Packages\FsPickler\lib\net45\FsPickler.dll"
+#r @"..\..\..\Packages\FsPickler.Json\lib\net45\FsPickler.Json.dll"
 
 (*
 Challenge:
@@ -179,3 +181,67 @@ module UndoRedo =
     // as you can see, adaptively synthesized leaf nodes automatically update,
     // functional snapshots automatically update and we have time travel.
     // this completes challange (d).
+
+module Persistency =
+
+    // Let us now add persistency for adaptive undoable tree's.
+    // First, let us create a new subclass of serializationBean,
+    // register interceptors via dependency injection etc.
+    // :P
+
+    // No, let us define picklers for pickling and unpickling non-adaptive 
+    // persistent binary trees
+    open Nessos.FsPickler
+    open Nessos.FsPickler.Combinators
+    open Nessos.FsPickler.Json
+    open System.Diagnostics
+    open System.IO
+    open System.Runtime.Serialization.Formatters.Binary
+
+    let p pElement =
+        Pickler.fix (fun self ->
+            Pickler.sum (fun t node leaf ->
+                match t with
+                | PNode (l,r) -> node (l, r)
+                | PLeaf  v    -> leaf v )
+            ^+ Pickler.case PNode (Pickler.pair self self) 
+            ^. Pickler.case PLeaf pElement
+        )
+    let pPTree<'a> = p Pickler.auto<'a>
+
+    let bin = FsPickler.CreateBinarySerializer()
+    let json = FsPickler.CreateJsonSerializer()
+    let serialized = json.PickleToString(testTree1,pPTree)
+    printfn "%s" serialized
+
+    // let us test performance of this simple serialization function
+    let mutable root = PLeaf 1
+    let depth = 18
+    for i in 0 .. depth do
+        root <- PNode(root,root)
+    
+    // let us create a function for measuring performance
+    let timed f = 
+        let sw = Stopwatch()
+        sw.Start()
+        let r = f ()
+        sw.Stop()
+        printfn "function took: %f seconds" sw.Elapsed.TotalSeconds
+        r,sw.Elapsed.TotalSeconds
+
+    printfn "pickling"
+    let bytes,time = timed (fun () -> bin.Pickle(root,pPTree))
+    printfn "running .net"
+
+    let bytes2, time2 = 
+        timed (fun () ->
+            let formatter = new BinaryFormatter();
+            let stream = new MemoryStream()
+            formatter.Serialize(stream, obj);
+            stream.Close();
+            stream.GetBuffer()
+    )
+
+    root <- PLeaf 2
+    printfn "serialization performed: %d bytes total, %d nodes, in %f seconds (%f mb/s)" bytes.Length (pow 2 depth) time (float (float bytes.Length / float (1024 * 1024)) / float time)
+    printfn "serialization performed: %d bytes total, %d nodes, in %f seconds (%f mb/s)" bytes2.Length (pow 2 depth) time (float (float bytes2.Length / float (1024 * 1024)) / float time2)
