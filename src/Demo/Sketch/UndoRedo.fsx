@@ -8,6 +8,7 @@
 #r "System.Reactive.Core.dll"
 #r "System.Reactive.Interfaces.dll"
 #r "System.Reactive.Linq.dll"
+#r @"..\..\..\Packages\Newtonsoft.Json\lib\net45\Newtonsoft.Json.dll"
 #r @"..\..\..\Packages\FsPickler\lib\net45\FsPickler.dll"
 #r @"..\..\..\Packages\FsPickler.Json\lib\net45\FsPickler.Json.dll"
 
@@ -58,8 +59,7 @@ let rec leafNodes t =
     aset {
         match t with 
          | Node(l,r) -> 
-            let! l = l // children are mod, read them adaptively
-            let! r = r
+            let! (l,r) = l,r // children are mod, read them adaptively
             yield! leafNodes l // then recurse and use yield! 
                                // since the rec call returns an aset
             yield! leafNodes r
@@ -182,6 +182,17 @@ module UndoRedo =
     // functional snapshots automatically update and we have time travel.
     // this completes challange (d).
 
+    
+open System.Diagnostics
+// let us create a function for measuring performance
+let timed f = 
+    let sw = Stopwatch()
+    sw.Start()
+    let r = f ()
+    sw.Stop()
+    printfn "function took: %f seconds" sw.Elapsed.TotalSeconds
+    r,sw.Elapsed.TotalSeconds
+
 module Persistency =
 
     // Let us now add persistency for adaptive undoable tree's.
@@ -216,21 +227,15 @@ module Persistency =
 
     // let us test performance of this simple serialization function
     let mutable root = PLeaf 1
-    let depth = 18
+    let depth = 2
     for i in 0 .. depth do
         root <- PNode(root,root)
-    
-    // let us create a function for measuring performance
-    let timed f = 
-        let sw = Stopwatch()
-        sw.Start()
-        let r = f ()
-        sw.Stop()
-        printfn "function took: %f seconds" sw.Elapsed.TotalSeconds
-        r,sw.Elapsed.TotalSeconds
+
 
     printfn "pickling"
     let bytes,time = timed (fun () -> bin.Pickle(root,pPTree))
+    printfn "pickling 2"
+    let bytes3,time3 = timed (fun () -> bin.Pickle(root,pPTree))
     printfn "running .net"
 
     let bytes2, time2 = 
@@ -245,3 +250,4 @@ module Persistency =
     root <- PLeaf 2
     printfn "serialization performed: %d bytes total, %d nodes, in %f seconds (%f mb/s)" bytes.Length (pow 2 depth) time (float (float bytes.Length / float (1024 * 1024)) / float time)
     printfn "serialization performed: %d bytes total, %d nodes, in %f seconds (%f mb/s)" bytes2.Length (pow 2 depth) time (float (float bytes2.Length / float (1024 * 1024)) / float time2)
+    printfn "serialization performed: %d bytes total, %d nodes, in %f seconds (%f mb/s)" bytes3.Length (pow 2 depth) time (float (float bytes2.Length / float (1024 * 1024)) / float time3)

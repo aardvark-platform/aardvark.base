@@ -38,12 +38,34 @@
     <Prefer32Bit>true</Prefer32Bit>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Aardvark.Base">
+      <HintPath>..\..\..\bin\Release\Aardvark.Base.dll</HintPath>
+    </Reference>
+    <Reference Include="Aardvark.Base.Essentials">
+      <HintPath>..\..\..\bin\Release\Aardvark.Base.Essentials.dll</HintPath>
+    </Reference>
+    <Reference Include="Aardvark.Base.FSharp">
+      <HintPath>..\..\..\bin\Release\Aardvark.Base.FSharp.dll</HintPath>
+    </Reference>
+    <Reference Include="Aardvark.Base.FSharp.Tests">
+      <HintPath>..\..\..\bin\Release\Aardvark.Base.FSharp.Tests.dll</HintPath>
+    </Reference>
+    <Reference Include="Aardvark.Base.Incremental">
+      <HintPath>..\..\..\bin\Release\Aardvark.Base.Incremental.dll</HintPath>
+    </Reference>
+    <Reference Include="Aardvark.Base.Incremental.Tests">
+      <HintPath>..\..\..\bin\Release\Aardvark.Base.Incremental.Tests.exe</HintPath>
+    </Reference>
+    <Reference Include="Aardvark.Base.Runtime">
+      <HintPath>..\..\..\bin\Release\Aardvark.Base.Runtime.dll</HintPath>
+    </Reference>
     <Reference Include="mscorlib" />
     <Reference Include="FSharp.Core, Version=$(TargetFSharpCoreVersion), Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
       <Private>True</Private>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Drawing" />
     <Reference Include="System.Numerics" />
   </ItemGroup>
   <ItemGroup>
