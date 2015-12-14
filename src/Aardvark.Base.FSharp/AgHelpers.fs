@@ -47,9 +47,17 @@ module internal AgHelpers =
     let private m_semanticMap = System.Collections.Concurrent.ConcurrentDictionary<string, List<MethodBase>>()
 
     let sprintSemanticFunctions (methodName : string) =
-        match m_semanticMap.TryGetValue methodName with
-         | (true,v) -> v.ToArray() |> Array.fold (fun s e -> sprintf "%s method: %s on type: %s" s e.Name e.DeclaringType.Name) ""
-         | _ -> sprintf "no sem objs for type: %s (m_semanticMap.Count=%d): %s" methodName m_semanticMap.Count (m_semanticMap |> Seq.fold (fun s (KeyValue(k,v)) -> sprintf "%s %s --> %A\n" s k v) "")
+        let message = sprintf "Semantic not found for name %s (m_semanticMap.Count=%d). \nInfo about registered semantic functions:\n\n" methodName m_semanticMap.Count
+        let details = 
+            match m_semanticMap.TryGetValue methodName with
+             | (true,v) -> 
+                [| for sem in v do
+                    let parameters =  sem.GetParameters() |> Array.map (fun pi -> sprintf "%s:%A" pi.Name pi.ParameterType) |> String.concat ", "
+                    let returnType = match sem with | :? MethodInfo as i -> i.ReturnType.Name | _ -> "unknown return type"
+                    yield sprintf "Semantic %s.%s(%s) -> %s " sem.DeclaringType.Name methodName parameters returnType
+                |] |> String.concat "\n" 
+             | _ -> m_semanticMap |> Seq.map (fun (KeyValue(k,v)) -> sprintf "%s --> %A" k v) |> String.concat "\n"
+        sprintf "%s%s" message details
     
     (*=======================================================================================================================*)
     (*                                        Generic overload resolution helpers                                            *)
