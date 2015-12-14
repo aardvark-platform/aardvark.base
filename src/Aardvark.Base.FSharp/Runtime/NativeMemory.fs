@@ -81,6 +81,13 @@ type FreeList<'k, 'v when 'k : comparison>() =
             false
 
 
+    member x.Values =
+        seq {
+            for _,s in sortedSet do
+                yield! s
+        }
+
+
     member x.TryGetGreaterOrEqual (minimal : 'k) = tryGet minimal
     member x.Insert (key : 'k, value : 'v) = insert key value
     member x.Remove (key : 'k, value : 'v) = remove key value
@@ -489,6 +496,10 @@ and MemoryManager(capacity : int, config : MemoryManagerConfig) as this =
     member x.Capacity = capacity
     member x.AllocatedBytes = allocated
     member x.FreeBytes = capacity - allocated
+
+    member x.FreeList =
+        freeList.Values |> Seq.map (fun b -> managedptr(b))
+
 
     member x.Dispose() =
         if ptr <> 0n then
