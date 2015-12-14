@@ -1,18 +1,4 @@
-﻿#I @"..\..\..\bin\Release"
-#r "Aardvark.Base.dll"
-#r "Aardvark.Base.Essentials.dll"
-#r "Aardvark.Base.TypeProviders.dll"
-#r "Aardvark.Base.FSharp.dll"
-#r "Aardvark.Base.Incremental.dll"
-#r "Aardvark.Base.Incremental.Tests.exe"
-#r "System.Reactive.Core.dll"
-#r "System.Reactive.Interfaces.dll"
-#r "System.Reactive.Linq.dll"
-#r @"..\..\..\Packages\Newtonsoft.Json\lib\net45\Newtonsoft.Json.dll"
-#r @"..\..\..\Packages\FsPickler\lib\net45\FsPickler.dll"
-#r @"..\..\..\Packages\FsPickler.Json\lib\net45\FsPickler.Json.dll"
-
-(*
+﻿(*
 Challenge:
 
 a) create a binary tree which stores single elements in leafs.
@@ -251,3 +237,69 @@ module Persistency =
     printfn "serialization performed: %d bytes total, %d nodes, in %f seconds (%f mb/s)" bytes.Length (pow 2 depth) time (float (float bytes.Length / float (1024 * 1024)) / float time)
     printfn "serialization performed: %d bytes total, %d nodes, in %f seconds (%f mb/s)" bytes2.Length (pow 2 depth) time (float (float bytes2.Length / float (1024 * 1024)) / float time2)
     printfn "serialization performed: %d bytes total, %d nodes, in %f seconds (%f mb/s)" bytes3.Length (pow 2 depth) time (float (float bytes2.Length / float (1024 * 1024)) / float time3)
+
+
+module Performance =
+    open System.Collections.Generic
+
+    let leaf v = Leaf (Mod.init v)
+    let node l r = Node (Mod.init l, Mod.init r)
+
+    let rec buildBigTree current = // 2^current inner nodes - 1, 2^current leafs
+        if current = 0 then 
+            leaf 1, []
+        else
+            let l,lrefs = buildBigTree (current - 1) 
+            let r,rrefs = buildBigTree (current - 1) 
+            let lm = Mod.init l
+            let rm = Mod.init r
+            Node(lm, rm), lm::rm::(lrefs @ rrefs)
+
+    let rec extractLeafs t =    
+        seq {
+            match t with
+             | Node(l,r) ->
+                yield! extractLeafs (Mod.force l) 
+                yield! extractLeafs (Mod.force r)
+             | Leaf v -> yield Mod.force v
+        }
+
+    let test () =
+
+
+        let (buildBigTree0,refs),elapsedBuild = timed (fun () -> buildBigTree 3)
+
+        let r,s = timed (fun () -> buildBigTree0 |> extractLeafs |> Seq.toArray)
+        printfn "rebuild took: %As" s
+    
+
+        let r = buildBigTree0 |> leafNodes
+
+
+        let reader = r |> ASet.toMod 
+        reader |> Mod.force |> ignore
+        Aardvark.Base.Incremental.Validation.IAdaptiveObjectValidationExtensions.Dump(reader,10000) |> File.writeAllText @"C:\Aardwork\dump.txt"
+        Aardvark.Base.Incremental.Validation.IAdaptiveObjectValidationExtensions.DumpDgml(reader,1000,@"C:\Aardwork\Graph.dgml") |> ignore
+
+        let list,elapsedFold = timed (fun () -> reader.GetValue() )
+        let l,elapsedPull = timed (fun () -> list |> Seq.toList |> List.map Mod.force)
+
+        let l,elapsedD = 
+            timed (fun () -> 
+                let x = HashSet(list |> Seq.toList)
+                let y = HashSet(list |> Seq.toList)
+                let a = x |> Seq.filter (fun s -> y.Contains s |> not) |> Seq.toList
+                let b = y |> Seq.filter (fun s -> x.Contains s |> not) |> Seq.toList
+                ())
+
+        printfn "differnece took: %As" elapsedD
+        printfn "build took: %Ams, fold too: %As" elapsedBuild elapsedFold 
+        printfn "force took: %As" elapsedPull
+
+        let last = refs |> List.last 
+        let _,reexElapsed = timed (fun () -> transact (fun () -> Mod.change last (leaf 10)); reader.GetValue() )
+        printfn "reex: %As" reexElapsed
+
+
+[<EntryPoint>]
+let main args = Performance.test(); 0
