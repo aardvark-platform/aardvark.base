@@ -322,85 +322,145 @@ module InvertibleDelta =
     let map f (a,b) = (Delta.map f a, Delta.map f b)
 
 type IUList<'a> =
-    abstract member GetDelta : obj -> list<Delta<'a>>
+    abstract member GetDelta : IAdaptiveObject -> list<Delta<'a>>
 
 type UList<'a>(initial : seq<'a>) =
+    inherit AdaptiveObject()
+
     let pending = HashSet<_>(initial |> Seq.map Add)
+    
+    member x.emit() =
+        if not x.OutOfDate then
+            match getCurrentTransaction() with
+             | Some t ->  t.Enqueue x
+             | None -> failwith "not in transaction"
+
     member x.Add v =
         pending.Add(Add v)
+        
+        x.emit()
     member x.Remove v =
         pending.Add(Rem v)
+        x.emit()
 
-    interface IUList<'a> with
-        member x.GetDelta (caller : obj) =
+    member x.GetDelta caller =
+        x.EvaluateIfNeeded x [] (fun () -> 
             let r = pending |> Seq.toList 
             pending.Clear()
             r
+        )
+
+    interface IUList<'a> with
+        member x.GetDelta caller = x.GetDelta x
 
 type Map<'a,'b>(s : IUList<'a>,f : 'a -> 'b) =
-    interface IUList<'b> with
-        member x.GetDelta o =
+    inherit AdaptiveObject()
+    member x.GetDelta caller =
+        x.EvaluateIfNeeded x [] (fun () -> 
             let invs = s.GetDelta x
             invs |> List.map (Delta.map f)
+        )
+    interface IUList<'b> with
+        member x.GetDelta o = x.GetDelta o
 
 type Collect<'a,'b when 'a : equality>(s : IUList<'a>, f : 'a -> IUList<'b>) =
+    inherit AdaptiveObject()
     let removals = Dictionary<'a, list<Delta<'b>>>()
     let activeOutputs = Dictionary<'a, IUList<'b>>()
-    interface IUList<'b> with
-        member x.GetDelta v = 
-            let source = s.GetDelta x
-            let ds = [ for op in source do 
-                        match op with
-                         | Rem v -> 
+    member x.GetDelta caller = 
+        let source = s.GetDelta caller
+        let ds = [ for op in source do 
+                    match op with
+                        | Rem v -> 
                             activeOutputs.Remove v |> ignore
                             match removals.TryGetValue v with
-                             | (true,xs) -> yield! xs
-                             | _ -> ()
-                         | Add fresh ->
+                                | (true,xs) -> yield! xs
+                                | _ -> ()
+                        | Add fresh ->
                             let newU = f fresh
                             let boundOnFresh = newU.GetDelta x
                             removals.Add(fresh, boundOnFresh)
                             activeOutputs.Add(fresh, newU)
                             yield! boundOnFresh
-                     ]
-            ds @ [ for (KeyValue(k,v)) in activeOutputs do yield! v.GetDelta()]
-
+                    ]
+        ds @ [ for (KeyValue(k,v)) in activeOutputs do yield! v.GetDelta x]
+    interface IUList<'b> with
+        member x.GetDelta o = x.GetDelta o
+        
 type Observation<'a>(input : IUList<'a>) =
+    inherit AdaptiveObject()
     let content = HashSet<_>()
 
-    let bringUpToDate () =
-        for i in input.GetDelta() do
-            match i with
-             | Add v -> content.Add v |> ignore
-             | Rem v -> content.Remove v |> ignore
+    member x.GetContent () =
+        x.EvaluateAlways x (fun () -> 
+            for i in input.GetDelta x do
+                match i with
+                 | Add v -> content.Add v |> ignore
+                 | Rem v -> content.Remove v |> ignore
+            content |> Seq.toList
+        )
 
-    member x.Content =
-        bringUpToDate()
-        content |> Seq.toList
-    
+type Bind<'a,'b>(m : IMod<'a>, f : 'a -> IUList<'b>) =
+    inherit AdaptiveObject()
+    let mutable lastA = Unchecked.defaultof<_>
+    let lastProduced = HashSet<Delta<'b>>()
+
+    member x.GetDelta caller =
+        x.EvaluateAlways x (fun () ->
+            let a = m.GetValue x
+            let r = f a
+            let outer = 
+                if Unchecked.equals r lastA then 
+                    []
+                else 
+                    let er = lastProduced |> Seq.toList
+                    lastProduced.Clear()
+                    for p in r.GetDelta x do lastProduced.Add p |> ignore
+                    er
+            let inner = 
+                if Unchecked.equals Unchecked.defaultof<_> lastA then [] 
+                else 
+                    let ne = lastA.GetDelta x
+                    for p in ne do lastProduced.Add p |> ignore
+                    ne
+            lastA <- r
+            inner @ outer
+        )
+
+    interface IUList<'b> with
+        member x.GetDelta caller = x.GetDelta caller  
             
 let collect f xs = Collect<_,_>(xs,f) :> IUList<_>
 let map f xs = Map<_,_>(xs,f) :> IUList<_>
 let observe xs = Observation<_>(xs) 
 let ulist xs = UList<_>(xs) :> IUList<_>
-
+let bind m f = Bind<_,_>(m,f) :> IUList<_>
 
 let test2 () =
 
     let input = UList []
 
-    let a = UList [1]
-    let b = UList [2]
-
+    let a = UList []
+    let b = UList []
+    let mo = Mod.init 5
     let ab = ulist [a :> IUList<_>;b :> _]
-    let ab = ab |> collect (fun a -> a) |> observe
+    let ab = ab |> collect (fun a -> bind mo (fun v -> if v < 10 then a else input :> _))
+    let r = ab |> observe
     //let r = observe col
-    printfn "%A " ab.Content
+    printfn "%A " <| r.GetContent()
 
-    a.Add 10 |> ignore
-    b.Add 5 |> ignore
+    transact (fun () -> 
+        a.Add 10 |> ignore
+    )
     
-    printfn "%A " ab.Content
+    printfn "%A " <| r.GetContent()
+
+    transact (fun () -> 
+        Mod.change mo 15
+        a.Add 12 |> ignore
+    )
+    
+    printfn "%A " <| r.GetContent()
 
 [<EntryPoint>]
 let main args =
