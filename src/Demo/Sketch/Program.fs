@@ -316,56 +316,94 @@ module Delta =
          | Add v -> Add <| f v
          | Rem v -> Rem <| f v
 
-type Observation<'a>() =
-    let content = HashSet()
-    member x.Content = content |> Seq.toList
-    member x.Continue(d : Delta<'a>) = 
-        match d with
-            | Add v -> content.Add v |> ignore; fun () -> (content.Remove v |> ignore)
-            | Rem v -> content.Remove v |> ignore; id
+type InvertibleDelta<'a> = Delta<'a> * Delta<'a>
 
-type Cont<'a> = Delta<'a> -> (Observation<'a> -> unit)
+module InvertibleDelta =
+    let map f (a,b) = (Delta.map f a, Delta.map f b)
 
-type IUList<'a> = 
-    abstract member GetValue : Cont<'a>
+type IUList<'a> =
+    abstract member GetDelta : obj -> list<Delta<'a>>
 
-type Source<'a when 'a : equality>(output : IUList<'a>) =
-    let buffer = Dictionary<'a,unit->unit>()
+type UList<'a>(initial : seq<'a>) =
+    let pending = HashSet<_>(initial |> Seq.map Add)
+    member x.Add v =
+        pending.Add(Add v)
+    member x.Remove v =
+        pending.Add(Rem v)
 
-    member x.Add (v:'a) = 
-        buffer.Add v
-    member x.Rem v = 
-        match content.TryRemove v with
-         | (true,d) -> d(); true
-         | _ -> false
-
-    member x.GetValue()
-
-type Map<'a,'b>(output : IUList<'b>,f ) =
     interface IUList<'a> with
-        member x.Continue d =
-            match d with
-             | Add v -> output.Continue (Add <| f v)
-             | Rem v -> output.Continue (Rem <| f v)
+        member x.GetDelta (caller : obj) =
+            let r = pending |> Seq.toList 
+            pending.Clear()
+            r
+
+type Map<'a,'b>(s : IUList<'a>,f : 'a -> 'b) =
+    interface IUList<'b> with
+        member x.GetDelta o =
+            let invs = s.GetDelta x
+            invs |> List.map (Delta.map f)
+
+type Collect<'a,'b when 'a : equality>(s : IUList<'a>, f : 'a -> IUList<'b>) =
+    let removals = Dictionary<'a, list<Delta<'b>>>()
+    let activeOutputs = Dictionary<'a, IUList<'b>>()
+    interface IUList<'b> with
+        member x.GetDelta v = 
+            let source = s.GetDelta x
+            let ds = [ for op in source do 
+                        match op with
+                         | Rem v -> 
+                            activeOutputs.Remove v |> ignore
+                            match removals.TryGetValue v with
+                             | (true,xs) -> yield! xs
+                             | _ -> ()
+                         | Add fresh ->
+                            let newU = f fresh
+                            let boundOnFresh = newU.GetDelta x
+                            removals.Add(fresh, boundOnFresh)
+                            activeOutputs.Add(fresh, newU)
+                            yield! boundOnFresh
+                     ]
+            ds @ [ for (KeyValue(k,v)) in activeOutputs do yield! v.GetDelta()]
+
+type Observation<'a>(input : IUList<'a>) =
+    let content = HashSet<_>()
+
+    let bringUpToDate () =
+        for i in input.GetDelta() do
+            match i with
+             | Add v -> content.Add v |> ignore
+             | Rem v -> content.Remove v |> ignore
+
+    member x.Content =
+        bringUpToDate()
+        content |> Seq.toList
+    
+            
+let collect f xs = Collect<_,_>(xs,f) :> IUList<_>
+let map f xs = Map<_,_>(xs,f) :> IUList<_>
+let observe xs = Observation<_>(xs) 
+let ulist xs = UList<_>(xs) :> IUList<_>
 
 
+let test2 () =
 
-type CUList<'a when 'a : equality>() =
-    let sources = List<Source<'a>>()
-    member x.Add v =    
-        for s in sources do s.Add v |> ignore
-    member x.Remove v = 
-        for s in sources do s.Rem v |> ignore
+    let input = UList []
 
-let test2 () = 
-    let result = Observation<int>()
-    let s = Source<int>(Map(result, ((+)1)))
-    s.Add 1 |> ignore
-    s.Rem 2 |> ignore
-    printfn "%A" result.Content
+    let a = UList [1]
+    let b = UList [2]
+
+    let ab = ulist [a :> IUList<_>;b :> _]
+    let ab = ab |> collect (fun a -> a) |> observe
+    //let r = observe col
+    printfn "%A " ab.Content
+
+    a.Add 10 |> ignore
+    b.Add 5 |> ignore
+    
+    printfn "%A " ab.Content
 
 [<EntryPoint>]
-let main args = 
-    test2 ()
+let main args =
+    test2() 
     //Performance.test(); 0
     0
