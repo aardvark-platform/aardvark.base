@@ -300,6 +300,72 @@ module Performance =
         let _,reexElapsed = timed (fun () -> transact (fun () -> Mod.change last (leaf 10)); reader.GetValue() )
         printfn "reex: %As" reexElapsed
 
+open Aardvark.Base.Incremental
+open System.Collections.Generic
+
+open System.Runtime.InteropServices 
+type Dictionary<'a,'b> with
+    member x.TryRemove(k,[<Out>] r: byref<'b>) =
+        match x.TryGetValue k with
+         | (true,v) -> r <- v; true
+         | _ -> false
+
+module Delta =
+    let map f x =
+        match x with 
+         | Add v -> Add <| f v
+         | Rem v -> Rem <| f v
+
+type Observation<'a>() =
+    let content = HashSet()
+    member x.Content = content |> Seq.toList
+    member x.Continue(d : Delta<'a>) = 
+        match d with
+            | Add v -> content.Add v |> ignore; fun () -> (content.Remove v |> ignore)
+            | Rem v -> content.Remove v |> ignore; id
+
+type Cont<'a> = Delta<'a> -> (Observation<'a> -> unit)
+
+type IUList<'a> = 
+    abstract member GetValue : Cont<'a>
+
+type Source<'a when 'a : equality>(output : IUList<'a>) =
+    let buffer = Dictionary<'a,unit->unit>()
+
+    member x.Add (v:'a) = 
+        buffer.Add v
+    member x.Rem v = 
+        match content.TryRemove v with
+         | (true,d) -> d(); true
+         | _ -> false
+
+    member x.GetValue()
+
+type Map<'a,'b>(output : IUList<'b>,f ) =
+    interface IUList<'a> with
+        member x.Continue d =
+            match d with
+             | Add v -> output.Continue (Add <| f v)
+             | Rem v -> output.Continue (Rem <| f v)
+
+
+
+type CUList<'a when 'a : equality>() =
+    let sources = List<Source<'a>>()
+    member x.Add v =    
+        for s in sources do s.Add v |> ignore
+    member x.Remove v = 
+        for s in sources do s.Rem v |> ignore
+
+let test2 () = 
+    let result = Observation<int>()
+    let s = Source<int>(Map(result, ((+)1)))
+    s.Add 1 |> ignore
+    s.Rem 2 |> ignore
+    printfn "%A" result.Content
 
 [<EntryPoint>]
-let main args = Performance.test(); 0
+let main args = 
+    test2 ()
+    //Performance.test(); 0
+    0

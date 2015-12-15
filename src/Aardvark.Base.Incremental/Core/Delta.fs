@@ -64,6 +64,11 @@ module Delta =
                     for i in 1..-(!nullCount) do yield Rem Unchecked.defaultof<_>
                 ]
 
+    let map f x =
+        match x with 
+         | Add v -> Add <| f v
+         | Rem v -> Rem <| f v
+
 /// <summary>
 /// a simple module for creating unique ids
 /// </summary>
