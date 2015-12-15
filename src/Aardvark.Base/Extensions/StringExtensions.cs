@@ -102,6 +102,23 @@ namespace Aardvark.Base
             return DateTime.Parse(self, Localization.FormatEnUS);
         }
 
+        public static decimal ToDecimal(this string self, decimal def)
+        {
+            decimal result;
+
+            if (!decimal.TryParse(self, out result))
+            {
+                result = def; 
+            }
+
+            return result;
+        }
+
+        public static decimal ToDecimal(this string self)
+        {
+            return decimal.Parse(self, Localization.FormatEnUS);
+        }
+
         #endregion
 
         #region Manipulations
