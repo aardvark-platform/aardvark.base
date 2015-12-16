@@ -1,8 +1,24 @@
+#I @"..\..\..\bin\Release"
+#I @"..\..\..\Packages\Rx-Core\lib\net45"
+#I @"..\..\..\Packages\Rx-Interfaces\lib\net45"
+#I @"..\..\..\Packages\Rx-Linq\lib\net45"
+#r "Aardvark.Base.dll"
+#r "Aardvark.Base.Essentials.dll"
+#r "Aardvark.Base.TypeProviders.dll"
+#r "Aardvark.Base.FSharp.dll"
+#r "Aardvark.Base.Incremental.dll"
+#r "System.Reactive.Core.dll"
+#r "System.Reactive.Interfaces.dll"
+#r "System.Reactive.Linq.dll"
+
+
+
 open System
 open System.Runtime.CompilerServices
 open System.Collections
 open System.Collections.Generic
-
+open Aardvark.Base
+open Aardvark.Base.Incremental
 
 type Measure<'a, 'm> = { f : 'a -> 'm; add : 'm -> 'm -> 'm; zero : 'm}
 
@@ -100,8 +116,20 @@ module private FingerTreeNode =
                 | Three(m,_,_,_) -> m
                 | Four(m,_,_,_,_) -> m
 
+        let first (a : Affix<'a, 'm>) =
+            match a with
+                | One(_,a) -> a
+                | Two(_,a,_) -> a
+                | Three(_,a,_,_) -> a
+                | Four(_,a,_,_,_) -> a
   
-
+        let last (a : Affix<'a, 'm>) =
+            match a with
+                | One(_,a) -> a
+                | Two(_,_,a) -> a
+                | Three(_,_,_,a) -> a
+                | Four(_,_,_,_,a) -> a
+  
     module Node =
         let toAffix(n : Node<'a,'m>) = Affix.ofNode n
 
@@ -716,26 +744,63 @@ module SortedList =
     let toArray (s : SortedList<'a>) =
         s.tree.ViewLeft |> Seq.toArray
 
-    let split (v : 'a) (s : SortedList<'a>) =
+    let splitLessOrEqual (v : 'a) (s : SortedList<'a>) =
         match FingerTree.split (fun vi -> vi >= Some v) s.tree with
             | Split(l,x,r) ->
                 let c = compare x v
                 if c > 0 then ({ tree = l }, { tree = FingerTree.prepend x r})
-                elif c < 0 then ({ tree = FingerTree.append x l }, { tree = r })
                 else ({ tree = FingerTree.append x l }, { tree = r })
+
             | NoSplit ->
                 (s, empty)
 
-    let min (s : SortedList<'a>) =
-        s.tree.ViewLeft |> Seq.head
+    let splitLess (v : 'a) (s : SortedList<'a>) =
+        match FingerTree.split (fun vi -> vi >= Some v) s.tree with
+            | Split(l,x,r) ->
+                let c = compare x v
+                if c < 0 then ({ tree = FingerTree.append x l }, { tree = r })
+                else ({ tree = l }, { tree = FingerTree.prepend x r})
+            | NoSplit ->
+                (s, empty)
 
-    let max (s : SortedList<'a>) =
-        s.tree.ViewRight |> Seq.head
+    let inline split (v : 'a) (s : SortedList<'a>) =
+        splitLessOrEqual v s
+
+    let minOpt (s : SortedList<'a>) =
+        match s.tree.root with
+            | Empty -> None
+            | Single x -> Some(x)
+            | Deep { prefix = p } ->
+                Some (Affix.first p)
+
+    let maxOpt (s : SortedList<'a>) =
+        match s.tree.root with
+            | Empty -> None
+            | Single x -> Some(x)
+            | Deep { suffix = s } ->
+                Some (Affix.last s)
+
+    let rangeOpt (s : SortedList<'a>) =
+        match s.tree.root with
+            | Empty -> None
+            | Single x -> Some(x,x)
+            | Deep { prefix = p; suffix = s } ->
+                Some (Affix.first p, Affix.last s)
+
+    let inline max (s : SortedList<'a>) =
+        s |> maxOpt |> Option.get
+
+    let inline min (s : SortedList<'a>) =
+        s |> minOpt |> Option.get
+
+    let inline range (s : SortedList<'a>) =
+        s |> rangeOpt |> Option.get
 
     let isEmpty (s : SortedList<'a>) =
-        match FingerTree.total s.tree with
-            | Some _ -> false
-            | None -> true
+        match s.tree.root with
+            | Empty -> true
+            | _ -> false
+
 
     let union (l : SortedList<'a>) (r : SortedList<'a>) =
         let lt = FingerTree.total l.tree
@@ -746,14 +811,27 @@ module SortedList =
             | Some _, None -> l
             | None, Some _ -> r
             | Some lv, Some rv ->
-                let rightMin = r.tree.ViewLeft |> Seq.head
+                let rightMin = min r
+                let leftMin = min l
                 if lv < rightMin then
                     { tree = FingerTree.concat l.tree r.tree }
+                elif rv < leftMin then
+                    { tree = FingerTree.concat r.tree l.tree }
                 else
                     let mutable res = l
                     for e in r.tree.ViewLeft do
                         res <- add e res
                     res
+
+    let unsafeConcatWithMiddle (l : SortedList<'a>) (m : list<'a>) (r : SortedList<'a>) =
+        { tree = FingerTree.concatWithMiddle l.tree m r.tree }
+   
+    let unsafeAppendRange (l : SortedList<'a>) (r : list<'a>) =
+        { tree = FingerTree.concatWithMiddle l.tree r (FingerTree.custom m) }
+    
+    let unsafePrependRange (l : list<'a>) (r : SortedList<'a>) =
+        { tree = FingerTree.concatWithMiddle (FingerTree.custom m) l r.tree }
+
 
     let viewl (l : SortedList<'a>) =
         match FingerTree.viewl l.tree with
@@ -765,7 +843,261 @@ module SortedList =
             | Some(v,rest) -> Some(v, { tree = rest })
             | None -> None
 
+    let replaceRangeInclusive (firstInclusive : 'a) (lastInclusive : 'a) (newElements : list<'a>) (s : SortedList<'a>) =
+        let inRange = newElements |> List.forall (fun v -> v >= firstInclusive && v <= lastInclusive)
+        let (l, rest) = splitLess firstInclusive s
+        let (_,r) = splitLessOrEqual lastInclusive rest
 
+        if inRange then
+            { tree = FingerTree.concatWithMiddle l.tree newElements r.tree }
+        else
+            let maxE = newElements |> List.max
+            let minE = newElements |> List.min
+
+            if maxE < min l then
+                let l' = List.foldBack FingerTree.prepend newElements l.tree
+                { tree = FingerTree.concat l' r.tree}
+            elif minE > max r then
+                let r' = List.fold (fun s e -> FingerTree.append e s) r.tree newElements
+                { tree = FingerTree.concat l.tree r' }
+            else
+                let mutable l = l
+                for e in newElements do l <- add e l
+                union l r
+
+    let replaceRangeExclusive (firstExclusive : 'a) (lastExclusive : 'a) (newElements : list<'a>) (s : SortedList<'a>) =
+        let inRange = newElements |> List.forall (fun v -> v > firstExclusive && v < lastExclusive)
+        let (l, rest) = splitLessOrEqual firstExclusive s
+        let (_,r) = splitLess lastExclusive rest
+
+        if inRange then
+            { tree = FingerTree.concatWithMiddle l.tree newElements r.tree }
+        else
+            let maxE = newElements |> List.max
+            let minE = newElements |> List.min
+
+            if maxE < min l then
+                let l' = List.foldBack FingerTree.prepend newElements l.tree
+                { tree = FingerTree.concat l' r.tree}
+            elif minE > max r then
+                let r' = List.fold (fun s e -> FingerTree.append e s) r.tree newElements
+                { tree = FingerTree.concat l.tree r' }
+            else
+                let mutable l = l
+                for e in newElements do l <- add e l
+                union l r
+
+
+
+[<CustomComparison; CustomEquality>]
+type private HalfRange = 
+    struct
+        val mutable public Value : int
+        val mutable public IsMax : bool
+
+        new(v,m) = { Value = v; IsMax = m }
+
+        interface IComparable with
+            member x.CompareTo(o) =
+                match o with
+                    | :? HalfRange as o -> 
+                        let c = compare x.Value o.Value
+                        if c <> 0 then c
+                        else compare (if x.IsMax then 1 else 0) (if o.IsMax then 1 else 0)
+
+                    | _ -> failwith "uncomparable"
+
+        override x.GetHashCode() =
+            HashCode.Combine(x.Value.GetHashCode(), x.IsMax.GetHashCode())
+
+        override x.Equals o =
+            match o with
+                | :? HalfRange as o -> o.Value = x.Value && o.IsMax = x.IsMax
+                | _ -> false
+
+        override x.ToString() =
+            if x.IsMax then sprintf "Leq %d" x.Value
+            else sprintf "Geq %d" x.Value
+
+    end
+
+[<StructuredFormatDisplay("{AsString}")>]
+type IntervalTree = private { list : SortedList<HalfRange> } with
+
+    interface System.Collections.IEnumerable with
+        member x.GetEnumerator() = 
+            new IntervalEnumerator(x.list |> SortedList.toSeq) :> System.Collections.IEnumerator
+
+    interface IEnumerable<Range1i> with
+        member x.GetEnumerator() = 
+            new IntervalEnumerator(x.list |> SortedList.toSeq) :> IEnumerator<_>
+
+    member private x.AsString =
+        x |> Seq.toList |> sprintf "%A"
+
+and private IntervalEnumerator(input : seq<HalfRange>) =
+    let mutable e = input.GetEnumerator()
+    let mutable last = Unchecked.defaultof<HalfRange>
+    let mutable current = Unchecked.defaultof<HalfRange>
+
+    member x.Current =
+        Range1i(last.Value, current.Value - 1)
+
+    interface System.Collections.IEnumerator with
+        member x.MoveNext() =
+            if e.MoveNext() then
+                last <- e.Current
+                if e.MoveNext() then
+                    current <- e.Current
+                    true
+                else
+                    false
+            else
+                false
+        
+        member x.Current = x.Current :> obj
+        member x.Reset() =
+            e.Reset()
+            last <- Unchecked.defaultof<_>
+            current <- Unchecked.defaultof<_>
+
+    interface IEnumerator<Range1i> with
+        member x.Dispose() =
+            e.Dispose()
+
+        member x.Current = x.Current
+
+
+[<CompilationRepresentation(CompilationRepresentationFlags.ModuleSuffix)>]
+module IntervalTree = 
+
+    [<AutoOpen>]
+    module private HalfRanges =
+        let Leq v =
+            HalfRange(v, true)
+
+        let Geq v =
+            HalfRange(v, false)
+
+        let (|Leq|Geq|) (r : HalfRange) =
+            if r.IsMax then Leq r.Value
+            else Geq r.Value
+        
+
+        let inline value (r : HalfRange) = r.Value
+
+    let empty = { list = SortedList.empty }
+
+    let min (t : IntervalTree) =
+        t.list |> SortedList.min |> value
+
+    let max (t : IntervalTree) =
+        t.list |> SortedList.max |> value
+
+    let insert (r : Range1i) (t : IntervalTree) =
+        let r = Range1i(r.Min, r.Max + 1)
+        if SortedList.isEmpty t.list then
+            { list = SortedList.ofList [Geq r.Min; Leq r.Max] }
+        else
+            let (left,rest) = t.list |> SortedList.splitLess (Leq r.Min)
+            let (inner,right) = rest |> SortedList.splitLessOrEqual (Geq r.Max)
+
+            let smaller = SortedList.viewr left |> Option.map fst
+            let greater = SortedList.viewl right  |> Option.map fst
+
+
+            match smaller, greater with
+                | None, None ->
+                    { list = SortedList.ofList [Geq r.Min; Leq r.Max] }
+                | Some s, None ->
+                    match s with
+                        | Leq v ->
+                            { list = SortedList.unsafeAppendRange left [Geq r.Min; Leq r.Max] }
+                        | Geq v ->
+                            { list = SortedList.unsafeAppendRange left [Leq r.Max] }
+
+                | None, Some g ->
+                    match g with
+                        | Leq v ->
+                            { list = SortedList.unsafePrependRange [Geq r.Min] right }
+                        | Geq v ->
+                            { list = SortedList.unsafePrependRange [Geq r.Min; Leq r.Max] right }
+
+                | Some s, Some g ->
+                    match s, g with
+                        | Leq lmax, Leq rmax ->
+                            { list = SortedList.unsafeConcatWithMiddle left [Geq r.Min] right }
+
+                        | Leq lmax, Geq rmin ->
+                            { list = SortedList.unsafeConcatWithMiddle left [Geq r.Min; Leq r.Max] right }
+
+                        | Geq lmin, Leq rmax ->
+                            { list = SortedList.unsafeConcatWithMiddle left [] right }
+
+                        | Geq lmin, Geq rmin ->
+                            { list = SortedList.unsafeConcatWithMiddle left [Leq r.Max] right }
+
+    let remove (r : Range1i) (t : IntervalTree) =
+        let r = Range1i(r.Min, r.Max + 1)
+
+        if SortedList.isEmpty t.list then
+            { list = t.list }
+        else
+            let (left,rest) = t.list |> SortedList.splitLess (Leq r.Min)
+            let (inner,right) = rest |> SortedList.splitLessOrEqual (Geq r.Max)
+
+            let smaller = SortedList.viewr left |> Option.map fst
+            let greater = SortedList.viewl right  |> Option.map fst
+
+
+            match smaller, greater with
+                | None, None ->
+                    { list = SortedList.ofList [] }
+                | Some s, None ->
+                    match s with
+                        | Leq v ->
+                            { list = left }
+                        | Geq v ->
+                            { list = SortedList.unsafeAppendRange left [Leq r.Min] }
+
+                | None, Some g ->
+                    match g with
+                        | Leq v ->
+                            { list = SortedList.unsafePrependRange [Geq r.Max] right }
+                        | Geq v ->
+                            { list = right }
+
+                | Some s, Some g ->
+                    match s, g with
+                        | Leq lmax, Leq rmax ->
+                            { list = SortedList.unsafeConcatWithMiddle left [Geq r.Max] right }
+
+                        | Leq lmax, Geq rmin ->
+                            { list = SortedList.unsafeConcatWithMiddle left [] right }
+
+                        | Geq lmin, Leq rmax ->
+                            { list = SortedList.unsafeConcatWithMiddle left [Leq r.Min; Geq r.Max] right }
+
+                        | Geq lmin, Geq rmin ->
+                            { list = SortedList.unsafeConcatWithMiddle left [Leq r.Min] right }
+
+
+    let toSeq (t : IntervalTree) = t :> seq<_>
+    let toList (t : IntervalTree) = t |> Seq.toList
+    let toArray (t : IntervalTree) = t |> Seq.toArray
+
+    let ofSeq (s : seq<Range1i>) =
+        let mutable res = empty
+        for r in s do res <- insert r res
+        res
+
+    let ofList (l : list<Range1i>) =
+        l |> ofSeq
+
+    let ofArray (a : Range1i[]) =
+        a |> ofSeq
+
+          
 
 // some tests
 module Test =
@@ -833,5 +1165,16 @@ module Test =
         let merged = SortedList.union a b
         printfn "merged = %A" merged
 
+        printfn "range(a) = %A" (SortedList.range a)
+        printfn "range(b) = %A" (SortedList.range b)
 
 
+        let test = l |> SortedList.replaceRangeInclusive 4 10 [8]
+        printfn "l = %A" l
+        printfn "test = %A" test
+
+
+    let run3() =
+        let res = IntervalTree.ofList [Range1i(0,4); Range1i(6,10); Range1i(12,20)]
+
+        printfn "%A" res
