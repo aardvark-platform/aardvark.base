@@ -1002,43 +1002,6 @@ module ``collect tests`` =
         //result |> ASet.unsafeRegisterCallbackKeepDisposable (printfn "%A") |> ignore
         ()
 
-    [<Test>]
-    let ``[ASet] memory test`` () =
-
-        //total e9206773e69bfe38e737c434d5496c9d56332160: 
-        //total: 
-        //5346872L
-        //, per aset: 
-        //5346.872
-        // (bytes)
-        let t = Thread(ThreadStart(fun () ->
-            
-            let mutable m = CSet.ofList [0] :> aset<_>
-
-            let mem = System.GC.GetTotalMemory(true)
-
-            let size = 1000
-
-            for i in 1 .. size do
-                m <- ASet.map id m
-
-            let r = m.GetReader()
-            r.Update()
-
-            let memAfter = System.GC.GetTotalMemory(true)
-            let diff = memAfter - mem
-            let sizePerMod = float diff / float (2 * size)
-
-            printfn "per aset: %A (bytes)" (float diff / float size)
-
-            printfn "per reader: %A (bytes)" sizePerMod
-
-            r.Update()
-            r.Dispose()
-        ), 100000000)
-        t.Start()
-        t.Join()
-
 
     [<Test>]
     let ``[ASet] task bindings``() =

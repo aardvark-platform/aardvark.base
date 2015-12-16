@@ -73,6 +73,7 @@
     <Compile Include="UndoRedo.fs" />
     <Compile Include="ASetPerformanceTests.fs" />
     <Compile Include="Program.fs" />
+    <Compile Include="SizeOfVariousAdaptiveObjects.fs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="mscorlib" />
