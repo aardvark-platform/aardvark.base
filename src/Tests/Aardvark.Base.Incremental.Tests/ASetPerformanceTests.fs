@@ -76,9 +76,10 @@ module TreeFlattenPerformance =
 
         let reader = r |> ASet.toMod 
 
+        let before = System.GC.GetTotalMemory(true)
         let list,elapsedFold = timed (fun () -> reader.GetValue() )
         //let l,elapsedPull = timed (fun () -> list |> Seq.toList |> List.map Mod.force)
-
+        let after = System.GC.GetTotalMemory(true)
 
         printfn "build took,%As\nfold took: %As" elapsedBuild elapsedFold 
 
@@ -86,8 +87,8 @@ module TreeFlattenPerformance =
         let _,reexElapsed = timed (fun () -> transact (fun () -> Mod.change last (leaf 10)); reader.GetValue() )
         printfn "rexecution: %As" reexElapsed
 
-        let measurement = sprintf "%A;%f;%f;%f" System.DateTime.Now elapsedBuild elapsedFold reexElapsed
+        let measurement = sprintf "%A;%f;%f;%f;%f" System.DateTime.Now elapsedBuild elapsedFold reexElapsed (float (after-before) / float (1024*1024))
         let perfName = Path.Combine(__SOURCE_DIRECTORY__, "ASetFoldTest.csv")
         if File.Exists perfName then File.AppendAllLines(perfName,[|measurement|])
-        else File.WriteAllLines(perfName,[|"Date;ElapsedBuild;elapsedFold;reexElapsed";measurement|])
+        else File.WriteAllLines(perfName,[|"Date;ElapsedBuild;elapsedFold;reexElapsed;Memory";measurement|])
             
