@@ -989,10 +989,33 @@ module IntervalTree =
     let empty = { list = SortedList.empty }
 
     let min (t : IntervalTree) =
-        t.list |> SortedList.min |> value
+        match SortedList.minOpt t.list with
+            | Some min -> min.Value
+            | None -> Int32.MaxValue
 
     let max (t : IntervalTree) =
-        t.list |> SortedList.max |> value
+        match SortedList.maxOpt t.list with
+            | Some max -> max.Value - 1
+            | None -> Int32.MinValue
+
+    let range (t : IntervalTree) =
+        match SortedList.rangeOpt t.list with
+            | Some (min,max) -> Range1i(min.Value,max.Value-1)
+            | None -> Range1i.Invalid
+
+    let computeCovered (t : IntervalTree) =
+        let mutable size = 0
+        for r in t do
+            size <- size + 1 + r.Size
+        size
+            
+
+    let computeDensity (t : IntervalTree) =
+        let covered = computeCovered t |> float
+        let overall = (range t).Size + 1 |> float
+
+        covered / overall
+
 
     let insert (r : Range1i) (t : IntervalTree) =
         let r = Range1i(r.Min, r.Max + 1)
