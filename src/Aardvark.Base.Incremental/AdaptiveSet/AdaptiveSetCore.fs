@@ -188,6 +188,18 @@ module ASetReaders =
         override x.Release() =
             dirty.Clear()
 
+    type SmallUnionReader<'a>(readers : list<IReader<'a>>)  =
+        inherit AbstractReader<'a>()
+
+        override x.Inputs =
+            readers |> Seq.cast
+
+        override x.ComputeDelta() =
+            readers |> List.collect (fun r -> r.GetDelta x)
+
+        override x.Release() =
+            ()
+
     type BindReader<'a, 'b>(scope : Ag.Scope, m : IMod<'a>, f : 'a -> IReader<'b>) =
         inherit AbstractReader<'b>()
 
@@ -959,8 +971,11 @@ module ASetReaders =
     let union (input : list<IReader<'a>>) =
         new UnionReader<_>(input) :> IReader<_>
 
+    let smallUnion (input : list<IReader<'a>>) =
+        new SmallUnionReader<_>(input) :> IReader<_>
+
     let bind scope (f : 'a -> IReader<'b>) (input : IMod<'a>) =
-        new CollectReader<_,_>(scope, new ModReader<_>(input), f) :> IReader<_>
+        new BindReader<_,_>(scope, input, f) :> IReader<_>
 
     let bind2 scope (f : 'a -> 'b -> IReader<'c>) (ma : IMod<'a>)  (mb : IMod<'b>)=
         let tup = Mod.map2 (fun a b -> (a,b)) ma mb

@@ -294,7 +294,8 @@ module ASet =
     /// <summary>
     /// adaptively unions the given sets, similar to union, nice for composing |> style with paps
     /// </summary>
-    let unionTwo (x : aset<'a>) (y : aset<'a>) = union' [x;y]
+    let unionTwo (x : aset<'a>) (y : aset<'a>) = 
+        AdaptiveSet(fun () -> smallUnion [x.GetReader(); y.GetReader()]) :> aset<_>
 
     /// <summary>
     /// applies the given function to all elements in the set

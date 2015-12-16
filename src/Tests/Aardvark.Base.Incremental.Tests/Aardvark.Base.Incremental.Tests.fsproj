@@ -71,6 +71,7 @@
     <Compile Include="Performance.fs" />
     <Content Include="app.config" />
     <Compile Include="UndoRedo.fs" />
+    <Compile Include="ASetPerformanceTests.fs" />
     <Compile Include="Program.fs" />
   </ItemGroup>
   <ItemGroup>
