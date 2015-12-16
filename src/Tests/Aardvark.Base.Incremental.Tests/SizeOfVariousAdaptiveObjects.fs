@@ -13,7 +13,7 @@ open Aardvark.Base
 module SizeOfAdaptiveObjects = 
 
     [<Test>]
-    let ``[ASet] memory test`` () =
+    let ``[MemoryOverhead] memory test`` () =
 
         //total e9206773e69bfe38e737c434d5496c9d56332160: 
         //total: 
@@ -51,7 +51,7 @@ module SizeOfAdaptiveObjects =
         t.Join()
 
     [<Test>]
-    let ``[Mod] memory test`` () =
+    let ``[MemoryOverhead] adaptiveObject`` () =
 
         let xs = Array.zeroCreate 100000
         let mem = System.GC.GetTotalMemory(true)
@@ -64,7 +64,7 @@ module SizeOfAdaptiveObjects =
         printfn "%A" (xs |> Array.sumBy (fun s -> uint64 s.Id))
 
     [<Test>]
-    let ``[Mod] copy reader`` () =
+    let ``[MemoryOverhead] copy reader`` () =
 
         let xs = Array.zeroCreate 100000
         let mem = System.GC.GetTotalMemory(true)
@@ -77,14 +77,14 @@ module SizeOfAdaptiveObjects =
         printfn "%A" (xs |> Array.sumBy (fun s -> uint64 s.Id))
 
     [<Test>]
-    let ``[ASet] ReaderSize`` () =
+    let ``[MemoryOverhead] ReaderSize`` () =
 
         let xs = Array.zeroCreate 100000
         let mem = System.GC.GetTotalMemory(true)
 
         for x in 0 .. xs.Length - 1 do
-            xs.[x] <- new ASetReaders.SmallUnionReader<int>([])
+            xs.[x] <- ASet.AdaptiveSet<int>(fun () -> Unchecked.defaultof<IReader<int>>)
 
         let after = System.GC.GetTotalMemory(true)
         printfn "%f bytes." (float (after - mem) / float xs.Length)
-        printfn "%A" (xs |> Array.sumBy (fun s -> uint64 s.Id))
+        printfn "%A" (xs |> Array.sumBy (fun s -> 0.01 * float (s.GetHashCode())))
