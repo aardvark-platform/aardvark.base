@@ -38,6 +38,16 @@ module TreeFlattenPerformance =
             ASet.unionTwo a b
          | Leaf v -> ASet.single v
 
+    (* 2^15 leafs: 2^15 leaf values, 
+    // 2^15 - 1 inner: 2 child Mod ptr, 
+    2^16 bind reader
+    2^15 unionSmallReader
+    2^15+2^16 copy reader -> 3*2^15 copyreaders
+    per aset: 1899.128 (bytes)
+    per reader: 949.564 (bytes)
+    2kb * 3*2^15 -> 187 MB
+    *)
+
     open System.Collections.Generic
     open System.IO
 
@@ -88,6 +98,7 @@ module TreeFlattenPerformance =
         printfn "rexecution: %As" reexElapsed
 
         let measurement = sprintf "%A;%f;%f;%f;%f" System.DateTime.Now elapsedBuild elapsedFold reexElapsed (float (after-before) / float (1024*1024))
+        System.Console.Read()
         let perfName = Path.Combine(__SOURCE_DIRECTORY__, "ASetFoldTest.csv")
         if File.Exists perfName then File.AppendAllLines(perfName,[|measurement|])
         else File.WriteAllLines(perfName,[|"Date;ElapsedBuild;elapsedFold;reexElapsed;Memory";measurement|])
