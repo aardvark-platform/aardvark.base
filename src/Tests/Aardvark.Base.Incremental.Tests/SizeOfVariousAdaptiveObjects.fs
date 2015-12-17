@@ -25,9 +25,17 @@ module SizeOfAdaptiveObjects =
             
             let mutable m = CSet.ofList [0] :> aset<_>
 
+            let empty = ASet.empty
+            m <- ASet.unionTwo m empty
+
+            let r = m.GetReader()
+            r.Update()
+
             let mem = System.GC.GetTotalMemory(true)
 
-            let size = 1000
+
+            //Console.ReadLine()
+            let size = 100
 
             let empty = ASet.empty
             for i in 1 .. size do
@@ -36,13 +44,15 @@ module SizeOfAdaptiveObjects =
             let r = m.GetReader()
             r.Update()
 
+            //Console.ReadLine()
+
             let memAfter = System.GC.GetTotalMemory(true)
             let diff = memAfter - mem
             let sizePerMod = float diff / float (2 * size)
 
             printfn "per aset: %A (bytes)" (float diff / float size)
-
             printfn "per reader: %A (bytes)" sizePerMod
+
 
             r.Update()
             r.Dispose()
@@ -63,18 +73,18 @@ module SizeOfAdaptiveObjects =
         printfn "%f bytes." (float (after - mem) / float xs.Length)
         printfn "%A" (xs |> Array.sumBy (fun s -> uint64 s.Id))
 
-    [<Test>]
-    let ``[MemoryOverhead] copy reader`` () =
-
-        let xs = Array.zeroCreate 100000
-        let mem = System.GC.GetTotalMemory(true)
-
-        for x in 0 .. xs.Length - 1 do
-            xs.[x] <- new ASetReaders.CopyReader<int>(Unchecked.defaultof<_>)
-
-        let after = System.GC.GetTotalMemory(true)
-        printfn "%f bytes." (float (after - mem) / float xs.Length)
-        printfn "%A" (xs |> Array.sumBy (fun s -> uint64 s.Id))
+//    [<Test>]
+//    let ``[MemoryOverhead] copy reader`` () =
+//
+//        let xs = Array.zeroCreate 100000
+//        let mem = System.GC.GetTotalMemory(true)
+//
+//        for x in 0 .. xs.Length - 1 do
+//            xs.[x] <- new ASetReaders.CopyReader<int>(Unchecked.defaultof<_>)
+//
+//        let after = System.GC.GetTotalMemory(true)
+//        printfn "%f bytes." (float (after - mem) / float xs.Length)
+//        printfn "%A" (xs |> Array.sumBy (fun s -> uint64 s.Id))
 
     [<Test>]
     let ``[MemoryOverhead] ReaderSize`` () =
