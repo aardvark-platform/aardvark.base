@@ -289,27 +289,9 @@ namespace Aardvark.Base
             return newFastHull;
         }
 
-        public FastHull3d TransformedProj(Trafo3d trafo)
-        {
-            var newFastHull = new FastHull3d()
-            {
-                Hull = this.Hull.TransformedProj(trafo)
-            };
-            newFastHull.MinCornerIndexArray =
-                ComputeMinCornerIndexArray(newFastHull.Hull.PlaneArray);
-            return newFastHull;
-        }
-
         public void TransformInto(Trafo3d trafo, ref FastHull3d fastHull)
         {
             Hull.TransformInto(trafo, ref fastHull.Hull);
-            ComputeMinCornerIndexArrayInto(fastHull.Hull.PlaneArray,
-                                        fastHull.MinCornerIndexArray);
-        }
-
-        public void TransformIntoProj(Trafo3d trafo, ref FastHull3d fastHull)
-        {
-            Hull.TransformIntoProj(trafo, ref fastHull.Hull);
             ComputeMinCornerIndexArrayInto(fastHull.Hull.PlaneArray,
                                         fastHull.MinCornerIndexArray);
         }
