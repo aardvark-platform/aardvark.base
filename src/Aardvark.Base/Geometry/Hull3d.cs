@@ -144,19 +144,6 @@ namespace Aardvark.Base
             return hull;
         }
 
-        public Hull3d TransformedProj(Trafo3d trafo)
-        {
-            int count = PlaneCount;
-            var hull = new Hull3d(count);
-            var invTr = trafo.Backward.Transposed;
-            for (int i = 0; i < count; i++)
-                hull.PlaneArray[i]
-                    = new Plane3d(
-                            invTr.TransformDir(PlaneArray[i].Normal).Normalized,
-                            trafo.Forward.TransformPosProj(PlaneArray[i].Point));
-            return hull;
-        }
-
         public void TransformInto(Trafo3d trafo, ref Hull3d hull)
         {
             int count = PlaneCount;
@@ -166,17 +153,6 @@ namespace Aardvark.Base
                     = new Plane3d(
                             invTr.TransformDir(PlaneArray[i].Normal).Normalized,
                             trafo.Forward.TransformPos(PlaneArray[i].Point));
-        }
-
-        public void TransformIntoProj(Trafo3d trafo, ref Hull3d hull)
-        {
-            int count = PlaneCount;
-            var invTr = trafo.Backward.Transposed;
-            for (int i = 0; i < count; i++)
-                hull.PlaneArray[i]
-                    = new Plane3d(
-                            invTr.TransformDir(PlaneArray[i].Normal).Normalized,
-                            trafo.Forward.TransformPosProj(PlaneArray[i].Point));
         }
 
         #endregion
