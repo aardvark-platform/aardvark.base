@@ -91,12 +91,17 @@ module AListReaders =
         default x.Update(caller) = x.GetDelta(caller) |> ignore
 
         override x.Finalize() =
-            try x.Dispose()
+            try x.Dispose false
             with _ -> ()
 
-        member x.Dispose() =
+        member x.Dispose disposing =
             x.Release()
-            content.Clear()
+            if disposing then content.Clear()
+
+        member x.Dispose() =
+            x.Dispose true
+            GC.SuppressFinalize x
+
 
         member x.SubscribeOnEvaluate (cb : Change<ISortKey * 'a> -> unit) =
             lock x (fun () ->

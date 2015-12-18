@@ -144,12 +144,16 @@ module AStreamReaders =
             )
 
         override x.Finalize() =
-            try x.Dispose()
+            try x.Dispose false
             with _ -> ()
 
-        member x.Dispose() =
+        member x.Dispose disposing =
             x.Release()
-            callbacks.Clear()
+            if disposing then callbacks.Clear()
+
+        member x.Dispose() =
+            x.Dispose true
+            GC.SuppressFinalize x
 
         member x.SubscribeOnEvaluate (cb : EventHistory<'a> -> unit) =
             lock x (fun () ->

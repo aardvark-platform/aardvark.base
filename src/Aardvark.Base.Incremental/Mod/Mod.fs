@@ -237,16 +237,6 @@ module Mod =
             val mutable public scope : Ag.Scope
 
             abstract member Compute : unit -> 'a
-            abstract member Release : unit -> unit
-            default x.Release() = ()
-
-            override x.Finalize() =
-                try
-                    x.Release()
-                    x.cache <- Unchecked.defaultof<_>
-                    x.scope <- Ag.emptyScope
-                with e ->
-                    ()
 
             member x.GetValue(caller) =
                 x.EvaluateAlways caller (fun () ->
@@ -269,6 +259,20 @@ module Mod =
             new() =
                 { cache = Unchecked.defaultof<'a>; scope = Ag.getContext() }
         end
+
+    [<AbstractClass>]
+    type AbstractModWithFinalizer<'a>() =
+        inherit AbstractMod<'a>()
+        abstract member Release : unit -> unit
+        default x.Release() = ()
+
+        override x.Finalize() =
+            try
+                x.Release()
+                x.cache <- Unchecked.defaultof<_> // TODO: not sure whether this makes things worse or better
+                x.scope <- Ag.emptyScope
+            with e ->
+                ()
 
     // LazyMod<'a> (as the name suggests) implements IMod<'a>
     // and will be evaluated lazily (if not forced to be eager
@@ -403,7 +407,7 @@ module Mod =
             f (a.GetValue x) (b.GetValue x)
 
     type internal MapNMod<'a, 'b>(a : seq<IMod<'a>>, f : list<'a> -> 'b) as this =
-        inherit AbstractMod<'b>()
+        inherit AbstractModWithFinalizer<'b>()
         let a = Seq.toArray a
 
         let store = lazy ( a |> Array.map (fun v -> v.GetValue this) )
