@@ -427,6 +427,28 @@ module Caching =
     let cacheFunction (f : 'a -> 'b) (a : 'a) :  'b =
         memoTable.GetOrAdd((a,f) :> obj, fun (o:obj) -> f a :> obj)  |> unbox<'b>
             
+[<AutoOpen>]
+module NiceUtilities =
+
+    module LookupTable =
+        open System.Collections.Generic
+
+        let lookupTable (l : list<'a * 'b>) =
+            let d = Dictionary()
+            for (k,v) in l do
+
+                match d.TryGetValue k with
+                    | (true, vo) -> failwithf "duplicated lookup-entry: %A (%A vs %A)" k vo v
+                    | _ -> ()
+
+                d.[k] <- v
+
+            fun (key : 'a) ->
+                match d.TryGetValue key with
+                    | (true, v) -> v
+                    | _ -> failwithf "unsupported %A: %A" typeof<'a> key
+
+
 [<CompilationRepresentation(CompilationRepresentationFlags.ModuleSuffix)>]
 module IO =
     open System.IO
