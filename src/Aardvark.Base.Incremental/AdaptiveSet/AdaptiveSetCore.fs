@@ -127,14 +127,19 @@ module ASetReaders =
 
         default x.Update(caller) = x.GetDelta(caller) |> ignore
 
-        override x.Finalize() =
-            try x.Dispose()
-            with _ -> ()
-
-        member x.Dispose() =
+        member x.Dispose disposing =
             if Interlocked.Exchange(&isDisposed,1) = 0 then
                 x.Release()
                 content.Clear()
+
+
+        override x.Finalize() =
+            try x.Dispose false
+            with _ -> ()
+
+        member x.Dispose() =
+            x.Dispose true
+            GC.SuppressFinalize x
 
         member x.SubscribeOnEvaluate (cb : Change<'a> -> unit) =
             lock x (fun () ->
@@ -791,10 +796,10 @@ module ASetReaders =
         member x.Update(caller) = x.GetDelta(caller) |> ignore
 
         override x.Finalize() =
-            try x.Dispose()
+            try x.Dispose false
             with e -> Report.Warn("finalizer faulted: {0}", e.Message)
-
-        member x.Dispose() =
+            
+        member x.Dispose disposing =
             if Interlocked.Exchange(&isDisposed, 1) = 0 then
                 onlySubscription.Dispose()
                 deadSubscription.Dispose()
@@ -804,8 +809,11 @@ module ASetReaders =
                     content.Clear()
 
 
-                input.RemoveReference()
-                //dispose(x)
+                input.RemoveReference() 
+
+        member x.Dispose() =
+            x.Dispose true
+            GC.SuppressFinalize x
 
         member x.SubscribeOnEvaluate (cb : Change<'a> -> unit) =
             lock x (fun () ->

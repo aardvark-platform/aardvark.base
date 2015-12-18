@@ -155,6 +155,10 @@ namespace Aardvark.Base
                             trafo.Forward.TransformPos(PlaneArray[i].Point));
         }
 
+        #endregion
+
+        #region Reversal
+
         public Hull3d Reversed()
         {
             return new Hull3d(PlaneArray.Map(p => p.Reversed));

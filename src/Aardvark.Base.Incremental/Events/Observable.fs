@@ -105,11 +105,15 @@ module Obs =
         let subscription = obs.Subscribe push
 
 
-        member x.Dispose() =
+        member x.Dispose dispsing =
             subscription.Dispose()
 
+        member x.Dispose() =
+            x.Dispose true
+            GC.SuppressFinalize x
+
         override x.Finalize() =
-            try subscription.Dispose()
+            try x.Dispose false
             with _ -> ()
 
         override x.Compute() =
@@ -131,11 +135,15 @@ module Obs =
         let subscription = obs.Subscribe push
 
 
-        member x.Dispose() =
+        member x.Dispose disposing =
             subscription.Dispose()
 
+        member x.Dispose() =
+            x.Dispose true
+            GC.SuppressFinalize x
+
         override x.Finalize() =
-            try subscription.Dispose()
+            try x.Dispose false
             with _ -> ()
 
         override x.Compute() =

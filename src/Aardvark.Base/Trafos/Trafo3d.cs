@@ -232,7 +232,7 @@ namespace Aardvark.Base
 
         /// <summary>
         /// Returns the trafo that transforms from the coordinate system
-        /// specified by the basis into the world cordinate system.
+        /// specified by the basis into the world coordinate system.
         /// </summary>
         public static Trafo3d FromBasis(V3f xAxis, V3f yAxis, V3f zAxis, V3f orign)
         {
@@ -241,7 +241,7 @@ namespace Aardvark.Base
 
         /// <summary>
         /// Returns the trafo that transforms from the coordinate system
-        /// specified by the basis into the world cordinate system.
+        /// specified by the basis into the world coordinate system.
         /// </summary>
         public static Trafo3d FromBasis(V3d xAxis, V3d yAxis, V3d zAxis, V3d orign)
         {
@@ -256,8 +256,8 @@ namespace Aardvark.Base
 
         /// <summary>
         /// Returns the trafo that transforms from the coordinate system
-        /// specified by the basis into the world cordinate system.
-        /// NOTE that the axes MUST be normalized an normal to each other.
+        /// specified by the basis into the world coordinate system.
+        /// NOTE that the axes MUST be normalized and normal to each other.
         /// </summary>
         public static Trafo3d FromOrthoNormalBasis(
                 V3d xAxis, V3d yAxis, V3d zAxis)
@@ -294,7 +294,7 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Creates a right-handed view trafo where z-negative points into the scene.
+        /// Creates a right-handed view trafo, where z-negative points into the scene.
         /// </summary>
         public static Trafo3d ViewTrafoRH(V3d location, V3d up, V3d forward)
         {
@@ -302,11 +302,80 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Creates a left-handed view trafo where z-positive points into the scene.
+        /// Creates a left-handed view trafo, where z-positive points into the scene.
         /// </summary>
         public static Trafo3d ViewTrafoLH(V3d location, V3d up, V3d forward)
         {
             return Trafo3d.ViewTrafo(location, up.Cross(forward), up, forward);
+        }
+
+        /// <summary>
+        /// Creates a right-handed perspective projection transform, where z-negative points into the scene.
+        /// The resulting canonical view volume is [(-1, -1, 0), (+1, +1, +1)].
+        /// </summary>
+        public static Trafo3d PerspectiveProjectionRH(double l, double r, double b, double t, double n, double f)
+        {
+            return new Trafo3d(
+                new M44d(
+                    (2 * n) / (r - l),                     0,     (r + l) / (r - l),                     0,
+                                    0,     (2 * n) / (t - b),     (t + b) / (t - b),                     0,
+                                    0,                     0,           f / (n - f),     (f * n) / (n - f),
+                                    0,                     0,                    -1,                     0
+                    ),                                                     
+                                                                       
+                new M44d(                                      
+                    (r - l) / (2 * n),                     0,                     0,     (r + l) / (2 * n),
+                                    0,     (t - b) / (2 * n),                     0,     (t + b) / (2 * n),
+                                    0,                     0,                     0,                    -1,
+                                    0,                     0,     (n - f) / (f * n),                 1 / n
+                    )
+                );
+        }
+
+        /// <summary>
+        /// Creates a left-handed perspective projection transform, where z-positive points into the scene.
+        /// The resulting canonical view volume is [(-1, -1, 0), (+1, +1, +1)].
+        /// </summary>
+        public static Trafo3d PerspectiveProjectionLH(double l, double r, double b, double t, double n, double f)
+        {
+            return new Trafo3d(
+                new M44d(
+                    (2 * n) / (r - l),                     0,                     0,                     0,
+                                    0,     (2 * n) / (t - b),                     0,                     0,
+                    (l + r) / (l - r),     (b + t) / (b - t),           f / (f - n),                     1,
+                                    0,                     0,     (n * f) / (n - f),                     0
+                    ),                                                     
+                                                                       
+                new M44d(                                      
+                    (r - l) / (2 * n),                     0,                     0,                     0,
+                                    0,     (t - b) / (2 * n),                     0,                     0,
+                                    0,                     0,                     0,     (n - f) / (f * n),
+                    (r + l) / (2 * n),     (t + b) / (2 * n),                     1,                 1 / n
+                    )
+                );
+        }
+
+        /// <summary>
+        /// Creates a right-handed ortho projection transform, where z-negative points into the scene.
+        /// The resulting canonical view volume is [(-1, -1, 0), (+1, +1, +1)].
+        /// </summary>
+        public static Trafo3d OrthoProjectionRH(double l, double r, double b, double t, double n, double f)
+        {
+            return new Trafo3d(
+                new M44d(
+                    2 / (r - l),               0,               0,     (l + r) / (l - r),
+                              0,     2 / (t - b),               0,     (b + t) / (b - t),
+                              0,               0,     1 / (n - f),           n / (n - f),
+                              0,               0,               0,                     1
+                    ),
+
+                new M44d(
+                    (r - l) / 2,               0,               0,           (l + r) / 2,
+                              0,     (t - b) / 2,               0,           (b + t) / 2,
+                              0,               0,           n - f,                    -n,
+                              0,               0,               0,                     1
+                    )
+                );
         }
 
         #endregion
@@ -338,7 +407,7 @@ namespace Aardvark.Base
                                t0.Backward * t1.Backward);
         }
 
-        #endregion
+        #endregion 
 
     }
 
