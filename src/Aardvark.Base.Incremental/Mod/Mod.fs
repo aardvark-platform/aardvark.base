@@ -1015,18 +1015,18 @@ module Mod =
             )
 
     let useCurrent<'a when 'a :> IDisposable> (f : IMod<'a> -> 'a) : IMod<'a>  =
-        let mutable current = None
+        let current = ref None
 
         custom (fun self ->
-            match current with
+            match !current with
              | None -> 
                 let v = f self
-                current <- Some v
+                current := Some v
                 v
              | Some v ->
                 v.Dispose()
                 let v = f self
-                current <- Some v
+                current :=  Some v
                 v
         )
 

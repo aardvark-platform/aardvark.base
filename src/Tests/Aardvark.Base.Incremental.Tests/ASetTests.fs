@@ -925,9 +925,76 @@ module ``collect tests`` =
             transact (fun () -> CSet.add i inputSet |> ignore)
             //printfn "should equal i=%d called=%d" i !called
             reader.GetDelta() |> ignore
+            //printfn "works? %A == %A" i !called
             should equal  i !called
+            GC.Collect()
+            GC.WaitForPendingFinalizers()
             Thread.Sleep 5
             if i % 10 = 0 then printfn "done: %d/%d" i cnt; GC.Collect()
+        printfn "done"
+
+
+    [<Test>]
+    let ``[ASet] Mod.async in asets is a memory leak?``() =
+        
+        let mutable t = Task.Factory.StartNew(fun () -> 
+            System.Threading.Thread.Sleep 10
+            1
+        )
+
+        let input = Mod.asyncTask t
+        t <- null
+
+        let reult = 
+            aset {
+                let! input = input
+                match input with
+                 | Some v -> 
+                    yield 2
+                 | None -> ()
+            }
+        GC.Collect ()
+        GC.WaitForPendingFinalizers()
+        printfn "ok"
+
+    let private createLeakAndForgetAboutStackFrame () =
+        let refCnt = ref 0
+        let mutable l = Leak refCnt
+
+        Mod.init l, refCnt
+
+    [<Test>]
+    let ``[ASet] ToMod is a memory leak due to inputs``() =
+
+        // situation: all is leaky. If i remove input tracking
+        // leaks get less but still in the end pendinging delta processing
+        // holds on to things. 
+        
+        let mutable tup = createLeakAndForgetAboutStackFrame()
+        let mutable spuriousInput = Weak(fst tup)
+        let refCnt = snd tup
+        let input = Mod.init (Some 1)
+
+        let result = 
+            aset {
+                let! i = input
+                match i with
+                 | Some v -> 
+                    let! si = spuriousInput.Target
+                    yield i
+                 | None -> ()
+            } |> ASet.toMod
+        result |> Mod.force |> ignore
+        result |> Mod.unsafeRegisterCallbackKeepDisposable (printfn "%A") |> ignore
+        tup <- Unchecked.defaultof<_>
+        transact (fun () -> Mod.change input None)
+        should equal  1 !refCnt
+        //result |> Mod.force |> ignore // without forcing this test fails
+        //transact (fun () -> spuriousInput.Target.Value <- Leak (ref 0)) // this does not help
+        GC.Collect()
+        GC.WaitForPendingFinalizers()
+        printfn "now checkit "
+        should equal  0 !refCnt
 
 
     [<Test>]
