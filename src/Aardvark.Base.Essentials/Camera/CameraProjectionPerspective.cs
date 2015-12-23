@@ -123,21 +123,7 @@ namespace Aardvark.Base
             var b = m_box.Min.Y; var t = m_box.Max.Y;
             var n = m_box.Min.Z; var f = m_box.Max.Z;
 
-            m_trafo = new Trafo3d(
-                new M44d(
-                    (2 * n) / (r - l),                     0,     (r + l) / (r - l),                     0,
-                                    0,     (2 * n) / (t - b),     (t + b) / (t - b),                     0,
-                                    0,                     0,           f / (n - f),     (f * n) / (n - f),
-                                    0,                     0,                    -1,                     0
-                    ),                                                     
-                                                                       
-                new M44d(                                      
-                    (r - l) / (2 * n),                     0,                     0,     (r + l) / (2 * n),
-                                    0,     (t - b) / (2 * n),                     0,     (t + b) / (2 * n),
-                                    0,                     0,                     0,                    -1,
-                                    0,                     0,     (n - f) / (f * n),                 1 / n
-                    )
-                );
+            m_trafo = Trafo3d.PerspectiveProjectionRH(l, r, b, t, n, f);
 
             m_trafoChanges.Emit(m_trafo);
         }
