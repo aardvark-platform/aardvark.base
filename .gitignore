@@ -48,3 +48,4 @@ tmp
 /docs
 /src/Aardvark.Base/Images/TensorExtensions_generator.cs
 /src/Demo/Sketch/.vs/Sketch/v14/*.suo
+/TestResult.xml

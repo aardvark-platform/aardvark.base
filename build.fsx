@@ -17,5 +17,10 @@ do Environment.CurrentDirectory <- __SOURCE_DIRECTORY__
 
 DefaultTargets.install ["src/Aardvark.sln"]
 
+Target "Tests" (fun () ->
+    Fake.NUnitSequential.NUnit (fun p -> { p with ToolPath = @"packages\NUnit.Runners\tools"
+                                                  ToolName = "nunit-console.exe" }) [@"bin\Release\Aardvark.Base.Incremental.Tests.exe"]
+)
+
 // start build
 RunTargetOrDefault "Default"

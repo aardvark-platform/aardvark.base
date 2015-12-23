@@ -8,3 +8,5 @@ before_install:
   - sudo apt-get install -qq mono-devel > /dev/null
   - mozroots --import --sync 
   - ./build.sh
+after_success:
+  - ./build.sh tests
