@@ -397,8 +397,9 @@ module ``collect tests`` =
         transact (fun () -> normalSource |> CSet.remove leak |> should be True)
         leak <- Unchecked.defaultof<_>
         GC.Collect ()
+        GC.WaitForPendingFinalizers()
         // enable this to see potential problem
-        //!cnt |> should equal 0   
+        !cnt |> should equal 0   
         ()
 
     [<Test>]
