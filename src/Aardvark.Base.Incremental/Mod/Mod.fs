@@ -1014,6 +1014,22 @@ module Mod =
                 task.Result
             )
 
+    let useCurrent<'a when 'a :> IDisposable> (f : IMod<'a> -> 'a) : IMod<'a>  =
+        let mutable current = None
+
+        custom (fun self ->
+            match current with
+             | None -> 
+                let v = f self
+                current <- Some v
+                v
+             | Some v ->
+                v.Dispose()
+                let v = f self
+                current <- Some v
+                v
+        )
+
     /// <summary>
     /// a changeable cell which will always be outdated when control-flow leaves
     /// the mod-system. Its value will always hold the current time (DateTime.Now) 
