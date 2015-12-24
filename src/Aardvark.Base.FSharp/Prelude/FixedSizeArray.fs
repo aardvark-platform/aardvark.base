@@ -176,7 +176,7 @@ module Arrays =
         let t = o.GetType()
         match t with
             | FixedArrayType(_,content) ->
-                let store = t.GetProperty("Store").GetValue(o) |> unbox<Array>
+                let store = t.GetProperty("Data").GetValue(o) |> unbox<Array>
                 let result = Array.create store.Length null
                 for i in 0..store.Length-1 do
                     result.[i] <- store.GetValue(i)
