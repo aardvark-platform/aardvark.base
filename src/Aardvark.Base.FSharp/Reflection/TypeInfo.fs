@@ -138,7 +138,7 @@ module TypeInfo =
             else None
 
         let (|UInt16|_|) (t : Type) = 
-            if t = typeof<int16> then Some UInt16
+            if t = typeof<uint16> then Some UInt16
             else None
 
         let (|Int32|_|) (t : Type) = 
@@ -146,7 +146,7 @@ module TypeInfo =
             else None
 
         let (|UInt32|_|) (t : Type) = 
-            if t = typeof<int32> then Some UInt32
+            if t = typeof<uint32> then Some UInt32
             else None
 
         let (|UInt64|_|) (t : Type) = 
