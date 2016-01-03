@@ -114,6 +114,7 @@ module AMD64 =
              
         let value (o : obj) =
             match o with
+                | null -> Qword(0UL)
                 | :? nativeint as o -> Qword(uint64 o)
                 | :? int64 as o -> Qword(uint64 o)
                 | :? int as o -> Dword(uint32 o)
@@ -123,7 +124,14 @@ module AMD64 =
                 | :? float32 as o -> Dword(cast o)
                 | :? float as o -> Qword(cast o)
                 | :? Register as o -> Register(o)
-                | _ -> failwithf "unsupported argument-type: %A" (o.GetType())
+                | _ ->
+                    let t = o.GetType()
+                    if t.IsValueType && Marshal.SizeOf t <= 8 then
+                        let ptr = NativePtr.stackalloc 1
+                        Marshal.StructureToPtr(o, NativePtr.toNativeInt ptr, false)
+                        ptr |> NativePtr.read |> Qword
+                    else
+                        failwithf "unsupported argument-type: %A" (o.GetType())
 
         let stackSize(v : Value) =
             match v with
@@ -177,7 +185,7 @@ module AMD64 =
                     
                 let pushRsp = PushReg(Register.Rsp)
 
-                pushRsp::pushTempArgs |> List.toArray
+                pushRsp :: pushTempArgs |> List.toArray
             else
                 [||]
 
@@ -386,6 +394,7 @@ module AMD64 =
 
         let assemblePush (stackOffset : int) (value : Value) (stream : BinaryWriter) =
             stream |> assembleMov Register.Rax value
+            //asssemblePushReg true Register.Rax stream
             stream.Write([| 0x48uy; 0x89uy; 0x44uy; 0x24uy; byte stackOffset |])
 
         let assembleCallRax (stream : BinaryWriter) =
@@ -604,8 +613,8 @@ module ASM =
 
                 fun (dynamicArgs : int) (maxArgs : int) ->
                     let real = specific maxArgs
-                    let prefix = AMD64.Compiler.functionProlog cc dynamicArgs |> AMD64.Assembler.assemble
-                    Array.append real prefix
+                    let suffix = AMD64.Compiler.functionProlog cc dynamicArgs |> AMD64.Assembler.assemble
+                    Array.append suffix real
 
             | _ ->
                 failwithf "no assembler for: %A / %A" os.Platform cpu    
@@ -618,9 +627,9 @@ module ASM =
                         let additionalSize =
                             if maxArgs < 5 then 8uy
                             else 8 * maxArgs - 24 |> byte
-                        [| 0x48uy; 0x83uy; 0xC4uy; 0x20uy + additionalSize; 0xC3uy|]
-                | Linux, AMD64 -> fun (maxArgs : int) -> [|0xC3uy|]
-                | Mac, AMD64 -> fun (maxArgs : int) -> [|0xC3uy|]
+                        [| 0x48uy; 0x83uy; 0xC4uy; 0x20uy + additionalSize|]
+                | Linux, AMD64 -> fun (maxArgs : int) -> [||]
+                | Mac, AMD64 -> fun (maxArgs : int) -> [||]
                 | _ -> failwithf "no assembler for: %A / %A" os.Platform cpu     
                  
         match cpu with  
@@ -630,7 +639,7 @@ module ASM =
                 fun (dynamicArgs : int) (maxArgs : int) ->
                     let real = specific maxArgs
                     let prefix = AMD64.Compiler.functionEpilog cc dynamicArgs |> AMD64.Assembler.assemble
-                    Array.append prefix real
+                    Array.concat [real; prefix; [|0xC3uy|]]
 
             | _ ->
                 failwithf "no assembler for: %A / %A" os.Platform cpu    

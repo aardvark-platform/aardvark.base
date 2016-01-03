@@ -55,6 +55,8 @@ module DynamicCodeTests =
         struct
             val mutable public Handle : int64
 
+            override x.ToString() = sprintf "S%d" x.Handle
+
             new(h : int) = { Handle = int64 h }
         end
 
@@ -164,8 +166,27 @@ module DynamicCodeTests =
 
             new TestProgram<TestStruct,_>(program, getCalls)
 
+    let testF(a : int) (b : int) (c : int) (d : int) (e : int) =
+        sprintf "(%A,%A,%A,%A,%A)" a b c d e |> Console.WriteLine
 
+    type TestDel = delegate of int * int * int * int * int -> unit
 
+    let dTest = TestDel testF
+    let pTest = System.Runtime.InteropServices.Marshal.GetFunctionPointerForDelegate(dTest)
+
+    [<Test>]
+    let ``[DynamicCode] lots of args``() =
+        let input = CSet.ofList [1,1]
+        let prog = 
+            AdaptiveProgram.nativeSimple 
+                6 Comparer<int>.Default 
+                (fun a -> new AdaptiveCode<_>([Mod.constant [pTest, [|2 :> obj; 3 :> obj; 4 :> obj; 5 :> obj|]]]) :> IAdaptiveCode<_>)
+                input
+
+        prog.Update(null) |> ignore
+        prog.Run(1)
+
+        ()
 
     [<Test>]
     let ``[DynamicCode] add/remove/clear``() =
