@@ -59,7 +59,6 @@
     <Compile Include="OrderMaintenance.fs" />
     <Compile Include="SkipList.fs" />
     <Compile Include="AVL.fs" />
-    <Compile Include="StableSet.fs" />
     <Compile Include="FingerTree.fs" />
     <Compile Include="Interop\Dictionary.fs" />
     <Compile Include="Interop\Symbol.fs" />
@@ -82,6 +81,7 @@
     <Compile Include="Runtime\NativeMemory.fs" />
     <Compile Include="Runtime\Fragments.fs" />
     <Compile Include="Runtime\CustomSchedulers.fs" />
+    <Compile Include="StableSet.fs" />
     <Compile Include="Reflection.fs" />
     <Compile Include="Runtime.fs" />
     <Compile Include="AgHelpers.fs" />
