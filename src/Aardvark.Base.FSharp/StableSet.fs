@@ -40,7 +40,7 @@ type private LinkedEnumerator<'a>(l : Linked<'a>) =
   
 [<AllowNullLiteral>]              
 type StableSet<'a>() =
-    let content = Dict<'a, Linked<'a>>()
+    let content = Dict.empty<'a, Linked<'a>>
     let mutable first : Linked<'a> = null
     let mutable last : Linked<'a> = null
 
@@ -135,7 +135,7 @@ type StableSet<'a>() =
 
 [<AllowNullLiteral>]
 type StableDict<'k, 'v>() =
-    let content = Dict<'k, Linked<'k * 'v>>()
+    let content = Dict.empty<'k, Linked<'k * 'v>>
     let mutable first : Linked<'k * 'v> = null
     let mutable last : Linked<'k * 'v> = null
 

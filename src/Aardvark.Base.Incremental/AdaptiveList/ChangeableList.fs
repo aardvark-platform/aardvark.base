@@ -273,7 +273,7 @@ type corderedset<'a>(initial : seq<'a>) =
     let listReaders = WeakSet<EmitReader<'a>>()
     let setReaders = WeakSet<ASetReaders.EmitReader<'a>>()
     let set = HashSet<'a>()
-    let times = Dict<'a, SimpleOrder.SortKey>()
+    let times = Dict.empty<'a, SimpleOrder.SortKey>
 
     let submitDeltas (v, listDeltas, setDeltas) =
         lock listReaders (fun () ->

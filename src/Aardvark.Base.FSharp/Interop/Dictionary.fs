@@ -5,6 +5,12 @@ module Dictionary =
     open System.Collections.Generic
 
     let empty<'k, 'v when 'k : equality> = Dictionary<'k, 'v>()
+    let emptyNoEquality<'k,'v> = 
+        Dictionary<'k,'v>(
+            { new IEqualityComparer<'k> with 
+                    member x.Equals(a,b)    = Unchecked.equals a b
+                    member x.GetHashCode(t) = Unchecked.hash t 
+            })
 
     let inline add (key : 'k) (value : 'v) (d : Dictionary<'k, 'v>) =
         d.Add(key,value)
@@ -76,7 +82,11 @@ module Dictionary =
 [<CompilationRepresentation(CompilationRepresentationFlags.ModuleSuffix)>]
 module Dict =
 
-    let empty<'k, 'v when 'k : equality> = Dict<'k, 'v>()
+    #if __SLIM__
+    let empty<'k, 'v> = Dictionary.emptyNoEquality<'k,'v>
+    #else
+    let empty<'k, 'v> = Dict<'k,'v>()
+    #endif
 
     let inline add (key : 'k) (value : 'v) (d : Dict<'k, 'v>) =
         d.Add(key,value)
@@ -90,6 +100,24 @@ module Dict =
     let inline clear (d : Dict<'k, 'v>) =
         d.Clear()
 
+    let inline keys (k : Dict<'k,'v>) =
+        #if __SLIM__
+        k.Keys |> Seq.map id
+        #else
+        k.Keys
+        #endif
+    let inline values (k : Dict<'k,'v>) =
+        #if __SLIM__
+        k.Values |> Seq.map id
+        #else
+        k.Values
+        #endif
+    let inline keyValues (k : Dict<'k,'v>) =
+        #if __SLIM__
+        k |> Seq.map id
+        #else
+        k.KeyValuePairs
+        #endif
 
     let inline map (f : 'k -> 'a -> 'b) (d : Dict<'k, 'a>) =
         let result = Dict()

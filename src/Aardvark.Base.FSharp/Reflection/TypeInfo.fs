@@ -95,14 +95,14 @@ module TypeInfo =
     let TV3d = { vectorType = typeof<V3d>; baseType = TFloat64; dimension = 3 }
     let TV4d = { vectorType = typeof<V4d>; baseType = TFloat64; dimension = 4 }
 
-    let TM22f = { matrixType = typeof<M22f>; baseType = TFloat32; dimension = new V2i(2,2) }
-    let TM33f = { matrixType = typeof<M33f>; baseType = TFloat32; dimension = new V2i(3,3) }
-    let TM34f = { matrixType = typeof<M34f>; baseType = TFloat32; dimension = new V2i(4,3) }
-    let TM44f = { matrixType = typeof<M44f>; baseType = TFloat32; dimension = new V2i(4,4) }
-    let TM22d = { matrixType = typeof<M22d>; baseType = TFloat64; dimension = new V2i(2,2) }
-    let TM33d = { matrixType = typeof<M33d>; baseType = TFloat64; dimension = new V2i(3,3) }
-    let TM34d = { matrixType = typeof<M34d>; baseType = TFloat64; dimension = new V2i(4,3) }
-    let TM44d = { matrixType = typeof<M44d>; baseType = TFloat64; dimension = new V2i(4,4) }
+    let TM22f = { matrixType = typeof<M22f>; baseType = TFloat32; dimension = V2i(2,2) }
+    let TM33f = { matrixType = typeof<M33f>; baseType = TFloat32; dimension = V2i(3,3) }
+    let TM34f = { matrixType = typeof<M34f>; baseType = TFloat32; dimension = V2i(4,3) }
+    let TM44f = { matrixType = typeof<M44f>; baseType = TFloat32; dimension = V2i(4,4) }
+    let TM22d = { matrixType = typeof<M22d>; baseType = TFloat64; dimension = V2i(2,2) }
+    let TM33d = { matrixType = typeof<M33d>; baseType = TFloat64; dimension = V2i(3,3) }
+    let TM34d = { matrixType = typeof<M34d>; baseType = TFloat64; dimension = V2i(4,3) }
+    let TM44d = { matrixType = typeof<M44d>; baseType = TFloat64; dimension = V2i(4,4) }
 
     let IntegralTypes : Set<ITypeInfo>  = Set.ofList [TByte; TSByte; TInt16; TUInt16; TInt32; TUInt32; TInt64; TUInt64]
     let FractionalTypes : Set<ITypeInfo>  = Set.ofList [TFloat32; TFloat64; TDecimal]

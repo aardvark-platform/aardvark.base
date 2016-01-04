@@ -98,9 +98,9 @@ type cmap<'k, 'v when 'k : equality>(initial : seq<'k * 'v>) =
             content.TryGetValue(k, &v)
 
         member x.ContainsKey(k) = content.ContainsKey k
-        member x.Keys = content.Keys
-        member x.Values = content.Values
-        member x.KeyValuePairs = content.KeyValuePairs
+        member x.Keys = Dict.keys content
+        member x.Values = Dict.values content
+        member x.KeyValuePairs = Dict.keyValues content
 
     interface amap<'k, 'v> with
         member x.ASet = set 
