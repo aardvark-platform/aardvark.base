@@ -382,24 +382,26 @@ module ``collect tests`` =
 
     [<Test>]
     let ``[ASet] memory leak test`` () =
-        let independenSource = Mod.init 10
+        let mutable independenSource = Mod.init 10
         let cnt = ref 0
-        let mutable leak = Leak(cnt)
-        let normalSource = CSet.ofList [ leak ]
-        let mapped = 
-            normalSource 
-                |> ASet.map (fun l -> 
-                    let m = independenSource |> Mod.map (fun i -> l)
-                    Mod.force m |> ignore
-                    m
-                ) 
-        mapped |> ASet.toArray |> ignore
-        transact (fun () -> normalSource |> CSet.remove leak |> should be True)
-        leak <- Unchecked.defaultof<_>
+        let f () =
+            let mutable leak = Leak(cnt)
+            let normalSource = CSet.ofList [ leak ]
+            let mapped = 
+                normalSource 
+                    |> ASet.map (fun l -> 
+                        let m = independenSource |> Mod.map (fun i -> l)
+                        Mod.force m |> ignore
+                        m
+                    ) 
+            mapped |> ASet.toArray |> ignore
+            transact (fun () -> normalSource |> CSet.remove leak |> should be True)
+            leak <- Unchecked.defaultof<_>
+        f()
         GC.Collect ()
         GC.WaitForPendingFinalizers()
-        // enable this to see potential problem
-        !cnt |> should equal 0   
+        !cnt |> should equal 0  
+        printfn "%A" independenSource 
         ()
 
     [<Test>]
