@@ -13,16 +13,25 @@ namespace Aardvark.Base
     public abstract partial class PixImage
     {
         private static object s_devilLock = new object();
+        private static bool s_initialized = false;
+
+        [OnAardvarkInit]
+        public static void InitDevil()
+        {
+            if (s_initialized) return;
+            s_initialized = true;
+
+            Bootstrap.Init();
+            IL.Init();
+            IL.Enable(EnableCap.AbsoluteOrigin);
+            IL.OriginFunc(OriginMode.UpperLeft);
+            IL.Enable(EnableCap.OverwriteExistingFile);
+            IL.Enable(EnableCap.ConvertPalette);
+        }
 
         static PixImage()
         {
-            Bootstrap.Init();
-            IL.Init();
-            IL.Enable(EnableCap.OverwriteExistingFile);
-            //IL.OriginFunc(OriginMode.UpperLeft);
-            IL.Enable(EnableCap.ConvertPalette);
-            //IL.Enable(EnableCap.AbsoluteOrigin);
-
+            InitDevil();
         }
 
         private static Dictionary<Devil.ChannelFormat, Col.Format> s_pixColorFormats = new Dictionary<Devil.ChannelFormat, Col.Format>()
@@ -164,6 +173,7 @@ namespace Aardvark.Base
             var mode = (OriginMode)IL.GetInteger((IntName)0x0603);
             if (mode == OriginMode.LowerLeft && !ILU.FlipImage())
                 return null;
+            
 
             // create an appropriate PixImage instance
             var imageType = typeof(PixImage<>).MakeGenericType(type);
