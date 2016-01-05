@@ -7,10 +7,11 @@ open System.Collections.Concurrent
 open System.Threading
 open System.Linq
 
-type VolatileCollection<'a>() =
-    let mutable set : HashSet<'a> = null
-    let mutable pset : List<'a> = List()
+type VolatileCollection<'a when 'a: not struct>() =
+    let mutable set : HashSet<Weak<'a>> = null
+    let mutable pset : List<Weak<'a>> = List()
 
+    let mutable v = Unchecked.defaultof<_>
 
     member x.IsEmpty = 
         if isNull set then pset.Count = 0
@@ -18,17 +19,28 @@ type VolatileCollection<'a>() =
 
     member x.Consume(length : byref<int>) : array<'a> =
         if isNull set then
-            let res = pset.ToArray()
+            let res = Array.zeroCreate pset.Count
+            length <- 0
+            for i in 0 .. pset.Count - 1 do
+                if pset.[i].TryGetTarget(&v) then
+                    res.[length] <- v; 
+                    length <- length + 1
+            v <- Unchecked.defaultof<_>
             pset.Clear()
-            length <- res.Length
             res
         else
-            let res = set.ToArray()
+            let res = Array.zeroCreate set.Count
+            length <- 0
+            for e in set do
+                if e.TryGetTarget(&v) then
+                    res.[length] <- v; 
+                    length <- length + 1
+            v <- Unchecked.defaultof<_>
             set.Clear()
-            length <- res.Length
             res
 
     member x.Add(value : 'a) : bool =
+        let value = Weak value
         if isNull set then 
             let id = pset.IndexOf(value)
             if id < 0 then 
@@ -44,6 +56,7 @@ type VolatileCollection<'a>() =
         
 
     member x.Remove(value : 'a) : bool =
+        let value = Weak value
         if isNull set then 
             pset.Remove(value)
         else
@@ -605,15 +618,19 @@ module Marking =
 [<AutoOpen>]
 module CallbackExtensions =
     
+    let private undyingMarkingCallbacks = System.Runtime.CompilerServices.ConditionalWeakTable<IAdaptiveObject,HashSet<obj>>()
+
     type private CallbackObject(inner : IAdaptiveObject, callback : unit -> unit) as this =
 
         let modId = newId()
         let mutable level = inner.Level + 1
-
+        let mutable live = 1
         let mutable scope = Ag.getContext()
         let mutable inner = inner
         let mutable callback = fun () -> Ag.useScope scope callback
         do lock inner (fun () -> inner.Outputs.Add this |> ignore)
+
+        do lock undyingMarkingCallbacks (fun () -> undyingMarkingCallbacks.GetOrCreateValue(inner).Add this |> ignore )
 
         member x.Mark() =
             callback ()
@@ -637,13 +654,22 @@ module CallbackExtensions =
             member x.Outputs = VolatileCollection()
             member x.InputChanged ip = ()
 
-        interface IDisposable with
-            member x.Dispose() =
+        member x.Dispose() =
+            if Interlocked.Exchange(&live, 0) = 1 then
+                lock undyingMarkingCallbacks (fun () -> 
+                    match undyingMarkingCallbacks.TryGetValue(inner) with
+                        | (true,v) -> 
+                            v.Remove x |> ignore
+                            if v.Count = 0 then undyingMarkingCallbacks.Remove inner |> ignore
+                        | _ -> ()
+                )
                 inner.RemoveOutput x
                 callback <- ignore
                 scope <- Unchecked.defaultof<_>
                 inner <- null
 
+        interface IDisposable with
+            member x.Dispose() = x.Dispose()
 
     type IAdaptiveObject with
 
@@ -678,9 +704,11 @@ module CallbackExtensions =
                 new CallbackObject(x, fun s ->
                     try
                         f ()
+                        self.Value.Dispose()
                     with :? LevelChangedException as ex ->
                         lock x (fun () -> x.Outputs.Add !self |> ignore)
                         raise ex
+
                 )
 
             lock x (fun () -> x.Outputs.Add !self |> ignore)

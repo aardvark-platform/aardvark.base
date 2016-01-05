@@ -42,6 +42,7 @@ module Obs =
                 }
 
         override x.Mark() =
+            base.Mark() |> ignore
             if subscriptionCount > 0 then
                 let v = x.GetValue null
                 let all = lock subscriptions (fun s -> subscriptions.ToArray())
@@ -74,6 +75,7 @@ module Obs =
                 }
 
         override x.Mark() =
+            base.Mark () |> ignore
             if subscriptionCount > 0 then
                 let v = x.GetValue null
                 let all = 

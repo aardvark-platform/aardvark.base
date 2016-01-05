@@ -698,8 +698,15 @@ module ASetReaders =
             )
  
         let mutable isDisposed = 0
-        let mutable deadSubscription = input.ContainingSetDiedEvent.Values.Subscribe this.ContainingSetDied
-        let mutable onlySubscription = input.OnlyReader.Values.Subscribe(fun pass -> this.SetPassThru(pass, passThru))
+        
+        //let mutable deadSubscription = input.ContainingSetDiedEvent.Values.Subscribe this.ContainingSetDied
+        let mutable onlySubscription = 
+            let weakThis = Weak this 
+            input.OnlyReader.Values.Subscribe(fun pass -> 
+                match weakThis.TargetOption with
+                    | Some this -> this.SetPassThru(pass, passThru)
+                    | _ -> ()
+            )
 
 
         member x.SetPassThru(active : bool, copyContent : bool) =
@@ -726,13 +733,13 @@ module ASetReaders =
                 )
             )
 
-        member private x.ContainingSetDied() =
-            deadSubscription.Dispose()
-            if not input.OnlyReader.Latest then
-                deadSubscription <- input.OnlyReader.Values.Subscribe(fun pass -> if pass then x.ContainingSetDied())
-            else
-                containgSetDead <- true
-                x.Optimize()
+//        member private x.ContainingSetDied() =
+//            deadSubscription.Dispose()
+//            if not input.OnlyReader.Latest then
+//                deadSubscription <- input.OnlyReader.Values.Subscribe(fun pass -> if pass then x.ContainingSetDied())
+//            else
+//                containgSetDead <- true
+//                x.Optimize()
 
         member x.PassThru =
             passThru
@@ -802,7 +809,7 @@ module ASetReaders =
         member x.Dispose disposing =
             if Interlocked.Exchange(&isDisposed, 1) = 0 then
                 onlySubscription.Dispose()
-                deadSubscription.Dispose()
+                //deadSubscription.Dispose()
                 inputReader.RemoveOutput x
                 if not passThru then
                     subscription.Dispose()

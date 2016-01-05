@@ -249,6 +249,10 @@ module Mod =
                     )
                 )
 
+            override x.Mark () =
+                x.cache <- Unchecked.defaultof<_>
+                true
+
             interface IMod with
                 member x.IsConstant = false
                 member x.GetValue(caller) = x.GetValue(caller) :> obj
@@ -306,6 +310,7 @@ module Mod =
         member x.Input = input
 
         override x.Mark() =
+            base.Mark() |> ignore
             let newValue = x.GetValue(null)
             x.OutOfDate <- false
 
@@ -614,6 +619,7 @@ module Mod =
                 input.GetValue x
 
             override x.Mark() =
+                base.Mark() |> ignore
                 if callbacks.Count > 0 then
                     let v = x.GetValue null
                     let current = callbacks |> Seq.toArray

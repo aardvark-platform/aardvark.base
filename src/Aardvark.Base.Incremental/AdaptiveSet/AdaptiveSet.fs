@@ -176,12 +176,11 @@ module ASet =
             )
         else
             let r = s.GetReader()
-            let c = r.Content :> IVersionedSet<_>
 
             let m = 
                 [r] |> Mod.mapCustom (fun s ->
                     r.GetDelta(s) |> ignore
-                    c
+                    r.Content :> IVersionedSet<_>
                 )
             m
 
