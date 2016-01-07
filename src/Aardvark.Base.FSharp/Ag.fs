@@ -36,6 +36,14 @@ module Ag =
                                    c
                     )
 
+
+        member x.TryGetChildScope(child : obj) =
+            lock x (fun () ->
+                        match x.children.TryGetValue child with
+                            | (true,c) -> Some c
+                            | _ -> None
+                    )
+
         member x.TryFindCacheValue (name : string) =
             if enableCacheWrites then
                 match x.cache.TryGetValue name with
@@ -46,10 +54,6 @@ module Ag =
         member x.AddCache (name : string) (value : Option<obj>) =
             if enableCacheWrites then x.cache.[name] <- value
             value
-
-        override x.Finalize() =
-            freeCWT x.children
-            ()
         
         member x.Path = 
             match x.path with
@@ -90,9 +94,11 @@ module Ag =
                                                                 | _ -> match valueStore.Value.TryGetValue((anyObject, name)) with
                                                                         | (true, v) -> Some v
                                                                         | _ -> 
-                                                                            match rootScope.Value.GetChildScope(node).TryFindCacheValue name with
-                                                                                | Some v -> v
-                                                                                | _ -> None
+                                                                            match rootScope.Value.TryGetChildScope(node) with
+                                                                                | Some s -> match s.TryFindCacheValue name with
+                                                                                                | Some v -> v
+                                                                                                | _ -> None
+                                                                                | None -> None
     let private clearValueStore() = valueStore.Value.Clear()
     
     type System.Object with
@@ -237,16 +243,20 @@ module Ag =
     //when not given a scope we need to use the currentScope
     //these functions are called by the ?-operator
     let tryGetInhAttribute (node : obj) (name : string) =
+        let inline up () =  
+            match currentScope.Value.parent with
+                | Some parent -> tryGetInhAttributeScope node (parent.GetChildScope node) name
+                | None -> None
         match node with
             | :? Scope as scope -> tryGetInhAttributeScope node scope name
             | _ -> 
-                let s = rootScope.Value.GetChildScope node
-                match s.cache.TryGetValue name with
-                    | (true, v) -> v
-                    | _ ->
-                        match currentScope.Value.parent with
-                            | Some parent -> tryGetInhAttributeScope node (parent.GetChildScope node) name
-                            | None -> None
+                match rootScope.Value.TryGetChildScope node with
+                 | Some s -> 
+                    match s.cache.TryGetValue name with
+                        | (true, v) -> v
+                        | _ ->
+                            up ()
+                 | None -> up ()
 
     let tryGetSynAttribute (o : obj) (name : string) =
         match o with
