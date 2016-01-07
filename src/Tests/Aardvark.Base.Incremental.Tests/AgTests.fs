@@ -163,6 +163,67 @@ module AgTests =
 
         ()
         
+    open Aardvark.Base.Incremental
+    type IL = interface end
+    type LNode(children : aset<IL>) =
+        interface IL
+        member x.Children = children
+    type LLeaf(v : int) =
+        interface IL
+        member x.V = v
+
+    type Leak(cnt : ref<int>) =
+        do cnt := !cnt + 1
+        override x.Finalize() = cnt := !cnt - 1
+        
+    let leakCnt = ref 0
+
+    [<Semantic>]
+    type LSemantics() =
+        
+        member x.Flatten(n : LNode) : aset<Leak>=
+            aset {
+                for i in n.Children do
+                    yield! i?Flatten()
+            }
+
+        member x.Flatten(l : LLeaf) : aset<Leak> =
+            aset {
+                yield Leak leakCnt
+            }
+
+    [<Test>]
+    let ``[Ag] Leaky leaky test``() =
+
+        Ag.initialize()
+
+        let xs = CSet.ofList [ for i in 0 .. 10 do yield LLeaf i :> IL ]
+        let root = LNode (xs :> aset<_>)
+
+        let leaks : aset<Leak> = root?Flatten()
+        let r = leaks.GetReader()
+        let run () =
+            r.GetDelta() |> ignore
+        
+            !leakCnt |> should equal 11 
+
+            transact (fun () -> xs |> CSet.clear)
+
+            GC.Collect()
+            GC.WaitForPendingFinalizers()
+        
+            r.GetDelta() |> printfn "delta1: %A"
+
+        run ()
+
+        Console.ReadLine() |> ignore
+        !leakCnt |> should equal 0 
+
+        r.GetDelta() |> printfn "delta2=%A"
+        printfn "c=%A" r.Content
+
+
+        ()     
         
 //    [<EntryPoint>]
 //    let main args =
