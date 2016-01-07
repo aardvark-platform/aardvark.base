@@ -216,6 +216,9 @@ module AgTests =
 
         run ()
 
+        GC.Collect()
+        GC.WaitForPendingFinalizers()
+
         Console.ReadLine() |> ignore
         !leakCnt |> should equal 0 
 
