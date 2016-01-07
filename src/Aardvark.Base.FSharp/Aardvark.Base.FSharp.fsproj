@@ -70,6 +70,7 @@
     <Compile Include="Interop\HashSet.fs" />
     <Compile Include="Interop\CSharpList.fs" />
     <Compile Include="Interop\Tensors.fs" />
+    <Compile Include="Interop\NativeTensors.fs" />
     <Compile Include="Reflection\TypeInfo.fs" />
     <Compile Include="Reflection\FunctionReflection.fs" />
     <Compile Include="Reflection\UnmanagedFunctions.fs" />

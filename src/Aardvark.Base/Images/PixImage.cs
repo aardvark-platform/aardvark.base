@@ -509,6 +509,9 @@ namespace Aardvark.Base
 
         public abstract PixFormat PixFormat { get; }
 
+        public abstract VolumeInfo VolumeInfo { get; }
+
+
         public abstract V2i Size { get; }
         public abstract V2l SizeL { get; }
 
@@ -1119,6 +1122,12 @@ namespace Aardvark.Base
         #endregion
 
         #region Properties
+
+        public override VolumeInfo VolumeInfo
+        {
+            get { return Volume.Info; }
+        }
+
 
         public override V2i Size
         {
