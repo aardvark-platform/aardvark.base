@@ -175,8 +175,11 @@ module AgTests =
     type Leak(cnt : ref<int>) =
         do cnt := !cnt + 1
         override x.Finalize() = cnt := !cnt - 1
+
         
     let leakCnt = ref 0
+
+    type LS = Leak * Ag.Scope * IMod<int>* int
 
     [<Semantic>]
     type LSemantics() =
@@ -191,6 +194,24 @@ module AgTests =
             aset {
                 yield Leak leakCnt
             }
+
+        member x.Flatten2(n : LNode) : aset<LS>=
+            aset {
+                for i in n.Children do
+                    let a : IMod<int> = n?SomeInhValue
+                    let! ab = a
+                    printfn "AB:%A" ab
+                    yield! i?Flatten2()
+            }
+
+        member x.Flatten2(l : LLeaf) : aset<LS> =
+            aset {
+                let vm : IMod<int> = l?SomeInhValue
+                let! v = vm
+                yield Leak leakCnt, Ag.getContext(), l?SomeInhValue, v
+            }
+
+        member x.SomeInhValue(r : Root<IL>) = r.Child?SomeInhValue <- Mod.init 1
 
     [<Test>]
     let ``[Ag] Leaky leaky test``() =
@@ -219,14 +240,45 @@ module AgTests =
         GC.Collect()
         GC.WaitForPendingFinalizers()
 
-        Console.ReadLine() |> ignore
         !leakCnt |> should equal 0 
 
         r.GetDelta() |> printfn "delta2=%A"
         printfn "c=%A" r.Content
-
-
         ()     
+
+
+    [<Test>]
+    let ``[Ag] Leaky leaky test 2``() =
+
+        Ag.initialize()
+
+        let xs = CSet.ofList [ for i in 0 .. 10 do yield LLeaf i :> IL ]
+        let root = LNode (xs :> aset<_>)
+
+        let leaks : aset<LS> = root?Flatten2()
+        let r = leaks.GetReader()
+        let run () =
+            r.GetDelta() |> ignore
+        
+            !leakCnt |> should equal 11 
+
+            transact (fun () -> xs |> CSet.clear)
+
+            GC.Collect()
+            GC.WaitForPendingFinalizers()
+        
+            r.GetDelta() |> printfn "delta1: %A"
+
+        run ()
+
+        GC.Collect()
+        GC.WaitForPendingFinalizers()
+
+        !leakCnt |> should equal 0 
+
+        r.GetDelta() |> printfn "delta2=%A"
+        printfn "c=%A" r.Content
+        ()    
         
 //    [<EntryPoint>]
 //    let main args =
