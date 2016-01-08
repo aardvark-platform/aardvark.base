@@ -35,6 +35,8 @@ Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "Aardvark.Base.Runtime", "Aa
 EndProject
 Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "Aardvark.Base.Runtime.Tests", "Tests\Aardvark.Base.Runtime.Tests\Aardvark.Base.Runtime.Tests.fsproj", "{CE9B55FF-2D3E-4E13-BA0A-69FD82F0B29B}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ExamplesCSharp", "Demo\ExamplesCSharp\ExamplesCSharp.csproj", "{98DF2326-72A4-476B-A61C-B189C0A9C547}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -97,6 +99,10 @@ Global
 		{CE9B55FF-2D3E-4E13-BA0A-69FD82F0B29B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{CE9B55FF-2D3E-4E13-BA0A-69FD82F0B29B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{CE9B55FF-2D3E-4E13-BA0A-69FD82F0B29B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{98DF2326-72A4-476B-A61C-B189C0A9C547}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{98DF2326-72A4-476B-A61C-B189C0A9C547}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{98DF2326-72A4-476B-A61C-B189C0A9C547}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{98DF2326-72A4-476B-A61C-B189C0A9C547}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -108,5 +114,6 @@ Global
 		{B5958171-888E-46A0-BEC9-00FEBA41147F} = {A79411F9-60B3-46C8-8981-6905D9B9F74C}
 		{1B4BEB6E-96A1-4B86-9AC5-F9F5824382AE} = {A79411F9-60B3-46C8-8981-6905D9B9F74C}
 		{CE9B55FF-2D3E-4E13-BA0A-69FD82F0B29B} = {A79411F9-60B3-46C8-8981-6905D9B9F74C}
+		{98DF2326-72A4-476B-A61C-B189C0A9C547} = {864A9013-93AC-4073-BB2A-348CE1B00010}
 	EndGlobalSection
 EndGlobal

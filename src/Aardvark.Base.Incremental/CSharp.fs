@@ -130,6 +130,10 @@ type ModExtensions private() =
         Mod.map f.Invoke this
 
     [<Extension>]
+    static member Select2 (this : IMod<'a>, other : IMod<'b>, f : Func<'a, 'b, 'c>) =
+        Mod.map2 (curry f.Invoke) this other
+
+    [<Extension>]
     static member SelectFast (this : IMod<'a>, f : Func<'a, 'b>) =
         Mod.mapFast f.Invoke this
 
