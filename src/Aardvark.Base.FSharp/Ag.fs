@@ -1,6 +1,5 @@
 ﻿namespace Aardvark.Base
 
-
 open System.Collections.Generic
 open System.Runtime.CompilerServices
 open Microsoft.FSharp.Reflection
@@ -19,7 +18,11 @@ module Ag =
         inherit System.Attribute()
 
     let mutable unpack : obj -> obj = id
-
+    
+    #if DEBUGSCOPES
+    let allScopes = HashSet<obj>()
+    #endif
+    
     [<ReferenceEquality>]
     type Scope = { parent       : Option<Scope>
                    source       : obj
@@ -27,11 +30,15 @@ module Ag =
                    cache        : Dictionary<string, Option<obj>>
                    mutable path         : Option<string> } with
 
+
         member x.GetChildScope(child : obj) =
             lock x (fun () ->
                         match x.children.TryGetValue child with
                             | (true,c) -> c
                             | _ -> let c = { parent = Some(x); source = child; children = newCWT(); cache = Dictionary(); path = None}
+                                   #if DEBUGSCOPES
+                                   allScopes.Add (System.WeakReference<obj>(x :> obj)) |> ignore
+                                   #endif
                                    x.children.Add(child, c)
                                    c
                     )
@@ -54,6 +61,11 @@ module Ag =
         member x.AddCache (name : string) (value : Option<obj>) =
             if enableCacheWrites then x.cache.[name] <- value
             value
+
+        #if DEBUGSCOPES 
+        override x.Finalize() =
+            if not <| allScopes.Remove (System.WeakReference<_>(x :> obj)) then printfn "scope not registered"
+        #endif
         
         member x.Path = 
             match x.path with
