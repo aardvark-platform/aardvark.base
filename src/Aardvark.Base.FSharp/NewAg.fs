@@ -12,7 +12,6 @@ module NewAg =
     let private inhFunctions = Dictionary<string, Multimethod>()
     let private synFunctions = Dictionary<string, Multimethod>()
 
-
     type Scope =
         {
             parent : Scope
@@ -23,6 +22,10 @@ module NewAg =
     let private noScope = { parent = Unchecked.defaultof<_>; sourceNode = null; inhValues = null }
     let private currentScope = new ThreadLocal<ref<Scope>>(fun () -> ref noScope)
     let private tempStore = new ThreadLocal<Dictionary<obj * string, obj>>(fun () -> Dictionary.empty)
+
+    let inline private opt (success : bool, value : 'a) =
+        if success then Some value
+        else None
 
     module private Delay =
 
@@ -66,28 +69,37 @@ module NewAg =
 
             for m in methods do
                 if m.GetParameters().Length = 1 then
-                    let name = m.Name
-                    if m.ReturnType = typeof<unit> || m.ReturnType = typeof<System.Void> then
-                        match inhFunctions.TryGetValue name with
-                            | (true, mm) -> 
-                                mm.Add m
-                            | _ -> 
-                                let mm = Multimethod [m]
-                                inhFunctions.[name] <- mm
+                    let valid = 
+                        if m.IsGenericMethod then
+                            let free = HashSet(m.GetGenericArguments())
+                            let bound = HashSet(m.GetParameters() |> Seq.collect (fun p -> p.ParameterType.GetGenericArguments()))
 
-                    else
-                        match synFunctions.TryGetValue name with
-                            | (true, mm) -> 
-                                mm.Add m
-                            | _ -> 
-                                let mm = Multimethod [m]
-                                synFunctions.[name] <- mm
+                            if free.SetEquals bound then
+                                true
+                            else
+                                false
+                        else
+                            true
+                    if not valid then
+                        Log.warn "found generic semantic function %A whose parameters are not bound by the arguments" m
+                    else 
+                        let name = m.Name
+                        if m.ReturnType = typeof<unit> || m.ReturnType = typeof<System.Void> then
+                            match inhFunctions.TryGetValue name with
+                                | (true, mm) -> 
+                                    mm.Add m
+                                | _ -> 
+                                    let mm = Multimethod [m]
+                                    inhFunctions.[name] <- mm
 
+                        else
+                            match synFunctions.TryGetValue name with
+                                | (true, mm) -> 
+                                    mm.Add m
+                                | _ -> 
+                                    let mm = Multimethod [m]
+                                    synFunctions.[name] <- mm
 
-
-
-
-        ()
 
 
     let getCurrentScope() : Scope =
@@ -100,14 +112,8 @@ module NewAg =
         try f()
         finally r := old
 
-    let trySynthesize (name : string) (o : obj) =
-        useScope { parent = getCurrentScope(); sourceNode = o; inhValues = Dictionary.empty } (fun () ->
-            match synFunctions.[name].TryInvoke([|o|]) with
-                | (true, v) -> Some v
-                | _ -> None
-        )
 
-    let rec tryInhherit (scopeRef : ref<Scope>) (name : string) =
+    let rec private tryInhheritInternal (mm : Multimethod) (scopeRef : ref<Scope>) (name : string) =
         let scope = getCurrentScope()
 
         match scope.inhValues.TryGetValue name with
@@ -115,7 +121,7 @@ module NewAg =
             | _ ->
                 scopeRef := scope.parent
                 let res =
-                    match inhFunctions.[name].TryInvoke([|scope.parent.sourceNode|]) with
+                    match mm.TryInvoke([|scope.parent.sourceNode|]) with
                         | (true, _) -> 
                             let ts = tempStore.Value
                             let res =
@@ -126,11 +132,40 @@ module NewAg =
                             ts.Clear()
                             res
 
-                        | _ -> tryInhherit scopeRef name
+                        | _ -> tryInhheritInternal mm scopeRef name
+                            
 
                 scope.inhValues.[name] <- res
                 res
-                
+     
+    let tryInherit (name : string) (o : obj) =
+        let ref = currentScope.Value
+        if isNull ref.Value.sourceNode then
+            None
+        else
+            if not (Unchecked.equals ref.Value.sourceNode o) then
+                failwithf "inheriting %s for %A but current scope induces %A" name o ref.Value.sourceNode
+
+            match inhFunctions.TryGetValue name with
+                | (true, mm) ->
+                    tryInhheritInternal mm ref name
+                | _ ->
+                    None
+
+    let trySynthesize (name : string) (o : obj) =
+        match synFunctions.TryGetValue(name) with
+            | (true, f) ->
+                useScope { parent = getCurrentScope(); sourceNode = o; inhValues = Dictionary.empty } (fun () ->
+                    match f.TryInvoke([|o|]) with
+                        | (true, v) -> Some v
+                        | _ -> None
+                )
+            | _ -> None
+          
+    let tryGetAttributeValue (name : string) (o : obj) =
+        match trySynthesize name o with
+            | Some v -> Some v
+            | None -> tryInherit name o
 
     let (?<-) (n : obj) (name : string) (value : 'a) =
         tempStore.Value.[(n, name)] <- value
@@ -139,13 +174,27 @@ module NewAg =
         let t = typeof<'a>
         if t.Name.StartsWith "FSharpFunc" then
             match trySynthesize name n with
-                | Some v -> Delay.delay v
-                | None -> failwith "sadsadasd"
+                | Some v -> 
+                    Delay.delay v
+                | None -> 
+                    failwithf "[Ag] unable to find synthesized attribute %s for node type: %A" name (n.GetType())
         else
-            let ref = currentScope.Value
-            match tryInhherit ref name with
-                | Some (:? 'a as v) -> v
-                | _ -> failwith "askdnkasjdksajdl"
+            match n with
+                | :? Scope as s ->
+                    match useScope s (fun () -> tryInherit name s.sourceNode) with
+                        | Some (:? 'a as v) -> v
+                        | Some v ->
+                            failwithf "[Ag] unexpected type for inherited attribute %s on node type %A: %A" name (n.GetType()) (v.GetType())
+                        | _ -> 
+                            failwithf "[Ag] unable to find inherited attribute %s on node type: %A" name (s.sourceNode.GetType())
+                | _ ->
+                    match tryInherit name n with
+                        | Some (:? 'a as v) -> v
+                        | Some v ->
+                            failwithf "[Ag] unexpected type for inherited attribute %s on node type %A: %A" name (n.GetType()) (v.GetType())
+                        | None -> 
+                            failwithf "[Ag] unable to find inherited attribute %s on node type: %A" name (n.GetType())
+                    
 
 module NewAgTest =
     open NewAg
@@ -197,5 +246,8 @@ module NewAgTest =
         l.A <- 5
         let v : int = t?Value()
         printfn "%A" v
+
+        NewAg.tryGetAttributeValue "Sepp" v |> printfn "Sepp = %A"
+
 
 
