@@ -268,18 +268,18 @@ namespace ExamplesCSharp
             // As a result there are many things which do not fit to observables, others do not fit to mods.
 
             // Given this list. Mods are not immediately usable for tracking changes manually.
-            var fileNeedsSafe = Mod.Init(false);
+            var resendOverNetwork = Mod.Init(false);
             inputEvil.UnsafeRegisterCallbackNoGcRoot(s =>
             {
                 using (Adaptive.Transaction)
                 {
-                    fileNeedsSafe.Value = true;
+                    resendOverNetwork.Value = true;
                 }
             }
             );
-            fileNeedsSafe.UnsafeRegisterCallbackNoGcRoot(_ =>
+            resendOverNetwork.UnsafeRegisterCallbackNoGcRoot(_ =>
             {
-                inputEvil.GetValue().ToString(); // write content to file
+                inputEvil.GetValue().ToString(); // send new contents of inputEvil
             });
             // UnsafeRegisterCallbackNoGcRoot is a hack in the system to allow unproblematic side effects
             // to be coupled with reecution. The exeuction of order of callbacks, especially callbacks
