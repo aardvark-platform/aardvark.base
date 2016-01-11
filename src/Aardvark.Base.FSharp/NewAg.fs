@@ -11,6 +11,7 @@ open Microsoft.FSharp.Reflection
 module NewAg =
     let private inhFunctions = Dictionary<string, Multimethod>()
     let private synFunctions = Dictionary<string, Multimethod>()
+    let private rootFunctions = Dictionary<string, Multimethod>()
 
     type Scope =
         {
@@ -61,6 +62,72 @@ module NewAg =
             let ctor = getCtor typeof<'a>
             ctor.Invoke [|value|] |> unbox<'a>
 
+    module private RootFunctions =
+        open System.Reflection.Emit
+
+
+        let contentType (t : Type) =
+            if t.IsGenericType && t.GetGenericTypeDefinition() = typedefof<Ag.Root<_>> then
+                t.GetGenericArguments().[0]
+            else
+                t
+
+        let wrap (target : obj) (mi : MethodInfo) =
+            let parameters = mi.GetParameters()
+            let parameterTypes = parameters |> Array.map (fun p -> contentType p.ParameterType)
+            let bType = RuntimeMethodBuilder.bMod.DefineType(Guid.NewGuid().ToString())
+
+            let bTarget = 
+                if mi.IsStatic then null
+                else bType.DefineField("_target", mi.DeclaringType, FieldAttributes.Private)
+
+            let bMeth = bType.DefineMethod("Invoke", MethodAttributes.Public, mi.ReturnType, parameterTypes)
+            let il = bMeth.GetILGenerator()
+
+            il.Emit(OpCodes.Nop)
+            if not mi.IsStatic then
+                il.Emit(OpCodes.Ldarg_0)
+                il.Emit(OpCodes.Ldfld, bTarget)
+            
+
+            for i in 0..parameters.Length - 1 do
+                let p = parameters.[i]
+                il.Emit(OpCodes.Ldarg, i + 1)
+                il.Emit(OpCodes.Unbox_Any, typeof<obj>)
+                il.Emit(OpCodes.Newobj, typedefof<Ag.Root<_>>.MakeGenericType(parameterTypes.[i]).GetConstructor [|typeof<obj>|])
+
+
+
+            il.EmitCall(OpCodes.Call, mi, null)
+            il.Emit(OpCodes.Ret)
+
+
+            if mi.IsStatic then
+                let bCtor = bType.DefineConstructor(MethodAttributes.Public, CallingConventions.Standard, [||])
+                let il = bCtor.GetILGenerator()
+                il.Emit(OpCodes.Call, typeof<obj>.GetConstructor [||])
+                il.Emit(OpCodes.Ret)
+            else
+                let bCtor = bType.DefineConstructor(MethodAttributes.Public, CallingConventions.Standard, [|mi.DeclaringType|])
+                let il = bCtor.GetILGenerator()
+                il.Emit(OpCodes.Ldarg_0)
+                il.Emit(OpCodes.Call, typeof<obj>.GetConstructor [||])
+                il.Emit(OpCodes.Ldarg_0)
+                il.Emit(OpCodes.Ldarg_1)
+                il.Emit(OpCodes.Stfld, bTarget)
+                il.Emit(OpCodes.Ret)
+
+
+            let t = bType.CreateType()
+
+            if mi.IsStatic then
+                let ctor = t.GetConstructor [||]
+                ctor.Invoke [||], t.GetMethod "Invoke"
+            else
+                let ctor = t.GetConstructor [|mi.DeclaringType|]
+                ctor.Invoke [|target|], t.GetMethod "Invoke"
+
+
     let init() =
         let types = Introspection.GetAllTypesWithAttribute<Ag.Semantic>()
 
@@ -68,7 +135,8 @@ module NewAg =
             let methods = t.E0.GetMethods(BindingFlags.Public ||| BindingFlags.Instance)
 
             for m in methods do
-                if m.GetParameters().Length = 1 then
+                let parameters = m.GetParameters()
+                if parameters.Length = 1 then
                     let valid = 
                         if m.IsGenericMethod then
                             let free = HashSet(m.GetGenericArguments())
@@ -84,7 +152,21 @@ module NewAg =
                         Log.warn "found generic semantic function %A whose parameters are not bound by the arguments" m
                     else 
                         let name = m.Name
-                        if m.ReturnType = typeof<unit> || m.ReturnType = typeof<System.Void> then
+                        let parameterType = parameters.[0].ParameterType
+
+                        if parameterType.IsGenericType && parameterType.GetGenericTypeDefinition() = typedefof<Ag.Root<_>> then
+                            let mm = 
+                                match rootFunctions.TryGetValue name with
+                                    | (true, mm) -> mm
+                                    | _ ->
+                                        let mm = Multimethod(1)
+                                        rootFunctions.[name] <- mm
+                                        mm
+                            let (t,m) = RootFunctions.wrap (Multimethod.GetTarget m) m
+                            mm.Add(t, m)
+
+
+                        elif m.ReturnType = typeof<unit> || m.ReturnType = typeof<System.Void> then
                             match inhFunctions.TryGetValue name with
                                 | (true, mm) -> 
                                     mm.Add m
@@ -113,30 +195,53 @@ module NewAg =
         finally r := old
 
 
-    let rec private tryInhheritInternal (mm : Multimethod) (scopeRef : ref<Scope>) (name : string) =
+    let rec private tryInheritInternal (mm : Multimethod) (scopeRef : ref<Scope>) (name : string) =
         let scope = getCurrentScope()
 
         match scope.inhValues.TryGetValue name with
             | (true, v) -> v
             | _ ->
-                scopeRef := scope.parent
-                let res =
-                    match mm.TryInvoke([|scope.parent.sourceNode|]) with
-                        | (true, _) -> 
-                            let ts = tempStore.Value
-                            let res =
-                                match ts.TryGetValue((scope.sourceNode, name)) with
-                                    | (true, v) -> Some v
-                                    | _ -> None
+                if isNull scope.parent.sourceNode then
+                    match rootFunctions.TryGetValue(name) with
+                        | (true, mm) ->
+                            match mm.TryInvoke([|scope.sourceNode|]) with
+                                | (true, _) ->
+                                    let ts = tempStore.Value
+                                    let res =
+                                        match ts.TryGetValue((scope.sourceNode, name)) with
+                                            | (true, v) -> Some v
+                                            | _ -> 
+                                                failwithf "[Ag] invalid root method for attribute %s which does not write to %A" name scope.sourceNode
                             
-                            ts.Clear()
-                            res
+                                    ts.Clear()
+                                    res
+                                | _ ->
+                                    None
+                        | _ ->
+                            None
+                else
+                    scopeRef := scope.parent
+                    let res =
+                        match mm.TryInvoke([|scope.parent.sourceNode|]) with
+                            | (true, _) -> 
+                                let ts = tempStore.Value
+                                let res =
+                                    match ts.TryGetValue((scope.sourceNode, name)) with
+                                        | (true, v) -> Some v
+                                        | _ ->
+                                            match ts.TryGetValue((Ag.anyObject, name)) with
+                                                | (true, v) -> Some v
+                                                | _ ->  
+                                                    failwithf "[Ag] invalid inherit method for attribute %s which does not write to %A" name scope.sourceNode
+                            
+                                ts.Clear()
+                                res
 
-                        | _ -> tryInhheritInternal mm scopeRef name
+                            | _ -> tryInheritInternal mm scopeRef name
                             
 
-                scope.inhValues.[name] <- res
-                res
+                    scope.inhValues.[name] <- res
+                    res
      
     let tryInherit (name : string) (o : obj) =
         let ref = currentScope.Value
@@ -148,7 +253,7 @@ module NewAg =
 
             match inhFunctions.TryGetValue name with
                 | (true, mm) ->
-                    tryInhheritInternal mm ref name
+                    tryInheritInternal mm ref name
                 | _ ->
                     None
 
@@ -197,6 +302,7 @@ module NewAg =
                     
 
 module NewAgTest =
+    open Ag
     open NewAg
 
     type INode = interface end
@@ -218,11 +324,11 @@ module NewAgTest =
 
     [<Ag.Semantic>]
     type Sem() =
-        member x.Inh(r : Env) =
-            r.C?Inh <- 0
+        member x.Inh(r : Ag.Root<INode>) =
+            r.Child?Inh <- 0
             
         member x.Inh(n : Node) =
-            n.C?Inh <- 1 + n?Inh
+            n.AllChildren?Inh <- 1 + n?Inh
 
         member x.Value(a : Env) : int =
             a.C?Value()
@@ -238,7 +344,7 @@ module NewAgTest =
     let run() =
         NewAg.init()
         let l = Leaf 1
-        let t = Env(Node(Node(l)))
+        let t = Node(Node(l))
         let v : int = t?Value()
         printfn "%A" v
 

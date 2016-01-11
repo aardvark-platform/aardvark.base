@@ -174,8 +174,8 @@ type IRuntimeMethod =
 module RuntimeMethodBuilder =
     open System.Reflection.Emit
 
-    let private bAss = AppDomain.CurrentDomain.DefineDynamicAssembly(AssemblyName("IRuntimeMethods"), AssemblyBuilderAccess.RunAndSave)
-    let private bMod = bAss.DefineDynamicModule("MainModule")
+    let internal bAss = AppDomain.CurrentDomain.DefineDynamicAssembly(AssemblyName("IRuntimeMethods"), AssemblyBuilderAccess.RunAndSave)
+    let internal bMod = bAss.DefineDynamicModule("MainModule")
 
     let wrap (target : obj) (mi : MethodInfo) =
         let parameters = mi.GetParameters()
@@ -345,8 +345,8 @@ module RuntimeMethodBuilder =
         invoke
 
 exception MultimethodException              
-type Multimethod(parameterCount : int, initial : seq<MethodInfo>) as this =
-    let implementations = HashSet<MethodInfo>(initial)
+type Multimethod(parameterCount : int, initial : seq<MethodInfo * obj>) as this =
+    let implementations = Dictionary.ofSeq (initial)
     let mutable initialized = false
 
     static let instances = Dictionary<Type, obj>()
@@ -361,7 +361,9 @@ type Multimethod(parameterCount : int, initial : seq<MethodInfo>) as this =
                     i
         )
 
-
+    static let createTarget (mi : MethodInfo) =
+        if mi.IsStatic then null
+        else createInstance mi.DeclaringType
 
     let methodCache = 
         RuntimeMethodBuilder.inlineCache parameterCount (fun types -> 
@@ -370,6 +372,8 @@ type Multimethod(parameterCount : int, initial : seq<MethodInfo>) as this =
                 | (true, rm) -> Some rm
                 | _ -> None
         )
+
+    static member GetTarget (mi : MethodInfo) = createTarget mi 
 
     member x.Add(mi : MethodInfo) =
         if initialized then
@@ -380,9 +384,22 @@ type Multimethod(parameterCount : int, initial : seq<MethodInfo>) as this =
 
         if mi.IsGenericMethod then
             let mi = mi.GetGenericMethodDefinition()
-            implementations.Add(mi) |> ignore
+            implementations.Add(mi, createTarget mi) |> ignore
         else
-            implementations.Add(mi) |> ignore
+            implementations.Add(mi, createTarget mi) |> ignore
+
+    member x.Add(target : obj, mi : MethodInfo) =
+        if initialized then
+            failwith "cannot modify Multimethod after first call"
+
+        if mi.GetParameters().Length <> parameterCount then
+            failwithf "cannot add %A to Multimethod due to parameter-count mismatch" mi
+
+        if mi.IsGenericMethod then
+            let mi = mi.GetGenericMethodDefinition()
+            implementations.Add(mi, target) |> ignore
+        else
+            implementations.Add(mi, target) |> ignore
 
     member x.Remove(mi : MethodInfo) =
         if initialized then
@@ -390,9 +407,9 @@ type Multimethod(parameterCount : int, initial : seq<MethodInfo>) as this =
 
         implementations.Remove mi |> ignore
 
-    member x.TryGetMethodInfo(retType : Type, types : Type[], [<Out>] result : byref<MethodInfo>) =
+    member x.TryGetMethodInfo(retType : Type, types : Type[], [<Out>] result : byref<MethodInfo * obj>) =
         let goodOnes = 
-            implementations 
+            implementations.Keys
                 |> Seq.choose (fun mi -> Helpers.tryInstantiate mi types)
                 |> Seq.filter (fun mi -> retType.IsAssignableFrom mi.ReturnType)
                 |> Seq.cast
@@ -406,17 +423,16 @@ type Multimethod(parameterCount : int, initial : seq<MethodInfo>) as this =
                     types,
                     types |> Array.map (fun _ -> ParameterModifier())
                 ) |> unbox<MethodInfo>
-
-            result <- selected
+                
+            result <- selected, implementations.[selected]
             true
         else
             false
 
     member x.TryCreateMethod(retType : Type, types : Type[], [<Out>] result : byref<IRuntimeMethod>) =
         match x.TryGetMethodInfo(retType, types) with
-            | (true, mi) ->
-                if mi.IsStatic then result <- RuntimeMethodBuilder.wrap null mi
-                else result <- RuntimeMethodBuilder.wrap (createInstance mi.DeclaringType) mi
+            | (true, (mi, target)) ->
+                result <- RuntimeMethodBuilder.wrap target mi
                 true
             | _ ->
                 false
@@ -447,7 +463,7 @@ type Multimethod(parameterCount : int, initial : seq<MethodInfo>) as this =
 
     new(methods : seq<MethodInfo>) = 
         let count = (methods |> Seq.head).GetParameters().Length
-        Multimethod(count, methods)
+        Multimethod(count, methods |> Seq.map (fun mi -> mi, createTarget mi))
 
 module MultimethodTest =
 
@@ -497,11 +513,6 @@ module MultimethodTest =
 //                | (true, res) -> printfn "value(%A) = %A" o res
 //                | _ -> () 
 
-        let (_,mi) = m.TryGetMethodInfo(typeof<obj>, [|typeof<D>|])
-        let target = Activator.CreateInstance mi.DeclaringType
-
-        let res = RuntimeMethodBuilder.wrap target mi
-
         let ours() =
             let args = [|D 10 :> obj|]
             let sw = Stopwatch()
@@ -537,24 +548,6 @@ module MultimethodTest =
             printfn "sepp: %.3fns" (1000000.0 * sw.Elapsed.TotalMilliseconds / float iter)
 
 
-
-        let naive() =
-            let args = [|D 10 :> obj|]
-            let sw = Stopwatch()
-            let mutable iter = 0
-
-            for i in 0..1000 do
-                mi.Invoke(target, args) |> ignore
-
-            sw.Start()
-            while sw.Elapsed.TotalMilliseconds < 1000.0 do 
-                mi.Invoke(target, args) |> ignore
-                iter <- iter + 1
-            sw.Stop()
-            printfn "naive: %.3fns" (1000000.0 * sw.Elapsed.TotalMilliseconds / float iter)
-
-
         sepp()
         ours()
-        naive()
 

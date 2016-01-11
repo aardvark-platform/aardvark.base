@@ -96,7 +96,7 @@ module Ag =
     let mutable currentScope = new ThreadLocal<Scope>(fun () -> rootScope.Value)
 
     //temporary storage for inherited values
-    let private anyObject = obj()
+    let internal anyObject = obj()
     let private valueStore = new ThreadLocal<Dictionary<obj * string, obj>>(fun () -> Dictionary<obj * string, obj>())
     let private setValueStore (node : obj) (name : string) (value : obj) = let node = unpack node
                                                                            valueStore.Value.[(node,name)] <- value
