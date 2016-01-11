@@ -9,6 +9,8 @@ Additionally, our C# interfaces for F# datatypes often lack convenience and C# i
 (are not always as complete as the real implementation).
 One goal of this file is to show the very basic interaction techniques and motivate developers to
 contribute to the convenience layers to C#.
+
+PS.: please help to improve this tutorial (typos, non-english etc)
 */
 
 using System;
@@ -169,7 +171,7 @@ namespace ExamplesCSharp
             var aPlusB2 = ModModule.map2(FSharpFuncUtil.Create<int,int,int>((a, b) => a + b), inputAM, inputBM);
             // steps required: 
             // (1) F# map2 is defined in Mod module. usage Mod.map2 (+) a b
-            // so we need this map module. by convention modules with colliding type names
+            // so we need this map module. by convention, modules with colliding type names
             // are exported with the module suffix. so the function lives in ModModule.
             // (2) our f# function wants a f# function and not an instance of type System.Func. use a conversion
             // (3) C# has no real type inference, so most of the time you'll need to annotate stuff.
@@ -222,7 +224,7 @@ namespace ExamplesCSharp
             So what is the result of this analysis? Rx has precise semantics. You get what you want. But
             you need to know how you want it and there are many solutions.
             So Mod is the same as observable, but can do less because we do not have precise control about
-            reexecution semantics (although semantics seems to nice, right)?
+            reexecution semantics (although semantics seems to be nice, right)?
             */
 
             // One could use the mod system as strange implementation of observable of course.
@@ -267,7 +269,7 @@ namespace ExamplesCSharp
 
             // As a result there are many things which do not fit to observables, others do not fit to mods.
 
-            // Given this list. Mods are not immediately usable for tracking changes manually.
+            // Given this list, Mods are particularly not immediately usable for tracking changes manually.
             var resendOverNetwork = Mod.Init(false);
             inputEvil.UnsafeRegisterCallbackNoGcRoot(s =>
             {
@@ -286,14 +288,19 @@ namespace ExamplesCSharp
             // which run callbacks via transactions is highly unspecified. In fact
             // UnsafeRegisterCallbackNoGcRoot has no defined semantics.
 
-            // One little note: all callbacks are executed eventuallly, but maybe to often.
+            // One little note: (in the current implementation) all callbacks are executed eventuallly, but maybe to often.
             // This is very comparable to LINQ mixed with side effects. LINQ has lazy evaluation and using
             // side effects inside is just nonesense. Fortunately LINQ has no public cheat API --- one cannot
-            // simply "side-effect" elements into an existing enumerable sequence (ok we can but..). 
-            // We could do this with mod too, but
-            // we still wanted ways to do unsafe stuff in less than 0.01% of the code. 
+            // simply "side-effect" elements into an existing enumerable sequence 
+            // (ok we can but peoply luckily rarely mix side effects with linq because meijer said it is evil [1]).
+            // [1] https://www.youtube.com/watch?v=UuamC0T3hv8 
+            // Of course we could restrict the mod API (by removing callbacks), but
+            // we still wanted ways to do unsafe stuff (in less than 0.01% of the code). 
             // At this point we shall mention that the complete rendering backend works without callbacks,
             // but rendering things could be as well considered as rather imperative problem.
+            // If you really want to attach callbacks to some mod, maybe either:
+            // (1) the problem does not fit the declarative incremental computation modlel
+            // (2) the problem fits, but some parts of the current solution are not delcarative (either because of (1), because of hacks or other non-declarative parts)
 
             /* You know might think: "Why all this complexity. Why not just use Observables where
             appropriate and ad hoc techniques when they not work as nice as they should. I pretty
