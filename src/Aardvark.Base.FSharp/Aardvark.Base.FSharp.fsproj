@@ -74,6 +74,7 @@
     <Compile Include="Reflection\TypeInfo.fs" />
     <Compile Include="Reflection\FunctionReflection.fs" />
     <Compile Include="Reflection\UnmanagedFunctions.fs" />
+    <Compile Include="Reflection\Multimethod.fs" />
     <Compile Include="Runtime\DynamicLinker.fs" />
     <Compile Include="Runtime\MemoryUtilities.fs" />
     <Compile Include="Runtime\ExecutableMemory.fs" />
