@@ -203,7 +203,9 @@ module RuntimeMethodBuilder =
 
 
         il.EmitCall(OpCodes.Call, mi, null)
-        if mi.ReturnType.IsValueType then
+        if mi.ReturnType = typeof<System.Void> then
+            il.Emit(OpCodes.Ldnull)
+        elif mi.ReturnType.IsValueType then
             il.Emit(OpCodes.Box, mi.ReturnType)
         else
             il.Emit(OpCodes.Unbox_Any, typeof<obj>)
