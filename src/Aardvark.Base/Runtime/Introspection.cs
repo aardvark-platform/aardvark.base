@@ -593,7 +593,8 @@ namespace Aardvark.Base
                                 if (localComponents.Length != 0)
                                 {
                                     var localTarget = Path.Combine(localComponents);
-                                    var outputPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, localTarget);
+                                    var baseDir = IntrospectionProperties.CustomEntryAssembly != null ? IntrospectionProperties.CustomEntryAssembly.Location : AppDomain.CurrentDomain.BaseDirectory;
+                                    var outputPath = Path.Combine(baseDir, localTarget);
 
                                     var d = Path.GetDirectoryName(outputPath);
                                     if (!Directory.Exists(Path.GetDirectoryName(outputPath)))
