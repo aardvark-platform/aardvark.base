@@ -304,6 +304,7 @@ module NewAg =
 module NewAgTest =
     open Ag
     open NewAg
+    open System.Diagnostics
 
     type INode = interface end
 
@@ -341,8 +342,79 @@ module NewAgTest =
         
 
 
+    type IList<'a> = interface end
+
+    type Cons<'a>(head : 'a, tail : IList<'a>) =
+        interface IList<'a>
+        member x.Head = head
+        member x.Tail = tail
+
+    type Nil<'a>() =
+        interface IList<'a>
+
+    [<Ag.Semantic>]
+    type ListSem() =
+        member x.Sum(l : Cons<int>) =
+            l.Head + l.Tail?Sum()
+            
+        member x.Sum(n : Nil<int>) =
+            0 
+
+    let rec directSum (l : IList<int>) =
+        match l with
+            | :? Cons<int> as c -> c.Head + directSum c.Tail
+            | _ -> 0
+
     let run() =
         NewAg.init()
+
+        let rec longList (l : int) =
+            if l <= 0 then Nil<int>() :> IList<_>
+            else Cons(1, longList (l-1)) :> IList<_>
+
+
+        let l = longList (100)
+
+        let direct() =
+            let sw = Stopwatch()
+            let mutable iter = 0
+            let mutable total = 0
+            sw.Start()
+            while sw.Elapsed.TotalMilliseconds < 1000.0 do
+                total <- total + directSum l
+                iter <- iter + 1
+            sw.Stop()
+            printfn "direct: %.3fµs (%A)" (1000.0 * sw.Elapsed.TotalMilliseconds / float iter) (total /iter)
+
+
+        let ag() =
+            let sw = Stopwatch()
+            let mutable iter = 0
+            let mutable total = 0
+            sw.Start()
+            while sw.Elapsed.TotalMilliseconds < 10000.0 do
+                total <- total + l?Sum()
+                iter <- iter + 1
+            sw.Stop()
+            printfn "ag:     %.3fµs (%A)" (1000.0 * sw.Elapsed.TotalMilliseconds / float iter) (total /iter)
+
+
+
+
+        let directv = directSum l
+        printfn "direct: %A" directv
+        let agv : int = l?Sum()
+        printfn "ag:     %A" agv
+
+
+        direct()
+        ag()
+        direct()
+        ag()
+
+        Environment.Exit 0
+
+
         let l = Leaf 1
         let t = Node(Node(l))
         let v : int = t?Value()

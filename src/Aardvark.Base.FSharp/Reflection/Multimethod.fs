@@ -177,91 +177,27 @@ module RuntimeMethodBuilder =
     let internal bAss = AppDomain.CurrentDomain.DefineDynamicAssembly(AssemblyName("IRuntimeMethods"), AssemblyBuilderAccess.RunAndSave)
     let internal bMod = bAss.DefineDynamicModule("MainModule")
 
-    let wrap (target : obj) (mi : MethodInfo) =
-        let parameters = mi.GetParameters()
-        let bType = bMod.DefineType(Guid.NewGuid().ToString())
-
-        let bTarget = 
-            if mi.IsStatic then null
-            else bType.DefineField("_target", mi.DeclaringType, FieldAttributes.Private)
-
-        let bMeth = bType.DefineMethod("Invoke", MethodAttributes.Public ||| MethodAttributes.Virtual, typeof<obj>, [|typeof<obj[]>|])
-        let il = bMeth.GetILGenerator()
-
-        il.Emit(OpCodes.Nop)
-        if not mi.IsStatic then
-            il.Emit(OpCodes.Ldarg_0)
-            il.Emit(OpCodes.Ldfld, bTarget)
-            
-
-        for i in 0..parameters.Length - 1 do
-            let p = parameters.[i]
-            il.Emit(OpCodes.Ldarg_1)
-            il.Emit(OpCodes.Ldc_I4, i)
-            il.Emit(OpCodes.Ldelem_Ref)
-            il.Emit(OpCodes.Unbox_Any, p.ParameterType)
-
-
-        il.EmitCall(OpCodes.Call, mi, null)
-        if mi.ReturnType = typeof<System.Void> then
-            il.Emit(OpCodes.Ldnull)
-        elif mi.ReturnType.IsValueType then
-            il.Emit(OpCodes.Box, mi.ReturnType)
-        else
-            il.Emit(OpCodes.Unbox_Any, typeof<obj>)
-        il.Emit(OpCodes.Ret)
-
-
-        bType.AddInterfaceImplementation(typeof<IRuntimeMethod>)
-        bType.DefineMethodOverride(bMeth, typeof<IRuntimeMethod>.GetMethod "Invoke")
-
-
-        if mi.IsStatic then
-            let bCtor = bType.DefineConstructor(MethodAttributes.Public, CallingConventions.Standard, [||])
-            let il = bCtor.GetILGenerator()
-            il.Emit(OpCodes.Call, typeof<obj>.GetConstructor [||])
-            il.Emit(OpCodes.Ret)
-        else
-            let bCtor = bType.DefineConstructor(MethodAttributes.Public, CallingConventions.Standard, [|mi.DeclaringType|])
-            let il = bCtor.GetILGenerator()
-            il.Emit(OpCodes.Ldarg_0)
-            il.Emit(OpCodes.Call, typeof<obj>.GetConstructor [||])
-            il.Emit(OpCodes.Ldarg_0)
-            il.Emit(OpCodes.Ldarg_1)
-            il.Emit(OpCodes.Stfld, bTarget)
-            il.Emit(OpCodes.Ret)
-
-
-        let t = bType.CreateType()
-
-        if mi.IsStatic then
-            let ctor = t.GetConstructor [||]
-            ctor.Invoke [||] |> unbox<IRuntimeMethod>
-        else
-            let ctor = t.GetConstructor [|mi.DeclaringType|]
-            ctor.Invoke [|target|] |> unbox<IRuntimeMethod>
-
     exception UnknownException of Type[]
     exception UnsupportedTypesException of Type[]
 
-    let inlineCache (argCount : int) (f : Type[] -> Option<IRuntimeMethod>) : obj[] -> obj =
+    let inlineCache (argCount : int) (f : Type[] -> Option<obj * MethodInfo>) : obj[] -> obj =
         let created = ref false
         let current = ref Unchecked.defaultof<IRuntimeMethod>
 
-        let all = List<Type[] * IRuntimeMethod>()
+        let all = List<Type[] * obj * MethodInfo>()
 
         let rebuild(newArgTypes : Type[]) =
             created := true
             let meth = f newArgTypes
             match meth with
-                | Some meth ->
-                    all.Add(newArgTypes, meth)
+                | Some (target, meth) ->
+                    all.Add(newArgTypes, target, meth)
 
                     let bType = bMod.DefineType(Guid.NewGuid().ToString())
                     let bMeth = bType.DefineMethod("Invoke", MethodAttributes.Public ||| MethodAttributes.Virtual, typeof<obj>, [|typeof<obj[]>|])
                     let il = bMeth.GetILGenerator()
 
-                    let bMethods = bType.DefineField("methods", typeof<IRuntimeMethod[]>, FieldAttributes.Private)
+                    let bTargets = bType.DefineField("targets", typeof<obj[]>, FieldAttributes.Private)
 
                     let typeVars = Array.init argCount (fun i -> il.DeclareLocal(typeof<Type>))
                     let arr = il.DeclareLocal(typeof<Type[]>)
@@ -274,7 +210,8 @@ module RuntimeMethodBuilder =
                         il.Emit(OpCodes.Stloc, typeVars.[i])
 
                     for ai in 0..all.Count-1 do
-                        let (t, m) = all.[ai]
+                        let (t, target, meth) = all.[ai]
+                        let paramters = meth.GetParameters()
 
                         let fLabel = il.DefineLabel()
 
@@ -284,12 +221,29 @@ module RuntimeMethodBuilder =
                             il.Emit(OpCodes.Ldtoken, ti)
                             il.Emit(OpCodes.Bne_Un, fLabel)
 
-                        il.Emit(OpCodes.Ldarg_0)
-                        il.Emit(OpCodes.Ldfld, bMethods)
-                        il.Emit(OpCodes.Ldc_I4, ai)
-                        il.Emit(OpCodes.Ldelem_Ref)
-                        il.Emit(OpCodes.Ldarg_1)
-                        il.EmitCall(OpCodes.Callvirt, typeof<IRuntimeMethod>.GetMethod "Invoke", null)
+                        // load the targets[ai]
+                        if not meth.IsStatic then
+                            il.Emit(OpCodes.Ldarg_0)
+                            il.Emit(OpCodes.Ldfld, bTargets)
+                            il.Emit(OpCodes.Ldc_I4, ai)
+                            il.Emit(OpCodes.Ldelem_Ref)
+
+                        
+                        for i in 0..argCount-1 do
+                            let at = paramters.[i].ParameterType
+                            il.Emit(OpCodes.Ldarg_1)
+                            il.Emit(OpCodes.Ldc_I4, i)
+                            il.Emit(OpCodes.Ldelem_Ref)
+                            il.Emit(OpCodes.Unbox_Any, at)
+
+                        il.EmitCall(OpCodes.Call, meth, null)
+                        if meth.ReturnType = typeof<System.Void> then
+                            il.Emit(OpCodes.Ldnull)
+                        elif meth.ReturnType.IsValueType then
+                            il.Emit(OpCodes.Box, meth.ReturnType)
+                        else
+                            il.Emit(OpCodes.Unbox_Any, typeof<obj>)
+
                         il.Emit(OpCodes.Ret)
 
                         il.MarkLabel(fLabel)
@@ -312,13 +266,13 @@ module RuntimeMethodBuilder =
                     il.Emit(OpCodes.Ret)
 
 
-                    let bCtor = bType.DefineConstructor(MethodAttributes.Public, CallingConventions.Standard, [|typeof<IRuntimeMethod[]>|])
+                    let bCtor = bType.DefineConstructor(MethodAttributes.Public, CallingConventions.Standard, [|typeof<obj[]>|])
                     let il = bCtor.GetILGenerator()
                     il.Emit(OpCodes.Ldarg_0)
                     il.Emit(OpCodes.Call, typeof<obj>.GetConstructor [||])
                     il.Emit(OpCodes.Ldarg_0)
                     il.Emit(OpCodes.Ldarg_1)
-                    il.Emit(OpCodes.Stfld, bMethods)
+                    il.Emit(OpCodes.Stfld, bTargets)
                     il.Emit(OpCodes.Ret)
 
                     bType.AddInterfaceImplementation(typeof<IRuntimeMethod>)
@@ -327,8 +281,8 @@ module RuntimeMethodBuilder =
                     let t = bType.CreateType()
 
                     let ctor = t.GetConstructor [|typeof<IRuntimeMethod[]> |]
-                    let methods = all |> Seq.map snd |> Seq.toArray
-                    ctor.Invoke([|methods :> obj|]) |> unbox<IRuntimeMethod>
+                    let targets = all |> Seq.map (fun (_,t,_) -> t) |> Seq.toArray
+                    ctor.Invoke([|targets :> obj|]) |> unbox<IRuntimeMethod>
                 | _ ->
                     raise <| UnsupportedTypesException(newArgTypes)
 
@@ -345,7 +299,7 @@ module RuntimeMethodBuilder =
         invoke
 
 exception MultimethodException              
-type Multimethod(parameterCount : int, initial : seq<MethodInfo * obj>) as this =
+type Multimethod(parameterCount : int, initial : seq<MethodInfo * obj>)  =
     let implementations = Dictionary.ofSeq (initial)
     let mutable initialized = false
 
@@ -365,13 +319,35 @@ type Multimethod(parameterCount : int, initial : seq<MethodInfo * obj>) as this 
         if mi.IsStatic then null
         else createInstance mi.DeclaringType
 
+    let tryGetMethodInfo(retType : Type) (types : Type[])=
+        let goodOnes = 
+            implementations.Keys
+                |> Seq.choose (fun mi -> Helpers.tryInstantiate mi types)
+                |> Seq.filter (fun mi -> retType.IsAssignableFrom mi.ReturnType)
+                |> Seq.cast
+                |> Seq.toArray
+
+        if goodOnes.Length > 0 then
+            let selected = 
+                Type.DefaultBinder.SelectMethod(
+                    BindingFlags.Instance ||| BindingFlags.Public ||| BindingFlags.NonPublic ||| BindingFlags.InvokeMethod,
+                    goodOnes,
+                    types,
+                    types |> Array.map (fun _ -> ParameterModifier())
+                ) |> unbox<MethodInfo>
+                
+            Some (selected, implementations.[selected])
+        else
+            None
+
     let methodCache = 
         RuntimeMethodBuilder.inlineCache parameterCount (fun types -> 
             initialized <- true
-            match this.TryCreateMethod(typeof<obj>, types) with
-                | (true, rm) -> Some rm
+            match tryGetMethodInfo typeof<obj> types with
+                | Some(mi,target) -> Some(target, mi)
                 | _ -> None
         )
+
 
     static member GetTarget (mi : MethodInfo) = createTarget mi 
 
@@ -401,41 +377,6 @@ type Multimethod(parameterCount : int, initial : seq<MethodInfo * obj>) as this 
         else
             implementations.Add(mi, target) |> ignore
 
-    member x.Remove(mi : MethodInfo) =
-        if initialized then
-            failwith "cannot modify Multimethod after first call"
-
-        implementations.Remove mi |> ignore
-
-    member x.TryGetMethodInfo(retType : Type, types : Type[], [<Out>] result : byref<MethodInfo * obj>) =
-        let goodOnes = 
-            implementations.Keys
-                |> Seq.choose (fun mi -> Helpers.tryInstantiate mi types)
-                |> Seq.filter (fun mi -> retType.IsAssignableFrom mi.ReturnType)
-                |> Seq.cast
-                |> Seq.toArray
-
-        if goodOnes.Length > 0 then
-            let selected = 
-                Type.DefaultBinder.SelectMethod(
-                    BindingFlags.Instance ||| BindingFlags.Public ||| BindingFlags.NonPublic ||| BindingFlags.InvokeMethod,
-                    goodOnes,
-                    types,
-                    types |> Array.map (fun _ -> ParameterModifier())
-                ) |> unbox<MethodInfo>
-                
-            result <- selected, implementations.[selected]
-            true
-        else
-            false
-
-    member x.TryCreateMethod(retType : Type, types : Type[], [<Out>] result : byref<IRuntimeMethod>) =
-        match x.TryGetMethodInfo(retType, types) with
-            | (true, (mi, target)) ->
-                result <- RuntimeMethodBuilder.wrap target mi
-                true
-            | _ ->
-                false
 
     member x.TryInvoke(args : obj[], [<Out>] result : byref<obj>) : bool =
         if args.Length <> parameterCount then
