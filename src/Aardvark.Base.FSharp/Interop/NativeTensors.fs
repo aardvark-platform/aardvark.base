@@ -116,7 +116,7 @@ module NativeTensors =
             l.ForEachPtr(r, f) 
 
         let pin (f : NativeVolume<'a> -> 'b) (pi : PixImage<'a>) : 'b =
-            let gc = GCHandle.Alloc(pi.Data, GCHandleType.Pinned)
+            let gc = GCHandle.Alloc(pi.Array, GCHandleType.Pinned)
             let nv = gc.AddrOfPinnedObject() |> ofNativeInt pi.VolumeInfo
             try
                 f nv
@@ -124,10 +124,10 @@ module NativeTensors =
                 gc.Free()
 
         let pin2 (l : PixImage<'a>) (r : PixImage<'b>) (f : NativeVolume<'a> -> NativeVolume<'b> -> 'c)  : 'c =
-            let lgc = GCHandle.Alloc(l.Data, GCHandleType.Pinned)
+            let lgc = GCHandle.Alloc(l.Array, GCHandleType.Pinned)
             let lv = lgc.AddrOfPinnedObject() |> ofNativeInt l.VolumeInfo
 
-            let rgc = GCHandle.Alloc(r.Data, GCHandleType.Pinned)
+            let rgc = GCHandle.Alloc(r.Array, GCHandleType.Pinned)
             let rv = rgc.AddrOfPinnedObject() |> ofNativeInt r.VolumeInfo
 
             try
