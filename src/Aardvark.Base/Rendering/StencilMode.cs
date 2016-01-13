@@ -12,6 +12,17 @@ namespace Aardvark.Base.Rendering
         public int Reference;
         public uint Mask;
 
+        #region Constructors
+
+        public StencilFunction(StencilCompareFunction func, int reference, uint mask)
+        {
+            Function = func;
+            Reference = reference;
+            Mask = mask;
+        }
+
+        #endregion
+
         #region Constants
 
         public static readonly StencilFunction Default = new StencilFunction()
@@ -48,6 +59,17 @@ namespace Aardvark.Base.Rendering
         public StencilOperationFunction StencilFail;
         public StencilOperationFunction DepthFail;
         public StencilOperationFunction DepthPass;
+
+        #region Constructors
+
+        public StencilOperation(StencilOperationFunction depthPass, StencilOperationFunction depthFail, StencilOperationFunction stencilFail)
+        {
+            DepthPass = depthPass;
+            DepthFail = depthFail;
+            StencilFail = stencilFail;
+        }
+
+        #endregion
 
         #region Constants
 
@@ -106,7 +128,7 @@ namespace Aardvark.Base.Rendering
             set
             {
                 OperationFront = value;
-                OperationFront = value;
+                OperationBack = value;
             }
         }
 
@@ -116,6 +138,24 @@ namespace Aardvark.Base.Rendering
             Compare = StencilFunction.Default,
             Operation = StencilOperation.Default,
         };
+
+        #endregion
+
+        #region Constructors
+
+        public StencilMode(StencilOperation operation, StencilFunction compare)
+        {
+            IsEnabled = true;
+            CompareFront = compare;
+            CompareBack = compare;
+            OperationFront = operation;
+            OperationBack = operation;
+        }
+
+        public StencilMode(StencilOperationFunction depthPass, StencilOperationFunction depthFail, StencilOperationFunction stencilFail, StencilCompareFunction compare, int reference, uint mask)
+            : this (new StencilOperation(depthPass, depthFail, stencilFail), new StencilFunction(compare, reference, mask))
+        {
+        }
 
         #endregion
 
