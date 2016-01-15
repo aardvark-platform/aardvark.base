@@ -661,15 +661,22 @@ module MultimethodTest =
     type A = 
         class
             val mutable public V : obj
+
+            abstract member Sepp : unit -> obj
+            default x.Sepp() = x.V
+
             interface IA<float32> with
                 member x.V = x.V
-                member x.Sepp() = x.V
+                member x.Sepp() = x.Sepp()
 
             new(v) = { V = v }
         end
 
     type B(a : obj) =
         inherit A(a)
+
+        override x.Sepp() = x.V
+
         member x.A = a
 
     type C(v : obj) =
@@ -769,14 +776,14 @@ module MultimethodTest =
 
 
             
-            badInit()
+            //badInit()
             m.TryInvoke(args, &res) |> ignore
 
             for i in 0..1000 do
                 m.InvokeUnsafe(args) |> ignore
 
 
-            System.GC.Collect()
+            System.GC.Collect(3)
             System.GC.WaitForFullGCComplete() |> ignore
 
             sw.Start()
@@ -798,7 +805,7 @@ module MultimethodTest =
                 dispatcher(args) |> ignore
 
 
-            System.GC.Collect()
+            System.GC.Collect(3)
             System.GC.WaitForFullGCComplete() |> ignore
 
             sw.Start()
@@ -821,7 +828,7 @@ module MultimethodTest =
                 args.Sepp() |> ignore
 
 
-            System.GC.Collect()
+            System.GC.Collect(3)
             System.GC.WaitForFullGCComplete() |> ignore
 
             sw.Start()
@@ -833,15 +840,39 @@ module MultimethodTest =
             printfn "virt: %.3fns" t
             t
 
+        let staticCall() =
+            let s = Sepp()
+            let args = D 10
+            let sw = Stopwatch()
+            let mutable iter = 0
+            let mutable res = Unchecked.defaultof<obj>
+
+            for i in 0..1000 do
+                Sepp.Value(args) |> ignore
+
+
+            System.GC.Collect()
+            System.GC.WaitForFullGCComplete() |> ignore
+
+            sw.Start()
+            for i in 1..iterations do
+                Sepp.Value(args) |> ignore
+                iter <- iter + 1
+            sw.Stop()
+            let t = (1000000.0 * sw.Elapsed.TotalMilliseconds / float iter)
+            printfn "stat: %.3fns" t
+            t
+
 
         let log = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Desktop), "callPerf.csv")
-        File.WriteAllText(log, "nop;virtual;dispatcher;multimethods\r\n")
+        File.WriteAllText(log, "nop;virtual;dispatcher;multimethods;static\r\n")
         for i in 1..50 do
             let tNop = nop()
-            let tVirt = virtualCall()
-            let tDisp = dispatcher()
             let tOurs = ours()
-            let line = sprintf "%.3f;%.3f;%.3f;%.3f" tNop tVirt tDisp tOurs
+            let tVirt = virtualCall()
+            let tStat = staticCall()
+            let tDisp = dispatcher()
+            let line = sprintf "%.3f;%.3f;%.3f;%.3f;%.3f" tNop tVirt tDisp tOurs tStat
             File.AppendAllLines(log, [line])
             System.GC.Collect()
             System.GC.WaitForFullGCComplete() |> ignore
