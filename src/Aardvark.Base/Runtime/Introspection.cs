@@ -465,9 +465,13 @@ namespace Aardvark.Base
     public class Aardvark
     {
         private static string AppDataCache = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
-        private static string CacheFile = Path.Combine(AppDataCache, IntrospectionProperties.CurrentEntryAssembly.FullName, "plugins.bin");
+        private static string s_cacheFile =  IntrospectionProperties.CurrentEntryAssembly == null ? "" : 
+            Path.Combine(AppDataCache, IntrospectionProperties.CurrentEntryAssembly.FullName + "plugins.bin");
 
-        public Aardvark() { }
+        public string CacheFile = string.Empty;
+
+
+        public Aardvark() { CacheFile = s_cacheFile; }
 
         private Dictionary<string, Tuple<DateTime, bool>> ReadCacheFile()
         {
@@ -560,6 +564,7 @@ namespace Aardvark.Base
 
             var d = AppDomain.CreateDomain("search", null, setup);
             var aardvark = (Aardvark)d.CreateInstanceAndUnwrap(typeof(Aardvark).Assembly.FullName, typeof(Aardvark).FullName);
+            aardvark.CacheFile = Aardvark.s_cacheFile;
             var paths = aardvark.GetPluginAssemblyPaths();
             AppDomain.Unload(d);
 
