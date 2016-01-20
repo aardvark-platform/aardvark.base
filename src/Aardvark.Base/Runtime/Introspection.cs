@@ -464,7 +464,8 @@ namespace Aardvark.Base
     [Serializable]
     public class Aardvark
     {
-        private static string CacheFile = "plugins.bin";
+        private static string AppDataCache = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
+        private static string CacheFile = Path.Combine(AppDataCache, IntrospectionProperties.CurrentEntryAssembly.FullName, "plugins.bin");
 
         public Aardvark() { }
 
