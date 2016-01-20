@@ -143,9 +143,12 @@ type clist<'a>(initial : seq<'a>) =
     member x.Insert(index : int, value : 'a) =
         let res = 
             lock content (fun () ->
-                match tryAt index with
-                    | Some t ->  insertAfter t.Prev value 
-                    | None -> raise <| IndexOutOfRangeException()
+                if index = content.Count then // check if insert is requested at tail
+                    insertAfter order.Root.Prev value
+                else
+                    match tryAt index with
+                        | Some t ->  insertAfter t.Prev value 
+                        | None -> raise <| IndexOutOfRangeException()
             )
         clistkey(res |> submitDeltas)
 
