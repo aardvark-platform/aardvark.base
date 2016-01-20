@@ -37,10 +37,6 @@ namespace Aardvark.Base
                     return Assembly.GetEntryAssembly();
                 return CustomEntryAssembly;
             }
-            set
-            {
-            
-            }
         }
 
         public static string CurrentEntryPath
@@ -48,10 +44,6 @@ namespace Aardvark.Base
             get
             {
                 return Path.GetDirectoryName(CurrentEntryAssembly.Location);
-            }
-            set
-            {
-            
             }
         }
     }
