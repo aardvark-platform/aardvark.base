@@ -482,6 +482,7 @@ namespace Aardvark.Base
             };
 
         public abstract PixImage<T1> ToPixImage<T1>();
+        public abstract PixImage Transformed(ImageTrafo trafo);
 
         public PixImage<T> AsPixImage<T>()
         {
@@ -1482,6 +1483,11 @@ namespace Aardvark.Base
                 return new PixImage<T1>(format, (Volume<T1>)copy(Volume));
             }
             return new PixImage<T1>(this);
+        }
+
+        public override PixImage Transformed(ImageTrafo trafo)
+        {
+            return new PixImage<T>(Format, Volume.Transformed(trafo));
         }
 
         #endregion

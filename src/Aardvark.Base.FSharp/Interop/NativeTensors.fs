@@ -52,10 +52,8 @@ module NativeTensors =
 
                 ()
 
-            member inline x.ForEachPtr(other : NativeVolume<'b>, f : nativeptr<'a> -> nativeptr<'b> -> unit) =            
-                if x.SX <> other.SX || x.SY <> other.SY || x.SZ <> other.SZ then
-                    failwithf "NativeVolume sizes do not match { src = %A; dst = %A }" (x.SX, x.SY, x.SY) (other.SX, other.SY, other.SY)
 
+            member inline private x.ForEachPtrZYX(other : NativeVolume<'b>, f : nativeptr<'a> -> nativeptr<'b> -> unit) =  
                 let mutable i = NativePtr.toNativeInt x.Origin
                 let mutable i1 = NativePtr.toNativeInt other.Origin
 
@@ -92,6 +90,96 @@ module NativeTensors =
 
                 ()
 
+            member inline private x.ForEachPtrYXZ(other : NativeVolume<'b>, f : nativeptr<'a> -> nativeptr<'b> -> unit) =  
+                let mutable i = NativePtr.toNativeInt x.Origin
+                let mutable i1 = NativePtr.toNativeInt other.Origin
+    
+                let ys = x.SY * x.DY
+                let yj = x.DY - x.SX * x.DX
+                let yj1 = other.DY - other.SX * other.DX
+
+                let xs = x.SX * x.DX
+                let xj = x.DX - x.SZ * x.DZ
+                let xj1 = other.DX - other.SZ * other.DZ
+
+                let zs = x.SZ * x.DZ
+                let zj = x.DZ
+                let zj1 = other.DZ
+
+
+                let ye = i + ys
+                while i <> ye do
+                    let xe = i + xs
+                    while i <> xe do
+                        let ze = i + zs
+                        while i <> ze do
+                            f (NativePtr.ofNativeInt i) (NativePtr.ofNativeInt i1)
+                            i <- i + zj
+                            i1 <- i1 + zj1
+
+                        i <- i + xj
+                        i1 <- i1 + xj1
+
+                    i <- i + yj
+                    i1 <- i1 + yj1
+
+            member inline private x.ForEachPtrXYZ(other : NativeVolume<'b>, f : nativeptr<'a> -> nativeptr<'b> -> unit) =  
+                let mutable i = NativePtr.toNativeInt x.Origin
+                let mutable i1 = NativePtr.toNativeInt other.Origin
+    
+                let xs = x.SX * x.DX
+                let xj = x.DX - x.SY * x.DY
+                let xj1 = other.DX - other.SY * other.DY
+
+                let ys = x.SY * x.DY
+                let yj = x.DY - x.SZ * x.DZ
+                let yj1 = other.DY - other.SZ * other.DZ
+
+                let zs = x.SZ * x.DZ
+                let zj = x.DZ
+                let zj1 = other.DZ
+
+
+                let xe = i + xs
+                while i <> xe do
+                    let ye = i + ys
+                    while i <> ye do
+                        let ze = i + zs
+                        while i <> ze do
+                            f (NativePtr.ofNativeInt i) (NativePtr.ofNativeInt i1)
+                            i <- i + zj
+                            i1 <- i1 + zj1
+
+                        i <- i + yj
+                        i1 <- i1 + yj1
+
+                    i <- i + xj
+                    i1 <- i1 + xj1
+
+
+
+            member inline x.ForEachPtr(other : NativeVolume<'b>, f : nativeptr<'a> -> nativeptr<'b> -> unit) =  
+                if x.SX <> other.SX || x.SY <> other.SY || x.SZ <> other.SZ then
+                    failwithf "NativeVolume sizes do not match { src = %A; dst = %A }" (x.SX, x.SY, x.SY) (other.SX, other.SY, other.SY)
+
+                let cxy = compare (abs x.DX) (abs x.DY)
+                let cxz = compare (abs x.DX) (abs x.DZ)
+                let cyz = compare (abs x.DY) (abs x.DZ)
+
+                if cxz > 0 && cyz > 0 then
+                    // z is mincomponent
+                    if cxy < 0 then 
+                        x.ForEachPtrYXZ(other, f) // typical piximage case
+                    else 
+                        x.ForEachPtrXYZ(other, f)            // transposed image
+                elif cxy > 0 && cyz < 0 then
+                    // y is mincomponent (very rare)
+                    // TODO: efficiency 
+                    x.ForEachPtrZYX(other, f)
+                else
+                    // x is mincomponent
+                    x.ForEachPtrZYX(other, f)
+
             new(ptr : nativeptr<'a>, vi : VolumeInfo) =
                 let sa = int64 sizeof<'a>
                 {
@@ -116,7 +204,7 @@ module NativeTensors =
             l.ForEachPtr(r, f) 
 
         let pin (f : NativeVolume<'a> -> 'b) (pi : PixImage<'a>) : 'b =
-            let gc = GCHandle.Alloc(pi.Data, GCHandleType.Pinned)
+            let gc = GCHandle.Alloc(pi.Array, GCHandleType.Pinned)
             let nv = gc.AddrOfPinnedObject() |> ofNativeInt pi.VolumeInfo
             try
                 f nv
@@ -124,10 +212,10 @@ module NativeTensors =
                 gc.Free()
 
         let pin2 (l : PixImage<'a>) (r : PixImage<'b>) (f : NativeVolume<'a> -> NativeVolume<'b> -> 'c)  : 'c =
-            let lgc = GCHandle.Alloc(l.Data, GCHandleType.Pinned)
+            let lgc = GCHandle.Alloc(l.Array, GCHandleType.Pinned)
             let lv = lgc.AddrOfPinnedObject() |> ofNativeInt l.VolumeInfo
 
-            let rgc = GCHandle.Alloc(r.Data, GCHandleType.Pinned)
+            let rgc = GCHandle.Alloc(r.Array, GCHandleType.Pinned)
             let rv = rgc.AddrOfPinnedObject() |> ofNativeInt r.VolumeInfo
 
             try

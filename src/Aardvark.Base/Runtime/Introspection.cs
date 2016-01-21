@@ -28,6 +28,24 @@ namespace Aardvark.Base
             get;
             set;
         }
+
+        public static Assembly CurrentEntryAssembly
+        {
+            get
+            {
+                if( CustomEntryAssembly == null)
+                    return Assembly.GetEntryAssembly();
+                return CustomEntryAssembly;
+            }
+        }
+
+        public static string CurrentEntryPath
+        {
+            get
+            {
+                return Path.GetDirectoryName(CurrentEntryAssembly.Location);
+            }
+        }
     }
 
     public static class Introspection
@@ -241,9 +259,9 @@ namespace Aardvark.Base
                 // sm: so let's see who complains if we comment it out ;-)
                 //Bootstrapper.Init();
 
-                Report.Begin("trying all dlls and exes in current directory: {0}", Environment.CurrentDirectory);
-                foreach (var s in Directory.GetFiles(Environment.CurrentDirectory, "*.dll").Concat(
-                                  Directory.GetFiles(Environment.CurrentDirectory, "*.exe")))
+                Report.Begin("trying all dlls and exes in current directory: {0}", IntrospectionProperties.CurrentEntryPath); 
+                foreach (var s in Directory.GetFiles(IntrospectionProperties.CurrentEntryPath, "*.dll").Concat(    
+                                  Directory.GetFiles(IntrospectionProperties.CurrentEntryPath, "*.exe")))   
                 {
                     try
                     {
@@ -446,9 +464,14 @@ namespace Aardvark.Base
     [Serializable]
     public class Aardvark
     {
-        private static string CacheFile = "plugins.bin";
+        private static string AppDataCache = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
+        private static string s_cacheFile =  IntrospectionProperties.CurrentEntryAssembly == null ? "" : 
+            Path.Combine(AppDataCache, IntrospectionProperties.CurrentEntryAssembly.FullName + "plugins.bin");
 
-        public Aardvark() { }
+        public string CacheFile = string.Empty;
+
+
+        public Aardvark() { CacheFile = s_cacheFile; }
 
         private Dictionary<string, Tuple<DateTime, bool>> ReadCacheFile()
         {
@@ -492,7 +515,7 @@ namespace Aardvark.Base
 
             var verbosity = Report.Verbosity;
             Report.Verbosity = 0;
-            var folder = Environment.CurrentDirectory;
+            var folder = IntrospectionProperties.CurrentEntryPath; 
             var assemblies = Directory.EnumerateFiles(folder)
                                       .Where(p => { var ext = Path.GetExtension(p); return ext == ".dll" || ext == ".exe"; })
                                       .ToArray();
@@ -537,10 +560,11 @@ namespace Aardvark.Base
         public static List<Assembly> LoadPlugins()
         {
             var setup = new AppDomainSetup();
-            setup.ApplicationBase = Environment.CurrentDirectory;
+            setup.ApplicationBase = IntrospectionProperties.CurrentEntryPath;
 
             var d = AppDomain.CreateDomain("search", null, setup);
             var aardvark = (Aardvark)d.CreateInstanceAndUnwrap(typeof(Aardvark).Assembly.FullName, typeof(Aardvark).FullName);
+            aardvark.CacheFile = Aardvark.s_cacheFile;
             var paths = aardvark.GetPluginAssemblyPaths();
             AppDomain.Unload(d);
 
