@@ -155,13 +155,26 @@ namespace Aardvark.Base
                lines => lines.Select(s => Type.GetType(s))
                         .Select(t => Tup.Create(
                             t,
-                            t.GetCustomAttributes(typeof(T), false).Select(x => (T)x).ToArray())),
+                            TryGetCustomAttributes<T>(t))),
                types => from t in types
-                        let attribs = t.GetCustomAttributes(typeof(T), false)
+                        let attribs = TryGetCustomAttributes<T>(t)
                         where attribs.Length > 0
                         select Tup.Create(t, attribs.Select(x => (T)x).ToArray()),
                result => result.Select(t => t.E0.AssemblyQualifiedName)
                );
+        }
+
+        private static T[] TryGetCustomAttributes<T>(Type t)
+        {
+            try
+            {
+                return t.GetCustomAttributes(typeof(T), false).Select(x => (T)x).ToArray();
+            }
+            catch (Exception e)
+            {
+                Report.Warn(e.ToString());
+            }
+            return new T[0];
         }
 
         /// <summary>
