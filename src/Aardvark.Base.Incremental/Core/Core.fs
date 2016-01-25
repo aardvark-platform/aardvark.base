@@ -481,6 +481,7 @@ type AdaptiveObject =
         default x.InputChanged ip = ()
 
         abstract member Inputs : seq<IAdaptiveObject>
+        [<System.ComponentModel.Browsable(false)>]
         default x.Inputs = Seq.empty
 
         override x.GetHashCode() = x.Id
