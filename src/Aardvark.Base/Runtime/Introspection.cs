@@ -720,7 +720,7 @@ namespace Aardvark.Base
 
         private static void LoadAll(IEnumerable<Assembly> xs)
         {
-            var assemblies = Enumerable.Concat(Introspection.AllAssemblies, xs).Distinct().ToArray();
+            var assemblies = Enumerable.Concat(Introspection.AllAssemblies, xs).GroupBy(a => a.FullName).Select(x => x.First()).ToArray();
 
             foreach (var ass in assemblies)
             {
