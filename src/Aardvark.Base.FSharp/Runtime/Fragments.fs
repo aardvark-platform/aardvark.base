@@ -777,13 +777,20 @@ type CodeFragment(memory : managedptr, containsJmp : bool) =
         let size = binary.Length + ASM.encodedJumpSize
 
         if size <> memory.Size then
-            let moved =  memory |> ManagedPtr.realloc size
+            let n = x.ReadNextPointer()
+            let moved = memory |> ManagedPtr.realloc size
 
             // patch our own next-pointer since its location was changed
             containsJmp <- false
+            if n <> -1n then
+                x.WriteNextPointer(n) |> ignore
             //x.FixJumps moved
 
-        memory |> ManagedPtr.writeArray 0 binary
+            memory |> ManagedPtr.writeArray 0 binary
+            true
+        else
+            memory |> ManagedPtr.writeArray 0 binary
+            false
 
 
     member x.Append (data : byte[]) =
