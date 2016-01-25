@@ -1064,20 +1064,25 @@ module ModExtensions =
     
     // reflect the type argument used by a given
     // mod-type or return None if no mod type.
-    let rec private extractModTypeArg (t : Type) =
-        if t.IsGenericType && t.GetGenericTypeDefinition() = typedefof<IMod<_>> then
+    let rec private extractModTypeArg (t : Type) (typedef : Type) =
+        if t.IsGenericType && t.GetGenericTypeDefinition() = typedef then
             Some (t.GetGenericArguments().[0])
         else
-            let iface = t.GetInterface(typedefof<IMod<_>>.FullName)
+            let iface = t.GetInterface(typedef.FullName)
             if isNull iface then None
-            else extractModTypeArg iface
+            else extractModTypeArg iface typedef
 
     /// <summary>
     /// matches all types implementing IMod<'a> and
     /// extracts typeof<'a> using reflection.
     /// </summary>
-    let (|ModOf|_|) (t : Type) =
-        match extractModTypeArg t with
+    let (|ModRefOf|_|) (t : Type) =
+        match extractModTypeArg t typedefof<ModRef<_>> with
+            | Some t -> ModRefOf t |> Some
+            | None -> None
+
+    let (|ModOf|_|) (t : Type) =    
+        match extractModTypeArg t typedefof<IMod<_>> with
             | Some t -> ModOf t |> Some
             | None -> None
 
