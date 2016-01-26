@@ -617,3 +617,10 @@ module NativeUtilities =
                 | Linux -> LibC.memcmp(destination, source, length)
                 | Mac -> notimp()
 
+    let pinned (a : obj) f = 
+        let gc = GCHandle.Alloc(a, GCHandleType.Pinned)
+        try
+            f ( gc.AddrOfPinnedObject() )
+        finally
+            gc.Free()
+        
