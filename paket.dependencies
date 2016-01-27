@@ -18,5 +18,8 @@ group Build
 content: none
 source http://nuget.org/api/v2
 
-nuget FAKE prerelease
-github vrvis/Aardvark.Fake:paket_2_47 bin/Aardvark.Fake.dll
+nuget FAKE
+nuget Paket.Core
+nuget SourceLink.Fake
+nuget Mono.Cecil ~> 0.9.6.1
+github vrvis/Aardvark.Fake:standalone

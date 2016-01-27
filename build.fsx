@@ -1,6 +1,4 @@
-#r @"System.Xml.Linq"
-#r @"paket-files/build/vrvis/Aardvark.Fake/bin/Aardvark.Fake.dll"
-
+#load @"paket-files\build\vrvis\Aardvark.Fake\DefaultSetup.fsx"
 
 open Fake
 open System
@@ -18,4 +16,4 @@ Target "Tests" (fun () ->
 )
 
 // start build
-RunTargetOrDefault "Default"
+RunTargetOrDefault "Default" 

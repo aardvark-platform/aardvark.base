@@ -2,8 +2,6 @@
 SETLOCAL
 PUSHD %~dp0
 
-bin\wget.exe -q --no-check-certificate https://github.com/vrvis/Aardvark.Fake/blob/paket_2_47/bin/Aardvark.Fake.dll -O bin/Aardvark.Fake.dll
-
 cls
 
 .paket\paket.bootstrapper.exe
