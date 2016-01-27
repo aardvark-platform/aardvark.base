@@ -1,10 +1,5 @@
-#I @"packages/FAKE/tools/"
-#I @"packages/Paket.Core/lib/net45"
-#I @"bin"
 #r @"System.Xml.Linq"
-#r @"FakeLib.dll"
-#r @"Paket.Core.dll"
-#r @"Aardvark.Fake.dll"
+#r @"paket-files/build/vrvis/Aardvark.Fake/bin/Aardvark.Fake.dll"
 
 
 open Fake

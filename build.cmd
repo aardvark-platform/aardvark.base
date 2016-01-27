@@ -1,26 +1,26 @@
 @echo off
-
+SETLOCAL
 PUSHD %~dp0
 
-IF exist packages\FAKE ( echo skipping FAKE download ) ELSE ( 
-echo downloading FAKE
-"bin\nuget.exe" "install" "FAKE" "-Version" "3.35.2" "-OutputDirectory" "Packages" "-ExcludeVersion"
-"bin\nuget.exe" "install" "Paket.Core" "-Version" "1.18.5" "-OutputDirectory" "packages" "-ExcludeVersion"
-"bin\nuget.exe" "install" "NUnit.Runners" "-Version" "2.6.4"  "-OutputDirectory" "packages" "-ExcludeVersion"
+bin\wget.exe -q --no-check-certificate https://github.com/vrvis/Aardvark.Fake/blob/paket_2_47/bin/Aardvark.Fake.dll -O bin/Aardvark.Fake.dll
+
+cls
+
+.paket\paket.bootstrapper.exe
+if errorlevel 1 (
+  exit /b %errorlevel%
 )
 
-bin\wget.exe -q --no-check-certificate https://github.com/vrvis/Aardvark.Fake/raw/master/bin/Aardvark.Fake.dll -O bin/Aardvark.Fake.dll
+.paket\paket.exe restore
+if errorlevel 1 (
+  exit /b %errorlevel%
+)
 
-SET TARGET=Default
-IF NOT [%1]==[] (set TARGET=%1)
+SET FAKE_PATH=packages\build\FAKE\tools\Fake.exe
 
->tmp ECHO(%*
-SET /P t=<tmp
-SETLOCAL EnableDelayedExpansion
-IF DEFINED t SET "t=!t:%1 =!"
-SET args=!t!
-del tmp
-
-"packages\FAKE\tools\Fake.exe" "build.fsx" "target=%TARGET%" %args%
-
+IF [%1]==[] (
+    "%FAKE_PATH%" "build.fsx" "Default" 
+) ELSE (
+    "%FAKE_PATH%" "build.fsx" %* 
+) 
 

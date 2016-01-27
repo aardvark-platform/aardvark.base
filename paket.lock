@@ -1,5 +1,5 @@
 NUGET
-  remote: https://nuget.org/api/v2
+  remote: https://www.nuget.org/api/v2
   specs:
     DevILSharp (0.0.13)
     FSharp.Compiler.Service (0.0.90)
@@ -83,3 +83,14 @@ NUGET
       System.Threading.Tasks (>= 4.0.0)
     System.Threading.Tasks (4.0.10)
       System.Runtime (>= 4.0.0)
+
+GROUP Build
+CONTENT: NONE
+NUGET
+  remote: http://www.nuget.org/api/v2
+  specs:
+    FAKE (4.17.1)
+GITHUB
+  remote: vrvis/Aardvark.Fake
+  specs:
+    bin/Aardvark.Fake.dll (9399dcba91b11f0cdb35c5180223922283e57e96)
