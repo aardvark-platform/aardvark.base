@@ -89,18 +89,22 @@ CONTENT: NONE
 NUGET
   remote: http://www.nuget.org/api/v2
   specs:
-    Chessie (0.4.0)
+    Chessie (0.4.0) - content: none
       FSharp.Core
-    FAKE (4.17.1)
-    FSharp.Core (4.0.0.1)
-    Mono.Cecil (0.9.6.1)
-    Newtonsoft.Json (8.0.2)
-    Paket.Core (2.48.0)
+    FAKE (4.17.1) - content: none
+    FSharp.Core (4.0.0.1) - content: none
+    Mono.Cecil (0.9.6.1) - content: none
+    Newtonsoft.Json (8.0.2) - content: none
+    Paket.Core (2.48.0) - content: none
       Chessie
       FSharp.Core
       Newtonsoft.Json
-    SourceLink.Fake (1.1.0)
+    SourceLink.Fake (1.1.0) - content: none
 GITHUB
   remote: vrvis/Aardvark.Fake
   specs:
-    FULLPROJECT (f8f3f9ef6a4f4109e7db8f9913cdf6bb8438f4eb)
+    FULLPROJECT (a57845ae32bc9930c7a3638a9791b04502959150)
+      FAKE (>= 4.17.0 < 4.18.0)
+      Mono.Cecil (>= 0.9.6.1 < 0.9.7.0)
+      Paket.Core (>= 2.48.0 < 2.49.0)
+      SourceLink.Fake (>= 1.1.0 < 1.2.0)
