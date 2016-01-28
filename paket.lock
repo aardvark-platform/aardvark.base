@@ -103,7 +103,7 @@ NUGET
 GITHUB
   remote: vrvis/Aardvark.Fake
   specs:
-    FULLPROJECT (a57845ae32bc9930c7a3638a9791b04502959150)
+    FULLPROJECT (980b329fb9528e6f5c49ee2606af54d9eefb4176)
       FAKE (>= 4.17.0 < 4.18.0)
       Mono.Cecil (>= 0.9.6.1 < 0.9.7.0)
       Paket.Core (>= 2.48.0 < 2.49.0)
