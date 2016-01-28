@@ -1,4 +1,4 @@
-#load @"paket-files\build\vrvis\Aardvark.Fake\DefaultSetup.fsx"
+#load @"paket-files/build/vrvis/Aardvark.Fake/DefaultSetup.fsx"
 
 open Fake
 open System
