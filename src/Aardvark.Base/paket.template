@@ -6,6 +6,6 @@ description
 frameworkAssemblies
     System.Drawing
 files
-    ..\..\bin\BUILDCONFIG\Aardvark.Base.dll ==> lib\net45
-    ..\..\bin\BUILDCONFIG\Aardvark.Base.pdb ==> lib\net45
-    ..\..\bin\BUILDCONFIG\Aardvark.Base.xml ==> lib\net45
+    ..\..\bin\Release\Aardvark.Base.dll ==> lib\net45
+    ..\..\bin\Release\Aardvark.Base.pdb ==> lib\net45
+    ..\..\bin\Release\Aardvark.Base.xml ==> lib\net45

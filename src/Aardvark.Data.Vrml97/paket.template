@@ -4,6 +4,6 @@ authors VRVis Research Center
 description
     Aardvark.Data.Vrml97 provides a purely managed Vrml97 parser.
 files
-    ..\..\bin\BUILDCONFIG\Aardvark.Data.Vrml97.dll ==> lib\net45
-    ..\..\bin\BUILDCONFIG\Aardvark.Data.Vrml97.pdb ==> lib\net45
-    ..\..\bin\BUILDCONFIG\Aardvark.Data.Vrml97.xml ==> lib\net45
+    ..\..\bin\Release\Aardvark.Data.Vrml97.dll ==> lib\net45
+    ..\..\bin\Release\Aardvark.Data.Vrml97.pdb ==> lib\net45
+    ..\..\bin\Release\Aardvark.Data.Vrml97.xml ==> lib\net45
