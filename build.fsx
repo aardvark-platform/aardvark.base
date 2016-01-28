@@ -1,14 +1,10 @@
 #load @"paket-files\build\vrvis\Aardvark.Fake\DefaultSetup.fsx"
 
-#I @"packages\build\FAKE\tools"
-#r "Argu.dll"
-
 open Fake
 open System
 open System.IO
 open System.Diagnostics
 open Aardvark.Fake
-
 
 
 do Environment.CurrentDirectory <- __SOURCE_DIRECTORY__
