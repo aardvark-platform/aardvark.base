@@ -14,6 +14,11 @@ if errorlevel 1 (
   exit /b %errorlevel%
 )
 
+.paket\paket.exe update group Build
+if errorlevel 1 (
+  exit /b %errorlevel%
+)
+
 SET FAKE_PATH=packages\build\FAKE\tools\Fake.exe
 
 IF [%1]==[] (

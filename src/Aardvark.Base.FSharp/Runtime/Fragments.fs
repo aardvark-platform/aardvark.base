@@ -787,10 +787,8 @@ type CodeFragment(memory : managedptr, containsJmp : bool) =
             //x.FixJumps moved
 
             memory |> ManagedPtr.writeArray 0 binary
-            true
         else
             memory |> ManagedPtr.writeArray 0 binary
-            false
 
 
     member x.Append (data : byte[]) =

@@ -95,7 +95,7 @@ NUGET
     FSharp.Core (4.0.0.1)
     Mono.Cecil (0.9.6.1)
     Newtonsoft.Json (8.0.2)
-    Paket.Core (2.47.3)
+    Paket.Core (2.48.0)
       Chessie
       FSharp.Core
       Newtonsoft.Json
@@ -103,4 +103,4 @@ NUGET
 GITHUB
   remote: vrvis/Aardvark.Fake
   specs:
-    FULLPROJECT (21c743c1ed3cc8e1ad70a3724d66b6db214d0e3c)
+    FULLPROJECT (d7c3fe7834bf2260c5ccf2aeb2c99ed6ab94754e)
