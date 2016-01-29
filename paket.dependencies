@@ -16,6 +16,6 @@ nuget FsPickler.Json
 
 group Build
 content: none
-source https://nuget.org/api/v2
+source http://nuget.org/api/v2
 
 github vrvis/Aardvark.Fake:standalone
