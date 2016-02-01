@@ -62,6 +62,7 @@
     <Compile Include="Core\Core.fs" />
     <Compile Include="Core\Validation.fs" />
     <Compile Include="Mod\Mod.fs" />
+    <Compile Include="Mod\InstancedMod.fs" />
     <Compile Include="AdaptiveSet\AdaptiveSetCore.fs" />
     <Compile Include="AdaptiveSet\ChangeableSet.fs" />
     <Compile Include="AdaptiveSet\AdaptiveSet.fs" />
