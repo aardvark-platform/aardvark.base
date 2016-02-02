@@ -16,7 +16,7 @@ if errorlevel 1 (
 cls
 
 SET FSI_PATH=packages\build\FAKE\tools\Fake.exe
-"%FSI_PATH%" "build.fsx" Dummy --fsiargs build.fsx %* 
+"%FSI_PATH%" "build.fsx" Dummy --fsiargs build.fsx --shadowcopyreferences+ %* 
 
 
 
