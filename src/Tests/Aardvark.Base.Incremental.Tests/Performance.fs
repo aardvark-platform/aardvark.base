@@ -7,7 +7,7 @@ open Aardvark.Base.Incremental
 open NUnit.Framework
 open FsUnit
 open System.Diagnostics
-
+open Aardvark.Base
 
 module SimplePerfTests =
 
@@ -98,6 +98,57 @@ module SimplePerfTests =
         sw.Stop()
 
         Console.WriteLine("elapsed: {0}ms", sw.Elapsed.TotalMilliseconds)
+
+    [<Test>]
+    let ``[ASet] value dependent nop change``() =
+        let vt = Mod.init V3d.Zero
+        let iter = 100
+
+        let instances =
+            aset {
+                for x in 0..20 do
+                    for y in 0..20 do
+                        for z in 0..20 do
+                            yield fun (i : int) -> Array.zeroCreate (1 <<< i)
+            }
+
+        let getLevel (m : IMod<V3d>) (f : int -> int[]) =
+            let mutable current = None
+            adaptive {
+                let! m = m
+
+                let level = 
+                    match V3d.Distance(m, m) with   
+                        | v when v < 100.0 -> 0
+                        | _ -> 0
+
+                match current with
+                    | Some (l,v) when l = level ->
+                        return v
+                    | _ ->
+                        let v = f level
+                        current <- Some (level, v)
+                        return v
+            }
+
+        let final =
+            instances |> ASet.mapM (getLevel vt)
+
+        let r = final.GetReader()
+
+        r.GetDelta() |> ignore
+
+        let sw = Stopwatch()
+        sw.Start()
+        for i in 1..iter do
+            transact (fun () -> Mod.change vt (vt.Value + V3d.III))
+            r.GetDelta() |> ignore
+        sw.Stop()
+
+
+        sprintf "took: %.3fms" (sw.Elapsed.TotalMilliseconds / float iter) |> Console.WriteLine
+
+
 
 
 

@@ -6,6 +6,6 @@ let main args =
     //Aardvark.Base.Incremental.Tests.``collect tests``.``[ASet] memory leak test``()
     //Aardvark.Base.Incremental.Tests.``collect tests``.``[ASet] async registerCallback``()
     //Aardvark.Base.Incremental.Tests.AgTests.``[Ag] Leaky leaky test``()
-    
-    Aardvark.Base.Incremental.Tests.InstancingTest.test()
+    Aardvark.Base.Incremental.Tests.SimplePerfTests.``[ASet] value dependent nop change``()
+    //Aardvark.Base.Incremental.Tests.InstancingTest.test()
     0
