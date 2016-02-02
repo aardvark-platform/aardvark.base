@@ -72,6 +72,8 @@
     <Content Include="app.config" />
     <Compile Include="InstancingTest.fs" />
     <Compile Include="UndoRedo.fs" />
+    <Compile Include="SizeOfVariousAdaptiveObjects.fs" />
+    <Compile Include="ASetPerformanceTests.fs" />
     <Compile Include="Program.fs" />
   </ItemGroup>
   <ItemGroup>

@@ -267,7 +267,7 @@ module Performance =
     let test () =
 
 
-        let (buildBigTree0,refs),elapsedBuild = timed (fun () -> buildBigTree 3)
+        let (buildBigTree0,refs),elapsedBuild = timed (fun () -> buildBigTree 15)
 
         let r,s = timed (fun () -> buildBigTree0 |> extractLeafs |> Seq.toArray)
         printfn "rebuild took: %As" s
@@ -275,11 +275,10 @@ module Performance =
 
         let r = buildBigTree0 |> leafNodes
 
-
         let reader = r |> ASet.toMod 
-        reader |> Mod.force |> ignore
-        Aardvark.Base.Incremental.Validation.IAdaptiveObjectValidationExtensions.Dump(reader,10000) |> File.writeAllText @"C:\Aardwork\dump.txt"
-        Aardvark.Base.Incremental.Validation.IAdaptiveObjectValidationExtensions.DumpDgml(reader,1000,@"C:\Aardwork\Graph.dgml") |> ignore
+        //reader |> Mod.force |> ignore
+        //Aardvark.Base.Incremental.Validation.IAdaptiveObjectValidationExtensions.Dump(reader,10000) |> File.writeAllText @"C:\Aardwork\dump.txt"
+        //Aardvark.Base.Incremental.Validation.IAdaptiveObjectValidationExtensions.DumpDgml(reader,1000,@"C:\Aardwork\Graph.dgml") |> ignore
 
         let list,elapsedFold = timed (fun () -> reader.GetValue() )
         let l,elapsedPull = timed (fun () -> list |> Seq.toList |> List.map Mod.force)
@@ -300,6 +299,11 @@ module Performance =
         let _,reexElapsed = timed (fun () -> transact (fun () -> Mod.change last (leaf 10)); reader.GetValue() )
         printfn "reex: %As" reexElapsed
 
+//build took: 0.0552271ms, fold too: 1.6827239s
+//force took: 0.0075516s
+//function took: 0.002544 seconds
+//reex: 0.002544s
+
 open Aardvark.Base.Incremental
 open System.Collections.Generic
 
@@ -316,154 +320,226 @@ module Delta =
          | Add v -> Add <| f v
          | Rem v -> Rem <| f v
 
-type InvertibleDelta<'a> = Delta<'a> * Delta<'a>
+module IUList1 =
 
-module InvertibleDelta =
-    let map f (a,b) = (Delta.map f a, Delta.map f b)
+    type IUList<'a> =
+        abstract member GetDelta : IAdaptiveObject -> list<Delta<'a>>
 
-type IUList<'a> =
-    abstract member GetDelta : IAdaptiveObject -> list<Delta<'a>>
+    type UList<'a>(initial : seq<'a>) =
+        inherit AdaptiveObject()
 
-type UList<'a>(initial : seq<'a>) =
-    inherit AdaptiveObject()
-
-    let pending = HashSet<_>(initial |> Seq.map Add)
+        let pending = HashSet<_>(initial |> Seq.map Add)
     
-    member x.emit() =
-        if not x.OutOfDate then
-            match getCurrentTransaction() with
-             | Some t ->  t.Enqueue x
-             | None -> failwith "not in transaction"
+        member x.emit() =
+            if not x.OutOfDate then
+                match getCurrentTransaction() with
+                 | Some t ->  t.Enqueue x
+                 | None -> failwith "not in transaction"
 
-    member x.Add v =
-        pending.Add(Add v)
+        member x.Add v =
+            pending.Add(Add v) |> ignore
         
-        x.emit()
-    member x.Remove v =
-        pending.Add(Rem v)
-        x.emit()
+            x.emit()
+        member x.Remove v =
+            pending.Add(Rem v) |> ignore
+            x.emit()
 
-    member x.GetDelta caller =
-        x.EvaluateIfNeeded x [] (fun () -> 
-            let r = pending |> Seq.toList 
-            pending.Clear()
-            r
-        )
+        member x.GetDelta caller =
+            x.EvaluateIfNeeded x [] (fun () -> 
+                let r = pending |> Seq.toList 
+                pending.Clear()
+                r
+            )
 
-    interface IUList<'a> with
-        member x.GetDelta caller = x.GetDelta x
+        interface IUList<'a> with
+            member x.GetDelta caller = x.GetDelta x
 
-type Map<'a,'b>(s : IUList<'a>,f : 'a -> 'b) =
-    inherit AdaptiveObject()
-    member x.GetDelta caller =
-        x.EvaluateIfNeeded x [] (fun () -> 
-            let invs = s.GetDelta x
-            invs |> List.map (Delta.map f)
-        )
-    interface IUList<'b> with
-        member x.GetDelta o = x.GetDelta o
+    type Map<'a,'b>(s : IUList<'a>,f : 'a -> 'b) =
+        inherit AdaptiveObject()
+        member x.GetDelta caller =
+            x.EvaluateIfNeeded x [] (fun () -> 
+                let invs = s.GetDelta x
+                invs |> List.map (Delta.map f)
+            )
+        interface IUList<'b> with
+            member x.GetDelta o = x.GetDelta o
 
-type Collect<'a,'b when 'a : equality>(s : IUList<'a>, f : 'a -> IUList<'b>) =
-    inherit AdaptiveObject()
-    let removals = Dictionary<'a, list<Delta<'b>>>()
-    let activeOutputs = Dictionary<'a, IUList<'b>>()
-    member x.GetDelta caller = 
-        let source = s.GetDelta caller
-        let ds = [ for op in source do 
-                    match op with
-                        | Rem v -> 
-                            activeOutputs.Remove v |> ignore
-                            match removals.TryGetValue v with
-                                | (true,xs) -> yield! xs
-                                | _ -> ()
-                        | Add fresh ->
-                            let newU = f fresh
-                            let boundOnFresh = newU.GetDelta x
-                            removals.Add(fresh, boundOnFresh)
-                            activeOutputs.Add(fresh, newU)
-                            yield! boundOnFresh
-                    ]
-        ds @ [ for (KeyValue(k,v)) in activeOutputs do yield! v.GetDelta x]
-    interface IUList<'b> with
-        member x.GetDelta o = x.GetDelta o
+    type Collect<'a,'b when 'a : equality>(s : IUList<'a>, f : 'a -> IUList<'b>) =
+        inherit AdaptiveObject()
+        let removals = Dictionary<'a, list<Delta<'b>>>()
+        let activeOutputs = Dictionary<'a, IUList<'b>>()
+        member x.GetDelta caller = 
+            let source = s.GetDelta caller
+            let ds = [ for op in source do 
+                        match op with
+                            | Rem v -> 
+                                activeOutputs.Remove v |> ignore
+                                match removals.TryGetValue v with
+                                    | (true,xs) -> yield! xs
+                                    | _ -> ()
+                            | Add fresh ->
+                                let newU = f fresh
+                                let boundOnFresh = newU.GetDelta x
+                                removals.Add(fresh, boundOnFresh)
+                                activeOutputs.Add(fresh, newU)
+                                yield! boundOnFresh
+                        ]
+            ds @ [ for (KeyValue(k,v)) in activeOutputs do yield! v.GetDelta x]
+        interface IUList<'b> with
+            member x.GetDelta o = x.GetDelta o
         
-type Observation<'a>(input : IUList<'a>) =
-    inherit AdaptiveObject()
-    let content = HashSet<_>()
+    type Observation<'a>(input : IUList<'a>) =
+        inherit AdaptiveObject()
+        let content = HashSet<_>()
 
-    member x.GetContent () =
-        x.EvaluateAlways x (fun () -> 
-            for i in input.GetDelta x do
-                match i with
-                 | Add v -> content.Add v |> ignore
-                 | Rem v -> content.Remove v |> ignore
-            content |> Seq.toList
-        )
+        member x.GetContent () =
+            x.EvaluateAlways x (fun () -> 
+                for i in input.GetDelta x do
+                    match i with
+                     | Add v -> content.Add v |> ignore
+                     | Rem v -> content.Remove v |> ignore
+                content |> Seq.toList
+            )
 
-type Bind<'a,'b>(m : IMod<'a>, f : 'a -> IUList<'b>) =
-    inherit AdaptiveObject()
-    let mutable lastA = Unchecked.defaultof<_>
-    let lastProduced = HashSet<Delta<'b>>()
+    type Bind<'a,'b>(m : IMod<'a>, f : 'a -> IUList<'b>) =
+        inherit AdaptiveObject()
+        let mutable lastA = Unchecked.defaultof<_>
+        let lastProduced = HashSet<Delta<'b>>()
 
-    member x.GetDelta caller =
-        x.EvaluateAlways x (fun () ->
-            let a = m.GetValue x
-            let r = f a
-            let outer = 
-                if Unchecked.equals r lastA then 
-                    []
-                else 
-                    let er = lastProduced |> Seq.toList
-                    lastProduced.Clear()
-                    for p in r.GetDelta x do lastProduced.Add p |> ignore
-                    er
-            let inner = 
-                if Unchecked.equals Unchecked.defaultof<_> lastA then [] 
-                else 
-                    let ne = lastA.GetDelta x
-                    for p in ne do lastProduced.Add p |> ignore
-                    ne
-            lastA <- r
-            inner @ outer
-        )
+        member x.GetDelta caller =
+            x.EvaluateAlways x (fun () ->
+                let a = m.GetValue x
+                let r = f a
+                let outer = 
+                    if Unchecked.equals r lastA then 
+                        []
+                    else 
+                        let er = lastProduced |> Seq.toList
+                        lastProduced.Clear()
+                        for p in r.GetDelta x do lastProduced.Add p |> ignore
+                        er
+                let inner = 
+                    if Unchecked.equals Unchecked.defaultof<_> lastA then [] 
+                    else 
+                        let ne = lastA.GetDelta x
+                        for p in ne do lastProduced.Add p |> ignore
+                        ne
+                lastA <- r
+                inner @ outer
+            )
 
-    interface IUList<'b> with
-        member x.GetDelta caller = x.GetDelta caller  
+        interface IUList<'b> with
+            member x.GetDelta caller = x.GetDelta caller  
             
-let collect f xs = Collect<_,_>(xs,f) :> IUList<_>
-let map f xs = Map<_,_>(xs,f) :> IUList<_>
-let observe xs = Observation<_>(xs) 
-let ulist xs = UList<_>(xs) :> IUList<_>
-let bind m f = Bind<_,_>(m,f) :> IUList<_>
+    let collect f xs = Collect<_,_>(xs,f) :> IUList<_>
+    let map f xs = Map<_,_>(xs,f) :> IUList<_>
+    let observe xs = Observation<_>(xs) 
+    let ulist xs = UList<_>(xs) :> IUList<_>
+    let bind m f = Bind<_,_>(m,f) :> IUList<_>
 
-let test2 () =
+    let test2 () =
 
-    let input = UList []
+        let input = UList []
 
-    let a = UList []
-    let b = UList []
-    let mo = Mod.init 5
-    let ab = ulist [a :> IUList<_>;b :> _]
-    let ab = ab |> collect (fun a -> bind mo (fun v -> if v < 10 then a else input :> _))
-    let r = ab |> observe
-    //let r = observe col
-    printfn "%A " <| r.GetContent()
+        let a = UList []
+        let b = UList []
+        let mo = Mod.init 5
+        let ab = ulist [a :> IUList<_>;b :> _]
+        let ab = ab |> collect (fun a -> bind mo (fun v -> if v < 10 then a else input :> _))
+        let r = ab |> observe
+        //let r = observe col
+        printfn "%A " <| r.GetContent()
 
-    transact (fun () -> 
-        a.Add 10 |> ignore
-    )
+        transact (fun () -> 
+            a.Add 10 |> ignore
+        )
     
-    printfn "%A " <| r.GetContent()
+        printfn "%A " <| r.GetContent()
 
-    transact (fun () -> 
-        Mod.change mo 15
-        a.Add 12 |> ignore
-    )
+        transact (fun () -> 
+            Mod.change mo 15
+            a.Add 12 |> ignore
+        )
     
-    printfn "%A " <| r.GetContent()
+        printfn "%A " <| r.GetContent()
+
+
+module DirectWrite =
+
+    type WriteToSet<'v> =
+        abstract member Add : 'v -> (unit -> unit)
+
+    type Cause<'a> = Sink of WriteToSet<'a>
+                   | Cont of IList<'a>
+
+    and IUList<'a> =
+        abstract member Push : 'a -> (unit -> unit)
+
+    type OUList<'a when 'a : equality>(o : IUList<'a>) =
+        inherit AdaptiveObject()
+        let content = Dictionary<'a,unit->unit>()
+        let pending = Queue<'a>()
+        let removals = Queue<'a>()
+
+        member x.Add v =
+            pending.Enqueue v
+
+        member x.Rem v = 
+            removals.Enqueue v
+        
+        member x.Update() =
+            while pending.Count > 0 do
+                let p = pending.Dequeue()
+                content.Add(p, o.Push p)
+            while removals.Count > 0 do
+                let r = removals.Dequeue()
+                match content.TryRemove r with
+                 | (true,v) -> v()
+                 | _ -> failwith ""
+
+    type Map<'a,'b>(output : IUList<'b>, f : 'a -> 'b) =
+        let pending = List<'a>()
+        interface IUList<'a> with
+            member x.Push a =
+                output.Push(f a)
+
+    type ID<'a when 'a: equality>(output : IUList<'a>) =
+        let ds = Dictionary<'a,unit->unit>()
+        interface IUList<'a> with
+            member x.Push a =
+                ds.Add(a, output.Push a)
+                fun () ->
+                    match ds.TryGetValue a with
+                     | (true,v) -> v()
+                     | _ -> failwith""
+        member x.Dispose() =
+            for (KeyValue(k,v)) in ds do
+                v()
+
+
+    type Collect<'a,'b when 'a:equality and 'b:equality>(output : IUList<'b>, f : 'a -> IUList<'b>) =
+        let d = Dictionary<'a,ID<'b>>()
+        interface IUList<'a> with
+            member x.Push a =
+                let t = f a
+                let fuse = ID<'b>(output)
+                d.Add(a,fuse)
+                fun () ->
+                    match d.TryRemove a with
+                     | (true,v) -> v.Dispose()
+                     | _ -> failwith ""
+        
+    let culist o = OUList<_>(o) 
+    let map f o = Map<_,_>(o,f) :> IUList<_>
+    let collect f o = Collect<_,_>(o,f) :> IUList<_>
+                    
+    let test2() =
+        OUList
+
+                    
 
 [<EntryPoint>]
 let main args =
-    test2() 
-    //Performance.test(); 0
+
+    Performance.test(); 
     0
