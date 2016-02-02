@@ -98,7 +98,7 @@ module TreeFlattenPerformance =
         printfn "rexecution: %As" reexElapsed
 
         let measurement = sprintf "%A;%f;%f;%f;%f" System.DateTime.Now elapsedBuild elapsedFold reexElapsed (float (after-before) / float (1024*1024))
-        System.Console.Read()
+        System.Console.Read() |> ignore
         let perfName = Path.Combine(__SOURCE_DIRECTORY__, "ASetFoldTest.csv")
         if File.Exists perfName then File.AppendAllLines(perfName,[|measurement|])
         else File.WriteAllLines(perfName,[|"Date;ElapsedBuild;elapsedFold;reexElapsed;Memory";measurement|])
