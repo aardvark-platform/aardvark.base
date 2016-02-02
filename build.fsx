@@ -16,6 +16,8 @@ Target "Tests" (fun () ->
     NUnit3 (fun p -> { p with OutputDir = "tests.out" })  [ @"bin\Release\Aardvark.Base.Incremental.Tests.exe" ]
 )
 
+"Compile" ==> "Tests"
+
 #if DEBUG
 do System.Diagnostics.Debugger.Launch() |> ignore
 #endif
