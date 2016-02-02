@@ -43,7 +43,11 @@ namespace Aardvark.Base
         {
             get
             {
-                return Path.GetDirectoryName(CurrentEntryAssembly.Location);
+                if (CurrentEntryAssembly != null)
+                {
+                    return Path.GetDirectoryName(CurrentEntryAssembly.Location);
+                }
+                else return null;
             }
         }
     }
@@ -250,6 +254,21 @@ namespace Aardvark.Base
             s_assemblies = new Dictionary<string, Assembly>();
             var entryAssembly = Assembly.GetEntryAssembly();
 
+            if (Assembly.GetEntryAssembly() == null
+               && IntrospectionProperties.CurrentEntryAssembly == null
+               && typeof(Aardvark).Assembly != null)
+            {
+                if (typeof(Aardvark).Assembly != null)
+                {
+                    Report.Warn("Assembly.GetEntryAssembly() == null && IntrospectionProperties.CurrentEntryAssembly == null. This might be due to nunit like setups. trying to use typeof<Aardvark>.Assembly instead: {0}", typeof(Aardvark).Assembly.Location);
+                    IntrospectionProperties.CustomEntryAssembly = typeof(Aardvark).Assembly;
+                    RegisterAllAssembliesInCustomEntryPath();
+                } else
+                {
+                    Report.Warn("All is null!!. Assembly.GetEntryAssembly(), IntrospectionProperties.CurrentEntryAssembly, typeof(Aardvark).Assembly. Aardvark stuff, based on introspection will most likely fail due to missing entry points. Optimistically continuing for now...");
+                }
+            }
+
             // hs: Assembly.GetEntryAssembly() returns null if started from unmanged hosting process (like visualstudio)
             // use CustomEntryAssembly assembly in this cases.
             // prior to rev. 17705 CustomEntryAssembly was only used if entryAssembly is null. However this precludes
@@ -266,30 +285,35 @@ namespace Aardvark.Base
             }
             else
             {
-                Report.Warn("[Introspection] Assembly.GetEntryAssembly() == null");
-
-                // hs: why is this necessary here? bootstrapper should be initialized before anything is loaded?
-                // sm: so let's see who complains if we comment it out ;-)
-                //Bootstrapper.Init();
-
-                Report.Begin("trying all dlls and exes in current directory: {0}", IntrospectionProperties.CurrentEntryPath); 
-                foreach (var s in Directory.GetFiles(IntrospectionProperties.CurrentEntryPath, "*.dll").Concat(    
-                                  Directory.GetFiles(IntrospectionProperties.CurrentEntryPath, "*.exe")))   
-                {
-                    try
-                    {
-                        EnumerateAssemblies(AssemblyName.GetAssemblyName(s).Name);
-                        Report.Line("{0}", s);
-                    }
-                    catch
-                    {
-                    }
-                }
-                Report.End();
+                RegisterAllAssembliesInCustomEntryPath();
             }
-            
+
             //Report.Line("s_telemetryEnumerateAssembliesCheckTime1: {0}", s_telemetryEnumerateAssembliesCheckTime1.Value);
             //Report.Line("s_telemetryEnumerateAssembliesCheckTime2: {0}", s_telemetryEnumerateAssembliesCheckTime2.Value);
+        }
+
+        private static void RegisterAllAssembliesInCustomEntryPath()
+        {
+            Report.Warn("[Introspection] Assembly.GetEntryAssembly() == null");
+
+            // hs: why is this necessary here? bootstrapper should be initialized before anything is loaded?
+            // sm: so let's see who complains if we comment it out ;-)
+            //Bootstrapper.Init();
+
+            Report.Begin("trying all dlls and exes in current directory: {0}", IntrospectionProperties.CurrentEntryPath);
+            foreach (var s in Directory.GetFiles(IntrospectionProperties.CurrentEntryPath, "*.dll").Concat(
+                              Directory.GetFiles(IntrospectionProperties.CurrentEntryPath, "*.exe")))
+            {
+                try
+                {
+                    EnumerateAssemblies(AssemblyName.GetAssemblyName(s).Name);
+                    Report.Line("{0}", s);
+                }
+                catch
+                {
+                }
+            }
+            Report.End();
         }
 
         private static Telemetry.CpuTime s_telemetryEnumerateAssembliesCheckTime1 = new Telemetry.CpuTime();
@@ -675,7 +699,14 @@ namespace Aardvark.Base
             Report.End();
 
             Report.BeginTimed("Loading plugins");
-            var pluginsList = LoadPlugins();
+            var pluginsList = new List<Assembly>();
+            try
+            {
+                pluginsList = LoadPlugins();
+            } catch(Exception e)
+            {
+                Report.Warn("Could not load plugins: {0}", e.Message);
+            }
 
             //var pluginsFile = "plugins.txt";
             //if(File.Exists(pluginsFile))
