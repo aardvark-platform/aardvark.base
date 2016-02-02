@@ -382,6 +382,75 @@ module ASetReaders =
                         | Rem v -> f.Revoke v |> List.map Rem
                 )
 
+    type MapMReader<'a, 'b>(scope, source : IReader<'a>, f : 'a -> IMod<'b>) =
+        inherit AbstractReader<'b>() 
+        
+        let f = Cache(scope, fun v -> f v)
+        let oldValues = Dictionary<IMod<'b>, 'b>()
+        let dirty = List<IMod<'b>>()
+
+        member private x.EvalMod (m : IMod<'b>) =
+            lock m (fun () ->
+                if m.OutOfDate then
+                    let n = m.GetValue x
+                    match oldValues.TryGetValue m with
+                        | (true, old) -> 
+                            if System.Object.Equals(old, n) then
+                                []
+                            else
+                                oldValues.[m] <- n
+                                [Rem old; Add n]
+                        | _ ->
+                            [Add n]
+                            
+                else
+                    []
+            )
+
+
+        override x.InputChanged(o : IAdaptiveObject) =
+            match o with
+                | :? IMod<'b> as o ->
+                    lock dirty (fun () -> dirty.Add o)
+                | _ -> ()
+
+        override x.Inputs = Seq.singleton (source :> IAdaptiveObject)
+
+        override x.Release() =
+            source.RemoveOutput x
+            source.Dispose()
+            f.Clear(ignore)
+            oldValues.Clear()
+
+        override x.ComputeDelta() =
+            let outer = 
+                source.GetDelta x 
+                    |> List.collect (fun d ->
+                    
+                        match d with
+                            | Add v -> x.EvalMod(f.Invoke v)
+                            | Rem v -> 
+                                let m = f.Revoke v
+                                match oldValues.TryGetValue m with
+                                    | (true, old) ->
+                                        oldValues.Remove(m) |> ignore
+                                        [Rem old]
+                                    | _ ->
+                                        []
+                    )  
+
+            let dirty = 
+                lock dirty (fun () ->
+                    let arr = dirty |> CSharpList.toList
+                    dirty.Clear()
+                    arr
+                )
+
+            let inner =
+                dirty |> List.collect x.EvalMod
+
+            outer @ inner
+
           
     /// <summary>
     /// A reader representing "collect" operations
@@ -962,6 +1031,10 @@ module ASetReaders =
     // finally some utility functions reducing "noise" in the code using readers
     let map scope (f : 'a -> 'b) (input : IReader<'a>) =
         new MapReader<_, _>(scope, input, fun c -> [f c]) :> IReader<_>
+
+    let mapM scope (f : 'a -> IMod<'b>) (input : IReader<'a>) =
+        new MapMReader<_, _>(scope, input, f) :> IReader<_>
+
 
     let collect scope (f : 'a -> IReader<'b>) (input : IReader<'a>) =
         new CollectReader<_, _>(scope, input, f) :> IReader<_>

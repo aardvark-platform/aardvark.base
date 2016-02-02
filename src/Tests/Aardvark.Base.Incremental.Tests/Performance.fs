@@ -114,8 +114,10 @@ module SimplePerfTests =
 
         let getLevel (m : IMod<V3d>) (f : int -> int[]) =
             let mutable current = None
-            adaptive {
-                let! m = m
+            m |> Mod.map (fun m ->
+//
+//            adaptive {
+//                let! m = m
 
                 let level = 
                     match V3d.Distance(m, m) with   
@@ -124,12 +126,13 @@ module SimplePerfTests =
 
                 match current with
                     | Some (l,v) when l = level ->
-                        return v
+                        v
                     | _ ->
                         let v = f level
                         current <- Some (level, v)
-                        return v
-            }
+                        v
+//            }
+            )
 
         let final =
             instances |> ASet.mapM (getLevel vt)
