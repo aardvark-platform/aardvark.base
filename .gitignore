@@ -1,3 +1,4 @@
+.paket/paket.exe
 /src/Aardvark.Base/obj
 /src/*.suo
 /src/*.userprefs

@@ -5,6 +5,7 @@ open System
 open System.IO
 open System.Diagnostics
 open Aardvark.Fake
+open Fake.Testing
 
 
 do Environment.CurrentDirectory <- __SOURCE_DIRECTORY__
@@ -12,8 +13,7 @@ do Environment.CurrentDirectory <- __SOURCE_DIRECTORY__
 DefaultSetup.install ["src/Aardvark.sln"]
 
 Target "Tests" (fun () ->
-    Fake.NUnitSequential.NUnit (fun p -> { p with ToolPath = @"packages\NUnit.Runners\tools"
-                                                  ToolName = "nunit-console.exe" }) [@"bin\Release\Aardvark.Base.Incremental.Tests.exe"]
+    NUnit3 id  [ @"bin\Release\Aardvark.Base.Incremental.Tests.exe" ]
 )
 
 #if DEBUG
