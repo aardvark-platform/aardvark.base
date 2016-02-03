@@ -7,9 +7,13 @@ open System.Collections.Concurrent
 open System.Threading
 open System.Linq
 
-type VolatileCollection<'a when 'a: not struct>() =
-    let mutable set : HashSet<Weak<'a>> = null
-    let mutable pset : List<Weak<'a>> = List()
+[<AllowNullLiteral>]
+type IWeakable<'a when 'a : not struct> =
+    abstract member Weak : WeakReference<'a>
+
+type VolatileCollection<'a when 'a :> IWeakable<'a> and 'a : not struct>() =
+    let mutable set : HashSet<WeakReference<'a>> = null
+    let mutable pset : List<WeakReference<'a>> = List()
 
     let mutable v = Unchecked.defaultof<_>
 
@@ -40,7 +44,7 @@ type VolatileCollection<'a when 'a: not struct>() =
             res
 
     member x.Add(value : 'a) : bool =
-        let value = Weak value
+        let value = value.Weak
         if isNull set then 
             let id = pset.IndexOf(value)
             if id < 0 then 
@@ -56,13 +60,52 @@ type VolatileCollection<'a when 'a: not struct>() =
         
 
     member x.Remove(value : 'a) : bool =
-        let value = Weak value
+        let value = value.Weak
         if isNull set then 
             pset.Remove(value)
         else
             set.Remove value
 
+type VolatileCollectionStrong<'a>() =
+    let mutable set : HashSet<'a> = null
+    let mutable pset : List<'a> = List()
 
+    member x.IsEmpty = 
+        if isNull set then pset.Count = 0
+        else set.Count = 0
+
+    member x.Consume(length : byref<int>) : array<'a> =
+        if isNull set then
+            let res = pset.ToArray()
+            length <- res.Length
+            pset.Clear()
+            res
+        else
+            let res = set.ToArray()
+            length <- res.Length
+            set.Clear()
+            res
+
+    member x.Add(value : 'a) : bool =
+        if isNull set then 
+            let id = pset.IndexOf(value)
+            if id < 0 then 
+                pset.Add(value)
+                if pset.Count > 8 then
+                    set <- HashSet pset
+                    pset <- null
+                true
+            else 
+                false
+        else
+            set.Add value
+        
+
+    member x.Remove(value : 'a) : bool =
+        if isNull set then 
+            pset.Remove(value)
+        else
+            set.Remove value
 
 /// <summary>
 /// IAdaptiveObject represents the core interface for all
@@ -81,6 +124,7 @@ type VolatileCollection<'a when 'a: not struct>() =
 /// </summary>
 [<AllowNullLiteral>]
 type IAdaptiveObject =
+    inherit IWeakable<IAdaptiveObject>
 
     /// <summary>
     /// the globally unique id for the adaptive object
@@ -124,7 +168,6 @@ type IAdaptiveObject =
 
 
     abstract member InputChanged : IAdaptiveObject -> unit
-    
 
 /// <summary>
 /// LevelChangedException is internally used by the system
@@ -377,10 +420,11 @@ type AdaptiveObject =
         val mutable public OutOfDate : bool
         val mutable public Level : int 
         val mutable public Outputs : VolatileCollection<IAdaptiveObject>
+        val mutable public WeakThis : WeakReference<IAdaptiveObject>
 
         new() =
             { Id = newId(); OutOfDate = true; 
-              Level = 0; Outputs = VolatileCollection<IAdaptiveObject>() }
+              Level = 0; Outputs = VolatileCollection<IAdaptiveObject>(); WeakThis = null }
 
     
         member inline this.evaluate (caller : IAdaptiveObject) (otherwise : Option<'a>) (f : unit -> 'a) =
@@ -490,6 +534,18 @@ type AdaptiveObject =
                 | :? IAdaptiveObject as o -> x.Id = o.Id
                 | _ -> false
 
+        member x.Weak =
+            let o = x.WeakThis
+            if isNull o then
+                let r = new WeakReference<IAdaptiveObject>(x)
+                x.WeakThis <- r
+                r
+            else
+                o
+
+        interface IWeakable<IAdaptiveObject> with
+            member x.Weak = x.Weak
+
         interface IAdaptiveObject with
             member x.Id = x.Id
             member x.OutOfDate
@@ -506,6 +562,7 @@ type AdaptiveObject =
                 x.Mark ()
 
             member x.InputChanged ip = x.InputChanged ip
+            
     end
 
 
@@ -520,6 +577,20 @@ type AdaptiveObject =
 /// </summary>
 [<AbstractClass>]
 type ConstantObject() =
+
+    let mutable weakThis : WeakReference<IAdaptiveObject> = null
+
+    interface IWeakable<IAdaptiveObject> with
+        member x.Weak =
+            let w = weakThis
+            if isNull w then 
+                let w = WeakReference<IAdaptiveObject>(x)
+                weakThis <- w
+                w
+            else
+                weakThis
+
+
     interface IAdaptiveObject with
         member x.Id = -1
         member x.Level
@@ -629,6 +700,7 @@ module CallbackExtensions =
         let mutable scope = Ag.getContext()
         let mutable inner = inner
         let mutable callback = fun () -> Ag.useScope scope callback
+        let mutable weakThis = null
         do lock inner (fun () -> inner.Outputs.Add this |> ignore)
 
         do lock undyingMarkingCallbacks (fun () -> undyingMarkingCallbacks.GetOrCreateValue(inner).Add this |> ignore )
@@ -637,6 +709,15 @@ module CallbackExtensions =
             callback ()
             false
 
+        interface IWeakable<IAdaptiveObject> with
+            member x.Weak =
+                let w = weakThis
+                if isNull w then 
+                    let w = WeakReference<IAdaptiveObject>(x)
+                    weakThis <- w
+                    w
+                else
+                    weakThis
 
         interface IAdaptiveObject with
             member x.Id = modId
@@ -741,7 +822,8 @@ open System.Threading
 type AdaptiveDecorator(o : IAdaptiveObject) =
     let mutable o = o
     let id = newId()
-    
+    let mutable weakThis = null
+
     member x.Id = id
     member x.OutOfDate
         with get() = o.OutOfDate
@@ -760,6 +842,17 @@ type AdaptiveDecorator(o : IAdaptiveObject) =
         match o with
             | :? IAdaptiveObject as o -> x.Id = id
             | _ -> false
+
+    interface IWeakable<IAdaptiveObject> with
+        member x.Weak =
+            let w = weakThis
+            if isNull w then 
+                let w = WeakReference<IAdaptiveObject>(x)
+                weakThis <- w
+                w
+            else
+                weakThis
+
 
     interface IAdaptiveObject with
         member x.Id = id
