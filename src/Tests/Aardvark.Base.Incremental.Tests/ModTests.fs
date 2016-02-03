@@ -374,27 +374,27 @@ module ``Basic Mod Tests`` =
         r |> Mod.force |> should equal 3
 
 
-    [<Test>]
-    let ``[VolatileCollection] memory test`` () =
-        let count = 10000
-        let arr = Array.zeroCreate count
-        let objects = Array.init count (fun _ -> obj())
-
-        let before = System.GC.GetTotalMemory(true)
-
-        for i in 0..count-1 do
-            arr.[i] <- VolatileCollection()
-            ignore (arr.[i].Add(objects.[i]))
-
-        let after = System.GC.GetTotalMemory(true)
-
-        let mem = after - before
-        let perInstance = float mem / float count
-        System.Console.WriteLine("real:      {0}", perInstance)
-
-        let dummy = arr |> Array.exists (fun c -> c.IsEmpty)
-        if dummy then
-            printfn "asdlkasndksajmdlkasmdl"
+//    [<Test>]
+//    let ``[VolatileCollection] memory test`` () =
+//        let count = 10000
+//        let arr = Array.zeroCreate count
+//        let objects = Array.init count (fun _ -> obj())
+//
+//        let before = System.GC.GetTotalMemory(true)
+//
+//        for i in 0..count-1 do
+//            arr.[i] <- VolatileCollection()
+//            ignore (arr.[i].Add(objects.[i]))
+//
+//        let after = System.GC.GetTotalMemory(true)
+//
+//        let mem = after - before
+//        let perInstance = float mem / float count
+//        System.Console.WriteLine("real:      {0}", perInstance)
+//
+//        let dummy = arr |> Array.exists (fun c -> c.IsEmpty)
+//        if dummy then
+//            printfn "asdlkasndksajmdlkasmdl"
 
     [<Test>]
     let ``[Mod] deep hierarchy test`` () =
