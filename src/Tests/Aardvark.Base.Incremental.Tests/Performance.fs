@@ -109,16 +109,12 @@ module SimplePerfTests =
                 for x in 0..20 do
                     for y in 0..20 do
                         for z in 0..20 do
-                            yield fun (i : int) -> Array.zeroCreate (1 <<< i)
+                            yield fun (i : int) -> V3i(x,y,z)
             }
 
-        let getLevel (m : IMod<V3d>) (f : int -> int[]) =
+        let getLevel (m : IMod<V3d>) (f : int -> V3i) =
             let mutable current = None
             m |> Mod.map (fun m ->
-//
-//            adaptive {
-//                let! m = m
-
                 let level = 
                     match V3d.Distance(m, m) with   
                         | v when v < 100.0 -> 0
@@ -131,7 +127,6 @@ module SimplePerfTests =
                         let v = f level
                         current <- Some (level, v)
                         v
-//            }
             )
 
         let final =
@@ -141,17 +136,64 @@ module SimplePerfTests =
 
         r.GetDelta() |> ignore
 
+        printf "started incremental version: "
         let sw = Stopwatch()
         sw.Start()
         for i in 1..iter do
             transact (fun () -> Mod.change vt (vt.Value + V3d.III))
             r.GetDelta() |> ignore
         sw.Stop()
+        printfn "%.3fms" (sw.Elapsed.TotalMilliseconds / float iter)
+        r.Dispose()
 
 
-        sprintf "took: %.3fms" (sw.Elapsed.TotalMilliseconds / float iter) |> Console.WriteLine
+        let creators = instances |> ASet.toArray
+        let final = cset()
+                
+
+        let r = (final :> aset<_>).GetReader()
+        printf "started non-incremental version: "
+        let sw = Stopwatch()
+        sw.Start()
+        let current = Array.zeroCreate creators.Length
+
+        let update (m : V3d) =
+            for i in 0..creators.Length-1 do
+                let level = 
+                    match V3d.Distance(m, m) with   
+                        | v when v < 100.0 -> 0
+                        | _ -> 0
+
+                match current.[i] with
+                    | Some (l,v) ->
+                        if l <> level then
+                            let n = creators.[i] level
+                            current.[i] <- Some (level, n)
+                            transact (fun () -> 
+                                CSet.remove v final |> ignore
+                                CSet.add n final |> ignore
+                            )
+
+                    | _ ->
+                        let v = creators.[i] level
+                        current.[i] <- Some (level, v)
+                        transact (fun () -> CSet.add v final |> ignore)
+
+        update V3d.Zero
+
+        for i in 1..iter do
+            let m = V3d(i,i,i)
+            update m
+            r.GetDelta() |> ignore
+
+        sw.Stop()
+        printfn "%.3fms" (sw.Elapsed.TotalMilliseconds / float iter)
+        r.Dispose()
 
 
+
+
+      
 
 
 
