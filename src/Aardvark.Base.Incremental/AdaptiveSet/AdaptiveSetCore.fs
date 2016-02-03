@@ -394,37 +394,65 @@ module ASetReaders =
                         | Rem v -> f.Revoke v |> List.map Rem
                 )
 
+    type Value<'a> =
+        struct
+            val mutable public HasOld : bool
+            val mutable public Old : 'a
+            val mutable public Current : 'a
+
+            //new() = { HasOld = false; Old = Unchecked.defaultof<_>; Current = Unchecked.defaultof<_> }
+        end
+
+    type OldValueMod<'a>(input : IMod<'a>) =
+        inherit Mod.AbstractMod<Value<'a>>()
+
+        let mutable content = Unchecked.defaultof<Value<'a>>
+        let mutable initial = true
+
+        member x.CurrentValue =
+            if initial then None
+            else Some content.Current
+
+        override x.Compute() =
+            let v = input.GetValue(x)
+            content.Old <- content.Current
+            content.Current <- v
+            content.HasOld <- not initial
+            initial <- false
+
+            content
+
+
+
     type MapMReader<'a, 'b>(scope, source : IReader<'a>, f : 'a -> IMod<'b>) =
         inherit AbstractReader<'b>() 
         
-        let f = Cache(scope, fun v -> f v)
-        let oldValues = Dictionary<IMod<'b>, 'b>()
-        let dirty = List<IMod<'b>>()
+        let f = Cache(scope, fun v -> OldValueMod(f v))
+        let innerDeltas = List()
+        //let dirty = List<OldValueMod<'b>>()
 
-        member private x.EvalMod (m : IMod<'b>) =
+        member private x.EvalMod (m : OldValueMod<'b>, target : List<Delta<'b>>) =
             lock m (fun () ->
                 if m.OutOfDate then
-                    let n = m.GetValue x
-                    match oldValues.TryGetValue m with
-                        | (true, old) -> 
-                            if System.Object.Equals(old, n) then
-                                []
-                            else
-                                oldValues.[m] <- n
-                                [Rem old; Add n]
-                        | _ ->
-                            [Add n]
-                            
+                    let vv = m.GetValue x
+                    match vv.HasOld with
+                        | true ->
+                            if System.Object.Equals(vv.Old,vv.Current) then ()
+                            else 
+                                target.Add(Rem vv.Old)
+                                target.Add(Add vv.Current)
+                        | false ->
+                            target.Add(Add vv.Current)
                 else
-                    []
+                    ()
             )
 
 
-        override x.InputChanged(o : IAdaptiveObject) =
-            match o with
-                | :? IMod<'b> as o ->
-                    lock dirty (fun () -> dirty.Add o)
-                | _ -> ()
+//        override x.InputChanged(o : IAdaptiveObject) =
+//            match o with
+//                | :? OldValueMod<'b> as o ->
+//                    lock dirty (fun () -> dirty.Add o)
+//                | _ -> ()
 
         override x.Inputs = Seq.singleton (source :> IAdaptiveObject)
 
@@ -432,37 +460,33 @@ module ASetReaders =
             source.RemoveOutput x
             source.Dispose()
             f.Clear(ignore)
-            oldValues.Clear()
 
         override x.ComputeDelta() =
-            let outer = 
-                source.GetDelta x 
-                    |> List.collect (fun d ->
+            
+            source.GetDelta x 
+                |> List.iter (fun d ->
                     
-                        match d with
-                            | Add v -> x.EvalMod(f.Invoke v)
-                            | Rem v -> 
-                                let m = f.Revoke v
-                                match oldValues.TryGetValue m with
-                                    | (true, old) ->
-                                        oldValues.Remove(m) |> ignore
-                                        [Rem old]
-                                    | _ ->
-                                        []
-                    )  
+                    match d with
+                        | Add v -> x.EvalMod(f.Invoke v, innerDeltas)
+                        | Rem v -> 
+                            let m = f.Revoke v
+                            match m.CurrentValue with
+                                | Some old -> innerDeltas.Add(Rem old)
+                                | _ -> ()
+                )  
+//
+//            let dirty = 
+//                lock dirty (fun () ->
+//                    let arr = dirty |> CSharpList.toList
+//                    dirty.Clear()
+//                    arr
+//                )
 
-            let dirty = 
-                lock dirty (fun () ->
-                    let arr = dirty |> CSharpList.toList
-                    dirty.Clear()
-                    arr
-                )
+            f.Values |> Seq.iter (fun v -> x.EvalMod(v, innerDeltas))
 
-            let inner =
-                dirty |> List.collect x.EvalMod
-
-            outer @ inner
-
+            let res = innerDeltas |> CSharpList.toList
+            innerDeltas.Clear()
+            res
           
     /// <summary>
     /// A reader representing "collect" operations
