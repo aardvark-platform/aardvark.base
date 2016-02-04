@@ -102,17 +102,33 @@ module SimplePerfTests =
     [<Test>]
     let ``[ASet] value dependent nop change``() =
         let vt = Mod.init V3d.Zero
-        let iter = 100
+        let iter = 10000
 
         let instances =
             aset {
+                let mutable i = 0
                 for x in 0..20 do
                     for y in 0..20 do
                         for z in 0..20 do
-                            yield fun (i : int) -> V3i(x,y,z)
+                            yield (i, fun (i : int) -> obj()) //V3i(x,y,z)
+                            i <- i + 1
             }
 
-        let getLevel (m : IMod<V3d>) (f : int -> V3i) =
+        let current = Array.zeroCreate (21*21*21)
+        let getLevel'(index : int, f) (m : V3d) =
+            let level = 
+                match V3d.Distance(m, m) with   
+                    | v when v < 100.0 -> 0
+                    | _ -> 0
+
+            match current.[index] with
+                | Some(ol,ov) when ol = level -> ov
+                | _ ->
+                    let n = f level
+                    current.[index] <- Some(level, n)
+                    n
+
+        let getLevel (m : IMod<V3d>) (f : int -> obj) =
             let mutable current = None
             m |> Mod.map (fun m ->
                 let level = 
@@ -130,7 +146,10 @@ module SimplePerfTests =
             )
 
         let final =
-            instances |> ASet.mapM (getLevel vt)
+            instances |> ASet.mapMod vt getLevel'
+//
+//        let finaldsfsdf = 
+//            instances |> ASet.mapM failwith ""//(getLevel vt)
 
         let r = final.GetReader()
 
@@ -147,7 +166,7 @@ module SimplePerfTests =
         r.Dispose()
 
 
-        let creators = instances |> ASet.toArray
+        let creators = instances |> ASet.toArray |> Array.map snd
         let final = cset()
                 
 

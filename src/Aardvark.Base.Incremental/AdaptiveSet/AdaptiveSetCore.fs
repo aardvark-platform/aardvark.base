@@ -79,6 +79,12 @@ module ASetReaders =
     let private ReaderCallbackProbe = Symbol.Create "[ASet] eval callback"
     let private ApplyDeltaProbe = Symbol.Create "[ASet] apply deltas"
 
+    // TODO: efficiency?
+    let compareSets (l : ISet<'a>) (r : ISet<'a>) =
+        let add = r |> Seq.filter (not << l.Contains) |> Seq.map Add
+        let rem = l |> Seq.filter (not << r.Contains) |> Seq.map Rem
+        Seq.append add rem |> Seq.toList
+
     let apply (set : ReferenceCountingSet<'a>) (deltas : list<Delta<'a>>) =
         Telemetry.timed ApplyDeltaProbe (fun () ->
             set.Apply deltas
@@ -463,6 +469,63 @@ module ASetReaders =
 
             outer @ inner
 
+     
+    type MapModReader<'a, 'b, 'c>(scope, 
+                                  r : IReader<'a>, 
+                                  m  : IMod<'b>, 
+                                  f : 'a -> 'b -> 'c) =
+        inherit AbstractReader<'c>() 
+
+        let mutable modChanged = true
+        let mutable currentB = None
+        let cache = Cache(fun a -> f a currentB.Value)
+
+        override x.InputChanged(o : IAdaptiveObject) =
+            if o.Id = m.Id then modChanged <- true
+
+
+        override x.Inputs = seq { yield r :> IAdaptiveObject; yield m :> IAdaptiveObject; }
+
+        override x.Release() =
+            cache.Clear ignore
+            r.RemoveOutput x
+            m.RemoveOutput x
+            currentB <- None
+
+        override x.ComputeDelta() =
+            let replaySetChanges () =
+                Ag.useScope scope (fun () ->
+                    r.GetDelta x |> List.map (fun d ->
+                        match d with
+                            | Add x -> 
+                                cache.Invoke x |> Add
+                            | Rem x ->
+                                cache.Revoke x |> Rem
+                    )
+                )
+
+            if modChanged then
+                let b = m.GetValue x
+                modChanged <- false
+                match currentB with
+                 | Some v when System.Object.Equals(v,b) ->
+                    replaySetChanges ()
+                 | _ ->
+                    currentB <- Some b
+                    r.GetDelta x |> ignore
+
+                    cache.Clear ignore
+                    
+                    let newContent = 
+                        Ag.useScope scope (fun () ->
+                            r.Content |> Seq.map cache.Invoke |> HashSet.ofSeq
+                        )
+
+                    compareSets x.Content newContent
+
+            else
+                replaySetChanges ()
+
           
     /// <summary>
     /// A reader representing "collect" operations
@@ -663,10 +726,7 @@ module ASetReaders =
                     lock lockObj (fun () ->
                         //Interlocked.Increment(&resetCount) |> ignore
                         reset <- None
-                        let add = c |> Seq.filter (not << content.Contains) |> Seq.map Add
-                        let rem = content |> Seq.filter (not << c.Contains) |> Seq.map Rem
-
-                        Seq.append add rem |> Seq.toList
+                        compareSets content c
                     )
                 | None ->
                     //Interlocked.Increment(&incrementalCount) |> ignore
@@ -1047,6 +1107,8 @@ module ASetReaders =
     let mapM scope (f : 'a -> IMod<'b>) (input : IReader<'a>) =
         new MapMReader<_, _>(scope, input, f) :> IReader<_>
 
+    let mapMod scope (b : IMod<'b>) (f : 'a -> 'b -> 'c) (a : IReader<'a>) =
+        new MapModReader<_,_,_>(scope, a, b, f )  :> IReader<_>
 
     let collect scope (f : 'a -> IReader<'b>) (input : IReader<'a>) =
         new CollectReader<_, _>(scope, input, f) :> IReader<_>
