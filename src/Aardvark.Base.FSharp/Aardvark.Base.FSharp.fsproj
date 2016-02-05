@@ -87,9 +87,9 @@
     <Compile Include="Runtime.fs" />
     <Compile Include="AgHelpers.fs" />
     <Compile Include="Ag.fs" />
+    <Compile Include="NewAg.fs" />
     <Compile Include="Control.fs" />
     <None Include="paket.references" />
-    <Compile Include="NewAg.fs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="mscorlib" />
