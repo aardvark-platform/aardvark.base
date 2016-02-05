@@ -13,6 +13,7 @@ module NewAg =
     let private synFunctions = Dictionary<string, Multimethod>()
     let private rootFunctions = Dictionary<string, Multimethod>()
 
+
     type Scope =
         {
             parent : Scope
@@ -20,20 +21,31 @@ module NewAg =
             inhValues : Dictionary<string, Option<obj>>
         }
 
-    let private noScope = { parent = Unchecked.defaultof<_>; sourceNode = null; inhValues = null }
-    let private currentScope = new ThreadLocal<ref<Scope>>(fun () -> ref noScope)
-    let private tempStore = new ThreadLocal<Dictionary<obj * string, obj>>(fun () -> Dictionary.empty)
+    type ThreadState =
+        class
+            val mutable public OneElementArray : obj[]
+            val mutable public ObjRef : obj
+            val mutable public Scope : Scope
+            new(s) = { OneElementArray = Array.zeroCreate 1; ObjRef = null; Scope = s }
+        end
+
+    [<AutoOpen>]
+    module Scoping =
+        let noScope = { parent = Unchecked.defaultof<_>; sourceNode = null; inhValues = null }
+        let threadState = new ThreadLocal<ThreadState>(fun () -> ThreadState(noScope))
+        let tempStore = new ThreadLocal<Dictionary<obj * string, obj>>(fun () -> Dictionary.empty)
 
     let inline private opt (success : bool, value : 'a) =
         if success then Some value
         else None
 
-    module private Delay =
+    module Delay =
 
         open System
         open System.Reflection
         open System.Collections.Generic
         open Microsoft.FSharp.Reflection
+        open System.Reflection.Emit
 
         type FSharpFuncConst<'a>(value) =
             inherit FSharpFunc<unit, 'a>()
@@ -41,26 +53,43 @@ module NewAg =
             override x.Invoke(u : unit) =
                 value
 
-        let ctorCache = Dictionary<Type, ConstructorInfo>()
-
-        let getCtor (fType : Type) =
-            lock ctorCache (fun () ->
-                match ctorCache.TryGetValue fType with
-                    | (true, ctor) -> ctor
-                    | _ ->
-                        let (ta, tr) = FSharpType.GetFunctionElements fType
-                        if ta <> typeof<unit> then 
-                            failwithf "unexpected arg-type: %A" ta
-                        let t = typedefof<FSharpFuncConst<_>>.MakeGenericType [|tr|]
-                        let ctor = t.GetConstructor [|tr|]
-                        ctorCache.[fType] <- ctor
-                        ctor
-            )
+        type CreatorImpl<'a> private() =
+            
+            static let instance =
+                let funType = typeof<FSharpFunc<obj, 'a>>
+                let bType = RuntimeMethodBuilder.bMod.DefineType(Guid.NewGuid().ToString(), TypeAttributes.Class ||| TypeAttributes.Public, funType)
+                let bMeth = bType.DefineMethod("Invoke", MethodAttributes.Public ||| MethodAttributes.Virtual, typeof<'a>, [|typeof<obj>|])
+                let il = bMeth.GetILGenerator()
 
 
-        let delay (value : obj) : 'a =
-            let ctor = getCtor typeof<'a>
-            ctor.Invoke [|value|] |> unbox<'a>
+                let _,res = FSharpType.GetFunctionElements typeof<'a>
+                let fType = typedefof<FSharpFuncConst<_>>.MakeGenericType [|res|]
+                let ctor = fType.GetConstructor [|res|]
+
+                let l = il.DeclareLocal(res)
+                il.Emit(OpCodes.Ldarg_1)
+                il.Emit(OpCodes.Unbox_Any, res)
+                il.Emit(OpCodes.Newobj, ctor)
+                il.Emit(OpCodes.Unbox_Any, typeof<'a>)
+                il.Emit(OpCodes.Ret)
+
+                let bCtor = bType.DefineConstructor(MethodAttributes.Public, CallingConventions.Standard, [||])
+                let il = bCtor.GetILGenerator()
+                il.Emit(OpCodes.Ldarg_0)
+                il.Emit(OpCodes.Call, typeof<obj>.GetConstructor [||])
+                il.Emit(OpCodes.Ret)
+
+                bType.DefineMethodOverride(bMeth, funType.GetMethod "Invoke")
+                let t = bType.CreateType()
+                
+                Activator.CreateInstance t |> unbox<obj -> 'a>
+
+            static member Instance = instance
+
+        let inline creator<'a> : obj -> 'a = CreatorImpl<'a>.Instance
+            
+        let inline delay (value : obj) : 'a = creator<'a> value
+
 
     module private RootFunctions =
         open System.Reflection.Emit
@@ -184,18 +213,26 @@ module NewAg =
 
 
 
-    let getCurrentScope() : Scope =
-        !currentScope.Value
+    let inline getCurrentScope() : Scope =
+        threadState.Value.Scope
 
-    let useScope (s : Scope) (f : unit -> 'a) =
-        let r = currentScope.Value
-        let old = !r
-        r := s
-        try f()
-        finally r := old
+    let inline useScope (s : Scope) (f : ThreadState -> 'a) =
+        let state = threadState.Value
+        let old = state.Scope
+        state.Scope <- s
+        try f(state)
+        finally state.Scope <- old
+
+    let inline pushScope (sourceNode : obj) (f : ThreadState -> 'a) =
+        let state = threadState.Value
+        let scope = { parent = state.Scope; sourceNode = sourceNode; inhValues = Dictionary.empty}
+        state.Scope <- scope
+        let res = f(state)
+        state.Scope <- scope.parent
+        res
 
 
-    let rec private tryInheritInternal (mm : Multimethod) (scopeRef : ref<Scope>) (name : string) =
+    let rec private tryInheritInternal (mm : Multimethod) (state : ThreadState) (name : string) =
         let scope = getCurrentScope()
 
         match scope.inhValues.TryGetValue name with
@@ -220,7 +257,7 @@ module NewAg =
                         | _ ->
                             None
                 else
-                    scopeRef := scope.parent
+                    state.Scope <- scope.parent
                     let res =
                         match mm.TryInvoke([|scope.parent.sourceNode|]) with
                             | (true, _) -> 
@@ -237,33 +274,36 @@ module NewAg =
                                 ts.Clear()
                                 res
 
-                            | _ -> tryInheritInternal mm scopeRef name
+                            | _ -> tryInheritInternal mm state name
                             
 
                     scope.inhValues.[name] <- res
                     res
      
     let tryInherit (name : string) (o : obj) =
-        let ref = currentScope.Value
-        if isNull ref.Value.sourceNode then
+        let state = threadState.Value
+        if isNull state.Scope.sourceNode then
             None
         else
-            if not (Unchecked.equals ref.Value.sourceNode o) then
-                failwithf "inheriting %s for %A but current scope induces %A" name o ref.Value.sourceNode
+            if not (Unchecked.equals state.Scope.sourceNode o) then
+                failwithf "inheriting %s for %A but current scope induces %A" name o state.Scope.sourceNode
 
             match inhFunctions.TryGetValue name with
                 | (true, mm) ->
-                    tryInheritInternal mm ref name
+                    tryInheritInternal mm state name
                 | _ ->
                     None
+
 
     let trySynthesize (name : string) (o : obj) =
         match synFunctions.TryGetValue(name) with
             | (true, f) ->
-                useScope { parent = getCurrentScope(); sourceNode = o; inhValues = Dictionary.empty } (fun () ->
-                    match f.TryInvoke([|o|]) with
-                        | (true, v) -> Some v
-                        | _ -> None
+                pushScope o (fun temp ->
+                    temp.OneElementArray.[0] <- o
+                    if f.TryInvoke(temp.OneElementArray, &temp.ObjRef) then
+                        Some temp.ObjRef
+                    else
+                        None
                 )
             | _ -> None
           
@@ -275,9 +315,14 @@ module NewAg =
     let (?<-) (n : obj) (name : string) (value : 'a) =
         tempStore.Value.[(n, name)] <- value
         
+    type IsFunctionType<'a> private() =
+        static let value = FSharpType.IsFunction typeof<'a>
+        static member Value = value
+
+    let inline isfunction<'a> = IsFunctionType<'a>.Value
+
     let (?) (n : obj) (name : string) : 'a =
-        let t = typeof<'a>
-        if t.Name.StartsWith "FSharpFunc" then
+        if isfunction<'a> then
             match trySynthesize name n with
                 | Some v -> 
                     Delay.delay v
@@ -286,7 +331,7 @@ module NewAg =
         else
             match n with
                 | :? Scope as s ->
-                    match useScope s (fun () -> tryInherit name s.sourceNode) with
+                    match useScope s (fun parent -> tryInherit name s.sourceNode) with
                         | Some (:? 'a as v) -> v
                         | Some v ->
                             failwithf "[Ag] unexpected type for inherited attribute %s on node type %A: %A" name (n.GetType()) (v.GetType())
@@ -362,10 +407,12 @@ module NewAgTest =
 
     let rec directSum (l : IList<int>) =
         match l with
+            | :? Nil<int> -> 0
             | :? Cons<int> as c -> c.Head + directSum c.Tail
             | _ -> 0
 
     let run() =
+        Aardvark.Init()
         NewAg.init()
 
         let rec longList (l : int) =
@@ -380,7 +427,7 @@ module NewAgTest =
             let mutable iter = 0
             let mutable total = 0
             sw.Start()
-            while sw.Elapsed.TotalMilliseconds < 1000.0 do
+            for i in 1..(1 <<< 22) do
                 total <- total + directSum l
                 iter <- iter + 1
             sw.Stop()
@@ -392,13 +439,23 @@ module NewAgTest =
             let mutable iter = 0
             let mutable total = 0
             sw.Start()
-            while sw.Elapsed.TotalMilliseconds < 10000.0 do
+            for i in 1..(1 <<< 16) do
                 total <- total + l?Sum()
                 iter <- iter + 1
             sw.Stop()
             printfn "ag:     %.3fµs (%A)" (1000.0 * sw.Elapsed.TotalMilliseconds / float iter) (total /iter)
 
 
+        let profile() =
+            let sw = Stopwatch()
+            let mutable iter = 0
+            let mutable total = 0
+            sw.Start()
+            for i in 1..(1 <<< 28) do
+                total <- total + l?Sum()
+                iter <- iter + 1
+            sw.Stop()
+            printfn "ag:     %.3fµs (%A)" (1000.0 * sw.Elapsed.TotalMilliseconds / float iter) (total /iter)
 
 
         let directv = directSum l
@@ -411,6 +468,8 @@ module NewAgTest =
         ag()
         direct()
         ag()
+
+        profile()
 
         Environment.Exit 0
 

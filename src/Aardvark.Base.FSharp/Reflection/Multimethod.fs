@@ -565,14 +565,16 @@ type Multimethod(parameterCount : int, initial : seq<MethodInfo * obj>)  =
                 |> Seq.cast
                 |> Seq.toArray
 
-        if goodOnes.Length > 1 then
-            let selected = 
-                Type.DefaultBinder.SelectMethod(
-                    BindingFlags.Instance ||| BindingFlags.Public ||| BindingFlags.NonPublic ||| BindingFlags.InvokeMethod,
-                    goodOnes,
-                    types,
-                    types |> Array.map (fun _ -> ParameterModifier())
-                ) |> unbox<MethodInfo>
+        if goodOnes.Length > 0 then
+            let selected =
+                if goodOnes.Length = 1 then goodOnes.[0] |> unbox<MethodInfo>
+                else 
+                    Type.DefaultBinder.SelectMethod(
+                        BindingFlags.Instance ||| BindingFlags.Public ||| BindingFlags.NonPublic ||| BindingFlags.InvokeMethod,
+                        goodOnes,
+                        types,
+                        types |> Array.map (fun _ -> ParameterModifier())
+                    ) |> unbox<MethodInfo>
                 
             if selected.IsGenericMethod then
                 Some (selected, implementations.[selected.GetGenericMethodDefinition()])
