@@ -616,7 +616,7 @@ module internal GenericProgram =
                             // from the top-level trie.
                             if set.Count = 0 then
                                 if not (fragments.Remove k) then
-                                    failwith "[AdaptiveProgram] failed to remove bucket: %A" k
+                                    failwithf "[AdaptiveProgram] failed to remove bucket: %A" k
 
                             validateCurrentState deltas
 

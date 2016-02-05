@@ -13,13 +13,39 @@ module NewAg =
     let private synFunctions = Dictionary<string, Multimethod>()
     let private rootFunctions = Dictionary<string, Multimethod>()
 
+    type private NewableDict<'a, 'b>() =
+        let dict = Dict<'a, 'b>()
+        member x.Dict = dict
+
+
+    let private attachedValues = System.Runtime.CompilerServices.ConditionalWeakTable<obj, NewableDict<string, obj>>()
+
+
+    let private attachValue (name : string) (node : obj) (value : obj) =
+        let dict = attachedValues.GetOrCreateValue(node)
+        dict.Dict.[name] <- value
+
+    let private tryGetAttachedValue (name : string) (node : obj) =
+        match attachedValues.TryGetValue node with
+            | (true, d) -> d.Dict |> Dict.tryFind name
+            | _ -> None
+
+
+    type Semantic() =
+        inherit System.Attribute()
+
+    type Root<'a>(child : obj) =
+        member x.Child = child
 
     type Scope =
         {
             parent : Scope
             sourceNode : obj
             inhValues : Dictionary<string, Option<obj>>
-        }
+        } with
+
+        member x.GetChildScope(node : obj) =
+            { parent = x; sourceNode = node; inhValues = Dictionary.empty }
 
     type ThreadState =
         class
@@ -29,10 +55,18 @@ module NewAg =
             new(s) = { OneElementArray = Array.zeroCreate 1; ObjRef = null; Scope = s }
         end
 
+    let mutable unpack : obj -> obj = id
+    let emptyScope = { parent = Unchecked.defaultof<_>; sourceNode = null; inhValues = null }
+    let internal anyObject = obj()
+
+    type System.Object with
+        member x.AllChildren = anyObject
+
+
+
     [<AutoOpen>]
     module Scoping =
-        let noScope = { parent = Unchecked.defaultof<_>; sourceNode = null; inhValues = null }
-        let threadState = new ThreadLocal<ThreadState>(fun () -> ThreadState(noScope))
+        let threadState = new ThreadLocal<ThreadState>(fun () -> ThreadState(emptyScope))
         let tempStore = new ThreadLocal<Dictionary<obj * string, obj>>(fun () -> Dictionary.empty)
 
     let inline private opt (success : bool, value : 'a) =
@@ -96,7 +130,7 @@ module NewAg =
 
 
         let contentType (t : Type) =
-            if t.IsGenericType && t.GetGenericTypeDefinition() = typedefof<Ag.Root<_>> then
+            if t.IsGenericType && t.GetGenericTypeDefinition() = typedefof<Root<_>> then
                 t.GetGenericArguments().[0]
             else
                 t
@@ -123,7 +157,7 @@ module NewAg =
                 let p = parameters.[i]
                 il.Emit(OpCodes.Ldarg, i + 1)
                 il.Emit(OpCodes.Unbox_Any, typeof<obj>)
-                il.Emit(OpCodes.Newobj, typedefof<Ag.Root<_>>.MakeGenericType(parameterTypes.[i]).GetConstructor [|typeof<obj>|])
+                il.Emit(OpCodes.Newobj, typedefof<Root<_>>.MakeGenericType(parameterTypes.[i]).GetConstructor [|typeof<obj>|])
 
 
 
@@ -157,8 +191,13 @@ module NewAg =
                 ctor.Invoke [|target|], t.GetMethod "Invoke"
 
 
+    [<Obsolete>]
+    let initialize() =
+        ()
+
+    [<OnAardvarkInit>]
     let init() =
-        let types = Introspection.GetAllTypesWithAttribute<Ag.Semantic>()
+        let types = Introspection.GetAllTypesWithAttribute<Semantic>()
 
         for t in types do
             let methods = t.E0.GetMethods(BindingFlags.Public ||| BindingFlags.Instance)
@@ -183,7 +222,7 @@ module NewAg =
                         let name = m.Name
                         let parameterType = parameters.[0].ParameterType
 
-                        if parameterType.IsGenericType && parameterType.GetGenericTypeDefinition() = typedefof<Ag.Root<_>> then
+                        if parameterType.IsGenericType && parameterType.GetGenericTypeDefinition() = typedefof<Root<_>> then
                             let mm = 
                                 match rootFunctions.TryGetValue name with
                                     | (true, mm) -> mm
@@ -216,12 +255,20 @@ module NewAg =
     let inline getCurrentScope() : Scope =
         threadState.Value.Scope
 
-    let inline useScope (s : Scope) (f : ThreadState -> 'a) =
+    let inline useScope (s : Scope) (f : unit -> 'a) =
+        let state = threadState.Value
+        let old = state.Scope
+        state.Scope <- s
+        try f()
+        finally state.Scope <- old
+
+    let inline useScope' (s : Scope) (f : ThreadState -> 'a) =
         let state = threadState.Value
         let old = state.Scope
         state.Scope <- s
         try f(state)
         finally state.Scope <- old
+
 
     let inline pushScope (sourceNode : obj) (f : ThreadState -> 'a) =
         let state = threadState.Value
@@ -231,89 +278,132 @@ module NewAg =
         state.Scope <- scope.parent
         res
 
+    let inline unscoped f = useScope emptyScope f
+
+    let rec private tryFindAttachedValue (scope : Scope) (name : string) =
+        if isNull scope.sourceNode then
+            None
+        else
+            match tryGetAttachedValue name scope.sourceNode with
+                | Some v -> Some v
+                | None ->
+                    tryFindAttachedValue scope.parent name
+
+
 
     let rec private tryInheritInternal (mm : Multimethod) (state : ThreadState) (name : string) =
-        let scope = getCurrentScope()
+        let scope = state.Scope
 
         match scope.inhValues.TryGetValue name with
             | (true, v) -> v
             | _ ->
                 if isNull scope.parent.sourceNode then
-                    match rootFunctions.TryGetValue(name) with
-                        | (true, mm) ->
-                            match mm.TryInvoke([|scope.sourceNode|]) with
-                                | (true, _) ->
-                                    let ts = tempStore.Value
-                                    let res =
-                                        match ts.TryGetValue((scope.sourceNode, name)) with
-                                            | (true, v) -> Some v
-                                            | _ -> 
-                                                failwithf "[Ag] invalid root method for attribute %s which does not write to %A" name scope.sourceNode
+                    match tryGetAttachedValue name scope.sourceNode with
+                        | Some v -> Some v 
+                        | None ->
+                            match rootFunctions.TryGetValue(name) with
+                                | (true, mm) ->
+                                    match mm.TryInvoke([|scope.sourceNode|]) with
+                                        | (true, _) ->
+                                            let ts = tempStore.Value
+                                            let res =
+                                                match ts.TryGetValue((scope.sourceNode, name)) with
+                                                    | (true, v) -> Some v
+                                                    | _ -> 
+                                                        failwithf "[Ag] invalid root method for attribute %s which does not write to %A" name scope.sourceNode
                             
-                                    ts.Clear()
-                                    res
+                                            ts.Clear()
+                                            res
+                                        | _ ->
+                                            None
                                 | _ ->
                                     None
-                        | _ ->
-                            None
                 else
                     state.Scope <- scope.parent
                     let res =
-                        match mm.TryInvoke([|scope.parent.sourceNode|]) with
-                            | (true, _) -> 
-                                let ts = tempStore.Value
-                                let res =
-                                    match ts.TryGetValue((scope.sourceNode, name)) with
-                                        | (true, v) -> Some v
-                                        | _ ->
-                                            match ts.TryGetValue((Ag.anyObject, name)) with
+                        match tryGetAttachedValue name scope.sourceNode with
+                            | Some v -> Some v 
+                            | None ->
+                                match mm.TryInvoke([|scope.parent.sourceNode|]) with
+                                    | (true, _) -> 
+                                        let ts = tempStore.Value
+                                        let res =
+                                            match ts.TryGetValue((scope.sourceNode, name)) with
                                                 | (true, v) -> Some v
-                                                | _ ->  
-                                                    failwithf "[Ag] invalid inherit method for attribute %s which does not write to %A" name scope.sourceNode
+                                                | _ ->
+                                                    match ts.TryGetValue((anyObject, name)) with
+                                                        | (true, v) -> Some v
+                                                        | _ ->  
+                                                            failwithf "[Ag] invalid inherit method for attribute %s which does not write to %A" name scope.sourceNode
                             
-                                ts.Clear()
-                                res
+                                        ts.Clear()
+                                        res
 
-                            | _ -> tryInheritInternal mm state name
+                                    | _ -> tryInheritInternal mm state name
                             
-
+                    state.Scope <- scope
                     scope.inhValues.[name] <- res
                     res
      
+
+
     let tryInherit (name : string) (o : obj) =
-        let state = threadState.Value
-        if isNull state.Scope.sourceNode then
-            None
-        else
-            if not (Unchecked.equals state.Scope.sourceNode o) then
-                failwithf "inheriting %s for %A but current scope induces %A" name o state.Scope.sourceNode
-
-            match inhFunctions.TryGetValue name with
-                | (true, mm) ->
-                    tryInheritInternal mm state name
-                | _ ->
+        match o with
+            | :? Scope as s ->
+                useScope' s (fun state ->
+                    match inhFunctions.TryGetValue name with
+                        | (true, mm) ->
+                            tryInheritInternal mm state name
+                        | _ ->
+                            tryFindAttachedValue state.Scope name
+                )
+            | _ -> 
+                let state = threadState.Value
+                if isNull state.Scope.sourceNode then
                     None
+                else
+//                    if not (Unchecked.equals state.Scope.sourceNode o) then
+//                        failwithf "inheriting %s for %A but current scope induces %A" name o state.Scope.sourceNode
 
+                    match inhFunctions.TryGetValue name with
+                        | (true, mm) ->
+                            tryInheritInternal mm state name
+                        | _ ->
+                            tryFindAttachedValue state.Scope name
 
     let trySynthesize (name : string) (o : obj) =
         match synFunctions.TryGetValue(name) with
             | (true, f) ->
-                pushScope o (fun temp ->
-                    temp.OneElementArray.[0] <- o
-                    if f.TryInvoke(temp.OneElementArray, &temp.ObjRef) then
-                        Some temp.ObjRef
-                    else
-                        None
-                )
+                match o with
+                    | :? Scope as s ->
+                        useScope' s (fun temp ->
+                            temp.OneElementArray.[0] <- s.sourceNode
+                            if f.TryInvoke(temp.OneElementArray, &temp.ObjRef) then
+                                Some temp.ObjRef
+                            else
+                                None
+                        )
+                    | _ ->
+                        pushScope o (fun temp ->
+                            temp.OneElementArray.[0] <- o
+                            if f.TryInvoke(temp.OneElementArray, &temp.ObjRef) then
+                                Some temp.ObjRef
+                            else
+                                None
+                        )
             | _ -> None
           
-    let tryGetAttributeValue (name : string) (o : obj) =
+    let tryGet (name : string) (o : obj) =
         match trySynthesize name o with
             | Some v -> Some v
             | None -> tryInherit name o
 
     let (?<-) (n : obj) (name : string) (value : 'a) =
-        tempStore.Value.[(n, name)] <- value
+        let s = getCurrentScope()
+        if isNull s.sourceNode then
+            attachValue name n value
+        else
+            tempStore.Value.[(unpack n, name)] <- value
         
     type IsFunctionType<'a> private() =
         static let value = FSharpType.IsFunction typeof<'a>
@@ -344,10 +434,33 @@ module NewAg =
                             failwithf "[Ag] unexpected type for inherited attribute %s on node type %A: %A" name (n.GetType()) (v.GetType())
                         | None -> 
                             failwithf "[Ag] unable to find inherited attribute %s on node type: %A" name (n.GetType())
-                    
+             
+         
+    [<Obsolete("use tryInherit instead")>]    
+    let inline tryGetInhAttribute (node : obj) (name : string) =
+        tryInherit name node
+    
+    [<Obsolete("use trySynthesize instead")>]    
+    let inline tryGetSynAttribute (o : obj) (name : string) =
+        trySynthesize name o
+    
+    [<Obsolete("use tryGet instead")>]    
+    let tryGetAttributeValue (o : obj) (name:string) : Error<'a> =
+        match tryGet name o with
+            | Some v -> Success (v |> unbox<'a>)
+            | None -> sprintf "attribute %A not found" name |> Error
+                
+    let getContext() = getCurrentScope()
+    let setContext(v) = threadState.Value.Scope <- v
 
+    [<AutoOpen>]
+    module CapturedExtensions =
+        type Scope with
+            member x.TryGetAttributeValue(name : string) : Error<'a> =
+                match tryGet name x with
+                    | Some v -> Success (v |> unbox<'a>)
+                    | None -> sprintf "attribute %A not found" name |> Error
 module NewAgTest =
-    open Ag
     open NewAg
     open System.Diagnostics
 
@@ -413,7 +526,6 @@ module NewAgTest =
 
     let run() =
         Aardvark.Init()
-        NewAg.init()
 
         let rec longList (l : int) =
             if l <= 0 then Nil<int>() :> IList<_>
@@ -484,7 +596,7 @@ module NewAgTest =
         let v : int = t?Value()
         printfn "%A" v
 
-        NewAg.tryGetAttributeValue "Sepp" v |> printfn "Sepp = %A"
+        NewAg.tryGet "Sepp" v |> printfn "Sepp = %A"
 
 
 

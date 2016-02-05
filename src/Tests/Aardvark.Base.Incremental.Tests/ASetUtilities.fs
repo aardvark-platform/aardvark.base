@@ -22,13 +22,13 @@ type cset_check<'a>(initial : seq<'a>) =
         let r = real.Add v
         let s = sim.Add v
         if r = s then s
-        else failwith "inconsistent add-result (is %A but should be %A)" r s
+        else failwithf "inconsistent add-result (is %A but should be %A)" r s
 
     member x.Remove v =
         let r = real.Remove v
         let s = sim.Remove v
         if r = s then s
-        else failwith "inconsistent remove-result (is %A but should be %A)" r s
+        else failwithf "inconsistent remove-result (is %A but should be %A)" r s
 
     member x.Clear() =
         sim.Clear()

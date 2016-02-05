@@ -380,8 +380,6 @@ module RuntimeMethodBuilder =
                     il.DefineLabel()
                 )
 
-            printfn "labels: %A" labels.Length
-
             il.Emit(OpCodes.Ldloc, typeVars.[0])
             if sizeof<nativeint> = 8 then il.Emit(OpCodes.Ldc_I8, int64 minId)
             else il.Emit(OpCodes.Ldc_I4, int minId)
@@ -511,7 +509,7 @@ module RuntimeMethodBuilder =
             match meth with
                 | Some (target, meth) ->
                     all.Add(newArgTypes, target, meth)
-                    if all.Count > 4 && argCount = 1 then
+                    if argCount < 0 then
                         current := buildTable(self)
                     else
                         current := buildMatch(self)
