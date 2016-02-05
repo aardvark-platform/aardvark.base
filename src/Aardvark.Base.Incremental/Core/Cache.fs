@@ -11,7 +11,7 @@ open Aardvark.Base
 /// reference count and removes the cache entry whenever
 /// the reference count is 0.
 /// </summary>
-type Cache<'a, 'b>(scope : Ag.Scope, f : 'a -> 'b) =  
+type Cache<'a, 'b>(f : 'a -> 'b) =  
     let cache = Dictionary<obj, 'b * ref<int>>(1)
     let mutable nullCache = None
 
@@ -43,7 +43,7 @@ type Cache<'a, 'b>(scope : Ag.Scope, f : 'a -> 'b) =
                     ref := !ref + 1
                     r
                 | None ->
-                    let r = Ag.useScope scope (fun () -> f v)
+                    let r = f v
                     nullCache <- Some(r, ref 1)
                     r
         else
@@ -52,7 +52,7 @@ type Cache<'a, 'b>(scope : Ag.Scope, f : 'a -> 'b) =
                     ref := !ref + 1
                     r
                 | _ ->
-                    let r = Ag.useScope scope (fun () -> f v)
+                    let r = f v
                     cache.[v] <- (r, ref 1)
                     r
     /// <summary>
@@ -85,6 +85,8 @@ type Cache<'a, 'b>(scope : Ag.Scope, f : 'a -> 'b) =
         x.RevokeAndGetDeleted v |> snd
 
     member x.Values = cache.Values |> Seq.map fst
+
+    new(scope : Ag.Scope, f : 'a -> 'b) = Cache(fun a -> Ag.useScope scope (fun () -> f a))
 
 
 /// <summary>

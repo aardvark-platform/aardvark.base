@@ -401,6 +401,10 @@ module ASet =
 //            v |> f |> ofMod
 //        )
 
+    let mapMod (m : IMod<'b>) (f : 'a -> 'b -> 'c) (s : aset<'a>) =
+        let scope = Ag.getContext()
+        AdaptiveSet(fun () -> s.GetReader() |> ASetReaders.mapMod scope m f) :> aset<_>
+
     /// <summary>
     /// Filters the set by applying the given modifiable function to all elements
     /// </summary>
