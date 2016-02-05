@@ -81,6 +81,9 @@ type ModRef<'a>(value : 'a) =
             value
         )
 
+    override x.ToString() =
+       sprintf "{ value = %A }" value
+
     interface IMod with
         member x.IsConstant = false
         member x.GetValue(caller) = x.GetValue(caller) :> obj
@@ -189,6 +192,10 @@ type DefaultingModRef<'a>(computed : IMod<'a>) =
                 cache <- v
                 x.MarkOutdated()
 
+    override x.ToString() =
+        if isComputed then sprintf "%A" computed
+        else sprintf "{ value = %A }" cache
+
     interface IMod with
         member x.IsConstant = false
         member x.GetValue(caller) = x.GetValue(caller) :> obj
@@ -252,6 +259,10 @@ module Mod =
             override x.Mark () =
                 x.cache <- Unchecked.defaultof<_>
                 true
+
+            override x.ToString() =
+                if x.OutOfDate then sprintf "{ cache = %A (outOfDate) }" x.cache
+                else sprintf "{ value = %A }" x.cache
 
             interface IMod with
                 member x.IsConstant = false

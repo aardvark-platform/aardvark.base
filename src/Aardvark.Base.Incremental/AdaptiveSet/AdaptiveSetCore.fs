@@ -726,6 +726,13 @@ module ASetReaders =
                     reader <- None
             )
 
+        override x.ToString() =
+            match reader with 
+             | Some r -> 
+                if r.OutOfDate then r.Content |> Seq.toArray |> sprintf "{ content = %A (outOfDate) }"
+                else r.Content |> Seq.toArray |> sprintf "{ content = %A }"
+             | None -> sprintf "{ unevaluated aset }"
+
 
 
     type CopyReader<'a>(input : ReferenceCountedReader<'a>) as this =

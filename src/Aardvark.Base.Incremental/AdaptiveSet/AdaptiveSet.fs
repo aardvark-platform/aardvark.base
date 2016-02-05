@@ -38,6 +38,9 @@ module ASet =
             try inputReader.ContainingSetDied()
             with _ -> ()
 
+        override x.ToString() =
+            sprintf "%A" inputReader
+
         interface aset<'a> with
             member x.ReaderCount = inputReader.ReferenceCount
             member x.IsConstant = false

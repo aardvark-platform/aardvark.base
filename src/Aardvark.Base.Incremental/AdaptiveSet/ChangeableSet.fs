@@ -127,6 +127,9 @@ type cset<'a>(initial : seq<'a>) =
             )
         emit (Some deltas)
 
+    override x.ToString() =
+        sprintf "{ content = %A }" (content |> Seq.toArray)
+
     /// Creates a new empty set.
     new() = cset Seq.empty
 
