@@ -26,7 +26,7 @@ type ReferenceCountingSet<'a>(initial : seq<'a>) =
                     | Rem v -> v
 
             if not (set.Add value) then
-                failwith "found duplicate value %A in delta-list: %A" value l
+                failwithf "found duplicate value %A in delta-list: %A" value l
 
     let hasChanged() =
         Interlocked.Increment &version |> ignore
