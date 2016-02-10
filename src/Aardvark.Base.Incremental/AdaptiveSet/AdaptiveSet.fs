@@ -119,6 +119,10 @@ module ASet =
         let scope = Ag.getContext()
         ConstantSet(lazy (Ag.useScope scope f)) :> aset<_>
 
+    let custom (f : IReader<'a> -> list<Delta<'a>>) =
+        let scope = Ag.getContext()
+        AdaptiveSet (fun () -> new CustomReader<'a>(scope, f) :> IReader<_>) :> aset<_>
+
     /// <summary>
     /// returns a list of all elements currently in the adaptive set. 
     /// NOTE: will force the evaluation of the set.
@@ -228,6 +232,16 @@ module ASet =
             let scope = Ag.getContext()
             let noRef = set.Copy
             AdaptiveSet(fun () -> noRef.GetReader() |> map scope f) :> aset<'b>
+
+    
+    let mapLazyAsync (f : 'a -> Async<'b>) (s : aset<'a>) =
+        let scope = Ag.getContext()
+        AdaptiveSet(fun () -> s.GetReader() |> mapAsync scope false f) :> aset<'b>
+
+
+    let mapAsync (f : 'a -> Async<'b>) (s : aset<'a>) =
+        let scope = Ag.getContext()
+        AdaptiveSet(fun () -> s.GetReader() |> mapAsync scope true f) :> aset<'b>
 
 
     let mapUse (f : 'a -> 'b) (set : aset<'a>) = 

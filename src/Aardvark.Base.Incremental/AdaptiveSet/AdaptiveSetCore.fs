@@ -3,11 +3,13 @@
 
 open System
 open System.Threading
+open System.Threading.Tasks
 open System.Collections
 open System.Collections.Generic
 open System.Collections.Concurrent
 open System.Runtime.CompilerServices
 open Aardvark.Base
+
 
 type Change<'a> = list<Delta<'a>>
 
@@ -470,10 +472,7 @@ module ASetReaders =
             outer @ inner
 
      
-    type MapModReader<'a, 'b, 'c>(scope, 
-                                  r : IReader<'a>, 
-                                  m  : IMod<'b>, 
-                                  f : 'a -> 'b -> 'c) =
+    type MapModReader<'a, 'b, 'c>(scope, r : IReader<'a>, m  : IMod<'b>, f : 'a -> 'b -> 'c) =
         inherit AbstractReader<'c>() 
 
         let mutable modChanged = true
@@ -650,6 +649,8 @@ module ASetReaders =
         inherit AbstractReader<'a>()
         let hasChanged = ChangeTracker.track<'a>
         let mutable old = None
+
+        member x.Source = source
 
         override x.Inputs = Seq.singleton (source :> IAdaptiveObject)
 
@@ -856,6 +857,9 @@ module ASetReaders =
                     | _ -> ()
             )
 
+
+        member x.Inner = inputReader
+            
 
         member x.SetPassThru(active : bool, copyContent : bool) =
             lock inputReader (fun () ->
@@ -1105,11 +1109,113 @@ module ASetReaders =
                             rem |> List.map Rem
                 )
 
+    
+    type AsyncMapReader<'a, 'b>(immediate : bool, scope : Ag.Scope, source : IReader<'a>, f : 'a -> Async<'b>) as this =
+        inherit AbstractReader<'b>()
+
+        let mutable sourceChanged = 1
+        let mutable deltas = []
+        let cache = Dictionary<obj, ref<int> * Task<'b> * CancellationTokenSource>()
+
+        let emit (d : Delta<'b>) =
+            Interlocked.Change(&deltas, fun deltas -> d::deltas) |> ignore
+            transact (fun () -> this.MarkOutdated())
+
+        let start (a : 'a) =
+            match cache.TryGetValue a with
+                | (true, (cnt,t,c)) -> 
+                    cnt := !cnt + 1
+                | _ ->
+                    let comp = 
+                        async {
+                            let! v = Ag.useScope scope (fun () -> f a)
+                            emit (Add v)
+                            return v
+                        }
+
+                    let cancel = new CancellationTokenSource()
+                    let task = Async.StartAsTask(comp, cancellationToken = cancel.Token)
+            
+                    cache.[a] <- (ref 1, task, cancel)
+
+        let stop (a : 'a) =
+            match cache.TryGetValue a with
+                | (true, (cnt,t,c)) -> 
+                    let cnt = Interlocked.Decrement(&cnt.contents)
+                    if cnt = 0 then
+                        c.Cancel()
+                        cache.Remove a |> ignore
+                        let aw = t.GetAwaiter()
+                        aw.OnCompleted (fun () ->
+                            if t.IsCanceled then ()
+                            elif t.IsFaulted then ()
+                            elif t.IsCompleted then
+                                emit (Rem t.Result)
+                            c.Dispose()
+                        )
+
+                | _ ->
+                    ()
+
+        let processDeltas() =
+            let input = source.GetDelta(this)
+
+            input |> List.iter (fun d ->
+                match d with
+                    | Add v -> start v
+                    | Rem v -> stop v
+            )
+
+            if Interlocked.Exchange(&sourceChanged, 0) = 1 then
+                if List.isEmpty input then false
+                else true
+            else
+                true
+
+        do if immediate then processDeltas() |> ignore
+
+        override x.InputChanged(i : IAdaptiveObject) =
+            if i.Id = source.Id then
+                sourceChanged <- 1
+
+        override x.Mark() =
+            if immediate then processDeltas()
+            else true
+
+        override x.ComputeDelta() =
+            if not immediate then processDeltas() |> ignore
+            let res = Interlocked.Exchange(&deltas, [])
+            res
+             
+        override x.Inputs = Seq.singleton (source :> IAdaptiveObject)
+
+        override x.Release() =
+            source.RemoveOutput x
+            for (_,_,c) in cache.Values do
+                c.Cancel()
+            cache.Clear()
+            deltas <- []
+
+
+    type CustomReader<'a>(scope : Ag.Scope, compute : IReader<'a> -> list<Delta<'a>>) =
+        inherit AbstractReader<'a>()
+
+        override x.ComputeDelta() =
+            compute x
+
+        override x.Release() =
+            ()
+
+
+
 
 
     // finally some utility functions reducing "noise" in the code using readers
     let map scope (f : 'a -> 'b) (input : IReader<'a>) =
         new MapReader<_, _>(scope, input, fun c -> [f c]) :> IReader<_>
+
+    let mapAsync scope (immediate : bool) (f : 'a -> Async<'b>) (input : IReader<'a>) =
+        new AsyncMapReader<'a, 'b>(immediate, scope, input, f) :> IReader<_>
 
     let mapM scope (f : 'a -> IMod<'b>) (input : IReader<'a>) =
         new MapMReader<_, _>(scope, input, f) :> IReader<_>
