@@ -564,8 +564,8 @@ module ASet =
         let m = set.GetReader()
 
         let result =
-            m.AddEvaluationCallback(fun () ->
-                m.GetDelta(null) |> f
+            m.AddEvaluationCallback(fun self ->
+                m.GetDelta(self) |> f
             )
 
 

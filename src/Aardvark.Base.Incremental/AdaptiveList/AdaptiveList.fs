@@ -226,8 +226,8 @@ module AList =
         let m = list.GetReader()
 
         let result = 
-            m.AddEvaluationCallback(fun () ->
-                m.GetDelta(null) |> f
+            m.AddEvaluationCallback(fun self ->
+                m.GetDelta(self) |> f
             )
 
 

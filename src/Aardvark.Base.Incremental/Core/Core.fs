@@ -692,21 +692,22 @@ module CallbackExtensions =
     
     let private undyingMarkingCallbacks = System.Runtime.CompilerServices.ConditionalWeakTable<IAdaptiveObject,HashSet<obj>>()
 
-    type private CallbackObject(inner : IAdaptiveObject, callback : unit -> unit) as this =
+    type private CallbackObject(inner : IAdaptiveObject, callback : CallbackObject -> unit) as this =
 
         let modId = newId()
         let mutable level = inner.Level + 1
         let mutable live = 1
         let mutable scope = Ag.getContext()
         let mutable inner = inner
-        let mutable callback = fun () -> Ag.useScope scope callback
         let mutable weakThis = null
         do lock inner (fun () -> inner.Outputs.Add this |> ignore)
 
         do lock undyingMarkingCallbacks (fun () -> undyingMarkingCallbacks.GetOrCreateValue(inner).Add this |> ignore )
 
         member x.Mark() =
-            callback ()
+            Ag.useScope scope (fun () ->
+                callback x
+            )
             false
 
         interface IWeakable<IAdaptiveObject> with
@@ -746,7 +747,6 @@ module CallbackExtensions =
                         | _ -> ()
                 )
                 inner.RemoveOutput x
-                callback <- ignore
                 scope <- Unchecked.defaultof<_>
                 inner <- null
 
@@ -761,19 +761,17 @@ module CallbackExtensions =
         /// allows to destroy the callback.
         /// </summary>
         member x.AddMarkingCallback(f : unit -> unit) =
-            let self = ref Unchecked.defaultof<_>
-            self := 
-                new CallbackObject(x, fun () ->
-                    
+            let res =
+                new CallbackObject(x, fun self ->
                     try
                         f ()
                     finally 
-                        lock x (fun () -> x.Outputs.Add !self |> ignore)
+                        lock x (fun () -> x.Outputs.Add self |> ignore)
                 )
 
-            lock x (fun () -> x.Outputs.Add !self |> ignore)
+            lock x (fun () -> x.Outputs.Add res |> ignore)
 
-            !self :> IDisposable //{ new IDisposable with member __.Dispose() = live := false; x.MarkingCallbacks.Remove !self |> ignore}
+            res :> IDisposable //{ new IDisposable with member __.Dispose() = live := false; x.MarkingCallbacks.Remove !self |> ignore}
  
         /// <summary>
         /// utility for adding a "persistent" callback to
@@ -781,36 +779,34 @@ module CallbackExtensions =
         /// allows to destroy the callback.
         /// </summary>
         member x.AddVolatileMarkingCallback(f : unit -> unit) =
-            let self = ref Unchecked.defaultof<_>
-            self := 
-                new CallbackObject(x, fun s ->
+            let res =
+                new CallbackObject(x, fun self ->
                     try
                         f ()
-                        self.Value.Dispose()
+                        self.Dispose()
                     with :? LevelChangedException as ex ->
-                        lock x (fun () -> x.Outputs.Add !self |> ignore)
+                        lock x (fun () -> x.Outputs.Add self |> ignore)
                         raise ex
 
                 )
 
-            lock x (fun () -> x.Outputs.Add !self |> ignore)
+            lock x (fun () -> x.Outputs.Add res |> ignore)
 
-            !self :> IDisposable //{ new IDisposable with member __.Dispose() = live := false; x.MarkingCallbacks.Remove !self |> ignore}
+            res :> IDisposable //{ new IDisposable with member __.Dispose() = live := false; x.MarkingCallbacks.Remove !self |> ignore}
  
 
-        member x.AddEvaluationCallback(f : unit -> unit) =
-            let self = ref Unchecked.defaultof<_>
-            self := 
-                new CallbackObject(x, fun s ->
+        member x.AddEvaluationCallback(f : IAdaptiveObject -> unit) =
+            let res = 
+                new CallbackObject(x, fun self ->
                     try
-                        f ()
+                        f self
                     finally 
-                        lock x (fun () -> x.Outputs.Add !self |> ignore)
+                        lock x (fun () -> x.Outputs.Add self |> ignore)
                 )
 
-            self.Value.Mark() |> ignore
+            res.Mark() |> ignore
 
-            !self :> IDisposable //{ new IDisposable with member __.Dispose() = live := false; x.MarkingCallbacks.Remove !self |> ignore}
+            res :> IDisposable //{ new IDisposable with member __.Dispose() = live := false; x.MarkingCallbacks.Remove !self |> ignore}
  
 
 
