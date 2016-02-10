@@ -309,14 +309,16 @@ module Threading =
                 sem.Release() |> ignore
         member x.Take () =
             sem.Wait()
+            let res = !Interlocked.Exchange(&content,Unchecked.defaultof<_>)
             cnt <- 0
-            !Interlocked.Exchange(&content,Unchecked.defaultof<_>)
+            res
         member x.TakeAsync () =
             async {
                 let! ct = Async.CancellationToken
                 do! Async.AwaitTask(sem.WaitAsync(ct))
+                let res = !Interlocked.Exchange(&content,Unchecked.defaultof<_>)
                 cnt <- 0
-                return !Interlocked.Exchange(&content,Unchecked.defaultof<_>)
+                return res
             }
         
     [<CompilationRepresentation(CompilationRepresentationFlags.ModuleSuffix)>]
