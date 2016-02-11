@@ -260,6 +260,12 @@ namespace Aardvark.Base
                 dirName, new string[] { Name }
                 );
 
+            if (result == null)
+            {
+                result = Path.Combine(Name, dirName);
+                Directory.CreateDirectory(result);
+            }
+
             return result;
         }
 
@@ -273,8 +279,7 @@ namespace Aardvark.Base
                 from dir in dirs
                 from subdir in Directory.GetDirectories(dir, pattern)
                 select subdir
-                ).FirstOrDefault()
-                ;
+                ).FirstOrDefault();
 
             if (result != null) return result;
 
