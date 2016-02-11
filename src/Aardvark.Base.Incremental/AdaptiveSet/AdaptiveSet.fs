@@ -598,3 +598,38 @@ module ASet =
                 d.Dispose()
                 undyingCallbacks.Remove d |> ignore
         }
+
+
+module ASetExtended =
+
+    open System.Threading
+    open System.Threading.Tasks
+
+    let mapModSetAsync (ct : CancellationToken) (m : IMod<_>) (f : 'a -> seq<'b> -> Async<Option<'c>>) (xs : aset<_>)  = 
+        
+        let def = new CustomTaskScheduler(1, ThreadPriority.BelowNormal)
+        let fac = TaskFactory(def)
+        
+        let setReader = xs.GetReader() 
+        let result = Mod.init None
+
+        let pos = MVar.empty ()
+
+        let all =
+            async {
+                while true do
+                    let! m = MVar.takeAsync pos
+                    setReader.GetDelta null |> ignore
+                    let! r  = f m setReader.Content
+
+                    transact (fun () -> Mod.change result r)
+            }
+
+        fac.StartNew(fun () -> 
+            Async.RunSynchronously(computation=all,cancellationToken=ct)
+        ) |> ignore
+
+        m |> Mod.bind (fun m ->
+            MVar.put pos m
+            result
+        )
