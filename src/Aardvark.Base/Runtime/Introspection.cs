@@ -520,17 +520,24 @@ namespace Aardvark.Base
                 {
                     using (var stream = new FileStream(CacheFile, FileMode.Open))
                     {
-                        return (Dictionary<string, Tuple<DateTime, bool>>)formatter.Deserialize(stream);
+                        var result = (Dictionary<string, Tuple<DateTime, bool>>)formatter.Deserialize(stream);
+                        Report.Line(3, "[ReadCacheFile] loaded cache file: {0}", CacheFile);
+                        return result;
                     }
                 }
-                catch (Exception)
+                catch (Exception e)
                 {
+                    Report.Line(3, "[ReadCacheFile] could not load cache file: {0} with {1}", CacheFile, e.Message);
                     return new Dictionary<string, Tuple<DateTime, bool>>();
                 }
 
 
             }
-            else return new Dictionary<string, Tuple<DateTime, bool>>();
+            else
+            {
+                Report.Line(3, "[ReadCacheFile] no plugins cache file found at {0}", CacheFile);
+                return new Dictionary<string, Tuple<DateTime, bool>>();
+            }
 
         }
 
@@ -545,6 +552,29 @@ namespace Aardvark.Base
             }
         }
 
+        private static bool IsPlugin(string file)
+        {
+            try
+            {
+                var a = Assembly.LoadFile(file);
+                var empty = Introspection.GetAllMethodsWithAttribute<OnAardvarkInitAttribute>(a).IsEmpty();
+                if (!empty)
+                {
+                    Report.Line(3, "[GetPluginAssemblyPaths] found plugins in: {0}", file);
+                    return true;
+                }
+                else
+                {
+                    return false;
+                }
+            }
+            catch (Exception e)
+            {
+                Report.Line(3, "[GetPluginAssemblyPaths] Could not load potential plugin assembly (not necessarily an error. proceeding): {0}", e.Message);
+                return false;
+            }
+        }
+
         public string[] GetPluginAssemblyPaths()
         {
             var cache = ReadCacheFile();
@@ -555,46 +585,52 @@ namespace Aardvark.Base
             var folder = IntrospectionProperties.CurrentEntryPath; 
             var assemblies = Directory.EnumerateFiles(folder)
                                       .Where(p => { var ext = Path.GetExtension(p); return ext == ".dll" || ext == ".exe"; })
+                                      .Select(Path.GetFullPath)
                                       .ToArray();
 
             var paths = new List<string>();
 
-            foreach (var ass in assemblies)
+            foreach (var fileName in assemblies)
             {
-                var fileName = Path.GetFileName(ass);
-                var lastWrite = File.GetLastWriteTimeUtc(ass);
+                var lastWrite = DateTime.MaxValue;
+                try { lastWrite = File.GetLastWriteTimeUtc(fileName); }
+                catch(Exception)
+                {
+                    Report.Line(3, "[GetPluginAssemblyPaths] could not get write time for: {0}", fileName);
+                }
 
                 Tuple<DateTime, bool> cacheValue;
-                if (!cache.TryGetValue(fileName, out cacheValue) || lastWrite > cacheValue.Item1)
+                if (cache.TryGetValue(fileName, out cacheValue) && lastWrite <= cacheValue.Item1)
                 {
-                    if (!cache.TryGetValue(fileName, out cacheValue))
-                        Report.Line(3, "[GetPluginAssemblyPaths] retrying to load because not in cache: {0}", fileName);
-                    if (lastWrite > cacheValue.Item1)
-                        Report.Line(3, "[GetPluginAssemblyPaths] retrying to load because last write > cacheWrite {0}", fileName);
-
-                    try
+                    Report.Line(3, "[GetPluginAssemblyPaths] cache found for: {0}", fileName);
+                    if (cacheValue.Item2)
                     {
-                        var a = Assembly.LoadFile(ass);
-                        var empty = Introspection.GetAllMethodsWithAttribute<OnAardvarkInitAttribute>(a).IsEmpty();
-                        if (!empty)
-                        {
-                            Report.Line(3, "[GetPluginAssemblyPaths] found plugins in: {0}", fileName);
-                            paths.Add(ass);
-                        }
-
-                        newCache[fileName] = Tuple.Create(lastWrite, !empty);
+                        newCache[fileName] = Tuple.Create(lastWrite, true);
+                        paths.Add(fileName);
                     }
-                    catch (Exception e)
+                    else
                     {
-                        Report.Line(3, "[GetPluginAssemblyPaths] Could not load potential plugin assembly (not necessarily an error. proceeding): {0}", e.Message);
                         newCache[fileName] = Tuple.Create(lastWrite, false);
                     }
-
                 }
                 else
                 {
-                    if (cacheValue.Item2) paths.Add(ass);
-                    newCache[fileName] = cacheValue;
+                    
+                    if (cacheValue != null && cacheValue.Item1 > lastWrite)
+                        Report.Line(3, "[GetPluginAssemblyPaths] retrying to load because cache outdated {0}", fileName);
+                    else
+                        Report.Line(3, "[GetPluginAssemblyPaths] retrying to load because not in cache {0}", fileName);
+
+                    if (IsPlugin(fileName))
+                    {
+                        Report.Line(3, "[GetPluginAssemblyPaths] plugin found {0}", fileName);
+                        newCache[fileName] = Tuple.Create(lastWrite, true);
+                        paths.Add(fileName);
+                    }
+                    else
+                    {
+                        newCache[fileName] = Tuple.Create(lastWrite, false);
+                    }
                 }
             }
 
@@ -611,7 +647,7 @@ namespace Aardvark.Base
 
             var d = AppDomain.CreateDomain("search", null, setup);
             var aardvark = (Aardvark)d.CreateInstanceAndUnwrap(typeof(Aardvark).Assembly.FullName, typeof(Aardvark).FullName);
-            Report.Line("[LoadPlugins] Using plugin cache file name: {0}", Aardvark.s_cacheFile);
+            Report.Line(3, "[LoadPlugins] Using plugin cache file name: {0}", Aardvark.s_cacheFile);
             aardvark.CacheFile = Aardvark.s_cacheFile;
             var paths = aardvark.GetPluginAssemblyPaths();
             AppDomain.Unload(d);
@@ -713,14 +749,7 @@ namespace Aardvark.Base
             Report.End();
 
             Report.BeginTimed("Loading plugins");
-            var pluginsList = new List<Assembly>();
-            try
-            {
-                pluginsList = LoadPlugins();
-            } catch(Exception e)
-            {
-                Report.Warn("Could not load plugins: {0}", e.Message);
-            }
+            var pluginsList = LoadPlugins();
 
             Report.End();
             LoadAll(pluginsList);
