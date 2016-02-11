@@ -70,6 +70,7 @@
     <Compile Include="AlgoDat\ExtendedCore\SortedSetExt.cs" />
     <Compile Include="AlgoDat\LruCache.cs" />
     <None Include="Extensions\FuncActionExtensions_template.cs" />
+    <Compile Include="AlgoDat\SalesmanOfDeath.cs" />
     <Compile Include="Extensions\FuncActionExtensions_auto.cs" />
     <Compile Include="Extensions\VariousExtensions.cs" />
     <Compile Include="Images\EdgeFilter.cs" />
