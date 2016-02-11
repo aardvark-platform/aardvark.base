@@ -73,6 +73,7 @@
     <Compile Include="AlgoDat\SalesmanOfDeath.cs" />
     <Compile Include="Extensions\FuncActionExtensions_auto.cs" />
     <Compile Include="Extensions\VariousExtensions.cs" />
+    <Compile Include="Geometry\Camera.cs" />
     <Compile Include="Images\EdgeFilter.cs" />
     <Compile Include="Images\ImageLoadException.cs" />
     <Compile Include="Images\IPix.cs" />
