@@ -66,6 +66,7 @@
     <Compile Include="AdaptiveSet\AdaptiveSetCore.fs" />
     <Compile Include="AdaptiveSet\ChangeableSet.fs" />
     <Compile Include="AdaptiveSet\AdaptiveSet.fs" />
+    <Compile Include="AdaptiveSet\DeltaQueue.fs" />
     <Compile Include="AdaptiveList\AdaptiveListCore.fs" />
     <Compile Include="AdaptiveList\ChangeableList.fs" />
     <Compile Include="AdaptiveList\AdaptiveList.fs" />
