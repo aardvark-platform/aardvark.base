@@ -503,7 +503,7 @@ namespace Aardvark.Base
     {
         private static string AppDataCache = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
         private static string s_cacheFile =  IntrospectionProperties.CurrentEntryAssembly == null ? "" : 
-            Path.Combine(AppDataCache, IntrospectionProperties.CurrentEntryAssembly.FullName + "plugins.bin");
+            Path.Combine(AppDataCache, IntrospectionProperties.CurrentEntryAssembly.FullName + "_plugins.bin");
 
         public string CacheFile = string.Empty;
 
@@ -567,16 +567,26 @@ namespace Aardvark.Base
                 Tuple<DateTime, bool> cacheValue;
                 if (!cache.TryGetValue(fileName, out cacheValue) || lastWrite > cacheValue.Item1)
                 {
+                    if (!cache.TryGetValue(fileName, out cacheValue))
+                        Report.Line(3, "[GetPluginAssemblyPaths] retrying to load because not in cache: {0}", fileName);
+                    if (lastWrite > cacheValue.Item1)
+                        Report.Line(3, "[GetPluginAssemblyPaths] retrying to load because last write > cacheWrite {0}", fileName);
+
                     try
                     {
                         var a = Assembly.LoadFile(ass);
                         var empty = Introspection.GetAllMethodsWithAttribute<OnAardvarkInitAttribute>(a).IsEmpty();
-                        if (!empty) paths.Add(ass);
+                        if (!empty)
+                        {
+                            Report.Line(3, "[GetPluginAssemblyPaths] found plugins in: {0}", fileName);
+                            paths.Add(ass);
+                        }
 
                         newCache[fileName] = Tuple.Create(lastWrite, !empty);
                     }
-                    catch (Exception)
+                    catch (Exception e)
                     {
+                        Report.Line(3, "[GetPluginAssemblyPaths] Could not load potential plugin assembly (not necessarily an error. proceeding): {0}", e.Message);
                         newCache[fileName] = Tuple.Create(lastWrite, false);
                     }
 
@@ -601,6 +611,7 @@ namespace Aardvark.Base
 
             var d = AppDomain.CreateDomain("search", null, setup);
             var aardvark = (Aardvark)d.CreateInstanceAndUnwrap(typeof(Aardvark).Assembly.FullName, typeof(Aardvark).FullName);
+            Report.Line("[LoadPlugins] Using plugin cache file name: {0}", Aardvark.s_cacheFile);
             aardvark.CacheFile = Aardvark.s_cacheFile;
             var paths = aardvark.GetPluginAssemblyPaths();
             AppDomain.Unload(d);
@@ -614,7 +625,10 @@ namespace Aardvark.Base
                     var ass = Assembly.LoadFile(p);
                     assemblies.Add(ass);
                 }
-                catch (Exception) { }
+                catch (Exception e)
+                {
+                    Report.Line(3, "[LoadPlugins] Could not load assembly: {0}", e.Message);
+                }
             }
 
             return assemblies;
@@ -707,37 +721,6 @@ namespace Aardvark.Base
             {
                 Report.Warn("Could not load plugins: {0}", e.Message);
             }
-
-            //var pluginsFile = "plugins.txt";
-            //if(File.Exists(pluginsFile))
-            //{
-            //    var plugins = File.ReadLines(pluginsFile);
-            //    try
-            //    {
-            //        foreach(var plugin in plugins)
-            //        {
-            //            var dll = plugin + ".dll";
-            //            var exe = plugin + ".exe";
-            //            if (File.Exists(dll))
-            //            {
-            //                Report.Line("loading {0}", dll);
-            //                pluginsList.Add(Assembly.LoadFile(Path.GetFullPath(dll)));
-            //            }
-            //            else if (File.Exists(exe))
-            //            {
-            //                Report.Line("loading {0}", exe);
-            //                pluginsList.Add(Assembly.LoadFile(Path.GetFullPath(exe)));
-            //            }
-
-                        
-            //        }
-            //    } 
-            //    catch(Exception e)
-            //    {
-            //        Report.Warn("Could not load {0} ({1}", pluginsFile, e.Message);
-            //    }
-            //}
-
 
             Report.End();
             LoadAll(pluginsList);
