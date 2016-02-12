@@ -805,11 +805,14 @@ namespace Aardvark.Base
         public static readonly SimpleType Triangle2dType = new SimpleType() { Name = "Triangle2d" };
         public static readonly SimpleType Triangle3dType = new SimpleType() { Name = "Triangle3d" };
 
+        public static readonly SimpleType CameraExtrinsicsType = new SimpleType() { Name = "CameraExtrinsics" };
+        public static readonly SimpleType CameraIntrinsicsType = new SimpleType() { Name = "CameraIntrinsics" };
+
         public static readonly SimpleType[] GeometryTypes = new SimpleType[]
         {
             Circle2dType, Line2dType, Line3dType, Plane2dType, Plane3dType, PlaneWithPoint3dType,
             Quad2dType, Quad3dType, Ray2dType, Ray3dType, Sphere3dType,
-            Triangle2dType, Triangle3dType,
+            Triangle2dType, Triangle3dType, CameraExtrinsicsType, CameraIntrinsicsType,
         };
     }
 }
