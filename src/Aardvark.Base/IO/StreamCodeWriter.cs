@@ -82,6 +82,26 @@ namespace Aardvark.Base
 
         #endregion
 
+        #region
+
+        public void Write(CameraExtrinsics c)
+        {
+            Write(c.Rotation); Write(c.Translation);
+        }
+
+        public void Write(CameraIntrinsics c)
+        {
+            Write(c.FocalLength);
+            Write(c.PrincipalPoint);
+            Write(c.Skew);
+            Write(c.K1); Write(c.K2); Write(c.K3);
+            Write(c.P1); Write(c.P2);
+        }
+
+
+        #endregion
+
+
         #region Write Arrays and Lists
 
         [StructLayout(LayoutKind.Explicit)]

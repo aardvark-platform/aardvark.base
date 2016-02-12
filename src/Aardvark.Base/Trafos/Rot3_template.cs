@@ -761,16 +761,33 @@ namespace Aardvark.Base
         }
 
         /// <summary>
+        /// Create from Rodrigues axis-angle vactor
+        /// </summary>
+        public static __rot3t__ FromAngleAxis(__v3t__ angleAxis)
+        {
+            __ft__ theta2 = angleAxis.LengthSquared;
+            if (theta2 > Constant<__ft__>.PositiveTinyValue)
+            {
+                var theta = Fun.Sqrt(theta2);
+                var thetaHalf = theta / 2;
+                var k = Fun.Sin(thetaHalf) / theta;
+                return new __rot3t__(Fun.Cos(thetaHalf), k * angleAxis);
+            }
+            else
+                return new __rot3t__(1, 0, 0, 0);
+        }
+
+        /// <summary>
         /// Creates a quaternion from a rotation matrix
         /// </summary>
         /// <param name="m"></param>
         /// <param name="epsilon"></param>
-        public static __rot3t__ From__m33t__(__m33t__ m, __ft__ epsilon = (__ft__)0.0001)
+        public static __rot3t__ From__m33t__(__m33t__ m, __ft__ epsilon = (__ft__)1e-6)
         {
             Trace.Assert(m.IsOrthonormal(epsilon), "Matrix is not orthonormal.");
             var t = 1 + m.M00 + m.M11 + m.M22;
 
-            if (t > 0.000001)
+            if (t > epsilon)
             {
                 __ft__ s = t.Sqrt() * 2;
                 __ft__ x = (m.M21 - m.M12) / s;
@@ -814,6 +831,24 @@ namespace Aardvark.Base
         #endregion
 
         #region Conversion
+
+        /// <summary>
+        /// Returns the Rodrigues angle-axis vector of the quaternion.
+        /// </summary>
+        public __v3t__ ToAngleAxis()
+        {
+            var sinTheta2 = V.LengthSquared;
+            if (sinTheta2 > Constant<__ft__>.PositiveTinyValue)
+            {
+                __ft__ sinTheta = Fun.Sqrt(sinTheta2);
+                __ft__ cosTheta = W;
+                __ft__ twoTheta = 2 * (cosTheta < 0 ? Fun.Atan2(-sinTheta, -cosTheta)
+                                                    : Fun.Atan2(sinTheta, cosTheta));
+                return V * (twoTheta / sinTheta);
+            }
+            else
+                return __v3t__.Zero;
+        }
 
         /// <summary>
         /// Converts this Rotation to the axis angle representation.
