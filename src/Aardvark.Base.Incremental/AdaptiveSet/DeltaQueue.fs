@@ -112,15 +112,56 @@ type ConcurrentDeltaQueue<'a>() =
 
 module ConcurrentDeltaQueue =
     
+    type AsyncReader<'a>(inner : IReader<'a>) =
+        inherit ASetReaders.AbstractReader<'a>()
+
+        let sem = new SemaphoreSlim(1)
+
+        member x.GetDeltaAsync(caller : IAdaptiveObject) =
+            async {
+                do! Async.SwitchToThreadPool()
+                let! _ = Async.AwaitIAsyncResult(sem.WaitAsync())
+                let d = EvaluationUtilities.evaluateTopLevel (fun () -> x.GetDelta(caller))
+                return d
+            }
+
+        override x.Mark() =
+            sem.Release() |> ignore
+            true
+
+        override x.ComputeDelta() =
+            inner.GetDelta(x)
+
+        override x.Release() =
+            sem.Dispose()
+            inner.Dispose()
+
+        override x.Inputs = Seq.singleton (inner :> IAdaptiveObject)
+
     let ofASet (s : aset<'a>) =
         let queue = new ConcurrentDeltaQueue<'a>()
          
-        let subscription = 
-            s |> ASet.unsafeRegisterCallbackKeepDisposable(fun deltas ->
-                for d in deltas do queue.Enqueue d
-            )
+        let reader = new AsyncReader<_>(s.GetReader())
 
-        queue.Subscription <- subscription
+        let pull =
+            async {
+                do! Async.SwitchToThreadPool()
+                while true do
+                    let! deltas = reader.GetDeltaAsync(null)
+                    for d in deltas do queue.Enqueue d
+            }
+
+        let cancel = new CancellationTokenSource()
+        let task = Async.StartAsTask(pull, cancellationToken = cancel.Token)
+
+        let disposable =
+            { new IDisposable with
+                member x.Dispose() =
+                    cancel.Cancel()
+                    reader.Dispose()
+            }
+
+        queue.Subscription <- disposable
         queue
 
 
