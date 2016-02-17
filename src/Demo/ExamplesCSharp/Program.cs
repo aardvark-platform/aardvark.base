@@ -32,6 +32,9 @@ namespace ExamplesCSharp
     {
         static void Main(string[] args)
         {
+            Aardvark.Base.Incremental.GitTest.run();
+            Environment.Exit(0);
+
             #region Basic Mod usage
 
             // Create a modref cell. can be changed via side effects
