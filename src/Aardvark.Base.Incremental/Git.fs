@@ -541,7 +541,7 @@ module GitTest =
         let c = Mod.map2 (+) a b
         
         let print() =
-            printfn "%s: %A" git.Branch (Mod.force c)
+            Log.line "%s: %A" git.Branch (Mod.force c)
 
         print()
 
@@ -586,6 +586,11 @@ module GitTest =
         // and back to master
         git.checkout "master"
         print()
+
+        git.checkout "merge"
+        print()
+        git.printLog()
+
 
 
 
