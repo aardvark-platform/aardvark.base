@@ -9,8 +9,9 @@ open System.Runtime.InteropServices
 
 
 type Op =
+    abstract member Target : obj
     abstract member Run : unit -> Op
-    abstract member ConflictsWith : Op -> bool
+    abstract member TryMerge : Op -> Option<Op>
 
 
 type Change =
@@ -130,15 +131,22 @@ module PMod =
     
     type ModChange<'a>(m : pmod<'a>, value : 'a) =
         interface Op with
+            member x.Target = m :> obj
             member x.Run() =
                 let old = m.Value
                 m.Ref.Value <- value
 
                 ModChange(m, old) :> Op
 
-            member x.ConflictsWith o =
-                false
+            member x.TryMerge o =
+                match o with
+                    | :? ModChange<'a> as o ->
+                        None
+                    | _ -> 
+                        failwith "impossible"
 
+        override x.ToString() =
+            sprintf "%s = %A" m.Name value
 
     let change (m : pmod<'a>) (value : 'a) =
         Single [ModChange(m, value) :> Op]
@@ -170,6 +178,10 @@ type Commit =
 and History =
     | Empty
     | Commit of History * Commit 
+
+type MergeResult =
+    | Success
+    | Conflicts of list<Op * Op>
 
 
 type WorkingCopy(remote : string) =
@@ -266,6 +278,11 @@ module Git =
                     | Empty ->
                         ()
         
+        let private undo (w : WorkingCopy) (o : Op) =
+            match w.Undo.TryRemove o with
+                | (true, u) -> u.Run() |> ignore
+                | _ ->  ()
+
         let rec forward (w : WorkingCopy) (current : History) (target : History) =
             if current != target then
                 match target with
@@ -274,16 +291,62 @@ module Git =
                         ops |> List.iter (fun o -> w.Undo.[o] <- o.Run())
                     | _ -> ()
 
-        let rec forwardCollectOps (w : WorkingCopy) (current : History) (target : History) =
+        let rec forwardMerge (w : WorkingCopy) (conflictTable : Dictionary<obj, Op>) (current : History) (target : History) =
             if current != target then
                 match target with
                     | Commit(b,{ ops = ops }) ->
-                        let inner = forwardCollectOps w current b
-                        ops |> List.iter (fun o -> w.Undo.[o] <- o.Run())
-                        inner @ ops
-                    | _ -> []
+                        let res, inner = forwardMerge w conflictTable current b
+                        let rec tryMerge (ops : list<Op>) =
+                            match ops with
+                                | [] -> [], []
+                                | o::ops ->
+                                    let working, conflicts = tryMerge ops
+
+                                    let op = 
+                                        match conflictTable.TryGetValue o.Target with
+                                            | (true, other) ->
+                                                match o.TryMerge(other) with
+                                                    | Some res ->
+                                                        Left res
+                                                    | None -> Right (o, other)
+                                            | _ -> Left o
+
+                                    match op with
+                                        | Left o ->
+                                            o::working, conflicts
+                                        | Right c ->
+                                            working, c::conflicts
+     
+                        let working, conflicts = tryMerge ops
+
+                        match res with
+                            | Success ->
+                                if List.isEmpty conflicts then 
+                                    working |> List.iter (fun o -> w.Undo.[o] <- o.Run())
+                                    let result = Change.append inner (Change.ofList working)
+
+                                    Success, result
+                                else
+                                    backward w b current
+                                    Conflicts conflicts, NoChange
+
+
+                            | Conflicts inner ->
+                                Conflicts (inner @ conflicts), NoChange
+
+                    | _ -> Success, NoChange
             else
-                []
+                Success,NoChange
+
+        let rec changeFromTo (current : History) (target : History) =
+            if current != target then
+                match target with
+                    | Commit(b,{ ops = ops }) ->
+                        let inner = changeFromTo current b
+                        Change.append inner (Change.ofList ops)
+                    | _ -> NoChange
+            else
+                NoChange
 
     let init (folder : string) = WorkingCopy(folder)
 
@@ -358,33 +421,59 @@ module Git =
 
                         let anc = findCommonAncestor s w.History
 
+
+                        let changesOnMyBranch = changeFromTo anc w.History
+
+                        let conflictTable = Dictionary<obj, Op>()
+                        changesOnMyBranch |> Change.iter (fun o ->
+                            conflictTable.[o.Target] <- o
+                        )
+
                         // TODO: check for conflicts
-                        let ops = 
+                        let mergeRes, change = 
                             transact (fun () ->
-                                forwardCollectOps w anc s
+                                forwardMerge w conflictTable anc s
                             )
 
+                        match mergeRes with
+                            | Success ->
 
-                        let commit =
-                            {
-                                hash = Guid.NewGuid()
-                                ops = ops
-                                message = sprintf "Merge branch %s into %s" source w.Branch
-                                author = Environment.UserName
-                                date = DateTime.UtcNow
-                                mergeSource = Some(source, s)
-                            }
+                                let commit =
+                                    {
+                                        hash = Guid.NewGuid()
+                                        ops = Change.toList change
+                                        message = sprintf "Merge branch %s into %s" source w.Branch
+                                        author = Environment.UserName
+                                        date = DateTime.UtcNow
+                                        mergeSource = Some(source, s)
+                                    }
 
-                        let newHistory = Commit(w.History, commit)
+                                let newHistory = Commit(w.History, commit)
 
-                        w.History <- newHistory
-                        w.LocalModifications <- NoChange
-                        w.Branches.[w.Branch] <- newHistory
+                                w.History <- newHistory
+                                w.LocalModifications <- NoChange
+                                w.Branches.[w.Branch] <- newHistory
+                            | Conflicts l ->
+                                Log.warn "merge conflict"
+                                for (l,r) in l do
+                                    Log.warn "    conflicting assignments: {%A} vs {%A}" l r
 
                     | _ ->
                         Log.warn "could not find branch %A" source
             else
                 Log.warn "cannot merge when having local modifications"
+
+    let log (w : WorkingCopy) =
+        let rec log (h : History) =
+            seq {
+                match h with
+                    | Empty -> ()
+                    | Commit(b, commit) ->
+                        yield commit
+                        yield! log b
+            }
+
+        log w.History
 
 [<AutoOpen>]
 module WorkingCopyExtensions =
@@ -410,6 +499,36 @@ module WorkingCopyExtensions =
         member x.merge source =
             Git.merge source x
 
+        member x.log =
+            Git.log x
+
+        member x.getlog (length : int) =
+            let s = x.log
+
+            let e = s.GetEnumerator()
+            let cnt = ref length
+            [
+                while !cnt > 0 && e.MoveNext() do
+                    yield e.Current
+                    cnt := !cnt - 1
+                e.Dispose()
+            ]
+
+        member x.printLog() =
+            let l = x.getlog(10)
+            for c in l do
+                Log.start "%A" c.hash
+                Log.line "message: %s" c.message
+                Log.line "author:  %s" c.author
+                Log.line "date:    %A" c.date
+                Log.start "changes:"
+                for o in c.ops do
+                    Log.line "%A" o
+                Log.stop()
+                Log.stop()
+
+                    
+        
 
 module GitTest =
     
@@ -453,6 +572,16 @@ module GitTest =
         git.checkout "merge"
         git.merge "a10"
         print()
+
+
+        git.checkout "a10"
+        git.checkout "conflict"
+        git.apply (PMod.change b 10)
+        git.commit "sync"
+        git.merge "b5"
+        print()
+
+        git.printLog()
 
         // and back to master
         git.checkout "master"
