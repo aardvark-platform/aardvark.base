@@ -467,7 +467,7 @@ namespace Aardvark.Base
 
         }
 
-        public class Tour : IEnumerable<TVertex>, IEnumerable<Edge>
+        public class Tour
         {
             private AbstractGraph<TVertex, TCost> m_graph;
             private int[] m_permutation;
@@ -591,24 +591,7 @@ namespace Aardvark.Base
 
             #endregion
 
-            #region IEnumerable Members
-
-            System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
-            {
-                foreach (var v in Vertices) yield return v;
-            }
-
-            IEnumerator<TVertex> IEnumerable<TVertex>.GetEnumerator()
-            {
-                foreach (var v in Vertices) yield return v;
-            }
-
-            IEnumerator<Edge> IEnumerable<Edge>.GetEnumerator()
-            {
-                foreach (var e in Edges) yield return e;
-            }
-
-            #endregion
+    
         }
 
         public struct Vertex

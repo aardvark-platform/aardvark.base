@@ -1,4 +1,5 @@
-﻿#if INTERACTIVE
+﻿#nowarn "51"
+#if INTERACTIVE
 #r "..\\..\\Bin\\Debug\\Aardvark.Base.dll"
 open Aardvark.Base
 #else
@@ -13,26 +14,24 @@ module ExecutableMemory =
         match os with
             | Windows -> 
                 Kernel32.Imports.VirtualAlloc(0n, UIntPtr (uint32 size), Kernel32.AllocationType.Commit, Kernel32.MemoryProtection.ExecuteReadWrite)
-            | Linux -> 
+            | Linux | Mac  -> 
                 let pageSize = Dl.Imports.getpagesize()
                 let s = nativeint size
-                let mem = Dl.Imports.memalign(nativeint pageSize, s)
+                let mutable mem = 0n
+                let r = Dl.Imports.posix_memalign(&&mem, nativeint pageSize, s)
+                if r<>0 then failwith "could not alloc aligned memory"
 
                 let stat = Dl.Imports.mprotect(mem, s, Dl.Protection.ReadWriteExecute)
                 if stat <> 0 then failwith "mprotect failed"
 
                 mem
-            | Mac ->
-                raise <| NotImplementedException()
 
     let free (ptr : nativeint) (size : int) =
         match os with
             | Windows -> 
                 Kernel32.Imports.VirtualFree(ptr, UIntPtr (uint32 size), Kernel32.FreeType.Decommit) |> ignore
-            | Linux ->
+            | Linux | Mac ->
                 Dl.Imports.free(ptr)
-            | Mac ->
-                raise <| NotImplementedException()
 
 
     let init (data : byte[]) =

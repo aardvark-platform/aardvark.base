@@ -562,36 +562,23 @@ module ASM =
 
     let private getLinuxCpuArchitecture() =
         
-        let ps = System.Diagnostics.ProcessStartInfo("lscpu", "")
+        let ps = System.Diagnostics.ProcessStartInfo("uname", "-m")
         ps.UseShellExecute <- false
         ps.RedirectStandardOutput <- true
         let proc = System.Diagnostics.Process.Start(ps)
         proc.WaitForExit()
-        let cpu = proc.StandardOutput.ReadToEnd()
-        let rx = System.Text.RegularExpressions.Regex @"Architecture[ \t]*:[ \t]*(?<arch>.*)"
-        let m = rx.Match cpu
+        let cpu = proc.StandardOutput.ReadToEnd().ToLower()
+        if cpu.Contains "arm" then ARM
+        else AMD64
 
-        if m.Success then
-            let arch = m.Groups.["arch"].Value
-            match arch with
-                | "x86_64" -> AMD64
-                | "x86" -> AMD64
-                | _ -> 
-                    if arch.Contains "arm" then ARM
-                    else failwithf "unknown architecture: %A" arch
-        else
-            failwith "could not determine cpu info"
-    
     let cpu = 
         match os with
             | Windows -> 
                 match System.Environment.GetEnvironmentVariable("PROCESSOR_ARCHITECTURE") with
                     | "AMD64" -> AMD64
                     | _ -> X86
-            | Linux ->
+            | _ ->
                 getLinuxCpuArchitecture()
-            | Mac ->
-                failwith "mac currently not supported" 
 
     let functionProlog =
         let specific =
