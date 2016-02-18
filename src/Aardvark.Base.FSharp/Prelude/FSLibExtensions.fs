@@ -57,6 +57,29 @@ module Prelude =
             e.Dispose()
             r
 
+        open System.Collections
+        open System.Collections.Generic
+
+        let atMost (n : int) (s : seq<'a>) : seq<'a> =
+            let newEnumerator() =
+                let input = s.GetEnumerator()
+                let remaining = ref n
+                { new IEnumerator<'a> with
+                    member x.MoveNext() = 
+                        remaining := !remaining - 1
+                        !remaining >= 0 && input.MoveNext()
+                    member x.Current : obj = input.Current :> obj
+                    member x.Dispose() = input.Dispose()
+                    member x.Reset() = input.Reset(); remaining := n
+                    member x.Current : 'a = input.Current
+                }
+
+            { new IEnumerable<'a> with
+                member x.GetEnumerator() : IEnumerator = newEnumerator() :> IEnumerator
+                member x.GetEnumerator() : IEnumerator<'a> = newEnumerator()
+            }
+
+
     module List = 
 
         //Experimental Results show that this implementation is faster than all other ones maintaining the list's order
@@ -198,6 +221,12 @@ module Prelude =
 
     let ಠ_ಠ str = failwith str
 
+    let inline private refequals<'a when 'a : not struct> (a : 'a) (b : 'a) = Object.ReferenceEquals(a,b)
+
+    let inline (==) (a : 'a) (b : 'a) = refequals a b
+    let inline (!=) (a : 'a) (b : 'a) = refequals a b |> not
+
+
     let inline flip f a b = f b a
 
     let inline constF v = fun _ -> v
@@ -320,7 +349,10 @@ module Threading =
                 cnt <- 0
                 return res
             }
+            
+            
         
+                 
     [<CompilationRepresentation(CompilationRepresentationFlags.ModuleSuffix)>]
     module MVar =
         let empty () = MVar<'a>()
@@ -330,12 +362,6 @@ module Threading =
         let put (m : MVar<'a>) v = m.Put v
         let take (m : MVar<'a>) = m.Take()
         let takeAsync (m : MVar<'a>) = m.TakeAsync ()
-
-    let inline private (==) (l : 'a) (r : 'a) =
-        Object.ReferenceEquals(l,r)
-
-    let inline private (!=) (l : 'a) (r : 'a) =
-        not <| Object.ReferenceEquals(l,r)
 
     type Interlocked with
         static member Change(location : byref<'a>, f : 'a -> 'a) =

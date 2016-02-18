@@ -8,51 +8,110 @@ open System.Runtime.CompilerServices
 open System.Runtime.InteropServices
 
 
-type Op =
-    abstract member Target : obj
-    abstract member Run : unit -> Op
-    abstract member TryMerge : Op -> Option<Op>
+module DB =
+    
+    type Table = { content : IDict<Guid, obj> }
 
+    type Database = { tables : IDict<string, Table> }
+
+    [<CompilationRepresentation(CompilationRepresentationFlags.ModuleSuffix)>]
+    module Database =
+        let create() = { tables = Dict() }
+
+        let getTable (name : string) (db : Database) =
+            match db.tables.TryGetValue name with
+                | (true, t) -> t
+                | _ ->
+                    let t = { content = Dict() }
+                    db.tables.[name] <- t
+                    t
+
+
+//        let store (file : string) (db : Database) =
+//            
+//        
+
+    [<CompilationRepresentation(CompilationRepresentationFlags.ModuleSuffix)>]
+    module Table =
+        let read (id : Guid) (t : Table) =
+            t.content.[id]
+
+        let write (id : Guid) (value : obj) (t : Table) =
+            t.content.[id] <- value
+
+        let insert (value : obj) (t : Table) =
+            let id = Guid.NewGuid()
+            t.content.[id] <- value
+            id
+
+        let delete (id : Guid) (t : Table) =
+            t.content.Remove(id) |> ignore
+
+
+    
+type Thunk<'a>(f : unit -> 'a) =
+    
+    member x.Value = f()
+
+
+type IRef =
+    abstract member Name : string
+
+
+type Op =
+    abstract member Target : IRef
+    abstract member Run : unit -> Op
+    abstract member TryMergeParallel : Op -> Option<Op>
+    abstract member MergeSequential : Op -> Op
 
 type Change =
+    private 
     | NoChange
-    | Single of list<Op>
-    | Union of list<Change>
+    | Change of HashMap<IRef, Op>
 
 [<CompilationRepresentation(CompilationRepresentationFlags.ModuleSuffix)>]
 module Change =
     
+    module private HashMap =
+        let update (key : 'k) (f : Option<'a> -> 'a) (m : HashMap<'k, 'a>) =
+            let old = HashMap.tryFind key m
+            HashMap.add key (f old) m
+
     let empty = NoChange
 
     let single (o : Op) =
-        Single [o]
+        Change (HashMap.ofList [o.Target, o])
 
 
     let ofSeq (s : seq<Op>) =
-        Single (Seq.toList s)
+        let mutable m = HashMap.empty
+        for op in s do
+            m <- m |> HashMap.update op.Target (fun o -> 
+                match o with
+                    | None -> op
+                    | Some o -> o.MergeSequential op
+            )
+        Change m
 
     let ofList (l : list<Op>) =
-        Single l
+        ofSeq l
 
     let ofArray (a : Op[]) =
-        Single (Array.toList a)
+        ofSeq a
 
-    let rec toSeq (c : Change) =
+    let toSeq (c : Change) =
         seq {
             match c with
                 | NoChange -> ()
-                | Single ops -> 
-                    yield! ops
-                | Union changes ->
-                    for c in changes do
-                        yield! toSeq c
+                | Change map ->
+                    yield! map |> HashMap.toSeq |> Seq.map snd
         }
 
     let rec toList (c : Change) =
         match c with
             | NoChange -> []
-            | Single ops -> ops
-            | Union changes -> changes |> List.collect toList
+            | Change map ->
+                map |> HashMap.toList |> List.map snd
 
     let toArray (c : Change) =
         c |> toSeq |> Seq.toArray
@@ -61,29 +120,46 @@ module Change =
     let isEmpty (c : Change) =
         match c with
             | NoChange -> true
-            | _ -> false
-
-    let union (c : #seq<Change>) =
-        match Seq.toList c with
-            | [] -> empty
-            | [s] -> s
-            | changes -> Union changes
-
-    let rec iter (f : Op -> unit) (c : Change) =
-        match c with
-            | NoChange -> ()
-            | Single ops -> ops |> List.iter f
-            | Union changes -> changes |> List.iter (iter f)
+            | Change m -> HashMap.isEmpty m
 
     let append (l : Change) (r : Change) =
         match l, r with
             | NoChange, r -> r
             | l, NoChange -> l
-            | l, r -> Union [l;r]
+            | Change l, Change r ->
+                let mutable res = l
+                for (k,v) in HashMap.toSeq r do
+                    res <- res |> HashMap.update k (fun ov ->
+                        match ov with
+                            | Some ov -> ov.MergeSequential v
+                            | _ -> v
+                    )
+                Change res
+
+    let concat (c : #seq<Change>) =
+        match Seq.toList c with
+            | [] -> empty
+            | f::r -> 
+                let mutable res = f
+                for c in r do
+                    res <- append res c
+                res
+
+    
+
+    let iter (f : Op -> unit) (c : Change) =
+        match c with
+            | NoChange -> ()
+            | Change map ->
+                map |> HashMap.toSeq |> Seq.iter(fun (_,op) -> f op)
+
 
 
 type pmod<'a>(name : string, value : 'a) =
     let r = ModRef<'a>(value)
+
+    interface IRef with
+        member x.Name = name
 
     member x.Value = value
     member x.Name = name
@@ -131,25 +207,31 @@ module PMod =
     
     type ModChange<'a>(m : pmod<'a>, value : 'a) =
         interface Op with
-            member x.Target = m :> obj
+            member x.Target = m :> IRef
             member x.Run() =
                 let old = m.Value
                 m.Ref.Value <- value
 
                 ModChange(m, old) :> Op
 
-            member x.TryMerge o =
+            member x.TryMergeParallel o =
                 match o with
                     | :? ModChange<'a> as o ->
                         None
                     | _ -> 
                         failwith "impossible"
 
+            member x.MergeSequential o =
+                match o with
+                    | :? ModChange<'a> as o -> o :> Op
+                    | _ ->
+                        failwith "impossible"
+
         override x.ToString() =
             sprintf "%s = %A" m.Name value
 
     let change (m : pmod<'a>) (value : 'a) =
-        Single [ModChange(m, value) :> Op]
+        Change.single (ModChange(m, value) :> Op)
 
 
 
@@ -158,6 +240,9 @@ type pset<'a>(name : string, value : PersistentHashSet<'a>) =
     let a = r :> aset<_>
     member x.Value = value
 
+    interface IRef with
+        member x.Name = name
+
     interface aset<'a> with
         member x.ReaderCount = a.ReaderCount
         member x.IsConstant = false
@@ -165,6 +250,9 @@ type pset<'a>(name : string, value : PersistentHashSet<'a>) =
         member x.GetReader() = a.GetReader()
 
 
+
+
+[<CustomEquality; CustomComparison>]
 type Commit =
     { 
         hash : Guid
@@ -172,87 +260,69 @@ type Commit =
         message : string
         author : string
         date : DateTime
-        mergeSource : Option<string * History>
+        parent : Commit
+        mergeSource : Option<string * Commit>
     }
 
-and History =
-    | Empty
-    | Commit of History * Commit 
+    override x.GetHashCode() = x.hash.GetHashCode()
+    override x.Equals o =
+        match o with
+            | :? Commit as o -> x.hash = o.hash
+            | _ -> false
+
+    interface IComparable with
+        member x.CompareTo o =
+            match o with
+                | :? Commit as o -> compare x.hash o.hash
+                | _ -> failwith "uncomparable"
+
+[<CompilationRepresentation(CompilationRepresentationFlags.ModuleSuffix)>]
+module Commit =
+    let root =
+        {
+            hash = Guid.Empty
+            ops = []
+            message = "root"
+            author = "root"
+            date = DateTime.MinValue
+            parent = Unchecked.defaultof<_>
+            mergeSource = None
+        }
+
+[<AutoOpen>]
+module CommitPatterns =
+    let (|Root|Commit|) (c : Commit) =
+        if c.hash = Guid.Empty then Root
+        else Commit(c.parent, c)
+
+
+
 
 type MergeResult =
-    | Success
+    | Merged
     | Conflicts of list<Op * Op>
 
-
-type WorkingCopy(remote : string) =
-    let refs = Dictionary<string, IMod>()
-    let sets = Dictionary<string, obj>()
-
-    let mutable history = Empty
-    let mutable localModifications = NoChange
-
-    let mutable branch = "master"
-
-    let branches = Dictionary<string, History>()
-    do branches.Add("master", history) |> ignore
-
-    let mutable undo = Dict<Op, Op>()
-    
-    member x.Undo = undo
-
-
-    member x.Remote = remote
-    member x.Branches = branches
-
-    member x.Branch
-        with get() = branch
-        and set b = branch <- b
-
-    member x.History
-        with get() = history
-        and set h = history <- h
-
-    member x.LocalModifications
-        with get() = localModifications
-        and set l = localModifications <- l
-
-    member x.NewRef(name : string, value : 'a) =
-        match refs.TryGetValue name with
-            | (true, (:? pmod<'a> as m)) -> m
-            | _ ->
-                let m = pmod(name, value)
-                refs.[name] <- m
-                m
-
-    member x.NewSet(name : string, value : PersistentHashSet<'a>) =
-        match sets.TryGetValue name with
-            | (true, (:? pset<'a> as s)) -> s
-            | _ ->
-                let s = pset(name, value)
-                sets.[name] <- s
-                s
-    
-    member x.NewSet(name : string) =
-        x.NewSet(name, PersistentHashSet.empty)
-
+type WorkingCopy =
+    {
+        mutable History : Commit
+        mutable LocalModifications : Change
+        mutable Branch : string
+        mutable Branches : Dictionary<string, Commit>
+        mutable Undo : Dict<Op, Op>
+        mutable Refs : Dict<string, IRef>
+    }
 
 [<CompilationRepresentation(CompilationRepresentationFlags.ModuleSuffix)>]
 module Git =
     
     [<AutoOpen>]
     module private Helpers =
-        
-        let inline (==) (a : 'a) (b : 'a) = Object.ReferenceEquals(a,b)
-        let inline (!=) (a : 'a) (b : 'a) = Object.ReferenceEquals(a,b) |> not
-
-
-
-        let findCommonAncestor (l : History) (r : History) =
+        let findCommonAncestor (l : Commit) (r : Commit) =
             let visited = HashSet<Guid>()
-            let rec run (l : History) (r : History) =
+            let rec run (l : Commit) (r : Commit) =
                 match l with
-                    | Empty -> l
-                    | Commit(b,{ hash = h }) ->
+                    | Root -> l
+                    | Commit(b, { hash = h }) ->
                         if visited.Contains h then
                             l
                         else
@@ -262,7 +332,7 @@ module Git =
             run l r
 
 
-        let rec backward (w : WorkingCopy) (current : History) (target : History) =
+        let rec backward (w : WorkingCopy) (current : Commit) (target : Commit) =
             if current != target then
                 match current with
                     | Commit(b,{ ops = ops; message = msg; mergeSource = m }) ->
@@ -275,7 +345,7 @@ module Git =
 
                         backward w b target
 
-                    | Empty ->
+                    | Root ->
                         ()
         
         let private undo (w : WorkingCopy) (o : Op) =
@@ -283,7 +353,7 @@ module Git =
                 | (true, u) -> u.Run() |> ignore
                 | _ ->  ()
 
-        let rec forward (w : WorkingCopy) (current : History) (target : History) =
+        let rec forward (w : WorkingCopy) (current : Commit) (target : Commit) =
             if current != target then
                 match target with
                     | Commit(b,{ ops = ops }) ->
@@ -291,7 +361,7 @@ module Git =
                         ops |> List.iter (fun o -> w.Undo.[o] <- o.Run())
                     | _ -> ()
 
-        let rec forwardMerge (w : WorkingCopy) (conflictTable : Dictionary<obj, Op>) (current : History) (target : History) =
+        let rec forwardMerge (w : WorkingCopy) (conflictTable : Dictionary<obj, Op>) (current : Commit) (target : Commit) =
             if current != target then
                 match target with
                     | Commit(b,{ ops = ops }) ->
@@ -305,7 +375,7 @@ module Git =
                                     let op = 
                                         match conflictTable.TryGetValue o.Target with
                                             | (true, other) ->
-                                                match o.TryMerge(other) with
+                                                match o.TryMergeParallel(other) with
                                                     | Some res ->
                                                         Left res
                                                     | None -> Right (o, other)
@@ -320,12 +390,12 @@ module Git =
                         let working, conflicts = tryMerge ops
 
                         match res with
-                            | Success ->
+                            | Merged ->
                                 if List.isEmpty conflicts then 
                                     working |> List.iter (fun o -> w.Undo.[o] <- o.Run())
                                     let result = Change.append inner (Change.ofList working)
 
-                                    Success, result
+                                    Merged, result
                                 else
                                     backward w b current
                                     Conflicts conflicts, NoChange
@@ -334,11 +404,11 @@ module Git =
                             | Conflicts inner ->
                                 Conflicts (inner @ conflicts), NoChange
 
-                    | _ -> Success, NoChange
+                    | _ -> Merged, NoChange
             else
-                Success,NoChange
+                Merged,NoChange
 
-        let rec changeFromTo (current : History) (target : History) =
+        let rec changeFromTo (current : Commit) (target : Commit) =
             if current != target then
                 match target with
                     | Commit(b,{ ops = ops }) ->
@@ -348,13 +418,26 @@ module Git =
             else
                 NoChange
 
-    let init (folder : string) = WorkingCopy(folder)
+    let init () =
+        {
+            History = Commit.root
+            LocalModifications = Change.empty
+            Branch = "master"
+            Branches = Dictionary.ofList ["master", Commit.root]
+            Undo = Dict.empty
+            Refs = Dict.empty
+        }
 
     let pmod (name : string) (value : 'a) (w : WorkingCopy) =
-        w.NewRef(name, value)
+        w.Refs.GetOrCreate(name, fun name ->
+            pmod(name, value) :> IRef
+        ) |> unbox<pmod<'a>>
 
     let pset (name : string) (w : WorkingCopy) =
-        w.NewSet(name)
+        w.Refs.GetOrCreate(name, fun name ->
+            pset(name, PersistentHashSet.empty) :> IRef
+        ) |> unbox<pset<'a>>
+
 
     let commit (message : string) (w : WorkingCopy) =
         let ops = w.LocalModifications |> Change.toList
@@ -364,7 +447,7 @@ module Git =
                 Log.warn "nothing to commit"
             | ops ->
 
-                let commit =
+                let newHistory =
                     {
                         hash = Guid.NewGuid()
                         ops = ops
@@ -372,9 +455,9 @@ module Git =
                         author = Environment.UserName
                         date = DateTime.UtcNow
                         mergeSource = None
+                        parent = w.History
                     }
 
-                let newHistory = Commit(w.History, commit)
 
                 w.History <- newHistory
                 w.LocalModifications <- NoChange
@@ -436,9 +519,9 @@ module Git =
                             )
 
                         match mergeRes with
-                            | Success ->
+                            | Merged ->
 
-                                let commit =
+                                let newHistory =
                                     {
                                         hash = Guid.NewGuid()
                                         ops = Change.toList change
@@ -446,9 +529,9 @@ module Git =
                                         author = Environment.UserName
                                         date = DateTime.UtcNow
                                         mergeSource = Some(source, s)
+                                        parent = w.History
                                     }
 
-                                let newHistory = Commit(w.History, commit)
 
                                 w.History <- newHistory
                                 w.LocalModifications <- NoChange
@@ -464,10 +547,10 @@ module Git =
                 Log.warn "cannot merge when having local modifications"
 
     let log (w : WorkingCopy) =
-        let rec log (h : History) =
+        let rec log (h : Commit) =
             seq {
                 match h with
-                    | Empty -> ()
+                    | Root -> ()
                     | Commit(b, commit) ->
                         yield commit
                         yield! log b
@@ -483,7 +566,6 @@ module WorkingCopyExtensions =
         member x.pmod (name : string) (value : 'a) =
             Git.pmod name value x
 
-        
         member x.pset (name : string) =
             Git.pset name x
 
@@ -503,16 +585,7 @@ module WorkingCopyExtensions =
             Git.log x
 
         member x.getlog (length : int) =
-            let s = x.log
-
-            let e = s.GetEnumerator()
-            let cnt = ref length
-            [
-                while !cnt > 0 && e.MoveNext() do
-                    yield e.Current
-                    cnt := !cnt - 1
-                e.Dispose()
-            ]
+            x.log |> Seq.atMost length
 
         member x.printLog() =
             let l = x.getlog(10)
@@ -533,7 +606,7 @@ module WorkingCopyExtensions =
 module GitTest =
     
     let run() =
-        let git = Git.init "temp"
+        let git = Git.init()
 
         let a = git.pmod "a" 1
         let b = git.pmod "b" 1
