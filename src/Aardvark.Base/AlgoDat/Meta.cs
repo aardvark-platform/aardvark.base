@@ -808,6 +808,10 @@ namespace Aardvark.Base
         public static readonly SimpleType CameraExtrinsicsType = new SimpleType() { Name = "CameraExtrinsics" };
         public static readonly SimpleType CameraIntrinsicsType = new SimpleType() { Name = "CameraIntrinsics" };
 
+
+        /// <summary>
+        /// All geometry types that need to be serialized.
+        /// </summary>
         public static readonly SimpleType[] GeometryTypes = new SimpleType[]
         {
             Circle2dType, Line2dType, Line3dType, Plane2dType, Plane3dType, PlaneWithPoint3dType,
