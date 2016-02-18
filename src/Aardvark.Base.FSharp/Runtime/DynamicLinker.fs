@@ -195,7 +195,7 @@ module private Dl =
         extern int getpagesize()
 
         [<DllImport("libc", SetLastError=true)>]
-        extern nativeint memalign(nativeint align, nativeint size)
+        extern int posix_memalign(nativeint* ptr, nativeint p, nativeint size)
 
         [<DllImport("libc", SetLastError=true)>]
         extern int mprotect(IntPtr addr, nativeint size, Protection prot);
