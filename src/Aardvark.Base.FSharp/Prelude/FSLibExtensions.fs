@@ -239,12 +239,6 @@ module Prelude =
         else x
 
 
-    let (|Windows|Linux|Mac|) (p : System.OperatingSystem) =
-        match p.Platform with
-            | System.PlatformID.Unix -> Linux
-            | System.PlatformID.MacOSX -> Mac
-            | _ -> Windows
-
 [<AutoOpen>]
 module CSharpInterop =
 
@@ -531,6 +525,7 @@ module NativeUtilities =
         open System
         open System.Runtime.InteropServices
 
+
         [<DllImport("libc", EntryPoint = "memcpy", CallingConvention = CallingConvention.Cdecl, SetLastError = false)>]
         extern nativeint private memcpy_internal(nativeint dest, nativeint src, UIntPtr size);
 
@@ -542,6 +537,21 @@ module NativeUtilities =
 
         [<DllImport("libc", EntryPoint = "memmove", CallingConvention = CallingConvention.Cdecl, SetLastError = false)>]
         extern nativeint private memmove_internal(nativeint dest, nativeint src, UIntPtr size);
+
+        [<DllImport("libc", EntryPoint = "uname", CallingConvention = CallingConvention.Cdecl, SetLastError = false)>]
+        extern int private uname_intern(nativeint buf);
+
+
+        let mutable osname = null
+        let uname() =
+            if isNull osname then
+                let ptr : nativeptr<byte> = NativePtr.stackalloc 8192
+                if uname_intern(NativePtr.toNativeInt ptr) = 0 then
+                    osname <- Marshal.PtrToStringAnsi(NativePtr.toNativeInt ptr)
+                else
+                    failwith "could not get os-name"
+            osname
+                
 
 
         let memcpy(target : nativeint, source : nativeint, size : int) =
@@ -556,31 +566,39 @@ module NativeUtilities =
         let memmove(target : nativeint, source : nativeint, size : int) =
             memmove_internal(target, source, UIntPtr (uint32 size)) |> ignore
 
+    [<AutoOpen>]
+    module PlatformStuff =
+
+
+        let (|Windows|Linux|Mac|) (p : System.OperatingSystem) =
+            match p.Platform with
+                | System.PlatformID.Unix ->
+                    if LibC.uname() = "Darwin" then Mac
+                    else Linux
+                | System.PlatformID.MacOSX -> Mac
+                | _ -> Windows
+
     [<CompilationRepresentation(CompilationRepresentationFlags.ModuleSuffix)>]
     module NativeInt =
         let memcpy (src : nativeint) (dst : nativeint) (size : int) =
             match os with
                 | Windows -> MSVCRT.memcpy(dst, src, size)
-                | Linux -> LibC.memcpy(dst, src, size)
-                | Mac -> notimp()
+                | _ -> LibC.memcpy(dst, src, size)
 
         let memmove (src : nativeint) (dst : nativeint) (size : int) =
             match os with
                 | Windows -> MSVCRT.memmove(dst, src, size)
-                | Linux -> LibC.memmove(dst, src, size)
-                | Mac -> notimp()
+                | _ -> LibC.memmove(dst, src, size)
 
         let memset (dst : nativeint) (value : int) (size : int) =
             match os with
                 | Windows -> MSVCRT.memset(dst, value, size)
-                | Linux -> LibC.memset(dst, value, size)
-                | Mac -> notimp()
+                | _ -> LibC.memset(dst, value, size)
 
         let memcmp (src : nativeint) (dst : nativeint) (size : int) =
             match os with
                 | Windows -> MSVCRT.memcmp(dst, src, size)
-                | Linux -> LibC.memcmp(dst, src, size)
-                | Mac -> notimp()
+                | _ -> LibC.memcmp(dst, src, size)
 
         let inline read<'a when 'a : unmanaged> (ptr : nativeint) =
             NativePtr.read (NativePtr.ofNativeInt<'a> ptr) 
@@ -598,26 +616,22 @@ module NativeUtilities =
         static member Copy(source : nativeint, destination : nativeint, length : int) =
             match os with
                 | Windows -> MSVCRT.memcpy(destination, source, length)
-                | Linux -> LibC.memcpy(destination, source, length)
-                | Mac -> notimp()
+                | _ -> LibC.memcpy(destination, source, length)
 
         static member Move(source : nativeint, destination : nativeint, length : int) =
             match os with
                 | Windows -> MSVCRT.memmove(destination, source, length)
-                | Linux -> LibC.memmove(destination, source, length)
-                | Mac -> notimp()
+                | _ -> LibC.memmove(destination, source, length)
 
         static member Set(memory : nativeint, value : int, length : int) =
             match os with
                 | Windows -> MSVCRT.memset(memory, value, length)
-                | Linux -> LibC.memset(memory, value, length)
-                | Mac -> notimp()
+                | _ -> LibC.memset(memory, value, length)
 
         static member Compare(source : nativeint, destination : nativeint, length : int) =
             match os with
                 | Windows -> MSVCRT.memcmp(destination, source, length)
-                | Linux -> LibC.memcmp(destination, source, length)
-                | Mac -> notimp()
+                | _ -> LibC.memcmp(destination, source, length)
 
     let pinned (a : obj) f = 
         let gc = GCHandle.Alloc(a, GCHandleType.Pinned)
@@ -625,4 +639,7 @@ module NativeUtilities =
             f ( gc.AddrOfPinnedObject() )
         finally
             gc.Free()
+
+   
+
         

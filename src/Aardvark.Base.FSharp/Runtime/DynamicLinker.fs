@@ -241,13 +241,13 @@ module DynamicLinker =
         match os with
             | Windows -> Kernel32.tryLoadLibrary name
             | Linux -> Dl.tryLoadLibrary name
-            | Mac -> notimp()
+            | Mac -> Dl.tryLoadLibrary name
 
     let loadLibrary (name : string) =
         match os with
             | Windows -> Kernel32.loadLibrary name
             | Linux -> Dl.loadLibrary name
-            | Mac -> notimp()    
+            | Mac -> Dl.loadLibrary name  
 
     let tryLoadFunction (name : string) (lib : Library) =
         lib.TryFindFunction name
