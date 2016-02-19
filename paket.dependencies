@@ -15,8 +15,8 @@ nuget NUnit                        = 2.6.3
 nuget FsUnit
 
 nuget RegexProvider                ~> 0.0.5
-nuget FsPickler.Json
-
+nuget FsPickler.Json			   ~> 1.8.0
+nuget Newtonsoft.Json			   ~> 7.0.1
 
 
 group Build

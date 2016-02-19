@@ -48,12 +48,6 @@ module DB =
             t.content.Remove(id) |> ignore
 
 
-    
-type Thunk<'a>(f : unit -> 'a) =
-    
-    member x.Value = f()
-
-
 type IRef =
     abstract member Name : string
 
@@ -61,8 +55,13 @@ type IRef =
 type Op =
     abstract member Target : IRef
     abstract member Run : unit -> Op
+    abstract member Data : seq<obj>
     abstract member TryMergeParallel : Op -> Option<Op>
     abstract member MergeSequential : Op -> Op
+
+    abstract member Serialize : (obj -> string) -> Map<string, string>
+
+
 
 type Change =
     private 
@@ -113,6 +112,7 @@ module Change =
             | Change map ->
                 map |> HashMap.toList |> List.map snd
 
+
     let toArray (c : Change) =
         c |> toSeq |> Seq.toArray
 
@@ -145,68 +145,92 @@ module Change =
                     res <- append res c
                 res
 
-    
-
     let iter (f : Op -> unit) (c : Change) =
         match c with
             | NoChange -> ()
             | Change map ->
                 map |> HashMap.toSeq |> Seq.iter(fun (_,op) -> f op)
 
+    let run (c : Change) =
+        match c with
+            | NoChange -> NoChange
+            | Change map ->
+                let mutable inverse = HashMap.empty
+
+                for (k,op) in HashMap.toSeq map do
+                    let inv = op.Run()
+                    inverse <- HashMap.add k inv inverse
+
+                Change inverse
 
 
-type pmod<'a>(name : string, value : 'a) =
-    let r = ModRef<'a>(value)
+
+
+type pmod<'a> private(name : string, defaultValue : Option<'a>) =
+    let mutable defaultValue = defaultValue
+    let r = lazy ( ModRef<'a>(defaultValue.Value) )
 
     interface IRef with
         member x.Name = name
 
-    member x.Value = value
+    member x.DefaultValue
+        with get() = defaultValue.Value
+        and set d = 
+            match defaultValue with
+                | Some d -> ()
+                | None -> defaultValue <- Some d
+
+
+    member x.Value = r.Value.Value
     member x.Name = name
 
     interface IWeakable<IAdaptiveObject> with
-        member x.Weak = r.Weak
+        member x.Weak = r.Value.Weak
 
     interface IAdaptiveObject with
-        member x.Id = r.Id
+        member x.Id = r.Value.Id
         member x.OutOfDate
-            with get() = r.OutOfDate
-            and set v = r.OutOfDate <- v
+            with get() = r.Value.OutOfDate
+            and set v = r.Value.OutOfDate <- v
 
-        member x.Outputs = r.Outputs
-        member x.Inputs = r.Inputs
+        member x.Outputs = r.Value.Outputs
+        member x.Inputs = r.Value.Inputs
         member x.Level 
-            with get() = r.Level
-            and set l = r.Level <- l
+            with get() = r.Value.Level
+            and set l = r.Value.Level <- l
 
         member x.Mark () =
-            r.Mark ()
+            r.Value.Mark ()
 
-        member x.InputChanged ip = r.InputChanged ip
+        member x.InputChanged ip = r.Value.InputChanged ip
 
 
     interface IMod with
         member x.IsConstant = false
-        member x.GetValue(caller) = r.GetValue(caller) :> obj
+        member x.GetValue(caller) = r.Value.GetValue(caller) :> obj
 
     interface IMod<'a> with
-        member x.GetValue(caller) = r.GetValue(caller)
+        member x.GetValue(caller) = r.Value.GetValue(caller)
 
     override x.ToString() =
-        sprintf "pmod { %s = %A }" name r.Value
+        sprintf "pmod { %s = %A }" name r.Value.Value
 
     override x.GetHashCode() =
-        r.GetHashCode()
+        r.Value.GetHashCode()
 
     override x.Equals o =
-        r.Equals o
+        r.Value.Equals o
 
-    member internal x.Ref = r
+    member internal x.Ref = r.Value
+
+    new(name, value) = pmod<'a>(name, Some value)
+    new(name) = pmod<'a>(name, None)
 
 module PMod =
     
     type ModChange<'a>(m : pmod<'a>, value : 'a) =
         interface Op with
+            member x.Data = Seq.singleton (value :> obj)
             member x.Target = m :> IRef
             member x.Run() =
                 let old = m.Value
@@ -226,6 +250,15 @@ module PMod =
                     | :? ModChange<'a> as o -> o :> Op
                     | _ ->
                         failwith "impossible"
+
+            member x.Serialize (store : obj -> string) =
+                Map.ofList [
+                    "Value",        store value
+                ]
+
+        static member Deserialize (target : pmod<'a>, data : Map<string, string>, load : string -> obj) =
+            let value = data.["Value"] |> load |> unbox<'a>
+            ModChange(target, value)
 
         override x.ToString() =
             sprintf "%s = %A" m.Name value
@@ -256,7 +289,8 @@ type pset<'a>(name : string, value : PersistentHashSet<'a>) =
 type Commit =
     { 
         hash : Guid
-        ops : list<Op>
+        forward : list<Op>
+        backward : list<Op>
         message : string
         author : string
         date : DateTime
@@ -276,18 +310,53 @@ type Commit =
                 | :? Commit as o -> compare x.hash o.hash
                 | _ -> failwith "uncomparable"
 
+[<AutoOpen>]
+module GuidExts =
+    let private max = Guid(Int32.MaxValue, Int16.MaxValue, Int16.MaxValue, Byte.MaxValue, Byte.MaxValue, Byte.MaxValue, Byte.MaxValue, Byte.MaxValue, Byte.MaxValue, Byte.MaxValue, Byte.MaxValue)
+    type Guid with
+        static member MaxValue = max
+
 [<CompilationRepresentation(CompilationRepresentationFlags.ModuleSuffix)>]
 module Commit =
+
+
+
     let root =
         {
             hash = Guid.Empty
-            ops = []
+            forward = []
+            backward = []
             message = "root"
             author = "root"
             date = DateTime.MinValue
             parent = Unchecked.defaultof<_>
             mergeSource = None
         }
+
+    let unrelated =
+        {
+            hash = Guid.MaxValue
+            forward = []
+            backward = []
+            message = "unrelated"
+            author = "unrelated"
+            date = DateTime.MaxValue
+            parent = Unchecked.defaultof<_>
+            mergeSource = None
+        }
+
+
+    let inline isRoot (c : Commit) = c.hash = Guid.Empty
+
+    let inline message (c : Commit) = c.message
+    let inline author (c : Commit) = c.author
+    let inline date (c : Commit) = c.date
+    let inline parent (c : Commit) = c.parent
+    let inline mergeSource (c : Commit) = c.mergeSource
+    let inline forward (c : Commit) = c.forward
+    let inline backward (c : Commit) = c.backward
+    let inline hash (c : Commit) = c.hash
+
 
 [<AutoOpen>]
 module CommitPatterns =
@@ -306,15 +375,20 @@ type WorkingCopy =
     {
         mutable History : Commit
         mutable LocalModifications : Change
+        mutable LocalModificationsInverse : Change
         mutable Branch : string
         mutable Branches : Dictionary<string, Commit>
-        mutable Undo : Dict<Op, Op>
+        mutable Commits : Dictionary<Guid, Commit>
+        mutable Data : Dictionary<string, obj>
         mutable Refs : Dict<string, IRef>
     }
 
 [<CompilationRepresentation(CompilationRepresentationFlags.ModuleSuffix)>]
 module Git =
-    
+
+    open System.IO
+    open System.Reflection
+        
     [<AutoOpen>]
     module private Helpers =
         let findCommonAncestor (l : Commit) (r : Commit) =
@@ -335,12 +409,10 @@ module Git =
         let rec backward (w : WorkingCopy) (current : Commit) (target : Commit) =
             if current != target then
                 match current with
-                    | Commit(b,{ ops = ops; message = msg; mergeSource = m }) ->
+                    | Commit(b,{ backward = ops; message = msg; mergeSource = m }) ->
                         
                         ops |> List.iter (fun o ->
-                            match w.Undo.TryRemove o with
-                                | (true, u) -> u.Run() |> ignore
-                                | _ -> failwithf "cannot undo operation in commit %A" msg
+                            o.Run() |> ignore
                         )
 
                         backward w b target
@@ -348,23 +420,19 @@ module Git =
                     | Root ->
                         ()
         
-        let private undo (w : WorkingCopy) (o : Op) =
-            match w.Undo.TryRemove o with
-                | (true, u) -> u.Run() |> ignore
-                | _ ->  ()
 
         let rec forward (w : WorkingCopy) (current : Commit) (target : Commit) =
             if current != target then
                 match target with
-                    | Commit(b,{ ops = ops }) ->
+                    | Commit(b,{ forward = ops }) ->
                         forward w current b
-                        ops |> List.iter (fun o -> w.Undo.[o] <- o.Run())
+                        ops |> List.iter (fun o -> o.Run() |> ignore)
                     | _ -> ()
 
         let rec forwardMerge (w : WorkingCopy) (conflictTable : Dictionary<obj, Op>) (current : Commit) (target : Commit) =
             if current != target then
                 match target with
-                    | Commit(b,{ ops = ops }) ->
+                    | Commit(b,{ forward = ops }) ->
                         let res, inner = forwardMerge w conflictTable current b
                         let rec tryMerge (ops : list<Op>) =
                             match ops with
@@ -392,7 +460,6 @@ module Git =
                         match res with
                             | Merged ->
                                 if List.isEmpty conflicts then 
-                                    working |> List.iter (fun o -> w.Undo.[o] <- o.Run())
                                     let result = Change.append inner (Change.ofList working)
 
                                     Merged, result
@@ -411,27 +478,289 @@ module Git =
         let rec changeFromTo (current : Commit) (target : Commit) =
             if current != target then
                 match target with
-                    | Commit(b,{ ops = ops }) ->
+                    | Commit(b,{ forward = ops }) ->
                         let inner = changeFromTo current b
                         Change.append inner (Change.ofList ops)
                     | _ -> NoChange
             else
                 NoChange
 
+    [<AutoOpen>]
+    module private Serialization = 
+        open System.IO
+        open Nessos.FsPickler
+        open Nessos.FsPickler.Hashing
+        open Nessos.FsPickler.Json
+
+        let pickler = FsPickler.CreateJsonSerializer(true, true)
+        let bson = FsPickler.CreateBsonSerializer()
+
+        let objHash (o : obj) =
+            let hash = FsPickler.ComputeHash o
+            System.Convert.ToBase64String(hash.Hash).Replace('/', '_')
+
+        let ensureExists (dir : string) =
+            if not (Directory.Exists dir) then
+                Directory.CreateDirectory dir |> ignore
+
+        let exists (dir : string) =
+            File.Exists dir
+
+        let (++) (str : string) (name : string) =
+            Path.Combine(str, name)
+
+        let (!!) (str : string) =
+            not (File.Exists str) && not (Directory.Exists str)
+
+        type StorableCommit =
+            {
+                shash : Guid
+                smessage : string
+                sforward : list<Map<string, string>>
+                sbackward : list<Map<string, string>>
+                sauthor : string
+                sdate : DateTime
+                sparent : Guid
+                smergeSource : Option<string * Guid>
+            }
+
+
+    let push (allBranches : bool) (force : bool) (target : string) (w : WorkingCopy) =
+        ensureExists target
+
+
+        let data = target ++ "data"
+        ensureExists data
+
+        let dataTable = Dict<obj, string>()
+
+        let storeData (d : obj) =
+            dataTable.GetOrCreate(d, fun o ->
+                let hash = objHash o
+                let binary = bson.Pickle(o)
+                
+
+                let target = data ++ hash
+                if !!target then File.WriteAllBytes(target, binary)
+
+                hash
+            )
+
+        let commits = target ++ "commits"
+        ensureExists commits
+
+        let rec storeCommits (c : Commit) =
+            if not (Commit.isRoot c) then
+                let file = commits ++ (string c.hash)
+                if File.Exists file then
+                    ()
+                else
+                    let serializeOp (o : Op) =
+                        let m = o.Serialize storeData
+                        m |> Map.add "Type" (o.GetType().FullName)
+                          |> Map.add "Target" o.Target.Name
+
+                    let storable =
+                        {
+                            shash = c.hash
+                            smessage = c.message
+                            sforward = c.forward |> List.map serializeOp
+                            sbackward = c.backward |> List.map serializeOp
+                            sauthor = c.author
+                            sdate = c.date
+                            sparent = c.parent.hash
+                            smergeSource = c.mergeSource |> Option.map (fun (a,b) -> a, b.hash)
+                        }
+
+                    let data = pickler.Pickle storable
+                    File.WriteAllBytes(file, data)
+
+                    storeCommits c.parent
+
+        let headsFile = target ++ "heads.json"
+        let remoteHeads : Map<string, Guid> = 
+            if !!headsFile then Map.empty
+            else pickler.UnPickle (File.ReadAllBytes headsFile)
+
+        let branches =
+            if allBranches then w.Branches.Keys |> Seq.filter (fun k -> k.StartsWith "remote" |> not) |> Seq.toList
+            else [w.Branch]
+
+        let remoteState =
+            branches 
+                |> List.map (fun b ->
+                    match Map.tryFind b remoteHeads with
+                        | Some h -> 
+                            match w.Commits.TryGetValue h with
+                                | (true, c) -> b,c
+                                | _ -> b,Commit.unrelated
+                        | None -> b,Commit.root
+
+                   )
+                |> Map.ofList
+
+
+        let bad = 
+            if force then []
+            else remoteState |> Map.filter (fun _ v -> v = Commit.unrelated) |> Map.toSeq |> Seq.map fst |> Seq.toList
+
+        if List.isEmpty bad then
+            
+            let mutable heads = remoteHeads 
+
+            for b in branches do
+                let myCommit = w.Branches.[b]
+                storeCommits myCommit
+                heads <- Map.add b myCommit.hash heads
+
+            pickler.Pickle heads |> File.writeAllBytes headsFile
+
+
+        else
+            Log.warn "remote contains changes not in your local copy (please integrate them)"
+
+//        if allBranches then
+//            let heads = 
+//                w.Branches 
+//                    |> Dictionary.toMap
+//                    |> Map.filter (fun k _ -> k.StartsWith "remotes" |> not)
+//                    |> Map.map (fun _ c -> c.hash)
+//
+//            pickler.Pickle heads |> File.writeAllBytes (target ++ "heads.json")
+//
+//            for (b,c) in Dictionary.toSeq w.Branches do
+//                if not (b.StartsWith "remotes/") then
+//                    storeCommits c
+//        else
+//
+//            
+//            let heads = 
+//                w.Branches 
+//                    |> Dictionary.toMap
+//                    |> Map.map (fun _ c -> c.hash)
+//
+//            pickler.Pickle heads |> File.writeAllBytes (target ++ "heads.json")
+//
+//
+//            let c = w.Branches.[w.Branch]
+//            storeCommits c
+
+
+
+    let private remoteBranchName (branch : string) =
+        sprintf "remote/%s" branch
+
+    let fetch (source : string) (w : WorkingCopy) =
+        let commits = source ++ "commits"
+        let data = source ++ "data"
+        let heads = source ++ "heads.json"
+
+        if !!source then
+            failwithf "could not fetch from %A (does not exist)" source
+
+        if !!commits || !!data || !!heads then
+            failwithf "not a valid repo: %A" source
+
+        let heads : Map<string, Guid> = pickler.UnPickle(File.ReadAllBytes heads)
+        
+        let loadData (str : string) =
+            match w.Data.TryGetValue str with
+                | (true, v) -> v
+                | _ ->
+                    let path = data ++ str
+                    if exists path then
+                        let data = path |> File.ReadAllBytes |> bson.UnPickle
+                        w.Data.[str] <- data
+                        data
+                    else
+                        failwithf "could not get data for hash: %A" str
+
+        let rec loadCommit (id : Guid) =
+            match w.Commits.TryGetValue id with
+                | (true, c) -> c
+                | _ ->
+                    let file = commits ++ string id
+
+                    if exists file then
+                        let sc : StorableCommit = pickler.UnPickle (File.ReadAllBytes file)
+
+                        let parent = loadCommit sc.sparent
+
+                        let mergeSource =
+                            match sc.smergeSource with
+                                | Some (name, c) ->
+                                    Some (name, loadCommit c)
+                                | _ ->
+                                    None
+
+                        let deserializeOp (m : Map<string, string>) =
+                            let target = m.["Target"]
+
+                            let opType = System.Type.GetType(m.["Type"])
+                            let des = opType.GetMethod("Deserialize", BindingFlags.NonPublic ||| BindingFlags.Public ||| BindingFlags.Static)
+                            let target =
+                                match w.Refs.TryGetValue target with
+                                    | (true, target) -> target
+                                    | _ -> 
+                                        let t = des.GetParameters().[0].ParameterType
+                                        let ctor = t.GetConstructor [|typeof<string>|]
+                                        let res = ctor.Invoke([|target|]) |> unbox<IRef>
+                                        w.Refs.[target] <- res
+                                        res
+
+
+                            des.Invoke(null, [|target; m; loadData|]) |> unbox<Op>
+
+                        let commit =
+                            {
+                                hash = sc.shash
+                                message = sc.smessage
+                                forward = sc.sforward |> List.map deserializeOp
+                                backward = sc.sbackward |> List.map deserializeOp
+                                author = sc.sauthor
+                                date = sc.sdate
+                                parent = parent
+                                mergeSource = mergeSource
+                            }
+
+                        w.Commits.[sc.shash] <- commit
+
+                        commit
+
+                    else
+                        failwithf "failed to load commit: %A" id
+
+    
+        for (name, h) in Map.toSeq heads do
+            let c = loadCommit h
+            w.Branches.[remoteBranchName name] <- c
+
+        //forward w w.History w.Branches.[w.Branch]
+
+
+
+
+
     let init () =
         {
             History = Commit.root
             LocalModifications = Change.empty
+            LocalModificationsInverse = Change.empty
             Branch = "master"
             Branches = Dictionary.ofList ["master", Commit.root]
-            Undo = Dict.empty
+            Commits = Dictionary.ofList [Guid.Empty, Commit.root]
+            Data = Dictionary.empty
             Refs = Dict.empty
         }
 
     let pmod (name : string) (value : 'a) (w : WorkingCopy) =
-        w.Refs.GetOrCreate(name, fun name ->
-            pmod(name, value) :> IRef
-        ) |> unbox<pmod<'a>>
+        let result = 
+            w.Refs.GetOrCreate(name, fun name ->
+                pmod(name, value) :> IRef
+            ) |> unbox<pmod<'a>>
+
+        result.DefaultValue <- value
+        result
 
     let pset (name : string) (w : WorkingCopy) =
         w.Refs.GetOrCreate(name, fun name ->
@@ -441,16 +770,25 @@ module Git =
 
     let commit (message : string) (w : WorkingCopy) =
         let ops = w.LocalModifications |> Change.toList
+        let inverse = w.LocalModificationsInverse |> Change.toList
 
         match ops with
             | [] -> 
                 Log.warn "nothing to commit"
             | ops ->
 
+                ops 
+                    |> Seq.collect (fun o -> o.Data) 
+                    |> Seq.iter (fun d ->
+                        let hash = objHash d
+                        w.Data.[hash] <- d
+                    )
+
                 let newHistory =
                     {
                         hash = Guid.NewGuid()
-                        ops = ops
+                        forward = ops
+                        backward = inverse
                         message = message
                         author = Environment.UserName
                         date = DateTime.UtcNow
@@ -458,9 +796,10 @@ module Git =
                         parent = w.History
                     }
 
-
+                w.Commits.[newHistory.hash] <- newHistory
                 w.History <- newHistory
                 w.LocalModifications <- NoChange
+                w.LocalModificationsInverse <- NoChange
                 w.Branches.[w.Branch] <- newHistory
 
 
@@ -483,17 +822,33 @@ module Git =
 
                         ()
                     | _ ->
-                        w.Branches.[branch] <- w.History
-                        w.Branch <- branch
+                        match w.Branches.TryGetValue (remoteBranchName branch) with
+                            | (true, target) ->  
+                                let current = w.History
+
+                                let anc = findCommonAncestor current target
+
+                                transact (fun () ->
+                                    backward w current anc
+                                    forward w anc target
+                                )
+
+                                w.Branch <- branch
+                                w.History <- target
+                            | _ ->
+                                w.Branches.[branch] <- w.History
+                                w.Branch <- branch
 
             
             else
                 Log.warn "cannot checkout branch %s because you have local changes" branch
 
     let apply (change : Change) (w : WorkingCopy) =
-        transact (fun () ->
-            change |> Change.iter (fun o -> w.Undo.[o] <- o.Run())
-        )
+        let inverse = 
+            transact (fun () ->
+                change |> Change.run
+            )
+        w.LocalModificationsInverse <- Change.append w.LocalModificationsInverse inverse
         w.LocalModifications <- Change.append w.LocalModifications change
 
     let merge (source : string) (w : WorkingCopy) =
@@ -513,18 +868,17 @@ module Git =
                         )
 
                         // TODO: check for conflicts
-                        let mergeRes, change = 
-                            transact (fun () ->
-                                forwardMerge w conflictTable anc s
-                            )
+                        let mergeRes, change = forwardMerge w conflictTable anc s
 
                         match mergeRes with
                             | Merged ->
+                                let inverse = transact (fun () -> change |> Change.run)
 
                                 let newHistory =
                                     {
                                         hash = Guid.NewGuid()
-                                        ops = Change.toList change
+                                        forward = Change.toList change
+                                        backward = Change.toList inverse
                                         message = sprintf "Merge branch %s into %s" source w.Branch
                                         author = Environment.UserName
                                         date = DateTime.UtcNow
@@ -532,9 +886,8 @@ module Git =
                                         parent = w.History
                                     }
 
-
+                                w.Commits.[newHistory.hash] <- newHistory
                                 w.History <- newHistory
-                                w.LocalModifications <- NoChange
                                 w.Branches.[w.Branch] <- newHistory
                             | Conflicts l ->
                                 Log.warn "merge conflict"
@@ -557,6 +910,35 @@ module Git =
             }
 
         log w.History
+
+
+    let pull (remote : string) (w : WorkingCopy) =
+        w |> fetch remote
+
+        if Change.isEmpty w.LocalModifications then
+
+            let remName = remoteBranchName w.Branch
+
+            match w.Branches.TryGetValue remName with
+                | (true, rem) ->
+                
+                    let anc = findCommonAncestor rem w.History
+
+                    if anc == w.History then
+                        transact (fun () -> forward w anc rem)
+                        w.History <- rem
+                        w.Branches.[w.Branch] <- rem
+                    else
+                        merge remName w
+
+
+                | _ ->
+                    ()
+
+        else
+            Log.warn "you have local changes (cannot pull)"
+
+
 
 [<AutoOpen>]
 module WorkingCopyExtensions =
@@ -581,6 +963,19 @@ module WorkingCopyExtensions =
         member x.merge source =
             Git.merge source x
 
+        member x.pull remote =
+            Git.pull remote x
+
+        member x.push remote =
+            Git.push false false remote x
+
+        member x.pushAll remote =
+            Git.push true false remote x
+
+
+        member x.forcePushAll remote =
+            Git.push true true remote x
+
         member x.log =
             Git.log x
 
@@ -595,7 +990,7 @@ module WorkingCopyExtensions =
                 Log.line "author:  %s" c.author
                 Log.line "date:    %A" c.date
                 Log.start "changes:"
-                for o in c.ops do
+                for o in c.forward do
                     Log.line "%A" o
                 Log.stop()
                 Log.stop()
@@ -604,19 +999,17 @@ module WorkingCopyExtensions =
         
 
 module GitTest =
+    let repo = @"C:\Users\schorsch\Desktop\test.rep"
     
-    let run() =
+    let build () =
         let git = Git.init()
-
         let a = git.pmod "a" 1
         let b = git.pmod "b" 1
 
         let c = Mod.map2 (+) a b
-        
+
         let print() =
             Log.line "%s: %A" git.Branch (Mod.force c)
-
-        print()
 
         // create a new branch a10, set a to 10 and commit it
         git.checkout "a10"
@@ -665,7 +1058,41 @@ module GitTest =
         git.printLog()
 
 
+        //git.forcePushAll repo
 
+    let read() =
+        let git = Git.init()
+        git.pull repo
+
+        let a = git.pmod "a" 1
+        let b = git.pmod "b" 1
+
+        let c = Mod.map2 (+) a b
+
+
+        let print() =
+            Log.line "%s: %A" git.Branch (Mod.force c)
+
+        print()
+
+        git.checkout "merge"
+        git.pull repo
+        print()
+
+        git.checkout "conflict"
+        git.pull repo
+        print()
+
+        
+        git.checkout "b5"
+        git.pull repo
+        print()
+
+        git.pushAll repo
+
+    let run() =
+        build()
+        read()
 
 
 
