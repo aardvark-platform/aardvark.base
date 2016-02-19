@@ -999,7 +999,9 @@ module WorkingCopyExtensions =
         
 
 module GitTest =
-    let repo = @"C:\Users\schorsch\Desktop\test.rep"
+    open System
+    open System.IO
+    let repo = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Desktop), "test.rep")
     
     let build () =
         let git = Git.init()
@@ -1057,8 +1059,8 @@ module GitTest =
         print()
         git.printLog()
 
-
-        //git.forcePushAll repo
+        if not (Directory.Exists repo) then
+            git.forcePushAll repo
 
     let read() =
         let git = Git.init()
