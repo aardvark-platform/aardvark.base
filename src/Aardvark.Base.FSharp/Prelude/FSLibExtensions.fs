@@ -503,20 +503,6 @@ module File =
     let readAllText  p = File.ReadAllText  p
     let readAllBytes p = File.ReadAllBytes p
 
-module String =
-    let private lineBreak = System.Text.RegularExpressions.Regex("\r\n")
-
-    let indent (step : int) (s : string) =
-        let parts = lineBreak.Split s
-        let indent = System.String(' ', step * 4)
-        let parts = parts |> Seq.map (fun l -> indent + l)
-        System.String.Join("\r\n", parts)
-
-    let lineCount (s : string) =
-        let parts = lineBreak.Split s
-        parts.Length
-
-
 [<AutoOpen>]
 module NativeUtilities =
     open System.Runtime.InteropServices
