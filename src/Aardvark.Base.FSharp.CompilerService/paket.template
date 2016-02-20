@@ -1,5 +1,0 @@
-type project
-id Aardvark.Base.FSharp.CompilerService
-authors VRVis Research Center
-description
-    Common compiler extensions for Aardvark librarires

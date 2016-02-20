@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 14
-VisualStudioVersion = 14.0.24720.0
+VisualStudioVersion = 14.0.23107.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Aardvark.Base", "Aardvark.Base\Aardvark.Base.csproj", "{377DA721-C821-45F6-B803-9C8724C7B37F}"
 EndProject
@@ -36,8 +36,6 @@ EndProject
 Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "Aardvark.Base.Runtime.Tests", "Tests\Aardvark.Base.Runtime.Tests\Aardvark.Base.Runtime.Tests.fsproj", "{CE9B55FF-2D3E-4E13-BA0A-69FD82F0B29B}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ExamplesCSharp", "Demo\ExamplesCSharp\ExamplesCSharp.csproj", "{98DF2326-72A4-476B-A61C-B189C0A9C547}"
-EndProject
-Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "Aardvark.Base.FSharp.CompilerService", "Aardvark.Base.FSharp.CompilerService\Aardvark.Base.FSharp.CompilerService.fsproj", "{744D462C-E932-4EEA-9624-2BE8162167EA}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -105,10 +103,6 @@ Global
 		{98DF2326-72A4-476B-A61C-B189C0A9C547}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{98DF2326-72A4-476B-A61C-B189C0A9C547}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{98DF2326-72A4-476B-A61C-B189C0A9C547}.Release|Any CPU.Build.0 = Release|Any CPU
-		{744D462C-E932-4EEA-9624-2BE8162167EA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{744D462C-E932-4EEA-9624-2BE8162167EA}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{744D462C-E932-4EEA-9624-2BE8162167EA}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{744D462C-E932-4EEA-9624-2BE8162167EA}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
