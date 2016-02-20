@@ -466,7 +466,6 @@ namespace Aardvark.Base
             catch (ReflectionTypeLoadException e)
             {
                 Report.Begin("ReflectionTypeLoadException error in assembly {0}", a.GetName().Name);
-                Report.Line("You probably forgot to buildpatch your newly added library.");
                 Report.Line("Full assembly name is {0}.", a.FullName);
                 Report.Line("Exception is {0}", e);
                 Report.Begin("Loader exceptions are");
