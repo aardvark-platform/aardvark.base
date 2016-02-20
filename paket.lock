@@ -3,9 +3,9 @@ NUGET
   specs:
     DevILSharp (0.0.13)
     FSharp.Compiler.Service (0.0.90)
-    FsPickler (1.8.0)
-    FsPickler.Json (1.8.0)
-      FsPickler (1.8.0)
+    FsPickler (1.6.2)
+    FsPickler.Json (1.6.2)
+      FsPickler (1.6.2)
       Newtonsoft.Json (>= 6.0.5)
     FsUnit (1.3.0.1)
       NUnit (>= 2.6.3)
@@ -104,7 +104,7 @@ NUGET
 GITHUB
   remote: vrvis/Aardvark.Fake
   specs:
-    FULLPROJECT (6f944f441b3506d3be8ce36dc0da2b481bc67c56)
+    FULLPROJECT (99e54e4563ce1b97c950e7789146c008d327b843)
       FAKE (>= 4.17.0 < 4.18.0)
       Mono.Cecil (>= 0.9.5.4 < 0.9.6.0)
       Paket.Core (2.48.0)
