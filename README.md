@@ -16,13 +16,13 @@ How to build:
 Windows:
 - Visual Studio 2013 or 2015,
 - FSharp 3.1 (at least Daily Builds Preview 10-27-2014) [1]
-- run install.bat
-- run msbuild src\Aardvark.sln or use VisualStudio to build the solution
+- run build.cmd which will install all dependencies
+- msbuild src\Aardvark.sln or use VisualStudio to build the solution
 
 Linux:
 - install mono >= 3.2.8 (might work in older versions as well)
 - install fsharp 3.1 (http://fsharp.org/use/linux/)
-- run install.sh (this restores all nuget packages in ./packages which is referenced by the projects)
+- run build.sh which will install all dependencies
 - run xbuild src/Aardvark.sln
 
 A visual studio solution is located at: src/Aardvark.sln.
