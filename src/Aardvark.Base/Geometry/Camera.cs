@@ -78,9 +78,9 @@ namespace Aardvark.Base
 
     public struct CameraIntrinsics
     {
-        public readonly V2d FocalLength;                     // 2    (fx, fy)    in pixels
-        public readonly V2d PrincipalPoint;                  // 2    (cx, cy)    in pixels
-        public readonly double Skew;                         // 1    sk
+        public readonly V2d FocalLength;                     // 2    (fx, fy)    1.0 == Fun.Max(size.X, size.Y)
+        public readonly V2d PrincipalPoint;                  // 2    (cx, cy)    [0..1], [0..1]
+        public readonly double Skew;                         // 1    1.0 == Fun.Max(size.X, size.Y)
         public readonly double K1, K2, K3;                   // 3    radial distortion coefficients r^2, r^4, r^6
         public readonly double P1, P2;                       // 2    tangential distortion coefficients
 
@@ -113,7 +113,7 @@ namespace Aardvark.Base
         /// Project a point from camera space into image space according to the intrinsic camera parameters.
         /// This documents the camera model.
         /// </summary>
-        public V2d ProjectToImage(V3d p)
+        public V2d ProjectToImage(V3d p, V2d imageSize)
         {
             // projection
             double x = p.X / p.Z;
@@ -121,19 +121,22 @@ namespace Aardvark.Base
 
             // undo distortion here
             double rd, tx, ty;
-            ComputeUndistortionParamsForPoint(x, y, out rd, out tx, out ty);
+            ComputeUndistortionParamsForCameraPoint(x, y, out rd, out tx, out ty);
             
             // undistorted point:
             double xd = x * rd + tx;
             double yd = y * rd + ty;
 
+            double maxSize = Fun.Max(imageSize.X, imageSize.Y);
+
             // point in image:
             return new V2d(
-                FocalLength.X * xd + Skew * yd + PrincipalPoint.X,
-                FocalLength.Y * yd             + PrincipalPoint.Y);
+                FocalLength.X * maxSize * xd + Skew * maxSize * yd + PrincipalPoint.X * imageSize.X,
+                FocalLength.Y * maxSize * yd                       + PrincipalPoint.Y * imageSize.Y);
         }
 
-        public void ComputeUndistortionParamsForPoint(double x, double y, out double rd, out double tx, out double ty)
+        public void ComputeUndistortionParamsForCameraPoint(double x, double y,
+            out double rd, out double tx, out double ty)
         {
             // radial distortion
             double x2 = x * x, y2 = y * y, r2 = x2 + y2;
@@ -148,19 +151,20 @@ namespace Aardvark.Base
         /// <summary>
         /// UnDistortion of pixel coordinates.
         /// </summary>
-        public V2d UndistortPixel(V2d p2)
+        public V2d UndistortPixel(V2d p2, V2i imageSize)
         {
-            var y = (p2.Y - PrincipalPoint.Y) / FocalLength.Y;
-            var x = (p2.X - PrincipalPoint.X - Skew * y) / FocalLength.X;
+            var maxSize = Fun.Max(imageSize.X, imageSize.Y);
+            var y = (p2.Y - PrincipalPoint.Y * imageSize.Y) / (FocalLength.Y * maxSize);
+            var x = (p2.X - PrincipalPoint.X * imageSize.X - Skew * maxSize * y) / (FocalLength.X * maxSize);
 
             double rd, tx, ty;
-            ComputeUndistortionParamsForPoint(x, y, out rd, out tx, out ty);
+            ComputeUndistortionParamsForCameraPoint(x, y, out rd, out tx, out ty);
             double xd = x * rd + tx;
             double yd = y * rd + ty;
 
             return new V2d(
-                FocalLength.X * xd + Skew * yd + PrincipalPoint.X,
-                FocalLength.Y * yd + PrincipalPoint.Y);
+                FocalLength.X * maxSize * xd + Skew * maxSize * yd + PrincipalPoint.X * imageSize.X,
+                FocalLength.Y * maxSize * yd + PrincipalPoint.Y * imageSize.Y);
         }
 
         /// <summary>
@@ -168,9 +172,7 @@ namespace Aardvark.Base
         /// the coordinates are roughly in the range [0..imageSize.X, 0..imageSize.Y].
         /// These can be used for a piecewise linear undistortion using the graphics
         /// card. If count is not given, it is set to iamgeSize / 8, for one grid
-        /// point each 8 pixels. Note that although imageSize is given as a parameter
-        /// it only works correctly for the image size from which these camera parameters
-        /// were derived. The image size is not stored in the camera intrinsics!
+        /// point each 8 pixels.
         /// </summary>
         Matrix<V2f> ComputeUndistortedGrid(V2i imageSize, V2i count = default(V2i))
         {
@@ -178,7 +180,7 @@ namespace Aardvark.Base
             var grid = new Matrix<V2f>(count + V2i.II);
             var delta = imageSize.ToV2d() / count.ToV2d();
             var self = this;
-            grid.SetByCoord((x, y) => self.UndistortPixel(new V2d(x * delta.X, y * delta.Y)).ToV2f());
+            grid.SetByCoord((x, y) => self.UndistortPixel(new V2d(x * delta.X, y * delta.Y), imageSize).ToV2f());
             return grid;
         }
 
