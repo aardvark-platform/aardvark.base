@@ -344,6 +344,32 @@ namespace Aardvark.Base
         }
 
         /// <summary>
+        /// Begin a timed block with a formatted message that will only be logged at the end of the job.
+        /// All report calls till the call to the next
+        /// <see cref="End()"/> are either indented (console/stream) or
+        /// hierarchical children of this block (treeview).
+        /// At the <see cref="End()"/> of the block the run time is reported.
+        /// </summary>
+        public static ReportJob JobTimedNoBeginLog(int level, [Localizable(true)] string message, params object[] args)
+        {
+            CountCallsToBeginTimed.Increment();
+            return s_reporter.Begin(level, RootTarget, Format(message, args), true, true);
+        }
+
+        /// <summary>
+        /// Begin a timed block with a formatted message that will only be logged at the end of the job.
+        /// All report calls till the call to the next
+        /// <see cref="End()"/> are either indented (console/stream) or
+        /// hierarchical children of this block (treeview).
+        /// At the <see cref="End()"/> of the block the run time is reported.
+        /// </summary>
+        public static ReportJob JobTimedNoBeginLog([Localizable(true)] string message, params object[] args)
+        {
+            CountCallsToBeginTimed.Increment();
+            return s_reporter.Begin(0, RootTarget, Format(message, args), true, true);
+        }
+
+        /// <summary>
         /// Begin a timed block with a formatted message.
         /// All report calls till the call to the next
         /// <see cref="End()"/> are either indented (console/stream) or
@@ -395,6 +421,32 @@ namespace Aardvark.Base
 
 
         /// <summary>
+        /// Begin a timed block with a formatted message that will only be logged at the end of the job.
+        /// All report calls till the call to the next
+        /// <see cref="End()"/> are either indented (console/stream) or
+        /// hierarchical children of this block (treeview).
+        /// At the <see cref="End()"/> of the block the run time is reported.
+        /// </summary>
+        public static void BeginTimedNoLog(int level, [Localizable(true)] string message, params object[] args)
+        {
+            CountCallsToBeginTimed.Increment();
+            s_reporter.Begin(level, RootTarget, Format(message, args), true, true);
+        }
+
+        /// <summary>
+        /// Begin a timed block with a formatted message that will only be logged at the end of the job.
+        /// All report calls till the call to the next
+        /// <see cref="End()"/> are either indented (console/stream) or
+        /// hierarchical children of this block (treeview).
+        /// At the <see cref="End()"/> of the block the run time is reported.
+        /// </summary>
+        public static void BeginTimedNoLog([Localizable(true)] string message, params object[] args)
+        {
+            CountCallsToBeginTimed.Increment();
+            s_reporter.Begin(0, RootTarget, Format(message, args), true, true);
+        }
+
+        /// <summary>
         /// Begin a timed block with a formatted message.
         /// All report calls till the call to the next
         /// <see cref="End()"/> are either indented (console/stream) or
@@ -419,8 +471,6 @@ namespace Aardvark.Base
             CountCallsToBeginTimed.Increment();
             s_reporter.Begin(0, RootTarget, Format(message, args), true);
         }
-
-
 
         /// <summary>
         /// Begin a block with a formatted message.
@@ -474,7 +524,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Ends a block of messages. If the block was timed, its runtime is
         /// reported. The End call MUST use the same level as the
-        /// corresponding Begin/BeginTimed.
+        /// corresponding Begin/BeginTimed. The runtime in seconds is also returned.
         /// </summary>
         public static double End(int level)
         {
@@ -485,7 +535,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Ends a block of messages. If the block was timed, its runtime is
         /// reported. The End call MUST use the same level as the
-        /// corresponding Begin/BeginTimed.
+        /// corresponding Begin/BeginTimed. The runtime in seconds is also returned.
         /// </summary>
         public static double End()
         {
@@ -829,7 +879,7 @@ namespace Aardvark.Base
         // the following methods are regarded as LogType.Info
         void Text(int level, ILogTarget target, string text);
         void Wrap(int level, ILogTarget target, string text);
-        ReportJob Begin(int level, ILogTarget target, string text, bool timed);
+        ReportJob Begin(int level, ILogTarget target, string text, bool timed, bool noLog = false);
         double End(int level, ILogTarget target, string text);
         void Tests(TestInfo testInfo);
         void Progress(int level, ILogTarget target, double progress, bool relative = false);
@@ -927,7 +977,7 @@ namespace Aardvark.Base
         {
         }
 
-        public ReportJob Begin(int level, ILogTarget target, string text, bool timed)
+        public ReportJob Begin(int level, ILogTarget target, string text, bool timed, bool noLog = false)
         {
             return null;
         }
@@ -1043,14 +1093,15 @@ namespace Aardvark.Base
                     reporterArray[i].Text(m_ti, level, target, text);
        }
 
-        public ReportJob Begin(int level, ILogTarget target, string text, bool timed)
+        public ReportJob Begin(int level, ILogTarget target, string text, bool timed, bool noLog = false)
         {
             var reporterArray = m_reporterArray;
             if (reporterArray != null)
                 for (int i = 0; i < reporterArray.Length; i++)
                     reporterArray[i].Begin(m_ti, level, target, text, timed);
             var opt = timed ? LogOpt.Timed : LogOpt.None;
-            target.Log(m_ti, new LogMsg(LogType.Begin, opt, level, m_jobStack.Count * m_indent, text, -2));
+            if (!noLog)
+                target.Log(m_ti, new LogMsg(LogType.Begin, opt, level, m_jobStack.Count * m_indent, text, -2));
             m_jobStack.Push(m_job);
             m_job = new ReportJob(text, level, timed);
             return m_job;
@@ -1247,9 +1298,9 @@ namespace Aardvark.Base
             CurrentReporter(target).Wrap(level, target, text);
         }
 
-        public ReportJob Begin(int level, ILogTarget target, string text, bool timed)
+        public ReportJob Begin(int level, ILogTarget target, string text, bool timed, bool noLog = false)
         {
-            return CurrentReporter(target).Begin(level, target, text, timed);
+            return CurrentReporter(target).Begin(level, target, text, timed, noLog);
         }
 
         public double End(int level, ILogTarget target, string text)
