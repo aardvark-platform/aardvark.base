@@ -1397,7 +1397,7 @@ namespace Aardvark.Base
             {
                 var childrenTime = m_job.ChildrenTime;
                 if (seconds > 0.0 && childrenTime > 0.0)
-                    time = String.Format(Localization.FormatEnUS, "[{0:F3}x] ", childrenTime / seconds) + time;
+                    time = String.Format(Localization.FormatEnUS, "[{0:F2}x] ", childrenTime / seconds) + time;
                 if (addTimeToParent)
                 {
                     lock (parentJob) parentJob.ChildrenTime += seconds;
