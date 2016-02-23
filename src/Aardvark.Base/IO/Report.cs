@@ -705,7 +705,7 @@ namespace Aardvark.Base
         public static double End(int level)
         {
             CountCallsToEnd.Increment();
-            return s_reporter.End(level, RootTarget, null);
+            return s_reporter.End(level, RootTarget, null, false);
         }
 
         /// <summary>
@@ -716,7 +716,7 @@ namespace Aardvark.Base
         public static double End()
         {
             CountCallsToEnd.Increment();
-            return s_reporter.End(0, RootTarget, null);
+            return s_reporter.End(0, RootTarget, null, false);
         }
 
         /// <summary>
@@ -731,7 +731,7 @@ namespace Aardvark.Base
         public static double End(int level, [Localizable(true)] string message, params object[] args)
         {
             CountCallsToEnd.Increment();
-            return s_reporter.End(level, RootTarget, Format(message, args));
+            return s_reporter.End(level, RootTarget, Format(message, args), false);
         }
 
         /// <summary>
@@ -746,7 +746,59 @@ namespace Aardvark.Base
         public static double End([Localizable(true)] string message, params object[] args)
         {
             CountCallsToEnd.Increment();
-            return s_reporter.End(0, RootTarget, Format(message, args));
+            return s_reporter.End(0, RootTarget, Format(message, args), false);
+        }
+
+        /// <summary>
+        /// Ends a block of messages. If the block was timed, its runtime is
+        /// reported. The End call MUST use the same level as the
+        /// corresponding Begin/BeginTimed. The runtime in seconds is also returned.
+        /// </summary>
+        public static double EndTimed(int level)
+        {
+            CountCallsToEnd.Increment();
+            return s_reporter.End(level, RootTarget, null, true);
+        }
+
+        /// <summary>
+        /// Ends a block of messages. If the block was timed, its runtime is
+        /// reported. The End call MUST use the same level as the
+        /// corresponding Begin/BeginTimed. The runtime in seconds is also returned.
+        /// </summary>
+        public static double EndTimed()
+        {
+            CountCallsToEnd.Increment();
+            return s_reporter.End(0, RootTarget, null, true);
+        }
+
+        /// <summary>
+        /// Ends a block of messages, and supply an end message. If the end
+        /// message is the very same as the begin message it is suppressed.
+        /// If the end message starts with a continuation character (a space,
+        /// a colon or a comma), it is viewed as a continuation message of
+        /// the begin message, and appended as appropriate. If it is not the
+        /// same and does not start with a continuation character, it is used
+        /// as a distinct end message.
+        /// </summary>
+        public static double EndTimed(int level, [Localizable(true)] string message, params object[] args)
+        {
+            CountCallsToEnd.Increment();
+            return s_reporter.End(level, RootTarget, Format(message, args), true);
+        }
+
+        /// <summary>
+        /// Ends a block of messages, and supply an end message. If the end
+        /// message is the very same as the begin message it is suppressed.
+        /// If the end message starts with a continuation character (a space,
+        /// a colon or a comma), it is viewed as a continuation message of
+        /// the begin message, and appended as appropriate. If it is not the
+        /// same and does not start with a continuation character, it is used
+        /// as a distinct end message.
+        /// </summary>
+        public static double EndTimed([Localizable(true)] string message, params object[] args)
+        {
+            CountCallsToEnd.Increment();
+            return s_reporter.End(0, RootTarget, Format(message, args), true);
         }
 
         /// <summary>
@@ -1056,7 +1108,7 @@ namespace Aardvark.Base
         void Text(int level, ILogTarget target, string text);
         void Wrap(int level, ILogTarget target, string text);
         ReportJob Begin(ReportJob parentJob, int level, ILogTarget target, string text, bool timed, bool noLog = false);
-        double End(int level, ILogTarget target, string text);
+        double End(int level, ILogTarget target, string text, bool addTimeToParent);
         void Tests(TestInfo testInfo);
         void Progress(int level, ILogTarget target, double progress, bool relative = false);
         void Values(int level, ILogTarget target, string name, string separator, object[] values);
@@ -1119,6 +1171,7 @@ namespace Aardvark.Base
         internal string Message;
         public readonly int HierarchyLevel;
         public readonly ReportJob ParentJob;
+        public double ChildrenTime;
         internal int Level;
         internal Stopwatch Timer;
         internal double Progress;
@@ -1131,6 +1184,7 @@ namespace Aardvark.Base
             Disposed = false;
             Message = message;
             ParentJob = parentJob;
+            ChildrenTime = 0.0;
             HierarchyLevel = parentJob == null ? 0 : parentJob.HierarchyLevel + 1;
             Level = level;
             Progress = -1.0;
@@ -1162,7 +1216,7 @@ namespace Aardvark.Base
             return null;
         }
 
-        public double End(int level, ILogTarget target, string text)
+        public double End(int level, ILogTarget target, string text, bool addTimeToParent)
         {
             return 0.0;
         }
@@ -1294,7 +1348,7 @@ namespace Aardvark.Base
             m_job.ReportTests = true;
         }
 
-        public double End(int level, ILogTarget target, string text)
+        public double End(int level, ILogTarget target, string text, bool addTimeToParent)
         {
             var parentJob = m_job.ParentJob;
             double seconds; string time; LogOpt opt;
@@ -1341,6 +1395,13 @@ namespace Aardvark.Base
             }
             else
             {
+                var childrenTime = m_job.ChildrenTime;
+                if (seconds > 0.0 && childrenTime > 0.0)
+                    time = String.Format(Localization.FormatEnUS, "[{0:F3}x] ", childrenTime / seconds) + time;
+                if (addTimeToParent)
+                {
+                    lock (parentJob) parentJob.ChildrenTime += seconds;
+                }
                 if (m_jobStack.Count > 0)
                     m_job = m_jobStack.Pop();
                 else
@@ -1485,9 +1546,9 @@ namespace Aardvark.Base
             return CurrentReporter(target).Begin(parentJob, level, target, text, timed, noLog);
         }
 
-        public double End(int level, ILogTarget target, string text)
+        public double End(int level, ILogTarget target, string text, bool addTimeToParent)
         {
-            return CurrentReporter(target).End(level, target, text);
+            return CurrentReporter(target).End(level, target, text, addTimeToParent);
         }
 
         public void Tests(TestInfo testInfo)
