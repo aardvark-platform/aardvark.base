@@ -350,10 +350,86 @@ namespace Aardvark.Base
         /// hierarchical children of this block (treeview).
         /// At the <see cref="End()"/> of the block the run time is reported.
         /// </summary>
+        public static ReportJob JobTimedNoBeginLog(ReportJob parentJob, int level, [Localizable(true)] string message, params object[] args)
+        {
+            CountCallsToBeginTimed.Increment();
+            return s_reporter.Begin(parentJob, level, RootTarget, Format(message, args), true, true);
+        }
+
+        /// <summary>
+        /// Begin a timed block with a formatted message that will only be logged at the end of the job.
+        /// All report calls till the call to the next
+        /// <see cref="End()"/> are either indented (console/stream) or
+        /// hierarchical children of this block (treeview).
+        /// At the <see cref="End()"/> of the block the run time is reported.
+        /// </summary>
+        public static ReportJob JobTimedNoBeginLog(ReportJob parentJob, [Localizable(true)] string message, params object[] args)
+        {
+            CountCallsToBeginTimed.Increment();
+            return s_reporter.Begin(parentJob, 0, RootTarget, Format(message, args), true, true);
+        }
+
+        /// <summary>
+        /// Begin a timed block with a formatted message.
+        /// All report calls till the call to the next
+        /// <see cref="End()"/> are either indented (console/stream) or
+        /// hierarchical children of this block (treeview).
+        /// At the <see cref="End()"/> of the block the run time is reported.
+        /// </summary>
+        public static ReportJob JobTimed(ReportJob parentJob, int level, [Localizable(true)] string message, params object[] args)
+        {
+            CountCallsToBeginTimed.Increment();
+            return s_reporter.Begin(parentJob, level, RootTarget, Format(message, args), true);
+        }
+
+        /// <summary>
+        /// Begin a timed block with a formatted message.
+        /// All report calls till the call to the next
+        /// <see cref="End()"/> are either indented (console/stream) or
+        /// hierarchical children of this block (treeview).
+        /// At the <see cref="End()"/> of the block the run time is reported.
+        /// </summary>
+        public static ReportJob JobTimed(ReportJob parentJob, [Localizable(true)] string message, params object[] args)
+        {
+            CountCallsToBeginTimed.Increment();
+            return s_reporter.Begin(parentJob, 0, RootTarget, Format(message, args), true);
+        }
+
+        /// <summary>
+        /// Begin a block with a formatted message.
+        /// All report calls till the call to the next
+        /// <see cref="End()"/> are either indented (console/stream) or
+        /// hierarchical children of this block (treeview).
+        /// </summary>
+        public static ReportJob Job(ReportJob parentJob, int level, [Localizable(true)] string message, params object[] args)
+        {
+            CountCallsToBegin.Increment();
+            return s_reporter.Begin(parentJob, level, RootTarget, Format(message, args), false);
+        }
+
+        /// <summary>
+        /// Begin a block with a formatted message.
+        /// All report calls till the call to the next
+        /// <see cref="End()"/> are either indented (console/stream) or
+        /// hierarchical children of this block (treeview).
+        /// </summary>
+        public static ReportJob Job(ReportJob parentJob, [Localizable(true)] string message, params object[] args)
+        {
+            CountCallsToBegin.Increment();
+            return s_reporter.Begin(parentJob, 0, RootTarget, Format(message, args), false);
+        }
+
+        /// <summary>
+        /// Begin a timed block with a formatted message that will only be logged at the end of the job.
+        /// All report calls till the call to the next
+        /// <see cref="End()"/> are either indented (console/stream) or
+        /// hierarchical children of this block (treeview).
+        /// At the <see cref="End()"/> of the block the run time is reported.
+        /// </summary>
         public static ReportJob JobTimedNoBeginLog(int level, [Localizable(true)] string message, params object[] args)
         {
             CountCallsToBeginTimed.Increment();
-            return s_reporter.Begin(level, RootTarget, Format(message, args), true, true);
+            return s_reporter.Begin(null, level, RootTarget, Format(message, args), true, true);
         }
 
         /// <summary>
@@ -366,7 +442,7 @@ namespace Aardvark.Base
         public static ReportJob JobTimedNoBeginLog([Localizable(true)] string message, params object[] args)
         {
             CountCallsToBeginTimed.Increment();
-            return s_reporter.Begin(0, RootTarget, Format(message, args), true, true);
+            return s_reporter.Begin(null, 0, RootTarget, Format(message, args), true, true);
         }
 
         /// <summary>
@@ -379,7 +455,7 @@ namespace Aardvark.Base
         public static ReportJob JobTimed(int level, [Localizable(true)] string message, params object[] args)
         {
             CountCallsToBeginTimed.Increment();
-            return s_reporter.Begin(level, RootTarget, Format(message, args), true);
+            return s_reporter.Begin(null, level, RootTarget, Format(message, args), true);
         }
 
         /// <summary>
@@ -392,7 +468,7 @@ namespace Aardvark.Base
         public static ReportJob JobTimed([Localizable(true)] string message, params object[] args)
         {
             CountCallsToBeginTimed.Increment();
-            return s_reporter.Begin(0, RootTarget, Format(message, args), true);
+            return s_reporter.Begin(null, 0, RootTarget, Format(message, args), true);
         }
 
         /// <summary>
@@ -404,7 +480,7 @@ namespace Aardvark.Base
         public static ReportJob Job(int level, [Localizable(true)] string message, params object[] args)
         {
             CountCallsToBegin.Increment();
-            return s_reporter.Begin(level, RootTarget, Format(message, args), false);
+            return s_reporter.Begin(null, level, RootTarget, Format(message, args), false);
         }
 
         /// <summary>
@@ -416,9 +492,109 @@ namespace Aardvark.Base
         public static ReportJob Job([Localizable(true)] string message, params object[] args)
         {
             CountCallsToBegin.Increment();
-            return s_reporter.Begin(0, RootTarget, Format(message, args), false);
+            return s_reporter.Begin(null, 0, RootTarget, Format(message, args), false);
         }
 
+        /// <summary>
+        /// Begin a timed block with a formatted message that will only be logged at the end of the job.
+        /// All report calls till the call to the next
+        /// <see cref="End()"/> are either indented (console/stream) or
+        /// hierarchical children of this block (treeview).
+        /// At the <see cref="End()"/> of the block the run time is reported.
+        /// </summary>
+        public static void BeginTimedNoLog(ReportJob parentJob, int level, [Localizable(true)] string message, params object[] args)
+        {
+            CountCallsToBeginTimed.Increment();
+            s_reporter.Begin(parentJob, level, RootTarget, Format(message, args), true, true);
+        }
+
+        /// <summary>
+        /// Begin a timed block with a formatted message that will only be logged at the end of the job.
+        /// All report calls till the call to the next
+        /// <see cref="End()"/> are either indented (console/stream) or
+        /// hierarchical children of this block (treeview).
+        /// At the <see cref="End()"/> of the block the run time is reported.
+        /// </summary>
+        public static void BeginTimedNoLog(ReportJob parentJob, [Localizable(true)] string message, params object[] args)
+        {
+            CountCallsToBeginTimed.Increment();
+            s_reporter.Begin(parentJob, 0, RootTarget, Format(message, args), true, true);
+        }
+
+        /// <summary>
+        /// Begin a timed block with a formatted message.
+        /// All report calls till the call to the next
+        /// <see cref="End()"/> are either indented (console/stream) or
+        /// hierarchical children of this block (treeview).
+        /// At the <see cref="End()"/> of the block the run time is reported.
+        /// </summary>
+        public static void BeginTimed(ReportJob parentJob, int level, [Localizable(true)] string message, params object[] args)
+        {
+            CountCallsToBeginTimed.Increment();
+            s_reporter.Begin(parentJob, level, RootTarget, Format(message, args), true);
+        }
+
+        /// <summary>
+        /// Begin a timed block with a formatted message.
+        /// All report calls till the call to the next
+        /// <see cref="End()"/> are either indented (console/stream) or
+        /// hierarchical children of this block (treeview).
+        /// At the <see cref="End()"/> of the block the run time is reported.
+        /// </summary>
+        public static void BeginTimed(ReportJob parentJob, [Localizable(true)] string message, params object[] args)
+        {
+            CountCallsToBeginTimed.Increment();
+            s_reporter.Begin(parentJob, 0, RootTarget, Format(message, args), true);
+        }
+
+        /// <summary>
+        /// Begin a block with a formatted message.
+        /// All report calls till the call to the next
+        /// <see cref="End()"/> are either indented (console/stream) or
+        /// hierarchical children of this block (treeview).
+        /// </summary>
+        public static void Begin(ReportJob parentJob, int level, [Localizable(true)] string message, params object[] args)
+        {
+            CountCallsToBegin.Increment();
+            s_reporter.Begin(parentJob, level, RootTarget, Format(message, args), false);
+        }
+
+        /// <summary>
+        /// Begin a block with a formatted message.
+        /// All report calls till the call to the next
+        /// <see cref="End()"/> are either indented (console/stream) or
+        /// hierarchical children of this block (treeview).
+        /// </summary>
+        public static void Begin(ReportJob parentJob, [Localizable(true)] string message, params object[] args)
+        {
+            CountCallsToBegin.Increment();
+            s_reporter.Begin(parentJob, 0, RootTarget, Format(message, args), false);
+        }
+
+
+        /// <summary>
+        /// Begin a block without an explicit message.
+        /// All report calls till the call to the next
+        /// <see cref="End()"/> are either indented (console/stream) or
+        /// hierarchical children of this block (treeview).
+        /// </summary>
+        public static void Begin(ReportJob parentJob, int level)
+        {
+            CountCallsToBegin.Increment();
+            s_reporter.Begin(parentJob, level, RootTarget, "", false);
+        }
+
+        /// <summary>
+        /// Begin a block without an explicit message.
+        /// All report calls till the call to the next
+        /// <see cref="End()"/> are either indented (console/stream) or
+        /// hierarchical children of this block (treeview).
+        /// </summary>
+        public static void Begin(ReportJob parentJob)
+        {
+            CountCallsToBegin.Increment();
+            s_reporter.Begin(parentJob, 0, RootTarget, "", false);
+        }
 
         /// <summary>
         /// Begin a timed block with a formatted message that will only be logged at the end of the job.
@@ -430,7 +606,7 @@ namespace Aardvark.Base
         public static void BeginTimedNoLog(int level, [Localizable(true)] string message, params object[] args)
         {
             CountCallsToBeginTimed.Increment();
-            s_reporter.Begin(level, RootTarget, Format(message, args), true, true);
+            s_reporter.Begin(null, level, RootTarget, Format(message, args), true, true);
         }
 
         /// <summary>
@@ -443,7 +619,7 @@ namespace Aardvark.Base
         public static void BeginTimedNoLog([Localizable(true)] string message, params object[] args)
         {
             CountCallsToBeginTimed.Increment();
-            s_reporter.Begin(0, RootTarget, Format(message, args), true, true);
+            s_reporter.Begin(null, 0, RootTarget, Format(message, args), true, true);
         }
 
         /// <summary>
@@ -456,7 +632,7 @@ namespace Aardvark.Base
         public static void BeginTimed(int level, [Localizable(true)] string message, params object[] args)
         {
             CountCallsToBeginTimed.Increment();
-            s_reporter.Begin(level, RootTarget, Format(message, args), true);
+            s_reporter.Begin(null, level, RootTarget, Format(message, args), true);
         }
 
         /// <summary>
@@ -469,7 +645,7 @@ namespace Aardvark.Base
         public static void BeginTimed([Localizable(true)] string message, params object[] args)
         {
             CountCallsToBeginTimed.Increment();
-            s_reporter.Begin(0, RootTarget, Format(message, args), true);
+            s_reporter.Begin(null, 0, RootTarget, Format(message, args), true);
         }
 
         /// <summary>
@@ -481,7 +657,7 @@ namespace Aardvark.Base
         public static void Begin(int level, [Localizable(true)] string message, params object[] args)
         {
             CountCallsToBegin.Increment();
-            s_reporter.Begin(level, RootTarget, Format(message, args), false);
+            s_reporter.Begin(null, level, RootTarget, Format(message, args), false);
         }
 
         /// <summary>
@@ -493,7 +669,7 @@ namespace Aardvark.Base
         public static void Begin([Localizable(true)] string message, params object[] args)
         {
             CountCallsToBegin.Increment();
-            s_reporter.Begin(0, RootTarget, Format(message, args), false);
+            s_reporter.Begin(null, 0, RootTarget, Format(message, args), false);
         }
 
 
@@ -506,7 +682,7 @@ namespace Aardvark.Base
         public static void Begin(int level)
         {
             CountCallsToBegin.Increment();
-            s_reporter.Begin(level, RootTarget, "", false);
+            s_reporter.Begin(null, level, RootTarget, "", false);
         }
 
         /// <summary>
@@ -518,7 +694,7 @@ namespace Aardvark.Base
         public static void Begin()
         {
             CountCallsToBegin.Increment();
-            s_reporter.Begin(0, RootTarget, "", false);
+            s_reporter.Begin(null, 0, RootTarget, "", false);
         }
 
         /// <summary>
@@ -870,7 +1046,7 @@ namespace Aardvark.Base
     public interface IJobReporter
     {
         /// <summary>
-        /// The number of spaces of indent caused by Report.Begin / Report.End.
+        /// The number of spaces of indent caused by Begin / Report.End.
         /// This property should only be set BEFORE actual reporting.
         /// </summary>
         int Indent { get; set; }
@@ -879,7 +1055,7 @@ namespace Aardvark.Base
         // the following methods are regarded as LogType.Info
         void Text(int level, ILogTarget target, string text);
         void Wrap(int level, ILogTarget target, string text);
-        ReportJob Begin(int level, ILogTarget target, string text, bool timed, bool noLog = false);
+        ReportJob Begin(ReportJob parentJob, int level, ILogTarget target, string text, bool timed, bool noLog = false);
         double End(int level, ILogTarget target, string text);
         void Tests(TestInfo testInfo);
         void Progress(int level, ILogTarget target, double progress, bool relative = false);
@@ -941,6 +1117,8 @@ namespace Aardvark.Base
     public class ReportJob : IDisposable
     {
         internal string Message;
+        public readonly int HierarchyLevel;
+        public readonly ReportJob ParentJob;
         internal int Level;
         internal Stopwatch Timer;
         internal double Progress;
@@ -948,10 +1126,12 @@ namespace Aardvark.Base
         internal TestInfo TestInfo;
         internal bool Disposed;
 
-        public ReportJob(string message, int level, bool timed)
+        public ReportJob(string message, int level, bool timed, ReportJob parentJob = null)
         {
             Disposed = false;
             Message = message;
+            ParentJob = parentJob;
+            HierarchyLevel = parentJob == null ? 0 : parentJob.HierarchyLevel + 1;
             Level = level;
             Progress = -1.0;
             ReportTests = false;
@@ -977,7 +1157,7 @@ namespace Aardvark.Base
         {
         }
 
-        public ReportJob Begin(int level, ILogTarget target, string text, bool timed, bool noLog = false)
+        public ReportJob Begin(ReportJob parentJob, int level, ILogTarget target, string text, bool timed, bool noLog = false)
         {
             return null;
         }
@@ -1052,7 +1232,7 @@ namespace Aardvark.Base
 
         public void Line(LogType type, int level, ILogTarget target, string t0, int p1 = 0, string t1 = null)
         {
-            target.Log(m_ti, new LogMsg(type, LogOpt.EndLine, level, m_jobStack.Count * m_indent, t0, p1, t1));
+            target.Log(m_ti, new LogMsg(type, LogOpt.EndLine, level, m_job.HierarchyLevel * m_indent, t0, p1, t1));
             var reporterArray = m_reporterArray;
             if (reporterArray != null)
                 for (int i = 0; i < reporterArray.Length; i++)
@@ -1062,7 +1242,7 @@ namespace Aardvark.Base
         public void Wrap(int level, ILogTarget target, string text)
         {
             target.Log(m_ti, new LogMsg(LogType.Info, LogOpt.Join | LogOpt.Wrap, level,
-                                            m_jobStack.Count * m_indent, text, -2));
+                                            m_job.HierarchyLevel * m_indent, text, -2));
             var reporterArray = m_reporterArray;
             if (reporterArray != null)
                 for (int i = 0; i < reporterArray.Length; i++)
@@ -1076,16 +1256,16 @@ namespace Aardvark.Base
             if (last == 0)
             {
                 target.Log(m_ti,  new LogMsg(LogType.Info, LogOpt.Join, level,
-                                             m_jobStack.Count * m_indent, lines[0], -2));
+                                             m_job.HierarchyLevel * m_indent, lines[0], -2));
             }
             else
             {
                 for (int i = 0; i < last; i++)
                     target.Log(m_ti,  new LogMsg(LogType.Info, LogOpt.Join | LogOpt.EndLine, level,
-                                                 m_jobStack.Count * m_indent, lines[i]));
+                                                 m_job.HierarchyLevel * m_indent, lines[i]));
                 if (lines[last].Length > 0)
                     target.Log(m_ti, new LogMsg(LogType.Info, LogOpt.Join, level,
-                                                m_jobStack.Count * m_indent, lines[last]));
+                                                m_job.HierarchyLevel * m_indent, lines[last]));
             }
             var reporterArray = m_reporterArray;
             if (reporterArray != null)
@@ -1093,17 +1273,18 @@ namespace Aardvark.Base
                     reporterArray[i].Text(m_ti, level, target, text);
        }
 
-        public ReportJob Begin(int level, ILogTarget target, string text, bool timed, bool noLog = false)
+        public ReportJob Begin(ReportJob parentJob, int level, ILogTarget target, string text, bool timed, bool noLog = false)
         {
+            if (parentJob == null) parentJob = m_job;
             var reporterArray = m_reporterArray;
             if (reporterArray != null)
                 for (int i = 0; i < reporterArray.Length; i++)
                     reporterArray[i].Begin(m_ti, level, target, text, timed);
             var opt = timed ? LogOpt.Timed : LogOpt.None;
             if (!noLog)
-                target.Log(m_ti, new LogMsg(LogType.Begin, opt, level, m_jobStack.Count * m_indent, text, -2));
+                target.Log(m_ti, new LogMsg(LogType.Begin, opt, level, parentJob.HierarchyLevel * m_indent, text, -2));
             m_jobStack.Push(m_job);
-            m_job = new ReportJob(text, level, timed);
+            m_job = new ReportJob(text, level, timed, parentJob);
             return m_job;
         }
 
@@ -1115,6 +1296,7 @@ namespace Aardvark.Base
 
         public double End(int level, ILogTarget target, string text)
         {
+            var parentJob = m_job.ParentJob;
             double seconds; string time; LogOpt opt;
             if (m_job.Timer != null)
             {
@@ -1147,13 +1329,13 @@ namespace Aardvark.Base
                 var passed = String.Format(Localization.FormatEnUS,
                              "[{0}/{1} OK]", testInfo.PassedCount, testInfo.TestCount);
                 time = time != null ? passed + ' ' + time : passed;
-                target.Log(m_ti, new LogMsg(LogType.End, opt, level, m_jobStack.Count * m_indent,
+                target.Log(m_ti, new LogMsg(LogType.End, opt, level, parentJob.HierarchyLevel * m_indent,
                                             text, -2, time));
                 if (testInfo.FailedCount > 0)
                 {
                     var failed = String.Format(Localization.FormatEnUS,
                                                " {0}/{1} FAILED", testInfo.FailedCount, testInfo.TestCount);
-                    target.Log(m_ti, new LogMsg(LogType.Warn, opt, level, m_jobStack.Count * m_indent,
+                    target.Log(m_ti, new LogMsg(LogType.Warn, opt, level, parentJob.HierarchyLevel * m_indent,
                                                     "WARNING: " + text + failed));
                 }
             }
@@ -1163,7 +1345,7 @@ namespace Aardvark.Base
                     m_job = m_jobStack.Pop();
                 else
                     Report.Warn("superfluous Report.End() encountered");
-                target.Log(m_ti, new LogMsg(LogType.End, opt, level, m_jobStack.Count * m_indent,
+                target.Log(m_ti, new LogMsg(LogType.End, opt, level, parentJob.HierarchyLevel * m_indent,
                                             text, -2, time));
             }
             var reporterArray = m_reporterArray;
@@ -1190,7 +1372,7 @@ namespace Aardvark.Base
                 text = String.Format(Localization.FormatEnUS, "{0,6:F2}% {1,10:F3} s", 100.0 * progress, seconds);
             }
             target.Log(m_ti, new LogMsg(LogType.Progress, opt, level,
-                                        (m_jobStack.Count - 1) * m_indent, m_job.Message, -2, text));
+                                        (m_job.HierarchyLevel - 1) * m_indent, m_job.Message, -2, text));
             var reporterArray = m_reporterArray;
             if (reporterArray != null)
                 for (int i = 0; i < reporterArray.Length; i++)
@@ -1201,7 +1383,7 @@ namespace Aardvark.Base
         {
             var text = values.Length == 1 ? values[0].ToString() : values.Map(o => o.ToString()).Join(separator);
             target.Log(m_ti, new LogMsg(LogType.Info, LogOpt.EndLine, level,
-                                        m_jobStack.Count * m_indent, name, 40, text));
+                                        m_job.HierarchyLevel * m_indent, name, 40, text));
             var reporterArray = m_reporterArray;
             if (reporterArray != null)
                 for (int i = 0; i < reporterArray.Length; i++)
@@ -1298,9 +1480,9 @@ namespace Aardvark.Base
             CurrentReporter(target).Wrap(level, target, text);
         }
 
-        public ReportJob Begin(int level, ILogTarget target, string text, bool timed, bool noLog = false)
+        public ReportJob Begin(ReportJob parentJob, int level, ILogTarget target, string text, bool timed, bool noLog = false)
         {
-            return CurrentReporter(target).Begin(level, target, text, timed, noLog);
+            return CurrentReporter(target).Begin(parentJob, level, target, text, timed, noLog);
         }
 
         public double End(int level, ILogTarget target, string text)
