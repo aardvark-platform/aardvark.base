@@ -753,13 +753,13 @@ module Git =
             Refs = Dict.empty
         }
 
-    let pmod (name : string) (value : 'a) (w : WorkingCopy) =
+    let pmod (name : string) (defaultValue : 'a) (w : WorkingCopy) =
         let result = 
             w.Refs.GetOrCreate(name, fun name ->
-                pmod(name, value) :> IRef
+                pmod(name, defaultValue) :> IRef
             ) |> unbox<pmod<'a>>
 
-        result.DefaultValue <- value
+        result.DefaultValue <- defaultValue
         result
 
     let pset (name : string) (w : WorkingCopy) =
