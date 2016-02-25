@@ -1110,10 +1110,15 @@ module ASetReaders =
                 )
 
     
-    type AsyncMapReader<'a, 'b>(immediate : bool, scope : Ag.Scope, source : IReader<'a>, f : 'a -> Async<'b>) as this =
+
+    type AsyncMapReader<'a, 'b>(scope : Ag.Scope, source : IReader<'a>, f : 'a -> Async<'b>) as this =
         inherit AbstractReader<'b>()
 
-        let mutable sourceChanged = 1
+        let sem = new SemaphoreSlim(1)
+        let cancel = new CancellationTokenSource()
+        let mutable inputDeltas = []
+        let mutable outdated = 0
+
         let mutable deltas = []
         let cache = Dictionary<obj, ref<int> * Task<'b> * CancellationTokenSource>()
 
@@ -1157,45 +1162,43 @@ module ASetReaders =
                 | _ ->
                     ()
 
-        let processDeltas() =
-            let input = source.GetDelta(this)
+        let puller =
+            async {
+                do! Async.SwitchToThreadPool()
 
-            input |> List.iter (fun d ->
-                match d with
-                    | Add v -> start v
-                    | Rem v -> stop v
-            )
+                while true do
+                    let! _ = Async.AwaitIAsyncResult(sem.WaitAsync())
+                    let deltas = EvaluationUtilities.evaluateTopLevel (fun () -> source.GetDelta(this))
 
-            if Interlocked.Exchange(&sourceChanged, 0) = 1 then
-                if List.isEmpty input then false
-                else true
-            else
-                true
+                    for d in deltas do
+                        match d with
+                            | Add v -> start v
+                            | Rem v -> stop v
 
-        do if immediate then processDeltas() |> ignore
+            }
 
-        override x.InputChanged(i : IAdaptiveObject) =
-            if i.Id = source.Id then
-                sourceChanged <- 1
+        let task = Async.StartAsTask(puller, cancellationToken = cancel.Token)
+
 
         override x.Mark() =
-            if immediate then processDeltas()
-            else true
+            sem.Release() |> ignore
+            true
+
 
         override x.ComputeDelta() =
-            if not immediate then processDeltas() |> ignore
-            let res = Interlocked.Exchange(&deltas, [])
-            res
+            Interlocked.Exchange(&deltas, [])
              
         override x.Inputs = Seq.singleton (source :> IAdaptiveObject)
 
         override x.Release() =
+            cancel.Cancel()
             source.RemoveOutput x
             for (_,_,c) in cache.Values do
                 c.Cancel()
             cache.Clear()
             deltas <- []
-
+            cancel.Dispose()
+            sem.Dispose()
 
     type CustomReader<'a>(scope : Ag.Scope, compute : IReader<'a> -> list<Delta<'a>>) =
         inherit AbstractReader<'a>()
@@ -1214,8 +1217,8 @@ module ASetReaders =
     let map scope (f : 'a -> 'b) (input : IReader<'a>) =
         new MapReader<_, _>(scope, input, fun c -> [f c]) :> IReader<_>
 
-    let mapAsync scope (immediate : bool) (f : 'a -> Async<'b>) (input : IReader<'a>) =
-        new AsyncMapReader<'a, 'b>(immediate, scope, input, f) :> IReader<_>
+    let mapAsync scope (f : 'a -> Async<'b>) (input : IReader<'a>) =
+        new AsyncMapReader<'a, 'b>(scope, input, f) :> IReader<_>
 
     let mapM scope (f : 'a -> IMod<'b>) (input : IReader<'a>) =
         new MapMReader<_, _>(scope, input, f) :> IReader<_>

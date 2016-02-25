@@ -234,15 +234,13 @@ module ASet =
             AdaptiveSet(fun () -> noRef.GetReader() |> map scope f) :> aset<'b>
 
     
-    let mapLazyAsync (f : 'a -> Async<'b>) (s : aset<'a>) =
-        let scope = Ag.getContext()
-        AdaptiveSet(fun () -> s.GetReader() |> mapAsync scope false f) :> aset<'b>
-
 
     let mapAsync (f : 'a -> Async<'b>) (s : aset<'a>) =
         let scope = Ag.getContext()
-        AdaptiveSet(fun () -> s.GetReader() |> mapAsync scope true f) :> aset<'b>
+        AdaptiveSet(fun () -> s.GetReader() |> mapAsync scope f) :> aset<'b>
 
+    let async (s : aset<Async<'a>>) =
+        s |> mapAsync id
 
     let mapUse (f : 'a -> 'b) (set : aset<'a>) = 
         if set.IsConstant then
