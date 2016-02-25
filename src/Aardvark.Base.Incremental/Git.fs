@@ -535,16 +535,18 @@ module Git =
         let dataTable = Dict<obj, string>()
 
         let storeData (d : obj) =
-            dataTable.GetOrCreate(d, fun o ->
-                let hash = objHash o
-                let binary = bson.Pickle(o)
+            if d = null then "null"
+            else
+                dataTable.GetOrCreate(d, fun o ->
+                    let hash = objHash o
+                    let binary = bson.Pickle(o)
                 
 
-                let target = data ++ hash
-                if !!target then File.WriteAllBytes(target, binary)
+                    let target = data ++ hash
+                    if !!target then File.WriteAllBytes(target, binary)
 
-                hash
-            )
+                    hash
+                )
 
         let commits = target ++ "commits"
         ensureExists commits
@@ -664,16 +666,18 @@ module Git =
         let heads : Map<string, Guid> = pickler.UnPickle(File.ReadAllBytes heads)
         
         let loadData (str : string) =
-            match w.Data.TryGetValue str with
-                | (true, v) -> v
-                | _ ->
-                    let path = data ++ str
-                    if exists path then
-                        let data = path |> File.ReadAllBytes |> bson.UnPickle
-                        w.Data.[str] <- data
-                        data
-                    else
-                        failwithf "could not get data for hash: %A" str
+            if str = "null" then Unchecked.defaultof<_>
+            else
+                match w.Data.TryGetValue str with
+                    | (true, v) -> v
+                    | _ ->
+                        let path = data ++ str
+                        if exists path then
+                            let data = path |> File.ReadAllBytes |> bson.UnPickle
+                            w.Data.[str] <- data
+                            data
+                        else
+                            failwithf "could not get data for hash: %A" str
 
         let rec loadCommit (id : Guid) =
             match w.Commits.TryGetValue id with
@@ -1134,9 +1138,38 @@ module GitTest =
 
         git.pushAll repo
 
+    let repo2 = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Desktop), "test2.rep")
+
+    let build2() =
+
+        let git = Git.init()
+
+        let pm = git.pmod "abc" None
+
+        git.apply (PMod.change pm (Some 1))
+        git.commit "abc"
+
+        pm |> Mod.force |> printfn "%A"
+
+        git.forcePushAll repo2
+
+    let read2() =
+     
+        let git = Git.init()
+
+        let none : Option<int> = None
+        let a = git.pmod "abc" none
+        git.pull repo2
+
+        printfn "%A" (a |> Mod.force)
+
     let run() =
-        build()
-        read()
+        build2()
+        read2()
+//
+//        build()
+//        read()
+
 
 
 
