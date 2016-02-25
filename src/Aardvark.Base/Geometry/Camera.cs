@@ -35,6 +35,16 @@ namespace Aardvark.Base
             Translation = cam2worldTranslation;
         }
 
+        public V3d CameraPointFromWorldPoint(V3d worldPoint)
+        {
+            return Rotation.TransposedTransform(worldPoint - Translation);
+        }
+
+        public V3d WorldPointFromCameraPoint(V3d cameraPoint)
+        {
+            return Rotation.Transform(cameraPoint) + Translation;
+        }
+
         public M33d Camera2WorldRotation => Rotation;
         public V3d Camera2WorldTranslation => Translation;
         public M33d World2CameraRotation => Rotation.Transposed;
