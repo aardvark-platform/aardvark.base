@@ -41,12 +41,12 @@ namespace Aardvark.Base
         public V3d World2CameraTranslation => -Rotation.TransposedTransform(Translation);
         public V3d World2CameraRotationAngleAxis => Rot3d.FromM33d(Rotation.Transposed).ToAngleAxis();
 
-        public CameraExtrinsics FromWorld2Camera(M33d rotation, V3d translation)
+        public static CameraExtrinsics FromWorld2Camera(M33d rotation, V3d translation)
         {
             return new CameraExtrinsics(rotation.Transposed, -rotation.TransposedTransform(translation));
         }
 
-        public CameraExtrinsics FromWorld2Camera(V3d angleAxis, V3d translation)
+        public static CameraExtrinsics FromWorld2Camera(V3d angleAxis, V3d translation)
         {
             return FromWorld2Camera((M33d)Rot3d.FromAngleAxis(angleAxis), translation);
         }
