@@ -83,6 +83,7 @@
     <Compile Include="Runtime\Fragments.fs" />
     <Compile Include="Runtime\CustomSchedulers.fs" />
     <Compile Include="StableSet.fs" />
+    <Compile Include="ConcurrentHashQueue.fs" />
     <Compile Include="Reflection.fs" />
     <Compile Include="Runtime.fs" />
     <Compile Include="AgHelpers.fs" />
