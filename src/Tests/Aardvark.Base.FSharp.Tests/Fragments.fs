@@ -60,3 +60,45 @@ module FragmentTests =
               ]
 
         ()
+
+
+    type PrintDelegate = delegate of int * int64 -> unit
+    let printer (i : int) (l : int64) =
+        printfn "i=%d l=%d" i l
+        calls.Add([|i :> obj; l :> obj|])
+
+    let pdel = PrintDelegate printer
+    let pptr = Marshal.GetFunctionPointerForDelegate(pdel)
+
+    [<Test>]
+    let ``[Fragment] pointer arguments working``() =
+        
+        let l0 = Marshal.AllocHGlobal sizeof<int>
+        let l1 = Marshal.AllocHGlobal sizeof<int64>
+
+        let code =
+            Array.concat [
+                ASM.functionProlog 0 6
+                ASM.assembleCalls 0 [pptr, [|Ptr32 l0 :> obj; Ptr64 l1 :> obj|]]
+                ASM.functionEpilog 0 6
+            ]
+
+        let ptr = ExecutableMemory.alloc code.Length
+        Marshal.Copy(code, 0, ptr, code.Length)
+        let f : unit -> unit = UnmanagedFunctions.wrap ptr
+
+        let run() = 
+            f()
+            let arr = calls |> CSharpList.toArray
+            calls.Clear()
+            arr.[0]
+
+
+        Marshal.WriteInt32(l0, 1)
+        Marshal.WriteInt64(l1, 10L)
+        run() |> should equal [|1 :> obj; 10L :> obj|]
+
+
+        Marshal.WriteInt32(l0, 5)
+        Marshal.WriteInt64(l1, 6L)
+        run() |> should equal [|5 :> obj; 6L :> obj|]

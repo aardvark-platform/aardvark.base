@@ -11,6 +11,9 @@ open Microsoft.FSharp.NativeInterop
 
 type NativeCall = nativeint * obj[]
 
+type PtrArgument =
+    | Ptr64 of nativeint
+    | Ptr32 of nativeint
 
 module AMD64 =
     open System.IO
@@ -56,6 +59,7 @@ module AMD64 =
         | Dword of uint32
         | Qword of uint64
         | Register of Register
+        | Memory of bool * nativeint
 
     type Instruction =
         | Mov of Register * Value
@@ -124,6 +128,10 @@ module AMD64 =
                 | :? float32 as o -> Dword(cast o)
                 | :? float as o -> Qword(cast o)
                 | :? Register as o -> Register(o)
+                | :? PtrArgument as o ->
+                    match o with
+                        | Ptr32 p -> Memory(false, p)
+                        | Ptr64 p -> Memory(true, p)
                 | _ ->
                     let t = o.GetType()
                     if t.IsValueType && Marshal.SizeOf t <= 8 then
@@ -138,6 +146,7 @@ module AMD64 =
                 | Qword _ -> 8
                 | Dword _ -> 8
                 | Register _ -> 8
+                | Memory _ -> 8
 
         let setArg (cc : CallingConvention) (index : int) (stackOffset : int) (arg : obj) =
             match cc |> CallingConvention.getArgumentLocation index (arg.GetType()) with
@@ -223,6 +232,9 @@ module AMD64 =
                                     | Qword q -> q :> obj
                                     | Dword d -> d :> obj
                                     | Register r -> r :> obj
+                                    | Memory(w,ptr) -> 
+                                        if w then Ptr64 ptr :> obj
+                                        else Ptr32 ptr :> obj
                                 )
                              |> List.toArray
 
@@ -291,13 +303,13 @@ module AMD64 =
 
             // AMD Manual Volume 3 Page 21
             // ModRM layout:
-            // mod |  left  | right
-            // 7 6    5 4 3   2 1 0
+            // mod |  left   | right
+            // 7 6    5 4 3    2 1 0
 
             // REX prefix:
             // [- 4 -] w r x b | [- 0xB8 + id -]
             // 7 6 5 4 3 2 1 0 | 7 6 5 4 3 2 1 0
-
+            // 0x4
             rexPrefix wide r b, modRM left right
 
         let private assembleImmediateMov (wide : bool) (target : Register) (stream : BinaryWriter) =
@@ -335,6 +347,15 @@ module AMD64 =
                 // MOV   reg64, reg/mem64       8B/r
                 stream.Write [|rex; 0x8Buy; modRM|]
 
+        let private assembleMemoryMov (wide : bool) (target : Register) (source : nativeint) (stream : BinaryWriter) =
+            stream |> assembleImmediateMov true Register.Rax 
+            stream.Write(int64 source)
+            if wide then stream.Write 0x48uy
+            stream.Write [|0x8Buy; 0x00uy|]
+            if target <> Register.Rax then
+                stream |> assembleRegisterMov wide target Register.Rax
+            ()
+
         let private asssemblePushReg (wide : bool) (reg : Register) (stream : BinaryWriter) =
             let reg = reg |> int |> byte
             let w = if wide then 1uy else 0uy
@@ -369,6 +390,9 @@ module AMD64 =
                         stream.Write d
                     | Register r ->
                         stream |> assembleRegisterMov true target r
+                    | Memory(wide, ptr) ->
+                        
+                        stream |> assembleMemoryMov wide target ptr
             else
                 // media registers
                 match value with
@@ -387,6 +411,8 @@ module AMD64 =
                     | Register r ->
                         // mov xmm, reg
                         stream |> assembleRegisterMov true target r
+                    | Memory(wide, ptr) ->
+                        stream |> assembleMemoryMov wide target ptr
 
                 
                 ()
