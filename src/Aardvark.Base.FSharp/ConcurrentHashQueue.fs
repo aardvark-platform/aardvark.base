@@ -32,21 +32,22 @@ type ConcurrentHashQueue<'a when 'a : equality>() =
 
     member x.Enqueue(value : 'a) =
         lock lockObj (fun () ->
-            let node = 
+            let node,added = 
                 match nodes.TryGetValue value with
                     | (true, node) -> 
                         detach node
                         node.Prev <- last
                         node.Next <- null
-                        node    
+                        node, false   
                     | _ ->
                         let node = HashQueueNode(value, last, null)
                         nodes.[value] <- node
-                        node
+                        node, true
 
             if isNull last then first <- node
             else last.Next <- node
             last <- node
+            added
         )
 
     member x.Dequeue() =
