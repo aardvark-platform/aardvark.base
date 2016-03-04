@@ -567,9 +567,26 @@ namespace Aardvark.Base
                     return false;
                 }
             }
+            catch(FileLoadException e)
+            {
+                Report.Line(3, "[GetPluginAssemblyPaths] IsPlugin({0}) failed.", file);
+                Report.Line(3, "[GetPluginAssemblyPaths] (FileLoad) Could not load potential plugin assembly (not necessarily an error. proceeding): {0}", e.Message);
+                Report.Line(5, "[GetPluginAssemblyPaths] StackTrace (outer): {0}", e.StackTrace.ToString());
+                try {
+                    Report.Line(5, "[GetPluginAssemblyPaths] FusionLog: {0}", e.FusionLog);
+                    Report.Line(5, "[GetPluginAssemblyPaths] Inner message: {0}", e.InnerException.Message);
+                    Report.Line(5, "[GetPluginAssemblyPaths] Inner stackTrace: {0}", e.InnerException.StackTrace.ToString());
+                } catch(Exception)
+                {
+                    Report.Line(5, "[GetPluginAssemblyPaths] could not print details for FileLoadException (most likely BadImageFormat)");
+                }
+                return false;
+            }
             catch (Exception e)
             {
+                Report.Line(3, "[GetPluginAssemblyPaths] IsPlugin({0}) failed.", file);
                 Report.Line(3, "[GetPluginAssemblyPaths] Could not load potential plugin assembly (not necessarily an error. proceeding): {0}", e.Message);
+                Report.Line(5, "[GetPluginAssemblyPaths] {0}", e.StackTrace.ToString());
                 return false;
             }
         }
@@ -735,6 +752,12 @@ namespace Aardvark.Base
         public static void Init()
         {
             Report.BeginTimed("initializing aardvark");
+
+            Report.Begin("System Information:");
+            Report.Line("OSVersion: {0}", System.Environment.OSVersion);
+            Report.Line("IntPtr.Size: {0}", IntPtr.Size);
+            Report.Line("Environment.Version: {0}", Environment.Version);
+            Report.End();
 
             Report.BeginTimed("Unpacking native dependencies");
             foreach(var a in AppDomain.CurrentDomain.GetAssemblies())
