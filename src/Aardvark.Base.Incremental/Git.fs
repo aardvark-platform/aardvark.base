@@ -272,6 +272,7 @@ type pset<'a>(name : string, value : PersistentHashSet<'a>) =
     let r = cset<'a>()
     let a = r :> aset<_>
     member x.Value = value
+    member x.CSet = r
 
     interface IRef with
         member x.Name = name
@@ -283,6 +284,49 @@ type pset<'a>(name : string, value : PersistentHashSet<'a>) =
         member x.GetReader() = a.GetReader()
 
 
+module PSet=
+    
+    type PSetChange<'a>(pset : pset<'a>, deltas : list<Delta<'a>>) =
+        member x.Deltas = deltas
+        interface Op with
+            member x.Data = pset.Value |> PersistentHashSet.toSeq |> Seq.map (fun p -> p :> obj)
+            member x.Target = pset :> IRef
+            member x.Run() =
+                pset.CSet |> CSet.applyDeltas deltas
+                let invert = function Add v -> Rem v | Rem v -> Add v
+                PSetChange(pset, deltas |> List.map invert) :> Op
+
+            member x.TryMergeParallel o =
+                match o with
+                    | :? PSetChange<'a> as o ->
+                        PSetChange(pset, o.Deltas @ deltas) :> Op |> Some
+                    | _ -> 
+                        failwith "impossible"
+
+            member x.MergeSequential o =
+                match o with
+                    | :? PSetChange<'a> as o -> 
+                        PSetChange(pset, o.Deltas @ deltas) :> Op
+                    | _ ->
+                        failwith "impossible"
+
+            member x.Serialize (store : obj -> string) =
+                failwith ""
+                Map.ofList [
+                    "Value",        store (pset.CSet |> CSet.toList :> obj)
+                ]
+
+        static member Deserialize (target : pset<'a>, data : Map<string, string>, load : string -> obj) =
+            failwith ""
+            let value = data.["Value"] |> load |> unbox<list<'a>>
+            PSetChange(target, value |> List.map Delta.Add)
+
+
+    let add (m : pset<'a>) (value : 'a) =
+        Change.single (PSetChange(m, [Add value]) :> Op)
+
+    let remove (m : pset<'a>) (value : 'a) =
+        Change.single (PSetChange(m, [Rem value]) :> Op)
 
 
 [<CustomEquality; CustomComparison>]
@@ -768,7 +812,7 @@ module Git =
 
     let pset (name : string) (w : WorkingCopy) =
         w.Refs.GetOrCreate(name, fun name ->
-            pset(name, PersistentHashSet.empty) :> IRef
+            pset<'a>(name, PersistentHashSet.empty) :> IRef
         ) |> unbox<pset<'a>>
 
 
@@ -1163,7 +1207,26 @@ module GitTest =
 
         printfn "%A" (a |> Mod.force)
 
+    let test3() =
+
+        let git = Git.init ()
+
+        let a = git.pset "blub"
+        git.checkout "test"
+        
+        git.apply <| PSet.add a 1
+        git.apply <| PSet.add a 10
+
+        git.commit "urdar"
+
+        printfn "%A" (a.CSet |> CSet.toList)
+
+        git.checkout "master"
+
+        printfn "%A" (a.CSet |> CSet.toList)
+
     let run() =
+        test3()
         build2()
         read2()
 //
