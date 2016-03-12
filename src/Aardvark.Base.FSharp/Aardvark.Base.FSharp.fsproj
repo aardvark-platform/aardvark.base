@@ -73,8 +73,11 @@
     <Compile Include="Interop\NativeTensors.fs" />
     <Compile Include="Reflection\TypeInfo.fs" />
     <Compile Include="Reflection\FunctionReflection.fs" />
+    <Compile Include="Reflection\Formatf.fs" />
     <Compile Include="Reflection\UnmanagedFunctions.fs" />
     <Compile Include="Reflection\Multimethod.fs" />
+    <Compile Include="Reflection\IL.fs" />
+    <Compile Include="Reflection\Quotations.fs" />
     <Compile Include="Runtime\DynamicLinker.fs" />
     <Compile Include="Runtime\ExecutableMemory.fs" />
     <Compile Include="Runtime\Assembler.fs" />

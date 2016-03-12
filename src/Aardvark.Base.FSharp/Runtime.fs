@@ -376,32 +376,6 @@ module ReflectionHelpers =
                 getPrettyNameInternal x
             )
 
-module QuotationReflectionHelpers =
-    open Microsoft.FSharp.Quotations
-
-    //extracts the (optional) top-most method call from an expression
-    let rec tryGetMethodInfo (e : Expr) =
-        match e with
-            | Patterns.Call(_,mi,_) -> 
-                if mi.IsGenericMethod then mi.GetGenericMethodDefinition() |> Some
-                else mi |> Some
-            | ExprShape.ShapeCombination(_, args) -> 
-                args |> List.tryPick tryGetMethodInfo
-            | ExprShape.ShapeLambda(_,b) ->
-                tryGetMethodInfo b
-            | _ -> None
-
-
-    /// <summary>
-    /// extracts the top-most method-call from an expression.
-    /// When no method-call is found the method will raise an exception
-    /// </summary>
-    /// <param name="e"></param>
-    let getMethodInfo (e : Expr) =
-        match tryGetMethodInfo e with
-            | Some mi -> mi
-            | None -> failwith "could not find a method-call in expression"
-
 /// <summary>
 /// Defines a number of active patterns for matching expressions. Includes some
 /// functionality missing in F#.
