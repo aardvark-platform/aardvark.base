@@ -32,7 +32,7 @@ namespace ExamplesCSharp
     {
         static void Main(string[] args)
         {
-            Aardvark.Base.Incremental.GitTest.run();
+            Aardvark.Base.IL.TypeBuilderTest.run();
             Environment.Exit(0);
 
             #region Basic Mod usage

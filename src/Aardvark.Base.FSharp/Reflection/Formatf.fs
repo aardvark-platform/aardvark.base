@@ -122,7 +122,7 @@ module Printf =
         static let createFunction (fmt : string) : (StringFormat -> 'res) -> 'a =
             let meth =
                 DynamicMethod(
-                    fmt,
+                    "StringFormat_" + fmt,
                     typeof<'res>, args,
                     true
                 )
@@ -181,7 +181,7 @@ module Printf =
                 formatBuilder.Append(str.Replace("{", "{{").Replace("}", "}}")) |> ignore
                 c <- e
 
-                if c < value.Length then
+                if s < value.Length then
                     formatBuilder.Append("{" + string i + "}") |> ignore
                     i <- i + 1
                     let (d,i) = FSharpType.GetFunctionElements ret
@@ -189,7 +189,6 @@ module Printf =
                     ret <- i
 
             let formatString = formatBuilder.ToString()
-
             createFunction formatString
 
         static let cache = ConcurrentDictionary<string, (StringFormat -> 'res) -> 'a>()

@@ -78,6 +78,7 @@
     <Compile Include="Reflection\Multimethod.fs" />
     <Compile Include="Reflection\IL.fs" />
     <Compile Include="Reflection\Quotations.fs" />
+    <Compile Include="Reflection\TypeBuilder.fs" />
     <Compile Include="Runtime\DynamicLinker.fs" />
     <Compile Include="Runtime\ExecutableMemory.fs" />
     <Compile Include="Runtime\Assembler.fs" />
