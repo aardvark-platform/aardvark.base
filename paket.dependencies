@@ -16,7 +16,7 @@ nuget FsUnit
 
 nuget RegexProvider                ~> 0.0.5
 nuget FsPickler.Json			   ~> 1.8.0
-nuget Newtonsoft.Json			   ~> 7.0.1
+nuget Newtonsoft.Json			   ~> 8.0.2
 
 
 group Build
