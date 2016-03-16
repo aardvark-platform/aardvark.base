@@ -72,6 +72,38 @@ module Code =
         }
 
 
+    let tryStore (value : 'a) =
+        { new Code<bool * Guid>() with
+            override x.Run(s) =
+                let v = value :> obj
+                match RefMap.tryFind v s.References with
+                    | Some id ->
+                        (false, id)
+                    | None ->
+                        match s.Database.TryStore value with
+                            | (true, id) -> (false, id)
+                            | _ ->
+                                let id = Guid.NewGuid()
+                                s <- { s with References = RefMap.add v id s.References }
+                                (true, id)
+        }
+
+    let tryLoad (id : Guid) : Code<Option<'a>> =
+        { new Code<Option<'a>>() with
+            override x.Run(s) =
+                match Map.tryFind id s.Values with
+                    | Some v -> Some (unbox<'a> v)
+                    | None ->
+                        match s.Database.TryLoad id with
+                            | (true, v) ->
+                                s <- { s with Values = Map.add id (v :> obj) s.Values } 
+                                Some v
+                            | _ -> 
+                                None
+        }
+
+
+
 
 [<AutoOpen>]
 module CodeBuilder =
