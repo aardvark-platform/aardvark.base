@@ -48,6 +48,11 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AdaptiveCode.fs" />
+    <Compile Include="Coder\Utilities.fs" />
+    <Compile Include="Coder\State.fs" />
+    <Compile Include="Coder\Code.fs" />
+    <Compile Include="Coder\Core.fs" />
+    <Compile Include="Coder\ValueCoders.fs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Aardvark.Base.Essentials\Aardvark.Base.Essentials.csproj">
