@@ -6,7 +6,7 @@ nuget Rx-Linq                      ~> 2.2.5
 nuget Rx-Core                      ~> 2.2.5
 nuget Rx-PlatformServices          ~> 2.2.5
 
-nuget FSharp.Compiler.Service      ~> 0.0.90
+nuget FSharp.Compiler.Service      ~> 2.0.0.6
 
 nuget System.Collections.Immutable ~> 1.1.36
 
@@ -14,7 +14,6 @@ nuget NUnit.Console                ~> 3.0.1
 nuget NUnit                        = 2.6.3
 nuget FsUnit
 
-nuget RegexProvider                ~> 0.0.5
 nuget FsPickler.Json			   ~> 1.8.0
 nuget Newtonsoft.Json			   ~> 8.0.2
 

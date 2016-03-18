@@ -64,7 +64,6 @@
     <Compile Include="NativeMemory.fs" />
     <Compile Include="Fragments.fs" />
     <Compile Include="SortedSetExt.fs" />
-    <Content Include="app.config" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="mscorlib" />

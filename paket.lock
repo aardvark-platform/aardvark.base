@@ -2,7 +2,7 @@ NUGET
   remote: http://api.nuget.org/v3/index.json
   specs:
     DevILSharp (0.0.13)
-    FSharp.Compiler.Service (0.0.90)
+    FSharp.Compiler.Service (2.0.0.6)
     FsPickler (1.8.1)
     FsPickler.Json (1.8.1)
       FsPickler (1.8.1)
@@ -12,7 +12,6 @@ NUGET
     Newtonsoft.Json (8.0.3)
     NUnit (2.6.3)
     NUnit.Console (3.0.1)
-    RegexProvider (0.0.5)
     Rx-Core (2.2.5)
       Rx-Interfaces (>= 2.2.5)
     Rx-Interfaces (2.2.5)

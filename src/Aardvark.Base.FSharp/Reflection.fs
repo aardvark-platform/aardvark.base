@@ -96,14 +96,14 @@ module Fsi =
     let private errStream = new StreamWriter(sbErr)
 
     //input.fsx(9,9): error FS0039: The value or constructor 'a' is not defined
-
-    open FSharp.RegexProvider
-    type private ErrorRx = Regex< @"\((?<line>[0-9]+),(?<col>[0-9]+)\):[ ]+(?<errorType>warning|error)[ ]+(?<code>[a-zA-Z_0-9]+):(?<message>[^$]*)$" >
-    type private SplitRx = Regex< @"input\.fsx" >
-    type private UselessWsRx = Regex< @"[ \t\r\n][ \t\r\n]+" >
-    let private errorRx = ErrorRx()
-    let private splitRx = SplitRx()
-    let private uselessWsRx = UselessWsRx()
+//
+//    open FSharp.RegexProvider
+//    type private ErrorRx = Regex< @"\((?<line>[0-9]+),(?<col>[0-9]+)\):[ ]+(?<errorType>warning|error)[ ]+(?<code>[a-zA-Z_0-9]+):(?<message>[^$]*)$" >
+//    type private SplitRx = Regex< @"input\.fsx" >
+//    type private UselessWsRx = Regex< @"[ \t\r\n][ \t\r\n]+" >
+    let private errorRx = Regex @"\((?<line>[0-9]+),(?<col>[0-9]+)\):[ ]+(?<errorType>warning|error)[ ]+(?<code>[a-zA-Z_0-9]+):(?<message>[^$]*)$" 
+    let private splitRx = Regex @"input\.fsx" 
+    let private uselessWsRx =  Regex @"[ \t\r\n][ \t\r\n]+" 
 
     let parseErrors (err : string) =
         
@@ -112,11 +112,11 @@ module Fsi =
                 let m = errorRx.Match e
                 if m.Success then
                     { file = "input.fsx"
-                      line = System.Int32.Parse m.line.Value
-                      col = System.Int32.Parse m.col.Value
-                      errorType = match m.errorType.Value with | "error" -> Error | _ -> Warning
-                      code = m.code.Value
-                      message = m.message.Value.Replace("\r", "").Replace('\n', ' ') } |> Some
+                      line = System.Int32.Parse m.Groups.["line"].Value
+                      col = System.Int32.Parse m.Groups.["col"].Value
+                      errorType = match m.Groups.["errorType"].Value with | "error" -> Error | _ -> Warning
+                      code = m.Groups.["code"].Value
+                      message = m.Groups.["message"].Value.Replace("\r", "").Replace('\n', ' ') } |> Some
                 else
                     None
             )
