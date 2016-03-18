@@ -1,5 +1,5 @@
-source https://nuget.org/api/v2
-source https://vrvis.myget.org/F/aardvark_public/api/v2
+source https://api.nuget.org/v3/index.json
+source https://vrvis.myget.org/F/aardvark_public/api/v3/index.json
 
 nuget DevILSharp                   ~> 0.0.11
 nuget Rx-Linq                      ~> 2.2.5
@@ -21,6 +21,7 @@ nuget Newtonsoft.Json			   ~> 8.0.2
 
 group Build
 content: none
-source http://nuget.org/api/v2
+source https://vrvis.myget.org/F/aardvark_public/api/v3/index.json
+source https://api.nuget.org/v3/index.json
 
 github vrvis/Aardvark.Fake:standalone
