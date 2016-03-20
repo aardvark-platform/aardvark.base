@@ -16,6 +16,7 @@ type IWriter =
     abstract member WriteBool : bool -> Code<unit>
 
 type IValueCoder =
+    abstract member ValueType : Type
     abstract member ReadUnsafe : IReader -> Code<'a>
     abstract member WriteUnsafe : IWriter * 'a -> Code<unit>
 
@@ -23,6 +24,13 @@ type IValueCoder<'a> =
     inherit IValueCoder
     abstract member Read : IReader -> Code<'a>
     abstract member Write : IWriter * 'a -> Code<unit>
+
+
+type IReferenceCoder =
+    abstract member WithInternalStore : IValueCoder
+    abstract member WithExternalStore : IValueCoder
+
+
 
 [<AbstractClass; Sealed; Extension>]
 type ValueCoderExtensions private() =
@@ -72,6 +80,7 @@ type AbstractValueCoder<'a>() =
     abstract member Read : IReader -> Code<'a>
 
     interface IValueCoder with
+        member x.ValueType = typeof<'a>
         member x.WriteUnsafe(w,v) = x.Write(w, unbox v)
         member x.ReadUnsafe(r) = x.Read(r) |> State.map unbox
 
@@ -79,22 +88,72 @@ type AbstractValueCoder<'a>() =
         member x.Write(w,v) = x.Write(w, v)
         member x.Read(r) = x.Read(r)
 
+
+type private NewObj<'a>() =
+    static member Create() : 'a =
+        System.Runtime.Serialization.FormatterServices.GetSafeUninitializedObject(typeof<'a>) |> unbox<'a>
+
+
+
 [<AbstractClass>]
-type AbstractStateValueCoder<'a>() =
+type AbstractByRefValueCoder<'a>(useExternalStore : bool) =
     inherit AbstractValueCoder<'a>()
+    let mutable useExternalStore = useExternalStore
+
+    member private x.UseExternalStore 
+        with get() = useExternalStore
+        and set v = useExternalStore <- v
 
     abstract member WriteState : IWriter * 'a * byref<CodeState> -> unit
-    abstract member ReadState : IReader * byref<CodeState> -> 'a
+    abstract member ReadState : IReader * byref<'a> * byref<CodeState> -> unit
+    abstract member WithStore : bool -> AbstractByRefValueCoder<'a>
+
+    default x.WithStore ext =
+        let res = base.MemberwiseClone() |> unbox<AbstractByRefValueCoder<'a>>
+        res.UseExternalStore <- ext
+        res |> unbox<_>
+
+    interface IReferenceCoder with
+        member x.WithInternalStore = 
+            if useExternalStore then x.WithStore true :> IValueCoder
+            else x :> IValueCoder
+
+        member x.WithExternalStore = 
+            if useExternalStore then x :> IValueCoder
+            else x.WithStore false :> IValueCoder
 
     override x.Read(r) =
         { new Code<'a>() with
-            override __.Run(s) = x.ReadState(r, &s)
+            override __.Run(s) = 
+                let id = r.ReadPrimitive().Run(&s)
+                let load = 
+                    if useExternalStore then Code.tryLoad id
+                    else Code.tryLoadLocal id
+
+                match load.Run(&s) with
+                    | Some v -> v
+                    | _ ->
+                        let mutable self = NewObj<'a>.Create()
+                        s <- { s with Values = Map.add id (self :> obj) s.Values }
+                        x.ReadState(r, &self, &s)
+                        self
         }
 
     override x.Write(w,v) =
         { new Code<unit>() with
-            override __.RunUnit(s) = x.WriteState(w, v, &s)
+            override __.RunUnit(s) = 
+                let store =
+                    if useExternalStore then Code.tryStore v
+                    else Code.tryStoreLocal v
+                
+                let (isNew, id) = store.Run(&s)
+                w.WritePrimitive(id).Run(&s)
+
+                if isNew then
+                    x.WriteState(w, v, &s)
         }
+
+    new() = AbstractByRefValueCoder(false)
 
 
 

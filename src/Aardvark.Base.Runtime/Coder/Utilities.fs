@@ -84,6 +84,10 @@ module TypePropertyExtensions =
     type Type with
         member x.IsBlittable =
             blittableCache.GetOrAdd(x, fun x ->
+                let x = 
+                    if x.IsByRef then x.GetElementType()
+                    else x
+
                 let tb = typedefof<TypePropertyImpl<_>>.MakeGenericType [|x|]
                 let prop = tb.GetProperty("IsBlittable", BindingFlags.Static ||| BindingFlags.Public ||| BindingFlags.NonPublic)
                 prop.GetValue(null) |> unbox<bool>

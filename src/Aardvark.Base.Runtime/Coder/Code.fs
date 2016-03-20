@@ -111,7 +111,7 @@ module CodeBuilder =
     type CodeBuilder() =
         inherit SpecificStateBuilder<CodeState>()
 
-        member inline x.Run(v : Code<'a>) : Code<'a> =
+        member x.Run(v : Code<'a>) : Code<'a> =
             v
 
     let code = CodeBuilder()
