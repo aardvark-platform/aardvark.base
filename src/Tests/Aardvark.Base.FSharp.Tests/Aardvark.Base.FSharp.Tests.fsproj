@@ -58,38 +58,6 @@
   <Target Name="AfterBuild">
   </Target>
   -->
-  <ItemGroup>
-    <Compile Include="TimeTests.fs" />
-    <Compile Include="PureAgTests.fs" />
-    <Compile Include="NativeMemory.fs" />
-    <Compile Include="Fragments.fs" />
-    <Compile Include="SortedSetExt.fs" />
-  </ItemGroup>
-  <ItemGroup>
-    <Reference Include="mscorlib" />
-    <Reference Include="FSharp.Core, Version=$(TargetFSharpCoreVersion), Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="System" />
-    <Reference Include="System.Core" />
-    <Reference Include="System.Drawing" />
-    <Reference Include="System.Numerics" />
-    <ProjectReference Include="..\..\Aardvark.Base.FSharp\Aardvark.Base.FSharp.fsproj">
-      <Name>Aardvark.Base.FSharp</Name>
-      <Project>{692a3617-719b-4ea2-abc1-407ae20094ae}</Project>
-      <Private>True</Private>
-    </ProjectReference>
-    <ProjectReference Include="..\..\Aardvark.Base.TypeProviders\Aardvark.Base.TypeProviders.fsproj">
-      <Name>Aardvark.Base.TypeProviders</Name>
-      <Project>{8bfea4ef-bf0a-4c1a-b7ac-cbdd930306fd}</Project>
-      <Private>True</Private>
-    </ProjectReference>
-    <ProjectReference Include="..\..\Aardvark.Base\Aardvark.Base.csproj">
-      <Name>Aardvark.Base</Name>
-      <Project>{377da721-c821-45f6-b803-9c8724c7b37f}</Project>
-      <Private>True</Private>
-    </ProjectReference>
-  </ItemGroup>
   <Choose>
     <When Condition="$(TargetFrameworkIdentifier) == '.NETFramework' And ($(TargetFrameworkVersion) == 'v2.0' Or $(TargetFrameworkVersion) == 'v3.0' Or $(TargetFrameworkVersion) == 'v3.5')">
       <ItemGroup>
@@ -110,13 +78,6 @@
       </ItemGroup>
     </When>
   </Choose>
-  <ItemGroup>
-    <Reference Include="nunit.framework">
-      <HintPath>..\..\..\packages\NUnit\lib\nunit.framework.dll</HintPath>
-      <Private>True</Private>
-      <Paket>True</Paket>
-    </Reference>
-  </ItemGroup>
   <Choose>
     <When Condition="$(TargetFrameworkIdentifier) == '.NETCore'">
       <ItemGroup>
@@ -301,4 +262,42 @@
       </ItemGroup>
     </When>
   </Choose>
+  <ItemGroup>
+    <Compile Include="TimeTests.fs" />
+    <Compile Include="PureAgTests.fs" />
+    <Compile Include="NativeMemory.fs" />
+    <Compile Include="Fragments.fs" />
+    <Compile Include="SortedSetExt.fs" />
+    <Content Include="app.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Reference Include="mscorlib" />
+    <Reference Include="FSharp.Core, Version=$(TargetFSharpCoreVersion), Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Numerics" />
+    <ProjectReference Include="..\..\Aardvark.Base.FSharp\Aardvark.Base.FSharp.fsproj">
+      <Name>Aardvark.Base.FSharp</Name>
+      <Project>{692a3617-719b-4ea2-abc1-407ae20094ae}</Project>
+      <Private>True</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Aardvark.Base.TypeProviders\Aardvark.Base.TypeProviders.fsproj">
+      <Name>Aardvark.Base.TypeProviders</Name>
+      <Project>{8bfea4ef-bf0a-4c1a-b7ac-cbdd930306fd}</Project>
+      <Private>True</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Aardvark.Base\Aardvark.Base.csproj">
+      <Name>Aardvark.Base</Name>
+      <Project>{377da721-c821-45f6-b803-9c8724c7b37f}</Project>
+      <Private>True</Private>
+    </ProjectReference>
+    <Reference Include="nunit.framework">
+      <HintPath>..\..\..\packages\NUnit\lib\nunit.framework.dll</HintPath>
+      <Private>True</Private>
+      <Paket>True</Paket>
+    </Reference>
+  </ItemGroup>
 </Project>

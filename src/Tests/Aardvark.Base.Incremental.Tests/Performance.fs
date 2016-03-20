@@ -102,7 +102,7 @@ module SimplePerfTests =
     [<Test>]
     let ``[ASet] value dependent nop change``() =
         let vt = Mod.init V3d.Zero
-        let iter = 10000
+        let iter = 100
 
         let instances =
             aset {
