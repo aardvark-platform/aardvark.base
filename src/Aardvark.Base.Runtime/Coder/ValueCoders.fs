@@ -174,69 +174,6 @@ module AutoCoders =
                 )
 
         }
-//
-//    let createUnionCoder (unionType : Type) =
-//        let cases = FSharpType.GetUnionCases unionType
-//
-//        // just to be sure we don't see a concrete union-case-type here
-//        let unionType = cases.[0].DeclaringType
-//        let baseType = typedefof<AbstractStateValueCoder<_>>.MakeGenericType [|unionType|]
-//        let stateRefType = typeof<CodeState>.MakeByRefType()
-//
-//        newtype {
-//            do! inh baseType
-//
-//            let! stringCoder = fld "m_stringCoder" typeof<IValueCoder<string>>
-//            
-//            let writeStringMethod = ValueCoderExtensions.GetWriteMethod(stringCoder.FieldType, typeof<string>)
-//
-//            let writeString (str : string) =
-//                codegen {
-//                    // stack = [m_stringCoder]
-//                    do! IL.ldarg 0
-//                    do! IL.ldfld stringCoder
-//                    
-//                    // stack = [writer; m_stringCoder]
-//                    do! IL.ldarg 1
-//
-//                    // stack = [str; writer; m_stringCoder]
-//                    do! IL.ldconst (String str)
-//
-//                    // stack = [&state; str; writer; m_stringCoder]
-//                    do! IL.ldarg 3
-//
-//                    // stack = []
-//                    do! IL.call writeStringMethod
-//                }
-//
-//            do! mem typeof<Void> "WriteState" [typeof<IWriter>; unionType; stateRefType] (
-//                    codegen {
-//                        let! nullLabel = IL.newlabel
-//
-//                        // check if the value is null
-//                        do! IL.ldarg 2
-//                        do! IL.jmp False nullLabel
-//
-//                        for c in cases do
-//                            // TODO: check if value is instance of case and skip if not
-//                            
-//                            
-//                            ()
-//
-//                        do! IL.printfn "should be unreachable code"
-//                        do! IL.ret
-//
-//                        // write a special tag for null
-//                        do! IL.mark nullLabel
-//                        do! writeString "__NULL"
-//                        do! IL.ret
-//                    }
-//                )
-//
-//            // TODO: read and ctor
-//        }
-//
-
 
 
 module ValueCoderTypes =
@@ -248,6 +185,12 @@ module ValueCoderTypes =
         inherit AbstractValueCoder<'a>()
         override x.Read(r) = r.ReadPrimitive()
         override x.Write(w,v) = w.WritePrimitive(v)
+
+    type PrimitiveArrayCoder<'a when 'a : unmanaged>() =
+        inherit AbstractValueCoder<'a[]>()
+        override x.Read(r) = r.ReadPrimitiveArray()
+        override x.Write(w,v) = w.WritePrimitiveArray(v)
+
 
     type StringCoder() =
         inherit AbstractValueCoder<string>()
@@ -277,6 +220,194 @@ module ValueCoderTypes =
             else
                 w.WriteString t.AssemblyQualifiedName
 
+
+    type Array1dCoder<'a>(useExternalStore : bool, resolve : Type -> IValueCoder) =
+        inherit AbstractValueCoder<'a[]>()
+
+        let elementCoder = resolve typeof<'a> |> unbox<IValueCoder<'a>>
+
+        override x.Read(r : IReader) =
+            code {
+                let! id = r.ReadPrimitive()
+                if id = Guid.Empty then
+                    return null
+                else
+                    let! ref =
+                        if useExternalStore then Code.tryLoad id
+                        else Code.tryLoadLocal id
+
+                    match ref with
+                        | Some r -> 
+                            return r
+
+                        | _ ->
+                            let! length = r.ReadPrimitive()
+                            let arr = Array.zeroCreate length
+                            do! Code.storeLocal id arr
+
+                            for i in 0..length-1 do
+                                let! v = elementCoder.Read(r)
+                                arr.[i] <- v
+
+                            return arr
+
+            }
+
+        override x.Write(w : IWriter, value : 'a[]) =
+            code {
+                if isNull value then
+                    do! w.WritePrimitive Guid.Empty
+                else
+                    let! (isNew, id) = 
+                        if useExternalStore then Code.tryStore value
+                        else Code.tryStoreLocal value
+
+                    do! w.WritePrimitive id
+                    if isNew then
+                        do! w.WritePrimitive value.Length
+
+                        for i in 0..value.Length-1 do
+                            do! elementCoder.Write(w, value.[i])
+
+
+
+
+            }
+
+        new(resolve) = Array1dCoder(false, resolve)
+
+    type Array2dCoder<'a>(useExternalStore : bool, resolve : Type -> IValueCoder) =
+        inherit AbstractValueCoder<'a[,]>()
+
+        let elementCoder = resolve typeof<'a> |> unbox<IValueCoder<'a>>
+
+        override x.Read(r : IReader) =
+            code {
+                let! id = r.ReadPrimitive()
+                if id = Guid.Empty then
+                    return null
+                else
+                    let! ref =
+                        if useExternalStore then Code.tryLoad id
+                        else Code.tryLoadLocal id
+
+                    match ref with
+                        | Some r -> 
+                            return r
+
+                        | _ ->
+                            let! sx = r.ReadPrimitive()
+                            let! sy = r.ReadPrimitive()
+
+                            let arr = Array2D.zeroCreate sx sy
+                            do! Code.storeLocal id arr
+
+                            for x in 0..sx-1 do
+                                for y in 0..sy-1 do
+                                    let! v = elementCoder.Read(r)
+                                    arr.[x,y] <- v
+
+                            return arr
+
+            }
+
+        override x.Write(w : IWriter, value : 'a[,]) =
+            code {
+                if isNull value then
+                    do! w.WritePrimitive Guid.Empty
+                else
+                    let! (isNew, id) = 
+                        if useExternalStore then Code.tryStore value
+                        else Code.tryStoreLocal value
+
+                    do! w.WritePrimitive id
+                    if isNew then
+                        let sx = value.GetLength 0
+                        let sy = value.GetLength 1
+                        do! w.WritePrimitive sx
+                        do! w.WritePrimitive sy
+
+                        for x in 0..sx-1 do
+                            for y in 0..sy-1 do
+                                do! elementCoder.Write(w, value.[x,y])
+
+
+
+
+            }
+
+        new(resolve) = Array2dCoder(false, resolve)
+
+    type Array3dCoder<'a>(useExternalStore : bool, resolve : Type -> IValueCoder) =
+        inherit AbstractValueCoder<'a[,,]>()
+
+        let elementCoder = resolve typeof<'a> |> unbox<IValueCoder<'a>>
+
+        override x.Read(r : IReader) =
+            code {
+                let! id = r.ReadPrimitive()
+                if id = Guid.Empty then
+                    return null
+                else
+                    let! ref =
+                        if useExternalStore then Code.tryLoad id
+                        else Code.tryLoadLocal id
+
+                    match ref with
+                        | Some r -> 
+                            return r
+
+                        | _ ->
+                            let! sx = r.ReadPrimitive()
+                            let! sy = r.ReadPrimitive()
+                            let! sz = r.ReadPrimitive()
+
+                            let arr = Array3D.zeroCreate sx sy sz
+                            do! Code.storeLocal id arr
+
+                            for x in 0..sx-1 do
+                                for y in 0..sy-1 do
+                                    for z in 0..sz-1 do
+                                        let! v = elementCoder.Read(r)
+                                        arr.[x,y,z] <- v
+
+                            return arr
+
+            }
+
+        override x.Write(w : IWriter, value : 'a[,,]) =
+            code {
+                if isNull value then
+                    do! w.WritePrimitive Guid.Empty
+                else
+                    let! (isNew, id) = 
+                        if useExternalStore then Code.tryStore value
+                        else Code.tryStoreLocal value
+
+                    do! w.WritePrimitive id
+                    if isNew then
+                        let sx = value.GetLength 0
+                        let sy = value.GetLength 1
+                        let sz = value.GetLength 2
+                        do! w.WritePrimitive sx
+                        do! w.WritePrimitive sy
+                        do! w.WritePrimitive sz
+
+                        for x in 0..sx-1 do
+                            for y in 0..sy-1 do
+                                for z in 0..sz-1 do
+                                    do! elementCoder.Write(w, value.[x,y,z])
+
+
+
+
+            }
+
+        new(resolve) = Array3dCoder(false, resolve)
+
+
+
+
     type DynamicCoder<'a when 'a : not struct and 'a : null>(resolve : Type -> IValueCoder) =
         inherit AbstractValueCoder<'a>()
 
@@ -287,6 +418,8 @@ module ValueCoderTypes =
             resolve t
 
         let typeCoder = resolve typeof<Type> |> unbox<IValueCoder<Type>>
+
+        override x.CodesType = true
 
         override x.Read(r) =
             code {
@@ -309,97 +442,25 @@ module ValueCoderTypes =
                     do! coder.WriteUnsafe(w, v)
             }
 
-    
-    type ReferenceCoder<'a when 'a : not struct>(externalStore : bool, inner : IValueCoder<'a>) =
+    type WithTypeCoder<'a>(inner : IValueCoder<'a>, resolve : Type -> IValueCoder) =
         inherit AbstractValueCoder<'a>()
 
-        static let newInstance() =
-            System.Runtime.Serialization.FormatterServices.GetSafeUninitializedObject(typeof<'a>) |> unbox<'a>
+        let typeCoder = resolve typeof<Type> |> unbox<IValueCoder<Type>>
 
-        interface IReferenceCoder with
-            member x.WithInternalStore = 
-                if externalStore then ReferenceCoder<'a>(false, inner) :> IValueCoder
-                else x :> IValueCoder
+        override x.CodesType = true
 
-            member x.WithExternalStore = 
-                if externalStore then x :> IValueCoder
-                else ReferenceCoder<'a>(true, inner) :> IValueCoder
-
-        override x.Write(w, v) =
+        override x.Write(w,v) =
             code {
-                
-                let! (isNew, id) = 
-                    if externalStore then Code.tryStore v
-                    else Code.tryStoreLocal v
-
-                do! w.WritePrimitive id
-                if isNew then
-                    do! inner.Write(w,v)
+                do! typeCoder.Write(w, typeof<'a>)
+                do! inner.Write(w, v)
             }
 
         override x.Read(r) =
             code {
-                let! id = r.ReadPrimitive()
-                let! res = 
-                    if externalStore then Code.tryLoad id
-                    else Code.tryLoadLocal id
-
-                match res with
-                    | Some v -> return v
-                    | None ->
-                        let res = newInstance()
-                        do! Code.storeLocal id res
-
-                        let! value = inner.Read r
-                        copyAllFields res value
-
-                        return res
+                let! _ = typeCoder.Read(r)
+                return! inner.Read(r)
             }
 
-        new(resolve : Type -> IValueCoder) = ReferenceCoder<'a>(false, typeof<'a> |> resolve |> unbox)
-
-//    [<AbstractClass; Sealed; Extension>]
-//    type IValueCoderExtensions private() =
-//        
-//        [<Extension>]
-//        static member MakeReferenceCoder(this : IValueCoder<'a>, useExternalStore : bool) =
-//            match this with
-//                | :? IReferenceCoder as r -> 
-//                    if useExternalStore then r.WithExternalStore |> unbox<IValueCoder<'a>>
-//                    else r.WithInternalStore |> unbox<IValueCoder<'a>>
-//                | _ ->
-//                    let t = typeof<'a> 
-//
-//                    if t.IsArray then
-//                        failwith "yet another special case"
-//                    else
-//                        ReferenceCoder<'a>(useExternalStore, this) :> IValueCoder<_>
-//
-//        [<Extension>]
-//        static member MakeReferenceCoder(this : IValueCoder<'a>) =
-//            IValueCoderExtensions.MakeReferenceCoder(this, false)
-//
-//
-//        [<Extension>]
-//        static member MakeReferenceCoder(this : IValueCoder, useExternalStore : bool) : IValueCoder =
-//            match this with
-//                | :? IReferenceCoder as r -> 
-//                    if useExternalStore then r.WithExternalStore
-//                    else r.WithInternalStore
-//                | _ ->
-//
-//                    let t = this.ValueType
-//
-//                    if t.IsArray then
-//                        failwith "yet another special case"
-//                    else
-//                        let t = typedefof<ReferenceCoder<_>>.MakeGenericType [|t|]
-//                        Activator.CreateInstance(t, [|useExternalStore, this|]) |> unbox<IValueCoder>
-//
-//
-//        [<Extension>]
-//        static member MakeReferenceCoder(this : IValueCoder) : IValueCoder =
-//            IValueCoderExtensions.MakeReferenceCoder(this, false)
 
     let tryGetSpecialCoderType (t : Type) : Option<Type> =
         // TODO: resolve user-given coder-types
@@ -414,7 +475,7 @@ module ValueCoderTypes =
                     valueType.IsValueType || 
                     valueType.IsSealed || 
                     valueType.IsByRef ||
-                    FSharpType.IsTuple valueType
+                    FSharpType.IsTuple valueType // TODO: is that a reasonable assumption??
 
                 let valueType =
                     if valueType.IsByRef then valueType.GetElementType()
@@ -431,6 +492,22 @@ module ValueCoderTypes =
 
                 elif typeof<Type>.IsAssignableFrom valueType then
                     typeof<TypeCoder>
+
+                elif valueType.IsArray then
+                    let rank = valueType.GetArrayRank()
+                    let elementType = valueType.GetElementType()
+
+                    match rank with
+                        | 1 -> 
+                            if elementType.IsBlittable then
+                                typedefof<PrimitiveArrayCoder<int>>.MakeGenericType [|elementType|]
+                            else
+                                typedefof<Array1dCoder<_>>.MakeGenericType [|elementType|]
+
+                        | 2 -> typedefof<Array2dCoder<_>>.MakeGenericType [|elementType|]
+                        | 3 -> typedefof<Array3dCoder<_>>.MakeGenericType [|elementType|]
+                        | _ -> failwithf "[Coder] arrays of rank %d not supported atm." rank
+
 
                 else
                     if isInvariant then
@@ -511,10 +588,46 @@ module ValueCoder =
 
     type private CoderGenericImpl<'a>() =
         static let coder = Resolver.GetCoder typeof<'a> |> unbox<IValueCoder<'a>>
+
+        static let topLevelCoder =
+            match coder with
+                | :? AbstractValueCoder<'a> as c when c.CodesType -> 
+                    coder
+                | _ ->
+                    WithTypeCoder<'a>(coder, Resolver.GetCoder) :> IValueCoder<'a>
+
         static member Coder = coder
+        static member TopLevelCoder = topLevelCoder
 
     let coder<'a> : IValueCoder<'a> = 
         CoderGenericImpl<'a>.Coder
+
+    let topLevelCoder<'a> : IValueCoder<'a> =
+        CoderGenericImpl<'a>.TopLevelCoder
+
+
+[<AbstractClass; Sealed; Extension>]
+type ReaderWriterExtensions() =
+    static let emptyState =
+        {
+            Version         = Version(0,0,1)
+            MemberStack     = []
+            References      = RefMap.empty
+            Values          = Map.empty
+            Database        = Unchecked.defaultof<_>
+        }
+
+    [<Extension>]
+    static member Write(this : IWriter, value : 'a) =
+        let c = ValueCoder.topLevelCoder<'a>
+        let mutable s = emptyState
+        c.Write(this, value).Run(&s)
+
+    [<Extension>]
+    static member Read(this : IReader) : 'a =
+        let c = ValueCoder.topLevelCoder<'a>
+        let mutable s = emptyState
+        c.Read(this).Run(&s)
 
 
 

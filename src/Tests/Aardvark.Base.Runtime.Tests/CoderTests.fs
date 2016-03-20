@@ -21,14 +21,77 @@ module CoderTests =
     
     [<AutoOpen>]
     module Utilities = 
+        type private ArrayCoerce<'a, 'b when 'a : unmanaged and 'b : unmanaged>() =
+            
+            static let sa = sizeof<'a>
+            static let sb = sizeof<'b>
+
+//            static let lengthOffset = sizeof<nativeint> |> nativeint
+//            static let typeOffset = 2n * lengthOffset
+
+            static let idb : nativeint =
+                let gc = GCHandle.Alloc(Array.zeroCreate<'b> 1, GCHandleType.Pinned)
+                try 
+                    let ptr = gc.AddrOfPinnedObject() |> NativePtr.ofNativeInt
+                    NativePtr.get ptr -2
+                finally
+                    gc.Free()
+
+
+            static member Coerce (a : 'a[]) : 'b[] =
+                let newLength = (a.Length * sa) / sb |> nativeint
+                let gc = GCHandle.Alloc(a, GCHandleType.Pinned)
+                try
+                    let ptr = gc.AddrOfPinnedObject() |> NativePtr.ofNativeInt<nativeint>
+
+                    NativePtr.set ptr -1 newLength
+                    NativePtr.set ptr -2 idb
+
+                    a |> unbox<'b[]>
+
+                finally
+                    gc.Free()
+
+            static member CoercedApply (f : 'b[] -> 'r) (a : 'a[]) : 'r =
+                let newLength = (a.Length * sa) / sb |> nativeint
+                let gc = GCHandle.Alloc(a, GCHandleType.Pinned)
+                try
+                    let ptr = gc.AddrOfPinnedObject() |> NativePtr.ofNativeInt<nativeint>
+
+                    let oldLength = NativePtr.get ptr -1
+                    let oldType = NativePtr.get ptr -2
+
+                    NativePtr.set ptr -1 newLength
+                    NativePtr.set ptr -2 idb
+
+                    try
+                        a |> unbox<'b[]> |> f
+                    finally
+                        NativePtr.set ptr -1 oldLength
+                        NativePtr.set ptr -2 oldType
+
+                finally
+                    gc.Free()
+
+
         type StreamWriter(stream : Stream) =
             let bin = new BinaryWriter(stream)
 
+            member x.WritePrimitive (v : 'a) =
+                let mutable v = v
+                let ptr : byte[] = &&v |> NativePtr.cast |> NativePtr.toArray sizeof<'a>
+                code { return bin.Write(ptr) }
+
             interface IWriter with
-                member x.WritePrimitive (v : 'a) =
-                    let mutable v = v
-                    let ptr : byte[] = &&v |> NativePtr.cast |> NativePtr.toArray sizeof<'a>
-                    code { return bin.Write(ptr) }
+                member x.WritePrimitive (v : 'a) = x.WritePrimitive v
+                member x.WritePrimitiveArray(data : 'a[]) =
+                    code {
+                        if isNull data then
+                            do! x.WritePrimitive -1
+                        else
+                            do! x.WritePrimitive data.Length
+                            data |> ArrayCoerce<'a, byte>.CoercedApply bin.Write
+                    }
 
                 member x.WriteBool(v : bool) =
                     code { return bin.Write(v) }
@@ -42,16 +105,27 @@ module CoderTests =
         type StreamReader(stream : Stream) =
             let bin = new BinaryReader(stream)
 
-            interface IReader with
-                member x.ReadPrimitive () : Code<'a> =
-                    let read() : 'a =
-                        let arr = bin.ReadBytes sizeof<'a>
-                        let gc = GCHandle.Alloc(arr, GCHandleType.Pinned)
-                        let res = gc.AddrOfPinnedObject() |> NativePtr.ofNativeInt |> NativePtr.read
-                        gc.Free()
-                        res
+            member x.ReadPrimitive () : Code<'a> =
+                let read() : 'a =
+                    let arr = bin.ReadBytes sizeof<'a>
+                    let gc = GCHandle.Alloc(arr, GCHandleType.Pinned)
+                    let res = gc.AddrOfPinnedObject() |> NativePtr.ofNativeInt |> NativePtr.read
+                    gc.Free()
+                    res
 
-                    code { return read() }
+                code { return read() }
+            interface IReader with
+                member x.ReadPrimitive () = x.ReadPrimitive()
+
+                member x.ReadPrimitiveArray() : Code<'a[]> =
+                    code {
+                        let! length = x.ReadPrimitive()
+                        if length < 0 then
+                            return null
+                        else
+                            let data = bin.ReadBytes(sizeof<'a> * length)
+                            return ArrayCoerce<byte, 'a>.Coerce data
+                    }
 
                 member x.ReadBool() =
                     code { return bin.ReadBoolean() }
@@ -74,19 +148,12 @@ module CoderTests =
         let toArray (v : 'a) =
             use ms = new MemoryStream()
             use w = new StreamWriter(ms)
-
-            let coder = ValueCoder.coder<'a>
-            let mutable s = emptyState
-            coder.Write(w, v).Run(&s)
+            w.Write(v)
             ms.ToArray()
 
-        let ofArray<'a> (arr : byte[]) =
-            use ms = new MemoryStream(arr)
-            use w = new StreamReader(ms)
-
-            let coder = ValueCoder.coder<'a>
-            let mutable s = emptyState
-            coder.Read(w).Run(&s)
+        let ofArray<'a> (arr : byte[]) : 'a =
+            use r = new StreamReader(new MemoryStream(arr))
+            r.Read()
 
         let roundtrip (value : 'a) : 'a =
             let arr = toArray value
@@ -124,8 +191,26 @@ module CoderTests =
         | A of int
         | B of obj
 
+    let inline simpletest a =
+        let res = roundtrip a
+        res |> should equal a
+
+
     [<Test>]
-    let ``Class``() =
+    let ``[Coder] int``() = simpletest 1
+
+    [<Test>]
+    let ``[Coder] bool``() = simpletest true
+
+    [<Test>]
+    let ``[Coder] string``() = simpletest "hi there äü³²#"
+
+    [<Test>]
+    let ``[Coder] Type``() = simpletest typeof<int * obj * string>
+
+
+    [<Test>]
+    let ``[Coder] Class``() =
         let a = Class()
         a.ClassB <- a
         a.ClassA <- 10
@@ -142,7 +227,7 @@ module CoderTests =
         ()
 
     [<Test>]
-    let ``Struct (non blittable)``() =
+    let ``[Coder] Struct (non blittable)``() =
         let mutable input = Struct()
         input.StructA <- 100
         input.StructB <- "hi there"
@@ -152,7 +237,7 @@ module CoderTests =
         test.StructB |> should equal input.StructB
 
     [<Test>]
-    let ``Struct (blittable)``() =
+    let ``[Coder] Struct (blittable)``() =
         let mutable input = BlittableStruct()
         input.BlitA <- 100
         input.BlitB <- 10.0123456
@@ -162,50 +247,76 @@ module CoderTests =
         test.BlitB |> should equal input.BlitB
 
     [<Test>]
-    let ``Record``() =
+    let ``[Coder] Record``() =
         let input = { RecA = 10; RecB = "sadsad" }
         let test = roundtrip input
         test |> should equal input
 
     [<Test>]
-    let ``Union``() =
-        let input = A 10
-        let test = roundtrip input
-        test |> should equal input
-
-        let input = B "asdsad"
-        let test = roundtrip input
-        test |> should equal input
+    let ``[Coder] Union``() =
+        simpletest (A 10)
+        simpletest (B "asdsad")
 
     [<Test>]
-    let ``Option``() =
-        let input : Option<int> = Some 10
-        let test = roundtrip input
-        test |> should equal input
+    let ``[Coder] Option<int>``() =
+        simpletest (Some 10)
+        simpletest Option<int>.None
 
-        let input : Option<int> = None
-        let test = roundtrip input
-        test |> should equal input
 
     [<Test>]
-    let ``Tuple``() =
-        let input = (10, 10.012345, "hi there")
-        let test = roundtrip input
-        test |> should equal input
+    let ``[Coder] Option<obj>``() =
+        simpletest (Some (10 :> obj))
+        simpletest Option<obj>.None
 
     [<Test>]
-    let ``Choice``() =
+    let ``[Coder] int * float * string``() =
+        simpletest (10, 10.012345, "hi there")
+
+    [<Test>]
+    let ``[Coder] Choice<int, string>``() =
         let input : Choice<int, string> = Choice1Of2 1
-        let test = roundtrip input
-        test |> should equal input
-
-        
+        simpletest input
         let input : Choice<int, string> = Choice2Of2 "bla"
-        let test = roundtrip input
-        test |> should equal input
+        simpletest input
 
     [<Test>]
-    let ``List``() =
-        let input = [1;2;3;4;5]
-        let test = roundtrip input
-        test |> should equal input
+    let ``[Coder] list<int>``() =
+        simpletest [1;2;3;4;5]
+
+    [<Test>]
+    let ``[Coder] int[]``() =
+        simpletest [|1;2;3;4;5|]
+
+    [<Test>]
+    let ``[Coder] int[,]``() =
+        let input = Array2D.init 10 10 (fun x y -> x + y)
+        simpletest input
+
+    [<Test>]
+    let ``[Coder] int[] (null)``() =
+        let input : int[] = null
+        simpletest input
+
+    [<Test>]
+    let ``[Coder] int[,] (null)``() =
+        let input : int[,] = null
+        simpletest input
+
+    [<Test>]
+    let ``[Coder] int[,,]``() =
+        let input = Array3D.init 10 10 10 (fun x y z -> x + y + z)
+        simpletest input
+
+    [<Test>]
+    let ``[Coder] obj[]``() =
+        simpletest [|"asdas" :> obj; 2 :> obj; null; [|1;2;3|] :> obj|]
+
+    [<Test>]
+    let ``[Coder] top-level types``() =
+        let arr = toArray 1
+        let o : obj = ofArray arr
+
+        o |> should equal 1
+
+        ()
+

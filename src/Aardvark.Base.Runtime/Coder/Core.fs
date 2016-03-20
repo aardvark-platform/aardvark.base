@@ -7,11 +7,13 @@ open System.Runtime.CompilerServices
 
 type IReader =
     abstract member ReadPrimitive<'a when 'a : unmanaged> : unit -> Code<'a>
+    abstract member ReadPrimitiveArray<'a when 'a : unmanaged> : unit -> Code<'a[]>
     abstract member ReadString : unit -> Code<string>
     abstract member ReadBool : unit -> Code<bool>
 
 type IWriter =
     abstract member WritePrimitive<'a when 'a : unmanaged> : 'a -> Code<unit>
+    abstract member WritePrimitiveArray<'a when 'a : unmanaged> : 'a[] -> Code<unit>
     abstract member WriteString : string -> Code<unit>
     abstract member WriteBool : bool -> Code<unit>
 
@@ -79,6 +81,9 @@ type AbstractValueCoder<'a>() =
     abstract member Write : IWriter * 'a -> Code<unit>
     abstract member Read : IReader -> Code<'a>
 
+    abstract member CodesType : bool
+    default x.CodesType = false
+
     interface IValueCoder with
         member x.ValueType = typeof<'a>
         member x.WriteUnsafe(w : IWriter,v : 'b) = 
@@ -143,6 +148,7 @@ type AbstractByRefValueCoder<'a>(useExternalStore : bool) =
                     | Some v -> v
                     | _ ->
                         let mutable self = NewObj<'a>.Create()
+                        (Code.storeLocal id self).Run(&s)
                         s <- { s with Values = Map.add id (self :> obj) s.Values }
                         x.ReadState(r, &self, &s)
                         self
