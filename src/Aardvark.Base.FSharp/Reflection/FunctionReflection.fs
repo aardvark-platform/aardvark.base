@@ -321,7 +321,7 @@ module DelegateAdapters =
         let args = Array.append args [|ret|]
 
         let generic = 
-            if ret = typeof<unit> then
+            if mi.ReturnType = typeof<System.Void> then
                 Type.GetType(typedefof<AdapterAction<_>>.FullName.Replace("1", string args.Length))
             else
                 Type.GetType(typedefof<AdapterFunc<_>>.FullName.Replace("1", string args.Length))

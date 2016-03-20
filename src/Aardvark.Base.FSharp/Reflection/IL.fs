@@ -102,6 +102,7 @@ type Local private(id : int, name : string, t : Type) =
     new(t) = Local(Interlocked.Increment(&currentId), "", t)
 
 type Instruction =
+    | Start
     | Nop
     | Break
         
@@ -127,6 +128,7 @@ type Instruction =
     | LdObj of Type
     | StObj of Type
     | NewObj of ConstructorInfo
+    | InitObj of Type
     | CastClass of Type
     | IsInstance of Type
 
@@ -162,7 +164,7 @@ type Instruction =
     | Mark of Label
     | ConditionalJump of JumpCondition * Label
     | Jump of Label
-    | Call of MethodInfo
+    | Call of MethodBase
     | CallIndirect
     | Ret
     | Switch of Label[]
@@ -507,6 +509,10 @@ module Disassembler =
 
         let (|NewObj|_|) (i : RawInstruction) =
             if i.Code = OpCodes.Newobj then Some (unbox<ConstructorInfo> i.Operand)
+            else None
+
+        let (|InitObj|_|) (i : RawInstruction) =
+            if i.Code = OpCodes.Initobj then Some (unbox<Type> i.Operand)
             else None
 
         let (|CastClass|_|) (i : RawInstruction) =
@@ -861,6 +867,7 @@ module Disassembler =
                         | Patterns.StObj t          -> yield StObj t
 
                         | Patterns.NewObj c         -> yield NewObj c
+                        | Patterns.InitObj t        -> yield InitObj t
                         | Patterns.CastClass t      -> yield CastClass t
                         | Patterns.IsInstance t     -> yield IsInstance t
                         
@@ -922,7 +929,7 @@ module Disassembler =
                             failwithf "unknown instruction: %A" i
             }
             
-        let body = Seq.toList body
+        let body = Start :: (Seq.toList body)
 
         let returnType =
             match m with
@@ -1091,7 +1098,8 @@ module Assembler =
     let private assembleInstruction (i : Instruction) =
         state {
             match i with
-                | Nop   -> do! Asm.Emit(OpCodes.Nop)
+                | Start -> ()
+                | Nop -> do! Asm.Emit(OpCodes.Nop)
                 | Break -> do! Asm.Emit(OpCodes.Break)
                 | Dup   -> 
                     let! t = Asm.Peek
@@ -1208,6 +1216,9 @@ module Assembler =
                     let! args = Asm.PopN (c.GetParameters().Length)
                     do! Asm.Emit(OpCodes.Newobj, c)
                     do! Asm.Push c.DeclaringType
+
+                | InitObj t ->
+                    do! Asm.Emit(OpCodes.Initobj, t)
 
                 | CastClass t ->    
                     let! tr = Asm.Pop
@@ -1435,12 +1446,31 @@ module Assembler =
                 do! assembleInstruction i
         }
 
-    let assembleDelegate (m : MethodDefinition) : Delegate =
+    let assembleTo (il : ILGenerator) (m : seq<Instruction>) =
+        assembleBody m {
+            generator   = il
+            labels      = Map.empty
+            locals      = Map.empty
+            stack       = []
+        } |> ignore
+
+    let assembleDelegateInternal (tdel : Type) (m : list<Instruction>) : Delegate =
+        let invoke = tdel.GetMethod("Invoke")
+        let args = invoke.GetParameters() |> Array.map (fun p -> p.ParameterType)
+
+        let owner =
+            if args.Length > 0 then 
+                let a0 = args.[0] 
+                if a0.IsInterface then typeof<obj>
+                else a0
+            else 
+                typeof<obj>
+
         let meth = 
             DynamicMethod(
                 Guid.NewGuid() |> string,
-                m.ReturnType, m.ArgumentTypes,
-                m.ArgumentTypes.[0],
+                invoke.ReturnType, args,
+                owner,
                 true
             )
 
@@ -1452,20 +1482,26 @@ module Assembler =
                 stack       = []
             }
 
-        let endState,_ = assembleBody m.Body state
+        let endState,_ = assembleBody m state
+        meth.CreateDelegate(tdel)
 
+    let assembleDelegate  (m : MethodDefinition) : Delegate =
+        let delegateType = 
+            if m.ReturnType = typeof<System.Void> then
+                if m.ArgumentTypes.Length = 0 then
+                    typeof<Action>
+                else
+                    let funcType = typedefof<Action<_>>.FullName.Replace("1", string (m.ArgumentTypes.Length)) |> Type.GetType
+                    let funcType = funcType.MakeGenericType m.ArgumentTypes
 
-        if m.ReturnType = typeof<System.Void> then
-            let funcType = typedefof<Action<_>>.FullName.Replace("1", string (m.ArgumentTypes.Length)) |> Type.GetType
-            let funcType = funcType.MakeGenericType m.ArgumentTypes
+                    funcType
+            else
+                let funcType = typedefof<Func<_>>.FullName.Replace("1", string (m.ArgumentTypes.Length + 1)) |> Type.GetType
+                let funcType = funcType.MakeGenericType (Array.append m.ArgumentTypes [|m.ReturnType|])
 
-            meth.CreateDelegate(funcType)
-        else
-            let funcType = typedefof<Func<_>>.FullName.Replace("1", string (m.ArgumentTypes.Length + 1)) |> Type.GetType
-            let funcType = funcType.MakeGenericType (Array.append m.ArgumentTypes [|m.ReturnType|])
+                funcType
 
-            meth.CreateDelegate(funcType)
-
+        assembleDelegateInternal delegateType m.Body
    
     let assembleDefinition (m : MethodDefinition) : 'a =
         let d = assembleDelegate m
@@ -1476,7 +1512,7 @@ module Assembler =
 
         assembleDefinition {
             ArgumentTypes = List.toArray args
-            ReturnType = ret
+            ReturnType = if ret = typeof<unit> then typeof<System.Void> else ret
             Body = Seq.toList body
         }
 
@@ -1554,7 +1590,14 @@ module Frontend =
 
 
     type CodeGen =
-        
+        static member concat (l : list<CodeGen<unit>>) =
+            fun s -> 
+                let mutable c = s
+                for e in l do 
+                    let (s,()) = e c
+                    c <- s
+                c, ()
+
         static member run(c : CodeGen<unit>) =
             let (s,()) = c { instructions = ConcList.empty }
             s.instructions |> ConcList.toList
@@ -1568,7 +1611,6 @@ module Frontend =
         static member emit (i : #seq<Instruction>) : CodeGen<unit> =
             fun s -> { s with instructions = ConcList.append s.instructions (ConcList.ofSeq i) }, ()
            
-
     type CodeGenBuilder() =
         
         member x.Bind(i : Instruction, f : unit -> CodeGen<'b>) = 
@@ -1596,7 +1638,7 @@ module Frontend =
 
     let codegen = CodeGenBuilder()
 
-    let inlineil = ExecutableBuilder()
+    let cil = ExecutableBuilder()
 
     [<AutoOpen>]
     module private Helpers =
@@ -1648,7 +1690,7 @@ module Frontend =
    
     type IL private() =
         static let stringFormat = typeof<String>.GetMethod("Format", [| typeof<string>; typeof<obj[]> |])
-        static let printString = typeof<Report>.GetMethod("Line", [| typeof<string>; typeof<obj[]> |])
+        static let printString = typeof<Console>.GetMethod("WriteLine", [| typeof<string>; typeof<obj[]> |])
 
         /// nop
         static member nop = Nop |> CodeGen.emit
@@ -1718,6 +1760,9 @@ module Frontend =
 
         /// creates a new object by calling the given Constructor
         static member newobj (ctor : ConstructorInfo) = ctor |> NewObj |> CodeGen.emit
+
+        /// creates a new uninitialized object
+        static member initobj (t : Type) = t |> InitObj |> CodeGen.emit
 
         /// creates a new object by calling the given Constructor
         static member newobj (e : Expr) = e |> getConstructorInfo |> IL.newobj
@@ -1837,10 +1882,10 @@ module Frontend =
 
         /// calls the given MethodInfo
         static member call (e : Expr) = 
-            e |> getMethodInfo |> Call |> CodeGen.emit
+            e |> getMethodInfo :> MethodBase |> Call |> CodeGen.emit
 
         /// calls the given MethodInfo
-        static member call (mi : MethodInfo) =
+        static member call (mi : MethodBase) =
             mi |> Call |> CodeGen.emit
             
         /// returns from the current function
@@ -1879,14 +1924,109 @@ module Frontend =
                 do! Call printString
             }
 
+        /// prints a log-line using the given local values
         static member printfn (fmt : StringFormat<'a, CodeGen<unit>>) : 'a =
             kformatf (fun fmt -> IL.println(fmt.Format, fmt.Args)) fmt
 
         static member newlabel : CodeGen<Label> = fun s -> s, Label()
         static member newlocal (t : Type) : CodeGen<Local> = fun s -> s, Local(t)
 
-module AssemblerTest =
+    [<CompilationRepresentation(CompilationRepresentationFlags.ModuleSuffix)>]
+    module ILLog =
 
+        let private lineM = typeof<Report>.GetMethod("Line", [| typeof<string>; typeof<obj[]> |])
+        let private startM = typeof<Report>.GetMethod("Begin", [| typeof<string>; typeof<obj[]> |])
+        let private startTimedM = typeof<Report>.GetMethod("BeginTimed", [| typeof<string>; typeof<obj[]> |])
+        let private stopM = typeof<Report>.GetMethod("End", [| |])
+
+        /// prints a log-line using the given local values
+        let private print (meth : MethodInfo, format : string, [<ParamArray>] args : obj[]) =
+            let v = Local(typeof<string>)
+            let arr = Local(typeof<obj[]>)
+            codegen {
+                do! LdConst (Int32 args.Length)
+                do! NewArr typeof<obj>
+                do! Stloc arr
+
+                for i in 0..args.Length-1 do
+                    do! Ldloc arr
+                    do! LdConst (Int32 i)
+                    
+                    match args.[i] with
+                        | :? Local as a ->
+    
+                            do! Ldloc a
+                            if a.Type.IsValueType then 
+                                do! Box a.Type
+                            else
+                                do! UnboxAny typeof<obj>
+                        | a ->
+                            do! LdConst (String (string a))
+
+                
+                    do! Stelem typeof<obj>
+
+                do! LdConst (String format)
+                do! Ldloc arr
+                do! Call meth
+
+                if meth.ReturnType <> typeof<System.Void> then
+                    do! IL.pop
+
+            }
+
+
+        /// prints a log-line using the given local values
+        let line (fmt : StringFormat<'a, CodeGen<unit>>) : 'a =
+            kformatf (fun fmt -> print(lineM, fmt.Format, fmt.Args)) fmt
+
+        /// prints a log-line using the given local values
+        let start (fmt : StringFormat<'a, CodeGen<unit>>) : 'a =
+            kformatf (fun fmt -> print(startM, fmt.Format, fmt.Args)) fmt
+
+        /// prints a log-line using the given local values
+        let startTimed (fmt : StringFormat<'a, CodeGen<unit>>) : 'a =
+            kformatf (fun fmt -> print(startTimedM, fmt.Format, fmt.Args)) fmt
+
+
+        /// prints a log-line using the given local values
+        let stop () : CodeGen<unit> =
+            codegen {
+                do! IL.call stopM
+                do! IL.pop
+            }
+
+    [<CompilationRepresentation(CompilationRepresentationFlags.ModuleSuffix)>]
+    module IL =
+        let substitute (f : Instruction -> CodeGen<unit>) (body : #seq<Instruction>) =
+            let body = Seq.toList body
+
+            let body = 
+                match body with
+                    | Start::_ -> body
+                    | _ -> Start::body
+            
+            let code = codegen { for i in body do do! f i } |> CodeGen.run
+
+            match code with
+                | Start::_ -> code
+                | code -> Start::code
+
+
+    [<CompilationRepresentation(CompilationRepresentationFlags.ModuleSuffix)>]
+    module MethodDefinition =
+        let substitute (f : Instruction -> CodeGen<unit>) (d : MethodDefinition) =
+            { d with Body = IL.substitute f d.Body }
+        
+    
+
+module AssemblerTest =  
+    open System.Collections.Generic
+    type Type with
+        member x.GetInvokeMethod() =
+            x.GetMethods()
+                |> Array.filter (fun mi -> mi.Name = "Invoke")
+                |> Array.maxBy (fun mi -> mi.GetParameters().Length)
 
     type TestMethods() =
         static member Add(a : int, b : int) =
@@ -1912,7 +2052,7 @@ module AssemblerTest =
 
     let testCustom() =
         let custom : int -> int -> int =
-            inlineil {
+            cil {
                 let! bad = IL.newlabel
                 let! a0 = IL.newlocal typeof<int>
                 let! a1 = IL.newlocal typeof<int>
@@ -1944,9 +2084,9 @@ module AssemblerTest =
 
     let testLambda() =
         
-        let f = Fun.Min : int * int -> int
+        let f = fun (a : WeakReference<obj>) -> isNull a
 
-        let invoke = f.GetType().GetMethod "Invoke"
+        let invoke = f.GetType().GetInvokeMethod()
         let def = Disassembler.disassemble invoke
 
         for i in def.Body do
@@ -1956,27 +2096,89 @@ module AssemblerTest =
 
 
     let testInject() =
-        let l = System.Collections.Generic.List<int>()
-        let dis = Disassembler.disassemble (typeof<System.Collections.Generic.List<int>>.GetMethod("Add", [| typeof<int> |]))
-        
-        let str = "inside List<int>::Add(int)"
+        let l = List<int>()
+        let dis = Disassembler.disassemble (typeof<List<int>>.GetMethod("Add", [| typeof<int> |]))
 
-        let injected =
-            { dis with 
-                Body = WriteLine(str)::dis.Body
+        let ass : List<int> -> int -> unit =
+            cil {
+                for i in dis.Body do
+                    match i with
+                        | Start ->
+                            let! l = IL.newlocal typeof<int>
+                            do! IL.ldarg 1
+                            do! IL.stloc l
+                            do! ILLog.start "add %A" l
+
+                        | Ret -> 
+                            do! ILLog.stop()
+                            do! IL.ret
+
+                        | Stfld f ->
+                            let! l = IL.newlocal f.FieldType
+                            do! IL.stloc l
+                            do! IL.ldloc l
+                            do! IL.stfld f
+                            do! ILLog.line "%s <- %A" f.Name l
+
+                        | Ldlen ->
+                            let! l = IL.newlocal typeof<int>
+                            do! IL.ldlen
+                            do! IL.stloc l
+                            do! ILLog.line "length = %A" l
+                            do! IL.ldloc l
+                        
+//                        | Ldfld f ->
+//                            let! l = IL.newlocal f.FieldType
+//                            do! IL.ldfld f
+//                            do! IL.stloc l
+//                            do! ILLog.line "%s = %A" f.Name l
+//                            do! IL.ldloc l
+
+
+                        | Call mi ->
+
+                            do! ILLog.start "call %A" mi.Name
+                            let parameters = mi.GetParameters()
+                            let locals = Array.zeroCreate parameters.Length
+                            let index = ref (parameters.Length - 1)
+                            for _ in 0..parameters.Length-1 do
+                                let p = parameters.[!index]
+                                let! l = IL.newlocal p.ParameterType
+                                do! IL.stloc l
+
+                                do! ILLog.line "%s: %A" p.Name l
+
+                                locals.[!index] <- l
+                                index := !index - 1 
+
+                            for l in locals do
+                                do! IL.ldloc l
+
+
+                            do! IL.call mi
+                            do! ILLog.stop()
+
+                        | i -> do! i
             }
 
-        let ass : System.Collections.Generic.List<int> -> int -> unit = 
-            Assembler.assembleDefinition injected
 
         
         ass l 2
         ass l 3
-        printfn "%A" (Seq.toList l)
+        ass l 4
+        ass l 5
+        ass l 6
+        ass l 7
+        Log.line "%A" (Seq.toList l)
 
     let run() =
-        testCustom()
+        testInject()
         //testLambda()
+        // let a : StringFormat = formatf "sepp: %A hugo: %f" 1 1.0
+        // a.Format = "sepp: {0} hugo: {1}"
+        // a.Args = [| 1 :> obj; 1.0 :> obj |]
+
+
         //testCustom()
         //listAdd()
         //testInject()
