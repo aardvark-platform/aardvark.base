@@ -461,6 +461,15 @@ module ValueCoderTypes =
                 return! inner.Read(r)
             }
 
+    type EnumCoder<'e, 'v when 'v : unmanaged>() =
+        inherit AbstractValueCoder<'e>()
+        let inner = PrimitiveCoder<'v>()
+
+        override x.Read(r) =
+            inner.Read(r) |> State.map unbox<'e>
+
+        override x.Write(w, v) =
+            inner.Write(w, unbox v)
 
     let tryGetSpecialCoderType (t : Type) : Option<Type> =
         // TODO: resolve user-given coder-types
@@ -483,6 +492,10 @@ module ValueCoderTypes =
 
                 if valueType.IsBlittable then
                     typedefof<PrimitiveCoder<int>>.MakeGenericType [|valueType|]
+
+                elif valueType.IsEnum then
+                    let realType = valueType.GetEnumUnderlyingType()
+                    typedefof<EnumCoder<_,int>>.MakeGenericType [|valueType; realType|]
 
                 elif valueType = typeof<string> then
                     typeof<StringCoder>

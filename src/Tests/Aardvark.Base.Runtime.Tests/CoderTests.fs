@@ -191,6 +191,17 @@ module CoderTests =
         | A of int
         | B of obj
 
+    type Enum32 =
+        | A = 1
+        | B = 2
+        | C = 3
+
+    type Enum8 =
+        | A = 1uy
+        | B = 2uy
+        | C = 3uy
+
+
     let inline simpletest a =
         let res = roundtrip a
         res |> should equal a
@@ -258,6 +269,12 @@ module CoderTests =
         simpletest (B "asdsad")
 
     [<Test>]
+    let ``[Coder] Enum32``() = simpletest Enum32.A
+
+    [<Test>]
+    let ``[Coder] Enum8``() = simpletest Enum8.A
+
+    [<Test>]
     let ``[Coder] Option<int>``() =
         simpletest (Some 10)
         simpletest Option<int>.None
@@ -310,6 +327,9 @@ module CoderTests =
     [<Test>]
     let ``[Coder] obj[]``() =
         simpletest [|"asdas" :> obj; 2 :> obj; null; [|1;2;3|] :> obj|]
+
+
+
 
     [<Test>]
     let ``[Coder] top-level types``() =
