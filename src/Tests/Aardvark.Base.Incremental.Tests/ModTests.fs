@@ -565,16 +565,18 @@ module ``Basic Mod Tests`` =
     [<AutoOpen>]
     module Validation =
         open Aardvark.Base.Incremental.Validation
+        open System.IO
+
         [<Test>]
         let ``[Mod] DotSerialization`` () =
             let x = Mod.init 10
             let y = Mod.init 20
             let z = Mod.map2 ((+)) x y
-            z.DumpDotFile (1000, "test.dot") |> ignore
+            z.DumpDotFile (1000, Path.GetTempFileName()) |> ignore
 
         [<Test>]
         let ``[Mod] DgmlSerialization`` () =
             let x = Mod.init 10
             let y = Mod.init 20
             let z = Mod.map2 ((+)) x y
-            z.DumpDgml (1000, "test.dgml") |> ignore
+            z.DumpDgml (1000, Path.GetTempFileName()) |> ignore

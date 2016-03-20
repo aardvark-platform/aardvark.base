@@ -236,10 +236,25 @@ namespace Aardvark.Base
                                                     System.Diagnostics.Debug.Flush(); })
                         { Width = 100, Verbosity = 15, /* LogCompleteLinesOnly = true, */ };
 
+
+        private static string GetDefaultLogFile()
+        {
+            try
+            {
+                File.WriteAllText("Aardvark.log", "");
+                return "Aardvark";
+            }
+            catch (Exception)
+            {
+                return Path.GetTempFileName();
+            }
+            
+        }
+
         /// <summary>
         /// The LogFileName may be modified before the first log message is written.
         /// </summary>
-        public static string LogFileName = @"Aardvark";
+        public static string LogFileName = GetDefaultLogFile();
 
         /// <summary>
         /// Creates a stream writer writing to LogFileName but retries, if file is

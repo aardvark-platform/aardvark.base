@@ -47,8 +47,7 @@ type CoderExtensions private() =
 
 module CoderTests =
     
-    do  IntrospectionProperties.CustomEntryAssembly <- System.Reflection.Assembly.Load ("Aardvark.Base.Runtime.Tests.dll")
-        Aardvark.Init()
+    do Aardvark.Init()
 
     [<AutoOpen>]
     module Utilities = 
