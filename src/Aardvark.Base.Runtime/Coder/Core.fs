@@ -147,32 +147,39 @@ type AbstractByRefValueCoder<'a>(useExternalStore : bool) =
         { new Code<'a>() with
             override __.Run(s) = 
                 let id = r.ReadPrimitive().Run(&s)
-                let load = 
-                    if useExternalStore then Code.tryLoad id
-                    else Code.tryLoadLocal id
 
-                match load.Run(&s) with
-                    | Some v -> v
-                    | _ ->
-                        let mutable self = NewObj<'a>.Create()
-                        (Code.storeLocal id self).Run(&s)
-                        s <- { s with Values = Map.add id (self :> obj) s.Values }
-                        x.ReadState(r, &self, &s)
-                        self
+                if id = Guid.Empty then
+                    Unchecked.defaultof<'a>
+                else
+                    let load = 
+                        if useExternalStore then Code.tryLoad id
+                        else Code.tryLoadLocal id
+
+                    match load.Run(&s) with
+                        | Some v -> v
+                        | _ ->
+                            let mutable self = NewObj<'a>.Create()
+                            (Code.storeLocal id self).Run(&s)
+                            s <- { s with Values = Map.add id (self :> obj) s.Values }
+                            x.ReadState(r, &self, &s)
+                            self
         }
 
     override x.Write(w,v) =
         { new Code<unit>() with
             override __.RunUnit(s) = 
-                let store =
-                    if useExternalStore then Code.tryStore v
-                    else Code.tryStoreLocal v
+                if isNull (v :> obj) then
+                    w.WritePrimitive(Guid.Empty).Run(&s)
+                else
+                    let store =
+                        if useExternalStore then Code.tryStore v
+                        else Code.tryStoreLocal v
                 
-                let (isNew, id) = store.Run(&s)
-                w.WritePrimitive(id).Run(&s)
+                    let (isNew, id) = store.Run(&s)
+                    w.WritePrimitive(id).Run(&s)
 
-                if isNew then
-                    x.WriteState(w, v, &s)
+                    if isNew then
+                        x.WriteState(w, v, &s)
         }
 
     new() = AbstractByRefValueCoder(false)
