@@ -1,9 +1,9 @@
-﻿namespace Aardvark.Base
+﻿namespace Aardvark.Base.Runtime
 
 open System
 open System.Reflection
 open System.Runtime.CompilerServices
-
+open Aardvark.Base.Runtime
 
 type IReader =
     abstract member ReadPrimitive<'a when 'a : unmanaged> : unit -> Code<'a>

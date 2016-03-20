@@ -1,11 +1,11 @@
-﻿namespace Aardvark.Base
+﻿namespace Aardvark.Base.Runtime
 
 open System
 open System.Reflection
 open System.Runtime.CompilerServices
 open System.Runtime.InteropServices
 open Aardvark.Base
-
+open Aardvark.Base.Runtime
 
 type IDatabase =
     abstract member TryStore    : value : 'a    * [<Out>] id : byref<Guid>      -> bool

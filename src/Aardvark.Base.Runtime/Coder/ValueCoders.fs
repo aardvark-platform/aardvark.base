@@ -1,4 +1,4 @@
-﻿namespace Aardvark.Base
+﻿namespace Aardvark.Base.Runtime
 
 open System
 open System.Reflection
@@ -7,6 +7,8 @@ open System.Collections.Concurrent
 open System.Runtime.InteropServices
 open System.Runtime.CompilerServices
 open Microsoft.FSharp.Reflection
+open Aardvark.Base
+open Aardvark.Base.Runtime
 
 module AutoCoders =
     open Aardvark.Base.IL
