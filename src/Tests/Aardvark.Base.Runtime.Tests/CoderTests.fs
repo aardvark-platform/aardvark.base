@@ -203,3 +203,9 @@ module CoderTests =
         let input : Choice<int, string> = Choice2Of2 "bla"
         let test = roundtrip input
         test |> should equal input
+
+    [<Test>]
+    let ``List``() =
+        let input = [1;2;3;4;5]
+        let test = roundtrip input
+        test |> should equal input

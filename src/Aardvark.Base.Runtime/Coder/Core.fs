@@ -81,8 +81,17 @@ type AbstractValueCoder<'a>() =
 
     interface IValueCoder with
         member x.ValueType = typeof<'a>
-        member x.WriteUnsafe(w,v) = x.Write(w, unbox v)
-        member x.ReadUnsafe(r) = x.Read(r) |> State.map unbox
+        member x.WriteUnsafe(w : IWriter,v : 'b) = 
+            if isNull (v :> obj) then x.Write(w, Unchecked.defaultof<'a>)
+            else x.Write(w, unbox v)
+
+        member x.ReadUnsafe(r : IReader) : Code<'b> = 
+            x.Read(r) |> State.map (fun v ->
+                if isNull (v :> obj) then 
+                    Unchecked.defaultof<'b>
+                else
+                    unbox v
+            )
 
     interface IValueCoder<'a> with
         member x.Write(w,v) = x.Write(w, v)
