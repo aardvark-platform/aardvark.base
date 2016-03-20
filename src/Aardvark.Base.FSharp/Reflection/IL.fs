@@ -128,6 +128,7 @@ type Instruction =
     | LdObj of Type
     | StObj of Type
     | NewObj of ConstructorInfo
+    | InitObj of Type
     | CastClass of Type
     | IsInstance of Type
 
@@ -510,6 +511,10 @@ module Disassembler =
             if i.Code = OpCodes.Newobj then Some (unbox<ConstructorInfo> i.Operand)
             else None
 
+        let (|InitObj|_|) (i : RawInstruction) =
+            if i.Code = OpCodes.Initobj then Some (unbox<Type> i.Operand)
+            else None
+
         let (|CastClass|_|) (i : RawInstruction) =
             if i.Code = OpCodes.Castclass then Some (unbox<Type> i.Operand)
             else None
@@ -862,6 +867,7 @@ module Disassembler =
                         | Patterns.StObj t          -> yield StObj t
 
                         | Patterns.NewObj c         -> yield NewObj c
+                        | Patterns.InitObj t        -> yield InitObj t
                         | Patterns.CastClass t      -> yield CastClass t
                         | Patterns.IsInstance t     -> yield IsInstance t
                         
@@ -1210,6 +1216,9 @@ module Assembler =
                     let! args = Asm.PopN (c.GetParameters().Length)
                     do! Asm.Emit(OpCodes.Newobj, c)
                     do! Asm.Push c.DeclaringType
+
+                | InitObj t ->
+                    do! Asm.Emit(OpCodes.Initobj, t)
 
                 | CastClass t ->    
                     let! tr = Asm.Pop
@@ -1751,6 +1760,9 @@ module Frontend =
 
         /// creates a new object by calling the given Constructor
         static member newobj (ctor : ConstructorInfo) = ctor |> NewObj |> CodeGen.emit
+
+        /// creates a new uninitialized object
+        static member initobj (t : Type) = t |> InitObj |> CodeGen.emit
 
         /// creates a new object by calling the given Constructor
         static member newobj (e : Expr) = e |> getConstructorInfo |> IL.newobj

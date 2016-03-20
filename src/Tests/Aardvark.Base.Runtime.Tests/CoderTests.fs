@@ -8,6 +8,7 @@ open System.Threading
 open System.Threading.Tasks
 open System.Collections.Generic
 open System.Runtime.InteropServices
+open System.Runtime.CompilerServices
 open Microsoft.FSharp.NativeInterop
 open Aardvark.Base
 open Aardvark.Base.Incremental
@@ -17,8 +18,38 @@ open NUnit.Framework
 open FsUnit
 open System.IO
 
+[<AbstractClass; Sealed; Extension>]
+type CoderExtensions private() =
+    
+    [<Extension>]
+    static member Code(c : ICoder, value : ref<Symbol>) =
+        code {
+            if c.IsReading then 
+                let! str = c.ReadString()
+                value := Symbol.Create str
+            else
+                do! c.WriteString (value.Value.ToString())
+        }
+
+    [<Extension>]
+    static member Code(c : ICoder, l : ref<list<'a>>) =
+        code {
+            if c.IsReading then
+                let! arr = c.ReadState()
+                l := Array.toList arr
+            else
+                let arr = !l |> List.toArray
+                do! c.WriteState arr
+        }
+
+    
+
+
 module CoderTests =
     
+    do  IntrospectionProperties.CustomEntryAssembly <- System.Reflection.Assembly.Load ("Aardvark.Base.Runtime.Tests.dll")
+        Aardvark.Init()
+
     [<AutoOpen>]
     module Utilities = 
         type private ArrayCoerce<'a, 'b when 'a : unmanaged and 'b : unmanaged>() =
@@ -99,6 +130,15 @@ module CoderTests =
                 member x.WriteString (str : string) =
                     code { return bin.Write(str) }
 
+            interface IReader with
+                member x.ReadPrimitive() = failwith "[StreamWriter] cannot read"
+                member x.ReadPrimitiveArray() = failwith "[StreamWriter] cannot read"
+                member x.ReadBool() = failwith "[StreamWriter] cannot read"
+                member x.ReadString() = failwith "[StreamWriter] cannot read"
+
+            interface ICoder with
+                member x.IsReading = false
+
             interface IDisposable with
                 member x.Dispose() = bin.Dispose()
 
@@ -133,17 +173,17 @@ module CoderTests =
                 member x.ReadString () =
                     code { return bin.ReadString() }
 
+            interface IWriter with
+                member x.WritePrimitive _ = failwith "[StreamReader] cannot write"
+                member x.WritePrimitiveArray _ = failwith "[StreamReader] cannot write"
+                member x.WriteBool _ = failwith "[StreamReader] cannot write"
+                member x.WriteString _ = failwith "[StreamReader] cannot write"
+
+            interface ICoder with
+                member x.IsReading = true
+
             interface IDisposable with
                 member x.Dispose() = bin.Dispose()
-
-        let emptyState =
-            {
-                Version         = Version(0,0,1)
-                MemberStack     = []
-                References      = RefMap.empty
-                Values          = Map.empty
-                Database        = Unchecked.defaultof<_>
-            }
 
         let toArray (v : 'a) =
             use ms = new MemoryStream()
@@ -158,6 +198,11 @@ module CoderTests =
         let roundtrip (value : 'a) : 'a =
             let arr = toArray value
             ofArray arr
+
+        let inline simpletest a =
+            let res = roundtrip a
+            res |> should equal a
+
 
     type Class =
         class
@@ -202,13 +247,19 @@ module CoderTests =
         | C = 3uy
 
 
-    let inline simpletest a =
-        let res = roundtrip a
-        res |> should equal a
+    [<Test>]
+    let ``[Coder] int``() = simpletest 1
+
+    [<Test>]
+    let ``[Coder] decimal``() = simpletest (1.0m)
+
+    [<Test>]
+    let ``[Coder] Symbol``() = simpletest (Symbol.Create "blabla")
 
 
     [<Test>]
-    let ``[Coder] int``() = simpletest 1
+    let ``[Coder] DateTime``() = simpletest DateTime.Now
+
 
     [<Test>]
     let ``[Coder] bool``() = simpletest true
@@ -332,11 +383,22 @@ module CoderTests =
 
 
     [<Test>]
-    let ``[Coder] top-level types``() =
+    let ``[Coder] write int read obj``() =
         let arr = toArray 1
         let o : obj = ofArray arr
-
         o |> should equal 1
 
-        ()
+    [<Test>]
+    let ``[Coder] write obj(int) read int``() =
+        let arr = toArray (1 :> obj)
+        let o : int = ofArray arr
+        o |> should equal 1
 
+    [<Test>]
+    let ``[Coder] write obj(float) read int``() =
+        let arr = toArray (1.0 :> obj)
+        try
+            let o : int = ofArray arr
+            failwith "should not be able to read int when double was written"
+        with _ ->
+            ()

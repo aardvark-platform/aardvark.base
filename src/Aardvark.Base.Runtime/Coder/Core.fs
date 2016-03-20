@@ -17,6 +17,13 @@ type IWriter =
     abstract member WriteString : string -> Code<unit>
     abstract member WriteBool : bool -> Code<unit>
 
+type ICoder =   
+    inherit IReader
+    inherit IWriter
+    abstract member IsReading : bool
+
+
+
 type IValueCoder =
     abstract member ValueType : Type
     abstract member ReadUnsafe : IReader -> Code<'a>
@@ -169,6 +176,25 @@ type AbstractByRefValueCoder<'a>(useExternalStore : bool) =
         }
 
     new() = AbstractByRefValueCoder(false)
+
+
+[<AbstractClass>]
+type CustomCoder<'a>() =
+    inherit AbstractValueCoder<'a>()
+
+    abstract member WriteState : IWriter * 'a * byref<CodeState> -> unit
+    abstract member ReadState : IReader * byref<CodeState> -> 'a
+
+
+    override x.Read(r) =
+        { new Code<'a>() with
+            override __.Run(s) = x.ReadState(r, &s)
+        }
+
+    override x.Write(w,v) =
+        { new Code<unit>() with
+            override __.RunUnit(s) = x.WriteState(w, v, &s)
+        }
 
 
 

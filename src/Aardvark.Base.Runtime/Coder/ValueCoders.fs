@@ -176,6 +176,177 @@ module AutoCoders =
         }
 
 
+module CustomCoders =
+    open Aardvark.Base.IL
+    open Aardvark.Base.IL.TypeBuilder
+
+    let private extensions =
+        Introspection.GetAllMethodsWithAttribute<ExtensionAttribute>()
+            |> Seq.choose (fun t -> 
+                let meth = t.E0
+                let args = meth.GetParameters() |> Array.map (fun p -> p.ParameterType)
+                
+                if meth.Name = "Code" && args.Length = 2 && args.[0] = typeof<ICoder> then
+                    let codedType = args.[1]
+                    let ret = meth.ReturnType
+                    if codedType.IsGenericType && codedType.GetGenericTypeDefinition() = typedefof<ref<_>> && ret = typeof<Code<unit>> then
+                        let valueType = codedType.GetGenericArguments().[0]
+
+                        if valueType.ContainsGenericParameters then
+                            Some (valueType.GetGenericTypeDefinition(), meth)
+                        else
+                            Some (valueType, meth)
+                    else
+                        None
+
+                else
+                    None
+                    
+               )
+            |> Dictionary.ofSeq
+
+    type Ref<'a>() =
+        static member Create() = ref Unchecked.defaultof<'a>
+
+    let buildCustomCoder (valueType : Type) (codeMethod : MethodInfo) =
+        
+        let baseType = typedefof<CustomCoder<_>>.MakeGenericType [|valueType|]
+        let stateRefType = typeof<CodeState>.MakeByRefType()
+        let run = typeof<State<CodeState, unit>>.GetMethod "RunUnit"
+
+        let valueRef = typedefof<ref<_>>.MakeGenericType [|valueType|]
+        let refField = valueRef.GetField("contents@")
+
+        let emptyRef = typedefof<Ref<_>>.MakeGenericType([|valueType|]).GetMethod("Create", BindingFlags.AnyStatic)
+
+        newtype {
+            do! inh baseType
+
+            // override WriteState
+            do! mem typeof<Void> "WriteState" [ typeof<IWriter>; valueType; stateRefType ] (
+                    codegen {
+                        // load writer
+                        //   stack = [writer]
+                        do! IL.ldarg 1
+
+                        // load the value and wrap it in a ref
+                        //   stack = [ref value; writer]
+                        do! IL.ldarg 2
+                        let ctor = valueRef.GetConstructor [|valueType|]
+                        do! IL.newobj ctor
+
+                        // call the code method
+                        //   stack = [coder]
+                        do! IL.call codeMethod
+
+                        // load state-ref
+                        //   stack = [&state; coder]
+                        do! IL.ldarg 3
+
+                        // call Code<unit>.RunUnit
+                        //   stack = []
+                        do! IL.call run
+
+                        do! IL.ret
+                    }
+                )
+
+            // override ReadState
+            do! mem valueType "ReadState" [ typeof<IReader>; stateRefType ] (
+                    codegen {
+                        let! r = IL.newlocal valueRef
+                        
+                        // load reader 
+                        //   stack = [reader]
+                        do! IL.ldarg 1
+
+
+                        // create a ref and load it onto the stack
+                        //   stack = [ref value; reader]
+                        do! IL.call emptyRef
+                        do! IL.stloc r
+                        do! IL.ldloc r
+
+                        // call the code method
+                        //   stack = [coder]
+                        do! IL.call codeMethod
+
+                        // load state-ref
+                        //   stack = [&state; coder]
+                        do! IL.ldarg 2
+
+                        // call Code<unit>.RunUnit
+                        //   stack = []
+                        do! IL.call run
+
+
+                        // dereference the ref
+                        //   stack = [!ref]
+                        do! IL.ldloc r
+                        do! IL.ldfld refField
+
+
+                        do! IL.ret
+                    }
+                )
+
+            // define a ctor resolving all needed value-coders
+            do! ctor [ ] (
+                    codegen {
+                        do! IL.ldarg 0
+                        do! IL.call (baseType.GetConstructor [||])
+                        do! IL.ret
+                    }
+                )
+        }
+
+
+
+
+    let tryGetCustomCoderType (valueType : Type) =
+
+        let valueType =
+            if valueType.IsByRef then valueType.GetElementType()
+            else valueType
+
+        let meth = valueType.GetMethod("Code", BindingFlags.AnyStatic, Type.DefaultBinder, [|typeof<ICoder>; valueType.MakeByRefType()|], null)
+
+        if not (isNull meth) && meth.ReturnType = typeof<Code<unit>> then
+            let coder = buildCustomCoder valueType meth
+            Some coder
+        else
+            let lookup = 
+                if valueType.IsGenericType then valueType.GetGenericTypeDefinition()
+                else valueType 
+
+            match extensions.TryGetValue lookup with
+                | (true, meth) ->
+                    let meth = 
+                        if lookup = valueType then Some meth
+                        else 
+                            let parType = meth.GetParameters().[1].ParameterType.GetGenericArguments().[0]
+
+                            let assignment =
+                                Array.zip (parType.GetGenericArguments()) (valueType.GetGenericArguments())
+                                    |> Dictionary.ofArray
+
+                            let methArgs = 
+                                meth.GetGenericArguments()
+                                    |> Array.map (fun a -> assignment.[a])
+
+                            let meth = meth.MakeGenericMethod methArgs
+
+                            Some meth
+
+                    match meth with
+                        | Some meth ->    
+                            let coder = buildCustomCoder valueType meth
+                            Some coder
+                        | _ ->
+                            None
+                | _ ->
+                    None
+
 module ValueCoderTypes =
     
     let coderTypeCache = ConcurrentDictionary<Type, Type>()
@@ -457,8 +628,11 @@ module ValueCoderTypes =
 
         override x.Read(r) =
             code {
-                let! _ = typeCoder.Read(r)
-                return! inner.Read(r)
+                let! t = typeCoder.Read(r)
+                if typeof<'a>.IsAssignableFrom t then
+                    return! inner.Read(r)
+                else
+                    return failwithf "cannot reinterpret %A as %A" t typeof<'a>
             }
 
     type EnumCoder<'e, 'v when 'v : unmanaged>() =
@@ -472,8 +646,7 @@ module ValueCoderTypes =
             inner.Write(w, unbox v)
 
     let tryGetSpecialCoderType (t : Type) : Option<Type> =
-        // TODO: resolve user-given coder-types
-        None
+        CustomCoders.tryGetCustomCoderType t
 
     let rec resolve (valueType : Type) : Type =
         match tryGetSpecialCoderType valueType with
@@ -531,8 +704,12 @@ module ValueCoderTypes =
     and get (t : Type) =
         coderTypeCache.GetOrAdd(t, resolve)
 
+
+
 module ValueCoder =
     open ValueCoderTypes
+
+    
 
     type private Resolver private() =
         
@@ -642,6 +819,17 @@ type ReaderWriterExtensions() =
         let mutable s = emptyState
         c.Read(this).Run(&s)
 
+
+
+    [<Extension>]
+    static member WriteState(this : IWriter, value : 'a) =
+        let c = ValueCoder.coder<'a>
+        c.Write(this, value)
+
+    [<Extension>]
+    static member ReadState(this : IReader) : Code<'a> =
+        let c = ValueCoder.coder<'a>
+        c.Read(this)
 
 
 
