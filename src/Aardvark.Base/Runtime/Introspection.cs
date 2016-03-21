@@ -542,12 +542,25 @@ namespace Aardvark.Base
 
         private void WriteCacheFile(Dictionary<string, Tuple<DateTime, bool>> cache)
         {
-            if (File.Exists(CacheFile)) File.Delete(CacheFile);
-
-            var formatter = new BinaryFormatter();
-            using (var stream = new FileStream(CacheFile, FileMode.CreateNew))
+            if (string.IsNullOrEmpty(CacheFile))
             {
-                formatter.Serialize(stream, cache);
+                Report.Warn("Could not write cache file since CacheFile was null or empty");
+            }
+            else
+            {
+                try
+                {
+                    if (File.Exists(CacheFile)) File.Delete(CacheFile);
+
+                    var formatter = new BinaryFormatter();
+                    using (var stream = new FileStream(CacheFile, FileMode.CreateNew))
+                    {
+                        formatter.Serialize(stream, cache);
+                    }
+                } catch(Exception ex)
+                {
+                    Report.Warn("Could not write cache file: {0}", ex.Message);
+                }
             }
         }
 
