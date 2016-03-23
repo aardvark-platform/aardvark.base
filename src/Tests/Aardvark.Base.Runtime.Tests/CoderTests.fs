@@ -42,12 +42,15 @@ type CoderExtensions private() =
                 do! c.WriteState arr
         }
 
-    
 
 
 module CoderTests =
-    
-    do  IntrospectionProperties.CustomEntryAssembly <- System.Reflection.Assembly.Load ("Aardvark.Base.Runtime.Tests.dll")
+    open Aardvark.Base.Runtime.FieldCoders
+
+    do  let ass = typeof<CoderExtensions>.Assembly
+        System.Environment.CurrentDirectory <- System.IO.Path.GetDirectoryName(ass.Location)
+        IntrospectionProperties.CustomEntryAssembly <- ass
+        
         Aardvark.Init()
 
     [<AutoOpen>]
@@ -204,6 +207,86 @@ module CoderTests =
             res |> should equal a
 
 
+
+    [<Version(1)>]
+    type FieldCodedClass (a : int, b : float32) =
+
+        member x.A = a
+        member x.B = b
+
+        override x.ToString() =
+            sprintf "{ A = %A; B = %A }" a b
+
+        override x.GetHashCode() = HashCode.Combine(a.GetHashCode(), b.GetHashCode())
+
+        override x.Equals o =
+            match o with
+                | :? FieldCodedClass as o -> a = o.A && b = o.B
+                | _ -> false
+
+        member x.Coders(v : int) =
+            coders {
+                do! a <-> ValueCoder.coder
+
+                if v < 1 then
+                    do! b <-> (ValueCoder.coder<float> |>> float32)
+                else
+                    do! b <-> ValueCoder.coder
+            }
+
+    type ExtensionFieldCodedClass (a : int, b : float32) =
+        let mutable a = a
+        let mutable b = b
+        member x.A
+            with get() = a
+            and private set v = a <- v
+
+        member x.B
+            with get() = b
+            and private set v = b <- v
+
+        override x.ToString() =
+            sprintf "{ A = %A; B = %A }" a b
+
+        override x.GetHashCode() = HashCode.Combine(a.GetHashCode(), b.GetHashCode())
+
+        override x.Equals o =
+            match o with
+                | :? ExtensionFieldCodedClass as o -> a = o.A && b = o.B
+                | _ -> false
+
+
+    let mutable extensionInvoked = false
+
+    [<Extension>]
+    type FieldCodeableExtension private() =
+
+//        [<Extension; Version(1)>]
+//        static member Coders(x : ExtensionFieldCodedClass, v : int) =
+//            extensionInvoked <- true
+//            coders {
+//                do! x.A <-> ValueCoder.coder
+//
+//                if v < 1 then
+//                    do! x.B <-> (ValueCoder.coder<float> |>> float32)
+//                else
+//                    do! x.B <-> ValueCoder.coder
+//            }
+
+        [<Extension; Version(1)>]
+        static member Coders(x : ExtensionFieldCodedClass, v : int) =
+            extensionInvoked <- true
+            let a = typeof<ExtensionFieldCodedClass>.GetProperty("A")
+            let b = typeof<ExtensionFieldCodedClass>.GetProperty("B")
+            [
+                yield Property(a, ValueCoder.coder<int>)
+                if v < 1 then
+                    yield Property(b, ValueCoder.coder<float> |>> float32)
+                else
+                    yield Property(b, ValueCoder.coder<float32>)
+                    
+            ]
+
     type Class =
         class
             val mutable public ClassA : int
@@ -211,6 +294,7 @@ module CoderTests =
 
             new() = { ClassA = 0; ClassB = null }
         end
+
 
     type Struct =
         struct
@@ -402,3 +486,33 @@ module CoderTests =
             failwith "should not be able to read int when double was written"
         with _ ->
             ()
+
+    [<Test>]
+    let ``[Coder] FieldCodedClass``() =
+
+        let v0Stub = 
+            [|
+                0x8Auy; 0x01uy; 0x41uy; 0x61uy; 0x72uy; 0x64uy; 0x76uy; 0x61uy; 0x72uy; 0x6Buy; 0x2Euy; 0x42uy; 0x61uy; 0x73uy; 0x65uy; 0x2Euy; 0x52uy; 0x75uy; 0x6Euy; 0x74uy; 0x69uy; 0x6Duy; 0x65uy; 0x2Euy; 0x54uy; 0x65uy; 0x73uy; 0x74uy; 0x73uy; 0x2Euy; 0x43uy; 0x6Fuy; 0x64uy; 0x65uy; 0x72uy; 0x54uy; 0x65uy; 0x73uy; 0x74uy; 0x73uy; 0x2Buy; 0x46uy; 0x69uy; 0x65uy; 0x6Cuy; 0x64uy; 0x43uy; 0x6Fuy; 0x64uy; 0x65uy; 0x64uy; 0x43uy; 0x6Cuy; 0x61uy; 0x73uy; 0x73uy; 0x2Cuy; 0x20uy; 0x41uy; 0x61uy; 0x72uy; 0x64uy; 0x76uy; 0x61uy; 0x72uy; 0x6Buy; 0x2Euy; 0x42uy; 0x61uy; 0x73uy; 0x65uy; 0x2Euy; 0x52uy; 0x75uy; 0x6Euy; 0x74uy; 0x69uy; 0x6Duy; 0x65uy; 0x2Euy; 0x54uy; 0x65uy; 0x73uy; 0x74uy; 0x73uy; 0x2Cuy; 0x20uy; 0x56uy; 0x65uy; 0x72uy; 0x73uy; 0x69uy; 0x6Fuy; 0x6Euy; 0x3Duy; 0x30uy; 0x2Euy; 0x30uy; 0x2Euy; 0x30uy; 0x2Euy; 0x30uy; 0x2Cuy; 0x20uy; 0x43uy; 0x75uy; 0x6Cuy; 0x74uy; 0x75uy; 0x72uy; 0x65uy; 0x3Duy; 0x6Euy; 0x65uy; 0x75uy; 0x74uy; 0x72uy; 0x61uy; 0x6Cuy; 0x2Cuy; 0x20uy; 0x50uy; 0x75uy; 0x62uy; 0x6Cuy; 0x69uy; 0x63uy; 0x4Buy; 0x65uy; 0x79uy; 0x54uy; 0x6Fuy; 0x6Buy; 0x65uy; 0x6Euy; 0x3Duy; 0x6Euy; 0x75uy; 0x6Cuy; 0x6Cuy; 0x4Cuy; 0xADuy; 0x59uy; 0x1Euy; 0x16uy; 0xE4uy; 0x5Auy; 0x47uy; 0xB7uy; 0xEAuy; 0xBBuy; 0x25uy; 0xBFuy; 0x8Auy; 0xC0uy; 0x44uy; 0x00uy; 0x00uy; 0x00uy; 0x00uy; 
+                // int : 0x01uy; 0x00uy; 0x00uy; 0x00uy; 
+                // float : 0x00uy; 0x00uy; 0x00uy; 0x00uy; 0x00uy; 0x00uy; 0xF0uy; 0x3Fuy
+            |]
+
+        let v0Data (a : int) (b : float) =
+            Array.concat [
+                v0Stub
+                BitConverter.GetBytes(a)
+                BitConverter.GetBytes(b)
+            ]
+
+        v0Data 1 1.0 |> ofArray<FieldCodedClass> |> should equal (FieldCodedClass(1, 1.0f))
+        v0Data 2 5.0 |> ofArray<FieldCodedClass> |> should equal (FieldCodedClass(2, 5.0f))
+
+        simpletest (FieldCodedClass(1, 1.0f))
+
+
+
+    [<Test>]
+    let ``[Coder] ExtensionFieldCodedClass``() =
+        simpletest (ExtensionFieldCodedClass(1, 1.0f))
+        extensionInvoked |> should be True
+

@@ -63,6 +63,7 @@
   <ItemGroup>
     <Compile Include="DynamicCode.fs" />
     <Compile Include="CoderTests.fs" />
+    <Compile Include="ReflectionTests.fs" />
     <Content Include="app.config" />
   </ItemGroup>
   <ItemGroup>

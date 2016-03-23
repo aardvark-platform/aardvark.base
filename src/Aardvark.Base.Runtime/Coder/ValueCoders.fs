@@ -349,6 +349,321 @@ module CustomCoders =
                 | _ ->
                     None
 
+type VersionRangeAttribute(min : int, max : int) =
+    inherit Attribute()
+
+    member x.Min = min
+    member x.Max = max
+
+    new (max : int) = VersionRangeAttribute(Int32.MinValue, max)
+          
+type VersionAttribute(v : int) =
+    inherit Attribute()
+        
+    member x.Version = v  
+
+[<StructuredFormatDisplay("{AsString}")>]
+type PartialCoder =
+    | Field of FieldInfo * IValueCoder
+    | Property of PropertyInfo * IValueCoder
+    | Ignore of IValueCoder
+
+    member private x.AsString =
+        match x with
+            | Field(f,e) -> sprintf "this.%s <- %A" f.Name e
+            | Property(f,e) -> sprintf "this.%s <- %A" f.Name e
+            | Ignore e -> sprintf "ignore %A" e
+
+module FieldCoders =
+    open System
+    open System.Reflection
+    open Aardvark.Base.IL
+    open Aardvark.Base.IL.TypeBuilder
+    open Microsoft.FSharp.Quotations
+    open Microsoft.FSharp.Quotations.Patterns
+
+
+    let (<->) (l : 'a) (r : IValueCoder<'a>) =
+        r 
+
+    let (|>>) (l : IValueCoder<'a>) (f : 'a -> 'b) =
+        { new AbstractValueCoder<'b>() with
+            override x.Read(r) =
+                l.Read(r) |> State.map f
+            override x.Write(w,v) =
+                failwith "[Coder] cannot write"
+        } :> IValueCoder<_>
+
+    let (<<|) (f : 'a -> 'b) (l : IValueCoder<'a>) = l |>> f
+        
+    let skip (l : IValueCoder<'a>) = l
+
+    type FieldCoderBuilder() =
+        
+
+
+        member x.Bind(coder : PartialCoder, f : unit -> list<PartialCoder>) =
+            coder :: f()
+
+        member x.Bind([<ReflectedDefinition(true)>] coder : Expr<IValueCoder<'a>>, f : unit -> list<PartialCoder>) =
+            let partial = 
+                match coder.Raw with
+                    | WithValue(:? IValueCoder<'a> as v, _, Call(None, mi, [FieldGet(_,f);r])) ->
+                        match mi with
+                            | Method("op_LessMinusGreater",_) -> 
+                                Some(Field(f, v))
+
+                            | _ ->
+                                None
+
+                    | WithValue(:? IValueCoder<'a> as v, _, Call(None, mi, [PropertyGet(_,p,_);r])) ->
+                        match mi with
+                            | Method("op_LessMinusGreater",_) -> 
+                                Some(Property(p, v))
+
+                            | _ ->
+                                None
+
+                    | WithValue(:? IValueCoder<'a> as v, _, Call(None, mi, [r])) ->
+                        match mi with
+                            | MethodQuote <@ skip @> _ -> 
+                                Some(Ignore(v))
+
+                            | _ ->
+                                None
+
+                    | _ ->
+                        None
+
+            match partial with
+                | Some p -> p::f()
+                | _ -> failwithf "could not create PartialCoder from Expression: %A" coder
+
+        member x.Delay(f : unit -> list<PartialCoder>) = f
+
+        member x.Combine(l : list<PartialCoder>, r : unit -> list<PartialCoder>) =
+            List.append l (r())
+
+        member x.Run(f : unit -> list<PartialCoder>) = f()
+
+        member x.Zero() : list<PartialCoder> =
+            []
+
+        member x.Return (u : unit) : list<PartialCoder> = 
+            []
+
+    let coders = FieldCoderBuilder()
+
+
+
+    let private tryGetPartialCodersForVersion (version : int) (t : Type) =
+        let coders = t.GetMethodOrExtension("Coders", [|typeof<int>|])
+        match coders with
+            | null -> None
+            | mi ->
+                let instance =
+                    if t.IsValueType then Activator.CreateInstance(t)
+                    else System.Runtime.Serialization.FormatterServices.GetSafeUninitializedObject(t)
+
+                let res = 
+                    if mi.IsStatic then mi.Invoke(null, [|instance; version|]) 
+                    else mi.Invoke(instance, [|version|]) 
+
+                res |> unbox<list<PartialCoder>>
+                    |> Some
+
+    let private getHeadVersion (valueType : Type) =
+        match valueType.GetCustomAttributes<VersionAttribute>() |> Seq.toList with
+                | [] -> 
+                    let coders = valueType.GetMethodOrExtension("Coders", [|typeof<int>|])
+                    match coders with
+                        | null -> 0
+                        | _ ->
+                            match coders.GetCustomAttributes<VersionAttribute>() |> Seq.toList  with
+                                | [] -> 0
+                                | vatt::_ -> vatt.Version
+
+                | vatt::_ -> vatt.Version
+
+    type private IReaderExtensions private() =
+        
+
+        static member ReadPrimitiveState(this : IReader, s : byref<CodeState>) : 'a=
+            this.ReadPrimitive().Run(&s)
+
+        static member WritePrimitiveState(this : IWriter, value : 'a, s : byref<CodeState>) : unit=
+            this.WritePrimitive(value).Run(&s)
+
+    let tryBuildFieldCoders (valueType : Type) =
+        let headVersion = getHeadVersion valueType
+
+        match valueType |> tryGetPartialCodersForVersion headVersion with
+            | Some headCoders ->
+                let readingCoders = 
+                    Map.ofList [
+                        for v in 0..headVersion-1 do
+                            let coders = valueType |> tryGetPartialCodersForVersion v |> Option.get
+                            yield v, coders
+
+                        yield headVersion, headCoders
+                    ]
+
+
+                let baseType = typedefof<AbstractByRefValueCoder<_>>.MakeGenericType [|valueType|]
+                let stateRefType = typeof<CodeState>.MakeByRefType()
+                let readPrimitive = typeof<IReaderExtensions>.GetMethod("ReadPrimitiveState", BindingFlags.AnyStatic)
+                let writePrimitive = typeof<IReaderExtensions>.GetMethod("WritePrimitiveState", BindingFlags.AnyStatic)
+                
+                let coderFields = Dict<IValueCoder, FieldBuilder>()
+                      
+                let coders = ref [||]  
+
+                let resultType =
+                    newtype {
+                        for (_,v) in Map.toSeq readingCoders do
+                            for c in v do
+                                match c with
+                                    | Field(_,c) ->
+                                        if not (coderFields.ContainsKey(c)) then
+                                            let name = sprintf "s_coder%d" coderFields.Count
+                                            let! f = sfld name (c.GetType())
+                                            coderFields.[c] <- f
+
+                                    | Property(_,c) ->
+                                        if not (coderFields.ContainsKey(c)) then
+                                            let name = sprintf "s_coder%d" coderFields.Count
+                                            let! f = sfld name (c.GetType())
+                                            coderFields.[c] <- f                           
+
+                        coders := coderFields |> Dict.toArray
+                        let coderValues = !coders |> Array.map fst
+                        let coderTypes = !coders |> Array.map (fun (_,f) -> f.FieldType) |> Array.toList
+
+                        do! inh baseType
+                        
+                        do! mem typeof<Void> "ReadState" [ typeof<IReader>; valueType.MakeByRefType(); stateRefType] (
+                                codegen {
+                                    let labels = Array.zeroCreate (headVersion + 1)
+                                    for i in 0..headVersion do
+                                        let! l = IL.newlabel
+                                        labels.[i] <- l
+
+                                    let! version = IL.newlocal typeof<int>
+
+                                    // read and store the file-version
+                                    do! IL.ldarg 1
+                                    do! IL.ldarg 3
+                                    do! IL.call (readPrimitive.MakeGenericMethod [|typeof<int>|])
+                                    do! IL.stloc version
+
+                                    // switch based on the file-version
+                                    do! IL.ldloc version
+                                    do! CodeGen.emit(Switch labels)
+                                    do! IL.ret
+
+                                    for v in 0..headVersion do
+                                        do! IL.mark labels.[v]
+
+                                        let partials = Map.find v readingCoders
+
+                                        for p in partials do
+                                            let valueType, coder =
+                                                match p with
+                                                    | Field(f, coder) -> f.FieldType, coder
+                                                    | Property(p, coder) -> p.PropertyType, coder
+
+                    
+                                            let field = coderFields.[coder]
+                                                
+                                            let! value = IL.newlocal valueType
+                                            do! IL.ldfld field
+                                            do! IL.ldarg 1
+                                            do! IL.ldarg 3
+
+                                            // read* (this : IValueCoder, r : IReader, state : byref<CodeState>)
+                                            let read = ValueCoderExtensions.GetReadMethod(field.FieldType, valueType)
+                                            do! IL.call read
+                                            do! IL.stloc value
+
+                                            match p with
+                                                | Field(f, _) ->
+                                                    do! IL.ldarg 2
+                                                    do! IL.ldind ValueType.Object
+                                                    do! IL.ldloc value
+                                                    do! IL.stfld f
+
+                                                | Property(p, _) ->
+                                                    do! IL.ldarg 2
+                                                    do! IL.ldind ValueType.Object
+                                                    do! IL.ldloc value
+                                                    do! IL.call p.SetMethod
+
+
+                                        do! IL.ret
+
+
+
+
+
+                                }
+                            )
+                          
+                        do! mem typeof<Void> "WriteState" [ typeof<IWriter>; valueType; stateRefType ] (
+                                codegen {
+                                    
+                                    do! IL.ldarg 1
+                                    do! IL.ldconst headVersion
+                                    do! IL.ldarg 3
+                                    do! IL.call (writePrimitive.MakeGenericMethod [| typeof<int> |])
+
+                                    for p in headCoders do
+                                        let valueType, coder =
+                                            match p with
+                                                | Field(f, coder) -> f.FieldType, coder
+                                                | Property(p, coder) -> p.PropertyType, coder
+
+                                        let coderField = coderFields.[coder]
+
+                                        //Write* (this : IValueCoder, w : IWriter, value : 'a, state : byref<CodeState>) =
+                                        let write = ValueCoderExtensions.GetWriteMethod(coderField.FieldType, valueType)
+
+                                        do! IL.ldfld coderField
+
+                                        do! IL.ldarg 1
+
+                                        do! IL.ldarg 2
+                                        match p with
+                                            | Field(f,_) -> do! IL.ldfld f
+                                            | Property(p,_) -> do! IL.call p.GetMethod
+
+                                        do! IL.ldarg 3
+                                        do! IL.call write
+
+
+                                    do! IL.ret
+                                }
+                            )
+                           
+
+                        do! ctor [] (
+                                codegen {
+                                    do! IL.ldarg 0
+                                    do! IL.call (baseType.GetConstructor [||])
+                                    do! IL.ret
+                                }
+                            )
+                    }
+
+                for (v,f) in !coders do
+                    let f = resultType.GetField(f.Name, BindingFlags.AnyStatic)
+                    f.SetValue(null, v)
+
+
+                Some resultType
+
+            | None ->
+                None
+
 module ValueCoderTypes =
     
     let coderTypeCache = ConcurrentDictionary<Type, Type>()
@@ -648,7 +963,9 @@ module ValueCoderTypes =
             inner.Write(w, unbox v)
 
     let tryGetSpecialCoderType (t : Type) : Option<Type> =
-        CustomCoders.tryGetCustomCoderType t
+        match CustomCoders.tryGetCustomCoderType t with
+            | Some c -> Some c
+            | None -> FieldCoders.tryBuildFieldCoders t 
 
     let rec resolve (valueType : Type) : Type =
         match tryGetSpecialCoderType valueType with

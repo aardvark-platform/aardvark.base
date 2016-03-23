@@ -366,6 +366,11 @@ module TypeBuilder =
                 let fld = b.builder.DefineField(name, t, FieldAttributes.Public)
                 b, fld
 
+        let sfld (name : string) (t : Type) =
+            fun (b : TypeBuilderState) ->
+                let fld = b.builder.DefineField(name, t, FieldAttributes.Public ||| FieldAttributes.Static)
+                b, fld
+
         let private recmemint (r : Type) (n : string) (a : list<Type>) (body : MethodInfo -> CodeGen<unit>) : TypeBuilder<MethodBuilder> =
             fun (b : TypeBuilderState) ->
                 let mutable b = b
@@ -430,7 +435,7 @@ module TypeBuilder =
                                     | Ldfld fb ->
                                         match fb with
                                             | :? FieldBuilder as fb ->
-                                                let f = t.GetField(fb.Name, BindingFlags.All)
+                                                let f = t.GetField(fb.Name, BindingFlags.All ||| BindingFlags.Static)
                                                 Ldfld f
                                             | _ -> i
                                     | i -> i

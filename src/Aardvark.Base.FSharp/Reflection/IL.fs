@@ -1726,13 +1726,19 @@ module Frontend =
 
 
         /// loads the value of the field onto the stack
-        static member ldfld (f : FieldInfo) = f |> Ldfld |> CodeGen.emit
+        static member ldfld (f : FieldInfo) = 
+            if isNull f then failwith "[IL] cannot load null field"
+            f |> Ldfld |> CodeGen.emit
 
         /// loads the address of the field onto the stack
-        static member ldflda (f : FieldInfo) = f |> LdfldA |> CodeGen.emit
+        static member ldflda (f : FieldInfo) = 
+            if isNull f then failwith "[IL] cannot load null field"
+            f |> LdfldA |> CodeGen.emit
 
         /// stores the top-most value in the field
-        static member stfld (f : FieldInfo) = f |> Stfld |> CodeGen.emit
+        static member stfld (f : FieldInfo) = 
+            if isNull f then failwith "[IL] cannot store null field"
+            f |> Stfld |> CodeGen.emit
 
         /// loads the value of the field onto the stack
         static member ldfld (e : Expr) = e |> getFieldInfo |> IL.ldfld
