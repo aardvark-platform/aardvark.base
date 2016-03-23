@@ -366,13 +366,13 @@ type VersionAttribute(v : int) =
 type PartialCoder =
     | Field of FieldInfo * IValueCoder
     | Property of PropertyInfo * IValueCoder
-    | Ignore of IValueCoder
+    | Skip of IValueCoder
 
     member private x.AsString =
         match x with
             | Field(f,e) -> sprintf "this.%s <- %A" f.Name e
             | Property(f,e) -> sprintf "this.%s <- %A" f.Name e
-            | Ignore e -> sprintf "ignore %A" e
+            | Skip e -> sprintf "skip %A" e
 
 module FieldCoders =
     open System
@@ -427,7 +427,7 @@ module FieldCoders =
                     | WithValue(:? IValueCoder<'a> as v, _, Call(None, mi, [r])) ->
                         match mi with
                             | MethodQuote <@ skip @> _ -> 
-                                Some(Ignore(v))
+                                Some(Skip v)
 
                             | _ ->
                                 None
@@ -533,7 +533,12 @@ module FieldCoders =
                                         if not (coderFields.ContainsKey(c)) then
                                             let name = sprintf "s_coder%d" coderFields.Count
                                             let! f = sfld name (c.GetType())
-                                            coderFields.[c] <- f                           
+                                            coderFields.[c] <- f   
+                                    | Skip(c) ->
+                                        if not (coderFields.ContainsKey(c)) then
+                                            let name = sprintf "s_coder%d" coderFields.Count
+                                            let! f = sfld name (c.GetType())
+                                            coderFields.[c] <- f                        
 
                         coders := coderFields |> Dict.toArray
                         let coderValues = !coders |> Array.map fst
@@ -571,7 +576,7 @@ module FieldCoders =
                                                 match p with
                                                     | Field(f, coder) -> f.FieldType, coder
                                                     | Property(p, coder) -> p.PropertyType, coder
-
+                                                    | Skip(coder) -> coder.ValueType, coder
                     
                                             let field = coderFields.[coder]
                                                 
@@ -597,6 +602,8 @@ module FieldCoders =
                                                     do! IL.ldind ValueType.Object
                                                     do! IL.ldloc value
                                                     do! IL.call p.SetMethod
+                                                | Skip _ ->
+                                                    ()
 
 
                                         do! IL.ret
@@ -621,6 +628,7 @@ module FieldCoders =
                                             match p with
                                                 | Field(f, coder) -> f.FieldType, coder
                                                 | Property(p, coder) -> p.PropertyType, coder
+                                                | Skip coder -> failwith "[FieldCoder] head version may not include skip-coder"
 
                                         let coderField = coderFields.[coder]
 
@@ -635,6 +643,7 @@ module FieldCoders =
                                         match p with
                                             | Field(f,_) -> do! IL.ldfld f
                                             | Property(p,_) -> do! IL.call p.GetMethod
+                                            | Skip coder -> failwith "[FieldCoder] head version may not include skip-coder"
 
                                         do! IL.ldarg 3
                                         do! IL.call write

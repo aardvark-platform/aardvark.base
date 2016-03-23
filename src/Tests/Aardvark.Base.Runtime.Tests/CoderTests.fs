@@ -281,6 +281,7 @@ module CoderTests =
             [
                 yield Property(a, ValueCoder.coder<int>)
                 if v < 1 then
+                    yield Skip(ValueCoder.coder<float>)
                     yield Property(b, ValueCoder.coder<float> |>> float32)
                 else
                     yield Property(b, ValueCoder.coder<float32>)
