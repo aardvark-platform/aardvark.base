@@ -668,5 +668,181 @@ module NativeUtilities =
             gc.Free()
 
    
+[<AutoOpen>]
+module HalfFloatingPoints =
 
-        
+    // TODO: cleanup
+    // ported from: https://sourceforge.net/projects/csharp-half/
+    // seealso: ftp://ftp.fox-toolkit.org/pub/fasthalffloatconversion.pdf
+
+    open System.Runtime.InteropServices
+    open FSharp.NativeInterop
+
+    module Float16Converter =
+    
+        let convertMantissa(i : int) = 
+            let mutable m = uint32 (i <<< 13)
+            let mutable e = 0u
+            while (m &&& 0x00800000u) = 0u do
+                e <- e - 0x00800000u
+                m <- m <<< 1
+            m <- m &&& (uint32 ~~~0x00800000)
+            e <- e + 0x38800000u
+            m ||| e
+
+        let mantissaTable =
+            let arr = Array.zeroCreate 2048
+            arr.[0] <- 0u
+            for i in 1..1023 do
+                arr.[i] <- convertMantissa i
+
+            for i in 1024..2047 do
+                arr.[i] <- uint32 (0x38000000 + ((i - 1024) <<< 13))
+
+            arr
+
+        let exponentTable =
+            let arr = Array.zeroCreate 64
+            arr.[0] <- 0u
+            for i in 1..30 do
+                arr.[i] <- i <<< 23 |> uint32
+            arr.[31] <- 0x47800000u
+            arr.[32] <- 0x80000000u
+
+            for i in 33..62 do
+                arr.[i] <- uint32 (0x80000000 + ((i - 32) <<< 23))
+
+            arr.[63] <- 0xc7800000u
+            arr
+    
+        let offsetTable =
+            let arr = Array.zeroCreate 64
+            arr.[0] <- 0us
+            for i in 1..31 do
+                arr.[i] <- 1024us
+            arr.[32] <- 0us
+            for i in 33..63 do
+                arr.[i] <- 1024us
+
+            arr
+
+        let baseTable =
+            let arr = Array.zeroCreate 512
+            for i in 0..255 do
+                let e = int8 (127 - i) |> int
+            
+                if e > 24 then
+                    // Very small numbers map to zero
+                    arr.[i ||| 0x000] <- 0x0000us
+                    arr.[i ||| 0x100] <- 0x8000us
+
+                elif e > 14 then
+                    // Small numbers map to denorms
+                    arr.[i ||| 0x000] <- (0x0400 >>> (18 + e)) |> uint16
+                    arr.[i ||| 0x100] <- ((0x0400 >>> (18 + e)) ||| 0x8000) |> uint16
+
+                elif e >= -15 then
+                    arr.[i ||| 0x000] <- (15 - e) <<< 10 |> uint16
+                    arr.[i ||| 0x100] <- ((15 - e) <<< 10) ||| 0x8000 |> uint16
+
+                elif e > -128 then
+                    arr.[i ||| 0x000] <- 0x7c00us
+                    arr.[i ||| 0x100] <- 0xfc00us
+
+                else
+                    arr.[i ||| 0x000] <- 0x7c00us
+                    arr.[i ||| 0x100] <- 0xfc00us
+
+            arr
+       
+        let shiftTable =
+            let arr = Array.zeroCreate 512
+            for i in 0..255 do
+                let e = (127 - i) |> int8
+                if e > 24y then
+                    // Very small numbers map to zero
+                    arr.[i ||| 0x000] <- 24y
+                    arr.[i ||| 0x100] <- 24y
+                elif e > 14y then
+                    // Small numbers map to denorms
+                    arr.[i ||| 0x000] <- (int e - 1) |> int8
+                    arr.[i ||| 0x100] <- (int e - 1) |> int8
+
+                elif e >= -15y then
+                    // Normal numbers just lose precision
+                    arr.[i ||| 0x000] <- 13y
+                    arr.[i ||| 0x100] <- 13y
+
+                elif e > -128y then
+                    // Large numbers map to Infinity
+                    arr.[i ||| 0x000] <- 24y
+                    arr.[i ||| 0x100] <- 24y
+
+                else
+                    arr.[i ||| 0x000] <- 13y
+                    arr.[i ||| 0x100] <- 13y
+
+            arr
+                  
+        let float32ToInt16 (f : float32) =
+            let mutable f = f
+            let value : uint32 = &&f |> NativePtr.cast |> NativePtr.read
+
+            let result =
+                baseTable.[(value >>> 23 |> int) &&& 0x1FF] +
+                uint16 ((value &&& 0x007fffffu) >>> int shiftTable.[int (value >>> 23)])
+
+            result
+
+        let int16ToFloat32 (u : uint16) =
+            let mutable u32 = 
+                mantissaTable.[int offsetTable.[int u >>> 10] + (int u &&& 0x3FF)] +
+                exponentTable.[int u >>> 10]
+            &&u32 |> NativePtr.cast |> NativePtr.read<float32>
+
+    type float16 = 
+        struct 
+            val mutable private short : uint16
+
+            member x.UInt16
+                with get() = x.short
+                and set v = x.short <- v
+
+            member x.Float32
+                with get() = Float16Converter.int16ToFloat32 x.short
+                and set v = x.short <- Float16Converter.float32ToInt16 v
+  
+       
+            static member op_Explicit (f : float16) =
+                f.Float32
+        end
+
+    [<StructLayout(LayoutKind.Explicit, Size = 32)>]
+    type float32uint = 
+        struct 
+            member x.UInt32
+                with get() : uint32 = &&x |> NativePtr.cast |> NativePtr.read
+                and set (v : uint32) = NativePtr.write (&&x |> NativePtr.cast) v
+
+            member x.Float32
+                with get() : float32 = &&x |> NativePtr.cast |> NativePtr.read
+                and set (v : float32) = NativePtr.write (&&x |> NativePtr.cast) v
+        end
+
+
+    [<AutoOpen>]
+    module Float16 =
+        let private round (f : float32) =
+            let mutable r = float16()
+            r.Float32 <- f
+            r.Float32
+
+        let private print (u : float32) =
+            let mutable a = float32uint()
+            a.Float32 <-u
+            printfn "0x%X" a.UInt32
+
+        let private printFloat (u : uint32) =
+            let mutable a = float32uint()
+            a.UInt32 <- u
+            a.Float32

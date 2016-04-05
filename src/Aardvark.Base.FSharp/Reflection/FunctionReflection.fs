@@ -186,6 +186,7 @@ module FunctionReflection =
     let buildFunction (target : obj) (mi : MethodInfo) = 
         buildFunctionInternal target [] mi
 
+        
 
     [<System.Diagnostics.DebuggerStepThroughAttribute>]
     let rec private makeNAryFunctionInternal (t : Type) (count : int) (f : obj[] -> obj) : int * (obj[] -> obj) =
@@ -215,3 +216,125 @@ module FunctionReflection =
         makeNAryFunction (fun args ->
             (f fmt.Value args)
         )
+
+module QuotationReflectionHelpers =
+    open Microsoft.FSharp.Quotations
+
+    //extracts the (optional) top-most method call from an expression
+    let rec tryGetMethodInfo (e : Expr) =
+        match e with
+            | Patterns.Call(_,mi,_) -> 
+                if mi.IsGenericMethod then mi.GetGenericMethodDefinition() |> Some
+                else mi |> Some
+            | ExprShape.ShapeCombination(_, args) -> 
+                args |> List.tryPick tryGetMethodInfo
+            | ExprShape.ShapeLambda(_,b) ->
+                tryGetMethodInfo b
+            | _ -> None
+
+
+    /// <summary>
+    /// extracts the top-most method-call from an expression.
+    /// When no method-call is found the method will raise an exception
+    /// </summary>
+    /// <param name="e"></param>
+    let getMethodInfo (e : Expr) =
+        match tryGetMethodInfo e with
+            | Some mi -> mi
+            | None -> failwith "could not find a method-call in expression"
+
+module DelegateAdapters =
+    type private AdapterFunc<'a> (f : Func<'a>) =
+        inherit FSharpFunc<unit, 'a>()
+        override x.Invoke(_) = f.Invoke()
+
+    type private AdapterFunc<'a, 'b> (f : Func<'a, 'b>) =
+        inherit FSharpFunc<'a, 'b>()
+        override x.Invoke(a : 'a) = f.Invoke(a)
+
+    type private AdapterFunc<'a, 'b, 'c> (f : Func<'a, 'b, 'c>) =
+        inherit Microsoft.FSharp.Core.OptimizedClosures.FSharpFunc<'a, 'b, 'c>()
+        override x.Invoke(a : 'a) = fun b -> f.Invoke(a,b)
+        override x.Invoke(a : 'a, b : 'b) = f.Invoke(a,b)
+
+    type private AdapterFunc<'a, 'b, 'c, 'd> (f : Func<'a, 'b, 'c, 'd>) =
+        inherit Microsoft.FSharp.Core.OptimizedClosures.FSharpFunc<'a, 'b, 'c, 'd>()
+        override x.Invoke(a : 'a) = fun b c -> f.Invoke(a,b,c)
+        override x.Invoke(a : 'a, b : 'b, c : 'c) = f.Invoke(a,b,c)
+
+    type private AdapterFunc<'a, 'b, 'c, 'd, 'e> (f : Func<'a, 'b, 'c, 'd, 'e>) =
+        inherit Microsoft.FSharp.Core.OptimizedClosures.FSharpFunc<'a, 'b, 'c, 'd, 'e>()
+        override x.Invoke(a : 'a) = fun b c d -> f.Invoke(a,b,c,d)
+        override x.Invoke(a : 'a, b : 'b, c : 'c, d : 'd) = f.Invoke(a,b,c,d)
+
+    type private AdapterFunc<'a, 'b, 'c, 'd, 'e, 'f> (f : Func<'a, 'b, 'c, 'd, 'e, 'f>) =
+        inherit Microsoft.FSharp.Core.OptimizedClosures.FSharpFunc<'a, 'b, 'c, 'd, 'e, 'f>()
+        override x.Invoke(a : 'a) = fun b c d e -> f.Invoke(a,b,c,d,e)
+        override x.Invoke(a : 'a, b : 'b, c : 'c, d : 'd,e : 'e) = f.Invoke(a,b,c,d,e)
+
+
+
+    type private AdapterAction<'x>(f : Action) =
+        inherit FSharpFunc<unit, 'x>()
+        override x.Invoke(_) = f.Invoke(); Unchecked.defaultof<'x>
+
+    type private AdapterAction<'a, 'x>(f : Action<'a>) =
+        inherit FSharpFunc<'a, 'x>()
+        override x.Invoke(a) = f.Invoke(a); Unchecked.defaultof<'x>
+
+    type private AdapterAction<'a, 'b, 'x> (f : Action<'a, 'b>) =
+        inherit Microsoft.FSharp.Core.OptimizedClosures.FSharpFunc<'a, 'b, 'x>()
+        override x.Invoke(a : 'a) = fun b -> f.Invoke(a,b); Unchecked.defaultof<_>
+        override x.Invoke(a : 'a, b : 'b) = f.Invoke(a,b); Unchecked.defaultof<_>
+
+    type private AdapterAction<'a, 'b, 'c, 'x> (f : Action<'a, 'b, 'c>) =
+        inherit Microsoft.FSharp.Core.OptimizedClosures.FSharpFunc<'a, 'b, 'c, 'x>()
+        override x.Invoke(a : 'a) = fun b c -> f.Invoke(a,b,c); Unchecked.defaultof<_>
+        override x.Invoke(a : 'a, b : 'b, c : 'c) = f.Invoke(a,b,c); Unchecked.defaultof<_>
+
+    type private AdapterAction<'a, 'b, 'c, 'd, 'x> (f : Action<'a, 'b, 'c, 'd>) =
+        inherit Microsoft.FSharp.Core.OptimizedClosures.FSharpFunc<'a, 'b, 'c, 'd, 'x>()
+        override x.Invoke(a : 'a) = fun b c d -> f.Invoke(a,b,c,d); Unchecked.defaultof<_>
+        override x.Invoke(a : 'a, b : 'b, c : 'c, d : 'd) = f.Invoke(a,b,c,d); Unchecked.defaultof<_>
+
+    type private AdapterAction<'a, 'b, 'c, 'd, 'e, 'x> (f : Action<'a, 'b, 'c, 'd, 'e>) =
+        inherit Microsoft.FSharp.Core.OptimizedClosures.FSharpFunc<'a, 'b, 'c, 'd, 'e, 'x>()
+        override x.Invoke(a : 'a) = fun b c d e -> f.Invoke(a,b,c,d,e); Unchecked.defaultof<_>
+        override x.Invoke(a : 'a, b : 'b, c : 'c, d : 'd,e : 'e) = f.Invoke(a,b,c,d,e); Unchecked.defaultof<_>
+
+    let rec getFunctionSignature (t : Type) =
+        if FSharpType.IsFunction t then
+            let (d,i) = FSharpType.GetFunctionElements t
+            let args, ret = getFunctionSignature i
+            d::args, ret
+        else
+            [], t
+
+    let wrapUntyped (d : Delegate) : obj =
+        let mi = d.GetMethodInfo()
+        let args = mi.GetParameters() |> Array.map (fun p -> p.ParameterType)
+        
+        let ret = 
+            if mi.ReturnType = typeof<System.Void> then typeof<unit>
+            else mi.ReturnType
+
+        let args = Array.append args [|ret|]
+
+        let generic = 
+            if mi.ReturnType = typeof<System.Void> then
+                Type.GetType(typedefof<AdapterAction<_>>.FullName.Replace("1", string args.Length))
+            else
+                Type.GetType(typedefof<AdapterFunc<_>>.FullName.Replace("1", string args.Length))
+
+        if isNull generic then
+            let code = args |> Seq.map (fun t -> t.Name) |> String.concat " -> "
+            failwithf "could not get delegate adapter: %s" code
+
+        let t = generic.MakeGenericType args
+        Activator.CreateInstance(t, d)
+
+    let wrap (d : Delegate) : 'a =
+        match wrapUntyped d with
+            | :? 'a as res -> res
+            | _ ->
+                failwithf "[DelegateAdapter] cannot convert from delegate %A to %A" (d.GetType()) typeof<'a>

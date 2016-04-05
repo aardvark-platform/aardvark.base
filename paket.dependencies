@@ -1,26 +1,26 @@
-source https://nuget.org/api/v2
-source https://vrvis.myget.org/F/aardvark_public/api/v2
+source https://api.nuget.org/v3/index.json
+source https://vrvis.myget.org/F/aardvark_public/api/v3/index.json
 
 nuget DevILSharp                   ~> 0.0.11
 nuget Rx-Linq                      ~> 2.2.5
 nuget Rx-Core                      ~> 2.2.5
 nuget Rx-PlatformServices          ~> 2.2.5
 
-nuget FSharp.Compiler.Service      ~> 0.0.90
+nuget FSharp.Compiler.Service      ~> 2.0.0.6
 
 nuget System.Collections.Immutable ~> 1.1.36
 
 nuget NUnit.Console                ~> 3.0.1
-nuget NUnit                        = 2.6.3
-nuget FsUnit
+nuget NUnit                        ~> 3.2.0
+nuget FsUnit                       ~> 2.1.0
 
-nuget RegexProvider                ~> 0.0.5
 nuget FsPickler.Json			   ~> 1.8.0
-nuget Newtonsoft.Json			   ~> 7.0.1
+nuget Newtonsoft.Json			   ~> 8.0.2
 
 
 group Build
 content: none
-source http://nuget.org/api/v2
+source https://vrvis.myget.org/F/aardvark_public/api/v3/index.json
+source https://api.nuget.org/v3/index.json
 
-github vrvis/Aardvark.Fake:standalone
+github vrvis/Aardvark.Fake:customPaket

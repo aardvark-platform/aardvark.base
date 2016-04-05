@@ -8,8 +8,9 @@
     <RootNamespace>Aardvark.Base.FSharp</RootNamespace>
     <AssemblyName>Aardvark.Base.FSharp</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
-    <TargetFSharpCoreVersion>4.3.1.0</TargetFSharpCoreVersion>
+    <TargetFSharpCoreVersion>4.4.0.0</TargetFSharpCoreVersion>
     <Name>Aardvark.Base.FSharp</Name>
+    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -73,8 +74,12 @@
     <Compile Include="Interop\NativeTensors.fs" />
     <Compile Include="Reflection\TypeInfo.fs" />
     <Compile Include="Reflection\FunctionReflection.fs" />
+    <Compile Include="Reflection\Formatf.fs" />
     <Compile Include="Reflection\UnmanagedFunctions.fs" />
     <Compile Include="Reflection\Multimethod.fs" />
+    <Compile Include="Reflection\IL.fs" />
+    <Compile Include="Reflection\Quotations.fs" />
+    <Compile Include="Reflection\TypeBuilder.fs" />
     <Compile Include="Runtime\DynamicLinker.fs" />
     <Compile Include="Runtime\ExecutableMemory.fs" />
     <Compile Include="Runtime\Assembler.fs" />
@@ -138,17 +143,6 @@
       <ItemGroup>
         <Reference Include="FSharp.Compiler.Service">
           <HintPath>..\..\packages\FSharp.Compiler.Service\lib\net45\FSharp.Compiler.Service.dll</HintPath>
-          <Private>True</Private>
-          <Paket>True</Paket>
-        </Reference>
-      </ItemGroup>
-    </When>
-  </Choose>
-  <Choose>
-    <When Condition="$(TargetFrameworkIdentifier) == '.NETFramework' And ($(TargetFrameworkVersion) == 'v4.0' Or $(TargetFrameworkVersion) == 'v4.5' Or $(TargetFrameworkVersion) == 'v4.5.1' Or $(TargetFrameworkVersion) == 'v4.5.2' Or $(TargetFrameworkVersion) == 'v4.5.3' Or $(TargetFrameworkVersion) == 'v4.6' Or $(TargetFrameworkVersion) == 'v4.6.1')">
-      <ItemGroup>
-        <Reference Include="RegexProvider">
-          <HintPath>..\..\packages\RegexProvider\lib\net40\RegexProvider.dll</HintPath>
           <Private>True</Private>
           <Paket>True</Paket>
         </Reference>

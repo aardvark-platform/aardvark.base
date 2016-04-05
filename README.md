@@ -14,14 +14,14 @@ How to build:
 ======================
 
 Windows:
-- Visual Studio 2013 or 2015,
-- FSharp 3.1 (at least Daily Builds Preview 10-27-2014) [1]
+- Visual Studio 2015,
+- Visual FSharp Tools installed (we use 4.0 now) 
 - run build.cmd which will install all dependencies
 - msbuild src\Aardvark.sln or use VisualStudio to build the solution
 
 Linux:
-- install mono >= 3.2.8 (might work in older versions as well)
-- install fsharp 3.1 (http://fsharp.org/use/linux/)
+- install mono >= 4.2.3.0 (might work in older versions as well)
+- install fsharp 4.0 (http://fsharp.org/use/linux/)
 - run build.sh which will install all dependencies
 - run xbuild src/Aardvark.sln
 
@@ -30,4 +30,4 @@ While building, visual studio might prompt for permission to use our type provid
 the build fails immediately afterwards no matter if you granted permission. In this case
 simply rebuild all again and it should work this time.
 
-[1] https://visualfsharp.codeplex.com/releases/view/161288
+

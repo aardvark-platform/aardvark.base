@@ -94,6 +94,7 @@ module FragmentTests =
             arr.[0]
 
 
+        calls.Clear()
         Marshal.WriteInt32(l0, 1)
         Marshal.WriteInt64(l1, 10L)
         run() |> should equal [|1 :> obj; 10L :> obj|]

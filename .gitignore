@@ -53,3 +53,4 @@ tmp
 /.fake
 /paket-files
 /tests.out
+/*.log

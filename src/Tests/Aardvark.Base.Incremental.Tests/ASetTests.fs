@@ -830,7 +830,7 @@ module ``collect tests`` =
                     match readers with
                         | [] -> ()
                         | _ ->
-                            let r = List.nth readers (random.Next(readers.Length))
+                            let r = readers |> List.item (random.Next(readers.Length)) 
                             let old = HashSet r.Content
                             let deltas = r.GetDelta()
 

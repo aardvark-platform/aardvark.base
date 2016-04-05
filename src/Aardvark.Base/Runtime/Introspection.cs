@@ -542,12 +542,25 @@ namespace Aardvark.Base
 
         private void WriteCacheFile(Dictionary<string, Tuple<DateTime, bool>> cache)
         {
-            if (File.Exists(CacheFile)) File.Delete(CacheFile);
-
-            var formatter = new BinaryFormatter();
-            using (var stream = new FileStream(CacheFile, FileMode.CreateNew))
+            if (string.IsNullOrEmpty(CacheFile))
             {
-                formatter.Serialize(stream, cache);
+                Report.Warn("Could not write cache file since CacheFile was null or empty");
+            }
+            else
+            {
+                try
+                {
+                    if (File.Exists(CacheFile)) File.Delete(CacheFile);
+
+                    var formatter = new BinaryFormatter();
+                    using (var stream = new FileStream(CacheFile, FileMode.CreateNew))
+                    {
+                        formatter.Serialize(stream, cache);
+                    }
+                } catch(Exception ex)
+                {
+                    Report.Warn("Could not write cache file: {0}", ex.Message);
+                }
             }
         }
 
@@ -661,29 +674,35 @@ namespace Aardvark.Base
             var setup = new AppDomainSetup();
             setup.ApplicationBase = IntrospectionProperties.CurrentEntryPath;
 
-            var d = AppDomain.CreateDomain("search", null, setup);
-            var aardvark = (Aardvark)d.CreateInstanceAndUnwrap(typeof(Aardvark).Assembly.FullName, typeof(Aardvark).FullName);
-            Report.Line(3, "[LoadPlugins] Using plugin cache file name: {0}", Aardvark.s_cacheFile);
-            aardvark.CacheFile = Aardvark.s_cacheFile;
-            var paths = aardvark.GetPluginAssemblyPaths();
-            AppDomain.Unload(d);
+            try {
+                var d = AppDomain.CreateDomain(Guid.NewGuid().ToString(), null, setup);
+                var aardvark = (Aardvark)d.CreateInstanceAndUnwrap(typeof(Aardvark).Assembly.FullName, typeof(Aardvark).FullName);
+                Report.Line(3, "[LoadPlugins] Using plugin cache file name: {0}", Aardvark.s_cacheFile);
+                aardvark.CacheFile = Aardvark.s_cacheFile;
+                var paths = aardvark.GetPluginAssemblyPaths();
+                AppDomain.Unload(d);
 
-            var assemblies = new List<Assembly>();
+                var assemblies = new List<Assembly>();
 
-            foreach (var p in paths)
+                foreach (var p in paths)
+                {
+                    try
+                    {
+                        var ass = Assembly.LoadFile(p);
+                        assemblies.Add(ass);
+                    }
+                    catch (Exception e)
+                    {
+                        Report.Line(3, "[LoadPlugins] Could not load assembly: {0}", e.Message);
+                    }
+                }
+
+                return assemblies;
+            } catch(Exception e)
             {
-                try
-                {
-                    var ass = Assembly.LoadFile(p);
-                    assemblies.Add(ass);
-                }
-                catch (Exception e)
-                {
-                    Report.Line(3, "[LoadPlugins] Could not load assembly: {0}", e.Message);
-                }
+                Report.Warn("[LoadPlugins] could not load plugins: {0}", e.Message);
+                return new List<Assembly>();
             }
-
-            return assemblies;
         }
 
         private static void UnpackNativeDependencies(Assembly a)

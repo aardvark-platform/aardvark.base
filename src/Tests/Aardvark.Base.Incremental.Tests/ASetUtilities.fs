@@ -90,74 +90,49 @@ module FsUnitExtensions =
     open NUnit.Framework.Constraints
     open System.Text
 
-    type SetEqualityConstraint<'a>(ref : seq<'a>) =
-        inherit Constraints.EqualConstraint(ref)
+    type SetEqualConstraint<'a>(s : seq<'a>) =
+        inherit Constraints.EqualConstraint(s)
+        
+        let expected = HashSet(s)
 
-        let str (v : seq<'a>) = 
-            v |> Seq.map (sprintf "%A")
-              |> String.concat "; "
-              |> sprintf "set [%s]"
-
-        override x.Matches (o : obj) =
-            base.Matches(o) |> ignore
-            match o with
-                | :? seq<'a> as o ->
-                    let s = HashSet(o)
-                    s.SetEquals ref
+        override x.ApplyTo (actual : 'r) =
+            match actual :> obj with
+                | :? seq<'a> as actual ->
+                    if expected.SetEquals actual then
+                        ConstraintResult(x, actual, true)
+                    else 
+                        ConstraintResult(x, actual, false)
+                        
                 | _ ->
-                    false
+                        ConstraintResult(x, actual, false)
 
+    type DeltaListEqualConstraint<'a>(expected : list<list<Delta<'a>>>) =
+        inherit Constraints.EqualConstraint()
 
-        override this.WriteActualValueTo(writer: MessageWriter): unit =
-            let v = this.actual |> unbox<seq<'a>>
-            writer.WriteActualValue(str v)
+        override x.ApplyTo (actual : 'actual) =
+            match actual :> obj with
+                | :? list<list<Delta<'a>>> as actual -> 
+                    if List.length expected = List.length actual then
+                        let zip = List.zip expected actual
 
-        override this.WriteDescriptionTo(writer: MessageWriter): unit =
-            writer.WritePredicate("setEquals")
-
-            writer.WriteExpectedValue(str ref)
-
-        override this.WriteMessageTo(writer: MessageWriter): unit =
-            writer.WriteMessageLine(sprintf "Expected: %A, but was %A" (str ref) (str (unbox this.actual)))
-
-    type DeltaListEqual<'a>(ref : list<list<'a>>) =
-        inherit Constraints.EqualConstraint(ref)
-
-        let str (v : seq<#seq<'a>>) = 
-            v |> Seq.map (Seq.map (sprintf "%A") >> String.concat "; " >> sprintf "set [%s]")
-              |> String.concat "; "
-              |> sprintf "[%s]"
-
-        override x.Matches (o : obj) =
-            base.Matches(o) |> ignore
-            match o with
-                | :? list<list<'a>> as o ->
-                    if List.length ref = List.length o then
-                        let zip = List.zip ref o
-
-                        zip |> List.forall (fun (r,o) -> 
-                            let s = HashSet(o)
-                            s.SetEquals r
-                        )
+                        let res = 
+                            zip |> List.forall (fun (r,o) -> 
+                                let s = HashSet(o)
+                                s.SetEquals r
+                            )
+                        if res then 
+                            ConstraintResult(x, actual, true)
+                        else
+                            ConstraintResult(x, actual, false) 
                     else
-                        false
-
+                        ConstraintResult(x, actual, false) 
+                            
                 | _ ->
-                    false
+                    ConstraintResult(x, actual, false) 
 
-        override this.WriteActualValueTo(writer: MessageWriter): unit =
-            let v = this.actual |> unbox<seq<seq<'a>>>
-            writer.WriteActualValue(str v)
 
-        override this.WriteDescriptionTo(writer: MessageWriter): unit =
-            writer.WritePredicate("deltaListEqual")
 
-            writer.WriteExpectedValue(str ref)
-
-        override this.WriteMessageTo(writer: MessageWriter): unit =
-            writer.WriteMessageLine(sprintf "Expected: %A, but was %A" (str ref) (str (unbox this.actual)))
-
-    let setEqual<'a> a = SetEqualityConstraint<'a> a
-    let deltaListEqual<'a> a = DeltaListEqual<'a> a
+    let setEqual<'a> a = SetEqualConstraint<'a>(a)
+    let deltaListEqual<'a> a = DeltaListEqualConstraint<'a>(a)
 
 

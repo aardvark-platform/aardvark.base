@@ -13,7 +13,7 @@ do Environment.CurrentDirectory <- __SOURCE_DIRECTORY__
 DefaultSetup.install ["src/Aardvark.sln"]
 
 Target "Tests" (fun () ->
-    NUnit3 (fun p -> { p with OutputDir = "tests.out" })  [@"bin\Release\Aardvark.Base.Runtime.Tests.dll" ; @"bin\Release\Aardvark.Base.Incremental.Tests.exe" ]
+    NUnit3 (fun p -> { p with OutputDir = "tests.out" })  (!! @"bin\Release\*.Tests.dll" ++ @"bin\Release\*.Tests.exe")
 )
 
 "Compile" ==> "Tests"
