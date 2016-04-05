@@ -353,6 +353,7 @@ module Threading =
         let create a =
             let v = empty()
             v.Put a
+            v
         let put (m : MVar<'a>) v = m.Put v
         let take (m : MVar<'a>) = m.Take()
         let takeAsync (m : MVar<'a>) = m.TakeAsync ()
