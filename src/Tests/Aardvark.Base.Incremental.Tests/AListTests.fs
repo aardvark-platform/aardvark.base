@@ -581,3 +581,51 @@ module ``simple list tests`` =
 
 
         foo.Dispose()
+
+    type Leak(cnt : ref<int>) =
+        let value = !cnt
+        do cnt := !cnt + 1
+        member x.Value = value
+        override x.Finalize() = cnt := !cnt - 1
+
+    [<Test>]
+    let ``[AList] memory leak``() =
+        let list = CList.empty<Leak>;
+        let list2 = list |> AList.map (fun x -> (x.Value) * 2)
+        let cnt = ref 0
+
+        let check() =
+
+            printfn "%A" (list2 |> AList.toList)
+
+            GC.Collect ()
+            GC.WaitForPendingFinalizers()
+        
+            printfn "%A" !cnt
+               
+            !cnt |> should equal list.Count
+
+        // intial adds
+        transact (fun () -> list.Add(Leak(cnt)) |> ignore)
+
+        transact (fun () -> list.Add(Leak(cnt)) |> ignore)
+
+        transact (fun () -> list.Add(Leak(cnt)) |> ignore)
+
+        check() // should be 3
+        
+        transact (fun () -> list.Clear())
+
+        check() // should be 0
+
+        transact (fun () -> list.Add(Leak(cnt)) |> ignore)
+
+        transact (fun () -> list.Add(Leak(cnt)) |> ignore)
+
+        check() // should be 2
+
+        transact (fun () -> list.Add(Leak(cnt)) |> ignore)
+
+        check() // should be 3
+        
+        ()
