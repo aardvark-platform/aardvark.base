@@ -8,7 +8,7 @@ Getting started: https://github.com/vrvis/aardvark/wiki
  
 License: http://www.apache.org/licenses/LICENSE-2.0.txt
 
-Copyright © 2014,2015 VRVis Zentrum für Virtual Reality und Visualisierung Forschungs-GmbH, Donau-City-Strasse 1, A-1220 Wien, Austria. http://www.vrvis.at.
+Copyright © 2014,2015,2016 VRVis Zentrum für Virtual Reality und Visualisierung Forschungs-GmbH, Donau-City-Strasse 1, A-1220 Wien, Austria. http://www.vrvis.at.
 
 How to build:
 ======================
