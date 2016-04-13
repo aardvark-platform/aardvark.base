@@ -298,7 +298,7 @@ namespace Aardvark.Base
         /// </summary>
         public static Trafo3d ViewTrafoRH(V3d location, V3d up, V3d forward)
         {
-            return Trafo3d.ViewTrafo(location, up.Cross(forward), up, -forward);
+            return Trafo3d.ViewTrafo(location, forward.Cross(up), up, -forward);
         }
 
         /// <summary>
