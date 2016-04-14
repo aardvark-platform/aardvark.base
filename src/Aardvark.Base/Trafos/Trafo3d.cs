@@ -457,13 +457,24 @@ namespace Aardvark.Base
 
         /// <summary>
         /// Extracts the Z-Axis from the given transformation.
-        /// NOTE: In a right-handed coordinates system, the view direction pusually oints opposit the forward vector.
+        /// NOTE: A left-handed coordinates system transformation is expected, 
+        /// where the view-space z-axis points in forward direction.
         /// </summary>
-        public static V3d GetViewDirection(this Trafo3d trafo)
+        public static V3d GetViewDirectionLH(this Trafo3d trafo)
         {
             return trafo.Forward.R2.XYZ.Normalized;
         }
-        
+
+        /// <summary>
+        /// Extracts the Z-Axis from the given transformation.
+        /// NOTE: A right-handed coordinates system transformation is expected, where 
+        /// the view-space z-axis points opposit the forward vector.
+        /// </summary>
+        public static V3d GetViewDirectionRH(this Trafo3d trafo)
+        {
+            return -trafo.Forward.R2.XYZ.Normalized;
+        }
+
         /// <summary>
         /// Extracts the translation component of the given transformation, which when given 
         /// a model transformation represents the model origin in world position.
