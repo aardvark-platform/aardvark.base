@@ -150,6 +150,10 @@ type ModExtensions private() =
         Mod.map2 (fun a b -> f.Invoke(a,b)) this other
 
     [<Extension>]
+    static member Compose (this : seq<IMod<'a>>, f : Func<seq<'a>, 'b>) =
+        Mod.mapN (fun a -> f.Invoke(a)) this
+
+    [<Extension>]
     static member Bind(this : IMod<'a>, f : Func<'a, IMod<'b>>) =
         Mod.bind f.Invoke this
 
