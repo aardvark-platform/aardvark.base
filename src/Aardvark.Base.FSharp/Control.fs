@@ -426,3 +426,189 @@ module Monads =
 
     
 
+
+module Cancellable =
+
+    type CancelState = { comp : list<unit->unit> ; ct : System.Threading.CancellationToken }
+    type Cancellable<'a> = { runState : CancelState -> 'a * CancelState } 
+
+    let throwAndRollback (s : CancelState) =
+        if s.ct.IsCancellationRequested then 
+            for c in s.comp do c ()
+            s.ct.ThrowIfCancellationRequested()
+        else ()
+
+    module Cancellable =
+        
+        let onCancel (f : unit -> unit) : Cancellable<unit> =
+            { runState = fun s -> (), { s with comp = f::s.comp } }
+
+        let run (ct : System.Threading.CancellationToken) (m : Cancellable<'a>) =
+            try
+                let (v,s') = m.runState { comp = []; ct = ct }
+                Some v
+            with | :? System.OperationCanceledException as o -> 
+                None
+
+        let start (m : Cancellable<unit>) (ct : System.Threading.CancellationToken) =
+            Async.Start (async { return run ct m |> ignore } )
+
+        let ignore (m : Cancellable<'a>) : Cancellable<unit> =
+            { runState = 
+                fun s ->
+                    let (_,s') = m.runState s 
+                    (), s' 
+            }
+
+        let withCompsenation (f : 'a -> unit) (m : Cancellable<'a>) =
+           { runState = 
+                fun s ->
+                    let (r,s') = m.runState s 
+                    let comp () = f r
+                    r, { s' with comp = comp :: s'.comp }
+            }
+
+        let tryFinally (f : unit -> unit) (m : Cancellable<'a>) =
+           { runState = 
+                fun s ->
+                    let (r,s') = m.runState s 
+                    throwAndRollback s'
+                    f ()
+                    r, { s' with comp = s'.comp }
+            }
+
+    
+    type CancelBuilder() =
+
+        member x.Bind(m : Cancellable<'a>, f : 'a -> Cancellable<'b>) : Cancellable<'b> =
+            { runState = 
+                fun s -> 
+                    throwAndRollback s
+                    let (v, s') = m.runState s 
+                    throwAndRollback s'
+                    (f v).runState s' } 
+
+        member x.Return(v : 'a) : Cancellable<'a> =
+            { runState = 
+                fun s -> 
+                    throwAndRollback s
+                    (v,s) }
+
+        member x.ReturnFrom(s : Cancellable<'a>) =
+            s
+
+        member x.TryFinally(m : Cancellable<'a>, f : unit -> unit) =
+            Cancellable.tryFinally f m
+
+        member x.Delay(f : unit -> Cancellable<'a>) =
+            { runState = fun s -> throwAndRollback s; f().runState s }
+
+        member x.Combine(l : Cancellable<unit>, r : Cancellable<'a>) : Cancellable<'a> =
+            x.Bind(l, fun () -> r)
+
+        member x.Zero() : Cancellable<unit> =
+            { runState = fun s -> ((), s) }
+
+    let cancel = CancelBuilder()
+
+    module Test =
+        open System.Threading
+
+        let test () =
+            let a = 
+                cancel {
+                    Thread.Sleep 100
+                    do! Cancellable.onCancel (fun () -> printfn "undo a")
+                    return 1
+                }
+            let b = 
+                cancel {
+                    Thread.Sleep 100
+                    do! Cancellable.onCancel (fun () -> printfn "undo b")
+                    return 2
+                }
+            let c = 
+                cancel {
+                    Thread.Sleep 100
+                    do! Cancellable.onCancel (fun () -> printfn "undo c")
+                    return 3
+                }
+            let d = 
+                cancel {
+                    let! a = a
+                    printfn "a: %A" a
+                    let! b = b
+                    printfn "b: %A" b
+                    let! c = c
+                    printfn "c: %A" c
+                    let r = a + b + c
+                    printfn "r: %A" r
+                    return r
+                }
+            use cts = new System.Threading.CancellationTokenSource()
+            Cancellable.start (Cancellable.ignore d) cts.Token
+            Thread.Sleep 300
+            cts.Cancel()
+            printfn "done"
+
+
+    module StatefulStepVar =    
+        open System
+        open System.Threading
+
+        type Step<'a,'b> = { run : 'a -> Cancellable<'b>; }
+
+        let ofPrimitive (m : 'a -> Cancellable<'ba>) =
+            { run = m }
+
+        let compose (f : Step<'a,'b>) (g : Step<'b,'c>) (fuse : 'b -> 'c -> 'd) : Step<'a,'d> =
+            { run = fun a -> 
+                cancel {
+                    let! a = f.run a
+                    let! b = g.run a
+                    return fuse a b
+                }
+            }
+
+        module Step =
+            let ofFun (f : 'a -> Cancellable<'b>) = { run = fun a -> f a }
+            
+            let run (f : Step<unit,'a>) (ct : System.Threading.CancellationToken) =
+                let result = System.Threading.Tasks.TaskCompletionSource<_>()
+                try
+                    let r = f.run ()
+                    result.SetResult r
+                with | :? System.OperationCanceledException as o -> result.SetCanceled()
+                     | e -> result.SetException e   
+                result
+
+            let runRef (f : Step<unit,'a>) (ct : System.Threading.CancellationToken) =
+                let result = ref None
+                try
+                    let r = f.run () |> Cancellable.run ct
+                    result := r
+                with | e -> result := None
+                result
+
+        let (<*>) f g = compose f (Step.ofFun g) (fun a b -> a,b)
+        let ( **>) f g = compose (Step.ofFun (fun () -> f)) (Step.ofFun g) (fun a b -> a,b)
+        let ( *>) f g = compose f g (fun a b -> b)
+
+        module Test =
+            let test () =
+                let multiState =
+                    cancel { 
+                            try 
+                                Thread.Sleep 100; 
+                                return 1 
+                            finally 
+                                printfn "undid 1" 
+                        } 
+                    **> (fun i  -> cancel { Thread.Sleep 100; return 1.0   } |> Cancellable.withCompsenation (printfn "undid: %f")  ) 
+                    <*> (fun d  -> cancel { Thread.Sleep 100; return "abc" } |> Cancellable.withCompsenation (printfn "undid: %s")  )
+                
+                let cts = new System.Threading.CancellationTokenSource()
+                cts.CancelAfter(200)
+                let r = Step.runRef multiState cts.Token
+                Console.ReadLine() |> ignore
+                printfn "%A" r
