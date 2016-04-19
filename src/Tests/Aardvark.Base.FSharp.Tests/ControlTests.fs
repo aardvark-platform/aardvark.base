@@ -38,7 +38,7 @@ module ``Control tests`` =
                                         perform i
                                         
                                 }
-                            let f = Cancellable.withCompsenation unperform step
+                            let f = Cancellable.withCompensation unperform step
                             yield Step.ofFun (
                                 fun i -> f ) 
                          ]

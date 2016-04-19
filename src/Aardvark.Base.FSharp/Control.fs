@@ -460,7 +460,7 @@ module Cancellable =
                     (), s' 
             }
 
-        let withCompsenation (f : 'a -> unit) (m : Cancellable<'a>) =
+        let withCompensation (f : 'a -> unit) (m : Cancellable<'a>) =
            { runState = 
                 fun s ->
                     let (r,s') = m.runState s 
@@ -602,10 +602,10 @@ module Cancellable =
                                 Thread.Sleep 100; 
                                 return 1 
                             finally 
-                                printfn "undid 1" 
+                                printfn "performed action 1 (should be undone if cancelled in its context)" 
                         } 
-                    **> (fun i  -> cancel { Thread.Sleep 100; return 1.0   } |> Cancellable.withCompsenation (printfn "undid: %f")  ) 
-                    <*> (fun d  -> cancel { Thread.Sleep 100; return "abc" } |> Cancellable.withCompsenation (printfn "undid: %s")  )
+                    **> (fun i  -> cancel { Thread.Sleep 100; return 1.0   } |> Cancellable.withCompensation (printfn "undid: %f")  ) 
+                    <*> (fun d  -> cancel { Thread.Sleep 100; return "abc" } |> Cancellable.withCompensation (printfn "undid: %s")  )
                 
                 let cts = new System.Threading.CancellationTokenSource()
                 cts.CancelAfter(200)
