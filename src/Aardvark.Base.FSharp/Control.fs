@@ -468,13 +468,22 @@ module Cancellable =
                     r, { s' with comp = comp :: s'.comp }
             }
 
+        let tryFinallyAndUndo (f : unit -> (unit * ('a -> unit))) (m : Cancellable<'a>) =
+           { runState = 
+                fun s ->
+                    let (r,s') = m.runState s 
+                    throwAndRollback s'
+                    let (), undo = f ()
+                    r, { s' with comp = (fun () -> undo r) :: s'.comp }
+            }
+
         let tryFinally (f : unit -> unit) (m : Cancellable<'a>) =
            { runState = 
                 fun s ->
                     let (r,s') = m.runState s 
                     throwAndRollback s'
                     f ()
-                    r, { s' with comp = s'.comp }
+                    r, s'
             }
 
     
@@ -496,6 +505,9 @@ module Cancellable =
 
         member x.ReturnFrom(s : Cancellable<'a>) =
             s
+
+        member x.TryFinally(m : Cancellable<'a>, f : unit -> (unit * ('a -> unit))) =
+            Cancellable.tryFinallyAndUndo f m
 
         member x.TryFinally(m : Cancellable<'a>, f : unit -> unit) =
             Cancellable.tryFinally f m
@@ -602,7 +614,7 @@ module Cancellable =
                                 Thread.Sleep 100; 
                                 return 1 
                             finally 
-                                printfn "performed action 1 (should be undone if cancelled in its context)" 
+                                printfn "do operation", fun i -> printfn "undo operation: %d" i
                         } 
                     **> (fun i  -> cancel { Thread.Sleep 100; return 1.0   } |> Cancellable.withCompensation (printfn "undid: %f")  ) 
                     <*> (fun d  -> cancel { Thread.Sleep 100; return "abc" } |> Cancellable.withCompensation (printfn "undid: %s")  )

@@ -35,12 +35,11 @@ module ``Control tests`` =
                                         System.Threading.Thread.Sleep perStep
                                         return i
                                     finally 
-                                        perform i
+                                        perform i, fun i -> unperform i
                                         
                                 }
-                            let f = Cancellable.withCompensation unperform step
                             yield Step.ofFun (
-                                fun i -> f ) 
+                                fun i -> step ) 
                          ]
 
             let all = things |> List.fold (( *>)) (Step.ofFun (fun () -> cancel { return 1 }) )
