@@ -774,7 +774,7 @@ namespace Aardvark.Base
 
             Report.Begin("System Information:");
             Report.Line("OSVersion: {0}", System.Environment.OSVersion);
-            Report.Line("IntPtr.Size: {0}", IntPtr.Size);
+            Report.Line("SystemArchitecture: {0}-bit", IntPtr.Size << 3);
             Report.Line("Environment.Version: {0}", Environment.Version);
             Report.End();
 

@@ -4,14 +4,13 @@
 
 Aardvark.Base is a collection of algorithms and data structures for computer graphics and visualization. It is under active development since 2006 as part of a much larger set of libraries at VRVis Research Center.
 
-Getting started: https://github.com/vrvis/aardvark/wiki
- 
-License: http://www.apache.org/licenses/LICENSE-2.0.txt
+##Docs and Tutorials
 
-Copyright © 2014,2015 VRVis Zentrum für Virtual Reality und Visualisierung Forschungs-GmbH, Donau-City-Strasse 1, A-1220 Wien, Austria. http://www.vrvis.at.
+[Getting Started](https://github.com/vrvis/aardvark/wiki)
 
-How to build:
-======================
+[Tutorial: Terrain Generator](https://aszabo314.github.io/stuff/terraingenerator.html)
+
+##How to build
 
 Windows:
 - Visual Studio 2015,
@@ -30,4 +29,7 @@ While building, visual studio might prompt for permission to use our type provid
 the build fails immediately afterwards no matter if you granted permission. In this case
 simply rebuild all again and it should work this time.
 
+##License
+Aardvark libraries are free to use: http://www.apache.org/licenses/LICENSE-2.0.txt
 
+Copyright © 2014,2015,2016 VRVis Zentrum für Virtual Reality und Visualisierung Forschungs-GmbH, Donau-City-Strasse 1, A-1220 Wien, Austria. http://www.vrvis.at.
