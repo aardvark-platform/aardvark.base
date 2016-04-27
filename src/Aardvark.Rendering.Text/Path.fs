@@ -16,14 +16,17 @@ module Path =
         open Poly2Tri.Triangulation.Polygon
 
         let private toInternal (p : Polygon2d) =
-            Polygon(p.Points |> Seq.map (fun v -> PolygonPoint(v.X, v.Y)) |> Seq.toArray)
+            let arr = p.Points |> Seq.map (fun v -> PolygonPoint(v.X, v.Y)) |> Seq.toArray
+
+            Polygon(Array.append arr [|arr.[0]|])
 
         let triangulate (polygon : Polygon2d) (holes : seq<Polygon2d>) =
             let p = toInternal polygon
-
+            
             for h in holes do
                 p.AddHole(toInternal h)
         
+            
             P2T.Triangulate [p]
 
 
@@ -307,7 +310,7 @@ module Path =
 
                 let F =
                     M44d(
-                            tl,     tl*tl*tl,       1.0, 1.0,
+                        tl,     tl*tl*tl,       1.0, 1.0,
                         -sl,    -3.0*sl*tl*tl,   0.0, 0.0,
                         0.0,     3.0*sl*sl*tl,   0.0, 0.0,
                         0.0,    -sl*sl*sl,       0.0, 0.0
@@ -379,7 +382,7 @@ module Path =
 
                 | Bezier2(p0, p1, p2) :: rest ->
                     let q = Polygon2d(p0, p1, p2)
-                    let p1Inside = p1.PosLeftOfLineValue(p0, p2) > 0.0
+                    let p1Inside = p1.PosLeftOfLineValue(p0, p2) < 0.0
 
                     let overlapping = allSplines |> Seq.exists (overlap q)
                     if overlapping then
@@ -410,8 +413,8 @@ module Path =
                         
 
                     let q = Polygon2d(p0, p1, p2, p3)
-                    let p1Inside = p1.PosLeftOfLineValue(p0, p3) > 0.0
-                    let p2Inside = p2.PosLeftOfLineValue(p0, p3) > 0.0
+                    let p1Inside = p1.PosLeftOfLineValue(p0, p3) < 0.0
+                    let p2Inside = p2.PosLeftOfLineValue(p0, p3) < 0.0
 
                     let overlapping = allSplines |> Seq.exists (overlap q)
                     if overlapping then
@@ -453,73 +456,28 @@ module Path =
         run (Array.toList p.outline)
 
         // merge the interior polygons (respecting holes)
-        let innerPoints = innerPoints |> CSharpList.map (CSharpList.toArray >> Polygon2d)
-
-
-
-        let mergePolys(a : Polygon2d) (b : Polygon2d) =
-
-            //let b = b.Reversed
-
-            let distances =
-                seq {
-                    for i in 0..a.PointCount-1 do
-                        for j in 0..b.PointCount-1 do
-                            let a = a.[i]
-                            let b = b.[j]
-                            yield (i,j), V2d.Distance(a,b)
-                }
-
-            let (i,j) = distances |> Seq.minBy snd |> fst
-
-
-            let rot (i : int) (points : 'a[]) =
-                let i = i % (points.Length-1)
-                if i = 0 then points
-                else Array.append (Array.skip i points) (Array.sub points 1 i)
-
-            let aperm = a.GetPointArray() |> rot i
-            let bperm = b.GetPointArray() |> rot j
-
-
-
-            // a0 ... an,a0, b0 ... bn,b0, a0
-            Array.concat [ aperm; bperm; [|aperm.[0]|] ] |> Polygon2d
+        let innerPoints = innerPoints |> CSharpList.map (fun l -> l |> CSharpList.toArray |> Array.take (l.Count-1) |> Polygon2d)
 
         let polygons = List<Polygon2d * List<Polygon2d>>()
+        
 
-  
 
-        //innerPoints.[0] <- innerPoints.[0].Reversed
+
 
         for polygon in innerPoints do
-            let last =
-                if polygons.Count > 0 then Some polygons.[polygons.Count-1]
-                else None
+            if not (polygon.IsCcw()) then
+                polygons.Add (polygon, List())
 
-//                let containing =
-//                    polygons 
-//                        |> Seq.indexed 
-//                        |> Seq.tryFind (fun (i,p) -> p.IsFullyContainedInside polygon || polygon.IsFullyContainedInside p)
-//      
-                
-            match last with
-//                    | Some (i, other) ->
-//                        polygons.[i] <- mergePolys other polygon
-//
-//                    
-                | Some (last, holes) when last.BoundingBox2d.Contains polygon.BoundingBox2d ->
-                    holes.Add(polygon)
-                    //polygons.[polygons.Count-1] <- mergePolys last polygon
+        for polygon in innerPoints do
+            if polygon.IsCcw() then
+                let mutable found = false
+                for (p, holes) in polygons do
+                    if p.BoundingBox2d.Contains polygon.BoundingBox2d then
+                        holes.Add polygon
+                        found <- true
 
-                    
-                | Some (last, holes) when polygon.BoundingBox2d.Contains last.BoundingBox2d->
-        
-                    polygons.[polygons.Count-1] <- (polygon, List [last])
-                    polygons.InsertRange(0, holes |> Seq.map (fun p -> p, List()))
-
-                | _ ->
-                    polygons.Add (polygon, List())
+                if not found then
+                    Log.warn "[Path] bad hole"
 
         // triangulate the interior polygons (marking all vertices as interior ones => fst = 0)
         let interiorTriangles =
