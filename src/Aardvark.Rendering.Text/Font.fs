@@ -254,6 +254,13 @@ and FontCache(r : IRuntime, f : Font) =
     let pool = Aardvark.Base.Rendering.GeometryPool.createAsync r
     let ranges = ConcurrentDictionary<Glyph, Range1i>()
 
+    let surface = 
+        r.PrepareEffect [
+            Path.Shader.pathVertex |> toEffect
+            DefaultSurfaces.trafo |> toEffect
+            Path.Shader.pathFragment |> toEffect
+        ]
+
     let types =
         Map.ofList [
             DefaultSemantic.Positions, typeof<V3f>
@@ -271,6 +278,7 @@ and FontCache(r : IRuntime, f : Font) =
             member x.Dispose() = ()
         }
 
+    member x.Surface = surface :> ISurface
     member x.VertexBuffers = vertexBuffers
 
     member x.GetBufferRange(glyph : Glyph) =
@@ -281,6 +289,7 @@ and FontCache(r : IRuntime, f : Font) =
 
     member x.Dispose() =
         //pool.Dispose()
+        surface.Dispose()
         ranges.Clear()
 
 
