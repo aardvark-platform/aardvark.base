@@ -9,6 +9,7 @@ open System.Collections.Generic
 open System.Collections.Concurrent
 open System.Runtime.CompilerServices
 open Aardvark.Base
+open Aardvark.Base.Incremental.Telemetry
 
 
 type Change<'a> = list<Delta<'a>>

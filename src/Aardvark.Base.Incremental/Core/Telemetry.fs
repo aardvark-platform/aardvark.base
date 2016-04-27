@@ -1,4 +1,4 @@
-﻿namespace Aardvark.Base.Incremental
+﻿namespace Aardvark.Base.Incremental.Telemetry
 
 open System
 open System.Threading
