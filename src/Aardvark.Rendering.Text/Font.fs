@@ -4,8 +4,11 @@
 #nowarn "51"
 
 open System
+open System.Linq
+open System.Threading
 open System.Collections.Generic
 open System.Collections.Concurrent
+open System.Runtime.CompilerServices
 open Aardvark.Base
 open Aardvark.Base.Rendering
 open System.Drawing
@@ -113,6 +116,8 @@ type Glyph internal(path : Path, graphics : Graphics, font : System.Drawing.Font
 
     let widths = lazy (FontInfo.getCharWidths graphics font c)
 
+    member x.Character = c
+    
     member x.Path = path
     member x.Advance = 
         let sizes = widths.Value
@@ -129,11 +134,15 @@ type Glyph internal(path : Path, graphics : Graphics, font : System.Drawing.Font
                 g
 
 type Font private(f : System.Drawing.Font) =
+    static let cache = ConcurrentDictionary<IRuntime, FontCache>()
+    static let mutable fontCount = 0
+
+    do Interlocked.Increment &fontCount |> ignore
+
     let largeScaleFont = new System.Drawing.Font(f.FontFamily, 2000.0f, f.Style, f.Unit, f.GdiCharSet, f.GdiVerticalFont)
     let graphics = Graphics.FromHwnd(0n, PageUnit = f.Unit)
 
     let kerningTable = FontInfo.getKerningPairs graphics largeScaleFont
-    let cache = ConcurrentDictionary<IRuntime, FontCache>()
 
     let lineHeight = 1.0
 
@@ -213,14 +222,16 @@ type Font private(f : System.Drawing.Font) =
         )
 
 
-    member x.GetOrCreateCache(r : IRuntime) =
+    static member GetOrCreateCache(r : IRuntime) =
         cache.GetOrAdd(r, fun r ->
-            new FontCache(r, x)
+            new FontCache(r)
         )
 
     member x.Dispose() =
-        cache.Values |> Seq.toList |> List.iter (fun c -> c.Dispose())
-        cache.Clear()
+        if Interlocked.Decrement &fontCount = 0 then
+            cache.Values |> Seq.toList |> List.iter (fun c -> c.Dispose())
+            cache.Clear()
+
         f.Dispose()
         kerningTable.Clear()
         cache.Clear()
@@ -250,7 +261,7 @@ type Font private(f : System.Drawing.Font) =
     new(family : string) = 
         new Font(family, FontStyle.Regular)
 
-and FontCache(r : IRuntime, f : Font) =
+and FontCache(r : IRuntime) =
     let pool = Aardvark.Base.Rendering.GeometryPool.createAsync r
     let ranges = ConcurrentDictionary<Glyph, Range1i>()
 
@@ -305,92 +316,8 @@ module Glyph =
     let inline advance (g : Glyph) = g.Advance
     let inline path (g : Glyph) = g.Path
     let inline geometry (g : Glyph) = g.Geometry
+    let inline char (g : Glyph) = g.Character
 
 
 
 
-type TextAlignment =
-    | Left = 0
-    | Right = 1
-    | Center = 2
-
-type TextWrapMode =
-    | None = 0
-    | WrapChar = 1
-    | WrapWord = 2
-
-[<CompilationRepresentation(CompilationRepresentationFlags.ModuleSuffix)>]
-module Text =
-    open System.Text.RegularExpressions
-    open System.Collections.Generic
-
-    let lineBreak = Regex @"\r?\n|\r"
-
-    let lines (str : string) =
-        
-        lineBreak.Split(str)
-
-
-    let layout (font : Font) (align : TextAlignment) (bounds : Box2d) (text : string) =
-        [|
-            let chars = List<float * Glyph>()
-
-            let mutable cy = 0.0
-            let allLines = lines text
-
-            for l in allLines do
-                let mutable cx = 0.0
-                let mutable last = '\n'
-                chars.Clear()
-
-                for c in l do
-                    let kerning = font.GetKerning(last, c)
-               
-                    match c with
-                        | ' ' -> cx <- cx + font.Spacing
-                        | '\t' -> cx <- cx + 4.0 + font.Spacing
-                        | c ->
-                            let g = font |> Font.glyph c
-                            chars.Add(cx + g.Before + kerning, g)
-                            cx <- cx + g.Advance
-
-                    last <- c
-
-                let shift = 
-                    match align with
-                        | TextAlignment.Left -> 0.0
-                        | TextAlignment.Right -> bounds.SizeX - cx
-                        | TextAlignment.Center -> (bounds.SizeX - cx) / 2.0
-                        | _ -> failwithf "[Text] bad align: %A" align
-
-                let y = cy
-                yield! chars |> Seq.map (fun (x,g) -> 
-                    let pos = bounds.Min + V2d(shift + x,y)
-                    pos, g
-                )
-
-                cy <- cy - font.LineHeight
-
-        |]
-
-
-
-
-
-
-module FontTest =
-    open System.IO
-
-
-
-
-    let run() =
-        
-        let font = new Font("Times New Roman")
-
-
-        let test = Text.layout font TextAlignment.Left (Box2d(0.0, 0.0, 10000.0, 10000.0)) "hi there!"
-
-        printfn "%A" test
-
-        ()

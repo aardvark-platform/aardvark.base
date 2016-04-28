@@ -42,10 +42,12 @@ module Path =
     
     module Attributes = 
         let KLMKind = Symbol.Create "KLMKind"
-        let PathOffset = Symbol.Create "PathOffset"
+        let PathOffsetAndScale = Symbol.Create "PathOffsetAndScale"
+        let PathColor = Symbol.Create "PathColor"
 
     type KLMKindAttribute() = inherit FShade.Parameters.SemanticAttribute(Attributes.KLMKind |> string)
-    type PathOffsetAttribute() = inherit FShade.Parameters.SemanticAttribute(Attributes.PathOffset |> string)
+    type PathOffsetAndScaleAttribute() = inherit FShade.Parameters.SemanticAttribute(Attributes.PathOffsetAndScale |> string)
+    type PathColorAttribute() = inherit FShade.Parameters.SemanticAttribute(Attributes.PathColor |> string)
 
     module Shader = 
         open FShade
@@ -58,12 +60,14 @@ module Path =
             {
                 [<Position>] p : V4d
                 [<KLMKind>] klm : V4d
-                [<PathOffset>] offset : V2d
+                [<PathOffsetAndScale>] offset : V4d
+                [<PathColor>] color : V4d
             }
 
         let pathVertex (v : Vertex) =
             vertex {
-                let p = V4d(v.p.X + v.offset.X, v.p.Y + v.offset.Y, v.p.Z, v.p.W)
+                let pi = v.offset.XY + v.p.XY * v.offset.ZW
+                let p = V4d(pi.X, pi.Y, v.p.Z, v.p.W)
                 return { v with p = p }
             }
 
@@ -71,7 +75,7 @@ module Path =
             fragment {
                 let kind = v.klm.W
                 if kind < 0.5 then
-                    return V4d.IIII
+                    return v.color
                 else    
                     if uniform.FillGlyphs then
                         let klm = v.klm.XYZ
@@ -87,16 +91,16 @@ module Path =
                             let alpha = 0.5 - sd
 
                             if alpha > 1.0 then
-                                return V4d.IIII
+                                return v.color
                             elif alpha < 0.0 then
-                                return V4d.OOOI
+                                return V4d.OOOO
                             else
-                                return V4d(alpha, alpha, alpha, 1.0)
+                                return v.color * V4d(alpha, alpha, alpha, 1.0)
                         else
                             if pow klm.X 3.0 > klm.Y*klm.Z then
-                                return V4d.OOOI
+                                return V4d.OOOO
                             else
-                                return V4d.IIII
+                                return v.color
                     else
                         return V4d.IOOI
 
