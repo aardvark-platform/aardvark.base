@@ -14,12 +14,15 @@ open Aardvark.Base.Rendering
 open System.Drawing
 open System.Drawing.Drawing2D
 
+
+[<Flags>]
 type FontStyle =
     | Regular = 0
     | Bold = 1
     | Italic = 2
 
 module private GDI32 =
+
     
     open System.Runtime.InteropServices
     open Microsoft.FSharp.NativeInterop
