@@ -114,9 +114,32 @@ module FontInfo =
             | Mac -> failwithf "[Font] implement character sizes for Mac OS"
 
 
-type Glyph internal(path : Path, graphics : Graphics, font : System.Drawing.Font, c : char) =
-    let mutable geometry = None
+type Shape(path : Path) =
 
+    static let quad = 
+        Path.ofList [
+            PathSegment.line V2d.OO V2d.OI
+            PathSegment.line V2d.OI V2d.II
+            PathSegment.line V2d.II V2d.IO
+            PathSegment.line V2d.IO V2d.OO
+        ] |> Shape
+
+    let mutable geometry = None
+    
+    static member Quad = quad
+
+    member x.Path = path
+
+    member x.Geometry =
+        match geometry with
+            | Some g -> g
+            | None ->
+                let g = Path.toGeometry path
+                geometry <- Some g
+                g
+
+type Glyph internal(path : Path, graphics : Graphics, font : System.Drawing.Font, c : char) =
+    inherit Shape(path)
     let widths = lazy (FontInfo.getCharWidths graphics font c)
 
     member x.Character = c
@@ -128,16 +151,8 @@ type Glyph internal(path : Path, graphics : Graphics, font : System.Drawing.Font
 
     member x.Before = -0.1666
 
-    member x.Geometry =
-        match geometry with
-            | Some g -> g
-            | None ->
-                let g = Path.toGeometry path
-                geometry <- Some g
-                g
 
 type Font private(f : System.Drawing.Font) =
-    static let cache = ConcurrentDictionary<IRuntime, FontCache>()
     static let mutable fontCount = 0
 
     do Interlocked.Increment &fontCount |> ignore
@@ -225,19 +240,10 @@ type Font private(f : System.Drawing.Font) =
         )
 
 
-    static member GetOrCreateCache(r : IRuntime) =
-        cache.GetOrAdd(r, fun r ->
-            new FontCache(r)
-        )
 
     member x.Dispose() =
-        if Interlocked.Decrement &fontCount = 0 then
-            cache.Values |> Seq.toList |> List.iter (fun c -> c.Dispose())
-            cache.Clear()
-
         f.Dispose()
         kerningTable.Clear()
-        cache.Clear()
         largeScaleFont.Dispose()
         graphics.Dispose()
 
@@ -264,9 +270,12 @@ type Font private(f : System.Drawing.Font) =
     new(family : string) = 
         new Font(family, FontStyle.Regular)
 
-and FontCache(r : IRuntime) =
+type ShapeCache(r : IRuntime) =
+    static let cache = ConcurrentDictionary<IRuntime, ShapeCache>()
+
+
     let pool = Aardvark.Base.Rendering.GeometryPool.createAsync r
-    let ranges = ConcurrentDictionary<Glyph, Range1i>()
+    let ranges = ConcurrentDictionary<Shape, Range1i>()
 
     let surface = 
         r.PrepareEffect [
@@ -292,10 +301,15 @@ and FontCache(r : IRuntime) =
             member x.Dispose() = ()
         }
 
+    static member GetOrCreateCache(r : IRuntime) =
+        cache.GetOrAdd(r, fun r ->
+            new ShapeCache(r)
+        )
+
     member x.Surface = surface :> ISurface
     member x.VertexBuffers = vertexBuffers
 
-    member x.GetBufferRange(glyph : Glyph) =
+    member x.GetBufferRange(glyph : Shape) =
         ranges.GetOrAdd(glyph, fun glyph ->
             let range = pool.Add(glyph.Geometry)
             range
