@@ -48,26 +48,25 @@ module private GDI32 =
             end
 
         [<DllImport("gdi32.dll")>]
-        extern int GetKerningPairs(nativeint hdc, int count, KerningPair* pairs)
+        extern int GetKerningPairsW (nativeint hdc, int count, KerningPair* pairs)
 
         [<DllImport("gdi32.dll")>]
         extern nativeint SelectObject(nativeint hdc,nativeint hFont)
 
         [<DllImport("gdi32.dll")>]
-        extern bool GetCharABCWidthsFloat(nativeint hdc, uint32 first, uint32 last, ABC* pxBuffer)
+        extern int GetCharABCWidthsFloatW (nativeint hdc, uint32 first, uint32 last, ABC* pxBuffer)
 
         [<DllImport("gdi32.dll")>]
-        extern bool GetCharWidthFloat(nativeint hdc, uint32 first, uint32 last, float32* pxBuffer)
-
+        extern int GetCharWidthFloatW (nativeint hdc, uint32 first, uint32 last, float32* pxBuffer)
 
     let getKerningPairs (g : Graphics) (f : Font) =
         let hdc = g.GetHdc()
         let hFont = f.ToHfont()
         let old = SelectObject(hdc, hFont)
         try
-            let cnt = GetKerningPairs(hdc, 0, NativePtr.zero)
+            let cnt = GetKerningPairsW(hdc, 0, NativePtr.zero)
             let ptr = NativePtr.stackalloc cnt
-            GetKerningPairs(hdc, cnt, ptr) |> ignore
+            GetKerningPairsW(hdc, cnt, ptr) |> ignore
 
             let res = Dictionary<char * char, float>()
             for i in 0..cnt-1 do
@@ -86,15 +85,18 @@ module private GDI32 =
 
         let old = SelectObject(hdc, f.ToHfont())
         try
+
+            let index = uint32 c
             let mutable size = ABC()
-            if GetCharABCWidthsFloat(hdc, uint32 c, uint32 c, &&size) then
+
+            if GetCharABCWidthsFloatW(hdc, index, index, &&size) <> 0 then
                 0.75 * V3d(size.A, size.B, size.C) / float f.Size
             else
                 let mutable size = 0.0f
-                if GetCharWidthFloat(hdc, uint32 c, uint32 c, &&size) then
+                if GetCharWidthFloatW(hdc, index, index, &&size) <> 0 then
                     0.75 * V3d(0.0, float size, 0.0) / float f.Size
                 else
-                    Log.warn "no width for: '%c'" c
+                    Log.warn "no width for glyph '%c' (%d)" c (int c)
                     V3d.Zero
         finally
             SelectObject(hdc, old) |> ignore
@@ -224,7 +226,6 @@ type Font private(f : System.Drawing.Font) =
                     start <- V2d.NaN
 
             let bounds = segments |> Seq.map PathSegment.bounds |> Box2d
-            Log.warn "bounds(%c) = %A / %A" c bounds.Min bounds.Size
 
 
 
