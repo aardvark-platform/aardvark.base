@@ -35,6 +35,7 @@ module Path =
                     let p0 = t.Points.[0]
                     let p1 = t.Points.[1]
                     let p2 = t.Points.[2]
+
                     Triangle2d(V2d(p0.X, p0.Y), V2d(p1.X, p1.Y), V2d(p2.X, p2.Y))
                    )
                 |> Seq.toList
@@ -71,36 +72,81 @@ module Path =
                 return { v with p = p }
             }
 
+        let pathFragmentAA (v : Vertex) =
+            fragment {
+                let kind = v.klm.W
+                if kind < 0.5 then
+                    let uv = v.klm.XY
+                    
+                    let du = V2d(ddx(uv.X), ddy(uv.X))
+                    let dv = V2d(ddx(uv.Y), ddy(uv.Y))
+
+                    let vnu = uv.X + du.Length
+                    let vnv = uv.Y + dv.Length
+                    let vn = max vnu vnv
+                    
+                    if vn > 1.0 then
+                        let distance = 
+                            if vnu > vnv then (vn - 1.0) / du.Length
+                            else (vn - 1.0) / dv.Length
+                            
+                        return V4d(v.color.XYZ, 1.0 - distance)
+                    else
+                        return v.color
+
+
+//
+//                    //let m = max v.klm.X v.klm.Y
+//                    let m = v.klm.XY.Length
+////                    let m = min (min v.klm.X v.klm.Y) v.klm.Z //v.klm.XYZ
+////                    let d = m //1.0 - m
+//                    if m > 0.707 then
+//                        return V4d(v.klm.XYZ, v.color.W)
+//                    else
+//                        return V4d(0.0, 1.0, 0.0, v.color.W)
+                else    
+                    if uniform.FillGlyphs then
+                        let klm = v.klm.XYZ
+ 
+                        let dx = ddx(klm)
+                        let dy = ddy(klm)
+                        let f = pow klm.X 3.0 - klm.Y*klm.Z
+                        let fx = 3.0*klm.X*klm.X*dx.X - klm.Y*dx.Z - klm.Z*dx.Y
+                        let fy = 3.0*klm.X*klm.X*dy.X - klm.Y*dy.Z - klm.Z*dy.Y
+
+                        let sd = f / sqrt (fx*fx + fy*fy)
+                        let alpha = 0.5 - sd
+
+                        if alpha > 1.0 then
+                            return v.color
+                        elif alpha < 0.0 then
+                            return V4d.OOOO
+                        else
+                            return V4d(v.color.XYZ, alpha)
+     
+                    else
+                        return V4d.IOOI
+
+
+            }
+
         let pathFragment (v : Vertex) =
             fragment {
                 let kind = v.klm.W
                 if kind < 0.5 then
                     return v.color
+
                 else    
                     if uniform.FillGlyphs then
                         let klm = v.klm.XYZ
  
-                        if uniform.Antialias then
-                            let dx = ddx(klm)
-                            let dy = ddy(klm)
-                            let f = pow klm.X 3.0 - klm.Y*klm.Z
-                            let fx = 3.0*klm.X*klm.X*dx.X - klm.Y*dx.Z - klm.Z*dx.Y
-                            let fy = 3.0*klm.X*klm.X*dy.X - klm.Y*dy.Z - klm.Z*dy.Y
+                        let f = pow klm.X 3.0 - klm.Y*klm.Z
 
-                            let sd = f / sqrt (fx*fx + fy*fy)
-                            let alpha = 0.5 - sd
-
-                            if alpha > 1.0 then
-                                return v.color
-                            elif alpha < 0.0 then
-                                return V4d.OOOO
-                            else
-                                return v.color * V4d(alpha, alpha, alpha, 1.0)
+                        if f < 0.0 then
+                            return v.color
                         else
-                            if pow klm.X 3.0 > klm.Y*klm.Z then
-                                return V4d.OOOO
-                            else
-                                return v.color
+                            return V4d.OOOO
+     
                     else
                         return V4d.IOOI
 
@@ -165,6 +211,15 @@ module Path =
     /// applies the given transformation to all points used by the path
     let transform (f : V2d -> V2d) (p : Path) =
         { outline = Array.map (PathSegment.transform f) p.outline }
+
+
+    type private Triangle2dBound(p0 : V2d, p1 : V2d, p2 : V2d, b0 : bool, b1 : bool, b2 : bool) =
+        member x.P0 = p0
+        member x.P1 = p1
+        member x.P2 = p2
+        member x.B0 = b0
+        member x.B1 = b1
+        member x.B2 = b2
 
     /// creates a geometry using the !!closed!! path which contains the left-hand-side of
     /// the outline.
@@ -338,8 +393,10 @@ module Path =
 
 
         let innerPoints = List<List<V2d>>()
+        let boundaryEdges = HashSet<V2d * V2d>()
         let boundaryTriangles = List<V2d>()
         let boundaryCoords = List<V3d>()
+
         let mutable current = V2d.NaN
 
         let start (p : V2d) =
@@ -379,6 +436,7 @@ module Path =
                 | Line(p0, p1) :: rest ->
                     start p0
                     add p0
+                    boundaryEdges.Add(p0, p1) |> ignore
 
                     add p1
                     current <- p1
@@ -401,15 +459,19 @@ module Path =
                         start p0
                         add p0
 
-                        if p1Inside then add p1
+
+                        if p1Inside then 
+                            add p1
 
                         boundaryTriangles.AddRange [p0; p1; p2]
+
                         if p1Inside then
                             boundaryCoords.AddRange [V3d(0,0,0); V3d(-0.5, 0.0, -0.5); V3d(-1,1,-1)]
                         else
                             boundaryCoords.AddRange [V3d(0,0,0); V3d(0.5, 0.0, 0.5); V3d(1,1,1)]
 
                         add p2
+
                         current <- p2
                         run rest
 
@@ -442,12 +504,14 @@ module Path =
                         if p1Inside && p2Inside then
                             add p1
                             add p2
+                            
 
                         let w0,w1,w2,w3 = texCoords(p0, p1, p2, p3)
                         boundaryTriangles.AddRange [p0; p1; p2]
                         boundaryCoords.AddRange [w0; w1; w2]
                         boundaryTriangles.AddRange [p0; p2; p3]
                         boundaryCoords.AddRange [w0; w2; w3]
+
 
                         add p3
                         current <- p3
@@ -483,45 +547,79 @@ module Path =
                 if not found then
                     Log.warn "[Path] bad hole"
 
-        // triangulate the interior polygons (marking all vertices as interior ones => fst = 0)
-        let interiorTriangles =
-            polygons
-            |> CSharpList.toArray
-            |> Array.collect (fun (p, holes) ->
-                let triangles = Poly2Tri.triangulate p holes
 
-                triangles 
-                    |> List.collect (fun t -> [t.P0; t.P1; t.P2]) 
-                    |> List.map (fun v -> V3d(v, 0.0))
-                    |> List.toArray
+        let isBoundary (p0 : V2d) (p1 : V2d) =
+            boundaryEdges.Contains(p0, p1) || boundaryEdges.Contains(p1, p0)
 
-//                    let p = Polygon2d(p.GetPointArray() |> Array.take (p.PointCount-1))
-//                    let poly = p.ToPolygon3d (fun v -> V3d(v, 0.0))
-//                    
-//                    let idx = poly.ComputeTriangulationOfConcavePolygon(1.0E-6)
-//                    idx |> Array.map (fun i -> poly.[i])
+//
+//            let pointOnTriangle (p : V2d) (t : Triangle2d) =
+//                t.Contains(p)
+////                Fun.IsTiny(t.Line01.LeftValueOfPos(p) , 1.0E-4) ||
+////                Fun.IsTiny(t.Line12.LeftValueOfPos(p) , 1.0E-4) ||
+////                Fun.IsTiny(t.Line20.LeftValueOfPos(p) , 1.0E-4)
+//
+//            splineTriangles 
+//                |> Seq.exists (fun t -> pointOnTriangle p0 t && pointOnTriangle p1 t)
+//                |> not
 
-//                    let sub = p.ComputeNonConcaveSubPolygons(1.0E-6)
-//                    let test = 
-//                        sub |> Seq.collect (fun i ->
-//                            let p = Polygon2d(i |> Array.map (fun i -> p.[i])).ToPolygon3d(fun v -> V3d(v, 0.0))
+        // triangulate the interior polygons (marking all vertices as interior ones => triangleCoords.[*].W = 0)
+        let triangles =
+            polygons 
+                |> CSharpList.toList
+                |> List.collect (fun (p, holes) ->
+                    Poly2Tri.triangulate p holes 
+                        |> List.map (fun t ->
+                            let b0 = isBoundary t.P0 t.P1
+                            let b1 = isBoundary t.P1 t.P2
+                            let b2 = isBoundary t.P2 t.P0
+                            Triangle2dBound(t.P0, t.P1, t.P2, b0, b1, b2)
+                        )
+                   ) 
+                |> List.toArray
+
+
+        let trianglePositions =
+            triangles
+                |> Array.collect (fun t ->
+                    [| V3d(t.P0, 0.0); V3d(t.P1, 0.0); V3d(t.P2, 0.0) |]
+                )
+
+        let triangleCoords =
+            triangles
+                |> Array.collect (fun t ->
+                    let vecs = 
+                        match t.B0, t.B1, t.B2 with
+                            | false,    false,      false -> [| V2d.OO; V2d.OO; V2d.OO |]
+                        
+                            | true,     false,      false -> [| V2d.IO; V2d.IO; V2d.OO |]
+                            | false,    true,       false -> [| V2d.OO; V2d.IO; V2d.IO |]
+                            | false,    false,      true  -> [| V2d.IO; V2d.OO; V2d.IO |]
+
+                            | true,     false,      true  -> [| V2d.II; V2d.IO; V2d.OI |]
+                            | true,     true,       false -> [| V2d.IO; V2d.II; V2d.OI |]
+                            | false,    true,       true  -> [| V2d.IO; V2d.OI; V2d.II |]
+
+                            | true,     true,       true  -> [| V2d.II; V2d.II; V2d.II |]
+
+
+                    vecs |> Array.map (fun v ->
+                        V4d(v.X, v.Y, 0.0, 0.0)
+                    )
+//                    let c0 = if t.B0 then 1.0 else 0.0 //01
+//                    let c1 = if t.B1 then 1.0 else 0.0 //12
+//                    let c2 = if t.B2 then 1.0 else 0.0 //20
 //
-//                            let idx = p.ComputeTriangulationOfConcavePolygon(1.0E-6)
-//
-//                            idx |> Array.map (fun i -> p.[i])
-//                        )
-//                    let index = poly.ComputeTriangulationOfConcavePolygon(Constant.PositiveTinyValue)
-//                
-//
-//                    index |> Array.map (fun i -> poly.[i])
-                //test |> Seq.toArray
-            )
+//                    [|V4d(1.0, 0.0, 0.0, 0.0); V4d(0.0, 1.0, 0.0, 0.0); V4d(0.0, 0.0, 1.0, 0.0)|]
+                )
+
+
+        
 
         // union the interior with the bounary triangles
         let boundaryTriangles = boundaryTriangles |> Seq.map (fun v -> V3d(v.X, v.Y, 0.0)) |> Seq.toArray
         let boundaryCoords = boundaryCoords |> CSharpList.toArray |> Array.map (fun v -> V4d(v, 1.0))
-        let pos = Array.append interiorTriangles boundaryTriangles
-        let tex = Array.append (Array.create interiorTriangles.Length V4d.Zero) boundaryCoords
+        let pos = Array.append trianglePositions boundaryTriangles
+        let tex = Array.append triangleCoords boundaryCoords
 
 
         // use the merged vertex-data for creating the final geometry
