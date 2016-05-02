@@ -102,7 +102,14 @@ namespace Aardvark.Base.Rendering
             if (obj is BlendMode)
             {
                 var bm = (BlendMode)obj;
-                return (!Enabled && !bm.Enabled) || (bm.SourceFactor == SourceFactor && bm.SourceAlphaFactor == SourceAlphaFactor && bm.DestinationFactor == DestinationFactor && bm.DestinationAlphaFactor == DestinationAlphaFactor && bm.Operation == Operation && bm.AlphaOperation == AlphaOperation);
+                if (!Enabled && !bm.Enabled)
+                    return true;
+
+                else if (Enabled && bm.Enabled)
+                    return bm.SourceFactor == SourceFactor && bm.SourceAlphaFactor == SourceAlphaFactor && bm.DestinationFactor == DestinationFactor && bm.DestinationAlphaFactor == DestinationAlphaFactor && bm.Operation == Operation && bm.AlphaOperation == AlphaOperation;
+
+                else
+                    return false;
             }
             else return false;
         }
