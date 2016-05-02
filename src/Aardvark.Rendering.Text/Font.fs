@@ -285,6 +285,8 @@ type ShapeCache(r : IRuntime) =
             Path.Shader.pathFragment |> toEffect
         ]
 
+
+
     let types =
         Map.ofList [
             DefaultSemantic.Positions, typeof<V3f>
@@ -317,7 +319,7 @@ type ShapeCache(r : IRuntime) =
         )
 
     member x.Dispose() =
-        //pool.Dispose()
+        pool.Dispose()
         surface.Dispose()
         ranges.Clear()
 
