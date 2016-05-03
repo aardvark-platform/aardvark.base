@@ -56,6 +56,7 @@ module Path =
         type UniformScope with
             member x.FillGlyphs : bool = uniform?FillGlyphs
             member x.Antialias : bool = uniform?Antialias
+            member x.BoundaryColor : V4d = uniform?BoundaryColor
 
         type Vertex =
             {
@@ -153,7 +154,10 @@ module Path =
 
             }
 
-
+        let boundary (v : Vertex) =
+            fragment {
+                return uniform.BoundaryColor
+            }
 
 
     /// create a path using a single segment

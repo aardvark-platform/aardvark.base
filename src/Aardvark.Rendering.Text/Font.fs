@@ -280,9 +280,15 @@ type ShapeCache(r : IRuntime) =
 
     let surface = 
         r.PrepareEffect [
-            Path.Shader.pathVertex |> toEffect
-            DefaultSurfaces.trafo |> toEffect
-            Path.Shader.pathFragment |> toEffect
+            Path.Shader.pathVertex      |> toEffect
+            DefaultSurfaces.trafo       |> toEffect
+            Path.Shader.pathFragment    |> toEffect
+        ]
+
+    let boundarySurface =
+        r.PrepareEffect [
+            DefaultSurfaces.trafo       |> toEffect
+            Path.Shader.boundary        |> toEffect
         ]
 
 
@@ -310,6 +316,7 @@ type ShapeCache(r : IRuntime) =
         )
 
     member x.Surface = surface :> ISurface
+    member x.BoundarySurface = boundarySurface :> ISurface
     member x.VertexBuffers = vertexBuffers
 
     member x.GetBufferRange(glyph : Shape) =
