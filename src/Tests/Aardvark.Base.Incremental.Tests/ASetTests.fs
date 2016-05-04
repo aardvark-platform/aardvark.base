@@ -10,7 +10,10 @@ open NUnit.Framework
 open FsUnit
 open Aardvark.Base
 
-module ``collect tests`` =
+
+[<AutoOpen>]
+module ``utils`` =
+
     type Tree<'a> = Node of aset_check<Tree<'a>> | Leaf of aset_check<'a>
 
     type DeltaList<'a>() =
@@ -24,6 +27,7 @@ module ``collect tests`` =
             store.Clear()
             res
 
+module ``collect tests`` =
 
     [<Test>]
     let ``[ASet] duplicate handling in collect``() =
@@ -110,6 +114,9 @@ module ``collect tests`` =
         r.GetDelta() |> should setEqual []
         r.Content |> should setEqual [1;2]
     
+[<AutoOpen>]
+module OtherASetTests =
+
     [<Test>]
     let ``[ASet] tree flatten test``() =
         let rec flatten (t : Tree<'a>) =
@@ -1108,9 +1115,6 @@ module ``collect tests`` =
         r.Content |> Seq.toList |> List.sort |> should equal [0..99]
 
 
-
-
-
 module ASetPerformance =
     open System.Diagnostics
 
@@ -1284,7 +1288,69 @@ module ASetPerformance =
             printfn "  submit:   %A" (tSubmit.Elapsed / cnt)
             printfn "  transact: %A" (tTransact.Elapsed / cnt)
             printfn "  pull:     %A" (tPull.Elapsed / cnt)
+    
+
+[<AutoOpen>]
+module ConcurrentDeltaQueueTests =
+
+    [<Test>]
+    let ``[ASet ConcurrentDeltaQueue] concurrent delta queue test``() =
+
+        let set = CSet.empty
+
+        let queue = new ConcurrentDeltaQueue<int64>()
+
+        let r = System.Random()
+        let mutable freshIds = 0L
+        let livingThings = System.Collections.Generic.HashSet<int64>()
+
+        let perIteration = 20
+
+        let producer () =
+            for i in 0 .. 100000 do
+                let operations = List<Delta<int64>>()
+
+                for i in 0 .. r.Next(0,perIteration) do
+                    let arr = livingThings |> Seq.toArray
+                    if arr.Length > 100 then
+                        let toRemove = arr.[r.Next(0,arr.Length-1)]
+                        livingThings.Remove toRemove |> ignore
+                        operations.Add (Rem toRemove)
+                    
+                let newThings = 
+                    [ for i in 0 .. r.Next(0,perIteration) do 
+                        freshIds <- freshIds + 1L
+                        livingThings.Add freshIds |> ignore
+                        operations.Add (Add freshIds)
+                        yield freshIds
+                    ]
 
 
+                for i in operations do queue.Enqueue i
+
+            for x in livingThings |> Seq.toArray do 
+                livingThings.Remove x |> ignore
+                queue.Enqueue (Rem x)
+
+
+        let conc = System.Collections.Concurrent.ConcurrentHashSet()
+
+        let cts = new System.Threading.CancellationTokenSource()
+
+        let consumer  =
+            async {
+                do! Async.SwitchToNewThread()
+
+                while true do 
+                    let! i = queue.DequeueAsync()
+                    match i with
+                        | Add v -> if conc.Add( v) then () else failwith "duplicate!?!?!?"
+                        | Rem v -> if conc.Remove v then () else failwith "Rem of non existing?!?!?!"
+            }
+
+        let arrs = [ for i in 0 .. 8 do yield Async.StartAsTask( consumer,cancellationToken = cts.Token) ]
+
+        producer()
+        cts.Cancel()
 
 

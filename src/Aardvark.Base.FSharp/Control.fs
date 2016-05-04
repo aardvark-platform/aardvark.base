@@ -446,6 +446,7 @@ module Cancellable =
         let run (ct : System.Threading.CancellationToken) (m : Cancellable<'a>) =
             try
                 let (v,s') = m.runState { comp = []; ct = ct }
+                ct.Register(new System.Action(fun () -> for c in s'.comp do c())) |> ignore
                 Some v
             with | :? System.OperationCanceledException as o -> 
                 None
@@ -484,6 +485,11 @@ module Cancellable =
                     throwAndRollback s'
                     f ()
                     r, s'
+            }
+
+        let cancellationToken () =  
+            { runState =
+                fun s -> s.ct, s 
             }
 
     

@@ -7,6 +7,7 @@ open Aardvark.Base.Incremental
 open NUnit.Framework
 open FsUnit
 open System.Diagnostics
+open Aardvark.Base.Incremental.Telemetry
 
 module ``performance tests`` =
 
