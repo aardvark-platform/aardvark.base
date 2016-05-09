@@ -170,6 +170,9 @@ type IAdaptiveObject =
 
     abstract member InputChanged : IAdaptiveObject -> unit
 
+
+    abstract member Lock : AdaptiveLock
+
 /// <summary>
 /// LevelChangedException is internally used by the system
 /// to handle level changes during the change propagation.
@@ -178,6 +181,29 @@ exception LevelChangedException of changedObject : IAdaptiveObject * newLevel : 
 
 module AdaptiveSystemState =
     let curerntEvaluationDepth = new ThreadLocal<ref<int>>(fun _ -> ref 0)
+
+    let private currentLocks = new ThreadLocal<ref<list<AdaptiveLock>>>(fun () -> ref [])
+
+    let addReadLock (l : AdaptiveLock) =
+        let r = currentLocks.Value
+        r := l::!r
+
+    let pushReadLocks() =
+        let r = currentLocks.Value
+        let old = !r
+        r := []
+        old
+
+    let popReadLocks (old : list<AdaptiveLock>) =
+        let r = currentLocks.Value
+        let v = !r
+        r := old
+        for l in v do l.ExitRead()
+
+
+
+
+
     //let currentEvaluationPath = new ThreadLocal<Stack<IAdaptiveObject>>(fun _ -> Stack(100))
 
 type TrackAllThreadLocal<'a>(creator : unit -> 'a) =
@@ -321,6 +347,7 @@ type Transaction() =
                 // for this object we must acquire a lock here.
                 // Note that the transaction will at most hold one
                 // lock at a time.
+                e.Lock.EnterWrite()
                 Monitor.Enter e
                 try
                     // if the element is already outOfDate we
@@ -375,6 +402,7 @@ type Transaction() =
                 
                 finally 
                     Monitor.Exit e
+                    e.Lock.ExitWrite()
 
                 // finally we enqueue all returned outputs
                 for i in 0..!outputCount - 1 do
@@ -422,16 +450,24 @@ type AdaptiveObject =
         val mutable public Level : int 
         val mutable public Outputs : VolatileCollection<IAdaptiveObject>
         val mutable public WeakThis : WeakReference<IAdaptiveObject>
+        val mutable public Lock : AdaptiveLock
 
         new() =
             { Id = newId(); OutOfDate = true; 
-              Level = 0; Outputs = VolatileCollection<IAdaptiveObject>(); WeakThis = null }
+              Level = 0; Outputs = VolatileCollection<IAdaptiveObject>(); WeakThis = null;
+              Lock = new AdaptiveLock() }
 
     
         member inline this.evaluate (caller : IAdaptiveObject) (otherwise : Option<'a>) (f : unit -> 'a) =
             let depth = AdaptiveSystemState.curerntEvaluationDepth.Value
             let top = isNull caller && !depth = 0 && not Transaction.HasRunning
 
+            let oldLocks =
+                if top then AdaptiveSystemState.pushReadLocks()
+                else []
+
+            this.Lock.EnterRead()
+            AdaptiveSystemState.addReadLock this.Lock
 
             let mutable res = Unchecked.defaultof<_>
             Monitor.Enter this
@@ -477,6 +513,7 @@ type AdaptiveObject =
                 Monitor.Exit this
 
             if top then 
+                AdaptiveSystemState.popReadLocks oldLocks
                 let time = AdaptiveObject.Time
                 Monitor.Enter time
                 if not time.Outputs.IsEmpty then
@@ -563,7 +600,8 @@ type AdaptiveObject =
                 x.Mark ()
 
             member x.InputChanged ip = x.InputChanged ip
-            
+            member x.Lock = x.Lock
+
     end
 
 
@@ -580,6 +618,7 @@ type AdaptiveObject =
 type ConstantObject() =
 
     let mutable weakThis : WeakReference<IAdaptiveObject> = null
+    let lock = new AdaptiveLock()
 
     interface IWeakable<IAdaptiveObject> with
         member x.Weak =
@@ -606,6 +645,7 @@ type ConstantObject() =
         member x.Inputs = Seq.empty
         member x.Outputs = VolatileCollection()
         member x.InputChanged ip = ()
+        member x.Lock = lock
 
 
 
@@ -701,6 +741,7 @@ module CallbackExtensions =
         let mutable scope = Ag.getContext()
         let mutable inner = inner
         let mutable weakThis = null
+        let rw = new AdaptiveLock()
         do lock inner (fun () -> inner.Outputs.Add this |> ignore)
 
         do lock undyingMarkingCallbacks (fun () -> undyingMarkingCallbacks.GetOrCreateValue(inner).Add this |> ignore )
@@ -737,6 +778,7 @@ module CallbackExtensions =
             member x.Inputs = Seq.singleton inner
             member x.Outputs = VolatileCollection()
             member x.InputChanged ip = ()
+            member x.Lock = rw
 
         member x.Dispose() =
             if Interlocked.Exchange(&live, 0) = 1 then
@@ -866,7 +908,7 @@ type AdaptiveDecorator(o : IAdaptiveObject) =
         member x.Mark () = o.Mark()
 
         member x.InputChanged ip = o.InputChanged ip
-
+        member x.Lock = o.Lock
  
 type VolatileDirtySet<'a, 'b when 'a :> IAdaptiveObject and 'a : equality and 'a : not struct>(eval : 'a -> 'b) =
     let mutable set : PersistentHashSet<'a> = PersistentHashSet.empty

@@ -63,6 +63,7 @@ type ModRef<'a>(value : 'a) =
     inherit AdaptiveObject()
 
     let mutable value = value
+    let mutable cache = value
     let tracker = ChangeTracker.trackVersion<'a>
 
     member x.UnsafeCache
@@ -76,9 +77,14 @@ type ModRef<'a>(value : 'a) =
                 value <- v
                 x.MarkOutdated()
 
+    
+
     member x.GetValue(caller : IAdaptiveObject) =
         x.EvaluateAlways caller (fun () ->
-            value
+            if x.OutOfDate then
+                cache <- value
+            
+            cache
         )
 
     override x.ToString() =

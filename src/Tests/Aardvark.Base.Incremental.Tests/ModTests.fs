@@ -558,6 +558,146 @@ module ``Basic Mod Tests`` =
 
         ()
 
+    [<Test>]
+    let ``[Mod] consistent concurrency test``() =
+        let i = Mod.init 10
+
+        let a = i |> Mod.map id |> Mod.map id 
+        let b = i |> Mod.map (fun a -> -a)
+
+        let apb = Mod.map2 (+) a b
+
+        let r = System.Random()
+        let changer = 
+            async {
+                do! Async.SwitchToNewThread()
+                while true do
+                    //do! Async.Sleep 0
+                    transact (fun () -> Mod.change i (r.Next()))
+            }
+
+
+
+        for i in 0 .. 20 do 
+            Async.Start changer
+
+        let sw = System.Diagnostics.Stopwatch()
+        let mutable iterations = 0
+        sw.Start()
+        while sw.Elapsed.TotalSeconds < 10.0 do
+            let r = Mod.force apb
+            if r <> 0 then failwithf "hate :%d" iterations
+            iterations <- iterations + 1
+            if iterations % 10000 = 0 then
+                let progress = sw.Elapsed.TotalSeconds / 10.0
+                printfn "%.2f%%" (100.0 * progress)
+
+        printfn "done"
+
+    [<Test>]
+    let ``[Mod] consistent concurrency multiple evaluators test``() =
+        let i = Mod.init 10
+
+        let a = i |> Mod.map id |> Mod.map id 
+        let b = i |> Mod.map (fun a -> -a)
+
+        let apb = Mod.map2 (+) a b
+
+        let r = System.Random()
+
+        let mutable badResults = 0
+        let mutable evaluations = 0
+        let mutable changes = 0
+        let mutable running = true
+
+        let changers = 20
+        let evaluators = 5
+        let sem = new SemaphoreSlim(0)
+
+        let changer = 
+            async {
+                do! Async.SwitchToNewThread()
+                while true do
+                    //do! Async.Sleep 0
+                    transact (fun () -> Mod.change i (r.Next()))
+                    Interlocked.Increment &changes |> ignore
+            }
+
+        let evaluator =
+            async {
+                do! Async.SwitchToNewThread()
+                while Volatile.Read(&running) do
+                    let r = Mod.force apb
+                    Interlocked.Increment &evaluations |> ignore
+                    if r <> 0 then Interlocked.Increment(&badResults) |> ignore
+                sem.Release() |> ignore
+            }
+
+        for i in 1 .. changers do 
+            Async.Start changer
+
+        for i in 1 .. evaluators do 
+            Async.Start evaluator
+
+
+
+        let sw = System.Diagnostics.Stopwatch()
+        sw.Start()
+        while sw.Elapsed.TotalSeconds < 10.0 do
+            Thread.Sleep(500)
+            let progress = sw.Elapsed.TotalSeconds / 10.0 |> clamp 0.0 1.0
+            printfn "%.2f%%" (100.0 * progress)
+
+            if badResults > 0 then
+                failwithf "hate: %A" badResults
+
+        running <- false
+        for i in 1..evaluators do sem.Wait()
+        
+        printfn "evaluations: %A" evaluations
+        printfn "changes:     %A" changes
+        if badResults > 0 then
+            failwithf "hate: %A" badResults
+             
+        printfn "done"
+
+    [<Test>]
+    let ``[Mod] parallel consistent concurrency test``() =
+        let a = Mod.init 10
+        let b = Mod.init -10
+
+        let a' = a |> Mod.map id |> Mod.map id 
+        let b' = b :> IMod<_>
+
+        let apb = Mod.map2 (+) a' b'
+
+        let r = System.Random()
+        let changer = 
+            async {
+                do! Async.SwitchToNewThread()
+                while true do
+                    //do! Async.Sleep 0
+                    let v = r.Next()
+
+                    transact (fun () -> 
+                        Mod.change a v
+                        Mod.change b -v
+                    )
+            }
+
+
+
+        for i in 0 .. 20 do 
+            Async.Start changer
+
+        let sw = System.Diagnostics.Stopwatch()
+        let mutable iterations = 0
+        sw.Start()
+        while sw.Elapsed.TotalSeconds < 2.0 do
+            let r = Mod.force apb
+            if r <> 0 then failwithf "hate :%d" iterations
+            iterations <- iterations + 1
+
 
 
 

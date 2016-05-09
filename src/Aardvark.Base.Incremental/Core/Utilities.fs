@@ -223,3 +223,36 @@ module ChangeTracker =
 
     let trackVersion<'a> : 'a -> bool =
         ChangeTracker<'a>.CreateVersionOnlyTracker()
+
+
+
+type AdaptiveLock() =
+    let rw = new ReaderWriterLockSlim(LockRecursionPolicy.SupportsRecursion)
+//    let mutable readerCount = 0
+//    let mutable writerCount = 0
+
+
+    member x.EnterRead() =
+        rw.EnterReadLock()
+//        let mutable old = Interlocked.CompareExchange(&writerCount, -1, 0)
+//        while old <> 0 && old <> -1 do
+//            old <- Interlocked.CompareExchange(&writerCount, -1, 0)
+//            
+//        Interlocked.Increment &readerCount |> ignore
+
+    member x.ExitRead() =
+        rw.ExitReadLock()
+//        let newReaders = Interlocked.Decrement &readerCount
+//
+//        if newReaders = 0 then
+//            writerCount <- 0
+
+    member x.EnterWrite() =
+        rw.EnterWriteLock()
+//        let mutable old = Interlocked.CompareExchange(&writerCount, 1, 0)
+//        while old <> 0 do
+//            old <- Interlocked.CompareExchange(&writerCount, 1, 0)
+
+    member x.ExitWrite() =
+        rw.ExitWriteLock()
+//        writerCount <- 0
