@@ -168,7 +168,8 @@ type IAdaptiveObject =
     abstract member Outputs : VolatileCollection<IAdaptiveObject>
 
 
-    abstract member InputChanged : IAdaptiveObject -> unit
+    abstract member InputChanged : obj * IAdaptiveObject -> unit
+    abstract member AllInputsProcessed : obj -> unit
 
 
     abstract member Lock : AdaptiveLock
@@ -354,6 +355,7 @@ type Transaction() =
                     // do not traverse the graph further.
                     if e.OutOfDate then
                         outputCount := 0
+                        e.AllInputsProcessed(x)
 
                     else
                         // if the object's level has changed since it
@@ -367,12 +369,12 @@ type Transaction() =
                             outputCount := 0
                         else
                             if causes.TryRemove(e, &myCauses.contents) then
-                                !myCauses |> Seq.iter e.InputChanged
+                                !myCauses |> Seq.iter (fun i -> e.InputChanged(x,i))
 
                             // however if the level is consistent we may proceed
                             // by marking the object as outOfDate
                             e.OutOfDate <- true
-
+                            e.AllInputsProcessed(x)
                             markCount := !markCount + 1
                 
                             try 
@@ -407,7 +409,7 @@ type Transaction() =
                 // finally we enqueue all returned outputs
                 for i in 0..!outputCount - 1 do
                     let o = outputs.[i]
-                    o.InputChanged e
+                    o.InputChanged(x,e)
                     x.Enqueue o
 
                 contained.Remove e |> ignore
@@ -559,8 +561,12 @@ type AdaptiveObject =
         abstract member Mark : unit -> bool
         default x.Mark () = true
     
-        abstract member InputChanged : IAdaptiveObject -> unit
-        default x.InputChanged ip = ()
+        abstract member InputChanged : obj * IAdaptiveObject -> unit
+        default x.InputChanged(t,ip) = ()
+
+        abstract member AllInputsProcessed : obj -> unit
+        default x.AllInputsProcessed(t) = ()
+
 
         abstract member Inputs : seq<IAdaptiveObject>
         [<System.ComponentModel.Browsable(false)>]
@@ -599,7 +605,8 @@ type AdaptiveObject =
             member x.Mark () =
                 x.Mark ()
 
-            member x.InputChanged ip = x.InputChanged ip
+            member x.InputChanged(o,ip) = x.InputChanged(o, ip)
+            member x.AllInputsProcessed(o) = x.AllInputsProcessed(o)
             member x.Lock = x.Lock
 
     end
@@ -644,7 +651,8 @@ type ConstantObject() =
 
         member x.Inputs = Seq.empty
         member x.Outputs = VolatileCollection()
-        member x.InputChanged ip = ()
+        member x.InputChanged(o,ip) = ()
+        member x.AllInputsProcessed(o) = ()
         member x.Lock = lock
 
 
@@ -777,7 +785,8 @@ module CallbackExtensions =
 
             member x.Inputs = Seq.singleton inner
             member x.Outputs = VolatileCollection()
-            member x.InputChanged ip = ()
+            member x.InputChanged(o,ip) = ()
+            member x.AllInputsProcessed(o) = ()
             member x.Lock = rw
 
         member x.Dispose() =
@@ -907,7 +916,8 @@ type AdaptiveDecorator(o : IAdaptiveObject) =
 
         member x.Mark () = o.Mark()
 
-        member x.InputChanged ip = o.InputChanged ip
+        member x.InputChanged(t,ip) = o.InputChanged (t,ip)
+        member x.AllInputsProcessed(t) = o.AllInputsProcessed(t)
         member x.Lock = o.Lock
  
 type VolatileDirtySet<'a, 'b when 'a :> IAdaptiveObject and 'a : equality and 'a : not struct>(eval : 'a -> 'b) =

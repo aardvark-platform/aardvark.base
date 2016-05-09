@@ -443,7 +443,7 @@ module Mod =
         override x.Release() = 
             dirtySet.Clear()
 
-        override x.InputChanged i =
+        override x.InputChanged(t, i) =
             match i with
                 | :? IMod<'a> as i -> dirtySet.Push(i)
                 | _ -> ()
@@ -492,7 +492,7 @@ module Mod =
                     | None -> ()
             }
 
-        override x.InputChanged i =
+        override x.InputChanged(t, i) =
             System.Threading.Interlocked.Change(&changedInputs, PersistentHashSet.add i) |> ignore
 
         override x.Compute() =
@@ -555,7 +555,7 @@ module Mod =
                     | None -> ()
             }
 
-        override x.InputChanged i =
+        override x.InputChanged(t, i) =
             System.Threading.Interlocked.Change(&changedInputs, PersistentHashSet.add i) |> ignore
 
         override x.Compute() =

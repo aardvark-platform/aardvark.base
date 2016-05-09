@@ -200,7 +200,7 @@ module AListReaders =
 
         override x.Order = mapping.Order
 
-        override x.InputChanged (o : IAdaptiveObject) = 
+        override x.InputChanged (t, o : IAdaptiveObject) = 
             match o with
                 | :? IListReader<'b> as o -> dirtyInner.Push o
                 | _ -> ()

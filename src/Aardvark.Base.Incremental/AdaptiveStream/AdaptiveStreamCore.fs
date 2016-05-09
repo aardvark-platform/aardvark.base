@@ -230,7 +230,7 @@ module AStreamReaders =
             f.Clear(fun r -> r.RemoveOutput this; r.Dispose())
             dirtyInner.Clear()
 
-        override x.InputChanged(o : IAdaptiveObject) =
+        override x.InputChanged(t, o : IAdaptiveObject) =
             match o with
                 | :? IStreamReader<'b> as o -> dirtyInner.Push o
                 | _ -> ()

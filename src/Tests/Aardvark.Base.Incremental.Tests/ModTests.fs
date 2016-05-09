@@ -595,6 +595,73 @@ module ``Basic Mod Tests`` =
         printfn "done"
 
     [<Test>]
+    let ``[Mod] consistent concurrency dirty set``() =
+        //let i = Mod.init 10
+
+        let set = CSet.empty
+        let v = set |> ASet.toMod |> Mod.map (fun s -> s.Count)
+
+        let a = v |> Mod.map id |> Mod.map id 
+        let b = v |> Mod.map (fun a -> -a)
+
+        let r = System.Random()
+        let changer = 
+            async {
+                do! Async.SwitchToNewThread()
+                while true do
+                    //do! Async.Sleep 0
+                    transact (fun () -> 
+                        set.Add (r.Next()) |> ignore
+                        //Mod.change i (r.Next())
+                    )
+            }
+
+
+
+        for i in 0 .. 3 do 
+            Async.Start changer
+
+        let mutable markings = 0
+        let ab =
+            let scratch = Dict<obj, HashSet<IMod<int>>>()
+            let dirty = HashSet<IMod<int>> [a;b]
+
+            { new Mod.AbstractMod<int>() with
+                override x.InputChanged(t,i) =
+                    match i with
+                        | :? IMod<int> as i ->
+                            lock scratch (fun () ->
+                                let set = scratch.GetOrCreate(t, fun t -> HashSet())
+                                set.Add i |> ignore
+                            )
+                        | _ -> ()
+
+                override x.AllInputsProcessed(t) =
+                    markings <- markings + 1
+                    match lock scratch (fun () -> scratch.TryRemove t) with
+                        | (true, s) -> dirty.UnionWith s
+                        | _ -> ()
+
+                override x.Compute() =
+                    let cnt = dirty.Count
+                    for d in dirty do d.GetValue(x) |> ignore
+                    dirty.Clear()
+                    cnt
+            }
+
+        let sw = System.Diagnostics.Stopwatch()
+        let mutable iterations = 0
+        sw.Start()
+        while sw.Elapsed.TotalSeconds < 30.0 do
+            //Thread.Sleep(1)
+            let r = Mod.force ab
+            if r <> 2 then failwithf "hate : %d/%d" r iterations
+            iterations <- iterations + 1
+
+        printfn "markings: %A" markings
+        printfn "evals:    %A" iterations
+
+    [<Test>]
     let ``[Mod] consistent concurrency multiple evaluators test``() =
         let i = Mod.init 10
 
