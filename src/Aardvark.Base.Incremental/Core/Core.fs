@@ -329,6 +329,7 @@ type Transaction() =
             let old = running.Value
             running.Value <- Some x
             let mutable level = 0
+            let mutable hasWriteLock = false
             let myCauses = ref null
         
             let markCount = ref 0
@@ -339,16 +340,15 @@ type Transaction() =
                 // dequeue the next element (having the minimal level)
                 let e = q.Dequeue(&currentLevel)
                 current <- e
+                hasWriteLock <- false
 
                 traverseCount := !traverseCount + 1
 
                 outputCount := 0
-
                 // since we're about to access the outOfDate flag
                 // for this object we must acquire a lock here.
                 // Note that the transaction will at most hold one
                 // lock at a time.
-                e.Lock.EnterWrite()
                 Monitor.Enter e
                 try
                     // if the element is already outOfDate we
@@ -358,6 +358,8 @@ type Transaction() =
                         e.AllInputsProcessed(x)
 
                     else
+                        
+
                         // if the object's level has changed since it
                         // was added to the queue we re-enqueue it with the new level
                         // Note that this may of course cause runtime overhead and
@@ -368,6 +370,9 @@ type Transaction() =
                             q.Enqueue e
                             outputCount := 0
                         else
+                            e.Lock.EnterWrite()
+                            hasWriteLock <- true
+
                             if causes.TryRemove(e, &myCauses.contents) then
                                 !myCauses |> Seq.iter (fun i -> e.InputChanged(x,i))
 
@@ -403,8 +408,8 @@ type Transaction() =
                                 outputCount := 0
                 
                 finally 
+                    if hasWriteLock then e.Lock.ExitWrite()
                     Monitor.Exit e
-                    e.Lock.ExitWrite()
 
                 // finally we enqueue all returned outputs
                 for i in 0..!outputCount - 1 do
@@ -468,11 +473,12 @@ type AdaptiveObject =
                 if top then AdaptiveSystemState.pushReadLocks()
                 else []
 
+            let mutable res = Unchecked.defaultof<_>
+            Monitor.Enter this
+
             this.Lock.EnterRead()
             AdaptiveSystemState.addReadLock this.Lock
 
-            let mutable res = Unchecked.defaultof<_>
-            Monitor.Enter this
             depth := !depth + 1
 
             try
@@ -608,6 +614,55 @@ type AdaptiveObject =
             member x.InputChanged(o,ip) = x.InputChanged(o, ip)
             member x.AllInputsProcessed(o) = x.AllInputsProcessed(o)
             member x.Lock = x.Lock
+
+    end
+
+/// <summary>
+/// defines a base class for all adaptive objects implementing
+/// IAdaptiveObject and providing dirty-inputs for evaluation.
+/// </summary>
+[<AllowNullLiteral>]
+type DirtyTrackingAdaptiveObject<'a when 'a :> IAdaptiveObject> =
+    class 
+        inherit AdaptiveObject
+
+        val mutable public Scratch : Dict<obj, HashSet<'a>>
+        val mutable public Dirty : HashSet<'a>
+
+        override x.InputChanged(t,o) =
+            match o with
+                | :? 'a as o ->
+                    lock x.Scratch (fun () ->
+                        let set = x.Scratch.GetOrCreate(t, fun t -> HashSet())
+                        set.Add o |> ignore
+                    )
+                | _ -> ()
+
+        override x.AllInputsProcessed(t) =
+            match lock x.Scratch (fun () -> x.Scratch.TryRemove t) with
+                | (true, s) -> x.Dirty.UnionWith s
+                | _ -> ()
+
+
+
+        member x.EvaluateIfNeeded' (caller : IAdaptiveObject) (otherwise : 'b) (compute : HashSet<'a> -> 'b) =
+            x.EvaluateIfNeeded caller otherwise (fun () ->
+                let d = x.Dirty
+                let res = compute d
+                d.Clear()
+                res
+            )
+
+        member x.EvaluateAlways' (caller : IAdaptiveObject) (compute : HashSet<'a> -> 'b) =
+            x.EvaluateAlways caller (fun () ->
+                let d = x.Dirty
+                let res = compute d
+                d.Clear()
+                res
+            )
+
+        new() = { Scratch = Dict(); Dirty = HashSet() }
+
 
     end
 

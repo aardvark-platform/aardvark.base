@@ -625,29 +625,41 @@ module ``Basic Mod Tests`` =
         let ab =
             let scratch = Dict<obj, HashSet<IMod<int>>>()
             let dirty = HashSet<IMod<int>> [a;b]
-
-            { new Mod.AbstractMod<int>() with
-                override x.InputChanged(t,i) =
-                    match i with
-                        | :? IMod<int> as i ->
-                            lock scratch (fun () ->
-                                let set = scratch.GetOrCreate(t, fun t -> HashSet())
-                                set.Add i |> ignore
-                            )
-                        | _ -> ()
-
-                override x.AllInputsProcessed(t) =
-                    markings <- markings + 1
-                    match lock scratch (fun () -> scratch.TryRemove t) with
-                        | (true, s) -> dirty.UnionWith s
-                        | _ -> ()
-
-                override x.Compute() =
-                    let cnt = dirty.Count
-                    for d in dirty do d.GetValue(x) |> ignore
-                    dirty.Clear()
-                    cnt
+            let mutable initial = true
+            { new Mod.AbstractDirtyTrackingMod<IMod<int>, int>() with
+                member x.Compute(dirty) =
+                    if initial then
+                        a.GetValue(x) |> ignore
+                        b.GetValue(x) |> ignore
+                        2
+                    else
+                        let cnt = dirty.Count
+                        for d in dirty do d.GetValue(x) |> ignore
+                        dirty.Count
             }
+//
+//            { new Mod.AbstractMod<int>() with
+//                override x.InputChanged(t,i) =
+//                    match i with
+//                        | :? IMod<int> as i ->
+//                            lock scratch (fun () ->
+//                                let set = scratch.GetOrCreate(t, fun t -> HashSet())
+//                                set.Add i |> ignore
+//                            )
+//                        | _ -> ()
+//
+//                override x.AllInputsProcessed(t) =
+//                    markings <- markings + 1
+//                    match lock scratch (fun () -> scratch.TryRemove t) with
+//                        | (true, s) -> dirty.UnionWith s
+//                        | _ -> ()
+//
+//                override x.Compute() =
+//                    let cnt = dirty.Count
+//                    for d in dirty do d.GetValue(x) |> ignore
+//                    dirty.Clear()
+//                    cnt
+//            }
 
         let sw = System.Diagnostics.Stopwatch()
         let mutable iterations = 0

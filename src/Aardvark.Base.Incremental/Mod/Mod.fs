@@ -283,6 +283,46 @@ module Mod =
         end
 
     [<AbstractClass>]
+    type AbstractDirtyTrackingMod<'i, 'a when 'i :> IAdaptiveObject> =
+        class
+            inherit DirtyTrackingAdaptiveObject<'i>
+            val mutable public cache : 'a
+            val mutable public scope : Ag.Scope
+
+            abstract member Compute : HashSet<'i> -> 'a
+
+            member x.GetValue(caller) =
+                x.EvaluateAlways' caller (fun (dirty : HashSet<'i>) ->
+                    Telemetry.timed modEvaluateProbe (fun () ->
+                        if x.OutOfDate then
+                            Ag.useScope x.scope (fun () ->
+                                x.cache <- Telemetry.timed modComputeProbe (fun () -> x.Compute dirty)
+                            )
+                        x.cache
+                    )
+                )
+
+            override x.Mark () =
+                x.cache <- Unchecked.defaultof<_>
+                true
+
+            override x.ToString() =
+                if x.OutOfDate then sprintf "{ cache = %A (outOfDate) }" x.cache
+                else sprintf "{ value = %A }" x.cache
+
+            interface IMod with
+                member x.IsConstant = false
+                member x.GetValue(caller) = x.GetValue(caller) :> obj
+
+            interface IMod<'a> with
+                member x.GetValue(caller) = x.GetValue(caller)
+
+            new() =
+                { cache = Unchecked.defaultof<'a>; scope = Ag.getContext() }
+        end
+
+
+    [<AbstractClass>]
     type AbstractModWithFinalizer<'a>() =
         inherit AbstractMod<'a>()
         abstract member Release : unit -> unit
