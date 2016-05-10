@@ -24,32 +24,45 @@ type ConcurrentDeltaQueue<'a>() =
     member x.Add(v : 'a) =
         if isDisposed = 0 then
             let isNew = ref false
+            let newcount = ref 0
             let newEntry (v : 'a) =
                 isNew := true
                 { value = v; count = 1 }
 
             let update (v : 'a) (e : Entry<'a>) =
+                newcount := e.count + 1
                 { e with count = e.count + 1}
 
             entries.AddOrUpdate(v, newEntry, update) |> ignore
             if !isNew then 
                 queue.Enqueue v
                 sem.Release() |> ignore
+                true
+            else 
+                !newcount <> 0
+        else false
+                
 
     member x.Remove(v : 'a) =
         if isDisposed = 0 then
             let isNew = ref false
+            let newcount = ref 0
             let newEntry (v : 'a) =
                 isNew := true
                 { value = v; count = -1 }
 
             let update (v : 'a) (e : Entry<'a>) =
+                newcount := e.count - 1
                 { e with count = e.count - 1}
 
             entries.AddOrUpdate(v, newEntry, update) |> ignore
             if !isNew then 
                 queue.Enqueue v
                 sem.Release() |> ignore
+                true
+            else 
+                !newcount <> 0
+        else false
 
     member x.Enqueue(d : Delta<'a>) =
         match d with
@@ -148,7 +161,7 @@ module ConcurrentDeltaQueue =
                 do! Async.SwitchToThreadPool()
                 while true do
                     let! deltas = reader.GetDeltaAsync(null)
-                    for d in deltas do queue.Enqueue d
+                    for d in deltas do queue.Enqueue d |> ignore
             }
 
         let cancel = new CancellationTokenSource()

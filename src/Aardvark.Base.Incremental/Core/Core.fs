@@ -329,7 +329,6 @@ type Transaction() =
             let old = running.Value
             running.Value <- Some x
             let mutable level = 0
-            let mutable hasWriteLock = false
             let myCauses = ref null
         
             let markCount = ref 0
@@ -340,16 +339,18 @@ type Transaction() =
                 // dequeue the next element (having the minimal level)
                 let e = q.Dequeue(&currentLevel)
                 current <- e
-                hasWriteLock <- false
 
                 traverseCount := !traverseCount + 1
 
                 outputCount := 0
+
+
                 // since we're about to access the outOfDate flag
                 // for this object we must acquire a lock here.
                 // Note that the transaction will at most hold one
                 // lock at a time.
-                Monitor.Enter e
+                //Monitor.Enter e
+                e.Lock.EnterWrite(e)
                 try
                     // if the element is already outOfDate we
                     // do not traverse the graph further.
@@ -370,9 +371,6 @@ type Transaction() =
                             q.Enqueue e
                             outputCount := 0
                         else
-                            e.Lock.EnterWrite()
-                            hasWriteLock <- true
-
                             if causes.TryRemove(e, &myCauses.contents) then
                                 !myCauses |> Seq.iter (fun i -> e.InputChanged(x,i))
 
@@ -408,8 +406,8 @@ type Transaction() =
                                 outputCount := 0
                 
                 finally 
-                    if hasWriteLock then e.Lock.ExitWrite()
-                    Monitor.Exit e
+                    e.Lock.ExitWrite(e)
+                    //Monitor.Exit e
 
                 // finally we enqueue all returned outputs
                 for i in 0..!outputCount - 1 do
@@ -474,9 +472,8 @@ type AdaptiveObject =
                 else []
 
             let mutable res = Unchecked.defaultof<_>
-            Monitor.Enter this
+            this.Lock.EnterRead this
 
-            this.Lock.EnterRead()
             AdaptiveSystemState.addReadLock this.Lock
 
             depth := !depth + 1
@@ -518,7 +515,7 @@ type AdaptiveObject =
 
             finally
                 depth := !depth - 1
-                Monitor.Exit this
+                this.Lock.Downgrade this
 
             if top then 
                 AdaptiveSystemState.popReadLocks oldLocks

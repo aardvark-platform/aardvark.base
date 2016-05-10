@@ -225,34 +225,57 @@ module ChangeTracker =
         ChangeTracker<'a>.CreateVersionOnlyTracker()
 
 
+type AdaptiveLocksadasd() =
+    let rw = new ReaderWriterLockSlim(LockRecursionPolicy.SupportsRecursion)
+    
+    member x.EnterRead(o : obj) = 
+        rw.EnterReadLock()
+        Monitor.Enter o
+
+    member x.ExitRead() = 
+        rw.ExitReadLock()
+
+    member x.Downgrade(o : obj) =
+        Monitor.Exit o
+
+    member x.EnterWrite(o : obj) = 
+        rw.EnterWriteLock()
+        Monitor.Enter o
+
+    member x.ExitWrite(o : obj) = 
+        Monitor.Exit o
+        rw.ExitWriteLock()
+
 
 type AdaptiveLock() =
-    let rw = new ReaderWriterLockSlim(LockRecursionPolicy.SupportsRecursion)
-//    let mutable readerCount = 0
-//    let mutable writerCount = 0
+    let mutable readerCount = 0
 
+    member x.EnterRead(o : obj) = 
+        Monitor.Enter o
+        Interlocked.Increment(&readerCount) |> ignore
 
-    member x.EnterRead() =
-        rw.EnterReadLock()
-//        let mutable old = Interlocked.CompareExchange(&writerCount, -1, 0)
-//        while old <> 0 && old <> -1 do
-//            old <- Interlocked.CompareExchange(&writerCount, -1, 0)
-//            
-//        Interlocked.Increment &readerCount |> ignore
+    member x.Downgrade(o : obj) = 
+        Monitor.Exit o
 
-    member x.ExitRead() =
-        rw.ExitReadLock()
-//        let newReaders = Interlocked.Decrement &readerCount
-//
-//        if newReaders = 0 then
-//            writerCount <- 0
+    member x.ExitRead() = 
+        Interlocked.Decrement(&readerCount) |> ignore 
 
-    member x.EnterWrite() =
-        rw.EnterWriteLock()
-//        let mutable old = Interlocked.CompareExchange(&writerCount, 1, 0)
-//        while old <> 0 do
-//            old <- Interlocked.CompareExchange(&writerCount, 1, 0)
+    member x.EnterWrite(o : obj) = 
+        let rec enter(level : int) =
+            while Volatile.Read(&readerCount) > 0 do
+                Monitor.Enter o; Monitor.Exit o
+            Monitor.Enter o
+            if readerCount > 0 then
+                if level > 10 then Log.warn "yehaaa"
+                Monitor.Exit o
+                enter(level + 1)
+            else
+                ()
 
-    member x.ExitWrite() =
-        rw.ExitWriteLock()
-//        writerCount <- 0
+        if Monitor.IsEntered o && readerCount <= 1 then
+            Monitor.Enter o
+        else
+            enter 0
+
+    member x.ExitWrite(o : obj) = 
+        Monitor.Exit o

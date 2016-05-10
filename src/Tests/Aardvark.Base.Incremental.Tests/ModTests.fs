@@ -566,7 +566,9 @@ module ``Basic Mod Tests`` =
         let b = i |> Mod.map (fun a -> -a)
 
         let apb = Mod.map2 (+) a b
+        apb |> Mod.force |> ignore
 
+        let mutable changes = 0
         let r = System.Random()
         let changer = 
             async {
@@ -574,11 +576,12 @@ module ``Basic Mod Tests`` =
                 while true do
                     //do! Async.Sleep 0
                     transact (fun () -> Mod.change i (r.Next()))
+                    Interlocked.Increment &changes |> ignore
             }
 
 
 
-        for i in 0 .. 20 do 
+        for i in 0 .. 2 do 
             Async.Start changer
 
         let sw = System.Diagnostics.Stopwatch()
@@ -592,8 +595,8 @@ module ``Basic Mod Tests`` =
                 let progress = sw.Elapsed.TotalSeconds / 10.0
                 printfn "%.2f%%" (100.0 * progress)
 
-        printfn "done"
-
+        printfn "done: %A" iterations
+        printfn "changes: %A" changes
     [<Test>]
     let ``[Mod] consistent concurrency dirty set``() =
         //let i = Mod.init 10
