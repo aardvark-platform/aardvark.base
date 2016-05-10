@@ -54,6 +54,8 @@ type IModRef<'a> =
     /// Note: can only be set inside an active transaction.
     abstract member Value : 'a with get,set
 
+    abstract member UnsafeCache : 'a with get,set
+
 /// <summary>
 /// ModRef<'a> represents a changeable input
 /// cell which can be changed by the user and
@@ -101,6 +103,9 @@ type ModRef<'a>(value : 'a) =
         member x.Value 
             with get () = x.Value
             and set v = x.Value <- v
+        member x.UnsafeCache
+            with get() = x.UnsafeCache
+            and set v = x.UnsafeCache <- v
 
 
 // ConstantMod<'a> represents a constant mod-cell
@@ -198,6 +203,16 @@ type DefaultingModRef<'a>(computed : IMod<'a>) =
                 cache <- v
                 x.MarkOutdated()
 
+    member x.UnsafeCache
+        with get() = cache
+        and set v = 
+            if isComputed then 
+                computed.RemoveOutput x
+                isComputed <- false
+                x.Level <- 0
+  
+            cache <- v
+
     override x.ToString() =
         if isComputed then sprintf "%A" computed
         else sprintf "{ value = %A }" cache
@@ -213,7 +228,10 @@ type DefaultingModRef<'a>(computed : IMod<'a>) =
         member x.Value 
             with get () = x.Value
             and set v = x.Value <- v
-    
+
+        member x.UnsafeCache
+            with get() = x.UnsafeCache
+            and set v = x.UnsafeCache <- v
 
 /// <summary>
 /// defines functions for composing mods and
@@ -766,6 +784,13 @@ module Mod =
     let change (m : IModRef<'a>) (value : 'a) =
         m.Value <- value
 
+    /// <summary>
+    /// changes the value of the given cell after the current evaluation
+    /// phase has finished
+    /// </summary>
+    let changeAfterEvaluation (m : IModRef<'a>) (value : 'a) =
+        m.UnsafeCache <- value
+        AdaptiveObject.Time.Outputs.Add m |> ignore
 
     /// <summary>
     /// initializes a new constant cell using the given value.
