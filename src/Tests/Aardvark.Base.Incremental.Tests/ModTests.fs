@@ -558,6 +558,228 @@ module ``Basic Mod Tests`` =
 
         ()
 
+    [<Test>]
+    let ``[Mod] consistent concurrency test``() =
+        let i = Mod.init 10
+
+        let a = i |> Mod.map id |> Mod.map id 
+        let b = i |> Mod.map (fun a -> -a)
+
+        let apb = Mod.map2 (+) a b
+        apb |> Mod.force |> ignore
+
+        let mutable changes = 0
+        let r = System.Random()
+        let changer = 
+            async {
+                do! Async.SwitchToNewThread()
+                while true do
+                    //do! Async.Sleep 0
+                    transact (fun () -> Mod.change i (r.Next()))
+                    Interlocked.Increment &changes |> ignore
+            }
+
+
+
+        for i in 0 .. 2 do 
+            Async.Start changer
+
+        let sw = System.Diagnostics.Stopwatch()
+        let mutable iterations = 0
+        sw.Start()
+        while sw.Elapsed.TotalSeconds < 10.0 do
+            let r = Mod.force apb
+            if r <> 0 then failwithf "hate :%d" iterations
+            iterations <- iterations + 1
+            if iterations % 10000 = 0 then
+                let progress = sw.Elapsed.TotalSeconds / 10.0
+                printfn "%.2f%%" (100.0 * progress)
+
+        printfn "done: %A" iterations
+        printfn "changes: %A" changes
+    [<Test>]
+    let ``[Mod] consistent concurrency dirty set``() =
+        //let i = Mod.init 10
+
+        let set = CSet.empty
+        let v = set |> ASet.toMod |> Mod.map (fun s -> s.Count)
+
+        let a = v |> Mod.map id |> Mod.map id 
+        let b = v |> Mod.map (fun a -> -a)
+
+        let r = System.Random()
+        let changer = 
+            async {
+                do! Async.SwitchToNewThread()
+                while true do
+                    //do! Async.Sleep 0
+                    transact (fun () -> 
+                        set.Add (r.Next()) |> ignore
+                        //Mod.change i (r.Next())
+                    )
+            }
+
+
+
+        for i in 0 .. 3 do 
+            Async.Start changer
+
+        let mutable markings = 0
+        let ab =
+            let scratch = Dict<obj, HashSet<IMod<int>>>()
+            let dirty = HashSet<IMod<int>> [a;b]
+            let mutable initial = true
+            { new Mod.AbstractDirtyTrackingMod<IMod<int>, int>() with
+                member x.Compute(dirty) =
+                    if initial then
+                        a.GetValue(x) |> ignore
+                        b.GetValue(x) |> ignore
+                        2
+                    else
+                        let cnt = dirty.Count
+                        for d in dirty do d.GetValue(x) |> ignore
+                        dirty.Count
+            }
+//
+//            { new Mod.AbstractMod<int>() with
+//                override x.InputChanged(t,i) =
+//                    match i with
+//                        | :? IMod<int> as i ->
+//                            lock scratch (fun () ->
+//                                let set = scratch.GetOrCreate(t, fun t -> HashSet())
+//                                set.Add i |> ignore
+//                            )
+//                        | _ -> ()
+//
+//                override x.AllInputsProcessed(t) =
+//                    markings <- markings + 1
+//                    match lock scratch (fun () -> scratch.TryRemove t) with
+//                        | (true, s) -> dirty.UnionWith s
+//                        | _ -> ()
+//
+//                override x.Compute() =
+//                    let cnt = dirty.Count
+//                    for d in dirty do d.GetValue(x) |> ignore
+//                    dirty.Clear()
+//                    cnt
+//            }
+
+        let sw = System.Diagnostics.Stopwatch()
+        let mutable iterations = 0
+        sw.Start()
+        while sw.Elapsed.TotalSeconds < 30.0 do
+            //Thread.Sleep(1)
+            let r = Mod.force ab
+            if r <> 2 then failwithf "hate : %d/%d" r iterations
+            iterations <- iterations + 1
+
+        printfn "markings: %A" markings
+        printfn "evals:    %A" iterations
+
+    [<Test>]
+    let ``[Mod] consistent concurrency multiple evaluators test``() =
+        let i = Mod.init 10
+
+        let a = i |> Mod.map id |> Mod.map id 
+        let b = i |> Mod.map (fun a -> -a)
+
+        let apb = Mod.map2 (+) a b
+
+        let r = System.Random()
+
+        let mutable badResults = 0
+        let mutable evaluations = 0
+        let mutable changes = 0
+        let mutable running = true
+
+        let changers = 20
+        let evaluators = 5
+        let sem = new SemaphoreSlim(0)
+
+        let changer = 
+            async {
+                do! Async.SwitchToNewThread()
+                while true do
+                    //do! Async.Sleep 0
+                    transact (fun () -> Mod.change i (r.Next()))
+                    Interlocked.Increment &changes |> ignore
+            }
+
+        let evaluator =
+            async {
+                do! Async.SwitchToNewThread()
+                while Volatile.Read(&running) do
+                    let r = Mod.force apb
+                    Interlocked.Increment &evaluations |> ignore
+                    if r <> 0 then Interlocked.Increment(&badResults) |> ignore
+                sem.Release() |> ignore
+            }
+
+        for i in 1 .. changers do 
+            Async.Start changer
+
+        for i in 1 .. evaluators do 
+            Async.Start evaluator
+
+
+
+        let sw = System.Diagnostics.Stopwatch()
+        sw.Start()
+        while sw.Elapsed.TotalSeconds < 10.0 do
+            Thread.Sleep(500)
+            let progress = sw.Elapsed.TotalSeconds / 10.0 |> clamp 0.0 1.0
+            printfn "%.2f%%" (100.0 * progress)
+
+            if badResults > 0 then
+                failwithf "hate: %A" badResults
+
+        running <- false
+        for i in 1..evaluators do sem.Wait()
+        
+        printfn "evaluations: %A" evaluations
+        printfn "changes:     %A" changes
+        if badResults > 0 then
+            failwithf "hate: %A" badResults
+             
+        printfn "done"
+
+    [<Test>]
+    let ``[Mod] parallel consistent concurrency test``() =
+        let a = Mod.init 10
+        let b = Mod.init -10
+
+        let a' = a |> Mod.map id |> Mod.map id 
+        let b' = b :> IMod<_>
+
+        let apb = Mod.map2 (+) a' b'
+
+        let r = System.Random()
+        let changer = 
+            async {
+                do! Async.SwitchToNewThread()
+                while true do
+                    //do! Async.Sleep 0
+                    let v = r.Next()
+
+                    transact (fun () -> 
+                        Mod.change a v
+                        Mod.change b -v
+                    )
+            }
+
+
+
+        for i in 0 .. 20 do 
+            Async.Start changer
+
+        let sw = System.Diagnostics.Stopwatch()
+        let mutable iterations = 0
+        sw.Start()
+        while sw.Elapsed.TotalSeconds < 2.0 do
+            let r = Mod.force apb
+            if r <> 0 then failwithf "hate :%d" iterations
+            iterations <- iterations + 1
+
 
 
 

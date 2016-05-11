@@ -366,7 +366,7 @@ module internal GenericProgram =
         #else
         let validateCurrentState(deltas : list<Delta<'k * 'v>>) = ()
         #endif
-        override x.InputChanged(o : IAdaptiveObject) =
+        override x.InputChanged(t, o : IAdaptiveObject) =
             match o with
                 | :? Fragment<'i, 'a, 'instruction, 'fragment> as o ->
                     if not o.IsDisposed then
