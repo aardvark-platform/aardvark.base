@@ -1293,9 +1293,28 @@ module ASetPerformance =
 [<AutoOpen>]
 module ConcurrentDeltaQueueTests =
 
+    let private compilerTest () =
+        let r = System.Random()
+        let livingThings = System.Collections.Generic.List<_>()
+        let mutable freshIds = 0L
+        for i in 0 .. 100000 do
+            let operations = System.Collections.Generic.List<Delta<int64>>()
+            let newThings = 
+                [ for i in 0 .. r.Next(0,20) do 
+                        freshIds <- freshIds + 1L
+                        livingThings.Add freshIds |> ignore
+                        operations.Add (Add freshIds)
+                ]
+            for i in operations do printfn "%A" i
+
+        printfn "okay"
+
+
     [<Test>]
     let ``[ASet ConcurrentDeltaQueue] concurrent delta queue test``() =
 
+        
+        compilerTest()
         let set = CSet.empty
 
         let queue = new ConcurrentDeltaQueue<int64>()
@@ -1318,19 +1337,19 @@ module ConcurrentDeltaQueueTests =
                         operations.Add (Rem toRemove)
                     
                 let newThings = 
-                    [ for i in 0 .. r.Next(0,perIteration) do 
+                    [| for i in 0 .. r.Next(0,perIteration) do 
                         freshIds <- freshIds + 1L
                         livingThings.Add freshIds |> ignore
                         operations.Add (Add freshIds)
                         yield freshIds
-                    ]
+                    |]
 
 
-                for i in operations do queue.Enqueue i
+                for i in operations do queue.Enqueue i |> ignore
 
             for x in livingThings |> Seq.toArray do 
                 livingThings.Remove x |> ignore
-                queue.Enqueue (Rem x)
+                queue.Enqueue (Rem x) |> ignore
 
 
         let conc = System.Collections.Concurrent.ConcurrentHashSet()
@@ -1348,9 +1367,7 @@ module ConcurrentDeltaQueueTests =
                         | Rem v -> if conc.Remove v then () else failwith "Rem of non existing?!?!?!"
             }
 
-        let arrs = [ for i in 0 .. 8 do yield Async.StartAsTask( consumer,cancellationToken = cts.Token) ]
+        //let arrs = [ for i in 0 .. 8 do yield Async.StartAsTask( consumer,cancellationToken = cts.Token) ]
 
         producer()
         cts.Cancel()
-
-

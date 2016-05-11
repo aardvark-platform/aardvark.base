@@ -54,6 +54,8 @@ type IModRef<'a> =
     /// Note: can only be set inside an active transaction.
     abstract member Value : 'a with get,set
 
+    abstract member UnsafeCache : 'a with get,set
+
 /// <summary>
 /// ModRef<'a> represents a changeable input
 /// cell which can be changed by the user and
@@ -63,6 +65,7 @@ type ModRef<'a>(value : 'a) =
     inherit AdaptiveObject()
 
     let mutable value = value
+    let mutable cache = value
     let tracker = ChangeTracker.trackVersion<'a>
 
     member x.UnsafeCache
@@ -76,9 +79,14 @@ type ModRef<'a>(value : 'a) =
                 value <- v
                 x.MarkOutdated()
 
+    
+
     member x.GetValue(caller : IAdaptiveObject) =
         x.EvaluateAlways caller (fun () ->
-            value
+            if x.OutOfDate then
+                cache <- value
+            
+            cache
         )
 
     override x.ToString() =
@@ -95,6 +103,9 @@ type ModRef<'a>(value : 'a) =
         member x.Value 
             with get () = x.Value
             and set v = x.Value <- v
+        member x.UnsafeCache
+            with get() = x.UnsafeCache
+            and set v = x.UnsafeCache <- v
 
 
 // ConstantMod<'a> represents a constant mod-cell
@@ -192,6 +203,16 @@ type DefaultingModRef<'a>(computed : IMod<'a>) =
                 cache <- v
                 x.MarkOutdated()
 
+    member x.UnsafeCache
+        with get() = cache
+        and set v = 
+            if isComputed then 
+                computed.RemoveOutput x
+                isComputed <- false
+                x.Level <- 0
+  
+            cache <- v
+
     override x.ToString() =
         if isComputed then sprintf "%A" computed
         else sprintf "{ value = %A }" cache
@@ -207,7 +228,10 @@ type DefaultingModRef<'a>(computed : IMod<'a>) =
         member x.Value 
             with get () = x.Value
             and set v = x.Value <- v
-    
+
+        member x.UnsafeCache
+            with get() = x.UnsafeCache
+            and set v = x.UnsafeCache <- v
 
 /// <summary>
 /// defines functions for composing mods and
@@ -274,6 +298,46 @@ module Mod =
             new() =
                 { cache = Unchecked.defaultof<'a>; scope = Ag.getContext() }
         end
+
+    [<AbstractClass>]
+    type AbstractDirtyTrackingMod<'i, 'a when 'i :> IAdaptiveObject> =
+        class
+            inherit DirtyTrackingAdaptiveObject<'i>
+            val mutable public cache : 'a
+            val mutable public scope : Ag.Scope
+
+            abstract member Compute : HashSet<'i> -> 'a
+
+            member x.GetValue(caller) =
+                x.EvaluateAlways' caller (fun (dirty : HashSet<'i>) ->
+                    Telemetry.timed modEvaluateProbe (fun () ->
+                        if x.OutOfDate then
+                            Ag.useScope x.scope (fun () ->
+                                x.cache <- Telemetry.timed modComputeProbe (fun () -> x.Compute dirty)
+                            )
+                        x.cache
+                    )
+                )
+
+            override x.Mark () =
+                x.cache <- Unchecked.defaultof<_>
+                true
+
+            override x.ToString() =
+                if x.OutOfDate then sprintf "{ cache = %A (outOfDate) }" x.cache
+                else sprintf "{ value = %A }" x.cache
+
+            interface IMod with
+                member x.IsConstant = false
+                member x.GetValue(caller) = x.GetValue(caller) :> obj
+
+            interface IMod<'a> with
+                member x.GetValue(caller) = x.GetValue(caller)
+
+            new() =
+                { cache = Unchecked.defaultof<'a>; scope = Ag.getContext() }
+        end
+
 
     [<AbstractClass>]
     type AbstractModWithFinalizer<'a>() =
@@ -436,7 +500,7 @@ module Mod =
         override x.Release() = 
             dirtySet.Clear()
 
-        override x.InputChanged i =
+        override x.InputChanged(t, i) =
             match i with
                 | :? IMod<'a> as i -> dirtySet.Push(i)
                 | _ -> ()
@@ -485,7 +549,7 @@ module Mod =
                     | None -> ()
             }
 
-        override x.InputChanged i =
+        override x.InputChanged(t, i) =
             System.Threading.Interlocked.Change(&changedInputs, PersistentHashSet.add i) |> ignore
 
         override x.Compute() =
@@ -548,7 +612,7 @@ module Mod =
                     | None -> ()
             }
 
-        override x.InputChanged i =
+        override x.InputChanged(t, i) =
             System.Threading.Interlocked.Change(&changedInputs, PersistentHashSet.add i) |> ignore
 
         override x.Compute() =
@@ -719,6 +783,13 @@ module Mod =
     let change (m : IModRef<'a>) (value : 'a) =
         m.Value <- value
 
+    /// <summary>
+    /// changes the value of the given cell after the current evaluation
+    /// phase has finished
+    /// </summary>
+    let changeAfterEvaluation (m : IModRef<'a>) (value : 'a) =
+        m.UnsafeCache <- value
+        AdaptiveObject.Time.Outputs.Add m |> ignore
 
     /// <summary>
     /// initializes a new constant cell using the given value.

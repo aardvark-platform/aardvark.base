@@ -183,7 +183,7 @@ module ASetReaders =
         
         let mutable initial = true
 
-        override x.InputChanged(i : IAdaptiveObject) =
+        override x.InputChanged(t, i : IAdaptiveObject) =
             match i with
                 | :? IReader<'a> as r -> dirty.Push r
                 | _ -> ()
@@ -221,7 +221,7 @@ module ASetReaders =
         let mutable current : Option<IReader<'b>> = None
         let mutable mChanged = true
 
-        override x.InputChanged(o : IAdaptiveObject) =
+        override x.InputChanged(t, o : IAdaptiveObject) =
             mChanged <- Object.ReferenceEquals(o, m)
 
         override x.Inputs =
@@ -325,7 +325,7 @@ module ASetReaders =
         override x.Inputs =
             sources |> Seq.cast
 
-        override x.InputChanged(i : IAdaptiveObject) =
+        override x.InputChanged(t, i : IAdaptiveObject) =
             match i with
                 | :? IReader<'a> as r -> dirty.Push r
                 | _ -> ()
@@ -428,7 +428,7 @@ module ASetReaders =
             )
 
 
-        override x.InputChanged(o : IAdaptiveObject) =
+        override x.InputChanged(t, o : IAdaptiveObject) =
             match o with
                 | :? IMod<'b> as o ->
                     lock dirty (fun () -> dirty.Add o)
@@ -479,7 +479,7 @@ module ASetReaders =
         let mutable currentB = None
         let cache = Cache(fun a -> f a currentB.Value)
 
-        override x.InputChanged(o : IAdaptiveObject) =
+        override x.InputChanged(t, o : IAdaptiveObject) =
             if o.Id = m.Id then modChanged <- true
 
 
@@ -544,7 +544,7 @@ module ASetReaders =
             }
 
 
-        override x.InputChanged (o : IAdaptiveObject) = 
+        override x.InputChanged (t, o : IAdaptiveObject) = 
             match o with
                 | :? IReader<'b> as o -> dirtyInner.Add o
                 | _ -> ()

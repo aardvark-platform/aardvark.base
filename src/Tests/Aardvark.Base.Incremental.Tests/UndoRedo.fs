@@ -61,6 +61,10 @@ module ScopeExtensions =
                 scope.Changed x
                 x.MarkOutdated()
 
+        member x.UnsafeCache
+            with get() = value
+            and set v = value <- v
+
         interface ISnapshotThingy with
             member x.NewSnapshot() =
                 let v = x.GetValue()
@@ -71,6 +75,10 @@ module ScopeExtensions =
             member x.Value
                 with get() = value
                 and set v = x.Value <- v
+
+            member x.UnsafeCache
+                with get() = value
+                and set v = value <- v
 
         override x.Compute() =
             value
