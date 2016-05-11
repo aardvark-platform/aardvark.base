@@ -667,7 +667,7 @@ module ``Basic Mod Tests`` =
         let sw = System.Diagnostics.Stopwatch()
         let mutable iterations = 0
         sw.Start()
-        while sw.Elapsed.TotalSeconds < 30.0 do
+        while sw.Elapsed.TotalSeconds < 10.0 do
             //Thread.Sleep(1)
             let r = Mod.force ab
             if r <> 2 then failwithf "hate : %d/%d" r iterations
@@ -769,17 +769,23 @@ module ``Basic Mod Tests`` =
 
 
 
-        for i in 0 .. 20 do 
+        for i in 0 .. 3 do 
             Async.Start changer
 
-        let sw = System.Diagnostics.Stopwatch()
-        let mutable iterations = 0
-        sw.Start()
-        while sw.Elapsed.TotalSeconds < 2.0 do
-            let r = Mod.force apb
-            if r <> 0 then failwithf "hate :%d" iterations
-            iterations <- iterations + 1
+        let mutable finished = false
+        try
+            let sw = System.Diagnostics.Stopwatch()
+            let mutable iterations = 0
+            sw.Start()
+            while sw.Elapsed.TotalSeconds < 10.0 do
+                let r = Mod.force apb
+                if r <> 0 then failwithf "hate :%d" iterations
+                iterations <- iterations + 1
+            finished <- true
+        with _ ->
+            ()
 
+        if finished then failwith "that was unexpected"
 
 
 

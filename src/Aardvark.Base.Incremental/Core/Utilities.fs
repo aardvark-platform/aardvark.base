@@ -263,7 +263,8 @@ type AdaptiveLock() =
     member x.EnterWrite(o : obj) = 
         let rec enter(level : int) =
             while Volatile.Read(&readerCount) > 0 do
-                Monitor.Enter o; Monitor.Exit o
+                Thread.Sleep(0)
+
             Monitor.Enter o
             if readerCount > 0 then
                 if level > 10 then Log.warn "yehaaa"

@@ -473,8 +473,7 @@ type AdaptiveObject =
 
             let mutable res = Unchecked.defaultof<_>
             this.Lock.EnterRead this
-
-            AdaptiveSystemState.addReadLock this.Lock
+            let mutable good = false
 
             depth := !depth + 1
 
@@ -504,7 +503,7 @@ type AdaptiveObject =
                             //printfn "%A tried to pull from level %A but has level %A" top.Id level top.Level
                             // all greater pulls would be from the future
                             raise <| LevelChangedException(this, this.Level, !depth - 1)
-                            
+                                                                     
                         res <- r
 
 
@@ -512,13 +511,26 @@ type AdaptiveObject =
                     this.Outputs.Add caller |> ignore
                     caller.Level <- max caller.Level (this.Level + 1)
 
+                good <- true
 
             finally
-                depth := !depth - 1
                 this.Lock.Downgrade this
 
-            if top then 
+                if not good then
+                    this.Lock.ExitRead()
+
+                    if isNull caller then
+                        AdaptiveSystemState.popReadLocks oldLocks
+                else
+                    AdaptiveSystemState.addReadLock this.Lock
+
+                depth := !depth - 1
+
+
+            if isNull caller then
                 AdaptiveSystemState.popReadLocks oldLocks
+
+            if top then 
                 let time = AdaptiveObject.Time
                 Monitor.Enter time
                 if not time.Outputs.IsEmpty then
@@ -807,9 +819,14 @@ module CallbackExtensions =
         do lock undyingMarkingCallbacks (fun () -> undyingMarkingCallbacks.GetOrCreateValue(inner).Add this |> ignore )
 
         member x.Mark() =
-            Ag.useScope scope (fun () ->
-                callback x
-            )
+            let old = AdaptiveSystemState.pushReadLocks()
+            try
+                Ag.useScope scope (fun () ->
+                    callback x
+                )
+            finally
+                AdaptiveSystemState.popReadLocks old
+
             false
 
         interface IWeakable<IAdaptiveObject> with
