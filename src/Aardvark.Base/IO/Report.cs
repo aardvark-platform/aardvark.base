@@ -258,9 +258,19 @@ namespace Aardvark.Base
                                FileMode.Create, FileAccess.Write, FileShare.Read));
                 return writer;
             }
+
             catch (IOException)
             {
                 return CreateLogFileWriter(string.Format("{0}_{1}", fileName, cnt), cnt + 1);
+            }
+            catch (UnauthorizedAccessException)
+            {
+                var dir = Path.Combine(Path.GetTempPath(), "Aardvark", "logs");
+                if (!Directory.Exists(dir)) Directory.CreateDirectory(dir);
+
+                var now = DateTime.Now.ToString("yyyy-MM-dd-HH-mm-ss-fffffff");
+                var name = Path.Combine(dir, now);
+                return CreateLogFileWriter(name, cnt + 1);
             }
         }
 

@@ -168,7 +168,11 @@ type IAdaptiveObject =
     abstract member Outputs : VolatileCollection<IAdaptiveObject>
 
 
-    abstract member InputChanged : IAdaptiveObject -> unit
+    abstract member InputChanged : obj * IAdaptiveObject -> unit
+    abstract member AllInputsProcessed : obj -> unit
+
+
+    abstract member Lock : AdaptiveLock
 
 /// <summary>
 /// LevelChangedException is internally used by the system
@@ -178,6 +182,29 @@ exception LevelChangedException of changedObject : IAdaptiveObject * newLevel : 
 
 module AdaptiveSystemState =
     let curerntEvaluationDepth = new ThreadLocal<ref<int>>(fun _ -> ref 0)
+
+    let private currentLocks = new ThreadLocal<ref<list<AdaptiveLock>>>(fun () -> ref [])
+
+    let addReadLock (l : AdaptiveLock) =
+        let r = currentLocks.Value
+        r := l::!r
+
+    let pushReadLocks() =
+        let r = currentLocks.Value
+        let old = !r
+        r := []
+        old
+
+    let popReadLocks (old : list<AdaptiveLock>) =
+        let r = currentLocks.Value
+        let v = !r
+        r := old
+        for l in v do l.ExitRead()
+
+
+
+
+
     //let currentEvaluationPath = new ThreadLocal<Stack<IAdaptiveObject>>(fun _ -> Stack(100))
 
 type TrackAllThreadLocal<'a>(creator : unit -> 'a) =
@@ -317,18 +344,23 @@ type Transaction() =
 
                 outputCount := 0
 
+
                 // since we're about to access the outOfDate flag
                 // for this object we must acquire a lock here.
                 // Note that the transaction will at most hold one
                 // lock at a time.
-                Monitor.Enter e
+                //Monitor.Enter e
+                e.Lock.EnterWrite(e)
                 try
                     // if the element is already outOfDate we
                     // do not traverse the graph further.
                     if e.OutOfDate then
                         outputCount := 0
+                        e.AllInputsProcessed(x)
 
                     else
+                        
+
                         // if the object's level has changed since it
                         // was added to the queue we re-enqueue it with the new level
                         // Note that this may of course cause runtime overhead and
@@ -340,12 +372,12 @@ type Transaction() =
                             outputCount := 0
                         else
                             if causes.TryRemove(e, &myCauses.contents) then
-                                !myCauses |> Seq.iter e.InputChanged
+                                !myCauses |> Seq.iter (fun i -> e.InputChanged(x,i))
 
                             // however if the level is consistent we may proceed
                             // by marking the object as outOfDate
                             e.OutOfDate <- true
-
+                            e.AllInputsProcessed(x)
                             markCount := !markCount + 1
                 
                             try 
@@ -374,12 +406,13 @@ type Transaction() =
                                 outputCount := 0
                 
                 finally 
-                    Monitor.Exit e
+                    e.Lock.ExitWrite(e)
+                    //Monitor.Exit e
 
                 // finally we enqueue all returned outputs
                 for i in 0..!outputCount - 1 do
                     let o = outputs.[i]
-                    o.InputChanged e
+                    o.InputChanged(x,e)
                     x.Enqueue o
 
                 contained.Remove e |> ignore
@@ -422,19 +455,26 @@ type AdaptiveObject =
         val mutable public Level : int 
         val mutable public Outputs : VolatileCollection<IAdaptiveObject>
         val mutable public WeakThis : WeakReference<IAdaptiveObject>
+        val mutable public Lock : AdaptiveLock
 
         new() =
             { Id = newId(); OutOfDate = true; 
-              Level = 0; Outputs = VolatileCollection<IAdaptiveObject>(); WeakThis = null }
+              Level = 0; Outputs = VolatileCollection<IAdaptiveObject>(); WeakThis = null;
+              Lock = new AdaptiveLock() }
 
     
         member inline this.evaluate (caller : IAdaptiveObject) (otherwise : Option<'a>) (f : unit -> 'a) =
             let depth = AdaptiveSystemState.curerntEvaluationDepth.Value
             let top = isNull caller && !depth = 0 && not Transaction.HasRunning
 
+            let oldLocks =
+                if top then AdaptiveSystemState.pushReadLocks()
+                else []
 
             let mutable res = Unchecked.defaultof<_>
-            Monitor.Enter this
+            this.Lock.EnterRead this
+            let mutable good = false
+
             depth := !depth + 1
 
             try
@@ -463,7 +503,7 @@ type AdaptiveObject =
                             //printfn "%A tried to pull from level %A but has level %A" top.Id level top.Level
                             // all greater pulls would be from the future
                             raise <| LevelChangedException(this, this.Level, !depth - 1)
-                            
+                                                                     
                         res <- r
 
 
@@ -471,10 +511,24 @@ type AdaptiveObject =
                     this.Outputs.Add caller |> ignore
                     caller.Level <- max caller.Level (this.Level + 1)
 
+                good <- true
 
             finally
+                this.Lock.Downgrade this
+
+                if not good then
+                    this.Lock.ExitRead()
+
+                    if isNull caller then
+                        AdaptiveSystemState.popReadLocks oldLocks
+                else
+                    AdaptiveSystemState.addReadLock this.Lock
+
                 depth := !depth - 1
-                Monitor.Exit this
+
+
+            if isNull caller then
+                AdaptiveSystemState.popReadLocks oldLocks
 
             if top then 
                 let time = AdaptiveObject.Time
@@ -522,8 +576,12 @@ type AdaptiveObject =
         abstract member Mark : unit -> bool
         default x.Mark () = true
     
-        abstract member InputChanged : IAdaptiveObject -> unit
-        default x.InputChanged ip = ()
+        abstract member InputChanged : obj * IAdaptiveObject -> unit
+        default x.InputChanged(t,ip) = ()
+
+        abstract member AllInputsProcessed : obj -> unit
+        default x.AllInputsProcessed(t) = ()
+
 
         abstract member Inputs : seq<IAdaptiveObject>
         [<System.ComponentModel.Browsable(false)>]
@@ -562,8 +620,59 @@ type AdaptiveObject =
             member x.Mark () =
                 x.Mark ()
 
-            member x.InputChanged ip = x.InputChanged ip
-            
+            member x.InputChanged(o,ip) = x.InputChanged(o, ip)
+            member x.AllInputsProcessed(o) = x.AllInputsProcessed(o)
+            member x.Lock = x.Lock
+
+    end
+
+/// <summary>
+/// defines a base class for all adaptive objects implementing
+/// IAdaptiveObject and providing dirty-inputs for evaluation.
+/// </summary>
+[<AllowNullLiteral>]
+type DirtyTrackingAdaptiveObject<'a when 'a :> IAdaptiveObject> =
+    class 
+        inherit AdaptiveObject
+
+        val mutable public Scratch : Dict<obj, HashSet<'a>>
+        val mutable public Dirty : HashSet<'a>
+
+        override x.InputChanged(t,o) =
+            match o with
+                | :? 'a as o ->
+                    lock x.Scratch (fun () ->
+                        let set = x.Scratch.GetOrCreate(t, fun t -> HashSet())
+                        set.Add o |> ignore
+                    )
+                | _ -> ()
+
+        override x.AllInputsProcessed(t) =
+            match lock x.Scratch (fun () -> x.Scratch.TryRemove t) with
+                | (true, s) -> x.Dirty.UnionWith s
+                | _ -> ()
+
+
+
+        member x.EvaluateIfNeeded' (caller : IAdaptiveObject) (otherwise : 'b) (compute : HashSet<'a> -> 'b) =
+            x.EvaluateIfNeeded caller otherwise (fun () ->
+                let d = x.Dirty
+                let res = compute d
+                d.Clear()
+                res
+            )
+
+        member x.EvaluateAlways' (caller : IAdaptiveObject) (compute : HashSet<'a> -> 'b) =
+            x.EvaluateAlways caller (fun () ->
+                let d = x.Dirty
+                let res = compute d
+                d.Clear()
+                res
+            )
+
+        new() = { Scratch = Dict(); Dirty = HashSet() }
+
+
     end
 
 
@@ -580,6 +689,7 @@ type AdaptiveObject =
 type ConstantObject() =
 
     let mutable weakThis : WeakReference<IAdaptiveObject> = null
+    let lock = new AdaptiveLock()
 
     interface IWeakable<IAdaptiveObject> with
         member x.Weak =
@@ -605,7 +715,9 @@ type ConstantObject() =
 
         member x.Inputs = Seq.empty
         member x.Outputs = VolatileCollection()
-        member x.InputChanged ip = ()
+        member x.InputChanged(o,ip) = ()
+        member x.AllInputsProcessed(o) = ()
+        member x.Lock = lock
 
 
 
@@ -701,14 +813,20 @@ module CallbackExtensions =
         let mutable scope = Ag.getContext()
         let mutable inner = inner
         let mutable weakThis = null
+        let rw = new AdaptiveLock()
         do lock inner (fun () -> inner.Outputs.Add this |> ignore)
 
         do lock undyingMarkingCallbacks (fun () -> undyingMarkingCallbacks.GetOrCreateValue(inner).Add this |> ignore )
 
         member x.Mark() =
-            Ag.useScope scope (fun () ->
-                callback x
-            )
+            let old = AdaptiveSystemState.pushReadLocks()
+            try
+                Ag.useScope scope (fun () ->
+                    callback x
+                )
+            finally
+                AdaptiveSystemState.popReadLocks old
+
             false
 
         interface IWeakable<IAdaptiveObject> with
@@ -736,7 +854,9 @@ module CallbackExtensions =
 
             member x.Inputs = Seq.singleton inner
             member x.Outputs = VolatileCollection()
-            member x.InputChanged ip = ()
+            member x.InputChanged(o,ip) = ()
+            member x.AllInputsProcessed(o) = ()
+            member x.Lock = rw
 
         member x.Dispose() =
             if Interlocked.Exchange(&live, 0) = 1 then
@@ -865,8 +985,9 @@ type AdaptiveDecorator(o : IAdaptiveObject) =
 
         member x.Mark () = o.Mark()
 
-        member x.InputChanged ip = o.InputChanged ip
-
+        member x.InputChanged(t,ip) = o.InputChanged (t,ip)
+        member x.AllInputsProcessed(t) = o.AllInputsProcessed(t)
+        member x.Lock = o.Lock
  
 type VolatileDirtySet<'a, 'b when 'a :> IAdaptiveObject and 'a : equality and 'a : not struct>(eval : 'a -> 'b) =
     let mutable set : PersistentHashSet<'a> = PersistentHashSet.empty
