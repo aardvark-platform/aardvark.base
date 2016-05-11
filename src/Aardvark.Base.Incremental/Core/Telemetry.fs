@@ -1,4 +1,4 @@
-﻿namespace Aardvark.Base.Incremental.Telemetry
+﻿namespace Aardvark.Base.Incremental
 
 open System
 open System.Threading
@@ -96,6 +96,7 @@ type TelemetryReport =
         probeTimes : Map<Symbol, TimeDiff>
     }
 
+[<CompilationRepresentation(CompilationRepresentationFlags.ModuleSuffix)>]
 module Telemetry =
     let running = new ThreadLocal<Option<Stopwatch>>(fun () -> None)
     let probes = SymbolDict<Stopwatch>()

@@ -6,7 +6,6 @@ open Aardvark.Base
 open System.Collections.Concurrent
 open System.Threading
 open System.Linq
-open Aardvark.Base.Incremental.Telemetry
 
 [<AllowNullLiteral>]
 type IWeakable<'a when 'a : not struct> =
