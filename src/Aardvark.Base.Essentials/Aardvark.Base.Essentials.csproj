@@ -71,6 +71,7 @@
     <Compile Include="Geometry\ImmutablePolygon2d.cs" />
     <Compile Include="NormalizedDeviceCoordinates.cs" />
     <Compile Include="PixelPosition.cs" />
+    <Compile Include="Screenshot.cs" />
     <Compile Include="System\Awaitable.cs" />
     <Compile Include="System\Clock.cs" />
     <Compile Include="System\Disposable.cs" />
