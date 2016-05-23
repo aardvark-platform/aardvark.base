@@ -258,7 +258,6 @@ module Mod =
         Report.End() |> ignore
 
     open System.Reflection
-    open Aardvark.Base.Incremental.Telemetry
 
 
     [<AbstractClass>]

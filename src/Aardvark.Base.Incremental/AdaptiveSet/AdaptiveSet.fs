@@ -6,7 +6,6 @@ open System.Collections.Generic
 open System.Collections.Concurrent
 open Aardvark.Base
 open Aardvark.Base.Incremental.ASetReaders
-open Aardvark.Base.Incremental.Telemetry
 
 /// <summary>
 /// defines functions for composing asets and mods
