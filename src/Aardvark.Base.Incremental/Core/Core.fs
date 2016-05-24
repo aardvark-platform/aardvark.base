@@ -246,6 +246,7 @@ type Transaction() =
     static let emptyArray : IAdaptiveObject[] = Array.empty
     let mutable outputs = emptyArray
 
+
     // each thread may have its own running transaction
     static let running = new TrackAllThreadLocal<Option<Transaction>>(fun () -> None)
     
@@ -264,6 +265,15 @@ type Transaction() =
         for e in set do content <- e::content
         set.Clear()
         content
+        
+    let mutable finalizers : list<unit->unit> = []
+
+    let runFinalizers () =
+        let fs = Interlocked.Exchange(&finalizers, [])
+        for f in fs do f()
+        
+    member x.AddFinalizer (f : unit->unit) =
+        Interlocked.Change(&finalizers, (fun a -> f::a) ) |> ignore
 
     member x.IsContained e = contained.Contains e
     static member internal InAnyOfTheTransactionsInternal e =
@@ -423,8 +433,11 @@ type Transaction() =
             // running transaction (if any)
             running.Value <- old
             currentLevel <- 0
+
         )
 
+    interface IDisposable with
+        member x.Dispose() = runFinalizers()
 
 
 type private EmptyCollection<'a>() =
@@ -462,7 +475,7 @@ type AdaptiveObject =
               Lock = new AdaptiveLock() }
 
     
-        member inline this.evaluate (caller : IAdaptiveObject) (otherwise : Option<'a>) (f : unit -> 'a) =
+        member this.evaluate (caller : IAdaptiveObject) (otherwise : Option<'a>) (f : unit -> 'a) =
             let depth = AdaptiveSystemState.curerntEvaluationDepth.Value
             let top = isNull caller && !depth = 0 && not Transaction.HasRunning
 
@@ -561,7 +574,7 @@ type AdaptiveObject =
         /// the given default value is returned.
         /// Note that this function takes care of appropriate locking
         /// </summary>
-        member inline x.EvaluateIfNeeded (caller : IAdaptiveObject) (otherwise : 'a) (f : unit -> 'a) =
+        member x.EvaluateIfNeeded (caller : IAdaptiveObject) (otherwise : 'a) (f : unit -> 'a) =
             x.evaluate caller (Some otherwise) f
 
         /// <summary>
@@ -569,7 +582,7 @@ type AdaptiveObject =
         /// is not marked as outOfDate.
         /// Note that this function takes care of appropriate locking
         /// </summary>
-        member inline x.EvaluateAlways (caller : IAdaptiveObject) (f : unit -> 'a) =
+        member x.EvaluateAlways (caller : IAdaptiveObject) (f : unit -> 'a) =
             x.evaluate caller None f
 
         abstract member Mark : unit -> bool
@@ -752,13 +765,14 @@ module Marking =
     /// transaction and commits the transaction
     /// </summary>
     let transact (f : unit -> 'a) =
-        let t = Transaction()
+        use t = new Transaction()
         let old = current.Value
         current.Value <- Some t
         let r = f()
         current.Value <- old
         t.Commit()
         r
+
 
     // defines some extension utilites for
     // IAdaptiveObjects
