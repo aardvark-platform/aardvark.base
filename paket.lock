@@ -93,11 +93,11 @@ NUGET
   specs:
     Chessie (0.5.1) - content: none
       FSharp.Core
-    FAKE (4.17.1) - content: none
+    FAKE (4.27) - content: none
     FSharp.Core (4.0.0.1) - content: none
-    Mono.Cecil (0.9.5.4) - content: none
+    Mono.Cecil (0.9.6.1) - content: none
     Newtonsoft.Json (8.0.3) - content: none
-    Paket.Core (2.60.1) - content: none
+    Paket.Core (2.66.2) - content: none
       Chessie
       FSharp.Core
       Newtonsoft.Json
@@ -105,8 +105,8 @@ NUGET
 GITHUB
   remote: vrvis/Aardvark.Fake
   specs:
-    FULLPROJECT (69ff5fe3a1ade81c7f155d39e8aafcdbedb4c73a)
-      FAKE (>= 4.17 < 4.18)
-      Mono.Cecil (>= 0.9.5.4 < 0.9.6)
-      Paket.Core (>= 2.60.1 < 2.61)
-      SourceLink.Fake (>= 1.1 < 1.2)
+    FULLPROJECT (e6bd0a7993159bb16e832ade8c1ae6f52793bcbd)
+      FAKE
+      Mono.Cecil
+      Paket.Core
+      SourceLink.Fake
