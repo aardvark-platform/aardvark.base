@@ -436,8 +436,10 @@ type Transaction() =
 
         )
 
+    member x.Dispose() = runFinalizers()
+
     interface IDisposable with
-        member x.Dispose() = runFinalizers()
+        member x.Dispose() = x.Dispose()
 
 
 type private EmptyCollection<'a>() =
@@ -550,11 +552,12 @@ type AdaptiveObject =
                     let outputs = time.Outputs.Consume(&outputCount)
                     Monitor.Exit time
 
-                    let t = Transaction()
+                    let t = new Transaction()
                     for i in 0..outputCount-1 do
                         let o = outputs.[i]
                         t.Enqueue(o)
                     t.Commit()
+                    t.Dispose()
                 else
                     Monitor.Exit time
 

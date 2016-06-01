@@ -87,7 +87,7 @@ type Adaptive private() =
         setCurrentTransaction None
 
     static member Transaction =
-        let t = Transaction()
+        let t = new Transaction()
         let old = getCurrentTransaction()
         setCurrentTransaction (Some t)
       
@@ -95,6 +95,7 @@ type Adaptive private() =
             member x.Dispose() =
                 setCurrentTransaction old
                 t.Commit()
+                t.Dispose()
         }
 
 
