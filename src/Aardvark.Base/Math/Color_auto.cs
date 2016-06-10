@@ -1009,6 +1009,15 @@ namespace Aardvark.Base
                 (byte)(scalar * col.B));
         }
 
+        public static C3b operator /(C3b col, double scalar)
+        {
+            double f = 1.0 / scalar;
+            return new C3b(
+                (byte)(col.R * f), 
+                (byte)(col.G * f), 
+                (byte)(col.B * f));
+        }
+
         public static C3b operator +(C3b c0, C3b c1)
         {
             return new C3b(
@@ -2505,6 +2514,15 @@ namespace Aardvark.Base
                 (ushort)(scalar * col.B));
         }
 
+        public static C3us operator /(C3us col, double scalar)
+        {
+            double f = 1.0 / scalar;
+            return new C3us(
+                (ushort)(col.R * f), 
+                (ushort)(col.G * f), 
+                (ushort)(col.B * f));
+        }
+
         public static C3us operator +(C3us c0, C3b c1)
         {
             return new C3us(
@@ -3961,6 +3979,15 @@ namespace Aardvark.Base
                 (uint)(scalar * col.R), 
                 (uint)(scalar * col.G), 
                 (uint)(scalar * col.B));
+        }
+
+        public static C3ui operator /(C3ui col, double scalar)
+        {
+            double f = 1.0 / scalar;
+            return new C3ui(
+                (uint)(col.R * f), 
+                (uint)(col.G * f), 
+                (uint)(col.B * f));
         }
 
         public static C3ui operator +(C3ui c0, C3b c1)
@@ -5430,6 +5457,15 @@ namespace Aardvark.Base
                 (float)(scalar * col.B));
         }
 
+        public static C3f operator /(C3f col, double scalar)
+        {
+            double f = 1.0 / scalar;
+            return new C3f(
+                (float)(col.R * f), 
+                (float)(col.G * f), 
+                (float)(col.B * f));
+        }
+
         public static C3f operator +(C3f c0, C3b c1)
         {
             return new C3f(
@@ -5516,6 +5552,14 @@ namespace Aardvark.Base
                 (float)(c0.R * c1.R), 
                 (float)(c0.G * c1.G), 
                 (float)(c0.B * c1.B));
+        }
+
+        public static C3f operator /(C3f c0, C3f c1)
+        {
+            return new C3f(
+                (float)(c0.R / c1.R), 
+                (float)(c0.G / c1.G), 
+                (float)(c0.B / c1.B));
         }
 
         public static C3f operator +(C3f col, double scalar)
@@ -6915,6 +6959,15 @@ namespace Aardvark.Base
                 (double)(scalar * col.B));
         }
 
+        public static C3d operator /(C3d col, double scalar)
+        {
+            double f = 1.0 / scalar;
+            return new C3d(
+                (double)(col.R * f), 
+                (double)(col.G * f), 
+                (double)(col.B * f));
+        }
+
         public static C3d operator +(C3d c0, C3b c1)
         {
             return new C3d(
@@ -7001,6 +7054,14 @@ namespace Aardvark.Base
                 (double)(c0.R * c1.R), 
                 (double)(c0.G * c1.G), 
                 (double)(c0.B * c1.B));
+        }
+
+        public static C3d operator /(C3d c0, C3d c1)
+        {
+            return new C3d(
+                (double)(c0.R / c1.R), 
+                (double)(c0.G / c1.G), 
+                (double)(c0.B / c1.B));
         }
 
         public static C3d operator +(C3d col, double scalar)
@@ -8500,6 +8561,16 @@ namespace Aardvark.Base
                 (byte)(scalar * col.G), 
                 (byte)(scalar * col.B), 
                 (byte)(scalar * col.A));
+        }
+
+        public static C4b operator /(C4b col, double scalar)
+        {
+            double f = 1.0 / scalar;
+            return new C4b(
+                (byte)(col.R * f), 
+                (byte)(col.G * f), 
+                (byte)(col.B * f), 
+                (byte)(col.A * f));
         }
 
         public static C4b operator +(C4b c0, C4b c1)
@@ -10129,6 +10200,16 @@ namespace Aardvark.Base
                 (ushort)(scalar * col.A));
         }
 
+        public static C4us operator /(C4us col, double scalar)
+        {
+            double f = 1.0 / scalar;
+            return new C4us(
+                (ushort)(col.R * f), 
+                (ushort)(col.G * f), 
+                (ushort)(col.B * f), 
+                (ushort)(col.A * f));
+        }
+
         public static C4us operator +(C4us c0, C4b c1)
         {
             return new C4us(
@@ -11706,6 +11787,16 @@ namespace Aardvark.Base
                 (uint)(scalar * col.G), 
                 (uint)(scalar * col.B), 
                 (uint)(scalar * col.A));
+        }
+
+        public static C4ui operator /(C4ui col, double scalar)
+        {
+            double f = 1.0 / scalar;
+            return new C4ui(
+                (uint)(col.R * f), 
+                (uint)(col.G * f), 
+                (uint)(col.B * f), 
+                (uint)(col.A * f));
         }
 
         public static C4ui operator +(C4ui c0, C4b c1)
@@ -13306,6 +13397,16 @@ namespace Aardvark.Base
                 (float)(scalar * col.A));
         }
 
+        public static C4f operator /(C4f col, double scalar)
+        {
+            double f = 1.0 / scalar;
+            return new C4f(
+                (float)(col.R * f), 
+                (float)(col.G * f), 
+                (float)(col.B * f), 
+                (float)(col.A * f));
+        }
+
         public static C4f operator +(C4f c0, C4b c1)
         {
             return new C4f(
@@ -13403,6 +13504,15 @@ namespace Aardvark.Base
                 (float)(c0.G * c1.G), 
                 (float)(c0.B * c1.B), 
                 (float)(c0.A * c1.A));
+        }
+
+        public static C4f operator /(C4f c0, C4f c1)
+        {
+            return new C4f(
+                (float)(c0.R / c1.R), 
+                (float)(c0.G / c1.G), 
+                (float)(c0.B / c1.B), 
+                (float)(c0.A / c1.A));
         }
 
         public static C4f operator +(C4f col, double scalar)
@@ -14910,6 +15020,16 @@ namespace Aardvark.Base
                 (double)(scalar * col.A));
         }
 
+        public static C4d operator /(C4d col, double scalar)
+        {
+            double f = 1.0 / scalar;
+            return new C4d(
+                (double)(col.R * f), 
+                (double)(col.G * f), 
+                (double)(col.B * f), 
+                (double)(col.A * f));
+        }
+
         public static C4d operator +(C4d c0, C4b c1)
         {
             return new C4d(
@@ -15007,6 +15127,15 @@ namespace Aardvark.Base
                 (double)(c0.G * c1.G), 
                 (double)(c0.B * c1.B), 
                 (double)(c0.A * c1.A));
+        }
+
+        public static C4d operator /(C4d c0, C4d c1)
+        {
+            return new C4d(
+                (double)(c0.R / c1.R), 
+                (double)(c0.G / c1.G), 
+                (double)(c0.B / c1.B), 
+                (double)(c0.A / c1.A));
         }
 
         public static C4d operator +(C4d col, double scalar)

@@ -521,6 +521,13 @@ namespace Aardvark.Base
                 (__ftype__)(scalar * col.__f__)/*# }, comma); */);
         }
 
+        public static __type__ operator /(__type__ col, double scalar)
+        {
+            double f = 1.0 / scalar;
+            return new __type__(/*# fields.ForEach(f => { */
+                (__ftype__)(col.__f__ * f)/*# }, comma); */);
+        }
+
         //# foreach (var t1 in Meta.ColorTypes) { if (t1.HasAlpha != t.HasAlpha) continue;
         //#     
         //#     var type1 = t1.Name; var ft1 = t1.FieldType;
@@ -545,6 +552,12 @@ namespace Aardvark.Base
         {
             return new __type__(/*# fields.ForEach(f => { */
                 (__ftype__)(c0.__f__ * c1.__f__)/*# }, comma); */);
+        }
+
+        public static __type__ operator /(__type__ c0, __type__ c1)
+        {
+            return new __type__(/*# fields.ForEach(f => { */
+                (__ftype__)(c0.__f__ / c1.__f__)/*# }, comma); */);
         }
 
         public static __type__ operator +(__type__ col, double scalar)
