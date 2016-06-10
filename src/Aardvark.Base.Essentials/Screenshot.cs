@@ -914,7 +914,7 @@ namespace Aardvark.Rendering
 
             var created = DateTime.Now;
             var thumbFileName = fileName + ".thumb.jpg";
-            var infoFileName = fileName + ".xml";
+            //var infoFileName = fileName + ".xml";
             var size = image.Size;
 
             var metaInfo =
