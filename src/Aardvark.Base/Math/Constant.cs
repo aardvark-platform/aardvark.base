@@ -156,7 +156,6 @@ namespace Aardvark.Base
         /// in Euclidean geometry. Also known as Archimedes' constant.
         /// </summary>
         public const double Pi = 3.1415926535897932384626433832795;
-        // System.Math.PI; System.Math.PI only defined for 5 digits!? (pm)
 
         /// <summary>
         /// One divided by Pi (1 / Pi).
@@ -167,7 +166,7 @@ namespace Aardvark.Base
         /// Ratio of a circle's circumference to its diameter as float
         /// in Euclidean geometry. Also known as Archimedes' constant.
         /// </summary>
-        public const float PiF = (float)Pi; // System.Math.PI;
+        public const float PiF = (float)Pi;
 
         /// <summary>
         /// Two times PI: the circumference of the unit circle.
