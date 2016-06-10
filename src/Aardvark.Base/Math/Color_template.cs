@@ -180,7 +180,17 @@ namespace Aardvark.Base
             //# }
         }
 
-        //# }
+        //#if (t.HasAlpha && !t1.HasAlpha) { // build constructor from Color3 with explicit alpha
+        public __type__(__t1.Name__ color, __ftype__ alpha)
+        {
+            //# channels.ForEach(Meta.VecFields, (c, vf) => {
+            __c__ = __convert__(color.__c__);
+            //# });
+            A = alpha;
+        }
+
+        //# } 
+        //# } // end For
         //# var vecTypes = new List<Meta.VecType>();
         //# var vecFieldTypes = vftmap[ft];
         //# for (int d = 3; d < 5; d++) {
@@ -202,6 +212,16 @@ namespace Aardvark.Base
             //# }
         }
 
+        //#if (t.HasAlpha && d == 3) { // build constructor from Vec3 with explicit alpha
+        public __type__(__vt.Name__ vec, __ftype__ alpha)
+        {
+            //# channels.ForEach(Meta.VecFields, (c, vf) => {
+            __c__ = __convert__(vec.__vf__);
+            //# });
+            A = alpha;
+        }
+
+        //#         } 
         //#     }
         //# }
         #endregion

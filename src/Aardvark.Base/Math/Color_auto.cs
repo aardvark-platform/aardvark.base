@@ -7469,12 +7469,28 @@ namespace Aardvark.Base
             A = 255;
         }
 
+        public C4b(C3b color, byte alpha)
+        {
+            R = (color.R);
+            G = (color.G);
+            B = (color.B);
+            A = alpha;
+        }
+
         public C4b(C3us color)
         {
             R = Col.ByteFromUShort(color.R);
             G = Col.ByteFromUShort(color.G);
             B = Col.ByteFromUShort(color.B);
             A = 255;
+        }
+
+        public C4b(C3us color, byte alpha)
+        {
+            R = Col.ByteFromUShort(color.R);
+            G = Col.ByteFromUShort(color.G);
+            B = Col.ByteFromUShort(color.B);
+            A = alpha;
         }
 
         public C4b(C3ui color)
@@ -7485,6 +7501,14 @@ namespace Aardvark.Base
             A = 255;
         }
 
+        public C4b(C3ui color, byte alpha)
+        {
+            R = Col.ByteFromUInt(color.R);
+            G = Col.ByteFromUInt(color.G);
+            B = Col.ByteFromUInt(color.B);
+            A = alpha;
+        }
+
         public C4b(C3f color)
         {
             R = Col.ByteFromFloat(color.R);
@@ -7493,12 +7517,28 @@ namespace Aardvark.Base
             A = 255;
         }
 
+        public C4b(C3f color, byte alpha)
+        {
+            R = Col.ByteFromFloat(color.R);
+            G = Col.ByteFromFloat(color.G);
+            B = Col.ByteFromFloat(color.B);
+            A = alpha;
+        }
+
         public C4b(C3d color)
         {
             R = Col.ByteFromDouble(color.R);
             G = Col.ByteFromDouble(color.G);
             B = Col.ByteFromDouble(color.B);
             A = 255;
+        }
+
+        public C4b(C3d color, byte alpha)
+        {
+            R = Col.ByteFromDouble(color.R);
+            G = Col.ByteFromDouble(color.G);
+            B = Col.ByteFromDouble(color.B);
+            A = alpha;
         }
 
         public C4b(C4b color)
@@ -7549,12 +7589,28 @@ namespace Aardvark.Base
             A = 255;
         }
 
+        public C4b(V3i vec, byte alpha)
+        {
+            R = (byte)(vec.X);
+            G = (byte)(vec.Y);
+            B = (byte)(vec.Z);
+            A = alpha;
+        }
+
         public C4b(V3l vec)
         {
             R = (byte)(vec.X);
             G = (byte)(vec.Y);
             B = (byte)(vec.Z);
             A = 255;
+        }
+
+        public C4b(V3l vec, byte alpha)
+        {
+            R = (byte)(vec.X);
+            G = (byte)(vec.Y);
+            B = (byte)(vec.Z);
+            A = alpha;
         }
 
         public C4b(V4i vec)
@@ -9040,12 +9096,28 @@ namespace Aardvark.Base
             A = 65535;
         }
 
+        public C4us(C3b color, ushort alpha)
+        {
+            R = Col.UShortFromByte(color.R);
+            G = Col.UShortFromByte(color.G);
+            B = Col.UShortFromByte(color.B);
+            A = alpha;
+        }
+
         public C4us(C3us color)
         {
             R = (color.R);
             G = (color.G);
             B = (color.B);
             A = 65535;
+        }
+
+        public C4us(C3us color, ushort alpha)
+        {
+            R = (color.R);
+            G = (color.G);
+            B = (color.B);
+            A = alpha;
         }
 
         public C4us(C3ui color)
@@ -9056,6 +9128,14 @@ namespace Aardvark.Base
             A = 65535;
         }
 
+        public C4us(C3ui color, ushort alpha)
+        {
+            R = Col.UShortFromUInt(color.R);
+            G = Col.UShortFromUInt(color.G);
+            B = Col.UShortFromUInt(color.B);
+            A = alpha;
+        }
+
         public C4us(C3f color)
         {
             R = Col.UShortFromFloat(color.R);
@@ -9064,12 +9144,28 @@ namespace Aardvark.Base
             A = 65535;
         }
 
+        public C4us(C3f color, ushort alpha)
+        {
+            R = Col.UShortFromFloat(color.R);
+            G = Col.UShortFromFloat(color.G);
+            B = Col.UShortFromFloat(color.B);
+            A = alpha;
+        }
+
         public C4us(C3d color)
         {
             R = Col.UShortFromDouble(color.R);
             G = Col.UShortFromDouble(color.G);
             B = Col.UShortFromDouble(color.B);
             A = 65535;
+        }
+
+        public C4us(C3d color, ushort alpha)
+        {
+            R = Col.UShortFromDouble(color.R);
+            G = Col.UShortFromDouble(color.G);
+            B = Col.UShortFromDouble(color.B);
+            A = alpha;
         }
 
         public C4us(C4b color)
@@ -9120,12 +9216,28 @@ namespace Aardvark.Base
             A = 65535;
         }
 
+        public C4us(V3i vec, ushort alpha)
+        {
+            R = (ushort)(vec.X);
+            G = (ushort)(vec.Y);
+            B = (ushort)(vec.Z);
+            A = alpha;
+        }
+
         public C4us(V3l vec)
         {
             R = (ushort)(vec.X);
             G = (ushort)(vec.Y);
             B = (ushort)(vec.Z);
             A = 65535;
+        }
+
+        public C4us(V3l vec, ushort alpha)
+        {
+            R = (ushort)(vec.X);
+            G = (ushort)(vec.Y);
+            B = (ushort)(vec.Z);
+            A = alpha;
         }
 
         public C4us(V4i vec)
@@ -10611,12 +10723,28 @@ namespace Aardvark.Base
             A = UInt32.MaxValue;
         }
 
+        public C4ui(C3b color, uint alpha)
+        {
+            R = Col.UIntFromByte(color.R);
+            G = Col.UIntFromByte(color.G);
+            B = Col.UIntFromByte(color.B);
+            A = alpha;
+        }
+
         public C4ui(C3us color)
         {
             R = Col.UIntFromUShort(color.R);
             G = Col.UIntFromUShort(color.G);
             B = Col.UIntFromUShort(color.B);
             A = UInt32.MaxValue;
+        }
+
+        public C4ui(C3us color, uint alpha)
+        {
+            R = Col.UIntFromUShort(color.R);
+            G = Col.UIntFromUShort(color.G);
+            B = Col.UIntFromUShort(color.B);
+            A = alpha;
         }
 
         public C4ui(C3ui color)
@@ -10627,6 +10755,14 @@ namespace Aardvark.Base
             A = UInt32.MaxValue;
         }
 
+        public C4ui(C3ui color, uint alpha)
+        {
+            R = (color.R);
+            G = (color.G);
+            B = (color.B);
+            A = alpha;
+        }
+
         public C4ui(C3f color)
         {
             R = Col.UIntFromFloat(color.R);
@@ -10635,12 +10771,28 @@ namespace Aardvark.Base
             A = UInt32.MaxValue;
         }
 
+        public C4ui(C3f color, uint alpha)
+        {
+            R = Col.UIntFromFloat(color.R);
+            G = Col.UIntFromFloat(color.G);
+            B = Col.UIntFromFloat(color.B);
+            A = alpha;
+        }
+
         public C4ui(C3d color)
         {
             R = Col.UIntFromDouble(color.R);
             G = Col.UIntFromDouble(color.G);
             B = Col.UIntFromDouble(color.B);
             A = UInt32.MaxValue;
+        }
+
+        public C4ui(C3d color, uint alpha)
+        {
+            R = Col.UIntFromDouble(color.R);
+            G = Col.UIntFromDouble(color.G);
+            B = Col.UIntFromDouble(color.B);
+            A = alpha;
         }
 
         public C4ui(C4b color)
@@ -10689,6 +10841,14 @@ namespace Aardvark.Base
             G = (uint)(vec.Y);
             B = (uint)(vec.Z);
             A = UInt32.MaxValue;
+        }
+
+        public C4ui(V3l vec, uint alpha)
+        {
+            R = (uint)(vec.X);
+            G = (uint)(vec.Y);
+            B = (uint)(vec.Z);
+            A = alpha;
         }
 
         public C4ui(V4l vec)
@@ -12104,12 +12264,28 @@ namespace Aardvark.Base
             A = 1.0f;
         }
 
+        public C4f(C3b color, float alpha)
+        {
+            R = Col.FloatFromByte(color.R);
+            G = Col.FloatFromByte(color.G);
+            B = Col.FloatFromByte(color.B);
+            A = alpha;
+        }
+
         public C4f(C3us color)
         {
             R = Col.FloatFromUShort(color.R);
             G = Col.FloatFromUShort(color.G);
             B = Col.FloatFromUShort(color.B);
             A = 1.0f;
+        }
+
+        public C4f(C3us color, float alpha)
+        {
+            R = Col.FloatFromUShort(color.R);
+            G = Col.FloatFromUShort(color.G);
+            B = Col.FloatFromUShort(color.B);
+            A = alpha;
         }
 
         public C4f(C3ui color)
@@ -12120,6 +12296,14 @@ namespace Aardvark.Base
             A = 1.0f;
         }
 
+        public C4f(C3ui color, float alpha)
+        {
+            R = Col.FloatFromUInt(color.R);
+            G = Col.FloatFromUInt(color.G);
+            B = Col.FloatFromUInt(color.B);
+            A = alpha;
+        }
+
         public C4f(C3f color)
         {
             R = (color.R);
@@ -12128,12 +12312,28 @@ namespace Aardvark.Base
             A = 1.0f;
         }
 
+        public C4f(C3f color, float alpha)
+        {
+            R = (color.R);
+            G = (color.G);
+            B = (color.B);
+            A = alpha;
+        }
+
         public C4f(C3d color)
         {
             R = Col.FloatFromDouble(color.R);
             G = Col.FloatFromDouble(color.G);
             B = Col.FloatFromDouble(color.B);
             A = 1.0f;
+        }
+
+        public C4f(C3d color, float alpha)
+        {
+            R = Col.FloatFromDouble(color.R);
+            G = Col.FloatFromDouble(color.G);
+            B = Col.FloatFromDouble(color.B);
+            A = alpha;
         }
 
         public C4f(C4b color)
@@ -12184,12 +12384,28 @@ namespace Aardvark.Base
             A = 1.0f;
         }
 
+        public C4f(V3f vec, float alpha)
+        {
+            R = (vec.X);
+            G = (vec.Y);
+            B = (vec.Z);
+            A = alpha;
+        }
+
         public C4f(V3d vec)
         {
             R = (float)(vec.X);
             G = (float)(vec.Y);
             B = (float)(vec.Z);
             A = 1.0f;
+        }
+
+        public C4f(V3d vec, float alpha)
+        {
+            R = (float)(vec.X);
+            G = (float)(vec.Y);
+            B = (float)(vec.Z);
+            A = alpha;
         }
 
         public C4f(V4f vec)
@@ -13709,12 +13925,28 @@ namespace Aardvark.Base
             A = 1.0;
         }
 
+        public C4d(C3b color, double alpha)
+        {
+            R = Col.DoubleFromByte(color.R);
+            G = Col.DoubleFromByte(color.G);
+            B = Col.DoubleFromByte(color.B);
+            A = alpha;
+        }
+
         public C4d(C3us color)
         {
             R = Col.DoubleFromUShort(color.R);
             G = Col.DoubleFromUShort(color.G);
             B = Col.DoubleFromUShort(color.B);
             A = 1.0;
+        }
+
+        public C4d(C3us color, double alpha)
+        {
+            R = Col.DoubleFromUShort(color.R);
+            G = Col.DoubleFromUShort(color.G);
+            B = Col.DoubleFromUShort(color.B);
+            A = alpha;
         }
 
         public C4d(C3ui color)
@@ -13725,6 +13957,14 @@ namespace Aardvark.Base
             A = 1.0;
         }
 
+        public C4d(C3ui color, double alpha)
+        {
+            R = Col.DoubleFromUInt(color.R);
+            G = Col.DoubleFromUInt(color.G);
+            B = Col.DoubleFromUInt(color.B);
+            A = alpha;
+        }
+
         public C4d(C3f color)
         {
             R = Col.DoubleFromFloat(color.R);
@@ -13733,12 +13973,28 @@ namespace Aardvark.Base
             A = 1.0;
         }
 
+        public C4d(C3f color, double alpha)
+        {
+            R = Col.DoubleFromFloat(color.R);
+            G = Col.DoubleFromFloat(color.G);
+            B = Col.DoubleFromFloat(color.B);
+            A = alpha;
+        }
+
         public C4d(C3d color)
         {
             R = (color.R);
             G = (color.G);
             B = (color.B);
             A = 1.0;
+        }
+
+        public C4d(C3d color, double alpha)
+        {
+            R = (color.R);
+            G = (color.G);
+            B = (color.B);
+            A = alpha;
         }
 
         public C4d(C4b color)
@@ -13787,6 +14043,14 @@ namespace Aardvark.Base
             G = (vec.Y);
             B = (vec.Z);
             A = 1.0;
+        }
+
+        public C4d(V3d vec, double alpha)
+        {
+            R = (vec.X);
+            G = (vec.Y);
+            B = (vec.Z);
+            A = alpha;
         }
 
         public C4d(V4d vec)
