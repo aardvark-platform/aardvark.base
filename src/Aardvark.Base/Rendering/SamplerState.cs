@@ -117,7 +117,7 @@ namespace Aardvark.Base.Rendering
             Filter = TextureFilter.MinMagMipPoint;
             AddressU = WrapMode.Clamp;
             AddressV = WrapMode.Clamp;
-            AddressV = WrapMode.Clamp;
+            AddressW = WrapMode.Clamp;
 
             MaxAnisotropy = 16;
             MinLod = 0.0f;
