@@ -41,16 +41,17 @@ type File(id : Guid, table : FileTable, data : MemoryManager, block : Block) =
             block <- data.Alloc arr.LongLength
             lock table (fun () -> table.[id] <- (block.Offset, block.Size))
 
-        if block.Size <> arr.LongLength then
+        elif block.Size <> arr.LongLength then
             block.Realloc arr.LongLength
+            lock table (fun () -> table.[id] <- (block.Offset, block.Size))
 
         block.Write(arr)
 
 type Store(mem : Memory) =
-    let data, files = Memory.split mem
+    let managed, table = Memory.split mem
 
-    let fileTable = new FileTable(files)
-    let data = new MemoryManager(data)
+    let fileTable = new FileTable(table)
+    let data = new MemoryManager(managed)
 
     let fileCache = ConcurrentDictionary<Guid, File>()
 
@@ -71,7 +72,11 @@ type Store(mem : Memory) =
     
     do import()
 
-    member x.Memory = mem.Size
+    member x.FileCount = fileCache.Count
+    
+    member x.FileTableSize = Mem table.Size
+    member x.DataSize = Mem managed.Size
+    member x.Memory = Mem mem.Size
 
     member x.Create() =
         let mutable id = Guid.NewGuid()
@@ -93,4 +98,8 @@ type Store(mem : Memory) =
         )
 
 
+    member x.Dispose() =
+        mem.Dispose()
 
+    interface IDisposable with
+        member x.Dispose() = x.Dispose()

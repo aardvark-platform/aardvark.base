@@ -306,7 +306,7 @@ module NewImpl =
             override x.Size = size
             override x.Realloc (newSize : int64) =
                 if newSize <> size then
-                    ptr <- Marshal.ReAllocHGlobal(ptr, nativeint size)
+                    ptr <- Marshal.ReAllocHGlobal(ptr, nativeint newSize)
                     size <- newSize
 
             override x.Clear(newSize : int64) =
@@ -331,7 +331,7 @@ module NewImpl =
             override x.Size = size
             override x.Realloc (newSize : int64) =
                 if newSize <> size then
-                    ptr <- Marshal.ReAllocCoTaskMem(ptr, int size)
+                    ptr <- Marshal.ReAllocCoTaskMem(ptr, int newSize)
                     size <- newSize
 
             override x.Clear(newSize : int64) =
@@ -362,8 +362,8 @@ module NewImpl =
                             let file = MemoryMappedFile.CreateFromFile(fileName, FileMode.Open, mapName, info.Length, MemoryMappedFileAccess.ReadWrite)
                             fileName, file, info.Length
                         else
-                            let file = MemoryMappedFile.CreateFromFile(fileName, FileMode.Create, mapName, 0L, MemoryMappedFileAccess.ReadWrite)
-                            fileName, file, 0L
+                            let file = MemoryMappedFile.CreateFromFile(fileName, FileMode.Create, mapName, 4096L, MemoryMappedFileAccess.ReadWrite)
+                            fileName, file, 4096L
 
                     | Create(fileName, capacity) ->
                         let file = MemoryMappedFile.CreateFromFile(fileName, FileMode.Create, mapName, capacity, MemoryMappedFileAccess.ReadWrite)

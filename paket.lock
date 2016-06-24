@@ -1,6 +1,5 @@
 NUGET
   remote: http://api.nuget.org/v3/index.json
-  specs:
     DevILSharp (0.0.13)
     FSharp.Compiler.Service (2.0.0.6)
     FSharp.Core (4.0.0.1)
@@ -90,23 +89,22 @@ GROUP Build
 CONTENT: NONE
 NUGET
   remote: http://api.nuget.org/v3/index.json
-  specs:
     Chessie (0.5.1) - content: none
       FSharp.Core
-    FAKE (4.27) - content: none
+    FAKE (4.29.2) - content: none
     FSharp.Core (4.0.0.1) - content: none
-    Mono.Cecil (0.9.6.1) - content: none
+    Mono.Cecil (0.9.5.4) - content: none
     Newtonsoft.Json (8.0.3) - content: none
-    Paket.Core (2.66.2) - content: none
+    Paket.Core (3.1.9) - content: none
       Chessie
       FSharp.Core
+      Mono.Cecil
       Newtonsoft.Json
     SourceLink.Fake (1.1) - content: none
 GITHUB
   remote: vrvis/Aardvark.Fake
-  specs:
-    FULLPROJECT (e6bd0a7993159bb16e832ade8c1ae6f52793bcbd)
-      FAKE
-      Mono.Cecil
-      Paket.Core
+    FULLPROJECT (7c479e6e1818b2b868bd2443e79c7afbc68d872f)
+      FAKE (< 5.0)
+      Mono.Cecil (<= 0.9.5.4)
+      Paket.Core (< 4.0)
       SourceLink.Fake
