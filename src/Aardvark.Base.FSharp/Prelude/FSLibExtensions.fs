@@ -533,17 +533,17 @@ module NativeUtilities =
         extern nativeint private memmove_internal(nativeint dest, nativeint src, UIntPtr size);
 
 
-        let memcpy(target : nativeint, source : nativeint, size : int) =
-            memcpy_internal(target, source, UIntPtr (uint32 size)) |> ignore
+        let memcpy(target : nativeint, source : nativeint, size : unativeint) =
+            memcpy_internal(target, source, size) |> ignore
 
-        let memcmp(ptr1 : nativeint, ptr2 : nativeint, size : int) =
-            memcmp_internal(ptr1, ptr2, UIntPtr (uint32 size))
+        let memcmp(ptr1 : nativeint, ptr2 : nativeint, size : unativeint) =
+            memcmp_internal(ptr1, ptr2, size)
 
-        let memset(ptr : nativeint, value : int, size : int) =
-            memset_internal(ptr, value, UIntPtr (uint32 size)) |> ignore
+        let memset(ptr : nativeint, value : int, size : unativeint) =
+            memset_internal(ptr, value, size) |> ignore
 
-        let memmove(target : nativeint, source : nativeint, size : int) =
-            memmove_internal(target, source, UIntPtr (uint32 size)) |> ignore
+        let memmove(target : nativeint, source : nativeint, size : unativeint) =
+            memmove_internal(target, source, size) |> ignore
 
     /// <summary>
     /// LibC wraps memory-functions provided by libc on linux systems.
@@ -581,17 +581,17 @@ module NativeUtilities =
                 
 
 
-        let memcpy(target : nativeint, source : nativeint, size : int) =
-            memcpy_internal(target, source, UIntPtr (uint32 size)) |> ignore
+        let memcpy(target : nativeint, source : nativeint, size : unativeint) =
+            memcpy_internal(target, source, size) |> ignore
 
-        let memcmp(ptr1 : nativeint, ptr2 : nativeint, size : int) =
-            memcmp_internal(ptr1, ptr2, UIntPtr (uint32 size))
+        let memcmp(ptr1 : nativeint, ptr2 : nativeint, size : unativeint) =
+            memcmp_internal(ptr1, ptr2, size)
 
-        let memset(ptr : nativeint, value : int, size : int) =
-            memset_internal(ptr, value, UIntPtr (uint32 size)) |> ignore
+        let memset(ptr : nativeint, value : int, size : unativeint) =
+            memset_internal(ptr, value, size) |> ignore
 
-        let memmove(target : nativeint, source : nativeint, size : int) =
-            memmove_internal(target, source, UIntPtr (uint32 size)) |> ignore
+        let memmove(target : nativeint, source : nativeint, size : unativeint) =
+            memmove_internal(target, source, size) |> ignore
 
     [<AutoOpen>]
     module PlatformStuff =
@@ -609,23 +609,23 @@ module NativeUtilities =
     module NativeInt =
         let memcpy (src : nativeint) (dst : nativeint) (size : int) =
             match os with
-                | Windows -> MSVCRT.memcpy(dst, src, size)
-                | _ -> LibC.memcpy(dst, src, size)
+                | Windows -> MSVCRT.memcpy(dst, src, unativeint size)
+                | _ -> LibC.memcpy(dst, src, unativeint size)
 
         let memmove (src : nativeint) (dst : nativeint) (size : int) =
             match os with
-                | Windows -> MSVCRT.memmove(dst, src, size)
-                | _ -> LibC.memmove(dst, src, size)
+                | Windows -> MSVCRT.memmove(dst, src, unativeint size)
+                | _ -> LibC.memmove(dst, src, unativeint size)
 
         let memset (dst : nativeint) (value : int) (size : int) =
             match os with
-                | Windows -> MSVCRT.memset(dst, value, size)
-                | _ -> LibC.memset(dst, value, size)
+                | Windows -> MSVCRT.memset(dst, value, unativeint size)
+                | _ -> LibC.memset(dst, value, unativeint size)
 
         let memcmp (src : nativeint) (dst : nativeint) (size : int) =
             match os with
-                | Windows -> MSVCRT.memcmp(dst, src, size)
-                | _ -> LibC.memcmp(dst, src, size)
+                | Windows -> MSVCRT.memcmp(dst, src, unativeint size)
+                | _ -> LibC.memcmp(dst, src, unativeint size)
 
         let inline read<'a when 'a : unmanaged> (ptr : nativeint) =
             NativePtr.read (NativePtr.ofNativeInt<'a> ptr) 
@@ -640,25 +640,58 @@ module NativeUtilities =
             NativePtr.set (NativePtr.ofNativeInt<'a> ptr) index      
 
     type Marshal with
-        static member Copy(source : nativeint, destination : nativeint, length : int) =
+        static member Copy(source : nativeint, destination : nativeint, length : unativeint) =
             match os with
                 | Windows -> MSVCRT.memcpy(destination, source, length)
                 | _ -> LibC.memcpy(destination, source, length)
 
-        static member Move(source : nativeint, destination : nativeint, length : int) =
+        static member Move(source : nativeint, destination : nativeint, length : unativeint) =
             match os with
                 | Windows -> MSVCRT.memmove(destination, source, length)
                 | _ -> LibC.memmove(destination, source, length)
 
-        static member Set(memory : nativeint, value : int, length : int) =
+        static member Set(memory : nativeint, value : int, length : unativeint) =
             match os with
                 | Windows -> MSVCRT.memset(memory, value, length)
                 | _ -> LibC.memset(memory, value, length)
 
-        static member Compare(source : nativeint, destination : nativeint, length : int) =
+        static member Compare(source : nativeint, destination : nativeint, length : unativeint) =
             match os with
                 | Windows -> MSVCRT.memcmp(destination, source, length)
                 | _ -> LibC.memcmp(destination, source, length)
+
+                
+
+        static member Copy(source : nativeint, destination : nativeint, length : int) =
+            Marshal.Copy(source, destination, unativeint length)
+
+        static member Move(source : nativeint, destination : nativeint, length : int) =
+            Marshal.Move(source, destination, unativeint length)
+
+        static member Set(memory : nativeint, value : int, length : int) =
+            Marshal.Set(memory, value, unativeint length)
+
+        static member Compare(source : nativeint, destination : nativeint, length : int) =
+            Marshal.Compare(source, destination, unativeint length)
+
+
+
+
+        static member inline Copy(source : nativeint, destination : nativeint, length : 'a) =
+            Marshal.Copy(source, destination, unativeint length)
+
+        static member inline Move(source : nativeint, destination : nativeint, length : 'a) =
+            Marshal.Move(source, destination, unativeint length)
+
+        static member inline Set(memory : nativeint, value : int, length : 'a) =
+            Marshal.Set(memory, value, unativeint length)
+
+        static member inline Compare(source : nativeint, destination : nativeint, length : 'a) =
+            Marshal.Compare(source, destination, unativeint length)
+
+
+
+
 
     let pinned (a : obj) f = 
         let gc = GCHandle.Alloc(a, GCHandleType.Pinned)
