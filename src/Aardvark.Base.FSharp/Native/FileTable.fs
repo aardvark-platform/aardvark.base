@@ -118,7 +118,7 @@ module private ``DictHeader Extensions`` =
 type private DictStore =
     {
         size        : int64
-        pointer    : Memory
+        pointer     : Memory
         header      : ptr<DictHeader>
         entries     : ptr<Entry>
         buckets     : ptr<int>

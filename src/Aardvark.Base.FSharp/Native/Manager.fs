@@ -6,13 +6,20 @@ open System.Runtime.CompilerServices
 open Aardvark.Base
 
 
-type MemoryManager(store : Memory) =
-    let mutable capacity = 0L
+type MemoryManager(store : Memory) as this =
+    let mutable capacity = store.Size
     let mutable allocated = 0L
     let free = FreeList<int64, Block>()
 
     let mutable first : Block = null
     let mutable last : Block = null
+
+    do
+        if store.Size <> 0L then
+            let b = Block(this, 0L, store.Size)
+            free.Insert(b.Size, b)
+            first <- b
+            last <- b
 
     let mutable pointer = new ReaderWriterLockSlim()
 

@@ -14,9 +14,55 @@ let hash = MD5.Create()
 let md5 (str : string) =
     str |> Encoding.Unicode.GetBytes |> hash.ComputeHash |> Guid
 
+
+let sizeInvariantBench() =
+    let sw = Stopwatch()
+
+    let ids = Array.init (1 <<< 20) (fun i -> i |> string |> md5)
+    let data : byte[] = Array.init 128 byte
+    let data2 : byte[] = Array.zeroCreate 128
+
+    let path = @"C:\Users\Schorsch\Desktop\store.csv"
+    File.WriteAllLines(path, ["size;get [ns];write [ns];update [ns];delete[ns]"])
+
+    for cnt in 4096 .. 4096 .. 1 <<< 20 do
+        let ids = Array.take cnt ids
+        let mem = Memory.hglobal 0L
+        use store = new Store(mem)
+
+        printf "%d: " cnt
+        
+        sw.Restart()
+        let files = ids |> Array.map store.Get
+        sw.Stop()
+        let tget = sw.MicroTime / store.FileCount
+
+        sw.Restart()
+        for fi in 0..files.Length-1 do
+            files.[fi].Write data
+        sw.Stop()
+        let twrite = sw.MicroTime / files.Length
+        
+        sw.Restart()
+        for fi in 0..files.Length-1 do
+            files.[fi].Write data2
+        sw.Stop()
+        let tupdate = sw.MicroTime / files.Length
+
+        sw.Restart()
+        for fi in 0..files.Length-1 do
+            files.[fi].Delete()
+        sw.Stop()
+        let tdelete = sw.MicroTime / files.Length
+        
+        printfn "{ get = %A; write = %A; update = %A; delete = %A }" tget twrite tupdate tdelete
+        File.AppendAllLines(path, [sprintf "%d;%d;%d;%d;%d" cnt tget.TotalNanoseconds twrite.TotalNanoseconds tupdate.TotalNanoseconds tdelete.TotalNanoseconds])
+
+
+
 let perf() =
     let path = @"C:\Users\schorsch\Desktop\test.bin"
-    //if File.Exists path then File.Delete path
+    if File.Exists path then File.Delete path
     let sw = Stopwatch()
     let mem = Memory.mapped path
 
@@ -42,6 +88,7 @@ let perf() =
 
 
     let data : byte[] = Array.zeroCreate 128
+    let data2 : byte[] = Array.init 128 byte
 
     Log.startTimed "write"
     sw.Restart()
@@ -51,8 +98,29 @@ let perf() =
     Log.line "per file:     %A" (sw.MicroTime / files.Length)
     Log.stop()
 
+    Log.startTimed "update"
+    sw.Restart()
+    for fi in 0..files.Length-1 do
+        files.[fi].Write data2
+    sw.Stop()
+    Log.line "per file:     %A" (sw.MicroTime / files.Length)
+    Log.stop()
 
+    Log.startTimed "delete"
+    sw.Restart()
+    for fi in 0..files.Length-1 do
+        files.[fi].Delete()
+    sw.Stop()
+    Log.line "per file:     %A" (sw.MicroTime / files.Length)
+    Log.stop()
 
+    Log.startTimed "re-write"
+    sw.Restart()
+    for fi in 0..files.Length-1 do
+        files.[fi].Write data
+    sw.Stop()
+    Log.line "per file:     %A" (sw.MicroTime / files.Length)
+    Log.stop()
 
     ()
 
@@ -166,8 +234,8 @@ module FileSystem =
             with get()  = (x :> ptr + 20n).Read<int>()
             and set v   = (x :> ptr + 20n).Write<int>(v)
 
-        static member (+) (pb : pblock, r : 'a) = pblock(pb.Pointer + nativeint r * block.Size)
-        static member (-) (pb : pblock, r : 'a) = pblock(pb.Pointer - nativeint r * block.Size)
+        static member (+) (pb : pblock, r : int) = pblock(pb.Pointer + nativeint r * block.Size)
+        static member (-) (pb : pblock, r : int) = pblock(pb.Pointer - nativeint r * block.Size)
 
     type pentry(p : ptr) = 
         inherit ptr<entry>(p)
