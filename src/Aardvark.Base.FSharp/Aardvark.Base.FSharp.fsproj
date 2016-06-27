@@ -97,6 +97,7 @@
     <Compile Include="NewAg.fs" />
     <Compile Include="Control.fs" />
     <None Include="paket.references" />
+    <Compile Include="Native\BlobStore.fs" />
     <Compile Include="Native\Pointer.fs" />
     <Compile Include="Native\Memory.fs" />
     <Compile Include="Native\FileTable.fs" />

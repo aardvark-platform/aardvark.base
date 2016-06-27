@@ -47,6 +47,15 @@ type File(id : Guid, table : FileTable, data : MemoryManager, block : Block) =
 
         block.Write(arr)
 
+    interface IBlobFile with
+        member x.Name = id
+        member x.Read() = x.Read()
+        member x.Size = x.Size
+        member x.Write(arr) = x.Write(arr)
+        member x.Delete() = x.Delete()
+        member x.Exists = x.Exists
+        member x.CopyTo(o) = o.Write(x.Read())
+        
 type Store(mem : Memory) =
     let managed, table = Memory.split mem
 
@@ -103,3 +112,8 @@ type Store(mem : Memory) =
 
     interface IDisposable with
         member x.Dispose() = x.Dispose()
+
+    interface IBlobStore with
+        member x.Create() = x.Create() :> IBlobFile
+        member x.Get name = x.Get name :> IBlobFile
+        member x.Memory = x.Memory
