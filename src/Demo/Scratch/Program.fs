@@ -3,5 +3,6 @@
 
 [<EntryPoint>]
 let main argv = 
-    StoreTest.perf()
+    StoreTest.FS.moreTest()
+    //StoreTest.FS.test()
     0 // return an integer exit code
