@@ -3,5 +3,5 @@
 
 [<EntryPoint>]
 let main argv = 
-    StoreTest.sizeInvariantBench()
+    StoreTest.perf()
     0 // return an integer exit code
