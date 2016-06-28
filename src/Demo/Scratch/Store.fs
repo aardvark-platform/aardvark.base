@@ -226,6 +226,11 @@ module FS =
  
             member x.Left = VirtualNodeRef(x.Root, x.BasePtr, x.Ptr.Left)
             member x.Right = VirtualNodeRef(x.Root, x.BasePtr, x.Ptr.Right)
+
+            member x.SetParent(n : VirtualNode) =
+                if isNull n then x.Ptr.Parent <-- -1
+                else x.Ptr.Parent <-- n.Index
+
             member x.Parent = 
                 let p = !!x.Ptr.Parent
                 if p < 0 then
@@ -304,13 +309,13 @@ module FS =
             let p = !g.Right
             let parent = !g.Parent
 
-            p.Left.Value.Parent := g
+            p.Left.Value.SetParent g
             g.Right := !p.Left
 
-            g.Parent := p
+            g.SetParent p
             p.Left := g
 
-            p.Parent := parent
+            p.SetParent parent
             n := p
 
         let rotateRight (n : VirtualNodeRef) =
@@ -318,13 +323,13 @@ module FS =
             let p = !g.Left
             let parent = !g.Parent
 
-            p.Right.Value.Parent := g
+            p.Right.Value.SetParent g
             g.Left := !p.Right
                     
-            g.Parent := p
+            g.SetParent p
             p.Right := g
                     
-            p.Parent := parent
+            p.SetParent parent
             n := p
 
         module Insert = 
@@ -465,6 +470,7 @@ module FS =
 
             let t = !tree
             if isNull t then
+                n.SetParent t
                 tree := n
                 Insert.case1 tree
             else
@@ -501,7 +507,10 @@ module FS =
                 elif cmp > 0 then
                     remove n t.Right
                 else
-                    if isNull !t.Left then
+                    if isNull !t.Left && isNull !t.Right then
+                        tree := null
+                        true
+                    elif isNull !t.Left then
                         let n = t
                         let child = !t.Right
                         tree := child
@@ -515,7 +524,17 @@ module FS =
                         true
 
                     elif isNull !t.Right then
-                        tree := !t.Left
+
+                        let n = t
+                        let child = !t.Left
+                        tree := child
+
+                        if n.Color = Black then
+                            if child.Color = Red then
+                                child.Color <- Black
+                            else
+                                Delete.case1 tree
+                        
                         true
                     else
                         let min = findMin !t.Right
@@ -758,208 +777,239 @@ module FS =
                 x.NFreeList <- b
                 x.NFreeCount <- x.NFreeCount + 1
 
+            member x.WithTree (f : VirtualNodeRef -> 'a) =
+                let ptr = NativePtr.stackalloc 1
+                NativePtr.write ptr x.NRoot
+                let root = VirtualNodeRef(Unchecked.defaultof<_>, x.Nodes, ptr)
+                root.Root <- root
+                let res = f root
+                x.NRoot <- NativePtr.read ptr
+                res
+
             member x.RemoveNode(id : int, res : nodeptr) =
-                let l = !!res.Left
-                let r = !!res.Right
-                let pi = !!res.Parent
-
-                if pi >= 0 then
-                    let pParent = x.Nodes + !!res.Parent
-                    let ptr = if !!pParent.Left = id then pParent.Left else pParent.Right
-
-                    if l < 0 then
-                        ptr <-- r
-                        x.KillNode(id)
-                    elif r < 0 then
-                        ptr <-- l
-                        x.KillNode(id)
-                    else    
-                        let mutable last = res
-                        let mutable lastIndex = -1
-                        let mutable current = r
-                        while current >= 0 do
-                            let n =  x.Nodes + current
-                            last <- n
-                            lastIndex <- current
-                            current <- !!n.Left
-                        (x.Nodes + l).Parent <-- lastIndex
-                        last.Left <-- l
-                else
-                    if l < 0 then
-                        x.NRoot <- r
-                        x.KillNode(id)
-                    elif r < 0 then
-                        x.NRoot <- l
-                        x.KillNode(id)
-                    else
-                        let mutable last = res
-                        let mutable lastIndex = -1
-                        let mutable current = r
-                        while current >= 0 do
-                            let n =  x.Nodes + current
-                            last <- n
-                            lastIndex <- current
-                            current <- !!n.Left
-                        last.Left <-- l
-                        (x.Nodes + l).Parent <-- lastIndex
-                        (x.Nodes + r).Parent <-- -1
-                        x.NRoot <- r
+                let worked =
+                    x.WithTree(fun root ->
+                        let n = VirtualNode(root, x.Nodes, res, id)
+                        Tree.remove n root
+                    )
+                if worked then
+                    x.KillNode(id)
+//
+//                let l = !!res.Left
+//                let r = !!res.Right
+//                let pi = !!res.Parent
+//
+//                if pi >= 0 then
+//                    let pParent = x.Nodes + !!res.Parent
+//                    let ptr = if !!pParent.Left = id then pParent.Left else pParent.Right
+//
+//                    if l < 0 then
+//                        ptr <-- r
+//                        x.KillNode(id)
+//                    elif r < 0 then
+//                        ptr <-- l
+//                        x.KillNode(id)
+//                    else    
+//                        let mutable last = res
+//                        let mutable lastIndex = -1
+//                        let mutable current = r
+//                        while current >= 0 do
+//                            let n =  x.Nodes + current
+//                            last <- n
+//                            lastIndex <- current
+//                            current <- !!n.Left
+//                        (x.Nodes + l).Parent <-- lastIndex
+//                        last.Left <-- l
+//                else
+//                    if l < 0 then
+//                        x.NRoot <- r
+//                        x.KillNode(id)
+//                    elif r < 0 then
+//                        x.NRoot <- l
+//                        x.KillNode(id)
+//                    else
+//                        let mutable last = res
+//                        let mutable lastIndex = -1
+//                        let mutable current = r
+//                        while current >= 0 do
+//                            let n =  x.Nodes + current
+//                            last <- n
+//                            lastIndex <- current
+//                            current <- !!n.Left
+//                        last.Left <-- l
+//                        (x.Nodes + l).Parent <-- lastIndex
+//                        (x.Nodes + r).Parent <-- -1
+//                        x.NRoot <- r
 
 
             member x.InsertFree(pEntry : entryptr) : unit =
                 let size = !!pEntry.Block.Size
                 let offset = !!pEntry.Block.Offset
-
-                let mutable parent = NativePtr.zero
-                let mutable last = -1
-                let mutable current = x.NRoot
-
-                while current >= 0 do
-                    let pNode = x.Nodes + current
-
-                    let cmp =
-                        let c = compare size !!pNode.Size
-                        if c = 0 then compare offset !!pNode.Offset
-                        else c
-
-                    if cmp > 0 then
-                        parent <- pNode.Right
-                        last <- current
-                        current <- !!pNode.Right
-                    elif cmp < 0 then
-                        parent <- pNode.Left
-                        last <- current
-                        current <- !!pNode.Left
-                    else
-                        failwith "duplicate entry"
-
                 let n = x.NewNode()
                 let pNode = x.Nodes + n
                 pNode.Offset <-- !!pEntry.Block.Offset
                 pNode.Size <-- !!pEntry.Block.Size
                 pNode.Left <-- -1
                 pNode.Right <-- -1
-                pNode.Parent <-- last
+                pNode.Parent <-- -1
                 pNode.Entry <-- !!pEntry.Index
+                pNode.Color <-- Red
 
-                let grandParent (n : VirtualNode) =
-                    if isNull n then VirtualNodeRef.Null
-                    else
-                        let p = !n.Parent
-                        if isNull p then VirtualNodeRef.Null
-                        else p.Parent
-                
-                let uncle (n : VirtualNode) =
-                    let gpr = grandParent n
-                    let gp = !gpr
-                    if isNull gp then 
-                        VirtualNodeRef.Null, VirtualNodeRef.Null
-                    elif !gp.Left = !n.Parent then
-                        gp.Right, gpr
-                    else 
-                        gp.Left, gpr
-
-                let rotateLeft (n : VirtualNodeRef) =
-                    let g = !n
-                    let p = !g.Right
-                    let parent = !g.Parent
-
-                    p.Left.Value.Parent := g
-                    g.Right := !p.Left
-
-                    g.Parent := p
-                    p.Left := g
-
-                    p.Parent := parent
-                    n := p
-
-                let rotateRight (n : VirtualNodeRef) =
-                    let g = !n
-                    let p = !g.Left
-                    let parent = !g.Parent
-
-                    p.Right.Value.Parent := g
-                    g.Left := !p.Right
-                    
-                    g.Parent := p
-                    p.Right := g
-                    
-                    p.Parent := parent
-                    n := p
-
-                let rec case1 (nr : VirtualNodeRef) =
-                    let n = !nr
-                    if isNull !n.Parent then
-                        n.Color <- Black
-                    else 
-                        case2 nr
-
-                and case2 (nr : VirtualNodeRef) = 
-                    let n = !nr
-                    if n.Parent.Value.Color <> Black then
-                        case3 nr
-
-                and case3 (nr : VirtualNodeRef) =
-                    let n = !nr
-                    let ur, gr = uncle n
-                    let u = !ur
-                    let g = !gr
-
-                    if not (isNull u) && u.Color = Red then
-                        n.Parent.Value.Color <- Black
-                        u.Color <- Black
-                        g.Color <- Red
-                        case1 gr
-                    else
-                        case4 nr
-
-                and case4 (nr : VirtualNodeRef) =
-                    let n = !nr
-                    let g = !(grandParent n)
-                    let p = !n.Parent
-
-                    let nr = 
-                        if n = !p.Right && p = !g.Left then
-                            rotateLeft n.Parent
-                            n.Left
-                        elif n = !p.Left && p = !g.Right then
-                            rotateRight n.Parent
-                            n.Right
-                        else
-                            nr
-                            
-                    case5 nr
-
-                and case5 (nr : VirtualNodeRef) =
-                    let n = !nr
-                    let gr = grandParent n
-                    let g = !gr
-                    let p = !n.Parent
-
-                    p.Color <- Black
-                    g.Color <- Red
-                    if n = !p.Left then rotateRight gr
-                    else rotateLeft gr
-
-                if parent = NativePtr.zero then
-                    x.NRoot <- n
-                    let ptr = NativePtr.stackalloc 1
-                    NativePtr.write ptr x.NRoot
-                    let root = VirtualNodeRef(Unchecked.defaultof<_>, x.Nodes, ptr)
-                    root.Root <- root
-                    case1 root
-                    x.NRoot <- NativePtr.read ptr
-                else
-                    parent <-- n
-
-                    let ptr = NativePtr.stackalloc 1
-                    NativePtr.write ptr x.NRoot
-                    let root = VirtualNodeRef(Unchecked.defaultof<_>, x.Nodes, ptr)
-                    root.Root <- root
-      
-                    case1 (VirtualNodeRef(root, x.Nodes, parent))
-
-                    x.NRoot <- NativePtr.read ptr
+                x.WithTree (fun root ->
+                    let n = VirtualNode(root, x.Nodes, pNode, n)
+                    Tree.insert n root
+                )
+//
+//                let mutable parent = NativePtr.zero
+//                let mutable last = -1
+//                let mutable current = x.NRoot
+//
+//                while current >= 0 do
+//                    let pNode = x.Nodes + current
+//
+//                    let cmp =
+//                        let c = compare size !!pNode.Size
+//                        if c = 0 then compare offset !!pNode.Offset
+//                        else c
+//
+//                    if cmp > 0 then
+//                        parent <- pNode.Right
+//                        last <- current
+//                        current <- !!pNode.Right
+//                    elif cmp < 0 then
+//                        parent <- pNode.Left
+//                        last <- current
+//                        current <- !!pNode.Left
+//                    else
+//                        failwith "duplicate entry"
+//
+//                let n = x.NewNode()
+//                let pNode = x.Nodes + n
+//                pNode.Offset <-- !!pEntry.Block.Offset
+//                pNode.Size <-- !!pEntry.Block.Size
+//                pNode.Left <-- -1
+//                pNode.Right <-- -1
+//                pNode.Parent <-- last
+//                pNode.Entry <-- !!pEntry.Index
+//
+//                let grandParent (n : VirtualNode) =
+//                    if isNull n then VirtualNodeRef.Null
+//                    else
+//                        let p = !n.Parent
+//                        if isNull p then VirtualNodeRef.Null
+//                        else p.Parent
+//                
+//                let uncle (n : VirtualNode) =
+//                    let gpr = grandParent n
+//                    let gp = !gpr
+//                    if isNull gp then 
+//                        VirtualNodeRef.Null, VirtualNodeRef.Null
+//                    elif !gp.Left = !n.Parent then
+//                        gp.Right, gpr
+//                    else 
+//                        gp.Left, gpr
+//
+//                let rotateLeft (n : VirtualNodeRef) =
+//                    let g = !n
+//                    let p = !g.Right
+//                    let parent = !g.Parent
+//
+//                    p.Left.Value.Parent := g
+//                    g.Right := !p.Left
+//
+//                    g.Parent := p
+//                    p.Left := g
+//
+//                    p.Parent := parent
+//                    n := p
+//
+//                let rotateRight (n : VirtualNodeRef) =
+//                    let g = !n
+//                    let p = !g.Left
+//                    let parent = !g.Parent
+//
+//                    p.Right.Value.Parent := g
+//                    g.Left := !p.Right
+//                    
+//                    g.Parent := p
+//                    p.Right := g
+//                    
+//                    p.Parent := parent
+//                    n := p
+//
+//                let rec case1 (nr : VirtualNodeRef) =
+//                    let n = !nr
+//                    if isNull !n.Parent then
+//                        n.Color <- Black
+//                    else 
+//                        case2 nr
+//
+//                and case2 (nr : VirtualNodeRef) = 
+//                    let n = !nr
+//                    if n.Parent.Value.Color <> Black then
+//                        case3 nr
+//
+//                and case3 (nr : VirtualNodeRef) =
+//                    let n = !nr
+//                    let ur, gr = uncle n
+//                    let u = !ur
+//                    let g = !gr
+//
+//                    if not (isNull u) && u.Color = Red then
+//                        n.Parent.Value.Color <- Black
+//                        u.Color <- Black
+//                        g.Color <- Red
+//                        case1 gr
+//                    else
+//                        case4 nr
+//
+//                and case4 (nr : VirtualNodeRef) =
+//                    let n = !nr
+//                    let g = !(grandParent n)
+//                    let p = !n.Parent
+//
+//                    let nr = 
+//                        if n = !p.Right && p = !g.Left then
+//                            rotateLeft n.Parent
+//                            n.Left
+//                        elif n = !p.Left && p = !g.Right then
+//                            rotateRight n.Parent
+//                            n.Right
+//                        else
+//                            nr
+//                            
+//                    case5 nr
+//
+//                and case5 (nr : VirtualNodeRef) =
+//                    let n = !nr
+//                    let gr = grandParent n
+//                    let g = !gr
+//                    let p = !n.Parent
+//
+//                    p.Color <- Black
+//                    g.Color <- Red
+//                    if n = !p.Left then rotateRight gr
+//                    else rotateLeft gr
+//
+//                if parent = NativePtr.zero then
+//                    x.NRoot <- n
+//                    let ptr = NativePtr.stackalloc 1
+//                    NativePtr.write ptr x.NRoot
+//                    let root = VirtualNodeRef(Unchecked.defaultof<_>, x.Nodes, ptr)
+//                    root.Root <- root
+//                    case1 root
+//                    x.NRoot <- NativePtr.read ptr
+//                else
+//                    parent <-- n
+//
+//                    let ptr = NativePtr.stackalloc 1
+//                    NativePtr.write ptr x.NRoot
+//                    let root = VirtualNodeRef(Unchecked.defaultof<_>, x.Nodes, ptr)
+//                    root.Root <- root
+//      
+//                    case1 (VirtualNodeRef(root, x.Nodes, parent))
+//
+//                    x.NRoot <- NativePtr.read ptr
 
 
             member x.RemoveFree(pEntry : entryptr)  =
