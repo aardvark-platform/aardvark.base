@@ -68,17 +68,12 @@ module FS =
     let inline (!!) (ptr : nativeptr<'a>) = NativePtr.read ptr
     let inline (<--) (ptr : nativeptr<'a>) c = NativePtr.write ptr c
 
-    module Sizes = 
-        [<Literal>] 
-        let BlockSize = 32
-        let EntrySize = 56
-
     [<Literal>]
     let Red = 0
     [<Literal>]
     let Black = 1
 
-    [<StructLayout(LayoutKind.Explicit, Size = Sizes.BlockSize)>]
+    [<StructLayout(LayoutKind.Explicit, Size = 32)>]
     type Block =
         struct
             [<FieldOffset(0)>]
@@ -117,7 +112,7 @@ module FS =
             val mutable public NextEntry : int
         end
         
-    [<StructLayout(LayoutKind.Explicit, Size = 48)>]
+    [<StructLayout(LayoutKind.Explicit, Size = 32)>]
     type Node =
         struct  
             [<FieldOffset(0)>]
@@ -131,11 +126,26 @@ module FS =
             [<FieldOffset(24)>]
             val mutable public Right : int
             [<FieldOffset(28)>]
-            val mutable public Parent : int
-            [<FieldOffset(32)>]
             val mutable public Color : int
         end
 
+    [<StructLayout(LayoutKind.Sequential, Size = 128)>]
+    type Header =
+        struct
+            val mutable public Magic        : Guid      // 16
+            val mutable public MFirst       : int       // 20
+            val mutable public MLast        : int       // 24
+            val mutable public MCapacity    : int64     // 32
+            val mutable public NRoot        : int       // 36
+            val mutable public NCount       : int       // 40
+            val mutable public NFreeList    : int       // 44
+            val mutable public NFreeCount   : int       // 48
+            val mutable public ECount       : int       // 52
+            val mutable public EFreeList    : int       // 56
+            val mutable public EFreeCount   : int       // 60
+            val mutable public DCapacity    : int       // 64
+            val mutable public DCapacityId  : int       // 68
+        end
 
     type blockptr =
         struct
@@ -172,6 +182,7 @@ module FS =
                 NativePtr.write (NativePtr.ofNativeInt x.ptr) b
 
             static member inline (+) (ptr : entryptr, index : int) = entryptr(ptr.ptr + nativeint (sizeof<Entry> * index))
+            static member Null = entryptr(0n)
 
             new(p) = { ptr = p }
         end
@@ -185,14 +196,37 @@ module FS =
             member inline x.Entry       = NativePtr.ofNativeInt<int> (16n + x.ptr)
             member inline x.Left        = NativePtr.ofNativeInt<int> (20n + x.ptr)
             member inline x.Right       = NativePtr.ofNativeInt<int> (24n + x.ptr)
-            member inline x.Parent      = NativePtr.ofNativeInt<int> (28n + x.ptr)
-            member inline x.Color       = NativePtr.ofNativeInt<int> (32n + x.ptr)
+            member inline x.Color       = NativePtr.ofNativeInt<int> (28n + x.ptr)
 
             
             member inline x.Value = NativePtr.read (NativePtr.ofNativeInt<Node> x.ptr)
 
             static member inline (+) (ptr : nodeptr, index : int) = nodeptr(ptr.ptr + nativeint (sizeof<Node> * index))
             static member Null = nodeptr(0n)
+
+            new(p) = { ptr = p }
+        end
+
+    type headerptr =
+        struct
+            val mutable public ptr : nativeint
+            
+            member inline x.Magic           = NativePtr.ofNativeInt<Guid>   (0n + x.ptr)
+            member inline x.MFirst          = NativePtr.ofNativeInt<int>    (16n + x.ptr)
+            member inline x.MLast           = NativePtr.ofNativeInt<int>    (20n + x.ptr)
+            member inline x.MCapacity       = NativePtr.ofNativeInt<int64>  (24n + x.ptr)
+            member inline x.NRoot           = NativePtr.ofNativeInt<int>    (32n + x.ptr)
+            member inline x.NCount          = NativePtr.ofNativeInt<int>    (36n + x.ptr)
+            member inline x.NFreeList       = NativePtr.ofNativeInt<int>    (40n + x.ptr)
+            member inline x.NFreeCount      = NativePtr.ofNativeInt<int>    (44n + x.ptr)
+            member inline x.ECount          = NativePtr.ofNativeInt<int>    (48n + x.ptr)
+            member inline x.EFreeList       = NativePtr.ofNativeInt<int>    (52n + x.ptr)
+            member inline x.EFreeCount      = NativePtr.ofNativeInt<int>    (56n + x.ptr)
+            member inline x.DCapacity       = NativePtr.ofNativeInt<int>    (60n + x.ptr)
+            member inline x.DCapacityId     = NativePtr.ofNativeInt<int>    (64n + x.ptr)
+
+            static member inline (+) (ptr : headerptr, index : int) = nodeptr(ptr.ptr + nativeint (sizeof<Header> * index))
+            static member Null = headerptr(0n)
 
             new(p) = { ptr = p }
         end
@@ -671,6 +705,40 @@ module FS =
                 assert res
                 n
         
+    let primeSizes =
+        [|
+            (*    prime no.           prime *)
+            (*           2                3       +  1 = 2^2 *)
+            (*           4 *) 7                // +  1 = 2^3, minimal size
+            (*           6 *) 13               // +  3 = 2^4
+            (*          11 *) 31               // +  1 = 2^5
+            (*          18 *) 61               // +  3 = 2^6
+            (*          31 *) 127              // +  1 = 2^7
+            (*          54 *) 251              // +  5 = 2^8
+            (*          97 *) 509              // +  3 = 2^9
+            (*         172 *) 1021             // +  3 = 2^10
+            (*         309 *) 2039             // +  9 = 2^11
+            (*         564 *) 4093             // +  3 = 2^12
+            (*        1028 *) 8191             // +  1 = 2^13
+            (*        1900 *) 16381            // +  3 = 2^14
+            (*        3512 *) 32749            // + 19 = 2^15
+            (*        6542 *) 65521            // + 15 = 2^16
+            (*       12251 *) 131071           // +  1 = 2^17
+            (*       23000 *) 262139           // +  5 = 2^18
+            (*       43390 *) 524287           // +  1 = 2^19
+            (*       82025 *) 1048573          // +  3 = 2^20
+            (*      155611 *) 2097143          // +  9 = 2^21
+            (*      295947 *) 4194301          // +  3 = 2^22
+            (*      564163 *) 8388593          // + 15 = 2^23
+            (*     1077871 *) 16777213         // +  3 = 2^24
+            (*     2063689 *) 33554393         // + 39 = 2^25
+            (*     3957809 *) 67108859         // +  5 = 2^26
+            (*     7603553 *) 134217689        // + 39 = 2^27
+            (*    14630843 *) 268435399        // + 57 = 2^28
+            (*    28192750 *) 536870909        // +  3 = 2^29
+            (*    54400028 *) 1073741789       // + 35 = 2^30
+            (*   105097565 *) 2147483647       // +  1 = 2^31
+        |]
 
     type Store =
         class
@@ -694,8 +762,9 @@ module FS =
                     DCapacityId = -1
 
                     Pointer = 0n
-                    Nodes = nodeptr(0n)
-                    Entries = entryptr(0n)
+                    Header = headerptr.Null
+                    Nodes = nodeptr.Null
+                    Entries = entryptr.Null
                     Buckets = NativePtr.zero
                     Memory = 0n
                 }
@@ -719,12 +788,83 @@ module FS =
             val mutable public DCapacityId  : int
 
             val mutable public Pointer      : nativeint
+            val mutable public Header       : headerptr
             val mutable public Nodes        : nodeptr
             val mutable public Entries      : entryptr
             val mutable public Buckets      : nativeptr<int>
             val mutable public Memory       : nativeint
 
-            member x.CheckLinkedList() =
+            static member HeaderSize =
+                int64 sizeof<Header>
+
+            static member TableSize(cap : int) =
+                let nCapacity = if cap > 0 then cap + 1 else 0
+                let eCapacity = if cap > 0 then 2 * cap + 1 else 0
+                let dCapacity = cap
+                int64 nCapacity * int64 sizeof<Node> + 
+                int64 eCapacity * int64 sizeof<Entry> + 
+                int64 dCapacity * int64 sizeof<int>
+
+
+            member private x.MagicABC
+                with inline get() = !!x.Header.Magic
+                and inline set v = x.Header.Magic <-- v
+
+            member private x.MFirstABC
+                with inline get() = !!x.Header.MFirst
+                and inline set v = x.Header.MFirst <-- v
+
+            member private x.MLastABC
+                with inline get() = !!x.Header.MLast
+                and inline set v = x.Header.MLast <-- v
+
+            member private x.MCapacityABC
+                with inline get() = !!x.Header.MCapacity
+                and inline set v = x.Header.MCapacity <-- v
+
+            member private x.NRootABC
+                with inline get() = !!x.Header.NRoot
+                and inline set v = x.Header.NRoot <-- v
+
+            member private x.NCountABC
+                with inline get() = !!x.Header.NCount
+                and inline set v = x.Header.NCount <-- v
+
+            member private x.NFreeListABC
+                with inline get() = !!x.Header.NFreeList
+                and inline set v = x.Header.NFreeList <-- v
+
+            member private x.NFreeCountABC
+                with inline get() = !!x.Header.NFreeCount
+                and inline set v = x.Header.NFreeCount <-- v
+
+            member private x.ECountABC
+                with inline get() = !!x.Header.ECount
+                and inline set v = x.Header.ECount <-- v
+
+            member private x.EFreeListABC
+                with inline get() = !!x.Header.EFreeList
+                and inline set v = x.Header.EFreeList <-- v
+
+            member private x.EFreeCountABC
+                with inline get() = !!x.Header.EFreeCount
+                and inline set v = x.Header.EFreeCount <-- v
+
+            member private x.DCapacityABC
+                with inline get() = !!x.Header.DCapacity
+                and inline set v = x.Header.DCapacity <-- v
+
+            member private x.DCapacityIdABC
+                with inline get() = !!x.Header.DCapacityId
+                and inline set v = x.Header.DCapacityId <-- v
+
+
+
+
+
+
+
+            member private x.CheckLinkedList() =
                 let mutable success = true
 
                 let mutable last = -1
@@ -732,6 +872,7 @@ module FS =
                 let mutable current = x.MFirst
                 let mutable pCurrent = x.Entries + current
 
+                // first.Offset = 0L
                 let off = !!pCurrent.Block.Offset
                 if off <> 0L then
                     Log.warn "invalid first offset %A" off
@@ -741,10 +882,12 @@ module FS =
                     let prev = !!pCurrent.Block.Prev
                     let next = !!pCurrent.Block.Next
 
+                    // validate a.Prev.Next = a
                     if prev <> last then
                         Log.warn "invalid prev: %A" prev
                         success <- false
 
+                    // validate a.Prev.Offset + a.Prev.Size = a.Offset
                     if last >= 0 then
                         let lastOff = !!pLast.Block.Offset
                         let lastSize = !!pLast.Block.Size
@@ -754,45 +897,24 @@ module FS =
                             Log.warn "invalid offset: %A (should be %A)" off lastEnd
                             success <- false
 
+                    last <- current
+                    pLast <- pCurrent
                     current <- !!pCurrent.Block.Next
+                    pCurrent <- x.Entries + current
 
+                if last >= 0 then
+                    let total = !!pLast.Block.Offset + !!pLast.Block.Size
+                    if total <> x.MCapacity then
+                        Log.warn "not filling memory %A" total
+                        success <- false
 
+                success
 
-
-
-
-
-            member x.GrowData(needed : int64) =
-                let newCapacity = Fun.NextPowerOfTwo (max 1024L (x.MCapacity + needed))
-
-                let total = 
-                    int64 x.NCapacity * int64 sizeof<Node> + 
-                    int64 x.ECapacity * int64 sizeof<Entry> + 
-                    int64 x.DCapacity * int64 sizeof<int> + 
-                    newCapacity
-
-                let offset, size = 
-                    if x.Pointer <> 0n then
-                        x.Pointer <- Marshal.ReAllocHGlobal(x.Pointer, nativeint total)
-                        let offset = x.MCapacity
-                        let newSize = newCapacity - x.MCapacity
-                        x.MCapacity <- newCapacity
-                        offset, newSize
-                    else
-                        x.Pointer <- Marshal.AllocHGlobal(nativeint total)
-                        x.MCapacity <- newCapacity
-                        0L, newCapacity
-
-                let newBlock = 
-                    Block(
-                        Offset = offset, 
-                        Size = size, 
-                        IsFree = 0, 
-                        Prev = x.MLast, 
-                        Next = -1
-                    )
-
+            member private x.SetPointers() =
                 let ptr = x.Pointer
+                x.Header <- ptr |> headerptr
+
+                let ptr = ptr + nativeint Store.HeaderSize
                 x.Nodes <- ptr |> nodeptr
 
                 let ptr = ptr + nativeint (sizeof<Node> * x.NCapacity)
@@ -804,6 +926,47 @@ module FS =
                 let ptr = ptr + nativeint (sizeof<int> * x.DCapacity)
                 x.Memory <- ptr
 
+
+            member private x.GrowData(needed : int64) =
+                // find a minimal memory size being a power of 2
+                let newCapacity = Fun.NextPowerOfTwo (max 1024L (x.MCapacity + needed))
+
+                // calculate the new total capacity
+                let total = 
+                    Store.HeaderSize +
+                    Store.TableSize(x.DCapacity) +
+                    newCapacity
+
+                
+                let offset, size = 
+                    if x.Pointer <> 0n then
+                        // realloc the pointer and return the new memory's offset and size
+                        x.Pointer <- Marshal.ReAllocHGlobal(x.Pointer, nativeint total)
+                        let offset = x.MCapacity
+                        let newSize = newCapacity - x.MCapacity
+                        x.MCapacity <- newCapacity
+                        offset, newSize
+                    else
+                        // allocate the pointer and return the memory's offset and size
+                        x.Pointer <- Marshal.AllocHGlobal(nativeint total)
+                        x.MCapacity <- newCapacity
+                        0L, newCapacity
+
+                // recreate all pointers based on the new Pointer
+                x.SetPointers()
+
+                // create the new free-block
+                let newBlock = 
+                    Block(
+                        Offset = offset, 
+                        Size = size, 
+                        IsFree = 0, 
+                        Prev = x.MLast, 
+                        Next = -1
+                    )
+
+                // store the free-block in a new entry
+                // and ensure its correct linkage
                 let e,_ = x.NewEntry(newBlock)
                 if x.MLast < 0 then 
                     x.MFirst <- e
@@ -811,79 +974,73 @@ module FS =
                 else 
                     (x.Entries + x.MLast).Block.Next <-- e
 
+                // free the new block
                 x.Free(e)
 
-            member x.GrowTable() =
-                let newCapacity = if x.DCapacity = 0 then 1024 else 2 * x.DCapacity
+            member private x.GrowTable() =
+                let newCapacityId = if x.DCapacity = 0 then 7 else x.DCapacityId + 1
+                let newCapacity = primeSizes.[newCapacityId]
 
                 let nCapacity = if newCapacity > 0 then newCapacity + 1 else 0
                 let eCapacity = if newCapacity > 0 then 2 * newCapacity + 1 else 0
-                let dCapcaity = newCapacity
+                let dCapacity = newCapacity
+  
+                let oldMOffset = Store.HeaderSize + Store.TableSize x.DCapacity
+                let newMOffset = Store.HeaderSize + Store.TableSize newCapacity
 
-                let oldMOffset =
-                    int64 x.NCapacity * int64 sizeof<Node> + 
-                    int64 x.ECapacity * int64 sizeof<Entry> + 
-                    int64 x.DCapacity * int64 sizeof<int>
-
-                let newMOffset = 
-                    int64 nCapacity * int64 sizeof<Node> + 
-                    int64 eCapacity * int64 sizeof<Entry> + 
-                    int64 dCapcaity * int64 sizeof<int>
 
                 let total = newMOffset + x.MCapacity
 
                 if x.Pointer <> 0n then
                     x.Pointer <- Marshal.ReAllocHGlobal(x.Pointer, nativeint total)
                     
-                    let is = x.Pointer + nativeint oldMOffset
-                    let should = x.Pointer + nativeint newMOffset
-                    Marshal.Move(is, should, x.MCapacity)
-                    x.Memory <- should
+                    // move the memory
+                    let oldPtr = x.Pointer + nativeint oldMOffset
+                    let newPtr = x.Pointer + nativeint newMOffset
+                    Marshal.Move(oldPtr, newPtr, x.MCapacity)
+                    x.Memory <- newPtr
 
+                    // set the buckets to 0
                     let oldSize     = nativeint (sizeof<int> * x.DCapacity)
-                    let newSize     = nativeint (sizeof<int> * dCapcaity)
-                    let is          = is - oldSize
-                    let should      = should - newSize
-                    // set all to 0
-                    Marshal.Move(is, should, oldSize)
-                    Marshal.Set(should + oldSize, 0, newSize - oldSize)
-                    x.Buckets <- NativePtr.ofNativeInt should
+                    let newSize     = nativeint (sizeof<int> * dCapacity)
+                    let oldPtr      = oldPtr - oldSize
+                    let newPtr      = newPtr - newSize
+                    Marshal.Set(newPtr, 0, newSize)
+                    x.Buckets <- NativePtr.ofNativeInt newPtr
 
+                    // move the entries and set the new memory to 0
                     let oldSize     = nativeint (sizeof<Entry> * x.ECapacity)
                     let newSize     = nativeint (sizeof<Entry> * eCapacity)
-                    let is          = is - oldSize
-                    let should      = should - newSize
-                    Marshal.Move(is, should, oldSize)
-                    Marshal.Set(should + oldSize, 0, newSize - oldSize)
-                    x.Entries <- entryptr should
+                    let oldPtr      = oldPtr - oldSize
+                    let newPtr      = newPtr - newSize
+                    Marshal.Move(oldPtr, newPtr, oldSize)
+                    Marshal.Set(newPtr + oldSize, 0, newSize - oldSize)
+                    x.Entries <- entryptr newPtr
 
+                    
+                    // move the nodes and set the new memory to 0
                     let oldSize     = nativeint (sizeof<Node> * x.NCapacity)
                     let newSize     = nativeint (sizeof<Node> * nCapacity)
-                    Marshal.Set(x.Pointer + oldSize, 0, newSize - oldSize)
-                    x.Nodes <- nodeptr x.Pointer
+                    let oldPtr      = oldPtr - oldSize
+                    let newPtr      = newPtr - newSize
+                    Marshal.Move(oldPtr, newPtr, oldSize)
+                    Marshal.Set(newPtr + oldSize, 0, newSize - oldSize)
+                    x.Nodes <- nodeptr newPtr
+
+                    // set the header pointer
+                    x.Header <- headerptr x.Pointer
 
                     x.DCapacity <- newCapacity
+                    x.DCapacityId <- newCapacityId
                     
-
                 else
                     x.Pointer <- Marshal.AllocHGlobal(nativeint total)
-
                     x.DCapacity <- newCapacity
-                    let ptr = x.Pointer
-                    x.Nodes <- ptr |> nodeptr
+                    x.DCapacityId <- newCapacityId
+                    x.SetPointers()
+                    
 
-                    let ptr = ptr + nativeint (sizeof<Node> * x.NCapacity)
-                    x.Entries <- ptr |> entryptr
-
-                    let ptr = ptr + nativeint (sizeof<Entry> * x.ECapacity)
-                    x.Buckets <- ptr |> NativePtr.ofNativeInt
-
-                    let ptr = ptr + nativeint (sizeof<int> * x.DCapacity)
-                    x.Memory <- ptr
-
-                // repair buckets
-
-            member x.NewEntry(b : Block) : int * bool =
+            member private x.NewEntry(b : Block) : int * bool =
                 let mutable resized = false
                 let id =
                     if x.EFreeCount > 0 then
@@ -910,12 +1067,12 @@ module FS =
                 pEntry.SetBlock b
                 id, resized
 
-            member x.KillEntry(b : entryptr) : unit =
+            member private x.KillEntry(b : entryptr) : unit =
                 b.NextEntry <-- x.EFreeList
                 x.EFreeList <- !!b.Index
                 x.EFreeCount <- x.EFreeCount + 1
 
-            member x.NewNode() : int * bool =
+            member private x.NewNode() : int * bool =
                 let mutable resized = false
                 let id =
                     if x.NFreeCount > 0 then
@@ -939,13 +1096,13 @@ module FS =
                 pNode.Left <-- -1
                 id, resized
 
-            member x.KillNode(b : int) =
+            member private x.KillNode(b : int) =
                 let n = x.Nodes + b
                 n.Left <-- x.NFreeList
                 x.NFreeList <- b
                 x.NFreeCount <- x.NFreeCount + 1
 
-            member x.WithTree (f : ref<VirtualNode> -> 'a) =
+            member private x.WithTree (f : ref<VirtualNode> -> 'a) =
                 let root = 
                     if x.NRoot < 0 then null
                     else VirtualNode(x.Nodes + x.NRoot, x.NRoot)
@@ -960,27 +1117,8 @@ module FS =
                 res
 
 
-            member x.AllBlocks =
-                [|
-                    let mutable current = x.MFirst
-                    while current >= 0 do
-                        let pBlock = (x.Entries + current).Block
-                        yield current, pBlock.Value
-                        current <- !!pBlock.Next
-                |]
-//
-//            member x.RemoveNode(id : int, res : nodeptr) =
-//                let worked =
-//                    x.WithTree(fun root ->
-//                        let n = VirtualNode(res, id)
-//                        Tree.remove n &root.contents
-//                    )
-//
-//                if worked then
-//                    x.KillNode(id)
 
-
-            member x.InsertFree(pEntry : entryptr) : unit =
+            member private x.InsertFree(pEntry : entryptr) : unit =
                 let iEntry = !!pEntry.Index
                 let size = !!pEntry.Block.Size
                 let offset = !!pEntry.Block.Offset
@@ -992,7 +1130,6 @@ module FS =
                 pNode.Size <-- size
                 pNode.Left <-- -1
                 pNode.Right <-- -1
-                pNode.Parent <-- -1
                 pNode.Entry <-- iEntry
                 pNode.Color <-- Red
 
@@ -1005,49 +1142,23 @@ module FS =
                     
                 )
 
-            member x.RemoveFree(pEntry : entryptr)  =
+            member private x.RemoveFree(pEntry : entryptr)  =
                 let size = !!pEntry.Block.Size
                 let offset = !!pEntry.Block.Offset
 
-                let killed =
+                let toKill =
                     x.WithTree(fun root ->
                         Tree.removeKey offset size &root.contents
                     )
 
-                if not (isNull killed) then
-                    x.KillNode(killed.Index)
+                if not (isNull toKill) then
+                    x.KillNode toKill.Index
                     true
                 else
                     Log.warn "could not remove from freelist: %A" (offset, size)
                     false
-//                let mutable res = nodeptr(0n)
-//                let mutable ptr = NativePtr.zero
-//                let mutable current = x.NRoot
-//
-//                while current >= 0 && res.ptr = 0n do
-//                    let pNode = x.Nodes + current
-//
-//                    let cmp =
-//                        let c = compare size !!pNode.Size
-//                        if c = 0 then compare offset !!pNode.Offset
-//                        else c
-//
-//                    if cmp > 0 then
-//                        ptr <- pNode.Right
-//                        current <- !!pNode.Right
-//                    elif cmp < 0 then
-//                        ptr <- pNode.Left
-//                        current <- !!pNode.Left
-//                    else
-//                        res <- pNode
-//
-//                if res.ptr <> 0n then
-//                    x.RemoveNode(current, res)
-//                    true
-//                else
-//                    false
                 
-            member x.GetFree(size : int64) =
+            member private x.GetFree(size : int64) =
                 let node =
                     x.WithTree (fun tree ->
                         Tree.removeSmallestGreater size &tree.contents
@@ -1061,45 +1172,16 @@ module FS =
                     let pEntry = x.Entries + e
                     x.KillNode node.Index
                     pEntry
-//                let mutable best = nodeptr(0n)
-//                let mutable bestIndex = -1
-//                let mutable current = x.NRoot
-//                // search for the smallest node >= size
-//                while current >= 0 do
-//                    let pNode = x.Nodes + current
-//
-//                    let c = compare size !!pNode.Size
-//
-//                    if c > 0 then
-//                        current <- !!pNode.Right
-//
-//                    elif c < 0 then
-//                        best <- pNode
-//                        bestIndex <- current
-//                        current <- !!pNode.Left
-//
-//                    else
-//                        best <- pNode
-//                        bestIndex <- current
-//                        current <- -1
-//
-//                // if we found a best-fit use it (removing it from the tree)
-//                if best.ptr <> 0n then
-//                    let e = !!best.Entry
-//                    let pEntry = x.Entries + e
-//
-//                    let n = !!pEntry.Next
-//                    if n >= 0 then
-//                        best.Entry <-- n
-//                    else
-//                        x.RemoveNode(bestIndex, best)
-//
-//                    pEntry
-//                
-//                // otherwise increase memory-size and retry
-//                else
-//                    x.GrowData size
-//                    x.GetFree size
+
+
+            member x.AllBlocks =
+                [|
+                    let mutable current = x.MFirst
+                    while current >= 0 do
+                        let pBlock = (x.Entries + current).Block
+                        yield current, pBlock.Value
+                        current <- !!pBlock.Next
+                |]
 
             member x.Alloc(size : int64) =
                 let mutable pEntry = x.GetFree(size)
@@ -1133,11 +1215,6 @@ module FS =
                     pBlock.Size <-- size
                     pBlock.Next <-- eid 
                     x.InsertFree pNewEntry
-
-
-
-
-
 
 
                 pBlock.IsFree <-- 0
@@ -1196,23 +1273,44 @@ module FS =
                     pBlock.IsFree <-- 1
                     x.InsertFree(pEntry)
 
-            member x.Write(eid : int, data : byte[]) =
+
+            member x.Write(eid : int, src : byte[], srcOffset : int64, length : int64) =
+                let pEntry = x.Entries + eid
+                let offset = nativeint !!pEntry.Block.Offset
+                let size = !!pEntry.Block.Size
+
+                if length > size then
+                    failwithf "[Store] cannot write %d bytes to block with size %d" length size
+
+                let gc = GCHandle.Alloc(src, GCHandleType.Pinned)
+                try Marshal.Copy(gc.AddrOfPinnedObject() + nativeint srcOffset, x.Memory + offset, length)
+                finally gc.Free()
+
+            member x.Write(eid : int, src : byte[], srcOffset : int64) =
+                x.Write(eid, src, srcOffset, src.LongLength - srcOffset)
+
+            member x.Write(eid : int, src : byte[]) =
+                x.Write(eid, src, 0L, src.LongLength )
+
+
+            member x.Read(eid : int, dst : byte[], dstOffset : int64, length : int64) =
                 let pEntry = x.Entries + eid
                 let offset = nativeint !!pEntry.Block.Offset
                 let size = int64 !!pEntry.Block.Size
 
-                let gc = GCHandle.Alloc(data, GCHandleType.Pinned)
-                try Marshal.Copy(gc.AddrOfPinnedObject(), x.Memory + offset, min size data.LongLength)
+                if length > size then
+                    failwithf "[Store] cannot read %d bytes from block with size %d" length size
+
+
+                let gc = GCHandle.Alloc(dst, GCHandleType.Pinned)
+                try Marshal.Copy(x.Memory + offset, gc.AddrOfPinnedObject() + nativeint dstOffset, length)
                 finally gc.Free()
 
-            member x.Read(eid : int, data : byte[]) =
-                let pEntry = x.Entries + eid
-                let offset = nativeint !!pEntry.Block.Offset
-                let size = int64 !!pEntry.Block.Size
+            member x.Read(eid : int, dst : byte[], dstOffset : int64) =
+                x.Read(eid, dst, dstOffset, dst.LongLength - dstOffset)
 
-                let gc = GCHandle.Alloc(data, GCHandleType.Pinned)
-                try Marshal.Copy(x.Memory + offset, gc.AddrOfPinnedObject(), min size data.LongLength)
-                finally gc.Free()
+            member x.Read(eid : int, dst : byte[]) =
+                x.Read(eid, dst, 0L, dst.LongLength)
 
             member x.Read(eid : int) =
                 let pEntry = x.Entries + eid
@@ -1221,6 +1319,14 @@ module FS =
                 let arr = Array.zeroCreate (int size)
                 x.Read(eid, arr)
                 arr
+
+
+            member x.SizeOf(eid : int) =
+                let pEntry = x.Entries + eid
+                let size = !!pEntry.Block.Size
+                size
+            
+
 //            member x.NewFile(key : Guid, size : int64) =
 //                let hashCode = key.GetHashCode() &&& 0x7FFFFFFF
 //                let pEntry = x.Alloc size
@@ -1312,3 +1418,43 @@ module FS =
         for i in 0 .. 1000000 do
             if i%100 = 0 then printfn "it: %d (%d/%A)" i s.ECapacity (Mem s.MCapacity)
             run ()
+
+    let allocPerf() =
+        let s = Store()
+        let r = System.Random()
+
+        let cnt = 1 <<< 20
+
+        let mutable blocks = Array.zeroCreate cnt
+        let sizes = Array.init cnt (fun _ -> int64 (1 + r.Next 255))
+        let data = Array.zeroCreate 1024
+
+        let sw = Stopwatch()
+        sw.Restart()
+        for i in 0 .. cnt-1 do
+            blocks.[i] <- s.Alloc sizes.[i]
+        sw.Stop()
+        Log.line "alloc: %A" (sw.MicroTime / float cnt)
+
+
+        sw.Restart()
+        for i in 0 .. cnt-1 do
+            s.Write(blocks.[i], data, 0L, sizes.[i])
+        sw.Stop()
+        Log.line "write: %A" (sw.MicroTime / float cnt)
+
+        blocks <- blocks.RandomOrder() |> Seq.toArray
+        sw.Restart()
+        for i in 0 .. cnt-1 do
+            s.Free(blocks.[i])
+        sw.Stop()
+        Log.line "free:  %A (random order)" (sw.MicroTime / float cnt)
+
+        let s = Store()
+        for i in 0 .. cnt-1 do
+            blocks.[i] <- s.Alloc sizes.[i]
+        sw.Restart()
+        for i in 0 .. cnt-1 do
+            s.Free(blocks.[i])
+        sw.Stop()
+        Log.line "free:  %A (sequential)" (sw.MicroTime / float cnt)

@@ -3,6 +3,6 @@
 
 [<EntryPoint>]
 let main argv = 
-    StoreTest.FS.moreTest()
+    StoreTest.FS.allocPerf()
     //StoreTest.FS.test()
     0 // return an integer exit code
