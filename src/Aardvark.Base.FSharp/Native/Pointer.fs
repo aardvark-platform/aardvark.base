@@ -7,14 +7,6 @@ open System.Runtime.InteropServices
 open Microsoft.FSharp.NativeInterop
 open Aardvark.Base
 
-[<AutoOpen>]
-module private TypeSize =
-    type SizeImpl<'a> private() =
-        static let s = sizeof<'a>
-        static member Value = s
-
-    let inline sizeof<'a> = SizeImpl<'a>.Value
-
 [<AbstractClass>]
 type ptr() =
     static let nullptr = 
