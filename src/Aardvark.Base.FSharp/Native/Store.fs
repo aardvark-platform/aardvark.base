@@ -702,10 +702,10 @@ module FileManager =
 
         let mutable pointer = pointer
         let mutable header = headerptr.Null
+        let mutable memory = 0n
         let mutable nodes = nodeptr.Null
         let mutable entries = entryptr.Null
         let mutable buckets = NativePtr.zero<int>
-        let mutable memory = 0n
 
         let nCapacity() = 
             let cap = !!header.DCapacity
@@ -723,8 +723,6 @@ module FileManager =
         let setPointers() =
             let ptr = pointer.Pointer
 
-            
-
             header <- ptr |> headerptr
             let ptr = ptr + nativeint FileManager.HeaderSize
 
@@ -738,7 +736,6 @@ module FileManager =
             let ptr = ptr + nativeint (sizeof<Entry> * eCapacity())
 
             buckets <- ptr |> NativePtr.ofNativeInt
-            //let ptr = ptr + nativeint (sizeof<int> * dCapacity())
 
         do  if not (isStore pointer) then
                 
@@ -940,6 +937,7 @@ module FileManager =
             let offset, size = 
                 if x.DCapacity > 0 then
                     // realloc the pointer and return the new memory's offset and size
+                    x.MCapacity <- newCapacity
                     pointer.Realloc(total)
                     setPointers()
 
@@ -950,10 +948,10 @@ module FileManager =
                     Marshal.Move(ptr + nativeint oldTableOffset, ptr + nativeint newTableOffset, tableSize)
                     Marshal.Set(ptr + nativeint oldTableOffset, 0, newTableOffset - oldTableOffset)
 
-                    let offset = x.MCapacity
-                    let newSize = newCapacity - x.MCapacity
+                    let offset = mCapacity
+                    let newSize = newCapacity - mCapacity
 
-                    x.MCapacity <- newCapacity
+                    
                     offset, newSize
                 else
                     // allocate the pointer and return the memory's offset and size
@@ -1005,12 +1003,6 @@ module FileManager =
                 pointer.Realloc newSize // <- Marshal.ReAllocHGlobal(pointer, nativeint total)
                     
                 let ptr = pointer.Pointer
-
-//                // move the memory
-//                let oldPtr = ptr + nativeint oldMOffset
-//                let newPtr = ptr + nativeint newMOffset
-//                Marshal.Move(oldPtr, newPtr, mCapacity)
-//                memory <- newPtr
 
                 let oldPtr = ptr + nativeint oldSize
                 let newPtr = ptr + nativeint newSize
@@ -1356,12 +1348,12 @@ module FileManager =
             if eid >= 0 then
                 if size >= 0L then
                     let pEntry = entries + eid
-                    pEntry.HashCode <-- -1
-                    pEntry.Key <-- Guid.Empty
                     let s = !!pEntry.Block.Size
 
-
                     if s <> size then
+                        pEntry.HashCode <-- -1
+                        pEntry.Key <-- Guid.Empty
+                        pEntry.NextEntry <-- -1
                         x.Free eid
                         let nid = x.Alloc size
                         let pNewEntry = entries + nid
@@ -1376,6 +1368,7 @@ module FileManager =
                     else
                         eid
                 else
+                    x.Free(eid)
                     -1
 
             elif size >= 0L then
