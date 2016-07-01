@@ -312,6 +312,7 @@ module NewImpl =
             override x.Clear(newSize : int64) =
                 Marshal.FreeHGlobal(ptr)
                 ptr <- Marshal.AllocHGlobal (nativeint newSize)
+                Marshal.Set(ptr, 0, newSize)
                 size <- newSize
 
             override x.Free() =

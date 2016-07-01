@@ -3,12 +3,14 @@
 #nowarn "9"
 
 open System
+open System.Diagnostics
 open System.Runtime.InteropServices
 open Aardvark.Base
 open Microsoft.FSharp.NativeInterop
 open System.Threading
+open System.IO
 
-module FileManager =
+module FileManagerTypes =
     let inline (++) (ptr : nativeptr<'a>) (v : 'a) = NativePtr.add ptr (int v)
     let inline (!!) (ptr : nativeptr<'a>) = NativePtr.read ptr
     let inline (<--) (ptr : nativeptr<'a>) c = NativePtr.write ptr c
@@ -35,30 +37,34 @@ module FileManager =
             val mutable public Prev     : int
             [<FieldOffset(24)>]
             val mutable public Next     : int
+            [<FieldOffset(28)>]
+            val mutable public Chunk    : int
+
+            static member Invalid = Block(Offset = -1L, Size = -1L, IsFree = -1, Prev = -1, Next = -1, Chunk = -1)
 
 
             override x.ToString() =
-                sprintf "{ Offset = %d; Size = %d; IsFree = %A; Prev = %d; Next = %d }" x.Offset x.Size (x.IsFree <> 0) x.Prev x.Next
+                sprintf "{ Offset = %d; Size = %d; IsFree = %A; Prev = %d; Next = %d; Chunk = %d }" x.Offset x.Size (x.IsFree <> 0) x.Prev x.Next x.Chunk
 
         end
 
-    [<StructLayout(LayoutKind.Explicit, Size = 64)>]
-    type Entry =
+    [<StructLayout(LayoutKind.Explicit, Size = 32)>]
+    type DictEntry =
         struct
             [<FieldOffset(0)>]
-            val mutable public Block : Block
-            
-            [<FieldOffset(32)>]
-            val mutable public Index : int
-            
-            [<FieldOffset(36)>]
-            val mutable public Key : Guid
+            val mutable public Key : Guid       // 16
+            [<FieldOffset(16)>]
+            val mutable public HashCode : int   // 20
+            [<FieldOffset(20)>]
+            val mutable public Next : int       // 24
+            [<FieldOffset(24)>]
+            val mutable public Block : int      // 28
 
-            [<FieldOffset(52)>]
-            val mutable public HashCode : int
 
-            [<FieldOffset(56)>]
-            val mutable public NextEntry : int
+            static member Invalid = DictEntry(Key = Guid.Empty, HashCode = -1, Next = -1, Block = -1)
+
+
+
         end
         
     [<StructLayout(LayoutKind.Explicit, Size = 32)>]
@@ -76,7 +82,13 @@ module FileManager =
             val mutable public Right : int
             [<FieldOffset(28)>]
             val mutable public Color : int
+
+
+            static member Invalid = Node(Offset = -1L, Size = -1L, Entry = -1, Left = -1, Right = -1, Color = -1)
+
+
         end
+
 
     [<StructLayout(LayoutKind.Sequential, Size = 128)>]
     type Header =
@@ -84,7 +96,7 @@ module FileManager =
             val mutable public Magic        : Guid      // 16
             val mutable public MFirst       : int       // 20
             val mutable public MLast        : int       // 24
-            val mutable public MCapacity    : int64     // 32
+            val mutable public MBlubb       : int64     // 32
             val mutable public NRoot        : int       // 36
             val mutable public NCount       : int       // 40
             val mutable public NFreeList    : int       // 44
@@ -94,44 +106,54 @@ module FileManager =
             val mutable public EFreeCount   : int       // 60
             val mutable public DCapacity    : int       // 64
             val mutable public DCapacityId  : int       // 68
+
+            val mutable public BCount       : int       // 72
+            val mutable public BFreeList    : int       // 76
+            val mutable public BFreeCount   : int       // 80
+            val mutable public BCapacity    : int       // 84
+            val mutable public Chunks       : int       // 88
+
         end
 
     type blockptr =
         struct
             val mutable public ptr : nativeint
 
-            static member inline (+) (ptr : blockptr, index : int) = blockptr(ptr.ptr + nativeint (sizeof<Block> * index))
-
             member inline x.Offset      = NativePtr.ofNativeInt<int64>  x.ptr
             member inline x.Size        = NativePtr.ofNativeInt<int64>  (8n + x.ptr)
             member inline x.IsFree      = NativePtr.ofNativeInt<int>    (16n + x.ptr)
             member inline x.Prev        = NativePtr.ofNativeInt<int>    (20n + x.ptr)
             member inline x.Next        = NativePtr.ofNativeInt<int>    (24n + x.ptr)
+            member inline x.Chunk       = NativePtr.ofNativeInt<int>    (28n + x.ptr)
  
-            member inline x.Value = NativePtr.read (NativePtr.ofNativeInt<Block> x.ptr)
+ 
+            member x.Value  
+                with inline get() = NativePtr.read (NativePtr.ofNativeInt<Block> x.ptr)
+                and inline set v = NativePtr.write (NativePtr.ofNativeInt x.ptr) v
+
+            static member inline (+) (ptr : blockptr, index : int) = blockptr(ptr.ptr + nativeint (sizeof<Block> * index))
+            static member Null = blockptr(0n)
 
             new(p) = { ptr = p }
 
         end
 
-    type entryptr =
+    type dentryptr =
         struct
             val mutable public ptr : nativeint
-
-            member inline x.Block       = blockptr x.ptr
-            member inline x.Index       = NativePtr.ofNativeInt<int>  (32n + x.ptr)
-            member inline x.Key         = NativePtr.ofNativeInt<Guid> (36n + x.ptr)
-            member inline x.HashCode    = NativePtr.ofNativeInt<int>  (52n + x.ptr)
-            member inline x.NextEntry   = NativePtr.ofNativeInt<int>  (56n + x.ptr)
-
-            member inline x.Value = NativePtr.read (NativePtr.ofNativeInt<Entry> x.ptr)
+            member inline x.Key         = (x.ptr) |> NativePtr.ofNativeInt<Guid>
+            member inline x.HashCode    = (x.ptr + 16n) |> NativePtr.ofNativeInt<int>
+            member inline x.Next        = (x.ptr + 20n) |> NativePtr.ofNativeInt<int>
+            member inline x.Block       = (x.ptr + 24n) |> NativePtr.ofNativeInt<int>
 
 
-            member x.SetBlock(b : Block) =
-                NativePtr.write (NativePtr.ofNativeInt x.ptr) b
+            member x.Value  
+                with inline get() = NativePtr.read (NativePtr.ofNativeInt<DictEntry> x.ptr)
+                and inline set v = NativePtr.write (NativePtr.ofNativeInt x.ptr) v
 
-            static member inline (+) (ptr : entryptr, index : int) = entryptr(ptr.ptr + nativeint (sizeof<Entry> * index))
-            static member Null = entryptr(0n)
+
+            static member inline (+) (ptr : dentryptr, index : int) = dentryptr(ptr.ptr + nativeint (sizeof<DictEntry> * index))
+            static member Null = dentryptr(0n)
 
             new(p) = { ptr = p }
         end
@@ -148,7 +170,9 @@ module FileManager =
             member inline x.Color       = NativePtr.ofNativeInt<int> (28n + x.ptr)
 
             
-            member inline x.Value = NativePtr.read (NativePtr.ofNativeInt<Node> x.ptr)
+            member x.Value
+                with inline get() = NativePtr.read (NativePtr.ofNativeInt<Node> x.ptr)
+                and inline set n = NativePtr.write (NativePtr.ofNativeInt x.ptr) n
 
             static member inline (+) (ptr : nodeptr, index : int) = nodeptr(ptr.ptr + nativeint (sizeof<Node> * index))
             static member Null = nodeptr(0n)
@@ -161,18 +185,27 @@ module FileManager =
             val mutable public ptr : nativeint
             
             member inline x.Magic           = NativePtr.ofNativeInt<Guid>   (0n + x.ptr)
+
             member inline x.MFirst          = NativePtr.ofNativeInt<int>    (16n + x.ptr)
             member inline x.MLast           = NativePtr.ofNativeInt<int>    (20n + x.ptr)
-            member inline x.MCapacity       = NativePtr.ofNativeInt<int64>  (24n + x.ptr)
+
             member inline x.NRoot           = NativePtr.ofNativeInt<int>    (32n + x.ptr)
             member inline x.NCount          = NativePtr.ofNativeInt<int>    (36n + x.ptr)
             member inline x.NFreeList       = NativePtr.ofNativeInt<int>    (40n + x.ptr)
             member inline x.NFreeCount      = NativePtr.ofNativeInt<int>    (44n + x.ptr)
+
             member inline x.ECount          = NativePtr.ofNativeInt<int>    (48n + x.ptr)
             member inline x.EFreeList       = NativePtr.ofNativeInt<int>    (52n + x.ptr)
             member inline x.EFreeCount      = NativePtr.ofNativeInt<int>    (56n + x.ptr)
             member inline x.DCapacity       = NativePtr.ofNativeInt<int>    (60n + x.ptr)
             member inline x.DCapacityId     = NativePtr.ofNativeInt<int>    (64n + x.ptr)
+
+            member inline x.BCount          = NativePtr.ofNativeInt<int>    (68n + x.ptr)
+            member inline x.BFreeList       = NativePtr.ofNativeInt<int>    (72n + x.ptr)
+            member inline x.BFreeCount      = NativePtr.ofNativeInt<int>    (76n + x.ptr)
+            member inline x.BCapacity       = NativePtr.ofNativeInt<int>    (80n + x.ptr)
+            member inline x.Chunks          = NativePtr.ofNativeInt<int>    (84n + x.ptr)
+ 
 
             member inline x.Value = NativePtr.read (NativePtr.ofNativeInt<Header> x.ptr)
 
@@ -200,7 +233,10 @@ module FileManager =
                 match o with
                     | :? VirtualNode as o ->
                         let c = compare x.Size o.Size
-                        if c = 0 then compare x.Offset o.Offset
+                        if c = 0 then 
+                            let c = compare x.Offset o.Offset
+                            if c = 0 then compare x.Entry o.Entry
+                            else c
                         else c
                     | _ ->
                         failwith "uncomparable"
@@ -688,918 +724,1044 @@ module FileManager =
         |]
 
 
-    type FileManager(pointer : Memory) as this =
+    [<AllowNullLiteral>]
+    type FileHandle =
+        class
+            val mutable internal EntryId : int
+            val mutable internal Length : int64
+            val public Id : Guid
 
-        static let initialCapacityId = 7
-        static let initialMemoryCapacity = 1L <<< 20
+            member x.Size = x.Length
+            member x.Exists = x.EntryId >= 0
 
-        static let isStore (m : Memory) =
-            if m.Size >= int64 sizeof<Header> then
-                let ptr = m.Pointer |> headerptr
-                magic.Equals !!ptr.Magic
+            internal new(id : Guid, eid : int, length : int64) = { Id = id; EntryId = eid; Length = length }
+        end
+
+    type BlockHandle =
+        struct
+            val mutable internal BlockId : int
+            internal new(bid : int) = { BlockId = bid }
+        end
+
+    type FileManagerStatistics =
+        {
+            growManagerTime     : MicroTime
+            growDictTime        : MicroTime
+            growDataTime        : MicroTime
+            rehashTime          : MicroTime
+            reallocTime         : MicroTime
+            allocCount          : int64
+            freeCount           : int64
+            fileCount           : int
+            blockCount          : int
+        }
+
+open FileManagerTypes
+
+type FileManager(mem : Memory, getChunk : int -> Memory) =
+    static let initialCapacityId = 7
+    static let initialMemoryCapacity = 1L <<< 20
+    static let chunkSize = 2L <<< 30
+    static let isStore (m : Memory) =
+        if m.Size >= int64 sizeof<Header> then
+            let ptr = m.Pointer |> headerptr
+            magic.Equals !!ptr.Magic
+        else
+            false
+
+    static let headerSize = int64 sizeof<Header>
+
+    static let managerSize (bCapacity : int) =
+        let nCapacity = if bCapacity > 0 then bCapacity + 1 else 0
+
+        int64 sizeof<Node> * int64 nCapacity +
+        int64 sizeof<Block> * int64 bCapacity
+
+    static let dictSize (dCapacity : int) =
+        int64 (sizeof<int> + sizeof<DictEntry>) * int64 dCapacity
+
+
+    let mutable mem = mem
+
+    let chunks = System.Collections.Generic.List<Memory>()
+
+    let mutable header = headerptr.Null
+    let mutable nodes = nodeptr.Null
+    let mutable blocks = blockptr.Null
+    let mutable entries = dentryptr.Null
+    let mutable buckets = NativePtr.zero<int>
+
+    let growManagerTime = Stopwatch()
+    let growDictTime = Stopwatch()
+    let growDataTime = Stopwatch()
+    let rehashTime = Stopwatch()
+    let reallocTime = Stopwatch()
+    let mutable allocCount = 0L
+    let mutable freeCount = 0L
+        
+
+    let handleCache = Dict<Guid, FileHandle>()
+
+    let nCapacity() =
+        let cap = !!header.BCapacity
+        if cap > 0 then cap + 1 else 0
+
+    let bCapacity() = !!header.BCapacity
+    let dCapacity() = !!header.DCapacity
+
+    let setPointers() =
+        let ptr = mem.Pointer
+
+        header <- ptr |> headerptr
+        let ptr = ptr + nativeint headerSize
+
+        let nCapacity = nCapacity()
+        let bCapacity = bCapacity()
+        let dCapacity = dCapacity()
+
+        nodes <- ptr |> nodeptr
+        let ptr = ptr + (nativeint sizeof<Node> * nativeint nCapacity)
+
+        blocks <- ptr |> blockptr
+        let ptr = ptr + (nativeint sizeof<Block> * nativeint bCapacity)
+
+        entries <- ptr |> dentryptr
+        let ptr = ptr + (nativeint sizeof<DictEntry> * nativeint dCapacity)
+
+        buckets <- NativePtr.ofNativeInt ptr
+        let ptr = ptr + (nativeint sizeof<int> * nativeint dCapacity)
+
+        ()
+
+
+    let rec growManager() =
+        growManagerTime.Start()
+
+        let oldBCapacity = !!header.BCapacity
+        let newBCapacity = 2 * oldBCapacity
+        let oldNCapacity = if oldBCapacity = 0 then 0 else oldBCapacity + 1
+        let newNCapacity = if newBCapacity = 0 then 0 else newBCapacity + 1
+
+        let dictSize = dictSize !!header.DCapacity
+
+        let newTotalSize =
+            headerSize +
+            managerSize newBCapacity +
+            dictSize
+
+        let oldTotalSize =
+            headerSize +
+            managerSize oldBCapacity +
+            dictSize
+
+        header.BCapacity <-- newBCapacity
+        mem.Realloc(newTotalSize)
+            
+        let newPtr = mem.Pointer + nativeint newTotalSize
+        let oldPtr = mem.Pointer + nativeint oldTotalSize
+
+        // move the dict
+        let newPtr = newPtr - nativeint dictSize
+        let oldPtr = oldPtr - nativeint dictSize
+        Marshal.Move(oldPtr, newPtr, dictSize)
+
+        // move the Blocks
+        let oldSize = int64 sizeof<Block> * int64 oldBCapacity
+        let newSize = int64 sizeof<Block> * int64 newBCapacity
+        let newPtr = newPtr - nativeint newSize
+        let oldPtr = oldPtr - nativeint oldSize
+        Marshal.Move(oldPtr, newPtr, oldSize)
+        Marshal.Set(newPtr + nativeint oldSize, -1, newSize - oldSize)
+
+        // move the Nodes
+        let oldSize = int64 sizeof<Node> * int64 oldNCapacity
+        let newSize = int64 sizeof<Node> * int64 newNCapacity
+        let newPtr = newPtr - nativeint newSize
+        let oldPtr = oldPtr - nativeint oldSize
+        Marshal.Move(oldPtr, newPtr, oldSize)
+        Marshal.Set(newPtr + nativeint oldSize, -1, newSize - oldSize)
+
+            
+        setPointers()
+        growManagerTime.Stop()
+
+    and growDict() =
+        growDictTime.Start()
+        let oldDCapacityId = !!header.DCapacityId
+        let oldDCapacity = !!header.DCapacity
+        let newDCapacityId = 1 + oldDCapacityId
+        let newDCapacity = primeSizes.[newDCapacityId]
+
+        let oldDictSize = dictSize oldDCapacity
+        let newDictSize = dictSize newDCapacity
+
+        let managerSize = managerSize !!header.BCapacity
+
+        let newTotalSize =
+            headerSize +
+            managerSize +
+            newDictSize
+
+        let oldTotalSize =
+            headerSize +
+            managerSize +
+            oldDictSize
+                
+        header.DCapacityId <-- newDCapacityId
+        header.DCapacity <-- newDCapacity
+        reallocTime.Start()
+        mem.Realloc(newTotalSize)
+        reallocTime.Stop()
+
+        // move the dict
+        let newPtr = mem.Pointer + nativeint newTotalSize
+        let oldPtr = mem.Pointer + nativeint oldTotalSize
+
+
+        // set the buckets to 0
+        let newSize = int64 sizeof<int> * int64 newDCapacity
+        let oldSize = int64 sizeof<int> * int64 oldDCapacity
+        let newPtr = newPtr - nativeint newSize
+        let oldPtr = oldPtr - nativeint oldSize
+        Marshal.Set(newPtr, 0, newSize)
+
+        // move the DictEntries
+        let newSize = int64 sizeof<DictEntry> * int64 newDCapacity
+        let oldSize = int64 sizeof<DictEntry> * int64 oldDCapacity
+        let newPtr = newPtr - nativeint newSize
+        let oldPtr = oldPtr - nativeint oldSize
+        Marshal.Move(oldPtr, newPtr, oldSize)
+
+        setPointers()
+
+        rehashTime.Start()
+        rehash()
+        rehashTime.Stop()
+
+        growDictTime.Stop()
+
+    and growData(needed : int64) =
+        growDataTime.Start()
+
+        let chunkIndex = chunks.Count - 1
+
+        let oldLastId = !!header.MLast
+        let _, freeBlockId = newBlock()
+        let pFreeBlock = blocks + freeBlockId
+        pFreeBlock.Prev <-- oldLastId
+        pFreeBlock.Next <-- -1
+        pFreeBlock.IsFree <-- 0
+
+        if chunkIndex >= 0 && chunks.[chunkIndex].Size < chunkSize then
+            let lastChunk = chunks.[chunkIndex]
+            let oldChunkCapacity = lastChunk.Size
+            let newChunkCapacity = 2L * oldChunkCapacity
+            lastChunk.Realloc newChunkCapacity
+
+            let offset = chunkSize * int64 chunkIndex + oldChunkCapacity
+
+            // free the new block
+            pFreeBlock.Offset <-- offset
+            pFreeBlock.Size <-- newChunkCapacity - oldChunkCapacity
+            pFreeBlock.Chunk <-- chunkIndex
+
+        else
+            let chunkIndex = 1 + chunkIndex
+            let newChunk = getChunk chunkIndex
+            let newChunkCapacity = max (1L <<< 20) (Fun.NextPowerOfTwo needed)
+            newChunk.Clear newChunkCapacity
+            chunks.Add newChunk
+
+            let offset = chunkSize * int64 chunkIndex
+            pFreeBlock.Offset <-- offset
+            pFreeBlock.Size <-- newChunkCapacity
+            pFreeBlock.Chunk <-- chunkIndex
+
+            header.Chunks <-- !!header.Chunks + 1
+
+        if oldLastId < 0 then header.MFirst <-- freeBlockId
+        else (blocks + oldLastId).Next <-- freeBlockId
+
+        free freeBlockId
+        growDataTime.Stop()
+
+
+    and newBlock() : bool * int =
+        if !!header.BFreeCount > 0 then
+            let id = !!header.BFreeList
+            assert (id >= 0)
+
+            let b = blocks + id
+            header.BFreeList <-- !!b.Next
+            header.BFreeCount <-- !!header.BFreeCount - 1
+            b.Next <-- -1
+
+
+            false, id
+        else
+            let mutable resized = false
+            let cnt = !!header.BCount
+            if cnt >= bCapacity() then
+                resized <- true
+                growManager()
+
+            let id = cnt
+            header.BCount <-- cnt + 1
+            resized, id
+
+    and deleteBlock(bid : int) =
+        assert (bid >= 0)
+        let n = !!header.BFreeList
+        let mutable b = blocks + bid
+        b.Value <- Block.Invalid
+        b.Next <-- n
+        header.BFreeList <-- bid
+        header.BFreeCount <-- !!header.BFreeCount + 1
+
+    and newNode() : bool * int =
+        if !!header.NFreeCount > 0 then
+            let id = !!header.NFreeList
+            assert (id >= 0)
+
+            let n = nodes + id
+            header.NFreeList <-- !!n.Left
+            header.NFreeCount <-- !!header.NFreeCount - 1
+            n.Left <-- -1
+
+
+            false, id
+        else
+            let mutable resized = false
+            let cnt = !!header.NCount
+            if cnt >= nCapacity() then
+                resized <- true
+                growManager()
+
+            let id = cnt
+            header.NCount <-- cnt + 1
+            resized, id
+            
+    and deleteNode(nid : int) =
+        assert (nid >= 0)
+        let next = !!header.NFreeList
+        let mutable n = nodes + nid
+        n.Value <- Node.Invalid
+        n.Left <-- next
+        header.NFreeList <-- nid
+        header.NFreeCount <-- !!header.NFreeCount + 1   
+
+    and newEntry() : bool * int =
+        if !!header.EFreeCount > 0 then
+            let id = !!header.EFreeList
+            assert (id >= 0)
+
+            let e = entries + id
+            header.EFreeList <-- !!e.Next
+            header.EFreeCount <-- !!header.EFreeCount - 1
+            e.Next <-- -1
+
+            false, id
+        else
+            let mutable resized = false
+            let cnt = !!header.ECount
+            if cnt >= dCapacity() then
+                resized <- true
+                growDict()
+
+            let id = cnt
+            header.ECount <-- cnt + 1
+            resized, id
+
+    and deleteEntry(eid : int) =
+        assert (eid >= 0)
+
+        let next = !!header.EFreeList
+        let mutable e = entries + eid
+        e.Value <- DictEntry.Invalid
+        e.Next <-- next
+        header.EFreeList <-- eid
+        header.EFreeCount <-- !!header.EFreeCount + 1   
+
+
+
+    and withTree (f : ref<VirtualNode> -> 'a) =
+        let root = 
+            let rid = !!header.NRoot
+            if rid < 0 then null
+            else VirtualNode(nodes + rid, rid)
+
+        let r = ref root
+        let res = f r
+        let root = !r
+
+        if isNull root then header.NRoot <-- -1
+        else header.NRoot <-- root.Index
+
+        res
+
+    and insertFreeBlock (bid : int) =
+        assert (bid >= 0)
+
+        let pBlock = blocks + bid
+        let size = !!pBlock.Size
+        let offset = !!pBlock.Offset
+        let _, nid = newNode()
+        let pEntry = ()
+
+        let pNode = nodes + nid
+        pNode.Offset <-- offset
+        pNode.Size <-- size
+        pNode.Left <-- -1
+        pNode.Right <-- -1
+        pNode.Entry <-- bid
+        pNode.Color <-- Red
+
+        withTree (fun root ->
+            let nn = VirtualNode(pNode, nid)
+            let worked = Tree.insert nn &root.contents
+            if not worked then
+                Log.warn "could not add to freelist: %A" (offset, size)
+                deleteNode nid
+                    
+        )
+
+    and removeFreeBlock (bid : int) =
+        assert (bid >= 0)
+
+        let pBlock = blocks + bid
+        let offset = !!pBlock.Offset
+        let size = !!pBlock.Size
+
+        let toKill =
+            withTree(fun root ->
+                Tree.removeKey offset size &root.contents
+            )
+
+        if not (isNull toKill) then
+            deleteNode toKill.Index
+            true
+        else
+            Log.warn "could not remove from freelist: %A" (offset, size)
+            false
+
+    and getFreeBlock (size : int64) : bool * int =
+        let node =
+            withTree (fun tree ->
+                Tree.removeSmallestGreater size &tree.contents
+            )
+
+        if isNull node then 
+            growData size
+            let _, bid = getFreeBlock size
+            true, bid
+        else
+            let bid = node.Entry
+            assert (bid >= 0)
+            assert (!!(blocks + bid).Size >= size)
+            deleteNode node.Index
+            false, bid
+
+    and alloc (size : int64) =
+        if size <= 0L then
+            false, -1
+        else
+            allocCount <- allocCount + 1L
+            let mutable resized, bid = getFreeBlock size
+            let mutable pBlock = blocks + bid
+            let blockSize = !!pBlock.Size
+
+            if blockSize > size then
+                let r, rid = newBlock()
+                if r then
+                    pBlock <- blocks + bid
+                    resized <- true
+
+
+                let restNext = !!pBlock.Next
+
+                let mutable pRestBlock = blocks + rid
+                pRestBlock.Offset <-- !!pBlock.Offset + size
+                pRestBlock.Size <-- blockSize - size
+                pRestBlock.IsFree <-- 1
+                pRestBlock.Prev <-- bid
+                pRestBlock.Next <-- restNext
+                pRestBlock.Chunk <-- !!pBlock.Chunk
+
+                if restNext < 0 then header.MLast <-- rid
+                else (blocks + restNext).Prev <-- rid
+
+                pBlock.Size <-- size
+                pBlock.Next <-- rid 
+                insertFreeBlock rid
+
+
+            pBlock.IsFree <-- 0
+            assert (!!pBlock.Size = size)
+            resized, bid
+
+    and free (bid : int) =
+        if bid >= 0 then
+            freeCount <- freeCount + 1L
+            let pBlock = blocks + bid
+            if !!pBlock.IsFree = 0 then
+                let chunk = !!pBlock.Chunk
+                let prev = !!pBlock.Prev
+                let next = !!pBlock.Next
+                let pPrevBlock = blocks + prev
+                let pNextBlock = blocks + next
+
+                if prev < 0 then
+                    header.MFirst <-- bid
+
+                elif !!pPrevBlock.IsFree <> 0 && !!pPrevBlock.Chunk = chunk then
+                    // merge with prev
+                    removeFreeBlock prev |> ignore
+
+                    pBlock.Offset <-- !!pPrevBlock.Offset
+                    pBlock.Size <-- !!pPrevBlock.Size + !!pBlock.Size
+
+
+                    let pp = !!pPrevBlock.Prev
+                    pBlock.Prev <-- pp
+                    if pp < 0 then header.MFirst <-- bid
+                    else (blocks + pp).Next <-- bid
+
+                    deleteBlock prev
+
+
+                if next < 0 then
+                    header.MLast <-- bid
+
+                elif !!pNextBlock.IsFree <> 0 && !!pNextBlock.Chunk = chunk then
+                    // merge with next
+                    removeFreeBlock next |> ignore
+
+                    pBlock.Size <-- !!pBlock.Size + !!pNextBlock.Size
+
+                    let nn = !!pNextBlock.Next
+                    pBlock.Next <-- nn
+                    if nn < 0 then header.MLast <-- bid
+                    else (blocks + nn).Prev <-- bid
+                    
+                    deleteBlock next
+
+                pBlock.IsFree <-- 1
+                insertFreeBlock bid
+
+        
+
+    and findEntry (key : Guid) (hashCode : int) =
+        let bid = hashCode % !!header.DCapacity
+        let pBucket = NativePtr.add buckets bid
+
+        let b = !!pBucket - 1
+        if b < 0 then
+            -1
+        else
+            let pEntry = entries + b
+            if !!pEntry.HashCode = hashCode && key.Equals !!pEntry.Key then
+                b
             else
+                let rec search (id : int) (pEntry : dentryptr) = 
+                    if id < 0 then
+                        -1
+                    elif !!pEntry.HashCode = hashCode && key.Equals !!pEntry.Key then
+                        id
+                    else
+                        let next = !!pEntry.Next
+                        search next (entries + next)
+
+                let next = !!pEntry.Next
+                search next (entries + next)
+
+//        and removeEntry (key : Guid) (hashCode : int) =
+//            let bid = hashCode % !!header.DCapacity
+//            let pBucket = NativePtr.add buckets bid
+//
+//            let b = !!pBucket - 1
+//            if b < 0 then
+//                -1
+//            else
+//                let pEntry = entries + b
+//                if !!pEntry.HashCode = hashCode && key.Equals !!pEntry.Key then
+//                    let block = !!pEntry.Block
+//                    deleteEntry b
+//                    pBucket <-- 0
+//                    block
+//                else
+//                    let rec search (last : dentryptr) (id : int) (pEntry : dentryptr) = 
+//                        if id < 0 then
+//                            -1
+//                        elif !!pEntry.HashCode = hashCode && key.Equals !!pEntry.Key then
+//                            let next = !!pEntry.Next
+//                            last.Next <-- next
+//                            
+//                            let block = !!pEntry.Block
+//                            deleteEntry id
+//                            block
+//                        else
+//                            let next = !!pEntry.Next
+//                            search pEntry next (entries + next)
+//
+//                    let next = !!pEntry.Next
+//                    search pEntry next (entries + next) 
+
+    and removeEntryPtr (eid : int) =
+        if eid >= 0 then
+            let pRemEntry = entries + eid
+            let hashCode = !!pRemEntry.HashCode
+            let bid = hashCode % !!header.DCapacity
+            let pBucket = NativePtr.add buckets bid
+
+            let b = !!pBucket - 1
+            if b < 0 then
                 false
-
-        let mutable pointer = pointer
-        let mutable header = headerptr.Null
-        let mutable memory = 0n
-        let mutable nodes = nodeptr.Null
-        let mutable entries = entryptr.Null
-        let mutable buckets = NativePtr.zero<int>
-
-        let nCapacity() = 
-            let cap = !!header.DCapacity
-            if cap > 0 then cap + 1 else 0
-
-        let eCapacity() = 
-            let cap = !!header.DCapacity
-            if cap > 0 then 2 * cap + 1 else 0
-
-        let dCapacity() = !!header.DCapacity
-
-        let mCapacity() = !!header.MCapacity
-
-
-        let setPointers() =
-            let ptr = pointer.Pointer
-
-            header <- ptr |> headerptr
-            let ptr = ptr + nativeint FileManager.HeaderSize
-
-            memory <- ptr 
-            let ptr = ptr + nativeint (mCapacity())
-
-            nodes <- ptr |> nodeptr
-            let ptr = ptr + nativeint (sizeof<Node> * nCapacity())
-
-            entries <- ptr |> entryptr
-            let ptr = ptr + nativeint (sizeof<Entry> * eCapacity())
-
-            buckets <- ptr |> NativePtr.ofNativeInt
-
-        do  if not (isStore pointer) then
-                
-                let dCapacityId = initialCapacityId
-                let dCapacity = primeSizes.[dCapacityId]
-                let mCapacity = initialMemoryCapacity
-
-                let total =
-                    FileManager.HeaderSize +
-                    FileManager.TableSize dCapacity +
-                    mCapacity
-
-                pointer.Clear(total)
-
-                let header =
-                    Header(
-                        Magic        = magic,
-                        MFirst       = -1,
-                        MLast        = -1,
-                        MCapacity    = mCapacity,
-                        NRoot        = -1,
-                        NCount       = 0,
-                        NFreeList    = -1,
-                        NFreeCount   = 0,
-                        ECount       = 0,
-                        EFreeList    = -1,
-                        EFreeCount   = 0,
-                        DCapacity    = dCapacity,
-                        DCapacityId  = dCapacityId                        
-                    )     
-                    
-                NativePtr.write (NativePtr.ofNativeInt pointer.Pointer) header      
-                setPointers()
-
-                // create the new free-block
-                let newBlock = 
-                    Block(
-                        Offset = 0L, 
-                        Size = mCapacity, 
-                        IsFree = 0, 
-                        Prev = -1, 
-                        Next = -1
-                    )
-
-                // store the free-block in a new entry
-                // and ensure its correct linkage
-                let e,_ = this.NewEntry(newBlock)
-                this.MFirst <- e
-                this.MLast <- e
-
-                // free the new block
-                this.Free(e)
             else
-                setPointers()
-
-
-        static member private HeaderSize =
-            int64 sizeof<Header>
-
-        static member private TableSize(cap : int) =
-            let nCapacity = if cap > 0 then cap + 1 else 0
-            let eCapacity = if cap > 0 then 2 * cap + 1 else 0
-            let dCapacity = cap
-            int64 nCapacity * int64 sizeof<Node> + 
-            int64 eCapacity * int64 sizeof<Entry> + 
-            int64 dCapacity * int64 sizeof<int>
-
-        member private x.Magic
-            with inline get() = !!header.Magic
-            and inline set v = header.Magic <-- v
-
-        member private x.MFirst
-            with get() = !!header.MFirst
-            and set v = header.MFirst <-- v
-
-        member private x.MLast
-            with get() = !!header.MLast
-            and set v = header.MLast <-- v
-
-        member private x.MCapacity
-            with inline get() = !!header.MCapacity
-            and inline set v = header.MCapacity <-- v
-
-        member private x.NRoot
-            with inline get() = !!header.NRoot
-            and inline set v = header.NRoot <-- v
-
-        member private x.NCount
-            with inline get() = !!header.NCount
-            and inline set v = header.NCount <-- v
-
-        member private x.NFreeList
-            with inline get() = !!header.NFreeList
-            and inline set v = header.NFreeList <-- v
-
-        member private x.NFreeCount
-            with inline get() = !!header.NFreeCount
-            and inline set v = header.NFreeCount <-- v
-
-        member private x.NCapacity = 
-            let cap = x.DCapacity 
-            if cap > 0 then cap + 1 else 0
-
-        member private x.ECount
-            with inline get() = !!header.ECount
-            and inline set v = header.ECount <-- v
-
-        member private x.EFreeList
-            with inline get() = !!header.EFreeList
-            and inline set v = header.EFreeList <-- v
-
-        member private x.EFreeCount
-            with inline get() = !!header.EFreeCount
-            and inline set v = header.EFreeCount <-- v
-
-        member private x.ECapacity = 
-            let cap = x.DCapacity 
-            if cap > 0 then cap * 2 + 1 else 0
-
-        member private x.DCapacity
-            with get() = !!header.DCapacity
-            and inline set v = header.DCapacity <-- v
-
-        member private x.DCapacityId
-            with inline get() = !!header.DCapacityId
-            and inline set v = header.DCapacityId <-- v
-
-
-
-
-
-
-        // ===================================================================================================
-        // Validation
-        // ===================================================================================================
-        member private x.CheckLinkedList() =
-            let mutable success = true
-
-            let mutable last = -1
-            let mutable pLast = entries + last
-            let mutable current = x.MFirst
-            let mutable pCurrent = entries + current
-
-            // first.Offset = 0L
-            let off = !!pCurrent.Block.Offset
-            if off <> 0L then
-                Log.warn "invalid first offset %A" off
-                success <- false
-
-            while current >= 0 do
-                let prev = !!pCurrent.Block.Prev
-                let next = !!pCurrent.Block.Next
-
-                // validate a.Prev.Next = a
-                if prev <> last then
-                    Log.warn "invalid prev: %A" prev
-                    success <- false
-
-                // validate a.Prev.Offset + a.Prev.Size = a.Offset
-                if last >= 0 then
-                    let lastOff = !!pLast.Block.Offset
-                    let lastSize = !!pLast.Block.Size
-                    let lastEnd = lastOff + lastSize
-                    let off = !!pCurrent.Block.Offset
-                    if off <> lastEnd then
-                        Log.warn "invalid offset: %A (should be %A)" off lastEnd
-                        success <- false
-
-                last <- current
-                pLast <- pCurrent
-                current <- !!pCurrent.Block.Next
-                pCurrent <- entries + current
-
-            if last >= 0 then
-                let total = !!pLast.Block.Offset + !!pLast.Block.Size
-                if total <> x.MCapacity then
-                    Log.warn "not filling memory %A" total
-                    success <- false
-
-            success
-
-
-        // ===================================================================================================
-        // Realloc
-        // ===================================================================================================
-        member private x.GrowData(needed : int64) =
-            // find a minimal memory size being a power of 2
-            let newCapacity = Fun.NextPowerOfTwo (max 1024L (x.MCapacity + needed))
-
-            // calculate the new total capacity
-            let tableSize = FileManager.TableSize(x.DCapacity)
-            let total = 
-                FileManager.HeaderSize +
-                tableSize +
-                newCapacity
-
-            let mCapacity = mCapacity()
-                
-            let offset, size = 
-                if x.DCapacity > 0 then
-                    // realloc the pointer and return the new memory's offset and size
-                    x.MCapacity <- newCapacity
-                    pointer.Realloc(total)
-                    setPointers()
-
-                    let oldTableOffset = FileManager.HeaderSize + mCapacity
-                    let newTableOffset = FileManager.HeaderSize + newCapacity
-      
-                    let ptr = pointer.Pointer
-                    Marshal.Move(ptr + nativeint oldTableOffset, ptr + nativeint newTableOffset, tableSize)
-                    Marshal.Set(ptr + nativeint oldTableOffset, 0, newTableOffset - oldTableOffset)
-
-                    let offset = mCapacity
-                    let newSize = newCapacity - mCapacity
-
-                    
-                    offset, newSize
+                let pEntry = entries + b
+                if b = eid then
+                    let next = !!pEntry.Next
+                    deleteEntry b
+                    pBucket <-- 1 + next
+                    true
                 else
-                    // allocate the pointer and return the memory's offset and size
-                    pointer.Realloc total
-                    setPointers()
-                    x.MCapacity <- newCapacity
-                    0L, newCapacity
+                    let rec search (last : dentryptr) (id : int) (pEntry : dentryptr) = 
+                        if id < 0 then
+                            false
+                        elif id = eid then
+                            let next = !!pEntry.Next
+                            last.Next <-- next
+                            
+                            let block = !!pEntry.Block
+                            deleteEntry id
+                            true
+                        else
+                            let next = !!pEntry.Next
+                            search pEntry next (entries + next)
 
+                    let next = !!pEntry.Next
+                    search pEntry next (entries + next) 
+        else
+            true
+
+    and setEntry (key : Guid) (hashCode : int) (value : int) =
+        let eid = findEntry key hashCode
+        if eid >= 0 then
+            let pEntry = entries + eid
+            pEntry.Block <-- value
+            eid
+        else
+            let _, eid = newEntry()
+               
+            let pEntry = entries + eid
+            pEntry.Key <-- key
+            pEntry.HashCode <-- hashCode
+            pEntry.Block <-- value
+            pEntry.Next <-- -1
+
+            let bid = hashCode % !!header.DCapacity
+            let pBucket = NativePtr.add buckets bid
+
+            let b = !!pBucket - 1
+            pEntry.Next <-- b
+            pBucket <-- eid + 1
+            eid
+
+    and rehash() =
+        let mutable pEntry = entries
+        let eCount = !!header.ECount
+        let dCapacity = !!header.DCapacity
+        for i in 0..eCount-1 do
+            let hash = !!pEntry.HashCode
+            if hash >= 0 then
+                let bid = hash % dCapacity
+                let pBucket = NativePtr.add buckets bid
+                let b = !!pBucket - 1
+                pEntry.Next <-- b
+                pBucket <-- i + 1
+
+            pEntry <- pEntry + 1
+
+
+
+    do  if isStore mem then
+            setPointers()
+
+            let numChunks = !!header.Chunks
+            for i in 0..numChunks-1 do
+                chunks.Add(getChunk i)
+
+        else
+            let dCapacityId = initialCapacityId
+            let dCapacity = primeSizes.[dCapacityId]
+            let bCapacity = Fun.NextPowerOfTwo dCapacity
+
+            let total =
+                headerSize +
+                managerSize bCapacity +
+                dictSize dCapacity
+
+            mem.Clear(total)
+
+            let c0 = getChunk 0
+            chunks.Add c0
+            c0.Clear(initialMemoryCapacity)
+
+            let initialHeader =
+                Header(
+                    Magic        = magic,
+                    MFirst       = -1,
+                    MLast        = -1,
+                    NRoot        = -1,
+                    NCount       = 0,
+                    NFreeList    = -1,
+                    NFreeCount   = 0,
+                    ECount       = 0,
+                    EFreeList    = -1,
+                    EFreeCount   = 0,
+                    DCapacity    = dCapacity,
+                    DCapacityId  = dCapacityId,
+                        
+                    BCount       = 0,
+                    BFreeList    = -1,
+                    BFreeCount   = 0,
+                    BCapacity    = bCapacity,
+                    Chunks       = 1  
+                )     
+                    
+            NativePtr.write (NativePtr.ofNativeInt mem.Pointer) initialHeader      
+            setPointers()
 
             // create the new free-block
-            let newBlock = 
-                Block(
-                    Offset = offset, 
-                    Size = size, 
-                    IsFree = 0, 
-                    Prev = x.MLast, 
-                    Next = -1
-                )
+            let _,bid = newBlock()
+            let pBlock = blocks + bid
+            pBlock.Offset <-- 0L
+            pBlock.Size <-- initialMemoryCapacity
+            pBlock.IsFree <-- 0
+            pBlock.Prev <-- -1
+            pBlock.Next <-- -1
+            pBlock.Chunk <-- 0
 
             // store the free-block in a new entry
             // and ensure its correct linkage
-            let e,_ = x.NewEntry(newBlock)
-            if x.MLast < 0 then 
-                x.MFirst <- e
-                x.MLast <- e
-            else 
-                (entries + x.MLast).Block.Next <-- e
+            header.MFirst <-- bid
+            header.MLast <-- bid
 
             // free the new block
-            x.Free(e)
+            free bid
+            
+    // ===================================================================================================
+    // Block API
+    // ===================================================================================================
+    member x.Alloc (size : int64) =
+        let _,bid = alloc size
+        BlockHandle bid
 
-        member private x.GrowTable() =
-            let newCapacityId = if x.DCapacity = 0 then 7 else x.DCapacityId + 1
-            let newCapacity = primeSizes.[newCapacityId]
+    member x.Free (block : BlockHandle) =
+        free block.BlockId
 
-            let nCapacity = if newCapacity > 0 then newCapacity + 1 else 0
-            let eCapacity = if newCapacity > 0 then 2 * newCapacity + 1 else 0
-            let dCapacity = newCapacity
-  
-            let odCapacity = x.DCapacity
-            let oeCapacity = if odCapacity > 0 then 2 * odCapacity + 1 else 0
-            let onCapacity = if odCapacity > 0 then odCapacity + 1 else 0
-            let mCapacity = x.MCapacity
+    member x.SizeOf(block : BlockHandle) =
+        let bid = block.BlockId
+        if bid < 0 then 0L
+        else
+            let pBlock = blocks + bid
+            !!pBlock.Size
 
-            let oldSize = FileManager.HeaderSize + FileManager.TableSize x.DCapacity + mCapacity
-            let newSize = FileManager.HeaderSize + FileManager.TableSize newCapacity + mCapacity
+    member x.Copy(src : byte[], srcOffset : int64, dst : BlockHandle, dstOffset : int64, length : int64) =
+        if length <= 0L then
+            ()
+        else
+            let bid = dst.BlockId
+            if bid < 0 then failwithf "[FileManager] cannot write %d bytes to block of size 0" length
+            if isNull src then failwith "[FileManager] cannot read from null array"
 
-            if odCapacity > 0 || mCapacity > 0L then
-                pointer.Realloc newSize // <- Marshal.ReAllocHGlobal(pointer, nativeint total)
-                    
-                let ptr = pointer.Pointer
+            let pBlock = blocks + bid
+            assert (!!pBlock.IsFree <> 1)
 
-                let oldPtr = ptr + nativeint oldSize
-                let newPtr = ptr + nativeint newSize
+            let blockSize = !!pBlock.Size
+            if length > blockSize then failwithf "[FileManager] cannot write %d bytes to block of size %d" length blockSize
 
-                // set the buckets to 0
-                let oldSize     = nativeint (sizeof<int> * odCapacity)
-                let newSize     = nativeint (sizeof<int> * dCapacity)
-                let oldPtr      = oldPtr - oldSize
-                let newPtr      = newPtr - newSize
-                Marshal.Set(newPtr, 0, newSize)
-                buckets <- NativePtr.ofNativeInt newPtr
+            let chunk = !!pBlock.Chunk
+            let memory = chunks.[chunk].Pointer - nativeint chunkSize * nativeint chunk
 
-                // move the entries and set the new memory to 0
-                let oldSize     = nativeint (sizeof<Entry> * oeCapacity)
-                let newSize     = nativeint (sizeof<Entry> * eCapacity)
-                let oldPtr      = oldPtr - oldSize
-                let newPtr      = newPtr - newSize
-                Marshal.Move(oldPtr, newPtr, oldSize)
-                Marshal.Set(newPtr + oldSize, 0, newSize - oldSize)
-                entries <- entryptr newPtr
+            let gc = GCHandle.Alloc(src, GCHandleType.Pinned)
+            try
+                let dst = memory + nativeint !!pBlock.Offset + nativeint dstOffset
+                let src = gc.AddrOfPinnedObject() + nativeint srcOffset
+                Marshal.Copy(src, dst, length)
+            finally
+                gc.Free()
 
-                    
-                // move the nodes and set the new memory to 0
-                let oldSize     = nativeint (sizeof<Node> * onCapacity)
-                let newSize     = nativeint (sizeof<Node> * nCapacity)
-                let oldPtr      = oldPtr - oldSize
-                let newPtr      = newPtr - newSize
-                Marshal.Move(oldPtr, newPtr, oldSize)
-                Marshal.Set(newPtr + oldSize, 0, newSize - oldSize)
-                nodes <- nodeptr newPtr
+    member x.Copy(src : BlockHandle, srcOffset : int64, dst : byte[], dstOffset : int64, length : int64) =
+        if length <= 0L then
+            ()
+        else
+            let bid = src.BlockId
+            if bid < 0 then failwithf "[FileManager] cannot read %d bytes from block of size 0" length
+            if isNull dst then failwith "[FileManager] cannot write to null array"
 
-
+            let pBlock = blocks + bid
+            assert (!!pBlock.IsFree <> 1)
+            let blockSize = !!pBlock.Size
+            if length > blockSize then failwithf "[FileManager] cannot read %d bytes from block of size %d" length blockSize
                 
-                memory <- ptr + nativeint FileManager.HeaderSize
-
-                // set the header pointer
-                header <- headerptr ptr
-
-                x.DCapacity <- newCapacity
-                x.DCapacityId <- newCapacityId
-                    
-            else
-                pointer.Realloc newSize
-                setPointers()
-                x.DCapacity <- newCapacity
-                x.DCapacityId <- newCapacityId
-              
-
-            x.Rehash()
-                    
-        // ===================================================================================================
-        // Entries
-        // ===================================================================================================
-        member private x.NewEntry(b : Block) : int * bool =
-            let mutable resized = false
-            let id =
-                if x.EFreeCount > 0 then
-                    let id = x.EFreeList
-                    let pEntry = entries + id
-
-                    x.EFreeList <- !!pEntry.NextEntry
-                    x.EFreeCount <- x.EFreeCount - 1
-
-                    id
-                else
-                    if x.ECount >= x.ECapacity then
-                        x.GrowTable()
-                        resized <- true
-
-                    let id = x.ECount
-                    x.ECount <- x.ECount + 1
-                    id
-
-            let pEntry = entries + id
-            pEntry.Index <-- id
-            pEntry.NextEntry <-- -1
-            pEntry.HashCode <-- -1
-            pEntry.SetBlock b
-            id, resized
-
-        member private x.KillEntry(b : entryptr) : unit =
-            b.HashCode <-- -1
-            b.Key <-- Guid.Empty
-
-            b.NextEntry <-- x.EFreeList
-            x.EFreeList <- !!b.Index
-            x.EFreeCount <- x.EFreeCount + 1
+            let chunk = !!pBlock.Chunk
+            let memory = chunks.[chunk].Pointer - nativeint chunkSize * nativeint chunk
 
 
-        // ===================================================================================================
-        // FreeList
-        // ===================================================================================================
-        member private x.NewNode() : int * bool =
-            let mutable resized = false
-            let id =
-                if x.NFreeCount > 0 then
-                    let id = x.NFreeList
-                    let pNode = nodes + id
+            let gc = GCHandle.Alloc(dst, GCHandleType.Pinned)
+            try
+                let dst = gc.AddrOfPinnedObject() + nativeint dstOffset
+                let src = memory + nativeint !!pBlock.Offset + nativeint srcOffset
+                Marshal.Copy(src, dst, length)
+            finally
+                gc.Free()
 
-                    x.NFreeList <- !!pNode.Left
-                    x.NFreeCount <- x.NFreeCount - 1
+    member x.Copy(src : BlockHandle, srcOffset : int64, dst : BlockHandle, dstOffset : int64, length : int64) =
+        if length <= 0L then
+            ()
+        else
+            let sid = src.BlockId
+            let did = src.BlockId
 
-                    id
-                else
-                    if x.NCount >= x.NCapacity then
-                        x.GrowTable()
-                        resized <- true
+            if sid < 0 then failwithf "[FileManager] cannot copy %d bytes from block of size 0" length
+            if did < 0 then failwithf "[FileManager] cannot copy %d bytes to block of size 0" length
 
-                    let id = x.NCount
-                    x.NCount <- x.NCount + 1
-                    id
+            let pSrc = blocks + sid
+            let pDst = blocks + did
 
-            let pNode = nodes + id
-            pNode.Left <-- -1
-            id, resized
+            assert (!!pSrc.IsFree <> 1)
+            assert (!!pDst.IsFree <> 1)
 
-        member private x.KillNode(b : int) =
-            let n = nodes + b
-            n.Left <-- x.NFreeList
-            x.NFreeList <- b
-            x.NFreeCount <- x.NFreeCount + 1
-
-        member private x.WithTree (f : ref<VirtualNode> -> 'a) =
-            let root = 
-                if x.NRoot < 0 then null
-                else VirtualNode(nodes + x.NRoot, x.NRoot)
-
-            let r = ref root
-            let res = f r
-            let root = !r
-
-            if isNull root then x.NRoot <- -1
-            else x.NRoot <- root.Index
-
-            res
-
-        member private x.InsertFree(pEntry : entryptr) : unit =
-            let iEntry = !!pEntry.Index
-            let size = !!pEntry.Block.Size
-            let offset = !!pEntry.Block.Offset
-            let n,_ = x.NewNode()
-            let pEntry = ()
-
-            let pNode = nodes + n
-            pNode.Offset <-- offset
-            pNode.Size <-- size
-            pNode.Left <-- -1
-            pNode.Right <-- -1
-            pNode.Entry <-- iEntry
-            pNode.Color <-- Red
-
-            x.WithTree (fun root ->
-                let nn = VirtualNode(pNode, n)
-                let worked = Tree.insert nn &root.contents
-                if not worked then
-                    Log.warn "could not add to freelist: %A" (offset, size)
-                    x.KillNode n
-                    
-            )
-
-        member private x.RemoveFree(pEntry : entryptr)  =
-            let size = !!pEntry.Block.Size
-            let offset = !!pEntry.Block.Offset
-
-            let toKill =
-                x.WithTree(fun root ->
-                    Tree.removeKey offset size &root.contents
-                )
-
-            if not (isNull toKill) then
-                x.KillNode toKill.Index
-                true
-            else
-                Log.warn "could not remove from freelist: %A" (offset, size)
-                false
-                
-        member private x.GetFree(size : int64) =
-            let node =
-                x.WithTree (fun tree ->
-                    Tree.removeSmallestGreater size &tree.contents
-                )
-
-            if isNull node then 
-                x.GrowData size
-                x.GetFree size
-            else
-                let e = node.Entry
-                let pEntry = entries + e
-                x.KillNode node.Index
-                pEntry
+            let srcSize = !!pSrc.Size
+            let dstSize = !!pDst.Size
 
 
-        // ===================================================================================================
-        // HashTable
-        // ===================================================================================================
 
-        member private x.FindEntry(key : Guid, hashCode : int) =
-            let pBucket = buckets ++ hashCode % x.DCapacity
-            let ei = !!pBucket - 1
+            if length > srcSize then failwithf "[FileManager] cannot copy %d bytes from block of size %d" length srcSize
+            if length > dstSize then failwithf "[FileManager] cannot copy %d bytes to block of size %d" length dstSize
 
-            if ei < 0 then 
-                -1
-            else
-                let pEntry = entries + ei
-                if !!pEntry.HashCode = hashCode && !!pEntry.Key = key then
-                    ei
-                else
-                    let rec search (id : int) (pEntry : entryptr) =
-                        if id < 0 then
-                            -1
-                        elif !!pEntry.HashCode = hashCode && !!pEntry.Key = key then
-                            id
-                        else
-                            let n = !!pEntry.NextEntry
-                            search n (entries + n)
+            let dstChunk = !!pDst.Chunk
+            let dstMemory = chunks.[dstChunk].Pointer - nativeint chunkSize * nativeint dstChunk
 
-                    let n = !!pEntry.NextEntry
-                    search n (entries + n)
-        
-        member private x.Remove(key : Guid, hashCode : int) =
-            let pBucket = buckets ++ hashCode % x.DCapacity
-            let ei = !!pBucket - 1
-
-            if ei < 0 then 
-                -1
-            else
-                let pEntry = entries + ei
-                if !!pEntry.HashCode = hashCode && !!pEntry.Key = key then
-                    pBucket <-- !!pEntry.NextEntry + 1
-                    pEntry.NextEntry <-- -1
-                    ei
-                else
-                    let rec search (last : entryptr) (id : int) (pEntry : entryptr) =
-                        if id < 0 then
-                            -1
-                        elif !!pEntry.HashCode = hashCode && !!pEntry.Key = key then
-                            last.NextEntry <-- !!pEntry.NextEntry
-                            pEntry.NextEntry <-- -1
-                            id
-                        else
-                            let n = !!pEntry.NextEntry
-                            search pEntry n (entries + n)
-
-                    let n = !!pEntry.NextEntry
-                    search pEntry n (entries + n)
-
-        member private x.ReplaceEntryId(key : Guid, hashCode : int, newEntryId : int) =
-            let pBucket = buckets ++ hashCode % x.DCapacity
-            let ei = !!pBucket - 1
-            let pNewEntry = entries + newEntryId
-
-            if ei < 0 then 
-                -1
-            else
-                let pEntry = entries + ei
-                if !!pEntry.HashCode = hashCode && !!pEntry.Key = key then
-                    pBucket <-- newEntryId + 1
-
-                    pNewEntry.NextEntry <-- !!pEntry.NextEntry
-                    pEntry.NextEntry <-- -1
-
-                    ei
-                else
-                    let rec search (last : entryptr) (id : int) (pEntry : entryptr) =
-                        if id < 0 then
-                            -1
-
-                        elif !!pEntry.HashCode = hashCode && !!pEntry.Key = key then
-                            pNewEntry.NextEntry <-- !!pEntry.NextEntry
-                            pEntry.NextEntry <-- -1
-                            last.NextEntry <-- newEntryId
-                            id
-                        else
-                            let n = !!pEntry.NextEntry
-                            search pEntry n (entries + n)
-
-                    let n = !!pEntry.NextEntry
-                    search pEntry n (entries + n)
+            let srcChunk = !!pSrc.Chunk
+            let srcMemory = chunks.[srcChunk].Pointer - nativeint chunkSize * nativeint srcChunk
 
 
-        member private x.Rehash() =
-            let mutable e = entries
-            let mutable i = 0
+            Marshal.Copy(srcMemory + nativeint !!pSrc.Offset + nativeint srcOffset, dstMemory + nativeint !!pDst.Offset + nativeint dstOffset, length)
 
-            while i < x.ECount do
-                let hashCode = !!e.HashCode
-                if hashCode >= 0 then
-                    let bid = hashCode % x.DCapacity
-                    let pBucket = NativePtr.add buckets bid
+    member x.Copy(src : BlockHandle, dst : byte[], dstOffset : int64, length : int64) = x.Copy(src, 0L, dst, dstOffset, length)
+    member x.Copy(src : BlockHandle, srcOffset : int64, dst : byte[], length : int64) = x.Copy(src, srcOffset, dst, 0L, length)
+    member x.Copy(src : BlockHandle, dst : byte[], length : int64) = x.Copy(src, 0L, dst, 0L, length)
+    member x.Copy(src : BlockHandle, dst : byte[]) = x.Copy(src, 0L, dst, 0L, dst.LongLength)
+    member x.Copy(src : byte[], dst : BlockHandle, dstOffset : int64, length : int64) = x.Copy(src, 0L, dst, dstOffset, length)
+    member x.Copy(src : byte[], srcOffset : int64, dst : BlockHandle, length : int64) = x.Copy(src, srcOffset, dst, 0L, length)
+    member x.Copy(src : byte[], dst : BlockHandle, length : int64) = x.Copy(src, 0L, dst, 0L, length)
+    member x.Copy(src : byte[], dst : BlockHandle) = x.Copy(src, 0L, dst, 0L, src.LongLength)
+    member x.Copy(src : BlockHandle, dst : BlockHandle, dstOffset : int64, length : int64) = x.Copy(src, 0L, dst, dstOffset, length)
+    member x.Copy(src : BlockHandle, srcOffset : int64, dst : BlockHandle, length : int64) = x.Copy(src, srcOffset, dst, 0L, length)
+    member x.Copy(src : BlockHandle, dst : BlockHandle, length : int64) = x.Copy(src, 0L, dst, 0L, length)
+    member x.Copy(src : BlockHandle, dst : BlockHandle) = x.Copy(src, 0L, dst, 0L, x.SizeOf src)
 
-                    let old = !!pBucket - 1
-                    e.NextEntry <-- old
-                    pBucket <-- i + 1
+    member x.Read(src : BlockHandle) =
+        if src.BlockId >= 0 then
+            let size = x.SizeOf src
+            let arr = Array.zeroCreate (int size)
+            x.Copy(src, 0L, arr, 0L, arr.LongLength)
+            arr
+        else
+            [||]
 
-                e <- e + 1
-                i <- i + 1
 
-        member x.TryGetFile(key : Guid, [<Out>] file : byref<int>) =
+    // ===================================================================================================
+    // File API
+    // ===================================================================================================
+
+    member x.Exists(file : FileHandle) =
+        file.EntryId >= 0
+
+    member x.GetCurrentBlock(file : FileHandle) =
+        if file.EntryId < 0 then
+            BlockHandle(-1)
+        else
+            let pEntry = entries + file.EntryId
+            BlockHandle(!!pEntry.Block)
+
+
+    member x.GetFile (key : Guid) =
+        handleCache.GetOrCreate(key, fun key ->
             let hashCode = key.GetHashCode() &&& 0x7FFFFFFF
-            let eid = x.FindEntry(key, hashCode)
-            if eid >= 0 then
-                file <- eid
-                true
+            let eid = findEntry key hashCode
+            if eid < 0 then
+                FileHandle(key, -1, 0L)
             else
-                file <- -1
-                false
+                let bid = !!(entries + eid).Block |> BlockHandle
+                let size = x.SizeOf bid
+                FileHandle(key, eid, size)
+        )
 
-        member x.GetOrCreateFile(key : Guid, size : int64) =
+    member x.TryGetFile (key : Guid, [<Out>] file : byref<FileHandle>) =
+        if handleCache.TryGetValue(key, &file) then
+            true
+        else
             let hashCode = key.GetHashCode() &&& 0x7FFFFFFF
-            let eid = x.FindEntry(key, hashCode)
-
-            if eid >= 0 then
-                eid
-            else
-                let eid = x.Alloc(size)
-                let pEntry = entries + eid
-                pEntry.Key <-- key
-                pEntry.HashCode <-- hashCode
-
-                let bid = hashCode % x.DCapacity
-                let pBucket = NativePtr.add buckets bid
-
-                let old = !!pBucket - 1
-                pEntry.NextEntry <-- old
-                pBucket <-- eid + 1
-
-
-                eid
-
-        member x.DeleteFile(key : Guid) =
-            let hashCode = key.GetHashCode() &&& 0x7FFFFFFF
-            let eid = x.Remove(key, hashCode)
+            let eid = findEntry key hashCode
             if eid < 0 then
                 false
             else
-                x.Free eid
+                let bid = !!(entries + eid).Block |> BlockHandle
+                let size = x.SizeOf bid
+                let res = FileHandle(key, eid, size)
+                handleCache.[key] <- res
+                file <- res
                 true
-            
-        member x.Resize(key : Guid, size : int64) =
-            let hashCode = key.GetHashCode() &&& 0x7FFFFFFF
-            let eid = x.FindEntry(key, hashCode)
 
-            if eid >= 0 then
-                if size >= 0L then
-                    let pEntry = entries + eid
-                    let s = !!pEntry.Block.Size
+    member x.Resize (file : FileHandle, newSize : int64) =
+        let eid = file.EntryId
+        if eid < 0 then
+            if newSize > 0L then
+                let _, bid = alloc newSize
+                let hashCode = file.Id.GetHashCode() &&& 0x7FFFFFFF
+                let eid = setEntry file.Id hashCode bid
+                file.EntryId <- eid
+                file.Length <- newSize
 
-                    if s <> size then
-                        pEntry.HashCode <-- -1
-                        pEntry.Key <-- Guid.Empty
-                        pEntry.NextEntry <-- -1
-                        x.Free eid
-                        let nid = x.Alloc size
-                        let pNewEntry = entries + nid
-                        pNewEntry.Key <-- key
-                        pNewEntry.HashCode <-- hashCode
+            else
+                file.Length <- 0L
 
-                        let oid = x.ReplaceEntryId(key, hashCode, nid)
-                        assert (oid = eid)
+        else
 
+            if newSize > 0L then
+                let mutable pEntry = entries + eid
+                let oldBlockId = !!pEntry.Block
 
-                        nid
-                    else
-                        eid
+                if oldBlockId >= 0 then
+                    let pBlock = blocks + oldBlockId
+                    let oldSize = !!pBlock.Size
+
+                    if oldSize <> newSize then
+                        free oldBlockId
+                        let resized, newBlockId = alloc newSize
+                        if resized then 
+                            pEntry <- entries + eid
+
+                        pEntry.Block <-- newBlockId
+
                 else
-                    x.Free(eid)
-                    -1
-
-            elif size >= 0L then
-                let eid = x.Alloc(size)
-                let pEntry = entries + eid
-                pEntry.Key <-- key
-                pEntry.HashCode <-- hashCode
-
-                let bid = hashCode % x.DCapacity
-                let pBucket = NativePtr.add buckets bid
-
-                let old = !!pBucket - 1
-                pEntry.NextEntry <-- old
-                pBucket <-- eid + 1
-
-                eid
-            else
-                -1
-
-        // ===================================================================================================
-        // Public
-        // ===================================================================================================
-        member x.Entries = x.ECount - x.EFreeCount
-        member x.TotalMemory = Mem pointer.Size
-        member x.FileTableMemory = Mem (pointer.Size - x.MCapacity)
-        member x.DataMemory = Mem x.MCapacity
-
-        member x.AllBlocks =
-            [|
-                let mutable current = x.MFirst
-                while current >= 0 do
-                    let pBlock = (entries + current).Block
-                    yield current, pBlock.Value
-                    current <- !!pBlock.Next
-            |]
-
-        member x.AllFiles =
-            [|
-                let mutable current = x.MFirst
-                while current >= 0 do
-                    let pEntry = entries + current
-                    let pBlock = pEntry.Block
-                    if !!pEntry.HashCode >= 0 then
-                        yield !!pEntry.Key, current
-                    current <- !!pBlock.Next
-            |]
-
-        member x.Alloc(size : int64) =
-            if size <= 0L then
-                -1
-            else
-                let mutable pEntry = x.GetFree(size)
-                let mutable pBlock = pEntry.Block
-                let iEntry = !!pEntry.Index
-                let blockSize = !!pBlock.Size
-
-                if blockSize > size then
-                    let newBlock = 
-                        Block(
-                            Offset = !!pBlock.Offset + size, 
-                            Size = blockSize - size, 
-                            IsFree = 1, 
-                            Prev = !!pEntry.Index, 
-                            Next = !!pBlock.Next
-                        )
-                    
-
-                    let eid, resized = x.NewEntry(newBlock)
+                    let resized, bid = alloc newSize
                     if resized then
-                        pEntry <- entries + iEntry
-                        pBlock <- pEntry.Block
+                        pEntry <- entries + eid
 
-                    let pNewEntry = entries + eid
-                    let pNewBlock = pNewEntry.Block
+                    pEntry.Block <-- bid
 
-                    let nn = !!pNewBlock.Next
-                    if nn < 0 then x.MLast <- eid
-                    else (entries + nn).Block.Prev <-- eid
+                file.Length <- newSize
 
-                    pBlock.Size <-- size
-                    pBlock.Next <-- eid 
-                    x.InsertFree pNewEntry
-
-
-                pBlock.IsFree <-- 0
-                !!pEntry.Index
-
-        member x.Free(eid : int) =
-            if eid >= 0 then
-                let pEntry = entries + eid
-                let pBlock = pEntry.Block
-
-                if !!pBlock.IsFree = 0 then
-                    let prev = !!pBlock.Prev
-                    let next = !!pBlock.Next
-                    let pPrev = entries + prev
-                    let pNext = entries + next
-                    let pPrevBlock = pPrev.Block
-                    let pNextBlock = pNext.Block
-
-                    if prev < 0 then
-                        x.MFirst <- eid
-
-                    elif !!pPrevBlock.IsFree <> 0 then
-                        // merge with prev
-                        x.RemoveFree pPrev |> ignore
-
-                        pBlock.Offset <-- !!pPrevBlock.Offset
-                        pBlock.Size <-- !!pPrevBlock.Size + !!pBlock.Size
-
-
-
-                        let prev = !!pPrevBlock.Prev
-                        pBlock.Prev <-- prev
-                        if prev < 0 then x.MFirst <- eid
-                        else (entries + prev).Block.Next <-- eid
-
-                        x.KillEntry(pPrev)
-
-                    if next < 0 then
-                        x.MLast <- eid
-
-                    elif !!pNextBlock.IsFree <> 0 then
-                        // merge with next
-                        x.RemoveFree pNext |> ignore
-
-                        pBlock.Size <-- !!pBlock.Size + !!pNextBlock.Size
-
-                        let next = !!pNextBlock.Next
-                        pBlock.Next <-- next
-                        if next < 0 then x.MLast <- eid
-                        else (entries + next).Block.Prev <-- eid
-                    
-                        x.KillEntry(pNext)
-
-
-                    pEntry.Key <-- Guid.Empty
-                    pEntry.HashCode <-- -1
-                    pBlock.IsFree <-- 1
-                    x.InsertFree(pEntry)
-
-
-        member x.Write(eid : int, src : byte[], srcOffset : int64, length : int64) =
-            if eid < 0 then
-                if length > 0L then failwithf "[Store] cannot write %d bytes to block with size 0" length
             else
                 let pEntry = entries + eid
-                let offset = nativeint !!pEntry.Block.Offset
-                let size = !!pEntry.Block.Size
+                let bid = !!pEntry.Block
+                if bid >= 0 then
+                    pEntry.Block <-- -1
+                    free bid
 
-                if length > size then
-                    failwithf "[Store] cannot write %d bytes to block with size %d" length size
+                file.Length <- 0L
 
-                let gc = GCHandle.Alloc(src, GCHandleType.Pinned)
-                try Marshal.Copy(gc.AddrOfPinnedObject() + nativeint srcOffset, memory + offset, length)
-                finally gc.Free()
+    member x.Delete(file : FileHandle) =
+        let eid = file.EntryId
+        if eid >= 0 then
+            file.EntryId <- -1
 
-        member x.Write(eid : int, src : byte[], srcOffset : int64) =
-            x.Write(eid, src, srcOffset, src.LongLength - srcOffset)
-
-        member x.Write(eid : int, src : byte[]) =
-            x.Write(eid, src, 0L, src.LongLength )
-
-
-        member x.Read(eid : int, dst : byte[], dstOffset : int64, length : int64) =
-            if eid < 0 then
-                if length > 0L then failwithf "[Store] cannot read %d bytes from block with size 0" length
-            else
-                let pEntry = entries + eid
-                let offset = nativeint !!pEntry.Block.Offset
-                let size = int64 !!pEntry.Block.Size
-
-                if length > size then
-                    failwithf "[Store] cannot read %d bytes from block with size %d" length size
+            handleCache.Remove file.Id |> ignore
+                
+            let bid = !!(entries + eid).Block
+            let removed = removeEntryPtr eid
+            assert removed
 
 
-                let gc = GCHandle.Alloc(dst, GCHandleType.Pinned)
-                try Marshal.Copy(memory + offset, gc.AddrOfPinnedObject() + nativeint dstOffset, length)
-                finally gc.Free()
+            if bid >= 0 then free bid
+         
 
-        member x.Read(eid : int, dst : byte[], dstOffset : int64) =
-            x.Read(eid, dst, dstOffset, dst.LongLength - dstOffset)
+    member x.Copy(src : byte[], srcOffset : int64, dst : FileHandle, dstOffset : int64, length : int64) = x.Copy(src, srcOffset, x.GetCurrentBlock dst, dstOffset, length)
+    member x.Copy(src : byte[], dst : FileHandle, dstOffset : int64, length : int64) = x.Copy(src, 0L, x.GetCurrentBlock dst, dstOffset, length)
+    member x.Copy(src : byte[], srcOffset : int64, dst : FileHandle, length : int64) = x.Copy(src, srcOffset, x.GetCurrentBlock dst, 0L, length)
+    member x.Copy(src : byte[], dst : FileHandle, length : int64) = x.Copy(src, 0L, x.GetCurrentBlock dst, 0L, length)
+    member x.Copy(src : byte[], dst : FileHandle) = x.Copy(src, 0L, x.GetCurrentBlock dst, 0L, src.LongLength)
 
-        member x.Read(eid : int, dst : byte[]) =
-            x.Read(eid, dst, 0L, dst.LongLength)
+    member x.Copy(src : FileHandle, srcOffset : int64, dst : byte[], dstOffset : int64, length : int64) = x.Copy(x.GetCurrentBlock src, srcOffset, dst, dstOffset, length) 
+    member x.Copy(src : FileHandle, dst : byte[], dstOffset : int64, length : int64) = x.Copy(x.GetCurrentBlock src, 0L, dst, dstOffset, length)
+    member x.Copy(src : FileHandle, srcOffset : int64, dst : byte[], length : int64) = x.Copy(x.GetCurrentBlock src, srcOffset, dst, 0L, length)
+    member x.Copy(src : FileHandle, dst : byte[], length : int64) = x.Copy(x.GetCurrentBlock src, 0L, dst, 0L, length)
+    member x.Copy(src : FileHandle, dst : byte[]) = x.Copy(x.GetCurrentBlock src, 0L, dst, 0L, dst.LongLength)
 
-        member x.Read(eid : int) =
-            if eid >= 0 then
-                let pEntry = entries + eid
-                let size = int64 !!pEntry.Block.Size
+    member x.Read(src : FileHandle) =
+        if src.EntryId >= 0 then
+            let arr = Array.zeroCreate (int src.Length)
+            x.Copy(x.GetCurrentBlock src, 0L, arr, 0L, arr.LongLength)
+            arr
+        else
+            [||]
 
-                let arr = Array.zeroCreate (int size)
-                x.Read(eid, arr)
-                arr
-            else
-                [||]
 
-        member x.SizeOf(eid : int) =
-            if eid >= 0 then
-                let pEntry = entries + eid
-                let size = !!pEntry.Block.Size
-                size
-            else
-                0L
+
+    member x.TotalMemory = Mem mem.Size + Mem (chunks |> Seq.sumBy (fun m -> m.Size))
+    member x.Entries = !!header.BCount - !!header.BFreeCount
+    member x.Files = !!header.ECount - !!header.EFreeCount
+
+    member x.Statistics =
+        {
+            growManagerTime     = growManagerTime.MicroTime
+            growDictTime        = growDictTime.MicroTime
+            growDataTime        = growDataTime.MicroTime
+            rehashTime          = rehashTime.MicroTime
+            reallocTime         = reallocTime.MicroTime
+            allocCount          = allocCount
+            freeCount           = freeCount
+            fileCount           = !!header.ECount - !!header.EFreeCount
+            blockCount          = !!header.BCount - !!header.BFreeCount
+        }
+
+
+    member private x.Dispose(disposing : bool) =
+        if header.ptr <> 0n then
+            if disposing then GC.SuppressFinalize x
+            mem.Dispose()
+            chunks |> Seq.iter (fun c -> c.Dispose())
+            chunks.Clear()
+            header <- headerptr.Null
+            nodes <- nodeptr.Null
+            blocks <- blockptr.Null
+            entries <- dentryptr.Null
+            buckets <- NativePtr.zero<int>
+
+    member x.Dispose() = x.Dispose(true)
+    override x.Finalize() = x.Dispose(false)
+
+    interface IDisposable with
+        member x.Dispose() = x.Dispose(true)
+
+[<CompilationRepresentation(CompilationRepresentationFlags.ModuleSuffix)>]
+module FileManager =
+
+    let directory (dir : string) =
+        let exists = Directory.Exists dir
+        if not exists then Directory.CreateDirectory dir |> ignore
+
+        let main = Path.Combine(dir, "index.bin") |> Memory.mapped
+        let get (i : int) =
+            Path.Combine(dir, sprintf "store%d.bin" i) |> Memory.mapped
+
+        new FileManager(main, get)
+    
+    let hglobal () =
+        let main = Memory.hglobal 0L
+        let get (i : int) =
+            Memory.hglobal 0L
+
+        new FileManager(main, get)
             
 
-        
 
 
-        member private x.Dispose(disposing : bool) =
-            let o = Interlocked.Exchange(&memory, 0n)
-            if o <> 0n then
-                if disposing then GC.SuppressFinalize x
-                pointer.Dispose()
-                header <- headerptr.Null
-                nodes <- nodeptr.Null
-                entries <- entryptr.Null
-                buckets <- NativePtr.zero<int>
-                memory <- 0n
-
-        member x.Dispose() = x.Dispose(true)
-        override x.Finalize() = x.Dispose(false)
-
-        interface IDisposable with
-            member x.Dispose() = x.Dispose(true)
-
-
-open FileManager
-
-type BlobStore(m : Memory) =
-    let store = new FileManager(m)
+type BlobStore(m : Memory, getChunk : int -> Memory) =
+    let store = new FileManager(m, getChunk)
     let cache = System.Collections.Concurrent.ConcurrentDictionary<Guid, BlobFile>()
 
     let rw = new ReaderWriterLockSlim()
@@ -1609,42 +1771,24 @@ type BlobStore(m : Memory) =
 
     member x.Get (id : Guid) =
         cache.GetOrAdd(id, fun id ->
-            ReaderWriterLock.read rw (fun () -> 
-                match store.TryGetFile id with
-                    | (true, eid) -> BlobFile(rw, store, id, eid)
-                    | _ -> BlobFile(rw, store, id, -1)
+            ReaderWriterLock.write rw (fun () -> 
+                BlobFile(rw, store, id, store.GetFile id)
             )
         )
 
     member x.Create() =
         let id = Guid.NewGuid()
-        let res = BlobFile(rw, store, id, -1)
-        cache.[id] <- res
-        res
+        ReaderWriterLock.write rw (fun () -> 
+            let res = BlobFile(rw, store, id, store.GetFile id)
+            cache.[id] <- res
+            res
+        )
 
     member x.Dispose() = 
         ReaderWriterLock.write rw (fun () -> 
             store.Dispose()
         )
         
-    member x.Print() =
-        ReaderWriterLock.read rw (fun () -> 
-            Log.start "BlobStore"
-                
-            Log.start "Blocks"
-            store.AllBlocks
-                |> Seq.map (fun (id, b) -> sprintf "%d: %A" id b)
-                |> Seq.iter (Log.line "%s")
-            Log.stop()
-
-            Log.start "Files"
-            store.AllFiles
-                |> Seq.map (fun (id, b) -> sprintf "%A: %d" id b)
-                |> Seq.iter (Log.line "%s")
-            Log.stop()
-
-            Log.stop()
-        )
 
     interface IBlobStore with
         member x.Memory = x.Memory
@@ -1652,46 +1796,47 @@ type BlobStore(m : Memory) =
         member x.Create() = x.Create() :> IBlobFile
         member x.Dispose() = x.Dispose()
 
-and BlobFile(rw : ReaderWriterLockSlim, store : FileManager, id : Guid, eid : int) =
+and BlobFile(rw : ReaderWriterLockSlim, store : FileManager, id : Guid, eid : FileHandle) =
     let mutable eid = eid
-    let mutable size = store.SizeOf eid
+    let mutable bid = store.GetCurrentBlock eid
 
     member x.Name = id
 
     member x.Exists =
-        lock x (fun () -> eid >= 0)
+        lock x (fun () -> eid.Exists)
 
     member x.Size =
-        lock x (fun () -> size)
+        lock x (fun () -> eid.Size)
 
     member x.Read() =
         lock x (fun () ->
             ReaderWriterLock.read rw (fun () ->
-                store.Read eid
+                store.Read bid
             )
         )
 
     member x.Write(data : byte[]) =
         lock x (fun () ->
-            if size <> data.LongLength then
+            if eid.Size <> data.LongLength then
                 ReaderWriterLock.write rw (fun () ->
-                    size <- data.LongLength
-                    eid <- store.Resize(id, size)
+                    if not eid.Exists then
+                        eid <- store.GetFile(id)
+
+                    store.Resize(eid, data.LongLength)
+                    bid <- store.GetCurrentBlock eid
                 )
 
             ReaderWriterLock.read rw (fun () ->
-                store.Write(eid, data)
+                store.Copy(data, 0L, bid, 0L, data.LongLength)
             )
         )
 
     member x.Delete() =
         lock x (fun () ->
-            if eid >= 0 then
+            if eid.Exists then
                 ReaderWriterLock.write rw (fun () ->
-                    let deleted = store.DeleteFile(id)
-                    assert deleted
-                    eid <- -1
-                    size <- 0L
+                    store.Delete(eid)
+                    
                 )
         )
 
@@ -1703,3 +1848,22 @@ and BlobFile(rw : ReaderWriterLockSlim, store : FileManager, id : Guid, eid : in
         member x.Write arr = x.Write arr
         member x.Delete() = x.Delete()
         member x.CopyTo o = o.Write (x.Read())
+
+[<CompilationRepresentation(CompilationRepresentationFlags.ModuleSuffix)>]
+module BlobStore =
+    let directory (dir : string) =
+        let exists = Directory.Exists dir
+        if not exists then Directory.CreateDirectory dir |> ignore
+
+        let main = Path.Combine(dir, "index.bin") |> Memory.mapped
+        let get (i : int) =
+            Path.Combine(dir, sprintf "store%d.bin" i) |> Memory.mapped
+
+        new BlobStore(main, get)
+
+    let hglobal () =
+        let main = Memory.hglobal 0L
+        let get (i : int) =
+            Memory.hglobal 0L
+
+        new BlobStore(main, get)
