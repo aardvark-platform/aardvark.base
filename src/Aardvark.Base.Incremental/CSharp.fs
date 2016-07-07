@@ -148,7 +148,7 @@ type ModExtensions private() =
 
     [<Extension>]
     static member Compose (this : IMod<'a>, other : IMod<'b>, f : Func<'a, 'b, 'c>) =
-        Mod.map2 (fun a b -> f.Invoke(a,b)) this other
+        Mod.map2 (curry f.Invoke) this other
 
     [<Extension>]
     static member Compose (this : seq<IMod<'a>>, f : Func<seq<'a>, 'b>) =
@@ -347,6 +347,22 @@ type AdaptiveSetExtensions private() =
         let addFun = fun b -> fun a -> add.Invoke(a, b)
         let subFun = fun b -> fun a -> sub.Invoke(a, b)
         this |> ASet.foldGroup addFun subFun zero
+
+    [<Extension>]
+    static member Sum(this : aset<int>) : IMod<int> =
+        this |> ASet.sum
+
+    [<Extension>]
+    static member Sum(this : aset<float>) : IMod<float> =
+        this |> ASet.sum
+
+    [<Extension>]
+    static member SumM(this : aset<IMod<int>>) : IMod<int> =
+        this |> ASet.sumM
+
+    [<Extension>]
+    static member SumM(this : aset<IMod<float>>) : IMod<float> =
+        this |> ASet.sumM
 
 [<Extension; AbstractClass; Sealed>]
 type ChangeableSetExtensions private() =
