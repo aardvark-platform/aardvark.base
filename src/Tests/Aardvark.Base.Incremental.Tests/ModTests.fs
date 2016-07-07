@@ -744,6 +744,39 @@ module ``Basic Mod Tests`` =
         printfn "done"
 
     [<Test>]
+    let ``[Mod] eager mod trigger test``() =
+        let a = Mod.init 1
+        let b = Mod.onPushCustomEq (fun x y -> y < 5) a
+        
+        let mutable count = 0
+        b |> Mod.unsafeRegisterCallbackKeepDisposable (fun v -> count <- count + 1; printfn "%A" v) |> ignore
+
+        should equal count 1
+
+        transact(fun () ->
+            Mod.change a 2)
+
+        should equal count 1
+                
+        transact(fun () ->
+            Mod.change a 3)
+
+        should equal count 1
+
+        transact(fun () ->
+            Mod.change a 4)
+
+        should equal count 1
+
+        transact(fun () ->
+            Mod.change a 5)
+
+        should equal count 2
+
+        ()
+
+
+    [<Test>]
     let ``[Mod] parallel consistent concurrency test``() =
         let a = Mod.init 10
         let b = Mod.init -10

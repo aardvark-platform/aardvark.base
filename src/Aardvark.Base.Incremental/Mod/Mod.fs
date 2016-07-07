@@ -377,10 +377,11 @@ module Mod =
     // the change propagation process when equal values are
     // observed EagerMod can also be created with a custom 
     // equality function.
-    type internal EagerMod<'a>(input : IMod<'a>, eq : Option<'a -> 'a -> bool>) =
+    type internal EagerMod<'a>(input : IMod<'a>, eq : Option<'a -> 'a -> bool>) as this =
         inherit LazyMod<'a>(Seq.singleton (input :> IAdaptiveObject), fun s -> input.GetValue(s))
 
         let hasChanged = ChangeTracker.trackCustom<'a> eq
+        let _true = hasChanged (this.GetValue null)
 
         member x.Input = input
 
@@ -966,7 +967,6 @@ module Mod =
                 | :? EagerMod<'a> -> m
                 | _ ->
                     let res = EagerMod(m, Some eq)
-                    res.GetValue(null) |> ignore
                     res :> IMod<_>
 
     /// <summary>
