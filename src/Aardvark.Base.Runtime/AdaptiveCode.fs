@@ -317,7 +317,7 @@ module internal GenericProgram =
 
         let mutable autoDefragmentation = 1
 
-        #if DEBUG
+        #if DEBUG && false
         let validateCurrentState(deltas : list<Delta<'k * 'v>>) =
             let mutable hasErrors = false
             let mutable cnt = 0

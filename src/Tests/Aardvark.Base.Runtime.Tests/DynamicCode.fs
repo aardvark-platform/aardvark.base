@@ -370,3 +370,32 @@ module DynamicCodeTests =
 
 
     
+    [<Test>]
+    let ``[DynamicCode] huge changeset``() =
+
+        let cnt = 250000
+        let manyCalls =
+            [
+                for i in 1 .. cnt do yield i,i+1
+            ]
+
+        let calls = CSet.ofList manyCalls
+
+        use prog = TestProgram.create calls
+
+        let sw = System.Diagnostics.Stopwatch()
+        sw.Start()
+        let stats = prog.Update(null)
+        prog.NativeCallCount |> ignore
+        prog.FragmentCount |> ignore
+        sw.Stop()
+        printfn "stats: %A" stats
+        printfn "update took: %As" sw.Elapsed.TotalSeconds
+        sw.Restart()
+
+        prog.Run() |> ignore
+
+        sw.Stop()
+        printfn "run took: %As" sw.Elapsed.TotalSeconds
+
+
