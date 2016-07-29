@@ -205,11 +205,12 @@ module internal GenericProgram =
             member x.WriteContent (caller : IAdaptiveObject) =
                 x.EvaluateAlways caller (fun () ->
                     if not (isNull x.Code) then
-                        let code =
-                            x.Code.Content
-                                |> List.collect (fun c -> c.GetValue x)
-                                |> List.toArray
+                        let code = List<_>()
 
+                        for c in x.Code.Content do
+                            code.AddRange(Mod.force c)
+
+                        let code = code.ToArray()
 
                         Interlocked.Add(x.Context.nativeCallCount, code.Length - x.CallCount) |> ignore
                         x.CallCount <- code.Length
@@ -678,17 +679,20 @@ module internal GenericProgram =
                     handler.startDefragmentation (x :> obj) version |> ignore
 
                 // finally return some update-statistics
-                AdaptiveProgramStatistics (
-                    DeltaProcessTime = deltaProcessWatch.Elapsed,
-                    CompileTime = compileWatch.Elapsed,
-                    WriteTime = writeWatch.Elapsed,
+                let s = 
+                    AdaptiveProgramStatistics (
+                        DeltaProcessTime = deltaProcessWatch.Elapsed,
+                        CompileTime = compileWatch.Elapsed,
+                        WriteTime = writeWatch.Elapsed,
 
-                    AddedFragmentCount = added,
-                    RemovedFragmentCount = removed,
-                    CompiledFragmentCount = recompileSet.Count,
-                    UpdatedFragmentCount = dirtySet.Count,
-                    UpdatedJumpCount = relinkSet.Count
-                )
+                        AddedFragmentCount = added,
+                        RemovedFragmentCount = removed,
+                        CompiledFragmentCount = recompileSet.Count,
+                        UpdatedFragmentCount = dirtySet.Count,
+                        UpdatedJumpCount = relinkSet.Count
+                    )
+                //printfn "stasts = %A" s
+                s
             ) 
 
         member x.Dispose() =
