@@ -38,15 +38,15 @@ namespace Aardvark.Base
             // use inverse view-projection to get vertices in world space
             frustumCorners.Apply(c => mvp.Backward.TransformPosProj(c));
 
-            // hull planes should point outward, assume right-handed transformation to build planes
+            // hull planes should point inward, assume right-handed transformation to build planes
             var hull = new Hull3d(new[]
             {
-                new Plane3d(frustumCorners[0], frustumCorners[4], frustumCorners[2]), // left
-                new Plane3d(frustumCorners[1], frustumCorners[3], frustumCorners[5]), // right
-                new Plane3d(frustumCorners[2], frustumCorners[7], frustumCorners[3]), // bottom
-                new Plane3d(frustumCorners[0], frustumCorners[1], frustumCorners[4]), // top
-                new Plane3d(frustumCorners[0], frustumCorners[2], frustumCorners[1]), // near
-                new Plane3d(frustumCorners[4], frustumCorners[5], frustumCorners[6]), // far
+                new Plane3d(frustumCorners[0], frustumCorners[2], frustumCorners[4]), // left
+                new Plane3d(frustumCorners[1], frustumCorners[5], frustumCorners[3]), // right
+                new Plane3d(frustumCorners[2], frustumCorners[3], frustumCorners[7]), // bottom
+                new Plane3d(frustumCorners[0], frustumCorners[4], frustumCorners[1]), // top
+                new Plane3d(frustumCorners[0], frustumCorners[1], frustumCorners[2]), // near
+                new Plane3d(frustumCorners[4], frustumCorners[6], frustumCorners[5]), // far
             });
 
             // handedness of transformation -> flip planes in case of left-handed
