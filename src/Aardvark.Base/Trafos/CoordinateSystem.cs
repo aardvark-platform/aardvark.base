@@ -37,6 +37,11 @@ namespace Aardvark.Base
             public static readonly Info Vrml = new Info(1, Handedness.Right, Axis.Y);
 
             public static readonly Info Aardvark = new Info(1, Handedness.Right, Axis.Z);
+
+            public bool IsAardvark
+            {
+                get { return this.Equals(Aardvark); }
+            }
         }
 
         /// <summary>
@@ -60,7 +65,7 @@ namespace Aardvark.Base
         /// Creates a transformation from the specified coordinate system  
         /// to the aardvark coordinate system (Meters, Right-Handed, Z-Up).
         /// </summary>
-        public static Trafo3d ToAardvark(Info from)
+        public static Trafo3d ToAardvark(this Info from)
         {
             return ToAardvark(from.UnitScale, from.Handedness, from.UpVector);
         }
@@ -92,11 +97,32 @@ namespace Aardvark.Base
             return ToAardvark(1, hand, Axis.Z);
         }
 
-        public static V3d GetAxisVector(Axis ax)
+        /// <summary>
+        /// Gets the cooresponding vector for a given axis
+        /// </summary>
+        public static V3d GetAxisVector(this Axis ax)
         {
             return ax == Axis.X ? V3d.XAxis :
                    ax == Axis.Y ? V3d.YAxis :
                                   V3d.ZAxis;
+        }
+
+        /// <summary>
+        /// Builds transformation from one coordinate system to another.
+        /// </summary>
+        public static Trafo3d FromTo(Info from, Info to)
+        {
+            var t = Trafo3d.Identity;
+            if (from.UnitScale != to.UnitScale)
+                t = Trafo3d.Scale(to.UnitScale / from.UnitScale);
+
+            if (from.Handedness != to.Handedness)
+                t *= SwapHand;
+
+            if (from.UpVector != to.UpVector)
+                t *= FromToRH(from.UpVector, to.UpVector);
+
+            return t;
         }
 
         static Trafo3d FromTo(Axis from, Axis to, int s)

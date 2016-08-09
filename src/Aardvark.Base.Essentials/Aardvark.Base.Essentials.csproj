@@ -59,6 +59,8 @@
     <Compile Include="Camera\ICameraProjectionExtensions.cs" />
     <Compile Include="Camera\ICameraView.cs" />
     <Compile Include="Camera\ICameraViewExtensions.cs" />
+    <Compile Include="Camera\IRenderView.cs" />
+    <Compile Include="Camera\IRenderViewExtensions.cs" />
     <Compile Include="Editing\BehaviorDragAbsolute.cs" />
     <Compile Include="Editing\BehaviorDragRelative.cs" />
     <Compile Include="Editing\IBehaviorSplittableEdge2d.cs" />
