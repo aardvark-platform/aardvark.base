@@ -408,8 +408,8 @@ NUGET
 GITHUB
   remote: vrvis/Aardvark.Fake
     FULLPROJECT (c87283d45d9e55a53d66de85dad1455f4fa71c41)
-      Chessie (>= 0.5 < 0.6)
-      FAKE (< 5.0)
-      Mono.Cecil (<= 0.9.5.4)
-      Paket.Core (< 4.0)
+      Chessie
+      FAKE
+      Mono.Cecil
+      Paket.Core
       SourceLink.Fake
