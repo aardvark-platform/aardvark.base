@@ -3,7 +3,9 @@ source https://vrvis.myget.org/F/aardvark_public/api/v3/index.json
 
 nuget System.Collections.Immutable ~> 1.2.0
 
-nuget System.Reactive.Linq   ~> 3.0.0
+nuget System.Reactive.Linq       ~> 3.0.0
+nuget System.Reactive.Core       ~> 3.0.0
+nuget System.Reactive.Interfaces ~> 3.0.0
 
 nuget DevILSharp             ~> 0.0.11
 
