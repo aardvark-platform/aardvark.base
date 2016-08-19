@@ -40,6 +40,17 @@ namespace Aardvark.Base
                 +1.0 - np.Y * 2.0
                 );
         }
+
+        /// <summary>
+        /// Transform the normalized device coordinate to a [0, 1] texture coordinate (flipping Y).
+        /// </summary>
+        public V2d TextureCoordinate
+        {
+            get
+            {
+                return new V2d(Position.X * 0.5 + 0.5, -Position.Y * 0.5 + 0.5);
+            }
+        }
     }
 
     /// <summary>
@@ -67,6 +78,17 @@ namespace Aardvark.Base
         public Ndc3d(double x, double y, double z)
         {
             Position = new V3d(x, y, z);
+        }
+
+        /// <summary>
+        /// Transform the normalized device coordinate to a [0, 1] texture coordinate (flipping Y) with depth.
+        /// </summary>
+        public V3d TextureCoordinate
+        {
+            get
+            {
+                return new V3d(Position.X * 0.5 + 0.5, -Position.Y * 0.5 + 0.5, Position.Z);
+            }
         }
     }
 }

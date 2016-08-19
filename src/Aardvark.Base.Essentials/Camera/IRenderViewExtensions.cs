@@ -9,6 +9,24 @@ namespace Aardvark.Base
     public static class IRenderViewExtensions
     {
         /// <summary>
+        /// Projects a point from world-space to normalized device coordinates.
+        /// </summary>
+        public static Ndc3d Project(this IRenderView rv, V3d point)
+        {
+            var viewPoint = rv.View.ViewTrafo.Forward.TransformPos(point);
+            return rv.Projection.TransformPos(viewPoint);
+        }
+
+        /// <summary>
+        /// Project a point from world-space to a pixel position.
+        /// </summary>
+        public static PixelPosition ProjectPixel(this IRenderView rv, V3d point)
+        {
+            var ndcPoint = rv.Project(point);
+            return new PixelPosition(ndcPoint, rv.Region);
+        }
+
+        /// <summary>
         /// Returns the number of pixels per unit on the near plane. 
         /// ISSUE: Does not consider ClippingWindow of projection
         /// </summary>

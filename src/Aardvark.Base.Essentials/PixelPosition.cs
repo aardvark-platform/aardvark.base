@@ -55,33 +55,38 @@ namespace Aardvark.Base
             Position = new V2i(x, y);
             Bounds = Box2i.FromSize(width, height);
         }
-
-
-
+        
         /// <summary>
         /// PixelPosition from normalized device coordinates.
         /// </summary>
         public PixelPosition(Ndc2d ndc, V2i renderTargetSize)
+            : this(ndc, Box2i.FromSize(renderTargetSize))
         {
-            var d = (V2d)renderTargetSize / 2.0;
-            Position = new V2i(
-                (ndc.Position.X + 1.0) * d.X,
-                (1.0 - ndc.Position.Y) * d.Y
-                );
-            Bounds = Box2i.FromSize(renderTargetSize);
+        }
+
+        /// <summary>
+        /// PixelPosition from normalized device coordinates.
+        /// </summary>
+        public PixelPosition(Ndc2d ndc, Box2i renderTargetRegion)
+        {
+            Position = new V2i(ndc.TextureCoordinate * (V2d)renderTargetRegion.Size);
+            Bounds = renderTargetRegion;
         }
 
         /// <summary>
         /// PixelPosition from normalized device coordinates.
         /// </summary>
         public PixelPosition(Ndc3d ndc, V2i renderTargetSize)
+            : this(ndc, Box2i.FromSize(renderTargetSize))
         {
-            var d = (V2d)renderTargetSize / 2.0;
-            Position = new V2i(
-                (ndc.Position.X + 1.0) * d.X,
-                (1.0 - ndc.Position.Y) * d.Y
-                );
-            Bounds = Box2i.FromSize(renderTargetSize);
+        }
+
+        /// <summary>
+        /// PixelPosition from normalized device coordinates.
+        /// </summary>
+        public PixelPosition(Ndc3d ndc, Box2i renderTargetRegion)
+            : this(new Ndc2d(ndc.Position.XY), renderTargetRegion)
+        {
         }
 
 

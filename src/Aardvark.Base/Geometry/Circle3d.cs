@@ -70,6 +70,9 @@ namespace Aardvark.Base
             get { return Radius < 0.0; }
         }
 
+        /// <summary>
+        /// Returns a point on the circumference (AxisU).
+        /// </summary>
         public V3d Point
         {
             get
