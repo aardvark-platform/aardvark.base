@@ -56,8 +56,10 @@ module Monads =
 
             c.runCont (printfn "%d")
 
-    module State =
+    module StateOld =
         type State<'s, 'a> = { runState : 's -> 'a * 's } 
+
+
 
         type StateBuilder() =
             member x.Bind(m : State<'s, 'a>, f : 'a -> State<'s, 'b>) : State<'s, 'b> =
@@ -115,6 +117,224 @@ module Monads =
 
             let r = c.runState 2
             printfn "%A" r
+
+    module State =
+
+        [<AbstractClass>]
+        type State<'s, 'a>() =
+            abstract member Run : byref<'s> -> 'a
+            abstract member RunUnit : byref<'s> -> unit
+
+            default x.Run(s) = x.RunUnit(&s); Unchecked.defaultof<'a>
+            default x.RunUnit(s) = x.Run(&s) |> ignore
+
+        module State =
+            
+            let ignore (s : State<'s, 'a>) =
+                { new State<'s, unit>() with
+                    member x.RunUnit state =
+                        s.RunUnit(&state)
+                }
+
+            let map (f : 'a -> 'b) (s : State<'s, 'a>) =
+                { new State<'s, 'b>() with
+                    member x.Run state =
+                        let a = s.Run(&state)
+                        f a
+                }
+
+            let bind (f : 'a -> State<'s, 'b>) (s : State<'s, 'a>) =
+                { new State<'s, 'b>() with
+                    member x.Run state =
+                        let a = s.Run(&state) |> f
+                        a.Run(&state)
+                }
+
+            let value (v : 'a) =
+                { new State<'s, 'a>() with
+                    member x.Run _ = v
+                }
+
+            let get<'s> =
+                { new State<'s, 's>() with
+                    member x.Run state = state
+                }
+
+            let put (s : 's) =
+                { new State<'s, unit>() with
+                    member x.RunUnit state = state <- s
+                }
+
+            let modify (f : 's -> 's) =
+                { new State<'s, unit>() with
+                    member x.RunUnit state = state <- f state
+                }
+
+            let custom (f : 's -> 's * 'a) =
+                { new State<'s, 'a>() with
+                    member x.Run state = 
+                        let (s,r) = f state
+                        state <- s
+                        r
+                }
+
+            let run (state : 's) (m : State<'s, 'a>) =
+                let mutable res = state
+                let v = m.Run(&res)
+                res, v
+
+            let evaluate (state : 's) (m : State<'s, 'a>) =
+                let mutable res = state
+                let v = m.Run(&res)
+                v
+
+        module Seq =
+            let mapS (f : 'a -> State<'s, 'b>) (input : seq<'a>) =
+                { new State<'s, seq<'b>>() with
+                    member x.Run state =
+                        let result = System.Collections.Generic.List<'b>()
+                        for e in input do
+                            result.Add (f(e).Run(&state))
+                        result :> seq<_>    
+                }
+
+            let collectS (f : 'a -> State<'s, seq<'b>>) (input : seq<'a>) =
+                { new State<'s, seq<'b>>() with
+                    member x.Run state =
+                        let result = System.Collections.Generic.List<'b>()
+                        for e in input do
+                            result.AddRange (f(e).Run(&state))
+                        result :> seq<_>    
+                }
+
+            let chooseS (f : 'a -> State<'s, Option<'b>>) (input : seq<'a>) =
+                { new State<'s, seq<'b>>() with
+                    member x.Run state =
+                        let result = System.Collections.Generic.List<'b>()
+                        for e in input do
+                            match f(e).Run(&state) with
+                                | Some res -> result.Add res
+                                | _ -> ()
+                        result :> seq<_>    
+                }
+
+        module List =
+            let mapS (f : 'a -> State<'s, 'b>) (input : list<'a>) =
+                { new State<'s, list<'b>>() with
+                    member x.Run state =
+                        let result = System.Collections.Generic.List<'b>()
+                        for e in input do
+                            result.Add (f(e).Run(&state))
+                        result |> CSharpList.toList
+                }
+
+            let collectS (f : 'a -> State<'s, seq<'b>>) (input : list<'a>) =
+                { new State<'s, list<'b>>() with
+                    member x.Run state =
+                        let result = System.Collections.Generic.List<'b>()
+                        for e in input do
+                            result.AddRange (f(e).Run(&state))
+                        result |> CSharpList.toList
+                }
+
+            let chooseS (f : 'a -> State<'s, Option<'b>>) (input : list<'a>) =
+                { new State<'s, list<'b>>() with
+                    member x.Run state =
+                        let result = System.Collections.Generic.List<'b>()
+                        for e in input do
+                            match f(e).Run(&state) with
+                                | Some res -> result.Add res
+                                | _ -> ()
+                        result |> CSharpList.toList
+                }
+
+
+        type StateBuilder() =
+            member x.Bind(m : State<'s, 'a>, f : 'a -> State<'s, 'b>) =
+                State.bind f m
+
+            member x.Return(v : 'a) = 
+                State.value v
+
+            member x.ReturnFrom(m : State<'s, 'a>) =
+                m
+
+            member x.Delay(f : unit -> State<'s, 'a>) =
+                { new State<'s, 'a>() with
+                    member x.Run(state) =
+                        f().Run(&state)
+                }
+
+            member x.Combine(l : State<'s, unit>, r : State<'s, 'a>) =
+                { new State<'s, 'a>() with
+                    member x.Run(state) =
+                        l.Run(&state)
+                        r.Run(&state)
+                }
+
+            member x.Zero() : State<'s, unit> =
+                { new State<'s, unit>() with
+                    member x.RunUnit(state) =
+                        ()
+                }
+
+            member x.For(input : seq<'a>, f : 'a -> State<'s, unit>) =
+                { new State<'s, unit>() with
+                    member x.RunUnit(state) =
+                        for e in input do
+                            f(e).Run(&state)
+                }
+
+            member x.While(guard : unit -> bool, body : State<'s, unit>) =
+                { new State<'s, unit>() with
+                    member x.RunUnit(state) =
+                        while guard() do
+                            body.Run(&state)
+                }
+
+            member x.TryFinally(m : State<'s, 'a>, fin : unit -> unit) =
+                { new State<'s, 'a>() with
+                    member x.Run(state) =
+                        try m.Run(&state)
+                        finally fin()
+                }
+
+            member x.TryWith(m : State<'s, 'a>, handler : exn -> State<'s, 'a>) =
+                { new State<'s, 'a>() with
+                    member x.Run(state) =
+                        let mutable local = state
+                        try 
+                            let res = m.Run(&local)
+                            state <- local
+                            res
+                        with e ->  
+                            handler(e).Run(&state)
+                }
+
+            member x.Using(v : 'a, f : 'a -> State<'s, 'b>) =
+                { new State<'s, 'b>() with
+                    member x.Run(state) = 
+                        use v = v
+                        let res = f(v).Run(&state)
+                        res
+                }
+
+            member x.TryFinally(m : State<'s, 'a>, fin : unit -> State<'s, unit>) =
+                { new State<'s, 'a>() with
+                    member x.Run(state) =
+                        try m.Run(&state)
+                        finally fin().Run(&state)
+                }
+
+            member x.TryFinally(m : State<'s, 'a>, fin : unit -> 's -> 's) =
+                { new State<'s, 'a>() with
+                    member x.Run(state) =
+                        try m.Run(&state)
+                        finally state <- fin () state
+                }
+
+        let state = StateBuilder()
+
 
     module StateOpt =
 
@@ -365,10 +585,17 @@ module Monads =
                     else Some ()
                 run ()
 
+            member x.TryFinally(m : unit -> Option<'a>, fin : unit -> unit) =
+                try m()
+                finally fin()
+
+            member x.TryWith(m : unit -> Option<'a>, handler : exn -> Option<'a>) =
+                try m()
+                with e -> handler e
+
         let option = OptionBuilder()
 
-    
-
+   
 
 
     module StringBuilder =
@@ -412,17 +639,6 @@ module Monads =
     let sopt = StateOpt.state
     let sseq = StateSeq.sseq
     
-    let private test() = 
-        let a = state { return 1; }
-        let b = state { return 3;}
-        let c = state {
-                    let! a = a
-                    let! b = b
-
-                    return a+b
-                }
-
-        printfn "%A" (c.runState 2)
 
     
 
