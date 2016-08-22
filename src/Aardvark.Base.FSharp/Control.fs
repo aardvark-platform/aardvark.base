@@ -1,5 +1,6 @@
 ﻿namespace Aardvark.Base
 
+
 module Monads =
 
     module Cont =
@@ -596,6 +597,135 @@ module Monads =
         let option = OptionBuilder()
 
    
+    module Optics =
+        open Microsoft.FSharp.Quotations 
+        open State
+
+        type [<AbstractClass>] Lens<'a, 'b>() =
+            abstract member Get : 'a -> 'b
+            abstract member Set : 'a * 'b -> 'a
+
+            static member Compose(l : Lens<'a, 'b>, r : Lens<'b, 'c>) =
+                { new Lens<'a, 'c>() with
+                    member x.Get a = a |> l.Get |> r.Get
+                    member x.Set(a,c) = l.Set(a, r.Set(l.Get a, c))
+                }
+
+            static member Compose(l : Lens<'a, 'b>, r : Prism<'b, 'c>) =
+                { new Prism<'a, 'c>() with
+                    member x.Get a = a |> l.Get |> r.Get
+                    member x.Set(a,c) = l.Set(a, r.Set(l.Get a, c))
+                }
+
+        and [<AbstractClass>] Prism<'a, 'b>() =
+            abstract member Get : 'a -> Option<'b>
+            abstract member Set : 'a * 'b -> 'a
+
+            static member Compose(l : Prism<'a, 'b>, r : Lens<'b, 'c>) =
+                { new Prism<'a, 'c>() with
+                    member x.Get a = 
+                        match a |> l.Get with
+                            | Some v -> r.Get v |> Some
+                            | None -> None
+
+                    member x.Set(a,c) = 
+                        match l.Get a with
+                            | Some v -> l.Set(a, r.Set(v, c))
+                            | None -> a
+                }
+
+            static member Compose(l : Prism<'a, 'b>, r : Prism<'b, 'c>) =
+                { new Prism<'a, 'c>() with
+                    member x.Get a = a |> l.Get |> (Option.bind r.Get)
+                    member x.Set(a,c) = 
+                        match l.Get a with
+                            | Some v -> l.Set(a, r.Set(v, c))
+                            | None -> a
+                }
+
+
+        module Lens =
+        
+            let inline compose (l : ^a) (r : ^b) =
+                ((^a or ^b) : (static member Compose : ^a * ^b -> ^c) (l, r)) 
+
+            let create (get : 'a -> 'b) (set : 'a -> 'b -> 'a) =
+                { new Lens<'a, 'b>() with
+                    member x.Get a = get a
+                    member x.Set(a,b) = set a b
+                }
+
+        module Prism =
+            let create (get : 'a -> Option<'b>) (set : 'a -> 'b -> 'a) =
+                { new Prism<'a, 'b>() with
+                    member x.Get a = get a
+                    member x.Set(a,b) = set a b
+                }
+    
+        module List =
+            let head_<'a> =
+                { new Prism<list<'a>, 'a>() with
+                    member x.Get(l) =
+                        match l with
+                            | h :: _ -> Some h
+                            | _ -> None
+
+                    member x.Set(l, h) =
+                        match l with
+                            | [] -> [h]
+                            | _ :: rest -> h :: rest
+                }
+
+        module Set =
+            let IsContained (v : 'a) =
+                { new Lens<Set<'a>, bool>() with
+                    member x.Get(set) = Set.contains v set
+                    member x.Set(set, contains) =
+                        if contains then Set.add v set
+                        else Set.remove v set
+                }
+
+        module State =
+            let lift (l : Lens<'a, 'b>) (m : State<'b, 'r>) =
+                { new State<'a, 'r>() with
+                    member x.Run a =
+                        let mutable b = l.Get a
+                        let res = m.Run(&b)
+                        a <- l.Set(a, b)
+                        res
+                }
+
+        type Inner = { x : int } with
+            static member X = Lens.create (fun a -> a.x) (fun a x -> { a with x = x })
+
+        let inline (<==) (m : ^l) (v : ^b) =
+            { new State.State< ^a, unit >() with
+                member x.RunUnit(state) =
+                    state <- (^l : (member Set : ^a * ^b -> ^a) (m, state, v))        
+            }
+
+        let inline (.*) (l : ^l) (r : ^r) =
+            Lens.compose l r
+
+        
+
+        type Test = { a : Inner; b : Set<float> } with
+            static member A = Lens.create (fun v -> v.a) (fun v a -> { v with a = a })
+            static member B = Lens.create (fun v -> v.b) (fun v b -> { v with b = b })
+
+        
+        let test() =
+            let perform =
+                state {
+                    do! Test.B .* Set.IsContained 10.0 <== true
+                    do! Test.A .* Inner.X <== 1
+                }
+
+            let (v, ()) = perform |> State.run { a = { x = 10 }; b = Set.empty }
+
+            printfn "%A" v
+            
+            ()
 
 
     module StringBuilder =
