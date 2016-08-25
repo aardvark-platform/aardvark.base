@@ -8,23 +8,83 @@
 ///
 /// All members of this class are thread-safe and may be used concurrently from multiple threads.</remarks>
 [<StructuredFormatDisplay("{AsString}")>]
-type PersistentHashSet<'a> = internal PersistentHashSet of Map<int, list<'a>> with
+type PersistentHashSet<'a>(count : int, content : Map<int, list<'a>>) =
+
+    member x.Count = count
+
+    member internal x.Content = content
+
     member x.AsString = 
-        let (PersistentHashSet x) = x
-        let l = x |> Map.toList |> List.collect (fun (_,v) -> v)
+        let l = content |> Map.toList |> List.collect (fun (_,v) -> v)
         sprintf "set %A" l
+
+    interface System.Collections.IEnumerable with
+        member x.GetEnumerator() = 
+            new PersistentHashSetEnumerator<'a>(content) :> _
+
+    interface System.Collections.Generic.IEnumerable<'a> with
+        member x.GetEnumerator() = 
+            new PersistentHashSetEnumerator<'a>(content) :> _
+
        
+and private PersistentHashSetEnumerator<'a>(set : Map<int, list<'a>>) =
+    let e = (set :> seq<_>).GetEnumerator()
+    let mutable current = []
+    let mutable value = Unchecked.defaultof<'a>
+
+    member x.MoveNext() =
+        match current with
+            | [] -> 
+                if e.MoveNext() then
+                    current <- e.Current.Value
+                    match current with
+                        | h :: rest ->
+                            value <- h
+                            current <- rest
+                            true
+                        | [] ->
+                            Log.warn "[PersistentHashSet] empty bucket"
+                            x.MoveNext()
+                else
+                    false
+            | h :: rest ->
+                value <- h 
+                current <- rest
+                true
+
+    member x.Current = value
+
+    member x.Reset() =
+        e.Reset()
+        current <- []
+        value <- Unchecked.defaultof<'a>
+
+    member x.Dispose() =
+        e.Dispose()
+        current <- []
+        value <- Unchecked.defaultof<'a>
+
+
+    interface System.Collections.IEnumerator with
+        member x.MoveNext() = x.MoveNext()
+        member x.Current = x.Current :> obj
+        member x.Reset() = x.Reset()
+
+    interface System.Collections.Generic.IEnumerator<'a> with
+        member x.Current = x.Current
+        member x.Dispose() = x.Dispose()
+
+
        
 [<CompilationRepresentation(CompilationRepresentationFlags.ModuleSuffix)>]
 [<RequireQualifiedAccess>]
 /// <summary>Functional programming operators related to the <c>PersistentHashSet&lt;_&gt;</c> type.</summary> 
 module PersistentHashSet =
     let inline private (!) (h : PersistentHashSet<'a>) =
-        let (PersistentHashSet m) = h
-        m
+        h.Content
 
     type private EmptyImpl<'a>() =
-        static let instance : PersistentHashSet<'a> = PersistentHashSet Map.empty
+        static let instance : PersistentHashSet<'a> = PersistentHashSet(0, Map.empty)
         static member Instance = instance
 
     /// <summary>The empty set for the type 'T.</summary>
@@ -39,7 +99,7 @@ module PersistentHashSet =
     [<CompiledName("Singleton")>]
     let singleton (value : 'a) = 
         let hash = value.GetHashCode()
-        [hash, [value]] |> Map.ofList |> PersistentHashSet
+        PersistentHashSet(1, [hash, [value]] |> Map.ofList)
 
     /// <summary>Returns a new set with an element added to the set. No exception is raised if
     /// the set already contains the given element.</summary>
@@ -56,9 +116,9 @@ module PersistentHashSet =
                 if l |> List.exists (fun e -> e = value) then
                     set
                 else
-                    Map.add hash (value::l) map |> PersistentHashSet
+                    PersistentHashSet(set.Count + 1, Map.add hash (value::l) map)
             | None ->
-                Map.add hash [value] map |> PersistentHashSet
+                PersistentHashSet(set.Count + 1, Map.add hash [value] map)
 
 
     /// <summary>Returns a new set with the given element removed. No exception is raised if 
@@ -75,9 +135,9 @@ module PersistentHashSet =
             | Some l ->
                 let newL = l |> List.filter (fun e -> e <> value)
                 if List.isEmpty newL then
-                    Map.remove hash map |> PersistentHashSet
+                    PersistentHashSet(set.Count - 1, Map.remove hash map)
                 else
-                    Map.add hash newL map |> PersistentHashSet
+                    PersistentHashSet(set.Count - 1, Map.add hash newL map)
             | None ->
                 set
 
@@ -104,6 +164,7 @@ module PersistentHashSet =
         let mutable l = !set1
         let r = !set2
 
+        let mutable count = set1.Count
         for (h,vs) in r |> Map.toSeq do
             match Map.tryFind h l with
                 | Some values ->
@@ -111,10 +172,14 @@ module PersistentHashSet =
                     for v in vs do
                         if values |> List.forall (fun e -> e <> v) then
                             values <- v::values
+                            count <- count + 1
                     l <- Map.add h values l
 
-                | None -> l <- Map.add h vs l
-        PersistentHashSet l
+                | None -> 
+                    l <- Map.add h vs l
+                    count <- count + (List.length vs)
+
+        PersistentHashSet(count, l)
 
     /// <summary>Computes the union of a sequence of sets.</summary>
     /// <param name="sets">The sequence of sets to untion.</param>
@@ -132,18 +197,22 @@ module PersistentHashSet =
     let difference (set1 : PersistentHashSet<'a>) (set2 : PersistentHashSet<'a>) =
         let mutable l = !set1
         let r = !set2
+        let mutable count = set1.Count
 
         for (h,vs) in r |> Map.toSeq do
             match Map.tryFind h l with
-                | Some values ->
-                    let mutable values = values
+                | Some original ->
+                    let mutable values = original
                     for v in vs do
                         values <- values |> List.filter (fun e -> e <> v)
 
+                    count <- count + (List.length values - List.length original)
+
                     l <- Map.add h values l
 
-                | None -> l <- Map.add h vs l
-        PersistentHashSet l
+                | None -> ()
+
+        PersistentHashSet(count, l)
 
     /// <summary>Computes the intersection of the two sets.</summary>
     /// <param name="set1">The first input set.</param>
@@ -154,14 +223,16 @@ module PersistentHashSet =
         let mutable l = !set1
         let r = !set2
 
+        let mutable count = set1.Count
         for (h,vs) in r |> Map.toSeq do
             match Map.tryFind h l with
                 | None -> ()
                 | Some values ->
                     let newValues = values |> List.filter (fun v -> vs |> List.exists (fun vi -> vi = v))
                     l <- Map.add h newValues l
+                    count <- count + (List.length newValues - List.length values)
         
-        PersistentHashSet l
+        PersistentHashSet(count, l)
    
    
     /// <summary>Computes the intersection of a sequence of sets. The sequence must be non-empty.</summary>
@@ -203,14 +274,14 @@ module PersistentHashSet =
     /// <returns>An ordered list of the elements of <c>set</c>.</returns>
     [<CompiledName("ToList")>]
     let toList (set : PersistentHashSet<'a>) =
-        !set |> Map.toList |> List.collect snd
+        set |> Seq.toList
   
     /// <summary>Returns an ordered view of the collection as an enumerable object.</summary>
     /// <param name="set">The input set.</param>
     /// <returns>An ordered sequence of the elements of <c>set</c>.</returns>
     [<CompiledName("ToSeq")>]
     let toSeq (set : PersistentHashSet<'a>) =
-        !set |> Map.toSeq |> Seq.collect snd      
+        set :> seq<_>    
 
     /// <summary>Builds an array that contains the elements of the set in order.</summary>
     /// <param name="set">The input set.</param>
@@ -233,7 +304,7 @@ module PersistentHashSet =
     /// <returns>The number of elements in the set.</returns>
     [<CompiledName("Count")>]
     let count (set : PersistentHashSet<'a>) =
-        set |> toSeq |> Seq.length
+        set.Count
 
     /// <summary>Evaluates to "true" if all elements of the first set are in the second</summary>
     /// <param name="set1">The potential subset.</param>
