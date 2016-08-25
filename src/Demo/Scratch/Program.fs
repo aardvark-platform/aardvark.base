@@ -28,6 +28,8 @@ module Disposable =
         r := f(r)
         d
 
+
+
 type Future<'a> =
     | Later of (('a -> unit) -> IDisposable)
 
@@ -66,7 +68,7 @@ module Future =
 
     let inline next o = nextWith id o
    
-    let merge (futures : list<'a * Future<'a>>) =
+    let merge (futures : list<'a * Future<'a>>) : Future<list<'a>> =
         let values = futures |> List.map fst |> List.toArray
         Later (fun cb ->
             Disposable.fix (fun self ->
@@ -81,6 +83,7 @@ module Future =
                     |> Disposable.merge
             )
         )
+
 
 type Cont<'s, 'a> = { run : State<'s, Res<'s, 'a>> }
 
@@ -291,40 +294,41 @@ module Cont =
 
 
 type ContRunner<'s>(state : 's) =
-    
     let mutable state = state
-    let pending = System.Collections.Concurrent.ConcurrentQueue<Cont<'s, unit>>()
-    let sem = new SemaphoreSlim(0)
 
+    let time = new System.Reactive.Subjects.Subject<DateTime>()
 
+    let modState = 
+        Mod.custom (fun self -> 
+            if time.HasObservers then
+                time.OnNext DateTime.Now
+                if time.HasObservers then
+                    Mod.time.AddOutput self
+            state
+        )
 
-    member x.Enqueue(c : Cont<'s, 'a>) =
-        pending.Enqueue (Cont.ignore c)
-        sem.Release() |> ignore
+    let mutable isInTime = false
 
-    member x.Start() =
-        let run =
-            async {
-                do! Async.SwitchToNewThread()
+    member x.Time = time :> IObservable<_>
 
-                while true do
-                    let! _ = sem.WaitAsync() |> Async.AwaitTask
-                    match pending.TryDequeue() with
-                        | (true, c) ->
-                            match c.run.Run(&state) with
-                                | Cancel -> ()
-                                | Result () -> ()
-                                | Continue c ->
-                                    match c with
-                                        | Later s -> s x.Enqueue |> ignore
-                                    
-                        | _ ->
-                            ()
+    member x.State = modState :> IMod<_>
 
-            }
+    member x.Push(c : Cont<'s, 'a>) =
+        if not isInTime then
+            isInTime <- true
+            printfn "time"
+            time.OnNext(DateTime.Now)
+            isInTime <- false
 
-        Async.Start run
+        match c.run.Run(&state) with
+            | Cancel -> ()
+            | Result _ -> ()
+            | Continue c ->
+                match c with
+                    | Later s -> 
+                        s x.Push |> ignore
 
+        transact (fun () -> modState.MarkOutdated())
 
 
     
@@ -339,6 +343,23 @@ module ``Cont Builders`` =
         member x.Bind(m : Cont<'s, 'a>, f : 'a -> Cont<'s, 'b>) =
             Cont.bind f m
 
+        member x.Bind(m : State<'s, 'a>, f : 'a -> Cont<'s, 'b>) =
+            Cont.bind f { 
+                run = 
+                    state {
+                        let! v = m
+                        return Result v
+                    }
+            }
+
+        member x.ReturnFrom(m : State<'s, 'a>) =
+            { run = 
+                state {
+                    let! v = m
+                    return Result v
+                }
+            }
+
         member x.Return(v : 'a) = 
             Cont.result v
 
@@ -347,12 +368,12 @@ module ``Cont Builders`` =
                 | Not cancel -> Cont.repeatUntil cancel body
 
         member x.Delay(f : unit -> Cont<'s, 'a>) =
-            { run =
-                state {
-                    let! r = f().run
-                    return r
-                }
-            }
+            f()
+//            { run =
+//                state {
+//                    return! f().run
+//                }
+//            }
 
 
         member x.Combine(l : Cont<'s, unit>, r : Cont<'s, 'a>) =
@@ -938,29 +959,87 @@ type InputStream<'a>() =
 
 
 
-
+open System.Drawing
+open System.Windows.Forms
 
 module Test =
+
+    type SketchState =
+        { 
+            finished : list<list<V2i>>
+            current : list<V2i>
+        }
+
+    let append (p : V2i) =
+        State.modify (fun s -> { s with current = s.current @ [p]})
     
-    let paintThingy (down : IObservable<_>) (up : IObservable<_>) (move : IObservable<_>) =
+    let finish =
+        State.modify (fun s -> { s with finished = s.finished @ [s.current]; current = [] })
+
+    let paintThingy (down : IObservable<MouseEventArgs>) (up : IObservable<MouseEventArgs>) (move : IObservable<MouseEventArgs>) =
         cont {
             let! d = down
-            printfn "down"
+            do! append (V2i(d.X, d.Y))
 
-            let mutable res = []
             while Not (Cont.next up) do
                 let! m = move
-                printfn "move"
-                res <- m :: res
+                do! append (V2i(m.X, m.Y))
                 
-            printfn "up"
-            return res
+            do! finish
+        }
 
+    let continuous (time : IObservable<DateTime>) (down : IObservable<MouseEventArgs>) (up : IObservable<MouseEventArgs>) =
+        cont {
+            let! d = down
+
+            let mutable old = DateTime.Now
+            while Not (Cont.next up) do
+                let! t = time
+                printfn "%A" (t - old).TotalSeconds
+                old <- t
+
+//            let! t = time
+//            printfn "%A" (t - old).TotalSeconds  
+//            do! finish
         }
 
 
 
-open System.Windows.Forms
+type MyForm<'s>(runner : ContRunner<'s>, paint : Graphics -> 's -> unit) as this =
+    inherit Form()
+
+    let state = runner.State
+    do this.SetStyle(ControlStyles.AllPaintingInWmPaint, true)
+       this.SetStyle(ControlStyles.ResizeRedraw, true)
+       this.SetStyle(ControlStyles.DoubleBuffer, true)
+
+    let invalidate() =
+        this.BeginInvoke(new System.Action (fun () ->
+            this.Invalidate()
+        )) |> ignore
+
+    let subscription =
+        state.AddMarkingCallback invalidate
+
+
+    override x.OnPaintBackground(e) =
+        ()
+
+    override x.OnPaint(e) =
+        e.Graphics.CompositingQuality <- Drawing2D.CompositingQuality.HighQuality
+        e.Graphics.SmoothingMode <- Drawing2D.SmoothingMode.AntiAlias
+
+        e.Graphics.Clear(Color.Black)
+        printfn "get"
+        let s = state.GetValue()
+        paint e.Graphics s
+        printfn "done"
+        ()
+
+
+
+
+
 
 
 
@@ -969,20 +1048,64 @@ let main argv =
     React.Test.run()
     Environment.Exit 0
 
-    let form = new Form()
 
 
-    let runner = ContRunner<int>(0)
+    let runner = ContRunner<Test.SketchState>({ current = []; finished = [] })
 
+    
+    let paint (g : Graphics) (state : Test.SketchState) =
+        let draw (color : Color) (close : bool) (ps : list<V2i>) =
+            match ps with
+                | [] | [_] -> ()
+                | _ ->
+                    
+                    if close then
+                        use b = new SolidBrush(color)
+                        g.FillPolygon(b, ps |> List.map (fun p -> Point(p.X, p.Y)) |> List.toArray)
+                    else
+                        use p = new Pen(color, 3.0f)
+                        g.DrawLines(p, ps |> List.map (fun p -> Point(p.X, p.Y)) |> List.toArray)
+
+        for f in state.finished do
+            draw Color.Green true f
+    
+        draw Color.Red false state.current
+    
+    let form = new MyForm<Test.SketchState>(runner, paint)
+
+    let state = runner.State
     let start = form.KeyDown |> Observable.filter (fun e -> e.KeyCode = Keys.Q)
     let stop = form.KeyDown |> Observable.filter (fun e -> e.KeyCode = Keys.W)
     let move = form.KeyDown |> Observable.filter (fun e -> e.KeyCode = Keys.R) |> Observable.map (fun _ -> 1)
 
-    runner.Enqueue (Cont.repeat (Test.paintThingy form.MouseDown form.MouseUp form.MouseMove |> Cont.ignore))
+    //runner.Push (Cont.repeat (Test.paintThingy form.MouseDown form.MouseUp form.MouseMove |> Cont.ignore))
+    runner.Push (Cont.repeat (Test.continuous runner.Time form.MouseDown form.MouseUp))
+    //runner.Start()
 
-    runner.Start()
+    let sibn = 
+        state.AddMarkingCallback(fun () ->
+            form.BeginInvoke (new System.Action(fun () -> form.Invalidate())) |> ignore
+        )
 
+    
+    form.Paint.Add (fun e ->
+        let g = e.Graphics
+        g.Clear(Color.Black)
+        let state = state.GetValue()
 
+        let draw (color : Pen) (ps : list<V2i>) =
+            match ps with
+                | [] | [_] -> ()
+                | _ ->
+                    g.DrawPolygon(color, ps |> List.map (fun p -> Point(p.X, p.Y)) |> List.toArray)
+
+        draw Pens.Red state.current
+        for f in state.finished do
+            draw Pens.Green f
+    )
+
+    form.MouseDown.Add (fun _ -> printfn "down")
+    form.MouseUp.Add (fun _ -> printfn "up")
     Application.Run form
 
 
