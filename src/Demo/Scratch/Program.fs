@@ -963,9 +963,11 @@ module Test =
 open System.Windows.Forms
 
 
+
 [<EntryPoint; STAThread>]
 let main argv = 
-
+    React.Test.run()
+    Environment.Exit 0
 
     let form = new Form()
 

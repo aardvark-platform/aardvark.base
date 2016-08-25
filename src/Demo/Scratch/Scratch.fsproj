@@ -53,6 +53,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Store.fs" />
+    <Compile Include="SF.fs" />
     <Compile Include="Program.fs" />
   </ItemGroup>
   <ItemGroup>
