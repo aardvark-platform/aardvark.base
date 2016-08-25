@@ -45,14 +45,24 @@ module EventSource =
         interface IEventSource<'a> with
             member x.Subscribe cb = o.Subscribe(fun v -> cb v)
 
+    type private Mod<'a>(o : IMod<'a>) =
+        interface IEventSource with
+            member x.Subscribe cb = o |> Mod.unsafeRegisterCallbackKeepDisposable (fun v -> cb (v :> obj))
+
+        interface IEventSource<'a> with
+            member x.Subscribe cb = o  |> Mod.unsafeRegisterCallbackKeepDisposable (fun v -> cb v)
+
+
 
     let ofObservable (o : IObservable<'a>) =
         Obs<'a>(o) :> IEventSource<_>
 
+    let ofMod (o : IMod<'a>) =
+        Mod<'a>(o) :> IEventSource<_>
 
 type IPattern =
     abstract member Relevant : PersistentHashSet<IEventSource>
-    abstract member Run : IEventSource * obj -> Option<obj>
+    abstract member Run : IEventSource * obj-> Option<obj>
 
 [<AbstractClass>]
 type Pattern(relevant : PersistentHashSet<IEventSource>) =
@@ -82,47 +92,112 @@ type AmbPattern<'a, 'b>(a : Pattern, b : Pattern) =
                     | Some r -> Some (Choice<obj, obj>.Choice2Of2 r :> obj)
                     | None -> None
 
+type TimePattern private () =
+    inherit Pattern(PersistentHashSet.empty)
+    static let instance = TimePattern() :> Pattern
+    static member Instance = instance
+    
+    override x.Run(s,v) =
+        Some null
+
+type NeverPattern private () =
+    inherit Pattern(PersistentHashSet.empty)
+    static let instance = NeverPattern() :> Pattern
+    static member Instance = instance
+    
+    override x.Run(s,v) =
+        None
+
+
+type MultiDict<'k, 'v when 'k : equality>() =
+    let store = Dictionary<'k, List<'v>>()
+
+    member x.ContainsKey (key : 'k) =
+        store.ContainsKey key
+
+    member x.Add(key : 'k, value : 'v) =
+        let list = 
+            match store.TryGetValue key with
+                | (true, l) -> l
+                | _ ->
+                    let list = List()
+                    store.[key] <- list
+                    list
+
+        list.Add value
+
+    member x.Keys = store.Keys
+
+    interface System.Collections.IEnumerable with
+        member x.GetEnumerator() = store.GetEnumerator() :> _
+
+    interface System.Collections.Generic.IEnumerable<KeyValuePair<'k, List<'v>>> with
+        member x.GetEnumerator() = store.GetEnumerator() :> _
+
+
 type Runner<'s>(state : 's) =
+    inherit Mod.AbstractMod<'s>()
+
     let subscriptions = Dictionary<IEventSource, IDisposable>()
-    let mutable pending = Dictionary<Pattern, obj -> SF<'s, unit>>()
-    let queue = Queue<IEventSource * obj>()
+
+    let mutable pending : MultiDict<Pattern, obj -> SF<'s, unit>> = MultiDict()
+    let queue = Queue<IEventSource * obj * float>()
     let mutable state = { time = 0.0; state = state }
-    let modState = Mod.init state.state
     let sw = System.Diagnostics.Stopwatch()
+    do sw.Start()
+
+    let mutable dependsOnTime = false
+
+
+    let now () = sw.Elapsed.TotalSeconds
+
+    override x.Compute() =
+        x.Evaluate()
+            
+        if dependsOnTime then
+            AdaptiveObject.Time.Outputs.Add x |> ignore
+            
+        state.state
+
+    member private x.Push(source : IEventSource, value : obj) =
+        queue.Enqueue(source, value, now())
+        transact (fun () -> x.MarkOutdated())
 
     member x.Enqueue(sf : SF<'s, unit>) =
-        match sf.run.Run(&state) with
-            | Finished _ -> ()
-            | Continue(p, cont) ->
-                pending.[p] <- cont
-                for r in p.Relevant do
-                    if not (subscriptions.ContainsKey r) then
-                        subscriptions.[r] <- r.Subscribe(fun o -> queue.Enqueue(r, o))
-                            
-    member x.Step() =
         lock x (fun () ->
-            
-            if not sw.IsRunning then sw.Start()
-            else state <- { state with time = sw.Elapsed.TotalSeconds }
+            match sf.run.Run(&state) with
+                | Finished _ -> ()
+                | Continue(p, cont) ->
+                    pending.Add(p, cont)
 
-            if queue.Count > 0 then
-                printfn "step: %A" state.time
+                    if p = TimePattern.Instance then
+                        dependsOnTime <- true
 
+                    for r in p.Relevant do
+                        if not (subscriptions.ContainsKey r) then
+                            subscriptions.[r] <- r.Subscribe(fun o -> x.Push(r, o))
+        )
+                            
+    member private x.Step() =
+        lock x (fun () ->
             while queue.Count > 0 do
-                let (s,e) = queue.Dequeue()
+                let (s,e,t) = queue.Dequeue()
+                state <- { state with time = t }
 
-                let newPending = Dictionary<Pattern, obj -> SF<'s, unit>>()
-                for (KeyValue(p, cont)) in pending do
+                let mutable newPending = MultiDict()
+                for KeyValue(p, conts) in pending do
                     match p.Run(s,e) with
                         | Some v -> 
-                            let c = cont v
-                            match c.run.Run(&state) with
-                                | Continue(p,c) ->
-                                    newPending.[p] <- c
-                                | _ ->
-                                    ()
+                            for cont in conts do
+                                let c = cont v
+                                match c.run.Run(&state) with
+                                    | Continue(p,c) ->
+                                        newPending.Add(p, c)
+                                    | _ ->
+                                        ()
                         | None ->
-                            newPending.[p] <- cont
+                            for cont in conts do
+                                newPending.Add(p,cont)
 
                 let oldEvents   = pending.Keys |> Seq.collect (fun p -> p.Relevant) |> HashSet
                 let newEvents   = newPending.Keys |> Seq.collect (fun p -> p.Relevant) |> HashSet
@@ -130,7 +205,7 @@ type Runner<'s>(state : 's) =
                 let added       = newEvents |> Seq.filter (oldEvents.Contains >> not) |> Seq.toList
 
                 for a in added do
-                    subscriptions.[a] <- a.Subscribe(fun o -> queue.Enqueue(a, o))
+                    subscriptions.[a] <- a.Subscribe(fun o -> x.Push(a, o))
 
                 for r in removed do
                     match subscriptions.TryGetValue r with
@@ -141,11 +216,17 @@ type Runner<'s>(state : 's) =
 
                 pending <- newPending
 
-            transact (fun () -> modState.Value <- state.state)
+            dependsOnTime <- pending.ContainsKey TimePattern.Instance
 
         )
 
-    member x.State = modState :> IMod<_>
+    member x.Evaluate() =
+        lock x (fun () ->
+            queue.Enqueue(Unchecked.defaultof<_>, null, now ())
+            x.Step()
+        )
+
+    member x.State = x :> IMod<_>
 
 
 
@@ -154,6 +235,7 @@ and SF<'s, 'a> = { run : State<EventState<'s>, Result<'s, 'a>> }
 and Result<'s, 'a> =
     | Finished of 'a
     | Continue of Pattern * (obj -> SF<'s, 'a>)
+
 
 module SF =
     let value (v : 'a) =
@@ -164,6 +246,23 @@ module SF =
         
     let ofObservable (o : IObservable<'a>) =
         o |> EventSource.ofObservable |> ofEventSource
+
+    let ofMod (m : IMod<'a>) =
+        m |> EventSource.ofMod |> ofEventSource
+
+    let now<'s> : SF<'s, float> =
+        { run = State.get |> State.map (fun s -> Finished s.time) }
+
+    let nextTime<'s> : SF<'s, float> =
+        { run = State.get |> State.map (fun s -> Continue(TimePattern.Instance,fun _ -> { run = State.get |> State.map (fun s -> Finished s.time) })) }
+
+    let dt<'s> : SF<'s, float> =
+        { run = 
+            State.get |> State.map (fun s -> 
+                let start = s.time
+                Continue(TimePattern.Instance,fun _ -> { run = State.get |> State.map (fun s -> Finished (s.time - start)) })
+            ) 
+        }
 
 
     let rec map (f : 'a -> 'b) (m : SF<'s, 'a>) =
@@ -258,6 +357,25 @@ module SF =
 
         repeatUntil cancelOrM
 
+    let rec repeatWhile (guard : SF<'s, bool>) (body : SF<'s, unit>) =
+        { run =
+            state {
+                let! g = guard.run
+                match g with
+                    | Finished true ->
+                        let! r = body.run
+                        match r with
+                            | Finished () -> return! (repeatWhile guard body).run
+
+                            | Continue(p, c) ->
+                                return Continue(p, fun o -> append (c o) (repeatWhile guard body))
+                    | _ ->
+                        return Finished ()
+
+            }
+        }
+
+
     let rec repeat (inner : SF<'s, unit>) =
         { run =
             state {
@@ -267,6 +385,15 @@ module SF =
                     | Continue(p,cont) -> return Continue(p, fun o -> append (cont o) (repeat inner))
             }
         }
+
+    let never<'s, 'a> : SF<'s, 'a> =
+        { run =
+            state {
+                return Continue(NeverPattern.Instance, fun _ -> failwith "")
+            }
+        }
+
+
 
 
 type Pattern<'s, 'a> =
@@ -286,16 +413,25 @@ module ``SF Builders`` =
         member x.Bind(m : State<'s, 'a>, f : 'a -> SF<'s, 'b>) =
             SF.bind f { run = m |> EventState.lift |> State.map Finished }
 
-        member x.Bind(m : State<EventState<'s>, 'a>, f : 'a -> SF<'s, 'b>) =
-            SF.bind f { run = m |> State.map Finished }
-
+//        member x.Bind(m : Value<'s, 'a>, f : 'a -> SF<'s, 'b>) =
+//            SF.bind f { run = m.eval |> State.map Finished }
 
         member x.Return(v : 'a) = 
             SF.value v
 
+        member x.ReturnFrom(sf : SF<'s, 'a>) =
+            sf
+
         member x.While(guard : unit -> Pattern<'s, 'a>, body : SF<'s, unit>) =
             match guard() with
                 | Not cancel -> SF.repeatUntil cancel body
+
+        member x.While(guard : unit -> bool, body : SF<'s, unit>) =
+            SF.repeatWhile { run = state { return guard() |> Finished } } body
+
+//        member x.While(guard : unit -> Value<'s, bool>, body : SF<'s, unit>) =
+//            SF.repeatWhile { eval = state { return! guard().eval }} body
+
 
         member x.Delay(f : unit -> SF<'s, 'a>) =
             { run =
@@ -328,25 +464,50 @@ module Test =
     let append (v : V2i) =
         State.modify (fun s -> { s with current = s.current @ [v] } )
 
-    let finish =
-        State.modify (fun s -> { s with current = []; finished = s.finished @ [s.current] } )
+    let emit (v : list<V2i>) =
+        State.modify (fun s -> { s with current = []; finished = s.finished @ [v] } )
+
+    let clear =
+        State.modify (fun s -> { s with current = [] } )
 
 
     let paintThingy (down : IObservable<MouseEventArgs>) (up : IObservable<MouseEventArgs>) (move : IObservable<MouseEventArgs>) =
         sf {
             let! d = down
-            do! append (V2i(d.X, d.Y))
+            let pd = V2i(d.X, d.Y)
+            do! append pd
 
-            let mutable res = []
+            let mutable res = [pd]
             while Not (SF.ofObservable up) do
                 let! m = move
-                do! append (V2i(m.X, m.Y))
-                res <- m :: res
+                let pm = V2i(m.X, m.Y)
+                do! append pm
+                res <- res @ [pm]
                 
-            do! finish
+            do! clear
+            return res
 
         }
 
+    let paintManyThings (down : IObservable<MouseEventArgs>) (up : IObservable<MouseEventArgs>) (move : IObservable<MouseEventArgs>) =
+        sf {
+            while true do
+                let! a = paintThingy down up move
+                do! emit a
+        }
+
+    let rec printTime (sumOfDeltas : float) : SF<'s, unit> =
+        sf {
+            let! t = SF.now
+            let! dt = SF.dt
+            printfn "%.4f: %.3fms" t (1000.0 * dt)
+            if t < 3.0 then 
+                return! printTime (sumOfDeltas + dt)
+            else
+                let err = abs(sumOfDeltas - t)
+                if err = 0.0 then printfn "no error"
+                else printfn "error: %.8fms" (1000.0 * abs(sumOfDeltas - t))
+        }
 
     module UI =
         type Graphics with
@@ -354,14 +515,14 @@ module Test =
                 match ps with
                     | [] | [_] -> ()
                     | _ ->
-                        use p = new Pen(color, 5.0f)
+                        use p = new Pen(color, 3.0f)
                         x.DrawLines(p, ps |> List.map (fun p -> Point(p.X, p.Y)) |> List.toArray)
 
             member x.Polygon(color : Color, ps : list<V2i>) =
                 match ps with
                     | [] | [_] -> ()
                     | _ ->            
-                        use p = new SolidBrush(color)
+                        use p = new HatchBrush(HatchStyle.DottedGrid, color)
                         x.FillPolygon(p, ps |> List.map (fun p -> Point(p.X, p.Y)) |> List.toArray)
 
         type PaintForm(m : IMod<SketchState>) as this =
@@ -388,19 +549,20 @@ module Test =
                 let g = e.Graphics
                 g.Clear(Color.Black)
 
-                g.Line(Color.Red, s.current)
 
                 for p in s.finished do
                     g.Polygon(Color.Green, p)
+
+                g.Line(Color.Red, s.current)
 
     let run() =
         let runner = Runner { current = []; finished = [] }
         use form = new UI.PaintForm(runner.State)
 
 
-        let thing = paintThingy form.MouseDown form.MouseUp form.MouseMove |> SF.ignore |> SF.repeat
+        let thing = paintManyThings form.MouseDown form.MouseUp form.MouseMove
         runner.Enqueue thing
+        runner.Enqueue (printTime 0.0) //(printTime 0.0)
 
 
-        Application.Idle.Add (fun _ -> runner.Step())
         Application.Run(form)
