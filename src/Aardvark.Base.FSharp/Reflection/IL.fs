@@ -170,7 +170,7 @@ type Instruction =
     | Switch of Label[]
     | Throw
     | EndFinally
-    | Leave
+    | Leave of Label
 
 type MethodDefinition =
     {
@@ -771,7 +771,7 @@ module Disassembler =
             else None
 
         let (|Leave|_|) (i : RawInstruction) =
-            if i.Code = OpCodes.Leave then Some ()
+            if i.Code = OpCodes.Leave then Some (unbox<int> i.Operand)
             else None
 
 
@@ -917,7 +917,7 @@ module Disassembler =
 
                         | Patterns.Throw            -> yield Throw
                         | Patterns.EndFinally       -> yield EndFinally
-                        | Patterns.Leave            -> yield Leave
+                        | Patterns.Leave t          -> yield Leave(branchTargetIds.[t])
 
                         | Patterns.Switch targets ->
                             yield Switch(targets |> Array.map (fun t -> branchTargetIds.[t]))
@@ -953,18 +953,19 @@ module Disassembler =
 module Assembler =
     open StateMonad
 
+    type State =
+        {
+            generator   : ILGenerator
+            labels      : Map<Label, System.Reflection.Emit.Label>
+            locals      : Map<Local, LocalBuilder>
+            stack       : list<Type>
+        }
+
     [<AutoOpen>]
     module private Helpers =
         open Microsoft.FSharp.Reflection
         open StateMonad
 
-        type AssemblerState =
-            {
-                generator   : ILGenerator
-                labels      : Map<Label, System.Reflection.Emit.Label>
-                locals      : Map<int, LocalBuilder>
-                stack       : list<Type>
-            }
 
         let (|ValueType|_|) (t : Type) =
             if t = typeof<obj> then Some ValueType.Object
@@ -998,7 +999,7 @@ module Assembler =
                 | ValueType.Float64 -> typeof<float>
                 | _ -> typeof<obj>
 
-        type Asm<'a> = State<AssemblerState, 'a>
+        type Asm<'a> = State<State, 'a>
 
         type Asm() =
 
@@ -1043,11 +1044,11 @@ module Assembler =
 
             static member GetLocal (l : Local) : Asm<LocalBuilder> =
                 fun s ->
-                    match Map.tryFind l.Id s.locals with
+                    match Map.tryFind l s.locals with
                         | Some l -> s,l
                         | None ->
                             let res = s.generator.DeclareLocal(l.Type)
-                            let s = { s with locals = Map.add l.Id res s.locals }
+                            let s = { s with locals = Map.add l res s.locals }
                             s, res
 
             static member GetLabel (l : Label) : Asm<System.Reflection.Emit.Label> =
@@ -1432,7 +1433,9 @@ module Assembler =
 
                 | Throw -> do! Asm.Emit(OpCodes.Throw)
                 | EndFinally -> do! Asm.Emit(OpCodes.Endfinally)
-                | Leave -> do! Asm.Emit(OpCodes.Leave)
+                | Leave l -> 
+                    let! l = Asm.GetLabel l
+                    do! Asm.Emit(OpCodes.Leave, l)
                 | CkFinite -> do! Asm.Emit(OpCodes.Ckfinite)
                 | MkRefAny t -> do! Asm.Emit(OpCodes.Mkrefany, t)
                 | RefAnyVal t -> do! Asm.Emit(OpCodes.Refanyval, t)
@@ -1453,6 +1456,9 @@ module Assembler =
             locals      = Map.empty
             stack       = []
         } |> ignore
+
+    let assembleTo' (state : State) (m : seq<Instruction>) =
+        assembleBody m state |> ignore
 
     let assembleDelegateInternal (tdel : Type) (m : list<Instruction>) : Delegate =
         let invoke = tdel.GetMethod("Invoke")
