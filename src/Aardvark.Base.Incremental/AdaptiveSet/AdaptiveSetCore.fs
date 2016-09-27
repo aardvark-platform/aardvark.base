@@ -222,7 +222,7 @@ module ASetReaders =
         let mutable mChanged = true
 
         override x.InputChanged(t, o : IAdaptiveObject) =
-            mChanged <- Object.ReferenceEquals(o, m)
+            mChanged <- mChanged || Object.ReferenceEquals(o, m)
 
         override x.Inputs =
             seq {
@@ -245,8 +245,8 @@ module ASetReaders =
             
             match current with
                 | Some old ->
+                    let v = m.GetValue x
                     if moutdated then
-                        let v = m.GetValue x
                         if hasChanged v then
                             let removal = old.Content |> Seq.map Rem |> Seq.toList
                             old.Dispose()
