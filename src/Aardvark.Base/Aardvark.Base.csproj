@@ -31,7 +31,7 @@
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <Prefer32Bit>false</Prefer32Bit>
     <NoWarn>1591</NoWarn>
-    <DocumentationFile>..\..\..\..\build\Debug\AMD64\Aardvark.Base.XML</DocumentationFile>
+    <DocumentationFile>..\..\bin\Debug\Aardvark.Base.xml</DocumentationFile>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
