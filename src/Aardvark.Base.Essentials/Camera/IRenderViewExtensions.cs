@@ -73,5 +73,18 @@ namespace Aardvark.Base
             
             return hull;
         }
+
+        /// <summary>
+        /// Returns the ray-direction towards the center of the view.
+        /// </summary>
+        public static V3d CentralDirection(this IViewProjection vp)
+        {
+            var trafo = vp.View.ViewTrafo.Backward * vp.Projection.ProjectionTrafo.Backward;
+
+            var nearPoint = trafo.TransformPosProj(V3d.OOO);
+            var farPoint = trafo.TransformPosProj(V3d.OOI);
+
+            return (farPoint - nearPoint).Normalized;
+        }
     }
 }
