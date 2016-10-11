@@ -56,6 +56,10 @@ type IModRef<'a> =
 
     abstract member UnsafeCache : 'a with get,set
 
+    [<CLIEvent>]
+    abstract member Changed : IEvent<EventHandler<EventArgs>, EventArgs>
+
+
 /// <summary>
 /// ModRef<'a> represents a changeable input
 /// cell which can be changed by the user and
@@ -68,6 +72,18 @@ type ModRef<'a>(value : 'a) =
     let mutable cache = value
     let tracker = ChangeTracker.trackVersion<'a>
 
+    let mutable changed = None
+
+    let getChanged() =
+        match changed with
+            | None -> 
+                let c = Event<EventHandler<EventArgs>, EventArgs>()
+                changed <- Some c
+                c
+            | Some c ->
+                c
+
+
     member x.UnsafeCache
         with get() = value
         and set v = value <- v
@@ -77,9 +93,13 @@ type ModRef<'a>(value : 'a) =
         and set v =
             if tracker v || not <| Object.Equals(v, value) then
                 value <- v
-                x.MarkOutdated()
+                let fin = 
+                    match changed with
+                        | Some c -> Some (fun () -> c.Trigger(x, EventArgs.Empty))
+                        | None -> None
 
-    
+                x.MarkOutdated(fin)
+
 
     member x.GetValue(caller : IAdaptiveObject) =
         x.EvaluateAlways caller (fun () ->
@@ -88,6 +108,10 @@ type ModRef<'a>(value : 'a) =
             
             cache
         )
+
+    [<CLIEvent>]
+    member x.Changed =
+        getChanged().Publish
 
     override x.ToString() =
        sprintf "{ value = %A }" value
@@ -107,6 +131,8 @@ type ModRef<'a>(value : 'a) =
             with get() = x.UnsafeCache
             and set v = x.UnsafeCache <- v
 
+        [<CLIEvent>]
+        member x.Changed = x.Changed
 
 // ConstantMod<'a> represents a constant mod-cell
 // and implements IMod<'a> (making use of the core
@@ -168,6 +194,17 @@ type DefaultingModRef<'a>(computed : IMod<'a>) =
     let mutable cache = Unchecked.defaultof<'a>
     let mutable isComputed = true
     let mutable tracker = ChangeTracker.trackVersion<'a>
+    
+    let mutable changedEvt = None
+
+    let getChanged() =
+        match changedEvt with
+            | None -> 
+                let c = Event<EventHandler<EventArgs>, EventArgs>()
+                changedEvt <- Some c
+                c
+            | Some c ->
+                c
 
 
     member x.GetValue(caller) =
@@ -184,7 +221,12 @@ type DefaultingModRef<'a>(computed : IMod<'a>) =
         if not isComputed then
             tracker <- ChangeTracker.trackVersion<'a>
             isComputed <- true
-            x.MarkOutdated()
+            let fin = 
+                match changedEvt with
+                    | Some c -> Some (fun () -> c.Trigger(x, EventArgs.Empty))
+                    | None -> None
+
+            x.MarkOutdated(fin)
 
     member x.Value 
         with get() = 
@@ -201,7 +243,11 @@ type DefaultingModRef<'a>(computed : IMod<'a>) =
                     tracker v || not <| Object.Equals(v, cache)
             if changed then
                 cache <- v
-                x.MarkOutdated()
+                let fin = 
+                    match changedEvt with
+                        | Some c -> Some (fun () -> c.Trigger(x, EventArgs.Empty))
+                        | None -> None
+                x.MarkOutdated(fin)
 
     member x.UnsafeCache
         with get() = cache
@@ -212,6 +258,10 @@ type DefaultingModRef<'a>(computed : IMod<'a>) =
                 x.Level <- 0
   
             cache <- v
+
+    [<CLIEvent>]
+    member x.Changed =
+        getChanged().Publish
 
     override x.ToString() =
         if isComputed then sprintf "%A" computed
@@ -232,6 +282,9 @@ type DefaultingModRef<'a>(computed : IMod<'a>) =
         member x.UnsafeCache
             with get() = x.UnsafeCache
             and set v = x.UnsafeCache <- v
+
+        [<CLIEvent>]
+        member x.Changed = x.Changed
 
 /// <summary>
 /// defines functions for composing mods and

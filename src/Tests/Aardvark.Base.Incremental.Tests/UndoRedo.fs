@@ -80,6 +80,9 @@ module ScopeExtensions =
                 with get() = value
                 and set v = value <- v
 
+            [<CLIEvent>]
+            member x.Changed = Unchecked.defaultof<IEvent<_,_>>
+
         override x.Compute() =
             value
 

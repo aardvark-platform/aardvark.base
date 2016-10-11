@@ -798,8 +798,29 @@ module Marking =
                         else failwith "cannot mark object without transaction"
                     )
 
+
+        member x.MarkOutdated (cause : Option<IAdaptiveObject>, fin : Option<unit -> unit>) =
+            match getCurrentTransaction() with
+                | Some t -> 
+                    t.Enqueue(x, cause)
+                    match fin with
+                        | Some fin -> t.AddFinalizer(fin)
+                        | None -> ()
+                | None -> 
+                    lock x (fun () -> 
+                        if x.OutOfDate then ()
+                        elif x.Outputs.IsEmpty then x.OutOfDate <- true
+                        else failwith "cannot mark object without transaction"
+                    )
+                    match fin with
+                        | Some fin -> fin()
+                        | None -> ()
+
         member x.MarkOutdated () =
             x.MarkOutdated None
+               
+        member x.MarkOutdated (fin : Option<unit -> unit>) =
+            x.MarkOutdated(None, fin)
                             
         /// <summary>
         /// utility for adding an output to the object.
