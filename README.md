@@ -8,6 +8,8 @@ Aardvark.Base is a collection of algorithms and data structures for computer gra
 
 [Getting Started](https://github.com/vrvis/aardvark/wiki)
 
+[Example Code and Demos](https://github.com/vrvis/aardvark.rendering/tree/master/src/Demo/Examples)
+
 [Tutorial: Terrain Generator](https://aszabo314.github.io/stuff/terraingenerator.html)
 
 [Game: Samy the Salmon](https://github.com/gnufu/SamyTheSalmon)
@@ -32,6 +34,4 @@ the build fails immediately afterwards no matter if you granted permission. In t
 simply rebuild all again and it should work this time.
 
 ##License
-Aardvark libraries are free to use: http://www.apache.org/licenses/LICENSE-2.0.txt
-
-Copyright © 2014,2015,2016 VRVis Zentrum für Virtual Reality und Visualisierung Forschungs-GmbH, Donau-City-Strasse 1, A-1220 Wien, Austria. http://www.vrvis.at.
+Aardvark libraries are free to use: [Apache License 2.0](http://www.apache.org/licenses/LICENSE-2.0.txt).
