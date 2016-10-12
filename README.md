@@ -10,6 +10,8 @@ Aardvark.Base is a collection of algorithms and data structures for computer gra
 
 [Tutorial: Terrain Generator](https://aszabo314.github.io/stuff/terraingenerator.html)
 
+[Game: Samy the Salmon](https://github.com/gnufu/SamyTheSalmon)
+
 ##How to build
 
 Windows:
