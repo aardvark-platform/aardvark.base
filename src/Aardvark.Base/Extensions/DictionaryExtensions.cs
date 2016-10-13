@@ -67,6 +67,10 @@ namespace Aardvark.Base
 
     public static class IDictionaryExtensions
     { 
+        /// <summary>
+        /// Tries to get a value from the dictionary.
+        /// If the key is not found, default(T) will be returned.
+        /// </summary>
         public static Tv Get<Tk, Tv>(
             this IDictionary<Tk, Tv> self, Tk key)
         {
@@ -75,6 +79,10 @@ namespace Aardvark.Base
             return default(Tv);
         }
 
+        /// <summary>
+        /// Tries to get a value from the dictionary. 
+        /// If the key is not found, the specified defaultValue will be returned.
+        /// </summary>
         public static Tv Get<Tk, Tv>(
             this IDictionary<Tk, Tv> self, Tk key, Tv defaultValue)
         {
@@ -83,6 +91,9 @@ namespace Aardvark.Base
             return defaultValue;
         }
 
+        /// <summary>
+        /// Gets the value with the given key. If not found, a new value for the key is created.
+        /// </summary>
         public static TV GetCreate<TK, TV>(this IDictionary<TK, TV> self, TK key, Func<TK, TV> creator = null)
         {
             TV value;
@@ -94,6 +105,11 @@ namespace Aardvark.Base
             return value;
         }
 
+        /// <summary>
+        /// Removes the value with the given key from the dictionary and passes it as return argument.
+        /// </summary>
+        /// <return>The value removed from the dictionary</return>
+        /// <exception cref="KeyNotFoundException">if key not found</exception>
         public static TV Pop<TK, TV>(this IDictionary<TK, TV> self, TK key)
         {
             TV value;
@@ -102,9 +118,14 @@ namespace Aardvark.Base
                 self.Remove(key);
                 return value;
             }
-            throw new ArgumentException("key not found");
+            throw new KeyNotFoundException();
         }
 
+        /// <summary>
+        /// Removes the value with the given key from the dictionary and passes it as return argument.
+        /// In case the value is not found default(T) will be return.
+        /// </summary>
+        /// <return>The value removed from the dictionary or default(T)</return>
         public static TV TryPop<TK, TV>(this IDictionary<TK, TV> self, TK key)
         {
             TV value = default(TV);
