@@ -4,19 +4,6 @@ open System.Threading
 open System.Collections.Generic
 open Aardvark.Base
 
-/// <summary>
-/// Delta defines the two basic set-operations
-/// add and remove with their respective value
-/// </summary>
-type Delta<'a> = 
-    | Add of 'a 
-    | Rem of 'a with
-
-    member x.Value =
-        match x with
-            | Add v -> v
-            | Rem v -> v
-
 
 module Delta =
     /// <summary>

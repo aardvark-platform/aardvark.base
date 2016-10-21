@@ -1,6 +1,7 @@
 ﻿namespace Aardvark.Base.Incremental.Tests
 
 open System.Collections.Generic
+open Aardvark.Base
 open Aardvark.Base.Incremental
            
 module ASetReferenceImpl =

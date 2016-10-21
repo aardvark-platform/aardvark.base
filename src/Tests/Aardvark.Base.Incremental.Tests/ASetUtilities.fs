@@ -3,6 +3,7 @@
 
 open System.Collections
 open System.Collections.Generic
+open Aardvark.Base
 open Aardvark.Base.Incremental
 
 
