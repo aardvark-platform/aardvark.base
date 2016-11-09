@@ -173,6 +173,37 @@ type IAdaptiveObject =
 
     abstract member Lock : AdaptiveLock
 
+and AdaptiveLock() =
+    //let mutable readerCount = 0
+    let rw = new ReaderWriterLockSlim()
+
+    member x.EnterRead(o : IAdaptiveObject) = 
+        if rw.IsWriteLockHeld || rw.IsReadLockHeld then
+            Monitor.Enter o
+            false
+        else
+            rw.EnterReadLock()
+            Monitor.Enter o
+            true
+
+    member x.Downgrade(o : IAdaptiveObject) = 
+        Monitor.Exit o
+
+    member x.ExitRead() = 
+        rw.ExitReadLock()
+
+    member x.EnterWrite(o : IAdaptiveObject) = 
+        if rw.IsReadLockHeld && o.OutOfDate then
+            false
+        else
+            rw.EnterWriteLock()
+            Monitor.Enter o
+            true
+
+    member x.ExitWrite(o : IAdaptiveObject) = 
+        Monitor.Exit o
+        rw.ExitWriteLock()
+
 /// <summary>
 /// LevelChangedException is internally used by the system
 /// to handle level changes during the change propagation.
@@ -359,7 +390,7 @@ type Transaction() =
                 // Note that the transaction will at most hold one
                 // lock at a time.
                 //Monitor.Enter e
-                e.Lock.EnterWrite(e)
+                let enterWorked = e.Lock.EnterWrite(e)
                 try
                     // if the element is already outOfDate we
                     // do not traverse the graph further.
@@ -415,7 +446,8 @@ type Transaction() =
                                 outputCount := 0
                 
                 finally 
-                    e.Lock.ExitWrite(e)
+                    if enterWorked then
+                        e.Lock.ExitWrite(e)
                     //Monitor.Exit e
 
                 // finally we enqueue all returned outputs

@@ -247,30 +247,3 @@ type AdaptiveLocksadasd() =
         rw.ExitWriteLock()
 
 
-type AdaptiveLock() =
-    //let mutable readerCount = 0
-    let rw = new ReaderWriterLockSlim()
-
-    member x.EnterRead(o : obj) = 
-        if rw.IsWriteLockHeld || rw.IsReadLockHeld then
-            Monitor.Enter o
-            false
-        else
-            rw.EnterReadLock()
-            Monitor.Enter o
-            true
-
-    member x.Downgrade(o : obj) = 
-        Monitor.Exit o
-
-    member x.ExitRead() = 
-        rw.ExitReadLock()
-
-    member x.EnterWrite(o : obj) = 
-        rw.EnterWriteLock()
-        Monitor.Enter o
-
-
-    member x.ExitWrite(o : obj) = 
-        Monitor.Exit o
-        rw.ExitWriteLock()
