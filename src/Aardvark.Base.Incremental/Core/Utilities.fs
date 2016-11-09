@@ -248,35 +248,29 @@ type AdaptiveLocksadasd() =
 
 
 type AdaptiveLock() =
-    let mutable readerCount = 0
+    //let mutable readerCount = 0
+    let rw = new ReaderWriterLockSlim()
 
     member x.EnterRead(o : obj) = 
-        Monitor.Enter o
-        Interlocked.Increment(&readerCount) |> ignore
+        if rw.IsWriteLockHeld || rw.IsReadLockHeld then
+            Monitor.Enter o
+            false
+        else
+            rw.EnterReadLock()
+            Monitor.Enter o
+            true
 
     member x.Downgrade(o : obj) = 
         Monitor.Exit o
 
     member x.ExitRead() = 
-        Interlocked.Decrement(&readerCount) |> ignore 
+        rw.ExitReadLock()
 
     member x.EnterWrite(o : obj) = 
-        let rec enter(level : int) =
-            while Volatile.Read(&readerCount) > 0 do
-                Thread.Sleep(0)
+        rw.EnterWriteLock()
+        Monitor.Enter o
 
-            Monitor.Enter o
-            if readerCount > 0 then
-                if level > 10 then Log.warn "yehaaa"
-                Monitor.Exit o
-                enter(level + 1)
-            else
-                ()
-
-        if Monitor.IsEntered o && readerCount <= 1 then
-            Monitor.Enter o
-        else
-            enter 0
 
     member x.ExitWrite(o : obj) = 
         Monitor.Exit o
+        rw.ExitWriteLock()

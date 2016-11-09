@@ -486,8 +486,8 @@ type AdaptiveObject =
                 else []
 
             let mutable res = Unchecked.defaultof<_>
-            this.Lock.EnterRead this
-            let mutable good = false
+            let enterReadWorked = this.Lock.EnterRead this
+            let mutable good = false // evaluate works without exception?
 
             depth := !depth + 1
 
@@ -530,13 +530,15 @@ type AdaptiveObject =
             finally
                 this.Lock.Downgrade this
 
-                if not good then
-                    this.Lock.ExitRead()
+                if not good then // no level changed exn occured
+                    if enterReadWorked then this.Lock.ExitRead()
 
                     if isNull caller then
                         AdaptiveSystemState.popReadLocks oldLocks
                 else
-                    AdaptiveSystemState.addReadLock this.Lock
+                    // normal case. if we got read lock, capture lock
+                    if enterReadWorked then
+                        AdaptiveSystemState.addReadLock this.Lock
 
                 depth := !depth - 1
 
