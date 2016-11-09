@@ -587,8 +587,11 @@ namespace Aardvark.Base
                 Report.Line(5, "[GetPluginAssemblyPaths] StackTrace (outer): {0}", e.StackTrace.ToString());
                 try {
                     Report.Line(5, "[GetPluginAssemblyPaths] FusionLog: {0}", e.FusionLog);
-                    Report.Line(5, "[GetPluginAssemblyPaths] Inner message: {0}", e.InnerException.Message);
-                    Report.Line(5, "[GetPluginAssemblyPaths] Inner stackTrace: {0}", e.InnerException.StackTrace.ToString());
+                    if (e.InnerException != null)
+                    {
+                        Report.Line(5, "[GetPluginAssemblyPaths] Inner message: {0}", e.InnerException.Message);
+                        Report.Line(5, "[GetPluginAssemblyPaths] Inner stackTrace: {0}", e.InnerException.StackTrace.ToString());
+                    }
                 } catch(Exception)
                 {
                     Report.Line(5, "[GetPluginAssemblyPaths] could not print details for FileLoadException (most likely BadImageFormat)");
