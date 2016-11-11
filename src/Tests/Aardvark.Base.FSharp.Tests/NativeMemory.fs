@@ -12,7 +12,7 @@ open Aardvark.Base
 
 module MemoryManagerTests =
     
-    let create() = new MemoryManager(16, Marshal.AllocHGlobal, fun ptr _ -> Marshal.FreeHGlobal ptr)
+    let create() = new MemoryManager(16n, Marshal.AllocHGlobal, fun ptr _ -> Marshal.FreeHGlobal ptr)
 
     type Interlocked with
         static member Change(location : byref<int>, f : int -> int) =
@@ -33,8 +33,8 @@ module MemoryManagerTests =
     let ``[Memory] simple alloc test``() =
         let m = create()
 
-        let b0 = m.Alloc(10)
-        let b1 = m.Alloc(6)
+        let b0 = m.Alloc(10n)
+        let b1 = m.Alloc(6n)
 
         m.Validate()
 
@@ -42,11 +42,11 @@ module MemoryManagerTests =
     let ``[Memory] simple free test``() =
         let m = create()
 
-        let b0 = m.Alloc(10)
+        let b0 = m.Alloc(10n)
         m.Free b0
 
 
-        let b1 = m.Alloc(16)
+        let b1 = m.Alloc(16n)
         
         m.Validate()
 
@@ -54,9 +54,9 @@ module MemoryManagerTests =
     let ``[Memory] free collapse left``() =
         let m = create()
 
-        let b0 = m.Alloc(2)
-        let b1 = m.Alloc(2)
-        let b2 = m.Alloc(2)
+        let b0 = m.Alloc(2n)
+        let b1 = m.Alloc(2n)
+        let b2 = m.Alloc(2n)
         m.Free b0
         m.Free b1
 
@@ -67,10 +67,10 @@ module MemoryManagerTests =
     let ``[Memory] free collapse right``() =
         let m = create()
 
-        let b0 = m.Alloc(2)
-        let b1 = m.Alloc(2)
-        let b2 = m.Alloc(2)
-        let r = m.Alloc(10)
+        let b0 = m.Alloc(2n)
+        let b1 = m.Alloc(2n)
+        let b2 = m.Alloc(2n)
+        let r = m.Alloc(10n)
         m.Free b2
         m.Free b1
 
@@ -81,10 +81,10 @@ module MemoryManagerTests =
     let ``[Memory] free collapse both``() =
         let m = create()
 
-        let b0 = m.Alloc(2)
-        let b1 = m.Alloc(2)
-        let b2 = m.Alloc(2)
-        let r = m.Alloc(10)
+        let b0 = m.Alloc(2n)
+        let b1 = m.Alloc(2n)
+        let b2 = m.Alloc(2n)
+        let r = m.Alloc(10n)
         m.Free b2
         m.Free b0
         m.Free b1
@@ -97,13 +97,13 @@ module MemoryManagerTests =
     let ``[Memory] realloc move``() =
         let m = create()
 
-        let b0 = m.Alloc(2)
-        let b1 = m.Alloc(2)
+        let b0 = m.Alloc(2n)
+        let b1 = m.Alloc(2n)
         
-        m.Realloc(b0, 4) |> should be True
+        m.Realloc(b0, 4n) |> should be True
         m.Validate()
 
-        b0.Size |> should equal 4
+        b0.Size |> should equal 4n
         b0.Offset |> should equal 4n
 
 
@@ -111,13 +111,13 @@ module MemoryManagerTests =
     let ``[Memory] realloc exact space left``() =
         let m = create()
 
-        let b0 = m.Alloc(2)
-        let b1 = m.Alloc(4)
-        let b2 = m.Alloc(2)
+        let b0 = m.Alloc(2n)
+        let b1 = m.Alloc(4n)
+        let b2 = m.Alloc(2n)
         
         m.Free(b1)
 
-        m.Realloc(b0, 6) |> should be False
+        m.Realloc(b0, 6n) |> should be False
         m.Validate()
 
 
@@ -125,13 +125,13 @@ module MemoryManagerTests =
     let ``[Memory] realloc more space left``() =
         let m = create()
 
-        let b0 = m.Alloc(2)
-        let b1 = m.Alloc(5)
-        let b2 = m.Alloc(2)
+        let b0 = m.Alloc(2n)
+        let b1 = m.Alloc(5n)
+        let b2 = m.Alloc(2n)
         
         m.Free(b1)
 
-        m.Realloc(b0, 6) |> should be False
+        m.Realloc(b0, 6n) |> should be False
         m.Validate()
 
 
@@ -139,10 +139,10 @@ module MemoryManagerTests =
     let ``[Memory] realloc shrink``() =
         let m = create()
 
-        let b0 = m.Alloc(2)
-        let b1 = m.Alloc(4)
+        let b0 = m.Alloc(2n)
+        let b1 = m.Alloc(4n)
 
-        m.Realloc(b0, 1) |> should be False
+        m.Realloc(b0, 1n) |> should be False
         m.Validate()
 
 
@@ -150,10 +150,10 @@ module MemoryManagerTests =
     let ``[Memory] realloc 0``() =
         let m = create()
 
-        let b0 = m.Alloc(2)
-        let b1 = m.Alloc(4)
+        let b0 = m.Alloc(2n)
+        let b1 = m.Alloc(4n)
 
-        m.Realloc(b0, 0) |> should be False
+        m.Realloc(b0, 0n) |> should be False
         m.Validate()
 
         b0.Size |> should equal 0
@@ -163,8 +163,8 @@ module MemoryManagerTests =
     let ``[Memory] resize``() =
         let m = create()
 
-        let b0 = m.Alloc(10)
-        let b1 = m.Alloc(100)
+        let b0 = m.Alloc(10n)
+        let b1 = m.Alloc(100n)
 
         m.Validate()
 
@@ -177,7 +177,7 @@ module MemoryManagerTests =
 
         // warm-up
         for i in 0..100 do
-            m.Free(m.Alloc(r.Next(1 <<< 5) + 1))
+            m.Free(m.Alloc(r.Next(1 <<< 5) + 1 |> nativeint))
 
 
         let sw = Stopwatch()
@@ -185,7 +185,7 @@ module MemoryManagerTests =
 
         sw.Start()
         while sw.Elapsed.TotalMilliseconds < 1000.0 do
-            m.Alloc(r.Next(1 <<< 5) + 1) |> ignore
+            m.Alloc(r.Next(1 <<< 5) + 1 |> nativeint) |> ignore
             iterations <- iterations + 1
 
         sw.Stop()
@@ -200,11 +200,11 @@ module MemoryManagerTests =
 
         // warm-up
         for i in 0..100 do
-            m.Free(m.Alloc(r.Next(1 <<< 5) + 1))
+            m.Free(m.Alloc(r.Next(1 <<< 5) + 1 |> nativeint))
 
         let sw = Stopwatch()
 
-        let blocks = Array.init (1 <<< 17) (fun _ -> m.Alloc(r.Next(1 <<< 5) + 1))
+        let blocks = Array.init (1 <<< 17) (fun _ -> m.Alloc(r.Next(1 <<< 5) + 1 |> nativeint))
         let blocks = blocks.RandomOrder() |> Seq.toArray
 
         sw.Start()
@@ -223,18 +223,18 @@ module MemoryManagerTests =
 
         // warm-up
         for i in 0..100 do
-            let b = m.Alloc(r.Next(1 <<< 5) + 1)
-            m.Realloc(b, b.Size + 1) |> ignore
+            let b = m.Alloc(r.Next(1 <<< 5) + 1 |> nativeint)
+            m.Realloc(b, b.Size + 1n) |> ignore
             m.Free(b)
 
         let sw = Stopwatch()
 
-        let blocks = Array.init (1 <<< 17) (fun _ -> m.Alloc(r.Next(1 <<< 5) + 1))
+        let blocks = Array.init (1 <<< 17) (fun _ -> m.Alloc(r.Next(1 <<< 5) + 1 |> nativeint))
         let blocks = blocks.RandomOrder() |> Seq.toArray
 
         sw.Start()
         for i in 0..blocks.Length-1 do
-            m.Realloc(blocks.[i], blocks.[i].Size + 1) |> ignore
+            m.Realloc(blocks.[i], blocks.[i].Size + 1n) |> ignore
         sw.Stop()
         let microseconds = sw.Elapsed.TotalMilliseconds * 1000.0
 
@@ -248,14 +248,14 @@ module MemoryManagerTests =
 
         // warm-up
         for i in 0..100 do
-            let b = m.Alloc(r.Next(1 <<< 5) + 1)
-            m.Realloc(b, b.Size + 1) |> ignore
+            let b = m.Alloc(r.Next(1 <<< 5) + 1 |> nativeint)
+            m.Realloc(b, b.Size + 1n) |> ignore
             m.Free(b)
 
 
         let sw = Stopwatch()
 
-        let blocks = Array.init (1 <<< 18) (fun _ -> m.Alloc(r.Next(1 <<< 5) + 1))
+        let blocks = Array.init (1 <<< 18) (fun _ -> m.Alloc(r.Next(1 <<< 5) + 1 |> nativeint))
         for i in 0..2..blocks.Length-1 do
             m.Free(blocks.[i])
 
@@ -266,7 +266,7 @@ module MemoryManagerTests =
 
         sw.Start()
         for i in 0..blocks.Length-1 do
-            m.Realloc(blocks.[i], blocks.[i].Size + 1) |> ignore
+            m.Realloc(blocks.[i], blocks.[i].Size + 1n) |> ignore
         sw.Stop()
         let microseconds = sw.Elapsed.TotalMilliseconds * 1000.0
 
@@ -294,14 +294,14 @@ module MemoryManagerTests =
 
         for i in 0uy..cnt - 1uy do
             startTask (fun () ->
-                let size = r.Next 100 + 1
+                let size = r.Next 100 + 1 |> nativeint
                 start.Wait()
 
                 let b = mem |> MemoryManager.alloc size
 
                 let current = Interlocked.Increment(&currentWrites.contents)
                 Interlocked.Change(&maxParallelWrites.contents, max current) |> ignore
-                b.Write(0, Array.create size i)
+                b.Write(0, Array.create (int size) i)
                 Interlocked.Decrement(&currentWrites.contents) |> ignore
 
                 
@@ -320,7 +320,7 @@ module MemoryManagerTests =
 
         for (i,b) in Map.toSeq !allblocks do
             let data : byte[] = b |> ManagedPtr.readArray 0 
-            data |> should equal (Array.create b.Size i)
+            data |> should equal (Array.create (int b.Size) i)
 
         Console.WriteLine("parallel writes: {0}", !maxParallelWrites)
         allblocks.Value.Count |> should equal (int cnt)
@@ -341,11 +341,11 @@ module MemoryManagerTests =
 
         for i in 0uy..cnt - 1uy do
             startTask (fun () ->
-                let size = r.Next 100 + 1
+                let size = r.Next 100 + 1 |> nativeint
                 start.Wait()
 
                 let b = mem |> MemoryManager.alloc size
-                b.Write(0, Array.create size i)
+                b.Write(0, Array.create (int size) i)
 
                 Interlocked.Change(&allblocks.contents, Map.add i b) |> ignore
 
@@ -373,8 +373,8 @@ module MemoryManagerTests =
                 if free then
                     ManagedPtr.free b
                 else
-                    b |> ManagedPtr.realloc (b.Size + 2) |> ignore
-                    b |> ManagedPtr.writeArray (b.Size-2) [|i;i|]
+                    b |> ManagedPtr.realloc (b.Size + 2n) |> ignore
+                    b |> ManagedPtr.writeArray (int b.Size-2) [|i;i|]
 
                 finished.Release() |> ignore
             )
@@ -389,7 +389,7 @@ module MemoryManagerTests =
         for (i,b) in Map.toSeq !allblocks do
             if not b.Free then
                 let data : byte[] = b |> ManagedPtr.readArray 0 
-                data |> should equal (Array.create b.Size i)
+                data |> should equal (Array.create (int b.Size) i)
             else
                 b.Size |> should equal 0
 
@@ -424,7 +424,7 @@ module MemoryManagerTests =
                     try
                         match op with
                             | 0 | 1 | 2 -> 
-                                let b = mem.Alloc (r.Next(100) + 1)
+                                let b = mem.Alloc (r.Next(100) + 1 |> nativeint)
                                 Interlocked.Change(&blocks.contents, add b) |> ignore
 
                             | 3 -> 
@@ -437,8 +437,8 @@ module MemoryManagerTests =
                                 let b = Interlocked.Change(&blocks.contents, removeAny)
                                 match b with
                                     | Some b -> 
-                                        b |> ManagedPtr.realloc (r.Next(100) + 1) |> ignore
-                                        if b.Size > 0 then
+                                        b |> ManagedPtr.realloc (r.Next(100) + 1 |> nativeint) |> ignore
+                                        if b.Size > 0n then
                                             Interlocked.Change(&blocks.contents, add b) |> ignore
                                     | _ -> ()
 
@@ -494,7 +494,7 @@ module MemoryManagerTests =
                     try
                         match op with
                             | 0 | 1 | 2 -> 
-                                let b = mem.Alloc (r.Next(100) + 1)
+                                let b = mem.Alloc (r.Next(100) + 1 |> nativeint)
                                 Interlocked.Change(&blocks.contents, add b) |> ignore
 
                             | 3 -> 
@@ -507,8 +507,8 @@ module MemoryManagerTests =
                                 let b = Interlocked.Change(&blocks.contents, removeAny)
                                 match b with
                                     | Some b -> 
-                                        b |> ManagedPtr.realloc (r.Next(100) + 1) |> ignore
-                                        if b.Size > 0 then
+                                        b |> ManagedPtr.realloc (r.Next(100) + 1 |> nativeint) |> ignore
+                                        if b.Size > 0n then
                                             Interlocked.Change(&blocks.contents, add b) |> ignore
                                     | _ -> ()
 

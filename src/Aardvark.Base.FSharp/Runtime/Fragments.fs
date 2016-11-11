@@ -723,7 +723,7 @@ type CodeFragment(memory : managedptr, containsJmp : bool) =
     do startOffsets.Add(0)
 
     let nonAlignedJumpOffset() =
-        memory.Size - ASM.encodedJumpSize
+        int memory.Size - ASM.encodedJumpSize
         
     let alignedJumpArgumentOffset() =
         let jmpStart = ASM.jumpArgumentOffset + nonAlignedJumpOffset()
@@ -789,9 +789,9 @@ type CodeFragment(memory : managedptr, containsJmp : bool) =
         resetStartOffsets()
         let size = binary.Length + ASM.encodedJumpSize
 
-        if size <> memory.Size then
+        if size <> int memory.Size then
             let n = x.ReadNextPointer()
-            let moved = memory |> ManagedPtr.realloc size
+            let moved = memory |> ManagedPtr.realloc (nativeint size)
 
             // patch our own next-pointer since its location was changed
             containsJmp <- false
@@ -806,11 +806,11 @@ type CodeFragment(memory : managedptr, containsJmp : bool) =
 
     member x.Append (data : byte[]) =
         let id = startOffsets.Count - 1
-        let oldSize = memory.Size
+        let oldSize = int memory.Size
         let newSize = oldSize + data.Length
 
         // realloc the memory
-        let moved = memory |> ManagedPtr.realloc newSize
+        let moved = memory |> ManagedPtr.realloc (nativeint newSize)
         containsJmp <- false
 
         // write the data to the new region
@@ -831,20 +831,20 @@ type CodeFragment(memory : managedptr, containsJmp : bool) =
             // if the length did not change simply write the new data
             memory |> ManagedPtr.writeArray startOffset data
         else
-            let restSize = memory.Size - endOffset
+            let restSize = int memory.Size - endOffset
             let delta = length - data.Length
 
 
             let moved = 
                 if delta > 0 then
-                    let moved = memory |> ManagedPtr.realloc (memory.Size + delta)
+                    let moved = memory |> ManagedPtr.realloc (memory.Size + nativeint delta)
                     // move all subsequent sub-blocks to the right (making space for data)
                     memory |> ManagedPtr.move endOffset (endOffset + delta) restSize
                     moved
                 else
                     // move all subsequent sub-blocks to the left
                     memory |> ManagedPtr.move endOffset (endOffset + delta) restSize
-                    memory |> ManagedPtr.realloc (memory.Size + delta)
+                    memory |> ManagedPtr.realloc (memory.Size + nativeint delta)
             containsJmp <- false
 
             // write the data
@@ -860,7 +860,7 @@ type CodeFragment(memory : managedptr, containsJmp : bool) =
 
     member x.Clear() =
         resetStartOffsets()
-        let moved = memory |> ManagedPtr.realloc ASM.encodedJumpSize 
+        let moved = memory |> ManagedPtr.realloc (nativeint ASM.encodedJumpSize)
         containsJmp <- false
 
     member x.Dispose() =
@@ -872,7 +872,7 @@ type CodeFragment(memory : managedptr, containsJmp : bool) =
 
 
     new(manager : MemoryManager, content : byte[]) =
-        let ptr = manager.Alloc(content.Length + ASM.encodedJumpSize)
+        let ptr = manager.Alloc(nativeint (content.Length + ASM.encodedJumpSize))
         ptr |> ManagedPtr.writeArray 0 content
         CodeFragment(ptr, false)
 

@@ -10,13 +10,13 @@ module ExecutableMemory =
     open System
     let private os = System.Environment.OSVersion
 
-    let alloc (size : int) =
+    let alloc (size : nativeint) =
         match os with
             | Windows -> 
-                Kernel32.Imports.VirtualAlloc(0n, UIntPtr (uint32 size), Kernel32.AllocationType.Commit, Kernel32.MemoryProtection.ExecuteReadWrite)
+                Kernel32.Imports.VirtualAlloc(0n, unativeint size, Kernel32.AllocationType.Commit, Kernel32.MemoryProtection.ExecuteReadWrite)
             | Linux | Mac  -> 
                 let pageSize = Dl.Imports.getpagesize()
-                let s = nativeint size
+                let s = size
                 let mutable mem = 0n
                 let r = Dl.Imports.posix_memalign(&&mem, nativeint pageSize, s)
                 if r<>0 then failwith "could not alloc aligned memory"
@@ -26,16 +26,16 @@ module ExecutableMemory =
 
                 mem
 
-    let free (ptr : nativeint) (size : int) =
+    let free (ptr : nativeint) (size : nativeint) =
         match os with
             | Windows -> 
-                Kernel32.Imports.VirtualFree(ptr, UIntPtr (uint32 size), Kernel32.FreeType.Decommit) |> ignore
+                Kernel32.Imports.VirtualFree(ptr, unativeint size, Kernel32.FreeType.Decommit) |> ignore
             | Linux | Mac ->
                 Dl.Imports.free(ptr)
 
 
     let init (data : byte[]) =
-        let ptr = alloc data.Length
+        let ptr = alloc (nativeint data.Length)
         System.Runtime.InteropServices.Marshal.Copy(data, 0, ptr, data.Length)
         ptr
 

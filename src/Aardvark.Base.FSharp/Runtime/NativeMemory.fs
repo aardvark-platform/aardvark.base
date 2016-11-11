@@ -122,9 +122,9 @@ module ReaderWriterLock =
 
 type MemoryManagerConfig =
     {
-        malloc : int -> nativeint
-        mfree : nativeint -> int -> unit
-        mcopy : nativeint -> nativeint -> int -> unit
+        malloc : nativeint -> nativeint
+        mfree : nativeint -> nativeint -> unit
+        mcopy : nativeint -> nativeint -> nativeint -> unit
 
     }
 
@@ -134,17 +134,17 @@ type internal Block =
     class
         val mutable public Parent : MemoryManager
         val mutable public Offset : nativeint
-        val mutable public Size : int
+        val mutable public Size : nativeint
         val mutable public Prev : Block
         val mutable public Next : Block
         val mutable public Free : bool
 
         override x.ToString() =
-            if x.Size < 0 then "invalid"
-            else sprintf "[%d:%d]" x.Offset (x.Offset + nativeint x.Size)
+            if x.Size < 0n then "invalid"
+            else sprintf "[%d:%d]" x.Offset (x.Offset + x.Size)
 
 
-        static member Invalid = Block(Unchecked.defaultof<_>, 0n, 0, null, null, true)
+        static member Invalid = Block(Unchecked.defaultof<_>, 0n, 0n, null, null, true)
 
         new(parent, o,s,p,n,f) = { Parent = parent; Offset = o; Size = s; Prev = p; Next = n; Free = f }
     end
@@ -161,7 +161,7 @@ and [<AllowNullLiteral>] managedptr internal(block : Block) =
 
 
     member x.Parent = check(); block.Parent
-    member x.Size = if isNull block then 0 else block.Size
+    member x.Size = if isNull block then 0n else block.Size
     member x.Offset = if isNull block then 0n else block.Offset
     member x.Free = if isNull block then true else block.Free
 
@@ -175,7 +175,7 @@ and [<AllowNullLiteral>] managedptr internal(block : Block) =
 
     member x.Write(offset : int, source : nativeint, size : int) =
         check()
-        if offset + size > block.Size then failwith "[Memory] write exceeding size"
+        if nativeint (offset + size) > block.Size then failwith "[Memory] write exceeding size"
 
         ReaderWriterLock.read block.Parent.PointerLock (fun () ->
             let target = block.Parent.Pointer + block.Offset + nativeint offset
@@ -184,7 +184,7 @@ and [<AllowNullLiteral>] managedptr internal(block : Block) =
 
     member x.Read(offset : int, target : nativeint, size : int) =
         check()
-        if offset + size > block.Size then failwith "[Memory] read exceeding size"
+        if nativeint (offset + size) > block.Size then failwith "[Memory] read exceeding size"
 
         ReaderWriterLock.read block.Parent.PointerLock (fun () ->
             let source = block.Parent.Pointer + block.Offset + nativeint offset
@@ -193,7 +193,7 @@ and [<AllowNullLiteral>] managedptr internal(block : Block) =
 
     member x.Write(offset : int, data : 'a) =
         check()
-        if offset + sizeof<'a> > block.Size then failwith "[Memory] write exceeding size"
+        if nativeint (offset + sizeof<'a>) > block.Size then failwith "[Memory] write exceeding size"
 
         ReaderWriterLock.read block.Parent.PointerLock (fun () ->
             let ptr = block.Parent.Pointer + block.Offset + nativeint offset |> NativePtr.ofNativeInt
@@ -202,7 +202,7 @@ and [<AllowNullLiteral>] managedptr internal(block : Block) =
 
     member x.Read(offset : int) : 'a =
         check()
-        if offset + sizeof<'a> > block.Size then failwith "[Memory] read exceeding size"
+        if nativeint (offset + sizeof<'a>) > block.Size then failwith "[Memory] read exceeding size"
 
         ReaderWriterLock.read block.Parent.PointerLock (fun () ->
             let ptr = block.Parent.Pointer + block.Offset + nativeint offset |> NativePtr.ofNativeInt
@@ -211,7 +211,7 @@ and [<AllowNullLiteral>] managedptr internal(block : Block) =
 
     member x.Write(offset : int, data : 'a[]) =
         check()
-        if offset + sizeof<'a> * data.Length > block.Size then failwith "[Memory] write exceeding size"
+        if nativeint (offset + sizeof<'a> * data.Length) > block.Size then failwith "[Memory] write exceeding size"
 
         ReaderWriterLock.read block.Parent.PointerLock (fun () ->
             let mutable ptr = block.Parent.Pointer + block.Offset + nativeint offset |> NativePtr.ofNativeInt
@@ -221,7 +221,7 @@ and [<AllowNullLiteral>] managedptr internal(block : Block) =
 
     member x.Read(offset : int, data : 'a[]) =
         check()
-        if offset + sizeof<'a> * data.Length > block.Size then failwith "[Memory] read exceeding size"
+        if nativeint (offset + sizeof<'a> * data.Length) > block.Size then failwith "[Memory] read exceeding size"
 
         ReaderWriterLock.read block.Parent.PointerLock (fun () ->
             let mutable ptr = block.Parent.Pointer + block.Offset + nativeint offset |> NativePtr.ofNativeInt
@@ -231,7 +231,7 @@ and [<AllowNullLiteral>] managedptr internal(block : Block) =
 
     member x.Read(offset : int, count : int) : 'a[] =
         check()
-        if offset + sizeof<'a> * count > block.Size then failwith "[Memory] read exceeding size"
+        if offset + sizeof<'a> * count > int block.Size then failwith "[Memory] read exceeding size"
 
         let arr = Array.zeroCreate count
         x.Read(offset, arr)
@@ -259,22 +259,22 @@ and [<AllowNullLiteral>] managedptr internal(block : Block) =
             )
         )
 
-    member x.Int8Array      : int8[]    = x.Read(0, block.Size)
-    member x.Int16Array     : int16[]   = x.Read(0, block.Size / 2)
-    member x.Int32Array     : int[]     = x.Read(0, block.Size / 4)
-    member x.Int64Array     : int64[]   = x.Read(0, block.Size / 8)
+    member x.Int8Array      : int8[]    = x.Read(0, int block.Size)
+    member x.Int16Array     : int16[]   = x.Read(0, int block.Size / 2)
+    member x.Int32Array     : int[]     = x.Read(0, int block.Size / 4)
+    member x.Int64Array     : int64[]   = x.Read(0, int block.Size / 8)
 
-    member x.UInt8Array     : uint8[]   = x.Read(0, block.Size)
-    member x.UInt16Array    : uint16[]  = x.Read(0, block.Size / 2)
-    member x.UInt32Array    : uint32[]  = x.Read(0, block.Size / 4)
-    member x.UInt64Array    : uint64[]  = x.Read(0, block.Size / 8)
+    member x.UInt8Array     : uint8[]   = x.Read(0, int block.Size)
+    member x.UInt16Array    : uint16[]  = x.Read(0, int block.Size / 2)
+    member x.UInt32Array    : uint32[]  = x.Read(0, int block.Size / 4)
+    member x.UInt64Array    : uint64[]  = x.Read(0, int block.Size / 8)
 
-and MemoryManager(capacity : int, config : MemoryManagerConfig) as this =
+and MemoryManager(capacity : nativeint, config : MemoryManagerConfig) as this =
     let mutable capacity = capacity
-    let mutable allocated = 0
+    let mutable allocated = 0n
 
     let mutable ptr = config.malloc capacity
-    let freeList = FreeList<int, Block>()
+    let freeList = FreeList<nativeint, Block>()
     let l = obj()
     let pointerLock = new ReaderWriterLockSlim()
    
@@ -292,7 +292,7 @@ and MemoryManager(capacity : int, config : MemoryManagerConfig) as this =
         while not (isNull current) do
             assert (current.Prev = last)
 
-            assert(current.Size > 0)
+            assert(current.Size > 0n)
             assert(current.Offset >= 0n)
 
             if not (isNull last) then
@@ -309,7 +309,7 @@ and MemoryManager(capacity : int, config : MemoryManagerConfig) as this =
     let free (b : Block) : unit =
         assert (not (isNull b))
 
-        if not b.Free && b.Size > 0 then
+        if not b.Free && b.Size > 0n then
             allocated <- allocated - b.Size
             // merge b with its prev (if it's free)
             let prev = b.Prev
@@ -361,11 +361,11 @@ and MemoryManager(capacity : int, config : MemoryManagerConfig) as this =
             b.Free <- true
             freeList.Insert(b.Size, b)
 
-    let resize (additional : int) =
-        assert (additional > 0)
+    let resize (additional : nativeint) =
+        assert (additional > 0n)
 
         let oldCapacity = capacity
-        let newCapacity = Fun.NextPowerOfTwo(capacity + additional)
+        let newCapacity = Fun.NextPowerOfTwo(int64 (capacity + additional)) |> nativeint
         writePointer (fun () ->
             let n = config.malloc newCapacity
             config.mcopy ptr n oldCapacity
@@ -383,8 +383,8 @@ and MemoryManager(capacity : int, config : MemoryManagerConfig) as this =
         free newMemory
 
 
-    let rec alloc (size : int) : Block =
-        if size <= 0 then
+    let rec alloc (size : nativeint) : Block =
+        if size <= 0n then
             null
         else
             match freeList.TryGetGreaterOrEqual(size) with
@@ -393,7 +393,7 @@ and MemoryManager(capacity : int, config : MemoryManagerConfig) as this =
                     allocated <- allocated + block.Size
 
                     if block.Size > size then
-                        let rest = Block(this, block.Offset + nativeint size, block.Size - size, block, block.Next, false)
+                        let rest = Block(this, block.Offset + size, block.Size - size, block, block.Next, false)
 
                         if isNull block.Next then lastBlock <- rest
                         else block.Next.Prev <- rest
@@ -411,8 +411,8 @@ and MemoryManager(capacity : int, config : MemoryManagerConfig) as this =
                     // memory and retry
                     resize size
                     alloc size
-
-    let rec realloc (b : Block) (size : int) : bool * Block =
+        
+    let rec realloc (b : Block) (size : nativeint) : bool * Block =
 
         if b.Size = size then
             false, b
@@ -433,7 +433,7 @@ and MemoryManager(capacity : int, config : MemoryManagerConfig) as this =
 
             else
                 let next = b.Next
-                assert(next.Offset = b.Offset + nativeint b.Size)
+                assert(next.Offset = b.Offset + b.Size)
 
                 if freeList.Remove(next.Size, next) then
                     allocated <- allocated + next.Size
@@ -448,7 +448,7 @@ and MemoryManager(capacity : int, config : MemoryManagerConfig) as this =
                         next.Offset <- b.Offset + nativeint size
                         next.Size <- next.Size - additionalSize
 
-                        assert(next.Offset = b.Offset + nativeint b.Size)
+                        assert(next.Offset = b.Offset + b.Size)
 
                         free next
                     else
@@ -469,7 +469,7 @@ and MemoryManager(capacity : int, config : MemoryManagerConfig) as this =
         else (* if size < b.Size then *)
             // if the block "shrinked" we can simply create and free the
             // leftover memory
-            let rest = Block(this, b.Offset + nativeint size, b.Size - size, b, b.Next, false)
+            let rest = Block(this, b.Offset + size, b.Size - size, b, b.Next, false)
             b.Size <- size
 
             if isNull b.Next then lastBlock <- rest
@@ -477,11 +477,65 @@ and MemoryManager(capacity : int, config : MemoryManagerConfig) as this =
             b.Next <- rest
 
             assert(isNull lastBlock.Next)
-            assert(b.Offset + nativeint b.Size = rest.Offset)
+            assert(b.Offset + b.Size = rest.Offset)
 
             free rest
 
             false, b
+
+    let allocAligned (align : nativeint) (size : nativeint) : Block =
+        let maxSize = size + align - 1n
+        let block = alloc maxSize
+        
+        let prev = block.Prev
+        let next = block.Next
+
+
+        let r = block.Offset % align
+        let alignedOffset = 
+            if r = 0n then block.Offset
+            else align + block.Offset - r
+
+        let leftOffset = block.Offset
+        let leftSize =
+            if r = 0n then 0n
+            else align - r
+
+        let rightOffset = alignedOffset + size
+        let rightSize = maxSize - size - leftSize
+        
+
+        assert (leftSize + size + rightSize = maxSize)
+        assert (leftOffset + leftSize = alignedOffset)
+
+        if leftSize <> 0n then
+            let l = Block(this, leftOffset, leftSize, prev, block, false)
+
+            if isNull prev then firstBlock <- l
+            else prev.Next <- l
+            block.Prev <- l
+
+            block.Offset <- alignedOffset
+            block.Size <- block.Size - leftSize
+            free l
+
+        if rightSize <> 0n then
+            let r = Block(this, rightOffset, rightSize, block, next, false)
+
+            if isNull next then lastBlock <- r
+            else next.Prev <- r
+            block.Next <- r
+
+            block.Size <- block.Size - rightSize
+            free r
+
+        assert (block.Size = size)
+        assert (block.Offset % align = 0n)
+        block
+
+
+
+
 
     let clone (b : Block) : Block =
         if b.Free then failwithf "[Memory] cannot spill free block: %A" b
@@ -500,21 +554,34 @@ and MemoryManager(capacity : int, config : MemoryManagerConfig) as this =
     member x.FreeList =
         freeList.Values |> Seq.map (fun b -> managedptr(b))
 
+    member x.FirstUsedByte = 
+        if firstBlock.Free then firstBlock.Offset + nativeint firstBlock.Size
+        else firstBlock.Offset
+
+    member x.LastUsedByte =
+        if lastBlock.Free then lastBlock.Offset - 1n
+        else lastBlock.Offset + nativeint lastBlock.Size - 1n
 
     member x.Dispose() =
         if ptr <> 0n then
             config.mfree ptr capacity
             ptr <- 0n
-            capacity <- 0
-            allocated <- 0
+            capacity <- 0n
+            allocated <- 0n
             freeList.Clear()
             pointerLock.Dispose()
             firstBlock <- null
             lastBlock <- null
 
-    member x.Alloc (size : int) = 
+    member x.Alloc (size : nativeint) = 
         lock l (fun () ->
             let block = alloc size
+            managedptr block
+        )
+
+    member x.AllocAligned (align : nativeint, size : nativeint) = 
+        lock l (fun () ->
+            let block = allocAligned align size
             managedptr block
         )
 
@@ -525,10 +592,10 @@ and MemoryManager(capacity : int, config : MemoryManagerConfig) as this =
                 ptr.Block <- null
         )
 
-    member x.Realloc (ptr : managedptr, size : int) = 
+    member x.Realloc (ptr : managedptr, size : nativeint) = 
         lock l (fun () -> 
             if not (isNull ptr.Block) then
-                if size <= 0 then
+                if size <= 0n then
                     free ptr.Block
                     ptr.Block <- null
                     false
@@ -537,7 +604,7 @@ and MemoryManager(capacity : int, config : MemoryManagerConfig) as this =
                     ptr.Block <- newBlock
                     moved
             else
-                if size <= 0 then false
+                if size <= 0n then false
                 else failwith "[Memory] cannot realloc free managedptr"
         )
 
@@ -568,20 +635,19 @@ and MemoryManager(capacity : int, config : MemoryManagerConfig) as this =
 
 [<CompilationRepresentation(CompilationRepresentationFlags.ModuleSuffix)>]
 module MemoryManager =
-    let createHGlobal() = new MemoryManager(16, Marshal.AllocHGlobal, fun ptr _ -> Marshal.FreeHGlobal ptr)
-    let createCoTaskMem() = new MemoryManager(16, Marshal.AllocCoTaskMem, fun ptr _ -> Marshal.FreeCoTaskMem ptr)
-    let createExecutable() = new MemoryManager(16, ExecutableMemory.alloc, ExecutableMemory.free)
+    let createHGlobal() = new MemoryManager(16n, Marshal.AllocHGlobal, fun ptr _ -> Marshal.FreeHGlobal ptr)
+    let createExecutable() = new MemoryManager(16n, ExecutableMemory.alloc, ExecutableMemory.free)
 
     let private nopConfig = { malloc = (fun _ -> 0n); mfree = (fun _ _ -> ()); mcopy = (fun _ _ _ -> ()) }
-    let createNop() = new MemoryManager(16, nopConfig)
+    let createNop() = new MemoryManager(16n, nopConfig)
 
-    let inline alloc (size : int) (m : MemoryManager) =
+    let inline alloc (size : nativeint) (m : MemoryManager) =
         m.Alloc size
 
     let inline free (b : managedptr) (m : MemoryManager) =
         m.Free b
 
-    let inline realloc (b : managedptr) (size : int) (m : MemoryManager) =
+    let inline realloc (b : managedptr) (size : nativeint) (m : MemoryManager) =
         m.Realloc(b, size)
 
     let inline spill (b : managedptr) (m : MemoryManager) =
@@ -594,9 +660,9 @@ module ManagedPtr =
     let inline offset (b : managedptr) = b.Offset
     let inline isFree (b : managedptr) = b.Free
 
-    let inline realloc (size : int) (b : managedptr) =
+    let inline realloc (size : nativeint) (b : managedptr) =
         if b.Free then
-            if size <> 0 then failwith "[Memory] cannot realloc free managedptr"
+            if size <> 0n then failwith "[Memory] cannot realloc free managedptr"
             false
         else
             b.Parent.Realloc(b, size)
@@ -621,7 +687,7 @@ module ManagedPtr =
         b.Read(offset)
 
     let inline readArray (offset : int) (b : managedptr) : 'a[] =
-        b.Read(offset, b.Size / sizeof<'a>)
+        b.Read(offset, int (b.Size / nativeint sizeof<'a>))
 
     let inline move (sourceOffset : int) (targetOffset : int) (length : int) (b : managedptr) =
         b.Move(sourceOffset, targetOffset, length)

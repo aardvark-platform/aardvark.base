@@ -83,7 +83,7 @@ module FragmentTests =
                 ASM.functionEpilog 0 6
             ]
 
-        let ptr = ExecutableMemory.alloc code.Length
+        let ptr = ExecutableMemory.alloc (nativeint code.Length)
         Marshal.Copy(code, 0, ptr, code.Length)
         let f : unit -> unit = UnmanagedFunctions.wrap ptr
 
