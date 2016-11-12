@@ -88,6 +88,13 @@ namespace Aardvark.Base
     {
     }
 
+
+    public interface IPixImageVisitor<T>
+    {
+        T Visit<TData>(PixImage<TData> image);
+    }
+
+
     [Serializable]
     public abstract partial class PixImage : IPix, IPixImage2d
     {
@@ -534,6 +541,9 @@ namespace Aardvark.Base
         public abstract PixImage ToCanonicalDenseLayout();
 
         public abstract Array Data { get; }
+
+        public abstract T Visit<T>(IPixImageVisitor<T> visitor);
+        
 
         #endregion
 
@@ -1577,6 +1587,11 @@ namespace Aardvark.Base
                 Requires.That(Volume.HasImageLayout());
                 return Volume.Data;
             }
+        }
+
+        public override TResult Visit<TResult>(IPixImageVisitor<TResult> visitor)
+        {
+            return visitor.Visit<T>(this);
         }
 
         #endregion

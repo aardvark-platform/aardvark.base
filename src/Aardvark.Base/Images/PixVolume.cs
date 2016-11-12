@@ -11,6 +11,11 @@ using System.Text;
 
 namespace Aardvark.Base
 {
+    public interface IPixVolumeVisitor<T>
+    {
+        T Visit<TData>(PixVolume<TData> volume);
+    }
+
     public abstract class PixVolume : IPix
     {
         public Col.Format Format;
@@ -127,6 +132,8 @@ namespace Aardvark.Base
         public abstract PixVolume CopyToPixVolume();
 
         public abstract PixVolume CopyToPixVolumeWithCanonicalDenseLayout();
+
+        public abstract TResult Visit<TResult>(IPixVolumeVisitor<TResult> visitor);
 
         #endregion
 
@@ -487,6 +494,11 @@ namespace Aardvark.Base
             if (Format == format && ChannelCount == format.ChannelCount())
                 return this;
             return new PixVolume<T>(format, this);
+        }
+
+        public override TResult Visit<TResult>(IPixVolumeVisitor<TResult> visitor)
+        {
+            return visitor.Visit(this);
         }
 
         #endregion
