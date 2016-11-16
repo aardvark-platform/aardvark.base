@@ -1002,7 +1002,7 @@ module ASetReaders =
             member x.SubscribeOnEvaluate cb = x.SubscribeOnEvaluate cb
 
 
-    type OneShotReader<'a>(content : ReferenceCountingSet<'a>) =  
+    type OneShotReader<'a>(content : ReferenceCountingSet<'a>, release : unit -> unit) =  
         inherit ConstantObject()
         let mutable callbacks : HashSet<list<Delta<'a>> -> unit> = null
         static let empty = ReferenceCountingSet<'a>()
@@ -1056,10 +1056,12 @@ module ASetReaders =
             member x.SubscribeOnEvaluate(cb) = x.SubscribeOnEvaluate cb
             member x.Update(caller) = 
                 x.GetDelta(caller) |> ignore
-            member x.Dispose() = ()
+            member x.Dispose() = release()
             member x.Content = 
                 if initial then empty
                 else content
+    
+        new(content) = new OneShotReader<'a>(content, id)
 
     type UseReader<'a when 'a :> IDisposable>(inputReader : IReader<'a>) =
         inherit AbstractReader<'a>()

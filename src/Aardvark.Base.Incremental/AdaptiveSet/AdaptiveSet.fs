@@ -72,6 +72,48 @@ module ASet =
         new(l : array<'a>) = ConstantSet<'a> (lazy (ReferenceCountingSet l))
         new(l : seq<'a>) = ConstantSet<'a> (lazy (ReferenceCountingSet l))
 
+    type ConstantUseSet<'a when 'a :> IDisposable>(createContent : unit -> ReferenceCountingSet<'a>) =
+
+        let mutable readerCount = 0
+        let mutable content = Unchecked.defaultof<_>
+
+        member private x.getContent() =
+            lock x (fun () ->
+                if readerCount = 0 then
+                    content <- createContent()
+                    readerCount <- 1
+                else
+                    readerCount <- readerCount + 1
+                content
+            )
+
+        member private x.release() =
+            lock x (fun () ->
+                readerCount <- readerCount - 1
+                if readerCount = 0 then
+                    content |> Seq.iter (fun d -> (d :> IDisposable).Dispose())
+                    content <- Unchecked.defaultof<_>
+            )
+
+        interface aset<'a> with
+            member x.ReaderCount = 0
+            member x.IsConstant = true
+
+            member x.Copy = x :> aset<_>
+
+            member x.GetReader () =
+                Telemetry.timed GetConstantReaderProbe (fun () ->
+                    let c = x.getContent()
+                    let r = new OneShotReader<'a>(c, x.release)
+                    r :> IReader<_>
+                )
+
+        new(content : Lazy<list<'a>>) = ConstantUseSet<'a>(fun () -> (ReferenceCountingSet content.Value))
+        new(content : Lazy<seq<'a>>) = ConstantUseSet<'a>(fun () -> (ReferenceCountingSet content.Value))
+        new(l : list<'a>) = ConstantUseSet<'a> (fun () -> (ReferenceCountingSet l))
+        new(l : array<'a>) = ConstantUseSet<'a> (fun () -> (ReferenceCountingSet l))
+        new(l : seq<'a>) = ConstantUseSet<'a> (fun () -> (ReferenceCountingSet l))
+
     type private EmptySetImpl<'a> private() =
         static let emptySet = ConstantSet (lazy ([])) :> aset<'a>
         static member Instance = emptySet
@@ -118,6 +160,11 @@ module ASet =
     let delay (f : unit -> list<'a>) =
         let scope = Ag.getContext()
         ConstantSet(lazy (Ag.useScope scope f)) :> aset<_>
+
+    let delayUse (f : unit -> list<'a>) =
+        let scope = Ag.getContext()
+        ConstantUseSet(lazy (Ag.useScope scope f)) :> aset<_>
+
 
     let custom (f : IReader<'a> -> list<Delta<'a>>) =
         let scope = Ag.getContext()
@@ -244,7 +291,7 @@ module ASet =
 
     let mapUse (f : 'a -> 'b) (set : aset<'a>) = 
         if set.IsConstant then
-            delay (fun () ->
+            delayUse (fun () ->
                 use r = set.GetReader()
                 r.Update(null)
                 r.Content |> Seq.map f |> Seq.toList
