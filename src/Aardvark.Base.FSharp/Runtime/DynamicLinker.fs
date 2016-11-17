@@ -292,7 +292,10 @@ module DynamicLinker =
                                 read <- read + r
 
                             let name = entry.Name
-                            System.IO.File.WriteAllBytes(name, data)
+                            try
+                                System.IO.File.WriteAllBytes(name, data)
+                            with | :? System.IO.IOException as e -> 
+                                Log.line "could not unpack native dependency %s because: %s" name e.Message
                         true
 
 
