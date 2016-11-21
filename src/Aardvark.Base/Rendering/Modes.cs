@@ -26,13 +26,17 @@ namespace Aardvark.Base.Rendering
         Point
     }
 
-    public enum DepthTestMode
+    public enum DepthTestComparison
     {
         None,
         Less,
         LessOrEqual,
         Greater,
-        GreaterOrEqual
+        GreaterOrEqual,
+        Equal,
+        NotEqual,
+        Never,
+        Always
     }
 
     public enum Face
