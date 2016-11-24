@@ -645,12 +645,30 @@ namespace Aardvark.Base
         }
 
         /// <summary>
+        /// Returns the angle in radians whose sine is the specified number while clamping the input to [-1, 1] in order to avoid numerical problems.
+        /// </summary>
+        [Pure]
+        public static __t.Name__ AsinC(this __t.Name__ x)
+        {
+            return __cast__System.Math.Asin(Clamp(x, -1, 1));
+        }
+
+        /// <summary>
         /// Returns the angle in radians whose cosine is the specified number.
         /// </summary>
         [Pure]
         public static __t.Name__ Acos(this __t.Name__ x)
         {
             return __cast__System.Math.Acos(x);
+        }
+
+        /// <summary>
+        /// Returns the angle in radians whose cosine is the specified number while clamping the input to [-1, 1] in order to avoid numerical problems.
+        /// </summary>
+        [Pure]
+        public static __t.Name__ AcosC(this __t.Name__ x)
+        {
+            return __cast__System.Math.Acos(Clamp(x, -1, 1));
         }
 
         /// <summary>

@@ -114,7 +114,7 @@ namespace Aardvark.Base
             )
         {
             Rot3f q3 = q2;
-            float cosomega = Rot3f.Dot(q1, q3);
+            float cosomega = Fun.Clamp(Rot3f.Dot(q1, q3), -1, 1);
 
             if (cosomega < 0.0)
             {

@@ -15,7 +15,7 @@ namespace Aardvark.Tests
         public void TrafoDecomposeTest()
         {
             var rnd = new RandomSystem();
-            for (int i = 0; i < 100; i ++)
+            for (int i = 0; i < 100000; i ++)
             {
                 var rot = rnd.UniformV3dFull() * Constant.PiTimesFour - Constant.PiTimesTwo;
                 var trans = rnd.UniformV3dFull() * 10 - 5;
@@ -33,10 +33,12 @@ namespace Aardvark.Tests
 
             var recomposed = Trafo3d.FromComponents(s_d, r_d, t_d);
 
+            Assert.IsFalse(s_d.AnyNaN || r_d.AnyNaN || t_d.AnyNaN, "something NaN");
+
             var eq = CheckForwardBackwardConsistency(new Trafo3d(trafo.Forward, recomposed.Backward))
                 && CheckForwardBackwardConsistency(new Trafo3d(recomposed.Forward, trafo.Backward));
 
-            Assert.True(eq);
+            Assert.True(eq, "trafo not consistent");
         }
 
         [Test]
@@ -44,7 +46,7 @@ namespace Aardvark.Tests
         {
             var rnd = new Random();
 
-            for (int i = 0; i < 50; i++)
+            for (int i = 0; i < 500000; i++)
             {
                 var rx = new V3d(rnd.NextDouble() * 1e-17, 0, 0) * (rnd.Next(100) >= 50 ? 1: -1);
                 var ry = new V3d(0, rnd.NextDouble() * 1e-17, 0) * (rnd.Next(100) >= 50 ? 1 : -1);
@@ -95,10 +97,10 @@ namespace Aardvark.Tests
         {
             var i = trafo.Forward * trafo.Backward;
             // i should be Identity
-            return i.C0.ApproxEqual(V4d.IOOO, 1e-9)
-                && i.C1.ApproxEqual(V4d.OIOO, 1e-9)
-                && i.C2.ApproxEqual(V4d.OOIO, 1e-9)
-                && i.C3.ApproxEqual(V4d.OOOI, 1e-9);
+            return i.C0.ApproxEqual(V4d.IOOO, 1e-1)
+                && i.C1.ApproxEqual(V4d.OIOO, 1e-1)
+                && i.C2.ApproxEqual(V4d.OOIO, 1e-1)
+                && i.C3.ApproxEqual(V4d.OOOI, 1e-1);
         }
     }
 }

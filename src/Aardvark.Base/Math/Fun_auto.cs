@@ -2645,12 +2645,30 @@ namespace Aardvark.Base
         }
 
         /// <summary>
+        /// Returns the angle in radians whose sine is the specified number while clamping the input to [-1, 1] in order to avoid numerical problems.
+        /// </summary>
+        [Pure]
+        public static float AsinC(this float x)
+        {
+            return (float)System.Math.Asin(Clamp(x, -1, 1));
+        }
+
+        /// <summary>
         /// Returns the angle in radians whose cosine is the specified number.
         /// </summary>
         [Pure]
         public static float Acos(this float x)
         {
             return (float)System.Math.Acos(x);
+        }
+
+        /// <summary>
+        /// Returns the angle in radians whose cosine is the specified number while clamping the input to [-1, 1] in order to avoid numerical problems.
+        /// </summary>
+        [Pure]
+        public static float AcosC(this float x)
+        {
+            return (float)System.Math.Acos(Clamp(x, -1, 1));
         }
 
         /// <summary>
@@ -2790,12 +2808,30 @@ namespace Aardvark.Base
         }
 
         /// <summary>
+        /// Returns the angle in radians whose sine is the specified number while clamping the input to [-1, 1] in order to avoid numerical problems.
+        /// </summary>
+        [Pure]
+        public static double AsinC(this double x)
+        {
+            return System.Math.Asin(Clamp(x, -1, 1));
+        }
+
+        /// <summary>
         /// Returns the angle in radians whose cosine is the specified number.
         /// </summary>
         [Pure]
         public static double Acos(this double x)
         {
             return System.Math.Acos(x);
+        }
+
+        /// <summary>
+        /// Returns the angle in radians whose cosine is the specified number while clamping the input to [-1, 1] in order to avoid numerical problems.
+        /// </summary>
+        [Pure]
+        public static double AcosC(this double x)
+        {
+            return System.Math.Acos(Clamp(x, -1, 1));
         }
 
         /// <summary>

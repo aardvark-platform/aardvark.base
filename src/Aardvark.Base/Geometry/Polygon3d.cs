@@ -178,7 +178,7 @@ namespace Aardvark.Base
 
             var cv = V3d.Cross(cpa[0], cpa[cc - 1]);
             double ff = V3d.Dot(n, cv)
-                        * Fun.Acos(V3d.Dot(cpa[0], cpa[cc - 1])
+                        * Fun.AcosC(V3d.Dot(cpa[0], cpa[cc - 1])
                                     / (cpr[0] * cpr[cc - 1]))
                         / cv.Length;
 
@@ -186,7 +186,7 @@ namespace Aardvark.Base
             {
                 cv = V3d.Cross(cpa[ci + 1], cpa[ci]);
                 ff += V3d.Dot(n, cv)
-                       * Fun.Acos(V3d.Dot(cpa[ci + 1], cpa[ci])
+                       * Fun.AcosC(V3d.Dot(cpa[ci + 1], cpa[ci])
                                     / (cpr[ci + 1] * cpr[ci]))
                         / cv.Length;
             }
