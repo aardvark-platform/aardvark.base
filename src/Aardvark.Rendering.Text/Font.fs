@@ -153,6 +153,11 @@ type Glyph internal(path : Path, graphics : Graphics, font : System.Drawing.Font
 
     member x.Before = -0.1666
 
+type private WindingFlags =
+    | None   = 0
+    | CCW    = 1
+    | CW     = 2
+    | Mixed  = 3
 
 type Font private(f : System.Drawing.Font) =
     static let mutable fontCount = 0
@@ -185,7 +190,8 @@ type Font private(f : System.Drawing.Font) =
 
             let mutable start = V2d.NaN
             let currentPoints = List<V2d>()
-            let segments = List<PathSegment>()
+            let segment = List<PathSegment>()
+            let components = List<PathSegment[]>()
 
             for (p, t) in Array.zip points types do
                 let t = t |> int |> unbox<PathPointType>
@@ -197,7 +203,7 @@ type Font private(f : System.Drawing.Font) =
                     | PathPointType.Line ->
                         if currentPoints.Count > 0 then
                             let last = currentPoints.[currentPoints.Count - 1]
-                            segments.Add(Line(last, p))
+                            segment.Add(Line(last, p))
                             currentPoints.Clear()
                         currentPoints.Add p
                         
@@ -210,7 +216,7 @@ type Font private(f : System.Drawing.Font) =
                             let p1 = currentPoints.[1]
                             let p2 = currentPoints.[2]
                             let p3 = currentPoints.[3]
-                            segments.Add(Bezier3(p0, p1, p2, p3))
+                            segment.Add(Bezier3(p0, p1, p2, p3))
                             currentPoints.Clear()
                             currentPoints.Add p3
 
@@ -221,16 +227,19 @@ type Font private(f : System.Drawing.Font) =
 
                 if close then
                     if not start.IsNaN && p <> start then
-                        segments.Add(Line(p, start))
+                        segment.Add(Line(p, start))
+                    components.Add(CSharpList.toArray segment)
+                    segment.Clear()
                     currentPoints.Clear()
                     start <- V2d.NaN
 
-            let bounds = segments |> Seq.map PathSegment.bounds |> Box2d
+            let bounds = components |> Seq.collect (Seq.map PathSegment.bounds) |> Box2d
 
 
 
 
-            { outline = CSharpList.toArray segments }
+            { outline = CSharpList.toArray components |> Array.concat }
+
 
     let glyphCache = ConcurrentDictionary<char, Glyph>()
 

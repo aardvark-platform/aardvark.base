@@ -10,37 +10,6 @@ type Path = private { outline : PathSegment[] }
 [<CompilationRepresentation(CompilationRepresentationFlags.ModuleSuffix)>]
 module Path =
 
-    module private Poly2Tri =
-        open Poly2Tri
-        open Poly2Tri.Triangulation
-        open Poly2Tri.Triangulation.Polygon
-
-        let private toInternal (p : Polygon2d) =
-            let arr = p.Points |> Seq.map (fun v -> PolygonPoint(v.X, v.Y)) |> Seq.toArray
-
-            Polygon(Array.append arr [|arr.[0]|])
-
-        let triangulate (polygon : Polygon2d) (holes : seq<Polygon2d>) =
-            let p = toInternal polygon
-            
-            for h in holes do
-                p.AddHole(toInternal h)
-        
-            
-            P2T.Triangulate [p]
-
-
-            p.Triangles
-                |> Seq.map (fun t -> 
-                    let p0 = t.Points.[0]
-                    let p1 = t.Points.[1]
-                    let p2 = t.Points.[2]
-
-                    Triangle2d(V2d(p0.X, p0.Y), V2d(p1.X, p1.Y), V2d(p2.X, p2.Y))
-                   )
-                |> Seq.toList
-            
-    
     module Attributes = 
         let KLMKind = Symbol.Create "KLMKind"
         let PathOffsetAndScale = Symbol.Create "PathOffsetAndScale"
@@ -225,13 +194,84 @@ module Path =
         member x.B1 = b1
         member x.B2 = b2
 
+
+    module LibTess =
+        open LibTessDotNet.Double
+
+        module private ContourVertex =
+            let ofV2d (v : V2d) =
+                let mutable res = ContourVertex()
+                res.Position <- Vec3(X = v.X, Y = v.Y)
+                res
+
+            let toV2d (v : ContourVertex) =
+                V2d(v.Position.X, v.Position.Y)
+
+        module private Contour =
+            let closed (path : array<V3d * 'a>) =
+                let isClosed = (fst path.[0]) = (fst path.[path.Length-1])
+           
+                let arr = Array.zeroCreate (path.Length + (if isClosed then 0 else 1))
+                for i in 0 .. path.Length - 1 do
+                    let (pt, att) = path.[i]
+                    arr.[i] <- ContourVertex(Position = Vec3(X = pt.X, Y = pt.Y, Z = pt.Z), Data = att)
+
+                if not isClosed then
+                    arr.[path.Length] <- arr.[0]
+
+                arr
+
+            let ofPolygon2d (p : Polygon2d) =
+                let arr = Array.zeroCreate (p.PointCount + 1)
+                for i in 0 .. p.PointCount - 1 do
+                    arr.[i] <- ContourVertex.ofV2d p.[i]
+                arr.[p.PointCount] <- arr.[0]
+                arr
+
+        type Tessellator private() =
+            static member Tessellate<'a> (paths : seq<array<V3d * 'a>>, interpolate : V3d -> array<float * 'a> -> 'a) =
+                let tess = Tess()
+                for path in paths do
+                    tess.AddContour(Contour.closed path)
+
+                let combiner =
+                    CombineCallback(fun p values weights ->
+                        let pos = V3d(p.X, p.Y, p.Z)
+                        let zip = Array.map2 (fun w v -> (w, unbox<'a> v)) weights values 
+                        interpolate pos zip :> obj
+                    )
+
+                tess.Tessellate(WindingRule.EvenOdd, ElementType.Polygons, 3, combiner)
+            
+            static member inline Tessellate (paths : seq<array<V3d * 'a>>, mul : float -> 'a -> 'a) =
+                let combine (p : V3d) (arr : array<float * 'a>) : 'a =
+                    arr |> Array.sumBy (fun (w,v) -> mul w v)
+                Tessellator.Tessellate<'a>(paths, combine)
+
+        let tessellate (paths : seq<Polygon2d>) =
+            let tess = Tess()
+            for path in paths do
+                tess.AddContour(Contour.ofPolygon2d path)
+
+            tess.Tessellate(WindingRule.EvenOdd, ElementType.Polygons, 3)
+
+            let index = tess.Elements
+            let vertices = tess.Vertices |> Array.map ContourVertex.toV2d
+            Array.init tess.ElementCount (fun ti ->
+                Triangle2d(
+                    vertices.[index.[3 * ti + 0]],
+                    vertices.[index.[3 * ti + 1]],
+                    vertices.[index.[3 * ti + 2]]
+                )
+            )
+
+
     /// creates a geometry using the !!closed!! path which contains the left-hand-side of
     /// the outline.
     /// The returned geometry contains Positions and a 4-dimensional vector (KLMKind) describing the
     /// (k,l,m) coordinates for boundary triangles in its xyz components and
     /// the kind of the triangle (inner = 0, boundary = 1) in its w component
     let toGeometry (p : Path) =
-
         // calculates the (k,l,m) coordinates for a given bezier-segment as
         // shown by Blinn 2003: http://www.msr-waypoint.net/en-us/um/people/cloop/LoopBlinn05.pdf
         // returns the (k,l,m) triples for the four control-points
@@ -408,7 +448,7 @@ module Path =
                 innerPoints.Add(List())
                 current <- V2d.NaN
 
-        let add p =
+        let add (p : V2d) =
             if current <> p then 
                 innerPoints.[innerPoints.Count-1].Add p
                 current <- p
@@ -452,7 +492,6 @@ module Path =
 
                     let overlapping = allSplines |> Seq.exists (overlap q)
                     if overlapping then
-
                         let m0 = 0.5 * (p0 + p1)
                         let m1 = 0.5 * (p1 + p2)
                         let pp = 0.5 * (m0 + m1)
@@ -528,59 +567,55 @@ module Path =
         run (Array.toList p.outline)
 
         // merge the interior polygons (respecting holes)
-        let innerPoints = innerPoints |> CSharpList.map (fun l -> l |> CSharpList.toArray |> Array.take (l.Count-1) |> Polygon2d)
-
-        let polygons = List<Polygon2d * List<Polygon2d>>()
-        
-
-
-
-
-        for polygon in innerPoints do
-            if not (polygon.IsCcw()) then
-                polygons.Add (polygon, List())
-
-        for polygon in innerPoints do
-            if polygon.IsCcw() then
-                let mutable found = false
-                for (p, holes) in polygons do
-                    if p.BoundingBox2d.Contains polygon.BoundingBox2d then
-                        holes.Add polygon
-                        found <- true
-
-                if not found then
-                    Log.warn "[Path] bad hole"
-
+        let innerPoints = 
+            innerPoints |> Seq.map (fun l -> 
+                let p = l |> CSharpList.toArray |> Array.take (l.Count-1) |> Polygon2d
+                p //Clipper.clip p
+            ) |> Seq.toArray
 
         let isBoundary (p0 : V2d) (p1 : V2d) =
             boundaryEdges.Contains(p0, p1) || boundaryEdges.Contains(p1, p0)
-
 //
-//            let pointOnTriangle (p : V2d) (t : Triangle2d) =
-//                t.Contains(p)
-////                Fun.IsTiny(t.Line01.LeftValueOfPos(p) , 1.0E-4) ||
-////                Fun.IsTiny(t.Line12.LeftValueOfPos(p) , 1.0E-4) ||
-////                Fun.IsTiny(t.Line20.LeftValueOfPos(p) , 1.0E-4)
+//        let polygons = List<Polygon2d * List<Polygon2d>>()
 //
-//            splineTriangles 
-//                |> Seq.exists (fun t -> pointOnTriangle p0 t && pointOnTriangle p1 t)
-//                |> not
+//        for polygon in innerPoints do
+//            if not (polygon.IsCcw()) then
+//                polygons.Add (polygon, List())
+//
+//        for polygon in innerPoints do
+//            if polygon.IsCcw() then
+//                let mutable found = false
+//                for (p, holes) in polygons do
+//                    if p.BoundingBox2d.Intersects polygon.BoundingBox2d then
+//                        holes.Add polygon
+//                        found <- true
+//
+//                if not found then
+//                    Log.warn "[Path] bad hole"
+//
+//        let triangles =
+//            polygons 
+//                |> CSharpList.toList
+//                |> List.collect (fun (p, holes) ->
+//                    Poly2Tri.triangulate p holes 
+//                        |> List.map (fun t ->
+//                            let b0 = isBoundary t.P0 t.P1
+//                            let b1 = isBoundary t.P1 t.P2
+//                            let b2 = isBoundary t.P2 t.P0
+//                            Triangle2dBound(t.P0, t.P1, t.P2, b0, b1, b2)
+//                        )
+//                   ) 
+//                |> List.toArray
 
-        // triangulate the interior polygons (marking all vertices as interior ones => triangleCoords.[*].W = 0)
         let triangles =
-            polygons 
-                |> CSharpList.toList
-                |> List.collect (fun (p, holes) ->
-                    Poly2Tri.triangulate p holes 
-                        |> List.map (fun t ->
-                            let b0 = isBoundary t.P0 t.P1
-                            let b1 = isBoundary t.P1 t.P2
-                            let b2 = isBoundary t.P2 t.P0
-                            Triangle2dBound(t.P0, t.P1, t.P2, b0, b1, b2)
-                        )
-                   ) 
-                |> List.toArray
-
+            innerPoints
+                |> LibTess.tessellate
+                |> Array.map (fun t ->
+                    let b0 = isBoundary t.P0 t.P1
+                    let b1 = isBoundary t.P1 t.P2
+                    let b2 = isBoundary t.P2 t.P0
+                    Triangle2dBound(t.P0, t.P1, t.P2, b0, b1, b2)
+                )
 
         let trianglePositions =
             triangles
@@ -609,11 +644,6 @@ module Path =
                     vecs |> Array.map (fun v ->
                         V4d(v.X, v.Y, 0.0, 0.0)
                     )
-//                    let c0 = if t.B0 then 1.0 else 0.0 //01
-//                    let c1 = if t.B1 then 1.0 else 0.0 //12
-//                    let c2 = if t.B2 then 1.0 else 0.0 //20
-//
-//                    [|V4d(1.0, 0.0, 0.0, 0.0); V4d(0.0, 1.0, 0.0, 0.0); V4d(0.0, 0.0, 1.0, 0.0)|]
                 )
 
 
@@ -625,7 +655,6 @@ module Path =
         let pos = Array.append trianglePositions boundaryTriangles
         let tex = Array.append triangleCoords boundaryCoords
 
-
         // use the merged vertex-data for creating the final geometry
         IndexedGeometry(
             Mode = IndexedGeometryMode.TriangleList,
@@ -635,5 +664,3 @@ module Path =
                     Attributes.KLMKind,         tex |> Array.map (V4f.op_Explicit) :> Array
                 ]
         )
-
-    
