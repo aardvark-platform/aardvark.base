@@ -115,7 +115,7 @@ module Path =
                         if f < 0.0 then
                             return v.color
                         else
-                            return V4d.OOOO
+                            return V4d(v.color.XYZ, 0.0)
      
                     else
                         return V4d.IOOI
@@ -195,6 +195,8 @@ module Path =
         member x.B2 = b2
 
 
+    
+
     module LibTess =
         open LibTessDotNet.Double
 
@@ -242,7 +244,12 @@ module Path =
                     )
 
                 tess.Tessellate(WindingRule.EvenOdd, ElementType.Polygons, 3, combiner)
-            
+                let index = tess.Elements
+                let vertices = tess.Vertices
+                Array.init (3*tess.ElementCount) (fun vi ->
+                    let p0 = vertices.[index.[vi]]
+                    V3d(p0.Position.X, p0.Position.Y, p0.Position.Z), unbox<'a> p0.Data
+                )
             static member inline Tessellate (paths : seq<array<V3d * 'a>>, mul : float -> 'a -> 'a) =
                 let combine (p : V3d) (arr : array<float * 'a>) : 'a =
                     arr |> Array.sumBy (fun (w,v) -> mul w v)
@@ -253,7 +260,7 @@ module Path =
             for path in paths do
                 tess.AddContour(Contour.ofPolygon2d path)
 
-            tess.Tessellate(WindingRule.EvenOdd, ElementType.Polygons, 3)
+            tess.Tessellate(WindingRule.Positive, ElementType.Polygons, 3)
 
             let index = tess.Elements
             let vertices = tess.Vertices |> Array.map ContourVertex.toV2d
@@ -265,6 +272,103 @@ module Path =
                 )
             )
 
+
+    let closedSubPaths (p : Path) =
+        let rec traverse (components : list<array<PathSegment>>) (currentComponent : list<PathSegment>) (index : int) (current : V2d) (arr : PathSegment[]) =
+            if index >= arr.Length then
+                match currentComponent with
+                    | [] -> components
+                    | _ ->
+                        let arr = currentComponent |> List.rev |> List.toArray
+                        arr :: components
+            else
+                let s = arr.[index]
+                let p0 = PathSegment.startPoint s
+                let p1 = PathSegment.endPoint s
+
+                if p0 = current then
+                    traverse components (s :: currentComponent) (index + 1) p1 arr
+                else
+                    match currentComponent with
+                        | [] -> traverse components [s] (index + 1) p1 arr
+                        | _ ->
+                            let arr = currentComponent |> List.rev |> List.toArray
+                            traverse (arr :: components) [s] (index + 1) p1 arr
+
+
+        traverse [] [] 0 V2d.NaN p.outline
+            
+        
+
+    let toGeometryBla (p : Path) =
+        let subPaths = closedSubPaths p
+
+        let interior =
+            let polygons =
+                subPaths |> List.map (fun segments ->
+                    let points = List(segments.Length * 2)
+
+                    for s in segments do
+                        match s with
+                            | LineSeg(p0, p1) ->
+                                //if first then points.Add p0; first <- false
+                                points.Add p1
+
+                            | Bezier2Seg(p0, p1, p2) ->
+                                //if first then points.Add p0; first <- false
+                                let p1Inside = p1.PosLeftOfLineValue(p0, p2) < 0.0
+
+                                if p1Inside then points.Add p1
+
+                                points.Add p1
+
+                            | Bezier3Seg(p0, p1, p2, p3) ->
+                                //if first then points.Add p0; first <- false
+                                let p1Inside = p1.PosLeftOfLineValue(p0, p3) < 0.0
+                                let p2Inside = p2.PosLeftOfLineValue(p0, p3) < 0.0
+                                
+                                if p1Inside && p2Inside then
+                                    points.Add p1
+                                    points.Add p2
+
+                                points.Add p3
+
+
+                    Polygon2d(points.ToArray())
+                )
+
+            LibTess.tessellate polygons
+
+
+        let triangles = interior
+        let klm       = Array.create triangles.Length ((V4d.Zero, V4d.Zero, V4d.Zero))
+
+        let pos = Array.zeroCreate (3 * triangles.Length)
+        let tex = Array.zeroCreate (3 * triangles.Length)
+
+        for i in 0 .. triangles.Length - 1 do
+            let t = triangles.[i]
+            let c0, c1, c2 = klm.[i]
+
+            let i0 = 3 * i + 0
+            let i1 = 3 * i + 1
+            let i2 = 3 * i + 2
+
+            pos.[i0] <- V3f(float32 t.P0.X, float32 t.P0.Y, 0.0f)
+            pos.[i1] <- V3f(float32 t.P1.X, float32 t.P1.Y, 0.0f)
+            pos.[i2] <- V3f(float32 t.P2.X, float32 t.P2.Y, 0.0f)
+            tex.[i0] <- V4f c0
+            tex.[i1] <- V4f c1
+            tex.[i2] <- V4f c2
+
+        IndexedGeometry(
+            Mode = IndexedGeometryMode.TriangleList,
+            IndexedAttributes =
+                SymDict.ofList [
+                    DefaultSemantic.Positions,  pos :> Array
+                    Attributes.KLMKind,         tex :> Array
+                ]
+        )
 
     /// creates a geometry using the !!closed!! path which contains the left-hand-side of
     /// the outline.
@@ -453,20 +557,19 @@ module Path =
                 innerPoints.[innerPoints.Count-1].Add p
                 current <- p
 
-
         let overlap (q0 : Polygon2d) (q1 : Polygon2d) =
             let realIntersections =
                 seq {
                     for u in q0.EdgeLines do
+                        let mutable t = nan
+                        let r = u.Ray2d
                         for v in q1.EdgeLines do
-                            let mutable t = nan
-                            match u.Ray2d.Intersects(v, &t) with
-                                | true when t > 0.001 && t < 0.999 -> yield true
+                            match r.Intersects(v, &t) with
+                                | true when t > 0.001 && t < 0.999 -> yield 1
                                 | _ -> ()
                 }
             realIntersections |> Seq.isEmpty |> not
-
-                    
+        
         let allSplines = 
             p.outline |> Array.choose (fun s ->
                 match s with
@@ -575,37 +678,6 @@ module Path =
 
         let isBoundary (p0 : V2d) (p1 : V2d) =
             boundaryEdges.Contains(p0, p1) || boundaryEdges.Contains(p1, p0)
-//
-//        let polygons = List<Polygon2d * List<Polygon2d>>()
-//
-//        for polygon in innerPoints do
-//            if not (polygon.IsCcw()) then
-//                polygons.Add (polygon, List())
-//
-//        for polygon in innerPoints do
-//            if polygon.IsCcw() then
-//                let mutable found = false
-//                for (p, holes) in polygons do
-//                    if p.BoundingBox2d.Intersects polygon.BoundingBox2d then
-//                        holes.Add polygon
-//                        found <- true
-//
-//                if not found then
-//                    Log.warn "[Path] bad hole"
-//
-//        let triangles =
-//            polygons 
-//                |> CSharpList.toList
-//                |> List.collect (fun (p, holes) ->
-//                    Poly2Tri.triangulate p holes 
-//                        |> List.map (fun t ->
-//                            let b0 = isBoundary t.P0 t.P1
-//                            let b1 = isBoundary t.P1 t.P2
-//                            let b2 = isBoundary t.P2 t.P0
-//                            Triangle2dBound(t.P0, t.P1, t.P2, b0, b1, b2)
-//                        )
-//                   ) 
-//                |> List.toArray
 
         let triangles =
             innerPoints
@@ -626,28 +698,20 @@ module Path =
         let triangleCoords =
             triangles
                 |> Array.collect (fun t ->
-                    let vecs = 
-                        match t.B0, t.B1, t.B2 with
-                            | false,    false,      false -> [| V2d.OO; V2d.OO; V2d.OO |]
+                    match t.B0, t.B1, t.B2 with
+                        | false,    false,      false -> [| V4d.OOOO; V4d.OOOO; V4d.OOOO |]
                         
-                            | true,     false,      false -> [| V2d.IO; V2d.IO; V2d.OO |]
-                            | false,    true,       false -> [| V2d.OO; V2d.IO; V2d.IO |]
-                            | false,    false,      true  -> [| V2d.IO; V2d.OO; V2d.IO |]
+                        | true,     false,      false -> [| V4d.IOOO; V4d.IOOO; V4d.OOOO |]
+                        | false,    true,       false -> [| V4d.OOOO; V4d.IOOO; V4d.IOOO |]
+                        | false,    false,      true  -> [| V4d.IOOO; V4d.OOOO; V4d.IOOO |]
 
-                            | true,     false,      true  -> [| V2d.II; V2d.IO; V2d.OI |]
-                            | true,     true,       false -> [| V2d.IO; V2d.II; V2d.OI |]
-                            | false,    true,       true  -> [| V2d.IO; V2d.OI; V2d.II |]
+                        | true,     false,      true  -> [| V4d.IIOO; V4d.IOOO; V4d.OIOO |]
+                        | true,     true,       false -> [| V4d.IOOO; V4d.IIOO; V4d.OIOO |]
+                        | false,    true,       true  -> [| V4d.IOOO; V4d.OIOO; V4d.IIOO |]
 
-                            | true,     true,       true  -> [| V2d.II; V2d.II; V2d.II |]
-
-
-                    vecs |> Array.map (fun v ->
-                        V4d(v.X, v.Y, 0.0, 0.0)
-                    )
+                        | true,     true,       true  -> [| V4d.IIOO; V4d.IIOO; V4d.IIOO |]
                 )
 
-
-        
 
         // union the interior with the bounary triangles
         let boundaryTriangles = boundaryTriangles |> Seq.map (fun v -> V3d(v.X, v.Y, 0.0)) |> Seq.toArray

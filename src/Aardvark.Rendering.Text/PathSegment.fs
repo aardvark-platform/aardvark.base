@@ -14,7 +14,7 @@ type PathSegment =
 module PathSegment =
     /// creates a line segment
     let line (p0 : V2d) (p1 : V2d) = 
-        if V2d.ApproxEqual(p0, p1) then
+        if p0 = p1 then
             failwithf "[PathSegment] degenerate line at: %A" p0
 
         LineSeg(p0, p1)
@@ -63,6 +63,33 @@ module PathSegment =
         else
             Bezier3Seg(p0, p1, p2, p3)
 
+    /// creates a line segment (if not degenerate)
+    let tryLine (p0 : V2d) (p1 : V2d) =
+        if p0 = p1 then None
+        else Some (LineSeg(p0, p1))
+
+    /// creates a qudratic bezier segment (if not degenerate)
+    let tryBezier2 (p0 : V2d) (p1 : V2d) (p2 : V2d) = 
+        // check if the spline is actually a line
+        if Fun.IsTiny(p1.PosLeftOfLineValue(p0, p2)) then 
+            tryLine p0 p2
+        else 
+            Bezier2Seg(p0, p1, p2) |> Some
+
+    /// creates a cubic bezier segment (if not degenerate)
+    let tryBezier3 (p0 : V2d) (p1 : V2d) (p2 : V2d) (p3 : V2d) =
+        let areaBetween = 
+            sqrt(
+                let vec = p0 - 3.0*p1 + 3.0*p2 - p3 
+                Vec.dot vec vec / 840.0
+            )
+
+        if Fun.IsTiny(areaBetween, 1.0E-6) then
+            let pc = (3.0*(p1 + p2) - p0 - p3)/4.0
+            tryBezier2 p0 pc p3
+        else
+            Bezier3Seg(p0, p1, p2, p3) |> Some
+
     /// evaluates the curve-position for the given parameter (t <- [0;1])
     let point (t : float) (seg : PathSegment) =
         let t = clamp 0.0 1.0 t
@@ -80,6 +107,7 @@ module PathSegment =
                 let u2 = u * u
                 let t2 = t * t
                 (u * u2) * p0 + (3.0 * u2 * t) * p1 + (3.0 * u * t2) * p2 + (t * t2) * p2
+
 
     /// evaluates the curve-derivative for the given parameter (t <- [0;1])
     let derivative (t : float) (seg : PathSegment) =
@@ -141,6 +169,17 @@ module PathSegment =
         let t = tangent t seg
         V2d(-t.Y, t.X)
 
+    let startPoint (seg : PathSegment) =
+        match seg with
+            | LineSeg(p0, p1) -> p0
+            | Bezier2Seg(p0, p1, p2) -> p0
+            | Bezier3Seg(p0, p1, p2, p3) -> p0
+
+    let endPoint (seg : PathSegment) =
+        match seg with
+            | LineSeg(p0, p1) -> p1
+            | Bezier2Seg(p0, p1, p2) -> p2
+            | Bezier3Seg(p0, p1, p2, p3) -> p3
 [<AutoOpen>]
 module ``PathSegment Public API`` =
     let (|Line|Bezier2|Bezier3|) (s : PathSegment) =
@@ -157,4 +196,6 @@ module ``PathSegment Public API`` =
     let inline Line(p0, p1) = PathSegment.line p0 p1
     let inline Bezier2(p0, p1, p2) = PathSegment.bezier2 p0 p1 p2
     let inline Bezier3(p0, p1, p2, p3) = PathSegment.bezier3 p0 p1 p2 p3
+
+
 

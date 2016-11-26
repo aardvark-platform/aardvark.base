@@ -203,7 +203,9 @@ type Font private(f : System.Drawing.Font) =
                     | PathPointType.Line ->
                         if currentPoints.Count > 0 then
                             let last = currentPoints.[currentPoints.Count - 1]
-                            segment.Add(Line(last, p))
+                            match PathSegment.tryLine last p with
+                                | Some s -> segment.Add s
+                                | _ -> ()
                             currentPoints.Clear()
                         currentPoints.Add p
                         
@@ -216,7 +218,9 @@ type Font private(f : System.Drawing.Font) =
                             let p1 = currentPoints.[1]
                             let p2 = currentPoints.[2]
                             let p3 = currentPoints.[3]
-                            segment.Add(Bezier3(p0, p1, p2, p3))
+                            match PathSegment.tryBezier3 p0 p1 p2 p3 with
+                                | Some s -> segment.Add(s)
+                                | None -> ()
                             currentPoints.Clear()
                             currentPoints.Add p3
 
