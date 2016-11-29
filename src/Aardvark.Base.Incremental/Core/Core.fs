@@ -173,36 +173,70 @@ type IAdaptiveObject =
 
     abstract member Lock : AdaptiveLock
 
+//and AdaptiveLock() =
+//    //let mutable readerCount = 0
+//    let rw = new ReaderWriterLockSlim()
+//
+//    member x.EnterRead(o : IAdaptiveObject) = 
+//        if rw.IsWriteLockHeld || rw.IsReadLockHeld then
+//            Monitor.Enter o
+//            false
+//        else
+//            rw.EnterReadLock()
+//            Monitor.Enter o
+//            true
+//
+//    member x.Downgrade(o : IAdaptiveObject) = 
+//        Monitor.Exit o
+//
+//    member x.ExitRead() = 
+//        rw.ExitReadLock()
+//
+//    member x.EnterWrite(o : IAdaptiveObject) = 
+//        if rw.IsReadLockHeld && o.OutOfDate then
+//            false
+//        else
+//            rw.EnterWriteLock()
+//            Monitor.Enter o
+//            true
+//
+//    member x.ExitWrite(o : IAdaptiveObject) = 
+//        Monitor.Exit o
+//        rw.ExitWriteLock()
+
 and AdaptiveLock() =
-    //let mutable readerCount = 0
-    let rw = new ReaderWriterLockSlim()
+    let mutable readerCount = 0
+    let isZero = new ManualResetEventSlim(true)
 
-    member x.EnterRead(o : IAdaptiveObject) = 
-        if rw.IsWriteLockHeld || rw.IsReadLockHeld then
-            Monitor.Enter o
-            false
-        else
-            rw.EnterReadLock()
-            Monitor.Enter o
-            true
+    member x.EnterRead(o : obj) = 
+        Monitor.Enter o
+        if Interlocked.Increment(&readerCount) = 1 then
+            isZero.Reset()
+        true
 
-    member x.Downgrade(o : IAdaptiveObject) = 
+    member x.Downgrade(o : obj) = 
         Monitor.Exit o
 
     member x.ExitRead() = 
-        rw.ExitReadLock()
+        if Interlocked.Decrement(&readerCount) = 0 then
+            isZero.Set()
 
-    member x.EnterWrite(o : IAdaptiveObject) = 
-        if rw.IsReadLockHeld && o.OutOfDate then
-            false
-        else
-            rw.EnterWriteLock()
+    member x.EnterWrite(o : obj) = 
+        let rec enter(level : int) =
+            isZero.Wait()
             Monitor.Enter o
-            true
+            if readerCount > 0 then
+                if level > 10 then Log.warn "yehaaa"
+                Monitor.Exit o
+                enter(level + 1)
+            else
+                ()
 
-    member x.ExitWrite(o : IAdaptiveObject) = 
+        enter 0
+        true
+
+    member x.ExitWrite(o : obj) = 
         Monitor.Exit o
-        rw.ExitWriteLock()
 
 /// <summary>
 /// LevelChangedException is internally used by the system
