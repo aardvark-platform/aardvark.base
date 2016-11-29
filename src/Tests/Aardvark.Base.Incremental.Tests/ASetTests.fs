@@ -482,7 +482,7 @@ module OtherASetTests =
                 while true do
                     ct.ThrowIfCancellationRequested()
                     let delta = r.GetDelta()
-                    //Thread.Sleep(1)
+                    Thread.Sleep(1)
                     ()
             , TaskCreationOptions.LongRunning) |> ignore
 
