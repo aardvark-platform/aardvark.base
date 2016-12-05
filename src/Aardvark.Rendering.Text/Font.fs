@@ -20,6 +20,7 @@ type FontStyle =
     | Regular = 0
     | Bold = 1
     | Italic = 2
+    | BoldItalic = 3
 
 module private GDI32 =
 
@@ -155,17 +156,7 @@ type Glyph internal(path : Path, graphics : Graphics, font : System.Drawing.Font
 
     member x.Before = -0.1666
 
-type private WindingFlags =
-    | None   = 0
-    | CCW    = 1
-    | CW     = 2
-    | Mixed  = 3
-
-type Font private(f : System.Drawing.Font) =
-    static let mutable fontCount = 0
-
-    do Interlocked.Increment &fontCount |> ignore
-
+type private FontImpl(f : System.Drawing.Font) =
     let largeScaleFont = new System.Drawing.Font(f.FontFamily, 2000.0f, f.Style, f.Unit, f.GdiCharSet, f.GdiVerticalFont)
     let graphics = Graphics.FromHwnd(0n, PageUnit = f.Unit)
 
@@ -246,22 +237,15 @@ type Font private(f : System.Drawing.Font) =
 
             CSharpList.toArray components |> Array.concat |> Path.ofArray
 
-
-    let glyphCache = ConcurrentDictionary<char, Glyph>()
+    let glyphCache = Dict<char, Glyph>()
 
     let get (c : char) =
-        glyphCache.GetOrAdd(c, fun c ->
-            let path = getPath c
-            Glyph(path, graphics, largeScaleFont, c)
+        lock glyphCache (fun () ->
+            glyphCache.GetOrCreate(c, fun c ->
+                let path = getPath c
+                Glyph(path, graphics, largeScaleFont, c)
+            )
         )
-
-
-
-    member x.Dispose() =
-        f.Dispose()
-        kerningTable.Clear()
-        largeScaleFont.Dispose()
-        graphics.Dispose()
 
     member x.Family = f.FontFamily.Name
     member x.LineHeight = lineHeight
@@ -276,19 +260,26 @@ type Font private(f : System.Drawing.Font) =
             | (true, v) -> v
             | _ -> 0.0
 
-    interface IDisposable with
-        member x.Dispose() = x.Dispose()
+type Font(family : string, style : FontStyle) =
+    static let table = System.Collections.Concurrent.ConcurrentDictionary<string * FontStyle, FontImpl>()
 
-    new(family : string, style : FontStyle) = 
-        let f = new System.Drawing.Font(family, 1.0f, unbox (int style), GraphicsUnit.Point)
-        new Font(f)
+    let impl =
+        table.GetOrAdd((family, style), fun (family, style) ->
+            let f = new System.Drawing.Font(family, 1.0f, unbox (int style), GraphicsUnit.Point)
+            new FontImpl(f)
+        )
 
-    new(family : string) = 
-        new Font(family, FontStyle.Regular)
+    member x.Family = family
+    member x.LineHeight = impl.LineHeight
+    member x.Style = style
+    member x.Spacing = impl.Spacing
+    member x.GetGlyph(c : char) = impl.GetGlyph c
+    member x.GetKerning(l : char, r : char) = impl.GetKerning(l,r)
+
+    new(family : string) = Font(family, FontStyle.Regular)
 
 type ShapeCache(r : IRuntime) =
     static let cache = ConcurrentDictionary<IRuntime, ShapeCache>()
-
 
     let pool = Aardvark.Base.Rendering.GeometryPool.createAsync r
     let ranges = ConcurrentDictionary<Shape, Range1i>()
@@ -305,8 +296,6 @@ type ShapeCache(r : IRuntime) =
             DefaultSurfaces.trafo       |> toEffect
             Path.Shader.boundary        |> toEffect
         ]
-
-
 
     let types =
         Map.ofList [
@@ -334,9 +323,9 @@ type ShapeCache(r : IRuntime) =
     member x.BoundarySurface = boundarySurface :> ISurface
     member x.VertexBuffers = vertexBuffers
 
-    member x.GetBufferRange(glyph : Shape) =
-        ranges.GetOrAdd(glyph, fun glyph ->
-            let range = pool.Add(glyph.Geometry)
+    member x.GetBufferRange(shape : Shape) =
+        ranges.GetOrAdd(shape, fun shape ->
+            let range = pool.Add(shape.Geometry)
             range
         )
 
@@ -349,9 +338,16 @@ type ShapeCache(r : IRuntime) =
 
 [<CompilationRepresentation(CompilationRepresentationFlags.ModuleSuffix)>]
 module Font =
+    let inline family (f : Font) = f.Family
+    let inline style (f : Font) = f.Style
+    let inline spacing (f : Font) = f.Spacing
+    let inline lineHeight (f : Font) = f.LineHeight
+
     let inline glyph (c : char) (f : Font) = f.GetGlyph c
     let inline kerning (l : char) (r : char) (f : Font) = f.GetKerning(l,r)
-    let inline lineHeight (f : Font) = f.LineHeight
+
+    let inline create (family : string) (style : FontStyle) = Font(family, style)
+
 
 [<CompilationRepresentation(CompilationRepresentationFlags.ModuleSuffix)>]
 module Glyph =
