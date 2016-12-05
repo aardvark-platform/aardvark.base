@@ -146,6 +146,8 @@ type Glyph internal(path : Path, graphics : Graphics, font : System.Drawing.Font
 
     member x.Character = c
     
+    member x.Bounds = path.bounds
+
     member x.Path = path
     member x.Advance = 
         let sizes = widths.Value
@@ -181,7 +183,7 @@ type Font private(f : System.Drawing.Font) =
 
 
         if path.PointCount = 0 then
-            { outline = [||] }
+            { bounds = Box2d.Invalid; outline = [||] }
         else
             // build the interior polygon and boundary triangles using the 
             // given GraphicsPath
@@ -242,7 +244,7 @@ type Font private(f : System.Drawing.Font) =
 
 
 
-            { outline = CSharpList.toArray components |> Array.concat }
+            CSharpList.toArray components |> Array.concat |> Path.ofArray
 
 
     let glyphCache = ConcurrentDictionary<char, Glyph>()

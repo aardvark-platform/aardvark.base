@@ -5,7 +5,7 @@ open System.Collections.Generic
 open Aardvark.Base
 
 
-type Path = private { outline : PathSegment[] }
+type Path = private { bounds : Box2d; outline : PathSegment[] }
 
 [<CompilationRepresentation(CompilationRepresentationFlags.ModuleSuffix)>]
 module Path =
@@ -185,19 +185,24 @@ module Path =
 
     /// create a path using a single segment
     let single (seg : PathSegment) =
-        { outline = [| seg |] }
+        { bounds = PathSegment.bounds seg; outline = [| seg |] }
 
     /// creates a path using the given segments
     let ofSeq (segments : seq<PathSegment>) =
-        { outline = Seq.toArray segments }
+        let arr = Seq.toArray segments
+        let bounds = arr |> Array.fold (fun l r -> Box2d.Union(l,PathSegment.bounds r)) Box2d.Invalid
+        { bounds = bounds; outline = arr }
 
     /// creates a path using the given segments
     let ofList (segments : list<PathSegment>) =
-        { outline = List.toArray segments }
+        let arr = List.toArray segments
+        let bounds = arr |> Array.fold (fun l r -> Box2d.Union(l,PathSegment.bounds r)) Box2d.Invalid
+        { bounds = bounds; outline = arr }
 
     /// creates a path using the given segments
     let ofArray (segments : PathSegment[]) =
-        { outline = Array.copy segments }
+        let bounds = segments |> Array.fold (fun l r -> Box2d.Union(l,PathSegment.bounds r)) Box2d.Invalid
+        { bounds = bounds; outline = segments }
 
     /// returns all path segments
     let toSeq (p : Path) =
@@ -213,15 +218,17 @@ module Path =
 
     /// concatenates two paths
     let append (l : Path) (r : Path) =
-        { outline = Array.append l.outline r.outline }
+        { bounds = Box2d.Union(l.bounds, r.bounds); outline = Array.append l.outline r.outline }
 
     /// concatenates a sequence paths
     let concat (l : seq<Path>) =
-        { outline = l |> Seq.toArray |> Array.collect toArray }
+        let bounds = l |> Seq.fold (fun l r -> Box2d.Union(l, r.bounds)) Box2d.Invalid
+        let arr = l |> Seq.collect toArray |> Seq.toArray
+        { bounds = bounds; outline = arr }
 
     /// reverses the entrie path
     let reverse (p : Path) =
-        { outline = p.outline |> Array.map PathSegment.reverse |> Array.rev }
+        { bounds = p.bounds; outline = p.outline |> Array.map PathSegment.reverse |> Array.rev }
 
     /// gets an axis-aligned bounding box for the path
     let bounds (p : Path) =
@@ -237,7 +244,7 @@ module Path =
 
     /// applies the given transformation to all points used by the path
     let transform (f : V2d -> V2d) (p : Path) =
-        { outline = Array.map (PathSegment.transform f) p.outline }
+        p.outline |> Array.map (PathSegment.transform f) |> ofArray
 
 
     type private Triangle2dBound(p0 : V2d, p1 : V2d, p2 : V2d, b0 : bool, b1 : bool, b2 : bool) =
@@ -413,7 +420,7 @@ module Path =
                 match currentComponent with
                     | [] -> components
                     | _ ->
-                        let c = { outline = currentComponent |> List.rev |> List.toArray }
+                        let c = currentComponent |> List.rev |> ofList
                         c :: components
             else
                 let s = arr.[index]
@@ -426,7 +433,7 @@ module Path =
                     match currentComponent with
                         | [] -> traverse components [s] (index + 1) p1 arr
                         | _ ->
-                            let c = { outline = currentComponent |> List.rev |> List.toArray }
+                            let c = currentComponent |> List.rev |> ofList
                             traverse (c :: components) [s] (index + 1) p1 arr
 
         traverse [] [] 0 V2d.NaN p.outline
