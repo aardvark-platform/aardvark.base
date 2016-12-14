@@ -20,6 +20,9 @@ type Mod private() =
     static member Custom (f : Func<IMod<'a>, 'a>) : IMod<'a> =
         Mod.custom f.Invoke
 
+    static member MapCustom (f : Func<IMod<'a>, 'a>,  [<ParamArray>] inputs : IAdaptiveObject[] ) : IMod<'a> =
+        Mod.mapCustom f.Invoke (List.ofArray(inputs))
+
     static member Async(t : System.Threading.Tasks.Task<'a>, defaultValue : 'a) : IMod<'a> =
         Mod.asyncWithDefault defaultValue (Async.AwaitTask t)
 
@@ -232,6 +235,10 @@ type AdaptiveSetExtensions private() =
     [<Extension>]
     static member Choose (this : aset<'a>, f : Func<'a, Option<'b>>) =
         ASet.choose f.Invoke this
+
+    [<Extension>]
+    static member MapUse (this : aset<'a>, f : Func<'a, 'b>) =
+        ASet.mapUse f.Invoke this
 
     [<Extension>]
     static member Flatten (this : seq<aset<'a>>) =
