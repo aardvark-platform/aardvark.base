@@ -708,7 +708,7 @@ namespace Aardvark.Base
             }
         }
 
-        private static void UnpackNativeDependencies(Assembly a)
+        public static void UnpackNativeDependencies(Assembly a)
         {
             if (a.IsDynamic) return;
 
