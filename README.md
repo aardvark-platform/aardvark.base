@@ -4,6 +4,8 @@
 
 Aardvark.Base is a collection of algorithms and data structures for computer graphics and visualization. It is under active development since 2006 as part of a much larger set of libraries at VRVis Research Center.
 
+The aardvark rendering engine heavily uses aardvark.base and can be found here: [aardvark.rendering](https://github.com/vrvis/aardvark.rendering)
+
 ##Docs and Tutorials
 
 [Getting Started](https://github.com/vrvis/aardvark/wiki)
