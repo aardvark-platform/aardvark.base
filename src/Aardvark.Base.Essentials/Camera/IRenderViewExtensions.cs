@@ -44,7 +44,7 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Builds a hull from the given view-projection. 
+        /// Builds a hull from the given view-projection (left, right, top, bottom, near, far).
         /// The normals of the hull planes point to the inside. 
         /// A point inside the visual hull will have positive height to all planes.
         /// </summary>
