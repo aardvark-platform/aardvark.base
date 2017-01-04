@@ -44,7 +44,8 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Builds a hull from the given view-projection. The normals of the hull planes point to the inside. 
+        /// Builds a hull from the given view-projection. 
+        /// The normals of the hull planes point to the inside. 
         /// A point inside the visual hull will have positive height to all planes.
         /// </summary>
         public static Hull3d GetVisualHull(this IViewProjection vp)
@@ -53,18 +54,27 @@ namespace Aardvark.Base
 
             var frustumCorners = new Box3d(-V3d.IIO, V3d.III).ComputeCorners();
 
+            //Min,                             0 near left bottom
+            //new V3d(Max.X, Min.Y, Min.Z),    1 near right bottom
+            //new V3d(Min.X, Max.Y, Min.Z),    2 near left top
+            //new V3d(Max.X, Max.Y, Min.Z),    3 near right top
+            //new V3d(Min.X, Min.Y, Max.Z),    4 far left bottom
+            //new V3d(Max.X, Min.Y, Max.Z),    5 far right bottom
+            //new V3d(Min.X, Max.Y, Max.Z),    6 far left top
+            //Max                              7 far right top
+
             // use inverse view-projection to get vertices in world space
             frustumCorners.Apply(c => mvp.Backward.TransformPosProj(c));
 
             // hull planes should point inward, assume right-handed transformation to build planes
             var hull = new Hull3d(new[]
             {
-                new Plane3d(frustumCorners[0], frustumCorners[2], frustumCorners[4]), // left
-                new Plane3d(frustumCorners[1], frustumCorners[5], frustumCorners[3]), // right
-                new Plane3d(frustumCorners[2], frustumCorners[3], frustumCorners[7]), // bottom
-                new Plane3d(frustumCorners[0], frustumCorners[4], frustumCorners[1]), // top
-                new Plane3d(frustumCorners[0], frustumCorners[1], frustumCorners[2]), // near
-                new Plane3d(frustumCorners[4], frustumCorners[6], frustumCorners[5]), // far
+                new Plane3d(frustumCorners[0], frustumCorners[4], frustumCorners[2]), // left
+                new Plane3d(frustumCorners[1], frustumCorners[3], frustumCorners[5]), // right
+                new Plane3d(frustumCorners[2], frustumCorners[6], frustumCorners[3]), // top
+                new Plane3d(frustumCorners[0], frustumCorners[1], frustumCorners[4]), // bottom                
+                new Plane3d(frustumCorners[0], frustumCorners[2], frustumCorners[1]), // near
+                new Plane3d(frustumCorners[4], frustumCorners[5], frustumCorners[6]), // far
             });
 
             // handedness of transformation -> flip planes in case of left-handed
