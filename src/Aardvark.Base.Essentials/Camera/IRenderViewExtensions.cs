@@ -72,14 +72,10 @@ namespace Aardvark.Base
                 new Plane3d(frustumCorners[0], frustumCorners[4], frustumCorners[2]), // left
                 new Plane3d(frustumCorners[1], frustumCorners[3], frustumCorners[5]), // right
                 new Plane3d(frustumCorners[2], frustumCorners[6], frustumCorners[3]), // top
-                new Plane3d(frustumCorners[0], frustumCorners[1], frustumCorners[4]), // bottom                
+                new Plane3d(frustumCorners[0], frustumCorners[1], frustumCorners[4]), // bottom
                 new Plane3d(frustumCorners[0], frustumCorners[2], frustumCorners[1]), // near
                 new Plane3d(frustumCorners[4], frustumCorners[5], frustumCorners[6]), // far
             });
-
-            // handedness of transformation -> flip planes in case of left-handed
-            if (mvp.Forward.Det < 0)
-                hull.PlaneArray.Apply(p => p.Reversed);
             
             return hull;
         }
