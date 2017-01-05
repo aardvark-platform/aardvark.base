@@ -67,6 +67,7 @@
     <Compile Include="AlgoDat\LruCache.cs" />
     <None Include="Extensions\FuncActionExtensions_template.cs" />
     <Compile Include="AlgoDat\SalesmanOfDeath.cs" />
+    <Compile Include="Extensions\EnumHelpers.cs" />
     <Compile Include="Extensions\EventHandlerExtensions.cs" />
     <Compile Include="Extensions\FuncActionExtensions_auto.cs" />
     <Compile Include="Extensions\VariousExtensions.cs" />
@@ -126,6 +127,7 @@
     <None Include="IO\StreamCodeWriter_template.cs" />
     <None Include="Math\Complex_template.cs" />
     <Compile Include="IO\WorkDir.cs" />
+    <Compile Include="Math\AverageWindow.cs" />
     <Compile Include="Math\Complex_auto.cs" />
     <Compile Include="Math\Interpolation.cs" />
     <Compile Include="Math\PhysicsConsts.cs" />
