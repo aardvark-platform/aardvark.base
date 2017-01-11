@@ -208,20 +208,24 @@ and AdaptiveLock() =
     let mutable readerCount = 0
     let isZero = new ManualResetEventSlim(true)
 
-    member x.EnterRead(o : obj) = 
+
+
+    member x.EnterRead(o : IAdaptiveObject) = 
         Monitor.Enter o
         if Interlocked.Increment(&readerCount) = 1 then
             isZero.Reset()
-        true
 
-    member x.Downgrade(o : obj) = 
+    member x.Downgrade(o : IAdaptiveObject) = 
         Monitor.Exit o
 
     member x.ExitRead() = 
         if Interlocked.Decrement(&readerCount) = 0 then
             isZero.Set()
 
-    member x.EnterWrite(o : obj) = 
+    member x.IsOutdatedCaller(o : IAdaptiveObject) =
+        Monitor.IsEntered o && o.OutOfDate
+
+    member x.EnterWrite(o : IAdaptiveObject) = 
         let rec enter(level : int) =
             isZero.Wait()
             Monitor.Enter o
@@ -235,7 +239,7 @@ and AdaptiveLock() =
         enter 0
         true
 
-    member x.ExitWrite(o : obj) = 
+    member x.ExitWrite(o : IAdaptiveObject) = 
         Monitor.Exit o
 
 /// <summary>
@@ -424,71 +428,76 @@ type Transaction() =
                 // Note that the transaction will at most hold one
                 // lock at a time.
                 //Monitor.Enter e
-                let enterWorked = e.Lock.EnterWrite(e)
-                try
-                    // if the element is already outOfDate we
-                    // do not traverse the graph further.
-                    if e.OutOfDate then
-                        outputCount := 0
-                        e.AllInputsProcessed(x)
 
-                    else
+                if e.Lock.IsOutdatedCaller(e) then
+                    e.AllInputsProcessed(x)
+
+                else
+                    let enterWorked = e.Lock.EnterWrite(e)
+                    try
+                        // if the element is already outOfDate we
+                        // do not traverse the graph further.
+                        if e.OutOfDate then
+                            outputCount := 0
+                            e.AllInputsProcessed(x)
+
+                        else
                         
 
-                        // if the object's level has changed since it
-                        // was added to the queue we re-enqueue it with the new level
-                        // Note that this may of course cause runtime overhead and
-                        // might even change the asymptotic runtime behaviour of the entire
-                        // system in the worst case but we opted for this approach since
-                        // it is relatively simple to implement.
-                        if currentLevel <> e.Level then
-                            q.Enqueue e
-                            outputCount := 0
-                        else
-                            if causes.TryRemove(e, &myCauses.contents) then
-                                !myCauses |> Seq.iter (fun i -> e.InputChanged(x,i))
-
-                            // however if the level is consistent we may proceed
-                            // by marking the object as outOfDate
-                            e.OutOfDate <- true
-                            e.AllInputsProcessed(x)
-                            markCount := !markCount + 1
-                
-                            try 
-                                // here mark and the callbacks are allowed to evaluate
-                                // the adaptive object but must expect any call to AddOutput to 
-                                // raise a LevelChangedException whenever a level has been changed
-                                if e.Mark() then
-                                    // if everything succeeded we return all current outputs
-                                    // which will cause them to be enqueued 
-                                    outputs <- e.Outputs.Consume(outputCount)
-
-                                else
-                                    // if Mark told us not to continue we're done here
-                                    outputCount := 0
-
-                            with LevelChangedException(obj, objLevel, distance) ->
-                                // if the level was changed either by a callback
-                                // or Mark we re-enqueue the object with the new level and
-                                // mark it upToDate again (since it would otherwise not be processed again)
-                                e.Level <- max e.Level (objLevel + distance)
-                                e.OutOfDate <- false
-
-                                levelChangeCount := !levelChangeCount + 1
-
+                            // if the object's level has changed since it
+                            // was added to the queue we re-enqueue it with the new level
+                            // Note that this may of course cause runtime overhead and
+                            // might even change the asymptotic runtime behaviour of the entire
+                            // system in the worst case but we opted for this approach since
+                            // it is relatively simple to implement.
+                            if currentLevel <> e.Level then
                                 q.Enqueue e
                                 outputCount := 0
-                
-                finally 
-                    if enterWorked then
-                        e.Lock.ExitWrite(e)
-                    //Monitor.Exit e
+                            else
+                                if causes.TryRemove(e, &myCauses.contents) then
+                                    !myCauses |> Seq.iter (fun i -> e.InputChanged(x,i))
 
-                // finally we enqueue all returned outputs
-                for i in 0..!outputCount - 1 do
-                    let o = outputs.[i]
-                    o.InputChanged(x,e)
-                    x.Enqueue o
+                                // however if the level is consistent we may proceed
+                                // by marking the object as outOfDate
+                                e.OutOfDate <- true
+                                e.AllInputsProcessed(x)
+                                markCount := !markCount + 1
+                
+                                try 
+                                    // here mark and the callbacks are allowed to evaluate
+                                    // the adaptive object but must expect any call to AddOutput to 
+                                    // raise a LevelChangedException whenever a level has been changed
+                                    if e.Mark() then
+                                        // if everything succeeded we return all current outputs
+                                        // which will cause them to be enqueued 
+                                        outputs <- e.Outputs.Consume(outputCount)
+
+                                    else
+                                        // if Mark told us not to continue we're done here
+                                        outputCount := 0
+
+                                with LevelChangedException(obj, objLevel, distance) ->
+                                    // if the level was changed either by a callback
+                                    // or Mark we re-enqueue the object with the new level and
+                                    // mark it upToDate again (since it would otherwise not be processed again)
+                                    e.Level <- max e.Level (objLevel + distance)
+                                    e.OutOfDate <- false
+
+                                    levelChangeCount := !levelChangeCount + 1
+
+                                    q.Enqueue e
+                                    outputCount := 0
+                
+                    finally 
+                        if enterWorked then
+                            e.Lock.ExitWrite(e)
+                        //Monitor.Exit e
+
+                    // finally we enqueue all returned outputs
+                    for i in 0..!outputCount - 1 do
+                        let o = outputs.[i]
+                        o.InputChanged(x,e)
+                        x.Enqueue o
 
                 contained.Remove e |> ignore
                 current <- null
@@ -552,7 +561,7 @@ type AdaptiveObject =
                 else []
 
             let mutable res = Unchecked.defaultof<_>
-            let enterReadWorked = this.Lock.EnterRead this
+            this.Lock.EnterRead this
             let mutable good = false // evaluate works without exception?
 
             depth := !depth + 1
@@ -597,14 +606,13 @@ type AdaptiveObject =
                 this.Lock.Downgrade this
 
                 if not good then // no level changed exn occured
-                    if enterReadWorked then this.Lock.ExitRead()
+                    this.Lock.ExitRead()
 
                     if isNull caller then
                         AdaptiveSystemState.popReadLocks oldLocks
                 else
                     // normal case. if we got read lock, capture lock
-                    if enterReadWorked then
-                        AdaptiveSystemState.addReadLock this.Lock
+                    AdaptiveSystemState.addReadLock this.Lock
 
                 depth := !depth - 1
 
