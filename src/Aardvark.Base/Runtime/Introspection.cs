@@ -758,7 +758,7 @@ namespace Aardvark.Base
                                     }
                                     else if(File.GetLastWriteTimeUtc(outputPath) < e.LastWriteTime.UtcDateTime)
                                     {
-                                        e.ExtractToFile(outputPath);
+                                        e.ExtractToFile(outputPath, true);
                                         Report.Line(3, "unpacked: {0} (outdated)", outputPath);
                                     }
                                 }
