@@ -1290,6 +1290,37 @@ module ASetPerformance =
             printfn "  pull:     %A" (tPull.Elapsed / cnt)
     
 
+    [<Test>]
+    let ``[ASet] bind caching``() =
+
+        let set = cset [1;2;3;4;5;6;7;8;9]
+
+        let sel = set |> ASet.map (fun x -> printfn "first map: %A" x; x * 2)
+
+        let modul = Mod.init 3
+        
+        let tes = ASet.filter (fun n -> (n % 2) = 0) set
+
+        let b = modul |> ASet.bind (fun m -> sel |> ASet.filter (fun n -> (n % m) = 0))
+                
+        let b2 = b |> ASet.map (fun n -> printfn "second map: %A" n; n * 3)
+
+        let o = ASet.toMod b2
+
+        printfn "initial"
+
+        let force = o.GetValue()
+
+        printfn "change modul"
+
+        transact (fun () -> Mod.change modul 2)
+
+        let force = o.GetValue()
+
+        printfn "done"
+
+        ()
+
 [<AutoOpen>]
 module ConcurrentDeltaQueueTests =
 
