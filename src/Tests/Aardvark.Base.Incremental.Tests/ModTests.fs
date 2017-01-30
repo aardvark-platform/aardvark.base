@@ -821,6 +821,34 @@ module ``Basic Mod Tests`` =
         if finished then failwith "that was unexpected"
 
 
+    [<Test>]
+    let ``[Mod] recursive transact`` () =
+
+        let x = Mod.init 10
+        let y = Mod.init 20
+
+        let cb = x |> Mod.unsafeRegisterCallbackNoGcRoot (fun v ->
+                        transact(fun () ->
+                            Mod.change y v))
+
+        transact(fun () ->
+            Mod.change x 5)
+
+        let t = getCurrentTransaction()
+
+        t.IsNone |> should be True
+        y |> Mod.force |> should equal 5
+
+        let cb2 = x |> Mod.unsafeRegisterCallbackNoGcRoot (fun v ->
+                        using(Aardvark.Base.Incremental.CSharp.Adaptive.Transaction) (fun _ -> Mod.change y v)
+                    )
+
+        using(Aardvark.Base.Incremental.CSharp.Adaptive.Transaction) (fun _ -> Mod.change x 3)
+
+        let t = getCurrentTransaction()
+
+        t.IsNone |> should be True
+        y |> Mod.force |> should equal 3
 
 
     [<AutoOpen>]

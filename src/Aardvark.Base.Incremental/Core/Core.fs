@@ -841,7 +841,7 @@ module Marking =
     // for enqueing their changes we use a thread local 
     // current transaction which basically allows for 
     // an implicit argument.
-    let private current = new Threading.ThreadLocal<Option<Transaction>>(fun () -> None)
+    let internal current = new Threading.ThreadLocal<Option<Transaction>>(fun () -> None)
 
     /// <summary>
     /// returns the currently running transaction or (if none)
