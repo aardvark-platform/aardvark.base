@@ -315,6 +315,10 @@ type Transaction() =
     static let emptyArray : IAdaptiveObject[] = Array.empty
     let mutable outputs = emptyArray
 
+#if DEBUG
+    let mutable isDisposed = false
+#endif
+
 
     // each thread may have its own running transaction
     static let running = new TrackAllThreadLocal<Option<Transaction>>(fun () -> None)
@@ -370,12 +374,18 @@ type Transaction() =
     /// enqueues an adaptive object for marking
     /// </summary>
     member x.Enqueue(e : IAdaptiveObject) =
+#if DEBUG
+        if isDisposed then failwith "Invalid Enqueue! Transaction already disposed."
+#endif
         Telemetry.timed EnqueueProbe (fun () ->
             if contained.Add e then
                 q.Enqueue e
         )
 
     member x.Enqueue(e : IAdaptiveObject, cause : Option<IAdaptiveObject>) =
+#if DEBUG
+        if isDisposed then failwith "Invalid Enqueue! Transaction already disposed."
+#endif
         Telemetry.timed EnqueueProbe (fun () ->
             if contained.Add e then
                 q.Enqueue e
@@ -401,6 +411,11 @@ type Transaction() =
     /// the enqueued changes.
     /// </summary>
     member x.Commit() =
+
+#if DEBUG
+        if isDisposed then failwith "Invalid Commit Transaction already disposed."
+#endif
+
         Telemetry.timed CommitProbe (fun () ->
             // cache the currently running transaction (if any)
             // and make tourselves current.
@@ -511,7 +526,11 @@ type Transaction() =
 
         )
 
-    member x.Dispose() = runFinalizers()
+    member x.Dispose() = 
+        runFinalizers()
+#if DEBUG
+        isDisposed <- true
+#endif
 
     interface IDisposable with
         member x.Dispose() = x.Dispose()
