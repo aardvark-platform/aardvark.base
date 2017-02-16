@@ -1322,6 +1322,10 @@ namespace Aardvark.Base
 
         #region SubImages
 
+        /// <summary>
+        /// Returns a specified region as new PixImage.
+        /// No data is copied, the internal Volumue is only a view on the original one.
+        /// </summary>
         public PixImage<T> SubImage(long x, long y, long xSize, long ySize)
         {
             if (x < 0 || y < 0 || x + xSize > Size.X || y + ySize > Size.Y)
@@ -1333,12 +1337,17 @@ namespace Aardvark.Base
 
         /// <summary>
         /// Returns a specified region as new PixImage.
+        /// No data is copied, the internal Volumue is only a view on the original one.
         /// </summary>
         public PixImage<T> SubImage(V2i pos, V2i size)
         {
             return SubImage(pos.X, pos.Y, size.X, size.Y);
         }
 
+        /// <summary>
+        /// Returns a specified region as new PixImage.
+        /// No data is copied, the internal Volumue is only a view on the original one.
+        /// </summary>
         public PixImage<T> SubImage(V2l pos, V2l size)
         {
             return SubImage(pos.X, pos.Y, size.X, size.Y);
@@ -1346,6 +1355,7 @@ namespace Aardvark.Base
 
         /// <summary>
         /// Returns a specified region as new PixImage.
+        /// No data is copied, the internal Volumue is only a view on the original one.
         /// </summary>
         public PixImage<T> SubImage(Box2i box)
         {
@@ -1354,7 +1364,8 @@ namespace Aardvark.Base
 
         /// <summary>
         /// Returns a square region around the center as new PixImage.
-        /// SquareRadius is the given radus around the center.
+        /// SquareRadius is the given radius around the center.
+        /// No data is copied, the internal Volumue is only a view on the original one.
         /// </summary>
         public PixImage<T> SubImage(V2i center, int squareRadius)
         {
@@ -1367,6 +1378,7 @@ namespace Aardvark.Base
         /// Note that this may be different from SubImage(Box2d box), since
         /// rounding the size and rounding the Max of the box may
         /// result in different integer sizes.
+        /// No data is copied, the internal Volumue is only a view on the original one.
         /// </summary>
         public PixImage<T> SubImage(V2d pos, V2d size)
         {
@@ -1379,6 +1391,7 @@ namespace Aardvark.Base
         /// Note that this may be different from SubImage(V2d pos, V2d size),
         /// since rounding the Max of the box and rounding the size may
         /// result in different integer sizes.
+        /// No data is copied, the internal Volumue is only a view on the original one.
         /// </summary>
         public PixImage<T> SubImage(Box2d box)
         {
@@ -1392,6 +1405,7 @@ namespace Aardvark.Base
         /// rounded to the nearest integer. Note that this may be different
         /// from SubImage01(Box2d box) since rounding the size and rounding
         /// the Max of the box may result in different integer sizes.
+        /// No data is copied, the internal Volumue is only a view on the original one.
         /// </summary>
         public PixImage<T> SubImage01(V2d pos, V2d size)
         {
@@ -1406,6 +1420,7 @@ namespace Aardvark.Base
         /// and rounded to the nearest integer. Note that this may be different
         /// from SubImage01(V2d pos, V2d size), since rounding the Max of the
         /// box and rounding the size may result in different integer sizes.
+        /// No data is copied, the internal Volumue is only a view on the original one.
         /// </summary>
         public PixImage<T> SubImage01(Box2d bounds)
         {
