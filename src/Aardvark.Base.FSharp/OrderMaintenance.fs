@@ -800,8 +800,203 @@ module DerivedOrder =
     let create(cmp) =
         Order.New(cmp)
 
+type IReal =
+    inherit IComparable
+    abstract member InsertAfter : unit -> IReal
+
+module RealNumber =
+    open System.Threading
+
+    [<AutoOpen>]
+    module private Implementation = 
+        type MonitorList() =
+            let acquired = HashSet<obj>()
+
+            member x.Add(o : obj) =
+                if acquired.Add o then
+                    Monitor.Enter o
+
+            member x.Dispose() =
+                for a in acquired do Monitor.Exit a
+
+            interface IDisposable with
+                member x.Dispose() = x.Dispose()
+
+        [<AllowNullLiteral>]
+        type SortKey =
+            class
+                val mutable public RefCount : int
+                val mutable public Root : SortKey
+                val mutable public Tag : uint64
+                val mutable public Next : SortKey
+                val mutable public Prev : SortKey
+
+                member x.Time =
+                    x.Tag - x.Root.Tag
+
+                static member private CompareInternal(l : SortKey, r : SortKey) =
+                    match Monitor.TryEnter(l), Monitor.TryEnter(r) with
+                        | true, true -> 
+                            let res = compare l.Time r.Time
+                            Monitor.Exit l
+                            Monitor.Exit r
+                            res
+
+                        | false, true -> 
+                            Monitor.Exit r
+                            SortKey.CompareInternal(l, r)
+
+                        | true, false -> 
+                            Monitor.Exit l
+                            SortKey.CompareInternal(l, r)
+
+                        | false, false -> 
+                            SortKey.CompareInternal(l, r)
+
+                member x.CompareTo (o : SortKey) =
+                    if isNull o.Root || isNull x.Root then
+                        failwith "cannot compare deleted times"
+
+                    if o.Root != x.Root then
+                        failwith "cannot compare times from different clocks"
+
+                    SortKey.CompareInternal(x, o)
+
+                member t.InsertAfter() =
+                    use l = new MonitorList()
+                    l.Add t
+                    l.Add t.Next
+
+                    let distance (a : SortKey) (b : SortKey) =
+                        if a = b then System.UInt64.MaxValue
+                        else b.Tag - a.Tag
+
+                    let mutable dn = distance t t.Next
+
+                    // if the distance to the next time is 1 (no room)
+                    // relabel all times s.t. the new one can be inserted
+                    if dn = 1UL then
+                        // find a range s.t. distance(range) >= 1 + |range|^2 
+                        let mutable current = t.Next
+                        let mutable j = 1UL
+                        while distance t current < 1UL + j * j do
+                            l.Add current.Next
+                            current <- current.Next
+                            j <- j + 1UL
+
+                        // distribute all times in the range equally spaced
+                        let step = (distance t current) / j
+                        current <- t.Next
+                        let mutable currentTime = t.Tag + step
+                        for k in 1UL..(j-1UL) do
+                            current.Tag <- currentTime
+                            current <- current.Next
+                            currentTime <- currentTime + step
+
+                        // store the distance to the next time
+                        dn <- step
+
+                    // insert the new time with distance (dn / 2) after
+                    // the given one (there has to be enough room now)
+                    let res = SortKey(t.Root, Prev = t, Next = t.Next, Tag = t.Tag + dn / 2UL)
+                    t.Next.Prev <- res
+                    t.Next <- res
+
+                    res
+
+                member x.AddRef() =
+                    Interlocked.Increment(&x.RefCount) |> ignore
+
+                member x.Delete() =
+                    if Interlocked.Decrement(&x.RefCount) = 0 then
+                        lock x (fun () ->
+                            x.Prev.Next <- x.Next
+                            x.Next.Prev <- x.Prev
+                            // x.Next <- null
+                            // x.Prev <- null
+                            x.Root <- null
+                        )
+
+                interface IComparable<ISortKey> with
+                    member x.CompareTo o =
+                        match o with
+                            | :? SortKey as o -> x.CompareTo o
+                            | _ -> failwithf "cannot compare time with %A" o
+                            
+
+                interface IComparable with
+                    member x.CompareTo o =
+                        match o with
+                            | :? SortKey as o -> x.CompareTo o
+                            | _ -> failwithf "cannot compare time with %A" o
+
+                override x.GetHashCode() = System.Runtime.CompilerServices.RuntimeHelpers.GetHashCode(x)
+                override x.Equals o = System.Object.ReferenceEquals(x,o)
 
 
+                new(c) = { RefCount = 0; Root = c; Tag = 0UL; Next = null; Prev = null }
+            end
+
+        type GCKey(k : SortKey) =
+            do k.AddRef()
+
+            override x.Finalize() =
+                k.Delete()
+
+            member x.Key = k
+        
+            member x.InsertAfter() = GCKey(k.InsertAfter()) :> IReal
+
+            interface IReal with
+                member x.InsertAfter() = GCKey(k.InsertAfter()) :> IReal
+                member x.CompareTo o =
+                    match o with
+                        | :? GCKey as o -> compare k o.Key
+                        | :? SortKey as o -> compare k o
+                        | _ -> failwith "cannot compare"
+
+            override x.ToString() =
+               let value = float k.Time / float UInt64.MaxValue
+               value.ToString(System.Globalization.CultureInfo.InvariantCulture) + "r"
+
+            override x.GetHashCode() =
+                k.GetHashCode()
+
+            override x.Equals o =
+                match o with
+                    | :? GCKey as o -> k = o.Key
+                    | _ -> false
+
+    let zero = 
+        let root = SortKey(null)
+        root.Root <- root
+        root.Next <- root
+        root.Prev <- root
+
+        GCKey(root) :> IReal
+
+    let after (k : IReal) =
+        k.InsertAfter()
+
+    let between (l : IReal) (r : IReal) =
+        let l = unbox<GCKey> l
+        let r = unbox<GCKey> r
+
+        if l >= r then
+            failwith "[GCKey] negative range given"
+
+        use locks = new MonitorList()
+        locks.Add l
+        locks.Add r
+
+        if l.Key.Next == r.Key then
+            l.InsertAfter()
+
+        elif l.Key.Next < r.Key then
+            GCKey(l.Key.Next) :> IReal
+
+        else
+            failwith "[GCKey] illformed range given"
 
 [<CustomEquality; CustomComparison>]
 type private SortKeyTuple =
