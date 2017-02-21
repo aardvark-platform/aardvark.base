@@ -43,18 +43,21 @@ type ResetSet<'k>(initial : pset<'k>) =
 type IReuseCache =
     interface end
 
-type ReuseCache<'a>() =
-    let store = ConditionalWeakTable<Id, ref<'a>>()
+type ReuseCache<'v>() =
+    let store = ConditionalWeakTable<Id, ref<'v>>()
     
     interface IReuseCache
 
-    member x.GetOrCreate(k : 'k, f : 'k -> 'a) =
+    member x.GetOrCreate(k : 'k, create : 'k -> 'v, update : 'v * 'k -> unit) =
         let i = Unique.id k
         lock store (fun () ->
             match store.TryGetValue i with
-                | (true, v) -> !v
+                | (true, v) -> 
+                    let v = !v
+                    update (v,k)
+                    v
                 | _ -> 
-                    let v = f k
+                    let v = create k
                     store.Add(i, ref v)
                     v
         )
@@ -68,7 +71,7 @@ type MapSet<'k, 'v when 'k : equality and 'k :> IUnique>(cache : ReuseCache<'v>,
     do for e in initial do
         let id = Unique.id e
         let mutable isNew = false
-        let v = cache.GetOrCreate(e, fun k -> isNew <- true; create k)
+        let v = cache.GetOrCreate(e, (fun k -> isNew <- true; create k), update)
         if not (content.Add v) then
             update(v,e)
 
@@ -85,7 +88,8 @@ type MapSet<'k, 'v when 'k : equality and 'k :> IUnique>(cache : ReuseCache<'v>,
                 let added = HashSet()
                 for k in PSet.toSeq keys do
                     let id = Unique.id k
-                    let v = cache.GetOrCreate(k, create)
+                    let hasReused = true
+                    let v = cache.GetOrCreate(k, create, update)
                     if not (removed.Remove v) then 
                         added.Add v |> ignore
 
