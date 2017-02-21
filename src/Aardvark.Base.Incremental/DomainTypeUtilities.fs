@@ -88,7 +88,6 @@ type MapSet<'k, 'v when 'k : equality and 'k :> IUnique>(cache : ReuseCache<'v>,
                 let added = HashSet()
                 for k in PSet.toSeq keys do
                     let id = Unique.id k
-                    let hasReused = true
                     let v = cache.GetOrCreate(k, create, update)
                     if not (removed.Remove v) then 
                         added.Add v |> ignore
