@@ -2237,32 +2237,39 @@ namespace Aardvark.Base
         /// <exception cref="T:System.ArgumentException"><paramref name="count"/> is different from the number of elements in <paramref name="source" />.</exception>
         public static TElement[] ToArray<TElement>(this IEnumerable<TElement> source, int count)
         {
-            TElement[] array = null;
-            int num = 0;
-            ICollection<TElement> collection = source as ICollection<TElement>;
-            if (collection != null)
+            if (count == 0)
             {
-                num = collection.Count;
-                if (num > 0)
-                {
-                    array = new TElement[num];
-                    collection.CopyTo(array, 0);
-                }
+                return new TElement[0];
             }
             else
             {
-                array = new TElement[count];
-                foreach (TElement current in source)
+                TElement[] array = null;
+                int num = 0;
+                ICollection<TElement> collection = source as ICollection<TElement>;
+                if (collection != null)
                 {
-                    if (count == num)
-                        throw new ArgumentException("Enumerable has more elements than count.", "count");
-                    array[num] = current;
-                    num++;
+                    num = collection.Count;
+                    if (num > 0)
+                    {
+                        array = new TElement[num];
+                        collection.CopyTo(array, 0);
+                    }
                 }
+                else
+                {
+                    array = new TElement[count];
+                    foreach (TElement current in source)
+                    {
+                        if (count == num)
+                            throw new ArgumentException("Enumerable has more elements than count.", "count");
+                        array[num] = current;
+                        num++;
+                    }
+                }
+                if (count > num)
+                    throw new ArgumentException("Enumerable has less elements than count.", "count");
+                return array;
             }
-            if (count > num)
-                throw new ArgumentException("Enumerable has less elements than count.", "count");
-            return array;
         }
 
         #endregion
