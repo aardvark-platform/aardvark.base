@@ -156,7 +156,7 @@ module MemoryManagerTests =
         m.Realloc(b0, 0n) |> should be False
         m.Validate()
 
-        b0.Size |> should equal 0
+        b0.Size |> should equal 0n
 
 
     [<Test>]
@@ -391,7 +391,7 @@ module MemoryManagerTests =
                 let data : byte[] = b |> ManagedPtr.readArray 0 
                 data |> should equal (Array.create (int b.Size) i)
             else
-                b.Size |> should equal 0
+                b.Size |> should equal 0n
 
         allblocks.Value.Count |> should equal (int cnt)
 
