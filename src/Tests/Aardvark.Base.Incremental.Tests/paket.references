@@ -1,3 +1,5 @@
 FsUnit
 System.Reactive.Linq
 NUnit
+FsCheck
+FsCheck.NUnit

@@ -1,6 +1,6 @@
 FRAMEWORK: NET45
 NUGET
-  remote: https://api.nuget.org/v3/index.json
+  remote: http://api.nuget.org/v3/index.json
     DevILSharp (0.0.13)
     FsCheck (2.7.1)
       FSharp.Core (>= 3.1.2.5)
@@ -16,6 +16,10 @@ NUGET
       System.Reactive.Core (>= 3.0)
       System.Reactive.Interfaces (>= 3.0)
     System.ValueTuple (4.3)
+  remote: https://api.nuget.org/v3/index.json
+    FsCheck.Nunit (2.7.1)
+      FsCheck (>= 2.7.1)
+      NUnit (>= 3.6 < 4.0)
 
 GROUP Build
 CONTENT: NONE
