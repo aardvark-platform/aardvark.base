@@ -364,7 +364,7 @@ module internal GenericProgram =
                         | Rem (k,v) -> Log.warn "Rem %A" k
                 failwith "[AdaptiveCode] validation failed"
         #else
-        let validateCurrentState(deltas : list<Delta<'k * 'v>>) = ()
+        let validateCurrentState(deltas : deltaset<'k * 'v>) = ()
         #endif
         override x.InputChanged(t, o : IAdaptiveObject) =
             match o with
@@ -425,7 +425,7 @@ module internal GenericProgram =
                 Interlocked.Increment(version) |> ignore
 
                 // start by getting the deltas from our input-set
-                let deltas = reader.GetDelta x
+                let deltas = reader.GetOperations x
 
                 // get all fragments whose inner code-representation changed. 
                 let dirtySet = 
@@ -493,7 +493,7 @@ module internal GenericProgram =
                 deltaProcessWatch.Restart()
                 for d in deltas do
                     match d with
-                        | Add (k,v) ->
+                        | Add (_,(k,v)) ->
                             if cache.ContainsKey((k,v)) then
                                 Log.warn "[AdaptiveCode] duplicate addition of element %A" k
                             else
@@ -562,7 +562,7 @@ module internal GenericProgram =
 
                                 validateCurrentState deltas
 
-                        | Rem (k,v) ->
+                        | Rem (_,(k,v)) ->
                             let mutable set = Unchecked.defaultof<_>
                             let mutable fragment = Unchecked.defaultof<_>
                             

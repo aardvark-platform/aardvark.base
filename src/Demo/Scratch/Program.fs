@@ -512,7 +512,7 @@ module AStream =
         open System.Threading
 
         type ReferenceCountedReader<'a>(newReader : unit -> IStreamReader<'a>) =
-            static let noNewReader : unit -> IReader<'a> = 
+            static let noNewReader : unit -> ISetReader<'a> = 
                 fun () -> failwith "[AStream] implementation claimed that no new readers would be allocated"
 
             let lockObj = obj()

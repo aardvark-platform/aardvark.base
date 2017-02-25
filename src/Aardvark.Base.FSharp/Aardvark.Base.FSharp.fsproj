@@ -104,6 +104,7 @@
     <Compile Include="Native\FileTable.fs" />
     <Compile Include="Native\Manager.fs" />
     <Compile Include="Native\Store.fs" />
+    <Compile Include="MapExt.fs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="mscorlib" />

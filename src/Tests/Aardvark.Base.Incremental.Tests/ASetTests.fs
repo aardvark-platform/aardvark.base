@@ -654,41 +654,6 @@ module OtherASetTests =
 
 
 
-
-    [<Test>]
-    let ``[ASet] reader disposal``() =
-        
-        let input = CSet.ofList [1;2]
-        let level0 = input |> ASet.map id |> ASet.choose Some |> ASet.collect ASet.single
-
-        let a = level0 |> ASet.map id
-        let b = level0 |> ASet.collect ASet.single
-
-        level0.ReaderCount |> should equal 0
-        input.Readers |> Seq.length |> should equal 0
-
-        let ra = a.GetReader()
-        level0.ReaderCount |> should equal 1
-        input.Readers |> Seq.length |> should equal 1
-
-        let rb = b.GetReader()
-        level0.ReaderCount |> should equal 2
-        input.Readers |> Seq.length |> should equal 1
-
-
-        ra.Dispose()
-        level0.ReaderCount |> should equal 1
-        input.Readers |> Seq.length |> should equal 1
-
-
-        rb.Dispose()
-        level0.ReaderCount |> should equal 0
-        input.Readers |> Seq.length |> should equal 0
-
-
-        ()
-        
-
     [<Test>]
     let ``[ASet] finalizers working``() =
         let input = CSet.ofList [1]
@@ -707,101 +672,6 @@ module OtherASetTests =
 
         reader.GetDelta() |> should setEqual [Add 1]
         reader.Dispose()
-
-
-    let isPassThru (r : IReader<'a>) =
-        match r with
-            | :? ASetReaders.CopyReader<int> as r ->    
-                r.PassThru
-            | _ ->
-                failwith "not a copy-reader"    
-
-
-    [<Test>]
-    let ``[ASet] reader creation after pull without change``() =
-        let input = CSet.ofList [1;2]
-
-        let derived = input |> ASet.map id
-
-
-        let r0 = derived.GetReader()
-        r0.GetDelta() |> should setEqual [Add 1; Add 2]
-
-        r0 |> isPassThru |> should be True
-
-        let r1 = derived.GetReader()
-
-        r0 |> isPassThru |> should be False
-        r1 |> isPassThru |> should be False
-
-
-        r1.GetDelta() |> should setEqual [Add 1; Add 2]
-        r0.GetDelta() |> should setEqual []
-
-    [<Test>]
-    let ``[ASet] reader creation after pull with change``() =
-        let input = CSet.ofList [1;2]
-
-        let derived = input |> ASet.map id
-
-
-        let r0 = derived.GetReader()
-        r0.GetDelta() |> should setEqual [Add 1; Add 2]
-        r0 |> isPassThru |> should be True
-
-
-        transact (fun () -> CSet.add 3 input |> ignore)
-        let r1 = derived.GetReader()
-        r0 |> isPassThru |> should be False
-        r1 |> isPassThru |> should be False
-
-
-        r1.GetDelta() |> should setEqual [Add 1; Add 2; Add 3]
-        r0.GetDelta() |> should setEqual [Add 3]
-
-    [<Test>]
-    let ``[ASet] reader creation after pull dispose original``() =
-        let input = CSet.ofList [1;2]
-
-        let derived = input |> ASet.map id
-
-
-        let r0 = derived.GetReader()
-        r0.GetDelta() |> should setEqual [Add 1; Add 2]
-        r0 |> isPassThru |> should be True
-
-
-        transact (fun () -> CSet.add 3 input |> ignore)
-        let r1 = derived.GetReader()
-        r0 |> isPassThru |> should be False
-        r1 |> isPassThru |> should be False
-
-        r0.Dispose()
-        r1 |> isPassThru |> should be True
-
-
-        r1.GetDelta() |> should setEqual [Add 1; Add 2; Add 3]
-
-    [<Test>]
-    let ``[ASet] reader creation after pull dispose new one``() =
-        let input = CSet.ofList [1;2]
-
-        let derived = input |> ASet.map id
-
-
-        let r0 = derived.GetReader()
-        r0.GetDelta() |> should setEqual [Add 1; Add 2]
-        r0 |> isPassThru |> should be True
-
-
-        transact (fun () -> CSet.add 3 input |> ignore)
-        let r1 = derived.GetReader()
-        r0 |> isPassThru |> should be False
-        r1 |> isPassThru |> should be False
-
-        r1.Dispose()
-        r0 |> isPassThru |> should be True
-        r0.GetDelta() |> should setEqual [Add 3]
 
     [<Test>]
     let ``[ASet] reader modification/creation/disposal/pull``() =
@@ -838,26 +708,17 @@ module OtherASetTests =
                         | [] -> ()
                         | _ ->
                             let r = readers |> List.item (random.Next(readers.Length)) 
-                            let old = HashSet r.Content
+                            let old = HashSet r.State
                             let deltas = r.GetDelta()
 
                             for d in deltas do
                                 match d with
-                                    | Add v -> old.Add v |> ignore
-                                    | Rem v -> old.Remove v |> ignore
+                                    | Add(_,v) -> old.Add v |> ignore
+                                    | Rem(_,v) -> old.Remove v |> ignore
+                                    
+                            old |> should setEqual r.State
+                            r.State |> should setEqual input
 
-                            old |> should setEqual r.Content
-                            r.Content |> should setEqual input
-
-
-            let rc = readers.Length
-            if rc > 0 then
-                input.Readers |> Seq.length |> should equal 1
-            else
-                input.Readers |> Seq.length |> should equal 0
-
-            derived.ReaderCount |> should equal rc
-            ()
 
 
 

@@ -31,14 +31,14 @@ module Unique =
         else
             old
 
-type ResetSet<'k>(initial : pset<'k>) =
-    inherit cset<'k>(initial)
-    let mutable current = initial
-
-    member x.Update(keys : pset<'k>) =
-        let delta = PSet.computeDelta current keys
-        current <- keys
-        x.ApplyDeltas(delta)
+//type ResetSet<'k>(initial : pset<'k>) =
+//    inherit cset<'k>(initial)
+//    let mutable current = initial
+//
+//    member x.Update(keys : pset<'k>) =
+//        let delta = PSet.computeDelta current keys
+//        current <- keys
+//        x.ApplyDeltas(delta)
 
 type IReuseCache =
     interface end
@@ -63,57 +63,46 @@ type ReuseCache<'v>() =
         )
         
 
-type MapSet<'k, 'v when 'k : equality and 'k :> IUnique>(cache : ReuseCache<'v>, initial : pset<'k>, create : 'k -> 'v, update : 'v * 'k -> unit) =
-    //let store = Dictionary<int64, 'v>()
-    let readers = HashSet<ASetReaders.EmitReader<'v>>()
-    let content = VersionedSet (HashSet())
-    let readers = WeakSet<ASetReaders.EmitReader<'v>>()
-    do for e in initial do
-        let id = Unique.id e
-        let mutable isNew = false
-        let v = cache.GetOrCreate(e, (fun k -> isNew <- true; create k), update)
-        if not (content.Add v) then
-            update(v,e)
-
-    let emit (deltas : Option<Change<'v>>) =
-        lock readers (fun () ->
-            for r in readers do 
-                r.Emit(content, deltas)
-        )
-
-    member x.Update(keys : pset<'k>) =
-        let deltas =
-            lock content (fun () -> 
-                let removed = HashSet content
-                let added = HashSet()
-                for k in PSet.toSeq keys do
-                    let id = Unique.id k
-                    let v = cache.GetOrCreate(k, create, update)
-                    if not (removed.Remove v) then 
-                        added.Add v |> ignore
-
-                [
-                    yield! added |> Seq.filter content.Add |> Seq.map Add
-                    yield! removed |> Seq.filter content.Remove |> Seq.map Rem
-                ]
-            )
-        emit (Some deltas)
-
-    member x.GetReader() =
-        lock readers (fun () ->
-            let r = new ASetReaders.EmitReader<'v>(content, fun r -> lock readers (fun () -> readers.Remove r |> ignore))
-            r.Emit(content, None)
-            readers.Add r |> ignore
-            r :> IReader<_>
-        )
-
-    interface aset<'v> with
-        member x.ReaderCount = lock readers (fun () -> readers.Count)
-        member x.IsConstant = false
-
-        member x.Copy = x :> aset<_>
-        member x.GetReader() = x.GetReader()
-
+//type MapSet<'k, 'v when 'k : equality and 'k :> IUnique>(cache : ReuseCache<'v>, initial : prefset<'k>, create : 'k -> 'v, update : 'v * 'k -> unit) =
+//    let h = History(PRefSet.trace)
+//
+//    member x.Update(keys : prefset<'k>) =
+//        let deltas = 
+//            lock x (fun () ->
+//                PRefSet.computeDeltas h.State keys
+//            )
+//        let deltas =
+//            lock content (fun () -> 
+//                let removed = HashSet content
+//                let added = HashSet()
+//                for k in PSet.toSeq keys do
+//                    let id = Unique.id k
+//                    let v = cache.GetOrCreate(k, create, update)
+//                    if not (removed.Remove v) then 
+//                        added.Add v |> ignore
+//
+//                [
+//                    yield! added |> Seq.filter content.Add |> Seq.map Add
+//                    yield! removed |> Seq.filter content.Remove |> Seq.map Rem
+//                ]
+//            )
+//        emit (Some deltas)
+//
+//    member x.GetReader() =
+//        lock readers (fun () ->
+//            let r = new ASetReaders.EmitReader<'v>(content, fun r -> lock readers (fun () -> readers.Remove r |> ignore))
+//            r.Emit(content, None)
+//            readers.Add r |> ignore
+//            r :> IReader<_>
+//        )
+//
+//    interface aset<'v> with
+//        member x.ReaderCount = lock readers (fun () -> readers.Count)
+//        member x.IsConstant = false
+//
+//        member x.Copy = x :> aset<_>
+//        member x.GetReader() = x.GetReader()
+//
 
 type ReuseCache() =
 

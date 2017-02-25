@@ -259,7 +259,7 @@ type CSharpEventExtensions private() =
 
     [<Extension>]
     static member ToAdaptiveSet(this : IEvent<'a>) : aset<'a> =
-        this |> EventAdapters.toMod |> Mod.toASet
+        this |> EventAdapters.toMod |> ASet.ofModSingle
 
     [<Extension>]
     static member ToAdaptiveList(this : IEvent<'a>) : alist<'a> =
@@ -273,11 +273,3 @@ type CSharpEventExtensions private() =
     [<Extension>]
     static member ToEvent(this : IMod) : IEvent =
         EventAdapters.toEventUntyped this
-
-    [<Extension>]
-    static member ToEvent(this : aset<'a>) : IEvent<IVersionedSet<'a>> =
-        this |> ASet.toMod |> EventAdapters.toEvent
-
-    [<Extension>]
-    static member ToEvent(this : alist<'a>) : IEvent<TimeList<'a>> =
-        this |> AList.toMod |> EventAdapters.toEvent

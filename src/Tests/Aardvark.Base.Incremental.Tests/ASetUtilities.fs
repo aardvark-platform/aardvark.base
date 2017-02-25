@@ -37,13 +37,13 @@ type cset_check<'a>(initial : seq<'a>) =
 
     new() = cset_check Seq.empty
 
-type aset_check_reader<'a> = { realReader : IReader<'a>; simReader : ASetReferenceImpl.IReader<'a> } with
+type aset_check_reader<'a> = { realReader : ISetReader<'a>; simReader : ASetReferenceImpl.IReader<'a> } with
     member x.GetDelta() =
         let r = HashSet(x.realReader.GetDelta())
         let s = HashSet(x.simReader.GetDelta())
 
-        if not <| x.realReader.Content.SetEquals x.simReader.Content then
-            failwithf "inconsistent set content (is %A but should be %A)" x.realReader.Content x.simReader.Content
+        if not <| x.simReader.Content.SetEquals x.realReader.State then
+            failwithf "inconsistent set content (is %A but should be %A)" x.realReader.State x.simReader.Content
 
         if not <| r.SetEquals s then
             failwithf "inconsistent set delta (is %A but should be %A)" r s
@@ -51,10 +51,10 @@ type aset_check_reader<'a> = { realReader : IReader<'a>; simReader : ASetReferen
         r |> Seq.toList
 
     member x.Content =
-        if not <| x.realReader.Content.SetEquals x.simReader.Content then
-            failwithf "inconsistent set content (is %A but should be %A)" x.realReader.Content x.simReader.Content
+        if not <| x.simReader.Content.SetEquals x.realReader.State then
+            failwithf "inconsistent set content (is %A but should be %A)" x.realReader.State x.simReader.Content
 
-        x.realReader.Content
+        x.realReader.State
 
 [<AutoOpen>]
 module CheckExtensions =

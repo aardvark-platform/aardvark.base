@@ -179,17 +179,11 @@ module ``Computation Expression Builders`` =
         member x.Bind(m : IMod<'a>, f : 'a -> aset<'b>) =
             ASet.bind f m
 
-        member x.Bind(m : System.Threading.Tasks.Task<'a>, f : 'a -> aset<'b>) =
-            ASet.bindTask f m
-
-        member x.Bind(m : Async<'a>, f : 'a -> aset<'b>) =
-            ASet.bindTask f (Async.StartAsTask m)
-
         member x.For(s : aset<'a>, f : 'a -> aset<'b>) =
             ASet.collect f s
 
         member x.For(s : seq<'a>, f : 'a -> aset<'b>) =
-            ASet.collect' f s
+            ASet.collect f (ASet.ofSeq s)
 
         member x.Zero() =
             ASet.empty
@@ -198,7 +192,7 @@ module ``Computation Expression Builders`` =
             f()
 
         member x.Combine(l : aset<'a>, r : aset<'a>) =
-            ASet.union' [l;r]
+            ASet.union l r
 
     type AListBuilder() =
         member x.Yield (v : 'a) =
@@ -217,7 +211,7 @@ module ``Computation Expression Builders`` =
             AList.collect f s
 
         member x.For(s : seq<'a>, f : 'a -> alist<'b>) =
-            AList.collect' f s
+            AList.collect f (AList.ofSeq s)
 
         member x.Zero() =
             AList.empty
@@ -226,15 +220,15 @@ module ``Computation Expression Builders`` =
             f()
 
         member x.Combine(l : alist<'a>, r : alist<'a>) =
-            AList.concat' [l;r]
+            AList.append l r
 
 
     module Mod =
         let toASet (m : IMod<'a>) =
-            ASet.ofMod m
+            ASet.ofModSingle m
 
         let toAList (m : IMod<'a>) =
-            AList.ofMod m
+            AList.ofModSingle m
 
 
     let adaptive = AdaptiveBuilder()
@@ -254,14 +248,14 @@ type EvaluationExtensions() =
     static member inline GetValue(x : IMod<'a>) = x.GetValue(null)
 
     [<Extension>]
-    static member inline GetDelta(x : IReader<'a>) = x.GetDelta(null)
+    static member inline GetDelta(x : ISetReader<'a>) = x.GetOperations(null)
     [<Extension>]
-    static member inline Update(x : IReader<'a>) = x.Update(null)
+    static member inline Update(x : ISetReader<'a>) = x.GetOperations null |> ignore
 
     [<Extension>]
-    static member inline GetDelta(x : IListReader<'a>) = x.GetDelta(null)
+    static member inline GetDelta(x : IListReader<'a>) = x.GetOperations(null)
     [<Extension>]
-    static member inline Update(x : IListReader<'a>) = x.Update(null)
+    static member inline Update(x : IListReader<'a>) = x.GetOperations(null) |> ignore
 
     [<Extension>]
     static member inline Evaluate(x : afun<'a, 'b>, v : 'a) = x.Evaluate(null, v)
