@@ -53,15 +53,19 @@
   <ItemGroup>
     <Compile Include="Prelude\Logging.fs" />
     <Compile Include="Prelude\FSLibExtensions.fs" />
-    <Compile Include="Prelude\FixedSizeArray.fs" />
-    <Compile Include="Prelude\HashMap.fs" />
-    <Compile Include="Prelude\PersistentHashSet.fs" />
-    <Compile Include="Measures.fs" />
-    <Compile Include="Order.fs" />
-    <Compile Include="OrderMaintenance.fs" />
-    <Compile Include="SkipList.fs" />
-    <Compile Include="AVL.fs" />
-    <Compile Include="FingerTree.fs" />
+    <Compile Include="Prelude\Measures.fs" />
+    <Compile Include="Datastructures\Mutable\FixedSizeArray.fs" />
+    <Compile Include="Datastructures\Mutable\Order.fs" />
+    <Compile Include="Datastructures\Mutable\OrderMaintenance.fs" />
+    <Compile Include="Datastructures\Mutable\SkipList.fs" />
+    <Compile Include="Datastructures\Mutable\AVL.fs" />
+    <Compile Include="Datastructures\Mutable\StableSet.fs" />
+    <Compile Include="Datastructures\Mutable\ConcurrentHashQueue.fs" />
+    <Compile Include="Datastructures\Immutable\HashMap.fs" />
+    <Compile Include="Datastructures\Immutable\PersistentHashSet.fs" />
+    <Compile Include="Datastructures\Immutable\FingerTree.fs" />
+    <Compile Include="Datastructures\Immutable\pset.fs" />
+    <Compile Include="Datastructures\Immutable\MapExt.fs" />
     <Compile Include="Interop\Dictionary.fs" />
     <Compile Include="Interop\Symbol.fs" />
     <Compile Include="Interop\Vectors.fs" />
@@ -88,15 +92,12 @@
     <Compile Include="Runtime\NativeMemory.fs" />
     <Compile Include="Runtime\Fragments.fs" />
     <Compile Include="Runtime\CustomSchedulers.fs" />
-    <Compile Include="StableSet.fs" />
-    <Compile Include="ConcurrentHashQueue.fs" />
     <Compile Include="Reflection.fs" />
     <Compile Include="Runtime.fs" />
     <Compile Include="AgHelpers.fs" />
     <Compile Include="Ag.fs" />
     <Compile Include="NewAg.fs" />
     <Compile Include="Control.fs" />
-    <Compile Include="pset.fs" />
     <None Include="paket.references" />
     <Compile Include="Native\BlobStore.fs" />
     <Compile Include="Native\Pointer.fs" />
@@ -104,7 +105,6 @@
     <Compile Include="Native\FileTable.fs" />
     <Compile Include="Native\Manager.fs" />
     <Compile Include="Native\Store.fs" />
-    <Compile Include="MapExt.fs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="mscorlib" />

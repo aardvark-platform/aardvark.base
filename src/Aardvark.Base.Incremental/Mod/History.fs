@@ -229,6 +229,170 @@ type AbstractDirtyReader<'t, 'ops when 't :> IAdaptiveObject>(scope : Ag.Scope, 
 //    static member GetOperations(this : IOpReader<'ops>) =
 //        this.GetOperations null
 
+module private NewHistory =
+
+    [<AllowNullLiteral>]
+    type RelevantNode<'a> =
+        class
+            val mutable public Prev : RelevantNode<'a>
+            val mutable public Next : RelevantNode<'a>
+            val mutable public RefCount : int
+            val mutable public Value : 'a
+            
+            new(p, v, n) = { Prev = p; Next = n; RefCount = 0; Value = v }
+        end
+
+    type RelevantSet<'v>(m : Monoid<'v>) =
+        
+        let mutable first : RelevantNode<'v> = null
+        let mutable last : RelevantNode<'v> = null
+
+        /// O(1)
+        member x.Append(v : 'v) =
+            if isNull last || last.RefCount > 0 then
+                let n = RelevantNode(last, v, null)
+                last.Next <- n
+                last <- n
+            else
+                last.Value <- m.mappend last.Value v
+
+        // O(n) [where n is the number of relevant entries]
+        member x.Read(node : byref<RelevantNode<'v>>) =
+            let mutable start = node
+            let mutable res = start.Value
+
+            if start.RefCount = 1 then
+                let p = start.Prev
+                let n = start.Next
+                start.RefCount <- 0
+                start.Prev <- null
+                start.Next <- null
+                start <- n
+                let start = ()
+
+                if isNull p then
+                    first <- n
+                    if isNull n then last <- null
+                    else n.Prev <- null
+                else
+                    p.Value <- m.mappend p.Value res
+                    p.Next <- n
+                    if isNull n then last <- p
+                    else n.Prev <- p
+            else
+                start.RefCount <- start.RefCount - 1
+                
+
+            let mutable current = start
+            while not (isNull current) do
+                res <- m.mappend res current.Value
+                current <- current.Next
+
+            if not (isNull last) then
+                last.RefCount <- last.RefCount + 1
+
+            node <- last
+            res
+
+    
+    type History<'s, 'op>(t : Traceable<'s, 'op>) =
+        inherit AdaptiveObject()
+
+
+        let mutable first : RelevantNode<'op> = null
+        let mutable last : RelevantNode<'op> = null
+        let mutable state = t.empty
+
+
+        let mergeIntoLast (start : RelevantNode<'op>) =
+            let res = start.Value
+            let p = start.Prev
+            let n = start.Next
+            if start.RefCount = 1 then
+                start.RefCount <- 0
+                start.Prev <- null
+                start.Next <- null
+                
+                let start = ()
+
+                if isNull p then
+                    first <- n
+                    if isNull n then last <- null
+                    else n.Prev <- null
+                else
+                    p.Value <- t.ops.mappend p.Value res
+                    p.Next <- n
+                    if isNull n then last <- p
+                    else n.Prev <- p
+
+            else 
+                start.RefCount <- start.RefCount - 1
+
+            res, n
+
+        member x.Append(op : 'op) =
+            // only append non-empty ops
+            if not (t.ops.misEmpty op) then
+                lock x (fun () ->
+                    // apply the op to the state
+                    let s, op = t.apply state op
+                    state <- s
+
+                    // if op got empty do not append it
+                    if not (t.ops.misEmpty op) then
+
+                        if isNull last || last.RefCount > 0 then
+                            // if there is no last or last is relevant
+                            // we need to create a new node
+                            let n = RelevantNode(last, op, null)
+
+                            // if there was no last we're the only element
+                            if isNull last then first <- n
+                            else last.Next <- n
+
+                            // we're the new last
+                            last <- n
+                        else
+                            // last is non-null and not relevant (no one pulled it)
+                            // so we can append our op to it
+                            last.Value <- t.ops.mappend last.Value op
+                )
+
+        member x.Read(caller : IAdaptiveObject, old : RelevantNode<'op>, oldState : 's) =
+            x.EvaluateAlways caller (fun () ->
+                if isNull old then
+                    let ops = t.compute oldState state
+                    let token = x.Append t.ops.mempty
+                    token, ops
+                else
+                    let mutable res, current = mergeIntoLast old
+                    let mutable prev = null
+
+                    while not (isNull current) do
+                        res <- t.ops.mappend res current.Value
+                        prev <- current
+                        current <- current.Next
+
+
+                    if isNull prev then
+                        let t = x.Append t.ops.mempty
+                        t, res
+                    else
+                        prev.RefCount <- prev.RefCount + 1
+                        prev, res
+                        
+
+
+
+                    
+            )
+        
+
+
+
+
+
+
 type private HistoryEntry<'s, 'ops> = HeapEntry<uint64, WeakReference<HistoryReader<'s, 'ops>>>
 and private HistoryHeap<'s, 'ops> = Heap<uint64, WeakReference<HistoryReader<'s, 'ops>>>
 
