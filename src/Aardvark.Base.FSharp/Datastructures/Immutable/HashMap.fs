@@ -1,5 +1,10 @@
 ﻿namespace Aardvark.Base
 
+open System
+
+#nowarn "44" // obsolete
+
+[<Obsolete("use hmap instead")>]
 [<StructuredFormatDisplay("{AsString}")>]
 type HashMap<'k, 'v> = internal HashMap of Map<int, list<'k * 'v>> with
     member x.AsString =
@@ -13,6 +18,7 @@ type HashMap<'k, 'v> = internal HashMap of Map<int, list<'k * 'v>> with
 /// each containing a linked list of key-value-pairs. For "good" hash-codes
 /// the runtime of all operations should be similar to the corresponding Map-functions.
 /// </summary>
+[<Obsolete("use hmap instead")>]
 [<CompilationRepresentation(CompilationRepresentationFlags.ModuleSuffix)>]
 module HashMap =
     

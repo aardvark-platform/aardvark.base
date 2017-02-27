@@ -358,11 +358,22 @@ module private NewHistory =
                             last.Value <- t.ops.mappend last.Value op
                 )
 
+        member x.AddRef() =
+            if isNull last then
+                let n = RelevantNode<'op>(last, t.ops.mempty, null)
+                first <- n
+                last <- n
+                n
+            else
+                last.RefCount <- last.RefCount + 1
+                last
+
+
         member x.Read(caller : IAdaptiveObject, old : RelevantNode<'op>, oldState : 's) =
             x.EvaluateAlways caller (fun () ->
                 if isNull old then
                     let ops = t.compute oldState state
-                    let token = x.Append t.ops.mempty
+                    let token = x.AddRef()
                     token, ops
                 else
                     let mutable res, current = mergeIntoLast old
@@ -375,7 +386,7 @@ module private NewHistory =
 
 
                     if isNull prev then
-                        let t = x.Append t.ops.mempty
+                        let t = x.AddRef()
                         t, res
                     else
                         prev.RefCount <- prev.RefCount + 1
