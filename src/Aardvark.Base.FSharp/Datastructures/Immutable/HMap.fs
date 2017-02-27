@@ -504,11 +504,11 @@ module HMap =
     let inline remove (key : 'k) (map : hmap<'k, 'v>) =
         map.Remove(key)
 
-    // O(min(n,W))
+    // O(min(n,32))
     let inline alter (key : 'k) (mapping : Option<'v> -> Option<'v>) (map : hmap<'k, 'v>) =
         map.Alter(key, mapping)
         
-    // O(min(n,W))
+    // O(min(n,32))
     let inline update (key : 'k) (mapping : Option<'v> -> 'v) (map : hmap<'k, 'v>) =
         map.Update(key, mapping)
 
@@ -520,7 +520,7 @@ module HMap =
     let inline union (l : hmap<'k, 'v>) (r : hmap<'k, 'v>) =
         l.Union r
 
-    // O(min(n,W))
+    // O(min(n,32))
     let inline tryRemove (key : 'k) (map : hmap<'k, 'v>) =
         map.TryRemove key
 
@@ -555,17 +555,22 @@ module HMap =
         l.Choose2(r, mapping)
 
 
-    // O(min(n,W))
+
+
+    // O(min(n,32))
     let inline tryFind (key : 'k) (map : hmap<'k, 'v>) =
         map.TryFind key
         
-    // O(min(n,W))
+    // O(min(n,32))
     let inline find (key : 'k) (map : hmap<'k, 'v>) =
         map.Find key
+        
+    // O(min(n,32))
+    let inline containsKey (key : 'k) (map : hmap<'k, 'v>) =
+        map.ContainsKey key
 
     // O(1)
     let inline count (map : hmap<'k, 'v>) = map.Count
 
     // O(1)
     let inline isEmpty (map : hmap<'k, 'v>) = map.IsEmpty
-
