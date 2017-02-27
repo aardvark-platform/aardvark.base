@@ -74,6 +74,7 @@
     <Compile Include="Datastructures\Mutable\ConcurrentHashQueue.fs" />
     <Compile Include="Datastructures\Immutable\IntMap.fs" />
     <Compile Include="Datastructures\Immutable\HMap.fs" />
+    <Compile Include="Datastructures\Immutable\HSet.fs" />
     <Compile Include="Datastructures\Immutable\HashMap.fs" />
     <Compile Include="Datastructures\Immutable\PersistentHashSet.fs" />
     <Compile Include="Datastructures\Immutable\FingerTree.fs" />

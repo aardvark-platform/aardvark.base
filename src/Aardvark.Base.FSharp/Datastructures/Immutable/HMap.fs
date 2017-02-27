@@ -1,5 +1,8 @@
 ﻿namespace Aardvark.Base
 
+open System.Collections
+open System.Collections.Generic
+
 module private HMapList =
     let rec alter (k : 'k) (f : Option<'v> -> Option<'v>) (l : list<'k * 'v>) =
         match l with
@@ -256,6 +259,11 @@ type hmap<'k, 'v>(cnt : int, store : intmap<list<'k * 'v>>) =
             )
         hmap(cnt, newStore)
 
+    member x.Iter(iter : 'k -> 'v -> unit) =
+        store |> IntMap.toSeq |> Seq.iter (fun (_,l) ->
+            l |> List.iter (fun (k,v) -> iter k v)
+        )
+
     member x.Exists(predicate : 'k -> 'v -> bool) =
         store |> IntMap.toSeq |> Seq.exists (fun (_,v) ->
             v |> List.exists (fun (k,v) -> predicate k v)
@@ -421,6 +429,15 @@ type hmap<'k, 'v>(cnt : int, store : intmap<list<'k * 'v>>) =
 
     member private x.AsString = x.ToString()
 
+    interface IEnumerable with
+        member x.GetEnumerator() = 
+            x.ToSeq().GetEnumerator() :> _
+
+    interface IEnumerable<'k * 'v> with
+        member x.GetEnumerator() = 
+            x.ToSeq().GetEnumerator() :> _
+
+
 [<CompilationRepresentation(CompilationRepresentationFlags.ModuleSuffix)>]
 module HMap =
 
@@ -524,6 +541,10 @@ module HMap =
     // O(n)
     let inline filter (predicate : 'k -> 'v -> bool) (map : hmap<'k, 'v>) =
         map.Filter predicate
+
+    // O(n)
+    let inline iter (iter : 'k -> 'v -> unit) (map : hmap<'k, 'v>) =
+        map.Iter iter
 
     // O(n+m)
     let inline map2 (mapping : 'k -> Option<'a> -> Option<'b> -> 'c) (l : hmap<'k, 'a>) (r : hmap<'k, 'b>) =
