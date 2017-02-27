@@ -24,15 +24,17 @@ module private HSetList =
                     h :: remove &cnt value tail
 
     let rec union (dupl : byref<int>) (l : list<'a>) (r : list<'a>) =
+        let mutable d = dupl
         let newR = 
             r |> List.choose (fun r ->
                 if l |> List.exists (Unchecked.equals r) then
-                    dupl <- dupl + 1
+                    d <- d + 1
                     None
                 else
                     Some r
             )
 
+        dupl <- d
         l @ newR
 
 type hset<'a>(cnt : int, store : intmap<list<'a>>) =
