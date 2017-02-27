@@ -435,7 +435,7 @@ type hmap<'k, 'v>(cnt : int, store : intmap<list<'k * 'v>>) =
 
     interface IEnumerable<'k * 'v> with
         member x.GetEnumerator() = 
-            x.ToSeq().GetEnumerator() :> _
+            x.ToSeq().GetEnumerator()
 
 
 [<CompilationRepresentation(CompilationRepresentationFlags.ModuleSuffix)>]
@@ -574,3 +574,19 @@ module HMap =
 
     // O(1)
     let inline isEmpty (map : hmap<'k, 'v>) = map.IsEmpty
+
+
+    module Lens =
+        let item (key : 'k) =
+            { new Lens<_, _>() with
+                member x.Get s = 
+                    tryFind key s
+
+                member x.Set(s,r) =
+                    match r with
+                        | Some r -> add key r s
+                        | None -> remove key s
+
+                member x.Update(s,f) =
+                    alter key f s
+            }  

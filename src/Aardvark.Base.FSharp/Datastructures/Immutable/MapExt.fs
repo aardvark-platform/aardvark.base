@@ -173,21 +173,21 @@ module MapExtImplementation =
                 else rebalance l k2 v2 (remove comparer k r) 
 
 
-        let rec alterAux (comparer : IComparer<'Value>) k (f:OptimizedClosures.FSharpFunc<_,_,_>) m =
+        let rec alter (comparer : IComparer<'Value>) k f m =
             match m with   
             | MapEmpty ->
-                match f.Invoke(k, None) with
+                match f None with
                     | Some v -> MapOne(k,v)
                     | None -> MapEmpty
 
             | MapOne(k2, v2) ->
                 let c = comparer.Compare(k,k2) 
                 if c = 0 then
-                    match f.Invoke(k2, Some v2) with
+                    match f (Some v2) with
                         | Some v3 -> MapOne(k2, v3)
                         | None -> MapEmpty
                 else
-                    match f.Invoke(k, None) with
+                    match f None with
                         | None -> 
                             MapOne(k2, v2)
 
@@ -199,7 +199,7 @@ module MapExtImplementation =
                 let c = comparer.Compare(k, k2)
 
                 if c = 0 then
-                    match f.Invoke(k, Some v2) with
+                    match f (Some v2) with
                         | Some v3 -> 
                             MapNode(k2, v3, l, r, h, cnt)
 
@@ -211,12 +211,10 @@ module MapExtImplementation =
                                 let sk,sv,r' = spliceOutSuccessor r 
                                 mk l sk sv r'
                 elif c > 0 then
-                    rebalance l k2 v2 (alterAux comparer k f r) 
+                    rebalance l k2 v2 (alter comparer k f r) 
                 else
-                    rebalance (alterAux comparer k f l)  k2 v2 r
+                    rebalance (alter comparer k f l)  k2 v2 r
        
-        let alter (comparer: IComparer<'Value>) k f m = alterAux comparer k (OptimizedClosures.FSharpFunc<_,_,_>.Adapt(f)) m
-      
         let rec join left k v right =
             let lh = height left
             let rh = height right
@@ -268,14 +266,14 @@ module MapExtImplementation =
                 | MapEmpty, r -> r
                 | l, MapEmpty -> l
                 | MapOne(k,v), r ->
-                    r |> alter comparer k (fun _ o -> 
+                    r |> alter comparer k (fun o -> 
                         match o with
                             | None -> v |> Some
                             | Some o -> f.Invoke(v, o) |> Some
                     )
 
                 | l, MapOne(k,v) ->
-                    l |> alter comparer k (fun _ o ->
+                    l |> alter comparer k (fun o ->
                         match o with
                             | None -> v |> Some
                             | Some o -> f.Invoke(o, v) |> Some
@@ -1106,3 +1104,18 @@ module MapExt =
     
     [<CompiledName("NeighboursAt")>]
     let neighboursAt i (m:MapExt<_,_>) = m.NeighboursAt i
+
+
+    module Lens =
+        let item (key : 'k) =
+            { new Lens<_, _>() with
+                member x.Get s = 
+                    tryFind key s
+
+                member x.Set(s,r) =
+                    match r with
+                        | Some r -> add key r s
+                        | None -> remove key s
+                member x.Update(s,f) =
+                    alter key f s
+            }  

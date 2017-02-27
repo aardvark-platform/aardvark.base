@@ -54,6 +54,7 @@
     <Compile Include="Prelude\Logging.fs" />
     <Compile Include="Prelude\FSLibExtensions.fs" />
     <Compile Include="Prelude\Measures.fs" />
+    <Compile Include="Prelude\Lens.fs" />
     <Compile Include="Interop\Dictionary.fs" />
     <Compile Include="Interop\Symbol.fs" />
     <Compile Include="Interop\Vectors.fs" />
