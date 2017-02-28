@@ -74,6 +74,8 @@
     <Compile Include="Datastructures\Mutable\AVL.fs" />
     <Compile Include="Datastructures\Mutable\StableSet.fs" />
     <Compile Include="Datastructures\Mutable\ConcurrentHashQueue.fs" />
+    <Compile Include="Datastructures\Immutable\Index.fs" />
+    <Compile Include="Datastructures\Immutable\MapExt.fs" />
     <Compile Include="Datastructures\Immutable\IntMap.fs" />
     <Compile Include="Datastructures\Immutable\HMap.fs" />
     <Compile Include="Datastructures\Immutable\HSet.fs" />
@@ -83,7 +85,6 @@
     <Compile Include="Datastructures\Immutable\PersistentHashSet.fs" />
     <Compile Include="Datastructures\Immutable\FingerTree.fs" />
     <Compile Include="Datastructures\Immutable\pset.fs" />
-    <Compile Include="Datastructures\Immutable\MapExt.fs" />
     <Compile Include="Reflection\TypeInfo.fs" />
     <Compile Include="Reflection\FunctionReflection.fs" />
     <Compile Include="Reflection\Formatf.fs" />

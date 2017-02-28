@@ -4,9 +4,32 @@ open System.Collections
 open System.Collections.Generic
 
 [<Struct>]
+[<StructuredFormatDisplay("{AsString}")>]
 type hrefset<'a>(store : hmap<'a, int>) =
     
+    static let trace =
+        {
+            tops = hdeltaset<'a>.Monoid
+            tempty = hrefset<'a>(HMap.empty)
+            tapply = fun s d -> s.ApplyDelta d
+            tcompute = fun l r -> l.ComputeDelta r
+            tcollapse = fun _ _ -> false
+        }
+
+    static let traceNoRefCount =
+        {
+            tops = hdeltaset<'a>.Monoid
+            tempty = hrefset<'a>(HMap.empty)
+            tapply = fun s d -> s.ApplyDeltaNoRefCount d
+            tcompute = fun l r -> l.ComputeDelta r
+            tcollapse = fun _ _ -> false
+        }
+
     static member Empty = hrefset<'a>(HMap.empty)
+
+    static member Trace = trace
+
+    static member TraceNoRefCount = traceNoRefCount
 
     member x.IsEmpty = store.IsEmpty
 
@@ -190,7 +213,19 @@ type hrefset<'a>(store : hmap<'a, int>) =
         hrefset res, effective
 
 
+        
 
+    override x.ToString() =
+        let suffix =
+            if x.Count > 5 then "; ..."
+            else ""
+
+        let content =
+            x.ToSeq() |> Seq.truncate 5 |> Seq.map (sprintf "%A") |> String.concat "; "
+
+        "hrefset [" + content + suffix + "]"
+
+    member private x.AsString = x.ToString()
 
     interface IEnumerable with
         member x.GetEnumerator() = x.ToSeq().GetEnumerator() :> _
@@ -283,6 +318,10 @@ module HRefSet =
         set.Fold(seed, folder)
 
 
+
+    
+    let inline trace<'a> = hrefset<'a>.Trace
+    let inline traceNoRefCount<'a> = hrefset<'a>.TraceNoRefCount
 
     // O(n + m)
     let inline computeDelta (src : hrefset<'a>) (dst : hrefset<'a>) =

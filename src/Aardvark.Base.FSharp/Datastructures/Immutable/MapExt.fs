@@ -1,4 +1,7 @@
-﻿// Copyright (c) Microsoft Corporation.  All Rights Reserved.  Licensed under the Apache License, Version 2.0.  See License.txt in the project root for license information.
+﻿// THIS IS A MODIFIED VERSION OF F#'s Map<'Key, 'Value> !!!!
+// THE ORIGINAL CAN BE FOUND AT https://github.com/fsharp/fsharp/blob/master/src/fsharp/FSharp.Core/map.fs
+
+// Copyright (c) Microsoft Corporation.  All Rights Reserved.  Licensed under the Apache License, Version 2.0.  See License.txt in the project root for license information.
 
 namespace Aardvark.Base
 

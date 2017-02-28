@@ -40,6 +40,7 @@ module SetDeltaExtensions =
         else Rem(-d.Count, d.Value)
  
 [<Struct>]
+[<StructuredFormatDisplay("{AsString}")>]
 type hdeltaset<'a>(store : hmap<'a, int>) =
 
     static let monoid =
@@ -152,7 +153,19 @@ type hdeltaset<'a>(store : hmap<'a, int>) =
 
     static member OfArray (arr : array<SetDelta<'a>>) =
         arr |> hdeltaset.OfSeq
+        
 
+    override x.ToString() =
+        let suffix =
+            if x.Count > 5 then "; ..."
+            else ""
+
+        let content =
+            x.ToSeq() |> Seq.truncate 5 |> Seq.map (sprintf "%A") |> String.concat "; "
+
+        "hdeltaset [" + content + suffix + "]"
+
+    member private x.AsString = x.ToString()
 
     interface IEnumerable with
         member x.GetEnumerator() = x.ToSeq().GetEnumerator() :>_

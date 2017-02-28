@@ -60,6 +60,7 @@ module private HSetList =
                 else
                     intersect &cnt tail r
 
+[<StructuredFormatDisplay("{AsString}")>]
 type hset<'a>(cnt : int, store : intmap<list<'a>>) =
     static let empty = hset(0, IntMap.empty)
 
@@ -241,6 +242,18 @@ type hset<'a>(cnt : int, store : intmap<list<'a>>) =
 
     static member OfArray (arr : array<'a>) =
         hset.OfSeq arr
+
+    override x.ToString() =
+        let suffix =
+            if x.Count > 5 then "; ..."
+            else ""
+
+        let content =
+            x.ToSeq() |> Seq.truncate 5 |> Seq.map (sprintf "%A") |> String.concat "; "
+
+        "hset [" + content + suffix + "]"
+
+    member private x.AsString = x.ToString()
 
     interface IEnumerable with
         member x.GetEnumerator() = x.ToSeq().GetEnumerator() :> _
