@@ -183,12 +183,12 @@ type AbstractReader<'ops>(scope : Ag.Scope, t : Monoid<'ops>) =
 
 [<AbstractClass>]
 type AbstractReader<'s, 'ops>(scope : Ag.Scope, t : Traceable<'s, 'ops>) =
-    inherit AbstractReader<'ops>(scope, t.ops)
+    inherit AbstractReader<'ops>(scope, t.tops)
 
-    let mutable state = t.empty
+    let mutable state = t.tempty
 
     override x.Apply o =
-        let (s, o) = t.apply state o
+        let (s, o) = t.tapply state o
         state <- s
         o
 
@@ -301,7 +301,7 @@ module private NewHistory =
 
         let mutable first : RelevantNode<'op> = null
         let mutable last : RelevantNode<'op> = null
-        let mutable state = t.empty
+        let mutable state = t.tempty
 
 
         let mergeIntoLast (start : RelevantNode<'op>) =
@@ -320,7 +320,7 @@ module private NewHistory =
                     if isNull n then last <- null
                     else n.Prev <- null
                 else
-                    p.Value <- t.ops.mappend p.Value res
+                    p.Value <- t.tops.mappend p.Value res
                     p.Next <- n
                     if isNull n then last <- p
                     else n.Prev <- p
@@ -332,14 +332,14 @@ module private NewHistory =
 
         member x.Append(op : 'op) =
             // only append non-empty ops
-            if not (t.ops.misEmpty op) then
+            if not (t.tops.misEmpty op) then
                 lock x (fun () ->
                     // apply the op to the state
-                    let s, op = t.apply state op
+                    let s, op = t.tapply state op
                     state <- s
 
                     // if op got empty do not append it
-                    if not (t.ops.misEmpty op) then
+                    if not (t.tops.misEmpty op) then
 
                         if isNull last || last.RefCount > 0 then
                             // if there is no last or last is relevant
@@ -355,12 +355,12 @@ module private NewHistory =
                         else
                             // last is non-null and not relevant (no one pulled it)
                             // so we can append our op to it
-                            last.Value <- t.ops.mappend last.Value op
+                            last.Value <- t.tops.mappend last.Value op
                 )
 
         member x.AddRef() =
             if isNull last then
-                let n = RelevantNode<'op>(last, t.ops.mempty, null)
+                let n = RelevantNode<'op>(last, t.tops.mempty, null)
                 first <- n
                 last <- n
                 n
@@ -372,7 +372,7 @@ module private NewHistory =
         member x.Read(caller : IAdaptiveObject, old : RelevantNode<'op>, oldState : 's) =
             x.EvaluateAlways caller (fun () ->
                 if isNull old then
-                    let ops = t.compute oldState state
+                    let ops = t.tcompute oldState state
                     let token = x.AddRef()
                     token, ops
                 else
@@ -380,7 +380,7 @@ module private NewHistory =
                     let mutable prev = null
 
                     while not (isNull current) do
-                        res <- t.ops.mappend res current.Value
+                        res <- t.tops.mappend res current.Value
                         prev <- current
                         current <- current.Next
 
@@ -417,7 +417,7 @@ and History<'s, 'ops>(compute : History<'s, 'ops> -> 'ops, t : Traceable<'s, 'op
     let mutable buffer : 'ops[] = Array.zeroCreate 16
     let mutable start = 0
     let mutable count = 0
-    let mutable state = t.empty
+    let mutable state = t.tempty
 
     let bufferSize (cnt : int) =
         if cnt < 16 then 16
@@ -469,9 +469,9 @@ and History<'s, 'ops>(compute : History<'s, 'ops> -> 'ops, t : Traceable<'s, 'op
             let state = 
                 match relevant.Peek.Value.TryGetTarget() with
                     | (true, v) -> v.State
-                    | _ -> t.empty
+                    | _ -> t.tempty
 
-            if t.collapse state count then
+            if t.tcollapse state count then
                 printfn "collapse"
                 let minEntry = relevant.Dequeue()
                 minEntry.Index <- -1
@@ -479,19 +479,19 @@ and History<'s, 'ops>(compute : History<'s, 'ops> -> 'ops, t : Traceable<'s, 'op
                 collapse()
     
     let perform (ops : 'ops) =
-        if t.ops.misEmpty ops then
+        if t.tops.misEmpty ops then
             false
         else
-            let s, ops = t.apply state ops
+            let s, ops = t.tapply state ops
             state <- s
-            if t.ops.misEmpty ops then
+            if t.tops.misEmpty ops then
                 false
 
             else
                 if relevant.Count <> 0 then
                     if count > 0 && lastPullVersion < version then
                         let i = (start + count - 1) % buffer.Length
-                        buffer.[i] <- t.ops.mappend buffer.[i] ops
+                        buffer.[i] <- t.tops.mappend buffer.[i] ops
                         //Log.line "merged versions"
                     else
                         let mutable changed = false
@@ -504,7 +504,7 @@ and History<'s, 'ops>(compute : History<'s, 'ops> -> 'ops, t : Traceable<'s, 'op
                 true
 
     new(t : Traceable<'s, 'ops>) = 
-        let empty = t.ops.mempty
+        let empty = t.tops.mempty
         History<'s, 'ops>((fun _ -> empty), t)
 
     member x.Traceable = t
@@ -519,7 +519,7 @@ and History<'s, 'ops>(compute : History<'s, 'ops> -> 'ops, t : Traceable<'s, 'op
     member x.NewReader() : IOpReader<'s, 'ops> =
         lock x (fun () ->
             let entry = HeapEntry(version, Unchecked.defaultof<_>, -1) //.Enqueue(version, Unchecked.defaultof<_>)
-            let r = new HistoryReader<'s, 'ops>(t.ops, x, t.empty, entry)
+            let r = new HistoryReader<'s, 'ops>(t.tops, x, t.tempty, entry)
             entry.Value <- WeakReference<_>(r)
             r :> IOpReader<_,_>
         )
@@ -541,7 +541,7 @@ and History<'s, 'ops>(compute : History<'s, 'ops> -> 'ops, t : Traceable<'s, 'op
             lastPullVersion <- version
 
             if old.Index < 0 then
-                let ops = t.compute reader.State state
+                let ops = t.tcompute reader.State state
                 relevant.ChangeKey(old, version) |> ignore
                 state, ops
             else
@@ -550,11 +550,11 @@ and History<'s, 'ops>(compute : History<'s, 'ops> -> 'ops, t : Traceable<'s, 'op
                 let newMin = relevant.ChangeKey(old, version)
         
                 let mutable index = (start + int (oldVersion - minVersion)) % buffer.Length
-                let mutable operations = t.ops.mempty
+                let mutable operations = t.tops.mempty
                 for _ in 1 .. cnt do
                     let res = buffer.[index]  
                     index <- (index + 1) % buffer.Length
-                    operations <- t.ops.mappend operations res 
+                    operations <- t.tops.mappend operations res 
                     
                 adjust (Some newMin)
                 state, operations
@@ -628,15 +628,15 @@ module History =
 
             interface IOpReader<'ops> with
                 member x.Dispose() = ()
-                member x.GetOperations(caller) = t.ops.mempty
+                member x.GetOperations(caller) = t.tops.mempty
     
             interface IOpReader<'s, 'ops> with
-                member x.State = t.empty
+                member x.State = t.tempty
 
         type ConstantReader<'s, 'ops>(t : Traceable<'s, 'ops>, ops : Lazy<'ops>, finalState : Lazy<'s>) =
             inherit ConstantObject()
             
-            let mutable state = t.empty
+            let mutable state = t.tempty
             let mutable initial = true
 
             interface IOpReader<'ops> with
@@ -647,7 +647,7 @@ module History =
                             state <- finalState.Value
                             ops.Value
                         else
-                            t.ops.mempty
+                            t.tops.mempty
                     )
 
             interface IOpReader<'s, 'ops> with

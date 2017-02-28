@@ -183,6 +183,8 @@ module HDeltaSet =
     
     let inline count (set : hdeltaset<'a>) = set.Count
 
+    let inline single (op : SetDelta<'a>) =
+        hdeltaset(HMap.single op.Value op.Count)
 
     let inline ofSeq (seq : seq<SetDelta<'a>>) =
         hdeltaset.OfSeq seq

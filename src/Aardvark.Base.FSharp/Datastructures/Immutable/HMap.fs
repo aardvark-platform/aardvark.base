@@ -278,7 +278,7 @@ type hmap<'k, 'v>(cnt : int, store : intmap<list<'k * 'v>>) =
         store |> IntMap.fold (fun s l ->
             l |> List.fold (fun s (k,v) -> folder s k v) s
         ) seed
-
+        
     member x.UnionWith(other : hmap<'k, 'v>, f : 'k -> 'v -> 'v -> 'v) =
         let mutable cnt = cnt + other.Count
         let f k l r =
@@ -444,6 +444,9 @@ module HMap =
     /// <summary>The empty map.</summary>
     [<GeneralizableValue>]
     let empty<'k, 'v> = hmap<'k, 'v>.Empty
+    
+    let inline single (k : 'k) (v : 'v) = 
+        hmap.OfList [k,v]
 
     /// <summary>
     /// Returns a new map made from the given bindings. <para />

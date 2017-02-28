@@ -6,159 +6,6 @@ open System.Collections.Generic
 open Aardvark.Base.Incremental
 open Aardvark.Base
 
-type ISetReader<'a> = IOpReader<prefset<'a>, deltaset<'a>>
-
-type aset<'a> =
-    abstract member IsConstant  : bool
-    abstract member Content     : IMod<prefset<'a>>
-    abstract member GetReader   : unit -> ISetReader<'a>
-
-[<StructuredFormatDisplay("{AsString}")>]
-type cset<'a>(initial : seq<'a>) =
-    let history = History PRefSet.traceNoRefCount
-    do initial |> Seq.map Add |> DeltaSet.ofSeq |> history.Perform |> ignore
-
-    member x.Add(v : 'a) =
-        lock x (fun () ->
-            let op = DeltaSet.single (Add v)
-            history.Perform op
-        )
-        
-    member x.Remove(v : 'a) =
-        lock x (fun () ->
-            let op = DeltaSet.single (Rem v)
-            history.Perform op
-        )
-
-    member x.Contains (v : 'a) =
-        history.State |> PRefSet.contains v
-
-    member x.Count =
-        history.State.Count
-
-    member x.UnionWith (other : seq<'a>) =
-        lock x (fun () -> 
-            let op = other |> Seq.map Add |> DeltaSet.ofSeq
-            history.Perform op |> ignore
-        )
-
-    member x.ExceptWith (other : seq<'a>) =
-        lock x (fun () -> 
-            let op = other |> Seq.map Rem |> DeltaSet.ofSeq
-            history.Perform op |> ignore
-        )
-
-    member x.IntersectWith (other : seq<'a>) =
-        lock x (fun () -> 
-            let other = PRefSet.ofSeq other
-            let op = PRefSet.computeDeltas (PRefSet.difference history.State other) PRefSet.empty
-            history.Perform op |> ignore
-        )
-
-    member x.SymmetricExceptWith (other : seq<'a>) = 
-        let other = PRefSet.ofSeq other
-        lock x (fun () -> 
-            let add = PRefSet.computeDeltas PRefSet.empty (PRefSet.difference other history.State) 
-            let rem = PRefSet.computeDeltas (PRefSet.intersect other history.State) PRefSet.empty
-            let op = DeltaSet.combine add rem
-            history.Perform op |> ignore
-        )
-
-    member x.Clear() =
-        lock x (fun () -> 
-            let op = PRefSet.computeDeltas history.State PRefSet.empty
-            history.Perform op |> ignore
-        )
-
-    member x.CopyTo(arr : 'a[], index : int) =
-        let mutable index = index
-        for e in x do
-            arr.[index] <- e
-            index <- index + 1
-
-    interface ICollection<'a> with 
-        member x.Add(v) = x.Add v |> ignore
-        member x.Clear() = x.Clear()
-        member x.Remove(v) = x.Remove v
-        member x.Contains(v) = x.Contains v
-        member x.CopyTo(arr,i) = x.CopyTo(arr, i)
-        member x.IsReadOnly = false
-        member x.Count = x.Count
-
-    interface ISet<'a> with
-        member x.Add v = x.Add v
-        member x.ExceptWith o = x.ExceptWith o
-        member x.UnionWith o = x.UnionWith o
-        member x.IntersectWith o = x.IntersectWith o
-        member x.SymmetricExceptWith o = x.SymmetricExceptWith o
-        member x.IsSubsetOf o = 
-            let (l, b, r) = prefset.Compare(history.State, PRefSet.ofSeq o)
-            l = 0
-
-        member x.IsProperSubsetOf o = 
-            let (l, b, r) = prefset.Compare(history.State, PRefSet.ofSeq o)
-            l = 0 && r > 0
-            
-        member x.IsSupersetOf o = 
-            let (l, b, r) = prefset.Compare(history.State, PRefSet.ofSeq o)
-            r = 0
-
-        member x.IsProperSupersetOf o = 
-            let (l, b, r) = prefset.Compare(history.State, PRefSet.ofSeq o)
-            r = 0 && l > 0
-
-        member x.Overlaps o = 
-            let (l, b, r) = prefset.Compare(history.State, PRefSet.ofSeq o)
-            b > 0
-
-        member x.SetEquals o = 
-            let (l, b, r) = prefset.Compare(history.State, PRefSet.ofSeq o)
-            l = 0 && r = 0
-
-    interface aset<'a> with
-        member x.IsConstant = false
-        member x.Content = history :> IMod<_>
-        member x.GetReader() = history.NewReader()
-
-    interface IEnumerable with
-        member x.GetEnumerator() = (history.State :> seq<_>).GetEnumerator() :> _
-
-    interface IEnumerable<'a> with
-        member x.GetEnumerator() = (history.State :> seq<_>).GetEnumerator() :> _
-
-    override x.ToString() =
-        let suffix =
-            if x.Count > 5 then "; ..."
-            else ""
-
-        let content =
-            history.State |> Seq.truncate 5 |> Seq.map (sprintf "%A") |> String.concat "; "
-
-        "cset [" + content + suffix + "]"
-
-    member private x.AsString = x.ToString()
-
-    new() = cset<'a>(Seq.empty)
-
-[<CompilationRepresentation(CompilationRepresentationFlags.ModuleSuffix)>]
-[<RequireQualifiedAccess>]
-module CSet =
-    let inline empty<'a> = cset<'a>()
-    
-    let inline ofSet (set : prefset<'a>) = cset(set)
-    let inline ofSeq (seq : seq<'a>) = cset(seq)
-    let inline ofList (list : list<'a>) = cset(list)
-    let inline ofArray (list : array<'a>) = cset(list)
-
-    let inline add (v : 'a) (set : cset<'a>) = set.Add v
-    let inline remove (v : 'a) (set : cset<'a>) = set.Remove v
-    let inline clear (set : cset<'a>) = set.Clear()
-
-    let inline unionWith (other : seq<'a>) (set : cset<'a>) = set.UnionWith other
-    let inline exceptWith (other : seq<'a>) (set : cset<'a>) = set.ExceptWith other
-    let inline intersectWith (other : seq<'a>) (set : cset<'a>) = set.IntersectWith other
-    let inline symmetricExceptWith (other : seq<'a>) (set : cset<'a>) = set.SymmetricExceptWith other
-
 [<CompilationRepresentation(CompilationRepresentationFlags.ModuleSuffix)>]
 [<RequireQualifiedAccess>]
 module ASet =
@@ -171,18 +18,18 @@ module ASet =
             static let instance = new EmptyReader<'a>() :> IOpReader<_,_>
             static member Instance = instance
 
-            interface IOpReader<deltaset<'a>> with
+            interface IOpReader<hdeltaset<'a>> with
                 member x.Dispose() =
                     ()
 
                 member x.GetOperations caller =
-                    DeltaSet.empty
+                    HDeltaSet.empty
 
-            interface IOpReader<prefset<'a>, deltaset<'a>> with
-                member x.State = PRefSet.empty
+            interface IOpReader<hrefset<'a>, hdeltaset<'a>> with
+                member x.State = HRefSet.empty
 
         type EmptySet<'a> private() =
-            let content = Mod.constant PRefSet.empty
+            let content = Mod.constant HRefSet.empty
 
             static let instance = EmptySet<'a>() :> aset<_>
 
@@ -194,19 +41,19 @@ module ASet =
                 member x.Content = content
                 member x.GetReader() = EmptyReader.Instance
 
-        type ConstantSet<'a>(content : Lazy<prefset<'a>>) =
-            let deltas = lazy ( content.Value |> Seq.map Add |> DeltaSet.ofSeq)
-            let mcontent = ConstantMod<prefset<'a>>(content) :> IMod<_>
+        type ConstantSet<'a>(content : Lazy<hrefset<'a>>) =
+            let deltas = lazy ( content.Value |> Seq.map Add |> HDeltaSet.ofSeq)
+            let mcontent = ConstantMod<hrefset<'a>>(content) :> IMod<_>
 
             interface aset<'a> with
                 member x.IsConstant = true
-                member x.GetReader() = new History.Readers.ConstantReader<_,_>(PRefSet.trace, deltas, content) :> ISetReader<_>
+                member x.GetReader() = new History.Readers.ConstantReader<_,_>(HRefSet.trace, deltas, content) :> ISetReader<_>
                 member x.Content = mcontent
         
-            new(content : prefset<'a>) = ConstantSet<'a>(Lazy.CreateFromValue content)
+            new(content : hrefset<'a>) = ConstantSet<'a>(Lazy.CreateFromValue content)
 
-        type AdaptiveSet<'a>(newReader : unit -> IOpReader<deltaset<'a>>) =
-            let h = History.ofReader PRefSet.trace newReader
+        type AdaptiveSet<'a>(newReader : unit -> IOpReader<hdeltaset<'a>>) =
+            let h = History.ofReader HRefSet.trace newReader
 
             interface aset<'a> with
                 member x.IsConstant = false
@@ -216,17 +63,17 @@ module ASet =
         let inline unexpected() =
             failwith "[ASet] deltas are expected to be unique"
 
-        let inline aset (f : Ag.Scope -> #IOpReader<deltaset<'a>>) =
+        let inline aset (f : Ag.Scope -> #IOpReader<hdeltaset<'a>>) =
             let scope = Ag.getContext()
             AdaptiveSet<'a>(fun () -> f scope :> IOpReader<_>) :> aset<_>
 
-        let inline constant (l : Lazy<prefset<'a>>) =
+        let inline constant (l : Lazy<hrefset<'a>>) =
             ConstantSet<'a>(l) :> aset<_>
 
     [<AutoOpen>]
     module Readers =
         type MapReader<'a, 'b>(scope : Ag.Scope, input : aset<'a>, f : 'a -> 'b) =
-            inherit AbstractReader<deltaset<'b>>(scope, DeltaSet.monoid)
+            inherit AbstractReader<hdeltaset<'b>>(scope, HDeltaSet.monoid)
             
             let cache = Cache f
             let r = input.GetReader()
@@ -236,7 +83,7 @@ module ASet =
                 cache.Clear ignore
 
             override x.Compute() =
-                r.GetOperations x |> DeltaSet.map (fun d ->
+                r.GetOperations x |> HDeltaSet.map (fun d ->
                     match d with
                         | Add(1, v) -> Add(cache.Invoke v)
                         | Rem(1, v) -> Rem(cache.Revoke v)
@@ -244,7 +91,7 @@ module ASet =
                 )
 
         type ChooseReader<'a, 'b>(scope : Ag.Scope, input : aset<'a>, f : 'a -> Option<'b>) =
-            inherit AbstractReader<deltaset<'b>>(scope, DeltaSet.monoid)
+            inherit AbstractReader<hdeltaset<'b>>(scope, HDeltaSet.monoid)
             
             let cache = Cache f
             let r = input.GetReader()
@@ -254,7 +101,7 @@ module ASet =
                 cache.Clear ignore
 
             override x.Compute() =
-                r.GetOperations x |> DeltaSet.choose (fun d ->
+                r.GetOperations x |> HDeltaSet.choose (fun d ->
                     match d with
                         | Add(1, v) -> 
                             match cache.Invoke v with
@@ -269,7 +116,7 @@ module ASet =
                 )
 
         type FilterReader<'a>(scope : Ag.Scope, input : aset<'a>, f : 'a -> bool) =
-            inherit AbstractReader<deltaset<'a>>(scope, DeltaSet.monoid)
+            inherit AbstractReader<hdeltaset<'a>>(scope, HDeltaSet.monoid)
             
             let cache = Cache f
             let r = input.GetReader()
@@ -279,7 +126,7 @@ module ASet =
                 cache.Clear ignore
 
             override x.Compute() =
-                r.GetOperations x |> DeltaSet.choose (fun d ->
+                r.GetOperations x |> HDeltaSet.choose (fun d ->
                     match d with
                         | Add(1, v) -> 
                             if cache.Invoke v then Some (Add v)
@@ -292,7 +139,7 @@ module ASet =
                 )
 
         type UnionReader<'a>(scope : Ag.Scope, input : aset<aset<'a>>) =
-            inherit AbstractDirtyReader<ISetReader<'a>, deltaset<'a>>(scope, DeltaSet.monoid)
+            inherit AbstractDirtyReader<ISetReader<'a>, hdeltaset<'a>>(scope, HDeltaSet.monoid)
 
             let r = input.GetReader()
             let cache = Cache(fun (a : aset<'a>) -> a.GetReader())
@@ -303,7 +150,7 @@ module ASet =
 
             override x.Compute dirty =
                 let mutable deltas = 
-                    r.GetOperations x |> DeltaSet.collect (fun d ->
+                    r.GetOperations x |> HDeltaSet.collect (fun d ->
                         match d with
                             | Add(1, v) ->
                                 let r = cache.Invoke v
@@ -314,7 +161,7 @@ module ASet =
                                 let deleted, r = cache.RevokeAndGetDeleted v
                                 dirty.Remove r |> ignore
                                 if deleted then 
-                                    let ops = PRefSet.computeDeltas r.State PRefSet.empty
+                                    let ops = HRefSet.computeDelta r.State HRefSet.empty
                                     r.Dispose()
                                     ops
                                 else
@@ -324,15 +171,15 @@ module ASet =
                     )
 
                 for d in dirty do
-                    deltas <- DeltaSet.combine deltas (d.GetOperations x)
+                    deltas <- HDeltaSet.combine deltas (d.GetOperations x)
 
                 deltas
 
-        type UnionFixedReader<'a>(scope : Ag.Scope, input : prefset<aset<'a>>) =
-            inherit AbstractDirtyReader<ISetReader<'a>, deltaset<'a>>(scope, DeltaSet.monoid)
+        type UnionFixedReader<'a>(scope : Ag.Scope, input : hrefset<aset<'a>>) =
+            inherit AbstractDirtyReader<ISetReader<'a>, hdeltaset<'a>>(scope, HDeltaSet.monoid)
 
             let mutable initial = true
-            let input = input |> PRefSet.map (fun s -> s.GetReader())
+            let input = input |> HRefSet.map (fun s -> s.GetReader())
 
             override x.Release() =
                 for i in input do
@@ -341,12 +188,12 @@ module ASet =
             override x.Compute(dirty) =
                 if initial then
                     initial <- false
-                    input |> PRefSet.fold (fun deltas r -> DeltaSet.combine deltas (r.GetOperations x)) DeltaSet.empty
+                    input |> HRefSet.fold (fun deltas r -> HDeltaSet.combine deltas (r.GetOperations x)) HDeltaSet.empty
                 else
-                    dirty |> Seq.fold (fun deltas r -> DeltaSet.combine deltas (r.GetOperations x)) DeltaSet.empty
+                    dirty |> Seq.fold (fun deltas r -> HDeltaSet.combine deltas (r.GetOperations x)) HDeltaSet.empty
 
         type DifferenceReader<'a>(scope : Ag.Scope, l : aset<'a>, r : aset<'a>) =
-            inherit AbstractReader<deltaset<'a>>(scope, DeltaSet.monoid)
+            inherit AbstractReader<hdeltaset<'a>>(scope, HDeltaSet.monoid)
             
             let l = l.GetReader()
             let r = r.GetReader()
@@ -359,15 +206,15 @@ module ASet =
                 let lops = l.GetOperations x
                 let rops = r.GetOperations x
 
-                let rops = DeltaSet.map SetDelta.inverse rops
+                let rops = HDeltaSet.map SetDelta.inverse rops
 
-                DeltaSet.combine lops rops
+                HDeltaSet.combine lops rops
 
 
 
 
         type CollectReader<'a, 'b>(scope : Ag.Scope, input : aset<'a>, f : 'a -> aset<'b>) =
-            inherit AbstractDirtyReader<ISetReader<'b>, deltaset<'b>>(scope, DeltaSet.monoid)
+            inherit AbstractDirtyReader<ISetReader<'b>, hdeltaset<'b>>(scope, HDeltaSet.monoid)
 
             let r = input.GetReader()
             let cache = Cache(fun a -> (f a).GetReader())
@@ -378,7 +225,7 @@ module ASet =
 
             override x.Compute dirty =
                 let mutable deltas = 
-                    r.GetOperations x |> DeltaSet.collect (fun d ->
+                    r.GetOperations x |> HDeltaSet.collect (fun d ->
                         match d with
                             | Add(1, v) ->
                                 let r = cache.Invoke v
@@ -389,7 +236,7 @@ module ASet =
                                 let deleted, r = cache.RevokeAndGetDeleted v
                                 dirty.Remove r |> ignore
                                 if deleted then 
-                                    let ops = PRefSet.computeDeltas r.State PRefSet.empty
+                                    let ops = HRefSet.computeDelta r.State HRefSet.empty
                                     r.Dispose()
                                     ops
                                 else
@@ -399,12 +246,12 @@ module ASet =
                     )
 
                 for d in dirty do
-                    deltas <- DeltaSet.combine deltas (d.GetOperations x)
+                    deltas <- HDeltaSet.combine deltas (d.GetOperations x)
 
                 deltas
 
-        type CollectSetReader<'a, 'b>(scope : Ag.Scope, input : aset<'a>, f : 'a -> prefset<'b>) =
-            inherit AbstractReader<deltaset<'b>>(scope, DeltaSet.monoid)
+        type CollectSetReader<'a, 'b>(scope : Ag.Scope, input : aset<'a>, f : 'a -> hrefset<'b>) =
+            inherit AbstractReader<hdeltaset<'b>>(scope, HDeltaSet.monoid)
             
             let r = input.GetReader()
             let cache = Cache f
@@ -414,33 +261,33 @@ module ASet =
                 cache.Clear ignore
 
             override x.Compute() =
-                r.GetOperations x |> DeltaSet.collect (fun d ->
+                r.GetOperations x |> HDeltaSet.collect (fun d ->
                     match d with
                         | Add(1,v) -> 
-                            PRefSet.computeDeltas PRefSet.empty (cache.Invoke v)
+                            HRefSet.computeDelta HRefSet.empty (cache.Invoke v)
                         | Rem(1,v) ->
-                            PRefSet.computeDeltas (cache.Revoke v) PRefSet.empty
+                            HRefSet.computeDelta (cache.Revoke v) HRefSet.empty
                         | _ ->
                             unexpected()
                 )
 
 
-        type ModSetReader<'a>(scope : Ag.Scope, input : IMod<prefset<'a>>) =
-            inherit AbstractReader<deltaset<'a>>(scope, DeltaSet.monoid)
+        type ModSetReader<'a>(scope : Ag.Scope, input : IMod<hrefset<'a>>) =
+            inherit AbstractReader<hdeltaset<'a>>(scope, HDeltaSet.monoid)
 
-            let mutable old = PRefSet.empty
+            let mutable old = HRefSet.empty
 
             override x.Release() =
                 lock input (fun () -> input.Outputs.Remove x |> ignore)
 
             override x.Compute() =
                 let n = input.GetValue x
-                let deltas = PRefSet.computeDeltas old n
+                let deltas = HRefSet.computeDelta old n
                 old <- n
                 deltas
 
         type ModValueReader<'a>(scope : Ag.Scope, input : IMod<'a>) =
-            inherit AbstractReader<deltaset<'a>>(scope, DeltaSet.monoid)
+            inherit AbstractReader<hdeltaset<'a>>(scope, HDeltaSet.monoid)
 
             let mutable old = None
 
@@ -452,14 +299,14 @@ module ASet =
                 let n = input.GetValue x
                 let delta = 
                     match old with
-                        | None -> DeltaSet.ofList [Add n]
-                        | Some o when Object.Equals(o, n) -> DeltaSet.empty
-                        | Some o -> DeltaSet.ofList [Rem o; Add n]
+                        | None -> HDeltaSet.ofList [Add n]
+                        | Some o when Object.Equals(o, n) -> HDeltaSet.empty
+                        | Some o -> HDeltaSet.ofList [Rem o; Add n]
                 old <- Some n
                 delta
 
         type BindReader<'a, 'b>(scope : Ag.Scope, input : IMod<'a>, f : 'a -> aset<'b>) =
-            inherit AbstractReader<deltaset<'b>>(scope, DeltaSet.monoid)
+            inherit AbstractReader<hdeltaset<'b>>(scope, HDeltaSet.monoid)
             
             let mutable inputChanged = true
             let mutable old : Option<'a * ISetReader<'b>> = None
@@ -493,8 +340,8 @@ module ASet =
                         old <- Some(v, r)
                         r.GetOperations x
 
-        type CustomReader<'a>(scope : Ag.Scope, compute : ISetReader<'a> -> deltaset<'a>) =
-            inherit AbstractReader<prefset<'a>, deltaset<'a>>(scope, PRefSet.trace)
+        type CustomReader<'a>(scope : Ag.Scope, compute : ISetReader<'a> -> hdeltaset<'a>) =
+            inherit AbstractReader<hrefset<'a>, hdeltaset<'a>>(scope, HRefSet.trace)
             
             override x.Release() =
                 ()
@@ -503,7 +350,7 @@ module ASet =
                 compute x
             
         type FlattenReader<'a>(scope : Ag.Scope, input : aset<IMod<'a>>) =
-            inherit AbstractDirtyReader<IMod<'a>, deltaset<'a>>(scope, DeltaSet.monoid)
+            inherit AbstractDirtyReader<IMod<'a>, hdeltaset<'a>>(scope, HDeltaSet.monoid)
             
             let r = input.GetReader()
 
@@ -537,7 +384,7 @@ module ASet =
 
             override x.Compute(dirty) =
                 let mutable deltas = 
-                    r.GetOperations x |> DeltaSet.map (fun d ->
+                    r.GetOperations x |> HDeltaSet.map (fun d ->
                         match d with
                             | Add(1,m) -> Add(x.Invoke m)
                             | Rem(1,m) -> Rem(x.Revoke m)
@@ -547,12 +394,12 @@ module ASet =
                 for d in dirty do
                     let o, n = x.Invoke2 d
                     if not <| Object.Equals(o,n) then
-                        deltas <- DeltaSet.combine deltas (DeltaSet.ofList [Add n; Rem o])
+                        deltas <- HDeltaSet.combine deltas (HDeltaSet.ofList [Add n; Rem o])
 
                 deltas
             
         type MapMReader<'a, 'b>(scope : Ag.Scope, input : aset<'a>, f : 'a -> IMod<'b>) =
-            inherit AbstractDirtyReader<IMod<'b>, deltaset<'b>>(scope, DeltaSet.monoid)
+            inherit AbstractDirtyReader<IMod<'b>, hdeltaset<'b>>(scope, HDeltaSet.monoid)
             
             let r = input.GetReader()
 
@@ -593,7 +440,7 @@ module ASet =
 
             override x.Compute(dirty) =
                 let mutable deltas = 
-                    r.GetOperations x |> DeltaSet.map (fun d ->
+                    r.GetOperations x |> HDeltaSet.map (fun d ->
                         match d with
                             | Add(1,m) -> Add(x.Invoke m)
                             | Rem(1,m) -> Rem(x.Revoke m)
@@ -603,12 +450,12 @@ module ASet =
                 for d in dirty do
                     let o, n = x.Invoke2 d
                     if not <| Object.Equals(o,n) then
-                        deltas <- DeltaSet.combine deltas (DeltaSet.ofList [Add n; Rem o])
+                        deltas <- HDeltaSet.combine deltas (HDeltaSet.ofList [Add n; Rem o])
 
                 deltas
 
         type ChooseMReader<'a, 'b>(scope : Ag.Scope, input : aset<'a>, f : 'a -> IMod<Option<'b>>) =
-            inherit AbstractDirtyReader<IMod<Option<'b>>, deltaset<'b>>(scope, DeltaSet.monoid)
+            inherit AbstractDirtyReader<IMod<Option<'b>>, hdeltaset<'b>>(scope, HDeltaSet.monoid)
             
             let r = input.GetReader()
 
@@ -649,7 +496,7 @@ module ASet =
 
             override x.Compute(dirty) =
                 let mutable deltas = 
-                    r.GetOperations x |> DeltaSet.choose (fun d ->
+                    r.GetOperations x |> HDeltaSet.choose (fun d ->
                         match d with
                             | Add(1,m) -> 
                                 match x.Invoke m with
@@ -669,21 +516,21 @@ module ASet =
                     let change = 
                         match x.Invoke2 d with
                             | None, None -> 
-                                DeltaSet.empty
+                                HDeltaSet.empty
 
                             | None, Some v ->
-                                DeltaSet.single (Add v)
+                                HDeltaSet.single (Add v)
 
                             | Some o, None ->
-                                DeltaSet.single (Rem o)
+                                HDeltaSet.single (Rem o)
 
                             | Some o, Some n ->
                                 if Object.Equals(o, n) then
-                                    DeltaSet.empty
+                                    HDeltaSet.empty
                                 else
-                                    DeltaSet.ofList [Rem o; Add n]
+                                    HDeltaSet.ofList [Rem o; Add n]
 
-                    deltas <- DeltaSet.combine deltas change
+                    deltas <- HDeltaSet.combine deltas change
 
                 deltas
 
@@ -696,26 +543,26 @@ module ASet =
 
     /// creates a new aset containing only the given element
     let single (v : 'a) =
-        ConstantSet(PRefSet.single v) :> aset<_>
+        ConstantSet(HRefSet.single v) :> aset<_>
 
     /// creates a new aset using the given set content
-    let ofSet (set : prefset<'a>) =
+    let ofSet (set : hrefset<'a>) =
         ConstantSet(set) :> aset<_>
 
     /// create a new aset using all distinct entries from the sequence
     let ofSeq (seq : seq<'a>) =
-        seq |> PRefSet.ofSeq |> ofSet
+        seq |> HRefSet.ofSeq |> ofSet
         
     /// create a new aset using all distinct entries from the list
     let ofList (list : list<'a>) =
-        list |> PRefSet.ofList |> ofSet
+        list |> HRefSet.ofList |> ofSet
         
     /// create a new aset using all distinct entries from the array
     let ofArray (arr : 'a[]) =
-        arr |> PRefSet.ofArray |> ofSet
+        arr |> HRefSet.ofArray |> ofSet
 
     /// creates set which will always contain the elements given by the mod-cell
-    let ofMod (m : IMod<prefset<'a>>) =
+    let ofMod (m : IMod<hrefset<'a>>) =
         if m.IsConstant then
             constant <| lazy ( Mod.force m )
         else
@@ -724,7 +571,7 @@ module ASet =
     /// creates a singleton set which will always contain the latest value of the given mod-cell
     let ofModSingle (m : IMod<'a>) =
         if m.IsConstant then
-            constant <| lazy ( m |> Mod.force |> PRefSet.single )
+            constant <| lazy ( m |> Mod.force |> HRefSet.single )
         else
             aset <| fun scope -> new ModValueReader<'a>(scope, m)
 
@@ -743,11 +590,11 @@ module ASet =
         
     /// creates a list from the current state of the aset
     let toList (set : aset<'a>) =
-        set.Content |> Mod.force |> PRefSet.toList
+        set.Content |> Mod.force |> HRefSet.toList
         
     /// creates an array from the current state of the aset
     let toArray (set : aset<'a>) =
-        set.Content |> Mod.force |> PRefSet.toArray
+        set.Content |> Mod.force |> HRefSet.toArray
 
     /// creates a mod-cell containing the set's content as set
     let toMod (s : aset<'a>) =
@@ -760,20 +607,20 @@ module ASet =
 
     let union (l : aset<'a>) (r : aset<'a>) =
         if l.IsConstant && r.IsConstant then
-            constant <| lazy ( PRefSet.union (Mod.force l.Content) (Mod.force r.Content) )
+            constant <| lazy ( HRefSet.union (Mod.force l.Content) (Mod.force r.Content) )
         else
-            aset <| fun scope -> new UnionFixedReader<'a>(scope, PRefSet.ofList [l; r])
+            aset <| fun scope -> new UnionFixedReader<'a>(scope, HRefSet.ofList [l; r])
 
     let difference (l : aset<'a>) (r : aset<'a>) =
         if l.IsConstant && r.IsConstant then
-            constant <| lazy ( PRefSet.difference (Mod.force l.Content) (Mod.force r.Content) )
+            constant <| lazy ( HRefSet.difference (Mod.force l.Content) (Mod.force r.Content) )
         else
             aset <| fun scope -> new DifferenceReader<'a>(scope, l, r)
 
     let unionMany' (sets : seq<aset<'a>>) =
-        let sets = PRefSet.ofSeq sets
+        let sets = HRefSet.ofSeq sets
         if sets |> Seq.forall (fun s -> s.IsConstant) then
-            constant <| lazy ( sets |> PRefSet.collect (fun s -> s.Content |> Mod.force) )
+            constant <| lazy ( sets |> HRefSet.collect (fun s -> s.Content |> Mod.force) )
         else
             aset <| fun scope -> new UnionFixedReader<'a>(scope, sets)
 
@@ -790,7 +637,7 @@ module ASet =
     /// creates a new aset whose elements are the result of applying the given function to each of the elements of the given set
     let map (mapping : 'a -> 'b) (set : aset<'a>) =
         if set.IsConstant then
-            constant <| lazy ( set.Content |> Mod.force |> PRefSet.map mapping )
+            constant <| lazy ( set.Content |> Mod.force |> HRefSet.map mapping )
         else
             aset <| fun scope -> new MapReader<'a, 'b>(scope, set, mapping)
         
@@ -798,29 +645,29 @@ module ASet =
     /// where the function returns Some(x)
     let choose (chooser : 'a -> Option<'b>) (set : aset<'a>) =
         if set.IsConstant then
-            constant <| lazy ( set.Content |> Mod.force |> PRefSet.choose chooser )
+            constant <| lazy ( set.Content |> Mod.force |> HRefSet.choose chooser )
         else
             aset <| fun scope -> new ChooseReader<'a, 'b>(scope, set, chooser)
 
     /// creates a new aset containing only the elements of the given one for which the given predicate returns true
     let filter (predicate : 'a -> bool) (set : aset<'a>) =
         if set.IsConstant then
-            constant <| lazy ( set.Content |> Mod.force |> PRefSet.filter predicate )
+            constant <| lazy ( set.Content |> Mod.force |> HRefSet.filter predicate )
         else
             aset <| fun scope -> new FilterReader<'a>(scope, set, predicate)
 
     /// applies the given function to each element of the given aset. unions all the results and returns the combined aset
     let collect (mapping : 'a -> aset<'b>) (set : aset<'a>) =
         if set.IsConstant then
-            set.Content |> Mod.force |> PRefSet.map mapping |> unionMany'
+            set.Content |> Mod.force |> HRefSet.map mapping |> unionMany'
         else
             aset <| fun scope -> new CollectReader<'a, 'b>(scope, set, mapping)
         
     /// applies the given function to each element of the given aset. unions all the results and returns the combined aset
     let collect' (mapping : 'a -> #seq<'b>) (set : aset<'a>) =
-        let mapping = mapping >> PRefSet.ofSeq
+        let mapping = mapping >> HRefSet.ofSeq
         if set.IsConstant then
-            constant <| lazy ( set.Content |> Mod.force |> PRefSet.collect mapping )
+            constant <| lazy ( set.Content |> Mod.force |> HRefSet.collect mapping )
         else
             aset <| fun scope -> new CollectSetReader<'a, 'b>(scope, set, mapping)
     
@@ -900,10 +747,10 @@ module ASet =
         Mod.custom (fun self ->
             let ops = r.GetOperations self
 
-            let worked = traverse (DeltaSet.toList ops)
+            let worked = traverse (HDeltaSet.toList ops)
 
             if not worked then
-                res <- r.State |> PRefSet.fold add zero
+                res <- r.State |> HRefSet.fold add zero
                 
             res
         )
@@ -917,12 +764,12 @@ module ASet =
        
     let containsAll (seq : seq<'a>) (set : aset<'a>) =
         set.Content |> Mod.map (fun set ->
-            seq |> Seq.forall (fun v -> PRefSet.contains v set)
+            seq |> Seq.forall (fun v -> HRefSet.contains v set)
         )   
         
     let containsAny (seq : seq<'a>) (set : aset<'a>) =
         set.Content |> Mod.map (fun set ->
-            seq |> Seq.exists (fun v -> PRefSet.contains v set)
+            seq |> Seq.exists (fun v -> HRefSet.contains v set)
         )   
 
     /// Adaptively calculates the sum of all elements in the set
@@ -938,10 +785,10 @@ module ASet =
 
 
     /// creates a new aset using the given reader-creator
-    let create (f : Ag.Scope -> #IOpReader<deltaset<'a>>) =
+    let create (f : Ag.Scope -> #IOpReader<hdeltaset<'a>>) =
         aset f
 
-    let custom (f : ISetReader<'a> -> deltaset<'a>) =
+    let custom (f : ISetReader<'a> -> hdeltaset<'a>) =
         aset <| fun scope -> new CustomReader<'a>(scope, f)
 
     open System.Collections.Concurrent
@@ -967,7 +814,7 @@ module ASet =
 
         let result =
             m.AddEvaluationCallback(fun self ->
-                m.GetOperations(self) |> DeltaSet.toList |> f
+                m.GetOperations(self) |> HDeltaSet.toList |> f
             )
 
 

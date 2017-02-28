@@ -13,28 +13,28 @@ type plist<'a>(l : Index, h : Index, content : MapExt<Index, 'a>) =
 
     static let trace =
         {
-            ops = DeltaList.monoid
-            empty = empty
-            apply = fun a b -> a.Apply(b)
-            compute = fun l r -> plist.ComputeDeltas(l,r)
-            collapse = fun _ _ -> false
+            tops = PDeltaList.monoid
+            tempty = empty
+            tapply = fun a b -> a.Apply(b)
+            tcompute = fun l r -> plist.ComputeDeltas(l,r)
+            tcollapse = fun _ _ -> false
         }
 
     static member Empty = empty
     static member Trace = trace
 
-    member internal x.MinIndex = l
-    member internal x.MaxIndex = h
+    member x.MinIndex = l
+    member x.MaxIndex = h
 
     member x.Count = content.Count
 
     member x.Content = content
 
 
-    member x.Apply(deltas : deltalist<'a>) : plist<'a> * deltalist<'a> =
+    member x.Apply(deltas : pdeltalist<'a>) : plist<'a> * pdeltalist<'a> =
         let mutable res = x
         let finalDeltas =
-            deltas |> DeltaList.filter (fun i op ->
+            deltas |> PDeltaList.filter (fun i op ->
                 match op with
                     | Remove -> 
                         res <- res.Remove i
@@ -50,16 +50,16 @@ type plist<'a>(l : Index, h : Index, content : MapExt<Index, 'a>) =
 
         res, finalDeltas
 
-    static member ComputeDeltas(l : plist<'a>, r : plist<'a>) : deltalist<'a> =
+    static member ComputeDeltas(l : plist<'a>, r : plist<'a>) : pdeltalist<'a> =
         match l.Count, r.Count with
             | 0, 0 -> 
-                DeltaList.empty
+                PDeltaList.empty
 
             | 0, _ -> 
-                r.Content |> MapExt.map (fun i v -> Set v) |> DeltaList.ofMap
+                r.Content |> MapExt.map (fun i v -> Set v) |> PDeltaList.ofMap
 
             | _, 0 ->
-                l.Content |> MapExt.map (fun i v -> Remove) |> DeltaList.ofMap
+                l.Content |> MapExt.map (fun i v -> Remove) |> PDeltaList.ofMap
 
             | _, _ ->
                 let merge (k : Index) (l : Option<'a>) (r : Option<'a>) =
@@ -71,7 +71,7 @@ type plist<'a>(l : Index, h : Index, content : MapExt<Index, 'a>) =
                         | _ -> 
                             Some Remove
                
-                MapExt.choose2 merge l.Content r.Content |> DeltaList.ofMap
+                MapExt.choose2 merge l.Content r.Content |> PDeltaList.ofMap
 
     member x.TryGet (i : Index) =
         MapExt.tryFind i content
@@ -79,6 +79,7 @@ type plist<'a>(l : Index, h : Index, content : MapExt<Index, 'a>) =
     member x.Item
         with get(i : Index) = MapExt.find i content
         
+    // O(log(n))
     member x.Item
         with get(i : int) = MapExt.item i content |> snd
 

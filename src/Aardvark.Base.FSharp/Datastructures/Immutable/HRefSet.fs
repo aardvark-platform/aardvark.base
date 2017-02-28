@@ -3,6 +3,13 @@
 open System.Collections
 open System.Collections.Generic
 
+type SetCmp =
+    | Distinct          = 0
+    | ProperSubset      = 1
+    | ProperSuperset    = 2
+    | Overlap           = 3
+    | Equal             = 4
+
 [<Struct>]
 [<StructuredFormatDisplay("{AsString}")>]
 type hrefset<'a>(store : hmap<'a, int>) =
@@ -37,6 +44,8 @@ type hrefset<'a>(store : hmap<'a, int>) =
 
     member private x.Store = store
 
+    member x.Contains (value : 'a) =
+        HMap.containsKey value store
 
     member x.Add(value : 'a) =
         store
@@ -64,6 +73,28 @@ type hrefset<'a>(store : hmap<'a, int>) =
                 | Some l, None -> l
                 | None, Some r -> r
                 | None, None -> 0
+        ) store other.Store
+        |> hrefset
+
+    member x.Difference(other : hrefset<'a>) =
+        HMap.choose2 (fun k l r ->
+            let newRefCount = 
+                match l, r with 
+                    | Some l, Some r -> l - r
+                    | Some l, None -> l
+                    | None, Some r -> 0
+                    | None, None -> 0
+
+            if newRefCount > 0 then Some newRefCount
+            else None
+        ) store other.Store
+        |> hrefset
+
+    member x.Intersect(other : hrefset<'a>) =
+        HMap.choose2 (fun k l r ->
+            match l, r with 
+                | Some l, Some r -> Some (min l r)
+                | _ -> None
         ) store other.Store
         |> hrefset
 
@@ -213,7 +244,19 @@ type hrefset<'a>(store : hmap<'a, int>) =
         hrefset res, effective
 
 
-        
+    static member Compare(l : hrefset<'a>, r : hrefset<'a>) =
+        let i = l.Intersect r
+        let b = i.Count
+        let lo = l.Count - b
+        let ro = r.Count - b
+
+        match lo, b, ro with
+            | 0, _, 0 -> SetCmp.Equal
+            | _, 0, _ -> SetCmp.Distinct
+            | a, _, 0 -> SetCmp.ProperSuperset
+            | 0, _, a -> SetCmp.ProperSubset
+            | _, _, _ -> SetCmp.Overlap
+
 
     override x.ToString() =
         let suffix =
@@ -236,6 +279,9 @@ type hrefset<'a>(store : hmap<'a, int>) =
 [<CompilationRepresentation(CompilationRepresentationFlags.ModuleSuffix)>]
 module HRefSet =
     let inline empty<'a> = hrefset<'a>.Empty
+
+
+    let single v = hrefset (HMap.single v 1)
 
     // O(1)
     let inline toHMap (set : hrefset<'a>) = set.ToHMap()
@@ -273,6 +319,9 @@ module HRefSet =
     let inline count (set : hrefset<'a>) =
         set.Count
 
+    let inline contains (value : 'a) (set : hrefset<'a>) =
+        set.Contains value
+
     // O(min(n,32))
     let inline add (value : 'a) (set : hrefset<'a>) =
         set.Add value
@@ -284,6 +333,15 @@ module HRefSet =
     // O(n + m)
     let inline union (l : hrefset<'a>) (r : hrefset<'a>) =
         l.Union r
+
+    // O(n + m)
+    let inline difference (l : hrefset<'a>) (r : hrefset<'a>) =
+        l.Difference r
+
+    // O(n + m)
+    let inline intersect (l : hrefset<'a>) (r : hrefset<'a>) =
+        l.Intersect r
+
 
     // O(n)
     let inline map (mapping : 'a -> 'b) (set : hrefset<'a>) =
@@ -334,3 +392,11 @@ module HRefSet =
     // O(|delta| * min(32, n))
     let inline applyDeltaNoRefCount (set : hrefset<'a>) (delta : hdeltaset<'a>) =
         set.ApplyDeltaNoRefCount delta
+        
+    // O(n + m)
+    let compare (l : hrefset<'a>) (r : hrefset<'a>) =
+        hrefset.Compare(l,r)
+
+
+
+

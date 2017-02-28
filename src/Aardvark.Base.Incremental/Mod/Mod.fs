@@ -593,7 +593,7 @@ module Mod =
         inherit AbstractMod<'b>()
 
         let mutable inner : Option<'a * IMod<'b>> = None
-        let mutable changedInputs = PersistentHashSet.empty
+        let mutable changedInputs = HSet.empty
 
         override x.Inputs =
             seq {
@@ -604,7 +604,7 @@ module Mod =
             }
 
         override x.InputChanged(t, i) =
-            System.Threading.Interlocked.Change(&changedInputs, PersistentHashSet.add i) |> ignore
+            System.Threading.Interlocked.Change(&changedInputs, HSet.add i) |> ignore
 
         override x.Compute() =
             // whenever the result is outOfDate we
@@ -612,11 +612,11 @@ module Mod =
             // Note that the input is not necessarily outOfDate at this point
             let v = m.GetValue x
 
-            let changed = System.Threading.Interlocked.Exchange(&changedInputs, PersistentHashSet.empty)
+            let changed = System.Threading.Interlocked.Exchange(&changedInputs, HSet.empty)
 
             //let cv = hasChanged v
 
-            let mChanged = PersistentHashSet.contains (m :> IAdaptiveObject) changed
+            let mChanged = HSet.contains (m :> IAdaptiveObject) changed
 
             match inner with
                 // if the function argument has not changed
@@ -655,7 +655,7 @@ module Mod =
         inherit AbstractMod<'c>()
 
         let mutable inner : Option<'a * 'b * IMod<'c>> = None
-        let mutable changedInputs = PersistentHashSet.empty
+        let mutable changedInputs = HSet.empty
 
         override x.Inputs =
             seq {
@@ -667,15 +667,15 @@ module Mod =
             }
 
         override x.InputChanged(t, i) =
-            System.Threading.Interlocked.Change(&changedInputs, PersistentHashSet.add i) |> ignore
+            System.Threading.Interlocked.Change(&changedInputs, HSet.add i) |> ignore
 
         override x.Compute() =
-            let changed = System.Threading.Interlocked.Exchange(&changedInputs, PersistentHashSet.empty)
+            let changed = System.Threading.Interlocked.Exchange(&changedInputs, HSet.empty)
             let a = ma.GetValue x
             let b = mb.GetValue x
 
-            let ca = PersistentHashSet.contains (ma :> IAdaptiveObject) changed
-            let cb = PersistentHashSet.contains (mb :> IAdaptiveObject) changed
+            let ca = HSet.contains (ma :> IAdaptiveObject) changed
+            let cb = HSet.contains (mb :> IAdaptiveObject) changed
 
             match inner with
                 | Some (va, vb, inner) when not ca && not cb ->

@@ -81,10 +81,9 @@
     <Compile Include="Datastructures\Immutable\HSet.fs" />
     <Compile Include="Datastructures\Immutable\HDeltaSet.fs" />
     <Compile Include="Datastructures\Immutable\HRefSet.fs" />
-    <Compile Include="Datastructures\Immutable\HashMap.fs" />
-    <Compile Include="Datastructures\Immutable\PersistentHashSet.fs" />
+    <Compile Include="Datastructures\Immutable\PDeltaList.fs" />
+    <Compile Include="Datastructures\Immutable\PList.fs" />
     <Compile Include="Datastructures\Immutable\FingerTree.fs" />
-    <Compile Include="Datastructures\Immutable\pset.fs" />
     <Compile Include="Reflection\TypeInfo.fs" />
     <Compile Include="Reflection\FunctionReflection.fs" />
     <Compile Include="Reflection\Formatf.fs" />

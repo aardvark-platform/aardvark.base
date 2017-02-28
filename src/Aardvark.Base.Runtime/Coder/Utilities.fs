@@ -22,31 +22,30 @@ type private R<'a when 'a : not struct> =
         new(v) = { Value = v }
     end
 
-type RefMap<'a, 'b when 'a : not struct> = private { store : HashMap<R<'a>, 'b> }
+type RefMap<'a, 'b when 'a : not struct> = private { store : hmap<R<'a>, 'b> }
 
 module RefMap =
     type private EmptyImpl<'a, 'b when 'a : not struct>() =
-        static let instance = { store = HashMap.empty<R<'a>, 'b> }
+        static let instance = { store = HMap.empty<R<'a>, 'b> }
         static member Instance = instance
 
     let empty<'a, 'b when 'a : not struct> = EmptyImpl<'a, 'b>.Instance
 
     let add (key : 'a) (value : 'b) (m : RefMap<'a, 'b>) =
-        { store = HashMap.add (R key) value m.store }
+        { store = HMap.add (R key) value m.store }
 
     let remove (key : 'a) (m : RefMap<'a, 'b>) =
-        { store = HashMap.remove (R key) m.store }
+        { store = HMap.remove (R key) m.store }
 
     let containsKey (key : 'a) (m : RefMap<'a, 'b>) =
-        HashMap.containsKey (R key) m.store
+        HMap.containsKey (R key) m.store
 
     let update (key : 'a) (f : Option<'b> -> 'b) (m : RefMap<'a, 'b>) =
         let key = R key
-        let old = HashMap.tryFind key m.store
-        { store = HashMap.add key (f old) m.store }
+        { store = HMap.update key f m.store }
 
     let tryFind (key : 'a) (m : RefMap<'a, 'b>) =
-        HashMap.tryFind (R key) m.store
+        HMap.tryFind (R key) m.store
 
 
 
@@ -226,7 +225,7 @@ module OverloadResolution =
 
 
         if recurse decl real then
-            Some (assignment |> Dictionary.toSeq |> HashMap.ofSeq)
+            Some (assignment |> Dictionary.toSeq |> HMap.ofSeq)
         else
             None
 
@@ -238,7 +237,7 @@ module OverloadResolution =
 
                     let filled = 
                         holes |> Array.map (fun h ->
-                            match HashMap.tryFind h ass with
+                            match HMap.tryFind h ass with
                                 | Some r -> r
                                 | None -> h
                         )

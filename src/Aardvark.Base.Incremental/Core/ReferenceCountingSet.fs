@@ -17,7 +17,7 @@ type ReferenceCountingSet<'a>(initial : seq<'a>) =
     let mutable store = Dictionary<obj, 'a * ref<int>>(1)
 
 
-    static let rec checkDeltas (l : list<Delta<'a>>) =
+    static let rec checkDeltas (l : list<SetDelta<'a>>) =
         let set = HashSet<obj>()
         for d in l do
             let value = 
@@ -103,15 +103,15 @@ type ReferenceCountingSet<'a>(initial : seq<'a>) =
         for (KeyValue(k,(v,r))) in other.Store do
             store.[k] <- (v, ref !r)
 
-    member internal x.Apply(deltas : list<Delta<'a>>) =
+    member internal x.Apply(deltas : list<SetDelta<'a>>) =
         match deltas with
             | [] -> []
             | [v] -> 
                 match v with
-                    | Add v -> 
+                    | Add(_,v) -> 
                         if x.Add v then [Add v]
                         else []
-                    | Rem v ->
+                    | Rem(_,v) ->
                         if x.Remove v then [Rem v]
                         else []
 
@@ -120,7 +120,7 @@ type ReferenceCountingSet<'a>(initial : seq<'a>) =
                 let touched = Dictionary<obj, 'a * bool * ref<int>>()
                 for d in deltas do
                     match d with
-                        | Add v ->
+                        | Add(_,v) ->
                             let o = v :> obj
                             if isNull o then
                                 nullCount <- nullCount + 1
@@ -132,7 +132,7 @@ type ReferenceCountingSet<'a>(initial : seq<'a>) =
                                         let r = ref 1
                                         touched.[o] <- (v, false, r)
                                         store.[o] <- (v, r)
-                        | Rem v ->
+                        | Rem(_, v) ->
                             let o = v :> obj
                             if isNull o then
                                 nullCount <- nullCount - 1

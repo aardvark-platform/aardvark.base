@@ -299,7 +299,7 @@ type AdaptiveSetExtensions private() =
 
     [<Extension>]
     static member GetDeltas (this : ISetReader<'a>) =
-        this.GetOperations(null) |> DeltaSet.toArray
+        this.GetOperations(null) |> HDeltaSet.toArray
 
     /// <summary> see ASet/ASetModule.unsafeRegisterCallbackNoGcRoot </summary>
     [<Extension>]
