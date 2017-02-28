@@ -263,7 +263,7 @@ type hmap<'k, 'v>(cnt : int, store : intmap<list<'k * 'v>>) =
         store |> IntMap.toSeq |> Seq.iter (fun (_,l) ->
             l |> List.iter (fun (k,v) -> iter k v)
         )
-
+        
     member x.Exists(predicate : 'k -> 'v -> bool) =
         store |> IntMap.toSeq |> Seq.exists (fun (_,v) ->
             v |> List.exists (fun (k,v) -> predicate k v)
@@ -545,6 +545,18 @@ module HMap =
     // O(n)
     let inline iter (iter : 'k -> 'v -> unit) (map : hmap<'k, 'v>) =
         map.Iter iter
+
+    // O(n)
+    let inline fold (folder : 's -> 'k -> 'v -> 's) (seed : 's) (map : hmap<'k, 'v>) =
+        map.Fold(seed, folder)
+        
+    // O(n)
+    let inline exists (predicate : 'k -> 'v -> bool) (map : hmap<'k, 'v>) =
+        map.Exists(predicate)
+
+    // O(n)
+    let inline forall (predicate : 'k -> 'v -> bool) (map : hmap<'k, 'v>) =
+        map.Forall(predicate)
 
     // O(n+m)
     let inline map2 (mapping : 'k -> Option<'a> -> Option<'b> -> 'c) (l : hmap<'k, 'a>) (r : hmap<'k, 'b>) =

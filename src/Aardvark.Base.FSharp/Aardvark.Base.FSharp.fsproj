@@ -55,6 +55,7 @@
     <Compile Include="Prelude\FSLibExtensions.fs" />
     <Compile Include="Prelude\Measures.fs" />
     <Compile Include="Prelude\Lens.fs" />
+    <Compile Include="Prelude\Monoid.fs" />
     <Compile Include="Interop\Dictionary.fs" />
     <Compile Include="Interop\Symbol.fs" />
     <Compile Include="Interop\Vectors.fs" />
@@ -76,6 +77,8 @@
     <Compile Include="Datastructures\Immutable\IntMap.fs" />
     <Compile Include="Datastructures\Immutable\HMap.fs" />
     <Compile Include="Datastructures\Immutable\HSet.fs" />
+    <Compile Include="Datastructures\Immutable\HDeltaSet.fs" />
+    <Compile Include="Datastructures\Immutable\HRefSet.fs" />
     <Compile Include="Datastructures\Immutable\HashMap.fs" />
     <Compile Include="Datastructures\Immutable\PersistentHashSet.fs" />
     <Compile Include="Datastructures\Immutable\FingerTree.fs" />

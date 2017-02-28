@@ -113,7 +113,7 @@ type deltaset<'a>(content : pmap<'a, int>) =
                 | None ->
                     ()
         res
-
+        
     member x.Collect(f : SetDelta<'a> -> deltaset<'b>) =
         let mutable res = deltaset<'b>.Empty
         for (ov,oc) in content do
