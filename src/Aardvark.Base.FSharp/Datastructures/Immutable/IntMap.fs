@@ -34,13 +34,22 @@ type intmap<'T> =
     
     member x.ToList() = x.FoldBackWithKey (fun k x xs -> (k, x) :: xs) []
 
+    member x.ToSeq() =
+        match x with
+            | Nil -> Seq.empty
+            | Tip(k,v) -> Seq.singleton (k,v)
+            | Bin(_,_,l,r,_) -> Seq.append (l.ToSeq()) (Seq.delay r.ToSeq)
+        
+
     interface IEnumerable<int * 'T> with
         member x.GetEnumerator() =
-            (x.ToList() :> (_ * _) seq).GetEnumerator()
+            x.ToSeq().GetEnumerator()
         
     interface System.Collections.IEnumerable with
         member x.GetEnumerator() =
-            (x :> _ seq).GetEnumerator() :> IEnumerator
+            x.ToSeq().GetEnumerator() :> IEnumerator
+
+
 
 [<CompilationRepresentation(CompilationRepresentationFlags.ModuleSuffix)>]
 module IntMap =
@@ -701,7 +710,7 @@ module IntMap =
     let inline toList (m: _ intmap) = m.ToList()
 
     ///O(n). Convert the map to a seq of key/value pairs. Credit: Haskell.org
-    let toSeq m = m |> toList |> List.toSeq
+    let toSeq (m : intmap<'a>) = m.ToSeq()
 
     ///O(n). Convert the map to an array of key/value pairs. Credit: Haskell.org
     let toArray m = m |> toList |> List.toArray

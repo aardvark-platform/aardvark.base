@@ -431,11 +431,73 @@ type hmap<'k, 'v>(cnt : int, store : intmap<list<'k * 'v>>) =
 
     interface IEnumerable with
         member x.GetEnumerator() = 
-            x.ToSeq().GetEnumerator() :> _
+            new HMapEnumerator<_,_>(store) :> _
 
     interface IEnumerable<'k * 'v> with
         member x.GetEnumerator() = 
-            x.ToSeq().GetEnumerator()
+            new HMapEnumerator<_,_>(store) :> _
+
+
+
+and private HMapEnumerator<'k, 'v>(m : intmap<list<'k * 'v>>) =
+    
+    let mutable stack = [m]
+    let mutable inner = []
+    let mutable current = Unchecked.defaultof<_>
+
+    let rec moveNext() =
+        match inner with
+            | [] ->
+                match stack with
+                    | [] -> false
+                    | h :: s ->
+                        stack <- s
+                        match h with
+                            | Tip(k,v) -> 
+                                match v with
+                                    | [] -> failwith "asdasdsadasd"
+                                    | v :: rest ->
+                                        current <- v
+                                        inner <- rest
+                                        true
+
+                            | Nil ->
+                                moveNext()
+
+                            | Bin(_,_,l,r,_) ->
+                                stack <- l :: r :: stack
+                                moveNext()
+
+            | h :: rest ->
+                current <- h
+                inner <- rest
+                true
+
+    member x.MoveNext() =
+        moveNext()
+
+    member x.Current = current
+
+    member x.Reset() =
+        stack <- [m]
+        inner <- []
+        current <- Unchecked.defaultof<_>
+
+    member x.Dispose() =
+        stack <- []
+        inner <- []
+        current <- Unchecked.defaultof<_>
+
+
+    interface IEnumerator with
+        member x.MoveNext() = x.MoveNext()
+        member x.Current = x.Current :> obj
+        member x.Reset() = x.Reset()
+
+    interface IEnumerator<'k * 'v> with
+        member x.Current = x.Current
+        member x.Dispose() = x.Dispose()
+
 
 
 [<CompilationRepresentation(CompilationRepresentationFlags.ModuleSuffix)>]
