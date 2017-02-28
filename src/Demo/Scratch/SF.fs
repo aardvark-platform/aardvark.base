@@ -61,16 +61,16 @@ module EventSource =
         Mod<'a>(o) :> IEventSource<_>
 
 type IPattern =
-    abstract member Relevant : PersistentHashSet<IEventSource>
+    abstract member Relevant : hset<IEventSource>
     abstract member Run : IEventSource * obj-> Option<obj>
 
 [<AbstractClass>]
-type Pattern(relevant : PersistentHashSet<IEventSource>) =
+type Pattern(relevant : hset<IEventSource>) =
     member x.Relevant = relevant
     abstract member Run : IEventSource * obj -> Option<obj>
         
-    new(s : seq<IEventSource>) = Pattern(PersistentHashSet.ofSeq s)
-    new(s : list<IEventSource>) = Pattern(PersistentHashSet.ofList s)
+    new(s : seq<IEventSource>) = Pattern(HSet.ofSeq s)
+    new(s : list<IEventSource>) = Pattern(HSet.ofList s)
 
     interface IPattern with
         member x.Relevant = x.Relevant
@@ -83,7 +83,7 @@ type AnyPattern<'a>(e : IEventSource<'a>) =
         else None
 
 type AmbPattern<'a, 'b>(a : Pattern, b : Pattern) =
-    inherit Pattern(PersistentHashSet.union a.Relevant b.Relevant)
+    inherit Pattern(HSet.union a.Relevant b.Relevant)
     override x.Run (s,v) =
         match a.Run(s,v) with
             | Some r -> Some (Choice<obj, obj>.Choice1Of2 r :> obj)
@@ -93,7 +93,7 @@ type AmbPattern<'a, 'b>(a : Pattern, b : Pattern) =
                     | None -> None
 
 type TimePattern private () =
-    inherit Pattern(PersistentHashSet.empty)
+    inherit Pattern(HSet.empty)
     static let instance = TimePattern() :> Pattern
     static member Instance = instance
     
@@ -101,7 +101,7 @@ type TimePattern private () =
         Some null
 
 type NeverPattern private () =
-    inherit Pattern(PersistentHashSet.empty)
+    inherit Pattern(HSet.empty)
     static let instance = NeverPattern() :> Pattern
     static member Instance = instance
     

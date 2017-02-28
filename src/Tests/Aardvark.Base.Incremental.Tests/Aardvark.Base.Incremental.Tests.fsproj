@@ -70,7 +70,6 @@
     <Compile Include="ASetPerformance.fs" />
     <Compile Include="AgTests.fs" />
     <Compile Include="Performance.fs" />
-    <Compile Include="InstancingTest.fs" />
     <Compile Include="UndoRedo.fs" />
     <Compile Include="SizeOfVariousAdaptiveObjects.fs" />
     <Compile Include="ASetPerformanceTests.fs" />

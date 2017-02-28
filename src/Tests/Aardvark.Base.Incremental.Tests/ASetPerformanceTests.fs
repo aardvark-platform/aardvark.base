@@ -35,7 +35,7 @@ module TreeFlattenPerformance =
          | Node(a,b) ->
             let a = a |> ASet.bind leafNodesComb
             let b = b |> ASet.bind leafNodesComb
-            ASet.unionTwo a b
+            ASet.union a b
          | Leaf v -> ASet.single v
 
     (* 2^15 leafs: 2^15 leaf values, 

@@ -146,7 +146,9 @@ module SimplePerfTests =
             )
 
         let final =
-            instances |> ASet.mapMod vt getLevel'
+            vt |> ASet.bind (fun v ->
+                instances |> ASet.map (fun a -> getLevel' a v)
+            )
 //
 //        let finaldsfsdf = 
 //            instances |> ASet.mapM failwith ""//(getLevel vt)

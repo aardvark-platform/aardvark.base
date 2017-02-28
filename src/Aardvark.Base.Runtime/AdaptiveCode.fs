@@ -364,7 +364,7 @@ module internal GenericProgram =
                         | Rem (k,v) -> Log.warn "Rem %A" k
                 failwith "[AdaptiveCode] validation failed"
         #else
-        let validateCurrentState(deltas : deltaset<'k * 'v>) = ()
+        let validateCurrentState(deltas : hdeltaset<'k * 'v>) = ()
         #endif
         override x.InputChanged(t, o : IAdaptiveObject) =
             match o with

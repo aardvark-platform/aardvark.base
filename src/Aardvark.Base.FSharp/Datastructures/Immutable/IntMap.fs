@@ -6,7 +6,10 @@ open System.Collections
 open System.Collections.Generic
 
 #nowarn "25" // incomplete pattern match
+#nowarn "61"
 
+
+[<CompilationRepresentation(CompilationRepresentationFlags.UseNullAsTrueValue)>]
 type intmap<'T> =
     | Nil
     | Tip of int * 'T

@@ -107,12 +107,12 @@ module FsUnitExtensions =
                 | _ ->
                         ConstraintResult(x, actual, false)
 
-    type DeltaListEqualConstraint<'a>(expected : list<list<Delta<'a>>>) =
+    type DeltaListEqualConstraint<'a>(expected : list<list<SetDelta<'a>>>) =
         inherit Constraints.EqualConstraint()
 
         override x.ApplyTo (actual : 'actual) =
             match actual :> obj with
-                | :? list<list<Delta<'a>>> as actual -> 
+                | :? list<list<SetDelta<'a>>> as actual -> 
                     if List.length expected = List.length actual then
                         let zip = List.zip expected actual
 
