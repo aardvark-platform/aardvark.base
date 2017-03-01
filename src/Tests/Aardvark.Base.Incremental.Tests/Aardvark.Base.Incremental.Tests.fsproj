@@ -61,6 +61,7 @@
   </Target>
   -->
   <ItemGroup>
+    <Compile Include="aset\Arbitrary.fs" />
     <Compile Include="AdaptiveSetReference.fs" />
     <Compile Include="ASetUtilities.fs" />
     <Compile Include="ModTests.fs" />

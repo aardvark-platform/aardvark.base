@@ -221,7 +221,8 @@ type hrefset<'a>(store : hmap<'a, int>) =
                     elif n = 0 && o > 0 then
                         delta <- Rem(value)
 
-                    Some n
+                    if n <= 0 then None
+                    else Some n
                 )
 
                 if delta.Count <> 0 then Some delta
@@ -249,7 +250,8 @@ type hrefset<'a>(store : hmap<'a, int>) =
                     elif n = 0 && o > 0 then
                         delta <- Rem(value)
 
-                    Some n
+                    if n <= 0 then None
+                    else Some n
                 )
 
                 if delta.Count <> 0 then Some delta
