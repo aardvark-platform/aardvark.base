@@ -47,6 +47,9 @@ type hrefset<'a>(store : hmap<'a, int>) =
     member x.Contains (value : 'a) =
         HMap.containsKey value store
 
+    member x.GetRefCount (value : 'a) =
+        HMap.tryFind value store |> Option.defaultValue 0
+
     member x.Add(value : 'a) =
         store
         |> HMap.update value (fun o -> 
@@ -63,6 +66,18 @@ type hrefset<'a>(store : hmap<'a, int>) =
                 | Some 1 -> None
                 | Some c -> Some (c - 1)
                 | None -> None
+        )
+        |> hrefset
+
+    member x.Alter(value : 'a, f : int -> int) =
+        store
+        |> HMap.alter value (fun o ->
+            let o = defaultArg o 0
+            let n = f o
+            if n > 0 then
+                Some n
+            else
+                None
         )
         |> hrefset
 
@@ -271,10 +286,28 @@ type hrefset<'a>(store : hmap<'a, int>) =
     member private x.AsString = x.ToString()
 
     interface IEnumerable with
-        member x.GetEnumerator() = x.ToSeq().GetEnumerator() :> _
+        member x.GetEnumerator() = new HRefSetEnumerator<_>(store) :> _
 
     interface IEnumerable<'a> with
-        member x.GetEnumerator() = x.ToSeq().GetEnumerator()
+        member x.GetEnumerator() = new HRefSetEnumerator<_>(store) :> _
+
+and private HRefSetEnumerator<'a>(store : hmap<'a, int>) =
+    let e = (store :> seq<_>).GetEnumerator()
+
+    member x.Current = 
+        let (v,_) = e.Current
+        v
+
+    interface IEnumerator with
+        member x.MoveNext() = e.MoveNext()
+        member x.Current = x.Current :> obj
+        member x.Reset() = e.Reset()
+
+    interface IEnumerator<'a> with
+        member x.Dispose() = e.Dispose()
+        member x.Current = x.Current
+
+
 
 [<CompilationRepresentation(CompilationRepresentationFlags.ModuleSuffix)>]
 module HRefSet =
@@ -319,6 +352,9 @@ module HRefSet =
     let inline count (set : hrefset<'a>) =
         set.Count
 
+    let inline refcount (value : 'a) (set : hrefset<'a>) =
+        set.GetRefCount value
+
     let inline contains (value : 'a) (set : hrefset<'a>) =
         set.Contains value
 
@@ -342,6 +378,8 @@ module HRefSet =
     let inline intersect (l : hrefset<'a>) (r : hrefset<'a>) =
         l.Intersect r
 
+    let inline alter (value : 'a) (f : int -> int) (set : hrefset<'a>) =
+        set.Alter(value, f)
 
     // O(n)
     let inline map (mapping : 'a -> 'b) (set : hrefset<'a>) =
@@ -398,5 +436,29 @@ module HRefSet =
         hrefset.Compare(l,r)
 
 
+    module Lens =
+        let refcount (key : 'k) =
+            { new Lens<_, _>() with
+                member x.Get s = 
+                    refcount key s
 
+                member x.Set(s,r) =
+                    alter key (fun _ -> r) s
 
+                member x.Update(s,f) =
+                    alter key f s
+            }  
+
+        let contains (key : 'k) =
+            { new Lens<_, _>() with
+                member x.Get s = 
+                    contains key s
+
+                member x.Set(s,r) =
+                    match r with
+                        | true -> alter key (max 1) s
+                        | false -> alter key (min 0) s
+
+                member x.Update(s,f) =
+                    alter key (fun o -> if f(o>0) then max o 1 else min o 0) s
+            }  

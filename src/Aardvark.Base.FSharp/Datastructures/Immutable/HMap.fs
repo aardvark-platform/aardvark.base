@@ -464,7 +464,7 @@ and private HMapEnumerator<'k, 'v>(m : intmap<list<'k * 'v>>) =
                             | Nil ->
                                 moveNext()
 
-                            | Bin(_,_,l,r,_) ->
+                            | Bin(_,_,l,r) ->
                                 stack <- l :: r :: stack
                                 moveNext()
 

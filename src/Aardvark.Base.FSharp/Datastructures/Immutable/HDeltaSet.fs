@@ -168,10 +168,27 @@ type hdeltaset<'a>(store : hmap<'a, int>) =
     member private x.AsString = x.ToString()
 
     interface IEnumerable with
-        member x.GetEnumerator() = x.ToSeq().GetEnumerator() :>_
+        member x.GetEnumerator() = new HDeltaSetEnumerator<_>(store) :> _
 
     interface IEnumerable<SetDelta<'a>> with
-        member x.GetEnumerator() = x.ToSeq().GetEnumerator()
+        member x.GetEnumerator() = new HDeltaSetEnumerator<_>(store) :> _
+
+and private HDeltaSetEnumerator<'a>(store : hmap<'a, int>) =
+    let e = (store :> seq<_>).GetEnumerator()
+
+    member x.Current = 
+        let (v,c) = e.Current
+        SetDelta(v,c)
+
+    interface IEnumerator with
+        member x.MoveNext() = e.MoveNext()
+        member x.Current = x.Current :> obj
+        member x.Reset() = e.Reset()
+
+    interface IEnumerator<SetDelta<'a>> with
+        member x.Dispose() = e.Dispose()
+        member x.Current = x.Current
+
 
 [<CompilationRepresentation(CompilationRepresentationFlags.ModuleSuffix)>]
 module HDeltaSet =

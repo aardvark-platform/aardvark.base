@@ -13,23 +13,23 @@ open System.Collections.Generic
 type intmap<'T> =
     | Nil
     | Tip of int * 'T
-    | Bin of int * int * intmap<'T> * intmap<'T> * int
+    | Bin of int * int * intmap<'T> * intmap<'T>
 
-    member x.Count =
-        match x with
-            | Nil -> 0
-            | Tip _ -> 1
-            | Bin(_,_,_,_,c) -> c
+//    member x.Count =
+//        match x with
+//            | Nil -> 0
+//            | Tip _ -> 1
+//            | Bin(_,_,_,_,c) -> c
 
     member x.FoldBackWithKey f z =
         let rec go z =
             function
             | Nil -> z
             | Tip(kx, x) -> f kx x z
-            | Bin(_, _, l, r, _) -> go (go z r) l
+            | Bin(_, _, l, r) -> go (go z r) l
         match x with
-        | Bin(_, m, l, r, _) when m < 0 -> go (go z l) r  // put negative numbers before.
-        | Bin(_, m, l, r, _) -> go (go z r) l
+        | Bin(_, m, l, r) when m < 0 -> go (go z l) r  // put negative numbers before.
+        | Bin(_, m, l, r) -> go (go z r) l
         | _ -> go z x
     
     member x.ToList() = x.FoldBackWithKey (fun k x xs -> (k, x) :: xs) []
@@ -38,22 +38,53 @@ type intmap<'T> =
         match x with
             | Nil -> Seq.empty
             | Tip(k,v) -> Seq.singleton (k,v)
-            | Bin(_,_,l,r,_) -> Seq.append (l.ToSeq()) (Seq.delay r.ToSeq)
+            | Bin(_,_,l,r) -> Seq.append (l.ToSeq()) (Seq.delay r.ToSeq)
         
 
     interface IEnumerable<int * 'T> with
         member x.GetEnumerator() =
-            x.ToSeq().GetEnumerator()
+            new IntMapEnumerator<_>(x) :> _
         
     interface System.Collections.IEnumerable with
         member x.GetEnumerator() =
-            x.ToSeq().GetEnumerator() :> IEnumerator
+            new IntMapEnumerator<_>(x) :> _
+
+and private IntMapEnumerator<'a>(m : intmap<'a>) =
+    let mutable stack = [m]
+    let mutable current = Unchecked.defaultof<_>
+
+    let rec moveNext() =
+        match stack with
+            | [] -> false
+            | h :: rest ->
+                stack <- rest
+                match h with
+                    | Nil -> 
+                        moveNext()
+
+                    | Tip(k,v) -> 
+                        current <- (k,v)
+                        true
+                    | Bin(_,_,l,r) -> 
+                        stack <- l :: r :: stack
+                        moveNext()
+
+    interface IEnumerator with
+        member x.MoveNext() = moveNext()
+        member x.Current = current :> obj
+        member x.Reset() =
+            stack <- [m]
+            current <- Unchecked.defaultof<_>
+    interface IEnumerator<int * 'a> with
+        member x.Current = current
+        member x.Dispose() =
+            stack <- []
+            current <- Unchecked.defaultof<_>
 
 
 
 [<CompilationRepresentation(CompilationRepresentationFlags.ModuleSuffix)>]
 module IntMap =
-    let inline private Bin(a,b,l,r) = Bin(a,b,l,r,l.Count + r.Count)
 
     let inline private maskW i m = int (i &&& (~~~ (m - 1ul) ^^^ m))
     let inline private mask i m = maskW (uint32 i) (uint32 m)
@@ -91,19 +122,19 @@ module IntMap =
         | Nil -> true
         | _ -> false
 
-    ///O(1). Number of elements in the map. Credit: Haskell.org
-    let rec size =
-        function
-        | Bin(_, _, _, _,cnt) -> cnt
-        | Tip _ -> 1
-        | Nil -> 0
+//    ///O(1). Number of elements in the map. Credit: Haskell.org
+//    let rec size =
+//        function
+//        | Bin(_, _, _, _,cnt) -> cnt
+//        | Tip _ -> 1
+//        | Nil -> 0
 
     ///O(min(n,W)). Lookup the value at a key in the map. Returns 'T option. Credit: Haskell.org
     let rec tryFind k =
         function
-        | Bin(p, m, l, r, _) when nomatch k p m -> None
-        | Bin(p, m, l, r, _) when zero k m -> tryFind k l
-        | Bin(p, m, l, r, _) -> tryFind k r
+        | Bin(p, m, l, r) when nomatch k p m -> None
+        | Bin(p, m, l, r) when zero k m -> tryFind k l
+        | Bin(p, m, l, r) -> tryFind k r
         | Tip(kx, x) when k = kx -> Some x
         | Tip(kx, x) -> None
         | Nil -> None
@@ -111,9 +142,9 @@ module IntMap =
     ///O(min(n,W)). Is the key a member of the map? Credit: Haskell.org
     let rec exists k =
         function
-        | Bin(p, m, l, r, _) when nomatch k p m -> false
-        | Bin(p, m, l, r, _) when zero k m -> exists k l
-        | Bin(p, m, l, r, _) -> exists k r
+        | Bin(p, m, l, r) when nomatch k p m -> false
+        | Bin(p, m, l, r) when zero k m -> exists k l
+        | Bin(p, m, l, r) -> exists k r
         | Tip(kx, _) -> k = kx
         | Nil -> false
 
@@ -124,9 +155,9 @@ module IntMap =
     let rec find k m =
         let notFound() = failwith <| sprintf "intmap.find: key %d is not an element of the map" k
         match m with
-        | Bin(p, m, l, r, _) when nomatch k p m -> notFound()
-        | Bin(p, m, l, r, _) when zero k m -> find k l
-        | Bin(p, m, l, r, _) -> find k r
+        | Bin(p, m, l, r) when nomatch k p m -> notFound()
+        | Bin(p, m, l, r) when zero k m -> find k l
+        | Bin(p, m, l, r) -> find k r
         | Tip(kx, x) when k = kx -> x
         | Tip(kx, x) -> notFound()
         | Nil -> notFound()
@@ -134,9 +165,9 @@ module IntMap =
     ///O(min(n,W)). The expression (findWithDefault def k map) returns the value at key k or returns def when the key is not an element of the map.  Credit: Haskell.org
     let rec findWithDefault def k =
         function
-        | Bin(p, m, l, r, _) when nomatch k p m -> def
-        | Bin(p, m, l, r, _) when zero k m -> findWithDefault def k l
-        | Bin(p, m, l, r, _) -> findWithDefault def k r
+        | Bin(p, m, l, r) when nomatch k p m -> def
+        | Bin(p, m, l, r) when zero k m -> findWithDefault def k l
+        | Bin(p, m, l, r) -> findWithDefault def k r
         | Tip(kx, x) when k = kx -> x
         | Tip(kx, x) -> def
         | Nil -> def
@@ -145,68 +176,68 @@ module IntMap =
         function
         | Nil -> None
         | Tip(ky, y) -> Some(ky, y)
-        | Bin(_, _, _, r, _) -> unsafeFindMax r
+        | Bin(_, _, _, r) -> unsafeFindMax r
 
     ///O(log n). Find largest key smaller than the given one and return the corresponding (key, value) pair.  Credit: Haskell.org
     let tryFindLT k t =
         let rec go def =
             function
-            | Bin(p, m, l, r, _) when nomatch k p m -> if k < p then unsafeFindMax def else unsafeFindMax r
-            | Bin(p, m, l, r, _) when zero k m -> go def l
-            | Bin(p, m, l, r, _) -> go l r
+            | Bin(p, m, l, r) when nomatch k p m -> if k < p then unsafeFindMax def else unsafeFindMax r
+            | Bin(p, m, l, r) when zero k m -> go def l
+            | Bin(p, m, l, r) -> go l r
             | Tip(ky, y) when k <= ky -> unsafeFindMax def
             | Tip(ky, y) -> Some(ky, y)
             | Nil -> unsafeFindMax def
         match t with
-        | Bin(_, m, l, r, _) when m < 0 -> if k >= 0 then go r l else go Nil r
+        | Bin(_, m, l, r) when m < 0 -> if k >= 0 then go r l else go Nil r
         | _ -> go Nil t
 
     let rec private unsafeFindMin =
         function
         | Nil -> None
         | Tip(ky, y) -> Some(ky, y)
-        | Bin(_, _, l, _, _) -> unsafeFindMin l
+        | Bin(_, _, l, _) -> unsafeFindMin l
 
     ///O(log n). Find smallest key greater than the given one and return the corresponding (key, value) pair. Credit: Haskell.org
     let tryFindGT k t =
         let rec go def =
             function
-            | Bin(p, m, l, r, _) when nomatch k p m -> if k < p then unsafeFindMin l else unsafeFindMin def
-            | Bin(p, m, l, r, _) when zero k m -> go r l
-            | Bin(p, m, l, r, _) -> go def r
+            | Bin(p, m, l, r) when nomatch k p m -> if k < p then unsafeFindMin l else unsafeFindMin def
+            | Bin(p, m, l, r) when zero k m -> go r l
+            | Bin(p, m, l, r) -> go def r
             | Tip(ky, y) when k >= ky -> unsafeFindMin def
             | Tip(ky, y) -> Some(ky, y)
             | Nil -> unsafeFindMin def
         match t with
-        | Bin(_, m, l, r, _) when m < 0 -> if k >= 0 then go Nil l else go l r
+        | Bin(_, m, l, r) when m < 0 -> if k >= 0 then go Nil l else go l r
         | _ -> go Nil t
 
     ///O(log n). Find largest key smaller or equal to the given one and return the corresponding (key, value) pair. Credit: Haskell.org
     let tryFindLE k t =
         let rec go def =
             function
-            | Bin(p, m, l, r, _) when nomatch k p m -> if k < p then unsafeFindMax def else unsafeFindMax r
-            | Bin(p, m, l, r, _) when zero k m -> go def l
-            | Bin(p, m, l, r, _) -> go l r
+            | Bin(p, m, l, r) when nomatch k p m -> if k < p then unsafeFindMax def else unsafeFindMax r
+            | Bin(p, m, l, r) when zero k m -> go def l
+            | Bin(p, m, l, r) -> go l r
             | Tip(ky, y) when k < ky -> unsafeFindMax def
             | Tip(ky, y) -> Some(ky, y)
             | Nil -> unsafeFindMax def
         match t with
-        | Bin(_, m, l, r, _) when m < 0 -> if k >= 0 then go r l else go Nil r
+        | Bin(_, m, l, r) when m < 0 -> if k >= 0 then go r l else go Nil r
         | _ -> go Nil t
 
     ///O(log n). Find smallest key greater or equal to the given one and return the corresponding (key, value) pair Credit: Haskell.org
     let tryFindGE k t =
         let rec go def =
             function
-            | Bin(p, m, l, r, _) when nomatch k p m -> if k < p then unsafeFindMin l else unsafeFindMin def
-            | Bin(p, m, l, r, _) when zero k m -> go r l
-            | Bin(p, m, l, r, _) -> go def r
+            | Bin(p, m, l, r) when nomatch k p m -> if k < p then unsafeFindMin l else unsafeFindMin def
+            | Bin(p, m, l, r) when zero k m -> go r l
+            | Bin(p, m, l, r) -> go def r
             | Tip(ky, y) when k > ky -> unsafeFindMin def
             | Tip(ky, y) -> Some(ky, y)
             | Nil -> unsafeFindMin def
         match t with
-        | Bin(_, m, l, r, _) when m < 0 -> if k >= 0 then go Nil l else go l r
+        | Bin(_, m, l, r) when m < 0 -> if k >= 0 then go Nil l else go l r
         | _ -> go Nil t
 
     ///O(1). The empty map. Credit: Haskell.org
@@ -218,9 +249,9 @@ module IntMap =
     ///O(min(n,W)). Insert a new key/value pair in the map. If the key is already present in the map, the associated value is replaced with the supplied value, i.e. insert is equivalent to insertWith const. Credit: Haskell.org
     let rec insert k x t =
         match t with
-        | Bin(p, m, l, r, _) when nomatch k p m -> join k (Tip(k, x)) p t
-        | Bin(p, m, l, r, _) when zero k m -> Bin(p, m, insert k x l, r)
-        | Bin(p, m, l, r, _) -> Bin(p, m, l, insert k x r)
+        | Bin(p, m, l, r) when nomatch k p m -> join k (Tip(k, x)) p t
+        | Bin(p, m, l, r) when zero k m -> Bin(p, m, insert k x l, r)
+        | Bin(p, m, l, r) -> Bin(p, m, l, insert k x r)
         | Tip(ky, _) when k = ky -> Tip(k, x)
         | Tip(ky, _) -> join k (Tip(k, x)) ky t
         | Nil -> Tip(k, x)
@@ -228,9 +259,9 @@ module IntMap =
     ///O(min(n,W)). Insert with a combining function. insertWithKey f key value mp will insert the pair (key, value) into mp if key does not exist in the map. If the key does exist, the function will insert f key new_value old_value. Credit: Haskell.org
     let rec insertWithKey f k x t =
         match t with
-        | Bin(p, m, l, r, _) when nomatch k p m -> join k (Tip(k, x)) p t
-        | Bin(p, m, l, r, _) when zero k m -> Bin(p, m, insertWithKey f k x l, r)
-        | Bin(p, m, l, r, _) -> Bin(p, m, l, insertWithKey f k x r)
+        | Bin(p, m, l, r) when nomatch k p m -> join k (Tip(k, x)) p t
+        | Bin(p, m, l, r) when zero k m -> Bin(p, m, insertWithKey f k x l, r)
+        | Bin(p, m, l, r) -> Bin(p, m, l, insertWithKey f k x r)
         | Tip(ky, y) when k = ky -> Tip(k, f k x y)
         | Tip(ky, _) -> join k (Tip(k, x)) ky t
         | Nil -> Tip(k, x)
@@ -241,11 +272,11 @@ module IntMap =
     ///O(min(n,W)). The expression (insertLookupWithKey f k x map) is a pair where the first element is equal to (lookup k map) and the second element equal to (insertWithKey f k x map). Credit: Haskell.org
     let rec insertTryFindWithKey f k x t =
         match t with
-        | Bin(p, m, l, r, _) when nomatch k p m -> (None, join k (Tip(k, x)) p t)
-        | Bin(p, m, l, r, _) when zero k m ->
+        | Bin(p, m, l, r) when nomatch k p m -> (None, join k (Tip(k, x)) p t)
+        | Bin(p, m, l, r) when zero k m ->
             let found, l = insertTryFindWithKey f k x l
             (found, Bin(p, m, l, r))
-        | Bin(p, m, l, r, _) ->
+        | Bin(p, m, l, r) ->
             let found, r = insertTryFindWithKey f k x r
             (found, Bin(p, m, l, r))
         | Tip(ky, y) when k = ky -> (Some y, Tip(k, f k x y))
@@ -255,9 +286,9 @@ module IntMap =
     ///O(min(n,W)). Delete a key and its value from the map. When the key is not a member of the map, the original map is returned. Credit: Haskell.org
     let rec delete k t =
         match t with
-        | Bin(p, m, l, r, _) when nomatch k p m -> t
-        | Bin(p, m, l, r, _) when zero k m -> bin p m (delete k l) r
-        | Bin(p, m, l, r, _) -> bin p m l (delete k r)
+        | Bin(p, m, l, r) when nomatch k p m -> t
+        | Bin(p, m, l, r) when zero k m -> bin p m (delete k l) r
+        | Bin(p, m, l, r) -> bin p m l (delete k r)
         | Tip(ky, _) when k = ky -> Nil
         | Tip _ -> t
         | Nil -> Nil
@@ -265,9 +296,9 @@ module IntMap =
     ///O(min(n,W)). The expression (update f k map) updates the value x at k (if it is in the map). If (f k x) is Nothing, the element is deleted. If it is (Just y), the key k is bound to the new value y. Credit: Haskell.org
     let rec updateWithKey f k t =
         match t with
-        | Bin(p, m, l, r, _) when nomatch k p m -> t
-        | Bin(p, m, l, r, _) when zero k m -> bin p m (updateWithKey f k l) r
-        | Bin(p, m, l, r, _) -> bin p m l (updateWithKey f k r)
+        | Bin(p, m, l, r) when nomatch k p m -> t
+        | Bin(p, m, l, r) when zero k m -> bin p m (updateWithKey f k l) r
+        | Bin(p, m, l, r) -> bin p m l (updateWithKey f k r)
         | Tip(ky, y) when k = ky ->
             match f k y with
             | Some y -> Tip(ky, y)
@@ -287,11 +318,11 @@ module IntMap =
     ///O(min(n,W)). Lookup and update. Credit: Haskell.org
     let rec updateTryFindWithKey f k t =
         match t with
-        | Bin(p, m, l, r, _) when nomatch k p m -> (None, t)
-        | Bin(p, m, l, r, _) when zero k m ->
+        | Bin(p, m, l, r) when nomatch k p m -> (None, t)
+        | Bin(p, m, l, r) when zero k m ->
             let (found, l) = updateTryFindWithKey f k l
             (found, bin p m l r)
-        | Bin(p, m, l, r, _) ->
+        | Bin(p, m, l, r) ->
             let (found, r) = updateTryFindWithKey f k r
             (found, bin p m l r)
         | Tip(ky, y) when k = ky ->
@@ -304,12 +335,12 @@ module IntMap =
     ///O(log n). The expression (alter f k map) alters the value x at k, or absence thereof. alter can be used to insert, delete, or update a value in an intmap. Credit: Haskell.org
     let rec alter f k t =
         match t with
-        | Bin(p, m, l, r, _) when nomatch k p m ->
+        | Bin(p, m, l, r) when nomatch k p m ->
             match f None with
             | None -> t
             | Some x -> join k (Tip(k, x)) p t
-        | Bin(p, m, l, r, _) when zero k m -> bin p m (alter f k l) r
-        | Bin(p, m, l, r, _) -> bin p m l (alter f k r)
+        | Bin(p, m, l, r) when zero k m -> bin p m (alter f k l) r
+        | Bin(p, m, l, r) -> bin p m l (alter f k r)
         | Tip(ky, y) when k = ky ->
             match f (Some y) with
             | Some x -> Tip(ky, x)
@@ -343,27 +374,27 @@ module IntMap =
 
         and go t1 t2 =
             match t1, t2 with
-            | Bin(p1, m1, l1, r1, _), Bin(p2, m2, l2, r2, _) when shorter m1 m2 -> merge1 p1 m1 t1 l1 r1 p2 m2 t2
-            | Bin(p1, m1, l1, r1, _), Bin(p2, m2, l2, r2, _) when shorter m2 m1 -> merge2 p1 m1 t1 p2 m2 t2 l2 r2
-            | Bin(p1, m1, l1, r1, _), Bin(p2, m2, l2, r2, _) when p1 = p2 -> bin' p1 m1 (go l1 l2) (go r1 r2)
-            | Bin(p1, m1, l1, r1, _), Bin(p2, m2, l2, r2, _) -> maybe_join p1 (g1 t1) p2 (g2 t2)
-            | Bin(_, _, _, _, _), Tip( k2', _) ->
+            | Bin(p1, m1, l1, r1), Bin(p2, m2, l2, r2) when shorter m1 m2 -> merge1 p1 m1 t1 l1 r1 p2 m2 t2
+            | Bin(p1, m1, l1, r1), Bin(p2, m2, l2, r2) when shorter m2 m1 -> merge2 p1 m1 t1 p2 m2 t2 l2 r2
+            | Bin(p1, m1, l1, r1), Bin(p2, m2, l2, r2) when p1 = p2 -> bin' p1 m1 (go l1 l2) (go r1 r2)
+            | Bin(p1, m1, l1, r1), Bin(p2, m2, l2, r2) -> maybe_join p1 (g1 t1) p2 (g2 t2)
+            | Bin(_, _, _, _), Tip( k2', _) ->
                 let rec merge t2 k2 t1 =
                     match t1 with
-                    | Bin(p1, m1, l1, r1, _) when nomatch k2 p1 m1 -> maybe_join p1 (g1 t1) k2 (g2 t2)
-                    | Bin(p1, m1, l1, r1, _) when zero k2 m1 -> bin' p1 m1 (merge t2 k2 l1) (g1 r1)
-                    | Bin(p1, m1, l1, r1, _) -> bin' p1 m1 (g1 l1) (merge t2 k2 r1)
+                    | Bin(p1, m1, l1, r1) when nomatch k2 p1 m1 -> maybe_join p1 (g1 t1) k2 (g2 t2)
+                    | Bin(p1, m1, l1, r1) when zero k2 m1 -> bin' p1 m1 (merge t2 k2 l1) (g1 r1)
+                    | Bin(p1, m1, l1, r1) -> bin' p1 m1 (g1 l1) (merge t2 k2 r1)
                     | Tip(k1, _) when k1 = k2 -> f t1 t2
                     | Tip(k1, _) -> maybe_join k1 (g1 t1) k2 (g2 t2)
                     | Nil -> g2 t2
                 merge t2 k2' t1
-            | Bin(_, _, _, _, _), Nil -> g1 t1
+            | Bin(_, _, _, _), Nil -> g1 t1
             | Tip(k1', _), t2' -> 
                 let rec merge t1 k1 t2 =
                     match t2 with
-                    | Bin(p2, m2, l2, r2, _) when nomatch k1 p2 m2 -> maybe_join k1 (g1 t1) p2 (g2 t2)
-                    | Bin(p2, m2, l2, r2, _) when zero k1 m2 -> bin' p2 m2 (merge t1 k1 l2) (g2 r2)
-                    | Bin(p2, m2, l2, r2, _) -> bin' p2 m2 (g2 l2) (merge t1 k1 r2)
+                    | Bin(p2, m2, l2, r2) when nomatch k1 p2 m2 -> maybe_join k1 (g1 t1) p2 (g2 t2)
+                    | Bin(p2, m2, l2, r2) when zero k1 m2 -> bin' p2 m2 (merge t1 k1 l2) (g2 r2)
+                    | Bin(p2, m2, l2, r2) -> bin' p2 m2 (g2 l2) (merge t1 k1 r2)
                     | Tip(k2, _) when k1 = k2 -> f t1 t2
                     | Tip(k2, _) -> maybe_join k1 (g1 t1) k2 (g2 t2)
                     | Nil -> g1 t1
@@ -416,52 +447,52 @@ module IntMap =
     let updateMinWithKey f t =
         let rec go f =
             function
-            | Bin(p, m, l, r, _) -> bin p m (go f l) r
+            | Bin(p, m, l, r) -> bin p m (go f l) r
             | Tip(k, y) ->
                 match f k y with
                 | Some y -> Tip(k, y)
                 | None -> Nil
             | Nil -> failwith "updateMinWithKey Nil"
         match t with
-        | Bin(p, m, l, r, _) when m < 0 -> bin p m l (go f r)
+        | Bin(p, m, l, r) when m < 0 -> bin p m l (go f r)
         | _ -> go f t
 
     ///O(log n). Update the value at the maximal key. Credit: Haskell.org
     let updateMaxWithKey f t =
         let rec go f =
             function
-            | Bin(p, m, l, r, _) -> bin p m l (go f r)
+            | Bin(p, m, l, r) -> bin p m l (go f r)
             | Tip(k, y) ->
                 match f k y with
                 | Some y -> Tip(k, y)
                 | None -> Nil
             | Nil -> failwith "updateMaxWithKey Nil"
         match t with
-        | Bin(p, m, l, r, _) when m < 0 -> bin p m (go f l) r
+        | Bin(p, m, l, r) when m < 0 -> bin p m (go f l) r
         | _ -> go f t
 
     ///O(log n). Retrieves the maximal (key,value) couple of the map, and the map stripped from that element. fails (in the monad) when passed an empty map. Credit: Haskell.org
     let maxViewWithKey t =
         let rec go =
             function
-            | Bin(p, m, l, r, _) -> let (result, r) = go r in (result, bin p m l r)
+            | Bin(p, m, l, r) -> let (result, r) = go r in (result, bin p m l r)
             | Tip(k, y) -> ((k, y), Nil)
             | Nil -> failwith "maxViewWithKey Nil"
         match t with
         | Nil -> None
-        | Bin(p, m, l, r, _) when m < 0 -> let (result, l) = go l in Some(result, bin p m l r)
+        | Bin(p, m, l, r) when m < 0 -> let (result, l) = go l in Some(result, bin p m l r)
         | _ -> Some(go t)
 
     ///O(log n). Retrieves the minimal (key,value) couple of the map, and the map stripped from that element. fails (in the monad) when passed an empty map. Credit: Haskell.org
     let minViewWithKey t =
         let rec go =
             function
-            | Bin(p, m, l, r, _) -> let (result, l) = go l in (result, bin p m l r)
+            | Bin(p, m, l, r) -> let (result, l) = go l in (result, bin p m l r)
             | Tip(k, y) -> ((k,y), Nil)
             | Nil -> failwith "minViewWithKey Nil"
         match t with
         | Nil -> None
-        | Bin(p, m, l, r, _) when m < 0 -> let (result, r) = go r in Some(result, bin p m l r)
+        | Bin(p, m, l, r) when m < 0 -> let (result, r) = go r in Some(result, bin p m l r)
         | _ -> Some(go t)
 
     ///O(log n). Update the value at the maximal key. Credit: Haskell.org
@@ -495,26 +526,26 @@ module IntMap =
         let rec go =
             function
             | Tip(k, v) -> (k, v)
-            | Bin(_, _, l, _, _) -> go l
+            | Bin(_, _, l, _) -> go l
             | Nil -> failwith "findMin Nil"
         match t with
         | Nil -> failwith "findMin: empty map has no minimal element"
         | Tip(k, v) -> (k, v)
-        | Bin(_, m, l, r, _) when m < 0 -> go r
-        | Bin(_, m, l, r, _) -> go l
+        | Bin(_, m, l, r) when m < 0 -> go r
+        | Bin(_, m, l, r) -> go l
 
     ///O(log n). The maximal key of the map. Credit: Haskell.org
     let findMax t =
         let rec go =
             function
             | Tip(k, v) -> (k, v)
-            | Bin(_, _, _, r, _) -> go r
+            | Bin(_, _, _, r) -> go r
             | Nil -> failwith "findMax Nil"
         match t with
         | Nil -> failwith "findMax: empty map has no maximal element"
         | Tip(k, v) -> (k, v)
-        | Bin(_, m, l, r, _) when m < 0 -> go l
-        | Bin(_, m, l, r, _) -> go r
+        | Bin(_, m, l, r) when m < 0 -> go l
+        | Bin(_, m, l, r) -> go r
 
     ///O(log n). Delete the minimal key. Credit: Haskell.org
     let deleteMin t = 
@@ -531,21 +562,21 @@ module IntMap =
     ///O(n). Map a function over all values in the map. Credit: Haskell.org
     let rec mapWithKey f =
         function
-        | Bin(p, m, l, r, _) -> Bin(p, m, mapWithKey f l, mapWithKey f r)
+        | Bin(p, m, l, r) -> Bin(p, m, mapWithKey f l, mapWithKey f r)
         | Tip(k, x) -> Tip(k, f k x)
         | Nil -> Nil
 
     ///O(n). Map a function over all values in the map. Credit: Haskell.org
     let rec map f =
         function
-        | Bin(p, m, l, r, _) -> Bin(p, m, map f l, map f r)
+        | Bin(p, m, l, r) -> Bin(p, m, map f l, map f r)
         | Tip(k, x) -> Tip(k, f x)
         | Nil -> Nil
 
 
     let rec private mapAccumL f a =
         function
-        | Bin(p, m, l, r, _) ->
+        | Bin(p, m, l, r) ->
             let (a1,l) = mapAccumL f a l
             let (a2,r) = mapAccumL f a1 r
             (a2, Bin(p, m, l, r))
@@ -561,7 +592,7 @@ module IntMap =
     ///O(n). Filter all keys/values that satisfy some predicate. Credit: Haskell.org
     let rec filterWithKey predicate =
         function
-        | Bin(p, m, l, r, _) -> bin p m (filterWithKey predicate l) (filterWithKey predicate r)
+        | Bin(p, m, l, r) -> bin p m (filterWithKey predicate l) (filterWithKey predicate r)
         | Tip(k, x) when predicate k x -> Tip(k, x)
         | Tip _ -> Nil
         | Nil -> Nil
@@ -572,7 +603,7 @@ module IntMap =
     ///O(n). partition the map according to some predicate. The first map contains all elements that satisfy the predicate, the second all elements that fail the predicate. See also split. Credit: Haskell.org
     let rec partitionWithKey predicate t =
         match t with
-        | Bin(p, m, l, r, _)  ->
+        | Bin(p, m, l, r)  ->
             let (l1, l2) = partitionWithKey predicate l
             let (r1, r2) = partitionWithKey predicate r
             (bin p m l1 r1, bin p m l2 r2)
@@ -586,7 +617,7 @@ module IntMap =
     ///O(n). Map keys/values and collect the Just results. Credit: Haskell.org
     let rec mapOptionWithKey f =
         function
-        | Bin(p, m, l, r, _) -> bin p m (mapOptionWithKey f l) (mapOptionWithKey f r)
+        | Bin(p, m, l, r) -> bin p m (mapOptionWithKey f l) (mapOptionWithKey f r)
         | Tip(k, x) ->
             match f k x with
             | Some y -> Tip(k, y)
@@ -599,7 +630,7 @@ module IntMap =
     ///O(n). Map keys/values and separate the Left and Right results. Credit: Haskell.org
     let rec mapChoiceWithKey f =
         function
-        | Bin(p, m, l, r, _) ->
+        | Bin(p, m, l, r) ->
             let (l1, l2) = mapChoiceWithKey f l
             let (r1, r2) = mapChoiceWithKey f r
             (bin p m l1 r1, bin p m l2 r2)
@@ -616,11 +647,11 @@ module IntMap =
     let split k t =
         let rec go k t =
             match t with
-            | Bin(p, m, l, r, _) when nomatch k p m -> if k > p then (t, Nil) else (Nil, t)
-            | Bin(p, m, l, r, _) when zero k m ->
+            | Bin(p, m, l, r) when nomatch k p m -> if k > p then (t, Nil) else (Nil, t)
+            | Bin(p, m, l, r) when zero k m ->
                 let (lt, gt) = go k l
                 (lt, append gt r)
-            | Bin(p, m, l, r, _) ->
+            | Bin(p, m, l, r) ->
                 let (lt, gt) = go k r
                 (append l lt, gt)
             | Tip(ky, _) when k > ky -> (t, Nil)
@@ -628,7 +659,7 @@ module IntMap =
             | Tip(ky, _) -> (Nil, Nil)
             | Nil -> (Nil, Nil)
         match t with
-        | Bin(_, m, l, r, _) when  m < 0 ->
+        | Bin(_, m, l, r) when  m < 0 ->
             if k >= 0 // handle negative numbers.
                 then let (lt, gt) = go k l in let lt = append r lt in (lt, gt)
             else let (lt, gt) = go k r in let gt = append gt l in (lt, gt)
@@ -638,12 +669,12 @@ module IntMap =
     let splitTryFind k t =
         let rec go k t =
             match t with
-            | Bin(p, m, l, r, _) when nomatch k p m -> if k > p then (t, None, Nil) else (Nil, None, t)
-            | Bin(p, m, l, r, _) when zero k m ->
+            | Bin(p, m, l, r) when nomatch k p m -> if k > p then (t, None, Nil) else (Nil, None, t)
+            | Bin(p, m, l, r) when zero k m ->
                 let (lt, fnd, gt) = go k l
                 let gt = append gt r
                 (lt, fnd, gt)
-            | Bin(p, m, l, r, _) ->
+            | Bin(p, m, l, r) ->
                 let (lt, fnd, gt) = go k r
                 let lt = append l lt
                 (lt, fnd, gt)
@@ -652,7 +683,7 @@ module IntMap =
             | Tip(ky, y) -> (Nil, Some y, Nil)
             | Nil -> (Nil, None, Nil)
         match t with
-        | Bin(_, m, l, r, _) when  m < 0 ->
+        | Bin(_, m, l, r) when  m < 0 ->
             if k >= 0 // handle negative numbers.
                 then let (lt, fnd, gt) = go k l in let lt = append r lt in (lt, fnd, gt)
             else let (lt, fnd, gt) = go k r in let gt = append gt l in (lt, fnd, gt)
@@ -664,11 +695,11 @@ module IntMap =
             function
             | Nil -> z
             | Tip(_, x) -> f x z
-            | Bin(_, _, l, r, _) -> go (go z r) l
+            | Bin(_, _, l, r) -> go (go z r) l
         fun t ->
             match t with
-            | Bin(_, m, l, r, _) when m < 0 -> go (go z l) r  // put negative numbers before.
-            | Bin(_, m, l, r, _) -> go (go z r) l
+            | Bin(_, m, l, r) when m < 0 -> go (go z l) r  // put negative numbers before.
+            | Bin(_, m, l, r) -> go (go z r) l
             | _ -> go z t
 
     ///O(n). Fold the values in the map, such that fold f z == Prelude.foldr f z . elems. Credit: Haskell.org
@@ -677,11 +708,11 @@ module IntMap =
             function
             | Nil -> z
             | Tip(_, x) -> f z x
-            | Bin(_, _, l, r, _) -> go (go z l) r
+            | Bin(_, _, l, r) -> go (go z l) r
         fun t ->
             match t with
-            | Bin(_, m, l, r, _) when m < 0 -> go (go z r) l  // put negative numbers before.
-            | Bin(_, m, l, r, _) -> go (go z l) r
+            | Bin(_, m, l, r) when m < 0 -> go (go z r) l  // put negative numbers before.
+            | Bin(_, m, l, r) -> go (go z l) r
             | _ -> go z t
 
     ///O(n). FoldBack the keys and values in the map, such that foldWithKey f z == Prelude.foldr (uncurry f) z . toAscList. Credit: Haskell.org
@@ -693,11 +724,11 @@ module IntMap =
             function
             | Nil -> z
             | Tip(kx, x) -> f z kx x
-            | Bin(_, _, l, r, _) -> go (go z l) r
+            | Bin(_, _, l, r) -> go (go z l) r
         fun t ->
             match t with
-            | Bin(_, m, l, r, _) when m < 0 -> go (go z r) l  // put negative numbers before.
-            | Bin(_, m, l, r, _) -> go (go z l) r
+            | Bin(_, m, l, r) when m < 0 -> go (go z r) l  // put negative numbers before.
+            | Bin(_, m, l, r) -> go (go z l) r
             | _ -> go z t
     
     ///O(n). Return all elements of the map in the ascending order of their keys. Credit: Haskell.org
@@ -755,12 +786,12 @@ module IntMap =
     ///O(n+m). The expression (isSubmapOfBy f m1 m2) returns True if all keys in m1 are in m2, and when f returns True when applied to their respective values. Credit: Haskell.org
     let rec isSubmapOfBy predicate t1 t2 =
       match t1, t2 with
-      | Bin(p1, m1, l1, r1, _), Bin(p2, m2, l2, r2, _) when shorter m1 m2 -> false
-      | Bin(p1, m1, l1, r1, _), Bin(p2, m2, l2, r2, _) when shorter m2 m1 ->
+      | Bin(p1, m1, l1, r1), Bin(p2, m2, l2, r2) when shorter m1 m2 -> false
+      | Bin(p1, m1, l1, r1), Bin(p2, m2, l2, r2) when shorter m2 m1 ->
           match' p1 p2 m2 &&
               (if zero p1 m2 then isSubmapOfBy predicate t1 l2
                   else isSubmapOfBy predicate t1 r2)
-      | Bin(p1, m1, l1, r1, _), Bin(p2, m2, l2, r2, _) ->
+      | Bin(p1, m1, l1, r1), Bin(p2, m2, l2, r2) ->
           (p1 = p2) && isSubmapOfBy predicate l1 l2 && isSubmapOfBy predicate r1 r2
       | Bin _, _ -> false
       | Tip(k, x), t ->
@@ -791,10 +822,10 @@ module IntMap =
             | (EQ,EQ) -> EQ
             | _ -> LT
         match t1, t2 with
-        | Bin(p1, m1, l1, r1, _), Bin(p2, m2, l2, r2, _) when shorter m1 m2 -> GT
-        | Bin(p1, m1, l1, r1, _), Bin(p2, m2, l2, r2, _) when shorter m2 m1 -> submapCmpLt p1 r1 t1 p2 m2 l2 r2
-        | Bin(p1, m1, l1, r1, _), Bin(p2, m2, l2, r2, _) when p1 = p2 -> submapCmpEq l1 r1 l2 r2
-        | Bin(p1, m1, l1, r1, _), Bin(p2, m2, l2, r2, _) -> GT  // disjoint
+        | Bin(p1, m1, l1, r1), Bin(p2, m2, l2, r2) when shorter m1 m2 -> GT
+        | Bin(p1, m1, l1, r1), Bin(p2, m2, l2, r2) when shorter m2 m1 -> submapCmpLt p1 r1 t1 p2 m2 l2 r2
+        | Bin(p1, m1, l1, r1), Bin(p2, m2, l2, r2) when p1 = p2 -> submapCmpEq l1 r1 l2 r2
+        | Bin(p1, m1, l1, r1), Bin(p2, m2, l2, r2) -> GT  // disjoint
         | Bin _, _ -> GT
         | Tip(kx, x), Tip(ky, y) when (kx = ky) && predicate x y -> EQ
         | Tip(kx, x), Tip(ky, y) -> GT  // disjoint

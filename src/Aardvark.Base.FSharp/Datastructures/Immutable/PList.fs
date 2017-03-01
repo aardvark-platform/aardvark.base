@@ -75,6 +75,11 @@ type plist<'a>(l : Index, h : Index, content : MapExt<Index, 'a>) =
 
     member x.TryGet (i : Index) =
         MapExt.tryFind i content
+        
+    member x.TryGet (i : int) =
+        match MapExt.tryItem i content with
+            | Some (_,v) -> Some v
+            | None -> None
 
     member x.Item
         with get(i : Index) = MapExt.find i content
@@ -116,6 +121,14 @@ type plist<'a>(l : Index, h : Index, content : MapExt<Index, 'a>) =
         match MapExt.tryItem i content with
             | Some (id,_) -> x.Set(id, value)
             | None -> x
+
+    member x.Update(i : int, f : 'a -> 'a) =
+        match MapExt.tryItem i content with
+            | Some (id,v) -> 
+                let newContent = MapExt.add id (f v) content
+                plist(l, h, newContent)
+            | None -> 
+                x
 
     member x.InsertAt(i : int, value : 'a) =
         if i < 0 || i > content.Count then
@@ -211,19 +224,13 @@ type plist<'a>(l : Index, h : Index, content : MapExt<Index, 'a>) =
 
 and private PListEnumerator<'a>(r : IEnumerator<KeyValuePair<Index, 'a>>) =
     
-    member x.MoveNext() =
-        r.MoveNext()
-
     member x.Current =
         r.Current.Value
 
-    member x.Reset() =
-        r.Reset()
-
     interface IEnumerator with
-        member x.MoveNext() = x.MoveNext()
+        member x.MoveNext() = r.MoveNext()
         member x.Current = x.Current :> obj
-        member x.Reset() = x.Reset()
+        member x.Reset() = r.Reset()
 
     interface IEnumerator<'a> with
         member x.Current = x.Current
@@ -272,3 +279,16 @@ module PList =
 
 
     let trace<'a> = plist<'a>.Trace
+
+    module Lens =
+        let item (i : int) : Lens<plist<'a>, 'a> =
+            { new Lens<_, _>() with
+                member x.Get s = 
+                    s.[i]
+
+                member x.Set(s,r) =
+                    s.Set(i, r)
+
+                member x.Update(s,f) =
+                    s.Update(i, f)
+            }  

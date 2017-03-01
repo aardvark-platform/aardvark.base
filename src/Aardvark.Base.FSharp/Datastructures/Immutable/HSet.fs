@@ -256,10 +256,59 @@ type hset<'a>(cnt : int, store : intmap<list<'a>>) =
     member private x.AsString = x.ToString()
 
     interface IEnumerable with
-        member x.GetEnumerator() = x.ToSeq().GetEnumerator() :> _
+        member x.GetEnumerator() = new HSetEnumerator<_>(store) :> _
 
     interface IEnumerable<'a> with
-        member x.GetEnumerator() = x.ToSeq().GetEnumerator()
+        member x.GetEnumerator() = new HSetEnumerator<_>(store) :> _
+
+and private HSetEnumerator<'a>(store : intmap<list<'a>>) =
+    let mutable stack = [store]
+    let mutable inner = []
+    let mutable current = Unchecked.defaultof<'a>
+
+    let rec moveNext() =
+        match inner with
+            | [] -> 
+                match stack with
+                    | [] -> false
+                    | h :: rest ->
+                        stack <- rest
+                        match h with
+                            | Nil -> 
+                                moveNext()
+
+                            | Tip(_,vs) ->
+                                match vs with
+                                    | v :: rest ->
+                                        current <- v
+                                        inner <- rest
+                                        true
+                                    | [] ->
+                                        moveNext()
+
+                            | Bin(_,_,l,r) ->
+                                stack <- l :: r :: stack
+                                moveNext()
+            | h :: rest ->
+                current <- h
+                inner <- rest
+                true
+
+    interface IEnumerator with
+        member x.MoveNext() = moveNext()
+        member x.Current = current :> obj
+        member x.Reset() =
+            stack <- [store]
+            inner <- []
+            current <- Unchecked.defaultof<_>
+
+    interface IEnumerator<'a> with
+        member x.Current = current
+        member x.Dispose() =
+            stack <- []
+            inner <- []
+            current <- Unchecked.defaultof<_>
+            
 
 [<CompilationRepresentation(CompilationRepresentationFlags.ModuleSuffix)>]
 module HSet =
