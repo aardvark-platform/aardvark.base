@@ -60,6 +60,28 @@ module private HSetList =
                 else
                     intersect &cnt tail r
 
+
+    let rec mergeWithOption (f : 'a -> bool -> bool -> Option<'c>) (l : list<'a>) (r : list<'a>) =
+        let newL = 
+            l |> List.choose (fun lk ->
+                let other = r |> List.exists (fun rk -> Unchecked.equals rk lk)
+ 
+                match f lk true other with
+                    | Some r -> Some (lk, r)
+                    | None -> None
+            )
+        let newR =
+            r |> List.choose (fun rk ->
+                if l |> List.forall (fun lk -> not (Unchecked.equals lk rk)) then
+                    match f rk false true with
+                        | Some r -> Some(rk, r)
+                        | None -> None
+                else 
+                    None
+            )
+
+        newL @ newR
+
 [<StructuredFormatDisplay("{AsString}")>]
 type hset<'a>(cnt : int, store : intmap<list<'a>>) =
     static let empty = hset(0, IntMap.empty)
@@ -231,6 +253,52 @@ type hset<'a>(cnt : int, store : intmap<list<'a>>) =
     member x.ToArray() =
         x.ToSeq() |> Seq.toArray
 
+
+
+    member x.Choose2(other : hset<'a>, f : 'a -> bool-> bool -> Option<'v>) =
+        let mutable cnt = 0
+        let f k l r =
+            match f k l r with
+                | Some v -> 
+                    cnt <- cnt + 1
+                    Some v
+                | None -> 
+                    None
+
+        let both (hash : int) (l : list<'a>) (r : list<'a>) =
+            match HSetList.mergeWithOption f l r with
+                | [] -> None
+                | l -> Some l
+
+        let onlyLeft (l : intmap<list<'a>>) =
+            l |> IntMap.mapOption (fun l -> 
+                match l |> List.choose (fun lk -> match f lk true false with | Some v -> Some(lk,v) | None -> None) with
+                    | [] -> None
+                    | l -> Some l
+            )
+            
+        let onlyRight (r : intmap<list<'a>>) =
+            r |> IntMap.mapOption (fun r -> 
+                match r |> List.choose (fun rk -> match f rk false true with | Some v -> Some(rk,v) | None -> None) with
+                    | [] -> None
+                    | r -> Some r
+            )
+
+        let newStore =
+            IntMap.mergeWithKey both onlyLeft onlyRight store other.Store
+
+        hmap(cnt, newStore)
+
+
+    member x.ComputeDelta(other : hset<'a>) =
+        x.Choose2 (other, fun k l r -> 
+            match l, r with
+                | false, true -> Some 1
+                | true, false -> Some -1
+                | _ -> None
+        )
+        |> hdeltaset
+
     static member OfSeq (seq : seq<'a>) =
         let mutable res = empty
         for e in seq do
@@ -391,6 +459,9 @@ module HSet =
 
     let inline contains (value : 'a) (set : hset<'a>) =
         set.Contains value
+
+    let inline computeDelta (l : hset<'a>) (r : hset<'a>) =
+        l.ComputeDelta r
 
 
     module Lens =

@@ -17,98 +17,191 @@ type Id() =
     override x.ToString() = sprintf "Id %d" id
 
 
+type IUpdatable<'a> =
+    abstract member Update : 'a -> unit
 
-type IUnique =
-    abstract member Id : Id with get, set
+type ResetMod<'a>(value : 'a) =
+    inherit AdaptiveObject()
 
-module Unique = 
-    let id (u : IUnique) =
-        let old = u.Id
-        if isNull old then
-            let i = Id()
-            u.Id <- i
-            i
-        else
-            old
+    let mutable value = value
+    let mutable cache = value
 
-//type ResetSet<'k>(initial : pset<'k>) =
-//    inherit cset<'k>(initial)
-//    let mutable current = initial
-//
-//    member x.Update(keys : pset<'k>) =
-//        let delta = PSet.computeDelta current keys
-//        current <- keys
-//        x.ApplyDeltas(delta)
-
-type IReuseCache =
-    interface end
-
-type ReuseCache<'v>() =
-    let store = ConditionalWeakTable<Id, ref<'v>>()
-    
-    interface IReuseCache
-
-    member x.GetOrCreate(k : 'k, create : 'k -> 'v, update : 'v * 'k -> unit) =
-        let i = Unique.id k
-        lock store (fun () ->
-            match store.TryGetValue i with
-                | (true, v) -> 
-                    let v = !v
-                    update (v,k)
-                    v
-                | _ -> 
-                    let v = create k
-                    store.Add(i, ref v)
-                    v
-        )
+    member x.Update(v : 'a) =
+        if not <| Object.ReferenceEquals(v, value) then
+            value <- v
+            x.MarkOutdated()
         
 
-//type MapSet<'k, 'v when 'k : equality and 'k :> IUnique>(cache : ReuseCache<'v>, initial : prefset<'k>, create : 'k -> 'v, update : 'v * 'k -> unit) =
-//    let h = History(PRefSet.trace)
-//
-//    member x.Update(keys : prefset<'k>) =
-//        let deltas = 
-//            lock x (fun () ->
-//                PRefSet.computeDeltas h.State keys
-//            )
-//        let deltas =
-//            lock content (fun () -> 
-//                let removed = HashSet content
-//                let added = HashSet()
-//                for k in PSet.toSeq keys do
-//                    let id = Unique.id k
-//                    let v = cache.GetOrCreate(k, create, update)
-//                    if not (removed.Remove v) then 
-//                        added.Add v |> ignore
-//
-//                [
-//                    yield! added |> Seq.filter content.Add |> Seq.map Add
-//                    yield! removed |> Seq.filter content.Remove |> Seq.map Rem
-//                ]
-//            )
-//        emit (Some deltas)
-//
-//    member x.GetReader() =
-//        lock readers (fun () ->
-//            let r = new ASetReaders.EmitReader<'v>(content, fun r -> lock readers (fun () -> readers.Remove r |> ignore))
-//            r.Emit(content, None)
-//            readers.Add r |> ignore
-//            r :> IReader<_>
-//        )
-//
-//    interface aset<'v> with
-//        member x.ReaderCount = lock readers (fun () -> readers.Count)
-//        member x.IsConstant = false
-//
-//        member x.Copy = x :> aset<_>
-//        member x.GetReader() = x.GetReader()
-//
+    member x.GetValue(caller : IAdaptiveObject) =
+        x.EvaluateAlways caller (fun () ->
+            if x.OutOfDate then
+                cache <- value
+            
+            cache
+        )
 
-type ReuseCache() =
+    override x.ToString() =
+       sprintf "{ value = %A }" value
 
-    let version = ref 0L
-    let store = Dict<Type, IReuseCache>()
+    interface IUpdatable<'a> with
+        member x.Update v = x.Update v
 
-    member x.GetCache<'a>() =
-        let dict = store.GetOrCreate(typeof<'a>, fun t -> ReuseCache<'a>() :> IReuseCache)
-        dict |> unbox<ReuseCache<'a>>
+    interface IMod with
+        member x.IsConstant = false
+        member x.GetValue(caller) = x.GetValue(caller) :> obj
+
+    interface IMod<'a> with
+        member x.GetValue(caller) = x.GetValue(caller)
+
+type ResetSet<'a>(initial : hset<'a>) =
+    let history = History HRefSet.traceNoRefCount
+    do initial |> Seq.map Add |> HDeltaSet.ofSeq |> history.Perform |> ignore
+
+    let mutable current = initial
+
+    member x.Update(values : hset<'a>) =
+        let ops = HSet.computeDelta current values
+        current <- values
+        history.Perform ops |> ignore
+
+    override x.ToString() =
+        current.ToString()
+        
+    interface IUpdatable<hset<'a>> with
+        member x.Update v = x.Update v
+
+    interface aset<'a> with
+        member x.IsConstant = false
+        member x.GetReader() = history.NewReader()
+        member x.Content = history :> IMod<_>
+
+type ResetMapSet<'k, 'v>(getId : 'k -> obj, initial : hset<'k>, create : 'k -> 'v, update : 'v * 'k -> unit) =
+    let history = History HRefSet.traceNoRefCount
+    let cache = Dict<obj, ref<'k> * 'v>()
+
+    let mutable current = HSet.empty
+
+    let update (keys : hset<'k>) =
+        let keyDeltas = HSet.computeDelta current keys
+
+        
+        let valueDeltas =
+            keyDeltas |> HDeltaSet.choose (fun d ->
+                match d with
+                    | Add(_,k) ->
+                        let mutable isNew = false
+                        let r, v = 
+                            cache.GetOrCreate(getId k, fun _ ->
+                                isNew <- true
+                                ref k, create k
+                            )
+
+                        if isNew then
+                            Some (Add v)
+                        else
+                            r := k
+                            None
+
+                    | Rem(_,k) ->
+                        match cache.TryRemove k with
+                            | (true, (_,v)) ->
+                                Some (Rem v)
+                            | _ ->
+                                None
+            )
+
+
+
+        current <- keys
+        history.Perform valueDeltas |> ignore
+        for (r, v) in cache.Values do
+            update(v, !r)
+        
+    do update initial
+
+    member x.Update(keys : hset<'k>) =
+        update keys
+
+    override x.ToString() =
+        current.ToString()
+        
+    interface IUpdatable<hset<'k>> with
+        member x.Update v = x.Update v
+
+    interface aset<'v> with
+        member x.IsConstant = false
+        member x.GetReader() = history.NewReader()
+        member x.Content = history :> IMod<_>
+
+    new(initial : hset<'k>, create : 'k -> 'v, update : 'v * 'k -> unit) = ResetMapSet(unbox, initial, create, update)
+
+type ResetList<'a>(initial : plist<'a>) =
+    let history = History PList.trace
+    do 
+        let delta = plist.ComputeDeltas(PList.empty, initial)
+        history.Perform delta |> ignore
+
+    let mutable current = initial
+
+    member x.Update(values : plist<'a>) =
+        let delta = plist.ComputeDeltas(current, values)
+        history.Perform delta |> ignore
+        current <- values
+
+    interface alist<'a> with
+        member x.IsConstant = false
+        member x.Content = history :> IMod<_>
+        member x.GetReader() = history.NewReader()
+
+type ResetMapList<'k, 'v>(initial : plist<'k>, create : Index -> 'k -> 'v, update : 'v * 'k -> unit) =
+    
+    let history = History PList.trace
+    let cache = Dict<Index, ref<'k> * 'v>()
+
+    let mutable current = PList.empty
+
+    let update (keys : plist<'k>) =
+        let keyDeltas = plist.ComputeDeltas(current, keys)
+
+        let valueDeltas =
+            keyDeltas |> PDeltaList.choose (fun i op ->
+                match op with
+                    | Set k ->
+                        let mutable isNew = false
+                        let r, v = 
+                            cache.GetOrCreate(i, fun _ ->
+                                isNew <- true
+                                ref k, create i k
+                            )
+
+                        if isNew then
+                            Some (Set v)
+                        else
+                            r := k
+                            None
+
+                    | Remove ->
+                        match cache.TryRemove i with
+                            | (true, (_,v)) ->
+                                Some Remove
+                            | _ ->
+                                None
+            )
+
+        current <- keys
+        history.Perform valueDeltas |> ignore
+        for (r, v) in cache.Values do
+            update(v, !r)       
+
+    do update initial
+
+    member x.Update(keys : plist<'k>) =
+        update keys
+
+    override x.ToString() =
+        current.ToString()
+
+    interface alist<'v> with
+        member x.IsConstant = false
+        member x.Content = history :> IMod<_>
+        member x.GetReader() = history.NewReader()

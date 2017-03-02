@@ -78,8 +78,8 @@
     <Compile Include="Datastructures\Immutable\MapExt.fs" />
     <Compile Include="Datastructures\Immutable\IntMap.fs" />
     <Compile Include="Datastructures\Immutable\HMap.fs" />
-    <Compile Include="Datastructures\Immutable\HSet.fs" />
     <Compile Include="Datastructures\Immutable\HDeltaSet.fs" />
+    <Compile Include="Datastructures\Immutable\HSet.fs" />
     <Compile Include="Datastructures\Immutable\HRefSet.fs" />
     <Compile Include="Datastructures\Immutable\PDeltaList.fs" />
     <Compile Include="Datastructures\Immutable\PList.fs" />

@@ -13,9 +13,10 @@ type SimSetTree =
     | Choose of obj * SimSetTree
     | Filter of obj * SimSetTree
     | Collect of obj * SimSetTree
+    | OfMod of obj
 
 and simset<'a> =
-    abstract member Content : hrefset<'a>
+    abstract member Content : hset<'a>
     abstract member ASet : aset<'a>
     abstract member Inputs : hset<obj>
     abstract member Expression : SimSetTree
@@ -27,7 +28,7 @@ and csimset<'a>(initial : seq<'a>) =
 
     let id = newId()
     let cset = cset initial
-    let mutable content = HRefSet.ofSeq (HSet.ofSeq initial)
+    let mutable content = HSet.ofSeq initial
 
     member x.Name = "cset" + string id
 
@@ -35,11 +36,11 @@ and csimset<'a>(initial : seq<'a>) =
 
     member x.Add (value : 'a) =
         cset.Add(value) |> ignore
-        content <- content |> HRefSet.alter value (fun o -> max o 1)
+        content <- content |> HSet.add value
         
     member x.Remove (value : 'a) =
         cset.Remove value |> ignore
-        content <- content |> HRefSet.alter value (fun o -> 0)
+        content <- content |> HSet.remove value
 
     member x.Content = content
 
@@ -61,7 +62,7 @@ and csimset<'a>(initial : seq<'a>) =
 
 module SimSet =
     
-    type SimSet<'a> = { expression : SimSetTree; inputs : unit -> hset<obj>; aset : aset<'a>; content : unit -> hrefset<'a> } with
+    type SimSet<'a> = { expression : SimSetTree; inputs : unit -> hset<obj>; aset : aset<'a>; content : unit -> hset<'a> } with
         interface simset<'a> with
             member x.Expression = x.expression
             member x.Inputs = x.inputs()
@@ -81,12 +82,12 @@ module SimSet =
             expression = Constant HRefSet.empty 
             aset = ASet.empty
             inputs = fun () -> HSet.empty
-            content = fun () -> HRefSet.empty 
+            content = fun () -> HSet.empty 
         }
 
     let ofSeq (seq : seq<'a>) =
-        let set = HRefSet.ofSeq (HSet.ofSeq seq)
-        simset { 
+        let set = HSet.ofSeq seq
+        simset {
             expression = Constant set
             aset = ASet.ofSeq seq
             inputs = fun () -> HSet.empty
@@ -104,7 +105,7 @@ module SimSet =
             expression = Map(f, set.Expression)
             aset = ASet.map f set.ASet
             inputs = fun () -> set.Inputs
-            content = fun () -> HRefSet.map f set.Content 
+            content = fun () -> HSet.map f set.Content 
         }
 
     let choose (f : 'a -> Option<'b>) (set : simset<'a>) =
@@ -112,7 +113,7 @@ module SimSet =
             expression = Choose(f, set.Expression)
             aset = ASet.choose f set.ASet
             inputs = fun () -> set.Inputs
-            content = fun () -> HRefSet.choose f set.Content 
+            content = fun () -> HSet.choose f set.Content 
         }
 
     let filter (f : 'a -> bool) (set : simset<'a>) =
@@ -120,49 +121,74 @@ module SimSet =
             expression = Filter(f, set.Expression)
             aset = ASet.filter f set.ASet
             inputs = fun () -> set.Inputs
-            content = fun () -> HRefSet.filter f set.Content 
+            content = fun () -> HSet.filter f set.Content 
         }
-
 
     let collect (f : 'a -> simset<'b>) (set : simset<'a>) =
         simset { 
             expression = Collect(f, set.Expression)
             aset = ASet.collect (f >> aset) set.ASet
             inputs = fun () -> HSet.unionMany (set.Inputs :: (set.Content |> Seq.map (fun v -> f(v).Inputs) |> Seq.toList))
-            content = fun () -> HRefSet.collect (f >> content) set.Content 
+            content = fun () -> HSet.collect (f >> content) set.Content 
         }
 
+    let ofModSingle (m : ModRef<'a>) =
+        simset {
+            expression = OfMod m
+            aset = ASet.ofModSingle m
+            inputs = fun () -> HSet.ofList [m]
+            content = fun () -> HSet.ofList [Mod.force m]
+        }
+        
 
 type SimSetGenerator() =
     static let rand = RandomSystem()
+
+    static member ModRef() =
+        { new Arbitrary<ModRef<'a>>() with
+            override x.Generator =
+                gen {
+                    let! v = Arb.generate<'a>
+                    return Mod.init v
+                }
+        }
+
+
     static member SimSet() =
         { new Arbitrary<simset<'a>>() with
             override x.Generator =
                 gen {
                     let case = rand.UniformInt(9)
 
+                    
+
                     match case with
-                        | 0 | 1 | 2 -> 
+                        | 0 | 1  -> 
                             let! content = Arb.generate<list<'a>>
                             return csimset content :> simset<_>
 
-                        | 3 | 4 | 5 ->
+                        | 2 | 3 ->
                             let! content = Arb.generate<list<'a>>
                             return SimSet.ofList content
 
-                        | 6 ->
+                        | 4 ->
                             let! input = Arb.generate<simset<'a>>
                             let! f = Arb.generate<'a -> 'a>
-
+ 
                             return SimSet.map f input
 
-                        | 7 ->
+                        | 5 ->
                             let! input = Arb.generate<simset<'a>>
                             let! f = Arb.generate<'a -> Option<'a>>
 
                             return SimSet.choose f input
                             
-                        | 8 ->
+                        | 6 ->
+                            let! input = Arb.generate<simset<'a>>
+                            let! f = Arb.generate<'a -> bool>
+
+                            return SimSet.filter f input
+                        | 7 ->
                             let! input = Arb.generate<simset<'a>>
                             let! f = Arb.generate<'a -> simset<'a>>
 
@@ -170,6 +196,11 @@ type SimSetGenerator() =
                             let f a = cache.Invoke a
 
                             return SimSet.collect f input
+
+
+                        | 8 ->
+                            let! ref = Arb.generate<ModRef<'a>>
+                            return SimSet.ofModSingle ref
 
 
                         | _ ->
@@ -184,14 +215,21 @@ module SimSetTest =
 
     type IExistential =
         abstract member Run : csimset<'a> -> unit
+        abstract member RunMod : ModRef<'a> -> unit
+
 
     let private runMeth = typeof<IExistential>.GetMethod "Run"
+    let private runMethMod = typeof<IExistential>.GetMethod "RunMod"
 
     let private existential (v : obj) (e : IExistential) : unit =
         let t = v.GetType()
         if t.IsGenericType && t.GetGenericTypeDefinition() = typedefof<csimset<_>> then
             let t = t.GetGenericArguments().[0]
             let meth = runMeth.MakeGenericMethod [|t|]
+            meth.Invoke(e, [| v |]) |> ignore
+        elif t.IsGenericType && t.GetGenericTypeDefinition() = typedefof<ModRef<_>> then
+            let t = t.GetGenericArguments().[0]
+            let meth = runMethMod.MakeGenericMethod [|t|]
             meth.Invoke(e, [| v |]) |> ignore
         else
             failwith "bad type"
@@ -200,6 +238,8 @@ module SimSetTest =
         let inputs = sim.Inputs
 
         let log = List<string>()
+
+
 
         transact (fun () ->
             for i in inputs do
@@ -222,22 +262,26 @@ module SimSetTest =
                                     
                                     log.Add(sprintf "%s.add(%A)" set.Name element)
                                     set.Add element
+
+                            member x.RunMod(m : ModRef<'x>) =
+                                let element = Arb.generate<'x> |> Gen.eval 10 (Random.StdGen(rand.UniformInt(), rand.UniformInt()))
+                                m.Value <- element
                     }
-            if log.Count > 0 then
-                Log.start "change"
-                for l in log do Log.line "%s" l
-                Log.stop()
+//            if log.Count > 0 then
+//                Log.start "change"
+//                for l in log do Log.line "%s" l
+//                Log.stop()
         )
 
-    let checkEqual (is : hrefset<'a>) (should : hrefset<'a>) =
+    let checkEqual (is : hrefset<'a>) (should : hset<'a>) =
         let his = HashSet is
         let hshould = HashSet should
         if not (his.SetEquals hshould) then
-            let isButNotShould = HRefSet.difference is should
-            let shouldButNotIs = HRefSet.difference should is
+            let isButNotShould = HSet.difference (HSet.ofSeq is) should
+            let shouldButNotIs = HSet.difference should (HSet.ofSeq is)
 
 
-            match HRefSet.isEmpty isButNotShould, HRefSet.isEmpty shouldButNotIs with
+            match HSet.isEmpty isButNotShould, HSet.isEmpty shouldButNotIs with
                 | true, true ->
                     failwith "[ASet] PRefSet.difference produced empty sets"
 
@@ -261,7 +305,7 @@ module SimSetTest =
         if not (his.SetEquals hshould) then
             failwithf "[ASet] got deltas %A but effective are %A" is should
 
-    let check (reader : ISetReader<'a>) (set : simset<'a>) =
+    let check (verbose : bool) (reader : ISetReader<'a>) (set : simset<'a>) =
         let asetOldState = reader.State
         let asetOps = reader.GetOperations null
         let asetState = reader.State
@@ -269,25 +313,25 @@ module SimSetTest =
 
         checkEqual asetState simState
 
-
+        let asetOldState = HRefSet.ofSeq (HSet.ofSeq asetOldState)
         let asetStateClean, asetOpsClean = HRefSet.applyDelta asetOldState asetOps
         checkEqual asetStateClean simState
 
         checkEqualDelta asetOps asetOpsClean
-
-
+        if verbose then
+            Log.line "ok: %A" simState
 
 
         ()
 
-    let validate (set : simset<'a>) =
+    let validate (cnt : int) (verbose : bool) (set : simset<'a>) =
         use reader = set.ASet.GetReader()
 
-        check reader set
+        check verbose reader set
 
-        for i in 1 .. 100 do
+        for i in 1 .. cnt do
             arbitraryChange 0.5 0.3 set
-            check reader set
+            check verbose reader set
 
     [<Test>]
     let ``[ASet] validation``() =
@@ -306,10 +350,21 @@ module SimSetTest =
                 | Choose(f,o) -> sprintf "%s |> choose f" (toString o)
                 | Filter(f,o) -> sprintf "%s |> filter f" (toString o)
                 | Collect(f,o) -> sprintf "%s |> collect f" (toString o)
+                | OfMod m -> sprintf "%A |> ofModSingle" m
 
         for g in generated do
             let name = g.Expression |> toString
-            Log.start "%s" name
-            validate g
-            Log.stop()
+            System.Console.Write(name + ": ")
+            let cnt = 1000
+            validate cnt false g
+            System.Console.WriteLine("OK, " + string cnt + " tests")
         ()
+
+    [<Property>]
+    let Seppy(data : list<int>) =
+        let set = csimset data
+        let test = set |> SimSet.collect (fun a -> set :> simset<_>)
+        validate 100 true test 
+
+
+
