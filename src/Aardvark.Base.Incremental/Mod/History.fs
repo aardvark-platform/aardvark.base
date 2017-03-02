@@ -644,6 +644,7 @@ module History =
                 member x.GetOperations(caller) =
                     lock x (fun () ->
                         if initial then
+                            initial <- false
                             state <- finalState.Value
                             ops.Value
                         else

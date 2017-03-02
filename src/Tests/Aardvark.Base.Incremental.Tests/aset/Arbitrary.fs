@@ -121,7 +121,21 @@ type ASetGenerator() =
                             let res = ASet.map f inner.Set
 
                             return ASetProgram(res, inner.Changes |> List.map (ASetChange.map (HRefSet.map f)))
-     
+                        
+                        | 3 ->
+                            let! outer = Arb.generate<list<ASetProgram>>
+                            let set = cset (outer |> List.map (fun p -> p.Set))
+
+                            let! deltas = Arb.generate<list<ASetProgram>>
+
+                            let res = ASet.collect id set
+
+                            
+
+
+
+                            return failwith ""
+
              
 
                         | _ ->
