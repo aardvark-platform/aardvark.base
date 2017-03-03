@@ -90,7 +90,7 @@ type Adaptive private() =
 
     static member Transaction =
         let t = new Transaction()
-        let old = Marking.current.Value // directly use current here, getCurrentTransaction will also return a currently running (finalizing) transaction
+        let old = Transaction.Current // directly use current here, getCurrentTransaction will also return a currently running (finalizing) transaction
         setCurrentTransaction (Some t)
       
         { new IDisposable with

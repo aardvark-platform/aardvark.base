@@ -2,6 +2,7 @@
 
 open System
 open System.Collections.Generic
+open System.Runtime.CompilerServices
 open Aardvark.Base
 open System.Collections.Concurrent
 open System.Threading
@@ -171,99 +172,66 @@ type IAdaptiveObject =
     abstract member InputChanged : obj * IAdaptiveObject -> unit
     abstract member AllInputsProcessed : obj -> unit
 
-
-    abstract member Lock : AdaptiveLock
-
-
-and AdaptiveLock() =
-    let mutable readerCount = 0
-//    let isZero = new ManualResetEventSlim(true)
+    abstract member ReaderCount : int with get, set
 
 
+[<AbstractClass; Sealed; Extension>]
+type AdaptiveObjectExtensions private() =
 
-    member x.EnterRead(o : IAdaptiveObject) = 
+    static let equality =
+        { new IEqualityComparer<IAdaptiveObject> with
+            member x.GetHashCode(o : IAdaptiveObject) =
+                System.Runtime.CompilerServices.RuntimeHelpers.GetHashCode(o)
+
+            member x.Equals(l : IAdaptiveObject, r : IAdaptiveObject) =
+                System.Object.ReferenceEquals(l,r)
+        }
+
+    static member EqualityComparer = equality
+
+    [<Extension>]
+    static member EnterWrite(o : IAdaptiveObject) =
         Monitor.Enter o
-        Interlocked.Increment(&readerCount) |> ignore
-
-    member x.Downgrade(o : IAdaptiveObject) = 
-        Monitor.Exit o
-
-    member x.ExitRead(o : IAdaptiveObject) =
-        Monitor.Enter o 
-        let rc = Interlocked.Decrement(&readerCount)
-        if rc = 0 then Monitor.PulseAll o
-        Monitor.Exit o
-
-    member x.IsOutdatedCaller(o : IAdaptiveObject) =
-        Monitor.IsEntered o && o.OutOfDate
-
-    member x.EnterWrite(o : IAdaptiveObject) = 
-        Monitor.Enter o
-
-        while readerCount > 0 do
+        while o.ReaderCount > 0 do
             Monitor.Wait o |> ignore
-
-        true
-
-    member x.ExitWrite(o : IAdaptiveObject) = 
+            
+    [<Extension>]
+    static member ExitWrite(o : IAdaptiveObject) =
         Monitor.Exit o
-
-and AdaptiveLockOld() =
-    let mutable readerCount = 0
-    let isZero = new ManualResetEventSlim(true)
-
-
-
-    member x.EnterRead(o : IAdaptiveObject) = 
-        Monitor.Enter o
-        if Interlocked.Increment(&readerCount) = 1 then
-            isZero.Reset()
-
-    member x.Downgrade(o : IAdaptiveObject) = 
-        Monitor.Exit o
-
-    member x.ExitRead(o : IAdaptiveObject) = 
-        if Interlocked.Decrement(&readerCount) = 0 then
-            isZero.Set()
-
-    member x.IsOutdatedCaller(o : IAdaptiveObject) =
+        
+    [<Extension>]
+    static member IsOutdatedCaller(o : IAdaptiveObject) =
         Monitor.IsEntered o && o.OutOfDate
-
-    member x.EnterWrite(o : IAdaptiveObject) = 
-        let rec enter(level : int) =
-            isZero.Wait()
-            Monitor.Enter o
-            if readerCount > 0 then
-                if level > 10 then Log.warn "yehaaa"
-                Monitor.Exit o
-                enter(level + 1)
-            else
-                ()
-
-        enter 0
-        true
-
-    member x.ExitWrite(o : IAdaptiveObject) = 
-        Monitor.Exit o
-
 
 type AdaptiveToken =
     class
         val mutable public Depth : int
         val mutable public Caller : IAdaptiveObject
-        val mutable public Locked : List<IAdaptiveObject>
+        val mutable public Locked : HashSet<IAdaptiveObject>
+
+        member inline x.EnterRead(o : IAdaptiveObject) =
+            Monitor.Enter o
+            if x.Locked.Add o then
+                o.ReaderCount <- o.ReaderCount + 1
+
+        member inline x.Downgrade(o : IAdaptiveObject) =
+            Monitor.Exit o
+
+        member inline x.ExitRead(o : IAdaptiveObject) =
+            lock o (fun () ->
+                let rc = o.ReaderCount - 1
+                o.ReaderCount <- rc
+                if rc = 0 then Monitor.PulseAll o
+            )
 
         member inline x.WithCaller (c : IAdaptiveObject) =
             AdaptiveToken(x.Depth + 1, c, x.Locked)
 
-        member inline x.Add (o : IAdaptiveObject) =
-            x.Locked.Add o |> ignore
-
         member inline x.Release() =
             for l in x.Locked do
-                l.Lock.ExitRead l
+                x.ExitRead l
 
-        new(depth : int, caller : IAdaptiveObject, locked : List<IAdaptiveObject>) =
+        new(depth : int, caller : IAdaptiveObject, locked : HashSet<IAdaptiveObject>) =
             {
                 Depth = depth
                 Caller = caller
@@ -274,14 +242,14 @@ type AdaptiveToken =
             {
                 Depth = 1
                 Caller = caller
-                Locked = List()
+                Locked = HashSet(AdaptiveObjectExtensions.EqualityComparer)
             }
 
         new() =
             {
                 Depth = 0
                 Caller = null
-                Locked = List()
+                Locked = HashSet(AdaptiveObjectExtensions.EqualityComparer)
             }
     end
 
@@ -290,31 +258,6 @@ type AdaptiveToken =
 /// to handle level changes during the change propagation.
 /// </summary>
 exception LevelChangedException of changedObject : IAdaptiveObject * newLevel : int * distanceFromRoot : int
-
-//module AdaptiveSystemState =
-//    let private currentLocks = new ThreadLocal<ref<list<AdaptiveLock>>>(fun () -> ref [])
-//
-//    let addReadLock (l : AdaptiveLock) =
-//        let r = currentLocks.Value
-//        r := l::!r
-//
-//    let pushReadLocks() =
-//        let r = currentLocks.Value
-//        let old = !r
-//        r := []
-//        old
-//
-//    let popReadLocks (old : list<AdaptiveLock>) =
-//        let r = currentLocks.Value
-//        let v = !r
-//        r := old
-//        for l in v do l.ExitRead()
-
-
-
-
-
-    //let currentEvaluationPath = new ThreadLocal<Stack<IAdaptiveObject>>(fun _ -> Stack(100))
 
 type TrackAllThreadLocal<'a>(creator : unit -> 'a) =
     let mutable values : Map<int, 'a> = Map.empty
@@ -356,14 +299,21 @@ type Transaction() =
     static let emptyArray : IAdaptiveObject[] = Array.empty
     let mutable outputs = emptyArray
 
-#if DEBUG
-    let mutable isDisposed = false
-#endif
-
-
     // each thread may have its own running transaction
-    static let running = new TrackAllThreadLocal<Option<Transaction>>(fun () -> None)
-    
+    [<ThreadStatic; DefaultValue>]
+    static val mutable private RunningTransaction : Option<Transaction>
+
+    [<ThreadStatic; DefaultValue>]
+    static val mutable private CurrentTransaction : Option<Transaction>
+
+    #if DEBUG
+    let mutable isDisposed = false
+    #endif
+
+
+//    // each thread may have its own running transaction
+//    static let running = new TrackAllThreadLocal<Option<Transaction>>(fun () -> None)
+//    
     // we use a duplicate-queue here since we expect levels to be very similar 
     let q = DuplicatePriorityQueue<IAdaptiveObject, int>(fun o -> o.Level)
     let causes = Dict<IAdaptiveObject, HashSet<IAdaptiveObject>>()
@@ -390,21 +340,25 @@ type Transaction() =
         Interlocked.Change(&finalizers, (fun a -> f::a) ) |> ignore
 
     member x.IsContained e = contained.Contains e
-    static member internal InAnyOfTheTransactionsInternal e =
-        running.Values 
-            |> Seq.toList 
-            |> List.choose id 
-            |> List.exists (fun t -> t.IsContained e)
+//    static member internal InAnyOfTheTransactionsInternal e =
+//        running.Values 
+//            |> Seq.toList 
+//            |> List.choose id 
+//            |> List.exists (fun t -> t.IsContained e)
 
     static member Running
-        with get() = running.Value
-        and set r = running.Value <- r
+        with get() = Transaction.RunningTransaction
+        and set r = Transaction.RunningTransaction <- r
+
+    static member Current
+        with get() = Transaction.CurrentTransaction
+        and set r = Transaction.CurrentTransaction <- r
 
     static member HasRunning =
-        running.Value.IsSome
+        Transaction.RunningTransaction.IsSome
        
     static member RunningLevel =
-        match running.Value with
+        match Transaction.RunningTransaction with
             | Some t -> t.CurrentLevel
             | _ -> Int32.MaxValue - 1
 
@@ -415,17 +369,17 @@ type Transaction() =
     /// enqueues an adaptive object for marking
     /// </summary>
     member x.Enqueue(e : IAdaptiveObject) =
-#if DEBUG
+        #if DEBUG
         if isDisposed then failwith "Invalid Enqueue! Transaction already disposed."
-#endif
+        #endif
         
         if contained.Add e then
             q.Enqueue e
 
     member x.Enqueue(e : IAdaptiveObject, cause : Option<IAdaptiveObject>) =
-#if DEBUG
+        #if DEBUG
         if isDisposed then failwith "Invalid Enqueue! Transaction already disposed."
-#endif
+        #endif
         if contained.Add e then
             q.Enqueue e
             match cause with
@@ -450,15 +404,15 @@ type Transaction() =
     /// </summary>
     member x.Commit() =
 
-#if DEBUG
+        #if DEBUG
         if isDisposed then failwith "Invalid Commit Transaction already disposed."
-#endif
+        #endif
 
 
         // cache the currently running transaction (if any)
         // and make tourselves current.
-        let old = running.Value
-        running.Value <- Some x
+        let old = Transaction.RunningTransaction
+        Transaction.RunningTransaction <- Some x
         let mutable level = 0
         let myCauses = ref null
         
@@ -482,11 +436,11 @@ type Transaction() =
             // lock at a time.
             //Monitor.Enter e
 
-            if e.Lock.IsOutdatedCaller(e) then
+            if e.IsOutdatedCaller() then
                 e.AllInputsProcessed(x)
 
             else
-                let enterWorked = e.Lock.EnterWrite(e)
+                e.EnterWrite()
                 try
                     // if the element is already outOfDate we
                     // do not traverse the graph further.
@@ -542,9 +496,7 @@ type Transaction() =
                                 outputCount := 0
                 
                 finally 
-                    if enterWorked then
-                        e.Lock.ExitWrite(e)
-                    //Monitor.Exit e
+                    e.ExitWrite()
 
                 // finally we enqueue all returned outputs
                 for i in 0..!outputCount - 1 do
@@ -559,15 +511,15 @@ type Transaction() =
 
         // when the commit is over we restore the old
         // running transaction (if any)
-        running.Value <- old
+        Transaction.RunningTransaction <- old
         currentLevel <- 0
 
 
     member x.Dispose() = 
         runFinalizers()
-#if DEBUG
+        #if DEBUG
         isDisposed <- true
-#endif
+        #endif
 
     interface IDisposable with
         member x.Dispose() = x.Dispose()
@@ -600,12 +552,12 @@ type AdaptiveObject =
         val mutable public Level : int 
         val mutable public Outputs : VolatileCollection<IAdaptiveObject>
         val mutable public WeakThis : WeakReference<IAdaptiveObject>
-        val mutable public Lock : AdaptiveLock
+        val mutable public ReaderCountValue : int
 
         new() =
             { Id = newId(); OutOfDate = true; 
               Level = 0; Outputs = VolatileCollection<IAdaptiveObject>(); WeakThis = null;
-              Lock = new AdaptiveLock() }
+              ReaderCountValue = 0 }
 
     
         member this.evaluate (token : AdaptiveToken) (f : AdaptiveToken -> 'a) =
@@ -617,7 +569,7 @@ type AdaptiveObject =
 //                else []
 
             let mutable res = Unchecked.defaultof<_>
-            this.Lock.EnterRead this
+            token.EnterRead this
             let mutable good = false // evaluate works without exception?
 
             try
@@ -653,15 +605,14 @@ type AdaptiveObject =
                 good <- true
 
             finally
-                this.Lock.Downgrade this
+                token.Downgrade this
                 if not good then // no level changed exn occured
-                    this.Lock.ExitRead(this)
+                    token.ExitRead(this)
 
                     if isNull caller then
                         token.Release()
                 else
                     // normal case. if we got read lock, capture lock
-                    token.Add(this)
                     ()
 
                 
@@ -767,7 +718,9 @@ type AdaptiveObject =
 
             member x.InputChanged(o,ip) = x.InputChanged(o, ip)
             member x.AllInputsProcessed(o) = x.AllInputsProcessed(o)
-            member x.Lock = x.Lock
+            member x.ReaderCount
+                with get() = x.ReaderCountValue
+                and set v = x.ReaderCountValue <- v
 
     end
 
@@ -834,7 +787,7 @@ type DirtyTrackingAdaptiveObject<'a when 'a :> IAdaptiveObject> =
 type ConstantObject() =
 
     let mutable weakThis : WeakReference<IAdaptiveObject> = null
-    let lock = new AdaptiveLock()
+    let mutable readerCount = 0
 
     interface IWeakable<IAdaptiveObject> with
         member x.Weak =
@@ -862,7 +815,9 @@ type ConstantObject() =
         member x.Outputs = VolatileCollection()
         member x.InputChanged(o,ip) = ()
         member x.AllInputsProcessed(o) = ()
-        member x.Lock = lock
+        member x.ReaderCount
+            with get() = readerCount
+            and set v = readerCount <- v
 
 
 
@@ -876,7 +831,7 @@ module Marking =
     // for enqueing their changes we use a thread local 
     // current transaction which basically allows for 
     // an implicit argument.
-    let internal current = new Threading.ThreadLocal<Option<Transaction>>(fun () -> None)
+    //let internal current = new Threading.ThreadLocal<Option<Transaction>>(fun () -> None)
 
     /// <summary>
     /// returns the currently running transaction or (if none)
@@ -886,12 +841,12 @@ module Marking =
         match Transaction.Running with
             | Some r -> Some r
             | None ->
-                match current.Value with
+                match Transaction.Current with
                     | Some c -> Some c
                     | None -> None
 
-    let setCurrentTransaction t =
-        current.Value <- t
+    let inline setCurrentTransaction t =
+        Transaction.Current <- t
 
     /// <summary>
     /// executes a function "inside" a newly created
@@ -899,10 +854,10 @@ module Marking =
     /// </summary>
     let transact (f : unit -> 'a) =
         use t = new Transaction()
-        let old = current.Value
-        current.Value <- Some t
+        let old = Transaction.Current
+        Transaction.Current <- Some t
         let r = f()
-        current.Value <- old
+        Transaction.Current <- old
         t.Commit()
         r
 
@@ -980,7 +935,7 @@ module CallbackExtensions =
         let mutable scope = Ag.getContext()
         let mutable inner = inner
         let mutable weakThis = null
-        let rw = new AdaptiveLock()
+        let mutable readerCount = 0
         do lock inner (fun () -> inner.Outputs.Add this |> ignore)
 
         do lock undyingMarkingCallbacks (fun () -> undyingMarkingCallbacks.GetOrCreateValue(inner).Add this |> ignore )
@@ -1023,7 +978,9 @@ module CallbackExtensions =
             member x.Outputs = VolatileCollection()
             member x.InputChanged(o,ip) = ()
             member x.AllInputsProcessed(o) = ()
-            member x.Lock = rw
+            member x.ReaderCount
+                with get() = readerCount
+                and set c = readerCount <- c
 
         member x.Dispose() =
             if Interlocked.Exchange(&live, 0) = 1 then
@@ -1107,7 +1064,7 @@ type AdaptiveDecorator(o : IAdaptiveObject) =
     let mutable o = o
     let id = newId()
     let mutable weakThis = null
-
+    let mutable readerCount = 0
     member x.Id = id
     member x.OutOfDate
         with get() = o.OutOfDate
@@ -1154,7 +1111,9 @@ type AdaptiveDecorator(o : IAdaptiveObject) =
 
         member x.InputChanged(t,ip) = o.InputChanged (t,ip)
         member x.AllInputsProcessed(t) = o.AllInputsProcessed(t)
-        member x.Lock = o.Lock
+        member x.ReaderCount
+            with get() = readerCount
+            and set c = readerCount <- c
  
 type VolatileDirtySet<'a, 'b when 'a :> IAdaptiveObject and 'a : equality and 'a : not struct>(eval : 'a -> 'b) =
     let mutable set : hset<'a> = HSet.empty

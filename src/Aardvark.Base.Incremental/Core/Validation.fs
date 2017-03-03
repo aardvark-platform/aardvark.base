@@ -141,7 +141,7 @@ module private ValidationModule =
                 if not x.OutOfDate then
                     let invalid = x.Inputs |> Seq.exists (fun i -> i.OutOfDate) && not x.OutOfDate
                     if invalid then
-                        let iAmInTransaction = Transaction.InAnyOfTheTransactionsInternal x
+                        let iAmInTransaction = failwith "not implemented" //Transaction.InAnyOfTheTransactionsInternal x
                         if not iAmInTransaction then
                             let outdatedInputs = 
                                 x.Inputs 
