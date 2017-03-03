@@ -10,719 +10,651 @@ open NUnit.Framework
 open FsUnit
 open Aardvark.Base
 
-//
-//[<AutoOpen>]
-//module ``utils`` =
-//
-//    type Tree<'a> = Node of aset_check<Tree<'a>> | Leaf of aset_check<'a>
-//
-//    type DeltaList<'a>() =
-//        let store = List<list<Delta<'a>>>()
-//
-//        member x.push (deltas : list<Delta<'a>>) =
-//            store.Add deltas 
-//
-//        member x.read() =
-//            let res = store |> Seq.toList
-//            store.Clear()
-//            res
-//
-//module ``collect tests`` =
-//
-//    [<Test>]
-//    let ``[ASet] duplicate handling in collect``() =
-//        let i0 = CSetCheck.ofList [1;2;3]
-//        let i1 = CSetCheck.ofList [3;4;5]
-//        let s = CSetCheck.ofList [i0 :> aset_check<_>]
-//
-//        // union {{1,2,3}}
-//        let d = s |> ASetCheck.collect id
-//        let r = d.GetReader()
-//        r.GetDelta() |> should setEqual [Add 1; Add 2; Add 3]
-//        r.Content |> should setEqual [1;2;3]
-//        
-//        // union {{1,2,3}, {3,4,5}} -> { Add 4, Add 5 }
-//        transact (fun () ->
-//            s.Add i1 |> should equal true
-//        )
-//        r.GetDelta() |> should setEqual [Add 4; Add 5]
-//        r.Content |> should setEqual [1;2;3;4;5]
-//
-//        // union {{3,4,5}} -> { Rem 1, Rem 2 }
-//        transact (fun () ->
-//            s.Remove i0 |> should equal true
-//        )
-//        r.GetDelta() |> should setEqual [Rem 1; Rem 2]
-//        r.Content |> should setEqual [3;4;5]
-//
-//        // union {{4,5}} -> { Rem 3 }
-//        transact (fun () ->
-//            i1.Remove 3 |> should equal true
-//        )
-//        r.GetDelta() |> should setEqual [Rem 3]
-//        r.Content |> should setEqual [4;5]
-//
-//        // union {{1,2,3}, {4,5}} -> { Add 1, Add 2, Add 3 }
-//        transact (fun () ->
-//            s.Add i0 |> should equal true
-//        )
-//        r.GetDelta() |> should setEqual [Add 1; Add 2; Add 3]
-//        r.Content |> should setEqual [1;2;3;4;5]
-//
-//        // union {{1,2,3}, {3,4,5}} -> { }
-//        transact (fun () ->
-//            i1.Add 3 |> should equal true
-//        )
-//        r.GetDelta() |> should setEqual []
-//        r.Content |> should setEqual [1;2;3;4;5]
-//
-//        // union {{1,2}, {3,4,5}} -> { }
-//        transact (fun () ->
-//            i0.Remove 3 |> should equal true
-//        )
-//        r.GetDelta() |> should setEqual []
-//        r.Content |> should setEqual [1;2;3;4;5]
-//
-//        // union {{1,2}, {4,5}} -> { Rem 3 }
-//        transact (fun () ->
-//            i1.Remove 3 |> should equal true
-//        )
-//        r.GetDelta() |> should setEqual [Rem 3]
-//        r.Content |> should setEqual [1;2;4;5]
-//
-//    [<Test>]
-//    let ``[ASet] move test``() =
-//        let c0 = CSetCheck.ofList [1]
-//        let c1 = CSetCheck.ofList [2]
-//
-//        let s = CSetCheck.ofList[c0 :> aset_check<_>;c1 :> aset_check<_>]
-//
-//        let res = s |> ASetCheck.collect id
-//        let r = res.GetReader()
-//
-//        // union {{1},{2}}
-//        r.GetDelta() |> should setEqual [Add 1; Add 2]
-//        r.Content |> should setEqual [1;2]
-//
-//        // union {{2},{1}}
-//        transact (fun () ->
-//            c0.Remove 1 |> should equal true
-//            c1.Add 1 |> should equal true
-//            c1.Remove 2 |> should equal true
-//            c0.Add 2 |> should equal true
-//        )
-//        r.GetDelta() |> should setEqual []
-//        r.Content |> should setEqual [1;2]
-//    
-//[<AutoOpen>]
-//module OtherASetTests =
-//
-//    [<Test>]
-//    let ``[ASet] tree flatten test``() =
-//        let rec flatten (t : Tree<'a>) =
-//            match t with
-//                | Node children -> children |> ASetCheck.collect (flatten)
-//                | Leaf values -> values
-//
-//        let l2 = CSetCheck.ofList [1]
-//        let l1 = CSetCheck.ofList [Leaf l2]
-//        let l0 = CSetCheck.ofList [Node l1]
-//        let t = Node (l0)
-//
-//        // Node { Node { Leaf { 1 } } }
-//        let s = flatten t
-//        let r = s.GetReader()
-//        r.GetDelta() |> should setEqual [Add 1]
-//        r.Content |> should setEqual [1]
-//
-//
-//        // Node { Node { Leaf { 1, 3 }, Leaf { 2 } } }
-//        let l22 = CSetCheck.ofList [2] :> aset_check<_> |> Leaf
-//        transact (fun () ->
-//            l1.Add l22 |> should equal true
-//            l2.Add 3 |> should equal true
-//        )
-//        r.GetDelta() |> should setEqual [Add 2; Add 3]
-//        r.Content |> should setEqual [1; 2; 3]
-//
-//
-//        // Node { Leaf { 1, 5 } , Node { Leaf { 1, 3 }, Leaf { 2 } } }
-//        let l12 = CSetCheck.ofList [1;5] :> aset_check<_> |> Leaf
-//        transact (fun () ->
-//            l0.Add l12 |> should equal true
-//        )
-//        r.GetDelta() |> should setEqual [Add 5]
-//        r.Content |> should setEqual [1; 2; 3; 5]
-//
-//        // Node { Leaf { 1, 5 } , Node { Leaf { 2 } } }
-//        transact (fun () ->
-//            l1.Remove (Leaf l2) |> should equal true
-//        )
-//        r.GetDelta() |> should setEqual [Rem 3]
-//        r.Content |> should setEqual [1; 2; 5]
-//
-//        // Node { Leaf { 1, 5 } , Node { Leaf { 2 }, Node { Leaf { 17 } } } }
-//        let n = Node (CSetCheck.ofList [Leaf (CSetCheck.ofList [17])])
-//        transact (fun () ->
-//            l1.Add n |> should equal true
-//        )
-//        r.GetDelta() |> should setEqual [Add 17]
-//        r.Content |> should setEqual [1; 2; 5; 17]
-//
-//        ()
-//
-//    [<Test>]
-//    let ``[ASet] callback test``() =
-//
-//        let deltas = DeltaList<int>()
-//
-//        let set = cset [1;2;3;4]
-//        let m = set |> ASet.map (fun a -> 2 * a)
-//        let s = m |> ASet.unsafeRegisterCallbackNoGcRoot deltas.push
-//
-//        // { 1, 2, 3, 4 } -> [Add 2; Add 4; Add 6; Add 8]
-//        deltas.read() |> should deltaListEqual [[Add 2; Add 4; Add 6; Add 8]]
-//
-//        // { 1, 3, 4, 5 } -> [Add 10; Rem 4]
-//        transact (fun () ->
-//            set.Add 5 |> ignore
-//            set.Remove 2 |> ignore
-//        )
-//        deltas.read() |> should deltaListEqual [[Rem 4; Add 10]]
-//
-//        // { 1, 4, 5, 6 } -> [Add 12; Rem 6]
-//        transact (fun () ->
-//            set.Add 6 |> ignore
-//            set.Remove 3 |> ignore
-//        )
-//        deltas.read() |> should deltaListEqual [[Rem 6; Add 12]]
-//
-//        // { 1, 4, 5, 6, 7 } -> [Add 14]
-//        transact (fun () -> set.Add 7 |> ignore)
-//
-//        // { 1, 4, 5, 6, 7, 8 } -> [Add 16]
-//        transact (fun () -> set.Add 8 |> ignore)
-//        deltas.read() |> should deltaListEqual [[Add 14]; [Add 16]]
-//
-//
-//        s.Dispose()
-//
-//        // { 1, 4, 5, 6, 7 } -> [] (unsubscribed)
-//        transact (fun () -> set.Add 9 |> ignore)
-//        deltas.read() |> should deltaListEqual ([] : list<list<Delta<int>>>)
-//
-//
-//
-//
-//        ()
-//
-//    [<Test>]
-//    let ``[ASet] callback changing other list``() =
-//        
-//        let set = cset [1;2]
-//
-//        let derived = set |> ASet.map (fun a -> 1 + a)
-//        let inner = cset []
-//
-//        let s = derived |> ASet.unsafeRegisterCallbackKeepDisposable (fun delta ->
-//            for d in delta do
-//                match d with
-//                    | Add v -> inner.Add v |> ignore
-//                    | Rem v -> inner.Remove v |> ignore
-//        )
-//
-//        
-//        let dervivedInner = inner |> ASet.map id
-//
-//        let r = dervivedInner.GetReader()
-//        r.GetDelta() |> should setEqual [Add 2; Add 3]
-//
-//        transact (fun () ->
-//            set.Add 3 |> should equal true
-//        )
-//        r.GetDelta() |> should setEqual [Add 4]
-//
-//    [<Test>]
-//    let ``[ASet] toMod triggering even with equal set referece``() =
-//        
-//        let s = CSet.empty
-//
-//        let triggerCount = ref 0
-//        let hasTriggered() =
-//            let c = !triggerCount
-//            triggerCount := 0
-//            c > 0
-//
-//        let leak = 
-//            s |> ASet.toMod |> Mod.unsafeRegisterCallbackNoGcRoot (fun set ->
-//                triggerCount := !triggerCount + 1
-//            )
-//
-//        hasTriggered() |> should equal true
-//
-//
-//        transact(fun () ->
-//            CSet.add 1 s |> ignore
-//        )
-//        hasTriggered() |> should equal true
-//
-//        transact(fun () ->
-//            CSet.add 1 s |> ignore
-//        )
-//        hasTriggered() |> should equal false
-//
-//        transact(fun () ->
-//            CSet.remove 1 s |> ignore
-//        )
-//        hasTriggered() |> should equal true
-//
-//
-//        //pretend leak is used
-//        ignore leak
-//
-//
-//
-//    [<Test>]
-//    let ``[ASet] concurrency collect test``() =
-//
-//        let l = obj()
-//        let set = CSet.empty
-//        let derived = set |> ASet.collect id
-//        use reader = derived.GetReader()
-//        let numbers = [0..9999]
-//
-//        use sem = new SemaphoreSlim(0)
-//        use cancel = new CancellationTokenSource()
-//        let ct = cancel.Token
-//
-//        // pull from the system
-//        Task.Factory.StartNew(fun () ->
-//            while true do
-//                ct.ThrowIfCancellationRequested()
-//                let delta = reader.GetDelta()
-//                //Thread.Sleep(10)
-//                ()
-//        ) |> ignore
-//
-//
-//        // submit into the system
-//        for n in numbers do
-//            let s = ASet.single n
-//            Task.Factory.StartNew(fun () ->
-//                transact (fun () ->
-//                    lock l (fun () ->
-//                        set.Add(s) |> ignore
-//                    )
-//                )
-//                sem.Release() |> ignore
-//            ) |> ignore
-//
-//        // wait for all submissions to be done
-//        for n in numbers do
-//            sem.Wait()
-//
-//        cancel.Cancel()
-//
-//        reader.GetDelta() |> ignore
-//
-//
-//        let content = reader.Content |> Seq.toList |> List.sort
-//
-//        content |> should equal numbers
-//
-//    [<Test>]
-//    let ``[ASet] concurrency multi reader test``() =
-//
-//        let l = obj()
-//        let set = CSet.empty
-//        let derived = set |> ASet.collect id
-//        let numbers = [0..1000]
-//
-//        use sem = new SemaphoreSlim(0)
-//        use cancel = new CancellationTokenSource()
-//        let ct = cancel.Token
-//
-//
-//        let readers = [1..3] |> List.map (fun _ -> derived.GetReader())
-//        // pull from the system
-//
-//        for r in readers do
-//            Task.Factory.StartNew(fun () ->
-//                while true do
-//                    ct.ThrowIfCancellationRequested()
-//                    let delta = r.GetDelta()
-//                    
-//                    //if not (List.isEmpty delta) then
-//                    //    Console.WriteLine("delta: {0}", List.length delta)
-//                    //Thread.Sleep(1)
-//                    ()
-//            ) |> ignore
-//
-//
-//        // submit into the system
-//        for n in numbers do
-//            let s = ASet.single n
-//            Task.Factory.StartNew(fun () ->
-//                transact (fun () ->
-//                    lock l (fun () ->
-//                        set.Add(s) |> ignore
-//                    )
-//                )
-//                sem.Release() |> ignore
-//            ) |> ignore
-//
-//        // wait for all submissions to be done
-//        for n in numbers do
-//            sem.Wait()
-//
-//        cancel.Cancel()
-//
-//        for r in readers do
-//            r.GetDelta() |> ignore
-//            let content = r.Content |> Seq.toList |> List.sort
-//            content |> should equal numbers
-//
-//
-//    type Leak(cnt : ref<int>) =
-//        do cnt := !cnt + 1
-//        override x.Finalize() = cnt := !cnt - 1
-//
-//    [<Test>]
-//    let ``[ASet] memory leak test`` () =
-//        let mutable independenSource = Mod.init 10
-//        let cnt = ref 0
-//        let f () =
-//            let mutable leak = Leak(cnt)
-//            let normalSource = CSet.ofList [ leak ]
-//            let mapped = 
-//                normalSource 
-//                    |> ASet.map (fun l -> 
-//                        let m = independenSource |> Mod.map (fun i -> l)
-//                        Mod.force m |> ignore
-//                        m
-//                    ) 
-//            mapped |> ASet.toArray |> ignore
-//            transact (fun () -> normalSource |> CSet.remove leak |> should be True)
-//            leak <- Unchecked.defaultof<_>
-//        f()
-//        GC.Collect ()
-//        GC.WaitForPendingFinalizers()
-//        !cnt |> should equal 0  
-//        printfn "%A" independenSource 
-//        ()
-//
-//    [<Test>]
-//    let ``[ASet] concurrency buffered reader test``() =
-//
-//        let l = obj()
-//        let set = CSet.empty
-//
-//        let derived = set |> ASet.collect id |> ASet.map id // |> ASet.choose Some |> ASet.collect ASet.single |> ASet.collect ASet.single
-//        use reader = derived.GetReader()
-//        let numbers = [0..9999]
-//
-//        use sem = new SemaphoreSlim(0)
-//        use cancel = new CancellationTokenSource()
-//        let ct = cancel.Token
-//
-//        // pull from the system
-//        Task.Factory.StartNew(fun () ->
-//            while true do
-//                ct.ThrowIfCancellationRequested()
-//                let delta = reader.GetDelta()
-//                //Thread.Sleep(10)
-//                ()
-//        ) |> ignore
-//
-//
-//        // submit into the system
-//        for n in numbers do
-//            let s = ASet.single n
-//            Task.Factory.StartNew(fun () ->
-//                transact (fun () ->
-//                    lock l (fun () ->
-//                        set.Add(s) |> ignore
-//                    )
-//                )
-//                sem.Release() |> ignore
-//            ) |> ignore
-//
-//        // wait for all submissions to be done
-//        for n in numbers do
-//            sem.Wait()
-//
-//        cancel.Cancel()
-//
-//        reader.GetDelta() |> ignore
-//
-//
-//        let content = reader.Content |> Seq.toList |> List.sort
-//
-//        content |> should equal numbers
-//
-//
-//    [<Test>]
-//    let ``[ASet] concurrency overkill test``() =
-//
-//        let l = obj()
-//        let set = CSet.empty
-//
-//        let derived = set |> ASet.collect id |> ASet.map id |> ASet.choose Some |> ASet.collect ASet.single |> ASet.collect ASet.single
-//        let readers = [1..3] |> List.map (fun _ -> derived.GetReader())
-//        let numbers = [0..1000]
-//
-//        use sem = new SemaphoreSlim(0)
-//        use cancel = new CancellationTokenSource()
-//        let ct = cancel.Token
-//
-//
-//        for r in readers do
-//            // pull from the system
-//            Task.Factory.StartNew(fun () ->
-//                while true do
-//                    ct.ThrowIfCancellationRequested()
-//                    let delta = r.GetDelta()
-//                    Thread.Sleep(1)
-//                    ()
-//            , TaskCreationOptions.LongRunning) |> ignore
-//
-//
-//        // submit into the system
-//        for n in numbers do
-//            let s = CSet.ofList [n]
-//            Task.Factory.StartNew(fun () ->
-//                transact (fun () ->
-//                    lock l (fun () ->
-//                        set.Add(s) |> ignore
-//                    )
-//                )
-//                sem.Release() |> ignore
-//            , TaskCreationOptions.LongRunning) |> ignore
-//
-//        // wait for all submissions to be done
-//        for n in numbers do
-//            sem.Wait()
-//
-//        cancel.Cancel()
-//
-//        for r in readers do
-//            r.GetDelta() |> ignore
-//
-//
-//        for r in readers do
-//            let content = r.Content |> Seq.toList |> List.sort
-//
-//            content |> should equal numbers
-//
-//    [<Test>]
-//    let ``[ASet] stacked deltas test`` () =
-//
-//        let set = CSet.empty
-//
-//        let derived = set |> ASet.collect id |> ASet.map id |> ASet.choose Some |> ASet.collect ASet.single |> ASet.collect ASet.single
-//
-//        let readers = Array.init 10 (fun _ -> derived.GetReader())
-//
-//        for r in readers do
-//            r.Update()
-//            r.Content |> Seq.toList |> should equal []
-//
-//
-//        transact (fun () ->
-//            
-//            set.Add (ASet.ofList [1;3;4]) |> ignore
-//            set.Add (ASet.single 2) |> ignore
-//        )
-//
-//        for r in readers do
-//            r.GetDelta() |> should setEqual [Add 1; Add 2; Add 3; Add 4]
-//            r.Content |> Seq.sort |> Seq.toList |> should equal [1; 2; 3; 4]
-//
-//
-//        transact (fun () ->
-//            
-//            set.Add (ASet.ofList [5;6;7]) |> ignore
-//            set.Add (ASet.single 8) |> ignore
-//        )
-//
-//        for r in readers do
-//            r.GetDelta() |> should setEqual [Add 5; Add 6; Add 7; Add 8]
-//            r.Content |> Seq.sort |> Seq.toList |> should equal [1; 2; 3; 4; 5; 6; 7; 8]
-//
-//
-//
-//
-//
-//        ()
-//
-//
-//    [<Test>]
-//    let ``[ASet] concurrent readers``() =
-//
-//        let l = obj()
-//        let set = CSet.empty
-//        let derived = set |> ASet.collect id
-//        let numbers = [0..9999]
-//
-//        use cancel = new CancellationTokenSource()
-//        let ct = cancel.Token
-//
-//
-//        let readers = [|0..5|] |> Array.map (fun _ -> derived.GetReader())
-//        // pull from the system
-//
-//        let lists = Array.init readers.Length (fun _ -> System.Collections.Generic.List())
-//
-//
-//        for i in 0..readers.Length-1 do
-//            let r = readers.[i]
-//            let deltas = lists.[i]
-//            Task.Factory.StartNew(fun () ->
-//                while true do
-//                    ct.ThrowIfCancellationRequested()
-//                    let delta = r.GetDelta()
-//
-//
-//                    deltas.AddRange delta
-//                    if not (List.isEmpty delta) then
-//                        Console.WriteLine("delta: {0}", List.length delta)
-//                    //Thread.Sleep(1)
-//                    ()
-//            ) |> ignore
-//
-//
-//        // submit into the system
-//        for n in numbers do
-//            if n % 2 = 0 then
-//                let s = ASet.single n
-//                transact (fun () ->
-//                    lock l (fun () ->
-//                        set.Add(s) |> ignore
-//                        set.Add(ASet.single (n+1)) |> ignore
-//                    )
-//                )
-//
-//        cancel.Cancel()
-//
-//        for i in 0..readers.Length-1 do
-//            let r = readers.[i]
-//            let deltas = lists.[i]
-//            r.GetDelta() |> deltas.AddRange
-//
-//            let content = r.Content |> Seq.toList |> List.sort
-//            content |> should equal numbers
-//
-//            let deltas = deltas |> Seq.toList |> List.sort
-//            deltas |> should equal (numbers |> List.map Add)
-//
-//    [<Test>]
-//    let ``[CSet] concurrent reader-reset``() =
-//        
-//        let set = CSet.ofList [1..100]
-//
-//        let r = (set :> aset<_>).GetReader()
-//        let running = ref true
-//
-//        Task.Factory.StartNew(fun () ->
-//            while !running do
-//                set.Clear() // causing reset
-//                set.UnionWith [1..100] // changing content
-//        ) |> ignore
-//
-//        for i in 0..1000 do
-//            r.GetDelta() |> ignore
-//
-//        running := false
-//
-//    [<Test>]
-//    let ``[CSet] delta elimination``() =
-//        
-//        let set = CSet.empty
-//        let r = (set :> aset<_>).GetReader()
-//
-//        r.Update()
-//
-//        transact (fun () -> set.Add 1 |> ignore; set.Remove 1 |> ignore)
-//
-//        r.GetDelta() |> should equal []
-//        r.Content.Count |> should equal 0
-//
-//
-//
-//
-//
-//
-//
-//
-//    [<Test>]
-//    let ``[ASet] finalizers working``() =
-//        let input = CSet.ofList [1]
-//
-//        let getDerivedReader(input : aset<'a>) =
-//            let r = input |> ASet.map id |> ASet.map id
-//
-//            r.GetReader()
-//        let reader = getDerivedReader input
-//        //let reader = set.GetReader()
-//
-//        System.GC.Collect()
-//        System.GC.WaitForFullGCComplete() |> ignore
-//        System.GC.Collect()
-//        System.GC.WaitForFullGCComplete() |> ignore
-//
-//        reader.GetDelta() |> should setEqual [Add 1]
-//        reader.Dispose()
-//
-//    [<Test>]
-//    let ``[ASet] reader modification/creation/disposal/pull``() =
-//        let input = CSet.empty
-//        let derived = input |> ASet.map id
-//
-//        let mutable readers = []
-//        let random = Random()
-//
-//        for i in 0..10000 do
-//            
-//            let op = random.Next(6)
-//
-//            match op with
-//                | 0|1|2 ->
-//                    let r = derived.GetReader()
-//                    Interlocked.Change(&readers, fun l -> r::l) |> ignore
-//                | 3 ->
-//                    let v = random.Next()
-//                    transact (fun () -> CSet.add v input |> ignore)
-//                | 4 ->
-//                    let reader =
-//                        Interlocked.Change(&readers, fun l ->
-//                            match l with
-//                                | r::rest -> (rest, Some r)
-//                                | _ -> l, None
-//                        )
-//
-//                    match reader with
-//                        | Some r -> r.Dispose()
-//                        | None -> ()
-//                | _ ->
-//                    match readers with
-//                        | [] -> ()
-//                        | _ ->
-//                            let r = readers |> List.item (random.Next(readers.Length)) 
-//                            let old = HashSet r.State
-//                            let deltas = r.GetDelta()
-//
-//                            for d in deltas do
-//                                match d with
-//                                    | Add(_,v) -> old.Add v |> ignore
-//                                    | Rem(_,v) -> old.Remove v |> ignore
-//                                    
-//                            old |> should setEqual r.State
-//                            r.State |> should setEqual input
-//
-//
-//
-//
-//        ()
+
+[<AutoOpen>]
+module ``utils`` =
+
+    type Tree<'a> = Node of aset_check<Tree<'a>> | Leaf of aset_check<'a>
+
+    type DeltaList<'a>() =
+        let store = List<hdeltaset<'a>>()
+
+        member x.push (deltas : list<SetOperation<'a>>) =
+            store.Add (HDeltaSet.ofList deltas) 
+
+        member x.read() =
+            let res = store |> Seq.toList
+            store.Clear()
+            res
+
+module ``collect tests`` =
+
+    [<Test>]
+    let ``[ASet] duplicate handling in collect``() =
+        let i0 = CSetCheck.ofList [1;2;3]
+        let i1 = CSetCheck.ofList [3;4;5]
+        let s = CSetCheck.ofList [i0 :> aset_check<_>]
+
+        // union {{1,2,3}}
+        let d = s |> ASetCheck.collect id
+        let r = d.GetReader()
+        r.GetDelta() |> should setEqual [Add 1; Add 2; Add 3]
+        r.Content |> should setEqual [1;2;3]
+        
+        // union {{1,2,3}, {3,4,5}} -> { Add 4, Add 5 }
+        transact (fun () ->
+            s.Add i1 |> should equal true
+        )
+        r.GetDelta() |> should setEqual [Add 4; Add 5]
+        r.Content |> should setEqual [1;2;3;4;5]
+
+        // union {{3,4,5}} -> { Rem 1, Rem 2 }
+        transact (fun () ->
+            s.Remove i0 |> should equal true
+        )
+        r.GetDelta() |> should setEqual [Rem 1; Rem 2]
+        r.Content |> should setEqual [3;4;5]
+
+        // union {{4,5}} -> { Rem 3 }
+        transact (fun () ->
+            i1.Remove 3 |> should equal true
+        )
+        r.GetDelta() |> should setEqual [Rem 3]
+        r.Content |> should setEqual [4;5]
+
+        // union {{1,2,3}, {4,5}} -> { Add 1, Add 2, Add 3 }
+        transact (fun () ->
+            s.Add i0 |> should equal true
+        )
+        r.GetDelta() |> should setEqual [Add 1; Add 2; Add 3]
+        r.Content |> should setEqual [1;2;3;4;5]
+
+        // union {{1,2,3}, {3,4,5}} -> { }
+        transact (fun () ->
+            i1.Add 3 |> should equal true
+        )
+        r.GetDelta() |> should setEqual List.empty<SetOperation<int>>
+        r.Content |> should setEqual [1;2;3;4;5]
+
+        // union {{1,2}, {3,4,5}} -> { }
+        transact (fun () ->
+            i0.Remove 3 |> should equal true
+        )
+        r.GetDelta() |> should setEqual List.empty<SetOperation<int>>
+        r.Content |> should setEqual [1;2;3;4;5]
+
+        // union {{1,2}, {4,5}} -> { Rem 3 }
+        transact (fun () ->
+            i1.Remove 3 |> should equal true
+        )
+        r.GetDelta() |> should setEqual [Rem 3]
+        r.Content |> should setEqual [1;2;4;5]
+
+    [<Test>]
+    let ``[ASet] move test``() =
+        let c0 = CSetCheck.ofList [1]
+        let c1 = CSetCheck.ofList [2]
+
+        let s = CSetCheck.ofList[c0 :> aset_check<_>;c1 :> aset_check<_>]
+
+        let res = s |> ASetCheck.collect id
+        let r = res.GetReader()
+
+        // union {{1},{2}}
+        r.GetDelta() |> should setEqual [Add 1; Add 2]
+        r.Content |> should setEqual [1;2]
+
+        // union {{2},{1}}
+        transact (fun () ->
+            c0.Remove 1 |> should equal true
+            c1.Add 1 |> should equal true
+            c1.Remove 2 |> should equal true
+            c0.Add 2 |> should equal true
+        )
+        r.GetDelta() |> should setEqual List.empty<SetOperation<int>>
+        r.Content |> should setEqual [1;2]
+    
+[<AutoOpen>]
+module OtherASetTests =
+
+    [<Test>]
+    let ``[ASet] tree flatten test``() =
+        let rec flatten (t : Tree<'a>) =
+            match t with
+                | Node children -> children |> ASetCheck.collect (flatten)
+                | Leaf values -> values
+
+        let l2 = CSetCheck.ofList [1]
+        let l1 = CSetCheck.ofList [Leaf l2]
+        let l0 = CSetCheck.ofList [Node l1]
+        let t = Node (l0)
+
+        // Node { Node { Leaf { 1 } } }
+        let s = flatten t
+        let r = s.GetReader()
+        r.GetDelta() |> should setEqual [Add 1]
+        r.Content |> should setEqual [1]
+
+
+        // Node { Node { Leaf { 1, 3 }, Leaf { 2 } } }
+        let l22 = CSetCheck.ofList [2] :> aset_check<_> |> Leaf
+        transact (fun () ->
+            l1.Add l22 |> should equal true
+            l2.Add 3 |> should equal true
+        )
+        r.GetDelta() |> should setEqual [Add 2; Add 3]
+        r.Content |> should setEqual [1; 2; 3]
+
+
+        // Node { Leaf { 1, 5 } , Node { Leaf { 1, 3 }, Leaf { 2 } } }
+        let l12 = CSetCheck.ofList [1;5] :> aset_check<_> |> Leaf
+        transact (fun () ->
+            l0.Add l12 |> should equal true
+        )
+        r.GetDelta() |> should setEqual [Add 5]
+        r.Content |> should setEqual [1; 2; 3; 5]
+
+        // Node { Leaf { 1, 5 } , Node { Leaf { 2 } } }
+        transact (fun () ->
+            l1.Remove (Leaf l2) |> should equal true
+        )
+        r.GetDelta() |> should setEqual [Rem 3]
+        r.Content |> should setEqual [1; 2; 5]
+
+        // Node { Leaf { 1, 5 } , Node { Leaf { 2 }, Node { Leaf { 17 } } } }
+        let n = Node (CSetCheck.ofList [Leaf (CSetCheck.ofList [17])])
+        transact (fun () ->
+            l1.Add n |> should equal true
+        )
+        r.GetDelta() |> should setEqual [Add 17]
+        r.Content |> should setEqual [1; 2; 5; 17]
+
+        ()
+
+    [<Test>]
+    let ``[ASet] callback test``() =
+
+        let deltas = DeltaList<int>()
+
+        let set = cset [1;2;3;4]
+        let m = set |> ASet.map (fun a -> 2 * a)
+        let s = m |> ASet.unsafeRegisterCallbackNoGcRoot deltas.push
+
+        // { 1, 2, 3, 4 } -> [Add 2; Add 4; Add 6; Add 8]
+        deltas.read() |> should deltaListEqual [HDeltaSet.ofList [Add 2; Add 4; Add 6; Add 8]]
+
+        // { 1, 3, 4, 5 } -> [Add 10; Rem 4]
+        transact (fun () ->
+            set.Add 5 |> ignore
+            set.Remove 2 |> ignore
+        )
+        deltas.read() |> should deltaListEqual [HDeltaSet.ofList [Rem 4; Add 10]]
+
+        // { 1, 4, 5, 6 } -> [Add 12; Rem 6]
+        transact (fun () ->
+            set.Add 6 |> ignore
+            set.Remove 3 |> ignore
+        )
+        deltas.read() |> should deltaListEqual [HDeltaSet.ofList [Rem 6; Add 12]]
+
+        // { 1, 4, 5, 6, 7 } -> [Add 14]
+        transact (fun () -> set.Add 7 |> ignore)
+
+        // { 1, 4, 5, 6, 7, 8 } -> [Add 16]
+        transact (fun () -> set.Add 8 |> ignore)
+        deltas.read() |> should deltaListEqual [HDeltaSet.ofList [Add 14]; HDeltaSet.ofList [Add 16]]
+
+
+        s.Dispose()
+
+        // { 1, 4, 5, 6, 7 } -> [] (unsubscribed)
+        transact (fun () -> set.Add 9 |> ignore)
+        deltas.read() |> should deltaListEqual ([] : list<hdeltaset<int>>)
+
+
+
+
+        ()
+
+    [<Test>]
+    let ``[ASet] callback changing other list``() =
+        
+        let set = cset [1;2]
+
+        let derived = set |> ASet.map (fun a -> 1 + a)
+        let inner = cset []
+
+        let s = derived |> ASet.unsafeRegisterCallbackKeepDisposable (fun delta ->
+            for d in delta do
+                match d with
+                    | Add(_,v) -> inner.Add v |> ignore
+                    | Rem(_,v) -> inner.Remove v |> ignore
+        )
+
+        
+        let dervivedInner = inner |> ASet.map id
+
+        let r = dervivedInner.GetReader()
+        r.GetDelta() |> should setEqual [Add 2; Add 3]
+
+        transact (fun () ->
+            set.Add 3 |> should equal true
+        )
+        r.GetDelta() |> should setEqual [Add 4]
+
+    [<Test>]
+    let ``[ASet] toMod triggering even with equal set referece``() =
+        
+        let s = CSet.empty
+
+        let triggerCount = ref 0
+        let hasTriggered() =
+            let c = !triggerCount
+            triggerCount := 0
+            c > 0
+
+        let leak = 
+            s |> ASet.toMod |> Mod.unsafeRegisterCallbackNoGcRoot (fun set ->
+                triggerCount := !triggerCount + 1
+            )
+
+        hasTriggered() |> should equal true
+
+
+        transact(fun () ->
+            CSet.add 1 s |> ignore
+        )
+        hasTriggered() |> should equal true
+
+        transact(fun () ->
+            CSet.add 1 s |> ignore
+        )
+        hasTriggered() |> should equal false
+
+        transact(fun () ->
+            CSet.remove 1 s |> ignore
+        )
+        hasTriggered() |> should equal true
+
+
+        //pretend leak is used
+        ignore leak
+
+
+
+    [<Test>]
+    let ``[ASet] concurrency collect test``() =
+
+        let l = obj()
+        let set = CSet.empty
+        let derived = set |> ASet.collect id
+        use reader = derived.GetReader()
+        let numbers = [0..9999]
+
+        use sem = new SemaphoreSlim(0)
+        use cancel = new CancellationTokenSource()
+        let ct = cancel.Token
+
+        // pull from the system
+        Task.Factory.StartNew(fun () ->
+            while true do
+                ct.ThrowIfCancellationRequested()
+                let delta = reader.GetDelta()
+                //Thread.Sleep(10)
+                ()
+        ) |> ignore
+
+
+        // submit into the system
+        for n in numbers do
+            let s = ASet.single n
+            Task.Factory.StartNew(fun () ->
+                transact (fun () ->
+                    lock l (fun () ->
+                        set.Add(s) |> ignore
+                    )
+                )
+                sem.Release() |> ignore
+            ) |> ignore
+
+        // wait for all submissions to be done
+        for n in numbers do
+            sem.Wait()
+
+        cancel.Cancel()
+
+        reader.GetDelta() |> ignore
+
+
+        let content = reader.State |> Seq.toList |> List.sort
+
+        content |> should equal numbers
+
+    [<Test>]
+    let ``[ASet] concurrency multi reader test``() =
+
+        let l = obj()
+        let set = CSet.empty
+        let derived = set |> ASet.collect id
+        let numbers = [0..1000]
+
+        use sem = new SemaphoreSlim(0)
+        use cancel = new CancellationTokenSource()
+        let ct = cancel.Token
+
+
+        let readers = [1..3] |> List.map (fun _ -> derived.GetReader())
+        // pull from the system
+
+        for r in readers do
+            Task.Factory.StartNew(fun () ->
+                while true do
+                    ct.ThrowIfCancellationRequested()
+                    let delta = r.GetDelta()
+                    
+                    //if not (List.isEmpty delta) then
+                    //    Console.WriteLine("delta: {0}", List.length delta)
+                    //Thread.Sleep(1)
+                    ()
+            ) |> ignore
+
+
+        // submit into the system
+        for n in numbers do
+            let s = ASet.single n
+            Task.Factory.StartNew(fun () ->
+                transact (fun () ->
+                    lock l (fun () ->
+                        set.Add(s) |> ignore
+                    )
+                )
+                sem.Release() |> ignore
+            ) |> ignore
+
+        // wait for all submissions to be done
+        for n in numbers do
+            sem.Wait()
+
+        cancel.Cancel()
+
+        for r in readers do
+            r.GetDelta() |> ignore
+            let content = r.State |> Seq.toList |> List.sort
+            content |> should equal numbers
+
+
+    type Leak(cnt : ref<int>) =
+        do cnt := !cnt + 1
+        override x.Finalize() = cnt := !cnt - 1
+
+    [<Test>]
+    let ``[ASet] memory leak test`` () =
+        let mutable independenSource = Mod.init 10
+        let cnt = ref 0
+        let f () =
+            let mutable leak = Leak(cnt)
+            let normalSource = CSet.ofList [ leak ]
+            let mapped = 
+                normalSource 
+                    |> ASet.map (fun l -> 
+                        let m = independenSource |> Mod.map (fun i -> l)
+                        Mod.force m |> ignore
+                        m
+                    ) 
+            mapped |> ASet.toArray |> ignore
+            transact (fun () -> normalSource |> CSet.remove leak |> should be True)
+            leak <- Unchecked.defaultof<_>
+        f()
+        GC.Collect ()
+        GC.WaitForPendingFinalizers()
+        !cnt |> should equal 0  
+        printfn "%A" independenSource 
+        ()
+
+    [<Test>]
+    let ``[ASet] concurrency buffered reader test``() =
+
+        let l = obj()
+        let set = CSet.empty
+
+        let derived = set |> ASet.collect id |> ASet.map id // |> ASet.choose Some |> ASet.collect ASet.single |> ASet.collect ASet.single
+        use reader = derived.GetReader()
+        let numbers = [0..9999]
+
+        use sem = new SemaphoreSlim(0)
+        use cancel = new CancellationTokenSource()
+        let ct = cancel.Token
+
+        // pull from the system
+        Task.Factory.StartNew(fun () ->
+            while true do
+                ct.ThrowIfCancellationRequested()
+                let delta = reader.GetDelta()
+                //Thread.Sleep(10)
+                ()
+        ) |> ignore
+
+
+        // submit into the system
+        for n in numbers do
+            let s = ASet.single n
+            Task.Factory.StartNew(fun () ->
+                transact (fun () ->
+                    lock l (fun () ->
+                        set.Add(s) |> ignore
+                    )
+                )
+                sem.Release() |> ignore
+            ) |> ignore
+
+        // wait for all submissions to be done
+        for n in numbers do
+            sem.Wait()
+
+        cancel.Cancel()
+
+        reader.GetDelta() |> ignore
+
+
+        let content = reader.State |> Seq.toList |> List.sort
+
+        content |> should equal numbers
+
+
+    [<Test>]
+    let ``[ASet] concurrency overkill test``() =
+
+        let l = obj()
+        let set = CSet.empty
+
+        let derived = set |> ASet.collect id |> ASet.map id |> ASet.choose Some |> ASet.collect ASet.single |> ASet.collect ASet.single
+        let readers = [1..3] |> List.map (fun _ -> derived.GetReader())
+        let numbers = [0..1000]
+
+        use sem = new SemaphoreSlim(0)
+        use cancel = new CancellationTokenSource()
+        let ct = cancel.Token
+
+
+        for r in readers do
+            // pull from the system
+            Task.Factory.StartNew(fun () ->
+                while true do
+                    ct.ThrowIfCancellationRequested()
+                    let delta = r.GetDelta()
+                    Thread.Sleep(1)
+                    ()
+            , TaskCreationOptions.LongRunning) |> ignore
+
+
+        // submit into the system
+        for n in numbers do
+            let s = CSet.ofList [n]
+            Task.Factory.StartNew(fun () ->
+                transact (fun () ->
+                    lock l (fun () ->
+                        set.Add(s) |> ignore
+                    )
+                )
+                sem.Release() |> ignore
+            , TaskCreationOptions.LongRunning) |> ignore
+
+        // wait for all submissions to be done
+        for n in numbers do
+            sem.Wait()
+
+        cancel.Cancel()
+
+        for r in readers do
+            r.GetDelta() |> ignore
+
+
+        for r in readers do
+            let content = r.State |> Seq.toList |> List.sort
+
+            content |> should equal numbers
+
+    [<Test>]
+    let ``[ASet] stacked deltas test`` () =
+
+        let set = CSet.empty
+
+        let derived = set |> ASet.collect id |> ASet.map id |> ASet.choose Some |> ASet.collect ASet.single |> ASet.collect ASet.single
+
+        let readers = Array.init 10 (fun _ -> derived.GetReader())
+
+        for r in readers do
+            r.Update()
+            r.State |> Seq.toList |> should equal List.empty<int>
+
+
+        transact (fun () ->
+            
+            set.Add (ASet.ofList [1;3;4]) |> ignore
+            set.Add (ASet.single 2) |> ignore
+        )
+
+        for r in readers do
+            r.GetDelta() |> should setEqual [Add 1; Add 2; Add 3; Add 4]
+            r.State |> Seq.sort |> Seq.toList |> should equal [1; 2; 3; 4]
+
+
+        transact (fun () ->
+            
+            set.Add (ASet.ofList [5;6;7]) |> ignore
+            set.Add (ASet.single 8) |> ignore
+        )
+
+        for r in readers do
+            r.GetDelta() |> should setEqual [Add 5; Add 6; Add 7; Add 8]
+            r.State |> Seq.sort |> Seq.toList |> should equal [1; 2; 3; 4; 5; 6; 7; 8]
+
+
+
+
+
+        ()
+
+
+    [<Test>]
+    let ``[ASet] concurrent readers``() =
+
+        let l = obj()
+        let set = CSet.empty
+        let derived = set |> ASet.collect id
+        let numbers = [0..9999]
+
+        use cancel = new CancellationTokenSource()
+        let ct = cancel.Token
+
+
+        let readers = [|0..5|] |> Array.map (fun _ -> derived.GetReader())
+        // pull from the system
+
+        let lists = Array.init readers.Length (fun _ -> System.Collections.Generic.List())
+
+
+        for i in 0..readers.Length-1 do
+            let r = readers.[i]
+            let deltas = lists.[i]
+            Task.Factory.StartNew(fun () ->
+                while true do
+                    ct.ThrowIfCancellationRequested()
+                    let delta = r.GetDelta()
+
+
+                    deltas.AddRange delta
+                    if not (HDeltaSet.isEmpty delta) then
+                        Console.WriteLine("delta: {0}", HDeltaSet.count delta)
+                    //Thread.Sleep(1)
+                    ()
+            ) |> ignore
+
+
+        // submit into the system
+        for n in numbers do
+            if n % 2 = 0 then
+                let s = ASet.single n
+                transact (fun () ->
+                    lock l (fun () ->
+                        set.Add(s) |> ignore
+                        set.Add(ASet.single (n+1)) |> ignore
+                    )
+                )
+
+        cancel.Cancel()
+
+        for i in 0..readers.Length-1 do
+            let r = readers.[i]
+            let deltas = lists.[i]
+            r.GetDelta() |> deltas.AddRange
+
+            let content = r.State |> Seq.toList |> List.sort
+            content |> should equal numbers
+
+            let deltas = deltas |> Seq.toList |> List.sort
+            deltas |> should equal (numbers |> List.map Add)
+
+
+    [<Test>]
+    let ``[CSet] delta elimination``() =
+        
+        let set = CSet.empty
+        let r = (set :> aset<_>).GetReader()
+
+        r.Update()
+
+        transact (fun () -> set.Add 1 |> ignore; set.Remove 1 |> ignore)
+
+        r.GetDelta() |> should setEqual List.empty<SetOperation<int>>
+        r.State.Count |> should equal 0
+
+
+
+
+
+
+
+
+    [<Test>]
+    let ``[ASet] finalizers working``() =
+        let input = CSet.ofList [1]
+
+        let getDerivedReader(input : aset<'a>) =
+            let r = input |> ASet.map id |> ASet.map id
+
+            r.GetReader()
+        let reader = getDerivedReader input
+        //let reader = set.GetReader()
+
+        System.GC.Collect()
+        System.GC.WaitForFullGCComplete() |> ignore
+        System.GC.Collect()
+        System.GC.WaitForFullGCComplete() |> ignore
+
+        reader.GetDelta() |> should setEqual [Add 1]
+        reader.Dispose()
+
 //
 //        
 //    module GCHelper =
@@ -1158,115 +1090,33 @@ module ASetPerformance =
             printfn "  transact: %A" ((tTransact.MicroTime - tSubmit.MicroTime) / cnt)
             printfn "  pull:     %A" (tPull.MicroTime / cnt)
 
-//    [<Test>]
-//    let ``[ASet] bind caching``() =
-//
-//        let set = cset [1;2;3;4;5;6;7;8;9]
-//
-//        let sel = set |> ASet.map (fun x -> printfn "first map: %A" x; x * 2)
-//
-//        let modul = Mod.init 3
-//        
-//        let tes = ASet.filter (fun n -> (n % 2) = 0) set
-//
-//        let b = modul |> ASet.bind (fun m -> sel |> ASet.filter (fun n -> (n % m) = 0))
-//                
-//        let b2 = b |> ASet.map (fun n -> printfn "second map: %A" n; n * 3)
-//
-//        let o = ASet.toMod b2
-//
-//        printfn "initial"
-//
-//        let force = o.GetValue()
-//
-//        printfn "change modul"
-//
-//        transact (fun () -> Mod.change modul 2)
-//
-//        let force = o.GetValue()
-//
-//        printfn "done"
-//
-//        ()
-//
-//[<AutoOpen>]
-//module ConcurrentDeltaQueueTests =
-//
-//    let private compilerTest () =
-//        let r = System.Random()
-//        let livingThings = System.Collections.Generic.List<_>()
-//        let mutable freshIds = 0L
-//        for i in 0 .. 100000 do
-//            let operations = System.Collections.Generic.List<Delta<int64>>()
-//            let newThings = 
-//                [ for i in 0 .. r.Next(0,20) do 
-//                        freshIds <- freshIds + 1L
-//                        livingThings.Add freshIds |> ignore
-//                        operations.Add (Add freshIds)
-//                ]
-//            for i in operations do printfn "%A" i
-//
-//        printfn "okay"
-//
-//
-//    [<Test>]
-//    let ``[ASet ConcurrentDeltaQueue] concurrent delta queue test``() =
-//
-//        
-//        compilerTest()
-//        let set = CSet.empty
-//
-//        let queue = new ConcurrentDeltaQueue<int64>()
-//
-//        let r = System.Random()
-//        let mutable freshIds = 0L
-//        let livingThings = System.Collections.Generic.HashSet<int64>()
-//
-//        let perIteration = 20
-//
-//        let producer () =
-//            for i in 0 .. 100000 do
-//                let operations = List<Delta<int64>>()
-//
-//                for i in 0 .. r.Next(0,perIteration) do
-//                    let arr = livingThings |> Seq.toArray
-//                    if arr.Length > 100 then
-//                        let toRemove = arr.[r.Next(0,arr.Length-1)]
-//                        livingThings.Remove toRemove |> ignore
-//                        operations.Add (Rem toRemove)
-//                    
-//                let newThings = 
-//                    [| for i in 0 .. r.Next(0,perIteration) do 
-//                        freshIds <- freshIds + 1L
-//                        livingThings.Add freshIds |> ignore
-//                        operations.Add (Add freshIds)
-//                        yield freshIds
-//                    |]
-//
-//
-//                for i in operations do queue.Enqueue i |> ignore
-//
-//            for x in livingThings |> Seq.toArray do 
-//                livingThings.Remove x |> ignore
-//                queue.Enqueue (Rem x) |> ignore
-//
-//
-//        let conc = System.Collections.Concurrent.ConcurrentHashSet()
-//
-//        let cts = new System.Threading.CancellationTokenSource()
-//
-//        let consumer  =
-//            async {
-//                do! Async.SwitchToNewThread()
-//
-//                while true do 
-//                    let! i = queue.DequeueAsync()
-//                    match i with
-//                        | Add v -> if conc.Add( v) then () else failwith "duplicate!?!?!?"
-//                        | Rem v -> if conc.Remove v then () else failwith "Rem of non existing?!?!?!"
-//            }
-//
-//        //let arrs = [ for i in 0 .. 8 do yield Async.StartAsTask( consumer,cancellationToken = cts.Token) ]
-//
-//        producer()
-//        cts.Cancel()
+    [<Test>]
+    let ``[ASet] bind caching``() =
+
+        let set = cset [1;2;3;4;5;6;7;8;9]
+
+        let sel = set |> ASet.map (fun x -> printfn "first map: %A" x; x * 2)
+
+        let modul = Mod.init 3
+        
+        let tes = ASet.filter (fun n -> (n % 2) = 0) set
+
+        let b = modul |> ASet.bind (fun m -> sel |> ASet.filter (fun n -> (n % m) = 0))
+                
+        let b2 = b |> ASet.map (fun n -> printfn "second map: %A" n; n * 3)
+
+        let o = ASet.toMod b2
+
+        printfn "initial"
+
+        let force = o.GetValue()
+
+        printfn "change modul"
+
+        transact (fun () -> Mod.change modul 2)
+
+        let force = o.GetValue()
+
+        printfn "done"
+
+        ()
