@@ -151,7 +151,7 @@ type Runner<'s>(state : 's) =
 
     let now () = sw.Elapsed.TotalSeconds
 
-    override x.Compute() =
+    override x.Compute(t) =
         x.Evaluate()
             
         if dependsOnTime then

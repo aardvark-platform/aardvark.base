@@ -17,10 +17,10 @@ type Mod private() =
     static member LazyConstant (f : Func<'a>) : IMod<'a> =
         Mod.delay f.Invoke
 
-    static member Custom (f : Func<IMod<'a>, 'a>) : IMod<'a> =
+    static member Custom (f : Func<AdaptiveToken, 'a>) : IMod<'a> =
         Mod.custom f.Invoke
 
-    static member MapCustom (f : Func<IMod<'a>, 'a>,  [<ParamArray>] inputs : IAdaptiveObject[] ) : IMod<'a> =
+    static member MapCustom (f : Func<AdaptiveToken, 'a>,  [<ParamArray>] inputs : IAdaptiveObject[] ) : IMod<'a> =
         Mod.mapCustom f.Invoke (List.ofArray(inputs))
 
     static member Async(t : System.Threading.Tasks.Task<'a>, defaultValue : 'a) : IMod<'a> =
@@ -299,7 +299,7 @@ type AdaptiveSetExtensions private() =
 
     [<Extension>]
     static member GetDeltas (this : ISetReader<'a>) =
-        this.GetOperations(null) |> HDeltaSet.toArray
+        this.GetOperations(AdaptiveToken()) |> HDeltaSet.toArray
 
     /// <summary> see ASet/ASetModule.unsafeRegisterCallbackNoGcRoot </summary>
     [<Extension>]

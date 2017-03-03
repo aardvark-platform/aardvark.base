@@ -307,7 +307,7 @@ module SimSetTest =
 
     let check (verbose : bool) (reader : ISetReader<'a>) (set : simset<'a>) =
         let asetOldState = reader.State
-        let asetOps = reader.GetOperations null
+        let asetOps = reader.GetOperations(AdaptiveToken())
         let asetState = reader.State
         let simState = set.Content
 
@@ -359,12 +359,6 @@ module SimSetTest =
             validate cnt false g
             System.Console.WriteLine("OK, " + string cnt + " tests")
         ()
-
-    [<Property>]
-    let Seppy(data : list<int>) =
-        let set = csimset data
-        let test = set |> SimSet.collect (fun a -> set :> simset<_>)
-        validate 100 true test 
 
 
 

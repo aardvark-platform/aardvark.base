@@ -214,8 +214,8 @@ module AList =
             override x.Release() =
                 r.Dispose()
 
-            override x.Compute() =
-                r.GetOperations x |> PDeltaList.map (fun i op ->
+            override x.Compute(token) =
+                r.GetOperations token |> PDeltaList.map (fun i op ->
                     match op with
                         | Remove -> Remove
                         | Set v -> Set (mapping i v)
@@ -231,8 +231,8 @@ module AList =
                 mapping.Clear()
                 r.Dispose()
 
-            override x.Compute() =
-                r.GetOperations x |> PDeltaList.choose (fun i op ->
+            override x.Compute(token) =
+                r.GetOperations token |> PDeltaList.choose (fun i op ->
                     match op with
                         | Remove -> 
                             match mapping.Revoke(i) with
@@ -254,8 +254,8 @@ module AList =
                 mapping.Clear()
                 r.Dispose()
 
-            override x.Compute() =
-                r.GetOperations x |> PDeltaList.choose (fun i op ->
+            override x.Compute(token) =
+                r.GetOperations token |> PDeltaList.choose (fun i op ->
                     match op with
                         | Remove -> 
                             match mapping.Revoke(i) with
@@ -318,10 +318,10 @@ module AList =
                         reader <- None
                     | None -> ()
 
-            override x.Compute() =
+            override x.Compute(token) =
                 match reader with
                     | Some r -> 
-                        let ops = r.GetOperations x
+                        let ops = r.GetOperations token
 
                         ops |> PDeltaList.collect (fun ii op ->
                             match op with
@@ -399,16 +399,16 @@ module AList =
                 readers.Clear()
                 input.Dispose()
 
-            override x.Compute(dirty) =
+            override x.Compute(token, dirty) =
                 let mutable result = 
-                    input.GetOperations x |> PDeltaList.collect (fun i op ->
+                    input.GetOperations token |> PDeltaList.collect (fun i op ->
                         match op with
-                            | Remove -> x.Revoke(dirty,i)
+                            | Remove -> x.Revoke(dirty, i)
                             | Set v -> x.Invoke(dirty, i, v)
                     )
 
                 for d in dirty do
-                    result <- PDeltaList.combine result (d.GetOperations x)
+                    result <- PDeltaList.combine result (d.GetOperations token)
 
                 result
 
@@ -468,16 +468,16 @@ module AList =
                 readers.Clear()
                 input.Dispose()
 
-            override x.Compute(dirty) =
+            override x.Compute(token, dirty) =
                 let mutable result = 
-                    input.GetOperations x |> PDeltaList.collect (fun i op ->
+                    input.GetOperations token |> PDeltaList.collect (fun i op ->
                         match op with
                             | Remove -> x.Revoke(dirty,i)
                             | Set v -> x.Invoke(dirty, i, v)
                     )
 
                 for d in dirty do
-                    result <- PDeltaList.combine result (d.GetOperations x)
+                    result <- PDeltaList.combine result (d.GetOperations token)
 
                 result
 
@@ -509,13 +509,13 @@ module AList =
                 readers.Clear()
                 readers.Clear()
 
-            override x.Compute(dirty) =
+            override x.Compute(token, dirty) =
                 if initial then
                     initial <- false
-                    readers.Values |> Seq.fold (fun d r -> PDeltaList.combine d (r.GetOperations x)) PDeltaList.empty
+                    readers.Values |> Seq.fold (fun d r -> PDeltaList.combine d (r.GetOperations token)) PDeltaList.empty
 
                 else    
-                    dirty |> Seq.fold (fun d r -> PDeltaList.combine d (r.GetOperations x)) PDeltaList.empty
+                    dirty |> Seq.fold (fun d r -> PDeltaList.combine d (r.GetOperations token)) PDeltaList.empty
 
         type SetSortByReader<'a, 'b when 'b : comparison>(scope : Ag.Scope, input : aset<'a>, mapping : 'a -> 'b) =
             inherit AbstractReader<pdeltalist<'a>>(scope, PDeltaList.monoid)
@@ -529,8 +529,8 @@ module AList =
                 mapping.Clear(ignore)
                 reader.Dispose()
 
-            override x.Compute() =
-                reader.GetOperations x 
+            override x.Compute(token) =
+                reader.GetOperations token 
                     |> HDeltaSet.toSeq
                     |> Seq.map (fun d ->
                         match d with
@@ -557,8 +557,8 @@ module AList =
                 indices.Clear()
                 reader.Dispose()
 
-            override x.Compute() =
-                reader.GetOperations x 
+            override x.Compute(token) =
+                reader.GetOperations token
                     |> HDeltaSet.toSeq
                     |> Seq.map (fun d ->
                         match d with
@@ -590,8 +590,8 @@ module AList =
                 reader.Dispose()
                 last <- Index.zero
 
-            override x.Compute() =
-                reader.GetOperations x
+            override x.Compute(token) =
+                reader.GetOperations token
                     |> HDeltaSet.toSeq
                     |> Seq.map (fun d ->
                     match d with
@@ -613,9 +613,9 @@ module AList =
             override x.Release() =
                 reader.Dispose()
 
-            override x.Compute() =
+            override x.Compute(token) =
                 let oldContent = reader.State.Content
-                reader.GetOperations x 
+                reader.GetOperations token
                     |> PDeltaList.toSeq
                     |> Seq.collect (fun (i,op) ->
                         match op with
@@ -646,9 +646,9 @@ module AList =
                 mapping.Clear()
                 reader.Dispose()
 
-            override x.Compute() =
+            override x.Compute(token) =
                 let oldContent = reader.State.Content
-                reader.GetOperations x 
+                reader.GetOperations token
                     |> PDeltaList.collect (fun ii op ->
                         match op with
                             | Set v ->
@@ -688,9 +688,9 @@ module AList =
                 indices.Clear()
                 reader.Dispose()
 
-            override x.Compute() =
+            override x.Compute(token) =
                 let oldContent = reader.State.Content
-                reader.GetOperations x 
+                reader.GetOperations token
                     |> PDeltaList.collect (fun i op ->
                         match op with
                             | Set v -> 

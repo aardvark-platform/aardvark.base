@@ -568,35 +568,66 @@ module ``Basic Mod Tests`` =
         let apb = Mod.map2 (+) a b
         apb |> Mod.force |> ignore
 
+        let pullers = 3
+        let changers = 3
+
+        let countdown = new CountdownEvent(pullers)
+        let mutable iterations = 0
         let mutable changes = 0
+        let mutable exn = None
+
+
         let r = System.Random()
         let changer = 
             async {
                 do! Async.SwitchToNewThread()
                 while true do
-                    //do! Async.Sleep 0
                     transact (fun () -> Mod.change i (r.Next()))
                     Interlocked.Increment &changes |> ignore
             }
 
+        let puller =
+            async {
+                let sw = System.Diagnostics.Stopwatch()
+                sw.Start()
+                do! Async.SwitchToNewThread()
+                while sw.Elapsed.TotalSeconds < 10.0 do
+                    let r = Mod.force apb
+                    if r <> 0 then 
+                        exn <- Some (sprintf "hate :%d" iterations)
+                        failwithf "hate :%d" iterations
+                    Interlocked.Increment(&iterations) |> ignore
+
+                countdown.Signal() |> ignore
+            }
 
 
-        for i in 0 .. 2 do 
+        for i in 1 .. changers do 
             Async.Start changer
 
-        let sw = System.Diagnostics.Stopwatch()
-        let mutable iterations = 0
-        sw.Start()
-        while sw.Elapsed.TotalSeconds < 10.0 do
-            let r = Mod.force apb
-            if r <> 0 then failwithf "hate :%d" iterations
-            iterations <- iterations + 1
-            if iterations % 10000 = 0 then
-                let progress = sw.Elapsed.TotalSeconds / 10.0
-                printfn "%.2f%%" (100.0 * progress)
+        for i in 1 .. pullers do 
+            Async.Start puller
+
+
+        countdown.Wait()
+
+        match exn with
+            | Some e -> failwith e
+            | None -> ()
+
+//        let sw = System.Diagnostics.Stopwatch()
+//        sw.Start()
+//        while sw.Elapsed.TotalSeconds < 10.0 do
+//            let r = Mod.force apb
+//            if r <> 0 then failwithf "hate :%d" iterations
+//            iterations <- iterations + 1
+//            if iterations % 10000 = 0 then
+//                let progress = sw.Elapsed.TotalSeconds / 10.0
+//                printfn "%.2f%%" (100.0 * progress)
 
         printfn "done: %A" iterations
         printfn "changes: %A" changes
+    
     [<Test>]
     let ``[Mod] consistent concurrency dirty set``() =
         //let i = Mod.init 10
@@ -630,14 +661,14 @@ module ``Basic Mod Tests`` =
             let dirty = HashSet<IMod<int>> [a;b]
             let mutable initial = true
             { new Mod.AbstractDirtyTrackingMod<IMod<int>, int>() with
-                member x.Compute(dirty) =
+                member x.Compute(token, dirty) =
                     if initial then
-                        a.GetValue(x) |> ignore
-                        b.GetValue(x) |> ignore
+                        a.GetValue(token) |> ignore
+                        b.GetValue(token) |> ignore
                         2
                     else
                         let cnt = dirty.Count
-                        for d in dirty do d.GetValue(x) |> ignore
+                        for d in dirty do d.GetValue(token) |> ignore
                         dirty.Count
             }
 //
@@ -859,11 +890,13 @@ module ``Basic Mod Tests`` =
             let x = Mod.init 10
             let y = Mod.init 20
             let z = Mod.map2 ((+)) x y
-            z.DumpDotFile (1000, "test.dot") |> ignore
+            let path = System.IO.Path.GetTempFileName()
+            z.DumpDotFile (1000, path) |> ignore
 
         [<Test>]
         let ``[Mod] DgmlSerialization`` () =
             let x = Mod.init 10
             let y = Mod.init 20
             let z = Mod.map2 ((+)) x y
-            z.DumpDgml (1000, "test.dgml") |> ignore
+            let path = System.IO.Path.GetTempFileName()
+            z.DumpDgml (1000, path) |> ignore

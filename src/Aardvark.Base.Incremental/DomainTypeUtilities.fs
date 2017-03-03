@@ -32,8 +32,8 @@ type ResetMod<'a>(value : 'a) =
             x.MarkOutdated()
         
 
-    member x.GetValue(caller : IAdaptiveObject) =
-        x.EvaluateAlways caller (fun () ->
+    member x.GetValue(token : AdaptiveToken) =
+        x.EvaluateAlways token (fun token ->
             if x.OutOfDate then
                 cache <- value
             

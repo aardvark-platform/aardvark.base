@@ -52,7 +52,6 @@
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <Import Project="$(FSharpTargetsPath)" Condition="exists('$(FSharpTargetsPath)')" />
   <ItemGroup>
-    <Compile Include="Core\Telemetry.fs" />
     <Compile Include="Core\Utilities.fs" />
     <Compile Include="Core\PriorityQueue.fs" />
     <Compile Include="Core\WeakSet.fs" />

@@ -241,21 +241,21 @@ open System.Runtime.CompilerServices
 type EvaluationExtensions() =
 
     [<Extension>]
-    static member inline GetValue(x : IMod) = x.GetValue(null)
+    static member inline GetValue(x : IMod) = x.GetValue(AdaptiveToken())
 
 
     [<Extension>]
-    static member inline GetValue(x : IMod<'a>) = x.GetValue(null)
+    static member inline GetValue(x : IMod<'a>) = x.GetValue(AdaptiveToken())
 
     [<Extension>]
-    static member inline GetDelta(x : ISetReader<'a>) = x.GetOperations(null)
+    static member inline GetDelta(x : ISetReader<'a>) = x.GetOperations(AdaptiveToken())
     [<Extension>]
-    static member inline Update(x : ISetReader<'a>) = x.GetOperations null |> ignore
+    static member inline Update(x : ISetReader<'a>) = x.GetOperations(AdaptiveToken()) |> ignore
 
     [<Extension>]
-    static member inline GetDelta(x : IListReader<'a>) = x.GetOperations(null)
+    static member inline GetDelta(x : IListReader<'a>) = x.GetOperations(AdaptiveToken())
     [<Extension>]
-    static member inline Update(x : IListReader<'a>) = x.GetOperations(null) |> ignore
+    static member inline Update(x : IListReader<'a>) = x.GetOperations(AdaptiveToken()) |> ignore
 
     [<Extension>]
-    static member inline Evaluate(x : afun<'a, 'b>, v : 'a) = x.Evaluate(null, v)
+    static member inline Evaluate(x : afun<'a, 'b>, v : 'a) = x.Evaluate(AdaptiveToken(), v)

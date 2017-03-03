@@ -82,8 +82,8 @@ module ASet =
                 r.Dispose()
                 cache.Clear ignore
 
-            override x.Compute() =
-                r.GetOperations x |> HDeltaSet.map (fun d ->
+            override x.Compute(token) =
+                r.GetOperations token |> HDeltaSet.map (fun d ->
                     match d with
                         | Add(1, v) -> Add(cache.Invoke v)
                         | Rem(1, v) -> Rem(cache.Revoke v)
@@ -100,8 +100,8 @@ module ASet =
                 r.Dispose()
                 cache.Clear ignore
 
-            override x.Compute() =
-                r.GetOperations x |> HDeltaSet.choose (fun d ->
+            override x.Compute(token) =
+                r.GetOperations token |> HDeltaSet.choose (fun d ->
                     match d with
                         | Add(1, v) -> 
                             match cache.Invoke v with
@@ -125,8 +125,8 @@ module ASet =
                 r.Dispose()
                 cache.Clear ignore
 
-            override x.Compute() =
-                r.GetOperations x |> HDeltaSet.choose (fun d ->
+            override x.Compute(token) =
+                r.GetOperations token |> HDeltaSet.choose (fun d ->
                     match d with
                         | Add(1, v) -> 
                             if cache.Invoke v then Some (Add v)
@@ -148,14 +148,14 @@ module ASet =
                 r.Dispose()
                 cache.Clear (fun r -> r.Dispose())
 
-            override x.Compute dirty =
+            override x.Compute(token,dirty) =
                 let mutable deltas = 
-                    r.GetOperations x |> HDeltaSet.collect (fun d ->
+                    r.GetOperations token |> HDeltaSet.collect (fun d ->
                         match d with
                             | Add(1, v) ->
                                 let r = cache.Invoke v
                                 dirty.Remove r |> ignore
-                                r.GetOperations x
+                                r.GetOperations token
 
                             | Rem(1, v) -> 
                                 let deleted, r = cache.RevokeAndGetDeleted v
@@ -165,13 +165,13 @@ module ASet =
                                     r.Dispose()
                                     ops
                                 else
-                                    r.GetOperations x
+                                    r.GetOperations token
                                 
                             | _ -> unexpected()
                     )
 
                 for d in dirty do
-                    deltas <- HDeltaSet.combine deltas (d.GetOperations x)
+                    deltas <- HDeltaSet.combine deltas (d.GetOperations token)
 
                 deltas
 
@@ -185,12 +185,12 @@ module ASet =
                 for i in input do
                     i.Dispose()
 
-            override x.Compute(dirty) =
+            override x.Compute(token,dirty) =
                 if initial then
                     initial <- false
-                    input |> HRefSet.fold (fun deltas r -> HDeltaSet.combine deltas (r.GetOperations x)) HDeltaSet.empty
+                    input |> HRefSet.fold (fun deltas r -> HDeltaSet.combine deltas (r.GetOperations token)) HDeltaSet.empty
                 else
-                    dirty |> Seq.fold (fun deltas r -> HDeltaSet.combine deltas (r.GetOperations x)) HDeltaSet.empty
+                    dirty |> Seq.fold (fun deltas r -> HDeltaSet.combine deltas (r.GetOperations token)) HDeltaSet.empty
 
         type DifferenceReader<'a>(scope : Ag.Scope, l : aset<'a>, r : aset<'a>) =
             inherit AbstractReader<hdeltaset<'a>>(scope, HDeltaSet.monoid)
@@ -202,9 +202,9 @@ module ASet =
                 l.Dispose()
                 r.Dispose()
 
-            override x.Compute() =
-                let lops = l.GetOperations x
-                let rops = r.GetOperations x
+            override x.Compute(token) =
+                let lops = l.GetOperations token
+                let rops = r.GetOperations token
 
                 let rops = HDeltaSet.map SetOperation.inverse rops
 
@@ -223,14 +223,14 @@ module ASet =
                 r.Dispose()
                 cache.Clear (fun r -> r.Dispose())
 
-            override x.Compute dirty =
+            override x.Compute(token,dirty) =
                 let mutable deltas = 
-                    r.GetOperations x |> HDeltaSet.collect (fun d ->
+                    r.GetOperations token |> HDeltaSet.collect (fun d ->
                         match d with
                             | Add(1, v) ->
                                 let r = cache.Invoke v
                                 dirty.Remove r |> ignore
-                                r.GetOperations x
+                                r.GetOperations token
 
                             | Rem(1, v) -> 
                                 let deleted, r = cache.RevokeAndGetDeleted v
@@ -240,13 +240,13 @@ module ASet =
                                     r.Dispose()
                                     ops
                                 else
-                                    r.GetOperations x
+                                    r.GetOperations token
                                 
                             | _ -> unexpected()
                     )
 
                 for d in dirty do
-                    deltas <- HDeltaSet.combine deltas (d.GetOperations x)
+                    deltas <- HDeltaSet.combine deltas (d.GetOperations token)
 
                 deltas
 
@@ -260,8 +260,8 @@ module ASet =
                 r.Dispose()
                 cache.Clear ignore
 
-            override x.Compute() =
-                r.GetOperations x |> HDeltaSet.collect (fun d ->
+            override x.Compute(token) =
+                r.GetOperations token |> HDeltaSet.collect (fun d ->
                     match d with
                         | Add(1,v) -> 
                             HRefSet.computeDelta HRefSet.empty (cache.Invoke v)
@@ -280,8 +280,8 @@ module ASet =
             override x.Release() =
                 lock input (fun () -> input.Outputs.Remove x |> ignore)
 
-            override x.Compute() =
-                let n = input.GetValue x
+            override x.Compute(token) =
+                let n = input.GetValue token
                 let deltas = HRefSet.computeDelta old n
                 old <- n
                 deltas
@@ -295,8 +295,8 @@ module ASet =
                 lock input (fun () -> input.Outputs.Remove x |> ignore)
                 old <- None
 
-            override x.Compute() =
-                let n = input.GetValue x
+            override x.Compute(token) =
+                let n = input.GetValue token
                 let delta = 
                     match old with
                         | None -> HDeltaSet.ofList [Add n]
@@ -323,31 +323,31 @@ module ASet =
                     | _ ->
                         ()
 
-            override x.Compute() =
-                let v = input.GetValue x
+            override x.Compute(token) =
+                let v = input.GetValue token
                 match old with
                     | Some(_,ro) when inputChanged ->
                         ro.Dispose()
                         let r = (f v).GetReader()
                         old <- Some(v, r)
-                        r.GetOperations x
+                        r.GetOperations token
 
                     | Some(vo, ro) ->
-                        ro.GetOperations x
+                        ro.GetOperations token
 
                     | None ->
                         let r = (f v).GetReader()
                         old <- Some(v, r)
-                        r.GetOperations x
+                        r.GetOperations token
 
-        type CustomReader<'a>(scope : Ag.Scope, compute : ISetReader<'a> -> hdeltaset<'a>) =
+        type CustomReader<'a>(scope : Ag.Scope, compute : AdaptiveToken -> hrefset<'a> -> hdeltaset<'a>) =
             inherit AbstractReader<hrefset<'a>, hdeltaset<'a>>(scope, HRefSet.trace)
             
             override x.Release() =
                 ()
 
-            override x.Compute() =
-                compute x
+            override x.Compute(token) =
+                compute token x.State
             
         type FlattenReader<'a>(scope : Ag.Scope, input : aset<IMod<'a>>) =
             inherit AbstractDirtyReader<IMod<'a>, hdeltaset<'a>>(scope, HDeltaSet.monoid)
@@ -357,14 +357,14 @@ module ASet =
             let mutable initial = true
             let cache = Dict<IMod<'a>, 'a>()
 
-            member x.Invoke(m : IMod<'a>) =
-                let v = m.GetValue x
+            member x.Invoke(token : AdaptiveToken, m : IMod<'a>) =
+                let v = m.GetValue token
                 cache.[m] <- v
                 v
 
-            member x.Invoke2(m : IMod<'a>) =
+            member x.Invoke2(token : AdaptiveToken, m : IMod<'a>) =
                 let o = cache.[m]
-                let v = m.GetValue x
+                let v = m.GetValue token
                 cache.[m] <- v
                 o, v
 
@@ -382,17 +382,17 @@ module ASet =
                     lock m (fun () -> m.Outputs.Remove x |> ignore)
                 r.Dispose()
 
-            override x.Compute(dirty) =
+            override x.Compute(token, dirty) =
                 let mutable deltas = 
-                    r.GetOperations x |> HDeltaSet.map (fun d ->
+                    r.GetOperations token |> HDeltaSet.map (fun d ->
                         match d with
-                            | Add(1,m) -> Add(x.Invoke m)
-                            | Rem(1,m) -> Rem(x.Revoke m)
+                            | Add(1,m) -> Add(x.Invoke(token, m))
+                            | Rem(1,m) -> Rem(x.Revoke(m))
                             | _ -> unexpected()
                     )
 
                 for d in dirty do
-                    let o, n = x.Invoke2 d
+                    let o, n = x.Invoke2(token, d)
                     if not <| Object.Equals(o,n) then
                         deltas <- HDeltaSet.combine deltas (HDeltaSet.ofList [Add n; Rem o])
 
@@ -407,15 +407,15 @@ module ASet =
             let mutable initial = true
             let cache = Dict<IMod<'b>, 'b>()
 
-            member x.Invoke(v : 'a) =
+            member x.Invoke(token : AdaptiveToken, v : 'a) =
                 let m = f.Invoke v
-                let v = m.GetValue x
+                let v = m.GetValue token
                 cache.[m] <- v
                 v
 
-            member x.Invoke2(m : IMod<'b>) =
+            member x.Invoke2(token : AdaptiveToken, m : IMod<'b>) =
                 let o = cache.[m]
-                let v = m.GetValue x
+                let v = m.GetValue token
                 cache.[m] <- v
                 o, v
 
@@ -438,17 +438,17 @@ module ASet =
 
                 r.Dispose()
 
-            override x.Compute(dirty) =
+            override x.Compute(token, dirty) =
                 let mutable deltas = 
-                    r.GetOperations x |> HDeltaSet.map (fun d ->
+                    r.GetOperations token |> HDeltaSet.map (fun d ->
                         match d with
-                            | Add(1,m) -> Add(x.Invoke m)
+                            | Add(1,m) -> Add(x.Invoke(token,m))
                             | Rem(1,m) -> Rem(x.Revoke m)
                             | _ -> unexpected()
                     )
 
                 for d in dirty do
-                    let o, n = x.Invoke2 d
+                    let o, n = x.Invoke2(token, d)
                     if not <| Object.Equals(o,n) then
                         deltas <- HDeltaSet.combine deltas (HDeltaSet.ofList [Add n; Rem o])
 
@@ -463,15 +463,15 @@ module ASet =
             let mutable initial = true
             let cache = Dict<IMod<Option<'b>>, Option<'b>>()
 
-            member x.Invoke(v : 'a) =
+            member x.Invoke(token : AdaptiveToken, v : 'a) =
                 let m = f.Invoke v
-                let v = m.GetValue x
+                let v = m.GetValue token
                 cache.[m] <- v
                 v
 
-            member x.Invoke2(m : IMod<Option<'b>>) =
+            member x.Invoke2(token : AdaptiveToken, m : IMod<Option<'b>>) =
                 let o = cache.[m]
-                let v = m.GetValue x
+                let v = m.GetValue token
                 cache.[m] <- v
                 o, v
 
@@ -494,12 +494,12 @@ module ASet =
 
                 r.Dispose()
 
-            override x.Compute(dirty) =
+            override x.Compute(token, dirty) =
                 let mutable deltas = 
-                    r.GetOperations x |> HDeltaSet.choose (fun d ->
+                    r.GetOperations token |> HDeltaSet.choose (fun d ->
                         match d with
                             | Add(1,m) -> 
-                                match x.Invoke m with
+                                match x.Invoke(token,m) with
                                     | Some v -> Some (Add v)
                                     | None -> None
 
@@ -514,7 +514,7 @@ module ASet =
 
                 for d in dirty do
                     let change = 
-                        match x.Invoke2 d with
+                        match x.Invoke2(token, d) with
                             | None, None -> 
                                 HDeltaSet.empty
 
@@ -788,7 +788,7 @@ module ASet =
     let create (f : Ag.Scope -> #IOpReader<hdeltaset<'a>>) =
         aset f
 
-    let custom (f : ISetReader<'a> -> hdeltaset<'a>) =
+    let custom (f : AdaptiveToken -> hrefset<'a> -> hdeltaset<'a>) =
         aset <| fun scope -> new CustomReader<'a>(scope, f)
 
     open System.Collections.Concurrent
