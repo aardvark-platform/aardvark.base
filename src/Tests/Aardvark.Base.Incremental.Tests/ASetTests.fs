@@ -1074,7 +1074,7 @@ module ASetPerformance =
     let ``[ASet Performance] map``() =
         
         //System.Runtime.GCSettings.LatencyMode <- Runtime.GCLatencyMode.Batch
-        while true do
+        //while true do
             for s in 1000..1000..20000 do
                 System.GC.Collect()
                 System.GC.Collect()

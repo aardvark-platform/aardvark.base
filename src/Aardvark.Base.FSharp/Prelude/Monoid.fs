@@ -34,5 +34,5 @@ type Traceable<'s, 'ops> =
         /// of ops that would need to be applied.
         /// when returning true the history implementation will discard the history and reproduce it on demand using
         /// the above compute function.
-        tcollapse    : 's -> int -> bool
+        tcollapse    : 's -> 'ops -> bool
     }

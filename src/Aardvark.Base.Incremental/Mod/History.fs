@@ -229,396 +229,436 @@ type AbstractDirtyReader<'t, 'ops when 't :> IAdaptiveObject>(scope : Ag.Scope, 
 //    static member GetOperations(this : IOpReader<'ops>) =
 //        this.GetOperations null
 
-module private NewHistory =
+[<AutoOpen>]
+module NewHistory =
 
     [<AllowNullLiteral>]
-    type RelevantNode<'a> =
+    type RelevantNode<'s, 'a> =
         class
-            val mutable public Prev : RelevantNode<'a>
-            val mutable public Next : RelevantNode<'a>
+            val mutable public Prev : RelevantNode<'s, 'a>
+            val mutable public Next : RelevantNode<'s, 'a>
             val mutable public RefCount : int
+            val mutable public BaseState : 's
             val mutable public Value : 'a
             
-            new(p, v, n) = { Prev = p; Next = n; RefCount = 0; Value = v }
+            new(p, s, v, n) = { Prev = p; Next = n; RefCount = 0; BaseState = s; Value = v }
         end
 
-    type RelevantSet<'v>(m : Monoid<'v>) =
-        
-        let mutable first : RelevantNode<'v> = null
-        let mutable last : RelevantNode<'v> = null
-
-        /// O(1)
-        member x.Append(v : 'v) =
-            if isNull last || last.RefCount > 0 then
-                let n = RelevantNode(last, v, null)
-                last.Next <- n
-                last <- n
-            else
-                last.Value <- m.mappend last.Value v
-
-        // O(n) [where n is the number of relevant entries]
-        member x.Read(node : byref<RelevantNode<'v>>) =
-            let mutable start = node
-            let mutable res = start.Value
-
-            if start.RefCount = 1 then
-                let p = start.Prev
-                let n = start.Next
-                start.RefCount <- 0
-                start.Prev <- null
-                start.Next <- null
-                start <- n
-                let start = ()
-
-                if isNull p then
-                    first <- n
-                    if isNull n then last <- null
-                    else n.Prev <- null
-                else
-                    p.Value <- m.mappend p.Value res
-                    p.Next <- n
-                    if isNull n then last <- p
-                    else n.Prev <- p
-            else
-                start.RefCount <- start.RefCount - 1
-                
-
-            let mutable current = start
-            while not (isNull current) do
-                res <- m.mappend res current.Value
-                current <- current.Next
-
-            if not (isNull last) then
-                last.RefCount <- last.RefCount + 1
-
-            node <- last
-            res
-
-    
-    type History<'s, 'op>(t : Traceable<'s, 'op>) =
+    type History<'s, 'op> private(compute : Option<History<'s, 'op> -> 'op>, t : Traceable<'s, 'op>) =
         inherit AdaptiveObject()
 
 
-        let mutable first : RelevantNode<'op> = null
-        let mutable last : RelevantNode<'op> = null
         let mutable state = t.tempty
+        let mutable first   : RelevantNode<'s, 'op> = null
+        let mutable last    : RelevantNode<'s, 'op> = null
 
+        let rec tryCollapse (node : RelevantNode<'s, 'op>) =
+            if t.tcollapse node.BaseState node.Value then
+                let next = node.Next
+                let prev = node.Prev
+                node.Value <- Unchecked.defaultof<_>
+                node.Prev <- null
+                node.Next <- null
+                node.RefCount <- -1
 
-        let mergeIntoLast (start : RelevantNode<'op>) =
-            let res = start.Value
-            let p = start.Prev
-            let n = start.Next
-            if start.RefCount = 1 then
-                start.RefCount <- 0
-                start.Prev <- null
-                start.Next <- null
                 
-                let start = ()
+                if isNull next then last <- prev
+                else next.Prev <- prev
+                if isNull prev then first <- next
+                else prev.Next <- next
 
-                if isNull p then
-                    first <- n
-                    if isNull n then last <- null
-                    else n.Prev <- null
-                else
-                    p.Value <- t.tops.mappend p.Value res
-                    p.Next <- n
-                    if isNull n then last <- p
-                    else n.Prev <- p
+                tryCollapse next
 
-            else 
-                start.RefCount <- start.RefCount - 1
-
-            res, n
-
-        member x.Append(op : 'op) =
+        let append (op : 'op) =
             // only append non-empty ops
             if not (t.tops.misEmpty op) then
-                lock x (fun () ->
-                    // apply the op to the state
-                    let s, op = t.tapply state op
-                    state <- s
+                // apply the op to the state
+                let s, op = t.tapply state op
+                state <- s
 
-                    // if op got empty do not append it
-                    if not (t.tops.misEmpty op) then
+                // if op got empty do not append it
+                if not (t.tops.misEmpty op) then
 
-                        if isNull last || last.RefCount > 0 then
-                            // if there is no last or last is relevant
-                            // we need to create a new node
-                            let n = RelevantNode(last, op, null)
+                    // it last is null no reader is interested in ops.
+                    // therefore we simply discard them here
+                    if not (isNull last) then
 
-                            // if there was no last we're the only element
-                            if isNull last then first <- n
-                            else last.Next <- n
+                        // last is non-null and no one pulled it yet
+                        // so we can append our op to it
+                        last.Value <- t.tops.mappend last.Value op
 
-                            // we're the new last
-                            last <- n
-                        else
-                            // last is non-null and not relevant (no one pulled it)
-                            // so we can append our op to it
-                            last.Value <- t.tops.mappend last.Value op
-                )
+                        tryCollapse first
+                    true
 
-        member x.AddRef() =
+                else
+                    false
+            else
+                false
+
+        let addRefToLast() =
             if isNull last then
-                let n = RelevantNode<'op>(last, t.tops.mempty, null)
-                first <- n
+                // if there is no last (the history is empty) we append
+                // a new empty last with no ops and set its refcount to 1
+                let n = RelevantNode(null, state, t.tops.mempty, null)
+                n.RefCount <- 1
                 last <- n
+                first <- n
                 n
             else
-                last.RefCount <- last.RefCount + 1
-                last
+                
+                if t.tops.misEmpty last.Value then
+                    // if last has no ops we can reuse it here
+                    last.RefCount <- last.RefCount + 1
+                    last
+                else
+                    // if last contains ops we just consumed it and therefore
+                    // need a new empty last
+                    let n = RelevantNode(last, state, t.tops.mempty, null)
+                    last.Next <- n
+                    last <- n
+                    n.RefCount <- 1
+                    n
+              
+        let mergeIntoLast (node : RelevantNode<'s, 'op>) =
+            if node.RefCount = 1 then
+                let res = node.Value
+                let next = node.Next
+                let prev = node.Prev
 
+                node.Value <- Unchecked.defaultof<_>
+                node.Prev <- null
+                node.Next <- null
+                node.RefCount <- -1
+                
+                if isNull next then last <- prev
+                else next.Prev <- prev
 
-        member x.Read(caller : IAdaptiveObject, old : RelevantNode<'op>, oldState : 's) =
+                if isNull prev then 
+                    first <- next
+                    res, next
+                else 
+                    prev.Next <- next
+                    prev.Value <- t.tops.mappend prev.Value res
+                    res, next
+
+            else
+                node.RefCount <- node.RefCount - 1
+                node.Value, node.Next      
+
+        let update (self : History<'s, 'op>) =
+            match compute with
+                | Some c -> 
+                    let v = c self
+                    append v |> ignore
+                | None ->
+                    ()
+
+        let isInvalid (node : RelevantNode<'s, 'op>) =
+            isNull node || node.RefCount < 0
+
+        let isValid (node : RelevantNode<'s, 'op>) =
+            not (isNull node) && node.RefCount >= 0
+
+        member x.State = state
+
+        member x.Trace = t
+
+        member x.Perform(op : 'op) =
+            lock x (fun () ->
+                let changed = append op
+                if changed then x.MarkOutdated()
+                changed
+            )
+
+        member x.Remove(token : RelevantNode<'s, 'op>) =
+            lock x (fun () ->
+                if isValid token then
+                    mergeIntoLast token |> ignore
+            )
+
+        member x.Read(caller : IAdaptiveObject, old : RelevantNode<'s, 'op>, oldState : 's) =
             x.EvaluateAlways caller (fun () ->
-                if isNull old then
+                update x
+
+                if isInvalid old then
                     let ops = t.tcompute oldState state
-                    let token = x.AddRef()
+                    let token = addRefToLast()
                     token, ops
                 else
                     let mutable res, current = mergeIntoLast old
-                    let mutable prev = null
 
                     while not (isNull current) do
                         res <- t.tops.mappend res current.Value
-                        prev <- current
                         current <- current.Next
 
-
-                    if isNull prev then
-                        let t = x.AddRef()
-                        t, res
-                    else
-                        prev.RefCount <- prev.RefCount + 1
-                        prev, res
-                        
-
-
-
-                    
+                    let token = addRefToLast()
+                    token, res
             )
         
+        member x.GetValue(caller : IAdaptiveObject) =
+            x.EvaluateAlways caller (fun () ->
+                update x
+                state
+            )
+
+        member x.NewReader() =
+            new HistoryReader<'s, 'op>(x) :> IOpReader<'s, 'op>
+
+        new (t : Traceable<'s, 'op>) = History<'s, 'op>(None, t)
+        new (compute : History<'s, 'op> -> 'op, t : Traceable<'s, 'op>) = History<'s, 'op>(Some compute, t)
+
+        interface IMod with
+            member x.IsConstant = false
+            member x.GetValue c = x.GetValue c :> obj
+            
+        interface IMod<'s> with
+            member x.GetValue c = x.GetValue c
+
+    and HistoryReader<'s, 'op>(h : History<'s, 'op>) =
+        inherit AdaptiveObject()
+        let trace = h.Trace
+        let mutable token : RelevantNode<'s, 'op> = null
+        let mutable state = trace.tempty
+
+        member x.GetOperations(caller : IAdaptiveObject) =
+            x.EvaluateIfNeeded caller trace.tops.mempty (fun () ->
+                let nt, ops = h.Read(x, token, state)
+                token <- nt
+                state <- h.State
+                ops
+            )
+
+        member x.Dispose() =
+            h.Outputs.Remove x |> ignore
+            h.Remove token
+            token <- null
+            state <- trace.tempty
+
+        interface IOpReader<'op> with
+            member x.Dispose() = x.Dispose()
+            member x.GetOperations c = x.GetOperations c
+
+        interface IOpReader<'s, 'op> with
+            member x.State = state
 
 
+//[<AutoOpen>]
+module OldHistory = 
+    type private HistoryEntry<'s, 'ops> = HeapEntry<uint64, WeakReference<HistoryReader<'s, 'ops>>>
+    and private HistoryHeap<'s, 'ops> = Heap<uint64, WeakReference<HistoryReader<'s, 'ops>>>
 
+    and History<'s, 'ops>(compute : History<'s, 'ops> -> 'ops, t : Traceable<'s, 'ops>) =
+        inherit AdaptiveObject()
 
+        let relevant = HistoryHeap<'s, 'ops>()
+        let mutable minVersion = 0UL
+        let mutable version = 0UL
+        let mutable lastPullVersion = 0UL
+        let mutable buffer : 'ops[] = Array.zeroCreate 16
+        let mutable start = 0
+        let mutable count = 0
+        let mutable state = t.tempty
 
+        let bufferSize (cnt : int) =
+            if cnt < 16 then 16
+            else Fun.NextPowerOfTwo cnt
 
-type private HistoryEntry<'s, 'ops> = HeapEntry<uint64, WeakReference<HistoryReader<'s, 'ops>>>
-and private HistoryHeap<'s, 'ops> = Heap<uint64, WeakReference<HistoryReader<'s, 'ops>>>
+        let adjust (newMinVersion : Option<uint64>) =
+            match newMinVersion with
+                | Some newMinVersion ->
+                    if newMinVersion <> minVersion then
+                        let removedVersions = int (newMinVersion - minVersion)
+                        start <- (start + removedVersions) % buffer.Length
+                        count <- count - removedVersions
+                        minVersion <- newMinVersion
 
-and History<'s, 'ops>(compute : History<'s, 'ops> -> 'ops, t : Traceable<'s, 'ops>) =
-    inherit AdaptiveObject()
+                        // shrink if possible
+                        let newCap = bufferSize count
+                        if newCap <> buffer.Length then
+                            let arr = Array.zeroCreate newCap
+                            let mutable index = start
+                            for i in 0 .. count - 1 do
+                                arr.[i] <- buffer.[index]
+                                index <- (index + 1) % buffer.Length
 
-    let relevant = HistoryHeap<'s, 'ops>()
-    let mutable minVersion = 0UL
-    let mutable version = 0UL
-    let mutable lastPullVersion = 0UL
-    let mutable buffer : 'ops[] = Array.zeroCreate 16
-    let mutable start = 0
-    let mutable count = 0
-    let mutable state = t.tempty
+                            buffer <- arr
+                            start <- 0
 
-    let bufferSize (cnt : int) =
-        if cnt < 16 then 16
-        else Fun.NextPowerOfTwo cnt
+                | None ->   
+                    minVersion <- 0UL
+                    version <- 0UL
+                    buffer <- Array.zeroCreate 16
+                    start <- 0
+                    count <- 0 
 
-    let adjust (newMinVersion : Option<uint64>) =
-        match newMinVersion with
-            | Some newMinVersion ->
-                if newMinVersion <> minVersion then
-                    let removedVersions = int (newMinVersion - minVersion)
-                    start <- (start + removedVersions) % buffer.Length
-                    count <- count - removedVersions
-                    minVersion <- newMinVersion
+        let grow(cnt : int) =
+            let newCapacity = bufferSize (count + cnt)
+            if newCapacity <> buffer.Length then
+                let arr = Array.zeroCreate newCapacity
 
-                    // shrink if possible
-                    let newCap = bufferSize count
-                    if newCap <> buffer.Length then
-                        let arr = Array.zeroCreate newCap
-                        let mutable index = start
-                        for i in 0 .. count - 1 do
-                            arr.[i] <- buffer.[index]
-                            index <- (index + 1) % buffer.Length
+                let mutable index = start
+                for i in 0 .. count - 1 do
+                    arr.[i] <- buffer.[index]
+                    index <- (index + 1) % buffer.Length
 
-                        buffer <- arr
-                        start <- 0
-
-            | None ->   
-                minVersion <- 0UL
-                version <- 0UL
-                buffer <- Array.zeroCreate 16
+                buffer <- arr
                 start <- 0
-                count <- 0 
 
-    let grow(cnt : int) =
-        let newCapacity = bufferSize (count + cnt)
-        if newCapacity <> buffer.Length then
-            let arr = Array.zeroCreate newCapacity
+        let rec collapse() =
+            if relevant.Count > 0 then
+                let state = 
+                    match relevant.Peek.Value.TryGetTarget() with
+                        | (true, v) -> v.State
+                        | _ -> t.tempty
 
-            let mutable index = start
-            for i in 0 .. count - 1 do
-                arr.[i] <- buffer.[index]
-                index <- (index + 1) % buffer.Length
-
-            buffer <- arr
-            start <- 0
-
-    let rec collapse() =
-        if relevant.Count > 0 then
-            let state = 
-                match relevant.Peek.Value.TryGetTarget() with
-                    | (true, v) -> v.State
-                    | _ -> t.tempty
-
-            if t.tcollapse state count then
-                printfn "collapse"
-                let minEntry = relevant.Dequeue()
-                minEntry.Index <- -1
-                adjust relevant.Min
-                collapse()
+                if t.tcollapse state t.tops.mempty then
+                    printfn "collapse"
+                    let minEntry = relevant.Dequeue()
+                    minEntry.Index <- -1
+                    adjust relevant.Min
+                    collapse()
     
-    let perform (ops : 'ops) =
-        if t.tops.misEmpty ops then
-            false
-        else
-            let s, ops = t.tapply state ops
-            state <- s
+        let perform (ops : 'ops) =
             if t.tops.misEmpty ops then
                 false
-
             else
-                if relevant.Count <> 0 then
-                    if count > 0 && lastPullVersion < version then
-                        let i = (start + count - 1) % buffer.Length
-                        buffer.[i] <- t.tops.mappend buffer.[i] ops
-                        //Log.line "merged versions"
-                    else
-                        let mutable changed = false
-                        grow 1
-                        let i = (start + count) % buffer.Length
-                        buffer.[i] <- ops
-                        count <- count + 1
-                        version <- version + 1UL
-                        collapse()
+                let s, ops = t.tapply state ops
+                state <- s
+                if t.tops.misEmpty ops then
+                    false
+
+                else
+                    if relevant.Count <> 0 then
+                        if count > 0 && lastPullVersion < version then
+                            let i = (start + count - 1) % buffer.Length
+                            buffer.[i] <- t.tops.mappend buffer.[i] ops
+                            //Log.line "merged versions"
+                        else
+                            let mutable changed = false
+                            grow 1
+                            let i = (start + count) % buffer.Length
+                            buffer.[i] <- ops
+                            count <- count + 1
+                            version <- version + 1UL
+                            collapse()
+                    true
+
+        new(t : Traceable<'s, 'ops>) = 
+            let empty = t.tops.mempty
+            History<'s, 'ops>((fun _ -> empty), t)
+
+        member x.Traceable = t
+
+        member x.Perform(ops : 'ops) =
+            if lock x (fun () -> perform ops) then
+                x.MarkOutdated()
                 true
-
-    new(t : Traceable<'s, 'ops>) = 
-        let empty = t.tops.mempty
-        History<'s, 'ops>((fun _ -> empty), t)
-
-    member x.Traceable = t
-
-    member x.Perform(ops : 'ops) =
-        if lock x (fun () -> perform ops) then
-            x.MarkOutdated()
-            true
-        else
-            false
-
-    member x.NewReader() : IOpReader<'s, 'ops> =
-        lock x (fun () ->
-            let entry = HeapEntry(version, Unchecked.defaultof<_>, -1) //.Enqueue(version, Unchecked.defaultof<_>)
-            let r = new HistoryReader<'s, 'ops>(t.tops, x, t.tempty, entry)
-            entry.Value <- WeakReference<_>(r)
-            r :> IOpReader<_,_>
-        )
-
-    member internal x.Remove(e : HistoryEntry<'s, 'ops>) =
-        lock x (fun () ->
-            relevant.Remove e |> ignore
-            if relevant.Count > 0 then
-                adjust relevant.Min
-        )
-
-    member internal x.GetOperationsSince(reader : HistoryReader<'s, 'ops>) : 's * 'ops =
-        x.EvaluateAlways reader (fun () ->
-            if x.OutOfDate then
-                let ops = compute x
-                perform ops |> ignore
-
-            let old = reader.Entry
-            lastPullVersion <- version
-
-            if old.Index < 0 then
-                let ops = t.tcompute reader.State state
-                relevant.ChangeKey(old, version) |> ignore
-                state, ops
             else
-                let oldVersion = old.Key
-                let cnt = int (version - oldVersion)
-                let newMin = relevant.ChangeKey(old, version)
+                false
+
+        member x.NewReader() : IOpReader<'s, 'ops> =
+            lock x (fun () ->
+                let entry = HeapEntry(version, Unchecked.defaultof<_>, -1) //.Enqueue(version, Unchecked.defaultof<_>)
+                let r = new HistoryReader<'s, 'ops>(t.tops, x, t.tempty, entry)
+                entry.Value <- WeakReference<_>(r)
+                r :> IOpReader<_,_>
+            )
+
+        member internal x.Remove(e : HistoryEntry<'s, 'ops>) =
+            lock x (fun () ->
+                relevant.Remove e |> ignore
+                if relevant.Count > 0 then
+                    adjust relevant.Min
+            )
+
+        member internal x.GetOperationsSince(reader : HistoryReader<'s, 'ops>) : 's * 'ops =
+            x.EvaluateAlways reader (fun () ->
+                if x.OutOfDate then
+                    let ops = compute x
+                    perform ops |> ignore
+
+                let old = reader.Entry
+                lastPullVersion <- version
+
+                if old.Index < 0 then
+                    let ops = t.tcompute reader.State state
+                    relevant.ChangeKey(old, version) |> ignore
+                    state, ops
+                else
+                    let oldVersion = old.Key
+                    let cnt = int (version - oldVersion)
+                    let newMin = relevant.ChangeKey(old, version)
         
-                let mutable index = (start + int (oldVersion - minVersion)) % buffer.Length
-                let mutable operations = t.tops.mempty
-                for _ in 1 .. cnt do
-                    let res = buffer.[index]  
-                    index <- (index + 1) % buffer.Length
-                    operations <- t.tops.mappend operations res 
+                    let mutable index = (start + int (oldVersion - minVersion)) % buffer.Length
+                    let mutable operations = t.tops.mempty
+                    for _ in 1 .. cnt do
+                        let res = buffer.[index]  
+                        index <- (index + 1) % buffer.Length
+                        operations <- t.tops.mappend operations res 
                     
-                adjust (Some newMin)
-                state, operations
-        )
+                    adjust (Some newMin)
+                    state, operations
+            )
 
-    member x.GetValue(caller : IAdaptiveObject) =
-        x.EvaluateAlways caller (fun () ->
-            if x.OutOfDate then
-                let ops = compute x
-                perform ops |> ignore    
+        member x.GetValue(caller : IAdaptiveObject) =
+            x.EvaluateAlways caller (fun () ->
+                if x.OutOfDate then
+                    let ops = compute x
+                    perform ops |> ignore    
            
-            state
-        )   
+                state
+            )   
 
-    member x.Count = count
-    member x.State = state
+        member x.Count = count
+        member x.State = state
 
-    interface IMod with
-        member x.IsConstant = false
-        member x.GetValue c = x.GetValue c :> obj
+        interface IMod with
+            member x.IsConstant = false
+            member x.GetValue c = x.GetValue c :> obj
 
-    interface IMod<'s> with
-        member x.GetValue c = x.GetValue c
+        interface IMod<'s> with
+            member x.GetValue c = x.GetValue c
 
-and internal HistoryReader<'s, 'ops>(ops : Monoid<'ops>, history : History<'s, 'ops>, state : 's, entry : HistoryEntry<'s, 'ops>) =
-    inherit AdaptiveObject()
+    and internal HistoryReader<'s, 'ops>(ops : Monoid<'ops>, history : History<'s, 'ops>, state : 's, entry : HistoryEntry<'s, 'ops>) =
+        inherit AdaptiveObject()
 
-    let mutable entry = Some entry
-    let mutable state = state
+        let mutable entry = Some entry
+        let mutable state = state
 
-    member x.Entry : HistoryEntry<'s, 'ops> = entry.Value
+        member x.Entry : HistoryEntry<'s, 'ops> = entry.Value
 
-    member private x.Dispose(disposing : bool) = 
-        if disposing then GC.SuppressFinalize x
-        match entry with
-            | Some e -> 
-                let mutable foo = 0
-                x.Outputs.Consume(&foo) |> ignore
-                history.Remove e
-                entry <- None
-            | None ->
-                ()
-
-    member x.Dispose() = x.Dispose(true)
-
-    member x.State : 's = state
-
-    member x.GetOperations(caller : IAdaptiveObject) =
-        x.EvaluateIfNeeded caller ops.mempty (fun () ->
+        member private x.Dispose(disposing : bool) = 
+            if disposing then GC.SuppressFinalize x
             match entry with
                 | Some e -> 
-                    let s, ops = history.GetOperationsSince(x)
-                    state <- s
-                    ops
+                    let mutable foo = 0
+                    x.Outputs.Consume(&foo) |> ignore
+                    history.Remove e
+                    entry <- None
                 | None ->
-                    failwith "[Reader] cannot pull disposed reader"
-        )
+                    ()
 
-    interface IDisposable with
-        member x.Dispose() = x.Dispose()
+        member x.Dispose() = x.Dispose(true)
 
-    interface IOpReader<'s, 'ops> with
-        member x.State = state
-        member x.GetOperations c = x.GetOperations c
+        member x.State : 's = state
+
+        member x.GetOperations(caller : IAdaptiveObject) =
+            x.EvaluateIfNeeded caller ops.mempty (fun () ->
+                match entry with
+                    | Some e -> 
+                        let s, ops = history.GetOperationsSince(x)
+                        state <- s
+                        ops
+                    | None ->
+                        failwith "[Reader] cannot pull disposed reader"
+            )
+
+        interface IDisposable with
+            member x.Dispose() = x.Dispose()
+
+        interface IOpReader<'s, 'ops> with
+            member x.State = state
+            member x.GetOperations c = x.GetOperations c
 
 module History =
 
