@@ -206,7 +206,7 @@ module ASet =
                 let lops = l.GetOperations x
                 let rops = r.GetOperations x
 
-                let rops = HDeltaSet.map SetDelta.inverse rops
+                let rops = HDeltaSet.map SetOperation.inverse rops
 
                 HDeltaSet.combine lops rops
 
@@ -725,7 +725,7 @@ module ASet =
         let r = s.GetReader()
         let mutable res = zero
 
-        let rec traverse (d : list<SetDelta<'a>>) =
+        let rec traverse (d : list<SetOperation<'a>>) =
             match d with
                 | [] -> true
                 | d :: rest ->
@@ -809,7 +809,7 @@ module ASet =
     /// </summary>
     let private callbackTable = ConditionalWeakTable<obj, ConcurrentHashSet<IDisposable>>()
 
-    let unsafeRegisterCallbackNoGcRoot (f : list<SetDelta<'a>> -> unit) (set : aset<'a>) =
+    let unsafeRegisterCallbackNoGcRoot (f : list<SetOperation<'a>> -> unit) (set : aset<'a>) =
         let m = set.GetReader()
 
         let result =
@@ -839,7 +839,7 @@ module ASet =
     /// When disposing the assosciated disposable, the gc root disappears and
     /// the computation can be collected.
     /// </summary>
-    let unsafeRegisterCallbackKeepDisposable (f : list<SetDelta<'a>> -> unit) (set : aset<'a>) =
+    let unsafeRegisterCallbackKeepDisposable (f : list<SetOperation<'a>> -> unit) (set : aset<'a>) =
         let d = unsafeRegisterCallbackNoGcRoot f set
         undyingCallbacks.Add d |> ignore
         { new IDisposable with

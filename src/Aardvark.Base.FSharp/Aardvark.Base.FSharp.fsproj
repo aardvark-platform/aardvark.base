@@ -74,6 +74,8 @@
     <Compile Include="Datastructures\Mutable\AVL.fs" />
     <Compile Include="Datastructures\Mutable\StableSet.fs" />
     <Compile Include="Datastructures\Mutable\ConcurrentHashQueue.fs" />
+    <Compile Include="Datastructures\Immutable\SetOperation.fs" />
+    <Compile Include="Datastructures\Immutable\ElementOperation.fs" />
     <Compile Include="Datastructures\Immutable\Index.fs" />
     <Compile Include="Datastructures\Immutable\MapExt.fs" />
     <Compile Include="Datastructures\Immutable\IntMap.fs" />

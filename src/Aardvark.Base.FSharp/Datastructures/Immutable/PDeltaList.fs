@@ -3,13 +3,9 @@
 open System.Collections
 open System.Collections.Generic
 
-type ListOperation<'a> =
-    | Set of 'a
-    | Remove
-  
 [<StructuredFormatDisplay("{AsString}")>]
 [<Struct>]
-type pdeltalist<'a> internal(content : MapExt<Index, ListOperation<'a>>) =
+type pdeltalist<'a> internal(content : MapExt<Index, ElementOperation<'a>>) =
 
     static let monoid : Monoid<pdeltalist<'a>> =
         {
@@ -29,7 +25,7 @@ type pdeltalist<'a> internal(content : MapExt<Index, ListOperation<'a>>) =
     member x.IsEmpty = content.IsEmpty
 
 
-    member x.Add(i : Index, op : ListOperation<'a>) =
+    member x.Add(i : Index, op : ElementOperation<'a>) =
         pdeltalist(MapExt.add i op content)
 
     member x.Remove(i : Index) =
@@ -44,16 +40,16 @@ type pdeltalist<'a> internal(content : MapExt<Index, ListOperation<'a>>) =
         elif r.IsEmpty then x
         else MapExt.unionWith (fun l r -> r) x.Content r.Content |> pdeltalist
 
-    member x.Map(f : Index -> ListOperation<'a> -> ListOperation<'b>) =
+    member x.Map(f : Index -> ElementOperation<'a> -> ElementOperation<'b>) =
         pdeltalist(MapExt.map f content)
         
-    member x.Choose(f : Index -> ListOperation<'a> -> Option<ListOperation<'b>>) =
+    member x.Choose(f : Index -> ElementOperation<'a> -> Option<ElementOperation<'b>>) =
         pdeltalist(MapExt.choose f content)
 
-    member x.MapMonotonic(f : Index -> ListOperation<'a> -> Index * ListOperation<'b>) =
+    member x.MapMonotonic(f : Index -> ElementOperation<'a> -> Index * ElementOperation<'b>) =
         pdeltalist(MapExt.mapMonotonic f content)
 
-    member x.Filter(f : Index -> ListOperation<'a> -> bool) =
+    member x.Filter(f : Index -> ElementOperation<'a> -> bool) =
         pdeltalist(MapExt.filter f content)
 
     override x.ToString() =
@@ -72,7 +68,7 @@ type pdeltalist<'a> internal(content : MapExt<Index, ListOperation<'a>>) =
 
     member private x.AsString = x.ToString()
 
-    member x.Collect (f : Index -> ListOperation<'a> -> pdeltalist<'b>) =
+    member x.Collect (f : Index -> ElementOperation<'a> -> pdeltalist<'b>) =
         let mutable res = pdeltalist<'b>.Empty
         for (KeyValue(i,v)) in content do
             res <- res.Combine(f i v)
@@ -85,37 +81,37 @@ module PDeltaList =
 
     let inline isEmpty (l : pdeltalist<'a>) = l.IsEmpty
 
-    let inline add (i : Index) (v : ListOperation<'a>) (l : pdeltalist<'a>) = l.Add(i, v)
+    let inline add (i : Index) (v : ElementOperation<'a>) (l : pdeltalist<'a>) = l.Add(i, v)
     let inline remove (i : Index) (l : pdeltalist<'a>) = l.Remove(i)
 
-    let ofMap (m : MapExt<Index, ListOperation<'a>>) = pdeltalist(m)
+    let ofMap (m : MapExt<Index, ElementOperation<'a>>) = pdeltalist(m)
     
-    let single (i : Index) (op : ListOperation<'a>) = pdeltalist(MapExt.singleton i op)
-    let ofSeq (s : seq<Index * ListOperation<'a>>) = pdeltalist(MapExt.ofSeq s)
-    let ofList (s : list<Index * ListOperation<'a>>) = pdeltalist(MapExt.ofList s)
-    let ofArray (s : array<Index * ListOperation<'a>>) = pdeltalist(MapExt.ofArray s)
+    let single (i : Index) (op : ElementOperation<'a>) = pdeltalist(MapExt.singleton i op)
+    let ofSeq (s : seq<Index * ElementOperation<'a>>) = pdeltalist(MapExt.ofSeq s)
+    let ofList (s : list<Index * ElementOperation<'a>>) = pdeltalist(MapExt.ofList s)
+    let ofArray (s : array<Index * ElementOperation<'a>>) = pdeltalist(MapExt.ofArray s)
 
     let inline toSeq (l : pdeltalist<'a>) = l.ToSeq()
     let inline toList (l : pdeltalist<'a>) = l.ToList()
     let inline toArray (l : pdeltalist<'a>) = l.ToArray()
 
     
-    let inline mapMonotonic (mapping : Index -> ListOperation<'a> -> Index * ListOperation<'b>) (l : pdeltalist<'a>) = 
+    let inline mapMonotonic (mapping : Index -> ElementOperation<'a> -> Index * ElementOperation<'b>) (l : pdeltalist<'a>) = 
         l.MapMonotonic mapping
 
-    let inline map (mapping : Index -> ListOperation<'a> -> ListOperation<'b>) (l : pdeltalist<'a>) = 
+    let inline map (mapping : Index -> ElementOperation<'a> -> ElementOperation<'b>) (l : pdeltalist<'a>) = 
         l.Map mapping
         
-    let inline choose (mapping : Index -> ListOperation<'a> -> Option<ListOperation<'b>>) (l : pdeltalist<'a>) = 
+    let inline choose (mapping : Index -> ElementOperation<'a> -> Option<ElementOperation<'b>>) (l : pdeltalist<'a>) = 
         l.Choose mapping
 
     let inline combine (l : pdeltalist<'a>) (r : pdeltalist<'a>) =
         l.Combine(r)
 
-    let inline collect (mapping : Index -> ListOperation<'a> -> pdeltalist<'b>) (l : pdeltalist<'a>) = 
+    let inline collect (mapping : Index -> ElementOperation<'a> -> pdeltalist<'b>) (l : pdeltalist<'a>) = 
         l.Collect mapping
         
-    let inline filter (predicate : Index -> ListOperation<'a> -> bool) (l : pdeltalist<'a>) =
+    let inline filter (predicate : Index -> ElementOperation<'a> -> bool) (l : pdeltalist<'a>) =
         l.Filter predicate
 
     type private MonoidInstance<'a>() =

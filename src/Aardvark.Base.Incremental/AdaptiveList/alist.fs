@@ -859,7 +859,7 @@ module AList =
     /// </summary>
     let private callbackTable = ConditionalWeakTable<obj, ConcurrentHashSet<IDisposable>>()
 
-    let unsafeRegisterCallbackNoGcRoot (f : list<Index * ListOperation<'a>> -> unit) (list : alist<'a>) =
+    let unsafeRegisterCallbackNoGcRoot (f : list<Index * ElementOperation<'a>> -> unit) (list : alist<'a>) =
         let m = list.GetReader()
 
         let result =
@@ -889,7 +889,7 @@ module AList =
     /// When disposing the assosciated disposable, the gc root disappears and
     /// the computation can be collected.
     /// </summary>
-    let unsafeRegisterCallbackKeepDisposable (f : list<Index * ListOperation<'a>> -> unit) (list : alist<'a>) =
+    let unsafeRegisterCallbackKeepDisposable (f : list<Index * ElementOperation<'a>> -> unit) (list : alist<'a>) =
         let d = unsafeRegisterCallbackNoGcRoot f list
         undyingCallbacks.Add d |> ignore
         { new IDisposable with

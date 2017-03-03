@@ -70,6 +70,7 @@
     <Compile Include="AdaptiveList\clist.fs" />
     <Compile Include="AdaptiveList\corderedset.fs" />
     <Compile Include="AdaptiveList\alist.fs" />
+    <Compile Include="AdaptiveMap\amap.fs" />
     <Compile Include="AdaptiveFunc\AdaptiveFunc.fs" />
     <Compile Include="Builders.fs" />
     <Compile Include="CSharp.fs" />

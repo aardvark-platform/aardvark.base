@@ -29,8 +29,8 @@
 //module ``simple list tests`` =
 //
 //    module Delta =
-//        let map (f : 'a -> 'b) (d : SetDelta<'a>) =
-//            SetDelta(f d.Value, d.Count)
+//        let map (f : 'a -> 'b) (d : SetOperation<'a>) =
+//            SetOperation(f d.Value, d.Count)
 //
 //
 //    [<Test>]

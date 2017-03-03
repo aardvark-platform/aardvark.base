@@ -17,7 +17,7 @@ type ReferenceCountingSet<'a>(initial : seq<'a>) =
     let mutable store = Dictionary<obj, 'a * ref<int>>(1)
 
 
-    static let rec checkDeltas (l : list<SetDelta<'a>>) =
+    static let rec checkDeltas (l : list<SetOperation<'a>>) =
         let set = HashSet<obj>()
         for d in l do
             let value = 
@@ -103,7 +103,7 @@ type ReferenceCountingSet<'a>(initial : seq<'a>) =
         for (KeyValue(k,(v,r))) in other.Store do
             store.[k] <- (v, ref !r)
 
-    member internal x.Apply(deltas : list<SetDelta<'a>>) =
+    member internal x.Apply(deltas : list<SetOperation<'a>>) =
         match deltas with
             | [] -> []
             | [v] -> 

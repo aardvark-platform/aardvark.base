@@ -437,6 +437,7 @@ type hmap<'k, 'v>(cnt : int, store : intmap<list<'k * 'v>>) =
         member x.GetEnumerator() = 
             new HMapEnumerator<_,_>(store) :> _
 
+and hdeltamap<'k, 'v> = hmap<'k, ElementOperation<'v>>
 
 
 and private HMapEnumerator<'k, 'v>(m : intmap<list<'k * 'v>>) =

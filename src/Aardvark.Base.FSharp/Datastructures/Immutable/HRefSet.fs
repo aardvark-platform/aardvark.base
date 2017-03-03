@@ -211,7 +211,7 @@ type hrefset<'a>(store : hmap<'a, int>) =
 
         let effective =
             deltas |> HDeltaSet.choose (fun d ->
-                let mutable delta = Unchecked.defaultof<SetDelta<'a>>
+                let mutable delta = Unchecked.defaultof<SetOperation<'a>>
                 let value = d.Value
                 res <- res |> HMap.alter value (fun cnt ->
                     let o = defaultArg cnt 0
@@ -236,7 +236,7 @@ type hrefset<'a>(store : hmap<'a, int>) =
 
         let effective =
             deltas |> HDeltaSet.choose (fun d ->
-                let mutable delta = Unchecked.defaultof<SetDelta<'a>>
+                let mutable delta = Unchecked.defaultof<SetOperation<'a>>
                 let value = d.Value
                 res <- res |> HMap.alter value (fun cnt ->
                     let o = defaultArg cnt 0
