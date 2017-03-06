@@ -712,6 +712,149 @@ module AList =
                                 PDeltaList.single i Remove
                     )
 
+        type BindReader<'a, 'b>(scope : Ag.Scope, input : IMod<'a>, f : 'a -> alist<'b>) =
+            inherit AbstractReader<pdeltalist<'b>>(scope, PDeltaList.monoid)
+
+            let mutable inputChanged = 1
+            let mutable reader : Option<'a * IListReader<'b>> = None
+
+            override x.InputChanged(t : obj, o : IAdaptiveObject) =
+                if Object.ReferenceEquals(input, o) then
+                    inputChanged <- 1
+
+            override x.Release() =
+                match reader with
+                    | Some(_,r) -> 
+                        r.Dispose()
+                        reader <- None
+                    | None -> 
+                        ()
+
+            override x.Compute(token) =
+                let v = input.GetValue token
+                let inputChanged = System.Threading.Interlocked.CompareExchange(&inputChanged, 0, 1)
+                match reader with
+                    | Some (oldA, oldReader) when inputChanged = 0 || Unchecked.equals v oldA ->
+                        oldReader.GetOperations token
+
+                    | _ -> 
+                        let r = f(v).GetReader()
+                        let deltas = 
+                            let addNew = r.GetOperations token
+                            match reader with
+                                | Some(_,old) ->
+                                    let remOld = plist.ComputeDeltas(old.State, PList.empty)
+                                    old.Dispose()
+                                    PDeltaList.combine remOld addNew
+                                | None ->
+                                    addNew
+                        reader <- Some (v,r)
+                        deltas
+
+        type IndexedMod<'a>(index : Index, m : IMod<'a>) =
+            inherit Mod.AbstractMod<Index * 'a>()
+            let mutable index = index
+            let mutable lastValue = None
+
+            member x.Index = index
+
+            member x.LastValue = lastValue
+
+            member x.Dispose() =
+                let mutable foo = 0
+                x.Outputs.Consume(&foo) |> ignore
+
+            override x.Compute(token) =
+                let v = m.GetValue token
+                lastValue <- Some v
+                (index, v)
+
+        type ChooseMReader<'a, 'b>(scope : Ag.Scope, input : alist<'a>, f : Index -> 'a -> IMod<Option<'b>>) =
+            inherit AbstractDirtyReader<IndexedMod<Option<'b>>, pdeltalist<'b>>(scope, PDeltaList.monoid)
+
+            let input = input.GetReader()
+            let cache = IndexCache((fun i v -> IndexedMod(i, f i v)), fun m -> m.Dispose())
+
+            member private x.invoke (dirty : HashSet<_>) (i : Index) (v : 'a) =
+                let o, n = cache.InvokeAndGetOld(i, v)
+                dirty.Add n |> ignore
+                match o with
+                    | Some o ->
+                        dirty.Remove o |> ignore
+                        o.Outputs.Remove x |> ignore
+                        match o.LastValue with
+                            | Some l -> PDeltaList.single i Remove
+                            | None -> PDeltaList.empty
+                    | None ->
+                        PDeltaList.empty
+
+            member private x.revoke (dirty : HashSet<_>) (i : Index) =
+                let o = cache.Revoke(i)
+                dirty.Remove o |> ignore
+                o.Outputs.Remove x |> ignore
+                match o.LastValue with
+                    | Some l -> PDeltaList.single o.Index Remove
+                    | None -> PDeltaList.empty
+
+            override x.Release() =
+                input.Dispose()
+                cache.Clear()
+
+            override x.Compute(token, dirty) =
+                let deltas = input.GetOperations token
+
+                let mutable res = PDeltaList.empty
+                for (i,d) in deltas |> PDeltaList.toSeq do
+                    match d with
+                        | Set v -> res <- PDeltaList.combine res (x.invoke dirty i v)
+                        | Remove -> res <- PDeltaList.combine res (x.revoke dirty i)
+
+                for d in dirty do
+                    let i, v = d.GetValue token
+                    match v with
+                        | Some v -> 
+                            res <- PDeltaList.combine res (PDeltaList.single i (Set v))
+                        | None ->
+                            ()
+
+                res
+
+        type OfModSingleReader<'a>(scope : Ag.Scope, input : IMod<'a>) =
+            inherit AbstractReader<pdeltalist<'a>>(scope, PDeltaList.monoid)
+            let index = Index.after Index.zero
+            let mutable old = None
+
+            override x.Release() =
+                input.Outputs.Remove x |> ignore
+                old <- None
+
+            override x.Compute(token) =
+                let v = input.GetValue token
+                match old with
+                    | Some o when Unchecked.equals o v -> 
+                        PDeltaList.empty
+
+                    | _ -> 
+                        old <- Some v
+                        PDeltaList.single index (Set v)
+
+        type OfModReader<'a>(scope : Ag.Scope, input : IMod<plist<'a>>) =
+            inherit AbstractReader<pdeltalist<'a>>(scope, PDeltaList.monoid)
+
+            let mutable state = PList.empty
+
+            override x.Release() =
+                input.Outputs.Remove x |> ignore
+
+            override x.Compute(token) =
+                let v = input.GetValue token
+                let delta = plist.ComputeDeltas(state, v)
+                state <- v
+                delta
+
+            interface IOpReader<plist<'a>, pdeltalist<'a>> with
+                member x.State = state
+
 
     /// the empty alist
     let empty<'a> = EmptyList<'a>.Instance
@@ -822,23 +965,54 @@ module AList =
         // TODO: better impl
         [l;r] |> PList.ofList |> concat'
 
-    let bind (f : 'a -> alist<'b>) (m : IMod<'a>) : alist<'b> =
-        failwith "not implemented"
+    let bind (mapping : 'a -> alist<'b>) (m : IMod<'a>) : alist<'b> =
+        if m.IsConstant then
+            m |> Mod.force |> mapping
+        else
+            alist <| fun scope -> new BindReader<_,_>(scope, m, mapping)
 
-    let bind2 (f : 'a -> 'b -> alist<'c>) (a : IMod<'a>) (b : IMod<'b>) : alist<'c> =
-        failwith "not implemented"
+    let bind2 (mapping : 'a -> 'b -> alist<'c>) (a : IMod<'a>) (b : IMod<'b>) : alist<'c> =
+        match a.IsConstant, b.IsConstant with
+            | true,  true  -> 
+                mapping (Mod.force a) (Mod.force b)
+            | true,  false ->
+                let mapping = mapping (Mod.force a)
+                b |> bind mapping
+
+            | false, true  ->
+                let mapping = 
+                    let b = Mod.force b
+                    fun a -> mapping a b
+
+                a |> bind mapping
+
+            | false, false ->
+                let tup = Mod.map2 (fun a b -> (a,b)) a b
+                tup |> bind (fun (a,b) -> mapping a b)
+
+    let chooseiM (mapping : Index -> 'a -> IMod<Option<'b>>) (list : alist<'a>) : alist<'b> =
+        alist <| fun scope -> new ChooseMReader<'a, 'b>(scope, list, mapping)
+        
+    let chooseM (mapping : 'a -> IMod<Option<'b>>) (list : alist<'a>) : alist<'b> =
+        chooseiM (fun _ v -> mapping v) list
 
     let filteriM (f : Index -> 'a -> IMod<bool>) (list : alist<'a>) : alist<'a> =
-        failwith "not implemented"
+        list |> chooseiM (fun i v -> f i v |> Mod.map (fun c -> if c then Some v else None))
 
     let filterM (f : 'a -> IMod<bool>) (list : alist<'a>) : alist<'a> =
-        failwith "not implemented"
+        filteriM (fun _ v -> f v) list
 
     let ofModSingle (m : IMod<'a>) : alist<'a> =
-        failwith "not implemented"
+        if m.IsConstant then
+            constant <| lazy (m |> Mod.force |> PList.single)
+        else
+            alist <| fun scope -> new OfModSingleReader<'a>(scope, m)
 
     let ofMod (m : IMod<plist<'a>>) : alist<'a> =
-        failwith "not implemented"
+        if m.IsConstant then
+            constant <| lazy (m |> Mod.force)
+        else
+            alist <| fun scope -> new OfModReader<_>(scope, m)
 
 
     open System.Collections.Concurrent
