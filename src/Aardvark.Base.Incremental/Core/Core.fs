@@ -665,10 +665,6 @@ type AdaptiveObject =
         member x.EvaluateAlways (token : AdaptiveToken) (f : AdaptiveToken -> 'a) =
             x.evaluate token f
 
-        member x.EvaluateWithCaptured (token : AdaptiveToken) (f : Option<obj> -> AdaptiveToken -> 'a) =
-            let old = None
-            x.evaluate token (f old)
-
         abstract member Mark : unit -> bool
         default x.Mark () = true
     

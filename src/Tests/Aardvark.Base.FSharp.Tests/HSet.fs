@@ -2,6 +2,7 @@
 
 open System
 open NUnit
+open NUnit.Framework
 open FsCheck
 open FsCheck.NUnit
 open Aardvark.Base
@@ -67,3 +68,58 @@ let ``[HSet] contains`` (l : Set<int>) (a : int)  =
 [<Property(Verbose = true)>]
 let ``[HSet] ofList`` (l : list<int>) =
     HSet.toList (HSet.ofList l) |> List.sort = Set.toList (Set.ofList l)
+
+[<Test>]
+let ``[HSet] performance``() =
+    let old = System.Runtime.GCSettings.LatencyMode
+    try
+        System.Runtime.GCSettings.LatencyMode <- System.Runtime.GCLatencyMode.Batch
+        let rand = RandomSystem()
+
+        for initialSize in 100 .. 100 .. 3000 do
+            Log.start "size %d" initialSize
+            let hash = System.Collections.Generic.HashSet<int>()
+            let mutable hs = HSet.empty
+    
+            let values = Array.init initialSize (fun _ -> rand.UniformInt())
+            for i in values do
+                hash.Add i |> ignore
+
+            for i in values do
+                hs <- HSet.add i hs
+
+            GC.Collect()
+            GC.WaitForFullGCComplete() |> ignore
+            GC.WaitForFullGCComplete() |> ignore
+
+            let values = Array.init 100000 (fun _ -> rand.UniformInt())
+            let sw = System.Diagnostics.Stopwatch()
+            sw.Start()
+            for i in 0 .. values.Length - 1 do
+                hash.Add values.[i] |> ignore
+            sw.Stop()
+            let thash = sw.MicroTime / values.Length
+            Log.line "HashSet.Add: %A" thash
+
+            GC.Collect()
+            GC.WaitForFullGCComplete() |> ignore
+            GC.WaitForFullGCComplete() |> ignore
+
+
+            sw.Restart()
+            for i in 0 .. values.Length - 1 do
+                HSet.add values.[i] hs |> ignore
+            sw.Stop()
+            let ths = sw.MicroTime / values.Length
+            Log.line "HSet.add: %A" ths
+
+            Log.line "factor: %.3f" (ths / thash)
+    
+            Log.stop()
+            GC.Collect()
+            GC.WaitForFullGCComplete() |> ignore
+            GC.WaitForFullGCComplete() |> ignore
+            ()
+
+    finally
+        System.Runtime.GCSettings.LatencyMode <- old

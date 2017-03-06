@@ -89,6 +89,30 @@ module ASet =
                         | Rem(1, v) -> Rem(cache.Revoke v)
                         | _ -> unexpected()
                 )
+                
+        type MapUseReader<'a, 'b when 'b :> IDisposable>(scope : Ag.Scope, input : aset<'a>, f : 'a -> 'b) =
+            inherit AbstractReader<hdeltaset<'b>>(scope, HDeltaSet.monoid)
+            
+            let cache = Cache f
+            let r = input.GetReader()
+
+            override x.Release() =
+                r.Dispose()
+
+            override x.Compute(token) =
+                r.GetOperations token |> HDeltaSet.map (fun d ->
+                    match d with
+                        | Add(1, v) -> 
+                            Add(cache.Invoke v)
+
+                        | Rem(1, v) -> 
+                            let del, value = cache.RevokeAndGetDeleted v
+                            if del then value.Dispose()
+                            Rem(value)
+
+                        | _ -> 
+                            unexpected()
+                )
 
         type ChooseReader<'a, 'b>(scope : Ag.Scope, input : aset<'a>, f : 'a -> Option<'b>) =
             inherit AbstractReader<hdeltaset<'b>>(scope, HDeltaSet.monoid)
@@ -640,6 +664,11 @@ module ASet =
             constant <| lazy ( set.Content |> Mod.force |> HRefSet.map mapping )
         else
             aset <| fun scope -> new MapReader<'a, 'b>(scope, set, mapping)
+ 
+
+    let mapUse<'a, 'b when 'b :> IDisposable> (mapping : 'a -> 'b) (set : aset<'a>) : aset<'b> =
+        aset <| fun scope -> new MapUseReader<'a, 'b>(scope, set, mapping)
+
         
     /// applies the given function to each element of the given aset. returns an aset comprised of the results x for each element
     /// where the function returns Some(x)
@@ -677,11 +706,16 @@ module ASet =
     // =====================================================================================
 
     let flattenM (set : aset<IMod<'a>>) =
-        aset <| fun scope -> new FlattenReader<'a>(scope, set)
-
+        if set.IsConstant && set.Content |> Mod.force |> Seq.forall (fun m -> m.IsConstant) then
+            constant <| lazy (set.Content |> Mod.force |> HRefSet.map Mod.force)
+        else
+            aset <| fun scope -> new FlattenReader<'a>(scope, set)
 
     let mapM (mapping : 'a -> IMod<'b>) (set : aset<'a>) =
-        aset <| fun scope -> new MapMReader<'a, 'b>(scope, set, mapping)
+        if set.IsConstant then
+            set.Content |> Mod.force |> HRefSet.map mapping |> ofSet |> flattenM
+        else
+            aset <| fun scope -> new MapMReader<'a, 'b>(scope, set, mapping)
 
     let chooseM (mapping : 'a -> IMod<Option<'b>>) (set : aset<'a>) =
         aset <| fun scope -> new ChooseMReader<'a, 'b>(scope, set, mapping)
@@ -741,7 +775,8 @@ module ASet =
                                     traverse rest
                                 | None ->
                                     false
-                        | _ -> failwith "unexpected delta"
+                        | _ -> 
+                            failwithf "[ASet] unexpected delta: %A" d
                                     
 
         Mod.custom (fun self ->
@@ -761,26 +796,50 @@ module ASet =
     let foldGroup (add : 's -> 'a -> 's) (sub : 's -> 'a -> 's) (zero : 's) (s : aset<'a>) =
         foldHalfGroup add (fun a b -> Some (sub a b)) zero s
        
+    let contains (value : 'a) (set : aset<'a>) =
+        let add (missing : hset<'a>) (v : 'a) =
+            HSet.remove v missing
+
+        let rem (missing : hset<'a>) (v : 'a) =
+            if Unchecked.equals v value then HSet.add v missing
+            else missing
+
+        set 
+            |> foldGroup add rem (HSet.ofList [value]) 
+            |> Mod.map HSet.isEmpty
        
     let containsAll (seq : seq<'a>) (set : aset<'a>) =
-        set.Content |> Mod.map (fun set ->
-            seq |> Seq.forall (fun v -> HRefSet.contains v set)
-        )   
-        
+        let all = HSet.ofSeq seq
+
+        let add (missing : hset<'a>) (value : 'a) =
+            HSet.remove value missing
+
+        let rem (missing : hset<'a>) (value : 'a) =
+            if HSet.contains value all then HSet.add value missing
+            else missing
+
+        foldGroup add rem all set |> Mod.map HSet.isEmpty
+      
     let containsAny (seq : seq<'a>) (set : aset<'a>) =
-        set.Content |> Mod.map (fun set ->
-            seq |> Seq.exists (fun v -> HRefSet.contains v set)
-        )   
+        let all = HSet.ofSeq seq
+
+        let add (contained : hset<'a>) (value : 'a) =
+            if HSet.contains value all then HSet.add value contained
+            else contained
+
+        let rem (contained : hset<'a>) (value : 'a) =
+            HSet.remove value contained
+
+        foldGroup add rem HSet.empty set |> Mod.map (not << HSet.isEmpty)
+
+    let count (set : aset<'a>) =
+        set.Content |> Mod.map HRefSet.count
 
     /// Adaptively calculates the sum of all elements in the set
     let inline sum (s : aset<'a>) = foldGroup (+) (-) LanguagePrimitives.GenericZero s
 
     /// Adaptively calculates the product of all elements in the set
     let inline product (s : aset<'a>) = foldGroup (*) (/) LanguagePrimitives.GenericOne s
-
-
-    let mapUse<'a, 'b when 'b :> IDisposable> (f : 'a -> 'b) (set : aset<'a>) : aset<'b> =
-        failwith "not implemented"
 
 
 
