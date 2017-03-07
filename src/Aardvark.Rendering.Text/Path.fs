@@ -15,9 +15,9 @@ module Path =
         let PathOffsetAndScale = Symbol.Create "PathOffsetAndScale"
         let PathColor = Symbol.Create "PathColor"
 
-    type KLMKindAttribute() = inherit FShade.Parameters.SemanticAttribute(Attributes.KLMKind |> string)
-    type PathOffsetAndScaleAttribute() = inherit FShade.Parameters.SemanticAttribute(Attributes.PathOffsetAndScale |> string)
-    type PathColorAttribute() = inherit FShade.Parameters.SemanticAttribute(Attributes.PathColor |> string)
+    type KLMKindAttribute() = inherit FShade.SemanticAttribute(Attributes.KLMKind |> string)
+    type PathOffsetAndScaleAttribute() = inherit FShade.SemanticAttribute(Attributes.PathOffsetAndScale |> string)
+    type PathColorAttribute() = inherit FShade.SemanticAttribute(Attributes.PathColor |> string)
 
     [<ReflectedDefinition>]
     module Shader = 
