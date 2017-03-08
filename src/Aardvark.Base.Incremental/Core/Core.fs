@@ -645,15 +645,20 @@ type AdaptiveObject =
             AdaptiveObject.time
 
 
-//        /// <summary>
-//        /// utility function for evaluating an object if
-//        /// it is marked as outOfDate. If the object is actually
-//        /// outOfDate the given function is executed and otherwise
-//        /// the given default value is returned.
-//        /// Note that this function takes care of appropriate locking
-//        /// </summary>
-//        member x.EvaluateIfNeeded (token : AdaptiveToken) (otherwise : 'a) (f : AdaptiveToken -> 'a) =
-//            x.evaluate token (Some otherwise) f
+        /// <summary>
+        /// utility function for evaluating an object if
+        /// it is marked as outOfDate. If the object is actually
+        /// outOfDate the given function is executed and otherwise
+        /// the given default value is returned.
+        /// Note that this function takes care of appropriate locking
+        /// </summary>
+        member x.EvaluateIfNeeded (token : AdaptiveToken) (otherwise : 'a) (f : AdaptiveToken -> 'a) =
+            x.evaluate token (fun token ->
+                if x.OutOfDate then 
+                    f token
+                else
+                    otherwise
+            )
 
         /// <summary>
         /// utility function for evaluating an object even if it
