@@ -205,7 +205,6 @@ type AdaptiveObjectExtensions private() =
 
 type AdaptiveToken =
     class
-        val mutable public Depth : int
         val mutable public Caller : IAdaptiveObject
         val mutable public Locked : HashSet<IAdaptiveObject>
 
@@ -228,9 +227,6 @@ type AdaptiveToken =
                     if rc = 0 then Monitor.PulseAll o
                 )
 
-        member inline x.WithCaller (c : IAdaptiveObject) =
-            AdaptiveToken(x.Depth + 1, c, x.Locked)
-
         member inline x.Release() =
             for o in x.Locked do
                 lock o (fun () ->
@@ -240,25 +236,21 @@ type AdaptiveToken =
                 )
             x.Locked.Clear()
 
-        new(depth : int, caller : IAdaptiveObject, locked : HashSet<IAdaptiveObject>) =
+
+
+        member x.WithCaller (c : IAdaptiveObject) =
+            AdaptiveToken(c, x.Locked)
+
+        member x.Isolated =
+            AdaptiveToken(x.Caller, HashSet())
+
+        static member Top = AdaptiveToken(null, HashSet())
+        static member inline Empty = Unchecked.defaultof<AdaptiveToken>
+
+        private new(caller : IAdaptiveObject, locked : HashSet<IAdaptiveObject>) =
             {
-                Depth = depth
                 Caller = caller
                 Locked = locked
-            }
-
-        new(caller) =
-            {
-                Depth = 1
-                Caller = caller
-                Locked = HashSet(AdaptiveObjectExtensions.EqualityComparer)
-            }
-
-        new() =
-            {
-                Depth = 0
-                Caller = null
-                Locked = HashSet(AdaptiveObjectExtensions.EqualityComparer)
             }
     end
 
@@ -556,6 +548,11 @@ type AdaptiveObject =
     class
         [<DefaultValue>]
         static val mutable private time : IAdaptiveObject 
+
+        [<DefaultValue; ThreadStatic>]
+        static val mutable private EvaluationDepthValue : int
+
+
         val mutable public Id : int
         val mutable public OutOfDate : bool
         val mutable public Level : int 
@@ -588,12 +585,14 @@ type AdaptiveObject =
 
         member this.evaluate (token : AdaptiveToken) (f : AdaptiveToken -> 'a) =
             let caller = token.Caller
-            let depth = token.Depth
+            let depth = AdaptiveObject.EvaluationDepthValue
 
             let mutable res = Unchecked.defaultof<_>
             token.EnterRead this
 
             try
+                AdaptiveObject.EvaluationDepthValue <- depth + 1
+
                 // this evaluation is performed optimistically
                 // meaning that the "top-level" object needs to be allowed to
                 // pull at least one value on every path.
@@ -624,9 +623,11 @@ type AdaptiveObject =
                     caller.Level <- max caller.Level (this.Level + 1)
 
             with _ ->
+                AdaptiveObject.EvaluationDepthValue <- depth
                 token.ExitFaultedRead this
                 reraise()
-
+                
+            AdaptiveObject.EvaluationDepthValue <- depth
             // downgrade to read
             token.Downgrade this
 
@@ -1043,7 +1044,7 @@ module CallbackExtensions =
             let res = 
                 new CallbackObject(x, fun self ->
                     try
-                        f (AdaptiveToken())
+                        f AdaptiveToken.Top
                     finally 
                         lock x (fun () -> x.Outputs.Add self |> ignore)
                 )

@@ -39,7 +39,7 @@ type cset_check<'a>(initial : seq<'a>) =
 
 type aset_check_reader<'a> = { realReader : ISetReader<'a>; simReader : ASetReferenceImpl.IReader<'a> } with
     member x.GetDelta() =
-        let r = HashSet(x.realReader.GetDelta())
+        let r = HashSet(x.realReader.GetOperations())
         let s = HashSet(x.simReader.GetDelta())
 
         if not <| x.simReader.Content.SetEquals x.realReader.State then

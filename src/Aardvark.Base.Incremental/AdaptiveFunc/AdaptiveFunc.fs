@@ -248,7 +248,7 @@ module ``Controller Builder`` =
 
     let preWith (f : 'a -> 'a -> 'b) (m : IMod<'a>) =
         if m.IsConstant then
-            let v = m.GetValue(AdaptiveToken())
+            let v = m.GetValue(AdaptiveToken.Top)
             AState.create (f v v)
         else
             m |> AState.bindMod (fun v ->

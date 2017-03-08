@@ -57,7 +57,7 @@ type ASetProgram(set : aset<int>, changes : list<ASetChange<int>>) =
         for c in changes do
             transact c.perform
             let oldState = r.State
-            let ops = r.GetOperations(AdaptiveToken())
+            let ops = r.GetOperations(AdaptiveToken.Top)
             let state = r.State
 
             checkEqual state c.desired

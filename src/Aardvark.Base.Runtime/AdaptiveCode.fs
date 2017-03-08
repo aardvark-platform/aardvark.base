@@ -303,8 +303,8 @@ module internal GenericProgram =
 
         do prolog.Next <- epilog
            epilog.Prev <- prolog
-           prolog.WriteContent(AdaptiveToken()) |> ignore
-           epilog.WriteContent(AdaptiveToken()) |> ignore
+           prolog.WriteContent(AdaptiveToken.Top) |> ignore
+           epilog.WriteContent(AdaptiveToken.Top) |> ignore
            handler.writeNext prolog.Storage.Value epilog.Storage.Value |> ignore
 
 
@@ -1003,7 +1003,7 @@ module AdaptiveProgram =
         p.Run()
 
     let inline update (p : IAdaptiveProgram<'a>) =
-        p.Update(AdaptiveToken())
+        p.Update(AdaptiveToken.Top)
 
 
     let inline nativeCallCount (p : IAdaptiveProgram<'i>) = p.NativeCallCount
@@ -1058,7 +1058,7 @@ module internal Tests =
         let prog = calls |> compile
         prog.AutoDefragmentation <- false
 
-        prog.Update(AdaptiveToken()) |> printfn "update: %A"
+        prog.Update(AdaptiveToken.Top) |> printfn "update: %A"
         prog.Run();
         read() |> printfn "%A"
 
@@ -1066,7 +1066,7 @@ module internal Tests =
             calls |> CSet.remove (0,Mod.constant 0) |> ignore
         )
 
-        prog.Update(AdaptiveToken()) |> printfn "update: %A"
+        prog.Update(AdaptiveToken.Top) |> printfn "update: %A"
         prog.Run();
         read() |> printfn "%A"
 
@@ -1074,7 +1074,7 @@ module internal Tests =
         transact (fun () ->
             calls |> CSet.add (1,Mod.constant 10) |> ignore
         )
-        prog.Update(AdaptiveToken()) |> printfn "update: %A"
+        prog.Update(AdaptiveToken.Top) |> printfn "update: %A"
         prog.Run();
         read() |> printfn "%A"
 
@@ -1084,7 +1084,7 @@ module internal Tests =
         )
 
 
-        prog.Update(AdaptiveToken()) |> printfn "update: %A"
+        prog.Update(AdaptiveToken.Top) |> printfn "update: %A"
         prog.Run(); 
         read() |> printfn "%A"
 
@@ -1101,7 +1101,7 @@ module internal Tests =
         )
 
 
-        prog.Update(AdaptiveToken()) |> printfn "update: %A"
+        prog.Update(AdaptiveToken.Top) |> printfn "update: %A"
         prog.Run(); 
         read() |> printfn "%A"
 
@@ -1115,7 +1115,7 @@ module internal Tests =
             calls |> CSet.unionWith [(10000, last :> IMod<_>); (10001, last :> IMod<_>)] |> ignore
         )
 
-        prog.Update(AdaptiveToken()) |> printfn "%A"
+        prog.Update(AdaptiveToken.Top) |> printfn "%A"
         prog.Run(); 
         read() |> printfn "%A"
 
@@ -1125,7 +1125,7 @@ module internal Tests =
             Mod.change last 1001
         )
 
-        prog.Update(AdaptiveToken()) |> printfn "%A"
+        prog.Update(AdaptiveToken.Top) |> printfn "%A"
         prog.Run();
         read() |> printfn "%A"
 

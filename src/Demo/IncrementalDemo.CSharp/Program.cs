@@ -106,7 +106,7 @@ namespace IncrementalDemo.CSharp
         {
             Action<IOpReader<hrefset<int>, hdeltaset<int>>> print = (r) =>
             {
-                var deltas = r.GetDeltas();
+                var deltas = r.GetOperations();
                 var content = r.State;
 
                 var deltaStr = deltas.Select(d => d.Count > 0 ? string.Format("Add {0}", d.Value) : string.Format("Rem {0}", d.Value)).Join(", ");

@@ -155,14 +155,14 @@ module SimplePerfTests =
 
         let r = final.GetReader()
 
-        r.GetDelta() |> ignore
+        r.GetOperations() |> ignore
 
         printf "started incremental version: "
         let sw = Stopwatch()
         sw.Start()
         for i in 1..iter do
             transact (fun () -> Mod.change vt (vt.Value + V3d.III))
-            r.GetDelta() |> ignore
+            r.GetOperations() |> ignore
         sw.Stop()
         printfn "%.3fms" (sw.Elapsed.TotalMilliseconds / float iter)
         r.Dispose()
@@ -205,7 +205,7 @@ module SimplePerfTests =
         for i in 1..iter do
             let m = V3d(i,i,i)
             update m
-            r.GetDelta() |> ignore
+            r.GetOperations() |> ignore
 
         sw.Stop()
         printfn "%.3fms" (sw.Elapsed.TotalMilliseconds / float iter)

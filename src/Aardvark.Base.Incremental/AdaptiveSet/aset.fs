@@ -351,10 +351,13 @@ module ASet =
                 let v = input.GetValue token
                 match old with
                     | Some(_,ro) when inputChanged ->
+                        let rem = HRefSet.computeDelta ro.State HRefSet.empty
                         ro.Dispose()
                         let r = (f v).GetReader()
                         old <- Some(v, r)
-                        r.GetOperations token
+                        let add = r.GetOperations token
+                        HDeltaSet.combine rem add
+
 
                     | Some(vo, ro) ->
                         ro.GetOperations token

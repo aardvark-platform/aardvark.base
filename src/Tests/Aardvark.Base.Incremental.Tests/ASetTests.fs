@@ -235,12 +235,12 @@ module OtherASetTests =
         let dervivedInner = inner |> ASet.map id
 
         let r = dervivedInner.GetReader()
-        r.GetDelta() |> should setEqual [Add 2; Add 3]
+        r.GetOperations() |> should setEqual [Add 2; Add 3]
 
         transact (fun () ->
             set.Add 3 |> should equal true
         )
-        r.GetDelta() |> should setEqual [Add 4]
+        r.GetOperations() |> should setEqual [Add 4]
 
     [<Test>]
     let ``[ASet] toMod triggering even with equal set referece``() =
@@ -299,7 +299,7 @@ module OtherASetTests =
         Task.Factory.StartNew(fun () ->
             while true do
                 ct.ThrowIfCancellationRequested()
-                let delta = reader.GetDelta()
+                let delta = reader.GetOperations()
                 //Thread.Sleep(10)
                 ()
         ) |> ignore
@@ -323,7 +323,7 @@ module OtherASetTests =
 
         cancel.Cancel()
 
-        reader.GetDelta() |> ignore
+        reader.GetOperations() |> ignore
 
 
         let content = reader.State |> Seq.toList |> List.sort
@@ -350,7 +350,7 @@ module OtherASetTests =
             Task.Factory.StartNew(fun () ->
                 while true do
                     ct.ThrowIfCancellationRequested()
-                    let delta = r.GetDelta()
+                    let delta = r.GetOperations()
                     
                     //if not (List.isEmpty delta) then
                     //    Console.WriteLine("delta: {0}", List.length delta)
@@ -378,7 +378,7 @@ module OtherASetTests =
         cancel.Cancel()
 
         for r in readers do
-            r.GetDelta() |> ignore
+            r.GetOperations() |> ignore
             let content = r.State |> Seq.toList |> List.sort
             content |> should equal numbers
 
@@ -429,7 +429,7 @@ module OtherASetTests =
         Task.Factory.StartNew(fun () ->
             while true do
                 ct.ThrowIfCancellationRequested()
-                let delta = reader.GetDelta()
+                let delta = reader.GetOperations()
                 //Thread.Sleep(10)
                 ()
         ) |> ignore
@@ -453,7 +453,7 @@ module OtherASetTests =
 
         cancel.Cancel()
 
-        reader.GetDelta() |> ignore
+        reader.GetOperations() |> ignore
 
 
         let content = reader.State |> Seq.toList |> List.sort
@@ -481,7 +481,7 @@ module OtherASetTests =
             Task.Factory.StartNew(fun () ->
                 while true do
                     ct.ThrowIfCancellationRequested()
-                    let delta = r.GetDelta()
+                    let delta = r.GetOperations()
                     Thread.Sleep(1)
                     ()
             , TaskCreationOptions.LongRunning) |> ignore
@@ -506,7 +506,7 @@ module OtherASetTests =
         cancel.Cancel()
 
         for r in readers do
-            r.GetDelta() |> ignore
+            r.GetOperations() |> ignore
 
 
         for r in readers do
@@ -535,7 +535,7 @@ module OtherASetTests =
         )
 
         for r in readers do
-            r.GetDelta() |> should setEqual [Add 1; Add 2; Add 3; Add 4]
+            r.GetOperations() |> should setEqual [Add 1; Add 2; Add 3; Add 4]
             r.State |> Seq.sort |> Seq.toList |> should equal [1; 2; 3; 4]
 
 
@@ -546,7 +546,7 @@ module OtherASetTests =
         )
 
         for r in readers do
-            r.GetDelta() |> should setEqual [Add 5; Add 6; Add 7; Add 8]
+            r.GetOperations() |> should setEqual [Add 5; Add 6; Add 7; Add 8]
             r.State |> Seq.sort |> Seq.toList |> should equal [1; 2; 3; 4; 5; 6; 7; 8]
 
 
@@ -580,7 +580,7 @@ module OtherASetTests =
             Task.Factory.StartNew(fun () ->
                 while true do
                     ct.ThrowIfCancellationRequested()
-                    let delta = r.GetDelta()
+                    let delta = r.GetOperations()
 
 
                     deltas.AddRange delta
@@ -607,7 +607,7 @@ module OtherASetTests =
         for i in 0..readers.Length-1 do
             let r = readers.[i]
             let deltas = lists.[i]
-            r.GetDelta() |> deltas.AddRange
+            r.GetOperations() |> deltas.AddRange
 
             let content = r.State |> Seq.toList |> List.sort
             content |> should equal numbers
@@ -626,7 +626,7 @@ module OtherASetTests =
 
         transact (fun () -> set.Add 1 |> ignore; set.Remove 1 |> ignore)
 
-        r.GetDelta() |> should setEqual List.empty<SetOperation<int>>
+        r.GetOperations() |> should setEqual List.empty<SetOperation<int>>
         r.State.Count |> should equal 0
 
 
@@ -652,7 +652,7 @@ module OtherASetTests =
         System.GC.Collect()
         System.GC.WaitForFullGCComplete() |> ignore
 
-        reader.GetDelta() |> should setEqual [Add 1]
+        reader.GetOperations() |> should setEqual [Add 1]
         reader.Dispose()
 
 //

@@ -14,6 +14,7 @@ type SimSetTree =
     | Filter of obj * SimSetTree
     | Collect of obj * SimSetTree
     | OfMod of obj
+    | Bind of obj * obj
 
 and simset<'a> =
     abstract member Content : hset<'a>
@@ -141,6 +142,14 @@ module SimSet =
         }
         
 
+    let bind (f : 'a -> simset<'b>) (m : ModRef<'a>) =
+        simset { 
+            expression = Bind(f, m)
+            aset = ASet.bind (f >> aset) m
+            inputs = fun () -> HSet.add (m :> obj) (f(Mod.force m).Inputs)
+            content = fun () -> HSet.collect (f >> content) (HSet.ofList ([Mod.force m]))
+        }
+
 type SimSetGenerator() =
     static let rand = RandomSystem()
 
@@ -158,7 +167,7 @@ type SimSetGenerator() =
         { new Arbitrary<simset<'a>>() with
             override x.Generator =
                 gen {
-                    let case = rand.UniformInt(9)
+                    let case = rand.UniformInt(10)
 
                     
 
@@ -202,6 +211,14 @@ type SimSetGenerator() =
                             let! ref = Arb.generate<ModRef<'a>>
                             return SimSet.ofModSingle ref
 
+
+                        | 9 ->
+                            let! ref = Arb.generate<ModRef<'a>>
+                            let! f = Arb.generate<'a -> simset<'a>>
+                            let cache = Cache f
+                            let f a = cache.Invoke a
+
+                            return SimSet.bind f ref
 
                         | _ ->
                             return failwith ""
@@ -307,7 +324,7 @@ module SimSetTest =
 
     let check (verbose : bool) (reader : ISetReader<'a>) (set : simset<'a>) =
         let asetOldState = reader.State
-        let asetOps = reader.GetOperations(AdaptiveToken())
+        let asetOps = reader.GetOperations(AdaptiveToken.Top)
         let asetState = reader.State
         let simState = set.Content
 
@@ -351,6 +368,7 @@ module SimSetTest =
                 | Filter(f,o) -> sprintf "%s |> filter f" (toString o)
                 | Collect(f,o) -> sprintf "%s |> collect f" (toString o)
                 | OfMod m -> sprintf "%A |> ofModSingle" m
+                | Bind(f,m) -> sprintf "%A |> bind f" m
 
         for g in generated do
             let name = g.Expression |> toString

@@ -36,19 +36,19 @@ module ``performance tests`` =
         let test = stepN 50 input
         let r = test.GetReader()
 
-        r.GetDelta() |> ignore
+        r.GetOperations() |> ignore
 
 
         for i in 0..100 do
             transact (fun () ->
                 input.UnionWith [i]
             )
-            r.GetDelta() |> ignore
+            r.GetOperations() |> ignore
 
         transact (fun () ->
             input.Clear()
         )
-        r.GetDelta() |> ignore
+        r.GetOperations() |> ignore
 
 
         let changeTime = Stopwatch()
@@ -62,7 +62,7 @@ module ``performance tests`` =
             changeTime.Stop()
 
             evalTime.Start()
-            r.GetDelta() |> ignore
+            r.GetOperations() |> ignore
             evalTime.Stop()
 
         Console.WriteLine("change: {0}ms", changeTime.Elapsed.TotalMilliseconds / float iter )
@@ -86,19 +86,19 @@ module ``performance tests`` =
         let test = stepN 50 input
         let r = test.GetReader()
 
-        r.GetDelta() |> ignore
+        r.GetOperations() |> ignore
 
 
         for i in 0..100 do
             transact (fun () ->
                 input.UnionWith [i]
             )
-            r.GetDelta() |> ignore
+            r.GetOperations() |> ignore
 
         transact (fun () ->
             input.Clear()
         )
-        r.GetDelta() |> ignore
+        r.GetOperations() |> ignore
 
 
         let changeTime = Stopwatch()
@@ -112,7 +112,7 @@ module ``performance tests`` =
             changeTime.Stop()
 
             evalTime.Start()
-            r.GetDelta() |> ignore
+            r.GetOperations() |> ignore
             evalTime.Stop()
 
         Console.WriteLine("change: {0}ms", changeTime.Elapsed.TotalMilliseconds / float iter )

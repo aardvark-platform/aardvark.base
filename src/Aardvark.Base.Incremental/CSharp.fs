@@ -298,8 +298,8 @@ type AdaptiveSetExtensions private() =
         this.GetReader()
 
     [<Extension>]
-    static member GetDeltas (this : ISetReader<'a>) =
-        this.GetOperations(AdaptiveToken()) |> HDeltaSet.toArray
+    static member GetOperations (this : ISetReader<'a>) =
+        this.GetOperations(AdaptiveToken.Top) |> HDeltaSet.toArray
 
     /// <summary> see ASet/ASetModule.unsafeRegisterCallbackNoGcRoot </summary>
     [<Extension>]
