@@ -204,7 +204,7 @@ type AdaptiveObjectExtensions private() =
         Monitor.IsEntered o && o.OutOfDate
 
 type AdaptiveToken =
-    class
+    struct
         val mutable public Caller : IAdaptiveObject
         val mutable public Locked : HashSet<IAdaptiveObject>
 
@@ -238,16 +238,16 @@ type AdaptiveToken =
 
 
 
-        member x.WithCaller (c : IAdaptiveObject) =
+        member inline x.WithCaller (c : IAdaptiveObject) =
             AdaptiveToken(c, x.Locked)
 
-        member x.Isolated =
+        member inline x.Isolated =
             AdaptiveToken(x.Caller, HashSet())
 
-        static member Top = AdaptiveToken(null, HashSet())
+        static member inline Top = AdaptiveToken(null, HashSet())
         static member inline Empty = Unchecked.defaultof<AdaptiveToken>
 
-        private new(caller : IAdaptiveObject, locked : HashSet<IAdaptiveObject>) =
+        new(caller : IAdaptiveObject, locked : HashSet<IAdaptiveObject>) =
             {
                 Caller = caller
                 Locked = locked
