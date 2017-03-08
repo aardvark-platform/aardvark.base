@@ -211,25 +211,34 @@ type AdaptiveToken =
 
         member inline x.EnterRead(o : IAdaptiveObject) =
             Monitor.Enter o
-            if x.Locked.Add o then
-                o.ReaderCount <- o.ReaderCount + 1
+                
+        member inline x.ExitFaultedRead(o : IAdaptiveObject) =
+            Monitor.Exit o
 
         member inline x.Downgrade(o : IAdaptiveObject) =
+            if x.Locked.Add o then
+                o.ReaderCount <- o.ReaderCount + 1
             Monitor.Exit o
 
         member inline x.ExitRead(o : IAdaptiveObject) =
-            lock o (fun () ->
-                let rc = o.ReaderCount - 1
-                o.ReaderCount <- rc
-                if rc = 0 then Monitor.PulseAll o
-            )
+            if x.Locked.Remove o then
+                lock o (fun () ->
+                    let rc = o.ReaderCount - 1
+                    o.ReaderCount <- rc
+                    if rc = 0 then Monitor.PulseAll o
+                )
 
         member inline x.WithCaller (c : IAdaptiveObject) =
             AdaptiveToken(x.Depth + 1, c, x.Locked)
 
         member inline x.Release() =
-            for l in x.Locked do
-                x.ExitRead l
+            for o in x.Locked do
+                lock o (fun () ->
+                    let rc = o.ReaderCount - 1
+                    o.ReaderCount <- rc
+                    if rc = 0 then Monitor.PulseAll o
+                )
+            x.Locked.Clear()
 
         new(depth : int, caller : IAdaptiveObject, locked : HashSet<IAdaptiveObject>) =
             {
@@ -559,18 +568,30 @@ type AdaptiveObject =
               Level = 0; Outputs = VolatileCollection<IAdaptiveObject>(); WeakThis = null;
               ReaderCountValue = 0 }
 
-    
+        static member inline private markTime() =
+            let time = AdaptiveObject.time
+            if not (isNull time) then
+                Monitor.Enter time
+                if not time.Outputs.IsEmpty then
+                    let mutable outputCount = 0
+                    let outputs = time.Outputs.Consume(&outputCount)
+                    Monitor.Exit time
+
+                    let t = new Transaction()
+                    for i in 0..outputCount-1 do
+                        let o = outputs.[i]
+                        t.Enqueue(o)
+                    t.Commit()
+                    t.Dispose()
+                else
+                     Monitor.Exit time
+
         member this.evaluate (token : AdaptiveToken) (f : AdaptiveToken -> 'a) =
             let caller = token.Caller
             let depth = token.Depth
-            let top = isNull caller && depth = 0 && not Transaction.HasRunning
-//            let oldLocks =
-//                if top then AdaptiveSystemState.pushReadLocks()
-//                else []
 
             let mutable res = Unchecked.defaultof<_>
             token.EnterRead this
-            let mutable good = false // evaluate works without exception?
 
             try
                 // this evaluation is performed optimistically
@@ -602,41 +623,18 @@ type AdaptiveObject =
                     this.Outputs.Add caller |> ignore
                     caller.Level <- max caller.Level (this.Level + 1)
 
-                good <- true
+            with _ ->
+                token.ExitFaultedRead this
+                reraise()
 
-            finally
-                token.Downgrade this
-                if not good then // no level changed exn occured
-                    token.ExitRead(this)
-
-                    if isNull caller then
-                        token.Release()
-                else
-                    // normal case. if we got read lock, capture lock
-                    ()
-
-                
-
+            // downgrade to read
+            token.Downgrade this
 
             if isNull caller then
                 token.Release()
 
-            if top then 
-                let time = AdaptiveObject.Time
-                Monitor.Enter time
-                if not time.Outputs.IsEmpty then
-                    let mutable outputCount = 0
-                    let outputs = time.Outputs.Consume(&outputCount)
-                    Monitor.Exit time
-
-                    let t = new Transaction()
-                    for i in 0..outputCount-1 do
-                        let o = outputs.[i]
-                        t.Enqueue(o)
-                    t.Commit()
-                    t.Dispose()
-                else
-                    Monitor.Exit time
+                if depth = 0 && not Transaction.HasRunning then 
+                    AdaptiveObject.markTime()
 
             res
 
