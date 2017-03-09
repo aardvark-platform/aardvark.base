@@ -956,7 +956,7 @@ module ASetReaders =
 
         override x.Finalize() =
             try x.Dispose false
-            with e -> Report.Warn("finalizer faulted: {0}", e.Message)
+            with e -> try Report.Warn("finalizer faulted: {0}", e.Message) finally ()
             
         member x.Dispose disposing =
             if Interlocked.Exchange(&isDisposed, 1) = 0 then
