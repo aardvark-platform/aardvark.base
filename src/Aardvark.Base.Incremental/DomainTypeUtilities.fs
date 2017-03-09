@@ -8,6 +8,7 @@ open Aardvark.Base
 
 
 type DomainTypeAttribute() = inherit System.Attribute()
+type PrimaryKeyAttribute() = inherit System.Attribute()
 
 [<AllowNullLiteral>]
 type Id() =
