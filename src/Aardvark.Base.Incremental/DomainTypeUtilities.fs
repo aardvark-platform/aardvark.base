@@ -6,9 +6,24 @@ open System.Runtime.CompilerServices
 open System.Collections.Generic
 open Aardvark.Base
 
-
+module AttributeTargets =
+    [<Literal>]
+    let Type =
+        AttributeTargets.Class |||
+        AttributeTargets.Delegate |||
+        AttributeTargets.Enum |||
+        AttributeTargets.GenericParameter |||
+        AttributeTargets.Interface |||
+        AttributeTargets.Struct
+   
+[<Sealed; AttributeUsage(AttributeTargets.Type, AllowMultiple = false)>]
 type DomainTypeAttribute() = inherit System.Attribute()
+
+[<Sealed; AttributeUsage(AttributeTargets.Property ||| AttributeTargets.Field, AllowMultiple = false)>]
 type PrimaryKeyAttribute() = inherit System.Attribute()
+
+[<Sealed; AttributeUsage(AttributeTargets.Property ||| System.AttributeTargets.Field, AllowMultiple = false)>]
+type TreatAsValueAttribute() = inherit System.Attribute()
 
 [<AllowNullLiteral>]
 type Id() =
@@ -206,3 +221,23 @@ type ResetMapList<'k, 'v>(initial : plist<'k>, create : Index -> 'k -> 'v, updat
         member x.IsConstant = false
         member x.Content = history :> IMod<_>
         member x.GetReader() = history.NewReader()
+
+
+type ResetMapOption<'a, 'b>(initial : Option<'a>, create : 'a -> 'b, update : 'b * 'a -> unit) =
+    inherit Mod.AbstractMod<Option<'b>>()
+    let b = ResetMod<Option<'b>>(initial |> Option.map create)
+
+    member x.Update(v : Option<'a>) =
+        match b.GetValue(), v with
+            | Some _, None -> b.Update(None)
+            | None , None -> ()
+            | None, Some v -> b.Update(create v |> Some)
+            | Some o, Some n ->
+                if not (System.Object.ReferenceEquals(o,n)) then
+                    update (o,n)
+            
+    interface IUpdatable<Option<'a>> with
+        member x.Update v = x.Update v
+
+    override x.Compute(token) =
+        b.GetValue(token)
