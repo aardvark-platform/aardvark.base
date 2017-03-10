@@ -601,7 +601,7 @@ module HMap =
         map.Map(mapping)
         
     // O(n)
-    let inline choose (mapping : 'k -> 'v -> Option<'v>) (map : hmap<'k, 'v>) =
+    let inline choose (mapping : 'k -> 'a -> Option<'b>) (map : hmap<'k, 'a>) =
         map.Choose mapping
 
     // O(n)
