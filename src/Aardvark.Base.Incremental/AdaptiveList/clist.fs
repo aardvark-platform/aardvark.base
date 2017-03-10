@@ -8,6 +8,7 @@ open Aardvark.Base.Incremental
 open Aardvark.Base
 
 [<StructuredFormatDisplay("{AsString}")>]
+[<CompiledName("ChangeableList")>]
 type clist<'a>(initial : seq<'a>) =
     let history = History PList.trace
     do 

@@ -7,6 +7,7 @@ open Aardvark.Base.Incremental
 open Aardvark.Base
 
 [<StructuredFormatDisplay("{AsString}")>]
+[<CompiledName("ChangeableSet")>]
 type cset<'a>(initial : seq<'a>) =
     let history = History HRefSet.traceNoRefCount
     do initial |> Seq.map Add |> HDeltaSet.ofSeq |> history.Perform |> ignore

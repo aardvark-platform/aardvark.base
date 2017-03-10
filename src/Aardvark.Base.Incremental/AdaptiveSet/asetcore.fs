@@ -4,6 +4,7 @@ open Aardvark.Base
 
 type ISetReader<'a> = IOpReader<hrefset<'a>, hdeltaset<'a>>
 
+[<CompiledName("IAdaptiveSet")>]
 type aset<'a> =
     abstract member IsConstant  : bool
     abstract member Content     : IMod<hrefset<'a>>

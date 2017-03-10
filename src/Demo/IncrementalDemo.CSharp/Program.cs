@@ -44,7 +44,7 @@ namespace IncrementalDemo.CSharp
 
         static void SetContainmentTest()
         {
-            var set = new cset<int> { 1, 2, 3, 4 };
+            var set = new ChangeableSet<int> { 1, 2, 3, 4 };
 
 
             var greater1 = from i in set where i > 1 select i;
@@ -116,10 +116,10 @@ namespace IncrementalDemo.CSharp
                 Report.Line("content = [{0}]", contentStr);
             };
 
-            var i0 = new cset<int> { 1, 2, 3 };
-            var i1 = new cset<int> { 4, 5 };
-            var i2 = new cset<int> { 6, 7 };
-            var input = new cset<aset<int>> { i0, i1 };
+            var i0 = new ChangeableSet<int> { 1, 2, 3 };
+            var i1 = new ChangeableSet<int> { 4, 5 };
+            var i2 = new ChangeableSet<int> { 6, 7 };
+            var input = new ChangeableSet<IAdaptiveSet<int>> { i0, i1 };
 
             var flat = input.SelectMany(a => a);
 
