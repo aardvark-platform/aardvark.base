@@ -123,7 +123,11 @@ module Index =
             member x.CompareTo(o : Value) =
                 match Monitor.TryEnter x, Monitor.TryEnter o with
                     | true, true ->
-                        compare x.Key o.Key
+                        try 
+                            compare x.Key o.Key
+                        finally
+                            Monitor.Exit x
+                            Monitor.Exit o
 
                     | true, false ->
                         Monitor.Exit x
