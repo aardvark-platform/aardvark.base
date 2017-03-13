@@ -239,7 +239,7 @@ namespace Aardvark.Base
         /// <summary>
         /// The LogFileName may be modified before the first log message is written.
         /// </summary>
-        public static string LogFileName = @"Aardvark";
+        public static string LogFileName = @"Aardvark.log";
 
         /// <summary>
         /// Creates a stream writer writing to LogFileName but retries, if file is
@@ -254,7 +254,7 @@ namespace Aardvark.Base
             try
             {
                 writer = new StreamWriter(
-                    new FileStream(fileName + ".log",
+                    new FileStream(fileName,
                                FileMode.Create, FileAccess.Write, FileShare.Read));
                 return writer;
             }
