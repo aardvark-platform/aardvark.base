@@ -430,17 +430,18 @@ module MapExtImplementation =
 
                 | MapNode(k,v,l,r,h,c) ->
                     let l' = chooseiOpt f l
+                    let s' = f.Invoke(k,v)
                     let r' = chooseiOpt f r
-
-                    match l', r' with
-                        | MapEmpty, r -> r
-                        | l, MapEmpty -> l
-                        | _ ->
-                            match f.Invoke(k,v) with
-                                | Some v -> join l' k v r'
-                                | None ->
+                    match s' with
+                        | None -> 
+                            match l', r' with
+                                | MapEmpty, r -> r
+                                | l, MapEmpty -> l
+                                | _ ->
                                     let k,v,r' = spliceOutSuccessor r'
                                     join l' k v r'
+                        | Some v ->
+                            join l' k v r'
 
         let choosei f m = chooseiOpt (OptimizedClosures.FSharpFunc<_,_,_>.Adapt(f)) m
     
