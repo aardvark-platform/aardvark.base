@@ -205,38 +205,40 @@ type IAdaptiveObject =
 //        rw.ExitWriteLock()
 
 and AdaptiveLock() =
-    let mutable readerCount = 0
-    let isZero = new ManualResetEventSlim(true)
+    //let mutable readerCount = 0
+    //let isZero = new ManualResetEventSlim(true)
 
 
 
     member x.EnterRead(o : IAdaptiveObject) = 
         Monitor.Enter o
-        if Interlocked.Increment(&readerCount) = 1 then
-            isZero.Reset()
-
+        
     member x.Downgrade(o : IAdaptiveObject) = 
+        //if Interlocked.Increment(&readerCount) = 1 then
+        //    isZero.Reset()
         Monitor.Exit o
 
-    member x.ExitRead() = 
-        if Interlocked.Decrement(&readerCount) = 0 then
-            isZero.Set()
+    member x.ExitRead() = ()
+        //if Interlocked.Decrement(&readerCount) = 0 then
+        //    isZero.Set()
 
     member x.IsOutdatedCaller(o : IAdaptiveObject) =
-        Monitor.IsEntered o && o.OutOfDate
+        false
+        //Monitor.IsEntered o// && o.OutOfDate
 
     member x.EnterWrite(o : IAdaptiveObject) = 
-        let rec enter(level : int) =
-            isZero.Wait()
-            Monitor.Enter o
-            if readerCount > 0 then
-                if level > 10 then Log.warn "yehaaa"
-                Monitor.Exit o
-                enter(level + 1)
-            else
-                ()
-
-        enter 0
+//        let rec enter(level : int) =
+//            //isZero.Wait(1000)
+//            Monitor.Enter o
+//            //if readerCount > 0 then
+//            //    if level > 10 then Log.warn "yehaaa"
+//                Monitor.Exit o
+//                enter(level + 1)
+//            else
+//                ()
+//
+//        enter 0
+        Monitor.Enter o
         true
 
     member x.ExitWrite(o : IAdaptiveObject) = 
