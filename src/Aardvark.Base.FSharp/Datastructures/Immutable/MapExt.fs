@@ -247,7 +247,7 @@ module MapExtImplementation =
 
                 | MapOne(k2,v2) ->
                     let c = comparer.Compare(k, k2)
-                    if c > 0 then MapEmpty, None, MapOne(k2,v2)
+                    if c < 0 then MapEmpty, None, MapOne(k2,v2)
                     elif c = 0 then MapEmpty, Some(v2), MapEmpty
                     else MapOne(k2,v2), None, MapEmpty
 
@@ -606,7 +606,7 @@ module MapExtImplementation =
                                 found <- true
                                 f i (Some lv) (Some v)
                             else 
-                                f i None (Some v)
+                                f i (Some lv) None
                         )
                     if found then 
                         res 
@@ -626,13 +626,14 @@ module MapExtImplementation =
                     let l = choose2 comparer f ll rs
                     let r = choose2 comparer f lr rg
 
-                    match l, r with
-                        | MapEmpty, r -> r
-                        | l, MapEmpty -> l
-                        | l, r ->
-                            match v with
-                                | Some v -> join l k v r
-                                | None ->
+                    match v with
+                        | Some v -> 
+                            join l k v r
+                        | None -> 
+                            match l, r with
+                                | MapEmpty, r -> r
+                                | l, MapEmpty -> l
+                                | l, r ->
                                     let k,v,r = spliceOutSuccessor r
                                     join l k v r
 

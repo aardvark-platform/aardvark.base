@@ -68,9 +68,11 @@ type plist<'a>(l : Index, h : Index, content : MapExt<Index, 'a>) =
                             None
                         | _, Some r -> 
                             Some (Set r)
-                        | _ -> 
+                        | Some l, None -> 
                             Some Remove
-               
+                        | None, None ->
+                            None
+
                 MapExt.choose2 merge l.Content r.Content |> PDeltaList.ofMap
 
     member x.TryGet (i : Index) =
@@ -244,9 +246,10 @@ module PList =
     let inline append (v : 'a) (list : plist<'a>) = list.Append v
     let inline prepend (v : 'a) (list : plist<'a>) = list.Prepend v
     let inline set (id : Index) (v : 'a) (list : plist<'a>) = list.Set(id, v)
+    let inline setAt (index : int) (v : 'a) (list : plist<'a>) = list.Set(index, v)
     let inline remove (id : Index) (list : plist<'a>) = list.Remove(id)
     let inline removeAt (index : int) (list : plist<'a>) = list.RemoveAt(index)
-
+    let inline insertAt (index : int) (value : 'a) (list : plist<'a>) = list.InsertAt(index, value)
     let inline toSeq (list : plist<'a>) = list :> seq<_>
     let inline toList (list : plist<'a>) = list.AsList
     let inline toArray (list : plist<'a>) = list.AsArray
@@ -276,7 +279,8 @@ module PList =
     let inline filter (predicate : 'a -> bool) (list : plist<'a>) = list.Filter (fun _ v -> predicate v)
 
 
-
+    let inline computeDelta (l : plist<'a>) (r : plist<'a>) = plist.ComputeDeltas(l, r)
+    let inline applyDelta (l : plist<'a>) (d : pdeltalist<'a>) = l.Apply(d)
 
     let trace<'a> = plist<'a>.Trace
 
