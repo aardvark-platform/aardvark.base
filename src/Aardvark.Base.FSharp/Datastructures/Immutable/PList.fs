@@ -151,6 +151,38 @@ type plist<'a>(l : Index, h : Index, content : MapExt<Index, 'a>) =
                     | None,            None           -> Index.after Index.zero
             x.Set(index, value)
 
+    member x.InsertBefore(i : Index, value : 'a) =
+        let str = Guid.NewGuid() |> string
+        let l, s, r = MapExt.neighbours i content
+        let r = 
+            match s with
+                | Some s -> Some s
+                | None -> r
+        let index = 
+            match l, r with
+                | Some (before,_), Some (after,_) -> Index.between before after
+                | None,            Some (after,_) -> Index.before after
+                | Some (before,_), None           -> Index.after before
+                | None,            None           -> Index.after Index.zero
+
+        x.Set(index, value)
+
+    member x.InsertAfter(i : Index, value : 'a) =
+        let str = Guid.NewGuid() |> string
+        let l, s, r = MapExt.neighbours i content
+        let l = 
+            match s with
+                | Some s -> Some s
+                | None -> l
+        let index = 
+            match l, r with
+                | Some (before,_), Some (after,_) -> Index.between before after
+                | None,            Some (after,_) -> Index.before after
+                | Some (before,_), None           -> Index.after before
+                | None,            None           -> Index.after Index.zero
+
+        x.Set(index, value)
+
     member x.Remove(key : Index) =
         let c = MapExt.remove key content
         if c.Count = 0 then empty
@@ -253,6 +285,9 @@ module PList =
     let inline toSeq (list : plist<'a>) = list :> seq<_>
     let inline toList (list : plist<'a>) = list.AsList
     let inline toArray (list : plist<'a>) = list.AsArray
+
+    let inline insertAfter (index : Index) (value : 'a) (list : plist<'a>) = list.InsertAfter(index, value)
+    let inline insertBefore (index : Index) (value : 'a) (list : plist<'a>) = list.InsertBefore(index, value)
 
     let single (v : 'a) =
         let t = Index.after Index.zero
