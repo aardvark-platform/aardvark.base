@@ -154,34 +154,33 @@ type plist<'a>(l : Index, h : Index, content : MapExt<Index, 'a>) =
     member x.InsertBefore(i : Index, value : 'a) =
         let str = Guid.NewGuid() |> string
         let l, s, r = MapExt.neighbours i content
-        let r = 
-            match s with
-                | Some s -> Some s
-                | None -> r
-        let index = 
-            match l, r with
-                | Some (before,_), Some (after,_) -> Index.between before after
-                | None,            Some (after,_) -> Index.before after
-                | Some (before,_), None           -> Index.after before
-                | None,            None           -> Index.after Index.zero
-
-        x.Set(index, value)
+        match s with
+            | None ->
+                x.Set(i, value)
+            | Some _ ->
+                let index = 
+                    match l with
+                        | Some (before,_) -> Index.between before i
+                        | None -> Index.before i
+                x.Set(index, value)
 
     member x.InsertAfter(i : Index, value : 'a) =
         let str = Guid.NewGuid() |> string
         let l, s, r = MapExt.neighbours i content
-        let l = 
-            match s with
-                | Some s -> Some s
-                | None -> l
-        let index = 
-            match l, r with
-                | Some (before,_), Some (after,_) -> Index.between before after
-                | None,            Some (after,_) -> Index.before after
-                | Some (before,_), None           -> Index.after before
-                | None,            None           -> Index.after Index.zero
+        match s with
+            | None ->
+                x.Set(i, value)
+            | Some _ ->
+                let index =
+                    match r with
+                        | Some (after,_) -> Index.between i after
+                        | None -> Index.after i
+                x.Set(index, value)
 
-        x.Set(index, value)
+    member x.TryGetIndex(i : int) =
+        match MapExt.tryItem i content with
+            | Some (id,_) -> Some id
+            | None -> None
 
     member x.Remove(key : Index) =
         let c = MapExt.remove key content
@@ -288,6 +287,8 @@ module PList =
 
     let inline insertAfter (index : Index) (value : 'a) (list : plist<'a>) = list.InsertAfter(index, value)
     let inline insertBefore (index : Index) (value : 'a) (list : plist<'a>) = list.InsertBefore(index, value)
+    let inline tryAt (index : int) (list : plist<'a>) = list.TryGet index
+    let inline tryGet (index : Index) (list : plist<'a>) = list.TryGet index
 
     let single (v : 'a) =
         let t = Index.after Index.zero

@@ -103,6 +103,43 @@ let ``[PList] computeDelta`` (l : list<int>) (r : list<int>) =
         PList.applyDelta l lr |> snd |> PDeltaList.toList = PDeltaList.toList lr
         PList.applyDelta r rl |> snd |> PDeltaList.toList = PDeltaList.toList rl
     ]
-
     
+[<Property>]
+let ``[PList] insertAfter`` (i : int) (l : list<int>) =
+    (i >= 0 && i < l.Length) ==> lazy (
+        let mutable p = PList.empty
+        let mutable last = Index.zero
+        let mutable idx = 0
+        let mutable key = Index.zero
+        for e in l do
+            let id = Index.after last
+            p <- p.Set(id, e)
+            if idx = i then key <- id
+            last <- id
+            idx <- idx + 1
+    
+        let check = l |> List.mapi (fun ii v -> if i = ii then [v;123] else [v]) |> List.concat
+        let test = PList.insertAfter key 123 p
+
+        PList.toList test = check
+    )    
+[<Property>]
+let ``[PList] insertBefore`` (i : int) (l : list<int>) =
+    (i >= 0 && i < l.Length) ==> lazy (
+        let mutable p = PList.empty
+        let mutable last = Index.zero
+        let mutable idx = 0
+        let mutable key = Index.zero
+        for e in l do
+            let id = Index.after last
+            p <- p.Set(id, e)
+            if idx = i then key <- id
+            last <- id
+            idx <- idx + 1
+    
+        let check = l |> List.mapi (fun ii v -> if i = ii then [123; v] else [v]) |> List.concat
+        let test = PList.insertBefore key 123 p
+
+        PList.toList test = check
+    )
 
