@@ -28,11 +28,11 @@ NUGET
     Chessie (0.6) - content: none
       FSharp.Core
     FAKE (4.52) - content: none
-    FSharp.Core (4.1) - content: none
+    FSharp.Core (4.1.0.2) - content: none
       System.ValueTuple (>= 4.3)
     Mono.Cecil (0.10.0-beta4) - content: none
     Newtonsoft.Json (9.0.1) - content: none
-    Paket.Core (3.36.1) - content: none
+    Paket.Core (3.36.5) - content: none
       Chessie (>= 0.6)
       FSharp.Core (>= 4.0.1.7-alpha)
       Mono.Cecil (>= 0.10.0-beta1-v2)
@@ -57,7 +57,7 @@ NUGET
     System.Xml.XPath.XmlDocument (4.3) - content: none
 GITHUB
   remote: vrvis/Aardvark.Fake
-    FULLPROJECT (bb456a863ff9adb36a1e86fc6f2e083eccf65b53)
+    FULLPROJECT (f2bce91a34f8ba811bc93055643c5f7d7c0747c0)
       Chessie (>= 0.6 < 0.7)
       FAKE (>= 4.52 < 4.53)
       Mono.Cecil
