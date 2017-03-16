@@ -41,6 +41,15 @@ type IMod<'a> =
     /// the respective computation if needed.
     /// </summary>
     abstract member GetValue : AdaptiveToken -> 'a
+    
+
+type IDisposableMod =
+    inherit IMod
+    inherit IDisposable
+    
+type IDisposableMod<'a> =
+    inherit IMod<'a>
+    inherit IDisposableMod
 
 /// <summary>
 /// ModRef<'a> represents a changeable input

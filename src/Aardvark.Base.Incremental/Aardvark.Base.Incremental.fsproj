@@ -79,6 +79,7 @@
     <Compile Include="DomainTypeUtilities.fs" />
     <Compile Include="Adapters\EventAdapter.fs" />
     <None Include="paket.references" />
+    <Compile Include="IncrementalBvh.fs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="../Aardvark.Base.TypeProviders/Aardvark.Base.TypeProviders.fsproj">
