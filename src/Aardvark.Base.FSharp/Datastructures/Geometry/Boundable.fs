@@ -21,13 +21,14 @@ module RayHit =
     let map (f : 'a -> 'b) (hit : RayHit<'a>) =
         RayHit(hit.T, f hit.Value)
 
-
+[<Extension>]
 type RayPart =
     struct
         val mutable public Ray  : FastRay3d
         val mutable public TMin : float
         val mutable public TMax : float
         
+        [<Extension>]
         static member Intersects(x : RayPart, tri : Triangle3d) =
             let ray = x.Ray.Ray
             let mutable t = 0.0
@@ -35,7 +36,8 @@ type RayPart =
                 Some t
             else
                 None
-
+                
+        [<Extension>]
         static member Intersects(x : RayPart, box : Box3d) =
             let ray = x.Ray
             let mutable tmin = x.TMin
@@ -44,7 +46,8 @@ type RayPart =
                 Some tmin
             else
                 None
-
+                
+        [<Extension>]
         static member Intersects(x : RayPart, sphere : Sphere3d) =
             let ray = x.Ray.Ray
             //  | (o + t * d - c) |^2 = r^2
@@ -76,6 +79,7 @@ type RayPart =
                 elif t2v then Some t2
                 else None
 
+        [<Extension>]
         static member Intersects(x : RayPart, cylinder : Cylinder3d) =
             let ray = x.Ray.Ray
             let tmin = x.TMin
@@ -107,7 +111,7 @@ type RayPart =
 
                 let inline isValid (t : float) =
                     let pt = ray.GetPointOnRay t
-                    t1 >= tmin && t1 <= tmax && p0.Height pt >= 0.0 && p1.Height pt <= 0.0
+                    t >= tmin && t <= tmax && p0.Height pt >= 0.0 && p1.Height pt <= 0.0
 
                 let t1 = if isValid t1 then Some t1 else None
                 let t2 = if isValid t2 then Some t2 else None
@@ -116,8 +120,8 @@ type RayPart =
                     let mutable t = 0.0
                     let mutable pt = V3d.Zero
                     if ray.Intersects(p0, &t, &pt) then
-                        let d = Vec.cross (pt - cylinder.P0) va |> Vec.lengthSquared
-                        if d < r2 then Some t
+                        let d = Vec.lengthSquared (pt - cylinder.P0)
+                        if d <= r2 then Some t
                         else None
                     else
                         None
@@ -126,13 +130,13 @@ type RayPart =
                     let mutable t = 0.0
                     let mutable pt = V3d.Zero
                     if ray.Intersects(p1, &t, &pt) then
-                        let d = Vec.cross (pt - cylinder.P0) va |> Vec.lengthSquared
-                        if d < r2 then Some t
+                        let d = Vec.lengthSquared (pt - cylinder.P1)
+                        if d <= r2 then Some t
                         else None
                     else
                         None
 
-                match [t1;t2;t3;t4] |> List.choose id with
+                match List.choose id [t1;t2;t3;t4] with
                     | [] -> None
                     | all -> List.min all |> Some
 
