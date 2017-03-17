@@ -191,7 +191,7 @@ type Bvh<'a>(boxes : Box3d[], values : 'a[], weight : 'a -> float) =
             let mutable rmax = tmax
 
             let il = ray.Intersects(node.LeftBox, &lmin, &lmax)
-            let ir = ray.Intersects(node.LeftBox, &rmin, &rmax)
+            let ir = ray.Intersects(node.RightBox, &rmin, &rmax)
 
 
             match il, ir with
