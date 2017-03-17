@@ -193,7 +193,6 @@ type Bvh<'a>(boxes : Box3d[], values : 'a[], weight : 'a -> float) =
             let il = ray.Intersects(node.LeftBox, &lmin, &lmax)
             let ir = ray.Intersects(node.RightBox, &rmin, &rmax)
 
-
             match il, ir with
                 | true, true ->
                     // both intersect
@@ -239,6 +238,8 @@ type Bvh<'a>(boxes : Box3d[], values : 'a[], weight : 'a -> float) =
                     None
 
     static member Empty = empty
+
+    member x.Bounds = data.box
 
     member x.Intersect(ray : FastRay3d, tmin : float, tmax : float, tryIntersect : RayPart -> 'a -> Option<RayHit<'r>>) =
         if boxes.Length = 0 then
