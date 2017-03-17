@@ -80,21 +80,13 @@ module BvhNode =
         }
         
     let rec build (boxes : Box3d[]) (indices : int[]) (start : int) (count : int) (box : Box3d) =
-        let split = calculateSplit indices start count box boxes
-
-        let left =
-            if split.leftCount > 1 then
-                build boxes split.sortedIndexArray 0 split.leftCount split.leftBox
-            else
-                BvhNode.Leaf split.sortedIndexArray.[0]
-
-        let right =
-            if split.rightCount > 1 then
-                build boxes split.sortedIndexArray split.leftCount split.rightCount split.rightBox
-            else
-                BvhNode.Leaf split.sortedIndexArray.[split.sortedIndexArray.Length - 1]
-
-        BvhNode.Node(split.leftBox, split.rightBox, left, right)
+        if count = 1 then
+            BvhNode.Leaf(indices.[start])
+        else
+            let split = calculateSplit indices start count box boxes
+            let left = build boxes split.sortedIndexArray 0 split.leftCount split.leftBox
+            let right = build boxes split.sortedIndexArray split.leftCount split.rightCount split.rightBox
+            BvhNode.Node(split.leftBox, split.rightBox, left, right)
 
     let rec intersect (tryIntersect : RayPart -> 'a -> Option<RayHit<'r>>) (data : 'a[]) (part : RayPart) (node : BvhNode) =
         match node with
