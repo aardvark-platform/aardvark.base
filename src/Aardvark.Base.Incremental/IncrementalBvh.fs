@@ -1,13 +1,14 @@
 ﻿namespace Aardvark.Base.Incremental
 
 open Aardvark.Base
+open Aardvark.Base.Geometry
 
 
 [<CompilationRepresentation(CompilationRepresentationFlags.ModuleSuffix)>]
-module Bvh =
+module BvhTree =
 
     type private ASetBvh<'a>(objects : aset<'a>, getBounds : 'a -> IMod<Box3d>) =
-        inherit Mod.AbstractMod<Bvh<'a>>()
+        inherit Mod.AbstractMod<BvhTree<'a>>()
     
         let mutable isDisposed = false
         let reader = objects.GetReader()
@@ -31,8 +32,7 @@ module Bvh =
                                 failwith "[Bvh] unexpected removal"
 
             let data = boundsCache |> Dict.toArray |> Array.map (fun (k,v) -> k, v.GetValue(token))
-
-            Bvh.ofArray data
+            BvhTree(data)
 
         member x.Dispose() =
             if not isDisposed then
@@ -42,11 +42,11 @@ module Bvh =
                     m.Outputs.Remove x |> ignore
                 boundsCache.Clear()
 
-        interface IDisposableMod<Bvh<'a>> with
+        interface IDisposableMod<BvhTree<'a>> with
             member x.Dispose() = x.Dispose()
   
     type private AMapBvh<'a>(objects : amap<'a, IMod<Box3d>>) =
-        inherit Mod.AbstractMod<Bvh<'a>>()
+        inherit Mod.AbstractMod<BvhTree<'a>>()
     
         let mutable isDisposed = false
         let reader = objects.GetReader()
@@ -74,7 +74,7 @@ module Bvh =
 
             let data = boundsCache |> Dict.toArray |> Array.map (fun (k,v) -> k, v.GetValue(token))
 
-            Bvh.ofArray data
+            BvhTree(data)
 
         member x.Dispose() =
             if not isDisposed then
@@ -84,7 +84,7 @@ module Bvh =
                     m.Outputs.Remove x |> ignore
                 boundsCache.Clear()
 
-        interface IDisposableMod<Bvh<'a>> with
+        interface IDisposableMod<BvhTree<'a>> with
             member x.Dispose() = x.Dispose()
 
     let ofASet (getBounds : 'a -> IMod<Box3d>) (objects : aset<'a>) =

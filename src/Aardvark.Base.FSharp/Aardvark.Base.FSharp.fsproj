@@ -74,7 +74,6 @@
     <Compile Include="Datastructures\Mutable\AVL.fs" />
     <Compile Include="Datastructures\Mutable\StableSet.fs" />
     <Compile Include="Datastructures\Mutable\ConcurrentHashQueue.fs" />
-    <Compile Include="Datastructures\Mutable\BVH.fs" />
     <Compile Include="Datastructures\Immutable\SetOperation.fs" />
     <Compile Include="Datastructures\Immutable\ElementOperation.fs" />
     <Compile Include="Datastructures\Immutable\Index.fs" />
@@ -87,6 +86,9 @@
     <Compile Include="Datastructures\Immutable\PDeltaList.fs" />
     <Compile Include="Datastructures\Immutable\PList.fs" />
     <Compile Include="Datastructures\Immutable\FingerTree.fs" />
+    <Compile Include="Datastructures\Geometry\Boundable.fs" />
+    <Compile Include="Datastructures\Geometry\KdTree.fs" />
+    <Compile Include="Datastructures\Geometry\Bvh.fs" />
     <Compile Include="Reflection\TypeInfo.fs" />
     <Compile Include="Reflection\FunctionReflection.fs" />
     <Compile Include="Reflection\Formatf.fs" />
