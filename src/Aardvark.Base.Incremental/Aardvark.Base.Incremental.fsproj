@@ -75,7 +75,6 @@
     <Compile Include="AdaptiveFunc\AdaptiveFunc.fs" />
     <Compile Include="Builders.fs" />
     <Compile Include="CSharp.fs" />
-    <Compile Include="DomainTypeUtilities.fs" />
     <Compile Include="Adapters\EventAdapter.fs" />
     <None Include="paket.references" />
     <Compile Include="IncrementalBvh.fs" />
