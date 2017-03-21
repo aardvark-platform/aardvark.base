@@ -104,8 +104,16 @@ module AMap =
                                     cache.[k] <- true
                                     Some (Set n)
                                 | None ->
+                                    let wasExisting =
+                                        match cache.TryGetValue k with
+                                            | (true, v) -> v
+                                            | _ -> false
+
                                     cache.[k] <- false
-                                    None
+                                    if wasExisting then
+                                        Some Remove
+                                    else
+                                        None
                         | Remove -> 
                             match cache.TryRemove k with
                                 | (true, wasExisting) ->
@@ -115,6 +123,90 @@ module AMap =
                                     failwithf "[AMap] could not remove entry %A" k
                 )
 
+        type MapMReader<'k, 'x, 'a>(scope : Ag.Scope, input : amap<'k, 'x>, f : 'k -> 'x -> IMod<'a>) =
+            inherit AbstractDirtyReader<IMod<'k * 'a>, hdeltamap<'k, 'a>>(scope, HDeltaMap.monoid)
+
+            let reader = input.GetReader()
+            let cache = Dict<'k, IMod<'k * 'a>>()
+
+            override x.Compute(token, dirty) =
+                let ops = reader.GetOperations token
+
+                let mutable ops =
+                    ops |> HMap.map (fun k op ->
+                        match op with
+                            | Set v -> 
+                                let mutable o = Unchecked.defaultof<_>
+                                if cache.TryGetValue(k, &o) then
+                                    o.Outputs.Remove x |> ignore
+                                    dirty.Remove o |> ignore
+                                
+                                let n = f k v |> Mod.map (fun v -> k, v)
+                                cache.[k] <- n
+                                let _,v = n.GetValue(token)
+                                Set v
+
+                            | Remove ->
+                                let (worked, o) = cache.TryRemove k
+                                if not worked then
+                                    failwith "[AMap] invalid state"
+                                let mutable foo = 0
+                                o.Outputs.Consume(&foo) |> ignore
+                                dirty.Remove o |> ignore
+                                Remove
+                    )
+                        
+                for m in dirty do
+                    let k, v = m.GetValue(token)
+                    ops <- HMap.add k (Set v) ops
+
+                ops
+
+            override x.Release() =
+                reader.Dispose()
+                cache.Clear()
+
+        type UpdateReader<'k, 'a>(scope : Ag.Scope, input : amap<'k, 'a>, keys : hset<'k>, f : 'k -> Option<'a> -> 'a) =
+            inherit AbstractReader<hdeltamap<'k, 'a>>(scope, HDeltaMap.monoid)
+            let reader = input.GetReader()
+
+            let mutable missing = keys
+
+            override x.Compute(token) =
+                let ops = reader.GetOperations(token)
+                let state = reader.State
+
+                let presentOps =
+                    ops |> HMap.map (fun k op ->
+                        match op with
+                            | Set v ->
+                                if HSet.contains k keys then
+                                    missing <- HSet.remove k missing
+                                    Set (f k (Some v))
+                                else
+                                    Set v
+
+                            | Remove ->
+                                if HSet.contains k keys then
+                                    missing <- HSet.add k missing
+                                Remove
+                    )
+
+                let additionalOps =
+                    missing 
+                        |> HSet.toSeq
+                        |> Seq.map (fun k -> k, Set (f k None))
+                        |> HMap.ofSeq
+
+                missing <- HSet.empty
+                HDeltaMap.combine presentOps additionalOps
+
+            override x.Release() =
+                missing <- keys
+                reader.Dispose()
+
+
+            
 
     let empty<'k, 'v> = EmptyMap<'k, 'v>.Instance
 
@@ -140,3 +232,13 @@ module AMap =
         choose (fun k v -> if predicate k v then Some v else None) map
 
     let toMod (map : amap<'k, 'v>) = map.Content
+
+    let mapM (mapping : 'k -> 'a -> IMod<'b>) (map : amap<'k, 'a>) =
+        amap <| fun scope -> new Readers.MapMReader<'k, 'a, 'b>(scope, map, mapping)
+        
+    let flattenM (map : amap<'k, IMod<'a>>) =
+       mapM (fun k v -> v) map
+
+    let update (keys : hset<'k>) (f : 'k -> Option<'v> -> 'v) (m : amap<'k, 'v>) =
+        amap <| fun scope -> new Readers.UpdateReader<'k, 'v>(scope, m, keys, f)
+        

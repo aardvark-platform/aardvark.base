@@ -133,21 +133,21 @@ module AList =
 
             type IndexCache<'a, 'b>(f : Index -> 'a -> 'b, release : 'b -> unit) =
                 let store = Dict<Index, 'a * 'b>()
-
-                member x.Invoke(i : Index, a : 'a) =
-                    match store.TryGetValue(i) with
-                        | (true, (oa, res)) ->
-                            if Unchecked.equals oa a then
-                                res
-                            else
-                                release res
-                                let res = f i a
-                                store.[i] <- (a, res)
-                                res
-                        | _ ->
-                            let res = f i a
-                            store.[i] <- (a, res)
-                            res
+//
+//                member x.Invoke(i : Index, a : 'a) =
+//                    match store.TryGetValue(i) with
+//                        | (true, (oa, res)) ->
+//                            if Unchecked.equals oa a then
+//                                res
+//                            else
+//                                release res
+//                                let res = f i a
+//                                store.[i] <- (a, res)
+//                                res
+//                        | _ ->
+//                            let res = f i a
+//                            store.[i] <- (a, res)
+//                            res
 
                 member x.InvokeAndGetOld(i : Index, a : 'a) =
                     match store.TryGetValue(i) with
@@ -239,9 +239,13 @@ module AList =
                                 | Some _ -> Some Remove
                                 | _ -> None
                         | Set v -> 
-                            match mapping.Invoke(i, v) with
+                            let o, n = mapping.InvokeAndGetOld(i, v)
+                            match n with
                                 | Some res -> Some (Set res)
-                                | _ -> None
+                                | None -> 
+                                    match o with
+                                        | Some (Some o) -> Some Remove
+                                        | _ -> None
                 )
 
         type FilterReader<'a>(scope : Ag.Scope, input : alist<'a>, mapping : Index -> 'a -> bool) =
@@ -262,9 +266,14 @@ module AList =
                                 | true -> Some Remove
                                 | _ -> None
                         | Set v -> 
-                            match mapping.Invoke(i, v) with
-                                | true -> Some (Set v)
-                                | _ -> None
+                            let o, n = mapping.InvokeAndGetOld(i, v)
+                            match n with
+                                | true -> 
+                                    Some (Set v)
+                                | false -> 
+                                    match o with
+                                        | Some true -> Some Remove
+                                        | _ -> None
                 )
 
         type MultiReader<'a>(scope : Ag.Scope, mapping : IndexMapping<Index * Index>, list : alist<'a>, release : alist<'a> -> unit) =
