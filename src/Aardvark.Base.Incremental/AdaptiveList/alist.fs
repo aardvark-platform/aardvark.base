@@ -514,7 +514,7 @@ module AList =
 
             override x.Release() =
                 mapping.Clear()
-                readers.Values |> Seq.iter (fun r -> r.Dispose())
+                readers.Values |> Seq.toArray |> Array.iter (fun r -> r.Dispose())
                 readers.Clear()
                 readers.Clear()
 

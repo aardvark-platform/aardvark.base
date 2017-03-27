@@ -166,6 +166,7 @@ module AMap =
                 reader.Dispose()
                 cache.Clear()
 
+
         type UpdateReader<'k, 'a>(scope : Ag.Scope, input : amap<'k, 'a>, keys : hset<'k>, f : 'k -> Option<'a> -> 'a) =
             inherit AbstractReader<hdeltamap<'k, 'a>>(scope, HDeltaMap.monoid)
             let reader = input.GetReader()
@@ -205,8 +206,140 @@ module AMap =
                 missing <- keys
                 reader.Dispose()
 
+        type UnionWithReader<'k, 'a>(scope : Ag.Scope, l : amap<'k, 'a>, r : amap<'k, 'a>, f : 'k -> 'a -> 'a -> 'a) =
+            inherit AbstractReader<hdeltamap<'k, 'a>>(scope, HDeltaMap.monoid)
 
+            let l = l.GetReader()
+            let r = r.GetReader()
+
+            override x.Compute(token) =
+                let lops = l.GetOperations token
+                let rops = r.GetOperations token
+
+                let merge (key : 'k) (lop : Option<ElementOperation<'a>>) (rop : Option<ElementOperation<'a>>) : ElementOperation<'a> =
+                    let lv =
+                        match lop with
+                            | Some (Set lv) -> Some lv
+                            | Some (Remove) -> None
+                            | None -> HMap.tryFind key l.State
+                            
+                    let rv =
+                        match rop with
+                            | Some (Set rv) -> Some rv
+                            | Some (Remove) -> None
+                            | None -> HMap.tryFind key r.State
+
+
+                    match lv, rv with
+                        | None, None -> failwith "[AMap] invalid state"
+                        | Some l, None -> Set l
+                        | None, Some r -> Set r
+                        | Some l, Some r -> Set (f key l r)
+
+                HMap.map2 merge lops rops
+
+            override x.Release() =
+                l.Dispose()
+                r.Dispose()
+
+        type Choose2Reader<'k, 'a, 'b, 'c>(scope : Ag.Scope, l : amap<'k, 'a>, r : amap<'k, 'b>, f : 'k -> Option<'a> -> Option<'b> -> Option<'c>) =
+            inherit AbstractReader<hdeltamap<'k, 'c>>(scope, HDeltaMap.monoid)
+
+            let l = l.GetReader()
+            let r = r.GetReader()
+
+            override x.Compute(token) =
+                let lops = l.GetOperations token
+                let rops = r.GetOperations token
+                
+                let merge (key : 'k) (lop : Option<ElementOperation<'a>>) (rop : Option<ElementOperation<'b>>) : ElementOperation<'c> =
+                    let lv =
+                        match lop with
+                            | Some (Set lv) -> Some lv
+                            | Some (Remove) -> None
+                            | None -> HMap.tryFind key l.State
+                            
+                    let rv =
+                        match rop with
+                            | Some (Set rv) -> Some rv
+                            | Some (Remove) -> None
+                            | None -> HMap.tryFind key r.State
+
+
+                    match f key lv rv with
+                        | Some c -> Set c
+                        | None -> Remove
+
+                HMap.map2 merge lops rops
+
+
+            override x.Release() =
+                l.Dispose()
+                r.Dispose()
+
+        type MapSetReader<'a, 'b>(scope : Ag.Scope, set : aset<'a>, f : 'a -> 'b) =
+            inherit AbstractReader<hdeltamap<'a, 'b>>(scope, HDeltaMap.monoid)
+
+            let r = set.GetReader()
+
+            override x.Compute(token) =
+                r.GetOperations token
+                    |> HDeltaSet.toHMap
+                    |> HMap.map (fun key v ->
+                        if v > 0 then Set (f key)
+                        elif v < 0 then Remove
+                        else failwith "[AMap] inconsistent state"
+                    )
+
+            override x.Release() =
+                r.Dispose()
             
+        type OfModReader<'a, 'b>(scope : Ag.Scope, input : IMod<hmap<'a, 'b>>) =
+            inherit AbstractReader<hmap<'a, 'b>, hdeltamap<'a, 'b>>(scope, HMap.trace)
+
+            override x.Compute(token) =
+                input.GetValue token
+                    |> HMap.computeDelta x.State
+
+            override x.Release() =
+                ()
+
+        type BindReader<'a, 'k, 'v>(scope : Ag.Scope, input : IMod<'a>, f : 'a -> amap<'k, 'v>) =
+            inherit AbstractReader<hdeltamap<'k, 'v>>(scope, HDeltaMap.monoid)
+
+            let mutable oldValue : Option<'a * IMapReader<'k, 'v>> = None
+
+            override x.Compute(token) =
+                let v = input.GetValue token
+            
+                match oldValue with
+                    | Some (ov, r) when Unchecked.equals ov v ->
+                        r.GetOperations(token)
+                    | _ ->
+                        let rem =
+                            match oldValue with
+                                | Some (_, oldReader) ->
+                                    let res = HMap.computeDelta oldReader.State HMap.empty
+                                    oldReader.Dispose()
+                                    oldReader.Outputs.Remove x |> ignore
+                                    res
+                                | _ ->
+                                    HMap.empty
+                                
+                        let newMap = f v
+                        let newReader = newMap.GetReader()
+                        oldValue <- Some(v, newReader)
+                        let add = newReader.GetOperations token
+
+                        HDeltaMap.combine rem add
+
+            override x.Release() =
+                match oldValue with
+                    | Some (_,r) ->
+                        r.Dispose()
+                        oldValue <- None
+                    | None ->
+                        ()
 
     let empty<'k, 'v> = EmptyMap<'k, 'v>.Instance
 
@@ -233,12 +366,140 @@ module AMap =
 
     let toMod (map : amap<'k, 'v>) = map.Content
 
+    let bind (mapping : 'a -> amap<'k, 'v>) (m : IMod<'a>) =
+        if m.IsConstant then
+            mapping (Mod.force m)
+        else
+            amap <| fun scope -> new Readers.BindReader<'a, 'k, 'v>(scope, m, mapping)
+
     let mapM (mapping : 'k -> 'a -> IMod<'b>) (map : amap<'k, 'a>) =
         amap <| fun scope -> new Readers.MapMReader<'k, 'a, 'b>(scope, map, mapping)
-        
-    let flattenM (map : amap<'k, IMod<'a>>) =
+
+    let reduce (map : amap<'k, 'a>) =
+       map
+
+    let reduceM (map : amap<'k, IMod<'a>>) =
        mapM (fun k v -> v) map
 
-    let update (keys : hset<'k>) (f : 'k -> Option<'v> -> 'v) (m : amap<'k, 'v>) =
+    let chooseM (mapping : 'k -> 'a -> IMod<Option<'b>>) (map : amap<'k, 'a>) =
+        mapM mapping map |> choose (fun _ v -> v)
+
+    let filterM (predicate : 'k -> 'a -> IMod<bool>) (map : amap<'k, 'a>) =
+        chooseM (fun k v -> predicate k v |> Mod.map (function true -> Some v | false -> None)) map
+              
+    let flatten (map : amap<'k, Option<'a>>) : amap<'k, 'a> =
+       choose (fun k v -> v) map
+
+    let flattenM (map : amap<'k, IMod<Option<'a>>>) : amap<'k, 'a> =
+       chooseM (fun k v -> v) map
+
+    let mapSet (f : 'a -> 'b) (set : aset<'a>) : amap<'a, 'b> =
+        if set.IsConstant then
+            constant <| lazy ( set.Content |> Mod.force |> HRefSet.toHMap |> HMap.map (fun k _ -> f k) )
+        else
+            amap <| fun scope -> new Readers.MapSetReader<'a, 'b>(scope, set, f)
+
+    let chooseSet (f : 'a -> Option<'b>) (set : aset<'a>) : amap<'a, 'b> =
+        set |> mapSet f |> flatten
+
+    let mapSetM (f : 'a -> IMod<'b>) (set : aset<'a>) : amap<'a, 'b> =
+        set |> mapSet f |> reduceM
+
+    let chooseSetM (f : 'a -> IMod<Option<'b>>) (set : aset<'a>) : amap<'a, 'b> =
+        set |> mapSet f |> flattenM
+
+    let ofMod (m : IMod<hmap<'a, 'b>>) : amap<'a, 'b> =
+        if m.IsConstant then
+            constant <| lazy (Mod.force m)
+        else
+            amap <| fun scope -> new Readers.OfModReader<'a, 'b>(scope, m)
+
+
+    let updateMany (keys : hset<'k>) (f : 'k -> Option<'v> -> 'v) (m : amap<'k, 'v>) =
         amap <| fun scope -> new Readers.UpdateReader<'k, 'v>(scope, m, keys, f)
         
+
+
+
+    let unionWith (f : 'k -> 'a -> 'a -> 'a) (l : amap<'k, 'a>) (r : amap<'k, 'a>) =
+        if l.IsConstant && r.IsConstant then
+            constant <| lazy ( HMap.unionWith f (Mod.force l.Content) (Mod.force r.Content) )
+        else
+            amap <| fun scope -> new Readers.UnionWithReader<'k, 'a>(scope, l, r, f)
+
+    let union (l : amap<'k, 'a>) (r : amap<'k, 'a>) =
+        unionWith (fun _ _ a -> a) l r
+        
+    let choose2 (mapping : 'k -> Option<'a> -> Option<'b> -> Option<'c>) (l : amap<'k, 'a>) (r : amap<'k, 'b>) =
+        if l.IsConstant && r.IsConstant then
+            constant <| lazy ( HMap.choose2 mapping (Mod.force l.Content) (Mod.force r.Content) )
+        else
+            amap <| fun scope -> new Readers.Choose2Reader<'k, 'a, 'b, 'c>(scope, l, r, mapping)
+        
+    let map2 (mapping : 'k -> Option<'a> -> Option<'b> -> 'c) (l : amap<'k, 'a>) (r : amap<'k, 'b>) =
+        choose2 (fun k l r -> Some (mapping k l r)) l r
+
+
+
+[<AutoOpen>]
+module AMapBuilderExperiments =
+
+    type AMapBuilder() =
+
+        member x.Yield(kvp : 'k * 'v) =
+            AMap.ofList [kvp]
+
+        member x.Combine(l : amap<'k, 'v>, r : amap<'k, 'v>) : amap<'k, 'v> =
+            AMap.union l r
+
+        member x.Bind(m : IMod<'a>, f : 'a -> amap<'k, 'v>) =
+            m |> AMap.bind f
+
+        member x.Zero() =
+            AMap.empty
+
+        member x.Delay(f : unit -> amap<'k, 'v>) =
+            f()
+
+        member x.YieldFrom(m : hmap<'k, 'v>) = 
+            AMap.ofHMap m
+
+        member x.YieldFrom(m : Map<'k, 'v>) = 
+            AMap.ofHMap (HMap.ofSeq (Map.toSeq m))
+
+        member x.YieldFrom(m : seq<'k * 'v>) = 
+            AMap.ofHMap (HMap.ofSeq m)
+
+        member x.YieldFrom(m : amap<'k, 'v>) = 
+            m
+
+    type RestrictedAMapBuilder<'k, 'v>() =
+
+        abstract member Resolve : 'k * 'v * 'v -> 'v
+        default x.Resolve(_,_,r) = r
+
+        member x.Yield(kvp : 'k * 'v) =
+            AMap.ofList [kvp]
+
+        member x.Combine(l : amap<'k, 'v>, r : amap<'k, 'v>) : amap<'k, 'v> =
+            AMap.union l r
+
+        member x.Bind(m : IMod<'a>, f : 'a -> amap<'k, 'v>) =
+            m |> AMap.bind f
+
+        member x.Zero() =
+            AMap.empty
+
+        member x.Delay(f : unit -> amap<'k, 'v>) =
+            f()
+
+        member x.YieldFrom(m : hmap<'k, 'v>) = 
+            AMap.ofHMap m
+
+        member x.YieldFrom(m : seq<'k * 'v>) = 
+            AMap.ofHMap (HMap.ofSeq m)
+
+        member x.YieldFrom(m : amap<'k, 'v>) = 
+            m
+
+    let amap = AMapBuilder()
