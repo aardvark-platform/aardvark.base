@@ -198,7 +198,7 @@ module SimMap =
         }
     let choose2 (f : 'k -> Option<'a> -> Option<'a> -> Option<'a>) (l : simmap<'k, 'a>) (r : simmap<'k, 'a>) =
         simmap { 
-            expression = UnionWith(f, l.Expression, r.Expression)
+            expression = Choose2(f, l.Expression, r.Expression)
             amap = AMap.choose2 f l.AMap r.AMap
             inputs = fun () -> HSet.union l.Inputs r.Inputs
             content = fun () -> HMap.choose2 f l.Content r.Content 
