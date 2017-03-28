@@ -148,5 +148,18 @@ let ``[HMap] map2/choose2`` (lm : Map<int, int>) (rm : Map<int, int>) =
         equal (HMap.choose2 (fun k l r -> add2 k l r) l r) (choose2 add2 lm rm)
     ]
 
+[<Property>]
+let ``[HMap] choose`` (m : Map<int, int>) (f : int -> int -> Option<int>) =
+    let h = HMap.ofSeq (Map.toSeq m)
 
+    let tm =
+        let mutable res = Map.empty
+        for (KeyValue(k,v)) in m do
+            match f k v with
+                | Some v -> res <- Map.add k v res
+                | _ -> ()
+        res
 
+    let th = HMap.choose f h |> Map.ofSeq
+
+    tm = th

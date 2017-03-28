@@ -10,6 +10,7 @@ open Aardvark.Base
 [<CompiledName("ChangeableMap")>]
 type cmap<'k, 'v>(initial : seq<'k * 'v>) =
     let history = History<hmap<'k, 'v>, hdeltamap<'k, 'v>>(HMap.trace)
+    do initial |> Seq.map (fun (k,v) -> k, Set v) |> HMap.ofSeq |> history.Perform |> ignore
 
     member x.Count =
         history.State.Count

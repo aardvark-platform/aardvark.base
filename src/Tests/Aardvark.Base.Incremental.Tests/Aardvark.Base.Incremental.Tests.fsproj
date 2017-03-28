@@ -60,8 +60,10 @@
   </Target>
   -->
   <ItemGroup>
+    <Compile Include="aset\Sim.fs" />
+    <Compile Include="aset\SimMod.fs" />
     <Compile Include="aset\SimSet.fs" />
-    <Compile Include="aset\Arbitrary.fs" />
+    <Compile Include="aset\SimMap.fs" />
     <Compile Include="AdaptiveSetReference.fs" />
     <Compile Include="ASetUtilities.fs" />
     <Compile Include="ModTests.fs" />

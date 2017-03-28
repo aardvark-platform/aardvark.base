@@ -36,6 +36,8 @@ module AMap =
             static let instance = EmptyMap<'a, 'b>() :> amap<_,_>
 
             static member Instance = instance
+            
+            override x.ToString() = HMap.empty.ToString()
 
             interface amap<'a, 'b> with
                 member x.IsConstant = true
@@ -51,6 +53,8 @@ module AMap =
                 member x.GetReader() = new History.Readers.ConstantReader<_,_>(HMap.trace, deltas, content) :> IMapReader<_,_>
                 member x.Content = mcontent
         
+            override x.ToString() = content.Value.ToString()
+
             new(content : hmap<'a, 'b>) = ConstantMap<'a, 'b>(Lazy.CreateFromValue content)
 
         type AdaptiveMap<'a, 'b>(newReader : unit -> IOpReader<hdeltamap<'a, 'b>>) =
@@ -122,6 +126,84 @@ module AMap =
                                 | _ ->
                                     failwithf "[AMap] could not remove entry %A" k
                 )
+
+        type KeyedMod<'k, 'a>(key : 'k, m : IMod<'a>) =
+            inherit Mod.AbstractMod<'k * 'a>()
+
+            let mutable last = None
+            
+            member x.Key = key
+            
+            member x.UnsafeLast =
+                last
+
+            override x.Compute(token) =
+                let v = m.GetValue(token)
+                last <- Some v
+                key, v
+
+        type ChooseMReader<'k, 'a, 'b>(scope : Ag.Scope, input : amap<'k, 'a>, f : 'k -> 'a -> IMod<Option<'b>>) =
+            inherit AbstractDirtyReader<KeyedMod<'k, Option<'b>>, hdeltamap<'k, 'b>>(scope, HDeltaMap.monoid)
+            
+            let reader = input.GetReader()
+            let cache = Dict<'k, KeyedMod<'k, Option<'b>>>()
+
+            override x.Release() =
+                reader.Dispose()
+                cache.Clear()
+            
+            override x.Compute(token, dirty) =
+                let ops = reader.GetOperations token
+
+                let mutable ops =
+                    ops |> HMap.choose (fun k op ->
+                        match op with
+                            | Set v ->
+                                let mutable o = Unchecked.defaultof<_>
+                                let hadOld = cache.TryGetValue(k, &o)
+                                if hadOld then
+                                    o.Outputs.Remove x |> ignore
+                                    dirty.Remove o |> ignore
+
+                                    
+                                let n = KeyedMod(k, f k v)
+                                cache.[k] <- n
+                                let _,v = n.GetValue(token)
+                                match v with
+                                    | Some v -> Some (Set v)
+                                    | None ->
+                                        if hadOld then Some Remove
+                                        else None
+                            | Remove ->
+                                match cache.TryRemove k with
+                                    | (true, o) ->
+                                        o.Outputs.Remove x |> ignore
+                                        dirty.Remove o |> ignore
+                                        match o.UnsafeLast with
+                                            | None | Some None -> 
+                                                None
+                                            | Some _ ->
+                                                Some Remove
+                                                
+                                    | _ ->
+                                        failwith "[AMap] invalid state"
+                    )
+
+                for m in dirty do
+                    let last = m.UnsafeLast
+                    let k, v = m.GetValue(token)
+                    match last, v with
+                        | None, None -> ()
+                        | None, Some v -> ops <- HMap.add k (Set v) ops
+
+
+                        | Some None, None -> ()
+                        | Some (Some _), None -> ops <- HMap.add k Remove ops
+                        | Some None, Some v -> ops <- HMap.add k (Set v) ops
+                        | Some (Some _), Some v -> ops <- HMap.add k (Set v) ops
+                        
+                ops
+
 
         type MapMReader<'k, 'x, 'a>(scope : Ag.Scope, input : amap<'k, 'x>, f : 'k -> 'x -> IMod<'a>) =
             inherit AbstractDirtyReader<IMod<'k * 'a>, hdeltamap<'k, 'a>>(scope, HDeltaMap.monoid)
@@ -384,7 +466,7 @@ module AMap =
        mapM (fun k v -> v) map
 
     let chooseM (mapping : 'k -> 'a -> IMod<Option<'b>>) (map : amap<'k, 'a>) =
-        mapM mapping map |> choose (fun _ v -> v)
+        amap <| fun scope -> new Readers.ChooseMReader<'k, 'a, 'b>(scope, map, mapping)
 
     let filterM (predicate : 'k -> 'a -> IMod<bool>) (map : amap<'k, 'a>) =
         chooseM (fun k v -> predicate k v |> Mod.map (function true -> Some v | false -> None)) map

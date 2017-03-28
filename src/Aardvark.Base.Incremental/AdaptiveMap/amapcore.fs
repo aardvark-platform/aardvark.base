@@ -54,11 +54,10 @@ module HMap =
                             Some n
                             
                         | Some o, Set n ->
-                            if Unchecked.equals o n then
-                                None
-                            else
+                            if not (Unchecked.equals o n) then
                                 effective <- HMap.add key (Set n) effective
-                                Some n
+
+                            Some n
 
         let res = HMap.choose2 apply m delta
         res, effective
