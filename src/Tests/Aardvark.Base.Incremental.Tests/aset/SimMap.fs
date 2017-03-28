@@ -14,6 +14,8 @@ type SimMapTree =
     | Filter of obj * SimMapTree
     | MapM of obj * SimMapTree
     | ChooseM of obj * SimMapTree
+    | UnionWith of obj * SimMapTree * SimMapTree
+    | Choose2 of obj * SimMapTree * SimMapTree
 
 and simmap<'k, 'v> =
     inherit IDependent
@@ -97,7 +99,10 @@ module SimMap =
                         | Filter(f,o) -> sprintf "%s |> filter f" (toString o)
                         | MapM(f,o) -> sprintf "%s |> mapM f" (toString o)
                         | ChooseM(f,o) -> sprintf "%s |> chooseM f" (toString o)
-            
+                        | UnionWith(f,l,r) -> sprintf "union(%s, %s)" (toString l) (toString r)
+                        | Choose2(f,l,r) -> sprintf "choose2(f, %s, %s)" (toString l) (toString r)
+
+
                 toString x.expression
             member x.Expression = x.expression
             member x.Inputs = x.inputs()
@@ -184,6 +189,20 @@ module SimMap =
                 HMap.choose (fun k v -> f.Invoke(k,v).Value) m.Content
         }
 
+    let unionWith (f : 'k -> 'a -> 'a -> 'a) (l : simmap<'k, 'a>) (r : simmap<'k, 'a>) =
+        simmap { 
+            expression = UnionWith(f, l.Expression, r.Expression)
+            amap = AMap.unionWith f l.AMap r.AMap
+            inputs = fun () -> HSet.union l.Inputs r.Inputs
+            content = fun () -> HMap.unionWith f l.Content r.Content 
+        }
+    let choose2 (f : 'k -> Option<'a> -> Option<'a> -> Option<'a>) (l : simmap<'k, 'a>) (r : simmap<'k, 'a>) =
+        simmap { 
+            expression = UnionWith(f, l.Expression, r.Expression)
+            amap = AMap.choose2 f l.AMap r.AMap
+            inputs = fun () -> HSet.union l.Inputs r.Inputs
+            content = fun () -> HMap.choose2 f l.Content r.Content 
+        }
 
     let private equal (l : hmap<'k, 'v>) (r : hmap<'k, 'v>) =
         let mutable l = l
@@ -244,7 +263,7 @@ type SimMapGenerator() =
         { new Arbitrary<simmap<'k, 'v>>() with
             override x.Generator =
                 gen {
-                    let case = rand.UniformInt(9)
+                    let case = rand.UniformInt(11)
                     match case with
                         | 0 | 1  -> 
                             let! content = Arb.generate<list<'k * 'v>>
@@ -279,6 +298,19 @@ type SimMapGenerator() =
                             let! input = Arb.generate<simmap<'k, 'v>>
                             let! f = Arb.generate<'k -> 'v -> simmod<Option<'v>>>
                             return SimMap.chooseM f input
+
+                        | 9 ->
+                            let! l = Arb.generate<simmap<'k, 'v>>
+                            let! r = Arb.generate<simmap<'k, 'v>>
+                            let! f = Arb.generate<'k -> 'v -> 'v -> 'v>
+                            return SimMap.unionWith f l r 
+
+                        | 10 ->
+                            let! l = Arb.generate<simmap<'k, 'v>>
+                            let! r = Arb.generate<simmap<'k, 'v>>
+                            let! f = Arb.generate<'k -> Option<'v> -> Option<'v> -> Option<'v>>
+                            return SimMap.choose2 f l r 
+                            
                         | _ ->
                             return failwith ""
                             
