@@ -231,7 +231,7 @@ module AMap =
 
 
                     match lv, rv with
-                        | None, None -> failwith "[AMap] invalid state"
+                        | None, None -> Remove
                         | Some l, None -> Set l
                         | None, Some r -> Set r
                         | Some l, Some r -> Set (f key l r)
@@ -265,10 +265,12 @@ module AMap =
                             | Some (Remove) -> None
                             | None -> HMap.tryFind key r.State
 
-
-                    match f key lv rv with
-                        | Some c -> Set c
-                        | None -> Remove
+                    match lv, rv with
+                        | None, None -> Remove
+                        | _ ->
+                            match f key lv rv with
+                                | Some c -> Set c
+                                | None -> Remove
 
                 HMap.map2 merge lops rops
 
