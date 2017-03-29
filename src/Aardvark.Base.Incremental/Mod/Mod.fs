@@ -549,7 +549,7 @@ module Mod =
         inherit AbstractMod<'b>()
 
         let mutable inner : Option<'a * IMod<'b>> = None
-        let mutable changedInputs = HSet.empty
+        let mutable mChanged = 1
 
         override x.Inputs =
             seq {
@@ -560,7 +560,8 @@ module Mod =
             }
 
         override x.InputChanged(t, i) =
-            System.Threading.Interlocked.Change(&changedInputs, HSet.add i) |> ignore
+            if i.Id = m.Id then
+                mChanged <- 1
 
         override x.Compute(token) =
             // whenever the result is outOfDate we
@@ -568,11 +569,11 @@ module Mod =
             // Note that the input is not necessarily outOfDate at this point
             let v = m.GetValue token
 
-            let changed = System.Threading.Interlocked.Exchange(&changedInputs, HSet.empty)
+            let changed = System.Threading.Interlocked.Exchange(&mChanged, 0)
 
             //let cv = hasChanged v
 
-            let mChanged = HSet.contains (m :> IAdaptiveObject) changed
+            let mChanged = changed <> 0
 
             match inner with
                 // if the function argument has not changed
