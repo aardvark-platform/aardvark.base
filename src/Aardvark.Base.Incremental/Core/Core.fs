@@ -109,6 +109,8 @@ type VolatileCollectionStrong<'a>() =
         else
             set.Remove value
 
+
+
 /// <summary>
 /// IAdaptiveObject represents the core interface for all
 /// adaptive objects and contains everything necessary for
@@ -155,6 +157,8 @@ type IAdaptiveObject =
     /// a lock on the adaptive object (allowing for concurrency)
     /// </summary>
     abstract member OutOfDate : bool with get, set
+
+    abstract member Reevaluate : bool with get, set
 
     /// <summary>
     /// the adaptive inputs for the object
@@ -207,6 +211,7 @@ type AdaptiveToken =
     struct
         val mutable public Caller : IAdaptiveObject
         val mutable public Locked : HashSet<IAdaptiveObject>
+        val mutable public Tag : obj
 
         member inline x.EnterRead(o : IAdaptiveObject) =
             Monitor.Enter o
@@ -215,7 +220,7 @@ type AdaptiveToken =
             Monitor.Exit o
 
         member inline x.Downgrade(o : IAdaptiveObject) =
-            if x.Locked.Add o then
+            if not o.Reevaluate && x.Locked.Add o then
                 o.ReaderCount <- o.ReaderCount + 1
             Monitor.Exit o
 
@@ -239,18 +244,23 @@ type AdaptiveToken =
 
 
         member inline x.WithCaller (c : IAdaptiveObject) =
-            AdaptiveToken(c, x.Locked)
+            AdaptiveToken(c, x.Locked, x.Tag)
+
+        member inline x.WithTag (t : obj) =
+            AdaptiveToken(x.Caller, x.Locked, t)
+
 
         member inline x.Isolated =
-            AdaptiveToken(x.Caller, HashSet())
+            AdaptiveToken(x.Caller, HashSet(), x.Tag)
 
-        static member inline Top = AdaptiveToken(null, HashSet())
+        static member inline Top = AdaptiveToken(null, HashSet(), null)
         static member inline Empty = Unchecked.defaultof<AdaptiveToken>
 
-        new(caller : IAdaptiveObject, locked : HashSet<IAdaptiveObject>) =
+        new(caller : IAdaptiveObject, locked : HashSet<IAdaptiveObject>, tag : obj) =
             {
                 Caller = caller
                 Locked = locked
+                Tag = tag
             }
     end
 
@@ -554,16 +564,28 @@ type AdaptiveObject =
 
 
         val mutable public Id : int
-        val mutable public OutOfDate : bool
-        val mutable public Level : int 
+        val mutable public OutOfDateValue : bool
+        val mutable public LevelValue : int 
         val mutable public Outputs : VolatileCollection<IAdaptiveObject>
         val mutable public WeakThis : WeakReference<IAdaptiveObject>
         val mutable public ReaderCountValue : int
+        val mutable public Reevaluate : bool
+
+        member x.Level
+            with inline get() = if x.Reevaluate then 0 else x.LevelValue
+            and inline set v = if not x.Reevaluate then x.LevelValue <- v
+
+        member x.OutOfDate 
+            with inline get() = 
+                x.Reevaluate || x.OutOfDateValue
+            and inline set v = 
+                if not x.Reevaluate then 
+                    x.OutOfDateValue <- v
 
         new() =
-            { Id = newId(); OutOfDate = true; 
-              Level = 0; Outputs = VolatileCollection<IAdaptiveObject>(); WeakThis = null;
-              ReaderCountValue = 0 }
+            { Id = newId(); OutOfDateValue = true; 
+              LevelValue = 0; Outputs = VolatileCollection<IAdaptiveObject>(); WeakThis = null;
+              ReaderCountValue = 0; Reevaluate = false }
 
         static member inline private markTime() =
             let time = AdaptiveObject.time
@@ -589,6 +611,8 @@ type AdaptiveObject =
 
             let mutable res = Unchecked.defaultof<_>
             token.EnterRead this
+
+            this.Reevaluate <- false
 
             try
                 AdaptiveObject.EvaluationDepthValue <- depth + 1
@@ -619,8 +643,13 @@ type AdaptiveObject =
 
 
                 if not (isNull caller) then
-                    this.Outputs.Add caller |> ignore
-                    caller.Level <- max caller.Level (this.Level + 1)
+                    if this.Reevaluate then
+                        caller.Reevaluate <- true
+                        caller.InputChanged(this, this)
+                        caller.AllInputsProcessed(this)
+                    else
+                        this.Outputs.Add caller |> ignore
+                        caller.Level <- max caller.Level (this.Level + 1)
 
             with _ ->
                 AdaptiveObject.EvaluationDepthValue <- depth
@@ -707,6 +736,12 @@ type AdaptiveObject =
                 with get() = x.OutOfDate
                 and set v = x.OutOfDate <- v
 
+                
+            member x.Reevaluate
+                with get() = x.Reevaluate
+                and set v = x.Reevaluate <- v
+
+
             member x.Outputs = x.Outputs
             member x.Inputs = x.Inputs
             member x.Level 
@@ -763,8 +798,8 @@ type DirtyTrackingAdaptiveObject<'a when 'a :> IAdaptiveObject> =
         member x.EvaluateAlways' (token : AdaptiveToken) (compute : AdaptiveToken -> HashSet<'a> -> 'b) =
             x.EvaluateAlways token (fun token ->
                 let d = x.Dirty
+                x.Dirty <- HashSet()
                 let res = compute token d
-                d.Clear()
                 res
             )
 
@@ -808,6 +843,10 @@ type ConstantObject() =
 
         member x.Mark() = false
         member x.OutOfDate
+            with get() = false
+            and set o = failwith "cannot mark constant outOfDate"
+
+        member x.Reevaluate
             with get() = false
             and set o = failwith "cannot mark constant outOfDate"
 
@@ -974,6 +1013,10 @@ module CallbackExtensions =
                 with get() = false
                 and set o = ()
 
+            member x.Reevaluate
+                with get() = false
+                and set o = ()
+
             member x.Inputs = Seq.singleton inner
             member x.Outputs = VolatileCollection()
             member x.InputChanged(o,ip) = ()
@@ -1100,6 +1143,11 @@ type AdaptiveDecorator(o : IAdaptiveObject) =
         member x.OutOfDate
             with get() = o.OutOfDate
             and set v = o.OutOfDate <- v
+
+        member x.Reevaluate
+            with get() = o.Reevaluate
+            and set v = o.Reevaluate <- v
+
 
         member x.Outputs = o.Outputs
         member x.Inputs = o.Inputs
