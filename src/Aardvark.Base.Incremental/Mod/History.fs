@@ -344,11 +344,22 @@ and HistoryReader<'s, 'op>(h : History<'s, 'op>) =
                 trace.tops.mempty
         )
 
-    member x.Dispose() =
-        h.Outputs.Remove x |> ignore
-        h.Remove node
+    member private x.Dispose(disposing : bool) =
+        if disposing then GC.SuppressFinalize x
+        lock h (fun () ->
+            h.Outputs.Remove x |> ignore
+            h.Remove node
+        )
         node <- null
         state <- trace.tempty
+        
+    override x.Finalize() =
+        DisposeThread.Dispose {
+            new IDisposable with
+                member __.Dispose() = x.Dispose false
+        }
+
+    member x.Dispose() = x.Dispose true
 
     interface IOpReader<'op> with
         member x.Dispose() = x.Dispose()

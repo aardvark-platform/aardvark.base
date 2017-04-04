@@ -525,6 +525,56 @@ module AMap =
 
 
 
+    let tryFind (key : 'k) (m : amap<'k, 'v>) =
+        let reader = m.GetReader()
+        let mutable last = None
+        Mod.custom (fun token ->
+            let ops = reader.GetOperations token
+            match HMap.tryFind key ops with
+                | Some Remove -> 
+                    last <- None
+                    None
+                | Some (Set v) -> 
+                    last <- Some v
+                    Some v
+                | None -> 
+                    last
+        )
+
+    let find (key : 'k) (m : amap<'k, 'v>) =
+        let reader = m.GetReader()
+        let mutable last = None
+        Mod.custom (fun token ->
+            let ops = reader.GetOperations token
+            match HMap.tryFind key ops with
+                | Some Remove -> 
+                    failwith "[AMap] key not found"
+                | Some (Set v) -> 
+                    last <- Some v
+                    v
+                | None -> 
+                    match last with
+                        | Some v -> v
+                        | None -> failwith "[AMap] key not found"
+        )
+
+    let findWithDefault (key : 'k) (def : 'v) (m : amap<'k, 'v>) =
+        let reader = m.GetReader()
+        let mutable last = def
+        Mod.custom (fun token ->
+            let ops = reader.GetOperations token
+            match HMap.tryFind key ops with
+                | Some Remove -> 
+                    last <- def
+                    def
+                | Some (Set v) -> 
+                    last <- v
+                    v
+                | None -> 
+                    last
+        )
+        
+
 [<AutoOpen>]
 module AMapBuilderExperiments =
 
