@@ -86,6 +86,7 @@
     <Compile Include="Datastructures\Immutable\PDeltaList.fs" />
     <Compile Include="Datastructures\Immutable\PList.fs" />
     <Compile Include="Datastructures\Immutable\FingerTree.fs" />
+    <Compile Include="Datastructures\Immutable\Graph.fs" />
     <Compile Include="Datastructures\Geometry\Boundable.fs" />
     <Compile Include="Datastructures\Geometry\KdTree.fs" />
     <Compile Include="Datastructures\Geometry\Bvh.fs" />
