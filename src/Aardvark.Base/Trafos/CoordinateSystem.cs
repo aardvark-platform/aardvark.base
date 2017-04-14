@@ -42,6 +42,26 @@ namespace Aardvark.Base
             {
                 get { return this.Equals(Aardvark); }
             }
+
+            public override int GetHashCode()
+            {
+                return HashCode.GetCombined(UnitScale, Handedness, UpVector);
+            }
+
+            public override bool Equals(object other)
+            {
+                return (other is Info) ? this == (Info)other : false;
+            }
+
+            public static bool operator ==(Info a, Info b)
+            {
+                return a.UnitScale == b.UnitScale && a.Handedness == b.Handedness && a.UpVector == b.UpVector;
+            }
+
+            public static bool operator !=(Info a, Info b)
+            {
+                return a.UnitScale != b.UnitScale || a.Handedness != b.Handedness || a.UpVector != b.UpVector;
+            }
         }
 
         /// <summary>
