@@ -616,7 +616,7 @@ namespace Aardvark.Base
             Report.Verbosity = 0;
             var folder = IntrospectionProperties.CurrentEntryPath; 
             var assemblies = Directory.EnumerateFiles(folder)
-                                      .Where(p => { var ext = Path.GetExtension(p); return ext == ".dll" || ext == ".exe"; })
+                                      .Where(p => { var ext = Path.GetExtension(p).ToLowerInvariant(); return ext == ".dll" || ext == ".exe"; })
                                       .Select(Path.GetFullPath)
                                       .ToArray();
 

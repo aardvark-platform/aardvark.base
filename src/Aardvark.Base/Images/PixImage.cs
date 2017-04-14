@@ -631,7 +631,7 @@ namespace Aardvark.Base
             bool appendExtension = false;
             if (Path.HasExtension(fileName))
             {
-                var ext = Path.GetExtension(fileName);
+                var ext = Path.GetExtension(fileName).ToLowerInvariant();
                 if (s_formatOfExtension.ContainsKey(ext))
                 {
                     if (s_formatOfExtension[ext] != format)
