@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
@@ -1264,16 +1265,16 @@ namespace Aardvark.Base
 
         public override string ToString()
         {
-            return ToString(null, Localization.FormatEnUS);
+            return ToString(null, CultureInfo.InvariantCulture);
         }
 
         public Text ToText(int bracketLevel = 1)
         {
             return
                 ((bracketLevel == 1 ? "[" : "")
-                + R.ToString(null, Localization.FormatEnUS)  + ", " 
-                + G.ToString(null, Localization.FormatEnUS)  + ", " 
-                + B.ToString(null, Localization.FormatEnUS) 
+                + R.ToString(null, CultureInfo.InvariantCulture)  + ", " 
+                + G.ToString(null, CultureInfo.InvariantCulture)  + ", " 
+                + B.ToString(null, CultureInfo.InvariantCulture) 
                 + (bracketLevel == 1 ? "]" : "")).ToText();
         }
 
@@ -1397,9 +1398,9 @@ namespace Aardvark.Base
         {
             var x = s.NestedBracketSplitLevelOne().ToArray();
             return new C3b(
-                byte.Parse(x[0], Localization.FormatEnUS), 
-                byte.Parse(x[1], Localization.FormatEnUS), 
-                byte.Parse(x[2], Localization.FormatEnUS)
+                byte.Parse(x[0], CultureInfo.InvariantCulture), 
+                byte.Parse(x[1], CultureInfo.InvariantCulture), 
+                byte.Parse(x[2], CultureInfo.InvariantCulture)
             );
         }
 
@@ -1419,7 +1420,7 @@ namespace Aardvark.Base
 
         public string ToString(string format)
         {
-            return ToString(format, Localization.FormatEnUS);
+            return ToString(format, CultureInfo.InvariantCulture);
         }
 
         public string ToString(string format, IFormatProvider fp)
@@ -1432,7 +1433,7 @@ namespace Aardvark.Base
         /// </summary>
         public string ToString(string format, IFormatProvider fp, string begin, string between, string end)
         {
-            if (fp == null) fp = Localization.FormatEnUS;
+            if (fp == null) fp = CultureInfo.InvariantCulture;
             return begin + R.ToString(format, fp)  + between + G.ToString(format, fp)  + between + B.ToString(format, fp)  + end;
         }
 
@@ -2769,16 +2770,16 @@ namespace Aardvark.Base
 
         public override string ToString()
         {
-            return ToString(null, Localization.FormatEnUS);
+            return ToString(null, CultureInfo.InvariantCulture);
         }
 
         public Text ToText(int bracketLevel = 1)
         {
             return
                 ((bracketLevel == 1 ? "[" : "")
-                + R.ToString(null, Localization.FormatEnUS)  + ", " 
-                + G.ToString(null, Localization.FormatEnUS)  + ", " 
-                + B.ToString(null, Localization.FormatEnUS) 
+                + R.ToString(null, CultureInfo.InvariantCulture)  + ", " 
+                + G.ToString(null, CultureInfo.InvariantCulture)  + ", " 
+                + B.ToString(null, CultureInfo.InvariantCulture) 
                 + (bracketLevel == 1 ? "]" : "")).ToText();
         }
 
@@ -2902,9 +2903,9 @@ namespace Aardvark.Base
         {
             var x = s.NestedBracketSplitLevelOne().ToArray();
             return new C3us(
-                ushort.Parse(x[0], Localization.FormatEnUS), 
-                ushort.Parse(x[1], Localization.FormatEnUS), 
-                ushort.Parse(x[2], Localization.FormatEnUS)
+                ushort.Parse(x[0], CultureInfo.InvariantCulture), 
+                ushort.Parse(x[1], CultureInfo.InvariantCulture), 
+                ushort.Parse(x[2], CultureInfo.InvariantCulture)
             );
         }
 
@@ -2924,7 +2925,7 @@ namespace Aardvark.Base
 
         public string ToString(string format)
         {
-            return ToString(format, Localization.FormatEnUS);
+            return ToString(format, CultureInfo.InvariantCulture);
         }
 
         public string ToString(string format, IFormatProvider fp)
@@ -2937,7 +2938,7 @@ namespace Aardvark.Base
         /// </summary>
         public string ToString(string format, IFormatProvider fp, string begin, string between, string end)
         {
-            if (fp == null) fp = Localization.FormatEnUS;
+            if (fp == null) fp = CultureInfo.InvariantCulture;
             return begin + R.ToString(format, fp)  + between + G.ToString(format, fp)  + between + B.ToString(format, fp)  + end;
         }
 
@@ -4198,16 +4199,16 @@ namespace Aardvark.Base
 
         public override string ToString()
         {
-            return ToString(null, Localization.FormatEnUS);
+            return ToString(null, CultureInfo.InvariantCulture);
         }
 
         public Text ToText(int bracketLevel = 1)
         {
             return
                 ((bracketLevel == 1 ? "[" : "")
-                + R.ToString(null, Localization.FormatEnUS)  + ", " 
-                + G.ToString(null, Localization.FormatEnUS)  + ", " 
-                + B.ToString(null, Localization.FormatEnUS) 
+                + R.ToString(null, CultureInfo.InvariantCulture)  + ", " 
+                + G.ToString(null, CultureInfo.InvariantCulture)  + ", " 
+                + B.ToString(null, CultureInfo.InvariantCulture) 
                 + (bracketLevel == 1 ? "]" : "")).ToText();
         }
 
@@ -4331,9 +4332,9 @@ namespace Aardvark.Base
         {
             var x = s.NestedBracketSplitLevelOne().ToArray();
             return new C3ui(
-                uint.Parse(x[0], Localization.FormatEnUS), 
-                uint.Parse(x[1], Localization.FormatEnUS), 
-                uint.Parse(x[2], Localization.FormatEnUS)
+                uint.Parse(x[0], CultureInfo.InvariantCulture), 
+                uint.Parse(x[1], CultureInfo.InvariantCulture), 
+                uint.Parse(x[2], CultureInfo.InvariantCulture)
             );
         }
 
@@ -4353,7 +4354,7 @@ namespace Aardvark.Base
 
         public string ToString(string format)
         {
-            return ToString(format, Localization.FormatEnUS);
+            return ToString(format, CultureInfo.InvariantCulture);
         }
 
         public string ToString(string format, IFormatProvider fp)
@@ -4366,7 +4367,7 @@ namespace Aardvark.Base
         /// </summary>
         public string ToString(string format, IFormatProvider fp, string begin, string between, string end)
         {
-            if (fp == null) fp = Localization.FormatEnUS;
+            if (fp == null) fp = CultureInfo.InvariantCulture;
             return begin + R.ToString(format, fp)  + between + G.ToString(format, fp)  + between + B.ToString(format, fp)  + end;
         }
 
@@ -5760,16 +5761,16 @@ namespace Aardvark.Base
 
         public override string ToString()
         {
-            return ToString(null, Localization.FormatEnUS);
+            return ToString(null, CultureInfo.InvariantCulture);
         }
 
         public Text ToText(int bracketLevel = 1)
         {
             return
                 ((bracketLevel == 1 ? "[" : "")
-                + R.ToString(null, Localization.FormatEnUS)  + ", " 
-                + G.ToString(null, Localization.FormatEnUS)  + ", " 
-                + B.ToString(null, Localization.FormatEnUS) 
+                + R.ToString(null, CultureInfo.InvariantCulture)  + ", " 
+                + G.ToString(null, CultureInfo.InvariantCulture)  + ", " 
+                + B.ToString(null, CultureInfo.InvariantCulture) 
                 + (bracketLevel == 1 ? "]" : "")).ToText();
         }
 
@@ -5893,9 +5894,9 @@ namespace Aardvark.Base
         {
             var x = s.NestedBracketSplitLevelOne().ToArray();
             return new C3f(
-                float.Parse(x[0], Localization.FormatEnUS), 
-                float.Parse(x[1], Localization.FormatEnUS), 
-                float.Parse(x[2], Localization.FormatEnUS)
+                float.Parse(x[0], CultureInfo.InvariantCulture), 
+                float.Parse(x[1], CultureInfo.InvariantCulture), 
+                float.Parse(x[2], CultureInfo.InvariantCulture)
             );
         }
 
@@ -5915,7 +5916,7 @@ namespace Aardvark.Base
 
         public string ToString(string format)
         {
-            return ToString(format, Localization.FormatEnUS);
+            return ToString(format, CultureInfo.InvariantCulture);
         }
 
         public string ToString(string format, IFormatProvider fp)
@@ -5928,7 +5929,7 @@ namespace Aardvark.Base
         /// </summary>
         public string ToString(string format, IFormatProvider fp, string begin, string between, string end)
         {
-            if (fp == null) fp = Localization.FormatEnUS;
+            if (fp == null) fp = CultureInfo.InvariantCulture;
             return begin + R.ToString(format, fp)  + between + G.ToString(format, fp)  + between + B.ToString(format, fp)  + end;
         }
 
@@ -7208,16 +7209,16 @@ namespace Aardvark.Base
 
         public override string ToString()
         {
-            return ToString(null, Localization.FormatEnUS);
+            return ToString(null, CultureInfo.InvariantCulture);
         }
 
         public Text ToText(int bracketLevel = 1)
         {
             return
                 ((bracketLevel == 1 ? "[" : "")
-                + R.ToString(null, Localization.FormatEnUS)  + ", " 
-                + G.ToString(null, Localization.FormatEnUS)  + ", " 
-                + B.ToString(null, Localization.FormatEnUS) 
+                + R.ToString(null, CultureInfo.InvariantCulture)  + ", " 
+                + G.ToString(null, CultureInfo.InvariantCulture)  + ", " 
+                + B.ToString(null, CultureInfo.InvariantCulture) 
                 + (bracketLevel == 1 ? "]" : "")).ToText();
         }
 
@@ -7341,9 +7342,9 @@ namespace Aardvark.Base
         {
             var x = s.NestedBracketSplitLevelOne().ToArray();
             return new C3d(
-                double.Parse(x[0], Localization.FormatEnUS), 
-                double.Parse(x[1], Localization.FormatEnUS), 
-                double.Parse(x[2], Localization.FormatEnUS)
+                double.Parse(x[0], CultureInfo.InvariantCulture), 
+                double.Parse(x[1], CultureInfo.InvariantCulture), 
+                double.Parse(x[2], CultureInfo.InvariantCulture)
             );
         }
 
@@ -7363,7 +7364,7 @@ namespace Aardvark.Base
 
         public string ToString(string format)
         {
-            return ToString(format, Localization.FormatEnUS);
+            return ToString(format, CultureInfo.InvariantCulture);
         }
 
         public string ToString(string format, IFormatProvider fp)
@@ -7376,7 +7377,7 @@ namespace Aardvark.Base
         /// </summary>
         public string ToString(string format, IFormatProvider fp, string begin, string between, string end)
         {
-            if (fp == null) fp = Localization.FormatEnUS;
+            if (fp == null) fp = CultureInfo.InvariantCulture;
             return begin + R.ToString(format, fp)  + between + G.ToString(format, fp)  + between + B.ToString(format, fp)  + end;
         }
 
@@ -8829,17 +8830,17 @@ namespace Aardvark.Base
 
         public override string ToString()
         {
-            return ToString(null, Localization.FormatEnUS);
+            return ToString(null, CultureInfo.InvariantCulture);
         }
 
         public Text ToText(int bracketLevel = 1)
         {
             return
                 ((bracketLevel == 1 ? "[" : "")
-                + R.ToString(null, Localization.FormatEnUS)  + ", " 
-                + G.ToString(null, Localization.FormatEnUS)  + ", " 
-                + B.ToString(null, Localization.FormatEnUS)  + ", " 
-                + A.ToString(null, Localization.FormatEnUS) 
+                + R.ToString(null, CultureInfo.InvariantCulture)  + ", " 
+                + G.ToString(null, CultureInfo.InvariantCulture)  + ", " 
+                + B.ToString(null, CultureInfo.InvariantCulture)  + ", " 
+                + A.ToString(null, CultureInfo.InvariantCulture) 
                 + (bracketLevel == 1 ? "]" : "")).ToText();
         }
 
@@ -8964,10 +8965,10 @@ namespace Aardvark.Base
         {
             var x = s.NestedBracketSplitLevelOne().ToArray();
             return new C4b(
-                byte.Parse(x[0], Localization.FormatEnUS), 
-                byte.Parse(x[1], Localization.FormatEnUS), 
-                byte.Parse(x[2], Localization.FormatEnUS), 
-                byte.Parse(x[3], Localization.FormatEnUS)
+                byte.Parse(x[0], CultureInfo.InvariantCulture), 
+                byte.Parse(x[1], CultureInfo.InvariantCulture), 
+                byte.Parse(x[2], CultureInfo.InvariantCulture), 
+                byte.Parse(x[3], CultureInfo.InvariantCulture)
             );
         }
 
@@ -8987,7 +8988,7 @@ namespace Aardvark.Base
 
         public string ToString(string format)
         {
-            return ToString(format, Localization.FormatEnUS);
+            return ToString(format, CultureInfo.InvariantCulture);
         }
 
         public string ToString(string format, IFormatProvider fp)
@@ -9000,7 +9001,7 @@ namespace Aardvark.Base
         /// </summary>
         public string ToString(string format, IFormatProvider fp, string begin, string between, string end)
         {
-            if (fp == null) fp = Localization.FormatEnUS;
+            if (fp == null) fp = CultureInfo.InvariantCulture;
             return begin + R.ToString(format, fp)  + between + G.ToString(format, fp)  + between + B.ToString(format, fp)  + between + A.ToString(format, fp)  + end;
         }
 
@@ -10466,17 +10467,17 @@ namespace Aardvark.Base
 
         public override string ToString()
         {
-            return ToString(null, Localization.FormatEnUS);
+            return ToString(null, CultureInfo.InvariantCulture);
         }
 
         public Text ToText(int bracketLevel = 1)
         {
             return
                 ((bracketLevel == 1 ? "[" : "")
-                + R.ToString(null, Localization.FormatEnUS)  + ", " 
-                + G.ToString(null, Localization.FormatEnUS)  + ", " 
-                + B.ToString(null, Localization.FormatEnUS)  + ", " 
-                + A.ToString(null, Localization.FormatEnUS) 
+                + R.ToString(null, CultureInfo.InvariantCulture)  + ", " 
+                + G.ToString(null, CultureInfo.InvariantCulture)  + ", " 
+                + B.ToString(null, CultureInfo.InvariantCulture)  + ", " 
+                + A.ToString(null, CultureInfo.InvariantCulture) 
                 + (bracketLevel == 1 ? "]" : "")).ToText();
         }
 
@@ -10601,10 +10602,10 @@ namespace Aardvark.Base
         {
             var x = s.NestedBracketSplitLevelOne().ToArray();
             return new C4us(
-                ushort.Parse(x[0], Localization.FormatEnUS), 
-                ushort.Parse(x[1], Localization.FormatEnUS), 
-                ushort.Parse(x[2], Localization.FormatEnUS), 
-                ushort.Parse(x[3], Localization.FormatEnUS)
+                ushort.Parse(x[0], CultureInfo.InvariantCulture), 
+                ushort.Parse(x[1], CultureInfo.InvariantCulture), 
+                ushort.Parse(x[2], CultureInfo.InvariantCulture), 
+                ushort.Parse(x[3], CultureInfo.InvariantCulture)
             );
         }
 
@@ -10624,7 +10625,7 @@ namespace Aardvark.Base
 
         public string ToString(string format)
         {
-            return ToString(format, Localization.FormatEnUS);
+            return ToString(format, CultureInfo.InvariantCulture);
         }
 
         public string ToString(string format, IFormatProvider fp)
@@ -10637,7 +10638,7 @@ namespace Aardvark.Base
         /// </summary>
         public string ToString(string format, IFormatProvider fp, string begin, string between, string end)
         {
-            if (fp == null) fp = Localization.FormatEnUS;
+            if (fp == null) fp = CultureInfo.InvariantCulture;
             return begin + R.ToString(format, fp)  + between + G.ToString(format, fp)  + between + B.ToString(format, fp)  + between + A.ToString(format, fp)  + end;
         }
 
@@ -12017,17 +12018,17 @@ namespace Aardvark.Base
 
         public override string ToString()
         {
-            return ToString(null, Localization.FormatEnUS);
+            return ToString(null, CultureInfo.InvariantCulture);
         }
 
         public Text ToText(int bracketLevel = 1)
         {
             return
                 ((bracketLevel == 1 ? "[" : "")
-                + R.ToString(null, Localization.FormatEnUS)  + ", " 
-                + G.ToString(null, Localization.FormatEnUS)  + ", " 
-                + B.ToString(null, Localization.FormatEnUS)  + ", " 
-                + A.ToString(null, Localization.FormatEnUS) 
+                + R.ToString(null, CultureInfo.InvariantCulture)  + ", " 
+                + G.ToString(null, CultureInfo.InvariantCulture)  + ", " 
+                + B.ToString(null, CultureInfo.InvariantCulture)  + ", " 
+                + A.ToString(null, CultureInfo.InvariantCulture) 
                 + (bracketLevel == 1 ? "]" : "")).ToText();
         }
 
@@ -12152,10 +12153,10 @@ namespace Aardvark.Base
         {
             var x = s.NestedBracketSplitLevelOne().ToArray();
             return new C4ui(
-                uint.Parse(x[0], Localization.FormatEnUS), 
-                uint.Parse(x[1], Localization.FormatEnUS), 
-                uint.Parse(x[2], Localization.FormatEnUS), 
-                uint.Parse(x[3], Localization.FormatEnUS)
+                uint.Parse(x[0], CultureInfo.InvariantCulture), 
+                uint.Parse(x[1], CultureInfo.InvariantCulture), 
+                uint.Parse(x[2], CultureInfo.InvariantCulture), 
+                uint.Parse(x[3], CultureInfo.InvariantCulture)
             );
         }
 
@@ -12175,7 +12176,7 @@ namespace Aardvark.Base
 
         public string ToString(string format)
         {
-            return ToString(format, Localization.FormatEnUS);
+            return ToString(format, CultureInfo.InvariantCulture);
         }
 
         public string ToString(string format, IFormatProvider fp)
@@ -12188,7 +12189,7 @@ namespace Aardvark.Base
         /// </summary>
         public string ToString(string format, IFormatProvider fp, string begin, string between, string end)
         {
-            if (fp == null) fp = Localization.FormatEnUS;
+            if (fp == null) fp = CultureInfo.InvariantCulture;
             return begin + R.ToString(format, fp)  + between + G.ToString(format, fp)  + between + B.ToString(format, fp)  + between + A.ToString(format, fp)  + end;
         }
 
@@ -13717,17 +13718,17 @@ namespace Aardvark.Base
 
         public override string ToString()
         {
-            return ToString(null, Localization.FormatEnUS);
+            return ToString(null, CultureInfo.InvariantCulture);
         }
 
         public Text ToText(int bracketLevel = 1)
         {
             return
                 ((bracketLevel == 1 ? "[" : "")
-                + R.ToString(null, Localization.FormatEnUS)  + ", " 
-                + G.ToString(null, Localization.FormatEnUS)  + ", " 
-                + B.ToString(null, Localization.FormatEnUS)  + ", " 
-                + A.ToString(null, Localization.FormatEnUS) 
+                + R.ToString(null, CultureInfo.InvariantCulture)  + ", " 
+                + G.ToString(null, CultureInfo.InvariantCulture)  + ", " 
+                + B.ToString(null, CultureInfo.InvariantCulture)  + ", " 
+                + A.ToString(null, CultureInfo.InvariantCulture) 
                 + (bracketLevel == 1 ? "]" : "")).ToText();
         }
 
@@ -13852,10 +13853,10 @@ namespace Aardvark.Base
         {
             var x = s.NestedBracketSplitLevelOne().ToArray();
             return new C4f(
-                float.Parse(x[0], Localization.FormatEnUS), 
-                float.Parse(x[1], Localization.FormatEnUS), 
-                float.Parse(x[2], Localization.FormatEnUS), 
-                float.Parse(x[3], Localization.FormatEnUS)
+                float.Parse(x[0], CultureInfo.InvariantCulture), 
+                float.Parse(x[1], CultureInfo.InvariantCulture), 
+                float.Parse(x[2], CultureInfo.InvariantCulture), 
+                float.Parse(x[3], CultureInfo.InvariantCulture)
             );
         }
 
@@ -13875,7 +13876,7 @@ namespace Aardvark.Base
 
         public string ToString(string format)
         {
-            return ToString(format, Localization.FormatEnUS);
+            return ToString(format, CultureInfo.InvariantCulture);
         }
 
         public string ToString(string format, IFormatProvider fp)
@@ -13888,7 +13889,7 @@ namespace Aardvark.Base
         /// </summary>
         public string ToString(string format, IFormatProvider fp, string begin, string between, string end)
         {
-            if (fp == null) fp = Localization.FormatEnUS;
+            if (fp == null) fp = CultureInfo.InvariantCulture;
             return begin + R.ToString(format, fp)  + between + G.ToString(format, fp)  + between + B.ToString(format, fp)  + between + A.ToString(format, fp)  + end;
         }
 
@@ -15286,17 +15287,17 @@ namespace Aardvark.Base
 
         public override string ToString()
         {
-            return ToString(null, Localization.FormatEnUS);
+            return ToString(null, CultureInfo.InvariantCulture);
         }
 
         public Text ToText(int bracketLevel = 1)
         {
             return
                 ((bracketLevel == 1 ? "[" : "")
-                + R.ToString(null, Localization.FormatEnUS)  + ", " 
-                + G.ToString(null, Localization.FormatEnUS)  + ", " 
-                + B.ToString(null, Localization.FormatEnUS)  + ", " 
-                + A.ToString(null, Localization.FormatEnUS) 
+                + R.ToString(null, CultureInfo.InvariantCulture)  + ", " 
+                + G.ToString(null, CultureInfo.InvariantCulture)  + ", " 
+                + B.ToString(null, CultureInfo.InvariantCulture)  + ", " 
+                + A.ToString(null, CultureInfo.InvariantCulture) 
                 + (bracketLevel == 1 ? "]" : "")).ToText();
         }
 
@@ -15421,10 +15422,10 @@ namespace Aardvark.Base
         {
             var x = s.NestedBracketSplitLevelOne().ToArray();
             return new C4d(
-                double.Parse(x[0], Localization.FormatEnUS), 
-                double.Parse(x[1], Localization.FormatEnUS), 
-                double.Parse(x[2], Localization.FormatEnUS), 
-                double.Parse(x[3], Localization.FormatEnUS)
+                double.Parse(x[0], CultureInfo.InvariantCulture), 
+                double.Parse(x[1], CultureInfo.InvariantCulture), 
+                double.Parse(x[2], CultureInfo.InvariantCulture), 
+                double.Parse(x[3], CultureInfo.InvariantCulture)
             );
         }
 
@@ -15444,7 +15445,7 @@ namespace Aardvark.Base
 
         public string ToString(string format)
         {
-            return ToString(format, Localization.FormatEnUS);
+            return ToString(format, CultureInfo.InvariantCulture);
         }
 
         public string ToString(string format, IFormatProvider fp)
@@ -15457,7 +15458,7 @@ namespace Aardvark.Base
         /// </summary>
         public string ToString(string format, IFormatProvider fp, string begin, string between, string end)
         {
-            if (fp == null) fp = Localization.FormatEnUS;
+            if (fp == null) fp = CultureInfo.InvariantCulture;
             return begin + R.ToString(format, fp)  + between + G.ToString(format, fp)  + between + B.ToString(format, fp)  + between + A.ToString(format, fp)  + end;
         }
 

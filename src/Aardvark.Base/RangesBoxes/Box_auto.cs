@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Runtime.InteropServices;
 
@@ -461,12 +462,12 @@ namespace Aardvark.Base
 
         public override string ToString()
         {
-            return ToString(null, Localization.FormatEnUS);
+            return ToString(null, CultureInfo.InvariantCulture);
         }
 
         public string ToString(string format)
         {
-            return ToString(format, Localization.FormatEnUS);
+            return ToString(format, CultureInfo.InvariantCulture);
         }
 
         #endregion
@@ -494,8 +495,8 @@ namespace Aardvark.Base
         public static Range1b Parse(string s)
         {
             var x = s.NestedBracketSplitLevelOne().ToArray();
-            return new Range1b(byte.Parse(x[0], Localization.FormatEnUS),
-                                byte.Parse(x[1], Localization.FormatEnUS));
+            return new Range1b(byte.Parse(x[0], CultureInfo.InvariantCulture),
+                                byte.Parse(x[1], CultureInfo.InvariantCulture));
         }
 
         public static Range1b Parse(Text t)
@@ -541,7 +542,7 @@ namespace Aardvark.Base
         /// </summary>
         public string ToString(string format, IFormatProvider fp, string beginB, string betweenB, string endB, string beginV, string betweenV, string endV)
         {
-            if (fp == null) fp = Localization.FormatEnUS;
+            if (fp == null) fp = CultureInfo.InvariantCulture;
             return beginB + Min.ToString(format, fp) + betweenB
                           + Max.ToString(format, fp) + endB;
         }
@@ -1167,12 +1168,12 @@ namespace Aardvark.Base
 
         public override string ToString()
         {
-            return ToString(null, Localization.FormatEnUS);
+            return ToString(null, CultureInfo.InvariantCulture);
         }
 
         public string ToString(string format)
         {
-            return ToString(format, Localization.FormatEnUS);
+            return ToString(format, CultureInfo.InvariantCulture);
         }
 
         #endregion
@@ -1200,8 +1201,8 @@ namespace Aardvark.Base
         public static Range1sb Parse(string s)
         {
             var x = s.NestedBracketSplitLevelOne().ToArray();
-            return new Range1sb(sbyte.Parse(x[0], Localization.FormatEnUS),
-                                sbyte.Parse(x[1], Localization.FormatEnUS));
+            return new Range1sb(sbyte.Parse(x[0], CultureInfo.InvariantCulture),
+                                sbyte.Parse(x[1], CultureInfo.InvariantCulture));
         }
 
         public static Range1sb Parse(Text t)
@@ -1247,7 +1248,7 @@ namespace Aardvark.Base
         /// </summary>
         public string ToString(string format, IFormatProvider fp, string beginB, string betweenB, string endB, string beginV, string betweenV, string endV)
         {
-            if (fp == null) fp = Localization.FormatEnUS;
+            if (fp == null) fp = CultureInfo.InvariantCulture;
             return beginB + Min.ToString(format, fp) + betweenB
                           + Max.ToString(format, fp) + endB;
         }
@@ -1873,12 +1874,12 @@ namespace Aardvark.Base
 
         public override string ToString()
         {
-            return ToString(null, Localization.FormatEnUS);
+            return ToString(null, CultureInfo.InvariantCulture);
         }
 
         public string ToString(string format)
         {
-            return ToString(format, Localization.FormatEnUS);
+            return ToString(format, CultureInfo.InvariantCulture);
         }
 
         #endregion
@@ -1906,8 +1907,8 @@ namespace Aardvark.Base
         public static Range1s Parse(string s)
         {
             var x = s.NestedBracketSplitLevelOne().ToArray();
-            return new Range1s(short.Parse(x[0], Localization.FormatEnUS),
-                                short.Parse(x[1], Localization.FormatEnUS));
+            return new Range1s(short.Parse(x[0], CultureInfo.InvariantCulture),
+                                short.Parse(x[1], CultureInfo.InvariantCulture));
         }
 
         public static Range1s Parse(Text t)
@@ -1953,7 +1954,7 @@ namespace Aardvark.Base
         /// </summary>
         public string ToString(string format, IFormatProvider fp, string beginB, string betweenB, string endB, string beginV, string betweenV, string endV)
         {
-            if (fp == null) fp = Localization.FormatEnUS;
+            if (fp == null) fp = CultureInfo.InvariantCulture;
             return beginB + Min.ToString(format, fp) + betweenB
                           + Max.ToString(format, fp) + endB;
         }
@@ -2579,12 +2580,12 @@ namespace Aardvark.Base
 
         public override string ToString()
         {
-            return ToString(null, Localization.FormatEnUS);
+            return ToString(null, CultureInfo.InvariantCulture);
         }
 
         public string ToString(string format)
         {
-            return ToString(format, Localization.FormatEnUS);
+            return ToString(format, CultureInfo.InvariantCulture);
         }
 
         #endregion
@@ -2612,8 +2613,8 @@ namespace Aardvark.Base
         public static Range1us Parse(string s)
         {
             var x = s.NestedBracketSplitLevelOne().ToArray();
-            return new Range1us(ushort.Parse(x[0], Localization.FormatEnUS),
-                                ushort.Parse(x[1], Localization.FormatEnUS));
+            return new Range1us(ushort.Parse(x[0], CultureInfo.InvariantCulture),
+                                ushort.Parse(x[1], CultureInfo.InvariantCulture));
         }
 
         public static Range1us Parse(Text t)
@@ -2659,7 +2660,7 @@ namespace Aardvark.Base
         /// </summary>
         public string ToString(string format, IFormatProvider fp, string beginB, string betweenB, string endB, string beginV, string betweenV, string endV)
         {
-            if (fp == null) fp = Localization.FormatEnUS;
+            if (fp == null) fp = CultureInfo.InvariantCulture;
             return beginB + Min.ToString(format, fp) + betweenB
                           + Max.ToString(format, fp) + endB;
         }
@@ -3285,12 +3286,12 @@ namespace Aardvark.Base
 
         public override string ToString()
         {
-            return ToString(null, Localization.FormatEnUS);
+            return ToString(null, CultureInfo.InvariantCulture);
         }
 
         public string ToString(string format)
         {
-            return ToString(format, Localization.FormatEnUS);
+            return ToString(format, CultureInfo.InvariantCulture);
         }
 
         #endregion
@@ -3318,8 +3319,8 @@ namespace Aardvark.Base
         public static Range1i Parse(string s)
         {
             var x = s.NestedBracketSplitLevelOne().ToArray();
-            return new Range1i(int.Parse(x[0], Localization.FormatEnUS),
-                                int.Parse(x[1], Localization.FormatEnUS));
+            return new Range1i(int.Parse(x[0], CultureInfo.InvariantCulture),
+                                int.Parse(x[1], CultureInfo.InvariantCulture));
         }
 
         public static Range1i Parse(Text t)
@@ -3365,7 +3366,7 @@ namespace Aardvark.Base
         /// </summary>
         public string ToString(string format, IFormatProvider fp, string beginB, string betweenB, string endB, string beginV, string betweenV, string endV)
         {
-            if (fp == null) fp = Localization.FormatEnUS;
+            if (fp == null) fp = CultureInfo.InvariantCulture;
             return beginB + Min.ToString(format, fp) + betweenB
                           + Max.ToString(format, fp) + endB;
         }
@@ -3991,12 +3992,12 @@ namespace Aardvark.Base
 
         public override string ToString()
         {
-            return ToString(null, Localization.FormatEnUS);
+            return ToString(null, CultureInfo.InvariantCulture);
         }
 
         public string ToString(string format)
         {
-            return ToString(format, Localization.FormatEnUS);
+            return ToString(format, CultureInfo.InvariantCulture);
         }
 
         #endregion
@@ -4024,8 +4025,8 @@ namespace Aardvark.Base
         public static Range1ui Parse(string s)
         {
             var x = s.NestedBracketSplitLevelOne().ToArray();
-            return new Range1ui(uint.Parse(x[0], Localization.FormatEnUS),
-                                uint.Parse(x[1], Localization.FormatEnUS));
+            return new Range1ui(uint.Parse(x[0], CultureInfo.InvariantCulture),
+                                uint.Parse(x[1], CultureInfo.InvariantCulture));
         }
 
         public static Range1ui Parse(Text t)
@@ -4071,7 +4072,7 @@ namespace Aardvark.Base
         /// </summary>
         public string ToString(string format, IFormatProvider fp, string beginB, string betweenB, string endB, string beginV, string betweenV, string endV)
         {
-            if (fp == null) fp = Localization.FormatEnUS;
+            if (fp == null) fp = CultureInfo.InvariantCulture;
             return beginB + Min.ToString(format, fp) + betweenB
                           + Max.ToString(format, fp) + endB;
         }
@@ -4697,12 +4698,12 @@ namespace Aardvark.Base
 
         public override string ToString()
         {
-            return ToString(null, Localization.FormatEnUS);
+            return ToString(null, CultureInfo.InvariantCulture);
         }
 
         public string ToString(string format)
         {
-            return ToString(format, Localization.FormatEnUS);
+            return ToString(format, CultureInfo.InvariantCulture);
         }
 
         #endregion
@@ -4730,8 +4731,8 @@ namespace Aardvark.Base
         public static Range1l Parse(string s)
         {
             var x = s.NestedBracketSplitLevelOne().ToArray();
-            return new Range1l(long.Parse(x[0], Localization.FormatEnUS),
-                                long.Parse(x[1], Localization.FormatEnUS));
+            return new Range1l(long.Parse(x[0], CultureInfo.InvariantCulture),
+                                long.Parse(x[1], CultureInfo.InvariantCulture));
         }
 
         public static Range1l Parse(Text t)
@@ -4777,7 +4778,7 @@ namespace Aardvark.Base
         /// </summary>
         public string ToString(string format, IFormatProvider fp, string beginB, string betweenB, string endB, string beginV, string betweenV, string endV)
         {
-            if (fp == null) fp = Localization.FormatEnUS;
+            if (fp == null) fp = CultureInfo.InvariantCulture;
             return beginB + Min.ToString(format, fp) + betweenB
                           + Max.ToString(format, fp) + endB;
         }
@@ -5403,12 +5404,12 @@ namespace Aardvark.Base
 
         public override string ToString()
         {
-            return ToString(null, Localization.FormatEnUS);
+            return ToString(null, CultureInfo.InvariantCulture);
         }
 
         public string ToString(string format)
         {
-            return ToString(format, Localization.FormatEnUS);
+            return ToString(format, CultureInfo.InvariantCulture);
         }
 
         #endregion
@@ -5436,8 +5437,8 @@ namespace Aardvark.Base
         public static Range1ul Parse(string s)
         {
             var x = s.NestedBracketSplitLevelOne().ToArray();
-            return new Range1ul(ulong.Parse(x[0], Localization.FormatEnUS),
-                                ulong.Parse(x[1], Localization.FormatEnUS));
+            return new Range1ul(ulong.Parse(x[0], CultureInfo.InvariantCulture),
+                                ulong.Parse(x[1], CultureInfo.InvariantCulture));
         }
 
         public static Range1ul Parse(Text t)
@@ -5483,7 +5484,7 @@ namespace Aardvark.Base
         /// </summary>
         public string ToString(string format, IFormatProvider fp, string beginB, string betweenB, string endB, string beginV, string betweenV, string endV)
         {
-            if (fp == null) fp = Localization.FormatEnUS;
+            if (fp == null) fp = CultureInfo.InvariantCulture;
             return beginB + Min.ToString(format, fp) + betweenB
                           + Max.ToString(format, fp) + endB;
         }
@@ -6126,12 +6127,12 @@ namespace Aardvark.Base
 
         public override string ToString()
         {
-            return ToString(null, Localization.FormatEnUS);
+            return ToString(null, CultureInfo.InvariantCulture);
         }
 
         public string ToString(string format)
         {
-            return ToString(format, Localization.FormatEnUS);
+            return ToString(format, CultureInfo.InvariantCulture);
         }
 
         #endregion
@@ -6159,8 +6160,8 @@ namespace Aardvark.Base
         public static Range1f Parse(string s)
         {
             var x = s.NestedBracketSplitLevelOne().ToArray();
-            return new Range1f(float.Parse(x[0], Localization.FormatEnUS),
-                                float.Parse(x[1], Localization.FormatEnUS));
+            return new Range1f(float.Parse(x[0], CultureInfo.InvariantCulture),
+                                float.Parse(x[1], CultureInfo.InvariantCulture));
         }
 
         public static Range1f Parse(Text t)
@@ -6206,7 +6207,7 @@ namespace Aardvark.Base
         /// </summary>
         public string ToString(string format, IFormatProvider fp, string beginB, string betweenB, string endB, string beginV, string betweenV, string endV)
         {
-            if (fp == null) fp = Localization.FormatEnUS;
+            if (fp == null) fp = CultureInfo.InvariantCulture;
             return beginB + Min.ToString(format, fp) + betweenB
                           + Max.ToString(format, fp) + endB;
         }
@@ -6849,12 +6850,12 @@ namespace Aardvark.Base
 
         public override string ToString()
         {
-            return ToString(null, Localization.FormatEnUS);
+            return ToString(null, CultureInfo.InvariantCulture);
         }
 
         public string ToString(string format)
         {
-            return ToString(format, Localization.FormatEnUS);
+            return ToString(format, CultureInfo.InvariantCulture);
         }
 
         #endregion
@@ -6882,8 +6883,8 @@ namespace Aardvark.Base
         public static Range1d Parse(string s)
         {
             var x = s.NestedBracketSplitLevelOne().ToArray();
-            return new Range1d(double.Parse(x[0], Localization.FormatEnUS),
-                                double.Parse(x[1], Localization.FormatEnUS));
+            return new Range1d(double.Parse(x[0], CultureInfo.InvariantCulture),
+                                double.Parse(x[1], CultureInfo.InvariantCulture));
         }
 
         public static Range1d Parse(Text t)
@@ -6929,7 +6930,7 @@ namespace Aardvark.Base
         /// </summary>
         public string ToString(string format, IFormatProvider fp, string beginB, string betweenB, string endB, string beginV, string betweenV, string endV)
         {
-            if (fp == null) fp = Localization.FormatEnUS;
+            if (fp == null) fp = CultureInfo.InvariantCulture;
             return beginB + Min.ToString(format, fp) + betweenB
                           + Max.ToString(format, fp) + endB;
         }
@@ -7878,12 +7879,12 @@ namespace Aardvark.Base
 
         public override string ToString()
         {
-            return ToString(null, Localization.FormatEnUS);
+            return ToString(null, CultureInfo.InvariantCulture);
         }
 
         public string ToString(string format)
         {
-            return ToString(format, Localization.FormatEnUS);
+            return ToString(format, CultureInfo.InvariantCulture);
         }
 
         #endregion
@@ -7958,7 +7959,7 @@ namespace Aardvark.Base
         /// </summary>
         public string ToString(string format, IFormatProvider fp, string beginB, string betweenB, string endB, string beginV, string betweenV, string endV)
         {
-            if (fp == null) fp = Localization.FormatEnUS;
+            if (fp == null) fp = CultureInfo.InvariantCulture;
             return beginB + Min.ToString(format, fp, beginV, betweenV, endV) + betweenB
                           + Max.ToString(format, fp, beginV, betweenV, endV) + endB;
         }
@@ -9097,12 +9098,12 @@ namespace Aardvark.Base
 
         public override string ToString()
         {
-            return ToString(null, Localization.FormatEnUS);
+            return ToString(null, CultureInfo.InvariantCulture);
         }
 
         public string ToString(string format)
         {
-            return ToString(format, Localization.FormatEnUS);
+            return ToString(format, CultureInfo.InvariantCulture);
         }
 
         #endregion
@@ -9177,7 +9178,7 @@ namespace Aardvark.Base
         /// </summary>
         public string ToString(string format, IFormatProvider fp, string beginB, string betweenB, string endB, string beginV, string betweenV, string endV)
         {
-            if (fp == null) fp = Localization.FormatEnUS;
+            if (fp == null) fp = CultureInfo.InvariantCulture;
             return beginB + Min.ToString(format, fp, beginV, betweenV, endV) + betweenB
                           + Max.ToString(format, fp, beginV, betweenV, endV) + endB;
         }
@@ -10417,12 +10418,12 @@ namespace Aardvark.Base
 
         public override string ToString()
         {
-            return ToString(null, Localization.FormatEnUS);
+            return ToString(null, CultureInfo.InvariantCulture);
         }
 
         public string ToString(string format)
         {
-            return ToString(format, Localization.FormatEnUS);
+            return ToString(format, CultureInfo.InvariantCulture);
         }
 
         #endregion
@@ -10497,7 +10498,7 @@ namespace Aardvark.Base
         /// </summary>
         public string ToString(string format, IFormatProvider fp, string beginB, string betweenB, string endB, string beginV, string betweenV, string endV)
         {
-            if (fp == null) fp = Localization.FormatEnUS;
+            if (fp == null) fp = CultureInfo.InvariantCulture;
             return beginB + Min.ToString(format, fp, beginV, betweenV, endV) + betweenB
                           + Max.ToString(format, fp, beginV, betweenV, endV) + endB;
         }
@@ -11726,12 +11727,12 @@ namespace Aardvark.Base
 
         public override string ToString()
         {
-            return ToString(null, Localization.FormatEnUS);
+            return ToString(null, CultureInfo.InvariantCulture);
         }
 
         public string ToString(string format)
         {
-            return ToString(format, Localization.FormatEnUS);
+            return ToString(format, CultureInfo.InvariantCulture);
         }
 
         #endregion
@@ -11806,7 +11807,7 @@ namespace Aardvark.Base
         /// </summary>
         public string ToString(string format, IFormatProvider fp, string beginB, string betweenB, string endB, string beginV, string betweenV, string endV)
         {
-            if (fp == null) fp = Localization.FormatEnUS;
+            if (fp == null) fp = CultureInfo.InvariantCulture;
             return beginB + Min.ToString(format, fp, beginV, betweenV, endV) + betweenB
                           + Max.ToString(format, fp, beginV, betweenV, endV) + endB;
         }
@@ -12977,12 +12978,12 @@ namespace Aardvark.Base
 
         public override string ToString()
         {
-            return ToString(null, Localization.FormatEnUS);
+            return ToString(null, CultureInfo.InvariantCulture);
         }
 
         public string ToString(string format)
         {
-            return ToString(format, Localization.FormatEnUS);
+            return ToString(format, CultureInfo.InvariantCulture);
         }
 
         #endregion
@@ -13057,7 +13058,7 @@ namespace Aardvark.Base
         /// </summary>
         public string ToString(string format, IFormatProvider fp, string beginB, string betweenB, string endB, string beginV, string betweenV, string endV)
         {
-            if (fp == null) fp = Localization.FormatEnUS;
+            if (fp == null) fp = CultureInfo.InvariantCulture;
             return beginB + Min.ToString(format, fp, beginV, betweenV, endV) + betweenB
                           + Max.ToString(format, fp, beginV, betweenV, endV) + endB;
         }
@@ -14216,12 +14217,12 @@ namespace Aardvark.Base
 
         public override string ToString()
         {
-            return ToString(null, Localization.FormatEnUS);
+            return ToString(null, CultureInfo.InvariantCulture);
         }
 
         public string ToString(string format)
         {
-            return ToString(format, Localization.FormatEnUS);
+            return ToString(format, CultureInfo.InvariantCulture);
         }
 
         #endregion
@@ -14296,7 +14297,7 @@ namespace Aardvark.Base
         /// </summary>
         public string ToString(string format, IFormatProvider fp, string beginB, string betweenB, string endB, string beginV, string betweenV, string endV)
         {
-            if (fp == null) fp = Localization.FormatEnUS;
+            if (fp == null) fp = CultureInfo.InvariantCulture;
             return beginB + Min.ToString(format, fp, beginV, betweenV, endV) + betweenB
                           + Max.ToString(format, fp, beginV, betweenV, endV) + endB;
         }
@@ -15562,12 +15563,12 @@ namespace Aardvark.Base
 
         public override string ToString()
         {
-            return ToString(null, Localization.FormatEnUS);
+            return ToString(null, CultureInfo.InvariantCulture);
         }
 
         public string ToString(string format)
         {
-            return ToString(format, Localization.FormatEnUS);
+            return ToString(format, CultureInfo.InvariantCulture);
         }
 
         #endregion
@@ -15642,7 +15643,7 @@ namespace Aardvark.Base
         /// </summary>
         public string ToString(string format, IFormatProvider fp, string beginB, string betweenB, string endB, string beginV, string betweenV, string endV)
         {
-            if (fp == null) fp = Localization.FormatEnUS;
+            if (fp == null) fp = CultureInfo.InvariantCulture;
             return beginB + Min.ToString(format, fp, beginV, betweenV, endV) + betweenB
                           + Max.ToString(format, fp, beginV, betweenV, endV) + endB;
         }
@@ -16896,12 +16897,12 @@ namespace Aardvark.Base
 
         public override string ToString()
         {
-            return ToString(null, Localization.FormatEnUS);
+            return ToString(null, CultureInfo.InvariantCulture);
         }
 
         public string ToString(string format)
         {
-            return ToString(format, Localization.FormatEnUS);
+            return ToString(format, CultureInfo.InvariantCulture);
         }
 
         #endregion
@@ -16976,7 +16977,7 @@ namespace Aardvark.Base
         /// </summary>
         public string ToString(string format, IFormatProvider fp, string beginB, string betweenB, string endB, string beginV, string betweenV, string endV)
         {
-            if (fp == null) fp = Localization.FormatEnUS;
+            if (fp == null) fp = CultureInfo.InvariantCulture;
             return beginB + Min.ToString(format, fp, beginV, betweenV, endV) + betweenB
                           + Max.ToString(format, fp, beginV, betweenV, endV) + endB;
         }

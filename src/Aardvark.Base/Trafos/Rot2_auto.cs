@@ -1,4 +1,5 @@
 using System;
+using System.Globalization;
 using System.Linq;
 using System.Runtime.InteropServices;
 
@@ -622,14 +623,14 @@ namespace Aardvark.Base
 
         public override string ToString()
         {
-            return string.Format(Localization.FormatEnUS, "[{0}]", Angle);
+            return string.Format(CultureInfo.InvariantCulture, "[{0}]", Angle);
         }
 
         public static Rot2f Parse(string s)
         {
             var x = s.NestedBracketSplitLevelOne().ToArray();
             return new Rot2f(
-                float.Parse(x[0], Localization.FormatEnUS)
+                float.Parse(x[0], CultureInfo.InvariantCulture)
             );
         }
 
@@ -1267,14 +1268,14 @@ namespace Aardvark.Base
 
         public override string ToString()
         {
-            return string.Format(Localization.FormatEnUS, "[{0}]", Angle);
+            return string.Format(CultureInfo.InvariantCulture, "[{0}]", Angle);
         }
 
         public static Rot2d Parse(string s)
         {
             var x = s.NestedBracketSplitLevelOne().ToArray();
             return new Rot2d(
-                double.Parse(x[0], Localization.FormatEnUS)
+                double.Parse(x[0], CultureInfo.InvariantCulture)
             );
         }
 

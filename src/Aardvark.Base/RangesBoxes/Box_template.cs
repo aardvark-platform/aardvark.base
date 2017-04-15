@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Runtime.InteropServices;
 
@@ -1123,12 +1124,12 @@ namespace Aardvark.Base
 
         public override string ToString()
         {
-            return ToString(null, Localization.FormatEnUS);
+            return ToString(null, CultureInfo.InvariantCulture);
         }
 
         public string ToString(string format)
         {
-            return ToString(format, Localization.FormatEnUS);
+            return ToString(format, CultureInfo.InvariantCulture);
         }
 
         #endregion
@@ -1160,8 +1161,8 @@ namespace Aardvark.Base
             return new __type__(__ltype__.Parse(x[0].ToString()),
                                 __ltype__.Parse(x[1].ToString()));
             //# } else {
-            return new __type__(__ftype__.Parse(x[0], Localization.FormatEnUS),
-                                __ftype__.Parse(x[1], Localization.FormatEnUS));
+            return new __type__(__ftype__.Parse(x[0], CultureInfo.InvariantCulture),
+                                __ftype__.Parse(x[1], CultureInfo.InvariantCulture));
             //# }
         }
 
@@ -1213,7 +1214,7 @@ namespace Aardvark.Base
         public string ToString(string format, IFormatProvider fp, string beginB, string betweenB, string endB, string beginV, string betweenV, string endV)
         {
             //# var format = "format, fp" + (dim > 1 ? ", beginV, betweenV, endV" : "");
-            if (fp == null) fp = Localization.FormatEnUS;
+            if (fp == null) fp = CultureInfo.InvariantCulture;
             return beginB + Min.ToString(__format__) + betweenB
                           + Max.ToString(__format__) + endB;
         }

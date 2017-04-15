@@ -1,3 +1,4 @@
+using System.Globalization;
 using System.Linq;
 using System.Runtime.InteropServices;
 
@@ -58,7 +59,7 @@ namespace Aardvark.Base
 
         public override string ToString()
         {
-            return string.Format(Localization.FormatEnUS,
+            return string.Format(CultureInfo.InvariantCulture,
                                  "[{0}, {1}]", Forward, Backward);
         }
 

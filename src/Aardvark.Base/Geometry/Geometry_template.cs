@@ -1,10 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Diagnostics;
+using System.Globalization;
 using System.Linq;
 using System.Runtime.InteropServices;
-using System.Text;
 
 namespace Aardvark.Base
 {
@@ -429,7 +427,7 @@ namespace Aardvark.Base
 
         public override string ToString()
         {
-            return string.Format(Localization.FormatEnUS,
+            return string.Format(CultureInfo.InvariantCulture,
                 "[{0}]", Points.Select(x => x.ToString()).Join(", ")
                 );
         }
@@ -986,7 +984,7 @@ namespace Aardvark.Base
         public override string ToString()
         {
             //# var format = "["; pc.ForEach(i => format += "{" + i + "}", () => format += ", "); format += "]";
-            return string.Format(Localization.FormatEnUS, "__format__", /*# pc.ForEach(i => { */P__i__/*# }, Sep(", ")); */);
+            return string.Format(CultureInfo.InvariantCulture, "__format__", /*# pc.ForEach(i => { */P__i__/*# }, Sep(", ")); */);
         }
 
         public static __type__ Parse(string s)

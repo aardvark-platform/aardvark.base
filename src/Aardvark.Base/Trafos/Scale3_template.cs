@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Globalization;
 using System.Linq;
 using System.Runtime.InteropServices;
 
@@ -618,16 +619,16 @@ namespace Aardvark.Base
 
         public override string ToString()
         {
-            return string.Format(Localization.FormatEnUS, "[{0}, {1}, {2}]", X, Y, Z);
+            return string.Format(CultureInfo.InvariantCulture, "[{0}, {1}, {2}]", X, Y, Z);
         }
 
         public static Scale__x3t__ Parse(string s)
         {
             var x = s.NestedBracketSplitLevelOne().ToArray();
             return new Scale__x3t__(
-                __ft__.Parse(x[0], Localization.FormatEnUS),
-                __ft__.Parse(x[1], Localization.FormatEnUS),
-                __ft__.Parse(x[2], Localization.FormatEnUS)
+                __ft__.Parse(x[0], CultureInfo.InvariantCulture),
+                __ft__.Parse(x[1], CultureInfo.InvariantCulture),
+                __ft__.Parse(x[2], CultureInfo.InvariantCulture)
             );
         }
 

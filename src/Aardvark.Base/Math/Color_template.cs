@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
@@ -714,14 +715,14 @@ namespace Aardvark.Base
 
         public override string ToString()
         {
-            return ToString(null, Localization.FormatEnUS);
+            return ToString(null, CultureInfo.InvariantCulture);
         }
 
         public Text ToText(int bracketLevel = 1)
         {
             return
                 ((bracketLevel == 1 ? "[" : "")/*# fields.ForEach(f => {*/
-                + __f__.ToString(null, Localization.FormatEnUS) /*# }, addqcommaspace); */
+                + __f__.ToString(null, CultureInfo.InvariantCulture) /*# }, addqcommaspace); */
                 + (bracketLevel == 1 ? "]" : "")).ToText();
         }
 
@@ -782,7 +783,7 @@ namespace Aardvark.Base
         {
             var x = s.NestedBracketSplitLevelOne().ToArray();
             return new __type__(/*# t.Len.ForEach(p => { */
-                __ftype__.Parse(x[__p__], Localization.FormatEnUS)/*# }, comma); */
+                __ftype__.Parse(x[__p__], CultureInfo.InvariantCulture)/*# }, comma); */
             );
         }
 
@@ -802,7 +803,7 @@ namespace Aardvark.Base
 
         public string ToString(string format)
         {
-            return ToString(format, Localization.FormatEnUS);
+            return ToString(format, CultureInfo.InvariantCulture);
         }
 
         public string ToString(string format, IFormatProvider fp)
@@ -815,7 +816,7 @@ namespace Aardvark.Base
         /// </summary>
         public string ToString(string format, IFormatProvider fp, string begin, string between, string end)
         {
-            if (fp == null) fp = Localization.FormatEnUS;
+            if (fp == null) fp = CultureInfo.InvariantCulture;
             return begin /*# fields.ForEach(f => {*/+ __f__.ToString(format, fp) /*# }, addbetween); */ + end;
         }
 

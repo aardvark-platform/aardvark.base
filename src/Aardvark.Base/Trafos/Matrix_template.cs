@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Runtime.InteropServices;
 
@@ -567,12 +568,12 @@ namespace Aardvark.Base
 
         public override string ToString()
         {
-            return ToString(null, Localization.FormatEnUS);
+            return ToString(null, CultureInfo.InvariantCulture);
         }
 
         public string ToString(string format)
         {
-            return ToString(format, Localization.FormatEnUS);
+            return ToString(format, CultureInfo.InvariantCulture);
         }
 
         public string ToString(string format, IFormatProvider fp)
@@ -585,7 +586,7 @@ namespace Aardvark.Base
         /// </summary>
         public string ToString(string format, IFormatProvider fp, string beginM, string betweenM, string endM, string beginR, string betweenR, string endR)
         {
-            if (fp == null) fp = Localization.FormatEnUS;
+            if (fp == null) fp = CultureInfo.InvariantCulture;
             return beginM/*# n.ForEach(r => {*/
                 + R__r__.ToString(format, fp, beginR, betweenR, endR) /*# }, addbetweenM); */
             + endM;

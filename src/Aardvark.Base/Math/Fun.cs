@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics.Contracts;
+using System.Globalization;
 using System.Linq;
 
 namespace Aardvark.Base
@@ -179,14 +180,14 @@ namespace Aardvark.Base
 
         public static int DigitCountOfIntegerPart(this double value)
         {
-            var str = value.ToString(Localization.FormatEnUS);
+            var str = value.ToString(CultureInfo.InvariantCulture);
             var x = str.Split('.');
             return x[0].Length;
         }
 
         public static int DigitCountOfFractionalPart(this double value)
         {
-            var str = value.ToString(Localization.FormatEnUS);
+            var str = value.ToString(CultureInfo.InvariantCulture);
             var x = str.Split('.');
             return x.Length < 2 ? 0 : x[1].Length;
         }

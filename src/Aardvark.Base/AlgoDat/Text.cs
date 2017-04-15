@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -992,7 +993,7 @@ namespace Aardvark.Base
             int len = pos - start;
             try
             {
-                return new ParsedValue<float>(float.Parse(String.Substring(start, len), Localization.FormatEnUS), len);
+                return new ParsedValue<float>(float.Parse(String.Substring(start, len), CultureInfo.InvariantCulture), len);
             }
             catch
             {
@@ -1037,7 +1038,7 @@ namespace Aardvark.Base
             int len = pos - start;
             try
             {
-                return new ParsedValue<double>(double.Parse(String.Substring(start, len), Localization.FormatEnUS), len);
+                return new ParsedValue<double>(double.Parse(String.Substring(start, len), CultureInfo.InvariantCulture), len);
             }
             catch
             {

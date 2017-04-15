@@ -1,3 +1,4 @@
+using System.Globalization;
 using System.Linq;
 using System.Runtime.InteropServices;
 
@@ -307,7 +308,7 @@ namespace Aardvark.Base
 
         public override string ToString()
         {
-            return string.Format(Localization.FormatEnUS, "[{0}, {1}]", Rot, Trans);
+            return string.Format(CultureInfo.InvariantCulture, "[{0}, {1}]", Rot, Trans);
         }
 
         public static Euclidean2f Parse(string s)
@@ -624,7 +625,7 @@ namespace Aardvark.Base
 
         public override string ToString()
         {
-            return string.Format(Localization.FormatEnUS, "[{0}, {1}]", Rot, Trans);
+            return string.Format(CultureInfo.InvariantCulture, "[{0}, {1}]", Rot, Trans);
         }
 
         public static Euclidean2d Parse(string s)

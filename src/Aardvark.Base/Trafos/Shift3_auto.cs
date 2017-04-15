@@ -1,4 +1,5 @@
 using System;
+using System.Globalization;
 using System.Linq;
 using System.Runtime.InteropServices;
 
@@ -489,16 +490,16 @@ namespace Aardvark.Base
 
         public override string ToString()
         {
-            return string.Format(Localization.FormatEnUS, "[{0}, {1}, {2}]", X, Y, Z);
+            return string.Format(CultureInfo.InvariantCulture, "[{0}, {1}, {2}]", X, Y, Z);
         }
 
         public static Shift3f Parse(string s)
         {
             var x = s.NestedBracketSplitLevelOne().ToArray();
             return new Shift3f(
-                float.Parse(x[0], Localization.FormatEnUS),
-                float.Parse(x[1], Localization.FormatEnUS),
-                float.Parse(x[2], Localization.FormatEnUS)
+                float.Parse(x[0], CultureInfo.InvariantCulture),
+                float.Parse(x[1], CultureInfo.InvariantCulture),
+                float.Parse(x[2], CultureInfo.InvariantCulture)
             );
         }
 
@@ -989,16 +990,16 @@ namespace Aardvark.Base
 
         public override string ToString()
         {
-            return string.Format(Localization.FormatEnUS, "[{0}, {1}, {2}]", X, Y, Z);
+            return string.Format(CultureInfo.InvariantCulture, "[{0}, {1}, {2}]", X, Y, Z);
         }
 
         public static Shift3d Parse(string s)
         {
             var x = s.NestedBracketSplitLevelOne().ToArray();
             return new Shift3d(
-                double.Parse(x[0], Localization.FormatEnUS),
-                double.Parse(x[1], Localization.FormatEnUS),
-                double.Parse(x[2], Localization.FormatEnUS)
+                double.Parse(x[0], CultureInfo.InvariantCulture),
+                double.Parse(x[1], CultureInfo.InvariantCulture),
+                double.Parse(x[2], CultureInfo.InvariantCulture)
             );
         }
 

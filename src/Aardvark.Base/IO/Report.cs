@@ -5,6 +5,7 @@ using System.IO;
 using System.Text;
 using System.Threading;
 using System.ComponentModel;
+using System.Globalization;
 #if __ANDROID__
 using Log = Android.Util.Log;
 #endif
@@ -344,7 +345,7 @@ namespace Aardvark.Base
 
             try
             {
-                return String.Format(Localization.FormatEnUS, message, args);
+                return String.Format(CultureInfo.InvariantCulture, message, args);
             }
             catch (FormatException)
             {
@@ -1365,7 +1366,7 @@ namespace Aardvark.Base
             if (m_job.Timer != null)
             {
                 seconds = m_job.Timer.ElapsedMilliseconds * 0.001; opt = LogOpt.EndLine | LogOpt.Timed;
-                time =  String.Format(Localization.FormatEnUS, "{0:F3} s", seconds);
+                time =  String.Format(CultureInfo.InvariantCulture, "{0:F3} s", seconds);
             }
             else
             {
@@ -1390,14 +1391,14 @@ namespace Aardvark.Base
                 }
                 else
                     Report.Warn("superfluous Report.End() encountered");
-                var passed = String.Format(Localization.FormatEnUS,
+                var passed = String.Format(CultureInfo.InvariantCulture,
                              "[{0}/{1} OK]", testInfo.PassedCount, testInfo.TestCount);
                 time = time != null ? passed + ' ' + time : passed;
                 target.Log(m_ti, new LogMsg(LogType.End, opt, level, parentJob.HierarchyLevel * m_indent,
                                             text, -2, time));
                 if (testInfo.FailedCount > 0)
                 {
-                    var failed = String.Format(Localization.FormatEnUS,
+                    var failed = String.Format(CultureInfo.InvariantCulture,
                                                " {0}/{1} FAILED", testInfo.FailedCount, testInfo.TestCount);
                     target.Log(m_ti, new LogMsg(LogType.Warn, opt, level, parentJob.HierarchyLevel * m_indent,
                                                     "WARNING: " + text + failed));
@@ -1407,7 +1408,7 @@ namespace Aardvark.Base
             {
                 var childrenTime = m_job.ChildrenTime;
                 if (seconds > 0.0 && childrenTime > 0.0)
-                    time = String.Format(Localization.FormatEnUS, "[{0:F2}x] ", childrenTime / seconds) + time;
+                    time = String.Format(CultureInfo.InvariantCulture, "[{0:F2}x] ", childrenTime / seconds) + time;
                 if (addTimeToParent)
                 {
                     lock (parentJob) parentJob.ChildrenTime += seconds;
@@ -1435,12 +1436,12 @@ namespace Aardvark.Base
             if (m_job.Timer == null)
             {
                 seconds = -1.0; opt = LogOpt.None;
-                text = String.Format(Localization.FormatEnUS, "{0,6:F2}%", 100.0 * progress);
+                text = String.Format(CultureInfo.InvariantCulture, "{0,6:F2}%", 100.0 * progress);
             }
             else
             {
                 seconds = m_job.Timer.ElapsedMilliseconds * 0.001; opt = LogOpt.Timed;
-                text = String.Format(Localization.FormatEnUS, "{0,6:F2}% {1,10:F3} s", 100.0 * progress, seconds);
+                text = String.Format(CultureInfo.InvariantCulture, "{0,6:F2}% {1,10:F3} s", 100.0 * progress, seconds);
             }
             target.Log(m_ti, new LogMsg(LogType.Progress, opt, level,
                                         (m_job.HierarchyLevel - 1) * m_indent, m_job.Message, -2, text));

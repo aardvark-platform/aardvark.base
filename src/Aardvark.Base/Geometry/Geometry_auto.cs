@@ -1,10 +1,8 @@
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Diagnostics;
+using System.Globalization;
 using System.Linq;
 using System.Runtime.InteropServices;
-using System.Text;
 
 namespace Aardvark.Base
 {
@@ -392,7 +390,7 @@ namespace Aardvark.Base
 
         public override string ToString()
         {
-            return string.Format(Localization.FormatEnUS,
+            return string.Format(CultureInfo.InvariantCulture,
                 "[{0}]", Points.Select(x => x.ToString()).Join(", ")
                 );
         }
@@ -882,7 +880,7 @@ namespace Aardvark.Base
 
         public override string ToString()
         {
-            return string.Format(Localization.FormatEnUS, "[{0}, {1}]", P0, P1);
+            return string.Format(CultureInfo.InvariantCulture, "[{0}, {1}]", P0, P1);
         }
 
         public static Line2d Parse(string s)
@@ -1116,7 +1114,7 @@ namespace Aardvark.Base
 
         public override string ToString()
         {
-            return string.Format(Localization.FormatEnUS, "[{0}, {1}, {2}]", P0, P1, P2);
+            return string.Format(CultureInfo.InvariantCulture, "[{0}, {1}, {2}]", P0, P1, P2);
         }
 
         public static Triangle2d Parse(string s)
@@ -1374,7 +1372,7 @@ namespace Aardvark.Base
 
         public override string ToString()
         {
-            return string.Format(Localization.FormatEnUS, "[{0}, {1}, {2}, {3}]", P0, P1, P2, P3);
+            return string.Format(CultureInfo.InvariantCulture, "[{0}, {1}, {2}, {3}]", P0, P1, P2, P3);
         }
 
         public static Quad2d Parse(string s)
@@ -1804,7 +1802,7 @@ namespace Aardvark.Base
 
         public override string ToString()
         {
-            return string.Format(Localization.FormatEnUS,
+            return string.Format(CultureInfo.InvariantCulture,
                 "[{0}]", Points.Select(x => x.ToString()).Join(", ")
                 );
         }
@@ -2295,7 +2293,7 @@ namespace Aardvark.Base
 
         public override string ToString()
         {
-            return string.Format(Localization.FormatEnUS, "[{0}, {1}]", P0, P1);
+            return string.Format(CultureInfo.InvariantCulture, "[{0}, {1}]", P0, P1);
         }
 
         public static Line3d Parse(string s)
@@ -2529,7 +2527,7 @@ namespace Aardvark.Base
 
         public override string ToString()
         {
-            return string.Format(Localization.FormatEnUS, "[{0}, {1}, {2}]", P0, P1, P2);
+            return string.Format(CultureInfo.InvariantCulture, "[{0}, {1}, {2}]", P0, P1, P2);
         }
 
         public static Triangle3d Parse(string s)
@@ -2787,7 +2785,7 @@ namespace Aardvark.Base
 
         public override string ToString()
         {
-            return string.Format(Localization.FormatEnUS, "[{0}, {1}, {2}, {3}]", P0, P1, P2, P3);
+            return string.Format(CultureInfo.InvariantCulture, "[{0}, {1}, {2}, {3}]", P0, P1, P2, P3);
         }
 
         public static Quad3d Parse(string s)

@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Net;
 using System.Text;
@@ -101,8 +102,8 @@ namespace Aardvark.Base
             if (tokens.Length != 4) throw new FormatException();
             if (tokens[0] != "200") return null;
             return new V3d(
-                double.Parse(tokens[2], Localization.FormatEnUS),
-                double.Parse(tokens[3], Localization.FormatEnUS),
+                double.Parse(tokens[2], CultureInfo.InvariantCulture),
+                double.Parse(tokens[3], CultureInfo.InvariantCulture),
                 151.0);
         }
 

@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System.Globalization;
+using System.Linq;
 
 namespace Aardvark.Base
 {
@@ -198,7 +199,7 @@ namespace Aardvark.Base
 
         public override string ToString()
         {
-            return string.Format(Localization.FormatEnUS,
+            return string.Format(CultureInfo.InvariantCulture,
                                  "[{0}, {1}]", Normal, Distance);
         }
 

@@ -7,12 +7,6 @@ using System.Text;
 
 namespace Aardvark.Base
 {
-    public static class Localization
-    {
-        public static readonly IFormatProvider FormatEnUS =
-            new CultureInfo("en-US", false);
-    }
-
     public static class CharFun
     {
         public static bool IsWhiteSpace(this char ch)
@@ -49,57 +43,57 @@ namespace Aardvark.Base
 
         public static byte ToByte(this string self)
         {
-            return byte.Parse(self, Localization.FormatEnUS);
+            return byte.Parse(self, CultureInfo.InvariantCulture);
         }
 
         public static sbyte ToSByte(this string self)
         {
-            return sbyte.Parse(self, Localization.FormatEnUS);
+            return sbyte.Parse(self, CultureInfo.InvariantCulture);
         }
 
         public static short ToShort(this string self)
         {
-            return short.Parse(self, Localization.FormatEnUS);
+            return short.Parse(self, CultureInfo.InvariantCulture);
         }
 
         public static ushort ToUShort(this string self)
         {
-            return ushort.Parse(self, Localization.FormatEnUS);
+            return ushort.Parse(self, CultureInfo.InvariantCulture);
         }
 
         public static int ToInt(this string self)
         {
-            return int.Parse(self, Localization.FormatEnUS);
+            return int.Parse(self, CultureInfo.InvariantCulture);
         }
 
         public static uint ToUInt(this string self)
         {
-            return uint.Parse(self, Localization.FormatEnUS);
+            return uint.Parse(self, CultureInfo.InvariantCulture);
         }
 
         public static long ToLong(this string self)
         {
-            return long.Parse(self, Localization.FormatEnUS);
+            return long.Parse(self, CultureInfo.InvariantCulture);
         }
 
         public static ulong ToULong(this string self)
         {
-            return ulong.Parse(self, Localization.FormatEnUS);
+            return ulong.Parse(self, CultureInfo.InvariantCulture);
         }
 
         public static float ToFloat(this string self)
         {
-            return float.Parse(self, Localization.FormatEnUS);
+            return float.Parse(self, CultureInfo.InvariantCulture);
         }
 
         public static double ToDouble(this string self)
         {
-            return double.Parse(self, Localization.FormatEnUS);
+            return double.Parse(self, CultureInfo.InvariantCulture);
         }
 
         public static DateTime ToDateTime(this string self)
         {
-            return DateTime.Parse(self, Localization.FormatEnUS);
+            return DateTime.Parse(self, CultureInfo.InvariantCulture);
         }
 
         public static decimal ToDecimal(this string self, decimal def)
@@ -116,7 +110,7 @@ namespace Aardvark.Base
 
         public static decimal ToDecimal(this string self)
         {
-            return decimal.Parse(self, Localization.FormatEnUS);
+            return decimal.Parse(self, CultureInfo.InvariantCulture);
         }
 
         #endregion
