@@ -393,7 +393,7 @@ namespace Aardvark.Base
         public override string ToString()
         {
             return string.Format(Localization.FormatEnUS,
-                "[{0},]", Points.Select(x => x.ToString()).Join(", ")
+                "[{0}]", Points.Select(x => x.ToString()).Join(", ")
                 );
         }
 
@@ -1805,7 +1805,7 @@ namespace Aardvark.Base
         public override string ToString()
         {
             return string.Format(Localization.FormatEnUS,
-                "[{0},]", Points.Select(x => x.ToString()).Join(", ")
+                "[{0}]", Points.Select(x => x.ToString()).Join(", ")
                 );
         }
 
