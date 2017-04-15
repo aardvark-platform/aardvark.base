@@ -13,7 +13,7 @@ obj
 Bin
 *.*~
 /buildLog.log
-/src/.vs/Aardvark/v14
+/src/.vs
 /src/Aardvark.Base/AlgoDat/Delegates_generator.cs
 /src/Aardvark.Base/AlgoDat/Dict_generator.cs
 /src/Aardvark.Base/AlgoDat/Sorting_generator.cs
