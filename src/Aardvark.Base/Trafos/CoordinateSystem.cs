@@ -183,4 +183,21 @@ namespace Aardvark.Base
 
         public static readonly Trafo3d SwapHand = new Trafo3d(s_swapHand, s_swapHand);
     }
+
+    public static class CoordinateSystemMatrixExtensions
+    {
+        /// <summary>
+        /// Returns the handedness of the given transformation matrix that is assumed to be row-major.
+        /// A right-handed coodinate system is given when
+        /// (X cross Y) dot Z is positive, 
+        /// otherwise left-handed.
+        /// </summary>
+        public static CoordinateSystem.Handedness Handedness(this M44d mat)
+        {
+            var x = mat.R0.XYZ;
+            var y = mat.R1.XYZ;
+            var z = mat.R2.XYZ;
+            return x.Cross(y).Dot(z) > 0 ? CoordinateSystem.Handedness.Right : CoordinateSystem.Handedness.Left;
+        }
+    }
 }
