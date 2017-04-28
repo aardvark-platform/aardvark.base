@@ -458,12 +458,18 @@ module ``Basic Mod Tests`` =
 
         let a = i |> Mod.map id |> Mod.map id 
         let b = i |> Mod.map (fun a -> -a)
-
-        let apb = Mod.map2 (+) a b
+        
+        let mutable values = 0
+        let apb = 
+            Mod.map2 (fun a b -> 
+                Interlocked.Increment(&values) |> ignore
+                a + b
+            ) a b
         apb |> Mod.force |> ignore
 
-        let pullers = 3
-        let changers = 3
+        values <- 0
+        let pullers = 1
+        let changers = 1
 
         let countdown = new CountdownEvent(pullers)
         let mutable iterations = 0
@@ -475,24 +481,30 @@ module ``Basic Mod Tests`` =
         let changer = 
             async {
                 do! Async.SwitchToNewThread()
-                while true do
-                    transact (fun () -> Mod.change i (r.Next()))
-                    Interlocked.Increment &changes |> ignore
+
+                do
+                    while true do
+                        transact (fun () -> Mod.change i (r.Next()))
+                        Interlocked.Increment &changes |> ignore
             }
+
 
         let puller =
             async {
                 let sw = System.Diagnostics.Stopwatch()
                 sw.Start()
                 do! Async.SwitchToNewThread()
-                while sw.Elapsed.TotalSeconds < 10.0 do
-                    let r = Mod.force apb
-                    if r <> 0 then 
-                        exn <- Some (sprintf "hate :%d" iterations)
-                        failwithf "hate :%d" iterations
-                    Interlocked.Increment(&iterations) |> ignore
-
-                countdown.Signal() |> ignore
+                do
+                    try
+                        while sw.Elapsed.TotalSeconds < 10.0 do
+                            if apb.OutOfDate then
+                                let r = Mod.force apb
+                                if r <> 0 then 
+                                    exn <- Some (sprintf "hate :%d" iterations)
+                                    failwithf "hate :%d" iterations
+                                Interlocked.Increment(&iterations) |> ignore
+                    finally
+                        countdown.Signal() |> ignore
             }
 
 
@@ -519,6 +531,7 @@ module ``Basic Mod Tests`` =
 //                let progress = sw.Elapsed.TotalSeconds / 10.0
 //                printfn "%.2f%%" (100.0 * progress)
 
+        printfn "values: %A" values
         printfn "done: %A" iterations
         printfn "changes: %A" changes
     
