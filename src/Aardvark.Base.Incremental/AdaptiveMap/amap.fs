@@ -450,6 +450,38 @@ module AMap =
 
     let toMod (map : amap<'k, 'v>) = map.Content
 
+    let toASet (m : amap<'k, 'v>) : aset<'k * 'v> =
+        ASet.create (fun scope ->
+            let r = m.GetReader()
+
+            { new AbstractReader<hdeltaset<'k * 'v>>(scope, HDeltaSet.monoid) with
+                
+                member x.Compute(token) =
+                    let oldState = r.State
+                    let ops = r.GetOperations token
+
+                    let mutable deltas = HDeltaSet.empty
+
+                    for (k,op) in ops do
+                        match op with
+                            | Set v ->
+                                match HMap.tryFind k oldState with
+                                    | Some ov ->
+                                        deltas <- HDeltaSet.add (Rem(k,ov)) deltas
+                                    | None ->
+                                        ()
+                                deltas <- HDeltaSet.add (Add(k, v)) deltas
+
+                            | Remove ->
+                                deltas <- HDeltaSet.add (Rem(k,HMap.find k oldState)) deltas
+
+
+                    deltas
+                member x.Release() =
+                    r.Dispose()
+            }
+        )
+
     let bind (mapping : 'a -> amap<'k, 'v>) (m : IMod<'a>) =
         if m.IsConstant then
             mapping (Mod.force m)
