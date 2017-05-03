@@ -1051,10 +1051,12 @@ module CallbackExtensions =
         member x.AddMarkingCallback(f : unit -> unit) =
             let res =
                 new CallbackObject(x, fun self ->
-                    try
-                        f ()
-                    finally 
-                        lock x (fun () -> x.Outputs.Add self |> ignore)
+                    lock x (fun _ -> 
+                        try
+                            f ()
+                        finally 
+                            x.Outputs.Add self |> ignore
+                    )
                 )
 
             lock x (fun () -> x.Outputs.Add res |> ignore)
