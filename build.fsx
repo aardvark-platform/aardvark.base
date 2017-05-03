@@ -7,7 +7,7 @@ open System.Diagnostics
 open Aardvark.Fake
 open Fake.Testing
 
-
+do MSBuildDefaults <- { MSBuildDefaults with Verbosity = Some Minimal }
 do Environment.CurrentDirectory <- __SOURCE_DIRECTORY__
 
 DefaultSetup.install ["src/Aardvark.sln"]
