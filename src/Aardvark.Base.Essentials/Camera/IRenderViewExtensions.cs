@@ -59,6 +59,16 @@ namespace Aardvark.Base
         /// </summary>
         public static Hull3d GetVisualHull(this IViewProjection vp)
         {
+            return vp.ViewProjTrafo().GetVisualHull();
+        }
+
+        /// <summary>
+        /// Builds a hull from the given view-projection transformation (left, right, top, bottom, near, far).
+        /// The normals of the hull planes point to the inside. 
+        /// A point inside the visual hull will have positive height to all planes.
+        /// </summary>
+        public static Hull3d GetVisualHull(this Trafo3d vpTrafo)
+        {
             var frustumCorners = new Box3d(-V3d.IIO, V3d.III).ComputeCorners();
 
             //Min,                             0 near left bottom
@@ -71,7 +81,6 @@ namespace Aardvark.Base
             //Max                              7 far right top
 
             // use inverse view-projection to get vertices in world space
-            var vpTrafo = vp.ViewProjTrafo();
             frustumCorners.Apply(c => vpTrafo.Backward.TransformPosProj(c));
 
             // hull planes should point inward, assume right-handed transformation to build planes
@@ -84,7 +93,7 @@ namespace Aardvark.Base
                 new Plane3d(frustumCorners[0], frustumCorners[2], frustumCorners[1]), // near
                 new Plane3d(frustumCorners[4], frustumCorners[5], frustumCorners[6]), // far
             });
-            
+
             return hull;
         }
 
