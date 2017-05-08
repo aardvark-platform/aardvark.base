@@ -377,7 +377,50 @@ module AMap =
 
             override x.Release() =
                 r.Dispose()
-            
+     
+        type GroupByReader<'a, 'b>(scope : Ag.Scope, set : aset<'a * 'b>) =
+            inherit AbstractReader<hmap<'a, hset<'b>>, hdeltamap<'a, hset<'b>>>(scope, HMap.trace)
+
+            let r = set.GetReader()
+
+            override x.Compute(token) =
+                let mutable state = x.State
+                let mutable deltas = HMap.empty
+
+                let ops = r.GetOperations token
+                for op in ops do
+                    match op with
+                        | Add (_,(a,b)) ->
+                            state <- 
+                                state |> HMap.update a (fun ob ->
+                                    let newState = 
+                                        match ob with
+                                            | None -> HSet.ofList [b]
+                                            | Some ob -> HSet.add b ob
+                                    deltas <- HMap.add a (Set newState) deltas
+                                    newState
+                                )
+                        | Rem(_,(a,b)) ->
+                            state <-    
+                                state |> HMap.alter a (fun ob ->
+                                    match ob with
+                                        | None -> 
+                                            Log.warn "[AMap] strange"
+                                            None
+                                        | Some ob ->
+                                            let newSet = HSet.remove b ob
+                                            if HSet.isEmpty newSet then 
+                                                deltas <- HMap.add a Remove deltas
+                                            else
+                                                deltas <- HMap.add a (Set newSet) deltas
+                                            Some newSet
+                                )         
+
+                deltas
+
+            override x.Release() =
+                r.Dispose()
+
         type OfModReader<'a, 'b>(scope : Ag.Scope, input : IMod<hmap<'a, 'b>>) =
             inherit AbstractReader<hmap<'a, 'b>, hdeltamap<'a, 'b>>(scope, HMap.trace)
 
@@ -514,6 +557,12 @@ module AMap =
             constant <| lazy ( set.Content |> Mod.force |> HRefSet.toHMap |> HMap.map (fun k _ -> f k) )
         else
             amap <| fun scope -> new Readers.MapSetReader<'a, 'b>(scope, set, f)
+
+    let ofASet (set : aset<'a * 'b>) : amap<'a, hset<'b>> =
+        if set.IsConstant then
+            constant <| lazy ( set.Content |> Mod.force |> HRefSet.toList |> List.groupBy (fun (a,_) -> a :> obj) |> List.map (fun (k,kvs) -> unbox<'a> k, kvs |> List.map snd |> HSet.ofList ) |> HMap.ofList )
+        else
+            amap <| fun scope -> new Readers.GroupByReader<'a, 'b>(scope, set)
 
     let chooseSet (f : 'a -> Option<'b>) (set : aset<'a>) : amap<'a, 'b> =
         set |> mapSet f |> flatten
