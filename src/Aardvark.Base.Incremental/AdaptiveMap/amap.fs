@@ -378,7 +378,7 @@ module AMap =
             override x.Release() =
                 r.Dispose()
      
-        type GroupByReader<'a, 'b>(scope : Ag.Scope, set : aset<'a * 'b>) =
+        type OfASetReader<'a, 'b>(scope : Ag.Scope, set : aset<'a * 'b>) =
             inherit AbstractReader<hmap<'a, hset<'b>>, hdeltamap<'a, hset<'b>>>(scope, HMap.trace)
 
             let r = set.GetReader()
@@ -420,6 +420,60 @@ module AMap =
 
             override x.Release() =
                 r.Dispose()
+
+        type GroupByReader<'a, 'b, 'c>(scope : Ag.Scope, set : aset<'a>, f : 'a -> 'b * 'c) =
+            inherit AbstractReader<hmap<'b, hset<'c>>, hdeltamap<'b, hset<'c>>>(scope, HMap.trace)
+
+            let r = set.GetReader()
+            let f = Cache f
+
+            override x.Compute(token) =
+                let mutable state = x.State
+                let mutable deltas = HMap.empty
+                let ops = r.GetOperations token
+
+                for op in ops do
+                    match op with
+                        | Add(_,a) ->
+                            let (b,c) = f.Invoke a
+                            state <- 
+                                state |> HMap.update b (fun oc ->
+                                    let newState = 
+                                        match oc with
+                                            | None -> HSet.ofList [c]
+                                            | Some oc -> HSet.add c oc
+                                    deltas <- HMap.add b (Set newState) deltas
+                                    newState
+                                )
+                        | Rem(_,a) ->
+                            let (b,c) = f.Revoke a
+                            state <-    
+                                state |> HMap.alter b (fun oc ->
+                                    match oc with
+                                        | None -> 
+                                            Log.warn "[AMap] strange"
+                                            None
+                                        | Some oc ->
+                                            let newSet = HSet.remove c oc
+                                            if HSet.isEmpty newSet then 
+                                                deltas <- HMap.add b Remove deltas
+                                            else
+                                                deltas <- HMap.add b (Set newSet) deltas
+                                            Some newSet
+                                )       
+                            
+                deltas
+
+            override x.Release() =
+                r.Dispose()
+                f.Clear ignore
+            
+
+
+
+
+
+            
 
         type OfModReader<'a, 'b>(scope : Ag.Scope, input : IMod<hmap<'a, 'b>>) =
             inherit AbstractReader<hmap<'a, 'b>, hdeltamap<'a, 'b>>(scope, HMap.trace)
@@ -562,7 +616,7 @@ module AMap =
         if set.IsConstant then
             constant <| lazy ( set.Content |> Mod.force |> HRefSet.toList |> List.groupBy (fun (a,_) -> a :> obj) |> List.map (fun (k,kvs) -> unbox<'a> k, kvs |> List.map snd |> HSet.ofList ) |> HMap.ofList )
         else
-            amap <| fun scope -> new Readers.GroupByReader<'a, 'b>(scope, set)
+            amap <| fun scope -> new Readers.OfASetReader<'a, 'b>(scope, set)
 
     let chooseSet (f : 'a -> Option<'b>) (set : aset<'a>) : amap<'a, 'b> =
         set |> mapSet f |> flatten
@@ -655,6 +709,28 @@ module AMap =
                     last
         )
         
+[<AutoOpen>]
+module ``ASet -> AMap interop`` =
+    open AMap.Implementation
+    open AMap.Readers
+
+    [<CompilationRepresentation(CompilationRepresentationFlags.ModuleSuffix)>]
+    [<RequireQualifiedAccess>]
+    module ASet =
+
+        let groupBy (f : 'a -> 'g) (s : aset<'a>) : amap<'g, hset<'a>> =
+            if s.IsConstant then
+                constant <| lazy ( s.Content |> Mod.force |> Seq.groupBy (fun v -> f v :> obj) |> Seq.map (fun (g,vs) -> unbox<'g> g, HSet.ofSeq vs) |> HMap.ofSeq )
+            else
+                amap <| function scope -> new GroupByReader<'a, 'g, 'a>(scope, s, fun v -> f v, v)
+
+        let groupBy' (f : 'a -> 'g * 'b) (s : aset<'a>) : amap<'g, hset<'b>> =
+            if s.IsConstant then
+                constant <| lazy ( s.Content |> Mod.force |> Seq.map f |> Seq.groupBy (fun (g,_) -> g :> obj) |> Seq.map (fun (g,vs) -> unbox<'g> g, vs |> Seq.map snd |> HSet.ofSeq) |> HMap.ofSeq )
+            else
+                amap <| function scope -> new GroupByReader<'a, 'g, 'b>(scope, s, f)
+
+
 
 [<AutoOpen>]
 module AMapBuilderExperiments =
