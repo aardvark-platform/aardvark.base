@@ -138,6 +138,100 @@ module BvhNode =
                                 | None ->
                                     intersect lpart left
 
+
+    module Seq = 
+        open System.Collections.Generic
+
+        let rec private mergeSortedAux (cmp : 'a -> 'a -> int) (cl : Option<'a>) (cr : Option<'a>) (l : IEnumerator<'a>) (r : IEnumerator<'a>) =
+            seq {
+                let cl =
+                    match cl with
+                        | Some c -> Some c
+                        | None -> 
+                            if l.MoveNext() then Some l.Current
+                            else None
+
+                let cr = 
+                    match cr with
+                        | Some c -> Some c
+                        | None -> 
+                            if r.MoveNext() then Some r.Current
+                            else None
+
+                match cl, cr with
+                    | None, None -> 
+                        ()
+                    | Some cl, None -> 
+                        yield cl
+                        yield! mergeSortedAux cmp None None l r
+
+                    | None, Some cr ->
+                        yield cr
+                        yield! mergeSortedAux cmp None None l r
+
+                    | Some vl, Some vr ->
+                        let c = cmp vl vr
+                        if c < 0 then
+                            yield vl
+                            yield! mergeSortedAux cmp None cr l r
+                        else
+                            yield vr
+                            yield! mergeSortedAux cmp cl None l r
+
+            }
+
+        let mergeSorted (cmp : 'a -> 'a -> int) (l : seq<'a>) (r : seq<'a>) =
+            seq {
+                use le = l.GetEnumerator()
+                use re = r.GetEnumerator()
+                yield! mergeSortedAux cmp None None le re
+
+            }
+
+    let rec intersections (tryIntersect : RayPart -> 'a -> Option<RayHit<'r>>) (data : 'a[]) (part : RayPart) (node : BvhNode) =
+        match node with
+            | BvhNode.Leaf id ->
+                match tryIntersect part data.[id] with
+                    | Some h -> Seq.singleton h
+                    | None -> Seq.empty
+
+            | BvhNode.Node(lBox, rBox, left, right) ->
+                let mutable lpart = part
+                let mutable rpart = part
+
+                let il = lpart.Ray.Intersects(lBox, &lpart.TMin, &lpart.TMax)
+                let ir = lpart.Ray.Intersects(rBox, &rpart.TMin, &rpart.TMax)
+
+                match il, ir with   
+                    | false, false -> 
+                        Seq.empty
+
+                    | true, false ->
+                        intersections tryIntersect data lpart left
+
+                    | false, true ->
+                        intersections tryIntersect data rpart right
+
+                    | true, true ->
+                        seq {
+
+                            if lpart.TMax <= rpart.TMin then
+                                // l strictly before r
+                                yield! intersections tryIntersect data lpart left
+                                yield! intersections tryIntersect data rpart right
+
+                            elif rpart.TMax <= lpart.TMin then
+                                // r strictly before l then
+                                yield! intersections tryIntersect data rpart right
+                                yield! intersections tryIntersect data lpart left
+
+                            else
+                                let li = intersections tryIntersect data lpart left
+                                let ri = intersections tryIntersect data rpart right
+                                yield! Seq.mergeSorted (fun (lh : RayHit<_>) (rh : RayHit<_>) -> compare lh.T rh.T) li ri
+                        }
+                            
+
     let cull (hull : FastHull3d) (node : BvhNode) =
         let rec cullAcc (hull : FastHull3d) (res : System.Collections.Generic.List<int>) (node : BvhNode) =
             match node with
@@ -170,6 +264,17 @@ type BvhTree<'a>(data : 'a[], bounds : Box3d, root : Option<BvhNode>) =
                     None
             | None ->
                 None
+
+    member x.Intersections (tryIntersect : RayPart -> 'a -> Option<RayHit<'r>>, part : RayPart) =
+        match root with
+            | Some root ->
+                let mutable part = part
+                if part.Ray.Intersects(bounds, &part.TMin, &part.TMax) then
+                    BvhNode.intersections tryIntersect data part root
+                else
+                    Seq.empty
+            | None ->
+                Seq.empty
 
     member x.Cull (hull : FastHull3d) =
         match root with
