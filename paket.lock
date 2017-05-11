@@ -7,18 +7,18 @@ NUGET
     FsCheck.Nunit (2.7.2)
       FsCheck (>= 2.7.2)
       NUnit (>= 3.6 < 4.0)
-    FSharp.Core (4.1)
+    FSharp.Core (4.1.17)
       System.ValueTuple (>= 4.3)
     FsUnit (2.4.0-alpha-2)
     NUnit (3.6.1)
-    System.Collections.Immutable (1.2)
+    System.Collections.Immutable (1.3.1)
     System.Reactive.Core (3.0)
       System.Reactive.Interfaces (>= 3.0)
     System.Reactive.Interfaces (3.0)
     System.Reactive.Linq (3.0)
       System.Reactive.Core (>= 3.0)
       System.Reactive.Interfaces (>= 3.0)
-    System.ValueTuple (4.3)
+    System.ValueTuple (4.3.1)
 
 GROUP Build
 CONTENT: NONE
@@ -28,10 +28,10 @@ NUGET
     Chessie (0.6) - content: none
       FSharp.Core
     FAKE (4.52) - content: none
-    FSharp.Core (4.1.0.2) - content: none
+    FSharp.Core (4.1.17) - content: none
       System.ValueTuple (>= 4.3)
-    Mono.Cecil (0.10.0-beta4) - content: none
-    Newtonsoft.Json (9.0.1) - content: none
+    Mono.Cecil (0.10.0-beta5) - content: none
+    Newtonsoft.Json (10.0.2) - content: none
     Paket.Core (3.36.5) - content: none
       Chessie (>= 0.6)
       FSharp.Core (>= 4.0.1.7-alpha)
@@ -50,14 +50,14 @@ NUGET
     System.Diagnostics.Process (4.3) - content: none
     System.Diagnostics.TraceSource (4.3) - content: none
     System.Security.Cryptography.Algorithms (4.3) - content: none
-    System.Security.Cryptography.ProtectedData (4.3) - content: none
-    System.ValueTuple (4.3) - content: none
+    System.Security.Cryptography.ProtectedData (4.4.0-preview1-25305-02) - content: none
+    System.ValueTuple (4.3.1) - content: none
     System.Xml.XDocument (4.3) - content: none
     System.Xml.XPath.XDocument (4.3) - content: none
     System.Xml.XPath.XmlDocument (4.3) - content: none
 GITHUB
   remote: vrvis/Aardvark.Fake
-    FULLPROJECT (f2bce91a34f8ba811bc93055643c5f7d7c0747c0)
+    FULLPROJECT (d8c6fb31cc19bdd6c4c45dfc4462e84102e8fa03)
       Chessie (>= 0.6 < 0.7)
       FAKE (>= 4.52 < 4.53)
       Mono.Cecil
