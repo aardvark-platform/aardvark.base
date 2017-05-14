@@ -26,11 +26,11 @@ let projInfo n =
       "github-link", sprintf "https://github.com/vrvis/aardvark.base/tree/master/src/%s" n
       "project-github", "https://github.com/vrvis/aardvark.base"
       "project-nuget", sprintf "https://www.nuget.org/packages/%s" n
-      "root", "https://github.com/vrvis/aardvark.base"
+      "root", "https://github.com/vrvis/aardvark.base/tree/docs/docs/api" 
       "project-name", n
     ]
 
-let libDirs = "--libDirs", "bin/Release"
+let libDirs = ["--libDirs", "bin/Release"]
 
 
 module MyFake =
