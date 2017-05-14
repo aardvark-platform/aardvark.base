@@ -509,7 +509,7 @@ module AVL =
     /// finds and removes the minimal value from the tree for which the given condition holds. 
     /// it is assumed that this condition is transitive with respect to the given comparison function.
     /// returns the (optional) value found in the tree.
-    /// Example: extractMinimalWhere (fun v -> v > 10) gives the minimal value in the tree being greater than 10.
+    /// Example: extractMinimalWhere (fun v -> v &gt; 10) gives the minimal value in the tree being greater than 10.
     /// Runtime: O(log(N))
     /// </summary>
     let extractMinimalWhere (condition : 'a -> bool) (t : Tree<'a>) =
@@ -519,7 +519,7 @@ module AVL =
     /// finds and removes the maximal value from the tree for which the given condition holds. 
     /// it is assumed that this condition is transitive with respect to the given comparison function.
     /// returns the (optional) value found in the tree.
-    /// Example: extractMaximalWhere (fun v -> v < 10) gives the maximal value in the tree being smaller than 10.
+    /// Example: extractMaximalWhere (fun v -> v &lt; 10) gives the maximal value in the tree being smaller than 10.
     /// Runtime: O(log(N))
     /// </summary>
     let extractMaximalWhere (condition : 'a -> bool) (t : Tree<'a>) =

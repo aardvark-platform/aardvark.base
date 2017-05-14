@@ -30,6 +30,7 @@ NUGET
     FAKE (4.52) - content: none
     FSharp.Core (4.1.17) - content: none
       System.ValueTuple (>= 4.3)
+    FSharp.Formatting.CommandTool (2.14.4)
     Mono.Cecil (0.10.0-beta5) - content: none
     Newtonsoft.Json (10.0.2) - content: none
     Paket.Core (3.36.5) - content: none

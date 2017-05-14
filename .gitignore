@@ -54,3 +54,4 @@ tmp
 /paket-files
 /tests.out
 /*.log
+/src/.vs/Aardvark/v15/.suo

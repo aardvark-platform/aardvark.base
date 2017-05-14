@@ -15,10 +15,14 @@ nuget FsUnit                 ~> 2.4.0-alpha-2
 nuget FsCheck                ~> 2.7.1
 nuget FsCheck.NUnit          ~> 2.7.1
 
+
+
 group Build
 framework: net45
 content: none
+
 source https://vrvis.myget.org/F/aardvark_public/api/v3/index.json
 source https://api.nuget.org/v3/index.json
 
 github vrvis/Aardvark.Fake:standalone
+nuget FSharp.Formatting.CommandTool

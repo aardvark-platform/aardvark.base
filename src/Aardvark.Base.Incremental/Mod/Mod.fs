@@ -28,7 +28,7 @@ type IMod =
     abstract member GetValue : AdaptiveToken -> obj
 
 /// <summary>
-/// IMod<'a> represents the base interface for
+/// IMod&lt;'a&gt; represents the base interface for
 /// modifiable cells and provides a method for
 /// getting the cell's current content.
 /// </summary>
@@ -52,9 +52,9 @@ type IDisposableMod<'a> =
     inherit IDisposableMod
 
 /// <summary>
-/// ModRef<'a> represents a changeable input
+/// ModRef&lt;'a&gt; represents a changeable input
 /// cell which can be changed by the user and
-/// implements IMod<'a>
+/// implements IMod&lt;'a&gt;
 /// </summary>
 type IModRef<'a> =
     inherit IMod<'a>
@@ -70,9 +70,9 @@ type IModRef<'a> =
 
 
 /// <summary>
-/// ModRef<'a> represents a changeable input
+/// ModRef&lt;'a&gt; represents a changeable input
 /// cell which can be changed by the user and
-/// implements IMod<'a>
+/// implements IMod&lt;'a&gt;
 /// </summary>
 type ModRef<'a>(value : 'a) =
     inherit AdaptiveObject()
@@ -142,8 +142,8 @@ type ModRef<'a>(value : 'a) =
         [<CLIEvent>]
         member x.Changed = x.Changed
 
-// ConstantMod<'a> represents a constant mod-cell
-// and implements IMod<'a> (making use of the core
+// ConstantMod&lt;'a&gt; represents a constant mod-cell
+// and implements IMod&lt;'a&gt; (making use of the core
 // class ConstantObject). Note that ConstantMod<'a> allows
 // computations to be delayed (which is useful if the
 // creation of the value is computationally expensive)
@@ -1115,8 +1115,8 @@ module ModExtensions =
             else extractModTypeArg iface typedef
 
     /// <summary>
-    /// matches all types implementing IMod<'a> and
-    /// extracts typeof<'a> using reflection.
+    /// matches all types implementing IMod&lt;'a&gt; and
+    /// extracts typeof&lt;'a&gt; using reflection.
     /// </summary>
     let (|ModRefOf|_|) (t : Type) =
         match extractModTypeArg t typedefof<ModRef<_>> with
