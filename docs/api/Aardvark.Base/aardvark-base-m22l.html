@@ -1,0 +1,3173 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>M22l - Aardvark.Base</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="The Aardvark Platform Team">
+
+    <script src="https://code.jquery.com/jquery-1.8.0.js"></script>
+    <script src="https://code.jquery.com/ui/1.8.23/jquery-ui.js"></script>
+    <script src="https://netdna.bootstrapcdn.com/twitter-bootstrap/2.2.1/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link href="https://netdna.bootstrapcdn.com/twitter-bootstrap/2.2.1/css/bootstrap-combined.min.css" rel="stylesheet">
+
+    <link type="text/css" rel="stylesheet" href="https://github.com/vrvis/aardvark.base/content/style.css" />
+    <script type="text/javascript" src="https://github.com/vrvis/aardvark.base/content/tips.js"></script>
+    <!-- HTML5 shim, for IE6-8 support of HTML5 elements -->
+    <!--[if lt IE 9]>
+      <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+  </head>
+  <body>
+    <div class="container">
+      <div class="masthead">
+        <ul class="nav nav-pills pull-right">
+          <li><a href="https://github.com/vrvis/aardvark.base">github page</a></li>
+        </ul>
+        <h3 class="muted"><a href="https://github.com/vrvis/aardvark.base/index.html">Aardvark.Base</a></h3>
+      </div>
+      <hr />
+      <div class="row">
+        <div class="span9" id="main">
+          
+
+
+
+<h1>M22l</h1>
+<div class="xmldoc">
+</div>
+  <h3>Constructors</h3>
+  <table class="table table-bordered member-list">
+    <thead>
+      <tr><td>Constructor</td><td>Description</td></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '9233', 9233)" onmouseover="showTip(event, '9233', 9233)">
+            new(m00, m01, m10, m11)
+          </code>
+          <div class="tip" id="9233">
+            <strong>Signature:</strong> (m00:int64 * m01:int64 * m10:int64 * m11:int64) -&gt; unit<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '9234', 9234)" onmouseover="showTip(event, '9234', 9234)">
+            new(a)
+          </code>
+          <div class="tip" id="9234">
+            <strong>Signature:</strong> (a:int64 []) -&gt; unit<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '9235', 9235)" onmouseover="showTip(event, '9235', 9235)">
+            new(a, start)
+          </code>
+          <div class="tip" id="9235">
+            <strong>Signature:</strong> (a:int64 [] * start:int) -&gt; unit<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+    </tbody>
+  </table>
+  <h3>Instance members</h3>
+  <table class="table table-bordered member-list">
+    <thead>
+      <tr><td>Instance member</td><td>Description</td></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '9236', 9236)" onmouseover="showTip(event, '9236', 9236)">
+            C0()
+          </code>
+          <div class="tip" id="9236">
+            <strong>Signature:</strong> unit -&gt; unit<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '9237', 9237)" onmouseover="showTip(event, '9237', 9237)">
+            C1()
+          </code>
+          <div class="tip" id="9237">
+            <strong>Signature:</strong> unit -&gt; unit<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '9238', 9238)" onmouseover="showTip(event, '9238', 9238)">
+            Column(index)
+          </code>
+          <div class="tip" id="9238">
+            <strong>Signature:</strong> index:int -&gt; V2l<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Returns index-th column of this matrix.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '9239', 9239)" onmouseover="showTip(event, '9239', 9239)">
+            Columns
+          </code>
+          <div class="tip" id="9239">
+            <strong>Signature:</strong> IEnumerable&lt;V2l&gt;<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '9240', 9240)" onmouseover="showTip(event, '9240', 9240)">
+            Copy(element_fun)
+          </code>
+          <div class="tip" id="9240">
+            <strong>Signature:</strong> element_fun:Func&lt;int64,int&gt; -&gt; M22i<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Returns a copy with all elements transformed by the supplied function.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '9241', 9241)" onmouseover="showTip(event, '9241', 9241)">
+            Copy(element_index0_index1_fun)
+          </code>
+          <div class="tip" id="9241">
+            <strong>Signature:</strong> element_index0_index1_fun:Func&lt;int64,int,int,int&gt; -&gt; M22i<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Returns a copy with all elements transformed by the supplied function.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '9242', 9242)" onmouseover="showTip(event, '9242', 9242)">
+            Copy(element_fun)
+          </code>
+          <div class="tip" id="9242">
+            <strong>Signature:</strong> element_fun:Func&lt;int64,int64&gt; -&gt; M22l<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Returns a copy with all elements transformed by the supplied function.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '9243', 9243)" onmouseover="showTip(event, '9243', 9243)">
+            Copy(element_index0_index1_fun)
+          </code>
+          <div class="tip" id="9243">
+            <strong>Signature:</strong> element_index0_index1_fun:Func&lt;int64,int,int,int64&gt; -&gt; M22l<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Returns a copy with all elements transformed by the supplied function.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '9244', 9244)" onmouseover="showTip(event, '9244', 9244)">
+            Copy(element_fun)
+          </code>
+          <div class="tip" id="9244">
+            <strong>Signature:</strong> element_fun:Func&lt;int64,float32&gt; -&gt; M22f<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Returns a copy with all elements transformed by the supplied function.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '9245', 9245)" onmouseover="showTip(event, '9245', 9245)">
+            Copy(element_index0_index1_fun)
+          </code>
+          <div class="tip" id="9245">
+            <strong>Signature:</strong> element_index0_index1_fun:Func&lt;int64,int,int,float32&gt; -&gt; M22f<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Returns a copy with all elements transformed by the supplied function.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '9246', 9246)" onmouseover="showTip(event, '9246', 9246)">
+            Copy(element_fun)
+          </code>
+          <div class="tip" id="9246">
+            <strong>Signature:</strong> element_fun:Func&lt;int64,float&gt; -&gt; M22d<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Returns a copy with all elements transformed by the supplied function.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '9247', 9247)" onmouseover="showTip(event, '9247', 9247)">
+            Copy(element_index0_index1_fun)
+          </code>
+          <div class="tip" id="9247">
+            <strong>Signature:</strong> element_index0_index1_fun:Func&lt;int64,int,int,float&gt; -&gt; M22d<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Returns a copy with all elements transformed by the supplied function.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '9248', 9248)" onmouseover="showTip(event, '9248', 9248)">
+            CopyTo(array, index)
+          </code>
+          <div class="tip" id="9248">
+            <strong>Signature:</strong> (array:int [] * index:int64) -&gt; unit<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '9249', 9249)" onmouseover="showTip(event, '9249', 9249)">
+            CopyTo(array, index)
+          </code>
+          <div class="tip" id="9249">
+            <strong>Signature:</strong> (array:int64 [] * index:int64) -&gt; unit<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '9250', 9250)" onmouseover="showTip(event, '9250', 9250)">
+            CopyTo(array, index)
+          </code>
+          <div class="tip" id="9250">
+            <strong>Signature:</strong> (array:float32 [] * index:int64) -&gt; unit<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '9251', 9251)" onmouseover="showTip(event, '9251', 9251)">
+            CopyTo(array, index)
+          </code>
+          <div class="tip" id="9251">
+            <strong>Signature:</strong> (array:float [] * index:int64) -&gt; unit<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '9252', 9252)" onmouseover="showTip(event, '9252', 9252)">
+            Det
+          </code>
+          <div class="tip" id="9252">
+            <strong>Signature:</strong> int64<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Gets the determinant of this matrix.
+The determinant is only defined for square matrices.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '9253', 9253)" onmouseover="showTip(event, '9253', 9253)">
+            Determinant()
+          </code>
+          <div class="tip" id="9253">
+            <strong>Signature:</strong> unit -&gt; int64<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Returns the determinant of this matrix.
+The determinant is only defined for square matrices.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '9254', 9254)" onmouseover="showTip(event, '9254', 9254)">
+            Dim
+          </code>
+          <div class="tip" id="9254">
+            <strong>Signature:</strong> V2l<br />
+              <strong>Modifiers:</strong> abstract<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '9255', 9255)" onmouseover="showTip(event, '9255', 9255)">
+            Elements
+          </code>
+          <div class="tip" id="9255">
+            <strong>Signature:</strong> IEnumerable&lt;int64&gt;<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '9256', 9256)" onmouseover="showTip(event, '9256', 9256)">
+            Equals(other)
+          </code>
+          <div class="tip" id="9256">
+            <strong>Signature:</strong> other:obj -&gt; bool<br />
+              <strong>Modifiers:</strong> abstract<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '9257', 9257)" onmouseover="showTip(event, '9257', 9257)">
+            GetHashCode()
+          </code>
+          <div class="tip" id="9257">
+            <strong>Signature:</strong> unit -&gt; int<br />
+              <strong>Modifiers:</strong> abstract<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '9258', 9258)" onmouseover="showTip(event, '9258', 9258)">
+            GetValue(x, y)
+          </code>
+          <div class="tip" id="9258">
+            <strong>Signature:</strong> (x:int64 * y:int64) -&gt; obj<br />
+              <strong>Modifiers:</strong> abstract<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '9259', 9259)" onmouseover="showTip(event, '9259', 9259)">
+            GetValue(v)
+          </code>
+          <div class="tip" id="9259">
+            <strong>Signature:</strong> v:V2l -&gt; obj<br />
+              <strong>Modifiers:</strong> abstract<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '9260', 9260)" onmouseover="showTip(event, '9260', 9260)">
+            Invertible
+          </code>
+          <div class="tip" id="9260">
+            <strong>Signature:</strong> bool<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Returns whether this matrix is invertible.
+A matrix is invertible if its determinant is not zero.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '9261', 9261)" onmouseover="showTip(event, '9261', 9261)">
+            IsInvalid
+          </code>
+          <div class="tip" id="9261">
+            <strong>Signature:</strong> bool<br />
+              <strong>Modifiers:</strong> abstract<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '9262', 9262)" onmouseover="showTip(event, '9262', 9262)">
+            IsValid
+          </code>
+          <div class="tip" id="9262">
+            <strong>Signature:</strong> bool<br />
+              <strong>Modifiers:</strong> abstract<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '9263', 9263)" onmouseover="showTip(event, '9263', 9263)">
+            [()]
+          </code>
+          <div class="tip" id="9263">
+            <strong>Signature:</strong> unit -&gt; int<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '9264', 9264)" onmouseover="showTip(event, '9264', 9264)">
+            [arg1]
+          </code>
+          <div class="tip" id="9264">
+            <strong>Signature:</strong> int -&gt; int<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '9265', 9265)" onmouseover="showTip(event, '9265', 9265)">
+            [arg1]
+          </code>
+          <div class="tip" id="9265">
+            <strong>Signature:</strong> int64 -&gt; int64<br />
+              <strong>Modifiers:</strong> abstract<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>NOTE: this indexer has reversed order of coordinates with respect to
+the default indexer!!!</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '9266', 9266)" onmouseover="showTip(event, '9266', 9266)">
+            [()]
+          </code>
+          <div class="tip" id="9266">
+            <strong>Signature:</strong> unit -&gt; V2l<br />
+              <strong>Modifiers:</strong> abstract<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>NOTE: this indexer has reversed order of coordinates with respect to
+the default indexer!!!</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '9267', 9267)" onmouseover="showTip(event, '9267', 9267)">
+            Norm(p)
+          </code>
+          <div class="tip" id="9267">
+            <strong>Signature:</strong> p:float -&gt; float<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Returns the p-norm of the matrix. This is calculated as
+(|M00|^p + |M01|^p + ... )^(1/p)</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '9268', 9268)" onmouseover="showTip(event, '9268', 9268)">
+            Norm1
+          </code>
+          <div class="tip" id="9268">
+            <strong>Signature:</strong> int64<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Returns the Manhattan (or 1-) norm of the matrix. This is
+calculated as |M00| + |M01| + ...</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '9269', 9269)" onmouseover="showTip(event, '9269', 9269)">
+            Norm2
+          </code>
+          <div class="tip" id="9269">
+            <strong>Signature:</strong> float<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Returns the Euclidean (or 2-) norm of the matrix. This is
+calculated as Sqrt(M00 <em> M00 + M01 </em> M01 + ... )</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '9270', 9270)" onmouseover="showTip(event, '9270', 9270)">
+            NormMax
+          </code>
+          <div class="tip" id="9270">
+            <strong>Signature:</strong> int64<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Returns the infinite (or maximum) norm of the matrix. This is
+calculated as max(|M00|, |M01|, ...).</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '9271', 9271)" onmouseover="showTip(event, '9271', 9271)">
+            NormMin
+          </code>
+          <div class="tip" id="9271">
+            <strong>Signature:</strong> int64<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Returns the minimum norm of the matrix. This is calculated as
+min(|M00|, |M01|, ...).</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '9272', 9272)" onmouseover="showTip(event, '9272', 9272)">
+            R0()
+          </code>
+          <div class="tip" id="9272">
+            <strong>Signature:</strong> unit -&gt; unit<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '9273', 9273)" onmouseover="showTip(event, '9273', 9273)">
+            R1()
+          </code>
+          <div class="tip" id="9273">
+            <strong>Signature:</strong> unit -&gt; unit<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '9274', 9274)" onmouseover="showTip(event, '9274', 9274)">
+            Row(index)
+          </code>
+          <div class="tip" id="9274">
+            <strong>Signature:</strong> index:int -&gt; V2l<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Returns index-th row of this matrix.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '9275', 9275)" onmouseover="showTip(event, '9275', 9275)">
+            Rows
+          </code>
+          <div class="tip" id="9275">
+            <strong>Signature:</strong> IEnumerable&lt;V2l&gt;<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '9276', 9276)" onmouseover="showTip(event, '9276', 9276)">
+            SetValue(value, x, y)
+          </code>
+          <div class="tip" id="9276">
+            <strong>Signature:</strong> (value:obj * x:int64 * y:int64) -&gt; unit<br />
+              <strong>Modifiers:</strong> abstract<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '9277', 9277)" onmouseover="showTip(event, '9277', 9277)">
+            SetValue(value, v)
+          </code>
+          <div class="tip" id="9277">
+            <strong>Signature:</strong> (value:obj * v:V2l) -&gt; unit<br />
+              <strong>Modifiers:</strong> abstract<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '9278', 9278)" onmouseover="showTip(event, '9278', 9278)">
+            Singular
+          </code>
+          <div class="tip" id="9278">
+            <strong>Signature:</strong> bool<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Returns whether this matrix is singular.
+A matrix is singular if its determinant is zero.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '9279', 9279)" onmouseover="showTip(event, '9279', 9279)">
+            ToArray()
+          </code>
+          <div class="tip" id="9279">
+            <strong>Signature:</strong> unit -&gt; int64 []<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '9280', 9280)" onmouseover="showTip(event, '9280', 9280)">
+            ToString()
+          </code>
+          <div class="tip" id="9280">
+            <strong>Signature:</strong> unit -&gt; string<br />
+              <strong>Modifiers:</strong> abstract<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '9281', 9281)" onmouseover="showTip(event, '9281', 9281)">
+            ToString(format)
+          </code>
+          <div class="tip" id="9281">
+            <strong>Signature:</strong> format:string -&gt; string<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '9282', 9282)" onmouseover="showTip(event, '9282', 9282)">
+            ToString(format, fp)
+          </code>
+          <div class="tip" id="9282">
+            <strong>Signature:</strong> (format:string * fp:IFormatProvider) -&gt; string<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '9283', 9283)" onmouseover="showTip(event, '9283', 9283)">
+            ToString(...)
+          </code>
+          <div class="tip" id="9283">
+            <strong>Signature:</strong> (format:string * fp:IFormatProvider * beginM:string * betweenM:string * endM:string * beginR:string * betweenR:string * endR:string) -&gt; string<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Outputs e.g. a 2x2-Matrix in the form "(beginM)(beginR)m00(betweenR)m01(endR)(betweenM)(beginR)m10(betweenR)m11(endR)(endM)".</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '9284', 9284)" onmouseover="showTip(event, '9284', 9284)">
+            Trace
+          </code>
+          <div class="tip" id="9284">
+            <strong>Signature:</strong> int64<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Returns the trace of this matrix.
+The trace is defined as the sum of the diagonal elements,
+and is only defined for square matrices.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '9285', 9285)" onmouseover="showTip(event, '9285', 9285)">
+            TransformDir(v)
+          </code>
+          <div class="tip" id="9285">
+            <strong>Signature:</strong> v:int64 -&gt; int64<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Transforms direction vector v (v.w is presumed 0.0) by this matrix.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '9286', 9286)" onmouseover="showTip(event, '9286', 9286)">
+            TransformPos(p)
+          </code>
+          <div class="tip" id="9286">
+            <strong>Signature:</strong> p:int64 -&gt; int64<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '9287', 9287)" onmouseover="showTip(event, '9287', 9287)">
+            TransformPosProj(p)
+          </code>
+          <div class="tip" id="9287">
+            <strong>Signature:</strong> p:int64 -&gt; int64<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '9288', 9288)" onmouseover="showTip(event, '9288', 9288)">
+            TransformPosProjFull(p)
+          </code>
+          <div class="tip" id="9288">
+            <strong>Signature:</strong> p:int64 -&gt; V2l<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '9289', 9289)" onmouseover="showTip(event, '9289', 9289)">
+            Transpose()
+          </code>
+          <div class="tip" id="9289">
+            <strong>Signature:</strong> unit -&gt; unit<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Transposes this matrix (and returns this).</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '9290', 9290)" onmouseover="showTip(event, '9290', 9290)">
+            Transposed
+          </code>
+          <div class="tip" id="9290">
+            <strong>Signature:</strong> M22l<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Gets transpose of this matrix.</p>
+
+
+        </td>
+      </tr>
+    </tbody>
+  </table>
+  <h3>Static members</h3>
+  <table class="table table-bordered member-list">
+    <thead>
+      <tr><td>Static member</td><td>Description</td></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '9291', 9291)" onmouseover="showTip(event, '9291', 9291)">
+            Add(a, b)
+          </code>
+          <div class="tip" id="9291">
+            <strong>Signature:</strong> (a:M22l * b:M22l) -&gt; M22l<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '9292', 9292)" onmouseover="showTip(event, '9292', 9292)">
+            Add(m, s)
+          </code>
+          <div class="tip" id="9292">
+            <strong>Signature:</strong> (m:M22l * s:int64) -&gt; M22l<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '9293', 9293)" onmouseover="showTip(event, '9293', 9293)">
+            Add(s, m)
+          </code>
+          <div class="tip" id="9293">
+            <strong>Signature:</strong> (s:int64 * m:M22l) -&gt; M22l<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '9294', 9294)" onmouseover="showTip(event, '9294', 9294)">
+            Add(a, b)
+          </code>
+          <div class="tip" id="9294">
+            <strong>Signature:</strong> (a:M22l * b:M22f) -&gt; M22f<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '9295', 9295)" onmouseover="showTip(event, '9295', 9295)">
+            Add(m, s)
+          </code>
+          <div class="tip" id="9295">
+            <strong>Signature:</strong> (m:M22l * s:float32) -&gt; M22f<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '9296', 9296)" onmouseover="showTip(event, '9296', 9296)">
+            Add(s, m)
+          </code>
+          <div class="tip" id="9296">
+            <strong>Signature:</strong> (s:float32 * m:M22l) -&gt; M22f<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '9297', 9297)" onmouseover="showTip(event, '9297', 9297)">
+            Add(a, b)
+          </code>
+          <div class="tip" id="9297">
+            <strong>Signature:</strong> (a:M22l * b:M22d) -&gt; M22d<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '9298', 9298)" onmouseover="showTip(event, '9298', 9298)">
+            Add(m, s)
+          </code>
+          <div class="tip" id="9298">
+            <strong>Signature:</strong> (m:M22l * s:float) -&gt; M22d<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '9299', 9299)" onmouseover="showTip(event, '9299', 9299)">
+            Add(s, m)
+          </code>
+          <div class="tip" id="9299">
+            <strong>Signature:</strong> (s:float * m:M22l) -&gt; M22d<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '9300', 9300)" onmouseover="showTip(event, '9300', 9300)">
+            Distance(a, b, p)
+          </code>
+          <div class="tip" id="9300">
+            <strong>Signature:</strong> (a:M22l * b:M22l * p:float) -&gt; float<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Returns the p-distance between two matrices.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '9301', 9301)" onmouseover="showTip(event, '9301', 9301)">
+            Distance1(a, b)
+          </code>
+          <div class="tip" id="9301">
+            <strong>Signature:</strong> (a:M22l * b:M22l) -&gt; int64<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Returns the Manhatten (or 1-) distance between two matrices.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '9302', 9302)" onmouseover="showTip(event, '9302', 9302)">
+            Distance2(a, b)
+          </code>
+          <div class="tip" id="9302">
+            <strong>Signature:</strong> (a:M22l * b:M22l) -&gt; float<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Returns the Euclidean (or 2-) distance between two matrices.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '9303', 9303)" onmouseover="showTip(event, '9303', 9303)">
+            DistanceMax(a, b)
+          </code>
+          <div class="tip" id="9303">
+            <strong>Signature:</strong> (a:M22l * b:M22l) -&gt; int64<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Returns the maximal absolute distance between the components of
+the two matrices.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '9304', 9304)" onmouseover="showTip(event, '9304', 9304)">
+            DistanceMin(a, b)
+          </code>
+          <div class="tip" id="9304">
+            <strong>Signature:</strong> (a:M22l * b:M22l) -&gt; int64<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Returns the minimal absolute distance between the components of
+the two matrices.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '9305', 9305)" onmouseover="showTip(event, '9305', 9305)">
+            Divide(a, b)
+          </code>
+          <div class="tip" id="9305">
+            <strong>Signature:</strong> (a:M22l * b:M22l) -&gt; M22l<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '9306', 9306)" onmouseover="showTip(event, '9306', 9306)">
+            Divide(m, s)
+          </code>
+          <div class="tip" id="9306">
+            <strong>Signature:</strong> (m:M22l * s:int64) -&gt; M22l<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '9307', 9307)" onmouseover="showTip(event, '9307', 9307)">
+            Divide(s, m)
+          </code>
+          <div class="tip" id="9307">
+            <strong>Signature:</strong> (s:int64 * m:M22l) -&gt; M22l<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '9308', 9308)" onmouseover="showTip(event, '9308', 9308)">
+            Divide(a, b)
+          </code>
+          <div class="tip" id="9308">
+            <strong>Signature:</strong> (a:M22l * b:M22f) -&gt; M22f<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '9309', 9309)" onmouseover="showTip(event, '9309', 9309)">
+            Divide(m, s)
+          </code>
+          <div class="tip" id="9309">
+            <strong>Signature:</strong> (m:M22l * s:float32) -&gt; M22f<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '9310', 9310)" onmouseover="showTip(event, '9310', 9310)">
+            Divide(s, m)
+          </code>
+          <div class="tip" id="9310">
+            <strong>Signature:</strong> (s:float32 * m:M22l) -&gt; M22f<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '9311', 9311)" onmouseover="showTip(event, '9311', 9311)">
+            Divide(a, b)
+          </code>
+          <div class="tip" id="9311">
+            <strong>Signature:</strong> (a:M22l * b:M22d) -&gt; M22d<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '9312', 9312)" onmouseover="showTip(event, '9312', 9312)">
+            Divide(m, s)
+          </code>
+          <div class="tip" id="9312">
+            <strong>Signature:</strong> (m:M22l * s:float) -&gt; M22d<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '9313', 9313)" onmouseover="showTip(event, '9313', 9313)">
+            Divide(s, m)
+          </code>
+          <div class="tip" id="9313">
+            <strong>Signature:</strong> (s:float * m:M22l) -&gt; M22d<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '9314', 9314)" onmouseover="showTip(event, '9314', 9314)">
+            FromCols(col0, col1)
+          </code>
+          <div class="tip" id="9314">
+            <strong>Signature:</strong> (col0:V2l * col1:V2l) -&gt; M22l<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '9315', 9315)" onmouseover="showTip(event, '9315', 9315)">
+            FromRows(row0, row1)
+          </code>
+          <div class="tip" id="9315">
+            <strong>Signature:</strong> (row0:V2l * row1:V2l) -&gt; M22l<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '9316', 9316)" onmouseover="showTip(event, '9316', 9316)">
+            Modulo(a, b)
+          </code>
+          <div class="tip" id="9316">
+            <strong>Signature:</strong> (a:M22l * b:M22l) -&gt; M22l<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '9317', 9317)" onmouseover="showTip(event, '9317', 9317)">
+            Modulo(m, s)
+          </code>
+          <div class="tip" id="9317">
+            <strong>Signature:</strong> (m:M22l * s:int64) -&gt; M22l<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '9318', 9318)" onmouseover="showTip(event, '9318', 9318)">
+            Modulo(s, m)
+          </code>
+          <div class="tip" id="9318">
+            <strong>Signature:</strong> (s:int64 * m:M22l) -&gt; M22l<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '9319', 9319)" onmouseover="showTip(event, '9319', 9319)">
+            Modulo(a, b)
+          </code>
+          <div class="tip" id="9319">
+            <strong>Signature:</strong> (a:M22l * b:M22f) -&gt; M22f<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '9320', 9320)" onmouseover="showTip(event, '9320', 9320)">
+            Modulo(m, s)
+          </code>
+          <div class="tip" id="9320">
+            <strong>Signature:</strong> (m:M22l * s:float32) -&gt; M22f<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '9321', 9321)" onmouseover="showTip(event, '9321', 9321)">
+            Modulo(s, m)
+          </code>
+          <div class="tip" id="9321">
+            <strong>Signature:</strong> (s:float32 * m:M22l) -&gt; M22f<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '9322', 9322)" onmouseover="showTip(event, '9322', 9322)">
+            Modulo(a, b)
+          </code>
+          <div class="tip" id="9322">
+            <strong>Signature:</strong> (a:M22l * b:M22d) -&gt; M22d<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '9323', 9323)" onmouseover="showTip(event, '9323', 9323)">
+            Modulo(m, s)
+          </code>
+          <div class="tip" id="9323">
+            <strong>Signature:</strong> (m:M22l * s:float) -&gt; M22d<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '9324', 9324)" onmouseover="showTip(event, '9324', 9324)">
+            Modulo(s, m)
+          </code>
+          <div class="tip" id="9324">
+            <strong>Signature:</strong> (s:float * m:M22l) -&gt; M22d<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '9325', 9325)" onmouseover="showTip(event, '9325', 9325)">
+            Multiply(m, s)
+          </code>
+          <div class="tip" id="9325">
+            <strong>Signature:</strong> (m:M22l * s:int64) -&gt; M22l<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '9326', 9326)" onmouseover="showTip(event, '9326', 9326)">
+            Multiply(s, m)
+          </code>
+          <div class="tip" id="9326">
+            <strong>Signature:</strong> (s:int64 * m:M22l) -&gt; M22l<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '9327', 9327)" onmouseover="showTip(event, '9327', 9327)">
+            Multiply(m, s)
+          </code>
+          <div class="tip" id="9327">
+            <strong>Signature:</strong> (m:M22l * s:float32) -&gt; M22f<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '9328', 9328)" onmouseover="showTip(event, '9328', 9328)">
+            Multiply(s, m)
+          </code>
+          <div class="tip" id="9328">
+            <strong>Signature:</strong> (s:float32 * m:M22l) -&gt; M22f<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '9329', 9329)" onmouseover="showTip(event, '9329', 9329)">
+            Multiply(m, s)
+          </code>
+          <div class="tip" id="9329">
+            <strong>Signature:</strong> (m:M22l * s:float) -&gt; M22d<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '9330', 9330)" onmouseover="showTip(event, '9330', 9330)">
+            Multiply(s, m)
+          </code>
+          <div class="tip" id="9330">
+            <strong>Signature:</strong> (s:float * m:M22l) -&gt; M22d<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '9331', 9331)" onmouseover="showTip(event, '9331', 9331)">
+            Multiply(m, v)
+          </code>
+          <div class="tip" id="9331">
+            <strong>Signature:</strong> (m:M22l * v:V2l) -&gt; V2l<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '9332', 9332)" onmouseover="showTip(event, '9332', 9332)">
+            Multiply(a, b)
+          </code>
+          <div class="tip" id="9332">
+            <strong>Signature:</strong> (a:M22l * b:M22l) -&gt; M22l<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '9333', 9333)" onmouseover="showTip(event, '9333', 9333)">
+            op_Addition(a, b)
+          </code>
+          <div class="tip" id="9333">
+            <strong>Signature:</strong> (a:M22l * b:M22l) -&gt; M22l<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '9334', 9334)" onmouseover="showTip(event, '9334', 9334)">
+            op_Addition(m, s)
+          </code>
+          <div class="tip" id="9334">
+            <strong>Signature:</strong> (m:M22l * s:int64) -&gt; M22l<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '9335', 9335)" onmouseover="showTip(event, '9335', 9335)">
+            op_Addition(s, m)
+          </code>
+          <div class="tip" id="9335">
+            <strong>Signature:</strong> (s:int64 * m:M22l) -&gt; M22l<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '9336', 9336)" onmouseover="showTip(event, '9336', 9336)">
+            op_Addition(a, b)
+          </code>
+          <div class="tip" id="9336">
+            <strong>Signature:</strong> (a:M22l * b:M22f) -&gt; M22f<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '9337', 9337)" onmouseover="showTip(event, '9337', 9337)">
+            op_Addition(m, s)
+          </code>
+          <div class="tip" id="9337">
+            <strong>Signature:</strong> (m:M22l * s:float32) -&gt; M22f<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '9338', 9338)" onmouseover="showTip(event, '9338', 9338)">
+            op_Addition(s, m)
+          </code>
+          <div class="tip" id="9338">
+            <strong>Signature:</strong> (s:float32 * m:M22l) -&gt; M22f<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '9339', 9339)" onmouseover="showTip(event, '9339', 9339)">
+            op_Addition(a, b)
+          </code>
+          <div class="tip" id="9339">
+            <strong>Signature:</strong> (a:M22l * b:M22d) -&gt; M22d<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '9340', 9340)" onmouseover="showTip(event, '9340', 9340)">
+            op_Addition(m, s)
+          </code>
+          <div class="tip" id="9340">
+            <strong>Signature:</strong> (m:M22l * s:float) -&gt; M22d<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '9341', 9341)" onmouseover="showTip(event, '9341', 9341)">
+            op_Addition(s, m)
+          </code>
+          <div class="tip" id="9341">
+            <strong>Signature:</strong> (s:float * m:M22l) -&gt; M22d<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '9342', 9342)" onmouseover="showTip(event, '9342', 9342)">
+            op_Division(a, b)
+          </code>
+          <div class="tip" id="9342">
+            <strong>Signature:</strong> (a:M22l * b:M22l) -&gt; M22l<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '9343', 9343)" onmouseover="showTip(event, '9343', 9343)">
+            op_Division(m, s)
+          </code>
+          <div class="tip" id="9343">
+            <strong>Signature:</strong> (m:M22l * s:int64) -&gt; M22l<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '9344', 9344)" onmouseover="showTip(event, '9344', 9344)">
+            op_Division(s, m)
+          </code>
+          <div class="tip" id="9344">
+            <strong>Signature:</strong> (s:int64 * m:M22l) -&gt; M22l<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '9345', 9345)" onmouseover="showTip(event, '9345', 9345)">
+            op_Division(a, b)
+          </code>
+          <div class="tip" id="9345">
+            <strong>Signature:</strong> (a:M22l * b:M22f) -&gt; M22f<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '9346', 9346)" onmouseover="showTip(event, '9346', 9346)">
+            op_Division(m, s)
+          </code>
+          <div class="tip" id="9346">
+            <strong>Signature:</strong> (m:M22l * s:float32) -&gt; M22f<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '9347', 9347)" onmouseover="showTip(event, '9347', 9347)">
+            op_Division(s, m)
+          </code>
+          <div class="tip" id="9347">
+            <strong>Signature:</strong> (s:float32 * m:M22l) -&gt; M22f<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '9348', 9348)" onmouseover="showTip(event, '9348', 9348)">
+            op_Division(a, b)
+          </code>
+          <div class="tip" id="9348">
+            <strong>Signature:</strong> (a:M22l * b:M22d) -&gt; M22d<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '9349', 9349)" onmouseover="showTip(event, '9349', 9349)">
+            op_Division(m, s)
+          </code>
+          <div class="tip" id="9349">
+            <strong>Signature:</strong> (m:M22l * s:float) -&gt; M22d<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '9350', 9350)" onmouseover="showTip(event, '9350', 9350)">
+            op_Division(s, m)
+          </code>
+          <div class="tip" id="9350">
+            <strong>Signature:</strong> (s:float * m:M22l) -&gt; M22d<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '9351', 9351)" onmouseover="showTip(event, '9351', 9351)">
+            op_Equality(a, b)
+          </code>
+          <div class="tip" id="9351">
+            <strong>Signature:</strong> (a:M22l * b:M22l) -&gt; bool<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '9352', 9352)" onmouseover="showTip(event, '9352', 9352)">
+            op_Equality(a, s)
+          </code>
+          <div class="tip" id="9352">
+            <strong>Signature:</strong> (a:M22l * s:int64) -&gt; bool<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '9353', 9353)" onmouseover="showTip(event, '9353', 9353)">
+            op_Equality(s, a)
+          </code>
+          <div class="tip" id="9353">
+            <strong>Signature:</strong> (s:int64 * a:M22l) -&gt; bool<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '9354', 9354)" onmouseover="showTip(event, '9354', 9354)">
+            op_Explicit(m)
+          </code>
+          <div class="tip" id="9354">
+            <strong>Signature:</strong> m:M22i -&gt; M22l<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '9355', 9355)" onmouseover="showTip(event, '9355', 9355)">
+            op_Explicit(m)
+          </code>
+          <div class="tip" id="9355">
+            <strong>Signature:</strong> m:M23i -&gt; M22l<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '9356', 9356)" onmouseover="showTip(event, '9356', 9356)">
+            op_Explicit(m)
+          </code>
+          <div class="tip" id="9356">
+            <strong>Signature:</strong> m:M33i -&gt; M22l<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '9357', 9357)" onmouseover="showTip(event, '9357', 9357)">
+            op_Explicit(m)
+          </code>
+          <div class="tip" id="9357">
+            <strong>Signature:</strong> m:M34i -&gt; M22l<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '9358', 9358)" onmouseover="showTip(event, '9358', 9358)">
+            op_Explicit(m)
+          </code>
+          <div class="tip" id="9358">
+            <strong>Signature:</strong> m:M44i -&gt; M22l<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '9359', 9359)" onmouseover="showTip(event, '9359', 9359)">
+            op_Explicit(m)
+          </code>
+          <div class="tip" id="9359">
+            <strong>Signature:</strong> m:M23l -&gt; M22l<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '9360', 9360)" onmouseover="showTip(event, '9360', 9360)">
+            op_Explicit(m)
+          </code>
+          <div class="tip" id="9360">
+            <strong>Signature:</strong> m:M33l -&gt; M22l<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '9361', 9361)" onmouseover="showTip(event, '9361', 9361)">
+            op_Explicit(m)
+          </code>
+          <div class="tip" id="9361">
+            <strong>Signature:</strong> m:M34l -&gt; M22l<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '9362', 9362)" onmouseover="showTip(event, '9362', 9362)">
+            op_Explicit(m)
+          </code>
+          <div class="tip" id="9362">
+            <strong>Signature:</strong> m:M44l -&gt; M22l<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '9363', 9363)" onmouseover="showTip(event, '9363', 9363)">
+            op_Explicit(m)
+          </code>
+          <div class="tip" id="9363">
+            <strong>Signature:</strong> m:M22f -&gt; M22l<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '9364', 9364)" onmouseover="showTip(event, '9364', 9364)">
+            op_Explicit(m)
+          </code>
+          <div class="tip" id="9364">
+            <strong>Signature:</strong> m:M23f -&gt; M22l<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '9365', 9365)" onmouseover="showTip(event, '9365', 9365)">
+            op_Explicit(m)
+          </code>
+          <div class="tip" id="9365">
+            <strong>Signature:</strong> m:M33f -&gt; M22l<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '9366', 9366)" onmouseover="showTip(event, '9366', 9366)">
+            op_Explicit(m)
+          </code>
+          <div class="tip" id="9366">
+            <strong>Signature:</strong> m:M34f -&gt; M22l<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '9367', 9367)" onmouseover="showTip(event, '9367', 9367)">
+            op_Explicit(m)
+          </code>
+          <div class="tip" id="9367">
+            <strong>Signature:</strong> m:M44f -&gt; M22l<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '9368', 9368)" onmouseover="showTip(event, '9368', 9368)">
+            op_Explicit(m)
+          </code>
+          <div class="tip" id="9368">
+            <strong>Signature:</strong> m:M22d -&gt; M22l<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '9369', 9369)" onmouseover="showTip(event, '9369', 9369)">
+            op_Explicit(m)
+          </code>
+          <div class="tip" id="9369">
+            <strong>Signature:</strong> m:M23d -&gt; M22l<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '9370', 9370)" onmouseover="showTip(event, '9370', 9370)">
+            op_Explicit(m)
+          </code>
+          <div class="tip" id="9370">
+            <strong>Signature:</strong> m:M33d -&gt; M22l<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '9371', 9371)" onmouseover="showTip(event, '9371', 9371)">
+            op_Explicit(m)
+          </code>
+          <div class="tip" id="9371">
+            <strong>Signature:</strong> m:M34d -&gt; M22l<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '9372', 9372)" onmouseover="showTip(event, '9372', 9372)">
+            op_Explicit(m)
+          </code>
+          <div class="tip" id="9372">
+            <strong>Signature:</strong> m:M44d -&gt; M22l<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '9373', 9373)" onmouseover="showTip(event, '9373', 9373)">
+            op_Explicit(a)
+          </code>
+          <div class="tip" id="9373">
+            <strong>Signature:</strong> (a:int []) -&gt; M22l<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '9374', 9374)" onmouseover="showTip(event, '9374', 9374)">
+            op_Explicit(a)
+          </code>
+          <div class="tip" id="9374">
+            <strong>Signature:</strong> (a:int [,]) -&gt; M22l<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '9375', 9375)" onmouseover="showTip(event, '9375', 9375)">
+            op_Explicit(m)
+          </code>
+          <div class="tip" id="9375">
+            <strong>Signature:</strong> m:M22l -&gt; int []<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '9376', 9376)" onmouseover="showTip(event, '9376', 9376)">
+            op_Explicit(m)
+          </code>
+          <div class="tip" id="9376">
+            <strong>Signature:</strong> m:M22l -&gt; int [,]<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '9377', 9377)" onmouseover="showTip(event, '9377', 9377)">
+            op_Explicit(a)
+          </code>
+          <div class="tip" id="9377">
+            <strong>Signature:</strong> (a:int64 []) -&gt; M22l<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '9378', 9378)" onmouseover="showTip(event, '9378', 9378)">
+            op_Explicit(a)
+          </code>
+          <div class="tip" id="9378">
+            <strong>Signature:</strong> (a:int64 [,]) -&gt; M22l<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '9379', 9379)" onmouseover="showTip(event, '9379', 9379)">
+            op_Explicit(m)
+          </code>
+          <div class="tip" id="9379">
+            <strong>Signature:</strong> m:M22l -&gt; int64 []<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '9380', 9380)" onmouseover="showTip(event, '9380', 9380)">
+            op_Explicit(m)
+          </code>
+          <div class="tip" id="9380">
+            <strong>Signature:</strong> m:M22l -&gt; int64 [,]<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '9381', 9381)" onmouseover="showTip(event, '9381', 9381)">
+            op_Explicit(a)
+          </code>
+          <div class="tip" id="9381">
+            <strong>Signature:</strong> (a:float32 []) -&gt; M22l<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '9382', 9382)" onmouseover="showTip(event, '9382', 9382)">
+            op_Explicit(a)
+          </code>
+          <div class="tip" id="9382">
+            <strong>Signature:</strong> (a:float32 [,]) -&gt; M22l<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '9383', 9383)" onmouseover="showTip(event, '9383', 9383)">
+            op_Explicit(m)
+          </code>
+          <div class="tip" id="9383">
+            <strong>Signature:</strong> m:M22l -&gt; float32 []<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '9384', 9384)" onmouseover="showTip(event, '9384', 9384)">
+            op_Explicit(m)
+          </code>
+          <div class="tip" id="9384">
+            <strong>Signature:</strong> m:M22l -&gt; float32 [,]<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '9385', 9385)" onmouseover="showTip(event, '9385', 9385)">
+            op_Explicit(a)
+          </code>
+          <div class="tip" id="9385">
+            <strong>Signature:</strong> (a:float []) -&gt; M22l<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '9386', 9386)" onmouseover="showTip(event, '9386', 9386)">
+            op_Explicit(a)
+          </code>
+          <div class="tip" id="9386">
+            <strong>Signature:</strong> (a:float [,]) -&gt; M22l<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '9387', 9387)" onmouseover="showTip(event, '9387', 9387)">
+            op_Explicit(m)
+          </code>
+          <div class="tip" id="9387">
+            <strong>Signature:</strong> m:M22l -&gt; float []<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '9388', 9388)" onmouseover="showTip(event, '9388', 9388)">
+            op_Explicit(m)
+          </code>
+          <div class="tip" id="9388">
+            <strong>Signature:</strong> m:M22l -&gt; float [,]<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '9389', 9389)" onmouseover="showTip(event, '9389', 9389)">
+            op_GreaterThan(a, b)
+          </code>
+          <div class="tip" id="9389">
+            <strong>Signature:</strong> (a:M22l * b:M22l) -&gt; bool<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '9390', 9390)" onmouseover="showTip(event, '9390', 9390)">
+            op_GreaterThan(a, s)
+          </code>
+          <div class="tip" id="9390">
+            <strong>Signature:</strong> (a:M22l * s:int64) -&gt; bool<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '9391', 9391)" onmouseover="showTip(event, '9391', 9391)">
+            op_GreaterThan(s, a)
+          </code>
+          <div class="tip" id="9391">
+            <strong>Signature:</strong> (s:int64 * a:M22l) -&gt; bool<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '9392', 9392)" onmouseover="showTip(event, '9392', 9392)">
+            op_GreaterThanOrEqual(a, b)
+          </code>
+          <div class="tip" id="9392">
+            <strong>Signature:</strong> (a:M22l * b:M22l) -&gt; bool<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '9393', 9393)" onmouseover="showTip(event, '9393', 9393)">
+            op_GreaterThanOrEqual(a, s)
+          </code>
+          <div class="tip" id="9393">
+            <strong>Signature:</strong> (a:M22l * s:int64) -&gt; bool<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '9394', 9394)" onmouseover="showTip(event, '9394', 9394)">
+            op_GreaterThanOrEqual(s, a)
+          </code>
+          <div class="tip" id="9394">
+            <strong>Signature:</strong> (s:int64 * a:M22l) -&gt; bool<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '9395', 9395)" onmouseover="showTip(event, '9395', 9395)">
+            op_Inequality(a, b)
+          </code>
+          <div class="tip" id="9395">
+            <strong>Signature:</strong> (a:M22l * b:M22l) -&gt; bool<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '9396', 9396)" onmouseover="showTip(event, '9396', 9396)">
+            op_Inequality(m, s)
+          </code>
+          <div class="tip" id="9396">
+            <strong>Signature:</strong> (m:M22l * s:int64) -&gt; bool<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '9397', 9397)" onmouseover="showTip(event, '9397', 9397)">
+            op_Inequality(s, m)
+          </code>
+          <div class="tip" id="9397">
+            <strong>Signature:</strong> (s:int64 * m:M22l) -&gt; bool<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '9398', 9398)" onmouseover="showTip(event, '9398', 9398)">
+            op_LessThan(a, b)
+          </code>
+          <div class="tip" id="9398">
+            <strong>Signature:</strong> (a:M22l * b:M22l) -&gt; bool<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '9399', 9399)" onmouseover="showTip(event, '9399', 9399)">
+            op_LessThan(a, s)
+          </code>
+          <div class="tip" id="9399">
+            <strong>Signature:</strong> (a:M22l * s:int64) -&gt; bool<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '9400', 9400)" onmouseover="showTip(event, '9400', 9400)">
+            op_LessThan(s, a)
+          </code>
+          <div class="tip" id="9400">
+            <strong>Signature:</strong> (s:int64 * a:M22l) -&gt; bool<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '9401', 9401)" onmouseover="showTip(event, '9401', 9401)">
+            op_LessThanOrEqual(a, b)
+          </code>
+          <div class="tip" id="9401">
+            <strong>Signature:</strong> (a:M22l * b:M22l) -&gt; bool<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '9402', 9402)" onmouseover="showTip(event, '9402', 9402)">
+            op_LessThanOrEqual(a, s)
+          </code>
+          <div class="tip" id="9402">
+            <strong>Signature:</strong> (a:M22l * s:int64) -&gt; bool<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '9403', 9403)" onmouseover="showTip(event, '9403', 9403)">
+            op_LessThanOrEqual(s, a)
+          </code>
+          <div class="tip" id="9403">
+            <strong>Signature:</strong> (s:int64 * a:M22l) -&gt; bool<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '9404', 9404)" onmouseover="showTip(event, '9404', 9404)">
+            op_Modulus(a, b)
+          </code>
+          <div class="tip" id="9404">
+            <strong>Signature:</strong> (a:M22l * b:M22l) -&gt; M22l<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '9405', 9405)" onmouseover="showTip(event, '9405', 9405)">
+            op_Modulus(m, s)
+          </code>
+          <div class="tip" id="9405">
+            <strong>Signature:</strong> (m:M22l * s:int64) -&gt; M22l<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '9406', 9406)" onmouseover="showTip(event, '9406', 9406)">
+            op_Modulus(s, m)
+          </code>
+          <div class="tip" id="9406">
+            <strong>Signature:</strong> (s:int64 * m:M22l) -&gt; M22l<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '9407', 9407)" onmouseover="showTip(event, '9407', 9407)">
+            op_Modulus(a, b)
+          </code>
+          <div class="tip" id="9407">
+            <strong>Signature:</strong> (a:M22l * b:M22f) -&gt; M22f<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '9408', 9408)" onmouseover="showTip(event, '9408', 9408)">
+            op_Modulus(m, s)
+          </code>
+          <div class="tip" id="9408">
+            <strong>Signature:</strong> (m:M22l * s:float32) -&gt; M22f<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '9409', 9409)" onmouseover="showTip(event, '9409', 9409)">
+            op_Modulus(s, m)
+          </code>
+          <div class="tip" id="9409">
+            <strong>Signature:</strong> (s:float32 * m:M22l) -&gt; M22f<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '9410', 9410)" onmouseover="showTip(event, '9410', 9410)">
+            op_Modulus(a, b)
+          </code>
+          <div class="tip" id="9410">
+            <strong>Signature:</strong> (a:M22l * b:M22d) -&gt; M22d<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '9411', 9411)" onmouseover="showTip(event, '9411', 9411)">
+            op_Modulus(m, s)
+          </code>
+          <div class="tip" id="9411">
+            <strong>Signature:</strong> (m:M22l * s:float) -&gt; M22d<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '9412', 9412)" onmouseover="showTip(event, '9412', 9412)">
+            op_Modulus(s, m)
+          </code>
+          <div class="tip" id="9412">
+            <strong>Signature:</strong> (s:float * m:M22l) -&gt; M22d<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '9413', 9413)" onmouseover="showTip(event, '9413', 9413)">
+            op_Multiply(m, s)
+          </code>
+          <div class="tip" id="9413">
+            <strong>Signature:</strong> (m:M22l * s:int64) -&gt; M22l<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '9414', 9414)" onmouseover="showTip(event, '9414', 9414)">
+            op_Multiply(s, m)
+          </code>
+          <div class="tip" id="9414">
+            <strong>Signature:</strong> (s:int64 * m:M22l) -&gt; M22l<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '9415', 9415)" onmouseover="showTip(event, '9415', 9415)">
+            op_Multiply(m, s)
+          </code>
+          <div class="tip" id="9415">
+            <strong>Signature:</strong> (m:M22l * s:float32) -&gt; M22f<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '9416', 9416)" onmouseover="showTip(event, '9416', 9416)">
+            op_Multiply(s, m)
+          </code>
+          <div class="tip" id="9416">
+            <strong>Signature:</strong> (s:float32 * m:M22l) -&gt; M22f<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '9417', 9417)" onmouseover="showTip(event, '9417', 9417)">
+            op_Multiply(m, s)
+          </code>
+          <div class="tip" id="9417">
+            <strong>Signature:</strong> (m:M22l * s:float) -&gt; M22d<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '9418', 9418)" onmouseover="showTip(event, '9418', 9418)">
+            op_Multiply(s, m)
+          </code>
+          <div class="tip" id="9418">
+            <strong>Signature:</strong> (s:float * m:M22l) -&gt; M22d<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '9419', 9419)" onmouseover="showTip(event, '9419', 9419)">
+            op_Multiply(m, v)
+          </code>
+          <div class="tip" id="9419">
+            <strong>Signature:</strong> (m:M22l * v:V2l) -&gt; V2l<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '9420', 9420)" onmouseover="showTip(event, '9420', 9420)">
+            op_Multiply(a, b)
+          </code>
+          <div class="tip" id="9420">
+            <strong>Signature:</strong> (a:M22l * b:M22l) -&gt; M22l<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '9421', 9421)" onmouseover="showTip(event, '9421', 9421)">
+            op_Subtraction(a, b)
+          </code>
+          <div class="tip" id="9421">
+            <strong>Signature:</strong> (a:M22l * b:M22l) -&gt; M22l<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '9422', 9422)" onmouseover="showTip(event, '9422', 9422)">
+            op_Subtraction(m, s)
+          </code>
+          <div class="tip" id="9422">
+            <strong>Signature:</strong> (m:M22l * s:int64) -&gt; M22l<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '9423', 9423)" onmouseover="showTip(event, '9423', 9423)">
+            op_Subtraction(s, m)
+          </code>
+          <div class="tip" id="9423">
+            <strong>Signature:</strong> (s:int64 * m:M22l) -&gt; M22l<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '9424', 9424)" onmouseover="showTip(event, '9424', 9424)">
+            op_Subtraction(a, b)
+          </code>
+          <div class="tip" id="9424">
+            <strong>Signature:</strong> (a:M22l * b:M22f) -&gt; M22f<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '9425', 9425)" onmouseover="showTip(event, '9425', 9425)">
+            op_Subtraction(m, s)
+          </code>
+          <div class="tip" id="9425">
+            <strong>Signature:</strong> (m:M22l * s:float32) -&gt; M22f<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '9426', 9426)" onmouseover="showTip(event, '9426', 9426)">
+            op_Subtraction(s, m)
+          </code>
+          <div class="tip" id="9426">
+            <strong>Signature:</strong> (s:float32 * m:M22l) -&gt; M22f<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '9427', 9427)" onmouseover="showTip(event, '9427', 9427)">
+            op_Subtraction(a, b)
+          </code>
+          <div class="tip" id="9427">
+            <strong>Signature:</strong> (a:M22l * b:M22d) -&gt; M22d<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '9428', 9428)" onmouseover="showTip(event, '9428', 9428)">
+            op_Subtraction(m, s)
+          </code>
+          <div class="tip" id="9428">
+            <strong>Signature:</strong> (m:M22l * s:float) -&gt; M22d<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '9429', 9429)" onmouseover="showTip(event, '9429', 9429)">
+            op_Subtraction(s, m)
+          </code>
+          <div class="tip" id="9429">
+            <strong>Signature:</strong> (s:float * m:M22l) -&gt; M22d<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '9430', 9430)" onmouseover="showTip(event, '9430', 9430)">
+            Parse(s)
+          </code>
+          <div class="tip" id="9430">
+            <strong>Signature:</strong> s:string -&gt; M22l<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '9431', 9431)" onmouseover="showTip(event, '9431', 9431)">
+            Subtract(a, b)
+          </code>
+          <div class="tip" id="9431">
+            <strong>Signature:</strong> (a:M22l * b:M22l) -&gt; M22l<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '9432', 9432)" onmouseover="showTip(event, '9432', 9432)">
+            Subtract(m, s)
+          </code>
+          <div class="tip" id="9432">
+            <strong>Signature:</strong> (m:M22l * s:int64) -&gt; M22l<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '9433', 9433)" onmouseover="showTip(event, '9433', 9433)">
+            Subtract(s, m)
+          </code>
+          <div class="tip" id="9433">
+            <strong>Signature:</strong> (s:int64 * m:M22l) -&gt; M22l<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '9434', 9434)" onmouseover="showTip(event, '9434', 9434)">
+            Subtract(a, b)
+          </code>
+          <div class="tip" id="9434">
+            <strong>Signature:</strong> (a:M22l * b:M22f) -&gt; M22f<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '9435', 9435)" onmouseover="showTip(event, '9435', 9435)">
+            Subtract(m, s)
+          </code>
+          <div class="tip" id="9435">
+            <strong>Signature:</strong> (m:M22l * s:float32) -&gt; M22f<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '9436', 9436)" onmouseover="showTip(event, '9436', 9436)">
+            Subtract(s, m)
+          </code>
+          <div class="tip" id="9436">
+            <strong>Signature:</strong> (s:float32 * m:M22l) -&gt; M22f<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '9437', 9437)" onmouseover="showTip(event, '9437', 9437)">
+            Subtract(a, b)
+          </code>
+          <div class="tip" id="9437">
+            <strong>Signature:</strong> (a:M22l * b:M22d) -&gt; M22d<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '9438', 9438)" onmouseover="showTip(event, '9438', 9438)">
+            Subtract(m, s)
+          </code>
+          <div class="tip" id="9438">
+            <strong>Signature:</strong> (m:M22l * s:float) -&gt; M22d<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '9439', 9439)" onmouseover="showTip(event, '9439', 9439)">
+            Subtract(s, m)
+          </code>
+          <div class="tip" id="9439">
+            <strong>Signature:</strong> (s:float * m:M22l) -&gt; M22d<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '9440', 9440)" onmouseover="showTip(event, '9440', 9440)">
+            TransformDir(m, v)
+          </code>
+          <div class="tip" id="9440">
+            <strong>Signature:</strong> (m:M22l * v:int64) -&gt; int64<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Transforms direction vector v (v.w is presumed 0.0) by matrix m.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '9441', 9441)" onmouseover="showTip(event, '9441', 9441)">
+            TransformPos(m, p)
+          </code>
+          <div class="tip" id="9441">
+            <strong>Signature:</strong> (m:M22l * p:int64) -&gt; int64<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Transforms point p (v.w is presumed 1.0) by matrix m.
+No projective transform is performed.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '9442', 9442)" onmouseover="showTip(event, '9442', 9442)">
+            TransformPosProj(m, p)
+          </code>
+          <div class="tip" id="9442">
+            <strong>Signature:</strong> (m:M22l * p:int64) -&gt; int64<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Transforms point p (p.w is presumed 1.0) by matrix m.
+Projective transform is performed. Perspective Division is performed.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '9443', 9443)" onmouseover="showTip(event, '9443', 9443)">
+            TransformPosProjFull(m, p)
+          </code>
+          <div class="tip" id="9443">
+            <strong>Signature:</strong> (m:M22l * p:int64) -&gt; V2l<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Transforms point p (p.w is presumed 1.0) by matrix m.
+Projective transform is performed.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '9444', 9444)" onmouseover="showTip(event, '9444', 9444)">
+            TransposedMultiply(v, m)
+          </code>
+          <div class="tip" id="9444">
+            <strong>Signature:</strong> (v:V2l * m:M22l) -&gt; V2l<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+        </div>
+        <div class="span3">
+          <a href="https://github.com/vrvis">
+            <img src="logo.png" style="width:140px;height:140px;margin:10px 0px 0px 35px;border-style:none;" />
+          </a>
+
+          <ul class="nav nav-list" id="menu">
+
+            <li class="nav-header">Aardvark.Base</li>
+
+            <li class="divider"></li>
+            <li><a href="https://github.com/vrvis/aardvark.base">Home page</a></li>
+            <li class="divider"></li>
+
+            <li><a href="https://www.nuget.org/packages/Aardvark.Base">Get Aardvark.Base via NuGet</a></li>
+            <li><a href="https://github.com/vrvis/aardvark.base">Source Code on GitHub</a></li>
+            <li><a href="https://github.com/vrvis/aardvark.baseLicense">License (Apache 2)</a></li>
+            
+            <!-- <li><a href="https://github.com/vrvis/aardvark.base/RELEASE_NOTES.html">Release Notes</a></li>
+            <li><a href="https://github.com/vrvis/aardvark.base//contributing.html">Contributing to Aardvark.Base</a></li>
+  
+            <li><a href="http://stackoverflow.com/questions/tagged/f%23-fake">Ask a question</a></li> 
+            
+            <li class="nav-header">Tutorials</li>
+            <li><a href="https://github.com/vrvis/aardvark.base/gettingstarted.html">Getting started</a></li>
+            
+            -->
+
+            
+            <li class="divider"></li>
+            <li class="nav-header">Reference</li>
+
+            <li><a href="https://github.com/vrvis/aardvark.base/apidocs/index.html">API Reference</a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    <a href="https://github.com/vrvis/aardvark.base"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_gray_6d6d6d.png" alt="Fork me on GitHub"></a>
+  </body>
+  </html>

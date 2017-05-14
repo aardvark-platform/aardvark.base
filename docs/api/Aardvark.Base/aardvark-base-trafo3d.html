@@ -1,0 +1,771 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>Trafo3d - Aardvark.Base</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="The Aardvark Platform Team">
+
+    <script src="https://code.jquery.com/jquery-1.8.0.js"></script>
+    <script src="https://code.jquery.com/ui/1.8.23/jquery-ui.js"></script>
+    <script src="https://netdna.bootstrapcdn.com/twitter-bootstrap/2.2.1/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link href="https://netdna.bootstrapcdn.com/twitter-bootstrap/2.2.1/css/bootstrap-combined.min.css" rel="stylesheet">
+
+    <link type="text/css" rel="stylesheet" href="https://github.com/vrvis/aardvark.base/content/style.css" />
+    <script type="text/javascript" src="https://github.com/vrvis/aardvark.base/content/tips.js"></script>
+    <!-- HTML5 shim, for IE6-8 support of HTML5 elements -->
+    <!--[if lt IE 9]>
+      <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+  </head>
+  <body>
+    <div class="container">
+      <div class="masthead">
+        <ul class="nav nav-pills pull-right">
+          <li><a href="https://github.com/vrvis/aardvark.base">github page</a></li>
+        </ul>
+        <h3 class="muted"><a href="https://github.com/vrvis/aardvark.base/index.html">Aardvark.Base</a></h3>
+      </div>
+      <hr />
+      <div class="row">
+        <div class="span9" id="main">
+          
+
+
+
+<h1>Trafo3d</h1>
+<div class="xmldoc">
+<p>A trafo is a container for a forward and a backward matrix.</p>
+
+</div>
+  <h3>Constructors</h3>
+  <table class="table table-bordered member-list">
+    <thead>
+      <tr><td>Constructor</td><td>Description</td></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '22594', 22594)" onmouseover="showTip(event, '22594', 22594)">
+            new(forward, backward)
+          </code>
+          <div class="tip" id="22594">
+            <strong>Signature:</strong> (forward:M44d * backward:M44d) -&gt; unit<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '22595', 22595)" onmouseover="showTip(event, '22595', 22595)">
+            new(trafo)
+          </code>
+          <div class="tip" id="22595">
+            <strong>Signature:</strong> trafo:Trafo3d -&gt; unit<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '22596', 22596)" onmouseover="showTip(event, '22596', 22596)">
+            new(trafo)
+          </code>
+          <div class="tip" id="22596">
+            <strong>Signature:</strong> trafo:Euclidean3d -&gt; unit<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '22597', 22597)" onmouseover="showTip(event, '22597', 22597)">
+            new(trafo)
+          </code>
+          <div class="tip" id="22597">
+            <strong>Signature:</strong> trafo:Similarity3d -&gt; unit<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '22598', 22598)" onmouseover="showTip(event, '22598', 22598)">
+            new(trafo)
+          </code>
+          <div class="tip" id="22598">
+            <strong>Signature:</strong> trafo:Rot3d -&gt; unit<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+    </tbody>
+  </table>
+  <h3>Instance members</h3>
+  <table class="table table-bordered member-list">
+    <thead>
+      <tr><td>Instance member</td><td>Description</td></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '22599', 22599)" onmouseover="showTip(event, '22599', 22599)">
+            Equals(other)
+          </code>
+          <div class="tip" id="22599">
+            <strong>Signature:</strong> other:obj -&gt; bool<br />
+              <strong>Modifiers:</strong> abstract<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '22600', 22600)" onmouseover="showTip(event, '22600', 22600)">
+            GetHashCode()
+          </code>
+          <div class="tip" id="22600">
+            <strong>Signature:</strong> unit -&gt; int<br />
+              <strong>Modifiers:</strong> abstract<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '22601', 22601)" onmouseover="showTip(event, '22601', 22601)">
+            Inverse
+          </code>
+          <div class="tip" id="22601">
+            <strong>Signature:</strong> Trafo3d<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '22602', 22602)" onmouseover="showTip(event, '22602', 22602)">
+            ToString()
+          </code>
+          <div class="tip" id="22602">
+            <strong>Signature:</strong> unit -&gt; string<br />
+              <strong>Modifiers:</strong> abstract<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+    </tbody>
+  </table>
+  <h3>Static members</h3>
+  <table class="table table-bordered member-list">
+    <thead>
+      <tr><td>Static member</td><td>Description</td></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '22603', 22603)" onmouseover="showTip(event, '22603', 22603)">
+            FromBasis(xAxis, yAxis, zAxis, orign)
+          </code>
+          <div class="tip" id="22603">
+            <strong>Signature:</strong> (xAxis:V3f * yAxis:V3f * zAxis:V3f * orign:V3f) -&gt; Trafo3d<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Returns the trafo that transforms from the coordinate system
+specified by the basis into the world coordinate system.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '22604', 22604)" onmouseover="showTip(event, '22604', 22604)">
+            FromBasis(xAxis, yAxis, zAxis, orign)
+          </code>
+          <div class="tip" id="22604">
+            <strong>Signature:</strong> (xAxis:V3d * yAxis:V3d * zAxis:V3d * orign:V3d) -&gt; Trafo3d<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Returns the trafo that transforms from the coordinate system
+specified by the basis into the world coordinate system.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '22605', 22605)" onmouseover="showTip(event, '22605', 22605)">
+            FromComponents(...)
+          </code>
+          <div class="tip" id="22605">
+            <strong>Signature:</strong> (scale:V3d * rotation:V3d * translation:V3d) -&gt; Trafo3d<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Builds a transformation matrix using the scale, rotation and translation componets.
+NOTE: Uses the Scale <em> Rotation </em> Translation notion.
+The rotation is in Euler-Angles (yaw, pitch, roll).</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '22606', 22606)" onmouseover="showTip(event, '22606', 22606)">
+            FromNormalFrame(origin, normal)
+          </code>
+          <div class="tip" id="22606">
+            <strong>Signature:</strong> (origin:V3d * normal:V3d) -&gt; Trafo3d<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '22607', 22607)" onmouseover="showTip(event, '22607', 22607)">
+            FromOrthoNormalBasis(...)
+          </code>
+          <div class="tip" id="22607">
+            <strong>Signature:</strong> (xAxis:V3d * yAxis:V3d * zAxis:V3d) -&gt; Trafo3d<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Returns the trafo that transforms from the coordinate system
+specified by the basis into the world coordinate system.
+NOTE that the axes MUST be normalized and normal to each other.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '22608', 22608)" onmouseover="showTip(event, '22608', 22608)">
+            op_Equality(a, b)
+          </code>
+          <div class="tip" id="22608">
+            <strong>Signature:</strong> (a:Trafo3d * b:Trafo3d) -&gt; bool<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '22609', 22609)" onmouseover="showTip(event, '22609', 22609)">
+            op_Inequality(a, b)
+          </code>
+          <div class="tip" id="22609">
+            <strong>Signature:</strong> (a:Trafo3d * b:Trafo3d) -&gt; bool<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '22610', 22610)" onmouseover="showTip(event, '22610', 22610)">
+            op_Multiply(t0, t1)
+          </code>
+          <div class="tip" id="22610">
+            <strong>Signature:</strong> (t0:Trafo3d * t1:Trafo3d) -&gt; Trafo3d<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>The order of operation of Trafo3d multiplicaition is backward
+with respect to M44d multiplication in order to provide
+natural postfix notation.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '22611', 22611)" onmouseover="showTip(event, '22611', 22611)">
+            OrthoProjectionRH(l, r, b, t, n, f)
+          </code>
+          <div class="tip" id="22611">
+            <strong>Signature:</strong> (l:float * r:float * b:float * t:float * n:float * f:float) -&gt; Trafo3d<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Creates a right-handed ortho projection transform, where z-negative points into the scene.
+The resulting canonical view volume is [(-1, -1, 0), (+1, +1, +1)].</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '22612', 22612)" onmouseover="showTip(event, '22612', 22612)">
+            Parse(s)
+          </code>
+          <div class="tip" id="22612">
+            <strong>Signature:</strong> s:string -&gt; Trafo3d<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '22613', 22613)" onmouseover="showTip(event, '22613', 22613)">
+            PerspectiveProjectionLH(...)
+          </code>
+          <div class="tip" id="22613">
+            <strong>Signature:</strong> (l:float * r:float * b:float * t:float * n:float * f:float) -&gt; Trafo3d<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Creates a left-handed perspective projection transform, where z-positive points into the scene.
+The resulting canonical view volume is [(-1, -1, 0), (+1, +1, +1)].</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '22614', 22614)" onmouseover="showTip(event, '22614', 22614)">
+            PerspectiveProjectionRH(...)
+          </code>
+          <div class="tip" id="22614">
+            <strong>Signature:</strong> (l:float * r:float * b:float * t:float * n:float * f:float) -&gt; Trafo3d<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Creates a right-handed perspective projection transform, where z-negative points into the scene.
+The resulting canonical view volume is [(-1, -1, 0), (+1, +1, +1)].</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '22615', 22615)" onmouseover="showTip(event, '22615', 22615)">
+            RotateInto(from, into)
+          </code>
+          <div class="tip" id="22615">
+            <strong>Signature:</strong> (from:V3d * into:V3d) -&gt; Trafo3d<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '22616', 22616)" onmouseover="showTip(event, '22616', 22616)">
+            Rotation(axis, angleInRadians)
+          </code>
+          <div class="tip" id="22616">
+            <strong>Signature:</strong> (axis:V3d * angleInRadians:float) -&gt; Trafo3d<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '22617', 22617)" onmouseover="showTip(event, '22617', 22617)">
+            Rotation(...)
+          </code>
+          <div class="tip" id="22617">
+            <strong>Signature:</strong> (yawInRadians:float * pitchInRadians:float * rollInRadians:float) -&gt; Trafo3d<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '22618', 22618)" onmouseover="showTip(event, '22618', 22618)">
+            Rotation(yaw_pitch_roll_inRadians)
+          </code>
+          <div class="tip" id="22618">
+            <strong>Signature:</strong> yaw_pitch_roll_inRadians:V3d -&gt; Trafo3d<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '22619', 22619)" onmouseover="showTip(event, '22619', 22619)">
+            RotationInDegrees(axis, angleInDegrees)
+          </code>
+          <div class="tip" id="22619">
+            <strong>Signature:</strong> (axis:V3d * angleInDegrees:float) -&gt; Trafo3d<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '22620', 22620)" onmouseover="showTip(event, '22620', 22620)">
+            RotationInDegrees(...)
+          </code>
+          <div class="tip" id="22620">
+            <strong>Signature:</strong> (yawInDegrees:float * pitchInDegrees:float * rollInDegrees:float) -&gt; Trafo3d<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '22621', 22621)" onmouseover="showTip(event, '22621', 22621)">
+            RotationInDegrees(...)
+          </code>
+          <div class="tip" id="22621">
+            <strong>Signature:</strong> yaw_pitch_roll_inDegrees:V3d -&gt; Trafo3d<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '22622', 22622)" onmouseover="showTip(event, '22622', 22622)">
+            RotationX(angleInRadians)
+          </code>
+          <div class="tip" id="22622">
+            <strong>Signature:</strong> angleInRadians:float -&gt; Trafo3d<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '22623', 22623)" onmouseover="showTip(event, '22623', 22623)">
+            RotationXInDegrees(angleInDegrees)
+          </code>
+          <div class="tip" id="22623">
+            <strong>Signature:</strong> angleInDegrees:float -&gt; Trafo3d<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '22624', 22624)" onmouseover="showTip(event, '22624', 22624)">
+            RotationY(angleInRadians)
+          </code>
+          <div class="tip" id="22624">
+            <strong>Signature:</strong> angleInRadians:float -&gt; Trafo3d<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '22625', 22625)" onmouseover="showTip(event, '22625', 22625)">
+            RotationYInDegrees(angleInDegrees)
+          </code>
+          <div class="tip" id="22625">
+            <strong>Signature:</strong> angleInDegrees:float -&gt; Trafo3d<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '22626', 22626)" onmouseover="showTip(event, '22626', 22626)">
+            RotationZ(angleInRadians)
+          </code>
+          <div class="tip" id="22626">
+            <strong>Signature:</strong> angleInRadians:float -&gt; Trafo3d<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '22627', 22627)" onmouseover="showTip(event, '22627', 22627)">
+            RotationZInDegrees(angleInDegrees)
+          </code>
+          <div class="tip" id="22627">
+            <strong>Signature:</strong> angleInDegrees:float -&gt; Trafo3d<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '22628', 22628)" onmouseover="showTip(event, '22628', 22628)">
+            Scale(v)
+          </code>
+          <div class="tip" id="22628">
+            <strong>Signature:</strong> v:V3d -&gt; Trafo3d<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '22629', 22629)" onmouseover="showTip(event, '22629', 22629)">
+            Scale(sx, sy, sz)
+          </code>
+          <div class="tip" id="22629">
+            <strong>Signature:</strong> (sx:float * sy:float * sz:float) -&gt; Trafo3d<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '22630', 22630)" onmouseover="showTip(event, '22630', 22630)">
+            Scale(s)
+          </code>
+          <div class="tip" id="22630">
+            <strong>Signature:</strong> s:float -&gt; Trafo3d<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '22631', 22631)" onmouseover="showTip(event, '22631', 22631)">
+            ShearXY(factorX, factorY)
+          </code>
+          <div class="tip" id="22631">
+            <strong>Signature:</strong> (factorX:float * factorY:float) -&gt; Trafo3d<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '22632', 22632)" onmouseover="showTip(event, '22632', 22632)">
+            ShearXZ(factorX, factorZ)
+          </code>
+          <div class="tip" id="22632">
+            <strong>Signature:</strong> (factorX:float * factorZ:float) -&gt; Trafo3d<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '22633', 22633)" onmouseover="showTip(event, '22633', 22633)">
+            ShearYZ(factorY, factorZ)
+          </code>
+          <div class="tip" id="22633">
+            <strong>Signature:</strong> (factorY:float * factorZ:float) -&gt; Trafo3d<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '22634', 22634)" onmouseover="showTip(event, '22634', 22634)">
+            Translation(v)
+          </code>
+          <div class="tip" id="22634">
+            <strong>Signature:</strong> v:V3d -&gt; Trafo3d<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '22635', 22635)" onmouseover="showTip(event, '22635', 22635)">
+            Translation(dx, dy, dz)
+          </code>
+          <div class="tip" id="22635">
+            <strong>Signature:</strong> (dx:float * dy:float * dz:float) -&gt; Trafo3d<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '22636', 22636)" onmouseover="showTip(event, '22636', 22636)">
+            ViewTrafo(location, u, v, z)
+          </code>
+          <div class="tip" id="22636">
+            <strong>Signature:</strong> (location:V3d * u:V3d * v:V3d * z:V3d) -&gt; Trafo3d<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '22637', 22637)" onmouseover="showTip(event, '22637', 22637)">
+            ViewTrafoLH(location, up, forward)
+          </code>
+          <div class="tip" id="22637">
+            <strong>Signature:</strong> (location:V3d * up:V3d * forward:V3d) -&gt; Trafo3d<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Creates a left-handed view trafo, where z-positive points into the scene.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '22638', 22638)" onmouseover="showTip(event, '22638', 22638)">
+            ViewTrafoRH(location, up, forward)
+          </code>
+          <div class="tip" id="22638">
+            <strong>Signature:</strong> (location:V3d * up:V3d * forward:V3d) -&gt; Trafo3d<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Creates a right-handed view trafo, where z-negative points into the scene.</p>
+
+
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+        </div>
+        <div class="span3">
+          <a href="https://github.com/vrvis">
+            <img src="logo.png" style="width:140px;height:140px;margin:10px 0px 0px 35px;border-style:none;" />
+          </a>
+
+          <ul class="nav nav-list" id="menu">
+
+            <li class="nav-header">Aardvark.Base</li>
+
+            <li class="divider"></li>
+            <li><a href="https://github.com/vrvis/aardvark.base">Home page</a></li>
+            <li class="divider"></li>
+
+            <li><a href="https://www.nuget.org/packages/Aardvark.Base">Get Aardvark.Base via NuGet</a></li>
+            <li><a href="https://github.com/vrvis/aardvark.base">Source Code on GitHub</a></li>
+            <li><a href="https://github.com/vrvis/aardvark.baseLicense">License (Apache 2)</a></li>
+            
+            <!-- <li><a href="https://github.com/vrvis/aardvark.base/RELEASE_NOTES.html">Release Notes</a></li>
+            <li><a href="https://github.com/vrvis/aardvark.base//contributing.html">Contributing to Aardvark.Base</a></li>
+  
+            <li><a href="http://stackoverflow.com/questions/tagged/f%23-fake">Ask a question</a></li> 
+            
+            <li class="nav-header">Tutorials</li>
+            <li><a href="https://github.com/vrvis/aardvark.base/gettingstarted.html">Getting started</a></li>
+            
+            -->
+
+            
+            <li class="divider"></li>
+            <li class="nav-header">Reference</li>
+
+            <li><a href="https://github.com/vrvis/aardvark.base/apidocs/index.html">API Reference</a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    <a href="https://github.com/vrvis/aardvark.base"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_gray_6d6d6d.png" alt="Fork me on GitHub"></a>
+  </body>
+  </html>

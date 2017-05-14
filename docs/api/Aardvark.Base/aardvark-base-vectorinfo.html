@@ -1,0 +1,816 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>VectorInfo - Aardvark.Base</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="The Aardvark Platform Team">
+
+    <script src="https://code.jquery.com/jquery-1.8.0.js"></script>
+    <script src="https://code.jquery.com/ui/1.8.23/jquery-ui.js"></script>
+    <script src="https://netdna.bootstrapcdn.com/twitter-bootstrap/2.2.1/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link href="https://netdna.bootstrapcdn.com/twitter-bootstrap/2.2.1/css/bootstrap-combined.min.css" rel="stylesheet">
+
+    <link type="text/css" rel="stylesheet" href="https://github.com/vrvis/aardvark.base/content/style.css" />
+    <script type="text/javascript" src="https://github.com/vrvis/aardvark.base/content/tips.js"></script>
+    <!-- HTML5 shim, for IE6-8 support of HTML5 elements -->
+    <!--[if lt IE 9]>
+      <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+  </head>
+  <body>
+    <div class="container">
+      <div class="masthead">
+        <ul class="nav nav-pills pull-right">
+          <li><a href="https://github.com/vrvis/aardvark.base">github page</a></li>
+        </ul>
+        <h3 class="muted"><a href="https://github.com/vrvis/aardvark.base/index.html">Aardvark.Base</a></h3>
+      </div>
+      <hr />
+      <div class="row">
+        <div class="span9" id="main">
+          
+
+
+
+<h1>VectorInfo</h1>
+<div class="xmldoc">
+<p>A vector info contains the complete indexing information for a vector, but no data array.</p>
+
+</div>
+  <h3>Constructors</h3>
+  <table class="table table-bordered member-list">
+    <thead>
+      <tr><td>Constructor</td><td>Description</td></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '58813', 58813)" onmouseover="showTip(event, '58813', 58813)">
+            new(origin, size, delta, first)
+          </code>
+          <div class="tip" id="58813">
+            <strong>Signature:</strong> (origin:int64 * size:int64 * delta:int64 * first:int64) -&gt; unit<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Construct a VectorInfo given a complete specification.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '58814', 58814)" onmouseover="showTip(event, '58814', 58814)">
+            new(origin, size, delta)
+          </code>
+          <div class="tip" id="58814">
+            <strong>Signature:</strong> (origin:int64 * size:int64 * delta:int64) -&gt; unit<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Construct a VectorInfo given a complete specification.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '58815', 58815)" onmouseover="showTip(event, '58815', 58815)">
+            new(size)
+          </code>
+          <div class="tip" id="58815">
+            <strong>Signature:</strong> size:int64 -&gt; unit<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Construct matrix info of specified size.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '58816', 58816)" onmouseover="showTip(event, '58816', 58816)">
+            new(info)
+          </code>
+          <div class="tip" id="58816">
+            <strong>Signature:</strong> info:VectorInfo -&gt; unit<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '58817', 58817)" onmouseover="showTip(event, '58817', 58817)">
+            new(size)
+          </code>
+          <div class="tip" id="58817">
+            <strong>Signature:</strong> size:int -&gt; unit<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Construct matrix info of specified size.</p>
+
+
+        </td>
+      </tr>
+    </tbody>
+  </table>
+  <h3>Instance members</h3>
+  <table class="table table-bordered member-list">
+    <thead>
+      <tr><td>Instance member</td><td>Description</td></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '58818', 58818)" onmouseover="showTip(event, '58818', 58818)">
+            CheckMatchingSize(t1)
+          </code>
+          <div class="tip" id="58818">
+            <strong>Signature:</strong> t1:VectorInfo -&gt; unit<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '58819', 58819)" onmouseover="showTip(event, '58819', 58819)">
+            CheckMatchingSize(t1, t2)
+          </code>
+          <div class="tip" id="58819">
+            <strong>Signature:</strong> (t1:VectorInfo * t2:VectorInfo) -&gt; unit<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '58820', 58820)" onmouseover="showTip(event, '58820', 58820)">
+            CheckMatchingSize(t1, t2, t3)
+          </code>
+          <div class="tip" id="58820">
+            <strong>Signature:</strong> (t1:VectorInfo * t2:VectorInfo * t3:VectorInfo) -&gt; unit<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '58821', 58821)" onmouseover="showTip(event, '58821', 58821)">
+            Count
+          </code>
+          <div class="tip" id="58821">
+            <strong>Signature:</strong> int64<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Total number of element in the vector.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '58822', 58822)" onmouseover="showTip(event, '58822', 58822)">
+            D()
+          </code>
+          <div class="tip" id="58822">
+            <strong>Signature:</strong> unit -&gt; unit<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Delta</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '58823', 58823)" onmouseover="showTip(event, '58823', 58823)">
+            DeltaArray()
+          </code>
+          <div class="tip" id="58823">
+            <strong>Signature:</strong> unit -&gt; unit<br />
+              <strong>Modifiers:</strong> abstract<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Get or set the deltas of the tensor in each dimension as an
+array of longs.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '58824', 58824)" onmouseover="showTip(event, '58824', 58824)">
+            DS
+          </code>
+          <div class="tip" id="58824">
+            <strong>Signature:</strong> int64<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Cummulative delta for all elements up to this dimension.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '58825', 58825)" onmouseover="showTip(event, '58825', 58825)">
+            DSX
+          </code>
+          <div class="tip" id="58825">
+            <strong>Signature:</strong> int64<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Cummulative delta for all elements up to this dimension.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '58826', 58826)" onmouseover="showTip(event, '58826', 58826)">
+            DX()
+          </code>
+          <div class="tip" id="58826">
+            <strong>Signature:</strong> unit -&gt; unit<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Delta</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '58827', 58827)" onmouseover="showTip(event, '58827', 58827)">
+            E
+          </code>
+          <div class="tip" id="58827">
+            <strong>Signature:</strong> int64<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>End (one step beyond the last element in all dimensions).</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '58828', 58828)" onmouseover="showTip(event, '58828', 58828)">
+            End
+          </code>
+          <div class="tip" id="58828">
+            <strong>Signature:</strong> int64<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>End (one step beyond the last element in all dimensions).</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '58829', 58829)" onmouseover="showTip(event, '58829', 58829)">
+            EX
+          </code>
+          <div class="tip" id="58829">
+            <strong>Signature:</strong> int64<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>End (one step beyond the last element).</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '58830', 58830)" onmouseover="showTip(event, '58830', 58830)">
+            F()
+          </code>
+          <div class="tip" id="58830">
+            <strong>Signature:</strong> unit -&gt; unit<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>First</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '58831', 58831)" onmouseover="showTip(event, '58831', 58831)">
+            FirstArray()
+          </code>
+          <div class="tip" id="58831">
+            <strong>Signature:</strong> unit -&gt; unit<br />
+              <strong>Modifiers:</strong> abstract<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Get or set the first coords of the tensor in each dimension as an
+array of longs.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '58832', 58832)" onmouseover="showTip(event, '58832', 58832)">
+            FirstIndex
+          </code>
+          <div class="tip" id="58832">
+            <strong>Signature:</strong> int64<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Return the index of the first element in the underlying data array.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '58833', 58833)" onmouseover="showTip(event, '58833', 58833)">
+            ForeachCoord(v_action)
+          </code>
+          <div class="tip" id="58833">
+            <strong>Signature:</strong> v_action:Action&lt;int64&gt; -&gt; unit<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '58834', 58834)" onmouseover="showTip(event, '58834', 58834)">
+            ForeachIndex(i_action)
+          </code>
+          <div class="tip" id="58834">
+            <strong>Signature:</strong> i_action:Action&lt;int64&gt; -&gt; unit<br />
+              <strong>Modifiers:</strong> abstract<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '58835', 58835)" onmouseover="showTip(event, '58835', 58835)">
+            ForeachIndex(x_i_action)
+          </code>
+          <div class="tip" id="58835">
+            <strong>Signature:</strong> x_i_action:Action&lt;int64,int64&gt; -&gt; unit<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '58836', 58836)" onmouseover="showTip(event, '58836', 58836)">
+            ForeachIndex(t1, i_i1_act)
+          </code>
+          <div class="tip" id="58836">
+            <strong>Signature:</strong> (t1:VectorInfo * i_i1_act:Action&lt;int64,int64&gt;) -&gt; unit<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '58837', 58837)" onmouseover="showTip(event, '58837', 58837)">
+            FX()
+          </code>
+          <div class="tip" id="58837">
+            <strong>Signature:</strong> unit -&gt; unit<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>First</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '58838', 58838)" onmouseover="showTip(event, '58838', 58838)">
+            HasMatchingLayout(t1)
+          </code>
+          <div class="tip" id="58838">
+            <strong>Signature:</strong> t1:VectorInfo -&gt; bool<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '58839', 58839)" onmouseover="showTip(event, '58839', 58839)">
+            HasMatchingLayout(t1, t2)
+          </code>
+          <div class="tip" id="58839">
+            <strong>Signature:</strong> (t1:VectorInfo * t2:VectorInfo) -&gt; bool<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '58840', 58840)" onmouseover="showTip(event, '58840', 58840)">
+            HasMatchingLayout(t1, t2, t3)
+          </code>
+          <div class="tip" id="58840">
+            <strong>Signature:</strong> (t1:VectorInfo * t2:VectorInfo * t3:VectorInfo) -&gt; bool<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '58841', 58841)" onmouseover="showTip(event, '58841', 58841)">
+            I
+          </code>
+          <div class="tip" id="58841">
+            <strong>Signature:</strong> int64<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '58842', 58842)" onmouseover="showTip(event, '58842', 58842)">
+            Index(coord)
+          </code>
+          <div class="tip" id="58842">
+            <strong>Signature:</strong> coord:int64 -&gt; int64<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Calculate element index for underlying data array.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '58843', 58843)" onmouseover="showTip(event, '58843', 58843)">
+            JX
+          </code>
+          <div class="tip" id="58843">
+            <strong>Signature:</strong> int64<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Jump</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '58844', 58844)" onmouseover="showTip(event, '58844', 58844)">
+            O
+          </code>
+          <div class="tip" id="58844">
+            <strong>Signature:</strong> int64<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '58845', 58845)" onmouseover="showTip(event, '58845', 58845)">
+            OriginIndex()
+          </code>
+          <div class="tip" id="58845">
+            <strong>Signature:</strong> unit -&gt; unit<br />
+              <strong>Modifiers:</strong> abstract<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '58846', 58846)" onmouseover="showTip(event, '58846', 58846)">
+            Rank
+          </code>
+          <div class="tip" id="58846">
+            <strong>Signature:</strong> int<br />
+              <strong>Modifiers:</strong> abstract<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Return the rank or dimension of the the vector (1).</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '58847', 58847)" onmouseover="showTip(event, '58847', 58847)">
+            S()
+          </code>
+          <div class="tip" id="58847">
+            <strong>Signature:</strong> unit -&gt; unit<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Size</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '58848', 58848)" onmouseover="showTip(event, '58848', 58848)">
+            SizeArray()
+          </code>
+          <div class="tip" id="58848">
+            <strong>Signature:</strong> unit -&gt; unit<br />
+              <strong>Modifiers:</strong> abstract<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Get or set the size of the tensor in each dimension as an
+array of longs.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '58849', 58849)" onmouseover="showTip(event, '58849', 58849)">
+            SubVector(begin, size)
+          </code>
+          <div class="tip" id="58849">
+            <strong>Signature:</strong> (begin:int64 * size:int64) -&gt; VectorInfo<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>A SubVector does not copy any data, and thus any operations on it
+are reflected in the corresponding part of the parent.
+This methods returns a Vector with zero as first coordinates.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '58850', 58850)" onmouseover="showTip(event, '58850', 58850)">
+            SubVector(begin, size)
+          </code>
+          <div class="tip" id="58850">
+            <strong>Signature:</strong> (begin:int * size:int) -&gt; VectorInfo<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>A SubVector does not copy any data, and thus any operations on it
+are reflected in the corresponding part of the parent.
+This methods returns a Vector with zero as first coordinates.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '58851', 58851)" onmouseover="showTip(event, '58851', 58851)">
+            SubVector(begin, size, delta)
+          </code>
+          <div class="tip" id="58851">
+            <strong>Signature:</strong> (begin:int64 * size:int64 * delta:int64) -&gt; VectorInfo<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>A SubVector does not copy any data, and thus any operations on it
+are reflected in the corresponding part of the parent.
+This methods returns a Vector with zero as first coordinates.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '58852', 58852)" onmouseover="showTip(event, '58852', 58852)">
+            SubVector(begin, size, delta)
+          </code>
+          <div class="tip" id="58852">
+            <strong>Signature:</strong> (begin:int * size:int * delta:int) -&gt; VectorInfo<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>A SubVector does not copy any data, and thus any operations on it
+are reflected in the corresponding part of the parent.
+This methods returns a Vector with zero as first coordinates.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '58853', 58853)" onmouseover="showTip(event, '58853', 58853)">
+            SubVectorWindow(begin, size)
+          </code>
+          <div class="tip" id="58853">
+            <strong>Signature:</strong> (begin:int64 * size:int64) -&gt; VectorInfo<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>A SubVector does not copy any data, and thus any operations on it
+are reflected in the corresponding part of the parent.
+This method retains the coordinates of the parent Vector.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '58854', 58854)" onmouseover="showTip(event, '58854', 58854)">
+            SubVectorWindow(begin, size)
+          </code>
+          <div class="tip" id="58854">
+            <strong>Signature:</strong> (begin:int * size:int) -&gt; VectorInfo<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>A SubVector does not copy any data, and thus any operations on it
+are reflected in the corresponding part of the parent.
+This method retains the coordinates of the parent Vector.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '58855', 58855)" onmouseover="showTip(event, '58855', 58855)">
+            SubVectorWindow(begin, size, delta)
+          </code>
+          <div class="tip" id="58855">
+            <strong>Signature:</strong> (begin:int64 * size:int64 * delta:int64) -&gt; VectorInfo<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>A SubVector does not copy any data, and thus any operations on it
+are reflected in the corresponding part of the parent.
+This method retains the coordinates of the parent Vector.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '58856', 58856)" onmouseover="showTip(event, '58856', 58856)">
+            SubVectorWindow(begin, size, delta)
+          </code>
+          <div class="tip" id="58856">
+            <strong>Signature:</strong> (begin:int * size:int * delta:int) -&gt; VectorInfo<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>A SubVector does not copy any data, and thus any operations on it
+are reflected in the corresponding part of the parent.
+This method retains the coordinates of the parent Vector.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '58857', 58857)" onmouseover="showTip(event, '58857', 58857)">
+            SX()
+          </code>
+          <div class="tip" id="58857">
+            <strong>Signature:</strong> unit -&gt; unit<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Size</p>
+
+
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+        </div>
+        <div class="span3">
+          <a href="https://github.com/vrvis">
+            <img src="logo.png" style="width:140px;height:140px;margin:10px 0px 0px 35px;border-style:none;" />
+          </a>
+
+          <ul class="nav nav-list" id="menu">
+
+            <li class="nav-header">Aardvark.Base</li>
+
+            <li class="divider"></li>
+            <li><a href="https://github.com/vrvis/aardvark.base">Home page</a></li>
+            <li class="divider"></li>
+
+            <li><a href="https://www.nuget.org/packages/Aardvark.Base">Get Aardvark.Base via NuGet</a></li>
+            <li><a href="https://github.com/vrvis/aardvark.base">Source Code on GitHub</a></li>
+            <li><a href="https://github.com/vrvis/aardvark.baseLicense">License (Apache 2)</a></li>
+            
+            <!-- <li><a href="https://github.com/vrvis/aardvark.base/RELEASE_NOTES.html">Release Notes</a></li>
+            <li><a href="https://github.com/vrvis/aardvark.base//contributing.html">Contributing to Aardvark.Base</a></li>
+  
+            <li><a href="http://stackoverflow.com/questions/tagged/f%23-fake">Ask a question</a></li> 
+            
+            <li class="nav-header">Tutorials</li>
+            <li><a href="https://github.com/vrvis/aardvark.base/gettingstarted.html">Getting started</a></li>
+            
+            -->
+
+            
+            <li class="divider"></li>
+            <li class="nav-header">Reference</li>
+
+            <li><a href="https://github.com/vrvis/aardvark.base/apidocs/index.html">API Reference</a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    <a href="https://github.com/vrvis/aardvark.base"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_gray_6d6d6d.png" alt="Fork me on GitHub"></a>
+  </body>
+  </html>

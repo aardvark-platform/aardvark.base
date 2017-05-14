@@ -1,0 +1,697 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>VecFloat - Aardvark.Base</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="The Aardvark Platform Team">
+
+    <script src="https://code.jquery.com/jquery-1.8.0.js"></script>
+    <script src="https://code.jquery.com/ui/1.8.23/jquery-ui.js"></script>
+    <script src="https://netdna.bootstrapcdn.com/twitter-bootstrap/2.2.1/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link href="https://netdna.bootstrapcdn.com/twitter-bootstrap/2.2.1/css/bootstrap-combined.min.css" rel="stylesheet">
+
+    <link type="text/css" rel="stylesheet" href="https://github.com/vrvis/aardvark.base/content/style.css" />
+    <script type="text/javascript" src="https://github.com/vrvis/aardvark.base/content/tips.js"></script>
+    <!-- HTML5 shim, for IE6-8 support of HTML5 elements -->
+    <!--[if lt IE 9]>
+      <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+  </head>
+  <body>
+    <div class="container">
+      <div class="masthead">
+        <ul class="nav nav-pills pull-right">
+          <li><a href="https://github.com/vrvis/aardvark.base">github page</a></li>
+        </ul>
+        <h3 class="muted"><a href="https://github.com/vrvis/aardvark.base/index.html">Aardvark.Base</a></h3>
+      </div>
+      <hr />
+      <div class="row">
+        <div class="span9" id="main">
+          
+
+
+
+<h1>VecFloat</h1>
+<div class="xmldoc">
+<p>This static class contains a number of extension methods on the Vec
+with type parameter float. These methods allow standard numerical
+methods in arbitrary dimensions. Note that this class does not have
+the usual "Extensions" as parts of its name, so that the method name
+looks more natural when it is uses as a function parameter.</p>
+
+</div>
+  <h3>Static members</h3>
+  <table class="table table-bordered member-list">
+    <thead>
+      <tr><td>Static member</td><td>Description</td></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '57863', 57863)" onmouseover="showTip(event, '57863', 57863)">
+            ComputeCentroid(vecArray)
+          </code>
+          <div class="tip" id="57863">
+            <strong>Signature:</strong> vecArray:VecArray&lt;float32&gt; -&gt; Vec&lt;float&gt;<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '57864', 57864)" onmouseover="showTip(event, '57864', 57864)">
+            ComputeCentroid(vecs)
+          </code>
+          <div class="tip" id="57864">
+            <strong>Signature:</strong> vecs:IEnumerable&lt;Vec&lt;float32&gt;&gt; -&gt; Vec&lt;float&gt;<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '57865', 57865)" onmouseover="showTip(event, '57865', 57865)">
+            Dist1(v0, v1)
+          </code>
+          <div class="tip" id="57865">
+            <strong>Signature:</strong> (v0:Vec&lt;float32&gt; * v1:Vec&lt;float32&gt;) -&gt; float32<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '57866', 57866)" onmouseover="showTip(event, '57866', 57866)">
+            Dist2(v0, v1)
+          </code>
+          <div class="tip" id="57866">
+            <strong>Signature:</strong> (v0:Vec&lt;float32&gt; * v1:Vec&lt;float32&gt;) -&gt; float32<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '57867', 57867)" onmouseover="showTip(event, '57867', 57867)">
+            Dist2Squared(v0, v1)
+          </code>
+          <div class="tip" id="57867">
+            <strong>Signature:</strong> (v0:Vec&lt;float32&gt; * v1:Vec&lt;float32&gt;) -&gt; float<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '57868', 57868)" onmouseover="showTip(event, '57868', 57868)">
+            DistMax(v0, v1)
+          </code>
+          <div class="tip" id="57868">
+            <strong>Signature:</strong> (v0:Vec&lt;float32&gt; * v1:Vec&lt;float32&gt;) -&gt; float32<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '57869', 57869)" onmouseover="showTip(event, '57869', 57869)">
+            DivideBy(v0, s1)
+          </code>
+          <div class="tip" id="57869">
+            <strong>Signature:</strong> (v0:Vec&lt;float32&gt; * s1:float32) -&gt; Vec&lt;float32&gt;<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '57870', 57870)" onmouseover="showTip(event, '57870', 57870)">
+            Dot(v0, v1)
+          </code>
+          <div class="tip" id="57870">
+            <strong>Signature:</strong> (v0:Vec&lt;float32&gt; * v1:Vec&lt;float32&gt;) -&gt; float32<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '57871', 57871)" onmouseover="showTip(event, '57871', 57871)">
+            GetMajorDim(box)
+          </code>
+          <div class="tip" id="57871">
+            <strong>Signature:</strong> box:VecBox&lt;float32&gt; -&gt; int64<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '57872', 57872)" onmouseover="showTip(event, '57872', 57872)">
+            GetMinorDim(box)
+          </code>
+          <div class="tip" id="57872">
+            <strong>Signature:</strong> box:VecBox&lt;float32&gt; -&gt; int64<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '57873', 57873)" onmouseover="showTip(event, '57873', 57873)">
+            IsNaN(v0)
+          </code>
+          <div class="tip" id="57873">
+            <strong>Signature:</strong> v0:Vec&lt;float32&gt; -&gt; bool<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '57874', 57874)" onmouseover="showTip(event, '57874', 57874)">
+            Max(v0)
+          </code>
+          <div class="tip" id="57874">
+            <strong>Signature:</strong> v0:Vec&lt;float32&gt; -&gt; float32<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '57875', 57875)" onmouseover="showTip(event, '57875', 57875)">
+            MaxDim(v0)
+          </code>
+          <div class="tip" id="57875">
+            <strong>Signature:</strong> v0:Vec&lt;float32&gt; -&gt; int64<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '57876', 57876)" onmouseover="showTip(event, '57876', 57876)">
+            MaxValue(dim)
+          </code>
+          <div class="tip" id="57876">
+            <strong>Signature:</strong> dim:int64 -&gt; Vec&lt;float32&gt;<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '57877', 57877)" onmouseover="showTip(event, '57877', 57877)">
+            Min(v0)
+          </code>
+          <div class="tip" id="57877">
+            <strong>Signature:</strong> v0:Vec&lt;float32&gt; -&gt; float32<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '57878', 57878)" onmouseover="showTip(event, '57878', 57878)">
+            MinDim(v0)
+          </code>
+          <div class="tip" id="57878">
+            <strong>Signature:</strong> v0:Vec&lt;float32&gt; -&gt; int64<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '57879', 57879)" onmouseover="showTip(event, '57879', 57879)">
+            Minus(v0, v1)
+          </code>
+          <div class="tip" id="57879">
+            <strong>Signature:</strong> (v0:Vec&lt;float32&gt; * v1:Vec&lt;float32&gt;) -&gt; Vec&lt;float32&gt;<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '57880', 57880)" onmouseover="showTip(event, '57880', 57880)">
+            MinValue(dim)
+          </code>
+          <div class="tip" id="57880">
+            <strong>Signature:</strong> dim:int64 -&gt; Vec&lt;float32&gt;<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '57881', 57881)" onmouseover="showTip(event, '57881', 57881)">
+            MultiplyBy(v0, s1)
+          </code>
+          <div class="tip" id="57881">
+            <strong>Signature:</strong> (v0:Vec&lt;float32&gt; * s1:float32) -&gt; Vec&lt;float32&gt;<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '57882', 57882)" onmouseover="showTip(event, '57882', 57882)">
+            NaN(dim)
+          </code>
+          <div class="tip" id="57882">
+            <strong>Signature:</strong> dim:int64 -&gt; Vec&lt;float32&gt;<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '57883', 57883)" onmouseover="showTip(event, '57883', 57883)">
+            Negated(v0)
+          </code>
+          <div class="tip" id="57883">
+            <strong>Signature:</strong> v0:Vec&lt;float32&gt; -&gt; Vec&lt;float32&gt;<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '57884', 57884)" onmouseover="showTip(event, '57884', 57884)">
+            Norm1(v0)
+          </code>
+          <div class="tip" id="57884">
+            <strong>Signature:</strong> v0:Vec&lt;float32&gt; -&gt; float32<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '57885', 57885)" onmouseover="showTip(event, '57885', 57885)">
+            Norm2(v0)
+          </code>
+          <div class="tip" id="57885">
+            <strong>Signature:</strong> v0:Vec&lt;float32&gt; -&gt; float32<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '57886', 57886)" onmouseover="showTip(event, '57886', 57886)">
+            Norm2Squared(v0)
+          </code>
+          <div class="tip" id="57886">
+            <strong>Signature:</strong> v0:Vec&lt;float32&gt; -&gt; float<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '57887', 57887)" onmouseover="showTip(event, '57887', 57887)">
+            NormMax(v0)
+          </code>
+          <div class="tip" id="57887">
+            <strong>Signature:</strong> v0:Vec&lt;float32&gt; -&gt; float32<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '57888', 57888)" onmouseover="showTip(event, '57888', 57888)">
+            Plus(v0, v1)
+          </code>
+          <div class="tip" id="57888">
+            <strong>Signature:</strong> (v0:Vec&lt;float32&gt; * v1:Vec&lt;float32&gt;) -&gt; Vec&lt;float32&gt;<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '57889', 57889)" onmouseover="showTip(event, '57889', 57889)">
+            Sum(vecArray)
+          </code>
+          <div class="tip" id="57889">
+            <strong>Signature:</strong> vecArray:VecArray&lt;float32&gt; -&gt; Vec&lt;float&gt;<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '57890', 57890)" onmouseover="showTip(event, '57890', 57890)">
+            Sum(vecs)
+          </code>
+          <div class="tip" id="57890">
+            <strong>Signature:</strong> vecs:IEnumerable&lt;Vec&lt;float32&gt;&gt; -&gt; Vec&lt;float&gt;<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '57891', 57891)" onmouseover="showTip(event, '57891', 57891)">
+            ToV2f(v0)
+          </code>
+          <div class="tip" id="57891">
+            <strong>Signature:</strong> v0:Vec&lt;float32&gt; -&gt; V2f<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '57892', 57892)" onmouseover="showTip(event, '57892', 57892)">
+            ToV2fs(vecs)
+          </code>
+          <div class="tip" id="57892">
+            <strong>Signature:</strong> vecs:VecArray&lt;float32&gt; -&gt; IEnumerable&lt;V2f&gt;<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '57893', 57893)" onmouseover="showTip(event, '57893', 57893)">
+            ToV3f(v0)
+          </code>
+          <div class="tip" id="57893">
+            <strong>Signature:</strong> v0:Vec&lt;float32&gt; -&gt; V3f<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '57894', 57894)" onmouseover="showTip(event, '57894', 57894)">
+            ToV3fs(vecs)
+          </code>
+          <div class="tip" id="57894">
+            <strong>Signature:</strong> vecs:VecArray&lt;float32&gt; -&gt; IEnumerable&lt;V3f&gt;<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '57895', 57895)" onmouseover="showTip(event, '57895', 57895)">
+            ToV4f(v0)
+          </code>
+          <div class="tip" id="57895">
+            <strong>Signature:</strong> v0:Vec&lt;float32&gt; -&gt; V4f<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '57896', 57896)" onmouseover="showTip(event, '57896', 57896)">
+            ToV4fs(vecs)
+          </code>
+          <div class="tip" id="57896">
+            <strong>Signature:</strong> vecs:VecArray&lt;float32&gt; -&gt; IEnumerable&lt;V4f&gt;<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '57897', 57897)" onmouseover="showTip(event, '57897', 57897)">
+            ToVec(v0)
+          </code>
+          <div class="tip" id="57897">
+            <strong>Signature:</strong> v0:V2f -&gt; Vec&lt;float32&gt;<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '57898', 57898)" onmouseover="showTip(event, '57898', 57898)">
+            ToVec(v0)
+          </code>
+          <div class="tip" id="57898">
+            <strong>Signature:</strong> v0:V3f -&gt; Vec&lt;float32&gt;<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '57899', 57899)" onmouseover="showTip(event, '57899', 57899)">
+            ToVec(v0)
+          </code>
+          <div class="tip" id="57899">
+            <strong>Signature:</strong> v0:V4f -&gt; Vec&lt;float32&gt;<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '57900', 57900)" onmouseover="showTip(event, '57900', 57900)">
+            ToVecArray(vecs)
+          </code>
+          <div class="tip" id="57900">
+            <strong>Signature:</strong> vecs:IEnumerable&lt;V2f&gt; -&gt; VecArray&lt;float32&gt;<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '57901', 57901)" onmouseover="showTip(event, '57901', 57901)">
+            ToVecArray(vecs)
+          </code>
+          <div class="tip" id="57901">
+            <strong>Signature:</strong> vecs:IEnumerable&lt;V3f&gt; -&gt; VecArray&lt;float32&gt;<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '57902', 57902)" onmouseover="showTip(event, '57902', 57902)">
+            ToVecArray(vecs)
+          </code>
+          <div class="tip" id="57902">
+            <strong>Signature:</strong> vecs:IEnumerable&lt;V4f&gt; -&gt; VecArray&lt;float32&gt;<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '57903', 57903)" onmouseover="showTip(event, '57903', 57903)">
+            ToVecArrayFloat(va)
+          </code>
+          <div class="tip" id="57903">
+            <strong>Signature:</strong> va:VecArray&lt;float32&gt; -&gt; VecArray&lt;float&gt;<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '57904', 57904)" onmouseover="showTip(event, '57904', 57904)">
+            ToVecDouble(v0)
+          </code>
+          <div class="tip" id="57904">
+            <strong>Signature:</strong> v0:Vec&lt;float32&gt; -&gt; Vec&lt;float&gt;<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '57905', 57905)" onmouseover="showTip(event, '57905', 57905)">
+            Unit(dim)
+          </code>
+          <div class="tip" id="57905">
+            <strong>Signature:</strong> dim:int64 -&gt; Vec&lt;float32&gt;<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+        </div>
+        <div class="span3">
+          <a href="https://github.com/vrvis">
+            <img src="logo.png" style="width:140px;height:140px;margin:10px 0px 0px 35px;border-style:none;" />
+          </a>
+
+          <ul class="nav nav-list" id="menu">
+
+            <li class="nav-header">Aardvark.Base</li>
+
+            <li class="divider"></li>
+            <li><a href="https://github.com/vrvis/aardvark.base">Home page</a></li>
+            <li class="divider"></li>
+
+            <li><a href="https://www.nuget.org/packages/Aardvark.Base">Get Aardvark.Base via NuGet</a></li>
+            <li><a href="https://github.com/vrvis/aardvark.base">Source Code on GitHub</a></li>
+            <li><a href="https://github.com/vrvis/aardvark.baseLicense">License (Apache 2)</a></li>
+            
+            <!-- <li><a href="https://github.com/vrvis/aardvark.base/RELEASE_NOTES.html">Release Notes</a></li>
+            <li><a href="https://github.com/vrvis/aardvark.base//contributing.html">Contributing to Aardvark.Base</a></li>
+  
+            <li><a href="http://stackoverflow.com/questions/tagged/f%23-fake">Ask a question</a></li> 
+            
+            <li class="nav-header">Tutorials</li>
+            <li><a href="https://github.com/vrvis/aardvark.base/gettingstarted.html">Getting started</a></li>
+            
+            -->
+
+            
+            <li class="divider"></li>
+            <li class="nav-header">Reference</li>
+
+            <li><a href="https://github.com/vrvis/aardvark.base/apidocs/index.html">API Reference</a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    <a href="https://github.com/vrvis/aardvark.base"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_gray_6d6d6d.png" alt="Fork me on GitHub"></a>
+  </body>
+  </html>

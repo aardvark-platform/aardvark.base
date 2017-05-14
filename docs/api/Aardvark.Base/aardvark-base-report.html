@@ -1,0 +1,1364 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>Report - Aardvark.Base</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="The Aardvark Platform Team">
+
+    <script src="https://code.jquery.com/jquery-1.8.0.js"></script>
+    <script src="https://code.jquery.com/ui/1.8.23/jquery-ui.js"></script>
+    <script src="https://netdna.bootstrapcdn.com/twitter-bootstrap/2.2.1/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link href="https://netdna.bootstrapcdn.com/twitter-bootstrap/2.2.1/css/bootstrap-combined.min.css" rel="stylesheet">
+
+    <link type="text/css" rel="stylesheet" href="https://github.com/vrvis/aardvark.base/content/style.css" />
+    <script type="text/javascript" src="https://github.com/vrvis/aardvark.base/content/tips.js"></script>
+    <!-- HTML5 shim, for IE6-8 support of HTML5 elements -->
+    <!--[if lt IE 9]>
+      <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+  </head>
+  <body>
+    <div class="container">
+      <div class="masthead">
+        <ul class="nav nav-pills pull-right">
+          <li><a href="https://github.com/vrvis/aardvark.base">github page</a></li>
+        </ul>
+        <h3 class="muted"><a href="https://github.com/vrvis/aardvark.base/index.html">Aardvark.Base</a></h3>
+      </div>
+      <hr />
+      <div class="row">
+        <div class="span9" id="main">
+          
+
+
+
+<h1>Report</h1>
+<div class="xmldoc">
+<p>This class makes it possible to report messages with different
+verbosity levels to the console or a stream.</p>
+<p>In the simplest case, you can start by reporting single line messages
+with a level Report.Line. The level gives an
+indication of how important this message is: a value of 0 indicates
+that this is a message of utmost importance that cannot be suppressed.
+The higher the level, the lower the importance of the message. In the
+default case only messages of level 0, 1 and 2 are actually reported.</p>
+<p>The following use of levels is suggested:</p>
+<table class="pre"><tr><td class="lines"><pre class="fssnip"><span class="l">1: </span>
+<span class="l">2: </span>
+<span class="l">3: </span>
+<span class="l">4: </span>
+<span class="l">5: </span>
+<span class="l">6: </span>
+</pre></td>
+<td class="snippet"><pre class="fssnip highlighted"><code lang="fsharp"><span class="n">0</span> <span class="o">..</span><span class="o">.</span> <span class="i">unsupressable</span> <span class="i">message</span> <span class="k">of</span> <span class="i">utmost</span> <span class="i">importance</span> (<span class="i">e</span><span class="o">.</span><span class="i">g</span> <span class="i">warning</span>),
+<span class="n">1</span> <span class="o">..</span><span class="o">.</span> <span class="i">very</span> <span class="i">short</span> <span class="i">output</span>,
+<span class="n">2</span> <span class="o">..</span><span class="o">.</span> <span class="i">short</span> <span class="i">output</span> (<span class="i">this</span> <span class="i">is</span> <span class="i">the</span> <span class="k">default</span> <span class="i">level</span>),
+<span class="n">3</span> <span class="o">..</span><span class="o">.</span> <span class="i">normal</span> <span class="i">output</span>,
+<span class="n">4</span> <span class="o">..</span><span class="o">.</span> <span class="i">detailed</span> <span class="i">output</span>,
+<span class="n">5</span><span class="o">-</span><span class="n">9</span> <span class="o">..</span><span class="o">.</span> <span class="i">debugging</span> <span class="i">levels</span>
+</code></pre></td>
+</tr>
+</table>
+<p>The static Report class wraps all methods to a concrete reporter that
+performs the actual reporting. The default reporting setup consists
+of a console reporter at verbosity level 2, and a file reporter at
+reporting level 9 that writes it contents to the file
+"Aardvark.log". Each thread gets its own reporters, which report to
+the logs in a synchronized manner. In order to globally change the
+console report level, you can just conveniently use the static
+Verbosity property.</p>
+
+</div>
+  <h3>Static members</h3>
+  <table class="table table-bordered member-list">
+    <thead>
+      <tr><td>Static member</td><td>Description</td></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '15600', 15600)" onmouseover="showTip(event, '15600', 15600)">
+            AddReporter(reporter)
+          </code>
+          <div class="tip" id="15600">
+            <strong>Signature:</strong> reporter:IReporter -&gt; unit<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Adds the reporter to report for the current active thread.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '15601', 15601)" onmouseover="showTip(event, '15601', 15601)">
+            Begin(parentJob, level, message, args)
+          </code>
+          <div class="tip" id="15601">
+            <strong>Signature:</strong> (parentJob:ReportJob * level:int * message:string * args:obj []) -&gt; unit<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Begin a block with a formatted message.
+All report calls till the call to the next
+are either indented (console/stream) or
+hierarchical children of this block (treeview).</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '15602', 15602)" onmouseover="showTip(event, '15602', 15602)">
+            Begin(parentJob, message, args)
+          </code>
+          <div class="tip" id="15602">
+            <strong>Signature:</strong> (parentJob:ReportJob * message:string * args:obj []) -&gt; unit<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Begin a block with a formatted message.
+All report calls till the call to the next
+are either indented (console/stream) or
+hierarchical children of this block (treeview).</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '15603', 15603)" onmouseover="showTip(event, '15603', 15603)">
+            Begin(parentJob, level)
+          </code>
+          <div class="tip" id="15603">
+            <strong>Signature:</strong> (parentJob:ReportJob * level:int) -&gt; unit<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Begin a block without an explicit message.
+All report calls till the call to the next
+are either indented (console/stream) or
+hierarchical children of this block (treeview).</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '15604', 15604)" onmouseover="showTip(event, '15604', 15604)">
+            Begin(parentJob)
+          </code>
+          <div class="tip" id="15604">
+            <strong>Signature:</strong> parentJob:ReportJob -&gt; unit<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Begin a block without an explicit message.
+All report calls till the call to the next
+are either indented (console/stream) or
+hierarchical children of this block (treeview).</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '15605', 15605)" onmouseover="showTip(event, '15605', 15605)">
+            Begin(level, message, args)
+          </code>
+          <div class="tip" id="15605">
+            <strong>Signature:</strong> (level:int * message:string * args:obj []) -&gt; unit<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Begin a block with a formatted message.
+All report calls till the call to the next
+are either indented (console/stream) or
+hierarchical children of this block (treeview).</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '15606', 15606)" onmouseover="showTip(event, '15606', 15606)">
+            Begin(message, args)
+          </code>
+          <div class="tip" id="15606">
+            <strong>Signature:</strong> (message:string * args:obj []) -&gt; unit<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Begin a block with a formatted message.
+All report calls till the call to the next
+are either indented (console/stream) or
+hierarchical children of this block (treeview).</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '15607', 15607)" onmouseover="showTip(event, '15607', 15607)">
+            Begin(level)
+          </code>
+          <div class="tip" id="15607">
+            <strong>Signature:</strong> level:int -&gt; unit<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Begin a block without an explicit message.
+All report calls till the call to the next
+are either indented (console/stream) or
+hierarchical children of this block (treeview).</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '15608', 15608)" onmouseover="showTip(event, '15608', 15608)">
+            Begin()
+          </code>
+          <div class="tip" id="15608">
+            <strong>Signature:</strong> unit -&gt; unit<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Begin a block without an explicit message.
+All report calls till the call to the next
+are either indented (console/stream) or
+hierarchical children of this block (treeview).</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '15609', 15609)" onmouseover="showTip(event, '15609', 15609)">
+            BeginTimed(...)
+          </code>
+          <div class="tip" id="15609">
+            <strong>Signature:</strong> (parentJob:ReportJob * level:int * message:string * args:obj []) -&gt; unit<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Begin a timed block with a formatted message.
+All report calls till the call to the next
+are either indented (console/stream) or
+hierarchical children of this block (treeview).
+At the  of the block the run time is reported.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '15610', 15610)" onmouseover="showTip(event, '15610', 15610)">
+            BeginTimed(parentJob, message, args)
+          </code>
+          <div class="tip" id="15610">
+            <strong>Signature:</strong> (parentJob:ReportJob * message:string * args:obj []) -&gt; unit<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Begin a timed block with a formatted message.
+All report calls till the call to the next
+are either indented (console/stream) or
+hierarchical children of this block (treeview).
+At the  of the block the run time is reported.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '15611', 15611)" onmouseover="showTip(event, '15611', 15611)">
+            BeginTimed(level, message, args)
+          </code>
+          <div class="tip" id="15611">
+            <strong>Signature:</strong> (level:int * message:string * args:obj []) -&gt; unit<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Begin a timed block with a formatted message.
+All report calls till the call to the next
+are either indented (console/stream) or
+hierarchical children of this block (treeview).
+At the  of the block the run time is reported.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '15612', 15612)" onmouseover="showTip(event, '15612', 15612)">
+            BeginTimed(message, args)
+          </code>
+          <div class="tip" id="15612">
+            <strong>Signature:</strong> (message:string * args:obj []) -&gt; unit<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Begin a timed block with a formatted message.
+All report calls till the call to the next
+are either indented (console/stream) or
+hierarchical children of this block (treeview).
+At the  of the block the run time is reported.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '15613', 15613)" onmouseover="showTip(event, '15613', 15613)">
+            BeginTimedNoLog(...)
+          </code>
+          <div class="tip" id="15613">
+            <strong>Signature:</strong> (parentJob:ReportJob * level:int * message:string * args:obj []) -&gt; unit<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Begin a timed block with a formatted message that will only be logged at the end of the job.
+All report calls till the call to the next
+are either indented (console/stream) or
+hierarchical children of this block (treeview).
+At the  of the block the run time is reported.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '15614', 15614)" onmouseover="showTip(event, '15614', 15614)">
+            BeginTimedNoLog(...)
+          </code>
+          <div class="tip" id="15614">
+            <strong>Signature:</strong> (parentJob:ReportJob * message:string * args:obj []) -&gt; unit<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Begin a timed block with a formatted message that will only be logged at the end of the job.
+All report calls till the call to the next
+are either indented (console/stream) or
+hierarchical children of this block (treeview).
+At the  of the block the run time is reported.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '15615', 15615)" onmouseover="showTip(event, '15615', 15615)">
+            BeginTimedNoLog(level, message, args)
+          </code>
+          <div class="tip" id="15615">
+            <strong>Signature:</strong> (level:int * message:string * args:obj []) -&gt; unit<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Begin a timed block with a formatted message that will only be logged at the end of the job.
+All report calls till the call to the next
+are either indented (console/stream) or
+hierarchical children of this block (treeview).
+At the  of the block the run time is reported.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '15616', 15616)" onmouseover="showTip(event, '15616', 15616)">
+            BeginTimedNoLog(message, args)
+          </code>
+          <div class="tip" id="15616">
+            <strong>Signature:</strong> (message:string * args:obj []) -&gt; unit<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Begin a timed block with a formatted message that will only be logged at the end of the job.
+All report calls till the call to the next
+are either indented (console/stream) or
+hierarchical children of this block (treeview).
+At the  of the block the run time is reported.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '15617', 15617)" onmouseover="showTip(event, '15617', 15617)">
+            ConsoleColoredWriteAct(...)
+          </code>
+          <div class="tip" id="15617">
+            <strong>Signature:</strong> (threadIndex:int * type:LogType * level:int * message:string) -&gt; unit<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '15618', 15618)" onmouseover="showTip(event, '15618', 15618)">
+            ConsoleForegroundColoredWriteAct(...)
+          </code>
+          <div class="tip" id="15618">
+            <strong>Signature:</strong> (threadIndex:int * type:LogType * level:int * message:string) -&gt; unit<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '15619', 15619)" onmouseover="showTip(event, '15619', 15619)">
+            ConsoleWriteAct(...)
+          </code>
+          <div class="tip" id="15619">
+            <strong>Signature:</strong> (threadIndex:int * type:LogType * level:int * message:string) -&gt; unit<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '15620', 15620)" onmouseover="showTip(event, '15620', 15620)">
+            Debug(line, args)
+          </code>
+          <div class="tip" id="15620">
+            <strong>Signature:</strong> (line:string * args:obj []) -&gt; unit<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Write a debug message.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '15621', 15621)" onmouseover="showTip(event, '15621', 15621)">
+            Debug(level, line, args)
+          </code>
+          <div class="tip" id="15621">
+            <strong>Signature:</strong> (level:int * line:string * args:obj []) -&gt; unit<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Write a debug message.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '15622', 15622)" onmouseover="showTip(event, '15622', 15622)">
+            End(level)
+          </code>
+          <div class="tip" id="15622">
+            <strong>Signature:</strong> level:int -&gt; float<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Ends a block of messages. If the block was timed, its runtime is
+reported. The End call MUST use the same level as the
+corresponding Begin/BeginTimed. The runtime in seconds is also returned.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '15623', 15623)" onmouseover="showTip(event, '15623', 15623)">
+            End()
+          </code>
+          <div class="tip" id="15623">
+            <strong>Signature:</strong> unit -&gt; float<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Ends a block of messages. If the block was timed, its runtime is
+reported. The End call MUST use the same level as the
+corresponding Begin/BeginTimed. The runtime in seconds is also returned.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '15624', 15624)" onmouseover="showTip(event, '15624', 15624)">
+            End(level, message, args)
+          </code>
+          <div class="tip" id="15624">
+            <strong>Signature:</strong> (level:int * message:string * args:obj []) -&gt; float<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Ends a block of messages, and supply an end message. If the end
+message is the very same as the begin message it is suppressed.
+If the end message starts with a continuation character (a space,
+a colon or a comma), it is viewed as a continuation message of
+the begin message, and appended as appropriate. If it is not the
+same and does not start with a continuation character, it is used
+as a distinct end message.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '15625', 15625)" onmouseover="showTip(event, '15625', 15625)">
+            End(message, args)
+          </code>
+          <div class="tip" id="15625">
+            <strong>Signature:</strong> (message:string * args:obj []) -&gt; float<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Ends a block of messages, and supply an end message. If the end
+message is the very same as the begin message it is suppressed.
+If the end message starts with a continuation character (a space,
+a colon or a comma), it is viewed as a continuation message of
+the begin message, and appended as appropriate. If it is not the
+same and does not start with a continuation character, it is used
+as a distinct end message.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '15626', 15626)" onmouseover="showTip(event, '15626', 15626)">
+            EndTimed(level)
+          </code>
+          <div class="tip" id="15626">
+            <strong>Signature:</strong> level:int -&gt; float<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Ends a block of messages. If the block was timed, its runtime is
+reported. The End call MUST use the same level as the
+corresponding Begin/BeginTimed. The runtime in seconds is also returned.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '15627', 15627)" onmouseover="showTip(event, '15627', 15627)">
+            EndTimed()
+          </code>
+          <div class="tip" id="15627">
+            <strong>Signature:</strong> unit -&gt; float<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Ends a block of messages. If the block was timed, its runtime is
+reported. The End call MUST use the same level as the
+corresponding Begin/BeginTimed. The runtime in seconds is also returned.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '15628', 15628)" onmouseover="showTip(event, '15628', 15628)">
+            EndTimed(level, message, args)
+          </code>
+          <div class="tip" id="15628">
+            <strong>Signature:</strong> (level:int * message:string * args:obj []) -&gt; float<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Ends a block of messages, and supply an end message. If the end
+message is the very same as the begin message it is suppressed.
+If the end message starts with a continuation character (a space,
+a colon or a comma), it is viewed as a continuation message of
+the begin message, and appended as appropriate. If it is not the
+same and does not start with a continuation character, it is used
+as a distinct end message.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '15629', 15629)" onmouseover="showTip(event, '15629', 15629)">
+            EndTimed(message, args)
+          </code>
+          <div class="tip" id="15629">
+            <strong>Signature:</strong> (message:string * args:obj []) -&gt; float<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Ends a block of messages, and supply an end message. If the end
+message is the very same as the begin message it is suppressed.
+If the end message starts with a continuation character (a space,
+a colon or a comma), it is viewed as a continuation message of
+the begin message, and appended as appropriate. If it is not the
+same and does not start with a continuation character, it is used
+as a distinct end message.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '15630', 15630)" onmouseover="showTip(event, '15630', 15630)">
+            Error(line, args)
+          </code>
+          <div class="tip" id="15630">
+            <strong>Signature:</strong> (line:string * args:obj []) -&gt; unit<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Write an error. Erors are at level 0 and cannot be
+suppressed. More serious than a Warning, the program commences.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '15631', 15631)" onmouseover="showTip(event, '15631', 15631)">
+            Fatal(line, args)
+          </code>
+          <div class="tip" id="15631">
+            <strong>Signature:</strong> (line:string * args:obj []) -&gt; unit<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Report a critical failure and break into the debugger, if
+one is attached.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '15632', 15632)" onmouseover="showTip(event, '15632', 15632)">
+            Job(parentJob, level, message, args)
+          </code>
+          <div class="tip" id="15632">
+            <strong>Signature:</strong> (parentJob:ReportJob * level:int * message:string * args:obj []) -&gt; ReportJob<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Begin a block with a formatted message.
+All report calls till the call to the next
+are either indented (console/stream) or
+hierarchical children of this block (treeview).</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '15633', 15633)" onmouseover="showTip(event, '15633', 15633)">
+            Job(parentJob, message, args)
+          </code>
+          <div class="tip" id="15633">
+            <strong>Signature:</strong> (parentJob:ReportJob * message:string * args:obj []) -&gt; ReportJob<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Begin a block with a formatted message.
+All report calls till the call to the next
+are either indented (console/stream) or
+hierarchical children of this block (treeview).</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '15634', 15634)" onmouseover="showTip(event, '15634', 15634)">
+            Job(level, message, args)
+          </code>
+          <div class="tip" id="15634">
+            <strong>Signature:</strong> (level:int * message:string * args:obj []) -&gt; ReportJob<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Begin a block with a formatted message.
+All report calls till the call to the next
+are either indented (console/stream) or
+hierarchical children of this block (treeview).</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '15635', 15635)" onmouseover="showTip(event, '15635', 15635)">
+            Job(message, args)
+          </code>
+          <div class="tip" id="15635">
+            <strong>Signature:</strong> (message:string * args:obj []) -&gt; ReportJob<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Begin a block with a formatted message.
+All report calls till the call to the next
+are either indented (console/stream) or
+hierarchical children of this block (treeview).</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '15636', 15636)" onmouseover="showTip(event, '15636', 15636)">
+            JobTimed(...)
+          </code>
+          <div class="tip" id="15636">
+            <strong>Signature:</strong> (parentJob:ReportJob * level:int * message:string * args:obj []) -&gt; ReportJob<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Begin a timed block with a formatted message.
+All report calls till the call to the next
+are either indented (console/stream) or
+hierarchical children of this block (treeview).
+At the  of the block the run time is reported.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '15637', 15637)" onmouseover="showTip(event, '15637', 15637)">
+            JobTimed(parentJob, message, args)
+          </code>
+          <div class="tip" id="15637">
+            <strong>Signature:</strong> (parentJob:ReportJob * message:string * args:obj []) -&gt; ReportJob<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Begin a timed block with a formatted message.
+All report calls till the call to the next
+are either indented (console/stream) or
+hierarchical children of this block (treeview).
+At the  of the block the run time is reported.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '15638', 15638)" onmouseover="showTip(event, '15638', 15638)">
+            JobTimed(level, message, args)
+          </code>
+          <div class="tip" id="15638">
+            <strong>Signature:</strong> (level:int * message:string * args:obj []) -&gt; ReportJob<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Begin a timed block with a formatted message.
+All report calls till the call to the next
+are either indented (console/stream) or
+hierarchical children of this block (treeview).
+At the  of the block the run time is reported.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '15639', 15639)" onmouseover="showTip(event, '15639', 15639)">
+            JobTimed(message, args)
+          </code>
+          <div class="tip" id="15639">
+            <strong>Signature:</strong> (message:string * args:obj []) -&gt; ReportJob<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Begin a timed block with a formatted message.
+All report calls till the call to the next
+are either indented (console/stream) or
+hierarchical children of this block (treeview).
+At the  of the block the run time is reported.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '15640', 15640)" onmouseover="showTip(event, '15640', 15640)">
+            JobTimedNoBeginLog(...)
+          </code>
+          <div class="tip" id="15640">
+            <strong>Signature:</strong> (parentJob:ReportJob * level:int * message:string * args:obj []) -&gt; ReportJob<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Begin a timed block with a formatted message that will only be logged at the end of the job.
+All report calls till the call to the next
+are either indented (console/stream) or
+hierarchical children of this block (treeview).
+At the  of the block the run time is reported.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '15641', 15641)" onmouseover="showTip(event, '15641', 15641)">
+            JobTimedNoBeginLog(...)
+          </code>
+          <div class="tip" id="15641">
+            <strong>Signature:</strong> (parentJob:ReportJob * message:string * args:obj []) -&gt; ReportJob<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Begin a timed block with a formatted message that will only be logged at the end of the job.
+All report calls till the call to the next
+are either indented (console/stream) or
+hierarchical children of this block (treeview).
+At the  of the block the run time is reported.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '15642', 15642)" onmouseover="showTip(event, '15642', 15642)">
+            JobTimedNoBeginLog(level, message, args)
+          </code>
+          <div class="tip" id="15642">
+            <strong>Signature:</strong> (level:int * message:string * args:obj []) -&gt; ReportJob<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Begin a timed block with a formatted message that will only be logged at the end of the job.
+All report calls till the call to the next
+are either indented (console/stream) or
+hierarchical children of this block (treeview).
+At the  of the block the run time is reported.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '15643', 15643)" onmouseover="showTip(event, '15643', 15643)">
+            JobTimedNoBeginLog(message, args)
+          </code>
+          <div class="tip" id="15643">
+            <strong>Signature:</strong> (message:string * args:obj []) -&gt; ReportJob<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Begin a timed block with a formatted message that will only be logged at the end of the job.
+All report calls till the call to the next
+are either indented (console/stream) or
+hierarchical children of this block (treeview).
+At the  of the block the run time is reported.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '15644', 15644)" onmouseover="showTip(event, '15644', 15644)">
+            Line(level, line, args)
+          </code>
+          <div class="tip" id="15644">
+            <strong>Signature:</strong> (level:int * line:string * args:obj []) -&gt; unit<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Report a single message line with formatted parameters.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '15645', 15645)" onmouseover="showTip(event, '15645', 15645)">
+            Line(line, args)
+          </code>
+          <div class="tip" id="15645">
+            <strong>Signature:</strong> (line:string * args:obj []) -&gt; unit<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Report a single message line with formatted parameters.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '15646', 15646)" onmouseover="showTip(event, '15646', 15646)">
+            Line(level)
+          </code>
+          <div class="tip" id="15646">
+            <strong>Signature:</strong> level:int -&gt; unit<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Report an empty line or end the line after using Text.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '15647', 15647)" onmouseover="showTip(event, '15647', 15647)">
+            Line()
+          </code>
+          <div class="tip" id="15647">
+            <strong>Signature:</strong> unit -&gt; unit<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Report an empty line or end the line after using Text.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '15648', 15648)" onmouseover="showTip(event, '15648', 15648)">
+            MultiThreaded()
+          </code>
+          <div class="tip" id="15648">
+            <strong>Signature:</strong> unit -&gt; unit<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>By assigning this property multi-threaded reporting can be turned on or off.
+This is mainly a feature for cosmetic and performance reasons of single-
+threaded applciations.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '15649', 15649)" onmouseover="showTip(event, '15649', 15649)">
+            Progress(level, progress)
+          </code>
+          <div class="tip" id="15649">
+            <strong>Signature:</strong> (level:int * progress:float) -&gt; unit<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '15650', 15650)" onmouseover="showTip(event, '15650', 15650)">
+            Progress(progress)
+          </code>
+          <div class="tip" id="15650">
+            <strong>Signature:</strong> progress:float -&gt; unit<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '15651', 15651)" onmouseover="showTip(event, '15651', 15651)">
+            ProgressDelta(level, progressDelta)
+          </code>
+          <div class="tip" id="15651">
+            <strong>Signature:</strong> (level:int * progressDelta:float) -&gt; unit<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '15652', 15652)" onmouseover="showTip(event, '15652', 15652)">
+            ProgressDelta(progressDelta)
+          </code>
+          <div class="tip" id="15652">
+            <strong>Signature:</strong> progressDelta:float -&gt; unit<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '15653', 15653)" onmouseover="showTip(event, '15653', 15653)">
+            RemoveReporter(reporter)
+          </code>
+          <div class="tip" id="15653">
+            <strong>Signature:</strong> reporter:IReporter -&gt; unit<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Removes the reporter to report for the current active thread.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '15654', 15654)" onmouseover="showTip(event, '15654', 15654)">
+            Tests(testInfo)
+          </code>
+          <div class="tip" id="15654">
+            <strong>Signature:</strong> testInfo:TestInfo -&gt; unit<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '15655', 15655)" onmouseover="showTip(event, '15655', 15655)">
+            Tests()
+          </code>
+          <div class="tip" id="15655">
+            <strong>Signature:</strong> unit -&gt; unit<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '15656', 15656)" onmouseover="showTip(event, '15656', 15656)">
+            Text(level, message, args)
+          </code>
+          <div class="tip" id="15656">
+            <strong>Signature:</strong> (level:int * message:string * args:obj []) -&gt; unit<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Report a (possibly multilined) message with formatted parameters.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '15657', 15657)" onmouseover="showTip(event, '15657', 15657)">
+            Text(message, args)
+          </code>
+          <div class="tip" id="15657">
+            <strong>Signature:</strong> (message:string * args:obj []) -&gt; unit<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Report a (possibly multilined) message with formatted parameters.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '15658', 15658)" onmouseover="showTip(event, '15658', 15658)">
+            Trace(line, args)
+          </code>
+          <div class="tip" id="15658">
+            <strong>Signature:</strong> (line:string * args:obj []) -&gt; unit<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Write a debug message.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '15659', 15659)" onmouseover="showTip(event, '15659', 15659)">
+            Trace(level, line, args)
+          </code>
+          <div class="tip" id="15659">
+            <strong>Signature:</strong> (level:int * line:string * args:obj []) -&gt; unit<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Write a debug message.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '15660', 15660)" onmouseover="showTip(event, '15660', 15660)">
+            Value(level, name, reportable)
+          </code>
+          <div class="tip" id="15660">
+            <strong>Signature:</strong> (level:int * name:string * reportable:IReportable) -&gt; unit<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Report a single, named, reportable value.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '15661', 15661)" onmouseover="showTip(event, '15661', 15661)">
+            Value(name, reportable)
+          </code>
+          <div class="tip" id="15661">
+            <strong>Signature:</strong> (name:string * reportable:IReportable) -&gt; unit<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Report a single, named, reportable value.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '15662', 15662)" onmouseover="showTip(event, '15662', 15662)">
+            Value(level, name, value)
+          </code>
+          <div class="tip" id="15662">
+            <strong>Signature:</strong> (level:int * name:string * value:obj) -&gt; unit<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Report a single, named, formattable value.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '15663', 15663)" onmouseover="showTip(event, '15663', 15663)">
+            Value(name, value)
+          </code>
+          <div class="tip" id="15663">
+            <strong>Signature:</strong> (name:string * value:obj) -&gt; unit<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Report a single, named, formattable value.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '15664', 15664)" onmouseover="showTip(event, '15664', 15664)">
+            Values(level, name, separator, values)
+          </code>
+          <div class="tip" id="15664">
+            <strong>Signature:</strong> (level:int * name:string * separator:string * values:obj []) -&gt; unit<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Report a sequence of formattable values.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '15665', 15665)" onmouseover="showTip(event, '15665', 15665)">
+            Values(name, separator, values)
+          </code>
+          <div class="tip" id="15665">
+            <strong>Signature:</strong> (name:string * separator:string * values:obj []) -&gt; unit<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Report a sequence of formattable values.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '15666', 15666)" onmouseover="showTip(event, '15666', 15666)">
+            Verbosity()
+          </code>
+          <div class="tip" id="15666">
+            <strong>Signature:</strong> unit -&gt; unit<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>A shortcat for the verbosity of the ConsoleTarget.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '15667', 15667)" onmouseover="showTip(event, '15667', 15667)">
+            Warn(line, args)
+          </code>
+          <div class="tip" id="15667">
+            <strong>Signature:</strong> (line:string * args:obj []) -&gt; unit<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Write a warning. Warnings are at level 0 and cannot be
+suppressed.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '15668', 15668)" onmouseover="showTip(event, '15668', 15668)">
+            Wrap(level, message, args)
+          </code>
+          <div class="tip" id="15668">
+            <strong>Signature:</strong> (level:int * message:string * args:obj []) -&gt; unit<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Report a message that will be written in the current line if it fits, or in
+the next line (with correct indent) if it does not fit.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '15669', 15669)" onmouseover="showTip(event, '15669', 15669)">
+            Wrap(message, args)
+          </code>
+          <div class="tip" id="15669">
+            <strong>Signature:</strong> (message:string * args:obj []) -&gt; unit<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Report a message that will be written in the current line if it fits, or in
+the next line (with correct indent) if it does not fit.</p>
+
+
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+        </div>
+        <div class="span3">
+          <a href="https://github.com/vrvis">
+            <img src="logo.png" style="width:140px;height:140px;margin:10px 0px 0px 35px;border-style:none;" />
+          </a>
+
+          <ul class="nav nav-list" id="menu">
+
+            <li class="nav-header">Aardvark.Base</li>
+
+            <li class="divider"></li>
+            <li><a href="https://github.com/vrvis/aardvark.base">Home page</a></li>
+            <li class="divider"></li>
+
+            <li><a href="https://www.nuget.org/packages/Aardvark.Base">Get Aardvark.Base via NuGet</a></li>
+            <li><a href="https://github.com/vrvis/aardvark.base">Source Code on GitHub</a></li>
+            <li><a href="https://github.com/vrvis/aardvark.baseLicense">License (Apache 2)</a></li>
+            
+            <!-- <li><a href="https://github.com/vrvis/aardvark.base/RELEASE_NOTES.html">Release Notes</a></li>
+            <li><a href="https://github.com/vrvis/aardvark.base//contributing.html">Contributing to Aardvark.Base</a></li>
+  
+            <li><a href="http://stackoverflow.com/questions/tagged/f%23-fake">Ask a question</a></li> 
+            
+            <li class="nav-header">Tutorials</li>
+            <li><a href="https://github.com/vrvis/aardvark.base/gettingstarted.html">Getting started</a></li>
+            
+            -->
+
+            
+            <li class="divider"></li>
+            <li class="nav-header">Reference</li>
+
+            <li><a href="https://github.com/vrvis/aardvark.base/apidocs/index.html">API Reference</a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    <a href="https://github.com/vrvis/aardvark.base"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_gray_6d6d6d.png" alt="Fork me on GitHub"></a>
+  </body>
+  </html>

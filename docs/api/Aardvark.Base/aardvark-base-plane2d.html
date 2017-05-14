@@ -1,0 +1,439 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>Plane2d - Aardvark.Base</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="The Aardvark Platform Team">
+
+    <script src="https://code.jquery.com/jquery-1.8.0.js"></script>
+    <script src="https://code.jquery.com/ui/1.8.23/jquery-ui.js"></script>
+    <script src="https://netdna.bootstrapcdn.com/twitter-bootstrap/2.2.1/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link href="https://netdna.bootstrapcdn.com/twitter-bootstrap/2.2.1/css/bootstrap-combined.min.css" rel="stylesheet">
+
+    <link type="text/css" rel="stylesheet" href="https://github.com/vrvis/aardvark.base/content/style.css" />
+    <script type="text/javascript" src="https://github.com/vrvis/aardvark.base/content/tips.js"></script>
+    <!-- HTML5 shim, for IE6-8 support of HTML5 elements -->
+    <!--[if lt IE 9]>
+      <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+  </head>
+  <body>
+    <div class="container">
+      <div class="masthead">
+        <ul class="nav nav-pills pull-right">
+          <li><a href="https://github.com/vrvis/aardvark.base">github page</a></li>
+        </ul>
+        <h3 class="muted"><a href="https://github.com/vrvis/aardvark.base/index.html">Aardvark.Base</a></h3>
+      </div>
+      <hr />
+      <div class="row">
+        <div class="span9" id="main">
+          
+
+
+
+<h1>Plane2d</h1>
+<div class="xmldoc">
+<p>A line represented by a (possibly) normalized normal vector and the
+distance to the origin. Note that the plane does not enforce the
+normalized normal vector.
+Equation for points p on the plane: Normal dot p == Distance</p>
+
+</div>
+  <h3>Constructors</h3>
+  <table class="table table-bordered member-list">
+    <thead>
+      <tr><td>Constructor</td><td>Description</td></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '14390', 14390)" onmouseover="showTip(event, '14390', 14390)">
+            new(normalizedNormal, distance)
+          </code>
+          <div class="tip" id="14390">
+            <strong>Signature:</strong> (normalizedNormal:V2d * distance:float) -&gt; unit<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Creates plane from normal vector and constant. IMPORTANT: The
+supplied vector has to be normalized in order for all methods
+to work correctly, however if only relative height computations
+using the  method are necessary, the normal
+vector need not be normalized.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '14391', 14391)" onmouseover="showTip(event, '14391', 14391)">
+            new(normalizedNormal, point)
+          </code>
+          <div class="tip" id="14391">
+            <strong>Signature:</strong> (normalizedNormal:V2d * point:V2d) -&gt; unit<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Creates plane from point and normal vector. IMPORTANT: The
+supplied vector has to be normalized in order for all methods
+to work correctly, however if only relative height computations
+using the  method are necessary, the normal
+vector need not be normalized.</p>
+
+
+        </td>
+      </tr>
+    </tbody>
+  </table>
+  <h3>Instance members</h3>
+  <table class="table table-bordered member-list">
+    <thead>
+      <tr><td>Instance member</td><td>Description</td></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '14392', 14392)" onmouseover="showTip(event, '14392', 14392)">
+            Coefficients
+          </code>
+          <div class="tip" id="14392">
+            <strong>Signature:</strong> V3d<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Returns the coefficients (a, b, c, d) of the normal equation.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '14393', 14393)" onmouseover="showTip(event, '14393', 14393)">
+            Equals(other)
+          </code>
+          <div class="tip" id="14393">
+            <strong>Signature:</strong> other:obj -&gt; bool<br />
+              <strong>Modifiers:</strong> abstract<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '14394', 14394)" onmouseover="showTip(event, '14394', 14394)">
+            GetHashCode()
+          </code>
+          <div class="tip" id="14394">
+            <strong>Signature:</strong> unit -&gt; int<br />
+              <strong>Modifiers:</strong> abstract<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '14395', 14395)" onmouseover="showTip(event, '14395', 14395)">
+            Height(p)
+          </code>
+          <div class="tip" id="14395">
+            <strong>Signature:</strong> p:V2d -&gt; float<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>The signed height of the supplied point over the plane.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '14396', 14396)" onmouseover="showTip(event, '14396', 14396)">
+            IsInvalid
+          </code>
+          <div class="tip" id="14396">
+            <strong>Signature:</strong> bool<br />
+              <strong>Modifiers:</strong> abstract<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Returns true if the normal of the plane is the zero-vector.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '14397', 14397)" onmouseover="showTip(event, '14397', 14397)">
+            IsValid
+          </code>
+          <div class="tip" id="14397">
+            <strong>Signature:</strong> bool<br />
+              <strong>Modifiers:</strong> abstract<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Returns true if the normal of the plane is not the zero-vector.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '14398', 14398)" onmouseover="showTip(event, '14398', 14398)">
+            NearestPoint(x)
+          </code>
+          <div class="tip" id="14398">
+            <strong>Signature:</strong> x:V2d -&gt; V2d<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Projets the given point x perpendicular on the plane
+and returns the nearest point on the plane.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '14399', 14399)" onmouseover="showTip(event, '14399', 14399)">
+            Normalize()
+          </code>
+          <div class="tip" id="14399">
+            <strong>Signature:</strong> unit -&gt; unit<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Calculates the nomalized plane of this .</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '14400', 14400)" onmouseover="showTip(event, '14400', 14400)">
+            Normalized
+          </code>
+          <div class="tip" id="14400">
+            <strong>Signature:</strong> Plane2d<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Returns the normalized  as new .</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '14401', 14401)" onmouseover="showTip(event, '14401', 14401)">
+            PlaneXY
+          </code>
+          <div class="tip" id="14401">
+            <strong>Signature:</strong> Plane3d<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Returns a Plane3d whose cutting-line with the XY-Plane
+is represented by the Plane2d</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '14402', 14402)" onmouseover="showTip(event, '14402', 14402)">
+            PlaneXZ
+          </code>
+          <div class="tip" id="14402">
+            <strong>Signature:</strong> Plane3d<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Returns a Plane3d whose cutting-line with the XZ-Plane
+is represented by the Plane2d</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '14403', 14403)" onmouseover="showTip(event, '14403', 14403)">
+            PlaneYZ
+          </code>
+          <div class="tip" id="14403">
+            <strong>Signature:</strong> Plane3d<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Returns a Plane3d whose cutting-line with the YZ-Plane
+is represented by the Plane2d</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '14404', 14404)" onmouseover="showTip(event, '14404', 14404)">
+            Point()
+          </code>
+          <div class="tip" id="14404">
+            <strong>Signature:</strong> unit -&gt; unit<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>The point on the plane which is closest to the origin.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '14405', 14405)" onmouseover="showTip(event, '14405', 14405)">
+            Reverse()
+          </code>
+          <div class="tip" id="14405">
+            <strong>Signature:</strong> unit -&gt; unit<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Changes sign of normal vector</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '14406', 14406)" onmouseover="showTip(event, '14406', 14406)">
+            Reversed
+          </code>
+          <div class="tip" id="14406">
+            <strong>Signature:</strong> Plane2d<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Returns  with normal vector in opposing direction.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '14407', 14407)" onmouseover="showTip(event, '14407', 14407)">
+            Sign(p)
+          </code>
+          <div class="tip" id="14407">
+            <strong>Signature:</strong> p:V2d -&gt; int<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>The sign of the height of the point over the plane.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '14408', 14408)" onmouseover="showTip(event, '14408', 14408)">
+            ToString()
+          </code>
+          <div class="tip" id="14408">
+            <strong>Signature:</strong> unit -&gt; string<br />
+              <strong>Modifiers:</strong> abstract<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+    </tbody>
+  </table>
+  <h3>Static members</h3>
+  <table class="table table-bordered member-list">
+    <thead>
+      <tr><td>Static member</td><td>Description</td></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '14409', 14409)" onmouseover="showTip(event, '14409', 14409)">
+            Parse(s)
+          </code>
+          <div class="tip" id="14409">
+            <strong>Signature:</strong> s:string -&gt; Plane2d<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+        </div>
+        <div class="span3">
+          <a href="https://github.com/vrvis">
+            <img src="logo.png" style="width:140px;height:140px;margin:10px 0px 0px 35px;border-style:none;" />
+          </a>
+
+          <ul class="nav nav-list" id="menu">
+
+            <li class="nav-header">Aardvark.Base</li>
+
+            <li class="divider"></li>
+            <li><a href="https://github.com/vrvis/aardvark.base">Home page</a></li>
+            <li class="divider"></li>
+
+            <li><a href="https://www.nuget.org/packages/Aardvark.Base">Get Aardvark.Base via NuGet</a></li>
+            <li><a href="https://github.com/vrvis/aardvark.base">Source Code on GitHub</a></li>
+            <li><a href="https://github.com/vrvis/aardvark.baseLicense">License (Apache 2)</a></li>
+            
+            <!-- <li><a href="https://github.com/vrvis/aardvark.base/RELEASE_NOTES.html">Release Notes</a></li>
+            <li><a href="https://github.com/vrvis/aardvark.base//contributing.html">Contributing to Aardvark.Base</a></li>
+  
+            <li><a href="http://stackoverflow.com/questions/tagged/f%23-fake">Ask a question</a></li> 
+            
+            <li class="nav-header">Tutorials</li>
+            <li><a href="https://github.com/vrvis/aardvark.base/gettingstarted.html">Getting started</a></li>
+            
+            -->
+
+            
+            <li class="divider"></li>
+            <li class="nav-header">Reference</li>
+
+            <li><a href="https://github.com/vrvis/aardvark.base/apidocs/index.html">API Reference</a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    <a href="https://github.com/vrvis/aardvark.base"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_gray_6d6d6d.png" alt="Fork me on GitHub"></a>
+  </body>
+  </html>

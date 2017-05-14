@@ -1,0 +1,2980 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>ArrayFun - Aardvark.Base</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="The Aardvark Platform Team">
+
+    <script src="https://code.jquery.com/jquery-1.8.0.js"></script>
+    <script src="https://code.jquery.com/ui/1.8.23/jquery-ui.js"></script>
+    <script src="https://netdna.bootstrapcdn.com/twitter-bootstrap/2.2.1/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link href="https://netdna.bootstrapcdn.com/twitter-bootstrap/2.2.1/css/bootstrap-combined.min.css" rel="stylesheet">
+
+    <link type="text/css" rel="stylesheet" href="https://github.com/vrvis/aardvark.base/content/style.css" />
+    <script type="text/javascript" src="https://github.com/vrvis/aardvark.base/content/tips.js"></script>
+    <!-- HTML5 shim, for IE6-8 support of HTML5 elements -->
+    <!--[if lt IE 9]>
+      <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+  </head>
+  <body>
+    <div class="container">
+      <div class="masthead">
+        <ul class="nav nav-pills pull-right">
+          <li><a href="https://github.com/vrvis/aardvark.base">github page</a></li>
+        </ul>
+        <h3 class="muted"><a href="https://github.com/vrvis/aardvark.base/index.html">Aardvark.Base</a></h3>
+      </div>
+      <hr />
+      <div class="row">
+        <div class="span9" id="main">
+          
+
+
+
+<h1>ArrayFun</h1>
+<div class="xmldoc">
+</div>
+  <h3>Static members</h3>
+  <table class="table table-bordered member-list">
+    <thead>
+      <tr><td>Static member</td><td>Description</td></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '432', 432)" onmouseover="showTip(event, '432', 432)">
+            AllEqual(...)
+          </code>
+          <div class="tip" id="432">
+            <strong>Signature:</strong> (array0:&#39;T0 [] * array1:&#39;T1 [] * item0_item1_equalFun:Func&lt;&#39;T0,&#39;T1,bool&gt;) -&gt; bool<br />
+                          <strong>Type parameters:</strong> 'T0, 'T1          </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '433', 433)" onmouseover="showTip(event, '433', 433)">
+            Apply(self, element_fun)
+          </code>
+          <div class="tip" id="433">
+            <strong>Signature:</strong> (self:&#39;T [] * element_fun:Func&lt;&#39;T,&#39;T&gt;) -&gt; &#39;T []<br />
+                          <strong>Type parameters:</strong> 'T          </div>
+        </td>
+        <td class="xmldoc">
+          <p>Apply the supplied transformation function to each element of the
+array.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '434', 434)" onmouseover="showTip(event, '434', 434)">
+            Apply(self, count, element_fun)
+          </code>
+          <div class="tip" id="434">
+            <strong>Signature:</strong> (self:&#39;T [] * count:int64 * element_fun:Func&lt;&#39;T,&#39;T&gt;) -&gt; &#39;T []<br />
+                          <strong>Type parameters:</strong> 'T          </div>
+        </td>
+        <td class="xmldoc">
+          <p>Apply the supplied transformation function to the first count
+elements of the array.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '435', 435)" onmouseover="showTip(event, '435', 435)">
+            Apply(self, start, count, element_fun)
+          </code>
+          <div class="tip" id="435">
+            <strong>Signature:</strong> (self:&#39;T [] * start:int64 * count:int64 * element_fun:Func&lt;&#39;T,&#39;T&gt;) -&gt; &#39;T []<br />
+                          <strong>Type parameters:</strong> 'T          </div>
+        </td>
+        <td class="xmldoc">
+          <p>Apply the supplied transformation function to count
+elements of the array, starting at the supplied start index.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '436', 436)" onmouseover="showTip(event, '436', 436)">
+            Apply(self, element_index_fun)
+          </code>
+          <div class="tip" id="436">
+            <strong>Signature:</strong> (self:&#39;T [] * element_index_fun:Func&lt;&#39;T,int64,&#39;T&gt;) -&gt; &#39;T []<br />
+                          <strong>Type parameters:</strong> 'T          </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '437', 437)" onmouseover="showTip(event, '437', 437)">
+            Apply(self, count, element_index_fun)
+          </code>
+          <div class="tip" id="437">
+            <strong>Signature:</strong> (self:&#39;T [] * count:int64 * element_index_fun:Func&lt;&#39;T,int64,&#39;T&gt;) -&gt; &#39;T []<br />
+                          <strong>Type parameters:</strong> 'T          </div>
+        </td>
+        <td class="xmldoc">
+          <p>Apply the supplied transformation function to the first count
+elements of the array.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '438', 438)" onmouseover="showTip(event, '438', 438)">
+            Apply(...)
+          </code>
+          <div class="tip" id="438">
+            <strong>Signature:</strong> (self:&#39;T [] * start:int64 * count:int64 * element_index_fun:Func&lt;&#39;T,int64,&#39;T&gt;) -&gt; &#39;T []<br />
+                          <strong>Type parameters:</strong> 'T          </div>
+        </td>
+        <td class="xmldoc">
+          <p>Apply the supplied transformation function to count
+elements of the array, starting at the supplied start index.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '439', 439)" onmouseover="showTip(event, '439', 439)">
+            Apply(array, fun, funT1ofT0, funT0ofT1)
+          </code>
+          <div class="tip" id="439">
+            <strong>Signature:</strong> (array:Array * fun:Func&lt;&#39;T1,&#39;T1&gt; * funT1ofT0:Func&lt;&#39;T0,&#39;T1&gt; * funT0ofT1:Func&lt;&#39;T1,&#39;T0&gt;) -&gt; Array<br />
+                          <strong>Type parameters:</strong> 'T0, 'T1          </div>
+        </td>
+        <td class="xmldoc">
+          <p>Apply a supplied function to each element of an array, with
+supplied conversion functions if the array is of a different
+type.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '440', 440)" onmouseover="showTip(event, '440', 440)">
+            BackMappedCopy(array, backMap, count)
+          </code>
+          <div class="tip" id="440">
+            <strong>Signature:</strong> (array:&#39;T [] * backMap:int [] * count:int) -&gt; &#39;T []<br />
+                          <strong>Type parameters:</strong> 'T          </div>
+        </td>
+        <td class="xmldoc">
+          <p>Returns a copy of this array that is created by copying the
+elements at the positions specified in the supplied backward
+map. An optional count argument is used for the size of the
+resulting array.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '441', 441)" onmouseover="showTip(event, '441', 441)">
+            BackMappedCopy(...)
+          </code>
+          <div class="tip" id="441">
+            <strong>Signature:</strong> (array:&#39;T [] * backMap:int [] * fun:Func&lt;&#39;T,&#39;Tr&gt; * count:int) -&gt; &#39;Tr []<br />
+                          <strong>Type parameters:</strong> 'T, 'Tr          </div>
+        </td>
+        <td class="xmldoc">
+          <p>Returns a copy of this array that is created by copying the
+elements at the positions specified in the supplied backward
+map and applying a function to each element. An optional
+count argument is used for the size of the resulting array.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '442', 442)" onmouseover="showTip(event, '442', 442)">
+            BackMappedCopy(array, backMap, count)
+          </code>
+          <div class="tip" id="442">
+            <strong>Signature:</strong> (array:&#39;T [] * backMap:int64 [] * count:int64) -&gt; &#39;T []<br />
+                          <strong>Type parameters:</strong> 'T          </div>
+        </td>
+        <td class="xmldoc">
+          <p>Returns a copy of this array that is created by copying the
+elements at the positions specified in the supplied backward
+map. An optional count argument is used for the size of the
+resulting array.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '443', 443)" onmouseover="showTip(event, '443', 443)">
+            BackMappedCopy(...)
+          </code>
+          <div class="tip" id="443">
+            <strong>Signature:</strong> (array:&#39;T [] * backMap:int64 [] * fun:Func&lt;&#39;T,&#39;Tr&gt; * count:int64) -&gt; &#39;Tr []<br />
+                          <strong>Type parameters:</strong> 'T, 'Tr          </div>
+        </td>
+        <td class="xmldoc">
+          <p>Returns a copy of this array that is created by copying the
+elements at the positions specified in the supplied backward
+map and applying a function to each element. An optional
+count argument is used for the size of the resulting array.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '444', 444)" onmouseover="showTip(event, '444', 444)">
+            BackMappedCopy(...)
+          </code>
+          <div class="tip" id="444">
+            <strong>Signature:</strong> (array:&#39;T [] * indexArray:int [] * backMap:int [] * count:int) -&gt; &#39;T []<br />
+                          <strong>Type parameters:</strong> 'T          </div>
+        </td>
+        <td class="xmldoc">
+          <p>Returns a copy of this array that is created by copying the
+elements at the positions specified in the index array of the
+supplied backward map. If the index array is null only the
+backward map is used to compute the position. An optional count
+argument is used for the size of the resulting array.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '445', 445)" onmouseover="showTip(event, '445', 445)">
+            BackMappedCopy(...)
+          </code>
+          <div class="tip" id="445">
+            <strong>Signature:</strong> (array:&#39;T [] * indexArray:int [] * backMap:int [] * fun:Func&lt;&#39;T,&#39;Tr&gt; * count:int) -&gt; &#39;Tr []<br />
+                          <strong>Type parameters:</strong> 'T, 'Tr          </div>
+        </td>
+        <td class="xmldoc">
+          <p>Returns a copy of this array that is created by copying the
+elements at the positions specified in the index array of the
+supplied backward map and applying a function to each element.
+If the index array is null only the backward map is used to
+compute the position. An optional count argument is used for
+the size of the resulting array.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '446', 446)" onmouseover="showTip(event, '446', 446)">
+            BackMappedCopy(source, backMap, count)
+          </code>
+          <div class="tip" id="446">
+            <strong>Signature:</strong> (source:Array * backMap:int [] * count:int) -&gt; Array<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '447', 447)" onmouseover="showTip(event, '447', 447)">
+            BackMappedCopy(...)
+          </code>
+          <div class="tip" id="447">
+            <strong>Signature:</strong> (source:Array * indexArray:int [] * backMap:int [] * count:int) -&gt; Array<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '448', 448)" onmouseover="showTip(event, '448', 448)">
+            BackMappedCopyFrom(...)
+          </code>
+          <div class="tip" id="448">
+            <strong>Signature:</strong> (targetArray:&#39;T [] * sourceArrays:&#39;T [] [] * backwardMaps:int [] []) -&gt; &#39;T []<br />
+                          <strong>Type parameters:</strong> 'T          </div>
+        </td>
+        <td class="xmldoc">
+          <p>copies all srcArrays into this array
+indexed by an inversed indexMap
+returns itself</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '449', 449)" onmouseover="showTip(event, '449', 449)">
+            BackMappedCopyFromIndexArrays(...)
+          </code>
+          <div class="tip" id="449">
+            <strong>Signature:</strong> (targetArray:int [] * sourceArrays:int [] [] * backwardMaps:int [] []) -&gt; int [] []<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>copies all srcIndexArrays to this indexArray
+over iaIndexMaps
+and returns aIndexMaps for
+copying the arrays that are indexed by srcIndexArrays</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '450', 450)" onmouseover="showTip(event, '450', 450)">
+            BackMappedCopyIndexArrayTo(...)
+          </code>
+          <div class="tip" id="450">
+            <strong>Signature:</strong> (sourceArray:int [] * targetArray:int [] * backwardMap:int [] * targetOffest:int) -&gt; int []<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Copies this index array to the target array over iaIndexMap at
+position diaOffset and returns aIndexMap for
+copying the arrays that are indexed by sourceIndexArray
+!! destinationIndexArray has to be initialized with -1</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '451', 451)" onmouseover="showTip(event, '451', 451)">
+            BackMappedCopyIndexArrayTo(...)
+          </code>
+          <div class="tip" id="451">
+            <strong>Signature:</strong> (sourceArray:int [] * targetArray:byref&lt;int []&gt; * backwardMap:int []) -&gt; int []<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>copies from this indexArray to destinationIndexArray
+over iaIndexMap
+and returns aIndexMap for
+copying the arrays that are indexed by sourceIndexArray</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '452', 452)" onmouseover="showTip(event, '452', 452)">
+            BackMappedCopySafe(...)
+          </code>
+          <div class="tip" id="452">
+            <strong>Signature:</strong> (array:&#39;T [] * backMap:int [] * defaultValue:&#39;T * count:int) -&gt; &#39;T []<br />
+                          <strong>Type parameters:</strong> 'T          </div>
+        </td>
+        <td class="xmldoc">
+          <p>Returns a copy of this array that is created by copying the
+elements at the positions specified in the supplied backward
+map. An optional count argument is used for the size of the
+resulting array.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '453', 453)" onmouseover="showTip(event, '453', 453)">
+            BackMappedCopyTo(...)
+          </code>
+          <div class="tip" id="453">
+            <strong>Signature:</strong> (source:&#39;T [] * target:&#39;T [] * backMap:int [] * offset:int) -&gt; unit<br />
+                          <strong>Type parameters:</strong> 'T          </div>
+        </td>
+        <td class="xmldoc">
+          <p>Copies from this array into the target array starting at the
+supplied offset using the supplied backward map that contains
+the source index for each index of the target array.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '454', 454)" onmouseover="showTip(event, '454', 454)">
+            BackMappedCopyTo(...)
+          </code>
+          <div class="tip" id="454">
+            <strong>Signature:</strong> (source:&#39;T [] * target:&#39;T [] * backMap:int64 [] * offset:int64) -&gt; unit<br />
+                          <strong>Type parameters:</strong> 'T          </div>
+        </td>
+        <td class="xmldoc">
+          <p>Copies from this array into the target array starting at the
+supplied offset using the supplied backward map that contains
+the source index for each index of the target array.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '455', 455)" onmouseover="showTip(event, '455', 455)">
+            BackMappedCopyTo(...)
+          </code>
+          <div class="tip" id="455">
+            <strong>Signature:</strong> (source:Array * backwardMap:int [] * target:Array * offset:int) -&gt; Array<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '456', 456)" onmouseover="showTip(event, '456', 456)">
+            BackMappedGroupCopyTo(...)
+          </code>
+          <div class="tip" id="456">
+            <strong>Signature:</strong> (source:&#39;T [] * groupBackMap:int [] * groupCount:int * fia:int [] * target:&#39;T [] * start:int) -&gt; unit<br />
+                          <strong>Type parameters:</strong> 'T          </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '457', 457)" onmouseover="showTip(event, '457', 457)">
+            BackMappedGroupCopyTo(...)
+          </code>
+          <div class="tip" id="457">
+            <strong>Signature:</strong> (source:int [] * groupBackMap:int [] * groupCount:int * fia:int [] * elementForwardMap:int [] * target:int [] * start:int) -&gt; unit<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '458', 458)" onmouseover="showTip(event, '458', 458)">
+            BackMappedGroupCopyTo(...)
+          </code>
+          <div class="tip" id="458">
+            <strong>Signature:</strong> (source:Array * faceBackMap:int [] * faceCount:int * fia:int [] * target:Array * offset:int) -&gt; unit<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '459', 459)" onmouseover="showTip(event, '459', 459)">
+            BinarySearch(self, item, comparer)
+          </code>
+          <div class="tip" id="459">
+            <strong>Signature:</strong> (self:&#39;T [] * item:&#39;T * comparer:Func&lt;&#39;T,&#39;T,int&gt;) -&gt; int<br />
+                          <strong>Type parameters:</strong> 'T          </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '460', 460)" onmouseover="showTip(event, '460', 460)">
+            Copy(array)
+          </code>
+          <div class="tip" id="460">
+            <strong>Signature:</strong> (array:&#39;T []) -&gt; &#39;T []<br />
+                          <strong>Type parameters:</strong> 'T          </div>
+        </td>
+        <td class="xmldoc">
+          <p>Use this instead of Clone() in order to get a typed array back.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '461', 461)" onmouseover="showTip(event, '461', 461)">
+            Copy(array, count)
+          </code>
+          <div class="tip" id="461">
+            <strong>Signature:</strong> (array:&#39;T [] * count:int64) -&gt; &#39;T []<br />
+                          <strong>Type parameters:</strong> 'T          </div>
+        </td>
+        <td class="xmldoc">
+          <p>Create a copy of the specified length. If the copy is longer
+it is filled with default elements.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '462', 462)" onmouseover="showTip(event, '462', 462)">
+            Copy(array, start, count)
+          </code>
+          <div class="tip" id="462">
+            <strong>Signature:</strong> (array:&#39;T [] * start:int64 * count:int64) -&gt; &#39;T []<br />
+                          <strong>Type parameters:</strong> 'T          </div>
+        </td>
+        <td class="xmldoc">
+          <p>Create a copy of the specified length starting at the specified
+start. If the copy is longer it is filled with default elements.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '463', 463)" onmouseover="showTip(event, '463', 463)">
+            Copy(array, element_fun)
+          </code>
+          <div class="tip" id="463">
+            <strong>Signature:</strong> (array:&#39;T [] * element_fun:Func&lt;&#39;T,&#39;Tr&gt;) -&gt; &#39;Tr []<br />
+                          <strong>Type parameters:</strong> 'T, 'Tr          </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '464', 464)" onmouseover="showTip(event, '464', 464)">
+            Copy(array, element_index_fun)
+          </code>
+          <div class="tip" id="464">
+            <strong>Signature:</strong> (array:&#39;T [] * element_index_fun:Func&lt;&#39;T,int64,&#39;Tr&gt;) -&gt; &#39;Tr []<br />
+                          <strong>Type parameters:</strong> 'T, 'Tr          </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '465', 465)" onmouseover="showTip(event, '465', 465)">
+            Copy(array, count, element_fun)
+          </code>
+          <div class="tip" id="465">
+            <strong>Signature:</strong> (array:&#39;T [] * count:int64 * element_fun:Func&lt;&#39;T,&#39;Tr&gt;) -&gt; &#39;Tr []<br />
+                          <strong>Type parameters:</strong> 'T, 'Tr          </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '466', 466)" onmouseover="showTip(event, '466', 466)">
+            Copy(array, count, element_index_fun)
+          </code>
+          <div class="tip" id="466">
+            <strong>Signature:</strong> (array:&#39;T [] * count:int64 * element_index_fun:Func&lt;&#39;T,int64,&#39;Tr&gt;) -&gt; &#39;Tr []<br />
+                          <strong>Type parameters:</strong> 'T, 'Tr          </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '467', 467)" onmouseover="showTip(event, '467', 467)">
+            Copy(array, start, count, element_fun)
+          </code>
+          <div class="tip" id="467">
+            <strong>Signature:</strong> (array:&#39;T [] * start:int64 * count:int64 * element_fun:Func&lt;&#39;T,&#39;Tr&gt;) -&gt; &#39;Tr []<br />
+                          <strong>Type parameters:</strong> 'T, 'Tr          </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '468', 468)" onmouseover="showTip(event, '468', 468)">
+            Copy(...)
+          </code>
+          <div class="tip" id="468">
+            <strong>Signature:</strong> (array:&#39;T [] * start:int64 * count:int64 * element_index_fun:Func&lt;&#39;T,int64,&#39;Tr&gt;) -&gt; &#39;Tr []<br />
+                          <strong>Type parameters:</strong> 'T, 'Tr          </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '469', 469)" onmouseover="showTip(event, '469', 469)">
+            Copy(array)
+          </code>
+          <div class="tip" id="469">
+            <strong>Signature:</strong> array:Array -&gt; Array<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '470', 470)" onmouseover="showTip(event, '470', 470)">
+            Copy(...)
+          </code>
+          <div class="tip" id="470">
+            <strong>Signature:</strong> (array:Array * funOfElementTypeToElementType:Func&lt;&#39;T,&#39;T&gt; * defaultFun:Func&lt;Array,Array&gt;) -&gt; Array<br />
+                          <strong>Type parameters:</strong> 'T          </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '471', 471)" onmouseover="showTip(event, '471', 471)">
+            CopyAndConvert(array, convert)
+          </code>
+          <div class="tip" id="471">
+            <strong>Signature:</strong> (array:Array * convert:Func&lt;&#39;T0,&#39;T1&gt;) -&gt; &#39;T1 []<br />
+                          <strong>Type parameters:</strong> 'T0, 'T1          </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '472', 472)" onmouseover="showTip(event, '472', 472)">
+            CopyAndConvert(array, convert, fun)
+          </code>
+          <div class="tip" id="472">
+            <strong>Signature:</strong> (array:Array * convert:Func&lt;&#39;T0,&#39;T1&gt; * fun:Func&lt;&#39;T1,&#39;Tr&gt;) -&gt; &#39;Tr []<br />
+                          <strong>Type parameters:</strong> 'T0, 'T1, 'Tr          </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '473', 473)" onmouseover="showTip(event, '473', 473)">
+            CopyRange(...)
+          </code>
+          <div class="tip" id="473">
+            <strong>Signature:</strong> (array:&#39;T [] * start:int64 * count:int64 * targetStart:int64) -&gt; unit<br />
+                          <strong>Type parameters:</strong> 'T          </div>
+        </td>
+        <td class="xmldoc">
+          <p>Copies the specified range of elements to the specified destination
+within the same array.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '474', 474)" onmouseover="showTip(event, '474', 474)">
+            CopyReversed(array)
+          </code>
+          <div class="tip" id="474">
+            <strong>Signature:</strong> (array:&#39;T []) -&gt; &#39;T []<br />
+                          <strong>Type parameters:</strong> 'T          </div>
+        </td>
+        <td class="xmldoc">
+          <p>Create a copy with the elements reversed.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '475', 475)" onmouseover="showTip(event, '475', 475)">
+            CopyTo(...)
+          </code>
+          <div class="tip" id="475">
+            <strong>Signature:</strong> (array:&#39;T [] * count:int64 * target:&#39;T [] * targetStart:int64) -&gt; unit<br />
+                          <strong>Type parameters:</strong> 'T          </div>
+        </td>
+        <td class="xmldoc">
+          <p>Copy a range of elements to the target array.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '476', 476)" onmouseover="showTip(event, '476', 476)">
+            CopyTo(...)
+          </code>
+          <div class="tip" id="476">
+            <strong>Signature:</strong> (array:&#39;T [] * start:int64 * count:int64 * target:&#39;T [] * targetStart:int64) -&gt; unit<br />
+                          <strong>Type parameters:</strong> 'T          </div>
+        </td>
+        <td class="xmldoc">
+          <p>Copy a range of elements to the target array.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '477', 477)" onmouseover="showTip(event, '477', 477)">
+            CopyTo(input, offset, length, target)
+          </code>
+          <div class="tip" id="477">
+            <strong>Signature:</strong> (input:Array * offset:int * length:int * target:nativeint) -&gt; unit<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Copies the specified part of an array to the target-pointer.
+NOTE: May cause AccessViolationException if the target-pointer
+is not sufficiently allocated.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '478', 478)" onmouseover="showTip(event, '478', 478)">
+            CopyTo(input, length, target)
+          </code>
+          <div class="tip" id="478">
+            <strong>Signature:</strong> (input:Array * length:int * target:nativeint) -&gt; unit<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '479', 479)" onmouseover="showTip(event, '479', 479)">
+            CopyTo(input, target)
+          </code>
+          <div class="tip" id="479">
+            <strong>Signature:</strong> (input:Array * target:nativeint) -&gt; unit<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '480', 480)" onmouseover="showTip(event, '480', 480)">
+            CopyTo(input, target, offset, length)
+          </code>
+          <div class="tip" id="480">
+            <strong>Signature:</strong> (input:nativeint * target:Array * offset:int * length:int) -&gt; unit<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '481', 481)" onmouseover="showTip(event, '481', 481)">
+            CopyTo(input, target, length)
+          </code>
+          <div class="tip" id="481">
+            <strong>Signature:</strong> (input:nativeint * target:Array * length:int) -&gt; unit<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '482', 482)" onmouseover="showTip(event, '482', 482)">
+            CopyTo(input, target)
+          </code>
+          <div class="tip" id="482">
+            <strong>Signature:</strong> (input:nativeint * target:Array) -&gt; unit<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '483', 483)" onmouseover="showTip(event, '483', 483)">
+            CopyTo(input, target, size)
+          </code>
+          <div class="tip" id="483">
+            <strong>Signature:</strong> (input:nativeint * target:nativeint * size:int) -&gt; unit<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '484', 484)" onmouseover="showTip(event, '484', 484)">
+            CopyToList(array)
+          </code>
+          <div class="tip" id="484">
+            <strong>Signature:</strong> (array:&#39;T []) -&gt; List&lt;&#39;T&gt;<br />
+                          <strong>Type parameters:</strong> 'T          </div>
+        </td>
+        <td class="xmldoc">
+          <p>Copies the array into a list.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '485', 485)" onmouseover="showTip(event, '485', 485)">
+            CopyToList(array, element_fun)
+          </code>
+          <div class="tip" id="485">
+            <strong>Signature:</strong> (array:&#39;T [] * element_fun:Func&lt;&#39;T,&#39;Tr&gt;) -&gt; List&lt;&#39;Tr&gt;<br />
+                          <strong>Type parameters:</strong> 'T, 'Tr          </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '486', 486)" onmouseover="showTip(event, '486', 486)">
+            CopyToList(array, item_index_fun)
+          </code>
+          <div class="tip" id="486">
+            <strong>Signature:</strong> (array:&#39;T [] * item_index_fun:Func&lt;&#39;T,int64,&#39;Tr&gt;) -&gt; List&lt;&#39;Tr&gt;<br />
+                          <strong>Type parameters:</strong> 'T, 'Tr          </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '487', 487)" onmouseover="showTip(event, '487', 487)">
+            CreateBackMap(forwardMap)
+          </code>
+          <div class="tip" id="487">
+            <strong>Signature:</strong> (forwardMap:int []) -&gt; int []<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>returns the inverse of the given indexMap
+(be carefull with inversing inversedIndexMaps =&gt; can be to short!
+fix if needed: use inverseIndexMap(int[] indexMap, int size) instead)</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '488', 488)" onmouseover="showTip(event, '488', 488)">
+            CreateBackMap(forwardMap, resultLength)
+          </code>
+          <div class="tip" id="488">
+            <strong>Signature:</strong> (forwardMap:int [] * resultLength:int) -&gt; int []<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>returns the backward map in the given size of the given forward map</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '489', 489)" onmouseover="showTip(event, '489', 489)">
+            CreateBackMap(...)
+          </code>
+          <div class="tip" id="489">
+            <strong>Signature:</strong> (forwardMap:int [] * resultLength:int * offset:int) -&gt; int []<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '490', 490)" onmouseover="showTip(event, '490', 490)">
+            CreateBackToFirstMap(...)
+          </code>
+          <div class="tip" id="490">
+            <strong>Signature:</strong> (forwardMap:int [] * resultLength:int) -&gt; int []<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '491', 491)" onmouseover="showTip(event, '491', 491)">
+            DenseCount(...)
+          </code>
+          <div class="tip" id="491">
+            <strong>Signature:</strong> (indexArray:int [] * indexCount:int * maxIndex:int) -&gt; int<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Count the indices in an index array that are actually used.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '492', 492)" onmouseover="showTip(event, '492', 492)">
+            DenseForwardMap(...)
+          </code>
+          <div class="tip" id="492">
+            <strong>Signature:</strong> (indexArray:int [] * indexCount:int * maxIndex:int * denseCount:byref&lt;int&gt;) -&gt; int []<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Create a forward map from an index array that contains new
+indices in such a way, that no index is unused.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '493', 493)" onmouseover="showTip(event, '493', 493)">
+            DenseForwardMap(...)
+          </code>
+          <div class="tip" id="493">
+            <strong>Signature:</strong> (indexArray:int [] * groupSelectionArray:int [] * groupSize:int * denseCount:byref&lt;int&gt;) -&gt; int []<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '494', 494)" onmouseover="showTip(event, '494', 494)">
+            Elements(array, first, count)
+          </code>
+          <div class="tip" id="494">
+            <strong>Signature:</strong> (array:&#39;T [] * first:int64 * count:int64) -&gt; IEnumerable&lt;&#39;T&gt;<br />
+                          <strong>Type parameters:</strong> 'T          </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '495', 495)" onmouseover="showTip(event, '495', 495)">
+            Elements(array, convert)
+          </code>
+          <div class="tip" id="495">
+            <strong>Signature:</strong> (array:Array * convert:Func&lt;&#39;T0,&#39;T1&gt;) -&gt; IEnumerable&lt;&#39;T1&gt;<br />
+                          <strong>Type parameters:</strong> 'T0, 'T1          </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '496', 496)" onmouseover="showTip(event, '496', 496)">
+            ElementsWhere(...)
+          </code>
+          <div class="tip" id="496">
+            <strong>Signature:</strong> (array:&#39;T [] * first:int * count:int * predicate:Func&lt;&#39;T,bool&gt;) -&gt; IEnumerable&lt;&#39;T&gt;<br />
+                          <strong>Type parameters:</strong> 'T          </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '497', 497)" onmouseover="showTip(event, '497', 497)">
+            ElementsWhere(...)
+          </code>
+          <div class="tip" id="497">
+            <strong>Signature:</strong> (array:&#39;T [] * first:int64 * count:int64 * predicate:Func&lt;&#39;T,bool&gt;) -&gt; IEnumerable&lt;&#39;T&gt;<br />
+                          <strong>Type parameters:</strong> 'T          </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '498', 498)" onmouseover="showTip(event, '498', 498)">
+            FlatCopy(array)
+          </code>
+          <div class="tip" id="498">
+            <strong>Signature:</strong> (array:&#39;T [] []) -&gt; &#39;T []<br />
+                          <strong>Type parameters:</strong> 'T          </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '499', 499)" onmouseover="showTip(event, '499', 499)">
+            FlatCopy(array)
+          </code>
+          <div class="tip" id="499">
+            <strong>Signature:</strong> (array:&#39;T [] [] []) -&gt; &#39;T []<br />
+                          <strong>Type parameters:</strong> 'T          </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '500', 500)" onmouseover="showTip(event, '500', 500)">
+            FlatCopyTo(array, target, start)
+          </code>
+          <div class="tip" id="500">
+            <strong>Signature:</strong> (array:&#39;T [] [] * target:&#39;T [] * start:int64) -&gt; unit<br />
+                          <strong>Type parameters:</strong> 'T          </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '501', 501)" onmouseover="showTip(event, '501', 501)">
+            FlatCopyTo(array, target, start)
+          </code>
+          <div class="tip" id="501">
+            <strong>Signature:</strong> (array:&#39;T [] [] [] * target:&#39;T [] * start:int64) -&gt; unit<br />
+                          <strong>Type parameters:</strong> 'T          </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '502', 502)" onmouseover="showTip(event, '502', 502)">
+            FlatCount(array)
+          </code>
+          <div class="tip" id="502">
+            <strong>Signature:</strong> (array:&#39;T [] []) -&gt; int64<br />
+                          <strong>Type parameters:</strong> 'T          </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '503', 503)" onmouseover="showTip(event, '503', 503)">
+            FlatCount(array)
+          </code>
+          <div class="tip" id="503">
+            <strong>Signature:</strong> (array:&#39;T [] [] []) -&gt; int64<br />
+                          <strong>Type parameters:</strong> 'T          </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '504', 504)" onmouseover="showTip(event, '504', 504)">
+            FoldLeft(array, seed, sum_item_fun)
+          </code>
+          <div class="tip" id="504">
+            <strong>Signature:</strong> (array:&#39;TVal [] * seed:&#39;TSum * sum_item_fun:Func&lt;&#39;TSum,&#39;TVal,&#39;TSum&gt;) -&gt; &#39;TSum<br />
+                          <strong>Type parameters:</strong> 'TVal, 'TSum          </div>
+        </td>
+        <td class="xmldoc">
+          <p>Performs an aggregation of all items in an array with the
+supplied aggregation function starting from the left and with the
+supplied seed, and returns the aggregated result.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '505', 505)" onmouseover="showTip(event, '505', 505)">
+            FoldLeft(...)
+          </code>
+          <div class="tip" id="505">
+            <strong>Signature:</strong> (array:&#39;TVal [] * start:int64 * count:int64 * seed:&#39;TSum * sum_item_fun:Func&lt;&#39;TSum,&#39;TVal,&#39;TSum&gt;) -&gt; &#39;TSum<br />
+                          <strong>Type parameters:</strong> 'TVal, 'TSum          </div>
+        </td>
+        <td class="xmldoc">
+          <p>Performs an aggregation of the specified slice of items in an
+array with the supplied aggregation function starting from the
+left and with the initial supplied left sum, and returns the
+aggregated result.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '506', 506)" onmouseover="showTip(event, '506', 506)">
+            FoldLeft2(...)
+          </code>
+          <div class="tip" id="506">
+            <strong>Signature:</strong> (array0:&#39;T0 [] * array1:&#39;T1 [] * seed:&#39;TSum * sum_item0_item1_fun:Func&lt;&#39;TSum,&#39;T0,&#39;T1,&#39;TSum&gt;) -&gt; &#39;TSum<br />
+                          <strong>Type parameters:</strong> 'T0, 'T1, 'TSum          </div>
+        </td>
+        <td class="xmldoc">
+          <p>Performs an aggregation of all corresponding pairs of items of
+the supplied arrays with the supplied aggregation function
+starting from the left and with the  supplied seed, and returns
+the aggregated result.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '507', 507)" onmouseover="showTip(event, '507', 507)">
+            FoldLeft3(...)
+          </code>
+          <div class="tip" id="507">
+            <strong>Signature:</strong> (array0:&#39;T0 [] * array1:&#39;T1 [] * array2:&#39;T2 [] * seed:&#39;TSum * sum_item0_item1_item2_fun:Func&lt;&#39;TSum,&#39;T0,&#39;T1,&#39;T2,&#39;TSum&gt;) -&gt; &#39;TSum<br />
+                          <strong>Type parameters:</strong> 'T0, 'T1, 'T2, 'TSum          </div>
+        </td>
+        <td class="xmldoc">
+          <p>Performs an aggregation of all corresponding triples of items of
+the supplied arrays with the supplied aggregation function
+starting from the left and with the  supplied seed, and returns
+the aggregated result.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '508', 508)" onmouseover="showTip(event, '508', 508)">
+            FoldRight(array, item_sum_fun, seed)
+          </code>
+          <div class="tip" id="508">
+            <strong>Signature:</strong> (array:&#39;TVal [] * item_sum_fun:Func&lt;&#39;TVal,&#39;TSum,&#39;TSum&gt; * seed:&#39;TSum) -&gt; &#39;TSum<br />
+                          <strong>Type parameters:</strong> 'TVal, 'TSum          </div>
+        </td>
+        <td class="xmldoc">
+          <p>Performs an aggregation of all items in an array with the
+supplied aggregation function starting from the right and with the
+supplied seed, and returns the aggregated result.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '509', 509)" onmouseover="showTip(event, '509', 509)">
+            FoldRight(...)
+          </code>
+          <div class="tip" id="509">
+            <strong>Signature:</strong> (array:&#39;TVal [] * start:int64 * count:int64 * item_sum_fun:Func&lt;&#39;TVal,&#39;TSum,&#39;TSum&gt; * seed:&#39;TSum) -&gt; &#39;TSum<br />
+                          <strong>Type parameters:</strong> 'TVal, 'TSum          </div>
+        </td>
+        <td class="xmldoc">
+          <p>Performs an aggregation of the specified slice of items in an
+array with the supplied aggregation function starting from the
+right and with the initial supplied right sum, and returns the
+aggregated result.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '510', 510)" onmouseover="showTip(event, '510', 510)">
+            FoldRight2(...)
+          </code>
+          <div class="tip" id="510">
+            <strong>Signature:</strong> (array0:&#39;T0 [] * array1:&#39;T1 [] * item0_item1_sum_fun:Func&lt;&#39;T0,&#39;T1,&#39;TSum,&#39;TSum&gt; * seed:&#39;TSum) -&gt; &#39;TSum<br />
+                          <strong>Type parameters:</strong> 'T0, 'T1, 'TSum          </div>
+        </td>
+        <td class="xmldoc">
+          <p>Performs an aggregation of all corresponding pairs of items of
+the supplied arrays with the supplied aggregation function
+starting from the rigth and with the  supplied seed, and returns
+the aggregated result.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '511', 511)" onmouseover="showTip(event, '511', 511)">
+            FoldRight3(...)
+          </code>
+          <div class="tip" id="511">
+            <strong>Signature:</strong> (array0:&#39;T0 [] * array1:&#39;T1 [] * array2:&#39;T2 [] * item0_item1_item2_sum_fun:Func&lt;&#39;T0,&#39;T1,&#39;T2,&#39;TSum,&#39;TSum&gt; * seed:&#39;TSum) -&gt; &#39;TSum<br />
+                          <strong>Type parameters:</strong> 'T0, 'T1, 'T2, 'TSum          </div>
+        </td>
+        <td class="xmldoc">
+          <p>Performs an aggregation of all corresponding triples of items of
+the supplied arrays with the supplied aggregation function
+starting from the rigth and with the  supplied seed, and returns
+the aggregated result.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '512', 512)" onmouseover="showTip(event, '512', 512)">
+            ForwardMapAdd(...)
+          </code>
+          <div class="tip" id="512">
+            <strong>Signature:</strong> (forwardMap:int [] * index:int * forwardCount:byref&lt;int&gt;) -&gt; int<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '513', 513)" onmouseover="showTip(event, '513', 513)">
+            ForwardMapAdd(...)
+          </code>
+          <div class="tip" id="513">
+            <strong>Signature:</strong> (forwardMap:int [] * forwardCount:int * indexArray:int [] * indexCount:int) -&gt; int<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '514', 514)" onmouseover="showTip(event, '514', 514)">
+            ForwardMappedCopy(...)
+          </code>
+          <div class="tip" id="514">
+            <strong>Signature:</strong> (sourceArray:&#39;T [] * forwardMap:int []) -&gt; &#39;T []<br />
+                          <strong>Type parameters:</strong> 'T          </div>
+        </td>
+        <td class="xmldoc">
+          <p>Returns a copy of this array by placing each element at a new
+position specified by the supplied forward map. The forward map
+may contain negative values for elements that should not be
+copied. The length of the result is computed to hold all forward
+mapped elements of the soruce array.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '515', 515)" onmouseover="showTip(event, '515', 515)">
+            ForwardMappedCopy(...)
+          </code>
+          <div class="tip" id="515">
+            <strong>Signature:</strong> (sourceArray:&#39;T [] * forwardMap:int [] * targetLength:int) -&gt; &#39;T []<br />
+                          <strong>Type parameters:</strong> 'T          </div>
+        </td>
+        <td class="xmldoc">
+          <p>Returns a copy of this array by placing each element at a new
+position specified by the supplied forward map. The forward map
+may contain negative values for elements that should not be
+copied. The length of the result needs to be supplied as
+a parameter.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '516', 516)" onmouseover="showTip(event, '516', 516)">
+            ForwardMappedCopyFrom(...)
+          </code>
+          <div class="tip" id="516">
+            <strong>Signature:</strong> (targetArray:&#39;T [] * sourceArrays:&#39;T [] [] * forwardMaps:int [] []) -&gt; &#39;T []<br />
+                          <strong>Type parameters:</strong> 'T          </div>
+        </td>
+        <td class="xmldoc">
+          <p>Copies all source arrays into this array, using the supplied
+array of forward maps.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '517', 517)" onmouseover="showTip(event, '517', 517)">
+            ForwardMappedCopyFromIndexArrays(...)
+          </code>
+          <div class="tip" id="517">
+            <strong>Signature:</strong> (targetArray:int [] * sourceArrays:int [] [] * forwardMaps:int [] []) -&gt; int [] []<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>copies all srcIndexArrays to this indexArray
+over iaIndexMaps
+and returns aIndexMaps for
+copying the arrays that are indexed by srcIndexArrays</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '518', 518)" onmouseover="showTip(event, '518', 518)">
+            ForwardMappedCopyIndexArrayTo(...)
+          </code>
+          <div class="tip" id="518">
+            <strong>Signature:</strong> (sourceArray:int [] * targetArray:int [] * forwardMap:int [] * targetOffset:int) -&gt; int []<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>copies this indexArray to destinationIndexArray
+over iaIndexMap at position diaOffset
+and returns aIndexMap for
+copying the arrays that are indexed by sourceIndexArray
+!! destinationIndexArray has to be initialized with -1</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '519', 519)" onmouseover="showTip(event, '519', 519)">
+            ForwardMappedCopyIndexArrayTo(...)
+          </code>
+          <div class="tip" id="519">
+            <strong>Signature:</strong> (sourceArray:int [] * targetArray:byref&lt;int []&gt; * forwardMap:int []) -&gt; int []<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>copies from this indexArray to destinationIndexArray
+over iaIndexMap
+and returns aIndexMap for
+copying the arrays that are indexed by sourceIndexArray</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '520', 520)" onmouseover="showTip(event, '520', 520)">
+            ForwardMappedCopyTo(...)
+          </code>
+          <div class="tip" id="520">
+            <strong>Signature:</strong> (sourceArray:&#39;T [] * targetArray:&#39;T [] * forwardMap:int [] * offset:int) -&gt; unit<br />
+                          <strong>Type parameters:</strong> 'T          </div>
+        </td>
+        <td class="xmldoc">
+          <p>Copies from this array into the target array starting at the
+supplied offset and using the supplied forward map that
+specifies the new index for each element. The forward map
+may contain negative values for elements to be skipped.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '521', 521)" onmouseover="showTip(event, '521', 521)">
+            GetTypeIdUncached()
+          </code>
+          <div class="tip" id="521">
+            <strong>Signature:</strong> unit -&gt; nativeint<br />
+                          <strong>Type parameters:</strong> 'T          </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '522', 522)" onmouseover="showTip(event, '522', 522)">
+            GroupReversedCopy(...)
+          </code>
+          <div class="tip" id="522">
+            <strong>Signature:</strong> (array:&#39;T [] * groupFirstIndices:int [] * groupCount:int * reverseMap:Func&lt;int,bool&gt;) -&gt; &#39;T []<br />
+                          <strong>Type parameters:</strong> 'T          </div>
+        </td>
+        <td class="xmldoc">
+          <p>Return an array with reversed groups. The specified first group
+indices array defines which consecutive elements constitute a
+group, and the reverse map function specifies wich of these
+groups should actually be reversed.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '523', 523)" onmouseover="showTip(event, '523', 523)">
+            GroupReversedCopy(...)
+          </code>
+          <div class="tip" id="523">
+            <strong>Signature:</strong> (array:Array * groupArray:int [] * groupCount:int * reverseMap:Func&lt;int,bool&gt;) -&gt; Array<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '524', 524)" onmouseover="showTip(event, '524', 524)">
+            IndexOfMax(a)
+          </code>
+          <div class="tip" id="524">
+            <strong>Signature:</strong> (a:&#39;T []) -&gt; int<br />
+                          <strong>Type parameters:</strong> 'T          </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '525', 525)" onmouseover="showTip(event, '525', 525)">
+            IndexOfMax(a, start, count)
+          </code>
+          <div class="tip" id="525">
+            <strong>Signature:</strong> (a:&#39;T [] * start:int * count:int) -&gt; int<br />
+                          <strong>Type parameters:</strong> 'T          </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '526', 526)" onmouseover="showTip(event, '526', 526)">
+            IndexOfMax(a, compare)
+          </code>
+          <div class="tip" id="526">
+            <strong>Signature:</strong> (a:&#39;T [] * compare:Func&lt;&#39;T,&#39;T,int&gt;) -&gt; int<br />
+                          <strong>Type parameters:</strong> 'T          </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '527', 527)" onmouseover="showTip(event, '527', 527)">
+            IndexOfMin(a)
+          </code>
+          <div class="tip" id="527">
+            <strong>Signature:</strong> (a:&#39;T []) -&gt; int<br />
+                          <strong>Type parameters:</strong> 'T          </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '528', 528)" onmouseover="showTip(event, '528', 528)">
+            IndexOfMin(a, start, count)
+          </code>
+          <div class="tip" id="528">
+            <strong>Signature:</strong> (a:&#39;T [] * start:int * count:int) -&gt; int<br />
+                          <strong>Type parameters:</strong> 'T          </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '529', 529)" onmouseover="showTip(event, '529', 529)">
+            IndexOfMin(a, compare)
+          </code>
+          <div class="tip" id="529">
+            <strong>Signature:</strong> (a:&#39;T [] * compare:Func&lt;&#39;T,&#39;T,int&gt;) -&gt; int<br />
+                          <strong>Type parameters:</strong> 'T          </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '530', 530)" onmouseover="showTip(event, '530', 530)">
+            IndexOfNLargest(a, n)
+          </code>
+          <div class="tip" id="530">
+            <strong>Signature:</strong> (a:&#39;T [] * n:int) -&gt; int<br />
+                          <strong>Type parameters:</strong> 'T          </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '531', 531)" onmouseover="showTip(event, '531', 531)">
+            IndexOfNSmallest(a, n)
+          </code>
+          <div class="tip" id="531">
+            <strong>Signature:</strong> (a:&#39;T [] * n:int) -&gt; int<br />
+                          <strong>Type parameters:</strong> 'T          </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '532', 532)" onmouseover="showTip(event, '532', 532)">
+            InnerProduct(...)
+          </code>
+          <div class="tip" id="532">
+            <strong>Signature:</strong> (array:&#39;T1 [] * other:&#39;T2 [] * count:int64 * mulFun:Func&lt;&#39;T1,&#39;T2,&#39;TMul&gt; * seed:&#39;TSum * addFun:Func&lt;&#39;TSum,&#39;TMul,&#39;TSum&gt;) -&gt; &#39;TSum<br />
+                          <strong>Type parameters:</strong> 'T1, 'T2, 'TMul, 'TSum          </div>
+        </td>
+        <td class="xmldoc">
+          <p>Apply the supplied mulFun to the first count corresponding pairs
+of elements from the supplied arrays. Aggregate the results
+starting with the supplied seed and the supplied addFun.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '533', 533)" onmouseover="showTip(event, '533', 533)">
+            InnerProduct(...)
+          </code>
+          <div class="tip" id="533">
+            <strong>Signature:</strong> (array:&#39;T1 [] * other:&#39;T2 [] * count:int64 * mulFun:Func&lt;&#39;T1,&#39;T2,&#39;TMul&gt; * seed:&#39;TSum * addFun:Func&lt;&#39;TSum,&#39;TMul,&#39;TSum&gt; * sum_exitIfTrueFun:Func&lt;&#39;TSum,bool&gt;) -&gt; &#39;TSum<br />
+                          <strong>Type parameters:</strong> 'T1, 'T2, 'TMul, 'TSum          </div>
+        </td>
+        <td class="xmldoc">
+          <p>Apply the supplied mulFun to the first count corresponding pairs
+of elements from the supplied arrays. Aggregate the results
+starting with the supplied seed and the supplied addFun.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '534', 534)" onmouseover="showTip(event, '534', 534)">
+            InnerProduct(...)
+          </code>
+          <div class="tip" id="534">
+            <strong>Signature:</strong> (array0:&#39;T1 [] * array1:&#39;T2 [] * item0_item1_productFun:Func&lt;&#39;T1,&#39;T2,&#39;TProduct&gt; * seed:&#39;TSum * sum_product_sumFun:Func&lt;&#39;TSum,&#39;TProduct,&#39;TSum&gt;) -&gt; &#39;TSum<br />
+                          <strong>Type parameters:</strong> 'T1, 'T2, 'TProduct, 'TSum          </div>
+        </td>
+        <td class="xmldoc">
+          <p>Apply the supplied productFun to corresponding pairs of elements
+from supplied arrays. Aggregate the results starting with the
+supplied seed and the supplied sumFun.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '535', 535)" onmouseover="showTip(event, '535', 535)">
+            InnerProduct(...)
+          </code>
+          <div class="tip" id="535">
+            <strong>Signature:</strong> (array0:&#39;T1 [] * array1:&#39;T2 [] * item0_item1_productFun:Func&lt;&#39;T1,&#39;T2,&#39;TProduct&gt; * seed:&#39;TSum * sum_product_sumFun:Func&lt;&#39;TSum,&#39;TProduct,&#39;TSum&gt; * sum_exitIfTrueFun:Func&lt;&#39;TSum,bool&gt;) -&gt; &#39;TSum<br />
+                          <strong>Type parameters:</strong> 'T1, 'T2, 'TProduct, 'TSum          </div>
+        </td>
+        <td class="xmldoc">
+          <p>Apply the supplied productFun to corresponding pairs of elements
+from supplied arrays. Aggregate the results starting with the
+supplied seed and the supplied sumFun.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '536', 536)" onmouseover="showTip(event, '536', 536)">
+            Integrate(array, sum)
+          </code>
+          <div class="tip" id="536">
+            <strong>Signature:</strong> (array:int [] * sum:int) -&gt; int<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Converts an array that contains the number of elements
+at each index into an array that holds the indices of
+the first element if the elements are stored in
+consecutive order. Returns the sum of all elements.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '537', 537)" onmouseover="showTip(event, '537', 537)">
+            Integrate(array, sum)
+          </code>
+          <div class="tip" id="537">
+            <strong>Signature:</strong> (array:int64 [] * sum:int64) -&gt; int64<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Converts an array that contains the number of elements
+at each index into an array that holds the indices of
+the first element if the elements are stored in
+consecutive order. Returns the sum of all elements.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '538', 538)" onmouseover="showTip(event, '538', 538)">
+            Integrate(array, sum)
+          </code>
+          <div class="tip" id="538">
+            <strong>Signature:</strong> (array:float [] * sum:float) -&gt; float<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Integrates the array and returns the sum. Note that the
+value of the starting element will be the supplied initial
+sum value after the operation.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '539', 539)" onmouseover="showTip(event, '539', 539)">
+            JaggedCopy(array)
+          </code>
+          <div class="tip" id="539">
+            <strong>Signature:</strong> (array:&#39;T [] []) -&gt; &#39;T [] []<br />
+                          <strong>Type parameters:</strong> 'T          </div>
+        </td>
+        <td class="xmldoc">
+          <p>Use this instead of Clone() or Copy() in order to get a full copy of the jagged array back.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '540', 540)" onmouseover="showTip(event, '540', 540)">
+            JaggedCopy(array)
+          </code>
+          <div class="tip" id="540">
+            <strong>Signature:</strong> (array:&#39;T [] [] []) -&gt; &#39;T [] [] []<br />
+                          <strong>Type parameters:</strong> 'T          </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '541', 541)" onmouseover="showTip(event, '541', 541)">
+            LongIndexOfMax(a)
+          </code>
+          <div class="tip" id="541">
+            <strong>Signature:</strong> (a:&#39;T []) -&gt; int64<br />
+                          <strong>Type parameters:</strong> 'T          </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '542', 542)" onmouseover="showTip(event, '542', 542)">
+            LongIndexOfMax(a, compare)
+          </code>
+          <div class="tip" id="542">
+            <strong>Signature:</strong> (a:&#39;T [] * compare:Func&lt;&#39;T,&#39;T,int&gt;) -&gt; int64<br />
+                          <strong>Type parameters:</strong> 'T          </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '543', 543)" onmouseover="showTip(event, '543', 543)">
+            LongIndexOfMin(a)
+          </code>
+          <div class="tip" id="543">
+            <strong>Signature:</strong> (a:&#39;T []) -&gt; int64<br />
+                          <strong>Type parameters:</strong> 'T          </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '544', 544)" onmouseover="showTip(event, '544', 544)">
+            LongIndexOfMin(a, compare)
+          </code>
+          <div class="tip" id="544">
+            <strong>Signature:</strong> (a:&#39;T [] * compare:Func&lt;&#39;T,&#39;T,int&gt;) -&gt; int64<br />
+                          <strong>Type parameters:</strong> 'T          </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '545', 545)" onmouseover="showTip(event, '545', 545)">
+            LongSum(array, selector)
+          </code>
+          <div class="tip" id="545">
+            <strong>Signature:</strong> (array:&#39;T [] * selector:Func&lt;&#39;T,int64&gt;) -&gt; int64<br />
+                          <strong>Type parameters:</strong> 'T          </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '546', 546)" onmouseover="showTip(event, '546', 546)">
+            Map(array, item_fun)
+          </code>
+          <div class="tip" id="546">
+            <strong>Signature:</strong> (array:&#39;T [] * item_fun:Func&lt;&#39;T,&#39;Tr&gt;) -&gt; &#39;Tr []<br />
+                          <strong>Type parameters:</strong> 'T, 'Tr          </div>
+        </td>
+        <td class="xmldoc">
+          <p>Create a copy with the elements piped through a function.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '547', 547)" onmouseover="showTip(event, '547', 547)">
+            Map(array, item_index_fun)
+          </code>
+          <div class="tip" id="547">
+            <strong>Signature:</strong> (array:&#39;T [] * item_index_fun:Func&lt;&#39;T,int64,&#39;Tr&gt;) -&gt; &#39;Tr []<br />
+                          <strong>Type parameters:</strong> 'T, 'Tr          </div>
+        </td>
+        <td class="xmldoc">
+          <p>Create a copy with the elements piped through a function.
+The function gets the index of the element as a second argument.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '548', 548)" onmouseover="showTip(event, '548', 548)">
+            Map(array, count, element_fun)
+          </code>
+          <div class="tip" id="548">
+            <strong>Signature:</strong> (array:&#39;T [] * count:int64 * element_fun:Func&lt;&#39;T,&#39;Tr&gt;) -&gt; &#39;Tr []<br />
+                          <strong>Type parameters:</strong> 'T, 'Tr          </div>
+        </td>
+        <td class="xmldoc">
+          <p>Create a copy of count elements with the elements piped through a
+function. count may be longer than the array, in this case the
+result array has default elements at the end.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '549', 549)" onmouseover="showTip(event, '549', 549)">
+            Map(array, count, element_index_fun)
+          </code>
+          <div class="tip" id="549">
+            <strong>Signature:</strong> (array:&#39;T [] * count:int64 * element_index_fun:Func&lt;&#39;T,int64,&#39;Tr&gt;) -&gt; &#39;Tr []<br />
+                          <strong>Type parameters:</strong> 'T, 'Tr          </div>
+        </td>
+        <td class="xmldoc">
+          <p>Create a copy of count elements with the elements piped through a
+function. count may be longer than the array, in this case the
+result array has default elements at the end.
+The function gets the index of the element as a second argument.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '550', 550)" onmouseover="showTip(event, '550', 550)">
+            Map(array, start, count, element_fun)
+          </code>
+          <div class="tip" id="550">
+            <strong>Signature:</strong> (array:&#39;T [] * start:int64 * count:int64 * element_fun:Func&lt;&#39;T,&#39;Tr&gt;) -&gt; &#39;Tr []<br />
+                          <strong>Type parameters:</strong> 'T, 'Tr          </div>
+        </td>
+        <td class="xmldoc">
+          <p>Create a copy of specified length starting at the specified
+offset with the elements piped through a function.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '551', 551)" onmouseover="showTip(event, '551', 551)">
+            Map(...)
+          </code>
+          <div class="tip" id="551">
+            <strong>Signature:</strong> (array:&#39;T [] * start:int64 * count:int64 * element_index_fun:Func&lt;&#39;T,int64,&#39;Tr&gt;) -&gt; &#39;Tr []<br />
+                          <strong>Type parameters:</strong> 'T, 'Tr          </div>
+        </td>
+        <td class="xmldoc">
+          <p>Create a copy of specified length starting at the specified
+offset with the elements piped through a function.
+The function gets the target index of the element as a second
+argument.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '552', 552)" onmouseover="showTip(event, '552', 552)">
+            Map2(array0, array1, item0_item1_fun)
+          </code>
+          <div class="tip" id="552">
+            <strong>Signature:</strong> (array0:&#39;T0 [] * array1:&#39;T1 [] * item0_item1_fun:Func&lt;&#39;T0,&#39;T1,&#39;Tr&gt;) -&gt; &#39;Tr []<br />
+                          <strong>Type parameters:</strong> 'T0, 'T1, 'Tr          </div>
+        </td>
+        <td class="xmldoc">
+          <p>Create an array of reulting items by applying a supplied binary function
+to corresponding pairs of the supplied arrays.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '553', 553)" onmouseover="showTip(event, '553', 553)">
+            Map2(...)
+          </code>
+          <div class="tip" id="553">
+            <strong>Signature:</strong> (array0:&#39;T0 [] * array1:&#39;T1 [] * item0_item1_index_fun:Func&lt;&#39;T0,&#39;T1,int64,&#39;Tr&gt;) -&gt; &#39;Tr []<br />
+                          <strong>Type parameters:</strong> 'T0, 'T1, 'Tr          </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '554', 554)" onmouseover="showTip(event, '554', 554)">
+            Map3(...)
+          </code>
+          <div class="tip" id="554">
+            <strong>Signature:</strong> (array0:&#39;T0 [] * array1:&#39;T1 [] * array2:&#39;T2 [] * item0_item1_item2_fun:Func&lt;&#39;T0,&#39;T1,&#39;T2,&#39;Tr&gt;) -&gt; &#39;Tr []<br />
+                          <strong>Type parameters:</strong> 'T0, 'T1, 'T2, 'Tr          </div>
+        </td>
+        <td class="xmldoc">
+          <p>Create an array of resulting items by applying a supplied ternary function
+to corresponding triples of the supplied arrays.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '555', 555)" onmouseover="showTip(event, '555', 555)">
+            Map3(...)
+          </code>
+          <div class="tip" id="555">
+            <strong>Signature:</strong> (array0:&#39;T0 [] * array1:&#39;T1 [] * array2:&#39;T2 [] * item0_item1_item2_index_fun:Func&lt;&#39;T0,&#39;T1,&#39;T2,int64,&#39;Tr&gt;) -&gt; &#39;Tr []<br />
+                          <strong>Type parameters:</strong> 'T0, 'T1, 'T2, 'Tr          </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '556', 556)" onmouseover="showTip(event, '556', 556)">
+            MapToList(array, element_fun)
+          </code>
+          <div class="tip" id="556">
+            <strong>Signature:</strong> (array:&#39;T [] * element_fun:Func&lt;&#39;T,&#39;Tr&gt;) -&gt; List&lt;&#39;Tr&gt;<br />
+                          <strong>Type parameters:</strong> 'T, 'Tr          </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '557', 557)" onmouseover="showTip(event, '557', 557)">
+            MapToList(array, item_index_fun)
+          </code>
+          <div class="tip" id="557">
+            <strong>Signature:</strong> (array:&#39;T [] * item_index_fun:Func&lt;&#39;T,int64,&#39;Tr&gt;) -&gt; List&lt;&#39;Tr&gt;<br />
+                          <strong>Type parameters:</strong> 'T, 'Tr          </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '558', 558)" onmouseover="showTip(event, '558', 558)">
+            Merge(array, left, right, comparer)
+          </code>
+          <div class="tip" id="558">
+            <strong>Signature:</strong> (array:&#39;T [] * left:&#39;T [] * right:&#39;T [] * comparer:Func&lt;&#39;T,&#39;T,int&gt;) -&gt; unit<br />
+                          <strong>Type parameters:</strong> 'T          </div>
+        </td>
+        <td class="xmldoc">
+          <p>Merges two already sorted arrays.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '559', 559)" onmouseover="showTip(event, '559', 559)">
+            MergeSorted(a0, a1)
+          </code>
+          <div class="tip" id="559">
+            <strong>Signature:</strong> (a0:&#39;T [] * a1:&#39;T []) -&gt; &#39;T []<br />
+                          <strong>Type parameters:</strong> 'T          </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '560', 560)" onmouseover="showTip(event, '560', 560)">
+            Move(self, sourceIndex, targetIndex)
+          </code>
+          <div class="tip" id="560">
+            <strong>Signature:</strong> (self:&#39;T [] * sourceIndex:int64 * targetIndex:int64) -&gt; unit<br />
+                          <strong>Type parameters:</strong> 'T          </div>
+        </td>
+        <td class="xmldoc">
+          <p>Move an element from a given source index to a destination index,
+and shift all elements in between by one.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '561', 561)" onmouseover="showTip(event, '561', 561)">
+            ProductArray(...)
+          </code>
+          <div class="tip" id="561">
+            <strong>Signature:</strong> (array0:&#39;T0 [] * array1:&#39;T1 [] * item0_item1_productFun:Func&lt;&#39;T0,&#39;T1,&#39;TProduct&gt;) -&gt; &#39;TProduct []<br />
+                          <strong>Type parameters:</strong> 'T0, 'T1, 'TProduct          </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '562', 562)" onmouseover="showTip(event, '562', 562)">
+            ProductArray(...)
+          </code>
+          <div class="tip" id="562">
+            <strong>Signature:</strong> (array0:&#39;T0 [] * array1:&#39;T1 [] * count:int64 * item0_item1_productFun:Func&lt;&#39;T0,&#39;T1,&#39;TProduct&gt;) -&gt; &#39;TProduct []<br />
+                          <strong>Type parameters:</strong> 'T0, 'T1, 'TProduct          </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '563', 563)" onmouseover="showTip(event, '563', 563)">
+            ProductArray(...)
+          </code>
+          <div class="tip" id="563">
+            <strong>Signature:</strong> (array0:&#39;T0 [] * array1:&#39;T1 [] * item0_item1_index_productFun:Func&lt;&#39;T0,&#39;T1,int64,&#39;TProduct&gt;) -&gt; &#39;TProduct []<br />
+                          <strong>Type parameters:</strong> 'T0, 'T1, 'TProduct          </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '564', 564)" onmouseover="showTip(event, '564', 564)">
+            ProductArray(...)
+          </code>
+          <div class="tip" id="564">
+            <strong>Signature:</strong> (array0:&#39;T0 [] * array1:&#39;T1 [] * count:int64 * item0_item1_index_productFun:Func&lt;&#39;T0,&#39;T1,int64,&#39;TProduct&gt;) -&gt; &#39;TProduct []<br />
+                          <strong>Type parameters:</strong> 'T0, 'T1, 'TProduct          </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '565', 565)" onmouseover="showTip(event, '565', 565)">
+            Resized(array, newSize)
+          </code>
+          <div class="tip" id="565">
+            <strong>Signature:</strong> (array:&#39;T [] * newSize:int) -&gt; &#39;T []<br />
+                          <strong>Type parameters:</strong> 'T          </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '566', 566)" onmouseover="showTip(event, '566', 566)">
+            Resized(array, newSize)
+          </code>
+          <div class="tip" id="566">
+            <strong>Signature:</strong> (array:&#39;T [] * newSize:int64) -&gt; &#39;T []<br />
+                          <strong>Type parameters:</strong> 'T          </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '567', 567)" onmouseover="showTip(event, '567', 567)">
+            Resized(array, size)
+          </code>
+          <div class="tip" id="567">
+            <strong>Signature:</strong> (array:Array * size:int) -&gt; Array<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '568', 568)" onmouseover="showTip(event, '568', 568)">
+            ReverseGroups(...)
+          </code>
+          <div class="tip" id="568">
+            <strong>Signature:</strong> (array:&#39;T [] * groupFirstIndices:int [] * groupCount:int * reverseMap:Func&lt;int,bool&gt;) -&gt; unit<br />
+                          <strong>Type parameters:</strong> 'T          </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '569', 569)" onmouseover="showTip(event, '569', 569)">
+            ReverseGroups(...)
+          </code>
+          <div class="tip" id="569">
+            <strong>Signature:</strong> (array:Array * groupArray:int [] * groupCount:int * reverseMap:Func&lt;int,bool&gt;) -&gt; unit<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '570', 570)" onmouseover="showTip(event, '570', 570)">
+            ReverseRange(a, lo, hi)
+          </code>
+          <div class="tip" id="570">
+            <strong>Signature:</strong> (a:&#39;T [] * lo:int64 * hi:int64) -&gt; unit<br />
+                          <strong>Type parameters:</strong> 'T          </div>
+        </td>
+        <td class="xmldoc">
+          <p>Reverse the order of elements in the supplied range [lo, hi[.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '571', 571)" onmouseover="showTip(event, '571', 571)">
+            Revert(array)
+          </code>
+          <div class="tip" id="571">
+            <strong>Signature:</strong> (array:&#39;T []) -&gt; unit<br />
+                          <strong>Type parameters:</strong> 'T          </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '572', 572)" onmouseover="showTip(event, '572', 572)">
+            ScanLeft(array, leftSum, sum_val_addFun)
+          </code>
+          <div class="tip" id="572">
+            <strong>Signature:</strong> (array:&#39;TVal [] * leftSum:&#39;TSum * sum_val_addFun:Func&lt;&#39;TSum,&#39;TVal,&#39;TSum&gt;) -&gt; &#39;TSum []<br />
+                          <strong>Type parameters:</strong> 'TVal, 'TSum          </div>
+        </td>
+        <td class="xmldoc">
+          <p>Performs an aggregation of all elements in an array with the
+supplied aggregation function starting from the left and with the
+initial supplied left sum.
+All intermediate results are returned as an array with the same
+length as the original.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '573', 573)" onmouseover="showTip(event, '573', 573)">
+            ScanLeft(...)
+          </code>
+          <div class="tip" id="573">
+            <strong>Signature:</strong> (array:&#39;TVal [] * leftSum:&#39;TSum * sum_val_index_addFun:Func&lt;&#39;TSum,&#39;TVal,int64,&#39;TSum&gt;) -&gt; &#39;TSum []<br />
+                          <strong>Type parameters:</strong> 'TVal, 'TSum          </div>
+        </td>
+        <td class="xmldoc">
+          <p>Performs an aggregation of all elements in an array with the
+supplied aggregation function starting from the left and with the
+initial supplied left sum.
+All intermediate results are returned as an array with the same
+length as the original.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '574', 574)" onmouseover="showTip(event, '574', 574)">
+            ScanLeft(...)
+          </code>
+          <div class="tip" id="574">
+            <strong>Signature:</strong> (array:&#39;TVal [] * start:int64 * count:int64 * leftSum:&#39;TSum * sum_val_addFun:Func&lt;&#39;TSum,&#39;TVal,&#39;TSum&gt;) -&gt; &#39;TSum []<br />
+                          <strong>Type parameters:</strong> 'TVal, 'TSum          </div>
+        </td>
+        <td class="xmldoc">
+          <p>Performs an aggregation of the specified slice of elements in an
+array with the supplied aggregation function starting from the
+left and with the initial supplied left sum.
+All intermediate results are returned as an array with the given
+count as length.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '575', 575)" onmouseover="showTip(event, '575', 575)">
+            ScanLeft(...)
+          </code>
+          <div class="tip" id="575">
+            <strong>Signature:</strong> (array:&#39;TVal [] * start:int64 * count:int64 * leftSum:&#39;TSum * sum_val_index_addFun:Func&lt;&#39;TSum,&#39;TVal,int64,&#39;TSum&gt;) -&gt; &#39;TSum []<br />
+                          <strong>Type parameters:</strong> 'TVal, 'TSum          </div>
+        </td>
+        <td class="xmldoc">
+          <p>Performs an aggregation of the specified slice of elements in an
+array with the supplied aggregation function starting from the
+left and with the initial supplied left sum.
+All intermediate results are returned as an array with the given
+count as length.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '576', 576)" onmouseover="showTip(event, '576', 576)">
+            ScanRight(...)
+          </code>
+          <div class="tip" id="576">
+            <strong>Signature:</strong> (array:&#39;TVal [] * val_sum_addFun:Func&lt;&#39;TVal,&#39;TSum,&#39;TSum&gt; * rightSum:&#39;TSum) -&gt; &#39;TSum []<br />
+                          <strong>Type parameters:</strong> 'TVal, 'TSum          </div>
+        </td>
+        <td class="xmldoc">
+          <p>Performs an aggregation of all elements in an array with the
+supplied aggregation function starting from the right and with the
+initial supplied right sum.
+All intermediate results are returned as an array with the same
+length as the original.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '577', 577)" onmouseover="showTip(event, '577', 577)">
+            ScanRight(...)
+          </code>
+          <div class="tip" id="577">
+            <strong>Signature:</strong> (array:&#39;TVal [] * val_index_sum_addFun:Func&lt;&#39;TVal,int64,&#39;TSum,&#39;TSum&gt; * rightSum:&#39;TSum) -&gt; &#39;TSum []<br />
+                          <strong>Type parameters:</strong> 'TVal, 'TSum          </div>
+        </td>
+        <td class="xmldoc">
+          <p>Performs an aggregation of all elements in an array with the
+supplied aggregation function starting from the right and with the
+initial supplied right sum.
+All intermediate results are returned as an array with the same
+length as the original.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '578', 578)" onmouseover="showTip(event, '578', 578)">
+            ScanRight(...)
+          </code>
+          <div class="tip" id="578">
+            <strong>Signature:</strong> (array:&#39;TVal [] * start:int64 * count:int64 * val_sum_addFun:Func&lt;&#39;TVal,&#39;TSum,&#39;TSum&gt; * rightSum:&#39;TSum) -&gt; &#39;TSum []<br />
+                          <strong>Type parameters:</strong> 'TVal, 'TSum          </div>
+        </td>
+        <td class="xmldoc">
+          <p>Performs an aggregation of the specified slice of elements in an
+array with the supplied aggregation function starting from the
+right and with the initial supplied right sum.
+All intermediate results are returned as an array with the given
+count as length.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '579', 579)" onmouseover="showTip(event, '579', 579)">
+            ScanRight(...)
+          </code>
+          <div class="tip" id="579">
+            <strong>Signature:</strong> (array:&#39;TVal [] * start:int64 * count:int64 * val_index_sum_addFun:Func&lt;&#39;TVal,int64,&#39;TSum,&#39;TSum&gt; * rightSum:&#39;TSum) -&gt; &#39;TSum []<br />
+                          <strong>Type parameters:</strong> 'TVal, 'TSum          </div>
+        </td>
+        <td class="xmldoc">
+          <p>Performs an aggregation of the specified slice of elements in an
+array with the supplied aggregation function starting from the
+right and with the initial supplied right sum.
+All intermediate results are returned as an array with the given
+count as length.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '580', 580)" onmouseover="showTip(event, '580', 580)">
+            Set(self, value)
+          </code>
+          <div class="tip" id="580">
+            <strong>Signature:</strong> (self:&#39;T [] * value:&#39;T) -&gt; &#39;T []<br />
+                          <strong>Type parameters:</strong> 'T          </div>
+        </td>
+        <td class="xmldoc">
+          <p>Set all elements to the same supplied value.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '581', 581)" onmouseover="showTip(event, '581', 581)">
+            Set(self, count, value)
+          </code>
+          <div class="tip" id="581">
+            <strong>Signature:</strong> (self:&#39;T [] * count:int64 * value:&#39;T) -&gt; &#39;T []<br />
+                          <strong>Type parameters:</strong> 'T          </div>
+        </td>
+        <td class="xmldoc">
+          <p>Set count elements to the same  supplied value.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '582', 582)" onmouseover="showTip(event, '582', 582)">
+            Set(self, start, count, value)
+          </code>
+          <div class="tip" id="582">
+            <strong>Signature:</strong> (self:&#39;T [] * start:int64 * count:int64 * value:&#39;T) -&gt; &#39;T []<br />
+                          <strong>Type parameters:</strong> 'T          </div>
+        </td>
+        <td class="xmldoc">
+          <p>Set count elements starting at the supplied index to the same
+supplied value.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '583', 583)" onmouseover="showTip(event, '583', 583)">
+            Set(self, array)
+          </code>
+          <div class="tip" id="583">
+            <strong>Signature:</strong> (self:&#39;T [] * array:&#39;T []) -&gt; &#39;T []<br />
+                          <strong>Type parameters:</strong> 'T          </div>
+        </td>
+        <td class="xmldoc">
+          <p>Set all elements to the elements of the supplied array.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '584', 584)" onmouseover="showTip(event, '584', 584)">
+            Set(self, value)
+          </code>
+          <div class="tip" id="584">
+            <strong>Signature:</strong> (self:&#39;T [,] * value:&#39;T) -&gt; &#39;T [,]<br />
+                          <strong>Type parameters:</strong> 'T          </div>
+        </td>
+        <td class="xmldoc">
+          <p>Set all elements to the same supplied value.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '585', 585)" onmouseover="showTip(event, '585', 585)">
+            SetByIndex(self, index_fun)
+          </code>
+          <div class="tip" id="585">
+            <strong>Signature:</strong> (self:&#39;T [] * index_fun:Func&lt;int,&#39;T&gt;) -&gt; &#39;T []<br />
+                          <strong>Type parameters:</strong> 'T          </div>
+        </td>
+        <td class="xmldoc">
+          <p>Set all elements to a function of the element index.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '586', 586)" onmouseover="showTip(event, '586', 586)">
+            SetByIndex(self, count, index_fun)
+          </code>
+          <div class="tip" id="586">
+            <strong>Signature:</strong> (self:&#39;T [] * count:int * index_fun:Func&lt;int,&#39;T&gt;) -&gt; &#39;T []<br />
+                          <strong>Type parameters:</strong> 'T          </div>
+        </td>
+        <td class="xmldoc">
+          <p>Set count elements to a function of the element index.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '587', 587)" onmouseover="showTip(event, '587', 587)">
+            SetByIndex(...)
+          </code>
+          <div class="tip" id="587">
+            <strong>Signature:</strong> (self:&#39;T [] * start:int * count:int * index_fun:Func&lt;int,&#39;T&gt;) -&gt; &#39;T []<br />
+                          <strong>Type parameters:</strong> 'T          </div>
+        </td>
+        <td class="xmldoc">
+          <p>Set count elements starting at the supplied index to a function
+of the element index.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '588', 588)" onmouseover="showTip(event, '588', 588)">
+            SetByIndex(self, fun)
+          </code>
+          <div class="tip" id="588">
+            <strong>Signature:</strong> (self:&#39;T [,] * fun:Func&lt;int,int,&#39;T&gt;) -&gt; &#39;T [,]<br />
+                          <strong>Type parameters:</strong> 'T          </div>
+        </td>
+        <td class="xmldoc">
+          <p>Set all elements to a function of the element index.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '589', 589)" onmouseover="showTip(event, '589', 589)">
+            SetByIndex(self, fun)
+          </code>
+          <div class="tip" id="589">
+            <strong>Signature:</strong> (self:&#39;T [,,] * fun:Func&lt;int,int,int,&#39;T&gt;) -&gt; &#39;T [,,]<br />
+                          <strong>Type parameters:</strong> 'T          </div>
+        </td>
+        <td class="xmldoc">
+          <p>Set all elements to a function of the element index.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '590', 590)" onmouseover="showTip(event, '590', 590)">
+            SetByIndexLong(self, index_fun)
+          </code>
+          <div class="tip" id="590">
+            <strong>Signature:</strong> (self:&#39;T [] * index_fun:Func&lt;int64,&#39;T&gt;) -&gt; &#39;T []<br />
+                          <strong>Type parameters:</strong> 'T          </div>
+        </td>
+        <td class="xmldoc">
+          <p>Set all elements to a function of the element index.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '591', 591)" onmouseover="showTip(event, '591', 591)">
+            SetByIndexLong(self, count, index_fun)
+          </code>
+          <div class="tip" id="591">
+            <strong>Signature:</strong> (self:&#39;T [] * count:int64 * index_fun:Func&lt;int64,&#39;T&gt;) -&gt; &#39;T []<br />
+                          <strong>Type parameters:</strong> 'T          </div>
+        </td>
+        <td class="xmldoc">
+          <p>Set count elements to a function of the element index.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '592', 592)" onmouseover="showTip(event, '592', 592)">
+            SetByIndexLong(...)
+          </code>
+          <div class="tip" id="592">
+            <strong>Signature:</strong> (self:&#39;T [] * start:int64 * count:int64 * index_fun:Func&lt;int64,&#39;T&gt;) -&gt; &#39;T []<br />
+                          <strong>Type parameters:</strong> 'T          </div>
+        </td>
+        <td class="xmldoc">
+          <p>Set count elements starting at the supplied index to a function
+of the element index.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '593', 593)" onmouseover="showTip(event, '593', 593)">
+            SetByIndexLong(self, fun)
+          </code>
+          <div class="tip" id="593">
+            <strong>Signature:</strong> (self:&#39;T [,] * fun:Func&lt;int64,int64,&#39;T&gt;) -&gt; &#39;T [,]<br />
+                          <strong>Type parameters:</strong> 'T          </div>
+        </td>
+        <td class="xmldoc">
+          <p>Set all elements to a function of the element index.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '594', 594)" onmouseover="showTip(event, '594', 594)">
+            SetByIndexLong(self, fun)
+          </code>
+          <div class="tip" id="594">
+            <strong>Signature:</strong> (self:&#39;T [,,] * fun:Func&lt;int64,int64,int64,&#39;T&gt;) -&gt; &#39;T [,,]<br />
+                          <strong>Type parameters:</strong> 'T          </div>
+        </td>
+        <td class="xmldoc">
+          <p>Set all elements to a function of the element index.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '595', 595)" onmouseover="showTip(event, '595', 595)">
+            SetMap(array, array0, item0_fun)
+          </code>
+          <div class="tip" id="595">
+            <strong>Signature:</strong> (array:&#39;T [] * array0:&#39;T0 [] * item0_fun:Func&lt;&#39;T0,&#39;T&gt;) -&gt; unit<br />
+                          <strong>Type parameters:</strong> 'T, 'T0          </div>
+        </td>
+        <td class="xmldoc">
+          <p>Sets the array items to a mapped version of the items of array0.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '596', 596)" onmouseover="showTip(event, '596', 596)">
+            SetMap2(...)
+          </code>
+          <div class="tip" id="596">
+            <strong>Signature:</strong> (array:&#39;T [] * array0:&#39;T0 [] * array1:&#39;T1 [] * item0_item1_fun:Func&lt;&#39;T0,&#39;T1,&#39;T&gt;) -&gt; unit<br />
+                          <strong>Type parameters:</strong> 'T, 'T0, 'T1          </div>
+        </td>
+        <td class="xmldoc">
+          <p>Sets the array items to a mapped version of corresponding
+pairs of items of array0 and array1.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '597', 597)" onmouseover="showTip(event, '597', 597)">
+            SetMap3(...)
+          </code>
+          <div class="tip" id="597">
+            <strong>Signature:</strong> (array:&#39;T [] * array0:&#39;T0 [] * array1:&#39;T1 [] * array2:&#39;T2 [] * item0_item1_item2_fun:Func&lt;&#39;T0,&#39;T1,&#39;T2,&#39;T&gt;) -&gt; unit<br />
+                          <strong>Type parameters:</strong> 'T, 'T0, 'T1, 'T2          </div>
+        </td>
+        <td class="xmldoc">
+          <p>Sets the array items to a mapped version of corresponding
+triples of  items of array0, array1, and array2.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '598', 598)" onmouseover="showTip(event, '598', 598)">
+            SkipLast(array, count)
+          </code>
+          <div class="tip" id="598">
+            <strong>Signature:</strong> (array:&#39;T [] * count:int64) -&gt; IEnumerable&lt;&#39;T&gt;<br />
+                          <strong>Type parameters:</strong> 'T          </div>
+        </td>
+        <td class="xmldoc">
+          <p>Enumerate all but last elements of an array. The number of
+elements to omit is supplied as a parameter and defaults to
+1.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '599', 599)" onmouseover="showTip(event, '599', 599)">
+            Swap(self, i, j)
+          </code>
+          <div class="tip" id="599">
+            <strong>Signature:</strong> (self:&#39;T [] * i:int * j:int) -&gt; unit<br />
+                          <strong>Type parameters:</strong> 'T          </div>
+        </td>
+        <td class="xmldoc">
+          <p>Swap the two elements specified by their indices.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '600', 600)" onmouseover="showTip(event, '600', 600)">
+            Swap(self, i, j)
+          </code>
+          <div class="tip" id="600">
+            <strong>Signature:</strong> (self:&#39;T [] * i:int64 * j:int64) -&gt; unit<br />
+                          <strong>Type parameters:</strong> 'T          </div>
+        </td>
+        <td class="xmldoc">
+          <p>Swap the two elements specified by their indices.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '601', 601)" onmouseover="showTip(event, '601', 601)">
+            Swap(array, i, j)
+          </code>
+          <div class="tip" id="601">
+            <strong>Signature:</strong> (array:Array * i:int64 * j:int64) -&gt; unit<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '602', 602)" onmouseover="showTip(event, '602', 602)">
+            TakeFraction(array, fraction)
+          </code>
+          <div class="tip" id="602">
+            <strong>Signature:</strong> (array:&#39;T [] * fraction:float) -&gt; IEnumerable&lt;&#39;T&gt;<br />
+                          <strong>Type parameters:</strong> 'T          </div>
+        </td>
+        <td class="xmldoc">
+          <p>Enumerates the given fraction of the array elements from the
+beginning of the array. E.g. TakeFraction(0.1) would enumerate
+the first 1/10 of the array elements. Fraction must be in range
+[0.0, 1.0].</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '603', 603)" onmouseover="showTip(event, '603', 603)">
+            ToList(array, fun)
+          </code>
+          <div class="tip" id="603">
+            <strong>Signature:</strong> (array:&#39;T [] * fun:Func&lt;&#39;T,&#39;Tr&gt;) -&gt; List&lt;&#39;Tr&gt;<br />
+                          <strong>Type parameters:</strong> 'T, 'Tr          </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '604', 604)" onmouseover="showTip(event, '604', 604)">
+            UnsafeCoerce(input)
+          </code>
+          <div class="tip" id="604">
+            <strong>Signature:</strong> input:Array -&gt; &#39;TR []<br />
+                          <strong>Type parameters:</strong> 'TR          </div>
+        </td>
+        <td class="xmldoc">
+          <p>Reinterprets an array as one of a different type
+Both types must be structs and you may cause memory leaks when the array-byte-sizes are not multiple of each other
+WARNING: destroys the original array</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '605', 605)" onmouseover="showTip(event, '605', 605)">
+            UnsafeCoercedApply(input, action)
+          </code>
+          <div class="tip" id="605">
+            <strong>Signature:</strong> (input:Array * action:Action&lt;&#39;TR []&gt;) -&gt; unit<br />
+                          <strong>Type parameters:</strong> 'TR          </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '606', 606)" onmouseover="showTip(event, '606', 606)">
+            With(array, index, item)
+          </code>
+          <div class="tip" id="606">
+            <strong>Signature:</strong> (array:&#39;T [] * index:int * item:&#39;T) -&gt; &#39;T []<br />
+                          <strong>Type parameters:</strong> 'T          </div>
+        </td>
+        <td class="xmldoc">
+          <p>Returns a copy of the array with the specified item replaced.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '607', 607)" onmouseover="showTip(event, '607', 607)">
+            WithAdded(array, item)
+          </code>
+          <div class="tip" id="607">
+            <strong>Signature:</strong> (array:&#39;T [] * item:&#39;T) -&gt; &#39;T []<br />
+                          <strong>Type parameters:</strong> 'T          </div>
+        </td>
+        <td class="xmldoc">
+          <p>Synonym for WithAppended().</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '608', 608)" onmouseover="showTip(event, '608', 608)">
+            WithAppended(array, item)
+          </code>
+          <div class="tip" id="608">
+            <strong>Signature:</strong> (array:&#39;T [] * item:&#39;T) -&gt; &#39;T []<br />
+                          <strong>Type parameters:</strong> 'T          </div>
+        </td>
+        <td class="xmldoc">
+          <p>Returns a copy of the array with the specified item appended
+at the end. If the item is already contained in the array,
+the original array is returned.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '609', 609)" onmouseover="showTip(event, '609', 609)">
+            WithPrepended(array, item)
+          </code>
+          <div class="tip" id="609">
+            <strong>Signature:</strong> (array:&#39;T [] * item:&#39;T) -&gt; &#39;T []<br />
+                          <strong>Type parameters:</strong> 'T          </div>
+        </td>
+        <td class="xmldoc">
+          <p>Returns a copy of the array with the specified item prepended
+to the front. If the item is already contained in the array,
+the original array is returned.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '610', 610)" onmouseover="showTip(event, '610', 610)">
+            WithRemoved(array, item)
+          </code>
+          <div class="tip" id="610">
+            <strong>Signature:</strong> (array:&#39;T [] * item:&#39;T) -&gt; &#39;T []<br />
+                          <strong>Type parameters:</strong> 'T          </div>
+        </td>
+        <td class="xmldoc">
+          <p>Returns a copy of the item with the specified item removed. If the
+item is not contained in the array, the original array is returned.</p>
+
+
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+        </div>
+        <div class="span3">
+          <a href="https://github.com/vrvis">
+            <img src="logo.png" style="width:140px;height:140px;margin:10px 0px 0px 35px;border-style:none;" />
+          </a>
+
+          <ul class="nav nav-list" id="menu">
+
+            <li class="nav-header">Aardvark.Base</li>
+
+            <li class="divider"></li>
+            <li><a href="https://github.com/vrvis/aardvark.base">Home page</a></li>
+            <li class="divider"></li>
+
+            <li><a href="https://www.nuget.org/packages/Aardvark.Base">Get Aardvark.Base via NuGet</a></li>
+            <li><a href="https://github.com/vrvis/aardvark.base">Source Code on GitHub</a></li>
+            <li><a href="https://github.com/vrvis/aardvark.baseLicense">License (Apache 2)</a></li>
+            
+            <!-- <li><a href="https://github.com/vrvis/aardvark.base/RELEASE_NOTES.html">Release Notes</a></li>
+            <li><a href="https://github.com/vrvis/aardvark.base//contributing.html">Contributing to Aardvark.Base</a></li>
+  
+            <li><a href="http://stackoverflow.com/questions/tagged/f%23-fake">Ask a question</a></li> 
+            
+            <li class="nav-header">Tutorials</li>
+            <li><a href="https://github.com/vrvis/aardvark.base/gettingstarted.html">Getting started</a></li>
+            
+            -->
+
+            
+            <li class="divider"></li>
+            <li class="nav-header">Reference</li>
+
+            <li><a href="https://github.com/vrvis/aardvark.base/apidocs/index.html">API Reference</a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    <a href="https://github.com/vrvis/aardvark.base"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_gray_6d6d6d.png" alt="Fork me on GitHub"></a>
+  </body>
+  </html>

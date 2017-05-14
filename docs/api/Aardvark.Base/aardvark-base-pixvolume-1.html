@@ -1,0 +1,676 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>PixVolume<'T> - Aardvark.Base</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="The Aardvark Platform Team">
+
+    <script src="https://code.jquery.com/jquery-1.8.0.js"></script>
+    <script src="https://code.jquery.com/ui/1.8.23/jquery-ui.js"></script>
+    <script src="https://netdna.bootstrapcdn.com/twitter-bootstrap/2.2.1/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link href="https://netdna.bootstrapcdn.com/twitter-bootstrap/2.2.1/css/bootstrap-combined.min.css" rel="stylesheet">
+
+    <link type="text/css" rel="stylesheet" href="https://github.com/vrvis/aardvark.base/content/style.css" />
+    <script type="text/javascript" src="https://github.com/vrvis/aardvark.base/content/tips.js"></script>
+    <!-- HTML5 shim, for IE6-8 support of HTML5 elements -->
+    <!--[if lt IE 9]>
+      <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+  </head>
+  <body>
+    <div class="container">
+      <div class="masthead">
+        <ul class="nav nav-pills pull-right">
+          <li><a href="https://github.com/vrvis/aardvark.base">github page</a></li>
+        </ul>
+        <h3 class="muted"><a href="https://github.com/vrvis/aardvark.base/index.html">Aardvark.Base</a></h3>
+      </div>
+      <hr />
+      <div class="row">
+        <div class="span9" id="main">
+          
+
+
+
+<h1>PixVolume<'T></h1>
+<div class="xmldoc">
+</div>
+  <h3>Constructors</h3>
+  <table class="table table-bordered member-list">
+    <thead>
+      <tr><td>Constructor</td><td>Description</td></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '14349', 14349)" onmouseover="showTip(event, '14349', 14349)">
+            new(format, tensor4)
+          </code>
+          <div class="tip" id="14349">
+            <strong>Signature:</strong> (format:Format * tensor4:Tensor4&lt;&#39;T&gt;) -&gt; unit<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '14350', 14350)" onmouseover="showTip(event, '14350', 14350)">
+            new()
+          </code>
+          <div class="tip" id="14350">
+            <strong>Signature:</strong> unit -&gt; unit<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '14351', 14351)" onmouseover="showTip(event, '14351', 14351)">
+            new(size, channelCount)
+          </code>
+          <div class="tip" id="14351">
+            <strong>Signature:</strong> (size:V3i * channelCount:int) -&gt; unit<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '14352', 14352)" onmouseover="showTip(event, '14352', 14352)">
+            new(sizeX, sizeY, sizeZ, channelCount)
+          </code>
+          <div class="tip" id="14352">
+            <strong>Signature:</strong> (sizeX:int * sizeY:int * sizeZ:int * channelCount:int) -&gt; unit<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '14353', 14353)" onmouseover="showTip(event, '14353', 14353)">
+            new(format, size)
+          </code>
+          <div class="tip" id="14353">
+            <strong>Signature:</strong> (format:Format * size:V3i) -&gt; unit<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '14354', 14354)" onmouseover="showTip(event, '14354', 14354)">
+            new(format, sizeX, sizeY, sizeZ)
+          </code>
+          <div class="tip" id="14354">
+            <strong>Signature:</strong> (format:Format * sizeX:int * sizeY:int * sizeZ:int) -&gt; unit<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '14355', 14355)" onmouseover="showTip(event, '14355', 14355)">
+            new(format, size, channelCount)
+          </code>
+          <div class="tip" id="14355">
+            <strong>Signature:</strong> (format:Format * size:V3i * channelCount:int) -&gt; unit<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '14356', 14356)" onmouseover="showTip(event, '14356', 14356)">
+            new(...)
+          </code>
+          <div class="tip" id="14356">
+            <strong>Signature:</strong> (format:Format * sizeX:int * sizeY:int * sizeZ:int * channelCount:int) -&gt; unit<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '14357', 14357)" onmouseover="showTip(event, '14357', 14357)">
+            new(pixVolume)
+          </code>
+          <div class="tip" id="14357">
+            <strong>Signature:</strong> pixVolume:PixVolume -&gt; unit<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Copy constructor: ALWAYS creates a copy of the data!</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '14358', 14358)" onmouseover="showTip(event, '14358', 14358)">
+            new(format, pixImage)
+          </code>
+          <div class="tip" id="14358">
+            <strong>Signature:</strong> (format:Format * pixImage:PixVolume) -&gt; unit<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Copy constructor: ALWAYS creates a copy of the data!</p>
+
+
+        </td>
+      </tr>
+    </tbody>
+  </table>
+  <h3>Instance members</h3>
+  <table class="table table-bordered member-list">
+    <thead>
+      <tr><td>Instance member</td><td>Description</td></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '14359', 14359)" onmouseover="showTip(event, '14359', 14359)">
+            Array
+          </code>
+          <div class="tip" id="14359">
+            <strong>Signature:</strong> Array<br />
+              <strong>Modifiers:</strong> abstract<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '14360', 14360)" onmouseover="showTip(event, '14360', 14360)">
+            BytesPerChannel
+          </code>
+          <div class="tip" id="14360">
+            <strong>Signature:</strong> int<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '14361', 14361)" onmouseover="showTip(event, '14361', 14361)">
+            ChannelArray
+          </code>
+          <div class="tip" id="14361">
+            <strong>Signature:</strong> Volume&lt;&#39;T&gt; []<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Returns the array containing the cahnnels in canonical order: red,
+green, blue, (alpha).</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '14362', 14362)" onmouseover="showTip(event, '14362', 14362)">
+            ChannelCount
+          </code>
+          <div class="tip" id="14362">
+            <strong>Signature:</strong> int<br />
+              <strong>Modifiers:</strong> abstract<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '14363', 14363)" onmouseover="showTip(event, '14363', 14363)">
+            Channels
+          </code>
+          <div class="tip" id="14363">
+            <strong>Signature:</strong> IEnumerable&lt;Volume&lt;&#39;T&gt;&gt;<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Returns the channels of the image in canonical order: red, green,
+blue, (alpha).</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '14364', 14364)" onmouseover="showTip(event, '14364', 14364)">
+            Copy()
+          </code>
+          <div class="tip" id="14364">
+            <strong>Signature:</strong> unit -&gt; PixVolume&lt;&#39;T&gt;<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '14365', 14365)" onmouseover="showTip(event, '14365', 14365)">
+            Copy(fun)
+          </code>
+          <div class="tip" id="14365">
+            <strong>Signature:</strong> fun:Func&lt;&#39;Tv,&#39;Tv&gt; -&gt; PixImage&lt;&#39;T&gt;<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Copy function for color conversions.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '14366', 14366)" onmouseover="showTip(event, '14366', 14366)">
+            Copy(fun, format)
+          </code>
+          <div class="tip" id="14366">
+            <strong>Signature:</strong> (fun:Func&lt;&#39;Tv,&#39;Tv&gt; * format:Format) -&gt; PixImage&lt;&#39;T&gt;<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Copy function for color conversions. Note that the
+new color format must have the same number of channels
+as the old one, and the result of the supplied conversion
+function is reinterpreted as a color in the new format.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '14367', 14367)" onmouseover="showTip(event, '14367', 14367)">
+            CopyChannelTo(channelIndex, target)
+          </code>
+          <div class="tip" id="14367">
+            <strong>Signature:</strong> (channelIndex:int64 * target:Volume&lt;&#39;Tv&gt;) -&gt; unit<br />
+              <strong>Modifiers:</strong> abstract<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '14368', 14368)" onmouseover="showTip(event, '14368', 14368)">
+            CopyToImageLayout()
+          </code>
+          <div class="tip" id="14368">
+            <strong>Signature:</strong> unit -&gt; PixVolume&lt;&#39;T&gt;<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '14369', 14369)" onmouseover="showTip(event, '14369', 14369)">
+            CopyToPixVolume()
+          </code>
+          <div class="tip" id="14369">
+            <strong>Signature:</strong> unit -&gt; PixVolume<br />
+              <strong>Modifiers:</strong> abstract<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '14370', 14370)" onmouseover="showTip(event, '14370', 14370)">
+            CopyToPixVolumeWithCanonicalDenseLayout(...)
+          </code>
+          <div class="tip" id="14370">
+            <strong>Signature:</strong> unit -&gt; PixVolume<br />
+              <strong>Modifiers:</strong> abstract<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '14371', 14371)" onmouseover="showTip(event, '14371', 14371)">
+            Data
+          </code>
+          <div class="tip" id="14371">
+            <strong>Signature:</strong> Array<br />
+              <strong>Modifiers:</strong> abstract<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '14372', 14372)" onmouseover="showTip(event, '14372', 14372)">
+            GetChannel(channelIndex)
+          </code>
+          <div class="tip" id="14372">
+            <strong>Signature:</strong> channelIndex:int64 -&gt; Volume&lt;&#39;T&gt;<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Returns the specified channel, based on the canonical channel
+order: red, green, blue, (alpha).</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '14373', 14373)" onmouseover="showTip(event, '14373', 14373)">
+            GetChannel(channel)
+          </code>
+          <div class="tip" id="14373">
+            <strong>Signature:</strong> channel:Channel -&gt; Volume&lt;&#39;T&gt;<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Returns the specified channel.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '14374', 14374)" onmouseover="showTip(event, '14374', 14374)">
+            GetChannel(channelIndex)
+          </code>
+          <div class="tip" id="14374">
+            <strong>Signature:</strong> channelIndex:int64 -&gt; Volume&lt;&#39;T,&#39;Tv&gt;<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Returns the specified channel (based on the canonical order) with
+a different view type.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '14375', 14375)" onmouseover="showTip(event, '14375', 14375)">
+            GetChannelInFormatOrder(...)
+          </code>
+          <div class="tip" id="14375">
+            <strong>Signature:</strong> formatChannelIndex:int64 -&gt; Volume&lt;&#39;T&gt;<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Returns the specified channel based on the order of the volumes's
+color format.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '14376', 14376)" onmouseover="showTip(event, '14376', 14376)">
+            GetChannelInFormatOrder(...)
+          </code>
+          <div class="tip" id="14376">
+            <strong>Signature:</strong> formatChannelIndex:int64 -&gt; Volume&lt;&#39;T,&#39;Tv&gt;<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Returns the specified channel based on the order of the volumes's
+color format with a different view type.
+formatChannelIndex</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '14377', 14377)" onmouseover="showTip(event, '14377', 14377)">
+            GetVolume()
+          </code>
+          <div class="tip" id="14377">
+            <strong>Signature:</strong> unit -&gt; Volume&lt;&#39;T,&#39;Tv&gt;<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '14378', 14378)" onmouseover="showTip(event, '14378', 14378)">
+            PixFormat
+          </code>
+          <div class="tip" id="14378">
+            <strong>Signature:</strong> PixFormat<br />
+              <strong>Modifiers:</strong> abstract<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '14379', 14379)" onmouseover="showTip(event, '14379', 14379)">
+            Size
+          </code>
+          <div class="tip" id="14379">
+            <strong>Signature:</strong> V3i<br />
+              <strong>Modifiers:</strong> abstract<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '14380', 14380)" onmouseover="showTip(event, '14380', 14380)">
+            SizeL
+          </code>
+          <div class="tip" id="14380">
+            <strong>Signature:</strong> V3l<br />
+              <strong>Modifiers:</strong> abstract<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '14381', 14381)" onmouseover="showTip(event, '14381', 14381)">
+            ToFormat(format)
+          </code>
+          <div class="tip" id="14381">
+            <strong>Signature:</strong> format:Format -&gt; PixVolume&lt;&#39;T&gt;<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '14382', 14382)" onmouseover="showTip(event, '14382', 14382)">
+            ToImageLayout()
+          </code>
+          <div class="tip" id="14382">
+            <strong>Signature:</strong> unit -&gt; PixVolume&lt;&#39;T&gt;<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '14383', 14383)" onmouseover="showTip(event, '14383', 14383)">
+            ToPixVolume()
+          </code>
+          <div class="tip" id="14383">
+            <strong>Signature:</strong> unit -&gt; PixVolume&lt;&#39;T1&gt;<br />
+              <strong>Modifiers:</strong> abstract<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '14384', 14384)" onmouseover="showTip(event, '14384', 14384)">
+            ToPixVolume(format)
+          </code>
+          <div class="tip" id="14384">
+            <strong>Signature:</strong> format:Format -&gt; PixVolume<br />
+              <strong>Modifiers:</strong> abstract<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '14385', 14385)" onmouseover="showTip(event, '14385', 14385)">
+            Visit(visitor)
+          </code>
+          <div class="tip" id="14385">
+            <strong>Signature:</strong> visitor:IPixVolumeVisitor&lt;&#39;TResult&gt; -&gt; &#39;TResult<br />
+              <strong>Modifiers:</strong> abstract<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '14386', 14386)" onmouseover="showTip(event, '14386', 14386)">
+            Volume
+          </code>
+          <div class="tip" id="14386">
+            <strong>Signature:</strong> Volume&lt;&#39;T&gt;<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Returns the volume representation of the tensor4 if there is only
+one channel. Fails if there are multiple channels.</p>
+
+
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+        </div>
+        <div class="span3">
+          <a href="https://github.com/vrvis">
+            <img src="logo.png" style="width:140px;height:140px;margin:10px 0px 0px 35px;border-style:none;" />
+          </a>
+
+          <ul class="nav nav-list" id="menu">
+
+            <li class="nav-header">Aardvark.Base</li>
+
+            <li class="divider"></li>
+            <li><a href="https://github.com/vrvis/aardvark.base">Home page</a></li>
+            <li class="divider"></li>
+
+            <li><a href="https://www.nuget.org/packages/Aardvark.Base">Get Aardvark.Base via NuGet</a></li>
+            <li><a href="https://github.com/vrvis/aardvark.base">Source Code on GitHub</a></li>
+            <li><a href="https://github.com/vrvis/aardvark.baseLicense">License (Apache 2)</a></li>
+            
+            <!-- <li><a href="https://github.com/vrvis/aardvark.base/RELEASE_NOTES.html">Release Notes</a></li>
+            <li><a href="https://github.com/vrvis/aardvark.base//contributing.html">Contributing to Aardvark.Base</a></li>
+  
+            <li><a href="http://stackoverflow.com/questions/tagged/f%23-fake">Ask a question</a></li> 
+            
+            <li class="nav-header">Tutorials</li>
+            <li><a href="https://github.com/vrvis/aardvark.base/gettingstarted.html">Getting started</a></li>
+            
+            -->
+
+            
+            <li class="divider"></li>
+            <li class="nav-header">Reference</li>
+
+            <li><a href="https://github.com/vrvis/aardvark.base/apidocs/index.html">API Reference</a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    <a href="https://github.com/vrvis/aardvark.base"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_gray_6d6d6d.png" alt="Fork me on GitHub"></a>
+  </body>
+  </html>

@@ -1,0 +1,1144 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>FastConcurrentBigDictIEq<'TKey, 'TValue> - Aardvark.Base</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="The Aardvark Platform Team">
+
+    <script src="https://code.jquery.com/jquery-1.8.0.js"></script>
+    <script src="https://code.jquery.com/ui/1.8.23/jquery-ui.js"></script>
+    <script src="https://netdna.bootstrapcdn.com/twitter-bootstrap/2.2.1/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link href="https://netdna.bootstrapcdn.com/twitter-bootstrap/2.2.1/css/bootstrap-combined.min.css" rel="stylesheet">
+
+    <link type="text/css" rel="stylesheet" href="https://github.com/vrvis/aardvark.base/content/style.css" />
+    <script type="text/javascript" src="https://github.com/vrvis/aardvark.base/content/tips.js"></script>
+    <!-- HTML5 shim, for IE6-8 support of HTML5 elements -->
+    <!--[if lt IE 9]>
+      <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+  </head>
+  <body>
+    <div class="container">
+      <div class="masthead">
+        <ul class="nav nav-pills pull-right">
+          <li><a href="https://github.com/vrvis/aardvark.base">github page</a></li>
+        </ul>
+        <h3 class="muted"><a href="https://github.com/vrvis/aardvark.base/index.html">Aardvark.Base</a></h3>
+      </div>
+      <hr />
+      <div class="row">
+        <div class="span9" id="main">
+          
+
+
+
+<h1>FastConcurrentBigDictIEq<'TKey, 'TValue></h1>
+<div class="xmldoc">
+<p>A FastConcurrentBigDictIEq is an alternate implementation of a Dictionary that can
+optionally act as a stack for all items with the same key.
+It is implemented as a hashtable with external linking, that uses
+primes as the table size in order to reduce the danger of funneling.</p>
+
+</div>
+  <h3>Constructors</h3>
+  <table class="table table-bordered member-list">
+    <thead>
+      <tr><td>Constructor</td><td>Description</td></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '5411', 5411)" onmouseover="showTip(event, '5411', 5411)">
+            new(hfun, stackDuplicateKeys)
+          </code>
+          <div class="tip" id="5411">
+            <strong>Signature:</strong> (hfun:Func&lt;&#39;TKey,int64&gt; * stackDuplicateKeys:bool) -&gt; unit<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Create a FastConcurrentBigDictIEq that autmatically grows and shrinks as necessary.
+If the optional parameter stackDuplicateKeys is set to true, the
+FastConcurrentBigDictIEq acts as a stack for all items with the same key.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '5412', 5412)" onmouseover="showTip(event, '5412', 5412)">
+            new(hfun, initialCapacity)
+          </code>
+          <div class="tip" id="5412">
+            <strong>Signature:</strong> (hfun:Func&lt;&#39;TKey,int64&gt; * initialCapacity:int64) -&gt; unit<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Create a FastConcurrentBigDictIEq that autmatically grows and shrinks as necessary,
+but also specify an initial capacity.
+If the optional parameter stackDuplicateKeys is set to true, the
+FastConcurrentBigDictIEq acts as a stack for all items with the same key.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '5413', 5413)" onmouseover="showTip(event, '5413', 5413)">
+            new(...)
+          </code>
+          <div class="tip" id="5413">
+            <strong>Signature:</strong> (hfun:Func&lt;&#39;TKey,int64&gt; * initialCapacity:int64 * stackDuplicateKeys:bool) -&gt; unit<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Create a FastConcurrentBigDictIEq that autmatically grows and shrinks as necessary,
+but also specify an initial capacity.
+If the optional parameter stackDuplicateKeys is set to true, the
+FastConcurrentBigDictIEq acts as a stack for all items with the same key.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '5414', 5414)" onmouseover="showTip(event, '5414', 5414)">
+            new(hfun, items, stackDuplicateKeys)
+          </code>
+          <div class="tip" id="5414">
+            <strong>Signature:</strong> (hfun:Func&lt;&#39;TKey,int64&gt; * items:IEnumerable&lt;KeyValuePair&lt;&#39;TKey,&#39;TValue&gt;&gt; * stackDuplicateKeys:bool) -&gt; unit<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Create a FastConcurrentBigDictIEq and initialize it to contain the supplied
+items.
+If the optional parameter stackDuplicateKeys is set to true, the
+FastConcurrentBigDictIEq acts as a stack for all items with the same key.</p>
+
+
+        </td>
+      </tr>
+    </tbody>
+  </table>
+  <h3>Instance members</h3>
+  <table class="table table-bordered member-list">
+    <thead>
+      <tr><td>Instance member</td><td>Description</td></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '5415', 5415)" onmouseover="showTip(event, '5415', 5415)">
+            Add(key, value)
+          </code>
+          <div class="tip" id="5415">
+            <strong>Signature:</strong> (key:&#39;TKey * value:&#39;TValue) -&gt; unit<br />
+              <strong>Modifiers:</strong> abstract<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Add the item with the supplied key and the supplied value
+to the FastConcurrentBigDictIEq.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '5416', 5416)" onmouseover="showTip(event, '5416', 5416)">
+            Add(key, hash, value)
+          </code>
+          <div class="tip" id="5416">
+            <strong>Signature:</strong> (key:&#39;TKey * hash:int64 * value:&#39;TValue) -&gt; unit<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Add the item with the supplied key and the supplied value
+to the FastConcurrentBigDictIEq.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '5417', 5417)" onmouseover="showTip(event, '5417', 5417)">
+            Add(item)
+          </code>
+          <div class="tip" id="5417">
+            <strong>Signature:</strong> item:KeyValuePair&lt;&#39;TKey,&#39;TValue&gt; -&gt; unit<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Add the supplied item to the FastConcurrentBigDictIEq.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '5418', 5418)" onmouseover="showTip(event, '5418', 5418)">
+            AddObject(objkey, objvalue)
+          </code>
+          <div class="tip" id="5418">
+            <strong>Signature:</strong> (objkey:obj * objvalue:obj) -&gt; unit<br />
+              <strong>Modifiers:</strong> abstract<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Add the item with supplied key and the supplied value
+both supplied as generic objects, to the FastConcurrentBigDictIEq. Note that the supplied key
+and value are cast to the concrete type of the keys and values used in the FastConcurrentBigDictIEq
+and this will fail if they are of different types.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '5419', 5419)" onmouseover="showTip(event, '5419', 5419)">
+            AddRange(items)
+          </code>
+          <div class="tip" id="5419">
+            <strong>Signature:</strong> items:IEnumerable&lt;KeyValuePair&lt;&#39;TKey,&#39;TValue&gt;&gt; -&gt; unit<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Add the supplied items to the FastConcurrentBigDictIEq.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '5420', 5420)" onmouseover="showTip(event, '5420', 5420)">
+            Clear()
+          </code>
+          <div class="tip" id="5420">
+            <strong>Signature:</strong> unit -&gt; unit<br />
+              <strong>Modifiers:</strong> abstract<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Remove all items. Capacity remains unchanged.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '5421', 5421)" onmouseover="showTip(event, '5421', 5421)">
+            Contains(key)
+          </code>
+          <div class="tip" id="5421">
+            <strong>Signature:</strong> key:&#39;TKey -&gt; bool<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Returns true if the FastConcurrentBigDictIEq contains the item with the supplied
+key.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '5422', 5422)" onmouseover="showTip(event, '5422', 5422)">
+            Contains(key, hash)
+          </code>
+          <div class="tip" id="5422">
+            <strong>Signature:</strong> (key:&#39;TKey * hash:int64) -&gt; bool<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Returns true if the FastConcurrentBigDictIEq contains the item with the supplied
+key.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '5423', 5423)" onmouseover="showTip(event, '5423', 5423)">
+            Contains(key, value)
+          </code>
+          <div class="tip" id="5423">
+            <strong>Signature:</strong> (key:&#39;TKey * value:&#39;TValue) -&gt; bool<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Returns true if the FastConcurrentBigDictIEq contains the item with the supplied
+key and the supplied value.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '5424', 5424)" onmouseover="showTip(event, '5424', 5424)">
+            Contains(key, hash, value)
+          </code>
+          <div class="tip" id="5424">
+            <strong>Signature:</strong> (key:&#39;TKey * hash:int64 * value:&#39;TValue) -&gt; bool<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Returns true if the FastConcurrentBigDictIEq contains the item with the supplied
+key and the supplied value.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '5425', 5425)" onmouseover="showTip(event, '5425', 5425)">
+            Contains(item)
+          </code>
+          <div class="tip" id="5425">
+            <strong>Signature:</strong> item:KeyValuePair&lt;&#39;TKey,&#39;TValue&gt; -&gt; bool<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Returns true if the FastConcurrentBigDictIEq contains the item with the supplied
+KeyValuePair.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '5426', 5426)" onmouseover="showTip(event, '5426', 5426)">
+            ContainsKey(key)
+          </code>
+          <div class="tip" id="5426">
+            <strong>Signature:</strong> key:&#39;TKey -&gt; bool<br />
+              <strong>Modifiers:</strong> abstract<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Returns true if the FastConcurrentBigDictIEq contains the item with the supplied
+key.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '5427', 5427)" onmouseover="showTip(event, '5427', 5427)">
+            ContainsKey(key, hash)
+          </code>
+          <div class="tip" id="5427">
+            <strong>Signature:</strong> (key:&#39;TKey * hash:int64) -&gt; bool<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Returns true if the FastConcurrentBigDictIEq contains the item with the supplied
+key.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '5428', 5428)" onmouseover="showTip(event, '5428', 5428)">
+            CopyKeysTo(array, index)
+          </code>
+          <div class="tip" id="5428">
+            <strong>Signature:</strong> (array:&#39;TKey [] * index:int64) -&gt; unit<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Copies all keys in the dictionary to the supplied
+array starting at the supplied index.
+This may throw a ConcurrentDataModifiedException if data is
+modified by another task during the operation.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '5429', 5429)" onmouseover="showTip(event, '5429', 5429)">
+            CopyTo(array, index)
+          </code>
+          <div class="tip" id="5429">
+            <strong>Signature:</strong> (array:KeyValuePair&lt;&#39;TKey,&#39;TValue&gt; [] * index:int64) -&gt; unit<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Copies all KeyValuePairs in the dictionary into the supplied
+array starting at the supplied index.
+This may throw a ConcurrentDataModifiedException if data is
+modified by another task during the operation.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '5430', 5430)" onmouseover="showTip(event, '5430', 5430)">
+            CopyValuesTo(array, index)
+          </code>
+          <div class="tip" id="5430">
+            <strong>Signature:</strong> (array:&#39;TValue [] * index:int64) -&gt; unit<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Copies all values in the dictionary to the supplied
+array starting at the supplied index.
+This may throw a ConcurrentDataModifiedException if data is
+modified by another task during the operation.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '5431', 5431)" onmouseover="showTip(event, '5431', 5431)">
+            Get(key)
+          </code>
+          <div class="tip" id="5431">
+            <strong>Signature:</strong> key:&#39;TKey -&gt; &#39;TValue<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Get the element with the supplied key.
+Throws an exception if the element is not found. This is an alias of the indexer.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '5432', 5432)" onmouseover="showTip(event, '5432', 5432)">
+            Get(key, defaultValue)
+          </code>
+          <div class="tip" id="5432">
+            <strong>Signature:</strong> (key:&#39;TKey * defaultValue:&#39;TValue) -&gt; &#39;TValue<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Get the element with the supplied key.
+Returns the supplied default value if the element is not found.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '5433', 5433)" onmouseover="showTip(event, '5433', 5433)">
+            Get(key, hash)
+          </code>
+          <div class="tip" id="5433">
+            <strong>Signature:</strong> (key:&#39;TKey * hash:int64) -&gt; &#39;TValue<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Get the element with the supplied key.
+Throws an exception if the element is not found. This is an alias of the indexer.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '5434', 5434)" onmouseover="showTip(event, '5434', 5434)">
+            Get(key, hash, defaultValue)
+          </code>
+          <div class="tip" id="5434">
+            <strong>Signature:</strong> (key:&#39;TKey * hash:int64 * defaultValue:&#39;TValue) -&gt; &#39;TValue<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Get the element with the supplied key.
+Returns the supplied default value if the element is not found.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '5435', 5435)" onmouseover="showTip(event, '5435', 5435)">
+            GetAndRemove(key)
+          </code>
+          <div class="tip" id="5435">
+            <strong>Signature:</strong> key:&#39;TKey -&gt; &#39;TValue<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Remove the item with the supplied key from the FastConcurrentBigDictIEq and
+return it. If multipe entries have the same key, the one that
+was inserted last is removed.
+If the item is not found, a KeyNotFoundException is thrown.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '5436', 5436)" onmouseover="showTip(event, '5436', 5436)">
+            GetEnumerator()
+          </code>
+          <div class="tip" id="5436">
+            <strong>Signature:</strong> unit -&gt; IEnumerator&lt;KeyValuePair&lt;&#39;TKey,&#39;TValue&gt;&gt;<br />
+              <strong>Modifiers:</strong> abstract<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '5437', 5437)" onmouseover="showTip(event, '5437', 5437)">
+            GetOrCreate(key, creator)
+          </code>
+          <div class="tip" id="5437">
+            <strong>Signature:</strong> (key:&#39;TKey * creator:Func&lt;&#39;TKey,&#39;TValue&gt;) -&gt; &#39;TValue<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Get the element with the supplied key.
+If the element is not found, the supplied creator is called to create
+a new element that is added to the FastConcurrentBigDictIEq and returned.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '5438', 5438)" onmouseover="showTip(event, '5438', 5438)">
+            GetOrCreate(key, hash, creator)
+          </code>
+          <div class="tip" id="5438">
+            <strong>Signature:</strong> (key:&#39;TKey * hash:int64 * creator:Func&lt;&#39;TKey,&#39;TValue&gt;) -&gt; &#39;TValue<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Get the element with the supplied key.
+If the element is not found, the supplied creator is called to create
+a new element that is added to the FastConcurrentBigDictIEq and returned.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '5439', 5439)" onmouseover="showTip(event, '5439', 5439)">
+            GetOrDefault(key)
+          </code>
+          <div class="tip" id="5439">
+            <strong>Signature:</strong> key:&#39;TKey -&gt; &#39;TValue<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Get the element with the supplied key. Returns the default
+value of the value type if the element is not found.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '5440', 5440)" onmouseover="showTip(event, '5440', 5440)">
+            [()]
+          </code>
+          <div class="tip" id="5440">
+            <strong>Signature:</strong> unit -&gt; &#39;TKey<br />
+              <strong>Modifiers:</strong> abstract<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Get or set the item with the supplied key. If multiple items with
+the same key are allowed, the FastConcurrentBigDictIEq acts as a stack.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '5441', 5441)" onmouseover="showTip(event, '5441', 5441)">
+            Items
+          </code>
+          <div class="tip" id="5441">
+            <strong>Signature:</strong> IEnumerable&lt;KeyValuePair&lt;&#39;TKey,&#39;TValue&gt;&gt;<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '5442', 5442)" onmouseover="showTip(event, '5442', 5442)">
+            Keys
+          </code>
+          <div class="tip" id="5442">
+            <strong>Signature:</strong> IEnumerable&lt;&#39;TKey&gt;<br />
+              <strong>Modifiers:</strong> abstract<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Returns all keys in the dictionary.
+This may throw a ConcurrentDataModifiedException if data is
+modified by another task during the enumeration.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '5443', 5443)" onmouseover="showTip(event, '5443', 5443)">
+            KeysToArray()
+          </code>
+          <div class="tip" id="5443">
+            <strong>Signature:</strong> unit -&gt; &#39;TKey []<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Returns all keys in the dictionary as an array.
+This may throw a ConcurrentDataModifiedException if data is
+modified by another task during the operation.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '5444', 5444)" onmouseover="showTip(event, '5444', 5444)">
+            KeyType
+          </code>
+          <div class="tip" id="5444">
+            <strong>Signature:</strong> Type<br />
+              <strong>Modifiers:</strong> abstract<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '5445', 5445)" onmouseover="showTip(event, '5445', 5445)">
+            KeyValuePairs
+          </code>
+          <div class="tip" id="5445">
+            <strong>Signature:</strong> IEnumerable&lt;KeyValuePair&lt;&#39;TKey,&#39;TValue&gt;&gt;<br />
+              <strong>Modifiers:</strong> abstract<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Returns all key value pairs in the FastConcurrentBigDictIEq.
+This may throw a ConcurrentDataModifiedException if data is
+modified by another task during the enumeration.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '5446', 5446)" onmouseover="showTip(event, '5446', 5446)">
+            KeyValuePairsForStorage
+          </code>
+          <div class="tip" id="5446">
+            <strong>Signature:</strong> IEnumerable&lt;KeyValuePair&lt;&#39;TKey,&#39;TValue&gt;&gt;<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Returns all key value pairs in the FastConcurrentBigDictIEq, in such a way,
+that the stack order is correct when the pairs are put into a
+new FastConcurrentBigDictIEq in the order they are returned.
+This may throw a ConcurrentDataModifiedException if data is
+modified by another task during the enumeration.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '5447', 5447)" onmouseover="showTip(event, '5447', 5447)">
+            LongCount
+          </code>
+          <div class="tip" id="5447">
+            <strong>Signature:</strong> int64<br />
+              <strong>Modifiers:</strong> abstract<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Returns the number of items currently contained in the FastConcurrentBigDictIEq
+as long.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '5448', 5448)" onmouseover="showTip(event, '5448', 5448)">
+            MaxFillFactor()
+          </code>
+          <div class="tip" id="5448">
+            <strong>Signature:</strong> unit -&gt; unit<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Setting the maximal fill factor makes it possible to fine-tune
+the performance for certain applications. Normally this should
+not be necessary.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '5449', 5449)" onmouseover="showTip(event, '5449', 5449)">
+            MinFillFactor()
+          </code>
+          <div class="tip" id="5449">
+            <strong>Signature:</strong> unit -&gt; unit<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Setting the minimal fill factor makes it possible to influence
+the shrinking behaviour of the FastConcurrentBigDictIEq. Normally this should
+be set to a quater of the maximal fill factor. In order to
+completely prevent shrinking it can also be set to 0.0f.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '5450', 5450)" onmouseover="showTip(event, '5450', 5450)">
+            ObjectPairs
+          </code>
+          <div class="tip" id="5450">
+            <strong>Signature:</strong> IEnumerable&lt;Pair&lt;obj&gt;&gt;<br />
+              <strong>Modifiers:</strong> abstract<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '5451', 5451)" onmouseover="showTip(event, '5451', 5451)">
+            Remove(key)
+          </code>
+          <div class="tip" id="5451">
+            <strong>Signature:</strong> key:&#39;TKey -&gt; bool<br />
+              <strong>Modifiers:</strong> abstract<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Try to remove the item with the supplied key from the FastConcurrentBigDictIEq.
+and return true if it was succesfully removed. If multipe
+entries have the same key, the one that was inserted last is
+removed. If the item is not found, false is returned.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '5452', 5452)" onmouseover="showTip(event, '5452', 5452)">
+            Remove(key, hash)
+          </code>
+          <div class="tip" id="5452">
+            <strong>Signature:</strong> (key:&#39;TKey * hash:int64) -&gt; bool<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Try to remove the item with the supplied key from the FastConcurrentBigDictIEq.
+and return true if it was succesfully removed. If multipe
+entries have the same key, the one that was inserted last is
+removed. If the item is not found, false is returned.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '5453', 5453)" onmouseover="showTip(event, '5453', 5453)">
+            Remove(key, value)
+          </code>
+          <div class="tip" id="5453">
+            <strong>Signature:</strong> (key:&#39;TKey * value:&#39;TValue) -&gt; bool<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Remove the item with the supplied key and the supplied value
+from the FastConcurrentBigDictIEq. Returns true if the value was removed.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '5454', 5454)" onmouseover="showTip(event, '5454', 5454)">
+            Remove(key, hash, value)
+          </code>
+          <div class="tip" id="5454">
+            <strong>Signature:</strong> (key:&#39;TKey * hash:int64 * value:&#39;TValue) -&gt; bool<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Remove the item with the supplied key and the supplied value
+from the FastConcurrentBigDictIEq. Returns true if the value was removed.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '5455', 5455)" onmouseover="showTip(event, '5455', 5455)">
+            Remove(item)
+          </code>
+          <div class="tip" id="5455">
+            <strong>Signature:</strong> item:KeyValuePair&lt;&#39;TKey,&#39;TValue&gt; -&gt; bool<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Remove the item with the supplied KeyValuePair from the FastConcurrentBigDictIEq.
+If the item is not found, a KeyNotFoundException is thrown.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '5456', 5456)" onmouseover="showTip(event, '5456', 5456)">
+            ToArray()
+          </code>
+          <div class="tip" id="5456">
+            <strong>Signature:</strong> unit -&gt; KeyValuePair&lt;&#39;TKey,&#39;TValue&gt; []<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Returns all KeyValuePairs in the dictionary as an array.
+This may throw a ConcurrentDataModifiedException if data is
+modified by another task during the operation.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '5457', 5457)" onmouseover="showTip(event, '5457', 5457)">
+            TryAdd(key, value)
+          </code>
+          <div class="tip" id="5457">
+            <strong>Signature:</strong> (key:&#39;TKey * value:&#39;TValue) -&gt; bool<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Add the item with the supplied key and the supplied value
+to the FastConcurrentBigDictIEq.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '5458', 5458)" onmouseover="showTip(event, '5458', 5458)">
+            TryAdd(key, hash, value)
+          </code>
+          <div class="tip" id="5458">
+            <strong>Signature:</strong> (key:&#39;TKey * hash:int64 * value:&#39;TValue) -&gt; bool<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Add the item with the supplied key and the supplied value
+to the FastConcurrentBigDictIEq.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '5459', 5459)" onmouseover="showTip(event, '5459', 5459)">
+            TryGetValue(key, value)
+          </code>
+          <div class="tip" id="5459">
+            <strong>Signature:</strong> (key:&#39;TKey * value:byref&lt;&#39;TValue&gt;) -&gt; bool<br />
+              <strong>Modifiers:</strong> abstract<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Try to retrieve the value with the supplied key, return true if
+successful and return the value via the out parameter.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '5460', 5460)" onmouseover="showTip(event, '5460', 5460)">
+            TryGetValue(key, hash, value)
+          </code>
+          <div class="tip" id="5460">
+            <strong>Signature:</strong> (key:&#39;TKey * hash:int64 * value:byref&lt;&#39;TValue&gt;) -&gt; bool<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Try to retrieve the value with the supplied key, return true if
+successful and return the value via the out parameter.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '5461', 5461)" onmouseover="showTip(event, '5461', 5461)">
+            TryRemove(key, value)
+          </code>
+          <div class="tip" id="5461">
+            <strong>Signature:</strong> (key:&#39;TKey * value:byref&lt;&#39;TValue&gt;) -&gt; bool<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Try to reomve the item with the supplied key. If multipe entries
+have the same key, the one that was inserted last is removed.
+Returns true if the item was found, which is returned via the out
+parameter.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '5462', 5462)" onmouseover="showTip(event, '5462', 5462)">
+            TryRemove(key, hash, value)
+          </code>
+          <div class="tip" id="5462">
+            <strong>Signature:</strong> (key:&#39;TKey * hash:int64 * value:byref&lt;&#39;TValue&gt;) -&gt; bool<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Try to reomve the item with the supplied key. If multipe entries
+have the same key, the one that was inserted last is removed.
+Returns true if the item was found, which is returned via the out
+parameter.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '5463', 5463)" onmouseover="showTip(event, '5463', 5463)">
+            TryRemove(key, value)
+          </code>
+          <div class="tip" id="5463">
+            <strong>Signature:</strong> (key:&#39;TKey * value:&#39;TValue) -&gt; bool<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Try to reomve the item with the supplied key and the supplied
+value. If multipe entries match, the one that was inserted last
+is removed. Returns true if the item was found.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '5464', 5464)" onmouseover="showTip(event, '5464', 5464)">
+            TryRemove(key, hash, value)
+          </code>
+          <div class="tip" id="5464">
+            <strong>Signature:</strong> (key:&#39;TKey * hash:int64 * value:&#39;TValue) -&gt; bool<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Try to reomve the item with the supplied key and the supplied
+value. If multipe entries match, the one that was inserted last
+is removed. Returns true if the item was found.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '5465', 5465)" onmouseover="showTip(event, '5465', 5465)">
+            Values
+          </code>
+          <div class="tip" id="5465">
+            <strong>Signature:</strong> IEnumerable&lt;&#39;TValue&gt;<br />
+              <strong>Modifiers:</strong> abstract<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Returns all values in the FastConcurrentBigDictIEq.
+This may throw a ConcurrentDataModifiedException if data is
+modified by another task during the enumeration.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '5466', 5466)" onmouseover="showTip(event, '5466', 5466)">
+            ValuesToArray()
+          </code>
+          <div class="tip" id="5466">
+            <strong>Signature:</strong> unit -&gt; &#39;TValue []<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Returns all values in the dictionary as an array.
+This may throw a ConcurrentDataModifiedException if data is
+modified by another task during the operation.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '5467', 5467)" onmouseover="showTip(event, '5467', 5467)">
+            ValuesWithKey(key)
+          </code>
+          <div class="tip" id="5467">
+            <strong>Signature:</strong> key:&#39;TKey -&gt; IEnumerable&lt;&#39;TValue&gt;<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Return all the value with the given key. This method is only
+useful if multiple item with the same key are allowed.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '5468', 5468)" onmouseover="showTip(event, '5468', 5468)">
+            ValueType
+          </code>
+          <div class="tip" id="5468">
+            <strong>Signature:</strong> Type<br />
+              <strong>Modifiers:</strong> abstract<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '5469', 5469)" onmouseover="showTip(event, '5469', 5469)">
+            ValueWithKeySkip(key, skip)
+          </code>
+          <div class="tip" id="5469">
+            <strong>Signature:</strong> (key:&#39;TKey * skip:int64) -&gt; &#39;TValue<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Return the value with the given key, but skip a supplied number
+of entries with this key. This method is only useful if multiple
+item with the same key are allowed.</p>
+
+
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+        </div>
+        <div class="span3">
+          <a href="https://github.com/vrvis">
+            <img src="logo.png" style="width:140px;height:140px;margin:10px 0px 0px 35px;border-style:none;" />
+          </a>
+
+          <ul class="nav nav-list" id="menu">
+
+            <li class="nav-header">Aardvark.Base</li>
+
+            <li class="divider"></li>
+            <li><a href="https://github.com/vrvis/aardvark.base">Home page</a></li>
+            <li class="divider"></li>
+
+            <li><a href="https://www.nuget.org/packages/Aardvark.Base">Get Aardvark.Base via NuGet</a></li>
+            <li><a href="https://github.com/vrvis/aardvark.base">Source Code on GitHub</a></li>
+            <li><a href="https://github.com/vrvis/aardvark.baseLicense">License (Apache 2)</a></li>
+            
+            <!-- <li><a href="https://github.com/vrvis/aardvark.base/RELEASE_NOTES.html">Release Notes</a></li>
+            <li><a href="https://github.com/vrvis/aardvark.base//contributing.html">Contributing to Aardvark.Base</a></li>
+  
+            <li><a href="http://stackoverflow.com/questions/tagged/f%23-fake">Ask a question</a></li> 
+            
+            <li class="nav-header">Tutorials</li>
+            <li><a href="https://github.com/vrvis/aardvark.base/gettingstarted.html">Getting started</a></li>
+            
+            -->
+
+            
+            <li class="divider"></li>
+            <li class="nav-header">Reference</li>
+
+            <li><a href="https://github.com/vrvis/aardvark.base/apidocs/index.html">API Reference</a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    <a href="https://github.com/vrvis/aardvark.base"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_gray_6d6d6d.png" alt="Fork me on GitHub"></a>
+  </body>
+  </html>

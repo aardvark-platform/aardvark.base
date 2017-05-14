@@ -1,0 +1,944 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>Conversion - Aardvark.Base</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="The Aardvark Platform Team">
+
+    <script src="https://code.jquery.com/jquery-1.8.0.js"></script>
+    <script src="https://code.jquery.com/ui/1.8.23/jquery-ui.js"></script>
+    <script src="https://netdna.bootstrapcdn.com/twitter-bootstrap/2.2.1/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link href="https://netdna.bootstrapcdn.com/twitter-bootstrap/2.2.1/css/bootstrap-combined.min.css" rel="stylesheet">
+
+    <link type="text/css" rel="stylesheet" href="https://github.com/vrvis/aardvark.base/content/style.css" />
+    <script type="text/javascript" src="https://github.com/vrvis/aardvark.base/content/tips.js"></script>
+    <!-- HTML5 shim, for IE6-8 support of HTML5 elements -->
+    <!--[if lt IE 9]>
+      <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+  </head>
+  <body>
+    <div class="container">
+      <div class="masthead">
+        <ul class="nav nav-pills pull-right">
+          <li><a href="https://github.com/vrvis/aardvark.base">github page</a></li>
+        </ul>
+        <h3 class="muted"><a href="https://github.com/vrvis/aardvark.base/index.html">Aardvark.Base</a></h3>
+      </div>
+      <hr />
+      <div class="row">
+        <div class="span9" id="main">
+          
+
+
+
+<h1>Conversion</h1>
+<div class="xmldoc">
+<p>Conversion routines.</p>
+
+</div>
+  <h3>Static members</h3>
+  <table class="table table-bordered member-list">
+    <thead>
+      <tr><td>Static member</td><td>Description</td></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '4677', 4677)" onmouseover="showTip(event, '4677', 4677)">
+            CartesianFromSpherical(phi, theta)
+          </code>
+          <div class="tip" id="4677">
+            <strong>Signature:</strong> (phi:float * theta:float) -&gt; V3d<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Returns unit vector in direction (phi, theta).
+Phi is rotation in xy-plane (x-axis is 0, y-axis is pi/2, ...).
+Positive theta rotates towards positive z-axis.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '4678', 4678)" onmouseover="showTip(event, '4678', 4678)">
+            CartesianFromSpherical(phiAndTheta)
+          </code>
+          <div class="tip" id="4678">
+            <strong>Signature:</strong> phiAndTheta:V2d -&gt; V3d<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Returns unit vector in direction (phi, theta).
+Phi is rotation in xy-plane (x-axis is 0, y-axis is pi/2, ...).
+Positive theta rotates towards positive z-axis.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '4679', 4679)" onmouseover="showTip(event, '4679', 4679)">
+            CartesianFromSpherical(phi)
+          </code>
+          <div class="tip" id="4679">
+            <strong>Signature:</strong> phi:float -&gt; V2d<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Returns unit vector in direction phi.
+Phi is rotation in xy-plane (x-axis is 0, y-axis is pi/2, ...).</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '4680', 4680)" onmouseover="showTip(event, '4680', 4680)">
+            CelsiusFromFahrenheit(fahrenheit)
+          </code>
+          <div class="tip" id="4680">
+            <strong>Signature:</strong> fahrenheit:float32 -&gt; float32<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Converts a temperature given in Fahrenheit to Celsius.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '4681', 4681)" onmouseover="showTip(event, '4681', 4681)">
+            CelsiusFromFahrenheit(fahrenheit)
+          </code>
+          <div class="tip" id="4681">
+            <strong>Signature:</strong> fahrenheit:float -&gt; float<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Converts a temperature given in Fahrenheit to Celsius.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '4682', 4682)" onmouseover="showTip(event, '4682', 4682)">
+            CelsiusFromKelvin(kelvin)
+          </code>
+          <div class="tip" id="4682">
+            <strong>Signature:</strong> kelvin:float32 -&gt; float32<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Converts a temperature given in Kelvin to Celsius.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '4683', 4683)" onmouseover="showTip(event, '4683', 4683)">
+            CelsiusFromKelvin(kelvin)
+          </code>
+          <div class="tip" id="4683">
+            <strong>Signature:</strong> kelvin:float -&gt; float<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Converts a temperature given in Kelvin to Celsius.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '4684', 4684)" onmouseover="showTip(event, '4684', 4684)">
+            DegreesFromGons(gons)
+          </code>
+          <div class="tip" id="4684">
+            <strong>Signature:</strong> gons:float32 -&gt; float32<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Converts an angle given in gons to degrees.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '4685', 4685)" onmouseover="showTip(event, '4685', 4685)">
+            DegreesFromGons(gons)
+          </code>
+          <div class="tip" id="4685">
+            <strong>Signature:</strong> gons:float -&gt; float<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Converts an angle given in gons to degrees.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '4686', 4686)" onmouseover="showTip(event, '4686', 4686)">
+            DegreesFromRadians(radians)
+          </code>
+          <div class="tip" id="4686">
+            <strong>Signature:</strong> radians:float32 -&gt; float32<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Converts an angle given in radians to degrees.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '4687', 4687)" onmouseover="showTip(event, '4687', 4687)">
+            DegreesFromRadians(radians)
+          </code>
+          <div class="tip" id="4687">
+            <strong>Signature:</strong> radians:float -&gt; float<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Converts an angle given in radians to degrees.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '4688', 4688)" onmouseover="showTip(event, '4688', 4688)">
+            FahrenheitFromCelsius(celsius)
+          </code>
+          <div class="tip" id="4688">
+            <strong>Signature:</strong> celsius:float32 -&gt; float32<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Converts a temperature given in Celsius to Fahrenheit.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '4689', 4689)" onmouseover="showTip(event, '4689', 4689)">
+            FahrenheitFromCelsius(celsius)
+          </code>
+          <div class="tip" id="4689">
+            <strong>Signature:</strong> celsius:float -&gt; float<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Converts a temperature given in Celsius to Fahrenheit.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '4690', 4690)" onmouseover="showTip(event, '4690', 4690)">
+            FahrenheitFromKelvin(kelvin)
+          </code>
+          <div class="tip" id="4690">
+            <strong>Signature:</strong> kelvin:float32 -&gt; float32<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Converts a temperature given in Kelvin to Fahrenheit.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '4691', 4691)" onmouseover="showTip(event, '4691', 4691)">
+            FahrenheitFromKelvin(kelvin)
+          </code>
+          <div class="tip" id="4691">
+            <strong>Signature:</strong> kelvin:float -&gt; float<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Converts a temperature given in Kelvin to Fahrenheit.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '4692', 4692)" onmouseover="showTip(event, '4692', 4692)">
+            GonsFromDegrees(degrees)
+          </code>
+          <div class="tip" id="4692">
+            <strong>Signature:</strong> degrees:float32 -&gt; float32<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Converts an angle given in degrees to gons.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '4693', 4693)" onmouseover="showTip(event, '4693', 4693)">
+            GonsFromDegrees(degrees)
+          </code>
+          <div class="tip" id="4693">
+            <strong>Signature:</strong> degrees:float -&gt; float<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Converts an angle given in degrees to gons.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '4694', 4694)" onmouseover="showTip(event, '4694', 4694)">
+            GonsFromRadians(radians)
+          </code>
+          <div class="tip" id="4694">
+            <strong>Signature:</strong> radians:float32 -&gt; float32<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Converts an angle given in radians to gons.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '4695', 4695)" onmouseover="showTip(event, '4695', 4695)">
+            GonsFromRadians(radians)
+          </code>
+          <div class="tip" id="4695">
+            <strong>Signature:</strong> radians:float -&gt; float<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Converts an angle given in radians to gons.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '4696', 4696)" onmouseover="showTip(event, '4696', 4696)">
+            HostToNetworkOrder(x)
+          </code>
+          <div class="tip" id="4696">
+            <strong>Signature:</strong> x:int16 -&gt; byte []<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '4697', 4697)" onmouseover="showTip(event, '4697', 4697)">
+            HostToNetworkOrder(x)
+          </code>
+          <div class="tip" id="4697">
+            <strong>Signature:</strong> x:uint16 -&gt; byte []<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '4698', 4698)" onmouseover="showTip(event, '4698', 4698)">
+            HostToNetworkOrder(x)
+          </code>
+          <div class="tip" id="4698">
+            <strong>Signature:</strong> x:int -&gt; byte []<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '4699', 4699)" onmouseover="showTip(event, '4699', 4699)">
+            HostToNetworkOrder(x)
+          </code>
+          <div class="tip" id="4699">
+            <strong>Signature:</strong> x:uint32 -&gt; byte []<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '4700', 4700)" onmouseover="showTip(event, '4700', 4700)">
+            HostToNetworkOrder(x)
+          </code>
+          <div class="tip" id="4700">
+            <strong>Signature:</strong> x:int64 -&gt; byte []<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '4701', 4701)" onmouseover="showTip(event, '4701', 4701)">
+            HostToNetworkOrder(x)
+          </code>
+          <div class="tip" id="4701">
+            <strong>Signature:</strong> x:uint64 -&gt; byte []<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '4702', 4702)" onmouseover="showTip(event, '4702', 4702)">
+            HostToNetworkOrder(x)
+          </code>
+          <div class="tip" id="4702">
+            <strong>Signature:</strong> x:float32 -&gt; byte []<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '4703', 4703)" onmouseover="showTip(event, '4703', 4703)">
+            HostToNetworkOrder(x)
+          </code>
+          <div class="tip" id="4703">
+            <strong>Signature:</strong> x:float -&gt; byte []<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '4704', 4704)" onmouseover="showTip(event, '4704', 4704)">
+            KelvinFromCelsius(celsius)
+          </code>
+          <div class="tip" id="4704">
+            <strong>Signature:</strong> celsius:float32 -&gt; float32<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Converts a temperature given in Celsius to Kelvin.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '4705', 4705)" onmouseover="showTip(event, '4705', 4705)">
+            KelvinFromCelsius(celsius)
+          </code>
+          <div class="tip" id="4705">
+            <strong>Signature:</strong> celsius:float -&gt; float<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Converts a temperature given in Celsius to Kelvin.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '4706', 4706)" onmouseover="showTip(event, '4706', 4706)">
+            KelvinFromFahrenheit(fahrenheit)
+          </code>
+          <div class="tip" id="4706">
+            <strong>Signature:</strong> fahrenheit:float32 -&gt; float32<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Converts a temperature given in Fahrenheit to Kelvin.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '4707', 4707)" onmouseover="showTip(event, '4707', 4707)">
+            KelvinFromFahrenheit(fahrenheit)
+          </code>
+          <div class="tip" id="4707">
+            <strong>Signature:</strong> fahrenheit:float -&gt; float<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Converts a temperature given in Fahrenheit to Kelvin.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '4708', 4708)" onmouseover="showTip(event, '4708', 4708)">
+            LabToXYZ(lab)
+          </code>
+          <div class="tip" id="4708">
+            <strong>Signature:</strong> lab:C3f -&gt; C3f<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>converts Lab-color to XYZ-color</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '4709', 4709)" onmouseover="showTip(event, '4709', 4709)">
+            NetworkToHostOrderDouble(data)
+          </code>
+          <div class="tip" id="4709">
+            <strong>Signature:</strong> (data:byte []) -&gt; float<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '4710', 4710)" onmouseover="showTip(event, '4710', 4710)">
+            NetworkToHostOrderDoubleInPlace(data)
+          </code>
+          <div class="tip" id="4710">
+            <strong>Signature:</strong> (data:byte []) -&gt; float<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '4711', 4711)" onmouseover="showTip(event, '4711', 4711)">
+            NetworkToHostOrderInt16(data)
+          </code>
+          <div class="tip" id="4711">
+            <strong>Signature:</strong> (data:byte []) -&gt; int16<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '4712', 4712)" onmouseover="showTip(event, '4712', 4712)">
+            NetworkToHostOrderInt16InPlace(data)
+          </code>
+          <div class="tip" id="4712">
+            <strong>Signature:</strong> (data:byte []) -&gt; int16<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '4713', 4713)" onmouseover="showTip(event, '4713', 4713)">
+            NetworkToHostOrderInt32(data)
+          </code>
+          <div class="tip" id="4713">
+            <strong>Signature:</strong> (data:byte []) -&gt; int<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '4714', 4714)" onmouseover="showTip(event, '4714', 4714)">
+            NetworkToHostOrderInt32InPlace(data)
+          </code>
+          <div class="tip" id="4714">
+            <strong>Signature:</strong> (data:byte []) -&gt; int<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '4715', 4715)" onmouseover="showTip(event, '4715', 4715)">
+            NetworkToHostOrderInt64(data)
+          </code>
+          <div class="tip" id="4715">
+            <strong>Signature:</strong> (data:byte []) -&gt; int64<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '4716', 4716)" onmouseover="showTip(event, '4716', 4716)">
+            NetworkToHostOrderInt64InPlace(data)
+          </code>
+          <div class="tip" id="4716">
+            <strong>Signature:</strong> (data:byte []) -&gt; int64<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '4717', 4717)" onmouseover="showTip(event, '4717', 4717)">
+            NetworkToHostOrderSingle(data)
+          </code>
+          <div class="tip" id="4717">
+            <strong>Signature:</strong> (data:byte []) -&gt; float32<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '4718', 4718)" onmouseover="showTip(event, '4718', 4718)">
+            NetworkToHostOrderSingleInPlace(data)
+          </code>
+          <div class="tip" id="4718">
+            <strong>Signature:</strong> (data:byte []) -&gt; float32<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '4719', 4719)" onmouseover="showTip(event, '4719', 4719)">
+            NetworkToHostOrderUInt16(data)
+          </code>
+          <div class="tip" id="4719">
+            <strong>Signature:</strong> (data:byte []) -&gt; uint16<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '4720', 4720)" onmouseover="showTip(event, '4720', 4720)">
+            NetworkToHostOrderUInt16InPlace(data)
+          </code>
+          <div class="tip" id="4720">
+            <strong>Signature:</strong> (data:byte []) -&gt; uint16<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '4721', 4721)" onmouseover="showTip(event, '4721', 4721)">
+            NetworkToHostOrderUInt32(data)
+          </code>
+          <div class="tip" id="4721">
+            <strong>Signature:</strong> (data:byte []) -&gt; uint32<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '4722', 4722)" onmouseover="showTip(event, '4722', 4722)">
+            NetworkToHostOrderUInt32InPlace(data)
+          </code>
+          <div class="tip" id="4722">
+            <strong>Signature:</strong> (data:byte []) -&gt; uint32<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '4723', 4723)" onmouseover="showTip(event, '4723', 4723)">
+            NetworkToHostOrderUInt64(data)
+          </code>
+          <div class="tip" id="4723">
+            <strong>Signature:</strong> (data:byte []) -&gt; uint64<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '4724', 4724)" onmouseover="showTip(event, '4724', 4724)">
+            NetworkToHostOrderUInt64InPlace(data)
+          </code>
+          <div class="tip" id="4724">
+            <strong>Signature:</strong> (data:byte []) -&gt; uint64<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '4725', 4725)" onmouseover="showTip(event, '4725', 4725)">
+            RadiansFromDegrees(degrees)
+          </code>
+          <div class="tip" id="4725">
+            <strong>Signature:</strong> degrees:float32 -&gt; float32<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Converts an angle given in degrees to radians.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '4726', 4726)" onmouseover="showTip(event, '4726', 4726)">
+            RadiansFromDegrees(degrees)
+          </code>
+          <div class="tip" id="4726">
+            <strong>Signature:</strong> degrees:float -&gt; float<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Converts an angle given in degrees to radians.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '4727', 4727)" onmouseover="showTip(event, '4727', 4727)">
+            RadiansFromGons(gons)
+          </code>
+          <div class="tip" id="4727">
+            <strong>Signature:</strong> gons:float32 -&gt; float32<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Converts an angle given in gons to radians.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '4728', 4728)" onmouseover="showTip(event, '4728', 4728)">
+            RadiansFromGons(gons)
+          </code>
+          <div class="tip" id="4728">
+            <strong>Signature:</strong> gons:float -&gt; float<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Converts an angle given in gons to radians.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '4729', 4729)" onmouseover="showTip(event, '4729', 4729)">
+            ReverseBytes(data)
+          </code>
+          <div class="tip" id="4729">
+            <strong>Signature:</strong> (data:byte []) -&gt; unit<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Reverses elements of given byte array.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '4730', 4730)" onmouseover="showTip(event, '4730', 4730)">
+            SphericalFromCartesian(v)
+          </code>
+          <div class="tip" id="4730">
+            <strong>Signature:</strong> v:V3d -&gt; V2d<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Returns spherical direction (phi, theta) from Cartesian direction.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '4731', 4731)" onmouseover="showTip(event, '4731', 4731)">
+            SphericalFromCartesian(v)
+          </code>
+          <div class="tip" id="4731">
+            <strong>Signature:</strong> v:V2d -&gt; float<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Returns spherical direction (phi) from Cartesian direction.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '4732', 4732)" onmouseover="showTip(event, '4732', 4732)">
+            XYZToLab(xyz)
+          </code>
+          <div class="tip" id="4732">
+            <strong>Signature:</strong> xyz:C3f -&gt; C3f<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Converts XYZ-color to Lab-color</p>
+
+
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+        </div>
+        <div class="span3">
+          <a href="https://github.com/vrvis">
+            <img src="logo.png" style="width:140px;height:140px;margin:10px 0px 0px 35px;border-style:none;" />
+          </a>
+
+          <ul class="nav nav-list" id="menu">
+
+            <li class="nav-header">Aardvark.Base</li>
+
+            <li class="divider"></li>
+            <li><a href="https://github.com/vrvis/aardvark.base">Home page</a></li>
+            <li class="divider"></li>
+
+            <li><a href="https://www.nuget.org/packages/Aardvark.Base">Get Aardvark.Base via NuGet</a></li>
+            <li><a href="https://github.com/vrvis/aardvark.base">Source Code on GitHub</a></li>
+            <li><a href="https://github.com/vrvis/aardvark.baseLicense">License (Apache 2)</a></li>
+            
+            <!-- <li><a href="https://github.com/vrvis/aardvark.base/RELEASE_NOTES.html">Release Notes</a></li>
+            <li><a href="https://github.com/vrvis/aardvark.base//contributing.html">Contributing to Aardvark.Base</a></li>
+  
+            <li><a href="http://stackoverflow.com/questions/tagged/f%23-fake">Ask a question</a></li> 
+            
+            <li class="nav-header">Tutorials</li>
+            <li><a href="https://github.com/vrvis/aardvark.base/gettingstarted.html">Getting started</a></li>
+            
+            -->
+
+            
+            <li class="divider"></li>
+            <li class="nav-header">Reference</li>
+
+            <li><a href="https://github.com/vrvis/aardvark.base/apidocs/index.html">API Reference</a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    <a href="https://github.com/vrvis/aardvark.base"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_gray_6d6d6d.png" alt="Fork me on GitHub"></a>
+  </body>
+  </html>

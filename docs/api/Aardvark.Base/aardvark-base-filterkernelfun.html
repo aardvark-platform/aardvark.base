@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>FilterKernelFun - Aardvark.Base</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="The Aardvark Platform Team">
+
+    <script src="https://code.jquery.com/jquery-1.8.0.js"></script>
+    <script src="https://code.jquery.com/ui/1.8.23/jquery-ui.js"></script>
+    <script src="https://netdna.bootstrapcdn.com/twitter-bootstrap/2.2.1/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link href="https://netdna.bootstrapcdn.com/twitter-bootstrap/2.2.1/css/bootstrap-combined.min.css" rel="stylesheet">
+
+    <link type="text/css" rel="stylesheet" href="https://github.com/vrvis/aardvark.base/content/style.css" />
+    <script type="text/javascript" src="https://github.com/vrvis/aardvark.base/content/tips.js"></script>
+    <!-- HTML5 shim, for IE6-8 support of HTML5 elements -->
+    <!--[if lt IE 9]>
+      <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+  </head>
+  <body>
+    <div class="container">
+      <div class="masthead">
+        <ul class="nav nav-pills pull-right">
+          <li><a href="https://github.com/vrvis/aardvark.base">github page</a></li>
+        </ul>
+        <h3 class="muted"><a href="https://github.com/vrvis/aardvark.base/index.html">Aardvark.Base</a></h3>
+      </div>
+      <hr />
+      <div class="row">
+        <div class="span9" id="main">
+          
+
+
+
+<h1>FilterKernelFun</h1>
+<div class="xmldoc">
+</div>
+  <h3>Static members</h3>
+  <table class="table table-bordered member-list">
+    <thead>
+      <tr><td>Static member</td><td>Description</td></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '5953', 5953)" onmouseover="showTip(event, '5953', 5953)">
+            DoG(sigma1, sigma2)
+          </code>
+          <div class="tip" id="5953">
+            <strong>Signature:</strong> (sigma1:float32 * sigma2:float32) -&gt; Func&lt;float32,float32&gt;<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Return a function that computes the difference of two
+one-dimensional gauss functions (Gauss(sigma1)-Gauss(sigma2)).</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '5954', 5954)" onmouseover="showTip(event, '5954', 5954)">
+            DoG2(sigma1, sigma2)
+          </code>
+          <div class="tip" id="5954">
+            <strong>Signature:</strong> (sigma1:float32 * sigma2:float32) -&gt; Func&lt;float32,float32,float32&gt;<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Return a function that computes the difference of two
+two-dimensional gauss functions (Gauss(sigma1)-Gauss(sigma2)).</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '5955', 5955)" onmouseover="showTip(event, '5955', 5955)">
+            Gaussian(sigma)
+          </code>
+          <div class="tip" id="5955">
+            <strong>Signature:</strong> sigma:float32 -&gt; Func&lt;float32,float32&gt;<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Return a function that computes the gauss function with mu = 0
+and the specified sigma.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '5956', 5956)" onmouseover="showTip(event, '5956', 5956)">
+            Gaussian2(sigma)
+          </code>
+          <div class="tip" id="5956">
+            <strong>Signature:</strong> sigma:float32 -&gt; Func&lt;float32,float32,float32&gt;<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Return a function that computes the two-dimensional gauss
+function with mu = (0, 0) and sigma = DiagonalMatrix(sigma).</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '5957', 5957)" onmouseover="showTip(event, '5957', 5957)">
+            Gaussian2Dx(sigma)
+          </code>
+          <div class="tip" id="5957">
+            <strong>Signature:</strong> sigma:float32 -&gt; Func&lt;float32,float32,float32&gt;<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Return a function that computes the partial derivative in X of
+the two-dimensional gauss function with mu = (0, 0) and
+sigma = DiagonalMatrix(sigma).</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '5958', 5958)" onmouseover="showTip(event, '5958', 5958)">
+            Gaussian2Dy(sigma)
+          </code>
+          <div class="tip" id="5958">
+            <strong>Signature:</strong> sigma:float32 -&gt; Func&lt;float32,float32,float32&gt;<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Return a function that computes the partial derivative in Y of
+the two-dimensional gauss function with mu = (0, 0) and
+sigma = DiagonalMatrix(sigma).</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '5959', 5959)" onmouseover="showTip(event, '5959', 5959)">
+            GaussianDx(sigma)
+          </code>
+          <div class="tip" id="5959">
+            <strong>Signature:</strong> sigma:float32 -&gt; Func&lt;float32,float32&gt;<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Return a function that computes the derivative of the gauss
+function with mu = 0 and specified sigma.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '5960', 5960)" onmouseover="showTip(event, '5960', 5960)">
+            LoG(sigma)
+          </code>
+          <div class="tip" id="5960">
+            <strong>Signature:</strong> sigma:float32 -&gt; Func&lt;float32,float32&gt;<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Return a function that computes the one-dimensional
+Laplacian of Gaussian function for a given sigma.
+Also known as Marr-Hildreth-Operator or Sombrero-Filter.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '5961', 5961)" onmouseover="showTip(event, '5961', 5961)">
+            LoG2(sigma)
+          </code>
+          <div class="tip" id="5961">
+            <strong>Signature:</strong> sigma:float32 -&gt; Func&lt;float32,float32,float32&gt;<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Return a function that computes the two-dimensional
+Laplacian of Gaussian function for a given sigma.
+Also known as Marr-Hildreth-Operator or Sombrero-Filter.</p>
+
+
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+        </div>
+        <div class="span3">
+          <a href="https://github.com/vrvis">
+            <img src="logo.png" style="width:140px;height:140px;margin:10px 0px 0px 35px;border-style:none;" />
+          </a>
+
+          <ul class="nav nav-list" id="menu">
+
+            <li class="nav-header">Aardvark.Base</li>
+
+            <li class="divider"></li>
+            <li><a href="https://github.com/vrvis/aardvark.base">Home page</a></li>
+            <li class="divider"></li>
+
+            <li><a href="https://www.nuget.org/packages/Aardvark.Base">Get Aardvark.Base via NuGet</a></li>
+            <li><a href="https://github.com/vrvis/aardvark.base">Source Code on GitHub</a></li>
+            <li><a href="https://github.com/vrvis/aardvark.baseLicense">License (Apache 2)</a></li>
+            
+            <!-- <li><a href="https://github.com/vrvis/aardvark.base/RELEASE_NOTES.html">Release Notes</a></li>
+            <li><a href="https://github.com/vrvis/aardvark.base//contributing.html">Contributing to Aardvark.Base</a></li>
+  
+            <li><a href="http://stackoverflow.com/questions/tagged/f%23-fake">Ask a question</a></li> 
+            
+            <li class="nav-header">Tutorials</li>
+            <li><a href="https://github.com/vrvis/aardvark.base/gettingstarted.html">Getting started</a></li>
+            
+            -->
+
+            
+            <li class="divider"></li>
+            <li class="nav-header">Reference</li>
+
+            <li><a href="https://github.com/vrvis/aardvark.base/apidocs/index.html">API Reference</a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    <a href="https://github.com/vrvis/aardvark.base"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_gray_6d6d6d.png" alt="Fork me on GitHub"></a>
+  </body>
+  </html>

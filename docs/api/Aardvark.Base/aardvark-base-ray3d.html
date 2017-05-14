@@ -1,0 +1,689 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>Ray3d - Aardvark.Base</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="The Aardvark Platform Team">
+
+    <script src="https://code.jquery.com/jquery-1.8.0.js"></script>
+    <script src="https://code.jquery.com/ui/1.8.23/jquery-ui.js"></script>
+    <script src="https://netdna.bootstrapcdn.com/twitter-bootstrap/2.2.1/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link href="https://netdna.bootstrapcdn.com/twitter-bootstrap/2.2.1/css/bootstrap-combined.min.css" rel="stylesheet">
+
+    <link type="text/css" rel="stylesheet" href="https://github.com/vrvis/aardvark.base/content/style.css" />
+    <script type="text/javascript" src="https://github.com/vrvis/aardvark.base/content/tips.js"></script>
+    <!-- HTML5 shim, for IE6-8 support of HTML5 elements -->
+    <!--[if lt IE 9]>
+      <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+  </head>
+  <body>
+    <div class="container">
+      <div class="masthead">
+        <ul class="nav nav-pills pull-right">
+          <li><a href="https://github.com/vrvis/aardvark.base">github page</a></li>
+        </ul>
+        <h3 class="muted"><a href="https://github.com/vrvis/aardvark.base/index.html">Aardvark.Base</a></h3>
+      </div>
+      <hr />
+      <div class="row">
+        <div class="span9" id="main">
+          
+
+
+
+<h1>Ray3d</h1>
+<div class="xmldoc">
+<p>A three-dimensional ray with an origin and a direction.</p>
+
+</div>
+  <h3>Constructors</h3>
+  <table class="table table-bordered member-list">
+    <thead>
+      <tr><td>Constructor</td><td>Description</td></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '15420', 15420)" onmouseover="showTip(event, '15420', 15420)">
+            new(origin, direction)
+          </code>
+          <div class="tip" id="15420">
+            <strong>Signature:</strong> (origin:V3d * direction:V3d) -&gt; unit<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Creates Ray from origin point and directional vector</p>
+
+
+        </td>
+      </tr>
+    </tbody>
+  </table>
+  <h3>Instance members</h3>
+  <table class="table table-bordered member-list">
+    <thead>
+      <tr><td>Instance member</td><td>Description</td></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '15421', 15421)" onmouseover="showTip(event, '15421', 15421)">
+            AnyNaN
+          </code>
+          <div class="tip" id="15421">
+            <strong>Signature:</strong> bool<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Returns true if either the origin or the direction contains any NaN value.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '15422', 15422)" onmouseover="showTip(event, '15422', 15422)">
+            BoundingBox3d
+          </code>
+          <div class="tip" id="15422">
+            <strong>Signature:</strong> Box3d<br />
+              <strong>Modifiers:</strong> abstract<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '15423', 15423)" onmouseover="showTip(event, '15423', 15423)">
+            Equals(other)
+          </code>
+          <div class="tip" id="15423">
+            <strong>Signature:</strong> other:obj -&gt; bool<br />
+              <strong>Modifiers:</strong> abstract<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Checks if 2 objects are equal.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '15424', 15424)" onmouseover="showTip(event, '15424', 15424)">
+            GetHashCode()
+          </code>
+          <div class="tip" id="15424">
+            <strong>Signature:</strong> unit -&gt; int<br />
+              <strong>Modifiers:</strong> abstract<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Calculates Hash-code of the given ray.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '15425', 15425)" onmouseover="showTip(event, '15425', 15425)">
+            GetPointOnRay(t)
+          </code>
+          <div class="tip" id="15425">
+            <strong>Signature:</strong> t:float -&gt; V3d<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Gets the point on the ray that is t * Direction from Origin.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '15426', 15426)" onmouseover="showTip(event, '15426', 15426)">
+            GetT(p)
+          </code>
+          <div class="tip" id="15426">
+            <strong>Signature:</strong> p:V3d -&gt; float<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Gets the t for a point p on this ray.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '15427', 15427)" onmouseover="showTip(event, '15427', 15427)">
+            GetTOfProjectedPoint(p)
+          </code>
+          <div class="tip" id="15427">
+            <strong>Signature:</strong> p:V3d -&gt; float<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Gets the t of the closest point on the ray for any point p.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '15428', 15428)" onmouseover="showTip(event, '15428', 15428)">
+            Hits(ray, hit)
+          </code>
+          <div class="tip" id="15428">
+            <strong>Signature:</strong> (ray:Ray3d * hit:byref&lt;RayHit3d&gt;) -&gt; bool<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Returns true if the ray hits the other ray before the parameter
+value contained in the supplied hit. Detailed information about
+the hit is returned in the supplied hit.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '15429', 15429)" onmouseover="showTip(event, '15429', 15429)">
+            Hits(ray, tmin, tmax, hit)
+          </code>
+          <div class="tip" id="15429">
+            <strong>Signature:</strong> (ray:Ray3d * tmin:float * tmax:float * hit:byref&lt;RayHit3d&gt;) -&gt; bool<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Returns true if the ray hits the other ray before the parameter
+value contained in the supplied hit. Detailed information about
+the hit is returned in the supplied hit.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '15430', 15430)" onmouseover="showTip(event, '15430', 15430)">
+            Hits(triangle, hit)
+          </code>
+          <div class="tip" id="15430">
+            <strong>Signature:</strong> (triangle:Triangle3d * hit:byref&lt;RayHit3d&gt;) -&gt; bool<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Returns true if the ray hits the triangle before the parameter
+value contained in the supplied hit. Detailed information about
+the hit is returned in the supplied hit.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '15431', 15431)" onmouseover="showTip(event, '15431', 15431)">
+            Hits(triangle, tmin, tmax, hit)
+          </code>
+          <div class="tip" id="15431">
+            <strong>Signature:</strong> (triangle:Triangle3d * tmin:float * tmax:float * hit:byref&lt;RayHit3d&gt;) -&gt; bool<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Returns true if the ray hits the triangle within the supplied
+parameter interval and before the parameter value contained
+in the supplied hit. Detailed information about the hit is
+returned in the supplied hit. In order to obtain all potential
+hits, the supplied hit can be initialized with RayHit3d.MaxRange.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '15432', 15432)" onmouseover="showTip(event, '15432', 15432)">
+            Hits(quad, hit)
+          </code>
+          <div class="tip" id="15432">
+            <strong>Signature:</strong> (quad:Quad3d * hit:byref&lt;RayHit3d&gt;) -&gt; bool<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Returns true if the ray hits the quad before the parameter
+value contained in the supplied hit. Detailed information about
+the hit is returned in the supplied hit. In order to obtain all
+potential hits, the supplied hit can be initialized with
+RayHit3d.MaxRange.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '15433', 15433)" onmouseover="showTip(event, '15433', 15433)">
+            Hits(quad, tmin, tmax, hit)
+          </code>
+          <div class="tip" id="15433">
+            <strong>Signature:</strong> (quad:Quad3d * tmin:float * tmax:float * hit:byref&lt;RayHit3d&gt;) -&gt; bool<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Returns true if the ray hits the quad within the supplied
+parameter interval and before the parameter value contained
+in the supplied hit. Detailed information about the hit is
+returned in the supplied hit. In order to obtain all potential
+hits, the supplied hit can be initialized with RayHit3d.MaxRange.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '15434', 15434)" onmouseover="showTip(event, '15434', 15434)">
+            Hits(sphere, tmin, tmax, hit)
+          </code>
+          <div class="tip" id="15434">
+            <strong>Signature:</strong> (sphere:Sphere3d * tmin:float * tmax:float * hit:byref&lt;RayHit3d&gt;) -&gt; bool<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Returns true if the ray hits the supplied sphere within the
+supplied parameter interval and before the parameter value
+contained in the supplied hit. Note that a hit is only
+registered if the front or the backsurface is encountered
+within the interval.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '15435', 15435)" onmouseover="showTip(event, '15435', 15435)">
+            Hits(cylinder, tmin, tmax, hit)
+          </code>
+          <div class="tip" id="15435">
+            <strong>Signature:</strong> (cylinder:Cylinder3d * tmin:float * tmax:float * hit:byref&lt;RayHit3d&gt;) -&gt; bool<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '15436', 15436)" onmouseover="showTip(event, '15436', 15436)">
+            HitsCircle(circle, tmin, tmax, hit)
+          </code>
+          <div class="tip" id="15436">
+            <strong>Signature:</strong> (circle:Circle3d * tmin:float * tmax:float * hit:byref&lt;RayHit3d&gt;) -&gt; bool<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '15437', 15437)" onmouseover="showTip(event, '15437', 15437)">
+            HitsCylinder(cylinder, tmin, tmax, hit)
+          </code>
+          <div class="tip" id="15437">
+            <strong>Signature:</strong> (cylinder:Cylinder3d * tmin:float * tmax:float * hit:byref&lt;RayHit3d&gt;) -&gt; bool<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '15438', 15438)" onmouseover="showTip(event, '15438', 15438)">
+            HitsPlane(plane, tmin, tmax, hit)
+          </code>
+          <div class="tip" id="15438">
+            <strong>Signature:</strong> (plane:Plane3d * tmin:float * tmax:float * hit:byref&lt;RayHit3d&gt;) -&gt; bool<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '15439', 15439)" onmouseover="showTip(event, '15439', 15439)">
+            HitsQuad(...)
+          </code>
+          <div class="tip" id="15439">
+            <strong>Signature:</strong> (p0:V3d * p1:V3d * p2:V3d * p3:V3d * tmin:float * tmax:float * hit:byref&lt;RayHit3d&gt;) -&gt; bool<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Returns true if the ray hits the quad within the supplied
+parameter interval and before the parameter value contained
+in the supplied hit. The quad is considered to consist of the
+two triangles [p0,p1,p2] and [p0,p2,p3]. Detailed information
+about the hit is returned in the supplied hit. In order to obtain
+all potential hits, the supplied hit can be initialized with
+RayHit3d.MaxRange.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '15440', 15440)" onmouseover="showTip(event, '15440', 15440)">
+            HitsRay(ray, tmin, tmax, hit)
+          </code>
+          <div class="tip" id="15440">
+            <strong>Signature:</strong> (ray:Ray3d * tmin:float * tmax:float * hit:byref&lt;RayHit3d&gt;) -&gt; bool<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Returns true if the ray hits the other ray before the parameter
+value contained in the supplied hit. Detailed information about
+the hit is returned in the supplied hit.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '15441', 15441)" onmouseover="showTip(event, '15441', 15441)">
+            HitsSphere(...)
+          </code>
+          <div class="tip" id="15441">
+            <strong>Signature:</strong> (center:V3d * radius:float * tmin:float * tmax:float * hit:byref&lt;RayHit3d&gt;) -&gt; bool<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Returns true if the ray hits the sphere given by center and
+radius within the supplied parameter interval and before the
+parameter value contained in the supplied hit. Note that a
+hit is only registered if the front or the backsurface is
+encountered within the interval.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '15442', 15442)" onmouseover="showTip(event, '15442', 15442)">
+            HitsTriangle(...)
+          </code>
+          <div class="tip" id="15442">
+            <strong>Signature:</strong> (p0:V3d * p1:V3d * p2:V3d * tmin:float * tmax:float * hit:byref&lt;RayHit3d&gt;) -&gt; bool<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Returns true if the ray hits the triangle within the supplied
+parameter interval and before the parameter value contained
+in the supplied hit. Detailed information about the hit is
+returned in the supplied hit. In order to obtain all potential
+hits, the supplied hit can be initialized with RayHit3d.MaxRange.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '15443', 15443)" onmouseover="showTip(event, '15443', 15443)">
+            HitsTrianglePointAndEdges(...)
+          </code>
+          <div class="tip" id="15443">
+            <strong>Signature:</strong> (p0:V3d * edge01:V3d * edge02:V3d * tmin:float * tmax:float * hit:byref&lt;RayHit3d&gt;) -&gt; bool<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Returns true if the ray hits the triangle within the supplied
+parameter interval and before the parameter value contained
+in the supplied hit. Detailed information about the hit is
+returned in the supplied hit. In order to obtain all potential
+hits, the supplied hit can be initialized with RayHit3d.MaxRange.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '15444', 15444)" onmouseover="showTip(event, '15444', 15444)">
+            IsInvalid
+          </code>
+          <div class="tip" id="15444">
+            <strong>Signature:</strong> bool<br />
+              <strong>Modifiers:</strong> abstract<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>A ray is invalid if its direction is zero.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '15445', 15445)" onmouseover="showTip(event, '15445', 15445)">
+            IsValid
+          </code>
+          <div class="tip" id="15445">
+            <strong>Signature:</strong> bool<br />
+              <strong>Modifiers:</strong> abstract<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>A ray is valid if its direction is non-zero.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '15446', 15446)" onmouseover="showTip(event, '15446', 15446)">
+            LexicalCompare(other)
+          </code>
+          <div class="tip" id="15446">
+            <strong>Signature:</strong> other:Ray3d -&gt; int<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '15447', 15447)" onmouseover="showTip(event, '15447', 15447)">
+            Line3d
+          </code>
+          <div class="tip" id="15447">
+            <strong>Signature:</strong> Line3d<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '15448', 15448)" onmouseover="showTip(event, '15448', 15448)">
+            Reversed
+          </code>
+          <div class="tip" id="15448">
+            <strong>Signature:</strong> Ray3d<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '15449', 15449)" onmouseover="showTip(event, '15449', 15449)">
+            ToString()
+          </code>
+          <div class="tip" id="15449">
+            <strong>Signature:</strong> unit -&gt; string<br />
+              <strong>Modifiers:</strong> abstract<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '15450', 15450)" onmouseover="showTip(event, '15450', 15450)">
+            Transformed(mat)
+          </code>
+          <div class="tip" id="15450">
+            <strong>Signature:</strong> mat:M44d -&gt; Ray3d<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Returns the ray transformed with the given matrix.</p>
+
+
+        </td>
+      </tr>
+    </tbody>
+  </table>
+  <h3>Static members</h3>
+  <table class="table table-bordered member-list">
+    <thead>
+      <tr><td>Static member</td><td>Description</td></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '15451', 15451)" onmouseover="showTip(event, '15451', 15451)">
+            FromEndPoints(origin, target)
+          </code>
+          <div class="tip" id="15451">
+            <strong>Signature:</strong> (origin:V3d * target:V3d) -&gt; Ray3d<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '15452', 15452)" onmouseover="showTip(event, '15452', 15452)">
+            op_Equality(a, b)
+          </code>
+          <div class="tip" id="15452">
+            <strong>Signature:</strong> (a:Ray3d * b:Ray3d) -&gt; bool<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '15453', 15453)" onmouseover="showTip(event, '15453', 15453)">
+            op_Inequality(a, b)
+          </code>
+          <div class="tip" id="15453">
+            <strong>Signature:</strong> (a:Ray3d * b:Ray3d) -&gt; bool<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '15454', 15454)" onmouseover="showTip(event, '15454', 15454)">
+            Parse(s)
+          </code>
+          <div class="tip" id="15454">
+            <strong>Signature:</strong> s:string -&gt; Ray3d<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+        </div>
+        <div class="span3">
+          <a href="https://github.com/vrvis">
+            <img src="logo.png" style="width:140px;height:140px;margin:10px 0px 0px 35px;border-style:none;" />
+          </a>
+
+          <ul class="nav nav-list" id="menu">
+
+            <li class="nav-header">Aardvark.Base</li>
+
+            <li class="divider"></li>
+            <li><a href="https://github.com/vrvis/aardvark.base">Home page</a></li>
+            <li class="divider"></li>
+
+            <li><a href="https://www.nuget.org/packages/Aardvark.Base">Get Aardvark.Base via NuGet</a></li>
+            <li><a href="https://github.com/vrvis/aardvark.base">Source Code on GitHub</a></li>
+            <li><a href="https://github.com/vrvis/aardvark.baseLicense">License (Apache 2)</a></li>
+            
+            <!-- <li><a href="https://github.com/vrvis/aardvark.base/RELEASE_NOTES.html">Release Notes</a></li>
+            <li><a href="https://github.com/vrvis/aardvark.base//contributing.html">Contributing to Aardvark.Base</a></li>
+  
+            <li><a href="http://stackoverflow.com/questions/tagged/f%23-fake">Ask a question</a></li> 
+            
+            <li class="nav-header">Tutorials</li>
+            <li><a href="https://github.com/vrvis/aardvark.base/gettingstarted.html">Getting started</a></li>
+            
+            -->
+
+            
+            <li class="divider"></li>
+            <li class="nav-header">Reference</li>
+
+            <li><a href="https://github.com/vrvis/aardvark.base/apidocs/index.html">API Reference</a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    <a href="https://github.com/vrvis/aardvark.base"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_gray_6d6d6d.png" alt="Fork me on GitHub"></a>
+  </body>
+  </html>

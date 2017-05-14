@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>SampleGrid2d - Aardvark.Base</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="The Aardvark Platform Team">
+
+    <script src="https://code.jquery.com/jquery-1.8.0.js"></script>
+    <script src="https://code.jquery.com/ui/1.8.23/jquery-ui.js"></script>
+    <script src="https://netdna.bootstrapcdn.com/twitter-bootstrap/2.2.1/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link href="https://netdna.bootstrapcdn.com/twitter-bootstrap/2.2.1/css/bootstrap-combined.min.css" rel="stylesheet">
+
+    <link type="text/css" rel="stylesheet" href="https://github.com/vrvis/aardvark.base/content/style.css" />
+    <script type="text/javascript" src="https://github.com/vrvis/aardvark.base/content/tips.js"></script>
+    <!-- HTML5 shim, for IE6-8 support of HTML5 elements -->
+    <!--[if lt IE 9]>
+      <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+  </head>
+  <body>
+    <div class="container">
+      <div class="masthead">
+        <ul class="nav nav-pills pull-right">
+          <li><a href="https://github.com/vrvis/aardvark.base">github page</a></li>
+        </ul>
+        <h3 class="muted"><a href="https://github.com/vrvis/aardvark.base/index.html">Aardvark.Base</a></h3>
+      </div>
+      <hr />
+      <div class="row">
+        <div class="span9" id="main">
+          
+
+
+
+<h1>SampleGrid2d</h1>
+<div class="xmldoc">
+</div>
+  <h3>Constructors</h3>
+  <table class="table table-bordered member-list">
+    <thead>
+      <tr><td>Constructor</td><td>Description</td></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '15961', 15961)" onmouseover="showTip(event, '15961', 15961)">
+            new(gridSize, region)
+          </code>
+          <div class="tip" id="15961">
+            <strong>Signature:</strong> (gridSize:V2l * region:Box2d) -&gt; unit<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+    </tbody>
+  </table>
+  <h3>Instance members</h3>
+  <table class="table table-bordered member-list">
+    <thead>
+      <tr><td>Instance member</td><td>Description</td></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '15962', 15962)" onmouseover="showTip(event, '15962', 15962)">
+            Sample(count, sample)
+          </code>
+          <div class="tip" id="15962">
+            <strong>Signature:</strong> (count:V2l * sample:Action&lt;int64,int64,float,float&gt;) -&gt; unit<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '15963', 15963)" onmouseover="showTip(event, '15963', 15963)">
+            Sample(count, region)
+          </code>
+          <div class="tip" id="15963">
+            <strong>Signature:</strong> (count:V2l * region:Action&lt;int64,int64,int64,int64,float,float,float,float&gt;) -&gt; unit<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '15964', 15964)" onmouseover="showTip(event, '15964', 15964)">
+            SampleRegular(step, sample)
+          </code>
+          <div class="tip" id="15964">
+            <strong>Signature:</strong> (step:V2l * sample:Action&lt;int64,int64,float,float&gt;) -&gt; unit<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Perform the supplied action on grid elements that are separated
+by a supplied step size. Only near the borders, the separation
+may be smaller. The (possibly) smaller border separation is
+distributed to all four borders.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '15965', 15965)" onmouseover="showTip(event, '15965', 15965)">
+            SampleRegular(step, region)
+          </code>
+          <div class="tip" id="15965">
+            <strong>Signature:</strong> (step:V2l * region:Action&lt;int64,int64,int64,int64,float,float,float,float&gt;) -&gt; unit<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Perform the supplied action on grid regions of a supplied step
+size. Only near the borders, the regions may be smaller. The
+(possibly) smaller border region size is distributed to all four
+borders.</p>
+
+
+        </td>
+      </tr>
+    </tbody>
+  </table>
+  <h3>Static members</h3>
+  <table class="table table-bordered member-list">
+    <thead>
+      <tr><td>Static member</td><td>Description</td></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '15966', 15966)" onmouseover="showTip(event, '15966', 15966)">
+            AdaptivelyFill(...)
+          </code>
+          <div class="tip" id="15966">
+            <strong>Signature:</strong> (xMid:Action&lt;int64,int64,int64,int64,float,float&gt; * yMid:Action&lt;int64,int64,int64,int64,float,float&gt; * xyMid:Action&lt;int64,int64,int64,int64,int64,int64,float,float,float,float&gt; * x0:int64 * x1:int64 * y0:int64 * y1:int64) -&gt; unit<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '15967', 15967)" onmouseover="showTip(event, '15967', 15967)">
+            AdaptivelyFill(...)
+          </code>
+          <div class="tip" id="15967">
+            <strong>Signature:</strong> (xMid:Action&lt;int,int64,int64,int64,int64,float,float&gt; * yMid:Action&lt;int,int64,int64,int64,int64,float,float&gt; * xyMid:Action&lt;int,int64,int64,int64,int64,int64,int64,float,float,float,float&gt; * depth:int * x0:int64 * x1:int64 * y0:int64 * y1:int64) -&gt; unit<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '15968', 15968)" onmouseover="showTip(event, '15968', 15968)">
+            AdaptivelySample(...)
+          </code>
+          <div class="tip" id="15968">
+            <strong>Signature:</strong> (similar:Func&lt;int64,int64,int64,int64,float,float,float,float,bool&gt; * sample:Action&lt;int64,int64,float,float&gt; * region:Action&lt;int64,int64,int64,int64,float,float,float,float&gt; * super:Action&lt;int64,int64,int64,int64,float,float,float,float&gt; * x0:int64 * x1:int64 * y0:int64 * y1:int64 * xd0:float * xd1:float * yd0:float * yd1:float) -&gt; unit<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+        </div>
+        <div class="span3">
+          <a href="https://github.com/vrvis">
+            <img src="logo.png" style="width:140px;height:140px;margin:10px 0px 0px 35px;border-style:none;" />
+          </a>
+
+          <ul class="nav nav-list" id="menu">
+
+            <li class="nav-header">Aardvark.Base</li>
+
+            <li class="divider"></li>
+            <li><a href="https://github.com/vrvis/aardvark.base">Home page</a></li>
+            <li class="divider"></li>
+
+            <li><a href="https://www.nuget.org/packages/Aardvark.Base">Get Aardvark.Base via NuGet</a></li>
+            <li><a href="https://github.com/vrvis/aardvark.base">Source Code on GitHub</a></li>
+            <li><a href="https://github.com/vrvis/aardvark.baseLicense">License (Apache 2)</a></li>
+            
+            <!-- <li><a href="https://github.com/vrvis/aardvark.base/RELEASE_NOTES.html">Release Notes</a></li>
+            <li><a href="https://github.com/vrvis/aardvark.base//contributing.html">Contributing to Aardvark.Base</a></li>
+  
+            <li><a href="http://stackoverflow.com/questions/tagged/f%23-fake">Ask a question</a></li> 
+            
+            <li class="nav-header">Tutorials</li>
+            <li><a href="https://github.com/vrvis/aardvark.base/gettingstarted.html">Getting started</a></li>
+            
+            -->
+
+            
+            <li class="divider"></li>
+            <li class="nav-header">Reference</li>
+
+            <li><a href="https://github.com/vrvis/aardvark.base/apidocs/index.html">API Reference</a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    <a href="https://github.com/vrvis/aardvark.base"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_gray_6d6d6d.png" alt="Fork me on GitHub"></a>
+  </body>
+  </html>

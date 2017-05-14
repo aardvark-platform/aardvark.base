@@ -1,0 +1,1031 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>NumericExtensions - Aardvark.Base</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="The Aardvark Platform Team">
+
+    <script src="https://code.jquery.com/jquery-1.8.0.js"></script>
+    <script src="https://code.jquery.com/ui/1.8.23/jquery-ui.js"></script>
+    <script src="https://netdna.bootstrapcdn.com/twitter-bootstrap/2.2.1/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link href="https://netdna.bootstrapcdn.com/twitter-bootstrap/2.2.1/css/bootstrap-combined.min.css" rel="stylesheet">
+
+    <link type="text/css" rel="stylesheet" href="https://github.com/vrvis/aardvark.base/content/style.css" />
+    <script type="text/javascript" src="https://github.com/vrvis/aardvark.base/content/tips.js"></script>
+    <!-- HTML5 shim, for IE6-8 support of HTML5 elements -->
+    <!--[if lt IE 9]>
+      <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+  </head>
+  <body>
+    <div class="container">
+      <div class="masthead">
+        <ul class="nav nav-pills pull-right">
+          <li><a href="https://github.com/vrvis/aardvark.base">github page</a></li>
+        </ul>
+        <h3 class="muted"><a href="https://github.com/vrvis/aardvark.base/index.html">Aardvark.Base</a></h3>
+      </div>
+      <hr />
+      <div class="row">
+        <div class="span9" id="main">
+          
+
+
+
+<h1>NumericExtensions</h1>
+<div class="xmldoc">
+</div>
+  <h3>Static members</h3>
+  <table class="table table-bordered member-list">
+    <thead>
+      <tr><td>Static member</td><td>Description</td></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '13848', 13848)" onmouseover="showTip(event, '13848', 13848)">
+            ColDotCol(array, c0, c1)
+          </code>
+          <div class="tip" id="13848">
+            <strong>Signature:</strong> (array:float [,] * c0:int64 * c1:int64) -&gt; float<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Dot product of complete matrix columns.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '13849', 13849)" onmouseover="showTip(event, '13849', 13849)">
+            ColDotCol(array, c0, c1, start, end)
+          </code>
+          <div class="tip" id="13849">
+            <strong>Signature:</strong> (array:float [,] * c0:int64 * c1:int64 * start:int64 * end:int64) -&gt; float<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Dot product of matrix column elements including start and excluding end.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '13850', 13850)" onmouseover="showTip(event, '13850', 13850)">
+            ColDotCol(matrix, col0, col1)
+          </code>
+          <div class="tip" id="13850">
+            <strong>Signature:</strong> (matrix:Matrix&lt;float&gt; * col0:int64 * col1:int64) -&gt; float<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Dot product of complete matrix columns.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '13851', 13851)" onmouseover="showTip(event, '13851', 13851)">
+            ColDotCol(...)
+          </code>
+          <div class="tip" id="13851">
+            <strong>Signature:</strong> (matrix:Matrix&lt;float&gt; * col0:int64 * col1:int64 * start:int64 * end:int64) -&gt; float<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Dot product of matrix column elements including start and excluding end.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '13852', 13852)" onmouseover="showTip(event, '13852', 13852)">
+            ColNorm2(array, col)
+          </code>
+          <div class="tip" id="13852">
+            <strong>Signature:</strong> (array:float [,] * col:int64) -&gt; float<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>L2 norm of complete matrix column.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '13853', 13853)" onmouseover="showTip(event, '13853', 13853)">
+            ColNorm2(array, col, start, end)
+          </code>
+          <div class="tip" id="13853">
+            <strong>Signature:</strong> (array:float [,] * col:int64 * start:int64 * end:int64) -&gt; float<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>L2 norm of matrix column elemnts including start and excluding end.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '13854', 13854)" onmouseover="showTip(event, '13854', 13854)">
+            ColNorm2(matrix, col)
+          </code>
+          <div class="tip" id="13854">
+            <strong>Signature:</strong> (matrix:Matrix&lt;float&gt; * col:int64) -&gt; float<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>L2 norm of complete matrix column.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '13855', 13855)" onmouseover="showTip(event, '13855', 13855)">
+            ColNorm2(matrix, col, start, end)
+          </code>
+          <div class="tip" id="13855">
+            <strong>Signature:</strong> (matrix:Matrix&lt;float&gt; * col:int64 * start:int64 * end:int64) -&gt; float<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>L2 norm of matrix column elemnts including start and excluding end.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '13856', 13856)" onmouseover="showTip(event, '13856', 13856)">
+            LuFactorize(alu)
+          </code>
+          <div class="tip" id="13856">
+            <strong>Signature:</strong> (alu:float [,]) -&gt; int []<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Perform a partially pivoting LU factorization of the supplied
+matrix, i.e A = inv(P) LU, so that any matrix equation A x = b
+can be solved using LU x = P b. The permutation matrix P is
+returns as permutation vector. WARNING: the supplied matrix A is
+overwritten with its factorization LU, both in the parameter alu.
+If the matrix is singular an ArgumentException is thrown.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '13857', 13857)" onmouseover="showTip(event, '13857', 13857)">
+            LuFactorize(alu, p)
+          </code>
+          <div class="tip" id="13857">
+            <strong>Signature:</strong> (alu:float [,] * p:int []) -&gt; bool<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Perform a partially pivoting LU factorization of the supplied
+matrix, i.e A = inv(P) LU, so that any matrix equation A x = b
+can be solved using LU x = P b. The permutation matrix P is
+filled into the supplied permutation vector p, and the supplied
+matrix A is overwritten with its factorization LU, both in the
+parameter alu. The function returns true if the factorization
+is successful, otherwise the matrix is singular and false is
+returned.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '13858', 13858)" onmouseover="showTip(event, '13858', 13858)">
+            LuFactorize(alu, a0, ax, ay, p)
+          </code>
+          <div class="tip" id="13858">
+            <strong>Signature:</strong> (alu:float [] * a0:int64 * ax:int64 * ay:int64 * p:int []) -&gt; bool<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Perform a partially pivoting LU factorization of the supplied
+matrix in-place, i.e A = inv(P) LU, so that any matrix equation
+A x = b can be solved using LU x = P b. The permutation matrix P
+is filled into the supplied permutation vector p, and the supplied
+matrix A is overwritten with its factorization LU, both in the
+parameter alu. The function returns true if the factorization
+is successful, otherwise the matrix is singular and false is
+returned. No size checks are performed.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '13859', 13859)" onmouseover="showTip(event, '13859', 13859)">
+            LuFactorize(inputAndLuMatrix)
+          </code>
+          <div class="tip" id="13859">
+            <strong>Signature:</strong> inputAndLuMatrix:Matrix&lt;float&gt; -&gt; int []<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Perform a partially pivoting LU factorization of the supplied
+matrix in-place, i.e A = inv(P) LU, so that any matrix equation
+A x = b can be solved using LU x = P b. The permutation matrix P
+is returned as a permutation vector, and the supplied matrix A is
+overwritten with its factorization LU, both in the parameter
+inputAndLuMatrix. If the supplied matrix is singular, null is
+returned.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '13860', 13860)" onmouseover="showTip(event, '13860', 13860)">
+            LuInverse(lu, p)
+          </code>
+          <div class="tip" id="13860">
+            <strong>Signature:</strong> (lu:float [,] * p:int []) -&gt; float [,]<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Return the inverse inv(A) of a the supplied LU factorized matrix
+lu, where A = inv(P) LU. The permuation matrix P is supplied as
+the permutation vector p.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '13861', 13861)" onmouseover="showTip(event, '13861', 13861)">
+            LuInverse(lu, p, inv)
+          </code>
+          <div class="tip" id="13861">
+            <strong>Signature:</strong> (lu:float [,] * p:int [] * inv:float [,]) -&gt; unit<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Compute the inverse inv(A) of a the supplied LU factorized matrix
+lu, where A = inv(P) LU. The permuation matrix P is supplied as
+the permutation vector p. The result matrix is filled into the
+supplied matrix.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '13862', 13862)" onmouseover="showTip(event, '13862', 13862)">
+            LuInverse(...)
+          </code>
+          <div class="tip" id="13862">
+            <strong>Signature:</strong> (lu:float [] * l0:int64 * lx:int64 * ly:int64 * p:int [] * x:float [] * x0:int64 * xx:int64 * xy:int64) -&gt; unit<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Compute the inverse inv(A) of a the supplied LU factorized matrix
+lu, where A = inv(P) LU. The permuation matrix P is supplied as
+the permutation vector p. The inverse matrix is filled into the
+supplied matrix x.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '13863', 13863)" onmouseover="showTip(event, '13863', 13863)">
+            LuInverse(luMatrix, p)
+          </code>
+          <div class="tip" id="13863">
+            <strong>Signature:</strong> (luMatrix:Matrix&lt;float&gt; * p:int []) -&gt; Matrix&lt;float&gt;<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Compute the inverse of an PLU factorized matrix, i.e LU x = P I.
+LU is the supplied factorized matrix, P is a permutation matrix
+supplied as a permutation array, and I is the square identity matrix.
+The inverse matrix x is returned.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '13864', 13864)" onmouseover="showTip(event, '13864', 13864)">
+            LuInverse(matrix)
+          </code>
+          <div class="tip" id="13864">
+            <strong>Signature:</strong> matrix:Matrix&lt;float&gt; -&gt; Matrix&lt;float&gt;<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Compute the inverse of a square matrix using PLU factorization.
+The inverse matrix x is returned. Returns an invalid matrix if
+the factorization failed.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '13865', 13865)" onmouseover="showTip(event, '13865', 13865)">
+            LuInvert(matrix)
+          </code>
+          <div class="tip" id="13865">
+            <strong>Signature:</strong> matrix:Matrix&lt;float&gt; -&gt; bool<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Invert square matrix using PLU factorization in-place.
+If the factorization fails, the matrix is unchanged and
+false is returned.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '13866', 13866)" onmouseover="showTip(event, '13866', 13866)">
+            LuSolve(lu, p, b)
+          </code>
+          <div class="tip" id="13866">
+            <strong>Signature:</strong> (lu:float [,] * p:int [] * b:float []) -&gt; float []<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Solve a matrix equation of the form LU x = P b.
+LU is the supplied factorized matrix lu, P is a permutation matrix
+supplied as a permutation array p, and b is the right hand side
+supplied as a vector. The returned x satisfies the equation.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '13867', 13867)" onmouseover="showTip(event, '13867', 13867)">
+            LuSolve(lu, p, b, x)
+          </code>
+          <div class="tip" id="13867">
+            <strong>Signature:</strong> (lu:float [,] * p:int [] * b:float [] * x:float []) -&gt; unit<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Solve a matrix equation of the form LU x = P b.
+LU is the supplied factorized matrix lu, P is a permutation matrix
+supplied as a permutation array p, and b is the right hand side
+supplied as a vector. The result vector that satisfies the
+equation is filled into the supplied parameter x.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '13868', 13868)" onmouseover="showTip(event, '13868', 13868)">
+            LuSolve(lu, p, b)
+          </code>
+          <div class="tip" id="13868">
+            <strong>Signature:</strong> (lu:float [,] * p:int [] * b:float [,]) -&gt; float [,]<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Solve a matrix equation of the form LU x = P b.
+LU is the supplied factorized matrix, P is a permutation matrix
+supplied as a permutation array, and b is a supplied matrix.
+The returned matrix x satisfies the equation.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '13869', 13869)" onmouseover="showTip(event, '13869', 13869)">
+            LuSolve(lu, p, b, x)
+          </code>
+          <div class="tip" id="13869">
+            <strong>Signature:</strong> (lu:float [,] * p:int [] * b:float [,] * x:float [,]) -&gt; unit<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Solve a matrix equation of the form LU x = P b.
+LU is the supplied factorized matrix, P is a permutation matrix
+supplied as a permutation array, and b is a supplied matrix.
+The result matrix that satisfies the equation is filled into the
+supplied parameter x.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '13870', 13870)" onmouseover="showTip(event, '13870', 13870)">
+            LuSolve(...)
+          </code>
+          <div class="tip" id="13870">
+            <strong>Signature:</strong> (lu:float [] * l0:int64 * lx:int64 * ly:int64 * p:int [] * b:float [] * b0:int64 * bd:int64 * x:float [] * x0:int64 * xd:int64) -&gt; unit<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Solve a matrix equation of the form LU x = P b.
+LU is the supplied factorized matrix lu, P is a permutation matrix
+supplied as a permutation array p, and b is the right hand side
+supplied as a vector starting at b0 with element to element
+delta bD. The result vector that satisfies the equation is
+filled into the supplied parameter x beginning at index x0
+with element to element delta xD.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '13871', 13871)" onmouseover="showTip(event, '13871', 13871)">
+            LuSolve(...)
+          </code>
+          <div class="tip" id="13871">
+            <strong>Signature:</strong> (lu:float [] * l0:int64 * lx:int64 * ly:int64 * p:int [] * m:int64 * b:float [] * b0:int64 * bx:int64 * by:int64 * x:float [] * x0:int64 * xx:int64 * xy:int64) -&gt; unit<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Solve a matrix equation of the form LU x = P b.
+LU is the supplied factorized matrix, P is a permutation matrix
+supplied as a permutation array, and b is a supplied matrix.
+The result matrix that satisfies the equation is filled into the
+supplied parameter x.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '13872', 13872)" onmouseover="showTip(event, '13872', 13872)">
+            LuSolve(luMatrix, p, b)
+          </code>
+          <div class="tip" id="13872">
+            <strong>Signature:</strong> (luMatrix:Matrix&lt;float&gt; * p:int [] * b:Vector&lt;float&gt;) -&gt; Vector&lt;float&gt;<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Solve a matrix equation of the form LU x = P b.
+LU is the supplied factorized matrix lu, P is a permutation matrix
+supplied as a permutation array p, and b is the right hand side
+supplied as a vector. The solution vector x is returned.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '13873', 13873)" onmouseover="showTip(event, '13873', 13873)">
+            LuSolve(luMatrix, p, b)
+          </code>
+          <div class="tip" id="13873">
+            <strong>Signature:</strong> (luMatrix:Matrix&lt;float&gt; * p:int [] * b:Matrix&lt;float&gt;) -&gt; Matrix&lt;float&gt;<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Solve a matrix equation of the form LU x = P b.
+LU is the supplied factorized matrix, P is a permutation matrix
+supplied as a permutation array, and b is the right hand side
+supplied as a matrix. The solution matrix x is returned.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '13874', 13874)" onmouseover="showTip(event, '13874', 13874)">
+            QrFactorize(aqr)
+          </code>
+          <div class="tip" id="13874">
+            <strong>Signature:</strong> (aqr:float [,]) -&gt; float []<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Perform a QR factorization of the supplied m x n matrix using
+Householder transofmations, i.e. A = QR, where Q is orthogonal
+(a product of n-2 Householder-Transformations) and R is a right
+upper n x n triangular matrix. An array of the diagonal elements
+of R is returned. WARNING: the supplied matrix A is overwritten
+with its factorization QR, both in the parameter aqr.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '13875', 13875)" onmouseover="showTip(event, '13875', 13875)">
+            QrFactorize(...)
+          </code>
+          <div class="tip" id="13875">
+            <strong>Signature:</strong> (aqr:float [] * a0:int64 * ax:int64 * ay:int64 * cols:int64 * rows:int64 * diagonal:float []) -&gt; unit<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Perform a QR factorization of the supplied m x n matrix using
+Householder transofmations, i.e. A = QR, where Q is orthogonal
+(a product of n-2 Householder-Transformations) and R is a right
+upper n x n triangular matrix. The diagonal elements of R are
+put in the supplied array diagonal. WARNING: the supplied
+matrix A is overwritten with its factorization QR, both in the
+parameter aqr.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '13876', 13876)" onmouseover="showTip(event, '13876', 13876)">
+            QrFactorize(aqr)
+          </code>
+          <div class="tip" id="13876">
+            <strong>Signature:</strong> aqr:Matrix&lt;float&gt; -&gt; float []<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Perform a QR factorization of the supplied m x n matrix using
+Householder transofmations, i.e. A = QR, where Q is orthogonal
+(a product of n-2 Householder-Transformations) and R is a right
+upper n x n triangular matrix. An array of the diagonal elements
+of R is returned. WARNING: the supplied matrix A is overwritten
+with its factorization QR, both in the parameter aqr.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '13877', 13877)" onmouseover="showTip(event, '13877', 13877)">
+            QrInverse(QR, diag, inv)
+          </code>
+          <div class="tip" id="13877">
+            <strong>Signature:</strong> (QR:float [,] * diag:float [] * inv:float [,]) -&gt; unit<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '13878', 13878)" onmouseover="showTip(event, '13878', 13878)">
+            QrInverse(matrix)
+          </code>
+          <div class="tip" id="13878">
+            <strong>Signature:</strong> (matrix:float [,]) -&gt; float [,]<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Calculates the inverse Matrix to A using Householder-Transformations
+A has to be Quadratic</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '13879', 13879)" onmouseover="showTip(event, '13879', 13879)">
+            QrInverse(qr, diag)
+          </code>
+          <div class="tip" id="13879">
+            <strong>Signature:</strong> (qr:Matrix&lt;float&gt; * diag:float []) -&gt; Matrix&lt;float&gt;<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Calculates the inverse of a matrix given its QR factorization using
+Householder transformations. The matrix has to be quadratic.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '13880', 13880)" onmouseover="showTip(event, '13880', 13880)">
+            QrInverse(matrix)
+          </code>
+          <div class="tip" id="13880">
+            <strong>Signature:</strong> matrix:Matrix&lt;float&gt; -&gt; Matrix&lt;float&gt;<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Calculates the inverse matrix using Householder transformations.
+The matrix has to be quadratic.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '13881', 13881)" onmouseover="showTip(event, '13881', 13881)">
+            QrInverse(mat)
+          </code>
+          <div class="tip" id="13881">
+            <strong>Signature:</strong> mat:M22d -&gt; M22d<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Calculates the inverse matrix using Householder transformations</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '13882', 13882)" onmouseover="showTip(event, '13882', 13882)">
+            QrInverse(mat)
+          </code>
+          <div class="tip" id="13882">
+            <strong>Signature:</strong> mat:M33d -&gt; M33d<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Calculates the inverse matrix using Householder transformations</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '13883', 13883)" onmouseover="showTip(event, '13883', 13883)">
+            QrInverse(mat)
+          </code>
+          <div class="tip" id="13883">
+            <strong>Signature:</strong> mat:M44d -&gt; M44d<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Calculates the inverse matrix using Householder transformations</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '13884', 13884)" onmouseover="showTip(event, '13884', 13884)">
+            QrSolve(qr, diag, b, x, residual)
+          </code>
+          <div class="tip" id="13884">
+            <strong>Signature:</strong> (qr:float [,] * diag:float [] * b:float [] * x:float [] * residual:byref&lt;float&gt;) -&gt; unit<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Solves the Equation QR x = b. QR must be a factorized matrix (QrFactorize).
+diag provides the diagonal elements of R (QrFactorize)
+If QR is not quadratic the x where |QR<em>x - b| == min is calculated
+residual holds the minimal value of |QR</em>x - b|</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '13885', 13885)" onmouseover="showTip(event, '13885', 13885)">
+            QrSolve(qr, diag, b)
+          </code>
+          <div class="tip" id="13885">
+            <strong>Signature:</strong> (qr:float [,] * diag:float [] * b:float []) -&gt; float []<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Solves the Equation QR<em>x = b. QR must be a factorized matrix (QRFactorize).
+diag provides the diagonal elements of R (QRFactorize)
+If QR is not quadratic the x where |QR</em>x - b| == min is calculated</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '13886', 13886)" onmouseover="showTip(event, '13886', 13886)">
+            QrSolve(qr, diag, b, residual)
+          </code>
+          <div class="tip" id="13886">
+            <strong>Signature:</strong> (qr:float [,] * diag:float [] * b:float [] * residual:byref&lt;float&gt;) -&gt; float []<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Solves the Equation QR<em>x = b. QR must be a factorized matrix (QRFactorize).
+diag provides the diagonal elements of R (QRFactorize)
+If QR is not quadratic the x where |QR</em>x - b| == min is returned
+residual holds the minimal value of |QR*x - b|</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '13887', 13887)" onmouseover="showTip(event, '13887', 13887)">
+            QrSolve(...)
+          </code>
+          <div class="tip" id="13887">
+            <strong>Signature:</strong> (qr:float [] * q0:int64 * qx:int64 * qy:int64 * cols:int64 * rows:int64 * diag:float [] * b:float [] * b0:int64 * bd:int64 * x:float [] * x0:int64 * xd:int64 * residual:byref&lt;float&gt;) -&gt; unit<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Solves the Equation QR x = b. QR must be a factorized matrix (QrFactorize).
+diag provides the diagonal elements of R (QrFactorize)
+If QR is not quadratic the x where |QR x - b| == min is calculated
+residual holds the minimal value of |QR x - b|</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '13888', 13888)" onmouseover="showTip(event, '13888', 13888)">
+            QrSolve(qr, diag, b)
+          </code>
+          <div class="tip" id="13888">
+            <strong>Signature:</strong> (qr:Matrix&lt;float&gt; * diag:float [] * b:Vector&lt;float&gt;) -&gt; Vector&lt;float&gt;<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Solves the Equation QR x = b. QR must be a factorized matrix (QrFactorize).
+diag provides the diagonal elements of R (QrFactorize)
+If QR is not quadratic the x where |QR x - b| == min is returned.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '13889', 13889)" onmouseover="showTip(event, '13889', 13889)">
+            QrSolve(qr, diag, b, residual)
+          </code>
+          <div class="tip" id="13889">
+            <strong>Signature:</strong> (qr:Matrix&lt;float&gt; * diag:float [] * b:Vector&lt;float&gt; * residual:byref&lt;float&gt;) -&gt; Vector&lt;float&gt;<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Solves the Equation QR x = b. QR must be a factorized matrix (QrFactorize).
+diag provides the diagonal elements of R (QrFactorize)
+If QR is not quadratic the x where |QR x - b| == min is returned
+residual holds the minimal value of |QR x - b|</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '13890', 13890)" onmouseover="showTip(event, '13890', 13890)">
+            QrSolve(qr, diag, b)
+          </code>
+          <div class="tip" id="13890">
+            <strong>Signature:</strong> (qr:Matrix&lt;float&gt; * diag:float [] * b:Matrix&lt;float&gt;) -&gt; Matrix&lt;float&gt;<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Solves the Equation QR x = b, where x and b are matrices and each column of x
+is the solution of the eqation with the corresponding column of b.
+QR must be a factorized matrix (QrFactorize). diag provides the diagonal elements
+of R (QrFactorize) If QR is not quadratic the x where |QR x - b| == min is returned</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '13891', 13891)" onmouseover="showTip(event, '13891', 13891)">
+            QrSolve(qr, diag, b, residual)
+          </code>
+          <div class="tip" id="13891">
+            <strong>Signature:</strong> (qr:Matrix&lt;float&gt; * diag:float [] * b:Matrix&lt;float&gt; * residual:Vector&lt;float&gt;) -&gt; Matrix&lt;float&gt;<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Solves the Equation QR x = b, where x and b are matrices and each column of x
+is the solution of the eqation with the corresponding column of b.
+QR must be a factorized matrix (QrFactorize). diag provides the diagonal elements
+of R (QrFactorize) If QR is not quadratic the x where |QR x - b| == min is returned
+The residual vector holds the minimal value of |QR x - b| for each column of x.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '13892', 13892)" onmouseover="showTip(event, '13892', 13892)">
+            RowDotRow(array, r0, r1)
+          </code>
+          <div class="tip" id="13892">
+            <strong>Signature:</strong> (array:float [,] * r0:int64 * r1:int64) -&gt; float<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Dot product of complete matrix rows.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '13893', 13893)" onmouseover="showTip(event, '13893', 13893)">
+            RowDotRow(array, r0, r1, start, end)
+          </code>
+          <div class="tip" id="13893">
+            <strong>Signature:</strong> (array:float [,] * r0:int64 * r1:int64 * start:int64 * end:int64) -&gt; float<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Dot product of matrix row elements including start and excluding end.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '13894', 13894)" onmouseover="showTip(event, '13894', 13894)">
+            RowDotRow(matrix, row0, row1)
+          </code>
+          <div class="tip" id="13894">
+            <strong>Signature:</strong> (matrix:Matrix&lt;float&gt; * row0:int64 * row1:int64) -&gt; float<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Dot product of complete matrix rows.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '13895', 13895)" onmouseover="showTip(event, '13895', 13895)">
+            RowDotRow(...)
+          </code>
+          <div class="tip" id="13895">
+            <strong>Signature:</strong> (matrix:Matrix&lt;float&gt; * row0:int64 * row1:int64 * start:int64 * end:int64) -&gt; float<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Dot product of matrix row elements including start and excluding end.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '13896', 13896)" onmouseover="showTip(event, '13896', 13896)">
+            RowNorm2(array, row)
+          </code>
+          <div class="tip" id="13896">
+            <strong>Signature:</strong> (array:float [,] * row:int64) -&gt; float<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>L2 norm of complete matrix row.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '13897', 13897)" onmouseover="showTip(event, '13897', 13897)">
+            RowNorm2(array, row, start, end)
+          </code>
+          <div class="tip" id="13897">
+            <strong>Signature:</strong> (array:float [,] * row:int64 * start:int64 * end:int64) -&gt; float<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>L2 norm of matrix row elemnts including start and excluding end.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '13898', 13898)" onmouseover="showTip(event, '13898', 13898)">
+            RowNorm2(matrix, row)
+          </code>
+          <div class="tip" id="13898">
+            <strong>Signature:</strong> (matrix:Matrix&lt;float&gt; * row:int64) -&gt; float<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>L2 norm of complete matrix row.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '13899', 13899)" onmouseover="showTip(event, '13899', 13899)">
+            RowNorm2(matrix, row, start, end)
+          </code>
+          <div class="tip" id="13899">
+            <strong>Signature:</strong> (matrix:Matrix&lt;float&gt; * row:int64 * start:int64 * end:int64) -&gt; float<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>L2 norm of matrix row elemnts including start and excluding end.</p>
+
+
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+        </div>
+        <div class="span3">
+          <a href="https://github.com/vrvis">
+            <img src="logo.png" style="width:140px;height:140px;margin:10px 0px 0px 35px;border-style:none;" />
+          </a>
+
+          <ul class="nav nav-list" id="menu">
+
+            <li class="nav-header">Aardvark.Base</li>
+
+            <li class="divider"></li>
+            <li><a href="https://github.com/vrvis/aardvark.base">Home page</a></li>
+            <li class="divider"></li>
+
+            <li><a href="https://www.nuget.org/packages/Aardvark.Base">Get Aardvark.Base via NuGet</a></li>
+            <li><a href="https://github.com/vrvis/aardvark.base">Source Code on GitHub</a></li>
+            <li><a href="https://github.com/vrvis/aardvark.baseLicense">License (Apache 2)</a></li>
+            
+            <!-- <li><a href="https://github.com/vrvis/aardvark.base/RELEASE_NOTES.html">Release Notes</a></li>
+            <li><a href="https://github.com/vrvis/aardvark.base//contributing.html">Contributing to Aardvark.Base</a></li>
+  
+            <li><a href="http://stackoverflow.com/questions/tagged/f%23-fake">Ask a question</a></li> 
+            
+            <li class="nav-header">Tutorials</li>
+            <li><a href="https://github.com/vrvis/aardvark.base/gettingstarted.html">Getting started</a></li>
+            
+            -->
+
+            
+            <li class="divider"></li>
+            <li class="nav-header">Reference</li>
+
+            <li><a href="https://github.com/vrvis/aardvark.base/apidocs/index.html">API Reference</a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    <a href="https://github.com/vrvis/aardvark.base"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_gray_6d6d6d.png" alt="Fork me on GitHub"></a>
+  </body>
+  </html>

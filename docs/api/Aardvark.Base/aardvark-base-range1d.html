@@ -1,0 +1,1077 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>Range1d - Aardvark.Base</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="The Aardvark Platform Team">
+
+    <script src="https://code.jquery.com/jquery-1.8.0.js"></script>
+    <script src="https://code.jquery.com/ui/1.8.23/jquery-ui.js"></script>
+    <script src="https://netdna.bootstrapcdn.com/twitter-bootstrap/2.2.1/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link href="https://netdna.bootstrapcdn.com/twitter-bootstrap/2.2.1/css/bootstrap-combined.min.css" rel="stylesheet">
+
+    <link type="text/css" rel="stylesheet" href="https://github.com/vrvis/aardvark.base/content/style.css" />
+    <script type="text/javascript" src="https://github.com/vrvis/aardvark.base/content/tips.js"></script>
+    <!-- HTML5 shim, for IE6-8 support of HTML5 elements -->
+    <!--[if lt IE 9]>
+      <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+  </head>
+  <body>
+    <div class="container">
+      <div class="masthead">
+        <ul class="nav nav-pills pull-right">
+          <li><a href="https://github.com/vrvis/aardvark.base">github page</a></li>
+        </ul>
+        <h3 class="muted"><a href="https://github.com/vrvis/aardvark.base/index.html">Aardvark.Base</a></h3>
+      </div>
+      <hr />
+      <div class="row">
+        <div class="span9" id="main">
+          
+
+
+
+<h1>Range1d</h1>
+<div class="xmldoc">
+</div>
+  <h3>Constructors</h3>
+  <table class="table table-bordered member-list">
+    <thead>
+      <tr><td>Constructor</td><td>Description</td></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '14857', 14857)" onmouseover="showTip(event, '14857', 14857)">
+            new(min, max)
+          </code>
+          <div class="tip" id="14857">
+            <strong>Signature:</strong> (min:float * max:float) -&gt; unit<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Creates a range from minimum and maximum limits.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '14858', 14858)" onmouseover="showTip(event, '14858', 14858)">
+            new(pnt)
+          </code>
+          <div class="tip" id="14858">
+            <strong>Signature:</strong> pnt:float -&gt; unit<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Creates infinitesimal box from single point.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '14859', 14859)" onmouseover="showTip(event, '14859', 14859)">
+            new(p0, p1, p2)
+          </code>
+          <div class="tip" id="14859">
+            <strong>Signature:</strong> (p0:float * p1:float * p2:float) -&gt; unit<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Creates a range from 3 points.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '14860', 14860)" onmouseover="showTip(event, '14860', 14860)">
+            new(p0, p1, p2, p3)
+          </code>
+          <div class="tip" id="14860">
+            <strong>Signature:</strong> (p0:float * p1:float * p2:float * p3:float) -&gt; unit<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Creates a range from 4 points.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '14861', 14861)" onmouseover="showTip(event, '14861', 14861)">
+            new(range)
+          </code>
+          <div class="tip" id="14861">
+            <strong>Signature:</strong> range:Range1d -&gt; unit<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Creates copy of existing range.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '14862', 14862)" onmouseover="showTip(event, '14862', 14862)">
+            new(b0, b1)
+          </code>
+          <div class="tip" id="14862">
+            <strong>Signature:</strong> (b0:Range1d * b1:Range1d) -&gt; unit<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Create a box containing all supplied ranges.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '14863', 14863)" onmouseover="showTip(event, '14863', 14863)">
+            new(b0, b1, b2)
+          </code>
+          <div class="tip" id="14863">
+            <strong>Signature:</strong> (b0:Range1d * b1:Range1d * b2:Range1d) -&gt; unit<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Create a box containing all supplied ranges.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '14864', 14864)" onmouseover="showTip(event, '14864', 14864)">
+            new(b0, b1, b2, b3)
+          </code>
+          <div class="tip" id="14864">
+            <strong>Signature:</strong> (b0:Range1d * b1:Range1d * b2:Range1d * b3:Range1d) -&gt; unit<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Create a box containing all supplied ranges.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '14865', 14865)" onmouseover="showTip(event, '14865', 14865)">
+            new(values)
+          </code>
+          <div class="tip" id="14865">
+            <strong>Signature:</strong> (values:float []) -&gt; unit<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Creates range as the bounding range of given points.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '14866', 14866)" onmouseover="showTip(event, '14866', 14866)">
+            new(values, start, count)
+          </code>
+          <div class="tip" id="14866">
+            <strong>Signature:</strong> (values:float [] * start:int64 * count:int64) -&gt; unit<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Creates range as the bounding range of count of the given points
+starting at start.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '14867', 14867)" onmouseover="showTip(event, '14867', 14867)">
+            new(values)
+          </code>
+          <div class="tip" id="14867">
+            <strong>Signature:</strong> values:IEnumerable&lt;float&gt; -&gt; unit<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Creates range as the bounding range of given values.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '14868', 14868)" onmouseover="showTip(event, '14868', 14868)">
+            new(box)
+          </code>
+          <div class="tip" id="14868">
+            <strong>Signature:</strong> box:Range1f -&gt; unit<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+    </tbody>
+  </table>
+  <h3>Instance members</h3>
+  <table class="table table-bordered member-list">
+    <thead>
+      <tr><td>Instance member</td><td>Description</td></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '14869', 14869)" onmouseover="showTip(event, '14869', 14869)">
+            Center
+          </code>
+          <div class="tip" id="14869">
+            <strong>Signature:</strong> float<br />
+              <strong>Modifiers:</strong> abstract<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '14870', 14870)" onmouseover="showTip(event, '14870', 14870)">
+            Clamped(x)
+          </code>
+          <div class="tip" id="14870">
+            <strong>Signature:</strong> x:float -&gt; float<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Return the value in the Range that is closest to the supplied value.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '14871', 14871)" onmouseover="showTip(event, '14871', 14871)">
+            Contains(value)
+          </code>
+          <div class="tip" id="14871">
+            <strong>Signature:</strong> value:float -&gt; bool<br />
+              <strong>Modifiers:</strong> abstract<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Returns true if the range contains the given value.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '14872', 14872)" onmouseover="showTip(event, '14872', 14872)">
+            Contains(b)
+          </code>
+          <div class="tip" id="14872">
+            <strong>Signature:</strong> b:Range1d -&gt; bool<br />
+              <strong>Modifiers:</strong> abstract<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Returns true if the range completely contains the given range.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '14873', 14873)" onmouseover="showTip(event, '14873', 14873)">
+            Elements
+          </code>
+          <div class="tip" id="14873">
+            <strong>Signature:</strong> IEnumerable&lt;float&gt;<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '14874', 14874)" onmouseover="showTip(event, '14874', 14874)">
+            EnlargeBy(delta)
+          </code>
+          <div class="tip" id="14874">
+            <strong>Signature:</strong> delta:float -&gt; unit<br />
+              <strong>Modifiers:</strong> abstract<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Enlarges range by the supplied value in all directions.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '14875', 14875)" onmouseover="showTip(event, '14875', 14875)">
+            EnlargeBy(deltaMin, deltaMax)
+          </code>
+          <div class="tip" id="14875">
+            <strong>Signature:</strong> (deltaMin:float * deltaMax:float) -&gt; unit<br />
+              <strong>Modifiers:</strong> abstract<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Enlarges range by the supplied values.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '14876', 14876)" onmouseover="showTip(event, '14876', 14876)">
+            EnlargedBy(increment)
+          </code>
+          <div class="tip" id="14876">
+            <strong>Signature:</strong> increment:float -&gt; Range1d<br />
+              <strong>Modifiers:</strong> abstract<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Return range enlarged by the supplied value in all directions.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '14877', 14877)" onmouseover="showTip(event, '14877', 14877)">
+            EnlargedBy(deltaMin, deltaMax)
+          </code>
+          <div class="tip" id="14877">
+            <strong>Signature:</strong> (deltaMin:float * deltaMax:float) -&gt; Range1d<br />
+              <strong>Modifiers:</strong> abstract<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Return range enlarged by the supplied values.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '14878', 14878)" onmouseover="showTip(event, '14878', 14878)">
+            Equals(obj)
+          </code>
+          <div class="tip" id="14878">
+            <strong>Signature:</strong> obj:obj -&gt; bool<br />
+              <strong>Modifiers:</strong> abstract<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '14879', 14879)" onmouseover="showTip(event, '14879', 14879)">
+            ExtendBy(range)
+          </code>
+          <div class="tip" id="14879">
+            <strong>Signature:</strong> range:Range1d -&gt; unit<br />
+              <strong>Modifiers:</strong> abstract<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Extends the range to contain the supplied range.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '14880', 14880)" onmouseover="showTip(event, '14880', 14880)">
+            ExtendBy(value)
+          </code>
+          <div class="tip" id="14880">
+            <strong>Signature:</strong> value:float -&gt; unit<br />
+              <strong>Modifiers:</strong> abstract<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Extends the range to contain the supplied value.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '14881', 14881)" onmouseover="showTip(event, '14881', 14881)">
+            ExtendedBy(range)
+          </code>
+          <div class="tip" id="14881">
+            <strong>Signature:</strong> range:Range1d -&gt; Range1d<br />
+              <strong>Modifiers:</strong> abstract<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Returns the range extended to contain the supplied range.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '14882', 14882)" onmouseover="showTip(event, '14882', 14882)">
+            ExtendedBy(value)
+          </code>
+          <div class="tip" id="14882">
+            <strong>Signature:</strong> value:float -&gt; Range1d<br />
+              <strong>Modifiers:</strong> abstract<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Returns the range extended to contain the supplied value.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '14883', 14883)" onmouseover="showTip(event, '14883', 14883)">
+            GetHashCode()
+          </code>
+          <div class="tip" id="14883">
+            <strong>Signature:</strong> unit -&gt; int<br />
+              <strong>Modifiers:</strong> abstract<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '14884', 14884)" onmouseover="showTip(event, '14884', 14884)">
+            Intersection(b)
+          </code>
+          <div class="tip" id="14884">
+            <strong>Signature:</strong> b:Range1d -&gt; Range1d<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '14885', 14885)" onmouseover="showTip(event, '14885', 14885)">
+            Intersects(range)
+          </code>
+          <div class="tip" id="14885">
+            <strong>Signature:</strong> range:Range1d -&gt; bool<br />
+              <strong>Modifiers:</strong> abstract<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Checks if 2 ranges intersect each other.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '14886', 14886)" onmouseover="showTip(event, '14886', 14886)">
+            Intersects(range, eps)
+          </code>
+          <div class="tip" id="14886">
+            <strong>Signature:</strong> (range:Range1d * eps:float) -&gt; bool<br />
+              <strong>Modifiers:</strong> abstract<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Checks if 2 ranges intersect each other with tolerance parameter.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '14887', 14887)" onmouseover="showTip(event, '14887', 14887)">
+            InvLerp(x)
+          </code>
+          <div class="tip" id="14887">
+            <strong>Signature:</strong> x:float -&gt; float<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Performs the inverse of Lerp.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '14888', 14888)" onmouseover="showTip(event, '14888', 14888)">
+            IsEmpty
+          </code>
+          <div class="tip" id="14888">
+            <strong>Signature:</strong> bool<br />
+              <strong>Modifiers:</strong> abstract<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>True if the box is invalid or has a zero volume.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '14889', 14889)" onmouseover="showTip(event, '14889', 14889)">
+            IsInfinite
+          </code>
+          <div class="tip" id="14889">
+            <strong>Signature:</strong> bool<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>True if the box is infinite.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '14890', 14890)" onmouseover="showTip(event, '14890', 14890)">
+            IsInvalid
+          </code>
+          <div class="tip" id="14890">
+            <strong>Signature:</strong> bool<br />
+              <strong>Modifiers:</strong> abstract<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>True if the box is invalid.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '14891', 14891)" onmouseover="showTip(event, '14891', 14891)">
+            IsNonEmpty
+          </code>
+          <div class="tip" id="14891">
+            <strong>Signature:</strong> bool<br />
+              <strong>Modifiers:</strong> abstract<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>True if the box has a non-zero volume.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '14892', 14892)" onmouseover="showTip(event, '14892', 14892)">
+            IsValid
+          </code>
+          <div class="tip" id="14892">
+            <strong>Signature:</strong> bool<br />
+              <strong>Modifiers:</strong> abstract<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>True if the box is valid.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '14893', 14893)" onmouseover="showTip(event, '14893', 14893)">
+            Lerp(x)
+          </code>
+          <div class="tip" id="14893">
+            <strong>Signature:</strong> x:float -&gt; float<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Linearly interpolates between min and max.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '14894', 14894)" onmouseover="showTip(event, '14894', 14894)">
+            Repair()
+          </code>
+          <div class="tip" id="14894">
+            <strong>Signature:</strong> unit -&gt; Range1d<br />
+              <strong>Modifiers:</strong> abstract<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Checks if the range is still valid and repairs if not.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '14895', 14895)" onmouseover="showTip(event, '14895', 14895)">
+            ShrinkBy(delta)
+          </code>
+          <div class="tip" id="14895">
+            <strong>Signature:</strong> delta:float -&gt; unit<br />
+              <strong>Modifiers:</strong> abstract<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Shrinks range by the supplied value in all directions.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '14896', 14896)" onmouseover="showTip(event, '14896', 14896)">
+            ShrinkBy(deltaMin, deltaMax)
+          </code>
+          <div class="tip" id="14896">
+            <strong>Signature:</strong> (deltaMin:float * deltaMax:float) -&gt; unit<br />
+              <strong>Modifiers:</strong> abstract<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Shrinks range by the supplied values.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '14897', 14897)" onmouseover="showTip(event, '14897', 14897)">
+            ShrunkBy(delta)
+          </code>
+          <div class="tip" id="14897">
+            <strong>Signature:</strong> delta:float -&gt; Range1d<br />
+              <strong>Modifiers:</strong> abstract<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Return range shrunk by the supplied value in all directions.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '14898', 14898)" onmouseover="showTip(event, '14898', 14898)">
+            ShrunkBy(deltaMin, deltaMax)
+          </code>
+          <div class="tip" id="14898">
+            <strong>Signature:</strong> (deltaMin:float * deltaMax:float) -&gt; Range1d<br />
+              <strong>Modifiers:</strong> abstract<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Return range shrunk by the supplied values.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '14899', 14899)" onmouseover="showTip(event, '14899', 14899)">
+            Size()
+          </code>
+          <div class="tip" id="14899">
+            <strong>Signature:</strong> unit -&gt; unit<br />
+              <strong>Modifiers:</strong> abstract<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Calculates size of the range.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '14900', 14900)" onmouseover="showTip(event, '14900', 14900)">
+            SplitLeft(splitValue)
+          </code>
+          <div class="tip" id="14900">
+            <strong>Signature:</strong> splitValue:float -&gt; Range1d<br />
+              <strong>Modifiers:</strong> abstract<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '14901', 14901)" onmouseover="showTip(event, '14901', 14901)">
+            SplitRight(splitValue)
+          </code>
+          <div class="tip" id="14901">
+            <strong>Signature:</strong> splitValue:float -&gt; Range1d<br />
+              <strong>Modifiers:</strong> abstract<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '14902', 14902)" onmouseover="showTip(event, '14902', 14902)">
+            ToString()
+          </code>
+          <div class="tip" id="14902">
+            <strong>Signature:</strong> unit -&gt; string<br />
+              <strong>Modifiers:</strong> abstract<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '14903', 14903)" onmouseover="showTip(event, '14903', 14903)">
+            ToString(format)
+          </code>
+          <div class="tip" id="14903">
+            <strong>Signature:</strong> format:string -&gt; string<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '14904', 14904)" onmouseover="showTip(event, '14904', 14904)">
+            ToString(format, fp)
+          </code>
+          <div class="tip" id="14904">
+            <strong>Signature:</strong> (format:string * fp:IFormatProvider) -&gt; string<br />
+              <strong>Modifiers:</strong> abstract<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '14905', 14905)" onmouseover="showTip(event, '14905', 14905)">
+            ToString(...)
+          </code>
+          <div class="tip" id="14905">
+            <strong>Signature:</strong> (format:string * fp:IFormatProvider * beginB:string * betweenB:string * endB:string * beginV:string * betweenV:string * endV:string) -&gt; string<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Outputs e.g. a Box2 in the form "(beginB)(beginV)min.x(betweenV)min.y(endV)(betweenB)(beginV)max.x(betweenV)max.y(endV)(endB)".</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '14906', 14906)" onmouseover="showTip(event, '14906', 14906)">
+            Union(b)
+          </code>
+          <div class="tip" id="14906">
+            <strong>Signature:</strong> b:Range1d -&gt; Range1d<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+    </tbody>
+  </table>
+  <h3>Static members</h3>
+  <table class="table table-bordered member-list">
+    <thead>
+      <tr><td>Static member</td><td>Description</td></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '14907', 14907)" onmouseover="showTip(event, '14907', 14907)">
+            FromCenterAndSize(center, size)
+          </code>
+          <div class="tip" id="14907">
+            <strong>Signature:</strong> (center:float * size:float) -&gt; Range1d<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Returns new range [center - size / 2, center + size / 2].</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '14908', 14908)" onmouseover="showTip(event, '14908', 14908)">
+            FromMinAndSize(min, size)
+          </code>
+          <div class="tip" id="14908">
+            <strong>Signature:</strong> (min:float * size:float) -&gt; Range1d<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Returns new range [min, min + size].</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '14909', 14909)" onmouseover="showTip(event, '14909', 14909)">
+            Intersection(a, b)
+          </code>
+          <div class="tip" id="14909">
+            <strong>Signature:</strong> (a:Range1d * b:Range1d) -&gt; Range1d<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '14910', 14910)" onmouseover="showTip(event, '14910', 14910)">
+            op_Addition(box, v)
+          </code>
+          <div class="tip" id="14910">
+            <strong>Signature:</strong> (box:Range1d * v:float) -&gt; Range1d<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Returns a range shifted by the supplied value.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '14911', 14911)" onmouseover="showTip(event, '14911', 14911)">
+            op_Equality(a, b)
+          </code>
+          <div class="tip" id="14911">
+            <strong>Signature:</strong> (a:Range1d * b:Range1d) -&gt; bool<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Checks if 2 boxes are equal.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '14912', 14912)" onmouseover="showTip(event, '14912', 14912)">
+            op_Explicit(box)
+          </code>
+          <div class="tip" id="14912">
+            <strong>Signature:</strong> box:Range1f -&gt; Range1d<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '14913', 14913)" onmouseover="showTip(event, '14913', 14913)">
+            op_Inequality(a, b)
+          </code>
+          <div class="tip" id="14913">
+            <strong>Signature:</strong> (a:Range1d * b:Range1d) -&gt; bool<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Checks if 2 boxes are not equal.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '14914', 14914)" onmouseover="showTip(event, '14914', 14914)">
+            op_Subtraction(box, v)
+          </code>
+          <div class="tip" id="14914">
+            <strong>Signature:</strong> (box:Range1d * v:float) -&gt; Range1d<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Returns a range shifted by the negative supplied value.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '14915', 14915)" onmouseover="showTip(event, '14915', 14915)">
+            Parse(s)
+          </code>
+          <div class="tip" id="14915">
+            <strong>Signature:</strong> s:string -&gt; Range1d<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '14916', 14916)" onmouseover="showTip(event, '14916', 14916)">
+            Parse(t)
+          </code>
+          <div class="tip" id="14916">
+            <strong>Signature:</strong> t:Text -&gt; Range1d<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '14917', 14917)" onmouseover="showTip(event, '14917', 14917)">
+            Union(a, b)
+          </code>
+          <div class="tip" id="14917">
+            <strong>Signature:</strong> (a:Range1d * b:Range1d) -&gt; Range1d<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+        </div>
+        <div class="span3">
+          <a href="https://github.com/vrvis">
+            <img src="logo.png" style="width:140px;height:140px;margin:10px 0px 0px 35px;border-style:none;" />
+          </a>
+
+          <ul class="nav nav-list" id="menu">
+
+            <li class="nav-header">Aardvark.Base</li>
+
+            <li class="divider"></li>
+            <li><a href="https://github.com/vrvis/aardvark.base">Home page</a></li>
+            <li class="divider"></li>
+
+            <li><a href="https://www.nuget.org/packages/Aardvark.Base">Get Aardvark.Base via NuGet</a></li>
+            <li><a href="https://github.com/vrvis/aardvark.base">Source Code on GitHub</a></li>
+            <li><a href="https://github.com/vrvis/aardvark.baseLicense">License (Apache 2)</a></li>
+            
+            <!-- <li><a href="https://github.com/vrvis/aardvark.base/RELEASE_NOTES.html">Release Notes</a></li>
+            <li><a href="https://github.com/vrvis/aardvark.base//contributing.html">Contributing to Aardvark.Base</a></li>
+  
+            <li><a href="http://stackoverflow.com/questions/tagged/f%23-fake">Ask a question</a></li> 
+            
+            <li class="nav-header">Tutorials</li>
+            <li><a href="https://github.com/vrvis/aardvark.base/gettingstarted.html">Getting started</a></li>
+            
+            -->
+
+            
+            <li class="divider"></li>
+            <li class="nav-header">Reference</li>
+
+            <li><a href="https://github.com/vrvis/aardvark.base/apidocs/index.html">API Reference</a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    <a href="https://github.com/vrvis/aardvark.base"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_gray_6d6d6d.png" alt="Fork me on GitHub"></a>
+  </body>
+  </html>

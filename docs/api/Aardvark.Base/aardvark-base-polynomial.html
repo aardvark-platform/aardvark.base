@@ -1,0 +1,399 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>Polynomial - Aardvark.Base</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="The Aardvark Platform Team">
+
+    <script src="https://code.jquery.com/jquery-1.8.0.js"></script>
+    <script src="https://code.jquery.com/ui/1.8.23/jquery-ui.js"></script>
+    <script src="https://netdna.bootstrapcdn.com/twitter-bootstrap/2.2.1/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link href="https://netdna.bootstrapcdn.com/twitter-bootstrap/2.2.1/css/bootstrap-combined.min.css" rel="stylesheet">
+
+    <link type="text/css" rel="stylesheet" href="https://github.com/vrvis/aardvark.base/content/style.css" />
+    <script type="text/javascript" src="https://github.com/vrvis/aardvark.base/content/tips.js"></script>
+    <!-- HTML5 shim, for IE6-8 support of HTML5 elements -->
+    <!--[if lt IE 9]>
+      <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+  </head>
+  <body>
+    <div class="container">
+      <div class="masthead">
+        <ul class="nav nav-pills pull-right">
+          <li><a href="https://github.com/vrvis/aardvark.base">github page</a></li>
+        </ul>
+        <h3 class="muted"><a href="https://github.com/vrvis/aardvark.base/index.html">Aardvark.Base</a></h3>
+      </div>
+      <hr />
+      <div class="row">
+        <div class="span9" id="main">
+          
+
+
+
+<h1>Polynomial</h1>
+<div class="xmldoc">
+</div>
+  <h3>Static members</h3>
+  <table class="table table-bordered member-list">
+    <thead>
+      <tr><td>Static member</td><td>Description</td></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '14598', 14598)" onmouseover="showTip(event, '14598', 14598)">
+            Derivative(coeff)
+          </code>
+          <div class="tip" id="14598">
+            <strong>Signature:</strong> (coeff:float []) -&gt; float []<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Return the polynomial derivative of the supplied polynomial that
+is stored with ascending coefficients:
+coeff[0] + coeff[1] x + coeff[2] x^2 + ... + coeff[n-1] x^(n-1)</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '14599', 14599)" onmouseover="showTip(event, '14599', 14599)">
+            Evaluate(coeff, x)
+          </code>
+          <div class="tip" id="14599">
+            <strong>Signature:</strong> (coeff:float [] * x:float) -&gt; float<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Evaluate the supplied polynomial that is stored with ascending
+coefficients at the supplied agrument x:
+coeff[0] + coeff[1] x + coeff[2] x^2 + ... + coeff[n-1] x^(n-1)</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '14600', 14600)" onmouseover="showTip(event, '14600', 14600)">
+            EvaluateDerivative(coeff, x)
+          </code>
+          <div class="tip" id="14600">
+            <strong>Signature:</strong> (coeff:float [] * x:float) -&gt; float<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Evaluate the derivative of the supplied polynomial that is stored
+with ascending coefficients at the supplied agrument x:
+coeff[1] + 2 coeff[2] x + ... + (n-1) coeff[n-1] x^(n-2)</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '14601', 14601)" onmouseover="showTip(event, '14601', 14601)">
+            Multiply(c0, c1)
+          </code>
+          <div class="tip" id="14601">
+            <strong>Signature:</strong> (c0:float [] * c1:float []) -&gt; float []<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Return the polynomial product of two polynomials that are supplied
+with ascending coefficients:
+( c0[0] + c0[1] x + c0[2] x^2 + ... + c0[n-1] x^(n-1) )
+* ( c1[0] + c1[1] x + c1[2] x^2 + ... + c1[n-1] x^(n-1) )</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '14602', 14602)" onmouseover="showTip(event, '14602', 14602)">
+            OneRealRootOfNormed(c2, c1, c0)
+          </code>
+          <div class="tip" id="14602">
+            <strong>Signature:</strong> (c2:float * c1:float * c0:float) -&gt; float<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>One real root of the equation: x^3 + c2 x^2 + c1 x + c0 = 0.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '14603', 14603)" onmouseover="showTip(event, '14603', 14603)">
+            RealRootOf(a, b)
+          </code>
+          <div class="tip" id="14603">
+            <strong>Signature:</strong> (a:float * b:float) -&gt; float<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Return root of the equation ax + b = 0.
+Returns NaN if no root exists (a = 0).</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '14604', 14604)" onmouseover="showTip(event, '14604', 14604)">
+            RealRootOfNormed(p)
+          </code>
+          <div class="tip" id="14604">
+            <strong>Signature:</strong> p:float -&gt; float<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Return -p as the root of x + p = 0.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '14605', 14605)" onmouseover="showTip(event, '14605', 14605)">
+            RealRoots(coeff)
+          </code>
+          <div class="tip" id="14605">
+            <strong>Signature:</strong> (coeff:float []) -&gt; float []<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Return the real roots of the supplied polynomial, that is stored
+with ascending coefficients:
+coeff[0] + coeff[1] x + coeff[2] x^2 + ... + coeff[n-1] x^(n-1)
+Note that double and triple roots are returned as repeated values.
+WARNING: currently only polynomials up to the 4th order can be solved.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '14606', 14606)" onmouseover="showTip(event, '14606', 14606)">
+            RealRootsNormed(coeff)
+          </code>
+          <div class="tip" id="14606">
+            <strong>Signature:</strong> (coeff:float []) -&gt; float []<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Return the real roots of the supplied normalized polynomial, that
+is stored with ascending coefficients:
+coeff[0] + coeff[1] x + coeff[2] x^2 + coeff[3] x^3 ... + x^n
+The last coefficient with value 1.0 must not be part of the
+supplied array.
+Note that double and triple roots are returned as repeated values.
+WARNING: currently only polynomials up to the 4th order can be solved.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '14607', 14607)" onmouseover="showTip(event, '14607', 14607)">
+            RealRootsOf(a, b, c)
+          </code>
+          <div class="tip" id="14607">
+            <strong>Signature:</strong> (a:float * b:float * c:float) -&gt; Pair&lt;float&gt;<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Return real roots of the equation ax^2 + bx + c = 0.
+Double roots are returned as a pair of identical values.
+If only one (linear) roots exists, it is stored in the first
+entry and the second entry is NaN.
+If no real roots exists, then both entries are NaN.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '14608', 14608)" onmouseover="showTip(event, '14608', 14608)">
+            RealRootsOf(a, b, c, d)
+          </code>
+          <div class="tip" id="14608">
+            <strong>Signature:</strong> (a:float * b:float * c:float * d:float) -&gt; Triple&lt;float&gt;<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Return real roots of the equation: a x^3 + b x^2 + c x + d = 0.
+Double and triple solutions are returned as replicated values.
+Imaginary and non existing solutions are returned as NaNs.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '14609', 14609)" onmouseover="showTip(event, '14609', 14609)">
+            RealRootsOf(a, b, c, d, e)
+          </code>
+          <div class="tip" id="14609">
+            <strong>Signature:</strong> (a:float * b:float * c:float * d:float * e:float) -&gt; Quad&lt;float&gt;<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Return real roots of: a x^4 + b x^3 + c x^2 + d x + e = 0
+Double and triple solutions are returned as replicated values.
+Imaginary and non existing solutions are returned as NaNs.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '14610', 14610)" onmouseover="showTip(event, '14610', 14610)">
+            RealRootsOfDepressed(p, q)
+          </code>
+          <div class="tip" id="14610">
+            <strong>Signature:</strong> (p:float * q:float) -&gt; Triple&lt;float&gt;<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Return real roots of the equation: x^3 + p x + q = 0
+Double and triple solutions are returned as replicated values.
+Imaginary and non existing solutions are returned as NaNs.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '14611', 14611)" onmouseover="showTip(event, '14611', 14611)">
+            RealRootsOfNormed(p, q)
+          </code>
+          <div class="tip" id="14611">
+            <strong>Signature:</strong> (p:float * q:float) -&gt; Pair&lt;float&gt;<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Return real roots of the equation x^2 + px + q = 0.
+Double roots are returned as a pair of identical values.
+If no real roots exists, then both entries are NaN.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '14612', 14612)" onmouseover="showTip(event, '14612', 14612)">
+            RealRootsOfNormed(c2, c1, c0)
+          </code>
+          <div class="tip" id="14612">
+            <strong>Signature:</strong> (c2:float * c1:float * c0:float) -&gt; Triple&lt;float&gt;<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Return real roots of the equation: x^3 + c2 x^2 + c1 x + c0 = 0
+Double and triple solutions are returned as replicated values.
+Imaginary and non existing solutions are returned as NaNs.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '14613', 14613)" onmouseover="showTip(event, '14613', 14613)">
+            RealRootsOfNormed(c3, c2, c1, c0)
+          </code>
+          <div class="tip" id="14613">
+            <strong>Signature:</strong> (c3:float * c2:float * c1:float * c0:float) -&gt; Quad&lt;float&gt;<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Return real roots of: x^4 + c3 x^3 + c2 x^2 + c1 x + c0 = 0.
+Double and triple solutions are returned as replicated values.
+Imaginary and non existing solutions are returned as NaNs.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '14614', 14614)" onmouseover="showTip(event, '14614', 14614)">
+            WithoutDoubleRoots(a, epsilon)
+          </code>
+          <div class="tip" id="14614">
+            <strong>Signature:</strong> (a:float [] * epsilon:float) -&gt; float []<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Returns a copy of an array of roots without any double roots with
+an absolute difference that is smaller than the supplied epsilon.
+Roots with odd multiplicity will be left as single roots.</p>
+
+
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+        </div>
+        <div class="span3">
+          <a href="https://github.com/vrvis">
+            <img src="logo.png" style="width:140px;height:140px;margin:10px 0px 0px 35px;border-style:none;" />
+          </a>
+
+          <ul class="nav nav-list" id="menu">
+
+            <li class="nav-header">Aardvark.Base</li>
+
+            <li class="divider"></li>
+            <li><a href="https://github.com/vrvis/aardvark.base">Home page</a></li>
+            <li class="divider"></li>
+
+            <li><a href="https://www.nuget.org/packages/Aardvark.Base">Get Aardvark.Base via NuGet</a></li>
+            <li><a href="https://github.com/vrvis/aardvark.base">Source Code on GitHub</a></li>
+            <li><a href="https://github.com/vrvis/aardvark.baseLicense">License (Apache 2)</a></li>
+            
+            <!-- <li><a href="https://github.com/vrvis/aardvark.base/RELEASE_NOTES.html">Release Notes</a></li>
+            <li><a href="https://github.com/vrvis/aardvark.base//contributing.html">Contributing to Aardvark.Base</a></li>
+  
+            <li><a href="http://stackoverflow.com/questions/tagged/f%23-fake">Ask a question</a></li> 
+            
+            <li class="nav-header">Tutorials</li>
+            <li><a href="https://github.com/vrvis/aardvark.base/gettingstarted.html">Getting started</a></li>
+            
+            -->
+
+            
+            <li class="divider"></li>
+            <li class="nav-header">Reference</li>
+
+            <li><a href="https://github.com/vrvis/aardvark.base/apidocs/index.html">API Reference</a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    <a href="https://github.com/vrvis/aardvark.base"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_gray_6d6d6d.png" alt="Fork me on GitHub"></a>
+  </body>
+  </html>

@@ -1,0 +1,2736 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>MatrixInfo - Aardvark.Base</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="The Aardvark Platform Team">
+
+    <script src="https://code.jquery.com/jquery-1.8.0.js"></script>
+    <script src="https://code.jquery.com/ui/1.8.23/jquery-ui.js"></script>
+    <script src="https://netdna.bootstrapcdn.com/twitter-bootstrap/2.2.1/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link href="https://netdna.bootstrapcdn.com/twitter-bootstrap/2.2.1/css/bootstrap-combined.min.css" rel="stylesheet">
+
+    <link type="text/css" rel="stylesheet" href="https://github.com/vrvis/aardvark.base/content/style.css" />
+    <script type="text/javascript" src="https://github.com/vrvis/aardvark.base/content/tips.js"></script>
+    <!-- HTML5 shim, for IE6-8 support of HTML5 elements -->
+    <!--[if lt IE 9]>
+      <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+  </head>
+  <body>
+    <div class="container">
+      <div class="masthead">
+        <ul class="nav nav-pills pull-right">
+          <li><a href="https://github.com/vrvis/aardvark.base">github page</a></li>
+        </ul>
+        <h3 class="muted"><a href="https://github.com/vrvis/aardvark.base/index.html">Aardvark.Base</a></h3>
+      </div>
+      <hr />
+      <div class="row">
+        <div class="span9" id="main">
+          
+
+
+
+<h1>MatrixInfo</h1>
+<div class="xmldoc">
+<p>A matrix info contains the complete indexing information for a matrix, but no data array.</p>
+
+</div>
+  <h3>Constructors</h3>
+  <table class="table table-bordered member-list">
+    <thead>
+      <tr><td>Constructor</td><td>Description</td></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '13675', 13675)" onmouseover="showTip(event, '13675', 13675)">
+            new(origin, size, delta, first)
+          </code>
+          <div class="tip" id="13675">
+            <strong>Signature:</strong> (origin:int64 * size:V2l * delta:V2l * first:V2l) -&gt; unit<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Construct a MatrixInfo given a complete specification.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '13676', 13676)" onmouseover="showTip(event, '13676', 13676)">
+            new(origin, size, delta)
+          </code>
+          <div class="tip" id="13676">
+            <strong>Signature:</strong> (origin:int64 * size:V2l * delta:V2l) -&gt; unit<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Construct a MatrixInfo given a complete specification.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '13677', 13677)" onmouseover="showTip(event, '13677', 13677)">
+            new(size)
+          </code>
+          <div class="tip" id="13677">
+            <strong>Signature:</strong> size:V2l -&gt; unit<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '13678', 13678)" onmouseover="showTip(event, '13678', 13678)">
+            new(size, delta)
+          </code>
+          <div class="tip" id="13678">
+            <strong>Signature:</strong> (size:V2l * delta:V2l) -&gt; unit<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '13679', 13679)" onmouseover="showTip(event, '13679', 13679)">
+            new(info)
+          </code>
+          <div class="tip" id="13679">
+            <strong>Signature:</strong> info:MatrixInfo -&gt; unit<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '13680', 13680)" onmouseover="showTip(event, '13680', 13680)">
+            new(size)
+          </code>
+          <div class="tip" id="13680">
+            <strong>Signature:</strong> size:V2i -&gt; unit<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Construct matrix info of specified size.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '13681', 13681)" onmouseover="showTip(event, '13681', 13681)">
+            new(sizeX, sizeY)
+          </code>
+          <div class="tip" id="13681">
+            <strong>Signature:</strong> (sizeX:int64 * sizeY:int64) -&gt; unit<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Construct matrix info of specified size.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '13682', 13682)" onmouseover="showTip(event, '13682', 13682)">
+            new(sizeX, sizeY)
+          </code>
+          <div class="tip" id="13682">
+            <strong>Signature:</strong> (sizeX:int * sizeY:int) -&gt; unit<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Construct matrix info of specified size.</p>
+
+
+        </td>
+      </tr>
+    </tbody>
+  </table>
+  <h3>Instance members</h3>
+  <table class="table table-bordered member-list">
+    <thead>
+      <tr><td>Instance member</td><td>Description</td></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '13683', 13683)" onmouseover="showTip(event, '13683', 13683)">
+            AsVector()
+          </code>
+          <div class="tip" id="13683">
+            <strong>Signature:</strong> unit -&gt; VectorInfo<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>If the lines of the matrix are stored consecutively without gaps,
+the whole matrix can be viewed as a single vector.
+This methods returns a Vector with zero as first coordinates.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '13684', 13684)" onmouseover="showTip(event, '13684', 13684)">
+            CheckMatchingSize(t1)
+          </code>
+          <div class="tip" id="13684">
+            <strong>Signature:</strong> t1:MatrixInfo -&gt; unit<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '13685', 13685)" onmouseover="showTip(event, '13685', 13685)">
+            CheckMatchingSize(t1, t2)
+          </code>
+          <div class="tip" id="13685">
+            <strong>Signature:</strong> (t1:MatrixInfo * t2:MatrixInfo) -&gt; unit<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '13686', 13686)" onmouseover="showTip(event, '13686', 13686)">
+            CheckMatchingSize(t1, t2, t3)
+          </code>
+          <div class="tip" id="13686">
+            <strong>Signature:</strong> (t1:MatrixInfo * t2:MatrixInfo * t3:MatrixInfo) -&gt; unit<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '13687', 13687)" onmouseover="showTip(event, '13687', 13687)">
+            Col(x)
+          </code>
+          <div class="tip" id="13687">
+            <strong>Signature:</strong> x:int64 -&gt; VectorInfo<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Return a full Y vector slice of the matrix.
+This methods returns a vector with zero as first coordinates.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '13688', 13688)" onmouseover="showTip(event, '13688', 13688)">
+            ColWindow(x)
+          </code>
+          <div class="tip" id="13688">
+            <strong>Signature:</strong> x:int64 -&gt; VectorInfo<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Return a full Y vector slice of the matrix.
+This method retains the coordinates of the parent matrix.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '13689', 13689)" onmouseover="showTip(event, '13689', 13689)">
+            Count
+          </code>
+          <div class="tip" id="13689">
+            <strong>Signature:</strong> int64<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Total number of element in the matrix.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '13690', 13690)" onmouseover="showTip(event, '13690', 13690)">
+            D()
+          </code>
+          <div class="tip" id="13690">
+            <strong>Signature:</strong> unit -&gt; unit<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Delta</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '13691', 13691)" onmouseover="showTip(event, '13691', 13691)">
+            DeltaArray()
+          </code>
+          <div class="tip" id="13691">
+            <strong>Signature:</strong> unit -&gt; unit<br />
+              <strong>Modifiers:</strong> abstract<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Get or set the deltas of the tensor in each dimension as an
+array of longs.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '13692', 13692)" onmouseover="showTip(event, '13692', 13692)">
+            DSX
+          </code>
+          <div class="tip" id="13692">
+            <strong>Signature:</strong> int64<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Cummulative delta for all elements up to this dimension.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '13693', 13693)" onmouseover="showTip(event, '13693', 13693)">
+            DSY
+          </code>
+          <div class="tip" id="13693">
+            <strong>Signature:</strong> int64<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Cummulative delta for all elements up to this dimension.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '13694', 13694)" onmouseover="showTip(event, '13694', 13694)">
+            Dv(dx, dy)
+          </code>
+          <div class="tip" id="13694">
+            <strong>Signature:</strong> (dx:int64 * dy:int64) -&gt; int64<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '13695', 13695)" onmouseover="showTip(event, '13695', 13695)">
+            DX()
+          </code>
+          <div class="tip" id="13695">
+            <strong>Signature:</strong> unit -&gt; unit<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Delta.X</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '13696', 13696)" onmouseover="showTip(event, '13696', 13696)">
+            DY()
+          </code>
+          <div class="tip" id="13696">
+            <strong>Signature:</strong> unit -&gt; unit<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Delta.Y</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '13697', 13697)" onmouseover="showTip(event, '13697', 13697)">
+            E
+          </code>
+          <div class="tip" id="13697">
+            <strong>Signature:</strong> V2l<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>End (one step beyond the last element in all dimensions).</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '13698', 13698)" onmouseover="showTip(event, '13698', 13698)">
+            End
+          </code>
+          <div class="tip" id="13698">
+            <strong>Signature:</strong> V2l<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>End (one step beyond the last element in all dimensions).</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '13699', 13699)" onmouseover="showTip(event, '13699', 13699)">
+            EX
+          </code>
+          <div class="tip" id="13699">
+            <strong>Signature:</strong> int64<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>End in dimension X (one step beyond the last element).</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '13700', 13700)" onmouseover="showTip(event, '13700', 13700)">
+            EY
+          </code>
+          <div class="tip" id="13700">
+            <strong>Signature:</strong> int64<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>End in dimension Y (one step beyond the last element).</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '13701', 13701)" onmouseover="showTip(event, '13701', 13701)">
+            F()
+          </code>
+          <div class="tip" id="13701">
+            <strong>Signature:</strong> unit -&gt; unit<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>First</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '13702', 13702)" onmouseover="showTip(event, '13702', 13702)">
+            FirstArray()
+          </code>
+          <div class="tip" id="13702">
+            <strong>Signature:</strong> unit -&gt; unit<br />
+              <strong>Modifiers:</strong> abstract<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Get or set the first coords of the tensor in each dimension as an
+array of longs.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '13703', 13703)" onmouseover="showTip(event, '13703', 13703)">
+            FirstIndex
+          </code>
+          <div class="tip" id="13703">
+            <strong>Signature:</strong> int64<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Return the index of the first element in the underlying data array.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '13704', 13704)" onmouseover="showTip(event, '13704', 13704)">
+            ForeachCoord(v_action)
+          </code>
+          <div class="tip" id="13704">
+            <strong>Signature:</strong> v_action:Action&lt;V2l&gt; -&gt; unit<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '13705', 13705)" onmouseover="showTip(event, '13705', 13705)">
+            ForeachIndex(i_action)
+          </code>
+          <div class="tip" id="13705">
+            <strong>Signature:</strong> i_action:Action&lt;int64&gt; -&gt; unit<br />
+              <strong>Modifiers:</strong> abstract<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '13706', 13706)" onmouseover="showTip(event, '13706', 13706)">
+            ForeachIndex(x_y_i_action)
+          </code>
+          <div class="tip" id="13706">
+            <strong>Signature:</strong> x_y_i_action:Action&lt;int64,int64,int64&gt; -&gt; unit<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '13707', 13707)" onmouseover="showTip(event, '13707', 13707)">
+            ForeachIndex(t1, i_i1_act)
+          </code>
+          <div class="tip" id="13707">
+            <strong>Signature:</strong> (t1:MatrixInfo * i_i1_act:Action&lt;int64,int64&gt;) -&gt; unit<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '13708', 13708)" onmouseover="showTip(event, '13708', 13708)">
+            ForeachX(x_elementAct)
+          </code>
+          <div class="tip" id="13708">
+            <strong>Signature:</strong> x_elementAct:Action&lt;int64&gt; -&gt; unit<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Loops over  the underlying data array in the specified order,
+and calls the supplied action with the index into the data
+array as parameter. Optionally, the coordinates of each element
+are also fed into the supplied action.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '13709', 13709)" onmouseover="showTip(event, '13709', 13709)">
+            ForeachXIndex(i_elementAct)
+          </code>
+          <div class="tip" id="13709">
+            <strong>Signature:</strong> i_elementAct:Action&lt;int64&gt; -&gt; unit<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Loops over  the underlying data array in the specified order,
+and calls the supplied action with the index into the data
+array as parameter. Optionally, the coordinates of each element
+are also fed into the supplied action.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '13710', 13710)" onmouseover="showTip(event, '13710', 13710)">
+            ForeachXIndex(x_i_elementAct)
+          </code>
+          <div class="tip" id="13710">
+            <strong>Signature:</strong> x_i_elementAct:Action&lt;int64,int64&gt; -&gt; unit<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Loops over  the underlying data array in the specified order,
+and calls the supplied action with the index into the data
+array as parameter. Optionally, the coordinates of each element
+are also fed into the supplied action.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '13711', 13711)" onmouseover="showTip(event, '13711', 13711)">
+            ForeachXIndex(t1, i_i1_elementAct)
+          </code>
+          <div class="tip" id="13711">
+            <strong>Signature:</strong> (t1:MatrixInfo * i_i1_elementAct:Action&lt;int64,int64&gt;) -&gt; unit<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Loops over  the underlying data array in the specified order,
+and calls the supplied action with the index into the data
+array as parameter. Optionally, the coordinates of each element
+are also fed into the supplied action.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '13712', 13712)" onmouseover="showTip(event, '13712', 13712)">
+            ForeachXIndex(t1, x_i_i1_elementAct)
+          </code>
+          <div class="tip" id="13712">
+            <strong>Signature:</strong> (t1:MatrixInfo * x_i_i1_elementAct:Action&lt;int64,int64,int64&gt;) -&gt; unit<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Loops over  the underlying data array in the specified order,
+and calls the supplied action with the index into the data
+array as parameter. Optionally, the coordinates of each element
+are also fed into the supplied action.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '13713', 13713)" onmouseover="showTip(event, '13713', 13713)">
+            ForeachXY(x_y_elementAct)
+          </code>
+          <div class="tip" id="13713">
+            <strong>Signature:</strong> x_y_elementAct:Action&lt;int64,int64&gt; -&gt; unit<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Loops over  the underlying data array in the specified order,
+with the first coordinate being the outer loop, and the last
+coordinate being the inner loop, and calls the supplied action
+with the index into the data array as parameter. Optionally, the
+coordinates of each element are also fed into the supplied action
+(in the order specified in the name of the function), and also
+optionally pre-line and post-line actions can be specified.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '13714', 13714)" onmouseover="showTip(event, '13714', 13714)">
+            ForeachXY(x_y_elementAct, x_postLineAct)
+          </code>
+          <div class="tip" id="13714">
+            <strong>Signature:</strong> (x_y_elementAct:Action&lt;int64,int64&gt; * x_postLineAct:Action&lt;int64&gt;) -&gt; unit<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Loops over  the underlying data array in the specified order,
+with the first coordinate being the outer loop, and the last
+coordinate being the inner loop, and calls the supplied action
+with the index into the data array as parameter. Optionally, the
+coordinates of each element are also fed into the supplied action
+(in the order specified in the name of the function), and also
+optionally pre-line and post-line actions can be specified.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '13715', 13715)" onmouseover="showTip(event, '13715', 13715)">
+            ForeachXY(x_preLineAct, x_y_elementAct)
+          </code>
+          <div class="tip" id="13715">
+            <strong>Signature:</strong> (x_preLineAct:Action&lt;int64&gt; * x_y_elementAct:Action&lt;int64,int64&gt;) -&gt; unit<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Loops over  the underlying data array in the specified order,
+with the first coordinate being the outer loop, and the last
+coordinate being the inner loop, and calls the supplied action
+with the index into the data array as parameter. Optionally, the
+coordinates of each element are also fed into the supplied action
+(in the order specified in the name of the function), and also
+optionally pre-line and post-line actions can be specified.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '13716', 13716)" onmouseover="showTip(event, '13716', 13716)">
+            ForeachXY(...)
+          </code>
+          <div class="tip" id="13716">
+            <strong>Signature:</strong> (x_preLineAct:Action&lt;int64&gt; * x_y_elementAct:Action&lt;int64,int64&gt; * x_postLineAct:Action&lt;int64&gt;) -&gt; unit<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Loops over  the underlying data array in the specified order,
+with the first coordinate being the outer loop, and the last
+coordinate being the inner loop, and calls the supplied action
+with the index into the data array as parameter. Optionally, the
+coordinates of each element are also fed into the supplied action
+(in the order specified in the name of the function), and also
+optionally pre-line and post-line actions can be specified.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '13717', 13717)" onmouseover="showTip(event, '13717', 13717)">
+            ForeachXYIndex(i_elementAct)
+          </code>
+          <div class="tip" id="13717">
+            <strong>Signature:</strong> i_elementAct:Action&lt;int64&gt; -&gt; unit<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Loops over  the underlying data array in the specified order,
+with the first coordinate being the outer loop, and the last
+coordinate being the inner loop, and calls the supplied action
+with the index into the data array as parameter. Optionally, the
+coordinates of each element are also fed into the supplied action
+(in the order specified in the name of the function), and also
+optionally pre-line and post-line actions can be specified.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '13718', 13718)" onmouseover="showTip(event, '13718', 13718)">
+            ForeachXYIndex(...)
+          </code>
+          <div class="tip" id="13718">
+            <strong>Signature:</strong> (i_elementAct:Action&lt;int64&gt; * postLineAct:Action) -&gt; unit<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Loops over  the underlying data array in the specified order,
+with the first coordinate being the outer loop, and the last
+coordinate being the inner loop, and calls the supplied action
+with the index into the data array as parameter. Optionally, the
+coordinates of each element are also fed into the supplied action
+(in the order specified in the name of the function), and also
+optionally pre-line and post-line actions can be specified.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '13719', 13719)" onmouseover="showTip(event, '13719', 13719)">
+            ForeachXYIndex(preLineAct, i_elementAct)
+          </code>
+          <div class="tip" id="13719">
+            <strong>Signature:</strong> (preLineAct:Action * i_elementAct:Action&lt;int64&gt;) -&gt; unit<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Loops over  the underlying data array in the specified order,
+with the first coordinate being the outer loop, and the last
+coordinate being the inner loop, and calls the supplied action
+with the index into the data array as parameter. Optionally, the
+coordinates of each element are also fed into the supplied action
+(in the order specified in the name of the function), and also
+optionally pre-line and post-line actions can be specified.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '13720', 13720)" onmouseover="showTip(event, '13720', 13720)">
+            ForeachXYIndex(...)
+          </code>
+          <div class="tip" id="13720">
+            <strong>Signature:</strong> (preLineAct:Action * i_elementAct:Action&lt;int64&gt; * postLineAct:Action) -&gt; unit<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Loops over  the underlying data array in the specified order,
+with the first coordinate being the outer loop, and the last
+coordinate being the inner loop, and calls the supplied action
+with the index into the data array as parameter. Optionally, the
+coordinates of each element are also fed into the supplied action
+(in the order specified in the name of the function), and also
+optionally pre-line and post-line actions can be specified.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '13721', 13721)" onmouseover="showTip(event, '13721', 13721)">
+            ForeachXYIndex(x_y_i_elementAct)
+          </code>
+          <div class="tip" id="13721">
+            <strong>Signature:</strong> x_y_i_elementAct:Action&lt;int64,int64,int64&gt; -&gt; unit<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Loops over  the underlying data array in the specified order,
+with the first coordinate being the outer loop, and the last
+coordinate being the inner loop, and calls the supplied action
+with the index into the data array as parameter. Optionally, the
+coordinates of each element are also fed into the supplied action
+(in the order specified in the name of the function), and also
+optionally pre-line and post-line actions can be specified.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '13722', 13722)" onmouseover="showTip(event, '13722', 13722)">
+            ForeachXYIndex(...)
+          </code>
+          <div class="tip" id="13722">
+            <strong>Signature:</strong> (x_y_i_elementAct:Action&lt;int64,int64,int64&gt; * x_postLineAct:Action&lt;int64&gt;) -&gt; unit<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Loops over  the underlying data array in the specified order,
+with the first coordinate being the outer loop, and the last
+coordinate being the inner loop, and calls the supplied action
+with the index into the data array as parameter. Optionally, the
+coordinates of each element are also fed into the supplied action
+(in the order specified in the name of the function), and also
+optionally pre-line and post-line actions can be specified.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '13723', 13723)" onmouseover="showTip(event, '13723', 13723)">
+            ForeachXYIndex(...)
+          </code>
+          <div class="tip" id="13723">
+            <strong>Signature:</strong> (x_preLineAct:Action&lt;int64&gt; * x_y_i_elementAct:Action&lt;int64,int64,int64&gt;) -&gt; unit<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Loops over  the underlying data array in the specified order,
+with the first coordinate being the outer loop, and the last
+coordinate being the inner loop, and calls the supplied action
+with the index into the data array as parameter. Optionally, the
+coordinates of each element are also fed into the supplied action
+(in the order specified in the name of the function), and also
+optionally pre-line and post-line actions can be specified.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '13724', 13724)" onmouseover="showTip(event, '13724', 13724)">
+            ForeachXYIndex(...)
+          </code>
+          <div class="tip" id="13724">
+            <strong>Signature:</strong> (x_preLineAct:Action&lt;int64&gt; * x_y_i_elementAct:Action&lt;int64,int64,int64&gt; * x_postLineAct:Action&lt;int64&gt;) -&gt; unit<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Loops over  the underlying data array in the specified order,
+with the first coordinate being the outer loop, and the last
+coordinate being the inner loop, and calls the supplied action
+with the index into the data array as parameter. Optionally, the
+coordinates of each element are also fed into the supplied action
+(in the order specified in the name of the function), and also
+optionally pre-line and post-line actions can be specified.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '13725', 13725)" onmouseover="showTip(event, '13725', 13725)">
+            ForeachXYIndex(t1, i_i1_elementAct)
+          </code>
+          <div class="tip" id="13725">
+            <strong>Signature:</strong> (t1:MatrixInfo * i_i1_elementAct:Action&lt;int64,int64&gt;) -&gt; unit<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Loops over  the underlying data array in the specified order,
+with the first coordinate being the outer loop, and the last
+coordinate being the inner loop, and calls the supplied action
+with the index into the data array as parameter. Optionally, the
+coordinates of each element are also fed into the supplied action
+(in the order specified in the name of the function), and also
+optionally pre-line and post-line actions can be specified.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '13726', 13726)" onmouseover="showTip(event, '13726', 13726)">
+            ForeachXYIndex(...)
+          </code>
+          <div class="tip" id="13726">
+            <strong>Signature:</strong> (t1:MatrixInfo * i_i1_elementAct:Action&lt;int64,int64&gt; * postLineAct:Action) -&gt; unit<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Loops over  the underlying data array in the specified order,
+with the first coordinate being the outer loop, and the last
+coordinate being the inner loop, and calls the supplied action
+with the index into the data array as parameter. Optionally, the
+coordinates of each element are also fed into the supplied action
+(in the order specified in the name of the function), and also
+optionally pre-line and post-line actions can be specified.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '13727', 13727)" onmouseover="showTip(event, '13727', 13727)">
+            ForeachXYIndex(...)
+          </code>
+          <div class="tip" id="13727">
+            <strong>Signature:</strong> (t1:MatrixInfo * preLineAct:Action * i_i1_elementAct:Action&lt;int64,int64&gt;) -&gt; unit<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Loops over  the underlying data array in the specified order,
+with the first coordinate being the outer loop, and the last
+coordinate being the inner loop, and calls the supplied action
+with the index into the data array as parameter. Optionally, the
+coordinates of each element are also fed into the supplied action
+(in the order specified in the name of the function), and also
+optionally pre-line and post-line actions can be specified.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '13728', 13728)" onmouseover="showTip(event, '13728', 13728)">
+            ForeachXYIndex(...)
+          </code>
+          <div class="tip" id="13728">
+            <strong>Signature:</strong> (t1:MatrixInfo * preLineAct:Action * i_i1_elementAct:Action&lt;int64,int64&gt; * postLineAct:Action) -&gt; unit<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Loops over  the underlying data array in the specified order,
+with the first coordinate being the outer loop, and the last
+coordinate being the inner loop, and calls the supplied action
+with the index into the data array as parameter. Optionally, the
+coordinates of each element are also fed into the supplied action
+(in the order specified in the name of the function), and also
+optionally pre-line and post-line actions can be specified.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '13729', 13729)" onmouseover="showTip(event, '13729', 13729)">
+            ForeachXYIndex(t1, x_y_i_i1_elementAct)
+          </code>
+          <div class="tip" id="13729">
+            <strong>Signature:</strong> (t1:MatrixInfo * x_y_i_i1_elementAct:Action&lt;int64,int64,int64,int64&gt;) -&gt; unit<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Loops over  the underlying data array in the specified order,
+with the first coordinate being the outer loop, and the last
+coordinate being the inner loop, and calls the supplied action
+with the index into the data array as parameter. Optionally, the
+coordinates of each element are also fed into the supplied action
+(in the order specified in the name of the function), and also
+optionally pre-line and post-line actions can be specified.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '13730', 13730)" onmouseover="showTip(event, '13730', 13730)">
+            ForeachXYIndex(...)
+          </code>
+          <div class="tip" id="13730">
+            <strong>Signature:</strong> (t1:MatrixInfo * x_y_i_i1_elementAct:Action&lt;int64,int64,int64,int64&gt; * x_postLineAct:Action&lt;int64&gt;) -&gt; unit<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Loops over  the underlying data array in the specified order,
+with the first coordinate being the outer loop, and the last
+coordinate being the inner loop, and calls the supplied action
+with the index into the data array as parameter. Optionally, the
+coordinates of each element are also fed into the supplied action
+(in the order specified in the name of the function), and also
+optionally pre-line and post-line actions can be specified.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '13731', 13731)" onmouseover="showTip(event, '13731', 13731)">
+            ForeachXYIndex(...)
+          </code>
+          <div class="tip" id="13731">
+            <strong>Signature:</strong> (t1:MatrixInfo * x_preLineAct:Action&lt;int64&gt; * x_y_i_i1_elementAct:Action&lt;int64,int64,int64,int64&gt;) -&gt; unit<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Loops over  the underlying data array in the specified order,
+with the first coordinate being the outer loop, and the last
+coordinate being the inner loop, and calls the supplied action
+with the index into the data array as parameter. Optionally, the
+coordinates of each element are also fed into the supplied action
+(in the order specified in the name of the function), and also
+optionally pre-line and post-line actions can be specified.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '13732', 13732)" onmouseover="showTip(event, '13732', 13732)">
+            ForeachXYIndex(...)
+          </code>
+          <div class="tip" id="13732">
+            <strong>Signature:</strong> (t1:MatrixInfo * x_preLineAct:Action&lt;int64&gt; * x_y_i_i1_elementAct:Action&lt;int64,int64,int64,int64&gt; * x_postLineAct:Action&lt;int64&gt;) -&gt; unit<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Loops over  the underlying data array in the specified order,
+with the first coordinate being the outer loop, and the last
+coordinate being the inner loop, and calls the supplied action
+with the index into the data array as parameter. Optionally, the
+coordinates of each element are also fed into the supplied action
+(in the order specified in the name of the function), and also
+optionally pre-line and post-line actions can be specified.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '13733', 13733)" onmouseover="showTip(event, '13733', 13733)">
+            ForeachY(y_elementAct)
+          </code>
+          <div class="tip" id="13733">
+            <strong>Signature:</strong> y_elementAct:Action&lt;int64&gt; -&gt; unit<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Loops over  the underlying data array in the specified order,
+and calls the supplied action with the index into the data
+array as parameter. Optionally, the coordinates of each element
+are also fed into the supplied action.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '13734', 13734)" onmouseover="showTip(event, '13734', 13734)">
+            ForeachYIndex(i_elementAct)
+          </code>
+          <div class="tip" id="13734">
+            <strong>Signature:</strong> i_elementAct:Action&lt;int64&gt; -&gt; unit<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Loops over  the underlying data array in the specified order,
+and calls the supplied action with the index into the data
+array as parameter. Optionally, the coordinates of each element
+are also fed into the supplied action.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '13735', 13735)" onmouseover="showTip(event, '13735', 13735)">
+            ForeachYIndex(y_i_elementAct)
+          </code>
+          <div class="tip" id="13735">
+            <strong>Signature:</strong> y_i_elementAct:Action&lt;int64,int64&gt; -&gt; unit<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Loops over  the underlying data array in the specified order,
+and calls the supplied action with the index into the data
+array as parameter. Optionally, the coordinates of each element
+are also fed into the supplied action.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '13736', 13736)" onmouseover="showTip(event, '13736', 13736)">
+            ForeachYIndex(t1, i_i1_elementAct)
+          </code>
+          <div class="tip" id="13736">
+            <strong>Signature:</strong> (t1:MatrixInfo * i_i1_elementAct:Action&lt;int64,int64&gt;) -&gt; unit<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Loops over  the underlying data array in the specified order,
+and calls the supplied action with the index into the data
+array as parameter. Optionally, the coordinates of each element
+are also fed into the supplied action.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '13737', 13737)" onmouseover="showTip(event, '13737', 13737)">
+            ForeachYIndex(t1, y_i_i1_elementAct)
+          </code>
+          <div class="tip" id="13737">
+            <strong>Signature:</strong> (t1:MatrixInfo * y_i_i1_elementAct:Action&lt;int64,int64,int64&gt;) -&gt; unit<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Loops over  the underlying data array in the specified order,
+and calls the supplied action with the index into the data
+array as parameter. Optionally, the coordinates of each element
+are also fed into the supplied action.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '13738', 13738)" onmouseover="showTip(event, '13738', 13738)">
+            ForeachYX(y_x_elementAct)
+          </code>
+          <div class="tip" id="13738">
+            <strong>Signature:</strong> y_x_elementAct:Action&lt;int64,int64&gt; -&gt; unit<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Loops over  the underlying data array in the specified order,
+with the first coordinate being the outer loop, and the last
+coordinate being the inner loop, and calls the supplied action
+with the index into the data array as parameter. Optionally, the
+coordinates of each element are also fed into the supplied action
+(in the order specified in the name of the function), and also
+optionally pre-line and post-line actions can be specified.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '13739', 13739)" onmouseover="showTip(event, '13739', 13739)">
+            ForeachYX(y_x_elementAct, y_postLineAct)
+          </code>
+          <div class="tip" id="13739">
+            <strong>Signature:</strong> (y_x_elementAct:Action&lt;int64,int64&gt; * y_postLineAct:Action&lt;int64&gt;) -&gt; unit<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Loops over  the underlying data array in the specified order,
+with the first coordinate being the outer loop, and the last
+coordinate being the inner loop, and calls the supplied action
+with the index into the data array as parameter. Optionally, the
+coordinates of each element are also fed into the supplied action
+(in the order specified in the name of the function), and also
+optionally pre-line and post-line actions can be specified.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '13740', 13740)" onmouseover="showTip(event, '13740', 13740)">
+            ForeachYX(y_preLineAct, y_x_elementAct)
+          </code>
+          <div class="tip" id="13740">
+            <strong>Signature:</strong> (y_preLineAct:Action&lt;int64&gt; * y_x_elementAct:Action&lt;int64,int64&gt;) -&gt; unit<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Loops over  the underlying data array in the specified order,
+with the first coordinate being the outer loop, and the last
+coordinate being the inner loop, and calls the supplied action
+with the index into the data array as parameter. Optionally, the
+coordinates of each element are also fed into the supplied action
+(in the order specified in the name of the function), and also
+optionally pre-line and post-line actions can be specified.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '13741', 13741)" onmouseover="showTip(event, '13741', 13741)">
+            ForeachYX(...)
+          </code>
+          <div class="tip" id="13741">
+            <strong>Signature:</strong> (y_preLineAct:Action&lt;int64&gt; * y_x_elementAct:Action&lt;int64,int64&gt; * y_postLineAct:Action&lt;int64&gt;) -&gt; unit<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Loops over  the underlying data array in the specified order,
+with the first coordinate being the outer loop, and the last
+coordinate being the inner loop, and calls the supplied action
+with the index into the data array as parameter. Optionally, the
+coordinates of each element are also fed into the supplied action
+(in the order specified in the name of the function), and also
+optionally pre-line and post-line actions can be specified.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '13742', 13742)" onmouseover="showTip(event, '13742', 13742)">
+            ForeachYXIndex(i_elementAct)
+          </code>
+          <div class="tip" id="13742">
+            <strong>Signature:</strong> i_elementAct:Action&lt;int64&gt; -&gt; unit<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Loops over  the underlying data array in the specified order,
+with the first coordinate being the outer loop, and the last
+coordinate being the inner loop, and calls the supplied action
+with the index into the data array as parameter. Optionally, the
+coordinates of each element are also fed into the supplied action
+(in the order specified in the name of the function), and also
+optionally pre-line and post-line actions can be specified.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '13743', 13743)" onmouseover="showTip(event, '13743', 13743)">
+            ForeachYXIndex(...)
+          </code>
+          <div class="tip" id="13743">
+            <strong>Signature:</strong> (i_elementAct:Action&lt;int64&gt; * postLineAct:Action) -&gt; unit<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Loops over  the underlying data array in the specified order,
+with the first coordinate being the outer loop, and the last
+coordinate being the inner loop, and calls the supplied action
+with the index into the data array as parameter. Optionally, the
+coordinates of each element are also fed into the supplied action
+(in the order specified in the name of the function), and also
+optionally pre-line and post-line actions can be specified.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '13744', 13744)" onmouseover="showTip(event, '13744', 13744)">
+            ForeachYXIndex(preLineAct, i_elementAct)
+          </code>
+          <div class="tip" id="13744">
+            <strong>Signature:</strong> (preLineAct:Action * i_elementAct:Action&lt;int64&gt;) -&gt; unit<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Loops over  the underlying data array in the specified order,
+with the first coordinate being the outer loop, and the last
+coordinate being the inner loop, and calls the supplied action
+with the index into the data array as parameter. Optionally, the
+coordinates of each element are also fed into the supplied action
+(in the order specified in the name of the function), and also
+optionally pre-line and post-line actions can be specified.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '13745', 13745)" onmouseover="showTip(event, '13745', 13745)">
+            ForeachYXIndex(...)
+          </code>
+          <div class="tip" id="13745">
+            <strong>Signature:</strong> (preLineAct:Action * i_elementAct:Action&lt;int64&gt; * postLineAct:Action) -&gt; unit<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Loops over  the underlying data array in the specified order,
+with the first coordinate being the outer loop, and the last
+coordinate being the inner loop, and calls the supplied action
+with the index into the data array as parameter. Optionally, the
+coordinates of each element are also fed into the supplied action
+(in the order specified in the name of the function), and also
+optionally pre-line and post-line actions can be specified.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '13746', 13746)" onmouseover="showTip(event, '13746', 13746)">
+            ForeachYXIndex(y_x_i_elementAct)
+          </code>
+          <div class="tip" id="13746">
+            <strong>Signature:</strong> y_x_i_elementAct:Action&lt;int64,int64,int64&gt; -&gt; unit<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Loops over  the underlying data array in the specified order,
+with the first coordinate being the outer loop, and the last
+coordinate being the inner loop, and calls the supplied action
+with the index into the data array as parameter. Optionally, the
+coordinates of each element are also fed into the supplied action
+(in the order specified in the name of the function), and also
+optionally pre-line and post-line actions can be specified.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '13747', 13747)" onmouseover="showTip(event, '13747', 13747)">
+            ForeachYXIndex(...)
+          </code>
+          <div class="tip" id="13747">
+            <strong>Signature:</strong> (y_x_i_elementAct:Action&lt;int64,int64,int64&gt; * y_postLineAct:Action&lt;int64&gt;) -&gt; unit<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Loops over  the underlying data array in the specified order,
+with the first coordinate being the outer loop, and the last
+coordinate being the inner loop, and calls the supplied action
+with the index into the data array as parameter. Optionally, the
+coordinates of each element are also fed into the supplied action
+(in the order specified in the name of the function), and also
+optionally pre-line and post-line actions can be specified.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '13748', 13748)" onmouseover="showTip(event, '13748', 13748)">
+            ForeachYXIndex(...)
+          </code>
+          <div class="tip" id="13748">
+            <strong>Signature:</strong> (y_preLineAct:Action&lt;int64&gt; * y_x_i_elementAct:Action&lt;int64,int64,int64&gt;) -&gt; unit<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Loops over  the underlying data array in the specified order,
+with the first coordinate being the outer loop, and the last
+coordinate being the inner loop, and calls the supplied action
+with the index into the data array as parameter. Optionally, the
+coordinates of each element are also fed into the supplied action
+(in the order specified in the name of the function), and also
+optionally pre-line and post-line actions can be specified.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '13749', 13749)" onmouseover="showTip(event, '13749', 13749)">
+            ForeachYXIndex(...)
+          </code>
+          <div class="tip" id="13749">
+            <strong>Signature:</strong> (y_preLineAct:Action&lt;int64&gt; * y_x_i_elementAct:Action&lt;int64,int64,int64&gt; * y_postLineAct:Action&lt;int64&gt;) -&gt; unit<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Loops over  the underlying data array in the specified order,
+with the first coordinate being the outer loop, and the last
+coordinate being the inner loop, and calls the supplied action
+with the index into the data array as parameter. Optionally, the
+coordinates of each element are also fed into the supplied action
+(in the order specified in the name of the function), and also
+optionally pre-line and post-line actions can be specified.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '13750', 13750)" onmouseover="showTip(event, '13750', 13750)">
+            ForeachYXIndex(t1, i_i1_elementAct)
+          </code>
+          <div class="tip" id="13750">
+            <strong>Signature:</strong> (t1:MatrixInfo * i_i1_elementAct:Action&lt;int64,int64&gt;) -&gt; unit<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Loops over  the underlying data array in the specified order,
+with the first coordinate being the outer loop, and the last
+coordinate being the inner loop, and calls the supplied action
+with the index into the data array as parameter. Optionally, the
+coordinates of each element are also fed into the supplied action
+(in the order specified in the name of the function), and also
+optionally pre-line and post-line actions can be specified.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '13751', 13751)" onmouseover="showTip(event, '13751', 13751)">
+            ForeachYXIndex(...)
+          </code>
+          <div class="tip" id="13751">
+            <strong>Signature:</strong> (t1:MatrixInfo * i_i1_elementAct:Action&lt;int64,int64&gt; * postLineAct:Action) -&gt; unit<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Loops over  the underlying data array in the specified order,
+with the first coordinate being the outer loop, and the last
+coordinate being the inner loop, and calls the supplied action
+with the index into the data array as parameter. Optionally, the
+coordinates of each element are also fed into the supplied action
+(in the order specified in the name of the function), and also
+optionally pre-line and post-line actions can be specified.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '13752', 13752)" onmouseover="showTip(event, '13752', 13752)">
+            ForeachYXIndex(...)
+          </code>
+          <div class="tip" id="13752">
+            <strong>Signature:</strong> (t1:MatrixInfo * preLineAct:Action * i_i1_elementAct:Action&lt;int64,int64&gt;) -&gt; unit<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Loops over  the underlying data array in the specified order,
+with the first coordinate being the outer loop, and the last
+coordinate being the inner loop, and calls the supplied action
+with the index into the data array as parameter. Optionally, the
+coordinates of each element are also fed into the supplied action
+(in the order specified in the name of the function), and also
+optionally pre-line and post-line actions can be specified.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '13753', 13753)" onmouseover="showTip(event, '13753', 13753)">
+            ForeachYXIndex(...)
+          </code>
+          <div class="tip" id="13753">
+            <strong>Signature:</strong> (t1:MatrixInfo * preLineAct:Action * i_i1_elementAct:Action&lt;int64,int64&gt; * postLineAct:Action) -&gt; unit<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Loops over  the underlying data array in the specified order,
+with the first coordinate being the outer loop, and the last
+coordinate being the inner loop, and calls the supplied action
+with the index into the data array as parameter. Optionally, the
+coordinates of each element are also fed into the supplied action
+(in the order specified in the name of the function), and also
+optionally pre-line and post-line actions can be specified.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '13754', 13754)" onmouseover="showTip(event, '13754', 13754)">
+            ForeachYXIndex(t1, y_x_i_i1_elementAct)
+          </code>
+          <div class="tip" id="13754">
+            <strong>Signature:</strong> (t1:MatrixInfo * y_x_i_i1_elementAct:Action&lt;int64,int64,int64,int64&gt;) -&gt; unit<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Loops over  the underlying data array in the specified order,
+with the first coordinate being the outer loop, and the last
+coordinate being the inner loop, and calls the supplied action
+with the index into the data array as parameter. Optionally, the
+coordinates of each element are also fed into the supplied action
+(in the order specified in the name of the function), and also
+optionally pre-line and post-line actions can be specified.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '13755', 13755)" onmouseover="showTip(event, '13755', 13755)">
+            ForeachYXIndex(...)
+          </code>
+          <div class="tip" id="13755">
+            <strong>Signature:</strong> (t1:MatrixInfo * y_x_i_i1_elementAct:Action&lt;int64,int64,int64,int64&gt; * y_postLineAct:Action&lt;int64&gt;) -&gt; unit<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Loops over  the underlying data array in the specified order,
+with the first coordinate being the outer loop, and the last
+coordinate being the inner loop, and calls the supplied action
+with the index into the data array as parameter. Optionally, the
+coordinates of each element are also fed into the supplied action
+(in the order specified in the name of the function), and also
+optionally pre-line and post-line actions can be specified.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '13756', 13756)" onmouseover="showTip(event, '13756', 13756)">
+            ForeachYXIndex(...)
+          </code>
+          <div class="tip" id="13756">
+            <strong>Signature:</strong> (t1:MatrixInfo * y_preLineAct:Action&lt;int64&gt; * y_x_i_i1_elementAct:Action&lt;int64,int64,int64,int64&gt;) -&gt; unit<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Loops over  the underlying data array in the specified order,
+with the first coordinate being the outer loop, and the last
+coordinate being the inner loop, and calls the supplied action
+with the index into the data array as parameter. Optionally, the
+coordinates of each element are also fed into the supplied action
+(in the order specified in the name of the function), and also
+optionally pre-line and post-line actions can be specified.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '13757', 13757)" onmouseover="showTip(event, '13757', 13757)">
+            ForeachYXIndex(...)
+          </code>
+          <div class="tip" id="13757">
+            <strong>Signature:</strong> (t1:MatrixInfo * y_preLineAct:Action&lt;int64&gt; * y_x_i_i1_elementAct:Action&lt;int64,int64,int64,int64&gt; * y_postLineAct:Action&lt;int64&gt;) -&gt; unit<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Loops over  the underlying data array in the specified order,
+with the first coordinate being the outer loop, and the last
+coordinate being the inner loop, and calls the supplied action
+with the index into the data array as parameter. Optionally, the
+coordinates of each element are also fed into the supplied action
+(in the order specified in the name of the function), and also
+optionally pre-line and post-line actions can be specified.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '13758', 13758)" onmouseover="showTip(event, '13758', 13758)">
+            FX()
+          </code>
+          <div class="tip" id="13758">
+            <strong>Signature:</strong> unit -&gt; unit<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>First.X</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '13759', 13759)" onmouseover="showTip(event, '13759', 13759)">
+            FY()
+          </code>
+          <div class="tip" id="13759">
+            <strong>Signature:</strong> unit -&gt; unit<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>First.Y</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '13760', 13760)" onmouseover="showTip(event, '13760', 13760)">
+            GetJX(size)
+          </code>
+          <div class="tip" id="13760">
+            <strong>Signature:</strong> size:V2l -&gt; int64<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '13761', 13761)" onmouseover="showTip(event, '13761', 13761)">
+            GetJX0(size)
+          </code>
+          <div class="tip" id="13761">
+            <strong>Signature:</strong> size:V2l -&gt; int64<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '13762', 13762)" onmouseover="showTip(event, '13762', 13762)">
+            GetJXY(size)
+          </code>
+          <div class="tip" id="13762">
+            <strong>Signature:</strong> size:V2l -&gt; int64<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '13763', 13763)" onmouseover="showTip(event, '13763', 13763)">
+            GetJY(size)
+          </code>
+          <div class="tip" id="13763">
+            <strong>Signature:</strong> size:V2l -&gt; int64<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '13764', 13764)" onmouseover="showTip(event, '13764', 13764)">
+            GetJY0(size)
+          </code>
+          <div class="tip" id="13764">
+            <strong>Signature:</strong> size:V2l -&gt; int64<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '13765', 13765)" onmouseover="showTip(event, '13765', 13765)">
+            GetJYX(size)
+          </code>
+          <div class="tip" id="13765">
+            <strong>Signature:</strong> size:V2l -&gt; int64<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '13766', 13766)" onmouseover="showTip(event, '13766', 13766)">
+            HasMatchingLayout(t1)
+          </code>
+          <div class="tip" id="13766">
+            <strong>Signature:</strong> t1:MatrixInfo -&gt; bool<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '13767', 13767)" onmouseover="showTip(event, '13767', 13767)">
+            HasMatchingLayout(t1, t2)
+          </code>
+          <div class="tip" id="13767">
+            <strong>Signature:</strong> (t1:MatrixInfo * t2:MatrixInfo) -&gt; bool<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '13768', 13768)" onmouseover="showTip(event, '13768', 13768)">
+            HasMatchingLayout(t1, t2, t3)
+          </code>
+          <div class="tip" id="13768">
+            <strong>Signature:</strong> (t1:MatrixInfo * t2:MatrixInfo * t3:MatrixInfo) -&gt; bool<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '13769', 13769)" onmouseover="showTip(event, '13769', 13769)">
+            II
+          </code>
+          <div class="tip" id="13769">
+            <strong>Signature:</strong> V2l<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '13770', 13770)" onmouseover="showTip(event, '13770', 13770)">
+            Index(x, y)
+          </code>
+          <div class="tip" id="13770">
+            <strong>Signature:</strong> (x:int64 * y:int64) -&gt; int64<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Calculate element index for underlying data array.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '13771', 13771)" onmouseover="showTip(event, '13771', 13771)">
+            Index(v)
+          </code>
+          <div class="tip" id="13771">
+            <strong>Signature:</strong> v:V2l -&gt; int64<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Calculate element index for underlying data array.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '13772', 13772)" onmouseover="showTip(event, '13772', 13772)">
+            Index(v)
+          </code>
+          <div class="tip" id="13772">
+            <strong>Signature:</strong> v:V2i -&gt; int64<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Calculate element index for underlying data array.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '13773', 13773)" onmouseover="showTip(event, '13773', 13773)">
+            IndicesX
+          </code>
+          <div class="tip" id="13773">
+            <strong>Signature:</strong> IEnumerable&lt;int64&gt;<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Return the indices into the underlying data array in the specified
+order.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '13774', 13774)" onmouseover="showTip(event, '13774', 13774)">
+            IndicesXY
+          </code>
+          <div class="tip" id="13774">
+            <strong>Signature:</strong> IEnumerable&lt;int64&gt;<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Return the indices into the underlying data array in the specified
+order, with the first coordinate being the outer loop, and the second
+coordinate being the inner loop.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '13775', 13775)" onmouseover="showTip(event, '13775', 13775)">
+            IndicesY
+          </code>
+          <div class="tip" id="13775">
+            <strong>Signature:</strong> IEnumerable&lt;int64&gt;<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Return the indices into the underlying data array in the specified
+order.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '13776', 13776)" onmouseover="showTip(event, '13776', 13776)">
+            IndicesYX
+          </code>
+          <div class="tip" id="13776">
+            <strong>Signature:</strong> IEnumerable&lt;int64&gt;<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Return the indices into the underlying data array in the specified
+order, with the first coordinate being the outer loop, and the second
+coordinate being the inner loop.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '13777', 13777)" onmouseover="showTip(event, '13777', 13777)">
+            IO
+          </code>
+          <div class="tip" id="13777">
+            <strong>Signature:</strong> V2l<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '13778', 13778)" onmouseover="showTip(event, '13778', 13778)">
+            JX
+          </code>
+          <div class="tip" id="13778">
+            <strong>Signature:</strong> int64<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Jump this many elements in the underlying data array when stepping
+between elements in dimension X.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '13779', 13779)" onmouseover="showTip(event, '13779', 13779)">
+            JX0
+          </code>
+          <div class="tip" id="13779">
+            <strong>Signature:</strong> int64<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Jump this many elements in the underlying data array when stepping
+between elements in dimension X in a loop around another loop
+in dimension 0.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '13780', 13780)" onmouseover="showTip(event, '13780', 13780)">
+            JXY
+          </code>
+          <div class="tip" id="13780">
+            <strong>Signature:</strong> int64<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Jump this many elements in the underlying data array when stepping
+between elements in dimension X in a loop around another loop
+in dimension Y.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '13781', 13781)" onmouseover="showTip(event, '13781', 13781)">
+            JY
+          </code>
+          <div class="tip" id="13781">
+            <strong>Signature:</strong> int64<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Jump this many elements in the underlying data array when stepping
+between elements in dimension Y.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '13782', 13782)" onmouseover="showTip(event, '13782', 13782)">
+            JY0
+          </code>
+          <div class="tip" id="13782">
+            <strong>Signature:</strong> int64<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Jump this many elements in the underlying data array when stepping
+between elements in dimension Y in a loop around another loop
+in dimension 0.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '13783', 13783)" onmouseover="showTip(event, '13783', 13783)">
+            JYX
+          </code>
+          <div class="tip" id="13783">
+            <strong>Signature:</strong> int64<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Jump this many elements in the underlying data array when stepping
+between elements in dimension Y in a loop around another loop
+in dimension X.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '13784', 13784)" onmouseover="showTip(event, '13784', 13784)">
+            OI
+          </code>
+          <div class="tip" id="13784">
+            <strong>Signature:</strong> V2l<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '13785', 13785)" onmouseover="showTip(event, '13785', 13785)">
+            OO
+          </code>
+          <div class="tip" id="13785">
+            <strong>Signature:</strong> V2l<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '13786', 13786)" onmouseover="showTip(event, '13786', 13786)">
+            OriginIndex()
+          </code>
+          <div class="tip" id="13786">
+            <strong>Signature:</strong> unit -&gt; unit<br />
+              <strong>Modifiers:</strong> abstract<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '13787', 13787)" onmouseover="showTip(event, '13787', 13787)">
+            Rank
+          </code>
+          <div class="tip" id="13787">
+            <strong>Signature:</strong> int<br />
+              <strong>Modifiers:</strong> abstract<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Return the rank or dimension of the the matrix (2).</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '13788', 13788)" onmouseover="showTip(event, '13788', 13788)">
+            Row(y)
+          </code>
+          <div class="tip" id="13788">
+            <strong>Signature:</strong> y:int64 -&gt; VectorInfo<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Return a full X vector slice of the matrix.
+This methods returns a vector with zero as first coordinates.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '13789', 13789)" onmouseover="showTip(event, '13789', 13789)">
+            RowWindow(y)
+          </code>
+          <div class="tip" id="13789">
+            <strong>Signature:</strong> y:int64 -&gt; VectorInfo<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Return a full X vector slice of the matrix.
+This method retains the coordinates of the parent matrix.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '13790', 13790)" onmouseover="showTip(event, '13790', 13790)">
+            S()
+          </code>
+          <div class="tip" id="13790">
+            <strong>Signature:</strong> unit -&gt; unit<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Size</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '13791', 13791)" onmouseover="showTip(event, '13791', 13791)">
+            SizeArray()
+          </code>
+          <div class="tip" id="13791">
+            <strong>Signature:</strong> unit -&gt; unit<br />
+              <strong>Modifiers:</strong> abstract<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Get or set the size of the tensor in each dimension as an
+array of longs.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '13792', 13792)" onmouseover="showTip(event, '13792', 13792)">
+            SubItemAsReadOnlyMatrix(...)
+          </code>
+          <div class="tip" id="13792">
+            <strong>Signature:</strong> (x:int64 * y:int64 * sizex:int64 * sizey:int64) -&gt; MatrixInfo<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Return a full  item slice of the matrix as a special matrix
+that replicates the item the supplied number of times. The special
+matrix can only be correctly used to read from. Other operations are not guaranteed.
+This methods returns a matrix with zero as first coordinates.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '13793', 13793)" onmouseover="showTip(event, '13793', 13793)">
+            SubItemAsReadOnlyMatrixWindow(...)
+          </code>
+          <div class="tip" id="13793">
+            <strong>Signature:</strong> (x:int64 * y:int64 * sizex:int64 * sizey:int64) -&gt; MatrixInfo<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Return a full  item slice of the matrix as a special matrix
+that replicates the item the supplied number of times. The special
+matrix can only be correctly used to read from. Other operations are not guaranteed.
+This method retains the coordinates of the parent matrix.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '13794', 13794)" onmouseover="showTip(event, '13794', 13794)">
+            SubMatrix(begin, size)
+          </code>
+          <div class="tip" id="13794">
+            <strong>Signature:</strong> (begin:V2l * size:V2l) -&gt; MatrixInfo<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>A SubMatrix does not copy any data, and thus any operations on it
+are reflected in the corresponding part of the parent.
+This methods returns a Matrix with zero as first coordinates.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '13795', 13795)" onmouseover="showTip(event, '13795', 13795)">
+            SubMatrix(begin, size)
+          </code>
+          <div class="tip" id="13795">
+            <strong>Signature:</strong> (begin:V2i * size:V2i) -&gt; MatrixInfo<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>A SubMatrix does not copy any data, and thus any operations on it
+are reflected in the corresponding part of the parent.
+This methods returns a Matrix with zero as first coordinates.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '13796', 13796)" onmouseover="showTip(event, '13796', 13796)">
+            SubMatrix(begin, size, delta)
+          </code>
+          <div class="tip" id="13796">
+            <strong>Signature:</strong> (begin:V2l * size:V2l * delta:V2l) -&gt; MatrixInfo<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>A SubMatrix does not copy any data, and thus any operations on it
+are reflected in the corresponding part of the parent.
+This methods returns a Matrix with zero as first coordinates.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '13797', 13797)" onmouseover="showTip(event, '13797', 13797)">
+            SubMatrix(begin, size, delta)
+          </code>
+          <div class="tip" id="13797">
+            <strong>Signature:</strong> (begin:V2i * size:V2i * delta:V2i) -&gt; MatrixInfo<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>A SubMatrix does not copy any data, and thus any operations on it
+are reflected in the corresponding part of the parent.
+This methods returns a Matrix with zero as first coordinates.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '13798', 13798)" onmouseover="showTip(event, '13798', 13798)">
+            SubMatrix(beginX, beginY, sizeX, sizeY)
+          </code>
+          <div class="tip" id="13798">
+            <strong>Signature:</strong> (beginX:int64 * beginY:int64 * sizeX:int64 * sizeY:int64) -&gt; MatrixInfo<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>A SubMatrix does not copy any data, and thus any operations on it
+are reflected in the corresponding part of the parent.
+This methods returns a Matrix with zero as first coordinates.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '13799', 13799)" onmouseover="showTip(event, '13799', 13799)">
+            SubMatrix(...)
+          </code>
+          <div class="tip" id="13799">
+            <strong>Signature:</strong> (beginX:int64 * beginY:int64 * sizeX:int64 * sizeY:int64 * deltaX:int64 * deltaY:int64) -&gt; MatrixInfo<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>A SubMatrix does not copy any data, and thus any operations on it
+are reflected in the corresponding part of the parent.
+This methods returns a Matrix with zero as first coordinates.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '13800', 13800)" onmouseover="showTip(event, '13800', 13800)">
+            SubMatrixWindow(begin, size)
+          </code>
+          <div class="tip" id="13800">
+            <strong>Signature:</strong> (begin:V2l * size:V2l) -&gt; MatrixInfo<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>A SubMatrix does not copy any data, and thus any operations on it
+are reflected in the corresponding part of the parent.
+This method retains the coordinates of the parent Matrix.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '13801', 13801)" onmouseover="showTip(event, '13801', 13801)">
+            SubMatrixWindow(begin, size)
+          </code>
+          <div class="tip" id="13801">
+            <strong>Signature:</strong> (begin:V2i * size:V2i) -&gt; MatrixInfo<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>A SubMatrix does not copy any data, and thus any operations on it
+are reflected in the corresponding part of the parent.
+This method retains the coordinates of the parent Matrix.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '13802', 13802)" onmouseover="showTip(event, '13802', 13802)">
+            SubMatrixWindow(begin, size, delta)
+          </code>
+          <div class="tip" id="13802">
+            <strong>Signature:</strong> (begin:V2l * size:V2l * delta:V2l) -&gt; MatrixInfo<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>A SubMatrix does not copy any data, and thus any operations on it
+are reflected in the corresponding part of the parent.
+This method retains the coordinates of the parent Matrix.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '13803', 13803)" onmouseover="showTip(event, '13803', 13803)">
+            SubMatrixWindow(begin, size, delta)
+          </code>
+          <div class="tip" id="13803">
+            <strong>Signature:</strong> (begin:V2i * size:V2i * delta:V2i) -&gt; MatrixInfo<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>A SubMatrix does not copy any data, and thus any operations on it
+are reflected in the corresponding part of the parent.
+This method retains the coordinates of the parent Matrix.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '13804', 13804)" onmouseover="showTip(event, '13804', 13804)">
+            SubMatrixWindow(...)
+          </code>
+          <div class="tip" id="13804">
+            <strong>Signature:</strong> (begin:V2l * size:V2l * delta:V2l * first:V2l) -&gt; MatrixInfo<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>A SubMatrix does not copy any data, and thus any operations on it
+are reflected in the corresponding part of the parent.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '13805', 13805)" onmouseover="showTip(event, '13805', 13805)">
+            SubMatrixWindow(...)
+          </code>
+          <div class="tip" id="13805">
+            <strong>Signature:</strong> (begin:V2i * size:V2i * delta:V2i * first:V2i) -&gt; MatrixInfo<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>A SubMatrix does not copy any data, and thus any operations on it
+are reflected in the corresponding part of the parent.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '13806', 13806)" onmouseover="showTip(event, '13806', 13806)">
+            SubMatrixWindow(...)
+          </code>
+          <div class="tip" id="13806">
+            <strong>Signature:</strong> (beginX:int64 * beginY:int64 * sizeX:int64 * sizeY:int64) -&gt; MatrixInfo<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>A SubMatrix does not copy any data, and thus any operations on it
+are reflected in the corresponding part of the parent.
+This method retains the coordinates of the parent Matrix.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '13807', 13807)" onmouseover="showTip(event, '13807', 13807)">
+            SubMatrixWindow(...)
+          </code>
+          <div class="tip" id="13807">
+            <strong>Signature:</strong> (beginX:int64 * beginY:int64 * sizeX:int64 * sizeY:int64 * deltaX:int64 * deltaY:int64) -&gt; MatrixInfo<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>A SubMatrix does not copy any data, and thus any operations on it
+are reflected in the corresponding part of the parent.
+This method retains the coordinates of the parent Matrix.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '13808', 13808)" onmouseover="showTip(event, '13808', 13808)">
+            SubVector(begin, size, delta)
+          </code>
+          <div class="tip" id="13808">
+            <strong>Signature:</strong> (begin:V2l * size:int64 * delta:int64) -&gt; VectorInfo<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>A SubVector does not copy any data, and thus any operations on it
+are reflected in the corresponding part of the parent.
+This methods returns a Vector with zero as first coordinates.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '13809', 13809)" onmouseover="showTip(event, '13809', 13809)">
+            SubVector(begin, size, delta)
+          </code>
+          <div class="tip" id="13809">
+            <strong>Signature:</strong> (begin:V2i * size:int64 * delta:int64) -&gt; VectorInfo<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>A SubVector does not copy any data, and thus any operations on it
+are reflected in the corresponding part of the parent.
+This methods returns a Vector with zero as first coordinates.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '13810', 13810)" onmouseover="showTip(event, '13810', 13810)">
+            SubXVector(y)
+          </code>
+          <div class="tip" id="13810">
+            <strong>Signature:</strong> y:int64 -&gt; VectorInfo<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Return a full X vector slice of the matrix.
+This methods returns a vector with zero as first coordinates.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '13811', 13811)" onmouseover="showTip(event, '13811', 13811)">
+            SubXVectorAsReadOnlyMatrix(y, sizey)
+          </code>
+          <div class="tip" id="13811">
+            <strong>Signature:</strong> (y:int64 * sizey:int64) -&gt; MatrixInfo<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Return a full X vector slice of the matrix as a special matrix
+that replicates the vector the supplied number of times. The special
+matrix can only be correctly used to read from. Other operations are not guaranteed.
+This methods returns a matrix with zero as first coordinates.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '13812', 13812)" onmouseover="showTip(event, '13812', 13812)">
+            SubXVectorAsReadOnlyMatrixWindow(...)
+          </code>
+          <div class="tip" id="13812">
+            <strong>Signature:</strong> (y:int64 * sizey:int64) -&gt; MatrixInfo<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Return a full X vector slice of the matrix as a special matrix
+that replicates the vector the supplied number of times. The special
+matrix can only be correctly used to read from. Other operations are not guaranteed.
+This method retains the coordinates of the parent matrix.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '13813', 13813)" onmouseover="showTip(event, '13813', 13813)">
+            SubXVectorWindow(y)
+          </code>
+          <div class="tip" id="13813">
+            <strong>Signature:</strong> y:int64 -&gt; VectorInfo<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Return a full X vector slice of the matrix.
+This method retains the coordinates of the parent matrix.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '13814', 13814)" onmouseover="showTip(event, '13814', 13814)">
+            SubYVector(x)
+          </code>
+          <div class="tip" id="13814">
+            <strong>Signature:</strong> x:int64 -&gt; VectorInfo<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Return a full Y vector slice of the matrix.
+This methods returns a vector with zero as first coordinates.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '13815', 13815)" onmouseover="showTip(event, '13815', 13815)">
+            SubYVectorAsReadOnlyMatrix(x, sizex)
+          </code>
+          <div class="tip" id="13815">
+            <strong>Signature:</strong> (x:int64 * sizex:int64) -&gt; MatrixInfo<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Return a full Y vector slice of the matrix as a special matrix
+that replicates the vector the supplied number of times. The special
+matrix can only be correctly used to read from. Other operations are not guaranteed.
+This methods returns a matrix with zero as first coordinates.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '13816', 13816)" onmouseover="showTip(event, '13816', 13816)">
+            SubYVectorAsReadOnlyMatrixWindow(...)
+          </code>
+          <div class="tip" id="13816">
+            <strong>Signature:</strong> (x:int64 * sizex:int64) -&gt; MatrixInfo<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Return a full Y vector slice of the matrix as a special matrix
+that replicates the vector the supplied number of times. The special
+matrix can only be correctly used to read from. Other operations are not guaranteed.
+This method retains the coordinates of the parent matrix.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '13817', 13817)" onmouseover="showTip(event, '13817', 13817)">
+            SubYVectorWindow(x)
+          </code>
+          <div class="tip" id="13817">
+            <strong>Signature:</strong> x:int64 -&gt; VectorInfo<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Return a full Y vector slice of the matrix.
+This method retains the coordinates of the parent matrix.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '13818', 13818)" onmouseover="showTip(event, '13818', 13818)">
+            SX()
+          </code>
+          <div class="tip" id="13818">
+            <strong>Signature:</strong> unit -&gt; unit<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Size.X</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '13819', 13819)" onmouseover="showTip(event, '13819', 13819)">
+            SY()
+          </code>
+          <div class="tip" id="13819">
+            <strong>Signature:</strong> unit -&gt; unit<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Size.Y</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '13820', 13820)" onmouseover="showTip(event, '13820', 13820)">
+            Transposed
+          </code>
+          <div class="tip" id="13820">
+            <strong>Signature:</strong> MatrixInfo<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+        </div>
+        <div class="span3">
+          <a href="https://github.com/vrvis">
+            <img src="logo.png" style="width:140px;height:140px;margin:10px 0px 0px 35px;border-style:none;" />
+          </a>
+
+          <ul class="nav nav-list" id="menu">
+
+            <li class="nav-header">Aardvark.Base</li>
+
+            <li class="divider"></li>
+            <li><a href="https://github.com/vrvis/aardvark.base">Home page</a></li>
+            <li class="divider"></li>
+
+            <li><a href="https://www.nuget.org/packages/Aardvark.Base">Get Aardvark.Base via NuGet</a></li>
+            <li><a href="https://github.com/vrvis/aardvark.base">Source Code on GitHub</a></li>
+            <li><a href="https://github.com/vrvis/aardvark.baseLicense">License (Apache 2)</a></li>
+            
+            <!-- <li><a href="https://github.com/vrvis/aardvark.base/RELEASE_NOTES.html">Release Notes</a></li>
+            <li><a href="https://github.com/vrvis/aardvark.base//contributing.html">Contributing to Aardvark.Base</a></li>
+  
+            <li><a href="http://stackoverflow.com/questions/tagged/f%23-fake">Ask a question</a></li> 
+            
+            <li class="nav-header">Tutorials</li>
+            <li><a href="https://github.com/vrvis/aardvark.base/gettingstarted.html">Getting started</a></li>
+            
+            -->
+
+            
+            <li class="divider"></li>
+            <li class="nav-header">Reference</li>
+
+            <li><a href="https://github.com/vrvis/aardvark.base/apidocs/index.html">API Reference</a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    <a href="https://github.com/vrvis/aardvark.base"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_gray_6d6d6d.png" alt="Fork me on GitHub"></a>
+  </body>
+  </html>

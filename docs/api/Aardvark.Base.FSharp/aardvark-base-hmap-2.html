@@ -1,0 +1,645 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>hmap<'k, 'v> - Aardvark.Base.FSharp</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="The Aardvark Platform Team">
+
+    <script src="https://code.jquery.com/jquery-1.8.0.js"></script>
+    <script src="https://code.jquery.com/ui/1.8.23/jquery-ui.js"></script>
+    <script src="https://netdna.bootstrapcdn.com/twitter-bootstrap/2.2.1/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link href="https://netdna.bootstrapcdn.com/twitter-bootstrap/2.2.1/css/bootstrap-combined.min.css" rel="stylesheet">
+
+    <link type="text/css" rel="stylesheet" href="https://github.com/vrvis/aardvark.base/content/style.css" />
+    <script type="text/javascript" src="https://github.com/vrvis/aardvark.base/content/tips.js"></script>
+    <!-- HTML5 shim, for IE6-8 support of HTML5 elements -->
+    <!--[if lt IE 9]>
+      <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+  </head>
+  <body>
+    <div class="container">
+      <div class="masthead">
+        <ul class="nav nav-pills pull-right">
+          <li><a href="https://github.com/vrvis/aardvark.base">github page</a></li>
+        </ul>
+        <h3 class="muted"><a href="https://github.com/vrvis/aardvark.base/index.html">Aardvark.Base.FSharp</a></h3>
+      </div>
+      <hr />
+      <div class="row">
+        <div class="span9" id="main">
+          
+
+
+
+<h1>hmap<'k, 'v></h1>
+<div class="xmldoc">
+</div>
+  <h3>Constructors</h3>
+  <table class="table table-bordered member-list">
+    <thead>
+      <tr><td>Constructor</td><td>Description</td></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '2287', 2287)" onmouseover="showTip(event, '2287', 2287)">
+            new(cnt, store)
+          </code>
+          <div class="tip" id="2287">
+            <strong>Signature:</strong> (cnt:int * store:intmap&lt;(&#39;k * &#39;v) list&gt;) -&gt; hmap&lt;&#39;k,&#39;v&gt;<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+            <a href="https://github.com/vrvis/aardvark.base/src/Aardvark.Base.FSharp/Datastructures/Immutable/HMap.fs#L129-129" class="github-link">
+              <img src="../content/img/github.png" class="normal" />
+              <img src="../content/img/github-blue.png" class="hover" />
+            </a>
+          
+        </td>
+      </tr>
+    </tbody>
+  </table>
+  <h3>Instance members</h3>
+  <table class="table table-bordered member-list">
+    <thead>
+      <tr><td>Instance member</td><td>Description</td></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '2288', 2288)" onmouseover="showTip(event, '2288', 2288)">
+            Add(key, value)
+          </code>
+          <div class="tip" id="2288">
+            <strong>Signature:</strong> (key:&#39;k * value:&#39;v) -&gt; hmap&lt;&#39;k,&#39;v&gt;<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+            <a href="https://github.com/vrvis/aardvark.base/src/Aardvark.Base.FSharp/Datastructures/Immutable/HMap.fs#L187-187" class="github-link">
+              <img src="../content/img/github.png" class="normal" />
+              <img src="../content/img/github-blue.png" class="hover" />
+            </a>
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '2289', 2289)" onmouseover="showTip(event, '2289', 2289)">
+            Alter(key, f)
+          </code>
+          <div class="tip" id="2289">
+            <strong>Signature:</strong> (key:&#39;k * f:(Option&lt;&#39;v&gt; -&gt; Option&lt;&#39;v&gt;)) -&gt; hmap&lt;&#39;k,&#39;v&gt;<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+            <a href="https://github.com/vrvis/aardvark.base/src/Aardvark.Base.FSharp/Datastructures/Immutable/HMap.fs#L140-140" class="github-link">
+              <img src="../content/img/github.png" class="normal" />
+              <img src="../content/img/github-blue.png" class="hover" />
+            </a>
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '2290', 2290)" onmouseover="showTip(event, '2290', 2290)">
+            Choose(mapping)
+          </code>
+          <div class="tip" id="2290">
+            <strong>Signature:</strong> (mapping:(&#39;k -&gt; &#39;v -&gt; Option&lt;&#39;b&gt;)) -&gt; hmap&lt;&#39;k,&#39;b&gt;<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+            <a href="https://github.com/vrvis/aardvark.base/src/Aardvark.Base.FSharp/Datastructures/Immutable/HMap.fs#L224-224" class="github-link">
+              <img src="../content/img/github.png" class="normal" />
+              <img src="../content/img/github-blue.png" class="hover" />
+            </a>
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '2291', 2291)" onmouseover="showTip(event, '2291', 2291)">
+            Choose2(other, f)
+          </code>
+          <div class="tip" id="2291">
+            <strong>Signature:</strong> (other:hmap&lt;&#39;k,&#39;a&gt; * f:(&#39;k -&gt; Option&lt;&#39;v&gt; -&gt; Option&lt;&#39;a&gt; -&gt; Option&lt;&#39;c&gt;)) -&gt; hmap&lt;&#39;k,&#39;c&gt;<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+            <a href="https://github.com/vrvis/aardvark.base/src/Aardvark.Base.FSharp/Datastructures/Immutable/HMap.fs#L293-293" class="github-link">
+              <img src="../content/img/github.png" class="normal" />
+              <img src="../content/img/github-blue.png" class="hover" />
+            </a>
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '2292', 2292)" onmouseover="showTip(event, '2292', 2292)">
+            ContainsKey(key)
+          </code>
+          <div class="tip" id="2292">
+            <strong>Signature:</strong> key:&#39;k -&gt; bool<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+            <a href="https://github.com/vrvis/aardvark.base/src/Aardvark.Base.FSharp/Datastructures/Immutable/HMap.fs#L212-212" class="github-link">
+              <img src="../content/img/github.png" class="normal" />
+              <img src="../content/img/github-blue.png" class="hover" />
+            </a>
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '2293', 2293)" onmouseover="showTip(event, '2293', 2293)">
+            Count
+          </code>
+          <div class="tip" id="2293">
+            <strong>Signature:</strong> int<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+            <a href="https://github.com/vrvis/aardvark.base/src/Aardvark.Base.FSharp/Datastructures/Immutable/HMap.fs#L138-138" class="github-link">
+              <img src="../content/img/github.png" class="normal" />
+              <img src="../content/img/github-blue.png" class="hover" />
+            </a>
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '2294', 2294)" onmouseover="showTip(event, '2294', 2294)">
+            Exists(predicate)
+          </code>
+          <div class="tip" id="2294">
+            <strong>Signature:</strong> (predicate:(&#39;k -&gt; &#39;v -&gt; bool)) -&gt; bool<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+            <a href="https://github.com/vrvis/aardvark.base/src/Aardvark.Base.FSharp/Datastructures/Immutable/HMap.fs#L267-267" class="github-link">
+              <img src="../content/img/github.png" class="normal" />
+              <img src="../content/img/github-blue.png" class="hover" />
+            </a>
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '2295', 2295)" onmouseover="showTip(event, '2295', 2295)">
+            Filter(predicate)
+          </code>
+          <div class="tip" id="2295">
+            <strong>Signature:</strong> (predicate:(&#39;k -&gt; &#39;v -&gt; bool)) -&gt; hmap&lt;&#39;k,&#39;v&gt;<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+            <a href="https://github.com/vrvis/aardvark.base/src/Aardvark.Base.FSharp/Datastructures/Immutable/HMap.fs#L245-245" class="github-link">
+              <img src="../content/img/github.png" class="normal" />
+              <img src="../content/img/github-blue.png" class="hover" />
+            </a>
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '2296', 2296)" onmouseover="showTip(event, '2296', 2296)">
+            Find(key)
+          </code>
+          <div class="tip" id="2296">
+            <strong>Signature:</strong> key:&#39;k -&gt; &#39;v<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+            <a href="https://github.com/vrvis/aardvark.base/src/Aardvark.Base.FSharp/Datastructures/Immutable/HMap.fs#L391-391" class="github-link">
+              <img src="../content/img/github.png" class="normal" />
+              <img src="../content/img/github-blue.png" class="hover" />
+            </a>
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '2297', 2297)" onmouseover="showTip(event, '2297', 2297)">
+            Fold(seed, folder)
+          </code>
+          <div class="tip" id="2297">
+            <strong>Signature:</strong> (seed:&#39;s * folder:(&#39;s -&gt; &#39;k -&gt; &#39;v -&gt; &#39;s)) -&gt; &#39;s<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+            <a href="https://github.com/vrvis/aardvark.base/src/Aardvark.Base.FSharp/Datastructures/Immutable/HMap.fs#L277-277" class="github-link">
+              <img src="../content/img/github.png" class="normal" />
+              <img src="../content/img/github-blue.png" class="hover" />
+            </a>
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '2298', 2298)" onmouseover="showTip(event, '2298', 2298)">
+            Forall(predicate)
+          </code>
+          <div class="tip" id="2298">
+            <strong>Signature:</strong> (predicate:(&#39;k -&gt; &#39;v -&gt; bool)) -&gt; bool<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+            <a href="https://github.com/vrvis/aardvark.base/src/Aardvark.Base.FSharp/Datastructures/Immutable/HMap.fs#L272-272" class="github-link">
+              <img src="../content/img/github.png" class="normal" />
+              <img src="../content/img/github-blue.png" class="hover" />
+            </a>
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '2299', 2299)" onmouseover="showTip(event, '2299', 2299)">
+            IsEmpty
+          </code>
+          <div class="tip" id="2299">
+            <strong>Signature:</strong> bool<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+            <a href="https://github.com/vrvis/aardvark.base/src/Aardvark.Base.FSharp/Datastructures/Immutable/HMap.fs#L136-136" class="github-link">
+              <img src="../content/img/github.png" class="normal" />
+              <img src="../content/img/github-blue.png" class="hover" />
+            </a>
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '2300', 2300)" onmouseover="showTip(event, '2300', 2300)">
+            [key]
+          </code>
+          <div class="tip" id="2300">
+            <strong>Signature:</strong> key:&#39;k -&gt; &#39;v<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+            <a href="https://github.com/vrvis/aardvark.base/src/Aardvark.Base.FSharp/Datastructures/Immutable/HMap.fs#L396-396" class="github-link">
+              <img src="../content/img/github.png" class="normal" />
+              <img src="../content/img/github-blue.png" class="hover" />
+            </a>
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '2301', 2301)" onmouseover="showTip(event, '2301', 2301)">
+            Iter(iter)
+          </code>
+          <div class="tip" id="2301">
+            <strong>Signature:</strong> (iter:(&#39;k -&gt; &#39;v -&gt; unit)) -&gt; unit<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+            <a href="https://github.com/vrvis/aardvark.base/src/Aardvark.Base.FSharp/Datastructures/Immutable/HMap.fs#L262-262" class="github-link">
+              <img src="../content/img/github.png" class="normal" />
+              <img src="../content/img/github-blue.png" class="hover" />
+            </a>
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '2302', 2302)" onmouseover="showTip(event, '2302', 2302)">
+            Map(mapping)
+          </code>
+          <div class="tip" id="2302">
+            <strong>Signature:</strong> (mapping:(&#39;k -&gt; &#39;v -&gt; &#39;b)) -&gt; hmap&lt;&#39;k,&#39;b&gt;<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+            <a href="https://github.com/vrvis/aardvark.base/src/Aardvark.Base.FSharp/Datastructures/Immutable/HMap.fs#L218-218" class="github-link">
+              <img src="../content/img/github.png" class="normal" />
+              <img src="../content/img/github-blue.png" class="hover" />
+            </a>
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '2303', 2303)" onmouseover="showTip(event, '2303', 2303)">
+            Map2(other, f)
+          </code>
+          <div class="tip" id="2303">
+            <strong>Signature:</strong> (other:hmap&lt;&#39;k,&#39;a&gt; * f:(&#39;k -&gt; Option&lt;&#39;v&gt; -&gt; Option&lt;&#39;a&gt; -&gt; &#39;c)) -&gt; hmap&lt;&#39;k,&#39;c&gt;<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+            <a href="https://github.com/vrvis/aardvark.base/src/Aardvark.Base.FSharp/Datastructures/Immutable/HMap.fs#L327-327" class="github-link">
+              <img src="../content/img/github.png" class="normal" />
+              <img src="../content/img/github-blue.png" class="hover" />
+            </a>
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '2304', 2304)" onmouseover="showTip(event, '2304', 2304)">
+            Remove(key)
+          </code>
+          <div class="tip" id="2304">
+            <strong>Signature:</strong> key:&#39;k -&gt; hmap&lt;&#39;k,&#39;v&gt;<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+            <a href="https://github.com/vrvis/aardvark.base/src/Aardvark.Base.FSharp/Datastructures/Immutable/HMap.fs#L201-201" class="github-link">
+              <img src="../content/img/github.png" class="normal" />
+              <img src="../content/img/github-blue.png" class="hover" />
+            </a>
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '2305', 2305)" onmouseover="showTip(event, '2305', 2305)">
+            ToArray()
+          </code>
+          <div class="tip" id="2305">
+            <strong>Signature:</strong> unit -&gt; (&#39;k * &#39;v) []<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+            <a href="https://github.com/vrvis/aardvark.base/src/Aardvark.Base.FSharp/Datastructures/Immutable/HMap.fs#L405-405" class="github-link">
+              <img src="../content/img/github.png" class="normal" />
+              <img src="../content/img/github-blue.png" class="hover" />
+            </a>
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '2306', 2306)" onmouseover="showTip(event, '2306', 2306)">
+            ToList()
+          </code>
+          <div class="tip" id="2306">
+            <strong>Signature:</strong> unit -&gt; (&#39;k * &#39;v) list<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+            <a href="https://github.com/vrvis/aardvark.base/src/Aardvark.Base.FSharp/Datastructures/Immutable/HMap.fs#L402-402" class="github-link">
+              <img src="../content/img/github.png" class="normal" />
+              <img src="../content/img/github-blue.png" class="hover" />
+            </a>
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '2307', 2307)" onmouseover="showTip(event, '2307', 2307)">
+            ToSeq()
+          </code>
+          <div class="tip" id="2307">
+            <strong>Signature:</strong> unit -&gt; seq&lt;&#39;k * &#39;v&gt;<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+            <a href="https://github.com/vrvis/aardvark.base/src/Aardvark.Base.FSharp/Datastructures/Immutable/HMap.fs#L399-399" class="github-link">
+              <img src="../content/img/github.png" class="normal" />
+              <img src="../content/img/github-blue.png" class="hover" />
+            </a>
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '2308', 2308)" onmouseover="showTip(event, '2308', 2308)">
+            TryFind(key)
+          </code>
+          <div class="tip" id="2308">
+            <strong>Signature:</strong> key:&#39;k -&gt; &#39;v option<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+            <a href="https://github.com/vrvis/aardvark.base/src/Aardvark.Base.FSharp/Datastructures/Immutable/HMap.fs#L378-378" class="github-link">
+              <img src="../content/img/github.png" class="normal" />
+              <img src="../content/img/github-blue.png" class="hover" />
+            </a>
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '2309', 2309)" onmouseover="showTip(event, '2309', 2309)">
+            TryRemove(key)
+          </code>
+          <div class="tip" id="2309">
+            <strong>Signature:</strong> key:&#39;k -&gt; (&#39;v * hmap&lt;&#39;k,&#39;v&gt;) option<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+            <a href="https://github.com/vrvis/aardvark.base/src/Aardvark.Base.FSharp/Datastructures/Immutable/HMap.fs#L360-360" class="github-link">
+              <img src="../content/img/github.png" class="normal" />
+              <img src="../content/img/github-blue.png" class="hover" />
+            </a>
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '2310', 2310)" onmouseover="showTip(event, '2310', 2310)">
+            Union(other)
+          </code>
+          <div class="tip" id="2310">
+            <strong>Signature:</strong> other:hmap&lt;&#39;k,&#39;v&gt; -&gt; hmap&lt;&#39;k,&#39;v&gt;<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+            <a href="https://github.com/vrvis/aardvark.base/src/Aardvark.Base.FSharp/Datastructures/Immutable/HMap.fs#L357-357" class="github-link">
+              <img src="../content/img/github.png" class="normal" />
+              <img src="../content/img/github-blue.png" class="hover" />
+            </a>
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '2311', 2311)" onmouseover="showTip(event, '2311', 2311)">
+            UnionWith(other, f)
+          </code>
+          <div class="tip" id="2311">
+            <strong>Signature:</strong> (other:hmap&lt;&#39;k,&#39;v&gt; * f:(&#39;k -&gt; &#39;v -&gt; &#39;v -&gt; &#39;v)) -&gt; hmap&lt;&#39;k,&#39;v&gt;<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+            <a href="https://github.com/vrvis/aardvark.base/src/Aardvark.Base.FSharp/Datastructures/Immutable/HMap.fs#L282-282" class="github-link">
+              <img src="../content/img/github.png" class="normal" />
+              <img src="../content/img/github-blue.png" class="hover" />
+            </a>
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '2312', 2312)" onmouseover="showTip(event, '2312', 2312)">
+            Update(key, f)
+          </code>
+          <div class="tip" id="2312">
+            <strong>Signature:</strong> (key:&#39;k * f:(Option&lt;&#39;v&gt; -&gt; &#39;v)) -&gt; hmap&lt;&#39;k,&#39;v&gt;<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+            <a href="https://github.com/vrvis/aardvark.base/src/Aardvark.Base.FSharp/Datastructures/Immutable/HMap.fs#L165-165" class="github-link">
+              <img src="../content/img/github.png" class="normal" />
+              <img src="../content/img/github-blue.png" class="hover" />
+            </a>
+          
+        </td>
+      </tr>
+    </tbody>
+  </table>
+  <h3>Static members</h3>
+  <table class="table table-bordered member-list">
+    <thead>
+      <tr><td>Static member</td><td>Description</td></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '2313', 2313)" onmouseover="showTip(event, '2313', 2313)">
+            Empty
+          </code>
+          <div class="tip" id="2313">
+            <strong>Signature:</strong> hmap&lt;&#39;k,&#39;v&gt;<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+            <a href="https://github.com/vrvis/aardvark.base/src/Aardvark.Base.FSharp/Datastructures/Immutable/HMap.fs#L132-132" class="github-link">
+              <img src="../content/img/github.png" class="normal" />
+              <img src="../content/img/github-blue.png" class="hover" />
+            </a>
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '2314', 2314)" onmouseover="showTip(event, '2314', 2314)">
+            OfArray(list)
+          </code>
+          <div class="tip" id="2314">
+            <strong>Signature:</strong> (list:(&#39;k * &#39;v) array) -&gt; hmap&lt;&#39;k,&#39;v&gt;<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+            <a href="https://github.com/vrvis/aardvark.base/src/Aardvark.Base.FSharp/Datastructures/Immutable/HMap.fs#L417-417" class="github-link">
+              <img src="../content/img/github.png" class="normal" />
+              <img src="../content/img/github-blue.png" class="hover" />
+            </a>
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '2315', 2315)" onmouseover="showTip(event, '2315', 2315)">
+            OfList(list)
+          </code>
+          <div class="tip" id="2315">
+            <strong>Signature:</strong> (list:(&#39;k * &#39;v) list) -&gt; hmap&lt;&#39;k,&#39;v&gt;<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+            <a href="https://github.com/vrvis/aardvark.base/src/Aardvark.Base.FSharp/Datastructures/Immutable/HMap.fs#L414-414" class="github-link">
+              <img src="../content/img/github.png" class="normal" />
+              <img src="../content/img/github-blue.png" class="hover" />
+            </a>
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '2316', 2316)" onmouseover="showTip(event, '2316', 2316)">
+            OfSeq(seq)
+          </code>
+          <div class="tip" id="2316">
+            <strong>Signature:</strong> (seq:seq&lt;&#39;k * &#39;v&gt;) -&gt; hmap&lt;&#39;k,&#39;v&gt;<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+            <a href="https://github.com/vrvis/aardvark.base/src/Aardvark.Base.FSharp/Datastructures/Immutable/HMap.fs#L408-408" class="github-link">
+              <img src="../content/img/github.png" class="normal" />
+              <img src="../content/img/github-blue.png" class="hover" />
+            </a>
+          
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+        </div>
+        <div class="span3">
+          <a href="https://github.com/vrvis">
+            <img src="logo.png" style="width:140px;height:140px;margin:10px 0px 0px 35px;border-style:none;" />
+          </a>
+
+          <ul class="nav nav-list" id="menu">
+
+            <li class="nav-header">Aardvark.Base.FSharp</li>
+
+            <li class="divider"></li>
+            <li><a href="https://github.com/vrvis/aardvark.base">Home page</a></li>
+            <li class="divider"></li>
+
+            <li><a href="https://www.nuget.org/packages/Aardvark.Base.FSharp">Get Aardvark.Base.FSharp via NuGet</a></li>
+            <li><a href="https://github.com/vrvis/aardvark.base">Source Code on GitHub</a></li>
+            <li><a href="https://github.com/vrvis/aardvark.baseLicense">License (Apache 2)</a></li>
+            
+            <!-- <li><a href="https://github.com/vrvis/aardvark.base/RELEASE_NOTES.html">Release Notes</a></li>
+            <li><a href="https://github.com/vrvis/aardvark.base//contributing.html">Contributing to Aardvark.Base.FSharp</a></li>
+  
+            <li><a href="http://stackoverflow.com/questions/tagged/f%23-fake">Ask a question</a></li> 
+            
+            <li class="nav-header">Tutorials</li>
+            <li><a href="https://github.com/vrvis/aardvark.base/gettingstarted.html">Getting started</a></li>
+            
+            -->
+
+            
+            <li class="divider"></li>
+            <li class="nav-header">Reference</li>
+
+            <li><a href="https://github.com/vrvis/aardvark.base/apidocs/index.html">API Reference</a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    <a href="https://github.com/vrvis/aardvark.base"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_gray_6d6d6d.png" alt="Fork me on GitHub"></a>
+  </body>
+  </html>

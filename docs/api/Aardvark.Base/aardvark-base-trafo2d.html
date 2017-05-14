@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>Trafo2d - Aardvark.Base</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="The Aardvark Platform Team">
+
+    <script src="https://code.jquery.com/jquery-1.8.0.js"></script>
+    <script src="https://code.jquery.com/ui/1.8.23/jquery-ui.js"></script>
+    <script src="https://netdna.bootstrapcdn.com/twitter-bootstrap/2.2.1/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link href="https://netdna.bootstrapcdn.com/twitter-bootstrap/2.2.1/css/bootstrap-combined.min.css" rel="stylesheet">
+
+    <link type="text/css" rel="stylesheet" href="https://github.com/vrvis/aardvark.base/content/style.css" />
+    <script type="text/javascript" src="https://github.com/vrvis/aardvark.base/content/tips.js"></script>
+    <!-- HTML5 shim, for IE6-8 support of HTML5 elements -->
+    <!--[if lt IE 9]>
+      <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+  </head>
+  <body>
+    <div class="container">
+      <div class="masthead">
+        <ul class="nav nav-pills pull-right">
+          <li><a href="https://github.com/vrvis/aardvark.base">github page</a></li>
+        </ul>
+        <h3 class="muted"><a href="https://github.com/vrvis/aardvark.base/index.html">Aardvark.Base</a></h3>
+      </div>
+      <hr />
+      <div class="row">
+        <div class="span9" id="main">
+          
+
+
+
+<h1>Trafo2d</h1>
+<div class="xmldoc">
+<p>A trafo is a container for a forward and a backward matrix.</p>
+
+</div>
+  <h3>Constructors</h3>
+  <table class="table table-bordered member-list">
+    <thead>
+      <tr><td>Constructor</td><td>Description</td></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '22577', 22577)" onmouseover="showTip(event, '22577', 22577)">
+            new(forward, backward)
+          </code>
+          <div class="tip" id="22577">
+            <strong>Signature:</strong> (forward:M33d * backward:M33d) -&gt; unit<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '22578', 22578)" onmouseover="showTip(event, '22578', 22578)">
+            new(trafo)
+          </code>
+          <div class="tip" id="22578">
+            <strong>Signature:</strong> trafo:Trafo2d -&gt; unit<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+    </tbody>
+  </table>
+  <h3>Instance members</h3>
+  <table class="table table-bordered member-list">
+    <thead>
+      <tr><td>Instance member</td><td>Description</td></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '22579', 22579)" onmouseover="showTip(event, '22579', 22579)">
+            Equals(other)
+          </code>
+          <div class="tip" id="22579">
+            <strong>Signature:</strong> other:obj -&gt; bool<br />
+              <strong>Modifiers:</strong> abstract<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '22580', 22580)" onmouseover="showTip(event, '22580', 22580)">
+            GetHashCode()
+          </code>
+          <div class="tip" id="22580">
+            <strong>Signature:</strong> unit -&gt; int<br />
+              <strong>Modifiers:</strong> abstract<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '22581', 22581)" onmouseover="showTip(event, '22581', 22581)">
+            Inverse
+          </code>
+          <div class="tip" id="22581">
+            <strong>Signature:</strong> Trafo2d<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '22582', 22582)" onmouseover="showTip(event, '22582', 22582)">
+            ToString()
+          </code>
+          <div class="tip" id="22582">
+            <strong>Signature:</strong> unit -&gt; string<br />
+              <strong>Modifiers:</strong> abstract<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+    </tbody>
+  </table>
+  <h3>Static members</h3>
+  <table class="table table-bordered member-list">
+    <thead>
+      <tr><td>Static member</td><td>Description</td></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '22583', 22583)" onmouseover="showTip(event, '22583', 22583)">
+            op_Equality(a, b)
+          </code>
+          <div class="tip" id="22583">
+            <strong>Signature:</strong> (a:Trafo2d * b:Trafo2d) -&gt; bool<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '22584', 22584)" onmouseover="showTip(event, '22584', 22584)">
+            op_Inequality(a, b)
+          </code>
+          <div class="tip" id="22584">
+            <strong>Signature:</strong> (a:Trafo2d * b:Trafo2d) -&gt; bool<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '22585', 22585)" onmouseover="showTip(event, '22585', 22585)">
+            op_Multiply(t0, t1)
+          </code>
+          <div class="tip" id="22585">
+            <strong>Signature:</strong> (t0:Trafo2d * t1:Trafo2d) -&gt; Trafo2d<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>The order of operation of Trafo2d multiplicaition is backward
+with respect to M44d multiplication in order to provide
+natural postfix notation.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '22586', 22586)" onmouseover="showTip(event, '22586', 22586)">
+            Parse(s)
+          </code>
+          <div class="tip" id="22586">
+            <strong>Signature:</strong> s:string -&gt; Trafo2d<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '22587', 22587)" onmouseover="showTip(event, '22587', 22587)">
+            Rotation(angleInRadians)
+          </code>
+          <div class="tip" id="22587">
+            <strong>Signature:</strong> angleInRadians:float -&gt; Trafo2d<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '22588', 22588)" onmouseover="showTip(event, '22588', 22588)">
+            RotationInDegrees(angleInDegrees)
+          </code>
+          <div class="tip" id="22588">
+            <strong>Signature:</strong> angleInDegrees:float -&gt; Trafo2d<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '22589', 22589)" onmouseover="showTip(event, '22589', 22589)">
+            Scale(sv)
+          </code>
+          <div class="tip" id="22589">
+            <strong>Signature:</strong> sv:V2d -&gt; Trafo2d<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '22590', 22590)" onmouseover="showTip(event, '22590', 22590)">
+            Scale(sx, sy)
+          </code>
+          <div class="tip" id="22590">
+            <strong>Signature:</strong> (sx:float * sy:float) -&gt; Trafo2d<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '22591', 22591)" onmouseover="showTip(event, '22591', 22591)">
+            Scale(s)
+          </code>
+          <div class="tip" id="22591">
+            <strong>Signature:</strong> s:float -&gt; Trafo2d<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '22592', 22592)" onmouseover="showTip(event, '22592', 22592)">
+            Translation(v)
+          </code>
+          <div class="tip" id="22592">
+            <strong>Signature:</strong> v:V2d -&gt; Trafo2d<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '22593', 22593)" onmouseover="showTip(event, '22593', 22593)">
+            Translation(dx, dy)
+          </code>
+          <div class="tip" id="22593">
+            <strong>Signature:</strong> (dx:float * dy:float) -&gt; Trafo2d<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+        </div>
+        <div class="span3">
+          <a href="https://github.com/vrvis">
+            <img src="logo.png" style="width:140px;height:140px;margin:10px 0px 0px 35px;border-style:none;" />
+          </a>
+
+          <ul class="nav nav-list" id="menu">
+
+            <li class="nav-header">Aardvark.Base</li>
+
+            <li class="divider"></li>
+            <li><a href="https://github.com/vrvis/aardvark.base">Home page</a></li>
+            <li class="divider"></li>
+
+            <li><a href="https://www.nuget.org/packages/Aardvark.Base">Get Aardvark.Base via NuGet</a></li>
+            <li><a href="https://github.com/vrvis/aardvark.base">Source Code on GitHub</a></li>
+            <li><a href="https://github.com/vrvis/aardvark.baseLicense">License (Apache 2)</a></li>
+            
+            <!-- <li><a href="https://github.com/vrvis/aardvark.base/RELEASE_NOTES.html">Release Notes</a></li>
+            <li><a href="https://github.com/vrvis/aardvark.base//contributing.html">Contributing to Aardvark.Base</a></li>
+  
+            <li><a href="http://stackoverflow.com/questions/tagged/f%23-fake">Ask a question</a></li> 
+            
+            <li class="nav-header">Tutorials</li>
+            <li><a href="https://github.com/vrvis/aardvark.base/gettingstarted.html">Getting started</a></li>
+            
+            -->
+
+            
+            <li class="divider"></li>
+            <li class="nav-header">Reference</li>
+
+            <li><a href="https://github.com/vrvis/aardvark.base/apidocs/index.html">API Reference</a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    <a href="https://github.com/vrvis/aardvark.base"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_gray_6d6d6d.png" alt="Fork me on GitHub"></a>
+  </body>
+  </html>

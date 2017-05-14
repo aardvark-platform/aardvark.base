@@ -1,0 +1,595 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>Polygon3dExtensions - Aardvark.Base</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="The Aardvark Platform Team">
+
+    <script src="https://code.jquery.com/jquery-1.8.0.js"></script>
+    <script src="https://code.jquery.com/ui/1.8.23/jquery-ui.js"></script>
+    <script src="https://netdna.bootstrapcdn.com/twitter-bootstrap/2.2.1/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link href="https://netdna.bootstrapcdn.com/twitter-bootstrap/2.2.1/css/bootstrap-combined.min.css" rel="stylesheet">
+
+    <link type="text/css" rel="stylesheet" href="https://github.com/vrvis/aardvark.base/content/style.css" />
+    <script type="text/javascript" src="https://github.com/vrvis/aardvark.base/content/tips.js"></script>
+    <!-- HTML5 shim, for IE6-8 support of HTML5 elements -->
+    <!--[if lt IE 9]>
+      <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+  </head>
+  <body>
+    <div class="container">
+      <div class="masthead">
+        <ul class="nav nav-pills pull-right">
+          <li><a href="https://github.com/vrvis/aardvark.base">github page</a></li>
+        </ul>
+        <h3 class="muted"><a href="https://github.com/vrvis/aardvark.base/index.html">Aardvark.Base</a></h3>
+      </div>
+      <hr />
+      <div class="row">
+        <div class="span9" id="main">
+          
+
+
+
+<h1>Polygon3dExtensions</h1>
+<div class="xmldoc">
+</div>
+  <h3>Static members</h3>
+  <table class="table table-bordered member-list">
+    <thead>
+      <tr><td>Static member</td><td>Description</td></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '14566', 14566)" onmouseover="showTip(event, '14566', 14566)">
+            ComputeArea(polygon)
+          </code>
+          <div class="tip" id="14566">
+            <strong>Signature:</strong> polygon:Polygon3d -&gt; float<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Computes the area as the length of the sum of  the simple
+triangulation cross-product normals.
+NOTE: This has been tested to be slightly faster and slightly more
+accurate than the computation via the 3d Newell normal
+(see Math.Tests/GeometryTests, rft 2013-05-04).</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '14567', 14567)" onmouseover="showTip(event, '14567', 14567)">
+            ComputeCentroid(polygon)
+          </code>
+          <div class="tip" id="14567">
+            <strong>Signature:</strong> polygon:Polygon3d -&gt; V3d<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>The geometric center of a 3-dimensional, flat polygon.
+WARNING: UNTESTED!</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '14568', 14568)" onmouseover="showTip(event, '14568', 14568)">
+            ComputeDoubleAreaNormal(polygon)
+          </code>
+          <div class="tip" id="14568">
+            <strong>Signature:</strong> polygon:Polygon3d -&gt; V3d<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Computes the normal with the length of twice the polygon area as
+the sum of  the simple triangulation cross-product normals.
+NOTE: This has been tested to be slightly faster and slightly more
+accurate than the computation via the 3d Newell normal
+(see Math.Tests/GeometryTests, rft 2013-05-04).</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '14569', 14569)" onmouseover="showTip(event, '14569', 14569)">
+            ComputeFromPointFormFactor(...)
+          </code>
+          <div class="tip" id="14569">
+            <strong>Signature:</strong> (targetPolygon:Polygon3d * sourcePoint:V3d * sourceNormal:V3d * eps:float) -&gt; float<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '14570', 14570)" onmouseover="showTip(event, '14570', 14570)">
+            ComputeNormal(polygon)
+          </code>
+          <div class="tip" id="14570">
+            <strong>Signature:</strong> polygon:Polygon3d -&gt; V3d<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Computes the normalized normal as the sum of  the simple
+triangulation cross-product normals.
+NOTE: This has been tested to be slightly faster and slightly more
+accurate than the computation via the 3d Newell normal
+(see Math.Tests/GeometryTests, rft 2013-05-04).</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '14571', 14571)" onmouseover="showTip(event, '14571', 14571)">
+            ComputePerimeter(polygon)
+          </code>
+          <div class="tip" id="14571">
+            <strong>Signature:</strong> polygon:Polygon3d -&gt; float<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '14572', 14572)" onmouseover="showTip(event, '14572', 14572)">
+            ComputePlane3d(polygon)
+          </code>
+          <div class="tip" id="14572">
+            <strong>Signature:</strong> polygon:Polygon3d -&gt; Plane3d<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Computes the supporting plane of the polygon via the vertex centroid
+and the sum of  the simple triangulation cross-product normals.
+NOTE: This has been tested to be slightly faster and slightly more
+accurate than the computation via the 3d Newell normal
+(see Math.Tests/GeometryTests, rft 2013-05-04).</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '14573', 14573)" onmouseover="showTip(event, '14573', 14573)">
+            ComputeToPointFormFactor(...)
+          </code>
+          <div class="tip" id="14573">
+            <strong>Signature:</strong> (sourcePolygon:Polygon3d * polygonArea:float * targetPoint:V3d * targetNormal:V3d * eps:float) -&gt; float<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '14574', 14574)" onmouseover="showTip(event, '14574', 14574)">
+            ComputeUnscaledFormFactor(...)
+          </code>
+          <div class="tip" id="14574">
+            <strong>Signature:</strong> (polygon:Polygon3d * p:V3d * n:V3d * eps:float) -&gt; float<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '14575', 14575)" onmouseover="showTip(event, '14575', 14575)">
+            ComputeVertexCentroid(polygon)
+          </code>
+          <div class="tip" id="14575">
+            <strong>Signature:</strong> polygon:Polygon3d -&gt; V3d<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>The vertex centroid is the average of the vertex coordinates.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '14576', 14576)" onmouseover="showTip(event, '14576', 14576)">
+            ConvexClipped(polygon, plane, eps)
+          </code>
+          <div class="tip" id="14576">
+            <strong>Signature:</strong> (polygon:Polygon3d * plane:Plane3d * eps:float) -&gt; Polygon3d<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Clip the supplied polygon at the supplied plane. The method should
+work with all non-selfintersecting polygons.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '14577', 14577)" onmouseover="showTip(event, '14577', 14577)">
+            ConvexClipped(polygon, planes, eps)
+          </code>
+          <div class="tip" id="14577">
+            <strong>Signature:</strong> (polygon:Polygon3d * planes:Plane3d [] * eps:float) -&gt; Polygon3d<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Returns the convex polygon clipped by the set of planes (defined
+as Plane3ds).</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '14578', 14578)" onmouseover="showTip(event, '14578', 14578)">
+            ConvexClipped(polygon, hull, eps)
+          </code>
+          <div class="tip" id="14578">
+            <strong>Signature:</strong> (polygon:Polygon3d * hull:Hull3d * eps:float) -&gt; Polygon3d<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Returns the polygon clipped by the hull, i.e. all parts of the
+polygon that are at the positive side of the hull planes.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '14579', 14579)" onmouseover="showTip(event, '14579', 14579)">
+            ConvexClipped(polygon, box, eps)
+          </code>
+          <div class="tip" id="14579">
+            <strong>Signature:</strong> (polygon:Polygon3d * box:Box3d * eps:float) -&gt; Polygon3d<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>TODO summary.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '14580', 14580)" onmouseover="showTip(event, '14580', 14580)">
+            GetCoincidentPoints(...)
+          </code>
+          <div class="tip" id="14580">
+            <strong>Signature:</strong> (polygon:Polygon3d * toleranceAbsolute:float) -&gt; IEnumerable&lt;Pair&lt;int&gt;&gt;<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Enumerates all pairs of coincident vertices (as pairs of vertex indices).</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '14581', 14581)" onmouseover="showTip(event, '14581', 14581)">
+            GetPlane3d(polygon)
+          </code>
+          <div class="tip" id="14581">
+            <strong>Signature:</strong> polygon:Polygon3d -&gt; Plane3d<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Returns the plane through the first 3 points of the polygon.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '14582', 14582)" onmouseover="showTip(event, '14582', 14582)">
+            GetSelfIntersections(...)
+          </code>
+          <div class="tip" id="14582">
+            <strong>Signature:</strong> (polygon:Polygon3d * toleranceAbsolute:float) -&gt; IEnumerable&lt;Pair&lt;int&gt;&gt;<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Enumerates all pairs of edges that intersect (as pairs of edge indices).</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '14583', 14583)" onmouseover="showTip(event, '14583', 14583)">
+            GetSpikes(self, toleranceInDegrees)
+          </code>
+          <div class="tip" id="14583">
+            <strong>Signature:</strong> (self:Polygon3d * toleranceInDegrees:float) -&gt; IEnumerable&lt;int&gt;<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Enumerates all vertex indexes at which
+both outgoing edges meet at an angle that
+is less than the given threshold.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '14584', 14584)" onmouseover="showTip(event, '14584', 14584)">
+            HasCoincidentPoints(...)
+          </code>
+          <div class="tip" id="14584">
+            <strong>Signature:</strong> (polygon:Polygon3d * toleranceAbsolute:float) -&gt; bool<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Returns true if at least two vertices are coincident.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '14585', 14585)" onmouseover="showTip(event, '14585', 14585)">
+            HasSpikes(self, toleranceInDegrees)
+          </code>
+          <div class="tip" id="14585">
+            <strong>Signature:</strong> (self:Polygon3d * toleranceInDegrees:float) -&gt; bool<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Returns true if at least one vertex
+both outgoing edges meet at an angle that
+is less than the given threshold.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '14586', 14586)" onmouseover="showTip(event, '14586', 14586)">
+            IsSelfIntersecting(...)
+          </code>
+          <div class="tip" id="14586">
+            <strong>Signature:</strong> (self:Polygon3d * toleranceAbsolute:float) -&gt; bool<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Returns true if at least two edges intersect.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '14587', 14587)" onmouseover="showTip(event, '14587', 14587)">
+            Scaled(polygon, scale)
+          </code>
+          <div class="tip" id="14587">
+            <strong>Signature:</strong> (polygon:Polygon3d * scale:float) -&gt; Polygon3d<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '14588', 14588)" onmouseover="showTip(event, '14588', 14588)">
+            Scaled(polygon, center, scale)
+          </code>
+          <div class="tip" id="14588">
+            <strong>Signature:</strong> (polygon:Polygon3d * center:V3d * scale:float) -&gt; Polygon3d<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '14589', 14589)" onmouseover="showTip(event, '14589', 14589)">
+            Scaled(polygon, scale)
+          </code>
+          <div class="tip" id="14589">
+            <strong>Signature:</strong> (polygon:Polygon3d * scale:V3d) -&gt; Polygon3d<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '14590', 14590)" onmouseover="showTip(event, '14590', 14590)">
+            Scaled(polygon, center, scale)
+          </code>
+          <div class="tip" id="14590">
+            <strong>Signature:</strong> (polygon:Polygon3d * center:V3d * scale:V3d) -&gt; Polygon3d<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '14591', 14591)" onmouseover="showTip(event, '14591', 14591)">
+            ScaledAboutVertexCentroid(...)
+          </code>
+          <div class="tip" id="14591">
+            <strong>Signature:</strong> (polygon:Polygon3d * scale:float) -&gt; Polygon3d<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '14592', 14592)" onmouseover="showTip(event, '14592', 14592)">
+            ScaledAboutVertexCentroid(...)
+          </code>
+          <div class="tip" id="14592">
+            <strong>Signature:</strong> (polygon:Polygon3d * scale:V3d) -&gt; Polygon3d<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '14593', 14593)" onmouseover="showTip(event, '14593', 14593)">
+            ToPolygon2d(polygon, point_copyFun)
+          </code>
+          <div class="tip" id="14593">
+            <strong>Signature:</strong> (polygon:Polygon3d * point_copyFun:Func&lt;V3d,V2d&gt;) -&gt; Polygon2d<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '14594', 14594)" onmouseover="showTip(event, '14594', 14594)">
+            ToPolygon2d(...)
+          </code>
+          <div class="tip" id="14594">
+            <strong>Signature:</strong> (polygon:Polygon3d * point_index_copyFun:Func&lt;V3d,int,V2d&gt;) -&gt; Polygon2d<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '14595', 14595)" onmouseover="showTip(event, '14595', 14595)">
+            Transformed(polygon, m)
+          </code>
+          <div class="tip" id="14595">
+            <strong>Signature:</strong> (polygon:Polygon3d * m:M33d) -&gt; Polygon3d<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '14596', 14596)" onmouseover="showTip(event, '14596', 14596)">
+            Transformed(polygon, m)
+          </code>
+          <div class="tip" id="14596">
+            <strong>Signature:</strong> (polygon:Polygon3d * m:M44d) -&gt; Polygon3d<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '14597', 14597)" onmouseover="showTip(event, '14597', 14597)">
+            WithoutMultiplePoints(polygon, eps)
+          </code>
+          <div class="tip" id="14597">
+            <strong>Signature:</strong> (polygon:Polygon3d * eps:float) -&gt; Polygon3d<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+        </div>
+        <div class="span3">
+          <a href="https://github.com/vrvis">
+            <img src="logo.png" style="width:140px;height:140px;margin:10px 0px 0px 35px;border-style:none;" />
+          </a>
+
+          <ul class="nav nav-list" id="menu">
+
+            <li class="nav-header">Aardvark.Base</li>
+
+            <li class="divider"></li>
+            <li><a href="https://github.com/vrvis/aardvark.base">Home page</a></li>
+            <li class="divider"></li>
+
+            <li><a href="https://www.nuget.org/packages/Aardvark.Base">Get Aardvark.Base via NuGet</a></li>
+            <li><a href="https://github.com/vrvis/aardvark.base">Source Code on GitHub</a></li>
+            <li><a href="https://github.com/vrvis/aardvark.baseLicense">License (Apache 2)</a></li>
+            
+            <!-- <li><a href="https://github.com/vrvis/aardvark.base/RELEASE_NOTES.html">Release Notes</a></li>
+            <li><a href="https://github.com/vrvis/aardvark.base//contributing.html">Contributing to Aardvark.Base</a></li>
+  
+            <li><a href="http://stackoverflow.com/questions/tagged/f%23-fake">Ask a question</a></li> 
+            
+            <li class="nav-header">Tutorials</li>
+            <li><a href="https://github.com/vrvis/aardvark.base/gettingstarted.html">Getting started</a></li>
+            
+            -->
+
+            
+            <li class="divider"></li>
+            <li class="nav-header">Reference</li>
+
+            <li><a href="https://github.com/vrvis/aardvark.base/apidocs/index.html">API Reference</a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    <a href="https://github.com/vrvis/aardvark.base"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_gray_6d6d6d.png" alt="Fork me on GitHub"></a>
+  </body>
+  </html>

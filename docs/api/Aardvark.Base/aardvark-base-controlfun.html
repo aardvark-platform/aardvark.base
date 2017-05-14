@@ -1,0 +1,655 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>ControlFun - Aardvark.Base</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="The Aardvark Platform Team">
+
+    <script src="https://code.jquery.com/jquery-1.8.0.js"></script>
+    <script src="https://code.jquery.com/ui/1.8.23/jquery-ui.js"></script>
+    <script src="https://netdna.bootstrapcdn.com/twitter-bootstrap/2.2.1/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link href="https://netdna.bootstrapcdn.com/twitter-bootstrap/2.2.1/css/bootstrap-combined.min.css" rel="stylesheet">
+
+    <link type="text/css" rel="stylesheet" href="https://github.com/vrvis/aardvark.base/content/style.css" />
+    <script type="text/javascript" src="https://github.com/vrvis/aardvark.base/content/tips.js"></script>
+    <!-- HTML5 shim, for IE6-8 support of HTML5 elements -->
+    <!--[if lt IE 9]>
+      <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+  </head>
+  <body>
+    <div class="container">
+      <div class="masthead">
+        <ul class="nav nav-pills pull-right">
+          <li><a href="https://github.com/vrvis/aardvark.base">github page</a></li>
+        </ul>
+        <h3 class="muted"><a href="https://github.com/vrvis/aardvark.base/index.html">Aardvark.Base</a></h3>
+      </div>
+      <hr />
+      <div class="row">
+        <div class="span9" id="main">
+          
+
+
+
+<h1>ControlFun</h1>
+<div class="xmldoc">
+</div>
+  <h3>Static members</h3>
+  <table class="table table-bordered member-list">
+    <thead>
+      <tr><td>Static member</td><td>Description</td></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '4644', 4644)" onmouseover="showTip(event, '4644', 4644)">
+            ForEach(n, i_act)
+          </code>
+          <div class="tip" id="4644">
+            <strong>Signature:</strong> (n:int * i_act:Action&lt;int&gt;) -&gt; unit<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Perform the supplied action for all integers i in [0, n).</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '4645', 4645)" onmouseover="showTip(event, '4645', 4645)">
+            ForEach(n, start, i_act)
+          </code>
+          <div class="tip" id="4645">
+            <strong>Signature:</strong> (n:int * start:int * i_act:Action&lt;int&gt;) -&gt; unit<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Perform the supplied action for all integers in [start, n).</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '4646', 4646)" onmouseover="showTip(event, '4646', 4646)">
+            ForEach(n, i_act, sep)
+          </code>
+          <div class="tip" id="4646">
+            <strong>Signature:</strong> (n:int * i_act:Action&lt;int&gt; * sep:Action) -&gt; unit<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Perform the supplied action for all integers i in [0, n).
+Perform the supplied separating action between the integers.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '4647', 4647)" onmouseover="showTip(event, '4647', 4647)">
+            ForEach(n, start, i_act, sep)
+          </code>
+          <div class="tip" id="4647">
+            <strong>Signature:</strong> (n:int * start:int * i_act:Action&lt;int&gt; * sep:Action) -&gt; unit<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Perform the supplied action for all integers i in [start, n).
+Perform the supplied separating action between the integers.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '4648', 4648)" onmouseover="showTip(event, '4648', 4648)">
+            ForEach(n, i_act, i_sep)
+          </code>
+          <div class="tip" id="4648">
+            <strong>Signature:</strong> (n:int * i_act:Action&lt;int&gt; * i_sep:Action&lt;int&gt;) -&gt; unit<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Perform the supplied action for all integers i in [0, n).
+Perform the supplied separating action between the integers.
+The seperating action receives the index of the preceeding item.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '4649', 4649)" onmouseover="showTip(event, '4649', 4649)">
+            ForEach(n, start, i_act, i_sep)
+          </code>
+          <div class="tip" id="4649">
+            <strong>Signature:</strong> (n:int * start:int * i_act:Action&lt;int&gt; * i_sep:Action&lt;int&gt;) -&gt; unit<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Perform the supplied action for all integers i in [start, n).
+Perform the supplied separating action between the integers.
+The seperating action receives the index of the preceeding item.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '4650', 4650)" onmouseover="showTip(event, '4650', 4650)">
+            ForEach(n, i_act)
+          </code>
+          <div class="tip" id="4650">
+            <strong>Signature:</strong> (n:int64 * i_act:Action&lt;int64&gt;) -&gt; unit<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Perform the supplied action for all integers i in [0, n).</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '4651', 4651)" onmouseover="showTip(event, '4651', 4651)">
+            ForEach(n, start, i_act)
+          </code>
+          <div class="tip" id="4651">
+            <strong>Signature:</strong> (n:int64 * start:int64 * i_act:Action&lt;int64&gt;) -&gt; unit<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Perform the supplied action for all integers in [start, n).</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '4652', 4652)" onmouseover="showTip(event, '4652', 4652)">
+            ForEach(items, item_act)
+          </code>
+          <div class="tip" id="4652">
+            <strong>Signature:</strong> (items:IEnumerable&lt;&#39;T&gt; * item_act:Action&lt;&#39;T&gt;) -&gt; unit<br />
+                          <strong>Type parameters:</strong> 'T          </div>
+        </td>
+        <td class="xmldoc">
+          <p>Perform the supplied action for all items in the IEnumerable.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '4653', 4653)" onmouseover="showTip(event, '4653', 4653)">
+            ForEach(items, item_i_act)
+          </code>
+          <div class="tip" id="4653">
+            <strong>Signature:</strong> (items:IEnumerable&lt;&#39;T&gt; * item_i_act:Action&lt;&#39;T,int&gt;) -&gt; unit<br />
+                          <strong>Type parameters:</strong> 'T          </div>
+        </td>
+        <td class="xmldoc">
+          <p>Perform the supplied action for all items in the IEnumerable.
+The action gets the index of the item i out of [0, n) as last
+parameter.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '4654', 4654)" onmouseover="showTip(event, '4654', 4654)">
+            ForEach(items0, items1, item0_item1_act)
+          </code>
+          <div class="tip" id="4654">
+            <strong>Signature:</strong> (items0:IEnumerable&lt;&#39;T0&gt; * items1:IEnumerable&lt;&#39;T1&gt; * item0_item1_act:Action&lt;&#39;T0,&#39;T1&gt;) -&gt; unit<br />
+                          <strong>Type parameters:</strong> 'T0, 'T1          </div>
+        </td>
+        <td class="xmldoc">
+          <p>Perform the supplied action for all pairs of items in the IEnumerable
+and from the second IEnumerable.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '4655', 4655)" onmouseover="showTip(event, '4655', 4655)">
+            ForEach(...)
+          </code>
+          <div class="tip" id="4655">
+            <strong>Signature:</strong> (items0:IEnumerable&lt;&#39;T0&gt; * items1:IEnumerable&lt;&#39;T1&gt; * items2:IEnumerable&lt;&#39;T2&gt; * item0_item1_item2_act:Action&lt;&#39;T0,&#39;T1,&#39;T2&gt;) -&gt; unit<br />
+                          <strong>Type parameters:</strong> 'T0, 'T1, 'T2          </div>
+        </td>
+        <td class="xmldoc">
+          <p>Perform the supplied action for all triples of items from
+each of the supplied IEnumerables.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '4656', 4656)" onmouseover="showTip(event, '4656', 4656)">
+            ForEach(...)
+          </code>
+          <div class="tip" id="4656">
+            <strong>Signature:</strong> (items0:IEnumerable&lt;&#39;T0&gt; * items1:IEnumerable&lt;&#39;T1&gt; * item0_item1_i_act:Action&lt;&#39;T0,&#39;T1,int&gt;) -&gt; unit<br />
+                          <strong>Type parameters:</strong> 'T0, 'T1          </div>
+        </td>
+        <td class="xmldoc">
+          <p>Perform the supplied action for all corresponding pairs
+of items from the IEnumerable and from the second IEnumerable.
+The action gets the index of the item as last parameter.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '4657', 4657)" onmouseover="showTip(event, '4657', 4657)">
+            ForEach(...)
+          </code>
+          <div class="tip" id="4657">
+            <strong>Signature:</strong> (items0:IEnumerable&lt;&#39;T0&gt; * items1:IEnumerable&lt;&#39;T1&gt; * items2:IEnumerable&lt;&#39;T2&gt; * item0_item1_item2_i_act:Action&lt;&#39;T0,&#39;T1,&#39;T2,int&gt;) -&gt; unit<br />
+                          <strong>Type parameters:</strong> 'T0, 'T1, 'T2          </div>
+        </td>
+        <td class="xmldoc">
+          <p>Perform the supplied action for all triples of items from
+each of the supplied IEnumerables.
+The action gets the index of the item as last parameter.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '4658', 4658)" onmouseover="showTip(event, '4658', 4658)">
+            ForEach(items, item_act, sep)
+          </code>
+          <div class="tip" id="4658">
+            <strong>Signature:</strong> (items:IEnumerable&lt;&#39;T&gt; * item_act:Action&lt;&#39;T&gt; * sep:Action) -&gt; unit<br />
+                          <strong>Type parameters:</strong> 'T          </div>
+        </td>
+        <td class="xmldoc">
+          <p>Perform the supplied action for all items in the IEnumerable.
+Perform the supplied separating action between the items.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '4659', 4659)" onmouseover="showTip(event, '4659', 4659)">
+            ForEach(items, item_i_act, sep)
+          </code>
+          <div class="tip" id="4659">
+            <strong>Signature:</strong> (items:IEnumerable&lt;&#39;T&gt; * item_i_act:Action&lt;&#39;T,int&gt; * sep:Action) -&gt; unit<br />
+                          <strong>Type parameters:</strong> 'T          </div>
+        </td>
+        <td class="xmldoc">
+          <p>Perform the supplied action for all items in the IEnumerable.
+The action gets the index i out of [0, n) of the item as last
+parameter. Perform the supplied separating action between items.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '4660', 4660)" onmouseover="showTip(event, '4660', 4660)">
+            ForEach(items, item_i_act, i_sep)
+          </code>
+          <div class="tip" id="4660">
+            <strong>Signature:</strong> (items:IEnumerable&lt;&#39;T&gt; * item_i_act:Action&lt;&#39;T,int&gt; * i_sep:Action&lt;int&gt;) -&gt; unit<br />
+                          <strong>Type parameters:</strong> 'T          </div>
+        </td>
+        <td class="xmldoc">
+          <p>Perform the supplied action for all items in the IEnumerable.
+The action gets the index of the item as last parameter.
+Perform the supplied separating action between items.
+The seperating action receives the index of the preceeding item.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '4661', 4661)" onmouseover="showTip(event, '4661', 4661)">
+            ForEach(...)
+          </code>
+          <div class="tip" id="4661">
+            <strong>Signature:</strong> (items0:IEnumerable&lt;&#39;T0&gt; * items1:IEnumerable&lt;&#39;T1&gt; * item0_item1_act:Action&lt;&#39;T0,&#39;T1&gt; * sep:Action) -&gt; unit<br />
+                          <strong>Type parameters:</strong> 'T0, 'T1          </div>
+        </td>
+        <td class="xmldoc">
+          <p>Perform the supplied action for all corresponding pairs
+of items from the IEnumerable and from the second IEnumerable.
+Perform the supplied separating action between the items.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '4662', 4662)" onmouseover="showTip(event, '4662', 4662)">
+            ForEach(...)
+          </code>
+          <div class="tip" id="4662">
+            <strong>Signature:</strong> (items0:IEnumerable&lt;&#39;T0&gt; * items1:IEnumerable&lt;&#39;T1&gt; * items2:IEnumerable&lt;&#39;T2&gt; * item0_item1_item2_act:Action&lt;&#39;T0,&#39;T1,&#39;T2&gt; * sep:Action) -&gt; unit<br />
+                          <strong>Type parameters:</strong> 'T0, 'T1, 'T2          </div>
+        </td>
+        <td class="xmldoc">
+          <p>Perform the supplied action for all triples of items from
+each of the supplied IEnumerables.
+Perform the supplied separating action between the items.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '4663', 4663)" onmouseover="showTip(event, '4663', 4663)">
+            ForEach(...)
+          </code>
+          <div class="tip" id="4663">
+            <strong>Signature:</strong> (items0:IEnumerable&lt;&#39;T0&gt; * items1:IEnumerable&lt;&#39;T1&gt; * item0_item1_i_act:Action&lt;&#39;T0,&#39;T1,int&gt; * sep:Action) -&gt; unit<br />
+                          <strong>Type parameters:</strong> 'T0, 'T1          </div>
+        </td>
+        <td class="xmldoc">
+          <p>Perform the supplied action for all corresponding pairs
+of items from the IEnumerable and from the second IEnumerable.
+The action gets the index of the item as last parameter.
+Perform the supplied separating action between the items.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '4664', 4664)" onmouseover="showTip(event, '4664', 4664)">
+            ForEach(...)
+          </code>
+          <div class="tip" id="4664">
+            <strong>Signature:</strong> (items0:IEnumerable&lt;&#39;T0&gt; * items1:IEnumerable&lt;&#39;T1&gt; * items2:IEnumerable&lt;&#39;T2&gt; * item0_item1_item2_int_act:Action&lt;&#39;T0,&#39;T1,&#39;T2,int&gt; * sep:Action) -&gt; unit<br />
+                          <strong>Type parameters:</strong> 'T0, 'T1, 'T2          </div>
+        </td>
+        <td class="xmldoc">
+          <p>Perform the supplied action for all triples of items from
+each of the supplied IEnumerables.
+The action gets the index of the item as last parameter.
+Perform the supplied separating action between the items.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '4665', 4665)" onmouseover="showTip(event, '4665', 4665)">
+            ForEach(...)
+          </code>
+          <div class="tip" id="4665">
+            <strong>Signature:</strong> (items0:IEnumerable&lt;&#39;T0&gt; * items1:IEnumerable&lt;&#39;T1&gt; * item0_item1_i_act:Action&lt;&#39;T0,&#39;T1,int&gt; * i_sep:Action&lt;int&gt;) -&gt; unit<br />
+                          <strong>Type parameters:</strong> 'T0, 'T1          </div>
+        </td>
+        <td class="xmldoc">
+          <p>Perform the supplied action for all corresponding pairs
+of items from the IEnumerable and from the second IEnumerable.
+The action gets the index of the item as last parameter.
+Perform the supplied separating action between the items.
+The seperating action receives the index of the preceeding items.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '4666', 4666)" onmouseover="showTip(event, '4666', 4666)">
+            ForEach(...)
+          </code>
+          <div class="tip" id="4666">
+            <strong>Signature:</strong> (items0:IEnumerable&lt;&#39;T0&gt; * items1:IEnumerable&lt;&#39;T1&gt; * items2:IEnumerable&lt;&#39;T2&gt; * item0_item1_item2_i_act:Action&lt;&#39;T0,&#39;T1,&#39;T2,int&gt; * i_sep:Action&lt;int&gt;) -&gt; unit<br />
+                          <strong>Type parameters:</strong> 'T0, 'T1, 'T2          </div>
+        </td>
+        <td class="xmldoc">
+          <p>Perform the supplied action for all triples of items from
+each of the supplied IEnumerables.
+The action gets the index of the item as last parameter.
+Perform the supplied separating action between the items.
+The seperating action receives the index of the preceeding items.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '4667', 4667)" onmouseover="showTip(event, '4667', 4667)">
+            ForEach(array, item_act)
+          </code>
+          <div class="tip" id="4667">
+            <strong>Signature:</strong> (array:&#39;T [] * item_act:Action&lt;&#39;T&gt;) -&gt; unit<br />
+                          <strong>Type parameters:</strong> 'T          </div>
+        </td>
+        <td class="xmldoc">
+          <p>Perform the supplied action for all items in the IEnumerable.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '4668', 4668)" onmouseover="showTip(event, '4668', 4668)">
+            ForEach(array, item_i_act)
+          </code>
+          <div class="tip" id="4668">
+            <strong>Signature:</strong> (array:&#39;T [] * item_i_act:Action&lt;&#39;T,int&gt;) -&gt; unit<br />
+                          <strong>Type parameters:</strong> 'T          </div>
+        </td>
+        <td class="xmldoc">
+          <p>Perform the supplied action for all items in the IEnumerable.
+The action gets the index of the item i out of [0, n) as last
+parameter.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '4669', 4669)" onmouseover="showTip(event, '4669', 4669)">
+            ForEach(array0, array1, item0_item1_act)
+          </code>
+          <div class="tip" id="4669">
+            <strong>Signature:</strong> (array0:&#39;T0 [] * array1:&#39;T1 [] * item0_item1_act:Action&lt;&#39;T0,&#39;T1&gt;) -&gt; unit<br />
+                          <strong>Type parameters:</strong> 'T0, 'T1          </div>
+        </td>
+        <td class="xmldoc">
+          <p>Perform the supplied action for all pairs of items in the array
+and from the second array.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '4670', 4670)" onmouseover="showTip(event, '4670', 4670)">
+            ForEach(...)
+          </code>
+          <div class="tip" id="4670">
+            <strong>Signature:</strong> (array0:&#39;T0 [] * array1:&#39;T1 [] * array2:&#39;T2 [] * item0_item1_item2_act:Action&lt;&#39;T0,&#39;T1,&#39;T2&gt;) -&gt; unit<br />
+                          <strong>Type parameters:</strong> 'T0, 'T1, 'T2          </div>
+        </td>
+        <td class="xmldoc">
+          <p>Perform the supplied action for all triples of items from
+each of the supplied arrays.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '4671', 4671)" onmouseover="showTip(event, '4671', 4671)">
+            ForEach(...)
+          </code>
+          <div class="tip" id="4671">
+            <strong>Signature:</strong> (array0:&#39;T0 [] * array1:&#39;T1 [] * item0_item1_i_act:Action&lt;&#39;T0,&#39;T1,int&gt;) -&gt; unit<br />
+                          <strong>Type parameters:</strong> 'T0, 'T1          </div>
+        </td>
+        <td class="xmldoc">
+          <p>Perform the supplied action for all corresponding pairs
+of items from the array and from the second array.
+The action gets the index of the item as last parameter.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '4672', 4672)" onmouseover="showTip(event, '4672', 4672)">
+            ForEach(...)
+          </code>
+          <div class="tip" id="4672">
+            <strong>Signature:</strong> (array0:&#39;T0 [] * array1:&#39;T1 [] * array2:&#39;T2 [] * item0_item1_item2_i_act:Action&lt;&#39;T0,&#39;T1,&#39;T2,int&gt;) -&gt; unit<br />
+                          <strong>Type parameters:</strong> 'T0, 'T1, 'T2          </div>
+        </td>
+        <td class="xmldoc">
+          <p>Perform the supplied action for all triples of items from
+each of the supplied arrays.
+The action gets the index of the item as last parameter.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '4673', 4673)" onmouseover="showTip(event, '4673', 4673)">
+            Switch(value, actionDict)
+          </code>
+          <div class="tip" id="4673">
+            <strong>Signature:</strong> (value:&#39;T * actionDict:Dict&lt;&#39;T,Action&lt;&#39;T&gt;&gt;) -&gt; unit<br />
+                          <strong>Type parameters:</strong> 'T          </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '4674', 4674)" onmouseover="showTip(event, '4674', 4674)">
+            Switch(value, actionDict, defaultAction)
+          </code>
+          <div class="tip" id="4674">
+            <strong>Signature:</strong> (value:&#39;T * actionDict:Dict&lt;&#39;T,Action&lt;&#39;T&gt;&gt; * defaultAction:Action&lt;&#39;T&gt;) -&gt; unit<br />
+                          <strong>Type parameters:</strong> 'T          </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '4675', 4675)" onmouseover="showTip(event, '4675', 4675)">
+            Switch(value, funcDict)
+          </code>
+          <div class="tip" id="4675">
+            <strong>Signature:</strong> (value:&#39;T * funcDict:Dict&lt;&#39;T,Func&lt;&#39;T,&#39;TResult&gt;&gt;) -&gt; &#39;TResult<br />
+                          <strong>Type parameters:</strong> 'T, 'TResult          </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '4676', 4676)" onmouseover="showTip(event, '4676', 4676)">
+            Switch(value, funcDict, defaultFunc)
+          </code>
+          <div class="tip" id="4676">
+            <strong>Signature:</strong> (value:&#39;T * funcDict:Dict&lt;&#39;T,Func&lt;&#39;T,&#39;TResult&gt;&gt; * defaultFunc:Func&lt;&#39;T,&#39;TResult&gt;) -&gt; &#39;TResult<br />
+                          <strong>Type parameters:</strong> 'T, 'TResult          </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+        </div>
+        <div class="span3">
+          <a href="https://github.com/vrvis">
+            <img src="logo.png" style="width:140px;height:140px;margin:10px 0px 0px 35px;border-style:none;" />
+          </a>
+
+          <ul class="nav nav-list" id="menu">
+
+            <li class="nav-header">Aardvark.Base</li>
+
+            <li class="divider"></li>
+            <li><a href="https://github.com/vrvis/aardvark.base">Home page</a></li>
+            <li class="divider"></li>
+
+            <li><a href="https://www.nuget.org/packages/Aardvark.Base">Get Aardvark.Base via NuGet</a></li>
+            <li><a href="https://github.com/vrvis/aardvark.base">Source Code on GitHub</a></li>
+            <li><a href="https://github.com/vrvis/aardvark.baseLicense">License (Apache 2)</a></li>
+            
+            <!-- <li><a href="https://github.com/vrvis/aardvark.base/RELEASE_NOTES.html">Release Notes</a></li>
+            <li><a href="https://github.com/vrvis/aardvark.base//contributing.html">Contributing to Aardvark.Base</a></li>
+  
+            <li><a href="http://stackoverflow.com/questions/tagged/f%23-fake">Ask a question</a></li> 
+            
+            <li class="nav-header">Tutorials</li>
+            <li><a href="https://github.com/vrvis/aardvark.base/gettingstarted.html">Getting started</a></li>
+            
+            -->
+
+            
+            <li class="divider"></li>
+            <li class="nav-header">Reference</li>
+
+            <li><a href="https://github.com/vrvis/aardvark.base/apidocs/index.html">API Reference</a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    <a href="https://github.com/vrvis/aardvark.base"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_gray_6d6d6d.png" alt="Fork me on GitHub"></a>
+  </body>
+  </html>

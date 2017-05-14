@@ -1,0 +1,607 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>TelemetryExtensions - Aardvark.Base</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="The Aardvark Platform Team">
+
+    <script src="https://code.jquery.com/jquery-1.8.0.js"></script>
+    <script src="https://code.jquery.com/ui/1.8.23/jquery-ui.js"></script>
+    <script src="https://netdna.bootstrapcdn.com/twitter-bootstrap/2.2.1/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link href="https://netdna.bootstrapcdn.com/twitter-bootstrap/2.2.1/css/bootstrap-combined.min.css" rel="stylesheet">
+
+    <link type="text/css" rel="stylesheet" href="https://github.com/vrvis/aardvark.base/content/style.css" />
+    <script type="text/javascript" src="https://github.com/vrvis/aardvark.base/content/tips.js"></script>
+    <!-- HTML5 shim, for IE6-8 support of HTML5 elements -->
+    <!--[if lt IE 9]>
+      <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+  </head>
+  <body>
+    <div class="container">
+      <div class="masthead">
+        <ul class="nav nav-pills pull-right">
+          <li><a href="https://github.com/vrvis/aardvark.base">github page</a></li>
+        </ul>
+        <h3 class="muted"><a href="https://github.com/vrvis/aardvark.base/index.html">Aardvark.Base</a></h3>
+      </div>
+      <hr />
+      <div class="row">
+        <div class="span9" id="main">
+          
+
+
+
+<h1>TelemetryExtensions</h1>
+<div class="xmldoc">
+</div>
+  <h3>Static members</h3>
+  <table class="table table-bordered member-list">
+    <thead>
+      <tr><td>Static member</td><td>Description</td></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '18569', 18569)" onmouseover="showTip(event, '18569', 18569)">
+            Add(self, others)
+          </code>
+          <div class="tip" id="18569">
+            <strong>Signature:</strong> (self:IProbe * others:IProbe []) -&gt; SumView<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '18570', 18570)" onmouseover="showTip(event, '18570', 18570)">
+            Add(self, others)
+          </code>
+          <div class="tip" id="18570">
+            <strong>Signature:</strong> (self:IProbe * others:IEnumerable&lt;IProbe&gt;) -&gt; SumView<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '18571', 18571)" onmouseover="showTip(event, '18571', 18571)">
+            Add(self, value)
+          </code>
+          <div class="tip" id="18571">
+            <strong>Signature:</strong> (self:IProbe * value:IProbe) -&gt; SumView<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '18572', 18572)" onmouseover="showTip(event, '18572', 18572)">
+            Add(self, value)
+          </code>
+          <div class="tip" id="18572">
+            <strong>Signature:</strong> (self:IProbe * value:float) -&gt; SumView<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '18573', 18573)" onmouseover="showTip(event, '18573', 18573)">
+            Add(self, values)
+          </code>
+          <div class="tip" id="18573">
+            <strong>Signature:</strong> (self:IProbe * values:float []) -&gt; SumView<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '18574', 18574)" onmouseover="showTip(event, '18574', 18574)">
+            Avg(self, others)
+          </code>
+          <div class="tip" id="18574">
+            <strong>Signature:</strong> (self:IProbe * others:IProbe []) -&gt; AvgView<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '18575', 18575)" onmouseover="showTip(event, '18575', 18575)">
+            Avg(self, others)
+          </code>
+          <div class="tip" id="18575">
+            <strong>Signature:</strong> (self:IProbe * others:IEnumerable&lt;IProbe&gt;) -&gt; AvgView<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '18576', 18576)" onmouseover="showTip(event, '18576', 18576)">
+            Avg(self, value)
+          </code>
+          <div class="tip" id="18576">
+            <strong>Signature:</strong> (self:IProbe * value:IProbe) -&gt; AvgView<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '18577', 18577)" onmouseover="showTip(event, '18577', 18577)">
+            Avg(self, value)
+          </code>
+          <div class="tip" id="18577">
+            <strong>Signature:</strong> (self:IProbe * value:float) -&gt; AvgView<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '18578', 18578)" onmouseover="showTip(event, '18578', 18578)">
+            Avg(self, values)
+          </code>
+          <div class="tip" id="18578">
+            <strong>Signature:</strong> (self:IProbe * values:float []) -&gt; AvgView<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '18579', 18579)" onmouseover="showTip(event, '18579', 18579)">
+            Max(self, others)
+          </code>
+          <div class="tip" id="18579">
+            <strong>Signature:</strong> (self:IProbe * others:IProbe []) -&gt; MaxView<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '18580', 18580)" onmouseover="showTip(event, '18580', 18580)">
+            Max(self, others)
+          </code>
+          <div class="tip" id="18580">
+            <strong>Signature:</strong> (self:IProbe * others:IEnumerable&lt;IProbe&gt;) -&gt; MaxView<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '18581', 18581)" onmouseover="showTip(event, '18581', 18581)">
+            Max(self, value)
+          </code>
+          <div class="tip" id="18581">
+            <strong>Signature:</strong> (self:IProbe * value:IProbe) -&gt; MaxView<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '18582', 18582)" onmouseover="showTip(event, '18582', 18582)">
+            Max(self, value)
+          </code>
+          <div class="tip" id="18582">
+            <strong>Signature:</strong> (self:IProbe * value:float) -&gt; MaxView<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '18583', 18583)" onmouseover="showTip(event, '18583', 18583)">
+            Max(self, values)
+          </code>
+          <div class="tip" id="18583">
+            <strong>Signature:</strong> (self:IProbe * values:float []) -&gt; MaxView<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '18584', 18584)" onmouseover="showTip(event, '18584', 18584)">
+            Min(self, others)
+          </code>
+          <div class="tip" id="18584">
+            <strong>Signature:</strong> (self:IProbe * others:IProbe []) -&gt; MinView<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '18585', 18585)" onmouseover="showTip(event, '18585', 18585)">
+            Min(self, others)
+          </code>
+          <div class="tip" id="18585">
+            <strong>Signature:</strong> (self:IProbe * others:IEnumerable&lt;IProbe&gt;) -&gt; MinView<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '18586', 18586)" onmouseover="showTip(event, '18586', 18586)">
+            Min(self, value)
+          </code>
+          <div class="tip" id="18586">
+            <strong>Signature:</strong> (self:IProbe * value:IProbe) -&gt; MinView<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '18587', 18587)" onmouseover="showTip(event, '18587', 18587)">
+            Min(self, value)
+          </code>
+          <div class="tip" id="18587">
+            <strong>Signature:</strong> (self:IProbe * value:float) -&gt; MinView<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '18588', 18588)" onmouseover="showTip(event, '18588', 18588)">
+            Min(self, values)
+          </code>
+          <div class="tip" id="18588">
+            <strong>Signature:</strong> (self:IProbe * values:float []) -&gt; MinView<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '18589', 18589)" onmouseover="showTip(event, '18589', 18589)">
+            Multiply(self, value)
+          </code>
+          <div class="tip" id="18589">
+            <strong>Signature:</strong> (self:IProbe * value:IProbe) -&gt; MultiplyView<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '18590', 18590)" onmouseover="showTip(event, '18590', 18590)">
+            Multiply(self, value)
+          </code>
+          <div class="tip" id="18590">
+            <strong>Signature:</strong> (self:IProbe * value:float) -&gt; MultiplyView<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '18591', 18591)" onmouseover="showTip(event, '18591', 18591)">
+            Per(self, denominator)
+          </code>
+          <div class="tip" id="18591">
+            <strong>Signature:</strong> (self:IProbe * denominator:IProbe) -&gt; RatioView<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '18592', 18592)" onmouseover="showTip(event, '18592', 18592)">
+            Per(self, denominator)
+          </code>
+          <div class="tip" id="18592">
+            <strong>Signature:</strong> (self:IProbe * denominator:float) -&gt; RatioView<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '18593', 18593)" onmouseover="showTip(event, '18593', 18593)">
+            RatePerSecond(self)
+          </code>
+          <div class="tip" id="18593">
+            <strong>Signature:</strong> self:IProbe -&gt; RatePerSecondView<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '18594', 18594)" onmouseover="showTip(event, '18594', 18594)">
+            Snapshot(probe)
+          </code>
+          <div class="tip" id="18594">
+            <strong>Signature:</strong> probe:IProbe&lt;&#39;T&gt; -&gt; IProbe&lt;&#39;T&gt;<br />
+                          <strong>Type parameters:</strong> 'T          </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '18595', 18595)" onmouseover="showTip(event, '18595', 18595)">
+            Subtract(self, others)
+          </code>
+          <div class="tip" id="18595">
+            <strong>Signature:</strong> (self:IProbe * others:IProbe []) -&gt; SubtractView<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '18596', 18596)" onmouseover="showTip(event, '18596', 18596)">
+            Subtract(self, others)
+          </code>
+          <div class="tip" id="18596">
+            <strong>Signature:</strong> (self:IProbe * others:IEnumerable&lt;IProbe&gt;) -&gt; SubtractView<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '18597', 18597)" onmouseover="showTip(event, '18597', 18597)">
+            Subtract(self, value)
+          </code>
+          <div class="tip" id="18597">
+            <strong>Signature:</strong> (self:IProbe * value:IProbe) -&gt; SubtractView<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '18598', 18598)" onmouseover="showTip(event, '18598', 18598)">
+            Subtract(self, value)
+          </code>
+          <div class="tip" id="18598">
+            <strong>Signature:</strong> (self:IProbe * value:float) -&gt; SubtractView<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '18599', 18599)" onmouseover="showTip(event, '18599', 18599)">
+            Subtract(self, values)
+          </code>
+          <div class="tip" id="18599">
+            <strong>Signature:</strong> (self:IProbe * values:float []) -&gt; SubtractView<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '18600', 18600)" onmouseover="showTip(event, '18600', 18600)">
+            Sum(self, others)
+          </code>
+          <div class="tip" id="18600">
+            <strong>Signature:</strong> (self:IProbe * others:IProbe []) -&gt; SumView<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '18601', 18601)" onmouseover="showTip(event, '18601', 18601)">
+            Sum(self, others)
+          </code>
+          <div class="tip" id="18601">
+            <strong>Signature:</strong> (self:IProbe * others:IEnumerable&lt;IProbe&gt;) -&gt; SumView<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '18602', 18602)" onmouseover="showTip(event, '18602', 18602)">
+            Sum(self, value)
+          </code>
+          <div class="tip" id="18602">
+            <strong>Signature:</strong> (self:IProbe * value:IProbe) -&gt; SumView<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '18603', 18603)" onmouseover="showTip(event, '18603', 18603)">
+            Sum(self, value)
+          </code>
+          <div class="tip" id="18603">
+            <strong>Signature:</strong> (self:IProbe * value:float) -&gt; SumView<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '18604', 18604)" onmouseover="showTip(event, '18604', 18604)">
+            Sum(self, values)
+          </code>
+          <div class="tip" id="18604">
+            <strong>Signature:</strong> (self:IProbe * values:float []) -&gt; SumView<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '18605', 18605)" onmouseover="showTip(event, '18605', 18605)">
+            Utilization(self)
+          </code>
+          <div class="tip" id="18605">
+            <strong>Signature:</strong> self:IProbe&lt;TimeSpan&gt; -&gt; UtilizationView<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+        </div>
+        <div class="span3">
+          <a href="https://github.com/vrvis">
+            <img src="logo.png" style="width:140px;height:140px;margin:10px 0px 0px 35px;border-style:none;" />
+          </a>
+
+          <ul class="nav nav-list" id="menu">
+
+            <li class="nav-header">Aardvark.Base</li>
+
+            <li class="divider"></li>
+            <li><a href="https://github.com/vrvis/aardvark.base">Home page</a></li>
+            <li class="divider"></li>
+
+            <li><a href="https://www.nuget.org/packages/Aardvark.Base">Get Aardvark.Base via NuGet</a></li>
+            <li><a href="https://github.com/vrvis/aardvark.base">Source Code on GitHub</a></li>
+            <li><a href="https://github.com/vrvis/aardvark.baseLicense">License (Apache 2)</a></li>
+            
+            <!-- <li><a href="https://github.com/vrvis/aardvark.base/RELEASE_NOTES.html">Release Notes</a></li>
+            <li><a href="https://github.com/vrvis/aardvark.base//contributing.html">Contributing to Aardvark.Base</a></li>
+  
+            <li><a href="http://stackoverflow.com/questions/tagged/f%23-fake">Ask a question</a></li> 
+            
+            <li class="nav-header">Tutorials</li>
+            <li><a href="https://github.com/vrvis/aardvark.base/gettingstarted.html">Getting started</a></li>
+            
+            -->
+
+            
+            <li class="divider"></li>
+            <li class="nav-header">Reference</li>
+
+            <li><a href="https://github.com/vrvis/aardvark.base/apidocs/index.html">API Reference</a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    <a href="https://github.com/vrvis/aardvark.base"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_gray_6d6d6d.png" alt="Fork me on GitHub"></a>
+  </body>
+  </html>

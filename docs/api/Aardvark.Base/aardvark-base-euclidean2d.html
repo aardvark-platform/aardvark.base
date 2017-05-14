@@ -1,0 +1,556 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>Euclidean2d - Aardvark.Base</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="The Aardvark Platform Team">
+
+    <script src="https://code.jquery.com/jquery-1.8.0.js"></script>
+    <script src="https://code.jquery.com/ui/1.8.23/jquery-ui.js"></script>
+    <script src="https://netdna.bootstrapcdn.com/twitter-bootstrap/2.2.1/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link href="https://netdna.bootstrapcdn.com/twitter-bootstrap/2.2.1/css/bootstrap-combined.min.css" rel="stylesheet">
+
+    <link type="text/css" rel="stylesheet" href="https://github.com/vrvis/aardvark.base/content/style.css" />
+    <script type="text/javascript" src="https://github.com/vrvis/aardvark.base/content/tips.js"></script>
+    <!-- HTML5 shim, for IE6-8 support of HTML5 elements -->
+    <!--[if lt IE 9]>
+      <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+  </head>
+  <body>
+    <div class="container">
+      <div class="masthead">
+        <ul class="nav nav-pills pull-right">
+          <li><a href="https://github.com/vrvis/aardvark.base">github page</a></li>
+        </ul>
+        <h3 class="muted"><a href="https://github.com/vrvis/aardvark.base/index.html">Aardvark.Base</a></h3>
+      </div>
+      <hr />
+      <div class="row">
+        <div class="span9" id="main">
+          
+
+
+
+<h1>Euclidean2d</h1>
+<div class="xmldoc">
+<p>Represents a Rigid Transformation (or Rigid Body Transformation) in 2D that is composed of a
+2D rotation Rot and a subsequent translation by a 2D vector Trans.
+This is also called an Euclidean Transformation and is a length preserving Transformation.</p>
+
+</div>
+  <h3>Constructors</h3>
+  <table class="table table-bordered member-list">
+    <thead>
+      <tr><td>Constructor</td><td>Description</td></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '5211', 5211)" onmouseover="showTip(event, '5211', 5211)">
+            new(rot, trans)
+          </code>
+          <div class="tip" id="5211">
+            <strong>Signature:</strong> (rot:Rot2d * trans:V2d) -&gt; unit<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Creates a rigid transformation from a rotation  and a (subsequent) translation .</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '5212', 5212)" onmouseover="showTip(event, '5212', 5212)">
+            new(rot, trans)
+          </code>
+          <div class="tip" id="5212">
+            <strong>Signature:</strong> (rot:M22d * trans:V2d) -&gt; unit<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Creates a rigid transformation from a rotation matrix  and a (subsequent) translation .</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '5213', 5213)" onmouseover="showTip(event, '5213', 5213)">
+            new(trafo)
+          </code>
+          <div class="tip" id="5213">
+            <strong>Signature:</strong> trafo:Trafo2d -&gt; unit<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Creates a rigid transformation from a trafo .</p>
+
+
+        </td>
+      </tr>
+    </tbody>
+  </table>
+  <h3>Instance members</h3>
+  <table class="table table-bordered member-list">
+    <thead>
+      <tr><td>Instance member</td><td>Description</td></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '5214', 5214)" onmouseover="showTip(event, '5214', 5214)">
+            Equals(other)
+          </code>
+          <div class="tip" id="5214">
+            <strong>Signature:</strong> other:obj -&gt; bool<br />
+              <strong>Modifiers:</strong> abstract<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '5215', 5215)" onmouseover="showTip(event, '5215', 5215)">
+            GetHashCode()
+          </code>
+          <div class="tip" id="5215">
+            <strong>Signature:</strong> unit -&gt; int<br />
+              <strong>Modifiers:</strong> abstract<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '5216', 5216)" onmouseover="showTip(event, '5216', 5216)">
+            Inverse
+          </code>
+          <div class="tip" id="5216">
+            <strong>Signature:</strong> Euclidean2d<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Gets the (multiplicative) inverse of this Euclidean transformation.
+[Rot^T,-Rot^T Trans]</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '5217', 5217)" onmouseover="showTip(event, '5217', 5217)">
+            Invert()
+          </code>
+          <div class="tip" id="5217">
+            <strong>Signature:</strong> unit -&gt; unit<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Inverts this rigid transformation (multiplicative inverse).
+this = [Rot^T,-Rot^T Trans]</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '5218', 5218)" onmouseover="showTip(event, '5218', 5218)">
+            InvTransformDir(v)
+          </code>
+          <div class="tip" id="5218">
+            <strong>Signature:</strong> v:V2d -&gt; V2d<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Transforms direction vector v (v.w is presumed 0.0) by the inverse of this rigid transformation.
+Actually, only the rotation is used.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '5219', 5219)" onmouseover="showTip(event, '5219', 5219)">
+            InvTransformPos(p)
+          </code>
+          <div class="tip" id="5219">
+            <strong>Signature:</strong> p:V2d -&gt; V2d<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Transforms point p (p.w is presumed 1.0) by the inverse of this rigid transformation.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '5220', 5220)" onmouseover="showTip(event, '5220', 5220)">
+            IsInvalid
+          </code>
+          <div class="tip" id="5220">
+            <strong>Signature:</strong> bool<br />
+              <strong>Modifiers:</strong> abstract<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '5221', 5221)" onmouseover="showTip(event, '5221', 5221)">
+            IsValid
+          </code>
+          <div class="tip" id="5221">
+            <strong>Signature:</strong> bool<br />
+              <strong>Modifiers:</strong> abstract<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '5222', 5222)" onmouseover="showTip(event, '5222', 5222)">
+            ToString()
+          </code>
+          <div class="tip" id="5222">
+            <strong>Signature:</strong> unit -&gt; string<br />
+              <strong>Modifiers:</strong> abstract<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '5223', 5223)" onmouseover="showTip(event, '5223', 5223)">
+            TransformDir(v)
+          </code>
+          <div class="tip" id="5223">
+            <strong>Signature:</strong> v:V2d -&gt; V2d<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Transforms direction vector v (v.w is presumed 0.0) by this rigid transformation.
+Actually, only the rotation is used.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '5224', 5224)" onmouseover="showTip(event, '5224', 5224)">
+            TransformPos(p)
+          </code>
+          <div class="tip" id="5224">
+            <strong>Signature:</strong> p:V2d -&gt; V2d<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Transforms point p (p.w is presumed 1.0) by this rigid transformation.</p>
+
+
+        </td>
+      </tr>
+    </tbody>
+  </table>
+  <h3>Static members</h3>
+  <table class="table table-bordered member-list">
+    <thead>
+      <tr><td>Static member</td><td>Description</td></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '5225', 5225)" onmouseover="showTip(event, '5225', 5225)">
+            ApproxEqual(r0, r1)
+          </code>
+          <div class="tip" id="5225">
+            <strong>Signature:</strong> (r0:Euclidean2d * r1:Euclidean2d) -&gt; bool<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '5226', 5226)" onmouseover="showTip(event, '5226', 5226)">
+            ApproxEqual(r0, r1, angleTol, posTol)
+          </code>
+          <div class="tip" id="5226">
+            <strong>Signature:</strong> (r0:Euclidean2d * r1:Euclidean2d * angleTol:float * posTol:float) -&gt; bool<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '5227', 5227)" onmouseover="showTip(event, '5227', 5227)">
+            InvTransformDir(r, v)
+          </code>
+          <div class="tip" id="5227">
+            <strong>Signature:</strong> (r:Euclidean2d * v:V2d) -&gt; V2d<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Transforms direction vector v (v.w is presumed 0.0) by the inverse of the rigid transformation r.
+Actually, only the rotation is used.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '5228', 5228)" onmouseover="showTip(event, '5228', 5228)">
+            InvTransformPos(r, p)
+          </code>
+          <div class="tip" id="5228">
+            <strong>Signature:</strong> (r:Euclidean2d * p:V2d) -&gt; V2d<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Transforms point p (p.w is presumed 1.0) by the inverse of the rigid transformation r.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '5229', 5229)" onmouseover="showTip(event, '5229', 5229)">
+            Multiply(a, b)
+          </code>
+          <div class="tip" id="5229">
+            <strong>Signature:</strong> (a:Euclidean2d * b:Euclidean2d) -&gt; Euclidean2d<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Multiplies 2 Euclidean transformations.
+This concatenates the two rigid transformations into a single one, first b is applied, then a.
+Attention: Multiplication is NOT commutative!</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '5230', 5230)" onmouseover="showTip(event, '5230', 5230)">
+            Multiply(m, r)
+          </code>
+          <div class="tip" id="5230">
+            <strong>Signature:</strong> (m:M22d * r:Euclidean2d) -&gt; M23d<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '5231', 5231)" onmouseover="showTip(event, '5231', 5231)">
+            op_Equality(r0, r1)
+          </code>
+          <div class="tip" id="5231">
+            <strong>Signature:</strong> (r0:Euclidean2d * r1:Euclidean2d) -&gt; bool<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '5232', 5232)" onmouseover="showTip(event, '5232', 5232)">
+            op_Explicit(r)
+          </code>
+          <div class="tip" id="5232">
+            <strong>Signature:</strong> r:Euclidean2d -&gt; M23d<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '5233', 5233)" onmouseover="showTip(event, '5233', 5233)">
+            op_Explicit(r)
+          </code>
+          <div class="tip" id="5233">
+            <strong>Signature:</strong> r:Euclidean2d -&gt; M33d<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '5234', 5234)" onmouseover="showTip(event, '5234', 5234)">
+            op_Inequality(r0, r1)
+          </code>
+          <div class="tip" id="5234">
+            <strong>Signature:</strong> (r0:Euclidean2d * r1:Euclidean2d) -&gt; bool<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '5235', 5235)" onmouseover="showTip(event, '5235', 5235)">
+            op_Multiply(a, b)
+          </code>
+          <div class="tip" id="5235">
+            <strong>Signature:</strong> (a:Euclidean2d * b:Euclidean2d) -&gt; Euclidean2d<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '5236', 5236)" onmouseover="showTip(event, '5236', 5236)">
+            op_Multiply(m, r)
+          </code>
+          <div class="tip" id="5236">
+            <strong>Signature:</strong> (m:M22d * r:Euclidean2d) -&gt; M23d<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '5237', 5237)" onmouseover="showTip(event, '5237', 5237)">
+            Parse(s)
+          </code>
+          <div class="tip" id="5237">
+            <strong>Signature:</strong> s:string -&gt; Euclidean2d<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '5238', 5238)" onmouseover="showTip(event, '5238', 5238)">
+            TransformDir(r, v)
+          </code>
+          <div class="tip" id="5238">
+            <strong>Signature:</strong> (r:Euclidean2d * v:V2d) -&gt; V2d<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Transforms direction vector v (v.w is presumed 0.0) by rigid transformation r.
+Actually, only the rotation is used.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '5239', 5239)" onmouseover="showTip(event, '5239', 5239)">
+            TransformPos(r, p)
+          </code>
+          <div class="tip" id="5239">
+            <strong>Signature:</strong> (r:Euclidean2d * p:V2d) -&gt; V2d<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Transforms point p (p.w is presumed 1.0) by rigid transformation r.</p>
+
+
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+        </div>
+        <div class="span3">
+          <a href="https://github.com/vrvis">
+            <img src="logo.png" style="width:140px;height:140px;margin:10px 0px 0px 35px;border-style:none;" />
+          </a>
+
+          <ul class="nav nav-list" id="menu">
+
+            <li class="nav-header">Aardvark.Base</li>
+
+            <li class="divider"></li>
+            <li><a href="https://github.com/vrvis/aardvark.base">Home page</a></li>
+            <li class="divider"></li>
+
+            <li><a href="https://www.nuget.org/packages/Aardvark.Base">Get Aardvark.Base via NuGet</a></li>
+            <li><a href="https://github.com/vrvis/aardvark.base">Source Code on GitHub</a></li>
+            <li><a href="https://github.com/vrvis/aardvark.baseLicense">License (Apache 2)</a></li>
+            
+            <!-- <li><a href="https://github.com/vrvis/aardvark.base/RELEASE_NOTES.html">Release Notes</a></li>
+            <li><a href="https://github.com/vrvis/aardvark.base//contributing.html">Contributing to Aardvark.Base</a></li>
+  
+            <li><a href="http://stackoverflow.com/questions/tagged/f%23-fake">Ask a question</a></li> 
+            
+            <li class="nav-header">Tutorials</li>
+            <li><a href="https://github.com/vrvis/aardvark.base/gettingstarted.html">Getting started</a></li>
+            
+            -->
+
+            
+            <li class="divider"></li>
+            <li class="nav-header">Reference</li>
+
+            <li><a href="https://github.com/vrvis/aardvark.base/apidocs/index.html">API Reference</a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    <a href="https://github.com/vrvis/aardvark.base"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_gray_6d6d6d.png" alt="Fork me on GitHub"></a>
+  </body>
+  </html>

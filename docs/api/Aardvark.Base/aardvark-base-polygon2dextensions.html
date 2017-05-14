@@ -1,0 +1,631 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>Polygon2dExtensions - Aardvark.Base</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="The Aardvark Platform Team">
+
+    <script src="https://code.jquery.com/jquery-1.8.0.js"></script>
+    <script src="https://code.jquery.com/ui/1.8.23/jquery-ui.js"></script>
+    <script src="https://netdna.bootstrapcdn.com/twitter-bootstrap/2.2.1/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link href="https://netdna.bootstrapcdn.com/twitter-bootstrap/2.2.1/css/bootstrap-combined.min.css" rel="stylesheet">
+
+    <link type="text/css" rel="stylesheet" href="https://github.com/vrvis/aardvark.base/content/style.css" />
+    <script type="text/javascript" src="https://github.com/vrvis/aardvark.base/content/tips.js"></script>
+    <!-- HTML5 shim, for IE6-8 support of HTML5 elements -->
+    <!--[if lt IE 9]>
+      <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+  </head>
+  <body>
+    <div class="container">
+      <div class="masthead">
+        <ul class="nav nav-pills pull-right">
+          <li><a href="https://github.com/vrvis/aardvark.base">github page</a></li>
+        </ul>
+        <h3 class="muted"><a href="https://github.com/vrvis/aardvark.base/index.html">Aardvark.Base</a></h3>
+      </div>
+      <hr />
+      <div class="row">
+        <div class="span9" id="main">
+          
+
+
+
+<h1>Polygon2dExtensions</h1>
+<div class="xmldoc">
+</div>
+  <h3>Static members</h3>
+  <table class="table table-bordered member-list">
+    <thead>
+      <tr><td>Static member</td><td>Description</td></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '14497', 14497)" onmouseover="showTip(event, '14497', 14497)">
+            ComputeArea(polygon)
+          </code>
+          <div class="tip" id="14497">
+            <strong>Signature:</strong> polygon:Polygon2d -&gt; float<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Computes the area of the polygon according to
+"Fast Polygon Area and Newell Normal Computation"
+journal of graphics tools, 7(2):9-13, 2002. The
+absolute value is returned (i.e. area &gt;= 0.0).</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '14498', 14498)" onmouseover="showTip(event, '14498', 14498)">
+            ComputeCentroid(polygon)
+          </code>
+          <div class="tip" id="14498">
+            <strong>Signature:</strong> polygon:Polygon2d -&gt; V2d<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>The geometric center of the polygon.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '14499', 14499)" onmouseover="showTip(event, '14499', 14499)">
+            ComputeConvexHullIndexPolygon(polygon)
+          </code>
+          <div class="tip" id="14499">
+            <strong>Signature:</strong> polygon:Polygon2d -&gt; IndexPolygon2d<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Returns convex hull of this polygon.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '14500', 14500)" onmouseover="showTip(event, '14500', 14500)">
+            ComputeMinAreaEnclosingBoxRotation(...)
+          </code>
+          <div class="tip" id="14500">
+            <strong>Signature:</strong> (polygon:Polygon2d * epsilon:float) -&gt; M22d<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Returns the rotation of the supplied counter clockwise enumerated
+convex polygon that results in the minimum area enclosing box.
+If multiple rotations are within epsilon in their area, the one
+that is closest to an axis-aligned rotation (0, 90, 180, 270) is
+returned. O(n).</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '14501', 14501)" onmouseover="showTip(event, '14501', 14501)">
+            ComputeOrientedBoundingBox(polygon)
+          </code>
+          <div class="tip" id="14501">
+            <strong>Signature:</strong> polygon:Polygon2d -&gt; Polygon2d<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Gets oriented bounding box of this polygon</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '14502', 14502)" onmouseover="showTip(event, '14502', 14502)">
+            ComputePerimeter(polygon)
+          </code>
+          <div class="tip" id="14502">
+            <strong>Signature:</strong> polygon:Polygon2d -&gt; float<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '14503', 14503)" onmouseover="showTip(event, '14503', 14503)">
+            ComputeSignedArea(polygon)
+          </code>
+          <div class="tip" id="14503">
+            <strong>Signature:</strong> polygon:Polygon2d -&gt; float<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Computes the area of the polygon according to
+"Fast Polygon Area and Newell Normal Computation"
+journal of graphics tools, 7(2):9-13, 2002</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '14504', 14504)" onmouseover="showTip(event, '14504', 14504)">
+            ComputeVertexCentroid(polygon)
+          </code>
+          <div class="tip" id="14504">
+            <strong>Signature:</strong> polygon:Polygon2d -&gt; V2d<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>The vertex centroid is the average of the vertex coordinates.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '14505', 14505)" onmouseover="showTip(event, '14505', 14505)">
+            ComputeWindingNumber(polygon)
+          </code>
+          <div class="tip" id="14505">
+            <strong>Signature:</strong> polygon:Polygon2d -&gt; int<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Computes the winding number of the polyon.
+The winding number is positive for counter-
+clockwise polygons, negative for clockwise polygons.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '14506', 14506)" onmouseover="showTip(event, '14506', 14506)">
+            ConvexClipped(polygon, line, eps)
+          </code>
+          <div class="tip" id="14506">
+            <strong>Signature:</strong> (polygon:Polygon2d * line:Plane2d * eps:float) -&gt; Polygon2d<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Clip the supplied polygon at the supplied line. The method should
+work with all non-selfintersecting polygons.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '14507', 14507)" onmouseover="showTip(event, '14507', 14507)">
+            ConvexClipped(polygon, lines, eps)
+          </code>
+          <div class="tip" id="14507">
+            <strong>Signature:</strong> (polygon:Polygon2d * lines:Plane2d [] * eps:float) -&gt; Polygon2d<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Returns the convex polygon clipped by the set of lines (defined
+as Plane2ds).</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '14508', 14508)" onmouseover="showTip(event, '14508', 14508)">
+            ConvexClipped(polygon, hull, eps)
+          </code>
+          <div class="tip" id="14508">
+            <strong>Signature:</strong> (polygon:Polygon2d * hull:Hull2d * eps:float) -&gt; Polygon2d<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Returns the polygon clipped by the hull, i.e. all parts of the
+polygon that are at the positive side of the hull lines.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '14509', 14509)" onmouseover="showTip(event, '14509', 14509)">
+            ConvexClipped(polygon, box, eps)
+          </code>
+          <div class="tip" id="14509">
+            <strong>Signature:</strong> (polygon:Polygon2d * box:Box2d * eps:float) -&gt; Polygon2d<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>TODO summary.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '14510', 14510)" onmouseover="showTip(event, '14510', 14510)">
+            HasSelfIntersections(...)
+          </code>
+          <div class="tip" id="14510">
+            <strong>Signature:</strong> (poly:Polygon2d * absoluteEpsilon:float) -&gt; int<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Returns:
+1 if the Polygon created by poly has no self-intersections
+0 if one point of the polygon lies close to a line (absoluteEpsilon)
+-1 if the Polygon created by poly has a real self-intersection</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '14511', 14511)" onmouseover="showTip(event, '14511', 14511)">
+            HasWinding(polygon, winding)
+          </code>
+          <div class="tip" id="14511">
+            <strong>Signature:</strong> (polygon:Polygon2d * winding:Winding) -&gt; bool<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Check if a polygon has a specified winding.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '14512', 14512)" onmouseover="showTip(event, '14512', 14512)">
+            IsCcw(polygon)
+          </code>
+          <div class="tip" id="14512">
+            <strong>Signature:</strong> polygon:Polygon2d -&gt; bool<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Returns true if polygon points are oriented in counter-clockwise order.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '14513', 14513)" onmouseover="showTip(event, '14513', 14513)">
+            IsConcave(polygon)
+          </code>
+          <div class="tip" id="14513">
+            <strong>Signature:</strong> polygon:Polygon2d -&gt; bool<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '14514', 14514)" onmouseover="showTip(event, '14514', 14514)">
+            IsConvex(polygon)
+          </code>
+          <div class="tip" id="14514">
+            <strong>Signature:</strong> polygon:Polygon2d -&gt; bool<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '14515', 14515)" onmouseover="showTip(event, '14515', 14515)">
+            IsFullyContainedInside(self, other)
+          </code>
+          <div class="tip" id="14515">
+            <strong>Signature:</strong> (self:Polygon2d * other:Polygon2d) -&gt; bool<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Returns true if the 'other' polygon is fully contained inside this polygon.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '14516', 14516)" onmouseover="showTip(event, '14516', 14516)">
+            MinDistanceTo(polygon, polygon1)
+          </code>
+          <div class="tip" id="14516">
+            <strong>Signature:</strong> (polygon:Polygon2d * polygon1:Polygon2d) -&gt; float<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Returns the minimal distance between the polygon and the
+other supplied polygon. O(n).</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '14517', 14517)" onmouseover="showTip(event, '14517', 14517)">
+            MinDistanceTo(...)
+          </code>
+          <div class="tip" id="14517">
+            <strong>Signature:</strong> (polygon:Polygon2d * polygon1:Polygon2d * pi0:byref&lt;int&gt; * pi1:byref&lt;int&gt; * lineOnThis:byref&lt;bool&gt;) -&gt; float<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Returns the minimal distance between the polygon and the non-
+overlapping other supplied polygon. The minimal distance is
+always computed as the distance between a line segment and a
+point. The indices of the minimal distance configuration are
+returned in the out parameter, as the indices of points on the
+two polygons, and wether the line segement was on this or the
+other polygon. O(n). The returned index of the line segment is
+the lower point index (except in case of wraparound).</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '14518', 14518)" onmouseover="showTip(event, '14518', 14518)">
+            RasterizeAsLabels(...)
+          </code>
+          <div class="tip" id="14518">
+            <strong>Signature:</strong> (polygons:IEnumerable&lt;Polygon2d&gt; * resolution:V2i * bb:Box2d) -&gt; Matrix&lt;int&gt;<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Rasterizes an array of polygons into a matrix of given size.
+First polygon is rasterized with label 1, second polygon with label 2, and so on.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '14519', 14519)" onmouseover="showTip(event, '14519', 14519)">
+            RasterizePolygon(...)
+          </code>
+          <div class="tip" id="14519">
+            <strong>Signature:</strong> (polygon:Polygon2d * intoMatrix:Matrix&lt;int&gt; * value:int) -&gt; unit<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Rasterizes this polygon into a given matrix using the given value (label).</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '14520', 14520)" onmouseover="showTip(event, '14520', 14520)">
+            Scaled(polygon, scale)
+          </code>
+          <div class="tip" id="14520">
+            <strong>Signature:</strong> (polygon:Polygon2d * scale:float) -&gt; Polygon2d<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '14521', 14521)" onmouseover="showTip(event, '14521', 14521)">
+            Scaled(polygon, center, scale)
+          </code>
+          <div class="tip" id="14521">
+            <strong>Signature:</strong> (polygon:Polygon2d * center:V2d * scale:float) -&gt; Polygon2d<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '14522', 14522)" onmouseover="showTip(event, '14522', 14522)">
+            Scaled(polygon, scale)
+          </code>
+          <div class="tip" id="14522">
+            <strong>Signature:</strong> (polygon:Polygon2d * scale:V2d) -&gt; Polygon2d<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '14523', 14523)" onmouseover="showTip(event, '14523', 14523)">
+            Scaled(polygon, center, scale)
+          </code>
+          <div class="tip" id="14523">
+            <strong>Signature:</strong> (polygon:Polygon2d * center:V2d * scale:V2d) -&gt; Polygon2d<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '14524', 14524)" onmouseover="showTip(event, '14524', 14524)">
+            ScaledAboutVertexCentroid(...)
+          </code>
+          <div class="tip" id="14524">
+            <strong>Signature:</strong> (polygon:Polygon2d * scale:float) -&gt; Polygon2d<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '14525', 14525)" onmouseover="showTip(event, '14525', 14525)">
+            ScaledAboutVertexCentroid(...)
+          </code>
+          <div class="tip" id="14525">
+            <strong>Signature:</strong> (polygon:Polygon2d * scale:V2d) -&gt; Polygon2d<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '14526', 14526)" onmouseover="showTip(event, '14526', 14526)">
+            ToPolygon3d(polygon, point_copyFun)
+          </code>
+          <div class="tip" id="14526">
+            <strong>Signature:</strong> (polygon:Polygon2d * point_copyFun:Func&lt;V2d,V3d&gt;) -&gt; Polygon3d<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '14527', 14527)" onmouseover="showTip(event, '14527', 14527)">
+            ToPolygon3d(...)
+          </code>
+          <div class="tip" id="14527">
+            <strong>Signature:</strong> (polygon:Polygon2d * point_index_copyFun:Func&lt;V2d,int,V3d&gt;) -&gt; Polygon3d<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '14528', 14528)" onmouseover="showTip(event, '14528', 14528)">
+            Transformed(polygon, m)
+          </code>
+          <div class="tip" id="14528">
+            <strong>Signature:</strong> (polygon:Polygon2d * m:M22d) -&gt; Polygon2d<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '14529', 14529)" onmouseover="showTip(event, '14529', 14529)">
+            Transformed(polygon, m)
+          </code>
+          <div class="tip" id="14529">
+            <strong>Signature:</strong> (polygon:Polygon2d * m:M33d) -&gt; Polygon2d<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '14530', 14530)" onmouseover="showTip(event, '14530', 14530)">
+            WithoutMultiplePoints(polygon, eps)
+          </code>
+          <div class="tip" id="14530">
+            <strong>Signature:</strong> (polygon:Polygon2d * eps:float) -&gt; Polygon2d<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+        </div>
+        <div class="span3">
+          <a href="https://github.com/vrvis">
+            <img src="logo.png" style="width:140px;height:140px;margin:10px 0px 0px 35px;border-style:none;" />
+          </a>
+
+          <ul class="nav nav-list" id="menu">
+
+            <li class="nav-header">Aardvark.Base</li>
+
+            <li class="divider"></li>
+            <li><a href="https://github.com/vrvis/aardvark.base">Home page</a></li>
+            <li class="divider"></li>
+
+            <li><a href="https://www.nuget.org/packages/Aardvark.Base">Get Aardvark.Base via NuGet</a></li>
+            <li><a href="https://github.com/vrvis/aardvark.base">Source Code on GitHub</a></li>
+            <li><a href="https://github.com/vrvis/aardvark.baseLicense">License (Apache 2)</a></li>
+            
+            <!-- <li><a href="https://github.com/vrvis/aardvark.base/RELEASE_NOTES.html">Release Notes</a></li>
+            <li><a href="https://github.com/vrvis/aardvark.base//contributing.html">Contributing to Aardvark.Base</a></li>
+  
+            <li><a href="http://stackoverflow.com/questions/tagged/f%23-fake">Ask a question</a></li> 
+            
+            <li class="nav-header">Tutorials</li>
+            <li><a href="https://github.com/vrvis/aardvark.base/gettingstarted.html">Getting started</a></li>
+            
+            -->
+
+            
+            <li class="divider"></li>
+            <li class="nav-header">Reference</li>
+
+            <li><a href="https://github.com/vrvis/aardvark.base/apidocs/index.html">API Reference</a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    <a href="https://github.com/vrvis/aardvark.base"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_gray_6d6d6d.png" alt="Fork me on GitHub"></a>
+  </body>
+  </html>

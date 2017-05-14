@@ -1,0 +1,691 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>AMap - Aardvark.Base.Incremental</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="The Aardvark Platform Team">
+
+    <script src="https://code.jquery.com/jquery-1.8.0.js"></script>
+    <script src="https://code.jquery.com/ui/1.8.23/jquery-ui.js"></script>
+    <script src="https://netdna.bootstrapcdn.com/twitter-bootstrap/2.2.1/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link href="https://netdna.bootstrapcdn.com/twitter-bootstrap/2.2.1/css/bootstrap-combined.min.css" rel="stylesheet">
+
+    <link type="text/css" rel="stylesheet" href="https://github.com/vrvis/aardvark.base/content/style.css" />
+    <script type="text/javascript" src="https://github.com/vrvis/aardvark.base/content/tips.js"></script>
+    <!-- HTML5 shim, for IE6-8 support of HTML5 elements -->
+    <!--[if lt IE 9]>
+      <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+  </head>
+  <body>
+    <div class="container">
+      <div class="masthead">
+        <ul class="nav nav-pills pull-right">
+          <li><a href="https://github.com/vrvis/aardvark.base">github page</a></li>
+        </ul>
+        <h3 class="muted"><a href="https://github.com/vrvis/aardvark.base/index.html">Aardvark.Base.Incremental</a></h3>
+      </div>
+      <hr />
+      <div class="row">
+        <div class="span9" id="main">
+          
+
+
+
+<h1>AMap</h1>
+<div class="xmldoc">
+</div>
+
+<!-- Render nested types and modules, if there are any -->
+  <h2>Nested types and modules</h2>
+  <div>
+      <table class="table table-bordered module-list">
+    <thead>
+      <tr><td>Module</td><td>Description</td></tr>
+    </thead>
+    <tbody>
+        <tr>
+          <td class="module-name">
+            <a href="aardvark-base-incremental-amapmodule-implementation.html">Implementation</a>
+          </td>
+          <td class="xmldoc"></td>
+        </tr>
+        <tr>
+          <td class="module-name">
+            <a href="aardvark-base-incremental-amapmodule-readers.html">Readers</a>
+          </td>
+          <td class="xmldoc"></td>
+        </tr>
+    </tbody>
+  </table>
+
+  </div>
+
+  <h3>Functions and values</h3>
+  <table class="table table-bordered member-list">
+    <thead>
+      <tr><td>Function or value</td><td>Description</td></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '58', 58)" onmouseover="showTip(event, '58', 58)">
+            bind(mapping m)
+          </code>
+          <div class="tip" id="58">
+            <strong>Signature:</strong> mapping:(&#39;a -&gt; amap&lt;&#39;k,&#39;v&gt;) -&gt; m:IMod&lt;&#39;a&gt; -&gt; amap&lt;&#39;k,&#39;v&gt;<br />
+                          <strong>Type parameters:</strong> 'a, 'k, 'v          </div>
+        </td>
+        <td class="xmldoc">
+            <a href="https://github.com/vrvis/aardvark.base/src/Aardvark.Base.Incremental/AdaptiveMap/amap.fs#L582-582" class="github-link">
+              <img src="../content/img/github.png" class="normal" />
+              <img src="../content/img/github-blue.png" class="hover" />
+            </a>
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '59', 59)" onmouseover="showTip(event, '59', 59)">
+            choose(mapping map)
+          </code>
+          <div class="tip" id="59">
+            <strong>Signature:</strong> mapping:(&#39;k -&gt; &#39;a -&gt; Option&lt;&#39;b&gt;) -&gt; map:amap&lt;&#39;k,&#39;a&gt; -&gt; amap&lt;&#39;k,&#39;b&gt;<br />
+                          <strong>Type parameters:</strong> 'k, 'a, 'b          </div>
+        </td>
+        <td class="xmldoc">
+            <a href="https://github.com/vrvis/aardvark.base/src/Aardvark.Base.Incremental/AdaptiveMap/amap.fs#L539-539" class="github-link">
+              <img src="../content/img/github.png" class="normal" />
+              <img src="../content/img/github-blue.png" class="hover" />
+            </a>
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '60', 60)" onmouseover="showTip(event, '60', 60)">
+            choose2(mapping l r)
+          </code>
+          <div class="tip" id="60">
+            <strong>Signature:</strong> mapping:(&#39;k -&gt; Option&lt;&#39;a&gt; -&gt; Option&lt;&#39;b&gt; -&gt; Option&lt;&#39;c&gt;) -&gt; l:amap&lt;&#39;k,&#39;a&gt; -&gt; r:amap&lt;&#39;k,&#39;b&gt; -&gt; amap&lt;&#39;k,&#39;c&gt;<br />
+                          <strong>Type parameters:</strong> 'k, 'a, 'b, 'c          </div>
+        </td>
+        <td class="xmldoc">
+            <a href="https://github.com/vrvis/aardvark.base/src/Aardvark.Base.Incremental/AdaptiveMap/amap.fs#L652-652" class="github-link">
+              <img src="../content/img/github.png" class="normal" />
+              <img src="../content/img/github-blue.png" class="hover" />
+            </a>
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '61', 61)" onmouseover="showTip(event, '61', 61)">
+            chooseM(mapping map)
+          </code>
+          <div class="tip" id="61">
+            <strong>Signature:</strong> mapping:(&#39;k -&gt; &#39;a -&gt; IMod&lt;Option&lt;&#39;b&gt;&gt;) -&gt; map:amap&lt;&#39;k,&#39;a&gt; -&gt; amap&lt;&#39;k,&#39;b&gt;<br />
+                          <strong>Type parameters:</strong> 'k, 'a, 'b          </div>
+        </td>
+        <td class="xmldoc">
+            <a href="https://github.com/vrvis/aardvark.base/src/Aardvark.Base.Incremental/AdaptiveMap/amap.fs#L597-597" class="github-link">
+              <img src="../content/img/github.png" class="normal" />
+              <img src="../content/img/github-blue.png" class="hover" />
+            </a>
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '62', 62)" onmouseover="showTip(event, '62', 62)">
+            chooseSet(f set)
+          </code>
+          <div class="tip" id="62">
+            <strong>Signature:</strong> f:(&#39;a -&gt; Option&lt;&#39;b&gt;) -&gt; set:aset&lt;&#39;a&gt; -&gt; amap&lt;&#39;a,&#39;b&gt;<br />
+                          <strong>Type parameters:</strong> 'a, 'b          </div>
+        </td>
+        <td class="xmldoc">
+            <a href="https://github.com/vrvis/aardvark.base/src/Aardvark.Base.Incremental/AdaptiveMap/amap.fs#L621-621" class="github-link">
+              <img src="../content/img/github.png" class="normal" />
+              <img src="../content/img/github-blue.png" class="hover" />
+            </a>
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '63', 63)" onmouseover="showTip(event, '63', 63)">
+            chooseSetM(f set)
+          </code>
+          <div class="tip" id="63">
+            <strong>Signature:</strong> f:(&#39;a -&gt; IMod&lt;Option&lt;&#39;b&gt;&gt;) -&gt; set:aset&lt;&#39;a&gt; -&gt; amap&lt;&#39;a,&#39;b&gt;<br />
+                          <strong>Type parameters:</strong> 'a, 'b          </div>
+        </td>
+        <td class="xmldoc">
+            <a href="https://github.com/vrvis/aardvark.base/src/Aardvark.Base.Incremental/AdaptiveMap/amap.fs#L627-627" class="github-link">
+              <img src="../content/img/github.png" class="normal" />
+              <img src="../content/img/github-blue.png" class="hover" />
+            </a>
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '64', 64)" onmouseover="showTip(event, '64', 64)">
+            empty
+          </code>
+          <div class="tip" id="64">
+            <strong>Signature:</strong> amap&lt;&#39;k,&#39;v&gt;<br />
+                          <strong>Type parameters:</strong> 'k, 'v          </div>
+        </td>
+        <td class="xmldoc">
+            <a href="https://github.com/vrvis/aardvark.base/src/Aardvark.Base.Incremental/AdaptiveMap/amap.fs#L525-525" class="github-link">
+              <img src="../content/img/github.png" class="normal" />
+              <img src="../content/img/github-blue.png" class="hover" />
+            </a>
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '65', 65)" onmouseover="showTip(event, '65', 65)">
+            filter(predicate map)
+          </code>
+          <div class="tip" id="65">
+            <strong>Signature:</strong> predicate:(&#39;k -&gt; &#39;a -&gt; bool) -&gt; map:amap&lt;&#39;k,&#39;a&gt; -&gt; amap&lt;&#39;k,&#39;a&gt;<br />
+                          <strong>Type parameters:</strong> 'k, 'a          </div>
+        </td>
+        <td class="xmldoc">
+            <a href="https://github.com/vrvis/aardvark.base/src/Aardvark.Base.Incremental/AdaptiveMap/amap.fs#L545-545" class="github-link">
+              <img src="../content/img/github.png" class="normal" />
+              <img src="../content/img/github-blue.png" class="hover" />
+            </a>
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '66', 66)" onmouseover="showTip(event, '66', 66)">
+            filterM(predicate map)
+          </code>
+          <div class="tip" id="66">
+            <strong>Signature:</strong> predicate:(&#39;k -&gt; &#39;a -&gt; IMod&lt;bool&gt;) -&gt; map:amap&lt;&#39;k,&#39;a&gt; -&gt; amap&lt;&#39;k,&#39;a&gt;<br />
+                          <strong>Type parameters:</strong> 'k, 'a          </div>
+        </td>
+        <td class="xmldoc">
+            <a href="https://github.com/vrvis/aardvark.base/src/Aardvark.Base.Incremental/AdaptiveMap/amap.fs#L600-600" class="github-link">
+              <img src="../content/img/github.png" class="normal" />
+              <img src="../content/img/github-blue.png" class="hover" />
+            </a>
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '67', 67)" onmouseover="showTip(event, '67', 67)">
+            find(key m)
+          </code>
+          <div class="tip" id="67">
+            <strong>Signature:</strong> key:&#39;k -&gt; m:amap&lt;&#39;k,&#39;v&gt; -&gt; IMod&lt;&#39;v&gt;<br />
+                          <strong>Type parameters:</strong> 'k, 'v          </div>
+        </td>
+        <td class="xmldoc">
+            <a href="https://github.com/vrvis/aardvark.base/src/Aardvark.Base.Incremental/AdaptiveMap/amap.fs#L679-679" class="github-link">
+              <img src="../content/img/github.png" class="normal" />
+              <img src="../content/img/github-blue.png" class="hover" />
+            </a>
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '68', 68)" onmouseover="showTip(event, '68', 68)">
+            findWithDefault(key def m)
+          </code>
+          <div class="tip" id="68">
+            <strong>Signature:</strong> key:&#39;k -&gt; def:&#39;v -&gt; m:amap&lt;&#39;k,&#39;v&gt; -&gt; IMod&lt;&#39;v&gt;<br />
+                          <strong>Type parameters:</strong> 'k, 'v          </div>
+        </td>
+        <td class="xmldoc">
+            <a href="https://github.com/vrvis/aardvark.base/src/Aardvark.Base.Incremental/AdaptiveMap/amap.fs#L696-696" class="github-link">
+              <img src="../content/img/github.png" class="normal" />
+              <img src="../content/img/github-blue.png" class="hover" />
+            </a>
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '69', 69)" onmouseover="showTip(event, '69', 69)">
+            flatten(map)
+          </code>
+          <div class="tip" id="69">
+            <strong>Signature:</strong> map:amap&lt;&#39;k,Option&lt;&#39;a&gt;&gt; -&gt; amap&lt;&#39;k,&#39;a&gt;<br />
+                          <strong>Type parameters:</strong> 'k, 'a          </div>
+        </td>
+        <td class="xmldoc">
+            <a href="https://github.com/vrvis/aardvark.base/src/Aardvark.Base.Incremental/AdaptiveMap/amap.fs#L603-603" class="github-link">
+              <img src="../content/img/github.png" class="normal" />
+              <img src="../content/img/github-blue.png" class="hover" />
+            </a>
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '70', 70)" onmouseover="showTip(event, '70', 70)">
+            flattenM(map)
+          </code>
+          <div class="tip" id="70">
+            <strong>Signature:</strong> map:amap&lt;&#39;k,IMod&lt;Option&lt;&#39;a&gt;&gt;&gt; -&gt; amap&lt;&#39;k,&#39;a&gt;<br />
+                          <strong>Type parameters:</strong> 'k, 'a          </div>
+        </td>
+        <td class="xmldoc">
+            <a href="https://github.com/vrvis/aardvark.base/src/Aardvark.Base.Incremental/AdaptiveMap/amap.fs#L606-606" class="github-link">
+              <img src="../content/img/github.png" class="normal" />
+              <img src="../content/img/github-blue.png" class="hover" />
+            </a>
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '71', 71)" onmouseover="showTip(event, '71', 71)">
+            map(mapping map)
+          </code>
+          <div class="tip" id="71">
+            <strong>Signature:</strong> mapping:(&#39;k -&gt; &#39;a -&gt; &#39;b) -&gt; map:amap&lt;&#39;k,&#39;a&gt; -&gt; amap&lt;&#39;k,&#39;b&gt;<br />
+                          <strong>Type parameters:</strong> 'k, 'a, 'b          </div>
+        </td>
+        <td class="xmldoc">
+            <a href="https://github.com/vrvis/aardvark.base/src/Aardvark.Base.Incremental/AdaptiveMap/amap.fs#L533-533" class="github-link">
+              <img src="../content/img/github.png" class="normal" />
+              <img src="../content/img/github-blue.png" class="hover" />
+            </a>
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '72', 72)" onmouseover="showTip(event, '72', 72)">
+            map2(mapping l r)
+          </code>
+          <div class="tip" id="72">
+            <strong>Signature:</strong> mapping:(&#39;k -&gt; Option&lt;&#39;a&gt; -&gt; Option&lt;&#39;b&gt; -&gt; &#39;c) -&gt; l:amap&lt;&#39;k,&#39;a&gt; -&gt; r:amap&lt;&#39;k,&#39;b&gt; -&gt; amap&lt;&#39;k,&#39;c&gt;<br />
+                          <strong>Type parameters:</strong> 'k, 'a, 'b, 'c          </div>
+        </td>
+        <td class="xmldoc">
+            <a href="https://github.com/vrvis/aardvark.base/src/Aardvark.Base.Incremental/AdaptiveMap/amap.fs#L658-658" class="github-link">
+              <img src="../content/img/github.png" class="normal" />
+              <img src="../content/img/github-blue.png" class="hover" />
+            </a>
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '73', 73)" onmouseover="showTip(event, '73', 73)">
+            mapM(mapping map)
+          </code>
+          <div class="tip" id="73">
+            <strong>Signature:</strong> mapping:(&#39;k -&gt; &#39;a -&gt; IMod&lt;&#39;b&gt;) -&gt; map:amap&lt;&#39;k,&#39;a&gt; -&gt; amap&lt;&#39;k,&#39;b&gt;<br />
+                          <strong>Type parameters:</strong> 'k, 'a, 'b          </div>
+        </td>
+        <td class="xmldoc">
+            <a href="https://github.com/vrvis/aardvark.base/src/Aardvark.Base.Incremental/AdaptiveMap/amap.fs#L588-588" class="github-link">
+              <img src="../content/img/github.png" class="normal" />
+              <img src="../content/img/github-blue.png" class="hover" />
+            </a>
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '74', 74)" onmouseover="showTip(event, '74', 74)">
+            mapSet(f set)
+          </code>
+          <div class="tip" id="74">
+            <strong>Signature:</strong> f:(&#39;a -&gt; &#39;b) -&gt; set:aset&lt;&#39;a&gt; -&gt; amap&lt;&#39;a,&#39;b&gt;<br />
+                          <strong>Type parameters:</strong> 'a, 'b          </div>
+        </td>
+        <td class="xmldoc">
+            <a href="https://github.com/vrvis/aardvark.base/src/Aardvark.Base.Incremental/AdaptiveMap/amap.fs#L609-609" class="github-link">
+              <img src="../content/img/github.png" class="normal" />
+              <img src="../content/img/github-blue.png" class="hover" />
+            </a>
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '75', 75)" onmouseover="showTip(event, '75', 75)">
+            mapSetM(f set)
+          </code>
+          <div class="tip" id="75">
+            <strong>Signature:</strong> f:(&#39;a -&gt; IMod&lt;&#39;b&gt;) -&gt; set:aset&lt;&#39;a&gt; -&gt; amap&lt;&#39;a,&#39;b&gt;<br />
+                          <strong>Type parameters:</strong> 'a, 'b          </div>
+        </td>
+        <td class="xmldoc">
+            <a href="https://github.com/vrvis/aardvark.base/src/Aardvark.Base.Incremental/AdaptiveMap/amap.fs#L624-624" class="github-link">
+              <img src="../content/img/github.png" class="normal" />
+              <img src="../content/img/github-blue.png" class="hover" />
+            </a>
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '76', 76)" onmouseover="showTip(event, '76', 76)">
+            ofArray(arr)
+          </code>
+          <div class="tip" id="76">
+            <strong>Signature:</strong> arr:(&#39;k * &#39;v) array -&gt; amap&lt;&#39;k,&#39;v&gt;<br />
+                          <strong>Type parameters:</strong> 'k, 'v          </div>
+        </td>
+        <td class="xmldoc">
+            <a href="https://github.com/vrvis/aardvark.base/src/Aardvark.Base.Incremental/AdaptiveMap/amap.fs#L530-530" class="github-link">
+              <img src="../content/img/github.png" class="normal" />
+              <img src="../content/img/github-blue.png" class="hover" />
+            </a>
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '77', 77)" onmouseover="showTip(event, '77', 77)">
+            ofASet(set)
+          </code>
+          <div class="tip" id="77">
+            <strong>Signature:</strong> set:aset&lt;&#39;a * &#39;b&gt; -&gt; amap&lt;&#39;a,hset&lt;&#39;b&gt;&gt;<br />
+                          <strong>Type parameters:</strong> 'a, 'b          </div>
+        </td>
+        <td class="xmldoc">
+            <a href="https://github.com/vrvis/aardvark.base/src/Aardvark.Base.Incremental/AdaptiveMap/amap.fs#L615-615" class="github-link">
+              <img src="../content/img/github.png" class="normal" />
+              <img src="../content/img/github-blue.png" class="hover" />
+            </a>
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '78', 78)" onmouseover="showTip(event, '78', 78)">
+            ofHMap(map)
+          </code>
+          <div class="tip" id="78">
+            <strong>Signature:</strong> map:hmap&lt;&#39;k,&#39;v&gt; -&gt; amap&lt;&#39;k,&#39;v&gt;<br />
+                          <strong>Type parameters:</strong> 'k, 'v          </div>
+        </td>
+        <td class="xmldoc">
+            <a href="https://github.com/vrvis/aardvark.base/src/Aardvark.Base.Incremental/AdaptiveMap/amap.fs#L527-527" class="github-link">
+              <img src="../content/img/github.png" class="normal" />
+              <img src="../content/img/github-blue.png" class="hover" />
+            </a>
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '79', 79)" onmouseover="showTip(event, '79', 79)">
+            ofList(list)
+          </code>
+          <div class="tip" id="79">
+            <strong>Signature:</strong> list:(&#39;k * &#39;v) list -&gt; amap&lt;&#39;k,&#39;v&gt;<br />
+                          <strong>Type parameters:</strong> 'k, 'v          </div>
+        </td>
+        <td class="xmldoc">
+            <a href="https://github.com/vrvis/aardvark.base/src/Aardvark.Base.Incremental/AdaptiveMap/amap.fs#L529-529" class="github-link">
+              <img src="../content/img/github.png" class="normal" />
+              <img src="../content/img/github-blue.png" class="hover" />
+            </a>
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '80', 80)" onmouseover="showTip(event, '80', 80)">
+            ofMod(m)
+          </code>
+          <div class="tip" id="80">
+            <strong>Signature:</strong> m:IMod&lt;hmap&lt;&#39;a,&#39;b&gt;&gt; -&gt; amap&lt;&#39;a,&#39;b&gt;<br />
+                          <strong>Type parameters:</strong> 'a, 'b          </div>
+        </td>
+        <td class="xmldoc">
+            <a href="https://github.com/vrvis/aardvark.base/src/Aardvark.Base.Incremental/AdaptiveMap/amap.fs#L630-630" class="github-link">
+              <img src="../content/img/github.png" class="normal" />
+              <img src="../content/img/github-blue.png" class="hover" />
+            </a>
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '81', 81)" onmouseover="showTip(event, '81', 81)">
+            ofSeq(seq)
+          </code>
+          <div class="tip" id="81">
+            <strong>Signature:</strong> seq:seq&lt;&#39;k * &#39;v&gt; -&gt; amap&lt;&#39;k,&#39;v&gt;<br />
+                          <strong>Type parameters:</strong> 'k, 'v          </div>
+        </td>
+        <td class="xmldoc">
+            <a href="https://github.com/vrvis/aardvark.base/src/Aardvark.Base.Incremental/AdaptiveMap/amap.fs#L528-528" class="github-link">
+              <img src="../content/img/github.png" class="normal" />
+              <img src="../content/img/github-blue.png" class="hover" />
+            </a>
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '82', 82)" onmouseover="showTip(event, '82', 82)">
+            reduce(map)
+          </code>
+          <div class="tip" id="82">
+            <strong>Signature:</strong> map:amap&lt;&#39;k,&#39;a&gt; -&gt; amap&lt;&#39;k,&#39;a&gt;<br />
+                          <strong>Type parameters:</strong> 'k, 'a          </div>
+        </td>
+        <td class="xmldoc">
+            <a href="https://github.com/vrvis/aardvark.base/src/Aardvark.Base.Incremental/AdaptiveMap/amap.fs#L591-591" class="github-link">
+              <img src="../content/img/github.png" class="normal" />
+              <img src="../content/img/github-blue.png" class="hover" />
+            </a>
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '83', 83)" onmouseover="showTip(event, '83', 83)">
+            reduceM(map)
+          </code>
+          <div class="tip" id="83">
+            <strong>Signature:</strong> map:amap&lt;&#39;k,IMod&lt;&#39;a&gt;&gt; -&gt; amap&lt;&#39;k,&#39;a&gt;<br />
+                          <strong>Type parameters:</strong> 'k, 'a          </div>
+        </td>
+        <td class="xmldoc">
+            <a href="https://github.com/vrvis/aardvark.base/src/Aardvark.Base.Incremental/AdaptiveMap/amap.fs#L594-594" class="github-link">
+              <img src="../content/img/github.png" class="normal" />
+              <img src="../content/img/github-blue.png" class="hover" />
+            </a>
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '84', 84)" onmouseover="showTip(event, '84', 84)">
+            toASet(m)
+          </code>
+          <div class="tip" id="84">
+            <strong>Signature:</strong> m:amap&lt;&#39;k,&#39;v&gt; -&gt; aset&lt;&#39;k * &#39;v&gt;<br />
+                          <strong>Type parameters:</strong> 'k, 'v          </div>
+        </td>
+        <td class="xmldoc">
+            <a href="https://github.com/vrvis/aardvark.base/src/Aardvark.Base.Incremental/AdaptiveMap/amap.fs#L550-550" class="github-link">
+              <img src="../content/img/github.png" class="normal" />
+              <img src="../content/img/github-blue.png" class="hover" />
+            </a>
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '85', 85)" onmouseover="showTip(event, '85', 85)">
+            toMod(map)
+          </code>
+          <div class="tip" id="85">
+            <strong>Signature:</strong> map:amap&lt;&#39;k,&#39;v&gt; -&gt; IMod&lt;hmap&lt;&#39;k,&#39;v&gt;&gt;<br />
+                          <strong>Type parameters:</strong> 'k, 'v          </div>
+        </td>
+        <td class="xmldoc">
+            <a href="https://github.com/vrvis/aardvark.base/src/Aardvark.Base.Incremental/AdaptiveMap/amap.fs#L548-548" class="github-link">
+              <img src="../content/img/github.png" class="normal" />
+              <img src="../content/img/github-blue.png" class="hover" />
+            </a>
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '86', 86)" onmouseover="showTip(event, '86', 86)">
+            tryFind(key m)
+          </code>
+          <div class="tip" id="86">
+            <strong>Signature:</strong> key:&#39;k -&gt; m:amap&lt;&#39;k,&#39;v&gt; -&gt; IMod&lt;&#39;v option&gt;<br />
+                          <strong>Type parameters:</strong> 'k, 'v          </div>
+        </td>
+        <td class="xmldoc">
+            <a href="https://github.com/vrvis/aardvark.base/src/Aardvark.Base.Incremental/AdaptiveMap/amap.fs#L663-663" class="github-link">
+              <img src="../content/img/github.png" class="normal" />
+              <img src="../content/img/github-blue.png" class="hover" />
+            </a>
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '87', 87)" onmouseover="showTip(event, '87', 87)">
+            union(l r)
+          </code>
+          <div class="tip" id="87">
+            <strong>Signature:</strong> l:amap&lt;&#39;k,&#39;a&gt; -&gt; r:amap&lt;&#39;k,&#39;a&gt; -&gt; amap&lt;&#39;k,&#39;a&gt;<br />
+                          <strong>Type parameters:</strong> 'k, 'a          </div>
+        </td>
+        <td class="xmldoc">
+            <a href="https://github.com/vrvis/aardvark.base/src/Aardvark.Base.Incremental/AdaptiveMap/amap.fs#L649-649" class="github-link">
+              <img src="../content/img/github.png" class="normal" />
+              <img src="../content/img/github-blue.png" class="hover" />
+            </a>
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '88', 88)" onmouseover="showTip(event, '88', 88)">
+            unionWith(f l r)
+          </code>
+          <div class="tip" id="88">
+            <strong>Signature:</strong> f:(&#39;k -&gt; &#39;a -&gt; &#39;a -&gt; &#39;a) -&gt; l:amap&lt;&#39;k,&#39;a&gt; -&gt; r:amap&lt;&#39;k,&#39;a&gt; -&gt; amap&lt;&#39;k,&#39;a&gt;<br />
+                          <strong>Type parameters:</strong> 'k, 'a          </div>
+        </td>
+        <td class="xmldoc">
+            <a href="https://github.com/vrvis/aardvark.base/src/Aardvark.Base.Incremental/AdaptiveMap/amap.fs#L643-643" class="github-link">
+              <img src="../content/img/github.png" class="normal" />
+              <img src="../content/img/github-blue.png" class="hover" />
+            </a>
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '89', 89)" onmouseover="showTip(event, '89', 89)">
+            updateMany(keys f m)
+          </code>
+          <div class="tip" id="89">
+            <strong>Signature:</strong> keys:hset&lt;&#39;k&gt; -&gt; f:(&#39;k -&gt; Option&lt;&#39;v&gt; -&gt; &#39;v) -&gt; m:amap&lt;&#39;k,&#39;v&gt; -&gt; amap&lt;&#39;k,&#39;v&gt;<br />
+                          <strong>Type parameters:</strong> 'k, 'v          </div>
+        </td>
+        <td class="xmldoc">
+            <a href="https://github.com/vrvis/aardvark.base/src/Aardvark.Base.Incremental/AdaptiveMap/amap.fs#L637-637" class="github-link">
+              <img src="../content/img/github.png" class="normal" />
+              <img src="../content/img/github-blue.png" class="hover" />
+            </a>
+          
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+        </div>
+        <div class="span3">
+          <a href="https://github.com/vrvis">
+            <img src="logo.png" style="width:140px;height:140px;margin:10px 0px 0px 35px;border-style:none;" />
+          </a>
+
+          <ul class="nav nav-list" id="menu">
+
+            <li class="nav-header">Aardvark.Base.Incremental</li>
+
+            <li class="divider"></li>
+            <li><a href="https://github.com/vrvis/aardvark.base">Home page</a></li>
+            <li class="divider"></li>
+
+            <li><a href="https://www.nuget.org/packages/Aardvark.Base.Incremental">Get Aardvark.Base.Incremental via NuGet</a></li>
+            <li><a href="https://github.com/vrvis/aardvark.base">Source Code on GitHub</a></li>
+            <li><a href="https://github.com/vrvis/aardvark.baseLicense">License (Apache 2)</a></li>
+            
+            <!-- <li><a href="https://github.com/vrvis/aardvark.base/RELEASE_NOTES.html">Release Notes</a></li>
+            <li><a href="https://github.com/vrvis/aardvark.base//contributing.html">Contributing to Aardvark.Base.Incremental</a></li>
+  
+            <li><a href="http://stackoverflow.com/questions/tagged/f%23-fake">Ask a question</a></li> 
+            
+            <li class="nav-header">Tutorials</li>
+            <li><a href="https://github.com/vrvis/aardvark.base/gettingstarted.html">Getting started</a></li>
+            
+            -->
+
+            
+            <li class="divider"></li>
+            <li class="nav-header">Reference</li>
+
+            <li><a href="https://github.com/vrvis/aardvark.base/apidocs/index.html">API Reference</a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    <a href="https://github.com/vrvis/aardvark.base"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_gray_6d6d6d.png" alt="Fork me on GitHub"></a>
+  </body>
+  </html>

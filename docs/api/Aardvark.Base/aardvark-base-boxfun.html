@@ -1,0 +1,4085 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>BoxFun - Aardvark.Base</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="The Aardvark Platform Team">
+
+    <script src="https://code.jquery.com/jquery-1.8.0.js"></script>
+    <script src="https://code.jquery.com/ui/1.8.23/jquery-ui.js"></script>
+    <script src="https://netdna.bootstrapcdn.com/twitter-bootstrap/2.2.1/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link href="https://netdna.bootstrapcdn.com/twitter-bootstrap/2.2.1/css/bootstrap-combined.min.css" rel="stylesheet">
+
+    <link type="text/css" rel="stylesheet" href="https://github.com/vrvis/aardvark.base/content/style.css" />
+    <script type="text/javascript" src="https://github.com/vrvis/aardvark.base/content/tips.js"></script>
+    <!-- HTML5 shim, for IE6-8 support of HTML5 elements -->
+    <!--[if lt IE 9]>
+      <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+  </head>
+  <body>
+    <div class="container">
+      <div class="masthead">
+        <ul class="nav nav-pills pull-right">
+          <li><a href="https://github.com/vrvis/aardvark.base">github page</a></li>
+        </ul>
+        <h3 class="muted"><a href="https://github.com/vrvis/aardvark.base/index.html">Aardvark.Base</a></h3>
+      </div>
+      <hr />
+      <div class="row">
+        <div class="span9" id="main">
+          
+
+
+
+<h1>BoxFun</h1>
+<div class="xmldoc">
+</div>
+  <h3>Static members</h3>
+  <table class="table table-bordered member-list">
+    <thead>
+      <tr><td>Static member</td><td>Description</td></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '1850', 1850)" onmouseover="showTip(event, '1850', 1850)">
+            GetBoundingBox2d(pointArray)
+          </code>
+          <div class="tip" id="1850">
+            <strong>Signature:</strong> (pointArray:V2d []) -&gt; Box2d<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '1851', 1851)" onmouseover="showTip(event, '1851', 1851)">
+            GetBoundingBox2d(pointArray, count)
+          </code>
+          <div class="tip" id="1851">
+            <strong>Signature:</strong> (pointArray:V2d [] * count:int64) -&gt; Box2d<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Returns the BoundingBox2d of the first count elements
+of the array.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '1852', 1852)" onmouseover="showTip(event, '1852', 1852)">
+            GetBoundingBox2d(...)
+          </code>
+          <div class="tip" id="1852">
+            <strong>Signature:</strong> (pointArray:V2d [] * start:int64 * count:int64) -&gt; Box2d<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Returns the BoundingBox2d of count elements
+of the array starting at start</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '1853', 1853)" onmouseover="showTip(event, '1853', 1853)">
+            GetBoundingBox2d(...)
+          </code>
+          <div class="tip" id="1853">
+            <strong>Signature:</strong> (array:&#39;T [] * start:int64 * count:int64 * pointSelector:Func&lt;&#39;T,V2d&gt;) -&gt; Box2d<br />
+                          <strong>Type parameters:</strong> 'T          </div>
+        </td>
+        <td class="xmldoc">
+          <p>Returns the BoundingBox2d of count elements
+of the array starting at start</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '1854', 1854)" onmouseover="showTip(event, '1854', 1854)">
+            GetBoundingBox2d(pointList)
+          </code>
+          <div class="tip" id="1854">
+            <strong>Signature:</strong> pointList:List&lt;V2d&gt; -&gt; Box2d<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '1855', 1855)" onmouseover="showTip(event, '1855', 1855)">
+            GetBoundingBox2d(pointList, count)
+          </code>
+          <div class="tip" id="1855">
+            <strong>Signature:</strong> (pointList:List&lt;V2d&gt; * count:int) -&gt; Box2d<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Returns the BoundingBox2d of the first count elements
+of the list.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '1856', 1856)" onmouseover="showTip(event, '1856', 1856)">
+            GetBoundingBox2d(indexArray, pointArray)
+          </code>
+          <div class="tip" id="1856">
+            <strong>Signature:</strong> (indexArray:int [] * pointArray:V2d []) -&gt; Box2d<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '1857', 1857)" onmouseover="showTip(event, '1857', 1857)">
+            GetBoundingBox2d(...)
+          </code>
+          <div class="tip" id="1857">
+            <strong>Signature:</strong> (indexArray:int [] * count:int * pointArray:V2d []) -&gt; Box2d<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '1858', 1858)" onmouseover="showTip(event, '1858', 1858)">
+            GetBoundingBox2d(...)
+          </code>
+          <div class="tip" id="1858">
+            <strong>Signature:</strong> (indexArray:int [] * start:int * count:int * pointArray:V2d []) -&gt; Box2d<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '1859', 1859)" onmouseover="showTip(event, '1859', 1859)">
+            GetBoundingBox2d(...)
+          </code>
+          <div class="tip" id="1859">
+            <strong>Signature:</strong> (indexArray:int [] * start:int * count:int * array:&#39;T [] * pointSelector:Func&lt;&#39;T,V2d&gt;) -&gt; Box2d<br />
+                          <strong>Type parameters:</strong> 'T          </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '1860', 1860)" onmouseover="showTip(event, '1860', 1860)">
+            GetBoundingBox2d(indexArray, pointArray)
+          </code>
+          <div class="tip" id="1860">
+            <strong>Signature:</strong> (indexArray:int64 [] * pointArray:V2d []) -&gt; Box2d<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '1861', 1861)" onmouseover="showTip(event, '1861', 1861)">
+            GetBoundingBox2d(...)
+          </code>
+          <div class="tip" id="1861">
+            <strong>Signature:</strong> (indexArray:int64 [] * count:int64 * pointArray:V2d []) -&gt; Box2d<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '1862', 1862)" onmouseover="showTip(event, '1862', 1862)">
+            GetBoundingBox2d(...)
+          </code>
+          <div class="tip" id="1862">
+            <strong>Signature:</strong> (indexArray:int64 [] * start:int64 * count:int64 * pointArray:V2d []) -&gt; Box2d<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '1863', 1863)" onmouseover="showTip(event, '1863', 1863)">
+            GetBoundingBox2d(...)
+          </code>
+          <div class="tip" id="1863">
+            <strong>Signature:</strong> (indexArray:int64 [] * start:int64 * count:int64 * array:&#39;T [] * pointSelector:Func&lt;&#39;T,V2d&gt;) -&gt; Box2d<br />
+                          <strong>Type parameters:</strong> 'T          </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '1864', 1864)" onmouseover="showTip(event, '1864', 1864)">
+            GetBoundingBox2d(points)
+          </code>
+          <div class="tip" id="1864">
+            <strong>Signature:</strong> points:IEnumerable&lt;V2d&gt; -&gt; Box2d<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '1865', 1865)" onmouseover="showTip(event, '1865', 1865)">
+            GetBoundingBox2f(pointArray)
+          </code>
+          <div class="tip" id="1865">
+            <strong>Signature:</strong> (pointArray:V2f []) -&gt; Box2f<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '1866', 1866)" onmouseover="showTip(event, '1866', 1866)">
+            GetBoundingBox2f(pointArray, count)
+          </code>
+          <div class="tip" id="1866">
+            <strong>Signature:</strong> (pointArray:V2f [] * count:int64) -&gt; Box2f<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Returns the BoundingBox2f of the first count elements
+of the array.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '1867', 1867)" onmouseover="showTip(event, '1867', 1867)">
+            GetBoundingBox2f(...)
+          </code>
+          <div class="tip" id="1867">
+            <strong>Signature:</strong> (pointArray:V2f [] * start:int64 * count:int64) -&gt; Box2f<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Returns the BoundingBox2f of count elements
+of the array starting at start</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '1868', 1868)" onmouseover="showTip(event, '1868', 1868)">
+            GetBoundingBox2f(...)
+          </code>
+          <div class="tip" id="1868">
+            <strong>Signature:</strong> (array:&#39;T [] * start:int64 * count:int64 * pointSelector:Func&lt;&#39;T,V2f&gt;) -&gt; Box2f<br />
+                          <strong>Type parameters:</strong> 'T          </div>
+        </td>
+        <td class="xmldoc">
+          <p>Returns the BoundingBox2f of count elements
+of the array starting at start</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '1869', 1869)" onmouseover="showTip(event, '1869', 1869)">
+            GetBoundingBox2f(pointList)
+          </code>
+          <div class="tip" id="1869">
+            <strong>Signature:</strong> pointList:List&lt;V2f&gt; -&gt; Box2f<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '1870', 1870)" onmouseover="showTip(event, '1870', 1870)">
+            GetBoundingBox2f(pointList, count)
+          </code>
+          <div class="tip" id="1870">
+            <strong>Signature:</strong> (pointList:List&lt;V2f&gt; * count:int) -&gt; Box2f<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Returns the BoundingBox2f of the first count elements
+of the list.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '1871', 1871)" onmouseover="showTip(event, '1871', 1871)">
+            GetBoundingBox2f(indexArray, pointArray)
+          </code>
+          <div class="tip" id="1871">
+            <strong>Signature:</strong> (indexArray:int [] * pointArray:V2f []) -&gt; Box2f<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '1872', 1872)" onmouseover="showTip(event, '1872', 1872)">
+            GetBoundingBox2f(...)
+          </code>
+          <div class="tip" id="1872">
+            <strong>Signature:</strong> (indexArray:int [] * count:int * pointArray:V2f []) -&gt; Box2f<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '1873', 1873)" onmouseover="showTip(event, '1873', 1873)">
+            GetBoundingBox2f(...)
+          </code>
+          <div class="tip" id="1873">
+            <strong>Signature:</strong> (indexArray:int [] * start:int * count:int * pointArray:V2f []) -&gt; Box2f<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '1874', 1874)" onmouseover="showTip(event, '1874', 1874)">
+            GetBoundingBox2f(...)
+          </code>
+          <div class="tip" id="1874">
+            <strong>Signature:</strong> (indexArray:int [] * start:int * count:int * array:&#39;T [] * pointSelector:Func&lt;&#39;T,V2f&gt;) -&gt; Box2f<br />
+                          <strong>Type parameters:</strong> 'T          </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '1875', 1875)" onmouseover="showTip(event, '1875', 1875)">
+            GetBoundingBox2f(indexArray, pointArray)
+          </code>
+          <div class="tip" id="1875">
+            <strong>Signature:</strong> (indexArray:int64 [] * pointArray:V2f []) -&gt; Box2f<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '1876', 1876)" onmouseover="showTip(event, '1876', 1876)">
+            GetBoundingBox2f(...)
+          </code>
+          <div class="tip" id="1876">
+            <strong>Signature:</strong> (indexArray:int64 [] * count:int64 * pointArray:V2f []) -&gt; Box2f<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '1877', 1877)" onmouseover="showTip(event, '1877', 1877)">
+            GetBoundingBox2f(...)
+          </code>
+          <div class="tip" id="1877">
+            <strong>Signature:</strong> (indexArray:int64 [] * start:int64 * count:int64 * pointArray:V2f []) -&gt; Box2f<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '1878', 1878)" onmouseover="showTip(event, '1878', 1878)">
+            GetBoundingBox2f(...)
+          </code>
+          <div class="tip" id="1878">
+            <strong>Signature:</strong> (indexArray:int64 [] * start:int64 * count:int64 * array:&#39;T [] * pointSelector:Func&lt;&#39;T,V2f&gt;) -&gt; Box2f<br />
+                          <strong>Type parameters:</strong> 'T          </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '1879', 1879)" onmouseover="showTip(event, '1879', 1879)">
+            GetBoundingBox2f(points)
+          </code>
+          <div class="tip" id="1879">
+            <strong>Signature:</strong> points:IEnumerable&lt;V2f&gt; -&gt; Box2f<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '1880', 1880)" onmouseover="showTip(event, '1880', 1880)">
+            GetBoundingBox2i(pointArray)
+          </code>
+          <div class="tip" id="1880">
+            <strong>Signature:</strong> (pointArray:V2i []) -&gt; Box2i<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '1881', 1881)" onmouseover="showTip(event, '1881', 1881)">
+            GetBoundingBox2i(pointArray, count)
+          </code>
+          <div class="tip" id="1881">
+            <strong>Signature:</strong> (pointArray:V2i [] * count:int64) -&gt; Box2i<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Returns the BoundingBox2i of the first count elements
+of the array.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '1882', 1882)" onmouseover="showTip(event, '1882', 1882)">
+            GetBoundingBox2i(...)
+          </code>
+          <div class="tip" id="1882">
+            <strong>Signature:</strong> (pointArray:V2i [] * start:int64 * count:int64) -&gt; Box2i<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Returns the BoundingBox2i of count elements
+of the array starting at start</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '1883', 1883)" onmouseover="showTip(event, '1883', 1883)">
+            GetBoundingBox2i(...)
+          </code>
+          <div class="tip" id="1883">
+            <strong>Signature:</strong> (array:&#39;T [] * start:int64 * count:int64 * pointSelector:Func&lt;&#39;T,V2i&gt;) -&gt; Box2i<br />
+                          <strong>Type parameters:</strong> 'T          </div>
+        </td>
+        <td class="xmldoc">
+          <p>Returns the BoundingBox2i of count elements
+of the array starting at start</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '1884', 1884)" onmouseover="showTip(event, '1884', 1884)">
+            GetBoundingBox2i(pointList)
+          </code>
+          <div class="tip" id="1884">
+            <strong>Signature:</strong> pointList:List&lt;V2i&gt; -&gt; Box2i<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '1885', 1885)" onmouseover="showTip(event, '1885', 1885)">
+            GetBoundingBox2i(pointList, count)
+          </code>
+          <div class="tip" id="1885">
+            <strong>Signature:</strong> (pointList:List&lt;V2i&gt; * count:int) -&gt; Box2i<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Returns the BoundingBox2i of the first count elements
+of the list.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '1886', 1886)" onmouseover="showTip(event, '1886', 1886)">
+            GetBoundingBox2i(indexArray, pointArray)
+          </code>
+          <div class="tip" id="1886">
+            <strong>Signature:</strong> (indexArray:int [] * pointArray:V2i []) -&gt; Box2i<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '1887', 1887)" onmouseover="showTip(event, '1887', 1887)">
+            GetBoundingBox2i(...)
+          </code>
+          <div class="tip" id="1887">
+            <strong>Signature:</strong> (indexArray:int [] * count:int * pointArray:V2i []) -&gt; Box2i<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '1888', 1888)" onmouseover="showTip(event, '1888', 1888)">
+            GetBoundingBox2i(...)
+          </code>
+          <div class="tip" id="1888">
+            <strong>Signature:</strong> (indexArray:int [] * start:int * count:int * pointArray:V2i []) -&gt; Box2i<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '1889', 1889)" onmouseover="showTip(event, '1889', 1889)">
+            GetBoundingBox2i(...)
+          </code>
+          <div class="tip" id="1889">
+            <strong>Signature:</strong> (indexArray:int [] * start:int * count:int * array:&#39;T [] * pointSelector:Func&lt;&#39;T,V2i&gt;) -&gt; Box2i<br />
+                          <strong>Type parameters:</strong> 'T          </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '1890', 1890)" onmouseover="showTip(event, '1890', 1890)">
+            GetBoundingBox2i(indexArray, pointArray)
+          </code>
+          <div class="tip" id="1890">
+            <strong>Signature:</strong> (indexArray:int64 [] * pointArray:V2i []) -&gt; Box2i<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '1891', 1891)" onmouseover="showTip(event, '1891', 1891)">
+            GetBoundingBox2i(...)
+          </code>
+          <div class="tip" id="1891">
+            <strong>Signature:</strong> (indexArray:int64 [] * count:int64 * pointArray:V2i []) -&gt; Box2i<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '1892', 1892)" onmouseover="showTip(event, '1892', 1892)">
+            GetBoundingBox2i(...)
+          </code>
+          <div class="tip" id="1892">
+            <strong>Signature:</strong> (indexArray:int64 [] * start:int64 * count:int64 * pointArray:V2i []) -&gt; Box2i<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '1893', 1893)" onmouseover="showTip(event, '1893', 1893)">
+            GetBoundingBox2i(...)
+          </code>
+          <div class="tip" id="1893">
+            <strong>Signature:</strong> (indexArray:int64 [] * start:int64 * count:int64 * array:&#39;T [] * pointSelector:Func&lt;&#39;T,V2i&gt;) -&gt; Box2i<br />
+                          <strong>Type parameters:</strong> 'T          </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '1894', 1894)" onmouseover="showTip(event, '1894', 1894)">
+            GetBoundingBox2i(points)
+          </code>
+          <div class="tip" id="1894">
+            <strong>Signature:</strong> points:IEnumerable&lt;V2i&gt; -&gt; Box2i<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '1895', 1895)" onmouseover="showTip(event, '1895', 1895)">
+            GetBoundingBox2l(pointArray)
+          </code>
+          <div class="tip" id="1895">
+            <strong>Signature:</strong> (pointArray:V2l []) -&gt; Box2l<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '1896', 1896)" onmouseover="showTip(event, '1896', 1896)">
+            GetBoundingBox2l(pointArray, count)
+          </code>
+          <div class="tip" id="1896">
+            <strong>Signature:</strong> (pointArray:V2l [] * count:int64) -&gt; Box2l<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Returns the BoundingBox2l of the first count elements
+of the array.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '1897', 1897)" onmouseover="showTip(event, '1897', 1897)">
+            GetBoundingBox2l(...)
+          </code>
+          <div class="tip" id="1897">
+            <strong>Signature:</strong> (pointArray:V2l [] * start:int64 * count:int64) -&gt; Box2l<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Returns the BoundingBox2l of count elements
+of the array starting at start</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '1898', 1898)" onmouseover="showTip(event, '1898', 1898)">
+            GetBoundingBox2l(...)
+          </code>
+          <div class="tip" id="1898">
+            <strong>Signature:</strong> (array:&#39;T [] * start:int64 * count:int64 * pointSelector:Func&lt;&#39;T,V2l&gt;) -&gt; Box2l<br />
+                          <strong>Type parameters:</strong> 'T          </div>
+        </td>
+        <td class="xmldoc">
+          <p>Returns the BoundingBox2l of count elements
+of the array starting at start</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '1899', 1899)" onmouseover="showTip(event, '1899', 1899)">
+            GetBoundingBox2l(pointList)
+          </code>
+          <div class="tip" id="1899">
+            <strong>Signature:</strong> pointList:List&lt;V2l&gt; -&gt; Box2l<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '1900', 1900)" onmouseover="showTip(event, '1900', 1900)">
+            GetBoundingBox2l(pointList, count)
+          </code>
+          <div class="tip" id="1900">
+            <strong>Signature:</strong> (pointList:List&lt;V2l&gt; * count:int) -&gt; Box2l<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Returns the BoundingBox2l of the first count elements
+of the list.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '1901', 1901)" onmouseover="showTip(event, '1901', 1901)">
+            GetBoundingBox2l(indexArray, pointArray)
+          </code>
+          <div class="tip" id="1901">
+            <strong>Signature:</strong> (indexArray:int [] * pointArray:V2l []) -&gt; Box2l<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '1902', 1902)" onmouseover="showTip(event, '1902', 1902)">
+            GetBoundingBox2l(...)
+          </code>
+          <div class="tip" id="1902">
+            <strong>Signature:</strong> (indexArray:int [] * count:int * pointArray:V2l []) -&gt; Box2l<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '1903', 1903)" onmouseover="showTip(event, '1903', 1903)">
+            GetBoundingBox2l(...)
+          </code>
+          <div class="tip" id="1903">
+            <strong>Signature:</strong> (indexArray:int [] * start:int * count:int * pointArray:V2l []) -&gt; Box2l<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '1904', 1904)" onmouseover="showTip(event, '1904', 1904)">
+            GetBoundingBox2l(...)
+          </code>
+          <div class="tip" id="1904">
+            <strong>Signature:</strong> (indexArray:int [] * start:int * count:int * array:&#39;T [] * pointSelector:Func&lt;&#39;T,V2l&gt;) -&gt; Box2l<br />
+                          <strong>Type parameters:</strong> 'T          </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '1905', 1905)" onmouseover="showTip(event, '1905', 1905)">
+            GetBoundingBox2l(indexArray, pointArray)
+          </code>
+          <div class="tip" id="1905">
+            <strong>Signature:</strong> (indexArray:int64 [] * pointArray:V2l []) -&gt; Box2l<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '1906', 1906)" onmouseover="showTip(event, '1906', 1906)">
+            GetBoundingBox2l(...)
+          </code>
+          <div class="tip" id="1906">
+            <strong>Signature:</strong> (indexArray:int64 [] * count:int64 * pointArray:V2l []) -&gt; Box2l<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '1907', 1907)" onmouseover="showTip(event, '1907', 1907)">
+            GetBoundingBox2l(...)
+          </code>
+          <div class="tip" id="1907">
+            <strong>Signature:</strong> (indexArray:int64 [] * start:int64 * count:int64 * pointArray:V2l []) -&gt; Box2l<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '1908', 1908)" onmouseover="showTip(event, '1908', 1908)">
+            GetBoundingBox2l(...)
+          </code>
+          <div class="tip" id="1908">
+            <strong>Signature:</strong> (indexArray:int64 [] * start:int64 * count:int64 * array:&#39;T [] * pointSelector:Func&lt;&#39;T,V2l&gt;) -&gt; Box2l<br />
+                          <strong>Type parameters:</strong> 'T          </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '1909', 1909)" onmouseover="showTip(event, '1909', 1909)">
+            GetBoundingBox2l(points)
+          </code>
+          <div class="tip" id="1909">
+            <strong>Signature:</strong> points:IEnumerable&lt;V2l&gt; -&gt; Box2l<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '1910', 1910)" onmouseover="showTip(event, '1910', 1910)">
+            GetBoundingBox3d(pointArray)
+          </code>
+          <div class="tip" id="1910">
+            <strong>Signature:</strong> (pointArray:V3d []) -&gt; Box3d<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '1911', 1911)" onmouseover="showTip(event, '1911', 1911)">
+            GetBoundingBox3d(pointArray, count)
+          </code>
+          <div class="tip" id="1911">
+            <strong>Signature:</strong> (pointArray:V3d [] * count:int64) -&gt; Box3d<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Returns the BoundingBox3d of the first count elements
+of the array.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '1912', 1912)" onmouseover="showTip(event, '1912', 1912)">
+            GetBoundingBox3d(...)
+          </code>
+          <div class="tip" id="1912">
+            <strong>Signature:</strong> (pointArray:V3d [] * start:int64 * count:int64) -&gt; Box3d<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Returns the BoundingBox3d of count elements
+of the array starting at start</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '1913', 1913)" onmouseover="showTip(event, '1913', 1913)">
+            GetBoundingBox3d(...)
+          </code>
+          <div class="tip" id="1913">
+            <strong>Signature:</strong> (array:&#39;T [] * start:int64 * count:int64 * pointSelector:Func&lt;&#39;T,V3d&gt;) -&gt; Box3d<br />
+                          <strong>Type parameters:</strong> 'T          </div>
+        </td>
+        <td class="xmldoc">
+          <p>Returns the BoundingBox3d of count elements
+of the array starting at start</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '1914', 1914)" onmouseover="showTip(event, '1914', 1914)">
+            GetBoundingBox3d(pointList)
+          </code>
+          <div class="tip" id="1914">
+            <strong>Signature:</strong> pointList:List&lt;V3d&gt; -&gt; Box3d<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '1915', 1915)" onmouseover="showTip(event, '1915', 1915)">
+            GetBoundingBox3d(pointList, count)
+          </code>
+          <div class="tip" id="1915">
+            <strong>Signature:</strong> (pointList:List&lt;V3d&gt; * count:int) -&gt; Box3d<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Returns the BoundingBox3d of the first count elements
+of the list.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '1916', 1916)" onmouseover="showTip(event, '1916', 1916)">
+            GetBoundingBox3d(indexArray, pointArray)
+          </code>
+          <div class="tip" id="1916">
+            <strong>Signature:</strong> (indexArray:int [] * pointArray:V3d []) -&gt; Box3d<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '1917', 1917)" onmouseover="showTip(event, '1917', 1917)">
+            GetBoundingBox3d(...)
+          </code>
+          <div class="tip" id="1917">
+            <strong>Signature:</strong> (indexArray:int [] * count:int * pointArray:V3d []) -&gt; Box3d<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '1918', 1918)" onmouseover="showTip(event, '1918', 1918)">
+            GetBoundingBox3d(...)
+          </code>
+          <div class="tip" id="1918">
+            <strong>Signature:</strong> (indexArray:int [] * start:int * count:int * pointArray:V3d []) -&gt; Box3d<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '1919', 1919)" onmouseover="showTip(event, '1919', 1919)">
+            GetBoundingBox3d(...)
+          </code>
+          <div class="tip" id="1919">
+            <strong>Signature:</strong> (indexArray:int [] * start:int * count:int * array:&#39;T [] * pointSelector:Func&lt;&#39;T,V3d&gt;) -&gt; Box3d<br />
+                          <strong>Type parameters:</strong> 'T          </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '1920', 1920)" onmouseover="showTip(event, '1920', 1920)">
+            GetBoundingBox3d(indexArray, pointArray)
+          </code>
+          <div class="tip" id="1920">
+            <strong>Signature:</strong> (indexArray:int64 [] * pointArray:V3d []) -&gt; Box3d<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '1921', 1921)" onmouseover="showTip(event, '1921', 1921)">
+            GetBoundingBox3d(...)
+          </code>
+          <div class="tip" id="1921">
+            <strong>Signature:</strong> (indexArray:int64 [] * count:int64 * pointArray:V3d []) -&gt; Box3d<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '1922', 1922)" onmouseover="showTip(event, '1922', 1922)">
+            GetBoundingBox3d(...)
+          </code>
+          <div class="tip" id="1922">
+            <strong>Signature:</strong> (indexArray:int64 [] * start:int64 * count:int64 * pointArray:V3d []) -&gt; Box3d<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '1923', 1923)" onmouseover="showTip(event, '1923', 1923)">
+            GetBoundingBox3d(...)
+          </code>
+          <div class="tip" id="1923">
+            <strong>Signature:</strong> (indexArray:int64 [] * start:int64 * count:int64 * array:&#39;T [] * pointSelector:Func&lt;&#39;T,V3d&gt;) -&gt; Box3d<br />
+                          <strong>Type parameters:</strong> 'T          </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '1924', 1924)" onmouseover="showTip(event, '1924', 1924)">
+            GetBoundingBox3d(points)
+          </code>
+          <div class="tip" id="1924">
+            <strong>Signature:</strong> points:IEnumerable&lt;V3d&gt; -&gt; Box3d<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '1925', 1925)" onmouseover="showTip(event, '1925', 1925)">
+            GetBoundingBox3f(pointArray)
+          </code>
+          <div class="tip" id="1925">
+            <strong>Signature:</strong> (pointArray:V3f []) -&gt; Box3f<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '1926', 1926)" onmouseover="showTip(event, '1926', 1926)">
+            GetBoundingBox3f(pointArray, count)
+          </code>
+          <div class="tip" id="1926">
+            <strong>Signature:</strong> (pointArray:V3f [] * count:int64) -&gt; Box3f<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Returns the BoundingBox3f of the first count elements
+of the array.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '1927', 1927)" onmouseover="showTip(event, '1927', 1927)">
+            GetBoundingBox3f(...)
+          </code>
+          <div class="tip" id="1927">
+            <strong>Signature:</strong> (pointArray:V3f [] * start:int64 * count:int64) -&gt; Box3f<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Returns the BoundingBox3f of count elements
+of the array starting at start</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '1928', 1928)" onmouseover="showTip(event, '1928', 1928)">
+            GetBoundingBox3f(...)
+          </code>
+          <div class="tip" id="1928">
+            <strong>Signature:</strong> (array:&#39;T [] * start:int64 * count:int64 * pointSelector:Func&lt;&#39;T,V3f&gt;) -&gt; Box3f<br />
+                          <strong>Type parameters:</strong> 'T          </div>
+        </td>
+        <td class="xmldoc">
+          <p>Returns the BoundingBox3f of count elements
+of the array starting at start</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '1929', 1929)" onmouseover="showTip(event, '1929', 1929)">
+            GetBoundingBox3f(pointList)
+          </code>
+          <div class="tip" id="1929">
+            <strong>Signature:</strong> pointList:List&lt;V3f&gt; -&gt; Box3f<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '1930', 1930)" onmouseover="showTip(event, '1930', 1930)">
+            GetBoundingBox3f(pointList, count)
+          </code>
+          <div class="tip" id="1930">
+            <strong>Signature:</strong> (pointList:List&lt;V3f&gt; * count:int) -&gt; Box3f<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Returns the BoundingBox3f of the first count elements
+of the list.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '1931', 1931)" onmouseover="showTip(event, '1931', 1931)">
+            GetBoundingBox3f(indexArray, pointArray)
+          </code>
+          <div class="tip" id="1931">
+            <strong>Signature:</strong> (indexArray:int [] * pointArray:V3f []) -&gt; Box3f<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '1932', 1932)" onmouseover="showTip(event, '1932', 1932)">
+            GetBoundingBox3f(...)
+          </code>
+          <div class="tip" id="1932">
+            <strong>Signature:</strong> (indexArray:int [] * count:int * pointArray:V3f []) -&gt; Box3f<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '1933', 1933)" onmouseover="showTip(event, '1933', 1933)">
+            GetBoundingBox3f(...)
+          </code>
+          <div class="tip" id="1933">
+            <strong>Signature:</strong> (indexArray:int [] * start:int * count:int * pointArray:V3f []) -&gt; Box3f<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '1934', 1934)" onmouseover="showTip(event, '1934', 1934)">
+            GetBoundingBox3f(...)
+          </code>
+          <div class="tip" id="1934">
+            <strong>Signature:</strong> (indexArray:int [] * start:int * count:int * array:&#39;T [] * pointSelector:Func&lt;&#39;T,V3f&gt;) -&gt; Box3f<br />
+                          <strong>Type parameters:</strong> 'T          </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '1935', 1935)" onmouseover="showTip(event, '1935', 1935)">
+            GetBoundingBox3f(indexArray, pointArray)
+          </code>
+          <div class="tip" id="1935">
+            <strong>Signature:</strong> (indexArray:int64 [] * pointArray:V3f []) -&gt; Box3f<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '1936', 1936)" onmouseover="showTip(event, '1936', 1936)">
+            GetBoundingBox3f(...)
+          </code>
+          <div class="tip" id="1936">
+            <strong>Signature:</strong> (indexArray:int64 [] * count:int64 * pointArray:V3f []) -&gt; Box3f<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '1937', 1937)" onmouseover="showTip(event, '1937', 1937)">
+            GetBoundingBox3f(...)
+          </code>
+          <div class="tip" id="1937">
+            <strong>Signature:</strong> (indexArray:int64 [] * start:int64 * count:int64 * pointArray:V3f []) -&gt; Box3f<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '1938', 1938)" onmouseover="showTip(event, '1938', 1938)">
+            GetBoundingBox3f(...)
+          </code>
+          <div class="tip" id="1938">
+            <strong>Signature:</strong> (indexArray:int64 [] * start:int64 * count:int64 * array:&#39;T [] * pointSelector:Func&lt;&#39;T,V3f&gt;) -&gt; Box3f<br />
+                          <strong>Type parameters:</strong> 'T          </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '1939', 1939)" onmouseover="showTip(event, '1939', 1939)">
+            GetBoundingBox3f(points)
+          </code>
+          <div class="tip" id="1939">
+            <strong>Signature:</strong> points:IEnumerable&lt;V3f&gt; -&gt; Box3f<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '1940', 1940)" onmouseover="showTip(event, '1940', 1940)">
+            GetBoundingBox3i(pointArray)
+          </code>
+          <div class="tip" id="1940">
+            <strong>Signature:</strong> (pointArray:V3i []) -&gt; Box3i<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '1941', 1941)" onmouseover="showTip(event, '1941', 1941)">
+            GetBoundingBox3i(pointArray, count)
+          </code>
+          <div class="tip" id="1941">
+            <strong>Signature:</strong> (pointArray:V3i [] * count:int64) -&gt; Box3i<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Returns the BoundingBox3i of the first count elements
+of the array.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '1942', 1942)" onmouseover="showTip(event, '1942', 1942)">
+            GetBoundingBox3i(...)
+          </code>
+          <div class="tip" id="1942">
+            <strong>Signature:</strong> (pointArray:V3i [] * start:int64 * count:int64) -&gt; Box3i<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Returns the BoundingBox3i of count elements
+of the array starting at start</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '1943', 1943)" onmouseover="showTip(event, '1943', 1943)">
+            GetBoundingBox3i(...)
+          </code>
+          <div class="tip" id="1943">
+            <strong>Signature:</strong> (array:&#39;T [] * start:int64 * count:int64 * pointSelector:Func&lt;&#39;T,V3i&gt;) -&gt; Box3i<br />
+                          <strong>Type parameters:</strong> 'T          </div>
+        </td>
+        <td class="xmldoc">
+          <p>Returns the BoundingBox3i of count elements
+of the array starting at start</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '1944', 1944)" onmouseover="showTip(event, '1944', 1944)">
+            GetBoundingBox3i(pointList)
+          </code>
+          <div class="tip" id="1944">
+            <strong>Signature:</strong> pointList:List&lt;V3i&gt; -&gt; Box3i<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '1945', 1945)" onmouseover="showTip(event, '1945', 1945)">
+            GetBoundingBox3i(pointList, count)
+          </code>
+          <div class="tip" id="1945">
+            <strong>Signature:</strong> (pointList:List&lt;V3i&gt; * count:int) -&gt; Box3i<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Returns the BoundingBox3i of the first count elements
+of the list.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '1946', 1946)" onmouseover="showTip(event, '1946', 1946)">
+            GetBoundingBox3i(indexArray, pointArray)
+          </code>
+          <div class="tip" id="1946">
+            <strong>Signature:</strong> (indexArray:int [] * pointArray:V3i []) -&gt; Box3i<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '1947', 1947)" onmouseover="showTip(event, '1947', 1947)">
+            GetBoundingBox3i(...)
+          </code>
+          <div class="tip" id="1947">
+            <strong>Signature:</strong> (indexArray:int [] * count:int * pointArray:V3i []) -&gt; Box3i<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '1948', 1948)" onmouseover="showTip(event, '1948', 1948)">
+            GetBoundingBox3i(...)
+          </code>
+          <div class="tip" id="1948">
+            <strong>Signature:</strong> (indexArray:int [] * start:int * count:int * pointArray:V3i []) -&gt; Box3i<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '1949', 1949)" onmouseover="showTip(event, '1949', 1949)">
+            GetBoundingBox3i(...)
+          </code>
+          <div class="tip" id="1949">
+            <strong>Signature:</strong> (indexArray:int [] * start:int * count:int * array:&#39;T [] * pointSelector:Func&lt;&#39;T,V3i&gt;) -&gt; Box3i<br />
+                          <strong>Type parameters:</strong> 'T          </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '1950', 1950)" onmouseover="showTip(event, '1950', 1950)">
+            GetBoundingBox3i(indexArray, pointArray)
+          </code>
+          <div class="tip" id="1950">
+            <strong>Signature:</strong> (indexArray:int64 [] * pointArray:V3i []) -&gt; Box3i<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '1951', 1951)" onmouseover="showTip(event, '1951', 1951)">
+            GetBoundingBox3i(...)
+          </code>
+          <div class="tip" id="1951">
+            <strong>Signature:</strong> (indexArray:int64 [] * count:int64 * pointArray:V3i []) -&gt; Box3i<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '1952', 1952)" onmouseover="showTip(event, '1952', 1952)">
+            GetBoundingBox3i(...)
+          </code>
+          <div class="tip" id="1952">
+            <strong>Signature:</strong> (indexArray:int64 [] * start:int64 * count:int64 * pointArray:V3i []) -&gt; Box3i<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '1953', 1953)" onmouseover="showTip(event, '1953', 1953)">
+            GetBoundingBox3i(...)
+          </code>
+          <div class="tip" id="1953">
+            <strong>Signature:</strong> (indexArray:int64 [] * start:int64 * count:int64 * array:&#39;T [] * pointSelector:Func&lt;&#39;T,V3i&gt;) -&gt; Box3i<br />
+                          <strong>Type parameters:</strong> 'T          </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '1954', 1954)" onmouseover="showTip(event, '1954', 1954)">
+            GetBoundingBox3i(points)
+          </code>
+          <div class="tip" id="1954">
+            <strong>Signature:</strong> points:IEnumerable&lt;V3i&gt; -&gt; Box3i<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '1955', 1955)" onmouseover="showTip(event, '1955', 1955)">
+            GetBoundingBox3l(pointArray)
+          </code>
+          <div class="tip" id="1955">
+            <strong>Signature:</strong> (pointArray:V3l []) -&gt; Box3l<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '1956', 1956)" onmouseover="showTip(event, '1956', 1956)">
+            GetBoundingBox3l(pointArray, count)
+          </code>
+          <div class="tip" id="1956">
+            <strong>Signature:</strong> (pointArray:V3l [] * count:int64) -&gt; Box3l<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Returns the BoundingBox3l of the first count elements
+of the array.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '1957', 1957)" onmouseover="showTip(event, '1957', 1957)">
+            GetBoundingBox3l(...)
+          </code>
+          <div class="tip" id="1957">
+            <strong>Signature:</strong> (pointArray:V3l [] * start:int64 * count:int64) -&gt; Box3l<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Returns the BoundingBox3l of count elements
+of the array starting at start</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '1958', 1958)" onmouseover="showTip(event, '1958', 1958)">
+            GetBoundingBox3l(...)
+          </code>
+          <div class="tip" id="1958">
+            <strong>Signature:</strong> (array:&#39;T [] * start:int64 * count:int64 * pointSelector:Func&lt;&#39;T,V3l&gt;) -&gt; Box3l<br />
+                          <strong>Type parameters:</strong> 'T          </div>
+        </td>
+        <td class="xmldoc">
+          <p>Returns the BoundingBox3l of count elements
+of the array starting at start</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '1959', 1959)" onmouseover="showTip(event, '1959', 1959)">
+            GetBoundingBox3l(pointList)
+          </code>
+          <div class="tip" id="1959">
+            <strong>Signature:</strong> pointList:List&lt;V3l&gt; -&gt; Box3l<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '1960', 1960)" onmouseover="showTip(event, '1960', 1960)">
+            GetBoundingBox3l(pointList, count)
+          </code>
+          <div class="tip" id="1960">
+            <strong>Signature:</strong> (pointList:List&lt;V3l&gt; * count:int) -&gt; Box3l<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Returns the BoundingBox3l of the first count elements
+of the list.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '1961', 1961)" onmouseover="showTip(event, '1961', 1961)">
+            GetBoundingBox3l(indexArray, pointArray)
+          </code>
+          <div class="tip" id="1961">
+            <strong>Signature:</strong> (indexArray:int [] * pointArray:V3l []) -&gt; Box3l<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '1962', 1962)" onmouseover="showTip(event, '1962', 1962)">
+            GetBoundingBox3l(...)
+          </code>
+          <div class="tip" id="1962">
+            <strong>Signature:</strong> (indexArray:int [] * count:int * pointArray:V3l []) -&gt; Box3l<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '1963', 1963)" onmouseover="showTip(event, '1963', 1963)">
+            GetBoundingBox3l(...)
+          </code>
+          <div class="tip" id="1963">
+            <strong>Signature:</strong> (indexArray:int [] * start:int * count:int * pointArray:V3l []) -&gt; Box3l<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '1964', 1964)" onmouseover="showTip(event, '1964', 1964)">
+            GetBoundingBox3l(...)
+          </code>
+          <div class="tip" id="1964">
+            <strong>Signature:</strong> (indexArray:int [] * start:int * count:int * array:&#39;T [] * pointSelector:Func&lt;&#39;T,V3l&gt;) -&gt; Box3l<br />
+                          <strong>Type parameters:</strong> 'T          </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '1965', 1965)" onmouseover="showTip(event, '1965', 1965)">
+            GetBoundingBox3l(indexArray, pointArray)
+          </code>
+          <div class="tip" id="1965">
+            <strong>Signature:</strong> (indexArray:int64 [] * pointArray:V3l []) -&gt; Box3l<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '1966', 1966)" onmouseover="showTip(event, '1966', 1966)">
+            GetBoundingBox3l(...)
+          </code>
+          <div class="tip" id="1966">
+            <strong>Signature:</strong> (indexArray:int64 [] * count:int64 * pointArray:V3l []) -&gt; Box3l<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '1967', 1967)" onmouseover="showTip(event, '1967', 1967)">
+            GetBoundingBox3l(...)
+          </code>
+          <div class="tip" id="1967">
+            <strong>Signature:</strong> (indexArray:int64 [] * start:int64 * count:int64 * pointArray:V3l []) -&gt; Box3l<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '1968', 1968)" onmouseover="showTip(event, '1968', 1968)">
+            GetBoundingBox3l(...)
+          </code>
+          <div class="tip" id="1968">
+            <strong>Signature:</strong> (indexArray:int64 [] * start:int64 * count:int64 * array:&#39;T [] * pointSelector:Func&lt;&#39;T,V3l&gt;) -&gt; Box3l<br />
+                          <strong>Type parameters:</strong> 'T          </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '1969', 1969)" onmouseover="showTip(event, '1969', 1969)">
+            GetBoundingBox3l(points)
+          </code>
+          <div class="tip" id="1969">
+            <strong>Signature:</strong> points:IEnumerable&lt;V3l&gt; -&gt; Box3l<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '1970', 1970)" onmouseover="showTip(event, '1970', 1970)">
+            GetBoundingRange1b(pointArray)
+          </code>
+          <div class="tip" id="1970">
+            <strong>Signature:</strong> (pointArray:byte []) -&gt; Range1b<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '1971', 1971)" onmouseover="showTip(event, '1971', 1971)">
+            GetBoundingRange1b(pointArray, count)
+          </code>
+          <div class="tip" id="1971">
+            <strong>Signature:</strong> (pointArray:byte [] * count:int64) -&gt; Range1b<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Returns the BoundingRange1b of the first count elements
+of the array.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '1972', 1972)" onmouseover="showTip(event, '1972', 1972)">
+            GetBoundingRange1b(...)
+          </code>
+          <div class="tip" id="1972">
+            <strong>Signature:</strong> (pointArray:byte [] * start:int64 * count:int64) -&gt; Range1b<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Returns the BoundingRange1b of count elements
+of the array starting at start</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '1973', 1973)" onmouseover="showTip(event, '1973', 1973)">
+            GetBoundingRange1b(...)
+          </code>
+          <div class="tip" id="1973">
+            <strong>Signature:</strong> (array:&#39;T [] * start:int64 * count:int64 * pointSelector:Func&lt;&#39;T,byte&gt;) -&gt; Range1b<br />
+                          <strong>Type parameters:</strong> 'T          </div>
+        </td>
+        <td class="xmldoc">
+          <p>Returns the BoundingRange1b of count elements
+of the array starting at start</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '1974', 1974)" onmouseover="showTip(event, '1974', 1974)">
+            GetBoundingRange1b(pointList)
+          </code>
+          <div class="tip" id="1974">
+            <strong>Signature:</strong> pointList:List&lt;byte&gt; -&gt; Range1b<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '1975', 1975)" onmouseover="showTip(event, '1975', 1975)">
+            GetBoundingRange1b(pointList, count)
+          </code>
+          <div class="tip" id="1975">
+            <strong>Signature:</strong> (pointList:List&lt;byte&gt; * count:int) -&gt; Range1b<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Returns the BoundingRange1b of the first count elements
+of the list.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '1976', 1976)" onmouseover="showTip(event, '1976', 1976)">
+            GetBoundingRange1b(...)
+          </code>
+          <div class="tip" id="1976">
+            <strong>Signature:</strong> (indexArray:int [] * pointArray:byte []) -&gt; Range1b<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '1977', 1977)" onmouseover="showTip(event, '1977', 1977)">
+            GetBoundingRange1b(...)
+          </code>
+          <div class="tip" id="1977">
+            <strong>Signature:</strong> (indexArray:int [] * count:int * pointArray:byte []) -&gt; Range1b<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '1978', 1978)" onmouseover="showTip(event, '1978', 1978)">
+            GetBoundingRange1b(...)
+          </code>
+          <div class="tip" id="1978">
+            <strong>Signature:</strong> (indexArray:int [] * start:int * count:int * pointArray:byte []) -&gt; Range1b<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '1979', 1979)" onmouseover="showTip(event, '1979', 1979)">
+            GetBoundingRange1b(...)
+          </code>
+          <div class="tip" id="1979">
+            <strong>Signature:</strong> (indexArray:int [] * start:int * count:int * array:&#39;T [] * pointSelector:Func&lt;&#39;T,byte&gt;) -&gt; Range1b<br />
+                          <strong>Type parameters:</strong> 'T          </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '1980', 1980)" onmouseover="showTip(event, '1980', 1980)">
+            GetBoundingRange1b(...)
+          </code>
+          <div class="tip" id="1980">
+            <strong>Signature:</strong> (indexArray:int64 [] * pointArray:byte []) -&gt; Range1b<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '1981', 1981)" onmouseover="showTip(event, '1981', 1981)">
+            GetBoundingRange1b(...)
+          </code>
+          <div class="tip" id="1981">
+            <strong>Signature:</strong> (indexArray:int64 [] * count:int64 * pointArray:byte []) -&gt; Range1b<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '1982', 1982)" onmouseover="showTip(event, '1982', 1982)">
+            GetBoundingRange1b(...)
+          </code>
+          <div class="tip" id="1982">
+            <strong>Signature:</strong> (indexArray:int64 [] * start:int64 * count:int64 * pointArray:byte []) -&gt; Range1b<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '1983', 1983)" onmouseover="showTip(event, '1983', 1983)">
+            GetBoundingRange1b(...)
+          </code>
+          <div class="tip" id="1983">
+            <strong>Signature:</strong> (indexArray:int64 [] * start:int64 * count:int64 * array:&#39;T [] * pointSelector:Func&lt;&#39;T,byte&gt;) -&gt; Range1b<br />
+                          <strong>Type parameters:</strong> 'T          </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '1984', 1984)" onmouseover="showTip(event, '1984', 1984)">
+            GetBoundingRange1b(points)
+          </code>
+          <div class="tip" id="1984">
+            <strong>Signature:</strong> points:IEnumerable&lt;byte&gt; -&gt; Range1b<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '1985', 1985)" onmouseover="showTip(event, '1985', 1985)">
+            GetBoundingRange1d(pointArray)
+          </code>
+          <div class="tip" id="1985">
+            <strong>Signature:</strong> (pointArray:float []) -&gt; Range1d<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '1986', 1986)" onmouseover="showTip(event, '1986', 1986)">
+            GetBoundingRange1d(pointArray, count)
+          </code>
+          <div class="tip" id="1986">
+            <strong>Signature:</strong> (pointArray:float [] * count:int64) -&gt; Range1d<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Returns the BoundingRange1d of the first count elements
+of the array.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '1987', 1987)" onmouseover="showTip(event, '1987', 1987)">
+            GetBoundingRange1d(...)
+          </code>
+          <div class="tip" id="1987">
+            <strong>Signature:</strong> (pointArray:float [] * start:int64 * count:int64) -&gt; Range1d<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Returns the BoundingRange1d of count elements
+of the array starting at start</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '1988', 1988)" onmouseover="showTip(event, '1988', 1988)">
+            GetBoundingRange1d(...)
+          </code>
+          <div class="tip" id="1988">
+            <strong>Signature:</strong> (array:&#39;T [] * start:int64 * count:int64 * pointSelector:Func&lt;&#39;T,float&gt;) -&gt; Range1d<br />
+                          <strong>Type parameters:</strong> 'T          </div>
+        </td>
+        <td class="xmldoc">
+          <p>Returns the BoundingRange1d of count elements
+of the array starting at start</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '1989', 1989)" onmouseover="showTip(event, '1989', 1989)">
+            GetBoundingRange1d(pointList)
+          </code>
+          <div class="tip" id="1989">
+            <strong>Signature:</strong> pointList:List&lt;float&gt; -&gt; Range1d<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '1990', 1990)" onmouseover="showTip(event, '1990', 1990)">
+            GetBoundingRange1d(pointList, count)
+          </code>
+          <div class="tip" id="1990">
+            <strong>Signature:</strong> (pointList:List&lt;float&gt; * count:int) -&gt; Range1d<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Returns the BoundingRange1d of the first count elements
+of the list.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '1991', 1991)" onmouseover="showTip(event, '1991', 1991)">
+            GetBoundingRange1d(...)
+          </code>
+          <div class="tip" id="1991">
+            <strong>Signature:</strong> (indexArray:int [] * pointArray:float []) -&gt; Range1d<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '1992', 1992)" onmouseover="showTip(event, '1992', 1992)">
+            GetBoundingRange1d(...)
+          </code>
+          <div class="tip" id="1992">
+            <strong>Signature:</strong> (indexArray:int [] * count:int * pointArray:float []) -&gt; Range1d<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '1993', 1993)" onmouseover="showTip(event, '1993', 1993)">
+            GetBoundingRange1d(...)
+          </code>
+          <div class="tip" id="1993">
+            <strong>Signature:</strong> (indexArray:int [] * start:int * count:int * pointArray:float []) -&gt; Range1d<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '1994', 1994)" onmouseover="showTip(event, '1994', 1994)">
+            GetBoundingRange1d(...)
+          </code>
+          <div class="tip" id="1994">
+            <strong>Signature:</strong> (indexArray:int [] * start:int * count:int * array:&#39;T [] * pointSelector:Func&lt;&#39;T,float&gt;) -&gt; Range1d<br />
+                          <strong>Type parameters:</strong> 'T          </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '1995', 1995)" onmouseover="showTip(event, '1995', 1995)">
+            GetBoundingRange1d(...)
+          </code>
+          <div class="tip" id="1995">
+            <strong>Signature:</strong> (indexArray:int64 [] * pointArray:float []) -&gt; Range1d<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '1996', 1996)" onmouseover="showTip(event, '1996', 1996)">
+            GetBoundingRange1d(...)
+          </code>
+          <div class="tip" id="1996">
+            <strong>Signature:</strong> (indexArray:int64 [] * count:int64 * pointArray:float []) -&gt; Range1d<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '1997', 1997)" onmouseover="showTip(event, '1997', 1997)">
+            GetBoundingRange1d(...)
+          </code>
+          <div class="tip" id="1997">
+            <strong>Signature:</strong> (indexArray:int64 [] * start:int64 * count:int64 * pointArray:float []) -&gt; Range1d<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '1998', 1998)" onmouseover="showTip(event, '1998', 1998)">
+            GetBoundingRange1d(...)
+          </code>
+          <div class="tip" id="1998">
+            <strong>Signature:</strong> (indexArray:int64 [] * start:int64 * count:int64 * array:&#39;T [] * pointSelector:Func&lt;&#39;T,float&gt;) -&gt; Range1d<br />
+                          <strong>Type parameters:</strong> 'T          </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '1999', 1999)" onmouseover="showTip(event, '1999', 1999)">
+            GetBoundingRange1d(points)
+          </code>
+          <div class="tip" id="1999">
+            <strong>Signature:</strong> points:IEnumerable&lt;float&gt; -&gt; Range1d<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '2000', 2000)" onmouseover="showTip(event, '2000', 2000)">
+            GetBoundingRange1f(pointArray)
+          </code>
+          <div class="tip" id="2000">
+            <strong>Signature:</strong> (pointArray:float32 []) -&gt; Range1f<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '2001', 2001)" onmouseover="showTip(event, '2001', 2001)">
+            GetBoundingRange1f(pointArray, count)
+          </code>
+          <div class="tip" id="2001">
+            <strong>Signature:</strong> (pointArray:float32 [] * count:int64) -&gt; Range1f<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Returns the BoundingRange1f of the first count elements
+of the array.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '2002', 2002)" onmouseover="showTip(event, '2002', 2002)">
+            GetBoundingRange1f(...)
+          </code>
+          <div class="tip" id="2002">
+            <strong>Signature:</strong> (pointArray:float32 [] * start:int64 * count:int64) -&gt; Range1f<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Returns the BoundingRange1f of count elements
+of the array starting at start</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '2003', 2003)" onmouseover="showTip(event, '2003', 2003)">
+            GetBoundingRange1f(...)
+          </code>
+          <div class="tip" id="2003">
+            <strong>Signature:</strong> (array:&#39;T [] * start:int64 * count:int64 * pointSelector:Func&lt;&#39;T,float32&gt;) -&gt; Range1f<br />
+                          <strong>Type parameters:</strong> 'T          </div>
+        </td>
+        <td class="xmldoc">
+          <p>Returns the BoundingRange1f of count elements
+of the array starting at start</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '2004', 2004)" onmouseover="showTip(event, '2004', 2004)">
+            GetBoundingRange1f(pointList)
+          </code>
+          <div class="tip" id="2004">
+            <strong>Signature:</strong> pointList:List&lt;float32&gt; -&gt; Range1f<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '2005', 2005)" onmouseover="showTip(event, '2005', 2005)">
+            GetBoundingRange1f(pointList, count)
+          </code>
+          <div class="tip" id="2005">
+            <strong>Signature:</strong> (pointList:List&lt;float32&gt; * count:int) -&gt; Range1f<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Returns the BoundingRange1f of the first count elements
+of the list.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '2006', 2006)" onmouseover="showTip(event, '2006', 2006)">
+            GetBoundingRange1f(...)
+          </code>
+          <div class="tip" id="2006">
+            <strong>Signature:</strong> (indexArray:int [] * pointArray:float32 []) -&gt; Range1f<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '2007', 2007)" onmouseover="showTip(event, '2007', 2007)">
+            GetBoundingRange1f(...)
+          </code>
+          <div class="tip" id="2007">
+            <strong>Signature:</strong> (indexArray:int [] * count:int * pointArray:float32 []) -&gt; Range1f<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '2008', 2008)" onmouseover="showTip(event, '2008', 2008)">
+            GetBoundingRange1f(...)
+          </code>
+          <div class="tip" id="2008">
+            <strong>Signature:</strong> (indexArray:int [] * start:int * count:int * pointArray:float32 []) -&gt; Range1f<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '2009', 2009)" onmouseover="showTip(event, '2009', 2009)">
+            GetBoundingRange1f(...)
+          </code>
+          <div class="tip" id="2009">
+            <strong>Signature:</strong> (indexArray:int [] * start:int * count:int * array:&#39;T [] * pointSelector:Func&lt;&#39;T,float32&gt;) -&gt; Range1f<br />
+                          <strong>Type parameters:</strong> 'T          </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '2010', 2010)" onmouseover="showTip(event, '2010', 2010)">
+            GetBoundingRange1f(...)
+          </code>
+          <div class="tip" id="2010">
+            <strong>Signature:</strong> (indexArray:int64 [] * pointArray:float32 []) -&gt; Range1f<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '2011', 2011)" onmouseover="showTip(event, '2011', 2011)">
+            GetBoundingRange1f(...)
+          </code>
+          <div class="tip" id="2011">
+            <strong>Signature:</strong> (indexArray:int64 [] * count:int64 * pointArray:float32 []) -&gt; Range1f<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '2012', 2012)" onmouseover="showTip(event, '2012', 2012)">
+            GetBoundingRange1f(...)
+          </code>
+          <div class="tip" id="2012">
+            <strong>Signature:</strong> (indexArray:int64 [] * start:int64 * count:int64 * pointArray:float32 []) -&gt; Range1f<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '2013', 2013)" onmouseover="showTip(event, '2013', 2013)">
+            GetBoundingRange1f(...)
+          </code>
+          <div class="tip" id="2013">
+            <strong>Signature:</strong> (indexArray:int64 [] * start:int64 * count:int64 * array:&#39;T [] * pointSelector:Func&lt;&#39;T,float32&gt;) -&gt; Range1f<br />
+                          <strong>Type parameters:</strong> 'T          </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '2014', 2014)" onmouseover="showTip(event, '2014', 2014)">
+            GetBoundingRange1f(points)
+          </code>
+          <div class="tip" id="2014">
+            <strong>Signature:</strong> points:IEnumerable&lt;float32&gt; -&gt; Range1f<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '2015', 2015)" onmouseover="showTip(event, '2015', 2015)">
+            GetBoundingRange1i(pointArray)
+          </code>
+          <div class="tip" id="2015">
+            <strong>Signature:</strong> (pointArray:int []) -&gt; Range1i<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '2016', 2016)" onmouseover="showTip(event, '2016', 2016)">
+            GetBoundingRange1i(pointArray, count)
+          </code>
+          <div class="tip" id="2016">
+            <strong>Signature:</strong> (pointArray:int [] * count:int64) -&gt; Range1i<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Returns the BoundingRange1i of the first count elements
+of the array.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '2017', 2017)" onmouseover="showTip(event, '2017', 2017)">
+            GetBoundingRange1i(...)
+          </code>
+          <div class="tip" id="2017">
+            <strong>Signature:</strong> (pointArray:int [] * start:int64 * count:int64) -&gt; Range1i<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Returns the BoundingRange1i of count elements
+of the array starting at start</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '2018', 2018)" onmouseover="showTip(event, '2018', 2018)">
+            GetBoundingRange1i(...)
+          </code>
+          <div class="tip" id="2018">
+            <strong>Signature:</strong> (array:&#39;T [] * start:int64 * count:int64 * pointSelector:Func&lt;&#39;T,int&gt;) -&gt; Range1i<br />
+                          <strong>Type parameters:</strong> 'T          </div>
+        </td>
+        <td class="xmldoc">
+          <p>Returns the BoundingRange1i of count elements
+of the array starting at start</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '2019', 2019)" onmouseover="showTip(event, '2019', 2019)">
+            GetBoundingRange1i(pointList)
+          </code>
+          <div class="tip" id="2019">
+            <strong>Signature:</strong> pointList:List&lt;int&gt; -&gt; Range1i<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '2020', 2020)" onmouseover="showTip(event, '2020', 2020)">
+            GetBoundingRange1i(pointList, count)
+          </code>
+          <div class="tip" id="2020">
+            <strong>Signature:</strong> (pointList:List&lt;int&gt; * count:int) -&gt; Range1i<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Returns the BoundingRange1i of the first count elements
+of the list.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '2021', 2021)" onmouseover="showTip(event, '2021', 2021)">
+            GetBoundingRange1i(...)
+          </code>
+          <div class="tip" id="2021">
+            <strong>Signature:</strong> (indexArray:int [] * pointArray:int []) -&gt; Range1i<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '2022', 2022)" onmouseover="showTip(event, '2022', 2022)">
+            GetBoundingRange1i(...)
+          </code>
+          <div class="tip" id="2022">
+            <strong>Signature:</strong> (indexArray:int [] * count:int * pointArray:int []) -&gt; Range1i<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '2023', 2023)" onmouseover="showTip(event, '2023', 2023)">
+            GetBoundingRange1i(...)
+          </code>
+          <div class="tip" id="2023">
+            <strong>Signature:</strong> (indexArray:int [] * start:int * count:int * pointArray:int []) -&gt; Range1i<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '2024', 2024)" onmouseover="showTip(event, '2024', 2024)">
+            GetBoundingRange1i(...)
+          </code>
+          <div class="tip" id="2024">
+            <strong>Signature:</strong> (indexArray:int [] * start:int * count:int * array:&#39;T [] * pointSelector:Func&lt;&#39;T,int&gt;) -&gt; Range1i<br />
+                          <strong>Type parameters:</strong> 'T          </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '2025', 2025)" onmouseover="showTip(event, '2025', 2025)">
+            GetBoundingRange1i(...)
+          </code>
+          <div class="tip" id="2025">
+            <strong>Signature:</strong> (indexArray:int64 [] * pointArray:int []) -&gt; Range1i<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '2026', 2026)" onmouseover="showTip(event, '2026', 2026)">
+            GetBoundingRange1i(...)
+          </code>
+          <div class="tip" id="2026">
+            <strong>Signature:</strong> (indexArray:int64 [] * count:int64 * pointArray:int []) -&gt; Range1i<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '2027', 2027)" onmouseover="showTip(event, '2027', 2027)">
+            GetBoundingRange1i(...)
+          </code>
+          <div class="tip" id="2027">
+            <strong>Signature:</strong> (indexArray:int64 [] * start:int64 * count:int64 * pointArray:int []) -&gt; Range1i<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '2028', 2028)" onmouseover="showTip(event, '2028', 2028)">
+            GetBoundingRange1i(...)
+          </code>
+          <div class="tip" id="2028">
+            <strong>Signature:</strong> (indexArray:int64 [] * start:int64 * count:int64 * array:&#39;T [] * pointSelector:Func&lt;&#39;T,int&gt;) -&gt; Range1i<br />
+                          <strong>Type parameters:</strong> 'T          </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '2029', 2029)" onmouseover="showTip(event, '2029', 2029)">
+            GetBoundingRange1i(points)
+          </code>
+          <div class="tip" id="2029">
+            <strong>Signature:</strong> points:IEnumerable&lt;int&gt; -&gt; Range1i<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '2030', 2030)" onmouseover="showTip(event, '2030', 2030)">
+            GetBoundingRange1l(pointArray)
+          </code>
+          <div class="tip" id="2030">
+            <strong>Signature:</strong> (pointArray:int64 []) -&gt; Range1l<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '2031', 2031)" onmouseover="showTip(event, '2031', 2031)">
+            GetBoundingRange1l(pointArray, count)
+          </code>
+          <div class="tip" id="2031">
+            <strong>Signature:</strong> (pointArray:int64 [] * count:int64) -&gt; Range1l<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Returns the BoundingRange1l of the first count elements
+of the array.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '2032', 2032)" onmouseover="showTip(event, '2032', 2032)">
+            GetBoundingRange1l(...)
+          </code>
+          <div class="tip" id="2032">
+            <strong>Signature:</strong> (pointArray:int64 [] * start:int64 * count:int64) -&gt; Range1l<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Returns the BoundingRange1l of count elements
+of the array starting at start</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '2033', 2033)" onmouseover="showTip(event, '2033', 2033)">
+            GetBoundingRange1l(...)
+          </code>
+          <div class="tip" id="2033">
+            <strong>Signature:</strong> (array:&#39;T [] * start:int64 * count:int64 * pointSelector:Func&lt;&#39;T,int64&gt;) -&gt; Range1l<br />
+                          <strong>Type parameters:</strong> 'T          </div>
+        </td>
+        <td class="xmldoc">
+          <p>Returns the BoundingRange1l of count elements
+of the array starting at start</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '2034', 2034)" onmouseover="showTip(event, '2034', 2034)">
+            GetBoundingRange1l(pointList)
+          </code>
+          <div class="tip" id="2034">
+            <strong>Signature:</strong> pointList:List&lt;int64&gt; -&gt; Range1l<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '2035', 2035)" onmouseover="showTip(event, '2035', 2035)">
+            GetBoundingRange1l(pointList, count)
+          </code>
+          <div class="tip" id="2035">
+            <strong>Signature:</strong> (pointList:List&lt;int64&gt; * count:int) -&gt; Range1l<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Returns the BoundingRange1l of the first count elements
+of the list.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '2036', 2036)" onmouseover="showTip(event, '2036', 2036)">
+            GetBoundingRange1l(...)
+          </code>
+          <div class="tip" id="2036">
+            <strong>Signature:</strong> (indexArray:int [] * pointArray:int64 []) -&gt; Range1l<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '2037', 2037)" onmouseover="showTip(event, '2037', 2037)">
+            GetBoundingRange1l(...)
+          </code>
+          <div class="tip" id="2037">
+            <strong>Signature:</strong> (indexArray:int [] * count:int * pointArray:int64 []) -&gt; Range1l<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '2038', 2038)" onmouseover="showTip(event, '2038', 2038)">
+            GetBoundingRange1l(...)
+          </code>
+          <div class="tip" id="2038">
+            <strong>Signature:</strong> (indexArray:int [] * start:int * count:int * pointArray:int64 []) -&gt; Range1l<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '2039', 2039)" onmouseover="showTip(event, '2039', 2039)">
+            GetBoundingRange1l(...)
+          </code>
+          <div class="tip" id="2039">
+            <strong>Signature:</strong> (indexArray:int [] * start:int * count:int * array:&#39;T [] * pointSelector:Func&lt;&#39;T,int64&gt;) -&gt; Range1l<br />
+                          <strong>Type parameters:</strong> 'T          </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '2040', 2040)" onmouseover="showTip(event, '2040', 2040)">
+            GetBoundingRange1l(...)
+          </code>
+          <div class="tip" id="2040">
+            <strong>Signature:</strong> (indexArray:int64 [] * pointArray:int64 []) -&gt; Range1l<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '2041', 2041)" onmouseover="showTip(event, '2041', 2041)">
+            GetBoundingRange1l(...)
+          </code>
+          <div class="tip" id="2041">
+            <strong>Signature:</strong> (indexArray:int64 [] * count:int64 * pointArray:int64 []) -&gt; Range1l<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '2042', 2042)" onmouseover="showTip(event, '2042', 2042)">
+            GetBoundingRange1l(...)
+          </code>
+          <div class="tip" id="2042">
+            <strong>Signature:</strong> (indexArray:int64 [] * start:int64 * count:int64 * pointArray:int64 []) -&gt; Range1l<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '2043', 2043)" onmouseover="showTip(event, '2043', 2043)">
+            GetBoundingRange1l(...)
+          </code>
+          <div class="tip" id="2043">
+            <strong>Signature:</strong> (indexArray:int64 [] * start:int64 * count:int64 * array:&#39;T [] * pointSelector:Func&lt;&#39;T,int64&gt;) -&gt; Range1l<br />
+                          <strong>Type parameters:</strong> 'T          </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '2044', 2044)" onmouseover="showTip(event, '2044', 2044)">
+            GetBoundingRange1l(points)
+          </code>
+          <div class="tip" id="2044">
+            <strong>Signature:</strong> points:IEnumerable&lt;int64&gt; -&gt; Range1l<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '2045', 2045)" onmouseover="showTip(event, '2045', 2045)">
+            GetBoundingRange1s(pointArray)
+          </code>
+          <div class="tip" id="2045">
+            <strong>Signature:</strong> (pointArray:int16 []) -&gt; Range1s<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '2046', 2046)" onmouseover="showTip(event, '2046', 2046)">
+            GetBoundingRange1s(pointArray, count)
+          </code>
+          <div class="tip" id="2046">
+            <strong>Signature:</strong> (pointArray:int16 [] * count:int64) -&gt; Range1s<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Returns the BoundingRange1s of the first count elements
+of the array.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '2047', 2047)" onmouseover="showTip(event, '2047', 2047)">
+            GetBoundingRange1s(...)
+          </code>
+          <div class="tip" id="2047">
+            <strong>Signature:</strong> (pointArray:int16 [] * start:int64 * count:int64) -&gt; Range1s<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Returns the BoundingRange1s of count elements
+of the array starting at start</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '2048', 2048)" onmouseover="showTip(event, '2048', 2048)">
+            GetBoundingRange1s(...)
+          </code>
+          <div class="tip" id="2048">
+            <strong>Signature:</strong> (array:&#39;T [] * start:int64 * count:int64 * pointSelector:Func&lt;&#39;T,int16&gt;) -&gt; Range1s<br />
+                          <strong>Type parameters:</strong> 'T          </div>
+        </td>
+        <td class="xmldoc">
+          <p>Returns the BoundingRange1s of count elements
+of the array starting at start</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '2049', 2049)" onmouseover="showTip(event, '2049', 2049)">
+            GetBoundingRange1s(pointList)
+          </code>
+          <div class="tip" id="2049">
+            <strong>Signature:</strong> pointList:List&lt;int16&gt; -&gt; Range1s<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '2050', 2050)" onmouseover="showTip(event, '2050', 2050)">
+            GetBoundingRange1s(pointList, count)
+          </code>
+          <div class="tip" id="2050">
+            <strong>Signature:</strong> (pointList:List&lt;int16&gt; * count:int) -&gt; Range1s<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Returns the BoundingRange1s of the first count elements
+of the list.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '2051', 2051)" onmouseover="showTip(event, '2051', 2051)">
+            GetBoundingRange1s(...)
+          </code>
+          <div class="tip" id="2051">
+            <strong>Signature:</strong> (indexArray:int [] * pointArray:int16 []) -&gt; Range1s<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '2052', 2052)" onmouseover="showTip(event, '2052', 2052)">
+            GetBoundingRange1s(...)
+          </code>
+          <div class="tip" id="2052">
+            <strong>Signature:</strong> (indexArray:int [] * count:int * pointArray:int16 []) -&gt; Range1s<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '2053', 2053)" onmouseover="showTip(event, '2053', 2053)">
+            GetBoundingRange1s(...)
+          </code>
+          <div class="tip" id="2053">
+            <strong>Signature:</strong> (indexArray:int [] * start:int * count:int * pointArray:int16 []) -&gt; Range1s<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '2054', 2054)" onmouseover="showTip(event, '2054', 2054)">
+            GetBoundingRange1s(...)
+          </code>
+          <div class="tip" id="2054">
+            <strong>Signature:</strong> (indexArray:int [] * start:int * count:int * array:&#39;T [] * pointSelector:Func&lt;&#39;T,int16&gt;) -&gt; Range1s<br />
+                          <strong>Type parameters:</strong> 'T          </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '2055', 2055)" onmouseover="showTip(event, '2055', 2055)">
+            GetBoundingRange1s(...)
+          </code>
+          <div class="tip" id="2055">
+            <strong>Signature:</strong> (indexArray:int64 [] * pointArray:int16 []) -&gt; Range1s<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '2056', 2056)" onmouseover="showTip(event, '2056', 2056)">
+            GetBoundingRange1s(...)
+          </code>
+          <div class="tip" id="2056">
+            <strong>Signature:</strong> (indexArray:int64 [] * count:int64 * pointArray:int16 []) -&gt; Range1s<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '2057', 2057)" onmouseover="showTip(event, '2057', 2057)">
+            GetBoundingRange1s(...)
+          </code>
+          <div class="tip" id="2057">
+            <strong>Signature:</strong> (indexArray:int64 [] * start:int64 * count:int64 * pointArray:int16 []) -&gt; Range1s<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '2058', 2058)" onmouseover="showTip(event, '2058', 2058)">
+            GetBoundingRange1s(...)
+          </code>
+          <div class="tip" id="2058">
+            <strong>Signature:</strong> (indexArray:int64 [] * start:int64 * count:int64 * array:&#39;T [] * pointSelector:Func&lt;&#39;T,int16&gt;) -&gt; Range1s<br />
+                          <strong>Type parameters:</strong> 'T          </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '2059', 2059)" onmouseover="showTip(event, '2059', 2059)">
+            GetBoundingRange1s(points)
+          </code>
+          <div class="tip" id="2059">
+            <strong>Signature:</strong> points:IEnumerable&lt;int16&gt; -&gt; Range1s<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '2060', 2060)" onmouseover="showTip(event, '2060', 2060)">
+            GetBoundingRange1sb(pointArray)
+          </code>
+          <div class="tip" id="2060">
+            <strong>Signature:</strong> (pointArray:sbyte []) -&gt; Range1sb<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '2061', 2061)" onmouseover="showTip(event, '2061', 2061)">
+            GetBoundingRange1sb(pointArray, count)
+          </code>
+          <div class="tip" id="2061">
+            <strong>Signature:</strong> (pointArray:sbyte [] * count:int64) -&gt; Range1sb<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Returns the BoundingRange1sb of the first count elements
+of the array.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '2062', 2062)" onmouseover="showTip(event, '2062', 2062)">
+            GetBoundingRange1sb(...)
+          </code>
+          <div class="tip" id="2062">
+            <strong>Signature:</strong> (pointArray:sbyte [] * start:int64 * count:int64) -&gt; Range1sb<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Returns the BoundingRange1sb of count elements
+of the array starting at start</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '2063', 2063)" onmouseover="showTip(event, '2063', 2063)">
+            GetBoundingRange1sb(...)
+          </code>
+          <div class="tip" id="2063">
+            <strong>Signature:</strong> (array:&#39;T [] * start:int64 * count:int64 * pointSelector:Func&lt;&#39;T,sbyte&gt;) -&gt; Range1sb<br />
+                          <strong>Type parameters:</strong> 'T          </div>
+        </td>
+        <td class="xmldoc">
+          <p>Returns the BoundingRange1sb of count elements
+of the array starting at start</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '2064', 2064)" onmouseover="showTip(event, '2064', 2064)">
+            GetBoundingRange1sb(pointList)
+          </code>
+          <div class="tip" id="2064">
+            <strong>Signature:</strong> pointList:List&lt;sbyte&gt; -&gt; Range1sb<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '2065', 2065)" onmouseover="showTip(event, '2065', 2065)">
+            GetBoundingRange1sb(pointList, count)
+          </code>
+          <div class="tip" id="2065">
+            <strong>Signature:</strong> (pointList:List&lt;sbyte&gt; * count:int) -&gt; Range1sb<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Returns the BoundingRange1sb of the first count elements
+of the list.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '2066', 2066)" onmouseover="showTip(event, '2066', 2066)">
+            GetBoundingRange1sb(...)
+          </code>
+          <div class="tip" id="2066">
+            <strong>Signature:</strong> (indexArray:int [] * pointArray:sbyte []) -&gt; Range1sb<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '2067', 2067)" onmouseover="showTip(event, '2067', 2067)">
+            GetBoundingRange1sb(...)
+          </code>
+          <div class="tip" id="2067">
+            <strong>Signature:</strong> (indexArray:int [] * count:int * pointArray:sbyte []) -&gt; Range1sb<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '2068', 2068)" onmouseover="showTip(event, '2068', 2068)">
+            GetBoundingRange1sb(...)
+          </code>
+          <div class="tip" id="2068">
+            <strong>Signature:</strong> (indexArray:int [] * start:int * count:int * pointArray:sbyte []) -&gt; Range1sb<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '2069', 2069)" onmouseover="showTip(event, '2069', 2069)">
+            GetBoundingRange1sb(...)
+          </code>
+          <div class="tip" id="2069">
+            <strong>Signature:</strong> (indexArray:int [] * start:int * count:int * array:&#39;T [] * pointSelector:Func&lt;&#39;T,sbyte&gt;) -&gt; Range1sb<br />
+                          <strong>Type parameters:</strong> 'T          </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '2070', 2070)" onmouseover="showTip(event, '2070', 2070)">
+            GetBoundingRange1sb(...)
+          </code>
+          <div class="tip" id="2070">
+            <strong>Signature:</strong> (indexArray:int64 [] * pointArray:sbyte []) -&gt; Range1sb<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '2071', 2071)" onmouseover="showTip(event, '2071', 2071)">
+            GetBoundingRange1sb(...)
+          </code>
+          <div class="tip" id="2071">
+            <strong>Signature:</strong> (indexArray:int64 [] * count:int64 * pointArray:sbyte []) -&gt; Range1sb<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '2072', 2072)" onmouseover="showTip(event, '2072', 2072)">
+            GetBoundingRange1sb(...)
+          </code>
+          <div class="tip" id="2072">
+            <strong>Signature:</strong> (indexArray:int64 [] * start:int64 * count:int64 * pointArray:sbyte []) -&gt; Range1sb<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '2073', 2073)" onmouseover="showTip(event, '2073', 2073)">
+            GetBoundingRange1sb(...)
+          </code>
+          <div class="tip" id="2073">
+            <strong>Signature:</strong> (indexArray:int64 [] * start:int64 * count:int64 * array:&#39;T [] * pointSelector:Func&lt;&#39;T,sbyte&gt;) -&gt; Range1sb<br />
+                          <strong>Type parameters:</strong> 'T          </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '2074', 2074)" onmouseover="showTip(event, '2074', 2074)">
+            GetBoundingRange1sb(points)
+          </code>
+          <div class="tip" id="2074">
+            <strong>Signature:</strong> points:IEnumerable&lt;sbyte&gt; -&gt; Range1sb<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '2075', 2075)" onmouseover="showTip(event, '2075', 2075)">
+            GetBoundingRange1ui(pointArray)
+          </code>
+          <div class="tip" id="2075">
+            <strong>Signature:</strong> (pointArray:uint32 []) -&gt; Range1ui<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '2076', 2076)" onmouseover="showTip(event, '2076', 2076)">
+            GetBoundingRange1ui(pointArray, count)
+          </code>
+          <div class="tip" id="2076">
+            <strong>Signature:</strong> (pointArray:uint32 [] * count:int64) -&gt; Range1ui<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Returns the BoundingRange1ui of the first count elements
+of the array.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '2077', 2077)" onmouseover="showTip(event, '2077', 2077)">
+            GetBoundingRange1ui(...)
+          </code>
+          <div class="tip" id="2077">
+            <strong>Signature:</strong> (pointArray:uint32 [] * start:int64 * count:int64) -&gt; Range1ui<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Returns the BoundingRange1ui of count elements
+of the array starting at start</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '2078', 2078)" onmouseover="showTip(event, '2078', 2078)">
+            GetBoundingRange1ui(...)
+          </code>
+          <div class="tip" id="2078">
+            <strong>Signature:</strong> (array:&#39;T [] * start:int64 * count:int64 * pointSelector:Func&lt;&#39;T,uint32&gt;) -&gt; Range1ui<br />
+                          <strong>Type parameters:</strong> 'T          </div>
+        </td>
+        <td class="xmldoc">
+          <p>Returns the BoundingRange1ui of count elements
+of the array starting at start</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '2079', 2079)" onmouseover="showTip(event, '2079', 2079)">
+            GetBoundingRange1ui(pointList)
+          </code>
+          <div class="tip" id="2079">
+            <strong>Signature:</strong> pointList:List&lt;uint32&gt; -&gt; Range1ui<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '2080', 2080)" onmouseover="showTip(event, '2080', 2080)">
+            GetBoundingRange1ui(pointList, count)
+          </code>
+          <div class="tip" id="2080">
+            <strong>Signature:</strong> (pointList:List&lt;uint32&gt; * count:int) -&gt; Range1ui<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Returns the BoundingRange1ui of the first count elements
+of the list.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '2081', 2081)" onmouseover="showTip(event, '2081', 2081)">
+            GetBoundingRange1ui(...)
+          </code>
+          <div class="tip" id="2081">
+            <strong>Signature:</strong> (indexArray:int [] * pointArray:uint32 []) -&gt; Range1ui<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '2082', 2082)" onmouseover="showTip(event, '2082', 2082)">
+            GetBoundingRange1ui(...)
+          </code>
+          <div class="tip" id="2082">
+            <strong>Signature:</strong> (indexArray:int [] * count:int * pointArray:uint32 []) -&gt; Range1ui<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '2083', 2083)" onmouseover="showTip(event, '2083', 2083)">
+            GetBoundingRange1ui(...)
+          </code>
+          <div class="tip" id="2083">
+            <strong>Signature:</strong> (indexArray:int [] * start:int * count:int * pointArray:uint32 []) -&gt; Range1ui<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '2084', 2084)" onmouseover="showTip(event, '2084', 2084)">
+            GetBoundingRange1ui(...)
+          </code>
+          <div class="tip" id="2084">
+            <strong>Signature:</strong> (indexArray:int [] * start:int * count:int * array:&#39;T [] * pointSelector:Func&lt;&#39;T,uint32&gt;) -&gt; Range1ui<br />
+                          <strong>Type parameters:</strong> 'T          </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '2085', 2085)" onmouseover="showTip(event, '2085', 2085)">
+            GetBoundingRange1ui(...)
+          </code>
+          <div class="tip" id="2085">
+            <strong>Signature:</strong> (indexArray:int64 [] * pointArray:uint32 []) -&gt; Range1ui<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '2086', 2086)" onmouseover="showTip(event, '2086', 2086)">
+            GetBoundingRange1ui(...)
+          </code>
+          <div class="tip" id="2086">
+            <strong>Signature:</strong> (indexArray:int64 [] * count:int64 * pointArray:uint32 []) -&gt; Range1ui<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '2087', 2087)" onmouseover="showTip(event, '2087', 2087)">
+            GetBoundingRange1ui(...)
+          </code>
+          <div class="tip" id="2087">
+            <strong>Signature:</strong> (indexArray:int64 [] * start:int64 * count:int64 * pointArray:uint32 []) -&gt; Range1ui<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '2088', 2088)" onmouseover="showTip(event, '2088', 2088)">
+            GetBoundingRange1ui(...)
+          </code>
+          <div class="tip" id="2088">
+            <strong>Signature:</strong> (indexArray:int64 [] * start:int64 * count:int64 * array:&#39;T [] * pointSelector:Func&lt;&#39;T,uint32&gt;) -&gt; Range1ui<br />
+                          <strong>Type parameters:</strong> 'T          </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '2089', 2089)" onmouseover="showTip(event, '2089', 2089)">
+            GetBoundingRange1ui(points)
+          </code>
+          <div class="tip" id="2089">
+            <strong>Signature:</strong> points:IEnumerable&lt;uint32&gt; -&gt; Range1ui<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '2090', 2090)" onmouseover="showTip(event, '2090', 2090)">
+            GetBoundingRange1ul(pointArray)
+          </code>
+          <div class="tip" id="2090">
+            <strong>Signature:</strong> (pointArray:uint64 []) -&gt; Range1ul<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '2091', 2091)" onmouseover="showTip(event, '2091', 2091)">
+            GetBoundingRange1ul(pointArray, count)
+          </code>
+          <div class="tip" id="2091">
+            <strong>Signature:</strong> (pointArray:uint64 [] * count:int64) -&gt; Range1ul<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Returns the BoundingRange1ul of the first count elements
+of the array.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '2092', 2092)" onmouseover="showTip(event, '2092', 2092)">
+            GetBoundingRange1ul(...)
+          </code>
+          <div class="tip" id="2092">
+            <strong>Signature:</strong> (pointArray:uint64 [] * start:int64 * count:int64) -&gt; Range1ul<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Returns the BoundingRange1ul of count elements
+of the array starting at start</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '2093', 2093)" onmouseover="showTip(event, '2093', 2093)">
+            GetBoundingRange1ul(...)
+          </code>
+          <div class="tip" id="2093">
+            <strong>Signature:</strong> (array:&#39;T [] * start:int64 * count:int64 * pointSelector:Func&lt;&#39;T,uint64&gt;) -&gt; Range1ul<br />
+                          <strong>Type parameters:</strong> 'T          </div>
+        </td>
+        <td class="xmldoc">
+          <p>Returns the BoundingRange1ul of count elements
+of the array starting at start</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '2094', 2094)" onmouseover="showTip(event, '2094', 2094)">
+            GetBoundingRange1ul(pointList)
+          </code>
+          <div class="tip" id="2094">
+            <strong>Signature:</strong> pointList:List&lt;uint64&gt; -&gt; Range1ul<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '2095', 2095)" onmouseover="showTip(event, '2095', 2095)">
+            GetBoundingRange1ul(pointList, count)
+          </code>
+          <div class="tip" id="2095">
+            <strong>Signature:</strong> (pointList:List&lt;uint64&gt; * count:int) -&gt; Range1ul<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Returns the BoundingRange1ul of the first count elements
+of the list.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '2096', 2096)" onmouseover="showTip(event, '2096', 2096)">
+            GetBoundingRange1ul(...)
+          </code>
+          <div class="tip" id="2096">
+            <strong>Signature:</strong> (indexArray:int [] * pointArray:uint64 []) -&gt; Range1ul<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '2097', 2097)" onmouseover="showTip(event, '2097', 2097)">
+            GetBoundingRange1ul(...)
+          </code>
+          <div class="tip" id="2097">
+            <strong>Signature:</strong> (indexArray:int [] * count:int * pointArray:uint64 []) -&gt; Range1ul<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '2098', 2098)" onmouseover="showTip(event, '2098', 2098)">
+            GetBoundingRange1ul(...)
+          </code>
+          <div class="tip" id="2098">
+            <strong>Signature:</strong> (indexArray:int [] * start:int * count:int * pointArray:uint64 []) -&gt; Range1ul<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '2099', 2099)" onmouseover="showTip(event, '2099', 2099)">
+            GetBoundingRange1ul(...)
+          </code>
+          <div class="tip" id="2099">
+            <strong>Signature:</strong> (indexArray:int [] * start:int * count:int * array:&#39;T [] * pointSelector:Func&lt;&#39;T,uint64&gt;) -&gt; Range1ul<br />
+                          <strong>Type parameters:</strong> 'T          </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '2100', 2100)" onmouseover="showTip(event, '2100', 2100)">
+            GetBoundingRange1ul(...)
+          </code>
+          <div class="tip" id="2100">
+            <strong>Signature:</strong> (indexArray:int64 [] * pointArray:uint64 []) -&gt; Range1ul<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '2101', 2101)" onmouseover="showTip(event, '2101', 2101)">
+            GetBoundingRange1ul(...)
+          </code>
+          <div class="tip" id="2101">
+            <strong>Signature:</strong> (indexArray:int64 [] * count:int64 * pointArray:uint64 []) -&gt; Range1ul<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '2102', 2102)" onmouseover="showTip(event, '2102', 2102)">
+            GetBoundingRange1ul(...)
+          </code>
+          <div class="tip" id="2102">
+            <strong>Signature:</strong> (indexArray:int64 [] * start:int64 * count:int64 * pointArray:uint64 []) -&gt; Range1ul<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '2103', 2103)" onmouseover="showTip(event, '2103', 2103)">
+            GetBoundingRange1ul(...)
+          </code>
+          <div class="tip" id="2103">
+            <strong>Signature:</strong> (indexArray:int64 [] * start:int64 * count:int64 * array:&#39;T [] * pointSelector:Func&lt;&#39;T,uint64&gt;) -&gt; Range1ul<br />
+                          <strong>Type parameters:</strong> 'T          </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '2104', 2104)" onmouseover="showTip(event, '2104', 2104)">
+            GetBoundingRange1ul(points)
+          </code>
+          <div class="tip" id="2104">
+            <strong>Signature:</strong> points:IEnumerable&lt;uint64&gt; -&gt; Range1ul<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '2105', 2105)" onmouseover="showTip(event, '2105', 2105)">
+            GetBoundingRange1us(pointArray)
+          </code>
+          <div class="tip" id="2105">
+            <strong>Signature:</strong> (pointArray:uint16 []) -&gt; Range1us<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '2106', 2106)" onmouseover="showTip(event, '2106', 2106)">
+            GetBoundingRange1us(pointArray, count)
+          </code>
+          <div class="tip" id="2106">
+            <strong>Signature:</strong> (pointArray:uint16 [] * count:int64) -&gt; Range1us<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Returns the BoundingRange1us of the first count elements
+of the array.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '2107', 2107)" onmouseover="showTip(event, '2107', 2107)">
+            GetBoundingRange1us(...)
+          </code>
+          <div class="tip" id="2107">
+            <strong>Signature:</strong> (pointArray:uint16 [] * start:int64 * count:int64) -&gt; Range1us<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Returns the BoundingRange1us of count elements
+of the array starting at start</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '2108', 2108)" onmouseover="showTip(event, '2108', 2108)">
+            GetBoundingRange1us(...)
+          </code>
+          <div class="tip" id="2108">
+            <strong>Signature:</strong> (array:&#39;T [] * start:int64 * count:int64 * pointSelector:Func&lt;&#39;T,uint16&gt;) -&gt; Range1us<br />
+                          <strong>Type parameters:</strong> 'T          </div>
+        </td>
+        <td class="xmldoc">
+          <p>Returns the BoundingRange1us of count elements
+of the array starting at start</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '2109', 2109)" onmouseover="showTip(event, '2109', 2109)">
+            GetBoundingRange1us(pointList)
+          </code>
+          <div class="tip" id="2109">
+            <strong>Signature:</strong> pointList:List&lt;uint16&gt; -&gt; Range1us<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '2110', 2110)" onmouseover="showTip(event, '2110', 2110)">
+            GetBoundingRange1us(pointList, count)
+          </code>
+          <div class="tip" id="2110">
+            <strong>Signature:</strong> (pointList:List&lt;uint16&gt; * count:int) -&gt; Range1us<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Returns the BoundingRange1us of the first count elements
+of the list.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '2111', 2111)" onmouseover="showTip(event, '2111', 2111)">
+            GetBoundingRange1us(...)
+          </code>
+          <div class="tip" id="2111">
+            <strong>Signature:</strong> (indexArray:int [] * pointArray:uint16 []) -&gt; Range1us<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '2112', 2112)" onmouseover="showTip(event, '2112', 2112)">
+            GetBoundingRange1us(...)
+          </code>
+          <div class="tip" id="2112">
+            <strong>Signature:</strong> (indexArray:int [] * count:int * pointArray:uint16 []) -&gt; Range1us<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '2113', 2113)" onmouseover="showTip(event, '2113', 2113)">
+            GetBoundingRange1us(...)
+          </code>
+          <div class="tip" id="2113">
+            <strong>Signature:</strong> (indexArray:int [] * start:int * count:int * pointArray:uint16 []) -&gt; Range1us<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '2114', 2114)" onmouseover="showTip(event, '2114', 2114)">
+            GetBoundingRange1us(...)
+          </code>
+          <div class="tip" id="2114">
+            <strong>Signature:</strong> (indexArray:int [] * start:int * count:int * array:&#39;T [] * pointSelector:Func&lt;&#39;T,uint16&gt;) -&gt; Range1us<br />
+                          <strong>Type parameters:</strong> 'T          </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '2115', 2115)" onmouseover="showTip(event, '2115', 2115)">
+            GetBoundingRange1us(...)
+          </code>
+          <div class="tip" id="2115">
+            <strong>Signature:</strong> (indexArray:int64 [] * pointArray:uint16 []) -&gt; Range1us<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '2116', 2116)" onmouseover="showTip(event, '2116', 2116)">
+            GetBoundingRange1us(...)
+          </code>
+          <div class="tip" id="2116">
+            <strong>Signature:</strong> (indexArray:int64 [] * count:int64 * pointArray:uint16 []) -&gt; Range1us<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '2117', 2117)" onmouseover="showTip(event, '2117', 2117)">
+            GetBoundingRange1us(...)
+          </code>
+          <div class="tip" id="2117">
+            <strong>Signature:</strong> (indexArray:int64 [] * start:int64 * count:int64 * pointArray:uint16 []) -&gt; Range1us<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '2118', 2118)" onmouseover="showTip(event, '2118', 2118)">
+            GetBoundingRange1us(...)
+          </code>
+          <div class="tip" id="2118">
+            <strong>Signature:</strong> (indexArray:int64 [] * start:int64 * count:int64 * array:&#39;T [] * pointSelector:Func&lt;&#39;T,uint16&gt;) -&gt; Range1us<br />
+                          <strong>Type parameters:</strong> 'T          </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '2119', 2119)" onmouseover="showTip(event, '2119', 2119)">
+            GetBoundingRange1us(points)
+          </code>
+          <div class="tip" id="2119">
+            <strong>Signature:</strong> points:IEnumerable&lt;uint16&gt; -&gt; Range1us<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+        </div>
+        <div class="span3">
+          <a href="https://github.com/vrvis">
+            <img src="logo.png" style="width:140px;height:140px;margin:10px 0px 0px 35px;border-style:none;" />
+          </a>
+
+          <ul class="nav nav-list" id="menu">
+
+            <li class="nav-header">Aardvark.Base</li>
+
+            <li class="divider"></li>
+            <li><a href="https://github.com/vrvis/aardvark.base">Home page</a></li>
+            <li class="divider"></li>
+
+            <li><a href="https://www.nuget.org/packages/Aardvark.Base">Get Aardvark.Base via NuGet</a></li>
+            <li><a href="https://github.com/vrvis/aardvark.base">Source Code on GitHub</a></li>
+            <li><a href="https://github.com/vrvis/aardvark.baseLicense">License (Apache 2)</a></li>
+            
+            <!-- <li><a href="https://github.com/vrvis/aardvark.base/RELEASE_NOTES.html">Release Notes</a></li>
+            <li><a href="https://github.com/vrvis/aardvark.base//contributing.html">Contributing to Aardvark.Base</a></li>
+  
+            <li><a href="http://stackoverflow.com/questions/tagged/f%23-fake">Ask a question</a></li> 
+            
+            <li class="nav-header">Tutorials</li>
+            <li><a href="https://github.com/vrvis/aardvark.base/gettingstarted.html">Getting started</a></li>
+            
+            -->
+
+            
+            <li class="divider"></li>
+            <li class="nav-header">Reference</li>
+
+            <li><a href="https://github.com/vrvis/aardvark.base/apidocs/index.html">API Reference</a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    <a href="https://github.com/vrvis/aardvark.base"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_gray_6d6d6d.png" alt="Fork me on GitHub"></a>
+  </body>
+  </html>

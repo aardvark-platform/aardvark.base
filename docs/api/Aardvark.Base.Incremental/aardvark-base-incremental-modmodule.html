@@ -1,0 +1,920 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>Mod - Aardvark.Base.Incremental</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="The Aardvark Platform Team">
+
+    <script src="https://code.jquery.com/jquery-1.8.0.js"></script>
+    <script src="https://code.jquery.com/ui/1.8.23/jquery-ui.js"></script>
+    <script src="https://netdna.bootstrapcdn.com/twitter-bootstrap/2.2.1/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link href="https://netdna.bootstrapcdn.com/twitter-bootstrap/2.2.1/css/bootstrap-combined.min.css" rel="stylesheet">
+
+    <link type="text/css" rel="stylesheet" href="https://github.com/vrvis/aardvark.base/content/style.css" />
+    <script type="text/javascript" src="https://github.com/vrvis/aardvark.base/content/tips.js"></script>
+    <!-- HTML5 shim, for IE6-8 support of HTML5 elements -->
+    <!--[if lt IE 9]>
+      <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+  </head>
+  <body>
+    <div class="container">
+      <div class="masthead">
+        <ul class="nav nav-pills pull-right">
+          <li><a href="https://github.com/vrvis/aardvark.base">github page</a></li>
+        </ul>
+        <h3 class="muted"><a href="https://github.com/vrvis/aardvark.base/index.html">Aardvark.Base.Incremental</a></h3>
+      </div>
+      <hr />
+      <div class="row">
+        <div class="span9" id="main">
+          
+
+
+
+<h1>Mod</h1>
+<div class="xmldoc">
+<p>defines functions for composing mods and
+managing evaluation order, etc.</p>
+
+</div>
+
+<!-- Render nested types and modules, if there are any -->
+  <h2>Nested types and modules</h2>
+  <div>
+      <table class="table table-bordered type-list">
+    <thead>
+      <tr><td>Type</td><td>Description</td></tr>
+    </thead>
+    <tbody>
+        <tr>
+          <td class="type-name">
+            <a href="aardvark-base-incremental-modmodule-abstractdirtytrackingmod-2.html">AbstractDirtyTrackingMod<'i, 'a></a>
+          </td>
+          <td class="xmldoc"></td>
+        </tr>
+        <tr>
+          <td class="type-name">
+            <a href="aardvark-base-incremental-modmodule-abstractmod-1.html">AbstractMod<'a></a>
+          </td>
+          <td class="xmldoc"></td>
+        </tr>
+        <tr>
+          <td class="type-name">
+            <a href="aardvark-base-incremental-modmodule-abstractmodwithfinalizer-1.html">AbstractModWithFinalizer<'a></a>
+          </td>
+          <td class="xmldoc"></td>
+        </tr>
+        <tr>
+          <td class="type-name">
+            <a href="aardvark-base-incremental-modmodule-lazymod-1.html">LazyMod<'a></a>
+          </td>
+          <td class="xmldoc"></td>
+        </tr>
+    </tbody>
+  </table>
+
+  </div>
+
+  <h3>Functions and values</h3>
+  <table class="table table-bordered member-list">
+    <thead>
+      <tr><td>Function or value</td><td>Description</td></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '222', 222)" onmouseover="showTip(event, '222', 222)">
+            always m
+          </code>
+          <div class="tip" id="222">
+            <strong>Signature:</strong> m:IMod&lt;&#39;a&gt; -&gt; IMod&lt;&#39;a&gt;<br />
+                          <strong>Type parameters:</strong> 'a          </div>
+        </td>
+        <td class="xmldoc">
+            <a href="https://github.com/vrvis/aardvark.base/src/Aardvark.Base.Incremental/Mod/Mod.fs#L1097-1097" class="github-link">
+              <img src="../content/img/github.png" class="normal" />
+              <img src="../content/img/github-blue.png" class="hover" />
+            </a>
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '223', 223)" onmouseover="showTip(event, '223', 223)">
+            async a
+          </code>
+          <div class="tip" id="223">
+            <strong>Signature:</strong> a:Async&lt;&#39;a&gt; -&gt; IMod&lt;Option&lt;&#39;a&gt;&gt;<br />
+                          <strong>Type parameters:</strong> 'a          </div>
+        </td>
+        <td class="xmldoc">
+            <a href="https://github.com/vrvis/aardvark.base/src/Aardvark.Base.Incremental/Mod/Mod.fs#L972-972" class="github-link">
+              <img src="../content/img/github.png" class="normal" />
+              <img src="../content/img/github-blue.png" class="hover" />
+            </a>
+          <p>creates a new cell by starting the given async computation.
+until the computation is completed the cell will contain None.
+as soon as the computation is finished it will contain the resulting value.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '224', 224)" onmouseover="showTip(event, '224', 224)">
+            asyncTask task
+          </code>
+          <div class="tip" id="224">
+            <strong>Signature:</strong> task:Task&lt;&#39;a&gt; -&gt; IMod&lt;Option&lt;&#39;a&gt;&gt;<br />
+                          <strong>Type parameters:</strong> 'a          </div>
+        </td>
+        <td class="xmldoc">
+            <a href="https://github.com/vrvis/aardvark.base/src/Aardvark.Base.Incremental/Mod/Mod.fs#L953-953" class="github-link">
+              <img src="../content/img/github.png" class="normal" />
+              <img src="../content/img/github-blue.png" class="hover" />
+            </a>
+          <p>creates a new cell by starting the given async computation.
+until the computation is completed the cell will contain None.
+as soon as the computation is finished it will contain the resulting value.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '225', 225)" onmouseover="showTip(event, '225', 225)">
+            asyncWithDefault defaultValue a
+          </code>
+          <div class="tip" id="225">
+            <strong>Signature:</strong> defaultValue:&#39;a -&gt; a:Async&lt;&#39;a&gt; -&gt; IMod&lt;&#39;a&gt;<br />
+                          <strong>Type parameters:</strong> 'a          </div>
+        </td>
+        <td class="xmldoc">
+            <a href="https://github.com/vrvis/aardvark.base/src/Aardvark.Base.Incremental/Mod/Mod.fs#L981-981" class="github-link">
+              <img src="../content/img/github.png" class="normal" />
+              <img src="../content/img/github-blue.png" class="hover" />
+            </a>
+          <p>creates a new cell by starting the given async computation.
+until the computation is completed the cell will contain the default value.
+as soon as the computation is finished it will contain the resulting value.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '226', 226)" onmouseover="showTip(event, '226', 226)">
+            bind f m
+          </code>
+          <div class="tip" id="226">
+            <strong>Signature:</strong> f:(&#39;a -&gt; &#39;c) -&gt; m:IMod&lt;&#39;a&gt; -&gt; IMod&lt;&#39;b&gt;<br />
+                          <strong>Type parameters:</strong> 'a, 'c, 'b          </div>
+        </td>
+        <td class="xmldoc">
+            <a href="https://github.com/vrvis/aardvark.base/src/Aardvark.Base.Incremental/Mod/Mod.fs#L860-860" class="github-link">
+              <img src="../content/img/github.png" class="normal" />
+              <img src="../content/img/github-blue.png" class="hover" />
+            </a>
+          <p>adaptively applies a function to a cell's value
+and returns a new dependent cell holding the inner
+cell's content.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '227', 227)" onmouseover="showTip(event, '227', 227)">
+            bind2 f ma mb
+          </code>
+          <div class="tip" id="227">
+            <strong>Signature:</strong> f:(&#39;a -&gt; &#39;b -&gt; &#39;d) -&gt; ma:IMod&lt;&#39;a&gt; -&gt; mb:IMod&lt;&#39;b&gt; -&gt; IMod&lt;&#39;c&gt;<br />
+                          <strong>Type parameters:</strong> 'a, 'b, 'd, 'c          </div>
+        </td>
+        <td class="xmldoc">
+            <a href="https://github.com/vrvis/aardvark.base/src/Aardvark.Base.Incremental/Mod/Mod.fs#L872-872" class="github-link">
+              <img src="../content/img/github.png" class="normal" />
+              <img src="../content/img/github-blue.png" class="hover" />
+            </a>
+          <p>adaptively applies a function to two cell's values
+and returns a new dependent cell holding the inner
+cell's content.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '228', 228)" onmouseover="showTip(event, '228', 228)">
+            cast m
+          </code>
+          <div class="tip" id="228">
+            <strong>Signature:</strong> m:IMod -&gt; IMod&lt;&#39;b&gt;<br />
+                          <strong>Type parameters:</strong> 'b          </div>
+        </td>
+        <td class="xmldoc">
+            <a href="https://github.com/vrvis/aardvark.base/src/Aardvark.Base.Incremental/Mod/Mod.fs#L832-832" class="github-link">
+              <img src="../content/img/github.png" class="normal" />
+              <img src="../content/img/github-blue.png" class="hover" />
+            </a>
+          <p>adaptively casts a value to the desired type
+and fails if the cast is invalid.
+NOTE that this does not create a new cell but instead
+"decorates" the given cell.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '229', 229)" onmouseover="showTip(event, '229', 229)">
+            change m value
+          </code>
+          <div class="tip" id="229">
+            <strong>Signature:</strong> m:IModRef&lt;&#39;a&gt; -&gt; value:&#39;a -&gt; unit<br />
+                          <strong>Type parameters:</strong> 'a          </div>
+        </td>
+        <td class="xmldoc">
+            <a href="https://github.com/vrvis/aardvark.base/src/Aardvark.Base.Incremental/Mod/Mod.fs#L740-740" class="github-link">
+              <img src="../content/img/github.png" class="normal" />
+              <img src="../content/img/github-blue.png" class="hover" />
+            </a>
+          <p>changes the value of the given cell. Note that this
+function may only be used inside a current transaction.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '230', 230)" onmouseover="showTip(event, '230', 230)">
+            changeAfterEvaluation m value
+          </code>
+          <div class="tip" id="230">
+            <strong>Signature:</strong> m:IModRef&lt;&#39;a&gt; -&gt; value:&#39;a -&gt; unit<br />
+                          <strong>Type parameters:</strong> 'a          </div>
+        </td>
+        <td class="xmldoc">
+            <a href="https://github.com/vrvis/aardvark.base/src/Aardvark.Base.Incremental/Mod/Mod.fs#L747-747" class="github-link">
+              <img src="../content/img/github.png" class="normal" />
+              <img src="../content/img/github-blue.png" class="hover" />
+            </a>
+          <p>changes the value of the given cell after the current evaluation
+phase has finished</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '231', 231)" onmouseover="showTip(event, '231', 231)">
+            constant v
+          </code>
+          <div class="tip" id="231">
+            <strong>Signature:</strong> v:&#39;a -&gt; IMod&lt;&#39;a&gt;<br />
+                          <strong>Type parameters:</strong> 'a          </div>
+        </td>
+        <td class="xmldoc">
+            <a href="https://github.com/vrvis/aardvark.base/src/Aardvark.Base.Incremental/Mod/Mod.fs#L754-754" class="github-link">
+              <img src="../content/img/github.png" class="normal" />
+              <img src="../content/img/github-blue.png" class="hover" />
+            </a>
+          <p>initializes a new constant cell using the given value.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '232', 232)" onmouseover="showTip(event, '232', 232)">
+            custom compute
+          </code>
+          <div class="tip" id="232">
+            <strong>Signature:</strong> compute:(AdaptiveToken -&gt; &#39;a) -&gt; IMod&lt;&#39;a&gt;<br />
+                          <strong>Type parameters:</strong> 'a          </div>
+        </td>
+        <td class="xmldoc">
+            <a href="https://github.com/vrvis/aardvark.base/src/Aardvark.Base.Incremental/Mod/Mod.fs#L681-681" class="github-link">
+              <img src="../content/img/github.png" class="normal" />
+              <img src="../content/img/github-blue.png" class="hover" />
+            </a>
+          <p>creates a custom modifiable cell using the given
+compute function. If no inputs are added to the
+cell it will actually be constant.
+However the system will not statically assume the
+cell to be constant in any case.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '233', 233)" onmouseover="showTip(event, '233', 233)">
+            delay f
+          </code>
+          <div class="tip" id="233">
+            <strong>Signature:</strong> f:(unit -&gt; &#39;a) -&gt; IMod&lt;&#39;a&gt;<br />
+                          <strong>Type parameters:</strong> 'a          </div>
+        </td>
+        <td class="xmldoc">
+            <a href="https://github.com/vrvis/aardvark.base/src/Aardvark.Base.Incremental/Mod/Mod.fs#L770-770" class="github-link">
+              <img src="../content/img/github.png" class="normal" />
+              <img src="../content/img/github-blue.png" class="hover" />
+            </a>
+          <p>initializes a new constant cell using the given lazy value.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '234', 234)" onmouseover="showTip(event, '234', 234)">
+            dynamic f
+          </code>
+          <div class="tip" id="234">
+            <strong>Signature:</strong> f:(unit -&gt; IMod&lt;&#39;a&gt;) -&gt; IMod&lt;&#39;a&gt;<br />
+                          <strong>Type parameters:</strong> 'a          </div>
+        </td>
+        <td class="xmldoc">
+            <a href="https://github.com/vrvis/aardvark.base/src/Aardvark.Base.Incremental/Mod/Mod.fs#L887-887" class="github-link">
+              <img src="../content/img/github.png" class="normal" />
+              <img src="../content/img/github-blue.png" class="hover" />
+            </a>
+          <p>creates a dynamic cell using the given function
+while maintaining lazy evaluation.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '235', 235)" onmouseover="showTip(event, '235', 235)">
+            force m
+          </code>
+          <div class="tip" id="235">
+            <strong>Signature:</strong> m:IMod&lt;&#39;a&gt; -&gt; &#39;a<br />
+                          <strong>Type parameters:</strong> 'a          </div>
+        </td>
+        <td class="xmldoc">
+            <a href="https://github.com/vrvis/aardvark.base/src/Aardvark.Base.Incremental/Mod/Mod.fs#L894-894" class="github-link">
+              <img src="../content/img/github.png" class="normal" />
+              <img src="../content/img/github-blue.png" class="hover" />
+            </a>
+          <p>forces the evaluation of a cell and returns its current value</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '236', 236)" onmouseover="showTip(event, '236', 236)">
+            init v
+          </code>
+          <div class="tip" id="236">
+            <strong>Signature:</strong> v:&#39;a -&gt; ModRef&lt;&#39;a&gt;<br />
+                          <strong>Type parameters:</strong> 'a          </div>
+        </td>
+        <td class="xmldoc">
+            <a href="https://github.com/vrvis/aardvark.base/src/Aardvark.Base.Incremental/Mod/Mod.fs#L760-760" class="github-link">
+              <img src="../content/img/github.png" class="normal" />
+              <img src="../content/img/github-blue.png" class="hover" />
+            </a>
+          <p>initializes a new modifiable input cell using the given value.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '237', 237)" onmouseover="showTip(event, '237', 237)">
+            initConstant v
+          </code>
+          <div class="tip" id="237">
+            <strong>Signature:</strong> v:&#39;a -&gt; IMod&lt;&#39;a&gt;<br />
+                          <strong>Type parameters:</strong> 'a          </div>
+        </td>
+        <td class="xmldoc">
+            <a href="https://github.com/vrvis/aardvark.base/src/Aardvark.Base.Incremental/Mod/Mod.fs#L1094-1094" class="github-link">
+              <img src="../content/img/github.png" class="normal" />
+              <img src="../content/img/github-blue.png" class="hover" />
+            </a>
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '238', 238)" onmouseover="showTip(event, '238', 238)">
+            initDefault initial
+          </code>
+          <div class="tip" id="238">
+            <strong>Signature:</strong> initial:IMod&lt;&#39;a&gt; -&gt; DefaultingModRef&lt;&#39;a&gt;<br />
+                          <strong>Type parameters:</strong> 'a          </div>
+        </td>
+        <td class="xmldoc">
+            <a href="https://github.com/vrvis/aardvark.base/src/Aardvark.Base.Incremental/Mod/Mod.fs#L764-764" class="github-link">
+              <img src="../content/img/github.png" class="normal" />
+              <img src="../content/img/github-blue.png" class="hover" />
+            </a>
+          <p>see DefaultingModRef</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '239', 239)" onmouseover="showTip(event, '239', 239)">
+            initialize ()
+          </code>
+          <div class="tip" id="239">
+            <strong>Signature:</strong> unit -&gt; unit<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+            <a href="https://github.com/vrvis/aardvark.base/src/Aardvark.Base.Incremental/Mod/Mod.fs#L310-310" class="github-link">
+              <img src="../content/img/github.png" class="normal" />
+              <img src="../content/img/github-blue.png" class="hover" />
+            </a>
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '240', 240)" onmouseover="showTip(event, '240', 240)">
+            initMod v
+          </code>
+          <div class="tip" id="240">
+            <strong>Signature:</strong> v:&#39;a -&gt; ModRef&lt;&#39;a&gt;<br />
+                          <strong>Type parameters:</strong> 'a          </div>
+        </td>
+        <td class="xmldoc">
+            <a href="https://github.com/vrvis/aardvark.base/src/Aardvark.Base.Incremental/Mod/Mod.fs#L1091-1091" class="github-link">
+              <img src="../content/img/github.png" class="normal" />
+              <img src="../content/img/github-blue.png" class="hover" />
+            </a>
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '241', 241)" onmouseover="showTip(event, '241', 241)">
+            later m
+          </code>
+          <div class="tip" id="241">
+            <strong>Signature:</strong> m:IMod&lt;&#39;a&gt; -&gt; IMod&lt;&#39;a&gt;<br />
+                          <strong>Type parameters:</strong> 'a          </div>
+        </td>
+        <td class="xmldoc">
+            <a href="https://github.com/vrvis/aardvark.base/src/Aardvark.Base.Incremental/Mod/Mod.fs#L1100-1100" class="github-link">
+              <img src="../content/img/github.png" class="normal" />
+              <img src="../content/img/github-blue.png" class="hover" />
+            </a>
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '242', 242)" onmouseover="showTip(event, '242', 242)">
+            lazyAsync run
+          </code>
+          <div class="tip" id="242">
+            <strong>Signature:</strong> run:Async&lt;&#39;a&gt; -&gt; IMod&lt;Option&lt;&#39;a&gt;&gt;<br />
+                          <strong>Type parameters:</strong> 'a          </div>
+        </td>
+        <td class="xmldoc">
+            <a href="https://github.com/vrvis/aardvark.base/src/Aardvark.Base.Incremental/Mod/Mod.fs#L1001-1001" class="github-link">
+              <img src="../content/img/github.png" class="normal" />
+              <img src="../content/img/github-blue.png" class="hover" />
+            </a>
+          <p>creates a new cell starting the given async computation when a value is requested for the first time.
+until the computation is completed the cell will contain None.
+as soon as the computation is finished it will contain the resulting value.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '243', 243)" onmouseover="showTip(event, '243', 243)">
+            lazyAsyncWithDefault defaultValue run
+          </code>
+          <div class="tip" id="243">
+            <strong>Signature:</strong> defaultValue:&#39;a -&gt; run:Async&lt;&#39;a&gt; -&gt; IMod&lt;&#39;a&gt;<br />
+                          <strong>Type parameters:</strong> 'a          </div>
+        </td>
+        <td class="xmldoc">
+            <a href="https://github.com/vrvis/aardvark.base/src/Aardvark.Base.Incremental/Mod/Mod.fs#L1029-1029" class="github-link">
+              <img src="../content/img/github.png" class="normal" />
+              <img src="../content/img/github-blue.png" class="hover" />
+            </a>
+          <p>creates a new cell starting the given async computation when a value is requested for the first time.
+until the computation is completed the cell will contain the default value.
+as soon as the computation is finished it will contain the resulting value.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '244', 244)" onmouseover="showTip(event, '244', 244)">
+            map f m
+          </code>
+          <div class="tip" id="244">
+            <strong>Signature:</strong> f:(&#39;a -&gt; &#39;b) -&gt; m:IMod&lt;&#39;a&gt; -&gt; IMod&lt;&#39;b&gt;<br />
+                          <strong>Type parameters:</strong> 'a, 'b          </div>
+        </td>
+        <td class="xmldoc">
+            <a href="https://github.com/vrvis/aardvark.base/src/Aardvark.Base.Incremental/Mod/Mod.fs#L777-777" class="github-link">
+              <img src="../content/img/github.png" class="normal" />
+              <img src="../content/img/github-blue.png" class="hover" />
+            </a>
+          <p>adaptively applies a function to a cell's value
+resulting in a new dependent cell.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '245', 245)" onmouseover="showTip(event, '245', 245)">
+            map2 f m1 m2
+          </code>
+          <div class="tip" id="245">
+            <strong>Signature:</strong> f:(&#39;a -&gt; &#39;b -&gt; &#39;c) -&gt; m1:IMod&lt;&#39;a&gt; -&gt; m2:IMod&lt;&#39;b&gt; -&gt; IMod&lt;&#39;c&gt;<br />
+                          <strong>Type parameters:</strong> 'a, 'b, 'c          </div>
+        </td>
+        <td class="xmldoc">
+            <a href="https://github.com/vrvis/aardvark.base/src/Aardvark.Base.Incremental/Mod/Mod.fs#L788-788" class="github-link">
+              <img src="../content/img/github.png" class="normal" />
+              <img src="../content/img/github-blue.png" class="hover" />
+            </a>
+          <p>adaptively applies a function to two cell's values
+resulting in a new dependent cell.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '246', 246)" onmouseover="showTip(event, '246', 246)">
+            mapCustom f inputs
+          </code>
+          <div class="tip" id="246">
+            <strong>Signature:</strong> f:(AdaptiveToken -&gt; &#39;a) -&gt; inputs:&#39;c list -&gt; IMod&lt;&#39;a&gt;<br />
+                          <strong>Type parameters:</strong> 'a, 'c          </div>
+        </td>
+        <td class="xmldoc">
+            <a href="https://github.com/vrvis/aardvark.base/src/Aardvark.Base.Incremental/Mod/Mod.fs#L804-804" class="github-link">
+              <img src="../content/img/github.png" class="normal" />
+              <img src="../content/img/github-blue.png" class="hover" />
+            </a>
+          <p>creates a custom modifiable cell using the given
+compute function and adds all given inputs to the
+resulting cell.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '247', 247)" onmouseover="showTip(event, '247', 247)">
+            mapFast f m
+          </code>
+          <div class="tip" id="247">
+            <strong>Signature:</strong> f:(&#39;a -&gt; &#39;b) -&gt; m:IMod&lt;&#39;a&gt; -&gt; IMod&lt;&#39;b&gt;<br />
+                          <strong>Type parameters:</strong> 'a, 'b          </div>
+        </td>
+        <td class="xmldoc">
+            <a href="https://github.com/vrvis/aardvark.base/src/Aardvark.Base.Incremental/Mod/Mod.fs#L814-814" class="github-link">
+              <img src="../content/img/github.png" class="normal" />
+              <img src="../content/img/github-blue.png" class="hover" />
+            </a>
+          <p>adaptively applies a function to a cell's value
+without creating a new cell (maintaining equality, id, etc.)
+NOTE: this combinator assumes that the given function
+is really cheap (e.g. field-access, cast, etc.)</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '248', 248)" onmouseover="showTip(event, '248', 248)">
+            mapFastObj f m
+          </code>
+          <div class="tip" id="248">
+            <strong>Signature:</strong> f:(obj -&gt; &#39;b) -&gt; m:IMod -&gt; IMod&lt;&#39;b&gt;<br />
+                          <strong>Type parameters:</strong> 'b          </div>
+        </td>
+        <td class="xmldoc">
+            <a href="https://github.com/vrvis/aardvark.base/src/Aardvark.Base.Incremental/Mod/Mod.fs#L823-823" class="github-link">
+              <img src="../content/img/github.png" class="normal" />
+              <img src="../content/img/github-blue.png" class="hover" />
+            </a>
+          <p>adaptively applies a function to a cell's value
+without creating a new cell (maintaining equality, id, etc.)
+NOTE: this combinator assumes that the given function
+is really cheap (e.g. field-access, cast, etc.)</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '249', 249)" onmouseover="showTip(event, '249', 249)">
+            mapN f inputs
+          </code>
+          <div class="tip" id="249">
+            <strong>Signature:</strong> f:(seq&lt;&#39;a&gt; -&gt; &#39;b) -&gt; inputs:seq&lt;&#39;c&gt; -&gt; IMod&lt;&#39;b&gt;<br />
+                          <strong>Type parameters:</strong> 'a, 'b, 'c          </div>
+        </td>
+        <td class="xmldoc">
+            <a href="https://github.com/vrvis/aardvark.base/src/Aardvark.Base.Incremental/Mod/Mod.fs#L842-842" class="github-link">
+              <img src="../content/img/github.png" class="normal" />
+              <img src="../content/img/github-blue.png" class="hover" />
+            </a>
+          <p>creates a modifiable cell using the given inputs
+and compute function (being evaluated whenever any of
+the inputs changes.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '250', 250)" onmouseover="showTip(event, '250', 250)">
+            onPull m
+          </code>
+          <div class="tip" id="250">
+            <strong>Signature:</strong> m:IMod&lt;&#39;a&gt; -&gt; IMod&lt;&#39;a&gt;<br />
+                          <strong>Type parameters:</strong> 'a          </div>
+        </td>
+        <td class="xmldoc">
+            <a href="https://github.com/vrvis/aardvark.base/src/Aardvark.Base.Incremental/Mod/Mod.fs#L938-938" class="github-link">
+              <img src="../content/img/github.png" class="normal" />
+              <img src="../content/img/github-blue.png" class="hover" />
+            </a>
+          <p>creates a new cell forcing the evaluation of the
+given one to be lazy (on demand)
+NOTE: onPull does not maintain equality
+for constant-cells</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '251', 251)" onmouseover="showTip(event, '251', 251)">
+            onPush m
+          </code>
+          <div class="tip" id="251">
+            <strong>Signature:</strong> m:IMod&lt;&#39;a&gt; -&gt; IMod&lt;&#39;a&gt;<br />
+                          <strong>Type parameters:</strong> 'a          </div>
+        </td>
+        <td class="xmldoc">
+            <a href="https://github.com/vrvis/aardvark.base/src/Aardvark.Base.Incremental/Mod/Mod.fs#L901-901" class="github-link">
+              <img src="../content/img/github.png" class="normal" />
+              <img src="../content/img/github-blue.png" class="hover" />
+            </a>
+          <p>creates a new cell forcing the evaluation of the
+given one during change propagation (making it eager)</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '252', 252)" onmouseover="showTip(event, '252', 252)">
+            onPushCustomEq eq m
+          </code>
+          <div class="tip" id="252">
+            <strong>Signature:</strong> eq:(&#39;a -&gt; &#39;a -&gt; bool) -&gt; m:IMod&lt;&#39;a&gt; -&gt; IMod&lt;&#39;a&gt;<br />
+                          <strong>Type parameters:</strong> 'a          </div>
+        </td>
+        <td class="xmldoc">
+            <a href="https://github.com/vrvis/aardvark.base/src/Aardvark.Base.Incremental/Mod/Mod.fs#L920-920" class="github-link">
+              <img src="../content/img/github.png" class="normal" />
+              <img src="../content/img/github-blue.png" class="hover" />
+            </a>
+          <p>creates a new cell forcing the evaluation of the
+given one during change propagation (making it eager)
+using a</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '253', 253)" onmouseover="showTip(event, '253', 253)">
+            registerCallback f m
+          </code>
+          <div class="tip" id="253">
+            <strong>Signature:</strong> f:(&#39;?12052 -&gt; unit) -&gt; m:IMod&lt;&#39;?12052&gt; -&gt; IDisposable<br />
+                          <strong>Type parameters:</strong> '?12052          </div>
+        </td>
+        <td class="xmldoc">
+            <a href="https://github.com/vrvis/aardvark.base/src/Aardvark.Base.Incremental/Mod/Mod.fs#L711-711" class="github-link">
+              <img src="../content/img/github.png" class="normal" />
+              <img src="../content/img/github-blue.png" class="hover" />
+            </a>
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '254', 254)" onmouseover="showTip(event, '254', 254)">
+            start run
+          </code>
+          <div class="tip" id="254">
+            <strong>Signature:</strong> run:Async&lt;&#39;a&gt; -&gt; IMod&lt;&#39;a&gt;<br />
+                          <strong>Type parameters:</strong> 'a          </div>
+        </td>
+        <td class="xmldoc">
+            <a href="https://github.com/vrvis/aardvark.base/src/Aardvark.Base.Incremental/Mod/Mod.fs#L1056-1056" class="github-link">
+              <img src="../content/img/github.png" class="normal" />
+              <img src="../content/img/github-blue.png" class="hover" />
+            </a>
+          <p>creates a new cell by starting the given async computation.
+upon evaluation of the cell it will wait until the async computation has finished</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '255', 255)" onmouseover="showTip(event, '255', 255)">
+            time 
+          </code>
+          <div class="tip" id="255">
+            <strong>Signature:</strong> IMod&lt;DateTime&gt;<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+            <a href="https://github.com/vrvis/aardvark.base/src/Aardvark.Base.Incremental/Mod/Mod.fs#L1085-1085" class="github-link">
+              <img src="../content/img/github.png" class="normal" />
+              <img src="../content/img/github-blue.png" class="hover" />
+            </a>
+          <p>a changeable cell which will always be outdated when control-flow leaves
+the mod-system. Its value will always hold the current time (DateTime.Now)</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '256', 256)" onmouseover="showTip(event, '256', 256)">
+            unsafeRegisterCallbackKeepDisposable f m
+          </code>
+          <div class="tip" id="256">
+            <strong>Signature:</strong> f:(&#39;b -&gt; unit) -&gt; m:IMod&lt;&#39;b&gt; -&gt; IDisposable<br />
+                          <strong>Type parameters:</strong> 'b          </div>
+        </td>
+        <td class="xmldoc">
+            <a href="https://github.com/vrvis/aardvark.base/src/Aardvark.Base.Incremental/Mod/Mod.fs#L727-727" class="github-link">
+              <img src="../content/img/github.png" class="normal" />
+              <img src="../content/img/github-blue.png" class="hover" />
+            </a>
+          <p>registers a callback for execution whenever the
+set's value might have changed and returns a disposable
+subscription in order to unregister the callback.
+Note that the callback will be executed immediately
+once here.
+In contrast to registerCallbackNoGcRoot, this function holds on to the
+fresh disposable, i.e. even if the input set goes out of scope,
+the disposable still forces the complete computation to exist.
+When disposing the assosciated disposable, the gc root disappears and
+the computation can be collected.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '257', 257)" onmouseover="showTip(event, '257', 257)">
+            unsafeRegisterCallbackNoGcRoot f m
+          </code>
+          <div class="tip" id="257">
+            <strong>Signature:</strong> f:(&#39;a -&gt; unit) -&gt; m:IMod&lt;&#39;a&gt; -&gt; IDisposable<br />
+                          <strong>Type parameters:</strong> 'a          </div>
+        </td>
+        <td class="xmldoc">
+            <a href="https://github.com/vrvis/aardvark.base/src/Aardvark.Base.Incremental/Mod/Mod.fs#L700-700" class="github-link">
+              <img src="../content/img/github.png" class="normal" />
+              <img src="../content/img/github-blue.png" class="hover" />
+            </a>
+          <p>registers a callback for execution whenever the
+cells value might have changed and returns a disposable
+subscription in order to unregister the callback.
+Note that the callback will be executed immediately
+once here.
+Note that this function does not hold on to the created disposable, i.e.
+if the disposable as well as the source dies, the callback dies as well.
+If you use callbacks to propagate changed to other mods by using side-effects
+(which you should not do), use registerCallbackKeepDisposable in order to
+create a gc to the fresh disposable.
+registerCallbackKeepDisposable only destroys the callback, iff the associated
+disposable is disposed.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '258', 258)" onmouseover="showTip(event, '258', 258)">
+            useCurrent f
+          </code>
+          <div class="tip" id="258">
+            <strong>Signature:</strong> f:(AdaptiveToken -&gt; &#39;a) -&gt; IMod&lt;&#39;a&gt;<br />
+                          <strong>Type parameters:</strong> 'a          </div>
+        </td>
+        <td class="xmldoc">
+            <a href="https://github.com/vrvis/aardvark.base/src/Aardvark.Base.Incremental/Mod/Mod.fs#L1065-1065" class="github-link">
+              <img src="../content/img/github.png" class="normal" />
+              <img src="../content/img/github-blue.png" class="hover" />
+            </a>
+          
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+        </div>
+        <div class="span3">
+          <a href="https://github.com/vrvis">
+            <img src="logo.png" style="width:140px;height:140px;margin:10px 0px 0px 35px;border-style:none;" />
+          </a>
+
+          <ul class="nav nav-list" id="menu">
+
+            <li class="nav-header">Aardvark.Base.Incremental</li>
+
+            <li class="divider"></li>
+            <li><a href="https://github.com/vrvis/aardvark.base">Home page</a></li>
+            <li class="divider"></li>
+
+            <li><a href="https://www.nuget.org/packages/Aardvark.Base.Incremental">Get Aardvark.Base.Incremental via NuGet</a></li>
+            <li><a href="https://github.com/vrvis/aardvark.base">Source Code on GitHub</a></li>
+            <li><a href="https://github.com/vrvis/aardvark.baseLicense">License (Apache 2)</a></li>
+            
+            <!-- <li><a href="https://github.com/vrvis/aardvark.base/RELEASE_NOTES.html">Release Notes</a></li>
+            <li><a href="https://github.com/vrvis/aardvark.base//contributing.html">Contributing to Aardvark.Base.Incremental</a></li>
+  
+            <li><a href="http://stackoverflow.com/questions/tagged/f%23-fake">Ask a question</a></li> 
+            
+            <li class="nav-header">Tutorials</li>
+            <li><a href="https://github.com/vrvis/aardvark.base/gettingstarted.html">Getting started</a></li>
+            
+            -->
+
+            
+            <li class="divider"></li>
+            <li class="nav-header">Reference</li>
+
+            <li><a href="https://github.com/vrvis/aardvark.base/apidocs/index.html">API Reference</a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    <a href="https://github.com/vrvis/aardvark.base"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_gray_6d6d6d.png" alt="Fork me on GitHub"></a>
+  </body>
+  </html>

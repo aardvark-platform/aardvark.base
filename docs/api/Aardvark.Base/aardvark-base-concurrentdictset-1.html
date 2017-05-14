@@ -1,0 +1,427 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>ConcurrentDictSet<'TKey> - Aardvark.Base</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="The Aardvark Platform Team">
+
+    <script src="https://code.jquery.com/jquery-1.8.0.js"></script>
+    <script src="https://code.jquery.com/ui/1.8.23/jquery-ui.js"></script>
+    <script src="https://netdna.bootstrapcdn.com/twitter-bootstrap/2.2.1/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link href="https://netdna.bootstrapcdn.com/twitter-bootstrap/2.2.1/css/bootstrap-combined.min.css" rel="stylesheet">
+
+    <link type="text/css" rel="stylesheet" href="https://github.com/vrvis/aardvark.base/content/style.css" />
+    <script type="text/javascript" src="https://github.com/vrvis/aardvark.base/content/tips.js"></script>
+    <!-- HTML5 shim, for IE6-8 support of HTML5 elements -->
+    <!--[if lt IE 9]>
+      <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+  </head>
+  <body>
+    <div class="container">
+      <div class="masthead">
+        <ul class="nav nav-pills pull-right">
+          <li><a href="https://github.com/vrvis/aardvark.base">github page</a></li>
+        </ul>
+        <h3 class="muted"><a href="https://github.com/vrvis/aardvark.base/index.html">Aardvark.Base</a></h3>
+      </div>
+      <hr />
+      <div class="row">
+        <div class="span9" id="main">
+          
+
+
+
+<h1>ConcurrentDictSet<'TKey></h1>
+<div class="xmldoc">
+<p>A ConcurrentDictSet is an alternate implementation of a HashSet.
+It is implemented as a hashtable with external linking, that uses
+primes as the table size in order to reduce the danger of funneling.</p>
+
+</div>
+  <h3>Constructors</h3>
+  <table class="table table-bordered member-list">
+    <thead>
+      <tr><td>Constructor</td><td>Description</td></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '4440', 4440)" onmouseover="showTip(event, '4440', 4440)">
+            new(dict)
+          </code>
+          <div class="tip" id="4440">
+            <strong>Signature:</strong> dict:DictSet&lt;&#39;TKey&gt; -&gt; unit<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>A ConcurrentDictSet can only be concstructed by wrapping its non-concurrent
+counterpart.</p>
+
+
+        </td>
+      </tr>
+    </tbody>
+  </table>
+  <h3>Instance members</h3>
+  <table class="table table-bordered member-list">
+    <thead>
+      <tr><td>Instance member</td><td>Description</td></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '4441', 4441)" onmouseover="showTip(event, '4441', 4441)">
+            Add(key)
+          </code>
+          <div class="tip" id="4441">
+            <strong>Signature:</strong> key:&#39;TKey -&gt; bool<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Add the item with the supplied key
+to the ConcurrentDictSet.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '4442', 4442)" onmouseover="showTip(event, '4442', 4442)">
+            Add(key, hash)
+          </code>
+          <div class="tip" id="4442">
+            <strong>Signature:</strong> (key:&#39;TKey * hash:int) -&gt; bool<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Add the item with the supplied key
+to the ConcurrentDictSet.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '4443', 4443)" onmouseover="showTip(event, '4443', 4443)">
+            AddObject(objkey)
+          </code>
+          <div class="tip" id="4443">
+            <strong>Signature:</strong> objkey:obj -&gt; bool<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Add the item with supplied key
+both supplied as generic objects, to the ConcurrentDictSet. Note that the supplied key
+and value are cast to the concrete type of the keys and values used in the ConcurrentDictSet
+and this will fail if they are of different types.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '4444', 4444)" onmouseover="showTip(event, '4444', 4444)">
+            AddRange(keys)
+          </code>
+          <div class="tip" id="4444">
+            <strong>Signature:</strong> keys:IEnumerable&lt;&#39;TKey&gt; -&gt; unit<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Add the supplied keys to the ConcurrentDictSet.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '4445', 4445)" onmouseover="showTip(event, '4445', 4445)">
+            Clear()
+          </code>
+          <div class="tip" id="4445">
+            <strong>Signature:</strong> unit -&gt; unit<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Remove all items. Capacity remains unchanged.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '4446', 4446)" onmouseover="showTip(event, '4446', 4446)">
+            Contains(key)
+          </code>
+          <div class="tip" id="4446">
+            <strong>Signature:</strong> key:&#39;TKey -&gt; bool<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Returns true if the ConcurrentDictSet contains the item with the supplied
+key.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '4447', 4447)" onmouseover="showTip(event, '4447', 4447)">
+            Contains(key, hash)
+          </code>
+          <div class="tip" id="4447">
+            <strong>Signature:</strong> (key:&#39;TKey * hash:int) -&gt; bool<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Returns true if the ConcurrentDictSet contains the item with the supplied
+key.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '4448', 4448)" onmouseover="showTip(event, '4448', 4448)">
+            CopyTo(array, index)
+          </code>
+          <div class="tip" id="4448">
+            <strong>Signature:</strong> (array:&#39;TKey [] * index:int) -&gt; unit<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Copies all keys in the dictionary to the supplied
+array starting at the supplied index.
+This may throw a ConcurrentDataModifiedException if data is
+modified by another task during the operation.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '4449', 4449)" onmouseover="showTip(event, '4449', 4449)">
+            Count
+          </code>
+          <div class="tip" id="4449">
+            <strong>Signature:</strong> int<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Returns the number of items currently contained in the ConcurrentDictSet.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '4450', 4450)" onmouseover="showTip(event, '4450', 4450)">
+            LongCount
+          </code>
+          <div class="tip" id="4450">
+            <strong>Signature:</strong> int64<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Returns the number of items currently contained in the ConcurrentDictSet
+as long.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '4451', 4451)" onmouseover="showTip(event, '4451', 4451)">
+            NonConcurrent
+          </code>
+          <div class="tip" id="4451">
+            <strong>Signature:</strong> DictSet&lt;&#39;TKey&gt;<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Return the non-concurrent contained ConcurrentDictSet.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '4452', 4452)" onmouseover="showTip(event, '4452', 4452)">
+            Remove(key)
+          </code>
+          <div class="tip" id="4452">
+            <strong>Signature:</strong> key:&#39;TKey -&gt; bool<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Remove the item with the supplied key
+from the ConcurrentDictSet. Returns true if the value was removed.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '4453', 4453)" onmouseover="showTip(event, '4453', 4453)">
+            Remove(key, hash)
+          </code>
+          <div class="tip" id="4453">
+            <strong>Signature:</strong> (key:&#39;TKey * hash:int) -&gt; bool<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Remove the item with the supplied key
+from the ConcurrentDictSet. Returns true if the value was removed.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '4454', 4454)" onmouseover="showTip(event, '4454', 4454)">
+            ToArray()
+          </code>
+          <div class="tip" id="4454">
+            <strong>Signature:</strong> unit -&gt; &#39;TKey []<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Returns all keys in the dictionary as an array.
+This may throw a ConcurrentDataModifiedException if data is
+modified by another task during the operation.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '4455', 4455)" onmouseover="showTip(event, '4455', 4455)">
+            TryAdd(key)
+          </code>
+          <div class="tip" id="4455">
+            <strong>Signature:</strong> key:&#39;TKey -&gt; bool<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Add the item with the supplied key
+to the ConcurrentDictSet.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '4456', 4456)" onmouseover="showTip(event, '4456', 4456)">
+            TryAdd(key, hash)
+          </code>
+          <div class="tip" id="4456">
+            <strong>Signature:</strong> (key:&#39;TKey * hash:int) -&gt; bool<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Add the item with the supplied key
+to the ConcurrentDictSet.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '4457', 4457)" onmouseover="showTip(event, '4457', 4457)">
+            TryRemove(key)
+          </code>
+          <div class="tip" id="4457">
+            <strong>Signature:</strong> key:&#39;TKey -&gt; bool<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Try to reomve the item with the supplied key. If multipe entries
+have the same key, the one that was inserted last is removed.
+Returns true if the item was found.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '4458', 4458)" onmouseover="showTip(event, '4458', 4458)">
+            TryRemove(key, hash)
+          </code>
+          <div class="tip" id="4458">
+            <strong>Signature:</strong> (key:&#39;TKey * hash:int) -&gt; bool<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Try to reomve the item with the supplied key. If multipe entries
+have the same key, the one that was inserted last is removed.
+Returns true if the item was found.</p>
+
+
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+        </div>
+        <div class="span3">
+          <a href="https://github.com/vrvis">
+            <img src="logo.png" style="width:140px;height:140px;margin:10px 0px 0px 35px;border-style:none;" />
+          </a>
+
+          <ul class="nav nav-list" id="menu">
+
+            <li class="nav-header">Aardvark.Base</li>
+
+            <li class="divider"></li>
+            <li><a href="https://github.com/vrvis/aardvark.base">Home page</a></li>
+            <li class="divider"></li>
+
+            <li><a href="https://www.nuget.org/packages/Aardvark.Base">Get Aardvark.Base via NuGet</a></li>
+            <li><a href="https://github.com/vrvis/aardvark.base">Source Code on GitHub</a></li>
+            <li><a href="https://github.com/vrvis/aardvark.baseLicense">License (Apache 2)</a></li>
+            
+            <!-- <li><a href="https://github.com/vrvis/aardvark.base/RELEASE_NOTES.html">Release Notes</a></li>
+            <li><a href="https://github.com/vrvis/aardvark.base//contributing.html">Contributing to Aardvark.Base</a></li>
+  
+            <li><a href="http://stackoverflow.com/questions/tagged/f%23-fake">Ask a question</a></li> 
+            
+            <li class="nav-header">Tutorials</li>
+            <li><a href="https://github.com/vrvis/aardvark.base/gettingstarted.html">Getting started</a></li>
+            
+            -->
+
+            
+            <li class="divider"></li>
+            <li class="nav-header">Reference</li>
+
+            <li><a href="https://github.com/vrvis/aardvark.base/apidocs/index.html">API Reference</a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    <a href="https://github.com/vrvis/aardvark.base"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_gray_6d6d6d.png" alt="Fork me on GitHub"></a>
+  </body>
+  </html>

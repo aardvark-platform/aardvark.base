@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>IndexPolygon2d - Aardvark.Base</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="The Aardvark Platform Team">
+
+    <script src="https://code.jquery.com/jquery-1.8.0.js"></script>
+    <script src="https://code.jquery.com/ui/1.8.23/jquery-ui.js"></script>
+    <script src="https://netdna.bootstrapcdn.com/twitter-bootstrap/2.2.1/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link href="https://netdna.bootstrapcdn.com/twitter-bootstrap/2.2.1/css/bootstrap-combined.min.css" rel="stylesheet">
+
+    <link type="text/css" rel="stylesheet" href="https://github.com/vrvis/aardvark.base/content/style.css" />
+    <script type="text/javascript" src="https://github.com/vrvis/aardvark.base/content/tips.js"></script>
+    <!-- HTML5 shim, for IE6-8 support of HTML5 elements -->
+    <!--[if lt IE 9]>
+      <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+  </head>
+  <body>
+    <div class="container">
+      <div class="masthead">
+        <ul class="nav nav-pills pull-right">
+          <li><a href="https://github.com/vrvis/aardvark.base">github page</a></li>
+        </ul>
+        <h3 class="muted"><a href="https://github.com/vrvis/aardvark.base/index.html">Aardvark.Base</a></h3>
+      </div>
+      <hr />
+      <div class="row">
+        <div class="span9" id="main">
+          
+
+
+
+<h1>IndexPolygon2d</h1>
+<div class="xmldoc">
+</div>
+  <h3>Constructors</h3>
+  <table class="table table-bordered member-list">
+    <thead>
+      <tr><td>Constructor</td><td>Description</td></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '8214', 8214)" onmouseover="showTip(event, '8214', 8214)">
+            new(...)
+          </code>
+          <div class="tip" id="8214">
+            <strong>Signature:</strong> (indexArray:int [] * firstIndex:int * pointCount:int * pointArray:V2d []) -&gt; unit<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '8215', 8215)" onmouseover="showTip(event, '8215', 8215)">
+            new(pointArray, firstIndex, pointCount)
+          </code>
+          <div class="tip" id="8215">
+            <strong>Signature:</strong> (pointArray:V2d [] * firstIndex:int * pointCount:int) -&gt; unit<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '8216', 8216)" onmouseover="showTip(event, '8216', 8216)">
+            new(pointArray)
+          </code>
+          <div class="tip" id="8216">
+            <strong>Signature:</strong> (pointArray:V2d []) -&gt; unit<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+    </tbody>
+  </table>
+  <h3>Instance members</h3>
+  <table class="table table-bordered member-list">
+    <thead>
+      <tr><td>Instance member</td><td>Description</td></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '8217', 8217)" onmouseover="showTip(event, '8217', 8217)">
+            FirstIndex
+          </code>
+          <div class="tip" id="8217">
+            <strong>Signature:</strong> int<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '8218', 8218)" onmouseover="showTip(event, '8218', 8218)">
+            ForEachIndex(index_act)
+          </code>
+          <div class="tip" id="8218">
+            <strong>Signature:</strong> index_act:Action&lt;int&gt; -&gt; unit<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '8219', 8219)" onmouseover="showTip(event, '8219', 8219)">
+            GetIndexArray()
+          </code>
+          <div class="tip" id="8219">
+            <strong>Signature:</strong> unit -&gt; int []<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Returns a newly created array containing only the actual indices
+of the index polygon. NOTE: This is different from the
+IndexArray property!</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '8220', 8220)" onmouseover="showTip(event, '8220', 8220)">
+            GetPointArray()
+          </code>
+          <div class="tip" id="8220">
+            <strong>Signature:</strong> unit -&gt; V2d []<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Returns a newly created array containing only the actual points
+of the index polygon. NOTE: This is different from the
+PointArray property!</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '8221', 8221)" onmouseover="showTip(event, '8221', 8221)">
+            GetPointArray(pointArray)
+          </code>
+          <div class="tip" id="8221">
+            <strong>Signature:</strong> (pointArray:&#39;T []) -&gt; &#39;T []<br />
+                          <strong>Type parameters:</strong> 'T          </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '8222', 8222)" onmouseover="showTip(event, '8222', 8222)">
+            GetPointArray(pointList)
+          </code>
+          <div class="tip" id="8222">
+            <strong>Signature:</strong> pointList:List&lt;&#39;T&gt; -&gt; &#39;T []<br />
+                          <strong>Type parameters:</strong> 'T          </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '8223', 8223)" onmouseover="showTip(event, '8223', 8223)">
+            IndexArray
+          </code>
+          <div class="tip" id="8223">
+            <strong>Signature:</strong> int []<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>The index array that contains the point indices of the
+index polygon at the index range [FirstIndex, FirstIndex + PointCount).
+NOTE: This is different from the array returned by GetIndexArray().</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '8224', 8224)" onmouseover="showTip(event, '8224', 8224)">
+            Indices
+          </code>
+          <div class="tip" id="8224">
+            <strong>Signature:</strong> IEnumerable&lt;int&gt;<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '8225', 8225)" onmouseover="showTip(event, '8225', 8225)">
+            IsInvalid
+          </code>
+          <div class="tip" id="8225">
+            <strong>Signature:</strong> bool<br />
+              <strong>Modifiers:</strong> abstract<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '8226', 8226)" onmouseover="showTip(event, '8226', 8226)">
+            IsValid
+          </code>
+          <div class="tip" id="8226">
+            <strong>Signature:</strong> bool<br />
+              <strong>Modifiers:</strong> abstract<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '8227', 8227)" onmouseover="showTip(event, '8227', 8227)">
+            [()]
+          </code>
+          <div class="tip" id="8227">
+            <strong>Signature:</strong> unit -&gt; int<br />
+              <strong>Modifiers:</strong> abstract<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '8228', 8228)" onmouseover="showTip(event, '8228', 8228)">
+            PointArray
+          </code>
+          <div class="tip" id="8228">
+            <strong>Signature:</strong> V2d []<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>The point array that contains the points referenced by
+the index array. Note: This is different from the array
+returned by GetPointArray().</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '8229', 8229)" onmouseover="showTip(event, '8229', 8229)">
+            PointCount
+          </code>
+          <div class="tip" id="8229">
+            <strong>Signature:</strong> int<br />
+              <strong>Modifiers:</strong> abstract<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '8230', 8230)" onmouseover="showTip(event, '8230', 8230)">
+            Points
+          </code>
+          <div class="tip" id="8230">
+            <strong>Signature:</strong> IEnumerable&lt;V2d&gt;<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+        </div>
+        <div class="span3">
+          <a href="https://github.com/vrvis">
+            <img src="logo.png" style="width:140px;height:140px;margin:10px 0px 0px 35px;border-style:none;" />
+          </a>
+
+          <ul class="nav nav-list" id="menu">
+
+            <li class="nav-header">Aardvark.Base</li>
+
+            <li class="divider"></li>
+            <li><a href="https://github.com/vrvis/aardvark.base">Home page</a></li>
+            <li class="divider"></li>
+
+            <li><a href="https://www.nuget.org/packages/Aardvark.Base">Get Aardvark.Base via NuGet</a></li>
+            <li><a href="https://github.com/vrvis/aardvark.base">Source Code on GitHub</a></li>
+            <li><a href="https://github.com/vrvis/aardvark.baseLicense">License (Apache 2)</a></li>
+            
+            <!-- <li><a href="https://github.com/vrvis/aardvark.base/RELEASE_NOTES.html">Release Notes</a></li>
+            <li><a href="https://github.com/vrvis/aardvark.base//contributing.html">Contributing to Aardvark.Base</a></li>
+  
+            <li><a href="http://stackoverflow.com/questions/tagged/f%23-fake">Ask a question</a></li> 
+            
+            <li class="nav-header">Tutorials</li>
+            <li><a href="https://github.com/vrvis/aardvark.base/gettingstarted.html">Getting started</a></li>
+            
+            -->
+
+            
+            <li class="divider"></li>
+            <li class="nav-header">Reference</li>
+
+            <li><a href="https://github.com/vrvis/aardvark.base/apidocs/index.html">API Reference</a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    <a href="https://github.com/vrvis/aardvark.base"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_gray_6d6d6d.png" alt="Fork me on GitHub"></a>
+  </body>
+  </html>

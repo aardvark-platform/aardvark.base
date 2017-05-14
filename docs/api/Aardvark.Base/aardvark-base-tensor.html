@@ -1,0 +1,445 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>Tensor - Aardvark.Base</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="The Aardvark Platform Team">
+
+    <script src="https://code.jquery.com/jquery-1.8.0.js"></script>
+    <script src="https://code.jquery.com/ui/1.8.23/jquery-ui.js"></script>
+    <script src="https://netdna.bootstrapcdn.com/twitter-bootstrap/2.2.1/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link href="https://netdna.bootstrapcdn.com/twitter-bootstrap/2.2.1/css/bootstrap-combined.min.css" rel="stylesheet">
+
+    <link type="text/css" rel="stylesheet" href="https://github.com/vrvis/aardvark.base/content/style.css" />
+    <script type="text/javascript" src="https://github.com/vrvis/aardvark.base/content/tips.js"></script>
+    <!-- HTML5 shim, for IE6-8 support of HTML5 elements -->
+    <!--[if lt IE 9]>
+      <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+  </head>
+  <body>
+    <div class="container">
+      <div class="masthead">
+        <ul class="nav nav-pills pull-right">
+          <li><a href="https://github.com/vrvis/aardvark.base">github page</a></li>
+        </ul>
+        <h3 class="muted"><a href="https://github.com/vrvis/aardvark.base/index.html">Aardvark.Base</a></h3>
+      </div>
+      <hr />
+      <div class="row">
+        <div class="span9" id="main">
+          
+
+
+
+<h1>Tensor</h1>
+<div class="xmldoc">
+<p>Symmetric operations with a scalar or non-tensor result.</p>
+
+</div>
+  <h3>Static members</h3>
+  <table class="table table-bordered member-list">
+    <thead>
+      <tr><td>Static member</td><td>Description</td></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '18606', 18606)" onmouseover="showTip(event, '18606', 18606)">
+            Index2SamplesClamped(i, first, end, d)
+          </code>
+          <div class="tip" id="18606">
+            <strong>Signature:</strong> (i:int64 * first:int64 * end:int64 * d:int64) -&gt; Tup2&lt;int64&gt;<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Provides sample clamping to the border value.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '18607', 18607)" onmouseover="showTip(event, '18607', 18607)">
+            Index2SamplesCyclic1(i, first, end, d)
+          </code>
+          <div class="tip" id="18607">
+            <strong>Signature:</strong> (i:int64 * first:int64 * end:int64 * d:int64) -&gt; Tup2&lt;int64&gt;<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Provides cyclic handling within one cycle of the original.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '18608', 18608)" onmouseover="showTip(event, '18608', 18608)">
+            Index2SamplesRaw(i, first, end, d)
+          </code>
+          <div class="tip" id="18608">
+            <strong>Signature:</strong> (i:int64 * first:int64 * end:int64 * d:int64) -&gt; Tup2&lt;int64&gt;<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Raw sample access without checks.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '18609', 18609)" onmouseover="showTip(event, '18609', 18609)">
+            Index3SamplesClamped(i, first, end, d)
+          </code>
+          <div class="tip" id="18609">
+            <strong>Signature:</strong> (i:int64 * first:int64 * end:int64 * d:int64) -&gt; Tup3&lt;int64&gt;<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Provides sample clamping to the border value.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '18610', 18610)" onmouseover="showTip(event, '18610', 18610)">
+            Index3SamplesRaw(i, first, end, d)
+          </code>
+          <div class="tip" id="18610">
+            <strong>Signature:</strong> (i:int64 * first:int64 * end:int64 * d:int64) -&gt; Tup3&lt;int64&gt;<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Raw sample access without checks.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '18611', 18611)" onmouseover="showTip(event, '18611', 18611)">
+            Index4SamplesClamped(i, first, end, d)
+          </code>
+          <div class="tip" id="18611">
+            <strong>Signature:</strong> (i:int64 * first:int64 * end:int64 * d:int64) -&gt; Tup4&lt;int64&gt;<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Provides sample clamping to the border value.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '18612', 18612)" onmouseover="showTip(event, '18612', 18612)">
+            Index4SamplesCyclic1(i, first, end, d)
+          </code>
+          <div class="tip" id="18612">
+            <strong>Signature:</strong> (i:int64 * first:int64 * end:int64 * d:int64) -&gt; Tup4&lt;int64&gt;<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Provides cyclic handling within one cycle of the original.
+Note that this does not handle regions with less than four
+samples.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '18613', 18613)" onmouseover="showTip(event, '18613', 18613)">
+            Index4SamplesRaw(i, first, end, d)
+          </code>
+          <div class="tip" id="18613">
+            <strong>Signature:</strong> (i:int64 * first:int64 * end:int64 * d:int64) -&gt; Tup4&lt;int64&gt;<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Raw sample access without checks.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '18614', 18614)" onmouseover="showTip(event, '18614', 18614)">
+            Index5SamplesClamped(i, first, end, d)
+          </code>
+          <div class="tip" id="18614">
+            <strong>Signature:</strong> (i:int64 * first:int64 * end:int64 * d:int64) -&gt; Tup5&lt;int64&gt;<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Provides sample clamping to the border value. Note that this
+function currently requires that max - min &gt;= 5! i.e. it
+does not work for too small source tensors.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '18615', 18615)" onmouseover="showTip(event, '18615', 18615)">
+            Index6SamplesClamped(i, first, end, d)
+          </code>
+          <div class="tip" id="18615">
+            <strong>Signature:</strong> (i:int64 * first:int64 * end:int64 * d:int64) -&gt; Tup6&lt;int64&gt;<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Provides sample clamping to the border value. Note that this
+function currently requires that max - min &gt;= 5! i.e. it
+does not work for too small source tensors.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '18616', 18616)" onmouseover="showTip(event, '18616', 18616)">
+            Index6SamplesRaw(i, first, end, d)
+          </code>
+          <div class="tip" id="18616">
+            <strong>Signature:</strong> (i:int64 * first:int64 * end:int64 * d:int64) -&gt; Tup6&lt;int64&gt;<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Raw sample access without checks.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '18617', 18617)" onmouseover="showTip(event, '18617', 18617)">
+            Index7SamplesClamped(i, first, end, d)
+          </code>
+          <div class="tip" id="18617">
+            <strong>Signature:</strong> (i:int64 * first:int64 * end:int64 * d:int64) -&gt; Tup7&lt;int64&gt;<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Provides sample clamping to the border value. Note that this
+function currently requires that max - min &gt;= 5! i.e. it
+does not work for too small source tensors.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '18618', 18618)" onmouseover="showTip(event, '18618', 18618)">
+            InnerProduct(...)
+          </code>
+          <div class="tip" id="18618">
+            <strong>Signature:</strong> (t1:Tensor&lt;&#39;T1&gt; * t2:Tensor&lt;&#39;T2&gt; * mulFun:Func&lt;&#39;T1,&#39;T2,&#39;Tm&gt; * bias:&#39;Ts * sumFun:Func&lt;&#39;Ts,&#39;Tm,&#39;Ts&gt;) -&gt; &#39;Ts<br />
+                          <strong>Type parameters:</strong> 'T1, 'T2, 'Tm, 'Ts          </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '18619', 18619)" onmouseover="showTip(event, '18619', 18619)">
+            SetByCoordParallelX(mat, x_y_valueFun)
+          </code>
+          <div class="tip" id="18619">
+            <strong>Signature:</strong> (mat:Matrix&lt;&#39;Td&gt; * x_y_valueFun:Func&lt;int64,int64,&#39;Td&gt;) -&gt; Matrix&lt;&#39;Td&gt;<br />
+                          <strong>Type parameters:</strong> 'Td          </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '18620', 18620)" onmouseover="showTip(event, '18620', 18620)">
+            SetByCoordParallelX(mat, x_y_valueFun)
+          </code>
+          <div class="tip" id="18620">
+            <strong>Signature:</strong> (mat:Matrix&lt;&#39;Td,&#39;Tv&gt; * x_y_valueFun:Func&lt;int64,int64,&#39;Tv&gt;) -&gt; Matrix&lt;&#39;Td,&#39;Tv&gt;<br />
+                          <strong>Type parameters:</strong> 'Td, 'Tv          </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '18621', 18621)" onmouseover="showTip(event, '18621', 18621)">
+            SetByCoordParallelX(vol, x_y_z_valueFun)
+          </code>
+          <div class="tip" id="18621">
+            <strong>Signature:</strong> (vol:Volume&lt;&#39;Td&gt; * x_y_z_valueFun:Func&lt;int64,int64,int64,&#39;Td&gt;) -&gt; Volume&lt;&#39;Td&gt;<br />
+                          <strong>Type parameters:</strong> 'Td          </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '18622', 18622)" onmouseover="showTip(event, '18622', 18622)">
+            SetByCoordParallelX(vol, x_y_z_valueFun)
+          </code>
+          <div class="tip" id="18622">
+            <strong>Signature:</strong> (vol:Volume&lt;&#39;Td,&#39;Tv&gt; * x_y_z_valueFun:Func&lt;int64,int64,int64,&#39;Tv&gt;) -&gt; Volume&lt;&#39;Td,&#39;Tv&gt;<br />
+                          <strong>Type parameters:</strong> 'Td, 'Tv          </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '18623', 18623)" onmouseover="showTip(event, '18623', 18623)">
+            SetByCoordParallelY(mat, x_y_valueFun)
+          </code>
+          <div class="tip" id="18623">
+            <strong>Signature:</strong> (mat:Matrix&lt;&#39;Td&gt; * x_y_valueFun:Func&lt;int64,int64,&#39;Td&gt;) -&gt; Matrix&lt;&#39;Td&gt;<br />
+                          <strong>Type parameters:</strong> 'Td          </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '18624', 18624)" onmouseover="showTip(event, '18624', 18624)">
+            SetByCoordParallelY(mat, x_y_valueFun)
+          </code>
+          <div class="tip" id="18624">
+            <strong>Signature:</strong> (mat:Matrix&lt;&#39;Td,&#39;Tv&gt; * x_y_valueFun:Func&lt;int64,int64,&#39;Tv&gt;) -&gt; Matrix&lt;&#39;Td,&#39;Tv&gt;<br />
+                          <strong>Type parameters:</strong> 'Td, 'Tv          </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '18625', 18625)" onmouseover="showTip(event, '18625', 18625)">
+            SetByCoordParallelY(vol, x_y_z_valueFun)
+          </code>
+          <div class="tip" id="18625">
+            <strong>Signature:</strong> (vol:Volume&lt;&#39;Td&gt; * x_y_z_valueFun:Func&lt;int64,int64,int64,&#39;Td&gt;) -&gt; Volume&lt;&#39;Td&gt;<br />
+                          <strong>Type parameters:</strong> 'Td          </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '18626', 18626)" onmouseover="showTip(event, '18626', 18626)">
+            SetByCoordParallelY(vol, x_y_z_valueFun)
+          </code>
+          <div class="tip" id="18626">
+            <strong>Signature:</strong> (vol:Volume&lt;&#39;Td,&#39;Tv&gt; * x_y_z_valueFun:Func&lt;int64,int64,int64,&#39;Tv&gt;) -&gt; Volume&lt;&#39;Td,&#39;Tv&gt;<br />
+                          <strong>Type parameters:</strong> 'Td, 'Tv          </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '18627', 18627)" onmouseover="showTip(event, '18627', 18627)">
+            SetByCoordParallelZ(vol, x_y_z_valueFun)
+          </code>
+          <div class="tip" id="18627">
+            <strong>Signature:</strong> (vol:Volume&lt;&#39;Td&gt; * x_y_z_valueFun:Func&lt;int64,int64,int64,&#39;Td&gt;) -&gt; Volume&lt;&#39;Td&gt;<br />
+                          <strong>Type parameters:</strong> 'Td          </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '18628', 18628)" onmouseover="showTip(event, '18628', 18628)">
+            SetByCoordParallelZ(vol, x_y_z_valueFun)
+          </code>
+          <div class="tip" id="18628">
+            <strong>Signature:</strong> (vol:Volume&lt;&#39;Td,&#39;Tv&gt; * x_y_z_valueFun:Func&lt;int64,int64,int64,&#39;Tv&gt;) -&gt; Volume&lt;&#39;Td,&#39;Tv&gt;<br />
+                          <strong>Type parameters:</strong> 'Td, 'Tv          </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+        </div>
+        <div class="span3">
+          <a href="https://github.com/vrvis">
+            <img src="logo.png" style="width:140px;height:140px;margin:10px 0px 0px 35px;border-style:none;" />
+          </a>
+
+          <ul class="nav nav-list" id="menu">
+
+            <li class="nav-header">Aardvark.Base</li>
+
+            <li class="divider"></li>
+            <li><a href="https://github.com/vrvis/aardvark.base">Home page</a></li>
+            <li class="divider"></li>
+
+            <li><a href="https://www.nuget.org/packages/Aardvark.Base">Get Aardvark.Base via NuGet</a></li>
+            <li><a href="https://github.com/vrvis/aardvark.base">Source Code on GitHub</a></li>
+            <li><a href="https://github.com/vrvis/aardvark.baseLicense">License (Apache 2)</a></li>
+            
+            <!-- <li><a href="https://github.com/vrvis/aardvark.base/RELEASE_NOTES.html">Release Notes</a></li>
+            <li><a href="https://github.com/vrvis/aardvark.base//contributing.html">Contributing to Aardvark.Base</a></li>
+  
+            <li><a href="http://stackoverflow.com/questions/tagged/f%23-fake">Ask a question</a></li> 
+            
+            <li class="nav-header">Tutorials</li>
+            <li><a href="https://github.com/vrvis/aardvark.base/gettingstarted.html">Getting started</a></li>
+            
+            -->
+
+            
+            <li class="divider"></li>
+            <li class="nav-header">Reference</li>
+
+            <li><a href="https://github.com/vrvis/aardvark.base/apidocs/index.html">API Reference</a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    <a href="https://github.com/vrvis/aardvark.base"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_gray_6d6d6d.png" alt="Fork me on GitHub"></a>
+  </body>
+  </html>

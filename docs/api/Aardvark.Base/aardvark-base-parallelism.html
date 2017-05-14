@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>Parallelism - Aardvark.Base</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="The Aardvark Platform Team">
+
+    <script src="https://code.jquery.com/jquery-1.8.0.js"></script>
+    <script src="https://code.jquery.com/ui/1.8.23/jquery-ui.js"></script>
+    <script src="https://netdna.bootstrapcdn.com/twitter-bootstrap/2.2.1/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link href="https://netdna.bootstrapcdn.com/twitter-bootstrap/2.2.1/css/bootstrap-combined.min.css" rel="stylesheet">
+
+    <link type="text/css" rel="stylesheet" href="https://github.com/vrvis/aardvark.base/content/style.css" />
+    <script type="text/javascript" src="https://github.com/vrvis/aardvark.base/content/tips.js"></script>
+    <!-- HTML5 shim, for IE6-8 support of HTML5 elements -->
+    <!--[if lt IE 9]>
+      <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+  </head>
+  <body>
+    <div class="container">
+      <div class="masthead">
+        <ul class="nav nav-pills pull-right">
+          <li><a href="https://github.com/vrvis/aardvark.base">github page</a></li>
+        </ul>
+        <h3 class="muted"><a href="https://github.com/vrvis/aardvark.base/index.html">Aardvark.Base</a></h3>
+      </div>
+      <hr />
+      <div class="row">
+        <div class="span9" id="main">
+          
+
+
+
+<h1>Parallelism</h1>
+<div class="xmldoc">
+<p>Provides various methods determining parallelism</p>
+
+</div>
+  <h3>Static members</h3>
+  <table class="table table-bordered member-list">
+    <thead>
+      <tr><td>Static member</td><td>Description</td></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '13945', 13945)" onmouseover="showTip(event, '13945', 13945)">
+            IsParallelTo(u, v)
+          </code>
+          <div class="tip" id="13945">
+            <strong>Signature:</strong> (u:V2d * v:V2d) -&gt; bool<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '13946', 13946)" onmouseover="showTip(event, '13946', 13946)">
+            IsParallelTo(u, v, epsilon)
+          </code>
+          <div class="tip" id="13946">
+            <strong>Signature:</strong> (u:V2d * v:V2d * epsilon:float) -&gt; bool<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '13947', 13947)" onmouseover="showTip(event, '13947', 13947)">
+            IsParallelTo(ray, v)
+          </code>
+          <div class="tip" id="13947">
+            <strong>Signature:</strong> (ray:Ray2d * v:V2d) -&gt; bool<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '13948', 13948)" onmouseover="showTip(event, '13948', 13948)">
+            IsParallelTo(ray, v, epsilon)
+          </code>
+          <div class="tip" id="13948">
+            <strong>Signature:</strong> (ray:Ray2d * v:V2d * epsilon:float) -&gt; bool<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '13949', 13949)" onmouseover="showTip(event, '13949', 13949)">
+            IsParallelTo(r0, r1)
+          </code>
+          <div class="tip" id="13949">
+            <strong>Signature:</strong> (r0:Ray2d * r1:Ray2d) -&gt; bool<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '13950', 13950)" onmouseover="showTip(event, '13950', 13950)">
+            IsParallelTo(r0, r1, epsilon)
+          </code>
+          <div class="tip" id="13950">
+            <strong>Signature:</strong> (r0:Ray2d * r1:Ray2d * epsilon:float) -&gt; bool<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '13951', 13951)" onmouseover="showTip(event, '13951', 13951)">
+            IsParallelTo(l0, l1)
+          </code>
+          <div class="tip" id="13951">
+            <strong>Signature:</strong> (l0:Line2d * l1:Line2d) -&gt; bool<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '13952', 13952)" onmouseover="showTip(event, '13952', 13952)">
+            IsParallelTo(l0, l1, epsilon)
+          </code>
+          <div class="tip" id="13952">
+            <strong>Signature:</strong> (l0:Line2d * l1:Line2d * epsilon:float) -&gt; bool<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '13953', 13953)" onmouseover="showTip(event, '13953', 13953)">
+            IsParallelTo(u, v)
+          </code>
+          <div class="tip" id="13953">
+            <strong>Signature:</strong> (u:V3d * v:V3d) -&gt; bool<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '13954', 13954)" onmouseover="showTip(event, '13954', 13954)">
+            IsParallelTo(u, v, epsilon)
+          </code>
+          <div class="tip" id="13954">
+            <strong>Signature:</strong> (u:V3d * v:V3d * epsilon:float) -&gt; bool<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '13955', 13955)" onmouseover="showTip(event, '13955', 13955)">
+            IsParallelTo(ray, vec)
+          </code>
+          <div class="tip" id="13955">
+            <strong>Signature:</strong> (ray:Ray3d * vec:V3d) -&gt; bool<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '13956', 13956)" onmouseover="showTip(event, '13956', 13956)">
+            IsParallelTo(ray, vec, epsilon)
+          </code>
+          <div class="tip" id="13956">
+            <strong>Signature:</strong> (ray:Ray3d * vec:V3d * epsilon:float) -&gt; bool<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '13957', 13957)" onmouseover="showTip(event, '13957', 13957)">
+            IsParallelTo(r0, r1)
+          </code>
+          <div class="tip" id="13957">
+            <strong>Signature:</strong> (r0:Ray3d * r1:Ray3d) -&gt; bool<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '13958', 13958)" onmouseover="showTip(event, '13958', 13958)">
+            IsParallelTo(r0, r1, epsilon)
+          </code>
+          <div class="tip" id="13958">
+            <strong>Signature:</strong> (r0:Ray3d * r1:Ray3d * epsilon:float) -&gt; bool<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '13959', 13959)" onmouseover="showTip(event, '13959', 13959)">
+            IsParallelTo(p0, p1)
+          </code>
+          <div class="tip" id="13959">
+            <strong>Signature:</strong> (p0:Plane3d * p1:Plane3d) -&gt; bool<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '13960', 13960)" onmouseover="showTip(event, '13960', 13960)">
+            IsParallelTo(p0, p1, epsilon)
+          </code>
+          <div class="tip" id="13960">
+            <strong>Signature:</strong> (p0:Plane3d * p1:Plane3d * epsilon:float) -&gt; bool<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '13961', 13961)" onmouseover="showTip(event, '13961', 13961)">
+            IsParallelTo(ray, plane)
+          </code>
+          <div class="tip" id="13961">
+            <strong>Signature:</strong> (ray:Ray3d * plane:Plane3d) -&gt; bool<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '13962', 13962)" onmouseover="showTip(event, '13962', 13962)">
+            IsParallelTo(plane, ray)
+          </code>
+          <div class="tip" id="13962">
+            <strong>Signature:</strong> (plane:Plane3d * ray:Ray3d) -&gt; bool<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '13963', 13963)" onmouseover="showTip(event, '13963', 13963)">
+            IsParallelTo(l0, l1)
+          </code>
+          <div class="tip" id="13963">
+            <strong>Signature:</strong> (l0:Line3d * l1:Line3d) -&gt; bool<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '13964', 13964)" onmouseover="showTip(event, '13964', 13964)">
+            IsParallelTo(l0, l1, epsilon)
+          </code>
+          <div class="tip" id="13964">
+            <strong>Signature:</strong> (l0:Line3d * l1:Line3d * epsilon:float) -&gt; bool<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+        </div>
+        <div class="span3">
+          <a href="https://github.com/vrvis">
+            <img src="logo.png" style="width:140px;height:140px;margin:10px 0px 0px 35px;border-style:none;" />
+          </a>
+
+          <ul class="nav nav-list" id="menu">
+
+            <li class="nav-header">Aardvark.Base</li>
+
+            <li class="divider"></li>
+            <li><a href="https://github.com/vrvis/aardvark.base">Home page</a></li>
+            <li class="divider"></li>
+
+            <li><a href="https://www.nuget.org/packages/Aardvark.Base">Get Aardvark.Base via NuGet</a></li>
+            <li><a href="https://github.com/vrvis/aardvark.base">Source Code on GitHub</a></li>
+            <li><a href="https://github.com/vrvis/aardvark.baseLicense">License (Apache 2)</a></li>
+            
+            <!-- <li><a href="https://github.com/vrvis/aardvark.base/RELEASE_NOTES.html">Release Notes</a></li>
+            <li><a href="https://github.com/vrvis/aardvark.base//contributing.html">Contributing to Aardvark.Base</a></li>
+  
+            <li><a href="http://stackoverflow.com/questions/tagged/f%23-fake">Ask a question</a></li> 
+            
+            <li class="nav-header">Tutorials</li>
+            <li><a href="https://github.com/vrvis/aardvark.base/gettingstarted.html">Getting started</a></li>
+            
+            -->
+
+            
+            <li class="divider"></li>
+            <li class="nav-header">Reference</li>
+
+            <li><a href="https://github.com/vrvis/aardvark.base/apidocs/index.html">API Reference</a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    <a href="https://github.com/vrvis/aardvark.base"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_gray_6d6d6d.png" alt="Fork me on GitHub"></a>
+  </body>
+  </html>

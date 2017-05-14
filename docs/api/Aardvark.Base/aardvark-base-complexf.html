@@ -1,0 +1,828 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>ComplexF - Aardvark.Base</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="The Aardvark Platform Team">
+
+    <script src="https://code.jquery.com/jquery-1.8.0.js"></script>
+    <script src="https://code.jquery.com/ui/1.8.23/jquery-ui.js"></script>
+    <script src="https://netdna.bootstrapcdn.com/twitter-bootstrap/2.2.1/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link href="https://netdna.bootstrapcdn.com/twitter-bootstrap/2.2.1/css/bootstrap-combined.min.css" rel="stylesheet">
+
+    <link type="text/css" rel="stylesheet" href="https://github.com/vrvis/aardvark.base/content/style.css" />
+    <script type="text/javascript" src="https://github.com/vrvis/aardvark.base/content/tips.js"></script>
+    <!-- HTML5 shim, for IE6-8 support of HTML5 elements -->
+    <!--[if lt IE 9]>
+      <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+  </head>
+  <body>
+    <div class="container">
+      <div class="masthead">
+        <ul class="nav nav-pills pull-right">
+          <li><a href="https://github.com/vrvis/aardvark.base">github page</a></li>
+        </ul>
+        <h3 class="muted"><a href="https://github.com/vrvis/aardvark.base/index.html">Aardvark.Base</a></h3>
+      </div>
+      <hr />
+      <div class="row">
+        <div class="span9" id="main">
+          
+
+
+
+<h1>ComplexF</h1>
+<div class="xmldoc">
+</div>
+  <h3>Constructors</h3>
+  <table class="table table-bordered member-list">
+    <thead>
+      <tr><td>Constructor</td><td>Description</td></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '4173', 4173)" onmouseover="showTip(event, '4173', 4173)">
+            new(real)
+          </code>
+          <div class="tip" id="4173">
+            <strong>Signature:</strong> real:float32 -&gt; unit<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '4174', 4174)" onmouseover="showTip(event, '4174', 4174)">
+            new(real, imag)
+          </code>
+          <div class="tip" id="4174">
+            <strong>Signature:</strong> (real:float32 * imag:float32) -&gt; unit<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+    </tbody>
+  </table>
+  <h3>Instance members</h3>
+  <table class="table table-bordered member-list">
+    <thead>
+      <tr><td>Instance member</td><td>Description</td></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '4175', 4175)" onmouseover="showTip(event, '4175', 4175)">
+            Add(number)
+          </code>
+          <div class="tip" id="4175">
+            <strong>Signature:</strong> number:ComplexF -&gt; unit<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Adds a complex number to this</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '4176', 4176)" onmouseover="showTip(event, '4176', 4176)">
+            Add(scalar)
+          </code>
+          <div class="tip" id="4176">
+            <strong>Signature:</strong> scalar:float32 -&gt; unit<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Adds a real number to this</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '4177', 4177)" onmouseover="showTip(event, '4177', 4177)">
+            Argument()
+          </code>
+          <div class="tip" id="4177">
+            <strong>Signature:</strong> unit -&gt; unit<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Argument of the complex number</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '4178', 4178)" onmouseover="showTip(event, '4178', 4178)">
+            Conjugate()
+          </code>
+          <div class="tip" id="4178">
+            <strong>Signature:</strong> unit -&gt; unit<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Conjugates the complex number</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '4179', 4179)" onmouseover="showTip(event, '4179', 4179)">
+            Conjugated
+          </code>
+          <div class="tip" id="4179">
+            <strong>Signature:</strong> ComplexF<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '4180', 4180)" onmouseover="showTip(event, '4180', 4180)">
+            Divide(number)
+          </code>
+          <div class="tip" id="4180">
+            <strong>Signature:</strong> number:ComplexF -&gt; unit<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Divides this by a complex number</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '4181', 4181)" onmouseover="showTip(event, '4181', 4181)">
+            Divide(scalar)
+          </code>
+          <div class="tip" id="4181">
+            <strong>Signature:</strong> scalar:float32 -&gt; unit<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Divides this by a real number</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '4182', 4182)" onmouseover="showTip(event, '4182', 4182)">
+            IsI
+          </code>
+          <div class="tip" id="4182">
+            <strong>Signature:</strong> bool<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '4183', 4183)" onmouseover="showTip(event, '4183', 4183)">
+            IsImaginary
+          </code>
+          <div class="tip" id="4183">
+            <strong>Signature:</strong> bool<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Number has no real-part</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '4184', 4184)" onmouseover="showTip(event, '4184', 4184)">
+            IsNan
+          </code>
+          <div class="tip" id="4184">
+            <strong>Signature:</strong> bool<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Returns</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '4185', 4185)" onmouseover="showTip(event, '4185', 4185)">
+            IsOne
+          </code>
+          <div class="tip" id="4185">
+            <strong>Signature:</strong> bool<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '4186', 4186)" onmouseover="showTip(event, '4186', 4186)">
+            IsReal
+          </code>
+          <div class="tip" id="4186">
+            <strong>Signature:</strong> bool<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Number has no imaginary-part</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '4187', 4187)" onmouseover="showTip(event, '4187', 4187)">
+            IsZero
+          </code>
+          <div class="tip" id="4187">
+            <strong>Signature:</strong> bool<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '4188', 4188)" onmouseover="showTip(event, '4188', 4188)">
+            Multiply(number)
+          </code>
+          <div class="tip" id="4188">
+            <strong>Signature:</strong> number:ComplexF -&gt; unit<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Multiplies a complex number with this</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '4189', 4189)" onmouseover="showTip(event, '4189', 4189)">
+            Multiply(scalar)
+          </code>
+          <div class="tip" id="4189">
+            <strong>Signature:</strong> scalar:float32 -&gt; unit<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Multiplies a real number with this</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '4190', 4190)" onmouseover="showTip(event, '4190', 4190)">
+            Norm()
+          </code>
+          <div class="tip" id="4190">
+            <strong>Signature:</strong> unit -&gt; unit<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Gaussian Norm (modulus) of the complex number</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '4191', 4191)" onmouseover="showTip(event, '4191', 4191)">
+            NormSquared
+          </code>
+          <div class="tip" id="4191">
+            <strong>Signature:</strong> float32<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Squared gaussian Norm (modulus) of the complex number</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '4192', 4192)" onmouseover="showTip(event, '4192', 4192)">
+            Pow(scalar)
+          </code>
+          <div class="tip" id="4192">
+            <strong>Signature:</strong> scalar:float32 -&gt; unit<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Exponentiates this by a real number</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '4193', 4193)" onmouseover="showTip(event, '4193', 4193)">
+            Root(number, order)
+          </code>
+          <div class="tip" id="4193">
+            <strong>Signature:</strong> (number:ComplexF * order:int) -&gt; ComplexF []<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Calculates the n-th Root of a Complex number and returns n Solutions</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '4194', 4194)" onmouseover="showTip(event, '4194', 4194)">
+            Sqrt(number)
+          </code>
+          <div class="tip" id="4194">
+            <strong>Signature:</strong> number:ComplexF -&gt; ComplexF []<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Calculates both Square-Roots of a complex number</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '4195', 4195)" onmouseover="showTip(event, '4195', 4195)">
+            Subtract(number)
+          </code>
+          <div class="tip" id="4195">
+            <strong>Signature:</strong> number:ComplexF -&gt; unit<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Subtracts a complex number from this</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '4196', 4196)" onmouseover="showTip(event, '4196', 4196)">
+            Subtract(scalar)
+          </code>
+          <div class="tip" id="4196">
+            <strong>Signature:</strong> scalar:float32 -&gt; unit<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Subtracts a real number from this</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '4197', 4197)" onmouseover="showTip(event, '4197', 4197)">
+            ToString()
+          </code>
+          <div class="tip" id="4197">
+            <strong>Signature:</strong> unit -&gt; string<br />
+              <strong>Modifiers:</strong> abstract<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '4198', 4198)" onmouseover="showTip(event, '4198', 4198)">
+            ToString(format)
+          </code>
+          <div class="tip" id="4198">
+            <strong>Signature:</strong> format:string -&gt; string<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+    </tbody>
+  </table>
+  <h3>Static members</h3>
+  <table class="table table-bordered member-list">
+    <thead>
+      <tr><td>Static member</td><td>Description</td></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '4199', 4199)" onmouseover="showTip(event, '4199', 4199)">
+            CreateOrthogonal(real, imag)
+          </code>
+          <div class="tip" id="4199">
+            <strong>Signature:</strong> (real:float32 * imag:float32) -&gt; ComplexF<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Creates a Orthogonal Complex</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '4200', 4200)" onmouseover="showTip(event, '4200', 4200)">
+            CreateRadial(r, phi)
+          </code>
+          <div class="tip" id="4200">
+            <strong>Signature:</strong> (r:float32 * phi:float32) -&gt; ComplexF<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Creates a Radial Complex</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '4201', 4201)" onmouseover="showTip(event, '4201', 4201)">
+            Exp(number)
+          </code>
+          <div class="tip" id="4201">
+            <strong>Signature:</strong> number:ComplexF -&gt; ComplexF<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Calculates e^Complex</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '4202', 4202)" onmouseover="showTip(event, '4202', 4202)">
+            Log(number)
+          </code>
+          <div class="tip" id="4202">
+            <strong>Signature:</strong> number:ComplexF -&gt; ComplexF<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Natural Logartihm for complex numbers</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '4203', 4203)" onmouseover="showTip(event, '4203', 4203)">
+            op_Addition(a, b)
+          </code>
+          <div class="tip" id="4203">
+            <strong>Signature:</strong> (a:ComplexF * b:ComplexF) -&gt; ComplexF<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '4204', 4204)" onmouseover="showTip(event, '4204', 4204)">
+            op_Addition(a, b)
+          </code>
+          <div class="tip" id="4204">
+            <strong>Signature:</strong> (a:ComplexF * b:float32) -&gt; ComplexF<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '4205', 4205)" onmouseover="showTip(event, '4205', 4205)">
+            op_Addition(b, a)
+          </code>
+          <div class="tip" id="4205">
+            <strong>Signature:</strong> (b:float32 * a:ComplexF) -&gt; ComplexF<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '4206', 4206)" onmouseover="showTip(event, '4206', 4206)">
+            op_Division(a, b)
+          </code>
+          <div class="tip" id="4206">
+            <strong>Signature:</strong> (a:ComplexF * b:ComplexF) -&gt; ComplexF<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '4207', 4207)" onmouseover="showTip(event, '4207', 4207)">
+            op_Division(a, b)
+          </code>
+          <div class="tip" id="4207">
+            <strong>Signature:</strong> (a:ComplexF * b:float32) -&gt; ComplexF<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '4208', 4208)" onmouseover="showTip(event, '4208', 4208)">
+            op_Division(a, b)
+          </code>
+          <div class="tip" id="4208">
+            <strong>Signature:</strong> (a:float32 * b:ComplexF) -&gt; ComplexF<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '4209', 4209)" onmouseover="showTip(event, '4209', 4209)">
+            op_Implicit(a)
+          </code>
+          <div class="tip" id="4209">
+            <strong>Signature:</strong> a:float32 -&gt; ComplexF<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '4210', 4210)" onmouseover="showTip(event, '4210', 4210)">
+            op_LogicalNot(a)
+          </code>
+          <div class="tip" id="4210">
+            <strong>Signature:</strong> a:ComplexF -&gt; ComplexF<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '4211', 4211)" onmouseover="showTip(event, '4211', 4211)">
+            op_Multiply(a, b)
+          </code>
+          <div class="tip" id="4211">
+            <strong>Signature:</strong> (a:ComplexF * b:ComplexF) -&gt; ComplexF<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '4212', 4212)" onmouseover="showTip(event, '4212', 4212)">
+            op_Multiply(a, b)
+          </code>
+          <div class="tip" id="4212">
+            <strong>Signature:</strong> (a:ComplexF * b:float32) -&gt; ComplexF<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '4213', 4213)" onmouseover="showTip(event, '4213', 4213)">
+            op_Multiply(b, a)
+          </code>
+          <div class="tip" id="4213">
+            <strong>Signature:</strong> (b:float32 * a:ComplexF) -&gt; ComplexF<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '4214', 4214)" onmouseover="showTip(event, '4214', 4214)">
+            op_Subtraction(a, b)
+          </code>
+          <div class="tip" id="4214">
+            <strong>Signature:</strong> (a:ComplexF * b:ComplexF) -&gt; ComplexF<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '4215', 4215)" onmouseover="showTip(event, '4215', 4215)">
+            op_Subtraction(a, b)
+          </code>
+          <div class="tip" id="4215">
+            <strong>Signature:</strong> (a:ComplexF * b:float32) -&gt; ComplexF<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '4216', 4216)" onmouseover="showTip(event, '4216', 4216)">
+            op_Subtraction(b, a)
+          </code>
+          <div class="tip" id="4216">
+            <strong>Signature:</strong> (b:float32 * a:ComplexF) -&gt; ComplexF<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '4217', 4217)" onmouseover="showTip(event, '4217', 4217)">
+            op_UnaryNegation(a)
+          </code>
+          <div class="tip" id="4217">
+            <strong>Signature:</strong> a:ComplexF -&gt; ComplexF<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '4218', 4218)" onmouseover="showTip(event, '4218', 4218)">
+            Pow(number, scalar)
+          </code>
+          <div class="tip" id="4218">
+            <strong>Signature:</strong> (number:ComplexF * scalar:float32) -&gt; ComplexF<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Exponentiates a complex by a real number</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '4219', 4219)" onmouseover="showTip(event, '4219', 4219)">
+            Pow(number, exponent)
+          </code>
+          <div class="tip" id="4219">
+            <strong>Signature:</strong> (number:ComplexF * exponent:ComplexF) -&gt; ComplexF<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Exponentiates a complex by another</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '4220', 4220)" onmouseover="showTip(event, '4220', 4220)">
+            Sqrt(number)
+          </code>
+          <div class="tip" id="4220">
+            <strong>Signature:</strong> number:float32 -&gt; ComplexF<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Calculates the Square-Root of a real number and returns a Complex</p>
+
+
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+        </div>
+        <div class="span3">
+          <a href="https://github.com/vrvis">
+            <img src="logo.png" style="width:140px;height:140px;margin:10px 0px 0px 35px;border-style:none;" />
+          </a>
+
+          <ul class="nav nav-list" id="menu">
+
+            <li class="nav-header">Aardvark.Base</li>
+
+            <li class="divider"></li>
+            <li><a href="https://github.com/vrvis/aardvark.base">Home page</a></li>
+            <li class="divider"></li>
+
+            <li><a href="https://www.nuget.org/packages/Aardvark.Base">Get Aardvark.Base via NuGet</a></li>
+            <li><a href="https://github.com/vrvis/aardvark.base">Source Code on GitHub</a></li>
+            <li><a href="https://github.com/vrvis/aardvark.baseLicense">License (Apache 2)</a></li>
+            
+            <!-- <li><a href="https://github.com/vrvis/aardvark.base/RELEASE_NOTES.html">Release Notes</a></li>
+            <li><a href="https://github.com/vrvis/aardvark.base//contributing.html">Contributing to Aardvark.Base</a></li>
+  
+            <li><a href="http://stackoverflow.com/questions/tagged/f%23-fake">Ask a question</a></li> 
+            
+            <li class="nav-header">Tutorials</li>
+            <li><a href="https://github.com/vrvis/aardvark.base/gettingstarted.html">Getting started</a></li>
+            
+            -->
+
+            
+            <li class="divider"></li>
+            <li class="nav-header">Reference</li>
+
+            <li><a href="https://github.com/vrvis/aardvark.base/apidocs/index.html">API Reference</a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    <a href="https://github.com/vrvis/aardvark.base"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_gray_6d6d6d.png" alt="Fork me on GitHub"></a>
+  </body>
+  </html>

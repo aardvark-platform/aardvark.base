@@ -1,0 +1,615 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>StringFun - Aardvark.Base</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="The Aardvark Platform Team">
+
+    <script src="https://code.jquery.com/jquery-1.8.0.js"></script>
+    <script src="https://code.jquery.com/ui/1.8.23/jquery-ui.js"></script>
+    <script src="https://netdna.bootstrapcdn.com/twitter-bootstrap/2.2.1/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link href="https://netdna.bootstrapcdn.com/twitter-bootstrap/2.2.1/css/bootstrap-combined.min.css" rel="stylesheet">
+
+    <link type="text/css" rel="stylesheet" href="https://github.com/vrvis/aardvark.base/content/style.css" />
+    <script type="text/javascript" src="https://github.com/vrvis/aardvark.base/content/tips.js"></script>
+    <!-- HTML5 shim, for IE6-8 support of HTML5 elements -->
+    <!--[if lt IE 9]>
+      <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+  </head>
+  <body>
+    <div class="container">
+      <div class="masthead">
+        <ul class="nav nav-pills pull-right">
+          <li><a href="https://github.com/vrvis/aardvark.base">github page</a></li>
+        </ul>
+        <h3 class="muted"><a href="https://github.com/vrvis/aardvark.base/index.html">Aardvark.Base</a></h3>
+      </div>
+      <hr />
+      <div class="row">
+        <div class="span9" id="main">
+          
+
+
+
+<h1>StringFun</h1>
+<div class="xmldoc">
+</div>
+  <h3>Static members</h3>
+  <table class="table table-bordered member-list">
+    <thead>
+      <tr><td>Static member</td><td>Description</td></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '18310', 18310)" onmouseover="showTip(event, '18310', 18310)">
+            Capitalized(self)
+          </code>
+          <div class="tip" id="18310">
+            <strong>Signature:</strong> self:string -&gt; string<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '18311', 18311)" onmouseover="showTip(event, '18311', 18311)">
+            FormatInvariant(format, args)
+          </code>
+          <div class="tip" id="18311">
+            <strong>Signature:</strong> (format:string * args:obj []) -&gt; string<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Same as String.Format, but uses the InvariantCulture formatter
+(The one we usually want. You know, . as decimal point,...)</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '18312', 18312)" onmouseover="showTip(event, '18312', 18312)">
+            IsNullOrEmpty(self)
+          </code>
+          <div class="tip" id="18312">
+            <strong>Signature:</strong> self:string -&gt; bool<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '18313', 18313)" onmouseover="showTip(event, '18313', 18313)">
+            Join(strings)
+          </code>
+          <div class="tip" id="18313">
+            <strong>Signature:</strong> strings:IEnumerable&lt;string&gt; -&gt; string<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '18314', 18314)" onmouseover="showTip(event, '18314', 18314)">
+            Join(strings, delimiter)
+          </code>
+          <div class="tip" id="18314">
+            <strong>Signature:</strong> (strings:IEnumerable&lt;string&gt; * delimiter:string) -&gt; string<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '18315', 18315)" onmouseover="showTip(event, '18315', 18315)">
+            Left(self, n)
+          </code>
+          <div class="tip" id="18315">
+            <strong>Signature:</strong> (self:string * n:int) -&gt; string<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Returns leftmost n characters of this string.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '18316', 18316)" onmouseover="showTip(event, '18316', 18316)">
+            NestedBracketSplit(text, splitLevel)
+          </code>
+          <div class="tip" id="18316">
+            <strong>Signature:</strong> (text:string * splitLevel:int) -&gt; IEnumerable&lt;string&gt;<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Splits a nested structure of comma-separated square bracked
+delimited lists at a specified split level. Level 0 means that
+the split is performed outside the outermost square brackets.
+Level 1 means that the split is peformed inside the outermost
+square brackets.
+NOTE: The resulting parts are not trimmed. Use the Trim extension
+to trim all resulting strings.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '18317', 18317)" onmouseover="showTip(event, '18317', 18317)">
+            NestedBracketSplitLevelOne(text)
+          </code>
+          <div class="tip" id="18317">
+            <strong>Signature:</strong> text:string -&gt; IEnumerable&lt;string&gt;<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Splits a nested structure of comma-separated square bracket
+delimited lists at level 1, i.e. inside the top most bracket.
+E.g. "[[a, b], foo, [c, d]]" returns "[a, b]", "foo" and "[c, d]".</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '18318', 18318)" onmouseover="showTip(event, '18318', 18318)">
+            Plural(word, s)
+          </code>
+          <div class="tip" id="18318">
+            <strong>Signature:</strong> (word:string * s:int) -&gt; string<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Returns the english plural of the supplied word (i.e. the word
+with "s" appended) if the supplied integer is not equal to one.
+Otherwise the word is returned unchanged.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '18319', 18319)" onmouseover="showTip(event, '18319', 18319)">
+            Plural(word, s)
+          </code>
+          <div class="tip" id="18319">
+            <strong>Signature:</strong> (word:string * s:int64) -&gt; string<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Returns the english plural of the supplied word (i.e. the word
+with "s" appended) if the supplied integer is not equal to one.
+Otherwise the word is returned unchanged.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '18320', 18320)" onmouseover="showTip(event, '18320', 18320)">
+            Right(self, n)
+          </code>
+          <div class="tip" id="18320">
+            <strong>Signature:</strong> (self:string * n:int) -&gt; string<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Returns rightmost n characters of this string.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '18321', 18321)" onmouseover="showTip(event, '18321', 18321)">
+            SplitOnWhitespace(s)
+          </code>
+          <div class="tip" id="18321">
+            <strong>Signature:</strong> s:string -&gt; string []<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '18322', 18322)" onmouseover="showTip(event, '18322', 18322)">
+            Sub(self, start, end)
+          </code>
+          <div class="tip" id="18322">
+            <strong>Signature:</strong> (self:string * start:int * end:int) -&gt; string<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Return the substring for the range [start, end). For the start
+index, negative indices count from the end. For the end index,
+negative and the indices and the index 0 count from the end.
+The ranges are clamped to the input string so that no exceptions
+can occur. If the the start and end index are crossed, the null
+string is returned.  As an example the call s.Sub(-3, 0) returns
+a string containing the last 3 characters s or the complete
+string s if its length is less than 3 characters.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '18323', 18323)" onmouseover="showTip(event, '18323', 18323)">
+            ToBool(self)
+          </code>
+          <div class="tip" id="18323">
+            <strong>Signature:</strong> self:string -&gt; bool<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '18324', 18324)" onmouseover="showTip(event, '18324', 18324)">
+            ToByte(self)
+          </code>
+          <div class="tip" id="18324">
+            <strong>Signature:</strong> self:string -&gt; byte<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '18325', 18325)" onmouseover="showTip(event, '18325', 18325)">
+            ToDateTime(self)
+          </code>
+          <div class="tip" id="18325">
+            <strong>Signature:</strong> self:string -&gt; DateTime<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '18326', 18326)" onmouseover="showTip(event, '18326', 18326)">
+            ToDecimal(self, def)
+          </code>
+          <div class="tip" id="18326">
+            <strong>Signature:</strong> (self:string * def:decimal) -&gt; decimal<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '18327', 18327)" onmouseover="showTip(event, '18327', 18327)">
+            ToDecimal(self)
+          </code>
+          <div class="tip" id="18327">
+            <strong>Signature:</strong> self:string -&gt; decimal<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '18328', 18328)" onmouseover="showTip(event, '18328', 18328)">
+            ToDouble(self)
+          </code>
+          <div class="tip" id="18328">
+            <strong>Signature:</strong> self:string -&gt; float<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '18329', 18329)" onmouseover="showTip(event, '18329', 18329)">
+            ToFloat(self)
+          </code>
+          <div class="tip" id="18329">
+            <strong>Signature:</strong> self:string -&gt; float32<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '18330', 18330)" onmouseover="showTip(event, '18330', 18330)">
+            ToGuid(self)
+          </code>
+          <div class="tip" id="18330">
+            <strong>Signature:</strong> self:string -&gt; Guid<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '18331', 18331)" onmouseover="showTip(event, '18331', 18331)">
+            ToGuid(self)
+          </code>
+          <div class="tip" id="18331">
+            <strong>Signature:</strong> self:IEnumerable&lt;string&gt; -&gt; Guid<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '18332', 18332)" onmouseover="showTip(event, '18332', 18332)">
+            ToGuid(self)
+          </code>
+          <div class="tip" id="18332">
+            <strong>Signature:</strong> self:IEnumerable&lt;Guid&gt; -&gt; Guid<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '18333', 18333)" onmouseover="showTip(event, '18333', 18333)">
+            ToInt(self)
+          </code>
+          <div class="tip" id="18333">
+            <strong>Signature:</strong> self:string -&gt; int<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '18334', 18334)" onmouseover="showTip(event, '18334', 18334)">
+            ToLong(self)
+          </code>
+          <div class="tip" id="18334">
+            <strong>Signature:</strong> self:string -&gt; int64<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '18335', 18335)" onmouseover="showTip(event, '18335', 18335)">
+            ToLower(self)
+          </code>
+          <div class="tip" id="18335">
+            <strong>Signature:</strong> (self:string []) -&gt; string []<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '18336', 18336)" onmouseover="showTip(event, '18336', 18336)">
+            ToLower(self)
+          </code>
+          <div class="tip" id="18336">
+            <strong>Signature:</strong> self:IEnumerable&lt;string&gt; -&gt; IEnumerable&lt;string&gt;<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '18337', 18337)" onmouseover="showTip(event, '18337', 18337)">
+            ToSByte(self)
+          </code>
+          <div class="tip" id="18337">
+            <strong>Signature:</strong> self:string -&gt; sbyte<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '18338', 18338)" onmouseover="showTip(event, '18338', 18338)">
+            ToShort(self)
+          </code>
+          <div class="tip" id="18338">
+            <strong>Signature:</strong> self:string -&gt; int16<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '18339', 18339)" onmouseover="showTip(event, '18339', 18339)">
+            ToSymbol(str)
+          </code>
+          <div class="tip" id="18339">
+            <strong>Signature:</strong> str:string -&gt; Symbol<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '18340', 18340)" onmouseover="showTip(event, '18340', 18340)">
+            ToUInt(self)
+          </code>
+          <div class="tip" id="18340">
+            <strong>Signature:</strong> self:string -&gt; uint32<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '18341', 18341)" onmouseover="showTip(event, '18341', 18341)">
+            ToULong(self)
+          </code>
+          <div class="tip" id="18341">
+            <strong>Signature:</strong> self:string -&gt; uint64<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '18342', 18342)" onmouseover="showTip(event, '18342', 18342)">
+            ToUpper(self)
+          </code>
+          <div class="tip" id="18342">
+            <strong>Signature:</strong> (self:string []) -&gt; string []<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '18343', 18343)" onmouseover="showTip(event, '18343', 18343)">
+            ToUpper(self)
+          </code>
+          <div class="tip" id="18343">
+            <strong>Signature:</strong> self:IEnumerable&lt;string&gt; -&gt; IEnumerable&lt;string&gt;<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '18344', 18344)" onmouseover="showTip(event, '18344', 18344)">
+            ToUShort(self)
+          </code>
+          <div class="tip" id="18344">
+            <strong>Signature:</strong> self:string -&gt; uint16<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+        </div>
+        <div class="span3">
+          <a href="https://github.com/vrvis">
+            <img src="logo.png" style="width:140px;height:140px;margin:10px 0px 0px 35px;border-style:none;" />
+          </a>
+
+          <ul class="nav nav-list" id="menu">
+
+            <li class="nav-header">Aardvark.Base</li>
+
+            <li class="divider"></li>
+            <li><a href="https://github.com/vrvis/aardvark.base">Home page</a></li>
+            <li class="divider"></li>
+
+            <li><a href="https://www.nuget.org/packages/Aardvark.Base">Get Aardvark.Base via NuGet</a></li>
+            <li><a href="https://github.com/vrvis/aardvark.base">Source Code on GitHub</a></li>
+            <li><a href="https://github.com/vrvis/aardvark.baseLicense">License (Apache 2)</a></li>
+            
+            <!-- <li><a href="https://github.com/vrvis/aardvark.base/RELEASE_NOTES.html">Release Notes</a></li>
+            <li><a href="https://github.com/vrvis/aardvark.base//contributing.html">Contributing to Aardvark.Base</a></li>
+  
+            <li><a href="http://stackoverflow.com/questions/tagged/f%23-fake">Ask a question</a></li> 
+            
+            <li class="nav-header">Tutorials</li>
+            <li><a href="https://github.com/vrvis/aardvark.base/gettingstarted.html">Getting started</a></li>
+            
+            -->
+
+            
+            <li class="divider"></li>
+            <li class="nav-header">Reference</li>
+
+            <li><a href="https://github.com/vrvis/aardvark.base/apidocs/index.html">API Reference</a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    <a href="https://github.com/vrvis/aardvark.base"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_gray_6d6d6d.png" alt="Fork me on GitHub"></a>
+  </body>
+  </html>

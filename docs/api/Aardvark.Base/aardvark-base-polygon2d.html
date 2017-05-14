@@ -1,0 +1,669 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>Polygon2d - Aardvark.Base</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="The Aardvark Platform Team">
+
+    <script src="https://code.jquery.com/jquery-1.8.0.js"></script>
+    <script src="https://code.jquery.com/ui/1.8.23/jquery-ui.js"></script>
+    <script src="https://netdna.bootstrapcdn.com/twitter-bootstrap/2.2.1/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link href="https://netdna.bootstrapcdn.com/twitter-bootstrap/2.2.1/css/bootstrap-combined.min.css" rel="stylesheet">
+
+    <link type="text/css" rel="stylesheet" href="https://github.com/vrvis/aardvark.base/content/style.css" />
+    <script type="text/javascript" src="https://github.com/vrvis/aardvark.base/content/tips.js"></script>
+    <!-- HTML5 shim, for IE6-8 support of HTML5 elements -->
+    <!--[if lt IE 9]>
+      <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+  </head>
+  <body>
+    <div class="container">
+      <div class="masthead">
+        <ul class="nav nav-pills pull-right">
+          <li><a href="https://github.com/vrvis/aardvark.base">github page</a></li>
+        </ul>
+        <h3 class="muted"><a href="https://github.com/vrvis/aardvark.base/index.html">Aardvark.Base</a></h3>
+      </div>
+      <hr />
+      <div class="row">
+        <div class="span9" id="main">
+          
+
+
+
+<h1>Polygon2d</h1>
+<div class="xmldoc">
+<p>A polygon internally represented by an array of points. Implemented
+as a structure, the validity of the polygon can be checked via its
+PointCount, which must be bigger than 0 for a polygon to hold any
+points, and bigger than 2 for a polygon to be geometrically valid.</p>
+
+</div>
+  <h3>Constructors</h3>
+  <table class="table table-bordered member-list">
+    <thead>
+      <tr><td>Constructor</td><td>Description</td></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '14462', 14462)" onmouseover="showTip(event, '14462', 14462)">
+            new(pointArray, pointCount)
+          </code>
+          <div class="tip" id="14462">
+            <strong>Signature:</strong> (pointArray:V2d [] * pointCount:int) -&gt; unit<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Creates a polygon from given points.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '14463', 14463)" onmouseover="showTip(event, '14463', 14463)">
+            new(pointArray)
+          </code>
+          <div class="tip" id="14463">
+            <strong>Signature:</strong> (pointArray:V2d []) -&gt; unit<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Creates a polygon from given points.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '14464', 14464)" onmouseover="showTip(event, '14464', 14464)">
+            new(pointArray, startIndex, count)
+          </code>
+          <div class="tip" id="14464">
+            <strong>Signature:</strong> (pointArray:V2d [] * startIndex:int * count:int) -&gt; unit<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Creates a polygon from given points.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '14465', 14465)" onmouseover="showTip(event, '14465', 14465)">
+            new(pointCount, index_pointCreator)
+          </code>
+          <div class="tip" id="14465">
+            <strong>Signature:</strong> (pointCount:int * index_pointCreator:Func&lt;int,V2d&gt;) -&gt; unit<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Creates a polygon from point count and point creator function.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '14466', 14466)" onmouseover="showTip(event, '14466', 14466)">
+            new(points)
+          </code>
+          <div class="tip" id="14466">
+            <strong>Signature:</strong> points:IEnumerable&lt;V2d&gt; -&gt; unit<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Creates a polygon from a sequence of points.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '14467', 14467)" onmouseover="showTip(event, '14467', 14467)">
+            new(indexArray, pointArray)
+          </code>
+          <div class="tip" id="14467">
+            <strong>Signature:</strong> (indexArray:int [] * pointArray:V2d []) -&gt; unit<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Creates a polygon from the points of a pointArray that
+are selected by an index array.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '14468', 14468)" onmouseover="showTip(event, '14468', 14468)">
+            new(triangle)
+          </code>
+          <div class="tip" id="14468">
+            <strong>Signature:</strong> triangle:Triangle2d -&gt; unit<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Creates a polygon from a triangle.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '14469', 14469)" onmouseover="showTip(event, '14469', 14469)">
+            new(quad)
+          </code>
+          <div class="tip" id="14469">
+            <strong>Signature:</strong> quad:Quad2d -&gt; unit<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Creates a polygon from a quad.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '14470', 14470)" onmouseover="showTip(event, '14470', 14470)">
+            new(original)
+          </code>
+          <div class="tip" id="14470">
+            <strong>Signature:</strong> original:Polygon2d -&gt; unit<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Copy constructor.
+Performs deep copy of original.</p>
+
+
+        </td>
+      </tr>
+    </tbody>
+  </table>
+  <h3>Instance members</h3>
+  <table class="table table-bordered member-list">
+    <thead>
+      <tr><td>Instance member</td><td>Description</td></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '14471', 14471)" onmouseover="showTip(event, '14471', 14471)">
+            BoundingBox2d
+          </code>
+          <div class="tip" id="14471">
+            <strong>Signature:</strong> Box2d<br />
+              <strong>Modifiers:</strong> abstract<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Bounding box of polygon.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '14472', 14472)" onmouseover="showTip(event, '14472', 14472)">
+            Copy()
+          </code>
+          <div class="tip" id="14472">
+            <strong>Signature:</strong> unit -&gt; Polygon2d<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Returns copy of polygon. Same as Map(p =&gt; p).</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '14473', 14473)" onmouseover="showTip(event, '14473', 14473)">
+            Copy(point_fun)
+          </code>
+          <div class="tip" id="14473">
+            <strong>Signature:</strong> point_fun:Func&lt;V2d,V2d&gt; -&gt; Polygon2d<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Obsolete. Use 'Map' instead (same functionality and parameters).</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '14474', 14474)" onmouseover="showTip(event, '14474', 14474)">
+            Edge(index)
+          </code>
+          <div class="tip" id="14474">
+            <strong>Signature:</strong> index:int -&gt; V2d<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Index-th edge as vector (edgeEndPos - edgeBeginPos).</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '14475', 14475)" onmouseover="showTip(event, '14475', 14475)">
+            EdgeLine(index)
+          </code>
+          <div class="tip" id="14475">
+            <strong>Signature:</strong> index:int -&gt; Line2d<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Index-th edge as line segment (edgeBeginPos, edgeEndPos).</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '14476', 14476)" onmouseover="showTip(event, '14476', 14476)">
+            EdgeLines
+          </code>
+          <div class="tip" id="14476">
+            <strong>Signature:</strong> IEnumerable&lt;Line2d&gt;<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Edges as line segments (edgeBeginPos, edgeEndPos).</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '14477', 14477)" onmouseover="showTip(event, '14477', 14477)">
+            Edges
+          </code>
+          <div class="tip" id="14477">
+            <strong>Signature:</strong> IEnumerable&lt;V2d&gt;<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Edges as vectors (edgeEndPos - edgeBeginPos).</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '14478', 14478)" onmouseover="showTip(event, '14478', 14478)">
+            Equals(other)
+          </code>
+          <div class="tip" id="14478">
+            <strong>Signature:</strong> other:obj -&gt; bool<br />
+              <strong>Modifiers:</strong> abstract<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '14479', 14479)" onmouseover="showTip(event, '14479', 14479)">
+            GetEdgeArray()
+          </code>
+          <div class="tip" id="14479">
+            <strong>Signature:</strong> unit -&gt; V2d []<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Edges as vectors (edgeEndPos - edgeBeginPos).</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '14480', 14480)" onmouseover="showTip(event, '14480', 14480)">
+            GetEdgeLineArray()
+          </code>
+          <div class="tip" id="14480">
+            <strong>Signature:</strong> unit -&gt; Line2d []<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Edges as line segments (edgeBeginPos, edgeEndPos).</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '14481', 14481)" onmouseover="showTip(event, '14481', 14481)">
+            GetHashCode()
+          </code>
+          <div class="tip" id="14481">
+            <strong>Signature:</strong> unit -&gt; int<br />
+              <strong>Modifiers:</strong> abstract<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '14482', 14482)" onmouseover="showTip(event, '14482', 14482)">
+            GetPointArray()
+          </code>
+          <div class="tip" id="14482">
+            <strong>Signature:</strong> unit -&gt; V2d []<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Returns a copy of the polygons point array.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '14483', 14483)" onmouseover="showTip(event, '14483', 14483)">
+            GetPointArray(point_copyFun)
+          </code>
+          <div class="tip" id="14483">
+            <strong>Signature:</strong> point_copyFun:Func&lt;V2d,&#39;T&gt; -&gt; &#39;T []<br />
+                          <strong>Type parameters:</strong> 'T          </div>
+        </td>
+        <td class="xmldoc">
+          <p>Returns a transformed copy of the polygons point array.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '14484', 14484)" onmouseover="showTip(event, '14484', 14484)">
+            GetPointArray(point_index_copyFun)
+          </code>
+          <div class="tip" id="14484">
+            <strong>Signature:</strong> point_index_copyFun:Func&lt;V2d,int,&#39;T&gt; -&gt; &#39;T []<br />
+                          <strong>Type parameters:</strong> 'T          </div>
+        </td>
+        <td class="xmldoc">
+          <p>Returns a transformed copy of the polygons point array.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '14485', 14485)" onmouseover="showTip(event, '14485', 14485)">
+            GetPointArrayWithRepeatedFirstPoint()
+          </code>
+          <div class="tip" id="14485">
+            <strong>Signature:</strong> unit -&gt; V2d []<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>[P0, P1, P2] -&gt; [P0, P1, P2, P0].</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '14486', 14486)" onmouseover="showTip(event, '14486', 14486)">
+            IsInvalid
+          </code>
+          <div class="tip" id="14486">
+            <strong>Signature:</strong> bool<br />
+              <strong>Modifiers:</strong> abstract<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '14487', 14487)" onmouseover="showTip(event, '14487', 14487)">
+            IsValid
+          </code>
+          <div class="tip" id="14487">
+            <strong>Signature:</strong> bool<br />
+              <strong>Modifiers:</strong> abstract<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '14488', 14488)" onmouseover="showTip(event, '14488', 14488)">
+            [()]
+          </code>
+          <div class="tip" id="14488">
+            <strong>Signature:</strong> unit -&gt; int<br />
+              <strong>Modifiers:</strong> abstract<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Gets the index-th point of this polygon.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '14489', 14489)" onmouseover="showTip(event, '14489', 14489)">
+            Map(point_fun)
+          </code>
+          <div class="tip" id="14489">
+            <strong>Signature:</strong> point_fun:Func&lt;V2d,V2d&gt; -&gt; Polygon2d<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Returns transformed copy of this polygon.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '14490', 14490)" onmouseover="showTip(event, '14490', 14490)">
+            PointCount
+          </code>
+          <div class="tip" id="14490">
+            <strong>Signature:</strong> int<br />
+              <strong>Modifiers:</strong> abstract<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>The number of points in the polygon. If this is 0, the polygon
+is invalid.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '14491', 14491)" onmouseover="showTip(event, '14491', 14491)">
+            Points
+          </code>
+          <div class="tip" id="14491">
+            <strong>Signature:</strong> IEnumerable&lt;V2d&gt;<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Enumerates points.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '14492', 14492)" onmouseover="showTip(event, '14492', 14492)">
+            Reverse()
+          </code>
+          <div class="tip" id="14492">
+            <strong>Signature:</strong> unit -&gt; unit<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Reverses order of vertices in-place.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '14493', 14493)" onmouseover="showTip(event, '14493', 14493)">
+            Reversed
+          </code>
+          <div class="tip" id="14493">
+            <strong>Signature:</strong> Polygon2d<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Gets copy with reversed order of vertices.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '14494', 14494)" onmouseover="showTip(event, '14494', 14494)">
+            Revert()
+          </code>
+          <div class="tip" id="14494">
+            <strong>Signature:</strong> unit -&gt; unit<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Obsolete. Use 'Reverse' instead..</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '14495', 14495)" onmouseover="showTip(event, '14495', 14495)">
+            ToString()
+          </code>
+          <div class="tip" id="14495">
+            <strong>Signature:</strong> unit -&gt; string<br />
+              <strong>Modifiers:</strong> abstract<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+    </tbody>
+  </table>
+  <h3>Static members</h3>
+  <table class="table table-bordered member-list">
+    <thead>
+      <tr><td>Static member</td><td>Description</td></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '14496', 14496)" onmouseover="showTip(event, '14496', 14496)">
+            Parse(s)
+          </code>
+          <div class="tip" id="14496">
+            <strong>Signature:</strong> s:string -&gt; Polygon2d<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+        </div>
+        <div class="span3">
+          <a href="https://github.com/vrvis">
+            <img src="logo.png" style="width:140px;height:140px;margin:10px 0px 0px 35px;border-style:none;" />
+          </a>
+
+          <ul class="nav nav-list" id="menu">
+
+            <li class="nav-header">Aardvark.Base</li>
+
+            <li class="divider"></li>
+            <li><a href="https://github.com/vrvis/aardvark.base">Home page</a></li>
+            <li class="divider"></li>
+
+            <li><a href="https://www.nuget.org/packages/Aardvark.Base">Get Aardvark.Base via NuGet</a></li>
+            <li><a href="https://github.com/vrvis/aardvark.base">Source Code on GitHub</a></li>
+            <li><a href="https://github.com/vrvis/aardvark.baseLicense">License (Apache 2)</a></li>
+            
+            <!-- <li><a href="https://github.com/vrvis/aardvark.base/RELEASE_NOTES.html">Release Notes</a></li>
+            <li><a href="https://github.com/vrvis/aardvark.base//contributing.html">Contributing to Aardvark.Base</a></li>
+  
+            <li><a href="http://stackoverflow.com/questions/tagged/f%23-fake">Ask a question</a></li> 
+            
+            <li class="nav-header">Tutorials</li>
+            <li><a href="https://github.com/vrvis/aardvark.base/gettingstarted.html">Getting started</a></li>
+            
+            -->
+
+            
+            <li class="divider"></li>
+            <li class="nav-header">Reference</li>
+
+            <li><a href="https://github.com/vrvis/aardvark.base/apidocs/index.html">API Reference</a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    <a href="https://github.com/vrvis/aardvark.base"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_gray_6d6d6d.png" alt="Fork me on GitHub"></a>
+  </body>
+  </html>

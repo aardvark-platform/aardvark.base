@@ -1,0 +1,624 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>Similarity3f - Aardvark.Base</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="The Aardvark Platform Team">
+
+    <script src="https://code.jquery.com/jquery-1.8.0.js"></script>
+    <script src="https://code.jquery.com/ui/1.8.23/jquery-ui.js"></script>
+    <script src="https://netdna.bootstrapcdn.com/twitter-bootstrap/2.2.1/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link href="https://netdna.bootstrapcdn.com/twitter-bootstrap/2.2.1/css/bootstrap-combined.min.css" rel="stylesheet">
+
+    <link type="text/css" rel="stylesheet" href="https://github.com/vrvis/aardvark.base/content/style.css" />
+    <script type="text/javascript" src="https://github.com/vrvis/aardvark.base/content/tips.js"></script>
+    <!-- HTML5 shim, for IE6-8 support of HTML5 elements -->
+    <!--[if lt IE 9]>
+      <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+  </head>
+  <body>
+    <div class="container">
+      <div class="masthead">
+        <ul class="nav nav-pills pull-right">
+          <li><a href="https://github.com/vrvis/aardvark.base">github page</a></li>
+        </ul>
+        <h3 class="muted"><a href="https://github.com/vrvis/aardvark.base/index.html">Aardvark.Base</a></h3>
+      </div>
+      <hr />
+      <div class="row">
+        <div class="span9" id="main">
+          
+
+
+
+<h1>Similarity3f</h1>
+<div class="xmldoc">
+<p>Represents a Similarity Transformation in 3D that is composed of a
+Uniform Scale and a subsequent Euclidean transformation (3D rotation Rot and a subsequent translation by a 3D vector Trans).
+This is an angle preserving Transformation.</p>
+
+</div>
+  <h3>Constructors</h3>
+  <table class="table table-bordered member-list">
+    <thead>
+      <tr><td>Constructor</td><td>Description</td></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '16401', 16401)" onmouseover="showTip(event, '16401', 16401)">
+            new(scale, euclideanTransformation)
+          </code>
+          <div class="tip" id="16401">
+            <strong>Signature:</strong> (scale:float32 * euclideanTransformation:Euclidean3f) -&gt; unit<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Creates a similarity transformation from an uniform scale by factor , and a (subsequent) rigid transformation .</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '16402', 16402)" onmouseover="showTip(event, '16402', 16402)">
+            new(euclideanTransformation, scale)
+          </code>
+          <div class="tip" id="16402">
+            <strong>Signature:</strong> (euclideanTransformation:Euclidean3f * scale:float32) -&gt; unit<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Creates a similarity transformation from a rigid transformation  and an (subsequent) uniform scale by factor .</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '16403', 16403)" onmouseover="showTip(event, '16403', 16403)">
+            new(m, epsilon)
+          </code>
+          <div class="tip" id="16403">
+            <strong>Signature:</strong> (m:M44f * epsilon:float32) -&gt; unit<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+    </tbody>
+  </table>
+  <h3>Instance members</h3>
+  <table class="table table-bordered member-list">
+    <thead>
+      <tr><td>Instance member</td><td>Description</td></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '16404', 16404)" onmouseover="showTip(event, '16404', 16404)">
+            Equals(other)
+          </code>
+          <div class="tip" id="16404">
+            <strong>Signature:</strong> other:obj -&gt; bool<br />
+              <strong>Modifiers:</strong> abstract<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '16405', 16405)" onmouseover="showTip(event, '16405', 16405)">
+            GetHashCode()
+          </code>
+          <div class="tip" id="16405">
+            <strong>Signature:</strong> unit -&gt; int<br />
+              <strong>Modifiers:</strong> abstract<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '16406', 16406)" onmouseover="showTip(event, '16406', 16406)">
+            Inverse
+          </code>
+          <div class="tip" id="16406">
+            <strong>Signature:</strong> Similarity3f<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Gets the (multiplicative) inverse of this Similarity transformation.
+[1/Scale, Rot^T,-Rot^T Trans/Scale]</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '16407', 16407)" onmouseover="showTip(event, '16407', 16407)">
+            Invert()
+          </code>
+          <div class="tip" id="16407">
+            <strong>Signature:</strong> unit -&gt; unit<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Inverts this similarity transformation (multiplicative inverse).
+this = [1/Scale, Rot^T,-Rot^T Trans/Scale]</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '16408', 16408)" onmouseover="showTip(event, '16408', 16408)">
+            InvTransformDir(v)
+          </code>
+          <div class="tip" id="16408">
+            <strong>Signature:</strong> v:V3f -&gt; V3f<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Transforms direction vector v (v.w is presumed 0.0) by the inverse of this similarity transformation.
+Actually, only the rotation is used.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '16409', 16409)" onmouseover="showTip(event, '16409', 16409)">
+            InvTransformPos(p)
+          </code>
+          <div class="tip" id="16409">
+            <strong>Signature:</strong> p:V3f -&gt; V3f<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Transforms point p (p.w is presumed 1.0) by the inverse of this similarity transformation.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '16410', 16410)" onmouseover="showTip(event, '16410', 16410)">
+            Normalize()
+          </code>
+          <div class="tip" id="16410">
+            <strong>Signature:</strong> unit -&gt; unit<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Normalizes the rotation quaternion.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '16411', 16411)" onmouseover="showTip(event, '16411', 16411)">
+            Normalized
+          </code>
+          <div class="tip" id="16411">
+            <strong>Signature:</strong> Similarity3f<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Returns a new version of this Similarity transformation with a normalized rotation quaternion.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '16412', 16412)" onmouseover="showTip(event, '16412', 16412)">
+            Rot
+          </code>
+          <div class="tip" id="16412">
+            <strong>Signature:</strong> Rot3f<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Shortcut for Rot of EuclideanTransformation</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '16413', 16413)" onmouseover="showTip(event, '16413', 16413)">
+            ToString()
+          </code>
+          <div class="tip" id="16413">
+            <strong>Signature:</strong> unit -&gt; string<br />
+              <strong>Modifiers:</strong> abstract<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '16414', 16414)" onmouseover="showTip(event, '16414', 16414)">
+            Trans
+          </code>
+          <div class="tip" id="16414">
+            <strong>Signature:</strong> V3f<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Shortcut for Trans of EuclideanTransformation</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '16415', 16415)" onmouseover="showTip(event, '16415', 16415)">
+            TransformDir(v)
+          </code>
+          <div class="tip" id="16415">
+            <strong>Signature:</strong> v:V3f -&gt; V3f<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Transforms direction vector v (v.w is presumed 0.0) by this similarity transformation.
+Actually, only the rotation is used.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '16416', 16416)" onmouseover="showTip(event, '16416', 16416)">
+            TransformPos(p)
+          </code>
+          <div class="tip" id="16416">
+            <strong>Signature:</strong> p:V3f -&gt; V3f<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Transforms point p (p.w is presumed 1.0) by this similarity transformation.</p>
+
+
+        </td>
+      </tr>
+    </tbody>
+  </table>
+  <h3>Static members</h3>
+  <table class="table table-bordered member-list">
+    <thead>
+      <tr><td>Static member</td><td>Description</td></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '16417', 16417)" onmouseover="showTip(event, '16417', 16417)">
+            ApproxEqual(t0, t1)
+          </code>
+          <div class="tip" id="16417">
+            <strong>Signature:</strong> (t0:Similarity3f * t1:Similarity3f) -&gt; bool<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '16418', 16418)" onmouseover="showTip(event, '16418', 16418)">
+            ApproxEqual(...)
+          </code>
+          <div class="tip" id="16418">
+            <strong>Signature:</strong> (t0:Similarity3f * t1:Similarity3f * angleTol:float32 * posTol:float32 * scaleTol:float32) -&gt; bool<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '16419', 16419)" onmouseover="showTip(event, '16419', 16419)">
+            InvTransformDir(t, v)
+          </code>
+          <div class="tip" id="16419">
+            <strong>Signature:</strong> (t:Similarity3f * v:V3f) -&gt; V3f<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Transforms direction vector v (v.w is presumed 0.0) by the inverse of the similarity transformation t.
+Actually, only the rotation is used.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '16420', 16420)" onmouseover="showTip(event, '16420', 16420)">
+            InvTransformPos(t, p)
+          </code>
+          <div class="tip" id="16420">
+            <strong>Signature:</strong> (t:Similarity3f * p:V3f) -&gt; V3f<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Transforms point p (p.w is presumed 1.0) by the inverse of the similarity transformation t.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '16421', 16421)" onmouseover="showTip(event, '16421', 16421)">
+            Multiply(a, b)
+          </code>
+          <div class="tip" id="16421">
+            <strong>Signature:</strong> (a:Similarity3f * b:Similarity3f) -&gt; Similarity3f<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Multiplies 2 Similarity transformations.
+This concatenates the two similarity transformations into a single one, first b is applied, then a.
+Attention: Multiplication is NOT commutative!</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '16422', 16422)" onmouseover="showTip(event, '16422', 16422)">
+            Multiply(a, b)
+          </code>
+          <div class="tip" id="16422">
+            <strong>Signature:</strong> (a:Similarity3f * b:Euclidean3f) -&gt; Similarity3f<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Multiplies a Similarity transformation by an Euclidean transformation.
+This concatenates the two transformations into a single one, first b is applied, then a.
+Attention: Multiplication is NOT commutative!</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '16423', 16423)" onmouseover="showTip(event, '16423', 16423)">
+            Multiply(a, b)
+          </code>
+          <div class="tip" id="16423">
+            <strong>Signature:</strong> (a:Euclidean3f * b:Similarity3f) -&gt; Similarity3f<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Multiplies an Euclidean transformation by a Similarity transformation.
+This concatenates the two transformations into a single one, first b is applied, then a.
+Attention: Multiplication is NOT commutative!</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '16424', 16424)" onmouseover="showTip(event, '16424', 16424)">
+            op_Equality(t0, t1)
+          </code>
+          <div class="tip" id="16424">
+            <strong>Signature:</strong> (t0:Similarity3f * t1:Similarity3f) -&gt; bool<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '16425', 16425)" onmouseover="showTip(event, '16425', 16425)">
+            op_Explicit(t)
+          </code>
+          <div class="tip" id="16425">
+            <strong>Signature:</strong> t:Similarity3f -&gt; M34f<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '16426', 16426)" onmouseover="showTip(event, '16426', 16426)">
+            op_Explicit(t)
+          </code>
+          <div class="tip" id="16426">
+            <strong>Signature:</strong> t:Similarity3f -&gt; M44f<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '16427', 16427)" onmouseover="showTip(event, '16427', 16427)">
+            op_Inequality(t0, t1)
+          </code>
+          <div class="tip" id="16427">
+            <strong>Signature:</strong> (t0:Similarity3f * t1:Similarity3f) -&gt; bool<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '16428', 16428)" onmouseover="showTip(event, '16428', 16428)">
+            op_Multiply(a, b)
+          </code>
+          <div class="tip" id="16428">
+            <strong>Signature:</strong> (a:Similarity3f * b:Similarity3f) -&gt; Similarity3f<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '16429', 16429)" onmouseover="showTip(event, '16429', 16429)">
+            op_Multiply(a, b)
+          </code>
+          <div class="tip" id="16429">
+            <strong>Signature:</strong> (a:Euclidean3f * b:Similarity3f) -&gt; Similarity3f<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '16430', 16430)" onmouseover="showTip(event, '16430', 16430)">
+            op_Multiply(a, b)
+          </code>
+          <div class="tip" id="16430">
+            <strong>Signature:</strong> (a:Similarity3f * b:Euclidean3f) -&gt; Similarity3f<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '16431', 16431)" onmouseover="showTip(event, '16431', 16431)">
+            Parse(s)
+          </code>
+          <div class="tip" id="16431">
+            <strong>Signature:</strong> s:string -&gt; Similarity3f<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '16432', 16432)" onmouseover="showTip(event, '16432', 16432)">
+            TransformDir(t, v)
+          </code>
+          <div class="tip" id="16432">
+            <strong>Signature:</strong> (t:Similarity3f * v:V3f) -&gt; V3f<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Transforms direction vector v (v.w is presumed 0.0) by similarity transformation t.
+Actually, only the rotation is used.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '16433', 16433)" onmouseover="showTip(event, '16433', 16433)">
+            TransformPos(t, p)
+          </code>
+          <div class="tip" id="16433">
+            <strong>Signature:</strong> (t:Similarity3f * p:V3f) -&gt; V3f<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Transforms point p (p.w is presumed 1.0) by similarity transformation t.</p>
+
+
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+        </div>
+        <div class="span3">
+          <a href="https://github.com/vrvis">
+            <img src="logo.png" style="width:140px;height:140px;margin:10px 0px 0px 35px;border-style:none;" />
+          </a>
+
+          <ul class="nav nav-list" id="menu">
+
+            <li class="nav-header">Aardvark.Base</li>
+
+            <li class="divider"></li>
+            <li><a href="https://github.com/vrvis/aardvark.base">Home page</a></li>
+            <li class="divider"></li>
+
+            <li><a href="https://www.nuget.org/packages/Aardvark.Base">Get Aardvark.Base via NuGet</a></li>
+            <li><a href="https://github.com/vrvis/aardvark.base">Source Code on GitHub</a></li>
+            <li><a href="https://github.com/vrvis/aardvark.baseLicense">License (Apache 2)</a></li>
+            
+            <!-- <li><a href="https://github.com/vrvis/aardvark.base/RELEASE_NOTES.html">Release Notes</a></li>
+            <li><a href="https://github.com/vrvis/aardvark.base//contributing.html">Contributing to Aardvark.Base</a></li>
+  
+            <li><a href="http://stackoverflow.com/questions/tagged/f%23-fake">Ask a question</a></li> 
+            
+            <li class="nav-header">Tutorials</li>
+            <li><a href="https://github.com/vrvis/aardvark.base/gettingstarted.html">Getting started</a></li>
+            
+            -->
+
+            
+            <li class="divider"></li>
+            <li class="nav-header">Reference</li>
+
+            <li><a href="https://github.com/vrvis/aardvark.base/apidocs/index.html">API Reference</a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    <a href="https://github.com/vrvis/aardvark.base"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_gray_6d6d6d.png" alt="Fork me on GitHub"></a>
+  </body>
+  </html>

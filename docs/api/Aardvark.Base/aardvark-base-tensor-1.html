@@ -1,0 +1,1007 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>Tensor<'T> - Aardvark.Base</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="The Aardvark Platform Team">
+
+    <script src="https://code.jquery.com/jquery-1.8.0.js"></script>
+    <script src="https://code.jquery.com/ui/1.8.23/jquery-ui.js"></script>
+    <script src="https://netdna.bootstrapcdn.com/twitter-bootstrap/2.2.1/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link href="https://netdna.bootstrapcdn.com/twitter-bootstrap/2.2.1/css/bootstrap-combined.min.css" rel="stylesheet">
+
+    <link type="text/css" rel="stylesheet" href="https://github.com/vrvis/aardvark.base/content/style.css" />
+    <script type="text/javascript" src="https://github.com/vrvis/aardvark.base/content/tips.js"></script>
+    <!-- HTML5 shim, for IE6-8 support of HTML5 elements -->
+    <!--[if lt IE 9]>
+      <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+  </head>
+  <body>
+    <div class="container">
+      <div class="masthead">
+        <ul class="nav nav-pills pull-right">
+          <li><a href="https://github.com/vrvis/aardvark.base">github page</a></li>
+        </ul>
+        <h3 class="muted"><a href="https://github.com/vrvis/aardvark.base/index.html">Aardvark.Base</a></h3>
+      </div>
+      <hr />
+      <div class="row">
+        <div class="span9" id="main">
+          
+
+
+
+<h1>Tensor<'T></h1>
+<div class="xmldoc">
+<p>Generic tensor of elements in r dimensons, each of arbitrary size
+with arbitrary strides in each dimension. All sizes are given as
+r-dimensional array of longs, with the dimensions ordered from
+inner to outer dimension.
+The tensor does not exclusively own its underlying data array, it
+can also serve as a window into other arrays, matrices, volumes, and<br />
+tensors. Operations on tensors are supported by function arguments
+which can be easily exploited by using lambda functions.
+Note: stride is called Delta (or D) within this data structure.</p>
+
+</div>
+  <h3>Constructors</h3>
+  <table class="table table-bordered member-list">
+    <thead>
+      <tr><td>Constructor</td><td>Description</td></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '18629', 18629)" onmouseover="showTip(event, '18629', 18629)">
+            new(size)
+          </code>
+          <div class="tip" id="18629">
+            <strong>Signature:</strong> (size:int64 []) -&gt; unit<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '18630', 18630)" onmouseover="showTip(event, '18630', 18630)">
+            new(size)
+          </code>
+          <div class="tip" id="18630">
+            <strong>Signature:</strong> (size:int []) -&gt; unit<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '18631', 18631)" onmouseover="showTip(event, '18631', 18631)">
+            new(size, value)
+          </code>
+          <div class="tip" id="18631">
+            <strong>Signature:</strong> (size:int64 [] * value:&#39;T) -&gt; unit<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '18632', 18632)" onmouseover="showTip(event, '18632', 18632)">
+            new(size, value)
+          </code>
+          <div class="tip" id="18632">
+            <strong>Signature:</strong> (size:int [] * value:&#39;T) -&gt; unit<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '18633', 18633)" onmouseover="showTip(event, '18633', 18633)">
+            new(data, origin, size)
+          </code>
+          <div class="tip" id="18633">
+            <strong>Signature:</strong> (data:&#39;T [] * origin:int64 * size:int []) -&gt; unit<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '18634', 18634)" onmouseover="showTip(event, '18634', 18634)">
+            new(data, origin, size)
+          </code>
+          <div class="tip" id="18634">
+            <strong>Signature:</strong> (data:&#39;T [] * origin:int64 * size:int64 []) -&gt; unit<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '18635', 18635)" onmouseover="showTip(event, '18635', 18635)">
+            new(data, origin, size, delta)
+          </code>
+          <div class="tip" id="18635">
+            <strong>Signature:</strong> (data:&#39;T [] * origin:int64 * size:int64 [] * delta:int64 []) -&gt; unit<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+    </tbody>
+  </table>
+  <h3>Instance members</h3>
+  <table class="table table-bordered member-list">
+    <thead>
+      <tr><td>Instance member</td><td>Description</td></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '18636', 18636)" onmouseover="showTip(event, '18636', 18636)">
+            Array()
+          </code>
+          <div class="tip" id="18636">
+            <strong>Signature:</strong> unit -&gt; unit<br />
+              <strong>Modifiers:</strong> abstract<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '18637', 18637)" onmouseover="showTip(event, '18637', 18637)">
+            ArrayType
+          </code>
+          <div class="tip" id="18637">
+            <strong>Signature:</strong> Type<br />
+              <strong>Modifiers:</strong> abstract<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '18638', 18638)" onmouseover="showTip(event, '18638', 18638)">
+            Copy()
+          </code>
+          <div class="tip" id="18638">
+            <strong>Signature:</strong> unit -&gt; Tensor&lt;&#39;T&gt;<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Elementwise copy.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '18639', 18639)" onmouseover="showTip(event, '18639', 18639)">
+            Copy(fun)
+          </code>
+          <div class="tip" id="18639">
+            <strong>Signature:</strong> fun:Func&lt;&#39;T,&#39;Tr&gt; -&gt; Tensor&lt;&#39;Tr&gt;<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Elementwise copy with function application.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '18640', 18640)" onmouseover="showTip(event, '18640', 18640)">
+            Count
+          </code>
+          <div class="tip" id="18640">
+            <strong>Signature:</strong> int64<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '18641', 18641)" onmouseover="showTip(event, '18641', 18641)">
+            D
+          </code>
+          <div class="tip" id="18641">
+            <strong>Signature:</strong> int64 []<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Delta</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '18642', 18642)" onmouseover="showTip(event, '18642', 18642)">
+            Data
+          </code>
+          <div class="tip" id="18642">
+            <strong>Signature:</strong> &#39;T []<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Underlying data array. Not exclusively owned by the tensor.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '18643', 18643)" onmouseover="showTip(event, '18643', 18643)">
+            Delta()
+          </code>
+          <div class="tip" id="18643">
+            <strong>Signature:</strong> unit -&gt; unit<br />
+              <strong>Modifiers:</strong> abstract<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Delta is copied out and in, emulating a value property.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '18644', 18644)" onmouseover="showTip(event, '18644', 18644)">
+            DeltaArray()
+          </code>
+          <div class="tip" id="18644">
+            <strong>Signature:</strong> unit -&gt; unit<br />
+              <strong>Modifiers:</strong> abstract<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '18645', 18645)" onmouseover="showTip(event, '18645', 18645)">
+            Dim
+          </code>
+          <div class="tip" id="18645">
+            <strong>Signature:</strong> int64 []<br />
+              <strong>Modifiers:</strong> abstract<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '18646', 18646)" onmouseover="showTip(event, '18646', 18646)">
+            DLR(r)
+          </code>
+          <div class="tip" id="18646">
+            <strong>Signature:</strong> r:int -&gt; int64<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Cummulative delta for all elements in dimension r.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '18647', 18647)" onmouseover="showTip(event, '18647', 18647)">
+            Elements
+          </code>
+          <div class="tip" id="18647">
+            <strong>Signature:</strong> IEnumerable&lt;&#39;T&gt;<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Yields all elemnts ordered by index.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '18648', 18648)" onmouseover="showTip(event, '18648', 18648)">
+            FirstArray()
+          </code>
+          <div class="tip" id="18648">
+            <strong>Signature:</strong> unit -&gt; unit<br />
+              <strong>Modifiers:</strong> abstract<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '18649', 18649)" onmouseover="showTip(event, '18649', 18649)">
+            GetValue(v)
+          </code>
+          <div class="tip" id="18649">
+            <strong>Signature:</strong> (v:int64 []) -&gt; obj<br />
+              <strong>Modifiers:</strong> abstract<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '18650', 18650)" onmouseover="showTip(event, '18650', 18650)">
+            Index(vi)
+          </code>
+          <div class="tip" id="18650">
+            <strong>Signature:</strong> vi:Vector&lt;int&gt; -&gt; int64<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Calculate element index for underlying data array.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '18651', 18651)" onmouseover="showTip(event, '18651', 18651)">
+            Index(vi)
+          </code>
+          <div class="tip" id="18651">
+            <strong>Signature:</strong> vi:Vector&lt;int64&gt; -&gt; int64<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Calculate element index for underlying data array.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '18652', 18652)" onmouseover="showTip(event, '18652', 18652)">
+            Index(vi)
+          </code>
+          <div class="tip" id="18652">
+            <strong>Signature:</strong> (vi:int []) -&gt; int64<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Calculate element index for underlying data array.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '18653', 18653)" onmouseover="showTip(event, '18653', 18653)">
+            Index(vi)
+          </code>
+          <div class="tip" id="18653">
+            <strong>Signature:</strong> (vi:int64 []) -&gt; int64<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Calculate element index for underlying data array.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '18654', 18654)" onmouseover="showTip(event, '18654', 18654)">
+            Init()
+          </code>
+          <div class="tip" id="18654">
+            <strong>Signature:</strong> unit -&gt; int64 []<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '18655', 18655)" onmouseover="showTip(event, '18655', 18655)">
+            IsInvalid
+          </code>
+          <div class="tip" id="18655">
+            <strong>Signature:</strong> bool<br />
+              <strong>Modifiers:</strong> abstract<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '18656', 18656)" onmouseover="showTip(event, '18656', 18656)">
+            IsValid
+          </code>
+          <div class="tip" id="18656">
+            <strong>Signature:</strong> bool<br />
+              <strong>Modifiers:</strong> abstract<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '18657', 18657)" onmouseover="showTip(event, '18657', 18657)">
+            [()]
+          </code>
+          <div class="tip" id="18657">
+            <strong>Signature:</strong> unit -&gt; Vector&lt;int&gt;<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '18658', 18658)" onmouseover="showTip(event, '18658', 18658)">
+            [()]
+          </code>
+          <div class="tip" id="18658">
+            <strong>Signature:</strong> unit -&gt; Vector&lt;int64&gt;<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '18659', 18659)" onmouseover="showTip(event, '18659', 18659)">
+            [()]
+          </code>
+          <div class="tip" id="18659">
+            <strong>Signature:</strong> unit -&gt; int []<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '18660', 18660)" onmouseover="showTip(event, '18660', 18660)">
+            [()]
+          </code>
+          <div class="tip" id="18660">
+            <strong>Signature:</strong> unit -&gt; int64 []<br />
+              <strong>Modifiers:</strong> abstract<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '18661', 18661)" onmouseover="showTip(event, '18661', 18661)">
+            L
+          </code>
+          <div class="tip" id="18661">
+            <strong>Signature:</strong> int64 []<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Length</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '18662', 18662)" onmouseover="showTip(event, '18662', 18662)">
+            Next(i, ve)
+          </code>
+          <div class="tip" id="18662">
+            <strong>Signature:</strong> (i:int64 * ve:byref&lt;int64 []&gt;) -&gt; int64<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '18663', 18663)" onmouseover="showTip(event, '18663', 18663)">
+            Next(i, ve, vi)
+          </code>
+          <div class="tip" id="18663">
+            <strong>Signature:</strong> (i:int64 * ve:byref&lt;int64 []&gt; * vi:byref&lt;int64 []&gt;) -&gt; int64<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '18664', 18664)" onmouseover="showTip(event, '18664', 18664)">
+            Origin()
+          </code>
+          <div class="tip" id="18664">
+            <strong>Signature:</strong> unit -&gt; unit<br />
+              <strong>Modifiers:</strong> abstract<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Origin index in the unerlying data array.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '18665', 18665)" onmouseover="showTip(event, '18665', 18665)">
+            OriginIndex()
+          </code>
+          <div class="tip" id="18665">
+            <strong>Signature:</strong> unit -&gt; unit<br />
+              <strong>Modifiers:</strong> abstract<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '18666', 18666)" onmouseover="showTip(event, '18666', 18666)">
+            R
+          </code>
+          <div class="tip" id="18666">
+            <strong>Signature:</strong> int<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Rank</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '18667', 18667)" onmouseover="showTip(event, '18667', 18667)">
+            Rank
+          </code>
+          <div class="tip" id="18667">
+            <strong>Signature:</strong> int<br />
+              <strong>Modifiers:</strong> abstract<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>The total number of contravariant and covariant indices.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '18668', 18668)" onmouseover="showTip(event, '18668', 18668)">
+            Set(t)
+          </code>
+          <div class="tip" id="18668">
+            <strong>Signature:</strong> t:ITensor&lt;&#39;T&gt; -&gt; Tensor&lt;&#39;T&gt;<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '18669', 18669)" onmouseover="showTip(event, '18669', 18669)">
+            Set(t, fun)
+          </code>
+          <div class="tip" id="18669">
+            <strong>Signature:</strong> (t:ITensor&lt;&#39;T1&gt; * fun:Func&lt;&#39;T1,&#39;T&gt;) -&gt; Tensor&lt;&#39;T&gt;<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '18670', 18670)" onmouseover="showTip(event, '18670', 18670)">
+            Set(t1)
+          </code>
+          <div class="tip" id="18670">
+            <strong>Signature:</strong> t1:Tensor&lt;&#39;T&gt; -&gt; Tensor&lt;&#39;T&gt;<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Copy all elements from another tensor.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '18671', 18671)" onmouseover="showTip(event, '18671', 18671)">
+            Set(t1, fun)
+          </code>
+          <div class="tip" id="18671">
+            <strong>Signature:</strong> (t1:Tensor&lt;&#39;T1&gt; * fun:Func&lt;&#39;T1,&#39;T&gt;) -&gt; Tensor&lt;&#39;T&gt;<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Set the elements of a tensor to the result of a function of
+the elements of the supplied tensor.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '18672', 18672)" onmouseover="showTip(event, '18672', 18672)">
+            Set(t1, t2, fun)
+          </code>
+          <div class="tip" id="18672">
+            <strong>Signature:</strong> (t1:Tensor&lt;&#39;T1&gt; * t2:Tensor&lt;&#39;T2&gt; * fun:Func&lt;&#39;T1,&#39;T2,&#39;T&gt;) -&gt; Tensor&lt;&#39;T&gt;<br />
+                          <strong>Type parameters:</strong> 'T2          </div>
+        </td>
+        <td class="xmldoc">
+          <p>Set the elements of a tensor to the result of a function of
+corresponding pairs of elements of the two supplied tensors.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '18673', 18673)" onmouseover="showTip(event, '18673', 18673)">
+            Set(t1, t2, t3, fun)
+          </code>
+          <div class="tip" id="18673">
+            <strong>Signature:</strong> (t1:Tensor&lt;&#39;T1&gt; * t2:Tensor&lt;&#39;T2&gt; * t3:Tensor&lt;&#39;T3&gt; * fun:Func&lt;&#39;T1,&#39;T2,&#39;T3,&#39;T&gt;) -&gt; Tensor&lt;&#39;T&gt;<br />
+                          <strong>Type parameters:</strong> 'T2, 'T3          </div>
+        </td>
+        <td class="xmldoc">
+          <p>Set the elements of a tensor to the result of a function of
+corresponding triples of elements of the three supplied tensors.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '18674', 18674)" onmouseover="showTip(event, '18674', 18674)">
+            SetByCoord(fun)
+          </code>
+          <div class="tip" id="18674">
+            <strong>Signature:</strong> (fun:Func&lt;int64 [],&#39;T&gt;) -&gt; Tensor&lt;&#39;T&gt;<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Set each element to the value of a function of the element coords.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '18675', 18675)" onmouseover="showTip(event, '18675', 18675)">
+            SetByIndex(t1, fun)
+          </code>
+          <div class="tip" id="18675">
+            <strong>Signature:</strong> (t1:Tensor&lt;&#39;T1&gt; * fun:Func&lt;int64,&#39;T&gt;) -&gt; Tensor&lt;&#39;T&gt;<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '18676', 18676)" onmouseover="showTip(event, '18676', 18676)">
+            SetValue(value, v)
+          </code>
+          <div class="tip" id="18676">
+            <strong>Signature:</strong> (value:obj * v:int64 []) -&gt; unit<br />
+              <strong>Modifiers:</strong> abstract<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '18677', 18677)" onmouseover="showTip(event, '18677', 18677)">
+            Size()
+          </code>
+          <div class="tip" id="18677">
+            <strong>Signature:</strong> unit -&gt; unit<br />
+              <strong>Modifiers:</strong> abstract<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Length is copied out and in, emulating a value property.
+Setting the size property also sets the rank of the tensor.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '18678', 18678)" onmouseover="showTip(event, '18678', 18678)">
+            SizeArray()
+          </code>
+          <div class="tip" id="18678">
+            <strong>Signature:</strong> unit -&gt; unit<br />
+              <strong>Modifiers:</strong> abstract<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '18679', 18679)" onmouseover="showTip(event, '18679', 18679)">
+            SR(r)
+          </code>
+          <div class="tip" id="18679">
+            <strong>Signature:</strong> r:int -&gt; int64<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Skip this many elements in the underlying data array when
+stepping between subtensors of rank r (required: r &gt; 0).</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '18680', 18680)" onmouseover="showTip(event, '18680', 18680)">
+            SubMatrix(origin, size, delta)
+          </code>
+          <div class="tip" id="18680">
+            <strong>Signature:</strong> (origin:int64 [] * size:V2l * delta:V2l) -&gt; Matrix&lt;&#39;T&gt;<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>A SubMatrix does not copy any data, and thus any operations on it
+are reflected in the corresponding part of the parent.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '18681', 18681)" onmouseover="showTip(event, '18681', 18681)">
+            SubTensor(origin, size)
+          </code>
+          <div class="tip" id="18681">
+            <strong>Signature:</strong> (origin:int64 [] * size:int64 []) -&gt; Tensor&lt;&#39;T&gt;<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>A SubTensor does not copy any data, and thus any operations on it
+are reflected in the corresponding part of the parent.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '18682', 18682)" onmouseover="showTip(event, '18682', 18682)">
+            SubTensor(origin, size, delta)
+          </code>
+          <div class="tip" id="18682">
+            <strong>Signature:</strong> (origin:int64 [] * size:int64 [] * delta:int64 []) -&gt; Tensor&lt;&#39;T&gt;<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>A SubTensor does not copy any data, and thus any operations on it
+are reflected in the corresponding part of the parent.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '18683', 18683)" onmouseover="showTip(event, '18683', 18683)">
+            SubVector(origin, size, delta)
+          </code>
+          <div class="tip" id="18683">
+            <strong>Signature:</strong> (origin:int64 [] * size:int64 * delta:int64) -&gt; Vector&lt;&#39;T&gt;<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>A SubVector does not copy any data, and thus any operations on it
+are reflected in the corresponding part of the parent.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '18684', 18684)" onmouseover="showTip(event, '18684', 18684)">
+            SubVolume(origin, size, delta)
+          </code>
+          <div class="tip" id="18684">
+            <strong>Signature:</strong> (origin:int64 [] * size:V3l * delta:V3l) -&gt; Volume&lt;&#39;T&gt;<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>A SubVolume does not copy any data, and thus any operations on it
+are reflected in the corresponding part of the parent.</p>
+
+
+        </td>
+      </tr>
+    </tbody>
+  </table>
+  <h3>Static members</h3>
+  <table class="table table-bordered member-list">
+    <thead>
+      <tr><td>Static member</td><td>Description</td></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '18685', 18685)" onmouseover="showTip(event, '18685', 18685)">
+            Create(t)
+          </code>
+          <div class="tip" id="18685">
+            <strong>Signature:</strong> t:ITensor&lt;&#39;T&gt; -&gt; Tensor&lt;&#39;T&gt;<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '18686', 18686)" onmouseover="showTip(event, '18686', 18686)">
+            Create(t, fun)
+          </code>
+          <div class="tip" id="18686">
+            <strong>Signature:</strong> (t:ITensor&lt;&#39;T1&gt; * fun:Func&lt;&#39;T1,&#39;T&gt;) -&gt; Tensor&lt;&#39;T&gt;<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+        </div>
+        <div class="span3">
+          <a href="https://github.com/vrvis">
+            <img src="logo.png" style="width:140px;height:140px;margin:10px 0px 0px 35px;border-style:none;" />
+          </a>
+
+          <ul class="nav nav-list" id="menu">
+
+            <li class="nav-header">Aardvark.Base</li>
+
+            <li class="divider"></li>
+            <li><a href="https://github.com/vrvis/aardvark.base">Home page</a></li>
+            <li class="divider"></li>
+
+            <li><a href="https://www.nuget.org/packages/Aardvark.Base">Get Aardvark.Base via NuGet</a></li>
+            <li><a href="https://github.com/vrvis/aardvark.base">Source Code on GitHub</a></li>
+            <li><a href="https://github.com/vrvis/aardvark.baseLicense">License (Apache 2)</a></li>
+            
+            <!-- <li><a href="https://github.com/vrvis/aardvark.base/RELEASE_NOTES.html">Release Notes</a></li>
+            <li><a href="https://github.com/vrvis/aardvark.base//contributing.html">Contributing to Aardvark.Base</a></li>
+  
+            <li><a href="http://stackoverflow.com/questions/tagged/f%23-fake">Ask a question</a></li> 
+            
+            <li class="nav-header">Tutorials</li>
+            <li><a href="https://github.com/vrvis/aardvark.base/gettingstarted.html">Getting started</a></li>
+            
+            -->
+
+            
+            <li class="divider"></li>
+            <li class="nav-header">Reference</li>
+
+            <li><a href="https://github.com/vrvis/aardvark.base/apidocs/index.html">API Reference</a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    <a href="https://github.com/vrvis/aardvark.base"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_gray_6d6d6d.png" alt="Fork me on GitHub"></a>
+  </body>
+  </html>

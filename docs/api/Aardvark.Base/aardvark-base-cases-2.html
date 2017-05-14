@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>Cases<'TPar, 'TNode> - Aardvark.Base</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="The Aardvark Platform Team">
+
+    <script src="https://code.jquery.com/jquery-1.8.0.js"></script>
+    <script src="https://code.jquery.com/ui/1.8.23/jquery-ui.js"></script>
+    <script src="https://netdna.bootstrapcdn.com/twitter-bootstrap/2.2.1/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link href="https://netdna.bootstrapcdn.com/twitter-bootstrap/2.2.1/css/bootstrap-combined.min.css" rel="stylesheet">
+
+    <link type="text/css" rel="stylesheet" href="https://github.com/vrvis/aardvark.base/content/style.css" />
+    <script type="text/javascript" src="https://github.com/vrvis/aardvark.base/content/tips.js"></script>
+    <!-- HTML5 shim, for IE6-8 support of HTML5 elements -->
+    <!--[if lt IE 9]>
+      <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+  </head>
+  <body>
+    <div class="container">
+      <div class="masthead">
+        <ul class="nav nav-pills pull-right">
+          <li><a href="https://github.com/vrvis/aardvark.base">github page</a></li>
+        </ul>
+        <h3 class="muted"><a href="https://github.com/vrvis/aardvark.base/index.html">Aardvark.Base</a></h3>
+      </div>
+      <hr />
+      <div class="row">
+        <div class="span9" id="main">
+          
+
+
+
+<h1>Cases<'TPar, 'TNode></h1>
+<div class="xmldoc">
+<p>The Cases class makes it possible to build a single state transition
+table by combining already defined case arrays. This makes it possible
+to avoid re-specifying cases that appear in multiple states.</p>
+
+</div>
+  <h3>Constructors</h3>
+  <table class="table table-bordered member-list">
+    <thead>
+      <tr><td>Constructor</td><td>Description</td></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '3900', 3900)" onmouseover="showTip(event, '3900', 3900)">
+            new()
+          </code>
+          <div class="tip" id="3900">
+            <strong>Signature:</strong> unit -&gt; unit<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '3901', 3901)" onmouseover="showTip(event, '3901', 3901)">
+            new(rxs, matchedFun)
+          </code>
+          <div class="tip" id="3901">
+            <strong>Signature:</strong> (rxs:Rx [] * matchedFun:Func&lt;&#39;TPar,&#39;TNode,State&lt;&#39;TPar,&#39;TNode&gt;&gt;) -&gt; unit<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+    </tbody>
+  </table>
+  <h3>Instance members</h3>
+  <table class="table table-bordered member-list">
+    <thead>
+      <tr><td>Instance member</td><td>Description</td></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '3902', 3902)" onmouseover="showTip(event, '3902', 3902)">
+            Add(singleCase)
+          </code>
+          <div class="tip" id="3902">
+            <strong>Signature:</strong> singleCase:Case&lt;&#39;TPar,&#39;TNode&gt; -&gt; unit<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '3903', 3903)" onmouseover="showTip(event, '3903', 3903)">
+            Add(caseArray)
+          </code>
+          <div class="tip" id="3903">
+            <strong>Signature:</strong> (caseArray:Case&lt;&#39;TPar,&#39;TNode&gt; []) -&gt; unit<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '3904', 3904)" onmouseover="showTip(event, '3904', 3904)">
+            Add(cases)
+          </code>
+          <div class="tip" id="3904">
+            <strong>Signature:</strong> cases:Cases&lt;&#39;TPar,&#39;TNode&gt; -&gt; unit<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '3905', 3905)" onmouseover="showTip(event, '3905', 3905)">
+            Add(pattern, matchedFun, adjustFun)
+          </code>
+          <div class="tip" id="3905">
+            <strong>Signature:</strong> (pattern:string * matchedFun:Func&lt;&#39;TPar,&#39;TNode,State&lt;&#39;TPar,&#39;TNode&gt;&gt; * adjustFun:Func&lt;&#39;TPar,&#39;TNode,Text,Text&gt;) -&gt; unit<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '3906', 3906)" onmouseover="showTip(event, '3906', 3906)">
+            Add(regex, matchedFun, adjustFun)
+          </code>
+          <div class="tip" id="3906">
+            <strong>Signature:</strong> (regex:Regex * matchedFun:Func&lt;&#39;TPar,&#39;TNode,State&lt;&#39;TPar,&#39;TNode&gt;&gt; * adjustFun:Func&lt;&#39;TPar,&#39;TNode,Text,Text&gt;) -&gt; unit<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '3907', 3907)" onmouseover="showTip(event, '3907', 3907)">
+            Add(rx, matchedFun, adjustFun)
+          </code>
+          <div class="tip" id="3907">
+            <strong>Signature:</strong> (rx:Rx * matchedFun:Func&lt;&#39;TPar,&#39;TNode,State&lt;&#39;TPar,&#39;TNode&gt;&gt; * adjustFun:Func&lt;&#39;TPar,&#39;TNode,Text,Text&gt;) -&gt; unit<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '3908', 3908)" onmouseover="showTip(event, '3908', 3908)">
+            Add(matchedFun, adjustFun)
+          </code>
+          <div class="tip" id="3908">
+            <strong>Signature:</strong> (matchedFun:Func&lt;&#39;TPar,&#39;TNode,State&lt;&#39;TPar,&#39;TNode&gt;&gt; * adjustFun:Func&lt;&#39;TPar,&#39;TNode,Text,Text&gt;) -&gt; unit<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '3909', 3909)" onmouseover="showTip(event, '3909', 3909)">
+            Array
+          </code>
+          <div class="tip" id="3909">
+            <strong>Signature:</strong> Case&lt;&#39;TPar,&#39;TNode&gt; []<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '3910', 3910)" onmouseover="showTip(event, '3910', 3910)">
+            GetEnumerator()
+          </code>
+          <div class="tip" id="3910">
+            <strong>Signature:</strong> unit -&gt; IEnumerator&lt;Case&lt;&#39;TPar,&#39;TNode&gt;&gt;<br />
+              <strong>Modifiers:</strong> abstract<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '3911', 3911)" onmouseover="showTip(event, '3911', 3911)">
+            ToState(textAct)
+          </code>
+          <div class="tip" id="3911">
+            <strong>Signature:</strong> textAct:Action&lt;&#39;TPar,&#39;TNode,Text&gt; -&gt; State&lt;&#39;TPar,&#39;TNode&gt;<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+        </div>
+        <div class="span3">
+          <a href="https://github.com/vrvis">
+            <img src="logo.png" style="width:140px;height:140px;margin:10px 0px 0px 35px;border-style:none;" />
+          </a>
+
+          <ul class="nav nav-list" id="menu">
+
+            <li class="nav-header">Aardvark.Base</li>
+
+            <li class="divider"></li>
+            <li><a href="https://github.com/vrvis/aardvark.base">Home page</a></li>
+            <li class="divider"></li>
+
+            <li><a href="https://www.nuget.org/packages/Aardvark.Base">Get Aardvark.Base via NuGet</a></li>
+            <li><a href="https://github.com/vrvis/aardvark.base">Source Code on GitHub</a></li>
+            <li><a href="https://github.com/vrvis/aardvark.baseLicense">License (Apache 2)</a></li>
+            
+            <!-- <li><a href="https://github.com/vrvis/aardvark.base/RELEASE_NOTES.html">Release Notes</a></li>
+            <li><a href="https://github.com/vrvis/aardvark.base//contributing.html">Contributing to Aardvark.Base</a></li>
+  
+            <li><a href="http://stackoverflow.com/questions/tagged/f%23-fake">Ask a question</a></li> 
+            
+            <li class="nav-header">Tutorials</li>
+            <li><a href="https://github.com/vrvis/aardvark.base/gettingstarted.html">Getting started</a></li>
+            
+            -->
+
+            
+            <li class="divider"></li>
+            <li class="nav-header">Reference</li>
+
+            <li><a href="https://github.com/vrvis/aardvark.base/apidocs/index.html">API Reference</a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    <a href="https://github.com/vrvis/aardvark.base"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_gray_6d6d6d.png" alt="Fork me on GitHub"></a>
+  </body>
+  </html>

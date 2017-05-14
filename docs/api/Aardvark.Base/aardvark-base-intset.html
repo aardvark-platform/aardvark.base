@@ -1,0 +1,556 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>IntSet - Aardvark.Base</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="The Aardvark Platform Team">
+
+    <script src="https://code.jquery.com/jquery-1.8.0.js"></script>
+    <script src="https://code.jquery.com/ui/1.8.23/jquery-ui.js"></script>
+    <script src="https://netdna.bootstrapcdn.com/twitter-bootstrap/2.2.1/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link href="https://netdna.bootstrapcdn.com/twitter-bootstrap/2.2.1/css/bootstrap-combined.min.css" rel="stylesheet">
+
+    <link type="text/css" rel="stylesheet" href="https://github.com/vrvis/aardvark.base/content/style.css" />
+    <script type="text/javascript" src="https://github.com/vrvis/aardvark.base/content/tips.js"></script>
+    <!-- HTML5 shim, for IE6-8 support of HTML5 elements -->
+    <!--[if lt IE 9]>
+      <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+  </head>
+  <body>
+    <div class="container">
+      <div class="masthead">
+        <ul class="nav nav-pills pull-right">
+          <li><a href="https://github.com/vrvis/aardvark.base">github page</a></li>
+        </ul>
+        <h3 class="muted"><a href="https://github.com/vrvis/aardvark.base/index.html">Aardvark.Base</a></h3>
+      </div>
+      <hr />
+      <div class="row">
+        <div class="span9" id="main">
+          
+
+
+
+<h1>IntSet</h1>
+<div class="xmldoc">
+<p>A IntSet is an alternate implementation of a HashSet.
+It is implemented as a hashtable with external linking, that uses
+primes as the table size in order to reduce the danger of funneling.</p>
+
+</div>
+  <h3>Constructors</h3>
+  <table class="table table-bordered member-list">
+    <thead>
+      <tr><td>Constructor</td><td>Description</td></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '8311', 8311)" onmouseover="showTip(event, '8311', 8311)">
+            new()
+          </code>
+          <div class="tip" id="8311">
+            <strong>Signature:</strong> unit -&gt; unit<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Create a IntSet that autmatically grows and shrinks as necessary.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '8312', 8312)" onmouseover="showTip(event, '8312', 8312)">
+            new(initialCapacity)
+          </code>
+          <div class="tip" id="8312">
+            <strong>Signature:</strong> initialCapacity:int -&gt; unit<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Create a IntSet that autmatically grows and shrinks as necessary,
+but also specify an initial capacity.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '8313', 8313)" onmouseover="showTip(event, '8313', 8313)">
+            new(items)
+          </code>
+          <div class="tip" id="8313">
+            <strong>Signature:</strong> items:IEnumerable&lt;int&gt; -&gt; unit<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Create a IntSet and initialize it to contain the supplied
+items.</p>
+
+
+        </td>
+      </tr>
+    </tbody>
+  </table>
+  <h3>Instance members</h3>
+  <table class="table table-bordered member-list">
+    <thead>
+      <tr><td>Instance member</td><td>Description</td></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '8314', 8314)" onmouseover="showTip(event, '8314', 8314)">
+            Add(key)
+          </code>
+          <div class="tip" id="8314">
+            <strong>Signature:</strong> key:int -&gt; bool<br />
+              <strong>Modifiers:</strong> abstract<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Add the item with the supplied key
+to the IntSet.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '8315', 8315)" onmouseover="showTip(event, '8315', 8315)">
+            AddObject(objkey)
+          </code>
+          <div class="tip" id="8315">
+            <strong>Signature:</strong> objkey:obj -&gt; bool<br />
+              <strong>Modifiers:</strong> abstract<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Add the item with supplied key
+both supplied as generic objects, to the IntSet. Note that the supplied key
+and value are cast to the concrete type of the keys and values used in the IntSet
+and this will fail if they are of different types.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '8316', 8316)" onmouseover="showTip(event, '8316', 8316)">
+            AddRange(keys)
+          </code>
+          <div class="tip" id="8316">
+            <strong>Signature:</strong> keys:IEnumerable&lt;int&gt; -&gt; unit<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Add the supplied keys to the IntSet.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '8317', 8317)" onmouseover="showTip(event, '8317', 8317)">
+            AsConcurrent()
+          </code>
+          <div class="tip" id="8317">
+            <strong>Signature:</strong> unit -&gt; ConcurrentIntSet<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Retuns a concurrent wrapper around the IntSet to enable
+concurrent modifications.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '8318', 8318)" onmouseover="showTip(event, '8318', 8318)">
+            Clear()
+          </code>
+          <div class="tip" id="8318">
+            <strong>Signature:</strong> unit -&gt; unit<br />
+              <strong>Modifiers:</strong> abstract<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Remove all items. Capacity remains unchanged.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '8319', 8319)" onmouseover="showTip(event, '8319', 8319)">
+            Contains(key)
+          </code>
+          <div class="tip" id="8319">
+            <strong>Signature:</strong> key:int -&gt; bool<br />
+              <strong>Modifiers:</strong> abstract<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Returns true if the IntSet contains the item with the supplied
+key.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '8320', 8320)" onmouseover="showTip(event, '8320', 8320)">
+            CopyTo(array, index)
+          </code>
+          <div class="tip" id="8320">
+            <strong>Signature:</strong> (array:int [] * index:int) -&gt; unit<br />
+              <strong>Modifiers:</strong> abstract<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Copies all keys in the dictionary to the supplied
+array starting at the supplied index.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '8321', 8321)" onmouseover="showTip(event, '8321', 8321)">
+            CopyTo(array, index)
+          </code>
+          <div class="tip" id="8321">
+            <strong>Signature:</strong> (array:Array * index:int) -&gt; unit<br />
+              <strong>Modifiers:</strong> abstract<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Copy items into supplied array starting at supplied index.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '8322', 8322)" onmouseover="showTip(event, '8322', 8322)">
+            Count
+          </code>
+          <div class="tip" id="8322">
+            <strong>Signature:</strong> int<br />
+              <strong>Modifiers:</strong> abstract<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Returns the number of items currently contained in the IntSet.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '8323', 8323)" onmouseover="showTip(event, '8323', 8323)">
+            GetEnumerator()
+          </code>
+          <div class="tip" id="8323">
+            <strong>Signature:</strong> unit -&gt; IEnumerator&lt;int&gt;<br />
+              <strong>Modifiers:</strong> abstract<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '8324', 8324)" onmouseover="showTip(event, '8324', 8324)">
+            IsReadOnly
+          </code>
+          <div class="tip" id="8324">
+            <strong>Signature:</strong> bool<br />
+              <strong>Modifiers:</strong> abstract<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Always returns false. Part of the ICollection implementation.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '8325', 8325)" onmouseover="showTip(event, '8325', 8325)">
+            IsSynchronized
+          </code>
+          <div class="tip" id="8325">
+            <strong>Signature:</strong> bool<br />
+              <strong>Modifiers:</strong> abstract<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '8326', 8326)" onmouseover="showTip(event, '8326', 8326)">
+            Items
+          </code>
+          <div class="tip" id="8326">
+            <strong>Signature:</strong> IEnumerable&lt;int&gt;<br />
+              <strong>Modifiers:</strong> abstract<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '8327', 8327)" onmouseover="showTip(event, '8327', 8327)">
+            Keys
+          </code>
+          <div class="tip" id="8327">
+            <strong>Signature:</strong> IEnumerable&lt;int&gt;<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Returns all keys in the dictionary.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '8328', 8328)" onmouseover="showTip(event, '8328', 8328)">
+            KeyType
+          </code>
+          <div class="tip" id="8328">
+            <strong>Signature:</strong> Type<br />
+              <strong>Modifiers:</strong> abstract<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '8329', 8329)" onmouseover="showTip(event, '8329', 8329)">
+            LongCount
+          </code>
+          <div class="tip" id="8329">
+            <strong>Signature:</strong> int64<br />
+              <strong>Modifiers:</strong> abstract<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Returns the number of items currently contained in the IntSet
+as long.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '8330', 8330)" onmouseover="showTip(event, '8330', 8330)">
+            MaxFillFactor()
+          </code>
+          <div class="tip" id="8330">
+            <strong>Signature:</strong> unit -&gt; unit<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Setting the maximal fill factor makes it possible to fine-tune
+the performance for certain applications. Normally this should
+not be necessary.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '8331', 8331)" onmouseover="showTip(event, '8331', 8331)">
+            MinFillFactor()
+          </code>
+          <div class="tip" id="8331">
+            <strong>Signature:</strong> unit -&gt; unit<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Setting the minimal fill factor makes it possible to influence
+the shrinking behaviour of the IntSet. Normally this should
+be set to a quater of the maximal fill factor. In order to
+completely prevent shrinking it can also be set to 0.0f.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '8332', 8332)" onmouseover="showTip(event, '8332', 8332)">
+            Objects
+          </code>
+          <div class="tip" id="8332">
+            <strong>Signature:</strong> IEnumerable&lt;obj&gt;<br />
+              <strong>Modifiers:</strong> abstract<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '8333', 8333)" onmouseover="showTip(event, '8333', 8333)">
+            Remove(key)
+          </code>
+          <div class="tip" id="8333">
+            <strong>Signature:</strong> key:int -&gt; bool<br />
+              <strong>Modifiers:</strong> abstract<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Remove the item with the supplied key
+from the IntSet. Returns true if the value was removed.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '8334', 8334)" onmouseover="showTip(event, '8334', 8334)">
+            SyncRoot
+          </code>
+          <div class="tip" id="8334">
+            <strong>Signature:</strong> obj<br />
+              <strong>Modifiers:</strong> abstract<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '8335', 8335)" onmouseover="showTip(event, '8335', 8335)">
+            ToArray()
+          </code>
+          <div class="tip" id="8335">
+            <strong>Signature:</strong> unit -&gt; int []<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Returns all keys in the dictionary as an array.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '8336', 8336)" onmouseover="showTip(event, '8336', 8336)">
+            TryAdd(key)
+          </code>
+          <div class="tip" id="8336">
+            <strong>Signature:</strong> key:int -&gt; bool<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Add the item with the supplied key
+to the IntSet.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '8337', 8337)" onmouseover="showTip(event, '8337', 8337)">
+            TryRemove(key)
+          </code>
+          <div class="tip" id="8337">
+            <strong>Signature:</strong> key:int -&gt; bool<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Try to reomve the item with the supplied key. If multipe entries
+have the same key, the one that was inserted last is removed.
+Returns true if the item was found.</p>
+
+
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+        </div>
+        <div class="span3">
+          <a href="https://github.com/vrvis">
+            <img src="logo.png" style="width:140px;height:140px;margin:10px 0px 0px 35px;border-style:none;" />
+          </a>
+
+          <ul class="nav nav-list" id="menu">
+
+            <li class="nav-header">Aardvark.Base</li>
+
+            <li class="divider"></li>
+            <li><a href="https://github.com/vrvis/aardvark.base">Home page</a></li>
+            <li class="divider"></li>
+
+            <li><a href="https://www.nuget.org/packages/Aardvark.Base">Get Aardvark.Base via NuGet</a></li>
+            <li><a href="https://github.com/vrvis/aardvark.base">Source Code on GitHub</a></li>
+            <li><a href="https://github.com/vrvis/aardvark.baseLicense">License (Apache 2)</a></li>
+            
+            <!-- <li><a href="https://github.com/vrvis/aardvark.base/RELEASE_NOTES.html">Release Notes</a></li>
+            <li><a href="https://github.com/vrvis/aardvark.base//contributing.html">Contributing to Aardvark.Base</a></li>
+  
+            <li><a href="http://stackoverflow.com/questions/tagged/f%23-fake">Ask a question</a></li> 
+            
+            <li class="nav-header">Tutorials</li>
+            <li><a href="https://github.com/vrvis/aardvark.base/gettingstarted.html">Getting started</a></li>
+            
+            -->
+
+            
+            <li class="divider"></li>
+            <li class="nav-header">Reference</li>
+
+            <li><a href="https://github.com/vrvis/aardvark.base/apidocs/index.html">API Reference</a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    <a href="https://github.com/vrvis/aardvark.base"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_gray_6d6d6d.png" alt="Fork me on GitHub"></a>
+  </body>
+  </html>

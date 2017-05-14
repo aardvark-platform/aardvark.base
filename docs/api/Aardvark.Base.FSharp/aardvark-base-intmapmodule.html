@@ -1,0 +1,1840 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>IntMap - Aardvark.Base.FSharp</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="The Aardvark Platform Team">
+
+    <script src="https://code.jquery.com/jquery-1.8.0.js"></script>
+    <script src="https://code.jquery.com/ui/1.8.23/jquery-ui.js"></script>
+    <script src="https://netdna.bootstrapcdn.com/twitter-bootstrap/2.2.1/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link href="https://netdna.bootstrapcdn.com/twitter-bootstrap/2.2.1/css/bootstrap-combined.min.css" rel="stylesheet">
+
+    <link type="text/css" rel="stylesheet" href="https://github.com/vrvis/aardvark.base/content/style.css" />
+    <script type="text/javascript" src="https://github.com/vrvis/aardvark.base/content/tips.js"></script>
+    <!-- HTML5 shim, for IE6-8 support of HTML5 elements -->
+    <!--[if lt IE 9]>
+      <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+  </head>
+  <body>
+    <div class="container">
+      <div class="masthead">
+        <ul class="nav nav-pills pull-right">
+          <li><a href="https://github.com/vrvis/aardvark.base">github page</a></li>
+        </ul>
+        <h3 class="muted"><a href="https://github.com/vrvis/aardvark.base/index.html">Aardvark.Base.FSharp</a></h3>
+      </div>
+      <hr />
+      <div class="row">
+        <div class="span9" id="main">
+          
+
+
+
+<h1>IntMap</h1>
+<div class="xmldoc">
+</div>
+
+<!-- Render nested types and modules, if there are any -->
+
+  <h3>Functions and values</h3>
+  <table class="table table-bordered member-list">
+    <thead>
+      <tr><td>Function or value</td><td>Description</td></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '527', 527)" onmouseover="showTip(event, '527', 527)">
+            adjust f k m
+          </code>
+          <div class="tip" id="527">
+            <strong>Signature:</strong> f:(&#39;?14942 -&gt; &#39;?14942) -&gt; k:int -&gt; m:intmap&lt;&#39;?14942&gt; -&gt; intmap&lt;&#39;?14942&gt;<br />
+                          <strong>Type parameters:</strong> '?14942          </div>
+        </td>
+        <td class="xmldoc">
+            <a href="https://github.com/vrvis/aardvark.base/src/Aardvark.Base.FSharp/Datastructures/Immutable/IntMap.fs#L316-316" class="github-link">
+              <img src="../content/img/github.png" class="normal" />
+              <img src="../content/img/github-blue.png" class="hover" />
+            </a>
+          <p>O(min(n,W)). Adjust a value at a specific key. When the key is not a member of the map, the original map is returned. Credit: Haskell.org</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '528', 528)" onmouseover="showTip(event, '528', 528)">
+            adjustWithKey f k m
+          </code>
+          <div class="tip" id="528">
+            <strong>Signature:</strong> f:(int -&gt; &#39;?14940 -&gt; &#39;?14940) -&gt; k:int -&gt; m:intmap&lt;&#39;?14940&gt; -&gt; intmap&lt;&#39;?14940&gt;<br />
+                          <strong>Type parameters:</strong> '?14940          </div>
+        </td>
+        <td class="xmldoc">
+            <a href="https://github.com/vrvis/aardvark.base/src/Aardvark.Base.FSharp/Datastructures/Immutable/IntMap.fs#L313-313" class="github-link">
+              <img src="../content/img/github.png" class="normal" />
+              <img src="../content/img/github-blue.png" class="hover" />
+            </a>
+          <p>O(min(n,W)). Adjust a value at a specific key. When the key is not a member of the map, the original map is returned. Credit: Haskell.org</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '529', 529)" onmouseover="showTip(event, '529', 529)">
+            alter f k t
+          </code>
+          <div class="tip" id="529">
+            <strong>Signature:</strong> f:(&#39;a option -&gt; &#39;a option) -&gt; k:int -&gt; t:intmap&lt;&#39;a&gt; -&gt; intmap&lt;&#39;a&gt;<br />
+                          <strong>Type parameters:</strong> 'a          </div>
+        </td>
+        <td class="xmldoc">
+            <a href="https://github.com/vrvis/aardvark.base/src/Aardvark.Base.FSharp/Datastructures/Immutable/IntMap.fs#L336-336" class="github-link">
+              <img src="../content/img/github.png" class="normal" />
+              <img src="../content/img/github-blue.png" class="hover" />
+            </a>
+          <p>O(log n). The expression (alter f k map) alters the value x at k, or absence thereof. alter can be used to insert, delete, or update a value in an intmap. Credit: Haskell.org</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '530', 530)" onmouseover="showTip(event, '530', 530)">
+            append m1 m2
+          </code>
+          <div class="tip" id="530">
+            <strong>Signature:</strong> m1:intmap&lt;&#39;?14959&gt; -&gt; m2:intmap&lt;&#39;?14959&gt; -&gt; intmap&lt;&#39;?14959&gt;<br />
+                          <strong>Type parameters:</strong> '?14959          </div>
+        </td>
+        <td class="xmldoc">
+            <a href="https://github.com/vrvis/aardvark.base/src/Aardvark.Base.FSharp/Datastructures/Immutable/IntMap.fs#L416-416" class="github-link">
+              <img src="../content/img/github.png" class="normal" />
+              <img src="../content/img/github-blue.png" class="hover" />
+            </a>
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '531', 531)" onmouseover="showTip(event, '531', 531)">
+            appendWith f m1 m2
+          </code>
+          <div class="tip" id="531">
+            <strong>Signature:</strong> f:(&#39;a -&gt; &#39;a -&gt; &#39;a) -&gt; m1:intmap&lt;&#39;a&gt; -&gt; m2:intmap&lt;&#39;a&gt; -&gt; intmap&lt;&#39;a&gt;<br />
+                          <strong>Type parameters:</strong> 'a          </div>
+        </td>
+        <td class="xmldoc">
+            <a href="https://github.com/vrvis/aardvark.base/src/Aardvark.Base.FSharp/Datastructures/Immutable/IntMap.fs#L421-421" class="github-link">
+              <img src="../content/img/github.png" class="normal" />
+              <img src="../content/img/github-blue.png" class="hover" />
+            </a>
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '532', 532)" onmouseover="showTip(event, '532', 532)">
+            appendWithKey f m1 m2
+          </code>
+          <div class="tip" id="532">
+            <strong>Signature:</strong> f:(int -&gt; &#39;?14961 -&gt; &#39;?14961 -&gt; &#39;?14961) -&gt; m1:intmap&lt;&#39;?14961&gt; -&gt; m2:intmap&lt;&#39;?14961&gt; -&gt; intmap&lt;&#39;?14961&gt;<br />
+                          <strong>Type parameters:</strong> '?14961          </div>
+        </td>
+        <td class="xmldoc">
+            <a href="https://github.com/vrvis/aardvark.base/src/Aardvark.Base.FSharp/Datastructures/Immutable/IntMap.fs#L418-418" class="github-link">
+              <img src="../content/img/github.png" class="normal" />
+              <img src="../content/img/github-blue.png" class="hover" />
+            </a>
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '533', 533)" onmouseover="showTip(event, '533', 533)">
+            concat xs
+          </code>
+          <div class="tip" id="533">
+            <strong>Signature:</strong> xs:intmap&lt;&#39;?14965&gt; list -&gt; intmap&lt;&#39;?14965&gt;<br />
+                          <strong>Type parameters:</strong> '?14965          </div>
+        </td>
+        <td class="xmldoc">
+            <a href="https://github.com/vrvis/aardvark.base/src/Aardvark.Base.FSharp/Datastructures/Immutable/IntMap.fs#L423-423" class="github-link">
+              <img src="../content/img/github.png" class="normal" />
+              <img src="../content/img/github-blue.png" class="hover" />
+            </a>
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '534', 534)" onmouseover="showTip(event, '534', 534)">
+            concatWith f xs
+          </code>
+          <div class="tip" id="534">
+            <strong>Signature:</strong> f:(&#39;?14967 -&gt; &#39;?14967 -&gt; &#39;?14967) -&gt; xs:intmap&lt;&#39;?14967&gt; list -&gt; intmap&lt;&#39;?14967&gt;<br />
+                          <strong>Type parameters:</strong> '?14967          </div>
+        </td>
+        <td class="xmldoc">
+            <a href="https://github.com/vrvis/aardvark.base/src/Aardvark.Base.FSharp/Datastructures/Immutable/IntMap.fs#L425-425" class="github-link">
+              <img src="../content/img/github.png" class="normal" />
+              <img src="../content/img/github-blue.png" class="hover" />
+            </a>
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '535', 535)" onmouseover="showTip(event, '535', 535)">
+            delete k t
+          </code>
+          <div class="tip" id="535">
+            <strong>Signature:</strong> k:int -&gt; t:intmap&lt;&#39;?14934&gt; -&gt; intmap&lt;&#39;?14934&gt;<br />
+                          <strong>Type parameters:</strong> '?14934          </div>
+        </td>
+        <td class="xmldoc">
+            <a href="https://github.com/vrvis/aardvark.base/src/Aardvark.Base.FSharp/Datastructures/Immutable/IntMap.fs#L287-287" class="github-link">
+              <img src="../content/img/github.png" class="normal" />
+              <img src="../content/img/github-blue.png" class="hover" />
+            </a>
+          <p>O(min(n,W)). Delete a key and its value from the map. When the key is not a member of the map, the original map is returned. Credit: Haskell.org</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '536', 536)" onmouseover="showTip(event, '536', 536)">
+            deleteFindMax t
+          </code>
+          <div class="tip" id="536">
+            <strong>Signature:</strong> t:intmap&lt;&#39;?15009&gt; -&gt; (int * &#39;?15009) * intmap&lt;&#39;?15009&gt;<br />
+                          <strong>Type parameters:</strong> '?15009          </div>
+        </td>
+        <td class="xmldoc">
+            <a href="https://github.com/vrvis/aardvark.base/src/Aardvark.Base.FSharp/Datastructures/Immutable/IntMap.fs#L513-513" class="github-link">
+              <img src="../content/img/github.png" class="normal" />
+              <img src="../content/img/github-blue.png" class="hover" />
+            </a>
+          <p>O(log n). Retrieves the maximal key of the map, and the map stripped from that element. Credit: Haskell.org</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '537', 537)" onmouseover="showTip(event, '537', 537)">
+            deleteFindMin t
+          </code>
+          <div class="tip" id="537">
+            <strong>Signature:</strong> t:intmap&lt;&#39;?15011&gt; -&gt; (int * &#39;?15011) * intmap&lt;&#39;?15011&gt;<br />
+                          <strong>Type parameters:</strong> '?15011          </div>
+        </td>
+        <td class="xmldoc">
+            <a href="https://github.com/vrvis/aardvark.base/src/Aardvark.Base.FSharp/Datastructures/Immutable/IntMap.fs#L519-519" class="github-link">
+              <img src="../content/img/github.png" class="normal" />
+              <img src="../content/img/github-blue.png" class="hover" />
+            </a>
+          <p>O(log n). Retrieves the minimal key of the map, and the map stripped from that element. Credit: Haskell.org</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '538', 538)" onmouseover="showTip(event, '538', 538)">
+            deleteMax t
+          </code>
+          <div class="tip" id="538">
+            <strong>Signature:</strong> t:intmap&lt;&#39;?15019&gt; -&gt; intmap&lt;&#39;?15019&gt;<br />
+                          <strong>Type parameters:</strong> '?15019          </div>
+        </td>
+        <td class="xmldoc">
+            <a href="https://github.com/vrvis/aardvark.base/src/Aardvark.Base.FSharp/Datastructures/Immutable/IntMap.fs#L557-557" class="github-link">
+              <img src="../content/img/github.png" class="normal" />
+              <img src="../content/img/github-blue.png" class="hover" />
+            </a>
+          <p>O(log n). Delete the maximal key. Credit: Haskell.org</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '539', 539)" onmouseover="showTip(event, '539', 539)">
+            deleteMin t
+          </code>
+          <div class="tip" id="539">
+            <strong>Signature:</strong> t:intmap&lt;&#39;?15017&gt; -&gt; intmap&lt;&#39;?15017&gt;<br />
+                          <strong>Type parameters:</strong> '?15017          </div>
+        </td>
+        <td class="xmldoc">
+            <a href="https://github.com/vrvis/aardvark.base/src/Aardvark.Base.FSharp/Datastructures/Immutable/IntMap.fs#L551-551" class="github-link">
+              <img src="../content/img/github.png" class="normal" />
+              <img src="../content/img/github-blue.png" class="hover" />
+            </a>
+          <p>O(log n). Delete the minimal key. Credit: Haskell.org</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '540', 540)" onmouseover="showTip(event, '540', 540)">
+            difference m1 m2
+          </code>
+          <div class="tip" id="540">
+            <strong>Signature:</strong> m1:intmap&lt;&#39;?14969&gt; -&gt; m2:intmap&lt;&#39;?14970&gt; -&gt; intmap&lt;&#39;?14969&gt;<br />
+                          <strong>Type parameters:</strong> '?14969, '?14970          </div>
+        </td>
+        <td class="xmldoc">
+            <a href="https://github.com/vrvis/aardvark.base/src/Aardvark.Base.FSharp/Datastructures/Immutable/IntMap.fs#L428-428" class="github-link">
+              <img src="../content/img/github.png" class="normal" />
+              <img src="../content/img/github-blue.png" class="hover" />
+            </a>
+          <p>O(n+m). Difference between two maps (based on keys). Credit: Haskell.org</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '541', 541)" onmouseover="showTip(event, '541', 541)">
+            differenceWith f m1 m2
+          </code>
+          <div class="tip" id="541">
+            <strong>Signature:</strong> f:(&#39;?14975 -&gt; &#39;?14976 -&gt; &#39;?14975 option) -&gt; m1:intmap&lt;&#39;?14975&gt; -&gt; m2:intmap&lt;&#39;?14976&gt; -&gt; intmap&lt;&#39;?14975&gt;<br />
+                          <strong>Type parameters:</strong> '?14975, '?14976          </div>
+        </td>
+        <td class="xmldoc">
+            <a href="https://github.com/vrvis/aardvark.base/src/Aardvark.Base.FSharp/Datastructures/Immutable/IntMap.fs#L434-434" class="github-link">
+              <img src="../content/img/github.png" class="normal" />
+              <img src="../content/img/github-blue.png" class="hover" />
+            </a>
+          <p>O(n+m). Difference with a combining function. Credit: Haskell.org</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '542', 542)" onmouseover="showTip(event, '542', 542)">
+            differenceWithKey f m1 m2
+          </code>
+          <div class="tip" id="542">
+            <strong>Signature:</strong> f:(int -&gt; &#39;?14972 -&gt; &#39;?14973 -&gt; &#39;?14972 option) -&gt; m1:intmap&lt;&#39;?14972&gt; -&gt; m2:intmap&lt;&#39;?14973&gt; -&gt; intmap&lt;&#39;?14972&gt;<br />
+                          <strong>Type parameters:</strong> '?14972, '?14973          </div>
+        </td>
+        <td class="xmldoc">
+            <a href="https://github.com/vrvis/aardvark.base/src/Aardvark.Base.FSharp/Datastructures/Immutable/IntMap.fs#L431-431" class="github-link">
+              <img src="../content/img/github.png" class="normal" />
+              <img src="../content/img/github-blue.png" class="hover" />
+            </a>
+          <p>O(n+m). Difference with a combining function. When two equal keys are encountered, the combining function is applied to the key and both values. If it returns Nothing, the element is discarded (proper set difference). If it returns (Just y), the element is updated with a new value y. Credit: Haskell.org</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '543', 543)" onmouseover="showTip(event, '543', 543)">
+            empty 
+          </code>
+          <div class="tip" id="543">
+            <strong>Signature:</strong> intmap&lt;&#39;a&gt;<br />
+                          <strong>Type parameters:</strong> 'a          </div>
+        </td>
+        <td class="xmldoc">
+            <a href="https://github.com/vrvis/aardvark.base/src/Aardvark.Base.FSharp/Datastructures/Immutable/IntMap.fs#L244-244" class="github-link">
+              <img src="../content/img/github.png" class="normal" />
+              <img src="../content/img/github-blue.png" class="hover" />
+            </a>
+          <p>O(1). The empty map. Credit: Haskell.org</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '544', 544)" onmouseover="showTip(event, '544', 544)">
+            exists k _arg1
+          </code>
+          <div class="tip" id="544">
+            <strong>Signature:</strong> k:int -&gt; _arg1:intmap&lt;&#39;?14902&gt; -&gt; bool<br />
+                          <strong>Type parameters:</strong> '?14902          </div>
+        </td>
+        <td class="xmldoc">
+            <a href="https://github.com/vrvis/aardvark.base/src/Aardvark.Base.FSharp/Datastructures/Immutable/IntMap.fs#L143-143" class="github-link">
+              <img src="../content/img/github.png" class="normal" />
+              <img src="../content/img/github-blue.png" class="hover" />
+            </a>
+          <p>O(min(n,W)). Is the key a member of the map? Credit: Haskell.org</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '545', 545)" onmouseover="showTip(event, '545', 545)">
+            filter p m
+          </code>
+          <div class="tip" id="545">
+            <strong>Signature:</strong> p:(&#39;?15041 -&gt; bool) -&gt; m:intmap&lt;&#39;?15041&gt; -&gt; intmap&lt;&#39;?15041&gt;<br />
+                          <strong>Type parameters:</strong> '?15041          </div>
+        </td>
+        <td class="xmldoc">
+            <a href="https://github.com/vrvis/aardvark.base/src/Aardvark.Base.FSharp/Datastructures/Immutable/IntMap.fs#L601-601" class="github-link">
+              <img src="../content/img/github.png" class="normal" />
+              <img src="../content/img/github-blue.png" class="hover" />
+            </a>
+          <p>O(n). Filter all values that satisfy some predicate. Credit: Haskell.org</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '546', 546)" onmouseover="showTip(event, '546', 546)">
+            filterWithKey predicate _arg1
+          </code>
+          <div class="tip" id="546">
+            <strong>Signature:</strong> predicate:(int -&gt; &#39;?15039 -&gt; bool) -&gt; _arg1:intmap&lt;&#39;?15039&gt; -&gt; intmap&lt;&#39;?15039&gt;<br />
+                          <strong>Type parameters:</strong> '?15039          </div>
+        </td>
+        <td class="xmldoc">
+            <a href="https://github.com/vrvis/aardvark.base/src/Aardvark.Base.FSharp/Datastructures/Immutable/IntMap.fs#L593-593" class="github-link">
+              <img src="../content/img/github.png" class="normal" />
+              <img src="../content/img/github-blue.png" class="hover" />
+            </a>
+          <p>O(n). Filter all keys/values that satisfy some predicate. Credit: Haskell.org</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '547', 547)" onmouseover="showTip(event, '547', 547)">
+            find k m
+          </code>
+          <div class="tip" id="547">
+            <strong>Signature:</strong> k:int -&gt; m:intmap&lt;&#39;?14906&gt; -&gt; &#39;?14906<br />
+                          <strong>Type parameters:</strong> '?14906          </div>
+        </td>
+        <td class="xmldoc">
+            <a href="https://github.com/vrvis/aardvark.base/src/Aardvark.Base.FSharp/Datastructures/Immutable/IntMap.fs#L155-155" class="github-link">
+              <img src="../content/img/github.png" class="normal" />
+              <img src="../content/img/github-blue.png" class="hover" />
+            </a>
+          <p>O(min(n,W)). Lookup the value at a key in the map. Credit: Haskell.org</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '548', 548)" onmouseover="showTip(event, '548', 548)">
+            findMax t
+          </code>
+          <div class="tip" id="548">
+            <strong>Signature:</strong> t:intmap&lt;&#39;?15015&gt; -&gt; int * &#39;?15015<br />
+                          <strong>Type parameters:</strong> '?15015          </div>
+        </td>
+        <td class="xmldoc">
+            <a href="https://github.com/vrvis/aardvark.base/src/Aardvark.Base.FSharp/Datastructures/Immutable/IntMap.fs#L538-538" class="github-link">
+              <img src="../content/img/github.png" class="normal" />
+              <img src="../content/img/github-blue.png" class="hover" />
+            </a>
+          <p>O(log n). The maximal key of the map. Credit: Haskell.org</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '549', 549)" onmouseover="showTip(event, '549', 549)">
+            findMin t
+          </code>
+          <div class="tip" id="549">
+            <strong>Signature:</strong> t:intmap&lt;&#39;?15013&gt; -&gt; int * &#39;?15013<br />
+                          <strong>Type parameters:</strong> '?15013          </div>
+        </td>
+        <td class="xmldoc">
+            <a href="https://github.com/vrvis/aardvark.base/src/Aardvark.Base.FSharp/Datastructures/Immutable/IntMap.fs#L525-525" class="github-link">
+              <img src="../content/img/github.png" class="normal" />
+              <img src="../content/img/github-blue.png" class="hover" />
+            </a>
+          <p>O(log n). The minimal key of the map. Credit: Haskell.org</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '550', 550)" onmouseover="showTip(event, '550', 550)">
+            findWithDefault def k _arg1
+          </code>
+          <div class="tip" id="550">
+            <strong>Signature:</strong> def:&#39;?14908 -&gt; k:int -&gt; _arg1:intmap&lt;&#39;?14908&gt; -&gt; &#39;?14908<br />
+                          <strong>Type parameters:</strong> '?14908          </div>
+        </td>
+        <td class="xmldoc">
+            <a href="https://github.com/vrvis/aardvark.base/src/Aardvark.Base.FSharp/Datastructures/Immutable/IntMap.fs#L166-166" class="github-link">
+              <img src="../content/img/github.png" class="normal" />
+              <img src="../content/img/github-blue.png" class="hover" />
+            </a>
+          <p>O(min(n,W)). The expression (findWithDefault def k map) returns the value at key k or returns def when the key is not an element of the map.  Credit: Haskell.org</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '551', 551)" onmouseover="showTip(event, '551', 551)">
+            fold f z
+          </code>
+          <div class="tip" id="551">
+            <strong>Signature:</strong> f:(&#39;a -&gt; &#39;b -&gt; &#39;a) -&gt; z:&#39;a -&gt; intmap&lt;&#39;b&gt; -&gt; &#39;a<br />
+                          <strong>Type parameters:</strong> 'a, 'b          </div>
+        </td>
+        <td class="xmldoc">
+            <a href="https://github.com/vrvis/aardvark.base/src/Aardvark.Base.FSharp/Datastructures/Immutable/IntMap.fs#L706-706" class="github-link">
+              <img src="../content/img/github.png" class="normal" />
+              <img src="../content/img/github-blue.png" class="hover" />
+            </a>
+          <p>O(n). Fold the values in the map, such that fold f z == Prelude.foldr f z . elems. Credit: Haskell.org</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '552', 552)" onmouseover="showTip(event, '552', 552)">
+            foldBack f z
+          </code>
+          <div class="tip" id="552">
+            <strong>Signature:</strong> f:(&#39;?15065 -&gt; &#39;?15066 -&gt; &#39;?15066) -&gt; z:&#39;?15066 -&gt; intmap&lt;&#39;?15065&gt; -&gt; &#39;?15066<br />
+                          <strong>Type parameters:</strong> '?15065, '?15066          </div>
+        </td>
+        <td class="xmldoc">
+            <a href="https://github.com/vrvis/aardvark.base/src/Aardvark.Base.FSharp/Datastructures/Immutable/IntMap.fs#L693-693" class="github-link">
+              <img src="../content/img/github.png" class="normal" />
+              <img src="../content/img/github-blue.png" class="hover" />
+            </a>
+          <p>O(n). FoldBack the values in the map, such that fold f z == Prelude.foldr f z . elems. Credit: Haskell.org</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '553', 553)" onmouseover="showTip(event, '553', 553)">
+            foldBackWithKey f z t
+          </code>
+          <div class="tip" id="553">
+            <strong>Signature:</strong> f:(int -&gt; &#39;?15071 -&gt; &#39;?15072 -&gt; &#39;?15072) -&gt; z:&#39;?15072 -&gt; t:intmap&lt;&#39;?15071&gt; -&gt; &#39;?15072<br />
+                          <strong>Type parameters:</strong> '?15071, '?15072          </div>
+        </td>
+        <td class="xmldoc">
+            <a href="https://github.com/vrvis/aardvark.base/src/Aardvark.Base.FSharp/Datastructures/Immutable/IntMap.fs#L719-719" class="github-link">
+              <img src="../content/img/github.png" class="normal" />
+              <img src="../content/img/github-blue.png" class="hover" />
+            </a>
+          <p>O(n). FoldBack the keys and values in the map, such that foldWithKey f z == Prelude.foldr (uncurry f) z . toAscList. Credit: Haskell.org</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '554', 554)" onmouseover="showTip(event, '554', 554)">
+            foldWithKey f z
+          </code>
+          <div class="tip" id="554">
+            <strong>Signature:</strong> f:(&#39;?15074 -&gt; int -&gt; &#39;?15075 -&gt; &#39;?15074) -&gt; z:&#39;?15074 -&gt; intmap&lt;&#39;?15075&gt; -&gt; &#39;?15074<br />
+                          <strong>Type parameters:</strong> '?15074, '?15075          </div>
+        </td>
+        <td class="xmldoc">
+            <a href="https://github.com/vrvis/aardvark.base/src/Aardvark.Base.FSharp/Datastructures/Immutable/IntMap.fs#L722-722" class="github-link">
+              <img src="../content/img/github.png" class="normal" />
+              <img src="../content/img/github-blue.png" class="hover" />
+            </a>
+          <p>O(n). Fold the keys and values in the map, such that foldWithKey f z == Prelude.foldr (uncurry f) z . toAscList. Credit: Haskell.org</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '555', 555)" onmouseover="showTip(event, '555', 555)">
+            insert k x t
+          </code>
+          <div class="tip" id="555">
+            <strong>Signature:</strong> k:int -&gt; x:&#39;?14926 -&gt; t:intmap&lt;&#39;?14926&gt; -&gt; intmap&lt;&#39;?14926&gt;<br />
+                          <strong>Type parameters:</strong> '?14926          </div>
+        </td>
+        <td class="xmldoc">
+            <a href="https://github.com/vrvis/aardvark.base/src/Aardvark.Base.FSharp/Datastructures/Immutable/IntMap.fs#L250-250" class="github-link">
+              <img src="../content/img/github.png" class="normal" />
+              <img src="../content/img/github-blue.png" class="hover" />
+            </a>
+          <p>O(min(n,W)). Insert a new key/value pair in the map. If the key is already present in the map, the associated value is replaced with the supplied value, i.e. insert is equivalent to insertWith const. Credit: Haskell.org</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '556', 556)" onmouseover="showTip(event, '556', 556)">
+            insertTryFindWithKey f k x t
+          </code>
+          <div class="tip" id="556">
+            <strong>Signature:</strong> f:(int -&gt; &#39;?14932 -&gt; &#39;?14932 -&gt; &#39;?14932) -&gt; k:int -&gt; x:&#39;?14932 -&gt; t:intmap&lt;&#39;?14932&gt; -&gt; &#39;?14932 option * intmap&lt;&#39;?14932&gt;<br />
+                          <strong>Type parameters:</strong> '?14932          </div>
+        </td>
+        <td class="xmldoc">
+            <a href="https://github.com/vrvis/aardvark.base/src/Aardvark.Base.FSharp/Datastructures/Immutable/IntMap.fs#L273-273" class="github-link">
+              <img src="../content/img/github.png" class="normal" />
+              <img src="../content/img/github-blue.png" class="hover" />
+            </a>
+          <p>O(min(n,W)). The expression (insertLookupWithKey f k x map) is a pair where the first element is equal to (lookup k map) and the second element equal to (insertWithKey f k x map). Credit: Haskell.org</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '557', 557)" onmouseover="showTip(event, '557', 557)">
+            insertWith f k x t
+          </code>
+          <div class="tip" id="557">
+            <strong>Signature:</strong> f:(&#39;?14930 -&gt; &#39;?14930 -&gt; &#39;?14930) -&gt; k:int -&gt; x:&#39;?14930 -&gt; t:intmap&lt;&#39;?14930&gt; -&gt; intmap&lt;&#39;?14930&gt;<br />
+                          <strong>Type parameters:</strong> '?14930          </div>
+        </td>
+        <td class="xmldoc">
+            <a href="https://github.com/vrvis/aardvark.base/src/Aardvark.Base.FSharp/Datastructures/Immutable/IntMap.fs#L270-270" class="github-link">
+              <img src="../content/img/github.png" class="normal" />
+              <img src="../content/img/github-blue.png" class="hover" />
+            </a>
+          <p>O(min(n,W)). Insert with a combining function. insertWith f key value mp will insert the pair (key, value) into mp if key does not exist in the map. If the key does exist, the function will insert f new<em>value old</em>value. Credit: Haskell.org</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '558', 558)" onmouseover="showTip(event, '558', 558)">
+            insertWithKey f k x t
+          </code>
+          <div class="tip" id="558">
+            <strong>Signature:</strong> f:(int -&gt; &#39;?14928 -&gt; &#39;?14928 -&gt; &#39;?14928) -&gt; k:int -&gt; x:&#39;?14928 -&gt; t:intmap&lt;&#39;?14928&gt; -&gt; intmap&lt;&#39;?14928&gt;<br />
+                          <strong>Type parameters:</strong> '?14928          </div>
+        </td>
+        <td class="xmldoc">
+            <a href="https://github.com/vrvis/aardvark.base/src/Aardvark.Base.FSharp/Datastructures/Immutable/IntMap.fs#L260-260" class="github-link">
+              <img src="../content/img/github.png" class="normal" />
+              <img src="../content/img/github-blue.png" class="hover" />
+            </a>
+          <p>O(min(n,W)). Insert with a combining function. insertWithKey f key value mp will insert the pair (key, value) into mp if key does not exist in the map. If the key does exist, the function will insert f key new<em>value old</em>value. Credit: Haskell.org</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '559', 559)" onmouseover="showTip(event, '559', 559)">
+            intersection m1 m2
+          </code>
+          <div class="tip" id="559">
+            <strong>Signature:</strong> m1:intmap&lt;&#39;?14978&gt; -&gt; m2:intmap&lt;&#39;?14979&gt; -&gt; intmap&lt;&#39;?14978&gt;<br />
+                          <strong>Type parameters:</strong> '?14978, '?14979          </div>
+        </td>
+        <td class="xmldoc">
+            <a href="https://github.com/vrvis/aardvark.base/src/Aardvark.Base.FSharp/Datastructures/Immutable/IntMap.fs#L437-437" class="github-link">
+              <img src="../content/img/github.png" class="normal" />
+              <img src="../content/img/github-blue.png" class="hover" />
+            </a>
+          <p>O(n+m). The (left-biased) intersection of two maps (based on keys). Credit: Haskell.org</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '560', 560)" onmouseover="showTip(event, '560', 560)">
+            intersectionWith f m1 m2
+          </code>
+          <div class="tip" id="560">
+            <strong>Signature:</strong> f:(&#39;?14985 -&gt; &#39;?14986 -&gt; &#39;?14987) -&gt; m1:intmap&lt;&#39;?14985&gt; -&gt; m2:intmap&lt;&#39;?14986&gt; -&gt; intmap&lt;&#39;?14987&gt;<br />
+                          <strong>Type parameters:</strong> '?14985, '?14986, '?14987          </div>
+        </td>
+        <td class="xmldoc">
+            <a href="https://github.com/vrvis/aardvark.base/src/Aardvark.Base.FSharp/Datastructures/Immutable/IntMap.fs#L444-444" class="github-link">
+              <img src="../content/img/github.png" class="normal" />
+              <img src="../content/img/github-blue.png" class="hover" />
+            </a>
+          <p>O(n+m). The intersection with a combining function. Credit: Haskell.org</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '561', 561)" onmouseover="showTip(event, '561', 561)">
+            intersectionWithKey f m1 m2
+          </code>
+          <div class="tip" id="561">
+            <strong>Signature:</strong> f:(int -&gt; &#39;?14981 -&gt; &#39;?14982 -&gt; &#39;?14983) -&gt; m1:intmap&lt;&#39;?14981&gt; -&gt; m2:intmap&lt;&#39;?14982&gt; -&gt; intmap&lt;&#39;?14983&gt;<br />
+                          <strong>Type parameters:</strong> '?14981, '?14982, '?14983          </div>
+        </td>
+        <td class="xmldoc">
+            <a href="https://github.com/vrvis/aardvark.base/src/Aardvark.Base.FSharp/Datastructures/Immutable/IntMap.fs#L440-440" class="github-link">
+              <img src="../content/img/github.png" class="normal" />
+              <img src="../content/img/github-blue.png" class="hover" />
+            </a>
+          <p>O(n+m). The intersection with a combining function. Credit: Haskell.org</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '562', 562)" onmouseover="showTip(event, '562', 562)">
+            isEmpty _arg1
+          </code>
+          <div class="tip" id="562">
+            <strong>Signature:</strong> _arg1:intmap&lt;&#39;?14898&gt; -&gt; bool<br />
+                          <strong>Type parameters:</strong> '?14898          </div>
+        </td>
+        <td class="xmldoc">
+            <a href="https://github.com/vrvis/aardvark.base/src/Aardvark.Base.FSharp/Datastructures/Immutable/IntMap.fs#L120-120" class="github-link">
+              <img src="../content/img/github.png" class="normal" />
+              <img src="../content/img/github-blue.png" class="hover" />
+            </a>
+          <p>O(1). Map is empty.  Credit: Haskell.org</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '563', 563)" onmouseover="showTip(event, '563', 563)">
+            isProperSubmapOf m1 m2
+          </code>
+          <div class="tip" id="563">
+            <strong>Signature:</strong> m1:intmap&lt;&#39;?15130&gt; -&gt; m2:intmap&lt;&#39;?15130&gt; -&gt; bool<br />
+                          <strong>Type parameters:</strong> '?15130          </div>
+        </td>
+        <td class="xmldoc">
+            <a href="https://github.com/vrvis/aardvark.base/src/Aardvark.Base.FSharp/Datastructures/Immutable/IntMap.fs#L846-846" class="github-link">
+              <img src="../content/img/github.png" class="normal" />
+              <img src="../content/img/github-blue.png" class="hover" />
+            </a>
+          <p>O(n+m). Is this a proper submap? (ie. a submap but not equal). Defined as (isProperSubmapOf = isProperSubmapOfBy (==)). Credit: Haskell.org</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '564', 564)" onmouseover="showTip(event, '564', 564)">
+            isProperSubmapOfBy predicate t1 t2
+          </code>
+          <div class="tip" id="564">
+            <strong>Signature:</strong> predicate:(&#39;?15127 -&gt; &#39;?15128 -&gt; bool) -&gt; t1:intmap&lt;&#39;?15127&gt; -&gt; t2:intmap&lt;&#39;?15128&gt; -&gt; bool<br />
+                          <strong>Type parameters:</strong> '?15127, '?15128          </div>
+        </td>
+        <td class="xmldoc">
+            <a href="https://github.com/vrvis/aardvark.base/src/Aardvark.Base.FSharp/Datastructures/Immutable/IntMap.fs#L840-840" class="github-link">
+              <img src="../content/img/github.png" class="normal" />
+              <img src="../content/img/github-blue.png" class="hover" />
+            </a>
+          <p>O(n+m). Is this a proper submap? (ie. a submap but not equal). The expression (isProperSubmapOfBy f m1 m2) returns True when m1 and m2 are not equal, all keys in m1 are in m2, and when f returns True when applied to their respective values.  Credit: Haskell.org</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '565', 565)" onmouseover="showTip(event, '565', 565)">
+            isSubmapOf m1 m2
+          </code>
+          <div class="tip" id="565">
+            <strong>Signature:</strong> m1:intmap&lt;&#39;?15112&gt; -&gt; m2:intmap&lt;&#39;?15112&gt; -&gt; bool<br />
+                          <strong>Type parameters:</strong> '?15112          </div>
+        </td>
+        <td class="xmldoc">
+            <a href="https://github.com/vrvis/aardvark.base/src/Aardvark.Base.FSharp/Datastructures/Immutable/IntMap.fs#L804-804" class="github-link">
+              <img src="../content/img/github.png" class="normal" />
+              <img src="../content/img/github-blue.png" class="hover" />
+            </a>
+          <p>O(n+m). Is this a submap? Defined as (isSubmapOf = isSubmapOfBy (==)). Credit: Haskell.org</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '566', 566)" onmouseover="showTip(event, '566', 566)">
+            isSubmapOfBy predicate t1 t2
+          </code>
+          <div class="tip" id="566">
+            <strong>Signature:</strong> predicate:(&#39;?15109 -&gt; &#39;?15110 -&gt; bool) -&gt; t1:intmap&lt;&#39;?15109&gt; -&gt; t2:intmap&lt;&#39;?15110&gt; -&gt; bool<br />
+                          <strong>Type parameters:</strong> '?15109, '?15110          </div>
+        </td>
+        <td class="xmldoc">
+            <a href="https://github.com/vrvis/aardvark.base/src/Aardvark.Base.FSharp/Datastructures/Immutable/IntMap.fs#L787-787" class="github-link">
+              <img src="../content/img/github.png" class="normal" />
+              <img src="../content/img/github-blue.png" class="hover" />
+            </a>
+          <p>O(n+m). The expression (isSubmapOfBy f m1 m2) returns True if all keys in m1 are in m2, and when f returns True when applied to their respective values. Credit: Haskell.org</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '567', 567)" onmouseover="showTip(event, '567', 567)">
+            keys m
+          </code>
+          <div class="tip" id="567">
+            <strong>Signature:</strong> m:intmap&lt;&#39;?15079&gt; -&gt; int list<br />
+                          <strong>Type parameters:</strong> '?15079          </div>
+        </td>
+        <td class="xmldoc">
+            <a href="https://github.com/vrvis/aardvark.base/src/Aardvark.Base.FSharp/Datastructures/Immutable/IntMap.fs#L738-738" class="github-link">
+              <img src="../content/img/github.png" class="normal" />
+              <img src="../content/img/github-blue.png" class="hover" />
+            </a>
+          <p>O(n). Return all keys of the map in ascending order. Credit: Haskell.org</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '568', 568)" onmouseover="showTip(event, '568', 568)">
+            konst a arg2
+          </code>
+          <div class="tip" id="568">
+            <strong>Signature:</strong> a:&#39;?14956 -&gt; &#39;?14957 -&gt; &#39;?14956<br />
+                          <strong>Type parameters:</strong> '?14956, '?14957          </div>
+        </td>
+        <td class="xmldoc">
+            <a href="https://github.com/vrvis/aardvark.base/src/Aardvark.Base.FSharp/Datastructures/Immutable/IntMap.fs#L414-414" class="github-link">
+              <img src="../content/img/github.png" class="normal" />
+              <img src="../content/img/github-blue.png" class="hover" />
+            </a>
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '569', 569)" onmouseover="showTip(event, '569', 569)">
+            map f _arg1
+          </code>
+          <div class="tip" id="569">
+            <strong>Signature:</strong> f:(&#39;a -&gt; &#39;c) -&gt; _arg1:intmap&lt;&#39;a&gt; -&gt; intmap&lt;&#39;c&gt;<br />
+                          <strong>Type parameters:</strong> 'a, 'c          </div>
+        </td>
+        <td class="xmldoc">
+            <a href="https://github.com/vrvis/aardvark.base/src/Aardvark.Base.FSharp/Datastructures/Immutable/IntMap.fs#L570-570" class="github-link">
+              <img src="../content/img/github.png" class="normal" />
+              <img src="../content/img/github-blue.png" class="hover" />
+            </a>
+          <p>O(n). Map a function over all values in the map. Credit: Haskell.org</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '570', 570)" onmouseover="showTip(event, '570', 570)">
+            mapAccum f
+          </code>
+          <div class="tip" id="570">
+            <strong>Signature:</strong> f:(&#39;?15035 -&gt; &#39;?15036 -&gt; &#39;?15035 * &#39;?15037) -&gt; &#39;?15035 -&gt; intmap&lt;&#39;?15036&gt; -&gt; &#39;?15035 * intmap&lt;&#39;?15037&gt;<br />
+                          <strong>Type parameters:</strong> '?15035, '?15036, '?15037          </div>
+        </td>
+        <td class="xmldoc">
+            <a href="https://github.com/vrvis/aardvark.base/src/Aardvark.Base.FSharp/Datastructures/Immutable/IntMap.fs#L590-590" class="github-link">
+              <img src="../content/img/github.png" class="normal" />
+              <img src="../content/img/github-blue.png" class="hover" />
+            </a>
+          <p>O(n). The function mapAccumWithKey threads an accumulating argument through the map in ascending order of keys. Credit: Haskell.org</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '571', 571)" onmouseover="showTip(event, '571', 571)">
+            mapAccumWithKey f a t
+          </code>
+          <div class="tip" id="571">
+            <strong>Signature:</strong> f:(&#39;?15031 -&gt; int -&gt; &#39;?15032 -&gt; &#39;?15031 * &#39;?15033) -&gt; a:&#39;?15031 -&gt; t:intmap&lt;&#39;?15032&gt; -&gt; &#39;?15031 * intmap&lt;&#39;?15033&gt;<br />
+                          <strong>Type parameters:</strong> '?15031, '?15032, '?15033          </div>
+        </td>
+        <td class="xmldoc">
+            <a href="https://github.com/vrvis/aardvark.base/src/Aardvark.Base.FSharp/Datastructures/Immutable/IntMap.fs#L587-587" class="github-link">
+              <img src="../content/img/github.png" class="normal" />
+              <img src="../content/img/github-blue.png" class="hover" />
+            </a>
+          <p>O(n). The function mapAccum threads an accumulating argument through the map in ascending order of keys. Credit: Haskell.org</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '572', 572)" onmouseover="showTip(event, '572', 572)">
+            mapChoice f
+          </code>
+          <div class="tip" id="572">
+            <strong>Signature:</strong> f:(&#39;?15057 -&gt; Choice&lt;&#39;?15058,&#39;?15059&gt;) -&gt; intmap&lt;&#39;?15057&gt; -&gt; intmap&lt;&#39;?15058&gt; * intmap&lt;&#39;?15059&gt;<br />
+                          <strong>Type parameters:</strong> '?15057, '?15058, '?15059          </div>
+        </td>
+        <td class="xmldoc">
+            <a href="https://github.com/vrvis/aardvark.base/src/Aardvark.Base.FSharp/Datastructures/Immutable/IntMap.fs#L644-644" class="github-link">
+              <img src="../content/img/github.png" class="normal" />
+              <img src="../content/img/github-blue.png" class="hover" />
+            </a>
+          <p>O(n). Map values and separate the Left and Right results. Credit: Haskell.org</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '573', 573)" onmouseover="showTip(event, '573', 573)">
+            mapChoiceWithKey f _arg1
+          </code>
+          <div class="tip" id="573">
+            <strong>Signature:</strong> f:(int -&gt; &#39;?15053 -&gt; Choice&lt;&#39;?15054,&#39;?15055&gt;) -&gt; _arg1:intmap&lt;&#39;?15053&gt; -&gt; intmap&lt;&#39;?15054&gt; * intmap&lt;&#39;?15055&gt;<br />
+                          <strong>Type parameters:</strong> '?15053, '?15054, '?15055          </div>
+        </td>
+        <td class="xmldoc">
+            <a href="https://github.com/vrvis/aardvark.base/src/Aardvark.Base.FSharp/Datastructures/Immutable/IntMap.fs#L631-631" class="github-link">
+              <img src="../content/img/github.png" class="normal" />
+              <img src="../content/img/github-blue.png" class="hover" />
+            </a>
+          <p>O(n). Map keys/values and separate the Left and Right results. Credit: Haskell.org</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '574', 574)" onmouseover="showTip(event, '574', 574)">
+            mapKeys f
+          </code>
+          <div class="tip" id="574">
+            <strong>Signature:</strong> f:(int -&gt; int) -&gt; intmap&lt;&#39;?15105&gt; -&gt; intmap&lt;&#39;?15105&gt;<br />
+                          <strong>Type parameters:</strong> '?15105          </div>
+        </td>
+        <td class="xmldoc">
+            <a href="https://github.com/vrvis/aardvark.base/src/Aardvark.Base.FSharp/Datastructures/Immutable/IntMap.fs#L781-781" class="github-link">
+              <img src="../content/img/github.png" class="normal" />
+              <img src="../content/img/github-blue.png" class="hover" />
+            </a>
+          <p>O(n*min(n,W)). mapKeys f s is the map obtained by applying f to each key of s. The size of the result may be smaller if f maps two or more distinct keys to the same new key. In this case the value at the greatest of the original keys is retained. Credit: Haskell.org</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '575', 575)" onmouseover="showTip(event, '575', 575)">
+            mapKeysWith c f
+          </code>
+          <div class="tip" id="575">
+            <strong>Signature:</strong> c:(&#39;?15107 -&gt; &#39;?15107 -&gt; &#39;?15107) -&gt; f:(int -&gt; int) -&gt; intmap&lt;&#39;?15107&gt; -&gt; intmap&lt;&#39;?15107&gt;<br />
+                          <strong>Type parameters:</strong> '?15107          </div>
+        </td>
+        <td class="xmldoc">
+            <a href="https://github.com/vrvis/aardvark.base/src/Aardvark.Base.FSharp/Datastructures/Immutable/IntMap.fs#L784-784" class="github-link">
+              <img src="../content/img/github.png" class="normal" />
+              <img src="../content/img/github-blue.png" class="hover" />
+            </a>
+          <p>O(n*log n). mapKeysWith c f s is the map obtained by applying f to each key of s. The size of the result may be smaller if f maps two or more distinct keys to the same new key. In this case the associated values will be combined using c. Credit: Haskell.org</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '576', 576)" onmouseover="showTip(event, '576', 576)">
+            mapOption f
+          </code>
+          <div class="tip" id="576">
+            <strong>Signature:</strong> f:(&#39;a -&gt; &#39;c option) -&gt; intmap&lt;&#39;a&gt; -&gt; intmap&lt;&#39;c&gt;<br />
+                          <strong>Type parameters:</strong> 'a, 'c          </div>
+        </td>
+        <td class="xmldoc">
+            <a href="https://github.com/vrvis/aardvark.base/src/Aardvark.Base.FSharp/Datastructures/Immutable/IntMap.fs#L628-628" class="github-link">
+              <img src="../content/img/github.png" class="normal" />
+              <img src="../content/img/github-blue.png" class="hover" />
+            </a>
+          <p>O(n). Map values and collect the Just results. Credit: Haskell.org</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '577', 577)" onmouseover="showTip(event, '577', 577)">
+            mapOptionWithKey f _arg1
+          </code>
+          <div class="tip" id="577">
+            <strong>Signature:</strong> f:(int -&gt; &#39;?15047 -&gt; &#39;?15048 option) -&gt; _arg1:intmap&lt;&#39;?15047&gt; -&gt; intmap&lt;&#39;?15048&gt;<br />
+                          <strong>Type parameters:</strong> '?15047, '?15048          </div>
+        </td>
+        <td class="xmldoc">
+            <a href="https://github.com/vrvis/aardvark.base/src/Aardvark.Base.FSharp/Datastructures/Immutable/IntMap.fs#L618-618" class="github-link">
+              <img src="../content/img/github.png" class="normal" />
+              <img src="../content/img/github-blue.png" class="hover" />
+            </a>
+          <p>O(n). Map keys/values and collect the Just results. Credit: Haskell.org</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '578', 578)" onmouseover="showTip(event, '578', 578)">
+            mapWithKey f _arg1
+          </code>
+          <div class="tip" id="578">
+            <strong>Signature:</strong> f:(int -&gt; &#39;?15021 -&gt; &#39;?15022) -&gt; _arg1:intmap&lt;&#39;?15021&gt; -&gt; intmap&lt;&#39;?15022&gt;<br />
+                          <strong>Type parameters:</strong> '?15021, '?15022          </div>
+        </td>
+        <td class="xmldoc">
+            <a href="https://github.com/vrvis/aardvark.base/src/Aardvark.Base.FSharp/Datastructures/Immutable/IntMap.fs#L563-563" class="github-link">
+              <img src="../content/img/github.png" class="normal" />
+              <img src="../content/img/github-blue.png" class="hover" />
+            </a>
+          <p>O(n). Map a function over all values in the map. Credit: Haskell.org</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '579', 579)" onmouseover="showTip(event, '579', 579)">
+            maxView t
+          </code>
+          <div class="tip" id="579">
+            <strong>Signature:</strong> t:intmap&lt;&#39;?15005&gt; -&gt; (&#39;?15005 * intmap&lt;&#39;?15005&gt;) option<br />
+                          <strong>Type parameters:</strong> '?15005          </div>
+        </td>
+        <td class="xmldoc">
+            <a href="https://github.com/vrvis/aardvark.base/src/Aardvark.Base.FSharp/Datastructures/Immutable/IntMap.fs#L507-507" class="github-link">
+              <img src="../content/img/github.png" class="normal" />
+              <img src="../content/img/github-blue.png" class="hover" />
+            </a>
+          <p>O(min(n,W)). Retrieves the maximal key of the map, and the map stripped of that element, or Nothing if passed an empty map. Credit: Haskell.org</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '580', 580)" onmouseover="showTip(event, '580', 580)">
+            maxViewWithKey t
+          </code>
+          <div class="tip" id="580">
+            <strong>Signature:</strong> t:intmap&lt;&#39;?14993&gt; -&gt; ((int * &#39;?14993) * intmap&lt;&#39;?14993&gt;) option<br />
+                          <strong>Type parameters:</strong> '?14993          </div>
+        </td>
+        <td class="xmldoc">
+            <a href="https://github.com/vrvis/aardvark.base/src/Aardvark.Base.FSharp/Datastructures/Immutable/IntMap.fs#L475-475" class="github-link">
+              <img src="../content/img/github.png" class="normal" />
+              <img src="../content/img/github-blue.png" class="hover" />
+            </a>
+          <p>O(log n). Retrieves the maximal (key,value) couple of the map, and the map stripped from that element. fails (in the monad) when passed an empty map. Credit: Haskell.org</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '581', 581)" onmouseover="showTip(event, '581', 581)">
+            mergeWithKey f g1 g2
+          </code>
+          <div class="tip" id="581">
+            <strong>Signature:</strong> f:(int -&gt; &#39;b -&gt; &#39;d -&gt; &#39;e option) -&gt; g1:(intmap&lt;&#39;b&gt; -&gt; intmap&lt;&#39;e&gt;) -&gt; g2:(intmap&lt;&#39;d&gt; -&gt; intmap&lt;&#39;e&gt;) -&gt; intmap&lt;&#39;b&gt; -&gt; intmap&lt;&#39;d&gt; -&gt; intmap&lt;&#39;e&gt;<br />
+                          <strong>Type parameters:</strong> 'b, 'd, 'e          </div>
+        </td>
+        <td class="xmldoc">
+            <a href="https://github.com/vrvis/aardvark.base/src/Aardvark.Base.FSharp/Datastructures/Immutable/IntMap.fs#L406-406" class="github-link">
+              <img src="../content/img/github.png" class="normal" />
+              <img src="../content/img/github-blue.png" class="hover" />
+            </a>
+          <p>Refer to Haskell documentation. Unexpected code growth or corruption of the data structure can occure from wrong use. Credit: Haskell.org</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '582', 582)" onmouseover="showTip(event, '582', 582)">
+            minView t
+          </code>
+          <div class="tip" id="582">
+            <strong>Signature:</strong> t:intmap&lt;&#39;?15007&gt; -&gt; (&#39;?15007 * intmap&lt;&#39;?15007&gt;) option<br />
+                          <strong>Type parameters:</strong> '?15007          </div>
+        </td>
+        <td class="xmldoc">
+            <a href="https://github.com/vrvis/aardvark.base/src/Aardvark.Base.FSharp/Datastructures/Immutable/IntMap.fs#L510-510" class="github-link">
+              <img src="../content/img/github.png" class="normal" />
+              <img src="../content/img/github-blue.png" class="hover" />
+            </a>
+          <p>O(min(n,W)). Retrieves the minimal key of the map, and the map stripped of that element, or Nothing if passed an empty map. Credit: Haskell.org</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '583', 583)" onmouseover="showTip(event, '583', 583)">
+            minViewWithKey t
+          </code>
+          <div class="tip" id="583">
+            <strong>Signature:</strong> t:intmap&lt;&#39;?14995&gt; -&gt; ((int * &#39;?14995) * intmap&lt;&#39;?14995&gt;) option<br />
+                          <strong>Type parameters:</strong> '?14995          </div>
+        </td>
+        <td class="xmldoc">
+            <a href="https://github.com/vrvis/aardvark.base/src/Aardvark.Base.FSharp/Datastructures/Immutable/IntMap.fs#L487-487" class="github-link">
+              <img src="../content/img/github.png" class="normal" />
+              <img src="../content/img/github-blue.png" class="hover" />
+            </a>
+          <p>O(log n). Retrieves the minimal (key,value) couple of the map, and the map stripped from that element. fails (in the monad) when passed an empty map. Credit: Haskell.org</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '584', 584)" onmouseover="showTip(event, '584', 584)">
+            notExists k m
+          </code>
+          <div class="tip" id="584">
+            <strong>Signature:</strong> k:int -&gt; m:intmap&lt;&#39;?14904&gt; -&gt; bool<br />
+                          <strong>Type parameters:</strong> '?14904          </div>
+        </td>
+        <td class="xmldoc">
+            <a href="https://github.com/vrvis/aardvark.base/src/Aardvark.Base.FSharp/Datastructures/Immutable/IntMap.fs#L152-152" class="github-link">
+              <img src="../content/img/github.png" class="normal" />
+              <img src="../content/img/github-blue.png" class="hover" />
+            </a>
+          <p>O(log n). Is the key not a member of the map? Credit: Haskell.org</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '585', 585)" onmouseover="showTip(event, '585', 585)">
+            ofArray xs
+          </code>
+          <div class="tip" id="585">
+            <strong>Signature:</strong> xs:(int * &#39;?15099) [] -&gt; intmap&lt;&#39;?15099&gt;<br />
+                          <strong>Type parameters:</strong> '?15099          </div>
+        </td>
+        <td class="xmldoc">
+            <a href="https://github.com/vrvis/aardvark.base/src/Aardvark.Base.FSharp/Datastructures/Immutable/IntMap.fs#L772-772" class="github-link">
+              <img src="../content/img/github.png" class="normal" />
+              <img src="../content/img/github-blue.png" class="hover" />
+            </a>
+          <p>O(n*min(n,W)). Create a map from an array of key/value pairs. Credit: Haskell.org</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '586', 586)" onmouseover="showTip(event, '586', 586)">
+            ofArrayWith f xs
+          </code>
+          <div class="tip" id="586">
+            <strong>Signature:</strong> f:(&#39;?15103 -&gt; &#39;?15103 -&gt; &#39;?15103) -&gt; xs:(int * &#39;?15103) [] -&gt; intmap&lt;&#39;?15103&gt;<br />
+                          <strong>Type parameters:</strong> '?15103          </div>
+        </td>
+        <td class="xmldoc">
+            <a href="https://github.com/vrvis/aardvark.base/src/Aardvark.Base.FSharp/Datastructures/Immutable/IntMap.fs#L778-778" class="github-link">
+              <img src="../content/img/github.png" class="normal" />
+              <img src="../content/img/github-blue.png" class="hover" />
+            </a>
+          <p>O(n*min(n,W)). Create a map from an array of key/value pairs with a combining function. See also fromAscListWith. Credit: Haskell.org</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '587', 587)" onmouseover="showTip(event, '587', 587)">
+            ofArrayWithKey f xs
+          </code>
+          <div class="tip" id="587">
+            <strong>Signature:</strong> f:(int -&gt; &#39;?15101 -&gt; &#39;?15101 -&gt; &#39;?15101) -&gt; xs:(int * &#39;?15101) [] -&gt; intmap&lt;&#39;?15101&gt;<br />
+                          <strong>Type parameters:</strong> '?15101          </div>
+        </td>
+        <td class="xmldoc">
+            <a href="https://github.com/vrvis/aardvark.base/src/Aardvark.Base.FSharp/Datastructures/Immutable/IntMap.fs#L775-775" class="github-link">
+              <img src="../content/img/github.png" class="normal" />
+              <img src="../content/img/github-blue.png" class="hover" />
+            </a>
+          <p>O(n*min(n,W)). Build a map from an array of key/value pairs with a combining function. See also fromAscListWithKey'. Credit: Haskell.org</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '588', 588)" onmouseover="showTip(event, '588', 588)">
+            ofList xs
+          </code>
+          <div class="tip" id="588">
+            <strong>Signature:</strong> xs:(int * &#39;?15087) list -&gt; intmap&lt;&#39;?15087&gt;<br />
+                          <strong>Type parameters:</strong> '?15087          </div>
+        </td>
+        <td class="xmldoc">
+            <a href="https://github.com/vrvis/aardvark.base/src/Aardvark.Base.FSharp/Datastructures/Immutable/IntMap.fs#L750-750" class="github-link">
+              <img src="../content/img/github.png" class="normal" />
+              <img src="../content/img/github-blue.png" class="hover" />
+            </a>
+          <p>O(n*min(n,W)). Create a map from a list of key/value pairs. Credit: Haskell.org</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '589', 589)" onmouseover="showTip(event, '589', 589)">
+            ofListWith f xs
+          </code>
+          <div class="tip" id="589">
+            <strong>Signature:</strong> f:(&#39;?15091 -&gt; &#39;?15091 -&gt; &#39;?15091) -&gt; xs:(int * &#39;?15091) list -&gt; intmap&lt;&#39;?15091&gt;<br />
+                          <strong>Type parameters:</strong> '?15091          </div>
+        </td>
+        <td class="xmldoc">
+            <a href="https://github.com/vrvis/aardvark.base/src/Aardvark.Base.FSharp/Datastructures/Immutable/IntMap.fs#L760-760" class="github-link">
+              <img src="../content/img/github.png" class="normal" />
+              <img src="../content/img/github-blue.png" class="hover" />
+            </a>
+          <p>O(n*min(n,W)). Create a map from a list of key/value pairs with a combining function. See also fromAscListWith. Credit: Haskell.org</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '590', 590)" onmouseover="showTip(event, '590', 590)">
+            ofListWithKey f xs
+          </code>
+          <div class="tip" id="590">
+            <strong>Signature:</strong> f:(int -&gt; &#39;?15089 -&gt; &#39;?15089 -&gt; &#39;?15089) -&gt; xs:(int * &#39;?15089) list -&gt; intmap&lt;&#39;?15089&gt;<br />
+                          <strong>Type parameters:</strong> '?15089          </div>
+        </td>
+        <td class="xmldoc">
+            <a href="https://github.com/vrvis/aardvark.base/src/Aardvark.Base.FSharp/Datastructures/Immutable/IntMap.fs#L755-755" class="github-link">
+              <img src="../content/img/github.png" class="normal" />
+              <img src="../content/img/github-blue.png" class="hover" />
+            </a>
+          <p>O(n*min(n,W)). Build a map from a list of key/value pairs with a combining function. See also fromAscListWithKey'. Credit: Haskell.org</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '591', 591)" onmouseover="showTip(event, '591', 591)">
+            ofSeq xs
+          </code>
+          <div class="tip" id="591">
+            <strong>Signature:</strong> xs:seq&lt;int * &#39;?15093&gt; -&gt; intmap&lt;&#39;?15093&gt;<br />
+                          <strong>Type parameters:</strong> '?15093          </div>
+        </td>
+        <td class="xmldoc">
+            <a href="https://github.com/vrvis/aardvark.base/src/Aardvark.Base.FSharp/Datastructures/Immutable/IntMap.fs#L763-763" class="github-link">
+              <img src="../content/img/github.png" class="normal" />
+              <img src="../content/img/github-blue.png" class="hover" />
+            </a>
+          <p>O(n*min(n,W)). Create a map from a seq of key/value pairs. Credit: Haskell.org</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '592', 592)" onmouseover="showTip(event, '592', 592)">
+            ofSeqWith f xs
+          </code>
+          <div class="tip" id="592">
+            <strong>Signature:</strong> f:(&#39;?15097 -&gt; &#39;?15097 -&gt; &#39;?15097) -&gt; xs:seq&lt;int * &#39;?15097&gt; -&gt; intmap&lt;&#39;?15097&gt;<br />
+                          <strong>Type parameters:</strong> '?15097          </div>
+        </td>
+        <td class="xmldoc">
+            <a href="https://github.com/vrvis/aardvark.base/src/Aardvark.Base.FSharp/Datastructures/Immutable/IntMap.fs#L769-769" class="github-link">
+              <img src="../content/img/github.png" class="normal" />
+              <img src="../content/img/github-blue.png" class="hover" />
+            </a>
+          <p>O(n*min(n,W)). Create a map from a seq of key/value pairs with a combining function. See also fromAscListWith. Credit: Haskell.org</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '593', 593)" onmouseover="showTip(event, '593', 593)">
+            ofSeqWithKey f xs
+          </code>
+          <div class="tip" id="593">
+            <strong>Signature:</strong> f:(int -&gt; &#39;?15095 -&gt; &#39;?15095 -&gt; &#39;?15095) -&gt; xs:seq&lt;int * &#39;?15095&gt; -&gt; intmap&lt;&#39;?15095&gt;<br />
+                          <strong>Type parameters:</strong> '?15095          </div>
+        </td>
+        <td class="xmldoc">
+            <a href="https://github.com/vrvis/aardvark.base/src/Aardvark.Base.FSharp/Datastructures/Immutable/IntMap.fs#L766-766" class="github-link">
+              <img src="../content/img/github.png" class="normal" />
+              <img src="../content/img/github-blue.png" class="hover" />
+            </a>
+          <p>O(n*min(n,W)). Build a map from a seq of key/value pairs with a combining function. See also fromAscListWithKey'. Credit: Haskell.org</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '594', 594)" onmouseover="showTip(event, '594', 594)">
+            partition p m
+          </code>
+          <div class="tip" id="594">
+            <strong>Signature:</strong> p:(&#39;?15045 -&gt; bool) -&gt; m:intmap&lt;&#39;?15045&gt; -&gt; intmap&lt;&#39;?15045&gt; * intmap&lt;&#39;?15045&gt;<br />
+                          <strong>Type parameters:</strong> '?15045          </div>
+        </td>
+        <td class="xmldoc">
+            <a href="https://github.com/vrvis/aardvark.base/src/Aardvark.Base.FSharp/Datastructures/Immutable/IntMap.fs#L615-615" class="github-link">
+              <img src="../content/img/github.png" class="normal" />
+              <img src="../content/img/github-blue.png" class="hover" />
+            </a>
+          <p>O(n). partition the map according to some predicate. The first map contains all elements that satisfy the predicate, the second all elements that fail the predicate. See also split. Credit: Haskell.org</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '595', 595)" onmouseover="showTip(event, '595', 595)">
+            partitionWithKey predicate t
+          </code>
+          <div class="tip" id="595">
+            <strong>Signature:</strong> predicate:(int -&gt; &#39;?15043 -&gt; bool) -&gt; t:intmap&lt;&#39;?15043&gt; -&gt; intmap&lt;&#39;?15043&gt; * intmap&lt;&#39;?15043&gt;<br />
+                          <strong>Type parameters:</strong> '?15043          </div>
+        </td>
+        <td class="xmldoc">
+            <a href="https://github.com/vrvis/aardvark.base/src/Aardvark.Base.FSharp/Datastructures/Immutable/IntMap.fs#L604-604" class="github-link">
+              <img src="../content/img/github.png" class="normal" />
+              <img src="../content/img/github-blue.png" class="hover" />
+            </a>
+          <p>O(n). partition the map according to some predicate. The first map contains all elements that satisfy the predicate, the second all elements that fail the predicate. See also split. Credit: Haskell.org</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '596', 596)" onmouseover="showTip(event, '596', 596)">
+            singleton k x
+          </code>
+          <div class="tip" id="596">
+            <strong>Signature:</strong> k:int -&gt; x:&#39;?14924 -&gt; intmap&lt;&#39;?14924&gt;<br />
+                          <strong>Type parameters:</strong> '?14924          </div>
+        </td>
+        <td class="xmldoc">
+            <a href="https://github.com/vrvis/aardvark.base/src/Aardvark.Base.FSharp/Datastructures/Immutable/IntMap.fs#L247-247" class="github-link">
+              <img src="../content/img/github.png" class="normal" />
+              <img src="../content/img/github-blue.png" class="hover" />
+            </a>
+          <p>O(1). A map of one element. Credit: Haskell.org</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '597', 597)" onmouseover="showTip(event, '597', 597)">
+            split k t
+          </code>
+          <div class="tip" id="597">
+            <strong>Signature:</strong> k:int -&gt; t:intmap&lt;&#39;?15061&gt; -&gt; intmap&lt;&#39;?15061&gt; * intmap&lt;&#39;?15061&gt;<br />
+                          <strong>Type parameters:</strong> '?15061          </div>
+        </td>
+        <td class="xmldoc">
+            <a href="https://github.com/vrvis/aardvark.base/src/Aardvark.Base.FSharp/Datastructures/Immutable/IntMap.fs#L647-647" class="github-link">
+              <img src="../content/img/github.png" class="normal" />
+              <img src="../content/img/github-blue.png" class="hover" />
+            </a>
+          <p>O(log n). The expression (split k map) is a pair (map1,map2) where all keys in map1 are lower than k and all keys in map2 larger than k. Any key equal to k is found in neither map1 nor map2. Credit: Haskell.org</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '598', 598)" onmouseover="showTip(event, '598', 598)">
+            splitTryFind k t
+          </code>
+          <div class="tip" id="598">
+            <strong>Signature:</strong> k:int -&gt; t:intmap&lt;&#39;?15063&gt; -&gt; intmap&lt;&#39;?15063&gt; * &#39;?15063 option * intmap&lt;&#39;?15063&gt;<br />
+                          <strong>Type parameters:</strong> '?15063          </div>
+        </td>
+        <td class="xmldoc">
+            <a href="https://github.com/vrvis/aardvark.base/src/Aardvark.Base.FSharp/Datastructures/Immutable/IntMap.fs#L669-669" class="github-link">
+              <img src="../content/img/github.png" class="normal" />
+              <img src="../content/img/github-blue.png" class="hover" />
+            </a>
+          <p>O(log n). Performs a split but also returns whether the pivot key was found in the original map. Credit: Haskell.org</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '599', 599)" onmouseover="showTip(event, '599', 599)">
+            toArray m
+          </code>
+          <div class="tip" id="599">
+            <strong>Signature:</strong> m:intmap&lt;&#39;?15085&gt; -&gt; (int * &#39;?15085) []<br />
+                          <strong>Type parameters:</strong> '?15085          </div>
+        </td>
+        <td class="xmldoc">
+            <a href="https://github.com/vrvis/aardvark.base/src/Aardvark.Base.FSharp/Datastructures/Immutable/IntMap.fs#L747-747" class="github-link">
+              <img src="../content/img/github.png" class="normal" />
+              <img src="../content/img/github-blue.png" class="hover" />
+            </a>
+          <p>O(n). Convert the map to an array of key/value pairs. Credit: Haskell.org</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '600', 600)" onmouseover="showTip(event, '600', 600)">
+            toList m
+          </code>
+          <div class="tip" id="600">
+            <strong>Signature:</strong> m:intmap&lt;&#39;a&gt; -&gt; (int * &#39;a) list<br />
+                          <strong>Type parameters:</strong> 'a          </div>
+        </td>
+        <td class="xmldoc">
+            <a href="https://github.com/vrvis/aardvark.base/src/Aardvark.Base.FSharp/Datastructures/Immutable/IntMap.fs#L741-741" class="github-link">
+              <img src="../content/img/github.png" class="normal" />
+              <img src="../content/img/github-blue.png" class="hover" />
+            </a>
+          <p>O(n). Convert the map to a list of key/value pairs. Credit: Haskell.org</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '601', 601)" onmouseover="showTip(event, '601', 601)">
+            toSeq m
+          </code>
+          <div class="tip" id="601">
+            <strong>Signature:</strong> m:intmap&lt;&#39;a&gt; -&gt; seq&lt;int * &#39;a&gt;<br />
+                          <strong>Type parameters:</strong> 'a          </div>
+        </td>
+        <td class="xmldoc">
+            <a href="https://github.com/vrvis/aardvark.base/src/Aardvark.Base.FSharp/Datastructures/Immutable/IntMap.fs#L744-744" class="github-link">
+              <img src="../content/img/github.png" class="normal" />
+              <img src="../content/img/github-blue.png" class="hover" />
+            </a>
+          <p>O(n). Convert the map to a seq of key/value pairs. Credit: Haskell.org</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '602', 602)" onmouseover="showTip(event, '602', 602)">
+            tryFind k _arg1
+          </code>
+          <div class="tip" id="602">
+            <strong>Signature:</strong> k:int -&gt; _arg1:intmap&lt;&#39;a&gt; -&gt; &#39;a option<br />
+                          <strong>Type parameters:</strong> 'a          </div>
+        </td>
+        <td class="xmldoc">
+            <a href="https://github.com/vrvis/aardvark.base/src/Aardvark.Base.FSharp/Datastructures/Immutable/IntMap.fs#L133-133" class="github-link">
+              <img src="../content/img/github.png" class="normal" />
+              <img src="../content/img/github-blue.png" class="hover" />
+            </a>
+          <p>O(min(n,W)). Lookup the value at a key in the map. Returns 'T option. Credit: Haskell.org</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '603', 603)" onmouseover="showTip(event, '603', 603)">
+            tryFindGE k t
+          </code>
+          <div class="tip" id="603">
+            <strong>Signature:</strong> k:int -&gt; t:intmap&lt;&#39;?14920&gt; -&gt; (int * &#39;?14920) option<br />
+                          <strong>Type parameters:</strong> '?14920          </div>
+        </td>
+        <td class="xmldoc">
+            <a href="https://github.com/vrvis/aardvark.base/src/Aardvark.Base.FSharp/Datastructures/Immutable/IntMap.fs#L230-230" class="github-link">
+              <img src="../content/img/github.png" class="normal" />
+              <img src="../content/img/github-blue.png" class="hover" />
+            </a>
+          <p>O(log n). Find smallest key greater or equal to the given one and return the corresponding (key, value) pair Credit: Haskell.org</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '604', 604)" onmouseover="showTip(event, '604', 604)">
+            tryFindGT k t
+          </code>
+          <div class="tip" id="604">
+            <strong>Signature:</strong> k:int -&gt; t:intmap&lt;&#39;?14916&gt; -&gt; (int * &#39;?14916) option<br />
+                          <strong>Type parameters:</strong> '?14916          </div>
+        </td>
+        <td class="xmldoc">
+            <a href="https://github.com/vrvis/aardvark.base/src/Aardvark.Base.FSharp/Datastructures/Immutable/IntMap.fs#L202-202" class="github-link">
+              <img src="../content/img/github.png" class="normal" />
+              <img src="../content/img/github-blue.png" class="hover" />
+            </a>
+          <p>O(log n). Find smallest key greater than the given one and return the corresponding (key, value) pair. Credit: Haskell.org</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '605', 605)" onmouseover="showTip(event, '605', 605)">
+            tryFindLE k t
+          </code>
+          <div class="tip" id="605">
+            <strong>Signature:</strong> k:int -&gt; t:intmap&lt;&#39;?14918&gt; -&gt; (int * &#39;?14918) option<br />
+                          <strong>Type parameters:</strong> '?14918          </div>
+        </td>
+        <td class="xmldoc">
+            <a href="https://github.com/vrvis/aardvark.base/src/Aardvark.Base.FSharp/Datastructures/Immutable/IntMap.fs#L216-216" class="github-link">
+              <img src="../content/img/github.png" class="normal" />
+              <img src="../content/img/github-blue.png" class="hover" />
+            </a>
+          <p>O(log n). Find largest key smaller or equal to the given one and return the corresponding (key, value) pair. Credit: Haskell.org</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '606', 606)" onmouseover="showTip(event, '606', 606)">
+            tryFindLT k t
+          </code>
+          <div class="tip" id="606">
+            <strong>Signature:</strong> k:int -&gt; t:intmap&lt;&#39;?14912&gt; -&gt; (int * &#39;?14912) option<br />
+                          <strong>Type parameters:</strong> '?14912          </div>
+        </td>
+        <td class="xmldoc">
+            <a href="https://github.com/vrvis/aardvark.base/src/Aardvark.Base.FSharp/Datastructures/Immutable/IntMap.fs#L182-182" class="github-link">
+              <img src="../content/img/github.png" class="normal" />
+              <img src="../content/img/github-blue.png" class="hover" />
+            </a>
+          <p>O(log n). Find largest key smaller than the given one and return the corresponding (key, value) pair.  Credit: Haskell.org</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '607', 607)" onmouseover="showTip(event, '607', 607)">
+            update f k m
+          </code>
+          <div class="tip" id="607">
+            <strong>Signature:</strong> f:(&#39;a -&gt; &#39;a option) -&gt; k:int -&gt; m:intmap&lt;&#39;a&gt; -&gt; intmap&lt;&#39;a&gt;<br />
+                          <strong>Type parameters:</strong> 'a          </div>
+        </td>
+        <td class="xmldoc">
+            <a href="https://github.com/vrvis/aardvark.base/src/Aardvark.Base.FSharp/Datastructures/Immutable/IntMap.fs#L310-310" class="github-link">
+              <img src="../content/img/github.png" class="normal" />
+              <img src="../content/img/github-blue.png" class="hover" />
+            </a>
+          <p>O(min(n,W)). The expression (update f k map) updates the value x at k (if it is in the map). If (f x) is Nothing, the element is deleted. If it is (Just y), the key k is bound to the new value y. Credit: Haskell.org</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '608', 608)" onmouseover="showTip(event, '608', 608)">
+            updateMax f
+          </code>
+          <div class="tip" id="608">
+            <strong>Signature:</strong> f:(&#39;?14997 -&gt; &#39;?14997 option) -&gt; intmap&lt;&#39;?14997&gt; -&gt; intmap&lt;&#39;?14997&gt;<br />
+                          <strong>Type parameters:</strong> '?14997          </div>
+        </td>
+        <td class="xmldoc">
+            <a href="https://github.com/vrvis/aardvark.base/src/Aardvark.Base.FSharp/Datastructures/Immutable/IntMap.fs#L499-499" class="github-link">
+              <img src="../content/img/github.png" class="normal" />
+              <img src="../content/img/github-blue.png" class="hover" />
+            </a>
+          <p>O(log n). Update the value at the maximal key. Credit: Haskell.org</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '609', 609)" onmouseover="showTip(event, '609', 609)">
+            updateMaxWithKey f t
+          </code>
+          <div class="tip" id="609">
+            <strong>Signature:</strong> f:(int -&gt; &#39;?14991 -&gt; &#39;?14991 option) -&gt; t:intmap&lt;&#39;?14991&gt; -&gt; intmap&lt;&#39;?14991&gt;<br />
+                          <strong>Type parameters:</strong> '?14991          </div>
+        </td>
+        <td class="xmldoc">
+            <a href="https://github.com/vrvis/aardvark.base/src/Aardvark.Base.FSharp/Datastructures/Immutable/IntMap.fs#L461-461" class="github-link">
+              <img src="../content/img/github.png" class="normal" />
+              <img src="../content/img/github-blue.png" class="hover" />
+            </a>
+          <p>O(log n). Update the value at the maximal key. Credit: Haskell.org</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '610', 610)" onmouseover="showTip(event, '610', 610)">
+            updateMin f
+          </code>
+          <div class="tip" id="610">
+            <strong>Signature:</strong> f:(&#39;?14999 -&gt; &#39;?14999 option) -&gt; intmap&lt;&#39;?14999&gt; -&gt; intmap&lt;&#39;?14999&gt;<br />
+                          <strong>Type parameters:</strong> '?14999          </div>
+        </td>
+        <td class="xmldoc">
+            <a href="https://github.com/vrvis/aardvark.base/src/Aardvark.Base.FSharp/Datastructures/Immutable/IntMap.fs#L502-502" class="github-link">
+              <img src="../content/img/github.png" class="normal" />
+              <img src="../content/img/github-blue.png" class="hover" />
+            </a>
+          <p>O(log n). Update the value at the minimal key. Credit: Haskell.org</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '611', 611)" onmouseover="showTip(event, '611', 611)">
+            updateMinWithKey f t
+          </code>
+          <div class="tip" id="611">
+            <strong>Signature:</strong> f:(int -&gt; &#39;?14989 -&gt; &#39;?14989 option) -&gt; t:intmap&lt;&#39;?14989&gt; -&gt; intmap&lt;&#39;?14989&gt;<br />
+                          <strong>Type parameters:</strong> '?14989          </div>
+        </td>
+        <td class="xmldoc">
+            <a href="https://github.com/vrvis/aardvark.base/src/Aardvark.Base.FSharp/Datastructures/Immutable/IntMap.fs#L447-447" class="github-link">
+              <img src="../content/img/github.png" class="normal" />
+              <img src="../content/img/github-blue.png" class="hover" />
+            </a>
+          <p>O(log n). Update the value at the minimal key. Credit: Haskell.org</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '612', 612)" onmouseover="showTip(event, '612', 612)">
+            updateTryFindWithKey f k t
+          </code>
+          <div class="tip" id="612">
+            <strong>Signature:</strong> f:(int -&gt; &#39;?14944 -&gt; &#39;?14944 option) -&gt; k:int -&gt; t:intmap&lt;&#39;?14944&gt; -&gt; &#39;?14944 option * intmap&lt;&#39;?14944&gt;<br />
+                          <strong>Type parameters:</strong> '?14944          </div>
+        </td>
+        <td class="xmldoc">
+            <a href="https://github.com/vrvis/aardvark.base/src/Aardvark.Base.FSharp/Datastructures/Immutable/IntMap.fs#L319-319" class="github-link">
+              <img src="../content/img/github.png" class="normal" />
+              <img src="../content/img/github-blue.png" class="hover" />
+            </a>
+          <p>O(min(n,W)). Lookup and update. Credit: Haskell.org</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '613', 613)" onmouseover="showTip(event, '613', 613)">
+            updateWithKey f k t
+          </code>
+          <div class="tip" id="613">
+            <strong>Signature:</strong> f:(int -&gt; &#39;?14936 -&gt; &#39;?14936 option) -&gt; k:int -&gt; t:intmap&lt;&#39;?14936&gt; -&gt; intmap&lt;&#39;?14936&gt;<br />
+                          <strong>Type parameters:</strong> '?14936          </div>
+        </td>
+        <td class="xmldoc">
+            <a href="https://github.com/vrvis/aardvark.base/src/Aardvark.Base.FSharp/Datastructures/Immutable/IntMap.fs#L297-297" class="github-link">
+              <img src="../content/img/github.png" class="normal" />
+              <img src="../content/img/github-blue.png" class="hover" />
+            </a>
+          <p>O(min(n,W)). The expression (update f k map) updates the value x at k (if it is in the map). If (f k x) is Nothing, the element is deleted. If it is (Just y), the key k is bound to the new value y. Credit: Haskell.org</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '614', 614)" onmouseover="showTip(event, '614', 614)">
+            values m
+          </code>
+          <div class="tip" id="614">
+            <strong>Signature:</strong> m:intmap&lt;&#39;?15077&gt; -&gt; &#39;?15077 list<br />
+                          <strong>Type parameters:</strong> '?15077          </div>
+        </td>
+        <td class="xmldoc">
+            <a href="https://github.com/vrvis/aardvark.base/src/Aardvark.Base.FSharp/Datastructures/Immutable/IntMap.fs#L735-735" class="github-link">
+              <img src="../content/img/github.png" class="normal" />
+              <img src="../content/img/github-blue.png" class="hover" />
+            </a>
+          <p>O(n). Return all elements of the map in the ascending order of their keys. Credit: Haskell.org</p>
+
+
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+        </div>
+        <div class="span3">
+          <a href="https://github.com/vrvis">
+            <img src="logo.png" style="width:140px;height:140px;margin:10px 0px 0px 35px;border-style:none;" />
+          </a>
+
+          <ul class="nav nav-list" id="menu">
+
+            <li class="nav-header">Aardvark.Base.FSharp</li>
+
+            <li class="divider"></li>
+            <li><a href="https://github.com/vrvis/aardvark.base">Home page</a></li>
+            <li class="divider"></li>
+
+            <li><a href="https://www.nuget.org/packages/Aardvark.Base.FSharp">Get Aardvark.Base.FSharp via NuGet</a></li>
+            <li><a href="https://github.com/vrvis/aardvark.base">Source Code on GitHub</a></li>
+            <li><a href="https://github.com/vrvis/aardvark.baseLicense">License (Apache 2)</a></li>
+            
+            <!-- <li><a href="https://github.com/vrvis/aardvark.base/RELEASE_NOTES.html">Release Notes</a></li>
+            <li><a href="https://github.com/vrvis/aardvark.base//contributing.html">Contributing to Aardvark.Base.FSharp</a></li>
+  
+            <li><a href="http://stackoverflow.com/questions/tagged/f%23-fake">Ask a question</a></li> 
+            
+            <li class="nav-header">Tutorials</li>
+            <li><a href="https://github.com/vrvis/aardvark.base/gettingstarted.html">Getting started</a></li>
+            
+            -->
+
+            
+            <li class="divider"></li>
+            <li class="nav-header">Reference</li>
+
+            <li><a href="https://github.com/vrvis/aardvark.base/apidocs/index.html">API Reference</a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    <a href="https://github.com/vrvis/aardvark.base"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_gray_6d6d6d.png" alt="Fork me on GitHub"></a>
+  </body>
+  </html>

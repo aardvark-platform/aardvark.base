@@ -1,0 +1,1282 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>ImageTensors - Aardvark.Base</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="The Aardvark Platform Team">
+
+    <script src="https://code.jquery.com/jquery-1.8.0.js"></script>
+    <script src="https://code.jquery.com/ui/1.8.23/jquery-ui.js"></script>
+    <script src="https://netdna.bootstrapcdn.com/twitter-bootstrap/2.2.1/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link href="https://netdna.bootstrapcdn.com/twitter-bootstrap/2.2.1/css/bootstrap-combined.min.css" rel="stylesheet">
+
+    <link type="text/css" rel="stylesheet" href="https://github.com/vrvis/aardvark.base/content/style.css" />
+    <script type="text/javascript" src="https://github.com/vrvis/aardvark.base/content/tips.js"></script>
+    <!-- HTML5 shim, for IE6-8 support of HTML5 elements -->
+    <!--[if lt IE 9]>
+      <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+  </head>
+  <body>
+    <div class="container">
+      <div class="masthead">
+        <ul class="nav nav-pills pull-right">
+          <li><a href="https://github.com/vrvis/aardvark.base">github page</a></li>
+        </ul>
+        <h3 class="muted"><a href="https://github.com/vrvis/aardvark.base/index.html">Aardvark.Base</a></h3>
+      </div>
+      <hr />
+      <div class="row">
+        <div class="span9" id="main">
+          
+
+
+
+<h1>ImageTensors</h1>
+<div class="xmldoc">
+</div>
+  <h3>Static members</h3>
+  <table class="table table-bordered member-list">
+    <thead>
+      <tr><td>Static member</td><td>Description</td></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '8137', 8137)" onmouseover="showTip(event, '8137', 8137)">
+            AsMatrix(volume)
+          </code>
+          <div class="tip" id="8137">
+            <strong>Signature:</strong> volume:Volume&lt;&#39;T&gt; -&gt; Matrix&lt;&#39;T&gt;<br />
+                          <strong>Type parameters:</strong> 'T          </div>
+        </td>
+        <td class="xmldoc">
+          <p>Reinterpret a volume with Size.Z == 1 as matrix. The new matrix starts at [0, 0].</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '8138', 8138)" onmouseover="showTip(event, '8138', 8138)">
+            AsMatrixWindow(volume)
+          </code>
+          <div class="tip" id="8138">
+            <strong>Signature:</strong> volume:Volume&lt;&#39;T&gt; -&gt; Matrix&lt;&#39;T&gt;<br />
+                          <strong>Type parameters:</strong> 'T          </div>
+        </td>
+        <td class="xmldoc">
+          <p>Reinterpret a volume with Size.Z == 1 as matrix. Retain the coordinates of the volume.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '8139', 8139)" onmouseover="showTip(event, '8139', 8139)">
+            AsTensor4(volume)
+          </code>
+          <div class="tip" id="8139">
+            <strong>Signature:</strong> volume:Volume&lt;&#39;T&gt; -&gt; Tensor4&lt;&#39;T&gt;<br />
+                          <strong>Type parameters:</strong> 'T          </div>
+        </td>
+        <td class="xmldoc">
+          <p>Reinterpret a volume as a tensor4 with Size.W == 1. The new tensor4 starts at [0, 0, 0, 0].</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '8140', 8140)" onmouseover="showTip(event, '8140', 8140)">
+            AsTensor4Window(volume)
+          </code>
+          <div class="tip" id="8140">
+            <strong>Signature:</strong> volume:Volume&lt;&#39;T&gt; -&gt; Tensor4&lt;&#39;T&gt;<br />
+                          <strong>Type parameters:</strong> 'T          </div>
+        </td>
+        <td class="xmldoc">
+          <p>Reinterpret a volume as a tensor4 with Size.W == 1. Retain coordinates of the volume.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '8141', 8141)" onmouseover="showTip(event, '8141', 8141)">
+            AsVolume(matrix)
+          </code>
+          <div class="tip" id="8141">
+            <strong>Signature:</strong> matrix:Matrix&lt;&#39;T&gt; -&gt; Volume&lt;&#39;T&gt;<br />
+                          <strong>Type parameters:</strong> 'T          </div>
+        </td>
+        <td class="xmldoc">
+          <p>Reinterpret a matrix as a volume with Size.Z == 1. The new volume starts at [0, 0, 0].</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '8142', 8142)" onmouseover="showTip(event, '8142', 8142)">
+            AsVolume(tensor4)
+          </code>
+          <div class="tip" id="8142">
+            <strong>Signature:</strong> tensor4:Tensor4&lt;&#39;T&gt; -&gt; Volume&lt;&#39;T&gt;<br />
+                          <strong>Type parameters:</strong> 'T          </div>
+        </td>
+        <td class="xmldoc">
+          <p>Reinterpret a tensor4 with Size.W == 1 as volume. The new volume starts at [0, 0, 0].</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '8143', 8143)" onmouseover="showTip(event, '8143', 8143)">
+            AsVolumeWindow(matrix)
+          </code>
+          <div class="tip" id="8143">
+            <strong>Signature:</strong> matrix:Matrix&lt;&#39;T&gt; -&gt; Volume&lt;&#39;T&gt;<br />
+                          <strong>Type parameters:</strong> 'T          </div>
+        </td>
+        <td class="xmldoc">
+          <p>Reinterpret a matrix as a volume with Size.Z == 1. Retain coordinates of the matrix.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '8144', 8144)" onmouseover="showTip(event, '8144', 8144)">
+            AsVolumeWindow(tensor4)
+          </code>
+          <div class="tip" id="8144">
+            <strong>Signature:</strong> tensor4:Tensor4&lt;&#39;T&gt; -&gt; Volume&lt;&#39;T&gt;<br />
+                          <strong>Type parameters:</strong> 'T          </div>
+        </td>
+        <td class="xmldoc">
+          <p>Reinterpret a tensor4 with Size.W == 1 as volume. Retain the coordinates of the tensor4.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '8145', 8145)" onmouseover="showTip(event, '8145', 8145)">
+            CopyImage(volume)
+          </code>
+          <div class="tip" id="8145">
+            <strong>Signature:</strong> volume:Volume&lt;&#39;T&gt; -&gt; Volume&lt;&#39;T&gt;<br />
+                          <strong>Type parameters:</strong> 'T          </div>
+        </td>
+        <td class="xmldoc">
+          <p>Copy this volume to image memory layout.
+Coordinates of the result start at [0, 0, 0].</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '8146', 8146)" onmouseover="showTip(event, '8146', 8146)">
+            CopyImage(volume, fun)
+          </code>
+          <div class="tip" id="8146">
+            <strong>Signature:</strong> (volume:Volume&lt;&#39;T&gt; * fun:Func&lt;&#39;T,&#39;T1&gt;) -&gt; Volume&lt;&#39;T1&gt;<br />
+                          <strong>Type parameters:</strong> 'T, 'T1          </div>
+        </td>
+        <td class="xmldoc">
+          <p>Copy this volume to image memory layout, while piping all elements
+through the supplied function.
+Coordinates of the result start at [0, 0, 0].</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '8147', 8147)" onmouseover="showTip(event, '8147', 8147)">
+            CopyImage(tensor4)
+          </code>
+          <div class="tip" id="8147">
+            <strong>Signature:</strong> tensor4:Tensor4&lt;&#39;T&gt; -&gt; Tensor4&lt;&#39;T&gt;<br />
+                          <strong>Type parameters:</strong> 'T          </div>
+        </td>
+        <td class="xmldoc">
+          <p>Copy this tensor4 to image memory layout.
+Coordinates of the result start at [0, 0, 0, 0].</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '8148', 8148)" onmouseover="showTip(event, '8148', 8148)">
+            CopyImage(tensor4, fun)
+          </code>
+          <div class="tip" id="8148">
+            <strong>Signature:</strong> (tensor4:Tensor4&lt;&#39;T&gt; * fun:Func&lt;&#39;T,&#39;T1&gt;) -&gt; Tensor4&lt;&#39;T1&gt;<br />
+                          <strong>Type parameters:</strong> 'T, 'T1          </div>
+        </td>
+        <td class="xmldoc">
+          <p>Copy this tensor4 to image memory layout, while piping all elements
+through the supplied function.
+Coordinates of the result start at [0, 0, 0, 0].</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '8149', 8149)" onmouseover="showTip(event, '8149', 8149)">
+            CopyImageWindow(volume)
+          </code>
+          <div class="tip" id="8149">
+            <strong>Signature:</strong> volume:Volume&lt;&#39;T&gt; -&gt; Volume&lt;&#39;T&gt;<br />
+                          <strong>Type parameters:</strong> 'T          </div>
+        </td>
+        <td class="xmldoc">
+          <p>Copy this volume to image memory layout.
+Retains the coordinates of the original image.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '8150', 8150)" onmouseover="showTip(event, '8150', 8150)">
+            CopyImageWindow(volume, fun)
+          </code>
+          <div class="tip" id="8150">
+            <strong>Signature:</strong> (volume:Volume&lt;&#39;T&gt; * fun:Func&lt;&#39;T,&#39;T1&gt;) -&gt; Volume&lt;&#39;T1&gt;<br />
+                          <strong>Type parameters:</strong> 'T, 'T1          </div>
+        </td>
+        <td class="xmldoc">
+          <p>Copy this volume to image memory layout, while piping all elements
+through the supplied function.
+Retains the coordinates of the original image.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '8151', 8151)" onmouseover="showTip(event, '8151', 8151)">
+            CopyImageWindow(tensor4)
+          </code>
+          <div class="tip" id="8151">
+            <strong>Signature:</strong> tensor4:Tensor4&lt;&#39;T&gt; -&gt; Tensor4&lt;&#39;T&gt;<br />
+                          <strong>Type parameters:</strong> 'T          </div>
+        </td>
+        <td class="xmldoc">
+          <p>Copy this tensor4 to image memory layout.
+Retains the coordinates of the original image.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '8152', 8152)" onmouseover="showTip(event, '8152', 8152)">
+            CopyImageWindow(tensor4, fun)
+          </code>
+          <div class="tip" id="8152">
+            <strong>Signature:</strong> (tensor4:Tensor4&lt;&#39;T&gt; * fun:Func&lt;&#39;T,&#39;T1&gt;) -&gt; Tensor4&lt;&#39;T1&gt;<br />
+                          <strong>Type parameters:</strong> 'T, 'T1          </div>
+        </td>
+        <td class="xmldoc">
+          <p>Copy this tensor4 to image memory layout, while piping all elements
+through the supplied function.
+Retains the coordinates of the original image.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '8153', 8153)" onmouseover="showTip(event, '8153', 8153)">
+            CopyToImage(volume)
+          </code>
+          <div class="tip" id="8153">
+            <strong>Signature:</strong> volume:Volume&lt;&#39;T&gt; -&gt; Volume&lt;&#39;T&gt;<br />
+                          <strong>Type parameters:</strong> 'T          </div>
+        </td>
+        <td class="xmldoc">
+          <p>Copy this volume to image memory layout.
+Coordinates of the result start at [0, 0, 0].</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '8154', 8154)" onmouseover="showTip(event, '8154', 8154)">
+            CopyToImage(tensor4)
+          </code>
+          <div class="tip" id="8154">
+            <strong>Signature:</strong> tensor4:Tensor4&lt;&#39;T&gt; -&gt; Tensor4&lt;&#39;T&gt;<br />
+                          <strong>Type parameters:</strong> 'T          </div>
+        </td>
+        <td class="xmldoc">
+          <p>Copy this tensor4 to image memory layout.
+Coordinates of the result start at [0, 0, 0, 0].</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '8155', 8155)" onmouseover="showTip(event, '8155', 8155)">
+            CopyToImageWindow(volume)
+          </code>
+          <div class="tip" id="8155">
+            <strong>Signature:</strong> volume:Volume&lt;&#39;T&gt; -&gt; Volume&lt;&#39;T&gt;<br />
+                          <strong>Type parameters:</strong> 'T          </div>
+        </td>
+        <td class="xmldoc">
+          <p>Copy this volume to image memory layout.
+Retains the coordinates of the original image.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '8156', 8156)" onmouseover="showTip(event, '8156', 8156)">
+            CopyToImageWindow(tensor4)
+          </code>
+          <div class="tip" id="8156">
+            <strong>Signature:</strong> tensor4:Tensor4&lt;&#39;T&gt; -&gt; Tensor4&lt;&#39;T&gt;<br />
+                          <strong>Type parameters:</strong> 'T          </div>
+        </td>
+        <td class="xmldoc">
+          <p>Copy this tensor4 to image memory layout.
+Retains the coordinates of the original image.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '8157', 8157)" onmouseover="showTip(event, '8157', 8157)">
+            CreateImageMatrix(size)
+          </code>
+          <div class="tip" id="8157">
+            <strong>Signature:</strong> size:V2l -&gt; Matrix&lt;&#39;T&gt;<br />
+                          <strong>Type parameters:</strong> 'T          </div>
+        </td>
+        <td class="xmldoc">
+          <p>Create a valid image matrix, with stride appropriate for the
+given size. Note that this is just the same as a normal matrix.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '8158', 8158)" onmouseover="showTip(event, '8158', 8158)">
+            CreateImageTensor4(size)
+          </code>
+          <div class="tip" id="8158">
+            <strong>Signature:</strong> size:V4l -&gt; Tensor4&lt;&#39;T&gt;<br />
+                          <strong>Type parameters:</strong> 'T          </div>
+        </td>
+        <td class="xmldoc">
+          <p>Create a valid image tensor4, with stride appropriate for the
+given size.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '8159', 8159)" onmouseover="showTip(event, '8159', 8159)">
+            CreateImageVolume(size)
+          </code>
+          <div class="tip" id="8159">
+            <strong>Signature:</strong> size:V3l -&gt; Volume&lt;&#39;T&gt;<br />
+                          <strong>Type parameters:</strong> 'T          </div>
+        </td>
+        <td class="xmldoc">
+          <p>Create a valid image volume, with stride appropriate for the
+given size. For image volumes DZ == 1.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '8160', 8160)" onmouseover="showTip(event, '8160', 8160)">
+            CreateImageVolume(data, size)
+          </code>
+          <div class="tip" id="8160">
+            <strong>Signature:</strong> (data:&#39;T [] * size:V3l) -&gt; Volume&lt;&#39;T&gt;<br />
+                          <strong>Type parameters:</strong> 'T          </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '8161', 8161)" onmouseover="showTip(event, '8161', 8161)">
+            GetMatrix(volume, intent)
+          </code>
+          <div class="tip" id="8161">
+            <strong>Signature:</strong> (volume:Volume&lt;&#39;Td&gt; * intent:Symbol) -&gt; Matrix&lt;&#39;Td,&#39;Tv&gt;<br />
+                          <strong>Type parameters:</strong> 'Td, 'Tv          </div>
+        </td>
+        <td class="xmldoc">
+          <p>Reinterpret an image volume as a matrix of colors with supplied color intent.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '8162', 8162)" onmouseover="showTip(event, '8162', 8162)">
+            GetVolume(tensor4, intent)
+          </code>
+          <div class="tip" id="8162">
+            <strong>Signature:</strong> (tensor4:Tensor4&lt;&#39;Td&gt; * intent:Symbol) -&gt; Volume&lt;&#39;Td,&#39;Tv&gt;<br />
+                          <strong>Type parameters:</strong> 'Td, 'Tv          </div>
+        </td>
+        <td class="xmldoc">
+          <p>Reinterpret an image tensor as a volume of colors with supplied color intent.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '8163', 8163)" onmouseover="showTip(event, '8163', 8163)">
+            HasImageLayout(matrix)
+          </code>
+          <div class="tip" id="8163">
+            <strong>Signature:</strong> matrix:Matrix&lt;&#39;T&gt; -&gt; bool<br />
+                          <strong>Type parameters:</strong> 'T          </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '8164', 8164)" onmouseover="showTip(event, '8164', 8164)">
+            HasImageLayout(volume)
+          </code>
+          <div class="tip" id="8164">
+            <strong>Signature:</strong> volume:Volume&lt;&#39;T&gt; -&gt; bool<br />
+                          <strong>Type parameters:</strong> 'T          </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '8165', 8165)" onmouseover="showTip(event, '8165', 8165)">
+            HasImageLayout(tensor4)
+          </code>
+          <div class="tip" id="8165">
+            <strong>Signature:</strong> tensor4:Tensor4&lt;&#39;T&gt; -&gt; bool<br />
+                          <strong>Type parameters:</strong> 'T          </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '8166', 8166)" onmouseover="showTip(event, '8166', 8166)">
+            HasImageWindowLayout(matrix)
+          </code>
+          <div class="tip" id="8166">
+            <strong>Signature:</strong> matrix:Matrix&lt;&#39;T&gt; -&gt; bool<br />
+                          <strong>Type parameters:</strong> 'T          </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '8167', 8167)" onmouseover="showTip(event, '8167', 8167)">
+            HasImageWindowLayout(vol)
+          </code>
+          <div class="tip" id="8167">
+            <strong>Signature:</strong> vol:Volume&lt;&#39;T&gt; -&gt; bool<br />
+                          <strong>Type parameters:</strong> 'T          </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '8168', 8168)" onmouseover="showTip(event, '8168', 8168)">
+            HasImageWindowLayout(tensor4)
+          </code>
+          <div class="tip" id="8168">
+            <strong>Signature:</strong> tensor4:Tensor4&lt;&#39;T&gt; -&gt; bool<br />
+                          <strong>Type parameters:</strong> 'T          </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '8169', 8169)" onmouseover="showTip(event, '8169', 8169)">
+            ImageCol(vol, x)
+          </code>
+          <div class="tip" id="8169">
+            <strong>Signature:</strong> (vol:Volume&lt;&#39;T&gt; * x:int64) -&gt; Volume&lt;&#39;T&gt;<br />
+                          <strong>Type parameters:</strong> 'T          </div>
+        </td>
+        <td class="xmldoc">
+          <p>Returns a single image column as an image volume with coordinates
+starting at 0, 0, 0.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '8170', 8170)" onmouseover="showTip(event, '8170', 8170)">
+            ImageRow(vol, y)
+          </code>
+          <div class="tip" id="8170">
+            <strong>Signature:</strong> (vol:Volume&lt;&#39;T&gt; * y:int64) -&gt; Volume&lt;&#39;T&gt;<br />
+                          <strong>Type parameters:</strong> 'T          </div>
+        </td>
+        <td class="xmldoc">
+          <p>Returns a single image row as an image volume with coordinates
+starting at 0, 0, 0.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '8171', 8171)" onmouseover="showTip(event, '8171', 8171)">
+            ImageWindowCol(vol, x)
+          </code>
+          <div class="tip" id="8171">
+            <strong>Signature:</strong> (vol:Volume&lt;&#39;T&gt; * x:int64) -&gt; Volume&lt;&#39;T&gt;<br />
+                          <strong>Type parameters:</strong> 'T          </div>
+        </td>
+        <td class="xmldoc">
+          <p>Returns a single image column as an image volume.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '8172', 8172)" onmouseover="showTip(event, '8172', 8172)">
+            ImageWindowRow(vol, y)
+          </code>
+          <div class="tip" id="8172">
+            <strong>Signature:</strong> (vol:Volume&lt;&#39;T&gt; * y:int64) -&gt; Volume&lt;&#39;T&gt;<br />
+                          <strong>Type parameters:</strong> 'T          </div>
+        </td>
+        <td class="xmldoc">
+          <p>Returns a single image row as an image volume.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '8173', 8173)" onmouseover="showTip(event, '8173', 8173)">
+            MapToImage(volume, fun)
+          </code>
+          <div class="tip" id="8173">
+            <strong>Signature:</strong> (volume:Volume&lt;&#39;T&gt; * fun:Func&lt;&#39;T,&#39;T1&gt;) -&gt; Volume&lt;&#39;T1&gt;<br />
+                          <strong>Type parameters:</strong> 'T, 'T1          </div>
+        </td>
+        <td class="xmldoc">
+          <p>Copy this volume to image memory layout, while piping all elements
+through the supplied function.
+Coordinates of the result start at [0, 0, 0].</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '8174', 8174)" onmouseover="showTip(event, '8174', 8174)">
+            MapToImage(tensor4, fun)
+          </code>
+          <div class="tip" id="8174">
+            <strong>Signature:</strong> (tensor4:Tensor4&lt;&#39;T&gt; * fun:Func&lt;&#39;T,&#39;T1&gt;) -&gt; Tensor4&lt;&#39;T1&gt;<br />
+                          <strong>Type parameters:</strong> 'T, 'T1          </div>
+        </td>
+        <td class="xmldoc">
+          <p>Copy this tensor4 to image memory layout, while piping all elements
+through the supplied function.
+Coordinates of the result start at [0, 0, 0, 0].</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '8175', 8175)" onmouseover="showTip(event, '8175', 8175)">
+            MapToImageWindow(volume, fun)
+          </code>
+          <div class="tip" id="8175">
+            <strong>Signature:</strong> (volume:Volume&lt;&#39;T&gt; * fun:Func&lt;&#39;T,&#39;T1&gt;) -&gt; Volume&lt;&#39;T1&gt;<br />
+                          <strong>Type parameters:</strong> 'T, 'T1          </div>
+        </td>
+        <td class="xmldoc">
+          <p>Copy this volume to image memory layout, while piping all elements
+through the supplied function.
+Retains the coordinates of the original image.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '8176', 8176)" onmouseover="showTip(event, '8176', 8176)">
+            MapToImageWindow(tensor4, fun)
+          </code>
+          <div class="tip" id="8176">
+            <strong>Signature:</strong> (tensor4:Tensor4&lt;&#39;T&gt; * fun:Func&lt;&#39;T,&#39;T1&gt;) -&gt; Tensor4&lt;&#39;T1&gt;<br />
+                          <strong>Type parameters:</strong> 'T, 'T1          </div>
+        </td>
+        <td class="xmldoc">
+          <p>Copy this tensor4 to image memory layout, while piping all elements
+through the supplied function.
+Retains the coordinates of the original image.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '8177', 8177)" onmouseover="showTip(event, '8177', 8177)">
+            SubImage(vol, begin, size)
+          </code>
+          <div class="tip" id="8177">
+            <strong>Signature:</strong> (vol:Volume&lt;&#39;T&gt; * begin:V2l * size:V2l) -&gt; Volume&lt;&#39;T&gt;<br />
+                          <strong>Type parameters:</strong> 'T          </div>
+        </td>
+        <td class="xmldoc">
+          <p>Return a sub image volume beginning at the supplied pixel
+coordinate with the supplied size in pixels. The coordinates
+of the sub image volume start at 0, 0, 0.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '8178', 8178)" onmouseover="showTip(event, '8178', 8178)">
+            SubImage(...)
+          </code>
+          <div class="tip" id="8178">
+            <strong>Signature:</strong> (vol:Volume&lt;&#39;T&gt; * beginX:int64 * beginY:int64 * sizeX:int64 * sizeY:int64) -&gt; Volume&lt;&#39;T&gt;<br />
+                          <strong>Type parameters:</strong> 'T          </div>
+        </td>
+        <td class="xmldoc">
+          <p>Return a sub image volume beginning at the supplied pixel
+coordinate with the supplied size in pixels. The coordinates
+of the sub image volume start at 0, 0, 0.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '8179', 8179)" onmouseover="showTip(event, '8179', 8179)">
+            SubImageAtZ(tensor4, z)
+          </code>
+          <div class="tip" id="8179">
+            <strong>Signature:</strong> (tensor4:Tensor4&lt;&#39;T&gt; * z:int64) -&gt; Volume&lt;&#39;T&gt;<br />
+                          <strong>Type parameters:</strong> 'T          </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '8180', 8180)" onmouseover="showTip(event, '8180', 8180)">
+            SubImageWindow(vol, begin, size)
+          </code>
+          <div class="tip" id="8180">
+            <strong>Signature:</strong> (vol:Volume&lt;&#39;T&gt; * begin:V2l * size:V2l) -&gt; Volume&lt;&#39;T&gt;<br />
+                          <strong>Type parameters:</strong> 'T          </div>
+        </td>
+        <td class="xmldoc">
+          <p>Return a sub image volume beginning at the supplied pixel
+coordinate with the supplied size in pixels. The sub image
+retains the coordinates of the parent image.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '8181', 8181)" onmouseover="showTip(event, '8181', 8181)">
+            SubImageWindow(...)
+          </code>
+          <div class="tip" id="8181">
+            <strong>Signature:</strong> (vol:Volume&lt;&#39;T&gt; * beginX:int64 * beginY:int64 * sizeX:int64 * sizeY:int64) -&gt; Volume&lt;&#39;T&gt;<br />
+                          <strong>Type parameters:</strong> 'T          </div>
+        </td>
+        <td class="xmldoc">
+          <p>Return a sub image volume beginning at the supplied pixel
+coordinate with the supplied size in pixels. The sub image
+retains the coordinates of the parent image.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '8182', 8182)" onmouseover="showTip(event, '8182', 8182)">
+            SubImageWindowAtZ(tensor4, z)
+          </code>
+          <div class="tip" id="8182">
+            <strong>Signature:</strong> (tensor4:Tensor4&lt;&#39;T&gt; * z:int64) -&gt; Volume&lt;&#39;T&gt;<br />
+                          <strong>Type parameters:</strong> 'T          </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '8183', 8183)" onmouseover="showTip(event, '8183', 8183)">
+            ToByteColor(matrix)
+          </code>
+          <div class="tip" id="8183">
+            <strong>Signature:</strong> matrix:Matrix&lt;uint16&gt; -&gt; Matrix&lt;byte&gt;<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '8184', 8184)" onmouseover="showTip(event, '8184', 8184)">
+            ToByteColor(matrix)
+          </code>
+          <div class="tip" id="8184">
+            <strong>Signature:</strong> matrix:Matrix&lt;uint32&gt; -&gt; Matrix&lt;byte&gt;<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '8185', 8185)" onmouseover="showTip(event, '8185', 8185)">
+            ToByteColor(matrix)
+          </code>
+          <div class="tip" id="8185">
+            <strong>Signature:</strong> matrix:Matrix&lt;float32&gt; -&gt; Matrix&lt;byte&gt;<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '8186', 8186)" onmouseover="showTip(event, '8186', 8186)">
+            ToByteColor(matrix)
+          </code>
+          <div class="tip" id="8186">
+            <strong>Signature:</strong> matrix:Matrix&lt;float&gt; -&gt; Matrix&lt;byte&gt;<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '8187', 8187)" onmouseover="showTip(event, '8187', 8187)">
+            ToDoubleColor(matrix)
+          </code>
+          <div class="tip" id="8187">
+            <strong>Signature:</strong> matrix:Matrix&lt;byte&gt; -&gt; Matrix&lt;float&gt;<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '8188', 8188)" onmouseover="showTip(event, '8188', 8188)">
+            ToDoubleColor(matrix)
+          </code>
+          <div class="tip" id="8188">
+            <strong>Signature:</strong> matrix:Matrix&lt;uint16&gt; -&gt; Matrix&lt;float&gt;<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '8189', 8189)" onmouseover="showTip(event, '8189', 8189)">
+            ToDoubleColor(matrix)
+          </code>
+          <div class="tip" id="8189">
+            <strong>Signature:</strong> matrix:Matrix&lt;uint32&gt; -&gt; Matrix&lt;float&gt;<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '8190', 8190)" onmouseover="showTip(event, '8190', 8190)">
+            ToDoubleColor(matrix)
+          </code>
+          <div class="tip" id="8190">
+            <strong>Signature:</strong> matrix:Matrix&lt;float32&gt; -&gt; Matrix&lt;float&gt;<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '8191', 8191)" onmouseover="showTip(event, '8191', 8191)">
+            ToFloatColor(matrix)
+          </code>
+          <div class="tip" id="8191">
+            <strong>Signature:</strong> matrix:Matrix&lt;byte&gt; -&gt; Matrix&lt;float32&gt;<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '8192', 8192)" onmouseover="showTip(event, '8192', 8192)">
+            ToFloatColor(matrix)
+          </code>
+          <div class="tip" id="8192">
+            <strong>Signature:</strong> matrix:Matrix&lt;uint16&gt; -&gt; Matrix&lt;float32&gt;<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '8193', 8193)" onmouseover="showTip(event, '8193', 8193)">
+            ToFloatColor(matrix)
+          </code>
+          <div class="tip" id="8193">
+            <strong>Signature:</strong> matrix:Matrix&lt;uint32&gt; -&gt; Matrix&lt;float32&gt;<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '8194', 8194)" onmouseover="showTip(event, '8194', 8194)">
+            ToFloatColor(matrix)
+          </code>
+          <div class="tip" id="8194">
+            <strong>Signature:</strong> matrix:Matrix&lt;float&gt; -&gt; Matrix&lt;float32&gt;<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '8195', 8195)" onmouseover="showTip(event, '8195', 8195)">
+            ToImage(matrix)
+          </code>
+          <div class="tip" id="8195">
+            <strong>Signature:</strong> matrix:Matrix&lt;&#39;T&gt; -&gt; Matrix&lt;&#39;T&gt;<br />
+                          <strong>Type parameters:</strong> 'T          </div>
+        </td>
+        <td class="xmldoc">
+          <p>Convert this matrix to image memory layout (if it is not already).
+Coordinates of the result start at [0, 0].</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '8196', 8196)" onmouseover="showTip(event, '8196', 8196)">
+            ToImage(volume)
+          </code>
+          <div class="tip" id="8196">
+            <strong>Signature:</strong> volume:Volume&lt;&#39;T&gt; -&gt; Volume&lt;&#39;T&gt;<br />
+                          <strong>Type parameters:</strong> 'T          </div>
+        </td>
+        <td class="xmldoc">
+          <p>Convert this volume to image memory layout (if it is not already).
+Coordinates of the result start at [0, 0, 0].</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '8197', 8197)" onmouseover="showTip(event, '8197', 8197)">
+            ToImageWindow(matrix)
+          </code>
+          <div class="tip" id="8197">
+            <strong>Signature:</strong> matrix:Matrix&lt;&#39;T&gt; -&gt; Matrix&lt;&#39;T&gt;<br />
+                          <strong>Type parameters:</strong> 'T          </div>
+        </td>
+        <td class="xmldoc">
+          <p>Convert this matrix to image memory layout (if it is not already).
+Retains coordinates of original image.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '8198', 8198)" onmouseover="showTip(event, '8198', 8198)">
+            ToImageWindow(volume)
+          </code>
+          <div class="tip" id="8198">
+            <strong>Signature:</strong> volume:Volume&lt;&#39;T&gt; -&gt; Volume&lt;&#39;T&gt;<br />
+                          <strong>Type parameters:</strong> 'T          </div>
+        </td>
+        <td class="xmldoc">
+          <p>Convert this volume to image memory layout (if it is not already).
+Retains coordinates of th original volume.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '8199', 8199)" onmouseover="showTip(event, '8199', 8199)">
+            ToUIntColor(matrix)
+          </code>
+          <div class="tip" id="8199">
+            <strong>Signature:</strong> matrix:Matrix&lt;byte&gt; -&gt; Matrix&lt;uint32&gt;<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '8200', 8200)" onmouseover="showTip(event, '8200', 8200)">
+            ToUIntColor(matrix)
+          </code>
+          <div class="tip" id="8200">
+            <strong>Signature:</strong> matrix:Matrix&lt;uint16&gt; -&gt; Matrix&lt;uint32&gt;<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '8201', 8201)" onmouseover="showTip(event, '8201', 8201)">
+            ToUIntColor(matrix)
+          </code>
+          <div class="tip" id="8201">
+            <strong>Signature:</strong> matrix:Matrix&lt;float32&gt; -&gt; Matrix&lt;uint32&gt;<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '8202', 8202)" onmouseover="showTip(event, '8202', 8202)">
+            ToUIntColor(matrix)
+          </code>
+          <div class="tip" id="8202">
+            <strong>Signature:</strong> matrix:Matrix&lt;float&gt; -&gt; Matrix&lt;uint32&gt;<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '8203', 8203)" onmouseover="showTip(event, '8203', 8203)">
+            ToUShortColor(matrix)
+          </code>
+          <div class="tip" id="8203">
+            <strong>Signature:</strong> matrix:Matrix&lt;byte&gt; -&gt; Matrix&lt;uint16&gt;<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '8204', 8204)" onmouseover="showTip(event, '8204', 8204)">
+            ToUShortColor(matrix)
+          </code>
+          <div class="tip" id="8204">
+            <strong>Signature:</strong> matrix:Matrix&lt;uint32&gt; -&gt; Matrix&lt;uint16&gt;<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '8205', 8205)" onmouseover="showTip(event, '8205', 8205)">
+            ToUShortColor(matrix)
+          </code>
+          <div class="tip" id="8205">
+            <strong>Signature:</strong> matrix:Matrix&lt;float32&gt; -&gt; Matrix&lt;uint16&gt;<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '8206', 8206)" onmouseover="showTip(event, '8206', 8206)">
+            ToUShortColor(matrix)
+          </code>
+          <div class="tip" id="8206">
+            <strong>Signature:</strong> matrix:Matrix&lt;float&gt; -&gt; Matrix&lt;uint16&gt;<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '8207', 8207)" onmouseover="showTip(event, '8207', 8207)">
+            VecPixel(vol, x, y)
+          </code>
+          <div class="tip" id="8207">
+            <strong>Signature:</strong> (vol:Volume&lt;&#39;T&gt; * x:int64 * y:int64) -&gt; Vec&lt;&#39;T&gt;<br />
+                          <strong>Type parameters:</strong> 'T          </div>
+        </td>
+        <td class="xmldoc">
+          <p>Access a single pixel of an image volume as a Vec. Note that this
+involves an indexing operation with two index multiplications.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '8208', 8208)" onmouseover="showTip(event, '8208', 8208)">
+            VecPixel(vol, position)
+          </code>
+          <div class="tip" id="8208">
+            <strong>Signature:</strong> (vol:Volume&lt;&#39;T&gt; * position:V2l) -&gt; Vec&lt;&#39;T&gt;<br />
+                          <strong>Type parameters:</strong> 'T          </div>
+        </td>
+        <td class="xmldoc">
+          <p>Access a single pixel of an image volume as a Vec. Note that this
+involves an indexing operation with two index multiplications.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '8209', 8209)" onmouseover="showTip(event, '8209', 8209)">
+            VecPixelsX(vol)
+          </code>
+          <div class="tip" id="8209">
+            <strong>Signature:</strong> vol:Volume&lt;&#39;T&gt; -&gt; IEnumerable&lt;Vec&lt;&#39;T&gt;&gt;<br />
+                          <strong>Type parameters:</strong> 'T          </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '8210', 8210)" onmouseover="showTip(event, '8210', 8210)">
+            VecPixelsXY(vol)
+          </code>
+          <div class="tip" id="8210">
+            <strong>Signature:</strong> vol:Volume&lt;&#39;T&gt; -&gt; IEnumerable&lt;Vec&lt;&#39;T&gt;&gt;<br />
+                          <strong>Type parameters:</strong> 'T          </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '8211', 8211)" onmouseover="showTip(event, '8211', 8211)">
+            VecPixelsY(vol)
+          </code>
+          <div class="tip" id="8211">
+            <strong>Signature:</strong> vol:Volume&lt;&#39;T&gt; -&gt; IEnumerable&lt;Vec&lt;&#39;T&gt;&gt;<br />
+                          <strong>Type parameters:</strong> 'T          </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '8212', 8212)" onmouseover="showTip(event, '8212', 8212)">
+            VecPixelsYX(vol)
+          </code>
+          <div class="tip" id="8212">
+            <strong>Signature:</strong> vol:Volume&lt;&#39;T&gt; -&gt; IEnumerable&lt;Vec&lt;&#39;T&gt;&gt;<br />
+                          <strong>Type parameters:</strong> 'T          </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+        </div>
+        <div class="span3">
+          <a href="https://github.com/vrvis">
+            <img src="logo.png" style="width:140px;height:140px;margin:10px 0px 0px 35px;border-style:none;" />
+          </a>
+
+          <ul class="nav nav-list" id="menu">
+
+            <li class="nav-header">Aardvark.Base</li>
+
+            <li class="divider"></li>
+            <li><a href="https://github.com/vrvis/aardvark.base">Home page</a></li>
+            <li class="divider"></li>
+
+            <li><a href="https://www.nuget.org/packages/Aardvark.Base">Get Aardvark.Base via NuGet</a></li>
+            <li><a href="https://github.com/vrvis/aardvark.base">Source Code on GitHub</a></li>
+            <li><a href="https://github.com/vrvis/aardvark.baseLicense">License (Apache 2)</a></li>
+            
+            <!-- <li><a href="https://github.com/vrvis/aardvark.base/RELEASE_NOTES.html">Release Notes</a></li>
+            <li><a href="https://github.com/vrvis/aardvark.base//contributing.html">Contributing to Aardvark.Base</a></li>
+  
+            <li><a href="http://stackoverflow.com/questions/tagged/f%23-fake">Ask a question</a></li> 
+            
+            <li class="nav-header">Tutorials</li>
+            <li><a href="https://github.com/vrvis/aardvark.base/gettingstarted.html">Getting started</a></li>
+            
+            -->
+
+            
+            <li class="divider"></li>
+            <li class="nav-header">Reference</li>
+
+            <li><a href="https://github.com/vrvis/aardvark.base/apidocs/index.html">API Reference</a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    <a href="https://github.com/vrvis/aardvark.base"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_gray_6d6d6d.png" alt="Fork me on GitHub"></a>
+  </body>
+  </html>

@@ -1,0 +1,4209 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>GeometryFun - Aardvark.Base</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="The Aardvark Platform Team">
+
+    <script src="https://code.jquery.com/jquery-1.8.0.js"></script>
+    <script src="https://code.jquery.com/ui/1.8.23/jquery-ui.js"></script>
+    <script src="https://netdna.bootstrapcdn.com/twitter-bootstrap/2.2.1/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link href="https://netdna.bootstrapcdn.com/twitter-bootstrap/2.2.1/css/bootstrap-combined.min.css" rel="stylesheet">
+
+    <link type="text/css" rel="stylesheet" href="https://github.com/vrvis/aardvark.base/content/style.css" />
+    <script type="text/javascript" src="https://github.com/vrvis/aardvark.base/content/tips.js"></script>
+    <!-- HTML5 shim, for IE6-8 support of HTML5 elements -->
+    <!--[if lt IE 9]>
+      <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+  </head>
+  <body>
+    <div class="container">
+      <div class="masthead">
+        <ul class="nav nav-pills pull-right">
+          <li><a href="https://github.com/vrvis/aardvark.base">github page</a></li>
+        </ul>
+        <h3 class="muted"><a href="https://github.com/vrvis/aardvark.base/index.html">Aardvark.Base</a></h3>
+      </div>
+      <hr />
+      <div class="row">
+        <div class="span9" id="main">
+          
+
+
+
+<h1>GeometryFun</h1>
+<div class="xmldoc">
+<p>Provides various methods for middle point computations.</p>
+
+</div>
+  <h3>Static members</h3>
+  <table class="table table-bordered member-list">
+    <thead>
+      <tr><td>Static member</td><td>Description</td></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '7426', 7426)" onmouseover="showTip(event, '7426', 7426)">
+            BresenhamLineIterator(p0, p1)
+          </code>
+          <div class="tip" id="7426">
+            <strong>Signature:</strong> (p0:V2i * p1:V2i) -&gt; IEnumerable&lt;V2i&gt;<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Iterates along Bresenham Discrete Line Raster from P0 to P1.
+Yields each integer position V2i.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '7427', 7427)" onmouseover="showTip(event, '7427', 7427)">
+            BresenhamLineIterator(p0, p1)
+          </code>
+          <div class="tip" id="7427">
+            <strong>Signature:</strong> (p0:V2l * p1:V2l) -&gt; IEnumerable&lt;V2l&gt;<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Iterates along Bresenham discrete line raster from p0 to p1.
+Yields each integer position V2l.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '7428', 7428)" onmouseover="showTip(event, '7428', 7428)">
+            ClippedBy(p0, p1, relativeEpsilon)
+          </code>
+          <div class="tip" id="7428">
+            <strong>Signature:</strong> (p0:Polygon2d * p1:Polygon2d * relativeEpsilon:float) -&gt; IEnumerable&lt;Polygon2d&gt;<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Clips one Polygon with an other. Returns a Polygon-Set representing the Intersections of the two.
+Works only with all (convex/concave) Polygons
+!!!! UNTESTED !!!!</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '7429', 7429)" onmouseover="showTip(event, '7429', 7429)">
+            ClippedByConvex(poly, second)
+          </code>
+          <div class="tip" id="7429">
+            <strong>Signature:</strong> (poly:Polygon2d * second:Polygon2d) -&gt; Polygon2d<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Clips one Polygon with an other. Returns a Polygon representing the Intersection of the two.
+Works only with Convex Polygons. (For non-convex Polygons use Polygon2d.ClipWith(Polygon2d))
+!!!! UNTESTED !!!!</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '7430', 7430)" onmouseover="showTip(event, '7430', 7430)">
+            ClipWith(line, poly)
+          </code>
+          <div class="tip" id="7430">
+            <strong>Signature:</strong> (line:Line2d * poly:Polygon2d) -&gt; IEnumerable&lt;Line2d&gt;<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Returns the Line-Segments of line inside the Polygon (CCW ordered).
+Works with all (convex and non-convex) Polygons</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '7431', 7431)" onmouseover="showTip(event, '7431', 7431)">
+            ClipWithConvex(line, poly)
+          </code>
+          <div class="tip" id="7431">
+            <strong>Signature:</strong> (line:Line2d * poly:Polygon2d) -&gt; Line2d<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Returns the Line-Segments of line inside the Polygon (CCW ordered).
+Works only with Convex-Polygons</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '7432', 7432)" onmouseover="showTip(event, '7432', 7432)">
+            ClosestIntersection(...)
+          </code>
+          <div class="tip" id="7432">
+            <strong>Signature:</strong> (poly:Polygon2d * start:V2d * end:V2d * enter:byref&lt;bool&gt; * otherIndex:byref&lt;int&gt; * p:byref&lt;V2d&gt;) -&gt; bool<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '7433', 7433)" onmouseover="showTip(event, '7433', 7433)">
+            ComputeBoxContaining(points, percentile)
+          </code>
+          <div class="tip" id="7433">
+            <strong>Signature:</strong> (points:IEnumerable&lt;V3d&gt; * percentile:float) -&gt; Box3d<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Compute a box containing approximately the supplied percentile
+of points, by performing a separate sorting operation on each
+coordinate.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '7434', 7434)" onmouseover="showTip(event, '7434', 7434)">
+            Contains(triangle, point)
+          </code>
+          <div class="tip" id="7434">
+            <strong>Signature:</strong> (triangle:Triangle2d * point:V2d) -&gt; bool<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '7435', 7435)" onmouseover="showTip(event, '7435', 7435)">
+            Contains(box, quad)
+          </code>
+          <div class="tip" id="7435">
+            <strong>Signature:</strong> (box:Box3d * quad:Quad3d) -&gt; bool<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '7436', 7436)" onmouseover="showTip(event, '7436', 7436)">
+            Contains(box, triangle)
+          </code>
+          <div class="tip" id="7436">
+            <strong>Signature:</strong> (box:Box3d * triangle:Triangle3d) -&gt; bool<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '7437', 7437)" onmouseover="showTip(event, '7437', 7437)">
+            Contains(box, sphere)
+          </code>
+          <div class="tip" id="7437">
+            <strong>Signature:</strong> (box:Box3d * sphere:Sphere3d) -&gt; bool<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '7438', 7438)" onmouseover="showTip(event, '7438', 7438)">
+            Contains(box, cylinder)
+          </code>
+          <div class="tip" id="7438">
+            <strong>Signature:</strong> (box:Box3d * cylinder:Cylinder3d) -&gt; bool<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '7439', 7439)" onmouseover="showTip(event, '7439', 7439)">
+            Contains(hull, point)
+          </code>
+          <div class="tip" id="7439">
+            <strong>Signature:</strong> (hull:Hull3d * point:V3d) -&gt; bool<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Hull normals are expected to point outside.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '7440', 7440)" onmouseover="showTip(event, '7440', 7440)">
+            Contains(quad, point)
+          </code>
+          <div class="tip" id="7440">
+            <strong>Signature:</strong> (quad:Quad2d * point:V2d) -&gt; bool<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>returns true if the Quad2d contains the Point</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '7441', 7441)" onmouseover="showTip(event, '7441', 7441)">
+            Contains(poly, point)
+          </code>
+          <div class="tip" id="7441">
+            <strong>Signature:</strong> (poly:Polygon2d * point:V2d) -&gt; bool<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Returns true if the Polygon2d contains the given point.
+Works with all (convex and non-convex) Polygons.
+Assumes that the Vertices of the Polygon are sorted counter clockwise</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '7442', 7442)" onmouseover="showTip(event, '7442', 7442)">
+            Contains(poly, point, CCW)
+          </code>
+          <div class="tip" id="7442">
+            <strong>Signature:</strong> (poly:Polygon2d * point:V2d * CCW:bool) -&gt; bool<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Returns true if the Polygon2d contains the given point.
+Works with all (convex and non-convex) Polygons.
+CCW represents the sorting order of the Polygon-Vertices (true -&gt; CCW, false -&gt; CW)</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '7443', 7443)" onmouseover="showTip(event, '7443', 7443)">
+            ConvexHullIndexPolygon(...)
+          </code>
+          <div class="tip" id="7443">
+            <strong>Signature:</strong> (indexArray:int [] * pointArray:V2d []) -&gt; IndexPolygon2d<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Returns those indices of the supplied index array to the supplied
+points set that constitute the convex hull. The returned indices
+emumerate the convex hull in counter-clockwise fashion.
+Implemented via Andrew's monotone chain 2d convex hull algorithm.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '7444', 7444)" onmouseover="showTip(event, '7444', 7444)">
+            ConvexHullIndexPolygon(...)
+          </code>
+          <div class="tip" id="7444">
+            <strong>Signature:</strong> (pointArray:V2d [] * pointCount:int) -&gt; IndexPolygon2d<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Returns the indices of the points of the supplied point set that
+constitute the convex hull. The returned indices emumerate the
+convex hull in counter-clockwise fashion. Implemented via Andrew's
+monotone chain 2d convex hull algorithm.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '7445', 7445)" onmouseover="showTip(event, '7445', 7445)">
+            Divides(plane, data)
+          </code>
+          <div class="tip" id="7445">
+            <strong>Signature:</strong> (plane:Plane2d * data:IEnumerable&lt;V2d&gt;) -&gt; bool<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>returns true if the Plane2d divides the Point-Cloud</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '7446', 7446)" onmouseover="showTip(event, '7446', 7446)">
+            GetClosestPointOn(query, line)
+          </code>
+          <div class="tip" id="7446">
+            <strong>Signature:</strong> (query:V2d * line:Line2d) -&gt; V2d<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '7447', 7447)" onmouseover="showTip(event, '7447', 7447)">
+            GetClosestPointOn(line, query)
+          </code>
+          <div class="tip" id="7447">
+            <strong>Signature:</strong> (line:Line2d * query:V2d) -&gt; V2d<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '7448', 7448)" onmouseover="showTip(event, '7448', 7448)">
+            GetClosestPointOn(query, line, t)
+          </code>
+          <div class="tip" id="7448">
+            <strong>Signature:</strong> (query:V2d * line:Line2d * t:byref&lt;float&gt;) -&gt; V2d<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '7449', 7449)" onmouseover="showTip(event, '7449', 7449)">
+            GetClosestPointOn(line, query, t)
+          </code>
+          <div class="tip" id="7449">
+            <strong>Signature:</strong> (line:Line2d * query:V2d * t:byref&lt;float&gt;) -&gt; V2d<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '7450', 7450)" onmouseover="showTip(event, '7450', 7450)">
+            GetClosestPointOn(query, ray)
+          </code>
+          <div class="tip" id="7450">
+            <strong>Signature:</strong> (query:V2d * ray:Ray2d) -&gt; V2d<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '7451', 7451)" onmouseover="showTip(event, '7451', 7451)">
+            GetClosestPointOn(ray, query)
+          </code>
+          <div class="tip" id="7451">
+            <strong>Signature:</strong> (ray:Ray2d * query:V2d) -&gt; V2d<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '7452', 7452)" onmouseover="showTip(event, '7452', 7452)">
+            GetClosestPointOn(query, ray, t)
+          </code>
+          <div class="tip" id="7452">
+            <strong>Signature:</strong> (query:V2d * ray:Ray2d * t:byref&lt;float&gt;) -&gt; V2d<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '7453', 7453)" onmouseover="showTip(event, '7453', 7453)">
+            GetClosestPointOn(ray, query, t)
+          </code>
+          <div class="tip" id="7453">
+            <strong>Signature:</strong> (ray:Ray2d * query:V2d * t:byref&lt;float&gt;) -&gt; V2d<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '7454', 7454)" onmouseover="showTip(event, '7454', 7454)">
+            GetClosestPointOn(point, line)
+          </code>
+          <div class="tip" id="7454">
+            <strong>Signature:</strong> (point:V2d * line:Plane2d) -&gt; V2d<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '7455', 7455)" onmouseover="showTip(event, '7455', 7455)">
+            GetClosestPointOn(line, point)
+          </code>
+          <div class="tip" id="7455">
+            <strong>Signature:</strong> (line:Plane2d * point:V2d) -&gt; V2d<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '7456', 7456)" onmouseover="showTip(event, '7456', 7456)">
+            GetClosestPointOn(query, box)
+          </code>
+          <div class="tip" id="7456">
+            <strong>Signature:</strong> (query:V2d * box:Box2d) -&gt; V2d<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '7457', 7457)" onmouseover="showTip(event, '7457', 7457)">
+            GetClosestPointOn(box, query)
+          </code>
+          <div class="tip" id="7457">
+            <strong>Signature:</strong> (box:Box2d * query:V2d) -&gt; V2d<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '7458', 7458)" onmouseover="showTip(event, '7458', 7458)">
+            GetClosestPointOn(vec, quad)
+          </code>
+          <div class="tip" id="7458">
+            <strong>Signature:</strong> (vec:V2d * quad:Quad2d) -&gt; V2d<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '7459', 7459)" onmouseover="showTip(event, '7459', 7459)">
+            GetClosestPointOn(quad, vec)
+          </code>
+          <div class="tip" id="7459">
+            <strong>Signature:</strong> (quad:Quad2d * vec:V2d) -&gt; V2d<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '7460', 7460)" onmouseover="showTip(event, '7460', 7460)">
+            GetClosestPointOn(vec, poly)
+          </code>
+          <div class="tip" id="7460">
+            <strong>Signature:</strong> (vec:V2d * poly:Polygon2d) -&gt; V2d<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '7461', 7461)" onmouseover="showTip(event, '7461', 7461)">
+            GetClosestPointOn(poly, vec)
+          </code>
+          <div class="tip" id="7461">
+            <strong>Signature:</strong> (poly:Polygon2d * vec:V2d) -&gt; V2d<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '7462', 7462)" onmouseover="showTip(event, '7462', 7462)">
+            GetClosestPointOn(query, circle)
+          </code>
+          <div class="tip" id="7462">
+            <strong>Signature:</strong> (query:V2d * circle:Circle2d) -&gt; V2d<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '7463', 7463)" onmouseover="showTip(event, '7463', 7463)">
+            GetClosestPointOn(circle, query)
+          </code>
+          <div class="tip" id="7463">
+            <strong>Signature:</strong> (circle:Circle2d * query:V2d) -&gt; V2d<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '7464', 7464)" onmouseover="showTip(event, '7464', 7464)">
+            GetClosestPointOn(query, triangle)
+          </code>
+          <div class="tip" id="7464">
+            <strong>Signature:</strong> (query:V2d * triangle:Triangle2d) -&gt; V2d<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '7465', 7465)" onmouseover="showTip(event, '7465', 7465)">
+            GetClosestPointOn(triangle, query)
+          </code>
+          <div class="tip" id="7465">
+            <strong>Signature:</strong> (triangle:Triangle2d * query:V2d) -&gt; V2d<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '7466', 7466)" onmouseover="showTip(event, '7466', 7466)">
+            GetClosestPointOn(query, box)
+          </code>
+          <div class="tip" id="7466">
+            <strong>Signature:</strong> (query:V3d * box:Box3d) -&gt; V3d<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '7467', 7467)" onmouseover="showTip(event, '7467', 7467)">
+            GetClosestPointOn(box, query)
+          </code>
+          <div class="tip" id="7467">
+            <strong>Signature:</strong> (box:Box3d * query:V3d) -&gt; V3d<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '7468', 7468)" onmouseover="showTip(event, '7468', 7468)">
+            GetClosestPointOn(query, line)
+          </code>
+          <div class="tip" id="7468">
+            <strong>Signature:</strong> (query:V3d * line:Line3d) -&gt; V3d<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '7469', 7469)" onmouseover="showTip(event, '7469', 7469)">
+            GetClosestPointOn(line, query)
+          </code>
+          <div class="tip" id="7469">
+            <strong>Signature:</strong> (line:Line3d * query:V3d) -&gt; V3d<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '7470', 7470)" onmouseover="showTip(event, '7470', 7470)">
+            GetClosestPointOn(query, line, t)
+          </code>
+          <div class="tip" id="7470">
+            <strong>Signature:</strong> (query:V3d * line:Line3d * t:byref&lt;float&gt;) -&gt; V3d<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '7471', 7471)" onmouseover="showTip(event, '7471', 7471)">
+            GetClosestPointOn(line, query, t)
+          </code>
+          <div class="tip" id="7471">
+            <strong>Signature:</strong> (line:Line3d * query:V3d * t:byref&lt;float&gt;) -&gt; V3d<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '7472', 7472)" onmouseover="showTip(event, '7472', 7472)">
+            GetClosestPointOn(query, plane)
+          </code>
+          <div class="tip" id="7472">
+            <strong>Signature:</strong> (query:V3d * plane:Plane3d) -&gt; V3d<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '7473', 7473)" onmouseover="showTip(event, '7473', 7473)">
+            GetClosestPointOn(plane, query)
+          </code>
+          <div class="tip" id="7473">
+            <strong>Signature:</strong> (plane:Plane3d * query:V3d) -&gt; V3d<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '7474', 7474)" onmouseover="showTip(event, '7474', 7474)">
+            GetClosestPointOn(query, ray)
+          </code>
+          <div class="tip" id="7474">
+            <strong>Signature:</strong> (query:V3d * ray:Ray3d) -&gt; V3d<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '7475', 7475)" onmouseover="showTip(event, '7475', 7475)">
+            GetClosestPointOn(ray, query)
+          </code>
+          <div class="tip" id="7475">
+            <strong>Signature:</strong> (ray:Ray3d * query:V3d) -&gt; V3d<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '7476', 7476)" onmouseover="showTip(event, '7476', 7476)">
+            GetClosestPointOn(query, ray, t)
+          </code>
+          <div class="tip" id="7476">
+            <strong>Signature:</strong> (query:V3d * ray:Ray3d * t:byref&lt;float&gt;) -&gt; V3d<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '7477', 7477)" onmouseover="showTip(event, '7477', 7477)">
+            GetClosestPointOn(ray, query, t)
+          </code>
+          <div class="tip" id="7477">
+            <strong>Signature:</strong> (ray:Ray3d * query:V3d * t:byref&lt;float&gt;) -&gt; V3d<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '7478', 7478)" onmouseover="showTip(event, '7478', 7478)">
+            GetClosestPointOn(query, sphere)
+          </code>
+          <div class="tip" id="7478">
+            <strong>Signature:</strong> (query:V3d * sphere:Sphere3d) -&gt; V3d<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '7479', 7479)" onmouseover="showTip(event, '7479', 7479)">
+            GetClosestPointOn(sphere, query)
+          </code>
+          <div class="tip" id="7479">
+            <strong>Signature:</strong> (sphere:Sphere3d * query:V3d) -&gt; V3d<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '7480', 7480)" onmouseover="showTip(event, '7480', 7480)">
+            GetClosestPointOn(query, cylinder)
+          </code>
+          <div class="tip" id="7480">
+            <strong>Signature:</strong> (query:V3d * cylinder:Cylinder3d) -&gt; V3d<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>get closest point on cylinder with infinite length</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '7481', 7481)" onmouseover="showTip(event, '7481', 7481)">
+            GetClosestPointOn(cylinder, query)
+          </code>
+          <div class="tip" id="7481">
+            <strong>Signature:</strong> (cylinder:Cylinder3d * query:V3d) -&gt; V3d<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>get closest point on cylinder with infinite length</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '7482', 7482)" onmouseover="showTip(event, '7482', 7482)">
+            GetClosestPointOn(query, triangle)
+          </code>
+          <div class="tip" id="7482">
+            <strong>Signature:</strong> (query:V3d * triangle:Triangle3d) -&gt; V3d<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Tested by rft on 2008-08-06.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '7483', 7483)" onmouseover="showTip(event, '7483', 7483)">
+            GetClosestPointOn(triangle, query)
+          </code>
+          <div class="tip" id="7483">
+            <strong>Signature:</strong> (triangle:Triangle3d * query:V3d) -&gt; V3d<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '7484', 7484)" onmouseover="showTip(event, '7484', 7484)">
+            GetClosestPointOn(ray0, ray1)
+          </code>
+          <div class="tip" id="7484">
+            <strong>Signature:</strong> (ray0:Ray3d * ray1:Ray3d) -&gt; V3d<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '7485', 7485)" onmouseover="showTip(event, '7485', 7485)">
+            GetClosestPointOn(line0, line1)
+          </code>
+          <div class="tip" id="7485">
+            <strong>Signature:</strong> (line0:Line3d * line1:Line3d) -&gt; V3d<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Returns the point on line1 which is closest to line0.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '7486', 7486)" onmouseover="showTip(event, '7486', 7486)">
+            GetClosestPointOn(plane, line)
+          </code>
+          <div class="tip" id="7486">
+            <strong>Signature:</strong> (plane:Plane3d * line:Line3d) -&gt; V3d<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Returns the closest point from a line to a plane (point on line).</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '7487', 7487)" onmouseover="showTip(event, '7487', 7487)">
+            GetClosestPointOn(line, triangle)
+          </code>
+          <div class="tip" id="7487">
+            <strong>Signature:</strong> (line:Line3d * triangle:Triangle3d) -&gt; V3d<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Returns the closest point from a triangle to a line (point on triangle).
+Note: untested</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '7488', 7488)" onmouseover="showTip(event, '7488', 7488)">
+            GetClosestPointOnLine(query, p0, p1)
+          </code>
+          <div class="tip" id="7488">
+            <strong>Signature:</strong> (query:V3d * p0:V3d * p1:V3d) -&gt; V3d<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '7489', 7489)" onmouseover="showTip(event, '7489', 7489)">
+            GetClosestPointOnLine(query, p0, p1, t)
+          </code>
+          <div class="tip" id="7489">
+            <strong>Signature:</strong> (query:V3d * p0:V3d * p1:V3d * t:byref&lt;float&gt;) -&gt; V3d<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '7490', 7490)" onmouseover="showTip(event, '7490', 7490)">
+            GetClosestPointOnTriangle(...)
+          </code>
+          <div class="tip" id="7490">
+            <strong>Signature:</strong> (query:V3d * p0:V3d * p1:V3d * p2:V3d) -&gt; V3d<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Tested by rft on 2008-08-06.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '7491', 7491)" onmouseover="showTip(event, '7491', 7491)">
+            GetClosestPointTOn(query, ray)
+          </code>
+          <div class="tip" id="7491">
+            <strong>Signature:</strong> (query:V2d * ray:Ray2d) -&gt; float<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Returns the t-parameter along  at which the closest point to  is.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '7492', 7492)" onmouseover="showTip(event, '7492', 7492)">
+            GetClosestPointTOn(ray, query)
+          </code>
+          <div class="tip" id="7492">
+            <strong>Signature:</strong> (ray:Ray2d * query:V2d) -&gt; float<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Returns the t-parameter along  at which the closest point to  is.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '7493', 7493)" onmouseover="showTip(event, '7493', 7493)">
+            GetDistanceSquared(q, b)
+          </code>
+          <div class="tip" id="7493">
+            <strong>Signature:</strong> (q:V3d * b:Box3d) -&gt; float<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '7494', 7494)" onmouseover="showTip(event, '7494', 7494)">
+            GetDistanceSquared(...)
+          </code>
+          <div class="tip" id="7494">
+            <strong>Signature:</strong> (q:V3d * boxAndFlags:Box3dAndFlags * d2Flags:Flags * d2v:V3d * d2Flags0:byref&lt;Flags&gt; * d2v0:byref&lt;V3d&gt; * d2Flags1:byref&lt;Flags&gt; * d2v1:byref&lt;V3d&gt;) -&gt; Pair&lt;float&gt;<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '7495', 7495)" onmouseover="showTip(event, '7495', 7495)">
+            GetIntersectionSigns(box, plane, eps)
+          </code>
+          <div class="tip" id="7495">
+            <strong>Signature:</strong> (box:Box3d * plane:Plane3d * eps:float) -&gt; Signs<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Classify the position of all the eight vertices of a box with
+respect to a supplied plane.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '7496', 7496)" onmouseover="showTip(event, '7496', 7496)">
+            GetIntersectionSigns(...)
+          </code>
+          <div class="tip" id="7496">
+            <strong>Signature:</strong> (box:Box3d * plane:Plane3d * eps:float * negBox:byref&lt;Box3d&gt; * zeroBox:byref&lt;Box3d&gt; * posBox:byref&lt;Box3d&gt;) -&gt; Signs<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Returns true if the box intersects the supplied plane. The
+bounding boxes of the resulting parts are returned in the out
+parameters.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '7497', 7497)" onmouseover="showTip(event, '7497', 7497)">
+            GetIntersectionSigns(...)
+          </code>
+          <div class="tip" id="7497">
+            <strong>Signature:</strong> (box:Box3d * normal:V3d * distance:float * eps:float * negBox:byref&lt;Box3d&gt; * zeroBox:byref&lt;Box3d&gt; * posBox:byref&lt;Box3d&gt;) -&gt; Signs<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Returns true if the box intersects the supplied plane. The
+bounding boxes of the resulting parts are returned in the out
+parameters.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '7498', 7498)" onmouseover="showTip(event, '7498', 7498)">
+            GetIntersectionSignsWithPlane(...)
+          </code>
+          <div class="tip" id="7498">
+            <strong>Signature:</strong> (box:Box3d * normal:V3d * distance:float * eps:float) -&gt; Signs<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Classify the position of all the eight vertices of a box with
+respect to a supplied plane.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '7499', 7499)" onmouseover="showTip(event, '7499', 7499)">
+            GetMiddlePoint(ray0, ray1)
+          </code>
+          <div class="tip" id="7499">
+            <strong>Signature:</strong> (ray0:Ray3d * ray1:Ray3d) -&gt; V3d<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '7500', 7500)" onmouseover="showTip(event, '7500', 7500)">
+            GetMiddlePoint(rays)
+          </code>
+          <div class="tip" id="7500">
+            <strong>Signature:</strong> rays:IEnumerable&lt;Ray3d&gt; -&gt; V3d<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '7501', 7501)" onmouseover="showTip(event, '7501', 7501)">
+            GetMinimalDistanceTo(range0, range1)
+          </code>
+          <div class="tip" id="7501">
+            <strong>Signature:</strong> (range0:Range1d * range1:Range1d) -&gt; float<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '7502', 7502)" onmouseover="showTip(event, '7502', 7502)">
+            GetMinimalDistanceTo(box0, box1)
+          </code>
+          <div class="tip" id="7502">
+            <strong>Signature:</strong> (box0:Box2d * box1:Box2d) -&gt; float<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '7503', 7503)" onmouseover="showTip(event, '7503', 7503)">
+            GetMinimalDistanceTo(point, line)
+          </code>
+          <div class="tip" id="7503">
+            <strong>Signature:</strong> (point:V3d * line:Line3d) -&gt; float<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>returns the minimal distance between the point and the Line</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '7504', 7504)" onmouseover="showTip(event, '7504', 7504)">
+            GetMinimalDistanceTo(line, point)
+          </code>
+          <div class="tip" id="7504">
+            <strong>Signature:</strong> (line:Line3d * point:V3d) -&gt; float<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Returns the minimal distance between the point and the Line.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '7505', 7505)" onmouseover="showTip(event, '7505', 7505)">
+            GetMinimalDistanceTo(point, ray)
+          </code>
+          <div class="tip" id="7505">
+            <strong>Signature:</strong> (point:V3d * ray:Ray3d) -&gt; float<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>returns the minimal distance between the point and the Ray.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '7506', 7506)" onmouseover="showTip(event, '7506', 7506)">
+            GetMinimalDistanceTo(ray, point)
+          </code>
+          <div class="tip" id="7506">
+            <strong>Signature:</strong> (ray:Ray3d * point:V3d) -&gt; float<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>returns the minimal distance between the point and the Ray.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '7507', 7507)" onmouseover="showTip(event, '7507', 7507)">
+            GetMinimalDistanceTo(point, ray, t)
+          </code>
+          <div class="tip" id="7507">
+            <strong>Signature:</strong> (point:V3d * ray:Ray3d * t:byref&lt;float&gt;) -&gt; float<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>returns the minimal distance between the point and the Ray.
+t holds the ray parameter for the closest point.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '7508', 7508)" onmouseover="showTip(event, '7508', 7508)">
+            GetMinimalDistanceTo(ray, point, t)
+          </code>
+          <div class="tip" id="7508">
+            <strong>Signature:</strong> (ray:Ray3d * point:V3d * t:byref&lt;float&gt;) -&gt; float<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>returns the minimal distance between the point and the Ray.
+t holds the ray parameter for the closest point.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '7509', 7509)" onmouseover="showTip(event, '7509', 7509)">
+            GetMinimalDistanceTo(point, plane)
+          </code>
+          <div class="tip" id="7509">
+            <strong>Signature:</strong> (point:V3d * plane:Plane3d) -&gt; float<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Returns the minimal distance (unsigned) between the point and the plane.
+Use Plane3d.Height to compute the signed height of the point over the plane.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '7510', 7510)" onmouseover="showTip(event, '7510', 7510)">
+            GetMinimalDistanceTo(plane, point)
+          </code>
+          <div class="tip" id="7510">
+            <strong>Signature:</strong> (plane:Plane3d * point:V3d) -&gt; float<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Returns the minimal distance (unsigned) between the point and the plane.
+Use Plane3d.Height to compute the signed height of the point over the plane.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '7511', 7511)" onmouseover="showTip(event, '7511', 7511)">
+            GetMinimalDistanceTo(point, box)
+          </code>
+          <div class="tip" id="7511">
+            <strong>Signature:</strong> (point:V3d * box:Box3d) -&gt; float<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>returns the minimal distance between the point and the box.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '7512', 7512)" onmouseover="showTip(event, '7512', 7512)">
+            GetMinimalDistanceTo(box, point)
+          </code>
+          <div class="tip" id="7512">
+            <strong>Signature:</strong> (box:Box3d * point:V3d) -&gt; float<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>returns the minimal distance between the point and the box.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '7513', 7513)" onmouseover="showTip(event, '7513', 7513)">
+            GetMinimalDistanceTo(l0, l1)
+          </code>
+          <div class="tip" id="7513">
+            <strong>Signature:</strong> (l0:Line3d * l1:Line3d) -&gt; float<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>returns the minimal distance between the given lines.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '7514', 7514)" onmouseover="showTip(event, '7514', 7514)">
+            GetMinimalDistanceTo(l0, l1, point)
+          </code>
+          <div class="tip" id="7514">
+            <strong>Signature:</strong> (l0:Line3d * l1:Line3d * point:byref&lt;V3d&gt;) -&gt; float<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>returns the minimal distance between the given lines.
+points holds the centroid of the shortest connection between the lines</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '7515', 7515)" onmouseover="showTip(event, '7515', 7515)">
+            GetMinimalDistanceTo(line, plane)
+          </code>
+          <div class="tip" id="7515">
+            <strong>Signature:</strong> (line:Line3d * plane:Plane3d) -&gt; float<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '7516', 7516)" onmouseover="showTip(event, '7516', 7516)">
+            GetMinimalDistanceTo(plane, line)
+          </code>
+          <div class="tip" id="7516">
+            <strong>Signature:</strong> (plane:Plane3d * line:Line3d) -&gt; float<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '7517', 7517)" onmouseover="showTip(event, '7517', 7517)">
+            GetMinimalDistanceTo(ray, line)
+          </code>
+          <div class="tip" id="7517">
+            <strong>Signature:</strong> (ray:Ray3d * line:Line3d) -&gt; float<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>returns the minimal distance between the ray and the line.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '7518', 7518)" onmouseover="showTip(event, '7518', 7518)">
+            GetMinimalDistanceTo(line, ray)
+          </code>
+          <div class="tip" id="7518">
+            <strong>Signature:</strong> (line:Line3d * ray:Ray3d) -&gt; float<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>returns the minimal distance between the ray and the line.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '7519', 7519)" onmouseover="showTip(event, '7519', 7519)">
+            GetMinimalDistanceTo(ray, line, t)
+          </code>
+          <div class="tip" id="7519">
+            <strong>Signature:</strong> (ray:Ray3d * line:Line3d * t:byref&lt;float&gt;) -&gt; float<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>returns the minimal distance between the ray and the line.
+t holds the correspoinding ray parameter.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '7520', 7520)" onmouseover="showTip(event, '7520', 7520)">
+            GetMinimalDistanceTo(line, ray, t)
+          </code>
+          <div class="tip" id="7520">
+            <strong>Signature:</strong> (line:Line3d * ray:Ray3d * t:byref&lt;float&gt;) -&gt; float<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>returns the minimal distance between the ray and the line.
+t holds the correspoinding ray parameter.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '7521', 7521)" onmouseover="showTip(event, '7521', 7521)">
+            GetMinimalDistanceTo(ray0, ray1)
+          </code>
+          <div class="tip" id="7521">
+            <strong>Signature:</strong> (ray0:Ray3d * ray1:Ray3d) -&gt; float<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>returns the minimal distance between the given rays.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '7522', 7522)" onmouseover="showTip(event, '7522', 7522)">
+            GetMinimalDistanceTo(ray0, ray1, t0, t1)
+          </code>
+          <div class="tip" id="7522">
+            <strong>Signature:</strong> (ray0:Ray3d * ray1:Ray3d * t0:byref&lt;float&gt; * t1:byref&lt;float&gt;) -&gt; float<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>returns the minimal distance between the given rays.
+t0 and t1 hold the correspunding ray parameters.
+if both rays are parallel the t0 and t1 are from the origin of ray1</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '7523', 7523)" onmouseover="showTip(event, '7523', 7523)">
+            Intersect(ray, plane)
+          </code>
+          <div class="tip" id="7523">
+            <strong>Signature:</strong> (ray:Ray3d * plane:Plane3d) -&gt; V3d<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Returns the intersection point with the given plane, or V3d.PositiveInfinity if ray is parallel to plane.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '7524', 7524)" onmouseover="showTip(event, '7524', 7524)">
+            Intersects(l0, l1)
+          </code>
+          <div class="tip" id="7524">
+            <strong>Signature:</strong> (l0:Line2d * l1:Line2d) -&gt; bool<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Returns true if the two Lines intersect
+If the lines overlap and are parallel there is no intersection returned</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '7525', 7525)" onmouseover="showTip(event, '7525', 7525)">
+            Intersects(l0, l1, p)
+          </code>
+          <div class="tip" id="7525">
+            <strong>Signature:</strong> (l0:Line2d * l1:Line2d * p:byref&lt;V2d&gt;) -&gt; bool<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Returns true if the two Lines intersect
+p holds the Intersection Point
+If the lines overlap and are parallel there is no intersection returned</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '7526', 7526)" onmouseover="showTip(event, '7526', 7526)">
+            Intersects(l0, l1, absoluteEpsilon, p)
+          </code>
+          <div class="tip" id="7526">
+            <strong>Signature:</strong> (l0:Line2d * l1:Line2d * absoluteEpsilon:float * p:byref&lt;V2d&gt;) -&gt; bool<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Returns true if the two Lines intersect with an absolute Tolerance
+p holds the Intersection Point
+If the lines overlap and are parallel there is no intersection returned</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '7527', 7527)" onmouseover="showTip(event, '7527', 7527)">
+            Intersects(...)
+          </code>
+          <div class="tip" id="7527">
+            <strong>Signature:</strong> (line0:Line2d * line1:Line2d * infiniteLines:bool * p:byref&lt;V2d&gt;) -&gt; bool<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Deprecated: use Plane2d.Intersects(Plane2d) or Ray2d.Intersects(Ray2d) instead</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '7528', 7528)" onmouseover="showTip(event, '7528', 7528)">
+            Intersects(ray, line)
+          </code>
+          <div class="tip" id="7528">
+            <strong>Signature:</strong> (ray:Ray2d * line:Line2d) -&gt; bool<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Returns true if the Ray and the Line intersect.
+ATTENTION: Both-Sided Ray</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '7529', 7529)" onmouseover="showTip(event, '7529', 7529)">
+            Intersects(ray, line, t)
+          </code>
+          <div class="tip" id="7529">
+            <strong>Signature:</strong> (ray:Ray2d * line:Line2d * t:byref&lt;float&gt;) -&gt; bool<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>returns true if the Ray and the Line intersect.
+t holds the smallest Intersection-Parameter for the Ray
+ATTENTION: t can be negative</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '7530', 7530)" onmouseover="showTip(event, '7530', 7530)">
+            Intersects(r0, r1)
+          </code>
+          <div class="tip" id="7530">
+            <strong>Signature:</strong> (r0:Ray2d * r1:Ray2d) -&gt; bool<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Returns true if the Rays intersect
+ATTENTION: Both-Sided Rays</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '7531', 7531)" onmouseover="showTip(event, '7531', 7531)">
+            Intersects(r0, r1, t0, t1)
+          </code>
+          <div class="tip" id="7531">
+            <strong>Signature:</strong> (r0:Ray2d * r1:Ray2d * t0:byref&lt;float&gt; * t1:byref&lt;float&gt;) -&gt; bool<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Returns true if the Rays intersect
+t0 and t1 are the corresponding Ray-Parameters for the Intersection
+ATTENTION: Both-Sided Rays</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '7532', 7532)" onmouseover="showTip(event, '7532', 7532)">
+            Intersects(r0, r1, t)
+          </code>
+          <div class="tip" id="7532">
+            <strong>Signature:</strong> (r0:Ray2d * r1:Ray2d * t:byref&lt;float&gt;) -&gt; bool<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Returns true if the Rays intersect.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '7533', 7533)" onmouseover="showTip(event, '7533', 7533)">
+            Intersects(plane, line, absoluteEpsilon)
+          </code>
+          <div class="tip" id="7533">
+            <strong>Signature:</strong> (plane:Plane2d * line:Line2d * absoluteEpsilon:float) -&gt; bool<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Returns true if the Plane2d and the Line2d intersect or the Line2d
+lies completely in the Plane's Epsilon-Range
+ATTENTION: Works only with Normalized Plane2ds</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '7534', 7534)" onmouseover="showTip(event, '7534', 7534)">
+            Intersects(plane, line)
+          </code>
+          <div class="tip" id="7534">
+            <strong>Signature:</strong> (plane:Plane2d * line:Line2d) -&gt; bool<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Returns true if the Plane2d and the Line2d intersect
+ATTENTION: Works only with Normalized Plane2ds</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '7535', 7535)" onmouseover="showTip(event, '7535', 7535)">
+            Intersects(plane, line, point)
+          </code>
+          <div class="tip" id="7535">
+            <strong>Signature:</strong> (plane:Plane2d * line:Line2d * point:byref&lt;V2d&gt;) -&gt; bool<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Returns true if the Plane2d and the Line2d intersect
+point holds the Intersection-Point. If no Intersection is found point is V2d.NaN
+ATTENTION: Works only with Normalized Plane2ds</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '7536', 7536)" onmouseover="showTip(event, '7536', 7536)">
+            Intersects(...)
+          </code>
+          <div class="tip" id="7536">
+            <strong>Signature:</strong> (plane:Plane2d * line:Line2d * absoluteEpsilon:float * point:byref&lt;V2d&gt;) -&gt; bool<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Returns true if the Plane2d and the Line2d intersect or the Line2d
+lies completely in the Plane's Epsilon-Range
+point holds the Intersection-Point. If the Line2d is inside Epsilon point holds the centroid of the Line2d
+If no Intersection is found point is V2d.NaN
+ATTENTION: Works only with Normalized Plane2ds</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '7537', 7537)" onmouseover="showTip(event, '7537', 7537)">
+            Intersects(plane, ray)
+          </code>
+          <div class="tip" id="7537">
+            <strong>Signature:</strong> (plane:Plane2d * ray:Ray2d) -&gt; bool<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Returns true if the Plane2d and the Ray2d intersect</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '7538', 7538)" onmouseover="showTip(event, '7538', 7538)">
+            Intersects(plane, ray, point)
+          </code>
+          <div class="tip" id="7538">
+            <strong>Signature:</strong> (plane:Plane2d * ray:Ray2d * point:byref&lt;V2d&gt;) -&gt; bool<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Returns true if the Plane2d and the Ray2d intersect
+point holds the Intersection-Point if an intersection is found (else V2d.NaN)
+ATTENTION: Works only with Normalized Plane2ds</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '7539', 7539)" onmouseover="showTip(event, '7539', 7539)">
+            Intersects(p0, p1)
+          </code>
+          <div class="tip" id="7539">
+            <strong>Signature:</strong> (p0:Plane2d * p1:Plane2d) -&gt; bool<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Returns true if the two Plane2ds intersect</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '7540', 7540)" onmouseover="showTip(event, '7540', 7540)">
+            Intersects(p0, p1, point)
+          </code>
+          <div class="tip" id="7540">
+            <strong>Signature:</strong> (p0:Plane2d * p1:Plane2d * point:byref&lt;V2d&gt;) -&gt; bool<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Returns true if the two Plane2ds intersect
+point holds the Intersection-Point if an Intersection is found (else V2d.NaN)</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '7541', 7541)" onmouseover="showTip(event, '7541', 7541)">
+            Intersects(triangle, line)
+          </code>
+          <div class="tip" id="7541">
+            <strong>Signature:</strong> (triangle:Triangle2d * line:Line2d) -&gt; bool<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Returns true if the triangle and the line intersect or the triangle contains the line</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '7542', 7542)" onmouseover="showTip(event, '7542', 7542)">
+            Intersects(triangle, ray)
+          </code>
+          <div class="tip" id="7542">
+            <strong>Signature:</strong> (triangle:Triangle2d * ray:Ray2d) -&gt; bool<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Returns true if the Triangle and the Ray intersect</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '7543', 7543)" onmouseover="showTip(event, '7543', 7543)">
+            Intersects(triangle, plane)
+          </code>
+          <div class="tip" id="7543">
+            <strong>Signature:</strong> (triangle:Triangle2d * plane:Plane2d) -&gt; bool<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>returns true if the Triangle2d and the Plane2d intersect</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '7544', 7544)" onmouseover="showTip(event, '7544', 7544)">
+            Intersects(t0, t1)
+          </code>
+          <div class="tip" id="7544">
+            <strong>Signature:</strong> (t0:Triangle2d * t1:Triangle2d) -&gt; bool<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Returns true if the Triangles intersect or one contains the other</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '7545', 7545)" onmouseover="showTip(event, '7545', 7545)">
+            Intersects(box, line)
+          </code>
+          <div class="tip" id="7545">
+            <strong>Signature:</strong> (box:Box2d * line:Line2d) -&gt; bool<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Returns true if the box and the line intersect.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '7546', 7546)" onmouseover="showTip(event, '7546', 7546)">
+            Intersects(box, line, out0, out1)
+          </code>
+          <div class="tip" id="7546">
+            <strong>Signature:</strong> (box:Box2d * line:Line2d * out0:Flags * out1:Flags) -&gt; bool<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Returns true if the box and the line intersect. The outside flags
+of the end points of the line with respect to the box have to be
+supplied as parameters.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '7547', 7547)" onmouseover="showTip(event, '7547', 7547)">
+            Intersects(box, ray)
+          </code>
+          <div class="tip" id="7547">
+            <strong>Signature:</strong> (box:Box2d * ray:Ray2d) -&gt; bool<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Returns true if the box and the ray intersect</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '7548', 7548)" onmouseover="showTip(event, '7548', 7548)">
+            Intersects(box, plane)
+          </code>
+          <div class="tip" id="7548">
+            <strong>Signature:</strong> (box:Box2d * plane:Plane2d) -&gt; bool<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>returns true if the box and the plane intersect</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '7549', 7549)" onmouseover="showTip(event, '7549', 7549)">
+            Intersects(box, plane, line)
+          </code>
+          <div class="tip" id="7549">
+            <strong>Signature:</strong> (box:Box2d * plane:Plane2d * line:byref&lt;Line2d&gt;) -&gt; bool<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>NOT TESTED YET.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '7550', 7550)" onmouseover="showTip(event, '7550', 7550)">
+            Intersects(...)
+          </code>
+          <div class="tip" id="7550">
+            <strong>Signature:</strong> (nx:float * ny:float * d:float * xmin:float * ymin:float * xmax:float * ymax:float * line:byref&lt;Line2d&gt;) -&gt; bool<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Intersects an infinite line given by its normal vector [nx, ny]
+and its distance to the origin d, with an axis aligned box given
+by it minimal point [xmin, ymin] and its maximal point
+[xmax, ymax]. Returns true if there is an intersection and computes
+the actual intersection line.
+NOT TESTED YET.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '7551', 7551)" onmouseover="showTip(event, '7551', 7551)">
+            Intersects(box, triangle)
+          </code>
+          <div class="tip" id="7551">
+            <strong>Signature:</strong> (box:Box2d * triangle:Triangle2d) -&gt; bool<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Returns true if the Box and the Triagle intersect</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '7552', 7552)" onmouseover="showTip(event, '7552', 7552)">
+            Intersects(quad, line)
+          </code>
+          <div class="tip" id="7552">
+            <strong>Signature:</strong> (quad:Quad2d * line:Line2d) -&gt; bool<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>returns true if the Quad and the line intersect or the quad contains the line</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '7553', 7553)" onmouseover="showTip(event, '7553', 7553)">
+            Intersects(quad, ray)
+          </code>
+          <div class="tip" id="7553">
+            <strong>Signature:</strong> (quad:Quad2d * ray:Ray2d) -&gt; bool<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>returns true if the quad and the ray intersect</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '7554', 7554)" onmouseover="showTip(event, '7554', 7554)">
+            Intersects(quad, plane)
+          </code>
+          <div class="tip" id="7554">
+            <strong>Signature:</strong> (quad:Quad2d * plane:Plane2d) -&gt; bool<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>returns true if the Quad2d and the Plane2d intersect</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '7555', 7555)" onmouseover="showTip(event, '7555', 7555)">
+            Intersects(quad, triangle)
+          </code>
+          <div class="tip" id="7555">
+            <strong>Signature:</strong> (quad:Quad2d * triangle:Triangle2d) -&gt; bool<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>returns true if the Quad2d and the Triangle2d intersect or one contains the other</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '7556', 7556)" onmouseover="showTip(event, '7556', 7556)">
+            Intersects(box, quad)
+          </code>
+          <div class="tip" id="7556">
+            <strong>Signature:</strong> (box:Box2d * quad:Quad2d) -&gt; bool<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Returns true if the box and the Quad intersect or one contains the other</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '7557', 7557)" onmouseover="showTip(event, '7557', 7557)">
+            Intersects(q0, quad)
+          </code>
+          <div class="tip" id="7557">
+            <strong>Signature:</strong> (q0:Quad2d * quad:Quad2d) -&gt; bool<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>returns true if the Quad2ds intersect or one contains the other</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '7558', 7558)" onmouseover="showTip(event, '7558', 7558)">
+            Intersects(poly, line)
+          </code>
+          <div class="tip" id="7558">
+            <strong>Signature:</strong> (poly:Polygon2d * line:Line2d) -&gt; bool<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>returns true if the Polygon2d and the Line2d intersect or the Polygon contains the Line</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '7559', 7559)" onmouseover="showTip(event, '7559', 7559)">
+            Intersects(poly, ray)
+          </code>
+          <div class="tip" id="7559">
+            <strong>Signature:</strong> (poly:Polygon2d * ray:Ray2d) -&gt; bool<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>returns true if the Polygon2d and the Ray2d intersect</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '7560', 7560)" onmouseover="showTip(event, '7560', 7560)">
+            Intersects(poly, plane)
+          </code>
+          <div class="tip" id="7560">
+            <strong>Signature:</strong> (poly:Polygon2d * plane:Plane2d) -&gt; bool<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>returns true if the Polygon2d and the Plane2d itnersect</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '7561', 7561)" onmouseover="showTip(event, '7561', 7561)">
+            Intersects(poly, triangle)
+          </code>
+          <div class="tip" id="7561">
+            <strong>Signature:</strong> (poly:Polygon2d * triangle:Triangle2d) -&gt; bool<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>returns true if the Polygon2d and the Triangle2d intersect or one contains the other</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '7562', 7562)" onmouseover="showTip(event, '7562', 7562)">
+            Intersects(poly, box)
+          </code>
+          <div class="tip" id="7562">
+            <strong>Signature:</strong> (poly:Polygon2d * box:Box2d) -&gt; bool<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>returns true if the Polygon2d and the Box2d intersect or one contains the other</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '7563', 7563)" onmouseover="showTip(event, '7563', 7563)">
+            Intersects(poly, quad)
+          </code>
+          <div class="tip" id="7563">
+            <strong>Signature:</strong> (poly:Polygon2d * quad:Quad2d) -&gt; bool<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>returns true if the Polygon2d and the Quad2d interset or one contains the other</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '7564', 7564)" onmouseover="showTip(event, '7564', 7564)">
+            Intersects(poly0, poly1)
+          </code>
+          <div class="tip" id="7564">
+            <strong>Signature:</strong> (poly0:Polygon2d * poly1:Polygon2d) -&gt; bool<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>returns true if the Polygon2ds intersect or one contains the other</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '7565', 7565)" onmouseover="showTip(event, '7565', 7565)">
+            Intersects(l0, l1)
+          </code>
+          <div class="tip" id="7565">
+            <strong>Signature:</strong> (l0:Line3d * l1:Line3d) -&gt; bool<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Returns true if the minimal distance between the given lines is smaller than Constant<double>.PositiveTinyValue.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '7566', 7566)" onmouseover="showTip(event, '7566', 7566)">
+            Intersects(l0, l1, absoluteEpsilon)
+          </code>
+          <div class="tip" id="7566">
+            <strong>Signature:</strong> (l0:Line3d * l1:Line3d * absoluteEpsilon:float) -&gt; bool<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Returns true if the minimal distance between the given lines is smaller than absoluteEpsilon.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '7567', 7567)" onmouseover="showTip(event, '7567', 7567)">
+            Intersects(...)
+          </code>
+          <div class="tip" id="7567">
+            <strong>Signature:</strong> (l0:Line3d * l1:Line3d * absoluteEpsilon:float * point:byref&lt;V3d&gt;) -&gt; bool<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Returns true if the minimal distance between the given lines is smaller than absoluteEpsilon.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '7568', 7568)" onmouseover="showTip(event, '7568', 7568)">
+            Intersects(line, plane, t)
+          </code>
+          <div class="tip" id="7568">
+            <strong>Signature:</strong> (line:Line3d * plane:Plane3d * t:byref&lt;float&gt;) -&gt; bool<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Returns true if the line and the plane intersect.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '7569', 7569)" onmouseover="showTip(event, '7569', 7569)">
+            Intersects(line, plane, t, p)
+          </code>
+          <div class="tip" id="7569">
+            <strong>Signature:</strong> (line:Line3d * plane:Plane3d * t:byref&lt;float&gt; * p:byref&lt;V3d&gt;) -&gt; bool<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Returns true if the line and the plane intersect.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '7570', 7570)" onmouseover="showTip(event, '7570', 7570)">
+            Intersects(line, triangle)
+          </code>
+          <div class="tip" id="7570">
+            <strong>Signature:</strong> (line:Line3d * triangle:Triangle3d) -&gt; bool<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Returns true if the line and the triangle intersect.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '7571', 7571)" onmouseover="showTip(event, '7571', 7571)">
+            Intersects(line, triangle, point)
+          </code>
+          <div class="tip" id="7571">
+            <strong>Signature:</strong> (line:Line3d * triangle:Triangle3d * point:byref&lt;V3d&gt;) -&gt; bool<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Returns true if the line and the triangle intersect.
+point holds the intersection point.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '7572', 7572)" onmouseover="showTip(event, '7572', 7572)">
+            Intersects(ray, line)
+          </code>
+          <div class="tip" id="7572">
+            <strong>Signature:</strong> (ray:Ray3d * line:Line3d) -&gt; bool<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Returns true if the minimal distance between the line and the ray is smaller than Constant<double>.PositiveTinyValue</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '7573', 7573)" onmouseover="showTip(event, '7573', 7573)">
+            Intersects(ray, line, absoluteEpsilon)
+          </code>
+          <div class="tip" id="7573">
+            <strong>Signature:</strong> (ray:Ray3d * line:Line3d * absoluteEpsilon:float) -&gt; bool<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Returns true if the minimal distance between the line and the ray is smaller than absoluteEpsilon</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '7574', 7574)" onmouseover="showTip(event, '7574', 7574)">
+            Intersects(...)
+          </code>
+          <div class="tip" id="7574">
+            <strong>Signature:</strong> (ray:Ray3d * line:Line3d * absoluteEpsilon:float * t:byref&lt;float&gt;) -&gt; bool<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Returns true if the minimal distance between the line and the ray is smaller than absoluteEpsilon
+t holds the corresponding ray parameter</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '7575', 7575)" onmouseover="showTip(event, '7575', 7575)">
+            Intersects(r0, r1)
+          </code>
+          <div class="tip" id="7575">
+            <strong>Signature:</strong> (r0:Ray3d * r1:Ray3d) -&gt; bool<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>returns true if the minimal distance between the rays is smaller than Constant<double>.PositiveTinyValue</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '7576', 7576)" onmouseover="showTip(event, '7576', 7576)">
+            Intersects(r0, r1, t0, t1)
+          </code>
+          <div class="tip" id="7576">
+            <strong>Signature:</strong> (r0:Ray3d * r1:Ray3d * t0:byref&lt;float&gt; * t1:byref&lt;float&gt;) -&gt; bool<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>returns true if the minimal distance between the rays is smaller than Constant<double>.PositiveTinyValue
+t0 and t1 hold the ray-parameters for the intersection</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '7577', 7577)" onmouseover="showTip(event, '7577', 7577)">
+            Intersects(r0, r1, absoluteEpsilon)
+          </code>
+          <div class="tip" id="7577">
+            <strong>Signature:</strong> (r0:Ray3d * r1:Ray3d * absoluteEpsilon:float) -&gt; bool<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>returns true if the minimal distance between the rays is smaller than absoluteEpsilon</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '7578', 7578)" onmouseover="showTip(event, '7578', 7578)">
+            Intersects(...)
+          </code>
+          <div class="tip" id="7578">
+            <strong>Signature:</strong> (r0:Ray3d * r1:Ray3d * t0:byref&lt;float&gt; * t1:byref&lt;float&gt; * absoluteEpsilon:float) -&gt; bool<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>returns true if the minimal distance between the rays is smaller than absoluteEpsilon
+t0 and t1 hold the ray-parameters for the intersection</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '7579', 7579)" onmouseover="showTip(event, '7579', 7579)">
+            Intersects(ray, triangle)
+          </code>
+          <div class="tip" id="7579">
+            <strong>Signature:</strong> (ray:Ray3d * triangle:Triangle3d) -&gt; bool<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Returns true if the ray and the triangle intersect. If you need
+information about the hit point see the Ray3d.Hits method.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '7580', 7580)" onmouseover="showTip(event, '7580', 7580)">
+            Intersects(ray, triangle, tmin, tmax)
+          </code>
+          <div class="tip" id="7580">
+            <strong>Signature:</strong> (ray:Ray3d * triangle:Triangle3d * tmin:float * tmax:float) -&gt; bool<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Returns true if the ray and the triangle intersect within the
+supplied parameter interval of the ray. If you need information
+about the hit point see the Ray3d.Hits method.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '7581', 7581)" onmouseover="showTip(event, '7581', 7581)">
+            Intersects(ray, triangle, tmin, tmax, t)
+          </code>
+          <div class="tip" id="7581">
+            <strong>Signature:</strong> (ray:Ray3d * triangle:Triangle3d * tmin:float * tmax:float * t:byref&lt;float&gt;) -&gt; bool<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Returns true if the ray and the triangle intersect within the
+supplied parameter interval of the ray. If you need information
+about the hit point see the Ray3d.Hits method.
+t holds the corresponding ray-parameter</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '7582', 7582)" onmouseover="showTip(event, '7582', 7582)">
+            Intersects(ray, quad)
+          </code>
+          <div class="tip" id="7582">
+            <strong>Signature:</strong> (ray:Ray3d * quad:Quad3d) -&gt; bool<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Returns true if the ray and the triangle intersect. If you need
+information about the hit point see the Ray3d.Hits method.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '7583', 7583)" onmouseover="showTip(event, '7583', 7583)">
+            Intersects(ray, quad, tmin, tmax)
+          </code>
+          <div class="tip" id="7583">
+            <strong>Signature:</strong> (ray:Ray3d * quad:Quad3d * tmin:float * tmax:float) -&gt; bool<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Returns true if the ray and the quad intersect within the
+supplied parameter interval of the ray. If you need information
+about the hit point see the Ray3d.Hits method.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '7584', 7584)" onmouseover="showTip(event, '7584', 7584)">
+            Intersects(ray, poly, tmin, tmax)
+          </code>
+          <div class="tip" id="7584">
+            <strong>Signature:</strong> (ray:Ray3d * poly:Polygon3d * tmin:float * tmax:float) -&gt; bool<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Returns true if the ray and the polygon intersect within the
+supplied parameter interval of the ray.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '7585', 7585)" onmouseover="showTip(event, '7585', 7585)">
+            Intersects(ray, poly, tmin, tmax, t)
+          </code>
+          <div class="tip" id="7585">
+            <strong>Signature:</strong> (ray:Ray3d * poly:Polygon3d * tmin:float * tmax:float * t:byref&lt;float&gt;) -&gt; bool<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Returns true if the ray and the polygon intersect within the
+supplied parameter interval of the ray.
+t holds the correspoinding paramter.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '7586', 7586)" onmouseover="showTip(event, '7586', 7586)">
+            Intersects(...)
+          </code>
+          <div class="tip" id="7586">
+            <strong>Signature:</strong> (ray:Ray3d * polygon:Polygon3d * triangulation:int [] * tmin:float * tmax:float) -&gt; bool<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Returns true if the ray and the polygon, which is given by vertices and triangulation, intersect within the
+supplied parameter interval of the ray.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '7587', 7587)" onmouseover="showTip(event, '7587', 7587)">
+            Intersects(ray, sphere)
+          </code>
+          <div class="tip" id="7587">
+            <strong>Signature:</strong> (ray:Ray3d * sphere:Sphere3d) -&gt; bool<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Returns true if the ray and the triangle intersect. If you need
+information about the hit point see the Ray3d.Hits method.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '7588', 7588)" onmouseover="showTip(event, '7588', 7588)">
+            Intersects(ray, sphere, tmin, tmax)
+          </code>
+          <div class="tip" id="7588">
+            <strong>Signature:</strong> (ray:Ray3d * sphere:Sphere3d * tmin:float * tmax:float) -&gt; bool<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Returns true if the ray and the triangle intersect within the
+supplied parameter interval of the ray. If you need information
+about the hit point see the Ray3d.Hits method.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '7589', 7589)" onmouseover="showTip(event, '7589', 7589)">
+            Intersects(sphere, triangle)
+          </code>
+          <div class="tip" id="7589">
+            <strong>Signature:</strong> (sphere:Sphere3d * triangle:Triangle3d) -&gt; bool<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '7590', 7590)" onmouseover="showTip(event, '7590', 7590)">
+            Intersects(tri, line)
+          </code>
+          <div class="tip" id="7590">
+            <strong>Signature:</strong> (tri:Triangle3d * line:Line3d) -&gt; bool<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Returns true if the triangle and the line intersect.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '7591', 7591)" onmouseover="showTip(event, '7591', 7591)">
+            Intersects(tri, line, point)
+          </code>
+          <div class="tip" id="7591">
+            <strong>Signature:</strong> (tri:Triangle3d * line:Line3d * point:byref&lt;V3d&gt;) -&gt; bool<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Returns true if the triangle and the line intersect.
+point holds the intersection point.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '7592', 7592)" onmouseover="showTip(event, '7592', 7592)">
+            Intersects(tri, ray)
+          </code>
+          <div class="tip" id="7592">
+            <strong>Signature:</strong> (tri:Triangle3d * ray:Ray3d) -&gt; bool<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Returns true if the triangle and the ray intersect.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '7593', 7593)" onmouseover="showTip(event, '7593', 7593)">
+            Intersects(tri, ray, tmin, tmax)
+          </code>
+          <div class="tip" id="7593">
+            <strong>Signature:</strong> (tri:Triangle3d * ray:Ray3d * tmin:float * tmax:float) -&gt; bool<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Returns true if the triangle and the ray intersect
+within the given parameter interval</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '7594', 7594)" onmouseover="showTip(event, '7594', 7594)">
+            Intersects(tri, ray, t)
+          </code>
+          <div class="tip" id="7594">
+            <strong>Signature:</strong> (tri:Triangle3d * ray:Ray3d * t:byref&lt;float&gt;) -&gt; bool<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Returns true if the triangle and the ray intersect.
+t holds the intersection paramter.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '7595', 7595)" onmouseover="showTip(event, '7595', 7595)">
+            Intersects(tri, ray, tmin, tmax, t)
+          </code>
+          <div class="tip" id="7595">
+            <strong>Signature:</strong> (tri:Triangle3d * ray:Ray3d * tmin:float * tmax:float * t:byref&lt;float&gt;) -&gt; bool<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Returns true if the triangle and the ray intersect
+within the given parameter interval
+t holds the intersection paramter.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '7596', 7596)" onmouseover="showTip(event, '7596', 7596)">
+            Intersects(t0, t1)
+          </code>
+          <div class="tip" id="7596">
+            <strong>Signature:</strong> (t0:Triangle3d * t1:Triangle3d) -&gt; bool<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Returns true if the triangles intersect.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '7597', 7597)" onmouseover="showTip(event, '7597', 7597)">
+            Intersects(t0, t1, line)
+          </code>
+          <div class="tip" id="7597">
+            <strong>Signature:</strong> (t0:Triangle3d * t1:Triangle3d * line:byref&lt;Line3d&gt;) -&gt; bool<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Returns true if the triangles intersect.
+line holds the cutting-line of the two triangles.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '7598', 7598)" onmouseover="showTip(event, '7598', 7598)">
+            Intersects(quad, line)
+          </code>
+          <div class="tip" id="7598">
+            <strong>Signature:</strong> (quad:Quad3d * line:Line3d) -&gt; bool<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Returns true if the quad and the line, given by p0 and p1, intersect.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '7599', 7599)" onmouseover="showTip(event, '7599', 7599)">
+            Intersects(quad, line, point)
+          </code>
+          <div class="tip" id="7599">
+            <strong>Signature:</strong> (quad:Quad3d * line:Line3d * point:byref&lt;V3d&gt;) -&gt; bool<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Returns true if the quad and the line, given by p0 and p1, intersect.
+point holds the intersection point.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '7600', 7600)" onmouseover="showTip(event, '7600', 7600)">
+            Intersects(quad, ray)
+          </code>
+          <div class="tip" id="7600">
+            <strong>Signature:</strong> (quad:Quad3d * ray:Ray3d) -&gt; bool<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Returns true if the quad and the ray intersect.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '7601', 7601)" onmouseover="showTip(event, '7601', 7601)">
+            Intersects(quad, ray, t)
+          </code>
+          <div class="tip" id="7601">
+            <strong>Signature:</strong> (quad:Quad3d * ray:Ray3d * t:byref&lt;float&gt;) -&gt; bool<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Returns true if the quad and the ray intersect.
+t holds the intersection parameter.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '7602', 7602)" onmouseover="showTip(event, '7602', 7602)">
+            Intersects(quad, ray, tmin, tmax)
+          </code>
+          <div class="tip" id="7602">
+            <strong>Signature:</strong> (quad:Quad3d * ray:Ray3d * tmin:float * tmax:float) -&gt; bool<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Returns true if the quad and the ray intersect
+within the given paramter range</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '7603', 7603)" onmouseover="showTip(event, '7603', 7603)">
+            Intersects(quad, ray, tmin, tmax, t)
+          </code>
+          <div class="tip" id="7603">
+            <strong>Signature:</strong> (quad:Quad3d * ray:Ray3d * tmin:float * tmax:float * t:byref&lt;float&gt;) -&gt; bool<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Returns true if the quad and the ray intersect
+within the given paramter range
+t holds the intersection parameter.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '7604', 7604)" onmouseover="showTip(event, '7604', 7604)">
+            Intersects(quad, tri)
+          </code>
+          <div class="tip" id="7604">
+            <strong>Signature:</strong> (quad:Quad3d * tri:Triangle3d) -&gt; bool<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Returns true if the quad and the triangle intersect.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '7605', 7605)" onmouseover="showTip(event, '7605', 7605)">
+            Intersects(q0, q1)
+          </code>
+          <div class="tip" id="7605">
+            <strong>Signature:</strong> (q0:Quad3d * q1:Quad3d) -&gt; bool<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Returns true if the given quads intersect.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '7606', 7606)" onmouseover="showTip(event, '7606', 7606)">
+            Intersects(plane, line)
+          </code>
+          <div class="tip" id="7606">
+            <strong>Signature:</strong> (plane:Plane3d * line:Line3d) -&gt; bool<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '7607', 7607)" onmouseover="showTip(event, '7607', 7607)">
+            Intersects(plane, line, absoluteEpsilon)
+          </code>
+          <div class="tip" id="7607">
+            <strong>Signature:</strong> (plane:Plane3d * line:Line3d * absoluteEpsilon:float) -&gt; bool<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '7608', 7608)" onmouseover="showTip(event, '7608', 7608)">
+            Intersects(ray, plane, t)
+          </code>
+          <div class="tip" id="7608">
+            <strong>Signature:</strong> (ray:Ray3d * plane:Plane3d * t:byref&lt;float&gt;) -&gt; bool<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Returns true if the ray and the plane intersect.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '7609', 7609)" onmouseover="showTip(event, '7609', 7609)">
+            Intersects(ray, plane, t, p)
+          </code>
+          <div class="tip" id="7609">
+            <strong>Signature:</strong> (ray:Ray3d * plane:Plane3d * t:byref&lt;float&gt; * p:byref&lt;V3d&gt;) -&gt; bool<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Returns true if the ray and the plane intersect.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '7610', 7610)" onmouseover="showTip(event, '7610', 7610)">
+            Intersects(p0, p1)
+          </code>
+          <div class="tip" id="7610">
+            <strong>Signature:</strong> (p0:Plane3d * p1:Plane3d) -&gt; bool<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '7611', 7611)" onmouseover="showTip(event, '7611', 7611)">
+            Intersects(p0, p1, ray)
+          </code>
+          <div class="tip" id="7611">
+            <strong>Signature:</strong> (p0:Plane3d * p1:Plane3d * ray:byref&lt;Ray3d&gt;) -&gt; bool<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '7612', 7612)" onmouseover="showTip(event, '7612', 7612)">
+            Intersects(p0, p1, p2, point)
+          </code>
+          <div class="tip" id="7612">
+            <strong>Signature:</strong> (p0:Plane3d * p1:Plane3d * p2:Plane3d * point:byref&lt;V3d&gt;) -&gt; bool<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '7613', 7613)" onmouseover="showTip(event, '7613', 7613)">
+            Intersects(plane, triangle)
+          </code>
+          <div class="tip" id="7613">
+            <strong>Signature:</strong> (plane:Plane3d * triangle:Triangle3d) -&gt; bool<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Returns whether the given plane and triangle intersect.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '7614', 7614)" onmouseover="showTip(event, '7614', 7614)">
+            Intersects(plane, sphere)
+          </code>
+          <div class="tip" id="7614">
+            <strong>Signature:</strong> (plane:Plane3d * sphere:Sphere3d) -&gt; bool<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Returns whether the given sphere and plane intersect.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '7615', 7615)" onmouseover="showTip(event, '7615', 7615)">
+            Intersects(plane, poly)
+          </code>
+          <div class="tip" id="7615">
+            <strong>Signature:</strong> (plane:Plane3d * poly:Polygon3d) -&gt; bool<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>returns true if the Plane3d and the Polygon3d intersect</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '7616', 7616)" onmouseover="showTip(event, '7616', 7616)">
+            Intersects(...)
+          </code>
+          <div class="tip" id="7616">
+            <strong>Signature:</strong> (plane:Plane3d * polygon:Polygon3d * absoluteEpsilon:float) -&gt; bool<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>returns true if the Plane3d and the polygon, intersect
+within a tolerance of absoluteEpsilon</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '7617', 7617)" onmouseover="showTip(event, '7617', 7617)">
+            Intersects(plane, cylinder)
+          </code>
+          <div class="tip" id="7617">
+            <strong>Signature:</strong> (plane:Plane3d * cylinder:Cylinder3d) -&gt; bool<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Returns whether the given sphere and cylinder intersect.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '7618', 7618)" onmouseover="showTip(event, '7618', 7618)">
+            Intersects(plane, cylinder, ellipse)
+          </code>
+          <div class="tip" id="7618">
+            <strong>Signature:</strong> (plane:Plane3d * cylinder:Cylinder3d * ellipse:byref&lt;Ellipse3d&gt;) -&gt; bool<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Returns true if the given plane and cylinder intersect in an ellipse.
+This is only true if the plane is neither orthogonal nor parallel to the cylinder axis. Otherwise the intersection methods returning a circle or rays have to be used.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '7619', 7619)" onmouseover="showTip(event, '7619', 7619)">
+            Intersects(plane, cylinder, circle)
+          </code>
+          <div class="tip" id="7619">
+            <strong>Signature:</strong> (plane:Plane3d * cylinder:Cylinder3d * circle:byref&lt;Circle3d&gt;) -&gt; bool<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Returns true if the given plane and cylinder intersect in a circle.
+This is only true if the plane is orthogonal to the cylinder axis. Otherwise the intersection methods returning an ellipse or rays have to be used.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '7620', 7620)" onmouseover="showTip(event, '7620', 7620)">
+            Intersects(plane, cylinder, rays)
+          </code>
+          <div class="tip" id="7620">
+            <strong>Signature:</strong> (plane:Plane3d * cylinder:Cylinder3d * rays:byref&lt;Ray3d []&gt;) -&gt; bool<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Returns true if the given plane and cylinder intersect in one or two rays.
+This is only true if the plane is parallel to the cylinder axis. Otherwise the intersection methods returning an ellipse or a circle have to be used.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '7621', 7621)" onmouseover="showTip(event, '7621', 7621)">
+            Intersects(box, line)
+          </code>
+          <div class="tip" id="7621">
+            <strong>Signature:</strong> (box:Box3d * line:Line3d) -&gt; bool<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Returns true if the box and the line intersect.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '7622', 7622)" onmouseover="showTip(event, '7622', 7622)">
+            Intersects(box, ray, t)
+          </code>
+          <div class="tip" id="7622">
+            <strong>Signature:</strong> (box:Box3d * ray:Ray3d * t:byref&lt;float&gt;) -&gt; bool<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '7623', 7623)" onmouseover="showTip(event, '7623', 7623)">
+            Intersects(box, plane, eps)
+          </code>
+          <div class="tip" id="7623">
+            <strong>Signature:</strong> (box:Box3d * plane:Plane3d * eps:float) -&gt; bool<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Returns true if the box and the plane intersect or touch with a
+supplied epsilon tolerance.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '7624', 7624)" onmouseover="showTip(event, '7624', 7624)">
+            Intersects(box, sphere)
+          </code>
+          <div class="tip" id="7624">
+            <strong>Signature:</strong> (box:Box3d * sphere:Sphere3d) -&gt; bool<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '7625', 7625)" onmouseover="showTip(event, '7625', 7625)">
+            Intersects(box, cylinder)
+          </code>
+          <div class="tip" id="7625">
+            <strong>Signature:</strong> (box:Box3d * cylinder:Cylinder3d) -&gt; bool<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '7626', 7626)" onmouseover="showTip(event, '7626', 7626)">
+            Intersects(box, triangle)
+          </code>
+          <div class="tip" id="7626">
+            <strong>Signature:</strong> (box:Box3d * triangle:Triangle3d) -&gt; bool<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Returns true if the box and the triangle intersect.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '7627', 7627)" onmouseover="showTip(event, '7627', 7627)">
+            Intersects(box, quad)
+          </code>
+          <div class="tip" id="7627">
+            <strong>Signature:</strong> (box:Box3d * quad:Quad3d) -&gt; bool<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '7628', 7628)" onmouseover="showTip(event, '7628', 7628)">
+            Intersects(box, poly)
+          </code>
+          <div class="tip" id="7628">
+            <strong>Signature:</strong> (box:Box3d * poly:Polygon3d) -&gt; bool<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '7629', 7629)" onmouseover="showTip(event, '7629', 7629)">
+            Intersects(hull, line)
+          </code>
+          <div class="tip" id="7629">
+            <strong>Signature:</strong> (hull:Hull3d * line:Line3d) -&gt; bool<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>returns true if the Hull3d and the Line3d intersect or the Hull3d contains the Line3d
+[Hull3d-Normals must point outside]</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '7630', 7630)" onmouseover="showTip(event, '7630', 7630)">
+            Intersects(hull, ray)
+          </code>
+          <div class="tip" id="7630">
+            <strong>Signature:</strong> (hull:Hull3d * ray:Ray3d) -&gt; bool<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>returns true if the Hull3d and the Ray3d intersect
+[Hull3d-Normals must point outside]</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '7631', 7631)" onmouseover="showTip(event, '7631', 7631)">
+            Intersects(hull, ray, t)
+          </code>
+          <div class="tip" id="7631">
+            <strong>Signature:</strong> (hull:Hull3d * ray:Ray3d * t:byref&lt;float&gt;) -&gt; bool<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>returns true if the Hull3d and the Ray3d intersect
+the out parameter t holds the ray-parameter where an intersection was found
+[Hull3d-Normals must point outside]</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '7632', 7632)" onmouseover="showTip(event, '7632', 7632)">
+            Intersects(hull, ray, t_min, t_max, t)
+          </code>
+          <div class="tip" id="7632">
+            <strong>Signature:</strong> (hull:Hull3d * ray:Ray3d * t_min:float * t_max:float * t:byref&lt;float&gt;) -&gt; bool<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>returns true if the Hull3d and the Ray3d intersect and the
+ray-parameter for the intersection is between t<em>min and t</em>max
+the out parameter t holds the ray-parameter where an intersection was found
+[Hull3d-Normals must point outside]</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '7633', 7633)" onmouseover="showTip(event, '7633', 7633)">
+            Intersects(hull, plane)
+          </code>
+          <div class="tip" id="7633">
+            <strong>Signature:</strong> (hull:Hull3d * plane:Plane3d) -&gt; bool<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>returns true if the Hull3d and the Plane3d intersect
+[Hull3d-Normals must point outside]</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '7634', 7634)" onmouseover="showTip(event, '7634', 7634)">
+            Intersects(hull, box)
+          </code>
+          <div class="tip" id="7634">
+            <strong>Signature:</strong> (hull:Hull3d * box:Box3d) -&gt; bool<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Returns true if the hull and the box intersect.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '7635', 7635)" onmouseover="showTip(event, '7635', 7635)">
+            Intersects(fastHull, box)
+          </code>
+          <div class="tip" id="7635">
+            <strong>Signature:</strong> (fastHull:FastHull3d * box:Box3d) -&gt; bool<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+            Test hull against intersection of the supplied bounding box.
+            Note that this is a conservative test, since in some cases
+            around the edges of the hull it may return true although the
+            hull does not intersect the box.
+        
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '7636', 7636)" onmouseover="showTip(event, '7636', 7636)">
+            Intersects(hull, sphere)
+          </code>
+          <div class="tip" id="7636">
+            <strong>Signature:</strong> (hull:Hull3d * sphere:Sphere3d) -&gt; bool<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Returns true if the hull and the sphere intersect.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '7637', 7637)" onmouseover="showTip(event, '7637', 7637)">
+            IntersectsConvex(plane, poly, line)
+          </code>
+          <div class="tip" id="7637">
+            <strong>Signature:</strong> (plane:Plane3d * poly:Polygon3d * line:byref&lt;Line3d&gt;) -&gt; bool<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>returns true if the Plane3d and the Polygon3d intersect.
+line holds the intersection line
+ATTENTION: works only with non-concave polygons!</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '7638', 7638)" onmouseover="showTip(event, '7638', 7638)">
+            IntersectsConvex(...)
+          </code>
+          <div class="tip" id="7638">
+            <strong>Signature:</strong> (plane:Plane3d * polygon:Polygon3d * absoluteEpsilon:float * line:byref&lt;Line3d&gt;) -&gt; bool<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Returns true if the Plane3d and the polygon, given by points, intersect
+within a tolerance of absoluteEpsilon.
+Line holds the intersection line.
+ATTENTION: works only with non-concave polygons!</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '7639', 7639)" onmouseover="showTip(event, '7639', 7639)">
+            IntersectsFrustum(box, projection)
+          </code>
+          <div class="tip" id="7639">
+            <strong>Signature:</strong> (box:Box3d * projection:M44d) -&gt; bool<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>returns true if the Box3d and the frustum described by the M44d intersect or the frustum contains the Box3d
+Assumes DirectX clip-space:
+-w &lt; x &lt; w
+-w &lt; y &lt; w
+0 &lt; z &lt; w</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '7640', 7640)" onmouseover="showTip(event, '7640', 7640)">
+            IntersectsLine(line, p0, p1)
+          </code>
+          <div class="tip" id="7640">
+            <strong>Signature:</strong> (line:Line2d * p0:V2d * p1:V2d) -&gt; bool<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Returns true if the Line intersects the Line between p0 and p1
+If the lines overlap and are parallel there is no intersection returned</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '7641', 7641)" onmouseover="showTip(event, '7641', 7641)">
+            IntersectsLine(line, p0, p1, point)
+          </code>
+          <div class="tip" id="7641">
+            <strong>Signature:</strong> (line:Line2d * p0:V2d * p1:V2d * point:byref&lt;V2d&gt;) -&gt; bool<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Returns true if the Line intersects the Line between p0 and p1
+point holds the Intersection Point
+If the lines overlap and are parallel there is no intersection returned</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '7642', 7642)" onmouseover="showTip(event, '7642', 7642)">
+            IntersectsLine(...)
+          </code>
+          <div class="tip" id="7642">
+            <strong>Signature:</strong> (line:Line2d * p0:V2d * p1:V2d * overlapping:bool * point:byref&lt;V2d&gt;) -&gt; bool<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Returns true if the Line intersects the Line between p0 and p1
+point holds the Intersection Point
+If the Overlapping-flag is true, the given Lines are parallel and intersect,
+point holds the Closest Point to p0 of the Intersection-Range</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '7643', 7643)" onmouseover="showTip(event, '7643', 7643)">
+            IntersectsLine(...)
+          </code>
+          <div class="tip" id="7643">
+            <strong>Signature:</strong> (line:Line2d * p0:V2d * p1:V2d * absoluteEpsilon:float * point:byref&lt;V2d&gt;) -&gt; bool<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Returns true if the Line intersects the Line between p0 and p1 with an absolute Tolerance
+point holds the Intersection Point
+If the lines overlap and are parallel there is no intersection returned</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '7644', 7644)" onmouseover="showTip(event, '7644', 7644)">
+            IntersectsLine(...)
+          </code>
+          <div class="tip" id="7644">
+            <strong>Signature:</strong> (line:Line2d * p0:V2d * p1:V2d * absoluteEpsilon:float * overlapping:bool * point:byref&lt;V2d&gt;) -&gt; bool<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Returns true if the Line intersects the Line between p0 and p1 with an absolute Tolerance
+point holds the Intersection Point
+If the Overlapping-flag is true, the given Lines are parallel and intersect,
+point holds the Closest Point to p0 of the Intersection-Range</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '7645', 7645)" onmouseover="showTip(event, '7645', 7645)">
+            IntersectsLine(ray, p0, p1)
+          </code>
+          <div class="tip" id="7645">
+            <strong>Signature:</strong> (ray:Ray2d * p0:V2d * p1:V2d) -&gt; bool<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>returns true if the Ray and the Line(p0,p1) intersect.
+ATTENTION: Both-Sided Ray</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '7646', 7646)" onmouseover="showTip(event, '7646', 7646)">
+            IntersectsLine(ray, p0, p1, t)
+          </code>
+          <div class="tip" id="7646">
+            <strong>Signature:</strong> (ray:Ray2d * p0:V2d * p1:V2d * t:byref&lt;float&gt;) -&gt; bool<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>returns true if the Ray and the Line(p0,p1) intersect.
+t holds the Intersection-Parameter for the Ray
+If both Line-Points are on the Ray no Intersection is returned
+ATTENTION: t can be negative</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '7647', 7647)" onmouseover="showTip(event, '7647', 7647)">
+            IntersectsLine(...)
+          </code>
+          <div class="tip" id="7647">
+            <strong>Signature:</strong> (ray:Ray2d * p0:V2d * p1:V2d * overlapping:bool * t:byref&lt;float&gt;) -&gt; bool<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>returns true if the Ray and the Line(p0,p1) intersect.
+if overlapping is true t holds the smallest Intersection-Parameter for the Ray
+if overlagging is false and both Line-Points are on the Ray no Intersection is returned
+ATTENTION: t can be negative</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '7648', 7648)" onmouseover="showTip(event, '7648', 7648)">
+            IntersectsLine(plane, p0, p1)
+          </code>
+          <div class="tip" id="7648">
+            <strong>Signature:</strong> (plane:Plane2d * p0:V2d * p1:V2d) -&gt; bool<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Returns true if the Plane2d and the line between p0 and p1 intersect
+ATTENTION: Works only with Normalized Plane2ds</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '7649', 7649)" onmouseover="showTip(event, '7649', 7649)">
+            IntersectsLine(triangle, p0, p1)
+          </code>
+          <div class="tip" id="7649">
+            <strong>Signature:</strong> (triangle:Triangle2d * p0:V2d * p1:V2d) -&gt; bool<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Returns true if the triangle and the line between p0 and p1 intersect or the triangle contains the line</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '7650', 7650)" onmouseover="showTip(event, '7650', 7650)">
+            IntersectsLine(quad, p0, p1)
+          </code>
+          <div class="tip" id="7650">
+            <strong>Signature:</strong> (quad:Quad2d * p0:V2d * p1:V2d) -&gt; bool<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>returns true if the Quad and the line between p0 and p1 intersect or the quad contains the line</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '7651', 7651)" onmouseover="showTip(event, '7651', 7651)">
+            IntersectsLine(tri, p0, p1)
+          </code>
+          <div class="tip" id="7651">
+            <strong>Signature:</strong> (tri:Triangle3d * p0:V3d * p1:V3d) -&gt; bool<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>returns true if the triangle and the line, given by p0 and p1, intersect.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '7652', 7652)" onmouseover="showTip(event, '7652', 7652)">
+            IntersectsLine(tri, p0, p1, point)
+          </code>
+          <div class="tip" id="7652">
+            <strong>Signature:</strong> (tri:Triangle3d * p0:V3d * p1:V3d * point:byref&lt;V3d&gt;) -&gt; bool<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>returns true if the triangle and the line, given by p0 and p1, intersect.
+point holds the intersection point.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '7653', 7653)" onmouseover="showTip(event, '7653', 7653)">
+            IntersectsLine(quad, p0, p1)
+          </code>
+          <div class="tip" id="7653">
+            <strong>Signature:</strong> (quad:Quad3d * p0:V3d * p1:V3d) -&gt; bool<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Returns true if the quad and the line, given by p0 and p1, intersect.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '7654', 7654)" onmouseover="showTip(event, '7654', 7654)">
+            IntersectsLine(quad, p0, p1, point)
+          </code>
+          <div class="tip" id="7654">
+            <strong>Signature:</strong> (quad:Quad3d * p0:V3d * p1:V3d * point:byref&lt;V3d&gt;) -&gt; bool<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Returns true if the quad and the line, given by p0 and p1, intersect.
+point holds the intersection point.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '7655', 7655)" onmouseover="showTip(event, '7655', 7655)">
+            IntersectsLine(...)
+          </code>
+          <div class="tip" id="7655">
+            <strong>Signature:</strong> (plane:Plane3d * p0:V3d * p1:V3d * absoluteEpsilon:float) -&gt; bool<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '7656', 7656)" onmouseover="showTip(event, '7656', 7656)">
+            IntersectsLine(...)
+          </code>
+          <div class="tip" id="7656">
+            <strong>Signature:</strong> (plane:Plane3d * p0:V3d * p1:V3d * absoluteEpsilon:float * point:byref&lt;V3d&gt;) -&gt; bool<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '7657', 7657)" onmouseover="showTip(event, '7657', 7657)">
+            IntersectsLine(box, p0, p1)
+          </code>
+          <div class="tip" id="7657">
+            <strong>Signature:</strong> (box:Box3d * p0:V3d * p1:V3d) -&gt; bool<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Returns true if the box and the line intersect.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '7658', 7658)" onmouseover="showTip(event, '7658', 7658)">
+            IntersectsLine(box, p0, p1, out0, out1)
+          </code>
+          <div class="tip" id="7658">
+            <strong>Signature:</strong> (box:Box3d * p0:V3d * p1:V3d * out0:Flags * out1:Flags) -&gt; bool<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Returns true if the box and the line intersect. The outside flags
+of the end points of the line with respect to the box have to be
+supplied, and have to be already individually tested against
+intersection with the box.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '7659', 7659)" onmouseover="showTip(event, '7659', 7659)">
+            IntersectsLine(hull, p0, p1)
+          </code>
+          <div class="tip" id="7659">
+            <strong>Signature:</strong> (hull:Hull3d * p0:V3d * p1:V3d) -&gt; bool<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>returns true if the Hull3d and the Line between p0 and p1 intersect or the Hull3d contains the Line
+[Hull3d-Normals must point outside]</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '7660', 7660)" onmouseover="showTip(event, '7660', 7660)">
+            IntersectsPolygon(...)
+          </code>
+          <div class="tip" id="7660">
+            <strong>Signature:</strong> (ray:Ray3d * vertices:V3d [] * tmin:float * tmax:float) -&gt; bool<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Returns true if the ray and the polygon, which is given by vertices, intersect within the
+supplied parameter interval of the ray.
+(The Method triangulates the polygon)</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '7661', 7661)" onmouseover="showTip(event, '7661', 7661)">
+            IntersectsPolygon(...)
+          </code>
+          <div class="tip" id="7661">
+            <strong>Signature:</strong> (ray:Ray3d * vertices:V3d [] * triangulation:int [] * tmin:float * tmax:float) -&gt; bool<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Returns true if the ray and the polygon, which is given by vertices and triangulation, intersect within the
+supplied parameter interval of the ray.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '7662', 7662)" onmouseover="showTip(event, '7662', 7662)">
+            IntersectsQuad(...)
+          </code>
+          <div class="tip" id="7662">
+            <strong>Signature:</strong> (ray:Ray3d * p0:V3d * p1:V3d * p2:V3d * p3:V3d * tmin:float * tmax:float) -&gt; bool<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Returns true if the ray and the quad intersect within the
+supplied parameter interval of the ray. If you need information
+about the hit point see the Ray3d.Hits method.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '7663', 7663)" onmouseover="showTip(event, '7663', 7663)">
+            IntersectsQuad(box, p0, p1, p2, p3)
+          </code>
+          <div class="tip" id="7663">
+            <strong>Signature:</strong> (box:Box3d * p0:V3d * p1:V3d * p2:V3d * p3:V3d) -&gt; bool<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '7664', 7664)" onmouseover="showTip(event, '7664', 7664)">
+            IntersectsQuad(...)
+          </code>
+          <div class="tip" id="7664">
+            <strong>Signature:</strong> (box:Box3d * p0:V3d * p1:V3d * p2:V3d * p3:V3d * out0:Flags * out1:Flags * out2:Flags * out3:Flags) -&gt; bool<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '7665', 7665)" onmouseover="showTip(event, '7665', 7665)">
+            IntersectsTriangle(box, p0, p1, p2)
+          </code>
+          <div class="tip" id="7665">
+            <strong>Signature:</strong> (box:Box2d * p0:V2d * p1:V2d * p2:V2d) -&gt; bool<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Returns true if the Box and the Triagle intersect</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '7666', 7666)" onmouseover="showTip(event, '7666', 7666)">
+            IntersectsTriangle(...)
+          </code>
+          <div class="tip" id="7666">
+            <strong>Signature:</strong> (ray:Ray3d * p0:V3d * p1:V3d * p2:V3d * tmin:float * tmax:float) -&gt; bool<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Returns true if the ray and the triangle intersect within the
+supplied parameter interval of the ray. If you need information
+about the hit point see the Ray3d.Hits method.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '7667', 7667)" onmouseover="showTip(event, '7667', 7667)">
+            IntersectsTriangle(...)
+          </code>
+          <div class="tip" id="7667">
+            <strong>Signature:</strong> (ray:Ray3d * p0:V3d * p1:V3d * p2:V3d * tmin:float * tmax:float * t:byref&lt;float&gt;) -&gt; bool<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Returns true if the ray and the triangle intersect within the
+supplied parameter interval of the ray. If you need information
+about the hit point see the Ray3d.Hits method.
+t holds the corresponding ray-parameter</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '7668', 7668)" onmouseover="showTip(event, '7668', 7668)">
+            IntersectsTriangle(quad, p0, p1, p2)
+          </code>
+          <div class="tip" id="7668">
+            <strong>Signature:</strong> (quad:Quad3d * p0:V3d * p1:V3d * p2:V3d) -&gt; bool<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Returns true if the quad and the triangle, given by p0/p1/p1, intersect.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '7669', 7669)" onmouseover="showTip(event, '7669', 7669)">
+            IntersectsTriangle(box, p0, p1, p2)
+          </code>
+          <div class="tip" id="7669">
+            <strong>Signature:</strong> (box:Box3d * p0:V3d * p1:V3d * p2:V3d) -&gt; bool<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Returns true if the box and the triangle intersect.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '7670', 7670)" onmouseover="showTip(event, '7670', 7670)">
+            IntersectsTriangle(...)
+          </code>
+          <div class="tip" id="7670">
+            <strong>Signature:</strong> (box:Box3d * p0:V3d * p1:V3d * p2:V3d * out0:Flags * out1:Flags * out2:Flags) -&gt; bool<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Returns true if the box and the triangle intersect. The outside
+flags of the triangle vertices with respect to the box have to be
+supplied, and already be individually tested for intersection with
+the box.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '7671', 7671)" onmouseover="showTip(event, '7671', 7671)">
+            IntersectsTrianglePointAndEdges(...)
+          </code>
+          <div class="tip" id="7671">
+            <strong>Signature:</strong> (ray:Ray3d * p0:V3d * edge01:V3d * edge02:V3d * tmin:float * tmax:float) -&gt; bool<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Returns true if the ray and the triangle intersect within the
+supplied parameter interval of the ray. If you need information
+about the hit point see the Ray3d.Hits method.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '7672', 7672)" onmouseover="showTip(event, '7672', 7672)">
+            IntersectsTrianglePointAndEdges(...)
+          </code>
+          <div class="tip" id="7672">
+            <strong>Signature:</strong> (ray:Ray3d * p0:V3d * edge01:V3d * edge02:V3d * tmin:float * tmax:float * t:byref&lt;float&gt;) -&gt; bool<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Returns true if the ray and the triangle intersect within the
+supplied parameter interval of the ray. If you need information
+about the hit point see the Ray3d.Hits method.
+t holds the corresponding ray-parameter</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '7673', 7673)" onmouseover="showTip(event, '7673', 7673)">
+            IsOrthogonalToAxis(plane, cylinder)
+          </code>
+          <div class="tip" id="7673">
+            <strong>Signature:</strong> (plane:Plane3d * cylinder:Cylinder3d) -&gt; bool<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Tests if the given plane is orthogonal to the cylinder axis (i.e. the plane's normal is parallel to the axis).
+The plane will intersect the cylinder in a circle.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '7674', 7674)" onmouseover="showTip(event, '7674', 7674)">
+            IsParallelToAxis(plane, cylinder)
+          </code>
+          <div class="tip" id="7674">
+            <strong>Signature:</strong> (plane:Plane3d * cylinder:Cylinder3d) -&gt; bool<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Tests if the given plane is parallel to the cylinder axis (i.e. the plane's normal is orthogonal to the axis).
+The plane will intersect the cylinder in two rays or in one tangent line.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '7675', 7675)" onmouseover="showTip(event, '7675', 7675)">
+            Simplify(polyline, epsilon)
+          </code>
+          <div class="tip" id="7675">
+            <strong>Signature:</strong> (polyline:V2d [] * epsilon:float) -&gt; int []<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Returns those indices of the supplied polyline that constitute
+the simplified polyline. A larger epsilon results in a simpler polyline.
+Implemented via the Ramer–Douglas–Peucker algorithm.
+<a href="http://en.wikipedia.org/wiki/Ramer-Douglas-Peucker_algorithm">http://en.wikipedia.org/wiki/Ramer-Douglas-Peucker_algorithm</a></p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '7676', 7676)" onmouseover="showTip(event, '7676', 7676)">
+            Triangulate(xSortedPoints)
+          </code>
+          <div class="tip" id="7676">
+            <strong>Signature:</strong> (xSortedPoints:V2d []) -&gt; int []<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Compute the Delaunay triangulation of the supplied x-sorted point
+array and return a triangle index array with counter-clockwise
+triangles.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '7677', 7677)" onmouseover="showTip(event, '7677', 7677)">
+            TriangulateXY(xSortedPoints)
+          </code>
+          <div class="tip" id="7677">
+            <strong>Signature:</strong> (xSortedPoints:V3d []) -&gt; int []<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Compute the Delaunay triangulation of the supplied x-sorted point
+array in the XY-plane and return a triangle index array with
+counter-clockwise triangles.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '7678', 7678)" onmouseover="showTip(event, '7678', 7678)">
+            Union(p)
+          </code>
+          <div class="tip" id="7678">
+            <strong>Signature:</strong> p:List&lt;Polygon2d&gt; -&gt; IEnumerable&lt;Polygon2d&gt;<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '7679', 7679)" onmouseover="showTip(event, '7679', 7679)">
+            Union(p0, p1)
+          </code>
+          <div class="tip" id="7679">
+            <strong>Signature:</strong> (p0:Polygon2d * p1:Polygon2d) -&gt; IEnumerable&lt;Polygon2d&gt;<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Returns the unified Polygon of the two given ones.
+Works only with convex-Polygons
+Returns an empty Polygon if the two do not intersect</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '7680', 7680)" onmouseover="showTip(event, '7680', 7680)">
+            Union(b0, b1)
+          </code>
+          <div class="tip" id="7680">
+            <strong>Signature:</strong> (b0:Box2d * b1:Box2d) -&gt; IEnumerable&lt;Polygon2d&gt;<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+        </div>
+        <div class="span3">
+          <a href="https://github.com/vrvis">
+            <img src="logo.png" style="width:140px;height:140px;margin:10px 0px 0px 35px;border-style:none;" />
+          </a>
+
+          <ul class="nav nav-list" id="menu">
+
+            <li class="nav-header">Aardvark.Base</li>
+
+            <li class="divider"></li>
+            <li><a href="https://github.com/vrvis/aardvark.base">Home page</a></li>
+            <li class="divider"></li>
+
+            <li><a href="https://www.nuget.org/packages/Aardvark.Base">Get Aardvark.Base via NuGet</a></li>
+            <li><a href="https://github.com/vrvis/aardvark.base">Source Code on GitHub</a></li>
+            <li><a href="https://github.com/vrvis/aardvark.baseLicense">License (Apache 2)</a></li>
+            
+            <!-- <li><a href="https://github.com/vrvis/aardvark.base/RELEASE_NOTES.html">Release Notes</a></li>
+            <li><a href="https://github.com/vrvis/aardvark.base//contributing.html">Contributing to Aardvark.Base</a></li>
+  
+            <li><a href="http://stackoverflow.com/questions/tagged/f%23-fake">Ask a question</a></li> 
+            
+            <li class="nav-header">Tutorials</li>
+            <li><a href="https://github.com/vrvis/aardvark.base/gettingstarted.html">Getting started</a></li>
+            
+            -->
+
+            
+            <li class="divider"></li>
+            <li class="nav-header">Reference</li>
+
+            <li><a href="https://github.com/vrvis/aardvark.base/apidocs/index.html">API Reference</a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    <a href="https://github.com/vrvis/aardvark.base"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_gray_6d6d6d.png" alt="Fork me on GitHub"></a>
+  </body>
+  </html>

@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>CoordTransforms - Aardvark.Base</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="The Aardvark Platform Team">
+
+    <script src="https://code.jquery.com/jquery-1.8.0.js"></script>
+    <script src="https://code.jquery.com/ui/1.8.23/jquery-ui.js"></script>
+    <script src="https://netdna.bootstrapcdn.com/twitter-bootstrap/2.2.1/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link href="https://netdna.bootstrapcdn.com/twitter-bootstrap/2.2.1/css/bootstrap-combined.min.css" rel="stylesheet">
+
+    <link type="text/css" rel="stylesheet" href="https://github.com/vrvis/aardvark.base/content/style.css" />
+    <script type="text/javascript" src="https://github.com/vrvis/aardvark.base/content/tips.js"></script>
+    <!-- HTML5 shim, for IE6-8 support of HTML5 elements -->
+    <!--[if lt IE 9]>
+      <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+  </head>
+  <body>
+    <div class="container">
+      <div class="masthead">
+        <ul class="nav nav-pills pull-right">
+          <li><a href="https://github.com/vrvis/aardvark.base">github page</a></li>
+        </ul>
+        <h3 class="muted"><a href="https://github.com/vrvis/aardvark.base/index.html">Aardvark.Base</a></h3>
+      </div>
+      <hr />
+      <div class="row">
+        <div class="span9" id="main">
+          
+
+
+
+<h1>CoordTransforms</h1>
+<div class="xmldoc">
+<p>Various coordinate transformations.</p>
+<p>Abbreviations:
+ll = lower left, lr = lower right, ul = upper left, ur = upper right</p>
+<p>2D:
+Normalized Image Pos:
+Our coord-exchange format; Independent of reolution.
+(0,0)=ul edge of sensor = ul edge of ul pixel, (1,1) = lr edge of sensor = lr edge of lr pixel.</p>
+<p>Pixel Center:
+(0,0)=center of ul pixel, (w-1, h-1)=center of lr pixel.</p>
+<p>Pixel Edge:
+(0,0)=ul edge of ul pixel, (w-1, h-1)= lr edge of lr pixel.</p>
+
+</div>
+  <h3>Static members</h3>
+  <table class="table table-bordered member-list">
+    <thead>
+      <tr><td>Static member</td><td>Description</td></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '4733', 4733)" onmouseover="showTip(event, '4733', 4733)">
+            NormalizedImagePosToPixelCenter(...)
+          </code>
+          <div class="tip" id="4733">
+            <strong>Signature:</strong> (pos:V2d * imgSizeInPixel:V2i) -&gt; V2d<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Convert from normalized image position [0,1][0,1] to pixel-center position
+(The inverse of toNormalizedImgPos.)</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '4734', 4734)" onmouseover="showTip(event, '4734', 4734)">
+            NormalizedImagePosToPixelCenter(...)
+          </code>
+          <div class="tip" id="4734">
+            <strong>Signature:</strong> (pos:V2d * imgSizeInPixel:V2l) -&gt; V2d<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Convert from normalized image position [0,1][0,1] to pixel-center position
+(The inverse of toNormalizedImgPos.)</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '4735', 4735)" onmouseover="showTip(event, '4735', 4735)">
+            NormalizedImagePosToPixelCenterMat(...)
+          </code>
+          <div class="tip" id="4735">
+            <strong>Signature:</strong> imgSizeInPixel:V2d -&gt; M33d<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Returns a Matrix to
+convert from normalized image position [0,1][0,1] to pixel-center position
+(The inverse of toNormalizedImgPos.)</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '4736', 4736)" onmouseover="showTip(event, '4736', 4736)">
+            NormalizedImagePosToPixelCenterRound(...)
+          </code>
+          <div class="tip" id="4736">
+            <strong>Signature:</strong> (pos:V2d * imgSizeInPixel:V2i) -&gt; V2i<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Convert from normalized image position [0,1][0,1] to already rounded pixel-center position.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '4737', 4737)" onmouseover="showTip(event, '4737', 4737)">
+            NormalizedImagePosToPixelCenterRound(...)
+          </code>
+          <div class="tip" id="4737">
+            <strong>Signature:</strong> (pos:V2d * imgSizeInPixel:V2l) -&gt; V2l<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Convert from normalized image position [0,1][0,1] to already rounded pixel-center position.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '4738', 4738)" onmouseover="showTip(event, '4738', 4738)">
+            NormalizedImagePosToPixelEdge(...)
+          </code>
+          <div class="tip" id="4738">
+            <strong>Signature:</strong> (pos:V2d * imgSizeInPixel:V2d) -&gt; V2d<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '4739', 4739)" onmouseover="showTip(event, '4739', 4739)">
+            NormalizedImagePosToPixelEdgeMat(...)
+          </code>
+          <div class="tip" id="4739">
+            <strong>Signature:</strong> imgSizeInPixel:V2d -&gt; M33d<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '4740', 4740)" onmouseover="showTip(event, '4740', 4740)">
+            NormalizedImagePosToPixelEdgeRound(...)
+          </code>
+          <div class="tip" id="4740">
+            <strong>Signature:</strong> (pos:V2d * imgSizeInPixel:V2d) -&gt; V2i<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '4741', 4741)" onmouseover="showTip(event, '4741', 4741)">
+            PixelCenterToNormalizedImgMat(...)
+          </code>
+          <div class="tip" id="4741">
+            <strong>Signature:</strong> imgSizeInPixel:V2d -&gt; M33d<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Returns a Matrix to
+convert from pixel-center position to normalized image position [0,1][0,1].
+(The inverse of toPixelCenter.)</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '4742', 4742)" onmouseover="showTip(event, '4742', 4742)">
+            PixelCenterToNormalizedImgPos(...)
+          </code>
+          <div class="tip" id="4742">
+            <strong>Signature:</strong> (pos:V2d * imgSizeInPixel:V2d) -&gt; V2d<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Convert from pixel-center position to normalized image position [0,1][0,1].
+(The inverse of toPixelCenter.)</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '4743', 4743)" onmouseover="showTip(event, '4743', 4743)">
+            PixelCenterToNormalizedImgPos(...)
+          </code>
+          <div class="tip" id="4743">
+            <strong>Signature:</strong> (pos:V2i * imgSizeInPixel:V2d) -&gt; V2d<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '4744', 4744)" onmouseover="showTip(event, '4744', 4744)">
+            PixelCenterToNormalizedImgPos(...)
+          </code>
+          <div class="tip" id="4744">
+            <strong>Signature:</strong> (x:int * y:int * imgSizeInPixel:V2d) -&gt; V2d<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '4745', 4745)" onmouseover="showTip(event, '4745', 4745)">
+            PixelEdgeToNormalizedImgMat(...)
+          </code>
+          <div class="tip" id="4745">
+            <strong>Signature:</strong> imgSizeInPixel:V2d -&gt; M33d<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '4746', 4746)" onmouseover="showTip(event, '4746', 4746)">
+            PixelEdgeToNormalizedImgPos(...)
+          </code>
+          <div class="tip" id="4746">
+            <strong>Signature:</strong> (pos:V2d * imgSizeInPixel:V2d) -&gt; V2d<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '4747', 4747)" onmouseover="showTip(event, '4747', 4747)">
+            PixelEdgeToNormalizedImgPos(...)
+          </code>
+          <div class="tip" id="4747">
+            <strong>Signature:</strong> (pos:V2i * imgSizeInPixel:V2d) -&gt; V2d<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+        </div>
+        <div class="span3">
+          <a href="https://github.com/vrvis">
+            <img src="logo.png" style="width:140px;height:140px;margin:10px 0px 0px 35px;border-style:none;" />
+          </a>
+
+          <ul class="nav nav-list" id="menu">
+
+            <li class="nav-header">Aardvark.Base</li>
+
+            <li class="divider"></li>
+            <li><a href="https://github.com/vrvis/aardvark.base">Home page</a></li>
+            <li class="divider"></li>
+
+            <li><a href="https://www.nuget.org/packages/Aardvark.Base">Get Aardvark.Base via NuGet</a></li>
+            <li><a href="https://github.com/vrvis/aardvark.base">Source Code on GitHub</a></li>
+            <li><a href="https://github.com/vrvis/aardvark.baseLicense">License (Apache 2)</a></li>
+            
+            <!-- <li><a href="https://github.com/vrvis/aardvark.base/RELEASE_NOTES.html">Release Notes</a></li>
+            <li><a href="https://github.com/vrvis/aardvark.base//contributing.html">Contributing to Aardvark.Base</a></li>
+  
+            <li><a href="http://stackoverflow.com/questions/tagged/f%23-fake">Ask a question</a></li> 
+            
+            <li class="nav-header">Tutorials</li>
+            <li><a href="https://github.com/vrvis/aardvark.base/gettingstarted.html">Getting started</a></li>
+            
+            -->
+
+            
+            <li class="divider"></li>
+            <li class="nav-header">Reference</li>
+
+            <li><a href="https://github.com/vrvis/aardvark.base/apidocs/index.html">API Reference</a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    <a href="https://github.com/vrvis/aardvark.base"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_gray_6d6d6d.png" alt="Fork me on GitHub"></a>
+  </body>
+  </html>

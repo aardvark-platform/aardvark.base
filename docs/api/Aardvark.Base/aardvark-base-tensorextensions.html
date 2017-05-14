@@ -1,0 +1,1594 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>TensorExtensions - Aardvark.Base</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="The Aardvark Platform Team">
+
+    <script src="https://code.jquery.com/jquery-1.8.0.js"></script>
+    <script src="https://code.jquery.com/ui/1.8.23/jquery-ui.js"></script>
+    <script src="https://netdna.bootstrapcdn.com/twitter-bootstrap/2.2.1/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link href="https://netdna.bootstrapcdn.com/twitter-bootstrap/2.2.1/css/bootstrap-combined.min.css" rel="stylesheet">
+
+    <link type="text/css" rel="stylesheet" href="https://github.com/vrvis/aardvark.base/content/style.css" />
+    <script type="text/javascript" src="https://github.com/vrvis/aardvark.base/content/tips.js"></script>
+    <!-- HTML5 shim, for IE6-8 support of HTML5 elements -->
+    <!--[if lt IE 9]>
+      <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+  </head>
+  <body>
+    <div class="container">
+      <div class="masthead">
+        <ul class="nav nav-pills pull-right">
+          <li><a href="https://github.com/vrvis/aardvark.base">github page</a></li>
+        </ul>
+        <h3 class="muted"><a href="https://github.com/vrvis/aardvark.base/index.html">Aardvark.Base</a></h3>
+      </div>
+      <hr />
+      <div class="row">
+        <div class="span9" id="main">
+          
+
+
+
+<h1>TensorExtensions</h1>
+<div class="xmldoc">
+<p>Wrappers for the best (fastest) available implementation of the respective tensor operation.</p>
+
+</div>
+  <h3>Static members</h3>
+  <table class="table table-bordered member-list">
+    <thead>
+      <tr><td>Static member</td><td>Description</td></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '22278', 22278)" onmouseover="showTip(event, '22278', 22278)">
+            GetCol(m, i)
+          </code>
+          <div class="tip" id="22278">
+            <strong>Signature:</strong> (m:Matrix&lt;&#39;T&gt; * i:int) -&gt; Vector&lt;&#39;T&gt;<br />
+                          <strong>Type parameters:</strong> 'T          </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '22279', 22279)" onmouseover="showTip(event, '22279', 22279)">
+            GetRow(m, i)
+          </code>
+          <div class="tip" id="22279">
+            <strong>Signature:</strong> (m:Matrix&lt;&#39;T&gt; * i:int) -&gt; Vector&lt;&#39;T&gt;<br />
+                          <strong>Type parameters:</strong> 'T          </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '22280', 22280)" onmouseover="showTip(event, '22280', 22280)">
+            SetCol(m, i, data)
+          </code>
+          <div class="tip" id="22280">
+            <strong>Signature:</strong> (m:Matrix&lt;&#39;T&gt; * i:int * data:byref&lt;Vector&lt;&#39;T&gt;&gt;) -&gt; unit<br />
+                          <strong>Type parameters:</strong> 'T          </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '22281', 22281)" onmouseover="showTip(event, '22281', 22281)">
+            SetRow(m, i, data)
+          </code>
+          <div class="tip" id="22281">
+            <strong>Signature:</strong> (m:Matrix&lt;&#39;T&gt; * i:int * data:byref&lt;Vector&lt;&#39;T&gt;&gt;) -&gt; unit<br />
+                          <strong>Type parameters:</strong> 'T          </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '22282', 22282)" onmouseover="showTip(event, '22282', 22282)">
+            SetScaledBSpline3(targetMat, sourceMat)
+          </code>
+          <div class="tip" id="22282">
+            <strong>Signature:</strong> (targetMat:Matrix&lt;byte&gt; * sourceMat:Matrix&lt;byte&gt;) -&gt; unit<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '22283', 22283)" onmouseover="showTip(event, '22283', 22283)">
+            SetScaledBSpline3(targetMat, sourceMat)
+          </code>
+          <div class="tip" id="22283">
+            <strong>Signature:</strong> (targetMat:Matrix&lt;uint16&gt; * sourceMat:Matrix&lt;uint16&gt;) -&gt; unit<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '22284', 22284)" onmouseover="showTip(event, '22284', 22284)">
+            SetScaledBSpline3(targetMat, sourceMat)
+          </code>
+          <div class="tip" id="22284">
+            <strong>Signature:</strong> (targetMat:Matrix&lt;float32&gt; * sourceMat:Matrix&lt;float32&gt;) -&gt; unit<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '22285', 22285)" onmouseover="showTip(event, '22285', 22285)">
+            SetScaledBSpline3(targetMat, sourceMat)
+          </code>
+          <div class="tip" id="22285">
+            <strong>Signature:</strong> (targetMat:Matrix&lt;byte,C3b&gt; * sourceMat:Matrix&lt;byte,C3b&gt;) -&gt; unit<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '22286', 22286)" onmouseover="showTip(event, '22286', 22286)">
+            SetScaledBSpline3(targetMat, sourceMat)
+          </code>
+          <div class="tip" id="22286">
+            <strong>Signature:</strong> (targetMat:Matrix&lt;uint16,C3us&gt; * sourceMat:Matrix&lt;uint16,C3us&gt;) -&gt; unit<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '22287', 22287)" onmouseover="showTip(event, '22287', 22287)">
+            SetScaledBSpline3(targetMat, sourceMat)
+          </code>
+          <div class="tip" id="22287">
+            <strong>Signature:</strong> (targetMat:Matrix&lt;float32,C3f&gt; * sourceMat:Matrix&lt;float32,C3f&gt;) -&gt; unit<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '22288', 22288)" onmouseover="showTip(event, '22288', 22288)">
+            SetScaledBSpline3(targetMat, sourceMat)
+          </code>
+          <div class="tip" id="22288">
+            <strong>Signature:</strong> (targetMat:Matrix&lt;byte,C4b&gt; * sourceMat:Matrix&lt;byte,C4b&gt;) -&gt; unit<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '22289', 22289)" onmouseover="showTip(event, '22289', 22289)">
+            SetScaledBSpline3(targetMat, sourceMat)
+          </code>
+          <div class="tip" id="22289">
+            <strong>Signature:</strong> (targetMat:Matrix&lt;uint16,C4us&gt; * sourceMat:Matrix&lt;uint16,C4us&gt;) -&gt; unit<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '22290', 22290)" onmouseover="showTip(event, '22290', 22290)">
+            SetScaledBSpline3(targetMat, sourceMat)
+          </code>
+          <div class="tip" id="22290">
+            <strong>Signature:</strong> (targetMat:Matrix&lt;float32,C4f&gt; * sourceMat:Matrix&lt;float32,C4f&gt;) -&gt; unit<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '22291', 22291)" onmouseover="showTip(event, '22291', 22291)">
+            SetScaledBSpline5(targetMat, sourceMat)
+          </code>
+          <div class="tip" id="22291">
+            <strong>Signature:</strong> (targetMat:Matrix&lt;byte&gt; * sourceMat:Matrix&lt;byte&gt;) -&gt; unit<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '22292', 22292)" onmouseover="showTip(event, '22292', 22292)">
+            SetScaledBSpline5(targetMat, sourceMat)
+          </code>
+          <div class="tip" id="22292">
+            <strong>Signature:</strong> (targetMat:Matrix&lt;uint16&gt; * sourceMat:Matrix&lt;uint16&gt;) -&gt; unit<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '22293', 22293)" onmouseover="showTip(event, '22293', 22293)">
+            SetScaledBSpline5(targetMat, sourceMat)
+          </code>
+          <div class="tip" id="22293">
+            <strong>Signature:</strong> (targetMat:Matrix&lt;float32&gt; * sourceMat:Matrix&lt;float32&gt;) -&gt; unit<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '22294', 22294)" onmouseover="showTip(event, '22294', 22294)">
+            SetScaledBSpline5(targetMat, sourceMat)
+          </code>
+          <div class="tip" id="22294">
+            <strong>Signature:</strong> (targetMat:Matrix&lt;byte,C3b&gt; * sourceMat:Matrix&lt;byte,C3b&gt;) -&gt; unit<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '22295', 22295)" onmouseover="showTip(event, '22295', 22295)">
+            SetScaledBSpline5(targetMat, sourceMat)
+          </code>
+          <div class="tip" id="22295">
+            <strong>Signature:</strong> (targetMat:Matrix&lt;uint16,C3us&gt; * sourceMat:Matrix&lt;uint16,C3us&gt;) -&gt; unit<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '22296', 22296)" onmouseover="showTip(event, '22296', 22296)">
+            SetScaledBSpline5(targetMat, sourceMat)
+          </code>
+          <div class="tip" id="22296">
+            <strong>Signature:</strong> (targetMat:Matrix&lt;float32,C3f&gt; * sourceMat:Matrix&lt;float32,C3f&gt;) -&gt; unit<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '22297', 22297)" onmouseover="showTip(event, '22297', 22297)">
+            SetScaledBSpline5(targetMat, sourceMat)
+          </code>
+          <div class="tip" id="22297">
+            <strong>Signature:</strong> (targetMat:Matrix&lt;byte,C4b&gt; * sourceMat:Matrix&lt;byte,C4b&gt;) -&gt; unit<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '22298', 22298)" onmouseover="showTip(event, '22298', 22298)">
+            SetScaledBSpline5(targetMat, sourceMat)
+          </code>
+          <div class="tip" id="22298">
+            <strong>Signature:</strong> (targetMat:Matrix&lt;uint16,C4us&gt; * sourceMat:Matrix&lt;uint16,C4us&gt;) -&gt; unit<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '22299', 22299)" onmouseover="showTip(event, '22299', 22299)">
+            SetScaledBSpline5(targetMat, sourceMat)
+          </code>
+          <div class="tip" id="22299">
+            <strong>Signature:</strong> (targetMat:Matrix&lt;float32,C4f&gt; * sourceMat:Matrix&lt;float32,C4f&gt;) -&gt; unit<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '22300', 22300)" onmouseover="showTip(event, '22300', 22300)">
+            SetScaledCubic(...)
+          </code>
+          <div class="tip" id="22300">
+            <strong>Signature:</strong> (targetMat:Matrix&lt;byte&gt; * sourceMat:Matrix&lt;byte&gt; * par:float) -&gt; unit<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Use Cubic Spline interpolation to scale the source matrix into the target matrix.
+The supplied parameter selects the spline to use. The default value of -0.5 generates
+Hermite Splines. If you call this repeatedly with the same selection parameter,
+build the cubic weighting function with 'Fun.CreateCubicTup4f(par)' and use the
+result as a paramter to the function call.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '22301', 22301)" onmouseover="showTip(event, '22301', 22301)">
+            SetScaledCubic(...)
+          </code>
+          <div class="tip" id="22301">
+            <strong>Signature:</strong> (targetMat:Matrix&lt;byte&gt; * sourceMat:Matrix&lt;byte&gt; * interpolator:Func&lt;float,Tup4&lt;float32&gt;&gt;) -&gt; unit<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Use a supplied cubic interpolator to scale the source matrix into the target matrix.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '22302', 22302)" onmouseover="showTip(event, '22302', 22302)">
+            SetScaledCubic(...)
+          </code>
+          <div class="tip" id="22302">
+            <strong>Signature:</strong> (targetMat:Matrix&lt;uint16&gt; * sourceMat:Matrix&lt;uint16&gt; * par:float) -&gt; unit<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Use Cubic Spline interpolation to scale the source matrix into the target matrix.
+The supplied parameter selects the spline to use. The default value of -0.5 generates
+Hermite Splines. If you call this repeatedly with the same selection parameter,
+build the cubic weighting function with 'Fun.CreateCubicTup4f(par)' and use the
+result as a paramter to the function call.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '22303', 22303)" onmouseover="showTip(event, '22303', 22303)">
+            SetScaledCubic(...)
+          </code>
+          <div class="tip" id="22303">
+            <strong>Signature:</strong> (targetMat:Matrix&lt;uint16&gt; * sourceMat:Matrix&lt;uint16&gt; * interpolator:Func&lt;float,Tup4&lt;float32&gt;&gt;) -&gt; unit<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Use a supplied cubic interpolator to scale the source matrix into the target matrix.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '22304', 22304)" onmouseover="showTip(event, '22304', 22304)">
+            SetScaledCubic(...)
+          </code>
+          <div class="tip" id="22304">
+            <strong>Signature:</strong> (targetMat:Matrix&lt;float32&gt; * sourceMat:Matrix&lt;float32&gt; * par:float) -&gt; unit<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Use Cubic Spline interpolation to scale the source matrix into the target matrix.
+The supplied parameter selects the spline to use. The default value of -0.5 generates
+Hermite Splines. If you call this repeatedly with the same selection parameter,
+build the cubic weighting function with 'Fun.CreateCubicTup4f(par)' and use the
+result as a paramter to the function call.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '22305', 22305)" onmouseover="showTip(event, '22305', 22305)">
+            SetScaledCubic(...)
+          </code>
+          <div class="tip" id="22305">
+            <strong>Signature:</strong> (targetMat:Matrix&lt;float32&gt; * sourceMat:Matrix&lt;float32&gt; * interpolator:Func&lt;float,Tup4&lt;float32&gt;&gt;) -&gt; unit<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Use a supplied cubic interpolator to scale the source matrix into the target matrix.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '22306', 22306)" onmouseover="showTip(event, '22306', 22306)">
+            SetScaledCubic(...)
+          </code>
+          <div class="tip" id="22306">
+            <strong>Signature:</strong> (targetMat:Matrix&lt;byte,C3b&gt; * sourceMat:Matrix&lt;byte,C3b&gt; * par:float) -&gt; unit<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Use Cubic Spline interpolation to scale the source matrix into the target matrix.
+The supplied parameter selects the spline to use. The default value of -0.5 generates
+Hermite Splines. If you call this repeatedly with the same selection parameter,
+build the cubic weighting function with 'Fun.CreateCubicTup4f(par)' and use the
+result as a paramter to the function call.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '22307', 22307)" onmouseover="showTip(event, '22307', 22307)">
+            SetScaledCubic(...)
+          </code>
+          <div class="tip" id="22307">
+            <strong>Signature:</strong> (targetMat:Matrix&lt;byte,C3b&gt; * sourceMat:Matrix&lt;byte,C3b&gt; * interpolator:Func&lt;float,Tup4&lt;float32&gt;&gt;) -&gt; unit<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Use a supplied cubic interpolator to scale the source matrix into the target matrix.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '22308', 22308)" onmouseover="showTip(event, '22308', 22308)">
+            SetScaledCubic(...)
+          </code>
+          <div class="tip" id="22308">
+            <strong>Signature:</strong> (targetMat:Matrix&lt;uint16,C3us&gt; * sourceMat:Matrix&lt;uint16,C3us&gt; * par:float) -&gt; unit<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Use Cubic Spline interpolation to scale the source matrix into the target matrix.
+The supplied parameter selects the spline to use. The default value of -0.5 generates
+Hermite Splines. If you call this repeatedly with the same selection parameter,
+build the cubic weighting function with 'Fun.CreateCubicTup4f(par)' and use the
+result as a paramter to the function call.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '22309', 22309)" onmouseover="showTip(event, '22309', 22309)">
+            SetScaledCubic(...)
+          </code>
+          <div class="tip" id="22309">
+            <strong>Signature:</strong> (targetMat:Matrix&lt;uint16,C3us&gt; * sourceMat:Matrix&lt;uint16,C3us&gt; * interpolator:Func&lt;float,Tup4&lt;float32&gt;&gt;) -&gt; unit<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Use a supplied cubic interpolator to scale the source matrix into the target matrix.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '22310', 22310)" onmouseover="showTip(event, '22310', 22310)">
+            SetScaledCubic(...)
+          </code>
+          <div class="tip" id="22310">
+            <strong>Signature:</strong> (targetMat:Matrix&lt;float32,C3f&gt; * sourceMat:Matrix&lt;float32,C3f&gt; * par:float) -&gt; unit<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Use Cubic Spline interpolation to scale the source matrix into the target matrix.
+The supplied parameter selects the spline to use. The default value of -0.5 generates
+Hermite Splines. If you call this repeatedly with the same selection parameter,
+build the cubic weighting function with 'Fun.CreateCubicTup4f(par)' and use the
+result as a paramter to the function call.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '22311', 22311)" onmouseover="showTip(event, '22311', 22311)">
+            SetScaledCubic(...)
+          </code>
+          <div class="tip" id="22311">
+            <strong>Signature:</strong> (targetMat:Matrix&lt;float32,C3f&gt; * sourceMat:Matrix&lt;float32,C3f&gt; * interpolator:Func&lt;float,Tup4&lt;float32&gt;&gt;) -&gt; unit<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Use a supplied cubic interpolator to scale the source matrix into the target matrix.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '22312', 22312)" onmouseover="showTip(event, '22312', 22312)">
+            SetScaledCubic(...)
+          </code>
+          <div class="tip" id="22312">
+            <strong>Signature:</strong> (targetMat:Matrix&lt;byte,C4b&gt; * sourceMat:Matrix&lt;byte,C4b&gt; * par:float) -&gt; unit<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Use Cubic Spline interpolation to scale the source matrix into the target matrix.
+The supplied parameter selects the spline to use. The default value of -0.5 generates
+Hermite Splines. If you call this repeatedly with the same selection parameter,
+build the cubic weighting function with 'Fun.CreateCubicTup4f(par)' and use the
+result as a paramter to the function call.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '22313', 22313)" onmouseover="showTip(event, '22313', 22313)">
+            SetScaledCubic(...)
+          </code>
+          <div class="tip" id="22313">
+            <strong>Signature:</strong> (targetMat:Matrix&lt;byte,C4b&gt; * sourceMat:Matrix&lt;byte,C4b&gt; * interpolator:Func&lt;float,Tup4&lt;float32&gt;&gt;) -&gt; unit<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Use a supplied cubic interpolator to scale the source matrix into the target matrix.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '22314', 22314)" onmouseover="showTip(event, '22314', 22314)">
+            SetScaledCubic(...)
+          </code>
+          <div class="tip" id="22314">
+            <strong>Signature:</strong> (targetMat:Matrix&lt;uint16,C4us&gt; * sourceMat:Matrix&lt;uint16,C4us&gt; * par:float) -&gt; unit<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Use Cubic Spline interpolation to scale the source matrix into the target matrix.
+The supplied parameter selects the spline to use. The default value of -0.5 generates
+Hermite Splines. If you call this repeatedly with the same selection parameter,
+build the cubic weighting function with 'Fun.CreateCubicTup4f(par)' and use the
+result as a paramter to the function call.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '22315', 22315)" onmouseover="showTip(event, '22315', 22315)">
+            SetScaledCubic(...)
+          </code>
+          <div class="tip" id="22315">
+            <strong>Signature:</strong> (targetMat:Matrix&lt;uint16,C4us&gt; * sourceMat:Matrix&lt;uint16,C4us&gt; * interpolator:Func&lt;float,Tup4&lt;float32&gt;&gt;) -&gt; unit<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Use a supplied cubic interpolator to scale the source matrix into the target matrix.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '22316', 22316)" onmouseover="showTip(event, '22316', 22316)">
+            SetScaledCubic(...)
+          </code>
+          <div class="tip" id="22316">
+            <strong>Signature:</strong> (targetMat:Matrix&lt;float32,C4f&gt; * sourceMat:Matrix&lt;float32,C4f&gt; * par:float) -&gt; unit<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Use Cubic Spline interpolation to scale the source matrix into the target matrix.
+The supplied parameter selects the spline to use. The default value of -0.5 generates
+Hermite Splines. If you call this repeatedly with the same selection parameter,
+build the cubic weighting function with 'Fun.CreateCubicTup4f(par)' and use the
+result as a paramter to the function call.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '22317', 22317)" onmouseover="showTip(event, '22317', 22317)">
+            SetScaledCubic(...)
+          </code>
+          <div class="tip" id="22317">
+            <strong>Signature:</strong> (targetMat:Matrix&lt;float32,C4f&gt; * sourceMat:Matrix&lt;float32,C4f&gt; * interpolator:Func&lt;float,Tup4&lt;float32&gt;&gt;) -&gt; unit<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Use a supplied cubic interpolator to scale the source matrix into the target matrix.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '22318', 22318)" onmouseover="showTip(event, '22318', 22318)">
+            SetScaledLanczos(targetMat, sourceMat)
+          </code>
+          <div class="tip" id="22318">
+            <strong>Signature:</strong> (targetMat:Matrix&lt;byte&gt; * sourceMat:Matrix&lt;byte&gt;) -&gt; unit<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Use Lanczos Interpoation to scale the source matrix into the target matrix.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '22319', 22319)" onmouseover="showTip(event, '22319', 22319)">
+            SetScaledLanczos(targetMat, sourceMat)
+          </code>
+          <div class="tip" id="22319">
+            <strong>Signature:</strong> (targetMat:Matrix&lt;uint16&gt; * sourceMat:Matrix&lt;uint16&gt;) -&gt; unit<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Use Lanczos Interpoation to scale the source matrix into the target matrix.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '22320', 22320)" onmouseover="showTip(event, '22320', 22320)">
+            SetScaledLanczos(targetMat, sourceMat)
+          </code>
+          <div class="tip" id="22320">
+            <strong>Signature:</strong> (targetMat:Matrix&lt;float32&gt; * sourceMat:Matrix&lt;float32&gt;) -&gt; unit<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Use Lanczos Interpoation to scale the source matrix into the target matrix.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '22321', 22321)" onmouseover="showTip(event, '22321', 22321)">
+            SetScaledLanczos(targetMat, sourceMat)
+          </code>
+          <div class="tip" id="22321">
+            <strong>Signature:</strong> (targetMat:Matrix&lt;byte,C3b&gt; * sourceMat:Matrix&lt;byte,C3b&gt;) -&gt; unit<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Use Lanczos Interpoation to scale the source matrix into the target matrix.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '22322', 22322)" onmouseover="showTip(event, '22322', 22322)">
+            SetScaledLanczos(targetMat, sourceMat)
+          </code>
+          <div class="tip" id="22322">
+            <strong>Signature:</strong> (targetMat:Matrix&lt;uint16,C3us&gt; * sourceMat:Matrix&lt;uint16,C3us&gt;) -&gt; unit<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Use Lanczos Interpoation to scale the source matrix into the target matrix.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '22323', 22323)" onmouseover="showTip(event, '22323', 22323)">
+            SetScaledLanczos(targetMat, sourceMat)
+          </code>
+          <div class="tip" id="22323">
+            <strong>Signature:</strong> (targetMat:Matrix&lt;float32,C3f&gt; * sourceMat:Matrix&lt;float32,C3f&gt;) -&gt; unit<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Use Lanczos Interpoation to scale the source matrix into the target matrix.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '22324', 22324)" onmouseover="showTip(event, '22324', 22324)">
+            SetScaledLanczos(targetMat, sourceMat)
+          </code>
+          <div class="tip" id="22324">
+            <strong>Signature:</strong> (targetMat:Matrix&lt;byte,C4b&gt; * sourceMat:Matrix&lt;byte,C4b&gt;) -&gt; unit<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Use Lanczos Interpoation to scale the source matrix into the target matrix.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '22325', 22325)" onmouseover="showTip(event, '22325', 22325)">
+            SetScaledLanczos(targetMat, sourceMat)
+          </code>
+          <div class="tip" id="22325">
+            <strong>Signature:</strong> (targetMat:Matrix&lt;uint16,C4us&gt; * sourceMat:Matrix&lt;uint16,C4us&gt;) -&gt; unit<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Use Lanczos Interpoation to scale the source matrix into the target matrix.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '22326', 22326)" onmouseover="showTip(event, '22326', 22326)">
+            SetScaledLanczos(targetMat, sourceMat)
+          </code>
+          <div class="tip" id="22326">
+            <strong>Signature:</strong> (targetMat:Matrix&lt;float32,C4f&gt; * sourceMat:Matrix&lt;float32,C4f&gt;) -&gt; unit<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Use Lanczos Interpoation to scale the source matrix into the target matrix.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '22327', 22327)" onmouseover="showTip(event, '22327', 22327)">
+            SetScaledLinear(...)
+          </code>
+          <div class="tip" id="22327">
+            <strong>Signature:</strong> (targetMat:Matrix&lt;byte&gt; * sourceMat:Matrix&lt;byte&gt; * xinterpolator:Func&lt;float,byte,byte,&#39;T1&gt; * yinterpolator:Func&lt;float,&#39;T1,&#39;T1,byte&gt;) -&gt; unit<br />
+                          <strong>Type parameters:</strong> 'T1          </div>
+        </td>
+        <td class="xmldoc">
+          <p>Use supplied linear interpolators in x and y to scale the source matrix into the target
+matrix.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '22328', 22328)" onmouseover="showTip(event, '22328', 22328)">
+            SetScaledLinear(...)
+          </code>
+          <div class="tip" id="22328">
+            <strong>Signature:</strong> (targetMat:Matrix&lt;uint16&gt; * sourceMat:Matrix&lt;uint16&gt; * xinterpolator:Func&lt;float,uint16,uint16,&#39;T1&gt; * yinterpolator:Func&lt;float,&#39;T1,&#39;T1,uint16&gt;) -&gt; unit<br />
+                          <strong>Type parameters:</strong> 'T1          </div>
+        </td>
+        <td class="xmldoc">
+          <p>Use supplied linear interpolators in x and y to scale the source matrix into the target
+matrix.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '22329', 22329)" onmouseover="showTip(event, '22329', 22329)">
+            SetScaledLinear(...)
+          </code>
+          <div class="tip" id="22329">
+            <strong>Signature:</strong> (targetMat:Matrix&lt;float32&gt; * sourceMat:Matrix&lt;float32&gt; * xinterpolator:Func&lt;float,float32,float32,&#39;T1&gt; * yinterpolator:Func&lt;float,&#39;T1,&#39;T1,float32&gt;) -&gt; unit<br />
+                          <strong>Type parameters:</strong> 'T1          </div>
+        </td>
+        <td class="xmldoc">
+          <p>Use supplied linear interpolators in x and y to scale the source matrix into the target
+matrix.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '22330', 22330)" onmouseover="showTip(event, '22330', 22330)">
+            SetScaledLinear(...)
+          </code>
+          <div class="tip" id="22330">
+            <strong>Signature:</strong> (targetMat:Matrix&lt;byte,C3b&gt; * sourceMat:Matrix&lt;byte,C3b&gt; * xinterpolator:Func&lt;float,C3b,C3b,&#39;T1&gt; * yinterpolator:Func&lt;float,&#39;T1,&#39;T1,C3b&gt;) -&gt; unit<br />
+                          <strong>Type parameters:</strong> 'T1          </div>
+        </td>
+        <td class="xmldoc">
+          <p>Use supplied linear interpolators in x and y to scale the source matrix into the target
+matrix.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '22331', 22331)" onmouseover="showTip(event, '22331', 22331)">
+            SetScaledLinear(...)
+          </code>
+          <div class="tip" id="22331">
+            <strong>Signature:</strong> (targetMat:Matrix&lt;uint16,C3us&gt; * sourceMat:Matrix&lt;uint16,C3us&gt; * xinterpolator:Func&lt;float,C3us,C3us,&#39;T1&gt; * yinterpolator:Func&lt;float,&#39;T1,&#39;T1,C3us&gt;) -&gt; unit<br />
+                          <strong>Type parameters:</strong> 'T1          </div>
+        </td>
+        <td class="xmldoc">
+          <p>Use supplied linear interpolators in x and y to scale the source matrix into the target
+matrix.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '22332', 22332)" onmouseover="showTip(event, '22332', 22332)">
+            SetScaledLinear(...)
+          </code>
+          <div class="tip" id="22332">
+            <strong>Signature:</strong> (targetMat:Matrix&lt;float32,C3f&gt; * sourceMat:Matrix&lt;float32,C3f&gt; * xinterpolator:Func&lt;float,C3f,C3f,&#39;T1&gt; * yinterpolator:Func&lt;float,&#39;T1,&#39;T1,C3f&gt;) -&gt; unit<br />
+                          <strong>Type parameters:</strong> 'T1          </div>
+        </td>
+        <td class="xmldoc">
+          <p>Use supplied linear interpolators in x and y to scale the source matrix into the target
+matrix.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '22333', 22333)" onmouseover="showTip(event, '22333', 22333)">
+            SetScaledLinear(...)
+          </code>
+          <div class="tip" id="22333">
+            <strong>Signature:</strong> (targetMat:Matrix&lt;byte,C4b&gt; * sourceMat:Matrix&lt;byte,C4b&gt; * xinterpolator:Func&lt;float,C4b,C4b,&#39;T1&gt; * yinterpolator:Func&lt;float,&#39;T1,&#39;T1,C4b&gt;) -&gt; unit<br />
+                          <strong>Type parameters:</strong> 'T1          </div>
+        </td>
+        <td class="xmldoc">
+          <p>Use supplied linear interpolators in x and y to scale the source matrix into the target
+matrix.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '22334', 22334)" onmouseover="showTip(event, '22334', 22334)">
+            SetScaledLinear(...)
+          </code>
+          <div class="tip" id="22334">
+            <strong>Signature:</strong> (targetMat:Matrix&lt;uint16,C4us&gt; * sourceMat:Matrix&lt;uint16,C4us&gt; * xinterpolator:Func&lt;float,C4us,C4us,&#39;T1&gt; * yinterpolator:Func&lt;float,&#39;T1,&#39;T1,C4us&gt;) -&gt; unit<br />
+                          <strong>Type parameters:</strong> 'T1          </div>
+        </td>
+        <td class="xmldoc">
+          <p>Use supplied linear interpolators in x and y to scale the source matrix into the target
+matrix.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '22335', 22335)" onmouseover="showTip(event, '22335', 22335)">
+            SetScaledLinear(...)
+          </code>
+          <div class="tip" id="22335">
+            <strong>Signature:</strong> (targetMat:Matrix&lt;float32,C4f&gt; * sourceMat:Matrix&lt;float32,C4f&gt; * xinterpolator:Func&lt;float,C4f,C4f,&#39;T1&gt; * yinterpolator:Func&lt;float,&#39;T1,&#39;T1,C4f&gt;) -&gt; unit<br />
+                          <strong>Type parameters:</strong> 'T1          </div>
+        </td>
+        <td class="xmldoc">
+          <p>Use supplied linear interpolators in x and y to scale the source matrix into the target
+matrix.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '22336', 22336)" onmouseover="showTip(event, '22336', 22336)">
+            SetScaledNearest(targetMat, sourceMat)
+          </code>
+          <div class="tip" id="22336">
+            <strong>Signature:</strong> (targetMat:Matrix&lt;byte&gt; * sourceMat:Matrix&lt;byte&gt;) -&gt; unit<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '22337', 22337)" onmouseover="showTip(event, '22337', 22337)">
+            SetScaledNearest(targetMat, sourceMat)
+          </code>
+          <div class="tip" id="22337">
+            <strong>Signature:</strong> (targetMat:Matrix&lt;uint16&gt; * sourceMat:Matrix&lt;uint16&gt;) -&gt; unit<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '22338', 22338)" onmouseover="showTip(event, '22338', 22338)">
+            SetScaledNearest(targetMat, sourceMat)
+          </code>
+          <div class="tip" id="22338">
+            <strong>Signature:</strong> (targetMat:Matrix&lt;float32&gt; * sourceMat:Matrix&lt;float32&gt;) -&gt; unit<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '22339', 22339)" onmouseover="showTip(event, '22339', 22339)">
+            SetScaledNearest(targetMat, sourceMat)
+          </code>
+          <div class="tip" id="22339">
+            <strong>Signature:</strong> (targetMat:Matrix&lt;byte,C3b&gt; * sourceMat:Matrix&lt;byte,C3b&gt;) -&gt; unit<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '22340', 22340)" onmouseover="showTip(event, '22340', 22340)">
+            SetScaledNearest(targetMat, sourceMat)
+          </code>
+          <div class="tip" id="22340">
+            <strong>Signature:</strong> (targetMat:Matrix&lt;uint16,C3us&gt; * sourceMat:Matrix&lt;uint16,C3us&gt;) -&gt; unit<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '22341', 22341)" onmouseover="showTip(event, '22341', 22341)">
+            SetScaledNearest(targetMat, sourceMat)
+          </code>
+          <div class="tip" id="22341">
+            <strong>Signature:</strong> (targetMat:Matrix&lt;float32,C3f&gt; * sourceMat:Matrix&lt;float32,C3f&gt;) -&gt; unit<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '22342', 22342)" onmouseover="showTip(event, '22342', 22342)">
+            SetScaledNearest(targetMat, sourceMat)
+          </code>
+          <div class="tip" id="22342">
+            <strong>Signature:</strong> (targetMat:Matrix&lt;byte,C4b&gt; * sourceMat:Matrix&lt;byte,C4b&gt;) -&gt; unit<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '22343', 22343)" onmouseover="showTip(event, '22343', 22343)">
+            SetScaledNearest(targetMat, sourceMat)
+          </code>
+          <div class="tip" id="22343">
+            <strong>Signature:</strong> (targetMat:Matrix&lt;uint16,C4us&gt; * sourceMat:Matrix&lt;uint16,C4us&gt;) -&gt; unit<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '22344', 22344)" onmouseover="showTip(event, '22344', 22344)">
+            SetScaledNearest(targetMat, sourceMat)
+          </code>
+          <div class="tip" id="22344">
+            <strong>Signature:</strong> (targetMat:Matrix&lt;float32,C4f&gt; * sourceMat:Matrix&lt;float32,C4f&gt;) -&gt; unit<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '22345', 22345)" onmouseover="showTip(event, '22345', 22345)">
+            SetScaledOrder5(...)
+          </code>
+          <div class="tip" id="22345">
+            <strong>Signature:</strong> (targetMat:Matrix&lt;byte&gt; * sourceMat:Matrix&lt;byte&gt; * interpolator:Func&lt;float,Tup6&lt;float32&gt;&gt;) -&gt; unit<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '22346', 22346)" onmouseover="showTip(event, '22346', 22346)">
+            SetScaledOrder5(...)
+          </code>
+          <div class="tip" id="22346">
+            <strong>Signature:</strong> (targetMat:Matrix&lt;uint16&gt; * sourceMat:Matrix&lt;uint16&gt; * interpolator:Func&lt;float,Tup6&lt;float32&gt;&gt;) -&gt; unit<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '22347', 22347)" onmouseover="showTip(event, '22347', 22347)">
+            SetScaledOrder5(...)
+          </code>
+          <div class="tip" id="22347">
+            <strong>Signature:</strong> (targetMat:Matrix&lt;float32&gt; * sourceMat:Matrix&lt;float32&gt; * interpolator:Func&lt;float,Tup6&lt;float32&gt;&gt;) -&gt; unit<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '22348', 22348)" onmouseover="showTip(event, '22348', 22348)">
+            SetScaledOrder5(...)
+          </code>
+          <div class="tip" id="22348">
+            <strong>Signature:</strong> (targetMat:Matrix&lt;byte,C3b&gt; * sourceMat:Matrix&lt;byte,C3b&gt; * interpolator:Func&lt;float,Tup6&lt;float32&gt;&gt;) -&gt; unit<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '22349', 22349)" onmouseover="showTip(event, '22349', 22349)">
+            SetScaledOrder5(...)
+          </code>
+          <div class="tip" id="22349">
+            <strong>Signature:</strong> (targetMat:Matrix&lt;uint16,C3us&gt; * sourceMat:Matrix&lt;uint16,C3us&gt; * interpolator:Func&lt;float,Tup6&lt;float32&gt;&gt;) -&gt; unit<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '22350', 22350)" onmouseover="showTip(event, '22350', 22350)">
+            SetScaledOrder5(...)
+          </code>
+          <div class="tip" id="22350">
+            <strong>Signature:</strong> (targetMat:Matrix&lt;float32,C3f&gt; * sourceMat:Matrix&lt;float32,C3f&gt; * interpolator:Func&lt;float,Tup6&lt;float32&gt;&gt;) -&gt; unit<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '22351', 22351)" onmouseover="showTip(event, '22351', 22351)">
+            SetScaledOrder5(...)
+          </code>
+          <div class="tip" id="22351">
+            <strong>Signature:</strong> (targetMat:Matrix&lt;byte,C4b&gt; * sourceMat:Matrix&lt;byte,C4b&gt; * interpolator:Func&lt;float,Tup6&lt;float32&gt;&gt;) -&gt; unit<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '22352', 22352)" onmouseover="showTip(event, '22352', 22352)">
+            SetScaledOrder5(...)
+          </code>
+          <div class="tip" id="22352">
+            <strong>Signature:</strong> (targetMat:Matrix&lt;uint16,C4us&gt; * sourceMat:Matrix&lt;uint16,C4us&gt; * interpolator:Func&lt;float,Tup6&lt;float32&gt;&gt;) -&gt; unit<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '22353', 22353)" onmouseover="showTip(event, '22353', 22353)">
+            SetScaledOrder5(...)
+          </code>
+          <div class="tip" id="22353">
+            <strong>Signature:</strong> (targetMat:Matrix&lt;float32,C4f&gt; * sourceMat:Matrix&lt;float32,C4f&gt; * interpolator:Func&lt;float,Tup6&lt;float32&gt;&gt;) -&gt; unit<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '22354', 22354)" onmouseover="showTip(event, '22354', 22354)">
+            ToPixImage(matrix)
+          </code>
+          <div class="tip" id="22354">
+            <strong>Signature:</strong> matrix:Matrix&lt;&#39;T&gt; -&gt; PixImage&lt;&#39;T&gt;<br />
+                          <strong>Type parameters:</strong> 'T          </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '22355', 22355)" onmouseover="showTip(event, '22355', 22355)">
+            ToPixImage(volume)
+          </code>
+          <div class="tip" id="22355">
+            <strong>Signature:</strong> volume:Volume&lt;&#39;T&gt; -&gt; PixImage&lt;&#39;T&gt;<br />
+                          <strong>Type parameters:</strong> 'T          </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '22356', 22356)" onmouseover="showTip(event, '22356', 22356)">
+            ToPixImage(volume, format)
+          </code>
+          <div class="tip" id="22356">
+            <strong>Signature:</strong> (volume:Volume&lt;&#39;T&gt; * format:Format) -&gt; PixImage&lt;&#39;T&gt;<br />
+                          <strong>Type parameters:</strong> 'T          </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '22357', 22357)" onmouseover="showTip(event, '22357', 22357)">
+            ToPixImage(matrix)
+          </code>
+          <div class="tip" id="22357">
+            <strong>Signature:</strong> matrix:Matrix&lt;C3b&gt; -&gt; PixImage&lt;&#39;T&gt;<br />
+                          <strong>Type parameters:</strong> 'T          </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '22358', 22358)" onmouseover="showTip(event, '22358', 22358)">
+            ToPixImage(matrix)
+          </code>
+          <div class="tip" id="22358">
+            <strong>Signature:</strong> matrix:Matrix&lt;C3us&gt; -&gt; PixImage&lt;&#39;T&gt;<br />
+                          <strong>Type parameters:</strong> 'T          </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '22359', 22359)" onmouseover="showTip(event, '22359', 22359)">
+            ToPixImage(matrix)
+          </code>
+          <div class="tip" id="22359">
+            <strong>Signature:</strong> matrix:Matrix&lt;C3f&gt; -&gt; PixImage&lt;&#39;T&gt;<br />
+                          <strong>Type parameters:</strong> 'T          </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '22360', 22360)" onmouseover="showTip(event, '22360', 22360)">
+            ToPixImage(matrix)
+          </code>
+          <div class="tip" id="22360">
+            <strong>Signature:</strong> matrix:Matrix&lt;C4b&gt; -&gt; PixImage&lt;&#39;T&gt;<br />
+                          <strong>Type parameters:</strong> 'T          </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '22361', 22361)" onmouseover="showTip(event, '22361', 22361)">
+            ToPixImage(matrix)
+          </code>
+          <div class="tip" id="22361">
+            <strong>Signature:</strong> matrix:Matrix&lt;C4us&gt; -&gt; PixImage&lt;&#39;T&gt;<br />
+                          <strong>Type parameters:</strong> 'T          </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '22362', 22362)" onmouseover="showTip(event, '22362', 22362)">
+            ToPixImage(matrix)
+          </code>
+          <div class="tip" id="22362">
+            <strong>Signature:</strong> matrix:Matrix&lt;C4f&gt; -&gt; PixImage&lt;&#39;T&gt;<br />
+                          <strong>Type parameters:</strong> 'T          </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '22363', 22363)" onmouseover="showTip(event, '22363', 22363)">
+            ToPixImage(matrix)
+          </code>
+          <div class="tip" id="22363">
+            <strong>Signature:</strong> matrix:Matrix&lt;&#39;TMatrixData,C3b&gt; -&gt; PixImage&lt;&#39;T&gt;<br />
+                          <strong>Type parameters:</strong> 'T, 'TMatrixData          </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '22364', 22364)" onmouseover="showTip(event, '22364', 22364)">
+            ToPixImage(matrix)
+          </code>
+          <div class="tip" id="22364">
+            <strong>Signature:</strong> matrix:Matrix&lt;&#39;TMatrixData,C3us&gt; -&gt; PixImage&lt;&#39;T&gt;<br />
+                          <strong>Type parameters:</strong> 'T, 'TMatrixData          </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '22365', 22365)" onmouseover="showTip(event, '22365', 22365)">
+            ToPixImage(matrix)
+          </code>
+          <div class="tip" id="22365">
+            <strong>Signature:</strong> matrix:Matrix&lt;&#39;TMatrixData,C3f&gt; -&gt; PixImage&lt;&#39;T&gt;<br />
+                          <strong>Type parameters:</strong> 'T, 'TMatrixData          </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '22366', 22366)" onmouseover="showTip(event, '22366', 22366)">
+            ToPixImage(matrix)
+          </code>
+          <div class="tip" id="22366">
+            <strong>Signature:</strong> matrix:Matrix&lt;&#39;TMatrixData,C4b&gt; -&gt; PixImage&lt;&#39;T&gt;<br />
+                          <strong>Type parameters:</strong> 'T, 'TMatrixData          </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '22367', 22367)" onmouseover="showTip(event, '22367', 22367)">
+            ToPixImage(matrix)
+          </code>
+          <div class="tip" id="22367">
+            <strong>Signature:</strong> matrix:Matrix&lt;&#39;TMatrixData,C4us&gt; -&gt; PixImage&lt;&#39;T&gt;<br />
+                          <strong>Type parameters:</strong> 'T, 'TMatrixData          </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '22368', 22368)" onmouseover="showTip(event, '22368', 22368)">
+            ToPixImage(matrix)
+          </code>
+          <div class="tip" id="22368">
+            <strong>Signature:</strong> matrix:Matrix&lt;&#39;TMatrixData,C4f&gt; -&gt; PixImage&lt;&#39;T&gt;<br />
+                          <strong>Type parameters:</strong> 'T, 'TMatrixData          </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '22369', 22369)" onmouseover="showTip(event, '22369', 22369)">
+            ToPixImage(matrix)
+          </code>
+          <div class="tip" id="22369">
+            <strong>Signature:</strong> matrix:IMatrix&lt;C3b&gt; -&gt; PixImage&lt;&#39;T&gt;<br />
+                          <strong>Type parameters:</strong> 'T          </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '22370', 22370)" onmouseover="showTip(event, '22370', 22370)">
+            ToPixImage(matrix)
+          </code>
+          <div class="tip" id="22370">
+            <strong>Signature:</strong> matrix:IMatrix&lt;C3us&gt; -&gt; PixImage&lt;&#39;T&gt;<br />
+                          <strong>Type parameters:</strong> 'T          </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '22371', 22371)" onmouseover="showTip(event, '22371', 22371)">
+            ToPixImage(matrix)
+          </code>
+          <div class="tip" id="22371">
+            <strong>Signature:</strong> matrix:IMatrix&lt;C3f&gt; -&gt; PixImage&lt;&#39;T&gt;<br />
+                          <strong>Type parameters:</strong> 'T          </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '22372', 22372)" onmouseover="showTip(event, '22372', 22372)">
+            ToPixImage(matrix)
+          </code>
+          <div class="tip" id="22372">
+            <strong>Signature:</strong> matrix:IMatrix&lt;C4b&gt; -&gt; PixImage&lt;&#39;T&gt;<br />
+                          <strong>Type parameters:</strong> 'T          </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '22373', 22373)" onmouseover="showTip(event, '22373', 22373)">
+            ToPixImage(matrix)
+          </code>
+          <div class="tip" id="22373">
+            <strong>Signature:</strong> matrix:IMatrix&lt;C4us&gt; -&gt; PixImage&lt;&#39;T&gt;<br />
+                          <strong>Type parameters:</strong> 'T          </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '22374', 22374)" onmouseover="showTip(event, '22374', 22374)">
+            ToPixImage(matrix)
+          </code>
+          <div class="tip" id="22374">
+            <strong>Signature:</strong> matrix:IMatrix&lt;C4f&gt; -&gt; PixImage&lt;&#39;T&gt;<br />
+                          <strong>Type parameters:</strong> 'T          </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '22375', 22375)" onmouseover="showTip(event, '22375', 22375)">
+            Transformed(matrix, rotation)
+          </code>
+          <div class="tip" id="22375">
+            <strong>Signature:</strong> (matrix:Matrix&lt;&#39;T&gt; * rotation:ImageTrafo) -&gt; Matrix&lt;&#39;T&gt;<br />
+                          <strong>Type parameters:</strong> 'T          </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '22376', 22376)" onmouseover="showTip(event, '22376', 22376)">
+            Transformed(volume, rotation)
+          </code>
+          <div class="tip" id="22376">
+            <strong>Signature:</strong> (volume:Volume&lt;&#39;T&gt; * rotation:ImageTrafo) -&gt; Volume&lt;&#39;T&gt;<br />
+                          <strong>Type parameters:</strong> 'T          </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+        </div>
+        <div class="span3">
+          <a href="https://github.com/vrvis">
+            <img src="logo.png" style="width:140px;height:140px;margin:10px 0px 0px 35px;border-style:none;" />
+          </a>
+
+          <ul class="nav nav-list" id="menu">
+
+            <li class="nav-header">Aardvark.Base</li>
+
+            <li class="divider"></li>
+            <li><a href="https://github.com/vrvis/aardvark.base">Home page</a></li>
+            <li class="divider"></li>
+
+            <li><a href="https://www.nuget.org/packages/Aardvark.Base">Get Aardvark.Base via NuGet</a></li>
+            <li><a href="https://github.com/vrvis/aardvark.base">Source Code on GitHub</a></li>
+            <li><a href="https://github.com/vrvis/aardvark.baseLicense">License (Apache 2)</a></li>
+            
+            <!-- <li><a href="https://github.com/vrvis/aardvark.base/RELEASE_NOTES.html">Release Notes</a></li>
+            <li><a href="https://github.com/vrvis/aardvark.base//contributing.html">Contributing to Aardvark.Base</a></li>
+  
+            <li><a href="http://stackoverflow.com/questions/tagged/f%23-fake">Ask a question</a></li> 
+            
+            <li class="nav-header">Tutorials</li>
+            <li><a href="https://github.com/vrvis/aardvark.base/gettingstarted.html">Getting started</a></li>
+            
+            -->
+
+            
+            <li class="divider"></li>
+            <li class="nav-header">Reference</li>
+
+            <li><a href="https://github.com/vrvis/aardvark.base/apidocs/index.html">API Reference</a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    <a href="https://github.com/vrvis/aardvark.base"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_gray_6d6d6d.png" alt="Fork me on GitHub"></a>
+  </body>
+  </html>

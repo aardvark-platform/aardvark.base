@@ -1,0 +1,742 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>XmlItem - Aardvark.Base</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="The Aardvark Platform Team">
+
+    <script src="https://code.jquery.com/jquery-1.8.0.js"></script>
+    <script src="https://code.jquery.com/ui/1.8.23/jquery-ui.js"></script>
+    <script src="https://netdna.bootstrapcdn.com/twitter-bootstrap/2.2.1/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link href="https://netdna.bootstrapcdn.com/twitter-bootstrap/2.2.1/css/bootstrap-combined.min.css" rel="stylesheet">
+
+    <link type="text/css" rel="stylesheet" href="https://github.com/vrvis/aardvark.base/content/style.css" />
+    <script type="text/javascript" src="https://github.com/vrvis/aardvark.base/content/tips.js"></script>
+    <!-- HTML5 shim, for IE6-8 support of HTML5 elements -->
+    <!--[if lt IE 9]>
+      <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+  </head>
+  <body>
+    <div class="container">
+      <div class="masthead">
+        <ul class="nav nav-pills pull-right">
+          <li><a href="https://github.com/vrvis/aardvark.base">github page</a></li>
+        </ul>
+        <h3 class="muted"><a href="https://github.com/vrvis/aardvark.base/index.html">Aardvark.Base</a></h3>
+      </div>
+      <hr />
+      <div class="row">
+        <div class="span9" id="main">
+          
+
+
+
+<h1>XmlItem</h1>
+<div class="xmldoc">
+</div>
+  <h3>Constructors</h3>
+  <table class="table table-bordered member-list">
+    <thead>
+      <tr><td>Constructor</td><td>Description</td></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '60187', 60187)" onmouseover="showTip(event, '60187', 60187)">
+            new()
+          </code>
+          <div class="tip" id="60187">
+            <strong>Signature:</strong> unit -&gt; unit<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '60188', 60188)" onmouseover="showTip(event, '60188', 60188)">
+            new(name, atts)
+          </code>
+          <div class="tip" id="60188">
+            <strong>Signature:</strong> (name:Symbol * atts:XmlAtt []) -&gt; unit<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '60189', 60189)" onmouseover="showTip(event, '60189', 60189)">
+            new(name, str)
+          </code>
+          <div class="tip" id="60189">
+            <strong>Signature:</strong> (name:Symbol * str:string) -&gt; unit<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '60190', 60190)" onmouseover="showTip(event, '60190', 60190)">
+            new(name, text)
+          </code>
+          <div class="tip" id="60190">
+            <strong>Signature:</strong> (name:Symbol * text:Text) -&gt; unit<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '60191', 60191)" onmouseover="showTip(event, '60191', 60191)">
+            new(name, obj)
+          </code>
+          <div class="tip" id="60191">
+            <strong>Signature:</strong> (name:Symbol * obj:obj) -&gt; unit<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '60192', 60192)" onmouseover="showTip(event, '60192', 60192)">
+            new(name, xmlItem, xmlItems)
+          </code>
+          <div class="tip" id="60192">
+            <strong>Signature:</strong> (name:Symbol * xmlItem:IXml * xmlItems:IXml []) -&gt; unit<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+    </tbody>
+  </table>
+  <h3>Instance members</h3>
+  <table class="table table-bordered member-list">
+    <thead>
+      <tr><td>Instance member</td><td>Description</td></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '60193', 60193)" onmouseover="showTip(event, '60193', 60193)">
+            Add(att)
+          </code>
+          <div class="tip" id="60193">
+            <strong>Signature:</strong> att:XmlAtt -&gt; unit<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '60194', 60194)" onmouseover="showTip(event, '60194', 60194)">
+            Add(text)
+          </code>
+          <div class="tip" id="60194">
+            <strong>Signature:</strong> text:Text -&gt; unit<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '60195', 60195)" onmouseover="showTip(event, '60195', 60195)">
+            Add(node)
+          </code>
+          <div class="tip" id="60195">
+            <strong>Signature:</strong> node:IXml -&gt; unit<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '60196', 60196)" onmouseover="showTip(event, '60196', 60196)">
+            Attribute(symbol)
+          </code>
+          <div class="tip" id="60196">
+            <strong>Signature:</strong> symbol:Symbol -&gt; Text<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '60197', 60197)" onmouseover="showTip(event, '60197', 60197)">
+            Count
+          </code>
+          <div class="tip" id="60197">
+            <strong>Signature:</strong> int<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '60198', 60198)" onmouseover="showTip(event, '60198', 60198)">
+            FirstSub()
+          </code>
+          <div class="tip" id="60198">
+            <strong>Signature:</strong> unit -&gt; &#39;T<br />
+                          <strong>Type parameters:</strong> 'T          </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '60199', 60199)" onmouseover="showTip(event, '60199', 60199)">
+            FirstSub(index)
+          </code>
+          <div class="tip" id="60199">
+            <strong>Signature:</strong> index:byref&lt;int&gt; -&gt; &#39;T<br />
+                          <strong>Type parameters:</strong> 'T          </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '60200', 60200)" onmouseover="showTip(event, '60200', 60200)">
+            FirstSub(predicate)
+          </code>
+          <div class="tip" id="60200">
+            <strong>Signature:</strong> predicate:Func&lt;&#39;T,bool&gt; -&gt; &#39;T<br />
+                          <strong>Type parameters:</strong> 'T          </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '60201', 60201)" onmouseover="showTip(event, '60201', 60201)">
+            FirstSub(predicate, index)
+          </code>
+          <div class="tip" id="60201">
+            <strong>Signature:</strong> (predicate:Func&lt;&#39;T,bool&gt; * index:byref&lt;int&gt;) -&gt; &#39;T<br />
+                          <strong>Type parameters:</strong> 'T          </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '60202', 60202)" onmouseover="showTip(event, '60202', 60202)">
+            FirstSubItemWithName(name)
+          </code>
+          <div class="tip" id="60202">
+            <strong>Signature:</strong> name:string -&gt; XmlItem<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '60203', 60203)" onmouseover="showTip(event, '60203', 60203)">
+            FirstSubItemWithName(name)
+          </code>
+          <div class="tip" id="60203">
+            <strong>Signature:</strong> name:Symbol -&gt; XmlItem<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '60204', 60204)" onmouseover="showTip(event, '60204', 60204)">
+            FirstSubItemWithName(name, index)
+          </code>
+          <div class="tip" id="60204">
+            <strong>Signature:</strong> (name:string * index:byref&lt;int&gt;) -&gt; XmlItem<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '60205', 60205)" onmouseover="showTip(event, '60205', 60205)">
+            FirstSubItemWithName(name, index)
+          </code>
+          <div class="tip" id="60205">
+            <strong>Signature:</strong> (name:Symbol * index:byref&lt;int&gt;) -&gt; XmlItem<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '60206', 60206)" onmouseover="showTip(event, '60206', 60206)">
+            [()]
+          </code>
+          <div class="tip" id="60206">
+            <strong>Signature:</strong> unit -&gt; int<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '60207', 60207)" onmouseover="showTip(event, '60207', 60207)">
+            NextSub(index)
+          </code>
+          <div class="tip" id="60207">
+            <strong>Signature:</strong> index:byref&lt;int&gt; -&gt; &#39;T<br />
+                          <strong>Type parameters:</strong> 'T          </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '60208', 60208)" onmouseover="showTip(event, '60208', 60208)">
+            NextSub(predicate, index)
+          </code>
+          <div class="tip" id="60208">
+            <strong>Signature:</strong> (predicate:Func&lt;&#39;T,bool&gt; * index:byref&lt;int&gt;) -&gt; &#39;T<br />
+                          <strong>Type parameters:</strong> 'T          </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '60209', 60209)" onmouseover="showTip(event, '60209', 60209)">
+            NextSubIndex(i)
+          </code>
+          <div class="tip" id="60209">
+            <strong>Signature:</strong> i:int -&gt; int<br />
+                          <strong>Type parameters:</strong> 'T          </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '60210', 60210)" onmouseover="showTip(event, '60210', 60210)">
+            NextSubIndex(item, i)
+          </code>
+          <div class="tip" id="60210">
+            <strong>Signature:</strong> (item:byref&lt;&#39;T&gt; * i:int) -&gt; int<br />
+                          <strong>Type parameters:</strong> 'T          </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '60211', 60211)" onmouseover="showTip(event, '60211', 60211)">
+            NextSubItemWithName(name, index)
+          </code>
+          <div class="tip" id="60211">
+            <strong>Signature:</strong> (name:string * index:byref&lt;int&gt;) -&gt; XmlItem<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '60212', 60212)" onmouseover="showTip(event, '60212', 60212)">
+            NextSubItemWithName(name, index)
+          </code>
+          <div class="tip" id="60212">
+            <strong>Signature:</strong> (name:Symbol * index:byref&lt;int&gt;) -&gt; XmlItem<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '60213', 60213)" onmouseover="showTip(event, '60213', 60213)">
+            Remove()
+          </code>
+          <div class="tip" id="60213">
+            <strong>Signature:</strong> unit -&gt; IXml<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '60214', 60214)" onmouseover="showTip(event, '60214', 60214)">
+            RequiredOnlySub()
+          </code>
+          <div class="tip" id="60214">
+            <strong>Signature:</strong> unit -&gt; &#39;T<br />
+                          <strong>Type parameters:</strong> 'T          </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '60215', 60215)" onmouseover="showTip(event, '60215', 60215)">
+            RequiredOnlySubString
+          </code>
+          <div class="tip" id="60215">
+            <strong>Signature:</strong> string<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '60216', 60216)" onmouseover="showTip(event, '60216', 60216)">
+            RequiredOnlySubText
+          </code>
+          <div class="tip" id="60216">
+            <strong>Signature:</strong> Text<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '60217', 60217)" onmouseover="showTip(event, '60217', 60217)">
+            RequiredSub(predicate)
+          </code>
+          <div class="tip" id="60217">
+            <strong>Signature:</strong> predicate:Func&lt;&#39;T,bool&gt; -&gt; &#39;T<br />
+                          <strong>Type parameters:</strong> 'T          </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '60218', 60218)" onmouseover="showTip(event, '60218', 60218)">
+            RequiredSub(predicate, index)
+          </code>
+          <div class="tip" id="60218">
+            <strong>Signature:</strong> (predicate:Func&lt;&#39;T,bool&gt; * index:byref&lt;int&gt;) -&gt; &#39;T<br />
+                          <strong>Type parameters:</strong> 'T          </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '60219', 60219)" onmouseover="showTip(event, '60219', 60219)">
+            RequiredSubItemStringOnlyWithName(name)
+          </code>
+          <div class="tip" id="60219">
+            <strong>Signature:</strong> name:Symbol -&gt; string<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '60220', 60220)" onmouseover="showTip(event, '60220', 60220)">
+            RequiredSubItemWithName(name)
+          </code>
+          <div class="tip" id="60220">
+            <strong>Signature:</strong> name:string -&gt; XmlItem<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '60221', 60221)" onmouseover="showTip(event, '60221', 60221)">
+            RequiredSubItemWithName(name)
+          </code>
+          <div class="tip" id="60221">
+            <strong>Signature:</strong> name:Symbol -&gt; XmlItem<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '60222', 60222)" onmouseover="showTip(event, '60222', 60222)">
+            RequiredSubItemWithName(name, index)
+          </code>
+          <div class="tip" id="60222">
+            <strong>Signature:</strong> (name:string * index:byref&lt;int&gt;) -&gt; XmlItem<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '60223', 60223)" onmouseover="showTip(event, '60223', 60223)">
+            RequiredSubItemWithName(name, index)
+          </code>
+          <div class="tip" id="60223">
+            <strong>Signature:</strong> (name:Symbol * index:byref&lt;int&gt;) -&gt; XmlItem<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '60224', 60224)" onmouseover="showTip(event, '60224', 60224)">
+            Sub(predicate)
+          </code>
+          <div class="tip" id="60224">
+            <strong>Signature:</strong> predicate:Func&lt;&#39;T,bool&gt; -&gt; &#39;T<br />
+                          <strong>Type parameters:</strong> 'T          </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '60225', 60225)" onmouseover="showTip(event, '60225', 60225)">
+            Sub(predicate, index)
+          </code>
+          <div class="tip" id="60225">
+            <strong>Signature:</strong> (predicate:Func&lt;&#39;T,bool&gt; * index:byref&lt;int&gt;) -&gt; &#39;T<br />
+                          <strong>Type parameters:</strong> 'T          </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '60226', 60226)" onmouseover="showTip(event, '60226', 60226)">
+            SubCount()
+          </code>
+          <div class="tip" id="60226">
+            <strong>Signature:</strong> unit -&gt; int<br />
+                          <strong>Type parameters:</strong> 'T          </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '60227', 60227)" onmouseover="showTip(event, '60227', 60227)">
+            SubItemsWithName(name)
+          </code>
+          <div class="tip" id="60227">
+            <strong>Signature:</strong> name:Symbol -&gt; IEnumerable&lt;XmlItem&gt;<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '60228', 60228)" onmouseover="showTip(event, '60228', 60228)">
+            SubItemWithName(name)
+          </code>
+          <div class="tip" id="60228">
+            <strong>Signature:</strong> name:string -&gt; XmlItem<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '60229', 60229)" onmouseover="showTip(event, '60229', 60229)">
+            SubItemWithName(name)
+          </code>
+          <div class="tip" id="60229">
+            <strong>Signature:</strong> name:Symbol -&gt; XmlItem<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '60230', 60230)" onmouseover="showTip(event, '60230', 60230)">
+            SubItemWithName(name, index)
+          </code>
+          <div class="tip" id="60230">
+            <strong>Signature:</strong> (name:string * index:byref&lt;int&gt;) -&gt; XmlItem<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '60231', 60231)" onmouseover="showTip(event, '60231', 60231)">
+            SubItemWithName(name, index)
+          </code>
+          <div class="tip" id="60231">
+            <strong>Signature:</strong> (name:Symbol * index:byref&lt;int&gt;) -&gt; XmlItem<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '60232', 60232)" onmouseover="showTip(event, '60232', 60232)">
+            WriteTo(writer, indent)
+          </code>
+          <div class="tip" id="60232">
+            <strong>Signature:</strong> (writer:StreamWriter * indent:int) -&gt; unit<br />
+              <strong>Modifiers:</strong> abstract<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+        </div>
+        <div class="span3">
+          <a href="https://github.com/vrvis">
+            <img src="logo.png" style="width:140px;height:140px;margin:10px 0px 0px 35px;border-style:none;" />
+          </a>
+
+          <ul class="nav nav-list" id="menu">
+
+            <li class="nav-header">Aardvark.Base</li>
+
+            <li class="divider"></li>
+            <li><a href="https://github.com/vrvis/aardvark.base">Home page</a></li>
+            <li class="divider"></li>
+
+            <li><a href="https://www.nuget.org/packages/Aardvark.Base">Get Aardvark.Base via NuGet</a></li>
+            <li><a href="https://github.com/vrvis/aardvark.base">Source Code on GitHub</a></li>
+            <li><a href="https://github.com/vrvis/aardvark.baseLicense">License (Apache 2)</a></li>
+            
+            <!-- <li><a href="https://github.com/vrvis/aardvark.base/RELEASE_NOTES.html">Release Notes</a></li>
+            <li><a href="https://github.com/vrvis/aardvark.base//contributing.html">Contributing to Aardvark.Base</a></li>
+  
+            <li><a href="http://stackoverflow.com/questions/tagged/f%23-fake">Ask a question</a></li> 
+            
+            <li class="nav-header">Tutorials</li>
+            <li><a href="https://github.com/vrvis/aardvark.base/gettingstarted.html">Getting started</a></li>
+            
+            -->
+
+            
+            <li class="divider"></li>
+            <li class="nav-header">Reference</li>
+
+            <li><a href="https://github.com/vrvis/aardvark.base/apidocs/index.html">API Reference</a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    <a href="https://github.com/vrvis/aardvark.base"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_gray_6d6d6d.png" alt="Fork me on GitHub"></a>
+  </body>
+  </html>

@@ -1,0 +1,1031 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>Scale3f - Aardvark.Base</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="The Aardvark Platform Team">
+
+    <script src="https://code.jquery.com/jquery-1.8.0.js"></script>
+    <script src="https://code.jquery.com/ui/1.8.23/jquery-ui.js"></script>
+    <script src="https://netdna.bootstrapcdn.com/twitter-bootstrap/2.2.1/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link href="https://netdna.bootstrapcdn.com/twitter-bootstrap/2.2.1/css/bootstrap-combined.min.css" rel="stylesheet">
+
+    <link type="text/css" rel="stylesheet" href="https://github.com/vrvis/aardvark.base/content/style.css" />
+    <script type="text/javascript" src="https://github.com/vrvis/aardvark.base/content/tips.js"></script>
+    <!-- HTML5 shim, for IE6-8 support of HTML5 elements -->
+    <!--[if lt IE 9]>
+      <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+  </head>
+  <body>
+    <div class="container">
+      <div class="masthead">
+        <ul class="nav nav-pills pull-right">
+          <li><a href="https://github.com/vrvis/aardvark.base">github page</a></li>
+        </ul>
+        <h3 class="muted"><a href="https://github.com/vrvis/aardvark.base/index.html">Aardvark.Base</a></h3>
+      </div>
+      <hr />
+      <div class="row">
+        <div class="span9" id="main">
+          
+
+
+
+<h1>Scale3f</h1>
+<div class="xmldoc">
+<p>A three dimensional scaling transform with different scaling values
+in each dimension.</p>
+
+</div>
+  <h3>Constructors</h3>
+  <table class="table table-bordered member-list">
+    <thead>
+      <tr><td>Constructor</td><td>Description</td></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '16028', 16028)" onmouseover="showTip(event, '16028', 16028)">
+            new(x, y, z)
+          </code>
+          <div class="tip" id="16028">
+            <strong>Signature:</strong> (x:float32 * y:float32 * z:float32) -&gt; unit<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Initializes a  using three floats.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '16029', 16029)" onmouseover="showTip(event, '16029', 16029)">
+            new(v)
+          </code>
+          <div class="tip" id="16029">
+            <strong>Signature:</strong> v:V3f -&gt; unit<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '16030', 16030)" onmouseover="showTip(event, '16030', 16030)">
+            new(uniform)
+          </code>
+          <div class="tip" id="16030">
+            <strong>Signature:</strong> uniform:float32 -&gt; unit<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Initializes a  using a uniform float value.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '16031', 16031)" onmouseover="showTip(event, '16031', 16031)">
+            new(array)
+          </code>
+          <div class="tip" id="16031">
+            <strong>Signature:</strong> (array:float32 []) -&gt; unit<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Initializes a  class from float-array.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '16032', 16032)" onmouseover="showTip(event, '16032', 16032)">
+            new(array, start)
+          </code>
+          <div class="tip" id="16032">
+            <strong>Signature:</strong> (array:float32 [] * start:int) -&gt; unit<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Initializes a  class from float-array starting from passed index</p>
+
+
+        </td>
+      </tr>
+    </tbody>
+  </table>
+  <h3>Instance members</h3>
+  <table class="table table-bordered member-list">
+    <thead>
+      <tr><td>Instance member</td><td>Description</td></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '16033', 16033)" onmouseover="showTip(event, '16033', 16033)">
+            Equals(obj)
+          </code>
+          <div class="tip" id="16033">
+            <strong>Signature:</strong> obj:obj -&gt; bool<br />
+              <strong>Modifiers:</strong> abstract<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '16034', 16034)" onmouseover="showTip(event, '16034', 16034)">
+            GetHashCode()
+          </code>
+          <div class="tip" id="16034">
+            <strong>Signature:</strong> unit -&gt; int<br />
+              <strong>Modifiers:</strong> abstract<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '16035', 16035)" onmouseover="showTip(event, '16035', 16035)">
+            Inverse
+          </code>
+          <div class="tip" id="16035">
+            <strong>Signature:</strong> Scale3f<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '16036', 16036)" onmouseover="showTip(event, '16036', 16036)">
+            [()]
+          </code>
+          <div class="tip" id="16036">
+            <strong>Signature:</strong> unit -&gt; int<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '16037', 16037)" onmouseover="showTip(event, '16037', 16037)">
+            Length
+          </code>
+          <div class="tip" id="16037">
+            <strong>Signature:</strong> float32<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Calculates the length of a .</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '16038', 16038)" onmouseover="showTip(event, '16038', 16038)">
+            LengthSquared
+          </code>
+          <div class="tip" id="16038">
+            <strong>Signature:</strong> float32<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Calculates the squared length of a .</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '16039', 16039)" onmouseover="showTip(event, '16039', 16039)">
+            ToString()
+          </code>
+          <div class="tip" id="16039">
+            <strong>Signature:</strong> unit -&gt; string<br />
+              <strong>Modifiers:</strong> abstract<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '16040', 16040)" onmouseover="showTip(event, '16040', 16040)">
+            X()
+          </code>
+          <div class="tip" id="16040">
+            <strong>Signature:</strong> unit -&gt; unit<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Gets and sets the X coordinate.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '16041', 16041)" onmouseover="showTip(event, '16041', 16041)">
+            Y()
+          </code>
+          <div class="tip" id="16041">
+            <strong>Signature:</strong> unit -&gt; unit<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Gets and sets the Y coordinate.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '16042', 16042)" onmouseover="showTip(event, '16042', 16042)">
+            Z()
+          </code>
+          <div class="tip" id="16042">
+            <strong>Signature:</strong> unit -&gt; unit<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Gets and sets the Z coordinate.</p>
+
+
+        </td>
+      </tr>
+    </tbody>
+  </table>
+  <h3>Static members</h3>
+  <table class="table table-bordered member-list">
+    <thead>
+      <tr><td>Static member</td><td>Description</td></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '16043', 16043)" onmouseover="showTip(event, '16043', 16043)">
+            Divide(scale, val)
+          </code>
+          <div class="tip" id="16043">
+            <strong>Signature:</strong> (scale:Scale3f * val:float32) -&gt; Scale3f<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Division of a  instance with a float scalar.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '16044', 16044)" onmouseover="showTip(event, '16044', 16044)">
+            Divide(val, scale)
+          </code>
+          <div class="tip" id="16044">
+            <strong>Signature:</strong> (val:float32 * scale:Scale3f) -&gt; Scale3f<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Division of a float scalar with a .</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '16045', 16045)" onmouseover="showTip(event, '16045', 16045)">
+            Multiply(scale, value)
+          </code>
+          <div class="tip" id="16045">
+            <strong>Signature:</strong> (scale:Scale3f * value:float32) -&gt; Scale3f<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Multiplacation of a float scalar with a .</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '16046', 16046)" onmouseover="showTip(event, '16046', 16046)">
+            Multiply(scale0, scale1)
+          </code>
+          <div class="tip" id="16046">
+            <strong>Signature:</strong> (scale0:Scale3f * scale1:Scale3f) -&gt; Scale3f<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Multiplication of two s.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '16047', 16047)" onmouseover="showTip(event, '16047', 16047)">
+            Multiply(scale, rot)
+          </code>
+          <div class="tip" id="16047">
+            <strong>Signature:</strong> (scale:Scale3f * rot:Rot3f) -&gt; M33f<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '16048', 16048)" onmouseover="showTip(event, '16048', 16048)">
+            Multiply(scale, v)
+          </code>
+          <div class="tip" id="16048">
+            <strong>Signature:</strong> (scale:Scale3f * v:V2f) -&gt; V2f<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Multiplacation of a  with a .</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '16049', 16049)" onmouseover="showTip(event, '16049', 16049)">
+            Multiply(scale, v)
+          </code>
+          <div class="tip" id="16049">
+            <strong>Signature:</strong> (scale:Scale3f * v:V3f) -&gt; V3f<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Multiplacation of a  with a .</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '16050', 16050)" onmouseover="showTip(event, '16050', 16050)">
+            Multiply(scale, vec)
+          </code>
+          <div class="tip" id="16050">
+            <strong>Signature:</strong> (scale:Scale3f * vec:V4f) -&gt; V4f<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Multiplacation of a  with a .</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '16051', 16051)" onmouseover="showTip(event, '16051', 16051)">
+            Multiply(scale, mat)
+          </code>
+          <div class="tip" id="16051">
+            <strong>Signature:</strong> (scale:Scale3f * mat:M22f) -&gt; M33f<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Multiplacation of a  with a .</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '16052', 16052)" onmouseover="showTip(event, '16052', 16052)">
+            Multiply(scale, mat)
+          </code>
+          <div class="tip" id="16052">
+            <strong>Signature:</strong> (scale:Scale3f * mat:M33f) -&gt; M33f<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Multiplacation of a  with a .</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '16053', 16053)" onmouseover="showTip(event, '16053', 16053)">
+            Multiply(scale, mat)
+          </code>
+          <div class="tip" id="16053">
+            <strong>Signature:</strong> (scale:Scale3f * mat:M34f) -&gt; M34f<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Multiplacation of a  with a .</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '16054', 16054)" onmouseover="showTip(event, '16054', 16054)">
+            Multiply(scale, mat)
+          </code>
+          <div class="tip" id="16054">
+            <strong>Signature:</strong> (scale:Scale3f * mat:M44f) -&gt; M44f<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Multiplacation of a  with a .</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '16055', 16055)" onmouseover="showTip(event, '16055', 16055)">
+            Multiply(scale, rot)
+          </code>
+          <div class="tip" id="16055">
+            <strong>Signature:</strong> (scale:Scale3f * rot:Rot2f) -&gt; M33f<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '16056', 16056)" onmouseover="showTip(event, '16056', 16056)">
+            Multiply(scale, shift)
+          </code>
+          <div class="tip" id="16056">
+            <strong>Signature:</strong> (scale:Scale3f * shift:Shift3f) -&gt; M34f<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Multiplacation of a  with a .</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '16057', 16057)" onmouseover="showTip(event, '16057', 16057)">
+            Negate(scale)
+          </code>
+          <div class="tip" id="16057">
+            <strong>Signature:</strong> scale:Scale3f -&gt; Scale3f<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Negates all values of a .</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '16058', 16058)" onmouseover="showTip(event, '16058', 16058)">
+            op_Division(scale, value)
+          </code>
+          <div class="tip" id="16058">
+            <strong>Signature:</strong> (scale:Scale3f * value:float32) -&gt; Scale3f<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Calculates the division of a  with a float scalar.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '16059', 16059)" onmouseover="showTip(event, '16059', 16059)">
+            op_Division(value, scale)
+          </code>
+          <div class="tip" id="16059">
+            <strong>Signature:</strong> (value:float32 * scale:Scale3f) -&gt; Scale3f<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Calculates the division of a float scalar with a .</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '16060', 16060)" onmouseover="showTip(event, '16060', 16060)">
+            op_Equality(s0, s1)
+          </code>
+          <div class="tip" id="16060">
+            <strong>Signature:</strong> (s0:Scale3f * s1:Scale3f) -&gt; bool<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Checks whether two s are equal.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '16061', 16061)" onmouseover="showTip(event, '16061', 16061)">
+            op_Explicit(s)
+          </code>
+          <div class="tip" id="16061">
+            <strong>Signature:</strong> s:Scale3f -&gt; M33f<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '16062', 16062)" onmouseover="showTip(event, '16062', 16062)">
+            op_Explicit(s)
+          </code>
+          <div class="tip" id="16062">
+            <strong>Signature:</strong> s:Scale3f -&gt; M44f<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '16063', 16063)" onmouseover="showTip(event, '16063', 16063)">
+            op_Explicit(s)
+          </code>
+          <div class="tip" id="16063">
+            <strong>Signature:</strong> s:Scale3f -&gt; M34f<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '16064', 16064)" onmouseover="showTip(event, '16064', 16064)">
+            op_Explicit(s)
+          </code>
+          <div class="tip" id="16064">
+            <strong>Signature:</strong> s:Scale3f -&gt; float32 []<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '16065', 16065)" onmouseover="showTip(event, '16065', 16065)">
+            op_GreaterThan(s0, s1)
+          </code>
+          <div class="tip" id="16065">
+            <strong>Signature:</strong> (s0:Scale3f * s1:Scale3f) -&gt; bool<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Checks whether all components of a<br />
+are bigger then the components of the second .</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '16066', 16066)" onmouseover="showTip(event, '16066', 16066)">
+            op_GreaterThanOrEqual(s0, s1)
+          </code>
+          <div class="tip" id="16066">
+            <strong>Signature:</strong> (s0:Scale3f * s1:Scale3f) -&gt; bool<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Checks whether all components of a<br />
+are bigger or equal then the components of the second .</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '16067', 16067)" onmouseover="showTip(event, '16067', 16067)">
+            op_Inequality(s0, s1)
+          </code>
+          <div class="tip" id="16067">
+            <strong>Signature:</strong> (s0:Scale3f * s1:Scale3f) -&gt; bool<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Checks whether two  instances are different.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '16068', 16068)" onmouseover="showTip(event, '16068', 16068)">
+            op_LessThan(s0, s1)
+          </code>
+          <div class="tip" id="16068">
+            <strong>Signature:</strong> (s0:Scale3f * s1:Scale3f) -&gt; bool<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Checks whether all components of a<br />
+are smaller then the components of the second .</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '16069', 16069)" onmouseover="showTip(event, '16069', 16069)">
+            op_LessThanOrEqual(s0, s1)
+          </code>
+          <div class="tip" id="16069">
+            <strong>Signature:</strong> (s0:Scale3f * s1:Scale3f) -&gt; bool<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Checks whether all components of a<br />
+are smaller or equal then the components of the second .</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '16070', 16070)" onmouseover="showTip(event, '16070', 16070)">
+            op_Multiply(scale, scalar)
+          </code>
+          <div class="tip" id="16070">
+            <strong>Signature:</strong> (scale:Scale3f * scalar:float32) -&gt; Scale3f<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Calculates the multiplacation of a float scalar with a .</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '16071', 16071)" onmouseover="showTip(event, '16071', 16071)">
+            op_Multiply(scale, vector)
+          </code>
+          <div class="tip" id="16071">
+            <strong>Signature:</strong> (scale:Scale3f * vector:V2f) -&gt; V2f<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Calculates the multiplacation of a  with a .</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '16072', 16072)" onmouseover="showTip(event, '16072', 16072)">
+            op_Multiply(scale, vector)
+          </code>
+          <div class="tip" id="16072">
+            <strong>Signature:</strong> (scale:Scale3f * vector:V3f) -&gt; V3f<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Calculates the multiplacation of a  with a .</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '16073', 16073)" onmouseover="showTip(event, '16073', 16073)">
+            op_Multiply(scale, vector)
+          </code>
+          <div class="tip" id="16073">
+            <strong>Signature:</strong> (scale:Scale3f * vector:V4f) -&gt; V4f<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Calculates the multiplacation of a  with a .</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '16074', 16074)" onmouseover="showTip(event, '16074', 16074)">
+            op_Multiply(scale, matrix)
+          </code>
+          <div class="tip" id="16074">
+            <strong>Signature:</strong> (scale:Scale3f * matrix:M22f) -&gt; M33f<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Calculates the multiplacation of a  with a .</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '16075', 16075)" onmouseover="showTip(event, '16075', 16075)">
+            op_Multiply(scale, matrix)
+          </code>
+          <div class="tip" id="16075">
+            <strong>Signature:</strong> (scale:Scale3f * matrix:M33f) -&gt; M33f<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Calculates the multiplacation of a  with a .</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '16076', 16076)" onmouseover="showTip(event, '16076', 16076)">
+            op_Multiply(scale, matrix)
+          </code>
+          <div class="tip" id="16076">
+            <strong>Signature:</strong> (scale:Scale3f * matrix:M34f) -&gt; M34f<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Calculates the multiplacation of a  with a .</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '16077', 16077)" onmouseover="showTip(event, '16077', 16077)">
+            op_Multiply(scale, matrix)
+          </code>
+          <div class="tip" id="16077">
+            <strong>Signature:</strong> (scale:Scale3f * matrix:M44f) -&gt; M44f<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Calculates the multiplacation of a  with a .</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '16078', 16078)" onmouseover="showTip(event, '16078', 16078)">
+            op_Multiply(scale, quaternion)
+          </code>
+          <div class="tip" id="16078">
+            <strong>Signature:</strong> (scale:Scale3f * quaternion:Rot3f) -&gt; M33f<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '16079', 16079)" onmouseover="showTip(event, '16079', 16079)">
+            op_Multiply(scale, rotation)
+          </code>
+          <div class="tip" id="16079">
+            <strong>Signature:</strong> (scale:Scale3f * rotation:Rot2f) -&gt; M33f<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '16080', 16080)" onmouseover="showTip(event, '16080', 16080)">
+            op_Multiply(scalar, scale)
+          </code>
+          <div class="tip" id="16080">
+            <strong>Signature:</strong> (scalar:float32 * scale:Scale3f) -&gt; Scale3f<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Calculates the multiplacation of a  with a float scalar.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '16081', 16081)" onmouseover="showTip(event, '16081', 16081)">
+            op_Multiply(scale1, scale2)
+          </code>
+          <div class="tip" id="16081">
+            <strong>Signature:</strong> (scale1:Scale3f * scale2:Scale3f) -&gt; Scale3f<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Calculates the multiplacation of a  with a .</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '16082', 16082)" onmouseover="showTip(event, '16082', 16082)">
+            op_Multiply(vector, scale)
+          </code>
+          <div class="tip" id="16082">
+            <strong>Signature:</strong> (vector:V3f * scale:Scale3f) -&gt; V3f<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Calculates the multiplacation of a  with a .</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '16083', 16083)" onmouseover="showTip(event, '16083', 16083)">
+            op_Multiply(scale, shift)
+          </code>
+          <div class="tip" id="16083">
+            <strong>Signature:</strong> (scale:Scale3f * shift:Shift3f) -&gt; M34f<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Calculates the multiplacation of a  with a .</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '16084', 16084)" onmouseover="showTip(event, '16084', 16084)">
+            op_UnaryNegation(scalingVector)
+          </code>
+          <div class="tip" id="16084">
+            <strong>Signature:</strong> scalingVector:Scale3f -&gt; Scale3f<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Negates the values of a  instance.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '16085', 16085)" onmouseover="showTip(event, '16085', 16085)">
+            Parse(s)
+          </code>
+          <div class="tip" id="16085">
+            <strong>Signature:</strong> s:string -&gt; Scale3f<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '16086', 16086)" onmouseover="showTip(event, '16086', 16086)">
+            Reciprocal(scale)
+          </code>
+          <div class="tip" id="16086">
+            <strong>Signature:</strong> scale:Scale3f -&gt; Scale3f<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Calculates the reciprocal of a .</p>
+
+
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+        </div>
+        <div class="span3">
+          <a href="https://github.com/vrvis">
+            <img src="logo.png" style="width:140px;height:140px;margin:10px 0px 0px 35px;border-style:none;" />
+          </a>
+
+          <ul class="nav nav-list" id="menu">
+
+            <li class="nav-header">Aardvark.Base</li>
+
+            <li class="divider"></li>
+            <li><a href="https://github.com/vrvis/aardvark.base">Home page</a></li>
+            <li class="divider"></li>
+
+            <li><a href="https://www.nuget.org/packages/Aardvark.Base">Get Aardvark.Base via NuGet</a></li>
+            <li><a href="https://github.com/vrvis/aardvark.base">Source Code on GitHub</a></li>
+            <li><a href="https://github.com/vrvis/aardvark.baseLicense">License (Apache 2)</a></li>
+            
+            <!-- <li><a href="https://github.com/vrvis/aardvark.base/RELEASE_NOTES.html">Release Notes</a></li>
+            <li><a href="https://github.com/vrvis/aardvark.base//contributing.html">Contributing to Aardvark.Base</a></li>
+  
+            <li><a href="http://stackoverflow.com/questions/tagged/f%23-fake">Ask a question</a></li> 
+            
+            <li class="nav-header">Tutorials</li>
+            <li><a href="https://github.com/vrvis/aardvark.base/gettingstarted.html">Getting started</a></li>
+            
+            -->
+
+            
+            <li class="divider"></li>
+            <li class="nav-header">Reference</li>
+
+            <li><a href="https://github.com/vrvis/aardvark.base/apidocs/index.html">API Reference</a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    <a href="https://github.com/vrvis/aardvark.base"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_gray_6d6d6d.png" alt="Fork me on GitHub"></a>
+  </body>
+  </html>

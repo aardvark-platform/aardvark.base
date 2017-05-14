@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>PerlinNoise - Aardvark.Base</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="The Aardvark Platform Team">
+
+    <script src="https://code.jquery.com/jquery-1.8.0.js"></script>
+    <script src="https://code.jquery.com/ui/1.8.23/jquery-ui.js"></script>
+    <script src="https://netdna.bootstrapcdn.com/twitter-bootstrap/2.2.1/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link href="https://netdna.bootstrapcdn.com/twitter-bootstrap/2.2.1/css/bootstrap-combined.min.css" rel="stylesheet">
+
+    <link type="text/css" rel="stylesheet" href="https://github.com/vrvis/aardvark.base/content/style.css" />
+    <script type="text/javascript" src="https://github.com/vrvis/aardvark.base/content/tips.js"></script>
+    <!-- HTML5 shim, for IE6-8 support of HTML5 elements -->
+    <!--[if lt IE 9]>
+      <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+  </head>
+  <body>
+    <div class="container">
+      <div class="masthead">
+        <ul class="nav nav-pills pull-right">
+          <li><a href="https://github.com/vrvis/aardvark.base">github page</a></li>
+        </ul>
+        <h3 class="muted"><a href="https://github.com/vrvis/aardvark.base/index.html">Aardvark.Base</a></h3>
+      </div>
+      <hr />
+      <div class="row">
+        <div class="span9" id="main">
+          
+
+
+
+<h1>PerlinNoise</h1>
+<div class="xmldoc">
+<p>Perlin noise generation class.
+Contains functions for 1D, 2D and 3D perlin noise generation.</p>
+
+</div>
+  <h3>Constructors</h3>
+  <table class="table table-bordered member-list">
+    <thead>
+      <tr><td>Constructor</td><td>Description</td></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '14013', 14013)" onmouseover="showTip(event, '14013', 14013)">
+            new()
+          </code>
+          <div class="tip" id="14013">
+            <strong>Signature:</strong> unit -&gt; unit<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>InitialintegerZes a new instance of the  class.</p>
+
+
+        </td>
+      </tr>
+    </tbody>
+  </table>
+  <h3>Instance members</h3>
+  <table class="table table-bordered member-list">
+    <thead>
+      <tr><td>Instance member</td><td>Description</td></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '14014', 14014)" onmouseover="showTip(event, '14014', 14014)">
+            InterpolateNoise(x)
+          </code>
+          <div class="tip" id="14014">
+            <strong>Signature:</strong> x:float32 -&gt; float32<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '14015', 14015)" onmouseover="showTip(event, '14015', 14015)">
+            InterpolateNoise(x, y)
+          </code>
+          <div class="tip" id="14015">
+            <strong>Signature:</strong> (x:float32 * y:float32) -&gt; float32<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '14016', 14016)" onmouseover="showTip(event, '14016', 14016)">
+            InterpolateNoise(x, y, z)
+          </code>
+          <div class="tip" id="14016">
+            <strong>Signature:</strong> (x:float32 * y:float32 * z:float32) -&gt; float32<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '14017', 14017)" onmouseover="showTip(event, '14017', 14017)">
+            Noise(x)
+          </code>
+          <div class="tip" id="14017">
+            <strong>Signature:</strong> x:int -&gt; float32<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Generates a pseudo-random number based upon one value(dimension).</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '14018', 14018)" onmouseover="showTip(event, '14018', 14018)">
+            Noise(x, y)
+          </code>
+          <div class="tip" id="14018">
+            <strong>Signature:</strong> (x:int * y:int) -&gt; float32<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Generates a pseudo-random number based upon two value(dimensions).</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '14019', 14019)" onmouseover="showTip(event, '14019', 14019)">
+            Noise(x, y, z)
+          </code>
+          <div class="tip" id="14019">
+            <strong>Signature:</strong> (x:int * y:int * z:int) -&gt; float32<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Generates a pseudo-random number based upon three value(dimensions).</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '14020', 14020)" onmouseover="showTip(event, '14020', 14020)">
+            PerlinNoise1F(x, amplitude, frequencyX)
+          </code>
+          <div class="tip" id="14020">
+            <strong>Signature:</strong> (x:float32 * amplitude:float32 * frequencyX:float32) -&gt; float32<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '14021', 14021)" onmouseover="showTip(event, '14021', 14021)">
+            PerlinNoise2F(...)
+          </code>
+          <div class="tip" id="14021">
+            <strong>Signature:</strong> (x:float32 * y:float32 * amplitude:float32 * frequencyX:float32 * frequencyY:float32) -&gt; float32<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '14022', 14022)" onmouseover="showTip(event, '14022', 14022)">
+            PerlinNoise3F(...)
+          </code>
+          <div class="tip" id="14022">
+            <strong>Signature:</strong> (x:float32 * y:float32 * z:float32 * amplitude:float32 * frequencyX:float32 * frequencyY:float32 * frequencyZ:float32) -&gt; float32<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '14023', 14023)" onmouseover="showTip(event, '14023', 14023)">
+            SmoothNoise(x)
+          </code>
+          <div class="tip" id="14023">
+            <strong>Signature:</strong> x:int -&gt; float32<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '14024', 14024)" onmouseover="showTip(event, '14024', 14024)">
+            SmoothNoise(x, y)
+          </code>
+          <div class="tip" id="14024">
+            <strong>Signature:</strong> (x:int * y:int) -&gt; float32<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '14025', 14025)" onmouseover="showTip(event, '14025', 14025)">
+            SmoothNoise(x, y, z)
+          </code>
+          <div class="tip" id="14025">
+            <strong>Signature:</strong> (x:int * y:int * z:int) -&gt; float32<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+        </div>
+        <div class="span3">
+          <a href="https://github.com/vrvis">
+            <img src="logo.png" style="width:140px;height:140px;margin:10px 0px 0px 35px;border-style:none;" />
+          </a>
+
+          <ul class="nav nav-list" id="menu">
+
+            <li class="nav-header">Aardvark.Base</li>
+
+            <li class="divider"></li>
+            <li><a href="https://github.com/vrvis/aardvark.base">Home page</a></li>
+            <li class="divider"></li>
+
+            <li><a href="https://www.nuget.org/packages/Aardvark.Base">Get Aardvark.Base via NuGet</a></li>
+            <li><a href="https://github.com/vrvis/aardvark.base">Source Code on GitHub</a></li>
+            <li><a href="https://github.com/vrvis/aardvark.baseLicense">License (Apache 2)</a></li>
+            
+            <!-- <li><a href="https://github.com/vrvis/aardvark.base/RELEASE_NOTES.html">Release Notes</a></li>
+            <li><a href="https://github.com/vrvis/aardvark.base//contributing.html">Contributing to Aardvark.Base</a></li>
+  
+            <li><a href="http://stackoverflow.com/questions/tagged/f%23-fake">Ask a question</a></li> 
+            
+            <li class="nav-header">Tutorials</li>
+            <li><a href="https://github.com/vrvis/aardvark.base/gettingstarted.html">Getting started</a></li>
+            
+            -->
+
+            
+            <li class="divider"></li>
+            <li class="nav-header">Reference</li>
+
+            <li><a href="https://github.com/vrvis/aardvark.base/apidocs/index.html">API Reference</a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    <a href="https://github.com/vrvis/aardvark.base"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_gray_6d6d6d.png" alt="Fork me on GitHub"></a>
+  </body>
+  </html>

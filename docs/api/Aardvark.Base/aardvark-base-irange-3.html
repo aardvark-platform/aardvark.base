@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>IRange<'TValue, 'TDiff, 'TRange> - Aardvark.Base</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="The Aardvark Platform Team">
+
+    <script src="https://code.jquery.com/jquery-1.8.0.js"></script>
+    <script src="https://code.jquery.com/ui/1.8.23/jquery-ui.js"></script>
+    <script src="https://netdna.bootstrapcdn.com/twitter-bootstrap/2.2.1/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link href="https://netdna.bootstrapcdn.com/twitter-bootstrap/2.2.1/css/bootstrap-combined.min.css" rel="stylesheet">
+
+    <link type="text/css" rel="stylesheet" href="https://github.com/vrvis/aardvark.base/content/style.css" />
+    <script type="text/javascript" src="https://github.com/vrvis/aardvark.base/content/tips.js"></script>
+    <!-- HTML5 shim, for IE6-8 support of HTML5 elements -->
+    <!--[if lt IE 9]>
+      <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+  </head>
+  <body>
+    <div class="container">
+      <div class="masthead">
+        <ul class="nav nav-pills pull-right">
+          <li><a href="https://github.com/vrvis/aardvark.base">github page</a></li>
+        </ul>
+        <h3 class="muted"><a href="https://github.com/vrvis/aardvark.base/index.html">Aardvark.Base</a></h3>
+      </div>
+      <hr />
+      <div class="row">
+        <div class="span9" id="main">
+          
+
+
+
+<h1>IRange<'TValue, 'TDiff, 'TRange></h1>
+<div class="xmldoc">
+<p>IRange enforces a uniform design of all range types.</p>
+
+</div>
+  <h3>Instance members</h3>
+  <table class="table table-bordered member-list">
+    <thead>
+      <tr><td>Instance member</td><td>Description</td></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '8045', 8045)" onmouseover="showTip(event, '8045', 8045)">
+            Center
+          </code>
+          <div class="tip" id="8045">
+            <strong>Signature:</strong> &#39;TValue<br />
+              <strong>Modifiers:</strong> abstract<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '8046', 8046)" onmouseover="showTip(event, '8046', 8046)">
+            EnlargeBy(v)
+          </code>
+          <div class="tip" id="8046">
+            <strong>Signature:</strong> v:&#39;TDiff -&gt; unit<br />
+              <strong>Modifiers:</strong> abstract<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Enlarges range by specified vector in BOTH directions.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '8047', 8047)" onmouseover="showTip(event, '8047', 8047)">
+            EnlargeBy(left, right)
+          </code>
+          <div class="tip" id="8047">
+            <strong>Signature:</strong> (left:&#39;TDiff * right:&#39;TDiff) -&gt; unit<br />
+              <strong>Modifiers:</strong> abstract<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Enlarges range by given values (paddings).</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '8048', 8048)" onmouseover="showTip(event, '8048', 8048)">
+            EnlargedBy(v)
+          </code>
+          <div class="tip" id="8048">
+            <strong>Signature:</strong> v:&#39;TDiff -&gt; &#39;TRange<br />
+              <strong>Modifiers:</strong> abstract<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Returns range enlarged by specified vector in BOTH directions.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '8049', 8049)" onmouseover="showTip(event, '8049', 8049)">
+            EnlargedBy(left, right)
+          </code>
+          <div class="tip" id="8049">
+            <strong>Signature:</strong> (left:&#39;TDiff * right:&#39;TDiff) -&gt; &#39;TRange<br />
+              <strong>Modifiers:</strong> abstract<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Returns range enlarged by given values (paddings).</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '8050', 8050)" onmouseover="showTip(event, '8050', 8050)">
+            Intersects(range, eps)
+          </code>
+          <div class="tip" id="8050">
+            <strong>Signature:</strong> (range:&#39;TRange * eps:&#39;TDiff) -&gt; bool<br />
+              <strong>Modifiers:</strong> abstract<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Checks if 2 ranges intersect each other with tolerance parameter.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '8051', 8051)" onmouseover="showTip(event, '8051', 8051)">
+            ShrinkBy(v)
+          </code>
+          <div class="tip" id="8051">
+            <strong>Signature:</strong> v:&#39;TDiff -&gt; unit<br />
+              <strong>Modifiers:</strong> abstract<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Shrinks range by specified vector in BOTH directions.
+Range may become invalid if vector is too large.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '8052', 8052)" onmouseover="showTip(event, '8052', 8052)">
+            ShrinkBy(left, right)
+          </code>
+          <div class="tip" id="8052">
+            <strong>Signature:</strong> (left:&#39;TDiff * right:&#39;TDiff) -&gt; unit<br />
+              <strong>Modifiers:</strong> abstract<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Shrinks range by given values (paddings).</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '8053', 8053)" onmouseover="showTip(event, '8053', 8053)">
+            ShrunkBy(v)
+          </code>
+          <div class="tip" id="8053">
+            <strong>Signature:</strong> v:&#39;TDiff -&gt; &#39;TRange<br />
+              <strong>Modifiers:</strong> abstract<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Returns range by shrunk specified vector in BOTH directions.
+The returned range may be invalid if vector is too large.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '8054', 8054)" onmouseover="showTip(event, '8054', 8054)">
+            ShrunkBy(left, right)
+          </code>
+          <div class="tip" id="8054">
+            <strong>Signature:</strong> (left:&#39;TDiff * right:&#39;TDiff) -&gt; &#39;TRange<br />
+              <strong>Modifiers:</strong> abstract<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Returns range shrunk by given values (paddings).
+The returned range may be invalid if the paddings are too large.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '8055', 8055)" onmouseover="showTip(event, '8055', 8055)">
+            Size
+          </code>
+          <div class="tip" id="8055">
+            <strong>Signature:</strong> &#39;TDiff<br />
+              <strong>Modifiers:</strong> abstract<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '8056', 8056)" onmouseover="showTip(event, '8056', 8056)">
+            SplitLeft(splitValue)
+          </code>
+          <div class="tip" id="8056">
+            <strong>Signature:</strong> splitValue:&#39;TValue -&gt; &#39;TRange<br />
+              <strong>Modifiers:</strong> abstract<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '8057', 8057)" onmouseover="showTip(event, '8057', 8057)">
+            SplitRight(splitValue)
+          </code>
+          <div class="tip" id="8057">
+            <strong>Signature:</strong> splitValue:&#39;TValue -&gt; &#39;TRange<br />
+              <strong>Modifiers:</strong> abstract<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+        </div>
+        <div class="span3">
+          <a href="https://github.com/vrvis">
+            <img src="logo.png" style="width:140px;height:140px;margin:10px 0px 0px 35px;border-style:none;" />
+          </a>
+
+          <ul class="nav nav-list" id="menu">
+
+            <li class="nav-header">Aardvark.Base</li>
+
+            <li class="divider"></li>
+            <li><a href="https://github.com/vrvis/aardvark.base">Home page</a></li>
+            <li class="divider"></li>
+
+            <li><a href="https://www.nuget.org/packages/Aardvark.Base">Get Aardvark.Base via NuGet</a></li>
+            <li><a href="https://github.com/vrvis/aardvark.base">Source Code on GitHub</a></li>
+            <li><a href="https://github.com/vrvis/aardvark.baseLicense">License (Apache 2)</a></li>
+            
+            <!-- <li><a href="https://github.com/vrvis/aardvark.base/RELEASE_NOTES.html">Release Notes</a></li>
+            <li><a href="https://github.com/vrvis/aardvark.base//contributing.html">Contributing to Aardvark.Base</a></li>
+  
+            <li><a href="http://stackoverflow.com/questions/tagged/f%23-fake">Ask a question</a></li> 
+            
+            <li class="nav-header">Tutorials</li>
+            <li><a href="https://github.com/vrvis/aardvark.base/gettingstarted.html">Getting started</a></li>
+            
+            -->
+
+            
+            <li class="divider"></li>
+            <li class="nav-header">Reference</li>
+
+            <li><a href="https://github.com/vrvis/aardvark.base/apidocs/index.html">API Reference</a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    <a href="https://github.com/vrvis/aardvark.base"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_gray_6d6d6d.png" alt="Fork me on GitHub"></a>
+  </body>
+  </html>

@@ -1,0 +1,3320 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>Vector<'Td> - Aardvark.Base</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="The Aardvark Platform Team">
+
+    <script src="https://code.jquery.com/jquery-1.8.0.js"></script>
+    <script src="https://code.jquery.com/ui/1.8.23/jquery-ui.js"></script>
+    <script src="https://netdna.bootstrapcdn.com/twitter-bootstrap/2.2.1/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link href="https://netdna.bootstrapcdn.com/twitter-bootstrap/2.2.1/css/bootstrap-combined.min.css" rel="stylesheet">
+
+    <link type="text/css" rel="stylesheet" href="https://github.com/vrvis/aardvark.base/content/style.css" />
+    <script type="text/javascript" src="https://github.com/vrvis/aardvark.base/content/tips.js"></script>
+    <!-- HTML5 shim, for IE6-8 support of HTML5 elements -->
+    <!--[if lt IE 9]>
+      <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+  </head>
+  <body>
+    <div class="container">
+      <div class="masthead">
+        <ul class="nav nav-pills pull-right">
+          <li><a href="https://github.com/vrvis/aardvark.base">github page</a></li>
+        </ul>
+        <h3 class="muted"><a href="https://github.com/vrvis/aardvark.base/index.html">Aardvark.Base</a></h3>
+      </div>
+      <hr />
+      <div class="row">
+        <div class="span9" id="main">
+          
+
+
+
+<h1>Vector<'Td></h1>
+<div class="xmldoc">
+<p>Generic vector of elements with arbitrary stride.
+All sizes are given as 1-dimensional vectors, with the first
+parameter specifying the inner dimension.
+The vector does not exclusively own its underlying data array, it
+can also serve as a window into other arrays and tensors. Operations
+on vectors are supported by function arguments which can be easily
+exploited by using lambda functions.
+Note: stride is called Delta (or D) within this data structure, the
+1 stride direction(s) are called DX, DY, aso.</p>
+
+</div>
+  <h3>Constructors</h3>
+  <table class="table table-bordered member-list">
+    <thead>
+      <tr><td>Constructor</td><td>Description</td></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '58379', 58379)" onmouseover="showTip(event, '58379', 58379)">
+            new(data, info)
+          </code>
+          <div class="tip" id="58379">
+            <strong>Signature:</strong> (data:&#39;Td [] * info:VectorInfo) -&gt; unit<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Construct from data array with specified info without copying.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '58380', 58380)" onmouseover="showTip(event, '58380', 58380)">
+            new(size)
+          </code>
+          <div class="tip" id="58380">
+            <strong>Signature:</strong> size:int64 -&gt; unit<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Construct vector of specified size.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '58381', 58381)" onmouseover="showTip(event, '58381', 58381)">
+            new(size)
+          </code>
+          <div class="tip" id="58381">
+            <strong>Signature:</strong> size:int -&gt; unit<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Construct vector of specified size.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '58382', 58382)" onmouseover="showTip(event, '58382', 58382)">
+            new(info)
+          </code>
+          <div class="tip" id="58382">
+            <strong>Signature:</strong> info:VectorInfo -&gt; unit<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Construct vector with specified info.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '58383', 58383)" onmouseover="showTip(event, '58383', 58383)">
+            new(data)
+          </code>
+          <div class="tip" id="58383">
+            <strong>Signature:</strong> (data:&#39;Td []) -&gt; unit<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Construct from data array without copying.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '58384', 58384)" onmouseover="showTip(event, '58384', 58384)">
+            new(data, size)
+          </code>
+          <div class="tip" id="58384">
+            <strong>Signature:</strong> (data:&#39;Td [] * size:int64) -&gt; unit<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Construct from data array with specified size without copying.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '58385', 58385)" onmouseover="showTip(event, '58385', 58385)">
+            new(data, size)
+          </code>
+          <div class="tip" id="58385">
+            <strong>Signature:</strong> (data:&#39;Td [] * size:int) -&gt; unit<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Construct from data array with specified size without copying.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '58386', 58386)" onmouseover="showTip(event, '58386', 58386)">
+            new(size, value)
+          </code>
+          <div class="tip" id="58386">
+            <strong>Signature:</strong> (size:int64 * value:&#39;Td) -&gt; unit<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Construct vector of specified size, with all elements set to
+the supplied value.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '58387', 58387)" onmouseover="showTip(event, '58387', 58387)">
+            new(size, value)
+          </code>
+          <div class="tip" id="58387">
+            <strong>Signature:</strong> (size:int * value:&#39;Td) -&gt; unit<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Construct matrix of specified size, with all elements set to
+the supplied value.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '58388', 58388)" onmouseover="showTip(event, '58388', 58388)">
+            new(data, origin, size, delta)
+          </code>
+          <div class="tip" id="58388">
+            <strong>Signature:</strong> (data:&#39;Td [] * origin:int64 * size:int64 * delta:int64) -&gt; unit<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Construct from data array with specified size and delta without copying.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '58389', 58389)" onmouseover="showTip(event, '58389', 58389)">
+            new(data, origin, size, delta, first)
+          </code>
+          <div class="tip" id="58389">
+            <strong>Signature:</strong> (data:&#39;Td [] * origin:int64 * size:int64 * delta:int64 * first:int64) -&gt; unit<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Construct from data array with specified size and delta without copying.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '58390', 58390)" onmouseover="showTip(event, '58390', 58390)">
+            new(origin, size, delta)
+          </code>
+          <div class="tip" id="58390">
+            <strong>Signature:</strong> (origin:int64 * size:int64 * delta:int64) -&gt; unit<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Construct with specified size and delta.</p>
+
+
+        </td>
+      </tr>
+    </tbody>
+  </table>
+  <h3>Instance members</h3>
+  <table class="table table-bordered member-list">
+    <thead>
+      <tr><td>Instance member</td><td>Description</td></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '58391', 58391)" onmouseover="showTip(event, '58391', 58391)">
+            Apply(element_elementFun)
+          </code>
+          <div class="tip" id="58391">
+            <strong>Signature:</strong> element_elementFun:Func&lt;&#39;Td,&#39;Td&gt; -&gt; Vector&lt;&#39;Td&gt;<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Apply the supplied function on the elements of the vector.
+The value of the elements is given to fun.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '58392', 58392)" onmouseover="showTip(event, '58392', 58392)">
+            Apply(t1, element_element1_elementFun)
+          </code>
+          <div class="tip" id="58392">
+            <strong>Signature:</strong> (t1:Vector&lt;&#39;T1&gt; * element_element1_elementFun:Func&lt;&#39;Td,&#39;T1,&#39;Td&gt;) -&gt; Vector&lt;&#39;Td&gt;<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Apply the supplied function to each pair of corresponding
+elements of the original vector and the supplied vector.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '58393', 58393)" onmouseover="showTip(event, '58393', 58393)">
+            Apply(t1, element_element1_elementFun)
+          </code>
+          <div class="tip" id="58393">
+            <strong>Signature:</strong> (t1:Vector&lt;&#39;T1d,&#39;T1&gt; * element_element1_elementFun:Func&lt;&#39;Td,&#39;T1,&#39;Td&gt;) -&gt; Vector&lt;&#39;Td&gt;<br />
+                          <strong>Type parameters:</strong> 'T1          </div>
+        </td>
+        <td class="xmldoc">
+          <p>Apply the supplied function to each pair of corresponding
+elements of the original vector and the supplied vector.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '58394', 58394)" onmouseover="showTip(event, '58394', 58394)">
+            ApplyByCoord(fun)
+          </code>
+          <div class="tip" id="58394">
+            <strong>Signature:</strong> fun:Func&lt;&#39;Td,int64,&#39;Td&gt; -&gt; Vector&lt;&#39;Td&gt;<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Set each element to the value of a function of the element coords.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '58395', 58395)" onmouseover="showTip(event, '58395', 58395)">
+            Array()
+          </code>
+          <div class="tip" id="58395">
+            <strong>Signature:</strong> unit -&gt; unit<br />
+              <strong>Modifiers:</strong> abstract<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Return the underlying data array as an untyped array.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '58396', 58396)" onmouseover="showTip(event, '58396', 58396)">
+            ArrayType
+          </code>
+          <div class="tip" id="58396">
+            <strong>Signature:</strong> Type<br />
+              <strong>Modifiers:</strong> abstract<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Return the type of the underlying data array.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '58397', 58397)" onmouseover="showTip(event, '58397', 58397)">
+            Copy()
+          </code>
+          <div class="tip" id="58397">
+            <strong>Signature:</strong> unit -&gt; Vector&lt;&#39;Td&gt;<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Elementwise copy.
+This methods returns a Vector with zero as first coordinates.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '58398', 58398)" onmouseover="showTip(event, '58398', 58398)">
+            Copy(fun)
+          </code>
+          <div class="tip" id="58398">
+            <strong>Signature:</strong> fun:Func&lt;&#39;Td,&#39;T1&gt; -&gt; Vector&lt;&#39;T1&gt;<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Elementwise copy with function application.
+This methods returns a Vector with zero as first coordinates.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '58399', 58399)" onmouseover="showTip(event, '58399', 58399)">
+            CopyWindow()
+          </code>
+          <div class="tip" id="58399">
+            <strong>Signature:</strong> unit -&gt; Vector&lt;&#39;Td&gt;<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Elementwise copy.
+This method retains the coordinates of the original Vector.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '58400', 58400)" onmouseover="showTip(event, '58400', 58400)">
+            CopyWindow(fun)
+          </code>
+          <div class="tip" id="58400">
+            <strong>Signature:</strong> fun:Func&lt;&#39;Td,&#39;T1&gt; -&gt; Vector&lt;&#39;T1&gt;<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Elementwise copy with function application.
+This method retains the coordinates of the original Vector.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '58401', 58401)" onmouseover="showTip(event, '58401', 58401)">
+            Count
+          </code>
+          <div class="tip" id="58401">
+            <strong>Signature:</strong> int64<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Total number of element in the matrix.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '58402', 58402)" onmouseover="showTip(event, '58402', 58402)">
+            D()
+          </code>
+          <div class="tip" id="58402">
+            <strong>Signature:</strong> unit -&gt; unit<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Delta</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '58403', 58403)" onmouseover="showTip(event, '58403', 58403)">
+            Delta()
+          </code>
+          <div class="tip" id="58403">
+            <strong>Signature:</strong> unit -&gt; unit<br />
+              <strong>Modifiers:</strong> abstract<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '58404', 58404)" onmouseover="showTip(event, '58404', 58404)">
+            DeltaArray()
+          </code>
+          <div class="tip" id="58404">
+            <strong>Signature:</strong> unit -&gt; unit<br />
+              <strong>Modifiers:</strong> abstract<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Get or set the deltas of the tensor in each dimension as an
+array of longs.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '58405', 58405)" onmouseover="showTip(event, '58405', 58405)">
+            Dim
+          </code>
+          <div class="tip" id="58405">
+            <strong>Signature:</strong> int64<br />
+              <strong>Modifiers:</strong> abstract<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Dimension of the generic Vector.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '58406', 58406)" onmouseover="showTip(event, '58406', 58406)">
+            DS
+          </code>
+          <div class="tip" id="58406">
+            <strong>Signature:</strong> int64<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Cummulative delta for all elements up to this dimension.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '58407', 58407)" onmouseover="showTip(event, '58407', 58407)">
+            DSX
+          </code>
+          <div class="tip" id="58407">
+            <strong>Signature:</strong> int64<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Cummulative delta for all elements up to this dimension.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '58408', 58408)" onmouseover="showTip(event, '58408', 58408)">
+            DX()
+          </code>
+          <div class="tip" id="58408">
+            <strong>Signature:</strong> unit -&gt; unit<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Delta in dimension X.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '58409', 58409)" onmouseover="showTip(event, '58409', 58409)">
+            E
+          </code>
+          <div class="tip" id="58409">
+            <strong>Signature:</strong> int64<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>End: one step beyond the last element.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '58410', 58410)" onmouseover="showTip(event, '58410', 58410)">
+            Elements
+          </code>
+          <div class="tip" id="58410">
+            <strong>Signature:</strong> IEnumerable&lt;&#39;Td&gt;<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Yields all elemnts ordered by index.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '58411', 58411)" onmouseover="showTip(event, '58411', 58411)">
+            End
+          </code>
+          <div class="tip" id="58411">
+            <strong>Signature:</strong> int64<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>One step beyond the last element.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '58412', 58412)" onmouseover="showTip(event, '58412', 58412)">
+            EX
+          </code>
+          <div class="tip" id="58412">
+            <strong>Signature:</strong> int64<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>End in dimension X (one step beyond the last element).</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '58413', 58413)" onmouseover="showTip(event, '58413', 58413)">
+            F()
+          </code>
+          <div class="tip" id="58413">
+            <strong>Signature:</strong> unit -&gt; unit<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>First</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '58414', 58414)" onmouseover="showTip(event, '58414', 58414)">
+            First()
+          </code>
+          <div class="tip" id="58414">
+            <strong>Signature:</strong> unit -&gt; unit<br />
+              <strong>Modifiers:</strong> abstract<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '58415', 58415)" onmouseover="showTip(event, '58415', 58415)">
+            FirstArray()
+          </code>
+          <div class="tip" id="58415">
+            <strong>Signature:</strong> unit -&gt; unit<br />
+              <strong>Modifiers:</strong> abstract<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Get or set the first coords of the tensor in each dimension as an
+array of longs.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '58416', 58416)" onmouseover="showTip(event, '58416', 58416)">
+            FirstIndex
+          </code>
+          <div class="tip" id="58416">
+            <strong>Signature:</strong> int64<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Return the index of the first element in the underlying
+data array.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '58417', 58417)" onmouseover="showTip(event, '58417', 58417)">
+            ForeachCoord(v_action)
+          </code>
+          <div class="tip" id="58417">
+            <strong>Signature:</strong> v_action:Action&lt;int64&gt; -&gt; unit<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '58418', 58418)" onmouseover="showTip(event, '58418', 58418)">
+            ForeachIndex(i_action)
+          </code>
+          <div class="tip" id="58418">
+            <strong>Signature:</strong> i_action:Action&lt;int64&gt; -&gt; unit<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '58419', 58419)" onmouseover="showTip(event, '58419', 58419)">
+            ForeachIndex(x_i_action)
+          </code>
+          <div class="tip" id="58419">
+            <strong>Signature:</strong> x_i_action:Action&lt;int64,int64&gt; -&gt; unit<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '58420', 58420)" onmouseover="showTip(event, '58420', 58420)">
+            ForeachIndex(t1, i_i1_act)
+          </code>
+          <div class="tip" id="58420">
+            <strong>Signature:</strong> (t1:VectorInfo * i_i1_act:Action&lt;int64,int64&gt;) -&gt; unit<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '58421', 58421)" onmouseover="showTip(event, '58421', 58421)">
+            FX()
+          </code>
+          <div class="tip" id="58421">
+            <strong>Signature:</strong> unit -&gt; unit<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>First in dimension X.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '58422', 58422)" onmouseover="showTip(event, '58422', 58422)">
+            GetValue(x)
+          </code>
+          <div class="tip" id="58422">
+            <strong>Signature:</strong> x:int64 -&gt; obj<br />
+              <strong>Modifiers:</strong> abstract<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '58423', 58423)" onmouseover="showTip(event, '58423', 58423)">
+            I
+          </code>
+          <div class="tip" id="58423">
+            <strong>Signature:</strong> int64<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '58424', 58424)" onmouseover="showTip(event, '58424', 58424)">
+            InnerProduct(t1, mulFun, bias, sumFun)
+          </code>
+          <div class="tip" id="58424">
+            <strong>Signature:</strong> (t1:Vector&lt;&#39;T1&gt; * mulFun:Func&lt;&#39;Td,&#39;T1,&#39;Tm&gt; * bias:&#39;Ts * sumFun:Func&lt;&#39;Ts,&#39;Tm,&#39;Ts&gt;) -&gt; &#39;Ts<br />
+                          <strong>Type parameters:</strong> 'Tm, 'Ts          </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '58425', 58425)" onmouseover="showTip(event, '58425', 58425)">
+            InnerProduct(t1, mulFun, bias, sumFun)
+          </code>
+          <div class="tip" id="58425">
+            <strong>Signature:</strong> (t1:Vector&lt;&#39;T1d,&#39;T1&gt; * mulFun:Func&lt;&#39;Td,&#39;T1,&#39;Tm&gt; * bias:&#39;Ts * sumFun:Func&lt;&#39;Ts,&#39;Tm,&#39;Ts&gt;) -&gt; &#39;Ts<br />
+                          <strong>Type parameters:</strong> 'T1, 'Tm, 'Ts          </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '58426', 58426)" onmouseover="showTip(event, '58426', 58426)">
+            InnerProduct(...)
+          </code>
+          <div class="tip" id="58426">
+            <strong>Signature:</strong> (t1:Vector&lt;&#39;T1&gt; * mulFun:Func&lt;&#39;Td,&#39;T1,&#39;Tm&gt; * bias:&#39;Ts * sumFun:Func&lt;&#39;Ts,&#39;Tm,&#39;Ts&gt; * breakIfTrueFun:Func&lt;&#39;Ts,bool&gt;) -&gt; &#39;Ts<br />
+                          <strong>Type parameters:</strong> 'Tm, 'Ts          </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '58427', 58427)" onmouseover="showTip(event, '58427', 58427)">
+            InnerProduct(...)
+          </code>
+          <div class="tip" id="58427">
+            <strong>Signature:</strong> (t1:Vector&lt;&#39;T1d,&#39;T1&gt; * mulFun:Func&lt;&#39;Td,&#39;T1,&#39;Tm&gt; * bias:&#39;Ts * sumFun:Func&lt;&#39;Ts,&#39;Tm,&#39;Ts&gt; * breakIfTrueFun:Func&lt;&#39;Ts,bool&gt;) -&gt; &#39;Ts<br />
+                          <strong>Type parameters:</strong> 'T1, 'Tm, 'Ts          </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '58428', 58428)" onmouseover="showTip(event, '58428', 58428)">
+            IsInvalid
+          </code>
+          <div class="tip" id="58428">
+            <strong>Signature:</strong> bool<br />
+              <strong>Modifiers:</strong> abstract<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Returns true if the vector does not have a data array.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '58429', 58429)" onmouseover="showTip(event, '58429', 58429)">
+            IsValid
+          </code>
+          <div class="tip" id="58429">
+            <strong>Signature:</strong> bool<br />
+              <strong>Modifiers:</strong> abstract<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Returns true if the vector has a data array.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '58430', 58430)" onmouseover="showTip(event, '58430', 58430)">
+            [()]
+          </code>
+          <div class="tip" id="58430">
+            <strong>Signature:</strong> unit -&gt; int64<br />
+              <strong>Modifiers:</strong> abstract<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Get/Set element at specified coordinates.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '58431', 58431)" onmouseover="showTip(event, '58431', 58431)">
+            [()]
+          </code>
+          <div class="tip" id="58431">
+            <strong>Signature:</strong> unit -&gt; int<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Get/Set element at specified coordinates.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '58432', 58432)" onmouseover="showTip(event, '58432', 58432)">
+            JX
+          </code>
+          <div class="tip" id="58432">
+            <strong>Signature:</strong> int64<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Jump this many elements in the underlying data array when stepping
+in dimension X.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '58433', 58433)" onmouseover="showTip(event, '58433', 58433)">
+            Map(fun)
+          </code>
+          <div class="tip" id="58433">
+            <strong>Signature:</strong> fun:Func&lt;&#39;Td,&#39;T1&gt; -&gt; Vector&lt;&#39;T1&gt;<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Elementwise copy with function application.
+This methods returns a Vector with zero as first coordinates.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '58434', 58434)" onmouseover="showTip(event, '58434', 58434)">
+            MapWindow(fun)
+          </code>
+          <div class="tip" id="58434">
+            <strong>Signature:</strong> fun:Func&lt;&#39;Td,&#39;T1&gt; -&gt; Vector&lt;&#39;T1&gt;<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Elementwise copy with function application.
+This method retains the coordinates of the original Vector.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '58435', 58435)" onmouseover="showTip(event, '58435', 58435)">
+            Norm(elementFun, bias, sumFun)
+          </code>
+          <div class="tip" id="58435">
+            <strong>Signature:</strong> (elementFun:Func&lt;&#39;Td,&#39;Ti&gt; * bias:&#39;Tr * sumFun:Func&lt;&#39;Tr,&#39;Ti,&#39;Tr&gt;) -&gt; &#39;Tr<br />
+                          <strong>Type parameters:</strong> 'Ti          </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '58436', 58436)" onmouseover="showTip(event, '58436', 58436)">
+            Norm(elementFun, bias, sumFun)
+          </code>
+          <div class="tip" id="58436">
+            <strong>Signature:</strong> (elementFun:Func&lt;&#39;Td,int64,&#39;Ti&gt; * bias:&#39;Tr * sumFun:Func&lt;&#39;Tr,&#39;Ti,&#39;Tr&gt;) -&gt; &#39;Tr<br />
+                          <strong>Type parameters:</strong> 'Ti          </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '58437', 58437)" onmouseover="showTip(event, '58437', 58437)">
+            Norm(...)
+          </code>
+          <div class="tip" id="58437">
+            <strong>Signature:</strong> (elementFun:Func&lt;&#39;Td,&#39;Ti&gt; * bias:&#39;Tr * sumFun:Func&lt;&#39;Tr,&#39;Ti,&#39;Tr&gt; * breakIfTrueFun:Func&lt;&#39;Tr,bool&gt;) -&gt; &#39;Tr<br />
+                          <strong>Type parameters:</strong> 'Ti          </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '58438', 58438)" onmouseover="showTip(event, '58438', 58438)">
+            Norm(...)
+          </code>
+          <div class="tip" id="58438">
+            <strong>Signature:</strong> (elementFun:Func&lt;&#39;Td,int64,&#39;Ti&gt; * bias:&#39;Tr * sumFun:Func&lt;&#39;Tr,&#39;Ti,&#39;Tr&gt; * breakIfTrueFun:Func&lt;&#39;Tr,bool&gt;) -&gt; &#39;Tr<br />
+                          <strong>Type parameters:</strong> 'Ti          </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '58439', 58439)" onmouseover="showTip(event, '58439', 58439)">
+            O
+          </code>
+          <div class="tip" id="58439">
+            <strong>Signature:</strong> int64<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '58440', 58440)" onmouseover="showTip(event, '58440', 58440)">
+            Origin()
+          </code>
+          <div class="tip" id="58440">
+            <strong>Signature:</strong> unit -&gt; unit<br />
+              <strong>Modifiers:</strong> abstract<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '58441', 58441)" onmouseover="showTip(event, '58441', 58441)">
+            OriginIndex()
+          </code>
+          <div class="tip" id="58441">
+            <strong>Signature:</strong> unit -&gt; unit<br />
+              <strong>Modifiers:</strong> abstract<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '58442', 58442)" onmouseover="showTip(event, '58442', 58442)">
+            Rank
+          </code>
+          <div class="tip" id="58442">
+            <strong>Signature:</strong> int<br />
+              <strong>Modifiers:</strong> abstract<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Return the rank or dimension of the vector (1).</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '58443', 58443)" onmouseover="showTip(event, '58443', 58443)">
+            Repeated(count)
+          </code>
+          <div class="tip" id="58443">
+            <strong>Signature:</strong> count:int64 -&gt; Vector&lt;&#39;Td&gt;<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Returns a tensor repeated in each dimension by the specified
+count.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '58444', 58444)" onmouseover="showTip(event, '58444', 58444)">
+            S()
+          </code>
+          <div class="tip" id="58444">
+            <strong>Signature:</strong> unit -&gt; unit<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Size</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '58445', 58445)" onmouseover="showTip(event, '58445', 58445)">
+            Sample2(...)
+          </code>
+          <div class="tip" id="58445">
+            <strong>Signature:</strong> (x:float * ipl:Func&lt;float,&#39;Td,&#39;Td,&#39;TRes&gt; * index_min_max_delta_indexFun:Func&lt;int64,int64,int64,int64,Tup2&lt;int64&gt;&gt;) -&gt; &#39;TRes<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Sample the vector using 2 samples and the supplied
+interpolation function. If an integer coordinte is
+supplied the returned value is the same as the indexer
+of the vector.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '58446', 58446)" onmouseover="showTip(event, '58446', 58446)">
+            Sample2Clamped(x, ipl)
+          </code>
+          <div class="tip" id="58446">
+            <strong>Signature:</strong> (x:float * ipl:Func&lt;float,&#39;Td,&#39;Td,&#39;TRes&gt;) -&gt; &#39;TRes<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '58447', 58447)" onmouseover="showTip(event, '58447', 58447)">
+            Sample4(...)
+          </code>
+          <div class="tip" id="58447">
+            <strong>Signature:</strong> (x:float * ipl:Func&lt;float,Tup4&lt;&#39;T1&gt;&gt; * smp:FuncRef1&lt;&#39;Td,&#39;Td,&#39;Td,&#39;Td,Tup4&lt;&#39;T1&gt;,&#39;TRes&gt; * index_min_max_delta_indexFun:Func&lt;int64,int64,int64,int64,Tup4&lt;int64&gt;&gt;) -&gt; &#39;TRes<br />
+                          <strong>Type parameters:</strong> 'TRes          </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '58448', 58448)" onmouseover="showTip(event, '58448', 58448)">
+            Sample4Clamped(x, ipl, smp)
+          </code>
+          <div class="tip" id="58448">
+            <strong>Signature:</strong> (x:float * ipl:Func&lt;float,Tup4&lt;&#39;T1&gt;&gt; * smp:FuncRef1&lt;&#39;Td,&#39;Td,&#39;Td,&#39;Td,Tup4&lt;&#39;T1&gt;,&#39;TRes&gt;) -&gt; &#39;TRes<br />
+                          <strong>Type parameters:</strong> 'TRes          </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '58449', 58449)" onmouseover="showTip(event, '58449', 58449)">
+            Sample6(...)
+          </code>
+          <div class="tip" id="58449">
+            <strong>Signature:</strong> (x:float * ipl:Func&lt;float,Tup6&lt;&#39;T1&gt;&gt; * smp:FuncRef1&lt;&#39;Td,&#39;Td,&#39;Td,&#39;Td,&#39;Td,&#39;Td,Tup6&lt;&#39;T1&gt;,&#39;TRes&gt; * index_min_max_delta_indexFun:Func&lt;int64,int64,int64,int64,Tup6&lt;int64&gt;&gt;) -&gt; &#39;TRes<br />
+                          <strong>Type parameters:</strong> 'TRes          </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '58450', 58450)" onmouseover="showTip(event, '58450', 58450)">
+            Sample6Clamped(x, ipl, smp)
+          </code>
+          <div class="tip" id="58450">
+            <strong>Signature:</strong> (x:float * ipl:Func&lt;float,Tup6&lt;&#39;T1&gt;&gt; * smp:FuncRef1&lt;&#39;Td,&#39;Td,&#39;Td,&#39;Td,&#39;Td,&#39;Td,Tup6&lt;&#39;T1&gt;,&#39;TRes&gt;) -&gt; &#39;TRes<br />
+                          <strong>Type parameters:</strong> 'TRes          </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '58451', 58451)" onmouseover="showTip(event, '58451', 58451)">
+            SampleRaw2(x, ipl)
+          </code>
+          <div class="tip" id="58451">
+            <strong>Signature:</strong> (x:float * ipl:Func&lt;float,&#39;Td,&#39;Td,&#39;TRes&gt;) -&gt; &#39;TRes<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Sample the vector using 2 samples and the supplied
+interpolation function. If an integer coordinte is
+supplied the returned value is the same as the indexer
+of the vector. No bounds checking is performed.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '58452', 58452)" onmouseover="showTip(event, '58452', 58452)">
+            SampleRaw4(x, ipl, smp)
+          </code>
+          <div class="tip" id="58452">
+            <strong>Signature:</strong> (x:float * ipl:Func&lt;float,Tup4&lt;&#39;T1&gt;&gt; * smp:FuncRef1&lt;&#39;Td,&#39;Td,&#39;Td,&#39;Td,Tup4&lt;&#39;T1&gt;,&#39;TRes&gt;) -&gt; &#39;TRes<br />
+                          <strong>Type parameters:</strong> 'TRes          </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '58453', 58453)" onmouseover="showTip(event, '58453', 58453)">
+            SampleRaw6(x, ipl, smp)
+          </code>
+          <div class="tip" id="58453">
+            <strong>Signature:</strong> (x:float * ipl:Func&lt;float,Tup6&lt;&#39;T1&gt;&gt; * smp:FuncRef1&lt;&#39;Td,&#39;Td,&#39;Td,&#39;Td,&#39;Td,&#39;Td,Tup6&lt;&#39;T1&gt;,&#39;TRes&gt;) -&gt; &#39;TRes<br />
+                          <strong>Type parameters:</strong> 'TRes          </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '58454', 58454)" onmouseover="showTip(event, '58454', 58454)">
+            Set(v)
+          </code>
+          <div class="tip" id="58454">
+            <strong>Signature:</strong> v:&#39;Td -&gt; Vector&lt;&#39;Td&gt;<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Sets all elements to the supplied value.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '58455', 58455)" onmouseover="showTip(event, '58455', 58455)">
+            Set(it1)
+          </code>
+          <div class="tip" id="58455">
+            <strong>Signature:</strong> it1:IVector&lt;&#39;Td&gt; -&gt; Vector&lt;&#39;Td&gt;<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Set from a tensor that conforms to the corresponding tensor
+interface. Note, that this function checks if faster set
+operations are available and uses them if appropriate.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '58456', 58456)" onmouseover="showTip(event, '58456', 58456)">
+            Set(t1)
+          </code>
+          <div class="tip" id="58456">
+            <strong>Signature:</strong> t1:Vector&lt;&#39;Td&gt; -&gt; Vector&lt;&#39;Td&gt;<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Copy all elements from another vector.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '58457', 58457)" onmouseover="showTip(event, '58457', 58457)">
+            Set(t1, element1_elementFun)
+          </code>
+          <div class="tip" id="58457">
+            <strong>Signature:</strong> (t1:Vector&lt;&#39;T1&gt; * element1_elementFun:Func&lt;&#39;T1,&#39;Td&gt;) -&gt; Vector&lt;&#39;Td&gt;<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Set the elements of a vector to the result of a function of
+the elements of the supplied vector.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '58458', 58458)" onmouseover="showTip(event, '58458', 58458)">
+            Set(t1)
+          </code>
+          <div class="tip" id="58458">
+            <strong>Signature:</strong> t1:Vector&lt;&#39;T1,&#39;Td&gt; -&gt; Vector&lt;&#39;Td&gt;<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Copy all elements from another vector.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '58459', 58459)" onmouseover="showTip(event, '58459', 58459)">
+            Set(t1, element1_elementFun)
+          </code>
+          <div class="tip" id="58459">
+            <strong>Signature:</strong> (t1:Vector&lt;&#39;T1d,&#39;T1&gt; * element1_elementFun:Func&lt;&#39;T1,&#39;Td&gt;) -&gt; Vector&lt;&#39;Td&gt;<br />
+                          <strong>Type parameters:</strong> 'T1          </div>
+        </td>
+        <td class="xmldoc">
+          <p>Set the elements of a vector to the result of a function of
+the elements of the supplied vector.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '58460', 58460)" onmouseover="showTip(event, '58460', 58460)">
+            Set(...)
+          </code>
+          <div class="tip" id="58460">
+            <strong>Signature:</strong> (t1:Vector&lt;&#39;T1&gt; * t2:Vector&lt;&#39;T2&gt; * element1_element2_elementFun:Func&lt;&#39;T1,&#39;T2,&#39;Td&gt;) -&gt; Vector&lt;&#39;Td&gt;<br />
+                          <strong>Type parameters:</strong> 'T2          </div>
+        </td>
+        <td class="xmldoc">
+          <p>Set the elements of a vector to the result of a function of
+corresponding pairs of elements of the two supplied tensors.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '58461', 58461)" onmouseover="showTip(event, '58461', 58461)">
+            Set(...)
+          </code>
+          <div class="tip" id="58461">
+            <strong>Signature:</strong> (t1:Vector&lt;&#39;T1&gt; * t2:Vector&lt;&#39;T2d,&#39;T2&gt; * element1_element2_elementFun:Func&lt;&#39;T1,&#39;T2,&#39;Td&gt;) -&gt; Vector&lt;&#39;Td&gt;<br />
+                          <strong>Type parameters:</strong> 'T2d, 'T2          </div>
+        </td>
+        <td class="xmldoc">
+          <p>Set the elements of a vector to the result of a function of
+corresponding pairs of elements of the two supplied tensors.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '58462', 58462)" onmouseover="showTip(event, '58462', 58462)">
+            Set(...)
+          </code>
+          <div class="tip" id="58462">
+            <strong>Signature:</strong> (t1:Vector&lt;&#39;T1d,&#39;T1&gt; * t2:Vector&lt;&#39;T2&gt; * element1_element2_elementFun:Func&lt;&#39;T1,&#39;T2,&#39;Td&gt;) -&gt; Vector&lt;&#39;Td&gt;<br />
+                          <strong>Type parameters:</strong> 'T1, 'T2          </div>
+        </td>
+        <td class="xmldoc">
+          <p>Set the elements of a vector to the result of a function of
+corresponding pairs of elements of the two supplied tensors.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '58463', 58463)" onmouseover="showTip(event, '58463', 58463)">
+            Set(...)
+          </code>
+          <div class="tip" id="58463">
+            <strong>Signature:</strong> (t1:Vector&lt;&#39;T1d,&#39;T1&gt; * t2:Vector&lt;&#39;T2d,&#39;T2&gt; * element1_element2_elementFun:Func&lt;&#39;T1,&#39;T2,&#39;Td&gt;) -&gt; Vector&lt;&#39;Td&gt;<br />
+                          <strong>Type parameters:</strong> 'T1, 'T2d, 'T2          </div>
+        </td>
+        <td class="xmldoc">
+          <p>Set the elements of a vector to the result of a function of
+corresponding pairs of elements of the two supplied tensors.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '58464', 58464)" onmouseover="showTip(event, '58464', 58464)">
+            Set(...)
+          </code>
+          <div class="tip" id="58464">
+            <strong>Signature:</strong> (t1:Vector&lt;&#39;T1&gt; * t2:Vector&lt;&#39;T2&gt; * t3:Vector&lt;&#39;T3&gt; * element1_element2_element3_elementFun:Func&lt;&#39;T1,&#39;T2,&#39;T3,&#39;Td&gt;) -&gt; Vector&lt;&#39;Td&gt;<br />
+                          <strong>Type parameters:</strong> 'T2, 'T3          </div>
+        </td>
+        <td class="xmldoc">
+          <p>Set the elements of a tensor to the result of a function of
+corresponding triples of elements of the three supplied tensors.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '58465', 58465)" onmouseover="showTip(event, '58465', 58465)">
+            Set(...)
+          </code>
+          <div class="tip" id="58465">
+            <strong>Signature:</strong> (t1:Vector&lt;&#39;T1&gt; * t2:Vector&lt;&#39;T2&gt; * t3:Vector&lt;&#39;T3d,&#39;T3&gt; * element1_element2_element3_elementFun:Func&lt;&#39;T1,&#39;T2,&#39;T3,&#39;Td&gt;) -&gt; Vector&lt;&#39;Td&gt;<br />
+                          <strong>Type parameters:</strong> 'T2, 'T3d, 'T3          </div>
+        </td>
+        <td class="xmldoc">
+          <p>Set the elements of a tensor to the result of a function of
+corresponding triples of elements of the three supplied tensors.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '58466', 58466)" onmouseover="showTip(event, '58466', 58466)">
+            Set(...)
+          </code>
+          <div class="tip" id="58466">
+            <strong>Signature:</strong> (t1:Vector&lt;&#39;T1&gt; * t2:Vector&lt;&#39;T2d,&#39;T2&gt; * t3:Vector&lt;&#39;T3&gt; * element1_element2_element3_elementFun:Func&lt;&#39;T1,&#39;T2,&#39;T3,&#39;Td&gt;) -&gt; Vector&lt;&#39;Td&gt;<br />
+                          <strong>Type parameters:</strong> 'T2d, 'T2, 'T3          </div>
+        </td>
+        <td class="xmldoc">
+          <p>Set the elements of a tensor to the result of a function of
+corresponding triples of elements of the three supplied tensors.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '58467', 58467)" onmouseover="showTip(event, '58467', 58467)">
+            Set(...)
+          </code>
+          <div class="tip" id="58467">
+            <strong>Signature:</strong> (t1:Vector&lt;&#39;T1&gt; * t2:Vector&lt;&#39;T2d,&#39;T2&gt; * t3:Vector&lt;&#39;T3d,&#39;T3&gt; * element1_element2_element3_elementFun:Func&lt;&#39;T1,&#39;T2,&#39;T3,&#39;Td&gt;) -&gt; Vector&lt;&#39;Td&gt;<br />
+                          <strong>Type parameters:</strong> 'T2d, 'T2, 'T3d, 'T3          </div>
+        </td>
+        <td class="xmldoc">
+          <p>Set the elements of a tensor to the result of a function of
+corresponding triples of elements of the three supplied tensors.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '58468', 58468)" onmouseover="showTip(event, '58468', 58468)">
+            Set(...)
+          </code>
+          <div class="tip" id="58468">
+            <strong>Signature:</strong> (t1:Vector&lt;&#39;T1d,&#39;T1&gt; * t2:Vector&lt;&#39;T2&gt; * t3:Vector&lt;&#39;T3&gt; * element1_element2_element3_elementFun:Func&lt;&#39;T1,&#39;T2,&#39;T3,&#39;Td&gt;) -&gt; Vector&lt;&#39;Td&gt;<br />
+                          <strong>Type parameters:</strong> 'T1, 'T2, 'T3          </div>
+        </td>
+        <td class="xmldoc">
+          <p>Set the elements of a tensor to the result of a function of
+corresponding triples of elements of the three supplied tensors.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '58469', 58469)" onmouseover="showTip(event, '58469', 58469)">
+            Set(...)
+          </code>
+          <div class="tip" id="58469">
+            <strong>Signature:</strong> (t1:Vector&lt;&#39;T1d,&#39;T1&gt; * t2:Vector&lt;&#39;T2&gt; * t3:Vector&lt;&#39;T3d,&#39;T3&gt; * element1_element2_element3_elementFun:Func&lt;&#39;T1,&#39;T2,&#39;T3,&#39;Td&gt;) -&gt; Vector&lt;&#39;Td&gt;<br />
+                          <strong>Type parameters:</strong> 'T1, 'T2, 'T3d, 'T3          </div>
+        </td>
+        <td class="xmldoc">
+          <p>Set the elements of a tensor to the result of a function of
+corresponding triples of elements of the three supplied tensors.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '58470', 58470)" onmouseover="showTip(event, '58470', 58470)">
+            Set(...)
+          </code>
+          <div class="tip" id="58470">
+            <strong>Signature:</strong> (t1:Vector&lt;&#39;T1d,&#39;T1&gt; * t2:Vector&lt;&#39;T2d,&#39;T2&gt; * t3:Vector&lt;&#39;T3&gt; * element1_element2_element3_elementFun:Func&lt;&#39;T1,&#39;T2,&#39;T3,&#39;Td&gt;) -&gt; Vector&lt;&#39;Td&gt;<br />
+                          <strong>Type parameters:</strong> 'T1, 'T2d, 'T2, 'T3          </div>
+        </td>
+        <td class="xmldoc">
+          <p>Set the elements of a tensor to the result of a function of
+corresponding triples of elements of the three supplied tensors.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '58471', 58471)" onmouseover="showTip(event, '58471', 58471)">
+            Set(...)
+          </code>
+          <div class="tip" id="58471">
+            <strong>Signature:</strong> (t1:Vector&lt;&#39;T1d,&#39;T1&gt; * t2:Vector&lt;&#39;T2d,&#39;T2&gt; * t3:Vector&lt;&#39;T3d,&#39;T3&gt; * element1_element2_element3_elementFun:Func&lt;&#39;T1,&#39;T2,&#39;T3,&#39;Td&gt;) -&gt; Vector&lt;&#39;Td&gt;<br />
+                          <strong>Type parameters:</strong> 'T1, 'T2d, 'T2, 'T3d, 'T3          </div>
+        </td>
+        <td class="xmldoc">
+          <p>Set the elements of a tensor to the result of a function of
+corresponding triples of elements of the three supplied tensors.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '58472', 58472)" onmouseover="showTip(event, '58472', 58472)">
+            SetByCoord(x_elementFun)
+          </code>
+          <div class="tip" id="58472">
+            <strong>Signature:</strong> x_elementFun:Func&lt;int64,&#39;Td&gt; -&gt; Vector&lt;&#39;Td&gt;<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Set each element to the value of a function of the element coords.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '58473', 58473)" onmouseover="showTip(event, '58473', 58473)">
+            SetByIndex(index_elementFun)
+          </code>
+          <div class="tip" id="58473">
+            <strong>Signature:</strong> index_elementFun:Func&lt;int64,&#39;Td&gt; -&gt; Vector&lt;&#39;Td&gt;<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Set each element to the value of a function of the index of the
+elements of the supplied vector. The function may access the
+elements of the supplied vector to compute the elements of the
+vector.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '58474', 58474)" onmouseover="showTip(event, '58474', 58474)">
+            SetByIndex(t1, index1_elementFun)
+          </code>
+          <div class="tip" id="58474">
+            <strong>Signature:</strong> (t1:Vector&lt;&#39;T1&gt; * index1_elementFun:Func&lt;int64,&#39;Td&gt;) -&gt; Vector&lt;&#39;Td&gt;<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Set each element to the value of a function of the index of the
+elements of the supplied vector. The function may access the
+elements of the supplied vector to compute the elements of the
+vector.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '58475', 58475)" onmouseover="showTip(event, '58475', 58475)">
+            SetByIndex(t1, index1_elementFun)
+          </code>
+          <div class="tip" id="58475">
+            <strong>Signature:</strong> (t1:Vector&lt;&#39;T1d,&#39;T1&gt; * index1_elementFun:Func&lt;int64,&#39;Td&gt;) -&gt; Vector&lt;&#39;Td&gt;<br />
+                          <strong>Type parameters:</strong> 'T1          </div>
+        </td>
+        <td class="xmldoc">
+          <p>Set each element to the value of a function of the index of the
+elements of the supplied vector. The function may access the
+elements of the supplied vector to compute the elements of the
+vector.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '58476', 58476)" onmouseover="showTip(event, '58476', 58476)">
+            SetByIndex(...)
+          </code>
+          <div class="tip" id="58476">
+            <strong>Signature:</strong> (t1:Vector&lt;&#39;T1&gt; * t2:Vector&lt;&#39;T2&gt; * index1_index2_elementFun:Func&lt;int64,int64,&#39;Td&gt;) -&gt; Vector&lt;&#39;Td&gt;<br />
+                          <strong>Type parameters:</strong> 'T2          </div>
+        </td>
+        <td class="xmldoc">
+          <p>Set each element to the value of a function of the index of the
+elements of the supplied vector. The function may access the
+elements of the supplied vector to compute the elements of the
+vector.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '58477', 58477)" onmouseover="showTip(event, '58477', 58477)">
+            SetByIndex(...)
+          </code>
+          <div class="tip" id="58477">
+            <strong>Signature:</strong> (t1:Vector&lt;&#39;T1&gt; * t2:Vector&lt;&#39;T2d,&#39;T2&gt; * index1_index2_elementFun:Func&lt;int64,int64,&#39;Td&gt;) -&gt; Vector&lt;&#39;Td&gt;<br />
+                          <strong>Type parameters:</strong> 'T2d, 'T2          </div>
+        </td>
+        <td class="xmldoc">
+          <p>Set each element to the value of a function of the index of the
+elements of the supplied vector. The function may access the
+elements of the supplied vector to compute the elements of the
+vector.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '58478', 58478)" onmouseover="showTip(event, '58478', 58478)">
+            SetByIndex(...)
+          </code>
+          <div class="tip" id="58478">
+            <strong>Signature:</strong> (t1:Vector&lt;&#39;T1d,&#39;T1&gt; * t2:Vector&lt;&#39;T2&gt; * index1_index2_elementFun:Func&lt;int64,int64,&#39;Td&gt;) -&gt; Vector&lt;&#39;Td&gt;<br />
+                          <strong>Type parameters:</strong> 'T1, 'T2          </div>
+        </td>
+        <td class="xmldoc">
+          <p>Set each element to the value of a function of the index of the
+elements of the supplied vector. The function may access the
+elements of the supplied vector to compute the elements of the
+vector.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '58479', 58479)" onmouseover="showTip(event, '58479', 58479)">
+            SetByIndex(...)
+          </code>
+          <div class="tip" id="58479">
+            <strong>Signature:</strong> (t1:Vector&lt;&#39;T1d,&#39;T1&gt; * t2:Vector&lt;&#39;T2d,&#39;T2&gt; * index1_index2_elementFun:Func&lt;int64,int64,&#39;Td&gt;) -&gt; Vector&lt;&#39;Td&gt;<br />
+                          <strong>Type parameters:</strong> 'T1, 'T2d, 'T2          </div>
+        </td>
+        <td class="xmldoc">
+          <p>Set each element to the value of a function of the index of the
+elements of the supplied vector. The function may access the
+elements of the supplied vector to compute the elements of the
+vector.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '58480', 58480)" onmouseover="showTip(event, '58480', 58480)">
+            SetByIndex(...)
+          </code>
+          <div class="tip" id="58480">
+            <strong>Signature:</strong> (t1:Vector&lt;&#39;T1&gt; * t2:Vector&lt;&#39;T2&gt; * t3:Vector&lt;&#39;T3&gt; * index1_index2_index3_elementFun:Func&lt;int64,int64,int64,&#39;Td&gt;) -&gt; Vector&lt;&#39;Td&gt;<br />
+                          <strong>Type parameters:</strong> 'T2, 'T3          </div>
+        </td>
+        <td class="xmldoc">
+          <p>Set each element to the value of a function of the index of the
+elements of the supplied vector. The function may access the
+elements of the supplied vector to compute the elements of the
+vector.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '58481', 58481)" onmouseover="showTip(event, '58481', 58481)">
+            SetByIndex(...)
+          </code>
+          <div class="tip" id="58481">
+            <strong>Signature:</strong> (t1:Vector&lt;&#39;T1&gt; * t2:Vector&lt;&#39;T2&gt; * t3:Vector&lt;&#39;T3d,&#39;T3&gt; * index1_index2_index3_elementFun:Func&lt;int64,int64,int64,&#39;Td&gt;) -&gt; Vector&lt;&#39;Td&gt;<br />
+                          <strong>Type parameters:</strong> 'T2, 'T3d, 'T3          </div>
+        </td>
+        <td class="xmldoc">
+          <p>Set each element to the value of a function of the index of the
+elements of the supplied vector. The function may access the
+elements of the supplied vector to compute the elements of the
+vector.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '58482', 58482)" onmouseover="showTip(event, '58482', 58482)">
+            SetByIndex(...)
+          </code>
+          <div class="tip" id="58482">
+            <strong>Signature:</strong> (t1:Vector&lt;&#39;T1&gt; * t2:Vector&lt;&#39;T2d,&#39;T2&gt; * t3:Vector&lt;&#39;T3&gt; * index1_index2_index3_elementFun:Func&lt;int64,int64,int64,&#39;Td&gt;) -&gt; Vector&lt;&#39;Td&gt;<br />
+                          <strong>Type parameters:</strong> 'T2d, 'T2, 'T3          </div>
+        </td>
+        <td class="xmldoc">
+          <p>Set each element to the value of a function of the index of the
+elements of the supplied vector. The function may access the
+elements of the supplied vector to compute the elements of the
+vector.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '58483', 58483)" onmouseover="showTip(event, '58483', 58483)">
+            SetByIndex(...)
+          </code>
+          <div class="tip" id="58483">
+            <strong>Signature:</strong> (t1:Vector&lt;&#39;T1&gt; * t2:Vector&lt;&#39;T2d,&#39;T2&gt; * t3:Vector&lt;&#39;T3d,&#39;T3&gt; * index1_index2_index3_elementFun:Func&lt;int64,int64,int64,&#39;Td&gt;) -&gt; Vector&lt;&#39;Td&gt;<br />
+                          <strong>Type parameters:</strong> 'T2d, 'T2, 'T3d, 'T3          </div>
+        </td>
+        <td class="xmldoc">
+          <p>Set each element to the value of a function of the index of the
+elements of the supplied vector. The function may access the
+elements of the supplied vector to compute the elements of the
+vector.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '58484', 58484)" onmouseover="showTip(event, '58484', 58484)">
+            SetByIndex(...)
+          </code>
+          <div class="tip" id="58484">
+            <strong>Signature:</strong> (t1:Vector&lt;&#39;T1d,&#39;T1&gt; * t2:Vector&lt;&#39;T2&gt; * t3:Vector&lt;&#39;T3&gt; * index1_index2_index3_elementFun:Func&lt;int64,int64,int64,&#39;Td&gt;) -&gt; Vector&lt;&#39;Td&gt;<br />
+                          <strong>Type parameters:</strong> 'T1, 'T2, 'T3          </div>
+        </td>
+        <td class="xmldoc">
+          <p>Set each element to the value of a function of the index of the
+elements of the supplied vector. The function may access the
+elements of the supplied vector to compute the elements of the
+vector.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '58485', 58485)" onmouseover="showTip(event, '58485', 58485)">
+            SetByIndex(...)
+          </code>
+          <div class="tip" id="58485">
+            <strong>Signature:</strong> (t1:Vector&lt;&#39;T1d,&#39;T1&gt; * t2:Vector&lt;&#39;T2&gt; * t3:Vector&lt;&#39;T3d,&#39;T3&gt; * index1_index2_index3_elementFun:Func&lt;int64,int64,int64,&#39;Td&gt;) -&gt; Vector&lt;&#39;Td&gt;<br />
+                          <strong>Type parameters:</strong> 'T1, 'T2, 'T3d, 'T3          </div>
+        </td>
+        <td class="xmldoc">
+          <p>Set each element to the value of a function of the index of the
+elements of the supplied vector. The function may access the
+elements of the supplied vector to compute the elements of the
+vector.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '58486', 58486)" onmouseover="showTip(event, '58486', 58486)">
+            SetByIndex(...)
+          </code>
+          <div class="tip" id="58486">
+            <strong>Signature:</strong> (t1:Vector&lt;&#39;T1d,&#39;T1&gt; * t2:Vector&lt;&#39;T2d,&#39;T2&gt; * t3:Vector&lt;&#39;T3&gt; * index1_index2_index3_elementFun:Func&lt;int64,int64,int64,&#39;Td&gt;) -&gt; Vector&lt;&#39;Td&gt;<br />
+                          <strong>Type parameters:</strong> 'T1, 'T2d, 'T2, 'T3          </div>
+        </td>
+        <td class="xmldoc">
+          <p>Set each element to the value of a function of the index of the
+elements of the supplied vector. The function may access the
+elements of the supplied vector to compute the elements of the
+vector.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '58487', 58487)" onmouseover="showTip(event, '58487', 58487)">
+            SetByIndex(...)
+          </code>
+          <div class="tip" id="58487">
+            <strong>Signature:</strong> (t1:Vector&lt;&#39;T1d,&#39;T1&gt; * t2:Vector&lt;&#39;T2d,&#39;T2&gt; * t3:Vector&lt;&#39;T3d,&#39;T3&gt; * index1_index2_index3_elementFun:Func&lt;int64,int64,int64,&#39;Td&gt;) -&gt; Vector&lt;&#39;Td&gt;<br />
+                          <strong>Type parameters:</strong> 'T1, 'T2d, 'T2, 'T3d, 'T3          </div>
+        </td>
+        <td class="xmldoc">
+          <p>Set each element to the value of a function of the index of the
+elements of the supplied vector. The function may access the
+elements of the supplied vector to compute the elements of the
+vector.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '58488', 58488)" onmouseover="showTip(event, '58488', 58488)">
+            SetConvolution(...)
+          </code>
+          <div class="tip" id="58488">
+            <strong>Signature:</strong> (image:Vector&lt;&#39;Ti&gt; * filter:Vector&lt;&#39;Tf&gt; * mulFun:Func&lt;&#39;Ti,&#39;Tf,&#39;Tm&gt; * bias:&#39;Ts * sumFun:Func&lt;&#39;Ts,&#39;Tm,&#39;Ts&gt; * castFun:Func&lt;&#39;Ts,&#39;Td&gt;) -&gt; Vector&lt;&#39;Td&gt;<br />
+                          <strong>Type parameters:</strong> 'Tf, 'Tm, 'Ts          </div>
+        </td>
+        <td class="xmldoc">
+          <p>Set the vector to be the convolution of the supplied image and filter tensors.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '58489', 58489)" onmouseover="showTip(event, '58489', 58489)">
+            SetMap(t1, element1_elementFun)
+          </code>
+          <div class="tip" id="58489">
+            <strong>Signature:</strong> (t1:Vector&lt;&#39;T1&gt; * element1_elementFun:Func&lt;&#39;T1,&#39;Td&gt;) -&gt; Vector&lt;&#39;Td&gt;<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Set the elements of a vector to the result of a function of
+the elements of the supplied vector.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '58490', 58490)" onmouseover="showTip(event, '58490', 58490)">
+            SetMap(t1, element1_elementFun)
+          </code>
+          <div class="tip" id="58490">
+            <strong>Signature:</strong> (t1:Vector&lt;&#39;T1d,&#39;T1&gt; * element1_elementFun:Func&lt;&#39;T1,&#39;Td&gt;) -&gt; Vector&lt;&#39;Td&gt;<br />
+                          <strong>Type parameters:</strong> 'T1          </div>
+        </td>
+        <td class="xmldoc">
+          <p>Set the elements of a vector to the result of a function of
+the elements of the supplied vector.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '58491', 58491)" onmouseover="showTip(event, '58491', 58491)">
+            SetMap2(...)
+          </code>
+          <div class="tip" id="58491">
+            <strong>Signature:</strong> (t1:Vector&lt;&#39;T1&gt; * t2:Vector&lt;&#39;T2&gt; * element1_element2_elementFun:Func&lt;&#39;T1,&#39;T2,&#39;Td&gt;) -&gt; Vector&lt;&#39;Td&gt;<br />
+                          <strong>Type parameters:</strong> 'T2          </div>
+        </td>
+        <td class="xmldoc">
+          <p>Set the elements of a vector to the result of a function of
+corresponding pairs of elements of the two supplied tensors.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '58492', 58492)" onmouseover="showTip(event, '58492', 58492)">
+            SetMap2(...)
+          </code>
+          <div class="tip" id="58492">
+            <strong>Signature:</strong> (t1:Vector&lt;&#39;T1&gt; * t2:Vector&lt;&#39;T2d,&#39;T2&gt; * element1_element2_elementFun:Func&lt;&#39;T1,&#39;T2,&#39;Td&gt;) -&gt; Vector&lt;&#39;Td&gt;<br />
+                          <strong>Type parameters:</strong> 'T2d, 'T2          </div>
+        </td>
+        <td class="xmldoc">
+          <p>Set the elements of a vector to the result of a function of
+corresponding pairs of elements of the two supplied tensors.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '58493', 58493)" onmouseover="showTip(event, '58493', 58493)">
+            SetMap2(...)
+          </code>
+          <div class="tip" id="58493">
+            <strong>Signature:</strong> (t1:Vector&lt;&#39;T1d,&#39;T1&gt; * t2:Vector&lt;&#39;T2&gt; * element1_element2_elementFun:Func&lt;&#39;T1,&#39;T2,&#39;Td&gt;) -&gt; Vector&lt;&#39;Td&gt;<br />
+                          <strong>Type parameters:</strong> 'T1, 'T2          </div>
+        </td>
+        <td class="xmldoc">
+          <p>Set the elements of a vector to the result of a function of
+corresponding pairs of elements of the two supplied tensors.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '58494', 58494)" onmouseover="showTip(event, '58494', 58494)">
+            SetMap2(...)
+          </code>
+          <div class="tip" id="58494">
+            <strong>Signature:</strong> (t1:Vector&lt;&#39;T1d,&#39;T1&gt; * t2:Vector&lt;&#39;T2d,&#39;T2&gt; * element1_element2_elementFun:Func&lt;&#39;T1,&#39;T2,&#39;Td&gt;) -&gt; Vector&lt;&#39;Td&gt;<br />
+                          <strong>Type parameters:</strong> 'T1, 'T2d, 'T2          </div>
+        </td>
+        <td class="xmldoc">
+          <p>Set the elements of a vector to the result of a function of
+corresponding pairs of elements of the two supplied tensors.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '58495', 58495)" onmouseover="showTip(event, '58495', 58495)">
+            SetMap3(...)
+          </code>
+          <div class="tip" id="58495">
+            <strong>Signature:</strong> (t1:Vector&lt;&#39;T1&gt; * t2:Vector&lt;&#39;T2&gt; * t3:Vector&lt;&#39;T3&gt; * element1_element2_element3_elementFun:Func&lt;&#39;T1,&#39;T2,&#39;T3,&#39;Td&gt;) -&gt; Vector&lt;&#39;Td&gt;<br />
+                          <strong>Type parameters:</strong> 'T2, 'T3          </div>
+        </td>
+        <td class="xmldoc">
+          <p>Set the elements of a tensor to the result of a function of
+corresponding triples of elements of the three supplied tensors.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '58496', 58496)" onmouseover="showTip(event, '58496', 58496)">
+            SetMap3(...)
+          </code>
+          <div class="tip" id="58496">
+            <strong>Signature:</strong> (t1:Vector&lt;&#39;T1&gt; * t2:Vector&lt;&#39;T2&gt; * t3:Vector&lt;&#39;T3d,&#39;T3&gt; * element1_element2_element3_elementFun:Func&lt;&#39;T1,&#39;T2,&#39;T3,&#39;Td&gt;) -&gt; Vector&lt;&#39;Td&gt;<br />
+                          <strong>Type parameters:</strong> 'T2, 'T3d, 'T3          </div>
+        </td>
+        <td class="xmldoc">
+          <p>Set the elements of a tensor to the result of a function of
+corresponding triples of elements of the three supplied tensors.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '58497', 58497)" onmouseover="showTip(event, '58497', 58497)">
+            SetMap3(...)
+          </code>
+          <div class="tip" id="58497">
+            <strong>Signature:</strong> (t1:Vector&lt;&#39;T1&gt; * t2:Vector&lt;&#39;T2d,&#39;T2&gt; * t3:Vector&lt;&#39;T3&gt; * element1_element2_element3_elementFun:Func&lt;&#39;T1,&#39;T2,&#39;T3,&#39;Td&gt;) -&gt; Vector&lt;&#39;Td&gt;<br />
+                          <strong>Type parameters:</strong> 'T2d, 'T2, 'T3          </div>
+        </td>
+        <td class="xmldoc">
+          <p>Set the elements of a tensor to the result of a function of
+corresponding triples of elements of the three supplied tensors.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '58498', 58498)" onmouseover="showTip(event, '58498', 58498)">
+            SetMap3(...)
+          </code>
+          <div class="tip" id="58498">
+            <strong>Signature:</strong> (t1:Vector&lt;&#39;T1&gt; * t2:Vector&lt;&#39;T2d,&#39;T2&gt; * t3:Vector&lt;&#39;T3d,&#39;T3&gt; * element1_element2_element3_elementFun:Func&lt;&#39;T1,&#39;T2,&#39;T3,&#39;Td&gt;) -&gt; Vector&lt;&#39;Td&gt;<br />
+                          <strong>Type parameters:</strong> 'T2d, 'T2, 'T3d, 'T3          </div>
+        </td>
+        <td class="xmldoc">
+          <p>Set the elements of a tensor to the result of a function of
+corresponding triples of elements of the three supplied tensors.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '58499', 58499)" onmouseover="showTip(event, '58499', 58499)">
+            SetMap3(...)
+          </code>
+          <div class="tip" id="58499">
+            <strong>Signature:</strong> (t1:Vector&lt;&#39;T1d,&#39;T1&gt; * t2:Vector&lt;&#39;T2&gt; * t3:Vector&lt;&#39;T3&gt; * element1_element2_element3_elementFun:Func&lt;&#39;T1,&#39;T2,&#39;T3,&#39;Td&gt;) -&gt; Vector&lt;&#39;Td&gt;<br />
+                          <strong>Type parameters:</strong> 'T1, 'T2, 'T3          </div>
+        </td>
+        <td class="xmldoc">
+          <p>Set the elements of a tensor to the result of a function of
+corresponding triples of elements of the three supplied tensors.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '58500', 58500)" onmouseover="showTip(event, '58500', 58500)">
+            SetMap3(...)
+          </code>
+          <div class="tip" id="58500">
+            <strong>Signature:</strong> (t1:Vector&lt;&#39;T1d,&#39;T1&gt; * t2:Vector&lt;&#39;T2&gt; * t3:Vector&lt;&#39;T3d,&#39;T3&gt; * element1_element2_element3_elementFun:Func&lt;&#39;T1,&#39;T2,&#39;T3,&#39;Td&gt;) -&gt; Vector&lt;&#39;Td&gt;<br />
+                          <strong>Type parameters:</strong> 'T1, 'T2, 'T3d, 'T3          </div>
+        </td>
+        <td class="xmldoc">
+          <p>Set the elements of a tensor to the result of a function of
+corresponding triples of elements of the three supplied tensors.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '58501', 58501)" onmouseover="showTip(event, '58501', 58501)">
+            SetMap3(...)
+          </code>
+          <div class="tip" id="58501">
+            <strong>Signature:</strong> (t1:Vector&lt;&#39;T1d,&#39;T1&gt; * t2:Vector&lt;&#39;T2d,&#39;T2&gt; * t3:Vector&lt;&#39;T3&gt; * element1_element2_element3_elementFun:Func&lt;&#39;T1,&#39;T2,&#39;T3,&#39;Td&gt;) -&gt; Vector&lt;&#39;Td&gt;<br />
+                          <strong>Type parameters:</strong> 'T1, 'T2d, 'T2, 'T3          </div>
+        </td>
+        <td class="xmldoc">
+          <p>Set the elements of a tensor to the result of a function of
+corresponding triples of elements of the three supplied tensors.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '58502', 58502)" onmouseover="showTip(event, '58502', 58502)">
+            SetMap3(...)
+          </code>
+          <div class="tip" id="58502">
+            <strong>Signature:</strong> (t1:Vector&lt;&#39;T1d,&#39;T1&gt; * t2:Vector&lt;&#39;T2d,&#39;T2&gt; * t3:Vector&lt;&#39;T3d,&#39;T3&gt; * element1_element2_element3_elementFun:Func&lt;&#39;T1,&#39;T2,&#39;T3,&#39;Td&gt;) -&gt; Vector&lt;&#39;Td&gt;<br />
+                          <strong>Type parameters:</strong> 'T1, 'T2d, 'T2, 'T3d, 'T3          </div>
+        </td>
+        <td class="xmldoc">
+          <p>Set the elements of a tensor to the result of a function of
+corresponding triples of elements of the three supplied tensors.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '58503', 58503)" onmouseover="showTip(event, '58503', 58503)">
+            SetValue(value, x)
+          </code>
+          <div class="tip" id="58503">
+            <strong>Signature:</strong> (value:obj * x:int64) -&gt; unit<br />
+              <strong>Modifiers:</strong> abstract<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '58504', 58504)" onmouseover="showTip(event, '58504', 58504)">
+            Size()
+          </code>
+          <div class="tip" id="58504">
+            <strong>Signature:</strong> unit -&gt; unit<br />
+              <strong>Modifiers:</strong> abstract<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '58505', 58505)" onmouseover="showTip(event, '58505', 58505)">
+            SizeArray()
+          </code>
+          <div class="tip" id="58505">
+            <strong>Signature:</strong> unit -&gt; unit<br />
+              <strong>Modifiers:</strong> abstract<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Get or set the size of the tensor in each dimension as an
+array of longs.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '58506', 58506)" onmouseover="showTip(event, '58506', 58506)">
+            SubVector(begin, size)
+          </code>
+          <div class="tip" id="58506">
+            <strong>Signature:</strong> (begin:int64 * size:int64) -&gt; Vector&lt;&#39;Td&gt;<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>A SubVector does not copy any data, and thus any operations on it
+are reflected in the corresponding part of the parent.
+This methods returns a Vector with zero as first coordinates.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '58507', 58507)" onmouseover="showTip(event, '58507', 58507)">
+            SubVector(begin, size)
+          </code>
+          <div class="tip" id="58507">
+            <strong>Signature:</strong> (begin:int * size:int) -&gt; Vector&lt;&#39;Td&gt;<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>A SubVector does not copy any data, and thus any operations on it
+are reflected in the corresponding part of the parent.
+This methods returns a Vector with zero as first coordinates.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '58508', 58508)" onmouseover="showTip(event, '58508', 58508)">
+            SubVector(begin, size, delta)
+          </code>
+          <div class="tip" id="58508">
+            <strong>Signature:</strong> (begin:int64 * size:int64 * delta:int64) -&gt; Vector&lt;&#39;Td&gt;<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>A SubVector does not copy any data, and thus any operations on it
+are reflected in the corresponding part of the parent.
+This methods returns a Vector with zero as first coordinates.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '58509', 58509)" onmouseover="showTip(event, '58509', 58509)">
+            SubVector(begin, size, delta)
+          </code>
+          <div class="tip" id="58509">
+            <strong>Signature:</strong> (begin:int * size:int * delta:int) -&gt; Vector&lt;&#39;Td&gt;<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>A SubVector does not copy any data, and thus any operations on it
+are reflected in the corresponding part of the parent.
+This methods returns a Vector with zero as first coordinates.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '58510', 58510)" onmouseover="showTip(event, '58510', 58510)">
+            SubVector(begin, size)
+          </code>
+          <div class="tip" id="58510">
+            <strong>Signature:</strong> (begin:int64 * size:int64) -&gt; Vector&lt;&#39;Td,&#39;T1&gt;<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>A SubVector does not copy any data, and thus any operations on it
+are reflected in the corresponding part of the parent.
+This methods returns a Vector with zero as first coordinates.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '58511', 58511)" onmouseover="showTip(event, '58511', 58511)">
+            SubVector(begin, size)
+          </code>
+          <div class="tip" id="58511">
+            <strong>Signature:</strong> (begin:int * size:int) -&gt; Vector&lt;&#39;Td,&#39;T1&gt;<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>A SubVector does not copy any data, and thus any operations on it
+are reflected in the corresponding part of the parent.
+This methods returns a Vector with zero as first coordinates.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '58512', 58512)" onmouseover="showTip(event, '58512', 58512)">
+            SubVector(begin, size, delta)
+          </code>
+          <div class="tip" id="58512">
+            <strong>Signature:</strong> (begin:int64 * size:int64 * delta:int64) -&gt; Vector&lt;&#39;Td,&#39;T1&gt;<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>A SubVector does not copy any data, and thus any operations on it
+are reflected in the corresponding part of the parent.
+This methods returns a Vector with zero as first coordinates.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '58513', 58513)" onmouseover="showTip(event, '58513', 58513)">
+            SubVector(begin, size, delta)
+          </code>
+          <div class="tip" id="58513">
+            <strong>Signature:</strong> (begin:int * size:int * delta:int) -&gt; Vector&lt;&#39;Td,&#39;T1&gt;<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>A SubVector does not copy any data, and thus any operations on it
+are reflected in the corresponding part of the parent.
+This methods returns a Vector with zero as first coordinates.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '58514', 58514)" onmouseover="showTip(event, '58514', 58514)">
+            SubVectorWindow(begin, size)
+          </code>
+          <div class="tip" id="58514">
+            <strong>Signature:</strong> (begin:int64 * size:int64) -&gt; Vector&lt;&#39;Td&gt;<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>A SubVector does not copy any data, and thus any operations on it
+are reflected in the corresponding part of the parent.
+This method retains the coordinates of the parent Vector.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '58515', 58515)" onmouseover="showTip(event, '58515', 58515)">
+            SubVectorWindow(begin, size)
+          </code>
+          <div class="tip" id="58515">
+            <strong>Signature:</strong> (begin:int * size:int) -&gt; Vector&lt;&#39;Td&gt;<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>A SubVector does not copy any data, and thus any operations on it
+are reflected in the corresponding part of the parent.
+This method retains the coordinates of the parent Vector.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '58516', 58516)" onmouseover="showTip(event, '58516', 58516)">
+            SubVectorWindow(begin, size, delta)
+          </code>
+          <div class="tip" id="58516">
+            <strong>Signature:</strong> (begin:int64 * size:int64 * delta:int64) -&gt; Vector&lt;&#39;Td&gt;<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>A SubVector does not copy any data, and thus any operations on it
+are reflected in the corresponding part of the parent.
+This method retains the coordinates of the parent Vector.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '58517', 58517)" onmouseover="showTip(event, '58517', 58517)">
+            SubVectorWindow(begin, size, delta)
+          </code>
+          <div class="tip" id="58517">
+            <strong>Signature:</strong> (begin:int * size:int * delta:int) -&gt; Vector&lt;&#39;Td&gt;<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>A SubVector does not copy any data, and thus any operations on it
+are reflected in the corresponding part of the parent.
+This method retains the coordinates of the parent Vector.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '58518', 58518)" onmouseover="showTip(event, '58518', 58518)">
+            SubVectorWindow(begin, size)
+          </code>
+          <div class="tip" id="58518">
+            <strong>Signature:</strong> (begin:int64 * size:int64) -&gt; Vector&lt;&#39;Td,&#39;T1&gt;<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>A SubVector does not copy any data, and thus any operations on it
+are reflected in the corresponding part of the parent.
+This method retains the coordinates of the parent Vector.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '58519', 58519)" onmouseover="showTip(event, '58519', 58519)">
+            SubVectorWindow(begin, size)
+          </code>
+          <div class="tip" id="58519">
+            <strong>Signature:</strong> (begin:int * size:int) -&gt; Vector&lt;&#39;Td,&#39;T1&gt;<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>A SubVector does not copy any data, and thus any operations on it
+are reflected in the corresponding part of the parent.
+This method retains the coordinates of the parent Vector.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '58520', 58520)" onmouseover="showTip(event, '58520', 58520)">
+            SubVectorWindow(begin, size, delta)
+          </code>
+          <div class="tip" id="58520">
+            <strong>Signature:</strong> (begin:int64 * size:int64 * delta:int64) -&gt; Vector&lt;&#39;Td,&#39;T1&gt;<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>A SubVector does not copy any data, and thus any operations on it
+are reflected in the corresponding part of the parent.
+This method retains the coordinates of the parent Vector.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '58521', 58521)" onmouseover="showTip(event, '58521', 58521)">
+            SubVectorWindow(begin, size, delta)
+          </code>
+          <div class="tip" id="58521">
+            <strong>Signature:</strong> (begin:int * size:int * delta:int) -&gt; Vector&lt;&#39;Td,&#39;T1&gt;<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>A SubVector does not copy any data, and thus any operations on it
+are reflected in the corresponding part of the parent.
+This method retains the coordinates of the parent Vector.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '58522', 58522)" onmouseover="showTip(event, '58522', 58522)">
+            SX()
+          </code>
+          <div class="tip" id="58522">
+            <strong>Signature:</strong> unit -&gt; unit<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Size in dimension X.</p>
+
+
+        </td>
+      </tr>
+    </tbody>
+  </table>
+  <h3>Static members</h3>
+  <table class="table table-bordered member-list">
+    <thead>
+      <tr><td>Static member</td><td>Description</td></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '58523', 58523)" onmouseover="showTip(event, '58523', 58523)">
+            Create(t1)
+          </code>
+          <div class="tip" id="58523">
+            <strong>Signature:</strong> t1:Vector&lt;&#39;Td&gt; -&gt; Vector&lt;&#39;Td&gt;<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Create a new vector as copy of the supplied vector.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '58524', 58524)" onmouseover="showTip(event, '58524', 58524)">
+            Create(t1)
+          </code>
+          <div class="tip" id="58524">
+            <strong>Signature:</strong> t1:Vector&lt;&#39;T1d,&#39;Td&gt; -&gt; Vector&lt;&#39;Td&gt;<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Create a new vector as copy of the supplied vector.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '58525', 58525)" onmouseover="showTip(event, '58525', 58525)">
+            Create(t1, element1_elementFun)
+          </code>
+          <div class="tip" id="58525">
+            <strong>Signature:</strong> (t1:Vector&lt;&#39;T1&gt; * element1_elementFun:Func&lt;&#39;T1,&#39;Td&gt;) -&gt; Vector&lt;&#39;Td&gt;<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Create a new vector by applying a function on each element of
+the supplied vector.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '58526', 58526)" onmouseover="showTip(event, '58526', 58526)">
+            Create(t1, element1_elementFun)
+          </code>
+          <div class="tip" id="58526">
+            <strong>Signature:</strong> (t1:Vector&lt;&#39;T1d,&#39;T1&gt; * element1_elementFun:Func&lt;&#39;T1,&#39;Td&gt;) -&gt; Vector&lt;&#39;Td&gt;<br />
+                          <strong>Type parameters:</strong> 'T1          </div>
+        </td>
+        <td class="xmldoc">
+          <p>Create a new vector by applying a function on each element of
+the supplied vector.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '58527', 58527)" onmouseover="showTip(event, '58527', 58527)">
+            Create(...)
+          </code>
+          <div class="tip" id="58527">
+            <strong>Signature:</strong> (t1:Vector&lt;&#39;T1&gt; * t2:Vector&lt;&#39;T2&gt; * element1_element2_elementFun:Func&lt;&#39;T1,&#39;T2,&#39;Td&gt;) -&gt; Vector&lt;&#39;Td&gt;<br />
+                          <strong>Type parameters:</strong> 'T2          </div>
+        </td>
+        <td class="xmldoc">
+          <p>Create a new vector by applying a function on each element of
+the supplied vector.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '58528', 58528)" onmouseover="showTip(event, '58528', 58528)">
+            Create(...)
+          </code>
+          <div class="tip" id="58528">
+            <strong>Signature:</strong> (t1:Vector&lt;&#39;T1&gt; * t2:Vector&lt;&#39;T2d,&#39;T2&gt; * element1_element2_elementFun:Func&lt;&#39;T1,&#39;T2,&#39;Td&gt;) -&gt; Vector&lt;&#39;Td&gt;<br />
+                          <strong>Type parameters:</strong> 'T2d, 'T2          </div>
+        </td>
+        <td class="xmldoc">
+          <p>Create a new vector by applying a function on each element of
+the supplied vector.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '58529', 58529)" onmouseover="showTip(event, '58529', 58529)">
+            Create(...)
+          </code>
+          <div class="tip" id="58529">
+            <strong>Signature:</strong> (t1:Vector&lt;&#39;T1d,&#39;T1&gt; * t2:Vector&lt;&#39;T2&gt; * element1_element2_elementFun:Func&lt;&#39;T1,&#39;T2,&#39;Td&gt;) -&gt; Vector&lt;&#39;Td&gt;<br />
+                          <strong>Type parameters:</strong> 'T1, 'T2          </div>
+        </td>
+        <td class="xmldoc">
+          <p>Create a new vector by applying a function on each element of
+the supplied vector.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '58530', 58530)" onmouseover="showTip(event, '58530', 58530)">
+            Create(...)
+          </code>
+          <div class="tip" id="58530">
+            <strong>Signature:</strong> (t1:Vector&lt;&#39;T1d,&#39;T1&gt; * t2:Vector&lt;&#39;T2d,&#39;T2&gt; * element1_element2_elementFun:Func&lt;&#39;T1,&#39;T2,&#39;Td&gt;) -&gt; Vector&lt;&#39;Td&gt;<br />
+                          <strong>Type parameters:</strong> 'T1, 'T2d, 'T2          </div>
+        </td>
+        <td class="xmldoc">
+          <p>Create a new vector by applying a function on each element of
+the supplied vector.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '58531', 58531)" onmouseover="showTip(event, '58531', 58531)">
+            Create(...)
+          </code>
+          <div class="tip" id="58531">
+            <strong>Signature:</strong> (t1:Vector&lt;&#39;T1&gt; * t2:Vector&lt;&#39;T2&gt; * t3:Vector&lt;&#39;T3&gt; * element1_element2_element3_elementFun:Func&lt;&#39;T1,&#39;T2,&#39;T3,&#39;Td&gt;) -&gt; Vector&lt;&#39;Td&gt;<br />
+                          <strong>Type parameters:</strong> 'T2, 'T3          </div>
+        </td>
+        <td class="xmldoc">
+          <p>Create a new vector by applying a function on each element of
+the supplied vector.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '58532', 58532)" onmouseover="showTip(event, '58532', 58532)">
+            Create(...)
+          </code>
+          <div class="tip" id="58532">
+            <strong>Signature:</strong> (t1:Vector&lt;&#39;T1&gt; * t2:Vector&lt;&#39;T2&gt; * t3:Vector&lt;&#39;T3d,&#39;T3&gt; * element1_element2_element3_elementFun:Func&lt;&#39;T1,&#39;T2,&#39;T3,&#39;Td&gt;) -&gt; Vector&lt;&#39;Td&gt;<br />
+                          <strong>Type parameters:</strong> 'T2, 'T3d, 'T3          </div>
+        </td>
+        <td class="xmldoc">
+          <p>Create a new vector by applying a function on each element of
+the supplied vector.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '58533', 58533)" onmouseover="showTip(event, '58533', 58533)">
+            Create(...)
+          </code>
+          <div class="tip" id="58533">
+            <strong>Signature:</strong> (t1:Vector&lt;&#39;T1&gt; * t2:Vector&lt;&#39;T2d,&#39;T2&gt; * t3:Vector&lt;&#39;T3&gt; * element1_element2_element3_elementFun:Func&lt;&#39;T1,&#39;T2,&#39;T3,&#39;Td&gt;) -&gt; Vector&lt;&#39;Td&gt;<br />
+                          <strong>Type parameters:</strong> 'T2d, 'T2, 'T3          </div>
+        </td>
+        <td class="xmldoc">
+          <p>Create a new vector by applying a function on each element of
+the supplied vector.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '58534', 58534)" onmouseover="showTip(event, '58534', 58534)">
+            Create(...)
+          </code>
+          <div class="tip" id="58534">
+            <strong>Signature:</strong> (t1:Vector&lt;&#39;T1&gt; * t2:Vector&lt;&#39;T2d,&#39;T2&gt; * t3:Vector&lt;&#39;T3d,&#39;T3&gt; * element1_element2_element3_elementFun:Func&lt;&#39;T1,&#39;T2,&#39;T3,&#39;Td&gt;) -&gt; Vector&lt;&#39;Td&gt;<br />
+                          <strong>Type parameters:</strong> 'T2d, 'T2, 'T3d, 'T3          </div>
+        </td>
+        <td class="xmldoc">
+          <p>Create a new vector by applying a function on each element of
+the supplied vector.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '58535', 58535)" onmouseover="showTip(event, '58535', 58535)">
+            Create(...)
+          </code>
+          <div class="tip" id="58535">
+            <strong>Signature:</strong> (t1:Vector&lt;&#39;T1d,&#39;T1&gt; * t2:Vector&lt;&#39;T2&gt; * t3:Vector&lt;&#39;T3&gt; * element1_element2_element3_elementFun:Func&lt;&#39;T1,&#39;T2,&#39;T3,&#39;Td&gt;) -&gt; Vector&lt;&#39;Td&gt;<br />
+                          <strong>Type parameters:</strong> 'T1, 'T2, 'T3          </div>
+        </td>
+        <td class="xmldoc">
+          <p>Create a new vector by applying a function on each element of
+the supplied vector.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '58536', 58536)" onmouseover="showTip(event, '58536', 58536)">
+            Create(...)
+          </code>
+          <div class="tip" id="58536">
+            <strong>Signature:</strong> (t1:Vector&lt;&#39;T1d,&#39;T1&gt; * t2:Vector&lt;&#39;T2&gt; * t3:Vector&lt;&#39;T3d,&#39;T3&gt; * element1_element2_element3_elementFun:Func&lt;&#39;T1,&#39;T2,&#39;T3,&#39;Td&gt;) -&gt; Vector&lt;&#39;Td&gt;<br />
+                          <strong>Type parameters:</strong> 'T1, 'T2, 'T3d, 'T3          </div>
+        </td>
+        <td class="xmldoc">
+          <p>Create a new vector by applying a function on each element of
+the supplied vector.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '58537', 58537)" onmouseover="showTip(event, '58537', 58537)">
+            Create(...)
+          </code>
+          <div class="tip" id="58537">
+            <strong>Signature:</strong> (t1:Vector&lt;&#39;T1d,&#39;T1&gt; * t2:Vector&lt;&#39;T2d,&#39;T2&gt; * t3:Vector&lt;&#39;T3&gt; * element1_element2_element3_elementFun:Func&lt;&#39;T1,&#39;T2,&#39;T3,&#39;Td&gt;) -&gt; Vector&lt;&#39;Td&gt;<br />
+                          <strong>Type parameters:</strong> 'T1, 'T2d, 'T2, 'T3          </div>
+        </td>
+        <td class="xmldoc">
+          <p>Create a new vector by applying a function on each element of
+the supplied vector.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '58538', 58538)" onmouseover="showTip(event, '58538', 58538)">
+            Create(...)
+          </code>
+          <div class="tip" id="58538">
+            <strong>Signature:</strong> (t1:Vector&lt;&#39;T1d,&#39;T1&gt; * t2:Vector&lt;&#39;T2d,&#39;T2&gt; * t3:Vector&lt;&#39;T3d,&#39;T3&gt; * element1_element2_element3_elementFun:Func&lt;&#39;T1,&#39;T2,&#39;T3,&#39;Td&gt;) -&gt; Vector&lt;&#39;Td&gt;<br />
+                          <strong>Type parameters:</strong> 'T1, 'T2d, 'T2, 'T3d, 'T3          </div>
+        </td>
+        <td class="xmldoc">
+          <p>Create a new vector by applying a function on each element of
+the supplied vector.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '58539', 58539)" onmouseover="showTip(event, '58539', 58539)">
+            Create(size, fun)
+          </code>
+          <div class="tip" id="58539">
+            <strong>Signature:</strong> (size:int64 * fun:Func&lt;int64,&#39;Td&gt;) -&gt; Vector&lt;&#39;Td&gt;<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Create a new vector by applying a function to the coordinates of
+the elements the newly created vector.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '58540', 58540)" onmouseover="showTip(event, '58540', 58540)">
+            CreateByIndex(t1, index1_elementFun)
+          </code>
+          <div class="tip" id="58540">
+            <strong>Signature:</strong> (t1:Vector&lt;&#39;T1&gt; * index1_elementFun:Func&lt;int64,&#39;Td&gt;) -&gt; Vector&lt;&#39;Td&gt;<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Create a new vector by applying a function to each index of the
+elements of the supplied vector. The function may access the
+elements of the supplied vector to compute the elements of the new
+vector.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '58541', 58541)" onmouseover="showTip(event, '58541', 58541)">
+            CreateByIndex(t1, index1_elementFun)
+          </code>
+          <div class="tip" id="58541">
+            <strong>Signature:</strong> (t1:Vector&lt;&#39;T1d,&#39;T1&gt; * index1_elementFun:Func&lt;int64,&#39;Td&gt;) -&gt; Vector&lt;&#39;Td&gt;<br />
+                          <strong>Type parameters:</strong> 'T1          </div>
+        </td>
+        <td class="xmldoc">
+          <p>Create a new vector by applying a function to each index of the
+elements of the supplied vector. The function may access the
+elements of the supplied vector to compute the elements of the new
+vector.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '58542', 58542)" onmouseover="showTip(event, '58542', 58542)">
+            CreateByIndex(t1, t2, index1_index2_fun)
+          </code>
+          <div class="tip" id="58542">
+            <strong>Signature:</strong> (t1:Vector&lt;&#39;T1&gt; * t2:Vector&lt;&#39;T2&gt; * index1_index2_fun:Func&lt;int64,int64,&#39;Td&gt;) -&gt; Vector&lt;&#39;Td&gt;<br />
+                          <strong>Type parameters:</strong> 'T2          </div>
+        </td>
+        <td class="xmldoc">
+          <p>Create a new vector by applying a function to each index of the
+elements of the supplied vector. The function may access the
+elements of the supplied vector to compute the elements of the new
+vector.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '58543', 58543)" onmouseover="showTip(event, '58543', 58543)">
+            CreateByIndex(t1, t2, index1_index2_fun)
+          </code>
+          <div class="tip" id="58543">
+            <strong>Signature:</strong> (t1:Vector&lt;&#39;T1&gt; * t2:Vector&lt;&#39;T2d,&#39;T2&gt; * index1_index2_fun:Func&lt;int64,int64,&#39;Td&gt;) -&gt; Vector&lt;&#39;Td&gt;<br />
+                          <strong>Type parameters:</strong> 'T2d, 'T2          </div>
+        </td>
+        <td class="xmldoc">
+          <p>Create a new vector by applying a function to each index of the
+elements of the supplied vector. The function may access the
+elements of the supplied vector to compute the elements of the new
+vector.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '58544', 58544)" onmouseover="showTip(event, '58544', 58544)">
+            CreateByIndex(t1, t2, index1_index2_fun)
+          </code>
+          <div class="tip" id="58544">
+            <strong>Signature:</strong> (t1:Vector&lt;&#39;T1d,&#39;T1&gt; * t2:Vector&lt;&#39;T2&gt; * index1_index2_fun:Func&lt;int64,int64,&#39;Td&gt;) -&gt; Vector&lt;&#39;Td&gt;<br />
+                          <strong>Type parameters:</strong> 'T1, 'T2          </div>
+        </td>
+        <td class="xmldoc">
+          <p>Create a new vector by applying a function to each index of the
+elements of the supplied vector. The function may access the
+elements of the supplied vector to compute the elements of the new
+vector.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '58545', 58545)" onmouseover="showTip(event, '58545', 58545)">
+            CreateByIndex(t1, t2, index1_index2_fun)
+          </code>
+          <div class="tip" id="58545">
+            <strong>Signature:</strong> (t1:Vector&lt;&#39;T1d,&#39;T1&gt; * t2:Vector&lt;&#39;T2d,&#39;T2&gt; * index1_index2_fun:Func&lt;int64,int64,&#39;Td&gt;) -&gt; Vector&lt;&#39;Td&gt;<br />
+                          <strong>Type parameters:</strong> 'T1, 'T2d, 'T2          </div>
+        </td>
+        <td class="xmldoc">
+          <p>Create a new vector by applying a function to each index of the
+elements of the supplied vector. The function may access the
+elements of the supplied vector to compute the elements of the new
+vector.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '58546', 58546)" onmouseover="showTip(event, '58546', 58546)">
+            CreateByIndex(...)
+          </code>
+          <div class="tip" id="58546">
+            <strong>Signature:</strong> (t1:Vector&lt;&#39;T1&gt; * t2:Vector&lt;&#39;T2&gt; * t3:Vector&lt;&#39;T3&gt; * index1_index2_index3_elementFun:Func&lt;int64,int64,int64,&#39;Td&gt;) -&gt; Vector&lt;&#39;Td&gt;<br />
+                          <strong>Type parameters:</strong> 'T2, 'T3          </div>
+        </td>
+        <td class="xmldoc">
+          <p>Create a new vector by applying a function to each index of the
+elements of the supplied vector. The function may access the
+elements of the supplied vector to compute the elements of the new
+vector.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '58547', 58547)" onmouseover="showTip(event, '58547', 58547)">
+            CreateByIndex(...)
+          </code>
+          <div class="tip" id="58547">
+            <strong>Signature:</strong> (t1:Vector&lt;&#39;T1&gt; * t2:Vector&lt;&#39;T2&gt; * t3:Vector&lt;&#39;T3d,&#39;T3&gt; * index1_index2_index3_elementFun:Func&lt;int64,int64,int64,&#39;Td&gt;) -&gt; Vector&lt;&#39;Td&gt;<br />
+                          <strong>Type parameters:</strong> 'T2, 'T3d, 'T3          </div>
+        </td>
+        <td class="xmldoc">
+          <p>Create a new vector by applying a function to each index of the
+elements of the supplied vector. The function may access the
+elements of the supplied vector to compute the elements of the new
+vector.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '58548', 58548)" onmouseover="showTip(event, '58548', 58548)">
+            CreateByIndex(...)
+          </code>
+          <div class="tip" id="58548">
+            <strong>Signature:</strong> (t1:Vector&lt;&#39;T1&gt; * t2:Vector&lt;&#39;T2d,&#39;T2&gt; * t3:Vector&lt;&#39;T3&gt; * index1_index2_index3_elementFun:Func&lt;int64,int64,int64,&#39;Td&gt;) -&gt; Vector&lt;&#39;Td&gt;<br />
+                          <strong>Type parameters:</strong> 'T2d, 'T2, 'T3          </div>
+        </td>
+        <td class="xmldoc">
+          <p>Create a new vector by applying a function to each index of the
+elements of the supplied vector. The function may access the
+elements of the supplied vector to compute the elements of the new
+vector.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '58549', 58549)" onmouseover="showTip(event, '58549', 58549)">
+            CreateByIndex(...)
+          </code>
+          <div class="tip" id="58549">
+            <strong>Signature:</strong> (t1:Vector&lt;&#39;T1&gt; * t2:Vector&lt;&#39;T2d,&#39;T2&gt; * t3:Vector&lt;&#39;T3d,&#39;T3&gt; * index1_index2_index3_elementFun:Func&lt;int64,int64,int64,&#39;Td&gt;) -&gt; Vector&lt;&#39;Td&gt;<br />
+                          <strong>Type parameters:</strong> 'T2d, 'T2, 'T3d, 'T3          </div>
+        </td>
+        <td class="xmldoc">
+          <p>Create a new vector by applying a function to each index of the
+elements of the supplied vector. The function may access the
+elements of the supplied vector to compute the elements of the new
+vector.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '58550', 58550)" onmouseover="showTip(event, '58550', 58550)">
+            CreateByIndex(...)
+          </code>
+          <div class="tip" id="58550">
+            <strong>Signature:</strong> (t1:Vector&lt;&#39;T1d,&#39;T1&gt; * t2:Vector&lt;&#39;T2&gt; * t3:Vector&lt;&#39;T3&gt; * index1_index2_index3_elementFun:Func&lt;int64,int64,int64,&#39;Td&gt;) -&gt; Vector&lt;&#39;Td&gt;<br />
+                          <strong>Type parameters:</strong> 'T1, 'T2, 'T3          </div>
+        </td>
+        <td class="xmldoc">
+          <p>Create a new vector by applying a function to each index of the
+elements of the supplied vector. The function may access the
+elements of the supplied vector to compute the elements of the new
+vector.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '58551', 58551)" onmouseover="showTip(event, '58551', 58551)">
+            CreateByIndex(...)
+          </code>
+          <div class="tip" id="58551">
+            <strong>Signature:</strong> (t1:Vector&lt;&#39;T1d,&#39;T1&gt; * t2:Vector&lt;&#39;T2&gt; * t3:Vector&lt;&#39;T3d,&#39;T3&gt; * index1_index2_index3_elementFun:Func&lt;int64,int64,int64,&#39;Td&gt;) -&gt; Vector&lt;&#39;Td&gt;<br />
+                          <strong>Type parameters:</strong> 'T1, 'T2, 'T3d, 'T3          </div>
+        </td>
+        <td class="xmldoc">
+          <p>Create a new vector by applying a function to each index of the
+elements of the supplied vector. The function may access the
+elements of the supplied vector to compute the elements of the new
+vector.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '58552', 58552)" onmouseover="showTip(event, '58552', 58552)">
+            CreateByIndex(...)
+          </code>
+          <div class="tip" id="58552">
+            <strong>Signature:</strong> (t1:Vector&lt;&#39;T1d,&#39;T1&gt; * t2:Vector&lt;&#39;T2d,&#39;T2&gt; * t3:Vector&lt;&#39;T3&gt; * index1_index2_index3_elementFun:Func&lt;int64,int64,int64,&#39;Td&gt;) -&gt; Vector&lt;&#39;Td&gt;<br />
+                          <strong>Type parameters:</strong> 'T1, 'T2d, 'T2, 'T3          </div>
+        </td>
+        <td class="xmldoc">
+          <p>Create a new vector by applying a function to each index of the
+elements of the supplied vector. The function may access the
+elements of the supplied vector to compute the elements of the new
+vector.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '58553', 58553)" onmouseover="showTip(event, '58553', 58553)">
+            CreateByIndex(...)
+          </code>
+          <div class="tip" id="58553">
+            <strong>Signature:</strong> (t1:Vector&lt;&#39;T1d,&#39;T1&gt; * t2:Vector&lt;&#39;T2d,&#39;T2&gt; * t3:Vector&lt;&#39;T3d,&#39;T3&gt; * index1_index2_index3_elementFun:Func&lt;int64,int64,int64,&#39;Td&gt;) -&gt; Vector&lt;&#39;Td&gt;<br />
+                          <strong>Type parameters:</strong> 'T1, 'T2d, 'T2, 'T3d, 'T3          </div>
+        </td>
+        <td class="xmldoc">
+          <p>Create a new vector by applying a function to each index of the
+elements of the supplied vector. The function may access the
+elements of the supplied vector to compute the elements of the new
+vector.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '58554', 58554)" onmouseover="showTip(event, '58554', 58554)">
+            CreateConvolution(...)
+          </code>
+          <div class="tip" id="58554">
+            <strong>Signature:</strong> (image:Vector&lt;&#39;Ti&gt; * filter:Vector&lt;&#39;Tf&gt; * mulFun:Func&lt;&#39;Ti,&#39;Tf,&#39;Tm&gt; * bias:&#39;Ts * sumFun:Func&lt;&#39;Ts,&#39;Tm,&#39;Ts&gt; * castFun:Func&lt;&#39;Ts,&#39;Td&gt;) -&gt; Vector&lt;&#39;Td&gt;<br />
+                          <strong>Type parameters:</strong> 'Tf, 'Tm, 'Ts          </div>
+        </td>
+        <td class="xmldoc">
+          <p>Create a new Vector by convolving the image with the filter. The mulFun
+is used to combine single elements of the image with the filter. The result
+is summed up using the sumFun starting with bias. The complete sum is put
+through the castFun and put into the resulting Vector.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '58555', 58555)" onmouseover="showTip(event, '58555', 58555)">
+            Map(t1, element1_elementFun)
+          </code>
+          <div class="tip" id="58555">
+            <strong>Signature:</strong> (t1:Vector&lt;&#39;T1&gt; * element1_elementFun:Func&lt;&#39;T1,&#39;Td&gt;) -&gt; Vector&lt;&#39;Td&gt;<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Create a new vector by applying a function on each element of
+the supplied vector.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '58556', 58556)" onmouseover="showTip(event, '58556', 58556)">
+            Map(t1, element1_elementFun)
+          </code>
+          <div class="tip" id="58556">
+            <strong>Signature:</strong> (t1:Vector&lt;&#39;T1d,&#39;T1&gt; * element1_elementFun:Func&lt;&#39;T1,&#39;Td&gt;) -&gt; Vector&lt;&#39;Td&gt;<br />
+                          <strong>Type parameters:</strong> 'T1          </div>
+        </td>
+        <td class="xmldoc">
+          <p>Create a new vector by applying a function on each element of
+the supplied vector.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '58557', 58557)" onmouseover="showTip(event, '58557', 58557)">
+            Map2(...)
+          </code>
+          <div class="tip" id="58557">
+            <strong>Signature:</strong> (t1:Vector&lt;&#39;T1&gt; * t2:Vector&lt;&#39;T2&gt; * element1_element2_elementFun:Func&lt;&#39;T1,&#39;T2,&#39;Td&gt;) -&gt; Vector&lt;&#39;Td&gt;<br />
+                          <strong>Type parameters:</strong> 'T2          </div>
+        </td>
+        <td class="xmldoc">
+          <p>Create a new vector by applying a function on each element of
+the supplied vector.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '58558', 58558)" onmouseover="showTip(event, '58558', 58558)">
+            Map2(...)
+          </code>
+          <div class="tip" id="58558">
+            <strong>Signature:</strong> (t1:Vector&lt;&#39;T1&gt; * t2:Vector&lt;&#39;T2d,&#39;T2&gt; * element1_element2_elementFun:Func&lt;&#39;T1,&#39;T2,&#39;Td&gt;) -&gt; Vector&lt;&#39;Td&gt;<br />
+                          <strong>Type parameters:</strong> 'T2d, 'T2          </div>
+        </td>
+        <td class="xmldoc">
+          <p>Create a new vector by applying a function on each element of
+the supplied vector.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '58559', 58559)" onmouseover="showTip(event, '58559', 58559)">
+            Map2(...)
+          </code>
+          <div class="tip" id="58559">
+            <strong>Signature:</strong> (t1:Vector&lt;&#39;T1d,&#39;T1&gt; * t2:Vector&lt;&#39;T2&gt; * element1_element2_elementFun:Func&lt;&#39;T1,&#39;T2,&#39;Td&gt;) -&gt; Vector&lt;&#39;Td&gt;<br />
+                          <strong>Type parameters:</strong> 'T1, 'T2          </div>
+        </td>
+        <td class="xmldoc">
+          <p>Create a new vector by applying a function on each element of
+the supplied vector.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '58560', 58560)" onmouseover="showTip(event, '58560', 58560)">
+            Map2(...)
+          </code>
+          <div class="tip" id="58560">
+            <strong>Signature:</strong> (t1:Vector&lt;&#39;T1d,&#39;T1&gt; * t2:Vector&lt;&#39;T2d,&#39;T2&gt; * element1_element2_elementFun:Func&lt;&#39;T1,&#39;T2,&#39;Td&gt;) -&gt; Vector&lt;&#39;Td&gt;<br />
+                          <strong>Type parameters:</strong> 'T1, 'T2d, 'T2          </div>
+        </td>
+        <td class="xmldoc">
+          <p>Create a new vector by applying a function on each element of
+the supplied vector.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '58561', 58561)" onmouseover="showTip(event, '58561', 58561)">
+            Map3(...)
+          </code>
+          <div class="tip" id="58561">
+            <strong>Signature:</strong> (t1:Vector&lt;&#39;T1&gt; * t2:Vector&lt;&#39;T2&gt; * t3:Vector&lt;&#39;T3&gt; * element1_element2_element3_elementFun:Func&lt;&#39;T1,&#39;T2,&#39;T3,&#39;Td&gt;) -&gt; Vector&lt;&#39;Td&gt;<br />
+                          <strong>Type parameters:</strong> 'T2, 'T3          </div>
+        </td>
+        <td class="xmldoc">
+          <p>Create a new vector by applying a function on each element of
+the supplied vector.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '58562', 58562)" onmouseover="showTip(event, '58562', 58562)">
+            Map3(...)
+          </code>
+          <div class="tip" id="58562">
+            <strong>Signature:</strong> (t1:Vector&lt;&#39;T1&gt; * t2:Vector&lt;&#39;T2&gt; * t3:Vector&lt;&#39;T3d,&#39;T3&gt; * element1_element2_element3_elementFun:Func&lt;&#39;T1,&#39;T2,&#39;T3,&#39;Td&gt;) -&gt; Vector&lt;&#39;Td&gt;<br />
+                          <strong>Type parameters:</strong> 'T2, 'T3d, 'T3          </div>
+        </td>
+        <td class="xmldoc">
+          <p>Create a new vector by applying a function on each element of
+the supplied vector.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '58563', 58563)" onmouseover="showTip(event, '58563', 58563)">
+            Map3(...)
+          </code>
+          <div class="tip" id="58563">
+            <strong>Signature:</strong> (t1:Vector&lt;&#39;T1&gt; * t2:Vector&lt;&#39;T2d,&#39;T2&gt; * t3:Vector&lt;&#39;T3&gt; * element1_element2_element3_elementFun:Func&lt;&#39;T1,&#39;T2,&#39;T3,&#39;Td&gt;) -&gt; Vector&lt;&#39;Td&gt;<br />
+                          <strong>Type parameters:</strong> 'T2d, 'T2, 'T3          </div>
+        </td>
+        <td class="xmldoc">
+          <p>Create a new vector by applying a function on each element of
+the supplied vector.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '58564', 58564)" onmouseover="showTip(event, '58564', 58564)">
+            Map3(...)
+          </code>
+          <div class="tip" id="58564">
+            <strong>Signature:</strong> (t1:Vector&lt;&#39;T1&gt; * t2:Vector&lt;&#39;T2d,&#39;T2&gt; * t3:Vector&lt;&#39;T3d,&#39;T3&gt; * element1_element2_element3_elementFun:Func&lt;&#39;T1,&#39;T2,&#39;T3,&#39;Td&gt;) -&gt; Vector&lt;&#39;Td&gt;<br />
+                          <strong>Type parameters:</strong> 'T2d, 'T2, 'T3d, 'T3          </div>
+        </td>
+        <td class="xmldoc">
+          <p>Create a new vector by applying a function on each element of
+the supplied vector.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '58565', 58565)" onmouseover="showTip(event, '58565', 58565)">
+            Map3(...)
+          </code>
+          <div class="tip" id="58565">
+            <strong>Signature:</strong> (t1:Vector&lt;&#39;T1d,&#39;T1&gt; * t2:Vector&lt;&#39;T2&gt; * t3:Vector&lt;&#39;T3&gt; * element1_element2_element3_elementFun:Func&lt;&#39;T1,&#39;T2,&#39;T3,&#39;Td&gt;) -&gt; Vector&lt;&#39;Td&gt;<br />
+                          <strong>Type parameters:</strong> 'T1, 'T2, 'T3          </div>
+        </td>
+        <td class="xmldoc">
+          <p>Create a new vector by applying a function on each element of
+the supplied vector.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '58566', 58566)" onmouseover="showTip(event, '58566', 58566)">
+            Map3(...)
+          </code>
+          <div class="tip" id="58566">
+            <strong>Signature:</strong> (t1:Vector&lt;&#39;T1d,&#39;T1&gt; * t2:Vector&lt;&#39;T2&gt; * t3:Vector&lt;&#39;T3d,&#39;T3&gt; * element1_element2_element3_elementFun:Func&lt;&#39;T1,&#39;T2,&#39;T3,&#39;Td&gt;) -&gt; Vector&lt;&#39;Td&gt;<br />
+                          <strong>Type parameters:</strong> 'T1, 'T2, 'T3d, 'T3          </div>
+        </td>
+        <td class="xmldoc">
+          <p>Create a new vector by applying a function on each element of
+the supplied vector.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '58567', 58567)" onmouseover="showTip(event, '58567', 58567)">
+            Map3(...)
+          </code>
+          <div class="tip" id="58567">
+            <strong>Signature:</strong> (t1:Vector&lt;&#39;T1d,&#39;T1&gt; * t2:Vector&lt;&#39;T2d,&#39;T2&gt; * t3:Vector&lt;&#39;T3&gt; * element1_element2_element3_elementFun:Func&lt;&#39;T1,&#39;T2,&#39;T3,&#39;Td&gt;) -&gt; Vector&lt;&#39;Td&gt;<br />
+                          <strong>Type parameters:</strong> 'T1, 'T2d, 'T2, 'T3          </div>
+        </td>
+        <td class="xmldoc">
+          <p>Create a new vector by applying a function on each element of
+the supplied vector.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '58568', 58568)" onmouseover="showTip(event, '58568', 58568)">
+            Map3(...)
+          </code>
+          <div class="tip" id="58568">
+            <strong>Signature:</strong> (t1:Vector&lt;&#39;T1d,&#39;T1&gt; * t2:Vector&lt;&#39;T2d,&#39;T2&gt; * t3:Vector&lt;&#39;T3d,&#39;T3&gt; * element1_element2_element3_elementFun:Func&lt;&#39;T1,&#39;T2,&#39;T3,&#39;Td&gt;) -&gt; Vector&lt;&#39;Td&gt;<br />
+                          <strong>Type parameters:</strong> 'T1, 'T2d, 'T2, 'T3d, 'T3          </div>
+        </td>
+        <td class="xmldoc">
+          <p>Create a new vector by applying a function on each element of
+the supplied vector.</p>
+
+
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+        </div>
+        <div class="span3">
+          <a href="https://github.com/vrvis">
+            <img src="logo.png" style="width:140px;height:140px;margin:10px 0px 0px 35px;border-style:none;" />
+          </a>
+
+          <ul class="nav nav-list" id="menu">
+
+            <li class="nav-header">Aardvark.Base</li>
+
+            <li class="divider"></li>
+            <li><a href="https://github.com/vrvis/aardvark.base">Home page</a></li>
+            <li class="divider"></li>
+
+            <li><a href="https://www.nuget.org/packages/Aardvark.Base">Get Aardvark.Base via NuGet</a></li>
+            <li><a href="https://github.com/vrvis/aardvark.base">Source Code on GitHub</a></li>
+            <li><a href="https://github.com/vrvis/aardvark.baseLicense">License (Apache 2)</a></li>
+            
+            <!-- <li><a href="https://github.com/vrvis/aardvark.base/RELEASE_NOTES.html">Release Notes</a></li>
+            <li><a href="https://github.com/vrvis/aardvark.base//contributing.html">Contributing to Aardvark.Base</a></li>
+  
+            <li><a href="http://stackoverflow.com/questions/tagged/f%23-fake">Ask a question</a></li> 
+            
+            <li class="nav-header">Tutorials</li>
+            <li><a href="https://github.com/vrvis/aardvark.base/gettingstarted.html">Getting started</a></li>
+            
+            -->
+
+            
+            <li class="divider"></li>
+            <li class="nav-header">Reference</li>
+
+            <li><a href="https://github.com/vrvis/aardvark.base/apidocs/index.html">API Reference</a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    <a href="https://github.com/vrvis/aardvark.base"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_gray_6d6d6d.png" alt="Fork me on GitHub"></a>
+  </body>
+  </html>

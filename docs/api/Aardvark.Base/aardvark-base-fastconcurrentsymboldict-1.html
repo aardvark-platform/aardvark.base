@@ -1,0 +1,1156 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>FastConcurrentSymbolDict<'TValue> - Aardvark.Base</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="The Aardvark Platform Team">
+
+    <script src="https://code.jquery.com/jquery-1.8.0.js"></script>
+    <script src="https://code.jquery.com/ui/1.8.23/jquery-ui.js"></script>
+    <script src="https://netdna.bootstrapcdn.com/twitter-bootstrap/2.2.1/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link href="https://netdna.bootstrapcdn.com/twitter-bootstrap/2.2.1/css/bootstrap-combined.min.css" rel="stylesheet">
+
+    <link type="text/css" rel="stylesheet" href="https://github.com/vrvis/aardvark.base/content/style.css" />
+    <script type="text/javascript" src="https://github.com/vrvis/aardvark.base/content/tips.js"></script>
+    <!-- HTML5 shim, for IE6-8 support of HTML5 elements -->
+    <!--[if lt IE 9]>
+      <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+  </head>
+  <body>
+    <div class="container">
+      <div class="masthead">
+        <ul class="nav nav-pills pull-right">
+          <li><a href="https://github.com/vrvis/aardvark.base">github page</a></li>
+        </ul>
+        <h3 class="muted"><a href="https://github.com/vrvis/aardvark.base/index.html">Aardvark.Base</a></h3>
+      </div>
+      <hr />
+      <div class="row">
+        <div class="span9" id="main">
+          
+
+
+
+<h1>FastConcurrentSymbolDict<'TValue></h1>
+<div class="xmldoc">
+<p>A FastConcurrentSymbolDict is an alternate implementation of a Dictionary that can
+optionally act as a stack for all items with the same key.
+It is implemented as a hashtable with external linking, that uses
+primes as the table size in order to reduce the danger of funneling.</p>
+
+</div>
+  <h3>Constructors</h3>
+  <table class="table table-bordered member-list">
+    <thead>
+      <tr><td>Constructor</td><td>Description</td></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '5832', 5832)" onmouseover="showTip(event, '5832', 5832)">
+            new(stackDuplicateKeys)
+          </code>
+          <div class="tip" id="5832">
+            <strong>Signature:</strong> stackDuplicateKeys:bool -&gt; unit<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Create a FastConcurrentSymbolDict that autmatically grows and shrinks as necessary.
+If the optional parameter stackDuplicateKeys is set to true, the
+FastConcurrentSymbolDict acts as a stack for all items with the same key.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '5833', 5833)" onmouseover="showTip(event, '5833', 5833)">
+            new(initialCapacity)
+          </code>
+          <div class="tip" id="5833">
+            <strong>Signature:</strong> initialCapacity:int -&gt; unit<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Create a FastConcurrentSymbolDict that autmatically grows and shrinks as necessary,
+but also specify an initial capacity.
+If the optional parameter stackDuplicateKeys is set to true, the
+FastConcurrentSymbolDict acts as a stack for all items with the same key.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '5834', 5834)" onmouseover="showTip(event, '5834', 5834)">
+            new(initialCapacity, stackDuplicateKeys)
+          </code>
+          <div class="tip" id="5834">
+            <strong>Signature:</strong> (initialCapacity:int * stackDuplicateKeys:bool) -&gt; unit<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Create a FastConcurrentSymbolDict that autmatically grows and shrinks as necessary,
+but also specify an initial capacity.
+If the optional parameter stackDuplicateKeys is set to true, the
+FastConcurrentSymbolDict acts as a stack for all items with the same key.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '5835', 5835)" onmouseover="showTip(event, '5835', 5835)">
+            new(items, stackDuplicateKeys)
+          </code>
+          <div class="tip" id="5835">
+            <strong>Signature:</strong> (items:IEnumerable&lt;KeyValuePair&lt;Symbol,&#39;TValue&gt;&gt; * stackDuplicateKeys:bool) -&gt; unit<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Create a FastConcurrentSymbolDict and initialize it to contain the supplied
+items.
+If the optional parameter stackDuplicateKeys is set to true, the
+FastConcurrentSymbolDict acts as a stack for all items with the same key.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '5836', 5836)" onmouseover="showTip(event, '5836', 5836)">
+            new(items, stackDuplicateKeys)
+          </code>
+          <div class="tip" id="5836">
+            <strong>Signature:</strong> (items:IEnumerable&lt;KeyValuePair&lt;string,&#39;TValue&gt;&gt; * stackDuplicateKeys:bool) -&gt; unit<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Create a FastConcurrentSymbolDict and initialize to contain the supplied items.
+Note hat this incurs the overhead of converting all string keys
+to symbols.
+If the optional parameter stackDuplicateKeys is set to true, the
+FastConcurrentSymbolDict acts as a stack for all items with the same key.</p>
+
+
+        </td>
+      </tr>
+    </tbody>
+  </table>
+  <h3>Instance members</h3>
+  <table class="table table-bordered member-list">
+    <thead>
+      <tr><td>Instance member</td><td>Description</td></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '5837', 5837)" onmouseover="showTip(event, '5837', 5837)">
+            Add(key, value)
+          </code>
+          <div class="tip" id="5837">
+            <strong>Signature:</strong> (key:Symbol * value:&#39;TValue) -&gt; unit<br />
+              <strong>Modifiers:</strong> abstract<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Add the item with the supplied key and the supplied value
+to the FastConcurrentSymbolDict.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '5838', 5838)" onmouseover="showTip(event, '5838', 5838)">
+            Add(key, value)
+          </code>
+          <div class="tip" id="5838">
+            <strong>Signature:</strong> (key:string * value:&#39;TValue) -&gt; unit<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Adds the supplied item to the FastConcurrentSymbolDict. Note that this incurs the
+overhead of converting the string key to a symbol.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '5839', 5839)" onmouseover="showTip(event, '5839', 5839)">
+            Add(item)
+          </code>
+          <div class="tip" id="5839">
+            <strong>Signature:</strong> item:KeyValuePair&lt;string,&#39;TValue&gt; -&gt; unit<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Add the supplied item to the FastConcurrentSymbolDict. Note that this incurs the
+overhead of converting the string key to a symbol.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '5840', 5840)" onmouseover="showTip(event, '5840', 5840)">
+            Add(item)
+          </code>
+          <div class="tip" id="5840">
+            <strong>Signature:</strong> item:KeyValuePair&lt;Symbol,&#39;TValue&gt; -&gt; unit<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Add the supplied item to the FastConcurrentSymbolDict.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '5841', 5841)" onmouseover="showTip(event, '5841', 5841)">
+            Add(key, value)
+          </code>
+          <div class="tip" id="5841">
+            <strong>Signature:</strong> (key:TypedSymbol&lt;&#39;TType&gt; * value:&#39;TType) -&gt; unit<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '5842', 5842)" onmouseover="showTip(event, '5842', 5842)">
+            AddObject(objkey, objvalue)
+          </code>
+          <div class="tip" id="5842">
+            <strong>Signature:</strong> (objkey:obj * objvalue:obj) -&gt; unit<br />
+              <strong>Modifiers:</strong> abstract<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Add the item with supplied key and the supplied value
+both supplied as generic objects, to the FastConcurrentSymbolDict. Note that the supplied key
+and value are cast to the concrete type of the keys and values used in the FastConcurrentSymbolDict
+and this will fail if they are of different types.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '5843', 5843)" onmouseover="showTip(event, '5843', 5843)">
+            AddRange(items)
+          </code>
+          <div class="tip" id="5843">
+            <strong>Signature:</strong> items:IEnumerable&lt;KeyValuePair&lt;Symbol,&#39;TValue&gt;&gt; -&gt; unit<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Add the supplied items to the FastConcurrentSymbolDict.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '5844', 5844)" onmouseover="showTip(event, '5844', 5844)">
+            Clear()
+          </code>
+          <div class="tip" id="5844">
+            <strong>Signature:</strong> unit -&gt; unit<br />
+              <strong>Modifiers:</strong> abstract<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Remove all items. Capacity remains unchanged.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '5845', 5845)" onmouseover="showTip(event, '5845', 5845)">
+            Contains(key)
+          </code>
+          <div class="tip" id="5845">
+            <strong>Signature:</strong> key:Symbol -&gt; bool<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Returns true if the FastConcurrentSymbolDict contains the item with the supplied
+key.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '5846', 5846)" onmouseover="showTip(event, '5846', 5846)">
+            Contains(key, value)
+          </code>
+          <div class="tip" id="5846">
+            <strong>Signature:</strong> (key:Symbol * value:&#39;TValue) -&gt; bool<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Returns true if the FastConcurrentSymbolDict contains the item with the supplied
+key and the supplied value.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '5847', 5847)" onmouseover="showTip(event, '5847', 5847)">
+            Contains(item)
+          </code>
+          <div class="tip" id="5847">
+            <strong>Signature:</strong> item:KeyValuePair&lt;Symbol,&#39;TValue&gt; -&gt; bool<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Returns true if the FastConcurrentSymbolDict contains the item with the supplied
+KeyValuePair.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '5848', 5848)" onmouseover="showTip(event, '5848', 5848)">
+            Contains(key)
+          </code>
+          <div class="tip" id="5848">
+            <strong>Signature:</strong> key:TypedSymbol&lt;&#39;TType&gt; -&gt; bool<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '5849', 5849)" onmouseover="showTip(event, '5849', 5849)">
+            ContainsKey(key)
+          </code>
+          <div class="tip" id="5849">
+            <strong>Signature:</strong> key:Symbol -&gt; bool<br />
+              <strong>Modifiers:</strong> abstract<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Returns true if the FastConcurrentSymbolDict contains the item with the supplied
+key.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '5850', 5850)" onmouseover="showTip(event, '5850', 5850)">
+            ContainsKey(key)
+          </code>
+          <div class="tip" id="5850">
+            <strong>Signature:</strong> key:TypedSymbol&lt;&#39;TType&gt; -&gt; bool<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '5851', 5851)" onmouseover="showTip(event, '5851', 5851)">
+            CopyKeysTo(array, index)
+          </code>
+          <div class="tip" id="5851">
+            <strong>Signature:</strong> (array:Symbol [] * index:int) -&gt; unit<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Copies all keys in the dictionary to the supplied
+array starting at the supplied index.
+This may throw a ConcurrentDataModifiedException if data is
+modified by another task during the operation.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '5852', 5852)" onmouseover="showTip(event, '5852', 5852)">
+            CopyTo(array, index)
+          </code>
+          <div class="tip" id="5852">
+            <strong>Signature:</strong> (array:KeyValuePair&lt;Symbol,&#39;TValue&gt; [] * index:int) -&gt; unit<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Copies all KeyValuePairs in the dictionary into the supplied
+array starting at the supplied index.
+This may throw a ConcurrentDataModifiedException if data is
+modified by another task during the operation.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '5853', 5853)" onmouseover="showTip(event, '5853', 5853)">
+            CopyValuesTo(array, index)
+          </code>
+          <div class="tip" id="5853">
+            <strong>Signature:</strong> (array:&#39;TValue [] * index:int) -&gt; unit<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Copies all values in the dictionary to the supplied
+array starting at the supplied index.
+This may throw a ConcurrentDataModifiedException if data is
+modified by another task during the operation.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '5854', 5854)" onmouseover="showTip(event, '5854', 5854)">
+            Count
+          </code>
+          <div class="tip" id="5854">
+            <strong>Signature:</strong> int<br />
+              <strong>Modifiers:</strong> abstract<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Returns the number of items currently contained in the FastConcurrentSymbolDict.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '5855', 5855)" onmouseover="showTip(event, '5855', 5855)">
+            Get(key)
+          </code>
+          <div class="tip" id="5855">
+            <strong>Signature:</strong> key:Symbol -&gt; &#39;TValue<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Get the element with the supplied key.
+Throws an exception if the element is not found. This is an alias of the indexer.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '5856', 5856)" onmouseover="showTip(event, '5856', 5856)">
+            Get(key, defaultValue)
+          </code>
+          <div class="tip" id="5856">
+            <strong>Signature:</strong> (key:Symbol * defaultValue:&#39;TValue) -&gt; &#39;TValue<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Get the element with the supplied key.
+Returns the supplied default value if the element is not found.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '5857', 5857)" onmouseover="showTip(event, '5857', 5857)">
+            Get(key)
+          </code>
+          <div class="tip" id="5857">
+            <strong>Signature:</strong> key:TypedSymbol&lt;&#39;TType&gt; -&gt; &#39;TType<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '5858', 5858)" onmouseover="showTip(event, '5858', 5858)">
+            Get(key, defaultValue)
+          </code>
+          <div class="tip" id="5858">
+            <strong>Signature:</strong> (key:TypedSymbol&lt;&#39;TType&gt; * defaultValue:&#39;TType) -&gt; &#39;TType<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '5859', 5859)" onmouseover="showTip(event, '5859', 5859)">
+            GetAndRemove(key)
+          </code>
+          <div class="tip" id="5859">
+            <strong>Signature:</strong> key:Symbol -&gt; &#39;TValue<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Remove the item with the supplied key from the FastConcurrentSymbolDict and
+return it. If multipe entries have the same key, the one that
+was inserted last is removed.
+If the item is not found, a KeyNotFoundException is thrown.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '5860', 5860)" onmouseover="showTip(event, '5860', 5860)">
+            GetAs(key)
+          </code>
+          <div class="tip" id="5860">
+            <strong>Signature:</strong> key:Symbol -&gt; &#39;TType<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '5861', 5861)" onmouseover="showTip(event, '5861', 5861)">
+            GetAs(key, defaultValue)
+          </code>
+          <div class="tip" id="5861">
+            <strong>Signature:</strong> (key:Symbol * defaultValue:&#39;TType) -&gt; &#39;TType<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '5862', 5862)" onmouseover="showTip(event, '5862', 5862)">
+            GetAsOrDefault(key)
+          </code>
+          <div class="tip" id="5862">
+            <strong>Signature:</strong> key:Symbol -&gt; &#39;TType<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '5863', 5863)" onmouseover="showTip(event, '5863', 5863)">
+            GetEnumerator()
+          </code>
+          <div class="tip" id="5863">
+            <strong>Signature:</strong> unit -&gt; IEnumerator&lt;KeyValuePair&lt;Symbol,&#39;TValue&gt;&gt;<br />
+              <strong>Modifiers:</strong> abstract<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '5864', 5864)" onmouseover="showTip(event, '5864', 5864)">
+            GetOrCreate(key, creator)
+          </code>
+          <div class="tip" id="5864">
+            <strong>Signature:</strong> (key:Symbol * creator:Func&lt;Symbol,&#39;TValue&gt;) -&gt; &#39;TValue<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Get the element with the supplied key.
+If the element is not found, the supplied creator is called to create
+a new element that is added to the FastConcurrentSymbolDict and returned.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '5865', 5865)" onmouseover="showTip(event, '5865', 5865)">
+            GetOrDefault(key)
+          </code>
+          <div class="tip" id="5865">
+            <strong>Signature:</strong> key:Symbol -&gt; &#39;TValue<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Get the element with the supplied key. Returns the default
+value of the value type if the element is not found.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '5866', 5866)" onmouseover="showTip(event, '5866', 5866)">
+            GetOrDefault(key)
+          </code>
+          <div class="tip" id="5866">
+            <strong>Signature:</strong> key:TypedSymbol&lt;&#39;TType&gt; -&gt; &#39;TType<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '5867', 5867)" onmouseover="showTip(event, '5867', 5867)">
+            [()]
+          </code>
+          <div class="tip" id="5867">
+            <strong>Signature:</strong> unit -&gt; Symbol<br />
+              <strong>Modifiers:</strong> abstract<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Get or set the item with the supplied key. If multiple items with
+the same key are allowed, the FastConcurrentSymbolDict acts as a stack.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '5868', 5868)" onmouseover="showTip(event, '5868', 5868)">
+            Items
+          </code>
+          <div class="tip" id="5868">
+            <strong>Signature:</strong> IEnumerable&lt;KeyValuePair&lt;Symbol,&#39;TValue&gt;&gt;<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '5869', 5869)" onmouseover="showTip(event, '5869', 5869)">
+            Keys
+          </code>
+          <div class="tip" id="5869">
+            <strong>Signature:</strong> IEnumerable&lt;Symbol&gt;<br />
+              <strong>Modifiers:</strong> abstract<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Returns all keys in the dictionary.
+This may throw a ConcurrentDataModifiedException if data is
+modified by another task during the enumeration.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '5870', 5870)" onmouseover="showTip(event, '5870', 5870)">
+            KeysToArray()
+          </code>
+          <div class="tip" id="5870">
+            <strong>Signature:</strong> unit -&gt; Symbol []<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Returns all keys in the dictionary as an array.
+This may throw a ConcurrentDataModifiedException if data is
+modified by another task during the operation.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '5871', 5871)" onmouseover="showTip(event, '5871', 5871)">
+            KeyType
+          </code>
+          <div class="tip" id="5871">
+            <strong>Signature:</strong> Type<br />
+              <strong>Modifiers:</strong> abstract<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '5872', 5872)" onmouseover="showTip(event, '5872', 5872)">
+            KeyValuePairs
+          </code>
+          <div class="tip" id="5872">
+            <strong>Signature:</strong> IEnumerable&lt;KeyValuePair&lt;Symbol,&#39;TValue&gt;&gt;<br />
+              <strong>Modifiers:</strong> abstract<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Returns all key value pairs in the FastConcurrentSymbolDict.
+This may throw a ConcurrentDataModifiedException if data is
+modified by another task during the enumeration.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '5873', 5873)" onmouseover="showTip(event, '5873', 5873)">
+            KeyValuePairsForStorage
+          </code>
+          <div class="tip" id="5873">
+            <strong>Signature:</strong> IEnumerable&lt;KeyValuePair&lt;Symbol,&#39;TValue&gt;&gt;<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Returns all key value pairs in the FastConcurrentSymbolDict, in such a way,
+that the stack order is correct when the pairs are put into a
+new FastConcurrentSymbolDict in the order they are returned.
+This may throw a ConcurrentDataModifiedException if data is
+modified by another task during the enumeration.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '5874', 5874)" onmouseover="showTip(event, '5874', 5874)">
+            LongCount
+          </code>
+          <div class="tip" id="5874">
+            <strong>Signature:</strong> int64<br />
+              <strong>Modifiers:</strong> abstract<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Returns the number of items currently contained in the FastConcurrentSymbolDict
+as long.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '5875', 5875)" onmouseover="showTip(event, '5875', 5875)">
+            MaxFillFactor()
+          </code>
+          <div class="tip" id="5875">
+            <strong>Signature:</strong> unit -&gt; unit<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Setting the maximal fill factor makes it possible to fine-tune
+the performance for certain applications. Normally this should
+not be necessary.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '5876', 5876)" onmouseover="showTip(event, '5876', 5876)">
+            MinFillFactor()
+          </code>
+          <div class="tip" id="5876">
+            <strong>Signature:</strong> unit -&gt; unit<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Setting the minimal fill factor makes it possible to influence
+the shrinking behaviour of the FastConcurrentSymbolDict. Normally this should
+be set to a quater of the maximal fill factor. In order to
+completely prevent shrinking it can also be set to 0.0f.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '5877', 5877)" onmouseover="showTip(event, '5877', 5877)">
+            ObjectPairs
+          </code>
+          <div class="tip" id="5877">
+            <strong>Signature:</strong> IEnumerable&lt;Pair&lt;obj&gt;&gt;<br />
+              <strong>Modifiers:</strong> abstract<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '5878', 5878)" onmouseover="showTip(event, '5878', 5878)">
+            Remove(key)
+          </code>
+          <div class="tip" id="5878">
+            <strong>Signature:</strong> key:Symbol -&gt; bool<br />
+              <strong>Modifiers:</strong> abstract<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Try to remove the item with the supplied key from the FastConcurrentSymbolDict.
+and return true if it was succesfully removed. If multipe
+entries have the same key, the one that was inserted last is
+removed. If the item is not found, false is returned.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '5879', 5879)" onmouseover="showTip(event, '5879', 5879)">
+            Remove(key, value)
+          </code>
+          <div class="tip" id="5879">
+            <strong>Signature:</strong> (key:Symbol * value:&#39;TValue) -&gt; bool<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Remove the item with the supplied key and the supplied value
+from the FastConcurrentSymbolDict. Returns true if the value was removed.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '5880', 5880)" onmouseover="showTip(event, '5880', 5880)">
+            Remove(item)
+          </code>
+          <div class="tip" id="5880">
+            <strong>Signature:</strong> item:KeyValuePair&lt;Symbol,&#39;TValue&gt; -&gt; bool<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Remove the item with the supplied KeyValuePair from the FastConcurrentSymbolDict.
+If the item is not found, a KeyNotFoundException is thrown.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '5881', 5881)" onmouseover="showTip(event, '5881', 5881)">
+            Remove(key)
+          </code>
+          <div class="tip" id="5881">
+            <strong>Signature:</strong> key:TypedSymbol&lt;&#39;TType&gt; -&gt; bool<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '5882', 5882)" onmouseover="showTip(event, '5882', 5882)">
+            Set(key, value)
+          </code>
+          <div class="tip" id="5882">
+            <strong>Signature:</strong> (key:TypedSymbol&lt;&#39;TType&gt; * value:&#39;TType) -&gt; unit<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '5883', 5883)" onmouseover="showTip(event, '5883', 5883)">
+            ToArray()
+          </code>
+          <div class="tip" id="5883">
+            <strong>Signature:</strong> unit -&gt; KeyValuePair&lt;Symbol,&#39;TValue&gt; []<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Returns all KeyValuePairs in the dictionary as an array.
+This may throw a ConcurrentDataModifiedException if data is
+modified by another task during the operation.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '5884', 5884)" onmouseover="showTip(event, '5884', 5884)">
+            TryAdd(key, value)
+          </code>
+          <div class="tip" id="5884">
+            <strong>Signature:</strong> (key:Symbol * value:&#39;TValue) -&gt; bool<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Add the item with the supplied key and the supplied value
+to the FastConcurrentSymbolDict.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '5885', 5885)" onmouseover="showTip(event, '5885', 5885)">
+            TryGetValue(key, value)
+          </code>
+          <div class="tip" id="5885">
+            <strong>Signature:</strong> (key:Symbol * value:byref&lt;&#39;TValue&gt;) -&gt; bool<br />
+              <strong>Modifiers:</strong> abstract<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Try to retrieve the value with the supplied key, return true if
+successful and return the value via the out parameter.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '5886', 5886)" onmouseover="showTip(event, '5886', 5886)">
+            TryGetValue(key, value)
+          </code>
+          <div class="tip" id="5886">
+            <strong>Signature:</strong> (key:TypedSymbol&lt;&#39;TType&gt; * value:byref&lt;&#39;TType&gt;) -&gt; bool<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '5887', 5887)" onmouseover="showTip(event, '5887', 5887)">
+            TryRemove(key, value)
+          </code>
+          <div class="tip" id="5887">
+            <strong>Signature:</strong> (key:Symbol * value:byref&lt;&#39;TValue&gt;) -&gt; bool<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Try to reomve the item with the supplied key. If multipe entries
+have the same key, the one that was inserted last is removed.
+Returns true if the item was found, which is returned via the out
+parameter.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '5888', 5888)" onmouseover="showTip(event, '5888', 5888)">
+            TryRemove(key, value)
+          </code>
+          <div class="tip" id="5888">
+            <strong>Signature:</strong> (key:Symbol * value:&#39;TValue) -&gt; bool<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Try to reomve the item with the supplied key and the supplied
+value. If multipe entries match, the one that was inserted last
+is removed. Returns true if the item was found.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '5889', 5889)" onmouseover="showTip(event, '5889', 5889)">
+            Values
+          </code>
+          <div class="tip" id="5889">
+            <strong>Signature:</strong> IEnumerable&lt;&#39;TValue&gt;<br />
+              <strong>Modifiers:</strong> abstract<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Returns all values in the FastConcurrentSymbolDict.
+This may throw a ConcurrentDataModifiedException if data is
+modified by another task during the enumeration.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '5890', 5890)" onmouseover="showTip(event, '5890', 5890)">
+            ValuesToArray()
+          </code>
+          <div class="tip" id="5890">
+            <strong>Signature:</strong> unit -&gt; &#39;TValue []<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Returns all values in the dictionary as an array.
+This may throw a ConcurrentDataModifiedException if data is
+modified by another task during the operation.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '5891', 5891)" onmouseover="showTip(event, '5891', 5891)">
+            ValuesWithKey(key)
+          </code>
+          <div class="tip" id="5891">
+            <strong>Signature:</strong> key:Symbol -&gt; IEnumerable&lt;&#39;TValue&gt;<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Return all the value with the given key. This method is only
+useful if multiple item with the same key are allowed.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '5892', 5892)" onmouseover="showTip(event, '5892', 5892)">
+            ValueType
+          </code>
+          <div class="tip" id="5892">
+            <strong>Signature:</strong> Type<br />
+              <strong>Modifiers:</strong> abstract<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '5893', 5893)" onmouseover="showTip(event, '5893', 5893)">
+            ValueWithKeySkip(key, skip)
+          </code>
+          <div class="tip" id="5893">
+            <strong>Signature:</strong> (key:Symbol * skip:int) -&gt; &#39;TValue<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Return the value with the given key, but skip a supplied number
+of entries with this key. This method is only useful if multiple
+item with the same key are allowed.</p>
+
+
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+        </div>
+        <div class="span3">
+          <a href="https://github.com/vrvis">
+            <img src="logo.png" style="width:140px;height:140px;margin:10px 0px 0px 35px;border-style:none;" />
+          </a>
+
+          <ul class="nav nav-list" id="menu">
+
+            <li class="nav-header">Aardvark.Base</li>
+
+            <li class="divider"></li>
+            <li><a href="https://github.com/vrvis/aardvark.base">Home page</a></li>
+            <li class="divider"></li>
+
+            <li><a href="https://www.nuget.org/packages/Aardvark.Base">Get Aardvark.Base via NuGet</a></li>
+            <li><a href="https://github.com/vrvis/aardvark.base">Source Code on GitHub</a></li>
+            <li><a href="https://github.com/vrvis/aardvark.baseLicense">License (Apache 2)</a></li>
+            
+            <!-- <li><a href="https://github.com/vrvis/aardvark.base/RELEASE_NOTES.html">Release Notes</a></li>
+            <li><a href="https://github.com/vrvis/aardvark.base//contributing.html">Contributing to Aardvark.Base</a></li>
+  
+            <li><a href="http://stackoverflow.com/questions/tagged/f%23-fake">Ask a question</a></li> 
+            
+            <li class="nav-header">Tutorials</li>
+            <li><a href="https://github.com/vrvis/aardvark.base/gettingstarted.html">Getting started</a></li>
+            
+            -->
+
+            
+            <li class="divider"></li>
+            <li class="nav-header">Reference</li>
+
+            <li><a href="https://github.com/vrvis/aardvark.base/apidocs/index.html">API Reference</a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    <a href="https://github.com/vrvis/aardvark.base"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_gray_6d6d6d.png" alt="Fork me on GitHub"></a>
+  </body>
+  </html>

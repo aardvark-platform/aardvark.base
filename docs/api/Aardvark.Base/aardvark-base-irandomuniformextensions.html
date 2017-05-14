@@ -1,0 +1,1054 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>IRandomUniformExtensions - Aardvark.Base</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="The Aardvark Platform Team">
+
+    <script src="https://code.jquery.com/jquery-1.8.0.js"></script>
+    <script src="https://code.jquery.com/ui/1.8.23/jquery-ui.js"></script>
+    <script src="https://netdna.bootstrapcdn.com/twitter-bootstrap/2.2.1/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link href="https://netdna.bootstrapcdn.com/twitter-bootstrap/2.2.1/css/bootstrap-combined.min.css" rel="stylesheet">
+
+    <link type="text/css" rel="stylesheet" href="https://github.com/vrvis/aardvark.base/content/style.css" />
+    <script type="text/javascript" src="https://github.com/vrvis/aardvark.base/content/tips.js"></script>
+    <!-- HTML5 shim, for IE6-8 support of HTML5 elements -->
+    <!--[if lt IE 9]>
+      <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+  </head>
+  <body>
+    <div class="container">
+      <div class="masthead">
+        <ul class="nav nav-pills pull-right">
+          <li><a href="https://github.com/vrvis/aardvark.base">github page</a></li>
+        </ul>
+        <h3 class="muted"><a href="https://github.com/vrvis/aardvark.base/index.html">Aardvark.Base</a></h3>
+      </div>
+      <hr />
+      <div class="row">
+        <div class="span9" id="main">
+          
+
+
+
+<h1>IRandomUniformExtensions</h1>
+<div class="xmldoc">
+</div>
+  <h3>Static members</h3>
+  <table class="table table-bordered member-list">
+    <thead>
+      <tr><td>Static member</td><td>Description</td></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '7984', 7984)" onmouseover="showTip(event, '7984', 7984)">
+            CreatePermutationArray(rnd, count)
+          </code>
+          <div class="tip" id="7984">
+            <strong>Signature:</strong> (rnd:IRandomUniform * count:int) -&gt; int []<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Creates an array that contains a random permutation of the
+ints in the interval [0, count-1].</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '7985', 7985)" onmouseover="showTip(event, '7985', 7985)">
+            CreatePermutationArrayLong(rnd, count)
+          </code>
+          <div class="tip" id="7985">
+            <strong>Signature:</strong> (rnd:IRandomUniform * count:int64) -&gt; int64 []<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Creates an array that contains a random permutation of the
+numbers in the interval [0, count-1].</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '7986', 7986)" onmouseover="showTip(event, '7986', 7986)">
+            CreateRandomSubsetOfSize(...)
+          </code>
+          <div class="tip" id="7986">
+            <strong>Signature:</strong> (array:&#39;T [] * subsetCount:int64 * rnd:IRandomUniform) -&gt; &#39;T []<br />
+                          <strong>Type parameters:</strong> 'T          </div>
+        </td>
+        <td class="xmldoc">
+          <p>Returns a random subset of an array with a supplied number of
+elements (subsetCount). The elements in the subset are in the
+same order as in the original array. O(count).
+NOTE: this method needs to generate one random number for each
+element of the original array. If subsetCount is signficantly
+smaller than count, it is more efficient to use
+or
+or
+or
+.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '7987', 7987)" onmouseover="showTip(event, '7987', 7987)">
+            CreateSmallRandomOrderedSubsetIndexArray(...)
+          </code>
+          <div class="tip" id="7987">
+            <strong>Signature:</strong> (rnd:IRandomUniform * subsetCount:int * count:int) -&gt; int []<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Creates an ordered array of subsetCount int indices that
+constitute a subset of all ints in the range [0, count-1].
+O(subsetCount * log(subsetCount)) for subsetCount &lt;&lt; count.
+NOTE: It is assumed that subsetCount is significantly smaller
+than count. If this is not the case, use
+CreateRandomSubsetOfSize instead.
+WARNING: As subsetCount approaches count execution time
+increases significantly.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '7988', 7988)" onmouseover="showTip(event, '7988', 7988)">
+            CreateSmallRandomOrderedSubsetIndexArrayLong(...)
+          </code>
+          <div class="tip" id="7988">
+            <strong>Signature:</strong> (rnd:IRandomUniform * subsetCount:int64 * count:int64) -&gt; int64 []<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Creates an ordered array of subsetCount long indices that
+constitute a subset of all longs in the range [0, count-1].
+O(subsetCount * log(subsetCount)) for subsetCount &lt;&lt; count.
+NOTE: It is assumed that subsetCount is significantly smaller
+than count. If this is not the case, use
+CreateRandomSubsetOfSize instead.
+WARNING: As subsetCount approaches count execution time
+increases significantly.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '7989', 7989)" onmouseover="showTip(event, '7989', 7989)">
+            CreateSmallRandomSubsetIndexArray(...)
+          </code>
+          <div class="tip" id="7989">
+            <strong>Signature:</strong> (rnd:IRandomUniform * subsetCount:int * count:int) -&gt; int []<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Creates an unordered array of subsetCount int indices that
+constitute a subset of all ints in the range [0, count-1].
+O(subsetCount) for subsetCount &lt;&lt; count.
+NOTE: It is assumed that subsetCount is significantly smaller
+than count. If this is not the case, use
+CreateRandomSubsetOfSize instead.
+WARNING: As subsetCount approaches count execution time
+increases significantly.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '7990', 7990)" onmouseover="showTip(event, '7990', 7990)">
+            CreateSmallRandomSubsetIndexArrayLong(...)
+          </code>
+          <div class="tip" id="7990">
+            <strong>Signature:</strong> (rnd:IRandomUniform * subsetCount:int64 * count:int64) -&gt; int64 []<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Creates an unordered array of subsetCount long indices that
+constitute a subset of all longs in the range  [0, count-1].
+O(subsetCount) for subsetCount &lt;&lt; count.
+NOTE: It is assumed that subsetCount is significantly smaller
+than count. If this is not the case, use
+CreateRandomSubsetOfSize instead.
+WARNING: As subsetCount approaches count execution time
+increases significantly.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '7991', 7991)" onmouseover="showTip(event, '7991', 7991)">
+            CreateUniformDoubleArray(rnd, length)
+          </code>
+          <div class="tip" id="7991">
+            <strong>Signature:</strong> (rnd:IRandomUniform * length:int64) -&gt; float []<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Create a random array of doubles in the half-open interval
+[0.0, 1.0) of the specified length.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '7992', 7992)" onmouseover="showTip(event, '7992', 7992)">
+            CreateUniformDoubleFullArray(...)
+          </code>
+          <div class="tip" id="7992">
+            <strong>Signature:</strong> (rnd:IRandomUniform * length:int64) -&gt; float []<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Create a random array of full doubles in the half-open interval
+[0.0, 1.0) of the specified length.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '7993', 7993)" onmouseover="showTip(event, '7993', 7993)">
+            FillUniform(rnd, array)
+          </code>
+          <div class="tip" id="7993">
+            <strong>Signature:</strong> (rnd:IRandomUniform * array:int []) -&gt; unit<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Fills the specified array with random ints in the interval
+[0, 2^31-1].</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '7994', 7994)" onmouseover="showTip(event, '7994', 7994)">
+            FillUniform(rnd, array)
+          </code>
+          <div class="tip" id="7994">
+            <strong>Signature:</strong> (rnd:IRandomUniform * array:float32 []) -&gt; unit<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Fills the specified array with random floats in the half-open
+interval [0.0f, 1.0f).</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '7995', 7995)" onmouseover="showTip(event, '7995', 7995)">
+            FillUniform(rnd, array)
+          </code>
+          <div class="tip" id="7995">
+            <strong>Signature:</strong> (rnd:IRandomUniform * array:float []) -&gt; unit<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Fills the specified array with random doubles in the half-open
+interval [0.0, 1.0).</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '7996', 7996)" onmouseover="showTip(event, '7996', 7996)">
+            FillUniformFull(rnd, array)
+          </code>
+          <div class="tip" id="7996">
+            <strong>Signature:</strong> (rnd:IRandomUniform * array:float []) -&gt; unit<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Fills the specified array with fully random doubles (53 random
+bits) in the half-open interval [0.0, 1.0).</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '7997', 7997)" onmouseover="showTip(event, '7997', 7997)">
+            RandomBit(rnd, randomBits)
+          </code>
+          <div class="tip" id="7997">
+            <strong>Signature:</strong> (rnd:IRandomUniform * randomBits:byref&lt;int&gt;) -&gt; bool<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Supply random bits one at a time. The currently unused bits are
+maintained in the supplied reference parameter. Before the first
+call randomBits must be 0.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '7998', 7998)" onmouseover="showTip(event, '7998', 7998)">
+            Randomize(rnd, array, count)
+          </code>
+          <div class="tip" id="7998">
+            <strong>Signature:</strong> (rnd:IRandomUniform * array:&#39;T [] * count:int64) -&gt; unit<br />
+                          <strong>Type parameters:</strong> 'T          </div>
+        </td>
+        <td class="xmldoc">
+          <p>Randomly permute the first count elements of the
+supplied array. This does work with counts of up
+to about 2^50.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '7999', 7999)" onmouseover="showTip(event, '7999', 7999)">
+            Randomize(rnd, array)
+          </code>
+          <div class="tip" id="7999">
+            <strong>Signature:</strong> (rnd:IRandomUniform * array:&#39;T []) -&gt; unit<br />
+                          <strong>Type parameters:</strong> 'T          </div>
+        </td>
+        <td class="xmldoc">
+          <p>Randomly permute the elements of the supplied array. This does
+work with arrays up to a length of about 2^50.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '8000', 8000)" onmouseover="showTip(event, '8000', 8000)">
+            Randomize(rnd, list)
+          </code>
+          <div class="tip" id="8000">
+            <strong>Signature:</strong> (rnd:IRandomUniform * list:List&lt;&#39;T&gt;) -&gt; unit<br />
+                          <strong>Type parameters:</strong> 'T          </div>
+        </td>
+        <td class="xmldoc">
+          <p>Randomly permute the elements of the supplied list.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '8001', 8001)" onmouseover="showTip(event, '8001', 8001)">
+            Randomize(rnd, array, start, count)
+          </code>
+          <div class="tip" id="8001">
+            <strong>Signature:</strong> (rnd:IRandomUniform * array:&#39;T [] * start:int * count:int) -&gt; unit<br />
+                          <strong>Type parameters:</strong> 'T          </div>
+        </td>
+        <td class="xmldoc">
+          <p>Randomly permute the specified number of elements in the supplied
+array starting at the specified index.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '8002', 8002)" onmouseover="showTip(event, '8002', 8002)">
+            Randomize(rnd, array, start, count)
+          </code>
+          <div class="tip" id="8002">
+            <strong>Signature:</strong> (rnd:IRandomUniform * array:&#39;T [] * start:int64 * count:int64) -&gt; unit<br />
+                          <strong>Type parameters:</strong> 'T          </div>
+        </td>
+        <td class="xmldoc">
+          <p>Randomly permute the specified number of elements in the supplied
+array starting at the specified index.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '8003', 8003)" onmouseover="showTip(event, '8003', 8003)">
+            Randomize(rnd, list, start, count)
+          </code>
+          <div class="tip" id="8003">
+            <strong>Signature:</strong> (rnd:IRandomUniform * list:List&lt;&#39;T&gt; * start:int * count:int) -&gt; unit<br />
+                          <strong>Type parameters:</strong> 'T          </div>
+        </td>
+        <td class="xmldoc">
+          <p>Randomly permute the specified number of elements in the supplied
+list starting at the specified index.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '8004', 8004)" onmouseover="showTip(event, '8004', 8004)">
+            UniformC3f(rnd)
+          </code>
+          <div class="tip" id="8004">
+            <strong>Signature:</strong> rnd:IRandomUniform -&gt; C3f<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '8005', 8005)" onmouseover="showTip(event, '8005', 8005)">
+            UniformC3fClosed(rnd)
+          </code>
+          <div class="tip" id="8005">
+            <strong>Signature:</strong> rnd:IRandomUniform -&gt; C3f<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '8006', 8006)" onmouseover="showTip(event, '8006', 8006)">
+            UniformC3fOpen(rnd)
+          </code>
+          <div class="tip" id="8006">
+            <strong>Signature:</strong> rnd:IRandomUniform -&gt; C3f<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '8007', 8007)" onmouseover="showTip(event, '8007', 8007)">
+            UniformDoubleFull(rnd)
+          </code>
+          <div class="tip" id="8007">
+            <strong>Signature:</strong> rnd:IRandomUniform -&gt; float<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Returns a uniformly distributed double in the half-open interval
+[0.0, 1.0). Note, that two random values are used to make all 53
+bits random. If you use this repeatedly, consider using a 64-bit
+random generator, which can  provide such doubles directly using
+UniformDouble().</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '8008', 8008)" onmouseover="showTip(event, '8008', 8008)">
+            UniformDoubleFullClosed(rnd)
+          </code>
+          <div class="tip" id="8008">
+            <strong>Signature:</strong> rnd:IRandomUniform -&gt; float<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Returns a uniformly distributed double in the closed interval
+[0.0, 1.0]. Note, that two random values are used to make all 53
+bits random.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '8009', 8009)" onmouseover="showTip(event, '8009', 8009)">
+            UniformDoubleFullOpen(rnd)
+          </code>
+          <div class="tip" id="8009">
+            <strong>Signature:</strong> rnd:IRandomUniform -&gt; float<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Returns a uniformly distributed double in the open interval
+(0.0, 1.0). Note, that two random values are used to make all 53
+bits random.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '8010', 8010)" onmouseover="showTip(event, '8010', 8010)">
+            UniformInt(rnd, size)
+          </code>
+          <div class="tip" id="8010">
+            <strong>Signature:</strong> (rnd:IRandomUniform * size:int) -&gt; int<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Returns a uniformly distributed int in the interval [0, count-1].
+In order to avoid excessive aliasing, two random numbers are used
+when count is greater or equal 2^24 and the random generator
+delivers 32 random bits or less. The method thus works fairly
+decently for all integers.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '8011', 8011)" onmouseover="showTip(event, '8011', 8011)">
+            UniformIntNonZero(rnd)
+          </code>
+          <div class="tip" id="8011">
+            <strong>Signature:</strong> rnd:IRandomUniform -&gt; int<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Returns a uniform int which is guaranteed not to be zero.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '8012', 8012)" onmouseover="showTip(event, '8012', 8012)">
+            UniformLong(rnd, size)
+          </code>
+          <div class="tip" id="8012">
+            <strong>Signature:</strong> (rnd:IRandomUniform * size:int64) -&gt; int64<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Returns a uniformly distributed long in the interval [0, size-1].
+NOTE: If count has more than about 48 bits, aliasing leads to
+noticeable (greater 5%) shifts in the probabilities (i.e. one
+long has a probability of x and the other a probability of
+x * (2^(52-b)-1)/(2^(52-b)), where b is log(size)/log(2)).</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '8013', 8013)" onmouseover="showTip(event, '8013', 8013)">
+            UniformLongNonZero(rnd)
+          </code>
+          <div class="tip" id="8013">
+            <strong>Signature:</strong> rnd:IRandomUniform -&gt; int64<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Returns a uniform long which is guaranteed not to be zero.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '8014', 8014)" onmouseover="showTip(event, '8014', 8014)">
+            UniformV2d(rnd)
+          </code>
+          <div class="tip" id="8014">
+            <strong>Signature:</strong> rnd:IRandomUniform -&gt; V2d<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '8015', 8015)" onmouseover="showTip(event, '8015', 8015)">
+            UniformV2d(rnd, box)
+          </code>
+          <div class="tip" id="8015">
+            <strong>Signature:</strong> (rnd:IRandomUniform * box:Box2d) -&gt; V2d<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '8016', 8016)" onmouseover="showTip(event, '8016', 8016)">
+            UniformV2dClosed(rnd)
+          </code>
+          <div class="tip" id="8016">
+            <strong>Signature:</strong> rnd:IRandomUniform -&gt; V2d<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '8017', 8017)" onmouseover="showTip(event, '8017', 8017)">
+            UniformV2dClosed(rnd, box)
+          </code>
+          <div class="tip" id="8017">
+            <strong>Signature:</strong> (rnd:IRandomUniform * box:Box2d) -&gt; V2d<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '8018', 8018)" onmouseover="showTip(event, '8018', 8018)">
+            UniformV2dDirection(rnd)
+          </code>
+          <div class="tip" id="8018">
+            <strong>Signature:</strong> rnd:IRandomUniform -&gt; V2d<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '8019', 8019)" onmouseover="showTip(event, '8019', 8019)">
+            UniformV2dFull(rnd)
+          </code>
+          <div class="tip" id="8019">
+            <strong>Signature:</strong> rnd:IRandomUniform -&gt; V2d<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '8020', 8020)" onmouseover="showTip(event, '8020', 8020)">
+            UniformV2dFull(rnd, box)
+          </code>
+          <div class="tip" id="8020">
+            <strong>Signature:</strong> (rnd:IRandomUniform * box:Box2d) -&gt; V2d<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '8021', 8021)" onmouseover="showTip(event, '8021', 8021)">
+            UniformV2dFullClosed(rnd)
+          </code>
+          <div class="tip" id="8021">
+            <strong>Signature:</strong> rnd:IRandomUniform -&gt; V2d<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '8022', 8022)" onmouseover="showTip(event, '8022', 8022)">
+            UniformV2dFullClosed(rnd, box)
+          </code>
+          <div class="tip" id="8022">
+            <strong>Signature:</strong> (rnd:IRandomUniform * box:Box2d) -&gt; V2d<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '8023', 8023)" onmouseover="showTip(event, '8023', 8023)">
+            UniformV2dFullOpen(rnd)
+          </code>
+          <div class="tip" id="8023">
+            <strong>Signature:</strong> rnd:IRandomUniform -&gt; V2d<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '8024', 8024)" onmouseover="showTip(event, '8024', 8024)">
+            UniformV2dFullOpen(rnd, box)
+          </code>
+          <div class="tip" id="8024">
+            <strong>Signature:</strong> (rnd:IRandomUniform * box:Box2d) -&gt; V2d<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '8025', 8025)" onmouseover="showTip(event, '8025', 8025)">
+            UniformV2dOpen(rnd)
+          </code>
+          <div class="tip" id="8025">
+            <strong>Signature:</strong> rnd:IRandomUniform -&gt; V2d<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '8026', 8026)" onmouseover="showTip(event, '8026', 8026)">
+            UniformV2dOpen(rnd, box)
+          </code>
+          <div class="tip" id="8026">
+            <strong>Signature:</strong> (rnd:IRandomUniform * box:Box2d) -&gt; V2d<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '8027', 8027)" onmouseover="showTip(event, '8027', 8027)">
+            UniformV3d(rnd)
+          </code>
+          <div class="tip" id="8027">
+            <strong>Signature:</strong> rnd:IRandomUniform -&gt; V3d<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '8028', 8028)" onmouseover="showTip(event, '8028', 8028)">
+            UniformV3d(rnd, box)
+          </code>
+          <div class="tip" id="8028">
+            <strong>Signature:</strong> (rnd:IRandomUniform * box:Box3d) -&gt; V3d<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '8029', 8029)" onmouseover="showTip(event, '8029', 8029)">
+            UniformV3dClosed(rnd)
+          </code>
+          <div class="tip" id="8029">
+            <strong>Signature:</strong> rnd:IRandomUniform -&gt; V3d<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '8030', 8030)" onmouseover="showTip(event, '8030', 8030)">
+            UniformV3dClosed(rnd, box)
+          </code>
+          <div class="tip" id="8030">
+            <strong>Signature:</strong> (rnd:IRandomUniform * box:Box3d) -&gt; V3d<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '8031', 8031)" onmouseover="showTip(event, '8031', 8031)">
+            UniformV3dClosedSphere(rnd)
+          </code>
+          <div class="tip" id="8031">
+            <strong>Signature:</strong> rnd:IRandomUniform -&gt; V3d<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Uniform vector in the closed unit sphere (i.e vectors to
+the surface of the sphere may be generated).</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '8032', 8032)" onmouseover="showTip(event, '8032', 8032)">
+            UniformV3dDirection(rnd)
+          </code>
+          <div class="tip" id="8032">
+            <strong>Signature:</strong> rnd:IRandomUniform -&gt; V3d<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Returns a uniformly distributed vector (corresponds to a
+uniformly distributed point on the surface of the unit sphere).
+Note however, that the returned vector will never be equal to
+[0, 0, -1].</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '8033', 8033)" onmouseover="showTip(event, '8033', 8033)">
+            UniformV3dFull(rnd)
+          </code>
+          <div class="tip" id="8033">
+            <strong>Signature:</strong> rnd:IRandomUniform -&gt; V3d<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '8034', 8034)" onmouseover="showTip(event, '8034', 8034)">
+            UniformV3dFull(rnd, box)
+          </code>
+          <div class="tip" id="8034">
+            <strong>Signature:</strong> (rnd:IRandomUniform * box:Box3d) -&gt; V3d<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '8035', 8035)" onmouseover="showTip(event, '8035', 8035)">
+            UniformV3dFullClosed(rnd)
+          </code>
+          <div class="tip" id="8035">
+            <strong>Signature:</strong> rnd:IRandomUniform -&gt; V3d<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '8036', 8036)" onmouseover="showTip(event, '8036', 8036)">
+            UniformV3dFullClosed(rnd, box)
+          </code>
+          <div class="tip" id="8036">
+            <strong>Signature:</strong> (rnd:IRandomUniform * box:Box3d) -&gt; V3d<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '8037', 8037)" onmouseover="showTip(event, '8037', 8037)">
+            UniformV3dFullDirection(rnd)
+          </code>
+          <div class="tip" id="8037">
+            <strong>Signature:</strong> rnd:IRandomUniform -&gt; V3d<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Returns a fully uniformly distributed vector (corresponds to a
+uniformly distributed point on the surface of the unit sphere).
+Note however, that the returned vector will never be equal to
+[0, 0, -1].</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '8038', 8038)" onmouseover="showTip(event, '8038', 8038)">
+            UniformV3dFullOpen(rnd)
+          </code>
+          <div class="tip" id="8038">
+            <strong>Signature:</strong> rnd:IRandomUniform -&gt; V3d<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '8039', 8039)" onmouseover="showTip(event, '8039', 8039)">
+            UniformV3dFullOpen(rnd, box)
+          </code>
+          <div class="tip" id="8039">
+            <strong>Signature:</strong> (rnd:IRandomUniform * box:Box3d) -&gt; V3d<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '8040', 8040)" onmouseover="showTip(event, '8040', 8040)">
+            UniformV3dOpen(rnd)
+          </code>
+          <div class="tip" id="8040">
+            <strong>Signature:</strong> rnd:IRandomUniform -&gt; V3d<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '8041', 8041)" onmouseover="showTip(event, '8041', 8041)">
+            UniformV3dOpen(rnd, box)
+          </code>
+          <div class="tip" id="8041">
+            <strong>Signature:</strong> (rnd:IRandomUniform * box:Box3d) -&gt; V3d<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '8042', 8042)" onmouseover="showTip(event, '8042', 8042)">
+            UniformV3dOpenSphere(rnd)
+          </code>
+          <div class="tip" id="8042">
+            <strong>Signature:</strong> rnd:IRandomUniform -&gt; V3d<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Uniform vector inside the open unit sphere (i.e. no vector
+ends on the surface of the sphere).</p>
+
+
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+        </div>
+        <div class="span3">
+          <a href="https://github.com/vrvis">
+            <img src="logo.png" style="width:140px;height:140px;margin:10px 0px 0px 35px;border-style:none;" />
+          </a>
+
+          <ul class="nav nav-list" id="menu">
+
+            <li class="nav-header">Aardvark.Base</li>
+
+            <li class="divider"></li>
+            <li><a href="https://github.com/vrvis/aardvark.base">Home page</a></li>
+            <li class="divider"></li>
+
+            <li><a href="https://www.nuget.org/packages/Aardvark.Base">Get Aardvark.Base via NuGet</a></li>
+            <li><a href="https://github.com/vrvis/aardvark.base">Source Code on GitHub</a></li>
+            <li><a href="https://github.com/vrvis/aardvark.baseLicense">License (Apache 2)</a></li>
+            
+            <!-- <li><a href="https://github.com/vrvis/aardvark.base/RELEASE_NOTES.html">Release Notes</a></li>
+            <li><a href="https://github.com/vrvis/aardvark.base//contributing.html">Contributing to Aardvark.Base</a></li>
+  
+            <li><a href="http://stackoverflow.com/questions/tagged/f%23-fake">Ask a question</a></li> 
+            
+            <li class="nav-header">Tutorials</li>
+            <li><a href="https://github.com/vrvis/aardvark.base/gettingstarted.html">Getting started</a></li>
+            
+            -->
+
+            
+            <li class="divider"></li>
+            <li class="nav-header">Reference</li>
+
+            <li><a href="https://github.com/vrvis/aardvark.base/apidocs/index.html">API Reference</a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    <a href="https://github.com/vrvis/aardvark.base"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_gray_6d6d6d.png" alt="Fork me on GitHub"></a>
+  </body>
+  </html>

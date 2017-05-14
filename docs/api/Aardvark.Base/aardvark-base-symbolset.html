@@ -1,0 +1,591 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>SymbolSet - Aardvark.Base</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="The Aardvark Platform Team">
+
+    <script src="https://code.jquery.com/jquery-1.8.0.js"></script>
+    <script src="https://code.jquery.com/ui/1.8.23/jquery-ui.js"></script>
+    <script src="https://netdna.bootstrapcdn.com/twitter-bootstrap/2.2.1/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link href="https://netdna.bootstrapcdn.com/twitter-bootstrap/2.2.1/css/bootstrap-combined.min.css" rel="stylesheet">
+
+    <link type="text/css" rel="stylesheet" href="https://github.com/vrvis/aardvark.base/content/style.css" />
+    <script type="text/javascript" src="https://github.com/vrvis/aardvark.base/content/tips.js"></script>
+    <!-- HTML5 shim, for IE6-8 support of HTML5 elements -->
+    <!--[if lt IE 9]>
+      <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+  </head>
+  <body>
+    <div class="container">
+      <div class="masthead">
+        <ul class="nav nav-pills pull-right">
+          <li><a href="https://github.com/vrvis/aardvark.base">github page</a></li>
+        </ul>
+        <h3 class="muted"><a href="https://github.com/vrvis/aardvark.base/index.html">Aardvark.Base</a></h3>
+      </div>
+      <hr />
+      <div class="row">
+        <div class="span9" id="main">
+          
+
+
+
+<h1>SymbolSet</h1>
+<div class="xmldoc">
+<p>A SymbolSet is an alternate implementation of a HashSet.
+It is implemented as a hashtable with external linking, that uses
+primes as the table size in order to reduce the danger of funneling.</p>
+
+</div>
+  <h3>Constructors</h3>
+  <table class="table table-bordered member-list">
+    <thead>
+      <tr><td>Constructor</td><td>Description</td></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '18492', 18492)" onmouseover="showTip(event, '18492', 18492)">
+            new()
+          </code>
+          <div class="tip" id="18492">
+            <strong>Signature:</strong> unit -&gt; unit<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Create a SymbolSet that autmatically grows and shrinks as necessary.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '18493', 18493)" onmouseover="showTip(event, '18493', 18493)">
+            new(initialCapacity)
+          </code>
+          <div class="tip" id="18493">
+            <strong>Signature:</strong> initialCapacity:int -&gt; unit<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Create a SymbolSet that autmatically grows and shrinks as necessary,
+but also specify an initial capacity.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '18494', 18494)" onmouseover="showTip(event, '18494', 18494)">
+            new(items)
+          </code>
+          <div class="tip" id="18494">
+            <strong>Signature:</strong> items:IEnumerable&lt;Symbol&gt; -&gt; unit<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Create a SymbolSet and initialize it to contain the supplied
+items.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '18495', 18495)" onmouseover="showTip(event, '18495', 18495)">
+            new(items)
+          </code>
+          <div class="tip" id="18495">
+            <strong>Signature:</strong> items:IEnumerable&lt;string&gt; -&gt; unit<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Create a SymbolSet and initialize to contain the supplied items.
+Note hat this incurs the overhead of converting all string keys
+to symbols.</p>
+
+
+        </td>
+      </tr>
+    </tbody>
+  </table>
+  <h3>Instance members</h3>
+  <table class="table table-bordered member-list">
+    <thead>
+      <tr><td>Instance member</td><td>Description</td></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '18496', 18496)" onmouseover="showTip(event, '18496', 18496)">
+            Add(key)
+          </code>
+          <div class="tip" id="18496">
+            <strong>Signature:</strong> key:Symbol -&gt; bool<br />
+              <strong>Modifiers:</strong> abstract<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Add the item with the supplied key
+to the SymbolSet.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '18497', 18497)" onmouseover="showTip(event, '18497', 18497)">
+            Add(key)
+          </code>
+          <div class="tip" id="18497">
+            <strong>Signature:</strong> key:string -&gt; unit<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Adds the supplied item to the SymbolSet. Note that this incurs the
+overhead of converting the string key to a symbol.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '18498', 18498)" onmouseover="showTip(event, '18498', 18498)">
+            AddObject(objkey)
+          </code>
+          <div class="tip" id="18498">
+            <strong>Signature:</strong> objkey:obj -&gt; bool<br />
+              <strong>Modifiers:</strong> abstract<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Add the item with supplied key
+both supplied as generic objects, to the SymbolSet. Note that the supplied key
+and value are cast to the concrete type of the keys and values used in the SymbolSet
+and this will fail if they are of different types.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '18499', 18499)" onmouseover="showTip(event, '18499', 18499)">
+            AddRange(keys)
+          </code>
+          <div class="tip" id="18499">
+            <strong>Signature:</strong> keys:IEnumerable&lt;Symbol&gt; -&gt; unit<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Add the supplied keys to the SymbolSet.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '18500', 18500)" onmouseover="showTip(event, '18500', 18500)">
+            AsConcurrent()
+          </code>
+          <div class="tip" id="18500">
+            <strong>Signature:</strong> unit -&gt; ConcurrentSymbolSet<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Retuns a concurrent wrapper around the SymbolSet to enable
+concurrent modifications.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '18501', 18501)" onmouseover="showTip(event, '18501', 18501)">
+            Clear()
+          </code>
+          <div class="tip" id="18501">
+            <strong>Signature:</strong> unit -&gt; unit<br />
+              <strong>Modifiers:</strong> abstract<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Remove all items. Capacity remains unchanged.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '18502', 18502)" onmouseover="showTip(event, '18502', 18502)">
+            Contains(key)
+          </code>
+          <div class="tip" id="18502">
+            <strong>Signature:</strong> key:Symbol -&gt; bool<br />
+              <strong>Modifiers:</strong> abstract<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Returns true if the SymbolSet contains the item with the supplied
+key.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '18503', 18503)" onmouseover="showTip(event, '18503', 18503)">
+            CopyTo(array, index)
+          </code>
+          <div class="tip" id="18503">
+            <strong>Signature:</strong> (array:Symbol [] * index:int) -&gt; unit<br />
+              <strong>Modifiers:</strong> abstract<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Copies all keys in the dictionary to the supplied
+array starting at the supplied index.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '18504', 18504)" onmouseover="showTip(event, '18504', 18504)">
+            CopyTo(array, index)
+          </code>
+          <div class="tip" id="18504">
+            <strong>Signature:</strong> (array:Array * index:int) -&gt; unit<br />
+              <strong>Modifiers:</strong> abstract<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Copy items into supplied array starting at supplied index.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '18505', 18505)" onmouseover="showTip(event, '18505', 18505)">
+            Count
+          </code>
+          <div class="tip" id="18505">
+            <strong>Signature:</strong> int<br />
+              <strong>Modifiers:</strong> abstract<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Returns the number of items currently contained in the SymbolSet.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '18506', 18506)" onmouseover="showTip(event, '18506', 18506)">
+            GetEnumerator()
+          </code>
+          <div class="tip" id="18506">
+            <strong>Signature:</strong> unit -&gt; IEnumerator&lt;Symbol&gt;<br />
+              <strong>Modifiers:</strong> abstract<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '18507', 18507)" onmouseover="showTip(event, '18507', 18507)">
+            IsReadOnly
+          </code>
+          <div class="tip" id="18507">
+            <strong>Signature:</strong> bool<br />
+              <strong>Modifiers:</strong> abstract<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Always returns false. Part of the ICollection implementation.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '18508', 18508)" onmouseover="showTip(event, '18508', 18508)">
+            IsSynchronized
+          </code>
+          <div class="tip" id="18508">
+            <strong>Signature:</strong> bool<br />
+              <strong>Modifiers:</strong> abstract<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '18509', 18509)" onmouseover="showTip(event, '18509', 18509)">
+            Items
+          </code>
+          <div class="tip" id="18509">
+            <strong>Signature:</strong> IEnumerable&lt;Symbol&gt;<br />
+              <strong>Modifiers:</strong> abstract<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '18510', 18510)" onmouseover="showTip(event, '18510', 18510)">
+            Keys
+          </code>
+          <div class="tip" id="18510">
+            <strong>Signature:</strong> IEnumerable&lt;Symbol&gt;<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Returns all keys in the dictionary.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '18511', 18511)" onmouseover="showTip(event, '18511', 18511)">
+            KeyType
+          </code>
+          <div class="tip" id="18511">
+            <strong>Signature:</strong> Type<br />
+              <strong>Modifiers:</strong> abstract<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '18512', 18512)" onmouseover="showTip(event, '18512', 18512)">
+            LongCount
+          </code>
+          <div class="tip" id="18512">
+            <strong>Signature:</strong> int64<br />
+              <strong>Modifiers:</strong> abstract<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Returns the number of items currently contained in the SymbolSet
+as long.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '18513', 18513)" onmouseover="showTip(event, '18513', 18513)">
+            MaxFillFactor()
+          </code>
+          <div class="tip" id="18513">
+            <strong>Signature:</strong> unit -&gt; unit<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Setting the maximal fill factor makes it possible to fine-tune
+the performance for certain applications. Normally this should
+not be necessary.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '18514', 18514)" onmouseover="showTip(event, '18514', 18514)">
+            MinFillFactor()
+          </code>
+          <div class="tip" id="18514">
+            <strong>Signature:</strong> unit -&gt; unit<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Setting the minimal fill factor makes it possible to influence
+the shrinking behaviour of the SymbolSet. Normally this should
+be set to a quater of the maximal fill factor. In order to
+completely prevent shrinking it can also be set to 0.0f.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '18515', 18515)" onmouseover="showTip(event, '18515', 18515)">
+            Objects
+          </code>
+          <div class="tip" id="18515">
+            <strong>Signature:</strong> IEnumerable&lt;obj&gt;<br />
+              <strong>Modifiers:</strong> abstract<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '18516', 18516)" onmouseover="showTip(event, '18516', 18516)">
+            Remove(key)
+          </code>
+          <div class="tip" id="18516">
+            <strong>Signature:</strong> key:Symbol -&gt; bool<br />
+              <strong>Modifiers:</strong> abstract<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Remove the item with the supplied key
+from the SymbolSet. Returns true if the value was removed.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '18517', 18517)" onmouseover="showTip(event, '18517', 18517)">
+            SyncRoot
+          </code>
+          <div class="tip" id="18517">
+            <strong>Signature:</strong> obj<br />
+              <strong>Modifiers:</strong> abstract<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '18518', 18518)" onmouseover="showTip(event, '18518', 18518)">
+            ToArray()
+          </code>
+          <div class="tip" id="18518">
+            <strong>Signature:</strong> unit -&gt; Symbol []<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Returns all keys in the dictionary as an array.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '18519', 18519)" onmouseover="showTip(event, '18519', 18519)">
+            TryAdd(key)
+          </code>
+          <div class="tip" id="18519">
+            <strong>Signature:</strong> key:Symbol -&gt; bool<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Add the item with the supplied key
+to the SymbolSet.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '18520', 18520)" onmouseover="showTip(event, '18520', 18520)">
+            TryRemove(key)
+          </code>
+          <div class="tip" id="18520">
+            <strong>Signature:</strong> key:Symbol -&gt; bool<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Try to reomve the item with the supplied key. If multipe entries
+have the same key, the one that was inserted last is removed.
+Returns true if the item was found.</p>
+
+
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+        </div>
+        <div class="span3">
+          <a href="https://github.com/vrvis">
+            <img src="logo.png" style="width:140px;height:140px;margin:10px 0px 0px 35px;border-style:none;" />
+          </a>
+
+          <ul class="nav nav-list" id="menu">
+
+            <li class="nav-header">Aardvark.Base</li>
+
+            <li class="divider"></li>
+            <li><a href="https://github.com/vrvis/aardvark.base">Home page</a></li>
+            <li class="divider"></li>
+
+            <li><a href="https://www.nuget.org/packages/Aardvark.Base">Get Aardvark.Base via NuGet</a></li>
+            <li><a href="https://github.com/vrvis/aardvark.base">Source Code on GitHub</a></li>
+            <li><a href="https://github.com/vrvis/aardvark.baseLicense">License (Apache 2)</a></li>
+            
+            <!-- <li><a href="https://github.com/vrvis/aardvark.base/RELEASE_NOTES.html">Release Notes</a></li>
+            <li><a href="https://github.com/vrvis/aardvark.base//contributing.html">Contributing to Aardvark.Base</a></li>
+  
+            <li><a href="http://stackoverflow.com/questions/tagged/f%23-fake">Ask a question</a></li> 
+            
+            <li class="nav-header">Tutorials</li>
+            <li><a href="https://github.com/vrvis/aardvark.base/gettingstarted.html">Getting started</a></li>
+            
+            -->
+
+            
+            <li class="divider"></li>
+            <li class="nav-header">Reference</li>
+
+            <li><a href="https://github.com/vrvis/aardvark.base/apidocs/index.html">API Reference</a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    <a href="https://github.com/vrvis/aardvark.base"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_gray_6d6d6d.png" alt="Fork me on GitHub"></a>
+  </body>
+  </html>

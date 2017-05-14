@@ -1,0 +1,1003 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>PixImage - Aardvark.Base</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="The Aardvark Platform Team">
+
+    <script src="https://code.jquery.com/jquery-1.8.0.js"></script>
+    <script src="https://code.jquery.com/ui/1.8.23/jquery-ui.js"></script>
+    <script src="https://netdna.bootstrapcdn.com/twitter-bootstrap/2.2.1/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link href="https://netdna.bootstrapcdn.com/twitter-bootstrap/2.2.1/css/bootstrap-combined.min.css" rel="stylesheet">
+
+    <link type="text/css" rel="stylesheet" href="https://github.com/vrvis/aardvark.base/content/style.css" />
+    <script type="text/javascript" src="https://github.com/vrvis/aardvark.base/content/tips.js"></script>
+    <!-- HTML5 shim, for IE6-8 support of HTML5 elements -->
+    <!--[if lt IE 9]>
+      <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+  </head>
+  <body>
+    <div class="container">
+      <div class="masthead">
+        <ul class="nav nav-pills pull-right">
+          <li><a href="https://github.com/vrvis/aardvark.base">github page</a></li>
+        </ul>
+        <h3 class="muted"><a href="https://github.com/vrvis/aardvark.base/index.html">Aardvark.Base</a></h3>
+      </div>
+      <hr />
+      <div class="row">
+        <div class="span9" id="main">
+          
+
+
+
+<h1>PixImage</h1>
+<div class="xmldoc">
+</div>
+  <h3>Constructors</h3>
+  <table class="table table-bordered member-list">
+    <thead>
+      <tr><td>Constructor</td><td>Description</td></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '14089', 14089)" onmouseover="showTip(event, '14089', 14089)">
+            new()
+          </code>
+          <div class="tip" id="14089">
+            <strong>Signature:</strong> unit -&gt; unit<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '14090', 14090)" onmouseover="showTip(event, '14090', 14090)">
+            new(format)
+          </code>
+          <div class="tip" id="14090">
+            <strong>Signature:</strong> format:Format -&gt; unit<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+    </tbody>
+  </table>
+  <h3>Instance members</h3>
+  <table class="table table-bordered member-list">
+    <thead>
+      <tr><td>Instance member</td><td>Description</td></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '14091', 14091)" onmouseover="showTip(event, '14091', 14091)">
+            Array
+          </code>
+          <div class="tip" id="14091">
+            <strong>Signature:</strong> Array<br />
+              <strong>Modifiers:</strong> abstract<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '14092', 14092)" onmouseover="showTip(event, '14092', 14092)">
+            AspectRatio
+          </code>
+          <div class="tip" id="14092">
+            <strong>Signature:</strong> float<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Width/height.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '14093', 14093)" onmouseover="showTip(event, '14093', 14093)">
+            AsPixImage()
+          </code>
+          <div class="tip" id="14093">
+            <strong>Signature:</strong> unit -&gt; PixImage&lt;&#39;T&gt;<br />
+                          <strong>Type parameters:</strong> 'T          </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '14094', 14094)" onmouseover="showTip(event, '14094', 14094)">
+            ChannelCount
+          </code>
+          <div class="tip" id="14094">
+            <strong>Signature:</strong> int<br />
+              <strong>Modifiers:</strong> abstract<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '14095', 14095)" onmouseover="showTip(event, '14095', 14095)">
+            ChannelCountL
+          </code>
+          <div class="tip" id="14095">
+            <strong>Signature:</strong> int64<br />
+              <strong>Modifiers:</strong> abstract<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '14096', 14096)" onmouseover="showTip(event, '14096', 14096)">
+            CopyChannelTo(channelIndex, target)
+          </code>
+          <div class="tip" id="14096">
+            <strong>Signature:</strong> (channelIndex:int64 * target:Matrix&lt;&#39;Tv&gt;) -&gt; unit<br />
+              <strong>Modifiers:</strong> abstract<br />
+                          <strong>Type parameters:</strong> 'Tv          </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '14097', 14097)" onmouseover="showTip(event, '14097', 14097)">
+            CopyToPixImage()
+          </code>
+          <div class="tip" id="14097">
+            <strong>Signature:</strong> unit -&gt; PixImage<br />
+              <strong>Modifiers:</strong> abstract<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '14098', 14098)" onmouseover="showTip(event, '14098', 14098)">
+            CopyToPixImageWithCanonicalDenseLayout()
+          </code>
+          <div class="tip" id="14098">
+            <strong>Signature:</strong> unit -&gt; PixImage<br />
+              <strong>Modifiers:</strong> abstract<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '14099', 14099)" onmouseover="showTip(event, '14099', 14099)">
+            Data
+          </code>
+          <div class="tip" id="14099">
+            <strong>Signature:</strong> Array<br />
+              <strong>Modifiers:</strong> abstract<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '14100', 14100)" onmouseover="showTip(event, '14100', 14100)">
+            Info
+          </code>
+          <div class="tip" id="14100">
+            <strong>Signature:</strong> PixImageInfo<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '14101', 14101)" onmouseover="showTip(event, '14101', 14101)">
+            IntStride
+          </code>
+          <div class="tip" id="14101">
+            <strong>Signature:</strong> int<br />
+              <strong>Modifiers:</strong> abstract<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '14102', 14102)" onmouseover="showTip(event, '14102', 14102)">
+            NumberOfPixels
+          </code>
+          <div class="tip" id="14102">
+            <strong>Signature:</strong> int<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Size.X * Size.Y.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '14103', 14103)" onmouseover="showTip(event, '14103', 14103)">
+            Op(op)
+          </code>
+          <div class="tip" id="14103">
+            <strong>Signature:</strong> op:IPixOp&lt;&#39;Tr&gt; -&gt; &#39;Tr<br />
+              <strong>Modifiers:</strong> abstract<br />
+                          <strong>Type parameters:</strong> 'Tr          </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '14104', 14104)" onmouseover="showTip(event, '14104', 14104)">
+            PixFormat
+          </code>
+          <div class="tip" id="14104">
+            <strong>Signature:</strong> PixFormat<br />
+              <strong>Modifiers:</strong> abstract<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '14105', 14105)" onmouseover="showTip(event, '14105', 14105)">
+            RemappedPixImage(xMap, yMap, ip)
+          </code>
+          <div class="tip" id="14105">
+            <strong>Signature:</strong> (xMap:Matrix&lt;float32&gt; * yMap:Matrix&lt;float32&gt; * ip:ImageInterpolation) -&gt; PixImage<br />
+              <strong>Modifiers:</strong> abstract<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '14106', 14106)" onmouseover="showTip(event, '14106', 14106)">
+            ResizedPixImage(size, ip)
+          </code>
+          <div class="tip" id="14106">
+            <strong>Signature:</strong> (size:V2i * ip:ImageInterpolation) -&gt; PixImage<br />
+              <strong>Modifiers:</strong> abstract<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '14107', 14107)" onmouseover="showTip(event, '14107', 14107)">
+            RotatedPixImage(...)
+          </code>
+          <div class="tip" id="14107">
+            <strong>Signature:</strong> (angleInRadiansCCW:float * resize:bool * ip:ImageInterpolation) -&gt; PixImage<br />
+              <strong>Modifiers:</strong> abstract<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '14108', 14108)" onmouseover="showTip(event, '14108', 14108)">
+            SaveAsImage(...)
+          </code>
+          <div class="tip" id="14108">
+            <strong>Signature:</strong> (stream:Stream * fileFormat:PixFileFormat * options:PixSaveOptions * qualityLevel:int) -&gt; unit<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '14109', 14109)" onmouseover="showTip(event, '14109', 14109)">
+            SaveAsImage(...)
+          </code>
+          <div class="tip" id="14109">
+            <strong>Signature:</strong> (filename:string * fileFormat:PixFileFormat * options:PixSaveOptions * qualityLevel:int) -&gt; unit<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '14110', 14110)" onmouseover="showTip(event, '14110', 14110)">
+            SaveAsImage(filename)
+          </code>
+          <div class="tip" id="14110">
+            <strong>Signature:</strong> filename:string -&gt; unit<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Automatically detects file format from filename extension.
+Throws exception if file name does not end in known format extension.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '14111', 14111)" onmouseover="showTip(event, '14111', 14111)">
+            ScaledPixImage(scaleFactor, ip)
+          </code>
+          <div class="tip" id="14111">
+            <strong>Signature:</strong> (scaleFactor:V2d * ip:ImageInterpolation) -&gt; PixImage<br />
+              <strong>Modifiers:</strong> abstract<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '14112', 14112)" onmouseover="showTip(event, '14112', 14112)">
+            Size
+          </code>
+          <div class="tip" id="14112">
+            <strong>Signature:</strong> V2i<br />
+              <strong>Modifiers:</strong> abstract<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '14113', 14113)" onmouseover="showTip(event, '14113', 14113)">
+            SizeL
+          </code>
+          <div class="tip" id="14113">
+            <strong>Signature:</strong> V2l<br />
+              <strong>Modifiers:</strong> abstract<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '14114', 14114)" onmouseover="showTip(event, '14114', 14114)">
+            ToBitmap()
+          </code>
+          <div class="tip" id="14114">
+            <strong>Signature:</strong> unit -&gt; Bitmap<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '14115', 14115)" onmouseover="showTip(event, '14115', 14115)">
+            ToCanonicalDenseLayout()
+          </code>
+          <div class="tip" id="14115">
+            <strong>Signature:</strong> unit -&gt; PixImage<br />
+              <strong>Modifiers:</strong> abstract<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '14116', 14116)" onmouseover="showTip(event, '14116', 14116)">
+            ToMemoryStream(...)
+          </code>
+          <div class="tip" id="14116">
+            <strong>Signature:</strong> (fileFormat:PixFileFormat * options:PixSaveOptions * qualityLevel:int) -&gt; MemoryStream<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '14117', 14117)" onmouseover="showTip(event, '14117', 14117)">
+            ToMemoryStream(qualityLevel)
+          </code>
+          <div class="tip" id="14117">
+            <strong>Signature:</strong> qualityLevel:int -&gt; MemoryStream<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '14118', 14118)" onmouseover="showTip(event, '14118', 14118)">
+            ToPixImage()
+          </code>
+          <div class="tip" id="14118">
+            <strong>Signature:</strong> unit -&gt; PixImage&lt;&#39;T1&gt;<br />
+              <strong>Modifiers:</strong> abstract<br />
+                          <strong>Type parameters:</strong> 'T1          </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '14119', 14119)" onmouseover="showTip(event, '14119', 14119)">
+            ToPixImage(format)
+          </code>
+          <div class="tip" id="14119">
+            <strong>Signature:</strong> format:Format -&gt; PixImage&lt;&#39;T&gt;<br />
+                          <strong>Type parameters:</strong> 'T          </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '14120', 14120)" onmouseover="showTip(event, '14120', 14120)">
+            ToPixImage(format)
+          </code>
+          <div class="tip" id="14120">
+            <strong>Signature:</strong> format:Format -&gt; PixImage<br />
+              <strong>Modifiers:</strong> abstract<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '14121', 14121)" onmouseover="showTip(event, '14121', 14121)">
+            Transformed(trafo)
+          </code>
+          <div class="tip" id="14121">
+            <strong>Signature:</strong> trafo:ImageTrafo -&gt; PixImage<br />
+              <strong>Modifiers:</strong> abstract<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '14122', 14122)" onmouseover="showTip(event, '14122', 14122)">
+            Visit(visitor)
+          </code>
+          <div class="tip" id="14122">
+            <strong>Signature:</strong> visitor:IPixImageVisitor&lt;&#39;T&gt; -&gt; &#39;T<br />
+              <strong>Modifiers:</strong> abstract<br />
+                          <strong>Type parameters:</strong> 'T          </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '14123', 14123)" onmouseover="showTip(event, '14123', 14123)">
+            VolumeInfo
+          </code>
+          <div class="tip" id="14123">
+            <strong>Signature:</strong> VolumeInfo<br />
+              <strong>Modifiers:</strong> abstract<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+    </tbody>
+  </table>
+  <h3>Static members</h3>
+  <table class="table table-bordered member-list">
+    <thead>
+      <tr><td>Static member</td><td>Description</td></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '14124', 14124)" onmouseover="showTip(event, '14124', 14124)">
+            CompressPixels(pixImage, bitImage)
+          </code>
+          <div class="tip" id="14124">
+            <strong>Signature:</strong> (pixImage:PixImage&lt;byte&gt; * bitImage:PixImage&lt;byte&gt;) -&gt; unit<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Compress BW images from 1 bit per byte to 8 bits per byte.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '14125', 14125)" onmouseover="showTip(event, '14125', 14125)">
+            Create(pixFormat, sx, sy, ch)
+          </code>
+          <div class="tip" id="14125">
+            <strong>Signature:</strong> (pixFormat:PixFormat * sx:int64 * sy:int64 * ch:int64) -&gt; PixImage<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '14126', 14126)" onmouseover="showTip(event, '14126', 14126)">
+            Create(pixFormat, sx, sy)
+          </code>
+          <div class="tip" id="14126">
+            <strong>Signature:</strong> (pixFormat:PixFormat * sx:int64 * sy:int64) -&gt; PixImage<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '14127', 14127)" onmouseover="showTip(event, '14127', 14127)">
+            Create(array, format, sx, sy, ch)
+          </code>
+          <div class="tip" id="14127">
+            <strong>Signature:</strong> (array:Array * format:Format * sx:int64 * sy:int64 * ch:int64) -&gt; PixImage<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '14128', 14128)" onmouseover="showTip(event, '14128', 14128)">
+            Create(array, format, sx, sy)
+          </code>
+          <div class="tip" id="14128">
+            <strong>Signature:</strong> (array:Array * format:Format * sx:int64 * sy:int64) -&gt; PixImage<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '14129', 14129)" onmouseover="showTip(event, '14129', 14129)">
+            Create(filename, options)
+          </code>
+          <div class="tip" id="14129">
+            <strong>Signature:</strong> (filename:string * options:PixLoadOptions) -&gt; PixImage<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Create a new image from the file. This is the standard way of
+loading images if they do not need to be converted to a specific
+format.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '14130', 14130)" onmouseover="showTip(event, '14130', 14130)">
+            Create(filenames)
+          </code>
+          <div class="tip" id="14130">
+            <strong>Signature:</strong> filenames:IEnumerable&lt;string&gt; -&gt; IEnumerable&lt;PixImage&gt;<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '14131', 14131)" onmouseover="showTip(event, '14131', 14131)">
+            Create(stream, options)
+          </code>
+          <div class="tip" id="14131">
+            <strong>Signature:</strong> (stream:Stream * options:PixLoadOptions) -&gt; PixImage<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '14132', 14132)" onmouseover="showTip(event, '14132', 14132)">
+            Create(bitmap)
+          </code>
+          <div class="tip" id="14132">
+            <strong>Signature:</strong> bitmap:Bitmap -&gt; PixImage<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '14133', 14133)" onmouseover="showTip(event, '14133', 14133)">
+            CreateCubeMapSide(...)
+          </code>
+          <div class="tip" id="14133">
+            <strong>Signature:</strong> (cubeSide:int * size:int * channelCount:int * vec_colFun:Func&lt;V3d,&#39;Tcol&gt;) -&gt; PixImage&lt;&#39;T&gt;<br />
+                          <strong>Type parameters:</strong> 'T, 'Tcol          </div>
+        </td>
+        <td class="xmldoc">
+          <p>Returns 6 square PixImages of the supplied size containing the
+textures of a cube map in the following arrangement (right-handed):
+UV -&gt;
+|       | 4 |
+v   | 0 | 1 | 2 | 3 |
+| 5 |
+XN YP XP YN ZP ZN</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '14134', 14134)" onmouseover="showTip(event, '14134', 14134)">
+            CreateCylinder(...)
+          </code>
+          <div class="tip" id="14134">
+            <strong>Signature:</strong> (width:int * height:int * channelCount:int * phi_theta_colFun:Func&lt;float,float,&#39;Tcol&gt;) -&gt; PixImage&lt;&#39;T&gt;<br />
+                          <strong>Type parameters:</strong> 'T, 'Tcol          </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '14135', 14135)" onmouseover="showTip(event, '14135', 14135)">
+            CreateDome(...)
+          </code>
+          <div class="tip" id="14135">
+            <strong>Signature:</strong> (width:int * height:int * channelCount:int * phi_theta_colFun:Func&lt;float,float,&#39;Tcol&gt;) -&gt; PixImage&lt;&#39;T&gt;<br />
+                          <strong>Type parameters:</strong> 'T, 'Tcol          </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '14136', 14136)" onmouseover="showTip(event, '14136', 14136)">
+            CreateRaw(filename, options)
+          </code>
+          <div class="tip" id="14136">
+            <strong>Signature:</strong> (filename:string * options:PixLoadOptions) -&gt; PixImage<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '14137', 14137)" onmouseover="showTip(event, '14137', 14137)">
+            CreateRaw(stream, options)
+          </code>
+          <div class="tip" id="14137">
+            <strong>Signature:</strong> (stream:Stream * options:PixLoadOptions) -&gt; PixImage<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '14138', 14138)" onmouseover="showTip(event, '14138', 14138)">
+            CreateVolume(size)
+          </code>
+          <div class="tip" id="14138">
+            <strong>Signature:</strong> size:V3i -&gt; Volume&lt;&#39;T&gt;<br />
+                          <strong>Type parameters:</strong> 'T          </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '14139', 14139)" onmouseover="showTip(event, '14139', 14139)">
+            CreateVolume(size)
+          </code>
+          <div class="tip" id="14139">
+            <strong>Signature:</strong> size:V3l -&gt; Volume&lt;&#39;T&gt;<br />
+                          <strong>Type parameters:</strong> 'T          </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '14140', 14140)" onmouseover="showTip(event, '14140', 14140)">
+            CreateVolume(sizeX, sizeY, channelCount)
+          </code>
+          <div class="tip" id="14140">
+            <strong>Signature:</strong> (sizeX:int64 * sizeY:int64 * channelCount:int64) -&gt; Volume&lt;&#39;T&gt;<br />
+                          <strong>Type parameters:</strong> 'T          </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '14141', 14141)" onmouseover="showTip(event, '14141', 14141)">
+            ExpandPixels(bitImage, pixImage)
+          </code>
+          <div class="tip" id="14141">
+            <strong>Signature:</strong> (bitImage:PixImage&lt;byte&gt; * pixImage:PixImage&lt;byte&gt;) -&gt; unit<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Expand BW images from 8 bit per byte to 1 bit per byte.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '14142', 14142)" onmouseover="showTip(event, '14142', 14142)">
+            GetPreferredExtensionOfFormat(format)
+          </code>
+          <div class="tip" id="14142">
+            <strong>Signature:</strong> format:PixFileFormat -&gt; string<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '14143', 14143)" onmouseover="showTip(event, '14143', 14143)">
+            InfoFromFileName(fileName, options)
+          </code>
+          <div class="tip" id="14143">
+            <strong>Signature:</strong> (fileName:string * options:PixLoadOptions) -&gt; PixImageInfo<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Gets info about a PixImage without loading the entire image into memory.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '14144', 14144)" onmouseover="showTip(event, '14144', 14144)">
+            InfoFromFileNameBitmap(...)
+          </code>
+          <div class="tip" id="14144">
+            <strong>Signature:</strong> (fileName:string * options:PixLoadOptions) -&gt; PixImageInfo<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Gets info about a PixImage without loading the entire image into memory.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '14145', 14145)" onmouseover="showTip(event, '14145', 14145)">
+            InfoFromFileNameDevil(fileName, options)
+          </code>
+          <div class="tip" id="14145">
+            <strong>Signature:</strong> (fileName:string * options:PixLoadOptions) -&gt; PixImageInfo<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Gets info about a PixImage without loading the entire image into memory.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '14146', 14146)" onmouseover="showTip(event, '14146', 14146)">
+            InitDevil()
+          </code>
+          <div class="tip" id="14146">
+            <strong>Signature:</strong> unit -&gt; unit<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '14147', 14147)" onmouseover="showTip(event, '14147', 14147)">
+            NormalizedFileName(fileName, format)
+          </code>
+          <div class="tip" id="14147">
+            <strong>Signature:</strong> (fileName:string * format:PixFileFormat) -&gt; string<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Makes the file name valid for the given format.
+E.g. for PixFileFormat.Png:
+"foo.png" -&gt; "foo.png",
+"foo" -&gt; "foo.png",
+"foo.jpg" -&gt; "foo.jpg.png",
+"foo.2011" -&gt; "foo.2011.png",</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '14148', 14148)" onmouseover="showTip(event, '14148', 14148)">
+            RegisterLoadingLib(...)
+          </code>
+          <div class="tip" id="14148">
+            <strong>Signature:</strong> (fileLoad:Func&lt;string,PixLoadOptions,PixImage&gt; * streamLoad:Func&lt;Stream,PixLoadOptions,PixImage&gt; * fileSave:Func&lt;string,PixSaveOptions,PixFileFormat,int,PixImage,bool&gt; * streamSave:Func&lt;Stream,PixSaveOptions,PixFileFormat,int,PixImage,bool&gt; * imageInfo:Func&lt;string,PixImageInfo&gt;) -&gt; unit<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+        </div>
+        <div class="span3">
+          <a href="https://github.com/vrvis">
+            <img src="logo.png" style="width:140px;height:140px;margin:10px 0px 0px 35px;border-style:none;" />
+          </a>
+
+          <ul class="nav nav-list" id="menu">
+
+            <li class="nav-header">Aardvark.Base</li>
+
+            <li class="divider"></li>
+            <li><a href="https://github.com/vrvis/aardvark.base">Home page</a></li>
+            <li class="divider"></li>
+
+            <li><a href="https://www.nuget.org/packages/Aardvark.Base">Get Aardvark.Base via NuGet</a></li>
+            <li><a href="https://github.com/vrvis/aardvark.base">Source Code on GitHub</a></li>
+            <li><a href="https://github.com/vrvis/aardvark.baseLicense">License (Apache 2)</a></li>
+            
+            <!-- <li><a href="https://github.com/vrvis/aardvark.base/RELEASE_NOTES.html">Release Notes</a></li>
+            <li><a href="https://github.com/vrvis/aardvark.base//contributing.html">Contributing to Aardvark.Base</a></li>
+  
+            <li><a href="http://stackoverflow.com/questions/tagged/f%23-fake">Ask a question</a></li> 
+            
+            <li class="nav-header">Tutorials</li>
+            <li><a href="https://github.com/vrvis/aardvark.base/gettingstarted.html">Getting started</a></li>
+            
+            -->
+
+            
+            <li class="divider"></li>
+            <li class="nav-header">Reference</li>
+
+            <li><a href="https://github.com/vrvis/aardvark.base/apidocs/index.html">API Reference</a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    <a href="https://github.com/vrvis/aardvark.base"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_gray_6d6d6d.png" alt="Fork me on GitHub"></a>
+  </body>
+  </html>

@@ -1,0 +1,999 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>IntDict<'TValue> - Aardvark.Base</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="The Aardvark Platform Team">
+
+    <script src="https://code.jquery.com/jquery-1.8.0.js"></script>
+    <script src="https://code.jquery.com/ui/1.8.23/jquery-ui.js"></script>
+    <script src="https://netdna.bootstrapcdn.com/twitter-bootstrap/2.2.1/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link href="https://netdna.bootstrapcdn.com/twitter-bootstrap/2.2.1/css/bootstrap-combined.min.css" rel="stylesheet">
+
+    <link type="text/css" rel="stylesheet" href="https://github.com/vrvis/aardvark.base/content/style.css" />
+    <script type="text/javascript" src="https://github.com/vrvis/aardvark.base/content/tips.js"></script>
+    <!-- HTML5 shim, for IE6-8 support of HTML5 elements -->
+    <!--[if lt IE 9]>
+      <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+  </head>
+  <body>
+    <div class="container">
+      <div class="masthead">
+        <ul class="nav nav-pills pull-right">
+          <li><a href="https://github.com/vrvis/aardvark.base">github page</a></li>
+        </ul>
+        <h3 class="muted"><a href="https://github.com/vrvis/aardvark.base/index.html">Aardvark.Base</a></h3>
+      </div>
+      <hr />
+      <div class="row">
+        <div class="span9" id="main">
+          
+
+
+
+<h1>IntDict<'TValue></h1>
+<div class="xmldoc">
+<p>A IntDict is an alternate implementation of a Dictionary that can
+optionally act as a stack for all items with the same key.
+It is implemented as a hashtable with external linking, that uses
+primes as the table size in order to reduce the danger of funneling.</p>
+
+</div>
+  <h3>Constructors</h3>
+  <table class="table table-bordered member-list">
+    <thead>
+      <tr><td>Constructor</td><td>Description</td></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '8259', 8259)" onmouseover="showTip(event, '8259', 8259)">
+            new(stackDuplicateKeys)
+          </code>
+          <div class="tip" id="8259">
+            <strong>Signature:</strong> stackDuplicateKeys:bool -&gt; unit<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Create a IntDict that autmatically grows and shrinks as necessary.
+If the optional parameter stackDuplicateKeys is set to true, the
+IntDict acts as a stack for all items with the same key.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '8260', 8260)" onmouseover="showTip(event, '8260', 8260)">
+            new(initialCapacity)
+          </code>
+          <div class="tip" id="8260">
+            <strong>Signature:</strong> initialCapacity:int -&gt; unit<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Create a IntDict that autmatically grows and shrinks as necessary,
+but also specify an initial capacity.
+If the optional parameter stackDuplicateKeys is set to true, the
+IntDict acts as a stack for all items with the same key.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '8261', 8261)" onmouseover="showTip(event, '8261', 8261)">
+            new(initialCapacity, stackDuplicateKeys)
+          </code>
+          <div class="tip" id="8261">
+            <strong>Signature:</strong> (initialCapacity:int * stackDuplicateKeys:bool) -&gt; unit<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Create a IntDict that autmatically grows and shrinks as necessary,
+but also specify an initial capacity.
+If the optional parameter stackDuplicateKeys is set to true, the
+IntDict acts as a stack for all items with the same key.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '8262', 8262)" onmouseover="showTip(event, '8262', 8262)">
+            new(items, stackDuplicateKeys)
+          </code>
+          <div class="tip" id="8262">
+            <strong>Signature:</strong> (items:IEnumerable&lt;KeyValuePair&lt;int,&#39;TValue&gt;&gt; * stackDuplicateKeys:bool) -&gt; unit<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Create a IntDict and initialize it to contain the supplied
+items.
+If the optional parameter stackDuplicateKeys is set to true, the
+IntDict acts as a stack for all items with the same key.</p>
+
+
+        </td>
+      </tr>
+    </tbody>
+  </table>
+  <h3>Instance members</h3>
+  <table class="table table-bordered member-list">
+    <thead>
+      <tr><td>Instance member</td><td>Description</td></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '8263', 8263)" onmouseover="showTip(event, '8263', 8263)">
+            Add(key, value)
+          </code>
+          <div class="tip" id="8263">
+            <strong>Signature:</strong> (key:int * value:&#39;TValue) -&gt; unit<br />
+              <strong>Modifiers:</strong> abstract<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Add the item with the supplied key and the supplied value
+to the IntDict.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '8264', 8264)" onmouseover="showTip(event, '8264', 8264)">
+            Add(item)
+          </code>
+          <div class="tip" id="8264">
+            <strong>Signature:</strong> item:KeyValuePair&lt;int,&#39;TValue&gt; -&gt; unit<br />
+              <strong>Modifiers:</strong> abstract<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Add the supplied item to the IntDict.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '8265', 8265)" onmouseover="showTip(event, '8265', 8265)">
+            AddObject(objkey, objvalue)
+          </code>
+          <div class="tip" id="8265">
+            <strong>Signature:</strong> (objkey:obj * objvalue:obj) -&gt; unit<br />
+              <strong>Modifiers:</strong> abstract<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Add the item with supplied key and the supplied value
+both supplied as generic objects, to the IntDict. Note that the supplied key
+and value are cast to the concrete type of the keys and values used in the IntDict
+and this will fail if they are of different types.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '8266', 8266)" onmouseover="showTip(event, '8266', 8266)">
+            AddRange(items)
+          </code>
+          <div class="tip" id="8266">
+            <strong>Signature:</strong> items:IEnumerable&lt;KeyValuePair&lt;int,&#39;TValue&gt;&gt; -&gt; unit<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Add the supplied items to the IntDict.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '8267', 8267)" onmouseover="showTip(event, '8267', 8267)">
+            AsConcurrent()
+          </code>
+          <div class="tip" id="8267">
+            <strong>Signature:</strong> unit -&gt; ConcurrentIntDict&lt;&#39;TValue&gt;<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Retuns a concurrent wrapper around the IntDict to enable
+concurrent modifications.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '8268', 8268)" onmouseover="showTip(event, '8268', 8268)">
+            Clear()
+          </code>
+          <div class="tip" id="8268">
+            <strong>Signature:</strong> unit -&gt; unit<br />
+              <strong>Modifiers:</strong> abstract<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Remove all items. Capacity remains unchanged.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '8269', 8269)" onmouseover="showTip(event, '8269', 8269)">
+            Contains(key)
+          </code>
+          <div class="tip" id="8269">
+            <strong>Signature:</strong> key:int -&gt; bool<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Returns true if the IntDict contains the item with the supplied
+key.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '8270', 8270)" onmouseover="showTip(event, '8270', 8270)">
+            Contains(key, value)
+          </code>
+          <div class="tip" id="8270">
+            <strong>Signature:</strong> (key:int * value:&#39;TValue) -&gt; bool<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Returns true if the IntDict contains the item with the supplied
+key and the supplied value.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '8271', 8271)" onmouseover="showTip(event, '8271', 8271)">
+            Contains(item)
+          </code>
+          <div class="tip" id="8271">
+            <strong>Signature:</strong> item:KeyValuePair&lt;int,&#39;TValue&gt; -&gt; bool<br />
+              <strong>Modifiers:</strong> abstract<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Returns true if the IntDict contains the item with the supplied
+KeyValuePair.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '8272', 8272)" onmouseover="showTip(event, '8272', 8272)">
+            ContainsKey(key)
+          </code>
+          <div class="tip" id="8272">
+            <strong>Signature:</strong> key:int -&gt; bool<br />
+              <strong>Modifiers:</strong> abstract<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Returns true if the IntDict contains the item with the supplied
+key.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '8273', 8273)" onmouseover="showTip(event, '8273', 8273)">
+            CopyKeysTo(array, index)
+          </code>
+          <div class="tip" id="8273">
+            <strong>Signature:</strong> (array:int [] * index:int) -&gt; unit<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Copies all keys in the dictionary to the supplied
+array starting at the supplied index.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '8274', 8274)" onmouseover="showTip(event, '8274', 8274)">
+            CopyTo(array, index)
+          </code>
+          <div class="tip" id="8274">
+            <strong>Signature:</strong> (array:KeyValuePair&lt;int,&#39;TValue&gt; [] * index:int) -&gt; unit<br />
+              <strong>Modifiers:</strong> abstract<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Copies all KeyValuePairs in the dictionary into the supplied
+array starting at the supplied index.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '8275', 8275)" onmouseover="showTip(event, '8275', 8275)">
+            CopyTo(array, index)
+          </code>
+          <div class="tip" id="8275">
+            <strong>Signature:</strong> (array:Array * index:int) -&gt; unit<br />
+              <strong>Modifiers:</strong> abstract<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Copy items into supplied array starting at supplied index.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '8276', 8276)" onmouseover="showTip(event, '8276', 8276)">
+            CopyValuesTo(array, index)
+          </code>
+          <div class="tip" id="8276">
+            <strong>Signature:</strong> (array:&#39;TValue [] * index:int) -&gt; unit<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Copies all values in the dictionary to the supplied
+array starting at the supplied index.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '8277', 8277)" onmouseover="showTip(event, '8277', 8277)">
+            Count
+          </code>
+          <div class="tip" id="8277">
+            <strong>Signature:</strong> int<br />
+              <strong>Modifiers:</strong> abstract<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Returns the number of items currently contained in the IntDict.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '8278', 8278)" onmouseover="showTip(event, '8278', 8278)">
+            Get(key)
+          </code>
+          <div class="tip" id="8278">
+            <strong>Signature:</strong> key:int -&gt; &#39;TValue<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Get the element with the supplied key.
+Throws an exception if the element is not found. This is an alias of the indexer.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '8279', 8279)" onmouseover="showTip(event, '8279', 8279)">
+            Get(key, defaultValue)
+          </code>
+          <div class="tip" id="8279">
+            <strong>Signature:</strong> (key:int * defaultValue:&#39;TValue) -&gt; &#39;TValue<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Get the element with the supplied key.
+Returns the supplied default value if the element is not found.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '8280', 8280)" onmouseover="showTip(event, '8280', 8280)">
+            GetAndRemove(key)
+          </code>
+          <div class="tip" id="8280">
+            <strong>Signature:</strong> key:int -&gt; &#39;TValue<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Remove the item with the supplied key from the IntDict and
+return it. If multipe entries have the same key, the one that
+was inserted last is removed.
+If the item is not found, a KeyNotFoundException is thrown.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '8281', 8281)" onmouseover="showTip(event, '8281', 8281)">
+            GetEnumerator()
+          </code>
+          <div class="tip" id="8281">
+            <strong>Signature:</strong> unit -&gt; IEnumerator&lt;KeyValuePair&lt;int,&#39;TValue&gt;&gt;<br />
+              <strong>Modifiers:</strong> abstract<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '8282', 8282)" onmouseover="showTip(event, '8282', 8282)">
+            GetOrCreate(key, creator)
+          </code>
+          <div class="tip" id="8282">
+            <strong>Signature:</strong> (key:int * creator:Func&lt;int,&#39;TValue&gt;) -&gt; &#39;TValue<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Get the element with the supplied key.
+If the element is not found, the supplied creator is called to create
+a new element that is added to the IntDict and returned.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '8283', 8283)" onmouseover="showTip(event, '8283', 8283)">
+            GetOrDefault(key)
+          </code>
+          <div class="tip" id="8283">
+            <strong>Signature:</strong> key:int -&gt; &#39;TValue<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Get the element with the supplied key. Returns the default
+value of the value type if the element is not found.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '8284', 8284)" onmouseover="showTip(event, '8284', 8284)">
+            IsReadOnly
+          </code>
+          <div class="tip" id="8284">
+            <strong>Signature:</strong> bool<br />
+              <strong>Modifiers:</strong> abstract<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Always returns false. Part of the ICollection implementation.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '8285', 8285)" onmouseover="showTip(event, '8285', 8285)">
+            IsSynchronized
+          </code>
+          <div class="tip" id="8285">
+            <strong>Signature:</strong> bool<br />
+              <strong>Modifiers:</strong> abstract<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '8286', 8286)" onmouseover="showTip(event, '8286', 8286)">
+            [()]
+          </code>
+          <div class="tip" id="8286">
+            <strong>Signature:</strong> unit -&gt; int<br />
+              <strong>Modifiers:</strong> abstract<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Get or set the item with the supplied key. If multiple items with
+the same key are allowed, the IntDict acts as a stack.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '8287', 8287)" onmouseover="showTip(event, '8287', 8287)">
+            Items
+          </code>
+          <div class="tip" id="8287">
+            <strong>Signature:</strong> IEnumerable&lt;KeyValuePair&lt;int,&#39;TValue&gt;&gt;<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '8288', 8288)" onmouseover="showTip(event, '8288', 8288)">
+            Keys
+          </code>
+          <div class="tip" id="8288">
+            <strong>Signature:</strong> IEnumerable&lt;int&gt;<br />
+              <strong>Modifiers:</strong> abstract<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Returns all keys in the dictionary.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '8289', 8289)" onmouseover="showTip(event, '8289', 8289)">
+            KeysToArray()
+          </code>
+          <div class="tip" id="8289">
+            <strong>Signature:</strong> unit -&gt; int []<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Returns all keys in the dictionary as an array.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '8290', 8290)" onmouseover="showTip(event, '8290', 8290)">
+            KeyType
+          </code>
+          <div class="tip" id="8290">
+            <strong>Signature:</strong> Type<br />
+              <strong>Modifiers:</strong> abstract<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '8291', 8291)" onmouseover="showTip(event, '8291', 8291)">
+            KeyValuePairs
+          </code>
+          <div class="tip" id="8291">
+            <strong>Signature:</strong> IEnumerable&lt;KeyValuePair&lt;int,&#39;TValue&gt;&gt;<br />
+              <strong>Modifiers:</strong> abstract<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Returns all key value pairs in the IntDict.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '8292', 8292)" onmouseover="showTip(event, '8292', 8292)">
+            KeyValuePairsForStorage
+          </code>
+          <div class="tip" id="8292">
+            <strong>Signature:</strong> IEnumerable&lt;KeyValuePair&lt;int,&#39;TValue&gt;&gt;<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Returns all key value pairs in the IntDict, in such a way,
+that the stack order is correct when the pairs are put into a
+new IntDict in the order they are returned.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '8293', 8293)" onmouseover="showTip(event, '8293', 8293)">
+            LongCount
+          </code>
+          <div class="tip" id="8293">
+            <strong>Signature:</strong> int64<br />
+              <strong>Modifiers:</strong> abstract<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Returns the number of items currently contained in the IntDict
+as long.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '8294', 8294)" onmouseover="showTip(event, '8294', 8294)">
+            MaxFillFactor()
+          </code>
+          <div class="tip" id="8294">
+            <strong>Signature:</strong> unit -&gt; unit<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Setting the maximal fill factor makes it possible to fine-tune
+the performance for certain applications. Normally this should
+not be necessary.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '8295', 8295)" onmouseover="showTip(event, '8295', 8295)">
+            MinFillFactor()
+          </code>
+          <div class="tip" id="8295">
+            <strong>Signature:</strong> unit -&gt; unit<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Setting the minimal fill factor makes it possible to influence
+the shrinking behaviour of the IntDict. Normally this should
+be set to a quater of the maximal fill factor. In order to
+completely prevent shrinking it can also be set to 0.0f.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '8296', 8296)" onmouseover="showTip(event, '8296', 8296)">
+            ObjectPairs
+          </code>
+          <div class="tip" id="8296">
+            <strong>Signature:</strong> IEnumerable&lt;Pair&lt;obj&gt;&gt;<br />
+              <strong>Modifiers:</strong> abstract<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '8297', 8297)" onmouseover="showTip(event, '8297', 8297)">
+            Remove(key)
+          </code>
+          <div class="tip" id="8297">
+            <strong>Signature:</strong> key:int -&gt; bool<br />
+              <strong>Modifiers:</strong> abstract<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Try to remove the item with the supplied key from the IntDict.
+and return true if it was succesfully removed. If multipe
+entries have the same key, the one that was inserted last is
+removed. If the item is not found, false is returned.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '8298', 8298)" onmouseover="showTip(event, '8298', 8298)">
+            Remove(key, value)
+          </code>
+          <div class="tip" id="8298">
+            <strong>Signature:</strong> (key:int * value:&#39;TValue) -&gt; bool<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Remove the item with the supplied key and the supplied value
+from the IntDict. Returns true if the value was removed.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '8299', 8299)" onmouseover="showTip(event, '8299', 8299)">
+            Remove(item)
+          </code>
+          <div class="tip" id="8299">
+            <strong>Signature:</strong> item:KeyValuePair&lt;int,&#39;TValue&gt; -&gt; bool<br />
+              <strong>Modifiers:</strong> abstract<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Remove the item with the supplied KeyValuePair from the IntDict.
+If the item is not found, a KeyNotFoundException is thrown.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '8300', 8300)" onmouseover="showTip(event, '8300', 8300)">
+            SyncRoot
+          </code>
+          <div class="tip" id="8300">
+            <strong>Signature:</strong> obj<br />
+              <strong>Modifiers:</strong> abstract<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '8301', 8301)" onmouseover="showTip(event, '8301', 8301)">
+            ToArray()
+          </code>
+          <div class="tip" id="8301">
+            <strong>Signature:</strong> unit -&gt; KeyValuePair&lt;int,&#39;TValue&gt; []<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Returns all KeyValuePairs in the dictionary as an array.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '8302', 8302)" onmouseover="showTip(event, '8302', 8302)">
+            TryAdd(key, value)
+          </code>
+          <div class="tip" id="8302">
+            <strong>Signature:</strong> (key:int * value:&#39;TValue) -&gt; bool<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Add the item with the supplied key and the supplied value
+to the IntDict.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '8303', 8303)" onmouseover="showTip(event, '8303', 8303)">
+            TryGetValue(key, value)
+          </code>
+          <div class="tip" id="8303">
+            <strong>Signature:</strong> (key:int * value:byref&lt;&#39;TValue&gt;) -&gt; bool<br />
+              <strong>Modifiers:</strong> abstract<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Try to retrieve the value with the supplied key, return true if
+successful and return the value via the out parameter.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '8304', 8304)" onmouseover="showTip(event, '8304', 8304)">
+            TryRemove(key, value)
+          </code>
+          <div class="tip" id="8304">
+            <strong>Signature:</strong> (key:int * value:byref&lt;&#39;TValue&gt;) -&gt; bool<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Try to reomve the item with the supplied key. If multipe entries
+have the same key, the one that was inserted last is removed.
+Returns true if the item was found, which is returned via the out
+parameter.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '8305', 8305)" onmouseover="showTip(event, '8305', 8305)">
+            TryRemove(key, value)
+          </code>
+          <div class="tip" id="8305">
+            <strong>Signature:</strong> (key:int * value:&#39;TValue) -&gt; bool<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Try to reomve the item with the supplied key and the supplied
+value. If multipe entries match, the one that was inserted last
+is removed. Returns true if the item was found.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '8306', 8306)" onmouseover="showTip(event, '8306', 8306)">
+            Values
+          </code>
+          <div class="tip" id="8306">
+            <strong>Signature:</strong> IEnumerable&lt;&#39;TValue&gt;<br />
+              <strong>Modifiers:</strong> abstract<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Returns all values in the IntDict.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '8307', 8307)" onmouseover="showTip(event, '8307', 8307)">
+            ValuesToArray()
+          </code>
+          <div class="tip" id="8307">
+            <strong>Signature:</strong> unit -&gt; &#39;TValue []<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Returns all values in the dictionary as an array.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '8308', 8308)" onmouseover="showTip(event, '8308', 8308)">
+            ValuesWithKey(key)
+          </code>
+          <div class="tip" id="8308">
+            <strong>Signature:</strong> key:int -&gt; IEnumerable&lt;&#39;TValue&gt;<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Return all the value with the given key. This method is only
+useful if multiple item with the same key are allowed.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '8309', 8309)" onmouseover="showTip(event, '8309', 8309)">
+            ValueType
+          </code>
+          <div class="tip" id="8309">
+            <strong>Signature:</strong> Type<br />
+              <strong>Modifiers:</strong> abstract<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '8310', 8310)" onmouseover="showTip(event, '8310', 8310)">
+            ValueWithKeySkip(key, skip)
+          </code>
+          <div class="tip" id="8310">
+            <strong>Signature:</strong> (key:int * skip:int) -&gt; &#39;TValue<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Return the value with the given key, but skip a supplied number
+of entries with this key. This method is only useful if multiple
+item with the same key are allowed.</p>
+
+
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+        </div>
+        <div class="span3">
+          <a href="https://github.com/vrvis">
+            <img src="logo.png" style="width:140px;height:140px;margin:10px 0px 0px 35px;border-style:none;" />
+          </a>
+
+          <ul class="nav nav-list" id="menu">
+
+            <li class="nav-header">Aardvark.Base</li>
+
+            <li class="divider"></li>
+            <li><a href="https://github.com/vrvis/aardvark.base">Home page</a></li>
+            <li class="divider"></li>
+
+            <li><a href="https://www.nuget.org/packages/Aardvark.Base">Get Aardvark.Base via NuGet</a></li>
+            <li><a href="https://github.com/vrvis/aardvark.base">Source Code on GitHub</a></li>
+            <li><a href="https://github.com/vrvis/aardvark.baseLicense">License (Apache 2)</a></li>
+            
+            <!-- <li><a href="https://github.com/vrvis/aardvark.base/RELEASE_NOTES.html">Release Notes</a></li>
+            <li><a href="https://github.com/vrvis/aardvark.base//contributing.html">Contributing to Aardvark.Base</a></li>
+  
+            <li><a href="http://stackoverflow.com/questions/tagged/f%23-fake">Ask a question</a></li> 
+            
+            <li class="nav-header">Tutorials</li>
+            <li><a href="https://github.com/vrvis/aardvark.base/gettingstarted.html">Getting started</a></li>
+            
+            -->
+
+            
+            <li class="divider"></li>
+            <li class="nav-header">Reference</li>
+
+            <li><a href="https://github.com/vrvis/aardvark.base/apidocs/index.html">API Reference</a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    <a href="https://github.com/vrvis/aardvark.base"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_gray_6d6d6d.png" alt="Fork me on GitHub"></a>
+  </body>
+  </html>

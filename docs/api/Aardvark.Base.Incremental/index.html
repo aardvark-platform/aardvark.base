@@ -1,0 +1,832 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>Namespaces - Aardvark.Base.Incremental</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="The Aardvark Platform Team">
+
+    <script src="https://code.jquery.com/jquery-1.8.0.js"></script>
+    <script src="https://code.jquery.com/ui/1.8.23/jquery-ui.js"></script>
+    <script src="https://netdna.bootstrapcdn.com/twitter-bootstrap/2.2.1/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link href="https://netdna.bootstrapcdn.com/twitter-bootstrap/2.2.1/css/bootstrap-combined.min.css" rel="stylesheet">
+
+    <link type="text/css" rel="stylesheet" href="https://github.com/vrvis/aardvark.base/content/style.css" />
+    <script type="text/javascript" src="https://github.com/vrvis/aardvark.base/content/tips.js"></script>
+    <!-- HTML5 shim, for IE6-8 support of HTML5 elements -->
+    <!--[if lt IE 9]>
+      <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+  </head>
+  <body>
+    <div class="container">
+      <div class="masthead">
+        <ul class="nav nav-pills pull-right">
+          <li><a href="https://github.com/vrvis/aardvark.base">github page</a></li>
+        </ul>
+        <h3 class="muted"><a href="https://github.com/vrvis/aardvark.base/index.html">Aardvark.Base.Incremental</a></h3>
+      </div>
+      <hr />
+      <div class="row">
+        <div class="span9" id="main">
+          
+
+<h1>Aardvark.Base.Incremental</h1>
+
+    <h2>Aardvark.Base.Incremental Namespace</h2>
+    <div>
+        <table class="table table-bordered type-list">
+    <thead>
+      <tr><td>Type</td><td>Description</td></tr>
+    </thead>
+    <tbody>
+        <tr>
+          <td class="type-name">
+            <a href="aardvark-base-incremental-abstractdirtyreader-2.html">AbstractDirtyReader<'t, 'ops></a>
+          </td>
+          <td class="xmldoc"></td>
+        </tr>
+        <tr>
+          <td class="type-name">
+            <a href="aardvark-base-incremental-abstractreader-1.html">AbstractReader<'ops></a>
+          </td>
+          <td class="xmldoc"></td>
+        </tr>
+        <tr>
+          <td class="type-name">
+            <a href="aardvark-base-incremental-abstractreader-2.html">AbstractReader<'s, 'ops></a>
+          </td>
+          <td class="xmldoc"></td>
+        </tr>
+        <tr>
+          <td class="type-name">
+            <a href="aardvark-base-incremental-adaptivedecorator.html">AdaptiveDecorator</a>
+          </td>
+          <td class="xmldoc"><p>defines a base class for all decorated mods</p>
+
+</td>
+        </tr>
+        <tr>
+          <td class="type-name">
+            <a href="aardvark-base-incremental-adaptivelocksadasd.html">AdaptiveLocksadasd</a>
+          </td>
+          <td class="xmldoc"></td>
+        </tr>
+        <tr>
+          <td class="type-name">
+            <a href="aardvark-base-incremental-adaptiveobject.html">AdaptiveObject</a>
+          </td>
+          <td class="xmldoc"><p>defines a base class for all adaptive objects implementing
+IAdaptiveObject.</p>
+
+</td>
+        </tr>
+        <tr>
+          <td class="type-name">
+            <a href="aardvark-base-incremental-adaptiveobjectextensions.html">AdaptiveObjectExtensions</a>
+          </td>
+          <td class="xmldoc"></td>
+        </tr>
+        <tr>
+          <td class="type-name">
+            <a href="aardvark-base-incremental-adaptivetoken.html">AdaptiveToken</a>
+          </td>
+          <td class="xmldoc"></td>
+        </tr>
+        <tr>
+          <td class="type-name">
+            <a href="aardvark-base-incremental-csharpeventextensions.html">CSharpEventExtensions</a>
+          </td>
+          <td class="xmldoc"></td>
+        </tr>
+        <tr>
+          <td class="type-name">
+            <a href="aardvark-base-incremental-cache-2.html">Cache<'a, 'b></a>
+          </td>
+          <td class="xmldoc"><p>Cache represents a cached function which can be
+invoked and revoked. invoke increments the reference
+count for a specific argument (possibly causing the
+function to be executed) whereas revoke decreases the
+reference count and removes the cache entry whenever
+the reference count is 0.</p>
+
+</td>
+        </tr>
+        <tr>
+          <td class="type-name">
+            <a href="aardvark-base-incremental-cache2-3.html">Cache2<'a, 'b, 'c></a>
+          </td>
+          <td class="xmldoc"><p>Cache represents a cached function which can be
+invoked and revoked. invoke increments the reference
+count for a specific argument (possibly causing the
+function to be executed) whereas revoke decreases the
+reference count and removes the cache entry whenever
+the reference count is 0.</p>
+
+</td>
+        </tr>
+        <tr>
+          <td class="type-name">
+            <a href="aardvark-base-incremental-constantmod-1.html">ConstantMod<'a></a>
+          </td>
+          <td class="xmldoc"></td>
+        </tr>
+        <tr>
+          <td class="type-name">
+            <a href="aardvark-base-incremental-constantobject.html">ConstantObject</a>
+          </td>
+          <td class="xmldoc"><p>defines a base class for all adaptive objects which are
+actually constant.
+Note that this class provides "dummy" implementations
+for all memebers defined in IAdaptiveObject and does not
+keep track of in-/outputs.</p>
+
+</td>
+        </tr>
+        <tr>
+          <td class="type-name">
+            <a href="aardvark-base-incremental-controller-1.html">Controller<'a></a>
+          </td>
+          <td class="xmldoc"></td>
+        </tr>
+        <tr>
+          <td class="type-name">
+            <a href="aardvark-base-incremental-controllerstate.html">ControllerState</a>
+          </td>
+          <td class="xmldoc"></td>
+        </tr>
+        <tr>
+          <td class="type-name">
+            <a href="aardvark-base-incremental-defaultingmodref-1.html">DefaultingModRef<'a></a>
+          </td>
+          <td class="xmldoc"><p>DefaultingModRef<'a> represents a mod ref with an adaptive
+default value. The resulting IMod corresponds to the default
+value unless a custom value is set to the ref.
+By calling Reset (), the initial behaviour can be restored,
+i.e. the resulting value is dependent on the adaptive default
+value.</p>
+
+</td>
+        </tr>
+        <tr>
+          <td class="type-name">
+            <a href="aardvark-base-incremental-dirtytrackingadaptiveobject-1.html">DirtyTrackingAdaptiveObject<'a></a>
+          </td>
+          <td class="xmldoc"><p>defines a base class for all adaptive objects implementing
+IAdaptiveObject and providing dirty-inputs for evaluation.</p>
+
+</td>
+        </tr>
+        <tr>
+          <td class="type-name">
+            <a href="aardvark-base-incremental-disposethread.html">DisposeThread</a>
+          </td>
+          <td class="xmldoc"></td>
+        </tr>
+        <tr>
+          <td class="type-name">
+            <a href="aardvark-base-incremental-duplicatepriorityqueue-2.html">DuplicatePriorityQueue<'a, 'k></a>
+          </td>
+          <td class="xmldoc"><p>implements a queue with "uncomparable" duplicates.
+This is helpful since regular heap implementation cannot
+deal with a large number of duplicated keys efficiently.
+Note: the duplicated values will be returned in the order they were enqueued</p>
+
+</td>
+        </tr>
+        <tr>
+          <td class="type-name">
+            <a href="aardvark-base-incremental-evaluationextensions.html">EvaluationExtensions</a>
+          </td>
+          <td class="xmldoc"></td>
+        </tr>
+        <tr>
+          <td class="type-name">
+            <a href="aardvark-base-incremental-eventsampler.html">EventSampler</a>
+          </td>
+          <td class="xmldoc"></td>
+        </tr>
+        <tr>
+          <td class="type-name">
+            <a href="aardvark-base-incremental-history-2.html">History<'s, 'op></a>
+          </td>
+          <td class="xmldoc"></td>
+        </tr>
+        <tr>
+          <td class="type-name">
+            <a href="aardvark-base-incremental-historyreader-2.html">HistoryReader<'s, 'op></a>
+          </td>
+          <td class="xmldoc"></td>
+        </tr>
+        <tr>
+          <td class="type-name">
+            <a href="aardvark-base-incremental-iadaptiveobject.html">IAdaptiveObject</a>
+          </td>
+          <td class="xmldoc"><p>IAdaptiveObject represents the core interface for all
+adaptive objects and contains everything necessary for
+tracking OutOfDate flags and managing in-/outputs in the
+dependency tree.</p>
+<p>Since eager evalutation might be desirable in some scenarios
+the interface also contains a Level representing the execution
+order when evaluating inside a transaction and a function called
+Mark allowing implementations to actually perform the evaluation.
+Mark returns a bool since eager evaluation might cause the change
+propagation process to exit early (if the actual value was unchanged)
+In order to make adaptive objects easily identifiable all adaptive
+objects must also provide a globally unique id (Id)</p>
+
+</td>
+        </tr>
+        <tr>
+          <td class="type-name">
+            <a href="aardvark-base-incremental-idisposablemod.html">IDisposableMod</a>
+          </td>
+          <td class="xmldoc"></td>
+        </tr>
+        <tr>
+          <td class="type-name">
+            <a href="aardvark-base-incremental-idisposablemod-1.html">IDisposableMod<'a></a>
+          </td>
+          <td class="xmldoc"></td>
+        </tr>
+        <tr>
+          <td class="type-name">
+            <a href="aardvark-base-incremental-ilistreader-1.html">IListReader<'a></a>
+          </td>
+          <td class="xmldoc"></td>
+        </tr>
+        <tr>
+          <td class="type-name">
+            <a href="aardvark-base-incremental-imapreader-2.html">IMapReader<'k, 'v></a>
+          </td>
+          <td class="xmldoc"></td>
+        </tr>
+        <tr>
+          <td class="type-name">
+            <a href="aardvark-base-incremental-imod.html">IMod</a>
+          </td>
+          <td class="xmldoc"><p>IMod is the non-generic base interface for
+modifiable cells. This is needed due to the
+lack of existential types in the .NET.</p>
+
+</td>
+        </tr>
+        <tr>
+          <td class="type-name">
+            <a href="aardvark-base-incremental-imod-1.html">IMod<'a></a>
+          </td>
+          <td class="xmldoc"><p>IMod<'a> represents the base interface for
+modifiable cells and provides a method for
+getting the cell's current content.</p>
+
+</td>
+        </tr>
+        <tr>
+          <td class="type-name">
+            <a href="aardvark-base-incremental-imodref-1.html">IModRef<'a></a>
+          </td>
+          <td class="xmldoc"><p>ModRef<'a> represents a changeable input
+cell which can be changed by the user and
+implements IMod<'a></p>
+
+</td>
+        </tr>
+        <tr>
+          <td class="type-name">
+            <a href="aardvark-base-incremental-iopreader-1.html">IOpReader<'ops></a>
+          </td>
+          <td class="xmldoc"></td>
+        </tr>
+        <tr>
+          <td class="type-name">
+            <a href="aardvark-base-incremental-iopreader-2.html">IOpReader<'s, 'ops></a>
+          </td>
+          <td class="xmldoc"></td>
+        </tr>
+        <tr>
+          <td class="type-name">
+            <a href="aardvark-base-incremental-isetreader-1.html">ISetReader<'a></a>
+          </td>
+          <td class="xmldoc"></td>
+        </tr>
+        <tr>
+          <td class="type-name">
+            <a href="aardvark-base-incremental-iversioned.html">IVersioned</a>
+          </td>
+          <td class="xmldoc"></td>
+        </tr>
+        <tr>
+          <td class="type-name">
+            <a href="aardvark-base-incremental-iversioneddictionary-2.html">IVersionedDictionary<'k, 'v></a>
+          </td>
+          <td class="xmldoc"></td>
+        </tr>
+        <tr>
+          <td class="type-name">
+            <a href="aardvark-base-incremental-iversionedset-1.html">IVersionedSet<'a></a>
+          </td>
+          <td class="xmldoc"></td>
+        </tr>
+        <tr>
+          <td class="type-name">
+            <a href="aardvark-base-incremental-iweakable-1.html">IWeakable<'a></a>
+          </td>
+          <td class="xmldoc"></td>
+        </tr>
+        <tr>
+          <td class="type-name">
+            <a href="aardvark-base-incremental-lazywithfinalizer-1.html">LazyWithFinalizer<'a></a>
+          </td>
+          <td class="xmldoc"></td>
+        </tr>
+        <tr>
+          <td class="type-name">
+            <a href="aardvark-base-incremental-levelchangedexception.html">LevelChangedException</a>
+          </td>
+          <td class="xmldoc"><p>LevelChangedException is internally used by the system
+to handle level changes during the change propagation.</p>
+
+</td>
+        </tr>
+        <tr>
+          <td class="type-name">
+            <a href="aardvark-base-incremental-modref-1.html">ModRef<'a></a>
+          </td>
+          <td class="xmldoc"><p>ModRef<'a> represents a changeable input
+cell which can be changed by the user and
+implements IMod<'a></p>
+
+</td>
+        </tr>
+        <tr>
+          <td class="type-name">
+            <a href="aardvark-base-incremental-mutablevolatiledirtyset-2.html">MutableVolatileDirtySet<'a, 'b></a>
+          </td>
+          <td class="xmldoc"></td>
+        </tr>
+        <tr>
+          <td class="type-name">
+            <a href="aardvark-base-incremental-mutablevolatiletaggeddirtyset-3.html">MutableVolatileTaggedDirtySet<'a, 'b, 't></a>
+          </td>
+          <td class="xmldoc"></td>
+        </tr>
+        <tr>
+          <td class="type-name">
+            <a href="aardvark-base-incremental-priorityqueue-1.html">PriorityQueue<'a></a>
+          </td>
+          <td class="xmldoc"><p>represents a simple priority queue using user-given compare function</p>
+
+</td>
+        </tr>
+        <tr>
+          <td class="type-name">
+            <a href="aardvark-base-incremental-referencecountingset-1.html">ReferenceCountingSet<'a></a>
+          </td>
+          <td class="xmldoc"><p>represents a set of elements having a reference count.
+this means that an element is contained when it has been
+added at least once more than removed.</p>
+
+</td>
+        </tr>
+        <tr>
+          <td class="type-name">
+            <a href="aardvark-base-incremental-relevantnode-2.html">RelevantNode<'s, 'a></a>
+          </td>
+          <td class="xmldoc"></td>
+        </tr>
+        <tr>
+          <td class="type-name">
+            <a href="aardvark-base-incremental-trackallthreadlocal-1.html">TrackAllThreadLocal<'a></a>
+          </td>
+          <td class="xmldoc"></td>
+        </tr>
+        <tr>
+          <td class="type-name">
+            <a href="aardvark-base-incremental-transaction.html">Transaction</a>
+          </td>
+          <td class="xmldoc"><p>Transaction holds a set of adaptive objects which
+have been changed and shall therefore be marked as outOfDate.
+Commit "propagates" these changes into the dependency-graph, takes
+care of the correct execution-order and acquires appropriate locks
+for all objects affected.</p>
+
+</td>
+        </tr>
+        <tr>
+          <td class="type-name">
+            <a href="aardvark-base-incremental-versioneddictionary-2.html">VersionedDictionary<'k, 'v></a>
+          </td>
+          <td class="xmldoc"></td>
+        </tr>
+        <tr>
+          <td class="type-name">
+            <a href="aardvark-base-incremental-versionedset-1.html">VersionedSet<'a></a>
+          </td>
+          <td class="xmldoc"></td>
+        </tr>
+        <tr>
+          <td class="type-name">
+            <a href="aardvark-base-incremental-volatilecollection-1.html">VolatileCollection<'a></a>
+          </td>
+          <td class="xmldoc"></td>
+        </tr>
+        <tr>
+          <td class="type-name">
+            <a href="aardvark-base-incremental-volatilecollectionstrong-1.html">VolatileCollectionStrong<'a></a>
+          </td>
+          <td class="xmldoc"></td>
+        </tr>
+        <tr>
+          <td class="type-name">
+            <a href="aardvark-base-incremental-volatiledirtyset-2.html">VolatileDirtySet<'a, 'b></a>
+          </td>
+          <td class="xmldoc"></td>
+        </tr>
+        <tr>
+          <td class="type-name">
+            <a href="aardvark-base-incremental-volatiletaggeddirtyset-3.html">VolatileTaggedDirtySet<'a, 'b, 't></a>
+          </td>
+          <td class="xmldoc"></td>
+        </tr>
+        <tr>
+          <td class="type-name">
+            <a href="aardvark-base-incremental-weakset-1.html">WeakSet<'a></a>
+          </td>
+          <td class="xmldoc"><p>represents a set of elements while not introducing
+a "garbage-collector-edge". This is desirable in
+scenarios where one needs to enumerate a set of things
+which shall be allowed to be garbage-collected.</p>
+
+</td>
+        </tr>
+        <tr>
+          <td class="type-name">
+            <a href="aardvark-base-incremental-iadaptivefunc.html">afun<'a, 'b></a>
+          </td>
+          <td class="xmldoc"></td>
+        </tr>
+        <tr>
+          <td class="type-name">
+            <a href="aardvark-base-incremental-iadaptivelist.html">alist<'a></a>
+          </td>
+          <td class="xmldoc"></td>
+        </tr>
+        <tr>
+          <td class="type-name">
+            <a href="aardvark-base-incremental-iadaptivemap.html">amap<'k, 'v></a>
+          </td>
+          <td class="xmldoc"></td>
+        </tr>
+        <tr>
+          <td class="type-name">
+            <a href="aardvark-base-incremental-iadaptiveset.html">aset<'a></a>
+          </td>
+          <td class="xmldoc"></td>
+        </tr>
+        <tr>
+          <td class="type-name">
+            <a href="aardvark-base-incremental-iadaptivestate.html">astate<'s, 'a></a>
+          </td>
+          <td class="xmldoc"></td>
+        </tr>
+        <tr>
+          <td class="type-name">
+            <a href="aardvark-base-incremental-changeablelist.html">clist<'a></a>
+          </td>
+          <td class="xmldoc"></td>
+        </tr>
+        <tr>
+          <td class="type-name">
+            <a href="aardvark-base-incremental-changeablemap.html">cmap<'k, 'v></a>
+          </td>
+          <td class="xmldoc"></td>
+        </tr>
+        <tr>
+          <td class="type-name">
+            <a href="aardvark-base-incremental-corderedset-1.html">corderedset<'a></a>
+          </td>
+          <td class="xmldoc"></td>
+        </tr>
+        <tr>
+          <td class="type-name">
+            <a href="aardvark-base-incremental-changeableset.html">cset<'a></a>
+          </td>
+          <td class="xmldoc"></td>
+        </tr>
+        <tr>
+          <td class="type-name">
+            <a href="aardvark-base-incremental-hdeltamap-2.html">hdeltamap<'k, 'v></a>
+          </td>
+          <td class="xmldoc"></td>
+        </tr>
+    </tbody>
+  </table>
+  <table class="table table-bordered module-list">
+    <thead>
+      <tr><td>Module</td><td>Description</td></tr>
+    </thead>
+    <tbody>
+        <tr>
+          <td class="module-name">
+            <a href="aardvark-base-incremental-afun.html">AFun</a>
+          </td>
+          <td class="xmldoc"></td>
+        </tr>
+        <tr>
+          <td class="module-name">
+            <a href="aardvark-base-incremental-afun_builder.html">AFun Builder</a>
+          </td>
+          <td class="xmldoc"></td>
+        </tr>
+        <tr>
+          <td class="module-name">
+            <a href="aardvark-base-incremental-alistmodule.html">AList</a>
+          </td>
+          <td class="xmldoc"></td>
+        </tr>
+        <tr>
+          <td class="module-name">
+            <a href="aardvark-base-incremental-amapmodule.html">AMap</a>
+          </td>
+          <td class="xmldoc"></td>
+        </tr>
+        <tr>
+          <td class="module-name">
+            <a href="aardvark-base-incremental-amapbuilderexperiments.html">AMapBuilderExperiments</a>
+          </td>
+          <td class="xmldoc"></td>
+        </tr>
+        <tr>
+          <td class="module-name">
+            <a href="aardvark-base-incremental-asetmodule.html">ASet</a>
+          </td>
+          <td class="xmldoc"></td>
+        </tr>
+        <tr>
+          <td class="module-name">
+            <a href="aardvark-base-incremental-aset_-__alist_interop.html">ASet -> AList interop</a>
+          </td>
+          <td class="xmldoc"></td>
+        </tr>
+        <tr>
+          <td class="module-name">
+            <a href="aardvark-base-incremental-aset_-__amap_interop.html">ASet -> AMap interop</a>
+          </td>
+          <td class="xmldoc"></td>
+        </tr>
+        <tr>
+          <td class="module-name">
+            <a href="aardvark-base-incremental-astate.html">AState</a>
+          </td>
+          <td class="xmldoc"></td>
+        </tr>
+        <tr>
+          <td class="module-name">
+            <a href="aardvark-base-incremental-astate_builder.html">AState Builder</a>
+          </td>
+          <td class="xmldoc"></td>
+        </tr>
+        <tr>
+          <td class="module-name">
+            <a href="aardvark-base-incremental-bvhtreemodule.html">BvhTree</a>
+          </td>
+          <td class="xmldoc"></td>
+        </tr>
+        <tr>
+          <td class="module-name">
+            <a href="aardvark-base-incremental-csetmodule.html">CSet</a>
+          </td>
+          <td class="xmldoc"></td>
+        </tr>
+        <tr>
+          <td class="module-name">
+            <a href="aardvark-base-incremental-callbackextensions.html">CallbackExtensions</a>
+          </td>
+          <td class="xmldoc"></td>
+        </tr>
+        <tr>
+          <td class="module-name">
+            <a href="aardvark-base-incremental-changetracker.html">ChangeTracker</a>
+          </td>
+          <td class="xmldoc"></td>
+        </tr>
+        <tr>
+          <td class="module-name">
+            <a href="aardvark-base-incremental-computation_expression_builders.html">Computation Expression Builders</a>
+          </td>
+          <td class="xmldoc"></td>
+        </tr>
+        <tr>
+          <td class="module-name">
+            <a href="aardvark-base-incremental-controller_builder.html">Controller Builder</a>
+          </td>
+          <td class="xmldoc"></td>
+        </tr>
+        <tr>
+          <td class="module-name">
+            <a href="aardvark-base-incremental-evaluationutilities.html">EvaluationUtilities</a>
+          </td>
+          <td class="xmldoc"></td>
+        </tr>
+        <tr>
+          <td class="module-name">
+            <a href="aardvark-base-incremental-eventadapters.html">EventAdapters</a>
+          </td>
+          <td class="xmldoc"></td>
+        </tr>
+        <tr>
+          <td class="module-name">
+            <a href="aardvark-base-incremental-fsharpeventextensions.html">FSharpEventExtensions</a>
+          </td>
+          <td class="xmldoc"></td>
+        </tr>
+        <tr>
+          <td class="module-name">
+            <a href="aardvark-base-incremental-hdeltamap.html">HDeltaMap</a>
+          </td>
+          <td class="xmldoc"></td>
+        </tr>
+        <tr>
+          <td class="module-name">
+            <a href="aardvark-base-incremental-hmap.html">HMap</a>
+          </td>
+          <td class="xmldoc"></td>
+        </tr>
+        <tr>
+          <td class="module-name">
+            <a href="aardvark-base-incremental-history.html">History</a>
+          </td>
+          <td class="xmldoc"></td>
+        </tr>
+        <tr>
+          <td class="module-name">
+            <a href="aardvark-base-incremental-marking.html">Marking</a>
+          </td>
+          <td class="xmldoc"></td>
+        </tr>
+        <tr>
+          <td class="module-name">
+            <a href="aardvark-base-incremental-modmodule.html">Mod</a>
+          </td>
+          <td class="xmldoc"><p>defines functions for composing mods and
+managing evaluation order, etc.</p>
+
+</td>
+        </tr>
+        <tr>
+          <td class="module-name">
+            <a href="aardvark-base-incremental-modextensions.html">ModExtensions</a>
+          </td>
+          <td class="xmldoc"></td>
+        </tr>
+        <tr>
+          <td class="module-name">
+            <a href="aardvark-base-incremental-operators.html">Operators</a>
+          </td>
+          <td class="xmldoc"><p>provides special operators for composing IMods</p>
+
+</td>
+        </tr>
+        <tr>
+          <td class="module-name">
+            <a href="aardvark-base-incremental-uniqeids.html">UniqeIds</a>
+          </td>
+          <td class="xmldoc"><p>a simple module for creating unique ids</p>
+
+</td>
+        </tr>
+    </tbody>
+  </table>
+
+    </div>
+    <h2>Aardvark.Base.Incremental.CSharp Namespace</h2>
+    <div>
+        <table class="table table-bordered type-list">
+    <thead>
+      <tr><td>Type</td><td>Description</td></tr>
+    </thead>
+    <tbody>
+        <tr>
+          <td class="type-name">
+            <a href="aardvark-base-incremental-csharp-adaptive.html">Adaptive</a>
+          </td>
+          <td class="xmldoc"></td>
+        </tr>
+        <tr>
+          <td class="type-name">
+            <a href="aardvark-base-incremental-csharp-adaptivelistextensions.html">AdaptiveListExtensions</a>
+          </td>
+          <td class="xmldoc"></td>
+        </tr>
+        <tr>
+          <td class="type-name">
+            <a href="aardvark-base-incremental-csharp-adaptiveobjectextensions.html">AdaptiveObjectExtensions</a>
+          </td>
+          <td class="xmldoc"></td>
+        </tr>
+        <tr>
+          <td class="type-name">
+            <a href="aardvark-base-incremental-csharp-adaptiveset-1.html">AdaptiveSet<'a></a>
+          </td>
+          <td class="xmldoc"></td>
+        </tr>
+        <tr>
+          <td class="type-name">
+            <a href="aardvark-base-incremental-csharp-adaptivesetextensions.html">AdaptiveSetExtensions</a>
+          </td>
+          <td class="xmldoc"></td>
+        </tr>
+        <tr>
+          <td class="type-name">
+            <a href="aardvark-base-incremental-csharp-clistextensions.html">CListExtensions</a>
+          </td>
+          <td class="xmldoc"></td>
+        </tr>
+        <tr>
+          <td class="type-name">
+            <a href="aardvark-base-incremental-csharp-changeablesetextensions.html">ChangeableSetExtensions</a>
+          </td>
+          <td class="xmldoc"></td>
+        </tr>
+        <tr>
+          <td class="type-name">
+            <a href="aardvark-base-incremental-csharp-evaluationextensions.html">EvaluationExtensions</a>
+          </td>
+          <td class="xmldoc"></td>
+        </tr>
+        <tr>
+          <td class="type-name">
+            <a href="aardvark-base-incremental-csharp-mod.html">Mod</a>
+          </td>
+          <td class="xmldoc"></td>
+        </tr>
+        <tr>
+          <td class="type-name">
+            <a href="aardvark-base-incremental-csharp-modextensions.html">ModExtensions</a>
+          </td>
+          <td class="xmldoc"></td>
+        </tr>
+    </tbody>
+  </table>
+
+    </div>
+    <h2>Aardvark.Base.Incremental.Validation Namespace</h2>
+    <div>
+        <table class="table table-bordered type-list">
+    <thead>
+      <tr><td>Type</td><td>Description</td></tr>
+    </thead>
+    <tbody>
+        <tr>
+          <td class="type-name">
+            <a href="aardvark-base-incremental-validation-iadaptiveobjectvalidationextensions.html">IAdaptiveObjectValidationExtensions</a>
+          </td>
+          <td class="xmldoc"></td>
+        </tr>
+    </tbody>
+  </table>
+
+    </div>
+
+        </div>
+        <div class="span3">
+          <a href="https://github.com/vrvis">
+            <img src="logo.png" style="width:140px;height:140px;margin:10px 0px 0px 35px;border-style:none;" />
+          </a>
+
+          <ul class="nav nav-list" id="menu">
+
+            <li class="nav-header">Aardvark.Base.Incremental</li>
+
+            <li class="divider"></li>
+            <li><a href="https://github.com/vrvis/aardvark.base">Home page</a></li>
+            <li class="divider"></li>
+
+            <li><a href="https://www.nuget.org/packages/Aardvark.Base.Incremental">Get Aardvark.Base.Incremental via NuGet</a></li>
+            <li><a href="https://github.com/vrvis/aardvark.base">Source Code on GitHub</a></li>
+            <li><a href="https://github.com/vrvis/aardvark.baseLicense">License (Apache 2)</a></li>
+            
+            <!-- <li><a href="https://github.com/vrvis/aardvark.base/RELEASE_NOTES.html">Release Notes</a></li>
+            <li><a href="https://github.com/vrvis/aardvark.base//contributing.html">Contributing to Aardvark.Base.Incremental</a></li>
+  
+            <li><a href="http://stackoverflow.com/questions/tagged/f%23-fake">Ask a question</a></li> 
+            
+            <li class="nav-header">Tutorials</li>
+            <li><a href="https://github.com/vrvis/aardvark.base/gettingstarted.html">Getting started</a></li>
+            
+            -->
+
+            
+            <li class="divider"></li>
+            <li class="nav-header">Reference</li>
+
+            <li><a href="https://github.com/vrvis/aardvark.base/apidocs/index.html">API Reference</a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    <a href="https://github.com/vrvis/aardvark.base"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_gray_6d6d6d.png" alt="Fork me on GitHub"></a>
+  </body>
+  </html>

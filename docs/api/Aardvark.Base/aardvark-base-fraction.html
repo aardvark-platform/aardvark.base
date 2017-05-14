@@ -1,0 +1,458 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>Fraction - Aardvark.Base</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="The Aardvark Platform Team">
+
+    <script src="https://code.jquery.com/jquery-1.8.0.js"></script>
+    <script src="https://code.jquery.com/ui/1.8.23/jquery-ui.js"></script>
+    <script src="https://netdna.bootstrapcdn.com/twitter-bootstrap/2.2.1/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link href="https://netdna.bootstrapcdn.com/twitter-bootstrap/2.2.1/css/bootstrap-combined.min.css" rel="stylesheet">
+
+    <link type="text/css" rel="stylesheet" href="https://github.com/vrvis/aardvark.base/content/style.css" />
+    <script type="text/javascript" src="https://github.com/vrvis/aardvark.base/content/tips.js"></script>
+    <!-- HTML5 shim, for IE6-8 support of HTML5 elements -->
+    <!--[if lt IE 9]>
+      <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+  </head>
+  <body>
+    <div class="container">
+      <div class="masthead">
+        <ul class="nav nav-pills pull-right">
+          <li><a href="https://github.com/vrvis/aardvark.base">github page</a></li>
+        </ul>
+        <h3 class="muted"><a href="https://github.com/vrvis/aardvark.base/index.html">Aardvark.Base</a></h3>
+      </div>
+      <hr />
+      <div class="row">
+        <div class="span9" id="main">
+          
+
+
+
+<h1>Fraction</h1>
+<div class="xmldoc">
+<p>Represents an integral fraction.</p>
+
+</div>
+  <h3>Constructors</h3>
+  <table class="table table-bordered member-list">
+    <thead>
+      <tr><td>Constructor</td><td>Description</td></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '5966', 5966)" onmouseover="showTip(event, '5966', 5966)">
+            new(value)
+          </code>
+          <div class="tip" id="5966">
+            <strong>Signature:</strong> value:int64 -&gt; unit<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '5967', 5967)" onmouseover="showTip(event, '5967', 5967)">
+            new(numerator, denominator)
+          </code>
+          <div class="tip" id="5967">
+            <strong>Signature:</strong> (numerator:int64 * denominator:int64) -&gt; unit<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+    </tbody>
+  </table>
+  <h3>Instance members</h3>
+  <table class="table table-bordered member-list">
+    <thead>
+      <tr><td>Instance member</td><td>Description</td></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '5968', 5968)" onmouseover="showTip(event, '5968', 5968)">
+            Equals(obj)
+          </code>
+          <div class="tip" id="5968">
+            <strong>Signature:</strong> obj:obj -&gt; bool<br />
+              <strong>Modifiers:</strong> abstract<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '5969', 5969)" onmouseover="showTip(event, '5969', 5969)">
+            GetHashCode()
+          </code>
+          <div class="tip" id="5969">
+            <strong>Signature:</strong> unit -&gt; int<br />
+              <strong>Modifiers:</strong> abstract<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '5970', 5970)" onmouseover="showTip(event, '5970', 5970)">
+            Reduced
+          </code>
+          <div class="tip" id="5970">
+            <strong>Signature:</strong> Fraction<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '5971', 5971)" onmouseover="showTip(event, '5971', 5971)">
+            ToString()
+          </code>
+          <div class="tip" id="5971">
+            <strong>Signature:</strong> unit -&gt; string<br />
+              <strong>Modifiers:</strong> abstract<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '5972', 5972)" onmouseover="showTip(event, '5972', 5972)">
+            Value
+          </code>
+          <div class="tip" id="5972">
+            <strong>Signature:</strong> float<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+    </tbody>
+  </table>
+  <h3>Static members</h3>
+  <table class="table table-bordered member-list">
+    <thead>
+      <tr><td>Static member</td><td>Description</td></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '5973', 5973)" onmouseover="showTip(event, '5973', 5973)">
+            IsInfinity(f)
+          </code>
+          <div class="tip" id="5973">
+            <strong>Signature:</strong> f:Fraction -&gt; bool<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Returns whether the specified
+evaluates to negative or positive infinity.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '5974', 5974)" onmouseover="showTip(event, '5974', 5974)">
+            IsNaN(f)
+          </code>
+          <div class="tip" id="5974">
+            <strong>Signature:</strong> f:Fraction -&gt; bool<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Returns whether the specified
+evaluates to a value that is not a number (Fraction.NaN).</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '5975', 5975)" onmouseover="showTip(event, '5975', 5975)">
+            IsNegativeInfinity(f)
+          </code>
+          <div class="tip" id="5975">
+            <strong>Signature:</strong> f:Fraction -&gt; bool<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Returns whether the specified
+evaluates to negative infinity.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '5976', 5976)" onmouseover="showTip(event, '5976', 5976)">
+            IsPositiveInfinity(f)
+          </code>
+          <div class="tip" id="5976">
+            <strong>Signature:</strong> f:Fraction -&gt; bool<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Returns whether the specified
+evaluates to positive infinity.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '5977', 5977)" onmouseover="showTip(event, '5977', 5977)">
+            op_Addition(a, b)
+          </code>
+          <div class="tip" id="5977">
+            <strong>Signature:</strong> (a:Fraction * b:Fraction) -&gt; Fraction<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '5978', 5978)" onmouseover="showTip(event, '5978', 5978)">
+            op_Division(a, b)
+          </code>
+          <div class="tip" id="5978">
+            <strong>Signature:</strong> (a:Fraction * b:Fraction) -&gt; Fraction<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '5979', 5979)" onmouseover="showTip(event, '5979', 5979)">
+            op_Equality(a, b)
+          </code>
+          <div class="tip" id="5979">
+            <strong>Signature:</strong> (a:Fraction * b:Fraction) -&gt; bool<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '5980', 5980)" onmouseover="showTip(event, '5980', 5980)">
+            op_GreaterThan(a, b)
+          </code>
+          <div class="tip" id="5980">
+            <strong>Signature:</strong> (a:Fraction * b:Fraction) -&gt; bool<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '5981', 5981)" onmouseover="showTip(event, '5981', 5981)">
+            op_GreaterThanOrEqual(a, b)
+          </code>
+          <div class="tip" id="5981">
+            <strong>Signature:</strong> (a:Fraction * b:Fraction) -&gt; bool<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '5982', 5982)" onmouseover="showTip(event, '5982', 5982)">
+            op_Inequality(a, b)
+          </code>
+          <div class="tip" id="5982">
+            <strong>Signature:</strong> (a:Fraction * b:Fraction) -&gt; bool<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '5983', 5983)" onmouseover="showTip(event, '5983', 5983)">
+            op_LessThan(a, b)
+          </code>
+          <div class="tip" id="5983">
+            <strong>Signature:</strong> (a:Fraction * b:Fraction) -&gt; bool<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '5984', 5984)" onmouseover="showTip(event, '5984', 5984)">
+            op_LessThanOrEqual(a, b)
+          </code>
+          <div class="tip" id="5984">
+            <strong>Signature:</strong> (a:Fraction * b:Fraction) -&gt; bool<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '5985', 5985)" onmouseover="showTip(event, '5985', 5985)">
+            op_Multiply(a, b)
+          </code>
+          <div class="tip" id="5985">
+            <strong>Signature:</strong> (a:Fraction * b:Fraction) -&gt; Fraction<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '5986', 5986)" onmouseover="showTip(event, '5986', 5986)">
+            op_Subtraction(a, b)
+          </code>
+          <div class="tip" id="5986">
+            <strong>Signature:</strong> (a:Fraction * b:Fraction) -&gt; Fraction<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '5987', 5987)" onmouseover="showTip(event, '5987', 5987)">
+            op_UnaryNegation(a)
+          </code>
+          <div class="tip" id="5987">
+            <strong>Signature:</strong> a:Fraction -&gt; Fraction<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '5988', 5988)" onmouseover="showTip(event, '5988', 5988)">
+            op_UnaryPlus(a)
+          </code>
+          <div class="tip" id="5988">
+            <strong>Signature:</strong> a:Fraction -&gt; Fraction<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '5989', 5989)" onmouseover="showTip(event, '5989', 5989)">
+            Parse(s)
+          </code>
+          <div class="tip" id="5989">
+            <strong>Signature:</strong> s:string -&gt; Fraction<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+        </div>
+        <div class="span3">
+          <a href="https://github.com/vrvis">
+            <img src="logo.png" style="width:140px;height:140px;margin:10px 0px 0px 35px;border-style:none;" />
+          </a>
+
+          <ul class="nav nav-list" id="menu">
+
+            <li class="nav-header">Aardvark.Base</li>
+
+            <li class="divider"></li>
+            <li><a href="https://github.com/vrvis/aardvark.base">Home page</a></li>
+            <li class="divider"></li>
+
+            <li><a href="https://www.nuget.org/packages/Aardvark.Base">Get Aardvark.Base via NuGet</a></li>
+            <li><a href="https://github.com/vrvis/aardvark.base">Source Code on GitHub</a></li>
+            <li><a href="https://github.com/vrvis/aardvark.baseLicense">License (Apache 2)</a></li>
+            
+            <!-- <li><a href="https://github.com/vrvis/aardvark.base/RELEASE_NOTES.html">Release Notes</a></li>
+            <li><a href="https://github.com/vrvis/aardvark.base//contributing.html">Contributing to Aardvark.Base</a></li>
+  
+            <li><a href="http://stackoverflow.com/questions/tagged/f%23-fake">Ask a question</a></li> 
+            
+            <li class="nav-header">Tutorials</li>
+            <li><a href="https://github.com/vrvis/aardvark.base/gettingstarted.html">Getting started</a></li>
+            
+            -->
+
+            
+            <li class="divider"></li>
+            <li class="nav-header">Reference</li>
+
+            <li><a href="https://github.com/vrvis/aardvark.base/apidocs/index.html">API Reference</a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    <a href="https://github.com/vrvis/aardvark.base"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_gray_6d6d6d.png" alt="Fork me on GitHub"></a>
+  </body>
+  </html>

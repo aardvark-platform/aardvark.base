@@ -1,0 +1,2424 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>EnumerableEx - Aardvark.Base</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="The Aardvark Platform Team">
+
+    <script src="https://code.jquery.com/jquery-1.8.0.js"></script>
+    <script src="https://code.jquery.com/ui/1.8.23/jquery-ui.js"></script>
+    <script src="https://netdna.bootstrapcdn.com/twitter-bootstrap/2.2.1/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link href="https://netdna.bootstrapcdn.com/twitter-bootstrap/2.2.1/css/bootstrap-combined.min.css" rel="stylesheet">
+
+    <link type="text/css" rel="stylesheet" href="https://github.com/vrvis/aardvark.base/content/style.css" />
+    <script type="text/javascript" src="https://github.com/vrvis/aardvark.base/content/tips.js"></script>
+    <!-- HTML5 shim, for IE6-8 support of HTML5 elements -->
+    <!--[if lt IE 9]>
+      <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+  </head>
+  <body>
+    <div class="container">
+      <div class="masthead">
+        <ul class="nav nav-pills pull-right">
+          <li><a href="https://github.com/vrvis/aardvark.base">github page</a></li>
+        </ul>
+        <h3 class="muted"><a href="https://github.com/vrvis/aardvark.base/index.html">Aardvark.Base</a></h3>
+      </div>
+      <hr />
+      <div class="row">
+        <div class="span9" id="main">
+          
+
+
+
+<h1>EnumerableEx</h1>
+<div class="xmldoc">
+</div>
+  <h3>Static members</h3>
+  <table class="table table-bordered member-list">
+    <thead>
+      <tr><td>Static member</td><td>Description</td></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '5057', 5057)" onmouseover="showTip(event, '5057', 5057)">
+            AddFirstToEnd(self)
+          </code>
+          <div class="tip" id="5057">
+            <strong>Signature:</strong> self:IEnumerable&lt;&#39;T&gt; -&gt; IEnumerable&lt;&#39;T&gt;<br />
+                          <strong>Type parameters:</strong> 'T          </div>
+        </td>
+        <td class="xmldoc">
+          <p>Moves the first element to the end of the sequence.
+[A B C].AddFirstToEnd() -&gt; [A B C A]</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '5058', 5058)" onmouseover="showTip(event, '5058', 5058)">
+            AllDistinct(elements)
+          </code>
+          <div class="tip" id="5058">
+            <strong>Signature:</strong> elements:IEnumerable&lt;&#39;T&gt; -&gt; bool<br />
+                          <strong>Type parameters:</strong> 'T          </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '5059', 5059)" onmouseover="showTip(event, '5059', 5059)">
+            AllEqual(elements)
+          </code>
+          <div class="tip" id="5059">
+            <strong>Signature:</strong> elements:IEnumerable&lt;&#39;T&gt; -&gt; bool<br />
+                          <strong>Type parameters:</strong> 'T          </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '5060', 5060)" onmouseover="showTip(event, '5060', 5060)">
+            Chunk(self, chunkSize)
+          </code>
+          <div class="tip" id="5060">
+            <strong>Signature:</strong> (self:IEnumerable&lt;&#39;T&gt; * chunkSize:int64) -&gt; IEnumerable&lt;&#39;T []&gt;<br />
+                          <strong>Type parameters:</strong> 'T          </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '5061', 5061)" onmouseover="showTip(event, '5061', 5061)">
+            Chunk(self, chunkSize, selector)
+          </code>
+          <div class="tip" id="5061">
+            <strong>Signature:</strong> (self:IEnumerable&lt;&#39;T&gt; * chunkSize:int64 * selector:Func&lt;&#39;T,&#39;Tr&gt;) -&gt; IEnumerable&lt;&#39;Tr []&gt;<br />
+                          <strong>Type parameters:</strong> 'T, 'Tr          </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '5062', 5062)" onmouseover="showTip(event, '5062', 5062)">
+            ComparableIndexedValues(self)
+          </code>
+          <div class="tip" id="5062">
+            <strong>Signature:</strong> self:IEnumerable&lt;&#39;T&gt; -&gt; IEnumerable&lt;ComparableIndexedValue&lt;&#39;T&gt;&gt;<br />
+                          <strong>Type parameters:</strong> 'T          </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '5063', 5063)" onmouseover="showTip(event, '5063', 5063)">
+            Concat(sequence, item)
+          </code>
+          <div class="tip" id="5063">
+            <strong>Signature:</strong> (sequence:IEnumerable&lt;&#39;T&gt; * item:&#39;T) -&gt; IEnumerable&lt;&#39;T&gt;<br />
+                          <strong>Type parameters:</strong> 'T          </div>
+        </td>
+        <td class="xmldoc">
+          <p>Concats single item to sequence.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '5064', 5064)" onmouseover="showTip(event, '5064', 5064)">
+            Concat(item, sequence)
+          </code>
+          <div class="tip" id="5064">
+            <strong>Signature:</strong> (item:&#39;T * sequence:IEnumerable&lt;&#39;T&gt;) -&gt; IEnumerable&lt;&#39;T&gt;<br />
+                          <strong>Type parameters:</strong> 'T          </div>
+        </td>
+        <td class="xmldoc">
+          <p>Concats sequence to single item.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '5065', 5065)" onmouseover="showTip(event, '5065', 5065)">
+            DistinctUntilChanged(self)
+          </code>
+          <div class="tip" id="5065">
+            <strong>Signature:</strong> self:IEnumerable&lt;&#39;T&gt; -&gt; IEnumerable&lt;&#39;T&gt;<br />
+                          <strong>Type parameters:</strong> 'T          </div>
+        </td>
+        <td class="xmldoc">
+          <p>Returns a sequence that contains only distinct contiguous elements.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '5066', 5066)" onmouseover="showTip(event, '5066', 5066)">
+            Do(self, action)
+          </code>
+          <div class="tip" id="5066">
+            <strong>Signature:</strong> (self:IEnumerable&lt;&#39;T&gt; * action:Action&lt;&#39;T&gt;) -&gt; IEnumerable&lt;&#39;T&gt;<br />
+                          <strong>Type parameters:</strong> 'T          </div>
+        </td>
+        <td class="xmldoc">
+          <p>Lazily applies action to each element of sequence.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '5067', 5067)" onmouseover="showTip(event, '5067', 5067)">
+            Do(self, action)
+          </code>
+          <div class="tip" id="5067">
+            <strong>Signature:</strong> (self:IEnumerable&lt;&#39;T&gt; * action:Action&lt;&#39;T,int64&gt;) -&gt; IEnumerable&lt;&#39;T&gt;<br />
+                          <strong>Type parameters:</strong> 'T          </div>
+        </td>
+        <td class="xmldoc">
+          <p>Lazily applies action to each element of sequence.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '5068', 5068)" onmouseover="showTip(event, '5068', 5068)">
+            Dup(self)
+          </code>
+          <div class="tip" id="5068">
+            <strong>Signature:</strong> self:IEnumerable&lt;&#39;T&gt; -&gt; IEnumerable&lt;&#39;T&gt;<br />
+                          <strong>Type parameters:</strong> 'T          </div>
+        </td>
+        <td class="xmldoc">
+          <p>Duplicates each element of the sequence.
+[A B C].DupElements() -&gt; [A A B B C C]</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '5069', 5069)" onmouseover="showTip(event, '5069', 5069)">
+            Dup(self, n)
+          </code>
+          <div class="tip" id="5069">
+            <strong>Signature:</strong> (self:IEnumerable&lt;&#39;T&gt; * n:int) -&gt; IEnumerable&lt;&#39;T&gt;<br />
+                          <strong>Type parameters:</strong> 'T          </div>
+        </td>
+        <td class="xmldoc">
+          <p>Duplicates each element of the sequence n times.
+[A B C].DupElements(4) -&gt; [A A A A B B B B C C C C]</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '5070', 5070)" onmouseover="showTip(event, '5070', 5070)">
+            EnumerableEquals(self, other)
+          </code>
+          <div class="tip" id="5070">
+            <strong>Signature:</strong> (self:IEnumerable&lt;&#39;T&gt; * other:IEnumerable&lt;&#39;T&gt;) -&gt; bool<br />
+                          <strong>Type parameters:</strong> 'T          </div>
+        </td>
+        <td class="xmldoc">
+          <p>Compares both enumerables using SequenceEqual and additionally checks
+whether both enumerables are null.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '5071', 5071)" onmouseover="showTip(event, '5071', 5071)">
+            FirstIndexOf(self, where)
+          </code>
+          <div class="tip" id="5071">
+            <strong>Signature:</strong> (self:IEnumerable&lt;&#39;T&gt; * where:Func&lt;&#39;T,bool&gt;) -&gt; int<br />
+                          <strong>Type parameters:</strong> 'T          </div>
+        </td>
+        <td class="xmldoc">
+          <p>Returns the index of the first element triggering the condition or -1 as default.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '5072', 5072)" onmouseover="showTip(event, '5072', 5072)">
+            FirstOrDefault(self, defaultValue)
+          </code>
+          <div class="tip" id="5072">
+            <strong>Signature:</strong> (self:IEnumerable&lt;&#39;T&gt; * defaultValue:&#39;T) -&gt; &#39;T<br />
+                          <strong>Type parameters:</strong> 'T          </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '5073', 5073)" onmouseover="showTip(event, '5073', 5073)">
+            FirstOrDefault(...)
+          </code>
+          <div class="tip" id="5073">
+            <strong>Signature:</strong> (self:IEnumerable&lt;&#39;T&gt; * predicate:Func&lt;&#39;T,bool&gt; * defaultValue:&#39;T) -&gt; &#39;T<br />
+                          <strong>Type parameters:</strong> 'T          </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '5074', 5074)" onmouseover="showTip(event, '5074', 5074)">
+            FlatGroupByMany(...)
+          </code>
+          <div class="tip" id="5074">
+            <strong>Signature:</strong> (elements:IEnumerable&lt;&#39;TElement&gt; * groupSelectorFuncs:Func&lt;&#39;TElement,obj&gt; []) -&gt; IEnumerable&lt;&#39;TElement&gt;<br />
+                          <strong>Type parameters:</strong> 'TElement          </div>
+        </td>
+        <td class="xmldoc">
+          <p>Groups enumeration by an array of keys.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '5075', 5075)" onmouseover="showTip(event, '5075', 5075)">
+            IndexedValues(self)
+          </code>
+          <div class="tip" id="5075">
+            <strong>Signature:</strong> self:IEnumerable&lt;&#39;T&gt; -&gt; IEnumerable&lt;IndexedValue&lt;&#39;T&gt;&gt;<br />
+                          <strong>Type parameters:</strong> 'T          </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '5076', 5076)" onmouseover="showTip(event, '5076', 5076)">
+            IndexIntoOther(self, other)
+          </code>
+          <div class="tip" id="5076">
+            <strong>Signature:</strong> (self:IEnumerable&lt;&#39;T&gt; * other:IList&lt;&#39;T&gt;) -&gt; IEnumerable&lt;IndexedValue&lt;&#39;T&gt;&gt;<br />
+                          <strong>Type parameters:</strong> 'T          </div>
+        </td>
+        <td class="xmldoc">
+          <p>Returns elements with index into 'other'.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '5077', 5077)" onmouseover="showTip(event, '5077', 5077)">
+            IndexOf(list, elementToFind)
+          </code>
+          <div class="tip" id="5077">
+            <strong>Signature:</strong> (list:IEnumerable&lt;&#39;T&gt; * elementToFind:&#39;T) -&gt; int<br />
+                          <strong>Type parameters:</strong> 'T          </div>
+        </td>
+        <td class="xmldoc">
+          <p>Returns index of first occurence of elementToFind.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '5078', 5078)" onmouseover="showTip(event, '5078', 5078)">
+            Indices(sequence)
+          </code>
+          <div class="tip" id="5078">
+            <strong>Signature:</strong> sequence:IEnumerable&lt;&#39;T&gt; -&gt; IEnumerable&lt;int&gt;<br />
+                          <strong>Type parameters:</strong> 'T          </div>
+        </td>
+        <td class="xmldoc">
+          <p>Returns sequence of indices [0, sequence.Count()-1].</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '5079', 5079)" onmouseover="showTip(event, '5079', 5079)">
+            IndicesOf(self, predicate)
+          </code>
+          <div class="tip" id="5079">
+            <strong>Signature:</strong> (self:IEnumerable&lt;&#39;T&gt; * predicate:Func&lt;&#39;T,bool&gt;) -&gt; IEnumerable&lt;int&gt;<br />
+                          <strong>Type parameters:</strong> 'T          </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '5080', 5080)" onmouseover="showTip(event, '5080', 5080)">
+            Integrated(counts, sum)
+          </code>
+          <div class="tip" id="5080">
+            <strong>Signature:</strong> (counts:IEnumerable&lt;int&gt; * sum:int) -&gt; IEnumerable&lt;int&gt;<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Converts a sequence that contains numbers of elements
+into a sequence that represents the indices of the
+first element if the elements are stored in consecutive
+order and is closed by the total count elemtns.
+The length of the integrated sequence is +1 of the input.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '5081', 5081)" onmouseover="showTip(event, '5081', 5081)">
+            Integrated(values, sum)
+          </code>
+          <div class="tip" id="5081">
+            <strong>Signature:</strong> (values:IEnumerable&lt;float&gt; * sum:float) -&gt; IEnumerable&lt;float&gt;<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Integrates a sequence of values.
+Returns a sequence of N+1 values where the last is the sum off all value.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '5082', 5082)" onmouseover="showTip(event, '5082', 5082)">
+            Interleave(self, separator)
+          </code>
+          <div class="tip" id="5082">
+            <strong>Signature:</strong> (self:IEnumerable&lt;&#39;T&gt; * separator:&#39;T) -&gt; IEnumerable&lt;&#39;T&gt;<br />
+                          <strong>Type parameters:</strong> 'T          </div>
+        </td>
+        <td class="xmldoc">
+          <p>Interleaves given IEnumerable with specified element.
+E.g. { 'A', 'B', 'C' }.Interleave('X') -&gt; { 'A', 'X', 'B', 'X', 'C' }.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '5083', 5083)" onmouseover="showTip(event, '5083', 5083)">
+            IsEmpty(self)
+          </code>
+          <div class="tip" id="5083">
+            <strong>Signature:</strong> self:IEnumerable&lt;&#39;T&gt; -&gt; bool<br />
+                          <strong>Type parameters:</strong> 'T          </div>
+        </td>
+        <td class="xmldoc">
+          <p>Determines whether a sequence contains no elements.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '5084', 5084)" onmouseover="showTip(event, '5084', 5084)">
+            IsEmptyOrNull(elements)
+          </code>
+          <div class="tip" id="5084">
+            <strong>Signature:</strong> elements:IEnumerable&lt;&#39;T&gt; -&gt; bool<br />
+                          <strong>Type parameters:</strong> 'T          </div>
+        </td>
+        <td class="xmldoc">
+          <p>Implemented in System.Interactive.dll.
+Returns true if elements contains no items or if elements is null,
+false otherwise.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '5085', 5085)" onmouseover="showTip(event, '5085', 5085)">
+            Max(seq, greaterThan)
+          </code>
+          <div class="tip" id="5085">
+            <strong>Signature:</strong> (seq:IEnumerable&lt;&#39;T&gt; * greaterThan:Func&lt;&#39;T,&#39;T,bool&gt;) -&gt; &#39;T<br />
+                          <strong>Type parameters:</strong> 'T          </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '5086', 5086)" onmouseover="showTip(event, '5086', 5086)">
+            Max(seq, greaterThan, minValue)
+          </code>
+          <div class="tip" id="5086">
+            <strong>Signature:</strong> (seq:IEnumerable&lt;&#39;T&gt; * greaterThan:Func&lt;&#39;T,&#39;T,bool&gt; * minValue:&#39;T) -&gt; &#39;T<br />
+                          <strong>Type parameters:</strong> 'T          </div>
+        </td>
+        <td class="xmldoc">
+          <p>Aardvark.Runtime.IEnumerableExtensions:
+No-Throw version. Finds the largest element in seq according to greaterThan, that is greater than minValue, or the first such element if there are equally large elements, or minValue if no element is greater.
+For normal operation set minValue = -Inf or the minimum of T.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '5087', 5087)" onmouseover="showTip(event, '5087', 5087)">
+            MaxElement(...)
+          </code>
+          <div class="tip" id="5087">
+            <strong>Signature:</strong> (source:IEnumerable&lt;&#39;TSrc&gt; * selector:Func&lt;&#39;TSrc,&#39;TDst&gt; * greaterThan:Func&lt;&#39;TDst,&#39;TDst,bool&gt; * minVal:&#39;TDst * defaultRv:&#39;TSrc * rv_maxVal:byref&lt;&#39;TDst&gt;) -&gt; &#39;TSrc<br />
+                          <strong>Type parameters:</strong> 'TSrc, 'TDst          </div>
+        </td>
+        <td class="xmldoc">
+          <p>Aardvark.Runtime.IEnumerableExtensions:
+Invokes a transform function on each element of a sequence and
+returns the element that yielded the maximum value (and the maximum value in rv_maxVal).
+Only elements that yield larger values than minVal are considered.
+If multiple elements yield the maximum value, the first in the sequence is chosen.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '5088', 5088)" onmouseover="showTip(event, '5088', 5088)">
+            MaxIndex(self, greaterThan, maxValue)
+          </code>
+          <div class="tip" id="5088">
+            <strong>Signature:</strong> (self:IEnumerable&lt;&#39;T&gt; * greaterThan:Func&lt;&#39;T,&#39;T,bool&gt; * maxValue:byref&lt;&#39;T&gt;) -&gt; int<br />
+                          <strong>Type parameters:</strong> 'T          </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '5089', 5089)" onmouseover="showTip(event, '5089', 5089)">
+            MaxIndex(self, minValue)
+          </code>
+          <div class="tip" id="5089">
+            <strong>Signature:</strong> (self:IEnumerable&lt;&#39;T&gt; * minValue:byref&lt;&#39;T&gt;) -&gt; int<br />
+                          <strong>Type parameters:</strong> 'T          </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '5090', 5090)" onmouseover="showTip(event, '5090', 5090)">
+            MaxIndex(self)
+          </code>
+          <div class="tip" id="5090">
+            <strong>Signature:</strong> self:IEnumerable&lt;&#39;T&gt; -&gt; int<br />
+                          <strong>Type parameters:</strong> 'T          </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '5091', 5091)" onmouseover="showTip(event, '5091', 5091)">
+            MaxIndex(self, greaterThan, maxValue)
+          </code>
+          <div class="tip" id="5091">
+            <strong>Signature:</strong> (self:&#39;T [] * greaterThan:Func&lt;&#39;T,&#39;T,bool&gt; * maxValue:byref&lt;&#39;T&gt;) -&gt; int<br />
+                          <strong>Type parameters:</strong> 'T          </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '5092', 5092)" onmouseover="showTip(event, '5092', 5092)">
+            MaxIndex(self, maxValue)
+          </code>
+          <div class="tip" id="5092">
+            <strong>Signature:</strong> (self:&#39;T [] * maxValue:byref&lt;&#39;T&gt;) -&gt; int<br />
+                          <strong>Type parameters:</strong> 'T          </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '5093', 5093)" onmouseover="showTip(event, '5093', 5093)">
+            MaxIndex(self)
+          </code>
+          <div class="tip" id="5093">
+            <strong>Signature:</strong> (self:&#39;T []) -&gt; int<br />
+                          <strong>Type parameters:</strong> 'T          </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '5094', 5094)" onmouseover="showTip(event, '5094', 5094)">
+            MaxIndex(self, greaterThan, maxValue)
+          </code>
+          <div class="tip" id="5094">
+            <strong>Signature:</strong> (self:List&lt;&#39;T&gt; * greaterThan:Func&lt;&#39;T,&#39;T,bool&gt; * maxValue:byref&lt;&#39;T&gt;) -&gt; int<br />
+                          <strong>Type parameters:</strong> 'T          </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '5095', 5095)" onmouseover="showTip(event, '5095', 5095)">
+            MaxIndex(self, maxValue)
+          </code>
+          <div class="tip" id="5095">
+            <strong>Signature:</strong> (self:List&lt;&#39;T&gt; * maxValue:byref&lt;&#39;T&gt;) -&gt; int<br />
+                          <strong>Type parameters:</strong> 'T          </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '5096', 5096)" onmouseover="showTip(event, '5096', 5096)">
+            MaxIndex(self)
+          </code>
+          <div class="tip" id="5096">
+            <strong>Signature:</strong> self:List&lt;&#39;T&gt; -&gt; int<br />
+                          <strong>Type parameters:</strong> 'T          </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '5097', 5097)" onmouseover="showTip(event, '5097', 5097)">
+            MaxIndex(self)
+          </code>
+          <div class="tip" id="5097">
+            <strong>Signature:</strong> (self:byte []) -&gt; int<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '5098', 5098)" onmouseover="showTip(event, '5098', 5098)">
+            MaxIndex(self)
+          </code>
+          <div class="tip" id="5098">
+            <strong>Signature:</strong> (self:sbyte []) -&gt; int<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '5099', 5099)" onmouseover="showTip(event, '5099', 5099)">
+            MaxIndex(self)
+          </code>
+          <div class="tip" id="5099">
+            <strong>Signature:</strong> (self:int16 []) -&gt; int<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '5100', 5100)" onmouseover="showTip(event, '5100', 5100)">
+            MaxIndex(self)
+          </code>
+          <div class="tip" id="5100">
+            <strong>Signature:</strong> (self:uint16 []) -&gt; int<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '5101', 5101)" onmouseover="showTip(event, '5101', 5101)">
+            MaxIndex(self)
+          </code>
+          <div class="tip" id="5101">
+            <strong>Signature:</strong> (self:int []) -&gt; int<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '5102', 5102)" onmouseover="showTip(event, '5102', 5102)">
+            MaxIndex(self)
+          </code>
+          <div class="tip" id="5102">
+            <strong>Signature:</strong> (self:uint32 []) -&gt; int<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '5103', 5103)" onmouseover="showTip(event, '5103', 5103)">
+            MaxIndex(self)
+          </code>
+          <div class="tip" id="5103">
+            <strong>Signature:</strong> (self:int64 []) -&gt; int<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '5104', 5104)" onmouseover="showTip(event, '5104', 5104)">
+            MaxIndex(self)
+          </code>
+          <div class="tip" id="5104">
+            <strong>Signature:</strong> (self:uint64 []) -&gt; int<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '5105', 5105)" onmouseover="showTip(event, '5105', 5105)">
+            MaxIndex(self)
+          </code>
+          <div class="tip" id="5105">
+            <strong>Signature:</strong> (self:float32 []) -&gt; int<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '5106', 5106)" onmouseover="showTip(event, '5106', 5106)">
+            MaxIndex(self)
+          </code>
+          <div class="tip" id="5106">
+            <strong>Signature:</strong> (self:float []) -&gt; int<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '5107', 5107)" onmouseover="showTip(event, '5107', 5107)">
+            MaxIndex(self)
+          </code>
+          <div class="tip" id="5107">
+            <strong>Signature:</strong> (self:decimal []) -&gt; int<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '5108', 5108)" onmouseover="showTip(event, '5108', 5108)">
+            MaxIndex(self)
+          </code>
+          <div class="tip" id="5108">
+            <strong>Signature:</strong> self:List&lt;byte&gt; -&gt; int<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '5109', 5109)" onmouseover="showTip(event, '5109', 5109)">
+            MaxIndex(self)
+          </code>
+          <div class="tip" id="5109">
+            <strong>Signature:</strong> self:List&lt;sbyte&gt; -&gt; int<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '5110', 5110)" onmouseover="showTip(event, '5110', 5110)">
+            MaxIndex(self)
+          </code>
+          <div class="tip" id="5110">
+            <strong>Signature:</strong> self:List&lt;int16&gt; -&gt; int<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '5111', 5111)" onmouseover="showTip(event, '5111', 5111)">
+            MaxIndex(self)
+          </code>
+          <div class="tip" id="5111">
+            <strong>Signature:</strong> self:List&lt;uint16&gt; -&gt; int<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '5112', 5112)" onmouseover="showTip(event, '5112', 5112)">
+            MaxIndex(self)
+          </code>
+          <div class="tip" id="5112">
+            <strong>Signature:</strong> self:List&lt;int&gt; -&gt; int<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '5113', 5113)" onmouseover="showTip(event, '5113', 5113)">
+            MaxIndex(self)
+          </code>
+          <div class="tip" id="5113">
+            <strong>Signature:</strong> self:List&lt;uint32&gt; -&gt; int<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '5114', 5114)" onmouseover="showTip(event, '5114', 5114)">
+            MaxIndex(self)
+          </code>
+          <div class="tip" id="5114">
+            <strong>Signature:</strong> self:List&lt;int64&gt; -&gt; int<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '5115', 5115)" onmouseover="showTip(event, '5115', 5115)">
+            MaxIndex(self)
+          </code>
+          <div class="tip" id="5115">
+            <strong>Signature:</strong> self:List&lt;uint64&gt; -&gt; int<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '5116', 5116)" onmouseover="showTip(event, '5116', 5116)">
+            MaxIndex(self)
+          </code>
+          <div class="tip" id="5116">
+            <strong>Signature:</strong> self:List&lt;float32&gt; -&gt; int<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '5117', 5117)" onmouseover="showTip(event, '5117', 5117)">
+            MaxIndex(self)
+          </code>
+          <div class="tip" id="5117">
+            <strong>Signature:</strong> self:List&lt;float&gt; -&gt; int<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '5118', 5118)" onmouseover="showTip(event, '5118', 5118)">
+            MaxIndex(self)
+          </code>
+          <div class="tip" id="5118">
+            <strong>Signature:</strong> self:List&lt;decimal&gt; -&gt; int<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '5119', 5119)" onmouseover="showTip(event, '5119', 5119)">
+            Median(self, cmp)
+          </code>
+          <div class="tip" id="5119">
+            <strong>Signature:</strong> (self:IEnumerable&lt;&#39;T&gt; * cmp:Func&lt;&#39;T,&#39;T,int&gt;) -&gt; &#39;T<br />
+                          <strong>Type parameters:</strong> 'T          </div>
+        </td>
+        <td class="xmldoc">
+          <p>Searches for the median-element in the Enumerable (according to cmp) and returns its value.
+Runtime is in O(N) and Memory in O(N)
+For partitioning use QuickMedian</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '5120', 5120)" onmouseover="showTip(event, '5120', 5120)">
+            Median(self)
+          </code>
+          <div class="tip" id="5120">
+            <strong>Signature:</strong> self:IEnumerable&lt;&#39;T&gt; -&gt; &#39;T<br />
+                          <strong>Type parameters:</strong> 'T          </div>
+        </td>
+        <td class="xmldoc">
+          <p>Searches for the median-element in the Enumerable and returns its value.
+Runtime is in O(N) and Memory in O(N)
+For partitioning use QuickMedian</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '5121', 5121)" onmouseover="showTip(event, '5121', 5121)">
+            Median(self, cmp)
+          </code>
+          <div class="tip" id="5121">
+            <strong>Signature:</strong> (self:&#39;T [] * cmp:Func&lt;&#39;T,&#39;T,int&gt;) -&gt; &#39;T<br />
+                          <strong>Type parameters:</strong> 'T          </div>
+        </td>
+        <td class="xmldoc">
+          <p>Searches for the median-element in the Array (according to cmp) and returns its value.
+Does not change the given Array
+Runtime is in O(N) and Memory in O(N)
+For partitioning use QuickMedian</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '5122', 5122)" onmouseover="showTip(event, '5122', 5122)">
+            Median(self)
+          </code>
+          <div class="tip" id="5122">
+            <strong>Signature:</strong> (self:&#39;T []) -&gt; &#39;T<br />
+                          <strong>Type parameters:</strong> 'T          </div>
+        </td>
+        <td class="xmldoc">
+          <p>Searches for the median-element in the Array and returns its value.
+Does not change the given Array
+Runtime is in O(N) and Memory in O(N)
+For partitioning use QuickMedian</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '5123', 5123)" onmouseover="showTip(event, '5123', 5123)">
+            Median(self, cmp)
+          </code>
+          <div class="tip" id="5123">
+            <strong>Signature:</strong> (self:List&lt;&#39;T&gt; * cmp:Func&lt;&#39;T,&#39;T,int&gt;) -&gt; &#39;T<br />
+                          <strong>Type parameters:</strong> 'T          </div>
+        </td>
+        <td class="xmldoc">
+          <p>Searches for the median-element in the List (according to cmp) and returns its value.
+Does not change the given List
+Runtime is in O(N) and Memory in O(N)
+For partitioning use QuickMedian</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '5124', 5124)" onmouseover="showTip(event, '5124', 5124)">
+            Median(self)
+          </code>
+          <div class="tip" id="5124">
+            <strong>Signature:</strong> self:List&lt;&#39;T&gt; -&gt; &#39;T<br />
+                          <strong>Type parameters:</strong> 'T          </div>
+        </td>
+        <td class="xmldoc">
+          <p>Searches for the median-element in the List and returns its value.
+Does not change the given List
+Runtime is in O(N) and Memory in O(N)
+For partitioning use QuickMedian</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '5125', 5125)" onmouseover="showTip(event, '5125', 5125)">
+            Min(seq, lessThan)
+          </code>
+          <div class="tip" id="5125">
+            <strong>Signature:</strong> (seq:IEnumerable&lt;&#39;T&gt; * lessThan:Func&lt;&#39;T,&#39;T,bool&gt;) -&gt; &#39;T<br />
+                          <strong>Type parameters:</strong> 'T          </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '5126', 5126)" onmouseover="showTip(event, '5126', 5126)">
+            Min(seq, lessThan, maxValue)
+          </code>
+          <div class="tip" id="5126">
+            <strong>Signature:</strong> (seq:IEnumerable&lt;&#39;T&gt; * lessThan:Func&lt;&#39;T,&#39;T,bool&gt; * maxValue:&#39;T) -&gt; &#39;T<br />
+                          <strong>Type parameters:</strong> 'T          </div>
+        </td>
+        <td class="xmldoc">
+          <p>Aardvark.Runtime.IEnumerableExtensions:
+No-Throw version. Finds the smallest element in seq according to lessThan, that is smaller than maxValue, or the first such element if there are equally small elements, or maxValue if no element is smaller.
+For normal operation set maxValue = +Inf or the maximum of T.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '5127', 5127)" onmouseover="showTip(event, '5127', 5127)">
+            MinElement(...)
+          </code>
+          <div class="tip" id="5127">
+            <strong>Signature:</strong> (source:IEnumerable&lt;&#39;TSrc&gt; * selector:Func&lt;&#39;TSrc,&#39;TDst&gt; * smallerThan:Func&lt;&#39;TDst,&#39;TDst,bool&gt; * maxVal:&#39;TDst * defaultRv:&#39;TSrc * rv_minVal:byref&lt;&#39;TDst&gt;) -&gt; &#39;TSrc<br />
+                          <strong>Type parameters:</strong> 'TSrc, 'TDst          </div>
+        </td>
+        <td class="xmldoc">
+          <p>Aardvark.Runtime.IEnumerableExtensions:
+Invokes a transform function on each element of a sequence and
+returns the element that yielded the minimum value (and the minimum value in rv_minVal).
+Only elements that yield smaller values than maxVal are considered.
+If multiple elements yield the minimum value, the first in the sequence is chosen.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '5128', 5128)" onmouseover="showTip(event, '5128', 5128)">
+            MinIndex(self, lessThan, minValue)
+          </code>
+          <div class="tip" id="5128">
+            <strong>Signature:</strong> (self:IEnumerable&lt;&#39;T&gt; * lessThan:Func&lt;&#39;T,&#39;T,bool&gt; * minValue:byref&lt;&#39;T&gt;) -&gt; int<br />
+                          <strong>Type parameters:</strong> 'T          </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '5129', 5129)" onmouseover="showTip(event, '5129', 5129)">
+            MinIndex(self, minValue)
+          </code>
+          <div class="tip" id="5129">
+            <strong>Signature:</strong> (self:IEnumerable&lt;&#39;T&gt; * minValue:byref&lt;&#39;T&gt;) -&gt; int<br />
+                          <strong>Type parameters:</strong> 'T          </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '5130', 5130)" onmouseover="showTip(event, '5130', 5130)">
+            MinIndex(self)
+          </code>
+          <div class="tip" id="5130">
+            <strong>Signature:</strong> self:IEnumerable&lt;&#39;T&gt; -&gt; int<br />
+                          <strong>Type parameters:</strong> 'T          </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '5131', 5131)" onmouseover="showTip(event, '5131', 5131)">
+            MinIndex(self, lessThan, minValue)
+          </code>
+          <div class="tip" id="5131">
+            <strong>Signature:</strong> (self:&#39;T [] * lessThan:Func&lt;&#39;T,&#39;T,bool&gt; * minValue:byref&lt;&#39;T&gt;) -&gt; int<br />
+                          <strong>Type parameters:</strong> 'T          </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '5132', 5132)" onmouseover="showTip(event, '5132', 5132)">
+            MinIndex(self, minValue)
+          </code>
+          <div class="tip" id="5132">
+            <strong>Signature:</strong> (self:&#39;T [] * minValue:byref&lt;&#39;T&gt;) -&gt; int<br />
+                          <strong>Type parameters:</strong> 'T          </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '5133', 5133)" onmouseover="showTip(event, '5133', 5133)">
+            MinIndex(self)
+          </code>
+          <div class="tip" id="5133">
+            <strong>Signature:</strong> (self:&#39;T []) -&gt; int<br />
+                          <strong>Type parameters:</strong> 'T          </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '5134', 5134)" onmouseover="showTip(event, '5134', 5134)">
+            MinIndex(self, lessThan, minValue)
+          </code>
+          <div class="tip" id="5134">
+            <strong>Signature:</strong> (self:List&lt;&#39;T&gt; * lessThan:Func&lt;&#39;T,&#39;T,bool&gt; * minValue:byref&lt;&#39;T&gt;) -&gt; int<br />
+                          <strong>Type parameters:</strong> 'T          </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '5135', 5135)" onmouseover="showTip(event, '5135', 5135)">
+            MinIndex(self, minValue)
+          </code>
+          <div class="tip" id="5135">
+            <strong>Signature:</strong> (self:List&lt;&#39;T&gt; * minValue:byref&lt;&#39;T&gt;) -&gt; int<br />
+                          <strong>Type parameters:</strong> 'T          </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '5136', 5136)" onmouseover="showTip(event, '5136', 5136)">
+            MinIndex(self)
+          </code>
+          <div class="tip" id="5136">
+            <strong>Signature:</strong> self:List&lt;&#39;T&gt; -&gt; int<br />
+                          <strong>Type parameters:</strong> 'T          </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '5137', 5137)" onmouseover="showTip(event, '5137', 5137)">
+            MinIndex(self)
+          </code>
+          <div class="tip" id="5137">
+            <strong>Signature:</strong> (self:byte []) -&gt; int<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '5138', 5138)" onmouseover="showTip(event, '5138', 5138)">
+            MinIndex(self)
+          </code>
+          <div class="tip" id="5138">
+            <strong>Signature:</strong> (self:sbyte []) -&gt; int<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '5139', 5139)" onmouseover="showTip(event, '5139', 5139)">
+            MinIndex(self)
+          </code>
+          <div class="tip" id="5139">
+            <strong>Signature:</strong> (self:int16 []) -&gt; int<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '5140', 5140)" onmouseover="showTip(event, '5140', 5140)">
+            MinIndex(self)
+          </code>
+          <div class="tip" id="5140">
+            <strong>Signature:</strong> (self:uint16 []) -&gt; int<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '5141', 5141)" onmouseover="showTip(event, '5141', 5141)">
+            MinIndex(self)
+          </code>
+          <div class="tip" id="5141">
+            <strong>Signature:</strong> (self:int []) -&gt; int<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '5142', 5142)" onmouseover="showTip(event, '5142', 5142)">
+            MinIndex(self)
+          </code>
+          <div class="tip" id="5142">
+            <strong>Signature:</strong> (self:uint32 []) -&gt; int<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '5143', 5143)" onmouseover="showTip(event, '5143', 5143)">
+            MinIndex(self)
+          </code>
+          <div class="tip" id="5143">
+            <strong>Signature:</strong> (self:int64 []) -&gt; int<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '5144', 5144)" onmouseover="showTip(event, '5144', 5144)">
+            MinIndex(self)
+          </code>
+          <div class="tip" id="5144">
+            <strong>Signature:</strong> (self:uint64 []) -&gt; int<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '5145', 5145)" onmouseover="showTip(event, '5145', 5145)">
+            MinIndex(self)
+          </code>
+          <div class="tip" id="5145">
+            <strong>Signature:</strong> (self:float32 []) -&gt; int<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '5146', 5146)" onmouseover="showTip(event, '5146', 5146)">
+            MinIndex(self)
+          </code>
+          <div class="tip" id="5146">
+            <strong>Signature:</strong> (self:float []) -&gt; int<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '5147', 5147)" onmouseover="showTip(event, '5147', 5147)">
+            MinIndex(self)
+          </code>
+          <div class="tip" id="5147">
+            <strong>Signature:</strong> (self:decimal []) -&gt; int<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '5148', 5148)" onmouseover="showTip(event, '5148', 5148)">
+            MinIndex(self)
+          </code>
+          <div class="tip" id="5148">
+            <strong>Signature:</strong> self:List&lt;byte&gt; -&gt; int<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '5149', 5149)" onmouseover="showTip(event, '5149', 5149)">
+            MinIndex(self)
+          </code>
+          <div class="tip" id="5149">
+            <strong>Signature:</strong> self:List&lt;sbyte&gt; -&gt; int<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '5150', 5150)" onmouseover="showTip(event, '5150', 5150)">
+            MinIndex(self)
+          </code>
+          <div class="tip" id="5150">
+            <strong>Signature:</strong> self:List&lt;int16&gt; -&gt; int<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '5151', 5151)" onmouseover="showTip(event, '5151', 5151)">
+            MinIndex(self)
+          </code>
+          <div class="tip" id="5151">
+            <strong>Signature:</strong> self:List&lt;uint16&gt; -&gt; int<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '5152', 5152)" onmouseover="showTip(event, '5152', 5152)">
+            MinIndex(self)
+          </code>
+          <div class="tip" id="5152">
+            <strong>Signature:</strong> self:List&lt;int&gt; -&gt; int<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '5153', 5153)" onmouseover="showTip(event, '5153', 5153)">
+            MinIndex(self)
+          </code>
+          <div class="tip" id="5153">
+            <strong>Signature:</strong> self:List&lt;uint32&gt; -&gt; int<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '5154', 5154)" onmouseover="showTip(event, '5154', 5154)">
+            MinIndex(self)
+          </code>
+          <div class="tip" id="5154">
+            <strong>Signature:</strong> self:List&lt;int64&gt; -&gt; int<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '5155', 5155)" onmouseover="showTip(event, '5155', 5155)">
+            MinIndex(self)
+          </code>
+          <div class="tip" id="5155">
+            <strong>Signature:</strong> self:List&lt;uint64&gt; -&gt; int<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '5156', 5156)" onmouseover="showTip(event, '5156', 5156)">
+            MinIndex(self)
+          </code>
+          <div class="tip" id="5156">
+            <strong>Signature:</strong> self:List&lt;float32&gt; -&gt; int<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '5157', 5157)" onmouseover="showTip(event, '5157', 5157)">
+            MinIndex(self)
+          </code>
+          <div class="tip" id="5157">
+            <strong>Signature:</strong> self:List&lt;float&gt; -&gt; int<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '5158', 5158)" onmouseover="showTip(event, '5158', 5158)">
+            MinIndex(self)
+          </code>
+          <div class="tip" id="5158">
+            <strong>Signature:</strong> self:List&lt;decimal&gt; -&gt; int<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '5159', 5159)" onmouseover="showTip(event, '5159', 5159)">
+            Most(self, predicate)
+          </code>
+          <div class="tip" id="5159">
+            <strong>Signature:</strong> (self:IEnumerable&lt;&#39;T&gt; * predicate:Func&lt;&#39;T,bool&gt;) -&gt; bool<br />
+                          <strong>Type parameters:</strong> 'T          </div>
+        </td>
+        <td class="xmldoc">
+          <p>Returns true if more elements than not satisfy the given predicate.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '5160', 5160)" onmouseover="showTip(event, '5160', 5160)">
+            NonNull(elements)
+          </code>
+          <div class="tip" id="5160">
+            <strong>Signature:</strong> elements:IEnumerable&lt;&#39;T&gt; -&gt; IEnumerable&lt;&#39;T&gt;<br />
+                          <strong>Type parameters:</strong> 'T          </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '5161', 5161)" onmouseover="showTip(event, '5161', 5161)">
+            PairChain(self, wrap)
+          </code>
+          <div class="tip" id="5161">
+            <strong>Signature:</strong> (self:IEnumerable&lt;&#39;T&gt; * wrap:bool) -&gt; IEnumerable&lt;Pair&lt;&#39;T&gt;&gt;<br />
+                          <strong>Type parameters:</strong> 'T          </div>
+        </td>
+        <td class="xmldoc">
+          <p>wrap = false: A B C D ... -&gt; (A, B) (B, C) (C, D) ...
+wrap = true:  A B C D -&gt; (A, B) (B, C) (C, D) (D, A)</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '5162', 5162)" onmouseover="showTip(event, '5162', 5162)">
+            PairChainIndexed(self, wrap)
+          </code>
+          <div class="tip" id="5162">
+            <strong>Signature:</strong> (self:IEnumerable&lt;&#39;T&gt; * wrap:bool) -&gt; IEnumerable&lt;Pair&lt;int&gt;&gt;<br />
+                          <strong>Type parameters:</strong> 'T          </div>
+        </td>
+        <td class="xmldoc">
+          <p>wrap = false: A B C D ... -&gt; (0, 1) (1, 2) (2, 3) ...
+wrap = true:  A B C D -&gt; (0, 1) (1, 2) (2, 3) (3, 0)</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '5163', 5163)" onmouseover="showTip(event, '5163', 5163)">
+            PairChainWrap(self)
+          </code>
+          <div class="tip" id="5163">
+            <strong>Signature:</strong> self:IEnumerable&lt;&#39;T&gt; -&gt; IEnumerable&lt;Pair&lt;&#39;T&gt;&gt;<br />
+                          <strong>Type parameters:</strong> 'T          </div>
+        </td>
+        <td class="xmldoc">
+          <p>A B C D -&gt; (A, B) (B, C) (C, D) (D, A)</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '5164', 5164)" onmouseover="showTip(event, '5164', 5164)">
+            PairChainWrapIndexed(self)
+          </code>
+          <div class="tip" id="5164">
+            <strong>Signature:</strong> self:IEnumerable&lt;&#39;T&gt; -&gt; IEnumerable&lt;Pair&lt;int&gt;&gt;<br />
+                          <strong>Type parameters:</strong> 'T          </div>
+        </td>
+        <td class="xmldoc">
+          <p>A B C -&gt; (0, 1) (1, 2) (2, 0)</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '5165', 5165)" onmouseover="showTip(event, '5165', 5165)">
+            Pairs(self)
+          </code>
+          <div class="tip" id="5165">
+            <strong>Signature:</strong> self:IEnumerable&lt;&#39;T&gt; -&gt; IEnumerable&lt;Pair&lt;&#39;T&gt;&gt;<br />
+                          <strong>Type parameters:</strong> 'T          </div>
+        </td>
+        <td class="xmldoc">
+          <p>A B C -&gt; (A, A) (A, B) (A, C) (B, A) (B, B) (B, C) (C, A) (C, B) (C, C)</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '5166', 5166)" onmouseover="showTip(event, '5166', 5166)">
+            Pairs(...)
+          </code>
+          <div class="tip" id="5166">
+            <strong>Signature:</strong> (self:IEnumerable&lt;&#39;T&gt; * excludeIdenticalPairs:bool * excludeReversePairs:bool) -&gt; IEnumerable&lt;Pair&lt;&#39;T&gt;&gt;<br />
+                          <strong>Type parameters:</strong> 'T          </div>
+        </td>
+        <td class="xmldoc">
+          <p>A B C -&gt; (A, A) (A, B) (A, C) (B, A) (B, B) (B, C) (C, A) (C, B) (C, C)
+excludeIdenticalPairs: A B C -&gt; (A, B) (A, C) (B, A) (B, C) (C, A) (C, B)
+excludeReversePairs:   A B C -&gt; (A, A) (A, B) (A, C) (B, B) (B, C) (C, C)
+both:                  A B C -&gt; (A, B) (A, C) (B, C)</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '5167', 5167)" onmouseover="showTip(event, '5167', 5167)">
+            Pairs(self, other)
+          </code>
+          <div class="tip" id="5167">
+            <strong>Signature:</strong> (self:IEnumerable&lt;&#39;T&gt; * other:IEnumerable&lt;&#39;T&gt;) -&gt; IEnumerable&lt;Pair&lt;&#39;T&gt;&gt;<br />
+                          <strong>Type parameters:</strong> 'T          </div>
+        </td>
+        <td class="xmldoc">
+          <p>[A B C].Pair([x y z]) -&gt; (A, x) (A, y) (A, z) (B, x) (B, y) (B, z) (C, x) (C, y) (C, z)</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '5168', 5168)" onmouseover="showTip(event, '5168', 5168)">
+            PairsCount(...)
+          </code>
+          <div class="tip" id="5168">
+            <strong>Signature:</strong> (self:IEnumerable&lt;&#39;T&gt; * excludeIdenticalPairs:bool * excludeReversePairs:bool) -&gt; int<br />
+                          <strong>Type parameters:</strong> 'T          </div>
+        </td>
+        <td class="xmldoc">
+          <p>Computes how many pairs method Pairs() will generate.
+Is efficient on ILists(of T), but will fully enumerate other IEnumerables.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '5169', 5169)" onmouseover="showTip(event, '5169', 5169)">
+            PairSequence(self)
+          </code>
+          <div class="tip" id="5169">
+            <strong>Signature:</strong> self:IEnumerable&lt;&#39;T&gt; -&gt; IEnumerable&lt;Pair&lt;&#39;T&gt;&gt;<br />
+                          <strong>Type parameters:</strong> 'T          </div>
+        </td>
+        <td class="xmldoc">
+          <p>A B C D ... -&gt; (A, B) (C, D) ...
+If sequence does not have even elements the last element is not selected.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '5170', 5170)" onmouseover="showTip(event, '5170', 5170)">
+            Repeat(self)
+          </code>
+          <div class="tip" id="5170">
+            <strong>Signature:</strong> self:&#39;T -&gt; IEnumerable&lt;&#39;T&gt;<br />
+                          <strong>Type parameters:</strong> 'T          </div>
+        </td>
+        <td class="xmldoc">
+          <p>Returns an enumeration which will infinitely yield copies of 'self'.
+A.Repeat -&gt; [A A A A ...]</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '5171', 5171)" onmouseover="showTip(event, '5171', 5171)">
+            Repeat(self, count)
+          </code>
+          <div class="tip" id="5171">
+            <strong>Signature:</strong> (self:&#39;T * count:int64) -&gt; IEnumerable&lt;&#39;T&gt;<br />
+                          <strong>Type parameters:</strong> 'T          </div>
+        </td>
+        <td class="xmldoc">
+          <p>Returns an enumeration which will yield 'count' copies of 'self'.
+A.Repeat(3) -&gt; [A A A]</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '5172', 5172)" onmouseover="showTip(event, '5172', 5172)">
+            Return(item)
+          </code>
+          <div class="tip" id="5172">
+            <strong>Signature:</strong> item:&#39;T -&gt; IEnumerable&lt;&#39;T&gt;<br />
+                          <strong>Type parameters:</strong> 'T          </div>
+        </td>
+        <td class="xmldoc">
+          <p>Creates sequence containing the given item.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '5173', 5173)" onmouseover="showTip(event, '5173', 5173)">
+            SelectNotNull(self, selector)
+          </code>
+          <div class="tip" id="5173">
+            <strong>Signature:</strong> (self:IEnumerable&lt;&#39;T&gt; * selector:Func&lt;&#39;T,&#39;TResult&gt;) -&gt; IEnumerable&lt;&#39;TResult&gt;<br />
+                          <strong>Type parameters:</strong> 'T, 'TResult          </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '5174', 5174)" onmouseover="showTip(event, '5174', 5174)">
+            SelectToArray(self, selector)
+          </code>
+          <div class="tip" id="5174">
+            <strong>Signature:</strong> (self:&#39;T [] * selector:Func&lt;&#39;T,&#39;R&gt;) -&gt; &#39;R []<br />
+                          <strong>Type parameters:</strong> 'T, 'R          </div>
+        </td>
+        <td class="xmldoc">
+          <p>Maps the elements of an array to a result array.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '5175', 5175)" onmouseover="showTip(event, '5175', 5175)">
+            SelectToArray(self, selector)
+          </code>
+          <div class="tip" id="5175">
+            <strong>Signature:</strong> (self:List&lt;&#39;T&gt; * selector:Func&lt;&#39;T,&#39;R&gt;) -&gt; &#39;R []<br />
+                          <strong>Type parameters:</strong> 'T, 'R          </div>
+        </td>
+        <td class="xmldoc">
+          <p>Maps the elements of a list to a result array.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '5176', 5176)" onmouseover="showTip(event, '5176', 5176)">
+            SelectToList(self, selector)
+          </code>
+          <div class="tip" id="5176">
+            <strong>Signature:</strong> (self:&#39;T [] * selector:Func&lt;&#39;T,&#39;R&gt;) -&gt; List&lt;&#39;R&gt;<br />
+                          <strong>Type parameters:</strong> 'T, 'R          </div>
+        </td>
+        <td class="xmldoc">
+          <p>Maps the elements of an array to a result list.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '5177', 5177)" onmouseover="showTip(event, '5177', 5177)">
+            SelectToList(self, selector)
+          </code>
+          <div class="tip" id="5177">
+            <strong>Signature:</strong> (self:List&lt;&#39;T&gt; * selector:Func&lt;&#39;T,&#39;R&gt;) -&gt; List&lt;&#39;R&gt;<br />
+                          <strong>Type parameters:</strong> 'T, 'R          </div>
+        </td>
+        <td class="xmldoc">
+          <p>Maps the elements of a list to a result list.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '5178', 5178)" onmouseover="showTip(event, '5178', 5178)">
+            SetEquals(self, other)
+          </code>
+          <div class="tip" id="5178">
+            <strong>Signature:</strong> (self:IEnumerable&lt;&#39;T&gt; * other:IEnumerable&lt;&#39;T&gt;) -&gt; bool<br />
+                          <strong>Type parameters:</strong> 'T          </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '5179', 5179)" onmouseover="showTip(event, '5179', 5179)">
+            SortedByDenseIndex(indexedValues)
+          </code>
+          <div class="tip" id="5179">
+            <strong>Signature:</strong> indexedValues:IEnumerable&lt;IndexedValue&lt;&#39;T&gt;&gt; -&gt; &#39;T []<br />
+                          <strong>Type parameters:</strong> 'T          </div>
+        </td>
+        <td class="xmldoc">
+          <p>If you have a sequence of indexed values, where all indexes
+starting from 0 up to some maximal value are present and
+unique, sorting can be performed this simple array based
+reshuffling operation with O(n) cost.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '5180', 5180)" onmouseover="showTip(event, '5180', 5180)">
+            TakePeriodic(self, stride)
+          </code>
+          <div class="tip" id="5180">
+            <strong>Signature:</strong> (self:IEnumerable&lt;&#39;T&gt; * stride:int) -&gt; IEnumerable&lt;&#39;T&gt;<br />
+                          <strong>Type parameters:</strong> 'T          </div>
+        </td>
+        <td class="xmldoc">
+          <p>Yields every stride-th element.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '5181', 5181)" onmouseover="showTip(event, '5181', 5181)">
+            TakeToArray(self, count)
+          </code>
+          <div class="tip" id="5181">
+            <strong>Signature:</strong> (self:IEnumerable&lt;&#39;T&gt; * count:int) -&gt; &#39;T []<br />
+                          <strong>Type parameters:</strong> 'T          </div>
+        </td>
+        <td class="xmldoc">
+          <p>Take the first count items of a sequence and put them into an
+array. If the sequence is shorter than the specified count, an
+Argument exception is thrown.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '5182', 5182)" onmouseover="showTip(event, '5182', 5182)">
+            TakeToArrayDefault(self, count)
+          </code>
+          <div class="tip" id="5182">
+            <strong>Signature:</strong> (self:IEnumerable&lt;&#39;T&gt; * count:int) -&gt; &#39;T []<br />
+                          <strong>Type parameters:</strong> 'T          </div>
+        </td>
+        <td class="xmldoc">
+          <p>Take the first count items of a sequence and put them into an
+array. If the sequence is shorter than the specified count, the
+array is filled up with default values.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '5183', 5183)" onmouseover="showTip(event, '5183', 5183)">
+            TakeToList(self, count)
+          </code>
+          <div class="tip" id="5183">
+            <strong>Signature:</strong> (self:IEnumerable&lt;&#39;T&gt; * count:int) -&gt; List&lt;&#39;T&gt;<br />
+                          <strong>Type parameters:</strong> 'T          </div>
+        </td>
+        <td class="xmldoc">
+          <p>Take the first count items of a sequence and put them into a
+list. If the supplied sequence has less than count elements
+the resulting list is shorter than count items.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '5184', 5184)" onmouseover="showTip(event, '5184', 5184)">
+            ToArray(source, count)
+          </code>
+          <div class="tip" id="5184">
+            <strong>Signature:</strong> (source:IEnumerable&lt;&#39;TElement&gt; * count:int) -&gt; &#39;TElement []<br />
+                          <strong>Type parameters:</strong> 'TElement          </div>
+        </td>
+        <td class="xmldoc">
+          <p>This is a more efficient version of System.Linq.Enumerable.ToArray() when the number of elements of  cannot be efficiently determined but is known.
+Creates an array from a .</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '5185', 5185)" onmouseover="showTip(event, '5185', 5185)">
+            ToArrayDebug(self)
+          </code>
+          <div class="tip" id="5185">
+            <strong>Signature:</strong> self:IEnumerable&lt;&#39;T&gt; -&gt; &#39;T []<br />
+                          <strong>Type parameters:</strong> 'T          </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '5186', 5186)" onmouseover="showTip(event, '5186', 5186)">
+            ToDictionaryDistinct(...)
+          </code>
+          <div class="tip" id="5186">
+            <strong>Signature:</strong> (source:IEnumerable&lt;&#39;TSource&gt; * keySelector:Func&lt;&#39;TSource,&#39;TKey&gt; * elementSelector:Func&lt;&#39;TSource,&#39;TElement&gt; * duplicateValue:&#39;TElement) -&gt; Dictionary&lt;&#39;TKey,&#39;TElement&gt;<br />
+                          <strong>Type parameters:</strong> 'TSource, 'TKey, 'TElement          </div>
+        </td>
+        <td class="xmldoc">
+          <p>Creates a Dictionary(of TKey,TValue) from an IEnumerable(of TSource)
+according to specified key selector and element selector functions.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '5187', 5187)" onmouseover="showTip(event, '5187', 5187)">
+            ToDictionaryDistinct(...)
+          </code>
+          <div class="tip" id="5187">
+            <strong>Signature:</strong> (source:IEnumerable&lt;&#39;TSource&gt; * keySelector:Func&lt;&#39;TSource,&#39;TKey&gt; * elementSelector:Func&lt;&#39;TSource,&#39;TElement&gt; * duplicateKeyKeepElement:Func&lt;&#39;TElement,&#39;TElement,bool&gt;) -&gt; Dictionary&lt;&#39;TKey,&#39;TElement&gt;<br />
+                          <strong>Type parameters:</strong> 'TSource, 'TKey, 'TElement          </div>
+        </td>
+        <td class="xmldoc">
+          <p>Creates a Dictionary(of TKey,TValue) from an IEnumerable(of TSource)
+containing all Key Value pairs with distinct keys.
+For duplicate keys, the returned value of  is inserted instead.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '5188', 5188)" onmouseover="showTip(event, '5188', 5188)">
+            ToDictionaryDistinct(...)
+          </code>
+          <div class="tip" id="5188">
+            <strong>Signature:</strong> (source:IEnumerable&lt;&#39;TSource&gt; * keySelector:Func&lt;&#39;TSource,&#39;TKey&gt; * elementSelector:Func&lt;&#39;TSource,&#39;TElement&gt; * duplicateKeyElementSelector:Func&lt;&#39;TElement,&#39;TElement,&#39;TElement&gt;) -&gt; Dictionary&lt;&#39;TKey,&#39;TElement&gt;<br />
+                          <strong>Type parameters:</strong> 'TSource, 'TKey, 'TElement          </div>
+        </td>
+        <td class="xmldoc">
+          <p>Creates a Dictionary(of TKey,TValue) from an IEnumerable(of TSource)
+containing all Key Value pairs with distinct keys.
+For duplicate keys, the returned value of  is inserted instead.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '5189', 5189)" onmouseover="showTip(event, '5189', 5189)">
+            ToString(...)
+          </code>
+          <div class="tip" id="5189">
+            <strong>Signature:</strong> (self:IEnumerable&lt;&#39;T&gt; * format:Func&lt;&#39;T,string&gt; * begin:string * between:string * end:string) -&gt; string<br />
+                          <strong>Type parameters:</strong> 'T          </div>
+        </td>
+        <td class="xmldoc">
+          <p>Outputs the enumeration in the form "(begin)element0(between)element1<a href="end">...</a>".
+Each element is formatted by the delegate format.
+You may set any parameter to null, in which case the default values
+(v =&gt; v.ToString(), "", ", ", "") are used.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '5190', 5190)" onmouseover="showTip(event, '5190', 5190)">
+            TripleChain(self, wrap)
+          </code>
+          <div class="tip" id="5190">
+            <strong>Signature:</strong> (self:IEnumerable&lt;&#39;T&gt; * wrap:bool) -&gt; IEnumerable&lt;Triple&lt;&#39;T&gt;&gt;<br />
+                          <strong>Type parameters:</strong> 'T          </div>
+        </td>
+        <td class="xmldoc">
+          <p>wrap = false: A B C D ... -&gt; (A, B, C) (B, C, D) (C, D, E) ...
+wrap = true:  A B C D -&gt; (A, B, C) (B, C, D) (C, D, A) (D, A, B)</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '5191', 5191)" onmouseover="showTip(event, '5191', 5191)">
+            TripleChainWrap(self)
+          </code>
+          <div class="tip" id="5191">
+            <strong>Signature:</strong> self:IEnumerable&lt;&#39;T&gt; -&gt; IEnumerable&lt;Triple&lt;&#39;T&gt;&gt;<br />
+                          <strong>Type parameters:</strong> 'T          </div>
+        </td>
+        <td class="xmldoc">
+          <p>A B C D -&gt; (A, B, C) (B, C, D) (C, D, A) (D, A, B)</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '5192', 5192)" onmouseover="showTip(event, '5192', 5192)">
+            Triples(self)
+          </code>
+          <div class="tip" id="5192">
+            <strong>Signature:</strong> self:IEnumerable&lt;&#39;T&gt; -&gt; IEnumerable&lt;Triple&lt;&#39;T&gt;&gt;<br />
+                          <strong>Type parameters:</strong> 'T          </div>
+        </td>
+        <td class="xmldoc">
+          <p>A B C -&gt; AAA, AAB, AAC, ABA, ABB, ABC, ACA, ACB, ACC, BAA, BAB, BAC, BBA, BBB, BBC, BCA, BCB, BCC, CAA, CAB, CAC, CBA, CBB, CBC, CCA, CCB, CCC</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '5193', 5193)" onmouseover="showTip(event, '5193', 5193)">
+            Triples(...)
+          </code>
+          <div class="tip" id="5193">
+            <strong>Signature:</strong> (self:IEnumerable&lt;&#39;T&gt; * excludeIdenticalPairs:bool * excludeReversePairs:bool) -&gt; IEnumerable&lt;Triple&lt;&#39;T&gt;&gt;<br />
+                          <strong>Type parameters:</strong> 'T          </div>
+        </td>
+        <td class="xmldoc">
+          <p>A B C -&gt; AAA, AAB, AAC, ABA, ABB, ABC, ACA, ACB, ACC, BAA, BAB, BAC, BBA, BBB, BBC, BCA, BCB, BCC, CAA, CAB, CAC, CBA, CBB, CBC, CCA, CCB, CCC
+excludeIdenticalPairs: A B C -&gt; ABC, CBA
+excludeReversePairs:   A B C -&gt; AAA, AAB, AAC, ABA, ABB, ABC, ACA, ACB, ACC, BAB, BAC, BBB, BBC, BCB, BCC, CAC, CBC, CCC
+both:                  A B C -&gt; ABC</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '5194', 5194)" onmouseover="showTip(event, '5194', 5194)">
+            Triples(self, other1, other2)
+          </code>
+          <div class="tip" id="5194">
+            <strong>Signature:</strong> (self:IEnumerable&lt;&#39;T&gt; * other1:IEnumerable&lt;&#39;T&gt; * other2:IEnumerable&lt;&#39;T&gt;) -&gt; IEnumerable&lt;Triple&lt;&#39;T&gt;&gt;<br />
+                          <strong>Type parameters:</strong> 'T          </div>
+        </td>
+        <td class="xmldoc">
+          <p>[A B].Triple([x y], [X Y]) -&gt; (A, x, X) (A, x, Y) (A, y, X) (A, y, Y) (B, x, X) (B, x, Y) (B, y, X) (B, y, Y) (C, x, X) (C, x, Y) (C, y, X) (C, y, Y)</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '5195', 5195)" onmouseover="showTip(event, '5195', 5195)">
+            TripleSequence(self)
+          </code>
+          <div class="tip" id="5195">
+            <strong>Signature:</strong> self:IEnumerable&lt;&#39;T&gt; -&gt; IEnumerable&lt;Triple&lt;&#39;T&gt;&gt;<br />
+                          <strong>Type parameters:</strong> 'T          </div>
+        </td>
+        <td class="xmldoc">
+          <p>A B C D ... -&gt; (A, B, C) (D, E, F) ...
+If sequence does not have even elements the last element is not selected.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '5196', 5196)" onmouseover="showTip(event, '5196', 5196)">
+            TrueForAll(sequence, predicate)
+          </code>
+          <div class="tip" id="5196">
+            <strong>Signature:</strong> (sequence:IEnumerable&lt;&#39;T&gt; * predicate:Func&lt;&#39;T,bool&gt;) -&gt; bool<br />
+                          <strong>Type parameters:</strong> 'T          </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '5197', 5197)" onmouseover="showTip(event, '5197', 5197)">
+            TrueForAny(sequence, predicate)
+          </code>
+          <div class="tip" id="5197">
+            <strong>Signature:</strong> (sequence:IEnumerable&lt;&#39;T&gt; * predicate:Func&lt;&#39;T,bool&gt;) -&gt; bool<br />
+                          <strong>Type parameters:</strong> 'T          </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '5198', 5198)" onmouseover="showTip(event, '5198', 5198)">
+            WhereNotNull(self)
+          </code>
+          <div class="tip" id="5198">
+            <strong>Signature:</strong> self:IEnumerable&lt;&#39;T&gt; -&gt; IEnumerable&lt;&#39;T&gt;<br />
+                          <strong>Type parameters:</strong> 'T          </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '5199', 5199)" onmouseover="showTip(event, '5199', 5199)">
+            WithFirstMovedToEnd(self)
+          </code>
+          <div class="tip" id="5199">
+            <strong>Signature:</strong> self:IEnumerable&lt;&#39;T&gt; -&gt; IEnumerable&lt;&#39;T&gt;<br />
+                          <strong>Type parameters:</strong> 'T          </div>
+        </td>
+        <td class="xmldoc">
+          <p>Moves the first element to the end of the sequence.
+[A B C D E].MoveFirstToEnd() -&gt; [B C D E A]</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '5200', 5200)" onmouseover="showTip(event, '5200', 5200)">
+            WithRepeatedLast(self)
+          </code>
+          <div class="tip" id="5200">
+            <strong>Signature:</strong> self:IEnumerable&lt;&#39;T&gt; -&gt; IEnumerable&lt;&#39;T&gt;<br />
+                          <strong>Type parameters:</strong> 'T          </div>
+        </td>
+        <td class="xmldoc">
+          <p>Appends an infinite number of copies of the sequence's last element.
+[A B C].WithRepeatedLast() -&gt; [A B C C C C C ...]
+Does nothing for an empty sequence.
+Throws an exception for a null sequence.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '5201', 5201)" onmouseover="showTip(event, '5201', 5201)">
+            Zip(self, other)
+          </code>
+          <div class="tip" id="5201">
+            <strong>Signature:</strong> (self:IEnumerable&lt;&#39;T&gt; * other:IEnumerable&lt;&#39;T&gt;) -&gt; IEnumerable&lt;&#39;T&gt;<br />
+                          <strong>Type parameters:</strong> 'T          </div>
+        </td>
+        <td class="xmldoc">
+          <p>Interleave this' elements with other's elements resulting in
+a sequence of length min(this.Length, other.Length).</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '5202', 5202)" onmouseover="showTip(event, '5202', 5202)">
+            Zip(self, other1, other2)
+          </code>
+          <div class="tip" id="5202">
+            <strong>Signature:</strong> (self:IEnumerable&lt;&#39;T&gt; * other1:IEnumerable&lt;&#39;T&gt; * other2:IEnumerable&lt;&#39;T&gt;) -&gt; IEnumerable&lt;&#39;T&gt;<br />
+                          <strong>Type parameters:</strong> 'T          </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '5203', 5203)" onmouseover="showTip(event, '5203', 5203)">
+            ZipAll(self, other)
+          </code>
+          <div class="tip" id="5203">
+            <strong>Signature:</strong> (self:IEnumerable&lt;&#39;T&gt; * other:IEnumerable&lt;&#39;T&gt;) -&gt; IEnumerable&lt;&#39;T&gt;<br />
+                          <strong>Type parameters:</strong> 'T          </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '5204', 5204)" onmouseover="showTip(event, '5204', 5204)">
+            ZipAll(self, other1, other2)
+          </code>
+          <div class="tip" id="5204">
+            <strong>Signature:</strong> (self:IEnumerable&lt;&#39;T&gt; * other1:IEnumerable&lt;&#39;T&gt; * other2:IEnumerable&lt;&#39;T&gt;) -&gt; IEnumerable&lt;&#39;T&gt;<br />
+                          <strong>Type parameters:</strong> 'T          </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '5205', 5205)" onmouseover="showTip(event, '5205', 5205)">
+            ZipPairs(self, other)
+          </code>
+          <div class="tip" id="5205">
+            <strong>Signature:</strong> (self:IEnumerable&lt;&#39;T&gt; * other:IEnumerable&lt;&#39;T&gt;) -&gt; IEnumerable&lt;Pair&lt;&#39;T&gt;&gt;<br />
+                          <strong>Type parameters:</strong> 'T          </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '5206', 5206)" onmouseover="showTip(event, '5206', 5206)">
+            ZipTriples(self, other1, other2)
+          </code>
+          <div class="tip" id="5206">
+            <strong>Signature:</strong> (self:IEnumerable&lt;&#39;T&gt; * other1:IEnumerable&lt;&#39;T&gt; * other2:IEnumerable&lt;&#39;T&gt;) -&gt; IEnumerable&lt;Triple&lt;&#39;T&gt;&gt;<br />
+                          <strong>Type parameters:</strong> 'T          </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '5207', 5207)" onmouseover="showTip(event, '5207', 5207)">
+            ZipTuples(self, other)
+          </code>
+          <div class="tip" id="5207">
+            <strong>Signature:</strong> (self:IEnumerable&lt;&#39;T0&gt; * other:IEnumerable&lt;&#39;T1&gt;) -&gt; IEnumerable&lt;Tup&lt;&#39;T0,&#39;T1&gt;&gt;<br />
+                          <strong>Type parameters:</strong> 'T0, 'T1          </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '5208', 5208)" onmouseover="showTip(event, '5208', 5208)">
+            ZipTuples(self, other1, other2)
+          </code>
+          <div class="tip" id="5208">
+            <strong>Signature:</strong> (self:IEnumerable&lt;&#39;T0&gt; * other1:IEnumerable&lt;&#39;T1&gt; * other2:IEnumerable&lt;&#39;T2&gt;) -&gt; IEnumerable&lt;Tup&lt;&#39;T0,&#39;T1,&#39;T2&gt;&gt;<br />
+                          <strong>Type parameters:</strong> 'T0, 'T1, 'T2          </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+        </div>
+        <div class="span3">
+          <a href="https://github.com/vrvis">
+            <img src="logo.png" style="width:140px;height:140px;margin:10px 0px 0px 35px;border-style:none;" />
+          </a>
+
+          <ul class="nav nav-list" id="menu">
+
+            <li class="nav-header">Aardvark.Base</li>
+
+            <li class="divider"></li>
+            <li><a href="https://github.com/vrvis/aardvark.base">Home page</a></li>
+            <li class="divider"></li>
+
+            <li><a href="https://www.nuget.org/packages/Aardvark.Base">Get Aardvark.Base via NuGet</a></li>
+            <li><a href="https://github.com/vrvis/aardvark.base">Source Code on GitHub</a></li>
+            <li><a href="https://github.com/vrvis/aardvark.baseLicense">License (Apache 2)</a></li>
+            
+            <!-- <li><a href="https://github.com/vrvis/aardvark.base/RELEASE_NOTES.html">Release Notes</a></li>
+            <li><a href="https://github.com/vrvis/aardvark.base//contributing.html">Contributing to Aardvark.Base</a></li>
+  
+            <li><a href="http://stackoverflow.com/questions/tagged/f%23-fake">Ask a question</a></li> 
+            
+            <li class="nav-header">Tutorials</li>
+            <li><a href="https://github.com/vrvis/aardvark.base/gettingstarted.html">Getting started</a></li>
+            
+            -->
+
+            
+            <li class="divider"></li>
+            <li class="nav-header">Reference</li>
+
+            <li><a href="https://github.com/vrvis/aardvark.base/apidocs/index.html">API Reference</a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    <a href="https://github.com/vrvis/aardvark.base"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_gray_6d6d6d.png" alt="Fork me on GitHub"></a>
+  </body>
+  </html>

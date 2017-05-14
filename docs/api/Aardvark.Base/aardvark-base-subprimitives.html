@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>SubPrimitives - Aardvark.Base</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="The Aardvark Platform Team">
+
+    <script src="https://code.jquery.com/jquery-1.8.0.js"></script>
+    <script src="https://code.jquery.com/ui/1.8.23/jquery-ui.js"></script>
+    <script src="https://netdna.bootstrapcdn.com/twitter-bootstrap/2.2.1/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link href="https://netdna.bootstrapcdn.com/twitter-bootstrap/2.2.1/css/bootstrap-combined.min.css" rel="stylesheet">
+
+    <link type="text/css" rel="stylesheet" href="https://github.com/vrvis/aardvark.base/content/style.css" />
+    <script type="text/javascript" src="https://github.com/vrvis/aardvark.base/content/tips.js"></script>
+    <!-- HTML5 shim, for IE6-8 support of HTML5 elements -->
+    <!--[if lt IE 9]>
+      <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+  </head>
+  <body>
+    <div class="container">
+      <div class="masthead">
+        <ul class="nav nav-pills pull-right">
+          <li><a href="https://github.com/vrvis/aardvark.base">github page</a></li>
+        </ul>
+        <h3 class="muted"><a href="https://github.com/vrvis/aardvark.base/index.html">Aardvark.Base</a></h3>
+      </div>
+      <hr />
+      <div class="row">
+        <div class="span9" id="main">
+          
+
+
+
+<h1>SubPrimitives</h1>
+<div class="xmldoc">
+</div>
+  <h3>Static members</h3>
+  <table class="table table-bordered member-list">
+    <thead>
+      <tr><td>Static member</td><td>Description</td></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '18348', 18348)" onmouseover="showTip(event, '18348', 18348)">
+            AddNonConcaveSubPolygons(...)
+          </code>
+          <div class="tip" id="18348">
+            <strong>Signature:</strong> (polygonList:List&lt;int []&gt; * poly:Polygon2d * absoluteEpsilon:float) -&gt; unit<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '18349', 18349)" onmouseover="showTip(event, '18349', 18349)">
+            ComputeNonConcaveSubPolygons(...)
+          </code>
+          <div class="tip" id="18349">
+            <strong>Signature:</strong> (polygon:Polygon2d * absoluteEpsilon:float) -&gt; List&lt;int []&gt;<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '18350', 18350)" onmouseover="showTip(event, '18350', 18350)">
+            ComputeNonConcaveSubPolygons(...)
+          </code>
+          <div class="tip" id="18350">
+            <strong>Signature:</strong> (polygon:Polygon3d * absoluteEpsilon:float) -&gt; List&lt;int []&gt;<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '18351', 18351)" onmouseover="showTip(event, '18351', 18351)">
+            ComputeNonConcaveSubPolygons(...)
+          </code>
+          <div class="tip" id="18351">
+            <strong>Signature:</strong> (vertexArray:V3d [] * polyCount:int * normalArray:V3d [] * firstIndices:int [] * vertexIndices:int [] * faceBackMap:List&lt;int&gt; * absoluteEpsilon:float) -&gt; List&lt;int []&gt;<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '18352', 18352)" onmouseover="showTip(event, '18352', 18352)">
+            ComputeSimpleTriangulation(...)
+          </code>
+          <div class="tip" id="18352">
+            <strong>Signature:</strong> (pia:int [] * via:int [] * tvi:int * tia:int [] * pvibm:int [] * tibm:int []) -&gt; int<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Compute a simple triangulation starting from the first point of
+the polygon. Note that the indices are twice indirect (once over
+pia, once over via). Returns the number of triangles (ie. two
+less than the length of the array pia).</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '18353', 18353)" onmouseover="showTip(event, '18353', 18353)">
+            ComputeStraightVertices(...)
+          </code>
+          <div class="tip" id="18353">
+            <strong>Signature:</strong> (via:int [] * va:V3d [] * absoluteEpsilon:float * normalizedEdgeArray:V3d [] * straightArray:bool []) -&gt; unit<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '18354', 18354)" onmouseover="showTip(event, '18354', 18354)">
+            ComputeTriangulationOfConcavePolygon(...)
+          </code>
+          <div class="tip" id="18354">
+            <strong>Signature:</strong> (polygon:Polygon3d * absoluteEpsilon:float) -&gt; int []<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Compute the triangulation of the supplied concave polygon and
+return the resulting triangle index array.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '18355', 18355)" onmouseover="showTip(event, '18355', 18355)">
+            ComputeTriangulationOfConcavePolygons(...)
+          </code>
+          <div class="tip" id="18355">
+            <strong>Signature:</strong> (vertexArray:V3d [] * polyCount:int * normalArray:V3d [] * firstIndices:int [] * vertexIndices:int [] * absoluteEpsilon:float) -&gt; int []<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Compute the triangulation of the concave polygons supplied in
+the arrays with PolyMesh layout, and return the resulting
+triangle index array.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '18356', 18356)" onmouseover="showTip(event, '18356', 18356)">
+            ComputeTriangulationOfNonConcavePolygon(...)
+          </code>
+          <div class="tip" id="18356">
+            <strong>Signature:</strong> (ia:int [] * via:int [] * va:V3d [] * edgeArray:V3d [] * straightArray:bool [] * tvi:int * tia:int [] * pvibm:int [] * tibm:int []) -&gt; int<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '18357', 18357)" onmouseover="showTip(event, '18357', 18357)">
+            ComputeTriangulationOfNonConcavePolygon(...)
+          </code>
+          <div class="tip" id="18357">
+            <strong>Signature:</strong> (va:V3d [] * via:int [] * absoluteEpsilon:float * ftvi:int * tia:int [] * pvibm:int [] * tibm:int []) -&gt; int<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '18358', 18358)" onmouseover="showTip(event, '18358', 18358)">
+            ComputeTriangulationOfNonConcavePolygons(...)
+          </code>
+          <div class="tip" id="18358">
+            <strong>Signature:</strong> (vertexArray:V3d [] * nonConcavePolyList:List&lt;int []&gt; * absoluteEpsilon:float) -&gt; int []<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+        </div>
+        <div class="span3">
+          <a href="https://github.com/vrvis">
+            <img src="logo.png" style="width:140px;height:140px;margin:10px 0px 0px 35px;border-style:none;" />
+          </a>
+
+          <ul class="nav nav-list" id="menu">
+
+            <li class="nav-header">Aardvark.Base</li>
+
+            <li class="divider"></li>
+            <li><a href="https://github.com/vrvis/aardvark.base">Home page</a></li>
+            <li class="divider"></li>
+
+            <li><a href="https://www.nuget.org/packages/Aardvark.Base">Get Aardvark.Base via NuGet</a></li>
+            <li><a href="https://github.com/vrvis/aardvark.base">Source Code on GitHub</a></li>
+            <li><a href="https://github.com/vrvis/aardvark.baseLicense">License (Apache 2)</a></li>
+            
+            <!-- <li><a href="https://github.com/vrvis/aardvark.base/RELEASE_NOTES.html">Release Notes</a></li>
+            <li><a href="https://github.com/vrvis/aardvark.base//contributing.html">Contributing to Aardvark.Base</a></li>
+  
+            <li><a href="http://stackoverflow.com/questions/tagged/f%23-fake">Ask a question</a></li> 
+            
+            <li class="nav-header">Tutorials</li>
+            <li><a href="https://github.com/vrvis/aardvark.base/gettingstarted.html">Getting started</a></li>
+            
+            -->
+
+            
+            <li class="divider"></li>
+            <li class="nav-header">Reference</li>
+
+            <li><a href="https://github.com/vrvis/aardvark.base/apidocs/index.html">API Reference</a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    <a href="https://github.com/vrvis/aardvark.base"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_gray_6d6d6d.png" alt="Fork me on GitHub"></a>
+  </body>
+  </html>

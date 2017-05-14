@@ -1,0 +1,1268 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>Rot3f - Aardvark.Base</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="The Aardvark Platform Team">
+
+    <script src="https://code.jquery.com/jquery-1.8.0.js"></script>
+    <script src="https://code.jquery.com/ui/1.8.23/jquery-ui.js"></script>
+    <script src="https://netdna.bootstrapcdn.com/twitter-bootstrap/2.2.1/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link href="https://netdna.bootstrapcdn.com/twitter-bootstrap/2.2.1/css/bootstrap-combined.min.css" rel="stylesheet">
+
+    <link type="text/css" rel="stylesheet" href="https://github.com/vrvis/aardvark.base/content/style.css" />
+    <script type="text/javascript" src="https://github.com/vrvis/aardvark.base/content/tips.js"></script>
+    <!-- HTML5 shim, for IE6-8 support of HTML5 elements -->
+    <!--[if lt IE 9]>
+      <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+  </head>
+  <body>
+    <div class="container">
+      <div class="masthead">
+        <ul class="nav nav-pills pull-right">
+          <li><a href="https://github.com/vrvis/aardvark.base">github page</a></li>
+        </ul>
+        <h3 class="muted"><a href="https://github.com/vrvis/aardvark.base/index.html">Aardvark.Base</a></h3>
+      </div>
+      <hr />
+      <div class="row">
+        <div class="span9" id="main">
+          
+
+
+
+<h1>Rot3f</h1>
+<div class="xmldoc">
+<p>Represents an arbitrary rotation in three dimensions. Implemented as
+a normalized quaternion.</p>
+
+</div>
+  <h3>Constructors</h3>
+  <table class="table table-bordered member-list">
+    <thead>
+      <tr><td>Constructor</td><td>Description</td></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '15884', 15884)" onmouseover="showTip(event, '15884', 15884)">
+            new(w, x, y, z)
+          </code>
+          <div class="tip" id="15884">
+            <strong>Signature:</strong> (w:float32 * x:float32 * y:float32 * z:float32) -&gt; unit<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Creates quaternion (w, (x, y, z)).</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '15885', 15885)" onmouseover="showTip(event, '15885', 15885)">
+            new(w, v)
+          </code>
+          <div class="tip" id="15885">
+            <strong>Signature:</strong> (w:float32 * v:V3f) -&gt; unit<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Creates quaternion (w, (v.x, v.y, v.z)).</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '15886', 15886)" onmouseover="showTip(event, '15886', 15886)">
+            new(a)
+          </code>
+          <div class="tip" id="15886">
+            <strong>Signature:</strong> (a:float32 []) -&gt; unit<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Creates quaternion from array.
+(w = a[0], (x = a[1], y = a[2], z = a[3])).</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '15887', 15887)" onmouseover="showTip(event, '15887', 15887)">
+            new(a, start)
+          </code>
+          <div class="tip" id="15887">
+            <strong>Signature:</strong> (a:float32 [] * start:int) -&gt; unit<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Creates quaternion from array starting at specified index.
+(w = a[start], (x = a[start+1], y = a[start+2], z = a[start+3])).</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '15888', 15888)" onmouseover="showTip(event, '15888', 15888)">
+            new(axis, angleInRadians)
+          </code>
+          <div class="tip" id="15888">
+            <strong>Signature:</strong> (axis:V3f * angleInRadians:float32) -&gt; unit<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Creates quaternion representing a rotation around
+an axis by an angle.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '15889', 15889)" onmouseover="showTip(event, '15889', 15889)">
+            new(...)
+          </code>
+          <div class="tip" id="15889">
+            <strong>Signature:</strong> (yawInRadians:float32 * pitchInRadians:float32 * rollInRadians:float32) -&gt; unit<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '15890', 15890)" onmouseover="showTip(event, '15890', 15890)">
+            new(from, into)
+          </code>
+          <div class="tip" id="15890">
+            <strong>Signature:</strong> (from:V3f * into:V3f) -&gt; unit<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Creates a quaternion representing a rotation from one
+vector into another.</p>
+
+
+        </td>
+      </tr>
+    </tbody>
+  </table>
+  <h3>Instance members</h3>
+  <table class="table table-bordered member-list">
+    <thead>
+      <tr><td>Instance member</td><td>Description</td></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '15891', 15891)" onmouseover="showTip(event, '15891', 15891)">
+            Conjugate()
+          </code>
+          <div class="tip" id="15891">
+            <strong>Signature:</strong> unit -&gt; unit<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Conjugates this quaternion. Returns this.
+For normalized rotation-quaternions this is the same as Invert().</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '15892', 15892)" onmouseover="showTip(event, '15892', 15892)">
+            Conjugated
+          </code>
+          <div class="tip" id="15892">
+            <strong>Signature:</strong> Rot3f<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Gets the conjugate of this quaternion.
+For normalized rotation-quaternions this is the same as Inverted().</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '15893', 15893)" onmouseover="showTip(event, '15893', 15893)">
+            Equals(other)
+          </code>
+          <div class="tip" id="15893">
+            <strong>Signature:</strong> other:obj -&gt; bool<br />
+              <strong>Modifiers:</strong> abstract<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '15894', 15894)" onmouseover="showTip(event, '15894', 15894)">
+            GetEulerAngles()
+          </code>
+          <div class="tip" id="15894">
+            <strong>Signature:</strong> unit -&gt; V3d<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Returns the Euler-Angles from the quatarnion.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '15895', 15895)" onmouseover="showTip(event, '15895', 15895)">
+            GetHashCode()
+          </code>
+          <div class="tip" id="15895">
+            <strong>Signature:</strong> unit -&gt; int<br />
+              <strong>Modifiers:</strong> abstract<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '15896', 15896)" onmouseover="showTip(event, '15896', 15896)">
+            Inverse
+          </code>
+          <div class="tip" id="15896">
+            <strong>Signature:</strong> Rot3f<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Gets the (multiplicative) inverse of this quaternion.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '15897', 15897)" onmouseover="showTip(event, '15897', 15897)">
+            Invert()
+          </code>
+          <div class="tip" id="15897">
+            <strong>Signature:</strong> unit -&gt; unit<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Inverts this quaternion (multiplicative inverse).
+Returns this.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '15898', 15898)" onmouseover="showTip(event, '15898', 15898)">
+            InvTransformDir(v)
+          </code>
+          <div class="tip" id="15898">
+            <strong>Signature:</strong> v:V3f -&gt; V3f<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Transforms direction vector v (v.w is presumed 0.0) by the inverse of this quaternion.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '15899', 15899)" onmouseover="showTip(event, '15899', 15899)">
+            InvTransformPos(p)
+          </code>
+          <div class="tip" id="15899">
+            <strong>Signature:</strong> p:V3f -&gt; V3f<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Transforms point p (p.w is presumed 1.0) by the inverse of this quaternion.
+For quaternions, this method is equivalent to TransformDir, and
+is made available only to provide a consistent set of operations
+for all transforms.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '15900', 15900)" onmouseover="showTip(event, '15900', 15900)">
+            [()]
+          </code>
+          <div class="tip" id="15900">
+            <strong>Signature:</strong> unit -&gt; int<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '15901', 15901)" onmouseover="showTip(event, '15901', 15901)">
+            Norm
+          </code>
+          <div class="tip" id="15901">
+            <strong>Signature:</strong> float32<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Gets norm (or length) of this quaternion.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '15902', 15902)" onmouseover="showTip(event, '15902', 15902)">
+            Normalize()
+          </code>
+          <div class="tip" id="15902">
+            <strong>Signature:</strong> unit -&gt; unit<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Normalizes this quaternion.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '15903', 15903)" onmouseover="showTip(event, '15903', 15903)">
+            Normalized
+          </code>
+          <div class="tip" id="15903">
+            <strong>Signature:</strong> Rot3f<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Gets normalized (unit) quaternion from this quaternion.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '15904', 15904)" onmouseover="showTip(event, '15904', 15904)">
+            NormSquared
+          </code>
+          <div class="tip" id="15904">
+            <strong>Signature:</strong> float32<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Gets squared norm (or squared length) of this quaternion.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '15905', 15905)" onmouseover="showTip(event, '15905', 15905)">
+            OneDividedBy()
+          </code>
+          <div class="tip" id="15905">
+            <strong>Signature:</strong> unit -&gt; Rot3f<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Returns the component-wise reciprocal (1/w, 1/x, 1/y, 1/z).</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '15906', 15906)" onmouseover="showTip(event, '15906', 15906)">
+            ToAngleAxis()
+          </code>
+          <div class="tip" id="15906">
+            <strong>Signature:</strong> unit -&gt; V3f<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Returns the Rodrigues angle-axis vector of the quaternion.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '15907', 15907)" onmouseover="showTip(event, '15907', 15907)">
+            ToAxisAngle(axis, angleInRadians)
+          </code>
+          <div class="tip" id="15907">
+            <strong>Signature:</strong> (axis:byref&lt;V3f&gt; * angleInRadians:byref&lt;float32&gt;) -&gt; unit<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Converts this Rotation to the axis angle representation.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '15908', 15908)" onmouseover="showTip(event, '15908', 15908)">
+            ToString()
+          </code>
+          <div class="tip" id="15908">
+            <strong>Signature:</strong> unit -&gt; string<br />
+              <strong>Modifiers:</strong> abstract<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '15909', 15909)" onmouseover="showTip(event, '15909', 15909)">
+            TransformDir(v)
+          </code>
+          <div class="tip" id="15909">
+            <strong>Signature:</strong> v:V3f -&gt; V3f<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Transforms direction vector v (v.w is presumed 0.0) by this quaternion.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '15910', 15910)" onmouseover="showTip(event, '15910', 15910)">
+            TransformPos(p)
+          </code>
+          <div class="tip" id="15910">
+            <strong>Signature:</strong> p:V3f -&gt; V3f<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Transforms point p (p.w is presumed 1.0) by this quaternion.
+For quaternions, this method is equivalent to TransformDir, and
+is made available only to provide a consistent set of operations
+for all transforms.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '15911', 15911)" onmouseover="showTip(event, '15911', 15911)">
+            X()
+          </code>
+          <div class="tip" id="15911">
+            <strong>Signature:</strong> unit -&gt; unit<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '15912', 15912)" onmouseover="showTip(event, '15912', 15912)">
+            Y()
+          </code>
+          <div class="tip" id="15912">
+            <strong>Signature:</strong> unit -&gt; unit<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '15913', 15913)" onmouseover="showTip(event, '15913', 15913)">
+            Z()
+          </code>
+          <div class="tip" id="15913">
+            <strong>Signature:</strong> unit -&gt; unit<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+    </tbody>
+  </table>
+  <h3>Static members</h3>
+  <table class="table table-bordered member-list">
+    <thead>
+      <tr><td>Static member</td><td>Description</td></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '15914', 15914)" onmouseover="showTip(event, '15914', 15914)">
+            Add(a, b)
+          </code>
+          <div class="tip" id="15914">
+            <strong>Signature:</strong> (a:Rot3f * b:Rot3f) -&gt; Rot3f<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Returns the sum of 2 quaternions (a.w + b.w, a.v + b.v).</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '15915', 15915)" onmouseover="showTip(event, '15915', 15915)">
+            Add(q, s)
+          </code>
+          <div class="tip" id="15915">
+            <strong>Signature:</strong> (q:Rot3f * s:float32) -&gt; Rot3f<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Returns (q.w + s, (q.x + s, q.y + s, q.z + s)).</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '15916', 15916)" onmouseover="showTip(event, '15916', 15916)">
+            ApproxEqual(r0, r1)
+          </code>
+          <div class="tip" id="15916">
+            <strong>Signature:</strong> (r0:Rot3f * r1:Rot3f) -&gt; bool<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '15917', 15917)" onmouseover="showTip(event, '15917', 15917)">
+            ApproxEqual(r0, r1, tolerance)
+          </code>
+          <div class="tip" id="15917">
+            <strong>Signature:</strong> (r0:Rot3f * r1:Rot3f * tolerance:float32) -&gt; bool<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '15918', 15918)" onmouseover="showTip(event, '15918', 15918)">
+            Divide(s, q)
+          </code>
+          <div class="tip" id="15918">
+            <strong>Signature:</strong> (s:float32 * q:Rot3f) -&gt; Rot3f<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '15919', 15919)" onmouseover="showTip(event, '15919', 15919)">
+            Divide(q, s)
+          </code>
+          <div class="tip" id="15919">
+            <strong>Signature:</strong> (q:Rot3f * s:float32) -&gt; Rot3f<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Returns (q.w / s, q.v * (1/s)).</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '15920', 15920)" onmouseover="showTip(event, '15920', 15920)">
+            Divide(a, b)
+          </code>
+          <div class="tip" id="15920">
+            <strong>Signature:</strong> (a:Rot3f * b:Rot3f) -&gt; Rot3f<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Divides 2 quaternions.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '15921', 15921)" onmouseover="showTip(event, '15921', 15921)">
+            Dot(a, b)
+          </code>
+          <div class="tip" id="15921">
+            <strong>Signature:</strong> (a:Rot3f * b:Rot3f) -&gt; float32<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Returns the dot-product of 2 quaternions.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '15922', 15922)" onmouseover="showTip(event, '15922', 15922)">
+            FromAngleAxis(angleAxis)
+          </code>
+          <div class="tip" id="15922">
+            <strong>Signature:</strong> angleAxis:V3f -&gt; Rot3f<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Create from Rodrigues axis-angle vactor</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '15923', 15923)" onmouseover="showTip(event, '15923', 15923)">
+            FromFrame(x, y, z)
+          </code>
+          <div class="tip" id="15923">
+            <strong>Signature:</strong> (x:V3f * y:V3f * z:V3f) -&gt; Rot3f<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>WARNING: UNTESTED!!!</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '15924', 15924)" onmouseover="showTip(event, '15924', 15924)">
+            FromM33f(m, epsilon)
+          </code>
+          <div class="tip" id="15924">
+            <strong>Signature:</strong> (m:M33f * epsilon:float32) -&gt; Rot3f<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Creates a quaternion from a rotation matrix</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '15925', 15925)" onmouseover="showTip(event, '15925', 15925)">
+            InvTransformDir(q, v)
+          </code>
+          <div class="tip" id="15925">
+            <strong>Signature:</strong> (q:Rot3f * v:V3f) -&gt; V3f<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Transforms direction vector v (v.w is presumed 0.0) by the inverse of quaternion q.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '15926', 15926)" onmouseover="showTip(event, '15926', 15926)">
+            InvTransformPos(q, p)
+          </code>
+          <div class="tip" id="15926">
+            <strong>Signature:</strong> (q:Rot3f * p:V3f) -&gt; V3f<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Transforms point p (p.w is presumed 1.0) by the incerse of quaternion q.
+For quaternions, this method is equivalent to InvTransformDir, and
+is made available only to provide a consistent set of operations
+for all transforms.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '15927', 15927)" onmouseover="showTip(event, '15927', 15927)">
+            Multiply(q, s)
+          </code>
+          <div class="tip" id="15927">
+            <strong>Signature:</strong> (q:Rot3f * s:float32) -&gt; Rot3f<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Returns (q.w <em> s, q.v </em> s).</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '15928', 15928)" onmouseover="showTip(event, '15928', 15928)">
+            Multiply(a, b)
+          </code>
+          <div class="tip" id="15928">
+            <strong>Signature:</strong> (a:Rot3f * b:Rot3f) -&gt; Rot3f<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Multiplies 2 quaternions.
+This concatenates the two rotations into a single one.
+Attention: Multiplication is NOT commutative!</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '15929', 15929)" onmouseover="showTip(event, '15929', 15929)">
+            Negated(q)
+          </code>
+          <div class="tip" id="15929">
+            <strong>Signature:</strong> q:Rot3f -&gt; Rot3f<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Returns the component-wise negation (-q.w, -q.v) of quaternion q.
+This represents the same rotation.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '15930', 15930)" onmouseover="showTip(event, '15930', 15930)">
+            op_Addition(a, b)
+          </code>
+          <div class="tip" id="15930">
+            <strong>Signature:</strong> (a:Rot3f * b:Rot3f) -&gt; Rot3f<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '15931', 15931)" onmouseover="showTip(event, '15931', 15931)">
+            op_Addition(rot, s)
+          </code>
+          <div class="tip" id="15931">
+            <strong>Signature:</strong> (rot:Rot3f * s:float32) -&gt; Rot3f<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '15932', 15932)" onmouseover="showTip(event, '15932', 15932)">
+            op_Addition(s, rot)
+          </code>
+          <div class="tip" id="15932">
+            <strong>Signature:</strong> (s:float32 * rot:Rot3f) -&gt; Rot3f<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '15933', 15933)" onmouseover="showTip(event, '15933', 15933)">
+            op_Division(rot, s)
+          </code>
+          <div class="tip" id="15933">
+            <strong>Signature:</strong> (rot:Rot3f * s:float32) -&gt; Rot3f<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '15934', 15934)" onmouseover="showTip(event, '15934', 15934)">
+            op_Division(s, rot)
+          </code>
+          <div class="tip" id="15934">
+            <strong>Signature:</strong> (s:float32 * rot:Rot3f) -&gt; Rot3f<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '15935', 15935)" onmouseover="showTip(event, '15935', 15935)">
+            op_Equality(r0, r1)
+          </code>
+          <div class="tip" id="15935">
+            <strong>Signature:</strong> (r0:Rot3f * r1:Rot3f) -&gt; bool<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '15936', 15936)" onmouseover="showTip(event, '15936', 15936)">
+            op_Explicit(r)
+          </code>
+          <div class="tip" id="15936">
+            <strong>Signature:</strong> r:Rot3f -&gt; M33f<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '15937', 15937)" onmouseover="showTip(event, '15937', 15937)">
+            op_Explicit(r)
+          </code>
+          <div class="tip" id="15937">
+            <strong>Signature:</strong> r:Rot3f -&gt; M44f<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '15938', 15938)" onmouseover="showTip(event, '15938', 15938)">
+            op_Explicit(r)
+          </code>
+          <div class="tip" id="15938">
+            <strong>Signature:</strong> r:Rot3f -&gt; M34f<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '15939', 15939)" onmouseover="showTip(event, '15939', 15939)">
+            op_Explicit(r)
+          </code>
+          <div class="tip" id="15939">
+            <strong>Signature:</strong> r:Rot3f -&gt; float32 []<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '15940', 15940)" onmouseover="showTip(event, '15940', 15940)">
+            op_Inequality(r0, r1)
+          </code>
+          <div class="tip" id="15940">
+            <strong>Signature:</strong> (r0:Rot3f * r1:Rot3f) -&gt; bool<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '15941', 15941)" onmouseover="showTip(event, '15941', 15941)">
+            op_Multiply(rot, s)
+          </code>
+          <div class="tip" id="15941">
+            <strong>Signature:</strong> (rot:Rot3f * s:float32) -&gt; Rot3f<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '15942', 15942)" onmouseover="showTip(event, '15942', 15942)">
+            op_Multiply(s, rot)
+          </code>
+          <div class="tip" id="15942">
+            <strong>Signature:</strong> (s:float32 * rot:Rot3f) -&gt; Rot3f<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '15943', 15943)" onmouseover="showTip(event, '15943', 15943)">
+            op_Multiply(a, b)
+          </code>
+          <div class="tip" id="15943">
+            <strong>Signature:</strong> (a:Rot3f * b:Rot3f) -&gt; Rot3f<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '15944', 15944)" onmouseover="showTip(event, '15944', 15944)">
+            op_Multiply(rot, m)
+          </code>
+          <div class="tip" id="15944">
+            <strong>Signature:</strong> (rot:Rot3f * m:Scale3f) -&gt; M33f<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '15945', 15945)" onmouseover="showTip(event, '15945', 15945)">
+            op_Multiply(rot, m)
+          </code>
+          <div class="tip" id="15945">
+            <strong>Signature:</strong> (rot:Rot3f * m:Shift3f) -&gt; M34f<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '15946', 15946)" onmouseover="showTip(event, '15946', 15946)">
+            op_Multiply(rot, m)
+          </code>
+          <div class="tip" id="15946">
+            <strong>Signature:</strong> (rot:Rot3f * m:M33f) -&gt; M33f<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '15947', 15947)" onmouseover="showTip(event, '15947', 15947)">
+            op_Multiply(m, rot)
+          </code>
+          <div class="tip" id="15947">
+            <strong>Signature:</strong> (m:M33f * rot:Rot3f) -&gt; M33f<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '15948', 15948)" onmouseover="showTip(event, '15948', 15948)">
+            op_Subtraction(a, b)
+          </code>
+          <div class="tip" id="15948">
+            <strong>Signature:</strong> (a:Rot3f * b:Rot3f) -&gt; Rot3f<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '15949', 15949)" onmouseover="showTip(event, '15949', 15949)">
+            op_Subtraction(rot, s)
+          </code>
+          <div class="tip" id="15949">
+            <strong>Signature:</strong> (rot:Rot3f * s:float32) -&gt; Rot3f<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '15950', 15950)" onmouseover="showTip(event, '15950', 15950)">
+            op_Subtraction(scalar, rot)
+          </code>
+          <div class="tip" id="15950">
+            <strong>Signature:</strong> (scalar:float32 * rot:Rot3f) -&gt; Rot3f<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '15951', 15951)" onmouseover="showTip(event, '15951', 15951)">
+            op_UnaryNegation(rot)
+          </code>
+          <div class="tip" id="15951">
+            <strong>Signature:</strong> rot:Rot3f -&gt; Rot3f<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '15952', 15952)" onmouseover="showTip(event, '15952', 15952)">
+            Parse(s)
+          </code>
+          <div class="tip" id="15952">
+            <strong>Signature:</strong> s:string -&gt; Rot3f<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '15953', 15953)" onmouseover="showTip(event, '15953', 15953)">
+            Reciprocal(q)
+          </code>
+          <div class="tip" id="15953">
+            <strong>Signature:</strong> q:Rot3f -&gt; Rot3f<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Returns the component-wise reciprocal (1/q.w, 1/q.x, 1/q.y, 1/q.z)
+of quaternion q.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '15954', 15954)" onmouseover="showTip(event, '15954', 15954)">
+            Subtract(q, s)
+          </code>
+          <div class="tip" id="15954">
+            <strong>Signature:</strong> (q:Rot3f * s:float32) -&gt; Rot3f<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Returns (q.w - s, (q.x - s, q.y - s, q.z - s)).</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '15955', 15955)" onmouseover="showTip(event, '15955', 15955)">
+            Subtract(s, q)
+          </code>
+          <div class="tip" id="15955">
+            <strong>Signature:</strong> (s:float32 * q:Rot3f) -&gt; Rot3f<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Returns (s - q.w, (s - q.x, s- q.y, s- q.z)).</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '15956', 15956)" onmouseover="showTip(event, '15956', 15956)">
+            Subtract(a, b)
+          </code>
+          <div class="tip" id="15956">
+            <strong>Signature:</strong> (a:Rot3f * b:Rot3f) -&gt; Rot3f<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Returns (a.w - b.w, a.v - b.v).</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '15957', 15957)" onmouseover="showTip(event, '15957', 15957)">
+            TransformDir(q, v)
+          </code>
+          <div class="tip" id="15957">
+            <strong>Signature:</strong> (q:Rot3f * v:V3f) -&gt; V3f<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Transforms direction vector v (v.w is presumed 0.0) by quaternion q.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '15958', 15958)" onmouseover="showTip(event, '15958', 15958)">
+            TransformPos(q, p)
+          </code>
+          <div class="tip" id="15958">
+            <strong>Signature:</strong> (q:Rot3f * p:V3f) -&gt; V3f<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Transforms point p (p.w is presumed 1.0) by quaternion q.
+For quaternions, this method is equivalent to TransformDir, and
+is made available only to provide a consistent set of operations
+for all transforms.</p>
+
+
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+        </div>
+        <div class="span3">
+          <a href="https://github.com/vrvis">
+            <img src="logo.png" style="width:140px;height:140px;margin:10px 0px 0px 35px;border-style:none;" />
+          </a>
+
+          <ul class="nav nav-list" id="menu">
+
+            <li class="nav-header">Aardvark.Base</li>
+
+            <li class="divider"></li>
+            <li><a href="https://github.com/vrvis/aardvark.base">Home page</a></li>
+            <li class="divider"></li>
+
+            <li><a href="https://www.nuget.org/packages/Aardvark.Base">Get Aardvark.Base via NuGet</a></li>
+            <li><a href="https://github.com/vrvis/aardvark.base">Source Code on GitHub</a></li>
+            <li><a href="https://github.com/vrvis/aardvark.baseLicense">License (Apache 2)</a></li>
+            
+            <!-- <li><a href="https://github.com/vrvis/aardvark.base/RELEASE_NOTES.html">Release Notes</a></li>
+            <li><a href="https://github.com/vrvis/aardvark.base//contributing.html">Contributing to Aardvark.Base</a></li>
+  
+            <li><a href="http://stackoverflow.com/questions/tagged/f%23-fake">Ask a question</a></li> 
+            
+            <li class="nav-header">Tutorials</li>
+            <li><a href="https://github.com/vrvis/aardvark.base/gettingstarted.html">Getting started</a></li>
+            
+            -->
+
+            
+            <li class="divider"></li>
+            <li class="nav-header">Reference</li>
+
+            <li><a href="https://github.com/vrvis/aardvark.base/apidocs/index.html">API Reference</a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    <a href="https://github.com/vrvis/aardvark.base"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_gray_6d6d6d.png" alt="Fork me on GitHub"></a>
+  </body>
+  </html>

@@ -1,0 +1,549 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>FastConcurrentBigDictSet<'TKey> - Aardvark.Base</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="The Aardvark Platform Team">
+
+    <script src="https://code.jquery.com/jquery-1.8.0.js"></script>
+    <script src="https://code.jquery.com/ui/1.8.23/jquery-ui.js"></script>
+    <script src="https://netdna.bootstrapcdn.com/twitter-bootstrap/2.2.1/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link href="https://netdna.bootstrapcdn.com/twitter-bootstrap/2.2.1/css/bootstrap-combined.min.css" rel="stylesheet">
+
+    <link type="text/css" rel="stylesheet" href="https://github.com/vrvis/aardvark.base/content/style.css" />
+    <script type="text/javascript" src="https://github.com/vrvis/aardvark.base/content/tips.js"></script>
+    <!-- HTML5 shim, for IE6-8 support of HTML5 elements -->
+    <!--[if lt IE 9]>
+      <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+  </head>
+  <body>
+    <div class="container">
+      <div class="masthead">
+        <ul class="nav nav-pills pull-right">
+          <li><a href="https://github.com/vrvis/aardvark.base">github page</a></li>
+        </ul>
+        <h3 class="muted"><a href="https://github.com/vrvis/aardvark.base/index.html">Aardvark.Base</a></h3>
+      </div>
+      <hr />
+      <div class="row">
+        <div class="span9" id="main">
+          
+
+
+
+<h1>FastConcurrentBigDictSet<'TKey></h1>
+<div class="xmldoc">
+<p>A FastConcurrentBigDictSet is an alternate implementation of a HashSet.
+It is implemented as a hashtable with external linking, that uses
+primes as the table size in order to reduce the danger of funneling.</p>
+
+</div>
+  <h3>Constructors</h3>
+  <table class="table table-bordered member-list">
+    <thead>
+      <tr><td>Constructor</td><td>Description</td></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '5470', 5470)" onmouseover="showTip(event, '5470', 5470)">
+            new(hfun)
+          </code>
+          <div class="tip" id="5470">
+            <strong>Signature:</strong> hfun:Func&lt;&#39;TKey,int64&gt; -&gt; unit<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Create a FastConcurrentBigDictSet that autmatically grows and shrinks as necessary.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '5471', 5471)" onmouseover="showTip(event, '5471', 5471)">
+            new(hfun, initialCapacity)
+          </code>
+          <div class="tip" id="5471">
+            <strong>Signature:</strong> (hfun:Func&lt;&#39;TKey,int64&gt; * initialCapacity:int64) -&gt; unit<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Create a FastConcurrentBigDictSet that autmatically grows and shrinks as necessary,
+but also specify an initial capacity.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '5472', 5472)" onmouseover="showTip(event, '5472', 5472)">
+            new(hfun, items)
+          </code>
+          <div class="tip" id="5472">
+            <strong>Signature:</strong> (hfun:Func&lt;&#39;TKey,int64&gt; * items:IEnumerable&lt;&#39;TKey&gt;) -&gt; unit<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Create a FastConcurrentBigDictSet and initialize it to contain the supplied
+items.</p>
+
+
+        </td>
+      </tr>
+    </tbody>
+  </table>
+  <h3>Instance members</h3>
+  <table class="table table-bordered member-list">
+    <thead>
+      <tr><td>Instance member</td><td>Description</td></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '5473', 5473)" onmouseover="showTip(event, '5473', 5473)">
+            Add(key)
+          </code>
+          <div class="tip" id="5473">
+            <strong>Signature:</strong> key:&#39;TKey -&gt; bool<br />
+              <strong>Modifiers:</strong> abstract<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Add the item with the supplied key
+to the FastConcurrentBigDictSet.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '5474', 5474)" onmouseover="showTip(event, '5474', 5474)">
+            Add(key, hash)
+          </code>
+          <div class="tip" id="5474">
+            <strong>Signature:</strong> (key:&#39;TKey * hash:int64) -&gt; bool<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Add the item with the supplied key
+to the FastConcurrentBigDictSet.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '5475', 5475)" onmouseover="showTip(event, '5475', 5475)">
+            AddObject(objkey)
+          </code>
+          <div class="tip" id="5475">
+            <strong>Signature:</strong> objkey:obj -&gt; bool<br />
+              <strong>Modifiers:</strong> abstract<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Add the item with supplied key
+both supplied as generic objects, to the FastConcurrentBigDictSet. Note that the supplied key
+and value are cast to the concrete type of the keys and values used in the FastConcurrentBigDictSet
+and this will fail if they are of different types.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '5476', 5476)" onmouseover="showTip(event, '5476', 5476)">
+            AddRange(keys)
+          </code>
+          <div class="tip" id="5476">
+            <strong>Signature:</strong> keys:IEnumerable&lt;&#39;TKey&gt; -&gt; unit<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Add the supplied keys to the FastConcurrentBigDictSet.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '5477', 5477)" onmouseover="showTip(event, '5477', 5477)">
+            Clear()
+          </code>
+          <div class="tip" id="5477">
+            <strong>Signature:</strong> unit -&gt; unit<br />
+              <strong>Modifiers:</strong> abstract<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Remove all items. Capacity remains unchanged.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '5478', 5478)" onmouseover="showTip(event, '5478', 5478)">
+            Contains(key)
+          </code>
+          <div class="tip" id="5478">
+            <strong>Signature:</strong> key:&#39;TKey -&gt; bool<br />
+              <strong>Modifiers:</strong> abstract<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Returns true if the FastConcurrentBigDictSet contains the item with the supplied
+key.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '5479', 5479)" onmouseover="showTip(event, '5479', 5479)">
+            Contains(key, hash)
+          </code>
+          <div class="tip" id="5479">
+            <strong>Signature:</strong> (key:&#39;TKey * hash:int64) -&gt; bool<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Returns true if the FastConcurrentBigDictSet contains the item with the supplied
+key.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '5480', 5480)" onmouseover="showTip(event, '5480', 5480)">
+            CopyTo(array, index)
+          </code>
+          <div class="tip" id="5480">
+            <strong>Signature:</strong> (array:&#39;TKey [] * index:int64) -&gt; unit<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Copies all keys in the dictionary to the supplied
+array starting at the supplied index.
+This may throw a ConcurrentDataModifiedException if data is
+modified by another task during the operation.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '5481', 5481)" onmouseover="showTip(event, '5481', 5481)">
+            GetEnumerator()
+          </code>
+          <div class="tip" id="5481">
+            <strong>Signature:</strong> unit -&gt; IEnumerator&lt;&#39;TKey&gt;<br />
+              <strong>Modifiers:</strong> abstract<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '5482', 5482)" onmouseover="showTip(event, '5482', 5482)">
+            Items
+          </code>
+          <div class="tip" id="5482">
+            <strong>Signature:</strong> IEnumerable&lt;&#39;TKey&gt;<br />
+              <strong>Modifiers:</strong> abstract<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '5483', 5483)" onmouseover="showTip(event, '5483', 5483)">
+            Keys
+          </code>
+          <div class="tip" id="5483">
+            <strong>Signature:</strong> IEnumerable&lt;&#39;TKey&gt;<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Returns all keys in the dictionary.
+This may throw a ConcurrentDataModifiedException if data is
+modified by another task during the enumeration.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '5484', 5484)" onmouseover="showTip(event, '5484', 5484)">
+            KeyType
+          </code>
+          <div class="tip" id="5484">
+            <strong>Signature:</strong> Type<br />
+              <strong>Modifiers:</strong> abstract<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '5485', 5485)" onmouseover="showTip(event, '5485', 5485)">
+            LongCount
+          </code>
+          <div class="tip" id="5485">
+            <strong>Signature:</strong> int64<br />
+              <strong>Modifiers:</strong> abstract<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Returns the number of items currently contained in the FastConcurrentBigDictSet
+as long.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '5486', 5486)" onmouseover="showTip(event, '5486', 5486)">
+            MaxFillFactor()
+          </code>
+          <div class="tip" id="5486">
+            <strong>Signature:</strong> unit -&gt; unit<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Setting the maximal fill factor makes it possible to fine-tune
+the performance for certain applications. Normally this should
+not be necessary.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '5487', 5487)" onmouseover="showTip(event, '5487', 5487)">
+            MinFillFactor()
+          </code>
+          <div class="tip" id="5487">
+            <strong>Signature:</strong> unit -&gt; unit<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Setting the minimal fill factor makes it possible to influence
+the shrinking behaviour of the FastConcurrentBigDictSet. Normally this should
+be set to a quater of the maximal fill factor. In order to
+completely prevent shrinking it can also be set to 0.0f.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '5488', 5488)" onmouseover="showTip(event, '5488', 5488)">
+            Objects
+          </code>
+          <div class="tip" id="5488">
+            <strong>Signature:</strong> IEnumerable&lt;obj&gt;<br />
+              <strong>Modifiers:</strong> abstract<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '5489', 5489)" onmouseover="showTip(event, '5489', 5489)">
+            Remove(key)
+          </code>
+          <div class="tip" id="5489">
+            <strong>Signature:</strong> key:&#39;TKey -&gt; bool<br />
+              <strong>Modifiers:</strong> abstract<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Remove the item with the supplied key
+from the FastConcurrentBigDictSet. Returns true if the value was removed.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '5490', 5490)" onmouseover="showTip(event, '5490', 5490)">
+            Remove(key, hash)
+          </code>
+          <div class="tip" id="5490">
+            <strong>Signature:</strong> (key:&#39;TKey * hash:int64) -&gt; bool<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Remove the item with the supplied key
+from the FastConcurrentBigDictSet. Returns true if the value was removed.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '5491', 5491)" onmouseover="showTip(event, '5491', 5491)">
+            ToArray()
+          </code>
+          <div class="tip" id="5491">
+            <strong>Signature:</strong> unit -&gt; &#39;TKey []<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Returns all keys in the dictionary as an array.
+This may throw a ConcurrentDataModifiedException if data is
+modified by another task during the operation.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '5492', 5492)" onmouseover="showTip(event, '5492', 5492)">
+            TryAdd(key)
+          </code>
+          <div class="tip" id="5492">
+            <strong>Signature:</strong> key:&#39;TKey -&gt; bool<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Add the item with the supplied key
+to the FastConcurrentBigDictSet.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '5493', 5493)" onmouseover="showTip(event, '5493', 5493)">
+            TryAdd(key, hash)
+          </code>
+          <div class="tip" id="5493">
+            <strong>Signature:</strong> (key:&#39;TKey * hash:int64) -&gt; bool<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Add the item with the supplied key
+to the FastConcurrentBigDictSet.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '5494', 5494)" onmouseover="showTip(event, '5494', 5494)">
+            TryRemove(key)
+          </code>
+          <div class="tip" id="5494">
+            <strong>Signature:</strong> key:&#39;TKey -&gt; bool<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Try to reomve the item with the supplied key. If multipe entries
+have the same key, the one that was inserted last is removed.
+Returns true if the item was found.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '5495', 5495)" onmouseover="showTip(event, '5495', 5495)">
+            TryRemove(key, hash)
+          </code>
+          <div class="tip" id="5495">
+            <strong>Signature:</strong> (key:&#39;TKey * hash:int64) -&gt; bool<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Try to reomve the item with the supplied key. If multipe entries
+have the same key, the one that was inserted last is removed.
+Returns true if the item was found.</p>
+
+
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+        </div>
+        <div class="span3">
+          <a href="https://github.com/vrvis">
+            <img src="logo.png" style="width:140px;height:140px;margin:10px 0px 0px 35px;border-style:none;" />
+          </a>
+
+          <ul class="nav nav-list" id="menu">
+
+            <li class="nav-header">Aardvark.Base</li>
+
+            <li class="divider"></li>
+            <li><a href="https://github.com/vrvis/aardvark.base">Home page</a></li>
+            <li class="divider"></li>
+
+            <li><a href="https://www.nuget.org/packages/Aardvark.Base">Get Aardvark.Base via NuGet</a></li>
+            <li><a href="https://github.com/vrvis/aardvark.base">Source Code on GitHub</a></li>
+            <li><a href="https://github.com/vrvis/aardvark.baseLicense">License (Apache 2)</a></li>
+            
+            <!-- <li><a href="https://github.com/vrvis/aardvark.base/RELEASE_NOTES.html">Release Notes</a></li>
+            <li><a href="https://github.com/vrvis/aardvark.base//contributing.html">Contributing to Aardvark.Base</a></li>
+  
+            <li><a href="http://stackoverflow.com/questions/tagged/f%23-fake">Ask a question</a></li> 
+            
+            <li class="nav-header">Tutorials</li>
+            <li><a href="https://github.com/vrvis/aardvark.base/gettingstarted.html">Getting started</a></li>
+            
+            -->
+
+            
+            <li class="divider"></li>
+            <li class="nav-header">Reference</li>
+
+            <li><a href="https://github.com/vrvis/aardvark.base/apidocs/index.html">API Reference</a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    <a href="https://github.com/vrvis/aardvark.base"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_gray_6d6d6d.png" alt="Fork me on GitHub"></a>
+  </body>
+  </html>
