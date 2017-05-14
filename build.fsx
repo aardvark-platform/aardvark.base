@@ -23,10 +23,10 @@ let projInfo n =
     [ "page-description", "Aardvark.Base"
       "page-author",  "The Aardvark Platform Team" 
       "project-author",  "The Aardvark Platform Team" 
-      "github-link", sprintf "https://github.com/vrvis/aardvark.base/tree/master/src/%s" n
-      "project-github", "https://github.com/vrvis/aardvark.base"
+      "github-link", sprintf "https://github.com/vrvis/aardvark.base/tree/docs/src/%s" n
+      "project-github", sprintf "https://github.com/vrvis/aardvark.base/tree/docs/src/%s" n
       "project-nuget", sprintf "https://www.nuget.org/packages/%s" n
-      "root", "https://github.com/vrvis/aardvark.base/tree/docs/docs/api" 
+      "root", "https://rawgit.com/vrvis/aardvark.base/docs/docs/api" 
       "project-name", n
     ]
 
