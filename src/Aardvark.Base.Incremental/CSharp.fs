@@ -17,10 +17,10 @@ type Mod private() =
     static member LazyConstant (f : Func<'a>) : IMod<'a> =
         Mod.delay f.Invoke
 
-    static member Custom (f : Func<IMod<'a>, 'a>) : IMod<'a> =
+    static member Custom (f : Func<AdaptiveToken, 'a>) : IMod<'a> =
         Mod.custom f.Invoke
 
-    static member MapCustom (f : Func<IMod<'a>, 'a>,  [<ParamArray>] inputs : IAdaptiveObject[] ) : IMod<'a> =
+    static member MapCustom (f : Func<AdaptiveToken, 'a>,  [<ParamArray>] inputs : IAdaptiveObject[] ) : IMod<'a> =
         Mod.mapCustom f.Invoke (List.ofArray(inputs))
 
     static member Async(t : System.Threading.Tasks.Task<'a>, defaultValue : 'a) : IMod<'a> =
@@ -50,9 +50,8 @@ type AdaptiveSet<'a>(content : seq<'a>) =
         sprintf "aset %A" (content |> Seq.toList)
 
     interface aset<'a> with
-        member x.ReaderCount = 0
+        member x.Content = s.Value.Content
         member x.IsConstant = s.Value.IsConstant
-        member x.Copy = s.Value.Copy 
         member x.GetReader() = s.Value.GetReader()
 
     interface IEnumerable with
@@ -91,7 +90,7 @@ type Adaptive private() =
 
     static member Transaction =
         let t = new Transaction()
-        let old = Marking.current.Value // directly use current here, getCurrentTransaction will also return a currently running (finalizing) transaction
+        let old = Transaction.Current // directly use current here, getCurrentTransaction will also return a currently running (finalizing) transaction
         setCurrentTransaction (Some t)
       
         { new IDisposable with
@@ -230,7 +229,7 @@ type AdaptiveSetExtensions private() =
 
     [<Extension>]
     static member SelectMany (this : seq<'a>, f : Func<'a, aset<'b>>) =
-        ASet.collect' f.Invoke this
+        ASet.unionMany' (this |> Seq.map f.Invoke)
 
     [<Extension>]
     static member Choose (this : aset<'a>, f : Func<'a, Option<'b>>) =
@@ -242,7 +241,7 @@ type AdaptiveSetExtensions private() =
 
     [<Extension>]
     static member Flatten (this : seq<aset<'a>>) =
-        ASet.union' this
+        ASet.union (ASet.ofSeq this)
 
     [<Extension>]
     static member Flatten (this : aset<aset<'a>>) =
@@ -262,7 +261,7 @@ type AdaptiveSetExtensions private() =
 
     [<Extension>]
     static member Union (this : aset<'a>, other : aset<'a>) =
-        ASet.union' [this; other]
+        ASet.union this other
 
     [<Extension>]
     static member ToMod (this : aset<'a>) =
@@ -299,12 +298,12 @@ type AdaptiveSetExtensions private() =
         this.GetReader()
 
     [<Extension>]
-    static member GetDeltas (this : IReader<'a>) =
-        this.GetDelta(null) |> List.toArray
+    static member GetOperations (this : ISetReader<'a>) =
+        this.GetOperations(AdaptiveToken.Top) |> HDeltaSet.toArray
 
     /// <summary> see ASet/ASetModule.unsafeRegisterCallbackNoGcRoot </summary>
     [<Extension>]
-    static member UnsafeRegisterCallbackNoGcRoot(this : aset<'a>, callback : Action<Delta<'a>[]>) =
+    static member UnsafeRegisterCallbackNoGcRoot(this : aset<'a>, callback : Action<SetOperation<'a>[]>) =
         this |> ASet.unsafeRegisterCallbackNoGcRoot (fun deltas ->
             deltas |> List.toArray |> callback.Invoke
         )
@@ -312,14 +311,14 @@ type AdaptiveSetExtensions private() =
     /// <summary> see ASet/ASetModule.unsafeRegisterCallbackNoGcRoot </summary>
     [<Extension>]
     [<Obsolete("use UnsafeRegisterCallbackNoGcRoot or UnsafeRegisterCallbackKeepDisposable instead")>]
-    static member RegisterCallback(this : aset<'a>, callback : Action<Delta<'a>[]>) =
+    static member RegisterCallback(this : aset<'a>, callback : Action<SetOperation<'a>[]>) =
         this |> ASet.unsafeRegisterCallbackNoGcRoot (fun deltas ->
             deltas |> List.toArray |> callback.Invoke
         )
 
     /// <summary> see ASet/ASetModule.unsafeRegisterCallbackKeepDisposable </summary>
     [<Extension>]
-    static member UnsafeRegisterCallbackKeepDisposable(this : aset<'a>, callback : Action<Delta<'a>[]>) =
+    static member UnsafeRegisterCallbackKeepDisposable(this : aset<'a>, callback : Action<SetOperation<'a>[]>) =
         this |> ASet.unsafeRegisterCallbackKeepDisposable (fun deltas ->
             deltas |> List.toArray |> callback.Invoke
         )
@@ -336,13 +335,13 @@ type AdaptiveSetExtensions private() =
     static member ToAdaptiveList (this : aset<'a>) =
         this |> ASet.toAList
 
-    [<Extension>]
-    static member GroupBy(this : aset<'a>, f : Func<'a, 'b>) =
-        this |> ASet.groupBy f.Invoke
-
-    [<Extension>]
-    static member ToAMap(this : aset<'k*'v>) =
-        this |> AMap.ofASet
+//    [<Extension>]
+//    static member GroupBy(this : aset<'a>, f : Func<'a, 'b>) =
+//        this |> ASet.groupBy f.Invoke
+//
+//    [<Extension>]
+//    static member ToAMap(this : aset<'k*'v>) =
+//        this |> AMap.ofASet
 
     [<Extension>]
     static member Fold(this : aset<'a>, add : Func<'a, 'b, 'b>, zero : 'b) : IMod<'b> =
@@ -365,11 +364,11 @@ type AdaptiveSetExtensions private() =
 
     [<Extension>]
     static member SumM(this : aset<IMod<int>>) : IMod<int> =
-        this |> ASet.sumM
+        this |> ASet.flattenM |> ASet.sum
 
     [<Extension>]
     static member SumM(this : aset<IMod<float>>) : IMod<float> =
-        this |> ASet.sumM
+        this |> ASet.flattenM |> ASet.sum
 
 [<Extension; AbstractClass; Sealed>]
 type ChangeableSetExtensions private() =
@@ -449,11 +448,11 @@ type AdaptiveListExtensions private() =
 
     [<Extension>]
     static member SelectMany (this : seq<'a>, f : Func<'a, alist<'b>>) =
-        AList.collect' f.Invoke this
+        AList.collect f.Invoke (AList.ofSeq this)
 
     [<Extension>]
     static member Concat (this : seq<alist<'a>>) =
-        AList.concat' this
+        AList.concat (AList.ofSeq this)
 
     [<Extension>]
     static member Concat (this : alist<alist<'a>>) =
@@ -469,7 +468,7 @@ type AdaptiveListExtensions private() =
 
     [<Extension>]
     static member Concat (this : alist<'a>, other : alist<'a>) =
-        AList.concat' [this; other]
+        AList.append this other
 
     [<Extension>]
     static member ToAdaptiveSet (this : alist<'a>) =
@@ -477,14 +476,14 @@ type AdaptiveListExtensions private() =
 
     /// <summary> see AList/AListModule.unsafeRegisterCallbackNoGcRoot </summary>
     [<Extension>]
-    static member UnsafeRegisterCallbackNoGcRoot(this : alist<'a>, callback : Action<Delta<ISortKey*'a>[]>) =
+    static member UnsafeRegisterCallbackNoGcRoot(this : alist<'a>, callback : Action<array<Index * ElementOperation<'a>>>) =
         this |> AList.unsafeRegisterCallbackNoGcRoot (fun deltas ->
             deltas |> List.toArray |> callback.Invoke
         )
         
     /// <summary> see AList/AListModule.unsafeRegisterCallbackKeepDisposable </summary>
     [<Extension>]
-    static member UnsafeRegisterCallbackKeepDisposable(this : alist<'a>, callback : Action<Delta<ISortKey*'a>[]>) =
+    static member UnsafeRegisterCallbackKeepDisposable(this : alist<'a>, callback : Action<array<Index * ElementOperation<'a>>>) =
         this |> AList.unsafeRegisterCallbackKeepDisposable (fun deltas ->
             deltas |> List.toArray |> callback.Invoke
         )
@@ -511,37 +510,29 @@ type CListExtensions private() =
 
     [<Extension>]
     static member Concat (this : clist<'a>, other : alist<'a>) =
-        AList.concat' [this; other]
+        AList.append this other
 
 
  
-[<Extension; AbstractClass; Sealed>]
-type COrderedSetExtensions private() =       
-    
-    // directly provide set view as callback, otherwise a cast to either aset or alist is necessary
-
-    /// <summary> see AList/AListModule.unsafeRegisterCallbackNoGcRoot </summary>
-    [<Extension>]
-    static member UnsafeRegisterCallbackNoGcRoot(this : corderedset<'a>, callback : Action<Delta<'a>[]>) =
-        this |> ASet.unsafeRegisterCallbackNoGcRoot (fun deltas ->
-            deltas |> List.toArray |> callback.Invoke
-        )
-
-    /// <summary> see AList/AListModule.unsafeRegisterCallbackKeepDisposable </summary>
-    [<Extension>]
-    static member UnsafeRegisterCallbackKeepDisposable(this : corderedset<'a>, callback : Action<Delta<'a>[]>) =
-        this |> ASet.unsafeRegisterCallbackKeepDisposable (fun deltas ->
-            deltas |> List.toArray |> callback.Invoke
-        )
-
-
-[<Extension; AbstractClass; Sealed>]
-type AdaptiveMapExtensions private() =
-
-    [<Extension>]
-    static member ToMod (this : amap<'k, 'v>) =
-        AMap.toMod this
-
+//[<Extension; AbstractClass; Sealed>]
+//type COrderedSetExtensions private() =       
+//    
+//    // directly provide set view as callback, otherwise a cast to either aset or alist is necessary
+//
+//    /// <summary> see AList/AListModule.unsafeRegisterCallbackNoGcRoot </summary>
+//    [<Extension>]
+//    static member UnsafeRegisterCallbackNoGcRoot(this : corderedset<'a>, callback : Action<Delta<'a>[]>) =
+//        this |> ASet.unsafeRegisterCallbackNoGcRoot (fun deltas ->
+//            deltas |> List.toArray |> callback.Invoke
+//        )
+//
+//    /// <summary> see AList/AListModule.unsafeRegisterCallbackKeepDisposable </summary>
+//    [<Extension>]
+//    static member UnsafeRegisterCallbackKeepDisposable(this : corderedset<'a>, callback : Action<Delta<'a>[]>) =
+//        this |> ASet.unsafeRegisterCallbackKeepDisposable (fun deltas ->
+//            deltas |> List.toArray |> callback.Invoke
+//        )
+//
 
 [<Extension; AbstractClass; Sealed>]
 type EvaluationExtensions private() =

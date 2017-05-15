@@ -83,7 +83,7 @@ module ScopeExtensions =
             [<CLIEvent>]
             member x.Changed = Unchecked.defaultof<IEvent<_,_>>
 
-        override x.Compute() =
+        override x.Compute(t) =
             value
 
 

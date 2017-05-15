@@ -58,7 +58,7 @@ namespace IncrementalDemo.CSharp
             {
                 foreach(var d in deltas)
                 {
-                    if (d.IsAdd) Report.Line("add {0}", d.Value);
+                    if (d.Count > 0) Report.Line("add {0}", d.Value);
                     else Report.Line("rem {0}", d.Value);
                 }
             });
@@ -104,12 +104,12 @@ namespace IncrementalDemo.CSharp
 
         static void AdvancedASetTest()
         {
-            Action<IReader<int>> print = (r) =>
+            Action<IOpReader<hrefset<int>, hdeltaset<int>>> print = (r) =>
             {
-                var deltas = r.GetDeltas();
-                var content = r.Content;
+                var deltas = r.GetOperations();
+                var content = r.State;
 
-                var deltaStr = deltas.Select(d => d.IsAdd ? string.Format("Add {0}", d.Value) : string.Format("Rem {0}", d.Value)).Join(", ");
+                var deltaStr = deltas.Select(d => d.Count > 0 ? string.Format("Add {0}", d.Value) : string.Format("Rem {0}", d.Value)).Join(", ");
                 var contentStr = content.OrderBy(a => a).Select(i => i.ToString()).Join(", ");
 
                 Report.Line("deltas = [{0}]", deltaStr);
@@ -121,7 +121,7 @@ namespace IncrementalDemo.CSharp
             var i2 = new ChangeableSet<int> { 6, 7 };
             var input = new ChangeableSet<IAdaptiveSet<int>> { i0, i1 };
 
-            var flat = input.Flatten();
+            var flat = input.SelectMany(a => a);
 
             Report.Begin("initial");
             var reader = flat.GetReader();

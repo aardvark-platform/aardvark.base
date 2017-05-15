@@ -7,7 +7,7 @@ open Aardvark.Base.Incremental
 module ASetReferenceImpl =
 
     type IReader<'a> = 
-        abstract member GetDelta : unit -> Change<'a>
+        abstract member GetDelta : unit -> list<SetOperation<'a>>
         abstract member Content : ReferenceCountingSet<'a>
 
     type aset<'a> = 

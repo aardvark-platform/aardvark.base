@@ -32,16 +32,17 @@ module DynamicCodeTests =
         member x.StartDefragmentation() =
             program.StartDefragmentation()
 
-        member x.Update(caller : IAdaptiveObject) =
-            x.EvaluateAlways caller (fun () ->
-                program.Update x
+        member x.Update(token : AdaptiveToken) =
+            x.EvaluateAlways token (fun token ->
+                program.Update token
             )
 
-        member x.Run v =
-            x.EvaluateIfNeeded null () (fun () ->
-                program.Update(x) |> ignore
+        member x.Run i =
+            let token = AdaptiveToken.Top
+            x.EvaluateAlways token (fun token ->
+                program.Update(token) |> ignore
             )
-            program.Run v
+            program.Run i
             getCalls()
 
         member x.Dispose() =
@@ -183,7 +184,7 @@ module DynamicCodeTests =
                 (fun a -> new AdaptiveCode<_>([Mod.constant [pTest, [|2 :> obj; 3 :> obj; 4 :> obj; 5 :> obj|]]]) :> IAdaptiveCode<_>)
                 input
 
-        prog.Update(null) |> ignore
+        prog.Update(AdaptiveToken.Top) |> ignore
         prog.Run(1)
 
         ()
@@ -196,7 +197,7 @@ module DynamicCodeTests =
         use prog = TestProgram.create calls
 
         // test initial execution
-        prog.Update(null) |> ignore
+        prog.Update(AdaptiveToken.Top) |> ignore
         prog.NativeCallCount |> should equal 2
         prog.FragmentCount |> should equal 2
 
@@ -208,7 +209,7 @@ module DynamicCodeTests =
             CSet.add (3,3) calls |> ignore
         )
 
-        prog.Update(null) |> ignore
+        prog.Update(AdaptiveToken.Top) |> ignore
         prog.NativeCallCount |> should equal 3
         prog.FragmentCount |> should equal 3
 
@@ -220,7 +221,7 @@ module DynamicCodeTests =
         transact (fun () ->
             CSet.exceptWith [(2,2); (3,3)] calls |> ignore
         )
-        prog.Update(null) |> ignore
+        prog.Update(AdaptiveToken.Top) |> ignore
         prog.NativeCallCount |> should equal 1 
         prog.FragmentCount |> should equal 1
 
@@ -232,7 +233,7 @@ module DynamicCodeTests =
         transact (fun () ->
             CSet.add (1,2) calls |> ignore
         )
-        prog.Update(null) |> ignore
+        prog.Update(AdaptiveToken.Top) |> ignore
         prog.NativeCallCount |> should equal 2 
         prog.FragmentCount |> should equal 2
 
@@ -243,7 +244,7 @@ module DynamicCodeTests =
         transact (fun () ->
             CSet.remove (1,1) calls |> ignore
         )
-        prog.Update(null) |> ignore
+        prog.Update(AdaptiveToken.Top) |> ignore
         prog.NativeCallCount |> should equal 1
         prog.FragmentCount |> should equal 1
 
@@ -253,7 +254,7 @@ module DynamicCodeTests =
         transact (fun () ->
             CSet.add (0,1) calls |> ignore
         )
-        prog.Update(null) |> ignore
+        prog.Update(AdaptiveToken.Top) |> ignore
         prog.NativeCallCount |> should equal 2
         prog.FragmentCount |> should equal 2
 
@@ -263,7 +264,7 @@ module DynamicCodeTests =
         transact (fun () ->
             CSet.clear calls
         )
-        prog.Update(null) |> ignore
+        prog.Update(AdaptiveToken.Top) |> ignore
         prog.NativeCallCount |> should equal 0
         prog.FragmentCount |> should equal 0
 
@@ -307,11 +308,11 @@ module DynamicCodeTests =
         use prog = TestProgram.createSimple calls
 
         // create some fragmentation
-        prog.Update(null) |> ignore
+        prog.Update(AdaptiveToken.Top) |> ignore
         transact (fun () ->
             calls |> CSet.exceptWith [100..200] 
         )
-        prog.Update(null) |> ignore
+        prog.Update(AdaptiveToken.Top) |> ignore
         prog.TotalJumpDistanceInBytes |> should not' (equal 0L)
 
 
@@ -325,7 +326,7 @@ module DynamicCodeTests =
         transact (fun () ->
             calls |> CSet.unionWith [100..200] 
         )
-        prog.Update(null) |> ignore
+        prog.Update(AdaptiveToken.Top) |> ignore
         prog.TotalJumpDistanceInBytes |> should not' (equal 0L)
         prog.StartDefragmentation().Wait()
         prog.TotalJumpDistanceInBytes |> should equal 0L
@@ -364,7 +365,7 @@ module DynamicCodeTests =
         let calls = [1.0f; 2.0f] |> CSet.ofList
         use prog = TestProgram.createSimpleFloat calls
 
-        prog.Update(null) |> ignore
+        prog.Update(AdaptiveToken.Top) |> ignore
         let res = prog.Run()
         res |> should equal [1.0f; 2.0f]
 
@@ -385,7 +386,7 @@ module DynamicCodeTests =
 
         let sw = System.Diagnostics.Stopwatch()
         sw.Start()
-        let stats = prog.Update(null)
+        let stats = prog.Update(AdaptiveToken.Top)
         prog.NativeCallCount |> ignore
         prog.FragmentCount |> ignore
         sw.Stop()

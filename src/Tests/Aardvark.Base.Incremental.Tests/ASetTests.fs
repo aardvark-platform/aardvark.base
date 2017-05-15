@@ -17,10 +17,10 @@ module ``utils`` =
     type Tree<'a> = Node of aset_check<Tree<'a>> | Leaf of aset_check<'a>
 
     type DeltaList<'a>() =
-        let store = List<list<Delta<'a>>>()
+        let store = List<hdeltaset<'a>>()
 
-        member x.push (deltas : list<Delta<'a>>) =
-            store.Add deltas 
+        member x.push (deltas : list<SetOperation<'a>>) =
+            store.Add (HDeltaSet.ofList deltas) 
 
         member x.read() =
             let res = store |> Seq.toList
@@ -73,14 +73,14 @@ module ``collect tests`` =
         transact (fun () ->
             i1.Add 3 |> should equal true
         )
-        r.GetDelta() |> should setEqual []
+        r.GetDelta() |> should setEqual List.empty<SetOperation<int>>
         r.Content |> should setEqual [1;2;3;4;5]
 
         // union {{1,2}, {3,4,5}} -> { }
         transact (fun () ->
             i0.Remove 3 |> should equal true
         )
-        r.GetDelta() |> should setEqual []
+        r.GetDelta() |> should setEqual List.empty<SetOperation<int>>
         r.Content |> should setEqual [1;2;3;4;5]
 
         // union {{1,2}, {4,5}} -> { Rem 3 }
@@ -111,7 +111,7 @@ module ``collect tests`` =
             c1.Remove 2 |> should equal true
             c0.Add 2 |> should equal true
         )
-        r.GetDelta() |> should setEqual []
+        r.GetDelta() |> should setEqual List.empty<SetOperation<int>>
         r.Content |> should setEqual [1;2]
     
 [<AutoOpen>]
@@ -181,35 +181,35 @@ module OtherASetTests =
         let s = m |> ASet.unsafeRegisterCallbackNoGcRoot deltas.push
 
         // { 1, 2, 3, 4 } -> [Add 2; Add 4; Add 6; Add 8]
-        deltas.read() |> should deltaListEqual [[Add 2; Add 4; Add 6; Add 8]]
+        deltas.read() |> should deltaListEqual [HDeltaSet.ofList [Add 2; Add 4; Add 6; Add 8]]
 
         // { 1, 3, 4, 5 } -> [Add 10; Rem 4]
         transact (fun () ->
             set.Add 5 |> ignore
             set.Remove 2 |> ignore
         )
-        deltas.read() |> should deltaListEqual [[Rem 4; Add 10]]
+        deltas.read() |> should deltaListEqual [HDeltaSet.ofList [Rem 4; Add 10]]
 
         // { 1, 4, 5, 6 } -> [Add 12; Rem 6]
         transact (fun () ->
             set.Add 6 |> ignore
             set.Remove 3 |> ignore
         )
-        deltas.read() |> should deltaListEqual [[Rem 6; Add 12]]
+        deltas.read() |> should deltaListEqual [HDeltaSet.ofList [Rem 6; Add 12]]
 
         // { 1, 4, 5, 6, 7 } -> [Add 14]
         transact (fun () -> set.Add 7 |> ignore)
 
         // { 1, 4, 5, 6, 7, 8 } -> [Add 16]
         transact (fun () -> set.Add 8 |> ignore)
-        deltas.read() |> should deltaListEqual [[Add 14]; [Add 16]]
+        deltas.read() |> should deltaListEqual [HDeltaSet.ofList [Add 14]; HDeltaSet.ofList [Add 16]]
 
 
         s.Dispose()
 
         // { 1, 4, 5, 6, 7 } -> [] (unsubscribed)
         transact (fun () -> set.Add 9 |> ignore)
-        deltas.read() |> should deltaListEqual ([] : list<list<Delta<int>>>)
+        deltas.read() |> should deltaListEqual ([] : list<hdeltaset<int>>)
 
 
 
@@ -227,20 +227,20 @@ module OtherASetTests =
         let s = derived |> ASet.unsafeRegisterCallbackKeepDisposable (fun delta ->
             for d in delta do
                 match d with
-                    | Add v -> inner.Add v |> ignore
-                    | Rem v -> inner.Remove v |> ignore
+                    | Add(_,v) -> inner.Add v |> ignore
+                    | Rem(_,v) -> inner.Remove v |> ignore
         )
 
         
         let dervivedInner = inner |> ASet.map id
 
         let r = dervivedInner.GetReader()
-        r.GetDelta() |> should setEqual [Add 2; Add 3]
+        r.GetOperations() |> should setEqual [Add 2; Add 3]
 
         transact (fun () ->
             set.Add 3 |> should equal true
         )
-        r.GetDelta() |> should setEqual [Add 4]
+        r.GetOperations() |> should setEqual [Add 4]
 
     [<Test>]
     let ``[ASet] toMod triggering even with equal set referece``() =
@@ -299,7 +299,7 @@ module OtherASetTests =
         Task.Factory.StartNew(fun () ->
             while true do
                 ct.ThrowIfCancellationRequested()
-                let delta = reader.GetDelta()
+                let delta = reader.GetOperations()
                 //Thread.Sleep(10)
                 ()
         ) |> ignore
@@ -323,10 +323,10 @@ module OtherASetTests =
 
         cancel.Cancel()
 
-        reader.GetDelta() |> ignore
+        reader.GetOperations() |> ignore
 
 
-        let content = reader.Content |> Seq.toList |> List.sort
+        let content = reader.State |> Seq.toList |> List.sort
 
         content |> should equal numbers
 
@@ -350,7 +350,7 @@ module OtherASetTests =
             Task.Factory.StartNew(fun () ->
                 while true do
                     ct.ThrowIfCancellationRequested()
-                    let delta = r.GetDelta()
+                    let delta = r.GetOperations()
                     
                     //if not (List.isEmpty delta) then
                     //    Console.WriteLine("delta: {0}", List.length delta)
@@ -378,8 +378,8 @@ module OtherASetTests =
         cancel.Cancel()
 
         for r in readers do
-            r.GetDelta() |> ignore
-            let content = r.Content |> Seq.toList |> List.sort
+            r.GetOperations() |> ignore
+            let content = r.State |> Seq.toList |> List.sort
             content |> should equal numbers
 
 
@@ -429,7 +429,7 @@ module OtherASetTests =
         Task.Factory.StartNew(fun () ->
             while true do
                 ct.ThrowIfCancellationRequested()
-                let delta = reader.GetDelta()
+                let delta = reader.GetOperations()
                 //Thread.Sleep(10)
                 ()
         ) |> ignore
@@ -453,10 +453,10 @@ module OtherASetTests =
 
         cancel.Cancel()
 
-        reader.GetDelta() |> ignore
+        reader.GetOperations() |> ignore
 
 
-        let content = reader.Content |> Seq.toList |> List.sort
+        let content = reader.State |> Seq.toList |> List.sort
 
         content |> should equal numbers
 
@@ -481,7 +481,7 @@ module OtherASetTests =
             Task.Factory.StartNew(fun () ->
                 while true do
                     ct.ThrowIfCancellationRequested()
-                    let delta = r.GetDelta()
+                    let delta = r.GetOperations()
                     Thread.Sleep(1)
                     ()
             , TaskCreationOptions.LongRunning) |> ignore
@@ -506,11 +506,11 @@ module OtherASetTests =
         cancel.Cancel()
 
         for r in readers do
-            r.GetDelta() |> ignore
+            r.GetOperations() |> ignore
 
 
         for r in readers do
-            let content = r.Content |> Seq.toList |> List.sort
+            let content = r.State |> Seq.toList |> List.sort
 
             content |> should equal numbers
 
@@ -525,7 +525,7 @@ module OtherASetTests =
 
         for r in readers do
             r.Update()
-            r.Content |> Seq.toList |> should equal []
+            r.State |> Seq.toList |> should equal List.empty<int>
 
 
         transact (fun () ->
@@ -535,8 +535,8 @@ module OtherASetTests =
         )
 
         for r in readers do
-            r.GetDelta() |> should setEqual [Add 1; Add 2; Add 3; Add 4]
-            r.Content |> Seq.sort |> Seq.toList |> should equal [1; 2; 3; 4]
+            r.GetOperations() |> should setEqual [Add 1; Add 2; Add 3; Add 4]
+            r.State |> Seq.sort |> Seq.toList |> should equal [1; 2; 3; 4]
 
 
         transact (fun () ->
@@ -546,8 +546,8 @@ module OtherASetTests =
         )
 
         for r in readers do
-            r.GetDelta() |> should setEqual [Add 5; Add 6; Add 7; Add 8]
-            r.Content |> Seq.sort |> Seq.toList |> should equal [1; 2; 3; 4; 5; 6; 7; 8]
+            r.GetOperations() |> should setEqual [Add 5; Add 6; Add 7; Add 8]
+            r.State |> Seq.sort |> Seq.toList |> should equal [1; 2; 3; 4; 5; 6; 7; 8]
 
 
 
@@ -580,12 +580,12 @@ module OtherASetTests =
             Task.Factory.StartNew(fun () ->
                 while true do
                     ct.ThrowIfCancellationRequested()
-                    let delta = r.GetDelta()
+                    let delta = r.GetOperations()
 
 
                     deltas.AddRange delta
-                    if not (List.isEmpty delta) then
-                        Console.WriteLine("delta: {0}", List.length delta)
+                    if not (HDeltaSet.isEmpty delta) then
+                        Console.WriteLine("delta: {0}", HDeltaSet.count delta)
                     //Thread.Sleep(1)
                     ()
             ) |> ignore
@@ -607,32 +607,14 @@ module OtherASetTests =
         for i in 0..readers.Length-1 do
             let r = readers.[i]
             let deltas = lists.[i]
-            r.GetDelta() |> deltas.AddRange
+            r.GetOperations() |> deltas.AddRange
 
-            let content = r.Content |> Seq.toList |> List.sort
+            let content = r.State |> Seq.toList |> List.sort
             content |> should equal numbers
 
             let deltas = deltas |> Seq.toList |> List.sort
             deltas |> should equal (numbers |> List.map Add)
 
-    [<Test>]
-    let ``[CSet] concurrent reader-reset``() =
-        
-        let set = CSet.ofList [1..100]
-
-        let r = (set :> aset<_>).GetReader()
-        let running = ref true
-
-        Task.Factory.StartNew(fun () ->
-            while !running do
-                set.Clear() // causing reset
-                set.UnionWith [1..100] // changing content
-        ) |> ignore
-
-        for i in 0..1000 do
-            r.GetDelta() |> ignore
-
-        running := false
 
     [<Test>]
     let ``[CSet] delta elimination``() =
@@ -644,8 +626,8 @@ module OtherASetTests =
 
         transact (fun () -> set.Add 1 |> ignore; set.Remove 1 |> ignore)
 
-        r.GetDelta() |> should equal []
-        r.Content.Count |> should equal 0
+        r.GetOperations() |> should setEqual List.empty<SetOperation<int>>
+        r.State.Count |> should equal 0
 
 
 
@@ -653,41 +635,6 @@ module OtherASetTests =
 
 
 
-
-
-    [<Test>]
-    let ``[ASet] reader disposal``() =
-        
-        let input = CSet.ofList [1;2]
-        let level0 = input |> ASet.map id |> ASet.choose Some |> ASet.collect ASet.single
-
-        let a = level0 |> ASet.map id
-        let b = level0 |> ASet.collect ASet.single
-
-        level0.ReaderCount |> should equal 0
-        input.Readers |> Seq.length |> should equal 0
-
-        let ra = a.GetReader()
-        level0.ReaderCount |> should equal 1
-        input.Readers |> Seq.length |> should equal 1
-
-        let rb = b.GetReader()
-        level0.ReaderCount |> should equal 2
-        input.Readers |> Seq.length |> should equal 1
-
-
-        ra.Dispose()
-        level0.ReaderCount |> should equal 1
-        input.Readers |> Seq.length |> should equal 1
-
-
-        rb.Dispose()
-        level0.ReaderCount |> should equal 0
-        input.Readers |> Seq.length |> should equal 0
-
-
-        ()
-        
 
     [<Test>]
     let ``[ASet] finalizers working``() =
@@ -705,416 +652,262 @@ module OtherASetTests =
         System.GC.Collect()
         System.GC.WaitForFullGCComplete() |> ignore
 
-        reader.GetDelta() |> should setEqual [Add 1]
+        reader.GetOperations() |> should setEqual [Add 1]
         reader.Dispose()
 
-
-    let isPassThru (r : IReader<'a>) =
-        match r with
-            | :? ASetReaders.CopyReader<int> as r ->    
-                r.PassThru
-            | _ ->
-                failwith "not a copy-reader"    
-
-
-    [<Test>]
-    let ``[ASet] reader creation after pull without change``() =
-        let input = CSet.ofList [1;2]
-
-        let derived = input |> ASet.map id
-
-
-        let r0 = derived.GetReader()
-        r0.GetDelta() |> should setEqual [Add 1; Add 2]
-
-        r0 |> isPassThru |> should be True
-
-        let r1 = derived.GetReader()
-
-        r0 |> isPassThru |> should be False
-        r1 |> isPassThru |> should be False
-
-
-        r1.GetDelta() |> should setEqual [Add 1; Add 2]
-        r0.GetDelta() |> should setEqual []
-
-    [<Test>]
-    let ``[ASet] reader creation after pull with change``() =
-        let input = CSet.ofList [1;2]
-
-        let derived = input |> ASet.map id
-
-
-        let r0 = derived.GetReader()
-        r0.GetDelta() |> should setEqual [Add 1; Add 2]
-        r0 |> isPassThru |> should be True
-
-
-        transact (fun () -> CSet.add 3 input |> ignore)
-        let r1 = derived.GetReader()
-        r0 |> isPassThru |> should be False
-        r1 |> isPassThru |> should be False
-
-
-        r1.GetDelta() |> should setEqual [Add 1; Add 2; Add 3]
-        r0.GetDelta() |> should setEqual [Add 3]
-
-    [<Test>]
-    let ``[ASet] reader creation after pull dispose original``() =
-        let input = CSet.ofList [1;2]
-
-        let derived = input |> ASet.map id
-
-
-        let r0 = derived.GetReader()
-        r0.GetDelta() |> should setEqual [Add 1; Add 2]
-        r0 |> isPassThru |> should be True
-
-
-        transact (fun () -> CSet.add 3 input |> ignore)
-        let r1 = derived.GetReader()
-        r0 |> isPassThru |> should be False
-        r1 |> isPassThru |> should be False
-
-        r0.Dispose()
-        r1 |> isPassThru |> should be True
-
-
-        r1.GetDelta() |> should setEqual [Add 1; Add 2; Add 3]
-
-    [<Test>]
-    let ``[ASet] reader creation after pull dispose new one``() =
-        let input = CSet.ofList [1;2]
-
-        let derived = input |> ASet.map id
-
-
-        let r0 = derived.GetReader()
-        r0.GetDelta() |> should setEqual [Add 1; Add 2]
-        r0 |> isPassThru |> should be True
-
-
-        transact (fun () -> CSet.add 3 input |> ignore)
-        let r1 = derived.GetReader()
-        r0 |> isPassThru |> should be False
-        r1 |> isPassThru |> should be False
-
-        r1.Dispose()
-        r0 |> isPassThru |> should be True
-        r0.GetDelta() |> should setEqual [Add 3]
-
-    [<Test>]
-    let ``[ASet] reader modification/creation/disposal/pull``() =
-        let input = CSet.empty
-        let derived = input |> ASet.map id
-
-        let mutable readers = []
-        let random = Random()
-
-        for i in 0..10000 do
-            
-            let op = random.Next(6)
-
-            match op with
-                | 0|1|2 ->
-                    let r = derived.GetReader()
-                    Interlocked.Change(&readers, fun l -> r::l) |> ignore
-                | 3 ->
-                    let v = random.Next()
-                    transact (fun () -> CSet.add v input |> ignore)
-                | 4 ->
-                    let reader =
-                        Interlocked.Change(&readers, fun l ->
-                            match l with
-                                | r::rest -> (rest, Some r)
-                                | _ -> l, None
-                        )
-
-                    match reader with
-                        | Some r -> r.Dispose()
-                        | None -> ()
-                | _ ->
-                    match readers with
-                        | [] -> ()
-                        | _ ->
-                            let r = readers |> List.item (random.Next(readers.Length)) 
-                            let old = HashSet r.Content
-                            let deltas = r.GetDelta()
-
-                            for d in deltas do
-                                match d with
-                                    | Add v -> old.Add v |> ignore
-                                    | Rem v -> old.Remove v |> ignore
-
-                            old |> should setEqual r.Content
-                            r.Content |> should setEqual input
-
-
-            let rc = readers.Length
-            if rc > 0 then
-                input.Readers |> Seq.length |> should equal 1
-            else
-                input.Readers |> Seq.length |> should equal 0
-
-            derived.ReaderCount |> should equal rc
-            ()
-
-
-
-        ()
-
-        
-    module GCHelper =
-
-        let ``create, registerCallback and return and make sure that the stack frame dies``  () =
-            let cset = CSet.ofList [ ]
-            let mutable x = cset |> ASet.map ((*)2) |> ASet.filter ((>)(-1000)) |> ASet.groupBy id |> AMap.toASet
-        
-            let called = ref (-2)
-            let y = ASet.unsafeRegisterCallbackNoGcRoot (fun _ -> called := !called + 1; ) x
-
-            x <- Unchecked.defaultof<_>
-            called, cset, y
-
-        let ``create, registerCallbackAndKeepDisposable and return and make sure that the stack frame dies``  () =
-            let cset = CSet.ofList [ ]
-            let mutable x = cset |> ASet.map ((*)2) |> ASet.filter ((>)(-1000)) |> ASet.groupBy id |> AMap.toASet
-        
-            let called = ref (-2)
-            let y = ASet.unsafeRegisterCallbackKeepDisposable (fun _ -> called := !called + 1; ) x
-
-            x <- Unchecked.defaultof<_>
-            called, cset
-
-        let ``create, register marking and return and make sure that the stack frame dies`` () =
-            let cset = CSet.ofList [ ]
-            let mutable x = cset |> ASet.map ((*)2) |> ASet.filter ((>)(-1000)) |> ASet.groupBy id |> AMap.toASet
-        
-            let called = ref 0
-            let reader = x.GetReader()
-            let mutable y = reader.AddMarkingCallback (fun _ -> called := !called + 1; ) 
-
-            y <- null
-            x <- Unchecked.defaultof<_>
-            called, cset, reader
-            
-
-    [<Test>]
-    let ``[ASet] registerCallback holds no gc root``() =
-        let called, inputSet, d = GCHelper.``create, registerCallback and return and make sure that the stack frame dies`` ()
-
-        let cnt = 100
-        for i in 0 .. cnt do
-            transact (fun () -> CSet.add i inputSet |> ignore)
-            //printfn "should equal i=%d called=%d" i !called
-            !called |> should equal i
-            Thread.Sleep 5
-            if i % 10 = 0 then printfn "done: %d/%d" i cnt; GC.Collect()
-
-        printfn "%A" d
-
-    [<Test>]
-    let ``[ASet] registerCallbackKeepDisposable holds gc root``() =
-        let called, inputSet = GCHelper.``create, registerCallbackAndKeepDisposable and return and make sure that the stack frame dies`` ()
-
-        let cnt = 100
-        for i in 0 .. cnt do
-            transact (fun () -> CSet.add i inputSet |> ignore)
-            //printfn "should equal i=%d called=%d" i !called
-            should equal  i !called
-            Thread.Sleep 5
-            if i % 10 = 0 then printfn "done: %d/%d" i cnt; GC.Collect()
-
-    [<Test>]
-    let ``[ASet] markingCallback holds gc root``() =
-        let called, inputSet, reader = GCHelper.``create, register marking and return and make sure that the stack frame dies`` ()
-
-        let cnt = 100
-        for i in 0 .. cnt do
-            transact (fun () -> CSet.add i inputSet |> ignore)
-            //printfn "should equal i=%d called=%d" i !called
-            reader.GetDelta() |> ignore
-            //printfn "works? %A == %A" i !called
-            should equal  i !called
-            GC.Collect()
-            GC.WaitForPendingFinalizers()
-            Thread.Sleep 5
-            if i % 10 = 0 then printfn "done: %d/%d" i cnt; GC.Collect()
-        printfn "done"
-
-
-    [<Test>]
-    let ``[ASet] Mod.async in asets is a memory leak?``() =
-        
-        let mutable t = Task.Factory.StartNew(fun () -> 
-            System.Threading.Thread.Sleep 10
-            1
-        )
-
-        let input = Mod.asyncTask t
-        t <- null
-
-        let reult = 
-            aset {
-                let! input = input
-                match input with
-                 | Some v -> 
-                    yield 2
-                 | None -> ()
-            }
-        GC.Collect ()
-        GC.WaitForPendingFinalizers()
-        printfn "ok"
-
-    let private createLeakAndForgetAboutStackFrame () =
-        let refCnt = ref 0
-        let mutable l = Leak refCnt
-
-        Mod.init l, refCnt
-
-    [<Test>]
-    let ``[ASet] ToMod is a memory leak due to inputs``() =
-
-        // situation: all is leaky. If i remove input tracking
-        // leaks get less but still in the end pendinging delta processing
-        // holds on to things. 
-        
-        let mutable tup = createLeakAndForgetAboutStackFrame()
-        let mutable spuriousInput = Weak(fst tup)
-        let refCnt = snd tup
-        let input = Mod.init (Some 1)
-
-        let result = 
-            aset {
-                let! i = input
-                match i with
-                 | Some v -> 
-                    let! si = spuriousInput.Target
-                    yield i
-                 | None -> ()
-            } |> ASet.toMod
-        result |> Mod.force |> ignore
-        result |> Mod.unsafeRegisterCallbackKeepDisposable (printfn "%A") |> ignore
-        tup <- Unchecked.defaultof<_>
-        transact (fun () -> Mod.change input None)
-        should equal  1 !refCnt
-        //result |> Mod.force |> ignore // without forcing this test fails
-        //transact (fun () -> spuriousInput.Target.Value <- Leak (ref 0)) // this does not help
-        GC.Collect()
-        GC.WaitForPendingFinalizers()
-        printfn "now checkit "
-        should equal  0 !refCnt
-
-
-    [<Test>]
-    let ``[ASet] async registerCallback``() =
-        
-        let inputSet = CSet.ofSeq [0; 1; 2; 3]
-        let adaptive = inputSet |> ASet.map ((*)2)
-
-        let mutable threadCount = 0
-        let cnt = 1000
-        for i in 0 .. cnt - 1 do
-            Task.Factory.StartNew(fun () ->
-                
-                    //printfn "thread In";
-                    let foo = adaptive |> ASet.unsafeRegisterCallbackNoGcRoot (fun d -> ())
-                    //printfn "thread Out";
-
-                    System.Threading.Interlocked.Increment(&threadCount) |> ignore
-                    
-                    ()
-                ) |> ignore
-        ()
-
-        printfn "all threads started...."
-
-        let maxWait = 10000
-        let mutable waitCnt = 0
-        while (threadCount <> cnt && waitCnt < maxWait) do
-            //printfn "wating for threads to finish %d / %d" threadCount cnt
-            waitCnt <- waitCnt + 1
-            Thread.Sleep(10)
-
-        let passed = threadCount = cnt || waitCnt < maxWait
-        printfn "passed %A" passed
-
-        should equal passed true
-
-        ()
-
-    [<Test>]
-    let ``[ASet] Mod.async supports zombie mods`` () =
-        
-        let AwaitTaskVoid : (Task -> Async<unit>) =
-            Async.AwaitIAsyncResult >> Async.Ignore
-
-        let set = CSet.ofList [ 1 .. 100 ]
-
-        let result =
-            aset {
-                for x in set :> aset<_> do
-                    let! r = 
-                        Mod.async <| 
-                            async {
-                                let! _ = AwaitTaskVoid <| Task.Delay 1
-                                return x * 10
-                            }
-                    yield r
-            }
-
-        let result = ASet.map id result
-
-        let resultReader = result.GetReader()
-
-        let t = Task.Factory.StartNew(fun () ->
-            for i in 101 .. 200 do
-                transact (fun () -> CSet.add i set |> ignore)
-                transact (fun () -> CSet.remove (i-100) set |> ignore)
-                System.Threading.Thread.Sleep 2
-                if i % 100 = 0 then resultReader.GetDelta() |> ignore
-        )
-        t.Wait()
-
-        //result |> ASet.unsafeRegisterCallbackKeepDisposable (printfn "%A") |> ignore
-        ()
-
-
-    [<Test>]
-    let ``[ASet] task bindings``() =
-        
-        let start = new ManualResetEventSlim()
-        let rand = Random()
-        let tasks =
-            Array.init 100 (fun i ->
-                Async.StartAsTask <| 
-                    async {
-                        let! _ =  Async.AwaitWaitHandle start.WaitHandle
-                        let t = rand.Next(1000)
-                        do! Async.Sleep t
-                        return i
-                    }
-            )
-
-        let sets =
-            tasks |> Array.map (fun t ->
-                aset {
-                    let! v = t
-                    yield v
-                }
-            )
-
-        let all = sets |> ASet.union'
-        let r = all.GetReader()
-        start.Set()
-
-        while r.Content.Count < 100 do
-            let deltas = r.GetDelta()
-            ()
-
-        r.Content |> Seq.toList |> List.sort |> should equal [0..99]
-
-
+//
+//        
+//    module GCHelper =
+//
+//        let ``create, registerCallback and return and make sure that the stack frame dies``  () =
+//            let cset = CSet.ofList [ ]
+//            let mutable x = cset |> ASet.map ((*)2) |> ASet.filter ((>)(-1000)) |> ASet.groupBy id |> AMap.toASet
+//        
+//            let called = ref (-2)
+//            let y = ASet.unsafeRegisterCallbackNoGcRoot (fun _ -> called := !called + 1; ) x
+//
+//            x <- Unchecked.defaultof<_>
+//            called, cset, y
+//
+//        let ``create, registerCallbackAndKeepDisposable and return and make sure that the stack frame dies``  () =
+//            let cset = CSet.ofList [ ]
+//            let mutable x = cset |> ASet.map ((*)2) |> ASet.filter ((>)(-1000)) |> ASet.groupBy id |> AMap.toASet
+//        
+//            let called = ref (-2)
+//            let y = ASet.unsafeRegisterCallbackKeepDisposable (fun _ -> called := !called + 1; ) x
+//
+//            x <- Unchecked.defaultof<_>
+//            called, cset
+//
+//        let ``create, register marking and return and make sure that the stack frame dies`` () =
+//            let cset = CSet.ofList [ ]
+//            let mutable x = cset |> ASet.map ((*)2) |> ASet.filter ((>)(-1000)) |> ASet.groupBy id |> AMap.toASet
+//        
+//            let called = ref 0
+//            let reader = x.GetReader()
+//            let mutable y = reader.AddMarkingCallback (fun _ -> called := !called + 1; ) 
+//
+//            y <- null
+//            x <- Unchecked.defaultof<_>
+//            called, cset, reader
+//            
+//
+//    [<Test>]
+//    let ``[ASet] registerCallback holds no gc root``() =
+//        let called, inputSet, d = GCHelper.``create, registerCallback and return and make sure that the stack frame dies`` ()
+//
+//        let cnt = 100
+//        for i in 0 .. cnt do
+//            transact (fun () -> CSet.add i inputSet |> ignore)
+//            //printfn "should equal i=%d called=%d" i !called
+//            !called |> should equal i
+//            Thread.Sleep 5
+//            if i % 10 = 0 then printfn "done: %d/%d" i cnt; GC.Collect()
+//
+//        printfn "%A" d
+//
+//    [<Test>]
+//    let ``[ASet] registerCallbackKeepDisposable holds gc root``() =
+//        let called, inputSet = GCHelper.``create, registerCallbackAndKeepDisposable and return and make sure that the stack frame dies`` ()
+//
+//        let cnt = 100
+//        for i in 0 .. cnt do
+//            transact (fun () -> CSet.add i inputSet |> ignore)
+//            //printfn "should equal i=%d called=%d" i !called
+//            should equal  i !called
+//            Thread.Sleep 5
+//            if i % 10 = 0 then printfn "done: %d/%d" i cnt; GC.Collect()
+//
+//    [<Test>]
+//    let ``[ASet] markingCallback holds gc root``() =
+//        let called, inputSet, reader = GCHelper.``create, register marking and return and make sure that the stack frame dies`` ()
+//
+//        let cnt = 100
+//        for i in 0 .. cnt do
+//            transact (fun () -> CSet.add i inputSet |> ignore)
+//            //printfn "should equal i=%d called=%d" i !called
+//            reader.GetDelta() |> ignore
+//            //printfn "works? %A == %A" i !called
+//            should equal  i !called
+//            GC.Collect()
+//            GC.WaitForPendingFinalizers()
+//            Thread.Sleep 5
+//            if i % 10 = 0 then printfn "done: %d/%d" i cnt; GC.Collect()
+//        printfn "done"
+//
+//
+//    [<Test>]
+//    let ``[ASet] Mod.async in asets is a memory leak?``() =
+//        
+//        let mutable t = Task.Factory.StartNew(fun () -> 
+//            System.Threading.Thread.Sleep 10
+//            1
+//        )
+//
+//        let input = Mod.asyncTask t
+//        t <- null
+//
+//        let reult = 
+//            aset {
+//                let! input = input
+//                match input with
+//                 | Some v -> 
+//                    yield 2
+//                 | None -> ()
+//            }
+//        GC.Collect ()
+//        GC.WaitForPendingFinalizers()
+//        printfn "ok"
+//
+//    let private createLeakAndForgetAboutStackFrame () =
+//        let refCnt = ref 0
+//        let mutable l = Leak refCnt
+//
+//        Mod.init l, refCnt
+//
+//    [<Test>]
+//    let ``[ASet] ToMod is a memory leak due to inputs``() =
+//
+//        // situation: all is leaky. If i remove input tracking
+//        // leaks get less but still in the end pendinging delta processing
+//        // holds on to things. 
+//        
+//        let mutable tup = createLeakAndForgetAboutStackFrame()
+//        let mutable spuriousInput = Weak(fst tup)
+//        let refCnt = snd tup
+//        let input = Mod.init (Some 1)
+//
+//        let result = 
+//            aset {
+//                let! i = input
+//                match i with
+//                 | Some v -> 
+//                    let! si = spuriousInput.Target
+//                    yield i
+//                 | None -> ()
+//            } |> ASet.toMod
+//        result |> Mod.force |> ignore
+//        result |> Mod.unsafeRegisterCallbackKeepDisposable (printfn "%A") |> ignore
+//        tup <- Unchecked.defaultof<_>
+//        transact (fun () -> Mod.change input None)
+//        should equal  1 !refCnt
+//        //result |> Mod.force |> ignore // without forcing this test fails
+//        //transact (fun () -> spuriousInput.Target.Value <- Leak (ref 0)) // this does not help
+//        GC.Collect()
+//        GC.WaitForPendingFinalizers()
+//        printfn "now checkit "
+//        should equal  0 !refCnt
+//
+//
+//    [<Test>]
+//    let ``[ASet] async registerCallback``() =
+//        
+//        let inputSet = CSet.ofSeq [0; 1; 2; 3]
+//        let adaptive = inputSet |> ASet.map ((*)2)
+//
+//        let mutable threadCount = 0
+//        let cnt = 1000
+//        for i in 0 .. cnt - 1 do
+//            Task.Factory.StartNew(fun () ->
+//                
+//                    //printfn "thread In";
+//                    let foo = adaptive |> ASet.unsafeRegisterCallbackNoGcRoot (fun d -> ())
+//                    //printfn "thread Out";
+//
+//                    System.Threading.Interlocked.Increment(&threadCount) |> ignore
+//                    
+//                    ()
+//                ) |> ignore
+//        ()
+//
+//        printfn "all threads started...."
+//
+//        let maxWait = 10000
+//        let mutable waitCnt = 0
+//        while (threadCount <> cnt && waitCnt < maxWait) do
+//            //printfn "wating for threads to finish %d / %d" threadCount cnt
+//            waitCnt <- waitCnt + 1
+//            Thread.Sleep(10)
+//
+//        let passed = threadCount = cnt || waitCnt < maxWait
+//        printfn "passed %A" passed
+//
+//        should equal passed true
+//
+//        ()
+//
+//    [<Test>]
+//    let ``[ASet] Mod.async supports zombie mods`` () =
+//        
+//        let AwaitTaskVoid : (Task -> Async<unit>) =
+//            Async.AwaitIAsyncResult >> Async.Ignore
+//
+//        let set = CSet.ofList [ 1 .. 100 ]
+//
+//        let result =
+//            aset {
+//                for x in set :> aset<_> do
+//                    let! r = 
+//                        Mod.async <| 
+//                            async {
+//                                let! _ = AwaitTaskVoid <| Task.Delay 1
+//                                return x * 10
+//                            }
+//                    yield r
+//            }
+//
+//        let result = ASet.map id result
+//
+//        let resultReader = result.GetReader()
+//
+//        let t = Task.Factory.StartNew(fun () ->
+//            for i in 101 .. 200 do
+//                transact (fun () -> CSet.add i set |> ignore)
+//                transact (fun () -> CSet.remove (i-100) set |> ignore)
+//                System.Threading.Thread.Sleep 2
+//                if i % 100 = 0 then resultReader.GetDelta() |> ignore
+//        )
+//        t.Wait()
+//
+//        //result |> ASet.unsafeRegisterCallbackKeepDisposable (printfn "%A") |> ignore
+//        ()
+//
+//
+//    [<Test>]
+//    let ``[ASet] task bindings``() =
+//        
+//        let start = new ManualResetEventSlim()
+//        let rand = Random()
+//        let tasks =
+//            Array.init 100 (fun i ->
+//                Async.StartAsTask <| 
+//                    async {
+//                        let! _ =  Async.AwaitWaitHandle start.WaitHandle
+//                        let t = rand.Next(1000)
+//                        do! Async.Sleep t
+//                        return i
+//                    }
+//            )
+//
+//        let sets =
+//            tasks |> Array.map (fun t ->
+//                aset {
+//                    let! v = t
+//                    yield v
+//                }
+//            )
+//
+//        let all = sets |> ASet.union'
+//        let r = all.GetReader()
+//        start.Set()
+//
+//        while r.Content.Count < 100 do
+//            let deltas = r.GetDelta()
+//            ()
+//
+//        r.Content |> Seq.toList |> List.sort |> should equal [0..99]
+//
+//
 module ASetPerformance =
     open System.Diagnostics
 
@@ -1208,47 +1001,55 @@ module ASetPerformance =
 
 
 
+
     [<Test>]
     let ``[ASet Performance] map``() =
         
-        for s in 1000..1000..10000 do
-            System.GC.Collect()
-            System.GC.WaitForFullGCApproach() |> ignore
+        //System.Runtime.GCSettings.LatencyMode <- Runtime.GCLatencyMode.Batch
+        //while true do
+            for s in 1000..1000..20000 do
+                System.GC.Collect()
+                System.GC.Collect()
+                System.GC.WaitForFullGCComplete() |> ignore
+                System.GC.WaitForFullGCComplete() |> ignore
         
-            printfn "size: %d" s
-            let tTransact = Probe.time()
-            let tSubmit = Probe.time()
-            let tPull = Probe.time()
+                printfn "size: %d" s
+                let tTransact = Stopwatch()
+                let tSubmit = Stopwatch()
+                let tPull = Stopwatch()
 
 
-            let input = CSet.empty
-            let mapped = input |> ASet.map id
-            let r = mapped.GetReader()
+                let input = CSet.empty
+                let mapped = input |> ASet.map id
+                let r = mapped.GetReader()
 
-            transact (fun () ->
-                CSet.add 0 input |> ignore
-            )
-            r.Update()
+                transact (fun () ->
+                    CSet.add 0 input |> ignore
+                )
+                r.Update()
 
-            let cnt = 10000
-            for i in 1..cnt do
-                tTransact |> Probe.using (fun () ->
+                let cnt = s
+                for i in 1..cnt do
+                    tTransact.Start()
                     transact (fun () ->
-                        tSubmit |> Probe.using (fun () ->
-                            CSet.add i input |> ignore
-                        )
+                        tSubmit.Start()
+                        CSet.add i input |> ignore
+                        tSubmit.Stop()
                     )
-                )
-
-                tPull |> Probe.using (fun _ ->
+                    tTransact.Stop()
+                
+                    tPull.Start()
                     r.Update()
-                )
+                    tPull.Stop()
 
-            printfn "  submit:   %A" (tSubmit.Elapsed / cnt)
-            printfn "  transact: %A" (tTransact.Elapsed / cnt)
-            printfn "  pull:     %A" (tPull.Elapsed / cnt)
+                
+    //                System.GC.Collect()
+    //                System.GC.WaitForFullGCComplete() |> ignore
 
-
+                printfn "  submit:   %A" (tSubmit.MicroTime / cnt)
+                printfn "  transact: %A" ((tTransact.MicroTime - tSubmit.MicroTime) / cnt)
+                printfn "  pull:     %A" (tPull.MicroTime / cnt)
+    
     [<Test>]
     let ``[ASet Performance] collect``() =
         
@@ -1257,9 +1058,9 @@ module ASetPerformance =
             System.GC.WaitForFullGCApproach() |> ignore
         
             printfn "size: %d" s
-            let tTransact = Probe.time()
-            let tSubmit = Probe.time()
-            let tPull = Probe.time()
+            let tTransact = Stopwatch()
+            let tSubmit = Stopwatch()
+            let tPull = Stopwatch()
 
 
             let input = CSet.empty
@@ -1273,22 +1074,21 @@ module ASetPerformance =
 
             let cnt = 10000
             for i in 1..cnt do
-                tTransact |> Probe.using (fun () ->
-                    transact (fun () ->
-                        tSubmit |> Probe.using (fun () ->
-                            CSet.add i input |> ignore
-                        )
-                    )
+                tTransact.Start()
+                transact (fun () ->
+                    tSubmit.Start()
+                    CSet.add i input |> ignore
+                    tSubmit.Stop()
                 )
+                tTransact.Stop()
 
-                tPull |> Probe.using (fun _ ->
-                    r.Update()
-                )
+                tPull.Start()
+                r.Update()
+                tPull.Stop()
 
-            printfn "  submit:   %A" (tSubmit.Elapsed / cnt)
-            printfn "  transact: %A" (tTransact.Elapsed / cnt)
-            printfn "  pull:     %A" (tPull.Elapsed / cnt)
-    
+            printfn "  submit:   %A" (tSubmit.MicroTime / cnt)
+            printfn "  transact: %A" ((tTransact.MicroTime - tSubmit.MicroTime) / cnt)
+            printfn "  pull:     %A" (tPull.MicroTime / cnt)
 
     [<Test>]
     let ``[ASet] bind caching``() =
@@ -1320,85 +1120,3 @@ module ASetPerformance =
         printfn "done"
 
         ()
-
-[<AutoOpen>]
-module ConcurrentDeltaQueueTests =
-
-    let private compilerTest () =
-        let r = System.Random()
-        let livingThings = System.Collections.Generic.List<_>()
-        let mutable freshIds = 0L
-        for i in 0 .. 100000 do
-            let operations = System.Collections.Generic.List<Delta<int64>>()
-            let newThings = 
-                [ for i in 0 .. r.Next(0,20) do 
-                        freshIds <- freshIds + 1L
-                        livingThings.Add freshIds |> ignore
-                        operations.Add (Add freshIds)
-                ]
-            for i in operations do printfn "%A" i
-
-        printfn "okay"
-
-
-    [<Test>]
-    let ``[ASet ConcurrentDeltaQueue] concurrent delta queue test``() =
-
-        
-        compilerTest()
-        let set = CSet.empty
-
-        let queue = new ConcurrentDeltaQueue<int64>()
-
-        let r = System.Random()
-        let mutable freshIds = 0L
-        let livingThings = System.Collections.Generic.HashSet<int64>()
-
-        let perIteration = 20
-
-        let producer () =
-            for i in 0 .. 100000 do
-                let operations = List<Delta<int64>>()
-
-                for i in 0 .. r.Next(0,perIteration) do
-                    let arr = livingThings |> Seq.toArray
-                    if arr.Length > 100 then
-                        let toRemove = arr.[r.Next(0,arr.Length-1)]
-                        livingThings.Remove toRemove |> ignore
-                        operations.Add (Rem toRemove)
-                    
-                let newThings = 
-                    [| for i in 0 .. r.Next(0,perIteration) do 
-                        freshIds <- freshIds + 1L
-                        livingThings.Add freshIds |> ignore
-                        operations.Add (Add freshIds)
-                        yield freshIds
-                    |]
-
-
-                for i in operations do queue.Enqueue i |> ignore
-
-            for x in livingThings |> Seq.toArray do 
-                livingThings.Remove x |> ignore
-                queue.Enqueue (Rem x) |> ignore
-
-
-        let conc = System.Collections.Concurrent.ConcurrentHashSet()
-
-        let cts = new System.Threading.CancellationTokenSource()
-
-        let consumer  =
-            async {
-                do! Async.SwitchToNewThread()
-
-                while true do 
-                    let! i = queue.DequeueAsync()
-                    match i with
-                        | Add v -> if conc.Add( v) then () else failwith "duplicate!?!?!?"
-                        | Rem v -> if conc.Remove v then () else failwith "Rem of non existing?!?!?!"
-            }
-
-        //let arrs = [ for i in 0 .. 8 do yield Async.StartAsTask( consumer,cancellationToken = cts.Token) ]
-
-        producer()
-        cts.Cancel()

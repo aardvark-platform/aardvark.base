@@ -36,24 +36,23 @@ module ``performance tests`` =
         let test = stepN 50 input
         let r = test.GetReader()
 
-        r.GetDelta() |> ignore
+        r.GetOperations() |> ignore
 
 
         for i in 0..100 do
             transact (fun () ->
                 input.UnionWith [i]
             )
-            r.GetDelta() |> ignore
+            r.GetOperations() |> ignore
 
         transact (fun () ->
             input.Clear()
         )
-        r.GetDelta() |> ignore
+        r.GetOperations() |> ignore
 
 
         let changeTime = Stopwatch()
         let evalTime = Stopwatch()
-        Telemetry.reset() |> ignore
         let iter = 1000
         for i in 1..iter do
             changeTime.Start()
@@ -63,10 +62,9 @@ module ``performance tests`` =
             changeTime.Stop()
 
             evalTime.Start()
-            r.GetDelta() |> ignore
+            r.GetOperations() |> ignore
             evalTime.Stop()
 
-        Telemetry.resetAndPrint()
         Console.WriteLine("change: {0}ms", changeTime.Elapsed.TotalMilliseconds / float iter )
         Console.WriteLine("eval:   {0}ms", evalTime.Elapsed.TotalMilliseconds / float iter)
         ()
@@ -88,24 +86,23 @@ module ``performance tests`` =
         let test = stepN 50 input
         let r = test.GetReader()
 
-        r.GetDelta() |> ignore
+        r.GetOperations() |> ignore
 
 
         for i in 0..100 do
             transact (fun () ->
                 input.UnionWith [i]
             )
-            r.GetDelta() |> ignore
+            r.GetOperations() |> ignore
 
         transact (fun () ->
             input.Clear()
         )
-        r.GetDelta() |> ignore
+        r.GetOperations() |> ignore
 
 
         let changeTime = Stopwatch()
         let evalTime = Stopwatch()
-        Telemetry.reset() |> ignore
         let iter = 1000
         for i in 1..iter do
             changeTime.Start()
@@ -115,10 +112,9 @@ module ``performance tests`` =
             changeTime.Stop()
 
             evalTime.Start()
-            r.GetDelta() |> ignore
+            r.GetOperations() |> ignore
             evalTime.Stop()
 
-        Telemetry.resetAndPrint()
         Console.WriteLine("change: {0}ms", changeTime.Elapsed.TotalMilliseconds / float iter )
         Console.WriteLine("eval:   {0}ms", evalTime.Elapsed.TotalMilliseconds / float iter)
         ()
@@ -155,7 +151,6 @@ module ``performance tests`` =
 
         let changeTime = Stopwatch()
         let evalTime = Stopwatch()
-        Telemetry.reset() |> ignore
         let iter = 1000
         for i in 1..iter do
             changeTime.Start()
@@ -168,7 +163,6 @@ module ``performance tests`` =
             Mod.force test |> ignore
             evalTime.Stop()
 
-        Telemetry.resetAndPrint()
         Console.WriteLine("change: {0}ms", changeTime.Elapsed.TotalMilliseconds / float iter )
         Console.WriteLine("eval:   {0}ms", evalTime.Elapsed.TotalMilliseconds / float iter)
         ()
@@ -205,7 +199,6 @@ module ``performance tests`` =
 
         let changeTime = Stopwatch()
         let evalTime = Stopwatch()
-        Telemetry.reset() |> ignore
         let iter = 1000
         for i in 1..iter do
             changeTime.Start()
@@ -218,7 +211,6 @@ module ``performance tests`` =
             Mod.force test |> ignore
             evalTime.Stop()
 
-        Telemetry.resetAndPrint()
         Console.WriteLine("change: {0}ms", changeTime.Elapsed.TotalMilliseconds / float iter )
         Console.WriteLine("eval:   {0}ms", evalTime.Elapsed.TotalMilliseconds / float iter)
         ()

@@ -453,150 +453,88 @@ module ``Basic Mod Tests`` =
 
 
     [<Test>]
-    let ``[Mod] toObservable test``() =
-        let m = Mod.init 10
-        let mutable exec = 0
-        let cnt() =
-            let v = exec
-            exec <- 0
-            v
-
-        let d = m |> Mod.map (fun a -> exec <- exec + 1; a)
-
-
-        let obs = d |> Mod.toObservable
-
-        let s0 = obs.Subscribe (fun v -> v |> should equal m.Value)
-        cnt() |> should equal 1
-
-        let s1 = obs.Subscribe (fun v -> v |> should equal m.Value)
-        cnt() |> should equal 0
-
-
-        transact (fun () -> Mod.change m 11)
-        cnt() |> should equal 1
-
-        s0.Dispose()
-        cnt() |> should equal 0
-
-        s1.Dispose()
-        cnt() |> should equal 0
-
-        transact (fun () -> Mod.change m 11)
-        cnt() |> should equal 0
-
-
-
-        ()
-
-    open System
-    open System.Reactive
-    open System.Reactive.Linq
-    [<Test>]
-    let ``[Mod] observable builder``() =
-        
-        let down = Mod.init false
-        let pos = Mod.init V2i.Zero
-
-
-
-        let test =
-            obs {
-                while true do
-                    System.Console.WriteLine("new polygon")
-                    let polygon = List<V2i>()
-
-                    // wait for down to become true
-                    while down do
-                        System.Console.WriteLine("in while")
-                    
-                        // while down accumulate all points in polygon and
-                        // yield intermediate representations.
-                        for p in pos do
-                            polygon.Add p
-                            yield Left (Seq.toList polygon)
-
-                    // when the button is up again yield the final polygon
-                    yield Right (Seq.toList polygon)
-                    System.Console.WriteLine("finished polygon ({0} points)", polygon.Count)
-
-            }
-
-
-        let l = List<_>()
-        let s = test.Subscribe(fun v -> l.Add v)
-//        let latest = 
-//            test 
-//                |> Observable.choose (fun v -> match v with | Left i -> Some i | _ -> None) 
-//                |> Observable.latest
-
-        
-
-        transact (fun () -> Mod.change down true)
-        transact (fun () -> Mod.change pos V2i.II)
-        transact (fun () -> Mod.change pos V2i.IO)
-        transact (fun () -> Mod.change down false)
-        transact (fun () -> Mod.change pos V2i.Zero)
-        transact (fun () -> Mod.change pos V2i.OI)
-
-        pos.OutOfDate |> should be True
-
-        let all = l |> Seq.toList
-        all |> should equal [Left [V2i.Zero]; Left [V2i.Zero; V2i.II]; Left [V2i.Zero; V2i.II; V2i.IO]; Right [V2i.Zero; V2i.II; V2i.IO]]
-        l.Clear()
-
-
-        transact (fun () -> Mod.change down true)
-        transact (fun () -> Mod.change pos V2i.II)
-        transact (fun () -> Mod.change pos V2i.IO)
-        transact (fun () -> Mod.change down false)
-        let all = l |> Seq.toList
-        all |> should equal [Left [V2i.OI]; Left [V2i.OI; V2i.II]; Left [V2i.OI; V2i.II; V2i.IO]; Right [V2i.OI; V2i.II; V2i.IO]]
-        l.Clear()
-
-
-
-        ()
-
-    [<Test>]
     let ``[Mod] consistent concurrency test``() =
         let i = Mod.init 10
 
         let a = i |> Mod.map id |> Mod.map id 
         let b = i |> Mod.map (fun a -> -a)
-
-        let apb = Mod.map2 (+) a b
+        
+        let mutable values = 0
+        let apb = 
+            Mod.map2 (fun a b -> 
+                Interlocked.Increment(&values) |> ignore
+                a + b
+            ) a b
         apb |> Mod.force |> ignore
 
+        values <- 0
+        let pullers = 1
+        let changers = 1
+
+        let countdown = new CountdownEvent(pullers)
+        let mutable iterations = 0
         let mutable changes = 0
+        let mutable exn = None
+
+
         let r = System.Random()
         let changer = 
             async {
                 do! Async.SwitchToNewThread()
-                while true do
-                    //do! Async.Sleep 0
-                    transact (fun () -> Mod.change i (r.Next()))
-                    Interlocked.Increment &changes |> ignore
+
+                do
+                    while true do
+                        transact (fun () -> Mod.change i (r.Next()))
+                        Interlocked.Increment &changes |> ignore
             }
 
 
+        let puller =
+            async {
+                let sw = System.Diagnostics.Stopwatch()
+                sw.Start()
+                do! Async.SwitchToNewThread()
+                do
+                    try
+                        while sw.Elapsed.TotalSeconds < 10.0 do
+                            if apb.OutOfDate then
+                                let r = Mod.force apb
+                                if r <> 0 then 
+                                    exn <- Some (sprintf "hate :%d" iterations)
+                                    failwithf "hate :%d" iterations
+                                Interlocked.Increment(&iterations) |> ignore
+                    finally
+                        countdown.Signal() |> ignore
+            }
 
-        for i in 0 .. 2 do 
+
+        for i in 1 .. changers do 
             Async.Start changer
 
-        let sw = System.Diagnostics.Stopwatch()
-        let mutable iterations = 0
-        sw.Start()
-        while sw.Elapsed.TotalSeconds < 10.0 do
-            let r = Mod.force apb
-            if r <> 0 then failwithf "hate :%d" iterations
-            iterations <- iterations + 1
-            if iterations % 10000 = 0 then
-                let progress = sw.Elapsed.TotalSeconds / 10.0
-                printfn "%.2f%%" (100.0 * progress)
+        for i in 1 .. pullers do 
+            Async.Start puller
 
+
+        countdown.Wait()
+
+        match exn with
+            | Some e -> failwith e
+            | None -> ()
+
+//        let sw = System.Diagnostics.Stopwatch()
+//        sw.Start()
+//        while sw.Elapsed.TotalSeconds < 10.0 do
+//            let r = Mod.force apb
+//            if r <> 0 then failwithf "hate :%d" iterations
+//            iterations <- iterations + 1
+//            if iterations % 10000 = 0 then
+//                let progress = sw.Elapsed.TotalSeconds / 10.0
+//                printfn "%.2f%%" (100.0 * progress)
+
+        printfn "values: %A" values
         printfn "done: %A" iterations
         printfn "changes: %A" changes
+    
     [<Test>]
     let ``[Mod] consistent concurrency dirty set``() =
         //let i = Mod.init 10
@@ -630,14 +568,14 @@ module ``Basic Mod Tests`` =
             let dirty = HashSet<IMod<int>> [a;b]
             let mutable initial = true
             { new Mod.AbstractDirtyTrackingMod<IMod<int>, int>() with
-                member x.Compute(dirty) =
+                member x.Compute(token, dirty) =
                     if initial then
-                        a.GetValue(x) |> ignore
-                        b.GetValue(x) |> ignore
+                        a.GetValue(token) |> ignore
+                        b.GetValue(token) |> ignore
                         2
                     else
                         let cnt = dirty.Count
-                        for d in dirty do d.GetValue(x) |> ignore
+                        for d in dirty do d.GetValue(token) |> ignore
                         dirty.Count
             }
 //
@@ -859,11 +797,13 @@ module ``Basic Mod Tests`` =
             let x = Mod.init 10
             let y = Mod.init 20
             let z = Mod.map2 ((+)) x y
-            z.DumpDotFile (1000, "test.dot") |> ignore
+            let path = System.IO.Path.GetTempFileName()
+            z.DumpDotFile (1000, path) |> ignore
 
         [<Test>]
         let ``[Mod] DgmlSerialization`` () =
             let x = Mod.init 10
             let y = Mod.init 20
             let z = Mod.map2 ((+)) x y
-            z.DumpDgml (1000, "test.dgml") |> ignore
+            let path = System.IO.Path.GetTempFileName()
+            z.DumpDgml (1000, path) |> ignore

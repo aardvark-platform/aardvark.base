@@ -1,7 +1,8 @@
+framework: net45
 source https://api.nuget.org/v3/index.json
 source https://vrvis.myget.org/F/aardvark_public/api/v3/index.json
 
-nuget System.Collections.Immutable ~> 1.2.0
+nuget System.Collections.Immutable >= 1.2.0
 
 nuget System.Reactive.Linq       ~> 3.0.0
 nuget System.Reactive.Core       ~> 3.0.0
@@ -9,12 +10,13 @@ nuget System.Reactive.Interfaces ~> 3.0.0
 
 nuget DevILSharp             ~> 0.0.11
 
-nuget NUnit.Console          ~> 3.0.1
-nuget NUnit                  ~> 3.2.0
-nuget FsUnit                 ~> 2.1.0
-
+nuget NUnit                  ~> 3.6.0
+nuget FsUnit                 ~> 2.4.0-alpha-2
+nuget FsCheck                ~> 2.7.1
+nuget FsCheck.NUnit          ~> 2.7.1
 
 group Build
+framework: net45
 content: none
 source https://vrvis.myget.org/F/aardvark_public/api/v3/index.json
 source https://api.nuget.org/v3/index.json

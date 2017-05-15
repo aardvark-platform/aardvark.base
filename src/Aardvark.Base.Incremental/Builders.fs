@@ -36,107 +36,6 @@ module Operators =
     /// creates a changeable cell containing the given value
     let inline mref (v : 'a) = Mod.init v
 
-[<AutoOpen>]
-module ``Observable extensions`` =
-    open System
-    open System.Reactive
-    open System.Reactive.Linq
-    
-    type ObservableBuilder() =
-        member x.For(o : IObservable<'a>, f : 'a -> IObservable<'b>) =
-            o.SelectMany f
-
-        member x.Yield(v) = 
-            Observable.Return(v)
-
-        member x.Delay(f : unit -> IObservable<'a>) = f
-
-        member x.For(m : IMod<'a>, f : 'a -> IObservable<'b>) =
-            let mo = m |> Mod.toObservable
-            mo.SelectMany f
-
-        member x.Combine(l : IObservable<'a>, r : unit -> IObservable<'a>) =
-            l.Concat (Observable.Defer(r))
-
-
-        member x.Zero() = 
-            Observable.Empty()
-
-        member x.While(guard : unit -> #IMod<bool>, body : unit -> IObservable<'b>) : IObservable<'b>  =
-            let guard = guard() :> IMod<bool> |> Mod.toObservable
-
-            Observable.Create(fun (obs : IObserver<'b>) ->
-                let active = ref false
-                let inner = ref { new IDisposable with member x.Dispose() = () }
- 
-                let rec run() =
-                    body().Subscribe(fun v ->
-                        obs.OnNext(v)
-                        let old = !inner
-                        inner := run()
-                        old.Dispose()
-
-                    )
-
-                let guardSub =
-                    guard.Subscribe (fun v ->
-                        if v then
-                            if not !active then
-                                inner := Observable.Defer(body).Repeat().Subscribe obs
-
-                            active := true
-                        else
-                            if !active then
-                                inner.Value.Dispose()
-                                obs.OnCompleted()
-                                ()
-
-                            active := false
-                    )
-                { new IDisposable with
-                    member x.Dispose() =
-                        guardSub.Dispose()
-                        inner.Value.Dispose()
-                }
-            )
-
-        member x.While(guard : unit -> bool, body : unit -> IObservable<'a>) =
-            if guard() then
-                body().Concat(Observable.Defer(fun () -> x.While(guard, body)))
-            else
-                Observable.Empty()
-            
-        member x.Run(f : unit -> IObservable<'a>) = 
-            f()
-
-
-    module Observable =
-        let private noDisposable = { new IDisposable with member x.Dispose() = () }
-
-        let latest (o : IObservable<'a>) : IMod<Option<'a>> =
-            let r = Mod.init None
-            let subscription = ref noDisposable
-            subscription :=
-                o.Subscribe (
-                    { new IObserver<'a> with
-                        member x.OnNext(v) = 
-                            r.UnsafeCache <- Some v
-                            let mark = lock r (fun () -> not r.OutOfDate)
-                            if mark then
-                                transact(fun () -> r.MarkOutdated())
-                        member x.OnCompleted() =
-                            subscription.Value.Dispose()
-                            subscription := noDisposable
-                        member x.OnError e =
-                            subscription.Value.Dispose()
-                            subscription := noDisposable
-                    }      
-                )
-
-            r :> IMod<_>
-
-    let obs = ObservableBuilder()
-
 
 [<AutoOpen>]
 module ``Computation Expression Builders`` =
@@ -179,17 +78,11 @@ module ``Computation Expression Builders`` =
         member x.Bind(m : IMod<'a>, f : 'a -> aset<'b>) =
             ASet.bind f m
 
-        member x.Bind(m : System.Threading.Tasks.Task<'a>, f : 'a -> aset<'b>) =
-            ASet.bindTask f m
-
-        member x.Bind(m : Async<'a>, f : 'a -> aset<'b>) =
-            ASet.bindTask f (Async.StartAsTask m)
-
         member x.For(s : aset<'a>, f : 'a -> aset<'b>) =
             ASet.collect f s
 
         member x.For(s : seq<'a>, f : 'a -> aset<'b>) =
-            ASet.collect' f s
+            ASet.collect f (ASet.ofSeq s)
 
         member x.Zero() =
             ASet.empty
@@ -198,7 +91,7 @@ module ``Computation Expression Builders`` =
             f()
 
         member x.Combine(l : aset<'a>, r : aset<'a>) =
-            ASet.union' [l;r]
+            ASet.union l r
 
     type AListBuilder() =
         member x.Yield (v : 'a) =
@@ -217,7 +110,7 @@ module ``Computation Expression Builders`` =
             AList.collect f s
 
         member x.For(s : seq<'a>, f : 'a -> alist<'b>) =
-            AList.collect' f s
+            AList.collect f (AList.ofSeq s)
 
         member x.Zero() =
             AList.empty
@@ -226,15 +119,15 @@ module ``Computation Expression Builders`` =
             f()
 
         member x.Combine(l : alist<'a>, r : alist<'a>) =
-            AList.concat' [l;r]
+            AList.append l r
 
 
     module Mod =
         let toASet (m : IMod<'a>) =
-            ASet.ofMod m
+            ASet.ofModSingle m
 
         let toAList (m : IMod<'a>) =
-            AList.ofMod m
+            AList.ofModSingle m
 
 
     let adaptive = AdaptiveBuilder()
@@ -247,21 +140,16 @@ open System.Runtime.CompilerServices
 type EvaluationExtensions() =
 
     [<Extension>]
-    static member inline GetValue(x : IMod) = x.GetValue(null)
-
-
-    [<Extension>]
-    static member inline GetValue(x : IMod<'a>) = x.GetValue(null)
+    static member inline GetValue(x : IMod) = x.GetValue(AdaptiveToken.Top)
 
     [<Extension>]
-    static member inline GetDelta(x : IReader<'a>) = x.GetDelta(null)
-    [<Extension>]
-    static member inline Update(x : IReader<'a>) = x.Update(null)
+    static member inline GetValue(x : IMod<'a>) = x.GetValue(AdaptiveToken.Top)
 
     [<Extension>]
-    static member inline GetDelta(x : IListReader<'a>) = x.GetDelta(null)
-    [<Extension>]
-    static member inline Update(x : IListReader<'a>) = x.Update(null)
+    static member inline GetOperations(x : IOpReader<'a>) = x.GetOperations(AdaptiveToken.Top)
 
     [<Extension>]
-    static member inline Evaluate(x : afun<'a, 'b>, v : 'a) = x.Evaluate(null, v)
+    static member inline Update(x : IOpReader<'a>) = x.GetOperations(AdaptiveToken.Top) |> ignore
+
+    [<Extension>]
+    static member inline Evaluate(x : afun<'a, 'b>, v : 'a) = x.Evaluate(AdaptiveToken.Top, v)

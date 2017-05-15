@@ -26,7 +26,7 @@ module SizeOfAdaptiveObjects =
             let mutable m = CSet.ofList [0] :> aset<_>
 
             let empty = ASet.empty
-            m <- ASet.unionTwo m empty
+            m <- ASet.union m empty
 
             let r = m.GetReader()
             r.Update()
@@ -39,7 +39,7 @@ module SizeOfAdaptiveObjects =
 
             let empty = ASet.empty
             for i in 1 .. size do
-                m <- ASet.unionTwo m empty
+                m <- ASet.union m empty
 
             let r = m.GetReader()
             r.Update()
@@ -93,7 +93,7 @@ module SizeOfAdaptiveObjects =
         let mem = System.GC.GetTotalMemory(true)
 
         for x in 0 .. xs.Length - 1 do
-            xs.[x] <- ASet.AdaptiveSet<int>(fun () -> Unchecked.defaultof<IReader<int>>)
+            xs.[x] <- ASet.create(fun _ -> Unchecked.defaultof<ISetReader<int>>)
 
         let after = System.GC.GetTotalMemory(true)
         printfn "%f bytes." (float (after - mem) / float xs.Length)

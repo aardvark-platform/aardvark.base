@@ -25,7 +25,7 @@ type IMod =
     /// returns the cell's content and evaluates
     /// the respective computation if needed.
     /// </summary>
-    abstract member GetValue : IAdaptiveObject -> obj
+    abstract member GetValue : AdaptiveToken -> obj
 
 /// <summary>
 /// IMod<'a> represents the base interface for
@@ -40,7 +40,16 @@ type IMod<'a> =
     /// returns the cell's content and evaluates
     /// the respective computation if needed.
     /// </summary>
-    abstract member GetValue : IAdaptiveObject -> 'a
+    abstract member GetValue : AdaptiveToken -> 'a
+    
+
+type IDisposableMod =
+    inherit IMod
+    inherit IDisposable
+    
+type IDisposableMod<'a> =
+    inherit IMod<'a>
+    inherit IDisposableMod
 
 /// <summary>
 /// ModRef<'a> represents a changeable input
@@ -101,11 +110,10 @@ type ModRef<'a>(value : 'a) =
                 x.MarkOutdated(fin)
 
 
-    member x.GetValue(caller : IAdaptiveObject) =
-        x.EvaluateAlways caller (fun () ->
+    member x.GetValue(token : AdaptiveToken) =
+        x.EvaluateAlways token (fun token ->
             if x.OutOfDate then
                 cache <- value
-            
             cache
         )
 
@@ -150,7 +158,7 @@ type ConstantMod<'a> =
         member x.Value =
             x.value.Value
 
-        member x.GetValue(caller : IAdaptiveObject) = 
+        member x.GetValue(token : AdaptiveToken) = 
             x.value.Value
             
         interface IMod with
@@ -162,20 +170,20 @@ type ConstantMod<'a> =
 
             
         override x.GetHashCode() =
-            let v = x.GetValue(null) :> obj
+            let v = x.value.Value :> obj
             if isNull v then 0
             else v.GetHashCode()
 
         override x.Equals o =
             match o with
                 | :? IMod<'a> as o when o.IsConstant ->
-                    System.Object.Equals(x.GetValue(null), o.GetValue(null))
+                    System.Object.Equals(x.value.Value, o.GetValue(Unchecked.defaultof<AdaptiveToken>))
                 | _ -> false
 
         override x.ToString() =
-            x.GetValue(null).ToString()
+            x.value.Value.ToString()
 
-        new(value : 'a) = ConstantMod<'a>(lazy value)
+        new(value : 'a) = ConstantMod<'a>(Lazy.CreateFromValue(value))
         new(compute : unit -> 'a) = ConstantMod<'a>( lazy (compute()) )
         new(l : Lazy<'a>) = { value = l }
 
@@ -207,10 +215,10 @@ type DefaultingModRef<'a>(computed : IMod<'a>) =
                 c
 
 
-    member x.GetValue(caller) =
-        x.EvaluateAlways caller (fun () ->
+    member x.GetValue(token) =
+        x.EvaluateAlways token (fun token ->
             if x.OutOfDate && isComputed then
-                let v = computed.GetValue(x)
+                let v = computed.GetValue(token)
                 cache <- v
                 v
             else
@@ -230,7 +238,7 @@ type DefaultingModRef<'a>(computed : IMod<'a>) =
 
     member x.Value 
         with get() = 
-            if isComputed then x.GetValue(null)
+            if isComputed then x.GetValue(AdaptiveToken.Top)
             else cache
         and set v =
             let changed =
@@ -304,7 +312,7 @@ module Mod =
 
         Aardvark.Base.Ag.unpack <- fun o ->
             match o with
-                | :? IMod as o -> o.GetValue(null)
+                | :? IMod as o -> o.GetValue(AdaptiveToken.Top)
                 | _ -> o
 
 
@@ -320,17 +328,15 @@ module Mod =
             val mutable public cache : 'a
             val mutable public scope : Ag.Scope
 
-            abstract member Compute : unit -> 'a
+            abstract member Compute : AdaptiveToken -> 'a
 
-            member x.GetValue(caller) =
-                x.EvaluateAlways caller (fun () ->
-                    Telemetry.timed modEvaluateProbe (fun () ->
-                        if x.OutOfDate then
-                            Ag.useScope x.scope (fun () ->
-                                x.cache <- Telemetry.timed modComputeProbe x.Compute
-                            )
-                        x.cache
-                    )
+            member x.GetValue(token) =
+                x.EvaluateAlways token (fun token ->
+                    if x.OutOfDate then
+                        Ag.useScope x.scope (fun () ->
+                            x.cache <- x.Compute(token)
+                        )
+                    x.cache
                 )
 
             override x.Mark () =
@@ -359,17 +365,15 @@ module Mod =
             val mutable public cache : 'a
             val mutable public scope : Ag.Scope
 
-            abstract member Compute : HashSet<'i> -> 'a
+            abstract member Compute : AdaptiveToken * HashSet<'i> -> 'a
 
-            member x.GetValue(caller) =
-                x.EvaluateAlways' caller (fun (dirty : HashSet<'i>) ->
-                    Telemetry.timed modEvaluateProbe (fun () ->
-                        if x.OutOfDate then
-                            Ag.useScope x.scope (fun () ->
-                                x.cache <- Telemetry.timed modComputeProbe (fun () -> x.Compute dirty)
-                            )
-                        x.cache
-                    )
+            member x.GetValue(token) =
+                x.EvaluateAlways' token (fun (token : AdaptiveToken) (dirty : HashSet<'i>) ->
+                    if x.OutOfDate then
+                        Ag.useScope x.scope (fun () ->
+                            x.cache <- x.Compute(token,dirty)
+                        )
+                    x.cache
                 )
 
             override x.Mark () =
@@ -413,11 +417,11 @@ module Mod =
         class
             inherit AbstractMod<'a>
             val mutable public inputs : seq<IAdaptiveObject>
-            val mutable public compute : IMod<'a> -> 'a
+            val mutable public compute : AdaptiveToken -> 'a
 
             override x.Inputs = x.inputs
 
-            override x.Compute() = x.compute(x :> IMod<_>)
+            override x.Compute(token) = x.compute(token)
 
             new(inputs : seq<IAdaptiveObject>, compute) =
                 { inputs = inputs; compute = compute }
@@ -434,13 +438,13 @@ module Mod =
         inherit LazyMod<'a>(Seq.singleton (input :> IAdaptiveObject), fun s -> input.GetValue(s))
 
         let hasChanged = ChangeTracker.trackCustom<'a> eq
-        let _true = hasChanged (this.GetValue null)
+        do hasChanged (this.GetValue(AdaptiveToken.Top)) |> ignore
 
         member x.Input = input
 
         override x.Mark() =
             base.Mark() |> ignore
-            let newValue = x.GetValue(null)
+            let newValue = x.GetValue(AdaptiveToken.Top)
             x.OutOfDate <- false
 
             if hasChanged newValue then
@@ -474,9 +478,9 @@ module Mod =
         static let instance = TimeMod() :> IMod<DateTime>
         static member Instance = instance
 
-        member x.GetValue(caller : IAdaptiveObject) =
+        member x.GetValue(token : AdaptiveToken) =
             let ti = AdaptiveObject.Time
-            x.EvaluateAlways caller (fun () ->
+            x.EvaluateAlways token (fun token ->
                 lock ti (fun () -> ti.Outputs.Add x |> ignore)
                 DateTime.Now
             )
@@ -491,8 +495,8 @@ module Mod =
     type internal DecoratorMod<'b>(m : IMod, f : obj -> 'b) =
         inherit AdaptiveDecorator(m)
 
-        member x.GetValue(caller : IAdaptiveObject) =
-            m.GetValue(caller) |> f
+        member x.GetValue(token : AdaptiveToken) =
+            m.GetValue(token) |> f
 
         interface IMod with
             member x.IsConstant = m.IsConstant
@@ -504,8 +508,8 @@ module Mod =
     type internal DecoratorMod<'a, 'b>(m : IMod<'a>, f : 'a -> 'b) =
         inherit AdaptiveDecorator(m)
 
-        member x.GetValue(caller : IAdaptiveObject) =
-            m.GetValue(caller) |> f
+        member x.GetValue(token : AdaptiveToken) =
+            m.GetValue(token) |> f
 
         interface IMod with
             member x.IsConstant = m.IsConstant
@@ -524,8 +528,8 @@ module Mod =
         override x.Inputs = 
             Seq.singleton (inner :> IAdaptiveObject)
 
-        override x.Compute() =
-            inner.GetValue x |> f
+        override x.Compute(token) =
+            inner.GetValue token |> f
 
     type internal Map2Mod<'a, 'b, 'c>(a : IMod<'a>, b : IMod<'b>, f : 'a -> 'b -> 'c) =
         inherit AbstractMod<'c>()
@@ -537,63 +541,15 @@ module Mod =
         override x.Inputs = 
             Seq.ofList [a :> IAdaptiveObject; b :> IAdaptiveObject]
         
-        override x.Compute() =
-            f (a.GetValue x) (b.GetValue x)
-
-    type internal MapNMod<'a, 'b>(a : seq<IMod<'a>>, f : list<'a> -> 'b) as this =
-        inherit AbstractModWithFinalizer<'b>()
-        let a = Seq.toArray a
-
-        let store = lazy ( a |> Array.map (fun v -> v.GetValue this) )
-        let dirtySet = MutableVolatileTaggedDirtySet(fun (m : IMod<'a>) -> m.GetValue this)
-
-        do a |> Array.iteri (fun i m ->
-            dirtySet.Add(i, m) |> ignore
-           )
-
-        override x.Release() = 
-            dirtySet.Clear()
-
-        override x.InputChanged(t, i) =
-            match i with
-                | :? IMod<'a> as i -> dirtySet.Push(i)
-                | _ -> ()
-
-        override x.Inputs = 
-            a |> Array.toSeq |> Seq.cast
-        
-        override x.Compute() =
-            let dirty = dirtySet.Evaluate()
-            if not store.IsValueCreated then
-                store.Value |> Array.toList |> f
-            else
-                let store = store.Value
-                for (v,indices) in dirty do
-                    for i in indices do
-                        store.[i] <- v
-
-                store |> Array.toList |> f
-
-    type internal MapNModBruteForce<'a, 'b>(a : seq<IMod<'a>>, f : list<'a> -> 'b) =
-        inherit AbstractMod<'b>()
-        let a = Seq.toList a
-
-
-        override x.Inputs = 
-            a |> List.toSeq |> Seq.cast
-
-        override x.Compute() =
-            let values = a |> List.map (fun m -> m.GetValue x)
-            f values
-
-
+        override x.Compute(token) =
+            f (a.GetValue token) (b.GetValue token)
 
 
     type internal BindMod<'a, 'b>(m : IMod<'a>, f : 'a -> IMod<'b>) =
         inherit AbstractMod<'b>()
 
         let mutable inner : Option<'a * IMod<'b>> = None
-        let mutable changedInputs = PersistentHashSet.empty
+        let mutable mChanged = 1
 
         override x.Inputs =
             seq {
@@ -604,19 +560,20 @@ module Mod =
             }
 
         override x.InputChanged(t, i) =
-            System.Threading.Interlocked.Change(&changedInputs, PersistentHashSet.add i) |> ignore
+            if i.Id = m.Id then
+                mChanged <- 1
 
-        override x.Compute() =
+        override x.Compute(token) =
             // whenever the result is outOfDate we
             // need to pull the input's value
             // Note that the input is not necessarily outOfDate at this point
-            let v = m.GetValue x
+            let v = m.GetValue token
 
-            let changed = System.Threading.Interlocked.Exchange(&changedInputs, PersistentHashSet.empty)
+            let changed = System.Threading.Interlocked.Exchange(&mChanged, 0)
 
             //let cv = hasChanged v
 
-            let mChanged = PersistentHashSet.contains (m :> IAdaptiveObject) changed
+            let mChanged = changed <> 0
 
             match inner with
                 // if the function argument has not changed
@@ -625,7 +582,7 @@ module Mod =
                 | Some (v', inner) when not mChanged ->
                     // since the inner cell might be outOfDate we
                     // simply pull its value and don't touch any in-/outputs.
-                    inner.GetValue x
+                    inner.GetValue token
                         
                 | _ ->
                     // whenever the argument's value changed we need to 
@@ -649,13 +606,13 @@ module Mod =
 
                     // finally we pull the value from the
                     // new inner cell.
-                    i.GetValue x
+                    i.GetValue token
 
     type internal Bind2Mod<'a, 'b, 'c>(ma : IMod<'a>, mb : IMod<'b>, f : 'a -> 'b -> IMod<'c>) =
         inherit AbstractMod<'c>()
 
         let mutable inner : Option<'a * 'b * IMod<'c>> = None
-        let mutable changedInputs = PersistentHashSet.empty
+        let mutable changedInputs = HSet.empty
 
         override x.Inputs =
             seq {
@@ -667,19 +624,19 @@ module Mod =
             }
 
         override x.InputChanged(t, i) =
-            System.Threading.Interlocked.Change(&changedInputs, PersistentHashSet.add i) |> ignore
+            System.Threading.Interlocked.Change(&changedInputs, HSet.add i) |> ignore
 
-        override x.Compute() =
-            let changed = System.Threading.Interlocked.Exchange(&changedInputs, PersistentHashSet.empty)
-            let a = ma.GetValue x
-            let b = mb.GetValue x
+        override x.Compute(token) =
+            let changed = System.Threading.Interlocked.Exchange(&changedInputs, HSet.empty)
+            let a = ma.GetValue token
+            let b = mb.GetValue token
 
-            let ca = PersistentHashSet.contains (ma :> IAdaptiveObject) changed
-            let cb = PersistentHashSet.contains (mb :> IAdaptiveObject) changed
+            let ca = HSet.contains (ma :> IAdaptiveObject) changed
+            let cb = HSet.contains (mb :> IAdaptiveObject) changed
 
             match inner with
                 | Some (va, vb, inner) when not ca && not cb ->
-                    inner.GetValue x
+                    inner.GetValue token
                 | _ ->
 
                     let i = f a b :> IMod<_>
@@ -693,7 +650,7 @@ module Mod =
                         | _ -> ()
 
                         
-                    i.GetValue x 
+                    i.GetValue token 
  
     type internal DynamicMod<'a>(f : unit -> IMod<'a>) =
         inherit AbstractMod<'a>()
@@ -704,60 +661,8 @@ module Mod =
             if inner.IsValueCreated then Seq.singleton (inner.Value :> IAdaptiveObject)
             else Seq.empty
 
-        override x.Compute() =
-            inner.Value.GetValue x
-
-
-    [<AutoOpen>]
-    module private RxAdapters =
-         
-
-        type EventMod<'a>(input : IMod<'a>) =
-            inherit AbstractMod<'a>()
-            static let noDisposable = { new IDisposable with member x.Dispose() = () }
-            let mutable callbacks = HashSet<IObserver<'a>>()
-            let mutable next : Awaitable<'a> = null
-
-            interface IObservable<'a> with
-                member x.Subscribe(obs : IObserver<'a>) =
-                    lock x (fun () ->
-                        if callbacks.Add obs then
-                            obs.OnNext (x.GetValue null)
-                        
-                            { new IDisposable with 
-                                member y.Dispose() = 
-                                    lock x (fun () ->
-                                        callbacks.Remove obs |> ignore
-                                    )
-                            }
-                        else
-                            noDisposable
-                    )
-
-
-            interface IEvent with
-                member x.Next = failwith "not implemented"
-                member x.Values = x |> Observable.map (fun _ -> System.Reactive.Unit.Default)
-
-            interface IEvent<'a> with
-                member x.Next = failwith "not implemented"
-                member x.Latest = x.GetValue null
-                member x.Values = x :> IObservable<'a>
-
-            override x.Compute() =
-                input.GetValue x
-
-            override x.Mark() =
-                base.Mark() |> ignore
-                if callbacks.Count > 0 then
-                    let v = x.GetValue null
-                    let current = callbacks |> Seq.toArray
-
-                    for c in current do
-                        c.OnNext(v)
-
-                true
-
+        override x.Compute(token) =
+            inner.Value.GetValue token
 
 
     let private scoped (f : 'a -> 'b) =
@@ -773,13 +678,11 @@ module Mod =
     /// However the system will not statically assume the
     /// cell to be constant in any case.
     /// </summary>
-    let custom (compute : IMod<'a> -> 'a) : IMod<'a> =
+    let custom (compute : AdaptiveToken -> 'a) : IMod<'a> =
         LazyMod(Seq.empty, compute) :> IMod<_>
 
 
-    let toObservable (m : IMod<'a>) : IObservable<'a> =
-        EventMod(m) :> IObservable<_>
-    
+  
     /// <summary>
     /// registers a callback for execution whenever the
     /// cells value might have changed and returns a disposable
@@ -874,7 +777,7 @@ module Mod =
     let map (f : 'a -> 'b) (m : IMod<'a>) =
         if m.IsConstant then
             let f = scoped f
-            delay (fun () -> m.GetValue(null) |> f)
+            delay (fun () -> m.GetValue(AdaptiveToken.Empty) |> f)
         else
             MapMod(m, f) :> IMod<_>
 
@@ -885,11 +788,11 @@ module Mod =
     let map2 (f : 'a -> 'b -> 'c) (m1 : IMod<'a>) (m2 : IMod<'b>)=
         match m1.IsConstant, m2.IsConstant with
             | (true, true) -> 
-                delay (fun () -> f (m1.GetValue(null)) (m2.GetValue(null))) 
+                delay (fun () -> f (m1.GetValue(AdaptiveToken.Empty)) (m2.GetValue(AdaptiveToken.Empty))) 
             | (true, false) -> 
-                map (fun b -> f (m1.GetValue(null)) b) m2
+                map (fun b -> f (m1.GetValue(AdaptiveToken.Empty)) b) m2
             | (false, true) -> 
-                map (fun a -> f a (m2.GetValue(null))) m1
+                map (fun a -> f a (m2.GetValue(AdaptiveToken.Empty))) m1
             | (false, false) ->
                 Map2Mod(m1, m2, f) :> IMod<_>
 
@@ -898,7 +801,7 @@ module Mod =
     /// compute function and adds all given inputs to the
     /// resulting cell.
     /// </summary>
-    let mapCustom (f : IMod<'a> -> 'a) (inputs : list<#IAdaptiveObject>) =
+    let mapCustom (f : AdaptiveToken -> 'a) (inputs : list<#IAdaptiveObject>) =
         LazyMod(List.map (fun a -> a :> IAdaptiveObject) inputs, f) :> IMod<_>
 
 
@@ -937,7 +840,11 @@ module Mod =
     /// the inputs changes.
     /// </summary>
     let mapN (f : seq<'a> -> 'b) (inputs : seq<#IMod<'a>>) =
-        MapNModBruteForce(Seq.cast inputs, List.toSeq >> f) :> IMod<_>
+        let inputs : list<IMod<'a>> = Seq.toList (Seq.cast inputs)
+        custom (fun token ->
+            let values = inputs |> List.map (fun i -> i.GetValue token)
+            f values
+        )
         //MapNMod(Seq.toList (Seq.cast inputs), List.toSeq >> f) :> IMod<_>
 //        let objs = inputs |> Seq.cast |> Seq.toList
 //        objs |> mapCustom (fun s ->
@@ -952,7 +859,7 @@ module Mod =
     /// </summary>
     let bind (f : 'a -> #IMod<'b>) (m : IMod<'a>) =
         if m.IsConstant then
-            m.GetValue(null) |> f :> IMod<_>
+            m.GetValue(AdaptiveToken.Empty) |> f :> IMod<_>
         else
             BindMod(m, fun v -> f v :> _) :> IMod<_>
       
@@ -965,11 +872,11 @@ module Mod =
     let bind2 (f : 'a -> 'b -> #IMod<'c>) (ma : IMod<'a>) (mb : IMod<'b>) =
         match ma.IsConstant, mb.IsConstant with
             | (true, true) ->
-                f (ma.GetValue(null)) (mb.GetValue(null)) :> IMod<_>
+                f (ma.GetValue(AdaptiveToken.Empty)) (mb.GetValue(AdaptiveToken.Empty)) :> IMod<_>
             | (false, true) ->
-                bind (fun a -> (f a (mb.GetValue(null))) :> IMod<_>) ma
+                bind (fun a -> (f a (mb.GetValue(AdaptiveToken.Empty))) :> IMod<_>) ma
             | (true, false) ->
-                bind (fun b -> (f (ma.GetValue(null)) b) :> IMod<_>) mb
+                bind (fun b -> (f (ma.GetValue(AdaptiveToken.Empty)) b) :> IMod<_>) mb
             | (false, false) ->
                 Bind2Mod(ma, mb, fun a b -> (f a b) :> _) :> IMod<_>
 
@@ -985,7 +892,7 @@ module Mod =
     /// forces the evaluation of a cell and returns its current value
     /// </summary>
     let force (m : IMod<'a>) =
-        m.GetValue(null)
+        m.GetValue(AdaptiveToken.Top)
 
     /// <summary>
     /// creates a new cell forcing the evaluation of the
@@ -993,7 +900,7 @@ module Mod =
     /// </summary>
     let rec onPush (m : IMod<'a>) =
         if m.IsConstant then 
-            m.GetValue(null) |> ignore
+            m.GetValue(AdaptiveToken.Empty) |> ignore
             m
         else
             match m with
@@ -1001,7 +908,7 @@ module Mod =
                 | :? EagerMod<'a> -> m
                 | _ ->
                     let res = EagerMod(m)
-                    res.GetValue(null) |> ignore
+                    res.GetValue(AdaptiveToken.Top) |> ignore
                     res :> IMod<_>
 
 
@@ -1012,7 +919,7 @@ module Mod =
     /// </summary>
     let rec onPushCustomEq (eq : 'a -> 'a -> bool) (m : IMod<'a>) =
         if m.IsConstant then 
-            m.GetValue(null) |> ignore
+            m.GetValue(AdaptiveToken.Empty) |> ignore
             m
         else
             match m with
@@ -1155,7 +1062,7 @@ module Mod =
                 task.Result
             )
 
-    let useCurrent<'a when 'a :> IDisposable> (f : IMod<'a> -> 'a) : IMod<'a>  =
+    let useCurrent<'a when 'a :> IDisposable> (f : AdaptiveToken -> 'a) : IMod<'a>  =
         let current = ref None
 
         custom (fun self ->

@@ -2249,9 +2249,9 @@ namespace Aardvark.Base
                 if (collection != null)
                 {
                     num = collection.Count;
+                    array = new TElement[num];
                     if (num > 0)
                     {
-                        array = new TElement[num];
                         collection.CopyTo(array, 0);
                     }
                 }

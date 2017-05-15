@@ -36,7 +36,7 @@ module RefelectionTests =
     let tryUnify (decl : Type) (real : Type) =
         match decl.TryUnifyWith real with
             | Some ass ->
-                decl.GetGenericArguments() |> Array.map (fun a -> HashMap.find a ass) |> Array.toList |> Some
+                decl.GetGenericArguments() |> Array.map (fun a -> HMap.find a ass) |> Array.toList |> Some
             | None ->
                 None
 
