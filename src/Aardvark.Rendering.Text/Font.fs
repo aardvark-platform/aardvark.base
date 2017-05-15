@@ -281,7 +281,14 @@ type Font(family : string, style : FontStyle) =
 type ShapeCache(r : IRuntime) =
     static let cache = ConcurrentDictionary<IRuntime, ShapeCache>()
 
-    let pool = Aardvark.Base.Rendering.GeometryPool.createAsync r
+
+    let types =
+        Map.ofList [
+            DefaultSemantic.Positions, typeof<V3f>
+            Path.Attributes.KLMKind, typeof<V4f>
+        ]
+
+    let pool = new Aardvark.Base.Rendering.GeometryPool2(r, SymDict.ofMap types)
     let ranges = ConcurrentDictionary<Shape, Range1i>()
 
     let surface = 
@@ -297,17 +304,12 @@ type ShapeCache(r : IRuntime) =
             Path.Shader.boundary        |> toEffect
         ]
 
-    let types =
-        Map.ofList [
-            DefaultSemantic.Positions, typeof<V3f>
-            Path.Attributes.KLMKind, typeof<V4f>
-        ]
 
     let vertexBuffers =
         { new IAttributeProvider with
             member x.TryGetAttribute(sem) =
                 match Map.tryFind sem types with    
-                    | Some t -> BufferView(pool.GetBuffer sem, t) |> Some
+                    | Some t -> pool.GetBuffer sem |> Some
                     | _ -> None
 
             member x.All = Seq.empty
