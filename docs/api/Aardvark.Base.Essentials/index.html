@@ -1,0 +1,640 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>Namespaces - Aardvark.Base.Essentials</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="The Aardvark Platform Team">
+
+    <script src="https://code.jquery.com/jquery-1.8.0.js"></script>
+    <script src="https://code.jquery.com/ui/1.8.23/jquery-ui.js"></script>
+    <script src="https://netdna.bootstrapcdn.com/twitter-bootstrap/2.2.1/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link href="https://netdna.bootstrapcdn.com/twitter-bootstrap/2.2.1/css/bootstrap-combined.min.css" rel="stylesheet">
+
+    <link type="text/css" rel="stylesheet" href="https://rawgit.com/vrvis/aardvark.base/docs/docs/api/content/style.css" />
+    <script type="text/javascript" src="https://rawgit.com/vrvis/aardvark.base/docs/docs/api/content/tips.js"></script>
+    <!-- HTML5 shim, for IE6-8 support of HTML5 elements -->
+    <!--[if lt IE 9]>
+      <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+  </head>
+  <body>
+    <div class="container">
+      <div class="masthead">
+        <ul class="nav nav-pills pull-right">
+          <li><a href="https://github.com/vrvis/aardvark.base/tree/docs/src/Aardvark.Base.Essentials">github page</a></li>
+        </ul>
+        <h3 class="muted"><a href="https://rawgit.com/vrvis/aardvark.base/docs/docs/api/index.html">Aardvark.Base.Essentials</a></h3>
+      </div>
+      <hr />
+      <div class="row">
+        <div class="span9" id="main">
+          
+
+<h1>Aardvark.Base.Essentials</h1>
+
+    <h2>Aardvark.Base Namespace</h2>
+    <div>
+        <table class="table table-bordered type-list">
+    <thead>
+      <tr><td>Type</td><td>Description</td></tr>
+    </thead>
+    <tbody>
+        <tr>
+          <td class="type-name">
+            <a href="aardvark-base-await.html">Await</a>
+          </td>
+          <td class="xmldoc"><p>Contains various combinators for Awaitables (e.g. WhenAny, WhenAll, WithCancellation) since the Task-combinators cannot be used for Awaitables.</p>
+
+</td>
+        </tr>
+        <tr>
+          <td class="type-name">
+            <a href="aardvark-base-awaitable.html">Awaitable</a>
+          </td>
+          <td class="xmldoc"><p>Represents an awaitable with clear-push semantics.
+Since Task/TaskCompletionSource are likely to spawn new threads
+and execute the respective continuations on haphazardous threads
+we implemeted our own awaitable executing all continuations on
+the thread which they were triggered on.</p>
+
+</td>
+        </tr>
+        <tr>
+          <td class="type-name">
+            <a href="aardvark-base-awaitable-1.html">Awaitable<'T></a>
+          </td>
+          <td class="xmldoc"><p>Represents an awaitable with clear-push semantics.
+Since Task/TaskCompletionSource are likely to spawn new threads
+and execute the respective continuations on haphazardous threads
+we implemeted our own awaitable executing all continuations on
+the thread which they were triggered on.</p>
+
+</td>
+        </tr>
+        <tr>
+          <td class="type-name">
+            <a href="aardvark-base-awaitabletest.html">AwaitableTest</a>
+          </td>
+          <td class="xmldoc">
+</td>
+        </tr>
+        <tr>
+          <td class="type-name">
+            <a href="aardvark-base-behaviordragabsolute.html">BehaviorDragAbsolute</a>
+          </td>
+          <td class="xmldoc"><p>Behavior extension DragAbsolute.</p>
+
+</td>
+        </tr>
+        <tr>
+          <td class="type-name">
+            <a href="aardvark-base-behaviordragrelative.html">BehaviorDragRelative</a>
+          </td>
+          <td class="xmldoc"><p>Behavior extension DragRelative.</p>
+
+</td>
+        </tr>
+        <tr>
+          <td class="type-name">
+            <a href="aardvark-base-cameraprojectionortho.html">CameraProjectionOrtho</a>
+          </td>
+          <td class="xmldoc"></td>
+        </tr>
+        <tr>
+          <td class="type-name">
+            <a href="aardvark-base-cameraprojectionperspective.html">CameraProjectionPerspective</a>
+          </td>
+          <td class="xmldoc"></td>
+        </tr>
+        <tr>
+          <td class="type-name">
+            <a href="aardvark-base-cameraviewraw.html">CameraViewRaw</a>
+          </td>
+          <td class="xmldoc"></td>
+        </tr>
+        <tr>
+          <td class="type-name">
+            <a href="aardvark-base-cameraviewwithsky.html">CameraViewWithSky</a>
+          </td>
+          <td class="xmldoc"></td>
+        </tr>
+        <tr>
+          <td class="type-name">
+            <a href="aardvark-base-clock.html">Clock</a>
+          </td>
+          <td class="xmldoc">
+</td>
+        </tr>
+        <tr>
+          <td class="type-name">
+            <a href="aardvark-base-clockextensions.html">ClockExtensions</a>
+          </td>
+          <td class="xmldoc">
+</td>
+        </tr>
+        <tr>
+          <td class="type-name">
+            <a href="aardvark-base-consteventsource.html">ConstEventSource</a>
+          </td>
+          <td class="xmldoc">
+</td>
+        </tr>
+        <tr>
+          <td class="type-name">
+            <a href="aardvark-base-consteventsource-1.html">ConstEventSource<'T></a>
+          </td>
+          <td class="xmldoc"><p>A ConstEventSource has its initial value and will never emit new values.</p>
+
+</td>
+        </tr>
+        <tr>
+          <td class="type-name">
+            <a href="aardvark-base-eventsource.html">EventSource</a>
+          </td>
+          <td class="xmldoc">
+</td>
+        </tr>
+        <tr>
+          <td class="type-name">
+            <a href="aardvark-base-eventsource-1.html">EventSource<'T></a>
+          </td>
+          <td class="xmldoc">
+</td>
+        </tr>
+        <tr>
+          <td class="type-name">
+            <a href="aardvark-base-eventsourceextensions.html">EventSourceExtensions</a>
+          </td>
+          <td class="xmldoc">
+</td>
+        </tr>
+        <tr>
+          <td class="type-name">
+            <a href="aardvark-base-eventsourceslim-1.html">EventSourceSlim<'T></a>
+          </td>
+          <td class="xmldoc"></td>
+        </tr>
+        <tr>
+          <td class="type-name">
+            <a href="aardvark-base-filteredeventsource-1.html">FilteredEventSource<'T></a>
+          </td>
+          <td class="xmldoc">
+</td>
+        </tr>
+        <tr>
+          <td class="type-name">
+            <a href="aardvark-base-iawaitable.html">IAwaitable</a>
+          </td>
+          <td class="xmldoc"><p>Represents the required interface for using the async/await syntax.
+every class implementing IAwaitable can be 'awaited' like tasks
+for an awaitable returning a value see IAwaitable[T].</p>
+
+</td>
+        </tr>
+        <tr>
+          <td class="type-name">
+            <a href="aardvark-base-iawaitable-1.html">IAwaitable<'T></a>
+          </td>
+          <td class="xmldoc"><p>represents the required interface for using the async/await syntax
+every class implementing IAwaitable can be 'awaited' like tasks
+for an awaitable returning no value see IAwaitable</p>
+
+</td>
+        </tr>
+        <tr>
+          <td class="type-name">
+            <a href="aardvark-base-iawaitableextensions.html">IAwaitableExtensions</a>
+          </td>
+          <td class="xmldoc">
+</td>
+        </tr>
+        <tr>
+          <td class="type-name">
+            <a href="aardvark-base-iawaiter.html">IAwaiter</a>
+          </td>
+          <td class="xmldoc">
+</td>
+        </tr>
+        <tr>
+          <td class="type-name">
+            <a href="aardvark-base-iawaiter-1.html">IAwaiter<'T></a>
+          </td>
+          <td class="xmldoc">
+</td>
+        </tr>
+        <tr>
+          <td class="type-name">
+            <a href="aardvark-base-ibehavior.html">IBehavior</a>
+          </td>
+          <td class="xmldoc"><p>Marker interface fort all behaviors.</p>
+
+</td>
+        </tr>
+        <tr>
+          <td class="type-name">
+            <a href="aardvark-base-ibehaviordeletable.html">IBehaviorDeletable</a>
+          </td>
+          <td class="xmldoc"><p>Editable object can be deleted.</p>
+
+</td>
+        </tr>
+        <tr>
+          <td class="type-name">
+            <a href="aardvark-base-ibehaviorposition2d.html">IBehaviorPosition2d</a>
+          </td>
+          <td class="xmldoc"><p>Editable object has a position in 2d.</p>
+
+</td>
+        </tr>
+        <tr>
+          <td class="type-name">
+            <a href="aardvark-base-ibehaviorsplittableedge2d.html">IBehaviorSplittableEdge2d</a>
+          </td>
+          <td class="xmldoc"><p>Editable edge that can be splitted.</p>
+
+</td>
+        </tr>
+        <tr>
+          <td class="type-name">
+            <a href="aardvark-base-ibehaviortransform2d.html">IBehaviorTransform2d</a>
+          </td>
+          <td class="xmldoc"><p>Editable object can be transformed in 2d.</p>
+
+</td>
+        </tr>
+        <tr>
+          <td class="type-name">
+            <a href="aardvark-base-icameraprojection.html">ICameraProjection</a>
+          </td>
+          <td class="xmldoc"></td>
+        </tr>
+        <tr>
+          <td class="type-name">
+            <a href="aardvark-base-icameraprojectionextensions.html">ICameraProjectionExtensions</a>
+          </td>
+          <td class="xmldoc"></td>
+        </tr>
+        <tr>
+          <td class="type-name">
+            <a href="aardvark-base-icameraprojectionperspective.html">ICameraProjectionPerspective</a>
+          </td>
+          <td class="xmldoc"></td>
+        </tr>
+        <tr>
+          <td class="type-name">
+            <a href="aardvark-base-icameraview.html">ICameraView</a>
+          </td>
+          <td class="xmldoc"></td>
+        </tr>
+        <tr>
+          <td class="type-name">
+            <a href="aardvark-base-icameraviewextensions.html">ICameraViewExtensions</a>
+          </td>
+          <td class="xmldoc"></td>
+        </tr>
+        <tr>
+          <td class="type-name">
+            <a href="aardvark-base-idisposableextensions.html">IDisposableExtensions</a>
+          </td>
+          <td class="xmldoc">
+</td>
+        </tr>
+        <tr>
+          <td class="type-name">
+            <a href="aardvark-base-ieditableedge2d.html">IEditableEdge2d</a>
+          </td>
+          <td class="xmldoc"><p>An editable edge.</p>
+
+</td>
+        </tr>
+        <tr>
+          <td class="type-name">
+            <a href="aardvark-base-ieditableface2d.html">IEditableFace2d</a>
+          </td>
+          <td class="xmldoc"><p>An editable face.</p>
+
+</td>
+        </tr>
+        <tr>
+          <td class="type-name">
+            <a href="aardvark-base-ieditablesequence-1.html">IEditableSequence<'T></a>
+          </td>
+          <td class="xmldoc"><p>Exposes sequence of editing steps.</p>
+
+</td>
+        </tr>
+        <tr>
+          <td class="type-name">
+            <a href="aardvark-base-ieditablevertex2d.html">IEditableVertex2d</a>
+          </td>
+          <td class="xmldoc"><p>An editable vertex.</p>
+
+</td>
+        </tr>
+        <tr>
+          <td class="type-name">
+            <a href="aardvark-base-ievent-1.html">IEvent<'T></a>
+          </td>
+          <td class="xmldoc"><p>The receiving side of an event source.</p>
+
+</td>
+        </tr>
+        <tr>
+          <td class="type-name">
+            <a href="aardvark-base-ievent.html">IEvent</a>
+          </td>
+          <td class="xmldoc"><p>The receiving side of an event source.</p>
+
+</td>
+        </tr>
+        <tr>
+          <td class="type-name">
+            <a href="aardvark-base-ieventemitter-1.html">IEventEmitter<'T></a>
+          </td>
+          <td class="xmldoc"><p>The sending side of an event source.</p>
+
+</td>
+        </tr>
+        <tr>
+          <td class="type-name">
+            <a href="aardvark-base-ieventemitter.html">IEventEmitter</a>
+          </td>
+          <td class="xmldoc"><p>The sending side of an event source.</p>
+
+</td>
+        </tr>
+        <tr>
+          <td class="type-name">
+            <a href="aardvark-base-iimmutablepolygon-1.html">IImmutablePolygon<'T></a>
+          </td>
+          <td class="xmldoc"><p>An immutable polygon.</p>
+
+</td>
+        </tr>
+        <tr>
+          <td class="type-name">
+            <a href="aardvark-base-iimmutablepolygonextensions.html">IImmutablePolygonExtensions</a>
+          </td>
+          <td class="xmldoc"><p>Extensions for IImmutablePolygon(of T).</p>
+
+</td>
+        </tr>
+        <tr>
+          <td class="type-name">
+            <a href="aardvark-base-irenderview.html">IRenderView</a>
+          </td>
+          <td class="xmldoc"></td>
+        </tr>
+        <tr>
+          <td class="type-name">
+            <a href="aardvark-base-irenderviewextensions.html">IRenderViewExtensions</a>
+          </td>
+          <td class="xmldoc"></td>
+        </tr>
+        <tr>
+          <td class="type-name">
+            <a href="aardvark-base-iviewprojection.html">IViewProjection</a>
+          </td>
+          <td class="xmldoc"></td>
+        </tr>
+        <tr>
+          <td class="type-name">
+            <a href="aardvark-base-immutablepolygon-1.html">ImmutablePolygon<'T></a>
+          </td>
+          <td class="xmldoc"><p>An immutable polygon.</p>
+
+</td>
+        </tr>
+        <tr>
+          <td class="type-name">
+            <a href="aardvark-base-ndc2d.html">Ndc2d</a>
+          </td>
+          <td class="xmldoc"><p>Position (x,y) in normalized device coordinates.
+The canonical view volume is defined as [(-1, -1, 0), (+1, +1, 1)].</p>
+
+</td>
+        </tr>
+        <tr>
+          <td class="type-name">
+            <a href="aardvark-base-ndc3d.html">Ndc3d</a>
+          </td>
+          <td class="xmldoc"><p>Position (xyz) in normalized device coordinates.
+The canonical view volume is defined as [(-1, -1, 0), (+1, +1, 1)].</p>
+
+</td>
+        </tr>
+        <tr>
+          <td class="type-name">
+            <a href="aardvark-base-pixelposition.html">PixelPosition</a>
+          </td>
+          <td class="xmldoc"><p>An integral pixel position relative to specified bounds.
+The x-axis goes from left to right and y-axis from top to bottom.</p>
+
+</td>
+        </tr>
+        <tr>
+          <td class="type-name">
+            <a href="aardvark-base-taskawaitable-1.html">TaskAwaitable<'T></a>
+          </td>
+          <td class="xmldoc">
+</td>
+        </tr>
+        <tr>
+          <td class="type-name">
+            <a href="aardvark-base-taskawaitable.html">TaskAwaitable</a>
+          </td>
+          <td class="xmldoc">
+</td>
+        </tr>
+        <tr>
+          <td class="type-name">
+            <a href="aardvark-base-taskawaitableextensions.html">TaskAwaitableExtensions</a>
+          </td>
+          <td class="xmldoc">
+</td>
+        </tr>
+        <tr>
+          <td class="type-name">
+            <a href="aardvark-base-taskawaiter-1.html">TaskAwaiter<'T></a>
+          </td>
+          <td class="xmldoc">
+</td>
+        </tr>
+        <tr>
+          <td class="type-name">
+            <a href="aardvark-base-taskawaiter.html">TaskAwaiter</a>
+          </td>
+          <td class="xmldoc">
+</td>
+        </tr>
+        <tr>
+          <td class="type-name">
+            <a href="aardvark-base-taskwithcancellationextensions.html">TaskWithCancellationExtensions</a>
+          </td>
+          <td class="xmldoc"><p>Implementation based on
+<a href="http://blogs.msdn.com/b/dotnet/archive/2013/04/04/net-memory-allocation-profiling-with-visual-studio-2012.aspx
+http://blogs.msdn.com/b/pfxteam/archive/2012/10/05/how-do-i-cancel-non-cancelable-async-operations.aspx">http://blogs.msdn.com/b/dotnet/archive/2013/04/04/net-memory-allocation-profiling-with-visual-studio-2012.aspx
+http://blogs.msdn.com/b/pfxteam/archive/2012/10/05/how-do-i-cancel-non-cancelable-async-operations.aspx</a></p>
+
+</td>
+        </tr>
+        <tr>
+          <td class="type-name">
+            <a href="aardvark-base-timevalue.html">TimeValue</a>
+          </td>
+          <td class="xmldoc">
+</td>
+        </tr>
+        <tr>
+          <td class="type-name">
+            <a href="aardvark-base-try.html">Try</a>
+          </td>
+          <td class="xmldoc">
+</td>
+        </tr>
+    </tbody>
+  </table>
+
+    </div>
+    <h2>Aardvark.Rendering Namespace</h2>
+    <div>
+        <table class="table table-bordered type-list">
+    <thead>
+      <tr><td>Type</td><td>Description</td></tr>
+    </thead>
+    <tbody>
+        <tr>
+          <td class="type-name">
+            <a href="aardvark-rendering-http.html">Http</a>
+          </td>
+          <td class="xmldoc"></td>
+        </tr>
+        <tr>
+          <td class="type-name">
+            <a href="aardvark-rendering-httplistenercontextextensions.html">HttpListenerContextExtensions</a>
+          </td>
+          <td class="xmldoc"></td>
+        </tr>
+        <tr>
+          <td class="type-name">
+            <a href="aardvark-rendering-httpserver.html">HttpServer</a>
+          </td>
+          <td class="xmldoc"></td>
+        </tr>
+        <tr>
+          <td class="type-name">
+            <a href="aardvark-rendering-httpserver2dispatcher.html">HttpServer2Dispatcher</a>
+          </td>
+          <td class="xmldoc"></td>
+        </tr>
+        <tr>
+          <td class="type-name">
+            <a href="aardvark-rendering-httpserver2route.html">HttpServer2Route</a>
+          </td>
+          <td class="xmldoc"></td>
+        </tr>
+        <tr>
+          <td class="type-name">
+            <a href="aardvark-rendering-httpserverdispatcher.html">HttpServerDispatcher</a>
+          </td>
+          <td class="xmldoc"></td>
+        </tr>
+        <tr>
+          <td class="type-name">
+            <a href="aardvark-rendering-httpserverrequestinfo.html">HttpServerRequestInfo</a>
+          </td>
+          <td class="xmldoc"></td>
+        </tr>
+        <tr>
+          <td class="type-name">
+            <a href="aardvark-rendering-screenshot.html">Screenshot</a>
+          </td>
+          <td class="xmldoc"></td>
+        </tr>
+        <tr>
+          <td class="type-name">
+            <a href="aardvark-rendering-webreponseextensions.html">WebReponseExtensions</a>
+          </td>
+          <td class="xmldoc"></td>
+        </tr>
+    </tbody>
+  </table>
+
+    </div>
+
+        </div>
+        <div class="span3">
+          <a href="https://github.com/vrvis">
+            <img src="logo.png" style="width:140px;height:140px;margin:10px 0px 0px 35px;border-style:none;" />
+          </a>
+
+          <ul class="nav nav-list" id="menu">
+
+            <li class="nav-header">Aardvark.Base.Essentials</li>
+
+            <li class="divider"></li>
+            <li><a href="https://github.com/vrvis">Home page</a></li>
+            <li class="divider"></li>
+
+            <li><a href="https://www.nuget.org/packages/Aardvark.Base.Essentials">Get Aardvark.Base.Essentials via NuGet</a></li>
+            <li><a href="https://github.com/vrvis/aardvark.base/tree/docs/src/Aardvark.Base.Essentials">Source Code on GitHub</a></li>
+            <li><a href="https://github.com/vrvis/aardvark.base/blob/master/LICENSE">License (Apache 2)</a></li>
+            
+            <!-- <li><a href="https://rawgit.com/vrvis/aardvark.base/docs/docs/api/RELEASE_NOTES.html">Release Notes</a></li>
+            <li><a href="https://rawgit.com/vrvis/aardvark.base/docs/docs/api//contributing.html">Contributing to Aardvark.Base.Essentials</a></li>
+  
+            <li><a href="http://stackoverflow.com/questions/tagged/f%23-fake">Ask a question</a></li> 
+            
+            <li class="nav-header">Tutorials</li>
+            <li><a href="https://rawgit.com/vrvis/aardvark.base/docs/docs/api/gettingstarted.html">Getting started</a></li>
+            
+            -->
+
+            
+            <li class="divider"></li>
+            <li class="nav-header">Aardvark.Base</li>
+
+            <li><a href="https://rawgit.com/vrvis/aardvark.base/docs/docs/api/Aardvark.Base/index.html">Aardvark.Base</a></li>
+            <li><a href="https://rawgit.com/vrvis/aardvark.base/docs/docs/api/Aardvark.Base.FSharp/index.html">Aardvark.Base.FSharp</a></li>
+            <li><a href="https://rawgit.com/vrvis/aardvark.base/docs/docs/api/Aardvark.Base.Incremental/index.html">Aardvark.Base.Incremental</a></l
+            <li><a href="https://rawgit.com/vrvis/aardvark.base/docs/docs/api/Aardvark.Base.FSharp/index.html">Aardvark.Base.Essentials</a></li>
+            <li><a href="https://rawgit.com/vrvis/aardvark.base/docs/docs/api/Aardvark.Base.Runtime/index.html">Aardvark.Base.Runtime</a></li>
+            <li><a href="https://rawgit.com/vrvis/aardvark.base/docs/docs/api/Aardvark.Base.TypeProviders/index.html">Aardvark.Base.TypeProviders</a></li>
+            <li><a href="https://rawgit.com/vrvis/aardvark.base/docs/docs/api/Aardvark.Data.Vrml97/index.html">Aardvark.Data.Vrml97</a></li>
+            
+            <li class="divider"></li>
+            <li class="nav-header">Aardvark.Rendering</li>
+
+            <li><a href="https://rawgit.com/vrvis/aardvark.base/docs/docs/api/Aardvark.Base.Rendering/index.html">Aardvark.Base.Rendering</a></li>
+            <li><a href="https://rawgit.com/vrvis/aardvark.base/docs/docs/api/Aardvark.Base.Rendering/index.html">Aardvark.Rendering.GL</a></li>
+            <li><a href="https://rawgit.com/vrvis/aardvark.base/docs/docs/api/Aardvark.Base.Rendering/index.html">Aardvark.Rendering.Interactive</a></li>
+            <li><a href="https://rawgit.com/vrvis/aardvark.base/docs/docs/api/Aardvark.Base.Rendering/index.html">Aardvark.Rendering.NanoVg</a></li>
+            <li><a href="https://rawgit.com/vrvis/aardvark.base/docs/docs/api/Aardvark.Base.Rendering/index.html">Aardvark.Rendering.Text</a></li>
+            <li><a href="https://rawgit.com/vrvis/aardvark.base/docs/docs/api/Aardvark.Base.Rendering/index.html">Aardvark.Rendering.Vulkan2</a></li>
+            <li><a href="https://rawgit.com/vrvis/aardvark.base/docs/docs/api/Aardvark.Base.Rendering/index.html">Aardvark.SceneGraph</a></li>
+            <li><a href="https://rawgit.com/vrvis/aardvark.base/docs/docs/api/Aardvark.Base.Rendering/index.html">Aardvark.SceneGraph.IO</a></li>
+            
+            <li><a href="https://rawgit.com/vrvis/aardvark.base/docs/docs/api/Aardvark.Base.Rendering/index.html">Aardvark.Application</a></li>
+            <li><a href="https://rawgit.com/vrvis/aardvark.base/docs/docs/api/Aardvark.Base.Rendering/index.html">Aardvark.Application.WinForms</a></li
+            <li><a href="https://rawgit.com/vrvis/aardvark.base/docs/docs/api/Aardvark.Base.Rendering/index.html">Aardvark.Application.WinForms.Vulkan2</a></li>
+            <li><a href="https://rawgit.com/vrvis/aardvark.base/docs/docs/api/Aardvark.Base.Rendering/index.html">Aardvark.Application.WinForms.GL</a></li>
+            <li><a href="https://rawgit.com/vrvis/aardvark.base/docs/docs/api/Aardvark.Base.Rendering/index.html">Aardvark.Application.WPF</a></li>
+            <li><a href="https://rawgit.com/vrvis/aardvark.base/docs/docs/api/Aardvark.Base.Rendering/index.html">Aardvark.Application.WPF.GL</a></li>
+
+            
+            <li class="divider"></li>
+            <li class="nav-header">Aardvark.Media</li>
+
+            <li><a href="https://rawgit.com/vrvis/aardvark.media/docs/docs/api/Aardvark.UI/index.html">Aardvark.Service</a></li>
+            <li><a href="https://rawgit.com/vrvis/aardvark.media/docs/docs/api/Aardvark.UI/index.html">Aardvark.UI</a></li>
+            <li><a href="https://rawgit.com/vrvis/aardvark.media/docs/docs/api/Aardvark.UI.Primitives/index.html">Aardvark.UI.Primitives</a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    <a href="https://github.com/vrvis/aardvark.base/tree/docs/src/Aardvark.Base.Essentials"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_gray_6d6d6d.png" alt="Fork me on GitHub"></a>
+  </body>
+  </html>

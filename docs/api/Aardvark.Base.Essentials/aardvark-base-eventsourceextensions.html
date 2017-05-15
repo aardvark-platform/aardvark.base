@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>EventSourceExtensions - Aardvark.Base.Essentials</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="The Aardvark Platform Team">
+
+    <script src="https://code.jquery.com/jquery-1.8.0.js"></script>
+    <script src="https://code.jquery.com/ui/1.8.23/jquery-ui.js"></script>
+    <script src="https://netdna.bootstrapcdn.com/twitter-bootstrap/2.2.1/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link href="https://netdna.bootstrapcdn.com/twitter-bootstrap/2.2.1/css/bootstrap-combined.min.css" rel="stylesheet">
+
+    <link type="text/css" rel="stylesheet" href="https://rawgit.com/vrvis/aardvark.base/docs/docs/api/content/style.css" />
+    <script type="text/javascript" src="https://rawgit.com/vrvis/aardvark.base/docs/docs/api/content/tips.js"></script>
+    <!-- HTML5 shim, for IE6-8 support of HTML5 elements -->
+    <!--[if lt IE 9]>
+      <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+  </head>
+  <body>
+    <div class="container">
+      <div class="masthead">
+        <ul class="nav nav-pills pull-right">
+          <li><a href="https://github.com/vrvis/aardvark.base/tree/docs/src/Aardvark.Base.Essentials">github page</a></li>
+        </ul>
+        <h3 class="muted"><a href="https://rawgit.com/vrvis/aardvark.base/docs/docs/api/index.html">Aardvark.Base.Essentials</a></h3>
+      </div>
+      <hr />
+      <div class="row">
+        <div class="span9" id="main">
+          
+
+
+
+<h1>EventSourceExtensions</h1>
+<div class="xmldoc">
+
+</div>
+  <h3>Static members</h3>
+  <table class="table table-bordered member-list">
+    <thead>
+      <tr><td>Static member</td><td>Description</td></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '107', 107)" onmouseover="showTip(event, '107', 107)">
+            ExecuteOnNextValue(self, action)
+          </code>
+          <div class="tip" id="107">
+            <strong>Signature:</strong> (self:IEvent&lt;&#39;T&gt; * action:Action&lt;&#39;T&gt;) -&gt; unit<br />
+                          <strong>Type parameters:</strong> 'T          </div>
+        </td>
+        <td class="xmldoc">
+          <p>Executes action when next value arrives.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '108', 108)" onmouseover="showTip(event, '108', 108)">
+            ExecuteOnNextValue(self, action)
+          </code>
+          <div class="tip" id="108">
+            <strong>Signature:</strong> (self:IEvent&lt;&#39;T&gt; * action:Action) -&gt; unit<br />
+                          <strong>Type parameters:</strong> 'T          </div>
+        </td>
+        <td class="xmldoc">
+          <p>Executes action when next value arrives.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '109', 109)" onmouseover="showTip(event, '109', 109)">
+            RepeatUntilCompleted(...)
+          </code>
+          <div class="tip" id="109">
+            <strong>Signature:</strong> (self:IAwaitable&lt;&#39;T&gt; * action:Func&lt;Task&gt; * finallyAction:Func&lt;&#39;T,Task&gt;) -&gt; Task<br />
+                          <strong>Type parameters:</strong> 'T          </div>
+        </td>
+        <td class="xmldoc">
+          <p>Repeats given action until the given task/awaitable completes.
+The optional final action gets called with the task's result.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '110', 110)" onmouseover="showTip(event, '110', 110)">
+            RepeatUntilCompleted(...)
+          </code>
+          <div class="tip" id="110">
+            <strong>Signature:</strong> (self:Task&lt;&#39;T&gt; * action:Func&lt;Task&gt; * finallyAction:Func&lt;&#39;T,Task&gt;) -&gt; Task<br />
+                          <strong>Type parameters:</strong> 'T          </div>
+        </td>
+        <td class="xmldoc">
+          <p>Repeats given action until the given task completes.
+The optional final action gets called with the task's result.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '111', 111)" onmouseover="showTip(event, '111', 111)">
+            RepeatUntilCompleted(...)
+          </code>
+          <div class="tip" id="111">
+            <strong>Signature:</strong> (self:IAwaitable&lt;&#39;T&gt; * action:Func&lt;Task&gt; * finallyAction:Action&lt;&#39;T&gt;) -&gt; Task<br />
+                          <strong>Type parameters:</strong> 'T          </div>
+        </td>
+        <td class="xmldoc">
+          <p>Repeats given action until the given task/awaitable completes.
+The optional final action gets called with the task's result.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '112', 112)" onmouseover="showTip(event, '112', 112)">
+            RepeatUntilCompleted(...)
+          </code>
+          <div class="tip" id="112">
+            <strong>Signature:</strong> (self:Task&lt;&#39;T&gt; * action:Func&lt;Task&gt; * finallyAction:Action&lt;&#39;T&gt;) -&gt; Task<br />
+                          <strong>Type parameters:</strong> 'T          </div>
+        </td>
+        <td class="xmldoc">
+          <p>Repeats given action until the given task completes.
+The optional final action gets called with the task's result.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '113', 113)" onmouseover="showTip(event, '113', 113)">
+            RepeatUntilCompleted(...)
+          </code>
+          <div class="tip" id="113">
+            <strong>Signature:</strong> (self:IAwaitable * action:Func&lt;Task&gt; * finallyAction:Func&lt;Task&gt;) -&gt; Task<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Repeats given action until the given task/awaitable completes.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '114', 114)" onmouseover="showTip(event, '114', 114)">
+            RepeatUntilCompleted(...)
+          </code>
+          <div class="tip" id="114">
+            <strong>Signature:</strong> (self:Task * action:Func&lt;Task&gt; * finallyAction:Func&lt;Task&gt;) -&gt; Task<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Repeats given action until the given task completes.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '115', 115)" onmouseover="showTip(event, '115', 115)">
+            RepeatUntilCompleted(...)
+          </code>
+          <div class="tip" id="115">
+            <strong>Signature:</strong> (self:IAwaitable * action:Func&lt;Task&gt; * finallyAction:Action) -&gt; Task<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Repeats given action until the given task/awaitable completes.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '116', 116)" onmouseover="showTip(event, '116', 116)">
+            RepeatUntilCompleted(...)
+          </code>
+          <div class="tip" id="116">
+            <strong>Signature:</strong> (self:Task * action:Func&lt;Task&gt; * finallyAction:Action) -&gt; Task<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Repeats given action until the given task completes.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '117', 117)" onmouseover="showTip(event, '117', 117)">
+            RepeatUntilNext(...)
+          </code>
+          <div class="tip" id="117">
+            <strong>Signature:</strong> (self:IEvent&lt;&#39;T&gt; * action:Func&lt;Task&gt; * finallyAction:Func&lt;&#39;T,Task&gt;) -&gt; Task<br />
+                          <strong>Type parameters:</strong> 'T          </div>
+        </td>
+        <td class="xmldoc">
+          <p>Repeats given action until the next value of this event source arrives.
+The optional final action gets called with this newly arrived value.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '118', 118)" onmouseover="showTip(event, '118', 118)">
+            RepeatUntilNext(...)
+          </code>
+          <div class="tip" id="118">
+            <strong>Signature:</strong> (self:Task&lt;&#39;T&gt; * action:Func&lt;Task&gt; * finallyAction:Func&lt;&#39;T,Task&gt;) -&gt; Task<br />
+                          <strong>Type parameters:</strong> 'T          </div>
+        </td>
+        <td class="xmldoc">
+          <p>Repeats given action until the task completes.
+The optional final action gets called with the task's result.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '119', 119)" onmouseover="showTip(event, '119', 119)">
+            RepeatUntilNext(...)
+          </code>
+          <div class="tip" id="119">
+            <strong>Signature:</strong> (self:IEvent&lt;&#39;T&gt; * action:Func&lt;Task&gt; * finallyAction:Action&lt;&#39;T&gt;) -&gt; Task<br />
+                          <strong>Type parameters:</strong> 'T          </div>
+        </td>
+        <td class="xmldoc">
+          <p>Repeats given action until the next value of this event source arrives.
+The optional final action gets called with this newly arrived value.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '120', 120)" onmouseover="showTip(event, '120', 120)">
+            RepeatUntilNext(...)
+          </code>
+          <div class="tip" id="120">
+            <strong>Signature:</strong> (self:Task&lt;&#39;T&gt; * action:Func&lt;Task&gt; * finallyAction:Action&lt;&#39;T&gt;) -&gt; Task<br />
+                          <strong>Type parameters:</strong> 'T          </div>
+        </td>
+        <td class="xmldoc">
+          <p>Repeats given action until the task completes.
+The optional final action gets called with the task's result.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '121', 121)" onmouseover="showTip(event, '121', 121)">
+            ToEventSource(self)
+          </code>
+          <div class="tip" id="121">
+            <strong>Signature:</strong> self:IObservable&lt;&#39;T&gt; -&gt; EventSource&lt;&#39;T&gt;<br />
+                          <strong>Type parameters:</strong> 'T          </div>
+        </td>
+        <td class="xmldoc">
+          <p>Wraps an observable as an event source.</p>
+
+
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+        </div>
+        <div class="span3">
+          <a href="https://github.com/vrvis">
+            <img src="logo.png" style="width:140px;height:140px;margin:10px 0px 0px 35px;border-style:none;" />
+          </a>
+
+          <ul class="nav nav-list" id="menu">
+
+            <li class="nav-header">Aardvark.Base.Essentials</li>
+
+            <li class="divider"></li>
+            <li><a href="https://github.com/vrvis">Home page</a></li>
+            <li class="divider"></li>
+
+            <li><a href="https://www.nuget.org/packages/Aardvark.Base.Essentials">Get Aardvark.Base.Essentials via NuGet</a></li>
+            <li><a href="https://github.com/vrvis/aardvark.base/tree/docs/src/Aardvark.Base.Essentials">Source Code on GitHub</a></li>
+            <li><a href="https://github.com/vrvis/aardvark.base/blob/master/LICENSE">License (Apache 2)</a></li>
+            
+            <!-- <li><a href="https://rawgit.com/vrvis/aardvark.base/docs/docs/api/RELEASE_NOTES.html">Release Notes</a></li>
+            <li><a href="https://rawgit.com/vrvis/aardvark.base/docs/docs/api//contributing.html">Contributing to Aardvark.Base.Essentials</a></li>
+  
+            <li><a href="http://stackoverflow.com/questions/tagged/f%23-fake">Ask a question</a></li> 
+            
+            <li class="nav-header">Tutorials</li>
+            <li><a href="https://rawgit.com/vrvis/aardvark.base/docs/docs/api/gettingstarted.html">Getting started</a></li>
+            
+            -->
+
+            
+            <li class="divider"></li>
+            <li class="nav-header">Aardvark.Base</li>
+
+            <li><a href="https://rawgit.com/vrvis/aardvark.base/docs/docs/api/Aardvark.Base/index.html">Aardvark.Base</a></li>
+            <li><a href="https://rawgit.com/vrvis/aardvark.base/docs/docs/api/Aardvark.Base.FSharp/index.html">Aardvark.Base.FSharp</a></li>
+            <li><a href="https://rawgit.com/vrvis/aardvark.base/docs/docs/api/Aardvark.Base.Incremental/index.html">Aardvark.Base.Incremental</a></l
+            <li><a href="https://rawgit.com/vrvis/aardvark.base/docs/docs/api/Aardvark.Base.FSharp/index.html">Aardvark.Base.Essentials</a></li>
+            <li><a href="https://rawgit.com/vrvis/aardvark.base/docs/docs/api/Aardvark.Base.Runtime/index.html">Aardvark.Base.Runtime</a></li>
+            <li><a href="https://rawgit.com/vrvis/aardvark.base/docs/docs/api/Aardvark.Base.TypeProviders/index.html">Aardvark.Base.TypeProviders</a></li>
+            <li><a href="https://rawgit.com/vrvis/aardvark.base/docs/docs/api/Aardvark.Data.Vrml97/index.html">Aardvark.Data.Vrml97</a></li>
+            
+            <li class="divider"></li>
+            <li class="nav-header">Aardvark.Rendering</li>
+
+            <li><a href="https://rawgit.com/vrvis/aardvark.base/docs/docs/api/Aardvark.Base.Rendering/index.html">Aardvark.Base.Rendering</a></li>
+            <li><a href="https://rawgit.com/vrvis/aardvark.base/docs/docs/api/Aardvark.Base.Rendering/index.html">Aardvark.Rendering.GL</a></li>
+            <li><a href="https://rawgit.com/vrvis/aardvark.base/docs/docs/api/Aardvark.Base.Rendering/index.html">Aardvark.Rendering.Interactive</a></li>
+            <li><a href="https://rawgit.com/vrvis/aardvark.base/docs/docs/api/Aardvark.Base.Rendering/index.html">Aardvark.Rendering.NanoVg</a></li>
+            <li><a href="https://rawgit.com/vrvis/aardvark.base/docs/docs/api/Aardvark.Base.Rendering/index.html">Aardvark.Rendering.Text</a></li>
+            <li><a href="https://rawgit.com/vrvis/aardvark.base/docs/docs/api/Aardvark.Base.Rendering/index.html">Aardvark.Rendering.Vulkan2</a></li>
+            <li><a href="https://rawgit.com/vrvis/aardvark.base/docs/docs/api/Aardvark.Base.Rendering/index.html">Aardvark.SceneGraph</a></li>
+            <li><a href="https://rawgit.com/vrvis/aardvark.base/docs/docs/api/Aardvark.Base.Rendering/index.html">Aardvark.SceneGraph.IO</a></li>
+            
+            <li><a href="https://rawgit.com/vrvis/aardvark.base/docs/docs/api/Aardvark.Base.Rendering/index.html">Aardvark.Application</a></li>
+            <li><a href="https://rawgit.com/vrvis/aardvark.base/docs/docs/api/Aardvark.Base.Rendering/index.html">Aardvark.Application.WinForms</a></li
+            <li><a href="https://rawgit.com/vrvis/aardvark.base/docs/docs/api/Aardvark.Base.Rendering/index.html">Aardvark.Application.WinForms.Vulkan2</a></li>
+            <li><a href="https://rawgit.com/vrvis/aardvark.base/docs/docs/api/Aardvark.Base.Rendering/index.html">Aardvark.Application.WinForms.GL</a></li>
+            <li><a href="https://rawgit.com/vrvis/aardvark.base/docs/docs/api/Aardvark.Base.Rendering/index.html">Aardvark.Application.WPF</a></li>
+            <li><a href="https://rawgit.com/vrvis/aardvark.base/docs/docs/api/Aardvark.Base.Rendering/index.html">Aardvark.Application.WPF.GL</a></li>
+
+            
+            <li class="divider"></li>
+            <li class="nav-header">Aardvark.Media</li>
+
+            <li><a href="https://rawgit.com/vrvis/aardvark.media/docs/docs/api/Aardvark.UI/index.html">Aardvark.Service</a></li>
+            <li><a href="https://rawgit.com/vrvis/aardvark.media/docs/docs/api/Aardvark.UI/index.html">Aardvark.UI</a></li>
+            <li><a href="https://rawgit.com/vrvis/aardvark.media/docs/docs/api/Aardvark.UI.Primitives/index.html">Aardvark.UI.Primitives</a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    <a href="https://github.com/vrvis/aardvark.base/tree/docs/src/Aardvark.Base.Essentials"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_gray_6d6d6d.png" alt="Fork me on GitHub"></a>
+  </body>
+  </html>

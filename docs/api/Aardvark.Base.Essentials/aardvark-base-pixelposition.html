@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>PixelPosition - Aardvark.Base.Essentials</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="The Aardvark Platform Team">
+
+    <script src="https://code.jquery.com/jquery-1.8.0.js"></script>
+    <script src="https://code.jquery.com/ui/1.8.23/jquery-ui.js"></script>
+    <script src="https://netdna.bootstrapcdn.com/twitter-bootstrap/2.2.1/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link href="https://netdna.bootstrapcdn.com/twitter-bootstrap/2.2.1/css/bootstrap-combined.min.css" rel="stylesheet">
+
+    <link type="text/css" rel="stylesheet" href="https://rawgit.com/vrvis/aardvark.base/docs/docs/api/content/style.css" />
+    <script type="text/javascript" src="https://rawgit.com/vrvis/aardvark.base/docs/docs/api/content/tips.js"></script>
+    <!-- HTML5 shim, for IE6-8 support of HTML5 elements -->
+    <!--[if lt IE 9]>
+      <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+  </head>
+  <body>
+    <div class="container">
+      <div class="masthead">
+        <ul class="nav nav-pills pull-right">
+          <li><a href="https://github.com/vrvis/aardvark.base/tree/docs/src/Aardvark.Base.Essentials">github page</a></li>
+        </ul>
+        <h3 class="muted"><a href="https://rawgit.com/vrvis/aardvark.base/docs/docs/api/index.html">Aardvark.Base.Essentials</a></h3>
+      </div>
+      <hr />
+      <div class="row">
+        <div class="span9" id="main">
+          
+
+
+
+<h1>PixelPosition</h1>
+<div class="xmldoc">
+<p>An integral pixel position relative to specified bounds.
+The x-axis goes from left to right and y-axis from top to bottom.</p>
+
+</div>
+  <h3>Constructors</h3>
+  <table class="table table-bordered member-list">
+    <thead>
+      <tr><td>Constructor</td><td>Description</td></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '231', 231)" onmouseover="showTip(event, '231', 231)">
+            new(position, bounds)
+          </code>
+          <div class="tip" id="231">
+            <strong>Signature:</strong> (position:V2i * bounds:Box2i) -&gt; unit<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Pixel position relative to specified bounds.
+For example, a typical render window has bounds [(0, 0), (width, height)].</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '232', 232)" onmouseover="showTip(event, '232', 232)">
+            new(position, width, height)
+          </code>
+          <div class="tip" id="232">
+            <strong>Signature:</strong> (position:V2i * width:int * height:int) -&gt; unit<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Pixel position relative to specified bounds.
+For example, a typical render window has bounds [(0, 0), (width, height)].</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '233', 233)" onmouseover="showTip(event, '233', 233)">
+            new(x, y, width, height)
+          </code>
+          <div class="tip" id="233">
+            <strong>Signature:</strong> (x:int * y:int * width:int * height:int) -&gt; unit<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Pixel position relative to specified bounds.
+For example, a typical render window has bounds [(0, 0), (width, height)].</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '234', 234)" onmouseover="showTip(event, '234', 234)">
+            new(ndc, renderTargetSize)
+          </code>
+          <div class="tip" id="234">
+            <strong>Signature:</strong> (ndc:Ndc2d * renderTargetSize:V2i) -&gt; unit<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>PixelPosition from normalized device coordinates.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '235', 235)" onmouseover="showTip(event, '235', 235)">
+            new(ndc, renderTargetRegion)
+          </code>
+          <div class="tip" id="235">
+            <strong>Signature:</strong> (ndc:Ndc2d * renderTargetRegion:Box2i) -&gt; unit<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>PixelPosition from normalized device coordinates.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '236', 236)" onmouseover="showTip(event, '236', 236)">
+            new(ndc, renderTargetSize)
+          </code>
+          <div class="tip" id="236">
+            <strong>Signature:</strong> (ndc:Ndc3d * renderTargetSize:V2i) -&gt; unit<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>PixelPosition from normalized device coordinates.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '237', 237)" onmouseover="showTip(event, '237', 237)">
+            new(ndc, renderTargetRegion)
+          </code>
+          <div class="tip" id="237">
+            <strong>Signature:</strong> (ndc:Ndc3d * renderTargetRegion:Box2i) -&gt; unit<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>PixelPosition from normalized device coordinates.</p>
+
+
+        </td>
+      </tr>
+    </tbody>
+  </table>
+  <h3>Instance members</h3>
+  <table class="table table-bordered member-list">
+    <thead>
+      <tr><td>Instance member</td><td>Description</td></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '238', 238)" onmouseover="showTip(event, '238', 238)">
+            NormalizedPosition
+          </code>
+          <div class="tip" id="238">
+            <strong>Signature:</strong> V2d<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Maps integral pixel position to range ](0,0), (1,1)[,
+where integral pixel positions correspond to pixel centers.
+E.g. all pixel mappings for Bounds [(0,0), (3,2)] are as follows:
+(0,0) -&gt; (0.17, 0.25)
+(1,0) -&gt; (0.50, 0.25)
+(2,0) -&gt; (0.83, 0.25)
+(0,1) -&gt; (0.17, 0.75)
+(0,2) -&gt; (0.50, 0.75)
+(0,3) -&gt; (0.83, 0.75)</p>
+
+
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+        </div>
+        <div class="span3">
+          <a href="https://github.com/vrvis">
+            <img src="logo.png" style="width:140px;height:140px;margin:10px 0px 0px 35px;border-style:none;" />
+          </a>
+
+          <ul class="nav nav-list" id="menu">
+
+            <li class="nav-header">Aardvark.Base.Essentials</li>
+
+            <li class="divider"></li>
+            <li><a href="https://github.com/vrvis">Home page</a></li>
+            <li class="divider"></li>
+
+            <li><a href="https://www.nuget.org/packages/Aardvark.Base.Essentials">Get Aardvark.Base.Essentials via NuGet</a></li>
+            <li><a href="https://github.com/vrvis/aardvark.base/tree/docs/src/Aardvark.Base.Essentials">Source Code on GitHub</a></li>
+            <li><a href="https://github.com/vrvis/aardvark.base/blob/master/LICENSE">License (Apache 2)</a></li>
+            
+            <!-- <li><a href="https://rawgit.com/vrvis/aardvark.base/docs/docs/api/RELEASE_NOTES.html">Release Notes</a></li>
+            <li><a href="https://rawgit.com/vrvis/aardvark.base/docs/docs/api//contributing.html">Contributing to Aardvark.Base.Essentials</a></li>
+  
+            <li><a href="http://stackoverflow.com/questions/tagged/f%23-fake">Ask a question</a></li> 
+            
+            <li class="nav-header">Tutorials</li>
+            <li><a href="https://rawgit.com/vrvis/aardvark.base/docs/docs/api/gettingstarted.html">Getting started</a></li>
+            
+            -->
+
+            
+            <li class="divider"></li>
+            <li class="nav-header">Aardvark.Base</li>
+
+            <li><a href="https://rawgit.com/vrvis/aardvark.base/docs/docs/api/Aardvark.Base/index.html">Aardvark.Base</a></li>
+            <li><a href="https://rawgit.com/vrvis/aardvark.base/docs/docs/api/Aardvark.Base.FSharp/index.html">Aardvark.Base.FSharp</a></li>
+            <li><a href="https://rawgit.com/vrvis/aardvark.base/docs/docs/api/Aardvark.Base.Incremental/index.html">Aardvark.Base.Incremental</a></l
+            <li><a href="https://rawgit.com/vrvis/aardvark.base/docs/docs/api/Aardvark.Base.FSharp/index.html">Aardvark.Base.Essentials</a></li>
+            <li><a href="https://rawgit.com/vrvis/aardvark.base/docs/docs/api/Aardvark.Base.Runtime/index.html">Aardvark.Base.Runtime</a></li>
+            <li><a href="https://rawgit.com/vrvis/aardvark.base/docs/docs/api/Aardvark.Base.TypeProviders/index.html">Aardvark.Base.TypeProviders</a></li>
+            <li><a href="https://rawgit.com/vrvis/aardvark.base/docs/docs/api/Aardvark.Data.Vrml97/index.html">Aardvark.Data.Vrml97</a></li>
+            
+            <li class="divider"></li>
+            <li class="nav-header">Aardvark.Rendering</li>
+
+            <li><a href="https://rawgit.com/vrvis/aardvark.base/docs/docs/api/Aardvark.Base.Rendering/index.html">Aardvark.Base.Rendering</a></li>
+            <li><a href="https://rawgit.com/vrvis/aardvark.base/docs/docs/api/Aardvark.Base.Rendering/index.html">Aardvark.Rendering.GL</a></li>
+            <li><a href="https://rawgit.com/vrvis/aardvark.base/docs/docs/api/Aardvark.Base.Rendering/index.html">Aardvark.Rendering.Interactive</a></li>
+            <li><a href="https://rawgit.com/vrvis/aardvark.base/docs/docs/api/Aardvark.Base.Rendering/index.html">Aardvark.Rendering.NanoVg</a></li>
+            <li><a href="https://rawgit.com/vrvis/aardvark.base/docs/docs/api/Aardvark.Base.Rendering/index.html">Aardvark.Rendering.Text</a></li>
+            <li><a href="https://rawgit.com/vrvis/aardvark.base/docs/docs/api/Aardvark.Base.Rendering/index.html">Aardvark.Rendering.Vulkan2</a></li>
+            <li><a href="https://rawgit.com/vrvis/aardvark.base/docs/docs/api/Aardvark.Base.Rendering/index.html">Aardvark.SceneGraph</a></li>
+            <li><a href="https://rawgit.com/vrvis/aardvark.base/docs/docs/api/Aardvark.Base.Rendering/index.html">Aardvark.SceneGraph.IO</a></li>
+            
+            <li><a href="https://rawgit.com/vrvis/aardvark.base/docs/docs/api/Aardvark.Base.Rendering/index.html">Aardvark.Application</a></li>
+            <li><a href="https://rawgit.com/vrvis/aardvark.base/docs/docs/api/Aardvark.Base.Rendering/index.html">Aardvark.Application.WinForms</a></li
+            <li><a href="https://rawgit.com/vrvis/aardvark.base/docs/docs/api/Aardvark.Base.Rendering/index.html">Aardvark.Application.WinForms.Vulkan2</a></li>
+            <li><a href="https://rawgit.com/vrvis/aardvark.base/docs/docs/api/Aardvark.Base.Rendering/index.html">Aardvark.Application.WinForms.GL</a></li>
+            <li><a href="https://rawgit.com/vrvis/aardvark.base/docs/docs/api/Aardvark.Base.Rendering/index.html">Aardvark.Application.WPF</a></li>
+            <li><a href="https://rawgit.com/vrvis/aardvark.base/docs/docs/api/Aardvark.Base.Rendering/index.html">Aardvark.Application.WPF.GL</a></li>
+
+            
+            <li class="divider"></li>
+            <li class="nav-header">Aardvark.Media</li>
+
+            <li><a href="https://rawgit.com/vrvis/aardvark.media/docs/docs/api/Aardvark.UI/index.html">Aardvark.Service</a></li>
+            <li><a href="https://rawgit.com/vrvis/aardvark.media/docs/docs/api/Aardvark.UI/index.html">Aardvark.UI</a></li>
+            <li><a href="https://rawgit.com/vrvis/aardvark.media/docs/docs/api/Aardvark.UI.Primitives/index.html">Aardvark.UI.Primitives</a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    <a href="https://github.com/vrvis/aardvark.base/tree/docs/src/Aardvark.Base.Essentials"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_gray_6d6d6d.png" alt="Fork me on GitHub"></a>
+  </body>
+  </html>

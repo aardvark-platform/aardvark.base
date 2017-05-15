@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>IImmutablePolygonExtensions - Aardvark.Base.Essentials</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="The Aardvark Platform Team">
+
+    <script src="https://code.jquery.com/jquery-1.8.0.js"></script>
+    <script src="https://code.jquery.com/ui/1.8.23/jquery-ui.js"></script>
+    <script src="https://netdna.bootstrapcdn.com/twitter-bootstrap/2.2.1/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link href="https://netdna.bootstrapcdn.com/twitter-bootstrap/2.2.1/css/bootstrap-combined.min.css" rel="stylesheet">
+
+    <link type="text/css" rel="stylesheet" href="https://rawgit.com/vrvis/aardvark.base/docs/docs/api/content/style.css" />
+    <script type="text/javascript" src="https://rawgit.com/vrvis/aardvark.base/docs/docs/api/content/tips.js"></script>
+    <!-- HTML5 shim, for IE6-8 support of HTML5 elements -->
+    <!--[if lt IE 9]>
+      <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+  </head>
+  <body>
+    <div class="container">
+      <div class="masthead">
+        <ul class="nav nav-pills pull-right">
+          <li><a href="https://github.com/vrvis/aardvark.base/tree/docs/src/Aardvark.Base.Essentials">github page</a></li>
+        </ul>
+        <h3 class="muted"><a href="https://rawgit.com/vrvis/aardvark.base/docs/docs/api/index.html">Aardvark.Base.Essentials</a></h3>
+      </div>
+      <hr />
+      <div class="row">
+        <div class="span9" id="main">
+          
+
+
+
+<h1>IImmutablePolygonExtensions</h1>
+<div class="xmldoc">
+<p>Extensions for IImmutablePolygon(of T).</p>
+
+</div>
+  <h3>Static members</h3>
+  <table class="table table-bordered member-list">
+    <thead>
+      <tr><td>Static member</td><td>Description</td></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '190', 190)" onmouseover="showTip(event, '190', 190)">
+            AlignEdge(self, index)
+          </code>
+          <div class="tip" id="190">
+            <strong>Signature:</strong> (self:IImmutablePolygon&lt;V2d&gt; * index:int) -&gt; IImmutablePolygon&lt;V2d&gt;<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Makes index-th edge parallel to x- or y-axis.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '191', 191)" onmouseover="showTip(event, '191', 191)">
+            GetEdge(self, index)
+          </code>
+          <div class="tip" id="191">
+            <strong>Signature:</strong> (self:IImmutablePolygon&lt;V2d&gt; * index:int) -&gt; Line2d<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Gets the index-th edge of this polygon.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '192', 192)" onmouseover="showTip(event, '192', 192)">
+            MovePoint(self, index, delta)
+          </code>
+          <div class="tip" id="192">
+            <strong>Signature:</strong> (self:IImmutablePolygon&lt;V2d&gt; * index:int * delta:V2d) -&gt; IImmutablePolygon&lt;V2d&gt;<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Returns new polygon with point moved.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '193', 193)" onmouseover="showTip(event, '193', 193)">
+            QueryNearestVertex(self, queryPoint)
+          </code>
+          <div class="tip" id="193">
+            <strong>Signature:</strong> (self:IImmutablePolygon&lt;V2d&gt; * queryPoint:V2d) -&gt; int * float<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Returns the index and distance of the polygon's closest point to the given query point.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '194', 194)" onmouseover="showTip(event, '194', 194)">
+            RepairIndex(self, index)
+          </code>
+          <div class="tip" id="194">
+            <strong>Signature:</strong> (self:IImmutablePolygon&lt;&#39;T&gt; * index:int) -&gt; int<br />
+                          <strong>Type parameters:</strong> 'T          </div>
+        </td>
+        <td class="xmldoc">
+          <p>Maps arbitrary index into valid range.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '195', 195)" onmouseover="showTip(event, '195', 195)">
+            RepairIndex(self, index)
+          </code>
+          <div class="tip" id="195">
+            <strong>Signature:</strong> (self:Polygon2d * index:int) -&gt; int<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Maps arbitrary index into valid range.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '196', 196)" onmouseover="showTip(event, '196', 196)">
+            RepairIndex(self, index)
+          </code>
+          <div class="tip" id="196">
+            <strong>Signature:</strong> (self:Polygon3d * index:int) -&gt; int<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Maps arbitrary index into valid range.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '197', 197)" onmouseover="showTip(event, '197', 197)">
+            SetEdge(self, index, edge)
+          </code>
+          <div class="tip" id="197">
+            <strong>Signature:</strong> (self:IImmutablePolygon&lt;V2d&gt; * index:int * edge:Line2d) -&gt; IImmutablePolygon&lt;V2d&gt;<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Sets the index-th edge of this polygon.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '198', 198)" onmouseover="showTip(event, '198', 198)">
+            ToClockwise(self)
+          </code>
+          <div class="tip" id="198">
+            <strong>Signature:</strong> self:IImmutablePolygon&lt;V2d&gt; -&gt; IImmutablePolygon&lt;V2d&gt;<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Ensures that the outline is oriented clockwise.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '199', 199)" onmouseover="showTip(event, '199', 199)">
+            ToCounterClockwise(self)
+          </code>
+          <div class="tip" id="199">
+            <strong>Signature:</strong> self:IImmutablePolygon&lt;V2d&gt; -&gt; IImmutablePolygon&lt;V2d&gt;<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Ensures that the outline is oriented counter-clockwise.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '200', 200)" onmouseover="showTip(event, '200', 200)">
+            ToPolygon2d(self)
+          </code>
+          <div class="tip" id="200">
+            <strong>Signature:</strong> self:IImmutablePolygon&lt;V2d&gt; -&gt; Polygon2d<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Converts this IImmutablePolygon(of V2d) to a Polygon2d.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '201', 201)" onmouseover="showTip(event, '201', 201)">
+            TransformPoint(self, index, trafo)
+          </code>
+          <div class="tip" id="201">
+            <strong>Signature:</strong> (self:IImmutablePolygon&lt;V2d&gt; * index:int * trafo:M33d) -&gt; IImmutablePolygon&lt;V2d&gt;<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+          <p>Returns new polygon with point transformed.</p>
+
+
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+        </div>
+        <div class="span3">
+          <a href="https://github.com/vrvis">
+            <img src="logo.png" style="width:140px;height:140px;margin:10px 0px 0px 35px;border-style:none;" />
+          </a>
+
+          <ul class="nav nav-list" id="menu">
+
+            <li class="nav-header">Aardvark.Base.Essentials</li>
+
+            <li class="divider"></li>
+            <li><a href="https://github.com/vrvis">Home page</a></li>
+            <li class="divider"></li>
+
+            <li><a href="https://www.nuget.org/packages/Aardvark.Base.Essentials">Get Aardvark.Base.Essentials via NuGet</a></li>
+            <li><a href="https://github.com/vrvis/aardvark.base/tree/docs/src/Aardvark.Base.Essentials">Source Code on GitHub</a></li>
+            <li><a href="https://github.com/vrvis/aardvark.base/blob/master/LICENSE">License (Apache 2)</a></li>
+            
+            <!-- <li><a href="https://rawgit.com/vrvis/aardvark.base/docs/docs/api/RELEASE_NOTES.html">Release Notes</a></li>
+            <li><a href="https://rawgit.com/vrvis/aardvark.base/docs/docs/api//contributing.html">Contributing to Aardvark.Base.Essentials</a></li>
+  
+            <li><a href="http://stackoverflow.com/questions/tagged/f%23-fake">Ask a question</a></li> 
+            
+            <li class="nav-header">Tutorials</li>
+            <li><a href="https://rawgit.com/vrvis/aardvark.base/docs/docs/api/gettingstarted.html">Getting started</a></li>
+            
+            -->
+
+            
+            <li class="divider"></li>
+            <li class="nav-header">Aardvark.Base</li>
+
+            <li><a href="https://rawgit.com/vrvis/aardvark.base/docs/docs/api/Aardvark.Base/index.html">Aardvark.Base</a></li>
+            <li><a href="https://rawgit.com/vrvis/aardvark.base/docs/docs/api/Aardvark.Base.FSharp/index.html">Aardvark.Base.FSharp</a></li>
+            <li><a href="https://rawgit.com/vrvis/aardvark.base/docs/docs/api/Aardvark.Base.Incremental/index.html">Aardvark.Base.Incremental</a></l
+            <li><a href="https://rawgit.com/vrvis/aardvark.base/docs/docs/api/Aardvark.Base.FSharp/index.html">Aardvark.Base.Essentials</a></li>
+            <li><a href="https://rawgit.com/vrvis/aardvark.base/docs/docs/api/Aardvark.Base.Runtime/index.html">Aardvark.Base.Runtime</a></li>
+            <li><a href="https://rawgit.com/vrvis/aardvark.base/docs/docs/api/Aardvark.Base.TypeProviders/index.html">Aardvark.Base.TypeProviders</a></li>
+            <li><a href="https://rawgit.com/vrvis/aardvark.base/docs/docs/api/Aardvark.Data.Vrml97/index.html">Aardvark.Data.Vrml97</a></li>
+            
+            <li class="divider"></li>
+            <li class="nav-header">Aardvark.Rendering</li>
+
+            <li><a href="https://rawgit.com/vrvis/aardvark.base/docs/docs/api/Aardvark.Base.Rendering/index.html">Aardvark.Base.Rendering</a></li>
+            <li><a href="https://rawgit.com/vrvis/aardvark.base/docs/docs/api/Aardvark.Base.Rendering/index.html">Aardvark.Rendering.GL</a></li>
+            <li><a href="https://rawgit.com/vrvis/aardvark.base/docs/docs/api/Aardvark.Base.Rendering/index.html">Aardvark.Rendering.Interactive</a></li>
+            <li><a href="https://rawgit.com/vrvis/aardvark.base/docs/docs/api/Aardvark.Base.Rendering/index.html">Aardvark.Rendering.NanoVg</a></li>
+            <li><a href="https://rawgit.com/vrvis/aardvark.base/docs/docs/api/Aardvark.Base.Rendering/index.html">Aardvark.Rendering.Text</a></li>
+            <li><a href="https://rawgit.com/vrvis/aardvark.base/docs/docs/api/Aardvark.Base.Rendering/index.html">Aardvark.Rendering.Vulkan2</a></li>
+            <li><a href="https://rawgit.com/vrvis/aardvark.base/docs/docs/api/Aardvark.Base.Rendering/index.html">Aardvark.SceneGraph</a></li>
+            <li><a href="https://rawgit.com/vrvis/aardvark.base/docs/docs/api/Aardvark.Base.Rendering/index.html">Aardvark.SceneGraph.IO</a></li>
+            
+            <li><a href="https://rawgit.com/vrvis/aardvark.base/docs/docs/api/Aardvark.Base.Rendering/index.html">Aardvark.Application</a></li>
+            <li><a href="https://rawgit.com/vrvis/aardvark.base/docs/docs/api/Aardvark.Base.Rendering/index.html">Aardvark.Application.WinForms</a></li
+            <li><a href="https://rawgit.com/vrvis/aardvark.base/docs/docs/api/Aardvark.Base.Rendering/index.html">Aardvark.Application.WinForms.Vulkan2</a></li>
+            <li><a href="https://rawgit.com/vrvis/aardvark.base/docs/docs/api/Aardvark.Base.Rendering/index.html">Aardvark.Application.WinForms.GL</a></li>
+            <li><a href="https://rawgit.com/vrvis/aardvark.base/docs/docs/api/Aardvark.Base.Rendering/index.html">Aardvark.Application.WPF</a></li>
+            <li><a href="https://rawgit.com/vrvis/aardvark.base/docs/docs/api/Aardvark.Base.Rendering/index.html">Aardvark.Application.WPF.GL</a></li>
+
+            
+            <li class="divider"></li>
+            <li class="nav-header">Aardvark.Media</li>
+
+            <li><a href="https://rawgit.com/vrvis/aardvark.media/docs/docs/api/Aardvark.UI/index.html">Aardvark.Service</a></li>
+            <li><a href="https://rawgit.com/vrvis/aardvark.media/docs/docs/api/Aardvark.UI/index.html">Aardvark.UI</a></li>
+            <li><a href="https://rawgit.com/vrvis/aardvark.media/docs/docs/api/Aardvark.UI.Primitives/index.html">Aardvark.UI.Primitives</a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    <a href="https://github.com/vrvis/aardvark.base/tree/docs/src/Aardvark.Base.Essentials"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_gray_6d6d6d.png" alt="Fork me on GitHub"></a>
+  </body>
+  </html>
