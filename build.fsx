@@ -53,7 +53,7 @@ module MyFake =
             printfn "Successfully generated docs for DLL %s" file
 
 Target "API" (fun () -> 
-    let projects = ["Aardvark.Base"; "Aardvark.Base.FSharp"; "Aardvark.Base.Incremental"]
+    let projects = ["Aardvark.Base"; "Aardvark.Base.FSharp"; "Aardvark.Base.Incremental"; "Aardvark.Base.Runtime"; "Aardvark.Base.Essentials"; "Aardvark.Data.Vrml97" ]
     for p in projects do
         let target = sprintf "docs/api/%s" p
         if Directory.Exists target then ()
