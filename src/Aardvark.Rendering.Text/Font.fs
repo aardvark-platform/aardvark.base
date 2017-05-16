@@ -288,7 +288,7 @@ type ShapeCache(r : IRuntime) =
             Path.Attributes.KLMKind, typeof<V4f>
         ]
 
-    let pool = new Aardvark.Base.Rendering.GeometryPool2(r, SymDict.ofMap types)
+    let pool = new Aardvark.Base.Rendering.GeometryPool2(r, types)
     let ranges = ConcurrentDictionary<Shape, Range1i>()
 
     let surface = 
