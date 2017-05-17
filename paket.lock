@@ -19,6 +19,8 @@ NUGET
       System.Reactive.Core (>= 3.0)
       System.Reactive.Interfaces (>= 3.0)
     System.ValueTuple (4.3.1)
+  remote: https://vrvis.myget.org/F/aardvark_public
+    Unofficial.LibTessDotNet (1.0.1)
 
 GROUP Build
 CONTENT: NONE
