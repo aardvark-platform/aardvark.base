@@ -20,6 +20,41 @@ module private LibTess =
 
         arr
 
+    let pruneRedundantPoints (angleEps : float) (p : Polygon2d) : Option<Polygon2d> =
+        if p.PointCount < 3 then
+            None
+        else
+            let inline angle (a : V2d) (b : V2d) =
+                let d = Vec.dot a b
+                let c = a.X * b.Y - a.Y * b.X
+                if d > 0.0 then asin c
+                else Constant.Pi - asin c
+                    
+            
+            let mutable pl = p.[p.PointCount - 1]
+            let mutable pc = p.[0]
+            let mutable pn = p.[1]
+
+            let mutable dlc = pc - pl |> Vec.normalize
+            let mutable dcn = pn - pc |> Vec.normalize
+
+            let points = System.Collections.Generic.List<V2d>()
+            for i in 0 .. p.PointCount - 1 do
+                let a = angle dlc dcn
+                if abs a > angleEps then
+                    points.Add(pc)
+
+                pl <- pc
+                pc <- pn
+                pn <- p.[(i + 2) % p.PointCount]
+                dlc <- dcn
+                dcn <- pn - pc |> Vec.normalize 
+
+            if points.Count < 3 then 
+                None
+            elif points.Count = p.PointCount then Some p
+            else Some (Polygon2d (points.ToArray()))
+
     let boundary (rule : WindingRule) (regions : seq<list<Polygon2d>>) : list<Polygon2d> =
         let t = Tess()
                 
@@ -36,26 +71,17 @@ module private LibTess =
             let indices = t.Elements
             let vertices = t.Vertices |> Array.map (fun p -> V2d(p.Position.X, p.Position.Y))
 
-            let results = 
-                List.init (indices.Length / 2) (fun pi ->
-                    let start = indices.[2 * pi + 0]
-                    let count = indices.[2 * pi + 1]
-//                    
-//                    let mutable dir = V2d.NaN
-//                    let mutable last = vertices.[start + count - 1]
-//                    for i in 0 .. count - 1 do
-//                        let current = vertices.[start + i]
-//                        let d = current - last
-//                        V2d.Dot(d, dir)
-//
-//
-//
+            let results = System.Collections.Generic.List<Polygon2d>()
 
+            for pi in 0 .. 2 .. indices.Length - 1 do
+                let start = indices.[pi + 0]
+                let count = indices.[pi + 1]
+                let poly = Polygon2d (Array.init count (fun vi -> vertices.[start + vi]))
+                match pruneRedundantPoints Constant.PositiveTinyValue poly with
+                    | Some p -> results.Add p
+                    | _ -> ()
 
-                    Polygon2d (Array.init count (fun vi -> vertices.[start + vi]))
-                )
-
-            results
+            results |> CSharpList.toList
 
     let triangulate (rule : WindingRule) (region : list<Polygon2d>) : Triangle2d[] =
         let t = Tess()
