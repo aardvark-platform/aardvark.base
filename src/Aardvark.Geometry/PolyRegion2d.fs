@@ -495,10 +495,6 @@ type PolyRegion private(polygons : list<Polygon2d>) =
     member x.Triangulate() =
         LibTess.triangulate WindingRule.EvenOdd polygons
 
-    member x.Contains(pt : V2d) =
-        polygons |> Seq.exists (fun p ->
-            p.Contains pt
-        )
 
     member x.Transformed(m : M33d) =
         PolyRegion (polygons |> List.map (fun p -> p.Transformed m))
@@ -529,11 +525,22 @@ type PolyRegion private(polygons : list<Polygon2d>) =
     static member inline (*) (l : PolyRegion, r : PolyRegion) = PolyRegion.Intersection(l,r)
     static member inline (+) (l : PolyRegion, r : PolyRegion) = PolyRegion.Union(l,r)
     static member inline (-) (l : PolyRegion, r : PolyRegion) = PolyRegion.Difference(l,r)
+    
+    member x.Contains(pt : V2d) =
+        polygons |> Seq.exists (fun p ->
+            p.Contains pt
+        )
 
     member x.Contains(contained : PolyRegion) =
+        // TODO: better implementation possible
         (contained - x).IsEmpty
 
+    member x.Contains(b : Box2d) =
+        // TODO: better implementation possible
+        x.Contains(PolyRegion(b.ToPolygon2dCCW()))
+
     member x.Overlaps(other : PolyRegion) =
+        // TODO: better implementation possible
         (other * x).IsEmpty |> not
 
 
