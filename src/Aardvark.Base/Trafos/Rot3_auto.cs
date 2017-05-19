@@ -550,21 +550,30 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns the Euler-Angles from the quatarnion.
         /// </summary>
-        /// <returns></returns>
         public V3d GetEulerAngles()
         {
+            var test = W * Y - X * Z;
+            if (test > 0.49999) // singularity at north pole
+            {
+                return new V3d(
+                    -2 * Fun.Atan2(X, W),
+                    Constant.PiHalf,
+                    0);
+            }
+            if (test < -0.49999) // singularity at south pole
+            {
+                return new V3d(
+                    2 * Fun.Atan2(X, W),
+                    -Constant.PiHalf,
+                    0);
+            }
             // From Wikipedia, conversion between quaternions and Euler angles.
-            double q0 = W;
-            double q1 = V.X;
-            double q2 = V.Y;
-            double q3 = V.Z;
-            V3d res = new V3d(0, 0, 0);
-            res[0] = Fun.Atan2(2 * (q0 * q1 + q2 * q3),
-                               1 - 2 * (q1 * q1 + q2 * q2));
-            res[1] = Fun.AsinC(2 * (q0 * q2 - q1 * q3));
-            res[2] = Fun.Atan2(2 * (q0 * q3 + q1 * q2),
-                               1 - 2 * (q2 * q2 + q3 * q3));
-            return res;
+            return new V3d(
+                        Fun.Atan2(2 * (W * X + Y * Z),
+                                  1 - 2 * (X * X + Y * Y)),
+                        Fun.AsinC(2 * test),
+                        Fun.Atan2(2 * (W * Z + X * Y),
+                                  1 - 2 * (Y * Y + Z * Z)));
         }
 
         public static bool ApproxEqual(Rot3f r0, Rot3f r1)
@@ -1536,21 +1545,30 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns the Euler-Angles from the quatarnion.
         /// </summary>
-        /// <returns></returns>
         public V3d GetEulerAngles()
         {
+            var test = W * Y - X * Z;
+            if (test > 0.49999) // singularity at north pole
+            {
+                return new V3d(
+                    -2 * Fun.Atan2(X, W),
+                    Constant.PiHalf,
+                    0);
+            }
+            if (test < -0.49999) // singularity at south pole
+            {
+                return new V3d(
+                    2 * Fun.Atan2(X, W),
+                    -Constant.PiHalf,
+                    0);
+            }
             // From Wikipedia, conversion between quaternions and Euler angles.
-            double q0 = W;
-            double q1 = V.X;
-            double q2 = V.Y;
-            double q3 = V.Z;
-            V3d res = new V3d(0, 0, 0);
-            res[0] = Fun.Atan2(2 * (q0 * q1 + q2 * q3),
-                               1 - 2 * (q1 * q1 + q2 * q2));
-            res[1] = Fun.AsinC(2 * (q0 * q2 - q1 * q3));
-            res[2] = Fun.Atan2(2 * (q0 * q3 + q1 * q2),
-                               1 - 2 * (q2 * q2 + q3 * q3));
-            return res;
+            return new V3d(
+                        Fun.Atan2(2 * (W * X + Y * Z),
+                                  1 - 2 * (X * X + Y * Y)),
+                        Fun.AsinC(2 * test),
+                        Fun.Atan2(2 * (W * Z + X * Y),
+                                  1 - 2 * (Y * Y + Z * Z)));
         }
 
         public static bool ApproxEqual(Rot3d r0, Rot3d r1)
