@@ -1035,6 +1035,9 @@ module CallbackExtensions =
                         | _ -> ()
                 )
                 inner.RemoveOutput x
+                match inner with
+                    | :? IDisposable as d -> d.Dispose()
+                    | _ -> ()
                 scope <- Unchecked.defaultof<_>
                 inner <- null
 

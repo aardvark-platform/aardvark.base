@@ -148,7 +148,7 @@ type RelevantNode<'s, 'a> =
         new(p, s, v, n) = { Prev = p; Next = n; RefCount = 0; BaseState = s; Value = v }
     end
 
-type History<'s, 'op> private(input : Option<LazyWithFinalizer<IOpReader<'op>>>, t : Traceable<'s, 'op>) =
+type History<'s, 'op> private(input : Option<LazyWithFinalizer<IOpReader<'op>>>, t : Traceable<'s, 'op>, finalize : 'op -> unit) =
     inherit AdaptiveObject()
 
     let mutable state   : 's = t.tempty
@@ -160,6 +160,7 @@ type History<'s, 'op> private(input : Option<LazyWithFinalizer<IOpReader<'op>>>,
         if t.tcollapse node.BaseState node.Value then
             let next = node.Next
             let prev = node.Prev
+            finalize node.Value
             node.Value <- Unchecked.defaultof<_>
             node.Prev <- null
             node.Next <- null
@@ -231,7 +232,8 @@ type History<'s, 'op> private(input : Option<LazyWithFinalizer<IOpReader<'op>>>,
             let res = node.Value
             let next = node.Next
             let prev = node.Prev
-
+            
+            finalize node.Value
             node.Value <- Unchecked.defaultof<_>
             node.Prev <- null
             node.Next <- null
@@ -317,8 +319,10 @@ type History<'s, 'op> private(input : Option<LazyWithFinalizer<IOpReader<'op>>>,
     member x.NewReader() =
         new HistoryReader<'s, 'op>(x) :> IOpReader<'s, 'op>
 
-    new (t : Traceable<'s, 'op>) = History<'s, 'op>(None, t)
-    new (input : unit -> IOpReader<'op>, t : Traceable<'s, 'op>) = History<'s, 'op>(Some (LazyWithFinalizer input), t)
+    new (t : Traceable<'s, 'op>, finalize : 'op -> unit) = History<'s, 'op>(None, t, finalize)
+    new (input : unit -> IOpReader<'op>, t : Traceable<'s, 'op>, finalize : 'op -> unit) = History<'s, 'op>(Some (LazyWithFinalizer input), t, finalize)
+    new (t : Traceable<'s, 'op>) = History<'s, 'op>(None, t, ignore)
+    new (input : unit -> IOpReader<'op>, t : Traceable<'s, 'op>) = History<'s, 'op>(Some (LazyWithFinalizer input), t, ignore)
 
     interface IMod with
         member x.IsConstant = false
