@@ -194,6 +194,9 @@ type History<'s, 'op> private(input : Option<LazyWithFinalizer<IOpReader<'op>>>,
                     last.Value <- t.tops.mappend last.Value op
 
                     tryCollapse first
+                else
+                    finalize op
+
                 true
 
             else
@@ -298,11 +301,16 @@ type History<'s, 'op> private(input : Option<LazyWithFinalizer<IOpReader<'op>>>,
 
                 node, ops
             else
-                let mutable res, current = mergeIntoLast old
+                let mutable res = t.tops.mempty
+                let mutable current = old
 
                 while not (isNull current) do
-                    res <- t.tops.mappend res current.Value
-                    current <- current.Next
+                    let (o,c) = mergeIntoLast current
+                    res <- t.tops.mappend res o
+                    if isNull c then
+                        current <- null
+                    else
+                        current <- c.Next
 
                 let node = addRefToLast()
                 node, res
