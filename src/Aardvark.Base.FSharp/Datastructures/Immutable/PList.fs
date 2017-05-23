@@ -219,6 +219,9 @@ type plist<'a>(l : Index, h : Index, content : MapExt<Index, 'a>) =
 
     member x.AsArray =
         content |> MapExt.toArray |> Array.map snd
+        
+    member x.AsMap =
+        content
 
     override x.ToString() =
         content |> MapExt.toSeq |> Seq.map (snd >> sprintf "%A") |> String.concat "; " |> sprintf "plist [%s]"
@@ -231,6 +234,9 @@ type plist<'a>(l : Index, h : Index, content : MapExt<Index, 'a>) =
 
     member x.IndexOf(item : 'a) =
         x |> Seq.tryFindIndex (Unchecked.equals item) |> Option.defaultValue -1
+
+    member x.IndexOf(index : Index) =
+        MapExt.tryMax
 
     interface ICollection<'a> with 
         member x.Add(v) = raise (NotSupportedException("plist cannot be mutated"))
@@ -284,6 +290,7 @@ module PList =
     let inline toSeq (list : plist<'a>) = list :> seq<_>
     let inline toList (list : plist<'a>) = list.AsList
     let inline toArray (list : plist<'a>) = list.AsArray
+    let inline toMap (list : plist<'a>) = list.AsMap
 
     let inline insertAfter (index : Index) (value : 'a) (list : plist<'a>) = list.InsertAfter(index, value)
     let inline insertBefore (index : Index) (value : 'a) (list : plist<'a>) = list.InsertBefore(index, value)

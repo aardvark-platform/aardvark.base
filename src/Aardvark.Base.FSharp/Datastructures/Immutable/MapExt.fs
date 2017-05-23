@@ -21,6 +21,11 @@ module MapExtImplementation =
             // REVIEW: performance rumour has it that the data held in MapNode and MapOne should be
             // exactly one cache line. It is currently ~7 and 4 words respectively. 
 
+    type MapExtReference<'v> =
+        | NonExisting of index : int
+        | Existing of index : int * value : 'v
+
+
     [<CompilationRepresentation(CompilationRepresentationFlags.ModuleSuffix)>]
     module MapTree = 
 
@@ -263,6 +268,27 @@ module MapExtImplementation =
                     else
                         let ll, res, lr = split comparer k l
                         ll, res, join lr k2 v2 r
+
+        let rec getReference (comparer: IComparer<'Value>) (current : int) k m =
+            match m with
+                | MapEmpty -> 
+                    NonExisting current
+
+                | MapOne(key,v) ->
+                    let c = comparer.Compare(k, key)
+                    
+                    if c > 0 then NonExisting (current + 1)
+                    elif c < 0 then NonExisting current
+                    else Existing(current, v)
+
+                | MapNode(key,v,l,r,_,s) ->
+                    let c = comparer.Compare(k, key)
+                    if c > 0 then getReference comparer (current + size l) k r
+                    elif c < 0 then getReference comparer current k l
+                    else Existing(current, v)
+
+
+                    
 
         let rec unionWithOpt (comparer: IComparer<'Value>) (f : OptimizedClosures.FSharpFunc<_,_,_>) l r =
             match l, r with
@@ -776,6 +802,7 @@ module MapExtImplementation =
 
 open MapExtImplementation
 
+
 [<System.Diagnostics.DebuggerTypeProxy(typedefof<MapDebugView<_,_>>)>]
 [<System.Diagnostics.DebuggerDisplay("Count = {Count}")>]
 [<Sealed>]
@@ -832,6 +859,16 @@ type MapExt<[<EqualityConditionalOn>]'Key,[<EqualityConditionalOn;ComparisonCond
     
     member m.MapMonotonic f  = new MapExt<'Key2,'Value2>(LanguagePrimitives.FastGenericComparer<'Key2>, MapTree.mapiMonotonic f tree)
    
+    member x.GetReference key =
+        MapTree.getReference comparer 0 key tree
+        
+    member x.TryIndexOf key =
+        match MapTree.getReference comparer 0 key tree with
+            | Existing(i,_) -> Some i
+            | _ -> None
+
+        
+
     member m.Map2(other:MapExt<'Key,'Value2>, f)  = 
         new MapExt<'Key,'Result>(comparer, MapTree.map2 comparer f tree other.Tree)
         
@@ -1088,6 +1125,13 @@ module MapExt =
 
     [<CompiledName("Split")>]
     let split k (m:MapExt<_,_>) = m.Split k
+
+    [<CompiledName("TryIndexOf")>]
+    let tryIndexOf i (m:MapExt<_,_>) = m.TryIndexOf i
+
+    [<CompiledName("GetReference")>]
+    let reference i (m:MapExt<_,_>) = m.GetReference i
+
 
     [<CompiledName("Union")>]
     let union (l:MapExt<_,_>) r = l.UnionWith (r, fun _ r -> r)
