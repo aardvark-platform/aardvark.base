@@ -288,7 +288,7 @@ type ShapeCache(r : IRuntime) =
             Path.Attributes.KLMKind, typeof<V4f>
         ]
 
-    let pool = new Aardvark.Base.Rendering.GeometryPool2(r, types)
+    let pool = r.CreateGeometryPool(types)
     let ranges = ConcurrentDictionary<Shape, Range1i>()
 
     let surface = 
@@ -308,9 +308,7 @@ type ShapeCache(r : IRuntime) =
     let vertexBuffers =
         { new IAttributeProvider with
             member x.TryGetAttribute(sem) =
-                match Map.tryFind sem types with    
-                    | Some t -> pool.GetBuffer sem |> Some
-                    | _ -> None
+                pool.TryGetBufferView sem
 
             member x.All = Seq.empty
             member x.Dispose() = ()
@@ -327,8 +325,10 @@ type ShapeCache(r : IRuntime) =
 
     member x.GetBufferRange(shape : Shape) =
         ranges.GetOrAdd(shape, fun shape ->
-            let range = pool.Add(shape.Geometry)
-            range
+            let ptr = pool.Alloc(shape.Geometry)
+            let last = ptr.Offset + ptr.Size - 1n |> int
+            let first = ptr.Offset |> int
+            Range1i(first, last)
         )
 
     member x.Dispose() =
