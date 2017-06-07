@@ -334,6 +334,29 @@ namespace Aardvark.Base
         }
 
         /// <summary>
+        /// Creates a right-handed perspective projection transform, where z-negative points into the scene.
+        /// The resulting canonical view volume is [(-1, -1, -1), (+1, +1, +1)].
+        /// </summary>
+        public static Trafo3d PerspectiveProjectionOpenGl(double l, double r, double b, double t, double n, double f)
+        {
+            return new Trafo3d(
+                new M44d(
+                    (2 * n) / (r - l),                     0,     (r + l) / (r - l),                      0,
+                                    0,     (2 * n) / (t - b),     (t + b) / (t - b),                      0,
+                                    0,                     0,     (f + n) / (n - f),  (2 * f * n) / (n - f),
+                                    0,                     0,                    -1,                      0
+                    ),
+
+                new M44d(
+                    (r - l) / (2 * n),                     0,                     0,     (r + l) / (2 * n),
+                                    0,     (t - b) / (2 * n),                     0,     (t + b) / (2 * n),
+                                    0,                     0,                     0,                    -1,
+                                    0,                     0, (n - f) / (2 * f * n),  (f + n) / (2 * f * n)
+                    )
+                );
+        }
+
+        /// <summary>
         /// Creates a left-handed perspective projection transform, where z-positive points into the scene.
         /// The resulting canonical view volume is [(-1, -1, 0), (+1, +1, +1)].
         /// </summary>
@@ -374,6 +397,29 @@ namespace Aardvark.Base
                     (r - l) / 2,               0,               0,           (l + r) / 2,
                               0,     (t - b) / 2,               0,           (b + t) / 2,
                               0,               0,           n - f,                    -n,
+                              0,               0,               0,                     1
+                    )
+                );
+        }
+
+        /// <summary>
+        /// Creates a right-handed ortho projection transform, where z-negative points into the scene.
+        /// The resulting canonical view volume is [(-1, -1, 1), (+1, +1, +1)].
+        /// </summary>
+        public static Trafo3d OrthoProjectionOpenGl(double l, double r, double b, double t, double n, double f)
+        {
+            return new Trafo3d(
+                new M44d(
+                    2 / (r - l),               0,               0,     (l + r) / (l - r),
+                              0,     2 / (t - b),               0,     (b + t) / (b - t),
+                              0,               0,     2 / (n - f),     (f + n) / (n - f),
+                              0,               0,               0,                     1
+                    ),
+
+                new M44d(
+                    (r - l) / 2,               0,               0,           (l + r) / 2,
+                              0,     (t - b) / 2,               0,           (b + t) / 2,
+                              0,               0,     (n - f) / 2,          -(f + n) / 2,
                               0,               0,               0,                     1
                     )
                 );
