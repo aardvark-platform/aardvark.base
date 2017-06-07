@@ -40,7 +40,7 @@ namespace ExamplesCSharp
             // Create a modref cell. can be changed via side effects
             var input = Mod.Init(10);
 
-            var output = input.Select(x => x * 2);
+            var output = input.Map(x => x * 2);
 
             Console.WriteLine($"output was: {output}");
             // Prints: output was Aardvark.Base.Incremental.ModModule+MapMod`2[System.Int32,System.Int32]
@@ -160,7 +160,7 @@ namespace ExamplesCSharp
             reexCount = 0;
             var inputAM = Mod.Init(1);
             var inputBM = Mod.Init(2);
-            var aPlusB = inputAM.Select2(inputBM, 
+            var aPlusB = inputAM.Map(inputBM, 
                 (a, b) => {
                     reexCount++;
                     return a + b;
@@ -195,7 +195,7 @@ namespace ExamplesCSharp
             // because we used an optimized combinator which does this, right?
             // we can do a low level implementation instead.
 
-            var aPlusBBind = inputAM.Bind(a => inputBM.Select(b =>
+            var aPlusBBind = inputAM.Bind(a => inputBM.Map(b =>
             {
                 reexCount++;
                 return a + b;

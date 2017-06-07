@@ -52,6 +52,8 @@ type cmap<'k, 'v>(initial : seq<'k * 'v>) =
     member x.ContainsKey(key : 'k) =
         history.State.ContainsKey key
 
+    new() = cmap(Seq.empty)
+
     interface ICollection<KeyValuePair<'k, 'v>> with
         member x.Contains(kvp : KeyValuePair<'k, 'v>) =
             match x.TryGetValue kvp.Key with

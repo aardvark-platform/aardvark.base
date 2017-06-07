@@ -618,6 +618,8 @@ module AMap =
         else
             amap <| fun scope -> new Readers.OfASetReader<'a, 'b>(scope, set)
 
+    let single (k : 'k) (v : 'v) = (k,v) |> ASet.single |> ofASet
+
     let chooseSet (f : 'a -> Option<'b>) (set : aset<'a>) : amap<'a, 'b> =
         set |> mapSet f |> flatten
 
@@ -648,6 +650,9 @@ module AMap =
 
     let union (l : amap<'k, 'a>) (r : amap<'k, 'a>) =
         unionWith (fun _ _ a -> a) l r
+
+    let unionSet (maps : aset<amap<'k, 'v>>) =
+        maps |> ASet.collect toASet |> ofASet |> map (fun (k) (v) -> v |> Seq.collect (fun x -> x) |> HSet.ofSeq)
         
     let choose2 (mapping : 'k -> Option<'a> -> Option<'b> -> Option<'c>) (l : amap<'k, 'a>) (r : amap<'k, 'b>) =
         if l.IsConstant && r.IsConstant then

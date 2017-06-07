@@ -124,24 +124,21 @@ type AdaptiveObjectExtensions private() =
 
 [<Extension; AbstractClass; Sealed>]
 type ModExtensions private() =
+  
     [<Extension>]
-    static member Apply (this : IMod<'a>, f : Func<'a, 'b>) =
+    static member Map (this : IMod<'a>, f : Func<'a, 'b>) =
         Mod.map f.Invoke this
 
     [<Extension>]
-    static member Select (this : IMod<'a>, f : Func<'a, 'b>) =
-        Mod.map f.Invoke this
-
-    [<Extension>]
-    static member Select2 (this : IMod<'a>, other : IMod<'b>, f : Func<'a, 'b, 'c>) =
+    static member Map (this : IMod<'a>, other : IMod<'b>, f : Func<'a, 'b, 'c>) =
         Mod.map2 (curry f.Invoke) this other
-
+        
     [<Extension>]
-    static member SelectFast (this : IMod<'a>, f : Func<'a, 'b>) =
+    static member MapFast (this : IMod<'a>, f : Func<'a, 'b>) =
         Mod.mapFast f.Invoke this
-
+        
     [<Extension>]
-    static member SelectFast (this : IMod, f : Func<obj, 'b>) =
+    static member MapFast (this : IMod, f : Func<obj, 'b>) =
         Mod.mapFastObj f.Invoke this
 
     [<Extension>]
@@ -268,6 +265,10 @@ type AdaptiveSetExtensions private() =
         ASet.toMod this
 
     [<Extension>]
+    static member MapSet (this : aset<'a>, valueSelector : Func<'a, 'v>) =
+        this |> AMap.mapSet valueSelector.Invoke 
+
+    [<Extension>]
     static member ContainsMod (this : aset<'a>, [<ParamArray>] item : 'a[]) =
         this |> ASet.containsAll item
 
@@ -335,13 +336,13 @@ type AdaptiveSetExtensions private() =
     static member ToAdaptiveList (this : aset<'a>) =
         this |> ASet.toAList
 
-//    [<Extension>]
-//    static member GroupBy(this : aset<'a>, f : Func<'a, 'b>) =
-//        this |> ASet.groupBy f.Invoke
-//
-//    [<Extension>]
-//    static member ToAMap(this : aset<'k*'v>) =
-//        this |> AMap.ofASet
+    [<Extension>]
+    static member GroupBy(this : aset<'a>, f : Func<'a, 'b>) =
+        this |> ASet.groupBy f.Invoke
+
+    [<Extension>]
+    static member ToAMap(this : aset<'k*'v>) =
+        this |> AMap.ofASet
 
     [<Extension>]
     static member Fold(this : aset<'a>, add : Func<'a, 'b, 'b>, zero : 'b) : IMod<'b> =
@@ -513,6 +514,16 @@ type CListExtensions private() =
         AList.append this other
 
 
+[<Extension; AbstractClass; Sealed>]
+type AdaptiveMapExtensions private() =
+
+    [<Extension>]
+    static member ToMod (this : amap<'k, 'v>) =
+        AMap.toMod this
+
+    [<Extension>]
+    static member ToAdaptiveSet (this : amap<'k, 'v>) =
+        this |> AMap.toASet
  
 //[<Extension; AbstractClass; Sealed>]
 //type COrderedSetExtensions private() =       

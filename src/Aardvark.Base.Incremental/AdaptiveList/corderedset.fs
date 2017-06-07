@@ -7,10 +7,35 @@ open System.Runtime.CompilerServices
 open Aardvark.Base.Incremental
 open Aardvark.Base
 
-type corderedset<'a>() =
+[<CompiledName("ChangeableOrderedSet")>]
+type corderedset<'a>(initial : seq<'a>) =
     let setHistory = History HRefSet.traceNoRefCount
     let history = History PList.trace
     let indices = Dict<'a, Index>()
+
+    let addRange(values : seq<'a>) =
+        let mutable last = history.State.MaxIndex
+        let values =
+            values 
+                |> Seq.toList
+                |> List.choose (fun v ->
+                    match indices.TryGetValue v with
+                        | (true, i) -> None
+                        | _ ->
+                            let i = Index.after last
+                            last <- i
+                            Some (i, v)
+                )
+
+        match values with
+            | [] -> 
+                ()
+            | l ->
+                history.Perform (values |> Seq.map (fun (i,v) -> i, Set v) |> PDeltaList.ofSeq) |> ignore
+                setHistory.Perform (values |> Seq.map (snd >> Add) |> HDeltaSet.ofSeq ) |> ignore
+        
+
+    do addRange initial
 
     member x.Count = setHistory.State.Count
 
@@ -28,27 +53,7 @@ type corderedset<'a>() =
         )
 
     member x.AddRange(values : seq<'a>) =
-        lock x (fun () ->
-            let mutable last = history.State.MaxIndex
-            let values =
-                values 
-                    |> Seq.toList
-                    |> List.choose (fun v ->
-                        match indices.TryGetValue v with
-                            | (true, i) -> None
-                            | _ ->
-                                let i = Index.after last
-                                last <- i
-                                Some (i, v)
-                    )
-
-            match values with
-                | [] -> 
-                    ()
-                | l ->
-                    history.Perform (values |> Seq.map (fun (i,v) -> i, Set v) |> PDeltaList.ofSeq) |> ignore
-                    setHistory.Perform (values |> Seq.map (snd >> Add) |> HDeltaSet.ofSeq ) |> ignore
-        )
+        lock x (fun () -> addRange values)
 
     member x.Remove(value : 'a) =
         lock x (fun () ->
@@ -189,6 +194,34 @@ type corderedset<'a>() =
                         | _ ->
                             raise <| KeyNotFoundException()
                 )
+
+    member x.TryGetNext(value : 'a) =
+        lock x (fun () ->
+            match indices.TryGetValue(value) with
+                | (true, t) ->
+                    if history.State.MaxIndex <> t then 
+                        let l, s, r = MapExt.neighbours t history.State.Content
+                        match r with 
+                            | Some (ni,_) -> history.State.TryGet(ni)
+                            | _ -> None
+                    else
+                        None
+                | _ -> None
+            )
+
+    member x.TryGetPrev(value : 'a) =
+        lock x (fun () ->
+            match indices.TryGetValue(value) with
+                | (true, t) ->
+                    if history.State.MinIndex <> t then 
+                        let l, s, r = MapExt.neighbours t history.State.Content
+                        match l with 
+                            | Some (pi,_) -> history.State.TryGet(pi)
+                            | _ -> None
+                    else
+                        None
+                | _ -> None
+            )
        
     member x.Clear() =
         lock x (fun () ->
@@ -196,6 +229,13 @@ type corderedset<'a>() =
             history.Perform (plist.ComputeDeltas(history.State, plist.Empty)) |> ignore
             setHistory.Perform (HRefSet.computeDelta setHistory.State HRefSet.empty) |> ignore
         )
+
+    member x.Contains(item : 'a) =
+        lock x (fun () ->
+            indices.ContainsKey(item)
+            )
+
+    new() = corderedset(Seq.empty)
 
     interface aset<'a> with
         member x.IsConstant = false

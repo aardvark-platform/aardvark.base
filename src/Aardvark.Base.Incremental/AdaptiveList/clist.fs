@@ -134,6 +134,8 @@ type clist<'a>(initial : seq<'a>) =
 
     member private x.AsString = x.ToString()
 
+    new() = clist(Seq.empty)
+
     interface alist<'a> with
         member x.IsConstant = false
         member x.Content = history :> IMod<_>

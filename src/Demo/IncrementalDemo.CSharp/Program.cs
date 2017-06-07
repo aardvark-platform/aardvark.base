@@ -15,7 +15,7 @@ namespace IncrementalDemo.CSharp
         static void SimpleCallbackTest()
         {
             var m = new ModRef<int>(0);
-            var d = m.Select(a => 2 * a);
+            var d = m.Map(a => 2 * a);
 
             Report.Begin("m = 0");
             var s = d.UnsafeRegisterCallbackNoGcRoot(v =>
