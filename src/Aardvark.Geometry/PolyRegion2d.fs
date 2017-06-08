@@ -179,7 +179,7 @@ type PolygonTessellator private() =
                 
         for (pts, att) in regions do
             let contour = LibTess.closed pts
-            for i in 0 .. contour.Length - 1 do contour.[i].Data <- att.[i]
+            for i in 0 .. contour.Length - 1 do contour.[i].Data <- att.[i % att.Length]
             t.AddContour(contour)
 
         let combine (pos : Vec3) (data : obj[]) (weights : float[]) =
@@ -253,7 +253,7 @@ type PolygonTessellator private() =
                 
         for (pts, att) in regions do
             let contour = LibTess.closed pts
-            for i in 0 .. contour.Length - 1 do contour.[i].Data <- att.[i]
+            for i in 0 .. contour.Length - 1 do contour.[i].Data <- att.[i % att.Length]
             t.AddContour(contour)
 
         let combine (pos : Vec3) (data : obj[]) (weights : float[]) =
@@ -334,7 +334,7 @@ type PolygonTessellator private() =
                 
         for (pts, att) in regions do
             let contour = LibTess.closed3 pts
-            for i in 0 .. contour.Length - 1 do contour.[i].Data <- att.[i]
+            for i in 0 .. contour.Length - 1 do contour.[i].Data <- att.[i % att.Length]
             t.AddContour(contour)
 
         let combine (pos : Vec3) (data : obj[]) (weights : float[]) =
@@ -408,7 +408,7 @@ type PolygonTessellator private() =
                 
         for (pts, att) in regions do
             let contour = LibTess.closed3 pts
-            for i in 0 .. contour.Length - 1 do contour.[i].Data <- att.[i]
+            for i in 0 .. contour.Length - 1 do contour.[i].Data <- att.[i % att.Length]
             t.AddContour(contour)
 
         let combine (pos : Vec3) (data : obj[]) (weights : float[]) =
