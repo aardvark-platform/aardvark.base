@@ -84,7 +84,6 @@ type NativeStream() =
 
 type IAssemblerStream =
     inherit IDisposable
-
     abstract member BeginFunction : unit -> unit
     abstract member EndFunction : unit -> unit
     abstract member BeginCall : args : int -> unit
@@ -1204,13 +1203,449 @@ module Test =
         Environment.Exit 0
 
 
+module Program =
+    open System.IO
+
+    let private jumpSize = 5n
+    
+    [<AllowNullLiteral>]
+    type Fragment<'a> =
+        class
+            val mutable prev : Fragment<'a>
+            val mutable next : Fragment<'a>
+            val mutable public TotalJumpDistance : ref<int64>
+            val mutable public Manager : MemoryManager
+            val mutable public Pointer : managedptr
+            val mutable public Tag : 'a
+            val mutable public JumpDistance : int64
+
+            member x.Dispose() =
+                x.Manager.Free x.Pointer
+                if not (isNull x.prev) then
+                    x.prev.Next <- x.next
+                    Interlocked.Add(x.TotalJumpDistance, -x.JumpDistance) |> ignore
+                    x.JumpDistance <- 0L
+
+            member private x.writeJump() =
+                if not (isNull x.next) then
+                    let target = x.next.Pointer.Offset
+                    let source = x.Pointer.Offset + x.Pointer.Size - jumpSize
+                    let offset = target - source - 5n |> int
+                    let dist = abs (int64 offset)
+                    Interlocked.Add(x.TotalJumpDistance, dist - x.JumpDistance) |> ignore
+                    x.JumpDistance <- dist
+
+                    let off = x.Pointer.Size - jumpSize |> int
+                    x.Pointer.Write(off, 0xE9uy)
+                    x.Pointer.Write(off + 1, offset)
+                else
+                    let off = x.Pointer.Size - jumpSize |> int
+                    x.Pointer.Write(off, 0xC9uy)
+                    x.Pointer.Write(off + 1, 0xC3uy)
+                    
+
+
+            member x.Capacity = x.Pointer.Size - jumpSize
+
+            member x.EntryPointer =
+                x.Pointer.Parent.Pointer + x.Pointer.Offset
+
+            member x.Realloc(newCapacity : nativeint) : unit =
+                let newCapacity = newCapacity + jumpSize
+                if newCapacity <> x.Pointer.Size then
+                    let moved = 
+                        if x.Pointer.Free then 
+                            x.Pointer <- x.Manager.Alloc(newCapacity)
+                            x.writeJump()
+                            true
+                        else
+                            x.Pointer |> ManagedPtr.realloc newCapacity
+
+                    x.writeJump()
+                    if moved && not (isNull x.prev) then
+                        x.prev.writeJump()
+                        
+            member x.Prev
+                with get() = x.prev
+
+            member x.Next
+                with get() = x.next
+                and set n =
+                    x.next <- n
+                    if not (isNull n) then 
+                        n.prev <- x
+
+                    x.writeJump()
+
+            member x.GetStream() : Stream =
+                new FragmentStream<'a>(x) :> Stream
+
+            member x.AssemblerStream =
+                AssemblerStream.ofStream (x.GetStream())
+
+            new(totalJumps, manager, tag) = { TotalJumpDistance = totalJumps; JumpDistance = 0L; Manager = manager; Tag = tag; Pointer = manager.Alloc(jumpSize); prev = null; next = null }
+        end
+
+    and FragmentStream<'a>(f : Fragment<'a>) =
+        inherit Stream()
+
+        let mutable capacity = f.Capacity
+        let mutable offset = 0n
+        let mutable additional : MemoryStream = null //new MemoryStream()
+
+        override x.CanRead = false
+        override x.CanWrite = true
+        override x.CanSeek = true
+
+        override x.Dispose(disposing) =
+            x.Flush()
+
+            base.Dispose(disposing)
+            let o = Interlocked.Exchange(&additional, null)
+            if not (isNull o) then
+                o.Dispose()
+                capacity <- 0n
+                offset <- 0n
+
+        override x.Position
+            with get() = int64 offset
+            and set v = offset <- nativeint v
+            
+        override x.Length = int64 capacity + (if isNull additional then 0L else additional.Length)
+
+        override x.Write(d, o, c) =
+            let newOffset = offset + nativeint c
+            if newOffset <= capacity then
+                f.Pointer.Use (fun ptr ->
+                    Marshal.Copy(d, o, ptr + offset, c)
+                )
+                offset <- newOffset
+            else
+                let additional =
+                    match additional with
+                        | null ->
+                            let s = new MemoryStream()
+                            additional <- s
+                            s
+                        | s -> s
+
+                if offset < capacity then
+                    let storable = capacity - offset
+                    f.Pointer.Use (fun ptr ->
+                        Marshal.Copy(d, o, ptr + offset, int storable)
+                    )
+
+                    additional.Position <- 0L
+                    if c > int storable then
+                        additional.Write(d, o + int storable, c - int storable)
+
+                    offset <- newOffset
+
+                else
+                    additional.Position <- int64 (offset - capacity)
+                    additional.Write(d, o, c)
+                    offset <- newOffset
+
+
+                
+
+
+            ()
+
+        override x.Read(d, o, c) =
+            failwith ""
+
+        override x.SetLength(l : int64) =
+            if nativeint l > capacity then
+                let additional =
+                    match additional with
+                        | null ->
+                            let s = new MemoryStream()
+                            additional <- s
+                            s
+                        | s -> s
+                
+                additional.SetLength(l - int64 capacity)
+
+            else
+                if not (isNull additional) then
+                    additional.Dispose()
+                    additional <- null
+
+                f.Realloc(nativeint l)
+                capacity <- nativeint l
+
+        override x.Seek(o : int64, origin : SeekOrigin) =
+            match origin with
+                | SeekOrigin.Begin -> offset <- nativeint o; int64 offset
+                | SeekOrigin.Current -> offset <- offset + nativeint o; int64 offset
+                | _ -> offset <- nativeint (x.Length - o); int64 offset
+
+        override x.Flush() =
+            if not (isNull additional) then
+                additional.Flush()
+                f.Realloc(offset)
+
+                let arr = additional.ToArray()
+                f.Pointer.Use (fun ptr ->
+                    Marshal.Copy(arr, 0, ptr + capacity, arr.Length)
+                )
+                additional.Dispose()
+                additional <- null
+                capacity <- f.Capacity
+            elif offset <> capacity then
+                f.Realloc(offset)
+                capacity <- f.Capacity
+
+    type MyDelegate = delegate of int * int * int * int -> unit
+
+
+    let report =
+        MyDelegate (fun a b c d ->
+            Log.start "cb"
+            Log.line "a: %A" a
+            Log.line "b: %A" b
+            Log.line "c: %A" c
+            Log.line "d: %A" d
+            Log.stop()
+        )
+
+    let mutable all = 0L
+    let sum =
+        MyDelegate (fun a b c d ->
+            all <- all + int64 d
+        )
+
+    let pReport = Marshal.PinDelegate(report)
+    let pSum = Marshal.PinDelegate(sum)
+
+    type AdaptiveProgram<'a> private(data : alist<'a>, isDifferential : bool, compileDelta : Option<'a> -> 'a -> IAssemblerStream -> unit) =
+        inherit AdaptiveObject()
+        let mutable disposed = false
+        let manager = MemoryManager.createExecutable()
+
+        let jumpDistance = ref 0L
+        let mutable count = 0
+
+        let mutable prolog = 
+            let f = new Fragment<'a>(jumpDistance, manager, Unchecked.defaultof<'a>)
+            use s = f.AssemblerStream
+            s.BeginFunction()
+            f
+
+        let reader = data.GetReader()
+        let cache : SortedDictionaryExt<Index, Fragment<'a>> = SortedDictionary.empty
+
+        let mutable entryPointer = 0n
+        let mutable run : unit -> unit = id
+        
+        let release() =
+            if not disposed then
+                disposed <- true
+                cache.Clear()
+                reader.Dispose()
+                manager.Dispose()
+                prolog <- null
+                entryPointer <- 0n
+                run <- id
+                jumpDistance := 0L
+                count <- 0
+
+        member x.AverageJumpDistance = float !jumpDistance / float count
+        member x.TotalJumpDistance = !jumpDistance
+
+        member x.Update(token : AdaptiveToken) =
+            x.EvaluateIfNeeded token () (fun token ->
+                if disposed then
+                    raise <| ObjectDisposedException("AdaptiveProgram")
+
+                let ops = reader.GetOperations token
+
+                let dirty = 
+                    if isDifferential then HashSet<Fragment<'a>>()
+                    else null
+
+                for i, op in PDeltaList.toSeq ops do
+                    match op with
+                        | Remove ->
+                            match cache.TryGetValue i with
+                                | (true, f) -> 
+                                    let n = f.Next
+                                    f.Dispose()
+                                    cache.Remove i |> ignore
+
+                                    if isDifferential then 
+                                        dirty.Add n |> ignore
+                                        dirty.Remove f |> ignore
+                                    count <- count - 1
+                                | _ ->
+                                    ()
+
+                        | Set v ->
+                            cache |> SortedDictionary.setWithNeighbours i (fun l s r ->
+                                let l = l |> Option.map snd
+                                let r = r |> Option.map snd
+
+                                let prev = 
+                                    if isDifferential then
+                                        match l with
+                                            | Some f ->
+                                                if f = prolog then None
+                                                else Some f.Tag
+                                            | None ->
+                                                None
+                                    else
+                                        None
+
+                                match s with
+                                    | Some f ->
+                                        f.Tag <- v
+                                        using f.AssemblerStream (compileDelta prev v)
+                                        if isDifferential then dirty.Add f.Next |> ignore
+                                        f
+
+                                    | None ->
+                                        let f = new Fragment<'a>(jumpDistance, manager, v)
+                                        using f.AssemblerStream (compileDelta prev v)
+                                        
+                                        count <- count + 1
+                                        match l with
+                                            | None -> prolog.Next <- f
+                                            | Some(p) -> p.Next <- f
+
+                                        match r with
+                                            | None -> f.Next <- null
+                                            | Some(n) ->    
+                                                if isDifferential then dirty.Add n |> ignore
+                                                f.Next <- n
+
+                                        f
+
+                            ) |> ignore
+
+                if isDifferential then
+                    dirty.Remove prolog |> ignore
+                    for d in dirty do
+                        let prev =
+                            if d.Prev = prolog then None
+                            else Some d.Prev.Tag
+
+                        using d.AssemblerStream (compileDelta prev d.Tag)
+
+            )
+
+        member x.Run() =
+            lock x (fun () ->
+                if disposed then
+                    raise <| ObjectDisposedException("AdaptiveProgram")
+
+                if entryPointer <> prolog.EntryPointer then
+                    run <- UnmanagedFunctions.wrap prolog.EntryPointer
+                    entryPointer <- prolog.EntryPointer
+
+                run()
+            )
+
+        member private x.Dispose(disposing : bool) =
+            if disposing then
+                GC.SuppressFinalize x
+                lock x release
+            else
+                release()
+
+        member x.Dispose() = x.Dispose(true)
+        override x.Finalize() = x.Dispose(false)
+
+
+        interface IDisposable with
+            member x.Dispose() = x.Dispose()
+
+        new(data : alist<'a>, compile : Option<'a> -> 'a -> IAssemblerStream -> unit) = new AdaptiveProgram<'a>(data, true, compile)
+        new(data : alist<'a>, compile : 'a -> IAssemblerStream -> unit) = new AdaptiveProgram<'a>(data, false, fun _ v s -> compile v s)
+
+    module AdaptiveProgram =
+        let differential (compile : Option<'a> -> 'a -> IAssemblerStream -> unit) (values : alist<'a>) =
+            new AdaptiveProgram<'a>(values, compile)
+
+        let simple (compile : 'a -> IAssemblerStream -> unit) (values : alist<'a>) =
+            new AdaptiveProgram<'a>(values, compile)
+
+
+    let test() =
+        let values = clist [0;1;2;3]
+        let compile (prev : Option<int>) (self : int) (stream : IAssemblerStream) =
+            let prev = defaultArg prev 0
+            stream.BeginCall(4)
+            stream.PushArg(self - prev)
+            stream.PushArg(self - prev)
+            stream.PushArg(self)
+            stream.PushArg(self)
+            stream.Call(pSum.Pointer)
+
+
+
+        use prog = values |> AdaptiveProgram.differential compile 
+
+        
+        Log.startTimed "run"
+        prog.Update(AdaptiveToken.Top)
+        prog.Run()
+        Log.line "dist: %A" prog.AverageJumpDistance
+        Log.line "run:  %d" (Interlocked.Exchange(&all, 0L))
+        Log.stop()
+        
+        Log.startTimed "run"
+        transact (fun () -> values.Insert(2, 100))
+        prog.Update(AdaptiveToken.Top)
+        prog.Run()
+        Log.line "dist: %A" prog.AverageJumpDistance
+        Log.line "run:  %d" (Interlocked.Exchange(&all, 0L))
+        Log.stop()
+        
+        Log.startTimed "run"
+        transact (fun () -> values.RemoveAt(2))
+        prog.Update(AdaptiveToken.Top)
+        prog.Run()
+        Log.line "dist: %A" prog.AverageJumpDistance
+        Log.line "run:  %d" (Interlocked.Exchange(&all, 0L))
+        Log.stop()
+
+        
+        Log.startTimed "run"
+        transact (fun () -> values.[2] <- 2)
+        prog.Update(AdaptiveToken.Top)
+        prog.Run()
+        Log.line "dist: %A" prog.AverageJumpDistance
+        Log.line "run:  %d" (Interlocked.Exchange(&all, 0L))
+        Log.stop()
+        
+        let test = PList.ofList [0 .. 1 <<< 13]
+
+
+
+        Log.startTimed "apply"
+        transact (fun () -> values.AppendMany [4 .. 1 <<< 16])
+        Log.stop()
+        Log.startTimed "update"
+        prog.Update(AdaptiveToken.Top)
+        Log.stop()
+        Log.startTimed "run"
+        for i in 1 .. 1000 do
+            Interlocked.Exchange(&all, 0L) |> ignore
+            prog.Run()
+        Log.line "dist: %A" prog.AverageJumpDistance
+        Log.line "all:  %d" (Interlocked.Exchange(&all, 0L))
+        Log.stop()
+
+        Log.line "last: %A" test.[(1 <<< 12) - 1]
+        Environment.Exit 0
+
+
 open AMD64
 
 [<EntryPoint; STAThread>]
 let main argv = 
-    Test.run()
-
-    Benchmark.run()
+    Program.test()
     Environment.Exit 0
 
 

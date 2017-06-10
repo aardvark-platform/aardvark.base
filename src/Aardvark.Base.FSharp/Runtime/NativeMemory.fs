@@ -173,6 +173,11 @@ and [<AllowNullLiteral>] managedptr internal(block : Block) =
         with get() = block
         and set b = block <- b
 
+    member x.Use(action : nativeint -> 'r) =
+        ReaderWriterLock.read block.Parent.PointerLock (fun () ->
+            action (block.Parent.Pointer + block.Offset)
+        )
+
     member x.Write(offset : int, source : nativeint, size : int) =
         check()
         if nativeint (offset + size) > block.Size then failwith "[Memory] write exceeding size"
@@ -218,6 +223,7 @@ and [<AllowNullLiteral>] managedptr internal(block : Block) =
             for i in 0..data.Length-1 do
                 NativePtr.set ptr i data.[i]
         )
+
 
     member x.Read(offset : int, data : 'a[]) =
         check()
@@ -421,8 +427,12 @@ and MemoryManager(capacity : nativeint, config : MemoryManagerConfig) as this =
             failwithf "[Memory] cannot realloc free block: %A" b
 
         elif size > b.Size then
+            if not (isNull b.Next) && b.Next.Free && isNull b.Next.Next && b.Next.Size + b.Size < size then
+                
+                resize (size - b.Next.Size - b.Size)
+                realloc b size
 
-            if isNull b.Next || not b.Next.Free || b.Next.Size + b.Size < size then
+            elif isNull b.Next || not b.Next.Free || b.Next.Size + b.Size < size then
                 // alloc a completely new block and copy the contents there
                 let n = alloc size
                 readPointer (fun () -> config.mcopy (ptr + b.Offset) (ptr + n.Offset) b.Size)

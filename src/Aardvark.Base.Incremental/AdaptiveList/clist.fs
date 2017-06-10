@@ -122,6 +122,30 @@ type clist<'a>(initial : seq<'a>) =
                 history.Perform(PDeltaList.ofList [i, Set v]) |> ignore
             )
 
+    member x.AppendMany(elements : seq<'a>) =
+        lock x (fun () ->
+            let mutable deltas = PDeltaList.empty
+            let mutable l = history.State.MaxIndex
+            for e in elements do
+                let t = Index.after l
+                deltas <- PDeltaList.add t (Set e) deltas
+                l <- t
+
+            history.Perform deltas |> ignore
+        )
+
+    member x.PrependMany(elements : seq<'a>) =
+        lock x (fun () ->
+            let mutable deltas = PDeltaList.empty
+            let mutable l = Index.before history.State.MinIndex
+            for e in elements do
+                let t = Index.between l history.State.MinIndex
+                deltas <- PDeltaList.add t (Set e) deltas
+                l <- t
+
+            history.Perform deltas |> ignore
+        )
+
     override x.ToString() =
         let suffix =
             if x.Count > 5 then "; ..."
