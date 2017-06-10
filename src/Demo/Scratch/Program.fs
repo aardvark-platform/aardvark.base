@@ -81,6 +81,25 @@ type NativeStream() =
         length <- length + nativeint count
         offset <- offset + nativeint count
 
+
+type IAssemblerStream =
+    inherit IDisposable
+
+    abstract member BeginFunction : unit -> unit
+    abstract member EndFunction : unit -> unit
+    abstract member BeginCall : args : int -> unit
+    abstract member Call : ptr : nativeint -> unit
+    abstract member PushPtrArg : location : nativeint -> unit
+    abstract member PushIntArg : location : nativeint -> unit
+    abstract member PushFloatArg : location : nativeint -> unit
+    abstract member PushArg : value : nativeint -> unit
+    abstract member PushArg : value : int -> unit
+    abstract member PushArg : value : float32 -> unit
+    abstract member Ret : unit -> unit
+    abstract member WriteOutput : value : nativeint -> unit
+    abstract member WriteOutput : value : int -> unit
+    abstract member WriteOutput : value : float32 -> unit
+
 module AMD64 =
 
     let private printBinary (v : uint8) =
@@ -188,6 +207,11 @@ module AMD64 =
     type AssemblerStream(stream : Stream, leaveOpen : bool) =
         let writer = new BinaryWriter(stream, Text.Encoding.UTF8, leaveOpen)
 
+        static let localConvention =
+            match Environment.OSVersion with
+                | Windows -> CallingConvention.windows
+                | _ -> CallingConvention.linux
+
         let mutable stackOffset = 0
         let mutable callPadded = []
         let mutable paddingPtr = []
@@ -203,7 +227,6 @@ module AMD64 =
         static let fourByteNop      = [| 0x0Fuy; 0x1Fuy; 0x40uy; 0x00uy |]
         static let fiveByteNop      = [| 0x0Fuy; 0x1Fuy; 0x44uy; 0x00uy; 0x00uy |]
         static let eightByteNop     = [| 0x0Fuy; 0x1Fuy; 0x84uy; 0x00uy; 0x00uy; 0x00uy; 0x00uy; 0x00uy |]
-
 
         member x.Leave() =
             writer.Write(0xC9uy)
@@ -696,22 +719,328 @@ module AMD64 =
         member x.Dispose() = x.Dispose(true)
         override x.Finalize() = x.Dispose(false)
 
+        
+
         interface IDisposable with
             member x.Dispose() = x.Dispose()
+
+        interface IAssemblerStream with
+            member x.BeginFunction() = x.Begin()
+            member x.EndFunction() = x.End()
+            member x.BeginCall(args : int) = x.BeginCall(args)
+            member x.Call (ptr : nativeint) = x.Call(localConvention, ptr)
+            member x.PushArg(v : nativeint) = x.PushArg(localConvention, uint64 v)
+            member x.PushArg(v : int) = x.PushArg(localConvention, uint32 v)
+            member x.PushArg(v : float32) = x.PushArg(localConvention, v)
+            member x.PushPtrArg(loc) = x.Load(Register.Rax, loc, true); x.PushIntArg(localConvention, Register.Rax, true)
+            member x.PushIntArg(loc) = x.Load(Register.Rax, loc, false); x.PushIntArg(localConvention, Register.Rax, false)
+            member x.PushFloatArg(loc) = x.Load(Register.Rax, loc, false); x.PushFloatArg(localConvention, Register.Rax, false)
+
+            member x.Ret() = x.Ret()
+
+            member x.WriteOutput(v : nativeint) = x.Mov(Register.Rax, v)
+            member x.WriteOutput(v : int) = x.Mov(Register.Rax, v)
+            member x.WriteOutput(v : float32) = x.Mov(Register.XMM0, v)
 
 
         new(stream : Stream) = new AssemblerStream(stream, false)
 
-let getDelegateType (args : list<Type>) (ret : Type) =
-    let arr = System.Collections.Generic.List()
-    arr.AddRange args
-    arr.Add ret
-    System.Linq.Expressions.Expression.GetDelegateType(arr.ToArray())
+module X86 =
+    type Register =
+        | Eax = 0
+        | Ecx = 1
+        | Edx = 2
+        | Ebx = 3
+        | Esp = 4
+        | Ebp = 5
+        | Esi = 6
+        | Edi = 7
 
+    [<AutoOpen>]
+    module private Utils = 
+        let inline modRM (left : byte) (right : byte) =
+            let left = left 
+            let right = right
+            0xC0uy ||| (left <<< 3) ||| right
+
+        let inline modRM0 (left : byte) (right : byte) =
+            let left = left 
+            let right = right
+            (left <<< 3) ||| right
+
+        let inline dec (v : byref<int>) =
+            let o = v
+            v <- o - 1
+            if o < 0 then failwith "argument index out of bounds"
+            o
+
+    type CallingConvention = { registers : Register[]; floatRegisters : Register[]; calleeSaved : Register[] }
+    
+    [<CompilationRepresentation(CompilationRepresentationFlags.ModuleSuffix)>]
+    module CallingConvention =
+        let windows = 
+            { 
+                registers = [|  |] 
+                floatRegisters = [|  |]
+                calleeSaved = [| |]
+            }
+
+
+    type AssemblerStream(stream : Stream, leaveOpen : bool) =
+        let writer = new BinaryWriter(stream, Text.Encoding.UTF8, leaveOpen)
+
+
+        static let localConvention =
+            match Environment.OSVersion with
+                | Windows -> CallingConvention.windows
+                | os -> failwithf "not implemented: %A" os
+
+
+        let mutable argumentIndex = 0
+        let mutable argumentOffset = 0
+
+        static let push             = [| 0x48uy; 0x89uy; 0x44uy; 0x24uy |]
+        static let callRax          = [| 0xFFuy; 0xD0uy |]
+
+        static let oneByteNop       = [| 0x90uy |]
+        static let twoByteNop       = [| 0x66uy; 0x90uy |]
+        static let threeByteNop     = [| 0x0Fuy; 0x1Fuy; 0x00uy |]
+        static let fourByteNop      = [| 0x0Fuy; 0x1Fuy; 0x40uy; 0x00uy |]
+        static let fiveByteNop      = [| 0x0Fuy; 0x1Fuy; 0x44uy; 0x00uy; 0x00uy |]
+        static let eightByteNop     = [| 0x0Fuy; 0x1Fuy; 0x84uy; 0x00uy; 0x00uy; 0x00uy; 0x00uy; 0x00uy |]
+
+
+        member x.Leave() =
+            writer.Write(0xC9uy)
+
+        member x.Begin() =
+            x.Push(Register.Ebp)
+            x.Mov(Register.Ebp, Register.Esp)
+
+        member x.End() = 
+            x.Leave()
+
+        member x.Mov(target : Register, source : Register) =
+            if source <> target then
+
+                let dst = byte target 
+                let src = byte source 
+
+                // MOV   reg64, reg/mem64       8B/r
+                // MOV   reg32, reg/mem32       8B/r
+                writer.Write(0x8Buy)
+                writer.Write(modRM dst src)
+
+        member x.Load(target : Register, source : Register) =
+            let dst = byte target
+            let src = byte source
+
+            let modRM = modRM0 dst src
+
+            // MOV   reg64, reg/mem64       8B/r
+            // MOV   reg32, reg/mem32       8B/r
+            writer.Write(0x8Buy)
+            writer.Write(modRM)
+            if source = Register.Esp then writer.Write(0x24uy)
+
+        member x.Store(target : Register, source : Register) =
+            let dst = byte target &&& 0x0Fuy
+            let src = byte source &&& 0x0Fuy
+
+            // MOV   reg/mem64, reg64       89/r
+            // MOV   reg/mem32, reg32       89/r
+
+            let modRM = modRM0 src dst
+            writer.Write(0x89uy)
+            writer.Write(modRM)
+            if target = Register.Esp then writer.Write(0x24uy)
+
+        member x.Mov(target : Register, value : uint32) =
+            let tb = target |> byte
+            writer.Write(0xB8uy + tb)
+            writer.Write value 
+               
+        member inline x.Mov(target : Register, value : nativeint) =
+            x.Mov(target, uint32 value)
+
+        member inline x.Mov(target : Register, value : unativeint) =
+            x.Mov(target, uint32 value)
+
+        member inline x.Mov(target : Register, value : int) =
+            x.Mov(target, uint32 value)
+
+        member inline x.Mov(target : Register, value : int8) =
+            x.Mov(target, uint32 value)
+
+        member inline x.Mov(target : Register, value : uint8) =
+            x.Mov(target, uint32 value)
+
+        member inline x.Mov(target : Register, value : int16) =
+            x.Mov(target, uint32 value)
+
+        member inline x.Mov(target : Register, value : uint16) =
+            x.Mov(target, uint32 value)
+
+        member inline x.Mov(target : Register, value : float32) =
+            let mutable value = value
+            let iv : uint32 = &&value |> NativePtr.cast |> NativePtr.read
+            x.Mov(target, iv)
+
+        member inline x.Load(target : Register, ptr : nativeint) =
+            x.Mov(target, ptr)
+            x.Load(target, target)
+
+        member inline x.Load(target : Register, ptr : nativeptr<'a>) =
+            x.Load(target, NativePtr.toNativeInt ptr)
+
+        member x.Add(target : Register, source : Register) =
+            let modRM = modRM (byte target) (byte source)
+
+            writer.Write(0x03uy)
+            writer.Write(modRM)
+
+        member x.Add(target : Register, value : uint32) =
+            if value > 0u then
+                let r = target |> byte
+
+                writer.Write(0x81uy)
+                writer.Write(0xC0uy + r)
+                writer.Write(value)
+
+        member x.Sub(target : Register, value : uint32) = 
+            if value > 0u then
+                let r = target |> byte
+
+                writer.Write(0x81uy)
+                writer.Write(0xE8uy + r)
+                writer.Write(value)
+
+        member x.Sub(target : Register, source : Register) = 
+            let modRM = modRM (byte source) (byte target)
+            writer.Write(0x29uy)
+            writer.Write(modRM)
+
+
+
+        member x.Push(r : Register) =
+            let r = r |> byte
+            writer.Write(0x50uy + r)
+
+        member x.Push(value : uint32) =
+            writer.Write(0x68uy)
+            writer.Write(value)
+
+        member x.Push(value : float32) =
+            writer.Write(0x68uy)
+            writer.Write(value)
+            
+
+        member x.Pop(r : Register) =
+            let r = r |> byte
+            writer.Write(0x58uy + r)
+
+
+        member x.Jmp(offset : int) =
+            writer.Write 0xE9uy
+            writer.Write offset
+
+        member x.BeginCall(args : int) =
+            argumentIndex <- args - 1
+
+        member x.Call(cc : CallingConvention, r : Register) =
+            let r = byte r
+            writer.Write(0xFFuy)
+            writer.Write(0xD0uy + r)
+
+            // not on windows:
+//            if argumentOffset > 0 then
+//                x.Add(Register.Esp, uint32 argumentOffset)
+//                argumentOffset <- 0
+
+
+        member x.Call(cc : CallingConvention, ptr : nativeint) =
+            x.Mov(Register.Eax, ptr)
+            x.Call(cc, Register.Eax)
+
+
+        member x.Ret() =
+            writer.Write(0xC3uy)
+
+         member x.PushArg(cc : CallingConvention, value : uint32) =
+            let i = dec &argumentIndex
+            if i < cc.registers.Length then
+                x.Mov(cc.registers.[i], value)
+            else
+                x.Push(value)    
+                argumentOffset <- argumentOffset + 4
+
+         member x.PushArg(cc : CallingConvention, value : float32) =
+            let i = dec &argumentIndex
+            if i < cc.floatRegisters.Length then
+                x.Mov(cc.floatRegisters.[i], value)
+            else
+                x.Push(value)  
+                argumentOffset <- argumentOffset + 4
+
+        member x.PushIntArg(cc : CallingConvention, r : Register) =
+            let i = dec &argumentIndex
+            if i < cc.registers.Length then
+                x.Mov(cc.registers.[i], r)
+            else
+                x.Push(r)
+                argumentOffset <- argumentOffset + 4
+
+        member x.PushFloatArg(cc : CallingConvention, r : Register) =
+            let i = dec &argumentIndex
+            if i < cc.floatRegisters.Length then
+                x.Mov(cc.floatRegisters.[i], r)
+            else
+                x.Push(r)
+                argumentOffset <- argumentOffset + 4
+
+
+        member private x.Dispose(disposing : bool) =
+            if disposing then GC.SuppressFinalize(x)
+            writer.Dispose()
+
+        member x.Dispose() = x.Dispose(true)
+        override x.Finalize() = x.Dispose(false)
+
+        interface IDisposable with
+            member x.Dispose() = x.Dispose()
+
+        interface IAssemblerStream with
+            member x.BeginFunction() = x.Begin()
+            member x.EndFunction() = x.End()
+            member x.BeginCall(args : int) = x.BeginCall(args)
+            member x.Call (ptr : nativeint) = x.Call(localConvention, ptr)
+            member x.PushArg(v : nativeint) = x.PushArg(localConvention, uint32 v)
+            member x.PushArg(v : int) = x.PushArg(localConvention, uint32 v)
+            member x.PushArg(v : float32) = x.PushArg(localConvention, v)
+            member x.PushPtrArg(loc) = x.Load(Register.Eax, loc); x.PushIntArg(localConvention, Register.Eax)
+            member x.PushIntArg(loc) = x.Load(Register.Eax, loc); x.PushIntArg(localConvention, Register.Eax)
+            member x.PushFloatArg(loc) = x.Load(Register.Eax, loc); x.PushFloatArg(localConvention, Register.Eax)
+
+
+            member x.Ret() = x.Ret()
+
+            member x.WriteOutput(v : nativeint) = x.Mov(Register.Eax, v)
+            member x.WriteOutput(v : int) = x.Mov(Register.Eax, v)
+            member x.WriteOutput(v : float32) : unit = failwith "asdasd"
+
+
+        new(stream : Stream) = new AssemblerStream(stream, false)
+
+
+module AssemblerStream =
+    let ofStream (s : IO.Stream) =
+        match sizeof<nativeint> with
+            | 4 -> new X86.AssemblerStream(s) :> IAssemblerStream
+            | 8 -> new AMD64.AssemblerStream(s) :> IAssemblerStream
+            | _ -> failwith "bad bitness"
 
 type MyDelegate = delegate of float32 * float32 * int64 * float32 * int * float32 * int * float32 -> unit
 
-open AMD64
 
 module Benchmark =
     open System.Diagnostics
@@ -748,7 +1077,7 @@ module Benchmark =
 
         sw.MicroTime / (float iter)
 
-    let cc = CallingConvention.windows
+    let cc = AMD64.CallingConvention.windows
     let fillNew(cnt) =
         use s = new MemoryStream()
         use w = new AMD64.AssemblerStream(s)
@@ -800,10 +1129,86 @@ module Benchmark =
         Log.line "factor: %A" speedup
 
 
+module Test =
 
+    type MyDelegate = delegate of float32 * float32 * int * float32 * int * float32 * int * float32 -> unit
+
+    let callback =
+        MyDelegate (fun a b c d e f g h ->
+            Log.start "call"
+            Log.line "a: %A" a
+            Log.line "b: %A" b
+            Log.line "c: %A" c
+            Log.line "d: %A" d
+            Log.line "e: %A" e
+            Log.line "f: %A" f
+            Log.line "g: %A" g
+            Log.line "h: %A" h
+            Log.stop()
+        )
+
+    let ptr = Marshal.PinDelegate(callback)
+
+    let run () =
+        let store = NativePtr.alloc 1
+        NativePtr.write store 100.0f
+
+        use stream = new NativeStream()
+        use asm = AssemblerStream.ofStream stream
+
+        asm.BeginFunction()
+
+        asm.BeginCall(8)
+        asm.PushFloatArg(NativePtr.toNativeInt store)
+        asm.PushArg(6)
+        asm.PushArg(5.0f)
+        asm.PushArg(4)
+        asm.PushArg(3.0f)
+        asm.PushArg(2)
+        asm.PushArg(1.0f)
+        asm.PushArg(0.0f)
+        asm.Call(ptr.Pointer)
+ 
+        asm.BeginCall(8)
+        asm.PushArg(17.0f)
+        asm.PushArg(16)
+        asm.PushArg(15.0f)
+        asm.PushArg(14)
+        asm.PushArg(13.0f)
+        asm.PushArg(12)
+        asm.PushArg(11.0f)
+        asm.PushArg(10.0f)
+        asm.Call(ptr.Pointer)
+
+        asm.WriteOutput(1234)
+        asm.EndFunction()
+        asm.Ret()
+        
+        let size = Fun.NextPowerOfTwo stream.Length |> nativeint
+        let mem = ExecutableMemory.alloc size
+        Marshal.Copy(stream.Pointer, mem, stream.Length)
+
+        let managed : int -> int = UnmanagedFunctions.wrap mem
+        Log.start "run(3)"
+
+        if sizeof<nativeint> = 4 then Log.warn "32 bit"
+        else Log.warn "64 bit"
+
+
+        let res = managed 3
+        Log.line "ret: %A" res
+        Log.stop()
+
+        ExecutableMemory.free mem size
+
+        Environment.Exit 0
+
+
+open AMD64
 
 [<EntryPoint; STAThread>]
 let main argv = 
+    Test.run()
 
     Benchmark.run()
     Environment.Exit 0
