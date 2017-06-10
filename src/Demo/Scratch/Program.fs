@@ -1030,7 +1030,7 @@ module X86 =
 
         new(stream : Stream) = new AssemblerStream(stream, false)
 
-
+[<CompilationRepresentation(CompilationRepresentationFlags.ModuleSuffix)>]
 module AssemblerStream =
     let ofStream (s : IO.Stream) =
         match sizeof<nativeint> with
@@ -1127,7 +1127,6 @@ module Benchmark =
         let speedup = ot / nt
         Log.line "factor: %A" speedup
 
-
 module Test =
 
     type MyDelegate = delegate of float32 * float32 * int * float32 * int * float32 * int * float32 -> unit
@@ -1209,7 +1208,7 @@ module Program =
     let private jumpSize = 5n
     
     [<AllowNullLiteral>]
-    type Fragment<'a> =
+    type private Fragment<'a> =
         class
             val mutable prev : Fragment<'a>
             val mutable next : Fragment<'a>
@@ -1239,6 +1238,9 @@ module Program =
                     x.Pointer.Write(off, 0xE9uy)
                     x.Pointer.Write(off + 1, offset)
                 else
+                    Interlocked.Add(x.TotalJumpDistance, -x.JumpDistance) |> ignore
+                    x.JumpDistance <- 0L
+
                     let off = x.Pointer.Size - jumpSize |> int
                     x.Pointer.Write(off, 0xC9uy)
                     x.Pointer.Write(off + 1, 0xC3uy)
@@ -1286,7 +1288,7 @@ module Program =
             new(totalJumps, manager, tag) = { TotalJumpDistance = totalJumps; JumpDistance = 0L; Manager = manager; Tag = tag; Pointer = manager.Alloc(jumpSize); prev = null; next = null }
         end
 
-    and FragmentStream<'a>(f : Fragment<'a>) =
+    and private FragmentStream<'a>(f : Fragment<'a>) =
         inherit Stream()
 
         let mutable capacity = f.Capacity
@@ -1397,30 +1399,10 @@ module Program =
                 f.Realloc(offset)
                 capacity <- f.Capacity
 
-    type MyDelegate = delegate of int * int * int * int -> unit
-
-
-    let report =
-        MyDelegate (fun a b c d ->
-            Log.start "cb"
-            Log.line "a: %A" a
-            Log.line "b: %A" b
-            Log.line "c: %A" c
-            Log.line "d: %A" d
-            Log.stop()
-        )
-
-    let mutable all = 0L
-    let sum =
-        MyDelegate (fun a b c d ->
-            all <- all + int64 d
-        )
-
-    let pReport = Marshal.PinDelegate(report)
-    let pSum = Marshal.PinDelegate(sum)
-
-    type AdaptiveProgram<'a> private(data : alist<'a>, isDifferential : bool, compileDelta : Option<'a> -> 'a -> IAssemblerStream -> unit) =
+    type NativeProgram<'a> private(data : alist<'a>, isDifferential : bool, compileDelta : Option<'a> -> 'a -> IAssemblerStream -> unit) =
         inherit AdaptiveObject()
+        let compileDelta = OptimizedClosures.FSharpFunc<_,_,_,_>.Adapt(compileDelta)
+        
         let mutable disposed = false
         let manager = MemoryManager.createExecutable()
 
@@ -1451,7 +1433,10 @@ module Program =
                 jumpDistance := 0L
                 count <- 0
 
-        member x.AverageJumpDistance = float !jumpDistance / float count
+        member x.AverageJumpDistance = 
+            if !jumpDistance = 0L then 0.0
+            else float !jumpDistance / float count
+
         member x.TotalJumpDistance = !jumpDistance
 
         member x.Update(token : AdaptiveToken) =
@@ -1475,7 +1460,7 @@ module Program =
                                     cache.Remove i |> ignore
 
                                     if isDifferential then 
-                                        dirty.Add n |> ignore
+                                        if not (isNull n) then dirty.Add n |> ignore
                                         dirty.Remove f |> ignore
                                     count <- count - 1
                                 | _ ->
@@ -1500,13 +1485,13 @@ module Program =
                                 match s with
                                     | Some f ->
                                         f.Tag <- v
-                                        using f.AssemblerStream (compileDelta prev v)
-                                        if isDifferential then dirty.Add f.Next |> ignore
+                                        using f.AssemblerStream (fun s -> compileDelta.Invoke(prev, v, s))
+                                        if isDifferential && not (isNull f.next) then dirty.Add f.next |> ignore
                                         f
 
                                     | None ->
                                         let f = new Fragment<'a>(jumpDistance, manager, v)
-                                        using f.AssemblerStream (compileDelta prev v)
+                                        using f.AssemblerStream (fun s -> compileDelta.Invoke(prev, v, s))
                                         
                                         count <- count + 1
                                         match l with
@@ -1530,7 +1515,7 @@ module Program =
                             if d.Prev = prolog then None
                             else Some d.Prev.Tag
 
-                        using d.AssemblerStream (compileDelta prev d.Tag)
+                        using d.AssemblerStream (fun s -> compileDelta.Invoke(prev, d.Tag, s))
 
             )
 
@@ -1560,65 +1545,119 @@ module Program =
         interface IDisposable with
             member x.Dispose() = x.Dispose()
 
-        new(data : alist<'a>, compile : Option<'a> -> 'a -> IAssemblerStream -> unit) = new AdaptiveProgram<'a>(data, true, compile)
-        new(data : alist<'a>, compile : 'a -> IAssemblerStream -> unit) = new AdaptiveProgram<'a>(data, false, fun _ v s -> compile v s)
-
-    module AdaptiveProgram =
+        new(data : alist<'a>, compile : Option<'a> -> 'a -> IAssemblerStream -> unit) = new NativeProgram<'a>(data, true, compile)
+        new(data : alist<'a>, compile : 'a -> IAssemblerStream -> unit) = new NativeProgram<'a>(data, false, fun _ v s -> compile v s)
+    
+    [<CompilationRepresentation(CompilationRepresentationFlags.ModuleSuffix)>]
+    module NativeProgram =
         let differential (compile : Option<'a> -> 'a -> IAssemblerStream -> unit) (values : alist<'a>) =
-            new AdaptiveProgram<'a>(values, compile)
+            new NativeProgram<'a>(values, compile)
 
         let simple (compile : 'a -> IAssemblerStream -> unit) (values : alist<'a>) =
-            new AdaptiveProgram<'a>(values, compile)
+            new NativeProgram<'a>(values, compile)
+
+    
+
+
+    type MyDelegate = delegate of int * int * int * int -> unit
+    
+    type TestDelegate = delegate of int * int -> unit
+
+    type TestProgram(values : alist<int>) =
+        let mutable validate = false
+        let store = List<int * int>(1024)
+        let d = TestDelegate (fun p s -> if validate then store.Add(p,s))
+        let dPtr = Marshal.PinDelegate d
+
+        let program = 
+            values |> NativeProgram.differential (fun prev self stream ->
+                stream.BeginCall(2)
+                stream.PushArg(self)
+                stream.PushArg(defaultArg prev 0)
+                stream.Call(dPtr.Pointer)
+            )
+
+        member x.AverageJumpDistance = program.AverageJumpDistance
+        
+        member x.Update() =
+            program.Update(AdaptiveToken.Top)
+            
+        member x.Run() =
+            program.Update(AdaptiveToken.Top)
+            program.Run()
+
+        member x.RunAndValidate() =
+            validate <- true
+            store.Clear()
+            program.Update(AdaptiveToken.Top)
+            program.Run()
+            validate <- false
+            let calls = store |> CSharpList.toArray
+            let ref = values.Content |> Mod.force
+            let mutable error = false
+            let mutable l = 0
+            let mutable i = 0
+            for r in ref do
+                let should = (l,r)
+                let is = calls.[i]
+
+                if should <> is then error <- true
+
+                i <- i + 1
+                l <- r
+
+            if error then
+                Log.warn "ERROR: %A vs %A" calls ref 
+            else
+                Log.line "calls: %d" calls.Length
+
+
+    let report =
+        MyDelegate (fun a b c d ->
+            Log.start "cb"
+            Log.line "a: %A" a
+            Log.line "b: %A" b
+            Log.line "c: %A" c
+            Log.line "d: %A" d
+            Log.stop()
+        )
+
+
+    let pReport = Marshal.PinDelegate(report)
 
 
     let test() =
         let values = clist [0;1;2;3]
-        let compile (prev : Option<int>) (self : int) (stream : IAssemblerStream) =
-            let prev = defaultArg prev 0
-            stream.BeginCall(4)
-            stream.PushArg(self - prev)
-            stream.PushArg(self - prev)
-            stream.PushArg(self)
-            stream.PushArg(self)
-            stream.Call(pSum.Pointer)
-
-
-
-        use prog = values |> AdaptiveProgram.differential compile 
+        let prog = TestProgram(values)
 
         
         Log.startTimed "run"
-        prog.Update(AdaptiveToken.Top)
-        prog.Run()
+        prog.RunAndValidate()
         Log.line "dist: %A" prog.AverageJumpDistance
-        Log.line "run:  %d" (Interlocked.Exchange(&all, 0L))
         Log.stop()
         
         Log.startTimed "run"
         transact (fun () -> values.Insert(2, 100))
-        prog.Update(AdaptiveToken.Top)
-        prog.Run()
+        prog.Update()
+        prog.RunAndValidate()
         Log.line "dist: %A" prog.AverageJumpDistance
-        Log.line "run:  %d" (Interlocked.Exchange(&all, 0L))
+        Log.stop()
+        
+        
+        Log.startTimed "run"
+        transact (fun () -> values.[2] <- 2)
+        prog.Update()
+        prog.RunAndValidate()
+        Log.line "dist: %A" prog.AverageJumpDistance
         Log.stop()
         
         Log.startTimed "run"
         transact (fun () -> values.RemoveAt(2))
-        prog.Update(AdaptiveToken.Top)
-        prog.Run()
+        prog.Update()
+        prog.RunAndValidate()
         Log.line "dist: %A" prog.AverageJumpDistance
-        Log.line "run:  %d" (Interlocked.Exchange(&all, 0L))
         Log.stop()
 
-        
-        Log.startTimed "run"
-        transact (fun () -> values.[2] <- 2)
-        prog.Update(AdaptiveToken.Top)
-        prog.Run()
-        Log.line "dist: %A" prog.AverageJumpDistance
-        Log.line "run:  %d" (Interlocked.Exchange(&all, 0L))
-        Log.stop()
-        
         let test = PList.ofList [0 .. 1 <<< 13]
 
 
@@ -1627,18 +1666,36 @@ module Program =
         transact (fun () -> values.AppendMany [4 .. 1 <<< 16])
         Log.stop()
         Log.startTimed "update"
-        prog.Update(AdaptiveToken.Top)
+        prog.Update()
         Log.stop()
         Log.startTimed "run"
         for i in 1 .. 1000 do
-            Interlocked.Exchange(&all, 0L) |> ignore
             prog.Run()
         Log.line "dist: %A" prog.AverageJumpDistance
-        Log.line "all:  %d" (Interlocked.Exchange(&all, 0L))
         Log.stop()
 
-        Log.line "last: %A" test.[(1 <<< 12) - 1]
+        Log.startTimed "run"
+        prog.RunAndValidate()
+        Log.stop()
+
+
+
+        Log.startTimed "apply"
+        transact (fun () -> values.Clear())
+        Log.stop()
+        Log.startTimed "update"
+        prog.Update()
+        Log.stop()
+        Log.startTimed "run"
+        for i in 1 .. 1000 do
+            prog.Run()
+        Log.line "dist: %A" prog.AverageJumpDistance
+        Log.stop()
+
+
+
         Environment.Exit 0
+        Log.line "last: %A" test.[(1 <<< 12) - 1]
 
 
 open AMD64
