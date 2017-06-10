@@ -12,10 +12,872 @@ open Aardvark.Base.Monads.State
 
 open System.Drawing
 open System.Windows.Forms
+open System.IO
+open System.Runtime.InteropServices
+open Microsoft.FSharp.NativeInterop
+
+#nowarn "9"
+#nowarn "51"
+
+type NativeStream() =
+    inherit Stream()
+
+    let mutable capacity = 128n
+    let mutable store = Marshal.AllocHGlobal(capacity)
+    let mutable offset = 0n
+    let mutable length = 0n
+
+    member x.Pointer = store
+        
+    override x.Dispose(disposing : bool) =
+        base.Dispose(disposing)
+        let s = Interlocked.Exchange(&store, 0n)
+        if s <> 0n then
+            Marshal.FreeHGlobal s
+            capacity <- 0n
+            offset <- 0n
+            length <- 0n
+
+    override x.CanRead = true
+    override x.CanSeek = true
+    override x.CanWrite = true
+
+    override x.Length = int64 length
+    override x.Position
+        with get() = int64 offset
+        and set o = offset <- nativeint o
+
+    override x.Flush() = ()
+
+    override x.Seek(o, origin) =
+        match origin with
+            | SeekOrigin.Begin -> offset <- nativeint o
+            | SeekOrigin.Current -> offset <- offset + nativeint o
+            | SeekOrigin.End -> offset <- length - nativeint o
+            | _ -> ()
+        int64 offset
+
+    override x.SetLength(l : int64) =
+        if l > int64 capacity then
+            let newCap = Fun.NextPowerOfTwo l |> nativeint
+            store <- Marshal.ReAllocHGlobal(store, newCap)
+            capacity <- newCap
+
+        length <- nativeint l
+
+    override x.Read(buffer : byte[], o : int, count : int) =
+        let count = min (length - nativeint offset) (nativeint count) |> int
+        Marshal.Copy(store + offset, buffer, o, count)
+        count
+
+    override x.Write(buffer : byte[], o : int, count : int) =
+        let l = offset + nativeint count
+        if l > capacity then
+            let newCap = Fun.NextPowerOfTwo (int64 l) |> nativeint
+            store <- Marshal.ReAllocHGlobal(store, newCap)
+            capacity <- newCap
+
+        Marshal.Copy(buffer, o, store + offset, count)
+        length <- length + nativeint count
+        offset <- offset + nativeint count
+
+module AMD64 =
+
+    let private printBinary (v : uint8) =
+        let mutable v = v
+        let mutable mask = 1uy <<< 7
+        
+        for _ in 1 .. 8 do
+            printf "%d" (if v &&& mask <> 0uy then 1 else 0)
+            mask <- mask >>> 1
+        printfn ""
+
+    type Register =
+        | Rax = 0
+        | Rcx = 1
+        | Rdx = 2
+        | Rbx = 3
+        | Rsp = 4
+        | Rbp = 5
+        | Rsi = 6
+        | Rdi = 7
+
+        | R8  = 8
+        | R9  = 9
+        | R10 = 10
+        | R11 = 11
+        | R12 = 12
+        | R13 = 13
+        | R14 = 14
+        | R15 = 15
+
+        | XMM0 = 16
+        | XMM1 = 17
+        | XMM2 = 18
+        | XMM3 = 19
+        | XMM4 = 20
+        | XMM5 = 21
+        | XMM6 = 22
+        | XMM7 = 23
+        | XMM8 = 24
+        | XMM9 = 25
+        | XMM10 = 26
+        | XMM11 = 27
+        | XMM12 = 28
+        | XMM13 = 29
+        | XMM14 = 30
+        | XMM15 = 31
+
+    type CallingConvention = { shadowSpace : bool; registers : Register[]; floatRegisters : Register[]; calleeSaved : Register[] }
+    
+    [<CompilationRepresentation(CompilationRepresentationFlags.ModuleSuffix)>]
+    module CallingConvention =
+        let windows = 
+            { 
+                shadowSpace = true
+                registers = [| Register.Rcx; Register.Rdx; Register.R8; Register.R9 |] 
+                floatRegisters = [| Register.XMM0; Register.XMM1; Register.XMM2; Register.XMM3 |]
+                calleeSaved = [|Register.R12; Register.R13; Register.R14; Register.R15 |]
+            }
+
+        let linux = 
+            { 
+                shadowSpace = false
+                registers = [| Register.Rdi; Register.Rsi; Register.Rdx; Register.Rcx; Register.R8; Register.R9 |] 
+                floatRegisters = [| Register.XMM0; Register.XMM1; Register.XMM2; Register.XMM3; Register.XMM4; Register.XMM5; Register.XMM6; Register.XMM7 |]
+                calleeSaved = [|Register.R12; Register.R13; Register.R14; Register.R15 |]
+            }
+
+    [<AutoOpen>]
+    module private Utils = 
+        let inline rexAndModRM (wide : bool) (left : byte) (right : byte) (rex : byref<byte>) (modRM : byref<byte>) =
+            let r = if left >= 8uy then 1uy else 0uy
+            let b = if right >= 8uy then 1uy else 0uy
+            let w = if wide then 1uy else 0uy
+            rex <- 0x40uy ||| (w <<< 3) ||| (r <<< 2) ||| b
+                
+            let left = left &&& 0x07uy
+            let right = right &&& 0x07uy
+            modRM <- 0xC0uy ||| (left <<< 3) ||| right
+
+        let inline rexAndModRM0 (wide : bool) (left : byte) (right : byte) (rex : byref<byte>) (modRM : byref<byte>) =
+            let r = if left >= 8uy then 1uy else 0uy
+            let b = if right >= 8uy then 1uy else 0uy
+            let w = if wide then 1uy else 0uy
+            rex <- 0x40uy ||| (w <<< 3) ||| (r <<< 2) ||| b
+                
+            let left = left &&& 0x07uy
+            let right = right &&& 0x07uy
+            modRM <- 0x00uy ||| (left <<< 3) ||| right
+
+        let inline rexAndModRMSIB (wide : bool) (left : byte) (rex : byref<byte>) (modRM : byref<byte>) =
+            let r = if left >= 8uy then 1uy else 0uy
+            let w = if wide then 1uy else 0uy
+            rex <- 0x40uy ||| (w <<< 3) ||| (r <<< 2)
+                
+            let left = left &&& 0x07uy
+            modRM <- 0x40uy ||| (left <<< 3) ||| 0x04uy
+
+
+        let inline dec (v : byref<int>) =
+            let o = v
+            v <- o - 1
+            if o < 0 then failwith "argument index out of bounds"
+            o
+
+    type AssemblerStream(stream : Stream, leaveOpen : bool) =
+        let writer = new BinaryWriter(stream, Text.Encoding.UTF8, leaveOpen)
+
+        let mutable stackOffset = 0
+        let mutable callPadded = []
+        let mutable paddingPtr = []
+        let mutable argumentOffset = 0
+        let mutable argumentIndex = 0
+
+        static let push             = [| 0x48uy; 0x89uy; 0x44uy; 0x24uy |]
+        static let callRax          = [| 0xFFuy; 0xD0uy |]
+
+        static let oneByteNop       = [| 0x90uy |]
+        static let twoByteNop       = [| 0x66uy; 0x90uy |]
+        static let threeByteNop     = [| 0x0Fuy; 0x1Fuy; 0x00uy |]
+        static let fourByteNop      = [| 0x0Fuy; 0x1Fuy; 0x40uy; 0x00uy |]
+        static let fiveByteNop      = [| 0x0Fuy; 0x1Fuy; 0x44uy; 0x00uy; 0x00uy |]
+        static let eightByteNop     = [| 0x0Fuy; 0x1Fuy; 0x84uy; 0x00uy; 0x00uy; 0x00uy; 0x00uy; 0x00uy |]
+
+
+        member x.Leave() =
+            writer.Write(0xC9uy)
+
+        member x.Begin() =
+            x.Push(Register.Rbp)
+            x.Mov(Register.Rbp, Register.Rsp, true)
+            stackOffset <- stackOffset - 8
+
+        member x.End() =
+            x.Leave()
+            stackOffset <- stackOffset - 8
+
+        member x.Mov(target : Register, source : Register, wide : bool) =
+            if source <> target then
+                let targetMedia = target >= Register.XMM0
+                let sourceMedia = source >= Register.XMM0
+
+                let mutable rex = 0x40uy
+                let mutable modRM = 0uy
+
+                let dst = byte target &&& 0x0Fuy
+                let src = byte source &&& 0x0Fuy
+
+
+                if targetMedia && sourceMedia then
+                    rexAndModRM wide dst src &rex &modRM
+                    writer.Write(0xF3uy)
+                    if rex <> 0x40uy then writer.Write(rex)
+                    writer.Write(0x0Fuy)
+                    writer.Write(0x7Euy)
+                    writer.Write(modRM)
+
+                elif sourceMedia then
+                    rexAndModRM wide src dst &rex &modRM
+                    // MOVD  reg/mem32, xmm         66 0F 7E /r
+                    // MOVD  reg/mem64, xmm         66 0F 7E /r
+
+                    writer.Write(0x66uy)
+                    if rex <> 0x40uy then writer.Write(rex)
+                    writer.Write(0x0Fuy)
+                    writer.Write(0x7Euy)
+                    writer.Write(modRM)
+
+                elif targetMedia then
+                    // MOVD  xmm, reg/mem32         66 0F 6E /r
+                    // MOVD  xmm, reg/mem64         66 0F 6E /r
+                
+                    rexAndModRM wide dst src &rex &modRM
+                    writer.Write(0x66uy)
+                    if rex <> 0x40uy then writer.Write(rex)
+                    writer.Write(0x0Fuy)
+                    writer.Write(0x6Euy)
+                    writer.Write(modRM)
+
+                else
+                    // MOV   reg64, reg/mem64       8B/r
+                    // MOV   reg32, reg/mem32       8B/r
+
+                    rexAndModRM wide dst src &rex &modRM
+                    if rex <> 0x40uy then writer.Write(rex)
+                    writer.Write(0x8Buy)
+                    writer.Write(modRM)
+
+        member x.Load(target : Register, source : Register, wide : bool) =
+            let targetMedia = target >= Register.XMM0
+            let sourceMedia = source >= Register.XMM0
+            
+            let dst = byte target &&& 0x0Fuy
+            let src = byte source &&& 0x0Fuy
+
+            let mutable rex = 0x40uy
+            let mutable modRM = 0uy
+
+            if sourceMedia then
+                failwith "mov reg|xmm, (xmm) not implemented"
+
+            elif targetMedia then
+                if wide then
+                    rexAndModRM0 false dst src &rex &modRM
+                    writer.Write(0xF3uy)
+                    if rex <> 0x40uy then writer.Write(rex)
+                    writer.Write(0x0Fuy)
+                    writer.Write(0x7Euy)
+                    writer.Write(modRM)
+                    if source = Register.Rsp then writer.Write(0x24uy)
+
+                else
+                    // MOVD  xmm, reg/mem32         66 0F 6E /r
+                    // MOVD  xmm, reg/mem64         66 0F 6E /r
+                    rexAndModRM0 wide dst src &rex &modRM
+                    writer.Write(0x66uy)
+                    if rex <> 0x40uy then writer.Write(rex)
+                    writer.Write(0x0Fuy)
+                    writer.Write(0x6Euy)
+                    writer.Write(modRM)
+                    if source = Register.Rsp then writer.Write(0x24uy)
+
+            else
+                // MOV   reg64, reg/mem64       8B/r
+                // MOV   reg32, reg/mem32       8B/r
+                rexAndModRM0 wide dst src &rex &modRM
+                if rex <> 0x40uy then writer.Write(rex)
+                writer.Write(0x8Buy)
+                writer.Write(modRM)
+                if source = Register.Rsp then writer.Write(0x24uy)
+
+        member x.Store(target : Register, source : Register, wide : bool) =
+            let targetMedia = target >= Register.XMM0
+            let sourceMedia = source >= Register.XMM0
+            
+            let mutable rex = 0x40uy
+            let mutable modRM = 0uy
+
+            let dst = byte target &&& 0x0Fuy
+            let src = byte source &&& 0x0Fuy
+
+            if targetMedia then
+                failwith "mov (xmm), reg|xmm not implemented"
+
+            elif sourceMedia then
+                if wide then
+                    rexAndModRM0 false src dst &rex &modRM
+                    writer.Write(0x66uy)
+                    if rex <> 0x40uy then writer.Write(rex)
+                    writer.Write(0x0Fuy)
+                    writer.Write(0xD6uy)
+                    writer.Write(modRM)
+                    if target = Register.Rsp then writer.Write(0x24uy)
+                else
+                    // MOVD  reg/mem32, xmm         66 0F 7E /r
+                    // MOVD  reg/mem64, xmm         66 0F 7E /r
+
+                    rexAndModRM0 wide src dst &rex &modRM
+                    writer.Write(0x66uy)
+                    if rex <> 0x40uy then writer.Write(rex)
+                    writer.Write(0x0Fuy)
+                    writer.Write(0x7Euy)
+                    writer.Write(modRM)
+                    if target = Register.Rsp then writer.Write(0x24uy)
+            else
+                // MOV   reg/mem64, reg64       89/r
+                // MOV   reg/mem32, reg32       89/r
+
+                rexAndModRM0 wide src dst &rex &modRM
+                if rex <> 0x40uy then writer.Write(rex)
+                writer.Write(0x89uy)
+                writer.Write(modRM)
+                if target = Register.Rsp then writer.Write(0x24uy)
+
+        member x.Mov(target : Register, value : uint64) =
+            if target < Register.XMM0 then
+                let tb = target |> byte
+                if tb >= 8uy then
+                    let tb = tb - 8uy
+                    let rex = 0x49uy
+                    writer.Write(rex)
+                    writer.Write(0xB8uy + tb)
+                else
+                    let rex = 0x48uy
+                    writer.Write(rex)
+                    writer.Write(0xB8uy + tb)
+
+                writer.Write value 
+                
+            else
+                x.Mov(Register.Rax, value)
+                x.Mov(target, Register.Rax, true)
+
+        member x.Mov(target : Register, value : uint32) =
+            if target < Register.XMM0 then
+                let tb = target |> byte
+                if tb >= 8uy then
+                    let tb = tb - 8uy
+                    let rex = 0x41uy
+                    writer.Write(rex)
+                    writer.Write(0xB8uy + tb)
+                else
+                    writer.Write(0xB8uy + tb)
+
+                writer.Write value 
+                
+            else
+                x.Mov(Register.Rax, value)
+                x.Mov(target, Register.Rax, false)
+
+
+        member inline x.MovQWord(target : Register, source : Register) =
+            x.Mov(target, source, true)
+
+        member inline x.MovDWord(target : Register, source : Register) =
+            x.Mov(target, source, false)
+
+        member inline x.Mov(target : Register, value : nativeint) =
+            x.Mov(target, uint64 value)
+
+        member inline x.Mov(target : Register, value : unativeint) =
+            x.Mov(target, uint64 value)
+
+        member inline x.Mov(target : Register, value : int) =
+            x.Mov(target, uint32 value)
+
+        member inline x.Mov(target : Register, value : int64) =
+            x.Mov(target, uint64 value)
+
+        member inline x.Mov(target : Register, value : int8) =
+            x.Mov(target, uint32 value)
+
+        member inline x.Mov(target : Register, value : uint8) =
+            x.Mov(target, uint32 value)
+
+        member inline x.Mov(target : Register, value : int16) =
+            x.Mov(target, uint32 value)
+
+        member inline x.Mov(target : Register, value : uint16) =
+            x.Mov(target, uint32 value)
+
+        member inline x.Mov(target : Register, value : float32) =
+            let mutable value = value
+            let iv : uint32 = &&value |> NativePtr.cast |> NativePtr.read
+            x.Mov(target, iv)
+
+        member inline x.Mov(target : Register, value : float) =
+            let mutable value = value
+            let iv : uint64 = &&value |> NativePtr.cast |> NativePtr.read
+            x.Mov(target, iv)
+
+        member inline x.Load(target : Register, ptr : nativeint, wide : bool) =
+            x.Mov(target, uint64 ptr)
+            x.Load(target, target, wide)
+
+        member inline x.Load(target : Register, ptr : nativeptr<'a>) =
+            x.Load(target, NativePtr.toNativeInt ptr, sizeof<'a> = 8)
+
+        member inline x.LoadQWord(target : Register, ptr : nativeint) =
+            x.Load(target, ptr, true)
+
+        member inline x.LoadDWord(target : Register, ptr : nativeint) =
+            x.Load(target, ptr, false)
+
+        member x.Add(target : Register, source : Register, wide : bool) =
+            let mutable rex = 0x40uy
+            let mutable modRM = 0uy
+            
+            if source >= Register.XMM0 || target >= Register.XMM0 then
+                failwith "cannot add media register"
+            else
+                rexAndModRM wide (byte target) (byte source) &rex &modRM
+
+                if rex <> 0x40uy then writer.Write(rex)
+                writer.Write(0x03uy)
+                writer.Write(modRM)
+
+        member x.Add(target : Register, value : uint32) =
+            if value > 0u then
+                if target >= Register.XMM0 then
+                    failwith "cannot add media register"
+                else
+                    let r = target |> byte
+                    let b = if r >= 8uy then 1uy else 0uy //(r &&& 0xF8uy) >>> 3
+                    let r = r &&& 0x07uy
+                    let rex = 0x48uy ||| b
+                
+                    writer.Write(rex)
+                    writer.Write(0x81uy)
+                    writer.Write(0xC0uy + r)
+                    writer.Write(value)
+
+        member x.Sub(target : Register, value : uint32) = 
+            if value > 0u then
+                if target >= Register.XMM0 then
+                    failwith "cannot add media register"
+                else
+                    let r = target |> byte
+                    let b = if r >= 8uy then 1uy else 0uy //(r &&& 0xF8uy) >>> 3
+                    let r = r &&& 0x07uy
+                    let rex = 0x48uy ||| b
+                
+                    writer.Write(rex)
+                    writer.Write(0x81uy)
+                    writer.Write(0xE8uy + r)
+                    writer.Write(value)
+
+        member x.Sub(target : Register, source : Register, wide : bool) = 
+            if target >= Register.XMM0 || source >= Register.XMM0 then
+                failwith "cannot sub media register"
+            else
+                let mutable rex = 0x40uy
+                let mutable modRM = 0uy
+
+                rexAndModRM wide (byte source) (byte target) &rex &modRM
+
+                if rex <> 0x40uy then writer.Write(rex)
+                writer.Write(0x29uy)
+                writer.Write(modRM)
+
+
+
+        member x.Push(r : Register) =
+            stackOffset <- stackOffset + 8
+            if r >= Register.XMM0 then
+                x.Sub(Register.Rsp, 8u)
+                x.Store(Register.Rsp, r, true)
+            else
+                let r = r |> byte
+                let b = if r >= 8uy then 1uy else 0uy //(r &&& 0xF8uy) >>> 3
+                let r = r &&& 0x07uy
+                let w = 1uy
+                let rex = 0x40uy ||| (w <<< 3) ||| b
+
+                let code = 0x50uy + r
+                if rex <> 0x4uy then writer.Write(rex)
+                writer.Write(code)
+
+        member x.Push(value : uint64) =
+            stackOffset <- stackOffset + 8
+            writer.Write(0x48uy)
+            writer.Write(0x68uy)
+            writer.Write(value)
+
+        member x.Push(value : uint32) =
+            stackOffset <- stackOffset + 8
+            writer.Write(0x68uy)
+            writer.Write(value)
+
+        member x.Push(value : float) =
+            stackOffset <- stackOffset + 8
+            writer.Write(0x48uy)
+            writer.Write(0x68uy)
+            writer.Write(value)
+
+        member x.Push(value : float32) =
+            stackOffset <- stackOffset + 8
+            writer.Write(0x68uy)
+            writer.Write(value)
+            
+
+        member x.Pop(r : Register) =
+            stackOffset <- stackOffset - 8
+            if r >= Register.XMM0 then
+                x.Load(r, Register.Rsp, true)
+                x.Add(Register.Rsp, 8u)
+                ()
+            else
+                let r = r |> byte
+
+                let b = (r &&& 0xF8uy) >>> 3
+                let r = r &&& 0x07uy
+                let w = 1uy
+                let rex = 0x40uy ||| (w <<< 3) ||| b
+
+                let code = 0x58uy + r
+                if rex <> 0x4uy then writer.Write(rex)
+                writer.Write(code)
+
+
+        member x.Jmp(offset : int) =
+            writer.Write 0xE9uy
+            writer.Write offset
+            
+        member x.Nop(width : int) =
+            if width > 0 then
+                match width with
+                    | 1 -> writer.Write oneByteNop
+                    | 2 -> writer.Write twoByteNop
+                    | 3 -> writer.Write threeByteNop
+                    | 4 -> writer.Write fourByteNop
+                    | 5 -> writer.Write fiveByteNop
+                    | 6 -> writer.Write threeByteNop; writer.Write threeByteNop // TODO: find good 6 byte nop sequence
+                    | 7 -> writer.Write fourByteNop; writer.Write threeByteNop // TODO: find good 7 byte nop sequence
+                    | _ -> writer.Write eightByteNop; x.Nop (width - 8)
+
+        member x.BeginCall(args : int) =
+            x.Sub(Register.Rsp, 8u)
+            stream.Seek(-4L, SeekOrigin.Current) |> ignore
+            let ptr = stream.Position
+            writer.Write(0u)
+
+            argumentOffset <- 0
+            paddingPtr <- ptr :: paddingPtr
+            argumentIndex <- args - 1
+
+        member x.Call(cc : CallingConvention, r : Register) =
+            if r >= Register.XMM0 then
+                failwith "cannot call media register"
+            else
+
+                let paddingPtr =
+                    match paddingPtr with
+                        | h :: rest ->
+                            paddingPtr <- rest
+                            h
+                        | _ ->
+                            failwith "no padding offset"
+
+                let additional = 
+                    if stackOffset % 16 <> 0 then
+                        let p = stream.Position
+                        stream.Position <- paddingPtr
+                        writer.Write(8u)
+                        stream.Position <- p
+                        8u
+                    else
+                        0u
+
+                if cc.shadowSpace then
+                    x.Sub(Register.Rsp, 8u * uint32 cc.registers.Length)
+
+                let r = byte r
+                if r >= 8uy then
+                    writer.Write(0x41uy)
+                    writer.Write(0xFFuy)
+                    writer.Write(0xD0uy + (r - 8uy))
+
+                else
+                    writer.Write(0xFFuy)
+                    writer.Write(0xD0uy + r)
+                    
+                let popSize =
+                    (if cc.shadowSpace then 8u * uint32 cc.registers.Length else 0u) +
+                    uint32 argumentOffset +
+                    additional
+
+                if popSize > 0u then
+                    x.Add(Register.Rsp, popSize)
+
+                argumentOffset <- 0
+
+        member x.Call(cc : CallingConvention, ptr : nativeint) =
+            x.Mov(Register.Rax, ptr)
+            x.Call(cc, Register.Rax)
+
+
+        member x.Ret() =
+            writer.Write(0xC3uy)
+
+        member x.PushArg(cc : CallingConvention, value : uint64) =
+            let i = dec &argumentIndex
+            if i < cc.registers.Length then
+                x.Mov(cc.registers.[i], value)
+            else
+                argumentOffset <- argumentOffset + 8
+                x.Push(value)
+
+         member x.PushArg(cc : CallingConvention, value : uint32) =
+            let i = dec &argumentIndex
+            if i < cc.registers.Length then
+                x.Mov(cc.registers.[i], value)
+            else
+                argumentOffset <- argumentOffset + 8
+                x.Push(value)    
+
+         member x.PushArg(cc : CallingConvention, value : float32) =
+            let i = dec &argumentIndex
+            if i < cc.floatRegisters.Length then
+                x.Mov(cc.floatRegisters.[i], value)
+            else
+                argumentOffset <- argumentOffset + 8
+                x.Push(value)  
+
+         member x.PushArg(cc : CallingConvention, value : float) =
+            let i = dec &argumentIndex
+            if i < cc.floatRegisters.Length then
+                x.Mov(cc.floatRegisters.[i], value)
+            else
+                argumentOffset <- argumentOffset + 8
+                x.Push(value)  
+
+        member x.PushIntArg(cc : CallingConvention, r : Register, wide : bool) =
+            let i = dec &argumentIndex
+            if i < cc.registers.Length then
+                x.Mov(cc.registers.[i], r, wide)
+            else
+                argumentOffset <- argumentOffset + 8
+                x.Push(r)
+
+        member x.PushFloatArg(cc : CallingConvention, r : Register, wide : bool) =
+            let i = dec &argumentIndex
+            if i < cc.floatRegisters.Length then
+                x.Mov(cc.floatRegisters.[i], r, wide)
+            else
+                argumentOffset <- argumentOffset + 8
+                x.Push(r)
+
+
+        member private x.Dispose(disposing : bool) =
+            if disposing then GC.SuppressFinalize(x)
+            writer.Dispose()
+
+        member x.Dispose() = x.Dispose(true)
+        override x.Finalize() = x.Dispose(false)
+
+        interface IDisposable with
+            member x.Dispose() = x.Dispose()
+
+
+        new(stream : Stream) = new AssemblerStream(stream, false)
+
+let getDelegateType (args : list<Type>) (ret : Type) =
+    let arr = System.Collections.Generic.List()
+    arr.AddRange args
+    arr.Add ret
+    System.Linq.Expressions.Expression.GetDelegateType(arr.ToArray())
+
+
+type MyDelegate = delegate of float32 * float32 * int64 * float32 * int * float32 * int * float32 -> unit
+
+open AMD64
+
+module Benchmark =
+    open System.Diagnostics
+
+    let callback =
+        MyDelegate (fun a b c d e f g h ->
+            printfn "a: %A" a
+            printfn "b: %A" b
+            printfn "c: %A" c
+            printfn "d: %A" d
+            printfn "e: %A" e
+            printfn "f: %A" f
+            printfn "g: %A" g
+            printfn "h: %A" h
+        )
+
+    let pDel = Marshal.PinDelegate(callback)
+    let ptr = pDel.Pointer
+
+    let cnt = 1 <<< 12
+
+    let args = [| 1.0f :> obj; 2.0f :> obj; 3L :> obj; 4.0f :> obj; 5 :> obj; 6.0f :> obj; 7 :> obj; 8.0f :> obj |]
+    let calls = Array.init cnt (fun _ -> ptr, args)
+
+    let runOld(iter : int) =
+        // warmup
+        for i in 1 .. 10 do
+            Aardvark.Base.Assembler.compileCalls 0 calls |> ignore
+
+        let sw = Stopwatch.StartNew()
+        for i in 1 .. iter do
+            Aardvark.Base.Assembler.compileCalls 0 calls |> ignore
+        sw.Stop()
+
+        sw.MicroTime / (float iter)
+
+    let cc = CallingConvention.windows
+    let fillNew(cnt) =
+        use s = new MemoryStream()
+        use w = new AMD64.AssemblerStream(s)
+
+        w.Begin()
+
+        for i in 1 .. cnt do
+            w.BeginCall(8)
+            w.PushArg(cc, 7.0f)
+            w.PushArg(cc, 6u)
+            w.PushArg(cc, 5.0f)
+            w.PushArg(cc, 4u)
+            w.PushArg(cc, 3.0f)
+            w.PushArg(cc, 2UL)
+            w.PushArg(cc, 1.0f)
+            w.PushArg(cc, 0.0f)
+            w.Call(cc, ptr)
+
+        w.End()
+        w.Ret()
+        //s.ToArray()
+
+    let runNew(iter : int) =
+        // warmup
+        for i in 1 .. 10 do
+            fillNew(cnt) |> ignore
+
+        let sw = Stopwatch.StartNew()
+        for i in 1 .. iter do
+            fillNew(cnt) |> ignore
+        sw.Stop()
+
+        sw.MicroTime / (float iter)
+
+    let run() =
+//        let size = 1 <<< 14
+//        while true do
+//            fillNew size
+
+        let ot = runOld 100
+        let throughput = float cnt / ot.TotalSeconds
+        Log.line "old: %A (%.0fc/s)" ot throughput
+
+        let nt = runNew 100
+        let throughput = float cnt / nt.TotalSeconds
+        Log.line "new: %A (%.0fc/s)" nt throughput
+
+        let speedup = ot / nt
+        Log.line "factor: %A" speedup
+
+
 
 
 [<EntryPoint; STAThread>]
 let main argv = 
+
+    Benchmark.run()
+    Environment.Exit 0
+
+
+    let callback =
+        MyDelegate (fun a b c d e f g h ->
+            printfn "a: %A" a
+            printfn "b: %A" b
+            printfn "c: %A" c
+            printfn "d: %A" d
+            printfn "e: %A" e
+            printfn "f: %A" f
+            printfn "g: %A" g
+            printfn "h: %A" h
+        )
+
+    let ptr = Marshal.PinDelegate(callback)
+
+    use stream = new NativeStream()
+    use asm = new AssemblerStream(stream)
+
+    let data = NativePtr.alloc 1
+    NativePtr.write data 12321.0
+
+    let cc = CallingConvention.windows
+
+    asm.Begin()
+    asm.Mov(Register.XMM0, 1234.0f)
+    asm.Push(Register.XMM0)
+
+
+    asm.BeginCall(8)
+    asm.PushArg(cc, 7.0f)
+    asm.PushArg(cc, 6u)
+    asm.PushArg(cc, 5.0f)
+    asm.PushArg(cc, 4u)
+    asm.PushArg(cc, 3.0f)
+    asm.PushArg(cc, 2UL)
+    asm.PushArg(cc, 1.0f)
+    asm.PushArg(cc, 0.0f)
+    asm.Call(cc, ptr.Pointer)
+ 
+    asm.BeginCall(8)
+    asm.PushArg(cc, 17.0f)
+    asm.PushArg(cc, 16u)
+    asm.PushArg(cc, 15.0f)
+    asm.PushArg(cc, 14u)
+    asm.PushArg(cc, 13.0f)
+    asm.PushArg(cc, 12UL)
+    asm.PushArg(cc, 11.0f)
+    asm.PushArg(cc, 10.0f)
+    asm.Call(cc, ptr.Pointer)
+ 
+    
+    asm.Pop(Register.XMM0)
+    asm.End()
+    asm.Ret()
+
+    let size = Fun.NextPowerOfTwo stream.Length |> nativeint
+    let mem = ExecutableMemory.alloc size
+    Marshal.Copy(stream.Pointer, mem, stream.Length)
+//
+//    let arr : byte[] = Array.zeroCreate (int stream.Length)
+//    Marshal.Copy(stream.Pointer, arr, 0, arr.Length)
+//    arr |> Seq.map (sprintf "0x%2Xuy") |> String.concat "; " |> printfn "[| %s |]"
+
+    let managed : int -> float32 = UnmanagedFunctions.wrap mem
+    let res = managed 3
+    printfn "res = %A" res
+    ExecutableMemory.free mem size
+
+    Environment.Exit 0
+
     let rand = RandomSystem()
     let g = UndirectedGraph.ofNodes (Set.ofList [0..127]) (fun li ri -> float (ri - li) |> Some)
 
