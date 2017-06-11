@@ -81,7 +81,6 @@ type NativeStream() =
         length <- length + nativeint count
         offset <- offset + nativeint count
 
-
 type IAssemblerStream =
     inherit IDisposable
     abstract member BeginFunction : unit -> unit
@@ -98,6 +97,7 @@ type IAssemblerStream =
     abstract member WriteOutput : value : nativeint -> unit
     abstract member WriteOutput : value : int -> unit
     abstract member WriteOutput : value : float32 -> unit
+    abstract member Jump : offset : int -> unit
 
 module AMD64 =
 
@@ -740,7 +740,7 @@ module AMD64 =
             member x.WriteOutput(v : nativeint) = x.Mov(Register.Rax, v)
             member x.WriteOutput(v : int) = x.Mov(Register.Rax, v)
             member x.WriteOutput(v : float32) = x.Mov(Register.XMM0, v)
-
+            member x.Jump(offset : int) = x.Jmp(offset)
 
         new(stream : Stream) = new AssemblerStream(stream, false)
 
@@ -783,7 +783,6 @@ module X86 =
                 floatRegisters = [|  |]
                 calleeSaved = [| |]
             }
-
 
     type AssemblerStream(stream : Stream, leaveOpen : bool) =
         let writer = new BinaryWriter(stream, Text.Encoding.UTF8, leaveOpen)
@@ -951,12 +950,6 @@ module X86 =
             writer.Write(0xFFuy)
             writer.Write(0xD0uy + r)
 
-            // not on windows:
-//            if argumentOffset > 0 then
-//                x.Add(Register.Esp, uint32 argumentOffset)
-//                argumentOffset <- 0
-
-
         member x.Call(cc : CallingConvention, ptr : nativeint) =
             x.Mov(Register.Eax, ptr)
             x.Call(cc, Register.Eax)
@@ -1025,7 +1018,8 @@ module X86 =
 
             member x.WriteOutput(v : nativeint) = x.Mov(Register.Eax, v)
             member x.WriteOutput(v : int) = x.Mov(Register.Eax, v)
-            member x.WriteOutput(v : float32) : unit = failwith "asdasd"
+            member x.WriteOutput(v : float32) : unit = failwith "[X86] not implemented"
+            member x.Jump(offset : int) = x.Jmp(offset)
 
 
         new(stream : Stream) = new AssemblerStream(stream, false)
@@ -1205,7 +1199,20 @@ module Test =
 module Program =
     open System.IO
 
-    let private jumpSize = 5n
+    let private jumpInt =
+        use ms = new MemoryStream()
+        use w = AssemblerStream.ofStream ms
+        w.Jump(0)
+        ms.ToArray() |> Array.take (int ms.Length - 4)
+
+    let private ret =
+        use ms = new MemoryStream()
+        use w = AssemblerStream.ofStream ms
+        w.EndFunction()
+        w.Ret()
+        ms.ToArray()
+
+    let private jumpSize = nativeint jumpInt.Length + 4n
     
     [<AllowNullLiteral>]
     type private Fragment<'a> =
@@ -1235,15 +1242,14 @@ module Program =
                     x.JumpDistance <- dist
 
                     let off = x.Pointer.Size - jumpSize |> int
-                    x.Pointer.Write(off, 0xE9uy)
-                    x.Pointer.Write(off + 1, offset)
+                    x.Pointer.Write(off, jumpInt)
+                    x.Pointer.Write(off + jumpInt.Length, offset)
                 else
                     Interlocked.Add(x.TotalJumpDistance, -x.JumpDistance) |> ignore
                     x.JumpDistance <- 0L
 
                     let off = x.Pointer.Size - jumpSize |> int
-                    x.Pointer.Write(off, 0xC9uy)
-                    x.Pointer.Write(off + 1, 0xC3uy)
+                    x.Pointer.Write(off, ret)
                     
 
 
@@ -1557,6 +1563,19 @@ module Program =
             new NativeProgram<'a>(values, compile)
 
     
+    let nopFunction =
+        use s = new MemoryStream()
+        use asm = AssemblerStream.ofStream s
+
+        asm.BeginFunction()
+        asm.EndFunction()
+        asm.Ret()
+
+        let arr = s.ToArray()
+        let mem = ExecutableMemory.alloc (nativeint arr.Length)
+        Marshal.Copy(arr, 0, mem, arr.Length)
+        mem
+
 
 
     type MyDelegate = delegate of int * int * int * int -> unit
@@ -1574,7 +1593,7 @@ module Program =
                 stream.BeginCall(2)
                 stream.PushArg(self)
                 stream.PushArg(defaultArg prev 0)
-                stream.Call(dPtr.Pointer)
+                stream.Call(nopFunction)
             )
 
         member x.AverageJumpDistance = program.AverageJumpDistance
@@ -1587,29 +1606,33 @@ module Program =
             program.Run()
 
         member x.RunAndValidate() =
-            validate <- true
-            store.Clear()
-            program.Update(AdaptiveToken.Top)
-            program.Run()
-            validate <- false
-            let calls = store |> CSharpList.toArray
-            let ref = values.Content |> Mod.force
-            let mutable error = false
-            let mutable l = 0
-            let mutable i = 0
-            for r in ref do
-                let should = (l,r)
-                let is = calls.[i]
+            x.Run()
+//            validate <- true
+//            store.Clear()
+//            program.Update(AdaptiveToken.Top)
+//            program.Run()
+//            validate <- false
+//            let calls = store |> CSharpList.toArray
+//            let ref = values.Content |> Mod.force
+//            let mutable error = false
+//            let mutable l = 0
+//            let mutable i = 0
+//            for r in ref do
+//                let should = (l,r)
+//                let is = calls.[i]
+//
+//                if should <> is then error <- true
+//
+//                i <- i + 1
+//                l <- r
+//
+//            if error then
+//                Log.warn "ERROR: %A vs %A" calls ref 
+//            else
+//                Log.line "calls: %d" calls.Length
 
-                if should <> is then error <- true
 
-                i <- i + 1
-                l <- r
 
-            if error then
-                Log.warn "ERROR: %A vs %A" calls ref 
-            else
-                Log.line "calls: %d" calls.Length
 
 
     let report =
@@ -1626,7 +1649,40 @@ module Program =
     let pReport = Marshal.PinDelegate(report)
 
 
+    let runInsertBenchmark() =
+        let values = clist [0;1;2;3]
+        let prog = TestProgram(values)
+        let log = @"C:\Users\Schorsch\Desktop\update.csv"
+        File.WriteAllLines(log, ["size;apply;update;run"])
+        for s in 500 .. 500 .. 100000 do
+            printf "%d: " s
+            transact (fun () -> values.Clear())
+            prog.Update()
+
+            let sw = System.Diagnostics.Stopwatch.StartNew()
+            transact (fun () -> values.AppendMany [1 .. s])
+            sw.Stop()
+            let apply = sw.MicroTime
+            sw.Restart()
+            prog.Update()
+            sw.Stop()
+            let update = sw.MicroTime
+            sw.Restart()
+            for i in 1 .. 1000 do
+                prog.Run()
+            sw.Stop()
+            let run = sw.MicroTime / 1000.0
+
+
+            printfn "{ apply: %A; update: %A; run: %A }" apply update run
+            File.AppendAllLines(log, [sprintf "%d;%d;%d;%d" s apply.TotalNanoseconds update.TotalNanoseconds run.TotalNanoseconds])
+
+        Environment.Exit(0)
+
     let test() =
+        if sizeof<nativeint> = 4 then Log.warn "32 bit"
+        else Log.warn "64 bit"
+
         let values = clist [0;1;2;3]
         let prog = TestProgram(values)
 
@@ -1658,9 +1714,6 @@ module Program =
         Log.line "dist: %A" prog.AverageJumpDistance
         Log.stop()
 
-        let test = PList.ofList [0 .. 1 <<< 13]
-
-
 
         Log.startTimed "apply"
         transact (fun () -> values.AppendMany [4 .. 1 <<< 16])
@@ -1668,7 +1721,7 @@ module Program =
         Log.startTimed "update"
         prog.Update()
         Log.stop()
-        Log.startTimed "run"
+        Log.startTimed "run x 1000"
         for i in 1 .. 1000 do
             prog.Run()
         Log.line "dist: %A" prog.AverageJumpDistance
@@ -1695,8 +1748,6 @@ module Program =
 
 
         Environment.Exit 0
-        Log.line "last: %A" test.[(1 <<< 12) - 1]
-
 
 open AMD64
 
