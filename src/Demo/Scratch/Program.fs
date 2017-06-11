@@ -542,9 +542,11 @@ module AMD64 =
 
         member x.Push(value : uint64) =
             stackOffset <- stackOffset + 8
-            writer.Write(0x48uy)
-            writer.Write(0x68uy)
-            writer.Write(value)
+            x.Mov(Register.Rax, value)
+            x.Push(Register.Rax)
+//            writer.Write(0x48uy)
+//            writer.Write(0x68uy)
+//            writer.Write(value)
 
         member x.Push(value : uint32) =
             stackOffset <- stackOffset + 8
@@ -622,6 +624,7 @@ module AMD64 =
                             failwith "no padding offset"
 
                 let additional = 
+                    //let align = stackOffset - argumentOffset
                     if stackOffset % 16 <> 0 then
                         let p = stream.Position
                         stream.Position <- paddingPtr
@@ -652,6 +655,7 @@ module AMD64 =
                 if popSize > 0u then
                     x.Add(Register.Rsp, popSize)
 
+                stackOffset <- stackOffset - argumentOffset
                 argumentOffset <- 0
 
         member x.Call(cc : CallingConvention, ptr : nativeint) =
@@ -1031,170 +1035,6 @@ module AssemblerStream =
             | 4 -> new X86.AssemblerStream(s) :> IAssemblerStream
             | 8 -> new AMD64.AssemblerStream(s) :> IAssemblerStream
             | _ -> failwith "bad bitness"
-
-type MyDelegate = delegate of float32 * float32 * int64 * float32 * int * float32 * int * float32 -> unit
-
-
-module Benchmark =
-    open System.Diagnostics
-
-    let callback =
-        MyDelegate (fun a b c d e f g h ->
-            printfn "a: %A" a
-            printfn "b: %A" b
-            printfn "c: %A" c
-            printfn "d: %A" d
-            printfn "e: %A" e
-            printfn "f: %A" f
-            printfn "g: %A" g
-            printfn "h: %A" h
-        )
-
-    let pDel = Marshal.PinDelegate(callback)
-    let ptr = pDel.Pointer
-
-    let cnt = 1 <<< 12
-
-    let args = [| 1.0f :> obj; 2.0f :> obj; 3L :> obj; 4.0f :> obj; 5 :> obj; 6.0f :> obj; 7 :> obj; 8.0f :> obj |]
-    let calls = Array.init cnt (fun _ -> ptr, args)
-
-    let runOld(iter : int) =
-        // warmup
-        for i in 1 .. 10 do
-            Aardvark.Base.Assembler.compileCalls 0 calls |> ignore
-
-        let sw = Stopwatch.StartNew()
-        for i in 1 .. iter do
-            Aardvark.Base.Assembler.compileCalls 0 calls |> ignore
-        sw.Stop()
-
-        sw.MicroTime / (float iter)
-
-    let cc = AMD64.CallingConvention.windows
-    let fillNew(cnt) =
-        use s = new MemoryStream()
-        use w = new AMD64.AssemblerStream(s)
-
-        w.Begin()
-
-        for i in 1 .. cnt do
-            w.BeginCall(8)
-            w.PushArg(cc, 7.0f)
-            w.PushArg(cc, 6u)
-            w.PushArg(cc, 5.0f)
-            w.PushArg(cc, 4u)
-            w.PushArg(cc, 3.0f)
-            w.PushArg(cc, 2UL)
-            w.PushArg(cc, 1.0f)
-            w.PushArg(cc, 0.0f)
-            w.Call(cc, ptr)
-
-        w.End()
-        w.Ret()
-        //s.ToArray()
-
-    let runNew(iter : int) =
-        // warmup
-        for i in 1 .. 10 do
-            fillNew(cnt) |> ignore
-
-        let sw = Stopwatch.StartNew()
-        for i in 1 .. iter do
-            fillNew(cnt) |> ignore
-        sw.Stop()
-
-        sw.MicroTime / (float iter)
-
-    let run() =
-//        let size = 1 <<< 14
-//        while true do
-//            fillNew size
-
-        let ot = runOld 100
-        let throughput = float cnt / ot.TotalSeconds
-        Log.line "old: %A (%.0fc/s)" ot throughput
-
-        let nt = runNew 100
-        let throughput = float cnt / nt.TotalSeconds
-        Log.line "new: %A (%.0fc/s)" nt throughput
-
-        let speedup = ot / nt
-        Log.line "factor: %A" speedup
-
-module Test =
-
-    type MyDelegate = delegate of float32 * float32 * int * float32 * int * float32 * int * float32 -> unit
-
-    let callback =
-        MyDelegate (fun a b c d e f g h ->
-            Log.start "call"
-            Log.line "a: %A" a
-            Log.line "b: %A" b
-            Log.line "c: %A" c
-            Log.line "d: %A" d
-            Log.line "e: %A" e
-            Log.line "f: %A" f
-            Log.line "g: %A" g
-            Log.line "h: %A" h
-            Log.stop()
-        )
-
-    let ptr = Marshal.PinDelegate(callback)
-
-    let run () =
-        let store = NativePtr.alloc 1
-        NativePtr.write store 100.0f
-
-        use stream = new NativeStream()
-        use asm = AssemblerStream.ofStream stream
-
-        asm.BeginFunction()
-
-        asm.BeginCall(8)
-        asm.PushFloatArg(NativePtr.toNativeInt store)
-        asm.PushArg(6)
-        asm.PushArg(5.0f)
-        asm.PushArg(4)
-        asm.PushArg(3.0f)
-        asm.PushArg(2)
-        asm.PushArg(1.0f)
-        asm.PushArg(0.0f)
-        asm.Call(ptr.Pointer)
- 
-        asm.BeginCall(8)
-        asm.PushArg(17.0f)
-        asm.PushArg(16)
-        asm.PushArg(15.0f)
-        asm.PushArg(14)
-        asm.PushArg(13.0f)
-        asm.PushArg(12)
-        asm.PushArg(11.0f)
-        asm.PushArg(10.0f)
-        asm.Call(ptr.Pointer)
-
-        asm.WriteOutput(1234)
-        asm.EndFunction()
-        asm.Ret()
-        
-        let size = Fun.NextPowerOfTwo stream.Length |> nativeint
-        let mem = ExecutableMemory.alloc size
-        Marshal.Copy(stream.Pointer, mem, stream.Length)
-
-        let managed : int -> int = UnmanagedFunctions.wrap mem
-        Log.start "run(3)"
-
-        if sizeof<nativeint> = 4 then Log.warn "32 bit"
-        else Log.warn "64 bit"
-
-
-        let res = managed 3
-        Log.line "ret: %A" res
-        Log.stop()
-
-        ExecutableMemory.free mem size
-
-        Environment.Exit 0
-
 
 module Program =
     open System.IO
@@ -1749,12 +1589,179 @@ module Program =
 
         Environment.Exit 0
 
+
+
+module Benchmark =
+    open System.Diagnostics
+
+    type MyDelegate = delegate of float32 * float32 * int64 * float32 * int * float32 * int * float32 -> unit
+
+    let callback =
+        MyDelegate (fun a b c d e f g h ->
+            printfn "a: %A" a
+            printfn "b: %A" b
+            printfn "c: %A" c
+            printfn "d: %A" d
+            printfn "e: %A" e
+            printfn "f: %A" f
+            printfn "g: %A" g
+            printfn "h: %A" h
+        )
+
+    let pDel = Marshal.PinDelegate(callback)
+    let ptr = pDel.Pointer
+
+    let cnt = 1 <<< 12
+
+    let args = [| 1.0f :> obj; 2.0f :> obj; 3L :> obj; 4.0f :> obj; 5 :> obj; 6.0f :> obj; 7 :> obj; 8.0f :> obj |]
+    let calls = Array.init cnt (fun _ -> ptr, args)
+
+    let runOld(iter : int) =
+        // warmup
+        for i in 1 .. 10 do
+            Aardvark.Base.Assembler.compileCalls 0 calls |> ignore
+
+        let sw = Stopwatch.StartNew()
+        for i in 1 .. iter do
+            Aardvark.Base.Assembler.compileCalls 0 calls |> ignore
+        sw.Stop()
+
+        sw.MicroTime / (float iter)
+
+    let cc = AMD64.CallingConvention.windows
+    let fillNew(cnt) =
+        use s = new MemoryStream()
+        use w = new AMD64.AssemblerStream(s)
+
+        w.Begin()
+
+        for i in 1 .. cnt do
+            w.BeginCall(8)
+            w.PushArg(cc, 7.0f)
+            w.PushArg(cc, 6u)
+            w.PushArg(cc, 5.0f)
+            w.PushArg(cc, 4u)
+            w.PushArg(cc, 3.0f)
+            w.PushArg(cc, 2UL)
+            w.PushArg(cc, 1.0f)
+            w.PushArg(cc, 0.0f)
+            w.Call(cc, ptr)
+
+        w.End()
+        w.Ret()
+        //s.ToArray()
+
+    let runNew(iter : int) =
+        // warmup
+        for i in 1 .. 10 do
+            fillNew(cnt) |> ignore
+
+        let sw = Stopwatch.StartNew()
+        for i in 1 .. iter do
+            fillNew(cnt) |> ignore
+        sw.Stop()
+
+        sw.MicroTime / (float iter)
+
+    let run() =
+//        let size = 1 <<< 14
+//        while true do
+//            fillNew size
+
+        let ot = runOld 100
+        let throughput = float cnt / ot.TotalSeconds
+        Log.line "old: %A (%.0fc/s)" ot throughput
+
+        let nt = runNew 100
+        let throughput = float cnt / nt.TotalSeconds
+        Log.line "new: %A (%.0fc/s)" nt throughput
+
+        let speedup = ot / nt
+        Log.line "factor: %A" speedup
+
+module Test =
+
+    type MyDelegate = delegate of float32 * float32 * int * float32 * int * float32 * int * float32 -> unit
+
+    let callback =
+        MyDelegate (fun a b c d e f g h ->
+            Log.start "call"
+            Log.line "a: %A" a
+            Log.line "b: %A" b
+            Log.line "c: %A" c
+            Log.line "d: %A" d
+            Log.line "e: %A" e
+            Log.line "f: %A" f
+            Log.line "g: %A" g
+            Log.line "h: %A" h
+            Log.stop()
+        )
+
+    let ptr = Marshal.PinDelegate(callback)
+
+    let run () =
+        let store = NativePtr.alloc 1
+        NativePtr.write store 100.0f
+
+        use stream = new NativeStream()
+        use asm = AssemblerStream.ofStream stream
+
+        asm.BeginFunction()
+
+        asm.BeginCall(8)
+        asm.PushFloatArg(NativePtr.toNativeInt store)
+        asm.PushArg(6)
+        asm.PushArg(5.0f)
+        asm.PushArg(4)
+        asm.PushArg(3.0f)
+        asm.PushArg(2)
+        asm.PushArg(1.0f)
+        asm.PushArg(0.0f)
+        asm.Call(ptr.Pointer)
+ 
+        asm.BeginCall(8)
+        asm.PushArg(17.0f)
+        asm.PushArg(16)
+        asm.PushArg(15.0f)
+        asm.PushArg(14)
+        asm.PushArg(13.0f)
+        asm.PushArg(12)
+        asm.PushArg(11.0f)
+        asm.PushArg(10.0f)
+        asm.Call(ptr.Pointer)
+
+        asm.WriteOutput(1234)
+        asm.EndFunction()
+        asm.Ret()
+        
+        let size = Fun.NextPowerOfTwo stream.Length |> nativeint
+        let mem = ExecutableMemory.alloc size
+        Marshal.Copy(stream.Pointer, mem, stream.Length)
+
+        let managed : int -> int = UnmanagedFunctions.wrap mem
+        Log.start "run(3)"
+
+        if sizeof<nativeint> = 4 then Log.warn "32 bit"
+        else Log.warn "64 bit"
+
+
+        let res = managed 3
+        Log.line "ret: %A" res
+        Log.stop()
+
+        ExecutableMemory.free mem size
+
+        Environment.Exit 0
+
+
+type MyDelegate = delegate of int * int * int * int64 * int64 * int64 * int64 * int64 -> unit
+
 open AMD64
 
 [<EntryPoint; STAThread>]
 let main argv = 
-    Program.test()
-    Environment.Exit 0
+//    Program.test()
+//    Environment.Exit 0
 
 
     let callback =
@@ -1780,34 +1787,46 @@ let main argv =
     let cc = CallingConvention.windows
 
     asm.Begin()
-    asm.Mov(Register.XMM0, 1234.0f)
-    asm.Push(Register.XMM0)
+    //asm.Mov(Register.XMM0, 1234.0f)
+    //asm.Push(Register.XMM0)
 
 
     asm.BeginCall(8)
-    asm.PushArg(cc, 7.0f)
-    asm.PushArg(cc, 6u)
-    asm.PushArg(cc, 5.0f)
-    asm.PushArg(cc, 4u)
-    asm.PushArg(cc, 3.0f)
-    asm.PushArg(cc, 2UL)
-    asm.PushArg(cc, 1.0f)
-    asm.PushArg(cc, 0.0f)
+    asm.PushArg(cc, 1234UL)
+    asm.PushArg(cc, 1234UL)
+    asm.PushArg(cc, 1234UL)
+    asm.PushArg(cc, 1234UL)
+    asm.PushArg(cc, 4321UL)
+    asm.PushArg(cc, 3u)
+    asm.PushArg(cc, 2u)
+    asm.PushArg(cc, 1u)
     asm.Call(cc, ptr.Pointer)
  
+
     asm.BeginCall(8)
-    asm.PushArg(cc, 17.0f)
-    asm.PushArg(cc, 16u)
-    asm.PushArg(cc, 15.0f)
-    asm.PushArg(cc, 14u)
-    asm.PushArg(cc, 13.0f)
-    asm.PushArg(cc, 12UL)
-    asm.PushArg(cc, 11.0f)
-    asm.PushArg(cc, 10.0f)
+    asm.PushArg(cc, 1234UL)
+    asm.PushArg(cc, 1234UL)
+    asm.PushArg(cc, 1234UL)
+    asm.PushArg(cc, 1234UL)
+    asm.PushArg(cc, 4321UL)
+    asm.PushArg(cc, 3u)
+    asm.PushArg(cc, 2u)
+    asm.PushArg(cc, 1u)
     asm.Call(cc, ptr.Pointer)
+
+//    asm.BeginCall(5)
+////    asm.PushArg(cc, 17.0f)
+////    asm.PushArg(cc, 16u)
+////    asm.PushArg(cc, 15.0f)
+//    asm.PushArg(cc, 14u)
+//    asm.PushArg(cc, 13.0f)
+//    asm.PushArg(cc, 12UL)
+//    asm.PushArg(cc, 11.0f)
+//    asm.PushArg(cc, 10.0f)
+//    asm.Call(cc, ptr.Pointer)
  
     
-    asm.Pop(Register.XMM0)
+    //asm.Pop(Register.XMM0)
     asm.End()
     asm.Ret()
 

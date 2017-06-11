@@ -48,6 +48,10 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AdaptiveCode.fs" />
+    <Compile Include="Assembler\AssemblerTypes.fs" />
+    <Compile Include="Assembler\AMD64.fs" />
+    <Compile Include="Assembler\AssemblerStream.fs" />
+    <Compile Include="Assembler\NativeProgram.fs" />
     <Compile Include="Coder\Utilities.fs" />
     <Compile Include="Coder\State.fs" />
     <Compile Include="Coder\Code.fs" />
