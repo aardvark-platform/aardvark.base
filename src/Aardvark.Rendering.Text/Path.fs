@@ -157,11 +157,38 @@ module Path =
                 if uniform.FillGlyphs then
                     if kind < 0.5 then return v.color
                     elif kind < 1.5 then return V4d.OOOO
+
+                    elif kind < 3.5 then
+                        let uv = v.klm.XYZ
+                        let f = (uv.X * uv.X - uv.Y) * uv.Z
+                        if uniform.Antialias then
+                            let duvx = ddx(v.klm.XY)
+                            let duvy = ddy(v.klm.XY)
+
+                            let fx = (2.0 * uv.X * duvx.X - duvx.Y) * uv.Z
+                            let fy = (2.0 * uv.X * duvy.X - duvy.Y) * uv.Z
+                        
+                            let sd = f / sqrt (fx * fx + fy * fy)
+                            let alpha = 0.5 - sd |> clamp 0.0 1.0
+                            return V4d(v.color.XYZ, alpha)
+                        else
+                            if f < 0.0 then
+                                return v.color
+                            else
+                                return V4d(v.color.XYZ, 0.0)
+
                     else
                         let klm = v.klm.XYZ
  
                         let f = pow klm.X 3.0 - klm.Y*klm.Z
 
+                        // u^2 - v < 0
+                        // k^3 - l * m
+                        // k = u
+                        // l = 0
+                        // m = v
+
+                        
                         if f < 0.0 then
                             return v.color
                         else
@@ -700,9 +727,9 @@ module Path =
                         boundaryTriangles.AddRange [p0; p1; p2]
 
                         if p1Inside then
-                            boundaryCoords.AddRange [V4d(0,0,0,2); V4d(-0.5, 0.0, -0.5, 2.0); V4d(-1,1,-1,2)]
+                            boundaryCoords.AddRange [V4d(0,0,-1,2); V4d(-0.5, 0.0,-1.0, 2.0); V4d(-1,1,-1,2)]
                         else
-                            boundaryCoords.AddRange [V4d(0,0,0,3); V4d(0.5, 0.0, 0.5,3.0); V4d(1,1,1,3)]
+                            boundaryCoords.AddRange [V4d(0,0,1,3); V4d(0.5, 0.0, 1.0,3.0); V4d(1,1,1,3)]
 
                         add p2
                         addOuter p2
