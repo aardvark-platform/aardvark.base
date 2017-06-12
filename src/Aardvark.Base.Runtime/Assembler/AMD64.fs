@@ -160,7 +160,6 @@ module AMD64 =
                 | _ -> CallingConvention.linux
 
         let mutable stackOffset = 0
-        let mutable callPadded = []
         let mutable paddingPtr = []
         let mutable argumentOffset = 0
         let mutable argumentIndex = 0
@@ -491,7 +490,6 @@ module AMD64 =
                 writer.Write(code)
 
         member x.Push(value : uint64) =
-            stackOffset <- stackOffset + 8
             x.Mov(Register.Rax, value)
             x.Push(Register.Rax)
 //            writer.Write(0x48uy)
@@ -555,9 +553,8 @@ module AMD64 =
             stream.Seek(-4L, SeekOrigin.Current) |> ignore
             let ptr = stream.Position
             writer.Write(0u)
-
-            argumentOffset <- 0
             paddingPtr <- ptr :: paddingPtr
+            argumentOffset <- 0
             argumentIndex <- args - 1
 
         member x.Call(cc : CallingConvention, r : Register) =

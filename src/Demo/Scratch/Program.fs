@@ -541,7 +541,6 @@ module AMD64 =
                 writer.Write(code)
 
         member x.Push(value : uint64) =
-            stackOffset <- stackOffset + 8
             x.Mov(Register.Rax, value)
             x.Push(Register.Rax)
 //            writer.Write(0x48uy)
@@ -624,7 +623,7 @@ module AMD64 =
                             failwith "no padding offset"
 
                 let additional = 
-                    //let align = stackOffset - argumentOffset
+//                    //let align = stackOffset - argumentOffset
                     if stackOffset % 16 <> 0 then
                         let p = stream.Position
                         stream.Position <- paddingPtr
@@ -1754,7 +1753,7 @@ module Test =
         Environment.Exit 0
 
 
-type MyDelegate = delegate of int * int * int * int64 * int64 * int64 * int64 * int64 -> unit
+type MyDelegate = delegate of int * int * int * int64 * int64 -> unit // * int64 * int64 * int64 * int64 -> unit
 
 open AMD64
 
@@ -1765,15 +1764,15 @@ let main argv =
 
 
     let callback =
-        MyDelegate (fun a b c d e f g h ->
+        MyDelegate (fun a b c d  e (* f g h *) ->
             printfn "a: %A" a
             printfn "b: %A" b
             printfn "c: %A" c
             printfn "d: %A" d
             printfn "e: %A" e
-            printfn "f: %A" f
-            printfn "g: %A" g
-            printfn "h: %A" h
+//            printfn "f: %A" f
+//            printfn "g: %A" g
+//            printfn "h: %A" h
         )
 
     let ptr = Marshal.PinDelegate(callback)
@@ -1787,14 +1786,14 @@ let main argv =
     let cc = CallingConvention.windows
 
     asm.Begin()
-    //asm.Mov(Register.XMM0, 1234.0f)
-    //asm.Push(Register.XMM0)
+//    asm.Mov(Register.XMM0, 1234.0f)
+//    asm.Push(Register.XMM0)
 
 
-    asm.BeginCall(8)
-    asm.PushArg(cc, 1234UL)
-    asm.PushArg(cc, 1234UL)
-    asm.PushArg(cc, 1234UL)
+    asm.BeginCall(5)
+//    asm.PushArg(cc, 1234UL)
+//    asm.PushArg(cc, 1234UL)
+//    asm.PushArg(cc, 1234UL)
     asm.PushArg(cc, 1234UL)
     asm.PushArg(cc, 4321UL)
     asm.PushArg(cc, 3u)
@@ -1803,10 +1802,10 @@ let main argv =
     asm.Call(cc, ptr.Pointer)
  
 
-    asm.BeginCall(8)
-    asm.PushArg(cc, 1234UL)
-    asm.PushArg(cc, 1234UL)
-    asm.PushArg(cc, 1234UL)
+    asm.BeginCall(5)
+//    asm.PushArg(cc, 1234UL)
+//    asm.PushArg(cc, 1234UL)
+//    asm.PushArg(cc, 1234UL)
     asm.PushArg(cc, 1234UL)
     asm.PushArg(cc, 4321UL)
     asm.PushArg(cc, 3u)
@@ -1826,7 +1825,7 @@ let main argv =
 //    asm.Call(cc, ptr.Pointer)
  
     
-    //asm.Pop(Register.XMM0)
+//    asm.Pop(Register.XMM0)
     asm.End()
     asm.Ret()
 
