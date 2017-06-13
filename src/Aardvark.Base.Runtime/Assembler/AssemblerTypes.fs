@@ -43,6 +43,13 @@ type AssemblerLabel internal() =
         with get() = position
         and internal set p = position <- p
 
+type JumpCondition =
+    | Equal = 0x84uy
+    | NotEqual = 0x85uy
+    | Less = 0x8Cuy
+    | GreaterEqual = 0x8Duy
+    | LessEqual = 0x8Euy
+    | Greater = 0x8Fuy
 
 
 type IAssemblerStream =
@@ -58,6 +65,12 @@ type IAssemblerStream =
     abstract member Mov : target : Register * source : Register -> unit
     abstract member Load : target : Register * source : Register * wide : bool -> unit
     abstract member Store : target : Register * source : Register * wide : bool -> unit
+
+    abstract member NewLabel : unit -> AssemblerLabel
+    abstract member Mark : AssemblerLabel -> unit
+    abstract member Cmp : location : nativeint * value : int32 -> unit
+    abstract member Jump : JumpCondition * AssemblerLabel -> unit
+    abstract member Jump : AssemblerLabel -> unit
 
 
     /// emits a function-preamble (typically pushing the base-pointer, etc.)

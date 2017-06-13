@@ -9,6 +9,7 @@ open Microsoft.FSharp.NativeInterop
 #nowarn "9"
 #nowarn "51"
 
+
 module AMD64 =
 
     type Register =
@@ -177,7 +178,7 @@ module AMD64 =
 
         let pendingOffsets = Dict<AssemblerLabel, List<int64>>()
 
-        member x.DefineLabel() =
+        member x.NewLabel() =
             AssemblerLabel()
 
         member x.Mark(l : AssemblerLabel) =
@@ -187,13 +188,49 @@ module AMD64 =
                     
                     for p in positions do
                         stream.Position <- p
-                        writer.Write(int (4L + oldPos - p))
+                        writer.Write(int (oldPos - (4L + p)))
 
                     stream.Position <- oldPos
                 | _ ->
                     ()
 
             l.Position <- stream.Position
+
+        member x.Cmp(l : Register, v : uint32) =
+            if l >= Register.XMM0 then
+                failwith "[AMD64] cannot compare media register"
+            else
+                let mutable rex = if l >= Register.R8 then 0x41uy else 0x40uy
+                //rex <- 0x40uy ||| (w <<< 3) ||| (r <<< 2) ||| b
+                let l = byte l &&& 0x7uy
+
+                if rex <> 0x40uy then writer.Write(rex)
+                writer.Write(0x81uy)
+                writer.Write(0xF8uy + l)
+                writer.Write(v)
+                
+        member x.Cmp(l : Register, v : uint64) =
+            if l >= Register.XMM0 then
+                failwith "[AMD64] cannot compare media register"
+            else
+                let mutable rex = if l >= Register.R8 then 0x49uy else 0x48uy
+                let l = byte l &&& 0x7uy
+
+                if rex <> 0x40uy then writer.Write(rex)
+                writer.Write(0x3Buy)
+                writer.Write(0xF8uy + l)
+                writer.Write(v)
+
+        member x.Cmp(l : Register, r : Register, wide : bool) =
+            if l >= Register.XMM0 || r >= Register.XMM0 then
+                failwith "[AMD64] cannot compare media register"
+            else
+                let mutable rex = 0uy
+                let mutable modRM = 0uy
+                rexAndModRM wide (byte l) (byte r) &rex &modRM
+                if rex <> 0x40uy then writer.Write(rex)
+                writer.Write(0x3B)
+                writer.Write(modRM)
 
         member x.Jump(l : AssemblerLabel) =
             if l.Position >= 0L then
@@ -203,6 +240,20 @@ module AMD64 =
                 x.Jmp(0)
                 let set = pendingOffsets.GetOrCreate(l, fun _ -> List())
                 set.Add(stream.Position - 4L)
+
+        member x.Jump(cond : JumpCondition, l : AssemblerLabel) =
+            if l.Position >= 0L then
+                let offset = 6L + l.Position - stream.Position
+                x.Jmp(cond, int offset)
+            else
+                x.Jmp(cond, 0)
+                let set = pendingOffsets.GetOrCreate(l, fun _ -> List())
+                set.Add(stream.Position - 4L)
+
+        member x.Jmp(cond : JumpCondition, offset : int) =
+            writer.Write(0x0Fuy)
+            writer.Write(byte cond)
+            writer.Write(offset)
 
         member x.Leave() =
             writer.Write(0xC9uy)
@@ -718,6 +769,16 @@ module AMD64 =
             member x.Mov(target : Runtime.Register, source : Runtime.Register) = x.Mov(unbox<Register> target.Tag, unbox<Register> source.Tag, true)
             member x.Load(target : Runtime.Register, source : Runtime.Register, wide : bool) = x.Load(unbox<Register> target.Tag, unbox<Register> source.Tag, wide)
             member x.Store(target : Runtime.Register, source : Runtime.Register, wide : bool) = x.Store(unbox<Register> target.Tag, unbox<Register> source.Tag, wide)
+
+            
+            member x.NewLabel() = x.NewLabel()
+            member x.Mark(l) = x.Mark(l)
+            member x.Jump(cond : JumpCondition, label : AssemblerLabel) = x.Jump(label)
+            member x.Jump(label : AssemblerLabel) = x.Jump(label)
+
+            member x.Cmp(location : nativeint, value : int) =
+                x.Load(Register.Rax, location, false)
+                x.Cmp(Register.Rax, uint32 value)
 
 
             member x.BeginFunction() = x.Begin()
