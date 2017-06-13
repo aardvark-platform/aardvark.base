@@ -7,6 +7,9 @@ open System.Runtime.InteropServices
 open System.IO
 open Aardvark.Base
 open Aardvark.Base.Incremental
+open Microsoft.FSharp.NativeInterop
+
+#nowarn "9"
 
 [<AutoOpen>]
 module private Helpers = 
@@ -246,9 +249,12 @@ type NativeProgram<'a> private(data : alist<'a>, isDifferential : bool, compileD
     let reader = data.GetReader()
     let cache : SortedDictionaryExt<Index, Fragment<'a>> = SortedDictionary.empty
 
-    let mutable entryPointer = 0n
-    let mutable run : unit -> unit = id
         
+    let mutable lastEntryPointer = prolog.EntryPointer
+    let mutable run : unit -> unit = UnmanagedFunctions.wrap lastEntryPointer
+    let entryPointerStore = NativePtr.alloc 1
+    do NativePtr.write entryPointerStore prolog.EntryPointer
+
     let release() =
         if not disposed then
             disposed <- true
@@ -256,10 +262,14 @@ type NativeProgram<'a> private(data : alist<'a>, isDifferential : bool, compileD
             reader.Dispose()
             manager.Dispose()
             prolog <- null
-            entryPointer <- 0n
+            NativePtr.write entryPointerStore 0n
             run <- id
             jumpDistance := 0L
             count <- 0
+
+    member x.FragmentCount = count
+
+    member x.EntryPointer = entryPointerStore
 
     member x.AverageJumpDistance = 
         if !jumpDistance = 0L then 0.0
@@ -355,6 +365,11 @@ type NativeProgram<'a> private(data : alist<'a>, isDifferential : bool, compileD
                     using d.AssemblerStream (fun s -> compileDelta.Invoke(prev, d.Tag, s))
                     compiled <- compiled + 1
 
+            let ptr = prolog.EntryPointer
+            if ptr <> lastEntryPointer then
+                lastEntryPointer <- ptr
+                NativePtr.write entryPointerStore ptr
+                run <- UnmanagedFunctions.wrap ptr
 
             new NativeProgramUpdateStatistics(
                 Added = added,
@@ -373,10 +388,6 @@ type NativeProgram<'a> private(data : alist<'a>, isDifferential : bool, compileD
         lock x (fun () ->
             if disposed then
                 raise <| ObjectDisposedException("AdaptiveProgram")
-
-            if entryPointer <> prolog.EntryPointer then
-                run <- UnmanagedFunctions.wrap prolog.EntryPointer
-                entryPointer <- prolog.EntryPointer
 
             run()
         )

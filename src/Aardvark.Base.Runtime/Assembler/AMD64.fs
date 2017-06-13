@@ -1,6 +1,7 @@
 namespace Aardvark.Base.Runtime
 
 open System
+open System.Collections.Generic
 open System.IO
 open Aardvark.Base
 open Microsoft.FSharp.NativeInterop
@@ -174,7 +175,34 @@ module AMD64 =
         static let fiveByteNop      = [| 0x0Fuy; 0x1Fuy; 0x44uy; 0x00uy; 0x00uy |]
         static let eightByteNop     = [| 0x0Fuy; 0x1Fuy; 0x84uy; 0x00uy; 0x00uy; 0x00uy; 0x00uy; 0x00uy |]
 
+        let pendingOffsets = Dict<AssemblerLabel, List<int64>>()
 
+        member x.DefineLabel() =
+            AssemblerLabel()
+
+        member x.Mark(l : AssemblerLabel) =
+            match pendingOffsets.TryRemove l with
+                | (true, positions) ->
+                    let oldPos = stream.Position
+                    
+                    for p in positions do
+                        stream.Position <- p
+                        writer.Write(int (4L + oldPos - p))
+
+                    stream.Position <- oldPos
+                | _ ->
+                    ()
+
+            l.Position <- stream.Position
+
+        member x.Jump(l : AssemblerLabel) =
+            if l.Position >= 0L then
+                let offset = 5L + l.Position - stream.Position
+                x.Jmp(int offset)
+            else
+                x.Jmp(0)
+                let set = pendingOffsets.GetOrCreate(l, fun _ -> List())
+                set.Add(stream.Position - 4L)
 
         member x.Leave() =
             writer.Write(0xC9uy)
@@ -662,7 +690,11 @@ module AMD64 =
 
 
         member private x.Dispose(disposing : bool) =
-            if disposing then GC.SuppressFinalize(x)
+            if disposing then 
+                GC.SuppressFinalize(x)
+                if pendingOffsets.Count > 0 then
+                    failwith "[AMD64] some labels have not been defined"
+
             writer.Dispose()
 
         member x.Dispose() = x.Dispose(true)

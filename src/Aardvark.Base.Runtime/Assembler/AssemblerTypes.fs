@@ -36,6 +36,15 @@ type Register =
 
     end
 
+type AssemblerLabel internal() =
+    let mutable position = -1L
+
+    member x.Position
+        with get() = position
+        and internal set p = position <- p
+
+
+
 type IAssemblerStream =
     inherit IDisposable
 
@@ -90,4 +99,5 @@ type IAssemblerStream =
 
     /// writes a relative jump to the stream (offset is relative to start of the instruction, e.g. offset=0 => nontermination)
     abstract member Jump : offset : int -> unit
+
 
