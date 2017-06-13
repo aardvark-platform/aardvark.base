@@ -785,6 +785,10 @@ module AMD64 =
             member x.EndFunction() = x.End()
             member x.BeginCall(args : int) = x.BeginCall(args)
             member x.Call (ptr : nativeint) = x.Call(localConvention, ptr)
+            member x.CallIndirect(ptr : nativeptr<nativeint>) =
+                x.Load(Register.Rax, ptr)
+                x.Call(localConvention, Register.Rax)
+
             member x.PushArg(v : nativeint) = x.PushArg(localConvention, uint64 v)
             member x.PushArg(v : int) = x.PushArg(localConvention, uint32 v)
             member x.PushArg(v : float32) = x.PushArg(localConvention, v)

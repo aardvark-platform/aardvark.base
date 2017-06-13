@@ -85,6 +85,7 @@ type IAssemblerStream =
 
     /// calls the given function-pointer using the arguments pushed (via PushArg*) in reverse order
     abstract member Call : ptr : nativeint -> unit
+    abstract member CallIndirect : ptr : nativeptr<nativeint> -> unit
 
     /// reads a pointer-sized integer value from the given location and pushes it onto the argument stack
     abstract member PushPtrArg : location : nativeint -> unit
