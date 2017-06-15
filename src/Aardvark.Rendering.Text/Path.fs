@@ -3,7 +3,7 @@
 open System
 open System.Collections.Generic
 open Aardvark.Base
-
+open Aardvark.Base.Rendering
 
 type Path = private { bounds : Box2d; outline : PathSegment[] }
 
@@ -14,6 +14,10 @@ module Path =
         let KLMKind = Symbol.Create "KLMKind"
         let PathOffsetAndScale = Symbol.Create "PathOffsetAndScale"
         let PathColor = Symbol.Create "PathColor"
+
+
+    let Src1Color = Symbol.Create "Src1Color"
+
 
     type KLMKindAttribute() = inherit FShade.SemanticAttribute(Attributes.KLMKind |> string)
     type PathOffsetAndScaleAttribute() = inherit FShade.SemanticAttribute(Attributes.PathOffsetAndScale |> string)
@@ -28,137 +32,102 @@ module Path =
             member x.Antialias : bool = uniform?Antialias
             member x.BoundaryColor : V4d = uniform?BoundaryColor
 
+        type Fragment =
+            {
+                [<Color>] color : V4d
+                [<Semantic("Src1Color")>] src1 : V4d
+            }
+
         type Vertex =
             {
                 [<Position>] p : V4d
-                [<KLMKind>] klm : V4d
+                [<Interpolation(InterpolationMode.Sample); KLMKind>] klm : V4d
                 [<PathOffsetAndScale>] offset : V4d
                 [<PathColor>] color : V4d
+                [<Semantic("BaryCentric")>] bary : V3d
+                [<VertexId>] vertexId : int
+
+                [<SamplePosition>] samplePos : V2d
             }
 
         let pathVertex (v : Vertex) =
             vertex {
                 let pi = v.offset.XY + v.p.XY * v.offset.ZW
                 let p = V4d(pi.X, pi.Y, v.p.Z, v.p.W)
+
+                let pi = v.vertexId % 3
+                let bary =
+                    if pi = 0 then V3d(1.0, 0.0, 0.0)
+                    elif pi = 1 then V3d(0.0, 1.0, 0.0)
+                    else V3d(0.0, 0.0, 1.0)
+
+                return { v with p = p; bary = bary }
+            }
+
+        let pathTrafo (v : Vertex) =
+            vertex {
+                let p = uniform.ModelViewProjTrafo * v.p
                 return { v with p = p }
             }
 
-        let pathFragmentAA (v : Vertex) =
+        let samplePattern =
+            Array.map (fun v -> v / 16.0) [|
+                V2d(1,1);   V2d(-1,-3); V2d(-3,2);  V2d(4,-1);
+                V2d(-5,-2); V2d(2,5);   V2d(5,3);   V2d(3,-5); 
+                V2d(-2,6);  V2d(0,-7);  V2d(-4,-6); V2d(-6,4); 
+                V2d(-8,0);  V2d(7,-4);  V2d(6,7);   V2d(-7,-8)
+            |] |> Arr<16 N, _>
+
+//            Array.map (fun v -> v / 16.0) [|
+//                V2d(1,3);   V2d(-1,3); V2d(-5,1);  V2d(-3,-5)
+//                V2d(-5,5);   V2d(-7,-1); V2d(3,7);  V2d(7,-7)
+//            |] |> Arr<8 N, _>
+
+        let eps = 0.0
+
+        let pathFragmentdsf (v : Vertex) =
             fragment {
                 let kind = v.klm.W
 
-                let klm = v.klm.XYZ
-                let mutable insideColor = v.color
-                let mutable outsideColor = V4d.OOOO
-                if kind > 0.5 && kind < 1.5 then
-                    insideColor <- V4d.OOOO
-                    outsideColor <- v.color
- 
-                let dx = ddx(klm)
-                let dy = ddy(klm)
-                let f = pow klm.X 3.0 - klm.Y*klm.Z
-                let fx = 3.0*klm.X*klm.X*dx.X - klm.Y*dx.Z - klm.Z*dx.Y
-                let fy = 3.0*klm.X*klm.X*dy.X - klm.Y*dy.Z - klm.Z*dy.Y
-
-                let sd = f / sqrt (fx*fx + fy*fy)
-                let alpha = 0.5 - sd
-
                 if uniform.FillGlyphs then
-                    if uniform.Antialias then
-                        if alpha > 1.0 then
-                            return insideColor
-                        elif alpha < 0.0 then
-                            return outsideColor
+                    if kind < 0.5 then 
+                        // inside triangle
+                        if uniform.Antialias then
+                            let f = v.bary
+                            let fx = ddx(v.bary)
+                            let fy = ddy(v.bary)
+                            //let f = v.bary - 0.5 * fx - 0.5 * fy
+
+                            //let alpha = if f.X > eps && f.Y > eps && f.Z > eps then 1.0 else 0.0
+
+                            let mutable sum = 0.0
+                            let mutable err = 0.0
+                            do
+                                for s in samplePattern do
+                                    let e = f + s.X * fx + s.Y * fy
+                                    let off = abs (e.X + e.Y + e.Z - 1.0)
+                                    err <- err + off
+
+                                    if (e.X >= 0.0 && e.Y >= 0.0 && e.Z >= 0.0) then
+                                        sum <- sum + 1.0
+
+//                            if (f.X >= 0.0 && f.Y >= 0.0 && f.Z >= 0.0) then
+//                                sum <- sum + 1.0
+                            if sum = 0.0 then
+                                discard()
+
+                            let alpha = sum / float (samplePattern.Length)
+                            return V4d(v.color.XYZ, alpha)
                         else
-                            return insideColor * alpha + outsideColor * (1.0 - alpha)
-                    else
-                        if f <= 0.0 then return insideColor
-                        else return outsideColor
-                else
-                    
-                    if kind < 0.5 then
-                        if alpha >= 0.0 && alpha < 2.0 then return V4d.IOII
-                        else return v.color
-                    elif kind < 1.5 then
-                        return V4d.IIOI
-                    elif kind < 2.5 then
-                        return V4d.IOOI
-                    else
-                        return V4d.OOII
+                            return v.color
 
-//                if kind < 1.5 then
-//                    if uniform.FillGlyphs then
-//                        let uv = v.klm.XY
-//                        let du = V2d(ddx(uv.X), ddy(uv.X))
-//                        let dv = V2d(ddx(uv.Y), ddy(uv.Y))
-//                        let vnu = uv.X + du.Length
-//                        let vnv = uv.Y + dv.Length
-//                        let vn = max vnu vnv
-//
-//                        //x * du + y * dv = (1,1)
-//
-//
-//                        let distance = 
-//                            if vnu > vnv then (vn - 1.0) / du.Length
-//                            else (vn - 1.0) / dv.Length
-//                            
-//                        let alpha =
-//                            if kind < 0.5 then 0.5 - distance else distance - 0.5
-//
-//                        if vn > 0.5 then
-//                            return V4d(color.XYZ, alpha)
-//                        elif kind < 0.5 then
-//                            return color
-//                        else
-//                            discard()
-//                            return V4d.OOOO
-//                    else
-//                        let color = if kind < 0.5 then V4d(0.5, 0.5, 0.5, 1.0) else V4d.IIOI
-//                        return color                     
-//
-//                else
-//                    if uniform.FillGlyphs then
-//                        let klm = v.klm.XYZ
-// 
-//                        let dx = ddx(klm)
-//                        let dy = ddy(klm)
-//                        let f = pow klm.X 3.0 - klm.Y*klm.Z
-//                        let fx = 3.0*klm.X*klm.X*dx.X - klm.Y*dx.Z - klm.Z*dx.Y
-//                        let fy = 3.0*klm.X*klm.X*dy.X - klm.Y*dy.Z - klm.Z*dy.Y
-//
-//                        let sd = f / sqrt (fx*fx + fy*fy)
-//
-//
-//
-//                        //let sd = sd - 0.01
-//                        let alpha = 0.5 - sd
-//
-//                        if alpha > 1.0 then
-//                            return color
-//                        elif alpha < 0.0 then
-//                            discard()
-//                            return V4d.OOOO
-//                        else
-//                            return V4d(color.XYZ, alpha)
-//     
-//                    else
-//                        if kind > 1.5 && kind < 2.5 then
-//                            return V4d.IOOI
-//                        else
-//                            return V4d.OOII
-
-
-            }
-
-        let pathFragment (v : Vertex) =
-            fragment {
-                let kind = v.klm.W
-
-                if uniform.FillGlyphs then
-                    if kind < 0.5 then return v.color
-                    elif kind < 1.5 then return V4d.OOOO
+                    elif kind < 1.5 then 
+                        // outside triangle
+                        return V4d.OOOO
 
                     elif kind < 3.5 then
+
+                        // quadratic bezier
                         let uv = v.klm.XYZ
                         let f = (uv.X * uv.X - uv.Y) * uv.Z
                         if uniform.Antialias then
@@ -178,6 +147,8 @@ module Path =
                                 return V4d(v.color.XYZ, 0.0)
 
                     else
+
+                        // cubic bezier (currently broken)
                         let klm = v.klm.XYZ
  
                         let f = pow klm.X 3.0 - klm.Y*klm.Z
@@ -204,9 +175,56 @@ module Path =
 
             }
 
+        let pathFragment (v : Vertex) =
+            fragment {
+                let kind = v.klm.W + 0.001 * v.samplePos.X
+
+                if kind < 0.5 then 
+                    // inside triangle
+                    return v.color
+
+                elif kind < 1.5 then 
+                    // outside triangle
+                    discard()
+                    return v.color
+
+                elif kind < 3.5 then
+
+                    // quadratic bezier
+                    let uv = v.klm.XYZ
+                    let f = (uv.X * uv.X - uv.Y) * uv.Z
+                    if f > 0.0 then
+                        discard()
+
+                    return v.color
+
+//                    if uniform.Antialias then
+//                        let duvx = ddx(v.klm.XY)
+//                        let duvy = ddy(v.klm.XY)
+//
+//                        let fx = (2.0 * uv.X * duvx.X - duvx.Y) * uv.Z
+//                        let fy = (2.0 * uv.X * duvy.X - duvy.Y) * uv.Z
+//                        
+//                        let sd = f / sqrt (fx * fx + fy * fy)
+//                        let alpha = 0.5 - sd |> clamp 0.0 1.0
+//                        return { color = V4d(v.color.XYZ, alpha); src1 = V4d(v.color.XYZ, alpha) }
+//                    else
+//                        if f < 0.0 then
+//                            return { color = v.color; src1 = v.color }
+//                        else
+//                            return { color = V4d.OOOO; src1 = V4d.OOOO }
+
+                else
+                    return v.color
+                     
+
+
+
+            }
+
         let boundary (v : Vertex) =
             fragment {
-                return uniform.BoundaryColor
+                return { color = uniform.BoundaryColor; src1 = V4d.OOOO }
             }
 
 
@@ -377,8 +395,30 @@ module Path =
             else
                 [||], [||]
 
+        let tessellateN (n : int) (evenOdd : bool) (paths : seq<V3d[]>) =
+            let tess = Tess()
+            let mutable cnt = 0
+            for (path) in paths do
+                if path.Length > 0 then
+                    cnt <- cnt + 1
+                    tess.AddContour(Contour.closed path None)
+            if cnt > 0 then
+                let rule = if evenOdd then WindingRule.EvenOdd else WindingRule.Positive
+                tess.Tessellate(rule, ElementType.Polygons, n)
+                let index = tess.Elements
+                let vertices = tess.Vertices |> Array.map (fun p -> V3d(p.Position.X, p.Position.Y, p.Position.Z))
+                index, vertices
+            else
+                [||], [||]
+
     
     type LibTess private() =
+        static member TessellateIndexed(polys : seq<Polygon2d>, evenOdd : bool) =
+            let points = polys |> Seq.map (fun p -> p.Points |> Seq.toArray |> Array.map (fun v -> V3d(v, 0.0)))
+            let index, pos = LibTessInternal.tessellate evenOdd points
+            let pos = pos |> Array.map Vec.xy
+            index, pos
+
         static member Tessellate(polys : seq<Polygon2d>, evenOdd : bool) =
             let points = polys |> Seq.map (fun p -> p.Points |> Seq.toArray |> Array.map (fun v -> V3d(v, 0.0)))
             let index, pos = LibTessInternal.tessellate evenOdd points
@@ -394,11 +434,35 @@ module Path =
 
             triangles
 
+        static member TessellateN(polys : seq<Polygon2d>, evenOdd : bool, n : int) =
+            let points = polys |> Seq.map (fun p -> p.Points |> Seq.toArray |> Array.map (fun v -> V3d(v, 0.0)))
+            let index, pos = LibTessInternal.tessellateN n evenOdd points
+
+            let pos = pos |> Array.map Vec.xy
+
+            let result = Array.zeroCreate (index.Length / n)
+            for ti in 0 .. result.Length-1 do
+                let baseIndex = n * ti
+                let points = 
+                    [| 0 .. n - 1 |] |> Array.choose (fun pi ->
+                        let vi = index.[baseIndex + pi]
+                        if vi < 0 then
+                            None
+                        else
+                            Some pos.[vi]
+                    ) 
+                result.[ti] <- Polygon2d(points)
+
+            result
+
         static member TessellateEvenOdd(polys : seq<Polygon2d>) =
             LibTess.Tessellate(polys, true)
 
         static member Tessellate(polys : seq<Polygon2d>) =
             LibTess.Tessellate(polys, false)
+
+        static member TessellateN(polys : seq<Polygon2d>, n : int) =
+            LibTess.TessellateN(polys, false, n)
 
         static member Tessellate(polys : seq<Polygon2d<'a>>, add : 'a -> 'a -> 'a, mul : float -> 'a -> 'a, zero : 'a) =
             let paths = polys |> Seq.map (fun p -> (Array.map (fun (v : V2d) -> V3d(v, 0.0)) p.Points, p.Coords))
@@ -638,6 +702,7 @@ module Path =
         let innerPoints = List<List<V2d>>()
         let outerPoints = List<List<V2d>>()
         let boundaryEdges = HashSet<V2d * V2d>()
+        let boundaryPoints = HashSet<V2d>()
         let boundaryTriangles = List<V2d>()
         let boundaryCoords = List<V4d>()
 
@@ -695,7 +760,8 @@ module Path =
                     add p0
                     addOuter p0
                     boundaryEdges.Add(p0, p1) |> ignore
-
+                    boundaryPoints.Add(p0) |> ignore
+                    boundaryPoints.Add(p1) |> ignore
                     add p1
                     addOuter p1
                     run rest
@@ -725,6 +791,8 @@ module Path =
                             addOuter p1
 
                         boundaryTriangles.AddRange [p0; p1; p2]
+                        boundaryPoints.Add(p0) |> ignore
+                        boundaryPoints.Add(p2) |> ignore
 
                         if p1Inside then
                             boundaryCoords.AddRange [V4d(0,0,-1,2); V4d(-0.5, 0.0,-1.0, 2.0); V4d(-1,1,-1,2)]
@@ -786,7 +854,9 @@ module Path =
                         boundaryCoords.AddRange [V4d(w0, kind); V4d(w1, kind); V4d(w2, kind)]
                         boundaryTriangles.AddRange [p0; p2; p3]
                         boundaryCoords.AddRange [V4d(w0, kind); V4d(w2, kind); V4d(w3, kind)]
-
+                        
+                        boundaryPoints.Add(p0) |> ignore
+                        boundaryPoints.Add(p3) |> ignore
 
                         add p3
                         addOuter p3
@@ -809,124 +879,277 @@ module Path =
         let isBoundary (p0 : V2d) (p1 : V2d) =
             boundaryEdges.Contains(p0, p1) || boundaryEdges.Contains(p1, p0)
 
+        let isBoundaryPoint (p : V2d) =
+            boundaryPoints.Contains p
+
+
+        let index, positions = LibTess.TessellateIndexed(innerPoints, false)
+        let boundaryPoint = positions |> Array.map isBoundaryPoint
+        
+        let trianglePositions = List<V3d>(positions.Length * 2)
+        let triangleCoords = List<V4d>(positions.Length * 2)
+
+        let rec appendTriangle (i0 : int) (i1 : int) (i2 : int) (p0 : V2d) (p1 : V2d) (p2 : V2d) =
+            let kind = 0
+//            let border u v w = V4d(u, v, w, kind)
+            trianglePositions.AddRange [ V3d(p0, 0.0); V3d(p1, 0.0); V3d(p2, 0.0) ]
+            triangleCoords.AddRange [ V4d(0,0,0,0); V4d(0,0,0,0); V4d(0,0,0,0) ]
+//
+//            let b0 = if i0 >= 0 then boundaryPoint.[i0] else false
+//            let b1 = if i1 >= 0 then boundaryPoint.[i1] else false
+//            let b2 = if i2 >= 0 then boundaryPoint.[i2] else false
+//            
+//            let insideCoord = V4d(-1,0,0,kind)
+//            let borderCoord = V4d(0,0,0,kind)
+//
+//            let insideCoord = V4d(-1,-1,-1,kind)
+//            let borderCoord = V4d(0,0,0,kind)
+//
+//            let border u v w = V4d(u, v, w, float kind)
+//
+//            let full = V4d(1,0,0,kind)
+//
+//            let coord (pi : int) (isBorder : bool) =
+//                if isBorder then V4d(0,0,0,kind)
+//                else V4d(-1,0,0,kind)
+//
+//            match b0, b1, b2 with
+//                | false, false, false -> 
+//                    trianglePositions.AddRange [ V3d(p0, 0.0); V3d(p1, 0.0); V3d(p2, 0.0) ]
+//                    triangleCoords.AddRange [ full; full; full ]
+//
+//                | true, false, false ->
+//                    trianglePositions.AddRange [ V3d(p0, 0.0); V3d(p1, 0.0); V3d(p2, 0.0) ]
+//                    triangleCoords.AddRange [ coord 0 false; coord 1 false; coord 2 false ]
+//
+//                | false, true, false ->
+//                    trianglePositions.AddRange [ V3d(p0, 0.0); V3d(p1, 0.0); V3d(p2, 0.0) ]
+//                    triangleCoords.AddRange [ coord 0 false; coord 1 false; coord 2 false ]
+//
+//                | false, false, true ->
+//                    trianglePositions.AddRange [ V3d(p0, 0.0); V3d(p1, 0.0); V3d(p2, 0.0) ]
+//                    triangleCoords.AddRange [ coord 0 false; coord 1 false; coord 2 false ]
+//
+//
+//                | true, false, true ->
+//                    if isBoundary p0 p2 then
+//                        trianglePositions.AddRange [ V3d(p0, 0.0); V3d(p1, 0.0); V3d(p2, 0.0) ]
+//                        triangleCoords.AddRange [ coord 0 true; coord 1 false; coord 2 true ]
+//                    else
+//                        let p = 0.5 * (p0 + p2)
+//                        appendTriangle i0 i1 -1 p0 p1 p
+//                        appendTriangle -1 i1 i2 p p1 p2
+//
+//                | true, true, false ->
+//                    if isBoundary p0 p1 then
+//                        trianglePositions.AddRange [ V3d(p0, 0.0); V3d(p1, 0.0); V3d(p2, 0.0) ]
+//                        triangleCoords.AddRange [ coord 0 true; coord 1 true; coord 2 false ]
+//                    else
+//                        let p = 0.5 * (p0 + p1)
+//                        appendTriangle i0 -1 i2 p0 p p2
+//                        appendTriangle -1 i1 i2 p p1 p2
+//
+//                | false, true, true ->
+//                    if isBoundary p1 p2 then
+//                        trianglePositions.AddRange [ V3d(p0, 0.0); V3d(p1, 0.0); V3d(p2, 0.0) ]
+//                        triangleCoords.AddRange [ coord 0 false; coord 1 true; coord 2 true ]
+//                    else
+//                        let p = 0.5 * (p1 + p2)
+//                        appendTriangle i0 i1 -1 p0 p1 p
+//                        appendTriangle i0 -1 i2 p0 p p2
+//
+//                | true, true, true ->
+//                    let c = (p0 + p1 + p2) / 3.0
+//                    appendTriangle i0 i1 -1 p0 p1 c
+//                    appendTriangle i1 i2 -1 p1 p2 c
+//                    appendTriangle i2 i0 -1 p2 p0 c
+
+        for ti in 0 .. index.Length/3 - 1 do
+            let i0 = index.[3 * ti + 0]
+            let i1 = index.[3 * ti + 1]
+            let i2 = index.[3 * ti + 2]
+
+            let p0 = positions.[i0]
+            let p1 = positions.[i1]
+            let p2 = positions.[i2]
+
+            appendTriangle i0 i1 i2 p0 p1 p2
+
+
         let triangles =
             innerPoints
                 |> LibTess.Tessellate
                 |> Array.map (fun t -> true, t)
 
 
-//        let outerStuff =
-//            let bounds = bounds.EnlargedByRelativeEps(0.1)
-//            let box = List [V2d(bounds.Min.X, bounds.Min.Y); V2d(bounds.Min.X, bounds.Max.Y); V2d(bounds.Max.X, bounds.Max.Y); V2d(bounds.Max.X, bounds.Min.Y); V2d(bounds.Min.X, bounds.Min.Y)]
-//            outerPoints.Add box
+//        let trianglePositions = List<V3d>(3 * triangles.Length)
+//        let triangleCoords = List<V4d>(3 * triangles.Length)
 //
-//            let outerPoints = outerPoints |> Seq.map (fun l -> l |> CSharpList.toArray |> Array.take (l.Count-1) |> Polygon2d) |> Seq.toArray
-//            outerPoints
-//                |> LibTess.TessellateEvenOdd
-//                |> Array.map (fun t -> false, t)
+//        let spikeCount = Dict<V2d, HashSet<int>>()
 //
-//        let triangles = Array.append triangles outerStuff
+//        let addSpike (pt : V2d) = 
+//            let index = trianglePositions.Count / 3
+//            let r = spikeCount.GetOrCreate(pt, fun _ -> HashSet())
+//            r.Add index |> ignore
+//
+//        let rec appendTriangle (inside : bool) (t : Triangle2d) =
+//            let kind = if inside then 0 else 1
+//
+//            let b0 = isBoundaryPoint t.P0
+//            let b1 = isBoundaryPoint t.P1
+//            let b2 = isBoundaryPoint t.P2
+//            
+//            let insideCoord = V4d(-1,0,0,kind)
+//            let borderCoord = V4d(0,0,0,kind)
+//
+//            let insideCoord = V4d(-1,-1,-1,kind)
+//            let borderCoord = V4d(0,0,0,kind)
+//
+//            let border u v w = V4d(u, v, w, kind)
+//
+//
+//
+//            match b0, b1, b2 with
+//                | false, false, false -> 
+//                    trianglePositions.AddRange [ V3d(t.P0, 0.0); V3d(t.P1, 0.0); V3d(t.P2, 0.0) ]
+//                    triangleCoords.AddRange [ insideCoord; insideCoord; insideCoord ]
+//
+//                | true, false, false ->
+//                    addSpike t.P0
+//                    trianglePositions.AddRange [ V3d(t.P0, 0.0); V3d(t.P1, 0.0); V3d(t.P2, 0.0) ]
+//                    triangleCoords.AddRange [ border 1 0 10; border 0 1 10; border 0 1 10 ]
+//
+//                | false, true, false ->
+//                    addSpike t.P1
+//                    trianglePositions.AddRange [ V3d(t.P0, 0.0); V3d(t.P1, 0.0); V3d(t.P2, 0.0) ]
+//                    triangleCoords.AddRange [ border 0 1 10; border 1 0 10; border 0 1 10 ]
+//
+//                | false, false, true ->
+//                    addSpike t.P2
+//                    trianglePositions.AddRange [ V3d(t.P0, 0.0); V3d(t.P1, 0.0); V3d(t.P2, 0.0) ]
+//                    triangleCoords.AddRange [ border 0 1 10; border 0 1 10; border 1 0 10 ]
+//
+//
+//                | true, false, true ->
+//                    if isBoundary t.P0 t.P2 then
+//                        trianglePositions.AddRange [ V3d(t.P0, 0.0); V3d(t.P1, 0.0); V3d(t.P2, 0.0) ]
+//                        triangleCoords.AddRange [ border 1 0 0; border 0 1 0; border 0 0 1 ]
+//                    else
+//                        let p = 0.5 * (t.P0 + t.P2)
+//                        appendTriangle inside (Triangle2d(t.P0, t.P1, p))
+//                        appendTriangle inside (Triangle2d(p, t.P1, t.P2))
+//
+//                | true, true, false ->
+//                    if isBoundary t.P0 t.P1 then
+//                        trianglePositions.AddRange [ V3d(t.P0, 0.0); V3d(t.P1, 0.0); V3d(t.P2, 0.0) ]
+//                        triangleCoords.AddRange [ border 1 0 0; border 0 0 1; border 0 1 0 ]
+//                    else
+//                        let p = 0.5 * (t.P0 + t.P1)
+//                        appendTriangle inside (Triangle2d(t.P0, p, t.P2))
+//                        appendTriangle inside (Triangle2d(p, t.P1, t.P2))
+//
+//                | false, true, true ->
+//                    if isBoundary t.P1 t.P2 then
+//                        trianglePositions.AddRange [ V3d(t.P0, 0.0); V3d(t.P1, 0.0); V3d(t.P2, 0.0) ]
+//                        triangleCoords.AddRange [ border 0 1 0; border 1 0 0; border 0 0 1 ]
+//                    else
+//                        let p = 0.5 * (t.P1 + t.P2)
+//                        appendTriangle inside (Triangle2d(t.P0, t.P1, p))
+//                        appendTriangle inside (Triangle2d(t.P0, p, t.P2))
+//
+//                | true, true, true ->
+//                    let c = (t.P0 + t.P1 + t.P2) / 3.0
+//                    appendTriangle inside (Triangle2d(t.P0, t.P1, c))
+//                    appendTriangle inside (Triangle2d(t.P1, t.P2, c))
+//                    appendTriangle inside (Triangle2d(t.P2, t.P0, c))
+//
+//        for inside, t in triangles do
+//            appendTriangle inside t
+//          
+//        for indices in spikeCount.Values do
+//            let count = float indices.Count
+//
+//            for ti in indices do
+//                for pi in 0 .. 2 do
+//                    let i = 3 * ti + pi
+//                    let c = triangleCoords.[i]
+//                    triangleCoords.[i] <- V4d(c.X, c.Y, 5.0 + count, c.W)
 //
 
-        let trianglePositions = List<V3d>(3 * triangles.Length)
-        let triangleCoords = List<V4d>(3 * triangles.Length)
+        let triangles = ()
+                    
 
-        for inside, t in triangles do
-            let kind = if inside then 0 else 1
-
-            let b01 = isBoundary t.P0 t.P1
-            let b12 = isBoundary t.P1 t.P2
-            let b20 = isBoundary t.P2 t.P0
-
-            let divide = (b01 && b12) || (b12 && b20) || (b20 && b01)
-
-            let insideCoord = V4d(0,1,1,kind)
-            let borderCoord = V4d(0,1,0,kind)
-
-            match b01, b12, b20 with
-                | false,    false,      false -> 
-                    trianglePositions.AddRange [ V3d(t.P0, 0.0); V3d(t.P1, 0.0); V3d(t.P2, 0.0) ]
-                    triangleCoords.AddRange [ insideCoord; insideCoord; insideCoord ]
-                        
-                | true,     false,      false -> 
-                    trianglePositions.AddRange [ V3d(t.P0, 0.0); V3d(t.P1, 0.0); V3d(t.P2, 0.0) ]
-                    triangleCoords.AddRange [ borderCoord; borderCoord; insideCoord ]
-
-                | false,    true,       false ->  
-                    trianglePositions.AddRange [ V3d(t.P0, 0.0); V3d(t.P1, 0.0); V3d(t.P2, 0.0) ]
-                    triangleCoords.AddRange [ insideCoord; borderCoord; borderCoord ]
-
-                | false,    false,      true  ->  
-                    trianglePositions.AddRange [ V3d(t.P0, 0.0); V3d(t.P1, 0.0); V3d(t.P2, 0.0) ]
-                    triangleCoords.AddRange [ borderCoord; insideCoord; borderCoord ]
-
-                | true,     true,       false -> 
-                    //01 and 12 edges
-                    let c = (t.P0 + t.P2) * 0.5
-
-                    trianglePositions.AddRange [ V3d(t.P0, 0.0); V3d(t.P1, 0.0); V3d(c, 0.0) ]
-                    triangleCoords.AddRange [ borderCoord; borderCoord; insideCoord ]
-                    trianglePositions.AddRange [ V3d(c, 0.0); V3d(t.P1, 0.0); V3d(t.P2, 0.0) ]
-                    triangleCoords.AddRange [ insideCoord; borderCoord; borderCoord ]
-
-                | true,     false,      true  -> 
-                    // 01 and 20 edges
-                    let c = (t.P1 + t.P2) * 0.5
-
-                    trianglePositions.AddRange [ V3d(t.P0, 0.0); V3d(t.P1, 0.0); V3d(c, 0.0) ]
-                    triangleCoords.AddRange [ borderCoord; borderCoord; insideCoord ]
-                    trianglePositions.AddRange [ V3d(c, 0.0); V3d(t.P2, 0.0); V3d(t.P0, 0.0) ]
-                    triangleCoords.AddRange [ insideCoord; borderCoord; borderCoord ]
-
-                | false,    true,       true  -> 
-                    // 12 and 20 edges
-                    let c = (t.P0 + t.P1) * 0.5
-                    trianglePositions.AddRange [ V3d(t.P0, 0.0); V3d(c, 0.0); V3d(t.P2, 0.0) ]
-                    triangleCoords.AddRange [ borderCoord; insideCoord; borderCoord ]
-                    trianglePositions.AddRange [ V3d(c, 0.0); V3d(t.P1, 0.0); V3d(t.P2, 0.0) ]
-                    triangleCoords.AddRange [ insideCoord; borderCoord; borderCoord ]
-
-
-                | true,     true,       true  -> 
-                    let c = (t.P0 + t.P1 + t.P2) / 3.0
-
-                    trianglePositions.AddRange [ V3d(t.P0, 0.0); V3d(t.P1, 0.0); V3d(c, 0.0) ]
-                    triangleCoords.AddRange [ borderCoord; borderCoord; insideCoord ]
-
-                    trianglePositions.AddRange [ V3d(t.P1, 0.0); V3d(t.P2, 0.0); V3d(c, 0.0) ]
-                    triangleCoords.AddRange [ borderCoord; borderCoord; insideCoord ]
-
-                    trianglePositions.AddRange [ V3d(t.P2, 0.0); V3d(t.P0, 0.0); V3d(c, 0.0) ]
-                    triangleCoords.AddRange [ borderCoord; borderCoord; insideCoord ]
-
-
-
-            ()
+//        for inside, t in triangles do
+//            let kind = if inside then 0 else 1
 //
-//        let triangleCoords =
-//            triangles
-//                |> Array.collect (fun (inside, t) ->
-//                    let kind = if inside then 0 else 1
+//            let b01 = isBoundary t.P0 t.P1
+//            let b12 = isBoundary t.P1 t.P2
+//            let b20 = isBoundary t.P2 t.P0
 //
-//                    let b01 = isBoundary t.P0 t.P1
-//                    let b12 = isBoundary t.P1 t.P2
-//                    let b20 = isBoundary t.P2 t.P0
+//            let divide = (b01 && b12) || (b12 && b20) || (b20 && b01)
 //
-//                    match b01, b12, b20 with
-//                        | false,    false,      false -> [| V4d(1,0,0,kind); V4d(1,0,0,kind); V4d(1,0,0,kind) |]
+//            let insideCoord = V4d(-1,0,0,kind)
+//            let borderCoord = V4d(0,0,0,kind)
+//
+//            match b01, b12, b20 with
+//                | false,    false,      false -> 
+//                    trianglePositions.AddRange [ V3d(t.P0, 0.0); V3d(t.P1, 0.0); V3d(t.P2, 0.0) ]
+//                    triangleCoords.AddRange [ insideCoord; insideCoord; insideCoord ]
 //                        
-//                        | true,     false,      false -> [| borderCoord; borderCoord; V4d(1,0,0,kind) |]
-//                        | false,    true,       false -> [| V4d(1,0,0,kind); borderCoord; borderCoord |]
-//                        | false,    false,      true  -> [| borderCoord; V4d(1,0,0,kind); borderCoord |]
+//                | true,     false,      false -> 
+//                    trianglePositions.AddRange [ V3d(t.P0, 0.0); V3d(t.P1, 0.0); V3d(t.P2, 0.0) ]
+//                    triangleCoords.AddRange [ borderCoord; borderCoord; insideCoord ]
 //
-//                        | true,     true,       false -> [| V4d(1,0,0,kind); V4d(1,1,0,kind); borderCoord |]
-//                        | true,     false,      true  -> [| V4d(1,1,0,kind); V4d(1,0,0,kind); borderCoord |]
-//                        | false,    true,       true  -> [| V4d(1,0,0,kind); borderCoord; V4d(1,1,0,kind) |]
+//                | false,    true,       false ->  
+//                    trianglePositions.AddRange [ V3d(t.P0, 0.0); V3d(t.P1, 0.0); V3d(t.P2, 0.0) ]
+//                    triangleCoords.AddRange [ insideCoord; borderCoord; borderCoord ]
 //
-//                        | true,     true,       true  -> 
-//                            Log.warn "bad triangle for AA"
-//                            [| V4d(1,0,0,kind); V4d(1,0,0,kind); V4d(1,0,0,kind) |]
-//                )
+//                | false,    false,      true  ->  
+//                    trianglePositions.AddRange [ V3d(t.P0, 0.0); V3d(t.P1, 0.0); V3d(t.P2, 0.0) ]
+//                    triangleCoords.AddRange [ borderCoord; insideCoord; borderCoord ]
+//
+//                | true,     true,       false -> 
+//                    //01 and 12 edges
+//                    let c = (t.P0 + t.P2) * 0.5
+//
+//                    trianglePositions.AddRange [ V3d(t.P0, 0.0); V3d(t.P1, 0.0); V3d(c, 0.0) ]
+//                    triangleCoords.AddRange [ borderCoord; borderCoord; insideCoord ]
+//                    trianglePositions.AddRange [ V3d(c, 0.0); V3d(t.P1, 0.0); V3d(t.P2, 0.0) ]
+//                    triangleCoords.AddRange [ insideCoord; borderCoord; borderCoord ]
+//
+//                | true,     false,      true  -> 
+//                    // 01 and 20 edges
+//                    let c = (t.P1 + t.P2) * 0.5
+//
+//                    trianglePositions.AddRange [ V3d(t.P0, 0.0); V3d(t.P1, 0.0); V3d(c, 0.0) ]
+//                    triangleCoords.AddRange [ borderCoord; borderCoord; insideCoord ]
+//                    trianglePositions.AddRange [ V3d(c, 0.0); V3d(t.P2, 0.0); V3d(t.P0, 0.0) ]
+//                    triangleCoords.AddRange [ insideCoord; borderCoord; borderCoord ]
+//
+//                | false,    true,       true  -> 
+//                    // 12 and 20 edges
+//                    let c = (t.P0 + t.P1) * 0.5
+//                    trianglePositions.AddRange [ V3d(t.P0, 0.0); V3d(c, 0.0); V3d(t.P2, 0.0) ]
+//                    triangleCoords.AddRange [ borderCoord; insideCoord; borderCoord ]
+//                    trianglePositions.AddRange [ V3d(c, 0.0); V3d(t.P1, 0.0); V3d(t.P2, 0.0) ]
+//                    triangleCoords.AddRange [ insideCoord; borderCoord; borderCoord ]
+//
+//
+//                | true,     true,       true  -> 
+//                    let c = (t.P0 + t.P1 + t.P2) / 3.0
+//
+//                    trianglePositions.AddRange [ V3d(t.P0, 0.0); V3d(t.P1, 0.0); V3d(c, 0.0) ]
+//                    triangleCoords.AddRange [ borderCoord; borderCoord; insideCoord ]
+//
+//                    trianglePositions.AddRange [ V3d(t.P1, 0.0); V3d(t.P2, 0.0); V3d(c, 0.0) ]
+//                    triangleCoords.AddRange [ borderCoord; borderCoord; insideCoord ]
+//
+//                    trianglePositions.AddRange [ V3d(t.P2, 0.0); V3d(t.P0, 0.0); V3d(c, 0.0) ]
+//                    triangleCoords.AddRange [ borderCoord; borderCoord; insideCoord ]
+//
+//
+//
+//            ()
 
 
 

@@ -281,7 +281,6 @@ type Font(family : string, style : FontStyle) =
 type ShapeCache(r : IRuntime) =
     static let cache = ConcurrentDictionary<IRuntime, ShapeCache>()
 
-
     let types =
         Map.ofList [
             DefaultSemantic.Positions, typeof<V3f>
@@ -291,18 +290,32 @@ type ShapeCache(r : IRuntime) =
     let pool = r.CreateGeometryPool(types)
     let ranges = ConcurrentDictionary<Shape, Range1i>()
 
+    let signature =
+        r.CreateFramebufferSignature(
+            1, 
+            [
+                DefaultSemantic.Colors, RenderbufferFormat.Rgba8
+                //Path.Src1Color, RenderbufferFormat.Rgba8
+                DefaultSemantic.Depth, RenderbufferFormat.Depth24Stencil8
+            ]
+        )
+
     let surface = 
-        r.PrepareEffect [
-            Path.Shader.pathVertex      |> toEffect
-            DefaultSurfaces.trafo       |> toEffect
-            Path.Shader.pathFragment    |> toEffect
-        ]
+        r.PrepareEffect(
+            signature, [
+                Path.Shader.pathVertex      |> toEffect
+                Path.Shader.pathTrafo       |> toEffect
+                Path.Shader.pathFragment    |> toEffect
+            ]
+        )
 
     let boundarySurface =
-        r.PrepareEffect [
-            DefaultSurfaces.trafo       |> toEffect
-            Path.Shader.boundary        |> toEffect
-        ]
+        r.PrepareEffect(
+            signature, [
+                DefaultSurfaces.trafo       |> toEffect
+                Path.Shader.boundary        |> toEffect
+            ]
+        )
 
 
     let vertexBuffers =
@@ -333,7 +346,6 @@ type ShapeCache(r : IRuntime) =
 
     member x.Dispose() =
         pool.Dispose()
-        surface.Dispose()
         ranges.Clear()
 
 
