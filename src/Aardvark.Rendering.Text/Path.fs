@@ -15,10 +15,6 @@ module Path =
         let PathOffsetAndScale = Symbol.Create "PathOffsetAndScale"
         let PathColor = Symbol.Create "PathColor"
 
-
-    let Src1Color = Symbol.Create "Src1Color"
-
-
     type KLMKindAttribute() = inherit FShade.SemanticAttribute(Attributes.KLMKind |> string)
     type PathOffsetAndScaleAttribute() = inherit FShade.SemanticAttribute(Attributes.PathOffsetAndScale |> string)
     type PathColorAttribute() = inherit FShade.SemanticAttribute(Attributes.PathColor |> string)
@@ -32,22 +28,16 @@ module Path =
             member x.Antialias : bool = uniform?Antialias
             member x.BoundaryColor : V4d = uniform?BoundaryColor
 
-        type Fragment =
-            {
-                [<Color>] color : V4d
-                [<Semantic("Src1Color")>] src1 : V4d
-            }
-
         type Vertex =
             {
                 [<Position>] p : V4d
                 [<Interpolation(InterpolationMode.Sample); KLMKind>] klm : V4d
                 [<PathOffsetAndScale>] offset : V4d
                 [<PathColor>] color : V4d
-                [<Semantic("BaryCentric")>] bary : V3d
                 [<VertexId>] vertexId : int
-
                 [<SamplePosition>] samplePos : V2d
+                [<SampleId>] sampleId : int
+                [<SampleMask>] sampleMask : Arr<16 N, int>
             }
 
         let pathVertex (v : Vertex) =
@@ -55,13 +45,7 @@ module Path =
                 let pi = v.offset.XY + v.p.XY * v.offset.ZW
                 let p = V4d(pi.X, pi.Y, v.p.Z, v.p.W)
 
-                let pi = v.vertexId % 3
-                let bary =
-                    if pi = 0 then V3d(1.0, 0.0, 0.0)
-                    elif pi = 1 then V3d(0.0, 1.0, 0.0)
-                    else V3d(0.0, 0.0, 1.0)
-
-                return { v with p = p; bary = bary }
+                return { v with p = p }
             }
 
         let pathTrafo (v : Vertex) =
@@ -83,139 +67,96 @@ module Path =
 //                V2d(-5,5);   V2d(-7,-1); V2d(3,7);  V2d(7,-7)
 //            |] |> Arr<8 N, _>
 
-        let eps = 0.0
-
-        let pathFragmentdsf (v : Vertex) =
+        let pathFragmentAA (v : Vertex) =
             fragment {
+                //let pos = v.samplePos
                 let kind = v.klm.W
 
+                let c = v.klm.XYZ
+                let mutable alpha = 1.0
+                let cx = ddx(v.klm.XYZ)
+                let cy = ddy(v.klm.XYZ)
+
+                if kind < 0.5 then
+                    if uniform.Antialias then
+                        let mutable sum = 0.0
+                        for s in samplePattern do
+                            let ci = c + s.X * cx + s.Y * cy
+                            if ci.X >= 0.0 && ci.Y >= 0.0 && ci.Z >= 0.0 then
+                                sum <- sum + 1.0
+            
+                        alpha <- sum / 16.0
+
+                elif kind > 0.5 && kind < 1.5 then 
+                    // outside triangle
+                    alpha <- 0.0
+
+                elif kind > 1.5 && kind < 3.5 then
+                    // quadratic bezier
+                    if uniform.Antialias then
+                        let mutable sum = 0.0
+                        for s in samplePattern do
+                            let ci = c + s.X * cx + s.Y * cy
+                            let f = (ci.X * ci.X - ci.Y) * ci.Z
+                            if f <= 0.0 then
+                                sum <- sum + 1.0
+
+                        alpha <- sum / 16.0
+                    else
+                        let f = (c.X * c.X - c.Y) * c.Z
+                        if f > 0.0 then alpha <- 0.0
+                        
+
+
+                return V4d(v.color.XYZ, alpha)
+            }
+
+        let pathFragment(v : Vertex) =
+            fragment {
+                //let pos = v.samplePos
+                let kind = v.klm.W + 0.001 * v.samplePos.X
+
                 if uniform.FillGlyphs then
-                    if kind < 0.5 then 
-                        // inside triangle
-                        if uniform.Antialias then
-                            let f = v.bary
-                            let fx = ddx(v.bary)
-                            let fy = ddy(v.bary)
-                            //let f = v.bary - 0.5 * fx - 0.5 * fy
+                    let mutable count = 0.0
 
-                            //let alpha = if f.X > eps && f.Y > eps && f.Z > eps then 1.0 else 0.0
+//                    Preprocessor.unroll()
+//                    for i in 0 .. 15 do
+//                        if v.sampleMask.[i] = 1 then
+//                            count <- count + 1.0
 
-                            let mutable sum = 0.0
-                            let mutable err = 0.0
-                            do
-                                for s in samplePattern do
-                                    let e = f + s.X * fx + s.Y * fy
-                                    let off = abs (e.X + e.Y + e.Z - 1.0)
-                                    err <- err + off
-
-                                    if (e.X >= 0.0 && e.Y >= 0.0 && e.Z >= 0.0) then
-                                        sum <- sum + 1.0
-
-//                            if (f.X >= 0.0 && f.Y >= 0.0 && f.Z >= 0.0) then
-//                                sum <- sum + 1.0
-                            if sum = 0.0 then
-                                discard()
-
-                            let alpha = sum / float (samplePattern.Length)
-                            return V4d(v.color.XYZ, alpha)
-                        else
-                            return v.color
-
-                    elif kind < 1.5 then 
+                    if kind > 0.5 && kind < 1.5 then 
                         // outside triangle
-                        return V4d.OOOO
+                        discard()
 
-                    elif kind < 3.5 then
-
+                    elif kind > 1.5 && kind < 3.5 then
                         // quadratic bezier
                         let uv = v.klm.XYZ
                         let f = (uv.X * uv.X - uv.Y) * uv.Z
-                        if uniform.Antialias then
-                            let duvx = ddx(v.klm.XY)
-                            let duvy = ddy(v.klm.XY)
-
-                            let fx = (2.0 * uv.X * duvx.X - duvx.Y) * uv.Z
-                            let fy = (2.0 * uv.X * duvy.X - duvy.Y) * uv.Z
-                        
-                            let sd = f / sqrt (fx * fx + fy * fy)
-                            let alpha = 0.5 - sd |> clamp 0.0 1.0
-                            return V4d(v.color.XYZ, alpha)
-                        else
-                            if f < 0.0 then
-                                return v.color
-                            else
-                                return V4d(v.color.XYZ, 0.0)
-
-                    else
-
-                        // cubic bezier (currently broken)
-                        let klm = v.klm.XYZ
- 
-                        let f = pow klm.X 3.0 - klm.Y*klm.Z
-
-                        // u^2 - v < 0
-                        // k^3 - l * m
-                        // k = u
-                        // l = 0
-                        // m = v
-
-                        
-                        if f < 0.0 then
-                            return v.color
-                        else
-                            return V4d(v.color.XYZ, 0.0)
-
-                else
-                    if kind < 0.5 then return V4d(0.5, 0.5, 0.5, 1.0)
-                    elif kind < 1.5 then return V4d.IIOI
-                    elif kind < 2.5 then return V4d.IOOI
-                    else return V4d.OOII
-           
-
-
-            }
-
-        let pathFragment (v : Vertex) =
-            fragment {
-                let kind = v.klm.W + 0.001 * v.samplePos.X
-
-                if kind < 0.5 then 
-                    // inside triangle
-                    return v.color
-
-                elif kind < 1.5 then 
-                    // outside triangle
-                    discard()
-                    return v.color
-
-                elif kind < 3.5 then
-
-                    // quadratic bezier
-                    let uv = v.klm.XYZ
-                    let f = (uv.X * uv.X - uv.Y) * uv.Z
-                    if f > 0.0 then
-                        discard()
-
-                    return v.color
-
-//                    if uniform.Antialias then
-//                        let duvx = ddx(v.klm.XY)
-//                        let duvy = ddy(v.klm.XY)
-//
-//                        let fx = (2.0 * uv.X * duvx.X - duvx.Y) * uv.Z
-//                        let fy = (2.0 * uv.X * duvy.X - duvy.Y) * uv.Z
-//                        
-//                        let sd = f / sqrt (fx * fx + fy * fy)
-//                        let alpha = 0.5 - sd |> clamp 0.0 1.0
-//                        return { color = V4d(v.color.XYZ, alpha); src1 = V4d(v.color.XYZ, alpha) }
-//                    else
-//                        if f < 0.0 then
-//                            return { color = v.color; src1 = v.color }
+                        if f > 0.0 then
+                            discard()
+                    
+//                    let p = v.samplePos
+//                    let color = 
+//                        if p.X < 0.5 then
+//                            let t = p.X / 0.5
+//                            (1.0 - t) * V4d.IOOI + t * V4d.OIOI
 //                        else
-//                            return { color = V4d.OOOO; src1 = V4d.OOOO }
+//                            let t = (p.X - 0.5) / 0.5
+//                            (1.0 - t) * V4d.OIOI + t * V4d.OOII
 
-                else
+    
                     return v.color
+                    //let i = count / 16.0
+                    //return V4d(i,i,i, 16.0)
+                else
+                    let color = 
+                        if kind < 0.5 then v.color
+                        elif kind < 1.5 then V4d.IIOI
+                        elif kind < 2.5 then V4d.IOOI
+                        elif kind < 3.5 then V4d.OOII
+                        else V4d.OIOI
+
+                    return color
                      
 
 
@@ -224,7 +165,7 @@ module Path =
 
         let boundary (v : Vertex) =
             fragment {
-                return { color = uniform.BoundaryColor; src1 = V4d.OOOO }
+                return uniform.BoundaryColor
             }
 
 
@@ -893,7 +834,7 @@ module Path =
             let kind = 0
 //            let border u v w = V4d(u, v, w, kind)
             trianglePositions.AddRange [ V3d(p0, 0.0); V3d(p1, 0.0); V3d(p2, 0.0) ]
-            triangleCoords.AddRange [ V4d(0,0,0,0); V4d(0,0,0,0); V4d(0,0,0,0) ]
+            triangleCoords.AddRange [ V4d(1,0,0,0); V4d(0,1,0,0); V4d(0,0,1,0) ]
 //
 //            let b0 = if i0 >= 0 then boundaryPoint.[i0] else false
 //            let b1 = if i1 >= 0 then boundaryPoint.[i1] else false

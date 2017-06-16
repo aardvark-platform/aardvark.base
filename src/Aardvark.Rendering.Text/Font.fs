@@ -162,7 +162,7 @@ type private FontImpl(f : System.Drawing.Font) =
 
     let kerningTable = FontInfo.getKerningPairs graphics largeScaleFont
 
-    let lineHeight = 1.0
+    let lineHeight = 1.2
 
     let getPath (c : char) =
         use path = new GraphicsPath()
@@ -171,7 +171,7 @@ type private FontImpl(f : System.Drawing.Font) =
         fmt.Trimming <- StringTrimming.None
         fmt.FormatFlags <- StringFormatFlags.FitBlackBox ||| StringFormatFlags.NoClip ||| StringFormatFlags.NoWrap 
         path.AddString(String(c, 1), f.FontFamily, int f.Style, size, PointF(0.0f, 0.0f), fmt)
-
+        
 
         if path.PointCount = 0 then
             { bounds = Box2d.Invalid; outline = [||] }
@@ -239,6 +239,13 @@ type private FontImpl(f : System.Drawing.Font) =
 
     let glyphCache = Dict<char, Glyph>()
 
+    let spacing =
+        
+        let s1 = graphics.MeasureString("% %", largeScaleFont)
+        let s2 = graphics.MeasureString("%%", largeScaleFont)
+        let s = (s1.Width - s2.Width) / largeScaleFont.Size
+        float s
+
     let get (c : char) =
         lock glyphCache (fun () ->
             glyphCache.GetOrCreate(c, fun c ->
@@ -250,7 +257,7 @@ type private FontImpl(f : System.Drawing.Font) =
     member x.Family = f.FontFamily.Name
     member x.LineHeight = lineHeight
     member x.Style = unbox<FontStyle> (int f.Style)
-    member x.Spacing = 1.0
+    member x.Spacing = spacing
 
     member x.GetGlyph(c : char) =
         get c
