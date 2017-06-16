@@ -81,6 +81,28 @@ type Cache<'a, 'b>(f : 'a -> 'b) =
                         (false, r)
                 | _ -> failwithf "cannot revoke unknown value: %A" v
 
+    member x.RevokeAndGetDeletedTotal (v : 'a) =
+        if isNull (v :> obj) then
+            match nullCache with
+                | Some (r, ref) -> 
+                    ref := !ref - 1
+                    if !ref = 0 then
+                        nullCache <- None
+                        Some (true, r)
+                    else
+                        Some(false, r)
+                | None -> Log.warn "cannot revoke null"; None
+        else
+            match cache.TryGetValue v with
+                | (true, (r, ref)) -> 
+                    ref := !ref - 1
+                    if !ref = 0 then
+                        cache.Remove v |> ignore
+                        Some(true, r)
+                    else
+                        Some(false, r)
+                | _ -> Log.warn "cannot revoke unknown value: %A" v;None
+
     member x.Revoke (v : 'a) =
         x.RevokeAndGetDeleted v |> snd
 

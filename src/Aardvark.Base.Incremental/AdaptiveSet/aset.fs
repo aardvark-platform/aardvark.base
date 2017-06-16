@@ -257,14 +257,18 @@ module ASet =
                                 r.GetOperations token
 
                             | Rem(1, v) -> 
-                                let deleted, r = cache.RevokeAndGetDeleted v
-                                dirty.Remove r |> ignore
-                                if deleted then 
-                                    let ops = HRefSet.computeDelta r.State HRefSet.empty
-                                    r.Dispose()
-                                    ops
-                                else
-                                    r.GetOperations token
+                                match cache.RevokeAndGetDeletedTotal v with
+                                    | Some (deleted,r) -> 
+                                        dirty.Remove r |> ignore
+                                        if deleted then 
+                                            let ops = HRefSet.computeDelta r.State HRefSet.empty
+                                            r.Dispose()
+                                            ops
+                                        else
+                                            r.GetOperations token
+                                    | None -> 
+                                        Log.warn "serious hate occured"
+                                        HDeltaSet.empty
                                 
                             | _ -> unexpected()
                     )

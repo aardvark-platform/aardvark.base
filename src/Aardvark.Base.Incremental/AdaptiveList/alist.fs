@@ -404,7 +404,7 @@ module AList =
             override x.Release() =
                 mapping.Clear()
                 cache.Clear()
-                readers.Values |> Seq.iter (fun r -> r.Dispose())
+                readers.Values |> Seq.toArray |> Array.iter (fun r -> r.Dispose())
                 readers.Clear()
                 input.Dispose()
 

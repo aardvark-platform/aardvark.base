@@ -307,10 +307,7 @@ type History<'s, 'op> private(input : Option<LazyWithFinalizer<IOpReader<'op>>>,
                 while not (isNull current) do
                     let (o,c) = mergeIntoLast current
                     res <- t.tops.mappend res o
-                    if isNull c then
-                        current <- null
-                    else
-                        current <- c.Next
+                    current <- c
 
                 let node = addRefToLast()
                 node, res
