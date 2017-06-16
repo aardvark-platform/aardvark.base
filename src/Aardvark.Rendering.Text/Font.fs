@@ -162,7 +162,7 @@ type private FontImpl(f : System.Drawing.Font) =
 
     let kerningTable = FontInfo.getKerningPairs graphics largeScaleFont
 
-    let lineHeight = 1.2
+    //let lineHeight = 1.2
 
     let getPath (c : char) =
         use path = new GraphicsPath()
@@ -238,6 +238,12 @@ type private FontImpl(f : System.Drawing.Font) =
             CSharpList.toArray components |> Array.concat |> Path.ofArray
 
     let glyphCache = Dict<char, Glyph>()
+    
+    let lineHeight =
+        let s1 = graphics.MeasureString("%\r\n%", largeScaleFont)
+        let s2= graphics.MeasureString("%", largeScaleFont)
+        let s = (s1.Height - s2.Height) / largeScaleFont.Size
+        float s
 
     let spacing =
         

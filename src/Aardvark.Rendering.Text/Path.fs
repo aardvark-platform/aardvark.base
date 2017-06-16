@@ -37,7 +37,13 @@ module Path =
                 [<VertexId>] vertexId : int
                 [<SamplePosition>] samplePos : V2d
                 [<SampleId>] sampleId : int
-                [<SampleMask>] sampleMask : Arr<16 N, int>
+                [<SampleMask>] sampleMask : Arr<1 N, int>
+            }
+
+        type Fragment =
+            {
+                [<Color>] color : V4d
+                [<SampleMask>] sampleMask : Arr<1 N, int>
             }
 
         let pathVertex (v : Vertex) =
@@ -62,9 +68,10 @@ module Path =
                 V2d(-8,0);  V2d(7,-4);  V2d(6,7);   V2d(-7,-8)
             |] |> Arr<16 N, _>
 
-//            Array.map (fun v -> v / 16.0) [|
-//                V2d(1,3);   V2d(-1,3); V2d(-5,1);  V2d(-3,-5)
-//                V2d(-5,5);   V2d(-7,-1); V2d(3,7);  V2d(7,-7)
+//            Array.map (fun v -> v - V2d(0.5, 0.5)) [|
+//                V2d(0.5625, 0.3125); V2d(0.4375, 0.6875); V2d(0.8125, 0.5625); V2d(0.3125, 0.1875);
+//                V2d(0.1875, 0.8125); V2d(0.0625, 0.4375); V2d(0.6875, 0.9375); V2d(0.9375, 0.0625)
+//
 //            |] |> Arr<8 N, _>
 
         let pathFragmentAA (v : Vertex) =
@@ -114,57 +121,26 @@ module Path =
         let pathFragment(v : Vertex) =
             fragment {
                 //let pos = v.samplePos
-                let kind = v.klm.W + 0.001 * v.samplePos.X
+                let kind = v.klm.W  + 0.001 * v.samplePos.X
 
-                if uniform.FillGlyphs then
-                    let mutable count = 0.0
 
-//                    Preprocessor.unroll()
-//                    for i in 0 .. 15 do
-//                        if v.sampleMask.[i] = 1 then
-//                            count <- count + 1.0
-
-                    if kind > 0.5 && kind < 1.5 then 
-                        // outside triangle
+                if kind > 1.5 && kind < 3.5 then
+                    let ci = v.klm.XYZ
+                    let f = (ci.X * ci.X - ci.Y) * ci.Z
+                    if f > 0.0 then
                         discard()
+//
+//                if kind > 1.5 && kind < 3.5 then
+//                    let f = (uv.X * uv.X - uv.Y) * uv.Z
+//                    if f > 0.0 then
+//                        discard()
 
-                    elif kind > 1.5 && kind < 3.5 then
-                        // quadratic bezier
-                        let uv = v.klm.XYZ
-                        let f = (uv.X * uv.X - uv.Y) * uv.Z
-                        if f > 0.0 then
-                            discard()
-                    
-//                    let p = v.samplePos
-//                    let color = 
-//                        if p.X < 0.5 then
-//                            let t = p.X / 0.5
-//                            (1.0 - t) * V4d.IOOI + t * V4d.OIOI
-//                        else
-//                            let t = (p.X - 0.5) / 0.5
-//                            (1.0 - t) * V4d.OIOI + t * V4d.OOII
-
-    
-                    return v.color
-                    //let i = count / 16.0
-                    //return V4d(i,i,i, 16.0)
-                else
-                    let color = 
-                        if kind < 0.5 then v.color
-                        elif kind < 1.5 then V4d.IIOI
-                        elif kind < 2.5 then V4d.IOOI
-                        elif kind < 3.5 then V4d.OOII
-                        else V4d.OIOI
-
-                    return color
-                     
-
-
-
+                return v.color
             }
 
         let boundary (v : Vertex) =
             fragment {
+
                 return uniform.BoundaryColor
             }
 
