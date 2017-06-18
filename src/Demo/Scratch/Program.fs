@@ -267,6 +267,8 @@ let main argv =
 
     let ptr = Marshal.PinDelegate(callback)
 
+    let store = NativePtr.alloc 1
+
     use stream = new NativeStream()
     let asm = new AssemblerStream(stream, true)
 
@@ -279,8 +281,9 @@ let main argv =
 
     asm.Begin()
     
-    asm.Cmp(Register.Rcx, 0u)
-    asm.Jump(JumpCondition.LessEqual, l)
+    asm.Load(Register.Rax, NativePtr.toNativeInt store, false)
+    asm.Cmp(Register.Rax, 0u)
+    asm.Jump(JumpCondition.Equal, l)
 
     asm.BeginCall(5)
     asm.PushArg(cc, 1234UL)
@@ -309,7 +312,9 @@ let main argv =
     Marshal.Copy(stream.Pointer, mem, stream.Length)
 
     let managed : int  -> float32 = UnmanagedFunctions.wrap mem
-    let res = managed 1
+    
+    NativePtr.write store 0
+    let res = managed 1234
     printfn "res = %A" res
     ExecutableMemory.free mem size
 

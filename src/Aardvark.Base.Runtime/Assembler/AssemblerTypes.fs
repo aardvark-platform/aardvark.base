@@ -94,6 +94,9 @@ type IAssemblerStream =
     /// reads a 4 byte floating-point value from the given location and pushes it onto the argument stack
     abstract member PushFloatArg : location : nativeint -> unit
 
+    /// reads a 8 byte floating-point value from the given location and pushes it onto the argument stack
+    abstract member PushDoubleArg : location : nativeint -> unit
+
     /// pushes an immediate pointer-sized integer onto the argument stack
     abstract member PushArg : value : nativeint -> unit
     /// pushes an immediate 4 byte integer onto the argument stack

@@ -773,7 +773,7 @@ module AMD64 =
             
             member x.NewLabel() = x.NewLabel()
             member x.Mark(l) = x.Mark(l)
-            member x.Jump(cond : JumpCondition, label : AssemblerLabel) = x.Jump(label)
+            member x.Jump(cond : JumpCondition, label : AssemblerLabel) = x.Jump(cond, label)
             member x.Jump(label : AssemblerLabel) = x.Jump(label)
 
             member x.Cmp(location : nativeint, value : int) =
@@ -795,6 +795,7 @@ module AMD64 =
             member x.PushPtrArg(loc) = x.Load(Register.Rax, loc, true); x.PushIntArg(localConvention, Register.Rax, true)
             member x.PushIntArg(loc) = x.Load(Register.Rax, loc, false); x.PushIntArg(localConvention, Register.Rax, false)
             member x.PushFloatArg(loc) = x.Load(Register.Rax, loc, false); x.PushFloatArg(localConvention, Register.Rax, false)
+            member x.PushDoubleArg(loc) = x.Load(Register.Rax, loc, true); x.PushFloatArg(localConvention, Register.Rax, true)
 
             member x.Ret() = x.Ret()
 
