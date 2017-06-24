@@ -6,7 +6,7 @@ Aardvark.Base is a collection of algorithms and data structures for computer gra
 
 The aardvark rendering engine heavily uses aardvark.base and can be found here: [aardvark.rendering](https://github.com/vrvis/aardvark.rendering)
 
-##Docs and Tutorials
+## Docs and Tutorials
 
 [Getting Started](https://github.com/vrvis/aardvark/wiki)
 
@@ -18,7 +18,7 @@ The aardvark rendering engine heavily uses aardvark.base and can be found here: 
 
 [Game: Samy the Salmon](https://github.com/gnufu/SamyTheSalmon)
 
-##How to build
+## How to build
 
 Windows:
 - Visual Studio 2015,
@@ -37,5 +37,5 @@ While building, visual studio might prompt for permission to use our type provid
 the build fails immediately afterwards no matter if you granted permission. In this case
 simply rebuild all again and it should work this time.
 
-##License
+## License
 Aardvark libraries are free to use: [Apache License 2.0](http://www.apache.org/licenses/LICENSE-2.0.txt).
