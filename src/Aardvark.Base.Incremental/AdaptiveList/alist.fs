@@ -221,6 +221,54 @@ module AList =
                         | Set v -> Set (mapping i v)
                 )
 
+        type MapUseReader<'a, 'b>(scope : Ag.Scope, input : alist<'a>, mapping :  'a -> 'b, dispose : 'b -> unit) =
+            inherit AbstractReader<pdeltalist<'b>>(scope, PDeltaList.monoid)
+
+            let cache = Dict<'a,'b * ref<int>>()
+            let r = input.GetReader()
+
+            override x.Release() =
+                r.Dispose()
+
+            override x.Compute(token) =
+                let oldState = r.State
+                let removed = HashSet<_>()
+
+                let ops = 
+                    r.GetOperations token |> PDeltaList.map (fun i op ->
+                        match op with
+                            | Remove -> 
+                                match PList.tryGet i oldState with
+                                    | Some v -> 
+                                        match cache.TryGetValue v with
+                                            | (true,(b,cnt)) -> 
+                                                cnt := !cnt - 1
+                                                // died, add to removed
+                                                if !cnt <= 0 then removed.Add (v, b) |> ignore
+                                                Remove
+                                            | _ -> failwith "[AList mapUse] impossible"
+                                    | None -> failwith "[AList mapUse] cannot remove non existing item"
+                            | Set v -> 
+                                match cache.TryGetValue v with
+                                    | (true,(b,cnt)) ->
+                                        cnt := !cnt + 1
+                                        // positive cnt, resurrect
+                                        if !cnt > 0 then removed.Remove (v,b) |> ignore
+                                        Set b
+                                    | _ -> 
+                                        // mk fresh
+                                        let b = mapping v
+                                        cache.Add(v,(b, ref 1))
+                                        Set b
+                    )
+
+                for (a,b) in removed do
+                    cache.Remove a |> ignore
+                    dispose b
+
+                ops
+                
+
         type ChooseReader<'a, 'b>(scope : Ag.Scope, input : alist<'a>, mapping : Index -> 'a -> Option<'b>) =
             inherit AbstractReader<pdeltalist<'b>>(scope, PDeltaList.monoid)
 
@@ -1023,6 +1071,15 @@ module AList =
         else
             alist <| fun scope -> new OfModReader<_>(scope, m)
 
+    // maps a list to an output list whereby each output list item is gets disposed if it disappears from the list
+    // 'b needs to be equatable in order to cache moves of list items.
+    let mapDispose (mapping : 'a -> 'b) (dispose : 'b -> unit) (list : alist<'a>) =
+        alist <| fun scope -> new MapUseReader<'a, 'b>(scope, list, mapping, dispose)
+
+    // maps a list to an output list whereby each output list item is gets disposed if it disappears from the list
+    // 'b needs to be equatable in order to cache moves of list items.
+    let mapUse<'a,'b when 'b : equality and 'b :> IDisposable> (mapping : 'a -> 'b) (list : alist<'a>) =
+        mapDispose mapping (fun b -> b.Dispose())
 
     open System.Collections.Concurrent
     open System.Runtime.CompilerServices

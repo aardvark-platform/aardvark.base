@@ -23,6 +23,9 @@ type cmap<'k, 'v>(initial : seq<'k * 'v>) =
                 history.Perform(HMap.single key (Set value)) |> ignore
             )
 
+    member x.TryFind(k : 'k) =
+        history.State.TryFind k
+
     member x.Remove(key : 'k) =
         lock x (fun () ->
             history.Perform(HMap.single key Remove)
@@ -91,3 +94,19 @@ type cmap<'k, 'v>(initial : seq<'k * 'v>) =
         member x.IsConstant = false
         member x.GetReader() = history.NewReader()
         member x.Content = history :> IMod<_>
+
+[<CompilationRepresentation(CompilationRepresentationFlags.ModuleSuffix)>]
+[<RequireQualifiedAccess>]
+module CMap =
+    
+    let empty<'a,'b> = cmap<'a,'b>()
+    
+    let find    (k : 'k) (m : cmap<'k,'v>) = m.[k]
+    let tryFind (k : 'k) (m : cmap<'k,'v>) = m.TryFind(k)
+    let remove  (k : 'k) (m : cmap<'k,'v>) = m.Remove k
+
+    let add (k : 'k) (v : 'v) (m : cmap<'k,'v>) = m.Add(k,v)
+
+    let clear (m : cmap<'k,'v>) = m.Clear()
+    let count (m : cmap<'k,'v>) = m.Count
+

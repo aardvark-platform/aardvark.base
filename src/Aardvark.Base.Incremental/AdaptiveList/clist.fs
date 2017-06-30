@@ -187,3 +187,26 @@ type clist<'a>(initial : seq<'a>) =
 
     interface IEnumerable<'a> with
         member x.GetEnumerator() = (history.State :> seq<_>).GetEnumerator() :> _
+
+
+[<CompilationRepresentation(CompilationRepresentationFlags.ModuleSuffix)>]
+[<RequireQualifiedAccess>]
+module CList =
+    
+    let empty<'a> = clist<_>()
+
+    let clear (l : clist<'a>) = l.Clear()
+    let append (v : 'a) (l : clist<'a>) = l.Append v
+    let prepend (v : 'a) (l : clist<'a>) = l.Prepend v
+    let remove (i : Index) (l : clist<'a>) = l.Remove i
+    let removeAt (index : int) (l : clist<'a>) = l.RemoveAt index
+    let indexOf (v : 'a) (l : clist<'a>) = l.IndexOf v
+    let removeElement (v : 'a) (l : clist<'a>) = l.Remove v
+    let contains (v : 'a) (l : clist<'a>) = l.Contains v
+    let insert (index : int) (v : 'a) (l : clist<'a>) = l.Insert(index,v)
+    
+    let getIndex (index : int) (l : clist<'a>) = l.Item index
+    let get      (i : Index) (l : clist<'a>) = l.Item i
+
+    let setIndex (index : int) (v : 'a) (l : clist<'a>) = l.[index] <- v
+    let set      (i : Index)   (v : 'a) (l : clist<'a>) = l.[i] <- v
