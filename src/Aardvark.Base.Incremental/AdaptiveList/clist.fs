@@ -210,3 +210,5 @@ module CList =
 
     let setIndex (index : int) (v : 'a) (l : clist<'a>) = l.[index] <- v
     let set      (i : Index)   (v : 'a) (l : clist<'a>) = l.[i] <- v
+
+    let ofSeq (l : seq<'a>) : clist<'a> = clist(l)

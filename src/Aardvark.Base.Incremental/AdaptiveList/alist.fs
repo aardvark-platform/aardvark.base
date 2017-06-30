@@ -1059,6 +1059,8 @@ module AList =
     let filterM (f : 'a -> IMod<bool>) (list : alist<'a>) : alist<'a> =
         filteriM (fun _ v -> f v) list
 
+    let count (l : alist<_>) = l |> toMod |> Mod.map PList.count
+
     let ofModSingle (m : IMod<'a>) : alist<'a> =
         if m.IsConstant then
             constant <| lazy (m |> Mod.force |> PList.single)
@@ -1079,7 +1081,7 @@ module AList =
     // maps a list to an output list whereby each output list item is gets disposed if it disappears from the list
     // 'b needs to be equatable in order to cache moves of list items.
     let mapUse<'a,'b when 'b : equality and 'b :> IDisposable> (mapping : 'a -> 'b) (list : alist<'a>) =
-        mapDispose mapping (fun b -> b.Dispose())
+        mapDispose mapping (fun b -> b.Dispose()) list
 
     open System.Collections.Concurrent
     open System.Runtime.CompilerServices
