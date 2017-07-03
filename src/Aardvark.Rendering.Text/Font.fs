@@ -334,7 +334,12 @@ type ShapeCache(r : IRuntime) =
     let vertexBuffers =
         { new IAttributeProvider with
             member x.TryGetAttribute(sem) =
-                pool.TryGetBufferView sem
+                match pool.TryGetBufferView sem with
+                    | Some bufferView ->
+                        //bufferView.Buffer.Level <- max bufferView.Buffer.Level 3000
+                        Some bufferView
+                    | None ->
+                        None
 
             member x.All = Seq.empty
             member x.Dispose() = ()
