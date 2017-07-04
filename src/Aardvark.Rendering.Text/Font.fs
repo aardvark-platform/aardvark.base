@@ -330,6 +330,15 @@ type ShapeCache(r : IRuntime) =
             ]
         )
 
+    do 
+        r.OnDispose.Add(fun () ->
+            r.DeleteSurface boundarySurface
+            r.DeleteSurface surface
+            r.DeleteFramebufferSignature signature
+            pool.Dispose()
+            ranges.Clear()
+            cache.Clear()
+        )
 
     let vertexBuffers =
         { new IAttributeProvider with
