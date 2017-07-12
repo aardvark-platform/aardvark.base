@@ -148,6 +148,7 @@ type RelevantNode<'s, 'a> =
         new(p, s, v, n) = { Prev = p; Next = n; RefCount = 0; BaseState = s; Value = v }
     end
 
+[<AllowNullLiteral>]
 type History<'s, 'op> private(input : Option<LazyWithFinalizer<IOpReader<'op>>>, t : Traceable<'s, 'op>, finalize : 'op -> unit) =
     inherit AdaptiveObject()
 
@@ -338,6 +339,7 @@ type History<'s, 'op> private(input : Option<LazyWithFinalizer<IOpReader<'op>>>,
 
 and HistoryReader<'s, 'op>(h : History<'s, 'op>) =
     inherit AdaptiveObject()
+    let mutable h = h
     let trace = h.Trace
     let mutable node : RelevantNode<'s, 'op> = null
     let mutable state = trace.tempty
@@ -355,13 +357,16 @@ and HistoryReader<'s, 'op>(h : History<'s, 'op>) =
 
     member private x.Dispose(disposing : bool) =
         if disposing then GC.SuppressFinalize x
-        lock h (fun () ->
-            h.Outputs.Remove x |> ignore
-            h.Remove node
-        )
-        node <- null
-        state <- trace.tempty
-        
+        let h = Interlocked.Exchange(&h,null)
+        if not (h |> isNull) then
+            lock h (fun () ->
+                h.Outputs.Remove x |> ignore
+                h.Remove node
+            )
+            node <- null
+            state <- trace.tempty
+        else ()
+                  
     override x.Finalize() =
         DisposeThread.Dispose {
             new IDisposable with

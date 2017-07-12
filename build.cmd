@@ -8,7 +8,7 @@ if errorlevel 1 (
   exit /b %errorlevel%
 )
 
-.paket\paket.exe restore group Build
+.paket\paket.exe restore --group Build
 if errorlevel 1 (
   exit /b %errorlevel%
 )

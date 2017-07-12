@@ -227,47 +227,59 @@ module AList =
             let cache = Dict<'a,'b * ref<int>>()
             let r = input.GetReader()
 
+            let invoke (deads : HashSet<_>) v =
+                let b, r = cache.GetOrCreate(v, fun v -> 
+                    mapping v, ref 0
+                )
+                incr r
+                deads.Remove v |> ignore
+                b
+
+            let revoke (deads : HashSet<_>) v =
+                match cache.TryGetValue v with
+                    | (true,(b,r)) -> 
+                        decr r
+                        if !r = 0 then deads.Add v |> ignore
+                    | _ -> failwith "impossible"
+
             override x.Release() =
+                cache.Values |> Seq.iter (dispose << fst)
+                cache.Clear()
                 r.Dispose()
 
             override x.Compute(token) =
                 let oldState = r.State
                 let removed = HashSet<_>()
 
+                let inputOps = r.GetOperations token
+
                 let ops = 
-                    r.GetOperations token |> PDeltaList.map (fun i op ->
+                    inputOps |> PDeltaList.map (fun i op ->
                         match op with
                             | Remove -> 
                                 match PList.tryGet i oldState with
                                     | Some v -> 
-                                        match cache.TryGetValue v with
-                                            | (true,(b,cnt)) -> 
-                                                cnt := !cnt - 1
-                                                // died, add to removed
-                                                if !cnt <= 0 then removed.Add (v, b) |> ignore
-                                                Remove
-                                            | _ -> failwith "[AList mapUse] impossible"
+                                        revoke removed v
+                                        Remove
                                     | None -> failwith "[AList mapUse] cannot remove non existing item"
                             | Set v -> 
-                                match cache.TryGetValue v with
-                                    | (true,(b,cnt)) ->
-                                        cnt := !cnt + 1
-                                        // positive cnt, resurrect
-                                        if !cnt > 0 then removed.Remove (v,b) |> ignore
-                                        Set b
-                                    | _ -> 
-                                        // mk fresh
-                                        let b = mapping v
-                                        cache.Add(v,(b, ref 1))
-                                        Set b
+                                match PList.tryGet i oldState with
+                                    | None -> 
+                                        ()
+                                    | Some oldA -> 
+                                        revoke removed oldA
+                                invoke removed v |> Set
+                                    
                     )
 
-                for (a,b) in removed do
-                    cache.Remove a |> ignore
-                    dispose b
+                for a in removed do
+                    match cache.TryRemove a with
+                        | (true,(b,r)) -> 
+                            if !r <> 0 then failwith "[AList.mapUse] non zero refcount"
+                            dispose b
+                        | _ -> failwith "[AList.mapUse] tried to remove non existing"
 
-                ops
-                
+                ops       
 
         type ChooseReader<'a, 'b>(scope : Ag.Scope, input : alist<'a>, mapping : Index -> 'a -> Option<'b>) =
             inherit AbstractReader<pdeltalist<'b>>(scope, PDeltaList.monoid)
