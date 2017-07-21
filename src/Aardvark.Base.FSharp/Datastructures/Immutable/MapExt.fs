@@ -283,9 +283,9 @@ module MapExtImplementation =
 
                 | MapNode(key,v,l,r,_,s) ->
                     let c = comparer.Compare(k, key)
-                    if c > 0 then getReference comparer (current + size l) k r
+                    if c > 0 then getReference comparer (current + size l + 1) k r
                     elif c < 0 then getReference comparer current k l
-                    else Existing(current, v)
+                    else Existing(current+size l, v)
 
 
                     
