@@ -115,11 +115,11 @@ namespace Aardvark.Base
 
         /// <summary>
         /// Transforms direction vector v (v.w is presumed 0.0) by similarity transformation t.
-        /// Actually, only the rotation is used.
+        /// Actually, only the rotation and scale is used.
         /// </summary>
         public static V3f TransformDir(Similarity3f t, V3f v)
         {
-            return t.EuclideanTransformation.TransformDir(v);
+            return t.EuclideanTransformation.TransformDir(t.Scale * v);
         }
 
         /// <summary>
@@ -132,11 +132,11 @@ namespace Aardvark.Base
 
         /// <summary>
         /// Transforms direction vector v (v.w is presumed 0.0) by the inverse of the similarity transformation t.
-        /// Actually, only the rotation is used.
+        /// Actually, only the rotation and scale is used.
         /// </summary>
         public static V3f InvTransformDir(Similarity3f t, V3f v)
         {
-            return t.EuclideanTransformation.InvTransformDir(v);
+            return t.EuclideanTransformation.InvTransformDir(v) / t.Scale;
         }
 
         /// <summary>
@@ -144,7 +144,7 @@ namespace Aardvark.Base
         /// </summary>
         public static V3f InvTransformPos(Similarity3f t, V3f p)
         {
-            return t.EuclideanTransformation.InvTransformPos(p / t.Scale);
+            return t.EuclideanTransformation.InvTransformPos(p) / t.Scale;
         }
 
         /// <summary>
@@ -474,11 +474,11 @@ namespace Aardvark.Base
 
         /// <summary>
         /// Transforms direction vector v (v.w is presumed 0.0) by similarity transformation t.
-        /// Actually, only the rotation is used.
+        /// Actually, only the rotation and scale is used.
         /// </summary>
         public static V3d TransformDir(Similarity3d t, V3d v)
         {
-            return t.EuclideanTransformation.TransformDir(v);
+            return t.EuclideanTransformation.TransformDir(t.Scale * v);
         }
 
         /// <summary>
@@ -491,11 +491,11 @@ namespace Aardvark.Base
 
         /// <summary>
         /// Transforms direction vector v (v.w is presumed 0.0) by the inverse of the similarity transformation t.
-        /// Actually, only the rotation is used.
+        /// Actually, only the rotation and scale is used.
         /// </summary>
         public static V3d InvTransformDir(Similarity3d t, V3d v)
         {
-            return t.EuclideanTransformation.InvTransformDir(v);
+            return t.EuclideanTransformation.InvTransformDir(v) / t.Scale;
         }
 
         /// <summary>
@@ -503,7 +503,7 @@ namespace Aardvark.Base
         /// </summary>
         public static V3d InvTransformPos(Similarity3d t, V3d p)
         {
-            return t.EuclideanTransformation.InvTransformPos(p / t.Scale);
+            return t.EuclideanTransformation.InvTransformPos(p) / t.Scale;
         }
 
         /// <summary>
