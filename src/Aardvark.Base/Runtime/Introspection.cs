@@ -502,12 +502,17 @@ namespace Aardvark.Base
     {
         private static string AppDataCache = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
         private static string s_cacheFile =  IntrospectionProperties.CurrentEntryAssembly == null ? "" : 
-            Path.Combine(AppDataCache, IntrospectionProperties.CurrentEntryAssembly.FullName + "_plugins.bin");
+            Path.Combine(AppDataCache, "VRVis", "Aardvark", "cache", IntrospectionProperties.CurrentEntryAssembly.GetName().Name + "_plugins.bin");
 
         public string CacheFile = string.Empty;
 
 
-        public Aardvark() { CacheFile = s_cacheFile; }
+        public Aardvark()
+        {
+            CacheFile = s_cacheFile;
+            Directory.CreateDirectory(Path.GetDirectoryName(CacheFile));
+
+        }
 
         private Dictionary<string, Tuple<DateTime, bool>> ReadCacheFile()
         {
