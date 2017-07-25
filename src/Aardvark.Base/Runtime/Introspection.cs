@@ -703,16 +703,25 @@ namespace Aardvark.Base
 
         public static List<Assembly> LoadPlugins()
         {
-            var setup = new AppDomainSetup();
-            setup.ApplicationBase = IntrospectionProperties.CurrentEntryPath;
+            //Note: I removed the separate AppDomain for Plugin probing because:
+            //1) it made problems on startup in some setups
+            //2) the code below seemed to not do anything in the new AppDomain since the call 
+            //   var paths = aardvark.GetPluginAssemblyPaths();
+            //   was actually executed in this AppDomain.
+            //Changes are marked with APPD
 
-            try {
-                var d = AppDomain.CreateDomain(Guid.NewGuid().ToString(), null, setup);
-                var aardvark = (Aardvark)d.CreateInstanceAndUnwrap(typeof(Aardvark).Assembly.FullName, typeof(Aardvark).FullName);
+            //APPD var setup = new AppDomainSetup();
+            //APPD setup.ApplicationBase = IntrospectionProperties.CurrentEntryPath;
+
+            try
+            {
+                //APPD var d = AppDomain.CreateDomain(Guid.NewGuid().ToString(), null, setup);
+                var aardvark = new Aardvark(); //APPD (Aardvark)d.CreateInstanceAndUnwrap(typeof(Aardvark).Assembly.FullName, typeof(Aardvark).FullName);
+
                 Report.Line(3, "[LoadPlugins] Using plugin cache file name: {0}", Aardvark.s_cacheFile);
                 aardvark.CacheFile = Aardvark.s_cacheFile;
                 var paths = aardvark.GetPluginAssemblyPaths();
-                AppDomain.Unload(d);
+                //APPD AppDomain.Unload(d);
 
                 var assemblies = new List<Assembly>();
 
