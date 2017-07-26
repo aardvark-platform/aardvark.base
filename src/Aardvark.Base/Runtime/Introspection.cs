@@ -573,7 +573,7 @@ namespace Aardvark.Base
         {
             try
             {
-                var a = Assembly.ReflectionOnlyLoadFrom(file);
+                var a = Assembly.LoadFile(file);
                 var empty = Introspection.GetAllMethodsWithAttribute<OnAardvarkInitAttribute>(a).IsEmpty();
                 if (!empty)
                 {
@@ -614,7 +614,6 @@ namespace Aardvark.Base
 
         public string[] GetPluginAssemblyPaths()
         {
-            AppDomain.CurrentDomain.ReflectionOnlyAssemblyResolve += D_ReflectionOnlyAssemblyResolve;
             var cache = ReadCacheFile();
             var newCache = new Dictionary<string, Tuple<DateTime, bool>>();
 
@@ -671,34 +670,11 @@ namespace Aardvark.Base
                     }
                 }
             }
-            AppDomain.CurrentDomain.ReflectionOnlyAssemblyResolve -= D_ReflectionOnlyAssemblyResolve;
 
 
             WriteCacheFile(newCache);
             Report.Verbosity = verbosity;
             return paths.ToArray();
-        }
-
-        private static Assembly D_ReflectionOnlyAssemblyResolve(object sender, ResolveEventArgs args)
-        {
-            var name = new AssemblyName(args.Name);
-            var file = Path.Combine(IntrospectionProperties.CurrentEntryPath, name.Name + ".exe");
-            if (File.Exists(file))
-                try { return Assembly.ReflectionOnlyLoadFrom(file); } catch (Exception) { }
-
-            file = Path.Combine(IntrospectionProperties.CurrentEntryPath, name.Name + ".dll");
-            if (File.Exists(file))
-                try { return Assembly.ReflectionOnlyLoadFrom(file); } catch (Exception) { }
-
-            file = Path.Combine(IntrospectionProperties.CurrentEntryPath, name.Name, args.Name + ".exe");
-            if (File.Exists(file))
-                try { return Assembly.ReflectionOnlyLoadFrom(file); } catch (Exception) { }
-
-            file = Path.Combine(IntrospectionProperties.CurrentEntryPath, name.Name, args.Name + ".dll");
-            if (File.Exists(file))
-                try { return Assembly.ReflectionOnlyLoadFrom(file); } catch (Exception) { }
-
-            return Assembly.ReflectionOnlyLoad(args.Name);
         }
 
         public static List<Assembly> LoadPlugins()
@@ -841,6 +817,11 @@ namespace Aardvark.Base
             Report.End();
             LoadAll(pluginsList);
             Report.End();
+        }
+
+        private static void CurrentDomain_AssemblyLoad(object sender, AssemblyLoadEventArgs args)
+        {
+            throw new NotImplementedException();
         }
 
         private static void LoadAll(IEnumerable<Assembly> xs)
