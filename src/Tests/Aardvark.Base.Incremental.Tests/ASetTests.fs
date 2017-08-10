@@ -1321,6 +1321,45 @@ module ASetPerformance =
 
         ()
 
+    [<Test>]
+    let ``[ASet] bind2``() =
+
+        let setA = cset [1;2;3;4;5]
+        let setB = cset [1;2]
+
+        let setAMod = setA |> ASet.toMod
+        let setBMod = setB |> ASet.toMod
+
+        let filterAbyBSet = ASet.bind2 (fun (a : IVersionedSet<int>) (b : IVersionedSet<int>) -> a |> Seq.filter (fun x -> not (b.Contains(x))) |> ASet.ofSeq) setAMod setBMod
+
+        printfn "initial"
+
+        let reader = filterAbyBSet.GetReader()
+        let force = filterAbyBSet |> ASet.toArray
+        let ref = setA |> Seq.filter (fun x -> not (setB.Contains(x))) |> Seq.toArray
+        force |> should setEqual ref
+        //reader.GetDelta() |> should setEqual [Add 3; Add 4; Add 5]
+
+        printfn "first"
+
+        transact (fun () -> CSet.add 5 setB |> ignore)
+        let force = filterAbyBSet |> ASet.toArray
+        let ref = setA |> Seq.filter (fun x -> not (setB.Contains(x))) |> Seq.toArray
+        force |> should setEqual ref
+        //reader.GetDelta() |> should setEqual [Rem 5]
+
+        printfn "second"
+
+        transact (fun () -> CSet.add 10 setA |> ignore)
+        let force = filterAbyBSet |> ASet.toArray
+        let ref = setA |> Seq.filter (fun x -> not (setB.Contains(x))) |> Seq.toArray
+        force |> should setEqual ref
+        //reader.GetDelta() |> should setEqual [Add 10]
+
+        printfn "passed"
+
+        ()
+
 [<AutoOpen>]
 module ConcurrentDeltaQueueTests =
 
