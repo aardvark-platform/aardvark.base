@@ -1026,6 +1026,27 @@ namespace Aardvark.Base
         #endregion
     }
 
+    public partial class Vec
+    {
+        #region Creators
+        /// <summary>
+        /// Creates a double vector from the given array.
+        /// </summary>
+        public static Vec<double> Create(double[] data)
+        {
+            return new Vec<double>(data);
+        }
+
+        /// <summary>
+        /// Create a float vector with the given array.
+        /// </summary>
+        public static Vec<float> Create(float[] data)
+        {
+            return new Vec<float>(data);
+        }
+        #endregion
+    }
+
     /// <summary>
     /// This static class contains a number of extension methods on the Vec
     /// with type parameter double. These methods allow standard numerical
@@ -1085,10 +1106,20 @@ namespace Aardvark.Base
             return new Vec<double>(v0.m_dim).Set(v0, a => a * s1);
         }
 
+        public static Vec<double> Multiply(this Vec<double> v0, Vec<double> v1)
+        {
+            return new Vec<double>(v0.m_dim).Set(v0, v1, (a, b) => a * b);
+        }
+
         public static Vec<double> DivideBy(this Vec<double> v0, double s1)
         {
             var f1 = 1.0 / s1;
             return new Vec<double>(v0.m_dim).Set(v0, a => a * f1);
+        }
+
+        public static Vec<double> Divide(this Vec<double> v0, Vec<double> v1)
+        {
+            return new Vec<double>(v0.m_dim).Set(v0, v1, (a, b) => a / b);
         }
 
         #endregion
@@ -1485,10 +1516,20 @@ namespace Aardvark.Base
             return new Vec<float>(v0.m_dim).Set(v0, a => a * s1);
         }
 
+        public static Vec<float> Multiply(this Vec<float> v0, Vec<float> v1)
+        {
+            return new Vec<float>(v0.m_dim).Set(v0, v1, (a, b) => a * b);
+        }
+
         public static Vec<float> DivideBy(this Vec<float> v0, float s1)
         {
             var f1 = 1.0f / s1;
             return new Vec<float>(v0.m_dim).Set(v0, a => a * f1);
+        }
+
+        public static Vec<float> Divide(this Vec<float> v0, Vec<float> v1)
+        {
+            return new Vec<float>(v0.m_dim).Set(v0, v1, (a, b) => a / b);
         }
 
         #endregion

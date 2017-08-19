@@ -180,7 +180,7 @@ namespace Aardvark.Tests
                     {
                         var m0 = new Matrix<double>((double[])mats[i], 4, 4);
                         var m1 = new Matrix<double>((double[])luis[i], 4, 4);
-                        var id = m0.MutliplyBy(m1);
+                        var id = m0.Multiply(m1);
                         double deltaErr = M44d.Distance1(luid, new M44d(id.Data));
                         Test.IsTrue(deltaErr == 0.0);
                     }

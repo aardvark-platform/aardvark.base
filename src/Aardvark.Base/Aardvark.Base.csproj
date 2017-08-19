@@ -134,7 +134,6 @@
     <Compile Include="Math\Spectrum.cs" />
     <Compile Include="Math\Statistics.cs" />
     <Compile Include="Numerics\LuFactorization.cs" />
-    <Compile Include="Numerics\MatrixOperations.cs" />
     <Compile Include="Numerics\Polynomial.cs" />
     <Compile Include="Numerics\QrFactorization.cs" />
     <Compile Include="Random\HaltonRandomSeries.cs" />
@@ -197,6 +196,7 @@
     <Compile Include="Tensors\Interfaces.cs" />
     <Compile Include="Tensors\Parallel.cs" />
     <Compile Include="Tensors\Tensor.cs" />
+    <Compile Include="Tensors\TensorMathExt.cs" />
     <Compile Include="Tensors\Tensor_auto.cs" />
     <None Include="Tensors\Tensor_template.cs" />
     <Compile Include="Tensors\Tools.cs" />

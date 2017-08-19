@@ -7,29 +7,6 @@ namespace Aardvark.Base
 {
     public static class TensorArrayExtensions
     {
-        #region Vector Extensions
-
-        public static double DotProduct(this Vector<double> v0, Vector<double> v1)
-        {
-            double result = 0.0;
-            double[] a0 = v0.Data, a1 = v1.Data;
-            for (long i0 = v0.Origin, i1 = v1.Origin, e0 = i0 + v0.S, d0 = v0.D, d1 = v1.D;
-                 i0 != e0; i0 += d0, i1 += d1)
-                result += a0[i0] * a1[i1];
-            return result;
-        }
-
-        public static double NormSquared(this Vector<double> v)
-        {
-            double result = 0.0;
-            double[] a = v.Data;
-            for (long i = v.Origin, e = i + v.S, d = v.D; i != e; i += d)
-                result += a[i] * a[i];
-            return result;
-        }
-
-        #endregion
-
         #region Bit Reversed Index
 
         public static void BitReverseIndex<T>(

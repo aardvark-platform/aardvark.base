@@ -4,7 +4,7 @@ namespace Aardvark.Base
 {
     #region Vec
 
-    public class Vec
+    public partial class Vec
     {
         [Flags]
         public enum DirFlags
