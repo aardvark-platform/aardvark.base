@@ -54,3 +54,4 @@ tmp
 /paket-files
 /tests.out
 /*.log
+/src/Aardvark.Base/Tensors/TensorMathExt_generator.cs

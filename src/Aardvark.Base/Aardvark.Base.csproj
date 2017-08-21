@@ -196,7 +196,8 @@
     <Compile Include="Tensors\Interfaces.cs" />
     <Compile Include="Tensors\Parallel.cs" />
     <Compile Include="Tensors\Tensor.cs" />
-    <Compile Include="Tensors\TensorMathExt.cs" />
+    <None Include="Tensors\TensorMathExt_template.cs" />
+    <Compile Include="Tensors\TensorMathExt_auto.cs" />
     <Compile Include="Tensors\Tensor_auto.cs" />
     <None Include="Tensors\Tensor_template.cs" />
     <Compile Include="Tensors\Tools.cs" />
