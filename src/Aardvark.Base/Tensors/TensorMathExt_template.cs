@@ -24,6 +24,7 @@ namespace Aardvark.Base
         /// </summary>
         public static Matrix<T> Create<T>(T[] array, int sx, int sy)
         {
+            if (array.Length != sx * sy) throw new ArgumentException("Data array of matrix does not match given size");
             return new Matrix<T>(array, sx, sy);
         }
 
@@ -32,6 +33,7 @@ namespace Aardvark.Base
         /// </summary>
         public static Matrix<T> Create<T>(T[] array, long sx, long sy)
         {
+            if (array.Length != sx * sy) throw new ArgumentException("Data array of matrix does not match given size");
             return new Matrix<T>(array, sx, sy);
         }
     }
