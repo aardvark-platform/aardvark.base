@@ -233,7 +233,7 @@ namespace Aardvark.Base
             var result = new float[m0.SX * m0.SY];
 
             var data0 = m0.Data; var data1 = m1.Data;
-            int mf0 = (int)m0.FirstIndex, my0 = (int)m0.DY, my1 = (int)m0.DY;
+            int mf0 = (int)m0.FirstIndex, my0 = (int)m0.DY, my1 = (int)m1.DY;
             int ds0 = (int)m0.DSX, d0 = (int)m0.DX, d1 = (int)m1.DX;
             for (int ye = mf0 + (int)m0.DSY, f0 = mf0, f1 = (int)m1.FirstIndex, ri = 0;
                  f0 != ye; f0 += my0, f1 += my1)
@@ -267,7 +267,7 @@ namespace Aardvark.Base
             var result = new float[m0.SX * m0.SY];
 
             var data0 = m0.Data; var data1 = m1.Data;
-            int mf0 = (int)m0.FirstIndex, my0 = (int)m0.DY, my1 = (int)m0.DY;
+            int mf0 = (int)m0.FirstIndex, my0 = (int)m0.DY, my1 = (int)m1.DY;
             int ds0 = (int)m0.DSX, d0 = (int)m0.DX, d1 = (int)m1.DX;
             for (int ye = mf0 + (int)m0.DSY, f0 = mf0, f1 = (int)m1.FirstIndex, ri = 0;
                  f0 != ye; f0 += my0, f1 += my1)
@@ -497,7 +497,7 @@ namespace Aardvark.Base
             var result = new double[m0.SX * m0.SY];
 
             var data0 = m0.Data; var data1 = m1.Data;
-            int mf0 = (int)m0.FirstIndex, my0 = (int)m0.DY, my1 = (int)m0.DY;
+            int mf0 = (int)m0.FirstIndex, my0 = (int)m0.DY, my1 = (int)m1.DY;
             int ds0 = (int)m0.DSX, d0 = (int)m0.DX, d1 = (int)m1.DX;
             for (int ye = mf0 + (int)m0.DSY, f0 = mf0, f1 = (int)m1.FirstIndex, ri = 0;
                  f0 != ye; f0 += my0, f1 += my1)
@@ -531,7 +531,7 @@ namespace Aardvark.Base
             var result = new double[m0.SX * m0.SY];
 
             var data0 = m0.Data; var data1 = m1.Data;
-            int mf0 = (int)m0.FirstIndex, my0 = (int)m0.DY, my1 = (int)m0.DY;
+            int mf0 = (int)m0.FirstIndex, my0 = (int)m0.DY, my1 = (int)m1.DY;
             int ds0 = (int)m0.DSX, d0 = (int)m0.DX, d1 = (int)m1.DX;
             for (int ye = mf0 + (int)m0.DSY, f0 = mf0, f1 = (int)m1.FirstIndex, ri = 0;
                  f0 != ye; f0 += my0, f1 += my1)
