@@ -43,13 +43,15 @@ namespace Aardvark.Base
         //# foreach (var isDouble in new[] { false, true }) {
         //#   var ft = isDouble ? "double" : "float";
         //#   var tc = isDouble ? "d" : "f";
+        //#   var ift = "(int)";
+        //#   var ifd = "int";
         #region Vector Extensions
 
         public static __ft__ DotProduct(this Vector<__ft__> v0, Vector<__ft__> v1)
         {
             __ft__ result = 0.0__tc__;
             __ft__[] a0 = v0.Data, a1 = v1.Data;
-            for (int i0 = (int)v0.Origin, i1 = (int)v1.Origin, e0 = i0 + (int)v0.DSX, d0 = (int)v0.D, d1 = (int)v1.D;
+            for (__ifd__ i0 = __ift__v0.Origin, i1 = __ift__v1.Origin, e0 = i0 + __ift__v0.DSX, d0 = __ift__v0.D, d1 = __ift__v1.D;
                  i0 != e0; i0 += d0, i1 += d1)
                 result += a0[i0] * a1[i1];
             return result;
@@ -59,7 +61,7 @@ namespace Aardvark.Base
         {
             __ft__ result = 0.0__tc__;
             __ft__[] a = v.Data;
-            for (int i = (int)v.Origin, e = i + (int)v.DSX, d = (int)v.D; i != e; i += d)
+            for (__ifd__ i = __ift__v.Origin, e = i + __ift__v.DSX, d = __ift__v.D; i != e; i += d)
                 result += a[i] * a[i];
             return result;
         }
@@ -71,7 +73,7 @@ namespace Aardvark.Base
             var result = new __ft__[a.Dim];
             var ri = 0;
             __ft__[] a0 = a.Data, a1 = b.Data;
-            for (int i0 = (int)a.Origin, i1 = (int)b.Origin, e0 = i0 + (int)a.DSX, d0 = (int)a.D, d1 = (int)b.D;
+            for (__ifd__ i0 = __ift__a.Origin, i1 = __ift__b.Origin, e0 = i0 + __ift__a.DSX, d0 = __ift__a.D, d1 = __ift__b.D;
                  i0 != e0; i0 += d0, i1 += d1)
                 result[ri++] = a0[i0] * a1[i1];
             return Vector.Create(result);
@@ -85,9 +87,9 @@ namespace Aardvark.Base
             var result = new __ft__[b.Dim * a.Dim];
             var ri = 0;
             __ft__[] a0 = a.Data, a1 = b.Data;
-            int f1 = (int)b.Origin, e1 = f1 + (int)b.DSX, d1 = (int)b.D;
-            for (int i0 = (int)a.Origin, e0 = i0 + (int)a.DSX, d0 = (int)a.D; i0 != e0; i0 += d0)
-                for (int i1 = f1; i1 != e1; i1 += d1)
+            __ifd__ f1 = __ift__b.Origin, e1 = f1 + __ift__b.DSX, d1 = __ift__b.D;
+            for (__ifd__ i0 = __ift__a.Origin, e0 = i0 + __ift__a.DSX, d0 = __ift__a.D; i0 != e0; i0 += d0)
+                for (__ifd__ i1 = f1; i1 != e1; i1 += d1)
                     result[ri++] = a0[i0] * a1[i1];
             return Matrix.Create(result, b.Dim, a.Dim);
         }
@@ -97,7 +99,7 @@ namespace Aardvark.Base
             var result = new __ft__[vec.Dim];
             var ri = 0;
             __ft__[] a0 = vec.Data;
-            for (int i0 = (int)vec.Origin, e0 = i0 + (int)vec.DSX, d0 = (int)vec.D; i0 != e0; i0 += d0)
+            for (__ifd__ i0 = __ift__vec.Origin, e0 = i0 + __ift__vec.DSX, d0 = __ift__vec.D; i0 != e0; i0 += d0)
                 result[ri++] = a0[i0] * s;
             return Vector.Create(result);
         }
@@ -109,7 +111,7 @@ namespace Aardvark.Base
             var result = new __ft__[a.Dim];
             var ri = 0;
             __ft__[] a0 = a.Data, a1 = b.Data;
-            for (int i0 = (int)a.Origin, i1 = (int)b.Origin, e0 = i0 + (int)a.DSX, d0 = (int)a.D, d1 = (int)b.D;
+            for (__ifd__ i0 = __ift__a.Origin, i1 = __ift__b.Origin, e0 = i0 + __ift__a.DSX, d0 = __ift__a.D, d1 = __ift__b.D;
                  i0 != e0; i0 += d0, i1 += d1)
                 result[ri++] = a0[i0] - a1[i1];
             return Vector.Create(result);
@@ -120,7 +122,7 @@ namespace Aardvark.Base
             var result = new __ft__[a.Dim];
             var ri = 0;
             __ft__[] a0 = a.Data;
-            for (int i0 = (int)a.Origin, e0 = i0 + (int)a.DSX, d0 = (int)a.D; i0 != e0; i0 += d0)
+            for (__ifd__ i0 = __ift__a.Origin, e0 = i0 + __ift__a.DSX, d0 = __ift__a.D; i0 != e0; i0 += d0)
                 result[ri++] = a0[i0] - b;
             return Vector.Create(result);
         }
@@ -132,7 +134,7 @@ namespace Aardvark.Base
             var result = new __ft__[a.Dim];
             var ri = 0;
             __ft__[] a0 = a.Data, a1 = b.Data;
-            for (int i0 = (int)a.Origin, i1 = (int)b.Origin, e0 = i0 + (int)a.DSX, d0 = (int)a.D, d1 = (int)b.D;
+            for (__ifd__ i0 = __ift__a.Origin, i1 = __ift__b.Origin, e0 = i0 + __ift__a.DSX, d0 = __ift__a.D, d1 = __ift__b.D;
                  i0 != e0; i0 += d0, i1 += d1)
                 result[ri++] = a0[i0] + a1[i1];
             return Vector.Create(result);
@@ -143,7 +145,7 @@ namespace Aardvark.Base
             var result = new __ft__[a.Dim];
             var ri = 0;
             __ft__[] a0 = a.Data;
-            for (int i0 = (int)a.Origin, e0 = i0 + (int)a.DSX, d0 = (int)a.D; i0 != e0; i0 += d0)
+            for (__ifd__ i0 = __ift__a.Origin, e0 = i0 + __ift__a.DSX, d0 = __ift__a.D; i0 != e0; i0 += d0)
                 result[ri++] = a0[i0] + b;
             return Vector.Create(result);
         }
@@ -172,14 +174,14 @@ namespace Aardvark.Base
             var result = new __ft__[mat.Dim.Y];
 
             var data0 = mat.Data; var data1 = vec.Data;
-            int my0 = (int)mat.DY, d1 = (int)vec.D;
-            int mf1 = (int)vec.FirstIndex;
-            int ds0 = (int)mat.DSX, d0 = (int)mat.DX;
-            for (int ri = 0, ye = (int)mat.FirstIndex + (int)mat.DSY, f0 = (int)mat.FirstIndex, e0 = f0 + ds0;
+            __ifd__ my0 = __ift__mat.DY, d1 = __ift__vec.D;
+            __ifd__ mf1 = __ift__vec.FirstIndex;
+            __ifd__ ds0 = __ift__mat.DSX, d0 = __ift__mat.DX;
+            for (__ifd__ ri = 0, ye = __ift__mat.FirstIndex + __ift__mat.DSY, f0 = __ift__mat.FirstIndex, e0 = f0 + ds0;
                  f0 != ye; f0 += my0, e0 += my0, ri++)
             {
                 __ft__ dot = 0.0__tc__;
-                for (int i0 = f0, i1 = mf1; i0 != e0; i0 += d0, i1 += d1)
+                for (__ifd__ i0 = f0, i1 = mf1; i0 != e0; i0 += d0, i1 += d1)
                     dot += data0[i0] * data1[i1];
 
                 result[ri] = dot;
@@ -196,15 +198,15 @@ namespace Aardvark.Base
             var result = new Matrix<__ft__>(m1.SX, m0.SY);
 
             var data = result.Data; var data0 = m0.Data; var data1 = m1.Data;
-            int i = (int)result.FirstIndex, yj = (int)result.JY, my0 = (int)m0.DY;
-            int xs = (int)result.DSX, mf1 = (int)m1.FirstIndex, xj = (int)result.JX, mx1 = (int)m1.DX;
-            int ds0 = (int)m0.DSX, d0 = (int)m0.DX, d1 = (int)m1.DY;
-            for (int ye = i + (int)result.DSY, f0 = (int)m0.FirstIndex, e0 = f0 + ds0;
+            __ifd__ i = __ift__result.FirstIndex, yj = __ift__result.JY, my0 = __ift__m0.DY;
+            __ifd__ xs = __ift__result.DSX, mf1 = __ift__m1.FirstIndex, xj = __ift__result.JX, mx1 = __ift__m1.DX;
+            __ifd__ ds0 = __ift__m0.DSX, d0 = __ift__m0.DX, d1 = __ift__m1.DY;
+            for (__ifd__ ye = i + __ift__result.DSY, f0 = __ift__m0.FirstIndex, e0 = f0 + ds0;
                  i != ye; i += yj, f0 += my0, e0 += my0)
-                for (int xe = i + xs, f1 = mf1; i != xe; i += xj, f1 += mx1)
+                for (__ifd__ xe = i + xs, f1 = mf1; i != xe; i += xj, f1 += mx1)
                 {
                     __ft__ dot = 0.0__tc__;
-                    for (int i0 = f0, i1 = f1; i0 != e0; i0 += d0, i1 += d1)
+                    for (__ifd__ i0 = f0, i1 = f1; i0 != e0; i0 += d0, i1 += d1)
                         dot += data0[i0] * data1[i1];
                     data[i] = dot;
                 }
@@ -217,13 +219,13 @@ namespace Aardvark.Base
             var result = new __ft__[mat.SX * mat.SY];
 
             var data0 = mat.Data;
-            int my0 = (int)mat.DY;
-            int mf0 = (int)mat.FirstIndex;
-            int ds0 = (int)mat.DSX, d0 = (int)mat.DX;
-            for (int ri = 0, ye = (int)mat.FirstIndex + (int)mat.DSY, f0 = (int)mat.FirstIndex, e0 = f0 + ds0; 
+            __ifd__ my0 = __ift__mat.DY;
+            __ifd__ mf0 = __ift__mat.FirstIndex;
+            __ifd__ ds0 = __ift__mat.DSX, d0 = __ift__mat.DX;
+            for (__ifd__ ri = 0, ye = __ift__mat.FirstIndex + __ift__mat.DSY, f0 = __ift__mat.FirstIndex, e0 = f0 + ds0; 
                 f0 != ye; f0 += my0, e0 += my0)
             {
-                for (int i0 = f0; i0 != e0; i0 += d0, ri++)
+                for (__ifd__ i0 = f0; i0 != e0; i0 += d0, ri++)
                     result[ri] = data0[i0] * a;
             }
             return Matrix.Create(result, mat.SX, mat.SY);
@@ -236,11 +238,11 @@ namespace Aardvark.Base
             var result = new __ft__[m0.SX * m0.SY];
 
             var data0 = m0.Data; var data1 = m1.Data;
-            int mf0 = (int)m0.FirstIndex, my0 = (int)m0.DY, my1 = (int)m1.DY;
-            int ds0 = (int)m0.DSX, d0 = (int)m0.DX, d1 = (int)m1.DX;
-            for (int ye = mf0 + (int)m0.DSY, f0 = mf0, f1 = (int)m1.FirstIndex, ri = 0;
+            __ifd__ mf0 = __ift__m0.FirstIndex, my0 = __ift__m0.DY, my1 = __ift__m1.DY;
+            __ifd__ ds0 = __ift__m0.DSX, d0 = __ift__m0.DX, d1 = __ift__m1.DX;
+            for (__ifd__ ye = mf0 + __ift__m0.DSY, f0 = mf0, f1 = __ift__m1.FirstIndex, ri = 0;
                  f0 != ye; f0 += my0, f1 += my1)
-                for (int xe = f0 + ds0, i0 = f0, i1 = f1; i0 != xe; i0 += d0, i1 += d1, ri++)
+                for (__ifd__ xe = f0 + ds0, i0 = f0, i1 = f1; i0 != xe; i0 += d0, i1 += d1, ri++)
                     result[ri] = data0[i0] - data1[i1];
 
             return Matrix.Create(result, m0.SX, m0.SY);
@@ -251,13 +253,13 @@ namespace Aardvark.Base
             var result = new __ft__[mat.SX * mat.SY];
 
             var data0 = mat.Data;
-            int my0 = (int)mat.DY;
-            int mf0 = (int)mat.FirstIndex;
-            int ds0 = (int)mat.DSX, d0 = (int)mat.DX;
-            for (int ri = 0, ye = (int)mat.FirstIndex + (int)mat.DSY, f0 = (int)mat.FirstIndex, e0 = f0 + ds0;
+            __ifd__ my0 = __ift__mat.DY;
+            __ifd__ mf0 = __ift__mat.FirstIndex;
+            __ifd__ ds0 = __ift__mat.DSX, d0 = __ift__mat.DX;
+            for (__ifd__ ri = 0, ye = __ift__mat.FirstIndex + __ift__mat.DSY, f0 = __ift__mat.FirstIndex, e0 = f0 + ds0;
                 f0 != ye; f0 += my0, e0 += my0)
             {
-                for (int i0 = f0; i0 != e0; i0 += d0, ri++)
+                for (__ifd__ i0 = f0; i0 != e0; i0 += d0, ri++)
                     result[ri] = data0[i0] - a;
             }
             return Matrix.Create(result, mat.SX, mat.SY);
@@ -270,11 +272,11 @@ namespace Aardvark.Base
             var result = new __ft__[m0.SX * m0.SY];
 
             var data0 = m0.Data; var data1 = m1.Data;
-            int mf0 = (int)m0.FirstIndex, my0 = (int)m0.DY, my1 = (int)m1.DY;
-            int ds0 = (int)m0.DSX, d0 = (int)m0.DX, d1 = (int)m1.DX;
-            for (int ye = mf0 + (int)m0.DSY, f0 = mf0, f1 = (int)m1.FirstIndex, ri = 0;
+            __ifd__ mf0 = __ift__m0.FirstIndex, my0 = __ift__m0.DY, my1 = __ift__m1.DY;
+            __ifd__ ds0 = __ift__m0.DSX, d0 = __ift__m0.DX, d1 = __ift__m1.DX;
+            for (__ifd__ ye = mf0 + __ift__m0.DSY, f0 = mf0, f1 = __ift__m1.FirstIndex, ri = 0;
                  f0 != ye; f0 += my0, f1 += my1)
-                for (int xe = f0 + ds0, i0 = f0, i1 = f1; i0 != xe; i0 += d0, i1 += d1, ri++)
+                for (__ifd__ xe = f0 + ds0, i0 = f0, i1 = f1; i0 != xe; i0 += d0, i1 += d1, ri++)
                     result[ri] = data0[i0] + data1[i1];
 
             return Matrix.Create(result, m0.SX, m0.SY);
@@ -285,13 +287,13 @@ namespace Aardvark.Base
             var result = new __ft__[mat.SX * mat.SY];
 
             var data0 = mat.Data;
-            int my0 = (int)mat.DY;
-            int mf0 = (int)mat.FirstIndex;
-            int ds0 = (int)mat.DSX, d0 = (int)mat.DX;
-            for (int ri = 0, ye = (int)mat.FirstIndex + (int)mat.DSY, f0 = (int)mat.FirstIndex, e0 = f0 + ds0;
+            __ifd__ my0 = __ift__mat.DY;
+            __ifd__ mf0 = __ift__mat.FirstIndex;
+            __ifd__ ds0 = __ift__mat.DSX, d0 = __ift__mat.DX;
+            for (__ifd__ ri = 0, ye = __ift__mat.FirstIndex + __ift__mat.DSY, f0 = __ift__mat.FirstIndex, e0 = f0 + ds0;
                 f0 != ye; f0 += my0, e0 += my0)
             {
-                for (int i0 = f0; i0 != e0; i0 += d0, ri++)
+                for (__ifd__ i0 = f0; i0 != e0; i0 += d0, ri++)
                     result[ri] = data0[i0] + a;
             }
             return Matrix.Create(result, mat.SX, mat.SY);
