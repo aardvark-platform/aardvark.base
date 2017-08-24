@@ -100,27 +100,39 @@ type Adaptive private() =
                 t.Dispose()
         }
 
+module private ImplicitConversionHate =
+    let inline addOutput (t:IAdaptiveObject) (o:IAdaptiveObject) = 
+        t.AddOutput o
+
+    let inline removeOutput (t:IAdaptiveObject) (o:IAdaptiveObject) = 
+        t.RemoveOutput o
+
+    let inline addMarkingCallback (t:IAdaptiveObject) (mc: unit -> unit ) = 
+        t.AddMarkingCallback mc
+
+    let inline markOutdated (t:IAdaptiveObject) = 
+        t.MarkOutdated()
 
 
+open CallbackExtensions
 [<Extension; AbstractClass; Sealed>]
 type AdaptiveObjectExtensions private() =
 
     [<Extension>]
-    static member AddOutput (this : IAdaptiveObject, o : IAdaptiveObject) =
-        this.AddOutput(o)
+    static member AddOutput (this : IAdaptiveObject, o : IAdaptiveObject) : unit =
+        ImplicitConversionHate.addOutput this o
 
     [<Extension>]
-    static member RemoveOutput (this : IAdaptiveObject, o : IAdaptiveObject) =
-        this.RemoveOutput(o)
+    static member RemoveOutput (this : IAdaptiveObject, o : IAdaptiveObject) : unit =
+        ImplicitConversionHate.removeOutput this o
 
     [<Extension>]
-    static member AddMarkingCallback (this : IAdaptiveObject, o : Action) =
-        this.AddMarkingCallback(o.Invoke)
-
+    static member AddMarkingCallback (this : IAdaptiveObject, o : Action) :IDisposable =
+        ImplicitConversionHate.addMarkingCallback this o.Invoke
+        
     [<Extension>]
-    static member MarkOutdated (this : IAdaptiveObject) =
-        this.MarkOutdated()
-
+    static member MarkOutdated (this : IAdaptiveObject) : unit =
+        ImplicitConversionHate.markOutdated this
 
 [<Extension; AbstractClass; Sealed>]
 type ModExtensions private() =
