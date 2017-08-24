@@ -150,6 +150,7 @@
     <Compile Include="RangesBoxes\Box.cs" />
     <Compile Include="RangesBoxes\Box_auto.cs" />
     <None Include="paket.references" />
+    <None Include="paket.template" />
     <None Include="RangesBoxes\Box_template.cs" />
     <Compile Include="RangesBoxes\OrientedBox.cs" />
     <Compile Include="RangesBoxes\Range.cs" />
