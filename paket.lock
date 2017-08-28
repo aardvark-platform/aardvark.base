@@ -1,4 +1,4 @@
-FRAMEWORK: NET45
+RESTRICTION: == net45
 NUGET
   remote: https://api.nuget.org/v3/index.json
     DevILSharp (0.0.13)
@@ -24,44 +24,15 @@ NUGET
 
 GROUP Build
 CONTENT: NONE
-FRAMEWORK: NET45
+RESTRICTION: == net45
 NUGET
   remote: https://api.nuget.org/v3/index.json
-    Chessie (0.6) - content: none
-      FSharp.Core
-    FAKE (4.52) - content: none
-    FSharp.Core (4.1.17) - content: none
-      System.ValueTuple (>= 4.3)
-    Mono.Cecil (0.10.0-beta5) - content: none
-    Newtonsoft.Json (10.0.2) - content: none
-    Paket.Core (3.36.5) - content: none
-      Chessie (>= 0.6)
-      FSharp.Core (>= 4.0.1.7-alpha)
-      Mono.Cecil (>= 0.10.0-beta1-v2)
-      Newtonsoft.Json
-      System.Diagnostics.FileVersionInfo (>= 4.3.0-prerelease)
-      System.Diagnostics.Process (>= 4.3.0-prerelease)
-      System.Diagnostics.TraceSource (>= 4.3.0-prerelease)
-      System.Security.Cryptography.Algorithms (>= 4.3.0-prerelease)
-      System.Security.Cryptography.ProtectedData (>= 4.3.0-prerelease)
-      System.Xml.XDocument (>= 4.3.0-prerelease)
-      System.Xml.XPath.XDocument (>= 4.3.0-prerelease)
-      System.Xml.XPath.XmlDocument (>= 4.3.0-prerelease)
+    FAKE (4.63) - content: none
+    Mono.Cecil (0.10.0-beta6) - content: none
     SourceLink.Fake (1.1) - content: none
-    System.Diagnostics.FileVersionInfo (4.3) - content: none
-    System.Diagnostics.Process (4.3) - content: none
-    System.Diagnostics.TraceSource (4.3) - content: none
-    System.Security.Cryptography.Algorithms (4.3) - content: none
-    System.Security.Cryptography.ProtectedData (4.4.0-preview1-25305-02) - content: none
-    System.ValueTuple (4.3.1) - content: none
-    System.Xml.XDocument (4.3) - content: none
-    System.Xml.XPath.XDocument (4.3) - content: none
-    System.Xml.XPath.XmlDocument (4.3) - content: none
 GITHUB
   remote: vrvis/Aardvark.Fake
-    FULLPROJECT (d8c6fb31cc19bdd6c4c45dfc4462e84102e8fa03)
-      Chessie (>= 0.6 < 0.7)
-      FAKE (>= 4.52 < 4.53)
-      Mono.Cecil
-      Paket.Core (>= 3.36.1 < 3.37)
+    FULLPROJECT (c4f9d04cc0c00c2f2081296ce30195ae997148f5)
+      FAKE (>= 4.63 < 4.64)
+      Mono.Cecil (>= 0.10.0-beta6 < 0.11)
       SourceLink.Fake (>= 1.1 < 1.2)
