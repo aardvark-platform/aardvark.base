@@ -2,6 +2,8 @@ framework: net45
 source https://api.nuget.org/v3/index.json
 source https://vrvis.myget.org/F/aardvark_public/api/v3/index.json
 
+nuget FSharp.Core                   = 4.0.0.1
+
 nuget System.Collections.Immutable >= 1.2.0
 
 nuget System.Reactive.Linq       ~> 3.0.0
