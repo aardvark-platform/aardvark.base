@@ -2,7 +2,7 @@ framework: net45
 source https://api.nuget.org/v3/index.json
 source https://vrvis.myget.org/F/aardvark_public/api/v3/index.json
 
-nuget FSharp.Core                   = 4.0.0.1
+nuget FSharp.Core                   ~> 4.0.0
 
 nuget System.Collections.Immutable >= 1.2.0
 
@@ -10,7 +10,7 @@ nuget System.Reactive.Linq       ~> 3.0.0
 nuget System.Reactive.Core       ~> 3.0.0
 nuget System.Reactive.Interfaces ~> 3.0.0
 
-nuget DevILSharp             ~> 0.0.11
+nuget DevILSharp             ~> 0.1.1
 
 nuget Unofficial.LibTessDotNet          ~> 1.0.2
 
