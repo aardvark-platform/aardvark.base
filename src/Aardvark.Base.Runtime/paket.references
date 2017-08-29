@@ -1,3 +1,5 @@
 System.Reactive.Linq
 System.Reactive.Core
 System.Reactive.Interfaces
+FSharp.Core
+DevILSharp

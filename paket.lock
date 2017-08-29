@@ -1,7 +1,10 @@
 RESTRICTION: == net45
 NUGET
+  remote: https://vrvis.myget.org/F/aardvark_public/api/v3/index.json
+    DevilSharp (0.1.1)
+      FSharp.Core (>= 4.0 < 4.1)
+    Unofficial.LibTessDotNet (1.0.2)
   remote: https://api.nuget.org/v3/index.json
-    DevILSharp (0.0.13)
     FsCheck (2.7.2)
       FSharp.Core (>= 3.1.2.5)
     FsCheck.NUnit (2.7.2)
@@ -23,8 +26,6 @@ NUGET
       System.Reactive.Core (>= 3.0)
       System.Reactive.Interfaces (>= 3.0)
     System.Runtime.InteropServices.RuntimeInformation (4.3)
-  remote: https://vrvis.myget.org/F/aardvark_public/api/v3/index.json
-    Unofficial.LibTessDotNet (1.0.2)
 
 GROUP Build
 CONTENT: NONE
