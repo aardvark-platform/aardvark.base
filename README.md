@@ -3,8 +3,6 @@
 
 Aardvark.Base is part of the open-source [Aardvark platform](https://github.com/aardvark-platform/aardvark.docs) for visual computing, real-time graphics and visualization.
 
-See [Aardvark.Docs](https://github.com/aardvark-platform/aardvark.docs) for general documentation.
-
 ## Docs and Tutorials
 
 [Getting Started](https://github.com/vrvis/aardvark/wiki)
