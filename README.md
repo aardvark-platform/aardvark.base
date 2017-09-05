@@ -1,7 +1,7 @@
-Aardvark.Base is part of the [Aardvark Platform](https://github.com/aardvark-platform/aardvark.docs) for visual computing and real-time graphics.
-
 [![Build Status](https://travis-ci.org/aardvark-platform/aardvark.base.svg?branch=master)](https://travis-ci.org/aardvark-platform/aardvark.base)
 [![Build status](https://ci.appveyor.com/api/projects/status/px8242ird5aa6svs/branch/master?svg=true)](https://ci.appveyor.com/project/haraldsteinlechner/aardvark/branch/master)
+
+[Aardvark](https://github.com/aardvark-platform/aardvark.docs) is an open-source platform for visual computing, real-time graphics and visualization.
 
 ## Docs and Tutorials
 
