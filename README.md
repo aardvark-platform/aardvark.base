@@ -15,7 +15,7 @@ This library contains data types and algorithms commonly used in computer graphi
 * polynomial solver / LU-Factorization / QR-Factorization
 * ...
 
-Aardvark.Base is also distributed as a binary package via NuGet. See https://www.nuget.org/packages/Aardvark.Base.
+Aardvark.Base is also distributed as a binary package via [NuGet](https://www.nuget.org/packages/Aardvark.Base/)!
 
 ## Aardvark Platform
 Our **quickstart** for [Windows](https://github.com/aardvark-platform/aardvark.docs/wiki/Quickstart-Windows) and [Linux](https://github.com/aardvark-platform/aardvark.docs/wiki/Quickstart-Linux) smoothes the path for your Aardvark experience! 
