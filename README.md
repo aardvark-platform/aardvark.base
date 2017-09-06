@@ -9,30 +9,10 @@ Aardvark.Base is part of the open-source [Aardvark platform](https://github.com/
 
 [Example Code and Demos](https://github.com/vrvis/aardvark.rendering/tree/master/src/Demo/Examples)
 
-[Tutorial: Terrain Generator](https://aszabo314.github.io/stuff/terraingenerator.html)
+## Aardvark Platform
+Our **quickstart** for [Windows](https://github.com/aardvark-platform/aardvark.docs/wiki/Quickstart-Windows) and [Linux](https://github.com/aardvark-platform/aardvark.docs/wiki/Quickstart-Linux) smoothes the path for your Aardvark experience! 
 
-[Shaders: FShade](http://www.fshade.org/)
-
-[Game: Samy the Salmon](https://github.com/gnufu/SamyTheSalmon)
-
-## How to build
-
-Windows:
-- Visual Studio 2015,
-- Visual FSharp Tools installed (we use 4.0 now) 
-- run build.cmd which will install all dependencies
-- msbuild src\Aardvark.sln or use VisualStudio to build the solution
-
-Linux:
-- install mono >= 4.2.3.0 (might work in older versions as well)
-- install fsharp 4.0 (http://fsharp.org/use/linux/)
-- run build.sh which will install all dependencies
-- run xbuild src/Aardvark.sln
-
-A visual studio solution is located at: src/Aardvark.sln.
-While building, visual studio might prompt for permission to use our type providers. Unfortunately,
-the build fails immediately afterwards no matter if you granted permission. In this case
-simply rebuild all again and it should work this time.
+Do not forget to checkout our [wiki](https://github.com/aardvarkplatform/aardvark.docs/wiki/Gallery) and various [examples](https://github.com/aardvark-platform/aardvark.docs), where your contriubtion is very welcomed!
 
 ## License
 Aardvark libraries are free to use: [Apache License 2.0](http://www.apache.org/licenses/LICENSE-2.0.txt).
