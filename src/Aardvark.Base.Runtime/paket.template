@@ -1,8 +1,11 @@
 type project
 id Aardvark.Base.Runtime
-authors VRVis Research Center
+authors Aardvark Platform Team
+owners Aardvark Platform Team
+projectUrl http://github.com/aardvark-platform
+licenseUrl http://www.apache.org/licenses/LICENSE-2.0.txt
 description
-    Aardvark.Base.Runtime provides a runtime utilities based Aardvark.Base.FSharp and Aardvark.Base.Incremental
+    Aardvark is an open-source platform for visual computing, real-time graphics and visualization.
 files
     ..\..\bin\Release\Aardvark.Base.Runtime.dll ==> lib\net45
     ..\..\bin\Release\Aardvark.Base.Runtime.pdb ==> lib\net45

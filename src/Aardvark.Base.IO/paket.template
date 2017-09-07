@@ -1,8 +1,11 @@
 type project
 id Aardvark.Base.IO
-authors VRVis Research Center
+authors Aardvark Platform Team
+owners Aardvark Platform Team
+projectUrl http://github.com/aardvark-platform
+licenseUrl http://www.apache.org/licenses/LICENSE-2.0.txt
 description
-    Serialization with versioning.
+    Aardvark is an open-source platform for visual computing, real-time graphics and visualization.
 files
     ..\..\bin\Release\Aardvark.Base.IO.dll ==> lib\net45
     ..\..\bin\Release\Aardvark.Base.IO.pdb ==> lib\net45

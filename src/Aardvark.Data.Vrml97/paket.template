@@ -1,8 +1,11 @@
 type project
 id Aardvark.Data.Vrml97
-authors VRVis Research Center
+authors Aardvark Platform Team
+owners Aardvark Platform Team
+projectUrl http://github.com/aardvark-platform
+licenseUrl http://www.apache.org/licenses/LICENSE-2.0.txt
 description
-    Aardvark.Data.Vrml97 provides a purely managed Vrml97 parser.
+    Aardvark is an open-source platform for visual computing, real-time graphics and visualization.
 files
     ..\..\bin\Release\Aardvark.Data.Vrml97.dll ==> lib\net45
     ..\..\bin\Release\Aardvark.Data.Vrml97.pdb ==> lib\net45
