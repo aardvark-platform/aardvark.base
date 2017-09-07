@@ -37,7 +37,7 @@ NUGET
     SourceLink.Fake (1.1) - content: none
 GITHUB
   remote: aardvark-platform/aardvark.fake
-    FULLPROJECT (c4f9d04cc0c00c2f2081296ce30195ae997148f5)
+    FULLPROJECT (850598ad8e27cef9d14cb0d4b88ba542c02a8a0d)
       FAKE (>= 4.63 < 4.64)
       Mono.Cecil (>= 0.10.0-beta6 < 0.11)
       SourceLink.Fake (>= 1.1 < 1.2)
