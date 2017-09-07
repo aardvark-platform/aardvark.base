@@ -36,7 +36,7 @@ NUGET
     Mono.Cecil (0.10.0-beta6) - content: none
     SourceLink.Fake (1.1) - content: none
 GITHUB
-  remote: vrvis/Aardvark.Fake
+  remote: aardvark-platform/aardvark.fake
     FULLPROJECT (c4f9d04cc0c00c2f2081296ce30195ae997148f5)
       FAKE (>= 4.63 < 4.64)
       Mono.Cecil (>= 0.10.0-beta6 < 0.11)
