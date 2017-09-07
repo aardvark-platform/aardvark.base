@@ -20,7 +20,7 @@ Aardvark.Base is also distributed as a binary package via [NuGet](https://www.nu
 ## Aardvark Platform
 Our **quickstart** for [Windows](https://github.com/aardvark-platform/aardvark.docs/wiki/Quickstart-Windows) and [Linux](https://github.com/aardvark-platform/aardvark.docs/wiki/Quickstart-Linux) smoothes the path for your Aardvark experience! 
 
-Do not forget to checkout our [wiki](https://github.com/aardvarkplatform/aardvark.docs/wiki) and various [examples](https://github.com/aardvark-platform/aardvark.docs/wiki/Gallery), where your contriubtion is very welcomed!
+Do not forget to check out our [wiki](https://github.com/aardvarkplatform/aardvark.docs/wiki) and various [examples](https://github.com/aardvark-platform/aardvark.docs/wiki/Gallery), where your contributions are very welcome!
 
 ## License
 Aardvark libraries are free to use: [Apache License 2.0](http://www.apache.org/licenses/LICENSE-2.0.txt).
