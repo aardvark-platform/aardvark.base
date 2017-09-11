@@ -645,6 +645,7 @@ module Disassembler =
             elif i.Code = OpCodes.Conv_R8 then Some ValueType.Float64
             elif i.Code = OpCodes.Conv_I then Some ValueType.NativeInt
             elif i.Code = OpCodes.Conv_U then Some ValueType.UNativeInt
+            elif i.Code = OpCodes.Conv_R_Un then Some ValueType.Float32
             else None
 
         let (|ConvChecked|_|) (i : RawInstruction) =
@@ -658,6 +659,19 @@ module Disassembler =
             elif i.Code = OpCodes.Conv_Ovf_U8 then Some ValueType.UInt64
             elif i.Code = OpCodes.Conv_Ovf_I then Some ValueType.NativeInt
             elif i.Code = OpCodes.Conv_Ovf_U then Some ValueType.UNativeInt
+
+            
+            elif i.Code = OpCodes.Conv_Ovf_I1_Un then Some ValueType.Int8
+            elif i.Code = OpCodes.Conv_Ovf_U1_Un then Some ValueType.UInt8
+            elif i.Code = OpCodes.Conv_Ovf_I2_Un then Some ValueType.Int16
+            elif i.Code = OpCodes.Conv_Ovf_U2_Un then Some ValueType.UInt16
+            elif i.Code = OpCodes.Conv_Ovf_I4_Un then Some ValueType.Int32
+            elif i.Code = OpCodes.Conv_Ovf_U4_Un then Some ValueType.UInt32
+            elif i.Code = OpCodes.Conv_Ovf_I8_Un then Some ValueType.Int64
+            elif i.Code = OpCodes.Conv_Ovf_U8_Un then Some ValueType.UInt64
+            elif i.Code = OpCodes.Conv_Ovf_I_Un then Some ValueType.NativeInt
+            elif i.Code = OpCodes.Conv_Ovf_U_Un then Some ValueType.UNativeInt
+
             else None
 
         let (|RefAnyVal|_|) (i : RawInstruction) =
@@ -745,7 +759,7 @@ module Disassembler =
 
         let (|Call|_|) (i : RawInstruction) =
             if i.Code = OpCodes.Call || i.Code = OpCodes.Callvirt then
-                Some (unbox<MethodInfo> i.Operand)
+                Some (unbox<MethodBase> i.Operand)
             else
                 None
 
@@ -797,8 +811,8 @@ module Disassembler =
 
         let ctx =
             {
-                TypeArgs = m.DeclaringType.GetGenericArguments()
-                MethodArgs = m.GetGenericArguments()
+                TypeArgs = if m.DeclaringType.IsGenericType then m.DeclaringType.GetGenericArguments() else [||]
+                MethodArgs = if m.IsGenericMethod then m.GetGenericArguments() else [||]
                 Module = m.Module
             }
 
