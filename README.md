@@ -1,5 +1,7 @@
 [![Build status](https://ci.appveyor.com/api/projects/status/px8242ird5aa6svs/branch/master?svg=true)](https://ci.appveyor.com/project/haraldsteinlechner/aardvark/branch/master)
 [![Build Status](https://travis-ci.org/aardvark-platform/aardvark.base.svg?branch=master)](https://travis-ci.org/aardvark-platform/aardvark.base)
+[![Join the chat at https://gitter.im/aardvark-platform/Lobby](https://img.shields.io/badge/gitter-join%20chat-blue.svg)](https://gitter.im/aardvark-platform/Lobby)
+[![Apache 2.0 license](http://img.shields.io/badge/license-Apache%202.0-yellowgreen.svg)](https://github.com/aardvark-platform/aardvark.base/blob/master/LICENSE)
 
 [Wiki](https://github.com/aardvarkplatform/aardvark.docs/wiki) | 
 [Gallery](https://github.com/aardvarkplatform/aardvark.docs/wiki/Gallery) | 
