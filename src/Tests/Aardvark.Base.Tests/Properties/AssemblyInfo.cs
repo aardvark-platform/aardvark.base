@@ -8,9 +8,9 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyTitle("Aardvark.Base.Tests")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("VRVis Zentrum fuer Virtual Reality und Visualisierung Forschungs-GmbH")]
+[assembly: AssemblyCompany("Aardvark Platform Team")]
 [assembly: AssemblyProduct("Aardvark.Base.Tests")]
-[assembly: AssemblyCopyright("Copyright © VRVis 2006-2013")]
+[assembly: AssemblyCopyright("Copyright © 2006-2017. Aardvark Platform Team.")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 

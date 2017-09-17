@@ -660,9 +660,7 @@ namespace Aardvark.Rendering
                 new XElement("body",
                     new XElement("div", "Not found!"),
                     new XElement("br"),
-                    new XElement("div",
-                        "Aardvark 2008, Copyright (c) 2008, VRVis Research Center."
-                        )
+                    new XElement("div", "Copyright (c) 2008-2017. Aardvark Platform Team.")
                     )
                 )
                 .ToString();

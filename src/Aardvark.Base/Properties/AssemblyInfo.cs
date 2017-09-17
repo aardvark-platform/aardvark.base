@@ -7,13 +7,11 @@ using System.Runtime.InteropServices;
 // associated with an assembly.
 [assembly: AssemblyTitle("Aardvark.Base")]
 [assembly: AssemblyDescription("Math, Geometry, Algorithms, and more ...")]
-#if !DEPLOY //(Automatic Code by BuildPatcher.) Removes these AssemblyAttributes for DEPLOY build since these are added with buildDeploy.bat.
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("VRVis Zentrum fuer Virtual Reality und Visualisierung Forschungs-GmbH")]
+[assembly: AssemblyCompany("Aardvark Platform Team")]
 [assembly: AssemblyProduct("Aardvark.Base")]
-[assembly: AssemblyCopyright("Copyright © VRVis 2006-2015")]
+[assembly: AssemblyCopyright("Copyright © 2006-2017. Aardvark Platform Team.")]
 [assembly: AssemblyTrademark("")]
-#endif //!DEPLOY (Automatic Code by BuildPatcher.)
 [assembly: AssemblyCulture("")]
 
 // Setting ComVisible to false makes the types in this assembly not visible 

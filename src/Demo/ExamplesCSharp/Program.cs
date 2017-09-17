@@ -59,7 +59,6 @@ namespace ExamplesCSharp
             // output was: 40
 
             // semantically, output now dependens on input declaratively. 
-            // more about conceptual semantics here: http://burrow.ra1.vrvis.lan:1220/html/adaptive-functional-programming.html
             // the dependency graph looks like:
             //   
             //       (x) => x * 2

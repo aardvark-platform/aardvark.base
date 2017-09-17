@@ -10,8 +10,6 @@ open AgHelpers
 
 // Implementation of an embedded domain specific language for attribute grammars. The library works with any types,
 // semantic functions can be added by defining modules annotated with [<Semantic>] attributes.
-// More information can be found here: https://github.com/vrvis/attribute-grammars-for-incremental-scenegraph-rendering and
-// the paper if accepted ;)
 module Ag =
 
     type Semantic() =

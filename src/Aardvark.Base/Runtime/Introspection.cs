@@ -241,7 +241,7 @@ namespace Aardvark.Base
             }
             else
             {
-                s_cacheDirName = Path.Combine(s_cacheDirName, @"VRVis\Aardvark\cache");
+                s_cacheDirName = Path.Combine(s_cacheDirName, @"Aardvark\cache");
             }
             Report.Line(4, "using cache dir: {0}", s_cacheDirName);
 
@@ -502,7 +502,7 @@ namespace Aardvark.Base
     {
         private static string AppDataCache = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
         private static string s_cacheFile =  IntrospectionProperties.CurrentEntryAssembly == null ? "" : 
-            Path.Combine(AppDataCache, "VRVis", "Aardvark", "cache", IntrospectionProperties.CurrentEntryAssembly.GetName().Name + "_plugins.bin");
+            Path.Combine(AppDataCache, "Aardvark", "cache", IntrospectionProperties.CurrentEntryAssembly.GetName().Name + "_plugins.bin");
 
         public string CacheFile = string.Empty;
 
