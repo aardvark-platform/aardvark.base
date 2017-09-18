@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Aardvark.VRVis
+namespace Aardvark.Base.Coder
 {
     /// <summary>
     /// Mark all classes that should be serializable with this attribute.

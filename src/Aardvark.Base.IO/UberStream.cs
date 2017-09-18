@@ -3,7 +3,7 @@ using System;
 using System.IO;
 using System.Linq;
 
-namespace Aardvark.VRVis
+namespace Aardvark.Base.Coder
 {
     /// <summary>
     /// To bundle multiple streams to one or create a sub-stream for an existing stream.

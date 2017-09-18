@@ -1,9 +1,9 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 
-namespace Aardvark.VRVis
+namespace Aardvark.Base.Coder
 {
-    public static class AnnotatedExtensions
+    internal static class AnnotatedExtensions
     {
         public static Annotated<T> Annotate<T>(this T self)
         {
@@ -27,7 +27,7 @@ namespace Aardvark.VRVis
         }
     }
 
-    public struct Annotation
+    internal struct Annotation
     {
         public string Key { get; private set; }
         public object Value { get; private set; }
@@ -41,7 +41,7 @@ namespace Aardvark.VRVis
         }
     }
 
-    public struct Annotated<T>
+    internal struct Annotated<T>
     {
         private T m_value;
         private IEnumerable<Annotation> m_tags;

@@ -3,7 +3,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 
-namespace Aardvark.VRVis
+namespace Aardvark.Base.Coder
 {
     /// <summary>
     /// This associates a type with a reading function and a writing

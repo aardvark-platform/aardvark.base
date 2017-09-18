@@ -3,7 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Aardvark.VRVis
+namespace Aardvark.Base.Coder
 {
     /// <summary>
     /// A field coder defines the name of a field and an associated coding

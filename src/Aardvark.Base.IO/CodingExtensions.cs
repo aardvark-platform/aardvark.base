@@ -2,7 +2,7 @@
 using System;
 using System.IO;
 
-namespace Aardvark.VRVis
+namespace Aardvark.Base.Coder
 {
     public static class CodingExtensions
     {

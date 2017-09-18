@@ -1,4 +1,4 @@
-namespace Aardvark.VRVis
+namespace Aardvark.Base.Coder
 {
     /// <summary>
     /// Implement this to awake an object from decoding after all fields of

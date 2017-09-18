@@ -2,12 +2,10 @@ using Aardvark.Base;
 using System.IO;
 using System.IO.Compression;
 
-namespace Aardvark.VRVis
+namespace Aardvark.Base.Coder
 {
-
     public static class GzipUtils
     {
-
         public static void GzipFile(string fileName)
         {
             Report.BeginTimed("compressing {0}", Path.GetFileName(fileName));
@@ -85,7 +83,5 @@ namespace Aardvark.VRVis
             ofs.Seek(0, SeekOrigin.Begin);
             return ofs;
         }
-
     }
-
 }

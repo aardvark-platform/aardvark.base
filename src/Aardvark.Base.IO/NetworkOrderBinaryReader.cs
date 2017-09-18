@@ -3,9 +3,8 @@ using System;
 using System.IO;
 using System.Text;
 
-namespace Aardvark.VRVis
+namespace Aardvark.Base.Coder
 {
-
     /// <summary>
     /// Wrapper for class BinaryReader.
     /// The following methods are overriden in order to
@@ -241,5 +240,4 @@ namespace Aardvark.VRVis
         #endregion
 
     }
-
 }

@@ -5,9 +5,8 @@ using System.Collections.Generic;
 using System.IO;
 using System.Text;
 
-namespace Aardvark.VRVis
+namespace Aardvark.Base.Coder
 {
-
     /// <summary>
     /// A class for writing binary files in an Aardvark specific format.
     /// </summary>
@@ -1085,5 +1084,4 @@ namespace Aardvark.VRVis
         #endregion    
 
     }
-
 }

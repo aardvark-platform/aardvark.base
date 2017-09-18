@@ -2,7 +2,7 @@ using Aardvark.Base;
 using System;
 using System.Collections.Generic;
 
-namespace Aardvark.VRVis
+namespace Aardvark.Base.Coder
 {
     public static class TypeInfoVersion
     {

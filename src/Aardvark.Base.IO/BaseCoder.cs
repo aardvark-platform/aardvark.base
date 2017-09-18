@@ -3,7 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Aardvark.VRVis
+namespace Aardvark.Base.Coder
 {
     [Flags]
     public enum CoderDebugMode

@@ -3,9 +3,8 @@ using System;
 using System.IO;
 using System.Text;
 
-namespace Aardvark.VRVis
+namespace Aardvark.Base.Coder
 {
-
     /// <summary>
     /// Wrapper for class BinaryWriter.
     /// The following methods are overriden in order to
@@ -35,7 +34,6 @@ namespace Aardvark.VRVis
     /// </summary>
     public class NetworkOrderBinaryWriter : BinaryWriter
     {
-
         public NetworkOrderBinaryWriter(Stream output)
             : base(output, Encoding.UTF8)
         {
@@ -134,7 +132,5 @@ namespace Aardvark.VRVis
             base.Write(Conversion.HostToNetworkOrder(value.B));
             base.Write(Conversion.HostToNetworkOrder(value.A));
         }
-
     }
-
 }

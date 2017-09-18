@@ -7,7 +7,7 @@ using System.IO;
 using System.Text;
 using System.Xml.Linq;
 
-namespace Aardvark.VRVis
+namespace Aardvark.Base.Coder
 {
     public partial class NewXmlWritingCoder
         : BaseWritingCoder, IWritingCoder, IDisposable

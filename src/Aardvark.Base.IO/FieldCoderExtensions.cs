@@ -4,9 +4,8 @@ using System.Linq;
 using System.Reflection;
 using System.Reflection.Emit;
 
-namespace Aardvark.VRVis
+namespace Aardvark.Base.Coder
 {
-
     public static class FieldCoderExtensions
     {
         public static IEnumerable<FieldCoder> CreateFieldCoders(this IFieldCodeable self, params string[] members)
@@ -225,7 +224,6 @@ namespace Aardvark.VRVis
 
     }
 
-
     public static class EmitDebug
     {
 
@@ -271,5 +269,4 @@ namespace Aardvark.VRVis
         private static TypeBuilder s_typeBuilder;
 
     }
-
 }

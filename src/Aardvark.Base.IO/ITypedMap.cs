@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace Aardvark.VRVis
+namespace Aardvark.Base.Coder
 {
     public struct FieldType
     {

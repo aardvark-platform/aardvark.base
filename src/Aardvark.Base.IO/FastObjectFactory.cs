@@ -2,7 +2,7 @@
 using System;
 using System.Reflection.Emit;
 
-namespace Aardvark.VRVis
+namespace Aardvark.Base.Coder
 {
     public static class FastObjectFactory
     {

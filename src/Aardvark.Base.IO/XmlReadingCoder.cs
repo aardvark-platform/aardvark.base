@@ -8,9 +8,8 @@ using System.Linq;
 using System.Text;
 using System.Xml.Linq;
 
-namespace Aardvark.VRVis
+namespace Aardvark.Base.Coder
 {
-
     public partial class NewXmlReadingCoder
         : BaseReadingCoder, IReadingCoder, IDisposable
     {
@@ -1741,6 +1740,5 @@ namespace Aardvark.VRVis
         }
 
         #endregion
-
     }
 }

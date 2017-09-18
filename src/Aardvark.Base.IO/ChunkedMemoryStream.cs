@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 
-namespace Aardvark.VRVis
+namespace Aardvark.Base.Coder
 {
     public class ChunkedMemoryStream : Stream
     {

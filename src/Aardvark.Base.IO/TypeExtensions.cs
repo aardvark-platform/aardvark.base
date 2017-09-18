@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Linq;
 
-namespace Aardvark.VRVis
+namespace Aardvark.Base.Coder
 {
     public static class TypeFun
     {

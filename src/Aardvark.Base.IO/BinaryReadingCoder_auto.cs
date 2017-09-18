@@ -2,7 +2,7 @@ using Aardvark.Base;
 using System;
 using System.Collections.Generic;
 
-namespace Aardvark.VRVis
+namespace Aardvark.Base.Coder
 {
     // AUTO GENERATED CODE - DO NOT CHANGE!
 

@@ -5,7 +5,7 @@ using System.IO;
 using System.Linq;
 using System.Threading;
 
-namespace Aardvark.VRVis
+namespace Aardvark.Base.Coder
 {
     [RegisterTypeInfo]
     public class Convertible : IFieldCodeable, IEquatable<Convertible>
@@ -252,7 +252,7 @@ namespace Aardvark.VRVis
         #endregion
     }
 
-    public class Converter
+    internal class Converter
     {
         #region Statics and Consts
 
@@ -1223,7 +1223,7 @@ namespace Aardvark.VRVis
         #endregion
     }
 
-    public class ConversionNotPossibleException : Exception
+    internal class ConversionNotPossibleException : Exception
     {
         public ConversionNotPossibleException(
             string source, string target, string text)

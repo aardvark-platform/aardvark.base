@@ -3,7 +3,7 @@ using System.IO;
 using System.Text;
 
 /// Important: .NET 4.5 contains full zip support.
-namespace Aardvark.VRVis.Legacy
+namespace Aardvark.Base.Coder.Legacy
 {
     // Based on .ZIP File Format Specification Version 6.3.3
 

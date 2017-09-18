@@ -5,7 +5,7 @@ using System.IO;
 using System.Linq;
 
 /// Important: .NET 4.5 contains full zip support.
-namespace Aardvark.VRVis.Legacy
+namespace Aardvark.Base.Coder.Legacy
 {
     /// <summary>
     /// Important: .NET 4.5 contains full zip support.

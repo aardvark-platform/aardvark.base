@@ -3,7 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Xml.Linq;
 
-namespace Aardvark.VRVis
+namespace Aardvark.Base.Coder
 {
     // AUTO GENERATED CODE - DO NOT CHANGE!
 

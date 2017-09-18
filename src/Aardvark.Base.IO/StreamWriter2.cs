@@ -2,7 +2,7 @@
 using System.IO;
 using System.Text;
 
-namespace Aardvark.VRVis
+namespace Aardvark.Base.Coder
 {
     /// <summary>
     /// Due to a bug, it is not possible to set the FormatProvider in StreamWriter constructor.
