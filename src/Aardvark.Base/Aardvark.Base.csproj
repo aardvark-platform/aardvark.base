@@ -118,14 +118,7 @@
     <Compile Include="Images\TensorExtensions.cs" />
     <None Include="Images\TensorExtensions_template.cs" />
     <Compile Include="Images\TensorExtensions_auto.cs" />
-    <Compile Include="IO\StreamCodeReader.cs" />
-    <Compile Include="IO\StreamCodeReader_auto.cs" />
-    <None Include="IO\StreamCodeReader_template.cs" />
-    <Compile Include="IO\StreamCodeWriter.cs" />
-    <Compile Include="IO\StreamCodeWriter_auto.cs" />
-    <None Include="IO\StreamCodeWriter_template.cs" />
     <None Include="Math\Complex_template.cs" />
-    <Compile Include="IO\WorkDir.cs" />
     <Compile Include="Math\AverageWindow.cs" />
     <Compile Include="Math\Complex_auto.cs" />
     <Compile Include="Math\Interpolation.cs" />

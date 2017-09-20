@@ -20,6 +20,7 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -28,6 +29,7 @@
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
@@ -48,6 +50,12 @@
     <Compile Include="FastObjectFactory.cs" />
     <Compile Include="ITypedMap.cs" />
     <Compile Include="RegisterTypeInfoAttribute.cs" />
+    <Compile Include="StreamCodeReader.cs" />
+    <Compile Include="StreamCodeReader_auto.cs" />
+    <None Include="StreamCodeReader_template.cs" />
+    <Compile Include="StreamCodeWriter.cs" />
+    <Compile Include="StreamCodeWriter_auto.cs" />
+    <None Include="StreamCodeWriter_template.cs" />
     <Compile Include="StreamWriter2.cs" />
     <Compile Include="TypeCoder.cs" />
     <Compile Include="TypeCoder_auto.cs" />
@@ -55,6 +63,7 @@
     <Compile Include="TypeInfo.cs" />
     <Compile Include="TypeInfoVersion.cs" />
     <Compile Include="UberStream.cs" />
+    <Compile Include="WorkDir.cs" />
     <Compile Include="XmlReadingCoder.cs" />
     <Compile Include="XmlReadingCoder_auto.cs" />
     <Compile Include="XmlWritingCoder.cs" />

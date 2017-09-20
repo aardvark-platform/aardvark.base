@@ -1,29 +1,23 @@
 ﻿using Aardvark.Base;
 using System;
-using System.Drawing;
 using System.IO;
-using System.Linq;
 
 namespace PixImageDemo
 {
     public static class Program
     {
-
         public static void Main(string[] args)
         {
             Aardvark.Base.Aardvark.Init();
             // require a directory of the following name inside the Aardvark workdir.
-            string dir = WorkDir.FindDir("PixImageDemo");
-
-
-
+            string dir = @"C:\Data\PixImageDemo";
+            
             PolygonDemo(dir);
             HowManyColorsIllusion(dir);
             ResampleDemo(dir);
             LinearRampDemo(dir);
             VariousDemos(dir);
         }
-
 
         public static void PolygonDemo(string dir)
         {
@@ -112,8 +106,7 @@ namespace PixImageDemo
 
             return pixImage;
         }
-
-
+        
         public static void HowManyColorsIllusion(string dir)
         {
             bool parallel = true;
@@ -238,8 +231,7 @@ namespace PixImageDemo
             outImg3.SaveAsImage(Path.Combine(dir, "resample-4clamped.tif"));
             Report.End();
         }
-
-
+        
         public static void VariousDemos(string dir)
         {
             bool alternative = true;
@@ -464,8 +456,7 @@ namespace PixImageDemo
 
             outImg.SaveAsImage(Path.Combine(odir, "difference.tiff"));
         }
-
-
+        
         public static void CopyTest(string dir)
         {
             var idir = Path.Combine(dir, "in");
