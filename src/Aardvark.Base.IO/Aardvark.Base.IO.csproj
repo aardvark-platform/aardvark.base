@@ -57,6 +57,7 @@
     <Compile Include="StreamCodeWriter_auto.cs" />
     <None Include="StreamCodeWriter_template.cs" />
     <Compile Include="StreamWriter2.cs" />
+    <Compile Include="SymMap.cs" />
     <Compile Include="TypeCoder.cs" />
     <Compile Include="TypeCoder_auto.cs" />
     <Compile Include="TypeExtensions.cs" />
