@@ -141,6 +141,7 @@
     <Compile Include="Random\RandomSample.cs" />
     <Compile Include="Random\RandomSystem.cs" />
     <Compile Include="RangesBoxes\Box.cs" />
+    <Compile Include="RangesBoxes\BoxExtensions.cs" />
     <Compile Include="RangesBoxes\Box_auto.cs" />
     <None Include="paket.references" />
     <None Include="paket.template" />

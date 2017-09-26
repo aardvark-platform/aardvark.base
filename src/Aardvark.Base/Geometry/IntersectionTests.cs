@@ -1,6 +1,5 @@
-using System;
 using System.Collections.Generic;
-using System.Text;
+using System.Runtime.CompilerServices;
 
 namespace Aardvark.Base
 {
@@ -76,6 +75,7 @@ namespace Aardvark.Base
 
         #endregion
 
+
         #region Hull3d contains V3d
 
         /// <summary>
@@ -93,6 +93,7 @@ namespace Aardvark.Base
         }
 
         #endregion
+
 
         #region Quad2d contains V2d (haaser)
 
@@ -113,6 +114,7 @@ namespace Aardvark.Base
         }
 
         #endregion
+
 
         #region Polygon2d contains V2d (haaser)
 
@@ -181,6 +183,38 @@ namespace Aardvark.Base
             }
             if (CCW) return counter > 0;
             else return counter < 0;
+        }
+
+        #endregion
+
+
+        #region Plane3d ± eps contains V3d (sm)
+
+        /// <summary>
+        /// Returns true if point is within given eps to plane.
+        /// </summary>
+        public static bool Contains(this Plane3d plane, double eps, V3d point)
+        {
+            var d = plane.Height(point);
+            return d >= -eps && d <= eps;
+        }
+
+        #endregion
+
+        #region Plane3d ± eps contains Box3d (sm)
+
+        /// <summary>
+        /// Returns true if the space within eps to a plane fully contains the given box.
+        /// </summary>
+        public static bool Contains(this Plane3d plane, double eps, Box3d box)
+        {
+            var corners = box.ComputeCorners();
+            for (var i = 0; i < 8; i++)
+            {
+                var d = plane.Height(corners[i]);
+                if (d < -eps || d > eps) return false;
+            }
+            return true;
         }
 
         #endregion
@@ -3365,30 +3399,24 @@ namespace Aardvark.Base
         /// Returns true if the box and the plane intersect or touch with a
         /// supplied epsilon tolerance.
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool Intersects(
             this Box3d box, Plane3d plane, double eps)
         {
-            var signs = box.GetIntersectionSignsWithPlane(plane.Normal, plane.Distance, eps);
+            var signs = box.GetIntersectionSignsWithPlane(plane, eps);
             return signs != Signs.Negative && signs != Signs.Positive;
         }
-
-        /// <summary>
-        /// Classify the position of all the eight vertices of a box with
-        /// respect to a supplied plane.
-        /// </summary>
-        public static Signs GetIntersectionSigns(
-            this Box3d box, Plane3d plane, double eps)
-        {
-            return box.GetIntersectionSignsWithPlane(plane.Normal, plane.Distance, eps);
-        }
-
+        
         /// <summary>
         /// Classify the position of all the eight vertices of a box with
         /// respect to a supplied plane.
         /// </summary>
         public static Signs GetIntersectionSignsWithPlane(
-            this Box3d box, V3d normal, double distance, double eps)
+            this Box3d box, Plane3d plane, double eps)
         {
+            var normal = plane.Normal;
+            var distance = plane.Distance;
+
             double npMinX = normal.X * box.Min.X;
             double npMaxX = normal.X * box.Max.X;
             double npMinY = normal.Y * box.Min.Y;
@@ -3848,6 +3876,7 @@ namespace Aardvark.Base
 
         #endregion
 
+
         #region Hull3d intersects Line3d
 
         /// <summary>
@@ -4054,6 +4083,17 @@ namespace Aardvark.Base
 
         #endregion
 
+
+        #region Plane3d intersects Box3d
+
+        /// <summary>
+        /// Returns true if the box and the plane intersect or touch with a
+        /// supplied epsilon tolerance.
+        /// </summary>
+        public static bool Intersects(this Plane3d plane, double eps, Box3d box)
+            => box.Intersects(plane, eps);
+        
+        #endregion
     }
 
 #if NEVERMORE
@@ -4750,5 +4790,4 @@ namespace Aardvark.Base
         }
 
 #endif
-
 }
