@@ -346,7 +346,7 @@ and HistoryReader<'s, 'op>(h : History<'s, 'op>) =
 
     member x.GetOperations(token : AdaptiveToken) =
         x.EvaluateAlways token (fun token ->
-            if x.OutOfDate then
+            if x.OutOfDate && not (h |> isNull) then
                 let nt, ops = h.Read(token, node, state)
                 node <- nt
                 state <- h.State
