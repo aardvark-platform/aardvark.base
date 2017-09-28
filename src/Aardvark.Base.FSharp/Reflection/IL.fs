@@ -792,6 +792,8 @@ module Disassembler =
     let read (m : MethodBase) =
         let body = m.GetMethodBody()
 
+        if body = null then failwith "could not get method body"
+
         let locals =
             body.LocalVariables 
                 |> Seq.map (fun l -> l.LocalIndex, Local(l.LocalType))
