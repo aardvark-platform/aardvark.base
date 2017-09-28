@@ -1,14 +1,14 @@
 ﻿namespace Aardvark.Base.Incremental.Tests
-//
-//open System
-//open System.Collections
-//open System.Collections.Generic
-//open Aardvark.Base
-//open Aardvark.Base.Incremental
-//open NUnit.Framework
-//open FsUnit
-//open System.Threading.Tasks
-//open System.Runtime.CompilerServices
+
+open System
+open System.Collections
+open System.Collections.Generic
+open Aardvark.Base
+open Aardvark.Base.Incremental
+open NUnit.Framework
+open FsUnit
+open System.Threading.Tasks
+open System.Runtime.CompilerServices
 //
 //[<AbstractClass; Sealed; Extension>]
 //type ListReaderExtensions private() =
@@ -25,47 +25,62 @@
 //                        MapExt.find i oldContent |> Rem
 //            )
 //            |> Seq.toList
-//
-//module ``simple list tests`` =
-//
-//    module Delta =
-//        let map (f : 'a -> 'b) (d : SetOperation<'a>) =
-//            SetOperation(f d.Value, d.Count)
-//
-//
-//    [<Test>]
-//    let ``[AList] clist add / remove``() =
-//        let l = clist [1;2;3]
-//
-//        let d = l |> AList.map (fun a -> 2 * a)
-//
-//        let r = d.GetReader()
-//
-//        let d = r.GetSetDelta()
-//        d |> should setEqual [Add 2; Add 4; Add 6]
-//
-//        transact (fun () ->
-//            l.Append 4 |> ignore
-//        )
-//
-//        let d = r.GetSetDelta()
-//        d |> should setEqual [Add 8]
-//
-//        let k5 =
-//            transact (fun () ->
-//                l.Insert(3, 4)
-//            )
-//
-//        let d = r.GetSetDelta()
-//        d |> should setEqual [Add 8]
-//
-//
-//        transact (fun () ->
-//            l.RemoveAt 3 |> ignore
-//        )
-//        let d = r.GetSetDelta()
-//        d |> should setEqual [Rem 8]
-//
+
+module ``simple list tests`` =
+
+    module Delta =
+        let map (f : 'a -> 'b) (d : SetOperation<'a>) =
+            SetOperation(f d.Value, d.Count)
+
+
+    [<Test>]
+    let ``[AList] clist add / remove``() =
+        let l = clist [1;2;3]
+
+        let d = l |> AList.map (fun a -> 2 * a)
+
+        let r = d.GetReader()
+        let d = r.GetOperations().ToSeq() |> Seq.map (fun (a,b) -> b)
+        d |> should setEqual [Set 2; Set 4; Set 6]
+
+        transact (fun () ->
+            l.Append 4 |> ignore
+        )
+
+        let d = r.GetOperations().ToSeq() |> Seq.map (fun (a,b) -> b)
+        d |> should setEqual [Set 8]
+
+        let k5 =
+            transact (fun () ->
+                l.Insert(3, 4)
+            )
+
+        let d = r.GetOperations().ToSeq() |> Seq.map (fun (a,b) -> b)
+        d |> should setEqual [Set 8]
+
+
+        transact (fun () ->
+            l.RemoveAt 3 |> ignore
+        )
+        let d = r.GetOperations().ToSeq() |> Seq.map (fun (a,b) -> b)
+        d |> should setEqual [ElementOperation<int>.Remove]
+
+    [<Test>]
+    let ``[COrderedSet] contains``() =
+        
+        let a = "a"
+        let b = "b"
+        let c = "c"
+
+        let set = COrderedSet.ofSeq [a; b; c]
+                
+        set.Contains(a) |> should be True
+        set.Contains(b) |> should be True
+        set.Contains(c) |> should be True
+
+        ()
+
+
 //    [<Test>]
 //    let ``[AList] collect``() =
 //        let l0 = clist []

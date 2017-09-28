@@ -24,6 +24,7 @@ type corderedset<'a>(initial : seq<'a>) =
                         | _ ->
                             let i = Index.after last
                             last <- i
+                            indices.Add(v, i)
                             Some (i, v)
                 )
 
@@ -254,3 +255,10 @@ type corderedset<'a>(initial : seq<'a>) =
         member x.GetEnumerator() = (history.State :> seq<_>).GetEnumerator()
 
 
+[<CompilationRepresentation(CompilationRepresentationFlags.ModuleSuffix)>]
+[<RequireQualifiedAccess>]
+module COrderedSet =
+    
+    let empty<'a> = corderedset<_>()
+
+    let ofSeq (l : seq<'a>) : corderedset<'a> = corderedset(l)
