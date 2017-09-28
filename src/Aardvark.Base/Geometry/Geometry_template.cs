@@ -712,7 +712,8 @@ namespace Aardvark.Base
 
         /// <summary>
         /// Clip the supplied polygon at the supplied __plane__. The method should
-        /// work with all non-selfintersecting polygons.
+        /// work with all non-selfintersecting polygons. Returns all parts of 
+        /// the polygon that are at the positive side of the __plane__.
         /// </summary>
         public static __tpolygon__ ConvexClipped(
                 this __tpolygon__ polygon, __tplane__ __plane__, double eps = 1e-8)
@@ -738,7 +739,8 @@ namespace Aardvark.Base
 
         /// <summary>
         /// Returns the convex polygon clipped by the set of __plane__s (defined
-        /// as __tplane__s).
+        /// as __tplane__s), i.e. all parts of the polygon that are at the positive 
+        /// side of the __plane__s.
         /// </summary>
         public static __tpolygon__ ConvexClipped(
                 this __tpolygon__ polygon, __tplane__[] __plane__s, double eps = 1e-8)

@@ -524,7 +524,8 @@ namespace Aardvark.Base
 
         /// <summary>
         /// Clip the supplied polygon at the supplied line. The method should
-        /// work with all non-selfintersecting polygons.
+        /// work with all non-selfintersecting polygons. Returns all parts of 
+        /// the polygon that are at the positive side of the line.
         /// </summary>
         public static Polygon2d ConvexClipped(
                 this Polygon2d polygon, Plane2d line, double eps = 1e-8)
@@ -550,7 +551,8 @@ namespace Aardvark.Base
 
         /// <summary>
         /// Returns the convex polygon clipped by the set of lines (defined
-        /// as Plane2ds).
+        /// as Plane2ds), i.e. all parts of the polygon that are at the positive 
+        /// side of the lines.
         /// </summary>
         public static Polygon2d ConvexClipped(
                 this Polygon2d polygon, Plane2d[] lines, double eps = 1e-8)
@@ -1936,7 +1938,8 @@ namespace Aardvark.Base
 
         /// <summary>
         /// Clip the supplied polygon at the supplied plane. The method should
-        /// work with all non-selfintersecting polygons.
+        /// work with all non-selfintersecting polygons. Returns all parts of 
+        /// the polygon that are at the positive side of the plane.
         /// </summary>
         public static Polygon3d ConvexClipped(
                 this Polygon3d polygon, Plane3d plane, double eps = 1e-8)
@@ -1962,7 +1965,8 @@ namespace Aardvark.Base
 
         /// <summary>
         /// Returns the convex polygon clipped by the set of planes (defined
-        /// as Plane3ds).
+        /// as Plane3ds), i.e. all parts of the polygon that are at the positive 
+        /// side of the planes.
         /// </summary>
         public static Polygon3d ConvexClipped(
                 this Polygon3d polygon, Plane3d[] planes, double eps = 1e-8)
