@@ -42,6 +42,10 @@ namespace Aardvark.Base
     {
         #region Vector Extensions
 
+        /// <summary>
+        /// Calculates the dot product of two vectors:
+        /// a dot b = Sum(a0*b0 + a1*b1 + ... aN*bN)
+        /// </summary>
         public static float DotProduct(this Vector<float> v0, Vector<float> v1)
         {
             float result = 0.0f;
@@ -52,6 +56,10 @@ namespace Aardvark.Base
             return result;
         }
 
+        /// <summary>
+        /// Calculates the squared norm of a vector:
+        /// ||a|| = Sum(a0*a0 + a1*a1 + ... aN*aN)
+        /// </summary>
         public static float NormSquared(this Vector<float> v)
         {
             float result = 0.0f;

@@ -45,6 +45,10 @@ namespace Aardvark.Base
         //#   var tc = isDouble ? "d" : "f";
         #region Vector Extensions
 
+        /// <summary>
+        /// Calculates the dot product of two vectors:
+        /// a dot b = Sum(a0*b0 + a1*b1 + ... aN*bN)
+        /// </summary>
         public static __ft__ DotProduct(this Vector<__ft__> v0, Vector<__ft__> v1)
         {
             __ft__ result = 0.0__tc__;
@@ -55,6 +59,10 @@ namespace Aardvark.Base
             return result;
         }
 
+        /// <summary>
+        /// Calculates the squared norm of a vector:
+        /// ||a|| = Sum(a0*a0 + a1*a1 + ... aN*aN)
+        /// </summary>
         public static __ft__ NormSquared(this Vector<__ft__> v)
         {
             __ft__ result = 0.0__tc__;
