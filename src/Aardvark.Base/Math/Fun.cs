@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics.Contracts;
 using System.Globalization;
 using System.Linq;
+using System.Runtime.CompilerServices;
 
 namespace Aardvark.Base
 {
@@ -481,6 +482,7 @@ namespace Aardvark.Base
 
         #region Signs
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Signs GetSigns(this double value, double epsilon)
         {
             if (value < -epsilon) return Signs.Negative;
@@ -503,8 +505,7 @@ namespace Aardvark.Base
             zeroCount = zc;
             positiveCount = pc;
         }
-
-
+        
         public static Signs AggregateSigns(this IEnumerable<double> values, double epsilon)
         {
             var signs = Signs.None;
@@ -914,6 +915,4 @@ namespace Aardvark.Base
     }
 
     #endregion
-
-
 }
