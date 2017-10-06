@@ -233,16 +233,24 @@ type AdaptiveSetExtensions private() =
         ASet.map f.Invoke this
 
     [<Extension>]
+    static member Select (this : aset<'a>, f : Func<'a, IMod<'b>>) =
+        ASet.mapM f.Invoke this
+
+    [<Extension>]
     static member SelectMany (this : aset<'a>, f : Func<'a, aset<'b>>) =
         ASet.collect f.Invoke this
 
     [<Extension>]
-    static member SelectMany (this : seq<'a>, f : Func<'a, aset<'b>>) =
-        ASet.unionMany' (this |> Seq.map f.Invoke)
+    static member SelectMany (this : aset<'a>, f : Func<'a, seq<'b>>) =
+        ASet.collect' f.Invoke this
 
     [<Extension>]
     static member Choose (this : aset<'a>, f : Func<'a, Option<'b>>) =
         ASet.choose f.Invoke this
+
+    [<Extension>]
+    static member Choose (this : aset<'a>, f : Func<'a, IMod<Option<'b>>>) =
+        ASet.chooseM f.Invoke this
 
     [<Extension>]
     static member MapUse (this : aset<'a>, f : Func<'a, 'b>) =
@@ -254,11 +262,15 @@ type AdaptiveSetExtensions private() =
 
     [<Extension>]
     static member Flatten (this : aset<aset<'a>>) =
-        ASet.union this
+        ASet.unionMany this
 
     [<Extension>]
     static member Flatten (this : aset<seq<'a>>) =
         ASet.collect ASet.ofSeq this
+
+    [<Extension>]
+    static member Flatten (this : aset<IMod<'a>>) =
+        ASet.flattenM this
 
     [<Extension>]
     static member Where (this : aset<'a>, f : Func<'a, bool>) =
