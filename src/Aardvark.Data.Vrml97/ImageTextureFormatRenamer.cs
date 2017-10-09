@@ -12,7 +12,7 @@ namespace Aardvark.Data.Vrml97
         /// <summary>
         /// Takes a Vrml97 parse tree (see also <seealso cref="Parser"/>)
         /// and replaces the file extension of all image texture URLs to
-       ///  the specified extension.
+        ///  the specified extension.
         /// </summary>
         /// <param name="root">Parse tree.</param>
         /// <param name="newExtension"></param>

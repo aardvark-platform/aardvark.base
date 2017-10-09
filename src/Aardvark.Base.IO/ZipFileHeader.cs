@@ -2,7 +2,7 @@
 using System.IO;
 using System.Text;
 
-/// Important: .NET 4.5 contains full zip support.
+// Important: .NET 4.5 contains full zip support.
 namespace Aardvark.Base.Coder.Legacy
 {
     // Based on .ZIP File Format Specification Version 6.3.3
@@ -100,9 +100,9 @@ namespace Aardvark.Base.Coder.Legacy
         public UInt16 lengthExtra;
 
         public string filename;
-        /// <summary>
-        /// extra field (variable size)
-        /// </summary>
+        ///// <summary>
+        ///// extra field (variable size)
+        ///// </summary>
         //public UInt32 xtraField;
 
         #endregion
@@ -230,13 +230,13 @@ namespace Aardvark.Base.Coder.Legacy
         /// file name (variable size)
         /// </summary>
         public string filename;
-        /// <summary>
-        /// extra field (variable size)
-        /// </summary>
+        ///// <summary>
+        ///// extra field (variable size)
+        ///// </summary>
         //public UInt32 xtraField;
-        /// <summary>
-        /// file comment (variable size)
-        /// </summary>
+        ///// <summary>
+        ///// file comment (variable size)
+        ///// </summary>
         //public string fileComment;
 
         #endregion
@@ -351,9 +351,9 @@ namespace Aardvark.Base.Coder.Legacy
         /// offset of start of central directory with respect to the starting disk number
         /// </summary>
         public UInt64 cd_offset;
-        /// <summary>
-        /// zip64 extensible data sector
-        /// </summary>
+        ///// <summary>
+        ///// zip64 extensible data sector
+        ///// </summary>
         //public ?? extData;
 
         #endregion
@@ -496,9 +496,9 @@ namespace Aardvark.Base.Coder.Legacy
         /// .ZIP file comment length
         /// </summary>
         public UInt16 cmntLen;
-        /// <summary>
-        /// .ZIP file comment (variable size)
-        /// </summary>
+        ///// <summary>
+        ///// .ZIP file comment (variable size)
+        ///// </summary>
         //public string comment;
 
         #endregion

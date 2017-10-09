@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 
-/// Important: .NET 4.5 contains full zip support.
+// Important: .NET 4.5 contains full zip support.
 namespace Aardvark.Base.Coder.Legacy
 {
     /// <summary>
@@ -207,7 +207,7 @@ namespace Aardvark.Base.Coder.Legacy
         /// <summary>
         /// Tests if a requested file, indexed by fileName, exists in the ContainerFile.
         /// </summary>
-        /// <param name="index">Name of the requested file.</param>
+        /// <param name="fileName">Name of the requested file.</param>
         /// <returns>Indication wheter the file exists or not.</returns>
         public bool FileExists(string fileName)
         {

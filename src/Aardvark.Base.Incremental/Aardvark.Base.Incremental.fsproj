@@ -21,8 +21,7 @@
     <OutputPath>..\..\bin\Debug\</OutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <WarningLevel>3</WarningLevel>
-    <DocumentationFile>
-    </DocumentationFile>
+    <DocumentationFile>..\..\bin\Debug\Aardvark.Base.Incremental.XML</DocumentationFile>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -31,8 +30,7 @@
     <OutputPath>..\..\bin\Release\</OutputPath>
     <DefineConstants>TRACE</DefineConstants>
     <WarningLevel>3</WarningLevel>
-    <DocumentationFile>
-    </DocumentationFile>
+    <DocumentationFile>..\..\bin\Release\Aardvark.Base.Incremental.XML</DocumentationFile>
   </PropertyGroup>
   <PropertyGroup>
     <MinimumVisualStudioVersion Condition="'$(MinimumVisualStudioVersion)' == ''">11</MinimumVisualStudioVersion>
@@ -76,8 +74,9 @@
     <Compile Include="Builders.fs" />
     <Compile Include="CSharp.fs" />
     <Compile Include="Adapters\EventAdapter.fs" />
-    <None Include="paket.references" />
     <Compile Include="IncrementalBvh.fs" />
+    <None Include="paket.references" />
+    <None Include="paket.template" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="../Aardvark.Base.TypeProviders/Aardvark.Base.TypeProviders.fsproj">

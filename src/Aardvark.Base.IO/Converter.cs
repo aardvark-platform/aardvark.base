@@ -1031,7 +1031,7 @@ namespace Aardvark.Base.Coder
         /// Sets whether a resource is available or not. By default, resources are
         /// not available. If this is done after the routing table has been 
         /// initialized once, the routing table will be rebuilt (therefore, use
-        /// SetResourceAvailability(List<string> resources, bool available) if you need
+        /// SetResourceAvailability(List{string} resources, bool available) if you need
         /// to set the availability of multiple resources).
         /// </summary>
         public void SetResourceAvailability(string resource, bool available)

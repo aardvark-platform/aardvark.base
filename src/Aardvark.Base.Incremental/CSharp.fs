@@ -144,7 +144,7 @@ type ModExtensions private() =
     [<Extension>]
     static member Map (this : IMod<'a>, other : IMod<'b>, f : Func<'a, 'b, 'c>) =
         Mod.map2 (curry f.Invoke) this other
-        
+                
     [<Extension>]
     static member MapFast (this : IMod<'a>, f : Func<'a, 'b>) =
         Mod.mapFast f.Invoke this
@@ -160,6 +160,17 @@ type ModExtensions private() =
     [<Extension>]
     static member Compose (this : IMod<'a>, other : IMod<'b>, f : Func<'a, 'b, 'c>) =
         Mod.map2 (curry f.Invoke) this other
+
+    [<Extension>]
+    static member Compose (a : IMod<'a>, b : IMod<'b>, c : IMod<'c>, f : Func<'a, 'b, 'c, 'd>) =
+        let tup = Mod.map2 (fun a b -> (a,b)) a b
+        Mod.map2 (fun (a,b) c -> f.Invoke(a, b, c)) tup c
+
+    [<Extension>]
+    static member Compose (a : IMod<'a>, b : IMod<'b>, c : IMod<'c>, d : IMod<'d>, f : Func<'a, 'b, 'c, 'd, 'e>) =
+        let tup1 = Mod.map2 (fun a b -> (a,b)) a b
+        let tup2 = Mod.map2 (fun c d -> (c,d)) c d
+        Mod.map2 (fun (a,b) (c,d) -> f.Invoke(a, b, c, d)) tup1 tup2
 
     [<Extension>]
     static member Compose (this : seq<IMod<'a>>, f : Func<seq<'a>, 'b>) =
@@ -208,6 +219,20 @@ type ModExtensions private() =
     [<Extension>]
     static member ToAdaptiveList(this : IMod<'a>) =
         Mod.toAList this
+
+    [<Extension>]
+    static member And(a : IMod<bool>, b : IMod<bool>) =
+        Mod.map2 (&&) a b
+        //Mod.bind (fun a -> if a then b else Mod.Constant false) a // better ?
+
+    [<Extension>]
+    static member Or(a : IMod<bool>, b : IMod<bool>) =
+        Mod.map2 (||) a b
+        //Mod.bind (fun a -> if a then Mod.Constant true else b) a // better ?
+
+    [<Extension>]
+    static member Not(a : IMod<bool>) =
+        Mod.map (not) a
 
     /// <summary> see Mod/ModModule.unsafeRegisterCallbackNoGcRoot </summary>
     [<Extension>]
@@ -398,6 +423,13 @@ type AdaptiveSetExtensions private() =
 [<Extension; AbstractClass; Sealed>]
 type ChangeableSetExtensions private() =
 
+    /// <summary>
+    /// Returns ChangeableSet cast to <cref=IAdaptiveSet{T}/>
+    /// </summary>
+    [<Extension>]
+    static member AsAdaptiveSet(this : cset<'a>) =
+        this :> aset<'a>
+
     [<Extension>]
     static member Select (this : cset<'a>, f : Func<'a, 'b>) =
         ASet.map f.Invoke this
@@ -454,7 +486,7 @@ type ChangeableSetExtensions private() =
     [<Extension>]
     static member ToAdaptiveList (this : cset<'a>) =
         this |> ASet.toAList
-
+        
 
 [<Extension; AbstractClass; Sealed>]
 type AdaptiveListExtensions private() =
@@ -466,7 +498,7 @@ type AdaptiveListExtensions private() =
     [<Extension>]
     static member Select (this : alist<'a>, f : Func<'a, 'b>) =
         AList.map f.Invoke this
-
+        
     [<Extension>]
     static member SelectMany (this : alist<'a>, f : Func<'a, alist<'b>>) =
         AList.collect f.Invoke this
@@ -484,6 +516,14 @@ type AdaptiveListExtensions private() =
         AList.concat this
 
     [<Extension>]
+    static member Choose (this : alist<'a>, f : Func<'a, Option<'b>>) =
+        AList.choose f.Invoke this
+
+    [<Extension>]
+    static member Choose (this : alist<'a>, f : Func<'a, IMod<Option<'b>>>) =
+        AList.chooseM f.Invoke this
+
+    [<Extension>]
     static member Where (this : alist<'a>, f : Func<'a, bool>) =
         AList.filter f.Invoke this
 
@@ -495,6 +535,9 @@ type AdaptiveListExtensions private() =
     static member Concat (this : alist<'a>, other : alist<'a>) =
         AList.append this other
 
+    /// <summary>
+    /// Converts the adaptive list to a set.
+    /// </summary>
     [<Extension>]
     static member ToAdaptiveSet (this : alist<'a>) =
         this |> AList.toASet
@@ -517,26 +560,31 @@ type AdaptiveListExtensions private() =
 [<Extension; AbstractClass; Sealed>]
 type CListExtensions private() =
 
+    /// <summary>
+    /// Returns ChangeableList cast to <cref=IAdaptiveSet{T}/>
+    /// </summary>
     [<Extension>]
-    static member Select (this : clist<'a>, f : Func<'a, 'b>) =
-        AList.map f.Invoke this
+    static member AsAdaptiveList(this : clist<'a>) =
+        this :> alist<'a>
+                
 
+[<Extension; AbstractClass; Sealed>]
+type COrderedSetExtensions private() =
+
+    /// <summary>
+    /// Returns ChangeableOrderedSet cast to <cref=IAdaptiveSet{T}/>
+    /// </summary>
     [<Extension>]
-    static member SelectMany (this : clist<'a>, f : Func<'a, alist<'b>>) =
-        AList.collect f.Invoke this
+    static member AsAdaptiveSet(this : corderedset<'a>) =
+        this :> aset<'a>
 
+    /// <summary>
+    /// Returns ChangeableOrderedSet cast to <cref=IAdaptiveList{T}/>
+    /// </summary>
     [<Extension>]
-    static member Where (this : clist<'a>, f : Func<'a, bool>) =
-        AList.filter f.Invoke this
-
-    [<Extension>]
-    static member Where (this : clist<'a>, f : Func<'a, IMod<bool>>) =
-        AList.filterM f.Invoke this
-
-    [<Extension>]
-    static member Concat (this : clist<'a>, other : alist<'a>) =
-        AList.append this other
-
+    static member AsAdaptiveList(this : corderedset<'a>) =
+        this :> alist<'a>
+        
 
 [<Extension; AbstractClass; Sealed>]
 type AdaptiveMapExtensions private() =

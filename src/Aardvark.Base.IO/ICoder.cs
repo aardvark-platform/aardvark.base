@@ -9,7 +9,7 @@ namespace Aardvark.Base.Coder
     /// An ICoder can either read or write objects. It declares its purpose
     /// with the methods <see cref="IsReading"/> and <see cref="IsWriting"/>
     /// one of which must return true the other one false. Depending on its
-    /// declared purpose all its <see cref="Code"/> methods either read or
+    /// declared purpose all its <see cref="o:Code"/> methods either read or
     /// write objects via the supplied reference.
     /// </summary>
     public partial interface ICoder
@@ -29,12 +29,12 @@ namespace Aardvark.Base.Coder
         int StreamVersion { get; }
 
         /// <summary>
-        /// If true all the <see cref="Code"/> methods read objects.
+        /// If true all the <see cref="o:Code"/> methods read objects.
         /// </summary>
         bool IsReading { get; }
 
         /// <summary>
-        /// If true all the <see cref="Code"/> methods write objects.
+        /// If true all the <see cref="o:Code"/> methods write objects.
         /// </summary>
         bool IsWriting { get; }
 

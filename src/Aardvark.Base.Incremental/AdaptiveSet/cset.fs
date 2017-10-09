@@ -17,7 +17,13 @@ type cset<'a>(initial : seq<'a>) =
             let op = HDeltaSet.single (Add v)
             history.Perform op
         )
-        
+    
+    member x.AddRange (items : seq<'a>) =
+        lock x (fun () ->
+            let ops = HDeltaSet.ofSeq (items |> Seq.map (fun v -> Add v))
+            history.Perform ops
+        )
+
     member x.Remove(v : 'a) =
         lock x (fun () ->
             let op = HDeltaSet.single (Rem v)

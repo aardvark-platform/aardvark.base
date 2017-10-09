@@ -21,6 +21,8 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <DocumentationFile>..\..\bin\Debug\Aardvark.Base.IO.XML</DocumentationFile>
+    <NoWarn>1591</NoWarn>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -30,6 +32,8 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <DocumentationFile>..\..\Bin\Release\Aardvark.Base.IO.XML</DocumentationFile>
+    <NoWarn>1591</NoWarn>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
