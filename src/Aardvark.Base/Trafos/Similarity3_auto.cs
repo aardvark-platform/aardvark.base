@@ -52,15 +52,15 @@ namespace Aardvark.Base
 
         public Similarity3f(M44f m, float epsilon = (float)0.00001)
         {
-            Trace.Assert(m.M30.IsTiny(epsilon) && m.M31.IsTiny(epsilon) && m.M32.IsTiny(epsilon), "Matrix contains perspective components.");
-            Trace.Assert(!m.M33.IsTiny(epsilon), "Matrix is not homogeneous.");
+            Requires.That(m.M30.IsTiny(epsilon) && m.M31.IsTiny(epsilon) && m.M32.IsTiny(epsilon), "Matrix contains perspective components.");
+            Requires.That(!m.M33.IsTiny(epsilon), "Matrix is not homogeneous.");
             m /= m.M33; //normalize it
             var m33 = (M33f)m;
             var s0 = m33.C0.Norm2;
             var s1 = m33.C1.Norm2;
             var s2 = m33.C2.Norm2;
             var s = (s0 * s1 * s2).Pow((float)1.0 / 3); //geometric mean of scale
-            Trace.Assert((s0 / s - 1).IsTiny(epsilon) && (s1 / s - 1).IsTiny(epsilon) && (s2 / s - 1).IsTiny(epsilon), "Matrix features non-uniform scaling");
+            Requires.That((s0 / s - 1).IsTiny(epsilon) && (s1 / s - 1).IsTiny(epsilon) && (s2 / s - 1).IsTiny(epsilon), "Matrix features non-uniform scaling");
             m33 /= s;
             Scale = s;
             EuclideanTransformation = new Euclidean3f(m33, m.C3.XYZ);
@@ -411,15 +411,15 @@ namespace Aardvark.Base
 
         public Similarity3d(M44d m, double epsilon = (double)0.00001)
         {
-            Trace.Assert(m.M30.IsTiny(epsilon) && m.M31.IsTiny(epsilon) && m.M32.IsTiny(epsilon), "Matrix contains perspective components.");
-            Trace.Assert(!m.M33.IsTiny(epsilon), "Matrix is not homogeneous.");
+            Requires.That(m.M30.IsTiny(epsilon) && m.M31.IsTiny(epsilon) && m.M32.IsTiny(epsilon), "Matrix contains perspective components.");
+            Requires.That(!m.M33.IsTiny(epsilon), "Matrix is not homogeneous.");
             m /= m.M33; //normalize it
             var m33 = (M33d)m;
             var s0 = m33.C0.Norm2;
             var s1 = m33.C1.Norm2;
             var s2 = m33.C2.Norm2;
             var s = (s0 * s1 * s2).Pow((double)1.0 / 3); //geometric mean of scale
-            Trace.Assert((s0 / s - 1).IsTiny(epsilon) && (s1 / s - 1).IsTiny(epsilon) && (s2 / s - 1).IsTiny(epsilon), "Matrix features non-uniform scaling");
+            Requires.That((s0 / s - 1).IsTiny(epsilon) && (s1 / s - 1).IsTiny(epsilon) && (s2 / s - 1).IsTiny(epsilon), "Matrix features non-uniform scaling");
             m33 /= s;
             Scale = s;
             EuclideanTransformation = new Euclidean3d(m33, m.C3.XYZ);

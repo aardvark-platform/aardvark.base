@@ -42,8 +42,8 @@ namespace Aardvark.Base
         public Euclidean3f(M44f m, float epsilon = (float)0.00001)
             : this(((M33f)m) / m.M33, m.C3.XYZ / m.M33, epsilon)
         {
-            Trace.Assert(m.M30.IsTiny(epsilon) && m.M31.IsTiny(epsilon) && m.M32.IsTiny(epsilon), "Matrix contains perspective components.");
-            Trace.Assert(!m.M33.IsTiny(epsilon), "Matrix is not homogeneous.");
+            Requires.That(m.M30.IsTiny(epsilon) && m.M31.IsTiny(epsilon) && m.M32.IsTiny(epsilon), "Matrix contains perspective components.");
+            Requires.That(!m.M33.IsTiny(epsilon), "Matrix is not homogeneous.");
         }
 
         /// <summary>
@@ -424,8 +424,8 @@ namespace Aardvark.Base
         public Euclidean3d(M44d m, double epsilon = (double)0.00001)
             : this(((M33d)m) / m.M33, m.C3.XYZ / m.M33, epsilon)
         {
-            Trace.Assert(m.M30.IsTiny(epsilon) && m.M31.IsTiny(epsilon) && m.M32.IsTiny(epsilon), "Matrix contains perspective components.");
-            Trace.Assert(!m.M33.IsTiny(epsilon), "Matrix is not homogeneous.");
+            Requires.That(m.M30.IsTiny(epsilon) && m.M31.IsTiny(epsilon) && m.M32.IsTiny(epsilon), "Matrix contains perspective components.");
+            Requires.That(!m.M33.IsTiny(epsilon), "Matrix is not homogeneous.");
         }
 
         /// <summary>

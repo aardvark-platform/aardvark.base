@@ -864,7 +864,7 @@ namespace Aardvark.Base
         public PixImage(PixImageInfo info)
             : this(info.Format.Format, info.Size)
         {
-            System.Diagnostics.Trace.Assert(info.Format.Type == typeof(T), "Attempt to create Piximage from PixImageInfo with different Type T.");
+            Requires.That(info.Format.Type == typeof(T), "Attempt to create Piximage from PixImageInfo with different Type T.");
         }
 
         /// <summary>

@@ -49,8 +49,8 @@ namespace Aardvark.Base
         public __e3t__(M4__s4f__ m, __ft__ epsilon = (__ft__)0.00001)
             : this(((M3__s3f__)m) / m.M33, m.C3.XYZ / m.M33, epsilon)
         {
-            Trace.Assert(m.M30.IsTiny(epsilon) && m.M31.IsTiny(epsilon) && m.M32.IsTiny(epsilon), "Matrix contains perspective components.");
-            Trace.Assert(!m.M33.IsTiny(epsilon), "Matrix is not homogeneous.");
+            Requires.That(m.M30.IsTiny(epsilon) && m.M31.IsTiny(epsilon) && m.M32.IsTiny(epsilon), "Matrix contains perspective components.");
+            Requires.That(!m.M33.IsTiny(epsilon), "Matrix is not homogeneous.");
         }
 
         /// <summary>

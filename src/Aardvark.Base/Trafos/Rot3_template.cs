@@ -794,7 +794,7 @@ namespace Aardvark.Base
         /// <param name="epsilon"></param>
         public static __rot3t__ From__m33t__(__m33t__ m, __ft__ epsilon = (__ft__)1e-6)
         {
-            Trace.Assert(m.IsOrthonormal(epsilon), "Matrix is not orthonormal.");
+            Requires.That(m.IsOrthonormal(epsilon), "Matrix is not orthonormal.");
             var t = 1 + m.M00 + m.M11 + m.M22;
 
             if (t > epsilon)

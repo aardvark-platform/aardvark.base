@@ -779,7 +779,7 @@ namespace Aardvark.Base
         /// <param name="epsilon"></param>
         public static Rot3f FromM33f(M33f m, float epsilon = (float)1e-6)
         {
-            Trace.Assert(m.IsOrthonormal(epsilon), "Matrix is not orthonormal.");
+            Requires.That(m.IsOrthonormal(epsilon), "Matrix is not orthonormal.");
             var t = 1 + m.M00 + m.M11 + m.M22;
 
             if (t > epsilon)
@@ -1774,7 +1774,7 @@ namespace Aardvark.Base
         /// <param name="epsilon"></param>
         public static Rot3d FromM33d(M33d m, double epsilon = (double)1e-6)
         {
-            Trace.Assert(m.IsOrthonormal(epsilon), "Matrix is not orthonormal.");
+            Requires.That(m.IsOrthonormal(epsilon), "Matrix is not orthonormal.");
             var t = 1 + m.M00 + m.M11 + m.M22;
 
             if (t > epsilon)
