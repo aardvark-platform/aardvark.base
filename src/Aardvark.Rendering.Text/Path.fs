@@ -137,6 +137,10 @@ module Path =
 
                 return v.color
             }
+        let boundaryVertex (v : Vertex) =
+            vertex {
+                return { v with p = uniform.ModelViewProjTrafo * v.p }
+            }
 
         let boundary (v : Vertex) =
             fragment {

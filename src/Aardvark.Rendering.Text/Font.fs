@@ -325,7 +325,8 @@ type ShapeCache(r : IRuntime) =
     let boundarySurface =
         r.PrepareEffect(
             signature, [
-                DefaultSurfaces.trafo       |> toEffect
+                //DefaultSurfaces.trafo |> toEffect
+                Path.Shader.boundaryVertex  |> toEffect
                 Path.Shader.boundary        |> toEffect
             ]
         )
