@@ -21,6 +21,8 @@ type EventSampler(frequency : int) =
     let mutable actions : Set<IAdapterMod> = Set.empty
 
     member x.Run() =
+        Thread.CurrentThread.Name <- "EventSampler"
+
         let sw = Stopwatch()
         sw.Start()
 
