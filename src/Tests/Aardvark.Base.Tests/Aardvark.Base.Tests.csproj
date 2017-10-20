@@ -59,6 +59,7 @@
     <Compile Include="Math\ColorTests.cs" />
     <Compile Include="Math\PolynomialTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="RangesBoxes\CellTests.cs" />
     <Compile Include="Telemetry\TelemetryTests.cs" />
     <Compile Include="Tensors\TensorMatrixTests.cs" />
     <Compile Include="TestSuite\TestSuite.cs" />

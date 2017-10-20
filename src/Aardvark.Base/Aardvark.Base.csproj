@@ -146,6 +146,7 @@
     <None Include="paket.references" />
     <None Include="paket.template" />
     <None Include="RangesBoxes\Box_template.cs" />
+    <Compile Include="RangesBoxes\Cell.cs" />
     <Compile Include="RangesBoxes\OrientedBox.cs" />
     <Compile Include="RangesBoxes\Range.cs" />
     <Compile Include="RangesBoxes\RangeExtensions.cs" />
