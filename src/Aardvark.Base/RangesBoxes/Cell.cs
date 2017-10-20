@@ -1,12 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Runtime.Serialization;
 
 namespace Aardvark.Base
 {
     /// <summary>
     /// A 2^Exponent sized cube positioned at (X,Y,Z) * 2^Exponent.
     /// </summary>
+    [DataContract]
     public struct Cell : IEquatable<Cell>
     {
         /// <summary>
@@ -16,18 +18,22 @@ namespace Aardvark.Base
 
         /// <summary>
         /// </summary>
+        [DataMember]
         public readonly long X;
 
         /// <summary>
         /// </summary>
+        [DataMember]
         public readonly long Y;
 
         /// <summary>
         /// </summary>
+        [DataMember]
         public readonly long Z;
 
         /// <summary>
         /// </summary>
+        [DataMember(Name = "E")]
         public readonly int Exponent;
 
         /// <summary>
