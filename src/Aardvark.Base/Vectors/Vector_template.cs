@@ -5,6 +5,7 @@ using System.Diagnostics;
 using System.Globalization;
 using System.Linq;
 using System.Runtime.InteropServices;
+using System.Runtime.Serialization;
 
 namespace Aardvark.Base
 {
@@ -37,11 +38,13 @@ namespace Aardvark.Base
     //#     var args = fields.ToLower();
     #region __vtype__
 
+    [DataContract]
     [Serializable]
     [StructLayout(LayoutKind.Sequential)]
     public partial struct __vtype__ : IVector<double>, ISize__d__d, IFormattable, IEquatable<__vtype__>
     {
         //# fields.ForEach(f => {
+        [DataMember]
         public __ftype__ __f__;
         //# });
 
