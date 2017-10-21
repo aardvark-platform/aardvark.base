@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 
-
 namespace Aardvark.Base
 {
     public static partial class Ipol

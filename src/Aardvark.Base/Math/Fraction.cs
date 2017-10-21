@@ -1,16 +1,18 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using System.Runtime.InteropServices;
+using System.Runtime.Serialization;
 
 namespace Aardvark.Base
 {
-
     /// <summary>
     /// Represents an integral fraction.
     /// </summary>
+    [DataContract]
+    [StructLayout(LayoutKind.Sequential)]
     public struct Fraction
     {
+        [DataMember]
         public long Numerator;
+        [DataMember]
         public long Denominator;
 
         #region Constructors
@@ -245,5 +247,4 @@ namespace Aardvark.Base
         }
 
     }
-
 }

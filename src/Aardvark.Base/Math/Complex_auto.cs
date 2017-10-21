@@ -1,13 +1,15 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+using System.Runtime.InteropServices;
+using System.Runtime.Serialization;
 
 namespace Aardvark.Base
 {
+    [DataContract]
+    [StructLayout(LayoutKind.Sequential)]
     public struct ComplexF
     {
+        [DataMember]
         public float Real;
+        [DataMember]
         public float Imag;
 
         #region Constructors
@@ -517,9 +519,13 @@ namespace Aardvark.Base
         #endregion
     }
 
+    [DataContract]
+    [StructLayout(LayoutKind.Sequential)]
     public struct ComplexD
     {
+        [DataMember]
         public double Real;
+        [DataMember]
         public double Imag;
 
         #region Constructors

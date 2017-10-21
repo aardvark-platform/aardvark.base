@@ -17,8 +17,7 @@ namespace Aardvark.Base
             DeltaWaveLength = deltaWaveLength;
             Data = data;
         }
-
-
+        
         public static readonly Spectrum CieXYZ31X = new Spectrum(360, 1, SpectralData.CieXYZ31_X_360_830_1nm);
         public static readonly Spectrum CieXYZ31Y = new Spectrum(360, 1, SpectralData.CieXYZ31_Y_360_830_1nm);
         public static readonly Spectrum CieXYZ31Z = new Spectrum(360, 1, SpectralData.CieXYZ31_Z_360_830_1nm);

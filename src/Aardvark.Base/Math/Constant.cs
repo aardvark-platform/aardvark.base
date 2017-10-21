@@ -1,10 +1,5 @@
-using System;
-using System.Collections.Generic;
-using System.Text;
-
 namespace Aardvark.Base
 {
-
     public enum Metric
     {
         Manhattan = 1,
@@ -315,5 +310,4 @@ namespace Aardvark.Base
         /// </summary>
         public const double SpeedOfLight = 299792458.0;
     }
-
 }

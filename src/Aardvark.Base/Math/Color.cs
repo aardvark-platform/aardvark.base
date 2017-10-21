@@ -1,9 +1,7 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
 using System.Runtime.InteropServices;
-
+using System.Runtime.Serialization;
 
 namespace Aardvark.Base
 {
@@ -1297,7 +1295,6 @@ namespace Aardvark.Base
                         (float)a.G + (float)(x * (double)((int)b.G - (int)a.G)),
                         (float)a.B + (float)(x * (double)((int)b.B - (int)a.B)));
         }
-
     }
 
     #endregion
@@ -1307,10 +1304,13 @@ namespace Aardvark.Base
     /// <summary>
     /// The PixFormat encodes the channel type and the color format of an image.
     /// </summary>
+    [DataContract]
     [Serializable]
     public struct PixFormat : IEquatable<PixFormat>
     {
+        [DataMember]
         public readonly Type Type;
+        [DataMember]
         public readonly Col.Format Format;
 
         #region Constructor
@@ -1417,6 +1417,7 @@ namespace Aardvark.Base
 
     #region C3b
 
+    [DataContract]
     [StructLayout(LayoutKind.Sequential)]
     public partial struct C3b
     {
@@ -1424,8 +1425,11 @@ namespace Aardvark.Base
         /// Memory layout for intel-based little-endian argb-ints.
         /// (DO NOT CHANGE!)
         /// </summary>
+        [DataMember]
         public byte B;
+        [DataMember]
         public byte G;
+        [DataMember]
         public byte R;
     }
 
@@ -1433,11 +1437,15 @@ namespace Aardvark.Base
 
     #region C3us
 
+    [DataContract]
     [StructLayout(LayoutKind.Sequential)]
     public partial struct C3us
     {
+        [DataMember]
         public ushort R;
+        [DataMember]
         public ushort G;
+        [DataMember]
         public ushort B;
     }
 
@@ -1445,11 +1453,15 @@ namespace Aardvark.Base
 
     #region C3ui
 
+    [DataContract]
     [StructLayout(LayoutKind.Sequential)]
     public partial struct C3ui
     {
+        [DataMember]
         public uint R;
+        [DataMember]
         public uint G;
+        [DataMember]
         public uint B;
     }
 
@@ -1457,11 +1469,15 @@ namespace Aardvark.Base
 
     #region C3f
 
+    [DataContract]
     [StructLayout(LayoutKind.Sequential)]
     public partial struct C3f
     {
+        [DataMember]
         public float R;
+        [DataMember]
         public float G;
+        [DataMember]
         public float B;
 
         /// <summary>
@@ -1498,11 +1514,15 @@ namespace Aardvark.Base
 
     #region C3d
 
+    [DataContract]
     [StructLayout(LayoutKind.Sequential)]
     public partial struct C3d
     {
+        [DataMember]
         public double R;
+        [DataMember]
         public double G;
+        [DataMember]
         public double B;
     }
 
@@ -1510,6 +1530,7 @@ namespace Aardvark.Base
 
     #region C4b
 
+    [DataContract]
     [StructLayout(LayoutKind.Sequential)]
     public partial struct C4b
     {
@@ -1517,9 +1538,13 @@ namespace Aardvark.Base
         /// Memory layout for intel-based little-endian argb-ints.
         /// (DO NOT CHANGE!)
         /// </summary>
+        [DataMember]
         public byte B;
+        [DataMember]
         public byte G;
+        [DataMember]
         public byte R;
+        [DataMember]
         public byte A;
     }
 
@@ -1527,12 +1552,17 @@ namespace Aardvark.Base
 
     #region C4us
 
+    [DataContract]
     [StructLayout(LayoutKind.Sequential)]
     public partial struct C4us
     {
+        [DataMember]
         public ushort R;
+        [DataMember]
         public ushort G;
+        [DataMember]
         public ushort B;
+        [DataMember]
         public ushort A;
     }
 
@@ -1540,12 +1570,17 @@ namespace Aardvark.Base
 
     #region C4ui
 
+    [DataContract]
     [StructLayout(LayoutKind.Sequential)]
     public partial struct C4ui
     {
+        [DataMember]
         public uint R;
+        [DataMember]
         public uint G;
+        [DataMember]
         public uint B;
+        [DataMember]
         public uint A;
     }
 
@@ -1553,12 +1588,17 @@ namespace Aardvark.Base
 
     #region C4f
 
+    [DataContract]
     [StructLayout(LayoutKind.Sequential)]
     public partial struct C4f
     {
+        [DataMember]
         public float R;
+        [DataMember]
         public float G;
+        [DataMember]
         public float B;
+        [DataMember]
         public float A;
     }
 
@@ -1566,12 +1606,17 @@ namespace Aardvark.Base
 
     #region C4d
 
+    [DataContract]
     [StructLayout(LayoutKind.Sequential)]
     public partial struct C4d
     {
+        [DataMember]
         public double R;
+        [DataMember]
         public double G;
+        [DataMember]
         public double B;
+        [DataMember]
         public double A;
     }
 
@@ -1579,11 +1624,15 @@ namespace Aardvark.Base
 
     #region CieLabf
 
+    [DataContract]
     [StructLayout(LayoutKind.Sequential)]
     public struct CieLabf
     {
+        [DataMember]
         public float L;
+        [DataMember]
         public float a;
+        [DataMember]
         public float b;
 
         public CieLabf(float _L, float _a, float _b) { L = _L; a = _a; b = _b; }
@@ -1594,11 +1643,15 @@ namespace Aardvark.Base
 
     #region CieLuvf
 
+    [DataContract]
     [StructLayout(LayoutKind.Sequential)]
     public struct CIeLuvf
     {
+        [DataMember]
         public float L;
+        [DataMember]
         public float u;
+        [DataMember]
         public float v;
 
         public CIeLuvf(float _L, float _u, float _v) { L = _L; u = _u; v = _v; }
@@ -1615,11 +1668,15 @@ namespace Aardvark.Base
     /// This structure holds Cie XYZ colors where Y should be in the range
     /// [0,100] for reflective color values.
     /// </summary>
+    [DataContract]
     [StructLayout(LayoutKind.Sequential)]
     public struct CieXYZf
     {
+        [DataMember]
         public float X;
+        [DataMember]
         public float Y;
+        [DataMember]
         public float Z;
 
         public CieXYZf(float _X, float _Y, float _Z) { X = _X; Y = _Y; Z = _Z; }
@@ -1630,11 +1687,15 @@ namespace Aardvark.Base
 
     #region CieYxyf
 
+    [DataContract]
     [StructLayout(LayoutKind.Sequential)]
     public struct CieYxyf
     {
+        [DataMember]
         public float Y;
+        [DataMember]
         public float x;
+        [DataMember]
         public float y;
 
         public CieYxyf(float _Y, float _x, float _y) { Y = _Y; x = _x; y = _y; }
@@ -1645,12 +1706,17 @@ namespace Aardvark.Base
 
     #region CMYKf
 
+    [DataContract]
     [StructLayout(LayoutKind.Sequential)]
     public struct CMYKf
     {
+        [DataMember]
         public float C;
+        [DataMember]
         public float M;
+        [DataMember]
         public float Y;
+        [DataMember]
         public float K;
 
         public CMYKf(float _C, float _M, float _Y, float _K) { C = _C; M = _M; Y = _Y; K = _K; }
@@ -1665,11 +1731,15 @@ namespace Aardvark.Base
     /// <summary>
     /// Hue Saturation Value colors. All three components are defined in the range [0.0, 1.0].
     /// </summary>
+    [DataContract]
     [StructLayout(LayoutKind.Sequential)]
     public struct HSLf
     {
+        [DataMember]
         public float H;
+        [DataMember]
         public float S;
+        [DataMember]
         public float L;
 
         #region Constructors
@@ -1701,11 +1771,15 @@ namespace Aardvark.Base
     /// <summary>
     /// Hue Saturation Lightness colors. All three components are defined in the range [0.0, 1.0].
     /// </summary>
+    [DataContract]
     [StructLayout(LayoutKind.Sequential)]
     public struct HSVf
     {
+        [DataMember]
         public float H;
+        [DataMember]
         public float S;
+        [DataMember]
         public float V;
 
         #region Constructors
@@ -1734,11 +1808,15 @@ namespace Aardvark.Base
 
     #region Yuvf
 
+    [DataContract]
     [StructLayout(LayoutKind.Sequential)]
     public struct Yuvf
     {
+        [DataMember]
         public float Y;
+        [DataMember]
         public float u;
+        [DataMember]
         public float v;
 
         public Yuvf(float _Y, float _u, float _v) { Y = _Y; u = _u; v = _v; }
@@ -1748,5 +1826,4 @@ namespace Aardvark.Base
     }
 
     #endregion
-
 }

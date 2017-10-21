@@ -1,16 +1,18 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using System.Runtime.InteropServices;
+using System.Runtime.Serialization;
 
 namespace Aardvark.Base
 {
     //# foreach (var isDouble in new[] { false, true }) {
     //#   var ft = isDouble ? "double" : "float";
     //#   var ct = isDouble ? "ComplexD" : "ComplexF";
+    [DataContract]
+    [StructLayout(LayoutKind.Sequential)]
     public struct __ct__
     {
+        [DataMember]
         public __ft__ Real;
+        [DataMember]
         public __ft__ Imag;
 
         #region Constructors
