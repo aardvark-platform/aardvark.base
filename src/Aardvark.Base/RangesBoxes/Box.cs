@@ -1,4 +1,5 @@
 using System;
+using System.Runtime.Serialization;
 
 namespace Aardvark.Base
 {
@@ -95,7 +96,6 @@ namespace Aardvark.Base
             Corner6 = 0x40000000,
             Corner7 = (int)-0x80000000,
         }
-
     }
 
     #endregion
@@ -267,9 +267,12 @@ namespace Aardvark.Base
 
     #region Box3dAndFlags
 
+    [DataContract]
     public struct Box3dAndFlags
     {
+        [DataMember]
         public Box.Flags BFlags;
+        [DataMember]
         public Box3d BBox;
 
         public Box3dAndFlags(Box3d union, Box3d box0, Box3d box1)
@@ -289,15 +292,16 @@ namespace Aardvark.Base
             if (box1.Max.Y < union.Max.Y) { BBox.Max.Y = box1.Max.Y; BFlags |= Box.Flags.MaxY1; }
             if (box1.Max.Z < union.Max.Z) { BBox.Max.Z = box1.Max.Z; BFlags |= Box.Flags.MaxZ1; }
         }
-
     }
 
     #endregion
 
     #region OctoBox2d
 
+    [DataContract]
     public struct OctoBox2d
     {
+        [DataMember]
         public double PX, PY, NX, NY, PXPY, PXNY, NXPY, NXNY;
 
         #region Constructors
@@ -357,7 +361,6 @@ namespace Aardvark.Base
         }
 
         #endregion
-
     }
 
     #endregion

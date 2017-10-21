@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Runtime.InteropServices;
+using System.Runtime.Serialization;
 
 namespace Aardvark.Base
 {
@@ -32,12 +33,15 @@ namespace Aardvark.Base
     //#                            : lt.IsReal ? "Constant<" + ltype + ">.ParseableMaxValue" : ltype + ".MaxValue";
     #region __type__
 
+    [DataContract]
     [StructLayout(LayoutKind.Sequential)]
     public partial struct __type__
         : IRange<__ltype__, __type__>, /*# if (dim > 1) {
                 */IBoundingBox__dim__d, ISize__dim__d,/*# } */ IFormattable
     {
+        [DataMember]
         public __ltype__ Min;
+        [DataMember]
         public __ltype__ Max;
 
         #region Constructors

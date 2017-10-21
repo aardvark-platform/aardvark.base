@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Runtime.InteropServices;
+using System.Runtime.Serialization;
 
 namespace Aardvark.Base
 {
@@ -10,11 +11,14 @@ namespace Aardvark.Base
 
     #region Range1b
 
+    [DataContract]
     [StructLayout(LayoutKind.Sequential)]
     public partial struct Range1b
         : IRange<byte, Range1b>,  IFormattable
     {
+        [DataMember]
         public byte Min;
+        [DataMember]
         public byte Max;
 
         #region Constructors
@@ -716,11 +720,14 @@ namespace Aardvark.Base
 
     #region Range1sb
 
+    [DataContract]
     [StructLayout(LayoutKind.Sequential)]
     public partial struct Range1sb
         : IRange<sbyte, Range1sb>,  IFormattable
     {
+        [DataMember]
         public sbyte Min;
+        [DataMember]
         public sbyte Max;
 
         #region Constructors
@@ -1422,11 +1429,14 @@ namespace Aardvark.Base
 
     #region Range1s
 
+    [DataContract]
     [StructLayout(LayoutKind.Sequential)]
     public partial struct Range1s
         : IRange<short, Range1s>,  IFormattable
     {
+        [DataMember]
         public short Min;
+        [DataMember]
         public short Max;
 
         #region Constructors
@@ -2128,11 +2138,14 @@ namespace Aardvark.Base
 
     #region Range1us
 
+    [DataContract]
     [StructLayout(LayoutKind.Sequential)]
     public partial struct Range1us
         : IRange<ushort, Range1us>,  IFormattable
     {
+        [DataMember]
         public ushort Min;
+        [DataMember]
         public ushort Max;
 
         #region Constructors
@@ -2834,11 +2847,14 @@ namespace Aardvark.Base
 
     #region Range1i
 
+    [DataContract]
     [StructLayout(LayoutKind.Sequential)]
     public partial struct Range1i
         : IRange<int, Range1i>,  IFormattable
     {
+        [DataMember]
         public int Min;
+        [DataMember]
         public int Max;
 
         #region Constructors
@@ -3540,11 +3556,14 @@ namespace Aardvark.Base
 
     #region Range1ui
 
+    [DataContract]
     [StructLayout(LayoutKind.Sequential)]
     public partial struct Range1ui
         : IRange<uint, Range1ui>,  IFormattable
     {
+        [DataMember]
         public uint Min;
+        [DataMember]
         public uint Max;
 
         #region Constructors
@@ -4246,11 +4265,14 @@ namespace Aardvark.Base
 
     #region Range1l
 
+    [DataContract]
     [StructLayout(LayoutKind.Sequential)]
     public partial struct Range1l
         : IRange<long, Range1l>,  IFormattable
     {
+        [DataMember]
         public long Min;
+        [DataMember]
         public long Max;
 
         #region Constructors
@@ -4952,11 +4974,14 @@ namespace Aardvark.Base
 
     #region Range1ul
 
+    [DataContract]
     [StructLayout(LayoutKind.Sequential)]
     public partial struct Range1ul
         : IRange<ulong, Range1ul>,  IFormattable
     {
+        [DataMember]
         public ulong Min;
+        [DataMember]
         public ulong Max;
 
         #region Constructors
@@ -5658,11 +5683,14 @@ namespace Aardvark.Base
 
     #region Range1f
 
+    [DataContract]
     [StructLayout(LayoutKind.Sequential)]
     public partial struct Range1f
         : IRange<float, Range1f>,  IFormattable
     {
+        [DataMember]
         public float Min;
+        [DataMember]
         public float Max;
 
         #region Constructors
@@ -6381,11 +6409,14 @@ namespace Aardvark.Base
 
     #region Range1d
 
+    [DataContract]
     [StructLayout(LayoutKind.Sequential)]
     public partial struct Range1d
         : IRange<double, Range1d>,  IFormattable
     {
+        [DataMember]
         public double Min;
+        [DataMember]
         public double Max;
 
         #region Constructors
@@ -7104,11 +7135,14 @@ namespace Aardvark.Base
 
     #region Box2i
 
+    [DataContract]
     [StructLayout(LayoutKind.Sequential)]
     public partial struct Box2i
         : IRange<V2i, Box2i>, IBoundingBox2d, ISize2d, IFormattable
     {
+        [DataMember]
         public V2i Min;
+        [DataMember]
         public V2i Max;
 
         #region Constructors
@@ -8323,11 +8357,14 @@ namespace Aardvark.Base
 
     #region Box2l
 
+    [DataContract]
     [StructLayout(LayoutKind.Sequential)]
     public partial struct Box2l
         : IRange<V2l, Box2l>, IBoundingBox2d, ISize2d, IFormattable
     {
+        [DataMember]
         public V2l Min;
+        [DataMember]
         public V2l Max;
 
         #region Constructors
@@ -9542,11 +9579,14 @@ namespace Aardvark.Base
 
     #region Box2f
 
+    [DataContract]
     [StructLayout(LayoutKind.Sequential)]
     public partial struct Box2f
         : IRange<V2f, Box2f>, IBoundingBox2d, ISize2d, IFormattable
     {
+        [DataMember]
         public V2f Min;
+        [DataMember]
         public V2f Max;
 
         #region Constructors
@@ -10851,11 +10891,14 @@ namespace Aardvark.Base
 
     #region Box2d
 
+    [DataContract]
     [StructLayout(LayoutKind.Sequential)]
     public partial struct Box2d
         : IRange<V2d, Box2d>, IBoundingBox2d, ISize2d, IFormattable
     {
+        [DataMember]
         public V2d Min;
+        [DataMember]
         public V2d Max;
 
         #region Constructors
@@ -12160,11 +12203,14 @@ namespace Aardvark.Base
 
     #region Box3i
 
+    [DataContract]
     [StructLayout(LayoutKind.Sequential)]
     public partial struct Box3i
         : IRange<V3i, Box3i>, IBoundingBox3d, ISize3d, IFormattable
     {
+        [DataMember]
         public V3i Min;
+        [DataMember]
         public V3i Max;
 
         #region Constructors
@@ -13399,11 +13445,14 @@ namespace Aardvark.Base
 
     #region Box3l
 
+    [DataContract]
     [StructLayout(LayoutKind.Sequential)]
     public partial struct Box3l
         : IRange<V3l, Box3l>, IBoundingBox3d, ISize3d, IFormattable
     {
+        [DataMember]
         public V3l Min;
+        [DataMember]
         public V3l Max;
 
         #region Constructors
@@ -14638,11 +14687,14 @@ namespace Aardvark.Base
 
     #region Box3f
 
+    [DataContract]
     [StructLayout(LayoutKind.Sequential)]
     public partial struct Box3f
         : IRange<V3f, Box3f>, IBoundingBox3d, ISize3d, IFormattable
     {
+        [DataMember]
         public V3f Min;
+        [DataMember]
         public V3f Max;
 
         #region Constructors
@@ -15972,11 +16024,14 @@ namespace Aardvark.Base
 
     #region Box3d
 
+    [DataContract]
     [StructLayout(LayoutKind.Sequential)]
     public partial struct Box3d
         : IRange<V3d, Box3d>, IBoundingBox3d, ISize3d, IFormattable
     {
+        [DataMember]
         public V3d Min;
+        [DataMember]
         public V3d Max;
 
         #region Constructors

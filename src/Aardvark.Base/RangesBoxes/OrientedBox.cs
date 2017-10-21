@@ -1,8 +1,13 @@
-﻿namespace Aardvark.Base
+﻿using System.Runtime.Serialization;
+
+namespace Aardvark.Base
 {
+    [DataContract]
     public struct OrientedBox2d
     {
+        [DataMember]
         public Box2d Box;
+        [DataMember]
         public Euclidean2d Trafo;
 
         public OrientedBox2d(Box2d box, Rot2d rot)
@@ -46,10 +51,13 @@
             }
         }
     }
-
+    
+    [DataContract]
     public struct OrientedBox3d
     {
+        [DataMember]
         public Box3d Box;
+        [DataMember]
         public Euclidean3d Trafo;
 
         public OrientedBox3d(Box3d box, Rot3d rot)
