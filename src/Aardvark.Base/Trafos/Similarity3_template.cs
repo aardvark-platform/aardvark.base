@@ -2,6 +2,7 @@
 using System.Globalization;
 using System.Linq;
 using System.Runtime.InteropServices;
+using System.Runtime.Serialization;
 
 namespace Aardvark.Base
 {
@@ -15,10 +16,13 @@ namespace Aardvark.Base
     /// Uniform Scale and a subsequent Euclidean transformation (3D rotation Rot and a subsequent translation by a 3D vector Trans).
     /// This is an angle preserving Transformation.
     /// </summary>
+    [DataContract]
     [StructLayout(LayoutKind.Sequential)]
     public struct Similarity__x3t__
     {
+        [DataMember]
         public __ft__ Scale;
+        [DataMember]
         public Euclidean__x3t__ EuclideanTransformation;
 
         /// <summary>

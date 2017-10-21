@@ -1,6 +1,7 @@
 using System.Globalization;
 using System.Linq;
 using System.Runtime.InteropServices;
+using System.Runtime.Serialization;
 
 namespace Aardvark.Base
 {
@@ -16,10 +17,13 @@ namespace Aardvark.Base
     /// 2D rotation Rot and a subsequent translation by a 2D vector Trans.
     /// This is also called an Euclidean Transformation and is a length preserving Transformation.
     /// </summary>
+    [DataContract]
     [StructLayout(LayoutKind.Sequential)]
     public struct __e2t__ : IValidity
     {
+        [DataMember]
         public __r2t__ Rot;
+        [DataMember]
         public __v2t__ Trans;
 
         #region Constructors

@@ -2,6 +2,7 @@
 using System.Globalization;
 using System.Linq;
 using System.Runtime.InteropServices;
+using System.Runtime.Serialization;
 
 namespace Aardvark.Base
 {
@@ -20,9 +21,11 @@ namespace Aardvark.Base
     //#   var m33t = "M33" + tc;
     //#   var m34t = "M34" + tc;
     //#   var m44t = "M44" + tc;
+    [DataContract]
     [StructLayout(LayoutKind.Sequential)]
     public struct __rot2t__
     {
+        [DataMember]
         public __ft__ Angle;
 
         #region Constructors

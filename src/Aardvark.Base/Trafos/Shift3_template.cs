@@ -2,6 +2,7 @@
 using System.Globalization;
 using System.Linq;
 using System.Runtime.InteropServices;
+using System.Runtime.Serialization;
 
 namespace Aardvark.Base
 {
@@ -11,9 +12,11 @@ namespace Aardvark.Base
     //#   var x2t = isDouble ? "2d" : "2f";
     //#   var x3t = isDouble ? "3d" : "3f";
     //#   var x4t = isDouble ? "4d" : "4f";
+    [DataContract]
     [StructLayout(LayoutKind.Sequential)]
     public partial struct Shift__x3t__
     {
+        [DataMember]
         public V__x3t__ V;
 
         #region Constructors

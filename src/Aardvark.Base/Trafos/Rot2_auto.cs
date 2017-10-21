@@ -2,12 +2,15 @@ using System;
 using System.Globalization;
 using System.Linq;
 using System.Runtime.InteropServices;
+using System.Runtime.Serialization;
 
 namespace Aardvark.Base
 {
+    [DataContract]
     [StructLayout(LayoutKind.Sequential)]
     public struct Rot2f
     {
+        [DataMember]
         public float Angle;
 
         #region Constructors
@@ -650,9 +653,11 @@ namespace Aardvark.Base
 
         #endregion
     }
+    [DataContract]
     [StructLayout(LayoutKind.Sequential)]
     public struct Rot2d
     {
+        [DataMember]
         public double Angle;
 
         #region Constructors

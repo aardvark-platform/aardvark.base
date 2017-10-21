@@ -2,6 +2,7 @@ using System;
 using System.Globalization;
 using System.Linq;
 using System.Runtime.InteropServices;
+using System.Runtime.Serialization;
 
 namespace Aardvark.Base
 {
@@ -9,9 +10,11 @@ namespace Aardvark.Base
     /// A three dimensional scaling transform with different scaling values
     /// in each dimension.
     /// </summary>
+    [DataContract]
     [StructLayout(LayoutKind.Sequential)]
     public partial struct Scale3f
     {
+        [DataMember]
         public V3f V;
 
         #region Constructors
@@ -632,9 +635,11 @@ namespace Aardvark.Base
     /// A three dimensional scaling transform with different scaling values
     /// in each dimension.
     /// </summary>
+    [DataContract]
     [StructLayout(LayoutKind.Sequential)]
     public partial struct Scale3d
     {
+        [DataMember]
         public V3d V;
 
         #region Constructors

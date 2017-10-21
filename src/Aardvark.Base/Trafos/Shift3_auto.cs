@@ -2,12 +2,15 @@ using System;
 using System.Globalization;
 using System.Linq;
 using System.Runtime.InteropServices;
+using System.Runtime.Serialization;
 
 namespace Aardvark.Base
 {
+    [DataContract]
     [StructLayout(LayoutKind.Sequential)]
     public partial struct Shift3f
     {
+        [DataMember]
         public V3f V;
 
         #region Constructors
@@ -505,9 +508,11 @@ namespace Aardvark.Base
 
         #endregion
     }
+    [DataContract]
     [StructLayout(LayoutKind.Sequential)]
     public partial struct Shift3d
     {
+        [DataMember]
         public V3d V;
 
         #region Constructors

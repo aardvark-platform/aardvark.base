@@ -2,6 +2,7 @@ using System.Diagnostics;
 using System.Globalization;
 using System.Linq;
 using System.Runtime.InteropServices;
+using System.Runtime.Serialization;
 
 namespace Aardvark.Base
 {
@@ -10,10 +11,13 @@ namespace Aardvark.Base
     /// 3D rotation Rot and a subsequent translation by a 3D vector Trans.
     /// This is also called an Euclidean Transformation and is a length preserving Transformation.
     /// </summary>
+    [DataContract]
     [StructLayout(LayoutKind.Sequential)]
     public struct Euclidean3f : IValidity
     {
+        [DataMember]
         public Rot3f Rot;
+        [DataMember]
         public V3f Trans;
 
         #region Constructors
@@ -392,10 +396,13 @@ namespace Aardvark.Base
     /// 3D rotation Rot and a subsequent translation by a 3D vector Trans.
     /// This is also called an Euclidean Transformation and is a length preserving Transformation.
     /// </summary>
+    [DataContract]
     [StructLayout(LayoutKind.Sequential)]
     public struct Euclidean3d : IValidity
     {
+        [DataMember]
         public Rot3d Rot;
+        [DataMember]
         public V3d Trans;
 
         #region Constructors

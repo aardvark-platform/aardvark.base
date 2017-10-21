@@ -3,6 +3,7 @@ using System.Diagnostics;
 using System.Globalization;
 using System.Linq;
 using System.Runtime.InteropServices;
+using System.Runtime.Serialization;
 
 namespace Aardvark.Base
 {
@@ -25,10 +26,13 @@ namespace Aardvark.Base
     /// Represents an arbitrary rotation in three dimensions. Implemented as
     /// a normalized quaternion.
     /// </summary>
+    [DataContract]
     [StructLayout(LayoutKind.Sequential)]
     public partial struct __rot3t__
     {
+        [DataMember]
         public __ft__ W;
+        [DataMember]
         public __v3t__ V;
 
         #region Constructors

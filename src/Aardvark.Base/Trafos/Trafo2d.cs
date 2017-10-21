@@ -1,16 +1,20 @@
 using System.Globalization;
 using System.Linq;
 using System.Runtime.InteropServices;
+using System.Runtime.Serialization;
 
 namespace Aardvark.Base
 {
     /// <summary>
     /// A trafo is a container for a forward and a backward matrix.
     /// </summary>
+    [DataContract]
     [StructLayout(LayoutKind.Sequential)]
     public struct Trafo2d
     {
+        [DataMember]
         public readonly M33d Forward;
+        [DataMember]
         public readonly M33d Backward;
 
         #region Constructors

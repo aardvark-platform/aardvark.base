@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Runtime.InteropServices;
+using System.Runtime.Serialization;
 
 namespace Aardvark.Base
 {
@@ -39,11 +40,13 @@ namespace Aardvark.Base
     //#     var ctype = ctypeA[t];
     #region __nmtype__
 
+    [DataContract]
     [Serializable]
     [StructLayout(LayoutKind.Sequential)]
     public partial struct __nmtype__ : IValidity, IMatrix<double>
     {
         //# n.ForEach(j => {
+        [DataMember]
         public __ftype__ /*# m.ForEach(k => { */M__j____k__/*# }, comma); */;
         //# });
 

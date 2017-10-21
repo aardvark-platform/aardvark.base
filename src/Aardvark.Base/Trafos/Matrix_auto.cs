@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Runtime.InteropServices;
+using System.Runtime.Serialization;
 
 namespace Aardvark.Base
 {
@@ -10,11 +11,14 @@ namespace Aardvark.Base
 
     #region M22i
 
+    [DataContract]
     [Serializable]
     [StructLayout(LayoutKind.Sequential)]
     public partial struct M22i : IValidity, IMatrix<double>
     {
+        [DataMember]
         public int M00, M01;
+        [DataMember]
         public int M10, M11;
 
         #region Constructors
@@ -2062,11 +2066,14 @@ namespace Aardvark.Base
 
     #region M22l
 
+    [DataContract]
     [Serializable]
     [StructLayout(LayoutKind.Sequential)]
     public partial struct M22l : IValidity, IMatrix<double>
     {
+        [DataMember]
         public long M00, M01;
+        [DataMember]
         public long M10, M11;
 
         #region Constructors
@@ -3918,11 +3925,14 @@ namespace Aardvark.Base
 
     #region M22f
 
+    [DataContract]
     [Serializable]
     [StructLayout(LayoutKind.Sequential)]
     public partial struct M22f : IValidity, IMatrix<double>
     {
+        [DataMember]
         public float M00, M01;
+        [DataMember]
         public float M10, M11;
 
         #region Constructors
@@ -5653,11 +5663,14 @@ namespace Aardvark.Base
 
     #region M22d
 
+    [DataContract]
     [Serializable]
     [StructLayout(LayoutKind.Sequential)]
     public partial struct M22d : IValidity, IMatrix<double>
     {
+        [DataMember]
         public double M00, M01;
+        [DataMember]
         public double M10, M11;
 
         #region Constructors
@@ -7192,11 +7205,14 @@ namespace Aardvark.Base
 
     #region M23i
 
+    [DataContract]
     [Serializable]
     [StructLayout(LayoutKind.Sequential)]
     public partial struct M23i : IValidity, IMatrix<double>
     {
+        [DataMember]
         public int M00, M01, M02;
+        [DataMember]
         public int M10, M11, M12;
 
         #region Constructors
@@ -9287,11 +9303,14 @@ namespace Aardvark.Base
 
     #region M23l
 
+    [DataContract]
     [Serializable]
     [StructLayout(LayoutKind.Sequential)]
     public partial struct M23l : IValidity, IMatrix<double>
     {
+        [DataMember]
         public long M00, M01, M02;
+        [DataMember]
         public long M10, M11, M12;
 
         #region Constructors
@@ -11186,11 +11205,14 @@ namespace Aardvark.Base
 
     #region M23f
 
+    [DataContract]
     [Serializable]
     [StructLayout(LayoutKind.Sequential)]
     public partial struct M23f : IValidity, IMatrix<double>
     {
+        [DataMember]
         public float M00, M01, M02;
+        [DataMember]
         public float M10, M11, M12;
 
         #region Constructors
@@ -12889,11 +12911,14 @@ namespace Aardvark.Base
 
     #region M23d
 
+    [DataContract]
     [Serializable]
     [StructLayout(LayoutKind.Sequential)]
     public partial struct M23d : IValidity, IMatrix<double>
     {
+        [DataMember]
         public double M00, M01, M02;
+        [DataMember]
         public double M10, M11, M12;
 
         #region Constructors
@@ -14396,12 +14421,16 @@ namespace Aardvark.Base
 
     #region M33i
 
+    [DataContract]
     [Serializable]
     [StructLayout(LayoutKind.Sequential)]
     public partial struct M33i : IValidity, IMatrix<double>
     {
+        [DataMember]
         public int M00, M01, M02;
+        [DataMember]
         public int M10, M11, M12;
+        [DataMember]
         public int M20, M21, M22;
 
         #region Constructors
@@ -16935,12 +16964,16 @@ namespace Aardvark.Base
 
     #region M33l
 
+    [DataContract]
     [Serializable]
     [StructLayout(LayoutKind.Sequential)]
     public partial struct M33l : IValidity, IMatrix<double>
     {
+        [DataMember]
         public long M00, M01, M02;
+        [DataMember]
         public long M10, M11, M12;
+        [DataMember]
         public long M20, M21, M22;
 
         #region Constructors
@@ -19250,12 +19283,16 @@ namespace Aardvark.Base
 
     #region M33f
 
+    [DataContract]
     [Serializable]
     [StructLayout(LayoutKind.Sequential)]
     public partial struct M33f : IValidity, IMatrix<double>
     {
+        [DataMember]
         public float M00, M01, M02;
+        [DataMember]
         public float M10, M11, M12;
+        [DataMember]
         public float M20, M21, M22;
 
         #region Constructors
@@ -21416,12 +21453,16 @@ namespace Aardvark.Base
 
     #region M33d
 
+    [DataContract]
     [Serializable]
     [StructLayout(LayoutKind.Sequential)]
     public partial struct M33d : IValidity, IMatrix<double>
     {
+        [DataMember]
         public double M00, M01, M02;
+        [DataMember]
         public double M10, M11, M12;
+        [DataMember]
         public double M20, M21, M22;
 
         #region Constructors
@@ -23358,12 +23399,16 @@ namespace Aardvark.Base
 
     #region M34i
 
+    [DataContract]
     [Serializable]
     [StructLayout(LayoutKind.Sequential)]
     public partial struct M34i : IValidity, IMatrix<double>
     {
+        [DataMember]
         public int M00, M01, M02, M03;
+        [DataMember]
         public int M10, M11, M12, M13;
+        [DataMember]
         public int M20, M21, M22, M23;
 
         #region Constructors
@@ -25902,12 +25947,16 @@ namespace Aardvark.Base
 
     #region M34l
 
+    [DataContract]
     [Serializable]
     [StructLayout(LayoutKind.Sequential)]
     public partial struct M34l : IValidity, IMatrix<double>
     {
+        [DataMember]
         public long M00, M01, M02, M03;
+        [DataMember]
         public long M10, M11, M12, M13;
+        [DataMember]
         public long M20, M21, M22, M23;
 
         #region Constructors
@@ -28222,12 +28271,16 @@ namespace Aardvark.Base
 
     #region M34f
 
+    [DataContract]
     [Serializable]
     [StructLayout(LayoutKind.Sequential)]
     public partial struct M34f : IValidity, IMatrix<double>
     {
+        [DataMember]
         public float M00, M01, M02, M03;
+        [DataMember]
         public float M10, M11, M12, M13;
+        [DataMember]
         public float M20, M21, M22, M23;
 
         #region Constructors
@@ -30318,12 +30371,16 @@ namespace Aardvark.Base
 
     #region M34d
 
+    [DataContract]
     [Serializable]
     [StructLayout(LayoutKind.Sequential)]
     public partial struct M34d : IValidity, IMatrix<double>
     {
+        [DataMember]
         public double M00, M01, M02, M03;
+        [DataMember]
         public double M10, M11, M12, M13;
+        [DataMember]
         public double M20, M21, M22, M23;
 
         #region Constructors
@@ -32190,13 +32247,18 @@ namespace Aardvark.Base
 
     #region M44i
 
+    [DataContract]
     [Serializable]
     [StructLayout(LayoutKind.Sequential)]
     public partial struct M44i : IValidity, IMatrix<double>
     {
+        [DataMember]
         public int M00, M01, M02, M03;
+        [DataMember]
         public int M10, M11, M12, M13;
+        [DataMember]
         public int M20, M21, M22, M23;
+        [DataMember]
         public int M30, M31, M32, M33;
 
         #region Constructors
@@ -35227,13 +35289,18 @@ namespace Aardvark.Base
 
     #region M44l
 
+    [DataContract]
     [Serializable]
     [StructLayout(LayoutKind.Sequential)]
     public partial struct M44l : IValidity, IMatrix<double>
     {
+        [DataMember]
         public long M00, M01, M02, M03;
+        [DataMember]
         public long M10, M11, M12, M13;
+        [DataMember]
         public long M20, M21, M22, M23;
+        [DataMember]
         public long M30, M31, M32, M33;
 
         #region Constructors
@@ -38012,13 +38079,18 @@ namespace Aardvark.Base
 
     #region M44f
 
+    [DataContract]
     [Serializable]
     [StructLayout(LayoutKind.Sequential)]
     public partial struct M44f : IValidity, IMatrix<double>
     {
+        [DataMember]
         public float M00, M01, M02, M03;
+        [DataMember]
         public float M10, M11, M12, M13;
+        [DataMember]
         public float M20, M21, M22, M23;
+        [DataMember]
         public float M30, M31, M32, M33;
 
         #region Constructors
@@ -40620,13 +40692,18 @@ namespace Aardvark.Base
 
     #region M44d
 
+    [DataContract]
     [Serializable]
     [StructLayout(LayoutKind.Sequential)]
     public partial struct M44d : IValidity, IMatrix<double>
     {
+        [DataMember]
         public double M00, M01, M02, M03;
+        [DataMember]
         public double M10, M11, M12, M13;
+        [DataMember]
         public double M20, M21, M22, M23;
+        [DataMember]
         public double M30, M31, M32, M33;
 
         #region Constructors
