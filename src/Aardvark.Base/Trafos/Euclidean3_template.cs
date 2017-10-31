@@ -13,6 +13,7 @@ namespace Aardvark.Base
     //#   var v3t = isDouble ? "V3d" : "V3f";
     //#   var r3t = isDouble ? "Rot3d" : "Rot3f";
     //#   var e3t = isDouble ? "Euclidean3d" : "Euclidean3f";
+    //#   var eps = isDouble ? "1e-12" : "1e-5f";
     /// <summary>
     /// Represents a Rigid Transformation (or Rigid Body Transformation) in 3D that is composed of a 
     /// 3D rotation Rot and a subsequent translation by a 3D vector Trans.
@@ -41,7 +42,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Creates a rigid transformation from a rotation matrix <paramref name="rot"/> and a (subsequent) translation <paramref name="trans"/>.
         /// </summary>
-        public __e3t__(M3__s3f__ rot, __v3t__ trans, __ft__ epsilon = (__ft__)0.00001)
+        public __e3t__(M3__s3f__ rot, __v3t__ trans, __ft__ epsilon = __eps__)
         {
             Rot = __r3t__.FromM3__s3f__(rot, epsilon);
             Trans = trans;
@@ -50,7 +51,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Creates a rigid transformation from a matrix <paramref name="m"/>.
         /// </summary>
-        public __e3t__(M4__s4f__ m, __ft__ epsilon = (__ft__)0.00001)
+        public __e3t__(M4__s4f__ m, __ft__ epsilon = __eps__)
             : this(((M3__s3f__)m) / m.M33, m.C3.XYZ / m.M33, epsilon)
         {
             Requires.That(m.M30.IsTiny(epsilon) && m.M31.IsTiny(epsilon) && m.M32.IsTiny(epsilon), "Matrix contains perspective components.");
@@ -60,7 +61,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Creates a rigid transformation from a trafo <paramref name="trafo"/>.
         /// </summary>
-        public __e3t__(Trafo3d trafo, __ft__ epsilon = (__ft__)0.00001)
+        public __e3t__(Trafo3d trafo, __ft__ epsilon = __eps__)
             : this((M4__s4f__)trafo.Forward, epsilon)
         {
         }
