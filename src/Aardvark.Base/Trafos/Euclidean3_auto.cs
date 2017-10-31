@@ -30,7 +30,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Creates a rigid transformation from a rotation matrix <paramref name="rot"/> and a (subsequent) translation <paramref name="trans"/>.
         /// </summary>
-        public Euclidean3f(M33f rot, V3f trans, float epsilon = (float)0.00001)
+        public Euclidean3f(M33f rot, V3f trans, float epsilon = 1e-5f)
         {
             Rot = Rot3f.FromM33f(rot, epsilon);
             Trans = trans;
@@ -39,7 +39,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Creates a rigid transformation from a matrix <paramref name="m"/>.
         /// </summary>
-        public Euclidean3f(M44f m, float epsilon = (float)0.00001)
+        public Euclidean3f(M44f m, float epsilon = 1e-5f)
             : this(((M33f)m) / m.M33, m.C3.XYZ / m.M33, epsilon)
         {
             Trace.Assert(m.M30.IsTiny(epsilon) && m.M31.IsTiny(epsilon) && m.M32.IsTiny(epsilon), "Matrix contains perspective components.");
@@ -49,7 +49,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Creates a rigid transformation from a trafo <paramref name="trafo"/>.
         /// </summary>
-        public Euclidean3f(Trafo3d trafo, float epsilon = (float)0.00001)
+        public Euclidean3f(Trafo3d trafo, float epsilon = 1e-5f)
             : this((M44f)trafo.Forward, epsilon)
         {
         }
@@ -412,7 +412,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Creates a rigid transformation from a rotation matrix <paramref name="rot"/> and a (subsequent) translation <paramref name="trans"/>.
         /// </summary>
-        public Euclidean3d(M33d rot, V3d trans, double epsilon = (double)0.00001)
+        public Euclidean3d(M33d rot, V3d trans, double epsilon = 1e-12)
         {
             Rot = Rot3d.FromM33d(rot, epsilon);
             Trans = trans;
@@ -421,7 +421,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Creates a rigid transformation from a matrix <paramref name="m"/>.
         /// </summary>
-        public Euclidean3d(M44d m, double epsilon = (double)0.00001)
+        public Euclidean3d(M44d m, double epsilon = 1e-12)
             : this(((M33d)m) / m.M33, m.C3.XYZ / m.M33, epsilon)
         {
             Trace.Assert(m.M30.IsTiny(epsilon) && m.M31.IsTiny(epsilon) && m.M32.IsTiny(epsilon), "Matrix contains perspective components.");
@@ -431,7 +431,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Creates a rigid transformation from a trafo <paramref name="trafo"/>.
         /// </summary>
-        public Euclidean3d(Trafo3d trafo, double epsilon = (double)0.00001)
+        public Euclidean3d(Trafo3d trafo, double epsilon = 1e-12)
             : this((M44d)trafo.Forward, epsilon)
         {
         }
