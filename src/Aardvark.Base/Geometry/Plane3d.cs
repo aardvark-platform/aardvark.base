@@ -487,25 +487,33 @@ namespace Aardvark.Base
     public static class Plane3dExtensions
     {
         /// <summary>
+        /// Returns a transformation of an orthonormal basis in Plane- to WorldSpace.
+        /// </summary>
+        public static Trafo3d GetPlaneSpaceTransform(this Plane3d self)
+        {
+            return Trafo3d.FromNormalFrame(self.Point, self.Normal);
+        }
+
+        /// <summary>
         /// 3D world space to 2D plane space.
         /// Plane space is defined by a normal-frame from Point and Normal of the plane.
         /// </summary>
-        public static Euclidean3d GetWorldToPlane(this Plane3d self)
+        public static M44d GetWorldToPlane(this Plane3d self)
         {
             M44d _, global2local;
             M44d.NormalFrame(self.Point, self.Normal, out _, out global2local);
-            return new Euclidean3d(global2local);
+            return global2local;
         }
 
         /// <summary>
         /// 2D plane space to 3D world space.
         /// Plane space is defined by a normal-frame from Point and Normal of the plane.
         /// </summary>
-        public static Euclidean3d GetPlaneToWorld(this Plane3d self)
+        public static M44d GetPlaneToWorld(this Plane3d self)
         {
             M44d local2global, _;
             M44d.NormalFrame(self.Point, self.Normal, out local2global, out _);
-            return new Euclidean3d(local2global);
+            return local2global;
         }
 
         /// <summary>
