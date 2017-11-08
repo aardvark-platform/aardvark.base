@@ -303,39 +303,59 @@ type ShapeCache(r : IRuntime) =
     let pool = r.CreateGeometryPool(types)
     let ranges = ConcurrentDictionary<Shape, Range1i>()
 
-    let signature =
-        r.CreateFramebufferSignature(
-            1, 
-            [
-                DefaultSemantic.Colors, RenderbufferFormat.Rgba8
-                //Path.Src1Color, RenderbufferFormat.Rgba8
-                DefaultSemantic.Depth, RenderbufferFormat.Depth24Stencil8
-            ]
+//    let signature =
+//        r.CreateFramebufferSignature(
+//            1, 
+//            [
+//                DefaultSemantic.Colors, RenderbufferFormat.Rgba8
+//                //Path.Src1Color, RenderbufferFormat.Rgba8
+//                DefaultSemantic.Depth, RenderbufferFormat.Depth24Stencil8
+//            ]
+//        )
+
+    let surfaceCache = ConcurrentDictionary<IFramebufferSignature, IBackendSurface>()
+    let boundarySurfaceCache = ConcurrentDictionary<IFramebufferSignature, IBackendSurface>()
+
+    let effect =
+        FShade.Effect.compose [
+            Path.Shader.pathVertex      |> toEffect
+            Path.Shader.pathTrafo       |> toEffect
+            Path.Shader.pathFragment    |> toEffect
+        ]
+        
+    let boundaryEffect =
+        FShade.Effect.compose [
+            Path.Shader.boundaryVertex  |> toEffect
+            Path.Shader.boundary        |> toEffect
+        ]
+
+
+    let surface (s : IFramebufferSignature) =
+        surfaceCache.GetOrAdd(s, fun s -> 
+            r.PrepareEffect(
+                s, [
+                    Path.Shader.pathVertex      |> toEffect
+                    Path.Shader.pathTrafo       |> toEffect
+                    Path.Shader.pathFragment    |> toEffect
+                ]
+            )
         )
 
-    let surface = 
-        r.PrepareEffect(
-            signature, [
-                Path.Shader.pathVertex      |> toEffect
-                Path.Shader.pathTrafo       |> toEffect
-                Path.Shader.pathFragment    |> toEffect
-            ]
-        )
-
-    let boundarySurface =
-        r.PrepareEffect(
-            signature, [
-                //DefaultSurfaces.trafo |> toEffect
-                Path.Shader.boundaryVertex  |> toEffect
-                Path.Shader.boundary        |> toEffect
-            ]
+    let boundarySurface (s : IFramebufferSignature) =
+        boundarySurfaceCache.GetOrAdd(s, fun s ->
+            r.PrepareEffect(
+                s, [
+                    //DefaultSurfaces.trafo |> toEffect
+                    Path.Shader.boundaryVertex  |> toEffect
+                    Path.Shader.boundary        |> toEffect
+                ]
+            )
         )
 
     do 
         r.OnDispose.Add(fun () ->
-            r.DeleteSurface boundarySurface
-            r.DeleteSurface surface
-            r.DeleteFramebufferSignature signature
+            boundarySurfaceCache.Values |> Seq.iter r.DeleteSurface
+            surfaceCache.Values |> Seq.iter r.DeleteSurface
             pool.Dispose()
             ranges.Clear()
             cache.Clear()
@@ -360,8 +380,10 @@ type ShapeCache(r : IRuntime) =
             new ShapeCache(r)
         )
 
-    member x.Surface = surface :> ISurface
-    member x.BoundarySurface = boundarySurface :> ISurface
+    member x.Effect = effect
+    member x.BoundaryEffect = boundaryEffect
+    member x.Surface s = surface s :> ISurface
+    member x.BoundarySurface s = boundarySurface s :> ISurface
     member x.VertexBuffers = vertexBuffers
 
     member x.GetBufferRange(shape : Shape) =
