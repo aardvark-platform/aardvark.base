@@ -22,6 +22,8 @@ namespace Aardvark.Base
     //#   var m33t = "M33" + tc;
     //#   var m34t = "M34" + tc;
     //#   var m44t = "M44" + tc;
+    //#   var rotIntoEps = isDouble ? "1e-7" : "1e-3f";
+    //#   var pi = isDouble ? "Constant.Pi" : "Constant.PiF";
     /// <summary>
     /// Represents an arbitrary rotation in three dimensions. Implemented as
     /// a normalized quaternion.
@@ -88,9 +90,13 @@ namespace Aardvark.Base
             V = axis.Normalized * halfAngle.Sin();
         }
 
-        public __rot3t__(
-            __ft__ yawInRadians, __ft__ pitchInRadians, __ft__ rollInRadians
-            )
+        /// <summary>
+        /// Creates quaternion from euler angles [yaw, pitch, roll].
+        /// </summary>
+        /// <param name="yawInRadians">Rotation around X</param>
+        /// <param name="pitchInRadians">Rotation around Y</param>
+        /// <param name="rollInRadians">Rotation around Z</param>
+        public __rot3t__(__ft__ yawInRadians, __ft__ pitchInRadians, __ft__ rollInRadians)
         {
             var qx = new __rot3t__(__v3t__.XAxis, yawInRadians);
             var qy = new __rot3t__(__v3t__.YAxis, pitchInRadians);
@@ -102,8 +108,7 @@ namespace Aardvark.Base
         /// Creates a quaternion representing a rotation from one
         /// vector into another.
         /// </summary>
-        public __rot3t__(
-            __v3t__ from, __v3t__ into)
+        public __rot3t__(__v3t__ from, __v3t__ into)
         {
             var a = from.Normalized;
             var b = into.Normalized;
@@ -111,13 +116,18 @@ namespace Aardvark.Base
             var angleAbs = angle.Abs();
             __v3t__ axis;
 
-            if (angle.IsTiny())
+            // some vectors do not normalize to 1.0 -> Vec.Dot = -0.99999999999999989 || -0.99999994f
+            // acos => 3.1415926386886319 or 3.14124632f -> delta of 1e-7 or 1e-3
+            if (angle < __rotIntoEps__)
             {
                 axis = a;
                 angle = 0;
             }
-            else if ((angleAbs - Constant.Pi).IsTiny())
+            else if (__pi__ - angleAbs < __rotIntoEps__)
+            {
                 axis = a.AxisAlignedNormal();
+                angle = __pi__;
+            }
             else
                 axis = __v3t__.Cross(a, b).Normalized;
 

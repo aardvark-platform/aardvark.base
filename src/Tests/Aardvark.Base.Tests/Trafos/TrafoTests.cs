@@ -102,5 +102,24 @@ namespace Aardvark.Tests
                 && i.C2.ApproxEqual(V4d.OOIO, 1e-1)
                 && i.C3.ApproxEqual(V4d.OOOI, 1e-1);
         }
+
+        [Test]
+        public void TrafoRotIntoCornerCase()
+        {
+            var rnd = new Random();
+            for (int i = 0; i < 1000; i++)
+            {
+                // some vectors will not normalize to 1.0 -> provoke numerical issues in Rot3d
+                var vecd = new V3d(0, 0, -rnd.NextDouble()); 
+                var rotd = new Rot3d(V3d.OOI, vecd);
+                var testd = rotd.TransformDir(V3d.OOI);
+                Assert.True((testd + V3d.OOI).Length < 1e-7);
+
+                var vecf = new V3f(0, 0, -rnd.NextDouble());
+                var rotf = new Rot3f(V3f.OOI, vecf);
+                var testf = rotf.TransformDir(V3f.OOI);
+                Assert.True((testf + V3f.OOI).Length < 1e-3);
+            }
+        }
     }
 }
