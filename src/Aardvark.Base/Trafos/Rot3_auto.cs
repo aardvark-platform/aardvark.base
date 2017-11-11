@@ -69,9 +69,13 @@ namespace Aardvark.Base
             V = axis.Normalized * halfAngle.Sin();
         }
 
-        public Rot3f(
-            float yawInRadians, float pitchInRadians, float rollInRadians
-            )
+        /// <summary>
+        /// Creates quaternion from euler angles [yaw, pitch, roll].
+        /// </summary>
+        /// <param name="yawInRadians">Rotation around X</param>
+        /// <param name="pitchInRadians">Rotation around Y</param>
+        /// <param name="rollInRadians">Rotation around Z</param>
+        public Rot3f(float yawInRadians, float pitchInRadians, float rollInRadians)
         {
             var qx = new Rot3f(V3f.XAxis, yawInRadians);
             var qy = new Rot3f(V3f.YAxis, pitchInRadians);
@@ -83,8 +87,7 @@ namespace Aardvark.Base
         /// Creates a quaternion representing a rotation from one
         /// vector into another.
         /// </summary>
-        public Rot3f(
-            V3f from, V3f into)
+        public Rot3f(V3f from, V3f into)
         {
             var a = from.Normalized;
             var b = into.Normalized;
@@ -92,13 +95,18 @@ namespace Aardvark.Base
             var angleAbs = angle.Abs();
             V3f axis;
 
-            if (angle.IsTiny())
+            // some vectors do not normalize to 1.0 -> Vec.Dot = -0.99999999999999989 || -0.99999994f
+            // acos => 3.1415926386886319 or 3.14124632f -> delta of 1e-7 or 1e-3
+            if (angle < 1e-3f)
             {
                 axis = a;
                 angle = 0;
             }
-            else if ((angleAbs - Constant.Pi).IsTiny())
+            else if (Constant.PiF - angleAbs < 1e-3f)
+            {
                 axis = a.AxisAlignedNormal();
+                angle = Constant.PiF;
+            }
             else
                 axis = V3f.Cross(a, b).Normalized;
 
@@ -1064,9 +1072,13 @@ namespace Aardvark.Base
             V = axis.Normalized * halfAngle.Sin();
         }
 
-        public Rot3d(
-            double yawInRadians, double pitchInRadians, double rollInRadians
-            )
+        /// <summary>
+        /// Creates quaternion from euler angles [yaw, pitch, roll].
+        /// </summary>
+        /// <param name="yawInRadians">Rotation around X</param>
+        /// <param name="pitchInRadians">Rotation around Y</param>
+        /// <param name="rollInRadians">Rotation around Z</param>
+        public Rot3d(double yawInRadians, double pitchInRadians, double rollInRadians)
         {
             var qx = new Rot3d(V3d.XAxis, yawInRadians);
             var qy = new Rot3d(V3d.YAxis, pitchInRadians);
@@ -1078,8 +1090,7 @@ namespace Aardvark.Base
         /// Creates a quaternion representing a rotation from one
         /// vector into another.
         /// </summary>
-        public Rot3d(
-            V3d from, V3d into)
+        public Rot3d(V3d from, V3d into)
         {
             var a = from.Normalized;
             var b = into.Normalized;
@@ -1087,13 +1098,18 @@ namespace Aardvark.Base
             var angleAbs = angle.Abs();
             V3d axis;
 
-            if (angle.IsTiny())
+            // some vectors do not normalize to 1.0 -> Vec.Dot = -0.99999999999999989 || -0.99999994f
+            // acos => 3.1415926386886319 or 3.14124632f -> delta of 1e-7 or 1e-3
+            if (angle < 1e-7)
             {
                 axis = a;
                 angle = 0;
             }
-            else if ((angleAbs - Constant.Pi).IsTiny())
+            else if (Constant.Pi - angleAbs < 1e-7)
+            {
                 axis = a.AxisAlignedNormal();
+                angle = Constant.Pi;
+            }
             else
                 axis = V3d.Cross(a, b).Normalized;
 
