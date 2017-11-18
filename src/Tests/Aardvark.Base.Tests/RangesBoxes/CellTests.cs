@@ -24,6 +24,14 @@ namespace Aardvark.Tests
         #region creation
 
         [Test]
+        public void UnitCell()
+        {
+            Assert.IsTrue(Cell.Unit.X == 0 && Cell.Unit.Y == 0 && Cell.Unit.Z == 0);
+            Assert.IsTrue(Cell.Unit.Exponent == 0);
+            Assert.IsTrue(Cell.Unit.BoundingBox == Box3d.Unit);
+        }
+
+        [Test]
         public void CanCreateCell()
         {
             var a = new Cell(1, 2, 3, -1);
