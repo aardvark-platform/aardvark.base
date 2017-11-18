@@ -246,6 +246,17 @@ namespace Aardvark.Base
             return poly2d.Contains(world2plane.TransformPos(point).XY);
         }
 
+        /// <summary>
+        /// Returns true if point is within given eps to polygon.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool Contains(this Polygon3d polygon, Plane3d supportingPlane, M44d world2plane, Polygon2d poly2d, double eps, V3d point, out double distance)
+        {
+            distance = supportingPlane.Height(point);
+            if (distance < -eps || distance > eps) return false;
+            return poly2d.Contains(world2plane.TransformPos(point).XY);
+        }
+
         #endregion
 
 
