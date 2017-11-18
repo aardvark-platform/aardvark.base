@@ -219,6 +219,35 @@ namespace Aardvark.Base
 
         #endregion
 
+        #region Polygon3d ± eps contains V3d (sm)
+
+        /// <summary>
+        /// Returns true if point is within given eps to polygon.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool Contains(this Polygon3d polygon, double eps, V3d point, out double distance)
+        {
+            var plane = polygon.GetPlane3d();
+            distance = plane.Height(point);
+            if (distance < -eps || distance > eps) return false;
+            var w2p = plane.GetWorldToPlane();
+            var poly2d = new Polygon2d(polygon.GetPointArray().Map(p => w2p.TransformPos(p).XY));
+            return poly2d.Contains(w2p.TransformPos(point).XY);
+        }
+
+        /// <summary>
+        /// Returns true if point is within given eps to polygon.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool Contains(this Polygon3d polygon, Plane3d supportingPlane, Euclidean3d world2plane, Polygon2d poly2d, double eps, V3d point, out double distance)
+        {
+            distance = supportingPlane.Height(point);
+            if (distance < -eps || distance > eps) return false;
+            return poly2d.Contains(world2plane.TransformPos(point).XY);
+        }
+
+        #endregion
+
 
         // Intersection tests
 
