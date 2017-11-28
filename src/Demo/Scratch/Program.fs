@@ -255,6 +255,67 @@ let main argv =
 //    Program.test()
 //    Environment.Exit 0
 
+    
+    let m = Mod.init 10
+    
+    let sw = System.Diagnostics.Stopwatch.StartNew()
+    let set = CSet.ofList [1 .. 100000]
+    sw.Stop()
+    Log.line "build: %A" sw.MicroTime
+
+    let op = 
+        m |> ASet.bind (fun a ->
+            printfn "bind"
+            set 
+                |> ASet.collect (fun b -> if a <> b then ASet.ofList [a] else ASet.empty)
+                |> fun a -> printfn "collect rebuild"; a
+                |> ASet.collect ASet.single
+                |> ASet.collect ASet.single
+                |> ASet.collect ASet.single
+                |> ASet.collect ASet.single
+                |> ASet.collect ASet.single
+                |> ASet.collect ASet.single
+                |> ASet.collect ASet.single
+        )
+
+    let r = op.GetReader()
+
+    let sw = System.Diagnostics.Stopwatch.StartNew()
+    r.GetOperations AdaptiveToken.Top |> ignore
+    sw.Stop()
+    Log.line "took: %A" sw.MicroTime
+
+    
+    let sw = System.Diagnostics.Stopwatch.StartNew()
+    transact (fun () -> m.Value <- 1)
+    sw.Stop()
+    Log.line "transact: %A" sw.MicroTime
+    
+    let sw = System.Diagnostics.Stopwatch.StartNew()
+    r.GetOperations AdaptiveToken.Top |> ignore
+    sw.Stop()
+    Log.line "took: %A" sw.MicroTime
+    
+    
+    let sw = System.Diagnostics.Stopwatch.StartNew()
+    transact (fun () -> set.Add 0 |> ignore)
+    sw.Stop()
+    Log.line "transact: %A" sw.MicroTime
+    
+    let sw = System.Diagnostics.Stopwatch.StartNew()
+    r.GetOperations AdaptiveToken.Top |> ignore
+    sw.Stop()
+
+
+    Log.line "took: %A" sw.MicroTime
+    Environment.Exit 0
+
+
+
+
+
+
+
 
     let callback =
         MyDelegate (fun a b c d e ->

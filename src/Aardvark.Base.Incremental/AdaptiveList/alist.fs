@@ -801,7 +801,7 @@ module AList =
 
             override x.Compute(token) =
                 let v = input.GetValue token
-                let inputChanged = System.Threading.Interlocked.CompareExchange(&inputChanged, 0, 1)
+                let inputChanged = System.Threading.Interlocked.Exchange(&inputChanged, 0)
                 match reader with
                     | Some (oldA, oldReader) when inputChanged = 0 || Unchecked.equals v oldA ->
                         oldReader.GetOperations token

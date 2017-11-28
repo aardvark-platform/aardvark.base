@@ -355,6 +355,7 @@ module ASet =
                 let v = input.GetValue token
                 match old with
                     | Some(_,ro) when inputChanged ->
+                        inputChanged <- false
                         let rem = HRefSet.computeDelta ro.State HRefSet.empty
                         ro.Dispose()
                         let r = (f v).GetReader()
