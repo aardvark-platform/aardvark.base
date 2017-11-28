@@ -502,20 +502,25 @@ module ASet =
                 v
 
             member x.Invoke2(token : AdaptiveToken, m : IMod<Option<'b>>) =
-                let o = cache.[m]
-                let v = m.GetValue token
-                cache.[m] <- v
-                o, v
+                match cache.TryGetValue m with
+                    | (true, o) ->
+                        let v = m.GetValue token
+                        cache.[m] <- v
+                        o, v
+                    | _ ->
+                      None, None  
 
             member x.Revoke(v : 'a) =
-                let m = f.Revoke v
-                match cache.TryRemove m with
-                    | (true, v) -> 
-                        lock m (fun () -> m.Outputs.Remove x |> ignore )
-                        v
-                    | _ -> 
-                        failwith "[ASet] cannot remove unknown object"
-
+                let deleted, m = f.RevokeAndGetDeleted v
+                if deleted then
+                    match cache.TryRemove m with
+                        | (true, v) -> 
+                            lock m (fun () -> m.Outputs.Remove x |> ignore )
+                            v
+                        | _ -> 
+                            failwith "[ASet] cannot remove unknown object"
+                else
+                    cache.[m]
 
             override x.Release() =
                 f.Clear ignore
