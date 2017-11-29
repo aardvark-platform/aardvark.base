@@ -252,8 +252,24 @@ open AMD64
 
 [<EntryPoint; STAThread>]
 let main argv = 
+
+    let sw = System.Diagnostics.Stopwatch.StartNew()
+    for iter in 1..50 do
+        let cnt = iter * 1000
+        let arr = ASet.ofArray(Array.init(cnt) (fun i -> Mod.init(i) :> IMod<_>))
+
+        let arrr = arr |> ASet.collect (fun x -> 
+                            x |> ASet.bind (fun y -> ASet.single y))
+
+        let r = arrr.GetReader()
+
+        let sw = System.Diagnostics.Stopwatch.StartNew()
+        r.GetOperations AdaptiveToken.Top |> ignore
+        sw.Stop()
+        Log.line "%d took: %A" cnt sw.MicroTime
+    Environment.Exit 0
+
 //    Program.test()
-//    Environment.Exit 0
 
     
     let m = Mod.init 10
