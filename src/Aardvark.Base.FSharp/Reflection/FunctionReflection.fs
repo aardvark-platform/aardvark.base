@@ -244,64 +244,23 @@ module QuotationReflectionHelpers =
             | None -> failwith "could not find a method-call in expression"
 
 module DelegateAdapters =
-    type private AdapterFunc<'a> (f : Func<'a>) =
-        inherit FSharpFunc<unit, 'a>()
-        override x.Invoke(_) = f.Invoke()
 
-    type private AdapterFunc<'a, 'b> (f : Func<'a, 'b>) =
-        inherit FSharpFunc<'a, 'b>()
-        override x.Invoke(a : 'a) = f.Invoke(a)
-
-    type private AdapterFunc<'a, 'b, 'c> (f : Func<'a, 'b, 'c>) =
-        inherit Microsoft.FSharp.Core.OptimizedClosures.FSharpFunc<'a, 'b, 'c>()
-        override x.Invoke(a : 'a) = fun b -> f.Invoke(a,b)
-        override x.Invoke(a : 'a, b : 'b) = f.Invoke(a,b)
-
-    type private AdapterFunc<'a, 'b, 'c, 'd> (f : Func<'a, 'b, 'c, 'd>) =
-        inherit Microsoft.FSharp.Core.OptimizedClosures.FSharpFunc<'a, 'b, 'c, 'd>()
-        override x.Invoke(a : 'a) = fun b c -> f.Invoke(a,b,c)
-        override x.Invoke(a : 'a, b : 'b, c : 'c) = f.Invoke(a,b,c)
-
-    type private AdapterFunc<'a, 'b, 'c, 'd, 'e> (f : Func<'a, 'b, 'c, 'd, 'e>) =
-        inherit Microsoft.FSharp.Core.OptimizedClosures.FSharpFunc<'a, 'b, 'c, 'd, 'e>()
-        override x.Invoke(a : 'a) = fun b c d -> f.Invoke(a,b,c,d)
-        override x.Invoke(a : 'a, b : 'b, c : 'c, d : 'd) = f.Invoke(a,b,c,d)
-
-    type private AdapterFunc<'a, 'b, 'c, 'd, 'e, 'f> (f : Func<'a, 'b, 'c, 'd, 'e, 'f>) =
-        inherit Microsoft.FSharp.Core.OptimizedClosures.FSharpFunc<'a, 'b, 'c, 'd, 'e, 'f>()
-        override x.Invoke(a : 'a) = fun b c d e -> f.Invoke(a,b,c,d,e)
-        override x.Invoke(a : 'a, b : 'b, c : 'c, d : 'd,e : 'e) = f.Invoke(a,b,c,d,e)
-
-
-
-    type private AdapterAction<'x>(f : Action) =
-        inherit FSharpFunc<unit, 'x>()
-        override x.Invoke(_) = f.Invoke(); Unchecked.defaultof<'x>
-
-    type private AdapterAction<'a, 'x>(f : Action<'a>) =
-        inherit FSharpFunc<'a, 'x>()
-        override x.Invoke(a) = f.Invoke(a); Unchecked.defaultof<'x>
-
-    type private AdapterAction<'a, 'b, 'x> (f : Action<'a, 'b>) =
-        inherit Microsoft.FSharp.Core.OptimizedClosures.FSharpFunc<'a, 'b, 'x>()
-        override x.Invoke(a : 'a) = fun b -> f.Invoke(a,b); Unchecked.defaultof<_>
-        override x.Invoke(a : 'a, b : 'b) = f.Invoke(a,b); Unchecked.defaultof<_>
-
-    type private AdapterAction<'a, 'b, 'c, 'x> (f : Action<'a, 'b, 'c>) =
-        inherit Microsoft.FSharp.Core.OptimizedClosures.FSharpFunc<'a, 'b, 'c, 'x>()
-        override x.Invoke(a : 'a) = fun b c -> f.Invoke(a,b,c); Unchecked.defaultof<_>
-        override x.Invoke(a : 'a, b : 'b, c : 'c) = f.Invoke(a,b,c); Unchecked.defaultof<_>
-
-    type private AdapterAction<'a, 'b, 'c, 'd, 'x> (f : Action<'a, 'b, 'c, 'd>) =
-        inherit Microsoft.FSharp.Core.OptimizedClosures.FSharpFunc<'a, 'b, 'c, 'd, 'x>()
-        override x.Invoke(a : 'a) = fun b c d -> f.Invoke(a,b,c,d); Unchecked.defaultof<_>
-        override x.Invoke(a : 'a, b : 'b, c : 'c, d : 'd) = f.Invoke(a,b,c,d); Unchecked.defaultof<_>
-
-    type private AdapterAction<'a, 'b, 'c, 'd, 'e, 'x> (f : Action<'a, 'b, 'c, 'd, 'e>) =
-        inherit Microsoft.FSharp.Core.OptimizedClosures.FSharpFunc<'a, 'b, 'c, 'd, 'e, 'x>()
-        override x.Invoke(a : 'a) = fun b c d e -> f.Invoke(a,b,c,d,e); Unchecked.defaultof<_>
-        override x.Invoke(a : 'a, b : 'b, c : 'c, d : 'd,e : 'e) = f.Invoke(a,b,c,d,e); Unchecked.defaultof<_>
-
+    type AdapterFunc =
+        static member Convert0 (f : Func<'a>) = f.Invoke
+        static member Convert1 (f : Func<'a, 'b>) = f.Invoke
+        static member Convert2 (f : Func<'a, 'b, 'c>) = fun a b -> f.Invoke(a,b)
+        static member Convert3 (f : Func<'a, 'b, 'c, 'd>) = fun a b c -> f.Invoke(a,b,c)
+        static member Convert4 (f : Func<'a, 'b, 'c, 'd, 'e>) = fun a b c d -> f.Invoke(a,b,c,d)
+        static member Convert5 (f : Func<'a, 'b, 'c, 'd, 'e, 'f>) = fun a b c d e -> f.Invoke(a,b,c,d,e)
+        
+    type AdapterAction =
+        static member Convert0 (f : Action) = f.Invoke
+        static member Convert1 (f : Action<'a>) = f.Invoke
+        static member Convert2 (f : Action<'a, 'b>) = fun a b -> f.Invoke(a,b)
+        static member Convert3 (f : Action<'a, 'b, 'c>) = fun a b c -> f.Invoke(a,b,c)
+        static member Convert4 (f : Action<'a, 'b, 'c, 'd>) = fun a b c d -> f.Invoke(a,b,c,d)
+        static member Convert5 (f : Action<'a, 'b, 'c, 'd, 'e>) = fun a b c d e -> f.Invoke(a,b,c,d,e)
+     
     let rec getFunctionSignature (t : Type) =
         if FSharpType.IsFunction t then
             let (d,i) = FSharpType.GetFunctionElements t
@@ -318,20 +277,21 @@ module DelegateAdapters =
             if mi.ReturnType = typeof<System.Void> then typeof<unit>
             else mi.ReturnType
 
-        let args = Array.append args [|ret|]
-
-        let generic = 
+        let generic, args = 
             if mi.ReturnType = typeof<System.Void> then
-                Type.GetType(typedefof<AdapterAction<_>>.FullName.Replace("1", string args.Length))
+                typeof<AdapterAction>.GetMethod("Convert" + string args.Length), args
+                //Type.GetType(typedefof<AdapterAction<_>>.FullName.Replace("1", string args.Length))
             else
-                Type.GetType(typedefof<AdapterFunc<_>>.FullName.Replace("1", string args.Length))
+                typeof<AdapterFunc>.GetMethod("Convert" + string args.Length), Array.append args [|ret|]
+                //Type.GetType(typedefof<AdapterFunc<_>>.FullName.Replace("1", string args.Length))
 
         if isNull generic then
             let code = args |> Seq.map (fun t -> t.Name) |> String.concat " -> "
             failwithf "could not get delegate adapter: %s" code
 
-        let t = generic.MakeGenericType args
-        Activator.CreateInstance(t, d)
+        let t = generic.MakeGenericMethod args
+        t.Invoke(null, [|d|])
+        //Activator.CreateInstance(t, d)
 
     let wrap (d : Delegate) : 'a =
         match wrapUntyped d with

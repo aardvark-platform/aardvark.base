@@ -81,42 +81,36 @@ module NewAg =
         open Microsoft.FSharp.Reflection
         open System.Reflection.Emit
 
-        type FSharpFuncConst<'a>(value) =
-            inherit FSharpFunc<unit, 'a>()
-
-            override x.Invoke(u : unit) =
-                value
-
         type CreatorImpl<'a> private() =
             
-            static let instance =
-                let funType = typeof<FSharpFunc<obj, 'a>>
-                let bType = RuntimeMethodBuilder.bMod.DefineType(Guid.NewGuid().ToString(), TypeAttributes.Class ||| TypeAttributes.Public, funType)
-                let bMeth = bType.DefineMethod("Invoke", MethodAttributes.Public ||| MethodAttributes.Virtual, typeof<'a>, [|typeof<obj>|])
-                let il = bMeth.GetILGenerator()
-
-
-                let _,res = FSharpType.GetFunctionElements typeof<'a>
-                let fType = typedefof<FSharpFuncConst<_>>.MakeGenericType [|res|]
-                let ctor = fType.GetConstructor [|res|]
-
-                let l = il.DeclareLocal(res)
-                il.Emit(OpCodes.Ldarg_1)
-                il.Emit(OpCodes.Unbox_Any, res)
-                il.Emit(OpCodes.Newobj, ctor)
-                il.Emit(OpCodes.Unbox_Any, typeof<'a>)
-                il.Emit(OpCodes.Ret)
-
-                let bCtor = bType.DefineConstructor(MethodAttributes.Public, CallingConventions.Standard, [||])
-                let il = bCtor.GetILGenerator()
-                il.Emit(OpCodes.Ldarg_0)
-                il.Emit(OpCodes.Call, typeof<obj>.GetConstructor [||])
-                il.Emit(OpCodes.Ret)
-
-                bType.DefineMethodOverride(bMeth, funType.GetMethod "Invoke")
-                let t = bType.CreateType()
-                
-                Activator.CreateInstance t |> unbox<obj -> 'a>
+            static let instance : obj -> 'a = fun _ -> failwith ""
+//                let funType = typeof<FSharpFunc<obj, 'a>>
+//                let bType = RuntimeMethodBuilder.bMod.DefineType(Guid.NewGuid().ToString(), TypeAttributes.Class ||| TypeAttributes.Public, funType)
+//                let bMeth = bType.DefineMethod("Invoke", MethodAttributes.Public ||| MethodAttributes.Virtual, typeof<'a>, [|typeof<obj>|])
+//                let il = bMeth.GetILGenerator()
+//
+//
+//                let _,res = FSharpType.GetFunctionElements typeof<'a>
+//                let fType = typedefof<FSharpFuncConst<_>>.MakeGenericType [|res|]
+//                let ctor = fType.GetConstructor [|res|]
+//
+//                let l = il.DeclareLocal(res)
+//                il.Emit(OpCodes.Ldarg_1)
+//                il.Emit(OpCodes.Unbox_Any, res)
+//                il.Emit(OpCodes.Newobj, ctor)
+//                il.Emit(OpCodes.Unbox_Any, typeof<'a>)
+//                il.Emit(OpCodes.Ret)
+//
+//                let bCtor = bType.DefineConstructor(MethodAttributes.Public, CallingConventions.Standard, [||])
+//                let il = bCtor.GetILGenerator()
+//                il.Emit(OpCodes.Ldarg_0)
+//                il.Emit(OpCodes.Call, typeof<obj>.GetConstructor [||])
+//                il.Emit(OpCodes.Ret)
+//
+//                bType.DefineMethodOverride(bMeth, funType.GetMethod "Invoke")
+//                let t = bType.CreateType()
+//                
+//                Activator.CreateInstance t |> unbox<obj -> 'a>
 
             static member Instance = instance
 

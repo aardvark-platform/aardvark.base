@@ -366,6 +366,15 @@ let testUnion (n : int) (m : int) =
 
 [<EntryPoint; STAThread>]
 let main argv = 
+
+//    let a = Func<int, int, int>(fun a b -> printfn "%A" (a,b); a + b)
+//    let f : int -> int -> int = DelegateAdapters.wrap a
+//    f 0 1 |> printfn "%A"
+//    Environment.Exit 0
+
+
+
+
 //    let output = @"C:\Users\Schorsch\Desktop\bla.csv"
 //
 //    File.WriteAllText(output, "n;m;ta;tu\r\n")
@@ -400,8 +409,8 @@ let main argv =
         let cnt = iter * 1000
         let arr = ASet.ofArray(Array.init(cnt) (fun i -> Mod.init(i) :> IMod<_>))
 
-        let arrr = arr |> ASet.mapM id //|> ASet.collect (fun x -> 
-                          //  x |> ASet.bind (fun y -> ASet.single y))
+        let arrr = arr |> ASet.collect (fun x -> 
+                            x |> ASet.bind (fun y -> ASet.single y))
 
         let r = arrr.GetReader()
    

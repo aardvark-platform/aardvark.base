@@ -384,13 +384,11 @@ module internal AgHelpers =
         open System.Collections.Generic
         open Microsoft.FSharp.Reflection
 
-        type FSharpFuncConst<'a>(value) =
-            inherit FSharpFunc<unit, 'a>()
+        type FSharpFuncConst =
+            static member Create (value : 'a) =
+                fun () -> value
 
-            override x.Invoke(u : unit) =
-                value
-
-        let ctorCache = Dictionary<Type, ConstructorInfo>()
+        let ctorCache = Dictionary<Type, MethodInfo>()
 
         let getCtor (fType : Type) =
             lock ctorCache (fun () ->
@@ -400,8 +398,12 @@ module internal AgHelpers =
                         let (ta, tr) = FSharpType.GetFunctionElements fType
                         if ta <> typeof<unit> then 
                             failwithf "unexpected arg-type: %A" ta
-                        let t = typedefof<FSharpFuncConst<_>>.MakeGenericType [|tr|]
-                        let ctor = t.GetConstructor [|tr|]
+
+                        //let t = typedefof<FSharpFuncConst>.MakeGenericType [|tr|]
+                        let ctor = typeof<FSharpFuncConst>.GetMethod("Create").MakeGenericMethod tr
+
+
+
                         ctorCache.[fType] <- ctor
                         ctor
             )
@@ -409,4 +411,4 @@ module internal AgHelpers =
 
         let delay (value : obj) : 'a =
             let ctor = getCtor typeof<'a>
-            ctor.Invoke [|value|] |> unbox<'a>
+            ctor.Invoke(null, [|value|]) |> unbox<'a>
