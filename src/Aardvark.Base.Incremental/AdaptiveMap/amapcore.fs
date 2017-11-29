@@ -37,30 +37,28 @@ module HMap =
 
     let applyDelta (m : hmap<'k, 'v>) (delta : hdeltamap<'k, 'v>) =
         let mutable effective = HMap.empty
-        let apply (key : 'k) (l : Option<'v>) (r : Option<ElementOperation<'v>>) =
-            match r with
-                | None -> 
-                    l
-                | Some op ->
-                    match l, op with
-                        | Some _, Remove ->
-                            effective <- HMap.add key Remove effective
-                            None
-                        | None, Remove ->
-                            None
+        let mutable m = m
+        for (k,v) in delta do
+            m <- m.Alter(k, fun o ->
+                match o, v with
+                    | Some o, Remove ->
+                        effective <- HMap.add k Remove effective
+                        None
+                    | None, Remove ->
+                        None
 
-                        | None, Set n ->
-                            effective <- HMap.add key (Set n) effective
-                            Some n
-                            
-                        | Some o, Set n ->
-                            if not (Unchecked.equals o n) then
-                                effective <- HMap.add key (Set n) effective
+                    | None, Set n ->
+                        effective <- HMap.add k (Set n) effective
+                        Some n
 
-                            Some n
+                    | Some o, Set n ->
+                        if not (Unchecked.equals o n) then
+                            effective <- HMap.add k (Set n) effective
 
-        let res = HMap.choose2 apply m delta
-        res, effective
+                        Some n
+            )
+
+        m, effective
 
     let trace<'k, 'v> : Traceable<hmap<'k, 'v>, hdeltamap<'k, 'v>> =
         {

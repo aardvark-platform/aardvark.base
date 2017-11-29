@@ -125,6 +125,7 @@ module private HMapList =
 
         newL @ newR
 
+[<Struct>]
 [<StructuredFormatDisplay("{AsString}")>]
 type hmap<'k, 'v>(cnt : int, store : intmap<list<'k * 'v>>) =
     static let empty = hmap<'k, 'v>(0, IntMap.empty)

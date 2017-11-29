@@ -45,26 +45,25 @@ type hdeltaset<'a>(store : hmap<'a, int>) =
             other
         elif other.IsEmpty then 
             x
-        else
-            if store.Count * 2 < other.Count then
-                let mutable big = other
-                for d in x do
-                    big <- big.Add d
-                big
+        elif store.Count * 5 < other.Count then
+            let mutable big = other
+            for d in x do
+                big <- big.Add d
+            big
 
-            elif other.Count * 2 < store.Count then
-                let mutable big = x
-                for d in other do
-                    big <- big.Add d
-                big
+        elif other.Count * 5 < store.Count then
+            let mutable big = x
+            for d in other do
+                big <- big.Add d
+            big
                 
-            else
-                HMap.choose2 (fun k l r -> 
-                    let r = Option.defaultValue 0 l + Option.defaultValue 0 r
-                    if r <> 0 then Some r
-                    else None
-                ) store other.Store
-                |> hdeltaset
+        else
+            HMap.choose2 (fun k l r -> 
+                let r = Option.defaultValue 0 l + Option.defaultValue 0 r
+                if r <> 0 then Some r
+                else None
+            ) store other.Store
+            |> hdeltaset
 
       
 

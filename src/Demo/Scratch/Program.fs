@@ -250,23 +250,182 @@ type MyDelegate = delegate of int * int * int * int64 * int64 -> unit // * int64
 
 open AMD64
 
+let testAdd (n : int) =
+    let set = HDeltaSet.ofList (List.map Add [ 1 .. n ])
+
+    let iter = 100000
+    let results = Array.zeroCreate iter
+    let rand = RandomSystem()
+    let rems = 
+        Array.init iter (fun _ -> 
+            let delta = if rand.UniformDouble() > 0.5 then 1 else -1
+
+            if rand.UniformDouble() > 0.5 then
+                SetOperation(rand.UniformInt(n) + 1, delta)
+            else
+                SetOperation(rand.UniformInt(n) + n + 1, delta)
+        )
+    
+    // warmup
+    for i in 0 .. iter / 10 do
+        results.[i] <- set.Add rems.[i]
+        
+    let results = Array.zeroCreate iter
+    System.GC.Collect()
+    System.GC.WaitForFullGCComplete() |> ignore
+
+    let sw = System.Diagnostics.Stopwatch.StartNew()
+    for i in 0 .. iter - 1 do
+        results.[i] <- set.Add rems.[i]
+    sw.Stop()
+    sw.MicroTime / iter
+
+let testAddMany (n : int) (m : int) =
+    let set = HDeltaSet.ofList (List.map Add [ 1 .. n ])
+
+    let iter = 10000
+    let results = Array.zeroCreate iter
+    let rand = RandomSystem()
+    let rems = 
+        Array.init m (fun _ -> 
+            let delta = if rand.UniformDouble() > 0.5 then 1 else -1
+
+            if rand.UniformDouble() > 0.5 then
+                SetOperation(rand.UniformInt(n) + 1, delta)
+            else
+                SetOperation(rand.UniformInt(n) + n + 1, delta)
+        )
+    
+    let inline res() =
+        let mutable set = set
+        for d in rems do
+            set <- set.Add d
+        set
+
+    // warmup
+    for i in 0 .. iter / 10 do
+        results.[i] <- res()
+        
+    let results = Array.zeroCreate iter
+    System.GC.Collect()
+    System.GC.WaitForFullGCComplete() |> ignore
+
+    let sw = System.Diagnostics.Stopwatch.StartNew()
+    for i in 0 .. iter - 1 do
+        results.[i] <- res()
+    sw.Stop()
+    sw.MicroTime / iter
+
+let testUnion (n : int) (m : int) =
+    
+    let rand = RandomSystem()
+    let randomOp () =
+        let delta = if rand.UniformDouble() > 0.5 then 1 else -1
+        if rand.UniformDouble() > 0.5 then
+            SetOperation(rand.UniformInt(n) + 1, delta)
+        else
+            SetOperation(rand.UniformInt(n) + n + 1, delta)
+
+    let a = HDeltaSet.ofList (List.map Add [ 1 .. n ]) |> HDeltaSet.toHMap
+    let b = HDeltaSet.ofList (List.init m (fun _ -> randomOp())) |> HDeltaSet.toHMap
+    
+    let iter = 100
+    let results = Array.zeroCreate iter
+    let rand = RandomSystem()
+    let inline res() =
+        HMap.choose2 (fun _ l r -> 
+            match l, r with
+                | None, r -> r
+                | l, None -> l
+                | Some l, Some r ->
+                    let r = l + r
+                    if r <> 0 then Some r
+                    else None
+        ) a b
+        |> hdeltaset
+
+    // warmup
+    for i in 0 .. iter / 10 do
+        results.[i] <- res()
+        
+    let results = Array.zeroCreate iter
+    System.GC.Collect()
+    System.GC.WaitForFullGCComplete() |> ignore
+
+    
+    let sw = System.Diagnostics.Stopwatch.StartNew()
+    for i in 0 .. iter - 1 do
+        results.[i] <- res()
+    sw.Stop()
+    sw.MicroTime / iter
+
+
+
+
+
+
 [<EntryPoint; STAThread>]
 let main argv = 
+//    let output = @"C:\Users\Schorsch\Desktop\bla.csv"
+//
+//    File.WriteAllText(output, "n;m;ta;tu\r\n")
+//    let n = 1000
+//    for i in 1 .. 50 do
+//        let n = i * 1000
+//        let mutable l = 0
+//        let mutable r = n / 3
+//
+//        while r - l > 0 do
+//            let m = (l + r) / 2
+//            let ta = testAddMany n m
+//            let tu = testUnion n m
+//            Log.line "%d/%d: %A %A" n m ta tu
+//            if ta > tu then
+//                r <- m - 1
+//            else
+//                l <- m + 1
+//        let m = l
+//        printf " 0: %d/%d: " n m
+//        let ta = testAddMany n m
+//        printf "%A" ta
+//        let tu = testUnion n m
+//        printfn " %A" tu
+//
+//        File.AppendAllLines(output, [sprintf "%d;%d;%.3f;%.3f" n l ta.TotalMicroseconds tu.TotalMicroseconds])
+//
+//    Environment.Exit 0
 
     let sw = System.Diagnostics.Stopwatch.StartNew()
     for iter in 1..50 do
         let cnt = iter * 1000
         let arr = ASet.ofArray(Array.init(cnt) (fun i -> Mod.init(i) :> IMod<_>))
 
-        let arrr = arr |> ASet.collect (fun x -> 
-                            x |> ASet.bind (fun y -> ASet.single y))
+        let arrr = arr |> ASet.mapM id //|> ASet.collect (fun x -> 
+                          //  x |> ASet.bind (fun y -> ASet.single y))
 
         let r = arrr.GetReader()
+   
+        System.GC.Collect()
+        System.GC.WaitForFullGCComplete() |> ignore
+        printf "%d " cnt
+
+//        let worked = System.GC.TryStartNoGCRegion(1L <<< 30)
 
         let sw = System.Diagnostics.Stopwatch.StartNew()
         r.GetOperations AdaptiveToken.Top |> ignore
         sw.Stop()
-        Log.line "%d took: %A" cnt sw.MicroTime
+//
+//        if worked then
+//            System.GC.EndNoGCRegion()
+//        else
+//            printf " (BAD) "
+
+        printfn "took: %A" sw.MicroTime
+
+        r.Dispose()
+        System.GC.Collect()
+        System.GC.WaitForFullGCComplete() |> ignore
+
     Environment.Exit 0
 
 //    Program.test()
