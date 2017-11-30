@@ -384,7 +384,12 @@ module internal AgHelpers =
         open System.Collections.Generic
         open Microsoft.FSharp.Reflection
 
-        type FSharpFuncConst =
+        type FSharpFuncConst private() =
+            static let createMeth = typeof<FSharpFuncConst>.GetMethod("Create", BindingFlags.Static ||| BindingFlags.NonPublic ||| BindingFlags.Public)
+
+            static member CreateMeth = createMeth
+
+
             static member Create (value : 'a) =
                 fun () -> value
 
@@ -400,9 +405,7 @@ module internal AgHelpers =
                             failwithf "unexpected arg-type: %A" ta
 
                         //let t = typedefof<FSharpFuncConst>.MakeGenericType [|tr|]
-                        let ctor = typeof<FSharpFuncConst>.GetMethod("Create").MakeGenericMethod tr
-
-
+                        let ctor = FSharpFuncConst.CreateMeth.MakeGenericMethod tr
 
                         ctorCache.[fType] <- ctor
                         ctor
