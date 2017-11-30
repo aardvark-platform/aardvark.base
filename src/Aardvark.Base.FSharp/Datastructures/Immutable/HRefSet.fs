@@ -197,69 +197,151 @@ type hrefset<'a>(store : hmap<'a, int>) =
         hrefset map
 
     member x.ComputeDelta(other : hrefset<'a>) =
-        HMap.choose2 (fun k l r -> 
-            match l, r with
-                | None, Some _ -> Some 1
-                | Some _, None -> Some -1
-                | None, None -> None
-                | Some l, Some r -> None
-           ) store other.Store
-        |> HDeltaSet.ofHMap
+        if store.IsEmpty then 
+            other.Store |> HMap.map (fun _ _ -> 1) |> HDeltaSet.ofHMap
+
+        elif other.IsEmpty then
+            store |> HMap.map (fun _ _ -> -1) |> HDeltaSet.ofHMap
+
+        else
+            HMap.choose2 (fun k l r -> 
+                match l, r with
+                    | None, Some _ -> Some 1
+                    | Some _, None -> Some -1
+                    | None, None -> None
+                    | Some l, Some r -> None
+               ) store other.Store
+            |> HDeltaSet.ofHMap
 
     member x.ApplyDelta (deltas : hdeltaset<'a>) =
-        let mutable res = store
+        // O(1)
+        if deltas.IsEmpty then
+            x, deltas
 
-        let effective =
-            deltas |> HDeltaSet.choose (fun d ->
-                let mutable delta = Unchecked.defaultof<SetOperation<'a>>
-                let value = d.Value
-                res <- res |> HMap.alter value (fun cnt ->
-                    let o = defaultArg cnt 0
-                    let n = o + d.Count
-                    if n > 0 && o = 0 then 
-                        delta <- Add(value)
-                    elif n = 0 && o > 0 then
-                        delta <- Rem(value)
+        // O(Delta)
+        elif store.IsEmpty then
+            let mutable maxDelta = 0
+            let state = deltas |> HDeltaSet.toHMap |> HMap.filter (fun _ d -> maxDelta <- max maxDelta d; d > 0)
+            let delta = 
+                if maxDelta > 1 then state |> HMap.map (fun _ _ -> 1)
+                else state
 
-                    if n <= 0 then None
-                    else Some n
+            hrefset state, hdeltaset delta
+
+        // O(Delta * log N)
+        elif deltas.Count * 5 < store.Count then
+            let mutable res = store
+
+            let effective =
+                deltas |> HDeltaSet.choose (fun d ->
+                    let mutable delta = Unchecked.defaultof<SetOperation<'a>>
+                    let value = d.Value
+                    res <- res |> HMap.alter value (fun cnt ->
+                        let o = defaultArg cnt 0
+                        let n = o + d.Count
+                        if n > 0 && o = 0 then 
+                            delta <- Add(value)
+                        elif n = 0 && o > 0 then
+                            delta <- Rem(value)
+
+                        if n <= 0 then None
+                        else Some n
+                    )
+
+                    if delta.Count <> 0 then Some delta
+                    else None
                 )
 
-                if delta.Count <> 0 then Some delta
-                else None
-            )
+            hrefset res, effective
 
-        hrefset res, effective
+        // O(Delta + N)
+        else
+            let mutable effective = HDeltaSet.empty
+            let deltas = HDeltaSet.toHMap deltas
+            let newStore = 
+                HMap.choose2 (fun k s d ->
+                    match d with
+                        | Some d ->
+                            let o = Option.defaultValue 0 s 
+                            let n = d + o
+                            if o = 0 && n > 0 then
+                                effective <- HDeltaSet.add (Add k) effective
+                            elif o > 0 && n = 0 then
+                                effective <- HDeltaSet.add (Rem k) effective
+                            
+                            if n <= 0 then None
+                            else Some n
+                        | None ->
+                            s
+                ) store deltas
+
+            hrefset newStore, effective
 
     member x.ApplyDeltaNoRefCount (deltas : hdeltaset<'a>) =
-        let mutable res = store
+        // O(1)
+        if deltas.IsEmpty then
+            x, deltas
 
-        let effective =
-            deltas |> HDeltaSet.choose (fun d ->
-                let mutable delta = Unchecked.defaultof<SetOperation<'a>>
-                let value = d.Value
-                res <- res |> HMap.alter value (fun cnt ->
-                    let o = defaultArg cnt 0
-                    let n = 
-                        if d.Count > 0 then 1 
-                        elif d.Count < 0 then 0
-                        else o
+        // O(Delta)
+        elif store.IsEmpty then
+            let state = deltas |> HDeltaSet.toHMap |> HMap.choose (fun _ d -> if d > 0 then Some 1 else None)
+            hrefset state, hdeltaset state
 
-                    if n > 0 && o = 0 then 
-                        delta <- Add(value)
-                    elif n = 0 && o > 0 then
-                        delta <- Rem(value)
+        // O(Delta * log N)
+        elif deltas.Count * 5 < store.Count then
+            let mutable res = store
 
-                    if n <= 0 then None
-                    else Some n
+            let effective =
+                deltas |> HDeltaSet.choose (fun d ->
+                    let mutable delta = Unchecked.defaultof<SetOperation<'a>>
+                    let value = d.Value
+                    res <- res |> HMap.alter value (fun cnt ->
+                        let o = defaultArg cnt 0
+                        let n = 
+                            if d.Count > 0 then 1 
+                            elif d.Count < 0 then 0
+                            else o
+
+                        if n > 0 && o = 0 then 
+                            delta <- Add(value)
+                        elif n = 0 && o > 0 then
+                            delta <- Rem(value)
+
+                        if n <= 0 then None
+                        else Some n
+                    )
+
+                    if delta.Count <> 0 then Some delta
+                    else None
                 )
 
-                if delta.Count <> 0 then Some delta
-                else None
-            )
+            hrefset res, effective
+        
+        // O(Delta + N)
+        else
+            let mutable effective = HDeltaSet.empty
+            let deltas = HDeltaSet.toHMap deltas
+            let newStore = 
+                HMap.choose2 (fun k s d ->
+                    match d with
+                        | Some d ->
+                            let o = Option.defaultValue 0 s 
+                            let n = if d > 0 then 1 elif d < 0 then 0 else o
 
-        hrefset res, effective
+                            if o = 0 && n > 0 then
+                                effective <- HDeltaSet.add (Add k) effective
+                            elif o > 0 && n = 0 then
+                                effective <- HDeltaSet.add (Rem k) effective
+                            
+                            if n <= 0 then None
+                            else Some n
+                        | None ->
+                            s
+                ) store deltas
 
+            hrefset newStore, effective
+            
+            
 
     static member Compare(l : hrefset<'a>, r : hrefset<'a>) =
         let i = l.Intersect r
