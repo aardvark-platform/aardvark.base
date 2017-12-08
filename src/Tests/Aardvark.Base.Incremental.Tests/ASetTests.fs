@@ -655,6 +655,26 @@ module OtherASetTests =
         reader.GetOperations() |> should setEqual [Add 1]
         reader.Dispose()
 
+    [<Test>]
+    let ``[ASet] mapM test``() =
+        let stuff = CSet.ofList [ Mod.init(1); Mod.init(2); Mod.init(3); ]
+
+        let mapm = stuff |> ASet.mapM (fun i -> i :> IMod<_>)
+
+        let r = mapm.GetReader()
+        r.GetOperations() |> should equal [Add(1); Add(2); Add(3)]
+
+        printfn "%A" (mapm |> ASet.toArray)
+
+        transact(fun () ->
+            Mod.change (stuff |> Seq.head) 99
+            stuff.Remove(stuff |> Seq.head) |> ignore
+            )
+
+        r.GetOperations() |> should equal [Rem(1)]
+
+        printfn "%A" (mapm |> ASet.toArray)
+
 //
 //        
 //    module GCHelper =
