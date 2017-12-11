@@ -451,10 +451,11 @@ module ASet =
                 cache.[m] <- v
                 o, v
 
-            member x.Revoke(v : 'a) =
+            member x.Revoke(v : 'a, dirty : HashSet<_>) =
                 let m = f.Revoke v
                 match cache.TryRemove m with
                     | (true, v) -> 
+                        dirty.Remove m |> ignore
                         lock m (fun () -> m.Outputs.Remove x |> ignore )
                         v
                     | _ -> 
@@ -475,7 +476,7 @@ module ASet =
                     r.GetOperations token |> HDeltaSet.map (fun d ->
                         match d with
                             | Add(1,m) -> Add(x.Invoke(token,m))
-                            | Rem(1,m) -> Rem(x.Revoke m)
+                            | Rem(1,m) -> Rem(x.Revoke(m, dirty))
                             | _ -> unexpected()
                     )
 
