@@ -700,7 +700,9 @@ module AList =
                             | Remove ->
                                 match MapExt.tryFind i oldContent with
                                     | Some v -> Seq.singleton (Rem v)
-                                    | _ -> failwith ""
+                                    // it is uknown if the reader has seen the corresponding Add, threrfore it's a valid case (in the current AList
+                                    // implementation with operations Set and Add) that something is removed that is not present in the reader state
+                                    | _ -> Seq.empty 
                     )
                     |> HDeltaSet.ofSeq
 
