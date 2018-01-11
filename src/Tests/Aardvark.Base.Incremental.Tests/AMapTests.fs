@@ -1,14 +1,16 @@
 ﻿namespace Aardvark.Base.Incremental.Tests
-//
-//
-//open System.Collections
-//open System.Collections.Generic
-//open Aardvark.Base
-//open Aardvark.Base.Incremental
-//open NUnit.Framework
-//open FsUnit
-//
-//module ``simple cmap tests`` =
+
+
+open System
+open System.Collections.Generic
+open Aardvark.Base
+open Aardvark.Base.Incremental
+open NUnit.Framework
+open FsUnit
+
+module ``simple cmap tests`` =
+    open Aardvark.Base.HMap
+
 //
 //    let dictEqual (xs : list<'k * 'v>) (set : IVersionedDictionary<'k,IVersionedSet<'v>>) =
 //        let kvs = set |> Seq.collect (fun (KeyValue(k,v)) ->
@@ -100,3 +102,36 @@
 //
 //
 //
+
+    [<Test>]
+    let ``[AMap] add/clear/evaluate``() =
+        
+        let m = CMap.empty<int,int>
+        let refSet = new HashSet<int*int>()
+        
+        let set = AMap.toASet m
+
+        let rnd = Random()
+
+        for i in 0..10000 do
+            if rnd.NextDouble() < 0.5 then
+                printfn "add"
+                refSet.Add((i,i)) |> ignore
+                transact(fun () -> m.[i] <- i)
+                printfn " -> cnt=%d" m.Count
+
+            if rnd.NextDouble() < 0.1 then
+                printfn "clear"
+                refSet.Clear()
+                transact(fun () -> m.Clear())
+                printfn " -> cnt=%d" m.Count
+                should equal 0 m.Count
+
+            if rnd.NextDouble() < 0.2 then
+                printfn "eval"
+                let test = ASet.toArray set
+                printfn " -> map=%d set=%d" m.Count test.Length
+                should equal test.Length m.Count
+                should equal test.Length refSet.Count
+                should setEqual test (Seq.toArray refSet) 
+        ()
