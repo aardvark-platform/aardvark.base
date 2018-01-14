@@ -398,6 +398,18 @@ type ShapeCache(r : IRuntime) =
         pool.Dispose()
         ranges.Clear()
 
+[<AbstractClass; Sealed; Extension>]
+type PrepareFontExtensions private() =
+
+    [<Extension>]
+    static member PrepareGlyphs(r : IRuntime, f : Font, chars : seq<char>) =
+        let cache = ShapeCache.GetOrCreateCache r
+
+        for c in chars do
+            cache.GetBufferRange (f.GetGlyph c) |> ignore
+
+
+
 
 
 [<CompilationRepresentation(CompilationRepresentationFlags.ModuleSuffix)>]
