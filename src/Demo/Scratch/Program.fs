@@ -366,6 +366,31 @@ let testUnion (n : int) (m : int) =
 
 [<EntryPoint; STAThread>]
 let main argv = 
+    
+    let set = CSet.ofList [1;2;3]
+
+    let m = Mod.init (Some 10)
+    let d = m |> Mod.map (fun v -> printfn "eval %A" v; v)
+    let b = set |> ASet.chooseM (fun _ -> d)
+
+    
+    let r = b.GetReader()
+    r.GetOperations() |> printfn "%A"
+
+    transact (fun () -> set.Remove 1 |> ignore)
+    r.GetOperations() |> printfn "%A"
+
+    transact (fun () -> set.Remove 2 |> ignore)
+    r.GetOperations() |> printfn "%A"
+
+    transact (fun () -> m.Value <- Some 1000)
+    r.GetOperations() |> printfn "%A"
+    
+    transact (fun () -> set.Remove 3 |> ignore; m.Value <- Some 100)
+    r.GetOperations() |> printfn "%A"
+
+
+    System.Environment.Exit 0
 
 //    let a = Func<int, int, int>(fun a b -> printfn "%A" (a,b); a + b)
 //    let f : int -> int -> int = DelegateAdapters.wrap a
