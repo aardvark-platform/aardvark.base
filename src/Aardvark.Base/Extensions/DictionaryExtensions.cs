@@ -227,11 +227,13 @@ namespace Aardvark.Base
             return true;
         }
   
+        /// <summary>
+        /// Returns the value stored with the supplied key or the specified default value if not found.
+        /// </summary>
         public static TValue GetValueOrDefault<TKey, TValue>(this IDictionary<TKey, TValue> self, TKey key, TValue default_value)
         {
-            //return dic.ContainsKey(key) ? self[key] : default_value;
-            self.TryGetValue(key, out default_value);
-            return default_value;
+            var result = default(TValue);
+            return self.TryGetValue(key, out result) ? result : default_value;
         }
     }
 
