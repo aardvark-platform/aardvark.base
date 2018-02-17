@@ -1,5 +1,6 @@
 ﻿using Aardvark.Base;
 using System;
+using System.Reflection;
 using System.Reflection.Emit;
 
 namespace Aardvark.Base.Coder
@@ -24,7 +25,8 @@ namespace Aardvark.Base.Coder
 
         private static readonly Func<Type, Func<object>> s_createObjectFun = (Type t) =>
         {
-            var constructor = t.GetConstructor(Type.EmptyTypes);
+            // get the parameterless constructor (including non-public) of the type t
+            var constructor = t.GetConstructor(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic, null, Type.EmptyTypes, null);
             if (constructor == null)
                 throw new InvalidOperationException(
                     String.Format("cannot create object of type \"{0}\" - type does not have parameterless constructor",
