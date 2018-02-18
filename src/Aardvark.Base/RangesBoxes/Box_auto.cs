@@ -7738,7 +7738,8 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Returns true if the box completely contains the given box.
+        /// Returns true if the box completely contains the other box.
+        /// A box contains itself.
         /// </summary>
         public bool Contains(Box2i b)
         {
@@ -7759,7 +7760,9 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Returns true if 2 boxes intersect each other.
+        /// Returns true if two boxes intersect each other (or one contains the other).
+        /// Boxes DO NOT intersect if only touching from the outside.
+        /// A box intersects itself.
         /// </summary>
         public bool Intersects(Box2i box)
         {
@@ -8960,7 +8963,8 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Returns true if the box completely contains the given box.
+        /// Returns true if the box completely contains the other box.
+        /// A box contains itself.
         /// </summary>
         public bool Contains(Box2l b)
         {
@@ -8981,7 +8985,9 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Returns true if 2 boxes intersect each other.
+        /// Returns true if two boxes intersect each other (or one contains the other).
+        /// Boxes DO NOT intersect if only touching from the outside.
+        /// A box intersects itself.
         /// </summary>
         public bool Intersects(Box2l box)
         {
@@ -10283,7 +10289,8 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Returns true if the box completely contains the given box.
+        /// Returns true if the box completely contains the other box.
+        /// A box contains itself.
         /// </summary>
         public bool Contains(Box2f b)
         {
@@ -10304,7 +10311,9 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Returns true if 2 boxes intersect each other.
+        /// Returns true if two boxes intersect each other (or one contains the other).
+        /// Boxes DO NOT intersect if only touching from the outside.
+        /// A box intersects itself.
         /// </summary>
         public bool Intersects(Box2f box)
         {
@@ -11595,7 +11604,8 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Returns true if the box completely contains the given box.
+        /// Returns true if the box completely contains the other box.
+        /// A box contains itself.
         /// </summary>
         public bool Contains(Box2d b)
         {
@@ -11616,7 +11626,9 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Returns true if 2 boxes intersect each other.
+        /// Returns true if two boxes intersect each other (or one contains the other).
+        /// Boxes DO NOT intersect if only touching from the outside.
+        /// A box intersects itself.
         /// </summary>
         public bool Intersects(Box2d box)
         {
@@ -12827,7 +12839,8 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Returns true if the box completely contains the given box.
+        /// Returns true if the box completely contains the other box.
+        /// A box contains itself.
         /// </summary>
         public bool Contains(Box3i b)
         {
@@ -12850,7 +12863,9 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Returns true if 2 boxes intersect each other.
+        /// Returns true if two boxes intersect each other (or one contains the other).
+        /// Boxes DO NOT intersect if only touching from the outside.
+        /// A box intersects itself.
         /// </summary>
         public bool Intersects(Box3i box)
         {
@@ -14069,7 +14084,8 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Returns true if the box completely contains the given box.
+        /// Returns true if the box completely contains the other box.
+        /// A box contains itself.
         /// </summary>
         public bool Contains(Box3l b)
         {
@@ -14092,7 +14108,9 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Returns true if 2 boxes intersect each other.
+        /// Returns true if two boxes intersect each other (or one contains the other).
+        /// Boxes DO NOT intersect if only touching from the outside.
+        /// A box intersects itself.
         /// </summary>
         public bool Intersects(Box3l box)
         {
@@ -15418,7 +15436,8 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Returns true if the box completely contains the given box.
+        /// Returns true if the box completely contains the other box.
+        /// A box contains itself.
         /// </summary>
         public bool Contains(Box3f b)
         {
@@ -15441,7 +15460,9 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Returns true if 2 boxes intersect each other.
+        /// Returns true if two boxes intersect each other (or one contains the other).
+        /// Boxes DO NOT intersect if only touching from the outside.
+        /// A box intersects itself.
         /// </summary>
         public bool Intersects(Box3f box)
         {
@@ -16755,7 +16776,8 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Returns true if the box completely contains the given box.
+        /// Returns true if the box completely contains the other box.
+        /// A box contains itself.
         /// </summary>
         public bool Contains(Box3d b)
         {
@@ -16778,7 +16800,9 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Returns true if 2 boxes intersect each other.
+        /// Returns true if two boxes intersect each other (or one contains the other).
+        /// Boxes DO NOT intersect if only touching from the outside.
+        /// A box intersects itself.
         /// </summary>
         public bool Intersects(Box3d box)
         {

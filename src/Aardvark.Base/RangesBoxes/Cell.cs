@@ -81,7 +81,7 @@ namespace Aardvark.Base
         public Cell(IEnumerable<V3d> ps) : this(new Box3d(ps)) { }
 
         /// <summary>
-        /// Smallest cell that contains given box.
+        /// Smallest cell that contains given point.
         /// </summary>
         public Cell(V3d p) : this(new Box3d(p)) { }
 
@@ -128,6 +128,7 @@ namespace Aardvark.Base
 
         /// <summary>
         /// Returns true if the cell completely contains the other cell.
+        /// A cell contains itself.
         /// </summary>
         public bool Contains(Cell other)
         {
@@ -203,10 +204,13 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Returns true if two cells intersect each other.
+        /// Returns true if two cells intersect each other (or one contains the other).
+        /// Cells DO NOT intersect if only touching from the outside.
+        /// A cell intersects itself.
         /// </summary>
         public bool Intersects(Cell other)
         {
+            if (X == other.X && Y == other.Y && Z == other.Z && Exponent == other.Exponent) return true;
             return BoundingBox.Intersects(other.BoundingBox);
         }
 
@@ -218,6 +222,7 @@ namespace Aardvark.Base
             get
             {
                 var x0 = X << 1; var y0 = Y << 1; var z0 = Z << 1;
+                if (IsCenteredAtOrigin) { x0++; y0++; z0++; }
                 var x1 = x0 + 1; var y1 = y0 + 1; var z1 = z0 + 1;
                 var e = Exponent - 1;
                 return new[]
@@ -235,9 +240,19 @@ namespace Aardvark.Base
         }
 
         /// <summary>
+        /// Gets parent cell.
+        /// </summary>
+        public Cell Parent => IsCenteredAtOrigin ? new Cell(Exponent + 1) : new Cell(X >> 1, Y >> 1, Z >> 1, Exponent + 1);
+
+        /// <summary>
         /// Gets cell's bounds.
         /// </summary>
         public Box3d BoundingBox { get; }
+
+        /// <summary>
+        /// Computes cell's center.
+        /// </summary>
+        public V3d GetCenter() => BoundingBox.Center;
 
         /// <summary>
         /// Octant 0-7.

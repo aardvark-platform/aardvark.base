@@ -960,7 +960,8 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Returns true if the box completely contains the given box.
+        /// Returns true if the box completely contains the other box.
+        /// A box contains itself.
         /// </summary>
         public bool Contains(__type__ b)
         {
@@ -981,7 +982,9 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Returns true if 2 boxes intersect each other.
+        /// Returns true if two boxes intersect each other (or one contains the other).
+        /// Boxes DO NOT intersect if only touching from the outside.
+        /// A box intersects itself.
         /// </summary>
         public bool Intersects(__type__ box)
         {

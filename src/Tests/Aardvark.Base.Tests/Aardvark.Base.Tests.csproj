@@ -60,6 +60,7 @@
     <Compile Include="Math\PolynomialTests.cs" />
     <Compile Include="Plane\PlaneTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="RangesBoxes\BoxTests.cs" />
     <Compile Include="RangesBoxes\CellTests.cs" />
     <Compile Include="Telemetry\TelemetryTests.cs" />
     <Compile Include="Tensors\TensorMatrixTests.cs" />

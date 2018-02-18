@@ -267,6 +267,20 @@ namespace Aardvark.Tests
         #region children
 
         [Test]
+        public void Cell_Centered_Children()
+        {
+            var xs = new Cell(1).Children;
+            Assert.IsTrue(xs[0] == new Cell(-1, -1, -1, 0));
+            Assert.IsTrue(xs[1] == new Cell( 0, -1, -1, 0));
+            Assert.IsTrue(xs[2] == new Cell(-1,  0, -1, 0));
+            Assert.IsTrue(xs[3] == new Cell( 0,  0, -1, 0));
+            Assert.IsTrue(xs[4] == new Cell(-1, -1,  0, 0));
+            Assert.IsTrue(xs[5] == new Cell( 0, -1,  0, 0));
+            Assert.IsTrue(xs[6] == new Cell(-1,  0,  0, 0));
+            Assert.IsTrue(xs[7] == new Cell( 0,  0,  0, 0));
+        }
+
+        [Test]
         public void Cell_Children1()
         {
             var xs = new Cell(0, 0, 0, 0).Children;
@@ -311,7 +325,41 @@ namespace Aardvark.Tests
 
         #endregion
 
-        #region inside/outside tests
+        #region parent
+
+        [Test]
+        public void Cell_Centered_Parent()
+        {
+            Assert.IsTrue(new Cell(-1).Parent == new Cell(0));
+            Assert.IsTrue(new Cell(0).Parent == new Cell(1));
+            Assert.IsTrue(new Cell(1).Parent == new Cell(2));
+        }
+
+        [Test]
+        public void Cell_Parent1()
+        {
+            Assert.IsTrue(new Cell(0, 0, 0, 0).Parent == new Cell(0, 0, 0, 1));
+            Assert.IsTrue(new Cell(1, 0, 0, 0).Parent == new Cell(0, 0, 0, 1));
+            Assert.IsTrue(new Cell(0, 1, 0, 0).Parent == new Cell(0, 0, 0, 1));
+            Assert.IsTrue(new Cell(1, 1, 0, 0).Parent == new Cell(0, 0, 0, 1));
+            Assert.IsTrue(new Cell(0, 0, 1, 0).Parent == new Cell(0, 0, 0, 1));
+            Assert.IsTrue(new Cell(1, 0, 1, 0).Parent == new Cell(0, 0, 0, 1));
+            Assert.IsTrue(new Cell(0, 1, 1, 0).Parent == new Cell(0, 0, 0, 1));
+            Assert.IsTrue(new Cell(1, 1, 1, 0).Parent == new Cell(0, 0, 0, 1));
+        }
+
+        [Test]
+        public void Cell_Parent2()
+        {
+            Assert.IsTrue(new Cell(-1, 0, 0, 0).Parent == new Cell(-1, 0, 0, 1));
+            Assert.IsTrue(new Cell(-2, 0, 0, 0).Parent == new Cell(-1, 0, 0, 1));
+            Assert.IsTrue(new Cell(-3, 0, 0, 0).Parent == new Cell(-2, 0, 0, 1));
+            Assert.IsTrue(new Cell(-4, 0, 0, 0).Parent == new Cell(-2, 0, 0, 1));
+        }
+
+        #endregion
+
+        #region contains/intersects
 
         [Test]
         public void Cell_InsideOutside_ContainsEqual()
@@ -424,6 +472,62 @@ namespace Aardvark.Tests
             var b = new Cell(1);
             Assert.IsTrue(!a.Contains(b));
         }
+        
+        [Test]
+        public void Cell_InsideOutside_Intersects_Itself_1()
+        {
+            var a = Cell.Unit;
+            Assert.IsTrue(a.Intersects(a));
+        }
+
+        [Test]
+        public void Cell_InsideOutside_Intersects_Itself_2()
+        {
+            var a = new Cell(1, -2, 3, -4);
+            Assert.IsTrue(a.Intersects(a));
+        }
+
+        [Test]
+        public void Cell_InsideOutside_Intersects_Itself_3()
+        {
+            var a = new Cell(1, -2, 12345678910111213, 2);
+            Assert.IsTrue(a.Intersects(a));
+        }
+
+        [Test]
+        public void Cell_InsideOutside_Intersects_Itself_4()
+        {
+            var a = new Cell(7);
+            Assert.IsTrue(a.Intersects(a));
+        }
+
+        [Test]
+        public void Cell_InsideOutside_Intersects_Itself_5()
+        {
+            var a = new Cell(-123456789);
+            Assert.IsTrue(a.Intersects(a));
+        }
+
+        [Test]
+        public void Cell_InsideOutside_Intersects_Contained_NotTouching()
+        {
+            var a = new Cell(0, 0, 0, 2);
+            var b = new Cell(1, 2, 1, 0);
+            Assert.IsTrue(a.Intersects(b));
+        }
+
+        [Test]
+        public void Cell_InsideOutside_Intersects_InsideTouching()
+        {
+            Assert.IsTrue(new Cell(0, 0, 0, 0).Intersects(new Cell(0, 0, 0, -1)));
+            Assert.IsTrue(new Cell(0, 0, 0, 0).Intersects(new Cell(1, 0, 0, -1)));
+            Assert.IsTrue(new Cell(0, 0, 0, 0).Intersects(new Cell(0, 1, 0, -1)));
+            Assert.IsTrue(new Cell(0, 0, 0, 0).Intersects(new Cell(1, 1, 0, -1)));
+            Assert.IsTrue(new Cell(0, 0, 0, 0).Intersects(new Cell(0, 0, 1, -1)));
+            Assert.IsTrue(new Cell(0, 0, 0, 0).Intersects(new Cell(1, 0, 1, -1)));
+            Assert.IsTrue(new Cell(0, 0, 0, 0).Intersects(new Cell(0, 1, 1, -1)));
+            Assert.IsTrue(new Cell(0, 0, 0, 0).Intersects(new Cell(1, 1, 1, -1)));
+        }
 
         [Test]
         public void Cell_InsideOutside_Intersects_OutsideTouchingMin()
@@ -441,8 +545,6 @@ namespace Aardvark.Tests
             Assert.IsTrue(!a.Intersects(b));
         }
 
-        #endregion
-
         [Test]
         public void Cell_InsideOutside_Contains_ExponentDeltaGreaterThan63()
         {
@@ -452,5 +554,31 @@ namespace Aardvark.Tests
             var b = new Cell(4408771833616582656, 3234636573324969984, 4552195268789674496, -62);
             Assert.IsTrue(a.Contains(b));
         }
+        
+        [Test]
+        public void Cell_InsideOutside_Contains_ExponentLessThanMinus64()
+        {
+            var a = new Cell(12345678910111213, 1000, 2000, -100);
+            var b= new Cell(12345678910111213*2+1, 2000, 4000, -101);
+            Assert.IsTrue(a.Contains(b));
+        }
+
+        [Test]
+        public void Cell_InsideOutside_Intersects_ExponentLessThanMinus64_1()
+        {
+            var a = new Cell(12345678910111213, 1000, 2000, -100);
+            var b = new Cell(12345678910111213 + 1, 2000, 4000, -100);
+            Assert.IsTrue(!a.Intersects(b));
+        }
+
+        [Test]
+        public void Cell_InsideOutside_Intersects_ExponentLessThanMinus64_2()
+        {
+            var a = new Cell(12345678910111213, 1000, 2000, -100);
+            var b = new Cell(12345678910111213, 2000, 4000, -100);
+            Assert.IsTrue(!a.Intersects(b));
+        }
+
+        #endregion
     }
 }
