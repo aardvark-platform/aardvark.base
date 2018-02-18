@@ -570,7 +570,14 @@ module AMap =
                                 deltas <- HDeltaSet.add (Add(k, v)) deltas
 
                             | Remove ->
-                                deltas <- HDeltaSet.add (Rem(k,HMap.find k oldState)) deltas
+                                // NOTE: As it is not clear at what point the toASet computation has been evaluated last, it is 
+                                //       a valid case that something is removed that is not present in the current local state.
+                                deltas <-
+                                    match HMap.tryFind k oldState with
+                                    | Some ov ->
+                                        HDeltaSet.add (Rem (k, ov)) deltas
+                                    | None ->
+                                        deltas
 
 
                     deltas

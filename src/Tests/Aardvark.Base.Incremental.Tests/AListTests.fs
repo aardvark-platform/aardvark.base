@@ -27,6 +27,8 @@ open System.Runtime.CompilerServices
 //            |> Seq.toList
 
 module ``simple list tests`` =
+    open Aardvark.Base.IL.Serializer.RefMap
+    open Aardvark.Base.CSharpList
 
     module Delta =
         let map (f : 'a -> 'b) (d : SetOperation<'a>) =
@@ -77,6 +79,64 @@ module ``simple list tests`` =
         set.Contains(a) |> should be True
         set.Contains(b) |> should be True
         set.Contains(c) |> should be True
+
+        ()
+
+    [<Test>]
+    let ``[AList] add/clear/evaluate``() =
+        
+        let l = CList.empty
+        let refSet = new HashSet<int>()
+        
+        let set = AList.toASet l
+
+        let rnd = Random()
+
+        for i in 0..10000 do
+            if rnd.NextDouble() < 0.5 then
+                printfn "add"
+                refSet.Add(i) |> ignore
+                transact(fun () -> l.Append i |> ignore)
+                printfn " -> cnt=%d" l.Count
+
+            if rnd.NextDouble() < 0.1 then
+                printfn "clear"
+                refSet.Clear()
+                transact(fun () -> l.Clear())
+                printfn " -> cnt=%d" l.Count
+                should equal 0 l.Count
+
+            if rnd.NextDouble() < 0.2 then
+                printfn "eval"
+                let test = ASet.toArray set
+                printfn " -> list=%d set=%d" l.Count test.Length
+                should equal test.Length l.Count
+                should equal test.Length refSet.Count
+                should equal test (Seq.toArray refSet) 
+
+    [<Test>]
+    let ``[AList] toASet``() =
+        
+        // test should not crash
+        let l = CList.empty
+        
+        let set = AList.toASet l
+        
+        transact(fun () -> l.Append 1 |> ignore)
+
+        let test = ASet.toArray set
+        printf "cnt=%d" test.Length
+        should equal test.Length 1
+        should equal test.[0] 1
+
+        transact(fun () -> l.Append 2 |> ignore)
+        transact(fun () -> l.Clear())
+        transact(fun () -> l.Append 3 |> ignore)
+        
+        let test = ASet.toArray set
+        printf "cnt=%d" test.Length
+        should equal test.Length 1
+        should equal test.[0] 3
 
         ()
 

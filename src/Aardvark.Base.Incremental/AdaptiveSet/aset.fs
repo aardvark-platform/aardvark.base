@@ -437,26 +437,37 @@ module ASet =
 
             let f = Cache f
             let mutable initial = true
-            let cache = Dict<IMod<'b>, 'b>()
+            let cache = Dict<IMod<'b>, ref<int * 'b>>()
 
             member x.Invoke(token : AdaptiveToken, v : 'a) =
                 let m = f.Invoke v
                 let v = m.GetValue token
-                cache.[m] <- v
+                let r = cache.GetOrCreate(m, fun _ -> ref (0, v))
+                r := (fst !r + 1, v)
+
                 v
 
             member x.Invoke2(token : AdaptiveToken, m : IMod<'b>) =
-                let o = cache.[m]
+                let r = cache.[m]
                 let v = m.GetValue token
-                cache.[m] <- v
+                let (rc, o) = !r
+                r := (rc, v)
                 o, v
 
-            member x.Revoke(v : 'a) =
+            member x.Revoke(v : 'a, dirty : HashSet<_>) =
                 let m = f.Revoke v
-                match cache.TryRemove m with
-                    | (true, v) -> 
-                        lock m (fun () -> m.Outputs.Remove x |> ignore )
-                        v
+                
+                match cache.TryGetValue m with
+                    | (true, r) -> 
+                        let (cnt, v) = !r
+                        if cnt = 1 then
+                            cache.Remove m |> ignore
+                            dirty.Remove m |> ignore
+                            lock m (fun () -> m.Outputs.Remove x |> ignore )
+                            v
+                        else
+                            r := (cnt - 1, v)
+                            v
                     | _ -> 
                         failwith "[ASet] cannot remove unknown object"
 
@@ -475,7 +486,7 @@ module ASet =
                     r.GetOperations token |> HDeltaSet.map (fun d ->
                         match d with
                             | Add(1,m) -> Add(x.Invoke(token,m))
-                            | Rem(1,m) -> Rem(x.Revoke m)
+                            | Rem(1,m) -> Rem(x.Revoke(m, dirty))
                             | _ -> unexpected()
                     )
 
@@ -493,34 +504,38 @@ module ASet =
 
             let f = Cache f
             let mutable initial = true
-            let cache = Dict<IMod<Option<'b>>, Option<'b>>()
+            let cache = Dict<IMod<Option<'b>>, ref<int * Option<'b>>>()
 
             member x.Invoke(token : AdaptiveToken, v : 'a) =
                 let m = f.Invoke v
                 let v = m.GetValue token
-                cache.[m] <- v
+                let r = cache.GetOrCreate(m, fun _ -> ref (0, None))
+                r := (fst !r + 1, v)
                 v
 
             member x.Invoke2(token : AdaptiveToken, m : IMod<Option<'b>>) =
                 match cache.TryGetValue m with
-                    | (true, o) ->
+                    | (true, r) ->
+                        let (rc, o) = !r
                         let v = m.GetValue token
-                        cache.[m] <- v
+                        r := (rc, v)
                         o, v
                     | _ ->
                       None, None  
 
             member x.Revoke(v : 'a) =
-                let deleted, m = f.RevokeAndGetDeleted v
-                if deleted then
-                    match cache.TryRemove m with
-                        | (true, v) -> 
+                let m = f.Revoke v
+                match cache.TryGetValue m with
+                    | (true, r) -> 
+                        let (rc, v) = !r
+                        if rc = 1 then
+                            cache.Remove m |> ignore
                             lock m (fun () -> m.Outputs.Remove x |> ignore )
-                            v
-                        | _ -> 
-                            failwith "[ASet] cannot remove unknown object"
-                else
-                    cache.[m]
+                        else
+                            r := (rc - 1, v)
+                        v
+                    | _ -> 
+                        failwith "[ASet] cannot remove unknown object"
 
             override x.Release() =
                 f.Clear ignore

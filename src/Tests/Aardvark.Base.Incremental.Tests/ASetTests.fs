@@ -629,11 +629,26 @@ module OtherASetTests =
         r.GetOperations() |> should setEqual List.empty<SetOperation<int>>
         r.State.Count |> should equal 0
 
+    [<Test>]
+    let ``[ASet] mapM test duplicate``() =
 
+        let testSet = COrderedSet.ofSeq [ Mod.init 1; ]
+        
+        let rnd = new Random(1)
 
+        let op3 = testSet |> ASet.mapM (fun x -> Mod.constant(10))
 
+        let r = op3.GetReader()
+                
+        transact(fun () ->
+            testSet.Add (Mod.init 1) |> ignore)
+            
+        printfn "%A" (r.GetOperations())
 
+        transact(fun () ->    
+                    testSet.Clear())
 
+        printfn "%A" (r.GetOperations())
 
 
     [<Test>]
@@ -674,6 +689,54 @@ module OtherASetTests =
         r.GetOperations() |> should equal [Rem(1)]
 
         printfn "%A" (mapm |> ASet.toArray)
+        
+    [<Test>]
+    let ``[ASet] mapM test simulation``() =
+
+        let testSet = COrderedSet.ofSeq [ 1; 2; 3; ]
+
+        let op1 = testSet |> ASet.collect (fun x -> (x + 1) |> ASet.single)
+
+        let op2 = op1 |> ASet.choose (fun x -> Some x)
+
+        let rnd = new Random(2)
+
+        let op3 = op2 |> ASet.mapM (fun x -> Mod.constant (rnd.Next(10)))
+
+        let r = op3.GetReader()
+
+        let stuffList = new System.Collections.Generic.List<int>()
+        
+        for i in 0..10000 do
+            
+            if rnd.NextDouble() < 0.8 then
+                transact(fun () ->
+                    let e = stuffList.Count
+                    testSet.Add e |> ignore
+                    stuffList.Add e)
+
+            if rnd.NextDouble() < 0.1 then
+                if stuffList.Count > 0 then
+                    transact(fun () ->
+                        let e = stuffList.[rnd.Next(stuffList.Count)]
+                        stuffList.Remove(e) |> ignore
+                        testSet.Remove e |> ignore)
+
+            if rnd.NextDouble() < 0.3 then
+                if stuffList.Count > 0 then
+                    transact(fun () ->
+                        let e = stuffList.[stuffList.Count - 1]
+                        stuffList.RemoveAt(stuffList.Count - 1)
+                        testSet.Remove e |> ignore)
+
+            if rnd.NextDouble() < 0.05 then
+                transact(fun () ->    
+                    testSet.Clear())
+
+            if rnd.NextDouble() < 0.5 then
+                 printfn "%A" (r.GetOperations())
+                                 
+
 
 //
 //        
