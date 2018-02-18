@@ -245,6 +245,12 @@ namespace Aardvark.Base
         public Cell Parent => IsCenteredAtOrigin ? new Cell(Exponent + 1) : new Cell(X >> 1, Y >> 1, Z >> 1, Exponent + 1);
 
         /// <summary>
+        /// True if one corner of this cell touches the origin.
+        /// Centered cells DO NOT touch the origin.
+        /// </summary>
+        public bool TouchesOrigin => IsCenteredAtOrigin ? false : (X == -1 || X == 0) && (Y == -1 || Y == 0) && (Z == -1 || Z == 0);
+
+        /// <summary>
         /// Gets cell's bounds.
         /// </summary>
         public Box3d BoundingBox { get; }

@@ -359,6 +359,40 @@ namespace Aardvark.Tests
 
         #endregion
 
+        #region touches origin
+
+        [Test]
+        public void CenteredCellDoesNotTouchOrigin()
+        {
+            Assert.IsTrue(new Cell(-1).TouchesOrigin == false);
+            Assert.IsTrue(new Cell(0).TouchesOrigin == false);
+            Assert.IsTrue(new Cell(1).TouchesOrigin == false);
+        }
+
+        [Test]
+        public void CellTouchOrigin()
+        {
+            Assert.IsTrue(new Cell( 0,  0,  0, 0).TouchesOrigin == true);
+            Assert.IsTrue(new Cell(-1,  0,  0, 0).TouchesOrigin == true);
+            Assert.IsTrue(new Cell( 0, -1,  0, 0).TouchesOrigin == true);
+            Assert.IsTrue(new Cell(-1, -1,  0, 0).TouchesOrigin == true);
+            Assert.IsTrue(new Cell( 0,  0, -1, 0).TouchesOrigin == true);
+            Assert.IsTrue(new Cell(-1,  0, -1, 0).TouchesOrigin == true);
+            Assert.IsTrue(new Cell( 0, -1, -1, 0).TouchesOrigin == true);
+            Assert.IsTrue(new Cell(-1, -1, -1, 0).TouchesOrigin == true);
+
+            Assert.IsTrue(new Cell(1, 0, 0, 0).TouchesOrigin == false);
+            Assert.IsTrue(new Cell(0, 1, 0, 0).TouchesOrigin == false);
+            Assert.IsTrue(new Cell(1, 1, 0, 0).TouchesOrigin == false);
+            Assert.IsTrue(new Cell(0, 0, 1, 0).TouchesOrigin == false);
+            Assert.IsTrue(new Cell(1, 0, 1, 0).TouchesOrigin == false);
+            Assert.IsTrue(new Cell(0, 1, 1, 0).TouchesOrigin == false);
+            Assert.IsTrue(new Cell(1, 1, 1, 0).TouchesOrigin == false);
+            
+        }
+
+        #endregion
+
         #region contains/intersects
 
         [Test]
