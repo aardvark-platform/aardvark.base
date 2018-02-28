@@ -735,7 +735,26 @@ module OtherASetTests =
 
             if rnd.NextDouble() < 0.5 then
                  printfn "%A" (r.GetOperations())
-                                 
+
+    [<Test>]
+    let ``[ASet] flattenM test``() =
+        let stuff = CSet.ofList [ Mod.init(1) :> IMod<_>; Mod.init(2) :> IMod<_>; Mod.init(3) :> IMod<_>; ]
+
+        let flatSet = stuff |> ASet.flattenM
+
+        let r = flatSet.GetReader()
+        r.GetOperations() |> should equal [Add(1); Add(2); Add(3)]
+
+        printfn "%A" (flatSet |> ASet.toArray)
+
+        transact(fun () ->
+            Mod.change (stuff |> Seq.head :?> ModRef<int>) 99
+            stuff.Remove(stuff |> Seq.head) |> ignore
+            )
+
+        r.GetOperations() |> should equal [Rem(1)]
+
+        printfn "%A" (flatSet |> ASet.toArray)
 
 
 //
