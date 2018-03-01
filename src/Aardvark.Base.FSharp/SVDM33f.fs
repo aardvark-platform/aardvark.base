@@ -6,6 +6,7 @@
 // https://github.com/ericjang/svd3/blob/master/svd3.h 
 // by https://github.com/ericjang
 
+[<CompilationRepresentation(CompilationRepresentationFlags.ModuleSuffix)>]
 module M33f =
 
     let gamma = 5.828427124f
