@@ -124,7 +124,8 @@ module AMap =
                                     if wasExisting then Some Remove
                                     else None
                                 | _ ->
-                                    failwithf "[AMap] could not remove entry %A" k
+                                    None
+                                    //failwithf "[AMap] could not remove entry %A" k
                 )
 
         type KeyedMod<'k, 'a>(key : 'k, m : IMod<'a>) =
@@ -186,7 +187,8 @@ module AMap =
                                                 Some Remove
                                                 
                                     | _ ->
-                                        failwith "[AMap] invalid state"
+                                        None
+                                        //failwith "[AMap] invalid state"
                     )
 
                 for m in dirty do
@@ -215,7 +217,7 @@ module AMap =
                 let ops = reader.GetOperations token
 
                 let mutable ops =
-                    ops |> HMap.map (fun k op ->
+                    ops |> HMap.choose (fun k op ->
                         match op with
                             | Set v -> 
                                 let mutable o = Unchecked.defaultof<_>
@@ -226,16 +228,17 @@ module AMap =
                                 let n = f k v |> Mod.map (fun v -> k, v)
                                 cache.[k] <- n
                                 let _,v = n.GetValue(token)
-                                Set v
+                                Some (Set v)
 
                             | Remove ->
                                 let (worked, o) = cache.TryRemove k
                                 if not worked then
-                                    failwith "[AMap] invalid state"
-                                let mutable foo = 0
-                                o.Outputs.Consume(&foo) |> ignore
-                                dirty.Remove o |> ignore
-                                Remove
+                                    None
+                                else
+                                    let mutable foo = 0
+                                    o.Outputs.Consume(&foo) |> ignore
+                                    dirty.Remove o |> ignore
+                                    Some Remove
                     )
                         
                 for m in dirty do
@@ -369,10 +372,10 @@ module AMap =
             override x.Compute(token) =
                 r.GetOperations token
                     |> HDeltaSet.toHMap
-                    |> HMap.map (fun key v ->
-                        if v > 0 then Set (f key)
-                        elif v < 0 then Remove
-                        else failwith "[AMap] inconsistent state"
+                    |> HMap.choose (fun key v ->
+                        if v > 0 then Some (Set (f key))
+                        elif v < 0 then Some Remove
+                        else None
                     )
 
             override x.Release() =

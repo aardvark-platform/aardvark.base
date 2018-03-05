@@ -39,7 +39,11 @@ and csimmap<'k, 'v>(initial : seq<'k * 'v>) =
     interface IChangeable with
         member x.RandomChange(rand, addprob) =
             gen {
-                if x.Count > 0 && rand.UniformDouble() > addprob then
+                if rand.UniformDouble() > 0.95 then
+                    x.Clear()
+                    return "clear"
+
+                elif x.Count > 0 && rand.UniformDouble() > addprob then
                     let key,_ = content |> HMap.toSeq |> Seq.item (rand.UniformInt(x.Count))
                     if rand.UniformDouble() < 0.5 then
                         x.Remove key
@@ -66,6 +70,10 @@ and csimmap<'k, 'v>(initial : seq<'k * 'v>) =
     member x.Remove (key : 'k) =
         cmap.Remove key |> ignore
         content <- content |> HMap.remove key
+
+    member x.Clear() =
+        cmap.Clear()
+        content <- HMap.empty
 
     member x.Content = content
 
@@ -218,7 +226,6 @@ module SimMap =
                         equal <- false
                 | None ->
                     equal <- false
-
         if HMap.count r > 0 then false
         else equal
 
@@ -243,6 +250,13 @@ module SimMap =
                     failwithf "[SimMap] invalid state: { is: %A; should: %A }" anew snew
 
                 let cops = HMap.computeDelta aold anew
+                let aops = 
+                    aops |> HMap.filter (fun k op -> 
+                        match HMap.tryFind k aold, op with
+                            | Some o, Set v when Unchecked.equals o v -> false
+                            | None, Remove -> false
+                            | _ -> true 
+                    ) 
                 if not (equal aops cops) then
                     printLog()
                     failwithf "[SimMap] invalid ops: { is: %A; should: %A }" aops cops

@@ -20,7 +20,11 @@ type cmap<'k, 'v>(initial : seq<'k * 'v>) =
             history.State.Find(key)
         and set (key : 'k) (value : 'v) =
             lock x (fun () ->
-                history.Perform(HMap.single key (Set value)) |> ignore
+                match HMap.tryFind key history.State with
+                    | Some o when Unchecked.equals o value ->
+                        ()
+                    | _ -> 
+                        history.Perform(HMap.single key (Set value)) |> ignore
             )
 
     member x.TryFind(k : 'k) =
