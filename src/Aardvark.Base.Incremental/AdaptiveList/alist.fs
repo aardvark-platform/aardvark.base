@@ -124,9 +124,10 @@ module AList =
                     if s.HasValue then
                         store.Remove s.Value |> ignore
                         let (_,s) = s.Value
-                        s
+                        Some s
                     else
-                        failwith "[AList] removing unknown index"
+                        None
+                        //failwith "[AList] removing unknown index"
 
                 member x.Clear() =
                     store.Clear()
@@ -167,9 +168,9 @@ module AList =
                     match store.TryRemove i with
                         | (true, (oa,ob)) -> 
                             release ob
-                            ob
+                            Some ob
                         | _ -> 
-                            failwithf "[AList] cannot revoke unknown index %A" i
+                            None //failwithf "[AList] cannot revoke unknown index %A" i
 
                 member x.Clear() =
                     store.Values |> Seq.iter (snd >> release)
@@ -240,7 +241,8 @@ module AList =
                     | (true,(b,r)) -> 
                         decr r
                         if !r = 0 then deads.Add v |> ignore
-                    | _ -> failwith "impossible"
+                    | _ -> 
+                        Log.warn "leak????"
 
             override x.Release() =
                 cache.Values |> Seq.iter (dispose << fst)
@@ -254,21 +256,22 @@ module AList =
                 let inputOps = r.GetOperations token
 
                 let ops = 
-                    inputOps |> PDeltaList.map (fun i op ->
+                    inputOps |> PDeltaList.choose (fun i op ->
                         match op with
                             | Remove -> 
                                 match PList.tryGet i oldState with
                                     | Some v -> 
                                         revoke removed v
-                                        Remove
-                                    | None -> failwith "[AList mapUse] cannot remove non existing item"
+                                        Some Remove
+                                    | None -> 
+                                        None
                             | Set v -> 
                                 match PList.tryGet i oldState with
                                     | None -> 
                                         ()
                                     | Some oldA -> 
                                         revoke removed oldA
-                                invoke removed v |> Set
+                                invoke removed v |> Set |> Some
                                     
                     )
 
@@ -277,7 +280,9 @@ module AList =
                         | (true,(b,r)) -> 
                             if !r <> 0 then failwith "[AList.mapUse] non zero refcount"
                             dispose b
-                        | _ -> failwith "[AList.mapUse] tried to remove non existing"
+                        | _ -> 
+                            //failwith "[AList.mapUse] tried to remove non existing"
+                            ()
 
                 ops       
 
@@ -323,7 +328,7 @@ module AList =
                     match op with
                         | Remove -> 
                             match mapping.Revoke(i) with
-                                | true -> Some Remove
+                                | Some true -> Some Remove
                                 | _ -> None
                         | Set v -> 
                             let o, n = mapping.InvokeAndGetOld(i, v)
@@ -365,8 +370,13 @@ module AList =
                         | Some r ->
                             let result = 
                                 r.State.Content 
-                                    |> MapExt.mapMonotonic (fun ii v -> mapping.Revoke(oi,ii), Remove)
-                                    |> PDeltaList.ofMap
+                                    |> MapExt.toSeq
+                                    |> Seq.choose (fun (ii, v) -> 
+                                        match mapping.Revoke(oi,ii) with
+                                            | Some v -> Some (v, Remove)
+                                            | None -> None
+                                        )
+                                    |> PDeltaList.ofSeq
 
                             if targets.Count = 0 then 
                                 dirty.Remove x |> ignore
@@ -375,7 +385,8 @@ module AList =
                             result
 
                         | None ->
-                            failwith "[AList] invalid reader state"
+                            //failwith "[AList] invalid reader state"
+                            PDeltaList.empty
                 else
                     PDeltaList.empty
 
@@ -396,7 +407,11 @@ module AList =
                             match op with
                                 | Remove -> 
                                     targets
-                                        |> Seq.map (fun oi -> mapping.Revoke(oi, ii), Remove)
+                                        |> Seq.choose (fun oi -> 
+                                            match mapping.Revoke(oi, ii) with   
+                                                | Some i -> Some(i, Remove)
+                                                | None -> None
+                                        )
                                         |> PDeltaList.ofSeq
 
                                 | Set v ->
@@ -601,16 +616,18 @@ module AList =
             override x.Compute(token) =
                 reader.GetOperations token 
                     |> HDeltaSet.toSeq
-                    |> Seq.map (fun d ->
+                    |> Seq.choose (fun d ->
                         match d with
                             | Add(1,v) -> 
                                 let k = mapping.Invoke v
                                 let i = indices.Invoke k
-                                i, Set v
+                                Some (i, Set v)
                             | Rem(1,v) ->
                                 let k = mapping.Revoke v
                                 let i = indices.Revoke k
-                                i, Remove
+                                match i with
+                                    | Some i -> Some (i, Remove)
+                                    | None -> None
                             | _ ->
                                 failwith ""
                     )
@@ -629,14 +646,15 @@ module AList =
             override x.Compute(token) =
                 reader.GetOperations token
                     |> HDeltaSet.toSeq
-                    |> Seq.map (fun d ->
+                    |> Seq.choose (fun d ->
                         match d with
                             | Add(1,v) -> 
                                 let i = indices.Invoke v
-                                i, Set v
+                                Some (i, Set v)
                             | Rem(1,v) ->
-                                let i = indices.Revoke v
-                                i, Remove
+                                match indices.Revoke v with
+                                    | Some i -> Some(i, Remove)
+                                    | None -> None
                             | _ ->
                                 failwith ""
                     )
@@ -728,17 +746,24 @@ module AList =
 
                                 match oldB with
                                     | Some oldB ->
-                                        let oi = indices.Revoke oldB
-                                        PDeltaList.ofList [oi, Remove; i, Set v]
+                                        match indices.Revoke oldB with
+                                            | Some oi -> 
+                                                PDeltaList.ofList [oi, Remove; i, Set v]
+                                            | None ->
+                                                PDeltaList.ofList [i, Set v]
                                     | None ->
                                         PDeltaList.single i (Set v)
 
 
 
                             | Remove ->
-                                let b = mapping.Revoke(ii)
-                                let i = indices.Revoke b
-                                PDeltaList.single i Remove
+                                match mapping.Revoke(ii) with   
+                                    | Some b -> 
+                                        match indices.Revoke b with
+                                            | Some i -> PDeltaList.single i Remove
+                                            | None -> PDeltaList.empty
+                                    | None ->
+                                        PDeltaList.empty
                     )
         
         type ListSortWithReader<'a>(scope : Ag.Scope, input : alist<'a>, comparer : IComparer<'a>) =
@@ -772,7 +797,11 @@ module AList =
                                         else
                                             let oi = indices.Revoke(o, i)
                                             let i = indices.Invoke(v, i)
-                                            PDeltaList.ofList [oi, Remove; i, Set v]
+                                            match oi with
+                                                | Some oi ->
+                                                    PDeltaList.ofList [oi, Remove; i, Set v]
+                                                | None ->
+                                                    PDeltaList.ofList [i, Set v]
                                     | None ->
                                         let i = indices.Invoke(v, i)
                                         PDeltaList.single i (Set v)
@@ -780,7 +809,9 @@ module AList =
                             | Remove ->
                                 let v = oldContent |> MapExt.find i
                                 let i = indices.Revoke(v, i)
-                                PDeltaList.single i Remove
+                                match i with
+                                    | Some i -> PDeltaList.single i Remove
+                                    | None -> PDeltaList.empty
                     )
 
         type BindReader<'a, 'b>(scope : Ag.Scope, input : IMod<'a>, f : 'a -> alist<'b>) =
@@ -861,11 +892,15 @@ module AList =
 
             member private x.revoke (dirty : HashSet<_>) (i : Index) =
                 let o = cache.Revoke(i)
-                dirty.Remove o |> ignore
-                o.Outputs.Remove x |> ignore
-                match o.LastValue with
-                    | Some l -> PDeltaList.single o.Index Remove
-                    | None -> PDeltaList.empty
+                match o with
+                    | Some o -> 
+                        dirty.Remove o |> ignore
+                        o.Outputs.Remove x |> ignore
+                        match o.LastValue with
+                            | Some l -> PDeltaList.single o.Index Remove
+                            | None -> PDeltaList.empty
+                    | None ->
+                        PDeltaList.empty
 
             override x.Release() =
                 input.Dispose()
