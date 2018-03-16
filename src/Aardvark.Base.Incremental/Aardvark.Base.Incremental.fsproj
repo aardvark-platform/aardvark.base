@@ -75,6 +75,9 @@
     <Compile Include="CSharp.fs" />
     <Compile Include="Adapters\EventAdapter.fs" />
     <Compile Include="IncrementalBvh.fs" />
+	<Compile Include="Proc\Proc.fs" />
+	<Compile Include="Proc\ProcList.fs" />
+	<Compile Include="Proc\ThreadPool.fs" />
     <None Include="paket.references" />
     <None Include="paket.template" />
   </ItemGroup>
