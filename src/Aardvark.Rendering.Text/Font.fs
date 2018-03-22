@@ -394,6 +394,12 @@ type ShapeCache(r : IRuntime) =
             Range1i(first, last)
         )
 
+    member x.PrepareShaders(signature : IFramebufferSignature) =
+        let _ = surface signature
+        let _ = boundarySurface signature
+        ()
+
+
     member x.Dispose() =
         pool.Dispose()
         ranges.Clear()
@@ -407,8 +413,11 @@ type PrepareFontExtensions private() =
 
         for c in chars do
             cache.GetBufferRange (f.GetGlyph c) |> ignore
-
-
+            
+    [<Extension>]
+    static member PrepareTextShaders(r : IRuntime, f : Font, signature : IFramebufferSignature) =
+        let cache = ShapeCache.GetOrCreateCache r
+        cache.PrepareShaders signature
 
 
 
