@@ -565,14 +565,14 @@ namespace Aardvark.Base
         public V3d GetEulerAngles()
         {
             var test = W * Y - X * Z;
-            if (test > 0.49999) // singularity at north pole
+            if (test > 0.49999f) // singularity at north pole
             {
                 return new V3d(
-                    -2 * Fun.Atan2(X, W),
+                    2 * Fun.Atan2(X, W),
                     Constant.PiHalf,
                     0);
             }
-            if (test < -0.49999) // singularity at south pole
+            if (test < -0.49999f) // singularity at south pole
             {
                 return new V3d(
                     2 * Fun.Atan2(X, W),
@@ -1571,14 +1571,14 @@ namespace Aardvark.Base
         public V3d GetEulerAngles()
         {
             var test = W * Y - X * Z;
-            if (test > 0.49999) // singularity at north pole
+            if (test > 0.49999999) // singularity at north pole
             {
                 return new V3d(
-                    -2 * Fun.Atan2(X, W),
+                    2 * Fun.Atan2(X, W),
                     Constant.PiHalf,
                     0);
             }
-            if (test < -0.49999) // singularity at south pole
+            if (test < -0.49999999) // singularity at south pole
             {
                 return new V3d(
                     2 * Fun.Atan2(X, W),

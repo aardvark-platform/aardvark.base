@@ -23,6 +23,7 @@ namespace Aardvark.Base
     //#   var m34t = "M34" + tc;
     //#   var m44t = "M44" + tc;
     //#   var rotIntoEps = isDouble ? "1e-7" : "1e-3f";
+    //#   var eulerAnglesEps = isDouble ? "0.49999999" : "0.49999f";
     //#   var pi = isDouble ? "Constant.Pi" : "Constant.PiF";
     /// <summary>
     /// Represents an arbitrary rotation in three dimensions. Implemented as
@@ -582,14 +583,14 @@ namespace Aardvark.Base
         public V3d GetEulerAngles()
         {
             var test = W * Y - X * Z;
-            if (test > 0.49999) // singularity at north pole
+            if (test > __eulerAnglesEps__) // singularity at north pole
             {
                 return new V3d(
-                    -2 * Fun.Atan2(X, W),
+                    2 * Fun.Atan2(X, W),
                     Constant.PiHalf,
                     0);
             }
-            if (test < -0.49999) // singularity at south pole
+            if (test < -__eulerAnglesEps__) // singularity at south pole
             {
                 return new V3d(
                     2 * Fun.Atan2(X, W),
