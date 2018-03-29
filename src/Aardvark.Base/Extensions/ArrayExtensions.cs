@@ -2,11 +2,10 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.InteropServices;
-using System.Text;
 
 namespace Aardvark.Base
 {
-	public static class ArrayFun
+    public static class ArrayFun
 	{
 		#region Generic Array Setting (initialization)
 
@@ -40,7 +39,7 @@ namespace Aardvark.Base
 		public static T[] Set<T>(
 				this T[] self, long start, long count, T value)
 		{
-			long end = start + System.Math.Min(count, self.LongLength - start);
+			long end = start + Math.Min(count, self.LongLength - start);
 			for (long i = start; i < end; i++) self[i] = value;
 			return self;
 		}
@@ -99,7 +98,7 @@ namespace Aardvark.Base
 		public static T[] SetByIndex<T>(
 				this T[] self, int start, int count, Func<int, T> index_fun)
 		{
-			int end = System.Math.Min(start + count, self.Length);
+			int end = Math.Min(start + count, self.Length);
 			for (int i = start; i < end; i++) self[i] = index_fun(i);
 			return self;
 		}
@@ -112,7 +111,7 @@ namespace Aardvark.Base
 		public static T[] SetByIndexLong<T>(
 				this T[] self, long start, long count, Func<long, T> index_fun)
 		{
-			long end = System.Math.Min(start + count, self.LongLength);
+			long end = Math.Min(start + count, self.LongLength);
 			for (long i = start; i < end; i++) self[i] = index_fun(i);
 			return self;
 		}
@@ -122,7 +121,7 @@ namespace Aardvark.Base
 		/// </summary>
 		public static T[] Set<T>(this T[] self, T[] array)
 		{
-			long len = System.Math.Min(self.LongLength, array.LongLength);
+			long len = Math.Min(self.LongLength, array.LongLength);
 			for (long i = 0; i < len; i++) self[i] = array[i];
 			return self;
 		}
@@ -162,22 +161,46 @@ namespace Aardvark.Base
 		public static T[] Copy<T>(this T[] array, long count)
 		{
 			var result = new T[count];
-			var len = System.Math.Min(count, array.LongLength);
+			var len = Math.Min(count, array.LongLength);
 			for (var i = 0L; i < len; i++) result[i] = array[i];
 			return result;
 		}
 
-		/// <summary>
-		/// Create a copy of the specified length starting at the specified
-		/// start. If the copy is longer it is filled with default elements.
+        /// <summary>
+		/// Create a copy of the specified length. If the copy is longer
+		/// it is filled with default elements.
 		/// </summary>
-		public static T[] Copy<T>(this T[] array, long start, long count)
+		public static T[] Copy<T>(this T[] array, int count)
+        {
+            var result = new T[count];
+            var len = Math.Min(count, array.Length);
+            for (var i = 0; i < len; i++) result[i] = array[i];
+            return result;
+        }
+
+        /// <summary>
+        /// Create a copy of the specified length starting at the specified
+        /// start. If the copy is longer it is filled with default elements.
+        /// </summary>
+        public static T[] Copy<T>(this T[] array, long start, long count)
 		{
 			var result = new T[count];
-			var len = System.Math.Min(count, array.LongLength - start);
+			var len = Math.Min(count, array.LongLength - start);
 			for (var i = 0L; i < len; i++) result[i] = array[i + start];
 			return result;
 		}
+
+        /// <summary>
+        /// Create a copy of the specified length starting at the specified
+        /// start. If the copy is longer it is filled with default elements.
+        /// </summary>
+        public static T[] Copy<T>(this T[] array, int start, int count)
+        {
+            var result = new T[count];
+            var len = Math.Min(count, array.Length - start);
+            for (var i = 0; i < len; i++) result[i] = array[i + start];
+            return result;
+        }
 
         [Obsolete("Use 'Map' instead (same functionality and parameters)", false)]
         public static Tr[] Copy<T, Tr>(this T[] array, Func<T, Tr> element_fun)
@@ -197,7 +220,7 @@ namespace Aardvark.Base
 		}
 
         /// <summary>
-        /// Create an array of reulting items by applying a supplied binary function
+        /// Create an array of resulting items by applying a supplied binary function
         /// to corresponding pairs of the supplied arrays.
         /// </summary>
         /// <returns></returns>
@@ -280,10 +303,24 @@ namespace Aardvark.Base
 				this T[] array, long count, Func<T, Tr> element_fun)
 		{
 			var result = new Tr[count];
-			var len = System.Math.Min(count, array.LongLength);
+			var len = Math.Min(count, array.LongLength);
 			for (var i = 0L; i < len; i++) result[i] = element_fun(array[i]);
 			return result;
 		}
+
+        /// <summary>
+        /// Create a copy of count elements with the elements piped through a
+        /// function. count may be longer than the array, in this case the
+        /// result array has default elements at the end.
+        /// </summary>
+        public static Tr[] Map<T, Tr>(
+                this T[] array, int count, Func<T, Tr> element_fun)
+        {
+            var result = new Tr[count];
+            var len = Math.Min(count, array.Length);
+            for (var i = 0; i < len; i++) result[i] = element_fun(array[i]);
+            return result;
+        }
 
         [Obsolete("Use 'Map' instead (same functionality and parameters)", false)]
         public static Tr[] Copy<T, Tr>(
@@ -302,7 +339,7 @@ namespace Aardvark.Base
 				this T[] array, long count, Func<T, long, Tr> element_index_fun)
 		{
 			var result = new Tr[count];
-			var len = System.Math.Min(count, array.LongLength);
+			var len = Math.Min(count, array.LongLength);
 			for (var i = 0L; i < len; i++) result[i] = element_index_fun(array[i], i);
 			return result;
 		}
@@ -322,10 +359,23 @@ namespace Aardvark.Base
 				this T[] array, long start, long count, Func<T, Tr> element_fun)
 		{
 			var result = new Tr[count];
-			var len = System.Math.Min(count, array.LongLength - start);
+			var len = Math.Min(count, array.LongLength - start);
 			for (var i = 0L; i < len; i++) result[i] = element_fun(array[start + i]);
 			return result;
 		}
+
+        /// <summary>
+        /// Create a copy of specified length starting at the specified
+        /// offset with the elements piped through a function.
+        /// </summary>
+        public static Tr[] Map<T, Tr>(
+                this T[] array, int start, int count, Func<T, Tr> element_fun)
+        {
+            var result = new Tr[count];
+            var len = Math.Min(count, array.Length - start);
+            for (var i = 0; i < len; i++) result[i] = element_fun(array[start + i]);
+            return result;
+        }
 
         [Obsolete("Use 'Map' instead (same functionality and parameters)", false)]
         public static Tr[] Copy<T, Tr>(
@@ -344,33 +394,66 @@ namespace Aardvark.Base
 				this T[] array, long start, long count, Func<T, long, Tr> element_index_fun)
 		{
 			var result = new Tr[count];
-			var len = System.Math.Min(count, array.LongLength - start);
+			var len = Math.Min(count, array.LongLength - start);
 			for (var i = 0L; i < len; i++) result[i] = element_index_fun(array[start + i], i);
 			return result;
 		}
 
-		/// <summary>
-		/// Copy a range of elements to the target array.
-		/// </summary>
-		public static void CopyTo<T>(this T[] array, long count, T[] target, long targetStart)
+        /// <summary>
+        /// Create a copy of specified length starting at the specified
+        /// offset with the elements piped through a function.
+        /// The function gets the target index of the element as a second
+        /// argument.
+        /// </summary>
+        public static Tr[] Map<T, Tr>(
+                this T[] array, int start, int count, Func<T, int, Tr> element_index_fun)
+        {
+            var result = new Tr[count];
+            var len = Math.Min(count, array.Length - start);
+            for (var i = 0; i < len; i++) result[i] = element_index_fun(array[start + i], i);
+            return result;
+        }
+
+        /// <summary>
+        /// Copy a range of elements to the target array.
+        /// </summary>
+        public static void CopyTo<T>(this T[] array, long count, T[] target, long targetStart)
 		{
 			for (var i = 0L; i < count; i++)
 				target[targetStart + i] = array[i];
 		}
 
-		/// <summary>
+        /// <summary>
 		/// Copy a range of elements to the target array.
 		/// </summary>
-		public static void CopyTo<T>(this T[] array, long start, long count, T[] target, long targetStart)
+		public static void CopyTo<T>(this T[] array, int count, T[] target, int targetStart)
+        {
+            for (var i = 0; i < count; i++)
+                target[targetStart + i] = array[i];
+        }
+
+        /// <summary>
+        /// Copy a range of elements to the target array.
+        /// </summary>
+        public static void CopyTo<T>(this T[] array, long start, long count, T[] target, long targetStart)
 		{
 			for (var i = 0L; i < count; i++)
 				target[targetStart + i] = array[start + i];
 		}
 
-		/// <summary>
-		/// Copies the array into a list.
-		/// </summary>
-		public static List<T> CopyToList<T>(this T[] array)
+        /// <summary>
+        /// Copy a range of elements to the target array.
+        /// </summary>
+        public static void CopyTo<T>(this T[] array, int start, int count, T[] target, int targetStart)
+        {
+            for (var i = 0; i < count; i++)
+                target[targetStart + i] = array[start + i];
+        }
+
+        /// <summary>
+        /// Copies the array into a list.
+        /// </summary>
+        public static List<T> CopyToList<T>(this T[] array)
 		{
 			var result = new List<T>(array.Length);
 			result.AddRange(array);
