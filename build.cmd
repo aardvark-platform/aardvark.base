@@ -18,13 +18,6 @@ if errorlevel 1 (
   exit /b %errorlevel%
 )
 
-dotnet restore src\Aardvark.Base.Extensions
-dotnet restore src\Aardvark.Base.Delegates
-dotnet restore src\Aardvark.Base.Telemetry
-dotnet restore src\Aardvark.Base.Reporting
-dotnet restore src\Aardvark.Base.TextParser
-dotnet restore src\Aardvark.Base.Symbol
-
 SET FSI_PATH=packages\build\FAKE\tools\Fake.exe
 "%FSI_PATH%" "build.fsx" Dummy --fsiargs build.fsx --shadowcopyreferences+ %* 
 
