@@ -16,4 +16,18 @@
     <NoWarn>1591</NoWarn>
   </PropertyGroup>
 
+  <ItemGroup>
+    <Compile Remove="SequenceExtensions_generator.cs" />
+    <Compile Remove="SequenceExtensions_template.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="SequenceExtensions_generator.cs" />
+    <None Include="SequenceExtensions_template.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Aardvark.Base.Tup\Aardvark.Base.Tup.csproj" />
+  </ItemGroup>
+
 </Project>

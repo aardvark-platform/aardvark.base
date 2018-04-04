@@ -25330,12 +25330,12 @@ namespace Aardvark.Base.Coder
 
         public void CodeCameraExtrinsicsArray(ref CameraExtrinsics[] value)
         {
-            CodeArray(ref value, s_nestedBracketSplitter, s => CameraExtrinsics.Parse(s));
+            throw new NotSupportedException("cannot xml serialize cameras");
         }
 
         public void CodeCameraIntrinsicsArray(ref CameraIntrinsics[] value)
         {
-            CodeArray(ref value, s_nestedBracketSplitter, s => CameraIntrinsics.Parse(s));
+            throw new NotSupportedException("cannot xml serialize cameras");
         }
 
         #endregion
@@ -26275,12 +26275,12 @@ namespace Aardvark.Base.Coder
 
         public void CodeList_of_CameraExtrinsics_(ref List<CameraExtrinsics> value)
         {
-            CodeList(ref value, s_nestedBracketSplitter, s => CameraExtrinsics.Parse(s));
+            throw new NotSupportedException("cannot xml serialize cameras");
         }
 
         public void CodeList_of_CameraIntrinsics_(ref List<CameraIntrinsics> value)
         {
-            CodeList(ref value, s_nestedBracketSplitter, s => CameraIntrinsics.Parse(s));
+            throw new NotSupportedException("cannot xml serialize cameras");
         }
 
         #endregion

@@ -133,6 +133,11 @@
       <Project>{430d818a-45e4-4643-9a9f-091d3ed31bc7}</Project>
       <Private>True</Private>
     </ProjectReference>
+    <ProjectReference Include="..\Aardvark.Base.HashCodes\Aardvark.Base.HashCodes.csproj">
+      <Name>Aardvark.Base.HashCodes</Name>
+      <Project>{8fc336ea-7de8-428f-949d-3320208a5ee5}</Project>
+      <Private>True</Private>
+    </ProjectReference>
     <ProjectReference Include="..\Aardvark.Base.Reporting\Aardvark.Base.Reporting.csproj">
       <Name>Aardvark.Base.Reporting</Name>
       <Project>{f4d5431a-43a4-4fba-b352-421ec359d03c}</Project>
@@ -141,6 +146,11 @@
     <ProjectReference Include="..\Aardvark.Base.Symbol\Aardvark.Base.Symbol.csproj">
       <Name>Aardvark.Base.Symbol</Name>
       <Project>{0d5b3e80-26bd-4d67-a4dc-0dde84c478b6}</Project>
+      <Private>True</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\Aardvark.Base.Tup\Aardvark.Base.Tup.csproj">
+      <Name>Aardvark.Base.Tup</Name>
+      <Project>{e0fc963c-92e2-466f-8f38-3a12b314e394}</Project>
       <Private>True</Private>
     </ProjectReference>
     <ProjectReference Include="..\Aardvark.Base.TypeProviders\Aardvark.Base.TypeProviders.fsproj">

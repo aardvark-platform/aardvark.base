@@ -26,4 +26,9 @@
     <None Include="Delegates_template.cs" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\Aardvark.Base.Extensions\Aardvark.Base.Extensions.csproj" />
+    <ProjectReference Include="..\Aardvark.Base.Symbol\Aardvark.Base.Symbol.csproj" />
+  </ItemGroup>
+
 </Project>

@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Aardvark.Base
 {
-    public static class ArrayFun
+    public static class ArrayFun_
     {
         #region UnsafeCoerce
 

@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Aardvark.Base
 {
-    public static class ListFun
+    public static class ListFun_
     {
         [Obsolete("Use 'MapToArray' instead (same functionality and parameters)", false)]
         public static Tr[] ToArray<T, Tr>(this List<T> self, Func<T, Tr> fun)

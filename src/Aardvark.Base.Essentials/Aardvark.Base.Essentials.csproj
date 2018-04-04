@@ -101,6 +101,10 @@
       <Project>{ac2e2835-64c6-4553-a613-981d6e104437}</Project>
       <Name>Aardvark.Base.Telemetry</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Aardvark.Base.Tup\Aardvark.Base.Tup.csproj">
+      <Project>{e0fc963c-92e2-466f-8f38-3a12b314e394}</Project>
+      <Name>Aardvark.Base.Tup</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Aardvark.Base\Aardvark.Base.csproj">
       <Name>Aardvark.Base</Name>
       <Project>{377DA721-C821-45F6-B803-9C8724C7B37F}</Project>

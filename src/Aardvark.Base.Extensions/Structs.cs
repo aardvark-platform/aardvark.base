@@ -6,6 +6,25 @@ using System.Text;
 
 namespace Aardvark.Base
 {
+    #region IndexedValue
+
+    public struct IndexedValue<T>
+    {
+        public readonly int Index;
+        public readonly T Value;
+
+        #region Constructor
+
+        public IndexedValue(int index, T value)
+        {
+            Index = index; Value = value;
+        }
+
+        #endregion
+    }
+
+    #endregion
+
     #region ComparableIndexedValue
 
     public struct ComparableIndexedValue<T> : IComparable<ComparableIndexedValue<T>>
@@ -54,6 +73,5 @@ namespace Aardvark.Base
         }
 
         #endregion
-
     }
 }

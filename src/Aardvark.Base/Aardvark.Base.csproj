@@ -65,6 +65,7 @@
   <ItemGroup>
     <Compile Include="AlgoDat\ExtendedCore\BitHelpers.cs" />
     <Compile Include="AlgoDat\ExtendedCore\SortedSetExt.cs" />
+    <Compile Include="AlgoDat\HashCode.cs" />
     <Compile Include="AlgoDat\LruCache.cs" />
     <None Include="Extensions\FuncActionExtensions_template.cs" />
     <Compile Include="AlgoDat\SalesmanOfDeath.cs" />
@@ -72,6 +73,8 @@
     <Compile Include="Extensions\EventHandlerExtensions.cs" />
     <Compile Include="Extensions\FuncActionExtensions_auto.cs" />
     <Compile Include="Extensions\ArrayExtensions.cs" />
+    <None Include="Extensions\FuncActionExtensions_generator.cs" />
+    <Compile Include="Extensions\IEnumerableExtensions.cs" />
     <Compile Include="Extensions\ListExtensions.cs" />
     <Compile Include="Extensions\VariousExtensions.cs" />
     <Compile Include="Geometry\Camera.cs" />
@@ -90,7 +93,6 @@
     <Compile Include="Images\PixImageSystemImage.cs" />
     <Compile Include="AlgoDat\AdaBoost.cs" />
     <Compile Include="AlgoDat\ConcurrentHashSet.cs" />
-    <Compile Include="AlgoDat\HigherOrderFunctions.cs" />
     <Compile Include="AlgoDat\IGenerational.cs" />
     <Compile Include="AlgoDat\Meta.cs" />
     <Compile Include="AlgoDat\MinimumSpanningTree.cs" />
@@ -98,13 +100,9 @@
     <Compile Include="AlgoDat\SubRange.cs" />
     <Compile Include="AlgoDat\SymMapBase.cs" />
     <Compile Include="AlgoDat\SymMapBaseTraversal.cs" />
-    <None Include="AlgoDat\Tuples_template.cs" />
-    <Compile Include="AlgoDat\Tuples_auto.cs" />
     <Compile Include="AlgoDat\XmlParser.cs" />
     <Compile Include="Extensions\ICollectionExtensions.cs" />
     <Compile Include="Extensions\IListExtensions.cs" />
-    <Compile Include="Extensions\SequenceExtensions_auto.cs" />
-    <None Include="Extensions\SequenceExtensions_template.cs" />
     <Compile Include="Extensions\SystemDrawingExtensions.cs" />
     <Compile Include="Geometry\Conic2d.cs" />
     <Compile Include="Geometry\Ellipse2d.cs" />
@@ -209,15 +207,12 @@
     <None Include="Vectors\VectorTypeConverter_template.cs" />
     <Compile Include="Vectors\Vector_auto.cs" />
     <None Include="Vectors\Vector_template.cs" />
-    <Compile Include="AlgoDat\HashCode.cs" />
     <Compile Include="AlgoDat\Requires.cs" />
     <Compile Include="AlgoDat\Sorting_auto.cs" />
     <None Include="AlgoDat\Sorting_template.cs" />
     <Compile Include="AlgoDat\Structs.cs" />
-    <Compile Include="AlgoDat\Tuples.cs" />
     <Compile Include="Extensions\DictionaryExtensions.cs" />
     <Compile Include="Extensions\FuncActionExtensions.cs" />
-    <Compile Include="Extensions\IEnumerableExtensions.cs" />
     <Compile Include="Geometry\Algorithms.cs" />
     <Compile Include="Geometry\Capsule3d.cs" />
     <Compile Include="Geometry\Circle2d.cs" />
@@ -276,6 +271,10 @@
       <Project>{430d818a-45e4-4643-9a9f-091d3ed31bc7}</Project>
       <Name>Aardvark.Base.Extensions</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Aardvark.Base.HashCodes\Aardvark.Base.HashCodes.csproj">
+      <Project>{8fc336ea-7de8-428f-949d-3320208a5ee5}</Project>
+      <Name>Aardvark.Base.HashCodes</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Aardvark.Base.Reporting\Aardvark.Base.Reporting.csproj">
       <Project>{f4d5431a-43a4-4fba-b352-421ec359d03c}</Project>
       <Name>Aardvark.Base.Reporting</Name>
@@ -291,6 +290,10 @@
     <ProjectReference Include="..\Aardvark.Base.TextParser\Aardvark.Base.TextParser.csproj">
       <Project>{c700fc2e-b25f-4404-9f7e-391221fbeb25}</Project>
       <Name>Aardvark.Base.TextParser</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Aardvark.Base.Tup\Aardvark.Base.Tup.csproj">
+      <Project>{e0fc963c-92e2-466f-8f38-3a12b314e394}</Project>
+      <Name>Aardvark.Base.Tup</Name>
     </ProjectReference>
   </ItemGroup>
   <Target Name="Package">

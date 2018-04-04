@@ -67,6 +67,10 @@
       <Project>{0d5b3e80-26bd-4d67-a4dc-0dde84c478b6}</Project>
       <Name>Aardvark.Base.Symbol</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Aardvark.Base.Tup\Aardvark.Base.Tup.csproj">
+      <Project>{e0fc963c-92e2-466f-8f38-3a12b314e394}</Project>
+      <Name>Aardvark.Base.Tup</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Aardvark.Base\Aardvark.Base.csproj">
       <Project>{377da721-c821-45f6-b803-9c8724c7b37f}</Project>
       <Name>Aardvark.Base</Name>

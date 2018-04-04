@@ -61,9 +61,17 @@
       <Project>{430d818a-45e4-4643-9a9f-091d3ed31bc7}</Project>
       <Name>Aardvark.Base.Extensions</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\Aardvark.Base.HashCodes\Aardvark.Base.HashCodes.csproj">
+      <Project>{8fc336ea-7de8-428f-949d-3320208a5ee5}</Project>
+      <Name>Aardvark.Base.HashCodes</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\Aardvark.Base.Reporting\Aardvark.Base.Reporting.csproj">
       <Project>{f4d5431a-43a4-4fba-b352-421ec359d03c}</Project>
       <Name>Aardvark.Base.Reporting</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Aardvark.Base.Tup\Aardvark.Base.Tup.csproj">
+      <Project>{e0fc963c-92e2-466f-8f38-3a12b314e394}</Project>
+      <Name>Aardvark.Base.Tup</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\Aardvark.Base\Aardvark.Base.csproj">
       <Project>{377da721-c821-45f6-b803-9c8724c7b37f}</Project>
