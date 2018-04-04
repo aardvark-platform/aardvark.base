@@ -66,18 +66,7 @@ namespace Aardvark.Base
         }
 
         #endregion
-
-        #region Comparable Indexed Values
-
-        public static IEnumerable<ComparableIndexedValue<T>> ComparableIndexedValues<T>(
-                this IEnumerable<T> self)
-            where T : IComparable<T>
-        {
-            return self.Select((item, i) => new ComparableIndexedValue<T>(i, item));
-        }
-
-        #endregion
-
+        
         #region Special Selects
 
         public static IEnumerable<T> WhereNotNull<T>(this IEnumerable<T> self)

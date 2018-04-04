@@ -25,35 +25,6 @@ namespace Aardvark.Base
 
     #endregion
 
-    #region ComparableIndexedValue
-
-    public struct ComparableIndexedValue<T> : IComparable<ComparableIndexedValue<T>>
-        where T : IComparable<T>
-    {
-        public readonly int Index;
-        public readonly T Value;
-
-        #region Constructor
-
-        public ComparableIndexedValue(int index, T value)
-        {
-            Index = index; Value = value;
-        }
-
-        #endregion
-
-        #region IComparable<IndexedValue<T>> Members
-
-        public int CompareTo(ComparableIndexedValue<T> other)
-        {
-            return Value.CompareTo(other.Value);
-        }
-
-        #endregion
-    }
-
-    #endregion
-
     #region Volatile Array
 
     /// <summary>
@@ -83,17 +54,7 @@ namespace Aardvark.Base
 
         #endregion
 
-        #region ComparableIndexedValue
-
-        public static ComparableIndexedValue<T> ComparableIndexedValue<T>(
-                this T self, int index)
-            where T : IComparable<T>
-        {
-            return new ComparableIndexedValue<T>(index, self);
-        }
-
-        #endregion
-
+        
         #region VolatileArray
 
         public static VolatileArray<T> ToVolatile<T>(this T[] array)

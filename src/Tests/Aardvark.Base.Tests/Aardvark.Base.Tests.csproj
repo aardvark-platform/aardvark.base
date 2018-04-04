@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
@@ -8,7 +8,7 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>Aardvark.Tests</RootNamespace>
     <AssemblyName>Aardvark.Base.Tests</AssemblyName>
-    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
     <TargetFSharpCoreVersion>4.3.1.0</TargetFSharpCoreVersion>
     <FileAlignment>512</FileAlignment>
     <SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">..\..\Solutions\</SolutionDir>
@@ -73,6 +73,22 @@
     <Service Include="{82A7F48D-3B50-4B1E-B82E-3ADA8210C358}" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\Aardvark.Base.Extensions\Aardvark.Base.Extensions.csproj">
+      <Project>{430d818a-45e4-4643-9a9f-091d3ed31bc7}</Project>
+      <Name>Aardvark.Base.Extensions</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Aardvark.Base.Reporting\Aardvark.Base.Reporting.csproj">
+      <Project>{f4d5431a-43a4-4fba-b352-421ec359d03c}</Project>
+      <Name>Aardvark.Base.Reporting</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Aardvark.Base.Symbol\Aardvark.Base.Symbol.csproj">
+      <Project>{0d5b3e80-26bd-4d67-a4dc-0dde84c478b6}</Project>
+      <Name>Aardvark.Base.Symbol</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Aardvark.Base.Telemetry\Aardvark.Base.Telemetry.csproj">
+      <Project>{ac2e2835-64c6-4553-a613-981d6e104437}</Project>
+      <Name>Aardvark.Base.Telemetry</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\Aardvark.Base\Aardvark.Base.csproj">
       <Project>{377da721-c821-45f6-b803-9c8724c7b37f}</Project>
       <Name>Aardvark.Base</Name>
@@ -86,7 +102,7 @@
   </Target>
   -->
   <Choose>
-    <When Condition="$(TargetFrameworkIdentifier) == '.NETFramework' And $(TargetFrameworkVersion) == 'v4.5'">
+    <When Condition="$(TargetFrameworkIdentifier) == '.NETFramework' And $(TargetFrameworkVersion) == 'v4.6.1'">
       <ItemGroup>
         <Reference Include="nunit.framework">
           <HintPath>..\..\..\packages\NUnit\lib\net45\nunit.framework.dll</HintPath>

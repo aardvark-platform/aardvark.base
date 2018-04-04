@@ -9,7 +9,7 @@
     <OutputType>Exe</OutputType>
     <RootNamespace>Aardvark.Base.Runtime.Tests</RootNamespace>
     <AssemblyName>Aardvark.Base.Runtime.Tests</AssemblyName>
-    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
     <TargetFSharpCoreVersion>4.4.0.0</TargetFSharpCoreVersion>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
     <Name>Aardvark.Base.Runtime.Tests</Name>
@@ -88,9 +88,19 @@
       <Project>{9623ae28-1f72-46e9-a3a7-85fc1a321a73}</Project>
       <Private>True</Private>
     </ProjectReference>
+    <ProjectReference Include="..\..\Aardvark.Base.Reporting\Aardvark.Base.Reporting.csproj">
+      <Name>Aardvark.Base.Reporting</Name>
+      <Project>{f4d5431a-43a4-4fba-b352-421ec359d03c}</Project>
+      <Private>True</Private>
+    </ProjectReference>
     <ProjectReference Include="..\..\Aardvark.Base.Runtime\Aardvark.Base.Runtime.fsproj">
       <Name>Aardvark.Base.Runtime</Name>
       <Project>{04e146c2-1c4c-432f-922c-351d0f4ced67}</Project>
+      <Private>True</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Aardvark.Base.Symbol\Aardvark.Base.Symbol.csproj">
+      <Name>Aardvark.Base.Symbol</Name>
+      <Project>{0d5b3e80-26bd-4d67-a4dc-0dde84c478b6}</Project>
       <Private>True</Private>
     </ProjectReference>
     <ProjectReference Include="..\..\Aardvark.Base.TypeProviders\Aardvark.Base.TypeProviders.fsproj">
@@ -105,7 +115,7 @@
     </ProjectReference>
   </ItemGroup>
   <Choose>
-    <When Condition="$(TargetFrameworkIdentifier) == '.NETFramework' And $(TargetFrameworkVersion) == 'v4.5'">
+    <When Condition="$(TargetFrameworkIdentifier) == '.NETFramework' And $(TargetFrameworkVersion) == 'v4.6.1'">
       <ItemGroup>
         <Reference Include="FSharp.Core">
           <HintPath>..\..\..\packages\FSharp.Core\lib\net40\FSharp.Core.dll</HintPath>
@@ -116,7 +126,7 @@
     </When>
   </Choose>
   <Choose>
-    <When Condition="$(TargetFrameworkIdentifier) == '.NETFramework' And $(TargetFrameworkVersion) == 'v4.5'">
+    <When Condition="$(TargetFrameworkIdentifier) == '.NETFramework' And $(TargetFrameworkVersion) == 'v4.6.1'">
       <ItemGroup>
         <Reference Include="FsUnit.NUnit">
           <HintPath>..\..\..\packages\FsUnit\lib\net45\FsUnit.NUnit.dll</HintPath>
@@ -127,7 +137,7 @@
     </When>
   </Choose>
   <Choose>
-    <When Condition="$(TargetFrameworkIdentifier) == '.NETFramework' And $(TargetFrameworkVersion) == 'v4.5'">
+    <When Condition="$(TargetFrameworkIdentifier) == '.NETFramework' And $(TargetFrameworkVersion) == 'v4.6.1'">
       <ItemGroup>
         <Reference Include="nunit.framework">
           <HintPath>..\..\..\packages\NUnit\lib\net45\nunit.framework.dll</HintPath>
@@ -138,10 +148,10 @@
     </When>
   </Choose>
   <Choose>
-    <When Condition="$(TargetFrameworkIdentifier) == '.NETFramework' And $(TargetFrameworkVersion) == 'v4.5'">
+    <When Condition="$(TargetFrameworkIdentifier) == '.NETFramework' And $(TargetFrameworkVersion) == 'v4.6.1'">
       <ItemGroup>
         <Reference Include="System.Reactive.Core">
-          <HintPath>..\..\..\packages\System.Reactive.Core\lib\net45\System.Reactive.Core.dll</HintPath>
+          <HintPath>..\..\..\packages\System.Reactive.Core\lib\net46\System.Reactive.Core.dll</HintPath>
           <Private>True</Private>
           <Paket>True</Paket>
         </Reference>
@@ -149,7 +159,7 @@
     </When>
   </Choose>
   <Choose>
-    <When Condition="$(TargetFrameworkIdentifier) == '.NETFramework' And $(TargetFrameworkVersion) == 'v4.5'">
+    <When Condition="$(TargetFrameworkIdentifier) == '.NETFramework' And $(TargetFrameworkVersion) == 'v4.6.1'">
       <ItemGroup>
         <Reference Include="System.Reactive.Interfaces">
           <HintPath>..\..\..\packages\System.Reactive.Interfaces\lib\net45\System.Reactive.Interfaces.dll</HintPath>
@@ -160,10 +170,10 @@
     </When>
   </Choose>
   <Choose>
-    <When Condition="$(TargetFrameworkIdentifier) == '.NETFramework' And $(TargetFrameworkVersion) == 'v4.5'">
+    <When Condition="$(TargetFrameworkIdentifier) == '.NETFramework' And $(TargetFrameworkVersion) == 'v4.6.1'">
       <ItemGroup>
         <Reference Include="System.Reactive.Linq">
-          <HintPath>..\..\..\packages\System.Reactive.Linq\lib\net45\System.Reactive.Linq.dll</HintPath>
+          <HintPath>..\..\..\packages\System.Reactive.Linq\lib\net46\System.Reactive.Linq.dll</HintPath>
           <Private>True</Private>
           <Paket>True</Paket>
         </Reference>

@@ -9,8 +9,10 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>PixImageDemo</RootNamespace>
     <AssemblyName>PixImageDemo</AssemblyName>
-    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
+    <TargetFrameworkProfile />
+    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -51,6 +53,18 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\Aardvark.Base.Delegates\Aardvark.Base.Delegates.csproj">
+      <Project>{f6879d9e-0f64-4b7e-a0e9-ac005e1da843}</Project>
+      <Name>Aardvark.Base.Delegates</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Aardvark.Base.Extensions\Aardvark.Base.Extensions.csproj">
+      <Project>{430d818a-45e4-4643-9a9f-091d3ed31bc7}</Project>
+      <Name>Aardvark.Base.Extensions</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Aardvark.Base.Reporting\Aardvark.Base.Reporting.csproj">
+      <Project>{f4d5431a-43a4-4fba-b352-421ec359d03c}</Project>
+      <Name>Aardvark.Base.Reporting</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\Aardvark.Base\Aardvark.Base.csproj">
       <Project>{377da721-c821-45f6-b803-9c8724c7b37f}</Project>
       <Name>Aardvark.Base</Name>
@@ -65,10 +79,10 @@
   </Target>
   -->
   <Choose>
-    <When Condition="$(TargetFrameworkIdentifier) == '.NETFramework' And $(TargetFrameworkVersion) == 'v4.5'">
+    <When Condition="$(TargetFrameworkIdentifier) == '.NETFramework' And $(TargetFrameworkVersion) == 'v4.6.1'">
       <ItemGroup>
         <Reference Include="DevILSharp">
-          <HintPath>..\..\..\packages\DevilSharp\lib\net45\DevILSharp.dll</HintPath>
+          <HintPath>..\..\..\packages\DevILSharp\lib\net45\DevILSharp.dll</HintPath>
           <Private>True</Private>
           <Paket>True</Paket>
         </Reference>
@@ -76,7 +90,7 @@
     </When>
   </Choose>
   <Choose>
-    <When Condition="$(TargetFrameworkIdentifier) == '.NETFramework' And $(TargetFrameworkVersion) == 'v4.5'">
+    <When Condition="$(TargetFrameworkIdentifier) == '.NETFramework' And $(TargetFrameworkVersion) == 'v4.6.1'">
       <ItemGroup>
         <Reference Include="FSharp.Core">
           <HintPath>..\..\..\packages\FSharp.Core\lib\net40\FSharp.Core.dll</HintPath>

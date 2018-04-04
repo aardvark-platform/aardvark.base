@@ -1,10 +1,8 @@
-RESTRICTION: == net45
+RESTRICTION: == net461
 NUGET
-  remote: https://vrvis.myget.org/F/aardvark_public/api/v3/index.json
-    DevilSharp (0.1.1)
-      FSharp.Core (>= 4.0 < 4.1)
-    Unofficial.LibTessDotNet (1.0.2)
   remote: https://api.nuget.org/v3/index.json
+    DevILSharp (0.1.2)
+      FSharp.Core (>= 4.0 < 4.1)
     FsCheck (2.7.2)
       FSharp.Core (>= 3.1.2.5)
     FsCheck.NUnit (2.7.2)
@@ -15,7 +13,6 @@ NUGET
     Microsoft.NETCore.Platforms (2.0)
     NETStandard.Library (2.0)
       Microsoft.NETCore.Platforms (>= 1.1)
-      System.Runtime.InteropServices.RuntimeInformation (>= 4.3)
     NUnit (3.6.1)
     System.Collections.Immutable (1.4)
       NETStandard.Library (>= 1.6.1)
@@ -25,11 +22,12 @@ NUGET
     System.Reactive.Linq (3.0)
       System.Reactive.Core (>= 3.0)
       System.Reactive.Interfaces (>= 3.0)
-    System.Runtime.InteropServices.RuntimeInformation (4.3)
+  remote: https://vrvis.myget.org/F/aardvark_public/api/v3/index.json
+    Unofficial.LibTessDotNet (1.0.2)
 
 GROUP Build
 CONTENT: NONE
-RESTRICTION: == net45
+RESTRICTION: == net461
 NUGET
   remote: https://api.nuget.org/v3/index.json
     FAKE (4.63) - content: none
@@ -37,7 +35,7 @@ NUGET
     SourceLink.Fake (1.1) - content: none
 GITHUB
   remote: aardvark-platform/aardvark.fake
-    FULLPROJECT (0bd495d19630a51f886fb4a2374f64fe9088f09d)
+    FULLPROJECT (9b337575e1ec13a611f4416d1df485f382f8c631)
       FAKE (>= 4.63 < 4.64)
       Mono.Cecil (>= 0.10.0-beta6 < 0.11)
       SourceLink.Fake (>= 1.1 < 1.2)
