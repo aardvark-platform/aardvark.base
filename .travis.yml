@@ -6,6 +6,8 @@ before_install:
   - sudo apt-get update -qq > /dev/null
   - sudo apt-get install -qq mono-devel > /dev/null
   - mozroots --import --sync > /dev/null
-  - sh ./build.sh restore
+  - dotnet restore src\Aardvark.Base.Extensions
+  - dotnet restore src\Aardvark.Base.Delegates
+  - dotnet restore src\Aardvark.Base.Telemetry
 script: sh ./build.sh
 dist: trusty
