@@ -308,8 +308,7 @@ namespace Aardvark.Base
             /// Computes the bounding box for interval [0, 1] of the
             /// Kochanek-Bartels spline defined by the specified points.
             /// </summary>
-            public static Box3d Bounds(
-                V3d p0, V3d p1, V3d p2, V3d p3)
+            public static Box3d Bounds(V3d p0, V3d p1, V3d p2, V3d p3)
             {
                 return Bounds(Range1d.Unit, p0, p1, p2, p3, 0, 0);
             }
@@ -330,10 +329,10 @@ namespace Aardvark.Base
 
                 var bb = Box3d.Invalid;
                 bb.ExtendBy(domain.Min > 0
-                    ? Ipol.KochanekBartels.Eval(domain.Min, p0, p1, p2, p3, tension, bias)
+                    ? Eval(domain.Min, p0, p1, p2, p3, tension, bias)
                     : p1);
                 bb.ExtendBy(domain.Max < 1
-                    ? Ipol.KochanekBartels.Eval(domain.Max, p0, p1, p2, p3, tension, bias)
+                    ? Eval(domain.Max, p0, p1, p2, p3, tension, bias)
                     : p2);
 
                 var a = 6 * p1 + 3 * m0 + 3 * m1 - 6 * p2;
@@ -345,10 +344,10 @@ namespace Aardvark.Base
                     var t = Polynomial.RealRootsOf(a[i], b[i], c[i]);
                     var p0x = p0[i]; var p1x = p1[i]; var p2x = p2[i]; var p3x = p3[i];
                     if (t.E0 > domain.Min && t.E0 < domain.Max) bb.ExtendDimBy(i,
-                        KochanekBartels.Eval(t.E0, p0x, p1x, p2x, p3x, tension, bias)
+                        Eval(t.E0, p0x, p1x, p2x, p3x, tension, bias)
                         );
                     if (t.E1 > domain.Min && t.E1 < domain.Max) bb.ExtendDimBy(i,
-                        KochanekBartels.Eval(t.E1, p0x, p1x, p2x, p3x, tension, bias)
+                        Eval(t.E1, p0x, p1x, p2x, p3x, tension, bias)
                         );
                 }
 
@@ -392,7 +391,6 @@ namespace Aardvark.Base
                 return new Pair<V3d>(x1 * s0 + x2 * s1, x1 * s1 + x2 * s2);
             }
         }
-
     }
 
     public class CurvePoints<T>
@@ -400,7 +398,6 @@ namespace Aardvark.Base
         private double[] m_params;
         private T[] m_items;
         private Range1i m_indexes;
-        // private Range1d m_domain;
 
         public CurvePoints(double[] parameters, T[] items)
         {
@@ -423,7 +420,6 @@ namespace Aardvark.Base
         private void Init()
         {
             m_indexes = new Range1i(0, m_items.Length - 1);
-            // m_domain = new Range1d(m_params[0], m_params[m_indexes.Max]);
         }
 
         public Tup<double, T>[] Neighbourhood(double t)
@@ -450,7 +446,5 @@ namespace Aardvark.Base
             }
             return result;
         }
-
     }
-
 }

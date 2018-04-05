@@ -106,25 +106,13 @@
     <Compile Include="Images\TensorExtensions.cs" />
     <None Include="Images\TensorExtensions_template.cs" />
     <Compile Include="Images\TensorExtensions_auto.cs" />
-    <None Include="Math\Complex_template.cs" />
-    <Compile Include="Math\AverageWindow.cs" />
-    <Compile Include="Math\Complex_auto.cs" />
-    <Compile Include="Math\Interpolation.cs" />
-    <Compile Include="Math\PhysicsConsts.cs" />
-    <Compile Include="Math\Quadric.cs" />
-    <Compile Include="Math\Spectrum.cs" />
-    <Compile Include="Math\Statistics.cs" />
     <None Include="paket.references" />
     <None Include="paket.template" />
     <Compile Include="AlgoDat\Requires.cs" />
     <Compile Include="AlgoDat\Structs.cs" />
     <Compile Include="Extensions\DictionaryExtensions.cs" />
     <Compile Include="Extensions\FuncActionExtensions.cs" />
-    <Compile Include="Math\Adler32.cs" />
-    <Compile Include="Math\Curves.cs" />
     <Compile Include="Math\Interfaces.cs" />
-    <Compile Include="Math\Mapping.cs" />
-    <Compile Include="Math\SampleGrid2d.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

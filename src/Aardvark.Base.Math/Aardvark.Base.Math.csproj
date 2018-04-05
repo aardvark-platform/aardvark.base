@@ -19,6 +19,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Base\Complex_template.cs" />
     <Compile Remove="Base\Fun_template.cs" />
     <Compile Remove="Colors\Color_template.cs" />
     <Compile Remove="Geometry\Geometry1i_template.cs" />
@@ -63,6 +64,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Include="Base\Complex_template.cs" />
     <None Include="Base\Fun_template.cs" />
     <None Include="Colors\Color_template.cs" />
     <None Include="Geometry\Geometry1i_template.cs" />

@@ -6,7 +6,6 @@ namespace Aardvark.Base
     {
         V3d m_normal;
         M44d m_errorQuadric;
-        M44d m_errorHeuristic;
 
         #region Properties
 
@@ -15,25 +14,16 @@ namespace Aardvark.Base
             get { return m_normal.Normalized; }
             set { m_normal = value; }
         }
-
-
+        
         public M44d ErrorQuadric
         {
             get { return m_errorQuadric; }
             set { m_errorQuadric = value; }
         }
 
-        public double ErrorOffset
-        {
-            get { return m_errorQuadric.M33; }
-        }
-
-
-        public M44d ErrorHeuristic
-        {
-            get { return m_errorHeuristic; }
-            set { m_errorHeuristic = value; }
-        }
+        public double ErrorOffset => ErrorQuadric.M33;
+        
+        public M44d ErrorHeuristic { get; set; }
 
         #endregion
 
@@ -76,7 +66,7 @@ namespace Aardvark.Base
                 throw new InvalidOperationException("Must call CreateQuadric(...) first");
             }
 
-            m_errorHeuristic = Quadric.ToHeuristic(ErrorQuadric);
+            ErrorHeuristic = ToHeuristic(ErrorQuadric);
         }
 
         #endregion
@@ -85,12 +75,13 @@ namespace Aardvark.Base
 
         public static Quadric operator +(Quadric lhs, Quadric rhs)
         {
-            Quadric result = new Quadric();
+            Quadric result = new Quadric
+            {
+                ErrorQuadric = lhs.ErrorQuadric + rhs.ErrorQuadric,
+                Normal = lhs.Normal + rhs.Normal
+            };
 
-            result.ErrorQuadric = lhs.ErrorQuadric + rhs.ErrorQuadric;
-            result.Normal = lhs.Normal + rhs.Normal;
-
-            result.ErrorHeuristic = Quadric.ToHeuristic(result.ErrorQuadric);
+            result.ErrorHeuristic = ToHeuristic(result.ErrorQuadric);
 
             return result;
         }
@@ -112,7 +103,7 @@ namespace Aardvark.Base
 
         static M44d ToHeuristic(M44d quadric)
         {
-            M44d result = new M44d();
+            var result = new M44d();
 
             result = quadric;
             result.R3 = new V4d(0, 0, 0, 1);

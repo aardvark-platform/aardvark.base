@@ -16,12 +16,12 @@ namespace Aardvark.Base
         }
 
         public static void AdaptivelyFill(
-                    Action<long, long, long, long, double, double> xMid,
-                    Action<long, long, long, long, double, double> yMid,
-                    Action<long, long, long, long, long, long,
-                         double, double, double, double> xyMid,
-                    long x0, long x1, long y0, long y1
-                    )
+            Action<long, long, long, long, double, double> xMid,
+            Action<long, long, long, long, double, double> yMid,
+            Action<long, long, long, long, long, long,
+                    double, double, double, double> xyMid,
+            long x0, long x1, long y0, long y1
+            )
         {
             var dx = x1 - x0;
             var dy = y1 - y0;

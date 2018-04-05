@@ -5,7 +5,6 @@ using System.Text;
 
 namespace Aardvark.Base
 {
-
     public static class PhysicsConstant
     {
         /// <summary>
@@ -402,7 +401,5 @@ namespace Aardvark.Base
         /// Roentgen R in C/kg.
         /// </summary>
         public const double Roentgen = 2.58e-4;
-
     }
-
 }

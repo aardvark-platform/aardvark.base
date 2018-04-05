@@ -44,6 +44,6 @@
         /// <summary>
         /// Returns the average of the last N inserted values.
         /// </summary>
-        public double Value { get { return m_avg; } }
+        public double Value => m_avg;
     }
 }
