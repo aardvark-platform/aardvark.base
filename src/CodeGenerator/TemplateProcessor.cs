@@ -104,15 +104,17 @@ public static class SourceGenerator
 
         public void CompileAndRunGenerator()
         {
-            CompilerResults results = null;
             var generatorAssembly = CompilerServices.CompileAssembly(
                 GeneratorSourceCode.IntoArray(),
                 new string[] {
                     "System.Xml.dll",
                     "System.Xml.Linq.dll",
                     "Aardvark.Base.dll",
+                    "Aardvark.Base.Extensions.dll",
+                    "Aardvark.Base.Math.dll",
+                    "Aardvark.Base.Tup.dll",
                 },
-                ".", out results);
+                ".", out CompilerResults results);
             if (results.Errors.Count > 0)
             {
                 Console.WriteLine("WARNING: build of generator failed!");

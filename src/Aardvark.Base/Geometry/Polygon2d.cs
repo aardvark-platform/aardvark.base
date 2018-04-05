@@ -8,6 +8,11 @@ namespace Aardvark.Base
     {
         #region Conversions
 
+        public static Polygon2d ToPolygon2dCCW(this Box2d self)
+        {
+            return new Polygon2d(self.Min, new V2d(self.Max.X, self.Min.Y), self.Max, new V2d(self.Min.X, self.Max.Y));
+        }
+
         public static Polygon3d ToPolygon3d(
                 this Polygon2d polygon, Func<V2d, V3d> point_copyFun)
         {

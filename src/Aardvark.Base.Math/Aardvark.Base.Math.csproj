@@ -1,0 +1,96 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <OutputPath>..\..\bin\Debug</OutputPath>
+    <DocumentationFile>..\..\bin\Debug\netstandard2.0\Aardvark.Base.Math.xml</DocumentationFile>
+    <NoWarn>1701;1702;1705;1591</NoWarn>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+    <OutputPath>..\..\bin\Release</OutputPath>
+    <DocumentationFile>..\..\bin\Release\netstandard2.0\Aardvark.Base.Math.xml</DocumentationFile>
+    <NoWarn>1701;1702;1705;1591</NoWarn>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="Base\Fun_template.cs" />
+    <Compile Remove="Colors\Color_template.cs" />
+    <Compile Remove="Geometry\Geometry1i_template.cs" />
+    <Compile Remove="RangesBoxes\Box_generator.cs" />
+    <Compile Remove="RangesBoxes\Box_template.cs" />
+    <Compile Remove="Tensors\Accessors_generator.cs" />
+    <Compile Remove="Tensors\Accessors_template.cs" />
+    <Compile Remove="Tensors\TensorMathExt_generator.cs" />
+    <Compile Remove="Tensors\TensorMathExt_template.cs" />
+    <Compile Remove="Tensors\Tensor_generator.cs" />
+    <Compile Remove="Tensors\Tensor_template.cs" />
+    <Compile Remove="Trafos\Euclidean2_generator.cs" />
+    <Compile Remove="Trafos\Euclidean2_template.cs" />
+    <Compile Remove="Trafos\Euclidean3_generator.cs" />
+    <Compile Remove="Trafos\Euclidean3_template.cs" />
+    <Compile Remove="Trafos\M22_generator.cs" />
+    <Compile Remove="Trafos\M22_template.cs" />
+    <Compile Remove="Trafos\M33_generator.cs" />
+    <Compile Remove="Trafos\M33_template.cs" />
+    <Compile Remove="Trafos\M34_generator.cs" />
+    <Compile Remove="Trafos\M34_template.cs" />
+    <Compile Remove="Trafos\M44_generator.cs" />
+    <Compile Remove="Trafos\M44_template.cs" />
+    <Compile Remove="Trafos\Matrix_generator.cs" />
+    <Compile Remove="Trafos\Matrix_template.cs" />
+    <Compile Remove="Trafos\Rot2_generator.cs" />
+    <Compile Remove="Trafos\Rot2_template.cs" />
+    <Compile Remove="Trafos\Rot3_generator.cs" />
+    <Compile Remove="Trafos\Rot3_template.cs" />
+    <Compile Remove="Trafos\Scale3_generator.cs" />
+    <Compile Remove="Trafos\Scale3_template.cs" />
+    <Compile Remove="Trafos\Shift3_generator.cs" />
+    <Compile Remove="Trafos\Shift3_template.cs" />
+    <Compile Remove="Trafos\Similarity3_generator.cs" />
+    <Compile Remove="Trafos\Similarity3_template.cs" />
+    <Compile Remove="Vectors\VectorIEnumerableExtensions_generator.cs" />
+    <Compile Remove="Vectors\VectorIEnumerableExtensions_template.cs" />
+    <Compile Remove="Vectors\VectorTypeConverter_generator.cs" />
+    <Compile Remove="Vectors\VectorTypeConverter_template.cs" />
+    <Compile Remove="Vectors\Vector_generator.cs" />
+    <Compile Remove="Vectors\Vector_template.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="Base\Fun_template.cs" />
+    <None Include="Colors\Color_template.cs" />
+    <None Include="Geometry\Geometry1i_template.cs" />
+    <None Include="RangesBoxes\Box_template.cs" />
+    <None Include="Tensors\Accessors_template.cs" />
+    <None Include="Tensors\TensorMathExt_template.cs" />
+    <None Include="Tensors\Tensor_template.cs" />
+    <None Include="Trafos\Euclidean2_template.cs" />
+    <None Include="Trafos\Euclidean3_template.cs" />
+    <None Include="Trafos\M22_template.cs" />
+    <None Include="Trafos\M33_template.cs" />
+    <None Include="Trafos\M34_template.cs" />
+    <None Include="Trafos\M44_template.cs" />
+    <None Include="Trafos\Matrix_template.cs" />
+    <None Include="Trafos\Rot2_template.cs" />
+    <None Include="Trafos\Rot3_template.cs" />
+    <None Include="Trafos\Scale3_template.cs" />
+    <None Include="Trafos\Shift3_template.cs" />
+    <None Include="Trafos\Similarity3_template.cs" />
+    <None Include="Vectors\VectorIEnumerableExtensions_template.cs" />
+    <None Include="Vectors\VectorTypeConverter_template.cs" />
+    <None Include="Vectors\Vector_template.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Aardvark.Base.Delegates\Aardvark.Base.Delegates.csproj" />
+    <ProjectReference Include="..\Aardvark.Base.Extensions\Aardvark.Base.Extensions.csproj" />
+    <ProjectReference Include="..\Aardvark.Base.TextParser\Aardvark.Base.TextParser.csproj" />
+  </ItemGroup>
+
+</Project>

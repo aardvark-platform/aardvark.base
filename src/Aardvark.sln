@@ -65,6 +65,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Aardvark.Base.Introspection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Aardvark.Base.Sorting", "Aardvark.Base.Sorting\Aardvark.Base.Sorting.csproj", "{59DCC8AB-AEEA-4134-8F46-D99AFD4216A5}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Aardvark.Base.Random", "Aardvark.Base.Random\Aardvark.Base.Random.csproj", "{1DC86253-A793-4FB9-9A1F-FB07B8C2CE09}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Aardvark.Base.Math", "Aardvark.Base.Math\Aardvark.Base.Math.csproj", "{CAA4E460-E04B-45A4-8501-2694E61F72C9}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -183,6 +187,14 @@ Global
 		{59DCC8AB-AEEA-4134-8F46-D99AFD4216A5}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{59DCC8AB-AEEA-4134-8F46-D99AFD4216A5}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{59DCC8AB-AEEA-4134-8F46-D99AFD4216A5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1DC86253-A793-4FB9-9A1F-FB07B8C2CE09}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1DC86253-A793-4FB9-9A1F-FB07B8C2CE09}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1DC86253-A793-4FB9-9A1F-FB07B8C2CE09}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1DC86253-A793-4FB9-9A1F-FB07B8C2CE09}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CAA4E460-E04B-45A4-8501-2694E61F72C9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CAA4E460-E04B-45A4-8501-2694E61F72C9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CAA4E460-E04B-45A4-8501-2694E61F72C9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CAA4E460-E04B-45A4-8501-2694E61F72C9}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -206,6 +218,8 @@ Global
 		{8FC336EA-7DE8-428F-949D-3320208A5EE5} = {C557CE9D-81EE-4EB3-AB94-B9F9CB2FA19A}
 		{919E549B-980D-4565-B504-2D0244D23CE6} = {C557CE9D-81EE-4EB3-AB94-B9F9CB2FA19A}
 		{59DCC8AB-AEEA-4134-8F46-D99AFD4216A5} = {C557CE9D-81EE-4EB3-AB94-B9F9CB2FA19A}
+		{1DC86253-A793-4FB9-9A1F-FB07B8C2CE09} = {C557CE9D-81EE-4EB3-AB94-B9F9CB2FA19A}
+		{CAA4E460-E04B-45A4-8501-2694E61F72C9} = {C557CE9D-81EE-4EB3-AB94-B9F9CB2FA19A}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {1537AED0-2BB3-4EC3-B2CB-06E22C23B002}
