@@ -1,9 +1,9 @@
+using Aardvark.Base;
+using Aardvark.Base.Sorting;
+using NUnit.Framework;
 using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
-using Aardvark.Base;
-using NUnit.Framework;
 
 namespace Aardvark.Tests
 {

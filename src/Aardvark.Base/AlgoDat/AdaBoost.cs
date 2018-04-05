@@ -114,36 +114,25 @@ namespace Aardvark.Base
 
         private struct Classifier<T>
         {
-			//private readonly WeightedExample<T>[] m_examples;  // hs: assigned but not used warning in mono, with warning as error this is a build error :(
-            private readonly WeakClassifier<T>[] m_weakClassifiers;
+			private readonly WeakClassifier<T>[] m_weakClassifiers;
 
             public Classifier(
                 IEnumerable<WeightedExample<T>> examples,
                 IEnumerable<WeakClassifier<T>> weakClassifiers
                 )
             {
-				//m_examples = examples.ToArray();
                 m_weakClassifiers = weakClassifiers.ToArray();
             }
 
-            public bool Classify(T x)
-            {
-                return SumAlphaWeightedWeakClassifiers(x) > 0.0;
-            }
+            public bool Classify(T x) => SumAlphaWeightedWeakClassifiers(x) > 0.0;
 
             /// <summary>
             /// Computes propability of positive classification given x.
             /// </summary>
-            public double P(T x)
-            {
-                var f = SumAlphaWeightedWeakClassifiers(x);
-                return 1.0 / (1.0 + Math.Exp(-2.0 * f));
-            }
+            public double P(T x) => 1.0 / (1.0 + Math.Exp(-2.0 * SumAlphaWeightedWeakClassifiers(x)));
 
             private double SumAlphaWeightedWeakClassifiers(T x)
-            {
-                return m_weakClassifiers.Sum(c => c.Alpha * (c.Classifier(x) ? +1 : -1));
-            }
+                => m_weakClassifiers.Sum(c => c.Alpha * (c.Classifier(x) ? +1 : -1));
         }
 
         private struct WeightedExample<T>
@@ -165,9 +154,8 @@ namespace Aardvark.Base
 
             public WeakClassifier(double alpha, Func<T, bool> classifier)
             {
-                if (classifier == null) throw new ArgumentNullException("classifier");
                 Alpha = alpha;
-                Classifier = classifier;
+                Classifier = classifier ?? throw new ArgumentNullException("classifier");
             }
         }
     }

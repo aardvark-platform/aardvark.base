@@ -1,10 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Linq;
-using System.Text;
 
-namespace Aardvark.Base
+namespace Aardvark.Base.Sorting
 {
     // AUTO GENERATED CODE - DO NOT CHANGE!
 
