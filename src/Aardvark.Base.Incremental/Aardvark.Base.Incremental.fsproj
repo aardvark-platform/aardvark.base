@@ -99,6 +99,11 @@
       <Project>{7FEF0693-EFC3-4B85-8F42-933B25F353A8}</Project>
       <Private>False</Private>
     </ProjectReference>
+    <ProjectReference Include="..\Aardvark.Base.Algodat\Aardvark.Base.Algodat.csproj">
+      <Name>Aardvark.Base.Algodat</Name>
+      <Project>{4e3f13a0-0a96-4608-b56a-5186a64f707b}</Project>
+      <Private>True</Private>
+    </ProjectReference>
     <ProjectReference Include="..\Aardvark.Base.Extensions\Aardvark.Base.Extensions.csproj">
       <Name>Aardvark.Base.Extensions</Name>
       <Project>{430d818a-45e4-4643-9a9f-091d3ed31bc7}</Project>

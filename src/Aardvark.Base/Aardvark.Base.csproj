@@ -65,9 +65,7 @@
   <ItemGroup>
     <Compile Include="AlgoDat\ExtendedCore\BitHelpers.cs" />
     <Compile Include="AlgoDat\ExtendedCore\SortedSetExt.cs" />
-    <Compile Include="AlgoDat\LruCache.cs" />
     <None Include="Extensions\FuncActionExtensions_template.cs" />
-    <Compile Include="AlgoDat\SalesmanOfDeath.cs" />
     <Compile Include="Extensions\EnumHelpers.cs" />
     <Compile Include="Extensions\EventHandlerExtensions.cs" />
     <Compile Include="Extensions\FuncActionExtensions_auto.cs" />
@@ -88,11 +86,7 @@
     <Compile Include="Images\PixImageFreeImage.cs" />
     <Compile Include="Images\PixImageMipMap.cs" />
     <Compile Include="Images\PixImageSystemImage.cs" />
-    <Compile Include="AlgoDat\AdaBoost.cs" />
-    <Compile Include="AlgoDat\ConcurrentHashSet.cs" />
     <Compile Include="AlgoDat\Meta.cs" />
-    <Compile Include="AlgoDat\MinimumSpanningTree.cs" />
-    <Compile Include="AlgoDat\ShortestPath.cs" />
     <Compile Include="AlgoDat\SubRange.cs" />
     <Compile Include="AlgoDat\XmlParser.cs" />
     <Compile Include="Extensions\ICollectionExtensions.cs" />

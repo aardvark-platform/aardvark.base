@@ -75,6 +75,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Aardvark.Base.Rendering", "
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Aardvark.Base.Geometry", "Aardvark.Base.Geometry\Aardvark.Base.Geometry.csproj", "{1F843BA4-1FEE-4D4E-BE32-EE9701D907E1}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Aardvark.Base.Algodat", "Aardvark.Base.Algodat\Aardvark.Base.Algodat.csproj", "{4E3F13A0-0A96-4608-B56A-5186A64F707B}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -213,6 +215,10 @@ Global
 		{1F843BA4-1FEE-4D4E-BE32-EE9701D907E1}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1F843BA4-1FEE-4D4E-BE32-EE9701D907E1}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{1F843BA4-1FEE-4D4E-BE32-EE9701D907E1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4E3F13A0-0A96-4608-B56A-5186A64F707B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4E3F13A0-0A96-4608-B56A-5186A64F707B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4E3F13A0-0A96-4608-B56A-5186A64F707B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4E3F13A0-0A96-4608-B56A-5186A64F707B}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -241,6 +247,7 @@ Global
 		{9C7A35F4-06EF-431A-87AE-52B41A389F46} = {C557CE9D-81EE-4EB3-AB94-B9F9CB2FA19A}
 		{9043F49A-B08D-47AC-B804-B8455C0B1E31} = {C557CE9D-81EE-4EB3-AB94-B9F9CB2FA19A}
 		{1F843BA4-1FEE-4D4E-BE32-EE9701D907E1} = {C557CE9D-81EE-4EB3-AB94-B9F9CB2FA19A}
+		{4E3F13A0-0A96-4608-B56A-5186A64F707B} = {C557CE9D-81EE-4EB3-AB94-B9F9CB2FA19A}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {1537AED0-2BB3-4EC3-B2CB-06E22C23B002}
