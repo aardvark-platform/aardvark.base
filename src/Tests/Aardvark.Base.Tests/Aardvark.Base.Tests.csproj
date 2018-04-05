@@ -85,9 +85,9 @@
       <Project>{1f843ba4-1fee-4d4e-be32-ee9701d907e1}</Project>
       <Name>Aardvark.Base.Geometry</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\Aardvark.Base.HashCodes\Aardvark.Base.HashCodes.csproj">
+    <ProjectReference Include="..\..\Aardvark.Base.Hashing\Aardvark.Base.Hashing.csproj">
       <Project>{8fc336ea-7de8-428f-949d-3320208a5ee5}</Project>
-      <Name>Aardvark.Base.HashCodes</Name>
+      <Name>Aardvark.Base.Hashing</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\Aardvark.Base.Math\Aardvark.Base.Math.csproj">
       <Project>{caa4e460-e04b-45a4-8501-2694e61f72c9}</Project>

@@ -41,7 +41,7 @@ Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "Aardvark.Geometry", "Aardva
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Aardvark.Base.IO", "Aardvark.Base.IO\Aardvark.Base.IO.csproj", "{C2C8BA0D-992B-4BA7-8A6A-EA7A3207BBE6}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Aardvark.Base.TextParser", "Aardvark.Base.TextParser\Aardvark.Base.TextParser.csproj", "{C700FC2E-B25F-4404-9F7E-391221FBEB25}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Aardvark.Base.Text", "Aardvark.Base.Text\Aardvark.Base.Text.csproj", "{C700FC2E-B25F-4404-9F7E-391221FBEB25}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Aardvark.Base.Symbol", "Aardvark.Base.Symbol\Aardvark.Base.Symbol.csproj", "{0D5B3E80-26BD-4D67-A4DC-0DDE84C478B6}"
 EndProject
@@ -59,7 +59,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CodeGenerator", "CodeGenera
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Aardvark.Base.Tup", "Aardvark.Base.Tup\Aardvark.Base.Tup.csproj", "{E0FC963C-92E2-466F-8F38-3A12B314E394}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Aardvark.Base.HashCodes", "Aardvark.Base.HashCodes\Aardvark.Base.HashCodes.csproj", "{8FC336EA-7DE8-428F-949D-3320208A5EE5}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Aardvark.Base.Hashing", "Aardvark.Base.Hashing\Aardvark.Base.Hashing.csproj", "{8FC336EA-7DE8-428F-949D-3320208A5EE5}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Aardvark.Base.Introspection", "Aardvark.Base.Introspection\Aardvark.Base.Introspection.csproj", "{919E549B-980D-4565-B504-2D0244D23CE6}"
 EndProject

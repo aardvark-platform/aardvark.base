@@ -59,7 +59,7 @@
       <Project>{0d5b3e80-26bd-4d67-a4dc-0dde84c478b6}</Project>
       <Name>Aardvark.Base.Symbol</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Aardvark.Base.TextParser\Aardvark.Base.TextParser.csproj">
+    <ProjectReference Include="..\Aardvark.Base.Text\Aardvark.Base.Text.csproj">
       <Project>{c700fc2e-b25f-4404-9f7e-391221fbeb25}</Project>
       <Name>Aardvark.Base.TextParser</Name>
     </ProjectReference>

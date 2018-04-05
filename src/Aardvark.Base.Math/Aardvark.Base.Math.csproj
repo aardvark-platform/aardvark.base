@@ -92,7 +92,7 @@
   <ItemGroup>
     <ProjectReference Include="..\Aardvark.Base.Delegates\Aardvark.Base.Delegates.csproj" />
     <ProjectReference Include="..\Aardvark.Base.Extensions\Aardvark.Base.Extensions.csproj" />
-    <ProjectReference Include="..\Aardvark.Base.TextParser\Aardvark.Base.TextParser.csproj" />
+    <ProjectReference Include="..\Aardvark.Base.Text\Aardvark.Base.Text.csproj" />
   </ItemGroup>
 
 </Project>

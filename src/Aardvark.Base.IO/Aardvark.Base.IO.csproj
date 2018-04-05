@@ -113,9 +113,9 @@
       <Project>{1f843ba4-1fee-4d4e-be32-ee9701d907e1}</Project>
       <Name>Aardvark.Base.Geometry</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Aardvark.Base.HashCodes\Aardvark.Base.HashCodes.csproj">
+    <ProjectReference Include="..\Aardvark.Base.Hashing\Aardvark.Base.Hashing.csproj">
       <Project>{8fc336ea-7de8-428f-949d-3320208a5ee5}</Project>
-      <Name>Aardvark.Base.HashCodes</Name>
+      <Name>Aardvark.Base.Hashing</Name>
     </ProjectReference>
     <ProjectReference Include="..\Aardvark.Base.Introspection\Aardvark.Base.Introspection.csproj">
       <Project>{919e549b-980d-4565-b504-2d0244d23ce6}</Project>
@@ -133,7 +133,7 @@
       <Project>{0d5b3e80-26bd-4d67-a4dc-0dde84c478b6}</Project>
       <Name>Aardvark.Base.Symbol</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Aardvark.Base.TextParser\Aardvark.Base.TextParser.csproj">
+    <ProjectReference Include="..\Aardvark.Base.Text\Aardvark.Base.Text.csproj">
       <Project>{c700fc2e-b25f-4404-9f7e-391221fbeb25}</Project>
       <Name>Aardvark.Base.TextParser</Name>
     </ProjectReference>
@@ -147,18 +147,4 @@
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-  <Choose>
-    <When Condition="$(TargetFrameworkIdentifier) == '.NETFramework' And $(TargetFrameworkVersion) == 'v4.6.1'" />
-  </Choose>
-  <Choose>
-    <When Condition="$(TargetFrameworkIdentifier) == '.NETFramework' And $(TargetFrameworkVersion) == 'v4.6.1'">
-      <ItemGroup>
-        <Reference Include="FSharp.Core">
-          <HintPath>..\..\packages\FSharp.Core\lib\net40\FSharp.Core.dll</HintPath>
-          <Private>True</Private>
-          <Paket>True</Paket>
-        </Reference>
-      </ItemGroup>
-    </When>
-  </Choose>
 </Project>

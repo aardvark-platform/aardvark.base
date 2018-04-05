@@ -114,8 +114,8 @@
       <Project>{1f843ba4-1fee-4d4e-be32-ee9701d907e1}</Project>
       <Private>True</Private>
     </ProjectReference>
-    <ProjectReference Include="..\Aardvark.Base.HashCodes\Aardvark.Base.HashCodes.csproj">
-      <Name>Aardvark.Base.HashCodes</Name>
+    <ProjectReference Include="..\Aardvark.Base.Hashing\Aardvark.Base.Hashing.csproj">
+      <Name>Aardvark.Base.Hashing</Name>
       <Project>{8fc336ea-7de8-428f-949d-3320208a5ee5}</Project>
       <Private>True</Private>
     </ProjectReference>

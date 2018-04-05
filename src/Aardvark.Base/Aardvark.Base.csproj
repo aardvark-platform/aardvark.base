@@ -117,9 +117,9 @@
       <Project>{1f843ba4-1fee-4d4e-be32-ee9701d907e1}</Project>
       <Name>Aardvark.Base.Geometry</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Aardvark.Base.HashCodes\Aardvark.Base.HashCodes.csproj">
+    <ProjectReference Include="..\Aardvark.Base.Hashing\Aardvark.Base.Hashing.csproj">
       <Project>{8fc336ea-7de8-428f-949d-3320208a5ee5}</Project>
-      <Name>Aardvark.Base.HashCodes</Name>
+      <Name>Aardvark.Base.Hashing</Name>
     </ProjectReference>
     <ProjectReference Include="..\Aardvark.Base.Introspection\Aardvark.Base.Introspection.csproj">
       <Project>{919e549b-980d-4565-b504-2d0244d23ce6}</Project>
@@ -145,7 +145,7 @@
       <Project>{ac2e2835-64c6-4553-a613-981d6e104437}</Project>
       <Name>Aardvark.Base.Telemetry</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Aardvark.Base.TextParser\Aardvark.Base.TextParser.csproj">
+    <ProjectReference Include="..\Aardvark.Base.Text\Aardvark.Base.Text.csproj">
       <Project>{c700fc2e-b25f-4404-9f7e-391221fbeb25}</Project>
       <Name>Aardvark.Base.TextParser</Name>
     </ProjectReference>
@@ -154,7 +154,6 @@
       <Name>Aardvark.Base.Tup</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup />
   <Target Name="Package">
     <!-- Ensure the Package directory exists for this project -->
     <RemoveDir Directories="NuGet" />
