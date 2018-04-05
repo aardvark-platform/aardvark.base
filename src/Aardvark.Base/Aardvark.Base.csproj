@@ -105,8 +105,6 @@
     <Compile Include="Extensions\SystemDrawingExtensions.cs" />
     <Compile Include="Geometry\Conic2d.cs" />
     <Compile Include="Geometry\Ellipse2d.cs" />
-    <Compile Include="Geo\GeoConsts.cs" />
-    <Compile Include="Geo\GeoConversion.cs" />
     <Compile Include="Images\PixVolume.cs" />
     <Compile Include="Images\TensorExtensions.cs" />
     <None Include="Images\TensorExtensions_template.cs" />
