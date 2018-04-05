@@ -454,10 +454,10 @@ module AList =
                             cache.[i] <- (v, newList)
                             let newReader = getReader(newList)
 
-                            let add = newReader.AddTarget i
                             let rem = getReader(oldList).RemoveTarget(dirty, i)
+                            let add = newReader.AddTarget i
                             dirty.Add newReader |> ignore
-                            PDeltaList.combine add rem
+                            PDeltaList.combine rem add 
 
                     | _ ->
                         let newList = f i v
@@ -474,7 +474,7 @@ module AList =
                         cache.Remove i |> ignore
                         r.RemoveTarget(dirty, i)
                     | _ ->
-                        failwithf "[AList] cannot remove %A from outer list" i
+                        PDeltaList.empty
 
             override x.Release() =
                 mapping.Clear()

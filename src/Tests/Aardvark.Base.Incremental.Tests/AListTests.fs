@@ -152,8 +152,8 @@ module ``simple list tests`` =
         
         let rnd = new Random(1)
         for i in 0..10000 do
-            if rnd.NextDouble() < 0.2 then // rem
-                let index = rnd.Next(stuff.Count - 1)
+            if rnd.NextDouble() < 0.2 && stuff.Count > 0 then // rem
+                let index = rnd.Next(stuff.Count)
                 transact(fun () ->
                     stuff.RemoveAt(index) |> ignore
                 )
@@ -169,7 +169,7 @@ module ``simple list tests`` =
                 )
             
             if rnd.NextDouble() < 0.2 then // insert
-                let insertIndex = rnd.Next(stuff.Count - 1)
+                let insertIndex = rnd.Next(stuff.Count)
                 transact(fun () ->
                     stuff.Insert(insertIndex, rnd.Next())
                 )

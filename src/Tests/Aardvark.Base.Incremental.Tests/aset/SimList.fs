@@ -19,7 +19,7 @@ type SimListTree =
 
 and simlist<'a> =
     inherit IDependent
-    abstract member Content : plist<'a>
+    abstract member Content : list<'a>
     abstract member AList : alist<'a>
     abstract member Expression : SimListTree
 
@@ -30,23 +30,23 @@ and csimlist<'a>(initial : seq<'a>) =
 
     let id = newId()
     let clist = clist initial
-    let mutable content = PList.ofSeq initial
+    let mutable content = List.ofSeq initial
 
     member x.Name = "clist" + string id
 
-    member x.Count = content.Count
+    member x.Count = content.Length
 
     member x.Add (value : 'a) =
         clist.Append(value) |> ignore
-        content <- content |> PList.append value
+        content <- content @ [value]
         
-    member x.Remove (value : 'a) =
-        clist.Remove value |> ignore
-        content <- content.Remove value
+    member x.RemoveAt (index : int) =
+        clist.RemoveAt index |> ignore
+        content <- content |> List.indexed |> List.choose (fun (i,v) -> if i = index then None else Some v)
 
     member x.Clear() =
         clist.Clear()
-        content <- PList.empty
+        content <- []
 
     member x.Content = content
 
@@ -61,9 +61,9 @@ and csimlist<'a>(initial : seq<'a>) =
                     x.Clear()
                     return sprintf "clear"
                 elif x.Count > 0 && rand.UniformDouble() > addprob then
-                    let v = content |> Seq.item (rand.UniformInt(x.Count))
-                    x.Remove v |> ignore
-                    return sprintf "remove(%A)" v
+                    let v = rand.UniformInt(x.Count)
+                    x.RemoveAt v |> ignore
+                    return sprintf "removeAt(%A)" v
                 else
                     let! v = Arb.generate<'a>
                     x.Add v |> ignore
@@ -79,7 +79,7 @@ and csimlist<'a>(initial : seq<'a>) =
         let content = 
             clist |> Seq.truncate 8 |> Seq.map (sprintf "%A") |> String.concat "; "
         
-        "cset" + string id + " [" + content + suffix + "]"
+        "clist" + string id + " [" + content + suffix + "]"
 
     interface simlist<'a> with
         member x.Expression = Changeable x
@@ -88,7 +88,7 @@ and csimlist<'a>(initial : seq<'a>) =
 
 module SimList =
     
-    type SimList<'a> = { expression : SimListTree; inputs : unit -> hset<IChangeable>; alist : alist<'a>; content : unit -> plist<'a> } with
+    type SimList<'a> = { expression : SimListTree; inputs : unit -> hset<IChangeable>; alist : alist<'a>; content : unit -> list<'a> } with
         interface simlist<'a> with
             member x.AsString =
                 let rec toString (t : SimListTree) =
@@ -121,16 +121,16 @@ module SimList =
             expression = Constant HRefSet.empty 
             alist = AList.empty
             inputs = fun () -> HSet.empty
-            content = fun () -> PList.empty 
+            content = fun () -> []
         }
 
     let ofSeq (seq : seq<'a>) =
-        let set = PList.ofSeq seq
+        let content = List.ofSeq seq
         simlist {
-            expression = Constant set
+            expression = Constant content
             alist = AList.ofSeq seq
             inputs = fun () -> HSet.empty
-            content = fun () -> set 
+            content = fun () -> content 
         }
 
     let ofList (list : list<'a>) =
@@ -140,27 +140,30 @@ module SimList =
         ofSeq arr
 
     let map (f : 'a -> 'b) (list : simlist<'a>) =
+        let f = Cache f
         simlist { 
             expression = Map(f, list.Expression)
-            alist = AList.map f list.AList
+            alist = AList.map f.Invoke list.AList
             inputs = fun () -> list.Inputs
-            content = fun () -> PList.map f list.Content 
+            content = fun () -> List.map f.Invoke list.Content 
         }
 
     let choose (f : 'a -> Option<'b>) (list : simlist<'a>) =
+        let f = Cache f
         simlist { 
             expression = Choose(f, list.Expression)
-            alist = AList.choose f list.AList
+            alist = AList.choose f.Invoke list.AList
             inputs = fun () -> list.Inputs
-            content = fun () -> PList.choose f list.Content 
+            content = fun () -> List.choose f.Invoke list.Content 
         }
 
     let filter (f : 'a -> bool) (list : simlist<'a>) =
+        let f = Cache f
         simlist { 
             expression = Filter(f, list.Expression)
-            alist = AList.filter f list.AList
+            alist = AList.filter f.Invoke list.AList
             inputs = fun () -> list.Inputs
-            content = fun () -> PList.filter f list.Content 
+            content = fun () -> List.filter f.Invoke list.Content 
         }
 
     let collect (f : 'a -> simlist<'b>) (list : simlist<'a>) =
@@ -170,7 +173,7 @@ module SimList =
             expression = Collect(f, list.Expression)
             alist = AList.collect (f.Invoke >> alist) list.AList
             inputs = fun () -> HSet.unionMany (list.Inputs :: (list.Content |> Seq.map (fun v -> f.Invoke(v).Inputs) |> Seq.toList))
-            content = fun () -> list.Content |> Seq.collect (f.Invoke >> content) |> PList.ofSeq
+            content = fun () -> list.Content |> List.collect (f.Invoke >> content) 
         }
 
     let ofModSingle (m : simmod<'a>) =
@@ -178,7 +181,7 @@ module SimList =
             expression = OfMod m
             alist = AList.ofModSingle m.Mod
             inputs = fun () -> m.Inputs
-            content = fun () -> PList.ofList [m.Value]
+            content = fun () -> [m.Value]
         }
         
 
@@ -192,13 +195,15 @@ module SimList =
         }
 
 
-    let private checkEqual (is : plist<'a>) (should : plist<'a>) =
-        if is.Count <> should.Count then
-            failwithf "[AList] count does not match: %d should be %d" is.Count should.Count
+    let private checkEqual (is : plist<'a>) (should : list<'a>) =
+        if is.Count <> should.Length then
+            Log.error "is: %A" (PList.toList is)
+            Log.error "should: %A" should
+            failwithf "[AList] count does not match: %d should be %d" is.Count should.Length
 
         let arr1 = is |> PList.toArray
-        let arr2 = should |> PList.toArray
-        for i in 0..arr1.Length do
+        let arr2 = should |> List.toArray
+        for i in 0..arr1.Length-1 do
             let a = arr1.[i]
             let b = arr2.[i]
             if a <> b then
@@ -213,8 +218,8 @@ module SimList =
         //    failwithf "[ASet] got deltas %A but effective are %A" is should
         ()
 
-    let validator (set : simlist<'a>) =
-        let reader = set.AList.GetReader()
+    let validator (list : simlist<'a>) =
+        let reader = list.AList.GetReader()
 
         { new IValidator with
             member x.Validate(log) = 
@@ -222,7 +227,7 @@ module SimList =
                     let alistOldState = reader.State
                     let alistOps = reader.GetOperations(AdaptiveToken.Top)
                     let alistState = reader.State
-                    let simState = set.Content
+                    let simState = list.Content
 
                     checkEqual alistState simState
 
@@ -243,7 +248,7 @@ module SimList =
         }
 
 type SimListGenerator() =
-    static let rand = RandomSystem()
+    static let rand = RandomSystem(2)
 
     static member SimList() =
         { new Arbitrary<simlist<'a>>() with
