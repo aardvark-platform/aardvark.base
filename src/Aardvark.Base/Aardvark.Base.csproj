@@ -90,7 +90,6 @@
     <Compile Include="Images\PixImageSystemImage.cs" />
     <Compile Include="AlgoDat\AdaBoost.cs" />
     <Compile Include="AlgoDat\ConcurrentHashSet.cs" />
-    <Compile Include="AlgoDat\IGenerational.cs" />
     <Compile Include="AlgoDat\Meta.cs" />
     <Compile Include="AlgoDat\MinimumSpanningTree.cs" />
     <Compile Include="AlgoDat\ShortestPath.cs" />
