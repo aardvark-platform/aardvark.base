@@ -89,6 +89,10 @@
       <Project>{f4d5431a-43a4-4fba-b352-421ec359d03c}</Project>
       <Name>Aardvark.Base.Reporting</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\Aardvark.Base.Sorting\Aardvark.Base.Sorting.csproj">
+      <Project>{59dcc8ab-aeea-4134-8f46-d99afd4216a5}</Project>
+      <Name>Aardvark.Base.Sorting</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\Aardvark.Base.Symbol\Aardvark.Base.Symbol.csproj">
       <Project>{0d5b3e80-26bd-4d67-a4dc-0dde84c478b6}</Project>
       <Name>Aardvark.Base.Symbol</Name>

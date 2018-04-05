@@ -73,7 +73,6 @@
     <Compile Include="Extensions\EventHandlerExtensions.cs" />
     <Compile Include="Extensions\FuncActionExtensions_auto.cs" />
     <Compile Include="Extensions\ArrayExtensions.cs" />
-    <None Include="Extensions\FuncActionExtensions_generator.cs" />
     <Compile Include="Extensions\IEnumerableExtensions.cs" />
     <Compile Include="Extensions\ListExtensions.cs" />
     <Compile Include="Extensions\VariousExtensions.cs" />
@@ -207,8 +206,6 @@
     <Compile Include="Vectors\Vector_auto.cs" />
     <None Include="Vectors\Vector_template.cs" />
     <Compile Include="AlgoDat\Requires.cs" />
-    <Compile Include="AlgoDat\Sorting_auto.cs" />
-    <None Include="AlgoDat\Sorting_template.cs" />
     <Compile Include="AlgoDat\Structs.cs" />
     <Compile Include="Extensions\DictionaryExtensions.cs" />
     <Compile Include="Extensions\FuncActionExtensions.cs" />
@@ -281,6 +278,10 @@
     <ProjectReference Include="..\Aardvark.Base.Reporting\Aardvark.Base.Reporting.csproj">
       <Project>{f4d5431a-43a4-4fba-b352-421ec359d03c}</Project>
       <Name>Aardvark.Base.Reporting</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Aardvark.Base.Sorting\Aardvark.Base.Sorting.csproj">
+      <Project>{59dcc8ab-aeea-4134-8f46-d99afd4216a5}</Project>
+      <Name>Aardvark.Base.Sorting</Name>
     </ProjectReference>
     <ProjectReference Include="..\Aardvark.Base.Symbol\Aardvark.Base.Symbol.csproj">
       <Project>{0d5b3e80-26bd-4d67-a4dc-0dde84c478b6}</Project>
