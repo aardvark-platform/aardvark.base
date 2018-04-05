@@ -864,7 +864,7 @@ namespace Aardvark.Base
         public PixImage(PixImageInfo info)
             : this(info.Format.Format, info.Size)
         {
-            Requires.That(info.Format.Type == typeof(T), "Attempt to create Piximage from PixImageInfo with different Type T.");
+            if (info.Format.Type != typeof(T)) throw new Exception("Attempt to create PixImage from PixImageInfo with different Type T.");
         }
 
         /// <summary>
@@ -1287,7 +1287,7 @@ namespace Aardvark.Base
                 V2d scaleFactor,
                 ImageInterpolation ip = ImageInterpolation.Cubic)
         {
-            Requires.That(scaleFactor.X > 0.0 && scaleFactor.Y > 0.0);
+            if (!(scaleFactor.X > 0.0 && scaleFactor.Y > 0.0)) throw new ArgumentOutOfRangeException(nameof(scaleFactor));
 
             // SuperSample is only available for scale factors < 1; fall back to Cubic
             if ((scaleFactor.X >= 1.0 || scaleFactor.Y >= 1.0) && ip == ImageInterpolation.SuperSample)
@@ -1599,7 +1599,7 @@ namespace Aardvark.Base
         {
             get
             {
-                Requires.That(Volume.HasImageLayout());
+                if (!Volume.HasImageLayout()) throw new ArgumentException(nameof(Volume));
                 return Volume.Data;
             }
         }

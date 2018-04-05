@@ -1,12 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using static Aardvark.Base.HashCode;
+﻿using static Aardvark.Base.HashCode;
+using static System.Math;
 
 namespace Aardvark.Base
 {
-    public static class HashCode_
+    public static class VectorHashCodeExtensions
     {
         /// <summary>
         /// Compute the first of four possible hashcodes for hashing in a 2-D
@@ -15,8 +12,8 @@ namespace Aardvark.Base
         /// </summary>
         public static int Get1of4(V2d point)
         {
-            var xi = (long)System.Math.Floor(point.X);
-            var yi = (long)System.Math.Floor(point.Y);
+            var xi = (long)Floor(point.X);
+            var yi = (long)Floor(point.Y);
 
             return Combine((int)(xi >> 1), (int)(yi >> 1));
         }
@@ -29,8 +26,8 @@ namespace Aardvark.Base
         /// </summary>
         public static void Get4(V2d point, int[] hca)
         {
-            var xi = (long)System.Math.Floor(point.X);
-            var yi = (long)System.Math.Floor(point.Y);
+            var xi = (long)Floor(point.X);
+            var yi = (long)Floor(point.Y);
 
             int xh0 = (int)(xi >> 1), xh1 = xh0 - 1 + ((int)(xi & 1) << 1);
             int yh0 = (int)(yi >> 1), yh1 = yh0 - 1 + ((int)(yi & 1) << 1);
@@ -48,9 +45,9 @@ namespace Aardvark.Base
         /// </summary>
         public static int Get1of8(V3d point)
         {
-            var xi = (long)System.Math.Floor(point.X);
-            var yi = (long)System.Math.Floor(point.Y);
-            var zi = (long)System.Math.Floor(point.Z);
+            var xi = (long)Floor(point.X);
+            var yi = (long)Floor(point.Y);
+            var zi = (long)Floor(point.Z);
 
             return Combine((int)(xi >> 1), (int)(yi >> 1), (int)(zi >> 1));
         }
@@ -63,9 +60,9 @@ namespace Aardvark.Base
         /// </summary>
         public static void Get8(V3d point, int[] hca)
         {
-            var xi = (long)System.Math.Floor(point.X);
-            var yi = (long)System.Math.Floor(point.Y);
-            var zi = (long)System.Math.Floor(point.Z);
+            var xi = (long)Floor(point.X);
+            var yi = (long)Floor(point.Y);
+            var zi = (long)Floor(point.Z);
 
             int xh0 = (int)(xi >> 1), xh1 = xh0 - 1 + ((int)(xi & 1) << 1);
             int yh0 = (int)(yi >> 1), yh1 = yh0 - 1 + ((int)(yi & 1) << 1);
@@ -88,10 +85,10 @@ namespace Aardvark.Base
         /// </summary>
         public static int Get1of16(V4d point)
         {
-            var xi = (long)System.Math.Floor(point.X);
-            var yi = (long)System.Math.Floor(point.Y);
-            var zi = (long)System.Math.Floor(point.Z);
-            var wi = (long)System.Math.Floor(point.W);
+            var xi = (long)Floor(point.X);
+            var yi = (long)Floor(point.Y);
+            var zi = (long)Floor(point.Z);
+            var wi = (long)Floor(point.W);
 
             return Combine((int)(xi >> 1), (int)(yi >> 1), (int)(zi >> 1), (int)(wi >> 1));
         }
@@ -104,10 +101,10 @@ namespace Aardvark.Base
         /// </summary>
         public static void Get16(V4d point, int[] hca)
         {
-            var xi = (long)System.Math.Floor(point.X);
-            var yi = (long)System.Math.Floor(point.Y);
-            var zi = (long)System.Math.Floor(point.Z);
-            var wi = (long)System.Math.Floor(point.W);
+            var xi = (long)Floor(point.X);
+            var yi = (long)Floor(point.Y);
+            var zi = (long)Floor(point.Z);
+            var wi = (long)Floor(point.W);
 
             int xh0 = (int)(xi >> 1), xh1 = xh0 - 1 + ((int)(xi & 1) << 1);
             int yh0 = (int)(yi >> 1), yh1 = yh0 - 1 + ((int)(yi & 1) << 1);

@@ -65,7 +65,6 @@
   <ItemGroup>
     <Compile Include="AlgoDat\ExtendedCore\BitHelpers.cs" />
     <Compile Include="AlgoDat\ExtendedCore\SortedSetExt.cs" />
-    <Compile Include="AlgoDat\HashCode.cs" />
     <Compile Include="AlgoDat\LruCache.cs" />
     <None Include="Extensions\FuncActionExtensions_template.cs" />
     <Compile Include="AlgoDat\SalesmanOfDeath.cs" />
@@ -108,7 +107,6 @@
     <Compile Include="Images\TensorExtensions_auto.cs" />
     <None Include="paket.references" />
     <None Include="paket.template" />
-    <Compile Include="AlgoDat\Requires.cs" />
     <Compile Include="AlgoDat\Structs.cs" />
     <Compile Include="Extensions\DictionaryExtensions.cs" />
     <Compile Include="Extensions\FuncActionExtensions.cs" />
@@ -165,9 +163,7 @@
       <Name>Aardvark.Base.Tup</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Runtime\" />
-  </ItemGroup>
+  <ItemGroup />
   <Target Name="Package">
     <!-- Ensure the Package directory exists for this project -->
     <RemoveDir Directories="NuGet" />

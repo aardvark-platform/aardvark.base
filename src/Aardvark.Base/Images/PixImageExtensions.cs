@@ -83,7 +83,7 @@ namespace Aardvark.Base
 
         public static Matrix<byte> ToBlackAndWhiteMatrix(this PixImage<byte> pixImage, int threshold)
         {
-            Requires.That(pixImage.ChannelCount == 1);
+            if (pixImage.ChannelCount != 1) throw new ArgumentOutOfRangeException(nameof(pixImage.ChannelCount));
             return pixImage.GetChannel(Col.Channel.Gray).MapWindow<byte>(b => (byte)(b < threshold ? 0 : 255));
         }
 

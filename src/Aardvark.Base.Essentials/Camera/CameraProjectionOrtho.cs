@@ -40,7 +40,7 @@ namespace Aardvark.Base
             get { return m_box.Min.Z; }
             set
             {
-                Requires.That(value > 0.0 && value < Far);
+                if (!(value > 0.0 && value < Far)) throw new ArgumentOutOfRangeException();
                 m_box.Min.Z = value;
                 UpdateProjectionTrafo();
             }
@@ -51,7 +51,7 @@ namespace Aardvark.Base
             get { return m_box.Max.Z; }
             set
             {
-                Requires.That(value > 0.0 && value > Near);
+                if (!(value > 0.0 && value > Near)) throw new ArgumentOutOfRangeException();
                 m_box.Max.Z = value;
                 UpdateProjectionTrafo();
             }
@@ -62,7 +62,7 @@ namespace Aardvark.Base
             get { return m_box.XY; }
             set
             {
-                Requires.That(m_box.IsValid);
+                if (m_box.IsInvalid) throw new ArgumentOutOfRangeException();
                 m_box.Min.X = value.Min.X;
                 m_box.Min.Y = value.Min.Y;
                 m_box.Max.X = value.Max.X;
@@ -79,7 +79,7 @@ namespace Aardvark.Base
             }
             set
             {
-                Requires.That(value > 0.0);
+                if (value <= 0.0) throw new ArgumentOutOfRangeException();
                 var w = m_box.Max.X - m_box.Min.X;
                 var hOld = m_box.Max.Y - m_box.Min.Y;
                 var hNew = w / value;

@@ -31,7 +31,7 @@ namespace Aardvark.Tests.Plane
             var projectedPoint2 = planeTrafo.Backward.TransformPos(testPoint).Func(x => x.XY);
             var unprojectedPoint2 = planeTrafo.Forward.TransformPos(projectedPoint2.Func(x => x.XYO));
 
-            Requires.That((unprojectedPoint - unprojectedPoint2).Length < 0.01);
+            if (!((unprojectedPoint - unprojectedPoint2).Length < 0.01)) throw new Exception();
         }
     }
 }

@@ -19,7 +19,7 @@ namespace Aardvark.Base
             )
             where TWeight : IComparable<TWeight>
         {
-            Requires.NotNull(edges);
+            if (edges is null) throw new ArgumentNullException(nameof(edges));
 
             Report.BeginTimed("create vertex set");
             var vertexSet = new HashSet<TVertex>(edges.SelectMany(e => e.E0));
