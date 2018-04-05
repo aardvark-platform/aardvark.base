@@ -119,12 +119,6 @@
     <Compile Include="Math\Statistics.cs" />
     <None Include="paket.references" />
     <None Include="paket.template" />
-    <Compile Include="Rendering\BlendMode.cs" />
-    <Compile Include="Rendering\DepthTestMode.cs" />
-    <Compile Include="Rendering\Modes.cs" />
-    <Compile Include="Rendering\RasterizerState.cs" />
-    <Compile Include="Rendering\SamplerState.cs" />
-    <Compile Include="Rendering\StencilMode.cs" />
     <Compile Include="AlgoDat\Requires.cs" />
     <Compile Include="AlgoDat\Structs.cs" />
     <Compile Include="Extensions\DictionaryExtensions.cs" />
