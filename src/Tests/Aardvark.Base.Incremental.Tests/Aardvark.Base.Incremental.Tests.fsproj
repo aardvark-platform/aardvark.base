@@ -64,6 +64,7 @@
     <Compile Include="aset\SimMod.fs" />
     <Compile Include="aset\SimSet.fs" />
     <Compile Include="aset\SimMap.fs" />
+	<Compile Include="aset\SimList.fs" />
     <Compile Include="AdaptiveSetReference.fs" />
     <Compile Include="ASetUtilities.fs" />
     <Compile Include="ModTests.fs" />
