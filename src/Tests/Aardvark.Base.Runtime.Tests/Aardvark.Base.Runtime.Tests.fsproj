@@ -93,6 +93,11 @@
       <Project>{9623ae28-1f72-46e9-a3a7-85fc1a321a73}</Project>
       <Private>True</Private>
     </ProjectReference>
+    <ProjectReference Include="..\..\Aardvark.Base.Introspection\Aardvark.Base.Introspection.csproj">
+      <Name>Aardvark.Base.Introspection</Name>
+      <Project>{919e549b-980d-4565-b504-2d0244d23ce6}</Project>
+      <Private>True</Private>
+    </ProjectReference>
     <ProjectReference Include="..\..\Aardvark.Base.Reporting\Aardvark.Base.Reporting.csproj">
       <Name>Aardvark.Base.Reporting</Name>
       <Project>{f4d5431a-43a4-4fba-b352-421ec359d03c}</Project>

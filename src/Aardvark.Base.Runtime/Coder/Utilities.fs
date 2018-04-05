@@ -142,9 +142,8 @@ module OverloadResolution =
 
     let private extensions =
         Introspection.GetAllMethodsWithAttribute<ExtensionAttribute>()
-            |> Seq.choose (fun t ->
-                let meth = t.E0
-                
+            |> Seq.choose (fun struct (meth, _) ->
+
                 let parameterTypes = meth.GetParameters() |> Array.map (fun p -> p.ParameterType)
                 
                 if parameterTypes.Length > 0 then

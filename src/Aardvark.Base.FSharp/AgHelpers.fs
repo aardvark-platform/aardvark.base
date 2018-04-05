@@ -335,8 +335,8 @@ module internal AgHelpers =
             //Aardvark.Base.Report.BeginTimed "initializing attribute grammar"
             registered.Value <- true 
 
-            for t in Introspection.GetAllTypesWithAttribute<'semanticType>() do
-                register t.E0
+            for struct (t, _) in Introspection.GetAllTypesWithAttribute<'semanticType>() do
+                register t
 
             //AppDomain.CurrentDomain.AssemblyLoad.Add(
             //    fun loadArgs ->

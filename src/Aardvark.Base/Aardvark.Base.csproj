@@ -150,7 +150,6 @@
     <Compile Include="Rendering\RasterizerState.cs" />
     <Compile Include="Rendering\SamplerState.cs" />
     <Compile Include="Rendering\StencilMode.cs" />
-    <Compile Include="Runtime\Introspection.cs" />
     <Compile Include="Tensors\Accessors.cs" />
     <Compile Include="Tensors\Accessors_auto.cs" />
     <None Include="Tensors\Accessors_template.cs" />
@@ -275,6 +274,10 @@
       <Project>{8fc336ea-7de8-428f-949d-3320208a5ee5}</Project>
       <Name>Aardvark.Base.HashCodes</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Aardvark.Base.Introspection\Aardvark.Base.Introspection.csproj">
+      <Project>{919e549b-980d-4565-b504-2d0244d23ce6}</Project>
+      <Name>Aardvark.Base.Introspection</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Aardvark.Base.Reporting\Aardvark.Base.Reporting.csproj">
       <Project>{f4d5431a-43a4-4fba-b352-421ec359d03c}</Project>
       <Name>Aardvark.Base.Reporting</Name>
@@ -295,6 +298,9 @@
       <Project>{e0fc963c-92e2-466f-8f38-3a12b314e394}</Project>
       <Name>Aardvark.Base.Tup</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Runtime\" />
   </ItemGroup>
   <Target Name="Package">
     <!-- Ensure the Package directory exists for this project -->

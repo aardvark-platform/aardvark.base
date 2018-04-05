@@ -113,6 +113,10 @@
       <Project>{8fc336ea-7de8-428f-949d-3320208a5ee5}</Project>
       <Name>Aardvark.Base.HashCodes</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Aardvark.Base.Introspection\Aardvark.Base.Introspection.csproj">
+      <Project>{919e549b-980d-4565-b504-2d0244d23ce6}</Project>
+      <Name>Aardvark.Base.Introspection</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Aardvark.Base.Reporting\Aardvark.Base.Reporting.csproj">
       <Project>{f4d5431a-43a4-4fba-b352-421ec359d03c}</Project>
       <Name>Aardvark.Base.Reporting</Name>

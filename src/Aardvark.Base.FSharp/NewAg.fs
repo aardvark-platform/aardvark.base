@@ -193,8 +193,8 @@ module NewAg =
     let init() =
         let types = Introspection.GetAllTypesWithAttribute<Semantic>()
 
-        for t in types do
-            let methods = t.E0.GetMethods(BindingFlags.Public ||| BindingFlags.Instance)
+        for struct (t, _) in types do
+            let methods = t.GetMethods(BindingFlags.Public ||| BindingFlags.Instance)
 
             for m in methods do
                 let parameters = m.GetParameters()

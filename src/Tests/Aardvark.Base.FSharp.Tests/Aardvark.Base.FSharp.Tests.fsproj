@@ -84,6 +84,11 @@
       <Project>{692a3617-719b-4ea2-abc1-407ae20094ae}</Project>
       <Private>True</Private>
     </ProjectReference>
+    <ProjectReference Include="..\..\Aardvark.Base.Introspection\Aardvark.Base.Introspection.csproj">
+      <Name>Aardvark.Base.Introspection</Name>
+      <Project>{919e549b-980d-4565-b504-2d0244d23ce6}</Project>
+      <Private>True</Private>
+    </ProjectReference>
     <ProjectReference Include="..\..\Aardvark.Base.TypeProviders\Aardvark.Base.TypeProviders.fsproj">
       <Name>Aardvark.Base.TypeProviders</Name>
       <Project>{8bfea4ef-bf0a-4c1a-b7ac-cbdd930306fd}</Project>
