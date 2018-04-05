@@ -76,7 +76,6 @@
     <Compile Include="Extensions\IEnumerableExtensions.cs" />
     <Compile Include="Extensions\ListExtensions.cs" />
     <Compile Include="Extensions\VariousExtensions.cs" />
-    <Compile Include="Geometry\Camera.cs" />
     <Compile Include="Images\EdgeFilter.cs" />
     <Compile Include="Images\ImageLoadException.cs" />
     <Compile Include="Images\IPix.cs" />
@@ -103,8 +102,6 @@
     <Compile Include="Extensions\ICollectionExtensions.cs" />
     <Compile Include="Extensions\IListExtensions.cs" />
     <Compile Include="Extensions\SystemDrawingExtensions.cs" />
-    <Compile Include="Geometry\Conic2d.cs" />
-    <Compile Include="Geometry\Ellipse2d.cs" />
     <Compile Include="Images\PixVolume.cs" />
     <Compile Include="Images\TensorExtensions.cs" />
     <None Include="Images\TensorExtensions_template.cs" />
@@ -123,36 +120,6 @@
     <Compile Include="AlgoDat\Structs.cs" />
     <Compile Include="Extensions\DictionaryExtensions.cs" />
     <Compile Include="Extensions\FuncActionExtensions.cs" />
-    <Compile Include="Geometry\Algorithms.cs" />
-    <Compile Include="Geometry\Capsule3d.cs" />
-    <Compile Include="Geometry\Circle2d.cs" />
-    <Compile Include="Geometry\Circle3d.cs" />
-    <Compile Include="Geometry\ClippingFunctions.cs" />
-    <Compile Include="Geometry\Cone3d.cs" />
-    <Compile Include="Geometry\Cylinder3d.cs" />
-    <Compile Include="Geometry\Ellipse3d.cs" />
-    <Compile Include="Geometry\Geometry_auto.cs" />
-    <None Include="Geometry\Geometry_template.cs" />
-    <Compile Include="Geometry\Hull2d.cs" />
-    <Compile Include="Geometry\Hull3d.cs" />
-    <Compile Include="Geometry\IntersectionTests.cs" />
-    <Compile Include="Geometry\Line2d.cs" />
-    <Compile Include="Geometry\Line3d.cs" />
-    <Compile Include="Geometry\Plane2d.cs" />
-    <Compile Include="Geometry\Plane3d.cs" />
-    <Compile Include="Geometry\Polygon2d.cs" />
-    <Compile Include="Geometry\Polygon3d.cs" />
-    <Compile Include="Geometry\PolygonExtensions.cs" />
-    <Compile Include="Geometry\Quad2d.cs" />
-    <Compile Include="Geometry\Quad3d.cs" />
-    <Compile Include="Geometry\Ray2d.cs" />
-    <Compile Include="Geometry\Ray3d.cs" />
-    <Compile Include="Geometry\Relations.cs" />
-    <Compile Include="Geometry\SpecialPoints.cs" />
-    <Compile Include="Geometry\Sphere3d.cs" />
-    <Compile Include="Geometry\Torus3d.cs" />
-    <Compile Include="Geometry\Triangle2d.cs" />
-    <Compile Include="Geometry\Triangle3d.cs" />
     <Compile Include="Math\Adler32.cs" />
     <Compile Include="Math\Curves.cs" />
     <Compile Include="Math\Interfaces.cs" />
@@ -168,6 +135,10 @@
     <ProjectReference Include="..\Aardvark.Base.Extensions\Aardvark.Base.Extensions.csproj">
       <Project>{430d818a-45e4-4643-9a9f-091d3ed31bc7}</Project>
       <Name>Aardvark.Base.Extensions</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Aardvark.Base.Geometry\Aardvark.Base.Geometry.csproj">
+      <Project>{1f843ba4-1fee-4d4e-be32-ee9701d907e1}</Project>
+      <Name>Aardvark.Base.Geometry</Name>
     </ProjectReference>
     <ProjectReference Include="..\Aardvark.Base.HashCodes\Aardvark.Base.HashCodes.csproj">
       <Project>{8fc336ea-7de8-428f-949d-3320208a5ee5}</Project>

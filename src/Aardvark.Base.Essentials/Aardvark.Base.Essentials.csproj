@@ -93,6 +93,10 @@
       <Project>{430d818a-45e4-4643-9a9f-091d3ed31bc7}</Project>
       <Name>Aardvark.Base.Extensions</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Aardvark.Base.Geometry\Aardvark.Base.Geometry.csproj">
+      <Project>{1f843ba4-1fee-4d4e-be32-ee9701d907e1}</Project>
+      <Name>Aardvark.Base.Geometry</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Aardvark.Base.Math\Aardvark.Base.Math.csproj">
       <Project>{caa4e460-e04b-45a4-8501-2694e61f72c9}</Project>
       <Name>Aardvark.Base.Math</Name>

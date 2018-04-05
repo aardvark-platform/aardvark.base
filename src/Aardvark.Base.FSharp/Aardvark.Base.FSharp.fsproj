@@ -133,6 +133,11 @@
       <Project>{430d818a-45e4-4643-9a9f-091d3ed31bc7}</Project>
       <Private>True</Private>
     </ProjectReference>
+    <ProjectReference Include="..\Aardvark.Base.Geometry\Aardvark.Base.Geometry.csproj">
+      <Name>Aardvark.Base.Geometry</Name>
+      <Project>{1f843ba4-1fee-4d4e-be32-ee9701d907e1}</Project>
+      <Private>True</Private>
+    </ProjectReference>
     <ProjectReference Include="..\Aardvark.Base.HashCodes\Aardvark.Base.HashCodes.csproj">
       <Name>Aardvark.Base.HashCodes</Name>
       <Project>{8fc336ea-7de8-428f-949d-3320208a5ee5}</Project>
