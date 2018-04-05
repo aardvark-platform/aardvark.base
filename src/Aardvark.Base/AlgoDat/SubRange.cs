@@ -1,11 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
 namespace Aardvark.Base
 {
-
     /// <summary>
     /// A SubRange is an IList that servers as a window into other ILists.
     /// </summary>
@@ -126,7 +123,5 @@ namespace Aardvark.Base
         }
 
         #endregion
-
     }
-
 }

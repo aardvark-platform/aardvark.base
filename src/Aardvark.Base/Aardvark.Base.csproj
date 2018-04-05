@@ -95,8 +95,6 @@
     <Compile Include="AlgoDat\MinimumSpanningTree.cs" />
     <Compile Include="AlgoDat\ShortestPath.cs" />
     <Compile Include="AlgoDat\SubRange.cs" />
-    <Compile Include="AlgoDat\SymMapBase.cs" />
-    <Compile Include="AlgoDat\SymMapBaseTraversal.cs" />
     <Compile Include="AlgoDat\XmlParser.cs" />
     <Compile Include="Extensions\ICollectionExtensions.cs" />
     <Compile Include="Extensions\IListExtensions.cs" />
