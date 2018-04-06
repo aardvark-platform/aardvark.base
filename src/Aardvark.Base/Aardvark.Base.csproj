@@ -65,42 +65,26 @@
   <ItemGroup>
     <Compile Include="AlgoDat\ExtendedCore\BitHelpers.cs" />
     <Compile Include="AlgoDat\ExtendedCore\SortedSetExt.cs" />
-    <None Include="Extensions\FuncActionExtensions_template.cs" />
     <Compile Include="Extensions\EnumHelpers.cs" />
-    <Compile Include="Extensions\EventHandlerExtensions.cs" />
-    <Compile Include="Extensions\FuncActionExtensions_auto.cs" />
     <Compile Include="Extensions\ArrayExtensions.cs" />
+    <Compile Include="Extensions\FuncActionExtensions.cs" />
+    <Compile Include="Extensions\FuncActionExtensions_auto.cs" />
+    <None Include="Extensions\FuncActionExtensions_template.cs" />
     <Compile Include="Extensions\IEnumerableExtensions.cs" />
+    <Compile Include="Extensions\IListExtensions.cs" />
     <Compile Include="Extensions\ListExtensions.cs" />
-    <Compile Include="Extensions\VariousExtensions.cs" />
-    <Compile Include="Images\EdgeFilter.cs" />
-    <Compile Include="Images\ImageLoadException.cs" />
-    <Compile Include="Images\IPix.cs" />
-    <Compile Include="Images\IPixImage.cs" />
-    <Compile Include="Images\PixImage.cs" />
     <Compile Include="Images\PixImageBitmap.cs" />
-    <Compile Include="Images\PixImageCreators.cs" />
-    <Compile Include="Images\PixImageCube.cs" />
     <Compile Include="Images\PixImageDevil.cs" />
-    <Compile Include="Images\PixImageExtensions.cs" />
     <Compile Include="Images\PixImageFreeImage.cs" />
-    <Compile Include="Images\PixImageMipMap.cs" />
     <Compile Include="Images\PixImageSystemImage.cs" />
     <Compile Include="AlgoDat\Meta.cs" />
     <Compile Include="AlgoDat\SubRange.cs" />
     <Compile Include="AlgoDat\XmlParser.cs" />
-    <Compile Include="Extensions\ICollectionExtensions.cs" />
-    <Compile Include="Extensions\IListExtensions.cs" />
     <Compile Include="Extensions\SystemDrawingExtensions.cs" />
-    <Compile Include="Images\PixVolume.cs" />
-    <Compile Include="Images\TensorExtensions.cs" />
-    <None Include="Images\TensorExtensions_template.cs" />
-    <Compile Include="Images\TensorExtensions_auto.cs" />
     <None Include="paket.references" />
     <None Include="paket.template" />
     <Compile Include="AlgoDat\Structs.cs" />
     <Compile Include="Extensions\DictionaryExtensions.cs" />
-    <Compile Include="Extensions\FuncActionExtensions.cs" />
     <Compile Include="Math\Interfaces.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
@@ -120,6 +104,10 @@
     <ProjectReference Include="..\Aardvark.Base.Hashing\Aardvark.Base.Hashing.csproj">
       <Project>{8fc336ea-7de8-428f-949d-3320208a5ee5}</Project>
       <Name>Aardvark.Base.Hashing</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Aardvark.Base.Images\Aardvark.Base.Images.csproj">
+      <Project>{839e595c-0771-40bd-b17d-32288a2f558d}</Project>
+      <Name>Aardvark.Base.Images</Name>
     </ProjectReference>
     <ProjectReference Include="..\Aardvark.Base.Introspection\Aardvark.Base.Introspection.csproj">
       <Project>{919e549b-980d-4565-b504-2d0244d23ce6}</Project>

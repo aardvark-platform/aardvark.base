@@ -11,8 +11,7 @@ namespace Aardvark.Base
         {
             if (!enumType.IsEnum) throw new ArgumentException(nameof(enumType));
 
-            Dict<long, Pair<object>> neighbourValuesDict;
-            if (!s_neighbourValuesDicts.TryGetValue(enumType, out neighbourValuesDict))
+            if (!s_neighbourValuesDicts.TryGetValue(enumType, out Dict<long, Pair<object>> neighbourValuesDict))
             {
                 var values = (T[])Enum.GetValues(enumType);
 
@@ -38,8 +37,7 @@ namespace Aardvark.Base
             var neighbourValuesDict = GetNeighbourValuesDict<T>(typeof(T));
 
             var intValue = Convert.ToInt64(enumValue);
-            Pair<object> result;
-            neighbourValuesDict.TryGetValue(intValue, out result);
+            neighbourValuesDict.TryGetValue(intValue, out Pair<object> result);
             return (T)result.E0;
         }
 
@@ -52,8 +50,7 @@ namespace Aardvark.Base
             var neighbourValuesDict = GetNeighbourValuesDict<T>(typeof(T));
 
             var intValue = Convert.ToInt64(enumValue);
-            Pair<object> result;
-            neighbourValuesDict.TryGetValue(intValue, out result);
+            neighbourValuesDict.TryGetValue(intValue, out Pair<object> result);
             return (T)result.E1;
         }
 

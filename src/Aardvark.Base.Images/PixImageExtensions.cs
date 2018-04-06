@@ -1,39 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
 
 namespace Aardvark.Base
 {
     public static class PixImageExtensions
     {
-        //#region Initialization
-
-        //private static bool s_isInitialized = false;
-
-        //internal static void Init()
-        //{
-        //    if (s_isInitialized) return;
-        //    s_isInitialized = true;
-        //    TypeInfo.Add(new[]
-        //    {
-        //        new PixImage<byte>().GetType(),
-        //        new PixImage<ushort>().GetType(),
-        //        new PixImage<uint>().GetType(),
-        //        new PixImage<float>().GetType(),
-        //        new PixImage<double>().GetType(),
-
-        //        new PixVolume<byte>().GetType(),
-        //        new PixVolume<ushort>().GetType(),
-        //        new PixVolume<uint>().GetType(),
-        //        new PixVolume<float>().GetType(),
-        //        new PixVolume<double>().GetType(),
-        //    });
-        //}
-
-        //#endregion
-
         #region IPixImage2d Extensions
 
         public static PixImage<T> ToPixImage<T>(this IPixImage2d image)
@@ -253,28 +223,5 @@ namespace Aardvark.Base
         }
 
         #endregion
-
-        //#region Gradients on PixImage
-
-        ///// <summary>
-        ///// Wrapper function for gradient-computation on images.
-        ///// </summary>
-        //public static Pair<PixImage<float>> ComputeGradients(
-        //        this PixImage<float> src, EdgeFilter filterType)
-        //{
-        //    return src.Volume.ComputeGradients(filterType).Copy(iv => iv.ToPixImage());
-        //}
-
-        ///// <summary>
-        ///// Compute gradient magnitudes from x and y gradients.
-        ///// </summary>
-        ///// <param name="gradXY">E0 contains x gradients, E1 contains y gradients</param>
-        //public static PixImage<float> GradientMagnitude(
-        //        this Pair<PixImage<float>> gradXY)
-        //{
-        //    return gradXY.Copy(pi => pi.Volume).GradientMagnitude().ToPixImage();
-        //}
-
-        //#endregion
     }
 }

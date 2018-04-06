@@ -11,7 +11,6 @@ namespace Aardvark.Base
     /// </summary>
     public static partial class TensorExtensions
     {
-
         #region Image Scaling
 
         //# var intConfigs = new []

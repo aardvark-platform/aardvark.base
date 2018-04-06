@@ -10,7 +10,7 @@ using DevILSharp;
 
 namespace Aardvark.Base
 {
-    public abstract partial class PixImage
+    public abstract class PixImageDevil : PixImage
     {
         private static object s_devilLock = new object();
         private static bool s_initialized = false;
@@ -29,7 +29,7 @@ namespace Aardvark.Base
             IL.Enable(EnableCap.ConvertPalette);
         }
 
-        static PixImage()
+        static PixImageDevil()
         {
             InitDevil();
         }
@@ -45,8 +45,7 @@ namespace Aardvark.Base
             {Devil.ChannelFormat.RGB, Col.Format.RGB},
             {Devil.ChannelFormat.RGBA, Col.Format.RGBA},
         };
-
-
+        
         private static Dictionary<Devil.ChannelType, Type> s_pixDataTypes = new Dictionary<Devil.ChannelType, Type>()
         {
             {Devil.ChannelType.Byte, typeof(sbyte)},
@@ -58,8 +57,7 @@ namespace Aardvark.Base
             {Devil.ChannelType.Float, typeof(float)},
             {Devil.ChannelType.Double, typeof(double)},
         };
-
-
+        
         private static Dictionary<Type, Devil.ChannelType> s_devilDataTypes = new Dictionary<Type, Devil.ChannelType>()
         {
             {typeof(sbyte), Devil.ChannelType.Byte},
@@ -71,8 +69,7 @@ namespace Aardvark.Base
             {typeof(float), Devil.ChannelType.Float},
             {typeof(double), Devil.ChannelType.Double},
         };
-
-
+        
         private static Dictionary<Col.Format, Devil.ChannelFormat> s_devilColorFormats = new Dictionary<Col.Format, Devil.ChannelFormat>()
         {
             { Col.Format.RGB, Devil.ChannelFormat.RGB },
@@ -82,9 +79,7 @@ namespace Aardvark.Base
             { Col.Format.Gray, Devil.ChannelFormat.Luminance },
             { Col.Format.GrayAlpha, Devil.ChannelFormat.LuminanceAlpha },
         };
-
-
-
+        
         private static Dictionary<PixFileFormat, Devil.ImageType> s_fileFormats = new Dictionary<PixFileFormat, Devil.ImageType>()
         {
             {PixFileFormat.Bmp,   Devil.ImageType.Bmp},
@@ -252,8 +247,7 @@ namespace Aardvark.Base
 
             return SaveDevIL(() => IL.SaveStream(imageType, stream), qualityLevel);
         }
-
-
+        
         private bool SaveAsImageDevil(
                 string file, PixFileFormat format,
                 PixSaveOptions options, int qualityLevel)
@@ -264,8 +258,7 @@ namespace Aardvark.Base
 
             return SaveDevIL(() => IL.Save(imageType, file), qualityLevel);
         }
-
-
+        
         /// <summary>
         /// Gets info about a PixImage without loading the entire image into memory.
         /// </summary>

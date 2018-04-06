@@ -16,9 +16,7 @@ namespace Aardvark.Base
         }
 
         public static SubRange<T> SubRange<T>(this IList<T> self, int index, int count)
-        {
-            return new SubRange<T>(self, index, count);
-        }
+            => new SubRange<T>(self, index, count);
 
         #region FindIndex
 
@@ -92,9 +90,7 @@ namespace Aardvark.Base
         /// <param name="match">The Predicate(of T) that defines the conditions of the element to search for.</param>
         /// <returns>The zero-based index of the first occurrence of an element that matches the conditions defined by match, if found; otherwise, –1.</returns>
         public static int FindIndex<T>(this IList<T> list, int startIndex, int count, bool forward, Predicate<T> match)
-        {
-            return FindIndex(list, startIndex, count, forward, startIndex, match);
-        }
+            => FindIndex(list, startIndex, count, forward, startIndex, match);
 
         /// <summary>
         /// Searches for an element that matches the conditions defined by the specified predicate, 
@@ -128,9 +124,7 @@ namespace Aardvark.Base
         /// <param name="match">The Predicate(of T) that defines the conditions of the element to search for.</param>
         /// <returns>The zero-based index of the first occurrence of an element that matches the conditions defined by match, if found; otherwise, –1.</returns>
         public static int FindIndex<T>(this IList<T> list, int startIndex, bool forward, Predicate<T> match)
-        {
-            return FindIndex(list, startIndex, forward, startIndex, match);
-        }
+            => FindIndex(list, startIndex, forward, startIndex, match);
 
         /// <summary>
         /// Searches for an element that matches the conditions defined by the specified predicate, 
@@ -144,9 +138,7 @@ namespace Aardvark.Base
         /// <param name="match">The Predicate(of T) that defines the conditions of the element to search for.</param>
         /// <returns>The zero-based index of the first occurrence of an element that matches the conditions defined by match, if found; otherwise, –1.</returns>
         public static int FindIndex<T>(this IList<T> list, bool forward, int startSearch, Predicate<T> match)
-        {
-            return FindIndex(list, 0, forward, startSearch, match);
-        }
+            => FindIndex(list, 0, forward, startSearch, match);
 
         /// <summary>
         /// Searches for an element that matches the conditions defined by the specified predicate, 
@@ -158,9 +150,7 @@ namespace Aardvark.Base
         /// <param name="match">The Predicate(of T) that defines the conditions of the element to search for.</param>
         /// <returns>The zero-based index of the first occurrence of an element that matches the conditions defined by match, if found; otherwise, –1.</returns>
         public static int FindIndex<T>(this IList<T> list, bool forward, Predicate<T> match)
-        {
-            return FindIndex(list, 0, forward, 0, match);
-        }
+            => FindIndex(list, 0, forward, 0, match);
 
 
         #endregion FindIndex
@@ -179,11 +169,8 @@ namespace Aardvark.Base
             return (self.Count < other.Count) ? -1 : ((self.Count > other.Count) ? 1 : 0);
         }
 
-        public static int FirstIndexOf<T>(this IList<T> self, IList<T> other)
-            where T : IComparable<T>
-        {
-            return self.FirstIndexOf(other, 0);
-        }
+        public static int FirstIndexOf<T>(this IList<T> self, IList<T> other) where T : IComparable<T>
+            => self.FirstIndexOf(other, 0);
 
         /// <summary>
         /// Search first occurance of other in self, and return index if found

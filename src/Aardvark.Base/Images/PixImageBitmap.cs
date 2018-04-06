@@ -1,16 +1,26 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.IO;
 using System.Drawing;
 using System.Drawing.Imaging;
-
-using System.Runtime.InteropServices;
+using System.IO;
+using System.Linq;
 
 namespace Aardvark.Base
 {
-    public abstract partial class PixImage
+    //public class PixImageBitmap<T> : PixImageBitmap
+    //{
+    //    public PixImageBitmap(System.Drawing.Bitmap bitmap)
+    //    {
+    //        var loadImage = Create(bitmap);
+    //        var loadPixImage = loadImage as PixImage<T>;
+    //        if (loadPixImage == null)
+    //            loadPixImage = new PixImage<T>(loadImage);
+    //        Format = loadPixImage.Format;
+    //        Volume = loadPixImage.Volume;
+    //    }
+    //}
+
+    public abstract class PixImageBitmap : PixImage
     {
         protected static Dictionary<PixelFormat, Tup<PixFormat, int>> s_pixFormatAndCountOfPixelFormatBitmap =
             new Dictionary<PixelFormat, Tup<PixFormat, int>>()
@@ -38,8 +48,7 @@ namespace Aardvark.Base
             { PixelFormat.Format16bppRgb565, PixelFormat.Format24bppRgb },
             { PixelFormat.Format4bppIndexed, PixelFormat.Format8bppIndexed }
         };
-
-
+        
         protected static Dictionary<PixFormat, PixelFormat> s_pixelFormats =
             new Dictionary<PixFormat, PixelFormat>()
         {
@@ -66,9 +75,7 @@ namespace Aardvark.Base
 
         protected static Dictionary<Guid, ImageCodecInfo> s_imageCodecInfos =
             ImageCodecInfo.GetImageEncoders().ToDictionary(c => c.FormatID);
-
-
-
+        
         private static PixelFormat GetLockFormat(PixelFormat format)
         {
             if (s_pixFormatAndCountOfPixelFormatBitmap.ContainsKey(format))
@@ -113,9 +120,7 @@ namespace Aardvark.Base
             }
             return pixImage;
         }
-
-
-
+        
         /// <summary>
         /// Load image from stream via System.Drawing.
         /// </summary>
@@ -136,6 +141,12 @@ namespace Aardvark.Base
             {
                 return null;
             }
+        }
+
+        public static PixImage Create(System.Drawing.Bitmap bitmap)
+        {
+            var loadImage = CreateRawBitmap(bitmap);
+            return loadImage.ToPixImage(loadImage.Format);
         }
 
         /// <summary>
@@ -181,6 +192,11 @@ namespace Aardvark.Base
             {
                 return false;
             }
+        }
+
+        public System.Drawing.Bitmap ToBitmap()
+        {
+            return new System.Drawing.Bitmap(ToMemoryStream(PixFileFormat.Png), false);
         }
 
         /// <summary>

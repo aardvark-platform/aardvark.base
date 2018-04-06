@@ -7,10 +7,7 @@ namespace Aardvark.Base
 {
     public static class IEnumerableFun_
     {
-        public static SymbolSet ToSymbolSet(this IEnumerable<Symbol> symbols)
-        {
-            return new SymbolSet(symbols);
-        }
+        public static SymbolSet ToSymbolSet(this IEnumerable<Symbol> symbols) => new SymbolSet(symbols);
 
         public static bool SetEquals<T>(this IEnumerable<T> self, IEnumerable<T> other)
         {
@@ -52,11 +49,8 @@ namespace Aardvark.Base
         /// Runtime is in O(N) and Memory in O(N)
         /// For partitioning use QuickMedian
         /// </summary>
-        public static T Median<T>(this IEnumerable<T> self)
-            where T : IComparable<T>
-        {
-            return Median(self, (a, b) => a.CompareTo(b));
-        }
+        public static T Median<T>(this IEnumerable<T> self) where T : IComparable<T>
+            => Median(self, (a, b) => a.CompareTo(b));
 
         /// <summary>
         /// Searches for the median-element in the Array (according to cmp) and returns its value.
@@ -80,11 +74,8 @@ namespace Aardvark.Base
         /// Runtime is in O(N) and Memory in O(N)
         /// For partitioning use QuickMedian
         /// </summary>
-        public static T Median<T>(this T[] self)
-            where T : IComparable<T>
-        {
-            return Median(self, (a, b) => a.CompareTo(b));
-        }
+        public static T Median<T>(this T[] self) where T : IComparable<T>
+            => Median(self, (a, b) => a.CompareTo(b));
 
         /// <summary>
         /// Searches for the median-element in the List (according to cmp) and returns its value.
@@ -108,11 +99,8 @@ namespace Aardvark.Base
         /// Runtime is in O(N) and Memory in O(N)
         /// For partitioning use QuickMedian
         /// </summary>
-        public static T Median<T>(this List<T> self)
-            where T : IComparable<T>
-        {
-            return Median(self, (a, b) => a.CompareTo(b));
-        }
+        public static T Median<T>(this List<T> self) where T : IComparable<T>
+            => Median(self, (a, b) => a.CompareTo(b));
 
         #endregion
     }

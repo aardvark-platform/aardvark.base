@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-
 namespace Aardvark.Base
 {
     //[RegisterTypeInfo]
@@ -140,20 +139,10 @@ namespace Aardvark.Base
 
         #endregion
 
-        //#region IFieldCodeable
-
-        //public IEnumerable<FieldCoder> GetFieldCoders(int coderVersion)
-        //{
-        //    yield return new FieldCoder(0, "images", (c, o) => c.CodeTArray(ref ((PixImageMipMap)o).ImageArray));
-        //}
-
-        //#endregion
-
         public PixFormat PixFormat
         {
             get { if (ImageArray.IsEmptyOrNull()) new Exception("PixMipMap is empty"); return ImageArray[0].PixFormat; }
         }
-
     }
 
     public class PixImageMipMap<T> : PixImageMipMap

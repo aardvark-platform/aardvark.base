@@ -8,7 +8,6 @@ using System.Text;
 //using System.Windows.Media.Imaging;
 //#endif
 
-
 namespace Aardvark.Base
 {
     public interface IPixVolumeVisitor<T>
@@ -142,20 +141,6 @@ namespace Aardvark.Base
         public Tr Op<Tr>(IPixOp<Tr> op) { return op.PixVolume(this); }
 
         #endregion
-
-        //#region IFieldCodeable Members
-
-        //virtual public IEnumerable<FieldCoder> GetFieldCoders(int coderVersion)
-        //{
-        //    return
-        //         new[]
-        //    {
-        //        new FieldCoder(0, "Format",
-        //            (c,o) => c.CodeT(ref ((PixImage)o).Format) ),
-        //    };
-        //}
-
-        //#endregion    
     }
 
     public class PixVolume<T> : PixVolume, IPixImage3d
@@ -502,21 +487,7 @@ namespace Aardvark.Base
         }
 
         #endregion
-
-        //#region IFieldCodeable Members
-
-        //override public IEnumerable<FieldCoder> GetFieldCoders(int coderVersion)
-        //{
-        //    return base.GetFieldCoders(coderVersion).Base().Concat(
-        //        new[]
-        //        {
-        //            new FieldCoder(0, "Tensor4",
-        //                (c,o) => c.CodeT(ref ((PixVolume<T>)o).Tensor4) ),
-        //        });
-        //}
-
-        //#endregion
-
+        
         #region IPixImage3d Members
 
         public Array Data
