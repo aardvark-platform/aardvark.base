@@ -332,7 +332,7 @@ namespace Aardvark.Base
             while (t2) { yield return e2.Current; t2 = e2.MoveNext(); }
         }
 
-        public static IEnumerable<Pair<T>> ZipPairs<T>(
+        public static IEnumerable<(T, T)> ZipPairs<T>(
             this IEnumerable<T> self, IEnumerable<T> other)
         {
             if (self is null) throw new ArgumentNullException(nameof(self));
@@ -342,10 +342,10 @@ namespace Aardvark.Base
             var e1 = other.GetEnumerator();
 
             while (e0.MoveNext() && e1.MoveNext())
-                yield return new Pair<T>(e0.Current, e1.Current);
+                yield return (e0.Current, e1.Current);
         }
 
-        public static IEnumerable<Triple<T>> ZipTriples<T>(
+        public static IEnumerable<(T, T, T)> ZipTriples<T>(
             this IEnumerable<T> self,
             IEnumerable<T> other1,
             IEnumerable<T> other2)
@@ -359,10 +359,10 @@ namespace Aardvark.Base
             var e2 = other2.GetEnumerator();
 
             while (e0.MoveNext() && e1.MoveNext() && e2.MoveNext())
-                yield return new Triple<T>(e0.Current, e1.Current, e2.Current);
+                yield return (e0.Current, e1.Current, e2.Current);
         }
 
-        public static IEnumerable<Tup<T0, T1>> ZipTuples<T0, T1>(
+        public static IEnumerable<(T0, T1)> ZipTuples<T0, T1>(
             this IEnumerable<T0> self, IEnumerable<T1> other)
         {
             if (self is null) throw new ArgumentNullException(nameof(self));
@@ -372,7 +372,7 @@ namespace Aardvark.Base
             var e1 = other.GetEnumerator();
 
             while (e0.MoveNext() && e1.MoveNext())
-                yield return new Tup<T0, T1>(e0.Current, e1.Current);
+                yield return (e0.Current, e1.Current);
         }
 
         public static IEnumerable<Tup<T0, T1, T2>> ZipTuples<T0, T1, T2>(
@@ -454,7 +454,7 @@ namespace Aardvark.Base
         /// A B C D ... -> (A, B) (C, D) ...
         /// If sequence does not have even elements the last element is not selected.
         /// </summary>
-        public static IEnumerable<Pair<T>> PairSequence<T>(this IEnumerable<T> self)
+        public static IEnumerable<(T, T)> PairSequence<T>(this IEnumerable<T> self)
         {
             if (self is null) throw new ArgumentNullException(nameof(self));
 
@@ -468,7 +468,7 @@ namespace Aardvark.Base
         /// wrap = false: A B C D ... -> (A, B) (B, C) (C, D) ...
         /// wrap = true:  A B C D -> (A, B) (B, C) (C, D) (D, A)
         /// </summary>
-        public static IEnumerable<Pair<T>> PairChain<T>(this IEnumerable<T> self, bool wrap = false)
+        public static IEnumerable<(T, T)> PairChain<T>(this IEnumerable<T> self, bool wrap = false)
         {
             if (self is null) throw new ArgumentNullException(nameof(self));
 
@@ -481,11 +481,11 @@ namespace Aardvark.Base
                     while (e.MoveNext())
                     {
                         var x = e.Current;
-                        yield return new Pair<T>(prev, x);
+                        yield return (prev, x);
                         prev = x;
                     }
                     if (wrap)
-                        yield return new Pair<T>(prev, first);
+                        yield return (prev, first);
                 }
             }
         }
@@ -494,7 +494,7 @@ namespace Aardvark.Base
         /// wrap = false: A B C D ... -> (0, 1) (1, 2) (2, 3) ...
         /// wrap = true:  A B C D -> (0, 1) (1, 2) (2, 3) (3, 0)
         /// </summary>
-        public static IEnumerable<Pair<int>> PairChainIndexed<T>(this IEnumerable<T> self, bool wrap = false)
+        public static IEnumerable<(int, int)> PairChainIndexed<T>(this IEnumerable<T> self, bool wrap = false)
         {
             if (self is null) throw new ArgumentNullException(nameof(self));
 
@@ -506,11 +506,11 @@ namespace Aardvark.Base
                     while (e.MoveNext())
                     {
                         var x = prev + 1;
-                        yield return new Pair<int>(prev, x);
+                        yield return (prev, x);
                         prev = x;
                     }
                     if (wrap)
-                        yield return new Pair<int>(prev, 0);
+                        yield return (prev, 0);
                 }
             }
         }
@@ -518,7 +518,7 @@ namespace Aardvark.Base
         /// <summary>
         /// A B C D -> (A, B) (B, C) (C, D) (D, A)
         /// </summary>
-        public static IEnumerable<Pair<T>> PairChainWrap<T>(this IEnumerable<T> self)
+        public static IEnumerable<(T, T)> PairChainWrap<T>(this IEnumerable<T> self)
         {
             return PairChain(self, true);
         }
@@ -526,7 +526,7 @@ namespace Aardvark.Base
         /// <summary>
         /// A B C -> (0, 1) (1, 2) (2, 0)
         /// </summary>
-        public static IEnumerable<Pair<int>> PairChainWrapIndexed<T>(this IEnumerable<T> self)
+        public static IEnumerable<(int, int)> PairChainWrapIndexed<T>(this IEnumerable<T> self)
         {
             return PairChainIndexed(self, true);
         }
@@ -534,7 +534,7 @@ namespace Aardvark.Base
         /// <summary>
         /// A B C -> (A, A) (A, B) (A, C) (B, A) (B, B) (B, C) (C, A) (C, B) (C, C)
         /// </summary>
-        public static IEnumerable<Pair<T>> Pairs<T>(this IEnumerable<T> self)
+        public static IEnumerable<(T, T)> Pairs<T>(this IEnumerable<T> self)
         {
             return Pairs(self, false, false);
         }
@@ -545,7 +545,7 @@ namespace Aardvark.Base
         /// excludeReversePairs:   A B C -> (A, A) (A, B) (A, C) (B, B) (B, C) (C, C)
         /// both:                  A B C -> (A, B) (A, C) (B, C)
         /// </summary>
-        public static IEnumerable<Pair<T>> Pairs<T>(this IEnumerable<T> self, bool excludeIdenticalPairs, bool excludeReversePairs)
+        public static IEnumerable<(T, T)> Pairs<T>(this IEnumerable<T> self, bool excludeIdenticalPairs, bool excludeReversePairs)
         {
             if (self is null) throw new ArgumentNullException(nameof(self));
 
@@ -554,7 +554,7 @@ namespace Aardvark.Base
                 for (int j = excludeReversePairs ? i : 0; j < a.Length; j++)
                 {
                     if (excludeIdenticalPairs && i == j) continue;
-                    yield return Pair.Create(a[i], a[j]);
+                    yield return (a[i], a[j]);
                 }
         }
 
@@ -586,7 +586,7 @@ namespace Aardvark.Base
         /// <summary>
         /// [A B C].Pair([x y z]) -> (A, x) (A, y) (A, z) (B, x) (B, y) (B, z) (C, x) (C, y) (C, z)
         /// </summary>
-        public static IEnumerable<Pair<T>> Pairs<T>(this IEnumerable<T> self, IEnumerable<T> other)
+        public static IEnumerable<(T, T)> Pairs<T>(this IEnumerable<T> self, IEnumerable<T> other)
         {
             if (self is null) throw new ArgumentNullException(nameof(self));
             if (other is null) throw new ArgumentNullException(nameof(other));
@@ -595,7 +595,7 @@ namespace Aardvark.Base
             var b = other.ToArray();
             for (int i = 0; i < a.Length; i++)
                 for (int j = 0; j < b.Length; j++)
-                    yield return Pair.Create(a[i], b[j]);
+                    yield return (a[i], b[j]);
         }
 
         #endregion
@@ -606,7 +606,7 @@ namespace Aardvark.Base
         /// A B C D ... -> (A, B, C) (D, E, F) ...
         /// If sequence does not have even elements the last element is not selected.
         /// </summary>
-        public static IEnumerable<Triple<T>> TripleSequence<T>(this IEnumerable<T> self)
+        public static IEnumerable<(T, T, T)> TripleSequence<T>(this IEnumerable<T> self)
         {
             if (self is null) throw new ArgumentNullException(nameof(self));
 
@@ -621,7 +621,7 @@ namespace Aardvark.Base
         /// wrap = false: A B C D ... -> (A, B, C) (B, C, D) (C, D, E) ...
         /// wrap = true:  A B C D -> (A, B, C) (B, C, D) (C, D, A) (D, A, B)
         /// </summary>
-        public static IEnumerable<Triple<T>> TripleChain<T>(this IEnumerable<T> self, bool wrap = false)
+        public static IEnumerable<(T, T, T)> TripleChain<T>(this IEnumerable<T> self, bool wrap = false)
         {
             if (self is null) throw new ArgumentNullException(nameof(self));
 
@@ -638,14 +638,14 @@ namespace Aardvark.Base
                         while (e.MoveNext())
                         {
                             var x = e.Current;
-                            yield return new Triple<T>(prev1, prev2, x);
+                            yield return (prev1, prev2, x);
                             prev1 = prev2;
                             prev2 = x;
                         }
                         if (wrap)
                         {
-                            yield return new Triple<T>(prev1, prev2, first);
-                            yield return new Triple<T>(prev2, first, second);
+                            yield return (prev1, prev2, first);
+                            yield return (prev2, first, second);
                         }
                     }
                 }
@@ -655,7 +655,7 @@ namespace Aardvark.Base
         /// <summary>
         /// A B C D -> (A, B, C) (B, C, D) (C, D, A) (D, A, B)
         /// </summary>
-        public static IEnumerable<Triple<T>> TripleChainWrap<T>(this IEnumerable<T> self)
+        public static IEnumerable<(T, T, T)> TripleChainWrap<T>(this IEnumerable<T> self)
         {
             return TripleChain(self, true);
         }
@@ -663,7 +663,7 @@ namespace Aardvark.Base
         /// <summary>
         /// A B C -> AAA, AAB, AAC, ABA, ABB, ABC, ACA, ACB, ACC, BAA, BAB, BAC, BBA, BBB, BBC, BCA, BCB, BCC, CAA, CAB, CAC, CBA, CBB, CBC, CCA, CCB, CCC
         /// </summary>
-        public static IEnumerable<Triple<T>> Triples<T>(this IEnumerable<T> self)
+        public static IEnumerable<(T, T, T)> Triples<T>(this IEnumerable<T> self)
         {
             return Triples(self, false, false);
         }
@@ -674,7 +674,7 @@ namespace Aardvark.Base
         /// excludeReversePairs:   A B C -> AAA, AAB, AAC, ABA, ABB, ABC, ACA, ACB, ACC, BAB, BAC, BBB, BBC, BCB, BCC, CAC, CBC, CCC
         /// both:                  A B C -> ABC
         /// </summary>
-        public static IEnumerable<Triple<T>> Triples<T>(this IEnumerable<T> self, bool excludeIdenticalPairs, bool excludeReversePairs)
+        public static IEnumerable<(T, T, T)> Triples<T>(this IEnumerable<T> self, bool excludeIdenticalPairs, bool excludeReversePairs)
         { //todo: check implementation; + what about excludePermutations? reversePairs do not extend to triples.
             if (self is null) throw new ArgumentNullException(nameof(self));
 
@@ -686,40 +686,15 @@ namespace Aardvark.Base
                     for (int k = excludeReversePairs ? j : 0; k < a.Length; k++)
                     {
                         if (excludeIdenticalPairs && (j == k || i == k)) continue;
-                        yield return new Triple<T>(a[i], a[j], a[k]);
+                        yield return (a[i], a[j], a[k]);
                     }
                 }
         }
-        /*
-                /// <summary>
-                /// Computes how many triples method Triples() will generate.
-                /// Is efficient on ILists(of T), but will fully enumerate other IEnumerables.
-                /// </summary>
-                public static int TripleCount<T>(this IEnumerable<T> self, bool excludeIdenticalPairs, bool excludeReversePairs)
-                {
-                    if (self is null) throw new ArgumentNullException(nameof(self));
-
-                    var c = self.Count();
-                    if (excludeIdenticalPairs)
-                    {
-                        if (excludeReversePairs)
-                            return (c * (c - 1) * (c - 2)) / 6;
-                        else
-                            return c * (c - 1) * (c - 2);
-                    }
-                    else
-                    {
-                        if (excludeReversePairs)
-                            throw new NotImplementedException(); //todo: return ((c + 1) * c) / 2;
-                        else
-                            return c * c * c;
-                    }
-                }
-        */
+       
         /// <summary>
         /// [A B].Triple([x y], [X Y]) -> (A, x, X) (A, x, Y) (A, y, X) (A, y, Y) (B, x, X) (B, x, Y) (B, y, X) (B, y, Y) (C, x, X) (C, x, Y) (C, y, X) (C, y, Y)
         /// </summary>
-        public static IEnumerable<Triple<T>> Triples<T>(this IEnumerable<T> self, IEnumerable<T> other1, IEnumerable<T> other2)
+        public static IEnumerable<(T, T, T)> Triples<T>(this IEnumerable<T> self, IEnumerable<T> other1, IEnumerable<T> other2)
         {
             if (self is null) throw new ArgumentNullException(nameof(self));
             if (other1 is null) throw new ArgumentNullException(nameof(other1));
@@ -731,7 +706,7 @@ namespace Aardvark.Base
             for (int i = 0; i < a.Length; i++)
                 for (int j = 0; j < b.Length; j++)
                     for (int k = 0; k < c.Length; k++)
-                        yield return new Triple<T>(a[i], b[j], c[k]);
+                        yield return (a[i], b[j], c[k]);
         }
 
         #endregion

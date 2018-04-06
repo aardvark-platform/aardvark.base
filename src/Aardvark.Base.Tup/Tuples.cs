@@ -179,31 +179,21 @@ namespace Aardvark.Base
             return new Triple<T>(p, e2);
         }
 
-        public static Triple<double> CreateAscending(double d0, double d1, double d2)
+        public static (double, double, double) CreateAscending(double d0, double d1, double d2)
         {
             if (d0 < d1)
             {
                 if (d1 < d2)
-                    return new Triple<double>(d0, d1, d2);
+                    return (d0, d1, d2);
                 else
-                {
-                    if (d0 < d2)
-                        return new Triple<double>(d0, d2, d1);
-                    else
-                        return new Triple<double>(d2, d0, d1);
-                }
+                    return (d0 < d2) ? (d0, d2, d1) : (d2, d0, d1);
             }
             else
             {
                 if (d2 < d1)
-                    return new Triple<double>(d2, d1, d0);
+                    return (d2, d1, d0);
                 else
-                {
-                    if (d0 < d2)
-                        return new Triple<double>(d1, d0, d2);
-                    else
-                        return new Triple<double>(d1, d2, d0);
-                }
+                    return (d0 < d2) ? (d1, d0, d2) : (d1, d2, d0);
             }
         }
 
@@ -219,6 +209,8 @@ namespace Aardvark.Base
             if (double.IsNaN(t.E2)) --count;
             return count;
         }
+
+        public static Triple<T> ToTriple<T>(this (T, T, T) t) => Create(t.Item1, t.Item2, t.Item3);
 
         #endregion
     }

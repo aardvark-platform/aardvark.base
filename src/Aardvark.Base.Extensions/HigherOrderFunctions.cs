@@ -122,7 +122,7 @@ namespace Aardvark.Base
                 Action<T0, T1> item0_item1_act)
         {
             foreach (var item in items0.ZipTuples(items1))
-                item0_item1_act(item.E0, item.E1);
+                item0_item1_act(item.Item1, item.Item2);
         }
 
         /// <summary>
@@ -148,7 +148,7 @@ namespace Aardvark.Base
         {
             int i = 0;
             foreach (var item in items0.ZipTuples(items1))
-                item0_item1_i_act(item.E0, item.E1, i++);
+                item0_item1_i_act(item.Item1, item.Item2, i++);
         }
 
         /// <summary>
@@ -228,7 +228,7 @@ namespace Aardvark.Base
             foreach (var item in items0.ZipTuples(items1))
             {
                 if (notfirst) sep(); else notfirst = true;
-                item0_item1_act(item.E0, item.E1);
+                item0_item1_act(item.Item1, item.Item2);
             }
         }
 
@@ -263,7 +263,7 @@ namespace Aardvark.Base
             foreach (var item in items0.ZipTuples(items1))
             {
                 if (i >= 0) sep();
-                item0_item1_i_act(item.E0, item.E1, ++i);
+                item0_item1_i_act(item.Item1, item.Item2, ++i);
             }
         }
 
@@ -300,7 +300,7 @@ namespace Aardvark.Base
             foreach (var item in items0.ZipTuples(items1))
             {
                 if (i >= 0) i_sep(i);
-                item0_item1_i_act(item.E0, item.E1, ++i);
+                item0_item1_i_act(item.Item1, item.Item2, ++i);
             }
         }
 

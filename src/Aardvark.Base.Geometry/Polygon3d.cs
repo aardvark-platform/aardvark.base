@@ -200,7 +200,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Enumerates all pairs of coincident vertices (as pairs of vertex indices).
         /// </summary>
-        public static IEnumerable<Pair<int>> GetCoincidentPoints(
+        public static IEnumerable<(int, int)> GetCoincidentPoints(
                 this Polygon3d polygon, double toleranceAbsolute)
         {
             if (toleranceAbsolute < 0.0) throw new ArgumentOutOfRangeException();
@@ -210,7 +210,7 @@ namespace Aardvark.Base
                 for (int pj = pi + 1; pj < pc; pj++)
                 {
                     if (polygon[pi].ApproxEqual(polygon[pj], toleranceAbsolute))
-                        yield return Pair.Create(pi, pj);
+                        yield return (pi, pj);
                 }
             }
         }
@@ -227,7 +227,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Enumerates all pairs of edges that intersect (as pairs of edge indices).
         /// </summary>
-        public static IEnumerable<Pair<int>> GetSelfIntersections(
+        public static IEnumerable<(int, int)> GetSelfIntersections(
                 this Polygon3d polygon, double toleranceAbsolute)
         {
             if (toleranceAbsolute < 0.0) throw new ArgumentOutOfRangeException();
@@ -238,7 +238,7 @@ namespace Aardvark.Base
                 int jmax = (i > 0) ? pc : pc - 1;
                 for (int j = i + 2; j < jmax; j++)
                 {
-                    if (la[i].Intersects(la[j], toleranceAbsolute)) yield return Pair.Create(i, j);
+                    if (la[i].Intersects(la[j], toleranceAbsolute)) yield return (i, j);
                 }
             }
         }

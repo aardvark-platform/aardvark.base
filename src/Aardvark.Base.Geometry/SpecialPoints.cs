@@ -346,7 +346,7 @@ namespace Aardvark.Base
                  + (q.Z < b.Min.Z ? Fun.Square(b.Min.Z - q.Z) : q.Z > b.Max.Z ? Fun.Square(q.Z - b.Max.Z) : 0.0);
         }
 
-        public static Pair<double> GetDistanceSquared(
+        public static (double, double) GetDistanceSquared(
             this V3d q, Box3dAndFlags boxAndFlags, Box.Flags d2Flags, V3d d2v,
             out Box.Flags d2Flags0, out V3d d2v0,
             out Box.Flags d2Flags1, out V3d d2v1)
@@ -411,9 +411,8 @@ namespace Aardvark.Base
                     }
                 }
             }
-
-
-            return Pair.Create(d0, d1);
+            
+            return (d0, d1);
         }
 
 

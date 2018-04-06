@@ -34,7 +34,7 @@ namespace Aardvark.Rendering
         public Http.Verb Verb { get { return m_verb; } }
         public bool Matches(string s, Dictionary<string, string> variables)
         {
-            var matchedVariables = new List<Pair<string>>();
+            var matchedVariables = new List<(string, string)>();
             var tokens = s.Split(new[] { '/' }, StringSplitOptions.RemoveEmptyEntries);
             if (tokens.Length != m_tokens.Length) return false;
             for (int i = 0; i < tokens.Length; i++)
@@ -45,7 +45,7 @@ namespace Aardvark.Rendering
                         if (!m_tokens[i].Equals(tokens[i])) return false;
                         break;
                     case Mode.Variable:
-                        matchedVariables.Add(new Pair<string>(m_tokens[i], tokens[i]));
+                        matchedVariables.Add((m_tokens[i], tokens[i]));
                         break;
                     case Mode.Mixed:
                         {
@@ -54,9 +54,10 @@ namespace Aardvark.Rendering
                             if (end != m_tokens[i].Length - 1) return false;
                             var pre = m_tokens[i].Left(start);
                             if (!tokens[i].StartsWith(pre)) return false;
-                            matchedVariables.Add(new Pair<string>(
-                                m_tokens[i].Substring(start + 1, end - start - 1),
-                                tokens[i].Substring(pre.Length)
+                            matchedVariables.Add(
+                                (
+                                    m_tokens[i].Substring(start + 1, end - start - 1),
+                                    tokens[i].Substring(pre.Length)
                                 ));
                         }
                         break;
@@ -65,7 +66,7 @@ namespace Aardvark.Rendering
                 }
             }
 
-            foreach (var mv in matchedVariables) variables[mv.E0] = mv.E1;
+            foreach (var mv in matchedVariables) variables[mv.Item1] = mv.Item2;
             return true;
         }
 

@@ -303,7 +303,7 @@ namespace Aardvark.Base
             where T : IComparable
         {
             foreach (var p in self.PairChain())
-                if (p.E0.CompareTo(p.E1) > 0) return false;
+                if (p.Item1.CompareTo(p.Item2) > 0) return false;
             return true;
         }
 
@@ -311,7 +311,7 @@ namespace Aardvark.Base
             where T : IComparable
         {
             foreach (var p in self.PairChain())
-                if (p.E0.CompareTo(p.E1) >= 0) return false;
+                if (p.Item1.CompareTo(p.Item2) >= 0) return false;
             return true;
         }
 
@@ -319,7 +319,7 @@ namespace Aardvark.Base
             where T : IComparable
         {
             foreach (var p in self.PairChain())
-                if (p.E0.CompareTo(p.E1) < 0) return false;
+                if (p.Item1.CompareTo(p.Item2) < 0) return false;
             return true;
         }
 
@@ -327,7 +327,7 @@ namespace Aardvark.Base
             where T : IComparable
         {
             foreach (var p in self.PairChain())
-                if (p.E0.CompareTo(p.E1) <= 0) return false;
+                if (p.Item1.CompareTo(p.Item2) <= 0) return false;
             return true;
         }
 

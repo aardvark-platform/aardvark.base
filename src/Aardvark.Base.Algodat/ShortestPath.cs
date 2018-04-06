@@ -28,15 +28,15 @@ namespace Aardvark.Base
         private Task m_task = null;
         private CancellationTokenSource m_cancellationToken;
 
-        public ShortestPath(List<T> nodes, List<Pair<int>> edges, Func<T, T, float> getCostFunc)
+        public ShortestPath(List<T> nodes, List<(int, int)> edges, Func<T, T, float> getCostFunc)
         {
             m_nodes = nodes;
             m_neighbors = new List<int>[nodes.Count];
             for(int i = 0; i<m_nodes.Count; i++) m_neighbors[i] = new List<int>();
             foreach (var e in edges)
             {
-                m_neighbors[e.E0].Add(e.E1);
-                m_neighbors[e.E1].Add(e.E0);
+                m_neighbors[e.Item1].Add(e.Item2);
+                m_neighbors[e.Item2].Add(e.Item1);
             }
             m_getCostFunc = getCostFunc;
             m_expanded = new bool[nodes.Count];

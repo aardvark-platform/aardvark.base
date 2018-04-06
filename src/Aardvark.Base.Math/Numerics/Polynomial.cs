@@ -135,16 +135,16 @@ namespace Aardvark.Base
             return new double[] { p.E0, p.E1 };
         }
 
-        private static double[] NonNanToArray(this Triple<double> t)
+        private static double[] NonNanToArray(this (double, double, double) t)
         {
             int c = 0;
-            bool v0 = !double.IsNaN(t.E0); if (v0) c++;
-            bool v1 = !double.IsNaN(t.E1); if (v1) c++;
-            bool v2 = !double.IsNaN(t.E2); if (v2) c++;
+            bool v0 = !double.IsNaN(t.Item1); if (v0) c++;
+            bool v1 = !double.IsNaN(t.Item2); if (v1) c++;
+            bool v2 = !double.IsNaN(t.Item3); if (v2) c++;
             var a = new double[c];
-            if (v2) a[--c] = t.E2;
-            if (v1) a[--c] = t.E1;
-            if (v0) a[--c] = t.E0;
+            if (v2) a[--c] = t.Item3;
+            if (v1) a[--c] = t.Item2;
+            if (v0) a[--c] = t.Item1;
             return a;
         }
 
@@ -240,13 +240,13 @@ namespace Aardvark.Base
         /// Double and triple solutions are returned as replicated values.
         /// Imaginary and non existing solutions are returned as NaNs.
         /// </summary>
-        public static Triple<double> RealRootsOf(
+        public static (double, double, double) RealRootsOf(
                 double a, double b, double c, double d)
         {
             if (Fun.IsTiny(a))
             {
                 var r = RealRootsOf(b, c, d);
-                return Triple.Create(r.E0, r.E1, double.NaN);
+                return (r.E0, r.E1, double.NaN);
             }
             return RealRootsOfNormed(b / a, c / a, d / a);
         }
@@ -256,7 +256,7 @@ namespace Aardvark.Base
         /// Double and triple solutions are returned as replicated values.
         /// Imaginary and non existing solutions are returned as NaNs.
         /// </summary>
-        public static Triple<double> RealRootsOfNormed(
+        public static (double, double, double) RealRootsOfNormed(
                 double c2, double c1, double c0)
         {
             // ------ eliminate quadric term (x = y - c2/3): x^3 + p x + q = 0
@@ -278,13 +278,12 @@ namespace Aardvark.Base
             // else if (Fun.IsTiny(q2))			           // one triple root
             // {                                           // too unlikely for
             //     double r = -1/3.0 * c2;                 // special handling
-            //     return Triple.Create(r, r, r);          // to pay off
+            //     return (r, r, r);                       // to pay off
             // }
             d = Fun.Sqrt(d);                 // one single and one double root
             double uav = Fun.Cbrt(d - q2) - Fun.Cbrt(d + q2);
             double s0 = uav - shift, s1 = -0.5 * uav - shift;
-            return s0 < s1  ? Triple.Create(s0, s1, s1)
-                            : Triple.Create(s1, s1, s0);
+            return s0 < s1  ? (s0, s1, s1) : (s1, s1, s0);
         }
 
         /// <summary>
@@ -292,7 +291,7 @@ namespace Aardvark.Base
         /// Double and triple solutions are returned as replicated values.
         /// Imaginary and non existing solutions are returned as NaNs.
         /// </summary>
-        public static Triple<double> RealRootsOfDepressed(
+        public static (double, double, double) RealRootsOfDepressed(
                 double p, double q)
         {
             double p3 = 1/3.0 * p, q2 = 1/2.0 * q;
@@ -309,8 +308,7 @@ namespace Aardvark.Base
             d = Fun.Sqrt(d);  // one triple root or a single and a double root
             double s0 = Fun.Cbrt(d - q2) - Fun.Cbrt(d + q2);
             double s1 = -0.5 * s0;
-            return s0 < s1  ? Triple.Create(s0, s1, s1)
-                            : Triple.Create(s1, s1, s0);
+            return s0 < s1  ? (s0, s1, s1) : (s1, s1, s0);
         }
 
         /// <summary>
@@ -344,7 +342,7 @@ namespace Aardvark.Base
             if (Fun.IsTiny(a))
             {
                 var r = RealRootsOf(b, c, d, e);
-                return Quad.Create(r.E0, r.E1, r.E2, double.NaN);
+                return Quad.Create(r.Item1, r.Item2, r.Item3, double.NaN);
             }
             return RealRootsOfNormed(b / a, c / a, d / a, e / a);
         }
@@ -365,7 +363,7 @@ namespace Aardvark.Base
 
             if (Fun.IsTiny(r)) // ---- no absolute term: y (y^3 + p y + q) = 0
                 return MergeSortedAndShift(
-                            RealRootsOfDepressed(p, q), 0.0, -1/4.0 * c3);
+                            RealRootsOfDepressed(p, q).ToTriple(), 0.0, -1/4.0 * c3);
             // ----------------------- take one root of the resolvent cubic...
             double z = OneRealRootOfNormed(
                             -1/2.0 * p, -r, 1/2.0 * r * p - 1/8.0 * q * q);
