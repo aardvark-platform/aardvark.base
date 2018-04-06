@@ -77,7 +77,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Aardvark.Base.Geometry", "A
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Aardvark.Base.Algodat", "Aardvark.Base.Algodat\Aardvark.Base.Algodat.csproj", "{4E3F13A0-0A96-4608-B56A-5186A64F707B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Aardvark.Base.Images", "Aardvark.Base.Images\Aardvark.Base.Images.csproj", "{839E595C-0771-40BD-B17D-32288A2F558D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Aardvark.Base.Images", "Aardvark.Base.Images\Aardvark.Base.Images.csproj", "{839E595C-0771-40BD-B17D-32288A2F558D}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Aardvark.Base.Geometry.ImmutablePolygon2d", "Aardvark.Base.Geometry.ImmutablePolygon2d\Aardvark.Base.Geometry.ImmutablePolygon2d.csproj", "{57193FF7-9886-437F-9527-BB8AFC60EA28}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -225,6 +227,10 @@ Global
 		{839E595C-0771-40BD-B17D-32288A2F558D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{839E595C-0771-40BD-B17D-32288A2F558D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{839E595C-0771-40BD-B17D-32288A2F558D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{57193FF7-9886-437F-9527-BB8AFC60EA28}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{57193FF7-9886-437F-9527-BB8AFC60EA28}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{57193FF7-9886-437F-9527-BB8AFC60EA28}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{57193FF7-9886-437F-9527-BB8AFC60EA28}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -255,6 +261,7 @@ Global
 		{1F843BA4-1FEE-4D4E-BE32-EE9701D907E1} = {C557CE9D-81EE-4EB3-AB94-B9F9CB2FA19A}
 		{4E3F13A0-0A96-4608-B56A-5186A64F707B} = {C557CE9D-81EE-4EB3-AB94-B9F9CB2FA19A}
 		{839E595C-0771-40BD-B17D-32288A2F558D} = {C557CE9D-81EE-4EB3-AB94-B9F9CB2FA19A}
+		{57193FF7-9886-437F-9527-BB8AFC60EA28} = {C557CE9D-81EE-4EB3-AB94-B9F9CB2FA19A}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {1537AED0-2BB3-4EC3-B2CB-06E22C23B002}

@@ -69,9 +69,6 @@
     <Compile Include="Editing\IEditableSequence.cs" />
     <Compile Include="Editing\IEditableEdge2d.cs" />
     <Compile Include="Editing\IEditableVertex2d.cs" />
-    <Compile Include="Geometry\IImmutablePolygon2d.cs" />
-    <Compile Include="Geometry\IImmutablePolygon2dExtensions.cs" />
-    <Compile Include="Geometry\ImmutablePolygon2d.cs" />
     <Compile Include="NormalizedDeviceCoordinates.cs" />
     <Compile Include="PixelPosition.cs" />
     <Compile Include="Screenshot.cs" />
