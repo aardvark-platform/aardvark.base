@@ -68,11 +68,6 @@
     <Compile Include="Program.fs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\Aardvark.System.EventSource\Aardvark.System.EventSource.csproj">
-      <Name>Aardvark.System.EventSource</Name>
-      <Project>{83641455-78b0-45ea-a7ca-c79641392ed3}</Project>
-      <Private>True</Private>
-    </ProjectReference>
     <Reference Include="mscorlib" />
     <Reference Include="System" />
     <Reference Include="System.Core" />

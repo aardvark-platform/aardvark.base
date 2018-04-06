@@ -27,4 +27,3 @@ tmp
 **/*.csproj.user
 **/*_generator.cs
 /.paket/Paket.Restore.targets
-/src/packages

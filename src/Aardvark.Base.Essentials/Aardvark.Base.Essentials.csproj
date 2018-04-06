@@ -41,28 +41,11 @@
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Core" />
-    <Reference Include="System.Reactive.Core, Version=3.0.3000.0, Culture=neutral, PublicKeyToken=94bc3704cddfc263, processorArchitecture=MSIL">
-      <HintPath>..\packages\System.Reactive.Core.3.1.1\lib\net46\System.Reactive.Core.dll</HintPath>
-    </Reference>
-    <Reference Include="System.Reactive.Interfaces, Version=3.0.1000.0, Culture=neutral, PublicKeyToken=94bc3704cddfc263, processorArchitecture=MSIL">
-      <HintPath>..\packages\System.Reactive.Interfaces.3.1.1\lib\net45\System.Reactive.Interfaces.dll</HintPath>
-    </Reference>
-    <Reference Include="System.Reactive.Linq, Version=3.0.3000.0, Culture=neutral, PublicKeyToken=94bc3704cddfc263, processorArchitecture=MSIL">
-      <HintPath>..\packages\System.Reactive.Linq.3.1.1\lib\net46\System.Reactive.Linq.dll</HintPath>
-    </Reference>
-    <Reference Include="System.Reactive.PlatformServices, Version=3.0.3000.0, Culture=neutral, PublicKeyToken=94bc3704cddfc263, processorArchitecture=MSIL">
-      <HintPath>..\packages\System.Reactive.PlatformServices.3.1.1\lib\net46\System.Reactive.PlatformServices.dll</HintPath>
-    </Reference>
-    <Reference Include="System.Reactive.Windows.Threading, Version=3.0.1000.0, Culture=neutral, PublicKeyToken=94bc3704cddfc263, processorArchitecture=MSIL">
-      <HintPath>..\packages\System.Reactive.Windows.Threading.3.1.1\lib\net45\System.Reactive.Windows.Threading.dll</HintPath>
-    </Reference>
-    <Reference Include="System.Windows" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
-    <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Camera\CameraProjectionOrtho.cs" />
@@ -75,10 +58,32 @@
     <Compile Include="Camera\ICameraViewExtensions.cs" />
     <Compile Include="Camera\IRenderView.cs" />
     <Compile Include="Camera\IRenderViewExtensions.cs" />
-    <Compile Include="Camera\NormalizedDeviceCoordinates.cs" />
-    <Compile Include="Camera\PixelPosition.cs" />
+    <Compile Include="Editing\BehaviorDragAbsolute.cs" />
+    <Compile Include="Editing\BehaviorDragRelative.cs" />
+    <Compile Include="Editing\IBehaviorSplittableEdge2d.cs" />
+    <Compile Include="Editing\IBehaviorPosition2d.cs" />
+    <Compile Include="Editing\IBehaviorDeletable.cs" />
+    <Compile Include="Editing\IBehaviorTransform2d.cs" />
+    <Compile Include="Editing\IBehavior.cs" />
+    <Compile Include="Editing\IEditableFace2d.cs" />
+    <Compile Include="Editing\IEditableSequence.cs" />
+    <Compile Include="Editing\IEditableEdge2d.cs" />
+    <Compile Include="Editing\IEditableVertex2d.cs" />
+    <Compile Include="NormalizedDeviceCoordinates.cs" />
+    <Compile Include="PixelPosition.cs" />
     <Compile Include="Screenshot.cs" />
+    <Compile Include="System\Awaitable.cs" />
+    <Compile Include="System\Clock.cs" />
+    <Compile Include="System\Disposable.cs" />
+    <Compile Include="System\EventSource.cs" />
+    <Compile Include="System\EventSourceExtensions.cs" />
+    <Compile Include="System\EventSourceInterfaces.cs" />
+    <Compile Include="System\EventSourceSpecials.cs" />
+    <Compile Include="System\FilteredEventSource.cs" />
+    <Compile Include="System\IAwaitable.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="System\Time.cs" />
+    <Compile Include="System\WithCancellationExtension.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Aardvark.Base.Extensions\Aardvark.Base.Extensions.csproj">
@@ -114,13 +119,8 @@
       <Project>{377DA721-C821-45F6-B803-9C8724C7B37F}</Project>
       <Private>False</Private>
     </ProjectReference>
-    <ProjectReference Include="..\Aardvark.System.EventSource\Aardvark.System.EventSource.csproj">
-      <Project>{83641455-78b0-45ea-a7ca-c79641392ed3}</Project>
-      <Name>Aardvark.System.EventSource</Name>
-    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <None Include="packages.config" />
     <None Include="paket.references" />
     <None Include="paket.template" />
   </ItemGroup>
@@ -158,13 +158,37 @@
     </When>
   </Choose>
   <Choose>
-    <When Condition="$(TargetFrameworkIdentifier) == '.NETFramework' And $(TargetFrameworkVersion) == 'v4.6.1'" />
+    <When Condition="$(TargetFrameworkIdentifier) == '.NETFramework' And $(TargetFrameworkVersion) == 'v4.6.1'">
+      <ItemGroup>
+        <Reference Include="System.Reactive.Core">
+          <HintPath>..\..\packages\System.Reactive.Core\lib\net46\System.Reactive.Core.dll</HintPath>
+          <Private>True</Private>
+          <Paket>True</Paket>
+        </Reference>
+      </ItemGroup>
+    </When>
   </Choose>
   <Choose>
-    <When Condition="$(TargetFrameworkIdentifier) == '.NETFramework' And $(TargetFrameworkVersion) == 'v4.6.1'" />
+    <When Condition="$(TargetFrameworkIdentifier) == '.NETFramework' And $(TargetFrameworkVersion) == 'v4.6.1'">
+      <ItemGroup>
+        <Reference Include="System.Reactive.Interfaces">
+          <HintPath>..\..\packages\System.Reactive.Interfaces\lib\net45\System.Reactive.Interfaces.dll</HintPath>
+          <Private>True</Private>
+          <Paket>True</Paket>
+        </Reference>
+      </ItemGroup>
+    </When>
   </Choose>
   <Choose>
-    <When Condition="$(TargetFrameworkIdentifier) == '.NETFramework' And $(TargetFrameworkVersion) == 'v4.6.1'" />
+    <When Condition="$(TargetFrameworkIdentifier) == '.NETFramework' And $(TargetFrameworkVersion) == 'v4.6.1'">
+      <ItemGroup>
+        <Reference Include="System.Reactive.Linq">
+          <HintPath>..\..\packages\System.Reactive.Linq\lib\net46\System.Reactive.Linq.dll</HintPath>
+          <Private>True</Private>
+          <Paket>True</Paket>
+        </Reference>
+      </ItemGroup>
+    </When>
   </Choose>
   <Import Project="..\..\packages\NETStandard.Library\build\NETStandard.Library.targets" Condition="Exists('..\..\packages\NETStandard.Library\build\NETStandard.Library.targets')" Label="Paket" />
 </Project>

@@ -81,10 +81,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Aardvark.Base.Images", "Aar
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Aardvark.Base.Geometry.ImmutablePolygon2d", "Aardvark.Base.Geometry.ImmutablePolygon2d\Aardvark.Base.Geometry.ImmutablePolygon2d.csproj", "{57193FF7-9886-437F-9527-BB8AFC60EA28}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Aardvark.Base.Editing.Behaviours", "Aardvark.Base.Editing.Behaviours\Aardvark.Base.Editing.Behaviours.csproj", "{6F44BADE-724A-476F-AFD8-2D9669535E8A}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Aardvark.System.EventSource", "Aardvark.System.EventSource\Aardvark.System.EventSource.csproj", "{83641455-78B0-45EA-A7CA-C79641392ED3}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -235,14 +231,6 @@ Global
 		{57193FF7-9886-437F-9527-BB8AFC60EA28}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{57193FF7-9886-437F-9527-BB8AFC60EA28}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{57193FF7-9886-437F-9527-BB8AFC60EA28}.Release|Any CPU.Build.0 = Release|Any CPU
-		{6F44BADE-724A-476F-AFD8-2D9669535E8A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{6F44BADE-724A-476F-AFD8-2D9669535E8A}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{6F44BADE-724A-476F-AFD8-2D9669535E8A}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{6F44BADE-724A-476F-AFD8-2D9669535E8A}.Release|Any CPU.Build.0 = Release|Any CPU
-		{83641455-78B0-45EA-A7CA-C79641392ED3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{83641455-78B0-45EA-A7CA-C79641392ED3}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{83641455-78B0-45EA-A7CA-C79641392ED3}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{83641455-78B0-45EA-A7CA-C79641392ED3}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -274,8 +262,6 @@ Global
 		{4E3F13A0-0A96-4608-B56A-5186A64F707B} = {C557CE9D-81EE-4EB3-AB94-B9F9CB2FA19A}
 		{839E595C-0771-40BD-B17D-32288A2F558D} = {C557CE9D-81EE-4EB3-AB94-B9F9CB2FA19A}
 		{57193FF7-9886-437F-9527-BB8AFC60EA28} = {C557CE9D-81EE-4EB3-AB94-B9F9CB2FA19A}
-		{6F44BADE-724A-476F-AFD8-2D9669535E8A} = {C557CE9D-81EE-4EB3-AB94-B9F9CB2FA19A}
-		{83641455-78B0-45EA-A7CA-C79641392ED3} = {C557CE9D-81EE-4EB3-AB94-B9F9CB2FA19A}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {1537AED0-2BB3-4EC3-B2CB-06E22C23B002}
