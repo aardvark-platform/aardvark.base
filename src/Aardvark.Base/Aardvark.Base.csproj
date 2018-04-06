@@ -63,26 +63,21 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Extensions\EnumHelpers.cs" />
-    <Compile Include="Extensions\ArrayExtensions.cs" />
     <Compile Include="Extensions\FuncActionExtensions.cs" />
     <Compile Include="Extensions\FuncActionExtensions_auto.cs" />
     <None Include="Extensions\FuncActionExtensions_template.cs" />
     <Compile Include="Extensions\IEnumerableExtensions.cs" />
-    <Compile Include="Extensions\IListExtensions.cs" />
     <Compile Include="Extensions\ListExtensions.cs" />
     <Compile Include="Images\PixImageBitmap.cs" />
     <Compile Include="Images\PixImageDevil.cs" />
     <Compile Include="Images\PixImageFreeImage.cs" />
     <Compile Include="Images\PixImageSystemImage.cs" />
     <Compile Include="AlgoDat\Meta.cs" />
-    <Compile Include="AlgoDat\SubRange.cs" />
     <Compile Include="AlgoDat\XmlParser.cs" />
     <Compile Include="Extensions\SystemDrawingExtensions.cs" />
     <None Include="paket.references" />
     <None Include="paket.template" />
     <Compile Include="AlgoDat\Structs.cs" />
-    <Compile Include="Extensions\DictionaryExtensions.cs" />
     <Compile Include="Math\Interfaces.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
