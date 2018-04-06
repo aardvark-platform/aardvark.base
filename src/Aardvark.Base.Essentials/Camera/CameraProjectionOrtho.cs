@@ -14,14 +14,12 @@ namespace Aardvark.Base
             SetClippingParams(left, right, bottom, top, near, far);
         }
 
-        public Trafo3d ProjectionTrafo { get { return m_trafo; } }
+        public Trafo3d ProjectionTrafo => m_trafo;
 
-        public IEvent<Trafo3d> ProjectionTrafos { get { return m_trafoChanges; } }
+        public IEvent<Trafo3d> ProjectionTrafos => m_trafoChanges;
 
         public Ray3d Unproject(V2d xyOnNearPlane)
-        {
-            return new Ray3d(new V3d(xyOnNearPlane, 0.0), new V3d(xyOnNearPlane, -m_box.Min.Z));
-        }
+            => new Ray3d(new V3d(xyOnNearPlane, 0.0), new V3d(xyOnNearPlane, -m_box.Min.Z));
 
         public void SetClippingParams(double left, double right, double bottom, double top, double near, double far)
         {

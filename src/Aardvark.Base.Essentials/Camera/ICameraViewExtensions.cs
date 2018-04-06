@@ -11,8 +11,6 @@ namespace Aardvark.Base
         /// Turns camera to look at given point p.
         /// </summary>
         public static void LookAt(this ICameraView self, V3d p)
-        {
-            self.Forward = (p - self.Location).Normalized;
-        }
+            => self.Forward = (p - self.Location).Normalized;
     }
 }

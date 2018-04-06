@@ -34,78 +34,62 @@ namespace Aardvark.Base
         /// </summary>
         public ImmutablePolygon(ImmutableList<T> outline)
         {
-            if (outline == null) throw new ArgumentNullException();
-            m_ps = outline;
+            m_ps = outline ?? throw new ArgumentNullException();
         }
 
         /// <summary>
         /// Gets index-th point.
         /// Index will be wrapped around if not in range [0, count).
         /// </summary>
-        public T GetPoint(int index)
-        {
-            return m_ps[this.RepairIndex(index)];
-        }
+        public T GetPoint(int index) => m_ps[this.RepairIndex(index)];
 
         /// <summary>
         /// Returns a string that represents the current object.
         /// </summary>
         public override string ToString()
-        {
-            return string.Format("[{0}]", string.Join(", ", m_ps.Select(x => x.ToString())));
-        }
+            => string.Format("[{0}]", string.Join(", ", m_ps.Select(x => x.ToString())));
 
         #region IImmutablePolygon
 
         /// <summary>
         /// Polygon outline.
         /// </summary>
-        public IReadOnlyList<T> Points { get { return m_ps; } }
+        public IReadOnlyList<T> Points => m_ps;
 
         /// <summary>
         /// Gets number of vertices.
         /// </summary>
-        public int Count { get { return m_ps.Count; } }
+        public int Count => m_ps.Count;
 
         /// <summary>
         /// Returns new polygon with point added. 
         /// </summary>
         public IImmutablePolygon<T> AddPoint(T p)
-        {
-            return new ImmutablePolygon<T>(m_ps.Add(p));
-        }
+            => new ImmutablePolygon<T>(m_ps.Add(p));
 
         /// <summary>
         /// Returns new polygon with points added. 
         /// </summary>
         public IImmutablePolygon<T> AddPoints(IEnumerable<T> points)
-        {
-            return new ImmutablePolygon<T>(m_ps.AddRange(points));
-        }
+            => new ImmutablePolygon<T>(m_ps.AddRange(points));
 
         /// <summary>
         /// Returns new polygon with point replaced. 
         /// </summary>
         public IImmutablePolygon<T> SetPoint(int index, T p)
-        {
-            return new ImmutablePolygon<T>(m_ps.SetItem(index, p));
-        }
+            => new ImmutablePolygon<T>(m_ps.SetItem(index, p));
 
         /// <summary>
         /// Returns new polygon with point p inserted at given index. 
         /// </summary>
         public IImmutablePolygon<T> InsertPoint(int index, T p)
-        {
-            return new ImmutablePolygon<T>(m_ps.Insert(index, p));
-        }
+            => new ImmutablePolygon<T>(m_ps.Insert(index, p));
 
         /// <summary>
         /// Returns new polygon with point removed. 
         /// </summary>
         public IImmutablePolygon<T> RemovePoint(int index)
-        {
-            return new ImmutablePolygon<T>(m_ps.RemoveAt(index));
-        }
+            => new ImmutablePolygon<T>(m_ps.RemoveAt(index));
 
         /// <summary>
         /// Returns new polygon with points removed. 
@@ -124,9 +108,7 @@ namespace Aardvark.Base
         /// Returns new polygon with transformed points.
         /// </summary>
         public IImmutablePolygon<U> Transform<U>(Func<T, U> transform)
-        {
-            return new ImmutablePolygon<U>(m_ps.Select(x => transform(x)));
-        }
+            => new ImmutablePolygon<U>(m_ps.Select(x => transform(x)));
 
         #endregion
     }

@@ -12,9 +12,7 @@ namespace Aardvark.Base
         /// Converts this IImmutablePolygon(of V2d) to a Polygon2d.
         /// </summary>
         public static Polygon2d ToPolygon2d(this IImmutablePolygon<V2d> self)
-        {
-            return new Polygon2d(self.Points);
-        }
+            => new Polygon2d(self.Points);
 
         /// <summary>
         /// Returns the index and distance of the polygon's closest point to the given query point.
@@ -38,17 +36,13 @@ namespace Aardvark.Base
         /// Returns new polygon with point moved. 
         /// </summary>
         public static IImmutablePolygon<V2d> MovePoint(this IImmutablePolygon<V2d> self, int index, V2d delta)
-        {
-            return self.SetPoint(index, self.Points[index] + delta);
-        }
+            => self.SetPoint(index, self.Points[index] + delta);
 
         /// <summary>
         /// Returns new polygon with point transformed. 
         /// </summary>
         public static IImmutablePolygon<V2d> TransformPoint(this IImmutablePolygon<V2d> self, int index, M33d trafo)
-        {
-            return self.SetPoint(index, trafo.TransformPos(self.Points[index]));
-        }
+            => self.SetPoint(index, trafo.TransformPos(self.Points[index]));
 
         /// <summary>
         /// Gets the index-th edge of this polygon.
@@ -76,25 +70,19 @@ namespace Aardvark.Base
         /// Maps arbitrary index into valid range.
         /// </summary>
         public static int RepairIndex<T>(this IImmutablePolygon<T> self, int index)
-        {
-            return RepairIndex(self.Count, index);
-        }
+            => RepairIndex(self.Count, index);
 
         /// <summary>
         /// Maps arbitrary index into valid range.
         /// </summary>
         public static int RepairIndex(this Polygon2d self, int index)
-        {
-            return RepairIndex(self.PointCount, index);
-        }
+            => RepairIndex(self.PointCount, index);
 
         /// <summary>
         /// Maps arbitrary index into valid range.
         /// </summary>
         public static int RepairIndex(this Polygon3d self, int index)
-        {
-            return RepairIndex(self.PointCount, index);
-        }
+            => RepairIndex(self.PointCount, index);
 
         /// <summary>
         /// Maps index into range [0, count).
@@ -141,16 +129,12 @@ namespace Aardvark.Base
         /// Ensures that the outline is oriented counter-clockwise.
         /// </summary>
         public static IImmutablePolygon<V2d> ToCounterClockwise(this IImmutablePolygon<V2d> self)
-        {
-            return self.ToPolygon2d().IsCcw() ? self : new ImmutablePolygon<V2d>(self.Points.Reverse());
-        }
+            => self.ToPolygon2d().IsCcw() ? self : new ImmutablePolygon<V2d>(self.Points.Reverse());
 
         /// <summary>
         /// Ensures that the outline is oriented clockwise.
         /// </summary>
         public static IImmutablePolygon<V2d> ToClockwise(this IImmutablePolygon<V2d> self)
-        {
-            return self.ToPolygon2d().IsCcw() ? new ImmutablePolygon<V2d>(self.Points.Reverse()) : self;
-        }
+            => self.ToPolygon2d().IsCcw() ? new ImmutablePolygon<V2d>(self.Points.Reverse()) : self;
     }
 }
