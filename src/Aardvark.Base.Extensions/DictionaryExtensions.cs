@@ -95,7 +95,7 @@ namespace Aardvark.Base
         {
             if (!self.TryGetValue(key, out TV value))
             {
-                value = creator.RunIfNotNull(key, default(TV));
+                value = (creator != null) ? creator(key) : default(TV);
                 self[key] = value;
             }
             return value;
