@@ -59,43 +59,6 @@
   <Target Name="AfterBuild">
   </Target>
   -->
-  <ItemGroup>
-    <Compile Include="PolyRegion2d.fs" />
-    <Compile Include="Program.fs" />
-    <None Include="paket.references" />
-  </ItemGroup>
-  <ItemGroup>
-    <Reference Include="mscorlib" />
-    <Reference Include="System" />
-    <Reference Include="System.Core" />
-    <Reference Include="System.Drawing" />
-    <Reference Include="System.Numerics" />
-    <ProjectReference Include="..\Aardvark.Base.FSharp\Aardvark.Base.FSharp.fsproj">
-      <Name>Aardvark.Base.FSharp</Name>
-      <Project>{692a3617-719b-4ea2-abc1-407ae20094ae}</Project>
-      <Private>True</Private>
-    </ProjectReference>
-    <ProjectReference Include="..\Aardvark.Base.Geometry\Aardvark.Base.Geometry.csproj">
-      <Name>Aardvark.Base.Geometry</Name>
-      <Project>{1f843ba4-1fee-4d4e-be32-ee9701d907e1}</Project>
-      <Private>True</Private>
-    </ProjectReference>
-    <ProjectReference Include="..\Aardvark.Base.Math\Aardvark.Base.Math.csproj">
-      <Name>Aardvark.Base.Math</Name>
-      <Project>{caa4e460-e04b-45a4-8501-2694e61f72c9}</Project>
-      <Private>True</Private>
-    </ProjectReference>
-    <ProjectReference Include="..\Aardvark.Base.TypeProviders\Aardvark.Base.TypeProviders.fsproj">
-      <Name>Aardvark.Base.TypeProviders</Name>
-      <Project>{8bfea4ef-bf0a-4c1a-b7ac-cbdd930306fd}</Project>
-      <Private>True</Private>
-    </ProjectReference>
-    <ProjectReference Include="..\Aardvark.Base\Aardvark.Base.csproj">
-      <Name>Aardvark.Base</Name>
-      <Project>{377da721-c821-45f6-b803-9c8724c7b37f}</Project>
-      <Private>True</Private>
-    </ProjectReference>
-  </ItemGroup>
   <Choose>
     <When Condition="$(TargetFrameworkIdentifier) == '.NETFramework' And $(TargetFrameworkVersion) == 'v4.6.1'">
       <ItemGroup>
@@ -129,4 +92,59 @@
       </ItemGroup>
     </When>
   </Choose>
+  <ItemGroup>
+    <Compile Include="PolyRegion2d.fs" />
+    <Compile Include="Program.fs" />
+    <None Include="paket.references" />
+    <Content Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Reference Include="mscorlib" />
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Numerics" />
+    <ProjectReference Include="..\Aardvark.Base.FSharp\Aardvark.Base.FSharp.fsproj">
+      <Name>Aardvark.Base.FSharp</Name>
+      <Project>{692a3617-719b-4ea2-abc1-407ae20094ae}</Project>
+      <Private>True</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\Aardvark.Base.Geometry\Aardvark.Base.Geometry.csproj">
+      <Name>Aardvark.Base.Geometry</Name>
+      <Project>{1f843ba4-1fee-4d4e-be32-ee9701d907e1}</Project>
+      <Private>True</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\Aardvark.Base.Math\Aardvark.Base.Math.csproj">
+      <Name>Aardvark.Base.Math</Name>
+      <Project>{caa4e460-e04b-45a4-8501-2694e61f72c9}</Project>
+      <Private>True</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\Aardvark.Base.TypeProviders\Aardvark.Base.TypeProviders.fsproj">
+      <Name>Aardvark.Base.TypeProviders</Name>
+      <Project>{8bfea4ef-bf0a-4c1a-b7ac-cbdd930306fd}</Project>
+      <Private>True</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\Aardvark.Base\Aardvark.Base.csproj">
+      <Name>Aardvark.Base</Name>
+      <Project>{377da721-c821-45f6-b803-9c8724c7b37f}</Project>
+      <Private>True</Private>
+    </ProjectReference>
+    <Reference Include="System.Reactive.Core">
+      <HintPath>..\packages\System.Reactive.Core.3.1.1\lib\net46\System.Reactive.Core.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Reactive.Interfaces">
+      <HintPath>..\packages\System.Reactive.Interfaces.3.1.1\lib\net45\System.Reactive.Interfaces.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Reactive.Linq">
+      <HintPath>..\packages\System.Reactive.Linq.3.1.1\lib\net46\System.Reactive.Linq.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Reactive.PlatformServices">
+      <HintPath>..\packages\System.Reactive.PlatformServices.3.1.1\lib\net46\System.Reactive.PlatformServices.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Reactive.Windows.Threading">
+      <HintPath>..\packages\System.Reactive.Windows.Threading.3.1.1\lib\net45\System.Reactive.Windows.Threading.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Windows" />
+    <Reference Include="WindowsBase" />
+  </ItemGroup>
 </Project>

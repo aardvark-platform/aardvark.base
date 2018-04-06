@@ -16,18 +16,12 @@ namespace Aardvark.Base
         /// <summary>
         /// Position (xy) in normalized device coordinates.
         /// </summary>
-        public Ndc2d(V2d position)
-        {
-            Position = position;
-        }
+        public Ndc2d(V2d position) => Position = position;
 
         /// <summary>
         /// Position (xy) in normalized device coordinates.
         /// </summary>
-        public Ndc2d(double x, double y)
-        {
-            Position = new V2d(x, y);
-        }
+        public Ndc2d(double x, double y) => Position = new V2d(x, y);
 
         /// <summary>
         /// Position (xy) in normalized device coordinates.
@@ -44,13 +38,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Transform the normalized device coordinate to a [0, 1] texture coordinate (flipping Y).
         /// </summary>
-        public V2d TextureCoordinate
-        {
-            get
-            {
-                return new V2d(Position.X * 0.5 + 0.5, -Position.Y * 0.5 + 0.5);
-            }
-        }
+        public V2d TextureCoordinate => new V2d(Position.X * 0.5 + 0.5, -Position.Y * 0.5 + 0.5);
     }
 
     /// <summary>
@@ -67,28 +55,16 @@ namespace Aardvark.Base
         /// <summary>
         /// Position (xyz) in normalized device coordinates.
         /// </summary>
-        public Ndc3d(V3d position)
-        {
-            Position = position;
-        }
+        public Ndc3d(V3d position) => Position = position;
 
         /// <summary>
         /// Position (xy) in normalized device coordinates.
         /// </summary>
-        public Ndc3d(double x, double y, double z)
-        {
-            Position = new V3d(x, y, z);
-        }
+        public Ndc3d(double x, double y, double z) => Position = new V3d(x, y, z);
 
         /// <summary>
         /// Transform the normalized device coordinate to a [0, 1] texture coordinate (flipping Y) with depth.
         /// </summary>
-        public V3d TextureCoordinate
-        {
-            get
-            {
-                return new V3d(Position.X * 0.5 + 0.5, -Position.Y * 0.5 + 0.5, Position.Z);
-            }
-        }
+        public V3d TextureCoordinate => new V3d(Position.X * 0.5 + 0.5, -Position.Y * 0.5 + 0.5, Position.Z);
     }
 }
