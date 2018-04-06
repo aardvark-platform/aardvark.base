@@ -93,12 +93,12 @@ namespace Aardvark.Base.Coder
     internal static class FieldCoderArray
     {
         private static object s_lock = new object();
-        private static Dictionary<Tup<int, Type, int>, FieldCoder[]> s_fieldCoderArrayMap
-                = new Dictionary<Tup<int, Type, int>, FieldCoder[]>();
+        private static Dictionary<(int, Type, int), FieldCoder[]> s_fieldCoderArrayMap
+                = new Dictionary<(int, Type, int), FieldCoder[]>();
 
         public static FieldCoder[] Get(int coderVersion, Type type, int version, IFieldCodeable fieldCodeAble)
         {
-            var key = Tup.Create(coderVersion, type, version);
+            var key = (coderVersion, type, version);
             FieldCoder[] fieldCoderArray;
             lock (s_lock)
             {
@@ -123,12 +123,12 @@ namespace Aardvark.Base.Coder
     internal class FieldCoderMap : Dictionary<string, Action<ICoder, object>>
     {
         private static object s_lock = new object();
-        private static Dictionary<Tup<int, Type, int>, FieldCoderMap> s_fieldCoderMapMap
-                = new Dictionary<Tup<int, Type, int>, FieldCoderMap>();
+        private static Dictionary<(int, Type, int), FieldCoderMap> s_fieldCoderMapMap
+                = new Dictionary<(int, Type, int), FieldCoderMap>();
 
         public static FieldCoderMap Get(int coderVersion, Type type, int version, IFieldCodeable fieldCodeAble)
         {
-            var key = Tup.Create(coderVersion, type, version);
+            var key = (coderVersion, type, version);
             FieldCoderMap fieldCoderMap;
             lock (s_lock)
             {

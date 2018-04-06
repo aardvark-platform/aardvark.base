@@ -18,6 +18,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Aardvark.Base.Extensions\Aardvark.Base.Extensions.csproj" />
     <ProjectReference Include="..\Aardvark.Base.Math\Aardvark.Base.Math.csproj" />
   </ItemGroup>
 

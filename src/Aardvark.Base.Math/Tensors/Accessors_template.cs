@@ -22,7 +22,7 @@ namespace Aardvark.Base
                 #region ColorChannel __ttype__ as __ctype__
 
                 {
-                    Tup.Create(typeof(__ttype__), typeof(__ctype__), Intent.ColorChannel),
+                    (typeof(__ttype__), typeof(__ctype__), Intent.ColorChannel),
                     delta =>
                     {
                         return new TensorAccessors<__ttype__, __ctype__>()
@@ -53,7 +53,7 @@ namespace Aardvark.Base
                 #region __intent__ __ttype__s as __ctype__
 
                 {
-                    Tup.Create(typeof(__ttype__), typeof(__ctype__), Intent.__intent__),
+                    (typeof(__ttype__), typeof(__ctype__), Intent.__intent__),
                     delta =>
                     {
                         if (delta.Length < 3)

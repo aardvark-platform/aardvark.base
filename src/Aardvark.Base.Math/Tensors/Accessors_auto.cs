@@ -8,15 +8,15 @@ namespace Aardvark.Base
 {
     public static partial class TensorAccessors
     {
-        private static Dictionary<Tup<Type, Type, Symbol>,
+        private static Dictionary<(Type, Type, Symbol),
                                   Func<long[], ITensorAccessors>> s_creatorMap
-            = new Dictionary<Tup<Type, Type, Symbol>,
+            = new Dictionary<(Type, Type, Symbol),
                              Func<long[], ITensorAccessors>>()
             {
                 #region ColorChannel byte as byte
 
                 {
-                    Tup.Create(typeof(byte), typeof(byte), Intent.ColorChannel),
+                    (typeof(byte), typeof(byte), Intent.ColorChannel),
                     delta =>
                     {
                         return new TensorAccessors<byte, byte>()
@@ -32,7 +32,7 @@ namespace Aardvark.Base
                 #region ColorChannel byte as ushort
 
                 {
-                    Tup.Create(typeof(byte), typeof(ushort), Intent.ColorChannel),
+                    (typeof(byte), typeof(ushort), Intent.ColorChannel),
                     delta =>
                     {
                         return new TensorAccessors<byte, ushort>()
@@ -48,7 +48,7 @@ namespace Aardvark.Base
                 #region ColorChannel byte as uint
 
                 {
-                    Tup.Create(typeof(byte), typeof(uint), Intent.ColorChannel),
+                    (typeof(byte), typeof(uint), Intent.ColorChannel),
                     delta =>
                     {
                         return new TensorAccessors<byte, uint>()
@@ -64,7 +64,7 @@ namespace Aardvark.Base
                 #region ColorChannel byte as float
 
                 {
-                    Tup.Create(typeof(byte), typeof(float), Intent.ColorChannel),
+                    (typeof(byte), typeof(float), Intent.ColorChannel),
                     delta =>
                     {
                         return new TensorAccessors<byte, float>()
@@ -80,7 +80,7 @@ namespace Aardvark.Base
                 #region ColorChannel byte as double
 
                 {
-                    Tup.Create(typeof(byte), typeof(double), Intent.ColorChannel),
+                    (typeof(byte), typeof(double), Intent.ColorChannel),
                     delta =>
                     {
                         return new TensorAccessors<byte, double>()
@@ -96,7 +96,7 @@ namespace Aardvark.Base
                 #region ColorChannel ushort as byte
 
                 {
-                    Tup.Create(typeof(ushort), typeof(byte), Intent.ColorChannel),
+                    (typeof(ushort), typeof(byte), Intent.ColorChannel),
                     delta =>
                     {
                         return new TensorAccessors<ushort, byte>()
@@ -112,7 +112,7 @@ namespace Aardvark.Base
                 #region ColorChannel ushort as ushort
 
                 {
-                    Tup.Create(typeof(ushort), typeof(ushort), Intent.ColorChannel),
+                    (typeof(ushort), typeof(ushort), Intent.ColorChannel),
                     delta =>
                     {
                         return new TensorAccessors<ushort, ushort>()
@@ -128,7 +128,7 @@ namespace Aardvark.Base
                 #region ColorChannel ushort as uint
 
                 {
-                    Tup.Create(typeof(ushort), typeof(uint), Intent.ColorChannel),
+                    (typeof(ushort), typeof(uint), Intent.ColorChannel),
                     delta =>
                     {
                         return new TensorAccessors<ushort, uint>()
@@ -144,7 +144,7 @@ namespace Aardvark.Base
                 #region ColorChannel ushort as float
 
                 {
-                    Tup.Create(typeof(ushort), typeof(float), Intent.ColorChannel),
+                    (typeof(ushort), typeof(float), Intent.ColorChannel),
                     delta =>
                     {
                         return new TensorAccessors<ushort, float>()
@@ -160,7 +160,7 @@ namespace Aardvark.Base
                 #region ColorChannel ushort as double
 
                 {
-                    Tup.Create(typeof(ushort), typeof(double), Intent.ColorChannel),
+                    (typeof(ushort), typeof(double), Intent.ColorChannel),
                     delta =>
                     {
                         return new TensorAccessors<ushort, double>()
@@ -176,7 +176,7 @@ namespace Aardvark.Base
                 #region ColorChannel uint as byte
 
                 {
-                    Tup.Create(typeof(uint), typeof(byte), Intent.ColorChannel),
+                    (typeof(uint), typeof(byte), Intent.ColorChannel),
                     delta =>
                     {
                         return new TensorAccessors<uint, byte>()
@@ -192,7 +192,7 @@ namespace Aardvark.Base
                 #region ColorChannel uint as ushort
 
                 {
-                    Tup.Create(typeof(uint), typeof(ushort), Intent.ColorChannel),
+                    (typeof(uint), typeof(ushort), Intent.ColorChannel),
                     delta =>
                     {
                         return new TensorAccessors<uint, ushort>()
@@ -208,7 +208,7 @@ namespace Aardvark.Base
                 #region ColorChannel uint as uint
 
                 {
-                    Tup.Create(typeof(uint), typeof(uint), Intent.ColorChannel),
+                    (typeof(uint), typeof(uint), Intent.ColorChannel),
                     delta =>
                     {
                         return new TensorAccessors<uint, uint>()
@@ -224,7 +224,7 @@ namespace Aardvark.Base
                 #region ColorChannel uint as float
 
                 {
-                    Tup.Create(typeof(uint), typeof(float), Intent.ColorChannel),
+                    (typeof(uint), typeof(float), Intent.ColorChannel),
                     delta =>
                     {
                         return new TensorAccessors<uint, float>()
@@ -240,7 +240,7 @@ namespace Aardvark.Base
                 #region ColorChannel uint as double
 
                 {
-                    Tup.Create(typeof(uint), typeof(double), Intent.ColorChannel),
+                    (typeof(uint), typeof(double), Intent.ColorChannel),
                     delta =>
                     {
                         return new TensorAccessors<uint, double>()
@@ -256,7 +256,7 @@ namespace Aardvark.Base
                 #region ColorChannel float as byte
 
                 {
-                    Tup.Create(typeof(float), typeof(byte), Intent.ColorChannel),
+                    (typeof(float), typeof(byte), Intent.ColorChannel),
                     delta =>
                     {
                         return new TensorAccessors<float, byte>()
@@ -272,7 +272,7 @@ namespace Aardvark.Base
                 #region ColorChannel float as ushort
 
                 {
-                    Tup.Create(typeof(float), typeof(ushort), Intent.ColorChannel),
+                    (typeof(float), typeof(ushort), Intent.ColorChannel),
                     delta =>
                     {
                         return new TensorAccessors<float, ushort>()
@@ -288,7 +288,7 @@ namespace Aardvark.Base
                 #region ColorChannel float as uint
 
                 {
-                    Tup.Create(typeof(float), typeof(uint), Intent.ColorChannel),
+                    (typeof(float), typeof(uint), Intent.ColorChannel),
                     delta =>
                     {
                         return new TensorAccessors<float, uint>()
@@ -304,7 +304,7 @@ namespace Aardvark.Base
                 #region ColorChannel float as float
 
                 {
-                    Tup.Create(typeof(float), typeof(float), Intent.ColorChannel),
+                    (typeof(float), typeof(float), Intent.ColorChannel),
                     delta =>
                     {
                         return new TensorAccessors<float, float>()
@@ -320,7 +320,7 @@ namespace Aardvark.Base
                 #region ColorChannel float as double
 
                 {
-                    Tup.Create(typeof(float), typeof(double), Intent.ColorChannel),
+                    (typeof(float), typeof(double), Intent.ColorChannel),
                     delta =>
                     {
                         return new TensorAccessors<float, double>()
@@ -336,7 +336,7 @@ namespace Aardvark.Base
                 #region ColorChannel double as byte
 
                 {
-                    Tup.Create(typeof(double), typeof(byte), Intent.ColorChannel),
+                    (typeof(double), typeof(byte), Intent.ColorChannel),
                     delta =>
                     {
                         return new TensorAccessors<double, byte>()
@@ -352,7 +352,7 @@ namespace Aardvark.Base
                 #region ColorChannel double as ushort
 
                 {
-                    Tup.Create(typeof(double), typeof(ushort), Intent.ColorChannel),
+                    (typeof(double), typeof(ushort), Intent.ColorChannel),
                     delta =>
                     {
                         return new TensorAccessors<double, ushort>()
@@ -368,7 +368,7 @@ namespace Aardvark.Base
                 #region ColorChannel double as uint
 
                 {
-                    Tup.Create(typeof(double), typeof(uint), Intent.ColorChannel),
+                    (typeof(double), typeof(uint), Intent.ColorChannel),
                     delta =>
                     {
                         return new TensorAccessors<double, uint>()
@@ -384,7 +384,7 @@ namespace Aardvark.Base
                 #region ColorChannel double as float
 
                 {
-                    Tup.Create(typeof(double), typeof(float), Intent.ColorChannel),
+                    (typeof(double), typeof(float), Intent.ColorChannel),
                     delta =>
                     {
                         return new TensorAccessors<double, float>()
@@ -400,7 +400,7 @@ namespace Aardvark.Base
                 #region ColorChannel double as double
 
                 {
-                    Tup.Create(typeof(double), typeof(double), Intent.ColorChannel),
+                    (typeof(double), typeof(double), Intent.ColorChannel),
                     delta =>
                     {
                         return new TensorAccessors<double, double>()
@@ -416,7 +416,7 @@ namespace Aardvark.Base
                 #region RGB bytes as C3b
 
                 {
-                    Tup.Create(typeof(byte), typeof(C3b), Intent.RGB),
+                    (typeof(byte), typeof(C3b), Intent.RGB),
                     delta =>
                     {
                         if (delta.Length < 3)
@@ -463,7 +463,7 @@ namespace Aardvark.Base
                 #region BGR bytes as C3b
 
                 {
-                    Tup.Create(typeof(byte), typeof(C3b), Intent.BGR),
+                    (typeof(byte), typeof(C3b), Intent.BGR),
                     delta =>
                     {
                         if (delta.Length < 3)
@@ -510,7 +510,7 @@ namespace Aardvark.Base
                 #region RGBA bytes as C3b
 
                 {
-                    Tup.Create(typeof(byte), typeof(C3b), Intent.RGBA),
+                    (typeof(byte), typeof(C3b), Intent.RGBA),
                     delta =>
                     {
                         if (delta.Length < 3)
@@ -559,7 +559,7 @@ namespace Aardvark.Base
                 #region BGRA bytes as C3b
 
                 {
-                    Tup.Create(typeof(byte), typeof(C3b), Intent.BGRA),
+                    (typeof(byte), typeof(C3b), Intent.BGRA),
                     delta =>
                     {
                         if (delta.Length < 3)
@@ -608,7 +608,7 @@ namespace Aardvark.Base
                 #region RGB bytes as C3us
 
                 {
-                    Tup.Create(typeof(byte), typeof(C3us), Intent.RGB),
+                    (typeof(byte), typeof(C3us), Intent.RGB),
                     delta =>
                     {
                         if (delta.Length < 3)
@@ -655,7 +655,7 @@ namespace Aardvark.Base
                 #region BGR bytes as C3us
 
                 {
-                    Tup.Create(typeof(byte), typeof(C3us), Intent.BGR),
+                    (typeof(byte), typeof(C3us), Intent.BGR),
                     delta =>
                     {
                         if (delta.Length < 3)
@@ -702,7 +702,7 @@ namespace Aardvark.Base
                 #region RGBA bytes as C3us
 
                 {
-                    Tup.Create(typeof(byte), typeof(C3us), Intent.RGBA),
+                    (typeof(byte), typeof(C3us), Intent.RGBA),
                     delta =>
                     {
                         if (delta.Length < 3)
@@ -751,7 +751,7 @@ namespace Aardvark.Base
                 #region BGRA bytes as C3us
 
                 {
-                    Tup.Create(typeof(byte), typeof(C3us), Intent.BGRA),
+                    (typeof(byte), typeof(C3us), Intent.BGRA),
                     delta =>
                     {
                         if (delta.Length < 3)
@@ -800,7 +800,7 @@ namespace Aardvark.Base
                 #region RGB bytes as C3ui
 
                 {
-                    Tup.Create(typeof(byte), typeof(C3ui), Intent.RGB),
+                    (typeof(byte), typeof(C3ui), Intent.RGB),
                     delta =>
                     {
                         if (delta.Length < 3)
@@ -847,7 +847,7 @@ namespace Aardvark.Base
                 #region BGR bytes as C3ui
 
                 {
-                    Tup.Create(typeof(byte), typeof(C3ui), Intent.BGR),
+                    (typeof(byte), typeof(C3ui), Intent.BGR),
                     delta =>
                     {
                         if (delta.Length < 3)
@@ -894,7 +894,7 @@ namespace Aardvark.Base
                 #region RGBA bytes as C3ui
 
                 {
-                    Tup.Create(typeof(byte), typeof(C3ui), Intent.RGBA),
+                    (typeof(byte), typeof(C3ui), Intent.RGBA),
                     delta =>
                     {
                         if (delta.Length < 3)
@@ -943,7 +943,7 @@ namespace Aardvark.Base
                 #region BGRA bytes as C3ui
 
                 {
-                    Tup.Create(typeof(byte), typeof(C3ui), Intent.BGRA),
+                    (typeof(byte), typeof(C3ui), Intent.BGRA),
                     delta =>
                     {
                         if (delta.Length < 3)
@@ -992,7 +992,7 @@ namespace Aardvark.Base
                 #region RGB bytes as C3f
 
                 {
-                    Tup.Create(typeof(byte), typeof(C3f), Intent.RGB),
+                    (typeof(byte), typeof(C3f), Intent.RGB),
                     delta =>
                     {
                         if (delta.Length < 3)
@@ -1039,7 +1039,7 @@ namespace Aardvark.Base
                 #region BGR bytes as C3f
 
                 {
-                    Tup.Create(typeof(byte), typeof(C3f), Intent.BGR),
+                    (typeof(byte), typeof(C3f), Intent.BGR),
                     delta =>
                     {
                         if (delta.Length < 3)
@@ -1086,7 +1086,7 @@ namespace Aardvark.Base
                 #region RGBA bytes as C3f
 
                 {
-                    Tup.Create(typeof(byte), typeof(C3f), Intent.RGBA),
+                    (typeof(byte), typeof(C3f), Intent.RGBA),
                     delta =>
                     {
                         if (delta.Length < 3)
@@ -1135,7 +1135,7 @@ namespace Aardvark.Base
                 #region BGRA bytes as C3f
 
                 {
-                    Tup.Create(typeof(byte), typeof(C3f), Intent.BGRA),
+                    (typeof(byte), typeof(C3f), Intent.BGRA),
                     delta =>
                     {
                         if (delta.Length < 3)
@@ -1184,7 +1184,7 @@ namespace Aardvark.Base
                 #region RGB bytes as C3d
 
                 {
-                    Tup.Create(typeof(byte), typeof(C3d), Intent.RGB),
+                    (typeof(byte), typeof(C3d), Intent.RGB),
                     delta =>
                     {
                         if (delta.Length < 3)
@@ -1231,7 +1231,7 @@ namespace Aardvark.Base
                 #region BGR bytes as C3d
 
                 {
-                    Tup.Create(typeof(byte), typeof(C3d), Intent.BGR),
+                    (typeof(byte), typeof(C3d), Intent.BGR),
                     delta =>
                     {
                         if (delta.Length < 3)
@@ -1278,7 +1278,7 @@ namespace Aardvark.Base
                 #region RGBA bytes as C3d
 
                 {
-                    Tup.Create(typeof(byte), typeof(C3d), Intent.RGBA),
+                    (typeof(byte), typeof(C3d), Intent.RGBA),
                     delta =>
                     {
                         if (delta.Length < 3)
@@ -1327,7 +1327,7 @@ namespace Aardvark.Base
                 #region BGRA bytes as C3d
 
                 {
-                    Tup.Create(typeof(byte), typeof(C3d), Intent.BGRA),
+                    (typeof(byte), typeof(C3d), Intent.BGRA),
                     delta =>
                     {
                         if (delta.Length < 3)
@@ -1376,7 +1376,7 @@ namespace Aardvark.Base
                 #region RGB bytes as C4b
 
                 {
-                    Tup.Create(typeof(byte), typeof(C4b), Intent.RGB),
+                    (typeof(byte), typeof(C4b), Intent.RGB),
                     delta =>
                     {
                         if (delta.Length < 3)
@@ -1425,7 +1425,7 @@ namespace Aardvark.Base
                 #region BGR bytes as C4b
 
                 {
-                    Tup.Create(typeof(byte), typeof(C4b), Intent.BGR),
+                    (typeof(byte), typeof(C4b), Intent.BGR),
                     delta =>
                     {
                         if (delta.Length < 3)
@@ -1474,7 +1474,7 @@ namespace Aardvark.Base
                 #region RGBA bytes as C4b
 
                 {
-                    Tup.Create(typeof(byte), typeof(C4b), Intent.RGBA),
+                    (typeof(byte), typeof(C4b), Intent.RGBA),
                     delta =>
                     {
                         if (delta.Length < 3)
@@ -1525,7 +1525,7 @@ namespace Aardvark.Base
                 #region BGRA bytes as C4b
 
                 {
-                    Tup.Create(typeof(byte), typeof(C4b), Intent.BGRA),
+                    (typeof(byte), typeof(C4b), Intent.BGRA),
                     delta =>
                     {
                         if (delta.Length < 3)
@@ -1576,7 +1576,7 @@ namespace Aardvark.Base
                 #region RGB bytes as C4us
 
                 {
-                    Tup.Create(typeof(byte), typeof(C4us), Intent.RGB),
+                    (typeof(byte), typeof(C4us), Intent.RGB),
                     delta =>
                     {
                         if (delta.Length < 3)
@@ -1625,7 +1625,7 @@ namespace Aardvark.Base
                 #region BGR bytes as C4us
 
                 {
-                    Tup.Create(typeof(byte), typeof(C4us), Intent.BGR),
+                    (typeof(byte), typeof(C4us), Intent.BGR),
                     delta =>
                     {
                         if (delta.Length < 3)
@@ -1674,7 +1674,7 @@ namespace Aardvark.Base
                 #region RGBA bytes as C4us
 
                 {
-                    Tup.Create(typeof(byte), typeof(C4us), Intent.RGBA),
+                    (typeof(byte), typeof(C4us), Intent.RGBA),
                     delta =>
                     {
                         if (delta.Length < 3)
@@ -1725,7 +1725,7 @@ namespace Aardvark.Base
                 #region BGRA bytes as C4us
 
                 {
-                    Tup.Create(typeof(byte), typeof(C4us), Intent.BGRA),
+                    (typeof(byte), typeof(C4us), Intent.BGRA),
                     delta =>
                     {
                         if (delta.Length < 3)
@@ -1776,7 +1776,7 @@ namespace Aardvark.Base
                 #region RGB bytes as C4ui
 
                 {
-                    Tup.Create(typeof(byte), typeof(C4ui), Intent.RGB),
+                    (typeof(byte), typeof(C4ui), Intent.RGB),
                     delta =>
                     {
                         if (delta.Length < 3)
@@ -1825,7 +1825,7 @@ namespace Aardvark.Base
                 #region BGR bytes as C4ui
 
                 {
-                    Tup.Create(typeof(byte), typeof(C4ui), Intent.BGR),
+                    (typeof(byte), typeof(C4ui), Intent.BGR),
                     delta =>
                     {
                         if (delta.Length < 3)
@@ -1874,7 +1874,7 @@ namespace Aardvark.Base
                 #region RGBA bytes as C4ui
 
                 {
-                    Tup.Create(typeof(byte), typeof(C4ui), Intent.RGBA),
+                    (typeof(byte), typeof(C4ui), Intent.RGBA),
                     delta =>
                     {
                         if (delta.Length < 3)
@@ -1925,7 +1925,7 @@ namespace Aardvark.Base
                 #region BGRA bytes as C4ui
 
                 {
-                    Tup.Create(typeof(byte), typeof(C4ui), Intent.BGRA),
+                    (typeof(byte), typeof(C4ui), Intent.BGRA),
                     delta =>
                     {
                         if (delta.Length < 3)
@@ -1976,7 +1976,7 @@ namespace Aardvark.Base
                 #region RGB bytes as C4f
 
                 {
-                    Tup.Create(typeof(byte), typeof(C4f), Intent.RGB),
+                    (typeof(byte), typeof(C4f), Intent.RGB),
                     delta =>
                     {
                         if (delta.Length < 3)
@@ -2025,7 +2025,7 @@ namespace Aardvark.Base
                 #region BGR bytes as C4f
 
                 {
-                    Tup.Create(typeof(byte), typeof(C4f), Intent.BGR),
+                    (typeof(byte), typeof(C4f), Intent.BGR),
                     delta =>
                     {
                         if (delta.Length < 3)
@@ -2074,7 +2074,7 @@ namespace Aardvark.Base
                 #region RGBA bytes as C4f
 
                 {
-                    Tup.Create(typeof(byte), typeof(C4f), Intent.RGBA),
+                    (typeof(byte), typeof(C4f), Intent.RGBA),
                     delta =>
                     {
                         if (delta.Length < 3)
@@ -2125,7 +2125,7 @@ namespace Aardvark.Base
                 #region BGRA bytes as C4f
 
                 {
-                    Tup.Create(typeof(byte), typeof(C4f), Intent.BGRA),
+                    (typeof(byte), typeof(C4f), Intent.BGRA),
                     delta =>
                     {
                         if (delta.Length < 3)
@@ -2176,7 +2176,7 @@ namespace Aardvark.Base
                 #region RGB bytes as C4d
 
                 {
-                    Tup.Create(typeof(byte), typeof(C4d), Intent.RGB),
+                    (typeof(byte), typeof(C4d), Intent.RGB),
                     delta =>
                     {
                         if (delta.Length < 3)
@@ -2225,7 +2225,7 @@ namespace Aardvark.Base
                 #region BGR bytes as C4d
 
                 {
-                    Tup.Create(typeof(byte), typeof(C4d), Intent.BGR),
+                    (typeof(byte), typeof(C4d), Intent.BGR),
                     delta =>
                     {
                         if (delta.Length < 3)
@@ -2274,7 +2274,7 @@ namespace Aardvark.Base
                 #region RGBA bytes as C4d
 
                 {
-                    Tup.Create(typeof(byte), typeof(C4d), Intent.RGBA),
+                    (typeof(byte), typeof(C4d), Intent.RGBA),
                     delta =>
                     {
                         if (delta.Length < 3)
@@ -2325,7 +2325,7 @@ namespace Aardvark.Base
                 #region BGRA bytes as C4d
 
                 {
-                    Tup.Create(typeof(byte), typeof(C4d), Intent.BGRA),
+                    (typeof(byte), typeof(C4d), Intent.BGRA),
                     delta =>
                     {
                         if (delta.Length < 3)
@@ -2376,7 +2376,7 @@ namespace Aardvark.Base
                 #region RGB ushorts as C3b
 
                 {
-                    Tup.Create(typeof(ushort), typeof(C3b), Intent.RGB),
+                    (typeof(ushort), typeof(C3b), Intent.RGB),
                     delta =>
                     {
                         if (delta.Length < 3)
@@ -2423,7 +2423,7 @@ namespace Aardvark.Base
                 #region BGR ushorts as C3b
 
                 {
-                    Tup.Create(typeof(ushort), typeof(C3b), Intent.BGR),
+                    (typeof(ushort), typeof(C3b), Intent.BGR),
                     delta =>
                     {
                         if (delta.Length < 3)
@@ -2470,7 +2470,7 @@ namespace Aardvark.Base
                 #region RGBA ushorts as C3b
 
                 {
-                    Tup.Create(typeof(ushort), typeof(C3b), Intent.RGBA),
+                    (typeof(ushort), typeof(C3b), Intent.RGBA),
                     delta =>
                     {
                         if (delta.Length < 3)
@@ -2519,7 +2519,7 @@ namespace Aardvark.Base
                 #region BGRA ushorts as C3b
 
                 {
-                    Tup.Create(typeof(ushort), typeof(C3b), Intent.BGRA),
+                    (typeof(ushort), typeof(C3b), Intent.BGRA),
                     delta =>
                     {
                         if (delta.Length < 3)
@@ -2568,7 +2568,7 @@ namespace Aardvark.Base
                 #region RGB ushorts as C3us
 
                 {
-                    Tup.Create(typeof(ushort), typeof(C3us), Intent.RGB),
+                    (typeof(ushort), typeof(C3us), Intent.RGB),
                     delta =>
                     {
                         if (delta.Length < 3)
@@ -2615,7 +2615,7 @@ namespace Aardvark.Base
                 #region BGR ushorts as C3us
 
                 {
-                    Tup.Create(typeof(ushort), typeof(C3us), Intent.BGR),
+                    (typeof(ushort), typeof(C3us), Intent.BGR),
                     delta =>
                     {
                         if (delta.Length < 3)
@@ -2662,7 +2662,7 @@ namespace Aardvark.Base
                 #region RGBA ushorts as C3us
 
                 {
-                    Tup.Create(typeof(ushort), typeof(C3us), Intent.RGBA),
+                    (typeof(ushort), typeof(C3us), Intent.RGBA),
                     delta =>
                     {
                         if (delta.Length < 3)
@@ -2711,7 +2711,7 @@ namespace Aardvark.Base
                 #region BGRA ushorts as C3us
 
                 {
-                    Tup.Create(typeof(ushort), typeof(C3us), Intent.BGRA),
+                    (typeof(ushort), typeof(C3us), Intent.BGRA),
                     delta =>
                     {
                         if (delta.Length < 3)
@@ -2760,7 +2760,7 @@ namespace Aardvark.Base
                 #region RGB ushorts as C3ui
 
                 {
-                    Tup.Create(typeof(ushort), typeof(C3ui), Intent.RGB),
+                    (typeof(ushort), typeof(C3ui), Intent.RGB),
                     delta =>
                     {
                         if (delta.Length < 3)
@@ -2807,7 +2807,7 @@ namespace Aardvark.Base
                 #region BGR ushorts as C3ui
 
                 {
-                    Tup.Create(typeof(ushort), typeof(C3ui), Intent.BGR),
+                    (typeof(ushort), typeof(C3ui), Intent.BGR),
                     delta =>
                     {
                         if (delta.Length < 3)
@@ -2854,7 +2854,7 @@ namespace Aardvark.Base
                 #region RGBA ushorts as C3ui
 
                 {
-                    Tup.Create(typeof(ushort), typeof(C3ui), Intent.RGBA),
+                    (typeof(ushort), typeof(C3ui), Intent.RGBA),
                     delta =>
                     {
                         if (delta.Length < 3)
@@ -2903,7 +2903,7 @@ namespace Aardvark.Base
                 #region BGRA ushorts as C3ui
 
                 {
-                    Tup.Create(typeof(ushort), typeof(C3ui), Intent.BGRA),
+                    (typeof(ushort), typeof(C3ui), Intent.BGRA),
                     delta =>
                     {
                         if (delta.Length < 3)
@@ -2952,7 +2952,7 @@ namespace Aardvark.Base
                 #region RGB ushorts as C3f
 
                 {
-                    Tup.Create(typeof(ushort), typeof(C3f), Intent.RGB),
+                    (typeof(ushort), typeof(C3f), Intent.RGB),
                     delta =>
                     {
                         if (delta.Length < 3)
@@ -2999,7 +2999,7 @@ namespace Aardvark.Base
                 #region BGR ushorts as C3f
 
                 {
-                    Tup.Create(typeof(ushort), typeof(C3f), Intent.BGR),
+                    (typeof(ushort), typeof(C3f), Intent.BGR),
                     delta =>
                     {
                         if (delta.Length < 3)
@@ -3046,7 +3046,7 @@ namespace Aardvark.Base
                 #region RGBA ushorts as C3f
 
                 {
-                    Tup.Create(typeof(ushort), typeof(C3f), Intent.RGBA),
+                    (typeof(ushort), typeof(C3f), Intent.RGBA),
                     delta =>
                     {
                         if (delta.Length < 3)
@@ -3095,7 +3095,7 @@ namespace Aardvark.Base
                 #region BGRA ushorts as C3f
 
                 {
-                    Tup.Create(typeof(ushort), typeof(C3f), Intent.BGRA),
+                    (typeof(ushort), typeof(C3f), Intent.BGRA),
                     delta =>
                     {
                         if (delta.Length < 3)
@@ -3144,7 +3144,7 @@ namespace Aardvark.Base
                 #region RGB ushorts as C3d
 
                 {
-                    Tup.Create(typeof(ushort), typeof(C3d), Intent.RGB),
+                    (typeof(ushort), typeof(C3d), Intent.RGB),
                     delta =>
                     {
                         if (delta.Length < 3)
@@ -3191,7 +3191,7 @@ namespace Aardvark.Base
                 #region BGR ushorts as C3d
 
                 {
-                    Tup.Create(typeof(ushort), typeof(C3d), Intent.BGR),
+                    (typeof(ushort), typeof(C3d), Intent.BGR),
                     delta =>
                     {
                         if (delta.Length < 3)
@@ -3238,7 +3238,7 @@ namespace Aardvark.Base
                 #region RGBA ushorts as C3d
 
                 {
-                    Tup.Create(typeof(ushort), typeof(C3d), Intent.RGBA),
+                    (typeof(ushort), typeof(C3d), Intent.RGBA),
                     delta =>
                     {
                         if (delta.Length < 3)
@@ -3287,7 +3287,7 @@ namespace Aardvark.Base
                 #region BGRA ushorts as C3d
 
                 {
-                    Tup.Create(typeof(ushort), typeof(C3d), Intent.BGRA),
+                    (typeof(ushort), typeof(C3d), Intent.BGRA),
                     delta =>
                     {
                         if (delta.Length < 3)
@@ -3336,7 +3336,7 @@ namespace Aardvark.Base
                 #region RGB ushorts as C4b
 
                 {
-                    Tup.Create(typeof(ushort), typeof(C4b), Intent.RGB),
+                    (typeof(ushort), typeof(C4b), Intent.RGB),
                     delta =>
                     {
                         if (delta.Length < 3)
@@ -3385,7 +3385,7 @@ namespace Aardvark.Base
                 #region BGR ushorts as C4b
 
                 {
-                    Tup.Create(typeof(ushort), typeof(C4b), Intent.BGR),
+                    (typeof(ushort), typeof(C4b), Intent.BGR),
                     delta =>
                     {
                         if (delta.Length < 3)
@@ -3434,7 +3434,7 @@ namespace Aardvark.Base
                 #region RGBA ushorts as C4b
 
                 {
-                    Tup.Create(typeof(ushort), typeof(C4b), Intent.RGBA),
+                    (typeof(ushort), typeof(C4b), Intent.RGBA),
                     delta =>
                     {
                         if (delta.Length < 3)
@@ -3485,7 +3485,7 @@ namespace Aardvark.Base
                 #region BGRA ushorts as C4b
 
                 {
-                    Tup.Create(typeof(ushort), typeof(C4b), Intent.BGRA),
+                    (typeof(ushort), typeof(C4b), Intent.BGRA),
                     delta =>
                     {
                         if (delta.Length < 3)
@@ -3536,7 +3536,7 @@ namespace Aardvark.Base
                 #region RGB ushorts as C4us
 
                 {
-                    Tup.Create(typeof(ushort), typeof(C4us), Intent.RGB),
+                    (typeof(ushort), typeof(C4us), Intent.RGB),
                     delta =>
                     {
                         if (delta.Length < 3)
@@ -3585,7 +3585,7 @@ namespace Aardvark.Base
                 #region BGR ushorts as C4us
 
                 {
-                    Tup.Create(typeof(ushort), typeof(C4us), Intent.BGR),
+                    (typeof(ushort), typeof(C4us), Intent.BGR),
                     delta =>
                     {
                         if (delta.Length < 3)
@@ -3634,7 +3634,7 @@ namespace Aardvark.Base
                 #region RGBA ushorts as C4us
 
                 {
-                    Tup.Create(typeof(ushort), typeof(C4us), Intent.RGBA),
+                    (typeof(ushort), typeof(C4us), Intent.RGBA),
                     delta =>
                     {
                         if (delta.Length < 3)
@@ -3685,7 +3685,7 @@ namespace Aardvark.Base
                 #region BGRA ushorts as C4us
 
                 {
-                    Tup.Create(typeof(ushort), typeof(C4us), Intent.BGRA),
+                    (typeof(ushort), typeof(C4us), Intent.BGRA),
                     delta =>
                     {
                         if (delta.Length < 3)
@@ -3736,7 +3736,7 @@ namespace Aardvark.Base
                 #region RGB ushorts as C4ui
 
                 {
-                    Tup.Create(typeof(ushort), typeof(C4ui), Intent.RGB),
+                    (typeof(ushort), typeof(C4ui), Intent.RGB),
                     delta =>
                     {
                         if (delta.Length < 3)
@@ -3785,7 +3785,7 @@ namespace Aardvark.Base
                 #region BGR ushorts as C4ui
 
                 {
-                    Tup.Create(typeof(ushort), typeof(C4ui), Intent.BGR),
+                    (typeof(ushort), typeof(C4ui), Intent.BGR),
                     delta =>
                     {
                         if (delta.Length < 3)
@@ -3834,7 +3834,7 @@ namespace Aardvark.Base
                 #region RGBA ushorts as C4ui
 
                 {
-                    Tup.Create(typeof(ushort), typeof(C4ui), Intent.RGBA),
+                    (typeof(ushort), typeof(C4ui), Intent.RGBA),
                     delta =>
                     {
                         if (delta.Length < 3)
@@ -3885,7 +3885,7 @@ namespace Aardvark.Base
                 #region BGRA ushorts as C4ui
 
                 {
-                    Tup.Create(typeof(ushort), typeof(C4ui), Intent.BGRA),
+                    (typeof(ushort), typeof(C4ui), Intent.BGRA),
                     delta =>
                     {
                         if (delta.Length < 3)
@@ -3936,7 +3936,7 @@ namespace Aardvark.Base
                 #region RGB ushorts as C4f
 
                 {
-                    Tup.Create(typeof(ushort), typeof(C4f), Intent.RGB),
+                    (typeof(ushort), typeof(C4f), Intent.RGB),
                     delta =>
                     {
                         if (delta.Length < 3)
@@ -3985,7 +3985,7 @@ namespace Aardvark.Base
                 #region BGR ushorts as C4f
 
                 {
-                    Tup.Create(typeof(ushort), typeof(C4f), Intent.BGR),
+                    (typeof(ushort), typeof(C4f), Intent.BGR),
                     delta =>
                     {
                         if (delta.Length < 3)
@@ -4034,7 +4034,7 @@ namespace Aardvark.Base
                 #region RGBA ushorts as C4f
 
                 {
-                    Tup.Create(typeof(ushort), typeof(C4f), Intent.RGBA),
+                    (typeof(ushort), typeof(C4f), Intent.RGBA),
                     delta =>
                     {
                         if (delta.Length < 3)
@@ -4085,7 +4085,7 @@ namespace Aardvark.Base
                 #region BGRA ushorts as C4f
 
                 {
-                    Tup.Create(typeof(ushort), typeof(C4f), Intent.BGRA),
+                    (typeof(ushort), typeof(C4f), Intent.BGRA),
                     delta =>
                     {
                         if (delta.Length < 3)
@@ -4136,7 +4136,7 @@ namespace Aardvark.Base
                 #region RGB ushorts as C4d
 
                 {
-                    Tup.Create(typeof(ushort), typeof(C4d), Intent.RGB),
+                    (typeof(ushort), typeof(C4d), Intent.RGB),
                     delta =>
                     {
                         if (delta.Length < 3)
@@ -4185,7 +4185,7 @@ namespace Aardvark.Base
                 #region BGR ushorts as C4d
 
                 {
-                    Tup.Create(typeof(ushort), typeof(C4d), Intent.BGR),
+                    (typeof(ushort), typeof(C4d), Intent.BGR),
                     delta =>
                     {
                         if (delta.Length < 3)
@@ -4234,7 +4234,7 @@ namespace Aardvark.Base
                 #region RGBA ushorts as C4d
 
                 {
-                    Tup.Create(typeof(ushort), typeof(C4d), Intent.RGBA),
+                    (typeof(ushort), typeof(C4d), Intent.RGBA),
                     delta =>
                     {
                         if (delta.Length < 3)
@@ -4285,7 +4285,7 @@ namespace Aardvark.Base
                 #region BGRA ushorts as C4d
 
                 {
-                    Tup.Create(typeof(ushort), typeof(C4d), Intent.BGRA),
+                    (typeof(ushort), typeof(C4d), Intent.BGRA),
                     delta =>
                     {
                         if (delta.Length < 3)
@@ -4336,7 +4336,7 @@ namespace Aardvark.Base
                 #region RGB uints as C3b
 
                 {
-                    Tup.Create(typeof(uint), typeof(C3b), Intent.RGB),
+                    (typeof(uint), typeof(C3b), Intent.RGB),
                     delta =>
                     {
                         if (delta.Length < 3)
@@ -4383,7 +4383,7 @@ namespace Aardvark.Base
                 #region BGR uints as C3b
 
                 {
-                    Tup.Create(typeof(uint), typeof(C3b), Intent.BGR),
+                    (typeof(uint), typeof(C3b), Intent.BGR),
                     delta =>
                     {
                         if (delta.Length < 3)
@@ -4430,7 +4430,7 @@ namespace Aardvark.Base
                 #region RGBA uints as C3b
 
                 {
-                    Tup.Create(typeof(uint), typeof(C3b), Intent.RGBA),
+                    (typeof(uint), typeof(C3b), Intent.RGBA),
                     delta =>
                     {
                         if (delta.Length < 3)
@@ -4479,7 +4479,7 @@ namespace Aardvark.Base
                 #region BGRA uints as C3b
 
                 {
-                    Tup.Create(typeof(uint), typeof(C3b), Intent.BGRA),
+                    (typeof(uint), typeof(C3b), Intent.BGRA),
                     delta =>
                     {
                         if (delta.Length < 3)
@@ -4528,7 +4528,7 @@ namespace Aardvark.Base
                 #region RGB uints as C3us
 
                 {
-                    Tup.Create(typeof(uint), typeof(C3us), Intent.RGB),
+                    (typeof(uint), typeof(C3us), Intent.RGB),
                     delta =>
                     {
                         if (delta.Length < 3)
@@ -4575,7 +4575,7 @@ namespace Aardvark.Base
                 #region BGR uints as C3us
 
                 {
-                    Tup.Create(typeof(uint), typeof(C3us), Intent.BGR),
+                    (typeof(uint), typeof(C3us), Intent.BGR),
                     delta =>
                     {
                         if (delta.Length < 3)
@@ -4622,7 +4622,7 @@ namespace Aardvark.Base
                 #region RGBA uints as C3us
 
                 {
-                    Tup.Create(typeof(uint), typeof(C3us), Intent.RGBA),
+                    (typeof(uint), typeof(C3us), Intent.RGBA),
                     delta =>
                     {
                         if (delta.Length < 3)
@@ -4671,7 +4671,7 @@ namespace Aardvark.Base
                 #region BGRA uints as C3us
 
                 {
-                    Tup.Create(typeof(uint), typeof(C3us), Intent.BGRA),
+                    (typeof(uint), typeof(C3us), Intent.BGRA),
                     delta =>
                     {
                         if (delta.Length < 3)
@@ -4720,7 +4720,7 @@ namespace Aardvark.Base
                 #region RGB uints as C3ui
 
                 {
-                    Tup.Create(typeof(uint), typeof(C3ui), Intent.RGB),
+                    (typeof(uint), typeof(C3ui), Intent.RGB),
                     delta =>
                     {
                         if (delta.Length < 3)
@@ -4767,7 +4767,7 @@ namespace Aardvark.Base
                 #region BGR uints as C3ui
 
                 {
-                    Tup.Create(typeof(uint), typeof(C3ui), Intent.BGR),
+                    (typeof(uint), typeof(C3ui), Intent.BGR),
                     delta =>
                     {
                         if (delta.Length < 3)
@@ -4814,7 +4814,7 @@ namespace Aardvark.Base
                 #region RGBA uints as C3ui
 
                 {
-                    Tup.Create(typeof(uint), typeof(C3ui), Intent.RGBA),
+                    (typeof(uint), typeof(C3ui), Intent.RGBA),
                     delta =>
                     {
                         if (delta.Length < 3)
@@ -4863,7 +4863,7 @@ namespace Aardvark.Base
                 #region BGRA uints as C3ui
 
                 {
-                    Tup.Create(typeof(uint), typeof(C3ui), Intent.BGRA),
+                    (typeof(uint), typeof(C3ui), Intent.BGRA),
                     delta =>
                     {
                         if (delta.Length < 3)
@@ -4912,7 +4912,7 @@ namespace Aardvark.Base
                 #region RGB uints as C3f
 
                 {
-                    Tup.Create(typeof(uint), typeof(C3f), Intent.RGB),
+                    (typeof(uint), typeof(C3f), Intent.RGB),
                     delta =>
                     {
                         if (delta.Length < 3)
@@ -4959,7 +4959,7 @@ namespace Aardvark.Base
                 #region BGR uints as C3f
 
                 {
-                    Tup.Create(typeof(uint), typeof(C3f), Intent.BGR),
+                    (typeof(uint), typeof(C3f), Intent.BGR),
                     delta =>
                     {
                         if (delta.Length < 3)
@@ -5006,7 +5006,7 @@ namespace Aardvark.Base
                 #region RGBA uints as C3f
 
                 {
-                    Tup.Create(typeof(uint), typeof(C3f), Intent.RGBA),
+                    (typeof(uint), typeof(C3f), Intent.RGBA),
                     delta =>
                     {
                         if (delta.Length < 3)
@@ -5055,7 +5055,7 @@ namespace Aardvark.Base
                 #region BGRA uints as C3f
 
                 {
-                    Tup.Create(typeof(uint), typeof(C3f), Intent.BGRA),
+                    (typeof(uint), typeof(C3f), Intent.BGRA),
                     delta =>
                     {
                         if (delta.Length < 3)
@@ -5104,7 +5104,7 @@ namespace Aardvark.Base
                 #region RGB uints as C3d
 
                 {
-                    Tup.Create(typeof(uint), typeof(C3d), Intent.RGB),
+                    (typeof(uint), typeof(C3d), Intent.RGB),
                     delta =>
                     {
                         if (delta.Length < 3)
@@ -5151,7 +5151,7 @@ namespace Aardvark.Base
                 #region BGR uints as C3d
 
                 {
-                    Tup.Create(typeof(uint), typeof(C3d), Intent.BGR),
+                    (typeof(uint), typeof(C3d), Intent.BGR),
                     delta =>
                     {
                         if (delta.Length < 3)
@@ -5198,7 +5198,7 @@ namespace Aardvark.Base
                 #region RGBA uints as C3d
 
                 {
-                    Tup.Create(typeof(uint), typeof(C3d), Intent.RGBA),
+                    (typeof(uint), typeof(C3d), Intent.RGBA),
                     delta =>
                     {
                         if (delta.Length < 3)
@@ -5247,7 +5247,7 @@ namespace Aardvark.Base
                 #region BGRA uints as C3d
 
                 {
-                    Tup.Create(typeof(uint), typeof(C3d), Intent.BGRA),
+                    (typeof(uint), typeof(C3d), Intent.BGRA),
                     delta =>
                     {
                         if (delta.Length < 3)
@@ -5296,7 +5296,7 @@ namespace Aardvark.Base
                 #region RGB uints as C4b
 
                 {
-                    Tup.Create(typeof(uint), typeof(C4b), Intent.RGB),
+                    (typeof(uint), typeof(C4b), Intent.RGB),
                     delta =>
                     {
                         if (delta.Length < 3)
@@ -5345,7 +5345,7 @@ namespace Aardvark.Base
                 #region BGR uints as C4b
 
                 {
-                    Tup.Create(typeof(uint), typeof(C4b), Intent.BGR),
+                    (typeof(uint), typeof(C4b), Intent.BGR),
                     delta =>
                     {
                         if (delta.Length < 3)
@@ -5394,7 +5394,7 @@ namespace Aardvark.Base
                 #region RGBA uints as C4b
 
                 {
-                    Tup.Create(typeof(uint), typeof(C4b), Intent.RGBA),
+                    (typeof(uint), typeof(C4b), Intent.RGBA),
                     delta =>
                     {
                         if (delta.Length < 3)
@@ -5445,7 +5445,7 @@ namespace Aardvark.Base
                 #region BGRA uints as C4b
 
                 {
-                    Tup.Create(typeof(uint), typeof(C4b), Intent.BGRA),
+                    (typeof(uint), typeof(C4b), Intent.BGRA),
                     delta =>
                     {
                         if (delta.Length < 3)
@@ -5496,7 +5496,7 @@ namespace Aardvark.Base
                 #region RGB uints as C4us
 
                 {
-                    Tup.Create(typeof(uint), typeof(C4us), Intent.RGB),
+                    (typeof(uint), typeof(C4us), Intent.RGB),
                     delta =>
                     {
                         if (delta.Length < 3)
@@ -5545,7 +5545,7 @@ namespace Aardvark.Base
                 #region BGR uints as C4us
 
                 {
-                    Tup.Create(typeof(uint), typeof(C4us), Intent.BGR),
+                    (typeof(uint), typeof(C4us), Intent.BGR),
                     delta =>
                     {
                         if (delta.Length < 3)
@@ -5594,7 +5594,7 @@ namespace Aardvark.Base
                 #region RGBA uints as C4us
 
                 {
-                    Tup.Create(typeof(uint), typeof(C4us), Intent.RGBA),
+                    (typeof(uint), typeof(C4us), Intent.RGBA),
                     delta =>
                     {
                         if (delta.Length < 3)
@@ -5645,7 +5645,7 @@ namespace Aardvark.Base
                 #region BGRA uints as C4us
 
                 {
-                    Tup.Create(typeof(uint), typeof(C4us), Intent.BGRA),
+                    (typeof(uint), typeof(C4us), Intent.BGRA),
                     delta =>
                     {
                         if (delta.Length < 3)
@@ -5696,7 +5696,7 @@ namespace Aardvark.Base
                 #region RGB uints as C4ui
 
                 {
-                    Tup.Create(typeof(uint), typeof(C4ui), Intent.RGB),
+                    (typeof(uint), typeof(C4ui), Intent.RGB),
                     delta =>
                     {
                         if (delta.Length < 3)
@@ -5745,7 +5745,7 @@ namespace Aardvark.Base
                 #region BGR uints as C4ui
 
                 {
-                    Tup.Create(typeof(uint), typeof(C4ui), Intent.BGR),
+                    (typeof(uint), typeof(C4ui), Intent.BGR),
                     delta =>
                     {
                         if (delta.Length < 3)
@@ -5794,7 +5794,7 @@ namespace Aardvark.Base
                 #region RGBA uints as C4ui
 
                 {
-                    Tup.Create(typeof(uint), typeof(C4ui), Intent.RGBA),
+                    (typeof(uint), typeof(C4ui), Intent.RGBA),
                     delta =>
                     {
                         if (delta.Length < 3)
@@ -5845,7 +5845,7 @@ namespace Aardvark.Base
                 #region BGRA uints as C4ui
 
                 {
-                    Tup.Create(typeof(uint), typeof(C4ui), Intent.BGRA),
+                    (typeof(uint), typeof(C4ui), Intent.BGRA),
                     delta =>
                     {
                         if (delta.Length < 3)
@@ -5896,7 +5896,7 @@ namespace Aardvark.Base
                 #region RGB uints as C4f
 
                 {
-                    Tup.Create(typeof(uint), typeof(C4f), Intent.RGB),
+                    (typeof(uint), typeof(C4f), Intent.RGB),
                     delta =>
                     {
                         if (delta.Length < 3)
@@ -5945,7 +5945,7 @@ namespace Aardvark.Base
                 #region BGR uints as C4f
 
                 {
-                    Tup.Create(typeof(uint), typeof(C4f), Intent.BGR),
+                    (typeof(uint), typeof(C4f), Intent.BGR),
                     delta =>
                     {
                         if (delta.Length < 3)
@@ -5994,7 +5994,7 @@ namespace Aardvark.Base
                 #region RGBA uints as C4f
 
                 {
-                    Tup.Create(typeof(uint), typeof(C4f), Intent.RGBA),
+                    (typeof(uint), typeof(C4f), Intent.RGBA),
                     delta =>
                     {
                         if (delta.Length < 3)
@@ -6045,7 +6045,7 @@ namespace Aardvark.Base
                 #region BGRA uints as C4f
 
                 {
-                    Tup.Create(typeof(uint), typeof(C4f), Intent.BGRA),
+                    (typeof(uint), typeof(C4f), Intent.BGRA),
                     delta =>
                     {
                         if (delta.Length < 3)
@@ -6096,7 +6096,7 @@ namespace Aardvark.Base
                 #region RGB uints as C4d
 
                 {
-                    Tup.Create(typeof(uint), typeof(C4d), Intent.RGB),
+                    (typeof(uint), typeof(C4d), Intent.RGB),
                     delta =>
                     {
                         if (delta.Length < 3)
@@ -6145,7 +6145,7 @@ namespace Aardvark.Base
                 #region BGR uints as C4d
 
                 {
-                    Tup.Create(typeof(uint), typeof(C4d), Intent.BGR),
+                    (typeof(uint), typeof(C4d), Intent.BGR),
                     delta =>
                     {
                         if (delta.Length < 3)
@@ -6194,7 +6194,7 @@ namespace Aardvark.Base
                 #region RGBA uints as C4d
 
                 {
-                    Tup.Create(typeof(uint), typeof(C4d), Intent.RGBA),
+                    (typeof(uint), typeof(C4d), Intent.RGBA),
                     delta =>
                     {
                         if (delta.Length < 3)
@@ -6245,7 +6245,7 @@ namespace Aardvark.Base
                 #region BGRA uints as C4d
 
                 {
-                    Tup.Create(typeof(uint), typeof(C4d), Intent.BGRA),
+                    (typeof(uint), typeof(C4d), Intent.BGRA),
                     delta =>
                     {
                         if (delta.Length < 3)
@@ -6296,7 +6296,7 @@ namespace Aardvark.Base
                 #region RGB floats as C3b
 
                 {
-                    Tup.Create(typeof(float), typeof(C3b), Intent.RGB),
+                    (typeof(float), typeof(C3b), Intent.RGB),
                     delta =>
                     {
                         if (delta.Length < 3)
@@ -6343,7 +6343,7 @@ namespace Aardvark.Base
                 #region BGR floats as C3b
 
                 {
-                    Tup.Create(typeof(float), typeof(C3b), Intent.BGR),
+                    (typeof(float), typeof(C3b), Intent.BGR),
                     delta =>
                     {
                         if (delta.Length < 3)
@@ -6390,7 +6390,7 @@ namespace Aardvark.Base
                 #region RGBA floats as C3b
 
                 {
-                    Tup.Create(typeof(float), typeof(C3b), Intent.RGBA),
+                    (typeof(float), typeof(C3b), Intent.RGBA),
                     delta =>
                     {
                         if (delta.Length < 3)
@@ -6439,7 +6439,7 @@ namespace Aardvark.Base
                 #region BGRA floats as C3b
 
                 {
-                    Tup.Create(typeof(float), typeof(C3b), Intent.BGRA),
+                    (typeof(float), typeof(C3b), Intent.BGRA),
                     delta =>
                     {
                         if (delta.Length < 3)
@@ -6488,7 +6488,7 @@ namespace Aardvark.Base
                 #region RGB floats as C3us
 
                 {
-                    Tup.Create(typeof(float), typeof(C3us), Intent.RGB),
+                    (typeof(float), typeof(C3us), Intent.RGB),
                     delta =>
                     {
                         if (delta.Length < 3)
@@ -6535,7 +6535,7 @@ namespace Aardvark.Base
                 #region BGR floats as C3us
 
                 {
-                    Tup.Create(typeof(float), typeof(C3us), Intent.BGR),
+                    (typeof(float), typeof(C3us), Intent.BGR),
                     delta =>
                     {
                         if (delta.Length < 3)
@@ -6582,7 +6582,7 @@ namespace Aardvark.Base
                 #region RGBA floats as C3us
 
                 {
-                    Tup.Create(typeof(float), typeof(C3us), Intent.RGBA),
+                    (typeof(float), typeof(C3us), Intent.RGBA),
                     delta =>
                     {
                         if (delta.Length < 3)
@@ -6631,7 +6631,7 @@ namespace Aardvark.Base
                 #region BGRA floats as C3us
 
                 {
-                    Tup.Create(typeof(float), typeof(C3us), Intent.BGRA),
+                    (typeof(float), typeof(C3us), Intent.BGRA),
                     delta =>
                     {
                         if (delta.Length < 3)
@@ -6680,7 +6680,7 @@ namespace Aardvark.Base
                 #region RGB floats as C3ui
 
                 {
-                    Tup.Create(typeof(float), typeof(C3ui), Intent.RGB),
+                    (typeof(float), typeof(C3ui), Intent.RGB),
                     delta =>
                     {
                         if (delta.Length < 3)
@@ -6727,7 +6727,7 @@ namespace Aardvark.Base
                 #region BGR floats as C3ui
 
                 {
-                    Tup.Create(typeof(float), typeof(C3ui), Intent.BGR),
+                    (typeof(float), typeof(C3ui), Intent.BGR),
                     delta =>
                     {
                         if (delta.Length < 3)
@@ -6774,7 +6774,7 @@ namespace Aardvark.Base
                 #region RGBA floats as C3ui
 
                 {
-                    Tup.Create(typeof(float), typeof(C3ui), Intent.RGBA),
+                    (typeof(float), typeof(C3ui), Intent.RGBA),
                     delta =>
                     {
                         if (delta.Length < 3)
@@ -6823,7 +6823,7 @@ namespace Aardvark.Base
                 #region BGRA floats as C3ui
 
                 {
-                    Tup.Create(typeof(float), typeof(C3ui), Intent.BGRA),
+                    (typeof(float), typeof(C3ui), Intent.BGRA),
                     delta =>
                     {
                         if (delta.Length < 3)
@@ -6872,7 +6872,7 @@ namespace Aardvark.Base
                 #region RGB floats as C3f
 
                 {
-                    Tup.Create(typeof(float), typeof(C3f), Intent.RGB),
+                    (typeof(float), typeof(C3f), Intent.RGB),
                     delta =>
                     {
                         if (delta.Length < 3)
@@ -6919,7 +6919,7 @@ namespace Aardvark.Base
                 #region BGR floats as C3f
 
                 {
-                    Tup.Create(typeof(float), typeof(C3f), Intent.BGR),
+                    (typeof(float), typeof(C3f), Intent.BGR),
                     delta =>
                     {
                         if (delta.Length < 3)
@@ -6966,7 +6966,7 @@ namespace Aardvark.Base
                 #region RGBA floats as C3f
 
                 {
-                    Tup.Create(typeof(float), typeof(C3f), Intent.RGBA),
+                    (typeof(float), typeof(C3f), Intent.RGBA),
                     delta =>
                     {
                         if (delta.Length < 3)
@@ -7015,7 +7015,7 @@ namespace Aardvark.Base
                 #region BGRA floats as C3f
 
                 {
-                    Tup.Create(typeof(float), typeof(C3f), Intent.BGRA),
+                    (typeof(float), typeof(C3f), Intent.BGRA),
                     delta =>
                     {
                         if (delta.Length < 3)
@@ -7064,7 +7064,7 @@ namespace Aardvark.Base
                 #region RGB floats as C3d
 
                 {
-                    Tup.Create(typeof(float), typeof(C3d), Intent.RGB),
+                    (typeof(float), typeof(C3d), Intent.RGB),
                     delta =>
                     {
                         if (delta.Length < 3)
@@ -7111,7 +7111,7 @@ namespace Aardvark.Base
                 #region BGR floats as C3d
 
                 {
-                    Tup.Create(typeof(float), typeof(C3d), Intent.BGR),
+                    (typeof(float), typeof(C3d), Intent.BGR),
                     delta =>
                     {
                         if (delta.Length < 3)
@@ -7158,7 +7158,7 @@ namespace Aardvark.Base
                 #region RGBA floats as C3d
 
                 {
-                    Tup.Create(typeof(float), typeof(C3d), Intent.RGBA),
+                    (typeof(float), typeof(C3d), Intent.RGBA),
                     delta =>
                     {
                         if (delta.Length < 3)
@@ -7207,7 +7207,7 @@ namespace Aardvark.Base
                 #region BGRA floats as C3d
 
                 {
-                    Tup.Create(typeof(float), typeof(C3d), Intent.BGRA),
+                    (typeof(float), typeof(C3d), Intent.BGRA),
                     delta =>
                     {
                         if (delta.Length < 3)
@@ -7256,7 +7256,7 @@ namespace Aardvark.Base
                 #region RGB floats as C4b
 
                 {
-                    Tup.Create(typeof(float), typeof(C4b), Intent.RGB),
+                    (typeof(float), typeof(C4b), Intent.RGB),
                     delta =>
                     {
                         if (delta.Length < 3)
@@ -7305,7 +7305,7 @@ namespace Aardvark.Base
                 #region BGR floats as C4b
 
                 {
-                    Tup.Create(typeof(float), typeof(C4b), Intent.BGR),
+                    (typeof(float), typeof(C4b), Intent.BGR),
                     delta =>
                     {
                         if (delta.Length < 3)
@@ -7354,7 +7354,7 @@ namespace Aardvark.Base
                 #region RGBA floats as C4b
 
                 {
-                    Tup.Create(typeof(float), typeof(C4b), Intent.RGBA),
+                    (typeof(float), typeof(C4b), Intent.RGBA),
                     delta =>
                     {
                         if (delta.Length < 3)
@@ -7405,7 +7405,7 @@ namespace Aardvark.Base
                 #region BGRA floats as C4b
 
                 {
-                    Tup.Create(typeof(float), typeof(C4b), Intent.BGRA),
+                    (typeof(float), typeof(C4b), Intent.BGRA),
                     delta =>
                     {
                         if (delta.Length < 3)
@@ -7456,7 +7456,7 @@ namespace Aardvark.Base
                 #region RGB floats as C4us
 
                 {
-                    Tup.Create(typeof(float), typeof(C4us), Intent.RGB),
+                    (typeof(float), typeof(C4us), Intent.RGB),
                     delta =>
                     {
                         if (delta.Length < 3)
@@ -7505,7 +7505,7 @@ namespace Aardvark.Base
                 #region BGR floats as C4us
 
                 {
-                    Tup.Create(typeof(float), typeof(C4us), Intent.BGR),
+                    (typeof(float), typeof(C4us), Intent.BGR),
                     delta =>
                     {
                         if (delta.Length < 3)
@@ -7554,7 +7554,7 @@ namespace Aardvark.Base
                 #region RGBA floats as C4us
 
                 {
-                    Tup.Create(typeof(float), typeof(C4us), Intent.RGBA),
+                    (typeof(float), typeof(C4us), Intent.RGBA),
                     delta =>
                     {
                         if (delta.Length < 3)
@@ -7605,7 +7605,7 @@ namespace Aardvark.Base
                 #region BGRA floats as C4us
 
                 {
-                    Tup.Create(typeof(float), typeof(C4us), Intent.BGRA),
+                    (typeof(float), typeof(C4us), Intent.BGRA),
                     delta =>
                     {
                         if (delta.Length < 3)
@@ -7656,7 +7656,7 @@ namespace Aardvark.Base
                 #region RGB floats as C4ui
 
                 {
-                    Tup.Create(typeof(float), typeof(C4ui), Intent.RGB),
+                    (typeof(float), typeof(C4ui), Intent.RGB),
                     delta =>
                     {
                         if (delta.Length < 3)
@@ -7705,7 +7705,7 @@ namespace Aardvark.Base
                 #region BGR floats as C4ui
 
                 {
-                    Tup.Create(typeof(float), typeof(C4ui), Intent.BGR),
+                    (typeof(float), typeof(C4ui), Intent.BGR),
                     delta =>
                     {
                         if (delta.Length < 3)
@@ -7754,7 +7754,7 @@ namespace Aardvark.Base
                 #region RGBA floats as C4ui
 
                 {
-                    Tup.Create(typeof(float), typeof(C4ui), Intent.RGBA),
+                    (typeof(float), typeof(C4ui), Intent.RGBA),
                     delta =>
                     {
                         if (delta.Length < 3)
@@ -7805,7 +7805,7 @@ namespace Aardvark.Base
                 #region BGRA floats as C4ui
 
                 {
-                    Tup.Create(typeof(float), typeof(C4ui), Intent.BGRA),
+                    (typeof(float), typeof(C4ui), Intent.BGRA),
                     delta =>
                     {
                         if (delta.Length < 3)
@@ -7856,7 +7856,7 @@ namespace Aardvark.Base
                 #region RGB floats as C4f
 
                 {
-                    Tup.Create(typeof(float), typeof(C4f), Intent.RGB),
+                    (typeof(float), typeof(C4f), Intent.RGB),
                     delta =>
                     {
                         if (delta.Length < 3)
@@ -7905,7 +7905,7 @@ namespace Aardvark.Base
                 #region BGR floats as C4f
 
                 {
-                    Tup.Create(typeof(float), typeof(C4f), Intent.BGR),
+                    (typeof(float), typeof(C4f), Intent.BGR),
                     delta =>
                     {
                         if (delta.Length < 3)
@@ -7954,7 +7954,7 @@ namespace Aardvark.Base
                 #region RGBA floats as C4f
 
                 {
-                    Tup.Create(typeof(float), typeof(C4f), Intent.RGBA),
+                    (typeof(float), typeof(C4f), Intent.RGBA),
                     delta =>
                     {
                         if (delta.Length < 3)
@@ -8005,7 +8005,7 @@ namespace Aardvark.Base
                 #region BGRA floats as C4f
 
                 {
-                    Tup.Create(typeof(float), typeof(C4f), Intent.BGRA),
+                    (typeof(float), typeof(C4f), Intent.BGRA),
                     delta =>
                     {
                         if (delta.Length < 3)
@@ -8056,7 +8056,7 @@ namespace Aardvark.Base
                 #region RGB floats as C4d
 
                 {
-                    Tup.Create(typeof(float), typeof(C4d), Intent.RGB),
+                    (typeof(float), typeof(C4d), Intent.RGB),
                     delta =>
                     {
                         if (delta.Length < 3)
@@ -8105,7 +8105,7 @@ namespace Aardvark.Base
                 #region BGR floats as C4d
 
                 {
-                    Tup.Create(typeof(float), typeof(C4d), Intent.BGR),
+                    (typeof(float), typeof(C4d), Intent.BGR),
                     delta =>
                     {
                         if (delta.Length < 3)
@@ -8154,7 +8154,7 @@ namespace Aardvark.Base
                 #region RGBA floats as C4d
 
                 {
-                    Tup.Create(typeof(float), typeof(C4d), Intent.RGBA),
+                    (typeof(float), typeof(C4d), Intent.RGBA),
                     delta =>
                     {
                         if (delta.Length < 3)
@@ -8205,7 +8205,7 @@ namespace Aardvark.Base
                 #region BGRA floats as C4d
 
                 {
-                    Tup.Create(typeof(float), typeof(C4d), Intent.BGRA),
+                    (typeof(float), typeof(C4d), Intent.BGRA),
                     delta =>
                     {
                         if (delta.Length < 3)
@@ -8256,7 +8256,7 @@ namespace Aardvark.Base
                 #region RGB doubles as C3b
 
                 {
-                    Tup.Create(typeof(double), typeof(C3b), Intent.RGB),
+                    (typeof(double), typeof(C3b), Intent.RGB),
                     delta =>
                     {
                         if (delta.Length < 3)
@@ -8303,7 +8303,7 @@ namespace Aardvark.Base
                 #region BGR doubles as C3b
 
                 {
-                    Tup.Create(typeof(double), typeof(C3b), Intent.BGR),
+                    (typeof(double), typeof(C3b), Intent.BGR),
                     delta =>
                     {
                         if (delta.Length < 3)
@@ -8350,7 +8350,7 @@ namespace Aardvark.Base
                 #region RGBA doubles as C3b
 
                 {
-                    Tup.Create(typeof(double), typeof(C3b), Intent.RGBA),
+                    (typeof(double), typeof(C3b), Intent.RGBA),
                     delta =>
                     {
                         if (delta.Length < 3)
@@ -8399,7 +8399,7 @@ namespace Aardvark.Base
                 #region BGRA doubles as C3b
 
                 {
-                    Tup.Create(typeof(double), typeof(C3b), Intent.BGRA),
+                    (typeof(double), typeof(C3b), Intent.BGRA),
                     delta =>
                     {
                         if (delta.Length < 3)
@@ -8448,7 +8448,7 @@ namespace Aardvark.Base
                 #region RGB doubles as C3us
 
                 {
-                    Tup.Create(typeof(double), typeof(C3us), Intent.RGB),
+                    (typeof(double), typeof(C3us), Intent.RGB),
                     delta =>
                     {
                         if (delta.Length < 3)
@@ -8495,7 +8495,7 @@ namespace Aardvark.Base
                 #region BGR doubles as C3us
 
                 {
-                    Tup.Create(typeof(double), typeof(C3us), Intent.BGR),
+                    (typeof(double), typeof(C3us), Intent.BGR),
                     delta =>
                     {
                         if (delta.Length < 3)
@@ -8542,7 +8542,7 @@ namespace Aardvark.Base
                 #region RGBA doubles as C3us
 
                 {
-                    Tup.Create(typeof(double), typeof(C3us), Intent.RGBA),
+                    (typeof(double), typeof(C3us), Intent.RGBA),
                     delta =>
                     {
                         if (delta.Length < 3)
@@ -8591,7 +8591,7 @@ namespace Aardvark.Base
                 #region BGRA doubles as C3us
 
                 {
-                    Tup.Create(typeof(double), typeof(C3us), Intent.BGRA),
+                    (typeof(double), typeof(C3us), Intent.BGRA),
                     delta =>
                     {
                         if (delta.Length < 3)
@@ -8640,7 +8640,7 @@ namespace Aardvark.Base
                 #region RGB doubles as C3ui
 
                 {
-                    Tup.Create(typeof(double), typeof(C3ui), Intent.RGB),
+                    (typeof(double), typeof(C3ui), Intent.RGB),
                     delta =>
                     {
                         if (delta.Length < 3)
@@ -8687,7 +8687,7 @@ namespace Aardvark.Base
                 #region BGR doubles as C3ui
 
                 {
-                    Tup.Create(typeof(double), typeof(C3ui), Intent.BGR),
+                    (typeof(double), typeof(C3ui), Intent.BGR),
                     delta =>
                     {
                         if (delta.Length < 3)
@@ -8734,7 +8734,7 @@ namespace Aardvark.Base
                 #region RGBA doubles as C3ui
 
                 {
-                    Tup.Create(typeof(double), typeof(C3ui), Intent.RGBA),
+                    (typeof(double), typeof(C3ui), Intent.RGBA),
                     delta =>
                     {
                         if (delta.Length < 3)
@@ -8783,7 +8783,7 @@ namespace Aardvark.Base
                 #region BGRA doubles as C3ui
 
                 {
-                    Tup.Create(typeof(double), typeof(C3ui), Intent.BGRA),
+                    (typeof(double), typeof(C3ui), Intent.BGRA),
                     delta =>
                     {
                         if (delta.Length < 3)
@@ -8832,7 +8832,7 @@ namespace Aardvark.Base
                 #region RGB doubles as C3f
 
                 {
-                    Tup.Create(typeof(double), typeof(C3f), Intent.RGB),
+                    (typeof(double), typeof(C3f), Intent.RGB),
                     delta =>
                     {
                         if (delta.Length < 3)
@@ -8879,7 +8879,7 @@ namespace Aardvark.Base
                 #region BGR doubles as C3f
 
                 {
-                    Tup.Create(typeof(double), typeof(C3f), Intent.BGR),
+                    (typeof(double), typeof(C3f), Intent.BGR),
                     delta =>
                     {
                         if (delta.Length < 3)
@@ -8926,7 +8926,7 @@ namespace Aardvark.Base
                 #region RGBA doubles as C3f
 
                 {
-                    Tup.Create(typeof(double), typeof(C3f), Intent.RGBA),
+                    (typeof(double), typeof(C3f), Intent.RGBA),
                     delta =>
                     {
                         if (delta.Length < 3)
@@ -8975,7 +8975,7 @@ namespace Aardvark.Base
                 #region BGRA doubles as C3f
 
                 {
-                    Tup.Create(typeof(double), typeof(C3f), Intent.BGRA),
+                    (typeof(double), typeof(C3f), Intent.BGRA),
                     delta =>
                     {
                         if (delta.Length < 3)
@@ -9024,7 +9024,7 @@ namespace Aardvark.Base
                 #region RGB doubles as C3d
 
                 {
-                    Tup.Create(typeof(double), typeof(C3d), Intent.RGB),
+                    (typeof(double), typeof(C3d), Intent.RGB),
                     delta =>
                     {
                         if (delta.Length < 3)
@@ -9071,7 +9071,7 @@ namespace Aardvark.Base
                 #region BGR doubles as C3d
 
                 {
-                    Tup.Create(typeof(double), typeof(C3d), Intent.BGR),
+                    (typeof(double), typeof(C3d), Intent.BGR),
                     delta =>
                     {
                         if (delta.Length < 3)
@@ -9118,7 +9118,7 @@ namespace Aardvark.Base
                 #region RGBA doubles as C3d
 
                 {
-                    Tup.Create(typeof(double), typeof(C3d), Intent.RGBA),
+                    (typeof(double), typeof(C3d), Intent.RGBA),
                     delta =>
                     {
                         if (delta.Length < 3)
@@ -9167,7 +9167,7 @@ namespace Aardvark.Base
                 #region BGRA doubles as C3d
 
                 {
-                    Tup.Create(typeof(double), typeof(C3d), Intent.BGRA),
+                    (typeof(double), typeof(C3d), Intent.BGRA),
                     delta =>
                     {
                         if (delta.Length < 3)
@@ -9216,7 +9216,7 @@ namespace Aardvark.Base
                 #region RGB doubles as C4b
 
                 {
-                    Tup.Create(typeof(double), typeof(C4b), Intent.RGB),
+                    (typeof(double), typeof(C4b), Intent.RGB),
                     delta =>
                     {
                         if (delta.Length < 3)
@@ -9265,7 +9265,7 @@ namespace Aardvark.Base
                 #region BGR doubles as C4b
 
                 {
-                    Tup.Create(typeof(double), typeof(C4b), Intent.BGR),
+                    (typeof(double), typeof(C4b), Intent.BGR),
                     delta =>
                     {
                         if (delta.Length < 3)
@@ -9314,7 +9314,7 @@ namespace Aardvark.Base
                 #region RGBA doubles as C4b
 
                 {
-                    Tup.Create(typeof(double), typeof(C4b), Intent.RGBA),
+                    (typeof(double), typeof(C4b), Intent.RGBA),
                     delta =>
                     {
                         if (delta.Length < 3)
@@ -9365,7 +9365,7 @@ namespace Aardvark.Base
                 #region BGRA doubles as C4b
 
                 {
-                    Tup.Create(typeof(double), typeof(C4b), Intent.BGRA),
+                    (typeof(double), typeof(C4b), Intent.BGRA),
                     delta =>
                     {
                         if (delta.Length < 3)
@@ -9416,7 +9416,7 @@ namespace Aardvark.Base
                 #region RGB doubles as C4us
 
                 {
-                    Tup.Create(typeof(double), typeof(C4us), Intent.RGB),
+                    (typeof(double), typeof(C4us), Intent.RGB),
                     delta =>
                     {
                         if (delta.Length < 3)
@@ -9465,7 +9465,7 @@ namespace Aardvark.Base
                 #region BGR doubles as C4us
 
                 {
-                    Tup.Create(typeof(double), typeof(C4us), Intent.BGR),
+                    (typeof(double), typeof(C4us), Intent.BGR),
                     delta =>
                     {
                         if (delta.Length < 3)
@@ -9514,7 +9514,7 @@ namespace Aardvark.Base
                 #region RGBA doubles as C4us
 
                 {
-                    Tup.Create(typeof(double), typeof(C4us), Intent.RGBA),
+                    (typeof(double), typeof(C4us), Intent.RGBA),
                     delta =>
                     {
                         if (delta.Length < 3)
@@ -9565,7 +9565,7 @@ namespace Aardvark.Base
                 #region BGRA doubles as C4us
 
                 {
-                    Tup.Create(typeof(double), typeof(C4us), Intent.BGRA),
+                    (typeof(double), typeof(C4us), Intent.BGRA),
                     delta =>
                     {
                         if (delta.Length < 3)
@@ -9616,7 +9616,7 @@ namespace Aardvark.Base
                 #region RGB doubles as C4ui
 
                 {
-                    Tup.Create(typeof(double), typeof(C4ui), Intent.RGB),
+                    (typeof(double), typeof(C4ui), Intent.RGB),
                     delta =>
                     {
                         if (delta.Length < 3)
@@ -9665,7 +9665,7 @@ namespace Aardvark.Base
                 #region BGR doubles as C4ui
 
                 {
-                    Tup.Create(typeof(double), typeof(C4ui), Intent.BGR),
+                    (typeof(double), typeof(C4ui), Intent.BGR),
                     delta =>
                     {
                         if (delta.Length < 3)
@@ -9714,7 +9714,7 @@ namespace Aardvark.Base
                 #region RGBA doubles as C4ui
 
                 {
-                    Tup.Create(typeof(double), typeof(C4ui), Intent.RGBA),
+                    (typeof(double), typeof(C4ui), Intent.RGBA),
                     delta =>
                     {
                         if (delta.Length < 3)
@@ -9765,7 +9765,7 @@ namespace Aardvark.Base
                 #region BGRA doubles as C4ui
 
                 {
-                    Tup.Create(typeof(double), typeof(C4ui), Intent.BGRA),
+                    (typeof(double), typeof(C4ui), Intent.BGRA),
                     delta =>
                     {
                         if (delta.Length < 3)
@@ -9816,7 +9816,7 @@ namespace Aardvark.Base
                 #region RGB doubles as C4f
 
                 {
-                    Tup.Create(typeof(double), typeof(C4f), Intent.RGB),
+                    (typeof(double), typeof(C4f), Intent.RGB),
                     delta =>
                     {
                         if (delta.Length < 3)
@@ -9865,7 +9865,7 @@ namespace Aardvark.Base
                 #region BGR doubles as C4f
 
                 {
-                    Tup.Create(typeof(double), typeof(C4f), Intent.BGR),
+                    (typeof(double), typeof(C4f), Intent.BGR),
                     delta =>
                     {
                         if (delta.Length < 3)
@@ -9914,7 +9914,7 @@ namespace Aardvark.Base
                 #region RGBA doubles as C4f
 
                 {
-                    Tup.Create(typeof(double), typeof(C4f), Intent.RGBA),
+                    (typeof(double), typeof(C4f), Intent.RGBA),
                     delta =>
                     {
                         if (delta.Length < 3)
@@ -9965,7 +9965,7 @@ namespace Aardvark.Base
                 #region BGRA doubles as C4f
 
                 {
-                    Tup.Create(typeof(double), typeof(C4f), Intent.BGRA),
+                    (typeof(double), typeof(C4f), Intent.BGRA),
                     delta =>
                     {
                         if (delta.Length < 3)
@@ -10016,7 +10016,7 @@ namespace Aardvark.Base
                 #region RGB doubles as C4d
 
                 {
-                    Tup.Create(typeof(double), typeof(C4d), Intent.RGB),
+                    (typeof(double), typeof(C4d), Intent.RGB),
                     delta =>
                     {
                         if (delta.Length < 3)
@@ -10065,7 +10065,7 @@ namespace Aardvark.Base
                 #region BGR doubles as C4d
 
                 {
-                    Tup.Create(typeof(double), typeof(C4d), Intent.BGR),
+                    (typeof(double), typeof(C4d), Intent.BGR),
                     delta =>
                     {
                         if (delta.Length < 3)
@@ -10114,7 +10114,7 @@ namespace Aardvark.Base
                 #region RGBA doubles as C4d
 
                 {
-                    Tup.Create(typeof(double), typeof(C4d), Intent.RGBA),
+                    (typeof(double), typeof(C4d), Intent.RGBA),
                     delta =>
                     {
                         if (delta.Length < 3)
@@ -10165,7 +10165,7 @@ namespace Aardvark.Base
                 #region BGRA doubles as C4d
 
                 {
-                    Tup.Create(typeof(double), typeof(C4d), Intent.BGRA),
+                    (typeof(double), typeof(C4d), Intent.BGRA),
                     delta =>
                     {
                         if (delta.Length < 3)

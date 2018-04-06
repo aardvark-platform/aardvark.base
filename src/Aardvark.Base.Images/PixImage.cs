@@ -410,39 +410,39 @@ namespace Aardvark.Base
 
 #region Conversions
 
-        protected static Dictionary<Tup<Type, Type>, Func<object, object>>
+        protected static Dictionary<(Type, Type), Func<object, object>> 
             s_copyFunMap =
-            new Dictionary<Tup<Type, Type>, Func<object, object>>()
+            new Dictionary<(Type, Type), Func<object, object>>()
             {
-                { Tup.Create(typeof(byte), typeof(byte)), v => ((Volume<byte>)v).CopyWindow() },
-                { Tup.Create(typeof(byte), typeof(ushort)), v => ((Volume<byte>)v).ToUShortColor() },
-                { Tup.Create(typeof(byte), typeof(uint)), v => ((Volume<byte>)v).ToUIntColor() },
-                { Tup.Create(typeof(byte), typeof(float)), v => ((Volume<byte>)v).ToFloatColor() },
-                { Tup.Create(typeof(byte), typeof(double)), v => ((Volume<byte>)v).ToDoubleColor() },
+                { (typeof(byte), typeof(byte)), v => ((Volume<byte>)v).CopyWindow() },
+                { (typeof(byte), typeof(ushort)), v => ((Volume<byte>)v).ToUShortColor() },
+                { (typeof(byte), typeof(uint)), v => ((Volume<byte>)v).ToUIntColor() },
+                { (typeof(byte), typeof(float)), v => ((Volume<byte>)v).ToFloatColor() },
+                { (typeof(byte), typeof(double)), v => ((Volume<byte>)v).ToDoubleColor() },
 
-                { Tup.Create(typeof(ushort), typeof(byte)), v => ((Volume<ushort>)v).ToByteColor() },
-                { Tup.Create(typeof(ushort), typeof(ushort)), v => ((Volume<ushort>)v).CopyWindow() },
-                { Tup.Create(typeof(ushort), typeof(uint)), v => ((Volume<ushort>)v).ToUIntColor() },
-                { Tup.Create(typeof(ushort), typeof(float)), v => ((Volume<ushort>)v).ToFloatColor() },
-                { Tup.Create(typeof(ushort), typeof(double)), v => ((Volume<ushort>)v).ToDoubleColor() },
+                { (typeof(ushort), typeof(byte)), v => ((Volume<ushort>)v).ToByteColor() },
+                { (typeof(ushort), typeof(ushort)), v => ((Volume<ushort>)v).CopyWindow() },
+                { (typeof(ushort), typeof(uint)), v => ((Volume<ushort>)v).ToUIntColor() },
+                { (typeof(ushort), typeof(float)), v => ((Volume<ushort>)v).ToFloatColor() },
+                { (typeof(ushort), typeof(double)), v => ((Volume<ushort>)v).ToDoubleColor() },
             
-                { Tup.Create(typeof(uint), typeof(byte)), v => ((Volume<uint>)v).ToByteColor() },
-                { Tup.Create(typeof(uint), typeof(ushort)), v => ((Volume<uint>)v).ToUShortColor() },
-                { Tup.Create(typeof(uint), typeof(uint)), v => ((Volume<uint>)v).CopyWindow() },
-                { Tup.Create(typeof(uint), typeof(float)), v => ((Volume<uint>)v).ToFloatColor() },
-                { Tup.Create(typeof(uint), typeof(double)), v => ((Volume<uint>)v).ToDoubleColor() },
+                { (typeof(uint), typeof(byte)), v => ((Volume<uint>)v).ToByteColor() },
+                { (typeof(uint), typeof(ushort)), v => ((Volume<uint>)v).ToUShortColor() },
+                { (typeof(uint), typeof(uint)), v => ((Volume<uint>)v).CopyWindow() },
+                { (typeof(uint), typeof(float)), v => ((Volume<uint>)v).ToFloatColor() },
+                { (typeof(uint), typeof(double)), v => ((Volume<uint>)v).ToDoubleColor() },
 
-                { Tup.Create(typeof(float), typeof(byte)), v => ((Volume<float>)v).ToByteColor() },
-                { Tup.Create(typeof(float), typeof(ushort)), v => ((Volume<float>)v).ToUShortColor() },
-                { Tup.Create(typeof(float), typeof(uint)), v => ((Volume<float>)v).ToUIntColor() },
-                { Tup.Create(typeof(float), typeof(float)), v => ((Volume<float>)v).CopyWindow() },
-                { Tup.Create(typeof(float), typeof(double)), v => ((Volume<float>)v).ToDoubleColor() },
+                { (typeof(float), typeof(byte)), v => ((Volume<float>)v).ToByteColor() },
+                { (typeof(float), typeof(ushort)), v => ((Volume<float>)v).ToUShortColor() },
+                { (typeof(float), typeof(uint)), v => ((Volume<float>)v).ToUIntColor() },
+                { (typeof(float), typeof(float)), v => ((Volume<float>)v).CopyWindow() },
+                { (typeof(float), typeof(double)), v => ((Volume<float>)v).ToDoubleColor() },
 
-                { Tup.Create(typeof(double), typeof(byte)), v => ((Volume<double>)v).ToByteColor() },
-                { Tup.Create(typeof(double), typeof(ushort)), v => ((Volume<double>)v).ToUShortColor() },
-                { Tup.Create(typeof(double), typeof(uint)), v => ((Volume<double>)v).ToUIntColor() },
-                { Tup.Create(typeof(double), typeof(float)), v => ((Volume<double>)v).ToFloatColor() },
-                { Tup.Create(typeof(double), typeof(double)), v => ((Volume<double>)v).CopyWindow() },
+                { (typeof(double), typeof(byte)), v => ((Volume<double>)v).ToByteColor() },
+                { (typeof(double), typeof(ushort)), v => ((Volume<double>)v).ToUShortColor() },
+                { (typeof(double), typeof(uint)), v => ((Volume<double>)v).ToUIntColor() },
+                { (typeof(double), typeof(float)), v => ((Volume<double>)v).ToFloatColor() },
+                { (typeof(double), typeof(double)), v => ((Volume<double>)v).CopyWindow() },
             };
 
         public abstract PixImage<T1> ToPixImage<T1>();
@@ -1316,7 +1316,7 @@ namespace Aardvark.Base
             var format = typeof(T1).FormatDefaultOf(ChannelCount);
             if (Format == format)
             {
-                var copy = s_copyFunMap[Tup.Create(typeof(T), typeof(T1))];
+                var copy = s_copyFunMap[(typeof(T), typeof(T1))];
                 return new PixImage<T1>(format, (Volume<T1>)copy(Volume));
             }
             return new PixImage<T1>(this);

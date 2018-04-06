@@ -194,27 +194,27 @@ namespace Aardvark.Base
             public static readonly Symbol NormalUV = "NormalUV";
         };
 
-        private static Tup<Col.Format, Symbol, Symbol, int>[] s_colFormatArray =
+        private static (Col.Format, Symbol, Symbol, int)[] s_colFormatArray =
             new[]
             {
-                Tup.Create(Format.BW,   Name.BW,   Intent.BW,   1),
-                Tup.Create(Format.Gray, Name.Gray, Intent.Gray, 1),
-                Tup.Create(Format.RGB,  Name.RGB,  Intent.RGB,  3),
-                Tup.Create(Format.BGR,  Name.BGR,  Intent.BGR,  3),
-                Tup.Create(Format.RGBA, Name.RGBA, Intent.RGBA, 4),
-                Tup.Create(Format.BGRA, Name.BGRA, Intent.BGRA, 4),
-                Tup.Create(Format.RGBP, Name.RGBP, Intent.RGBA, 4),
-                Tup.Create(Format.BGRP, Name.BGRP, Intent.BGRA, 4),
+                (Format.BW,   Name.BW,   Intent.BW,   1),
+                (Format.Gray, Name.Gray, Intent.Gray, 1),
+                (Format.RGB,  Name.RGB,  Intent.RGB,  3),
+                (Format.BGR,  Name.BGR,  Intent.BGR,  3),
+                (Format.RGBA, Name.RGBA, Intent.RGBA, 4),
+                (Format.BGRA, Name.BGRA, Intent.BGRA, 4),
+                (Format.RGBP, Name.RGBP, Intent.RGBA, 4),
+                (Format.BGRP, Name.BGRP, Intent.BGRA, 4),
 
-                Tup.Create(Format.CieXYZ,  Name.CieXYZ,  Intent.CieXYZ,  3),
-                Tup.Create(Format.CieYxy,  Name.CieYxy,  Intent.CieYxy,  3),
-                Tup.Create(Format.CieLab,  Name.CieLab,  Intent.CieLab,  3),
-                Tup.Create(Format.CieLuv,  Name.CieLuv,  Intent.CieLuv,  3),
-                Tup.Create(Format.Yuv,  Name.Yuv,  Intent.Yuv,  3),
-                Tup.Create(Format.HSL,  Name.HSL,  Intent.HSL,  3),
-                Tup.Create(Format.HSV,  Name.HSV,  Intent.HSV,  3),
+                (Format.CieXYZ,  Name.CieXYZ,  Intent.CieXYZ,  3),
+                (Format.CieYxy,  Name.CieYxy,  Intent.CieYxy,  3),
+                (Format.CieLab,  Name.CieLab,  Intent.CieLab,  3),
+                (Format.CieLuv,  Name.CieLuv,  Intent.CieLuv,  3),
+                (Format.Yuv,  Name.Yuv,  Intent.Yuv,  3),
+                (Format.HSL,  Name.HSL,  Intent.HSL,  3),
+                (Format.HSV,  Name.HSV,  Intent.HSV,  3),
 
-                Tup.Create(Format.NormalUV, Name.NormalUV, Intent.NormalUV, 2),
+                (Format.NormalUV, Name.NormalUV, Intent.NormalUV, 2),
             };
 
         static Col()
@@ -226,7 +226,7 @@ namespace Aardvark.Base
             s_channelCountMap = new Dict<Format, int>(count);
             foreach (var t in s_colFormatArray)
             {
-                var format = t.E0; var name = t.E1; var intent = t.E2; var channelCount = t.E3;
+                var format = t.Item1; var name = t.Item2; var intent = t.Item3; var channelCount = t.Item4;
                 s_nameOfFormat.Add(format, intent);
                 s_formatOfName.Add(name, format);
                 s_intentOfFormat.Add(format, intent);
@@ -324,80 +324,79 @@ namespace Aardvark.Base
             return s_channelOrderMap[format];
         }
 
-        private static Dict<Tup<Format, Channel>, long> s_channelIndexMap =
-            new Dict<Tup<Format, Channel>, long>()
+        private static Dict<(Format, Channel), long> s_channelIndexMap =
+            new Dict<(Format, Channel), long>()
             {
-                { Tup.Create(Format.BW, Channel.BW), 0L },
+                { (Format.BW, Channel.BW), 0L },
 
-                { Tup.Create(Format.Gray, Channel.Gray), 0L },
+                { (Format.Gray, Channel.Gray), 0L },
 
-                { Tup.Create(Format.RGB, Channel.Red), 0L },
-                { Tup.Create(Format.RGB, Channel.Green), 1L },
-                { Tup.Create(Format.RGB, Channel.Blue), 2L },
+                { (Format.RGB, Channel.Red), 0L },
+                { (Format.RGB, Channel.Green), 1L },
+                { (Format.RGB, Channel.Blue), 2L },
 
-                { Tup.Create(Format.BGR, Channel.Blue), 0L },
-                { Tup.Create(Format.BGR, Channel.Green), 1L },
-                { Tup.Create(Format.BGR, Channel.Red), 2L },
+                { (Format.BGR, Channel.Blue), 0L },
+                { (Format.BGR, Channel.Green), 1L },
+                { (Format.BGR, Channel.Red), 2L },
 
-                { Tup.Create(Format.RGBA, Channel.Red), 0L },
-                { Tup.Create(Format.RGBA, Channel.Green), 1L },
-                { Tup.Create(Format.RGBA, Channel.Blue), 2L },
-                { Tup.Create(Format.RGBA, Channel.Alpha), 3L },
+                { (Format.RGBA, Channel.Red), 0L },
+                { (Format.RGBA, Channel.Green), 1L },
+                { (Format.RGBA, Channel.Blue), 2L },
+                { (Format.RGBA, Channel.Alpha), 3L },
 
-                { Tup.Create(Format.BGRA, Channel.Blue), 0L },
-                { Tup.Create(Format.BGRA, Channel.Green), 1L },
-                { Tup.Create(Format.BGRA, Channel.Red), 2L },
-                { Tup.Create(Format.BGRA, Channel.Alpha), 3L },
+                { (Format.BGRA, Channel.Blue), 0L },
+                { (Format.BGRA, Channel.Green), 1L },
+                { (Format.BGRA, Channel.Red), 2L },
+                { (Format.BGRA, Channel.Alpha), 3L },
 
-                { Tup.Create(Format.RGBP, Channel.Red), 0L },
-                { Tup.Create(Format.RGBP, Channel.Green), 1L },
-                { Tup.Create(Format.RGBP, Channel.Blue), 2L },
-                { Tup.Create(Format.RGBP, Channel.PremultipliedAlpha), 3L },
+                { (Format.RGBP, Channel.Red), 0L },
+                { (Format.RGBP, Channel.Green), 1L },
+                { (Format.RGBP, Channel.Blue), 2L },
+                { (Format.RGBP, Channel.PremultipliedAlpha), 3L },
 
-                { Tup.Create(Format.BGRP, Channel.Blue), 0L },
-                { Tup.Create(Format.BGRP, Channel.Green), 1L },
-                { Tup.Create(Format.BGRP, Channel.Red), 2L },
-                { Tup.Create(Format.BGRP, Channel.PremultipliedAlpha), 3L },
+                { (Format.BGRP, Channel.Blue), 0L },
+                { (Format.BGRP, Channel.Green), 1L },
+                { (Format.BGRP, Channel.Red), 2L },
+                { (Format.BGRP, Channel.PremultipliedAlpha), 3L },
 
-                { Tup.Create(Format.CieXYZ, Channel.CieX), 0L },
-                { Tup.Create(Format.CieXYZ, Channel.CieY), 1L },
-                { Tup.Create(Format.CieXYZ, Channel.CieZ), 2L },
+                { (Format.CieXYZ, Channel.CieX), 0L },
+                { (Format.CieXYZ, Channel.CieY), 1L },
+                { (Format.CieXYZ, Channel.CieZ), 2L },
 
-                { Tup.Create(Format.CieYxy, Channel.CieY), 0L },
-                { Tup.Create(Format.CieYxy, Channel.Ciex), 1L },
-                { Tup.Create(Format.CieYxy, Channel.Ciey), 2L },
+                { (Format.CieYxy, Channel.CieY), 0L },
+                { (Format.CieYxy, Channel.Ciex), 1L },
+                { (Format.CieYxy, Channel.Ciey), 2L },
 
-                { Tup.Create(Format.CieLab, Channel.CieL), 0L },
-                { Tup.Create(Format.CieLab, Channel.Ciea), 1L },
-                { Tup.Create(Format.CieLab, Channel.Cieb), 2L },
+                { (Format.CieLab, Channel.CieL), 0L },
+                { (Format.CieLab, Channel.Ciea), 1L },
+                { (Format.CieLab, Channel.Cieb), 2L },
 
-                { Tup.Create(Format.CieLuv, Channel.CieL), 0L },
-                { Tup.Create(Format.CieLuv, Channel.Cieu), 1L },
-                { Tup.Create(Format.CieLuv, Channel.Ciev), 2L },
+                { (Format.CieLuv, Channel.CieL), 0L },
+                { (Format.CieLuv, Channel.Cieu), 1L },
+                { (Format.CieLuv, Channel.Ciev), 2L },
 
-                { Tup.Create(Format.HSL, Channel.H), 0L },
-                { Tup.Create(Format.HSL, Channel.S), 1L },
-                { Tup.Create(Format.HSL, Channel.L), 2L },
+                { (Format.HSL, Channel.H), 0L },
+                { (Format.HSL, Channel.S), 1L },
+                { (Format.HSL, Channel.L), 2L },
 
-                { Tup.Create(Format.HSV, Channel.H), 0L },
-                { Tup.Create(Format.HSV, Channel.S), 1L },
-                { Tup.Create(Format.HSV, Channel.V), 2L },
+                { (Format.HSV, Channel.H), 0L },
+                { (Format.HSV, Channel.S), 1L },
+                { (Format.HSV, Channel.V), 2L },
 
-                { Tup.Create(Format.Yuv, Channel.Y), 0L },
-                { Tup.Create(Format.Yuv, Channel.u), 1L },
-                { Tup.Create(Format.Yuv, Channel.v), 2L },
+                { (Format.Yuv, Channel.Y), 0L },
+                { (Format.Yuv, Channel.u), 1L },
+                { (Format.Yuv, Channel.v), 2L },
 
-                { Tup.Create(Format.NormalUV, Channel.U), 0L },
-                { Tup.Create(Format.NormalUV, Channel.V), 1L },
+                { (Format.NormalUV, Channel.U), 0L },
+                { (Format.NormalUV, Channel.V), 1L },
 
             };
 
 
         public static long ChannelIndex(this Format format, Channel channel)
         {
-            long index;
-            if (s_channelIndexMap.TryGetValue(Tup.Create(format, channel),
-                                              out index))
+            if (s_channelIndexMap.TryGetValue((format, channel),
+                                              out long index))
                 return index;
             throw new ArgumentException("format does not contain channel");
         }
@@ -405,46 +404,45 @@ namespace Aardvark.Base
         public static long ChannelIndexNoThrow(this Format format, Channel channel)
         {
             long index;
-            if (s_channelIndexMap.TryGetValue(Tup.Create(format, channel),
+            if (s_channelIndexMap.TryGetValue((format, channel),
                                               out index))
                 return index;
             return -1;
         }
 
-        private static Dict<Tup<Type, long>, Format> s_defaultFormatMap =
-            new Dict<Tup<Type, long>, Format>
+        private static Dict<(Type, long), Format> s_defaultFormatMap =
+            new Dict<(Type, long), Format>
             {
-                { Tup.Create(typeof(byte), 1L), Format.Gray },
-                { Tup.Create(typeof(byte), 2L), Format.NormalUV },
-                { Tup.Create(typeof(byte), 3L), Format.BGR },
-                { Tup.Create(typeof(byte), 4L), Format.BGRA },
+                { (typeof(byte), 1L), Format.Gray },
+                { (typeof(byte), 2L), Format.NormalUV },
+                { (typeof(byte), 3L), Format.BGR },
+                { (typeof(byte), 4L), Format.BGRA },
 
-                { Tup.Create(typeof(ushort), 1L), Format.Gray },
-                { Tup.Create(typeof(ushort), 2L), Format.NormalUV },
-                { Tup.Create(typeof(ushort), 3L), Format.RGB },
-                { Tup.Create(typeof(ushort), 4L), Format.RGBA },
+                { (typeof(ushort), 1L), Format.Gray },
+                { (typeof(ushort), 2L), Format.NormalUV },
+                { (typeof(ushort), 3L), Format.RGB },
+                { (typeof(ushort), 4L), Format.RGBA },
 
-                { Tup.Create(typeof(uint), 1L), Format.Gray },
-                { Tup.Create(typeof(uint), 2L), Format.NormalUV },
-                { Tup.Create(typeof(uint), 3L), Format.RGB },
-                { Tup.Create(typeof(uint), 4L), Format.RGBA },
+                { (typeof(uint), 1L), Format.Gray },
+                { (typeof(uint), 2L), Format.NormalUV },
+                { (typeof(uint), 3L), Format.RGB },
+                { (typeof(uint), 4L), Format.RGBA },
 
-                { Tup.Create(typeof(float), 1L), Format.Gray },
-                { Tup.Create(typeof(float), 2L), Format.NormalUV },
-                { Tup.Create(typeof(float), 3L), Format.RGB },
-                { Tup.Create(typeof(float), 4L), Format.RGBA },
+                { (typeof(float), 1L), Format.Gray },
+                { (typeof(float), 2L), Format.NormalUV },
+                { (typeof(float), 3L), Format.RGB },
+                { (typeof(float), 4L), Format.RGBA },
 
-                { Tup.Create(typeof(double), 1L), Format.Gray },
-                { Tup.Create(typeof(double), 2L), Format.NormalUV },
-                { Tup.Create(typeof(double), 3L), Format.RGB },
-                { Tup.Create(typeof(double), 4L), Format.RGBA },
+                { (typeof(double), 1L), Format.Gray },
+                { (typeof(double), 2L), Format.NormalUV },
+                { (typeof(double), 3L), Format.RGB },
+                { (typeof(double), 4L), Format.RGBA },
             };
 
         public static Format FormatDefaultOf(this Type type, long channelCount)
         {
-            Format format;
-            if (s_defaultFormatMap.TryGetValue(Tup.Create(type, channelCount),
-                                              out format))
+            if (s_defaultFormatMap.TryGetValue((type, channelCount),
+                                              out Format format))
                 return format;
             throw new ArgumentException("no default format for this type and channel count");
         }

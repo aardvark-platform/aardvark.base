@@ -57,9 +57,9 @@ namespace Aardvark.Base
             return (T)result.Item2;
         }
 
-        static Dictionary<Type, Tup<Array, Dictionary<long, int>>> s_valueIndexMapping = new Dictionary<Type, Tup<Array, Dictionary<long, int>>>(); // long = worst case enum value
+        static Dictionary<Type, (Array, Dictionary<long, int>)> s_valueIndexMapping = new Dictionary<Type, (Array, Dictionary<long, int>)>(); // long = worst case enum value
 
-        static Tup<Array, Dictionary<long, int>> GetValueIndexMapping(Type enumType)
+        static (Array, Dictionary<long, int>) GetValueIndexMapping(Type enumType)
         {
             if (!enumType.IsEnum) throw new ArgumentException(nameof(enumType));
 
@@ -69,7 +69,7 @@ namespace Aardvark.Base
                 var enumIndices = new Dictionary<long, int>();
                 for (int i = 0; i < enumValues.Length; i++)
                     enumIndices.Add(Convert.ToInt64(enumValues.GetValue(i)), i);
-                return Tup.Create(enumValues, enumIndices);
+                return (enumValues, enumIndices);
             });
         }
 
@@ -79,7 +79,7 @@ namespace Aardvark.Base
         public static int GetIndex<T>(T enumValue)
         {
             var mapping = GetValueIndexMapping(typeof(T));
-            return mapping.E1[Convert.ToInt64(enumValue)];
+            return mapping.Item2[Convert.ToInt64(enumValue)];
         }
 
         /// <summary>
@@ -88,7 +88,7 @@ namespace Aardvark.Base
         public static int GetIndex(Type enumType, object enumValue)
         {
             var mapping = GetValueIndexMapping(enumType);
-            return mapping.E1[Convert.ToInt64(enumValue)]; 
+            return mapping.Item2[Convert.ToInt64(enumValue)]; 
         }
 
         /// <summary>
@@ -97,7 +97,7 @@ namespace Aardvark.Base
         public static int GetValue(Type enumType, int index)
         {
             var mapping = GetValueIndexMapping(enumType);
-            return (int)mapping.E0.GetValue(index);
+            return (int)mapping.Item1.GetValue(index);
         }
 
         /// <summary>
@@ -106,7 +106,7 @@ namespace Aardvark.Base
         public static T GetValue<T>(int index)
         {
             var mapping = GetValueIndexMapping(typeof(T));
-            return (T)mapping.E0.GetValue(index);
+            return (T)mapping.Item1.GetValue(index);
         }
     }
 }

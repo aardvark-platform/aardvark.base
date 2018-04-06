@@ -30,7 +30,7 @@ namespace Aardvark.Base
         {
             Func<long[], ITensorAccessors> creator;
             if (s_creatorMap.TryGetValue(
-                    Tup.Create(dataType, viewType, intent),
+                    (dataType, viewType, intent),
                     out creator))
             {
                 var typed = creator(delta) as TensorAccessors<Td, Tv>;

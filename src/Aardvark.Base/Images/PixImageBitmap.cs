@@ -22,22 +22,22 @@ namespace Aardvark.Base
 
     public abstract class PixImageBitmap : PixImage
     {
-        protected static Dictionary<PixelFormat, Tup<PixFormat, int>> s_pixFormatAndCountOfPixelFormatBitmap =
-            new Dictionary<PixelFormat, Tup<PixFormat, int>>()
+        protected static Dictionary<PixelFormat, (PixFormat, int)> s_pixFormatAndCountOfPixelFormatBitmap =
+            new Dictionary<PixelFormat, (PixFormat, int)>()
         {
-            { PixelFormat.Format1bppIndexed, Tup.Create(PixFormat.ByteBW, 1) },
-            { PixelFormat.Format8bppIndexed, Tup.Create(PixFormat.ByteBW, 1) },
+            { PixelFormat.Format1bppIndexed, (PixFormat.ByteBW, 1) },
+            { PixelFormat.Format8bppIndexed, (PixFormat.ByteBW, 1) },
 
-            { PixelFormat.Format16bppGrayScale, Tup.Create(PixFormat.UShortGray, 1) },
+            { PixelFormat.Format16bppGrayScale, (PixFormat.UShortGray, 1) },
 
-            { PixelFormat.Format24bppRgb, Tup.Create(PixFormat.ByteBGR, 3) },
-            { PixelFormat.Format32bppRgb, Tup.Create(PixFormat.ByteBGR, 4) },
-            { PixelFormat.Format32bppArgb, Tup.Create(PixFormat.ByteBGRA, 4) },
-            { PixelFormat.Format32bppPArgb, Tup.Create(PixFormat.ByteBGRP, 4) },
+            { PixelFormat.Format24bppRgb, (PixFormat.ByteBGR, 3) },
+            { PixelFormat.Format32bppRgb, (PixFormat.ByteBGR, 4) },
+            { PixelFormat.Format32bppArgb, (PixFormat.ByteBGRA, 4) },
+            { PixelFormat.Format32bppPArgb, (PixFormat.ByteBGRP, 4) },
 
-            { PixelFormat.Format48bppRgb, Tup.Create(PixFormat.UShortBGR, 3) },
-            { PixelFormat.Format64bppArgb, Tup.Create(PixFormat.UShortBGRA, 4) },
-            { PixelFormat.Format64bppPArgb, Tup.Create(PixFormat.UShortBGRP, 4) },
+            { PixelFormat.Format48bppRgb, (PixFormat.UShortBGR, 3) },
+            { PixelFormat.Format64bppArgb, (PixFormat.UShortBGRA, 4) },
+            { PixelFormat.Format64bppPArgb, (PixFormat.UShortBGRP, 4) },
 
         };
 
@@ -91,12 +91,12 @@ namespace Aardvark.Base
 
             var sx = bitmap.Width;
             var sy = bitmap.Height;
-            var ch = pfc.E1;
+            var ch = pfc.Item2;
 
-            var pixImage = Create(pfc.E0, sx, sy, ch);
+            var pixImage = Create(pfc.Item1, sx, sy, ch);
             var array = pixImage.Array;
 
-            if (pfc.E0.Format == Col.Format.BW)
+            if (pfc.Item1.Format == Col.Format.BW)
             {
                 var bitImage = new PixImage<byte>(Col.Format.BW, 1 + (sx - 1) / 8, sy, 1);
 

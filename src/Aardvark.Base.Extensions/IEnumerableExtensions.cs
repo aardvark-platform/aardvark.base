@@ -2012,8 +2012,7 @@ namespace Aardvark.Base
         }
 
         #endregion
-
-
+        
         #region Conversions
 
         public static T[] ToArrayDebug<T>(this IEnumerable<T> self)
@@ -2329,6 +2328,69 @@ namespace Aardvark.Base
         {
             var i = 0;
             foreach (var x in sequence) yield return i++;
+        }
+
+        public static IEnumerable<T> SelectMany<T>(this IEnumerable<(T, T)> self)
+        {
+            foreach (var x in self)
+            {
+                yield return x.Item1;
+                yield return x.Item2;
+            }
+        }
+
+        public static IEnumerable<R> SelectMany<T, R>(this IEnumerable<T> self, Func<T, (R, R)> projection)
+        {
+            foreach (var y in self)
+            {
+                var x = projection(y);
+                yield return x.Item1;
+                yield return x.Item2;
+            }
+        }
+
+        public static IEnumerable<T> SelectMany<T>(this IEnumerable<(T, T, T)> self)
+        {
+            foreach (var x in self)
+            {
+                yield return x.Item1;
+                yield return x.Item2;
+                yield return x.Item3;
+            }
+        }
+
+        public static IEnumerable<R> SelectMany<T, R>(this IEnumerable<T> self, Func<T, (R, R, R)> projection)
+        {
+            foreach (var y in self)
+            {
+                var x = projection(y);
+                yield return x.Item1;
+                yield return x.Item2;
+                yield return x.Item3;
+            }
+        }
+
+        public static IEnumerable<T> SelectMany<T>(this IEnumerable<(T, T, T, T)> self)
+        {
+            foreach (var x in self)
+            {
+                yield return x.Item1;
+                yield return x.Item2;
+                yield return x.Item3;
+                yield return x.Item4;
+            }
+        }
+
+        public static IEnumerable<R> SelectMany<T, R>(this IEnumerable<T> self, Func<T, (R, R, R, R)> projection)
+        {
+            foreach (var y in self)
+            {
+                var x = projection(y);
+                yield return x.Item1;
+                yield return x.Item2;
+                yield return x.Item3;
+                yield return x.Item4;
+            }
         }
 
         #endregion
