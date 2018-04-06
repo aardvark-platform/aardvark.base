@@ -183,7 +183,7 @@ type ConstantMod<'a> =
         override x.ToString() =
             x.value.Value.ToString()
 
-        new(value : 'a) = ConstantMod<'a>(Lazy.CreateFromValue(value))
+        new(value : 'a) = ConstantMod<'a>(System.Lazy<'a>.CreateFromValue value)
         new(compute : unit -> 'a) = ConstantMod<'a>( lazy (compute()) )
         new(l : Lazy<'a>) = { value = l }
 

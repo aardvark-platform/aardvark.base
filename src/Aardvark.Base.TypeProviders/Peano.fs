@@ -3,7 +3,8 @@ open System
 open System.Reflection
 open Microsoft.FSharp.Core.CompilerServices
 open Microsoft.FSharp.Quotations
-open Aardvark.Base
+open ProviderImplementation
+open ProviderImplementation.ProvidedTypes
 
 
 
@@ -45,7 +46,8 @@ type N16 = S<N15>
 // as a reference to an F# command-line compilation, script, or project.
 [<TypeProvider>]
 type PeanoTypeProvider(config: TypeProviderConfig) as this = 
-    inherit TypeProviderForNamespaces()
+//TypeProviderConfig * namespaceName:string * types: ProvidedTypeDefinition list
+    inherit TypeProviderForNamespaces(config)
 
     let rec buildPeanoType (n : int) =
         match n with

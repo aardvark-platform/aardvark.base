@@ -1,12 +1,5 @@
-﻿#if COMPILED
-namespace Aardvark.Base
-#else
-#I @"..\..\..\bin\Release\"
-#r @"Aardvark.Base.dll"
-#r @"Aardvark.Base.TypeProviders.dll"
-#r @"Aardvark.Base.FSharp.dll"
-open Aardvark.Base
-#endif
+﻿namespace Aardvark.Base
+
 open System
 open System.Reflection
 open System.Collections.Generic
@@ -175,8 +168,9 @@ type IRuntimeMethod =
 
 module RuntimeMethodBuilder =
     open System.Reflection.Emit
-
-    let internal bAss = AppDomain.CurrentDomain.DefineDynamicAssembly(AssemblyName("IRuntimeMethods"), AssemblyBuilderAccess.RunAndSave)
+    
+    
+    let internal bAss = AssemblyBuilder.DefineDynamicAssembly(AssemblyName("IRuntimeMethods"), AssemblyBuilderAccess.Run)
     let internal bMod = bAss.DefineDynamicModule("MainModule")
 
     exception UnknownException of Type[]
@@ -317,7 +311,7 @@ module RuntimeMethodBuilder =
             bType.DefineMethodOverride(bMeth, typeof<IRuntimeMethod>.GetMethod "Invoke")
             bType.DefineMethodOverride(bMeth, funType.GetMethod "Invoke")
 
-            let t = bType.CreateType()
+            let t = bType.CreateTypeInfo()
 
             let ctor = t.GetConstructor [|typeof<obj[]>; typeof<MultimethodImpl>|]
             let targets = all |> Seq.map (fun (_,t,_) -> t) |> Seq.toArray
@@ -497,7 +491,7 @@ module RuntimeMethodBuilder =
             bType.DefineMethodOverride(bMeth, typeof<IRuntimeMethod>.GetMethod "Invoke")
             bType.DefineMethodOverride(bMeth, funType.GetMethod "Invoke")
 
-            let t = bType.CreateType()
+            let t = bType.CreateTypeInfo()
 
             let ctor = t.GetConstructor [|typeof<obj[]>; typeof<MultimethodImpl>|]
             let targets = all |> Seq.map (fun (_,t,_) -> t) |> Seq.toArray

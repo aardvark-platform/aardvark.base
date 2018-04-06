@@ -3,3 +3,4 @@ System.Reactive.Core
 System.Reactive.Interfaces
 FSharp.Core
 DevILSharp
+FSharp.Compiler.Tools

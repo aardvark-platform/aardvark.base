@@ -115,8 +115,8 @@ module private Kernel32 =
         let assembly = new AssemblyName();
         assembly.Version <- new Version(1, 0, 0, 0);
         assembly.Name <- "ReflectionEmitDelegateTest";
-        let assemblyBuilder = AppDomain.CurrentDomain.DefineDynamicAssembly(assembly, AssemblyBuilderAccess.RunAndSave);
-        let modbuilder = assemblyBuilder.DefineDynamicModule("MyModule", "ReflectionEmitDelegateTest.dll", true);
+        let assemblyBuilder = AssemblyBuilder.DefineDynamicAssembly(assembly, AssemblyBuilderAccess.Run);
+        let modbuilder = assemblyBuilder.DefineDynamicModule("MyModule");
 
         let mutable delegateIndex = 0
         let buildDelegate (argTypes : Type[]) (ret : Type) =
@@ -144,7 +144,7 @@ module private Kernel32 =
             typeBuilder.SetCustomAttribute(supressSecAtt)
             methodBuilder.SetCustomAttribute(supressSecAtt)
 
-            typeBuilder.CreateType()
+            typeBuilder.CreateTypeInfo() :> Type
 
     let tryLoadLibrary (path : string) =
         let ptr = Imports.LoadLibrary(path)

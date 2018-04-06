@@ -1,16 +1,19 @@
-framework: net461
+framework: netstandard2.0
 source https://api.nuget.org/v3/index.json
 source https://vrvis.myget.org/F/aardvark_public/api/v3/index.json
 
-nuget FSharp.Core                   ~> 4.0.0
-
+nuget FSharp.Core                   ~> 4.1.0
+nuget FSharp.Compiler.Tools         ~> 10.0.1
 nuget System.Collections.Immutable  >= 1.2.0
 
-nuget System.Reactive.Linq          ~> 3.0.0
-nuget System.Reactive.Core          ~> 3.0.0
-nuget System.Reactive.Interfaces    ~> 3.0.0
+nuget System.Reactive               ~> 3.1.1
+nuget System.Reactive.Linq          ~> 3.1.1
+nuget System.Reactive.Core          ~> 3.1.1
+nuget System.Reactive.Interfaces    ~> 3.1.1
 
-nuget DevILSharp                    ~> 0.1.1
+
+nuget System.Reflection.Emit        ~> 4.3.0
+nuget DevILSharp                    ~> 0.2.0
 
 nuget Unofficial.LibTessDotNet     ~> 1.0.2
 
@@ -25,4 +28,4 @@ content: none
 source https://vrvis.myget.org/F/aardvark_public/api/v3/index.json
 source https://api.nuget.org/v3/index.json
 
-github aardvark-platform/aardvark.fake:standalone
+github aardvark-platform/aardvark.fake:v4

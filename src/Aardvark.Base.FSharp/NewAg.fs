@@ -175,7 +175,7 @@ module NewAg =
                 il.Emit(OpCodes.Ret)
 
 
-            let t = bType.CreateType()
+            let t = bType.CreateTypeInfo()
 
             if mi.IsStatic then
                 let ctor = t.GetConstructor [||]
