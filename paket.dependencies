@@ -15,7 +15,7 @@ nuget System.Reactive.Interfaces    ~> 3.1.1
 nuget System.Reflection.Emit        ~> 4.3.0
 nuget DevILSharp                    ~> 0.2.0
 
-nuget Unofficial.LibTessDotNet     ~> 1.0.2
+nuget Unofficial.LibTessDotNet     ~> 2.0.0
 
 nuget NUnit                        ~> 3.6.0
 nuget FsUnit                       ~> 2.4.0-alpha-2
