@@ -54,7 +54,7 @@ namespace Aardvark.Tests
                         var p2 = new double[] { -x2, 1.0 };
                         var p012 = Polynomial.Multiply(p01, p2);
 
-                        var t = Triple.CreateAscending(x0, x1, x2);
+                        var t = Aardvark.Base.TupleExtensions.CreateAscending(x0, x1, x2);
                         var exact = new double[] { t.Item1, t.Item2, t.Item3 };
                         var roots = p012.RealRoots();
 
@@ -133,7 +133,7 @@ namespace Aardvark.Tests
                     {
                         var p2 = new double[] { -x2, 1.0 };
                         var p012 = p01.Multiply(p2);  
-                        var t = Triple.CreateAscending(x0, x1, x2);
+                        var t = Aardvark.Base.TupleExtensions.CreateAscending(x0, x1, x2);
 
                         for (double x3 = range.Min; x3 < range.Max + half; x3 += step)
                         {
