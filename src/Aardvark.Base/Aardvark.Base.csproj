@@ -22,6 +22,7 @@
     <Compile Remove="Extensions\FuncActionExtensions_template.cs" />
     <Compile Remove="Extensions\SequenceExtensions_template.cs" />
     <Compile Remove="Geometry\Geometry_template.cs" />
+    <Compile Remove="Images\TensorExtensions_generator.cs" />
     <Compile Remove="Images\TensorExtensions_template.cs" />
     <Compile Remove="Math\Base\Complex_template.cs" />
     <Compile Remove="Math\Base\Fun_template.cs" />
