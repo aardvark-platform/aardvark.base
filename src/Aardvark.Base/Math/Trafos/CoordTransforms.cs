@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using static System.Math;
 
 namespace Aardvark.Base
 {
@@ -34,17 +31,13 @@ namespace Aardvark.Base
         /// <param name="imgSizeInPixel">The size of the image (as V2d to safe lots of conversions).</param>
         /// <returns>A normalized image position in [0,1][0,1].</returns>
         public static V2d PixelCenterToNormalizedImgPos(V2d pos, V2d imgSizeInPixel)
-        {
-            return (pos + V2dHalf) / imgSizeInPixel;
-        }
+            => (pos + V2dHalf) / imgSizeInPixel;
+
         public static V2d PixelCenterToNormalizedImgPos(V2i pos, V2d imgSizeInPixel)
-        {
-            return PixelCenterToNormalizedImgPos((V2d)pos, imgSizeInPixel);
-        }
+            => PixelCenterToNormalizedImgPos((V2d)pos, imgSizeInPixel);
+
         public static V2d PixelCenterToNormalizedImgPos(int x, int y, V2d imgSizeInPixel)
-        {
-            return PixelCenterToNormalizedImgPos(new V2d(x, y), imgSizeInPixel);
-        }
+            => PixelCenterToNormalizedImgPos(new V2d(x, y), imgSizeInPixel);
 
         /// <summary>
         /// Returns a Matrix to 
@@ -52,9 +45,7 @@ namespace Aardvark.Base
         /// (The inverse of toPixelCenter.)
         /// </summary>
         public static M33d PixelCenterToNormalizedImgMat(V2d imgSizeInPixel)
-        {
-            return M33d.Scale(V2d.II / imgSizeInPixel) * M33d.Translation(V2dHalf);
-        }
+            => M33d.Scale(V2d.II / imgSizeInPixel) * M33d.Translation(V2dHalf);
 
         /// <summary>
         /// Convert from normalized image position [0,1][0,1] to pixel-center position
@@ -64,9 +55,7 @@ namespace Aardvark.Base
         /// <param name="imgSizeInPixel">The size of the image (as V2d to safe lots of conversions).</param>
         /// <returns>A image position in [-0.5,imgSizeInPixel.X-0.5][-0.5,imgSizeInPixel.Y-0.5].</returns>
         public static V2d NormalizedImagePosToPixelCenter(V2d pos, V2i imgSizeInPixel)
-        {
-            return new V2d(pos.X * imgSizeInPixel.X, pos.Y * imgSizeInPixel.Y) - V2dHalf;
-        }
+            => new V2d(pos.X * imgSizeInPixel.X, pos.Y * imgSizeInPixel.Y) - V2dHalf;
 
         /// <summary>
         /// Convert from normalized image position [0,1][0,1] to pixel-center position
@@ -76,9 +65,7 @@ namespace Aardvark.Base
         /// <param name="imgSizeInPixel">The size of the image (as V2d to safe lots of conversions).</param>
         /// <returns>A image position in [-0.5,imgSizeInPixel.X-0.5][-0.5,imgSizeInPixel.Y-0.5].</returns>
         public static V2d NormalizedImagePosToPixelCenter(V2d pos, V2l imgSizeInPixel)
-        {
-            return new V2d(pos.X * imgSizeInPixel.X, pos.Y * imgSizeInPixel.Y) - V2dHalf;
-        }
+            => new V2d(pos.X * imgSizeInPixel.X, pos.Y * imgSizeInPixel.Y) - V2dHalf;
 
         /// <summary>
         /// Convert from normalized image position [0,1][0,1] to already rounded pixel-center position.
@@ -87,9 +74,7 @@ namespace Aardvark.Base
         /// <param name="imgSizeInPixel">The size of the image (as V2d to safe lots of conversions).</param>
         /// <returns>A normalized image position in [0, imgSizeInPixel.X-1][0, imgSizeInPixel.Y-1].</returns>
         public static V2i NormalizedImagePosToPixelCenterRound(V2d pos, V2i imgSizeInPixel)
-        {
-            return (V2i)NormalizedImagePosToPixelCenter(pos, imgSizeInPixel).Copy(v => System.Math.Round(v));
-        }
+            => (V2i)NormalizedImagePosToPixelCenter(pos, imgSizeInPixel).Copy(v => Round(v));
 
         /// <summary>
         /// Convert from normalized image position [0,1][0,1] to already rounded pixel-center position.
@@ -98,9 +83,7 @@ namespace Aardvark.Base
         /// <param name="imgSizeInPixel">The size of the image (as V2d to safe lots of conversions).</param>
         /// <returns>A normalized image position in [0, imgSizeInPixel.X-1][0, imgSizeInPixel.Y-1].</returns>
         public static V2l NormalizedImagePosToPixelCenterRound(V2d pos, V2l imgSizeInPixel)
-        {
-            return (V2l)NormalizedImagePosToPixelCenter(pos, imgSizeInPixel).Copy(v => System.Math.Round(v));
-        }
+            => (V2l)NormalizedImagePosToPixelCenter(pos, imgSizeInPixel).Copy(v => Round(v));
 
         /// <summary>
         /// Returns a Matrix to 
@@ -108,36 +91,26 @@ namespace Aardvark.Base
         /// (The inverse of toNormalizedImgPos.)
         /// </summary>
         public static M33d NormalizedImagePosToPixelCenterMat(V2d imgSizeInPixel)
-        {
-            return M33d.Translation(-V2dHalf) * M33d.Scale(imgSizeInPixel);
-        }
+            => M33d.Translation(-V2dHalf) * M33d.Scale(imgSizeInPixel);
 
         //[ISSUE 20090819 andi] add docu
         /////////////////////////
         public static V2d PixelEdgeToNormalizedImgPos(V2d pos, V2d imgSizeInPixel)
-        {
-            return pos / (imgSizeInPixel-1);
-        }
-        public static V2d PixelEdgeToNormalizedImgPos(V2i pos, V2d imgSizeInPixel)
-        {
-            return PixelEdgeToNormalizedImgPos((V2d)pos, imgSizeInPixel);
-        }
-        public static M33d PixelEdgeToNormalizedImgMat(V2d imgSizeInPixel)
-        {
-            return M33d.Scale(V2d.II / (imgSizeInPixel-1));
-        }
-        public static V2d NormalizedImagePosToPixelEdge(V2d pos, V2d imgSizeInPixel)
-        {
-            return pos * (imgSizeInPixel-1);
-        }
-        public static V2i NormalizedImagePosToPixelEdgeRound(V2d pos, V2d imgSizeInPixel)
-        {
-            return (V2i)NormalizedImagePosToPixelEdge(pos, imgSizeInPixel).Copy(v => System.Math.Round(v));
-        }
-        public static M33d NormalizedImagePosToPixelEdgeMat(V2d imgSizeInPixel)
-        {
-            return M33d.Scale(imgSizeInPixel-1);
-        }
+            => pos / (imgSizeInPixel-1);
 
+        public static V2d PixelEdgeToNormalizedImgPos(V2i pos, V2d imgSizeInPixel)
+            => PixelEdgeToNormalizedImgPos((V2d)pos, imgSizeInPixel);
+
+        public static M33d PixelEdgeToNormalizedImgMat(V2d imgSizeInPixel)
+            => M33d.Scale(V2d.II / (imgSizeInPixel-1));
+
+        public static V2d NormalizedImagePosToPixelEdge(V2d pos, V2d imgSizeInPixel)
+            => pos * (imgSizeInPixel-1);
+
+        public static V2i NormalizedImagePosToPixelEdgeRound(V2d pos, V2d imgSizeInPixel)
+            => (V2i)NormalizedImagePosToPixelEdge(pos, imgSizeInPixel).Copy(v => Round(v));
+
+        public static M33d NormalizedImagePosToPixelEdgeMat(V2d imgSizeInPixel)
+            => M33d.Scale(imgSizeInPixel-1);
     }
 }

@@ -28,10 +28,7 @@ namespace Aardvark.Base
             Trafo = trafo;
         }
 
-        public Box2d AxisAlignedBox
-        {
-            get { return Box.Transformed((M33d)Trafo); }
-        }
+        public Box2d AxisAlignedBox => Box.Transformed((M33d)Trafo);
 
         public V2d[] Corners
         {
@@ -78,10 +75,7 @@ namespace Aardvark.Base
             Trafo = new Euclidean3d(rot, trans);
         }
 
-        public Box3d AxisAlignedBox
-        {
-            get { return Box.Transformed((M44d)Trafo); }
-        }
+        public Box3d AxisAlignedBox => Box.Transformed((M44d)Trafo);
 
         public V3d[] Corners
         {

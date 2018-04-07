@@ -23,7 +23,7 @@
     <WarningLevel>4</WarningLevel>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <DocumentationFile>..\..\bin\Debug\Aardvark.Base.IO.XML</DocumentationFile>
-    <NoWarn>1591</NoWarn>
+    <NoWarn>1591;612</NoWarn>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -34,7 +34,7 @@
     <WarningLevel>4</WarningLevel>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <DocumentationFile>..\..\Bin\Release\Aardvark.Base.IO.XML</DocumentationFile>
-    <NoWarn>1591</NoWarn>
+    <NoWarn>1591;612</NoWarn>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />

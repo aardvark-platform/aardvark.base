@@ -9,14 +9,14 @@ namespace Aardvark.Base
 
         public static void TransformPosArray(this M44d mat, V3d[] points)
         {
-            for (int i = 0; i < points.Length; i++)
+            for (var i = 0; i < points.Length; i++)
                 points[i] = mat.TransformPos(points[i]);
         }
 
         public static V3d[] TransformedPosArray(this M44d mat, ICollection<V3d> points)
         {
             var result = new V3d[points.Count];
-            int i = 0;
+            var i = 0;
             foreach (var p in points)
                 result[i++] = mat.TransformPos(p);
             return result;
@@ -25,7 +25,7 @@ namespace Aardvark.Base
         public static V3d[] TransformedDirArray(this M44d mat, V3d[] directions)
         {
             var result = new V3d[directions.Length];
-            for (int i = 0; i < directions.Length; i++)
+            for (var i = 0; i < directions.Length; i++)
                 result[i] = mat.TransformDir(directions[i]);
             return result;
         }
@@ -48,7 +48,7 @@ namespace Aardvark.Base
             M44d m44d)
         {
             var count = backwardMap.Length;
-            for (int i = 0; i < count; i++)
+            for (var i = 0; i < count; i++)
                 target[i + offset] = (V3f)m44d.TransformPos((V3d)source[backwardMap[i]]);
             return target;
         }
@@ -67,7 +67,7 @@ namespace Aardvark.Base
             M44d m44d)
         {
             var count = backwardMap.Length;
-            for (int i = 0; i < count; i++)
+            for (var i = 0; i < count; i++)
                 target[i + offset] = m44d.TransformPos(source[backwardMap[i]]);
 
             return target;
@@ -78,7 +78,7 @@ namespace Aardvark.Base
             int[] backwardMap, int offset,
             M44d m44d)
         {
-            Type type = source.GetType();
+            var type = source.GetType();
 
             if (type == typeof(V3f[]))
                 return BackwardIndexedTransformPosAndCopyTo((V3f[])source, (V3f[])target,
@@ -104,7 +104,7 @@ namespace Aardvark.Base
             M44d m44d)
         {
             var count = backwardMap.Length;
-            for (int i = 0; i < count; i++)
+            for (var i = 0; i < count; i++)
                 target[i + offset] = (V3f)m44d.TransformDir((V3d)source[backwardMap[i]]);
             return target;
         }
@@ -123,7 +123,7 @@ namespace Aardvark.Base
             M44d m44d)
         {
             var count = backwardMap.Length;
-            for (int i = 0; i < count; i++)
+            for (var i = 0; i < count; i++)
                 target[i + offset] = m44d.TransformDir(source[backwardMap[i]]);
 
             return target;
@@ -134,7 +134,7 @@ namespace Aardvark.Base
             int[] backwardMap, int offset,
             M44d m44d)
         {
-            Type type = source.GetType();
+            var type = source.GetType();
 
             if (type == typeof(V3f[]))
                 return BackwardIndexedTransformDirAndCopyTo((V3f[])source, (V3f[])target,

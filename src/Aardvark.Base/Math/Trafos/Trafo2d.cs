@@ -42,30 +42,20 @@ namespace Aardvark.Base
 
         #region Properties
 
-        public Trafo2d Inverse
-        {
-            get { return new Trafo2d(Backward, Forward); }
-        }
+        public Trafo2d Inverse => new Trafo2d(Backward, Forward);
 
         #endregion
 
         #region Overrides
 
         public override int GetHashCode()
-        {
-            return HashCode.GetCombined(Forward, Backward);
-        }
+            => HashCode.GetCombined(Forward, Backward);
 
         public override bool Equals(object other)
-        {
-            return (other is Trafo2d) ? (this == (Trafo2d)other) : false;
-        }
+            => (other is Trafo2d) ? (this == (Trafo2d)other) : false;
 
         public override string ToString()
-        {
-            return string.Format(CultureInfo.InvariantCulture,
-                                 "[{0}, {1}]", Forward, Backward);
-        }
+            => string.Format(CultureInfo.InvariantCulture, "[{0}, {1}]", Forward, Backward);
 
         #endregion
 
@@ -126,18 +116,10 @@ namespace Aardvark.Base
         #region Operators
 
         public static bool operator ==(Trafo2d a, Trafo2d b)
-        {
-            return
-                a.Forward == b.Forward &&
-                a.Backward == b.Backward;
-        }
+            => a.Forward == b.Forward && a.Backward == b.Backward;
 
         public static bool operator !=(Trafo2d a, Trafo2d b)
-        {
-            return
-                a.Forward != b.Forward ||
-                a.Backward != b.Backward;
-        }
+            => a.Forward != b.Forward || a.Backward != b.Backward;
 
         /// <summary>
         /// The order of operation of Trafo2d multiplicaition is backward
@@ -145,10 +127,7 @@ namespace Aardvark.Base
         /// natural postfix notation.
         /// </summary>
         public static Trafo2d operator *(Trafo2d t0, Trafo2d t1)
-        {
-            return new Trafo2d(t1.Forward * t0.Forward,
-                               t0.Backward * t1.Backward);
-        }
+            => new Trafo2d(t1.Forward * t0.Forward, t0.Backward * t1.Backward);
 
         #endregion
     }

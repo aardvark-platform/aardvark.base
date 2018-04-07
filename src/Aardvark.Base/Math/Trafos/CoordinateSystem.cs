@@ -1,7 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
 namespace Aardvark.Base
 {
@@ -38,30 +35,17 @@ namespace Aardvark.Base
 
             public static readonly Info Aardvark = new Info(1, Handedness.Right, Axis.Z);
 
-            public bool IsAardvark
-            {
-                get { return this.Equals(Aardvark); }
-            }
+            public bool IsAardvark => Equals(Aardvark);
 
-            public override int GetHashCode()
-            {
-                return HashCode.GetCombined(UnitScale, Handedness, UpVector);
-            }
+            public override int GetHashCode() => HashCode.GetCombined(UnitScale, Handedness, UpVector);
 
-            public override bool Equals(object other)
-            {
-                return (other is Info) ? this == (Info)other : false;
-            }
+            public override bool Equals(object other) => (other is Info) ? this == (Info)other : false;
 
             public static bool operator ==(Info a, Info b)
-            {
-                return a.UnitScale == b.UnitScale && a.Handedness == b.Handedness && a.UpVector == b.UpVector;
-            }
+                => a.UnitScale == b.UnitScale && a.Handedness == b.Handedness && a.UpVector == b.UpVector;
 
             public static bool operator !=(Info a, Info b)
-            {
-                return a.UnitScale != b.UnitScale || a.Handedness != b.Handedness || a.UpVector != b.UpVector;
-            }
+                => a.UnitScale != b.UnitScale || a.Handedness != b.Handedness || a.UpVector != b.UpVector;
         }
 
         /// <summary>
@@ -86,46 +70,31 @@ namespace Aardvark.Base
         /// to the aardvark coordinate system (Meters, Right-Handed, Z-Up).
         /// </summary>
         public static Trafo3d ToAardvark(this Info from)
-        {
-            return ToAardvark(from.UnitScale, from.Handedness, from.UpVector);
-        }
+            => ToAardvark(from.UnitScale, from.Handedness, from.UpVector);
 
         /// <summary>
         /// Creates a transformation from the specified coordinate system  
         /// to the aardvark coordinate system (Meters, Right-Handed, Z-Up).
         /// </summary>
-        public static Trafo3d ToAardvark(Handedness hand, Axis up)
-        {
-            return ToAardvark(1, hand, up);
-        }
+        public static Trafo3d ToAardvark(Handedness hand, Axis up) => ToAardvark(1, hand, up);
 
         /// <summary>
         /// Creates a transformation from the specified coordinate system  
         /// to the aardvark coordinate system (Meters, Right-Handed, Z-Up).
         /// </summary>
-        public static Trafo3d ToAardvark(Axis up)
-        {
-            return ToAardvark(1, Handedness.Right, up);
-        }
+        public static Trafo3d ToAardvark(Axis up) => ToAardvark(1, Handedness.Right, up);
 
         /// <summary>
         /// Creates a transformation from the specified coordinate system  
         /// to the aardvark coordinate system (Meters, Right-Handed, Z-Up).
         /// </summary>
-        public static Trafo3d ToAardvark(Handedness hand)
-        {
-            return ToAardvark(1, hand, Axis.Z);
-        }
+        public static Trafo3d ToAardvark(Handedness hand) => ToAardvark(1, hand, Axis.Z);
 
         /// <summary>
         /// Gets the cooresponding vector for a given axis
         /// </summary>
         public static V3d GetAxisVector(this Axis ax)
-        {
-            return ax == Axis.X ? V3d.XAxis :
-                   ax == Axis.Y ? V3d.YAxis :
-                                  V3d.ZAxis;
-        }
+            => ax == Axis.X ? V3d.XAxis : (ax == Axis.Y ? V3d.YAxis : V3d.ZAxis);
 
         /// <summary>
         /// Builds transformation from one coordinate system to another.

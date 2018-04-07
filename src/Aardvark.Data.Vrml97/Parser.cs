@@ -48,18 +48,13 @@ namespace Aardvark.Data.Vrml97
     /// </summary>
     internal class Parser
     {
-
         #region Public interface.
 
         public static Vrml97Scene FromFile(string fileName)
-        {
-            return new Parser(fileName).Perform();
-        }
+            => new Parser(fileName).Perform();
 
         public static Vrml97Scene FromStream(Stream stream, string fileName)
-        {
-            return new Parser(stream, fileName).Perform();
-        }
+            => new Parser(stream, fileName).Perform();
 
         /// <summary>
         /// Constructs a Parser for the given input stream.
@@ -104,13 +99,13 @@ namespace Aardvark.Data.Vrml97
         /// <returns>Parse tree.</returns>
         public Vrml97Scene Perform()
         {
-            List<SymMapBase> root = new List<SymMapBase>();
+            var root = new List<SymMapBase>();
 
             while (true)
             {
 				try
 				{
-                    SymMapBase node = ParseNode(m_tokenizer);
+                    var node = ParseNode(m_tokenizer);
 					if (node == null) break;
 					root.Add(node);
 					Thread.Sleep(0);
@@ -134,47 +129,47 @@ namespace Aardvark.Data.Vrml97
         /** Static constructor. */
         static Parser()
         {
-            FieldParser SFBool = new FieldParser(ParseSFBool);
-            //FieldParser MFBool = new FieldParser(ParseMFBool);
-            FieldParser SFColor = new FieldParser(ParseSFColor);
-            FieldParser MFColor = new FieldParser(ParseMFColor);
-            FieldParser SFFloat = new FieldParser(ParseSFFloat);
-            FieldParser MFFloat = new FieldParser(ParseMFFloat);
-            FieldParser SFImage = new FieldParser(ParseSFImage);
-            FieldParser SFInt32 = new FieldParser(ParseSFInt32);
-            FieldParser MFInt32 = new FieldParser(ParseMFInt32);
-            FieldParser SFNode = new FieldParser(ParseSFNode);
-            FieldParser MFNode = new FieldParser(ParseMFNode);
-            FieldParser SFRotation = new FieldParser(ParseSFRotation);
-            FieldParser MFRotation = new FieldParser(ParseMFRotation);
-            FieldParser SFString = new FieldParser(ParseSFString);
-            FieldParser MFString = new FieldParser(ParseMFString);
-            FieldParser SFTime = new FieldParser(ParseSFFloat);
-            //FieldParser MFTime = new FieldParser(ParseMFFloat);
-            FieldParser SFVec2f = new FieldParser(ParseSFVec2f);
-            FieldParser MFVec2f = new FieldParser(ParseMFVec2f);
-            FieldParser SFVec3f = new FieldParser(ParseSFVec3f);
-            FieldParser MFVec3f = new FieldParser(ParseMFVec3f);
+            var SFBool = new FieldParser(ParseSFBool);
+            //var MFBool = new FieldParser(ParseMFBool);
+            var SFColor = new FieldParser(ParseSFColor);
+            var MFColor = new FieldParser(ParseMFColor);
+            var SFFloat = new FieldParser(ParseSFFloat);
+            var MFFloat = new FieldParser(ParseMFFloat);
+            var SFImage = new FieldParser(ParseSFImage);
+            var SFInt32 = new FieldParser(ParseSFInt32);
+            var MFInt32 = new FieldParser(ParseMFInt32);
+            var SFNode = new FieldParser(ParseSFNode);
+            var MFNode = new FieldParser(ParseMFNode);
+            var SFRotation = new FieldParser(ParseSFRotation);
+            var MFRotation = new FieldParser(ParseMFRotation);
+            var SFString = new FieldParser(ParseSFString);
+            var MFString = new FieldParser(ParseMFString);
+            var SFTime = new FieldParser(ParseSFFloat);
+            //var MFTime = new FieldParser(ParseMFFloat);
+            var SFVec2f = new FieldParser(ParseSFVec2f);
+            var MFVec2f = new FieldParser(ParseMFVec2f);
+            var SFVec3f = new FieldParser(ParseSFVec3f);
+            var MFVec3f = new FieldParser(ParseMFVec3f);
 
-//            Dictionary<string, (FieldParser, object)> fields;
-           
+            //            Dictionary<string, (FieldParser, object)> fields;
+
             // Lookup table for Vrml97 node types.
             // For each node type a NodeParseInfo entry specifies how
             // to handle this kind of node.
-            m_parseInfoMap = new SymbolDict<NodeParseInfo>();
+            m_parseInfoMap = new SymbolDict<NodeParseInfo>
+            {
+                // DEF
+                [Vrml97Sym.DEF] = new NodeParseInfo(new NodeParser(ParseDEF)),
 
+                // USE
+                [Vrml97Sym.USE] = new NodeParseInfo(new NodeParser(ParseUSE)),
 
-            // DEF
-            m_parseInfoMap[Vrml97Sym.DEF] = new NodeParseInfo(new NodeParser(ParseDEF));
+                // ROUTE
+                [Vrml97Sym.ROUTE] = new NodeParseInfo(new NodeParser(ParseROUTE)),
 
-            // USE
-            m_parseInfoMap[Vrml97Sym.USE] = new NodeParseInfo(new NodeParser(ParseUSE));
-
-            // ROUTE
-            m_parseInfoMap[Vrml97Sym.ROUTE] = new NodeParseInfo(new NodeParser(ParseROUTE));
-
-            // NULL
-            m_parseInfoMap[Vrml97Sym.NULL] = new NodeParseInfo(new NodeParser(ParseNULL));
+                // NULL
+                [Vrml97Sym.NULL] = new NodeParseInfo(new NodeParser(ParseNULL))
+            };
 
             var defaultBBoxCenter = (SFVec3f, (object)V3f.Zero);
             var defaultBBoxSize = (SFVec3f, (object)new V3f(-1, -1, -1));
@@ -240,8 +235,7 @@ namespace Aardvark.Data.Vrml97
                     { "bboxCenter", defaultBBoxCenter},
                     { "bboxSize", defaultBBoxSize}
                 });
-
-
+            
             // Box
             m_parseInfoMap["Box"] = new NodeParseInfo(
                 new SymbolDict<(FieldParser, object)>()
@@ -750,7 +744,7 @@ namespace Aardvark.Data.Vrml97
 
         private static SymMapBase ParseDEF(Tokenizer t)
         {
-            SymMapBase result = new SymMapBase();
+            var result = new SymMapBase();
             result["name"] = t.NextNameToken().ToString();
             result["node"] = ParseNode(t);
             return result;
@@ -758,14 +752,14 @@ namespace Aardvark.Data.Vrml97
 
         private static SymMapBase ParseUSE(Tokenizer t)
         {
-            SymMapBase result = new SymMapBase();
+            var result = new SymMapBase();
             result["name"] = t.NextNameToken().ToString();
             return result;
         }
 
         private static SymMapBase ParseROUTE(Tokenizer t)
         {
-            SymMapBase result = new SymMapBase();
+            var result = new SymMapBase();
 
             // nodeNameId.eventOutId
             result["out"] = t.NextNameToken().ToString();
@@ -777,26 +771,19 @@ namespace Aardvark.Data.Vrml97
             return result;
         }
 
-        private static SymMapBase ParseNULL(Tokenizer t)
-        {
-            return null;
-        }
+        private static SymMapBase ParseNULL(Tokenizer t) => null;
 
         #endregion
 
         #region Helper functions.
 
-        private static object ParseSFBool(Tokenizer t)
-        {
-            Tokenizer.Token token = t.NextToken();
-            return token.ToBool();
-        }
+        private static object ParseSFBool(Tokenizer t) => t.NextToken().ToBool();
 
         private static List<bool> ParseMFBool(Tokenizer t)
         {
-            List<bool> result = new List<bool>();
+            var result = new List<bool>();
 
-            Tokenizer.Token token = t.NextToken();
+            var token = t.NextToken();
             if (token.IsBracketOpen)
             {
                 token = t.NextToken();
@@ -814,17 +801,13 @@ namespace Aardvark.Data.Vrml97
             return result;
         }
 
-        private static object ParseSFFloat(Tokenizer t)
-        {
-            Tokenizer.Token token = t.NextToken();
-            return token.ToFloat();
-        }
+        private static object ParseSFFloat(Tokenizer t) => t.NextToken().ToFloat();
 
         private static List<float> ParseMFFloat(Tokenizer t)
         {
-            List<float> result = new List<float>();
+            var result = new List<float>();
 
-            Tokenizer.Token token = t.NextToken();
+            var token = t.NextToken();
             if (token.IsBracketOpen)
             {
                 token = t.NextToken();
@@ -844,11 +827,12 @@ namespace Aardvark.Data.Vrml97
 
         private static List<uint> ParseSFImage(Tokenizer t)
         {
-            List<uint> result = new List<uint>();
-
-            result.Add(t.NextToken().ToUInt32());   // width
-            result.Add(t.NextToken().ToUInt32());   // height
-            result.Add(t.NextToken().ToUInt32());   // num components
+            var result = new List<uint>
+            {
+                t.NextToken().ToUInt32(),   // width
+                t.NextToken().ToUInt32(),   // height
+                t.NextToken().ToUInt32()   // num components
+            };
 
             uint imax = result[0] * result[1];
             for (uint i = 0; i < imax; i++)
@@ -859,17 +843,13 @@ namespace Aardvark.Data.Vrml97
             return result;
         }
 
-        private static object ParseSFInt32(Tokenizer t)
-        {
-            Tokenizer.Token token = t.NextToken();
-            return token.ToInt32();
-        }
+        private static object ParseSFInt32(Tokenizer t) => t.NextToken().ToInt32();
 
         private static List<int> ParseMFInt32(Tokenizer t)
         {
-            List<int> result = new List<int>();
+            var result = new List<int>();
 
-            Tokenizer.Token token = t.NextToken();
+            var token = t.NextToken();
             if (token.IsBracketOpen)
             {
                 token = t.NextToken();
@@ -887,16 +867,13 @@ namespace Aardvark.Data.Vrml97
             return result;
         }
 
-        private static SymMapBase ParseSFNode(Tokenizer t)
-        {
-            return ParseNode(t);
-        }
+        private static SymMapBase ParseSFNode(Tokenizer t) => ParseNode(t);
 
         private static List<SymMapBase> ParseMFNode(Tokenizer t)
         {
-            List<SymMapBase> result = new List<SymMapBase>();
+            var result = new List<SymMapBase>();
 
-            Tokenizer.Token token = t.NextToken();
+            var token = t.NextToken();
             if (token.IsBracketOpen)
             {
                 token = t.NextToken();
@@ -918,27 +895,27 @@ namespace Aardvark.Data.Vrml97
 
         private static object ParseSFRotation(Tokenizer t)
         {
-            float x = t.NextToken().ToFloat();
-            float y = t.NextToken().ToFloat();
-            float z = t.NextToken().ToFloat();
-            float w = t.NextToken().ToFloat();
+            var x = t.NextToken().ToFloat();
+            var y = t.NextToken().ToFloat();
+            var z = t.NextToken().ToFloat();
+            var w = t.NextToken().ToFloat();
             return new V4f(x, y, z, w);
         }
 
         private static List<V4f> ParseMFRotation(Tokenizer t)
         {
-            List<V4f> result = new List<V4f>();
+            var result = new List<V4f>();
 
-            Tokenizer.Token token = t.NextToken();
+            var token = t.NextToken();
             if (token.IsBracketOpen)
             {
                 token = t.NextToken();
                 while (!token.IsBracketClose)
                 {
-                    float x = token.ToFloat();
-                    float y = t.NextToken().ToFloat();
-                    float z = t.NextToken().ToFloat();
-                    float w = t.NextToken().ToFloat();
+                    var x = token.ToFloat();
+                    var y = t.NextToken().ToFloat();
+                    var z = t.NextToken().ToFloat();
+                    var w = t.NextToken().ToFloat();
                     result.Add(new V4f(x, y, z, w));
 
                     token = t.NextToken();
@@ -946,10 +923,10 @@ namespace Aardvark.Data.Vrml97
             }
             else
             {
-                float x = token.ToFloat();
-                float y = t.NextToken().ToFloat();
-                float z = t.NextToken().ToFloat();
-                float w = t.NextToken().ToFloat();
+                var x = token.ToFloat();
+                var y = t.NextToken().ToFloat();
+                var z = t.NextToken().ToFloat();
+                var w = t.NextToken().ToFloat();
                 result.Add(new V4f(x, y, z, w));
             }
 
@@ -957,16 +934,13 @@ namespace Aardvark.Data.Vrml97
         }
 
         private static string ParseSFString(Tokenizer t)
-        {
-            Tokenizer.Token token = t.NextToken();
-            return token.GetCheckedUnquotedString();
-        }
+            => t.NextToken().GetCheckedUnquotedString();
 
         private static List<string> ParseMFString(Tokenizer t)
         {
-            List<string> result = new List<string>();
+            var result = new List<string>();
 
-            Tokenizer.Token token = t.NextToken();
+            var token = t.NextToken();
             if (token.IsBracketOpen)
             {
                 token = t.NextToken();
@@ -986,16 +960,16 @@ namespace Aardvark.Data.Vrml97
 
         private static object ParseSFVec2f(Tokenizer t)
         {
-            float x = t.NextToken().ToFloat();
-            float y = t.NextToken().ToFloat();
+            var x = t.NextToken().ToFloat();
+            var y = t.NextToken().ToFloat();
             return new V2f(x, y);
         }
 
         private static List<V2f> ParseMFVec2f(Tokenizer t)
         {
-            List<V2f> result = new List<V2f>();
+            var result = new List<V2f>();
 
-            Tokenizer.Token token = t.NextToken();
+            var token = t.NextToken();
             if (token.IsBracketOpen)
             {
                 token = t.NextToken();
@@ -1020,25 +994,25 @@ namespace Aardvark.Data.Vrml97
 
         private static object ParseSFVec3f(Tokenizer t)
         {
-            float x = t.NextToken().ToFloat();
-            float y = t.NextToken().ToFloat();
-            float z = t.NextToken().ToFloat();
+            var x = t.NextToken().ToFloat();
+            var y = t.NextToken().ToFloat();
+            var z = t.NextToken().ToFloat();
             return new V3f(x, y, z);
         }
 
         private static List<V3f> ParseMFVec3f(Tokenizer t)
         {
-            List<V3f> result = new List<V3f>();
+            var result = new List<V3f>();
 
-            Tokenizer.Token token = t.NextToken();
+            var token = t.NextToken();
             if (token.IsBracketOpen)
             {
                 token = t.NextToken();
                 while (!token.IsBracketClose)
                 {
-                    float x = token.ToFloat();
-                    float y = t.NextToken().ToFloat();
-                    float z = t.NextToken().ToFloat();
+                    var x = token.ToFloat();
+                    var y = t.NextToken().ToFloat();
+                    var z = t.NextToken().ToFloat();
                     result.Add(new V3f(x, y, z));
 
                     token = t.NextToken();
@@ -1046,9 +1020,9 @@ namespace Aardvark.Data.Vrml97
             }
             else
             {
-                float x = token.ToFloat();
-                float y = t.NextToken().ToFloat();
-                float z = t.NextToken().ToFloat();
+                var x = token.ToFloat();
+                var y = t.NextToken().ToFloat();
+                var z = t.NextToken().ToFloat();
                 result.Add(new V3f(x, y, z));
             }
 
@@ -1057,25 +1031,25 @@ namespace Aardvark.Data.Vrml97
 
         private static object ParseSFColor(Tokenizer t)
         {
-            float r = t.NextToken().ToFloat();
-            float g = t.NextToken().ToFloat();
-            float b = t.NextToken().ToFloat();
+            var r = t.NextToken().ToFloat();
+            var g = t.NextToken().ToFloat();
+            var b = t.NextToken().ToFloat();
             return new C3f(r, g, b);
         }
 
         private static List<C3f> ParseMFColor(Tokenizer t)
         {
-            List<C3f> result = new List<C3f>();
+            var result = new List<C3f>();
 
-            Tokenizer.Token token = t.NextToken();
+            var token = t.NextToken();
             if (token.IsBracketOpen)
             {
                 token = t.NextToken();
                 while (!token.IsBracketClose)
                 {
-                    float r = token.ToFloat();
-                    float g = t.NextToken().ToFloat();
-                    float b = t.NextToken().ToFloat();
+                    var r = token.ToFloat();
+                    var g = t.NextToken().ToFloat();
+                    var b = t.NextToken().ToFloat();
                     result.Add(new C3f(r, g, b));
 
                     token = t.NextToken();
@@ -1083,9 +1057,9 @@ namespace Aardvark.Data.Vrml97
             }
             else
             {
-                float r = token.ToFloat();
-                float g = t.NextToken().ToFloat();
-                float b = t.NextToken().ToFloat();
+                var r = token.ToFloat();
+                var g = t.NextToken().ToFloat();
+                var b = t.NextToken().ToFloat();
                 result.Add(new C3f(r, g, b));
             }
 
@@ -1098,18 +1072,17 @@ namespace Aardvark.Data.Vrml97
 
         private static void ExpectBraceOpen(Tokenizer t)
         {
-            Tokenizer.Token token = t.NextToken();
+            var token = t.NextToken();
             if (token.IsBraceOpen) return;
 
             throw new ParseException(
                 "Token '{' expected. Found " + token.ToString() + " instead!"
                 );
-
         }
 
         private static void ExpectBraceClose(Tokenizer t)
         {
-            Tokenizer.Token token = t.NextToken();
+            var token = t.NextToken();
             if (token.IsBraceClose) return;
 
             throw new ParseException(
@@ -1124,7 +1097,7 @@ namespace Aardvark.Data.Vrml97
         private static SymMapBase ParseNode(Tokenizer t)
         {
             // Next token is expected to be a Vrml97 node type.
-            string nodeType = t.NextToken().ToString();
+            var nodeType = t.NextToken().ToString();
             if (nodeType == null) return null;
 
             SymMapBase node;
@@ -1194,7 +1167,7 @@ namespace Aardvark.Data.Vrml97
             NodeParseInfo info
             )
         {
-            SymMapBase result = new SymMapBase();
+            var result = new SymMapBase();
             ExpectBraceOpen(t);
 
             // populate fields with default values
@@ -1220,13 +1193,13 @@ namespace Aardvark.Data.Vrml97
         private static SymMapBase ParseUnknownNode(Tokenizer t)
         {
             ExpectBraceOpen(t);
-            int level = 1;
+            var level = 1;
 
-            StringBuilder sb = new StringBuilder("{");
+            var sb = new StringBuilder("{");
 
             do
             {
-                Tokenizer.Token token = t.NextToken();
+                var token = t.NextToken();
                 sb.Append(" " + token);
 
                 if (token.IsBraceOpen) level++;
@@ -1234,7 +1207,7 @@ namespace Aardvark.Data.Vrml97
             }
             while (level > 0);
 
-            SymMapBase result = new SymMapBase();
+            var result = new SymMapBase();
             result["unknownNode"] = true;
             result["content"] = sb.ToString();
             return result;
@@ -1249,7 +1222,5 @@ namespace Aardvark.Data.Vrml97
         private Tokenizer m_tokenizer;
 
         #endregion
-
     }
-
 }

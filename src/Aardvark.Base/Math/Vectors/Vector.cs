@@ -1,4 +1,5 @@
 using System;
+using static System.Math;
 
 namespace Aardvark.Base
 {
@@ -32,13 +33,10 @@ namespace Aardvark.Base
     public partial struct V2f
     {
         public static V2f FromPolar(float angleInRadians, float radius)
-        {
-            return new V2f(System.Math.Cos(angleInRadians) * radius, System.Math.Sin(angleInRadians) * radius);
-        }
+            => new V2f(Cos(angleInRadians) * radius, Sin(angleInRadians) * radius);
+
         public static V2f FromPolar(float angleInRadians)
-        {
-            return new V2f(System.Math.Cos(angleInRadians), System.Math.Sin(angleInRadians));
-        }
+            => new V2f(Cos(angleInRadians), Sin(angleInRadians));
     }
 
     #endregion
@@ -48,13 +46,10 @@ namespace Aardvark.Base
     public partial struct V2d
     {
         public static V2d FromPolar(double angleInRadians, double radius)
-        {
-            return new V2d(System.Math.Cos(angleInRadians) * radius, System.Math.Sin(angleInRadians) * radius);
-        }
+            => new V2d(Cos(angleInRadians) * radius, Sin(angleInRadians) * radius);
+
         public static V2d FromPolar(double angleInRadians)
-        {
-            return new V2d(System.Math.Cos(angleInRadians), System.Math.Sin(angleInRadians));
-        }
+            => new V2d(Cos(angleInRadians), Sin(angleInRadians));
     }
 
     #endregion

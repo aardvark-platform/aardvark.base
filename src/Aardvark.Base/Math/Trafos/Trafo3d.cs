@@ -60,30 +60,19 @@ namespace Aardvark.Base
 
         #region Properties
 
-        public Trafo3d Inverse
-        {
-            get { return new Trafo3d(Backward, Forward); }
-        }
+        public Trafo3d Inverse => new Trafo3d(Backward, Forward);
 
         #endregion
 
         #region Overrides
 
-        public override int GetHashCode()
-        {
-            return HashCode.GetCombined(Forward, Backward);
-        }
+        public override int GetHashCode() => HashCode.GetCombined(Forward, Backward);
 
         public override bool Equals(object other)
-        {
-            return (other is Trafo3d) ? (this == (Trafo3d)other) : false;
-        }
+            => (other is Trafo3d) ? (this == (Trafo3d)other) : false;
 
         public override string ToString()
-        {
-            return string.Format(CultureInfo.InvariantCulture,
-                                 "[{0}, {1}]", Forward, Backward);
-        }
+            => string.Format(CultureInfo.InvariantCulture, "[{0}, {1}]", Forward, Backward);
 
         #endregion
 
@@ -99,78 +88,49 @@ namespace Aardvark.Base
         }
 
         public static Trafo3d Translation(V3d v)
-        {
-            return new Trafo3d(M44d.Translation(v),
-                               M44d.Translation(-v));
-        }
+            => new Trafo3d(M44d.Translation(v), M44d.Translation(-v));
 
         public static Trafo3d Translation(double dx, double dy, double dz)
-        {
-            return new Trafo3d(M44d.Translation(dx, dy, dz),
-                               M44d.Translation(-dx, -dy, -dz));
-        }
+            => new Trafo3d(M44d.Translation(dx, dy, dz),
+                           M44d.Translation(-dx, -dy, -dz));
 
-        public static Trafo3d Scale(V3d v)
-        {
-            return new Trafo3d(M44d.Scale(v),
-                               M44d.Scale(1 / v));
-        }
+        public static Trafo3d Scale(V3d v) 
+            => new Trafo3d(M44d.Scale(v), M44d.Scale(1 / v));
 
         public static Trafo3d Scale(double sx, double sy, double sz)
-        {
-            return new Trafo3d(M44d.Scale(sx, sy, sz),
-                               M44d.Scale(1 / sx, 1 / sy, 1 / sz));
-        }
+            => new Trafo3d(M44d.Scale(sx, sy, sz),
+                           M44d.Scale(1 / sx, 1 / sy, 1 / sz));
 
         public static Trafo3d Scale(double s)
-        {
-            return new Trafo3d(M44d.Scale(s),
-                               M44d.Scale(1 / s));
-        }
+            => new Trafo3d(M44d.Scale(s), M44d.Scale(1 / s));
 
         public static Trafo3d Rotation(V3d axis, double angleInRadians)
-        {
-            return new Trafo3d(M44d.Rotation(axis, angleInRadians),
-                               M44d.Rotation(axis, -angleInRadians));
-        }
+            => new Trafo3d(M44d.Rotation(axis, angleInRadians),
+                           M44d.Rotation(axis, -angleInRadians));
 
         public static Trafo3d RotationInDegrees(V3d axis, double angleInDegrees)
-        {
-            return Rotation(axis, Conversion.RadiansFromDegrees(angleInDegrees));
-        }
+            => Rotation(axis, Conversion.RadiansFromDegrees(angleInDegrees));
 
         public static Trafo3d RotationX(double angleInRadians)
-        {
-            return new Trafo3d(M44d.RotationX(angleInRadians),
-                               M44d.RotationX(-angleInRadians));
-        }
+            => new Trafo3d(M44d.RotationX(angleInRadians),
+                           M44d.RotationX(-angleInRadians));
 
         public static Trafo3d RotationXInDegrees(double angleInDegrees)
-        {
-            return RotationX(Conversion.RadiansFromDegrees(angleInDegrees));
-        }
+            => RotationX(Conversion.RadiansFromDegrees(angleInDegrees));
 
         public static Trafo3d RotationY(double angleInRadians)
-        {
-            return new Trafo3d(M44d.RotationY(angleInRadians),
-                               M44d.RotationY(-angleInRadians));
-        }
+            => new Trafo3d(M44d.RotationY(angleInRadians),
+                           M44d.RotationY(-angleInRadians));
 
         public static Trafo3d RotationYInDegrees(double angleInDegrees)
-        {
-            return RotationY(Conversion.RadiansFromDegrees(angleInDegrees));
-        }
+            => RotationY(Conversion.RadiansFromDegrees(angleInDegrees));
 
         public static Trafo3d RotationZ(double angleInRadians)
-        {
-            return new Trafo3d(M44d.RotationZ(angleInRadians),
-                               M44d.RotationZ(-angleInRadians));
-        }
+            => new Trafo3d(M44d.RotationZ(angleInRadians),
+                           M44d.RotationZ(-angleInRadians));
 
         public static Trafo3d RotationZInDegrees(double angleInDegrees)
-        {
-            return RotationZ(Conversion.RadiansFromDegrees(angleInDegrees));
-        }
+            => RotationZ(Conversion.RadiansFromDegrees(angleInDegrees));
 
         public static Trafo3d Rotation(double yawInRadians, double pitchInRadians, double rollInRadians)
         {
@@ -179,19 +139,13 @@ namespace Aardvark.Base
         }
 
         public static Trafo3d RotationInDegrees(double yawInDegrees, double pitchInDegrees, double rollInDegrees)
-        {
-            return Rotation(yawInDegrees.RadiansFromDegrees(), pitchInDegrees.RadiansFromDegrees(), rollInDegrees.RadiansFromDegrees());
-        }
+            => Rotation(yawInDegrees.RadiansFromDegrees(), pitchInDegrees.RadiansFromDegrees(), rollInDegrees.RadiansFromDegrees());
 
         public static Trafo3d Rotation(V3d yaw_pitch_roll_inRadians)
-        {
-            return Rotation(yaw_pitch_roll_inRadians.X, yaw_pitch_roll_inRadians.Y, yaw_pitch_roll_inRadians.Z);
-        }
+            => Rotation(yaw_pitch_roll_inRadians.X, yaw_pitch_roll_inRadians.Y, yaw_pitch_roll_inRadians.Z);
 
         public static Trafo3d RotationInDegrees(V3d yaw_pitch_roll_inDegrees)
-        {
-            return RotationInDegrees(yaw_pitch_roll_inDegrees.X, yaw_pitch_roll_inDegrees.Y, yaw_pitch_roll_inDegrees.Z);
-        }
+            => RotationInDegrees(yaw_pitch_roll_inDegrees.X, yaw_pitch_roll_inDegrees.Y, yaw_pitch_roll_inDegrees.Z);
 
         public static Trafo3d RotateInto(V3d from, V3d into)
         {
@@ -202,8 +156,7 @@ namespace Aardvark.Base
 
         public static Trafo3d FromNormalFrame(V3d origin, V3d normal)
         {
-            M44d forward, backward;
-            M44d.NormalFrame(origin, normal, out forward, out backward);
+            M44d.NormalFrame(origin, normal, out M44d forward, out M44d backward);
             return new Trafo3d(forward, backward);
         }
 
@@ -213,36 +166,27 @@ namespace Aardvark.Base
         ///       The rotation is in Euler-Angles (yaw, pitch, roll).
         /// </summary>
         public static Trafo3d FromComponents(V3d scale, V3d rotation, V3d translation)
-        {
-            return Trafo3d.Scale(scale) * Trafo3d.Rotation(rotation) * Trafo3d.Translation(translation);
-        }
+            => Scale(scale) * Rotation(rotation) * Translation(translation);
 
         public static Trafo3d ShearYZ(double factorY, double factorZ)
-        {
-            return new Trafo3d(M44d.ShearYZ(factorY, factorZ),
-                               M44d.ShearYZ(-factorY, -factorZ));
-        }
+            => new Trafo3d(M44d.ShearYZ(factorY, factorZ),
+                           M44d.ShearYZ(-factorY, -factorZ));
+
 
         public static Trafo3d ShearXZ(double factorX, double factorZ)
-        {
-            return new Trafo3d(M44d.ShearXZ(factorX, factorZ),
-                               M44d.ShearXZ(-factorX, -factorZ));
-        }
+            => new Trafo3d(M44d.ShearXZ(factorX, factorZ),
+                           M44d.ShearXZ(-factorX, -factorZ));
 
         public static Trafo3d ShearXY(double factorX, double factorY)
-        {
-            return new Trafo3d(M44d.ShearXY(factorX, factorY),
-                               M44d.ShearXY(-factorX, -factorY));
-        }
+            => new Trafo3d(M44d.ShearXY(factorX, factorY),
+                           M44d.ShearXY(-factorX, -factorY));
 
         /// <summary>
         /// Returns the trafo that transforms from the coordinate system
         /// specified by the basis into the world coordinate system.
         /// </summary>
         public static Trafo3d FromBasis(V3f xAxis, V3f yAxis, V3f zAxis, V3f orign)
-        {
-            return Trafo3d.FromBasis((V3d)xAxis, (V3d)yAxis, (V3d)zAxis, (V3d)orign);
-        }
+            => FromBasis((V3d)xAxis, (V3d)yAxis, (V3d)zAxis, (V3d)orign);
 
         /// <summary>
         /// Returns the trafo that transforms from the coordinate system
@@ -302,17 +246,13 @@ namespace Aardvark.Base
         /// Creates a right-handed view trafo, where z-negative points into the scene.
         /// </summary>
         public static Trafo3d ViewTrafoRH(V3d location, V3d up, V3d forward)
-        {
-            return Trafo3d.ViewTrafo(location, forward.Cross(up), up, -forward);
-        }
+            => ViewTrafo(location, forward.Cross(up), up, -forward);
 
         /// <summary>
         /// Creates a left-handed view trafo, where z-positive points into the scene.
         /// </summary>
         public static Trafo3d ViewTrafoLH(V3d location, V3d up, V3d forward)
-        {
-            return Trafo3d.ViewTrafo(location, up.Cross(forward), up, forward);
-        }
+            => ViewTrafo(location, up.Cross(forward), up, forward);
 
         /// <summary>
         /// Creates a right-handed perspective projection transform, where z-negative points into the scene.
@@ -434,18 +374,10 @@ namespace Aardvark.Base
         #region Operators
 
         public static bool operator ==(Trafo3d a, Trafo3d b)
-        {
-            return
-                a.Forward == b.Forward &&
-                a.Backward == b.Backward;
-        }
+            => a.Forward == b.Forward && a.Backward == b.Backward;
 
         public static bool operator !=(Trafo3d a, Trafo3d b)
-        {
-            return
-                a.Forward != b.Forward ||
-                a.Backward != b.Backward;
-        }
+            => a.Forward != b.Forward || a.Backward != b.Backward;
 
         /// <summary>
         /// The order of operation of Trafo3d multiplicaition is backward
@@ -453,10 +385,7 @@ namespace Aardvark.Base
         /// natural postfix notation.
         /// </summary>
         public static Trafo3d operator *(Trafo3d t0, Trafo3d t1)
-        {
-            return new Trafo3d(t1.Forward * t0.Forward,
-                               t0.Backward * t1.Backward);
-        }
+            => new Trafo3d(t1.Forward * t0.Forward, t0.Backward * t1.Backward);
 
         #endregion 
 
@@ -468,43 +397,33 @@ namespace Aardvark.Base
         /// Approximates the uniform scale value of the given transformation (average length of basis vectors).
         /// </summary>
         public static double GetScale(this M44d trafo)
-        {
-            return (trafo.C0.XYZ.Length + trafo.C1.XYZ.Length + trafo.C2.XYZ.Length) / 3;
-        }
+            => (trafo.C0.XYZ.Length + trafo.C1.XYZ.Length + trafo.C2.XYZ.Length) / 3;
 
         /// <summary>
         /// Extracts a scale vector from the given matrix by calculating the lengths of the basis vectors.
         /// NOTE: The extraction only gives absolute value (negative scale will be ignored)
         /// </summary>
         public static V3d GetScaleVector(this M44d trafo)
-        {
-            return new V3d(trafo.C0.XYZ.Length, trafo.C1.XYZ.Length, trafo.C2.XYZ.Length);
-        }
+            => new V3d(trafo.C0.XYZ.Length, trafo.C1.XYZ.Length, trafo.C2.XYZ.Length);
 
         /// <summary>
         /// Approximates the uniform scale value of the given transformation (average length of basis vectors).
         /// </summary>
         public static double GetScale(this Trafo3d trafo)
-        {
-            return trafo.Forward.GetScale();
-        }
+            => trafo.Forward.GetScale();
 
         /// <summary>
         /// Extracts a scale vector from the given matrix by calculating the lengths of the basis vectors. 
         /// </summary>
         public static V3d GetScaleVector(this Trafo3d trafo)
-        {
-            return trafo.Forward.GetScaleVector();
-        }
+            => trafo.Forward.GetScaleVector();
 
         /// <summary>
         /// Extracts the inverse/backward translation component of the given transformation, which when given 
         /// a view transformation represents the location of the camera in world space.
         /// </summary>
         public static V3d GetViewPosition(this Trafo3d trafo)
-        {
-            return trafo.Backward.C3.XYZ;
-        }
+            => trafo.Backward.C3.XYZ;
 
         /// <summary>
         /// Extracts the Z-Axis from the given transformation.
@@ -512,9 +431,7 @@ namespace Aardvark.Base
         /// where the view-space z-axis points in forward direction.
         /// </summary>
         public static V3d GetViewDirectionLH(this Trafo3d trafo)
-        {
-            return trafo.Forward.R2.XYZ.Normalized;
-        }
+            => trafo.Forward.R2.XYZ.Normalized;
 
         /// <summary>
         /// Extracts the Z-Axis from the given transformation.
@@ -522,18 +439,14 @@ namespace Aardvark.Base
         /// the view-space z-axis points opposit the forward vector.
         /// </summary>
         public static V3d GetViewDirectionRH(this Trafo3d trafo)
-        {
-            return -trafo.Forward.R2.XYZ.Normalized;
-        }
+            => -trafo.Forward.R2.XYZ.Normalized;
 
         /// <summary>
         /// Extracts the translation component of the given transformation, which when given 
         /// a model transformation represents the model origin in world position.
         /// </summary>
         public static V3d GetModelOrigin(this Trafo3d trafo)
-        {
-            return trafo.Forward.C3.XYZ;
-        }
+            => trafo.Forward.C3.XYZ;
 
         /// <summary>
         /// Builds an ortho-normal orientation transformation form the given transform.

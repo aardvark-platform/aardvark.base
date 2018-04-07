@@ -49,18 +49,16 @@ namespace Aardvark.Base
         #region Constants
 
         public static readonly Func<Vec<T>, long, T> Getter =
-                (v, i) => v.m_data[v.m_origin + i];
+            (v, i) => v.m_data[v.m_origin + i];
+
         public static readonly Action<Vec<T>, long, T> Setter =
-                (v, i, s) => v.m_data[v.m_origin + i] = s;
+            (v, i, s) => v.m_data[v.m_origin + i] = s;
 
         #endregion
 
         #region Properties
 
-        public long Dim
-        {
-            get { return m_dim; }
-        }
+        public long Dim => m_dim;
 
         #endregion
 
@@ -69,35 +67,22 @@ namespace Aardvark.Base
         public T this[long index]
         {
             get { return m_data[m_origin + index]; }
-            set
-            {
-                throw new NotSupportedException();
-            }
+            set { throw new NotSupportedException(); }
         }
 
         #endregion
 
         #region Manipulations
 
-        public void Set(long index, T value)
-        {
-            m_data[m_origin + index] = value;
-        }
+        public void Set(long index, T value) => m_data[m_origin + index] = value;
 
-        public Vec<T> Copy()
-        {
-            return new Vec<T>(m_dim).Set(this);
-        }
+        public Vec<T> Copy() => new Vec<T>(m_dim).Set(this);
 
         public Vec<T1> Copy<T1>(Func<T,T1> element_fun)
-        {
-            return new Vec<T1>(m_dim).Set(this, element_fun);
-        }
+            => new Vec<T1>(m_dim).Set(this, element_fun);
 
         public Vec<T1> CopyByIndex<T1>(Func<T, long, T1> element_index_fun)
-        {
-            return new Vec<T1>(m_dim).SetByIndex(this, element_index_fun);
-        }
+            => new Vec<T1>(m_dim).SetByIndex(this, element_index_fun);
 
         public Vec<T> Set(T s1)
         {
@@ -198,7 +183,7 @@ namespace Aardvark.Base
         public TSum Norm<TSum>(
                 TSum bias, Func<TSum, T, TSum> sum_element_fun)
         {
-            TSum sum = bias;
+            var sum = bias;
             for (long i0 = m_origin, e0 = m_origin + m_dim;
                  i0 != e0; i0++)
                 sum = sum_element_fun(sum, m_data[i0]);
@@ -209,7 +194,7 @@ namespace Aardvark.Base
                 TSum bias, Func<TSum, T, TSum> sum_element_fun,
                 Func<TSum, bool> sum_breakIfTrueFun)
         {
-            TSum sum = bias;
+            var sum = bias;
             for (long i0 = m_origin, e0 = m_origin + m_dim;
                  i0 != e0; i0++)
             {
@@ -223,7 +208,7 @@ namespace Aardvark.Base
                 Vec<T1> v1, Func<T, T1, TProd> element_element1_productFun,
                 TSum bias, Func<TSum, TProd, TSum> sum_product_fun)
         {
-            TSum sum = bias;
+            var sum = bias;
             for (long i0 = m_origin, e0 = m_origin + m_dim, i1 = v1.m_origin;
                  i0 != e0; i0++, i1++)
                 sum = sum_product_fun(sum, element_element1_productFun(m_data[i0], v1.m_data[i1]));
@@ -235,7 +220,7 @@ namespace Aardvark.Base
                 TSum bias, Func<TSum, TProd, TSum> sum_product_fun,
                 Func<TSum, bool> sum_breakIfTrueFun)
         {
-            TSum sum = bias;
+            var sum = bias;
             for (long i0 = m_origin, e0 = m_origin + m_dim, i1 = v1.m_origin;
                  i0 != e0; i0++, i1++)
             {
@@ -249,19 +234,13 @@ namespace Aardvark.Base
 
         #region IEnumerable<T> Members
 
-        public IEnumerator<T> GetEnumerator()
-        {
-            return new Enumerator<T>(this);
-        }
+        public IEnumerator<T> GetEnumerator() => new Enumerator<T>(this);
 
         #endregion
 
         #region IEnumerable Members
 
-        System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
-        {
-            return new Enumerator<T>(this);
-        }
+        System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator() => new Enumerator<T>(this);
 
         #endregion
 
@@ -282,27 +261,19 @@ namespace Aardvark.Base
 
             #region IEnumerator<U> Members
 
-            public U Current
-            {
-                get { return m_data[m_index]; }
-            }
+            public U Current => m_data[m_index];
 
             #endregion
 
             #region IDisposable Members
 
-            public void Dispose()
-            {
-            }
+            public void Dispose() { }
 
             #endregion
 
             #region IEnumerator Members
 
-            object System.Collections.IEnumerator.Current
-            {
-                get { return Current; }
-            }
+            object System.Collections.IEnumerator.Current => Current;
 
             public bool MoveNext()
             {
@@ -310,10 +281,7 @@ namespace Aardvark.Base
                 return false;
             }
 
-            public void Reset()
-            {
-                throw new NotSupportedException();
-            }
+            public void Reset() => throw new NotSupportedException();
 
             #endregion
         }
@@ -322,15 +290,9 @@ namespace Aardvark.Base
 
         #region IVector Members
 
-        public object GetValue(long index)
-        {
-            return m_data[m_origin + index];
-        }
+        public object GetValue(long index) => m_data[m_origin + index];
 
-        public void SetValue(object value, long index)
-        {
-            m_data[m_origin + index] = (T)value;
-        }
+        public void SetValue(object value, long index) => m_data[m_origin + index] = (T)value;
 
         #endregion
     }
@@ -386,15 +348,9 @@ namespace Aardvark.Base
 
         #region Properties
 
-        public long Dim
-        {
-            get { return m_dim; }
-        }
+        public long Dim => m_dim;
 
-        public long Count
-        {
-            get { return m_count; }
-        }
+        public long Count => m_count;
 
         #endregion
 
@@ -410,20 +366,13 @@ namespace Aardvark.Base
 
         #region Operations
 
-        public VecArray<T> Copy()
-        {
-            return new VecArray<T>(m_dim, m_count).Set(this);
-        }
+        public VecArray<T> Copy() => new VecArray<T>(m_dim, m_count).Set(this);
 
         public VecArray<T1> Copy<T1>(Func<Vec<T>, Vec<T1>> element_fun)
-        {
-            return new VecArray<T1>(m_dim, m_count).Set(this, element_fun);
-        }
+            => new VecArray<T1>(m_dim, m_count).Set(this, element_fun);
 
         public VecArray<T1> Copy<T1>(Func<Vec<T>, Vec<T1>> element_fun, long newDim)
-        {
-            return new VecArray<T1>(newDim, m_count).Set(this, element_fun);
-        }
+            => new VecArray<T1>(newDim, m_count).Set(this, element_fun);
 
         public VecArray<T> ForEach(Action<Vec<T>> vec_act)
         {
@@ -440,14 +389,10 @@ namespace Aardvark.Base
         }
 
         public VecArray<T> SubArray(long begin)
-        {
-            return new VecArray<T>(m_data, m_origin + m_dim * begin, m_dim, m_count - begin);
-        }
+            => new VecArray<T>(m_data, m_origin + m_dim * begin, m_dim, m_count - begin);
 
         public VecArray<T> SubArray(long begin, long count)
-        {
-            return new VecArray<T>(m_data, m_origin + m_dim * begin, m_dim, count);
-        }
+            => new VecArray<T>(m_data, m_origin + m_dim * begin, m_dim, count);
 
         public VecArray<T> Set(VecArray<T> va1)
         {
@@ -570,19 +515,13 @@ namespace Aardvark.Base
 
         #region IEnumerable<Vec<T>> Members
 
-        public IEnumerator<Vec<T>> GetEnumerator()
-        {
-            return new Enumerator<T>(this);
-        }
+        public IEnumerator<Vec<T>> GetEnumerator() => new Enumerator<T>(this);
 
         #endregion
 
         #region IEnumerable Members
 
-        System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
-        {
-            return new Enumerator<T>(this);
-        }
+        System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator() => new Enumerator<T>(this);
 
         #endregion
 
@@ -605,27 +544,19 @@ namespace Aardvark.Base
 
             #region IEnumerator<Vec<U>> Members
 
-            public Vec<U> Current
-            {
-                get { return new Vec<U>(m_data, m_position, m_dim); }
-            }
+            public Vec<U> Current => new Vec<U>(m_data, m_position, m_dim);
 
             #endregion
 
             #region IDisposable Members
 
-            public void Dispose()
-            {
-            }
+            public void Dispose() { }
 
             #endregion
 
             #region IEnumerator Members
 
-            object System.Collections.IEnumerator.Current
-            {
-                get { return Current; }
-            }
+            object System.Collections.IEnumerator.Current => Current;
 
             public bool MoveNext()
             {
@@ -635,10 +566,7 @@ namespace Aardvark.Base
                 return false;
             }
 
-            public void Reset()
-            {
-                throw new NotSupportedException();
-            }
+            public void Reset() => throw new NotSupportedException();
 
             #endregion
         }
@@ -648,14 +576,10 @@ namespace Aardvark.Base
         #region IVector Members
 
         public object GetValue(long index)
-        {
-            return new Vec<T>(m_data, m_origin + index * m_dim, m_dim);
-        }
+            => new Vec<T>(m_data, m_origin + index * m_dim, m_dim);
 
         public void SetValue(object value, long index)
-        {
-            new Vec<T>(m_data, m_origin + index * m_dim, m_dim).Set((Vec<T>)value);
-        }
+            => new Vec<T>(m_data, m_origin + index * m_dim, m_dim).Set((Vec<T>)value);
 
         #endregion
     }
@@ -690,25 +614,13 @@ namespace Aardvark.Base
 
         #region Properties
 
-        public bool IsEmpty
-        {
-            get { return Min.AnyGreaterOrEqual(Max); }
-        }
+        public bool IsEmpty => Min.AnyGreaterOrEqual(Max);
 
-        public bool IsNonEmpty
-        {
-            get { return Min.AllSmaller(Max); }
-        }
+        public bool IsNonEmpty => Min.AllSmaller(Max);
 
-        public bool IsValid
-        {
-            get { return Min.AllSmallerOrEqual(Max); }
-        }
+        public bool IsValid => Min.AllSmallerOrEqual(Max);
 
-        public bool IsInvalid
-        {
-            get { return Min.AnyGreater(Max); }
-        }
+        public bool IsInvalid => Min.AnyGreater(Max);
 
         #endregion
 
@@ -727,14 +639,10 @@ namespace Aardvark.Base
         }
 
         public VecBox<T> ExtendedBy(Vec<T> value)
-        {
-            return new VecBox<T>(Min.MinVec(value), Max.MaxVec(value));
-        }
+            => new VecBox<T>(Min.MinVec(value), Max.MaxVec(value));
 
         public VecBox<T> ExtendedBy(VecBox<T> box)
-        {
-            return new VecBox<T>(Min.MinVec(box.Min), Max.MaxVec(box.Max));
-        }
+            => new VecBox<T>(Min.MinVec(box.Min), Max.MaxVec(box.Max));
 
         public void ExtendBy(Vec<T> value)
         {
@@ -749,19 +657,13 @@ namespace Aardvark.Base
         }
 
         public bool Contains(Vec<T> value)
-        {
-            return Min.AllSmallerOrEqual(value) && Max.AllGreaterOrEqual(value);
-        }
+            => Min.AllSmallerOrEqual(value) && Max.AllGreaterOrEqual(value);
 
         public bool Contains(VecBox<T> box)
-        {
-            return Min.AllSmallerOrEqual(box.Min) && Max.AllGreaterOrEqual(box.Max);
-        }
+            => Min.AllSmallerOrEqual(box.Min) && Max.AllGreaterOrEqual(box.Max);
 
         public bool Intersects(VecBox<T> range)
-        {
-            return (Max.AllGreaterOrEqual(range.Min) && Min.AllSmallerOrEqual(range.Max));
-        }
+            => (Max.AllGreaterOrEqual(range.Min) && Min.AllSmallerOrEqual(range.Max));
 
         /// <summary>
         /// Return the corner of the box with the given index. The corner
@@ -771,7 +673,7 @@ namespace Aardvark.Base
         /// </summary>
         public Vec<T> Corner(long ci)
         {
-            long dim = Min.Dim;
+            var dim = Min.Dim;
             if (dim >= 64) throw new ArgumentException(); // not possible otherwise
             var c = new Vec<T>(dim);
             var min = Min; var max = Max;
@@ -786,9 +688,9 @@ namespace Aardvark.Base
         /// </summary>
         public VecArray<T> ComputeCorners()
         {
-            int dim = (int)Min.Dim;
+            var dim = (int)Min.Dim;
             if (dim >= 32) throw new ArgumentException(); // more does not realisically make sense
-            long count = 1L << dim;
+            var count = 1L << dim;
             var ca = new VecArray<T>(dim, count);
             var min = Min; var max = Max;
             ca.ForeachIndex((c, ci) =>
@@ -832,18 +734,14 @@ namespace Aardvark.Base
         /// </summary>
         public static Vec<T> MinVec<T>(this Vec<T> v0, Vec<T> v1)
             where T : IComparable<T>
-        {
-            return new Vec<T>(v0.m_dim).Set(v0, v1, (x0, x1) => x0.CompareTo(x1) < 0 ? x0 : x1);
-        }
+            => new Vec<T>(v0.m_dim).Set(v0, v1, (x0, x1) => x0.CompareTo(x1) < 0 ? x0 : x1);
 
         /// <summary>
         /// Returns the componentwise maximum vector.
         /// </summary>
         public static Vec<T> MaxVec<T>(this Vec<T> v0, Vec<T> v1)
             where T : IComparable<T>
-        {
-            return new Vec<T>(v0.m_dim).Set(v0, v1, (x0, x1) => x0.CompareTo(x1) > 0 ? x0 : x1);
-        }
+            => new Vec<T>(v0.m_dim).Set(v0, v1, (x0, x1) => x0.CompareTo(x1) > 0 ? x0 : x1);
 
         #endregion
 
@@ -881,147 +779,99 @@ namespace Aardvark.Base
 
         public static bool AllSmaller<T>(this Vec<T> v0, T x1)
             where T : IComparable<T>
-        {
-            return v0.Norm(true, (b, x0) => b && x0.CompareTo(x1) < 0);
-        }
+            => v0.Norm(true, (b, x0) => b && x0.CompareTo(x1) < 0);
 
         public static bool AllSmaller<T>(this T x0, Vec<T> v1)
             where T : IComparable<T>
-        {
-            return v1.Norm(true, (b, x1) => b && x0.CompareTo(x1) < 0);
-        }
+            => v1.Norm(true, (b, x1) => b && x0.CompareTo(x1) < 0);
 
         public static bool AllSmaller<T>(this Vec<T> v0, Vec<T> v1)
             where T : IComparable<T>
-        {
-            return v0.InnerProduct(v1, (x0, x1) => x0.CompareTo(x1) < 0, true, (b, c) => b && c);
-        }
+            => v0.InnerProduct(v1, (x0, x1) => x0.CompareTo(x1) < 0, true, (b, c) => b && c);
 
         public static bool AnySmaller<T>(this Vec<T> v0, T x1)
             where T : IComparable<T>
-        {
-            return v0.Norm(false, (b, x0) => b || x0.CompareTo(x1) < 0);
-        }
+            => v0.Norm(false, (b, x0) => b || x0.CompareTo(x1) < 0);
 
         public static bool AnySmaller<T>(this T x0, Vec<T> v1)
             where T : IComparable<T>
-        {
-            return v1.Norm(false, (b, x1) => b || x0.CompareTo(x1) < 0);
-        }
+            => v1.Norm(false, (b, x1) => b || x0.CompareTo(x1) < 0);
 
         public static bool AnySmaller<T>(this Vec<T> v0, Vec<T> v1)
             where T : IComparable<T>
-        {
-            return v0.InnerProduct(v1, (x0, x1) => x0.CompareTo(x1) < 0, false, (b, c) => b || c);
-        }
+            => v0.InnerProduct(v1, (x0, x1) => x0.CompareTo(x1) < 0, false, (b, c) => b || c);
 
         public static bool AllGreater<T>(this Vec<T> v0, T x1)
             where T : IComparable<T>
-        {
-            return v0.Norm(true, (b, x0) => b && x0.CompareTo(x1) > 0);
-        }
+            => v0.Norm(true, (b, x0) => b && x0.CompareTo(x1) > 0);
 
         public static bool AllGreater<T>(this T x0, Vec<T> v1)
             where T : IComparable<T>
-        {
-            return v1.Norm(true, (b, x1) => b && x0.CompareTo(x1) > 0);
-        }
+            => v1.Norm(true, (b, x1) => b && x0.CompareTo(x1) > 0);
 
         public static bool AllGreater<T>(this Vec<T> v0, Vec<T> v1)
             where T : IComparable<T>
-        {
-            return v0.InnerProduct(v1, (x0, x1) => x0.CompareTo(x1) > 0, true, (b, c) => b && c);
-        }
+            => v0.InnerProduct(v1, (x0, x1) => x0.CompareTo(x1) > 0, true, (b, c) => b && c);
 
         public static bool AnyGreater<T>(this Vec<T> v0, T x1)
             where T : IComparable<T>
-        {
-            return v0.Norm(false, (b, x0) => b || x0.CompareTo(x1) > 0);
-        }
+            => v0.Norm(false, (b, x0) => b || x0.CompareTo(x1) > 0);
 
         public static bool AnyGreater<T>(this T x0, Vec<T> v1)
             where T : IComparable<T>
-        {
-            return v1.Norm(false, (b, x1) => b || x0.CompareTo(x1) > 0);
-        }
+            => v1.Norm(false, (b, x1) => b || x0.CompareTo(x1) > 0);
 
         public static bool AnyGreater<T>(this Vec<T> v0, Vec<T> v1)
             where T : IComparable<T>
-        {
-            return v0.InnerProduct(v1, (x0, x1) => x0.CompareTo(x1) > 0, false, (b, c) => b || c);
-        }
+            => v0.InnerProduct(v1, (x0, x1) => x0.CompareTo(x1) > 0, false, (b, c) => b || c);
 
         public static bool AllSmallerOrEqual<T>(this Vec<T> v0, T x1)
             where T : IComparable<T>
-        {
-            return v0.Norm(true, (b, x0) => b && x0.CompareTo(x1) <= 0);
-        }
+            => v0.Norm(true, (b, x0) => b && x0.CompareTo(x1) <= 0);
 
         public static bool AllSmallerOrEqual<T>(this T x0, Vec<T> v1)
             where T : IComparable<T>
-        {
-            return v1.Norm(true, (b, x1) => b && x0.CompareTo(x1) <= 0);
-        }
+            => v1.Norm(true, (b, x1) => b && x0.CompareTo(x1) <= 0);
 
         public static bool AllSmallerOrEqual<T>(this Vec<T> v0, Vec<T> v1)
             where T : IComparable<T>
-        {
-            return v0.InnerProduct(v1, (x0, x1) => x0.CompareTo(x1) <= 0, true, (b, c) => b && c);
-        }
+            => v0.InnerProduct(v1, (x0, x1) => x0.CompareTo(x1) <= 0, true, (b, c) => b && c);
 
         public static bool AnySmallerOrEqual<T>(this Vec<T> v0, T x1)
             where T : IComparable<T>
-        {
-            return v0.Norm(false, (b, x0) => b || x0.CompareTo(x1) <= 0);
-        }
+            => v0.Norm(false, (b, x0) => b || x0.CompareTo(x1) <= 0);
 
         public static bool AnySmallerOrEqual<T>(this T x0, Vec<T> v1)
             where T : IComparable<T>
-        {
-            return v1.Norm(false, (b, x1) => b || x0.CompareTo(x1) <= 0);
-        }
+            => v1.Norm(false, (b, x1) => b || x0.CompareTo(x1) <= 0);
 
         public static bool AnySmallerOrEqual<T>(this Vec<T> v0, Vec<T> v1)
             where T : IComparable<T>
-        {
-            return v0.InnerProduct(v1, (x0, x1) => x0.CompareTo(x1) <= 0, false, (b, c) => b || c);
-        }
+            => v0.InnerProduct(v1, (x0, x1) => x0.CompareTo(x1) <= 0, false, (b, c) => b || c);
 
         public static bool AllGreaterOrEqual<T>(this Vec<T> v0, T x1)
             where T : IComparable<T>
-        {
-            return v0.Norm(true, (b, x0) => b && x0.CompareTo(x1) >= 0);
-        }
+            => v0.Norm(true, (b, x0) => b && x0.CompareTo(x1) >= 0);
 
         public static bool AllGreaterOrEqual<T>(this T x0, Vec<T> v1)
             where T : IComparable<T>
-        {
-            return v1.Norm(true, (b, x1) => b && x0.CompareTo(x1) >= 0);
-        }
+            => v1.Norm(true, (b, x1) => b && x0.CompareTo(x1) >= 0);
 
         public static bool AllGreaterOrEqual<T>(this Vec<T> v0, Vec<T> v1)
             where T : IComparable<T>
-        {
-            return v0.InnerProduct(v1, (x0, x1) => x0.CompareTo(x1) >= 0, true, (b, c) => b && c);
-        }
+            => v0.InnerProduct(v1, (x0, x1) => x0.CompareTo(x1) >= 0, true, (b, c) => b && c);
 
         public static bool AnyGreaterOrEqual<T>(this Vec<T> v0, T x1)
             where T : IComparable<T>
-        {
-            return v0.Norm(false, (b, x0) => b || x0.CompareTo(x1) >= 0);
-        }
+            => v0.Norm(false, (b, x0) => b || x0.CompareTo(x1) >= 0);
 
         public static bool AnyGreaterOrEqual<T>(this T x0, Vec<T> v1)
             where T : IComparable<T>
-        {
-            return v1.Norm(false, (b, x1) => b || x0.CompareTo(x1) >= 0);
-        }
+            => v1.Norm(false, (b, x1) => b || x0.CompareTo(x1) >= 0);
 
         public static bool AnyGreaterOrEqual<T>(this Vec<T> v0, Vec<T> v1)
             where T : IComparable<T>
-        {
-            return v0.InnerProduct(v1, (x0, x1) => x0.CompareTo(x1) >= 0, false, (b, c) => b || c);
-        }
+            => v0.InnerProduct(v1, (x0, x1) => x0.CompareTo(x1) >= 0, false, (b, c) => b || c);
 
         #endregion
     }
@@ -1032,18 +882,13 @@ namespace Aardvark.Base
         /// <summary>
         /// Creates a double vector from the given array.
         /// </summary>
-        public static Vec<double> Create(double[] data)
-        {
-            return new Vec<double>(data);
-        }
+        public static Vec<double> Create(double[] data) => new Vec<double>(data);
 
         /// <summary>
         /// Create a float vector with the given array.
         /// </summary>
-        public static Vec<float> Create(float[] data)
-        {
-            return new Vec<float>(data);
-        }
+        public static Vec<float> Create(float[] data) => new Vec<float>(data);
+
         #endregion
     }
 
@@ -1058,59 +903,36 @@ namespace Aardvark.Base
     {
         #region Constants
 
-        public static Vec<double> NaN(long dim)
-        {
-            return new Vec<double>(dim).Set(double.NaN);
-        }
+        public static Vec<double> NaN(long dim) => new Vec<double>(dim).Set(double.NaN);
 
-        public static Vec<double> MinValue(long dim)
-        {
-            return new Vec<double>(dim).Set(Constant<double>.ParseableMinValue);
-        }
+        public static Vec<double> MinValue(long dim) => new Vec<double>(dim).Set(Constant<double>.ParseableMinValue);
 
-        public static Vec<double> MaxValue(long dim)
-        {
-            return new Vec<double>(dim).Set(Constant<double>.ParseableMaxValue);
-        }
+        public static Vec<double> MaxValue(long dim) => new Vec<double>(dim).Set(Constant<double>.ParseableMaxValue);
 
-        public static Vec<double> Unit(long dim)
-        {
-            return new Vec<double>(dim).SetByIndex(i => i == dim ? 1.0 : 0.0);
-        }
+        public static Vec<double> Unit(long dim) => new Vec<double>(dim).SetByIndex(i => i == dim ? 1.0 : 0.0);
 
         #endregion
 
         #region Vector-Valued Unary Operations
 
-        public static Vec<double> Negated(this Vec<double> v0)
-        {
-            return new Vec<double>(v0.m_dim).Set(v0, x0 => -x0);
-        }
+        public static Vec<double> Negated(this Vec<double> v0) => new Vec<double>(v0.m_dim).Set(v0, x0 => -x0);
 
         #endregion
 
         #region Vector-Valued Binary Operations
 
         public static Vec<double> Plus(this Vec<double> v0, Vec<double> v1)
-        {
-            return new Vec<double>(v0.m_dim).Set(v0, v1, (a, b) => a + b);
-        }
+            => new Vec<double>(v0.m_dim).Set(v0, v1, (a, b) => a + b);
 
         public static Vec<double> Minus(this Vec<double> v0, Vec<double> v1)
-        {
-            return new Vec<double>(v0.m_dim).Set(v0, v1, (a, b) => a - b);
-        }
-
+            => new Vec<double>(v0.m_dim).Set(v0, v1, (a, b) => a - b);
+        
         public static Vec<double> MultiplyBy(this Vec<double> v0, double s1)
-        {
-            return new Vec<double>(v0.m_dim).Set(v0, a => a * s1);
-        }
-
+            => new Vec<double>(v0.m_dim).Set(v0, a => a * s1);
+       
         public static Vec<double> Multiply(this Vec<double> v0, Vec<double> v1)
-        {
-            return new Vec<double>(v0.m_dim).Set(v0, v1, (a, b) => a * b);
-        }
-
+            => new Vec<double>(v0.m_dim).Set(v0, v1, (a, b) => a * b);
+       
         public static Vec<double> DivideBy(this Vec<double> v0, double s1)
         {
             var f1 = 1.0 / s1;
@@ -1118,9 +940,7 @@ namespace Aardvark.Base
         }
 
         public static Vec<double> Divide(this Vec<double> v0, Vec<double> v1)
-        {
-            return new Vec<double>(v0.m_dim).Set(v0, v1, (a, b) => a / b);
-        }
+            => new Vec<double>(v0.m_dim).Set(v0, v1, (a, b) => a / b);
 
         #endregion
 
@@ -1128,22 +948,22 @@ namespace Aardvark.Base
 
         public static Vec<double> Sum(this VecArray<double> vecArray)
         {
-            Vec<double> result = new Vec<double>(vecArray.Dim).Set(0.0);
+            var result = new Vec<double>(vecArray.Dim).Set(0.0);
             vecArray.ForEach(v => result.SetPlus(v));
             return result;
         }
 
         public static Vec<double> Sum(this IEnumerable<Vec<double>> vecs)
         {
-            Vec<double> result = new Vec<double>(vecs.First().Dim).Set(0.0);
+            var result = new Vec<double>(vecs.First().Dim).Set(0.0);
             foreach (var v in vecs) result.SetPlus(v);
             return result;
         }
 
         public static Vec<double> ComputeCentroid(this VecArray<double> vecArray)
         {
-            Vec<double> result = new Vec<double>(vecArray.Dim).Set(0.0);
-            long count = vecArray.Count;
+            var result = new Vec<double>(vecArray.Dim).Set(0.0);
+            var count = vecArray.Count;
             if (count == 0) return result;
             vecArray.ForEach(v => result.SetPlus(v));
             result.SetDivideBy((double)count);
@@ -1152,8 +972,8 @@ namespace Aardvark.Base
 
         public static Vec<double> ComputeCentroid(this IEnumerable<Vec<double>> vecs)
         {
-            Vec<double> result = new Vec<double>(vecs.First().Dim).Set(0.0);
-            long count = 0;
+            var result = new Vec<double>(vecs.First().Dim).Set(0.0);
+            var count = 0;
             foreach (var v in vecs) { result.SetPlus(v); ++count; }
             if (count > 0) result.SetDivideBy((double)count);
             return result;
@@ -1164,67 +984,41 @@ namespace Aardvark.Base
         #region Scalar-Valued Binary Operations
 
         public static double Dot(this Vec<double> v0, Vec<double> v1)
-        {
-            return v0.InnerProduct(v1, (x0, x1) => x0 * x1,
-                                   0.0, (s, p) => s + p);
-        }
+            => v0.InnerProduct(v1, (x0, x1) => x0 * x1, 0.0, (s, p) => s + p);
 
         public static double Dist1(this Vec<double> v0, Vec<double> v1)
-        {
-            return v0.InnerProduct(v1, (x0, x1) => Fun.Abs(x1 - x0),
-                                   0.0, (s, p) => s + p);
-        }
+            => v0.InnerProduct(v1, (x0, x1) => Fun.Abs(x1 - x0), 0.0, (s, p) => s + p);
 
         public static double Dist2Squared(this Vec<double> v0, Vec<double> v1)
-        {
-            return v0.InnerProduct(v1, (x0, x1) => Fun.Square(x1 - x0),
-                                   0.0, (s, p) => s + p);
-        }
+            => v0.InnerProduct(v1, (x0, x1) => Fun.Square(x1 - x0), 0.0, (s, p) => s + p);
 
         public static double Dist2(this Vec<double> v0, Vec<double> v1)
-        {
-            return Fun.Sqrt(v0.Dist2Squared(v1));
-        }
+            => Math.Sqrt(v0.Dist2Squared(v1));
 
         public static double DistMax(this Vec<double> v0, Vec<double> v1)
-        {
-            return v0.InnerProduct(v1, (x0, x1) => Fun.Abs(x1 - x0),
-                                   0.0, Fun.Max);
-        }
+            => v0.InnerProduct(v1, (x0, x1) => Fun.Abs(x1 - x0), 0.0, Fun.Max);
 
         #endregion
 
         #region Scalar-Valued Unary Operations
 
         public static double Min(this Vec<double> v0)
-        {
-            return v0.Norm(double.MaxValue, (m, x) => Fun.Min(m, x));
-        }
+            => v0.Norm(double.MaxValue, (m, x) => Fun.Min(m, x));
 
         public static double Max(this Vec<double> v0)
-        {
-            return v0.Norm(double.MinValue, (m, x) => Fun.Max(m, x));
-        }
+            => v0.Norm(double.MinValue, (m, x) => Fun.Max(m, x));
 
         public static double Norm1(this Vec<double> v0)
-        {
-            return v0.Norm(0.0, (s, x) => s + Fun.Abs(x));
-        }
+            => v0.Norm(0.0, (s, x) => s + Fun.Abs(x));
 
         public static double Norm2Squared(this Vec<double> v0)
-        {
-            return v0.Norm(0.0, (s, x) => s + Fun.Square(x));
-        }
+            => v0.Norm(0.0, (s, x) => s + Fun.Square(x));
 
         public static double Norm2(this Vec<double> v0)
-        {
-            return Fun.Sqrt(v0.Norm2Squared());
-        }
+            => Math.Sqrt(v0.Norm2Squared());
 
         public static double NormMax(this Vec<double> v0)
-        {
-            return v0.Norm(0.0, (s, x) => Fun.Max(s, Fun.Abs(x)));
-        }
+            => v0.Norm(0.0, (s, x) => Fun.Max(s, Fun.Abs(x)));
 
         #endregion
 
@@ -1249,9 +1043,7 @@ namespace Aardvark.Base
         #region Boolean-Valued Unary Operations
 
         public static bool IsNaN(this Vec<double> v0)
-        {
-            return v0.Norm(false, (b, x) => b || double.IsNaN(x), b => b);
-        }
+            => v0.Norm(false, (b, x) => b || double.IsNaN(x), b => b);
 
         #endregion
 
@@ -1259,10 +1051,10 @@ namespace Aardvark.Base
 
         public static long GetMajorDim(this VecBox<double> box)
         {
-            long dim = box.Min.Dim;
-            long majorDim = 0;
+            var dim = box.Min.Dim;
+            var majorDim = 0;
             var majorSize = box.Max[0] - box.Min[0];
-            for (long d = 1; d < dim; d++)
+            for (var d = 1; d < dim; d++)
             {
                 var size = box.Max[d] - box.Min[d];
                 if (size > majorSize) { majorDim = d; majorSize = size; }
@@ -1272,10 +1064,10 @@ namespace Aardvark.Base
 
         public static long GetMinorDim(this VecBox<double> box)
         {
-            long dim = box.Min.Dim;
-            long minorDim = 0;
+            var dim = box.Min.Dim;
+            var minorDim = 0;
             var minorSize = box.Max[0] - box.Min[0];
-            for (long d = 1; d < dim; d++)
+            for (var d = 1; d < dim; d++)
             {
                 var size = box.Max[d] - box.Min[d];
                 if (size < minorSize) { minorDim = d; minorSize = size; }
@@ -1313,30 +1105,21 @@ namespace Aardvark.Base
         #region Conversions From Vec<double> To Other Types
 
         public static Vec<float> ToVecFloat(this Vec<double> v0)
-        {
-            return new Vec<float>(v0.Dim).Set(v0, x => (float)x);
-        }
+            => new Vec<float>(v0.Dim).Set(v0, x => (float)x);
 
         public static V2d ToV2d(this Vec<double> v0)
-        {
-            return new V2d(v0.m_data[v0.m_origin],
-                           v0.m_data[v0.m_origin + 1]);
-        }
+            => new V2d(v0.m_data[v0.m_origin], v0.m_data[v0.m_origin + 1]);
 
         public static V3d ToV3d(this Vec<double> v0)
-        {
-            return new V3d(v0.m_data[v0.m_origin],
-                           v0.m_data[v0.m_origin + 1],
-                           v0.m_data[v0.m_origin + 2]);
-        }
+            => new V3d(v0.m_data[v0.m_origin],
+                       v0.m_data[v0.m_origin + 1],
+                       v0.m_data[v0.m_origin + 2]);
 
         public static V4d ToV4d(this Vec<double> v0)
-        {
-            return new V4d(v0.m_data[v0.m_origin],
-                           v0.m_data[v0.m_origin + 1],
-                           v0.m_data[v0.m_origin + 2],
-                           v0.m_data[v0.m_origin + 3]);
-        }
+            => new V4d(v0.m_data[v0.m_origin],
+                       v0.m_data[v0.m_origin + 1],
+                       v0.m_data[v0.m_origin + 2],
+                       v0.m_data[v0.m_origin + 3]);
 
         #endregion
 
@@ -1344,27 +1127,27 @@ namespace Aardvark.Base
 
         public static VecArray<double> ToVecArray(this IEnumerable<V2d> vecs)
         {
-            long count = vecs.Count();
+            var count = vecs.Count();
             var va = new VecArray<double>(2, count);
-            long index = 0;
+            var index = 0;
             foreach (var v in vecs) va[index++].Set(v);
             return va;
         }
 
         public static VecArray<double> ToVecArray(this IEnumerable<V3d> vecs)
         {
-            long count = vecs.Count();
+            var count = vecs.Count();
             var va = new VecArray<double>(3, count);
-            long index = 0;
+            var index = 0;
             foreach (var v in vecs) va[index++].Set(v);
             return va;
         }
 
         public static VecArray<double> ToVecArray(this IEnumerable<V4d> vecs)
         {
-            long count = vecs.Count();
+            var count = vecs.Count();
             var va = new VecArray<double>(4, count);
-            long index = 0;
+            var index = 0;
             foreach (var v in vecs) va[index++].Set(v);
             return va;
         }
@@ -1468,58 +1251,36 @@ namespace Aardvark.Base
     {
         #region Constants
 
-        public static Vec<float> NaN(long dim)
-        {
-            return new Vec<float>(dim).Set(float.NaN);
-        }
+        public static Vec<float> NaN(long dim) => new Vec<float>(dim).Set(float.NaN);
 
-        public static Vec<float> MinValue(long dim)
-        {
-            return new Vec<float>(dim).Set(Constant<float>.ParseableMinValue);
-        }
+        public static Vec<float> MinValue(long dim) => new Vec<float>(dim).Set(Constant<float>.ParseableMinValue);
 
-        public static Vec<float> MaxValue(long dim)
-        {
-            return new Vec<float>(dim).Set(Constant<float>.ParseableMaxValue);
-        }
+        public static Vec<float> MaxValue(long dim) => new Vec<float>(dim).Set(Constant<float>.ParseableMaxValue);
 
-        public static Vec<float> Unit(long dim)
-        {
-            return new Vec<float>(dim).SetByIndex(i => i == dim ? 1.0f : 0.0f);
-        }
+        public static Vec<float> Unit(long dim) => new Vec<float>(dim).SetByIndex(i => i == dim ? 1.0f : 0.0f);
 
         #endregion
 
         #region Vector-Valued Unary Operations
 
         public static Vec<float> Negated(this Vec<float> v0)
-        {
-            return new Vec<float>(v0.m_dim).Set(v0, x0 => -x0);
-        }
+            => new Vec<float>(v0.m_dim).Set(v0, x0 => -x0);
 
         #endregion
 
         #region Vector-Valued Binary Operations
 
         public static Vec<float> Plus(this Vec<float> v0, Vec<float> v1)
-        {
-            return new Vec<float>(v0.m_dim).Set(v0, v1, (a, b) => a + b);
-        }
+            => new Vec<float>(v0.m_dim).Set(v0, v1, (a, b) => a + b);
 
         public static Vec<float> Minus(this Vec<float> v0, Vec<float> v1)
-        {
-            return new Vec<float>(v0.m_dim).Set(v0, v1, (a, b) => a - b);
-        }
+            => new Vec<float>(v0.m_dim).Set(v0, v1, (a, b) => a - b);
 
         public static Vec<float> MultiplyBy(this Vec<float> v0, float s1)
-        {
-            return new Vec<float>(v0.m_dim).Set(v0, a => a * s1);
-        }
+            => new Vec<float>(v0.m_dim).Set(v0, a => a * s1);
 
         public static Vec<float> Multiply(this Vec<float> v0, Vec<float> v1)
-        {
-            return new Vec<float>(v0.m_dim).Set(v0, v1, (a, b) => a * b);
-        }
+            => new Vec<float>(v0.m_dim).Set(v0, v1, (a, b) => a * b);
 
         public static Vec<float> DivideBy(this Vec<float> v0, float s1)
         {
@@ -1528,9 +1289,7 @@ namespace Aardvark.Base
         }
 
         public static Vec<float> Divide(this Vec<float> v0, Vec<float> v1)
-        {
-            return new Vec<float>(v0.m_dim).Set(v0, v1, (a, b) => a / b);
-        }
+            => new Vec<float>(v0.m_dim).Set(v0, v1, (a, b) => a / b);
 
         #endregion
 
@@ -1538,34 +1297,34 @@ namespace Aardvark.Base
 
         public static Vec<double> Sum(this VecArray<float> vecArray)
         {
-            Vec<double> result = new Vec<double>(vecArray.Dim).Set(0.0);
+            var result = new Vec<double>(vecArray.Dim).Set(0.0);
             vecArray.ForEach(v => result.SetPlus(v));
             return result;
         }
 
         public static Vec<double> Sum(this IEnumerable<Vec<float>> vecs)
         {
-            Vec<double> result = new Vec<double>(vecs.First().Dim).Set(0.0);
+            var result = new Vec<double>(vecs.First().Dim).Set(0.0);
             foreach (var v in vecs) result.SetPlus(v);
             return result;
         }
 
         public static Vec<double> ComputeCentroid(this VecArray<float> vecArray)
         {
-            Vec<double> result = new Vec<double>(vecArray.Dim).Set(0.0);
-            long count = vecArray.Count;
+            var result = new Vec<double>(vecArray.Dim).Set(0.0);
+            var count = vecArray.Count;
             if (count == 0) return result;
             vecArray.ForEach(v => result.SetPlus(v));
-            result.SetDivideBy((double)count);
+            result.SetDivideBy(count);
             return result;
         }
 
         public static Vec<double> ComputeCentroid(this IEnumerable<Vec<float>> vecs)
         {
-            Vec<double> result = new Vec<double>(vecs.First().Dim).Set(0.0);
-            long count = 0;
+            var result = new Vec<double>(vecs.First().Dim).Set(0.0);
+            var count = 0;
             foreach (var v in vecs) { result.SetPlus(v); ++count; }
-            if (count > 0) result.SetDivideBy((double)count);
+            if (count > 0) result.SetDivideBy(count);
             return result;
         }
 
@@ -1574,67 +1333,44 @@ namespace Aardvark.Base
         #region Scalar-Valued Binary Operations
 
         public static float Dot(this Vec<float> v0, Vec<float> v1)
-        {
-            return v0.InnerProduct(v1, (x0, x1) => x0 * x1,
-                                   0.0f, (s, p) => s + p);
-        }
+            => v0.InnerProduct(v1, (x0, x1) => x0 * x1,
+                               0.0f, (s, p) => s + p);
 
         public static float Dist1(this Vec<float> v0, Vec<float> v1)
-        {
-            return v0.InnerProduct(v1, (x0, x1) => Fun.Abs(x1 - x0),
-                                   0.0f, (s, p) => s + p);
-        }
+            => v0.InnerProduct(v1, (x0, x1) => Fun.Abs(x1 - x0),
+                               0.0f, (s, p) => s + p);
 
         public static double Dist2Squared(this Vec<float> v0, Vec<float> v1)
-        {
-            return v0.InnerProduct(v1, (x0, x1) => Fun.Square(x1 - x0),
-                                   0.0, (s, p) => s + p);
-        }
+            => v0.InnerProduct(v1, (x0, x1) => Fun.Square(x1 - x0),
+                               0.0, (s, p) => s + p);
 
         public static float Dist2(this Vec<float> v0, Vec<float> v1)
-        {
-            return (float)Fun.Sqrt(v0.Dist2Squared(v1));
-        }
+            => (float)Fun.Sqrt(v0.Dist2Squared(v1));
 
         public static float DistMax(this Vec<float> v0, Vec<float> v1)
-        {
-            return v0.InnerProduct(v1, (x0, x1) => Fun.Abs(x1 - x0),
-                                   0.0f, Fun.Max);
-        }
+            => v0.InnerProduct(v1, (x0, x1) => Fun.Abs(x1 - x0), 0.0f, Fun.Max);
 
         #endregion
 
         #region Scalar-Valued Unary Operations
 
         public static float Min(this Vec<float> v0)
-        {
-            return v0.Norm(float.MaxValue, (m, x) => Fun.Min(m, x));
-        }
+            => v0.Norm(float.MaxValue, (m, x) => Fun.Min(m, x));
 
         public static float Max(this Vec<float> v0)
-        {
-            return v0.Norm(float.MinValue, (m, x) => Fun.Max(m, x));
-        }
+            => v0.Norm(float.MinValue, (m, x) => Fun.Max(m, x));
 
         public static float Norm1(this Vec<float> v0)
-        {
-            return v0.Norm(0.0f, (s, x) => s + Fun.Abs(x));
-        }
+            => v0.Norm(0.0f, (s, x) => s + Fun.Abs(x));
 
         public static double Norm2Squared(this Vec<float> v0)
-        {
-            return v0.Norm(0.0, (s, x) => s + Fun.Square(x));
-        }
+            => v0.Norm(0.0, (s, x) => s + Fun.Square(x));
 
         public static float Norm2(this Vec<float> v0)
-        {
-            return (float)Fun.Sqrt(v0.Norm2Squared());
-        }
+            => (float)Fun.Sqrt(v0.Norm2Squared());
 
         public static float NormMax(this Vec<float> v0)
-        {
-            return v0.Norm(0.0f, (s, x) => Fun.Max(s, Fun.Abs(x)));
-        }
+            => v0.Norm(0.0f, (s, x) => Fun.Max(s, Fun.Abs(x)));
 
         #endregion
 
@@ -1659,9 +1395,7 @@ namespace Aardvark.Base
         #region Boolean-Valued Unary Operations
 
         public static bool IsNaN(this Vec<float> v0)
-        {
-            return v0.Norm(false, (b, x) => b || float.IsNaN(x), b => b);
-        }
+            => v0.Norm(false, (b, x) => b || float.IsNaN(x), b => b);
 
         #endregion
 
@@ -1669,10 +1403,10 @@ namespace Aardvark.Base
 
         public static long GetMajorDim(this VecBox<float> box)
         {
-            long dim = box.Min.Dim;
-            long majorDim = 0;
+            var dim = box.Min.Dim;
+            var majorDim = 0;
             var majorSize = box.Max[0] - box.Min[0];
-            for (long d = 1; d < dim; d++)
+            for (var d = 1; d < dim; d++)
             {
                 var size = box.Max[d] - box.Min[d];
                 if (size > majorSize) { majorDim = d; majorSize = size; }
@@ -1682,10 +1416,10 @@ namespace Aardvark.Base
 
         public static long GetMinorDim(this VecBox<float> box)
         {
-            long dim = box.Min.Dim;
-            long minorDim = 0;
+            var dim = box.Min.Dim;
+            var minorDim = 0;
             var minorSize = box.Max[0] - box.Min[0];
-            for (long d = 1; d < dim; d++)
+            for (var d = 1; d < dim; d++)
             {
                 var size = box.Max[d] - box.Min[d];
                 if (size < minorSize) { minorDim = d; minorSize = size; }
@@ -1723,30 +1457,22 @@ namespace Aardvark.Base
         #region Conversions From Vec<float> To Other Types
 
         public static Vec<double> ToVecDouble(this Vec<float> v0)
-        {
-            return new Vec<double>(v0.Dim).Set(v0, x => (double)x);
-        }
+            => new Vec<double>(v0.Dim).Set(v0, x => x);
 
         public static V2f ToV2f(this Vec<float> v0)
-        {
-            return new V2f(v0.m_data[v0.m_origin],
-                           v0.m_data[v0.m_origin + 1]);
-        }
+            => new V2f(v0.m_data[v0.m_origin],
+                       v0.m_data[v0.m_origin + 1]);
 
         public static V3f ToV3f(this Vec<float> v0)
-        {
-            return new V3f(v0.m_data[v0.m_origin],
-                           v0.m_data[v0.m_origin + 1],
-                           v0.m_data[v0.m_origin + 2]);
-        }
+            => new V3f(v0.m_data[v0.m_origin],
+                       v0.m_data[v0.m_origin + 1],
+                       v0.m_data[v0.m_origin + 2]);
 
         public static V4f ToV4f(this Vec<float> v0)
-        {
-            return new V4f(v0.m_data[v0.m_origin],
-                           v0.m_data[v0.m_origin + 1],
-                           v0.m_data[v0.m_origin + 2],
-                           v0.m_data[v0.m_origin + 3]);
-        }
+            => new V4f(v0.m_data[v0.m_origin],
+                       v0.m_data[v0.m_origin + 1],
+                       v0.m_data[v0.m_origin + 2],
+                       v0.m_data[v0.m_origin + 3]);
 
         #endregion
 
@@ -1754,27 +1480,27 @@ namespace Aardvark.Base
 
         public static VecArray<float> ToVecArray(this IEnumerable<V2f> vecs)
         {
-            long count = vecs.Count();
+            var count = vecs.Count();
             var va = new VecArray<float>(2, count);
-            long index = 0;
+            var index = 0;
             foreach (var v in vecs) va[index++].Set(v);
             return va;
         }
 
         public static VecArray<float> ToVecArray(this IEnumerable<V3f> vecs)
         {
-            long count = vecs.Count();
+            var count = vecs.Count();
             var va = new VecArray<float>(3, count);
-            long index = 0;
+            var index = 0;
             foreach (var v in vecs) va[index++].Set(v);
             return va;
         }
 
         public static VecArray<float> ToVecArray(this IEnumerable<V4f> vecs)
         {
-            long count = vecs.Count();
+            var count = vecs.Count();
             var va = new VecArray<float>(4, count);
-            long index = 0;
+            var index = 0;
             foreach (var v in vecs) va[index++].Set(v);
             return va;
         }
