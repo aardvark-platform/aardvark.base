@@ -72,7 +72,6 @@
     <Compile Include="Images\PixImageFreeImage.cs" />
     <Compile Include="Images\PixImageSystemImage.cs" />
     <Compile Include="AlgoDat\Meta.cs" />
-    <Compile Include="AlgoDat\XmlParser.cs" />
     <Compile Include="Extensions\SystemDrawingExtensions.cs" />
     <None Include="paket.references" />
     <None Include="paket.template" />

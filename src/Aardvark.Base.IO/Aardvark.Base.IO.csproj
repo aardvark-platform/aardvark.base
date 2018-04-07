@@ -70,6 +70,7 @@
     <Compile Include="TypeInfoVersion.cs" />
     <Compile Include="UberStream.cs" />
     <Compile Include="WorkDir.cs" />
+    <Compile Include="XmlParser.cs" />
     <Compile Include="XmlReadingCoder.cs" />
     <Compile Include="XmlReadingCoder_auto.cs" />
     <Compile Include="XmlWritingCoder.cs" />
