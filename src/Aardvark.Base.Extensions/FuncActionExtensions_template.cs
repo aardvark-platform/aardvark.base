@@ -13,13 +13,11 @@ namespace Aardvark.Base
         //#   var ei = tc.Expand(i => "e" + i).Join(", ");
         public static TR ExecuteFirst<__Ti__, TR>(this Func<__Ti__, TR>[] funArray, /*# tc.ForEach(i=>{*/T__i__ e__i__/*#}, comma); */)
         {
-            if (funArray == null) Report.Warn("no function registered");
             return funArray[0](__ei__);
         }
 
         public static bool ExecuteUpToTrue<__Ti__>(this Func<__Ti__, bool>[] funArray, /*# tc.ForEach(i=>{*/T__i__ e__i__/*#}, comma); */)
         {
-            if (funArray == null) Report.Warn("no function registered");
             for (int i = 0; i < funArray.Length; i++)
                 if (funArray[i](__ei__)) return true;
             return false;
@@ -27,7 +25,6 @@ namespace Aardvark.Base
 
         public static bool ExecuteUpToTrueChecked<__Ti__>(this Func<__Ti__, bool>[] funArray, /*# tc.ForEach(i=>{*/T__i__ e__i__/*#}, comma); */)
         {
-            if (funArray == null) Report.Warn("no function registered");
             for (int i = 0; i < funArray.Length; i++)
             {
                 try
@@ -42,7 +39,6 @@ namespace Aardvark.Base
         public static TR ExecuteUpToNotNull<__Ti__, TR>(this Func<__Ti__, TR>[] funArray, /*# tc.ForEach(i=>{*/T__i__ e__i__/*#}, comma); */)
             where TR : class
         {
-            if (funArray == null) Report.Warn("no function registered");
             for (int i = 0; i < funArray.Length; i++)
             {
                 var r = funArray[i](__ei__);
@@ -54,7 +50,6 @@ namespace Aardvark.Base
         public static TR ExecuteUpToNotNullChecked<__Ti__, TR>(this Func<__Ti__, TR>[] funArray, /*# tc.ForEach(i=>{*/T__i__ e__i__/*#}, comma); */)
             where TR : class
         {
-            if (funArray == null) Report.Warn("no function registered");
             for (int i = 0; i < funArray.Length; i++)
             {
                 try

@@ -18,10 +18,14 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="FuncActionExtensions_generator.cs" />
+    <Compile Remove="FuncActionExtensions_template.cs" />
+    <Compile Remove="SequenceExtensions_generator.cs" />
     <Compile Remove="SequenceExtensions_template.cs" />
   </ItemGroup>
 
   <ItemGroup>
+    <None Include="FuncActionExtensions_template.cs" />
     <None Include="SequenceExtensions_template.cs" />
   </ItemGroup>
 
