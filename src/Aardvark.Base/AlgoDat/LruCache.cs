@@ -1,5 +1,4 @@
 using System;
-using System.IO;
 using System.Collections.Generic;
 
 namespace Aardvark.Base
@@ -69,10 +68,7 @@ namespace Aardvark.Base
             m_time = 0;
             m_size = 0;
         }
-
-
-
-
+        
         public long Capacity
         {
             get
@@ -93,18 +89,15 @@ namespace Aardvark.Base
         {
             while (size > m_capacity)
             {
-                Entry entry;
                 var removeKey = Dequeue(m_heap).Key;
-                if (m_cache.TryRemove(removeKey, out entry))
+                if (m_cache.TryRemove(removeKey, out Entry entry))
                 {
-                    if (m_deleteAct != null)
-                        m_deleteAct(removeKey, entry.Value);
-                    if (entry.DeleteAct != null)
-                        entry.DeleteAct();
+                    m_deleteAct?.Invoke(removeKey, entry.Value);
+                    entry.DeleteAct?.Invoke();
                     size -= entry.Size;
                 }
                 else
-                    Report.Warn("tried to remove an item that is not in the cache");  
+                    throw new InvalidOperationException("tried to remove an item that is not in the cache");  
                     // this should never ever happen!
             }
             m_size = size;
@@ -144,10 +137,9 @@ namespace Aardvark.Base
 
         public TValue GetOrAdd(TKey key, long size, Func<TValue> valueFun, Action deleteAct = null)
         {
-            Entry entry;
             lock (m_lock)
             {
-                if (m_cache.TryGetValue(key, out entry))
+                if (m_cache.TryGetValue(key, out Entry entry))
                 {
                     entry.Time = ++m_time;
                     Sink(m_heap, entry.Index);
@@ -179,8 +171,7 @@ namespace Aardvark.Base
         {
             lock (m_lock)
             {
-                Entry entry;
-                if (m_cache.TryRemove(key, out entry))
+                if (m_cache.TryRemove(key, out Entry entry))
                 {
                     m_size -= entry.Size;
                     RemoveAt(m_heap, entry.Index);
@@ -189,7 +180,7 @@ namespace Aardvark.Base
                     value = entry.Value;
                     return true;
                 }
-                value = default(TValue);
+                value = default;
                 return false;
             }
         }
@@ -202,15 +193,12 @@ namespace Aardvark.Base
         {
             lock (m_lock)
             {
-                Entry entry;
-                if (m_cache.TryRemove(key, out entry))
+                if (m_cache.TryRemove(key, out Entry entry))
                 {
                     m_size -= entry.Size;
                     RemoveAt(m_heap, entry.Index);
-                    if (m_deleteAct != null)
-                        m_deleteAct(key, entry.Value);
-                    if (entry.DeleteAct != null)
-                        entry.DeleteAct();
+                    m_deleteAct?.Invoke(key, entry.Value);
+                    entry.DeleteAct?.Invoke();
                     return true;
                 }
                 return false;
@@ -221,8 +209,7 @@ namespace Aardvark.Base
         /// Reomves an arbitrary element from the heap, and maintains the heap
         /// conditions.
         /// </summary>
-        private static void RemoveAt(
-            List<Entry> heap, int index)
+        private static void RemoveAt(List<Entry> heap, int index)
         {
             var count = heap.Count;
             if (count == 1) { heap.Clear(); return; }
@@ -258,8 +245,7 @@ namespace Aardvark.Base
             heap[i].Index = i;
         }
 
-        private static void Enqueue(
-            List<Entry> heap, Entry entry)
+        private static void Enqueue(List<Entry> heap, Entry entry)
         {
             int i = heap.Count;
             heap.Add(entry);
@@ -280,8 +266,7 @@ namespace Aardvark.Base
         /// Removes and returns the item at the top of the heap (i.e. the
         /// 0th position of the list).
         /// </summary>
-        private static Entry Dequeue(
-            List<Entry> heap)
+        private static Entry Dequeue(List<Entry> heap)
         {
             var result = heap[0];
             var count = heap.Count;
@@ -308,8 +293,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Sinks an item.
         /// </summary>
-        private static void Sink(
-            List<Entry> heap, int i)
+        private static void Sink(List<Entry> heap, int i)
         {
             var count = heap.Count;
             var entry = heap[i];
@@ -329,5 +313,4 @@ namespace Aardvark.Base
             heap[i].Index = i; // track index
         }
     }
-
 }

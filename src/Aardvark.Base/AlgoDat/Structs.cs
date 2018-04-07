@@ -1,10 +1,4 @@
-﻿//using System;
-//using System.Collections.Generic;
-//using System.Diagnostics.Contracts;
-//using System.Linq;
-//using System.Text;
-
-//namespace Aardvark.Base
+﻿//namespace Aardvark.Base
 //{
 //    #region Volatile Array
 
@@ -29,7 +23,7 @@
 //        public static IndexedValue<T> IndexedValue<T>(this T self, int index) => new IndexedValue<T>(index, self);
 
 //        #endregion
-        
+
 //        #region VolatileArray
 
 //        public static VolatileArray<T> ToVolatile<T>(this T[] array) => new VolatileArray<T>(array);

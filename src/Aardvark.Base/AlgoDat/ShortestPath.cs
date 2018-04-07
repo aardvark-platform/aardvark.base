@@ -1,5 +1,4 @@
-﻿
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
@@ -148,12 +147,12 @@ namespace Aardvark.Base
             }
             return contour;
         }
+
         public List<T> GetMinimalPath(T end)
         {
             var id = m_nodes.IndexOf(end);
             return GetMinimalPathByIndex(id);
         }
-
     }
 
     class FibonacciHeap<T>
@@ -177,10 +176,7 @@ namespace Aardvark.Base
                 _right = this;
             }
 
-            public T Value
-            {
-                get { return _item; }
-            }
+            public T Value => _item;
 
             public Node Right
             {
@@ -191,6 +187,7 @@ namespace Aardvark.Base
                     value._left = this;
                 }
             }
+
             public Node Left
             {
                 get { return _left; }
@@ -200,14 +197,11 @@ namespace Aardvark.Base
                     value._right = this;
                 }
             }
-            public Node Parent
-            {
-                get { return _parent; }
-            }
-            public Node Child
-            {
-                get { return _child; }
-            }
+
+            public Node Parent =>_parent; 
+
+            public Node Child => _child; 
+
             public void AddChild(Node node)
             {
                 _degree++;
@@ -218,6 +212,7 @@ namespace Aardvark.Base
                 else
                     _child.InsertOneBefore(node);
             }
+
             public void RemoveChild(Node node)
             {
                 if (_child != null)
@@ -238,6 +233,7 @@ namespace Aardvark.Base
                     }
                 }
             }
+
             public void RemoveAllChildren()
             {
                 if (_child != null)
@@ -248,19 +244,21 @@ namespace Aardvark.Base
                     _child = null;
                 }
             }
+
             public void InsertOneBefore(Node node)
             {
-                var right = this.Right;
-                this.Right = node;
+                var right = Right;
+                Right = node;
                 right.Left = node;
             }
+
             public void InsertGroupBefore(Node node)
             {
                 var start = node;
                 var end = start.Left;
 
-                var right = this.Right;
-                this.Right = start;
+                var right = Right;
+                Right = start;
                 right.Left = end;
             }
 
@@ -277,21 +275,22 @@ namespace Aardvark.Base
                 get { return _key; }
                 set { _key = value; }
             }
-            public int Degree
-            {
-                get { return _degree; }
-            }
+
+            public int Degree => _degree;
+
             public bool Marked
             {
                 get { return _marked; }
                 set { _marked = value; }
             }
+
             public IEnumerable<Node> GetAllChildren()
             {
                 if (_child == null)
                     return Enumerable.Empty<Node>();
                 return _child.AllSiblings;
             }
+
             public IEnumerable<Node> AllSiblings
             {
                 get
@@ -305,14 +304,9 @@ namespace Aardvark.Base
                 }
             }
 
-            public bool HasNoSiblings()
-            {
-                return _left == this;
-            }
-            public bool HasMaxOneSibling()
-            {
-                return _left._left == this;
-            }
+            public bool HasNoSiblings() => _left == this;
+
+            public bool HasMaxOneSibling() => _left._left == this;
         }
 
         private Node _min;
@@ -332,16 +326,15 @@ namespace Aardvark.Base
             }
             _n++;
         }
+
         public Node Insert(float key, T item)
         {
             var node = new Node(key, item);
             Insert(node);
             return node;
         }
-        public T GetMin()
-        {
-            return _min.Value;
-        }
+
+        public T GetMin() => _min.Value;
 
         public T DeleteMin()
         {
@@ -378,6 +371,7 @@ namespace Aardvark.Base
             }
             return min.Value;
         }
+
         /*private static Node FindMinSibling(Node node)
         {
             var minNode = node;
@@ -390,11 +384,13 @@ namespace Aardvark.Base
             }
             return minNode;
         }*/
+
         public void Delete(Node node)
         {
             DecreaseKey(node, int.MinValue);
             DeleteMin();
         }
+
         public void DecreaseKey(Node node, float newKey)
         {
             node.Key = newKey;
@@ -424,10 +420,8 @@ namespace Aardvark.Base
                 }
             }
         }
-        public bool IsEmpty()
-        {
-            return _min == null;
-        }
+
+        public bool IsEmpty() => _min == null;
 
         private void Consolidate()
         {

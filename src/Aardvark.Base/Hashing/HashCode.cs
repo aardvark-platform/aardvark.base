@@ -1,7 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Text;
+using static System.Math;
 
 namespace Aardvark.Base
 {
@@ -32,59 +31,39 @@ namespace Aardvark.Base
         */
 
         public static uint UCombine(int a, int b)
-        {
-            return (uint)a ^ (uint)b + 0x9e3779b9 + ((uint)a << 6) + ((uint)a >> 2);
-        }
+            => (uint)a ^ (uint)b + 0x9e3779b9 + ((uint)a << 6) + ((uint)a >> 2);
 
         public static uint UCombine(uint a, int b)
-        {
-            return a ^ (uint)b + 0x9e3779b9 + (a << 6) + (a >> 2);
-        }
+            => a ^ (uint)b + 0x9e3779b9 + (a << 6) + (a >> 2);
 
         public static uint UCombine(int a, uint b)
-        {
-            return (uint)a ^ (uint)b + 0x9e3779b9 + ((uint)a << 6) + ((uint)a >> 2);
-        }
+            => (uint)a ^ (uint)b + 0x9e3779b9 + ((uint)a << 6) + ((uint)a >> 2);
 
         public static uint UCombine(uint a, uint b)
-        {
-            return a ^ b + 0x9e3779b9 + (a << 6) + (a >> 2);
-        }
+            => a ^ b + 0x9e3779b9 + (a << 6) + (a >> 2);
 
         public static int Combine(uint a, uint b)
-        {
-            return (int)(a ^ b + 0x9e3779b9 + (a << 6) + (a >> 2));
-        }
+            => (int)(a ^ b + 0x9e3779b9 + (a << 6) + (a >> 2));
 
         public static int Combine(int a, uint b)
-        {
-            return (int)((uint)a ^ b + 0x9e3779b9 + ((uint)a << 6) + ((uint)a >> 2));
-        }
+            => (int)((uint)a ^ b + 0x9e3779b9 + ((uint)a << 6) + ((uint)a >> 2));
+
         public static int Combine(uint a, int b)
-        {
-            return (int)(a ^ (uint)b + 0x9e3779b9 + (a << 6) + (a >> 2));
-        }
+            => (int)(a ^ (uint)b + 0x9e3779b9 + (a << 6) + (a >> 2));
 
         public static int Combine(int a, int b)
-        {
-            return (int)((uint)a ^ (uint)b + 0x9e3779b9 + ((uint)a << 6) + ((uint)a >> 2));
-        }
+            => (int)((uint)a ^ (uint)b + 0x9e3779b9 + ((uint)a << 6) + ((uint)a >> 2));
 
         public static int Combine(long a, int b)
-        {
-            return Combine(UCombine((int)(a >> 32), (int)a), b);
-        }
+            => Combine(UCombine((int)(a >> 32), (int)a), b);
 
         public static int Combine(int a, long b)
-        {
-            return Combine(a, UCombine((int)(b >> 32), (int)b));
-        }
+            => Combine(a, UCombine((int)(b >> 32), (int)b));
 
         public static int Combine(long a, long b)
-        {
-            return Combine(UCombine((int)(a >> 32), (int)a),
-                           UCombine((int)(b >> 32), (int)b));
-        }
+            => Combine(UCombine((int)(a >> 32), (int)a),
+                       UCombine((int)(b >> 32), (int)b));
+
 
         public static int Combine(int a, int b, params int[] rest)
         {
@@ -96,30 +75,20 @@ namespace Aardvark.Base
         public static int GetCombined<T0, T1>(T0 e0, T1 e1)
             where T0 : struct
             where T1 : struct
-        {
-            return Combine(e0.GetHashCode(), e1.GetHashCode());
-        }
+            => Combine(e0.GetHashCode(), e1.GetHashCode());
 
         public static int GetCombined<T0, T1, T2>(T0 e0, T1 e1, T2 e2)
             where T0 : struct
             where T1 : struct
             where T2 : struct
-        {
-            return Combine(UCombine(e0.GetHashCode(), e1.GetHashCode()),
-                           e2.GetHashCode());
-        }
+            => Combine(UCombine(e0.GetHashCode(), e1.GetHashCode()), e2.GetHashCode());
 
         public static int GetCombined<T0, T1, T2, T3>(T0 e0, T1 e1, T2 e2, T3 e3)
             where T0 : struct
             where T1 : struct
             where T2 : struct
             where T3 : struct
-        {
-            return Combine(UCombine(UCombine(e0.GetHashCode(),
-                                             e1.GetHashCode()),
-                                    e2.GetHashCode()),
-                           e3.GetHashCode());
-        }
+            => Combine(UCombine(UCombine(e0.GetHashCode(), e1.GetHashCode()), e2.GetHashCode()), e3.GetHashCode());
 
         public static int GetCombined<T0, T1, T2, T3, T4>(T0 e0, T1 e1, T2 e2, T3 e3, T4 e4)
             where T0 : struct
@@ -127,22 +96,15 @@ namespace Aardvark.Base
             where T2 : struct
             where T3 : struct
             where T4 : struct
-        {
-            return Combine(UCombine(UCombine(UCombine(e0.GetHashCode(),
-                                                      e1.GetHashCode()),
-                                             e2.GetHashCode()),
-                                    e3.GetHashCode()),
-                           e4.GetHashCode());
-        }
+            => Combine(UCombine(UCombine(UCombine(e0.GetHashCode(),
+                e1.GetHashCode()), e2.GetHashCode()), e3.GetHashCode()), e4.GetHashCode());
 
         /// <summary>
         /// Compute the combined hash code of an IEnumerable of items.
         /// </summary>
         public static int GetCombinedHashCode<T>(this IEnumerable<T> items)
             where T : struct
-        {
-            return (int)items.Aggregate(0U, (h, i) => UCombine(h, i.GetHashCode()));
-        }
+            => (int)items.Aggregate(0U, (h, i) => UCombine(h, i.GetHashCode()));
 
         /// <summary>
         /// Compute the combined hash code of an array of items (explicit
@@ -150,9 +112,7 @@ namespace Aardvark.Base
         /// </summary>
         public static int GetCombinedHashCode<T>(this T[] array)
             where T : struct
-        {
-            return array.GetCombinedHashCode(array.LongLength);
-        }
+            => array.GetCombinedHashCode(array.LongLength);
 
         /// <summary>
         /// Compute the combined hash code of an array of items (explicit
@@ -162,8 +122,8 @@ namespace Aardvark.Base
             where T : struct
         {
             if (count == 0) return 0;
-            uint h = (uint)array[0].GetHashCode();
-            for (long i = 1; i < count; i++)
+            var h = (uint)array[0].GetHashCode();
+            for (var i = 1; i < count; i++)
                 h = UCombine(h, array[i].GetHashCode());
             return (int)h;
         }
@@ -176,32 +136,27 @@ namespace Aardvark.Base
             where T : struct
         {
             if (count == 0) return 0;
-            uint h = (uint)array[first].GetHashCode();
+            var h = (uint)array[first].GetHashCode();
             for (long i = first + 1, e = first + count; i < e; i++)
                 h = UCombine(h, array[i].GetHashCode());
             return (int)h;
         }
 
         public static int GetCombinedWithDefaultZero<T0, T1>(T0 e0, T1 e1)
-        {
-            return Combine(e0.Equals(default(T0)) ? 0 : e0.GetHashCode(),
-                           e1.Equals(default(T1)) ? 0 : e1.GetHashCode());
-        }
+            => Combine(e0.Equals(default(T0)) ? 0 : e0.GetHashCode(),
+                       e1.Equals(default(T1)) ? 0 : e1.GetHashCode());
+
 
         public static int GetCombinedWithDefaultZero<T0, T1, T2>(T0 e0, T1 e1, T2 e2)
-        {
-            return Combine(UCombine(e0.Equals(default(T0)) ? 0 : e0.GetHashCode(),
-                                    e1.Equals(default(T1)) ? 0 : e1.GetHashCode()),
-                           e2.Equals(default(T2)) ? 0 : e2.GetHashCode());
-        }
+            => Combine(UCombine(e0.Equals(default(T0)) ? 0 : e0.GetHashCode(),
+                                e1.Equals(default(T1)) ? 0 : e1.GetHashCode()),
+                                e2.Equals(default(T2)) ? 0 : e2.GetHashCode());
 
         public static int GetCombinedWithDefaultZero<T0, T1, T2, T3>(T0 e0, T1 e1, T2 e2, T3 e3)
-        {
-            return Combine(UCombine(UCombine(e0.Equals(default(T0)) ? 0 : e0.GetHashCode(),
-                                             e1.Equals(default(T1)) ? 0 : e1.GetHashCode()),
-                                    e2.Equals(default(T2)) ? 0 : e2.GetHashCode()),
-                           e3.Equals(default(T3)) ? 0 : e3.GetHashCode());
-        }
+            => Combine(UCombine(UCombine(e0.Equals(default(T0)) ? 0 : e0.GetHashCode(),
+                                         e1.Equals(default(T1)) ? 0 : e1.GetHashCode()),
+                                         e2.Equals(default(T2)) ? 0 : e2.GetHashCode()),
+                                         e3.Equals(default(T3)) ? 0 : e3.GetHashCode());
 
         /// <summary>
         /// Compute the first of two possible hashcodes for hashing in a 1-D
@@ -210,8 +165,7 @@ namespace Aardvark.Base
         /// </summary>
         public static int Get1of2(double x)
         {
-            var xi = (long)System.Math.Floor(x);
-
+            var xi = (long)Floor(x);
             return (int)(xi >> 1);
         }
 
@@ -223,7 +177,7 @@ namespace Aardvark.Base
         /// </summary>
         public static void Get2(double x, int[] hca)
         {
-            var xi = (long)System.Math.Floor(x);
+            var xi = (long)Floor(x);
 
             int xh0 = (int)(xi >> 1);
 
@@ -238,8 +192,8 @@ namespace Aardvark.Base
         /// </summary>
         public static int Get1of4(double x, double y)
         {
-            var xi = (long)System.Math.Floor(x);
-            var yi = (long)System.Math.Floor(y);
+            var xi = (long)Floor(x);
+            var yi = (long)Floor(y);
 
             return Combine((int)(xi >> 1), (int)(yi >> 1));
         }
@@ -252,8 +206,8 @@ namespace Aardvark.Base
         /// </summary>
         public static void Get4(double x, double y, int[] hca)
         {
-            var xi = (long)System.Math.Floor(x);
-            var yi = (long)System.Math.Floor(y);
+            var xi = (long)Floor(x);
+            var yi = (long)Floor(y);
 
             int xh0 = (int)(xi >> 1), xh1 = xh0 - 1 + ((int)(xi & 1) << 1);
             int yh0 = (int)(yi >> 1), yh1 = yh0 - 1 + ((int)(yi & 1) << 1);
@@ -271,9 +225,9 @@ namespace Aardvark.Base
         /// </summary>
         public static int Get1of8(double x, double y, double z)
         {
-            var xi = (long)System.Math.Floor(x);
-            var yi = (long)System.Math.Floor(y);
-            var zi = (long)System.Math.Floor(z);
+            var xi = (long)Floor(x);
+            var yi = (long)Floor(y);
+            var zi = (long)Floor(z);
 
             return Combine((int)(xi >> 1), (int)(yi >> 1), (int)(zi >> 1));
         }
@@ -286,9 +240,9 @@ namespace Aardvark.Base
         /// </summary>
         public static void Get8(double x, double y, double z, int[] hca)
         {
-            var xi = (long)System.Math.Floor(x);
-            var yi = (long)System.Math.Floor(y);
-            var zi = (long)System.Math.Floor(z);
+            var xi = (long)Floor(x);
+            var yi = (long)Floor(y);
+            var zi = (long)Floor(z);
 
             int xh0 = (int)(xi >> 1), xh1 = xh0 - 1 + ((int)(xi & 1) << 1);
             int yh0 = (int)(yi >> 1), yh1 = yh0 - 1 + ((int)(yi & 1) << 1);
@@ -311,10 +265,10 @@ namespace Aardvark.Base
         /// </summary>
         public static int Get1of16(double x, double y, double z, double w)
         {
-            var xi = (long)System.Math.Floor(x);
-            var yi = (long)System.Math.Floor(y);
-            var zi = (long)System.Math.Floor(z);
-            var wi = (long)System.Math.Floor(w);
+            var xi = (long)Floor(x);
+            var yi = (long)Floor(y);
+            var zi = (long)Floor(z);
+            var wi = (long)Floor(w);
 
             return Combine((int)(xi >> 1), (int)(yi >> 1), (int)(zi >> 1), (int)(wi >> 1));
         }
@@ -327,10 +281,10 @@ namespace Aardvark.Base
         /// </summary>
         public static void Get16(double x, double y, double z, double w, int[] hca)
         {
-            var xi = (long)System.Math.Floor(x);
-            var yi = (long)System.Math.Floor(y);
-            var zi = (long)System.Math.Floor(z);
-            var wi = (long)System.Math.Floor(w);
+            var xi = (long)Floor(x);
+            var yi = (long)Floor(y);
+            var zi = (long)Floor(z);
+            var wi = (long)Floor(w);
 
             int xh0 = (int)(xi >> 1), xh1 = xh0 - 1 + ((int)(xi & 1) << 1);
             int yh0 = (int)(yi >> 1), yh1 = yh0 - 1 + ((int)(yi & 1) << 1);

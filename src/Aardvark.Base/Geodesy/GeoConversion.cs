@@ -1,9 +1,8 @@
 using System;
-using System.Collections.Generic;
 using System.Globalization;
-using System.Linq;
 using System.Net;
-using System.Text;
+using static Aardvark.Base.Constant;
+using static System.Math;
 
 namespace Aardvark.Base
 {
@@ -20,21 +19,23 @@ namespace Aardvark.Base
             double phi = Conversion.RadiansFromDegrees(lonLatHeight.Y);
             double h = lonLatHeight.Z;
 
-            double cos_lam = System.Math.Cos(lam);
-            double cos_phi = System.Math.Cos(phi);
-            double sin_lam = System.Math.Sin(lam);
-            double sin_phi = System.Math.Sin(phi);
+            double cos_lam = Cos(lam);
+            double cos_phi = Cos(phi);
+            double sin_lam = Sin(lam);
+            double sin_phi = Sin(phi);
 
             // eccentricity square
             double eq = ellipsoid.EQ;
-    
+
             // radius of the curvature in prime vertical
             double Rv = ellipsoid.A / (1.0 - eq * sin_phi * sin_phi).Sqrt();
 
-            V3d result = new V3d();
-            result.X = (Rv + h) * cos_phi * cos_lam;
-            result.Y = (Rv + h) * cos_phi * sin_lam;
-            result.Z = ((1.0 - eq) * Rv + h) * sin_phi;
+            V3d result = new V3d
+            {
+                X = (Rv + h) * cos_phi * cos_lam,
+                Y = (Rv + h) * cos_phi * sin_lam,
+                Z = ((1.0 - eq) * Rv + h) * sin_phi
+            };
 
             return result;
         }
@@ -57,12 +58,12 @@ namespace Aardvark.Base
             double W = (xyz.X * xyz.X + xyz.Y * xyz.Y).Sqrt();
 
             // apprx phi
-            double PHI = System.Math.Atan((xyz.Z * a) / (W * b));
-            
+            double PHI = Atan((xyz.Z * a) / (W * b));
+
             double eq = ellipsoid.EQ;
             double e2q = ellipsoid.E2Q;// (eq / (1.0 - eq)).Sqrt();
 
-            double lam = System.Math.Atan(xyz.Y / xyz.X);
+            double lam = Atan(xyz.Y / xyz.X);
 
             double sinPhi = (PHI).Sin();
             double sinPhiTo3 = sinPhi * sinPhi * sinPhi;
@@ -70,7 +71,7 @@ namespace Aardvark.Base
             double cosPhi = (PHI).Cos();
             double cosPhiTo3 = cosPhi * cosPhi * cosPhi;
 
-            double phi = System.Math.Atan((xyz.Z + e2q * b * sinPhiTo3) / (W - eq * a * cosPhiTo3));
+            double phi = Atan((xyz.Z + e2q * b * sinPhiTo3) / (W - eq * a * cosPhiTo3));
             double sinphi = phi.Sin();
 
             // curvature in the prime vertical
@@ -81,7 +82,7 @@ namespace Aardvark.Base
 
             double lat = Conversion.DegreesFromRadians(phi);// phi * 180 / pi;
             double lon = Conversion.DegreesFromRadians(lam); // lam * 180 / pi;
-          
+
             return new V3d(lon, lat, h);
         }
 
@@ -92,7 +93,7 @@ namespace Aardvark.Base
         public static V3d? Wgs84FromStreetAddress(string address, string key)
         {
             var output = "csv";
-            var url = @"http://maps.google.com/maps/geo?" 
+            var url = @"http://maps.google.com/maps/geo?"
                         + "q=" + Uri.EscapeDataString(address)
                         + "&output=" + output
                         + "&key=" + key;
@@ -140,7 +141,7 @@ namespace Aardvark.Base
             )
         {
             double phi = Conversion.RadiansFromDegrees(lonLatHeight.Y);
-            double lam = Conversion.RadiansFromDegrees(lonLatHeight.X - zeroMeridian);           
+            double lam = Conversion.RadiansFromDegrees(lonLatHeight.X - zeroMeridian);
 
             double cosphi = phi.Cos();
 
@@ -172,7 +173,7 @@ namespace Aardvark.Base
 
             //% second nummerical eccentrencity
             double e2q = ellipsoid.E2Q;
-            
+
             // cos(phi) to powers
             double cosphiTo2 = cosphi * cosphi;
             double cosphiTo3 = cosphiTo2 * cosphi;
@@ -215,8 +216,8 @@ namespace Aardvark.Base
             double x3 = t / 720.0 * N * cosphiTo6 * (61.0 - 58.0 * tTo2 + tTo4 + 270.0 * nuTo2 - 330.0 * tTo2 * nuTo4) * lamTo6;
             double x4 = t / 403204.0 * N * cosphiTo8 * (1385.0 - 3111.0 * tTo2 + 543.0 * tTo4 - tTo6) * lamTo8;
 
-            double nX = B + x1 +x2 + x3 + x4;
-            nX = nX-5000000; // <-- im model 
+            double nX = B + x1 + x2 + x3 + x4;
+            nX = nX - 5000000; // <-- im model 
 
             // y-coord: laenge
             double y1 = N * cosphi * lam;
@@ -224,10 +225,9 @@ namespace Aardvark.Base
             double y3 = N / 120.0 * cosphiTo5 * (5.0 - 18.0 * tTo2 + tTo4 + 14 * nuTo2 - 58.0 * tTo2 * nuTo2) * lamTo5;
             double y4 = N / 5040.0 * cosphiTo7 * (61.0 - 479.0 * tTo2 + 179.0 * tTo4 - tTo6) * lamTo7;
 
-            double nY = y1 +y2 + y3 + y4;
+            double nY = y1 + y2 + y3 + y4;
             //%nY = nY + 500000+L0/3*1000000; %<-- potsdam datum
             return new V3d(nY, nX, lonLatHeight.Z); //<-- Laenge, Breite, Hoehe
-
         }
 
         public static V3d GaussKruegerPlaneToEllipsoid(
@@ -238,7 +238,7 @@ namespace Aardvark.Base
             double b = ellipsoid.B;
 
             double Y = rightHeightAlt.X;
-            double X = rightHeightAlt.Y + 5000000;            
+            double X = rightHeightAlt.Y + 5000000;
 
             double n = (a - b) / (a + b);
             double nTo2 = n * n;
@@ -267,8 +267,8 @@ namespace Aardvark.Base
 
             //%radius of the curvature in prime vertical
             double N = (a * a) / (b * (1.0 + nuTo2).Sqrt());
-            
-            double Nto2 = N*N;
+
+            double Nto2 = N * N;
             double Nto3 = Nto2 * N;
             double Nto4 = Nto3 * N;
             double Nto5 = Nto4 * N;
@@ -292,23 +292,22 @@ namespace Aardvark.Base
             double Yto7 = Yto6 * Y;
             double Yto8 = Yto7 * Y;
 
-
             double p1 = fPHI + (t / (2.0 * Nto2)) * (-1.0 - nuTo2) * Yto2;
             double p2 = (t / (24.0 * Nto4)) * (5.0 + 3.0 * tTo2 + 6.0 * nuTo2 - 6 * tTo2 * nuTo2 - 3.0 * nuTo4 - 9.0 * tTo2 * nuTo4) * Yto4;
             double p3 = (t / (720.0 * Nto6)) * (-61.0 - 90.0 * tTo2 - 45.0 * tTo4 - 107.0 * nuTo2 + 162.0 * tTo2 * nuTo2 + 45.0 * tTo4 * nuTo2) * Yto6;
             double p4 = (t / (40320.0 * Nto8)) * (1385.0 + 3633.0 * tTo2 + 4045 * tTo4 + 1575 * tTo6) * Yto8;
 
-            double phi = p1+p2 + p3 + p4;
+            double phi = p1 + p2 + p3 + p4;
 
             double l1 = Y / (cosfPHI * N);
-            double l2 = ((-1.0 -2.0 * tTo2 - nuTo2) * Yto3) / (6.0 * Nto3 * cosfPHI);
+            double l2 = ((-1.0 - 2.0 * tTo2 - nuTo2) * Yto3) / (6.0 * Nto3 * cosfPHI);
             double l3 = (5.0 + 28.0 * tTo2 + 24 * tTo4 + 6.0 * nuTo2 + 8.0 * tTo2 * nuTo2) * Yto5 / (120.0 * Nto5 * cosfPHI);
             double l4 = (-61.0 - 662 * tTo2 - 1320 * tTo4 - 720 * tTo6) * Yto7 / (5040.0 * Nto7 * cosfPHI);
 
-            double lam = l1 +l2 + l3 + l4;
+            double lam = l1 + l2 + l3 + l4;
 
             double lat = Conversion.DegreesFromRadians(phi);
-            double lon = Conversion.DegreesFromRadians(lam) +referenceMeridan;
+            double lon = Conversion.DegreesFromRadians(lam) + referenceMeridan;
             return new V3d(lon, lat, rightHeightAlt.Z);
         }
 
@@ -340,33 +339,20 @@ namespace Aardvark.Base
         // y = (northing - 5104320) / 5.0
 
         public static V2i OK50PixelCoordinatesFromWgs84(int easting, int northing)
-        {
-            return new V2i(
-                (double)(easting - 68500) / 5.0,
-                (double)(northing - 5104320) / 5.0);
-        }
+            => new V2i((easting - 68500) / 5.0, (northing - 5104320) / 5.0);
 
         public static V2i OK50PixelCoordinatesFromWgs84(V2i wgs84)
-        {
-            return OK50PixelCoordinatesFromWgs84(wgs84.X, wgs84.Y);
-        }
+            => OK50PixelCoordinatesFromWgs84(wgs84.X, wgs84.Y);
 
         public static V2i Wgs84FromOK50PixelCoordinates(V2i pos)
-        {
-            return new V2i(
-                pos.X * 5 + 68500,
-                pos.Y * 5 + 5104320);
-        }
+            => new V2i(pos.X * 5 + 68500, pos.Y * 5 + 5104320);
 
         #endregion
 
         #region Distance
 
-        public static double DistanceVincentyWgs84(
-                V2d lonLat0, V2d lonLat1)
-        {
-            return DistanceVincenty(lonLat0, lonLat1, GeoEllipsoid.Wgs84);
-        }
+        public static double DistanceVincentyWgs84(V2d lonLat0, V2d lonLat1)
+            => DistanceVincenty(lonLat0, lonLat1, GeoEllipsoid.Wgs84);
 
         /// <summary>
         /// Vincenty Inverse Solution of Geodesics on the Ellipsoid (c) Chris Veness 2002-2012
@@ -378,55 +364,53 @@ namespace Aardvark.Base
         /// inverse formula for ellipsoids.
         /// </summary>
         public static double DistanceVincenty(
-                V2d lonLat0, V2d lonLat1, GeoEllipsoid ellipsoid)
+            V2d lonLat0, V2d lonLat1, GeoEllipsoid ellipsoid)
         {
-            double a = ellipsoid.A, b = ellipsoid.B,  f = ellipsoid.F;
-            double L = (lonLat1.X - lonLat0.X) * Constant.RadiansPerDegree;
-            double U1 = Math.Atan((1-f) * Math.Tan(lonLat0.Y * Constant.RadiansPerDegree));
-            double U2 = Math.Atan((1-f) * Math.Tan(lonLat1.Y * Constant.RadiansPerDegree));
-            double sinU1 = Math.Sin(U1), cosU1 = Math.Cos(U1);
-            double sinU2 = Math.Sin(U2), cosU2 = Math.Cos(U2);  
+            double a = ellipsoid.A, b = ellipsoid.B, f = ellipsoid.F;
+            double L = (lonLat1.X - lonLat0.X) * RadiansPerDegree;
+            double U1 = Atan((1 - f) * Tan(lonLat0.Y * RadiansPerDegree));
+            double U2 = Atan((1 - f) * Tan(lonLat1.Y * RadiansPerDegree));
+            double sinU1 = Sin(U1), cosU1 = Cos(U1);
+            double sinU2 = Sin(U2), cosU2 = Cos(U2);
             double lambda = L, lambdaP;
             int iterLimit = 100;
             double sinSigma, cosSigma, sigma, cosSqAlpha, cos2SigmaM;
             do
             {
-                double sinLambda = Math.Sin(lambda), cosLambda = Math.Cos(lambda);
-                sinSigma = Math.Sqrt((cosU2 * sinLambda) * (cosU2 * sinLambda) + 
+                double sinLambda = Sin(lambda), cosLambda = Cos(lambda);
+                sinSigma = Sqrt((cosU2 * sinLambda) * (cosU2 * sinLambda) +
                     (cosU1 * sinU2 - sinU1 * cosU2 * cosLambda)
                     * (cosU1 * sinU2 - sinU1 * cosU2 * cosLambda));
                 if (sinSigma == 0) return 0;  // co-incident points
                 cosSigma = sinU1 * sinU2 + cosU1 * cosU2 * cosLambda;
-                sigma = Math.Atan2(sinSigma, cosSigma);
-                double sinAlpha = cosU1 * cosU2 * sinLambda/sinSigma;
+                sigma = Atan2(sinSigma, cosSigma);
+                double sinAlpha = cosU1 * cosU2 * sinLambda / sinSigma;
                 cosSqAlpha = 1 - sinAlpha * sinAlpha;
-                cos2SigmaM = cosSigma - 2 * sinU1 * sinU2/cosSqAlpha;
+                cos2SigmaM = cosSigma - 2 * sinU1 * sinU2 / cosSqAlpha;
                 if (double.IsNaN(cos2SigmaM)) cos2SigmaM = 0;  // equatorial line: cosSqAlpha=0 (§6)
-                double C = f/16 * cosSqAlpha * (4 + f * (4 - 3 * cosSqAlpha));
+                double C = f / 16 * cosSqAlpha * (4 + f * (4 - 3 * cosSqAlpha));
                 lambdaP = lambda;
                 lambda = L + (1 - C) * f * sinAlpha *
                     (sigma + C * sinSigma * (cos2SigmaM + C * cosSigma * (-1 + 2 * cos2SigmaM * cos2SigmaM)));
             }
-            while (Math.Abs(lambda - lambdaP) > 1e-12 && --iterLimit > 0);
+            while (Abs(lambda - lambdaP) > 1e-12 && --iterLimit > 0);
 
             if (iterLimit == 0) return double.NaN;  // formula failed to converge
 
             double uSq = cosSqAlpha * (a * a - b * b) / (b * b);
-            double A = 1 + uSq/16384 * (4096 + uSq*(-768 + uSq * (320 - 175 * uSq)));
-            double B = uSq/1024 * (256 + uSq*(-128 + uSq * (74 - 47 * uSq)));
-            double deltaSigma = B * sinSigma * (cos2SigmaM + B/4 * (cosSigma * (-1 + 2 * cos2SigmaM * cos2SigmaM)-
-                B/6 * cos2SigmaM * (-3 + 4 * sinSigma * sinSigma) * (-3 + 4 * cos2SigmaM * cos2SigmaM)));
+            double A = 1 + uSq / 16384 * (4096 + uSq * (-768 + uSq * (320 - 175 * uSq)));
+            double B = uSq / 1024 * (256 + uSq * (-128 + uSq * (74 - 47 * uSq)));
+            double deltaSigma = B * sinSigma * (cos2SigmaM + B / 4 * (cosSigma * (-1 + 2 * cos2SigmaM * cos2SigmaM) -
+                B / 6 * cos2SigmaM * (-3 + 4 * sinSigma * sinSigma) * (-3 + 4 * cos2SigmaM * cos2SigmaM)));
             double s = b * A * (sigma - deltaSigma);
 
             return s;
         }
 
         public static double DistanceVincentyWgs84(
-                V2d lonLat0, V2d lonLat1,
-                out double brng0, out double brng1)
-        {
-            return DistanceVincenty(lonLat0, lonLat1, GeoEllipsoid.Wgs84, out brng0, out brng1);
-        }
+            V2d lonLat0, V2d lonLat1,
+            out double brng0, out double brng1)
+            => DistanceVincenty(lonLat0, lonLat1, GeoEllipsoid.Wgs84, out brng0, out brng1);
 
         /// <summary>
         /// Vincenty Inverse Solution of Geodesics on the Ellipsoid (c) Chris Veness 2002-2012
@@ -438,22 +422,22 @@ namespace Aardvark.Base
         /// inverse formula for ellipsoids.
         /// </summary>
         public static double DistanceVincenty(
-                V2d lonLat0, V2d lonLat1, GeoEllipsoid ellipsoid,
-                out double brng0, out double brng1)
+            V2d lonLat0, V2d lonLat1, GeoEllipsoid ellipsoid,
+            out double brng0, out double brng1)
         {
-            double a = ellipsoid.A, b = ellipsoid.B,  f = ellipsoid.F;
-            double L = (lonLat1.X - lonLat0.X) * Constant.RadiansPerDegree;
-            double U1 = Math.Atan((1-f) * Math.Tan(lonLat0.Y * Constant.RadiansPerDegree));
-            double U2 = Math.Atan((1-f) * Math.Tan(lonLat1.Y * Constant.RadiansPerDegree));
-            double sinU1 = Math.Sin(U1), cosU1 = Math.Cos(U1);
-            double sinU2 = Math.Sin(U2), cosU2 = Math.Cos(U2);  
+            double a = ellipsoid.A, b = ellipsoid.B, f = ellipsoid.F;
+            double L = (lonLat1.X - lonLat0.X) * RadiansPerDegree;
+            double U1 = Atan((1 - f) * Tan(lonLat0.Y * RadiansPerDegree));
+            double U2 = Atan((1 - f) * Tan(lonLat1.Y * RadiansPerDegree));
+            double sinU1 = Sin(U1), cosU1 = Cos(U1);
+            double sinU2 = Sin(U2), cosU2 = Cos(U2);
             double lambda = L, lambdaP;
             int iterLimit = 100;
             double sinSigma, cosSigma, sinLambda, cosLambda, sigma, cosSqAlpha, cos2SigmaM;
             do
             {
-                sinLambda = Math.Sin(lambda); cosLambda = Math.Cos(lambda);
-                sinSigma = Math.Sqrt((cosU2 * sinLambda) * (cosU2 * sinLambda) + 
+                sinLambda = Sin(lambda); cosLambda = Cos(lambda);
+                sinSigma = Sqrt((cosU2 * sinLambda) * (cosU2 * sinLambda) +
                     (cosU1 * sinU2 - sinU1 * cosU2 * cosLambda)
                     * (cosU1 * sinU2 - sinU1 * cosU2 * cosLambda));
                 if (sinSigma == 0)
@@ -463,17 +447,17 @@ namespace Aardvark.Base
                     return 0;  // co-incident points
                 }
                 cosSigma = sinU1 * sinU2 + cosU1 * cosU2 * cosLambda;
-                sigma = Math.Atan2(sinSigma, cosSigma);
-                double sinAlpha = cosU1 * cosU2 * sinLambda/sinSigma;
+                sigma = Atan2(sinSigma, cosSigma);
+                var sinAlpha = cosU1 * cosU2 * sinLambda / sinSigma;
                 cosSqAlpha = 1 - sinAlpha * sinAlpha;
-                cos2SigmaM = cosSigma - 2 * sinU1 * sinU2/cosSqAlpha;
+                cos2SigmaM = cosSigma - 2 * sinU1 * sinU2 / cosSqAlpha;
                 if (double.IsNaN(cos2SigmaM)) cos2SigmaM = 0;  // equatorial line: cosSqAlpha=0 (§6)
-                double C = f/16 * cosSqAlpha * (4 + f * (4 - 3 * cosSqAlpha));
+                var C = f / 16 * cosSqAlpha * (4 + f * (4 - 3 * cosSqAlpha));
                 lambdaP = lambda;
                 lambda = L + (1 - C) * f * sinAlpha *
                     (sigma + C * sinSigma * (cos2SigmaM + C * cosSigma * (-1 + 2 * cos2SigmaM * cos2SigmaM)));
             }
-            while (Math.Abs(lambda - lambdaP) > 1e-12 && --iterLimit > 0);
+            while (Abs(lambda - lambdaP) > 1e-12 && --iterLimit > 0);
 
             if (iterLimit == 0)
             {
@@ -481,27 +465,24 @@ namespace Aardvark.Base
                 brng1 = double.NaN;
                 return double.NaN;  // formula failed to converge
             }
-            double uSq = cosSqAlpha * (a * a - b * b) / (b * b);
-            double A = 1 + uSq/16384 * (4096 + uSq*(-768 + uSq * (320 - 175 * uSq)));
-            double B = uSq/1024 * (256 + uSq*(-128 + uSq * (74 - 47 * uSq)));
-            double deltaSigma = B * sinSigma * (cos2SigmaM + B/4 * (cosSigma * (-1 + 2 * cos2SigmaM * cos2SigmaM)-
-                B/6 * cos2SigmaM * (-3 + 4 * sinSigma * sinSigma) * (-3 + 4 * cos2SigmaM * cos2SigmaM)));
-            double s = b * A * (sigma - deltaSigma);
+            var uSq = cosSqAlpha * (a * a - b * b) / (b * b);
+            var A = 1 + uSq / 16384 * (4096 + uSq * (-768 + uSq * (320 - 175 * uSq)));
+            var B = uSq / 1024 * (256 + uSq * (-128 + uSq * (74 - 47 * uSq)));
+            var deltaSigma = B * sinSigma * (cos2SigmaM + B / 4 * (cosSigma * (-1 + 2 * cos2SigmaM * cos2SigmaM) -
+                B / 6 * cos2SigmaM * (-3 + 4 * sinSigma * sinSigma) * (-3 + 4 * cos2SigmaM * cos2SigmaM)));
+            var s = b * A * (sigma - deltaSigma);
 
-            var fwdAz = Math.Atan2(cosU2*sinLambda,  cosU1*sinU2-sinU1*cosU2*cosLambda);
-            var revAz = Math.Atan2(cosU1*sinLambda, -sinU1*cosU2+cosU1*sinU2*cosLambda);
+            var fwdAz = Atan2(cosU2 * sinLambda, cosU1 * sinU2 - sinU1 * cosU2 * cosLambda);
+            var revAz = Atan2(cosU1 * sinLambda, -sinU1 * cosU2 + cosU1 * sinU2 * cosLambda);
 
-            brng0 = fwdAz * Constant.DegreesPerRadian;
-            brng1 = revAz * Constant.DegreesPerRadian; 
+            brng0 = fwdAz * DegreesPerRadian;
+            brng1 = revAz * DegreesPerRadian;
 
             return s;
         }
 
         public static V2d DirectionVincentyWgs84(V2d lonLat, double brng, double dist)
-        {
-            double finalBrng;
-            return DirectionVincenty(lonLat, brng, dist, GeoEllipsoid.Wgs84, out finalBrng);
-        }
+            => DirectionVincenty(lonLat, brng, dist, GeoEllipsoid.Wgs84, out double finalBrng);
 
         /// <summary>
         /// Vincenty Direct Solution of Geodesics on the Ellipsoid (c) Chris Veness 2005-2012
@@ -510,16 +491,11 @@ namespace Aardvark.Base
         /// http://www.ngs.noaa.gov/PUBS_LIB/inverse.pdf 
         /// </summary>
         public static V2d DirectionVincenty(V2d lonLat, double brng, double dist, GeoEllipsoid gel)
-        {
-            double finalBrng;
-            return DirectionVincenty(lonLat, brng, dist, gel, out finalBrng);
-        }
+            => DirectionVincenty(lonLat, brng, dist, gel, out double finalBrng);
 
         public static V2d DirectionVincentyWgs84(
             V2d lonLat, double brng, double dist, out double finalBrng)
-        {
-            return DirectionVincenty(lonLat, brng, dist, GeoEllipsoid.Wgs84, out finalBrng);
-        }
+            => DirectionVincenty(lonLat, brng, dist, GeoEllipsoid.Wgs84, out finalBrng);
 
         /// <summary>
         /// Vincenty Direct Solution of Geodesics on the Ellipsoid (c) Chris Veness 2005-2012
@@ -530,46 +506,47 @@ namespace Aardvark.Base
         public static V2d DirectionVincenty(V2d lonLat, double brng, double dist, GeoEllipsoid gel,
             out double finalBrng)
         {
-            double a = gel.A, b = gel.B,  f = gel.F;  // WGS-84 ellipsiod
+            double a = gel.A, b = gel.B, f = gel.F;  // WGS-84 ellipsiod
             var s = dist;
-            var alpha1 = brng * Constant.RadiansPerDegree;
-            var sinAlpha1 = Math.Sin(alpha1);
-            var cosAlpha1 = Math.Cos(alpha1);
+            var alpha1 = brng * RadiansPerDegree;
+            var sinAlpha1 = Sin(alpha1);
+            var cosAlpha1 = Cos(alpha1);
 
-            var tanU1 = (1-f) * Math.Tan(lonLat.Y * Constant.RadiansPerDegree);
-            double cosU1 = 1 / Math.Sqrt((1 + tanU1*tanU1)), sinU1 = tanU1*cosU1;
-            var sigma1 = Math.Atan2(tanU1, cosAlpha1);
+            var tanU1 = (1 - f) * Tan(lonLat.Y * RadiansPerDegree);
+            double cosU1 = 1 / Sqrt((1 + tanU1 * tanU1)), sinU1 = tanU1 * cosU1;
+            var sigma1 = Atan2(tanU1, cosAlpha1);
             var sinAlpha = cosU1 * sinAlpha1;
-            var cosSqAlpha = 1 - sinAlpha*sinAlpha;
-            var uSq = cosSqAlpha * (a*a - b*b) / (b*b);
-            var A = 1 + uSq/16384*(4096+uSq*(-768+uSq*(320-175*uSq)));
-            var B = uSq/1024 * (256+uSq*(-128+uSq*(74-47*uSq)));
+            var cosSqAlpha = 1 - sinAlpha * sinAlpha;
+            var uSq = cosSqAlpha * (a * a - b * b) / (b * b);
+            var A = 1 + uSq / 16384 * (4096 + uSq * (-768 + uSq * (320 - 175 * uSq)));
+            var B = uSq / 1024 * (256 + uSq * (-128 + uSq * (74 - 47 * uSq)));
 
-            var sigma = s / (b * A); var sigmaP = 2*Constant.Pi;
+            var sigma = s / (b * A); var sigmaP = 2 * PI;
             double sinSigma = 0, cosSigma = 0, cos2SigmaM = 0;
-            while (Math.Abs(sigma-sigmaP) > 1e-12) {
-                cos2SigmaM = Math.Cos(2*sigma1 + sigma);
-                sinSigma = Math.Sin(sigma);
-                cosSigma = Math.Cos(sigma);
-                var deltaSigma = B*sinSigma*(cos2SigmaM+B/4*(cosSigma*(-1+2*cos2SigmaM*cos2SigmaM)-
-                    B/6*cos2SigmaM*(-3+4*sinSigma*sinSigma)*(-3+4*cos2SigmaM*cos2SigmaM)));
+            while (Abs(sigma - sigmaP) > 1e-12)
+            {
+                cos2SigmaM = Cos(2 * sigma1 + sigma);
+                sinSigma = Sin(sigma);
+                cosSigma = Cos(sigma);
+                var deltaSigma = B * sinSigma * (cos2SigmaM + B / 4 * (cosSigma * (-1 + 2 * cos2SigmaM * cos2SigmaM) -
+                    B / 6 * cos2SigmaM * (-3 + 4 * sinSigma * sinSigma) * (-3 + 4 * cos2SigmaM * cos2SigmaM)));
                 sigmaP = sigma;
-                sigma = s / (b*A) + deltaSigma;
+                sigma = s / (b * A) + deltaSigma;
             }
 
-            var tmp = sinU1*sinSigma - cosU1*cosSigma*cosAlpha1;
-            var lat2 = Math.Atan2(sinU1*cosSigma + cosU1*sinSigma*cosAlpha1, 
-                (1-f)*Math.Sqrt(sinAlpha*sinAlpha + tmp*tmp));
-            var lambda = Math.Atan2(sinSigma*sinAlpha1, cosU1*cosSigma - sinU1*sinSigma*cosAlpha1);
-            var C = f/16*cosSqAlpha*(4+f*(4-3*cosSqAlpha));
-            var L = lambda - (1-C) * f * sinAlpha *
-                (sigma + C*sinSigma*(cos2SigmaM+C*cosSigma*(-1+2*cos2SigmaM*cos2SigmaM)));
-            var lon2 = (lonLat.X * Constant.RadiansPerDegree+L+3*Constant.Pi)%(2*Constant.Pi) - Constant.Pi;  // normalise to -180...+180
+            var tmp = sinU1 * sinSigma - cosU1 * cosSigma * cosAlpha1;
+            var lat2 = Atan2(sinU1 * cosSigma + cosU1 * sinSigma * cosAlpha1,
+                (1 - f) * Sqrt(sinAlpha * sinAlpha + tmp * tmp));
+            var lambda = Atan2(sinSigma * sinAlpha1, cosU1 * cosSigma - sinU1 * sinSigma * cosAlpha1);
+            var C = f / 16 * cosSqAlpha * (4 + f * (4 - 3 * cosSqAlpha));
+            var L = lambda - (1 - C) * f * sinAlpha *
+                (sigma + C * sinSigma * (cos2SigmaM + C * cosSigma * (-1 + 2 * cos2SigmaM * cos2SigmaM)));
+            var lon2 = (lonLat.X * RadiansPerDegree + L + 3 * PI) % (2 * PI) - PI;  // normalise to -180...+180
 
-            var revAz = Math.Atan2(sinAlpha, -tmp);  // final bearing, if required
+            var revAz = Atan2(sinAlpha, -tmp);  // final bearing, if required
 
-            finalBrng = revAz * Constant.DegreesPerRadian;
-            return new V2d(lon2 * Constant.DegreesPerRadian, lat2 * Constant.DegreesPerRadian);
+            finalBrng = revAz * DegreesPerRadian;
+            return new V2d(lon2 * DegreesPerRadian, lat2 * DegreesPerRadian);
 
         }
 
@@ -588,9 +565,7 @@ namespace Aardvark.Base
         }
 
         public static double ComputeLengthWgs84(V2d[] lonLatArray, params int[] indexArray)
-        {
-            return ComputeLength(lonLatArray, GeoEllipsoid.Wgs84, indexArray);
-        }
+            => ComputeLength(lonLatArray, GeoEllipsoid.Wgs84, indexArray);
 
         public static double ComputePerimeter(V2d[] lonLatArray, GeoEllipsoid gel, params int[] indexArray)
         {
@@ -607,11 +582,8 @@ namespace Aardvark.Base
         }
 
         public static double ComputePerimeterWgs84(V2d[] lonLatArray, params int[] indexArray)
-        {
-            return ComputePerimeter(lonLatArray, GeoEllipsoid.Wgs84, indexArray);
-        }
+            => ComputePerimeter(lonLatArray, GeoEllipsoid.Wgs84, indexArray);
 
         #endregion
     }
-
 }

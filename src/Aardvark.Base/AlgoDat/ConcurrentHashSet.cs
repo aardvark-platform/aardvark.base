@@ -1,9 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Collections.Concurrent;
 
 namespace System.Collections.Concurrent
 {
@@ -47,30 +43,17 @@ namespace System.Collections.Concurrent
 
         #region Properties
 
-        public int Count
-        {
-            get { return m_entries.Count; }
-        }
+        public int Count => m_entries.Count;
 
         #endregion
 
         #region Methods
 
-        public void Clear()
-        {
-            m_entries.Clear();
-        }
+        public void Clear() => m_entries.Clear();
 
-        public bool Add(T item)
-        {
-            return m_entries.TryAdd(item, 1);
-        }
+        public bool Add(T item) => m_entries.TryAdd(item, 1);
 
-        public bool Remove(T item)
-        {
-            int dummy;
-            return m_entries.TryRemove(item, out dummy);
-        }
+        public bool Remove(T item) => m_entries.TryRemove(item, out int dummy);
 
         public void UnionWith(IEnumerable<T> other)
         {
@@ -82,44 +65,23 @@ namespace System.Collections.Concurrent
 
         #region IEnumerable Members
 
-        public Enumerator GetEnumerator()
-        {
-            return new Enumerator(this);
-        }
+        public Enumerator GetEnumerator() => new Enumerator(this);
 
-        IEnumerator<T> IEnumerable<T>.GetEnumerator()
-        {
-            return new Enumerator(this);
-        }
+        IEnumerator<T> IEnumerable<T>.GetEnumerator() => new Enumerator(this);
 
-        IEnumerator IEnumerable.GetEnumerator()
-        {
-            return new Enumerator(this);
-        }
+        IEnumerator IEnumerable.GetEnumerator() => new Enumerator(this);
 
         #endregion
 
         #region ICollection Members
 
-        public bool Contains(T item)
-        {
-            return m_entries.ContainsKey(item);
-        }
+        public bool Contains(T item) => m_entries.ContainsKey(item);
 
-        public void CopyTo(T[] array, int arrayIndex)
-        {
-            m_entries.Keys.CopyTo(array, arrayIndex);
-        }
+        public void CopyTo(T[] array, int arrayIndex) => m_entries.Keys.CopyTo(array, arrayIndex);
 
-        public bool IsReadOnly
-        {
-            get { return false; }
-        }
+        public bool IsReadOnly => false;
 
-        void ICollection<T>.Add(T item)
-        {
-            Add(item);
-        }
+        void ICollection<T>.Add(T item) => Add(item);
 
         #endregion
 
@@ -132,34 +94,15 @@ namespace System.Collections.Concurrent
                 m_enumerator = set.m_entries.GetEnumerator();
             }
 
-            public T Current
-            {
-                get { return m_enumerator.Current.Key; }
-            }
+            public T Current => m_enumerator.Current.Key;
 
-            public void Dispose()
-            {
-                m_enumerator.Dispose();
-            }
+            public void Dispose() => m_enumerator.Dispose();
 
-            object IEnumerator.Current
-            {
-                get { return ((IEnumerator)m_enumerator).Current; }
-            }
+            object IEnumerator.Current => ((IEnumerator)m_enumerator).Current;
 
-            public bool MoveNext()
-            {
-                return m_enumerator.MoveNext();
-            }
+            public bool MoveNext() => m_enumerator.MoveNext();
 
-            public void Reset()
-            {
-                m_enumerator.Reset();
-            }
+            public void Reset() => m_enumerator.Reset();
         }
-
-
-
-        
     }
 }

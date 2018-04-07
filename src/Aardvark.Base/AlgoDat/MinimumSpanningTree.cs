@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-
 namespace Aardvark.Base
 {
     public static class MinimumSpanningTree
@@ -31,14 +30,10 @@ namespace Aardvark.Base
 
             // init per-vertex edge priority queues
             Report.BeginTimed("init per-vertex edge priority queues");
-            //var v2es = new Dictionary<TVertex, PriorityQueue<TWeight, TVertex>>();
-            //vertexSet.ForEach(v => v2es[v] = new PriorityQueue<TWeight, TVertex>());
             var v2es = new Dictionary<TVertex, List<KeyValuePair<TWeight, TVertex>>>();
             vertexSet.ForEach(v => v2es[v] = new List<KeyValuePair<TWeight, TVertex>>());
             foreach (var e in edges)
             {
-                //v2es[e.E0.E0].Enqueue(e.E1, e.E0.E1);
-                //v2es[e.E0.E1].Enqueue(e.E1, e.E0.E0);
                 v2es[e.Item1.Item1].HeapEnqueue(compare, new KeyValuePair<TWeight, TVertex>(e.Item2, e.Item1.Item2));
                 v2es[e.Item1.Item2].HeapEnqueue(compare, new KeyValuePair<TWeight, TVertex>(e.Item2, e.Item1.Item1));
             }
@@ -59,18 +54,14 @@ namespace Aardvark.Base
                     ;
                 foreach (var q in candidateQueues)
                 {
-                    //while (!q.E1.IsEmptyOrNull() && mst.Contains(q.E1.Peek()))
                     while (!q.Item2.IsEmptyOrNull() && mst.Contains(q.Item2[0].Value))
-                        //q.E1.Dequeue();
                         q.Item2.HeapDequeue(compare);
                     if (q.Item2.IsEmptyOrNull()) v2es.Remove(q.Item1);
                 }
                 var best = candidateQueues
-                    //.Select(q => (q.E0, q.E1.PeekKeyAndValue()))
                     .Select(q => (q.Item1, q.Item2[0]))
                     .Min((a, b) => a.Item2.Key.CompareTo(b.Item2.Key) < 0)
                     ;
-                //v2es[best.E0].Dequeue();
                 v2es[best.Item1].HeapDequeue(compare);
                 move(best.Item2.Value);
                 yield return ((best.Item1, best.Item2.Value), best.Item2.Key);
@@ -113,7 +104,6 @@ namespace Aardvark.Base
             Report.End();
 
             Report.Line("#edges in mst: {0}", mst.Length);
-            //foreach (var e in mst) Console.WriteLine(e);
         }
     }
 }
