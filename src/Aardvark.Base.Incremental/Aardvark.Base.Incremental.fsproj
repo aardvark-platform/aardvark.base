@@ -51,51 +51,7 @@
       <Project>{692a3617-719b-4ea2-abc1-407ae20094ae}</Project>
       <Private>False</Private>
     </ProjectReference>
-    <ProjectReference Include="..\Aardvark.Base.Algodat\Aardvark.Base.Algodat.csproj">
-      <Name>Aardvark.Base.Algodat</Name>
-      <Project>{4e3f13a0-0a96-4608-b56a-5186a64f707b}</Project>
-      <Private>True</Private>
-    </ProjectReference>
-    <ProjectReference Include="..\Aardvark.Base.Extensions\Aardvark.Base.Extensions.csproj">
-      <Name>Aardvark.Base.Extensions</Name>
-      <Project>{430d818a-45e4-4643-9a9f-091d3ed31bc7}</Project>
-      <Private>True</Private>
-    </ProjectReference>
-    <ProjectReference Include="..\Aardvark.Base.Geometry\Aardvark.Base.Geometry.csproj">
-      <Name>Aardvark.Base.Geometry</Name>
-      <Project>{1f843ba4-1fee-4d4e-be32-ee9701d907e1}</Project>
-      <Private>True</Private>
-    </ProjectReference>
-    <ProjectReference Include="..\Aardvark.Base.Hashing\Aardvark.Base.Hashing.csproj">
-      <Name>Aardvark.Base.Hashing</Name>
-      <Project>{8fc336ea-7de8-428f-949d-3320208a5ee5}</Project>
-      <Private>True</Private>
-    </ProjectReference>
-    <ProjectReference Include="..\Aardvark.Base.Introspection\Aardvark.Base.Introspection.csproj">
-      <Name>Aardvark.Base.Introspection</Name>
-      <Project>{919e549b-980d-4565-b504-2d0244d23ce6}</Project>
-      <Private>True</Private>
-    </ProjectReference>
-    <ProjectReference Include="..\Aardvark.Base.Math\Aardvark.Base.Math.csproj">
-      <Name>Aardvark.Base.Math</Name>
-      <Project>{caa4e460-e04b-45a4-8501-2694e61f72c9}</Project>
-      <Private>True</Private>
-    </ProjectReference>
-    <ProjectReference Include="..\Aardvark.Base.Reporting\Aardvark.Base.Reporting.csproj">
-      <Name>Aardvark.Base.Reporting</Name>
-      <Project>{f4d5431a-43a4-4fba-b352-421ec359d03c}</Project>
-      <Private>True</Private>
-    </ProjectReference>
-    <ProjectReference Include="..\Aardvark.Base.Symbol\Aardvark.Base.Symbol.csproj">
-      <Name>Aardvark.Base.Symbol</Name>
-      <Project>{0d5b3e80-26bd-4d67-a4dc-0dde84c478b6}</Project>
-      <Private>True</Private>
-    </ProjectReference>
-    <ProjectReference Include="..\Aardvark.Base.Tup\Aardvark.Base.Tup.csproj">
-      <Name>Aardvark.Base.Tup</Name>
-      <Project>{e0fc963c-92e2-466f-8f38-3a12b314e394}</Project>
-      <Private>True</Private>
-    </ProjectReference>
+    <ProjectReference Include="..\Aardvark.Base\Aardvark.Base.csproj" />
   </ItemGroup>
   <Import Project="..\..\.paket\Paket.Restore.targets" />
 </Project>

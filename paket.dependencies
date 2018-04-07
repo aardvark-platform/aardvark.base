@@ -4,7 +4,7 @@ source https://vrvis.myget.org/F/aardvark_public/api/v3/index.json
 
 nuget FSharp.Core                   ~> 4.1.0
 nuget FSharp.Compiler.Tools         ~> 10.0.1
-nuget System.Collections.Immutable  >= 1.2.0
+nuget System.Collections.Immutable  >= 1.4.0
 
 nuget System.Reactive               ~> 3.1.1
 nuget System.Reactive.Linq          ~> 3.1.1

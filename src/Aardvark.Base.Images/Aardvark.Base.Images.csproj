@@ -22,8 +22,7 @@
     <None Include="TensorExtensions_template.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Aardvark.Base.Introspection\Aardvark.Base.Introspection.csproj" />
-    <ProjectReference Include="..\Aardvark.Base.Math\Aardvark.Base.Math.csproj" />
+    <ProjectReference Include="..\Aardvark.Base\Aardvark.Base.csproj" />
   </ItemGroup>
   <Import Project="..\..\.paket\Paket.Restore.targets" />
 </Project>

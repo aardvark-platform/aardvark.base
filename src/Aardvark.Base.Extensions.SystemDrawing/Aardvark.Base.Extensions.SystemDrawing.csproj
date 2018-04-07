@@ -43,13 +43,18 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="PixImageBitmap.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SystemDrawingExtensions.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Aardvark.Base.Math\Aardvark.Base.Math.csproj">
-      <Project>{caa4e460-e04b-45a4-8501-2694e61f72c9}</Project>
-      <Name>Aardvark.Base.Math</Name>
+    <ProjectReference Include="..\Aardvark.Base.Images\Aardvark.Base.Images.csproj">
+      <Project>{839e595c-0771-40bd-b17d-32288a2f558d}</Project>
+      <Name>Aardvark.Base.Images</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Aardvark.Base\Aardvark.Base.csproj">
+      <Project>{c90c041e-e076-4bbc-bbcd-b29367f649a2}</Project>
+      <Name>Aardvark.Base</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

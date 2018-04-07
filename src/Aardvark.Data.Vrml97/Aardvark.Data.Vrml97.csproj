@@ -59,30 +59,14 @@
     <Compile Include="Vrml97Scene.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Aardvark.Base.Math\Aardvark.Base.Math.csproj">
-      <Project>{caa4e460-e04b-45a4-8501-2694e61f72c9}</Project>
-      <Name>Aardvark.Base.Math</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Aardvark.Base.Reporting\Aardvark.Base.Reporting.csproj">
-      <Project>{f4d5431a-43a4-4fba-b352-421ec359d03c}</Project>
-      <Name>Aardvark.Base.Reporting</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Aardvark.Base.Symbol\Aardvark.Base.Symbol.csproj">
-      <Project>{0d5b3e80-26bd-4d67-a4dc-0dde84c478b6}</Project>
-      <Name>Aardvark.Base.Symbol</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Aardvark.Base.Tup\Aardvark.Base.Tup.csproj">
-      <Project>{e0fc963c-92e2-466f-8f38-3a12b314e394}</Project>
-      <Name>Aardvark.Base.Tup</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Aardvark.Base\Aardvark.Base.csproj">
-      <Project>{377da721-c821-45f6-b803-9c8724c7b37f}</Project>
-      <Name>Aardvark.Base</Name>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
     <None Include="paket.references" />
     <None Include="paket.template" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Aardvark.Base\Aardvark.Base.csproj">
+      <Project>{c90c041e-e076-4bbc-bbcd-b29367f649a2}</Project>
+      <Name>Aardvark.Base</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

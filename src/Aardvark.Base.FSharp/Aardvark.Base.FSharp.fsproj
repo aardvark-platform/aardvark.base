@@ -80,14 +80,9 @@
     <Compile Include="Native\Store.fs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Aardvark.Base.Algodat\Aardvark.Base.Algodat.csproj" />
-    <ProjectReference Include="..\Aardvark.Base.Geometry\Aardvark.Base.Geometry.csproj" />
-    <ProjectReference Include="..\Aardvark.Base.Hashing\Aardvark.Base.Hashing.csproj" />
     <ProjectReference Include="..\Aardvark.Base.Images\Aardvark.Base.Images.csproj" />
-    <ProjectReference Include="..\Aardvark.Base.Introspection\Aardvark.Base.Introspection.csproj" />
-    <ProjectReference Include="..\Aardvark.Base.Math\Aardvark.Base.Math.csproj" />
-    <ProjectReference Include="..\Aardvark.Base.Reporting\Aardvark.Base.Reporting.csproj" />
     <ProjectReference Include="..\Aardvark.Base.TypeProviders\Aardvark.Base.TypeProviders.fsproj" />
+    <ProjectReference Include="..\Aardvark.Base\Aardvark.Base.csproj" />
   </ItemGroup>
   <Import Project="..\..\.paket\Paket.Restore.targets" />
 </Project>

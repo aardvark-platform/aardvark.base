@@ -21,16 +21,6 @@
       <Project>{692a3617-719b-4ea2-abc1-407ae20094ae}</Project>
       <Private>True</Private>
     </ProjectReference>
-    <ProjectReference Include="..\Aardvark.Base.Geometry\Aardvark.Base.Geometry.csproj">
-      <Name>Aardvark.Base.Geometry</Name>
-      <Project>{1f843ba4-1fee-4d4e-be32-ee9701d907e1}</Project>
-      <Private>True</Private>
-    </ProjectReference>
-    <ProjectReference Include="..\Aardvark.Base.Math\Aardvark.Base.Math.csproj">
-      <Name>Aardvark.Base.Math</Name>
-      <Project>{caa4e460-e04b-45a4-8501-2694e61f72c9}</Project>
-      <Private>True</Private>
-    </ProjectReference>
     <ProjectReference Include="..\Aardvark.Base.TypeProviders\Aardvark.Base.TypeProviders.fsproj">
       <Name>Aardvark.Base.TypeProviders</Name>
       <Project>{8bfea4ef-bf0a-4c1a-b7ac-cbdd930306fd}</Project>
