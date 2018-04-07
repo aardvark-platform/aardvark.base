@@ -221,76 +221,76 @@ namespace Aardvark.Base
                 double p0, double p1, double p2, double p3, double tension, double bias)
             {
                 var tangents = Tangents(p0, p1, p2, p3, tension, bias);
-                return CubicHermite.Eval(t, p1, p2, tangents.E0, tangents.E1);
+                return CubicHermite.Eval(t, p1, p2, tangents.Item1, tangents.Item2);
             }
             public static V2d Eval(double t,
                 V2d p0, V2d p1, V2d p2, V2d p3, double tension, double bias)
             {
                 var tangents = Tangents(p0, p1, p2, p3, tension, bias);
-                return CubicHermite.Eval(t, p1, p2, tangents.E0, tangents.E1);
+                return CubicHermite.Eval(t, p1, p2, tangents.Item1, tangents.Item2);
             }
             public static V3d Eval(double t,
                 V3d p0, V3d p1, V3d p2, V3d p3, double tension, double bias)
             {
                 var tangents = Tangents(p0, p1, p2, p3, tension, bias);
-                return CubicHermite.Eval(t, p1, p2, tangents.E0, tangents.E1);
+                return CubicHermite.Eval(t, p1, p2, tangents.Item1, tangents.Item2);
             }
 
             public static double EvalD1(double t,
                 double p0, double p1, double p2, double p3, double tension, double bias)
             {
                 var tangents = Tangents(p0, p1, p2, p3, tension, bias);
-                return CubicHermite.EvalD1(t, p1, p2, tangents.E0, tangents.E1);
+                return CubicHermite.EvalD1(t, p1, p2, tangents.Item1, tangents.Item2);
             }
             public static V2d EvalD1(double t,
                 V2d p0, V2d p1, V2d p2, V2d p3, double tension, double bias)
             {
                 var tangents = Tangents(p0, p1, p2, p3, tension, bias);
-                return CubicHermite.EvalD1(t, p1, p2, tangents.E0, tangents.E1);
+                return CubicHermite.EvalD1(t, p1, p2, tangents.Item1, tangents.Item2);
             }
             public static V3d EvalD1(double t,
                 V3d p0, V3d p1, V3d p2, V3d p3, double tension, double bias)
             {
                 var tangents = Tangents(p0, p1, p2, p3, tension, bias);
-                return CubicHermite.EvalD1(t, p1, p2, tangents.E0, tangents.E1);
+                return CubicHermite.EvalD1(t, p1, p2, tangents.Item1, tangents.Item2);
             }
 
             public static double EvalD2(double t,
                 double p0, double p1, double p2, double p3, double tension, double bias)
             {
                 var tangents = Tangents(p0, p1, p2, p3, tension, bias);
-                return CubicHermite.EvalD2(t, p1, p2, tangents.E0, tangents.E1);
+                return CubicHermite.EvalD2(t, p1, p2, tangents.Item1, tangents.Item2);
             }
             public static V2d EvalD2(double t,
                 V2d p0, V2d p1, V2d p2, V2d p3, double tension, double bias)
             {
                 var tangents = Tangents(p0, p1, p2, p3, tension, bias);
-                return CubicHermite.EvalD2(t, p1, p2, tangents.E0, tangents.E1);
+                return CubicHermite.EvalD2(t, p1, p2, tangents.Item1, tangents.Item2);
             }
             public static V3d EvalD2(double t,
                 V3d p0, V3d p1, V3d p2, V3d p3, double tension, double bias)
             {
                 var tangents = Tangents(p0, p1, p2, p3, tension, bias);
-                return CubicHermite.EvalD2(t, p1, p2, tangents.E0, tangents.E1);
+                return CubicHermite.EvalD2(t, p1, p2, tangents.Item1, tangents.Item2);
             }
 
             public static double EvalD3(double t,
                 double p0, double p1, double p2, double p3, double tension, double bias)
             {
                 var tangents = Tangents(p0, p1, p2, p3, tension, bias);
-                return CubicHermite.EvalD3(t, p1, p2, tangents.E0, tangents.E1);
+                return CubicHermite.EvalD3(t, p1, p2, tangents.Item1, tangents.Item2);
             }
             public static V2d EvalD3(double t,
                 V2d p0, V2d p1, V2d p2, V2d p3, double tension, double bias)
             {
                 var tangents = Tangents(p0, p1, p2, p3, tension, bias);
-                return CubicHermite.EvalD3(t, p1, p2, tangents.E0, tangents.E1);
+                return CubicHermite.EvalD3(t, p1, p2, tangents.Item1, tangents.Item2);
             }
             public static V3d EvalD3(double t,
                 V3d p0, V3d p1, V3d p2, V3d p3, double tension, double bias)
             {
                 var tangents = Tangents(p0, p1, p2, p3, tension, bias);
-                return CubicHermite.EvalD3(t, p1, p2, tangents.E0, tangents.E1);
+                return CubicHermite.EvalD3(t, p1, p2, tangents.Item1, tangents.Item2);
             }
 
             /// <summary>
@@ -343,11 +343,11 @@ namespace Aardvark.Base
                 {
                     var t = Polynomial.RealRootsOf(a[i], b[i], c[i]);
                     var p0x = p0[i]; var p1x = p1[i]; var p2x = p2[i]; var p3x = p3[i];
-                    if (t.E0 > domain.Min && t.E0 < domain.Max) bb.ExtendDimBy(i,
-                        Eval(t.E0, p0x, p1x, p2x, p3x, tension, bias)
+                    if (t.Item1 > domain.Min && t.Item1 < domain.Max) bb.ExtendDimBy(i,
+                        Eval(t.Item1, p0x, p1x, p2x, p3x, tension, bias)
                         );
-                    if (t.E1 > domain.Min && t.E1 < domain.Max) bb.ExtendDimBy(i,
-                        Eval(t.E1, p0x, p1x, p2x, p3x, tension, bias)
+                    if (t.Item2 > domain.Min && t.Item2 < domain.Max) bb.ExtendDimBy(i,
+                        Eval(t.Item2, p0x, p1x, p2x, p3x, tension, bias)
                         );
                 }
 
@@ -357,38 +357,38 @@ namespace Aardvark.Base
             /// <summary>
             /// Computes incoming (Item1) and outgoing (Item2) tangent.
             /// </summary>
-            private static Pair<double> Tangents(
+            private static (double, double) Tangents(
                 double p0, double p1, double p2, double p3, double tension, double bias)
             {
                 var oneMinusTensionHalf = (1 - tension) * 0.5;
                 var x1 = oneMinusTensionHalf * (1 + bias);
                 var x2 = oneMinusTensionHalf * (1 - bias);
                 var s0 = p1 - p0; var s1 = p2 - p1; var s2 = p3 - p2;
-                return new Pair<double>(x1 * s0 + x2 * s1, x1 * s1 + x2 * s2);
+                return (x1 * s0 + x2 * s1, x1 * s1 + x2 * s2);
             }
             /// <summary>
             /// Computes incoming (Item1) and outgoing (Item2) tangent.
             /// </summary>
-            private static Pair<V2d> Tangents(
+            private static (V2d, V2d) Tangents(
                 V2d p0, V2d p1, V2d p2, V2d p3, double tension, double bias)
             {
                 var oneMinusTensionHalf = (1 - tension) * 0.5;
                 var x1 = oneMinusTensionHalf * (1 + bias);
                 var x2 = oneMinusTensionHalf * (1 - bias);
                 var s0 = p1 - p0; var s1 = p2 - p1; var s2 = p3 - p2;
-                return new Pair<V2d>(x1 * s0 + x2 * s1, x1 * s1 + x2 * s2);
+                return (x1 * s0 + x2 * s1, x1 * s1 + x2 * s2);
             }
             /// <summary>
             /// Computes incoming (Item1) and outgoing (Item2) tangent.
             /// </summary>
-            private static Pair<V3d> Tangents(
+            private static (V3d, V3d) Tangents(
                 V3d p0, V3d p1, V3d p2, V3d p3, double tension, double bias)
             {
                 var oneMinusTensionHalf = (1 - tension) * 0.5;
                 var x1 = oneMinusTensionHalf * (1 + bias);
                 var x2 = oneMinusTensionHalf * (1 - bias);
                 var s0 = p1 - p0; var s1 = p2 - p1; var s2 = p3 - p2;
-                return new Pair<V3d>(x1 * s0 + x2 * s1, x1 * s1 + x2 * s2);
+                return (x1 * s0 + x2 * s1, x1 * s1 + x2 * s2);
             }
         }
     }

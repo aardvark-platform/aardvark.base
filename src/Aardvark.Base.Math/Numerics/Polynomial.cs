@@ -124,15 +124,15 @@ namespace Aardvark.Base
             return new double[] { root };
         }
 
-        private static double[] NonNanToArray(this Pair<double> p)
+        private static double[] NonNanToArray(this (double, double) p)
         {
-            if (double.IsNaN(p.E0))
+            if (double.IsNaN(p.Item1))
             {
-                if (double.IsNaN(p.E1)) return new double[0];
-                return new double[] { p.E1 };
+                if (double.IsNaN(p.Item2)) return new double[0];
+                return new double[] { p.Item2 };
             }
-            if (double.IsNaN(p.E1)) return new double[] { p.E0 };
-            return new double[] { p.E0, p.E1 };
+            if (double.IsNaN(p.Item2)) return new double[] { p.Item1 };
+            return new double[] { p.Item1, p.Item2 };
         }
 
         private static double[] NonNanToArray(this (double, double, double) t)
@@ -148,18 +148,18 @@ namespace Aardvark.Base
             return a;
         }
 
-        private static double[] NonNanToArray(this Quad<double> q)
+        private static double[] NonNanToArray(this (double, double, double, double) q)
         {
             int c = 0;
-            bool v0 = !double.IsNaN(q.E0); if (v0) c++;
-            bool v1 = !double.IsNaN(q.E1); if (v1) c++;
-            bool v2 = !double.IsNaN(q.E2); if (v2) c++;
-            bool v3 = !double.IsNaN(q.E3); if (v3) c++;
+            bool v0 = !double.IsNaN(q.Item1); if (v0) c++;
+            bool v1 = !double.IsNaN(q.Item2); if (v1) c++;
+            bool v2 = !double.IsNaN(q.Item3); if (v2) c++;
+            bool v3 = !double.IsNaN(q.Item4); if (v3) c++;
             var a = new double[c];
-            if (v3) a[--c] = q.E3;
-            if (v2) a[--c] = q.E2;
-            if (v1) a[--c] = q.E1;
-            if (v0) a[--c] = q.E0;
+            if (v3) a[--c] = q.Item4;
+            if (v2) a[--c] = q.Item3;
+            if (v1) a[--c] = q.Item2;
+            if (v0) a[--c] = q.Item1;
             return a;
         }
 
@@ -188,26 +188,26 @@ namespace Aardvark.Base
         /// entry and the second entry is NaN.
         /// If no real roots exists, then both entries are NaN.
         /// </summary>
-        public static Pair<double> RealRootsOf(double a, double b, double c)
+        public static (double, double) RealRootsOf(double a, double b, double c)
         {
             if (Fun.IsTiny(a))
             {
                 if (Fun.IsTiny(b))
-                    return Pair.Create(double.NaN, double.NaN);
-                return Pair.Create(-c / b, double.NaN);
+                    return (double.NaN, double.NaN);
+                return (-c / b, double.NaN);
             }
             var r = b * b - 4 * a * c;
             if (r < 0)
-                return Pair.Create(double.NaN, double.NaN);
+                return (double.NaN, double.NaN);
             if (b < 0)                                 // prevent cancellation
             {
                 double d = -b + Fun.Sqrt(r);
-                return Pair.Create(2 * c / d, d / (2 * a));
+                return (2 * c / d, d / (2 * a));
             }
             else
             {
                 double d = -b - Fun.Sqrt(r);
-                return Pair.Create(d / (2 * a), 2 * c / d);
+                return (d / (2 * a), 2 * c / d);
             }
         }
 
@@ -216,22 +216,22 @@ namespace Aardvark.Base
         /// Double roots are returned as a pair of identical values.
         /// If no real roots exists, then both entries are NaN.
         /// </summary>
-        public static Pair<double> RealRootsOfNormed(double p, double q)
+        public static (double, double) RealRootsOfNormed(double p, double q)
         {
             double p2 = p / 2.0;
             double d = p2 * p2 - q;
 
             if (d < 0)
-                return Pair.Create(double.NaN, double.NaN);
+                return (double.NaN, double.NaN);
             if (p2 > 0.0)				               // prevent cancellation
             {
                 double r = -(p2 + Fun.Sqrt(d));
-                return Pair.Create(r, q / r);
+                return (r, q / r);
             }
             else
             {
                 double r = Fun.Sqrt(d) - p2;
-                return Pair.Create(q / r, r);
+                return (q / r, r);
             }
         }
 
@@ -246,7 +246,7 @@ namespace Aardvark.Base
             if (Fun.IsTiny(a))
             {
                 var r = RealRootsOf(b, c, d);
-                return (r.E0, r.E1, double.NaN);
+                return (r.Item1, r.Item2, double.NaN);
             }
             return RealRootsOfNormed(b / a, c / a, d / a);
         }
@@ -273,7 +273,7 @@ namespace Aardvark.Base
                 double r0 = t * Fun.Cos(phi) - shift;
                 double r1 = -t * Fun.Cos(phi + Constant.Pi / 3.0) - shift;
                 double r2 = -t * Fun.Cos(phi - Constant.Pi / 3.0) - shift;
-                return Triple.CreateAscending(r0, r1, r2);
+                return TupleExtensions.CreateAscending(r0, r1, r2);
             }
             // else if (Fun.IsTiny(q2))			           // one triple root
             // {                                           // too unlikely for
@@ -303,7 +303,7 @@ namespace Aardvark.Base
                 double r0 = t * Fun.Cos(phi);
                 double r1 = -t * Fun.Cos(phi + Constant.Pi / 3.0);
                 double r2 = -t * Fun.Cos(phi - Constant.Pi / 3.0);
-                return Triple.CreateAscending(r0, r1, r2);
+                return TupleExtensions.CreateAscending(r0, r1, r2);
             }
             d = Fun.Sqrt(d);  // one triple root or a single and a double root
             double s0 = Fun.Cbrt(d - q2) - Fun.Cbrt(d + q2);
@@ -336,13 +336,13 @@ namespace Aardvark.Base
         /// Double and triple solutions are returned as replicated values.
         /// Imaginary and non existing solutions are returned as NaNs.
         /// </summary>
-        public static Quad<double> RealRootsOf(
+        public static (double, double, double, double) RealRootsOf(
                 double a, double b, double c, double d, double e)
         {
             if (Fun.IsTiny(a))
             {
                 var r = RealRootsOf(b, c, d, e);
-                return Quad.Create(r.Item1, r.Item2, r.Item3, double.NaN);
+                return (r.Item1, r.Item2, r.Item3, double.NaN);
             }
             return RealRootsOfNormed(b / a, c / a, d / a, e / a);
         }
@@ -352,7 +352,7 @@ namespace Aardvark.Base
         /// Double and triple solutions are returned as replicated values.
         /// Imaginary and non existing solutions are returned as NaNs.
         /// </summary>
-        public static Quad<double> RealRootsOfNormed(
+        public static (double, double, double, double) RealRootsOfNormed(
                 double c3, double c2, double c1, double c0)
         {
             // eliminate cubic term (x = y - c3/4):  x^4 + p x^2 + q x + r = 0
@@ -363,7 +363,7 @@ namespace Aardvark.Base
 
             if (Fun.IsTiny(r)) // ---- no absolute term: y (y^3 + p y + q) = 0
                 return MergeSortedAndShift(
-                            RealRootsOfDepressed(p, q).ToTriple(), 0.0, -1/4.0 * c3);
+                            RealRootsOfDepressed(p, q), 0.0, -1/4.0 * c3);
             // ----------------------- take one root of the resolvent cubic...
             double z = OneRealRootOfNormed(
                             -1/2.0 * p, -r, 1/2.0 * r * p - 1/8.0 * q * q);
@@ -384,44 +384,44 @@ namespace Aardvark.Base
                                -1/4.0 * c3);
         }
 
-        static Quad<double> MergeSortedAndShift(
-                Triple<double> t, double d, double shift)
+        static (double, double, double, double) MergeSortedAndShift(
+                (double, double, double) t, double d, double shift)
         {
-            var q = Quad.Create(0.0, 0.0, 0.0, 0.0);
+            var q = (0.0, 0.0, 0.0, 0.0);
             int tc = t.CountNonNaNs();
             int i = 0, ti = 0;
             while (ti < tc)
             {
-                if (t[ti] < d)
-                    q[i++] = t[ti++] + shift;
+                if (t.Index(ti) < d)
+                    q = q.SetIndex(i++, t.Index(ti++) + shift);
                 else
                 {
-                    q[i++] = d + shift;
+                    q.SetIndex(i++, d + shift);
                     break;
                 }
             }
-            while (ti < tc) q[i++] = t[ti++] + shift;
-            while (i < 4) q[i++] = double.NaN;
+            while (ti < tc) q = q.SetIndex(i++, t.Index(ti++) + shift);
+            while (i < 4) q = q.SetIndex(i++, double.NaN);
             return q;
         }
 
-        static Quad<double> MergeSortedAndShift(
-                Pair<double> p0, Pair<double> p1, double shift)
+        static (double, double, double, double) MergeSortedAndShift(
+                (double, double) p0, (double, double) p1, double shift)
         {
-            var q = Quad.Create(0.0, 0.0, 0.0, 0.0);
+            var q = (0.0, 0.0, 0.0, 0.0);
             int c0 = p0.CountNonNaNs();
             int c1 = p1.CountNonNaNs();
             int i = 0, i0 = 0, i1 = 0;
             while (i0 < c0 && i1 < c1)
             {
-                if (p0[i0] < p1[i1])
-                    q[i++] = p0[i0++] + shift;
+                if (p0.Index(i0) < p1.Index(i1))
+                    q = q.SetIndex(i++, p0.Index(i0++) + shift);
                 else
-                    q[i++] = p1[i1++] + shift;
+                    q = q.SetIndex(i++, p1.Index(i1++) + shift);
             }
-            while (i0 < c0) q[i++] = p0[i0++] + shift;
-            while (i1 < c1) q[i++] = p1[i1++] + shift;
-            while (i < 4) q[i++] = double.NaN;
+            while (i0 < c0) q = q.SetIndex(i++, p0.Index(i0++) + shift);
+            while (i1 < c1) q = q.SetIndex(i++, p1.Index(i1++) + shift);
+            while (i < 4) q = q.SetIndex(i++, double.NaN);
             return q;
         }
 

@@ -92,19 +92,19 @@ namespace Aardvark.Base
             Report.Line("number of edges: {0}", es.Count());
 
             /* unused variable error under mono:
-            var edges = new Tup<Pair<string>, int>[]
+            var edges = new Tup<(string ,string), int>[]
             {
-                (Pair.Create("A", "B"), 7),
-                (Pair.Create("A", "D"), 5),
-                (Pair.Create("D", "B"), 9),
-                (Pair.Create("B", "C"), 8),
-                (Pair.Create("B", "E"), 7),
-                (Pair.Create("C", "E"), 5),
-                (Pair.Create("E", "D"), 15),
-                (Pair.Create("F", "D"), 6),
-                (Pair.Create("E", "F"), 8),
-                (Pair.Create("F", "G"), 11),
-                (Pair.Create("E", "G"), 9),
+                (("A", "B"), 7),
+                (("A", "D"), 5),
+                (("D", "B"), 9),
+                (("B", "C"), 8),
+                (("B", "E"), 7),
+                (("C", "E"), 5),
+                (("E", "D"), 15),
+                (("F", "D"), 6),
+                (("E", "F"), 8),
+                (("F", "G"), 11),
+                (("E", "G"), 9),
             };
             */
 

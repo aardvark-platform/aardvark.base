@@ -584,7 +584,7 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// [A B C].Pair([x y z]) -> (A, x) (A, y) (A, z) (B, x) (B, y) (B, z) (C, x) (C, y) (C, z)
+        /// [A B C].Pairs([x y z]) -> (A, x) (A, y) (A, z) (B, x) (B, y) (B, z) (C, x) (C, y) (C, z)
         /// </summary>
         public static IEnumerable<(T, T)> Pairs<T>(this IEnumerable<T> self, IEnumerable<T> other)
         {
@@ -692,7 +692,7 @@ namespace Aardvark.Base
         }
        
         /// <summary>
-        /// [A B].Triple([x y], [X Y]) -> (A, x, X) (A, x, Y) (A, y, X) (A, y, Y) (B, x, X) (B, x, Y) (B, y, X) (B, y, Y) (C, x, X) (C, x, Y) (C, y, X) (C, y, Y)
+        /// [A B].Triples([x y], [X Y]) -> (A, x, X) (A, x, Y) (A, y, X) (A, y, Y) (B, x, X) (B, x, Y) (B, y, X) (B, y, Y) (C, x, X) (C, x, Y) (C, y, X) (C, y, Y)
         /// </summary>
         public static IEnumerable<(T, T, T)> Triples<T>(this IEnumerable<T> self, IEnumerable<T> other1, IEnumerable<T> other2)
         {
