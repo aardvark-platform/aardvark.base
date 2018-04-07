@@ -64,8 +64,6 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Extensions\FuncActionExtensions.cs" />
-    <Compile Include="Extensions\IEnumerableExtensions.cs" />
-    <Compile Include="Extensions\ListExtensions.cs" />
     <Compile Include="Images\PixImageBitmap.cs" />
     <Compile Include="Images\PixImageFreeImage.cs" />
     <Compile Include="Images\PixImageSystemImage.cs" />
