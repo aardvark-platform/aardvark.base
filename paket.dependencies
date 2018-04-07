@@ -1,4 +1,4 @@
-framework: netstandard2.0
+framework: netstandard2.0, net461, netcoreapp2.0
 source https://api.nuget.org/v3/index.json
 source https://vrvis.myget.org/F/aardvark_public/api/v3/index.json
 
