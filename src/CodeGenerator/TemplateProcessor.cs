@@ -104,15 +104,13 @@ public static class SourceGenerator
 
         public void CompileAndRunGenerator()
         {
+            var lines = GeneratorSourceCode.Split('\n');
             var generatorAssembly = CompilerServices.CompileAssembly(
                 GeneratorSourceCode.IntoArray(),
                 new string[] {
                     "System.Xml.dll",
                     "System.Xml.Linq.dll",
                     "Aardvark.Base.dll",
-                    "Aardvark.Base.Extensions.dll",
-                    "Aardvark.Base.Math.dll",
-                    "Aardvark.Base.Tup.dll",
                 },
                 ".", out CompilerResults results);
             if (results.Errors.Count > 0)

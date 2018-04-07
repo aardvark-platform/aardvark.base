@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using Aardvark.Base;
 
 namespace Aardvark.Base
 {
@@ -15,15 +11,15 @@ namespace Aardvark.Base
 
         //# var intConfigs = new []
         //# {
-        //#     ("byte",      "Byte",     "Fun",  "Fun"),
-        //#     ("ushort",    "UShort",   "Fun",  "Fun"),
-        //#     ("float",     "",         "Fun",  "Fun"),
-        //#     ("byte",      "Byte",     "C3b",  "C3f"),
-        //#     ("ushort",    "UShort",   "C3us", "C3f"),
-        //#     ("float",     "",         "C3f",  "C3f"),
-        //#     ("byte",      "Byte",     "C4b",  "C4f"),
-        //#     ("ushort",    "UShort",   "C4us", "C4f"),
-        //#     ("float",     "",         "C4f",  "C4f"),
+        //#     Tup.Create("byte",      "Byte",     "Fun",  "Fun"),
+        //#     Tup.Create("ushort",    "UShort",   "Fun",  "Fun"),
+        //#     Tup.Create("float",     "",         "Fun",  "Fun"),
+        //#     Tup.Create("byte",      "Byte",     "C3b",  "C3f"),
+        //#     Tup.Create("ushort",    "UShort",   "C3us", "C3f"),
+        //#     Tup.Create("float",     "",         "C3f",  "C3f"),
+        //#     Tup.Create("byte",      "Byte",     "C4b",  "C4f"),
+        //#     Tup.Create("ushort",    "UShort",   "C4us", "C4f"),
+        //#     Tup.Create("float",     "",         "C4f",  "C4f"),
         //# };
         //# intConfigs.ForEach((dt, dtn, ct, fct) => {
         //#     var clampVal = dtn != "" && ct == "Fun";
@@ -36,6 +32,7 @@ namespace Aardvark.Base
             targetMat.SetScaledLinear(sourceMat, (x, a, b) => x < 0.5 ? a : b,
                                                  (x, a, b) => x < 0.5 ? a : b);
         }
+
         /// <summary>
         /// Use supplied linear interpolators in x and y to scale the source matrix into the target
         /// matrix.
@@ -92,7 +89,7 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Use Lanczos Interpoation to scale the source matrix into the target matrix.
+        /// Use Lanczos Interpolation to scale the source matrix into the target matrix.
         /// </summary>
         public static void SetScaledLanczos(this Matrix<__dtct__> targetMat, Matrix<__dtct__> sourceMat)
         {

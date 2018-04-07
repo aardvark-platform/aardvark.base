@@ -104,9 +104,7 @@ namespace CodeGenerator
 
             foreach (var task in tasks)
             {
-                string report = task.Report != null
-                                        ? task.Report
-                                        : task.OutputFileName;
+                string report = task.Report ?? task.OutputFileName;
 
                 if (task.TemplateFileName != null &&
                     IsOlderThan(task.TemplateFileName, task.OutputFileName))
@@ -124,9 +122,7 @@ namespace CodeGenerator
 
                 if (writeGenerator)
                 {
-                    var baseName = task.Base != null
-                                        ? task.Base
-                                        : task.OutputFileName;
+                    var baseName = task.Base ?? task.OutputFileName;
                     var genName = baseName + c_generatorEnding;
                     var genReport = report + c_generatorEnding;
                     File.WriteAllText(genName, engine.GeneratorSourceCode);
