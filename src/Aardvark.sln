@@ -5,13 +5,13 @@ VisualStudioVersion = 15.0.26730.10
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Aardvark.Base", "Aardvark.Base\Aardvark.Base.csproj", "{377DA721-C821-45F6-B803-9C8724C7B37F}"
 EndProject
-Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "Aardvark.Base.FSharp", "Aardvark.Base.FSharp\Aardvark.Base.FSharp.fsproj", "{692A3617-719B-4EA2-ABC1-407AE20094AE}"
+Project("{6EC3EE1D-3C4E-46DD-8F32-0CC8E7565705}") = "Aardvark.Base.FSharp", "Aardvark.Base.FSharp\Aardvark.Base.FSharp.fsproj", "{692A3617-719B-4EA2-ABC1-407AE20094AE}"
 EndProject
-Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "Aardvark.Base.TypeProviders", "Aardvark.Base.TypeProviders\Aardvark.Base.TypeProviders.fsproj", "{8BFEA4EF-BF0A-4C1A-B7AC-CBDD930306FD}"
+Project("{6EC3EE1D-3C4E-46DD-8F32-0CC8E7565705}") = "Aardvark.Base.TypeProviders", "Aardvark.Base.TypeProviders\Aardvark.Base.TypeProviders.fsproj", "{8BFEA4EF-BF0A-4C1A-B7AC-CBDD930306FD}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Aardvark.Base.Essentials", "Aardvark.Base.Essentials\Aardvark.Base.Essentials.csproj", "{7FEF0693-EFC3-4B85-8F42-933B25F353A8}"
 EndProject
-Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "Aardvark.Base.Incremental", "Aardvark.Base.Incremental\Aardvark.Base.Incremental.fsproj", "{9623AE28-1F72-46E9-A3A7-85FC1A321A73}"
+Project("{6EC3EE1D-3C4E-46DD-8F32-0CC8E7565705}") = "Aardvark.Base.Incremental", "Aardvark.Base.Incremental\Aardvark.Base.Incremental.fsproj", "{9623AE28-1F72-46E9-A3A7-85FC1A321A73}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Aardvark.Data.Vrml97", "Aardvark.Data.Vrml97\Aardvark.Data.Vrml97.csproj", "{34A6B456-74A5-4EC6-A6CA-4100E2282A92}"
 EndProject
@@ -29,7 +29,7 @@ Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "Aardvark.Base.Incremental.T
 EndProject
 Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "Aardvark.Base.FSharp.Tests", "Tests\Aardvark.Base.FSharp.Tests\Aardvark.Base.FSharp.Tests.fsproj", "{1B4BEB6E-96A1-4B86-9AC5-F9F5824382AE}"
 EndProject
-Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "Aardvark.Base.Runtime", "Aardvark.Base.Runtime\Aardvark.Base.Runtime.fsproj", "{04E146C2-1C4C-432F-922C-351D0F4CED67}"
+Project("{6EC3EE1D-3C4E-46DD-8F32-0CC8E7565705}") = "Aardvark.Base.Runtime", "Aardvark.Base.Runtime\Aardvark.Base.Runtime.fsproj", "{04E146C2-1C4C-432F-922C-351D0F4CED67}"
 EndProject
 Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "Aardvark.Base.Runtime.Tests", "Tests\Aardvark.Base.Runtime.Tests\Aardvark.Base.Runtime.Tests.fsproj", "{CE9B55FF-2D3E-4E13-BA0A-69FD82F0B29B}"
 EndProject
@@ -37,7 +37,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ExamplesCSharp", "Demo\Exam
 EndProject
 Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "Scratch", "Demo\Scratch\Scratch.fsproj", "{18B625FF-C95B-4F17-8BFE-2BCCCCED0137}"
 EndProject
-Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "Aardvark.Geometry", "Aardvark.Geometry\Aardvark.Geometry.fsproj", "{97F4D5BB-9F48-454B-B6A5-536AE172CE50}"
+Project("{6EC3EE1D-3C4E-46DD-8F32-0CC8E7565705}") = "Aardvark.Geometry", "Aardvark.Geometry\Aardvark.Geometry.fsproj", "{97F4D5BB-9F48-454B-B6A5-536AE172CE50}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Aardvark.Base.IO", "Aardvark.Base.IO\Aardvark.Base.IO.csproj", "{C2C8BA0D-992B-4BA7-8A6A-EA7A3207BBE6}"
 EndProject
@@ -86,6 +86,10 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Aardvark.Base.Extensions.NonGenericArray", "Aardvark.Base.Extensions.NonGenericArray\Aardvark.Base.Extensions.NonGenericArray.csproj", "{EF343439-B140-4649-90F3-4A637C5D8E6D}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Aardvark.Base.Extensions.Enums", "Aardvark.Base.Extensions.Enums\Aardvark.Base.Extensions.Enums.csproj", "{8B391D6A-D77C-40AD-895F-4A86D433EDE5}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".Net461", ".Net461", "{6D3EE585-DA41-4EA7-BED7-9DE4F3E782C4}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Aardvark.Base.Extensions.SystemDrawing", "Aardvark.Base.Extensions.SystemDrawing\Aardvark.Base.Extensions.SystemDrawing.csproj", "{599BA682-70EF-4D1E-A4C1-A36359482F87}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -249,6 +253,10 @@ Global
 		{8B391D6A-D77C-40AD-895F-4A86D433EDE5}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{8B391D6A-D77C-40AD-895F-4A86D433EDE5}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{8B391D6A-D77C-40AD-895F-4A86D433EDE5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{599BA682-70EF-4D1E-A4C1-A36359482F87}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{599BA682-70EF-4D1E-A4C1-A36359482F87}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{599BA682-70EF-4D1E-A4C1-A36359482F87}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{599BA682-70EF-4D1E-A4C1-A36359482F87}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -283,6 +291,7 @@ Global
 		{39863F3B-F8D6-4922-B968-009773D99904} = {C557CE9D-81EE-4EB3-AB94-B9F9CB2FA19A}
 		{EF343439-B140-4649-90F3-4A637C5D8E6D} = {C557CE9D-81EE-4EB3-AB94-B9F9CB2FA19A}
 		{8B391D6A-D77C-40AD-895F-4A86D433EDE5} = {C557CE9D-81EE-4EB3-AB94-B9F9CB2FA19A}
+		{599BA682-70EF-4D1E-A4C1-A36359482F87} = {6D3EE585-DA41-4EA7-BED7-9DE4F3E782C4}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {1537AED0-2BB3-4EC3-B2CB-06E22C23B002}
