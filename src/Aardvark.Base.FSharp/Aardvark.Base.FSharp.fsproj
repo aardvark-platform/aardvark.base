@@ -80,7 +80,6 @@
     <Compile Include="Native\Store.fs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Aardvark.Base.Images\Aardvark.Base.Images.csproj" />
     <ProjectReference Include="..\Aardvark.Base.TypeProviders\Aardvark.Base.TypeProviders.fsproj" />
     <ProjectReference Include="..\Aardvark.Base\Aardvark.Base.csproj" />
   </ItemGroup>

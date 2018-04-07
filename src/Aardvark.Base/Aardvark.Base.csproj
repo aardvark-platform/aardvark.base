@@ -22,6 +22,7 @@
     <Compile Remove="Extensions\FuncActionExtensions_template.cs" />
     <Compile Remove="Extensions\SequenceExtensions_template.cs" />
     <Compile Remove="Geometry\Geometry_template.cs" />
+    <Compile Remove="Images\TensorExtensions_template.cs" />
     <Compile Remove="Math\Base\Complex_template.cs" />
     <Compile Remove="Math\Base\Fun_template.cs" />
     <Compile Remove="Math\Colors\Color_template.cs" />
@@ -55,6 +56,7 @@
     <None Include="Extensions\FuncActionExtensions_template.cs" />
     <None Include="Extensions\SequenceExtensions_template.cs" />
     <None Include="Geometry\Geometry_template.cs" />
+    <None Include="Images\TensorExtensions_template.cs" />
     <None Include="Math\Base\Complex_template.cs" />
     <None Include="Math\Base\Fun_template.cs" />
     <None Include="Math\Colors\Color_template.cs" />
