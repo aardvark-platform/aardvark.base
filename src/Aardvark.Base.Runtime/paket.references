@@ -1,6 +1,4 @@
-System.Reactive.Linq
-System.Reactive.Core
-System.Reactive.Interfaces
+FSharp.Compiler.Tools
 FSharp.Core
 DevILSharp
-FSharp.Compiler.Tools
+System.Reactive

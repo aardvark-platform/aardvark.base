@@ -1,6 +1,6 @@
 FsUnit
-System.Reactive.Linq
-NUnit
 FsCheck
 FsCheck.NUnit
 FSharp.Core
+NUnit
+System.Reactive

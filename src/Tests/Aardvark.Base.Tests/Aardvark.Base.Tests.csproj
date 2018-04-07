@@ -80,54 +80,6 @@
     <Service Include="{82A7F48D-3B50-4B1E-B82E-3ADA8210C358}" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\Aardvark.Base.Delegates\Aardvark.Base.Delegates.csproj">
-      <Project>{f6879d9e-0f64-4b7e-a0e9-ac005e1da843}</Project>
-      <Name>Aardvark.Base.Delegates</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\Aardvark.Base.Extensions\Aardvark.Base.Extensions.csproj">
-      <Project>{430d818a-45e4-4643-9a9f-091d3ed31bc7}</Project>
-      <Name>Aardvark.Base.Extensions</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\Aardvark.Base.Geometry\Aardvark.Base.Geometry.csproj">
-      <Project>{1f843ba4-1fee-4d4e-be32-ee9701d907e1}</Project>
-      <Name>Aardvark.Base.Geometry</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\Aardvark.Base.Hashing\Aardvark.Base.Hashing.csproj">
-      <Project>{8fc336ea-7de8-428f-949d-3320208a5ee5}</Project>
-      <Name>Aardvark.Base.Hashing</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\Aardvark.Base.Images\Aardvark.Base.Images.csproj">
-      <Project>{839e595c-0771-40bd-b17d-32288a2f558d}</Project>
-      <Name>Aardvark.Base.Images</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\Aardvark.Base.Math\Aardvark.Base.Math.csproj">
-      <Project>{caa4e460-e04b-45a4-8501-2694e61f72c9}</Project>
-      <Name>Aardvark.Base.Math</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\Aardvark.Base.Random\Aardvark.Base.Random.csproj">
-      <Project>{1dc86253-a793-4fb9-9a1f-fb07b8c2ce09}</Project>
-      <Name>Aardvark.Base.Random</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\Aardvark.Base.Reporting\Aardvark.Base.Reporting.csproj">
-      <Project>{f4d5431a-43a4-4fba-b352-421ec359d03c}</Project>
-      <Name>Aardvark.Base.Reporting</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\Aardvark.Base.Sorting\Aardvark.Base.Sorting.csproj">
-      <Project>{59dcc8ab-aeea-4134-8f46-d99afd4216a5}</Project>
-      <Name>Aardvark.Base.Sorting</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\Aardvark.Base.Symbol\Aardvark.Base.Symbol.csproj">
-      <Project>{0d5b3e80-26bd-4d67-a4dc-0dde84c478b6}</Project>
-      <Name>Aardvark.Base.Symbol</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\Aardvark.Base.Telemetry\Aardvark.Base.Telemetry.csproj">
-      <Project>{ac2e2835-64c6-4553-a613-981d6e104437}</Project>
-      <Name>Aardvark.Base.Telemetry</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\Aardvark.Base.Tup\Aardvark.Base.Tup.csproj">
-      <Project>{e0fc963c-92e2-466f-8f38-3a12b314e394}</Project>
-      <Name>Aardvark.Base.Tup</Name>
-    </ProjectReference>
     <ProjectReference Include="..\..\Aardvark.Base\Aardvark.Base.csproj">
       <Project>{377da721-c821-45f6-b803-9c8724c7b37f}</Project>
       <Name>Aardvark.Base</Name>
