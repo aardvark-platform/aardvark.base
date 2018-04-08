@@ -1,5 +1,5 @@
 type project
-id Aardvark.Base.Runtime
+id Aardvark.Base
 authors Aardvark Platform Team
 owners Aardvark Platform Team
 projectUrl http://github.com/aardvark-platform
