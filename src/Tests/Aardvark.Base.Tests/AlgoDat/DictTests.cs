@@ -331,14 +331,15 @@ namespace Aardvark.Tests
                     var recKey = "rec - " + rnd.Next(0, 1000).ToString();
                     var testRec = dict.GetOrCreate(recKey, r => r);
 
-                    Test.IsTrue(dict.ContainsKey(recKey));
-                    Test.IsTrue(dict[testRec] == recKey);
+                    Test.IsTrue(dict.ContainsKey(recKey), $"dict.ContainsKey({recKey})");
+                    Test.IsTrue(dict[testRec] == recKey, $"dict[{testRec}] == {testRec}");
 
                     return x;
                 });
 
-                Test.IsTrue(dict.ContainsKey(key));
-                Test.IsTrue(dict[test] == key);
+                Test.IsTrue(dict.ContainsKey(key), $"dict.ContainsKey({key})");
+                var foo = dict[test];
+                Test.IsTrue(foo == key, $"dict[{test}] == {key}");
             }
         }
     }

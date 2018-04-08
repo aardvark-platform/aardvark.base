@@ -28,3 +28,4 @@ tmp
 **/*_generator.cs
 /.paket/Paket.Restore.targets
 *.fsproj.user
+Aardvark.log
