@@ -91,19 +91,6 @@ namespace Aardvark.Base.Coder
             { typeof(IntSet), (c,o) => { var v = (IntSet)o; c.CodeIntSet(ref v); } },
             { typeof(SymbolSet), (c,o) => { var v = (SymbolSet)o; c.CodeSymbolSet(ref v); } },
 
-            // [planned cleanup ISSUE 20080125 rft] move BitMap writer to other lib
-            // use Add(...) to register
-            { typeof(Bitmap), (c,o) =>
-                {
-                    var bmp = (Bitmap)o;
-                    var stream = new MemoryStream();
-                    bmp.Save(stream, bmp.RawFormat);
-                    var data = stream.ToArray();
-
-                    // save as byte array
-                    c.CodeByteArray(ref data);
-                }
-            },
 
             { typeof(HashSet<string>), (c, o) => { var v = (HashSet<string>)o; c.CodeHashSet_of_T_(ref v); } },
 

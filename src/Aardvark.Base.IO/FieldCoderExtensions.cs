@@ -229,15 +229,12 @@ namespace Aardvark.Base.Coder
 
         private static void BeginDebug(string debugAssemblyName)
         {
-            s_assemblyName = debugAssemblyName;
-
             var domain = AppDomain.CurrentDomain;
-            var aname = new AssemblyName(s_assemblyName);
+            var aname = new AssemblyName(debugAssemblyName);
             aname.Version = new Version(0, 0, 1);
-            s_assemblyBuilder = domain.DefineDynamicAssembly(aname, AssemblyBuilderAccess.Save,
-                @"C:\Data\Development\Aardvark 2008\Apps\Scratch\ScratchSm\bin\x86\Release");
+            s_assemblyBuilder = AssemblyBuilder.DefineDynamicAssembly(aname, AssemblyBuilderAccess.Run);
 
-            s_modBuilder = s_assemblyBuilder.DefineDynamicModule("MainModule", s_assemblyName + ".dll");
+            s_modBuilder = s_assemblyBuilder.DefineDynamicModule("MainModule");
 
             s_typeBuilder = s_modBuilder.DefineType("Debug", TypeAttributes.Public);
         }
@@ -252,18 +249,16 @@ namespace Aardvark.Base.Coder
             return mb.GetILGenerator();
         }
 
+        [Obsolete("cannot save dynamic assemblies anymore")]
         public static void SaveDebug()
         {
-            s_typeBuilder.CreateType();
-            s_assemblyBuilder.Save(s_assemblyName + ".dll");
-
-            s_assemblyName = null;
             s_assemblyBuilder = null;
             s_modBuilder = null;
             s_typeBuilder = null;
+
+            throw new NotSupportedException("cannot save dynamic assemblies anymore");
         }
 
-        private static string s_assemblyName;
         private static AssemblyBuilder s_assemblyBuilder;
         private static ModuleBuilder s_modBuilder;
         private static TypeBuilder s_typeBuilder;
