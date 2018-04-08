@@ -40,13 +40,19 @@
   <PropertyGroup>
     <MinimumVisualStudioVersion Condition="'$(MinimumVisualStudioVersion)' == ''">11</MinimumVisualStudioVersion>
   </PropertyGroup>
-  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
-       Other similar extension points exist, see Microsoft.Common.targets.
-  <Target Name="BeforeBuild">
-  </Target>
-  <Target Name="AfterBuild">
-  </Target>
-  -->
+  <Choose>
+    <When Condition="'$(VisualStudioVersion)' == '11.0'">
+      <PropertyGroup Condition="Exists('$(MSBuildExtensionsPath32)\..\Microsoft SDKs\F#\3.0\Framework\v4.0\Microsoft.FSharp.Targets')">
+        <FSharpTargetsPath>$(MSBuildExtensionsPath32)\..\Microsoft SDKs\F#\3.0\Framework\v4.0\Microsoft.FSharp.Targets</FSharpTargetsPath>
+      </PropertyGroup>
+    </When>
+    <Otherwise>
+      <PropertyGroup Condition="Exists('$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\FSharp\Microsoft.FSharp.Targets')">
+        <FSharpTargetsPath>$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\FSharp\Microsoft.FSharp.Targets</FSharpTargetsPath>
+      </PropertyGroup>
+    </Otherwise>
+  </Choose>
+  <Import Project="$(FSharpTargetsPath)" Condition="exists('$(FSharpTargetsPath)')" />
   <ItemGroup>
     <Compile Include="aset\Sim.fs" />
     <Compile Include="aset\SimMod.fs" />
@@ -69,6 +75,11 @@
     <Content Include="app.config" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\Aardvark.Base\Aardvark.Base.csproj">
+      <Name>Aardvark.Base</Name>
+      <Project>{c90c041e-e076-4bbc-bbcd-b29367f649a2}</Project>
+      <Private>True</Private>
+    </ProjectReference>
     <Reference Include="mscorlib" />
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -82,6 +93,11 @@
     <ProjectReference Include="..\..\Aardvark.Base.FSharp\Aardvark.Base.FSharp.fsproj">
       <Name>Aardvark.Base.FSharp</Name>
       <Project>{692a3617-719b-4ea2-abc1-407ae20094ae}</Project>
+      <Private>True</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Aardvark.Base.Incremental\Aardvark.Base.Incremental.fsproj">
+      <Name>Aardvark.Base.Incremental</Name>
+      <Project>{9623ae28-1f72-46e9-a3a7-85fc1a321a73}</Project>
       <Private>True</Private>
     </ProjectReference>
     <ProjectReference Include="..\..\Aardvark.Base.TypeProviders\Aardvark.Base.TypeProviders.fsproj">
