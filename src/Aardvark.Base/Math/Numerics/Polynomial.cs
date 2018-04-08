@@ -396,7 +396,7 @@ namespace Aardvark.Base
                     q = q.SetIndex(i++, t.Index(ti++) + shift);
                 else
                 {
-                    q.SetIndex(i++, d + shift);
+                    q = q.SetIndex(i++, d + shift);
                     break;
                 }
             }
