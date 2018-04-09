@@ -1,5 +1,5 @@
 type project
-id Aardvark.Base.FSharp
+id Aardvark.Base.TypeProviders
 authors Aardvark Platform Team
 owners Aardvark Platform Team
 projectUrl http://github.com/aardvark-platform
