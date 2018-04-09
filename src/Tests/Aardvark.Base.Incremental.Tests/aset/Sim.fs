@@ -28,8 +28,9 @@ module Dependent =
             Transaction.Current <- Some t
             for i in inputs do
                 if rand.UniformDouble() < setProb then
-                    let! c = i.RandomChange(rand, addprob)
-                    log.Add(i, c)
+                    for ci in 0 .. rand.UniformInt(5) do
+                        let! c = i.RandomChange(rand, addprob)
+                        log.Add(i, c)
 
             t.Commit()
             Transaction.Current <- old

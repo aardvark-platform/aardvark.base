@@ -193,7 +193,7 @@ type clist<'a>(initial : seq<'a>) =
 [<RequireQualifiedAccess>]
 module CList =
     
-    let empty<'a> = clist<_>()
+    let empty<'a> = clist<'a>()
 
     let clear (l : clist<'a>) = l.Clear()
     let append (v : 'a) (l : clist<'a>) = l.Append v

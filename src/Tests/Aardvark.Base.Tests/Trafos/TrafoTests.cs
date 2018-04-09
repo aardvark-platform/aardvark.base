@@ -12,6 +12,83 @@ namespace Aardvark.Tests
     public class TrafoTests : TestSuite
     {
         [Test]
+        public void TrafoDecomposeCornerCasesTest()
+        {
+            TestDecompose(Trafo3d.FromOrthoNormalBasis(V3d.XAxis, V3d.YAxis, V3d.ZAxis));
+            TestDecompose(Trafo3d.FromOrthoNormalBasis(V3d.XAxis, V3d.ZAxis, V3d.YAxis));
+            TestDecompose(Trafo3d.FromOrthoNormalBasis(V3d.YAxis, V3d.XAxis, V3d.ZAxis));
+            TestDecompose(Trafo3d.FromOrthoNormalBasis(V3d.YAxis, V3d.ZAxis, V3d.XAxis));
+            TestDecompose(Trafo3d.FromOrthoNormalBasis(V3d.ZAxis, V3d.YAxis, V3d.XAxis));
+            TestDecompose(Trafo3d.FromOrthoNormalBasis(V3d.ZAxis, V3d.XAxis, V3d.YAxis));
+            
+            TestDecompose(Trafo3d.FromOrthoNormalBasis(-V3d.XAxis, V3d.YAxis, V3d.ZAxis));
+            TestDecompose(Trafo3d.FromOrthoNormalBasis(-V3d.XAxis, V3d.ZAxis, V3d.YAxis));
+            TestDecompose(Trafo3d.FromOrthoNormalBasis(-V3d.YAxis, V3d.XAxis, V3d.ZAxis));
+            TestDecompose(Trafo3d.FromOrthoNormalBasis(-V3d.YAxis, V3d.ZAxis, V3d.XAxis));
+            TestDecompose(Trafo3d.FromOrthoNormalBasis(-V3d.ZAxis, V3d.YAxis, V3d.XAxis));
+            TestDecompose(Trafo3d.FromOrthoNormalBasis(-V3d.ZAxis, V3d.XAxis, V3d.YAxis));
+
+            TestDecompose(Trafo3d.FromOrthoNormalBasis(V3d.XAxis, -V3d.YAxis, V3d.ZAxis));
+            TestDecompose(Trafo3d.FromOrthoNormalBasis(V3d.XAxis, -V3d.ZAxis, V3d.YAxis));
+            TestDecompose(Trafo3d.FromOrthoNormalBasis(V3d.YAxis, -V3d.XAxis, V3d.ZAxis));
+            TestDecompose(Trafo3d.FromOrthoNormalBasis(V3d.YAxis, -V3d.ZAxis, V3d.XAxis));
+            TestDecompose(Trafo3d.FromOrthoNormalBasis(V3d.ZAxis, -V3d.YAxis, V3d.XAxis));
+            TestDecompose(Trafo3d.FromOrthoNormalBasis(V3d.ZAxis, -V3d.XAxis, V3d.YAxis));
+            
+            TestDecompose(Trafo3d.FromOrthoNormalBasis(V3d.XAxis, V3d.YAxis, -V3d.ZAxis));
+            TestDecompose(Trafo3d.FromOrthoNormalBasis(V3d.XAxis, V3d.ZAxis, -V3d.YAxis));
+            TestDecompose(Trafo3d.FromOrthoNormalBasis(V3d.YAxis, V3d.XAxis, -V3d.ZAxis));
+            TestDecompose(Trafo3d.FromOrthoNormalBasis(V3d.YAxis, V3d.ZAxis, -V3d.XAxis));
+            TestDecompose(Trafo3d.FromOrthoNormalBasis(V3d.ZAxis, V3d.YAxis, -V3d.XAxis));
+            TestDecompose(Trafo3d.FromOrthoNormalBasis(V3d.ZAxis, V3d.XAxis, -V3d.YAxis));
+
+            TestDecompose(Trafo3d.FromOrthoNormalBasis(-V3d.XAxis, -V3d.YAxis, V3d.ZAxis));
+            TestDecompose(Trafo3d.FromOrthoNormalBasis(-V3d.XAxis, -V3d.ZAxis, V3d.YAxis));
+            TestDecompose(Trafo3d.FromOrthoNormalBasis(-V3d.YAxis, -V3d.XAxis, V3d.ZAxis));
+            TestDecompose(Trafo3d.FromOrthoNormalBasis(-V3d.YAxis, -V3d.ZAxis, V3d.XAxis));
+            TestDecompose(Trafo3d.FromOrthoNormalBasis(-V3d.ZAxis, -V3d.YAxis, V3d.XAxis));
+            TestDecompose(Trafo3d.FromOrthoNormalBasis(-V3d.ZAxis, -V3d.XAxis, V3d.YAxis));
+
+            TestDecompose(Trafo3d.FromOrthoNormalBasis(-V3d.XAxis, V3d.YAxis, -V3d.ZAxis));
+            TestDecompose(Trafo3d.FromOrthoNormalBasis(-V3d.XAxis, V3d.ZAxis, -V3d.YAxis));
+            TestDecompose(Trafo3d.FromOrthoNormalBasis(-V3d.YAxis, V3d.XAxis, -V3d.ZAxis));
+            TestDecompose(Trafo3d.FromOrthoNormalBasis(-V3d.YAxis, V3d.ZAxis, -V3d.XAxis));
+            TestDecompose(Trafo3d.FromOrthoNormalBasis(-V3d.ZAxis, V3d.YAxis, -V3d.XAxis));
+            TestDecompose(Trafo3d.FromOrthoNormalBasis(-V3d.ZAxis, V3d.XAxis, -V3d.YAxis));
+
+            TestDecompose(Trafo3d.FromOrthoNormalBasis(V3d.XAxis, -V3d.YAxis, -V3d.ZAxis));
+            TestDecompose(Trafo3d.FromOrthoNormalBasis(V3d.XAxis, -V3d.ZAxis, -V3d.YAxis));
+            TestDecompose(Trafo3d.FromOrthoNormalBasis(V3d.YAxis, -V3d.XAxis, -V3d.ZAxis));
+            TestDecompose(Trafo3d.FromOrthoNormalBasis(V3d.YAxis, -V3d.ZAxis, -V3d.XAxis));
+            TestDecompose(Trafo3d.FromOrthoNormalBasis(V3d.ZAxis, -V3d.YAxis, -V3d.XAxis));
+            TestDecompose(Trafo3d.FromOrthoNormalBasis(V3d.ZAxis, -V3d.XAxis, -V3d.YAxis));
+
+            TestDecompose(Trafo3d.FromOrthoNormalBasis(-V3d.XAxis, -V3d.YAxis, -V3d.ZAxis));
+            TestDecompose(Trafo3d.FromOrthoNormalBasis(-V3d.XAxis, -V3d.ZAxis, -V3d.YAxis));
+            TestDecompose(Trafo3d.FromOrthoNormalBasis(-V3d.YAxis, -V3d.XAxis, -V3d.ZAxis));
+            TestDecompose(Trafo3d.FromOrthoNormalBasis(-V3d.YAxis, -V3d.ZAxis, -V3d.XAxis));
+            TestDecompose(Trafo3d.FromOrthoNormalBasis(-V3d.ZAxis, -V3d.YAxis, -V3d.XAxis));
+            TestDecompose(Trafo3d.FromOrthoNormalBasis(-V3d.ZAxis, -V3d.XAxis, -V3d.YAxis));
+        }
+
+        void TestDecompose(Trafo3d trafo)
+        {
+            trafo = trafo * Trafo3d.RotationXInDegrees(0.000000000000000001);
+
+            V3d r_d, s_d, t_d;
+            trafo.Decompose(out s_d, out r_d, out t_d);
+
+            var recomposed = Trafo3d.FromComponents(s_d, r_d, t_d);
+
+            Assert.IsFalse(s_d.AnyNaN || r_d.AnyNaN || t_d.AnyNaN, "something NaN");
+
+            var eq = CheckForwardBackwardConsistency(new Trafo3d(trafo.Forward, recomposed.Backward))
+                && CheckForwardBackwardConsistency(new Trafo3d(recomposed.Forward, trafo.Backward));
+
+            Assert.True(eq, "trafo not consistent");
+        }
+
+        [Test]
         public void TrafoDecomposeTest()
         {
             var rnd = new RandomSystem();
@@ -35,10 +112,7 @@ namespace Aardvark.Tests
 
             Assert.IsFalse(s_d.AnyNaN || r_d.AnyNaN || t_d.AnyNaN, "something NaN");
 
-            var eq = CheckForwardBackwardConsistency(new Trafo3d(trafo.Forward, recomposed.Backward))
-                && CheckForwardBackwardConsistency(new Trafo3d(recomposed.Forward, trafo.Backward));
-
-            Assert.True(eq, "trafo not consistent");
+            ValidateTrafos(trafo, recomposed);
         }
 
         [Test]
@@ -93,6 +167,14 @@ namespace Aardvark.Tests
             }
         }
         
+        void ValidateTrafos(Trafo3d a, Trafo3d b)
+        {
+            var eq = CheckForwardBackwardConsistency(new Trafo3d(a.Forward, b.Backward))
+                  && CheckForwardBackwardConsistency(new Trafo3d(b.Forward, a.Backward));
+
+            Assert.True(eq, "trafo not consistent");
+        }
+
         bool CheckForwardBackwardConsistency(Trafo3d trafo)
         {
             var i = trafo.Forward * trafo.Backward;
@@ -120,6 +202,37 @@ namespace Aardvark.Tests
                 var testf = rotf.TransformDir(V3f.OOI);
                 Assert.True((testf + V3f.OOI).Length < 1e-3);
             }
+        }
+
+        [Test]
+        public void CoordsystemTransformTest()
+        {
+            var sys = new[] 
+                {
+                  new CoordinateSystem.Info(1, CoordinateSystem.Handedness.Left, CoordinateSystem.Axis.X),
+                  new CoordinateSystem.Info(1, CoordinateSystem.Handedness.Right, CoordinateSystem.Axis.X),
+                  new CoordinateSystem.Info(1, CoordinateSystem.Handedness.Left, CoordinateSystem.Axis.Y),
+                  new CoordinateSystem.Info(1, CoordinateSystem.Handedness.Right, CoordinateSystem.Axis.Y),
+                  new CoordinateSystem.Info(1, CoordinateSystem.Handedness.Left, CoordinateSystem.Axis.Z),
+                  new CoordinateSystem.Info(1, CoordinateSystem.Handedness.Right, CoordinateSystem.Axis.Z),
+                  new CoordinateSystem.Info(10, CoordinateSystem.Handedness.Left, CoordinateSystem.Axis.X),
+                  new CoordinateSystem.Info(10, CoordinateSystem.Handedness.Right, CoordinateSystem.Axis.X),
+                  new CoordinateSystem.Info(10, CoordinateSystem.Handedness.Left, CoordinateSystem.Axis.Y),
+                  new CoordinateSystem.Info(10, CoordinateSystem.Handedness.Right, CoordinateSystem.Axis.Y),
+                  new CoordinateSystem.Info(10, CoordinateSystem.Handedness.Left, CoordinateSystem.Axis.Z),
+                  new CoordinateSystem.Info(10, CoordinateSystem.Handedness.Right, CoordinateSystem.Axis.Z)
+                };
+
+            //foreach(var from in sys)
+            //    foreach(var to in sys)
+            //    {
+            //        // TODO: think about what the correct validation is and implement this test properly...
+
+            //        var direct = CoordinateSystem.FromTo(from, to);
+            //        var usingAardvark = CoordinateSystem.ToAardvark(to).Inverse * CoordinateSystem.ToAardvark(from);
+
+            //        ValidateTrafos(direct, usingAardvark);
+            //    }
         }
     }
 }

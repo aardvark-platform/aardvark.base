@@ -400,10 +400,11 @@ module ASet =
                 cache.[m] <- v
                 o, v
 
-            member x.Revoke(m : IMod<'a>) =
+            member x.Revoke(m : IMod<'a>, dirty : HashSet<_>) =
                 match cache.TryRemove m with
                     | (true, v) -> 
                         lock m (fun () -> m.Outputs.Remove x |> ignore )
+                        dirty.Remove m |> ignore
                         v
                     | _ -> 
                         failwith "[ASet] cannot remove unknown object"
@@ -419,7 +420,7 @@ module ASet =
                     r.GetOperations token |> HDeltaSet.map (fun d ->
                         match d with
                             | Add(1,m) -> Add(x.Invoke(token, m))
-                            | Rem(1,m) -> Rem(x.Revoke(m))
+                            | Rem(1,m) -> Rem(x.Revoke(m, dirty))
                             | _ -> unexpected()
                     )
 

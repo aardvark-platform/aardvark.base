@@ -140,6 +140,50 @@ module ``simple list tests`` =
 
         ()
 
+    [<Test>]
+    let ``[AList] choose test``() =
+        let stuff = CList.ofSeq [ 1; 2; 3;]
+
+        let filteredList = stuff |> AList.choose (fun x -> if x % 2 = 0 then Some x else None)
+
+        let r = filteredList.GetReader()
+        r.GetOperations() |> ignore
+        printfn "%A" (filteredList |> AList.toArray)
+        
+        let rnd = new Random(1)
+        for i in 0..10000 do
+            if rnd.NextDouble() < 0.2 then // rem
+                let index = rnd.Next(stuff.Count - 1)
+                transact(fun () ->
+                    stuff.RemoveAt(index) |> ignore
+                )
+
+            if rnd.NextDouble() < 0.2 then // append
+                transact(fun () ->
+                    stuff.Append(rnd.Next()) |> ignore
+                )
+
+            if rnd.NextDouble() < 0.2 then // prepend
+                transact(fun () ->
+                    stuff.Prepend(rnd.Next()) |> ignore
+                )
+            
+            if rnd.NextDouble() < 0.2 then // insert
+                let insertIndex = rnd.Next(stuff.Count - 1)
+                transact(fun () ->
+                    stuff.Insert(insertIndex, rnd.Next())
+                )
+
+            if rnd.NextDouble() < 0.2 then // evaluate
+                r.GetOperations() |> ignore
+                printfn "%A" (filteredList |> AList.toArray)
+
+            if rnd.NextDouble() < 0.2 then // clear
+                transact(fun () ->
+                    stuff.Clear())
+
+        ()
+
 
 //    [<Test>]
 //    let ``[AList] collect``() =

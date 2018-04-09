@@ -44,6 +44,10 @@ and csimset<'a>(initial : seq<'a>) =
         cset.Remove value |> ignore
         content <- content |> HSet.remove value
 
+    member x.Clear() =
+        cset.Clear()
+        content <- HSet.empty
+
     member x.Content = content
 
     interface IDependent with
@@ -53,7 +57,10 @@ and csimset<'a>(initial : seq<'a>) =
     interface IChangeable with
         member x.RandomChange(rand : RandomSystem, addprob : float) =
             gen {
-                if x.Count > 0 && rand.UniformDouble() > addprob then
+                if rand.UniformDouble() > 0.95 then
+                    x.Clear()
+                    return sprintf "clear"
+                elif x.Count > 0 && rand.UniformDouble() > addprob then
                     let v = content |> Seq.item (rand.UniformInt(x.Count))
                     x.Remove v |> ignore
                     return sprintf "remove(%A)" v

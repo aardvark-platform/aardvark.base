@@ -1,7 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
 namespace Aardvark.Base
 {
@@ -243,6 +241,251 @@ namespace Aardvark.Base
             sorted.Sort();
             max = sorted[sorted.Count - 1 - n];
             return self.IndexOf(max);
+        }
+
+        #endregion
+        
+        #region Generic IList Copying
+
+        /// <summary>
+        /// Use this instead of Clone() in order to get a typed array back.
+        /// </summary>
+        public static T[] Copy<T>(this IList<T> xs)
+        {
+            var count = xs.Count;
+            var result = new T[count];
+            for (var i = 0; i < count; i++) result[i] = xs[i];
+            return result;
+        }
+
+        /// <summary>
+        /// Create a copy of the specified length. If the copy is longer
+        /// it is filled with default elements.
+        /// </summary>
+        public static T[] Copy<T>(this IList<T> xs, int count)
+        {
+            var result = new T[count];
+            var len = Math.Min(count, xs.Count);
+            for (var i = 0; i < len; i++) result[i] = xs[i];
+            return result;
+        }
+
+        /// <summary>
+        /// Create a copy of the specified length starting at the specified
+        /// start. If the copy is longer it is filled with default elements.
+        /// </summary>
+        public static T[] Copy<T>(this IList<T> xs, int start, int count)
+        {
+            var result = new T[count];
+            var len = Math.Min(count, xs.Count - start);
+            for (var i = 0; i < len; i++) result[i] = xs[i + start];
+            return result;
+        }
+
+        /// <summary>
+        /// Create a copy with the elements piped through a function.
+        /// </summary>
+        public static Tr[] Map<T, Tr>(this IList<T> xs, Func<T, Tr> item_fun)
+        {
+            var len = xs.Count;
+            var result = new Tr[len];
+            for (var i = 0; i < len; i++) result[i] = item_fun(xs[i]);
+            return result;
+        }
+
+        /// <summary>
+        /// Create an array of resulting items by applying a supplied binary function
+        /// to corresponding pairs of the supplied ILists.
+        /// </summary>
+        /// <returns></returns>
+        public static Tr[] Map2<T0, T1, Tr>(
+                this IList<T0> xs0, IList<T1> xs1, Func<T0, T1, Tr> item0_item1_fun)
+        {
+            var len = Fun.Min(xs0.Count, xs1.Count);
+            var result = new Tr[len];
+            for (var i = 0; i < len; i++) result[i] = item0_item1_fun(xs0[i], xs1[i]);
+            return result;
+        }
+
+        /// <summary>
+        /// Create an array of resulting items by applying a supplied ternary function
+        /// to corresponding triples of the supplied ILists.
+        /// </summary>
+        /// <returns></returns>
+        public static Tr[] Map3<T0, T1, T2, Tr>(
+                this IList<T0> xs0, IList<T1> xs1, IList<T2> xs2, Func<T0, T1, T2, Tr> item0_item1_item2_fun)
+        {
+            var len = Fun.Min(xs0.Count, xs1.Count, xs2.Count);
+            var result = new Tr[len];
+            for (var i = 0; i < len; i++)
+                result[i] = item0_item1_item2_fun(xs0[i], xs1[i], xs2[i]);
+            return result;
+        }
+        
+        /// <summary>
+        /// Create a copy with the elements piped through a function.
+        /// The function gets the index of the element as a second argument.
+        /// </summary>
+        public static Tr[] Map<T, Tr>(this IList<T> xs, Func<T, int, Tr> item_index_fun)
+        {
+            var len = xs.Count;
+            var result = new Tr[len];
+            for (var i = 0; i < len; i++) result[i] = item_index_fun(xs[i], i);
+            return result;
+        }
+
+        public static Tr[] Map2<T0, T1, Tr>(
+                this IList<T0> xs0, IList<T1> xs1, Func<T0, T1, int, Tr> item0_item1_index_fun)
+        {
+            var len = Fun.Min(xs0.Count, xs1.Count);
+            var result = new Tr[len];
+            for (var i = 0; i < len; i++)
+                result[i] = item0_item1_index_fun(xs0[i], xs1[i], i);
+            return result;
+        }
+
+        public static Tr[] Map3<T0, T1, T2, Tr>(
+                this IList<T0> xs0, IList<T1> xs1, IList<T2> xs2,
+                Func<T0, T1, T2, int, Tr> item0_item1_item2_index_fun)
+        {
+            var len = Fun.Min(xs0.Count, xs1.Count, xs2.Count);
+            var result = new Tr[len];
+            for (var i = 0; i < len; i++)
+                result[i] = item0_item1_item2_index_fun(xs0[i], xs1[i], xs2[i], i);
+            return result;
+        }
+        
+        /// <summary>
+        /// Create a copy of count elements with the elements piped through a
+        /// function. count may be longer than the input, in this case the
+        /// result array has default elements at the end.
+        /// </summary>
+        public static Tr[] Map<T, Tr>(
+                this IList<T> xs, int count, Func<T, Tr> element_fun)
+        {
+            var result = new Tr[count];
+            var len = Math.Min(count, xs.Count);
+            for (var i = 0; i < len; i++) result[i] = element_fun(xs[i]);
+            return result;
+        }
+        
+        /// <summary>
+        /// Create a copy of count elements with the elements piped through a
+        /// function. count may be longer than the input, in this case the
+        /// result array has default elements at the end.
+        /// The function gets the index of the element as a second argument.
+        /// </summary>
+        public static Tr[] Map<T, Tr>(
+                this IList<T> xs, int count, Func<T, int, Tr> element_index_fun)
+        {
+            var result = new Tr[count];
+            var len = Math.Min(count, xs.Count);
+            for (var i = 0; i < len; i++) result[i] = element_index_fun(xs[i], i);
+            return result;
+        }
+
+        /// <summary>
+        /// Create a copy of specified length starting at the specified
+        /// offset with the elements piped through a function.
+        /// </summary>
+        public static Tr[] Map<T, Tr>(
+                this IList<T> xs, int start, int count, Func<T, Tr> element_fun)
+        {
+            var result = new Tr[count];
+            var len = Math.Min(count, xs.Count - start);
+            for (var i = 0; i < len; i++) result[i] = element_fun(xs[start + i]);
+            return result;
+        }
+        
+        /// <summary>
+        /// Create a copy of specified length starting at the specified
+        /// offset with the elements piped through a function.
+        /// The function gets the target index of the element as a second
+        /// argument.
+        /// </summary>
+        public static Tr[] Map<T, Tr>(
+                this IList<T> xs, int start, int count, Func<T, int, Tr> element_index_fun)
+        {
+            var result = new Tr[count];
+            var len = Math.Min(count, xs.Count - start);
+            for (var i = 0; i < len; i++) result[i] = element_index_fun(xs[start + i], i);
+            return result;
+        }
+
+        /// <summary>
+        /// Copy a range of elements to the target array.
+        /// </summary>
+        public static void CopyTo<T>(this IList<T> xs, int count, T[] target, int targetStart)
+        {
+            for (var i = 0; i < count; i++)
+                target[targetStart + i] = xs[i];
+        }
+
+        /// <summary>
+        /// Copy a range of elements to the target array.
+        /// </summary>
+        public static void CopyTo<T>(this IList<T> xs, int start, int count, T[] target, int targetStart)
+        {
+            for (var i = 0; i < count; i++)
+                target[targetStart + i] = xs[start + i];
+        }
+
+        /// <summary>
+        /// Copies the IList into a list.
+        /// </summary>
+        public static List<T> CopyToList<T>(this IList<T> xs)
+        {
+            var result = new List<T>(xs.Count);
+            result.AddRange(xs);
+            return result;
+        }
+        
+        public static List<Tr> MapToList<T, Tr>(this IList<T> xs, Func<T, Tr> element_fun)
+        {
+            var count = xs.Count;
+            var result = new List<Tr>(count);
+            for (int i = 0; i < count; i++) result.Add(element_fun(xs[i]));
+            return result;
+        }
+        
+        public static List<Tr> MapToList<T, Tr>(this IList<T> xs, Func<T, int, Tr> item_index_fun)
+        {
+            var count = xs.Count;
+            var result = new List<Tr>(count);
+            for (int i = 0; i < count; i++) result.Add(item_index_fun(xs[i], i));
+            return result;
+        }
+
+        /// <summary>
+        /// Copies the specified range of elements to the specified destination
+        /// within the same IList.
+        /// </summary>
+        public static void CopyRange<T>(this IList<T> xs, int start, int count, int targetStart)
+        {
+            var end = start + count;
+            if (targetStart < start || targetStart >= end)
+            {
+                while (start < end) xs[targetStart++] = xs[start++];
+            }
+            else
+            {
+                targetStart += count;
+                while (start < end) xs[--targetStart] = xs[--end];
+            }
+        }
+
+        /// <summary>
+        /// Create a copy with the elements reversed. 
+        /// </summary>
+        public static T[] CopyReversed<T>(this IList<T> xs)
+        {
+            var result = new T[xs.Count];
+            var lastIndex = xs.Count - 1;
+            for (var i = 0; i <= lastIndex; i++)
+            {
+                result[i] = xs[lastIndex - i];
+            }
+            return result;
         }
 
         #endregion
