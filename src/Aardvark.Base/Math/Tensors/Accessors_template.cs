@@ -10,9 +10,9 @@ namespace Aardvark.Base
 {
     public static partial class TensorAccessors
     {
-        private static Dictionary<Tup<Type, Type, Symbol>,
+        private static Dictionary<(Type, Type, Symbol),
                                   Func<long[], ITensorAccessors>> s_creatorMap
-            = new Dictionary<Tup<Type, Type, Symbol>,
+            = new Dictionary<(Type, Type, Symbol),
                              Func<long[], ITensorAccessors>>()
             {
                 //# foreach (var tt in Meta.ColorFieldTypes) { var ttype = tt.Name;

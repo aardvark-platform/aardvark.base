@@ -5710,7 +5710,6 @@ namespace Aardvark.Base.Coder
             { typeof(IntSet), c => { var v = default(IntSet); c.CodeIntSet(ref v); return v; } },
             { typeof(SymbolSet), c => { var v = default(SymbolSet); c.CodeSymbolSet(ref v); return v; } },
 
-
             { typeof(HashSet<string>), c => { var v = default(HashSet<string>); c.CodeHashSet_of_T_(ref v); return v; } },
 
             #endregion

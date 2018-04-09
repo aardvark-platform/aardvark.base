@@ -16,22 +16,11 @@
     <LangVersion>7.1</LangVersion>
   </PropertyGroup>
   <ItemGroup>
-	<Compile Remove="ICoder_template.cs" />
-	<Compile Remove="ICoder_generator.cs" />
-	<Compile Remove="BinaryReadingCoder_template.cs" />
-	<Compile Remove="BinaryReadingCoder_generator.cs" />
-	<Compile Remove="BinaryWritingCoder_template.cs" />
-	<Compile Remove="BinaryWritingCoder_generator.cs" />
-	<Compile Remove="StreamCodeReader_template.cs" />
-	<Compile Remove="StreamCodeReader_generator.cs" />
-	<Compile Remove="StreamCodeWriter_template.cs" />
-	<Compile Remove="StreamCodeWriter_generator.cs" />
-	<Compile Remove="TypeCoder_template.cs" />
-	<Compile Remove="TypeCoder_generator.cs" />
-	<Compile Remove="XmlReadingCoder_template.cs" />
-	<Compile Remove="XmlReadingCoder_generator.cs" />
-	<Compile Remove="XmlWritingCoder_template.cs" />
-	<Compile Remove="XmlWritingCoder_generator.cs" />
+	<Compile Remove="**\*_template.cs" />
+	<Compile Remove="**\*_generator.cs" />
+  </ItemGroup>
+  <ItemGroup>
+	<None Include="**\*_template.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Aardvark.Base\Aardvark.Base.csproj">

@@ -172,18 +172,6 @@ namespace Aardvark.Base.Coder
             { typeof(IntSet), c => { var v = default(IntSet); c.CodeIntSet(ref v); return v; } },
             { typeof(SymbolSet), c => { var v = default(SymbolSet); c.CodeSymbolSet(ref v); return v; } },
 
-            // [planned cleanup ISSUE 20080125 rft] move BitMap reader to other lib
-            // use Add(...) to register
-            { typeof(Bitmap), c =>
-                {
-                    var data = default(byte[]);
-                    c.CodeByteArray(ref data);
-
-                    var stream = new MemoryStream(data);
-                    return new Bitmap(stream);
-                }
-            },
-
             { typeof(HashSet<string>), c => { var v = default(HashSet<string>); c.CodeHashSet_of_T_(ref v); return v; } },
 
             #endregion
