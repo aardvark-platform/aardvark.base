@@ -210,6 +210,18 @@ type plist<'a>(l : Index, h : Index, content : MapExt<Index, 'a>) =
             plist<'a>.Empty
         else
             plist(MapExt.min res, MapExt.max res, res)
+
+    // O(n)
+    member x.TryFind(item : 'a) : Option<Index> =
+        match content |> MapExt.toSeq |> Seq.tryFind (fun (k,v) -> Unchecked.equals v item) with
+        | Some (k, v) -> Some k
+        | _ -> None
+
+    // O(n)
+    member x.Remove(item : 'a) : plist<'a> =
+        match x.TryFind(item) with
+        | Some index -> x.Remove(index)
+        | None -> x
           
     member x.AsSeq =
         content |> MapExt.toSeq |> Seq.map snd
