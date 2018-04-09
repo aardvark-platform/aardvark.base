@@ -18,72 +18,11 @@
     <LangVersion>7.1</LangVersion>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Remove="Delegates\Delegates_template.cs" />
-    <Compile Remove="Extensions\FuncActionExtensions_template.cs" />
-    <Compile Remove="Extensions\SequenceExtensions_template.cs" />
-    <Compile Remove="Geometry\Geometry_template.cs" />
-    <Compile Remove="Images\TensorExtensions_generator.cs" />
-    <Compile Remove="Images\TensorExtensions_template.cs" />
-    <Compile Remove="Math\Base\Complex_template.cs" />
-    <Compile Remove="Math\Base\Fun_template.cs" />
-    <Compile Remove="Math\Colors\Color_template.cs" />
-    <Compile Remove="Math\Geometry\Geometry1i_template.cs" />
-    <Compile Remove="Math\RangesBoxes\Box_template.cs" />
-    <Compile Remove="Math\Tensors\Accessors_template.cs" />
-    <Compile Remove="Math\Tensors\TensorMathExt_template.cs" />
-    <Compile Remove="Math\Tensors\Tensor_generator.cs" />
-    <Compile Remove="Math\Tensors\Tensor_template.cs" />
-    <Compile Remove="Math\Trafos\Euclidean2_template.cs" />
-    <Compile Remove="Math\Trafos\Euclidean3_template.cs" />
-    <Compile Remove="Math\Trafos\M22_template.cs" />
-    <Compile Remove="Math\Trafos\M33_template.cs" />
-    <Compile Remove="Math\Trafos\M34_template.cs" />
-    <Compile Remove="Math\Trafos\M44_template.cs" />
-    <Compile Remove="Math\Trafos\Matrix_template.cs" />
-    <Compile Remove="Math\Trafos\Rot2_template.cs" />
-    <Compile Remove="Math\Trafos\Rot3_template.cs" />
-    <Compile Remove="Math\Trafos\Scale3_template.cs" />
-    <Compile Remove="Math\Trafos\Shift3_template.cs" />
-    <Compile Remove="Math\Trafos\Similarity3_template.cs" />
-    <Compile Remove="Math\Vectors\VectorIEnumerableExtensions_template.cs" />
-    <Compile Remove="Math\Vectors\VectorTypeConverter_template.cs" />
-    <Compile Remove="Math\Vectors\Vector_template.cs" />
-    <Compile Remove="Sorting\Sorting_template.cs" />
-    <Compile Remove="Symbol\Dict_template.cs" />
-    <Compile Remove="Tup\Tuples_template.cs" />
+    <Compile Remove="**\*_template.cs" />
+    <Compile Remove="**\*_generator.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Delegates\Delegates_template.cs" />
-    <None Include="Extensions\FuncActionExtensions_template.cs" />
-    <None Include="Extensions\SequenceExtensions_template.cs" />
-    <None Include="Geometry\Geometry_template.cs" />
-    <None Include="Images\TensorExtensions_template.cs" />
-    <None Include="Math\Base\Complex_template.cs" />
-    <None Include="Math\Base\Fun_template.cs" />
-    <None Include="Math\Colors\Color_template.cs" />
-    <None Include="Math\Geometry\Geometry1i_template.cs" />
-    <None Include="Math\RangesBoxes\Box_template.cs" />
-    <None Include="Math\Tensors\Accessors_template.cs" />
-    <None Include="Math\Tensors\TensorMathExt_template.cs" />
-    <None Include="Math\Tensors\Tensor_template.cs" />
-    <None Include="Math\Trafos\Euclidean2_template.cs" />
-    <None Include="Math\Trafos\Euclidean3_template.cs" />
-    <None Include="Math\Trafos\M22_template.cs" />
-    <None Include="Math\Trafos\M33_template.cs" />
-    <None Include="Math\Trafos\M34_template.cs" />
-    <None Include="Math\Trafos\M44_template.cs" />
-    <None Include="Math\Trafos\Matrix_template.cs" />
-    <None Include="Math\Trafos\Rot2_template.cs" />
-    <None Include="Math\Trafos\Rot3_template.cs" />
-    <None Include="Math\Trafos\Scale3_template.cs" />
-    <None Include="Math\Trafos\Shift3_template.cs" />
-    <None Include="Math\Trafos\Similarity3_template.cs" />
-    <None Include="Math\Vectors\VectorIEnumerableExtensions_template.cs" />
-    <None Include="Math\Vectors\VectorTypeConverter_template.cs" />
-    <None Include="Math\Vectors\Vector_template.cs" />
-    <None Include="Sorting\Sorting_template.cs" />
-    <None Include="Symbol\Dict_template.cs" />
-    <None Include="Tup\Tuples_template.cs" />
+    <None Include="**\*_template.cs" />
   </ItemGroup>
   <Import Project="..\..\.paket\Paket.Restore.targets" />
 </Project>
