@@ -158,7 +158,76 @@ module private Typography =
                 
             { bounds = Bounds.toBox2d scale g.Bounds; outline = segments }
             
-    
+
+    module FontResolver =
+        module private Win32 =
+            open Microsoft.FSharp.NativeInterop
+            open System.Runtime.InteropServices
+            open System.Security
+
+            type HKey =
+                | HKEY_CLASSES_ROOT = 0x80000000
+                | HKEY_CURRENT_USER = 0x80000001
+                | HKEY_LOCAL_MACHINE = 0x80000002
+                | HKEY_USERS = 0x80000003
+                | HKEY_PERFORMANCE_DATA = 0x80000004
+                | HKEY_CURRENT_CONFIG = 0x80000005
+                | HKEY_DYN_DATA = 0x80000006
+
+            type Flags =
+                | RRF_RT_ANY = 0x0000ffff
+                | RRF_RT_DWORD = 0x00000018
+                | RRF_RT_QWORD = 0x00000048
+                | RRF_RT_REG_BINARY = 0x00000008
+                | RRF_RT_REG_DWORD = 0x00000010
+                | RRF_RT_REG_EXPAND_SZ = 0x00000004
+                | RRF_RT_REG_MULTI_SZ = 0x00000020
+                | RRF_RT_REG_NONE = 0x00000001
+                | RRF_RT_REG_QWORD = 0x00000040
+                | RRF_RT_REG_SZ = 0x00000002
+
+            [<DllImport("kernel32.dll")>]
+            extern int RegGetValue(HKey hkey, string lpSubKey, string lpValue, Flags dwFlags, uint32& pdwType, nativeint pvData, uint32& pcbData)
+            
+            let tryGetFontFileName (family : string) (style : FontStyle) =
+
+                let suffix =
+                    match style with
+                        | FontStyle.BoldItalic -> " Bold Italic"
+                        | FontStyle.Bold -> " Bold"
+                        | FontStyle.Italic -> " Italic"
+                        | _ -> ""
+
+                let name = sprintf "%s%s (TrueType)" family suffix
+                let arr : byte[] = Array.zeroCreate 1024
+                let gc = GCHandle.Alloc(arr, GCHandleType.Pinned)
+
+                try
+                    let ptr = gc.AddrOfPinnedObject()
+                    let mutable pdwType = 0u
+                    let mutable pcbData = uint32 arr.Length
+                    if RegGetValue(HKey.HKEY_LOCAL_MACHINE, "software\\microsoft\\windows nt\\currentversion\\Fonts", name, Flags.RRF_RT_REG_SZ, &pdwType, ptr, &pcbData) = 0 then
+                        if pcbData > 0u && arr.[int pcbData - 1] = 0uy then pcbData <- pcbData - 1u
+                        let file = System.Text.Encoding.UTF8.GetString(arr, 0, int pcbData)
+                        let path = System.IO.Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Fonts), file)
+                        Some path
+                    else
+                        None
+                finally
+                    gc.Free()
+
+
+        let tryResolveFont (family : string) (style : FontStyle) : Option<string> =
+            match Environment.OSVersion with
+                | Windows -> Win32.tryGetFontFileName family style
+                | _ -> failwith "not implemented"
+
+
+        let resolveFont (family : string) (style : FontStyle) =
+            match tryResolveFont family style with
+                | Some file -> file
+                | None -> failwithf "[Text] could not get font %s %A" family style
+
 
 type Glyph internal(g : Typography.OpenFont.Glyph, scale : float, advance : float, bearing : float, c : char) =
     inherit Shape(Path.ofGlyph scale g)
@@ -226,14 +295,13 @@ type private FontImpl(file : string) =
         float d * scale
 
 type Font(family : string, style : FontStyle) =
-    let impl = FontImpl(@"C:\windows\fonts\times.ttf")
-    //static let table = System.Collections.Concurrent.ConcurrentDictionary<string * FontStyle, FontImpl>()
+    static let table = System.Collections.Concurrent.ConcurrentDictionary<string * FontStyle, FontImpl>()
 
-    //let impl =
-    //    table.GetOrAdd((family, style), fun (family, style) ->
-    //        let f = new System.Drawing.Font(family, 1.0f, unbox (int style), GraphicsUnit.Point)
-    //        new FontImpl(f)
-    //    )
+    let impl =
+        table.GetOrAdd((family, style), fun (family, style) ->
+            let impl = FontImpl(FontResolver.resolveFont family style)
+            impl
+        )
 
     member x.Family = family
     member x.LineHeight = impl.LineHeight
