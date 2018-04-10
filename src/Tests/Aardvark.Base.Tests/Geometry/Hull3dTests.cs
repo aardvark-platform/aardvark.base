@@ -1,6 +1,5 @@
 ﻿using Aardvark.Base;
 using NUnit.Framework;
-using System.Linq;
 
 namespace Aardvark.Tests.Geometry
 {
@@ -24,7 +23,7 @@ namespace Aardvark.Tests.Geometry
 
             var expectedCorners = new V3d[] { V3d.OOO, V3d.OOI, V3d.OIO, V3d.OII, V3d.IOO, V3d.IOI, V3d.IIO, V3d.III };
 
-            Test.IsTrue(expectedCorners.Intersect(corners).Count() == expectedCorners.Count());
+            Assert.IsTrue(corners.SetEquals(expectedCorners));
         }
     }
 }
