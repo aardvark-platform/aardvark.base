@@ -314,7 +314,7 @@ namespace Aardvark.Base
                         if (i0 != i1 && i1 != i2 && i0 != i2)
                         {
                             V3d temp;
-                            if (hull.PlaneArray[0].Intersects(hull.PlaneArray[i1], hull.PlaneArray[i2], out temp))
+                            if (hull.PlaneArray[i0].Intersects(hull.PlaneArray[i1], hull.PlaneArray[i2], out temp))
                             {
                                 if(!temp.IsNaN && !temp.AnyInfinity)
                                     Corners.Add(temp);

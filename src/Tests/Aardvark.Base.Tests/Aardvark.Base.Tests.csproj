@@ -55,6 +55,7 @@
     <Compile Include="AlgoDat\HigherOrderFunctionsTests.cs" />
     <Compile Include="AlgoDat\SortingTests.cs" />
     <Compile Include="Extensions\ListHeapTests.cs" />
+    <Compile Include="Geometry\Hull3dTests.cs" />
     <Compile Include="Geometry\PolygonClipping.cs" />
     <Compile Include="Math\ColorTests.cs" />
     <Compile Include="Math\PolynomialTests.cs" />
