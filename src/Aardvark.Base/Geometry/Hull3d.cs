@@ -301,30 +301,26 @@ namespace Aardvark.Base
 
     public static class Hull3dExtensions
     {
-        public static List<V3d> ComputeCorners(this Hull3d hull)
+        public static HashSet<V3d> ComputeCorners(this Hull3d hull)
         {
-            List<V3d> Corners = new List<V3d>();
+            var corners = new HashSet<V3d>();
             int count = hull.PlaneArray.Length;
-            for (int i0 = 0; i0 < count; i0++)
+            for (var i0 = 0; i0 < count; i0++)
             {
-                for (int i1 = 0; i1 < count; i1++)
+                for (var i1 = i0 + 1; i1 < count; i1++)
                 {
-                    for (int i2 = 0; i2 < count; i2++)
+                    for (var i2 = i1 + 1; i2 < count; i2++)
                     {
-                        if (i0 != i1 && i1 != i2 && i0 != i2)
+                        if (hull.PlaneArray[i0].Intersects(hull.PlaneArray[i1], hull.PlaneArray[i2], out V3d temp))
                         {
-                            V3d temp;
-                            if (hull.PlaneArray[i0].Intersects(hull.PlaneArray[i1], hull.PlaneArray[i2], out temp))
-                            {
-                                if(!temp.IsNaN && !temp.AnyInfinity)
-                                    Corners.Add(temp);
-                            }
+                            if (!temp.IsNaN && !temp.AnyInfinity)
+                                corners.Add(temp);
                         }
                     }
                 }
             }
 
-            return Corners;
+            return corners;
         }
     }
 }
