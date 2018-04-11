@@ -1,4 +1,4 @@
-//#define USE_DEVIL
+#define USE_DEVIL
 //#define USE_BITMAP
 
 using System;
@@ -302,7 +302,7 @@ namespace Aardvark.Base
             {
                 try
                 {
-                    var img = CreateRawDevil(filename, options);
+                    var img = PixImageDevil.CreateRawDevil(filename, options);
                     if (img != null) return img;
                 }
                 catch (Exception) { }
@@ -381,7 +381,7 @@ namespace Aardvark.Base
             {
                 try
                 {
-                    var img = CreateRawDevil(stream, options);
+                    var img = PixImageDevil.CreateRawDevil(stream, options);
                     if (img != null) return img;
                 }
                 catch (Exception ex) { if (exception == null) exception = ex; }
@@ -553,7 +553,7 @@ namespace Aardvark.Base
 
 #if USE_DEVIL
             if ((options & PixSaveOptions.UseDevil) != 0
-                && SaveAsImageDevil(stream, fileFormat, options, qualityLevel)) return;
+                && this.SaveAsImageDevil(stream, fileFormat, options, qualityLevel)) return;
 #endif
 
             
@@ -625,7 +625,7 @@ namespace Aardvark.Base
             }
 
 #if USE_DEVIL
-            if ((options & PixSaveOptions.UseDevil) != 0 && SaveAsImageDevil(filename, fileFormat, options, qualityLevel))
+            if ((options & PixSaveOptions.UseDevil) != 0 && this.SaveAsImageDevil(filename, fileFormat, options, qualityLevel))
                 return;
 #endif
             
@@ -702,7 +702,7 @@ namespace Aardvark.Base
 #if USE_DEVIL
             if ((options & PixLoadOptions.UseDevil) != 0)
             {
-                var info = InfoFromFileNameDevil(fileName, options);
+                var info = PixImageDevil.InfoFromFileNameDevil(fileName, options);
                 if (info != null) return info;
             }
 #endif
