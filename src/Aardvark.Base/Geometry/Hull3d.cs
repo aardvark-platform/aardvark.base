@@ -45,13 +45,13 @@ namespace Aardvark.Base
             Plane31 = (int)-0x80000000,
         }
 
-        public static Hull.Flags32 OrPlane(this Hull.Flags32 flags, int i)
+        public static Flags32 OrPlane(this Flags32 flags, int i)
         {
-            return flags | (Hull.Flags32)((int)flags | (int)Hull.Flags32.Plane00 << i);
+            return flags | (Flags32)((int)flags | (int)Flags32.Plane00 << i);
         }
-        public static Hull.Flags32 AndNotPlane(this Hull.Flags32 flags, int i)
+        public static Flags32 AndNotPlane(this Flags32 flags, int i)
         {
-            return flags & (Hull.Flags32)~((int)flags | (int)Hull.Flags32.Plane00 << i);
+            return flags & (Flags32)~((int)flags | (int)Flags32.Plane00 << i);
         }
 
         #endregion
@@ -313,8 +313,20 @@ namespace Aardvark.Base
                     {
                         if (hull.PlaneArray[i0].Intersects(hull.PlaneArray[i1], hull.PlaneArray[i2], out V3d temp))
                         {
-                            if (!temp.IsNaN && !temp.AnyInfinity)
+                            if (temp.IsNaN || temp.AnyInfinity) continue;
+
+                            var inside = true;
+                            for (var j = 0; j < count; j++)
+                            {
+                                if (j == i0 || j == i1 || j == i2) continue;
+                                var h = hull.PlaneArray[j].Height(temp);
+                                if (h > 0) { inside = false; break; }
+                            }
+
+                            if (inside)
+                            {
                                 corners.Add(temp);
+                            }
                         }
                     }
                 }
