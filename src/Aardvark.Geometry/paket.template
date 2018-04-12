@@ -6,6 +6,4 @@ projectUrl http://github.com/aardvark-platform
 licenseUrl http://www.apache.org/licenses/LICENSE-2.0.txt
 description
     Aardvark is an open-source platform for visual computing, real-time graphics and visualization.
-files
-    ..\..\bin\Release\Aardvark.Geometry.dll ==> lib\net45
-    ..\..\bin\Release\Aardvark.Geometry.pdb ==> lib\net45
+include-pdbs true
