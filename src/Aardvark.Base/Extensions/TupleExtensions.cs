@@ -4,6 +4,9 @@ namespace Aardvark.Base
 {
     public static class TupleExtensions
     {
+        /// <summary>
+        /// Number of NaNs in tuple.
+        /// </summary>
         public static int CountNonNaNs(this (double, double) p)
         {
             int count = 2;
@@ -12,6 +15,9 @@ namespace Aardvark.Base
             return count;
         }
 
+        /// <summary>
+        /// Number of NaNs in tuple.
+        /// </summary>
         public static int CountNonNaNs(this (double, double, double) p)
         {
             int count = 3;
@@ -21,6 +27,9 @@ namespace Aardvark.Base
             return count;
         }
 
+        /// <summary>
+        /// Number of NaNs in tuple.
+        /// </summary>
         public static int CountNonNaNs(this (double, double, double, double) p)
         {
             int count = 4;
@@ -31,7 +40,10 @@ namespace Aardvark.Base
             return count;
         }
 
-        public static double Index(this (double, double) p, int i)
+        /// <summary>
+        /// Gets i-th value of tuple.
+        /// </summary>
+        public static double Get(this (double, double) p, int i)
         {
             switch (i)
             {
@@ -41,7 +53,10 @@ namespace Aardvark.Base
             }
         }
 
-        public static double Index(this (double, double, double) p, int i)
+        /// <summary>
+        /// Gets i-th value of tuple.
+        /// </summary>
+        public static double Get(this (double, double, double) p, int i)
         {
             switch (i)
             {
@@ -52,7 +67,10 @@ namespace Aardvark.Base
             }
         }
 
-        public static double Index(this (double, double, double, double) p, int i)
+        /// <summary>
+        /// Gets i-th value of tuple.
+        /// </summary>
+        public static double Get(this (double, double, double, double) p, int i)
         {
             switch (i)
             {
@@ -64,32 +82,57 @@ namespace Aardvark.Base
             }
         }
 
-        public static (double, double, double) SetIndex(this (double, double, double) p, int i, double value)
+        /// <summary>
+        /// Sets i-th value in tuple (in-place).
+        /// </summary>
+        public static void Set(this ref (double, double) p, int i, double value)
         {
             switch (i)
             {
-                case 0: return (value, p.Item2, p.Item3);
-                case 1: return (p.Item1, value, p.Item3);
-                case 2: return (p.Item1, p.Item2, value);
+                case 0: p.Item1 = value; break;
+                case 1: p.Item2 = value; break;
                 default: throw new IndexOutOfRangeException();
             }
         }
 
-        public static (double, double, double, double) SetIndex(this (double, double, double, double) p, int i, double value)
+        /// <summary>
+        /// Sets i-th value in tuple (in-place).
+        /// </summary>
+        public static void Set(this ref (double, double, double) p, int i, double value)
         {
             switch (i)
             {
-                case 0: return (value, p.Item2, p.Item3, p.Item4);
-                case 1: return (p.Item1, value, p.Item3, p.Item4);
-                case 2: return (p.Item1, p.Item2, value, p.Item4);
-                case 3: return (p.Item1, p.Item2, p.Item3, value);
+                case 0: p.Item1 = value; break;
+                case 1: p.Item2 = value; break;
+                case 2: p.Item3 = value; break;
                 default: throw new IndexOutOfRangeException();
             }
         }
 
+        /// <summary>
+        /// Sets i-th value in tuple (in-place).
+        /// </summary>
+        public static void Set(this ref (double, double, double, double) p, int i, double value)
+        {
+            switch (i)
+            {
+                case 0: p.Item1 = value; break;
+                case 1: p.Item2 = value; break;
+                case 2: p.Item3 = value; break;
+                case 3: p.Item4 = value; break;
+                default: throw new IndexOutOfRangeException();
+            }
+        }
+
+        /// <summary>
+        /// Creates tuple from given values with values in ascending order. 
+        /// </summary>
         public static (double, double) CreateAscending(double d0, double d1)
             => d0 < d1 ? (d0, d1) : (d1, d0);
 
+        /// <summary>
+        /// Creates tuple from given values with values in ascending order. 
+        /// </summary>
         public static (double, double, double) CreateAscending(double d0, double d1, double d2)
         {
             if (d0 < d1)

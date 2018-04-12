@@ -392,16 +392,16 @@ namespace Aardvark.Base
             int i = 0, ti = 0;
             while (ti < tc)
             {
-                if (t.Index(ti) < d)
-                    q = q.SetIndex(i++, t.Index(ti++) + shift);
+                if (t.Get(ti) < d)
+                    q.Set(i++, t.Get(ti++) + shift);
                 else
                 {
-                    q = q.SetIndex(i++, d + shift);
+                    q.Set(i++, d + shift);
                     break;
                 }
             }
-            while (ti < tc) q = q.SetIndex(i++, t.Index(ti++) + shift);
-            while (i < 4) q = q.SetIndex(i++, double.NaN);
+            while (ti < tc) q.Set(i++, t.Get(ti++) + shift);
+            while (i < 4) q.Set(i++, double.NaN);
             return q;
         }
 
@@ -414,14 +414,14 @@ namespace Aardvark.Base
             int i = 0, i0 = 0, i1 = 0;
             while (i0 < c0 && i1 < c1)
             {
-                if (p0.Index(i0) < p1.Index(i1))
-                    q = q.SetIndex(i++, p0.Index(i0++) + shift);
+                if (p0.Get(i0) < p1.Get(i1))
+                    q.Set(i++, p0.Get(i0++) + shift);
                 else
-                    q = q.SetIndex(i++, p1.Index(i1++) + shift);
+                    q.Set(i++, p1.Get(i1++) + shift);
             }
-            while (i0 < c0) q = q.SetIndex(i++, p0.Index(i0++) + shift);
-            while (i1 < c1) q = q.SetIndex(i++, p1.Index(i1++) + shift);
-            while (i < 4) q = q.SetIndex(i++, double.NaN);
+            while (i0 < c0) q.Set(i++, p0.Get(i0++) + shift);
+            while (i1 < c1) q.Set(i++, p1.Get(i1++) + shift);
+            while (i < 4) q.Set(i++, double.NaN);
             return q;
         }
 
