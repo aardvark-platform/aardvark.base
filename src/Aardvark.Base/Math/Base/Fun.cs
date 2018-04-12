@@ -505,7 +505,22 @@ namespace Aardvark.Base
             zeroCount = zc;
             positiveCount = pc;
         }
-        
+
+        public static void AggregateSigns(
+                this (double, double) values, double epsilon,
+                out int negativeCount, out int zeroCount, out int positiveCount)
+            => AggregateSigns(new[] { values.Item1, values.Item2 }, epsilon, out negativeCount, out zeroCount, out positiveCount);
+
+        public static void AggregateSigns(
+                this (double, double, double) values, double epsilon,
+                out int negativeCount, out int zeroCount, out int positiveCount)
+            => AggregateSigns(new[] { values.Item1, values.Item2, values.Item3 }, epsilon, out negativeCount, out zeroCount, out positiveCount);
+
+        public static void AggregateSigns(
+                this (double, double, double, double) values, double epsilon,
+                out int negativeCount, out int zeroCount, out int positiveCount)
+            => AggregateSigns(new[] { values.Item1, values.Item2, values.Item3, values.Item4 }, epsilon, out negativeCount, out zeroCount, out positiveCount);
+
         public static Signs AggregateSigns(this IEnumerable<double> values, double epsilon)
         {
             var signs = Signs.None;
@@ -517,6 +532,15 @@ namespace Aardvark.Base
             }
             return signs;
         }
+
+        public static Signs AggregateSigns(this (double, double) values, double epsilon)
+            => AggregateSigns(new[] { values.Item1, values.Item2 }, epsilon);
+
+        public static Signs AggregateSigns(this (double, double, double) values, double epsilon)
+            => AggregateSigns(new[] { values.Item1, values.Item2, values.Item3 }, epsilon);
+
+        public static Signs AggregateSigns(this (double, double, double, double) values, double epsilon)
+            => AggregateSigns(new[] { values.Item1, values.Item2, values.Item3, values.Item4 }, epsilon);
 
         #endregion
 
