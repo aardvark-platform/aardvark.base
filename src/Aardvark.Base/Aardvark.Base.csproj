@@ -8,14 +8,14 @@
     <DocumentationFile>..\..\bin\Debug\netstandard2.0\Aardvark.Base.xml</DocumentationFile>
     <NoWarn>1701;1702;1705;1591</NoWarn>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-    <LangVersion>7.1</LangVersion>
+    <LangVersion>7.2</LangVersion>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
     <OutputPath>..\..\bin\Release</OutputPath>
     <DocumentationFile>..\..\bin\Release\netstandard2.0\Aardvark.Base.xml</DocumentationFile>
     <NoWarn>1701;1702;1705;1591</NoWarn>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-    <LangVersion>7.1</LangVersion>
+    <LangVersion>7.2</LangVersion>
   </PropertyGroup>
   <ItemGroup>
     <Compile Remove="**\*_template.cs" />
