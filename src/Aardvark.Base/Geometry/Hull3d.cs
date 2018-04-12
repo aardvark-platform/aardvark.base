@@ -301,6 +301,9 @@ namespace Aardvark.Base
 
     public static class Hull3dExtensions
     {
+        /// <summary>
+         /// Returns unordered set of corners of this hull.
+         /// </summary>
         public static HashSet<V3d> ComputeCorners(this Hull3d hull)
         {
             var corners = new HashSet<V3d>();

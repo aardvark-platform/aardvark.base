@@ -103,7 +103,7 @@ namespace Aardvark.Base
     {
         /// <summary>
         /// Creates an inward hull (i.e. a hull whose normal vectors point
-        /// inside) from an counter-clockwise enumerated array of polygon
+        /// inside) from a counter-clockwise enumerated array of polygon
         /// points.
         /// </summary>
         public static Hull2d ToInwardHull(this V2d[] polygon, int pointCount = 0)
@@ -133,5 +133,38 @@ namespace Aardvark.Base
             return true;
         }
 
+        /// <summary>
+        /// Returns unordered set of corners of this hull.
+        /// </summary>
+        public static HashSet<V2d> ComputeCorners(this Hull2d hull)
+        {
+            var corners = new HashSet<V2d>();
+            int count = hull.PlaneArray.Length;
+            for (var i0 = 0; i0 < count; i0++)
+            {
+                for (var i1 = i0 + 1; i1 < count; i1++)
+                {
+                    if (hull.PlaneArray[i0].Intersects(hull.PlaneArray[i1], out V2d temp))
+                    {
+                        if (temp.IsNaN || temp.AnyInfinity) continue;
+
+                        var inside = true;
+                        for (var j = 0; j < count; j++)
+                        {
+                            if (j == i0 || j == i1) continue;
+                            var h = hull.PlaneArray[j].Height(temp);
+                            if (h > 0) { inside = false; break; }
+                        }
+
+                        if (inside)
+                        {
+                            corners.Add(temp);
+                        }
+                    }
+                }
+            }
+
+            return corners;
+        }
     }
 }

@@ -21,7 +21,7 @@ namespace Aardvark.Tests.Geometry
 
             var corners = hull.ComputeCorners();
 
-            var expectedCorners = new V3d[] { V3d.OOO, V3d.OOI, V3d.OIO, V3d.OII, V3d.IOO, V3d.IOI, V3d.IIO, V3d.III };
+            var expectedCorners = new [] { V3d.OOO, V3d.OOI, V3d.OIO, V3d.OII, V3d.IOO, V3d.IOI, V3d.IIO, V3d.III };
 
             Assert.IsTrue(corners.SetEquals(expectedCorners));
         }
@@ -39,7 +39,7 @@ namespace Aardvark.Tests.Geometry
                 new Plane3d(new V3d(0, +1, +1).Normalized, V3d.OIO),
             });
 
-            var expectedCorners = new V3d[]
+            var expectedCorners = new []
             {
                 V3d.OOO, V3d.IOO, V3d.IIO, V3d.OIO,
                 new V3d(0.25, 0.25, 0.25),
