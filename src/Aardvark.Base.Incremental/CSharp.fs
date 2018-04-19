@@ -173,6 +173,13 @@ type ModExtensions private() =
         Mod.map2 (fun (a,b) (c,d) -> f.Invoke(a, b, c, d)) tup1 tup2
 
     [<Extension>]
+    static member Compose (a : IMod<'a>, b : IMod<'b>, c : IMod<'c>, d : IMod<'d>, e : IMod<'e>, f : Func<'a, 'b, 'c, 'd, 'e, 'f>) =
+        let tup1 = Mod.map2 (fun a b -> (a,b)) a b
+        let tup2 = Mod.map2 (fun c d -> (c,d)) c d
+        let tup3 = Mod.map2 (fun (c, d) e -> (c,d,e)) tup2 e
+        Mod.map2 (fun (a,b) (c,d,e) -> f.Invoke(a, b, c, d, e)) tup1 tup3
+
+    [<Extension>]
     static member Compose (this : seq<IMod<'a>>, f : Func<seq<'a>, 'b>) =
         Mod.mapN (fun a -> f.Invoke(a)) this
 
