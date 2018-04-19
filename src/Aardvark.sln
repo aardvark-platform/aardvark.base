@@ -47,6 +47,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ExamplesCSharp", "Demo\Exam
 EndProject
 Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "Scratch", "Demo\Scratch\Scratch.fsproj", "{39EC0F23-19DF-46FD-8273-E931D26B7209}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Aardvark.Base.Telemetry", "Aardvark.Base.Telemetry\Aardvark.Base.Telemetry.csproj", "{B1593A50-6412-401F-AC89-433F426A8FD5}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -129,6 +131,10 @@ Global
 		{39EC0F23-19DF-46FD-8273-E931D26B7209}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{39EC0F23-19DF-46FD-8273-E931D26B7209}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{39EC0F23-19DF-46FD-8273-E931D26B7209}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B1593A50-6412-401F-AC89-433F426A8FD5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B1593A50-6412-401F-AC89-433F426A8FD5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B1593A50-6412-401F-AC89-433F426A8FD5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B1593A50-6412-401F-AC89-433F426A8FD5}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -151,6 +157,7 @@ Global
 		{2E887670-5BC3-44FA-97A3-389917B27BEB} = {C557CE9D-81EE-4EB3-AB94-B9F9CB2FA19A}
 		{6C6850B4-FDE7-4D75-9113-DCF9779145A6} = {864A9013-93AC-4073-BB2A-348CE1B00010}
 		{39EC0F23-19DF-46FD-8273-E931D26B7209} = {864A9013-93AC-4073-BB2A-348CE1B00010}
+		{B1593A50-6412-401F-AC89-433F426A8FD5} = {C557CE9D-81EE-4EB3-AB94-B9F9CB2FA19A}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {1537AED0-2BB3-4EC3-B2CB-06E22C23B002}

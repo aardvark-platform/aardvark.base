@@ -1,5 +1,4 @@
-﻿
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Globalization;
@@ -241,7 +240,7 @@ namespace Aardvark.Base
             {
                 RegisterAllAssembliesInCustomEntryPath();
             }
-
+            
             //Report.Line("s_telemetryEnumerateAssembliesCheckTime1: {0}", s_telemetryEnumerateAssembliesCheckTime1.Value);
             //Report.Line("s_telemetryEnumerateAssembliesCheckTime2: {0}", s_telemetryEnumerateAssembliesCheckTime2.Value);
         }
@@ -269,7 +268,7 @@ namespace Aardvark.Base
             }
             Report.End();
         }
-
+        
         private static Telemetry.CpuTime s_telemetryEnumerateAssembliesCheckTime1 = new Telemetry.CpuTime();
         private static Telemetry.CpuTime s_telemetryEnumerateAssembliesCheckTime2 = new Telemetry.CpuTime();
 
@@ -290,7 +289,7 @@ namespace Aardvark.Base
                 if (s_assembliesThatFailedToLoad.Contains(name)) return;
                 if (s_assemblies.ContainsKey(name)) return;
             }
-
+            
             using (s_telemetryEnumerateAssembliesCheckTime2.Timer)
             {
                 if (name.StartsWith("System.") ||
