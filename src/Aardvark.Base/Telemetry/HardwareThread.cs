@@ -10,9 +10,6 @@ namespace Aardvark.Base
     {
         private static Dictionary<int, ProcessThread> s_pts = new Dictionary<int, ProcessThread>();
         private static SpinLock s_ptsLock = new SpinLock();
-        
-        [DllImport("Kernel32", EntryPoint = "GetCurrentThreadId", ExactSpelling = true)]
-        public static extern Int32 GetCurrentWin32ThreadId();
 
         public static ProcessThread GetProcessThread(int tid)
         {
