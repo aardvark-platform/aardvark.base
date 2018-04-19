@@ -184,6 +184,7 @@ namespace Aardvark.Base
                     long t1User = 0, t1Privileged = 0;
                     
                     var pt = GetCurrentProcessThread();
+                    if (pt == null) return Disposable.Create(() => { });
                     var t0 = pt.TotalProcessorTime.Ticks;
                     if (m_measureUserTime) t0User = pt.UserProcessorTime.Ticks;
                     if (m_measurePrivilegedTime) t0Privileged = pt.PrivilegedProcessorTime.Ticks;
@@ -291,16 +292,22 @@ namespace Aardvark.Base
                         }
                         else
                         {
-                            var t0 = GetCurrentProcessThread().UserProcessorTime;
+                            var p = GetCurrentProcessThread();
+                            if (p == null) return Disposable.Create(() => { });
+                            var t0 = p.UserProcessorTime;
                             m_threadIds.Add(threadId);
                             return ProbeDisposable.Create(() =>
                             {
                                 //if (GetCurrentWin32ThreadId() != tid) Debugger.Break();
-                                var t1 = GetCurrentProcessThread().UserProcessorTime;
-                                lock (m_threadIds)
+                                var p2 = GetCurrentProcessThread();
+                                if (p2 != null)
                                 {
-                                    m_sum += t1 - t0;
-                                    m_threadIds.Remove(threadId);
+                                    var t1 = p2.UserProcessorTime;
+                                    lock (m_threadIds)
+                                    {
+                                        m_sum += t1 - t0;
+                                        m_threadIds.Remove(threadId);
+                                    }
                                 }
                             });
                         }
@@ -366,16 +373,22 @@ namespace Aardvark.Base
                         else
                         {
                             // /* var tid = */ HardwareThread.GetCurrentWin32ThreadId(); sm?
-                            var t0 = GetCurrentProcessThread().PrivilegedProcessorTime;
+                            var p = GetCurrentProcessThread();
+                            if (p == null) return Disposable.Create(() => { });
+                            var t0 = p.PrivilegedProcessorTime;
                             m_threadIds.Add(threadId);
                             return ProbeDisposable.Create(() =>
                             {
                                 //if (GetCurrentWin32ThreadId() != tid) Debugger.Break();
-                                var t1 = GetCurrentProcessThread().PrivilegedProcessorTime;
-                                lock (m_threadIds)
+                                var p2 = GetCurrentProcessThread();
+                                if (p2 != null)
                                 {
-                                    m_sum += t1 - t0;
-                                    m_threadIds.Remove(threadId);
+                                    var t1 = p2.PrivilegedProcessorTime;
+                                    lock (m_threadIds)
+                                    {
+                                        m_sum += t1 - t0;
+                                        m_threadIds.Remove(threadId);
+                                    }
                                 }
                             });
                         }
