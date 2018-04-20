@@ -5,22 +5,24 @@ namespace Aardvark.Base
 {
     public static class EnumHelpers
     {
-        static Dict<Type, Dict<long, Pair<object>>> s_neighbourValuesDicts = new Dict<Type, Dict<long, Pair<object>>>();
+        static Dict<Type, Dict<long, (object, object)>> s_neighbourValuesDicts = new Dict<Type, Dict<long, (object, object)>>();
 
-        static Dict<long, Pair<object>> GetNeighbourValuesDict<T>(Type enumType)
+        static Dict<long, (object, object)> GetNeighbourValuesDict<T>(Type enumType)
         {
-            Requires.That(enumType.IsEnum);
+            if (!enumType.IsEnum) throw new ArgumentException(nameof(enumType));
 
-            Dict<long, Pair<object>> neighbourValuesDict;
-            if (!s_neighbourValuesDicts.TryGetValue(enumType, out neighbourValuesDict))
+            if (!s_neighbourValuesDicts.TryGetValue(enumType, out Dict<long, (object, object)> neighbourValuesDict))
             {
                 var values = (T[])Enum.GetValues(enumType);
 
-                neighbourValuesDict = new Dict<long, Pair<object>>();
+                neighbourValuesDict = new Dict<long, (object, object)>();
                 for (int i = 0; i < values.Length; i++)
                 {
-                    neighbourValuesDict[Convert.ToInt64(values[i])] = new Pair<object>(
-                        values[(i > 0 ? i : values.Length) - 1], values[i < values.Length - 1 ? i + 1 : 0]); // previous and next value
+                    neighbourValuesDict[Convert.ToInt64(values[i])] = 
+                        (
+                            values[(i > 0 ? i : values.Length) - 1], 
+                            values[i < values.Length - 1 ? i + 1 : 0]
+                        ); // previous and next value
                 }
 
                 s_neighbourValuesDicts[enumType] = neighbourValuesDict;
@@ -38,9 +40,8 @@ namespace Aardvark.Base
             var neighbourValuesDict = GetNeighbourValuesDict<T>(typeof(T));
 
             var intValue = Convert.ToInt64(enumValue);
-            Pair<object> result;
-            neighbourValuesDict.TryGetValue(intValue, out result);
-            return (T)result.E0;
+            neighbourValuesDict.TryGetValue(intValue, out (object, object) result);
+            return (T)result.Item1;
         }
 
         /// <summary>
@@ -52,16 +53,15 @@ namespace Aardvark.Base
             var neighbourValuesDict = GetNeighbourValuesDict<T>(typeof(T));
 
             var intValue = Convert.ToInt64(enumValue);
-            Pair<object> result;
-            neighbourValuesDict.TryGetValue(intValue, out result);
-            return (T)result.E1;
+            neighbourValuesDict.TryGetValue(intValue, out (object, object) result);
+            return (T)result.Item2;
         }
 
-        static Dictionary<Type, Tup<Array, Dictionary<long, int>>> s_valueIndexMapping = new Dictionary<Type, Tup<Array, Dictionary<long, int>>>(); // long = worst case enum value
+        static Dictionary<Type, (Array, Dictionary<long, int>)> s_valueIndexMapping = new Dictionary<Type, (Array, Dictionary<long, int>)>(); // long = worst case enum value
 
-        static Tup<Array, Dictionary<long, int>> GetValueIndexMapping(Type enumType)
+        static (Array, Dictionary<long, int>) GetValueIndexMapping(Type enumType)
         {
-            Requires.That(enumType.IsEnum);
+            if (!enumType.IsEnum) throw new ArgumentException(nameof(enumType));
 
             return s_valueIndexMapping.GetCreate(enumType, et =>
             {
@@ -69,7 +69,7 @@ namespace Aardvark.Base
                 var enumIndices = new Dictionary<long, int>();
                 for (int i = 0; i < enumValues.Length; i++)
                     enumIndices.Add(Convert.ToInt64(enumValues.GetValue(i)), i);
-                return Tup.Create(enumValues, enumIndices);
+                return (enumValues, enumIndices);
             });
         }
 
@@ -79,7 +79,7 @@ namespace Aardvark.Base
         public static int GetIndex<T>(T enumValue)
         {
             var mapping = GetValueIndexMapping(typeof(T));
-            return mapping.E1[Convert.ToInt64(enumValue)];
+            return mapping.Item2[Convert.ToInt64(enumValue)];
         }
 
         /// <summary>
@@ -88,7 +88,7 @@ namespace Aardvark.Base
         public static int GetIndex(Type enumType, object enumValue)
         {
             var mapping = GetValueIndexMapping(enumType);
-            return mapping.E1[Convert.ToInt64(enumValue)]; 
+            return mapping.Item2[Convert.ToInt64(enumValue)]; 
         }
 
         /// <summary>
@@ -97,7 +97,7 @@ namespace Aardvark.Base
         public static int GetValue(Type enumType, int index)
         {
             var mapping = GetValueIndexMapping(enumType);
-            return (int)mapping.E0.GetValue(index);
+            return (int)mapping.Item1.GetValue(index);
         }
 
         /// <summary>
@@ -106,7 +106,7 @@ namespace Aardvark.Base
         public static T GetValue<T>(int index)
         {
             var mapping = GetValueIndexMapping(typeof(T));
-            return (T)mapping.E0.GetValue(index);
+            return (T)mapping.Item1.GetValue(index);
         }
     }
 }

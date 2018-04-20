@@ -8,9 +8,9 @@ open Aardvark.Base
 module TypeBuilderOld =
     
     let private bAss = 
-        AppDomain.CurrentDomain.DefineDynamicAssembly(
+        AssemblyBuilder.DefineDynamicAssembly(
             AssemblyName "TypeBuilder", 
-            AssemblyBuilderAccess.RunAndSave
+            AssemblyBuilderAccess.Run
         )
 
     let private bMod =
@@ -114,7 +114,7 @@ module TypeBuilderOld =
 
         il.Emit(OpCodes.Ret)
 
-        let t = bType.CreateType()
+        let t = bType.CreateTypeInfo()
 
         let delegates =
             fields |> List.map (fun (_, f, _,_,code) ->
@@ -224,7 +224,7 @@ module TypeBuilderOld =
 
         il.Emit(OpCodes.Ret)
 
-        let t = bType.CreateType()
+        let t = bType.CreateTypeInfo()
 
         let delegates =
             fields |> List.map (fun (name, f,_,_, code) ->
@@ -495,9 +495,9 @@ module TypeBuilder =
 
         type NewTypeBuilder() =
             let bAss =
-                AppDomain.CurrentDomain.DefineDynamicAssembly(
+                AssemblyBuilder.DefineDynamicAssembly(
                     AssemblyName "asdsads",
-                    AssemblyBuilderAccess.RunAndSave
+                    AssemblyBuilderAccess.Run
                 )
 
             let bMod = bAss.DefineDynamicModule("MainModule")
@@ -535,13 +535,13 @@ module TypeBuilder =
                 let bType = bMod.DefineType(Guid.NewGuid() |> string)
                 let (s, ()) = b { baseType = typeof<obj>; builder = bType; delegates = HMap.empty }
 
-                let t = s.builder.CreateType()
+                let t = s.builder.CreateTypeInfo()
 
                 for (v,k) in HMap.toSeq s.delegates do
                     let f = t.GetField(v.Name, BindingFlags.Static ||| BindingFlags.NonPublic)
                     f.SetValue(null, k t)
 
-                t
+                t :> Type
 
         let newtype = NewTypeBuilder()
 

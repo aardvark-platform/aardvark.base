@@ -1,8 +1,4 @@
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using Aardvark.Base;
 
 namespace Aardvark.Base
 {
@@ -11,7 +7,6 @@ namespace Aardvark.Base
     /// </summary>
     public static partial class TensorExtensions
     {
-
         #region Image Scaling
 
         public static void SetScaledNearest(this Matrix<byte> targetMat, Matrix<byte> sourceMat)
@@ -19,6 +14,7 @@ namespace Aardvark.Base
             targetMat.SetScaledLinear(sourceMat, (x, a, b) => x < 0.5 ? a : b,
                                                  (x, a, b) => x < 0.5 ? a : b);
         }
+
         /// <summary>
         /// Use supplied linear interpolators in x and y to scale the source matrix into the target
         /// matrix.
@@ -72,7 +68,7 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Use Lanczos Interpoation to scale the source matrix into the target matrix.
+        /// Use Lanczos Interpolation to scale the source matrix into the target matrix.
         /// </summary>
         public static void SetScaledLanczos(this Matrix<byte> targetMat, Matrix<byte> sourceMat)
         {
@@ -94,6 +90,7 @@ namespace Aardvark.Base
             targetMat.SetScaledLinear(sourceMat, (x, a, b) => x < 0.5 ? a : b,
                                                  (x, a, b) => x < 0.5 ? a : b);
         }
+
         /// <summary>
         /// Use supplied linear interpolators in x and y to scale the source matrix into the target
         /// matrix.
@@ -147,7 +144,7 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Use Lanczos Interpoation to scale the source matrix into the target matrix.
+        /// Use Lanczos Interpolation to scale the source matrix into the target matrix.
         /// </summary>
         public static void SetScaledLanczos(this Matrix<ushort> targetMat, Matrix<ushort> sourceMat)
         {
@@ -169,6 +166,7 @@ namespace Aardvark.Base
             targetMat.SetScaledLinear(sourceMat, (x, a, b) => x < 0.5 ? a : b,
                                                  (x, a, b) => x < 0.5 ? a : b);
         }
+
         /// <summary>
         /// Use supplied linear interpolators in x and y to scale the source matrix into the target
         /// matrix.
@@ -221,7 +219,7 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Use Lanczos Interpoation to scale the source matrix into the target matrix.
+        /// Use Lanczos Interpolation to scale the source matrix into the target matrix.
         /// </summary>
         public static void SetScaledLanczos(this Matrix<float> targetMat, Matrix<float> sourceMat)
         {
@@ -242,6 +240,7 @@ namespace Aardvark.Base
             targetMat.SetScaledLinear(sourceMat, (x, a, b) => x < 0.5 ? a : b,
                                                  (x, a, b) => x < 0.5 ? a : b);
         }
+
         /// <summary>
         /// Use supplied linear interpolators in x and y to scale the source matrix into the target
         /// matrix.
@@ -295,7 +294,7 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Use Lanczos Interpoation to scale the source matrix into the target matrix.
+        /// Use Lanczos Interpolation to scale the source matrix into the target matrix.
         /// </summary>
         public static void SetScaledLanczos(this Matrix<byte, C3b> targetMat, Matrix<byte, C3b> sourceMat)
         {
@@ -317,6 +316,7 @@ namespace Aardvark.Base
             targetMat.SetScaledLinear(sourceMat, (x, a, b) => x < 0.5 ? a : b,
                                                  (x, a, b) => x < 0.5 ? a : b);
         }
+
         /// <summary>
         /// Use supplied linear interpolators in x and y to scale the source matrix into the target
         /// matrix.
@@ -370,7 +370,7 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Use Lanczos Interpoation to scale the source matrix into the target matrix.
+        /// Use Lanczos Interpolation to scale the source matrix into the target matrix.
         /// </summary>
         public static void SetScaledLanczos(this Matrix<ushort, C3us> targetMat, Matrix<ushort, C3us> sourceMat)
         {
@@ -392,6 +392,7 @@ namespace Aardvark.Base
             targetMat.SetScaledLinear(sourceMat, (x, a, b) => x < 0.5 ? a : b,
                                                  (x, a, b) => x < 0.5 ? a : b);
         }
+
         /// <summary>
         /// Use supplied linear interpolators in x and y to scale the source matrix into the target
         /// matrix.
@@ -444,7 +445,7 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Use Lanczos Interpoation to scale the source matrix into the target matrix.
+        /// Use Lanczos Interpolation to scale the source matrix into the target matrix.
         /// </summary>
         public static void SetScaledLanczos(this Matrix<float, C3f> targetMat, Matrix<float, C3f> sourceMat)
         {
@@ -465,6 +466,7 @@ namespace Aardvark.Base
             targetMat.SetScaledLinear(sourceMat, (x, a, b) => x < 0.5 ? a : b,
                                                  (x, a, b) => x < 0.5 ? a : b);
         }
+
         /// <summary>
         /// Use supplied linear interpolators in x and y to scale the source matrix into the target
         /// matrix.
@@ -518,7 +520,7 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Use Lanczos Interpoation to scale the source matrix into the target matrix.
+        /// Use Lanczos Interpolation to scale the source matrix into the target matrix.
         /// </summary>
         public static void SetScaledLanczos(this Matrix<byte, C4b> targetMat, Matrix<byte, C4b> sourceMat)
         {
@@ -540,6 +542,7 @@ namespace Aardvark.Base
             targetMat.SetScaledLinear(sourceMat, (x, a, b) => x < 0.5 ? a : b,
                                                  (x, a, b) => x < 0.5 ? a : b);
         }
+
         /// <summary>
         /// Use supplied linear interpolators in x and y to scale the source matrix into the target
         /// matrix.
@@ -593,7 +596,7 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Use Lanczos Interpoation to scale the source matrix into the target matrix.
+        /// Use Lanczos Interpolation to scale the source matrix into the target matrix.
         /// </summary>
         public static void SetScaledLanczos(this Matrix<ushort, C4us> targetMat, Matrix<ushort, C4us> sourceMat)
         {
@@ -615,6 +618,7 @@ namespace Aardvark.Base
             targetMat.SetScaledLinear(sourceMat, (x, a, b) => x < 0.5 ? a : b,
                                                  (x, a, b) => x < 0.5 ? a : b);
         }
+
         /// <summary>
         /// Use supplied linear interpolators in x and y to scale the source matrix into the target
         /// matrix.
@@ -667,7 +671,7 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Use Lanczos Interpoation to scale the source matrix into the target matrix.
+        /// Use Lanczos Interpolation to scale the source matrix into the target matrix.
         /// </summary>
         public static void SetScaledLanczos(this Matrix<float, C4f> targetMat, Matrix<float, C4f> sourceMat)
         {

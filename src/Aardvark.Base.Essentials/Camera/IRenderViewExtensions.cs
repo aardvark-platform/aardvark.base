@@ -48,9 +48,7 @@ namespace Aardvark.Base
         /// Returns the multiplied View-Projection transformation.
         /// </summary>
         public static Trafo3d ViewProjTrafo(this IViewProjection vp)
-        {
-            return vp.View.ViewTrafo * vp.Projection.ProjectionTrafo;
-        }
+            => vp.View.ViewTrafo * vp.Projection.ProjectionTrafo;
 
         /// <summary>
         /// Builds a hull from the given view-projection (left, right, top, bottom, near, far).
@@ -58,9 +56,7 @@ namespace Aardvark.Base
         /// A point inside the visual hull will have positive height to all planes.
         /// </summary>
         public static Hull3d GetVisualHull(this IViewProjection vp)
-        {
-            return vp.ViewProjTrafo().GetVisualHull();
-        }
+            => vp.ViewProjTrafo().GetVisualHull();
 
         /// <summary>
         /// Builds a hull from the given view-projection transformation (left, right, top, bottom, near, far).

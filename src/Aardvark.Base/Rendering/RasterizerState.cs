@@ -1,35 +1,22 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Aardvark.Base.Rendering
+﻿namespace Aardvark.Base.Rendering
 {
     public struct RasterizerState
     {
-        private DepthTestMode m_depthTest;
-        private CullMode m_cullMode;
-        private BlendMode m_blendMode; 
-        private FillMode m_fillMode ;
-        private StencilMode m_stencilMode;
-
-        public DepthTestMode DepthTest { get { return m_depthTest; } set { m_depthTest = value; } }
-        public CullMode CullMode { get { return m_cullMode; } set { m_cullMode = value; } }
-        public BlendMode BlendMode { get { return m_blendMode; } set { m_blendMode = value; } }
-        public FillMode FillMode { get { return m_fillMode; } set { m_fillMode = value; } }
-        public StencilMode StencilMode { get { return m_stencilMode; } set { m_stencilMode = value; } }
+        public DepthTestMode DepthTest { get; set; }
+        public CullMode CullMode { get; set; }
+        public BlendMode BlendMode { get; set; }
+        public FillMode FillMode { get; set; }
+        public StencilMode StencilMode { get; set; }
 
         #region Constructors
 
         public RasterizerState(RasterizerState old)
         {
-            m_depthTest = old.DepthTest;
-            m_cullMode = old.CullMode;
-            m_blendMode = old.BlendMode;
-            m_fillMode = old.FillMode;
-            m_stencilMode = old.StencilMode;
+            DepthTest = old.DepthTest;
+            CullMode = old.CullMode;
+            BlendMode = old.BlendMode;
+            FillMode = old.FillMode;
+            StencilMode = old.StencilMode;
         }
 
         #endregion
@@ -37,13 +24,8 @@ namespace Aardvark.Base.Rendering
         #region Methods
 
         public RasterizerState ToPremultipliedAlpha()
-        {
-            return new RasterizerState(this)
-            {
-                BlendMode = BlendMode.ToPremultipliedAlpha()
-            };
-        }
-
+            => new RasterizerState(this) { BlendMode = BlendMode.ToPremultipliedAlpha() };
+        
         #endregion
 
         #region Constants
@@ -77,9 +59,8 @@ namespace Aardvark.Base.Rendering
 
         public override bool Equals(object obj)
         {
-            if (obj is RasterizerState)
+            if (obj is RasterizerState rs)
             {
-                var rs = (RasterizerState)obj;
                 return rs.DepthTest == DepthTest && rs.CullMode == CullMode && rs.BlendMode.Equals(BlendMode) && rs.StencilMode.Equals(StencilMode) && rs.FillMode == FillMode;
             }
             else return false;

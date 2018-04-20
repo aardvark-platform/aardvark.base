@@ -1,9 +1,4 @@
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using Aardvark.Base;
-using Aardvark.Base.CSharp;
 
 namespace Aardvark.Base
 {
@@ -12,7 +7,6 @@ namespace Aardvark.Base
     /// </summary>
     public static partial class TensorExtensions
     {
-
         #region Conversions (Matrix, Volume) to PixImage<T>
 
         public static PixImage<T> ToPixImage<T>(this Matrix<T> matrix)
@@ -462,6 +456,5 @@ namespace Aardvark.Base
         }
 
         #endregion
-
     }
 }

@@ -10,7 +10,7 @@ namespace Aardvark.Base
     {
         public static IEnumerable<T> Generate<T>(this Func<T> anotherElement)
         {
-            Requires.NotNull(anotherElement);
+            if (anotherElement is null) throw new ArgumentNullException(nameof(anotherElement));
             while (true) yield return anotherElement();
         }
 
@@ -19,15 +19,7 @@ namespace Aardvark.Base
             while (true) yield return Guid.NewGuid();
         }
     }
-
-    public static class IEnumerableFun
-    {
-        public static SymbolSet ToSymbolSet(this IEnumerable<Symbol> symbols)
-        {
-            return new SymbolSet(symbols);
-        }
-    }
-
+    
     public static partial class EnumerableEx
     {
         #region Indexed Values
@@ -66,18 +58,7 @@ namespace Aardvark.Base
         }
 
         #endregion
-
-        #region Comparable Indexed Values
-
-        public static IEnumerable<ComparableIndexedValue<T>> ComparableIndexedValues<T>(
-                this IEnumerable<T> self)
-            where T : IComparable<T>
-        {
-            return self.Select((item, i) => new ComparableIndexedValue<T>(i, item));
-        }
-
-        #endregion
-
+        
         #region Special Selects
 
         public static IEnumerable<T> WhereNotNull<T>(this IEnumerable<T> self)
@@ -122,8 +103,8 @@ namespace Aardvark.Base
         public static IEnumerable<T> TakePeriodic<T>(
             this IEnumerable<T> self, int stride)
         {
-            Requires.NotNull(self);
-            Requires.That(stride >= 1);
+            if (self is null) throw new ArgumentNullException(nameof(self));
+            if (stride < 1) throw new ArgumentOutOfRangeException(nameof(stride));
 
             var i = 0;
             foreach (var s in self) if (i++ % stride == 0) yield return s;
@@ -251,8 +232,8 @@ namespace Aardvark.Base
         public static IEnumerable<T> Zip<T>(
             this IEnumerable<T> self, IEnumerable<T> other)
         {
-            Requires.NotNull(self);
-            Requires.NotNull(other);
+            if (self is null) throw new ArgumentNullException(nameof(self));
+            if (other is null) throw new ArgumentNullException(nameof(other));
 
             var e0 = self.GetEnumerator();
             var e1 = other.GetEnumerator();
@@ -268,9 +249,9 @@ namespace Aardvark.Base
             this IEnumerable<T> self,
             IEnumerable<T> other1, IEnumerable<T> other2)
         {
-            Requires.NotNull(self);
-            Requires.NotNull(other1);
-            Requires.NotNull(other2);
+            if (self is null) throw new ArgumentNullException(nameof(self));
+            if (other1 is null) throw new ArgumentNullException(nameof(other1));
+            if (other2 is null) throw new ArgumentNullException(nameof(other2));
 
             var e0 = self.GetEnumerator();
             var e1 = other1.GetEnumerator();
@@ -287,8 +268,8 @@ namespace Aardvark.Base
         public static IEnumerable<T> ZipAll<T>(
             this IEnumerable<T> self, IEnumerable<T> other)
         {
-            Requires.NotNull(self);
-            Requires.NotNull(other);
+            if (self is null) throw new ArgumentNullException(nameof(self));
+            if (other is null) throw new ArgumentNullException(nameof(other));
 
             var e0 = self.GetEnumerator();
             var e1 = other.GetEnumerator();
@@ -310,9 +291,9 @@ namespace Aardvark.Base
             IEnumerable<T> other1,
             IEnumerable<T> other2)
         {
-            Requires.NotNull(self);
-            Requires.NotNull(other1);
-            Requires.NotNull(other2);
+            if (self is null) throw new ArgumentNullException(nameof(self));
+            if (other1 is null) throw new ArgumentNullException(nameof(other1));
+            if (other2 is null) throw new ArgumentNullException(nameof(other2));
 
             var e0 = self.GetEnumerator();
             var e1 = other1.GetEnumerator();
@@ -351,47 +332,47 @@ namespace Aardvark.Base
             while (t2) { yield return e2.Current; t2 = e2.MoveNext(); }
         }
 
-        public static IEnumerable<Pair<T>> ZipPairs<T>(
+        public static IEnumerable<(T, T)> ZipPairs<T>(
             this IEnumerable<T> self, IEnumerable<T> other)
         {
-            Requires.NotNull(self);
-            Requires.NotNull(other);
+            if (self is null) throw new ArgumentNullException(nameof(self));
+            if (other is null) throw new ArgumentNullException(nameof(other));
 
             var e0 = self.GetEnumerator();
             var e1 = other.GetEnumerator();
 
             while (e0.MoveNext() && e1.MoveNext())
-                yield return new Pair<T>(e0.Current, e1.Current);
+                yield return (e0.Current, e1.Current);
         }
 
-        public static IEnumerable<Triple<T>> ZipTriples<T>(
+        public static IEnumerable<(T, T, T)> ZipTriples<T>(
             this IEnumerable<T> self,
             IEnumerable<T> other1,
             IEnumerable<T> other2)
         {
-            Requires.NotNull(self);
-            Requires.NotNull(other1);
-            Requires.NotNull(other2);
+            if (self is null) throw new ArgumentNullException(nameof(self));
+            if (other1 is null) throw new ArgumentNullException(nameof(other1));
+            if (other2 is null) throw new ArgumentNullException(nameof(other2));
 
             var e0 = self.GetEnumerator();
             var e1 = other1.GetEnumerator();
             var e2 = other2.GetEnumerator();
 
             while (e0.MoveNext() && e1.MoveNext() && e2.MoveNext())
-                yield return new Triple<T>(e0.Current, e1.Current, e2.Current);
+                yield return (e0.Current, e1.Current, e2.Current);
         }
 
-        public static IEnumerable<Tup<T0, T1>> ZipTuples<T0, T1>(
+        public static IEnumerable<(T0, T1)> ZipTuples<T0, T1>(
             this IEnumerable<T0> self, IEnumerable<T1> other)
         {
-            Requires.NotNull(self);
-            Requires.NotNull(other);
+            if (self is null) throw new ArgumentNullException(nameof(self));
+            if (other is null) throw new ArgumentNullException(nameof(other));
 
             var e0 = self.GetEnumerator();
             var e1 = other.GetEnumerator();
 
             while (e0.MoveNext() && e1.MoveNext())
-                yield return new Tup<T0, T1>(e0.Current, e1.Current);
+                yield return (e0.Current, e1.Current);
         }
 
         public static IEnumerable<Tup<T0, T1, T2>> ZipTuples<T0, T1, T2>(
@@ -399,9 +380,9 @@ namespace Aardvark.Base
             IEnumerable<T1> other1,
             IEnumerable<T2> other2)
         {
-            Requires.NotNull(self);
-            Requires.NotNull(other1);
-            Requires.NotNull(other2);
+            if (self is null) throw new ArgumentNullException(nameof(self));
+            if (other1 is null) throw new ArgumentNullException(nameof(other1));
+            if (other2 is null) throw new ArgumentNullException(nameof(other2));
 
             var e0 = self.GetEnumerator();
             var e1 = other1.GetEnumerator();
@@ -420,8 +401,8 @@ namespace Aardvark.Base
             this IEnumerable<T> self, long chunkSize
             )
         {
-            Requires.NotNull(self);
-            Requires.That(chunkSize >= 1);
+            if (self is null) throw new ArgumentNullException(nameof(self));
+            if (chunkSize < 1) throw new ArgumentOutOfRangeException(nameof(chunkSize));
 
             var chunk = new List<T>();
 
@@ -444,9 +425,9 @@ namespace Aardvark.Base
             this IEnumerable<T> self, long chunkSize, Func<T, Tr> selector
             )
         {
-            Requires.NotNull(self);
-            Requires.That(chunkSize >= 1);
-            Requires.NotNull(selector);
+            if (self is null) throw new ArgumentNullException(nameof(self));
+            if (chunkSize < 1) throw new ArgumentOutOfRangeException(nameof(chunkSize));
+            if (selector is null) throw new ArgumentNullException(nameof(selector));
 
             var chunk = new List<Tr>();
 
@@ -473,9 +454,9 @@ namespace Aardvark.Base
         /// A B C D ... -> (A, B) (C, D) ...
         /// If sequence does not have even elements the last element is not selected.
         /// </summary>
-        public static IEnumerable<Pair<T>> PairSequence<T>(this IEnumerable<T> self)
+        public static IEnumerable<(T, T)> PairSequence<T>(this IEnumerable<T> self)
         {
-            Requires.NotNull(self);
+            if (self is null) throw new ArgumentNullException(nameof(self));
 
             var first = self.TakePeriodic(2);
             var second = self.Skip(1).TakePeriodic(2);
@@ -487,9 +468,9 @@ namespace Aardvark.Base
         /// wrap = false: A B C D ... -> (A, B) (B, C) (C, D) ...
         /// wrap = true:  A B C D -> (A, B) (B, C) (C, D) (D, A)
         /// </summary>
-        public static IEnumerable<Pair<T>> PairChain<T>(this IEnumerable<T> self, bool wrap = false)
+        public static IEnumerable<(T, T)> PairChain<T>(this IEnumerable<T> self, bool wrap = false)
         {
-            Requires.NotNull(self);
+            if (self is null) throw new ArgumentNullException(nameof(self));
 
             using (var e = self.GetEnumerator())
             {
@@ -500,11 +481,11 @@ namespace Aardvark.Base
                     while (e.MoveNext())
                     {
                         var x = e.Current;
-                        yield return new Pair<T>(prev, x);
+                        yield return (prev, x);
                         prev = x;
                     }
                     if (wrap)
-                        yield return new Pair<T>(prev, first);
+                        yield return (prev, first);
                 }
             }
         }
@@ -513,9 +494,9 @@ namespace Aardvark.Base
         /// wrap = false: A B C D ... -> (0, 1) (1, 2) (2, 3) ...
         /// wrap = true:  A B C D -> (0, 1) (1, 2) (2, 3) (3, 0)
         /// </summary>
-        public static IEnumerable<Pair<int>> PairChainIndexed<T>(this IEnumerable<T> self, bool wrap = false)
+        public static IEnumerable<(int, int)> PairChainIndexed<T>(this IEnumerable<T> self, bool wrap = false)
         {
-            Requires.NotNull(self);
+            if (self is null) throw new ArgumentNullException(nameof(self));
 
             using (var e = self.GetEnumerator())
             {
@@ -525,11 +506,11 @@ namespace Aardvark.Base
                     while (e.MoveNext())
                     {
                         var x = prev + 1;
-                        yield return new Pair<int>(prev, x);
+                        yield return (prev, x);
                         prev = x;
                     }
                     if (wrap)
-                        yield return new Pair<int>(prev, 0);
+                        yield return (prev, 0);
                 }
             }
         }
@@ -537,7 +518,7 @@ namespace Aardvark.Base
         /// <summary>
         /// A B C D -> (A, B) (B, C) (C, D) (D, A)
         /// </summary>
-        public static IEnumerable<Pair<T>> PairChainWrap<T>(this IEnumerable<T> self)
+        public static IEnumerable<(T, T)> PairChainWrap<T>(this IEnumerable<T> self)
         {
             return PairChain(self, true);
         }
@@ -545,7 +526,7 @@ namespace Aardvark.Base
         /// <summary>
         /// A B C -> (0, 1) (1, 2) (2, 0)
         /// </summary>
-        public static IEnumerable<Pair<int>> PairChainWrapIndexed<T>(this IEnumerable<T> self)
+        public static IEnumerable<(int, int)> PairChainWrapIndexed<T>(this IEnumerable<T> self)
         {
             return PairChainIndexed(self, true);
         }
@@ -553,7 +534,7 @@ namespace Aardvark.Base
         /// <summary>
         /// A B C -> (A, A) (A, B) (A, C) (B, A) (B, B) (B, C) (C, A) (C, B) (C, C)
         /// </summary>
-        public static IEnumerable<Pair<T>> Pairs<T>(this IEnumerable<T> self)
+        public static IEnumerable<(T, T)> Pairs<T>(this IEnumerable<T> self)
         {
             return Pairs(self, false, false);
         }
@@ -564,16 +545,16 @@ namespace Aardvark.Base
         /// excludeReversePairs:   A B C -> (A, A) (A, B) (A, C) (B, B) (B, C) (C, C)
         /// both:                  A B C -> (A, B) (A, C) (B, C)
         /// </summary>
-        public static IEnumerable<Pair<T>> Pairs<T>(this IEnumerable<T> self, bool excludeIdenticalPairs, bool excludeReversePairs)
+        public static IEnumerable<(T, T)> Pairs<T>(this IEnumerable<T> self, bool excludeIdenticalPairs, bool excludeReversePairs)
         {
-            Requires.NotNull(self);
+            if (self is null) throw new ArgumentNullException(nameof(self));
 
             var a = self.ToArray();
             for (int i = 0; i < a.Length; i++)
                 for (int j = excludeReversePairs ? i : 0; j < a.Length; j++)
                 {
                     if (excludeIdenticalPairs && i == j) continue;
-                    yield return Pair.Create(a[i], a[j]);
+                    yield return (a[i], a[j]);
                 }
         }
 
@@ -583,7 +564,7 @@ namespace Aardvark.Base
         /// </summary>
         public static int PairsCount<T>(this IEnumerable<T> self, bool excludeIdenticalPairs, bool excludeReversePairs)
         {
-            Requires.NotNull(self);
+            if (self is null) throw new ArgumentNullException(nameof(self));
 
             var c = self.Count();
             if(excludeIdenticalPairs)
@@ -603,18 +584,18 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// [A B C].Pair([x y z]) -> (A, x) (A, y) (A, z) (B, x) (B, y) (B, z) (C, x) (C, y) (C, z)
+        /// [A B C].Pairs([x y z]) -> (A, x) (A, y) (A, z) (B, x) (B, y) (B, z) (C, x) (C, y) (C, z)
         /// </summary>
-        public static IEnumerable<Pair<T>> Pairs<T>(this IEnumerable<T> self, IEnumerable<T> other)
+        public static IEnumerable<(T, T)> Pairs<T>(this IEnumerable<T> self, IEnumerable<T> other)
         {
-            Requires.NotNull(self);
-            Requires.NotNull(other);
+            if (self is null) throw new ArgumentNullException(nameof(self));
+            if (other is null) throw new ArgumentNullException(nameof(other));
 
             var a = self.ToArray();
             var b = other.ToArray();
             for (int i = 0; i < a.Length; i++)
                 for (int j = 0; j < b.Length; j++)
-                    yield return Pair.Create(a[i], b[j]);
+                    yield return (a[i], b[j]);
         }
 
         #endregion
@@ -625,9 +606,9 @@ namespace Aardvark.Base
         /// A B C D ... -> (A, B, C) (D, E, F) ...
         /// If sequence does not have even elements the last element is not selected.
         /// </summary>
-        public static IEnumerable<Triple<T>> TripleSequence<T>(this IEnumerable<T> self)
+        public static IEnumerable<(T, T, T)> TripleSequence<T>(this IEnumerable<T> self)
         {
-            Requires.NotNull(self);
+            if (self is null) throw new ArgumentNullException(nameof(self));
 
             var first = self.TakePeriodic(3);
             var second = self.Skip(1).TakePeriodic(3);
@@ -640,9 +621,9 @@ namespace Aardvark.Base
         /// wrap = false: A B C D ... -> (A, B, C) (B, C, D) (C, D, E) ...
         /// wrap = true:  A B C D -> (A, B, C) (B, C, D) (C, D, A) (D, A, B)
         /// </summary>
-        public static IEnumerable<Triple<T>> TripleChain<T>(this IEnumerable<T> self, bool wrap = false)
+        public static IEnumerable<(T, T, T)> TripleChain<T>(this IEnumerable<T> self, bool wrap = false)
         {
-            Requires.NotNull(self);
+            if (self is null) throw new ArgumentNullException(nameof(self));
 
             using (var e = self.GetEnumerator())
             {
@@ -657,14 +638,14 @@ namespace Aardvark.Base
                         while (e.MoveNext())
                         {
                             var x = e.Current;
-                            yield return new Triple<T>(prev1, prev2, x);
+                            yield return (prev1, prev2, x);
                             prev1 = prev2;
                             prev2 = x;
                         }
                         if (wrap)
                         {
-                            yield return new Triple<T>(prev1, prev2, first);
-                            yield return new Triple<T>(prev2, first, second);
+                            yield return (prev1, prev2, first);
+                            yield return (prev2, first, second);
                         }
                     }
                 }
@@ -674,7 +655,7 @@ namespace Aardvark.Base
         /// <summary>
         /// A B C D -> (A, B, C) (B, C, D) (C, D, A) (D, A, B)
         /// </summary>
-        public static IEnumerable<Triple<T>> TripleChainWrap<T>(this IEnumerable<T> self)
+        public static IEnumerable<(T, T, T)> TripleChainWrap<T>(this IEnumerable<T> self)
         {
             return TripleChain(self, true);
         }
@@ -682,7 +663,7 @@ namespace Aardvark.Base
         /// <summary>
         /// A B C -> AAA, AAB, AAC, ABA, ABB, ABC, ACA, ACB, ACC, BAA, BAB, BAC, BBA, BBB, BBC, BCA, BCB, BCC, CAA, CAB, CAC, CBA, CBB, CBC, CCA, CCB, CCC
         /// </summary>
-        public static IEnumerable<Triple<T>> Triples<T>(this IEnumerable<T> self)
+        public static IEnumerable<(T, T, T)> Triples<T>(this IEnumerable<T> self)
         {
             return Triples(self, false, false);
         }
@@ -693,9 +674,9 @@ namespace Aardvark.Base
         /// excludeReversePairs:   A B C -> AAA, AAB, AAC, ABA, ABB, ABC, ACA, ACB, ACC, BAB, BAC, BBB, BBC, BCB, BCC, CAC, CBC, CCC
         /// both:                  A B C -> ABC
         /// </summary>
-        public static IEnumerable<Triple<T>> Triples<T>(this IEnumerable<T> self, bool excludeIdenticalPairs, bool excludeReversePairs)
+        public static IEnumerable<(T, T, T)> Triples<T>(this IEnumerable<T> self, bool excludeIdenticalPairs, bool excludeReversePairs)
         { //todo: check implementation; + what about excludePermutations? reversePairs do not extend to triples.
-            Requires.NotNull(self);
+            if (self is null) throw new ArgumentNullException(nameof(self));
 
             var a = self.ToArray();
             for (int i = 0; i < a.Length; i++)
@@ -705,44 +686,19 @@ namespace Aardvark.Base
                     for (int k = excludeReversePairs ? j : 0; k < a.Length; k++)
                     {
                         if (excludeIdenticalPairs && (j == k || i == k)) continue;
-                        yield return new Triple<T>(a[i], a[j], a[k]);
+                        yield return (a[i], a[j], a[k]);
                     }
                 }
         }
-/*
+       
         /// <summary>
-        /// Computes how many triples method Triples() will generate.
-        /// Is efficient on ILists(of T), but will fully enumerate other IEnumerables.
+        /// [A B].Triples([x y], [X Y]) -> (A, x, X) (A, x, Y) (A, y, X) (A, y, Y) (B, x, X) (B, x, Y) (B, y, X) (B, y, Y) (C, x, X) (C, x, Y) (C, y, X) (C, y, Y)
         /// </summary>
-        public static int TripleCount<T>(this IEnumerable<T> self, bool excludeIdenticalPairs, bool excludeReversePairs)
+        public static IEnumerable<(T, T, T)> Triples<T>(this IEnumerable<T> self, IEnumerable<T> other1, IEnumerable<T> other2)
         {
-            Requires.NotNull(self);
-
-            var c = self.Count();
-            if (excludeIdenticalPairs)
-            {
-                if (excludeReversePairs)
-                    return (c * (c - 1) * (c - 2)) / 6;
-                else
-                    return c * (c - 1) * (c - 2);
-            }
-            else
-            {
-                if (excludeReversePairs)
-                    throw new NotImplementedException(); //todo: return ((c + 1) * c) / 2;
-                else
-                    return c * c * c;
-            }
-        }
-*/
-        /// <summary>
-        /// [A B].Triple([x y], [X Y]) -> (A, x, X) (A, x, Y) (A, y, X) (A, y, Y) (B, x, X) (B, x, Y) (B, y, X) (B, y, Y) (C, x, X) (C, x, Y) (C, y, X) (C, y, Y)
-        /// </summary>
-        public static IEnumerable<Triple<T>> Triples<T>(this IEnumerable<T> self, IEnumerable<T> other1, IEnumerable<T> other2)
-        {
-            Requires.NotNull(self);
-            Requires.NotNull(other1);
-            Requires.NotNull(other2);
+            if (self is null) throw new ArgumentNullException(nameof(self));
+            if (other1 is null) throw new ArgumentNullException(nameof(other1));
+            if (other2 is null) throw new ArgumentNullException(nameof(other2));
 
             var a = self.ToArray();
             var b = other1.ToArray();
@@ -750,7 +706,7 @@ namespace Aardvark.Base
             for (int i = 0; i < a.Length; i++)
                 for (int j = 0; j < b.Length; j++)
                     for (int k = 0; k < c.Length; k++)
-                        yield return new Triple<T>(a[i], b[j], c[k]);
+                        yield return (a[i], b[j], c[k]);
         }
 
         #endregion
@@ -772,7 +728,7 @@ namespace Aardvark.Base
         /// </summary>
         public static IEnumerable<T> Repeat<T>(this T self, long count)
         {
-            Requires.That(count >= 0);
+            if (count < 0) throw new ArgumentOutOfRangeException(nameof(count));
 
             for (long i = 0; i < count; i++) yield return self;
         }
@@ -785,7 +741,7 @@ namespace Aardvark.Base
         /// </summary>
         public static IEnumerable<T> WithRepeatedLast<T>(this IEnumerable<T> self)
         {
-            Requires.NotNull(self);
+            if (self is null) throw new ArgumentNullException(nameof(self));
             if (self.IsEmptyOrNull()) yield break;
 
             T last = default(T);
@@ -799,7 +755,7 @@ namespace Aardvark.Base
         /// </summary>
         public static IEnumerable<T> Dup<T>(this IEnumerable<T> self)
         {
-            Requires.NotNull(self);
+            if (self is null) throw new ArgumentNullException(nameof(self));
 
             foreach (var x in self) { yield return x; yield return x; }
         }
@@ -810,8 +766,8 @@ namespace Aardvark.Base
         /// </summary>
         public static IEnumerable<T> Dup<T>(this IEnumerable<T> self, int n)
         {
-            Requires.NotNull(self);
-            Requires.That(n >= 0);
+            if (self is null) throw new ArgumentNullException(nameof(self));
+            if (n < 0) throw new ArgumentOutOfRangeException(nameof(n));
 
             foreach (var x in self)
                 for (int i = 0; i < n; i++)
@@ -828,7 +784,7 @@ namespace Aardvark.Base
         /// </summary>
         public static IEnumerable<T> AddFirstToEnd<T>(this IEnumerable<T> self)
         {
-            Requires.NotNull(self);
+            if (self is null) throw new ArgumentNullException(nameof(self));
 
             if (self.IsEmpty()) yield break;
 
@@ -846,7 +802,7 @@ namespace Aardvark.Base
         /// </summary>
         public static IEnumerable<T> WithFirstMovedToEnd<T>(this IEnumerable<T> self)
         {
-            Requires.NotNull(self);
+            if (self is null) throw new ArgumentNullException(nameof(self));
 
             if (self.IsEmpty()) return self;
             return self.Skip(1).Concat(self.Take(1));
@@ -859,7 +815,7 @@ namespace Aardvark.Base
         public static IEnumerable<T> Interleave<T>(
             this IEnumerable<T> self, T separator)
         {
-            Requires.NotNull(self);
+            if (self is null) throw new ArgumentNullException(nameof(self));
 
             bool notFirst = false;
             foreach (var x in self)
@@ -880,13 +836,13 @@ namespace Aardvark.Base
             this IEnumerable<TElement> elements,
             params Func<TElement, object>[] groupSelectorFuncs)
         {
-            Requires.NotNull(elements);
-            Requires.NotNull(groupSelectorFuncs);
+            if (elements is null) throw new ArgumentNullException(nameof(elements));
+            if (groupSelectorFuncs is null) throw new ArgumentNullException(nameof(groupSelectorFuncs));
 
             IEnumerable<TElement> result = elements;
             foreach (var selectorFunc in groupSelectorFuncs.Reverse())
             {
-                Requires.NotNull(selectorFunc);
+                if (selectorFunc is null) throw new ArgumentNullException(nameof(selectorFunc));
                 result = from g in
                              (from item in result group item by selectorFunc(item))
                          from e in g
@@ -935,22 +891,7 @@ namespace Aardvark.Base
             if (elements == null) return Enumerable.Empty<T>();
             return elements;
         }
-
-        public static bool SetEquals<T>(this IEnumerable<T> self, IEnumerable<T> other)
-        {
-            if (self == null && other != null) return false;
-            if (self != null && other == null) return false;
-            if (self.Count() != other.Count()) return false;
-            if (self.Count() != self.Distinct().Count()) throw new Exception("not a proper set");
-            if (other.Count() != other.Distinct().Count()) throw new Exception("not a proper set");
-
-            var tmp = new Dictionary<T, T>();
-            tmp.AddRange(self.Select(x => new KeyValuePair<T, T>(x, x)));
-            foreach (var x in other) if (!tmp.ContainsKey(x)) return false;
-
-            return true;
-        }
-
+        
         /// <summary>
         /// Compares both enumerables using SequenceEqual and additionally checks
         /// whether both enumerables are null.
@@ -973,9 +914,9 @@ namespace Aardvark.Base
 
         public static T Min<T>(this IEnumerable<T> seq, Func<T, T, bool> lessThan)
         {
-            Requires.NotNull(seq);
-            Requires.NotNull(lessThan);
-            Requires.That(!seq.IsEmptyOrNull());
+            if (seq is null) throw new ArgumentNullException(nameof(seq));
+            if (lessThan is null) throw new ArgumentNullException(nameof(lessThan));
+            if (seq.IsEmptyOrNull()) throw new ArgumentNullException(nameof(seq));
 
             var min = seq.First();
             foreach (var x in seq.Skip(1))
@@ -985,9 +926,9 @@ namespace Aardvark.Base
 
         public static T Max<T>(this IEnumerable<T> seq, Func<T, T, bool> greaterThan)
         {
-            Requires.NotNull(seq);
-            Requires.NotNull(greaterThan);
-            Requires.That(!seq.IsEmptyOrNull());
+            if (seq is null) throw new ArgumentNullException(nameof(seq));
+            if (greaterThan is null) throw new ArgumentNullException(nameof(greaterThan));
+            if (seq.IsEmptyOrNull()) throw new ArgumentNullException(nameof(seq));
 
             var max = seq.First();
             foreach (var x in seq.Skip(1))
@@ -2071,13 +2012,12 @@ namespace Aardvark.Base
         }
 
         #endregion
-
-
+        
         #region Conversions
 
         public static T[] ToArrayDebug<T>(this IEnumerable<T> self)
         {
-            Requires.NotNull(self);
+            if (self is null) throw new ArgumentNullException(nameof(self));
 
             var array = self.ToArray();
             return array;
@@ -2092,8 +2032,8 @@ namespace Aardvark.Base
         public static string ToString<T>(
             this IEnumerable<T> self, Func<T, string> format, string begin = null, string between = null, string end = null)
         {
-            Requires.NotNull(self);
-            if(format==null)
+            if (self is null) throw new ArgumentNullException(nameof(self));
+            if (format==null)
                 format = v => v == null ? "" : v.ToString();
             if (begin == null)
                 begin = "";
@@ -2128,11 +2068,16 @@ namespace Aardvark.Base
         /// <param name="duplicateValue">If a duplicate key was found, insert this element as value for the key. This value must be distinct from all other values generated by elementSelector.</param>
         /// <returns>A Dictionary(of TKey,TValue) that contains values of type TElement selected from the input sequence.</returns>
         /// <exception cref="ArgumentNullException">source or keySelector or elementSelector is null. -or- keySelector produces a key that is null.</exception>
-        public static Dictionary<TKey, TElement> ToDictionaryDistinct<TSource, TKey, TElement>(this IEnumerable<TSource> source, Func<TSource, TKey> keySelector, Func<TSource, TElement> elementSelector, TElement duplicateValue)
+        public static Dictionary<TKey, TElement> ToDictionaryDistinct<TSource, TKey, TElement>(
+            this IEnumerable<TSource> source,
+            Func<TSource, TKey> keySelector,
+            Func<TSource, TElement> elementSelector,
+            TElement duplicateValue
+            )
         {
-            Requires.NotNull(source);
-            Requires.NotNull(keySelector);
-            Requires.NotNull(elementSelector);
+            if (source is null) throw new ArgumentNullException(nameof(source));
+            if (keySelector is null) throw new ArgumentNullException(nameof(keySelector));
+            if (elementSelector is null) throw new ArgumentNullException(nameof(elementSelector));
 
             Dictionary<TKey, TElement> dictionary = new Dictionary<TKey, TElement>();
             foreach (TSource local in source)
@@ -2163,12 +2108,16 @@ namespace Aardvark.Base
         /// <param name="duplicateKeyKeepElement">If a duplicate key was found, the function is called with the element to be inserted and the duplicate element already associated with the key, and must return true if the first (original) element should be kept of false if the second (new) element should be inserted.</param>
         /// <returns>A System.Collections.Generic.Dictionary(of TKey,TValue) that contains values of type TElement selected from the input sequence.</returns>
         /// <exception cref="ArgumentNullException">Any of the arguments is null. -or- keySelector produces a key that is null.</exception>
-        public static Dictionary<TKey, TElement> ToDictionaryDistinct<TSource, TKey, TElement>(this IEnumerable<TSource> source, Func<TSource, TKey> keySelector, Func<TSource, TElement> elementSelector, Func<TElement, TElement, bool> duplicateKeyKeepElement)
+        public static Dictionary<TKey, TElement> ToDictionaryDistinct<TSource, TKey, TElement>(
+            this IEnumerable<TSource> source,
+            Func<TSource, TKey> keySelector,
+            Func<TSource, TElement> elementSelector,
+            Func<TElement, TElement, bool> duplicateKeyKeepElement)
         {
-            Requires.NotNull(source);
-            Requires.NotNull(keySelector);
-            Requires.NotNull(elementSelector);
-            Requires.NotNull(duplicateKeyKeepElement);
+            if (source is null) throw new ArgumentNullException(nameof(source));
+            if (keySelector is null) throw new ArgumentNullException(nameof(keySelector));
+            if (elementSelector is null) throw new ArgumentNullException(nameof(elementSelector));
+            if (duplicateKeyKeepElement is null) throw new ArgumentNullException(nameof(duplicateKeyKeepElement));
 
             var dictionary = new Dictionary<TKey, TElement>();
             foreach (var v in source)
@@ -2202,12 +2151,17 @@ namespace Aardvark.Base
         /// <param name="duplicateKeyElementSelector">If a duplicate key was found, the function is called with the element to be inserted and the duplicate element already associated with the key, and must return the element to be inserted instead at this key.</param>
         /// <returns>A System.Collections.Generic.Dictionary(of TKey,TValue) that contains values of type TElement selected from the input sequence.</returns>
         /// <exception cref="ArgumentNullException">Any of the arguments is null. -or- keySelector produces a key that is null.</exception>
-        public static Dictionary<TKey, TElement> ToDictionaryDistinct<TSource, TKey, TElement>(this IEnumerable<TSource> source, Func<TSource, TKey> keySelector, Func<TSource, TElement> elementSelector, Func<TElement, TElement, TElement> duplicateKeyElementSelector)
+        public static Dictionary<TKey, TElement> ToDictionaryDistinct<TSource, TKey, TElement>(
+            this IEnumerable<TSource> source,
+            Func<TSource, TKey> keySelector,
+            Func<TSource, TElement> elementSelector,
+            Func<TElement, TElement, TElement> duplicateKeyElementSelector
+            )
         {
-            Requires.NotNull(source);
-            Requires.NotNull(keySelector);
-            Requires.NotNull(elementSelector);
-            Requires.NotNull(duplicateKeyElementSelector);
+            if (source is null) throw new ArgumentNullException(nameof(source));
+            if (keySelector is null) throw new ArgumentNullException(nameof(keySelector));
+            if (elementSelector is null) throw new ArgumentNullException(nameof(elementSelector));
+            if (duplicateKeyElementSelector is null) throw new ArgumentNullException(nameof(duplicateKeyElementSelector));
 
             var dictionary = new Dictionary<TKey, TElement>();
             foreach (var v in source)
@@ -2376,6 +2330,69 @@ namespace Aardvark.Base
             foreach (var x in sequence) yield return i++;
         }
 
+        public static IEnumerable<T> SelectMany<T>(this IEnumerable<(T, T)> self)
+        {
+            foreach (var x in self)
+            {
+                yield return x.Item1;
+                yield return x.Item2;
+            }
+        }
+
+        public static IEnumerable<R> SelectMany<T, R>(this IEnumerable<T> self, Func<T, (R, R)> projection)
+        {
+            foreach (var y in self)
+            {
+                var x = projection(y);
+                yield return x.Item1;
+                yield return x.Item2;
+            }
+        }
+
+        public static IEnumerable<T> SelectMany<T>(this IEnumerable<(T, T, T)> self)
+        {
+            foreach (var x in self)
+            {
+                yield return x.Item1;
+                yield return x.Item2;
+                yield return x.Item3;
+            }
+        }
+
+        public static IEnumerable<R> SelectMany<T, R>(this IEnumerable<T> self, Func<T, (R, R, R)> projection)
+        {
+            foreach (var y in self)
+            {
+                var x = projection(y);
+                yield return x.Item1;
+                yield return x.Item2;
+                yield return x.Item3;
+            }
+        }
+
+        public static IEnumerable<T> SelectMany<T>(this IEnumerable<(T, T, T, T)> self)
+        {
+            foreach (var x in self)
+            {
+                yield return x.Item1;
+                yield return x.Item2;
+                yield return x.Item3;
+                yield return x.Item4;
+            }
+        }
+
+        public static IEnumerable<R> SelectMany<T, R>(this IEnumerable<T> self, Func<T, (R, R, R, R)> projection)
+        {
+            foreach (var y in self)
+            {
+                var x = projection(y);
+                yield return x.Item1;
+                yield return x.Item2;
+                yield return x.Item3;
+                yield return x.Item4;
+            }
+        }
+
         #endregion
 
         #region Math
@@ -2409,95 +2426,6 @@ namespace Aardvark.Base
                 sum += c;
             }
             yield return sum;
-        }
-
-        #endregion
-
-        #region Median
-
-        /// <summary>
-        /// Searches for the median-element in the Enumerable (according to cmp) and returns its value.
-        /// Runtime is in O(N) and Memory in O(N)
-        /// For partitioning use QuickMedian
-        /// </summary>
-        public static T Median<T>(this IEnumerable<T> self, Func<T, T, int> cmp)
-        {
-            var array = self.ToArray();
-            var med = array.Length / 2;
-
-            array.QuickMedian(cmp, med);
-            
-            var result = array[med];
-            array = null;
-
-            return result;
-        }
-
-        /// <summary>
-        /// Searches for the median-element in the Enumerable and returns its value.
-        /// Runtime is in O(N) and Memory in O(N)
-        /// For partitioning use QuickMedian
-        /// </summary>
-        public static T Median<T>(this IEnumerable<T> self)
-            where T : IComparable<T>
-        {
-            return Median(self, (a, b) => a.CompareTo(b));
-        }
-
-        /// <summary>
-        /// Searches for the median-element in the Array (according to cmp) and returns its value.
-        /// Does not change the given Array
-        /// Runtime is in O(N) and Memory in O(N)
-        /// For partitioning use QuickMedian
-        /// </summary>
-        public static T Median<T>(this T[] self, Func<T, T, int> cmp)
-        { 
-            var med = self.Length / 2;
-            var indices = self.CreatePermutationQuickMedian(cmp, med);
-            var result = self[indices[med]];
-            indices = null;
-
-            return result;
-        }
-
-        /// <summary>
-        /// Searches for the median-element in the Array and returns its value.
-        /// Does not change the given Array
-        /// Runtime is in O(N) and Memory in O(N)
-        /// For partitioning use QuickMedian
-        /// </summary>
-        public static T Median<T>(this T[] self)
-            where T : IComparable<T>
-        {
-            return Median(self, (a, b) => a.CompareTo(b));
-        }
-
-        /// <summary>
-        /// Searches for the median-element in the List (according to cmp) and returns its value.
-        /// Does not change the given List
-        /// Runtime is in O(N) and Memory in O(N)
-        /// For partitioning use QuickMedian
-        /// </summary>
-        public static T Median<T>(this List<T> self, Func<T, T, int> cmp)
-        {
-            var med = self.Count / 2;
-            var indices = self.CreatePermutationQuickMedian(cmp, med);
-            var result = self[indices[med]];
-            indices = null;
-
-            return result;
-        }
-
-        /// <summary>
-        /// Searches for the median-element in the List and returns its value.
-        /// Does not change the given List
-        /// Runtime is in O(N) and Memory in O(N)
-        /// For partitioning use QuickMedian
-        /// </summary>
-        public static T Median<T>(this List<T> self)
-            where T : IComparable<T>
-        {
-            return Median(self, (a, b) => a.CompareTo(b));
         }
 
         #endregion

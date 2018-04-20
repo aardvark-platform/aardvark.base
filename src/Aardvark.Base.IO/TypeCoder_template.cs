@@ -91,19 +91,6 @@ namespace Aardvark.Base.Coder
             { typeof(IntSet), (c,o) => { var v = (IntSet)o; c.CodeIntSet(ref v); } },
             { typeof(SymbolSet), (c,o) => { var v = (SymbolSet)o; c.CodeSymbolSet(ref v); } },
 
-            // [planned cleanup ISSUE 20080125 rft] move BitMap writer to other lib
-            // use Add(...) to register
-            { typeof(Bitmap), (c,o) =>
-                {
-                    var bmp = (Bitmap)o;
-                    var stream = new MemoryStream();
-                    bmp.Save(stream, bmp.RawFormat);
-                    var data = stream.ToArray();
-
-                    // save as byte array
-                    c.CodeByteArray(ref data);
-                }
-            },
 
             { typeof(HashSet<string>), (c, o) => { var v = (HashSet<string>)o; c.CodeHashSet_of_T_(ref v); } },
 
@@ -184,18 +171,6 @@ namespace Aardvark.Base.Coder
 
             { typeof(IntSet), c => { var v = default(IntSet); c.CodeIntSet(ref v); return v; } },
             { typeof(SymbolSet), c => { var v = default(SymbolSet); c.CodeSymbolSet(ref v); return v; } },
-
-            // [planned cleanup ISSUE 20080125 rft] move BitMap reader to other lib
-            // use Add(...) to register
-            { typeof(Bitmap), c =>
-                {
-                    var data = default(byte[]);
-                    c.CodeByteArray(ref data);
-
-                    var stream = new MemoryStream(data);
-                    return new Bitmap(stream);
-                }
-            },
 
             { typeof(HashSet<string>), c => { var v = default(HashSet<string>); c.CodeHashSet_of_T_(ref v); return v; } },
 

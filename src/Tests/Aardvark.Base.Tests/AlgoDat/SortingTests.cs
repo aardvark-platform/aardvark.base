@@ -1,9 +1,9 @@
+using Aardvark.Base;
+using Aardvark.Base.Sorting;
+using NUnit.Framework;
 using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
-using Aardvark.Base;
-using NUnit.Framework;
 
 namespace Aardvark.Tests
 {
@@ -469,8 +469,8 @@ namespace Aardvark.Tests
             for (double doubleCount = minimalCount; doubleCount < 0.5 + arrayCount; doubleCount *= countFactor)
                 trialCounts.Add((long)doubleCount);
 
-            var sorterMap = new Dict<Tup<Symbol, Type, Type, bool>, Sorter>(
-                    from s in sorters select KeyValuePairs.Create(Tup.Create(s.Name, s.PermType, s.Type, s.UseCmp), s));
+            var sorterMap = new Dict<(Symbol, Type, Type, bool), Sorter>(
+                    from s in sorters select KeyValuePairs.Create((s.Name, s.PermType, s.Type, s.UseCmp), s));
 
             var master = new long[arrayCount];
 
@@ -496,7 +496,7 @@ namespace Aardvark.Tests
                             for (int i = 0; i < sortNames.Length; i++)
                             {
                                 var sni = (si + i) % sortNames.Length;
-                                var sorter = sorterMap[Tup.Create(sortNames[sni], permType, type, useCmp)];
+                                var sorter = sorterMap[(sortNames[sni], permType, type, useCmp)];
                                 sortArray.CopyFrom(master, totalCount);
                                 Report.BeginTimed("{0} sorting {1}x {2} {3}s",
                                                   sorter.Name, trialRepeat, trialCount, type.Name);

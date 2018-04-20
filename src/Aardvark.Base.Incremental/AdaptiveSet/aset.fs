@@ -50,7 +50,7 @@ module ASet =
                 member x.GetReader() = new History.Readers.ConstantReader<_,_>(HRefSet.trace, deltas, content) :> ISetReader<_>
                 member x.Content = mcontent
         
-            new(content : hrefset<'a>) = ConstantSet<'a>(Lazy.CreateFromValue content)
+            new(content : hrefset<'a>) = ConstantSet<'a>(System.Lazy<hrefset<_>>.CreateFromValue content)
 
         type AdaptiveSet<'a>(newReader : unit -> IOpReader<hdeltaset<'a>>) =
             let h = History.ofReader HRefSet.trace newReader

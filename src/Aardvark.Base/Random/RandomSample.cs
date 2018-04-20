@@ -1,7 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.Text;
-
 namespace Aardvark.Base
 {
     public static class RandomSample
@@ -41,7 +37,5 @@ namespace Aardvark.Base
             vec *= 1.0 / squareLen.Sqrt();
             return vec;
         }
-
     }
-
 }

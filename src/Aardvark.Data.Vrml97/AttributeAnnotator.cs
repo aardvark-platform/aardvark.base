@@ -29,9 +29,7 @@ namespace Aardvark.Data.Vrml97
         private Dictionary<SymMapBase, SymMapBase> m_visited = new Dictionary<SymMapBase, SymMapBase>();
 
         public static Vrml97Scene Annotate(Vrml97Scene vrmlParseTree)
-        {
-            return new AttributeAnnotator().Perform(vrmlParseTree);
-        }
+            => new AttributeAnnotator().Perform(vrmlParseTree);
 
         /// <summary>
         /// Takes a Vrml97 parse tree (see also <seealso cref="Parser"/>)
@@ -57,7 +55,7 @@ namespace Aardvark.Data.Vrml97
 
             m_transform.Push(Trafo3d.Identity);
 
-            SymMapBaseTraversal trav = new SymMapBaseTraversal(SymMapBaseTraversal.Mode.Modifying, SymMapBaseTraversal.Visit.PreAndPost);
+            var trav = new SymMapBaseTraversal(SymMapBaseTraversal.Mode.Modifying, SymMapBaseTraversal.Visit.PreAndPost);
 
             trav.PerNameVisitors["ImageTexture"] =
             delegate(SymMapBase m, SymMapBaseTraversal.Visit visit)
@@ -79,7 +77,7 @@ namespace Aardvark.Data.Vrml97
             };
 
             // geometry nodes
-            SymMapBaseVisitor foo = (SymMapBase m, SymMapBaseTraversal.Visit visit) =>
+            SymMapBase foo(SymMapBase m, SymMapBaseTraversal.Visit visit)
             {
                 if (visit == SymMapBaseTraversal.Visit.Post) return m;
 
@@ -126,7 +124,7 @@ namespace Aardvark.Data.Vrml97
                 }
 
                 return map;
-            };
+            }
 
             trav.PerNameVisitors["IndexedFaceSet"] = foo;
             trav.PerNameVisitors["IndexedLineSet"] = foo;

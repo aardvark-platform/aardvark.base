@@ -3,12 +3,10 @@ using System.Collections.Generic;
 
 namespace Aardvark.Data.Vrml97
 {
-
     /// <summary>
     /// </summary>
     public class ImageTextureFormatRenamer
     {
-
         /// <summary>
         /// Takes a Vrml97 parse tree (see also <seealso cref="Parser"/>)
         /// and replaces the file extension of all image texture URLs to
@@ -18,12 +16,12 @@ namespace Aardvark.Data.Vrml97
         /// <param name="newExtension"></param>
         internal Vrml97Scene Perform(Vrml97Scene root, string newExtension)
         {
-            SymMapBaseTraversal trav = new SymMapBaseTraversal(SymMapBaseTraversal.Visit.Post);
+            var trav = new SymMapBaseTraversal(SymMapBaseTraversal.Visit.Post);
 
             trav.PerNameVisitors["ImageTexture"] =
             delegate(SymMapBase m, SymMapBaseTraversal.Visit visit)
             {
-                List<string> urls = m.Get<List<string>>(Vrml97Sym.url);
+                var urls = m.Get<List<string>>(Vrml97Sym.url);
                 if (urls == null) return m;
                 for (int i = 0; i < urls.Count; i++)
                 {
@@ -38,5 +36,4 @@ namespace Aardvark.Data.Vrml97
             return root;
         }
     }
-
 }

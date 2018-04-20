@@ -277,17 +277,17 @@ namespace Aardvark.Base.Coder
         private bool m_initialized = false;
         private SpinLock m_spinLock = new SpinLock();
 
-        private Dictionary<Pair<string>, Action<Convertible, Convertible>>
-            m_actionMap = new Dictionary<Pair<string>, Action<Convertible, Convertible>>();
+        private Dictionary<(string, string), Action<Convertible, Convertible>>
+            m_actionMap = new Dictionary<(string, string), Action<Convertible, Convertible>>();
 
-        private Dictionary<Pair<string>, Annotation[]>
-            m_annotationsMap = new Dictionary<Pair<string>, Annotation[]>();
+        private Dictionary<(string, string), Annotation[]>
+            m_annotationsMap = new Dictionary<(string, string), Annotation[]>();
 
         private Dictionary<string, Dictionary<string, RoutingEntry>>
             m_routingMap = new Dictionary<string, Dictionary<string, RoutingEntry>>();
 
-        private Dictionary<Pair<string>, int>
-            m_weightMap = new Dictionary<Pair<string>, int>();
+        private Dictionary<(string, string), int>
+            m_weightMap = new Dictionary<(string, string), int>();
 
         private Dictionary<string, List<Func<string, Convertible>>>
             m_fileExtensionsMap = new Dictionary<string, List<Func<string, Convertible>>>();
@@ -474,7 +474,7 @@ namespace Aardvark.Base.Coder
         {
             if (source.Data == null) throw new ArgumentNullException();
 
-            var conversion = new Pair<string>(source.Descriptor, target.Descriptor);
+            var conversion = (source.Descriptor, target.Descriptor);
 
             Action<Convertible, Convertible> procedure;
             if (m_actionMap.TryGetValue(conversion, out procedure))
@@ -611,7 +611,7 @@ namespace Aardvark.Base.Coder
             {
                 m_spinLock.Enter(ref lockTaken);
 
-                var conversion = new Pair<string>(sourceDescriptor, targetDescriptor);
+                var conversion = (sourceDescriptor, targetDescriptor);
                 if (!m_actionMap.ContainsKey(conversion))
                 {
                     m_actionMap[conversion] = procedure;
@@ -782,7 +782,7 @@ namespace Aardvark.Base.Coder
             if (string.IsNullOrEmpty(sourceDescriptor) || string.IsNullOrEmpty(targetDescriptor))
                 throw new ArgumentNullException();
             if (annotations == null) return;
-            m_annotationsMap[Pair.Create(sourceDescriptor, targetDescriptor)] = annotations.ToArray();
+            m_annotationsMap[(sourceDescriptor, targetDescriptor)] = annotations.ToArray();
         }
 
         #endregion
@@ -805,10 +805,10 @@ namespace Aardvark.Base.Coder
             m_routingMap[descriptor] = newRoutingTable;
         }
 
-        private void AddDirectRoute(Pair<string> conversion)
+        private void AddDirectRoute((string, string) conversion)
         {
-            m_routingMap[conversion.E0][conversion.E1] =
-                    new RoutingEntry() { Distance = m_weightMap[conversion], Next = conversion.E1 };
+            m_routingMap[conversion.Item1][conversion.Item2] =
+                    new RoutingEntry() { Distance = m_weightMap[conversion], Next = conversion.Item2 };
         }
 
         /// <summary>
@@ -824,16 +824,16 @@ namespace Aardvark.Base.Coder
                     m_routingMap[key1][key2] = new RoutingEntry() { Distance = 99999999 };
 
             var validConversions = (from conversion in m_actionMap.Keys
-                                    where AreAllResourcesAvailable(conversion.E0) &&
-                                          AreAllResourcesAvailable(conversion.E1)
+                                    where AreAllResourcesAvailable(conversion.Item1) &&
+                                          AreAllResourcesAvailable(conversion.Item2)
                                     select conversion).ToList();
 
             // first add all direct routes
-            foreach (Pair<string> conversion in validConversions)
+            foreach (var conversion in validConversions)
                 AddDirectRoute(conversion);
 
             // now go and find the indirect routes
-            foreach (Pair<string> conversion in validConversions)
+            foreach (var conversion in validConversions)
                 UpdateRoutingTable(conversion);
 
             if (!m_initialized)
@@ -868,22 +868,22 @@ namespace Aardvark.Base.Coder
         /// Updates the routing table with a conversion. If the conversion results
         /// into a shorter path, the updates are propagated.
         /// </summary>
-        private void UpdateRoutingTable(Pair<string> conversion)
+        private void UpdateRoutingTable((string, string) conversion)
         {
-            Dictionary<string, RoutingEntry> tableToUpdate = m_routingMap[conversion.E0];
-            Dictionary<string, RoutingEntry> tableWithNewInfo = m_routingMap[conversion.E1];
+            Dictionary<string, RoutingEntry> tableToUpdate = m_routingMap[conversion.Item1];
+            Dictionary<string, RoutingEntry> tableWithNewInfo = m_routingMap[conversion.Item2];
 
             bool updated = false;
 
             var targetsToOptimize = (
                 from target in tableToUpdate.Keys
-                where target != conversion.E1
+                where target != conversion.Item2
                 select target
             ).ToArray();
 
-            foreach (string target in targetsToOptimize)
+            foreach (var target in targetsToOptimize)
             {
-                int alternativeDistance = tableWithNewInfo[target].Distance + tableToUpdate[conversion.E1].Distance;
+                int alternativeDistance = tableWithNewInfo[target].Distance + tableToUpdate[conversion.Item2].Distance;
 
                 // found a better way to the target
                 if (alternativeDistance < tableToUpdate[target].Distance)
@@ -891,7 +891,7 @@ namespace Aardvark.Base.Coder
                     tableToUpdate[target] = new RoutingEntry()
                     {
                         Distance = alternativeDistance,
-                        Next = tableToUpdate[conversion.E1].Next
+                        Next = tableToUpdate[conversion.Item2].Next
                     };
                     updated = true;
                 }
@@ -899,9 +899,9 @@ namespace Aardvark.Base.Coder
 
             if (updated)
             {
-                foreach (Pair<string> conv in m_actionMap.Keys)
+                foreach (var conv in m_actionMap.Keys)
                 {
-                    if (conv.E1 == conversion.E0)
+                    if (conv.Item2 == conversion.Item1)
                         UpdateRoutingTable(conv);
                 }
             }
@@ -1146,7 +1146,7 @@ namespace Aardvark.Base.Coder
             get
             {
                 foreach (var kv in m_actionMap)
-                    yield return GetConversion(kv.Key.E0, kv.Key.E1);
+                    yield return GetConversion(kv.Key.Item1, kv.Key.Item2);
             }
         }
 
@@ -1155,7 +1155,7 @@ namespace Aardvark.Base.Coder
         /// </summary>
         public Entry GetConversion(string sourceDescription, string targetDescription)
         {
-            var key = Pair.Create(sourceDescription, targetDescription);
+            var key = (sourceDescription, targetDescription);
             if (m_annotationsMap.ContainsKey(key))
             {
                 return new Entry
@@ -1190,7 +1190,7 @@ namespace Aardvark.Base.Coder
         /// </summary>
         public IEnumerable<Annotation> GetAnnotations(string source, string target)
         {
-            var key = Pair.Create(source, target);
+            var key = (source, target);
             if (m_annotationsMap.ContainsKey(key)) return m_annotationsMap[key];
             return new Annotation[0];
         }

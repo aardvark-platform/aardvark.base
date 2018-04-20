@@ -1,4 +1,4 @@
 FsUnit
-System.Reactive.Linq
-NUnit
 FSharp.Core
+NUnit
+System.Reactive

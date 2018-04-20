@@ -1,5 +1,4 @@
 using Aardvark.Base;
-using System;
 using System.Collections.Generic;
 
 namespace Aardvark.Data.Vrml97
@@ -22,10 +21,9 @@ namespace Aardvark.Data.Vrml97
     /// </summary>
     internal class DefUseResolver
     {
-        public static Vrml97Scene Resolve(Vrml97Scene vrmlParseTree, out Dictionary<string, SymMapBase> namedNodes, bool duplicateMaps = true)
-        {
-            return new DefUseResolver().Perform(vrmlParseTree, out namedNodes, duplicateMaps);
-        }
+        public static Vrml97Scene Resolve(Vrml97Scene vrmlParseTree,
+            out Dictionary<string, SymMapBase> namedNodes, bool duplicateMaps = true)
+            => new DefUseResolver().Perform(vrmlParseTree, out namedNodes, duplicateMaps);
 
         /// <summary>
         /// Takes a VRML97 parse tree (see also <seealso cref="Parser"/>)

@@ -8,20 +8,18 @@ namespace Aardvark.Base
         private Trafo3d m_trafo;
         private EventSource<Trafo3d> m_trafoChanges = new EventSource<Trafo3d>();
         private Box3d m_box;
-
+        
         public CameraProjectionOrtho(double left, double right, double bottom, double top, double near, double far)
         {
             SetClippingParams(left, right, bottom, top, near, far);
         }
 
-        public Trafo3d ProjectionTrafo { get { return m_trafo; } }
+        public Trafo3d ProjectionTrafo => m_trafo;
 
-        public IEvent<Trafo3d> ProjectionTrafos { get { return m_trafoChanges; } }
+        public IEvent<Trafo3d> ProjectionTrafos => m_trafoChanges;
 
         public Ray3d Unproject(V2d xyOnNearPlane)
-        {
-            return new Ray3d(new V3d(xyOnNearPlane, 0.0), new V3d(xyOnNearPlane, -m_box.Min.Z));
-        }
+            => new Ray3d(new V3d(xyOnNearPlane, 0.0), new V3d(xyOnNearPlane, -m_box.Min.Z));
 
         public void SetClippingParams(double left, double right, double bottom, double top, double near, double far)
         {
@@ -40,7 +38,7 @@ namespace Aardvark.Base
             get { return m_box.Min.Z; }
             set
             {
-                Requires.That(value > 0.0 && value < Far);
+                if (!(value > 0.0 && value < Far)) throw new ArgumentOutOfRangeException();
                 m_box.Min.Z = value;
                 UpdateProjectionTrafo();
             }
@@ -51,7 +49,7 @@ namespace Aardvark.Base
             get { return m_box.Max.Z; }
             set
             {
-                Requires.That(value > 0.0 && value > Near);
+                if (!(value > 0.0 && value > Near)) throw new ArgumentOutOfRangeException();
                 m_box.Max.Z = value;
                 UpdateProjectionTrafo();
             }
@@ -62,7 +60,7 @@ namespace Aardvark.Base
             get { return m_box.XY; }
             set
             {
-                Requires.That(m_box.IsValid);
+                if (m_box.IsInvalid) throw new ArgumentOutOfRangeException();
                 m_box.Min.X = value.Min.X;
                 m_box.Min.Y = value.Min.Y;
                 m_box.Max.X = value.Max.X;
@@ -79,7 +77,7 @@ namespace Aardvark.Base
             }
             set
             {
-                Requires.That(value > 0.0);
+                if (value <= 0.0) throw new ArgumentOutOfRangeException();
                 var w = m_box.Max.X - m_box.Min.X;
                 var hOld = m_box.Max.Y - m_box.Min.Y;
                 var hNew = w / value;

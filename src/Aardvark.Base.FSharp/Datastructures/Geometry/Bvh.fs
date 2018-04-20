@@ -9,6 +9,9 @@ type BvhNode =
 
 [<CompilationRepresentation(CompilationRepresentationFlags.ModuleSuffix)>]
 module BvhNode =
+
+    open Aardvark.Base.Sorting
+
     [<Literal>]
     let private splitPenalty = 1.0
 
@@ -38,7 +41,7 @@ module BvhNode =
         (leftP + (commonP * splitPenalty)) * (1.0 + lWeight) +
         (rightP + (commonP * splitPenalty)) * (1.0 + rWeight)
 
-    let private calculateSplit (indexArray : int[]) (start : int) (count : int) (box : Box3d) (boxes : Box3d[])  =
+    let private calculateSplit (indexArray : int[]) (start : int) (count : int) (box : Box3d) (boxes : Box3d[]) =
         let mutable bestLeft = 0
         let mutable bestCost = System.Double.PositiveInfinity
         let mutable bestLeftBox = Box3d.Invalid

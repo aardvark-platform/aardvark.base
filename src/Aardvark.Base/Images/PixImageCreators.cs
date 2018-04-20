@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using Aardvark.Base;
 
 namespace Aardvark.Base
 {
@@ -11,9 +7,11 @@ namespace Aardvark.Base
         private static readonly V3d[] s_v0 =
             new V3d[] { new V3d(-1, -1, 1), new V3d(-1, 1, 1), new V3d(1, 1, 1),
                         new V3d(1, -1, 1), new V3d(-1, -1, 1), new V3d(-1, 1, -1) };
+
         private static V3d[] s_dx =
             new V3d[] { new V3d(0, 2, 0), new V3d(2, 0, 0), new V3d(0, -2, 0),
                         new V3d(-2, 0, 0), new V3d(2, 0, 0), new V3d(2, 0, 0) };
+
         private static V3d[] s_dy =
             new V3d[] { new V3d(0, 0, -2), new V3d(0, 0, -2), new V3d(0, 0, -2),
                         new V3d(0, 0, -2), new V3d(0, 2, 0), new V3d(0, -2, 0) };
@@ -65,6 +63,5 @@ namespace Aardvark.Base
 
             return image;
         }
-
     }
 }

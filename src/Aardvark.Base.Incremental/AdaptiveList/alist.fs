@@ -59,7 +59,7 @@ module AList =
                 member x.GetReader() = new History.Readers.ConstantReader<_,_>(PList.trace, deltas, content) :> IListReader<_>
                 member x.Content = mcontent
         
-            new(content : plist<'a>) = ConstantList<'a>(Lazy.CreateFromValue content)
+            new(content : plist<'a>) = ConstantList<'a>(System.Lazy<plist<_>>.CreateFromValue content)
 
         type AdaptiveList<'a>(newReader : unit -> IOpReader<pdeltalist<'a>>) =
             let h = History.ofReader PList.trace newReader

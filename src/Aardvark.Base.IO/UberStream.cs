@@ -62,7 +62,7 @@ namespace Aardvark.Base.Coder
         }
 
         #endregion
-
+        
         #region constructors
 
         /// <summary>

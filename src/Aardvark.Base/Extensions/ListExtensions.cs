@@ -1,32 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using static System.Math;
 
 namespace Aardvark.Base
 {
     public static class ListFun
     {
-        #region Conversions
-
-        [Obsolete("Use 'MapToArray' instead (same functionality and parameters)", false)]
-        public static Tr[] ToArray<T, Tr>(this List<T> self, Func<T, Tr> fun)
-        {
-            return self.MapToArray(self.Count, fun);
-        }
-
-        [Obsolete("Use 'MapToArray' instead (same functionality and parameters)", false)]
-        public static Tr[] ToArray<T, Tr>(this List<T> self, int count, Func<T, Tr> fun)
-        {
-            return self.MapToArray(count, fun);
-        }
-
-        [Obsolete("Use 'MapToArray' instead (same functionality and parameters)", false)]
-        public static Tr[] ToArray<T, Tr>(this List<T> self, int start, int count, Func<T, Tr> fun)
-        {
-            return self.MapToArray(start, count, fun);
-        }
-
-        #endregion
-
         #region Copying
 
         public static List<T> Copy<T>(this List<T> self)
@@ -34,13 +13,6 @@ namespace Aardvark.Base
             var result = new List<T>(self.Count);
             foreach (var item in self) result.Add(item);
             return result;
-        }
-
-
-        [Obsolete("Use 'Map' instead (same functionality and parameters)", false)]
-        public static List<Tr> Copy<T, Tr>(this List<T> list, Func<T, Tr> fun)
-        {
-            return list.Map(fun);
         }
 
         /// <summary>
@@ -57,7 +29,7 @@ namespace Aardvark.Base
         public static List<Tr> Map2<T0, T1, Tr>(
                 this List<T0> list0, List<T1> list1, Func<T0, T1, Tr> item0_item1_fun)
         {
-            var count = Fun.Min(list0.Count, list1.Count);
+            var count = Min(list0.Count, list1.Count);
             var result = new List<Tr>(count);
             for (var i = 0; i < count; i++)
                 result.Add(item0_item1_fun(list0[i], list1[i]));
@@ -68,20 +40,13 @@ namespace Aardvark.Base
                 this List<T0> list0, List<T1> list1, List<T2> list2,
                 Func<T0, T1, T2, Tr> item0_item1_item2_fun)
         {
-            var count = Fun.Min(list0.Count, list1.Count);
+            var count = Min(list0.Count, list1.Count);
             var result = new List<Tr>(count);
             for (var i = 0; i < count; i++)
                 result.Add(item0_item1_item2_fun(list0[i], list1[i], list2[i]));
             return result;
         }
-
-
-        [Obsolete("Use 'Map' instead (same functionality and parameters)", false)]
-        public static List<Tr> Copy<T, Tr>(this List<T> list, Func<T, int, Tr> fun)
-        {
-            return list.Map(fun);
-        }
-
+        
         /// <summary>
         /// Create a copy with the elements piped through a function.
         /// </summary>
@@ -96,7 +61,7 @@ namespace Aardvark.Base
         public static List<Tr> Map2<T0, T1, Tr>(
                 this List<T0> list0, List<T1> list1, Func<T0, T1, int, Tr> item0_item1_index_fun)
         {
-            var count = Fun.Min(list0.Count, list1.Count);
+            var count = Min(list0.Count, list1.Count);
             var result = new List<Tr>(count);
             for (var i = 0; i < count; i++)
                 result.Add(item0_item1_index_fun(list0[i], list1[i], i));
@@ -107,7 +72,7 @@ namespace Aardvark.Base
                 this List<T0> list0, List<T1> list1, List<T2> list2,
                 Func<T0, T1, T2, int, Tr> item0_item1_item2_index_fun)
         {
-            var count = Fun.Min(list0.Count, list1.Count);
+            var count = Min(list0.Count, list1.Count);
             var result = new List<Tr>(count);
             for (var i = 0; i < count; i++)
                 result.Add(item0_item1_item2_index_fun(list0[i], list1[i], list2[i], i));
@@ -126,21 +91,9 @@ namespace Aardvark.Base
             return result;
         }
 
-        [Obsolete("Use 'MapToArray' instead (same functionality and parameters)", false)]
-        public static Tr[] CopyToArray<T, Tr>(this List<T> list, Func<T, Tr> item_fun)
-        {
-            return list.MapToArray(list.Count, item_fun);
-        }
-
         public static Tr[] MapToArray<T, Tr>(this List<T> list, Func<T, Tr> item_fun)
         {
             return list.MapToArray(list.Count, item_fun);
-        }
-
-        [Obsolete("Use 'MapToArray' instead (same functionality and parameters)", false)]
-        public static Tr[] CopyToArray<T, Tr>(this List<T> list, int count, Func<T, Tr> item_fun)
-        {
-            return list.MapToArray(count, item_fun);
         }
 
         public static Tr[] MapToArray<T, Tr>(this List<T> list, int count, Func<T, Tr> item_fun)
@@ -149,13 +102,6 @@ namespace Aardvark.Base
             if (list.Count < count) count = list.Count;
             for (int i = 0; i < count; i++) result[i] = item_fun(list[i]);
             return result;
-        }
-
-        [Obsolete("Use 'MapToArray' instead (same functionality and parameters)", false)]
-        public static Tr[] CopyToArray<T, Tr>(
-                this List<T> list, int start, int count, Func<T, Tr> item_fun)
-        {
-            return list.MapToArray(start, count, item_fun);
         }
 
         public static Tr[] MapToArray<T, Tr>(
@@ -741,23 +687,6 @@ namespace Aardvark.Base
             return index;
         }
 
-        public static int NSmallestIndex<T>(this List<T> a, int n)
-            where T : IComparable<T>
-        {
-            if (n == 0) return a.SmallestIndex();
-            var p = a.CreatePermutationQuickMedianAscending(n);
-            return p[n];
-        }
-
-        public static int NLargestIndex<T>(this List<T> a, int n)
-            where T : IComparable<T>
-        {
-            if (n == 0) return a.LargestIndex();
-            var p = a.CreatePermutationQuickMedianDescending(n);
-            return p[n];
-        }
-
         #endregion
     }
-
 }

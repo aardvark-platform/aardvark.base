@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Aardvark.Base
 {
@@ -10,6 +6,7 @@ namespace Aardvark.Base
     // yp  =  R01 R11 R21  *  (P.Y  -   T.Y)
     // zp     R02 R12 R22     (P.Z      T.X)
 
+    [Obsolete]
     public struct CameraExtrinsics
     {
         /// <summary>
@@ -86,6 +83,7 @@ namespace Aardvark.Base
 
     }
 
+    [Obsolete]
     public struct CameraIntrinsics
     {
         public readonly V2d FocalLength;                     // 2    (fx, fy)    1.0 == Fun.Max(size.X, size.Y)
@@ -195,9 +193,4 @@ namespace Aardvark.Base
         }
 
     }
-
-
-
-
-
 }

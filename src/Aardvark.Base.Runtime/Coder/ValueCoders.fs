@@ -184,8 +184,7 @@ module CustomCoders =
 
     let private extensions =
         Introspection.GetAllMethodsWithAttribute<ExtensionAttribute>()
-            |> Seq.choose (fun t -> 
-                let meth = t.E0
+            |> Seq.choose (fun struct (meth, _) ->
                 let args = meth.GetParameters() |> Array.map (fun p -> p.ParameterType)
                 
                 if meth.Name = "Code" && args.Length = 2 && args.[0] = typeof<ICoder> then

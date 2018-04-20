@@ -52,7 +52,7 @@ namespace Aardvark.Base
         /// </summary>
         public static void DisposeAllAndClear(this ICollection<IDisposable> disposables)
         {
-            Requires.That(!disposables.IsReadOnly, "the collection is read-only... it cannot be cleared");
+            if (disposables.IsReadOnly) throw new Exception("The collection is read-only... it cannot be cleared.");
             disposables.ForEach(x => x.Dispose());
             disposables.Clear();
         }

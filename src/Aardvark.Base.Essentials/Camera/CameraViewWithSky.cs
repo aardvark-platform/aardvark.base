@@ -44,7 +44,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Changes of ViewTrafo.
         /// </summary>
-        public IEvent<Trafo3d> ViewTrafos { get { return m_trafoChanges; } }
+        public IEvent<Trafo3d> ViewTrafos => m_trafoChanges;
 
         /// <summary>
         /// Gets or sets camera location in world space (origin in camera space).

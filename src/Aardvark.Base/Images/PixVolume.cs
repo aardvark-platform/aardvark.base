@@ -8,7 +8,6 @@ using System.Text;
 //using System.Windows.Media.Imaging;
 //#endif
 
-
 namespace Aardvark.Base
 {
     public interface IPixVolumeVisitor<T>
@@ -59,39 +58,39 @@ namespace Aardvark.Base
 
         #region Conversions
 
-        protected static Dictionary<Tup<Type, Type>, Func<object, object>>
+        protected static Dictionary<(Type, Type), Func<object, object>>
             s_copyFunMap =
-            new Dictionary<Tup<Type, Type>, Func<object, object>>()
+            new Dictionary<(Type, Type), Func<object, object>>()
             {
-                { Tup.Create(typeof(byte), typeof(byte)), v => ((Tensor4<byte>)v).CopyWindow() },
-                { Tup.Create(typeof(byte), typeof(ushort)), v => ((Tensor4<byte>)v).ToUShortColor() },
-                { Tup.Create(typeof(byte), typeof(uint)), v => ((Tensor4<byte>)v).ToUIntColor() },
-                { Tup.Create(typeof(byte), typeof(float)), v => ((Tensor4<byte>)v).ToFloatColor() },
-                { Tup.Create(typeof(byte), typeof(double)), v => ((Tensor4<byte>)v).ToDoubleColor() },
+                { (typeof(byte), typeof(byte)), v => ((Tensor4<byte>)v).CopyWindow() },
+                { (typeof(byte), typeof(ushort)), v => ((Tensor4<byte>)v).ToUShortColor() },
+                { (typeof(byte), typeof(uint)), v => ((Tensor4<byte>)v).ToUIntColor() },
+                { (typeof(byte), typeof(float)), v => ((Tensor4<byte>)v).ToFloatColor() },
+                { (typeof(byte), typeof(double)), v => ((Tensor4<byte>)v).ToDoubleColor() },
 
-                { Tup.Create(typeof(ushort), typeof(byte)), v => ((Tensor4<ushort>)v).ToByteColor() },
-                { Tup.Create(typeof(ushort), typeof(ushort)), v => ((Tensor4<ushort>)v).CopyWindow() },
-                { Tup.Create(typeof(ushort), typeof(uint)), v => ((Tensor4<ushort>)v).ToUIntColor() },
-                { Tup.Create(typeof(ushort), typeof(float)), v => ((Tensor4<ushort>)v).ToFloatColor() },
-                { Tup.Create(typeof(ushort), typeof(double)), v => ((Tensor4<ushort>)v).ToDoubleColor() },
+                { (typeof(ushort), typeof(byte)), v => ((Tensor4<ushort>)v).ToByteColor() },
+                { (typeof(ushort), typeof(ushort)), v => ((Tensor4<ushort>)v).CopyWindow() },
+                { (typeof(ushort), typeof(uint)), v => ((Tensor4<ushort>)v).ToUIntColor() },
+                { (typeof(ushort), typeof(float)), v => ((Tensor4<ushort>)v).ToFloatColor() },
+                { (typeof(ushort), typeof(double)), v => ((Tensor4<ushort>)v).ToDoubleColor() },
             
-                { Tup.Create(typeof(uint), typeof(byte)), v => ((Tensor4<uint>)v).ToByteColor() },
-                { Tup.Create(typeof(uint), typeof(ushort)), v => ((Tensor4<uint>)v).ToUShortColor() },
-                { Tup.Create(typeof(uint), typeof(uint)), v => ((Tensor4<uint>)v).CopyWindow() },
-                { Tup.Create(typeof(uint), typeof(float)), v => ((Tensor4<uint>)v).ToFloatColor() },
-                { Tup.Create(typeof(uint), typeof(double)), v => ((Tensor4<uint>)v).ToDoubleColor() },
+                { (typeof(uint), typeof(byte)), v => ((Tensor4<uint>)v).ToByteColor() },
+                { (typeof(uint), typeof(ushort)), v => ((Tensor4<uint>)v).ToUShortColor() },
+                { (typeof(uint), typeof(uint)), v => ((Tensor4<uint>)v).CopyWindow() },
+                { (typeof(uint), typeof(float)), v => ((Tensor4<uint>)v).ToFloatColor() },
+                { (typeof(uint), typeof(double)), v => ((Tensor4<uint>)v).ToDoubleColor() },
 
-                { Tup.Create(typeof(float), typeof(byte)), v => ((Tensor4<float>)v).ToByteColor() },
-                { Tup.Create(typeof(float), typeof(ushort)), v => ((Tensor4<float>)v).ToUShortColor() },
-                { Tup.Create(typeof(float), typeof(uint)), v => ((Tensor4<float>)v).ToUIntColor() },
-                { Tup.Create(typeof(float), typeof(float)), v => ((Tensor4<float>)v).CopyWindow() },
-                { Tup.Create(typeof(float), typeof(double)), v => ((Tensor4<float>)v).ToDoubleColor() },
+                { (typeof(float), typeof(byte)), v => ((Tensor4<float>)v).ToByteColor() },
+                { (typeof(float), typeof(ushort)), v => ((Tensor4<float>)v).ToUShortColor() },
+                { (typeof(float), typeof(uint)), v => ((Tensor4<float>)v).ToUIntColor() },
+                { (typeof(float), typeof(float)), v => ((Tensor4<float>)v).CopyWindow() },
+                { (typeof(float), typeof(double)), v => ((Tensor4<float>)v).ToDoubleColor() },
 
-                { Tup.Create(typeof(double), typeof(byte)), v => ((Tensor4<double>)v).ToByteColor() },
-                { Tup.Create(typeof(double), typeof(ushort)), v => ((Tensor4<double>)v).ToUShortColor() },
-                { Tup.Create(typeof(double), typeof(uint)), v => ((Tensor4<double>)v).ToUIntColor() },
-                { Tup.Create(typeof(double), typeof(float)), v => ((Tensor4<double>)v).ToFloatColor() },
-                { Tup.Create(typeof(double), typeof(double)), v => ((Tensor4<double>)v).CopyWindow() },
+                { (typeof(double), typeof(byte)), v => ((Tensor4<double>)v).ToByteColor() },
+                { (typeof(double), typeof(ushort)), v => ((Tensor4<double>)v).ToUShortColor() },
+                { (typeof(double), typeof(uint)), v => ((Tensor4<double>)v).ToUIntColor() },
+                { (typeof(double), typeof(float)), v => ((Tensor4<double>)v).ToFloatColor() },
+                { (typeof(double), typeof(double)), v => ((Tensor4<double>)v).CopyWindow() },
             };
 
         public abstract PixVolume<T1> ToPixVolume<T1>();
@@ -103,9 +102,7 @@ namespace Aardvark.Base
 
         public PixVolume<T> ToPixVolume<T>(Col.Format format)
         {
-            var castVolume = this as PixVolume<T>;
-            if (castVolume != null
-                && castVolume.Format == format
+            if (this is PixVolume<T> castVolume && castVolume.Format == format
                 && castVolume.ChannelCount == format.ChannelCount())
                 return castVolume;
             return new PixVolume<T>(format, this);
@@ -142,20 +139,6 @@ namespace Aardvark.Base
         public Tr Op<Tr>(IPixOp<Tr> op) { return op.PixVolume(this); }
 
         #endregion
-
-        //#region IFieldCodeable Members
-
-        //virtual public IEnumerable<FieldCoder> GetFieldCoders(int coderVersion)
-        //{
-        //    return
-        //         new[]
-        //    {
-        //        new FieldCoder(0, "Format",
-        //            (c,o) => c.CodeT(ref ((PixImage)o).Format) ),
-        //    };
-        //}
-
-        //#endregion    
     }
 
     public class PixVolume<T> : PixVolume, IPixImage3d
@@ -404,7 +387,7 @@ namespace Aardvark.Base
             var format = typeof(T1).FormatDefaultOf(ChannelCount);
             if (Format == format)
             {
-                var copy = s_copyFunMap[Tup.Create(typeof(T), typeof(T1))];
+                var copy = s_copyFunMap[(typeof(T), typeof(T1))];
                 return new PixVolume<T1>(format, (Tensor4<T1>)copy(Tensor4));
             }
             return new PixVolume<T1>(this);
@@ -502,21 +485,7 @@ namespace Aardvark.Base
         }
 
         #endregion
-
-        //#region IFieldCodeable Members
-
-        //override public IEnumerable<FieldCoder> GetFieldCoders(int coderVersion)
-        //{
-        //    return base.GetFieldCoders(coderVersion).Base().Concat(
-        //        new[]
-        //        {
-        //            new FieldCoder(0, "Tensor4",
-        //                (c,o) => c.CodeT(ref ((PixVolume<T>)o).Tensor4) ),
-        //        });
-        //}
-
-        //#endregion
-
+        
         #region IPixImage3d Members
 
         public Array Data

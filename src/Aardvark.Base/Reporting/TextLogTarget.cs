@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Text;
+using static System.Math;
 
 namespace Aardvark.Base
 {
@@ -7,7 +9,7 @@ namespace Aardvark.Base
     {
         private object m_lock;
         private ReportState m_state;
-        private IntDict<ReportState> m_stateTable;
+        private Dictionary<int, ReportState> m_stateTable;
         public Action<int, LogType, int, string> WriteAct;
         private int m_width = 80;
         private int m_maxIndent = 40;
@@ -24,7 +26,7 @@ namespace Aardvark.Base
         {
             m_lock = new object();
             m_state = new ReportState(threadIndex, m_prefixFun(threadIndex));
-            m_stateTable = new IntDict<ReportState>();
+            m_stateTable = new Dictionary<int, ReportState>();
             WriteAct = write;
         }
 
@@ -253,8 +255,8 @@ namespace Aardvark.Base
                     m_state.Buffer.Append(' ');
             }
             if (m_state.Buffer.Length == 0) m_state.Buffer.Append(m_state.Prefix);
-            if (msg.LeftText != null) m_state.AddSpaceText(Fun.Min(msg.LeftPos, m_maxIndent), msg.LeftText);
-            if (msg.RightText != null) m_state.AddDotsText(Fun.Min(msg.RightPos, m_width), msg.RightText, m_width);
+            if (msg.LeftText != null) m_state.AddSpaceText(Min(msg.LeftPos, m_maxIndent), msg.LeftText);
+            if (msg.RightText != null) m_state.AddDotsText(Min(msg.RightPos, m_width), msg.RightText, m_width);
             if ((msg.Opt & LogOpt.EndLine) != 0)
             {
                 WriteAct(m_state.TIdx, msg.Type, msg.Level, m_state.GetBufferLineAndClear());

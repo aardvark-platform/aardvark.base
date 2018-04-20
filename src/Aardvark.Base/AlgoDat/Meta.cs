@@ -581,7 +581,8 @@ namespace Aardvark.Base
                 {
                     var t = new VecType("V" + n + ft.Char)
                     {
-                        Len = n, FieldType = ft,
+                        Len = n,
+                        FieldType = ft,
                         Fields = VecFields.Take(n).ToArray(),
                     };
                     typeMap[ft] = t;
@@ -605,7 +606,7 @@ namespace Aardvark.Base
                 foreach (var ft in MatFieldTypes)
                 {
                     var t = new MatType("M" + dim.Rows + dim.Cols + ft.Char)
-                        { Rows = dim.Rows, Cols = dim.Cols, FieldType = ft };
+                    { Rows = dim.Rows, Cols = dim.Cols, FieldType = ft };
                     typeMap[ft] = t;
                     matrixTypes.Add(t);
                 }
@@ -712,7 +713,8 @@ namespace Aardvark.Base
                 {
                     var t = new ColorType("C" + n + ft.Char)
                     {
-                        Len = n, FieldType = ft,
+                        Len = n,
+                        FieldType = ft,
                         Fields = ColorFields.Take(n).ToArray(),
                         Channels = ColorFields.Take(3).ToArray(),
                         HasAlpha = n == 4,
@@ -788,7 +790,7 @@ namespace Aardvark.Base
             foreach (var vt in VecTypes)
                 if (vt.Len < 4)
                     yield return new RangeType("Box" + vt.Len + vt.FieldType.Char)
-                        { LimitType = vt };
+                    { LimitType = vt };
         }
 
         public static readonly SimpleType Circle2dType = new SimpleType() { Name = "Circle2d" };

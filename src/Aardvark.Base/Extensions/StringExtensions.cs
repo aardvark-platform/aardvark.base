@@ -24,11 +24,6 @@ namespace Aardvark.Base
     {
         #region To<Type>
 
-        public static Symbol ToSymbol(this string str)
-        {
-            return Symbol.Create(str);
-        }
-
         public static bool ToBool(this string self)
         {
             var s = self.Trim().ToLower();

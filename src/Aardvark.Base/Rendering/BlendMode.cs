@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Aardvark.Base.Rendering
+﻿namespace Aardvark.Base.Rendering
 {
     public enum BlendOperation
     {
@@ -86,8 +80,7 @@ namespace Aardvark.Base.Rendering
 
         public static readonly BlendMode Blend = new BlendMode(true);
         public static readonly BlendMode None = new BlendMode(false);
-
-
+        
         #endregion
 
         #region Overrides
@@ -99,9 +92,8 @@ namespace Aardvark.Base.Rendering
 
         public override bool Equals(object obj)
         {
-            if (obj is BlendMode)
+            if (obj is BlendMode bm)
             {
-                var bm = (BlendMode)obj;
                 if (!Enabled && !bm.Enabled)
                     return true;
 

@@ -1,5 +1,5 @@
 #define USE_DEVIL
-#define USE_BITMAP
+//#define USE_BITMAP
 
 using System;
 using System.Collections.Generic;
@@ -8,10 +8,8 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 
-
 namespace Aardvark.Base
 {
-
     public enum PixFileFormat
     {
         Unknown,
@@ -81,27 +79,16 @@ namespace Aardvark.Base
         UseBitmap           = 0x40000000,
     }
 
-    /// <summary>
-    /// TODO: Design this
-    /// </summary>
-    public class PixImageMetaData
-    {
-    }
-
-
     public interface IPixImageVisitor<T>
     {
         T Visit<TData>(PixImage<TData> image);
     }
-
-
+    
     [Serializable]
     public abstract partial class PixImage : IPix, IPixImage2d
     {
         public Col.Format Format;
-        // TODO: public PixImageMetaData MetaData;
-
-
+        
         private static List<Func<string, PixLoadOptions, PixImage>> s_fileLoadFunctions = new List<Func<string,PixLoadOptions,PixImage>>();
         private static List<Func<Stream, PixLoadOptions, PixImage>> s_streamLoadFunctions = new List<Func<Stream,PixLoadOptions,PixImage>>();
         private static List<Func<Stream, PixSaveOptions, PixFileFormat, int, PixImage, bool>> s_streamSaveFunctions = new List<Func<Stream, PixSaveOptions, PixFileFormat, int, PixImage, bool>>();
@@ -121,7 +108,6 @@ namespace Aardvark.Base
             if (streamSave != null) s_streamSaveFunctions.Add(streamSave);
             if (imageInfo != null) s_infoFunctions.Add(imageInfo);
         }
-
 
         #region Constructors
 
@@ -274,24 +260,16 @@ namespace Aardvark.Base
         #region Static Creator Functions
 
         public static PixImage Create(PixFormat pixFormat, long sx, long sy, long ch)
-        {
-            return s_pixImageCreatorMap[pixFormat](sx, sy, ch);
-        }
+            => s_pixImageCreatorMap[pixFormat](sx, sy, ch);
 
         public static PixImage Create(PixFormat pixFormat, long sx, long sy)
-        {
-            return s_pixImageCreatorMap[pixFormat](sx, sy, pixFormat.Format.ChannelCount());
-        }
+            => s_pixImageCreatorMap[pixFormat](sx, sy, pixFormat.Format.ChannelCount());
 
         public static PixImage Create(Array array, Col.Format format, long sx, long sy, long ch)
-        {
-            return s_pixImageArrayCreatorMap[array.GetType()](array, format, sx, sy, ch);
-        }
+            => s_pixImageArrayCreatorMap[array.GetType()](array, format, sx, sy, ch);
 
         public static PixImage Create(Array array, Col.Format format, long sx, long sy)
-        {
-            return s_pixImageArrayCreatorMap[array.GetType()](array, format, sx, sy, format.ChannelCount());
-        }
+            => s_pixImageArrayCreatorMap[array.GetType()](array, format, sx, sy, format.ChannelCount());
 
         /// <summary>
         /// Create a new image from the file. This is the standard way of
@@ -305,10 +283,7 @@ namespace Aardvark.Base
         }
 
         public static IEnumerable<PixImage> Create(IEnumerable<string> filenames)
-        {
-            return from file in filenames
-                   select PixImage.Create(file);
-        }
+            => from file in filenames select PixImage.Create(file);
 
         public static PixImage CreateRaw(string filename, PixLoadOptions options = PixLoadOptions.Default)
         {
@@ -321,14 +296,13 @@ namespace Aardvark.Base
                 }
                 catch (Exception) { }
             }
-
-
+            
             #if USE_DEVIL
             if ((options & PixLoadOptions.UseDevil) != 0)
             {
                 try
                 {
-                    var img = CreateRawDevil(filename, options);
+                    var img = PixImageDevil.CreateRawDevil(filename, options);
                     if (img != null) return img;
                 }
                 catch (Exception) { }
@@ -361,7 +335,6 @@ namespace Aardvark.Base
                     bit >>= 1; if (bit == 0) { bit = 0x80; bi++; }
                 }
             );
-
         }
 
         /// <summary>
@@ -408,7 +381,7 @@ namespace Aardvark.Base
             {
                 try
                 {
-                    var img = CreateRawDevil(stream, options);
+                    var img = PixImageDevil.CreateRawDevil(stream, options);
                     if (img != null) return img;
                 }
                 catch (Exception ex) { if (exception == null) exception = ex; }
@@ -422,104 +395,76 @@ namespace Aardvark.Base
                 if (img != null) return img;
             }
             #endif
-
             
-
             throw new ImageLoadException("could not load image", exception);
         }
+        
+        public static Volume<T> CreateVolume<T>(V3i size) => size.ToV3l().CreateImageVolume<T>();
 
-        public static PixImage Create(System.Drawing.Bitmap bitmap)
-        {
-            var loadImage = CreateRawBitmap(bitmap);
-            return loadImage.ToPixImage(loadImage.Format);
-        }
-
-        public static Volume<T> CreateVolume<T>(V3i size)
-        {
-            return size.ToV3l().CreateImageVolume<T>();
-        }
-
-        public static Volume<T> CreateVolume<T>(V3l size)
-        {
-            return size.CreateImageVolume<T>();
-        }
+        public static Volume<T> CreateVolume<T>(V3l size) => size.CreateImageVolume<T>();
 
         public static Volume<T> CreateVolume<T>(long sizeX, long sizeY, long channelCount)
-        {
-            return new V3l(sizeX, sizeY, channelCount).CreateImageVolume<T>();
-        }
+            => new V3l(sizeX, sizeY, channelCount).CreateImageVolume<T>();
 
-        #endregion
+#endregion
 
-        #region Conversions
+#region Conversions
 
-        protected static Dictionary<Tup<Type, Type>, Func<object, object>>
+        protected static Dictionary<(Type, Type), Func<object, object>> 
             s_copyFunMap =
-            new Dictionary<Tup<Type, Type>, Func<object, object>>()
+            new Dictionary<(Type, Type), Func<object, object>>()
             {
-                { Tup.Create(typeof(byte), typeof(byte)), v => ((Volume<byte>)v).CopyWindow() },
-                { Tup.Create(typeof(byte), typeof(ushort)), v => ((Volume<byte>)v).ToUShortColor() },
-                { Tup.Create(typeof(byte), typeof(uint)), v => ((Volume<byte>)v).ToUIntColor() },
-                { Tup.Create(typeof(byte), typeof(float)), v => ((Volume<byte>)v).ToFloatColor() },
-                { Tup.Create(typeof(byte), typeof(double)), v => ((Volume<byte>)v).ToDoubleColor() },
+                { (typeof(byte), typeof(byte)), v => ((Volume<byte>)v).CopyWindow() },
+                { (typeof(byte), typeof(ushort)), v => ((Volume<byte>)v).ToUShortColor() },
+                { (typeof(byte), typeof(uint)), v => ((Volume<byte>)v).ToUIntColor() },
+                { (typeof(byte), typeof(float)), v => ((Volume<byte>)v).ToFloatColor() },
+                { (typeof(byte), typeof(double)), v => ((Volume<byte>)v).ToDoubleColor() },
 
-                { Tup.Create(typeof(ushort), typeof(byte)), v => ((Volume<ushort>)v).ToByteColor() },
-                { Tup.Create(typeof(ushort), typeof(ushort)), v => ((Volume<ushort>)v).CopyWindow() },
-                { Tup.Create(typeof(ushort), typeof(uint)), v => ((Volume<ushort>)v).ToUIntColor() },
-                { Tup.Create(typeof(ushort), typeof(float)), v => ((Volume<ushort>)v).ToFloatColor() },
-                { Tup.Create(typeof(ushort), typeof(double)), v => ((Volume<ushort>)v).ToDoubleColor() },
+                { (typeof(ushort), typeof(byte)), v => ((Volume<ushort>)v).ToByteColor() },
+                { (typeof(ushort), typeof(ushort)), v => ((Volume<ushort>)v).CopyWindow() },
+                { (typeof(ushort), typeof(uint)), v => ((Volume<ushort>)v).ToUIntColor() },
+                { (typeof(ushort), typeof(float)), v => ((Volume<ushort>)v).ToFloatColor() },
+                { (typeof(ushort), typeof(double)), v => ((Volume<ushort>)v).ToDoubleColor() },
             
-                { Tup.Create(typeof(uint), typeof(byte)), v => ((Volume<uint>)v).ToByteColor() },
-                { Tup.Create(typeof(uint), typeof(ushort)), v => ((Volume<uint>)v).ToUShortColor() },
-                { Tup.Create(typeof(uint), typeof(uint)), v => ((Volume<uint>)v).CopyWindow() },
-                { Tup.Create(typeof(uint), typeof(float)), v => ((Volume<uint>)v).ToFloatColor() },
-                { Tup.Create(typeof(uint), typeof(double)), v => ((Volume<uint>)v).ToDoubleColor() },
+                { (typeof(uint), typeof(byte)), v => ((Volume<uint>)v).ToByteColor() },
+                { (typeof(uint), typeof(ushort)), v => ((Volume<uint>)v).ToUShortColor() },
+                { (typeof(uint), typeof(uint)), v => ((Volume<uint>)v).CopyWindow() },
+                { (typeof(uint), typeof(float)), v => ((Volume<uint>)v).ToFloatColor() },
+                { (typeof(uint), typeof(double)), v => ((Volume<uint>)v).ToDoubleColor() },
 
-                { Tup.Create(typeof(float), typeof(byte)), v => ((Volume<float>)v).ToByteColor() },
-                { Tup.Create(typeof(float), typeof(ushort)), v => ((Volume<float>)v).ToUShortColor() },
-                { Tup.Create(typeof(float), typeof(uint)), v => ((Volume<float>)v).ToUIntColor() },
-                { Tup.Create(typeof(float), typeof(float)), v => ((Volume<float>)v).CopyWindow() },
-                { Tup.Create(typeof(float), typeof(double)), v => ((Volume<float>)v).ToDoubleColor() },
+                { (typeof(float), typeof(byte)), v => ((Volume<float>)v).ToByteColor() },
+                { (typeof(float), typeof(ushort)), v => ((Volume<float>)v).ToUShortColor() },
+                { (typeof(float), typeof(uint)), v => ((Volume<float>)v).ToUIntColor() },
+                { (typeof(float), typeof(float)), v => ((Volume<float>)v).CopyWindow() },
+                { (typeof(float), typeof(double)), v => ((Volume<float>)v).ToDoubleColor() },
 
-                { Tup.Create(typeof(double), typeof(byte)), v => ((Volume<double>)v).ToByteColor() },
-                { Tup.Create(typeof(double), typeof(ushort)), v => ((Volume<double>)v).ToUShortColor() },
-                { Tup.Create(typeof(double), typeof(uint)), v => ((Volume<double>)v).ToUIntColor() },
-                { Tup.Create(typeof(double), typeof(float)), v => ((Volume<double>)v).ToFloatColor() },
-                { Tup.Create(typeof(double), typeof(double)), v => ((Volume<double>)v).CopyWindow() },
+                { (typeof(double), typeof(byte)), v => ((Volume<double>)v).ToByteColor() },
+                { (typeof(double), typeof(ushort)), v => ((Volume<double>)v).ToUShortColor() },
+                { (typeof(double), typeof(uint)), v => ((Volume<double>)v).ToUIntColor() },
+                { (typeof(double), typeof(float)), v => ((Volume<double>)v).ToFloatColor() },
+                { (typeof(double), typeof(double)), v => ((Volume<double>)v).CopyWindow() },
             };
 
         public abstract PixImage<T1> ToPixImage<T1>();
         public abstract PixImage Transformed(ImageTrafo trafo);
 
-        public PixImage<T> AsPixImage<T>()
-        {
-            return this as PixImage<T>;
-        }
+        public PixImage<T> AsPixImage<T>() => this as PixImage<T>;
 
         public PixImage<T> ToPixImage<T>(Col.Format format)
         {
-            var castImage = this as PixImage<T>;
-            if (castImage != null
-                && castImage.Format == format
-                && castImage.ChannelCount == format.ChannelCount())
+            if (this is PixImage<T> castImage && castImage.Format == format && castImage.ChannelCount == format.ChannelCount())
                 return castImage;
             return new PixImage<T>(format, this);
         }
+        
+#endregion
 
-        public System.Drawing.Bitmap ToBitmap()
-        {
-            return new System.Drawing.Bitmap(ToMemoryStream(PixFileFormat.Png), false);
-        }
-
-        #endregion
-
-        #region Abstract Methods
+#region Abstract Methods
 
         public abstract PixFormat PixFormat { get; }
 
         public abstract VolumeInfo VolumeInfo { get; }
-
-
+        
         public abstract V2i Size { get; }
         public abstract V2l SizeL { get; }
 
@@ -544,10 +489,9 @@ namespace Aardvark.Base
 
         public abstract T Visit<T>(IPixImageVisitor<T> visitor);
         
+#endregion
 
-        #endregion
-
-        #region Save as Image
+#region Save as Image
 
         /// <summary>
         /// Native implementation of PGM image writer, due to dismal
@@ -602,15 +546,15 @@ namespace Aardvark.Base
                 catch (Exception) { }
             }
 
-            #if USE_BITMAP
+#if USE_BITMAP
             if ((options & PixSaveOptions.UseBitmap) != 0
                 && SaveAsImageBitmap(stream, fileFormat, options, qualityLevel)) return;
-            #endif
+#endif
 
-            #if USE_DEVIL
+#if USE_DEVIL
             if ((options & PixSaveOptions.UseDevil) != 0
-                && SaveAsImageDevil(stream, fileFormat, options, qualityLevel)) return;
-            #endif
+                && this.SaveAsImageDevil(stream, fileFormat, options, qualityLevel)) return;
+#endif
 
             
 
@@ -680,13 +624,11 @@ namespace Aardvark.Base
                 catch (Exception) { }
             }
 
-
-            #if USE_DEVIL
-            if ((options & PixSaveOptions.UseDevil) != 0 && SaveAsImageDevil(filename, fileFormat, options, qualityLevel))
+#if USE_DEVIL
+            if ((options & PixSaveOptions.UseDevil) != 0 && this.SaveAsImageDevil(filename, fileFormat, options, qualityLevel))
                 return;
-            #endif
-
-
+#endif
+            
             var stream = new FileStream(filename, FileMode.Create);
             SaveAsImage(stream, fileFormat, options, qualityLevel);
             stream.Close();
@@ -696,10 +638,7 @@ namespace Aardvark.Base
         /// Automatically detects file format from filename extension. 
         /// Throws exception if file name does not end in known format extension.
         /// </summary>
-        public void SaveAsImage(string filename)
-        {
-            SaveAsImage(filename, GetFormatOfExtension(filename));
-        }
+        public void SaveAsImage(string filename) => SaveAsImage(filename, GetFormatOfExtension(filename));
 
         public MemoryStream ToMemoryStream(
                 PixFileFormat fileFormat,
@@ -711,13 +650,11 @@ namespace Aardvark.Base
         }
 
         public MemoryStream ToMemoryStream(int qualityLevel)
-        {
-            return ToMemoryStream(PixFileFormat.Jpeg, PixSaveOptions.Default, qualityLevel);
-        }
+            => ToMemoryStream(PixFileFormat.Jpeg, PixSaveOptions.Default, qualityLevel);
 
-        #endregion
+#endregion
 
-        #region Image Manipulation (abstract)
+#region Image Manipulation (abstract)
 
         public abstract PixImage RemappedPixImage(
                 Matrix<float> xMap, Matrix<float> yMap,
@@ -734,9 +671,9 @@ namespace Aardvark.Base
                 V2d scaleFactor,
                 ImageInterpolation ip = ImageInterpolation.Cubic);
 
-        #endregion
+#endregion
 
-        #region Static Utility Methods
+#region Static Utility Methods
 
         /// <summary>
         /// Gets info about a PixImage without loading the entire image into memory.
@@ -744,7 +681,6 @@ namespace Aardvark.Base
         public static PixImageInfo InfoFromFileName(
                 string fileName, PixLoadOptions options = PixLoadOptions.Default)
         {
-
             foreach (var readInfo in s_infoFunctions)
             {
                 try
@@ -755,47 +691,32 @@ namespace Aardvark.Base
                 catch (Exception) { }
             }
 
-            #if USE_BITMAP
+#if USE_BITMAP
             if ((options & PixLoadOptions.UseBitmap) != 0)
             {
                 var info = InfoFromFileNameBitmap(fileName, options);
                 if (info != null) return info;
             }
-            #endif
+#endif
 
-            #if USE_DEVIL
+#if USE_DEVIL
             if ((options & PixLoadOptions.UseDevil) != 0)
             {
-                var info = InfoFromFileNameDevil(fileName, options);
+                var info = PixImageDevil.InfoFromFileNameDevil(fileName, options);
                 if (info != null) return info;
             }
-            #endif
+#endif
 
             throw new ImageLoadException("could not load info of image");
         }
 
-        #endregion
+#endregion
 
-        #region IPix
+#region IPix
 
         public Tr Op<Tr>(IPixOp<Tr> op) { return op.PixImage(this); }
 
-        #endregion
-
-        //#region IFieldCodeable Members
-
-        //virtual public IEnumerable<FieldCoder> GetFieldCoders(int coderVersion)
-        //{
-        //    return
-        //         new[]
-        //    {
-        //        new FieldCoder(0, "Format",
-        //            (c,o) => c.CodeT(ref ((PixImage)o).Format) ),
-        //    };
-        //}
-
-        //#endregion
-
+#endregion
     }
 
     /// <summary>
@@ -813,7 +734,6 @@ namespace Aardvark.Base
             : base(format)
         {
             Volume = volume;
-            //TypeInfo.Add(GetType());
         }
 
         public PixImage() { }
@@ -864,7 +784,7 @@ namespace Aardvark.Base
         public PixImage(PixImageInfo info)
             : this(info.Format.Format, info.Size)
         {
-            Requires.That(info.Format.Type == typeof(T), "Attempt to create Piximage from PixImageInfo with different Type T.");
+            if (info.Format.Type != typeof(T)) throw new Exception("Attempt to create PixImage from PixImageInfo with different Type T.");
         }
 
         /// <summary>
@@ -989,17 +909,7 @@ namespace Aardvark.Base
             Volume = volume;
             Format = format;
         }
-
-        public PixImage(System.Drawing.Bitmap bitmap)
-        {
-            var loadImage = Create(bitmap);
-            var loadPixImage = loadImage as PixImage<T>;
-            if (loadPixImage == null)
-                loadPixImage = new PixImage<T>(loadImage);
-            Format = loadPixImage.Format;
-            Volume = loadPixImage.Volume;
-        }
-
+        
         public PixImage<T> CopyToImageLayout()
         {
             if (Volume.HasImageLayout())
@@ -1007,25 +917,13 @@ namespace Aardvark.Base
             return new PixImage<T>(this);
         }
 
-        public PixImage<T> Copy()
-        {
-            return new PixImage<T>(Format, Volume.CopyToImageWindow());
-        }
+        public PixImage<T> Copy() => new PixImage<T>(Format, Volume.CopyToImageWindow());
 
-        public override PixImage CopyToPixImage()
-        {
-            return Copy();
-        }
+        public override PixImage CopyToPixImage() => Copy();
 
-        public override PixImage CopyToPixImageWithCanonicalDenseLayout()
-        {
-            return CopyToImageLayout();
-        }
+        public override PixImage CopyToPixImageWithCanonicalDenseLayout() => CopyToImageLayout();
 
-        public override PixImage ToCanonicalDenseLayout()
-        {
-            return this.ToImageLayout();
-        }
+        public override PixImage ToCanonicalDenseLayout() => ToImageLayout();
 
         /// <summary>
         /// Copy function for color conversions.
@@ -1033,10 +931,7 @@ namespace Aardvark.Base
         /// <typeparam name="Tv"></typeparam>
         /// <param name="fun"></param>
         /// <returns></returns>
-        public PixImage<T> Copy<Tv>(Func<Tv, Tv> fun)
-        {
-            return Copy<Tv>(fun, Format);
-        }
+        public PixImage<T> Copy<Tv>(Func<Tv, Tv> fun) => Copy<Tv>(fun, Format);
 
         /// <summary>
         /// Copy function for color conversions. Note that the
@@ -1090,9 +985,7 @@ namespace Aardvark.Base
         #region Static Creator Functions
 
         public static PixImage<T> Create(params Matrix<T>[] channels)
-        {
-            return new PixImage<T>(channels);
-        }
+            => new PixImage<T>(channels);
 
         /// <summary>
         /// Create a pixel image from all the given channels in the specified format.
@@ -1102,9 +995,7 @@ namespace Aardvark.Base
         /// <param name="channels">channel matrices</param>
         /// </summary>
         public static PixImage<T> Create(Col.Format format, params Matrix<T>[] channels)
-        {
-            return new PixImage<T>(format, channels);
-        }
+            => new PixImage<T>(format, channels);
 
         /// <summary>
         /// Create a pixel image from all the given channels in the specified format.
@@ -1134,31 +1025,15 @@ namespace Aardvark.Base
 
         #region Properties
 
-        public override VolumeInfo VolumeInfo
-        {
-            get { return Volume.Info; }
-        }
+        public override VolumeInfo VolumeInfo => Volume.Info;
+        
+        public override V2i Size => (V2i)Volume.Info.Size.XY;
 
+        public override V2l SizeL => Volume.Info.Size.XY;
 
-        public override V2i Size
-        {
-            get { return (V2i)Volume.Info.Size.XY; }
-        }
+        public override int ChannelCount => (int)Volume.Info.Size.Z;
 
-        public override V2l SizeL
-        {
-            get { return Volume.Info.Size.XY; }
-        }
-
-        public override int ChannelCount
-        {
-            get { return (int)Volume.Info.Size.Z; }
-        }
-
-        public override long ChannelCountL
-        {
-            get { return Volume.Info.Size.Z; }
-        }
+        public override long ChannelCountL => Volume.Info.Size.Z;
 
         /// <summary>
         /// Returns the channels of the image in canonical order: red, green,
@@ -1178,116 +1053,86 @@ namespace Aardvark.Base
         /// Returns the array containing the cahnnels in canonical order: red,
         /// green, blue, (alpha).
         /// </summary>
-        public Matrix<T>[] ChannelArray
-        {
-            get { return Channels.ToArray(); }
-        }
+        public Matrix<T>[] ChannelArray => Channels.ToArray();
 
-        public int BytesPerChannel
-        {
-            get { return System.Runtime.InteropServices.Marshal.SizeOf(typeof(T)); }
-        }
+        public int BytesPerChannel => System.Runtime.InteropServices.Marshal.SizeOf(typeof(T));
 
-        public override Array Array
-        {
-            get { return Volume.Data; }
-        }
+        public override Array Array => Volume.Data;
 
-        public override int IntStride
-        {
-            get { return BytesPerChannel * (int)Volume.DY; }
-        }
+        public override int IntStride => BytesPerChannel * (int)Volume.DY;
 
         /// <summary>
         /// Returns the matrix representation of the volume if there is only
         /// one channel. Fails if there are multiple channels.
         /// </summary>
-        public Matrix<T> Matrix
-        {
-            get { return Volume.AsMatrixWindow(); }
-        }
+        public Matrix<T> Matrix => Volume.AsMatrixWindow();
 
         #endregion
 
         #region Image Manipulation
 
         public override PixImage RemappedPixImage(
-                Matrix<float> xMap, Matrix<float> yMap,
-                ImageInterpolation ip = ImageInterpolation.Cubic)
-        {
-            return Remapped(xMap, xMap, ip);
-        }
+            Matrix<float> xMap, Matrix<float> yMap,
+            ImageInterpolation ip = ImageInterpolation.Cubic
+            ) => Remapped(xMap, xMap, ip);
 
         public PixImage<T> Remapped(
-                Matrix<float> xMap, Matrix<float> yMap,
-                ImageInterpolation ip = ImageInterpolation.Cubic)
-        {
-            return new PixImage<T>(Format, s_remappedFun(Volume, xMap, yMap, ip));
-        }
+            Matrix<float> xMap, Matrix<float> yMap,
+            ImageInterpolation ip = ImageInterpolation.Cubic
+            ) => new PixImage<T>(Format, s_remappedFun(Volume, xMap, yMap, ip));
 
         private static Func<Volume<T>, Matrix<float>, Matrix<float>, ImageInterpolation, Volume<T>> s_remappedFun = null;
 
         public static void SetRemappedFun(
-                Func<Volume<T>, Matrix<float>, Matrix<float>, ImageInterpolation, Volume<T>> remappedFun)
+            Func<Volume<T>, Matrix<float>, Matrix<float>, ImageInterpolation, Volume<T>> remappedFun
+            )
         {
             s_remappedFun = remappedFun;
         }
 
         public override PixImage ResizedPixImage(
-                V2i newSize,
-                ImageInterpolation ip = ImageInterpolation.Cubic)
-        {
-            return Scaled((V2d)newSize / (V2d)Size, ip);
-        }
+            V2i newSize,
+            ImageInterpolation ip = ImageInterpolation.Cubic
+            ) => Scaled((V2d)newSize / (V2d)Size, ip);
 
         public PixImage<T> Resized(
-                V2i newSize,
-                ImageInterpolation ip = ImageInterpolation.Cubic)
-        {
-            return Scaled((V2d)newSize / (V2d)Size, ip);
-        }
+            V2i newSize,
+            ImageInterpolation ip = ImageInterpolation.Cubic
+            ) => Scaled((V2d)newSize / (V2d)Size, ip);
 
         public PixImage<T> Resized(
-                int xSize, int ySize,
-                ImageInterpolation ip = ImageInterpolation.Cubic)
-        {
-            return Scaled(new V2d(xSize, ySize) / (V2d)Size, ip);
-        }
+            int xSize, int ySize,
+            ImageInterpolation ip = ImageInterpolation.Cubic
+            ) => Scaled(new V2d(xSize, ySize) / (V2d)Size, ip);
 
         public override PixImage RotatedPixImage(
-                double angleInRadiansCCW, bool resize = true,
-                ImageInterpolation ip = ImageInterpolation.Cubic)
-        {
-            return Rotated(angleInRadiansCCW, resize, ip);
-        }
+            double angleInRadiansCCW, bool resize = true,
+            ImageInterpolation ip = ImageInterpolation.Cubic
+            ) => Rotated(angleInRadiansCCW, resize, ip);
 
         public PixImage<T> Rotated(
-                double angleInRadiansCCW, bool resize = true,
-                ImageInterpolation ip = ImageInterpolation.Cubic)
-        {
-            return new PixImage<T>(Format, s_rotatedFun(Volume, angleInRadiansCCW, resize, ip));
-        }
+            double angleInRadiansCCW, bool resize = true,
+            ImageInterpolation ip = ImageInterpolation.Cubic
+            ) => new PixImage<T>(Format, s_rotatedFun(Volume, angleInRadiansCCW, resize, ip));
 
         private static Func<Volume<T>, double, bool, ImageInterpolation, Volume<T>> s_rotatedFun = null;
 
         public static void SetRotatedFun(
-                Func<Volume<T>, double, bool, ImageInterpolation, Volume<T>> rotatedFun)
+            Func<Volume<T>, double, bool, ImageInterpolation, Volume<T>> rotatedFun)
         {
             s_rotatedFun = rotatedFun;
         }
 
         public override PixImage ScaledPixImage(
-                V2d scaleFactor,
-                ImageInterpolation ip = ImageInterpolation.Cubic)
-        {
-            return Scaled(scaleFactor, ip);
-        }
+            V2d scaleFactor,
+            ImageInterpolation ip = ImageInterpolation.Cubic
+            ) => Scaled(scaleFactor, ip);
 
         public PixImage<T> Scaled(
-                V2d scaleFactor,
-                ImageInterpolation ip = ImageInterpolation.Cubic)
+            V2d scaleFactor,
+            ImageInterpolation ip = ImageInterpolation.Cubic)
         {
-            Requires.That(scaleFactor.X > 0.0 && scaleFactor.Y > 0.0);
+            if (!(scaleFactor.X > 0.0 && scaleFactor.Y > 0.0)) throw new ArgumentOutOfRangeException(nameof(scaleFactor));
 
             // SuperSample is only available for scale factors < 1; fall back to Cubic
             if ((scaleFactor.X >= 1.0 || scaleFactor.Y >= 1.0) && ip == ImageInterpolation.SuperSample)
@@ -1302,21 +1147,16 @@ namespace Aardvark.Base
         {
             s_scaledFun = scaledFun;
         }
-
+        
+        public PixImage<T> Scaled(
+            double scaleFactor,
+            ImageInterpolation ip = ImageInterpolation.Cubic
+            ) => Scaled(new V2d(scaleFactor, scaleFactor), ip);
 
         public PixImage<T> Scaled(
-                double scaleFactor,
-                ImageInterpolation ip = ImageInterpolation.Cubic)
-        {
-            return Scaled(new V2d(scaleFactor, scaleFactor), ip);
-        }
-
-        public PixImage<T> Scaled(
-                double xScaleFactor, double yScaleFactor,
-                ImageInterpolation ip = ImageInterpolation.Cubic)
-        {
-            return Scaled(new V2d(xScaleFactor, yScaleFactor), ip);
-        }
+            double xScaleFactor, double yScaleFactor,
+            ImageInterpolation ip = ImageInterpolation.Cubic
+            ) => Scaled(new V2d(xScaleFactor, yScaleFactor), ip);
 
         #endregion
 
@@ -1339,28 +1179,19 @@ namespace Aardvark.Base
         /// Returns a specified region as new PixImage.
         /// No data is copied, the internal Volumue is only a view on the original one.
         /// </summary>
-        public PixImage<T> SubImage(V2i pos, V2i size)
-        {
-            return SubImage(pos.X, pos.Y, size.X, size.Y);
-        }
+        public PixImage<T> SubImage(V2i pos, V2i size) => SubImage(pos.X, pos.Y, size.X, size.Y);
 
         /// <summary>
         /// Returns a specified region as new PixImage.
         /// No data is copied, the internal Volumue is only a view on the original one.
         /// </summary>
-        public PixImage<T> SubImage(V2l pos, V2l size)
-        {
-            return SubImage(pos.X, pos.Y, size.X, size.Y);
-        }
+        public PixImage<T> SubImage(V2l pos, V2l size) => SubImage(pos.X, pos.Y, size.X, size.Y);
 
         /// <summary>
         /// Returns a specified region as new PixImage.
         /// No data is copied, the internal Volumue is only a view on the original one.
         /// </summary>
-        public PixImage<T> SubImage(Box2i box)
-        {
-            return SubImage(box.Min, box.Size);
-        }
+        public PixImage<T> SubImage(Box2i box) => SubImage(box.Min, box.Size);
 
         /// <summary>
         /// Returns a square region around the center as new PixImage.
@@ -1368,9 +1199,7 @@ namespace Aardvark.Base
         /// No data is copied, the internal Volumue is only a view on the original one.
         /// </summary>
         public PixImage<T> SubImage(V2i center, int squareRadius)
-        {
-            return SubImage(center - squareRadius, V2i.II * squareRadius * 2 + 1);
-        }
+            => SubImage(center - squareRadius, V2i.II * squareRadius * 2 + 1);
 
         /// <summary>
         /// Returns a specified region as a new PixImage.
@@ -1380,10 +1209,7 @@ namespace Aardvark.Base
         /// result in different integer sizes.
         /// No data is copied, the internal Volumue is only a view on the original one.
         /// </summary>
-        public PixImage<T> SubImage(V2d pos, V2d size)
-        {
-            return SubImage(new V2i(pos + 0.5), new V2i(size + 0.5));
-        }
+        public PixImage<T> SubImage(V2d pos, V2d size) => SubImage(new V2i(pos + 0.5), new V2i(size + 0.5));
 
         /// <summary>
         /// Returns a specified region as a new PixImage.
@@ -1437,19 +1263,13 @@ namespace Aardvark.Base
         /// Set a subregion of the image to the contents of another image.
         /// The size of the subregion is determined by the other image.
         /// </summary>
-        public void Set(int x, int y, PixImage<T> img)
-        {
-            Set(new V2i(x, y), img);
-        }
+        public void Set(int x, int y, PixImage<T> img) => Set(new V2i(x, y), img);
 
         /// <summary>
         /// Set a subregion of the image to the contents of another image.
         /// The size of the subregion is dtermined by the other image.
         /// </summary>
-        public void Set(V2i pos, PixImage<T> image)
-        {
-            SubImage(pos, image.Size).Set(image);
-        }
+        public void Set(V2i pos, PixImage<T> image) => SubImage(pos, image.Size).Set(image);
 
         /// <summary>
         /// Set the image contents of the image to the contents of another
@@ -1485,17 +1305,9 @@ namespace Aardvark.Base
 
         #region Conversions
 
-        public PixImage<T> ToImageLayout()
-        {
-            if (!Volume.HasImageLayout())
-                return new PixImage<T>(Format, this);
-            else return this;
-        }
+        public PixImage<T> ToImageLayout() => !Volume.HasImageLayout() ? new PixImage<T>(Format, this) : this;
 
-        public PixImage<T> ToFormat(Col.Format format)
-        {
-            return Format == format ? this : new PixImage<T>(format, this);
-        }
+        public PixImage<T> ToFormat(Col.Format format) => Format == format ? this : new PixImage<T>(format, this);
 
         public override PixImage<T1> ToPixImage<T1>()
         {
@@ -1504,16 +1316,14 @@ namespace Aardvark.Base
             var format = typeof(T1).FormatDefaultOf(ChannelCount);
             if (Format == format)
             {
-                var copy = s_copyFunMap[Tup.Create(typeof(T), typeof(T1))];
+                var copy = s_copyFunMap[(typeof(T), typeof(T1))];
                 return new PixImage<T1>(format, (Volume<T1>)copy(Volume));
             }
             return new PixImage<T1>(this);
         }
 
         public override PixImage Transformed(ImageTrafo trafo)
-        {
-            return new PixImage<T>(Format, Volume.Transformed(trafo));
-        }
+            => new PixImage<T>(Format, Volume.Transformed(trafo));
 
         #endregion
 
@@ -1533,27 +1343,21 @@ namespace Aardvark.Base
         /// Returns the specified channel.
         /// </summary>
         public Matrix<T> GetChannel(Col.Channel channel)
-        {
-            return GetChannelInFormatOrder(Format.ChannelIndex(channel));
-        }
+            => GetChannelInFormatOrder(Format.ChannelIndex(channel));
 
         /// <summary>
         /// Returns the specified channel (based on the canonical order) with
         /// a different view type.
         /// </summary>
         public Matrix<T, Tv> GetChannel<Tv>(long channelIndex)
-        {
-            return GetChannelInFormatOrder<Tv>(Format.ChannelOrder()[channelIndex]);
-        }
+            => GetChannelInFormatOrder<Tv>(Format.ChannelOrder()[channelIndex]);
 
         /// <summary>
         /// Returns the specified channel based on the order of the image's
         /// color format.
         /// </summary>
         public Matrix<T> GetChannelInFormatOrder(long formatChannelIndex)
-        {
-            return Volume.SubXYMatrixWindow(formatChannelIndex);
-        }
+            => Volume.SubXYMatrixWindow(formatChannelIndex);
 
         /// <summary>
         /// Returns the specified channel based on the order of the image's
@@ -1568,19 +1372,13 @@ namespace Aardvark.Base
             return matrix;
         }
             
-        public Matrix<T, Tv> GetMatrix<Tv>()
-        {
-            return Volume.GetMatrix<T, Tv>(Format.GetIntent());
-        }
+        public Matrix<T, Tv> GetMatrix<Tv>() => Volume.GetMatrix<T, Tv>(Format.GetIntent());
 
         #endregion
 
         #region Concrete Implementation Of Abstract Functions
 
-        public override PixFormat PixFormat
-        {
-            get { return new PixFormat(typeof(T), Format); }
-        }
+        public override PixFormat PixFormat => new PixFormat(typeof(T), Format);
 
         public override void CopyChannelTo<Tv>(long channelIndex, Matrix<Tv> target)
         {
@@ -1595,36 +1393,10 @@ namespace Aardvark.Base
             return new PixImage<T>(format, this);
         }
 
-        public override Array Data
-        {
-            get
-            {
-                Requires.That(Volume.HasImageLayout());
-                return Volume.Data;
-            }
-        }
+        public override Array Data => Volume.HasImageLayout() ? Volume.Data : throw new ArgumentException(nameof(Volume));
 
-        public override TResult Visit<TResult>(IPixImageVisitor<TResult> visitor)
-        {
-            return visitor.Visit<T>(this);
-        }
+        public override TResult Visit<TResult>(IPixImageVisitor<TResult> visitor) => visitor.Visit<T>(this);
 
         #endregion
-
-        //#region IFieldCodeable Members
-
-        //override public IEnumerable<FieldCoder> GetFieldCoders(int coderVersion)
-        //{
-        //    return base.GetFieldCoders(coderVersion).Base().Concat(
-        //        new[]
-        //        {
-        //            new FieldCoder(0, "Volume",
-        //                (c,o) => c.CodeT(ref ((PixImage<T>)o).Volume) ),
-        //        });
-        //}
-
-        //#endregion
-
     }
-
 }

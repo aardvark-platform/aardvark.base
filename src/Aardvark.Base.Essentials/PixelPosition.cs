@@ -88,8 +88,7 @@ namespace Aardvark.Base
             : this(new Ndc2d(ndc.Position.XY), renderTargetRegion)
         {
         }
-
-
+        
         /// <summary>
         /// Maps integral pixel position to range ](0,0), (1,1)[,
         /// where integral pixel positions correspond to pixel centers.
@@ -101,15 +100,9 @@ namespace Aardvark.Base
         /// (0,2) -> (0.50, 0.75)
         /// (0,3) -> (0.83, 0.75)
         /// </summary>
-        public V2d NormalizedPosition
-        {
-            get
-            {
-                return new V2d(
-                    (Position.X - Bounds.Min.X + 0.5) / (Bounds.Max.X - Bounds.Min.X),
-                    (Position.Y - Bounds.Min.Y + 0.5) / (Bounds.Max.Y - Bounds.Min.Y)
-                    );
-            }
-        }
+        public V2d NormalizedPosition => new V2d(
+            (Position.X - Bounds.Min.X + 0.5) / (Bounds.Max.X - Bounds.Min.X),
+            (Position.Y - Bounds.Min.Y + 0.5) / (Bounds.Max.Y - Bounds.Min.Y)
+            );
     }
 }

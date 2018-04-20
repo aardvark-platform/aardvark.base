@@ -36,8 +36,7 @@ namespace Aardvark.Base
             var r = new Dictionary<Tk, T1v>(self.Count);
             foreach (var kvp in self)
             {
-                Func<Tv, T1v> fun;
-                if (funMap.TryGetValue(kvp.Key, out fun))
+                if (funMap.TryGetValue(kvp.Key, out Func<Tv, T1v> fun))
                     r[kvp.Key] = fun(kvp.Value);
                 else if (defaultFun != null)
                     r[kvp.Key] = defaultFun(kvp.Value);
@@ -74,8 +73,7 @@ namespace Aardvark.Base
         public static Tv Get<Tk, Tv>(
             this IDictionary<Tk, Tv> self, Tk key)
         {
-            Tv value;
-            if (self.TryGetValue(key, out value)) return value;
+            if (self.TryGetValue(key, out Tv value)) return value;
             return default(Tv);
         }
 
@@ -86,8 +84,7 @@ namespace Aardvark.Base
         public static Tv Get<Tk, Tv>(
             this IDictionary<Tk, Tv> self, Tk key, Tv defaultValue)
         {
-            Tv value;
-            if (self.TryGetValue(key, out value)) return value;
+            if (self.TryGetValue(key, out Tv value)) return value;
             return defaultValue;
         }
 
@@ -96,10 +93,9 @@ namespace Aardvark.Base
         /// </summary>
         public static TV GetCreate<TK, TV>(this IDictionary<TK, TV> self, TK key, Func<TK, TV> creator = null)
         {
-            TV value;
-            if (!self.TryGetValue(key, out value))
+            if (!self.TryGetValue(key, out TV value))
             {
-                value = creator.RunIfNotNull(key, default(TV));
+                value = (creator != null) ? creator(key) : default(TV);
                 self[key] = value;
             }
             return value;
@@ -112,8 +108,7 @@ namespace Aardvark.Base
         /// <exception cref="KeyNotFoundException">if key not found</exception>
         public static TV Pop<TK, TV>(this IDictionary<TK, TV> self, TK key)
         {
-            TV value;
-            if (self.TryGetValue(key, out value))
+            if (self.TryGetValue(key, out TV value))
             {
                 self.Remove(key);
                 return value;
@@ -128,8 +123,7 @@ namespace Aardvark.Base
         /// <return>The value removed from the dictionary or default(T)</return>
         public static TV TryPop<TK, TV>(this IDictionary<TK, TV> self, TK key)
         {
-            TV value = default(TV);
-            if (self.TryGetValue(key, out value))
+            if (self.TryGetValue(key, out TV value))
                 self.Remove(key);
             return value;
         }
@@ -217,9 +211,8 @@ namespace Aardvark.Base
                 foreach (var item in self)
                 {
                     Tv valueA = item.Value;
-                    Tv valueB;
 
-                    if (!other.TryGetValue(item.Key, out valueB) || !valueComparisonFunc(valueA, valueB))
+                    if (!other.TryGetValue(item.Key, out Tv valueB) || !valueComparisonFunc(valueA, valueB))
                         return false;
 
                 }
@@ -232,8 +225,7 @@ namespace Aardvark.Base
         /// </summary>
         public static TValue GetValueOrDefault<TKey, TValue>(this IDictionary<TKey, TValue> self, TKey key, TValue default_value)
         {
-            var result = default(TValue);
-            return self.TryGetValue(key, out result) ? result : default_value;
+            return self.TryGetValue(key, out TValue result) ? result : default_value;
         }
     }
 

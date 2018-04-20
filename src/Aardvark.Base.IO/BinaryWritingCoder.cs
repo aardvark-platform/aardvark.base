@@ -560,9 +560,9 @@ namespace Aardvark.Base.Coder
             var valueType = dict.ValueType;
             foreach (var pair in dict.ObjectPairs)
             {
-                var key = pair.E0;
+                var key = pair.Item1;
                 TypeCoder.Write(this, keyType, ref key);
-                var val = pair.E1;
+                var val = pair.Item2;
                 TypeCoder.Write(this, valueType, ref val);
             }
         }

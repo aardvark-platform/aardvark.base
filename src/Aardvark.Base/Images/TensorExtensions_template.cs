@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using Aardvark.Base;
 
 namespace Aardvark.Base
 {
@@ -11,7 +7,6 @@ namespace Aardvark.Base
     /// </summary>
     public static partial class TensorExtensions
     {
-
         #region Image Scaling
 
         //# var intConfigs = new []
@@ -37,6 +32,7 @@ namespace Aardvark.Base
             targetMat.SetScaledLinear(sourceMat, (x, a, b) => x < 0.5 ? a : b,
                                                  (x, a, b) => x < 0.5 ? a : b);
         }
+
         /// <summary>
         /// Use supplied linear interpolators in x and y to scale the source matrix into the target
         /// matrix.
@@ -93,7 +89,7 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Use Lanczos Interpoation to scale the source matrix into the target matrix.
+        /// Use Lanczos Interpolation to scale the source matrix into the target matrix.
         /// </summary>
         public static void SetScaledLanczos(this Matrix<__dtct__> targetMat, Matrix<__dtct__> sourceMat)
         {

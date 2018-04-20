@@ -1,11 +1,12 @@
-﻿using System.Threading;
+﻿using System.Collections.Generic;
+using System.Threading;
 
 namespace Aardvark.Base
 {
     public class PerThreadJobReporter : IJobReporter
     {
         private SpinLock m_lock;
-        private volatile IntDict<IJobReporter> m_reporterMap;
+        private volatile Dictionary<int, IJobReporter> m_reporterMap;
         private volatile int m_threadCount;
         private int m_indent;
 
@@ -13,7 +14,7 @@ namespace Aardvark.Base
 
         public PerThreadJobReporter()
         {
-            m_reporterMap = new IntDict<IJobReporter>();
+            m_reporterMap = new Dictionary<int, IJobReporter>();
             m_threadCount = 0; m_indent = 2;
         }
 
@@ -105,6 +106,5 @@ namespace Aardvark.Base
         }
 
         #endregion
-
     }
 }

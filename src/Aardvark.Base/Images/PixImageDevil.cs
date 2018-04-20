@@ -10,7 +10,7 @@ using DevILSharp;
 
 namespace Aardvark.Base
 {
-    public abstract partial class PixImage
+    public static class PixImageDevil
     {
         private static object s_devilLock = new object();
         private static bool s_initialized = false;
@@ -29,7 +29,7 @@ namespace Aardvark.Base
             IL.Enable(EnableCap.ConvertPalette);
         }
 
-        static PixImage()
+        static PixImageDevil()
         {
             InitDevil();
         }
@@ -45,8 +45,7 @@ namespace Aardvark.Base
             {Devil.ChannelFormat.RGB, Col.Format.RGB},
             {Devil.ChannelFormat.RGBA, Col.Format.RGBA},
         };
-
-
+        
         private static Dictionary<Devil.ChannelType, Type> s_pixDataTypes = new Dictionary<Devil.ChannelType, Type>()
         {
             {Devil.ChannelType.Byte, typeof(sbyte)},
@@ -58,8 +57,7 @@ namespace Aardvark.Base
             {Devil.ChannelType.Float, typeof(float)},
             {Devil.ChannelType.Double, typeof(double)},
         };
-
-
+        
         private static Dictionary<Type, Devil.ChannelType> s_devilDataTypes = new Dictionary<Type, Devil.ChannelType>()
         {
             {typeof(sbyte), Devil.ChannelType.Byte},
@@ -71,8 +69,7 @@ namespace Aardvark.Base
             {typeof(float), Devil.ChannelType.Float},
             {typeof(double), Devil.ChannelType.Double},
         };
-
-
+        
         private static Dictionary<Col.Format, Devil.ChannelFormat> s_devilColorFormats = new Dictionary<Col.Format, Devil.ChannelFormat>()
         {
             { Col.Format.RGB, Devil.ChannelFormat.RGB },
@@ -82,9 +79,7 @@ namespace Aardvark.Base
             { Col.Format.Gray, Devil.ChannelFormat.Luminance },
             { Col.Format.GrayAlpha, Devil.ChannelFormat.LuminanceAlpha },
         };
-
-
-
+        
         private static Dictionary<PixFileFormat, Devil.ImageType> s_fileFormats = new Dictionary<PixFileFormat, Devil.ImageType>()
         {
             {PixFileFormat.Bmp,   Devil.ImageType.Bmp},
@@ -117,7 +112,7 @@ namespace Aardvark.Base
         /// Load image from stream via devil.
         /// </summary>
         /// <returns>If file could not be read, returns null, otherwise a Piximage.</returns>
-        private static PixImage CreateRawDevil(
+        internal static PixImage CreateRawDevil(
                 Stream stream,
                 PixLoadOptions loadFlags = PixLoadOptions.Default)
         {
@@ -138,7 +133,7 @@ namespace Aardvark.Base
         /// Load image from stream via devil.
         /// </summary>
         /// <returns>If file could not be read, returns null, otherwise a Piximage.</returns>
-        private static PixImage CreateRawDevil(
+        internal static PixImage CreateRawDevil(
                 string fileName,
                 PixLoadOptions loadFlags = PixLoadOptions.Default)
         {
@@ -198,7 +193,7 @@ namespace Aardvark.Base
             return pix;
         }
 
-        private bool SaveDevIL(Func<bool> save, int qualityLevel)
+        private static bool SaveDevIL(this PixImage image, Func<bool> save, int qualityLevel)
         {
             //Devil.ImageType imageType;
             //if (!s_fileFormats.TryGetValue(format, out imageType))
@@ -210,13 +205,13 @@ namespace Aardvark.Base
             ChannelType type;
             ChannelFormat fmt;
 
-            if (!s_devilDataTypes.TryGetValue(PixFormat.Type, out type)) return false;
-            if (!s_devilColorFormats.TryGetValue(PixFormat.Format, out fmt)) return false;
+            if (!s_devilDataTypes.TryGetValue(image.PixFormat.Type, out type)) return false;
+            if (!s_devilColorFormats.TryGetValue(image.PixFormat.Format, out fmt)) return false;
 
-            var gc = GCHandle.Alloc(Data, GCHandleType.Pinned);
+            var gc = GCHandle.Alloc(image.Data, GCHandleType.Pinned);
             try
             {
-                if (!IL.TexImage(Size.X, Size.Y, 1, (byte)ChannelCount, fmt, type, gc.AddrOfPinnedObject()))
+                if (!IL.TexImage(image.Size.X, image.Size.Y, 1, (byte)image.ChannelCount, fmt, type, gc.AddrOfPinnedObject()))
                     return false;
 
                 IL.RegisterOrigin(OriginMode.UpperLeft);
@@ -242,7 +237,8 @@ namespace Aardvark.Base
         /// Save image to stream via devil.
         /// </summary>
         /// <returns>True if the file was successfully saved.</returns>
-        private bool SaveAsImageDevil(
+        internal static bool SaveAsImageDevil(
+                this PixImage image,
                 Stream stream, PixFileFormat format,
                 PixSaveOptions options, int qualityLevel)
         {
@@ -250,11 +246,11 @@ namespace Aardvark.Base
             if (!s_fileFormats.TryGetValue(format, out imageType))
                 return false;
 
-            return SaveDevIL(() => IL.SaveStream(imageType, stream), qualityLevel);
+            return image.SaveDevIL(() => IL.SaveStream(imageType, stream), qualityLevel);
         }
-
-
-        private bool SaveAsImageDevil(
+        
+        internal static bool SaveAsImageDevil(
+                this PixImage image,
                 string file, PixFileFormat format,
                 PixSaveOptions options, int qualityLevel)
         {
@@ -262,10 +258,9 @@ namespace Aardvark.Base
             if (!s_fileFormats.TryGetValue(format, out imageType))
                 return false;
 
-            return SaveDevIL(() => IL.Save(imageType, file), qualityLevel);
+            return image.SaveDevIL(() => IL.Save(imageType, file), qualityLevel);
         }
-
-
+        
         /// <summary>
         /// Gets info about a PixImage without loading the entire image into memory.
         /// </summary>

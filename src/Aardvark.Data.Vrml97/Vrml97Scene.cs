@@ -15,10 +15,7 @@ namespace Aardvark.Data.Vrml97
         /// <summary>
         /// Creates a Vrml97Scene from given VRML97 file.
         /// </summary>
-        public static Vrml97Scene FromFile(string fileName)
-        {
-            return FromFile(fileName, true, true);
-        }
+        public static Vrml97Scene FromFile(string fileName) => FromFile(fileName, true, true);
 
         /// <summary>
         /// Creates a Vrml97Scene from given VRML97 file.
@@ -43,17 +40,12 @@ namespace Aardvark.Data.Vrml97
         /// <param name="fileName"></param>
         /// <returns></returns>
         public static Vrml97Scene FromStream(Stream stream, string fileName)
-        {
-            return Parse(new Parser(stream, fileName), true, true);
-        }
+            => Parse(new Parser(stream, fileName), true, true);
 
         /// <summary>
         ///  Constructor.
         /// </summary>
-        public Vrml97Scene(SymMapBase parseTree)
-        {
-            m_parseTree = parseTree;
-        }
+        public Vrml97Scene(SymMapBase parseTree) => m_parseTree = parseTree;
 
         /// <summary>
         /// Raw parse tree.
@@ -62,7 +54,6 @@ namespace Aardvark.Data.Vrml97
         {
             get { return m_parseTree; }
             internal set { m_parseTree = value; }
-        
         }
 
         /// <summary>
@@ -146,13 +137,7 @@ namespace Aardvark.Data.Vrml97
         /// <summary>
         /// Returns dictionary containing all named nodes in the scene.
         /// </summary>
-        public Dictionary<string, SymMapBase> NamedNodes
-        {
-            get
-            {
-                return m_namedNodes;
-            }
-        }
+        public Dictionary<string, SymMapBase> NamedNodes => m_namedNodes;
 
         private static Vrml97Scene Parse(Parser parser, bool resolveDefUse, bool annotate, bool duplicateMaps = true)
         {

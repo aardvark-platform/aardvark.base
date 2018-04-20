@@ -48,18 +48,13 @@ namespace Aardvark.Data.Vrml97
     /// </summary>
     internal class Parser
     {
-
         #region Public interface.
 
         public static Vrml97Scene FromFile(string fileName)
-        {
-            return new Parser(fileName).Perform();
-        }
+            => new Parser(fileName).Perform();
 
         public static Vrml97Scene FromStream(Stream stream, string fileName)
-        {
-            return new Parser(stream, fileName).Perform();
-        }
+            => new Parser(stream, fileName).Perform();
 
         /// <summary>
         /// Constructs a Parser for the given input stream.
@@ -104,13 +99,13 @@ namespace Aardvark.Data.Vrml97
         /// <returns>Parse tree.</returns>
         public Vrml97Scene Perform()
         {
-            List<SymMapBase> root = new List<SymMapBase>();
+            var root = new List<SymMapBase>();
 
             while (true)
             {
 				try
 				{
-                    SymMapBase node = ParseNode(m_tokenizer);
+                    var node = ParseNode(m_tokenizer);
 					if (node == null) break;
 					root.Add(node);
 					Thread.Sleep(0);
@@ -134,59 +129,57 @@ namespace Aardvark.Data.Vrml97
         /** Static constructor. */
         static Parser()
         {
-            FieldParser SFBool = new FieldParser(ParseSFBool);
-            //FieldParser MFBool = new FieldParser(ParseMFBool);
-            FieldParser SFColor = new FieldParser(ParseSFColor);
-            FieldParser MFColor = new FieldParser(ParseMFColor);
-            FieldParser SFFloat = new FieldParser(ParseSFFloat);
-            FieldParser MFFloat = new FieldParser(ParseMFFloat);
-            FieldParser SFImage = new FieldParser(ParseSFImage);
-            FieldParser SFInt32 = new FieldParser(ParseSFInt32);
-            FieldParser MFInt32 = new FieldParser(ParseMFInt32);
-            FieldParser SFNode = new FieldParser(ParseSFNode);
-            FieldParser MFNode = new FieldParser(ParseMFNode);
-            FieldParser SFRotation = new FieldParser(ParseSFRotation);
-            FieldParser MFRotation = new FieldParser(ParseMFRotation);
-            FieldParser SFString = new FieldParser(ParseSFString);
-            FieldParser MFString = new FieldParser(ParseMFString);
-            FieldParser SFTime = new FieldParser(ParseSFFloat);
-            //FieldParser MFTime = new FieldParser(ParseMFFloat);
-            FieldParser SFVec2f = new FieldParser(ParseSFVec2f);
-            FieldParser MFVec2f = new FieldParser(ParseMFVec2f);
-            FieldParser SFVec3f = new FieldParser(ParseSFVec3f);
-            FieldParser MFVec3f = new FieldParser(ParseMFVec3f);
+            var SFBool = new FieldParser(ParseSFBool);
+            //var MFBool = new FieldParser(ParseMFBool);
+            var SFColor = new FieldParser(ParseSFColor);
+            var MFColor = new FieldParser(ParseMFColor);
+            var SFFloat = new FieldParser(ParseSFFloat);
+            var MFFloat = new FieldParser(ParseMFFloat);
+            var SFImage = new FieldParser(ParseSFImage);
+            var SFInt32 = new FieldParser(ParseSFInt32);
+            var MFInt32 = new FieldParser(ParseMFInt32);
+            var SFNode = new FieldParser(ParseSFNode);
+            var MFNode = new FieldParser(ParseMFNode);
+            var SFRotation = new FieldParser(ParseSFRotation);
+            var MFRotation = new FieldParser(ParseMFRotation);
+            var SFString = new FieldParser(ParseSFString);
+            var MFString = new FieldParser(ParseMFString);
+            var SFTime = new FieldParser(ParseSFFloat);
+            //var MFTime = new FieldParser(ParseMFFloat);
+            var SFVec2f = new FieldParser(ParseSFVec2f);
+            var MFVec2f = new FieldParser(ParseMFVec2f);
+            var SFVec3f = new FieldParser(ParseSFVec3f);
+            var MFVec3f = new FieldParser(ParseMFVec3f);
 
-//            Dictionary<string, Tup<FieldParser, object>> fields;
-           
+            //            Dictionary<string, (FieldParser, object)> fields;
+
             // Lookup table for Vrml97 node types.
             // For each node type a NodeParseInfo entry specifies how
             // to handle this kind of node.
-            m_parseInfoMap = new SymbolDict<NodeParseInfo>();
+            m_parseInfoMap = new SymbolDict<NodeParseInfo>
+            {
+                // DEF
+                [Vrml97Sym.DEF] = new NodeParseInfo(new NodeParser(ParseDEF)),
 
+                // USE
+                [Vrml97Sym.USE] = new NodeParseInfo(new NodeParser(ParseUSE)),
 
-            // DEF
-            m_parseInfoMap[Vrml97Sym.DEF] = new NodeParseInfo(new NodeParser(ParseDEF));
+                // ROUTE
+                [Vrml97Sym.ROUTE] = new NodeParseInfo(new NodeParser(ParseROUTE)),
 
-            // USE
-            m_parseInfoMap[Vrml97Sym.USE] = new NodeParseInfo(new NodeParser(ParseUSE));
+                // NULL
+                [Vrml97Sym.NULL] = new NodeParseInfo(new NodeParser(ParseNULL))
+            };
 
-            // ROUTE
-            m_parseInfoMap[Vrml97Sym.ROUTE] = new NodeParseInfo(new NodeParser(ParseROUTE));
+            var defaultBBoxCenter = (SFVec3f, (object)V3f.Zero);
+            var defaultBBoxSize = (SFVec3f, (object)new V3f(-1, -1, -1));
 
-            // NULL
-            m_parseInfoMap[Vrml97Sym.NULL] = new NodeParseInfo(new NodeParser(ParseNULL));
-
-            var defaultBBoxCenter = Tup.Create(SFVec3f, (object)V3f.Zero);
-            var defaultBBoxSize = Tup.Create(SFVec3f, (object)new V3f(-1, -1, -1));
-
-            Func<FieldParser, object, Tup<FieldParser, object>> fdd =
-                (fp, obj) => Tup.Create(fp, obj);
-            Func<FieldParser, Tup<FieldParser, object>> fd =
-                fp => new Tup<FieldParser, object>(fp, null);
+            (FieldParser, object) fdd(FieldParser fp, object obj) => (fp, obj);
+            (FieldParser, object) fd(FieldParser fp) => (fp, null);
 
             // Anchor
             m_parseInfoMap["Anchor"] = new NodeParseInfo(
-                new SymbolDict<Tup<FieldParser, object>>()
+                new SymbolDict<(FieldParser, object)>()
                 {
                     { "children", fd(MFNode) },
                     { "description", fd(SFString) },
@@ -198,7 +191,7 @@ namespace Aardvark.Data.Vrml97
 
             // Appearance
             m_parseInfoMap["Appearance"] = new NodeParseInfo(
-                new SymbolDict<Tup<FieldParser, object>>()
+                new SymbolDict<(FieldParser, object)>()
                 {
                     { "material", fd(SFNode) },
                     { "texture", fd(SFNode) },
@@ -207,7 +200,7 @@ namespace Aardvark.Data.Vrml97
 
             // AudioClip
             m_parseInfoMap["AudioClip"] = new NodeParseInfo(
-                new SymbolDict<Tup<FieldParser, object>>()
+                new SymbolDict<(FieldParser, object)>()
                 {
                     { "description", fd(SFString) },
                     { "loop", fdd(SFBool, false) },
@@ -219,7 +212,7 @@ namespace Aardvark.Data.Vrml97
 
             // Background
             m_parseInfoMap["Background"] = new NodeParseInfo(
-                new SymbolDict<Tup<FieldParser, object>>()
+                new SymbolDict<(FieldParser, object)>()
                 {
                     { "groundAngle", fd(MFFloat) },
                     { "groundColor", fd(MFColor) },
@@ -235,25 +228,24 @@ namespace Aardvark.Data.Vrml97
 
             // Billboard
             m_parseInfoMap["Billboard"] = new NodeParseInfo(
-                new SymbolDict<Tup<FieldParser, object>>()
+                new SymbolDict<(FieldParser, object)>()
                 {
                     { "axisOfRotation", fdd(SFVec3f, new V3f(0.0f, 1.0f, 0.0f)) },
                     { "children", fd(MFNode) },
                     { "bboxCenter", defaultBBoxCenter},
                     { "bboxSize", defaultBBoxSize}
                 });
-
-
+            
             // Box
             m_parseInfoMap["Box"] = new NodeParseInfo(
-                new SymbolDict<Tup<FieldParser, object>>()
+                new SymbolDict<(FieldParser, object)>()
                 {
                     { "size", fdd(SFVec3f, new V3f(2.0f, 2.0f, 2.0f)) }
                 });
 
             // Collision
             m_parseInfoMap["Collision"] = new NodeParseInfo(
-                new SymbolDict<Tup<FieldParser, object>>()
+                new SymbolDict<(FieldParser, object)>()
                 {
                     { "children", fd(MFNode) },
                     { "collide", fdd(SFBool, true) },
@@ -264,14 +256,14 @@ namespace Aardvark.Data.Vrml97
 
             // Color
             m_parseInfoMap["Color"] = new NodeParseInfo(
-                new SymbolDict<Tup<FieldParser, object>>()
+                new SymbolDict<(FieldParser, object)>()
                 {
                     { "color", fd(MFColor) }
                 });
 
             // ColorInterpolator
             m_parseInfoMap["ColorInterpolator"] = new NodeParseInfo(
-                new SymbolDict<Tup<FieldParser, object>>()
+                new SymbolDict<(FieldParser, object)>()
                 {
                     { "key", fd(MFFloat) },
                     { "keyValue", fd(MFColor) }
@@ -279,7 +271,7 @@ namespace Aardvark.Data.Vrml97
 
             // Cone
             m_parseInfoMap["Cone"] = new NodeParseInfo(
-                new SymbolDict<Tup<FieldParser, object>>()
+                new SymbolDict<(FieldParser, object)>()
                 {
                     { "bottomRadius", fdd(SFFloat, 1.0f) },
                     { "height", fdd(SFFloat, 2.0f) },
@@ -289,14 +281,14 @@ namespace Aardvark.Data.Vrml97
 
             // Coordinate
             m_parseInfoMap["Coordinate"] = new NodeParseInfo(
-                new SymbolDict<Tup<FieldParser, object>>()
+                new SymbolDict<(FieldParser, object)>()
                 {
                     { "point", fd(MFVec3f) }
                 });
 
             // CoordinateInterpolator
             m_parseInfoMap["CoordinateInterpolator"] = new NodeParseInfo(
-                new SymbolDict<Tup<FieldParser, object>>()
+                new SymbolDict<(FieldParser, object)>()
                 {
                     { "key", fd(MFFloat) },
                     { "keyValue", fd(MFVec3f) }
@@ -304,7 +296,7 @@ namespace Aardvark.Data.Vrml97
 
             // Cylinder
             m_parseInfoMap["Cylinder"] = new NodeParseInfo(
-                new SymbolDict<Tup<FieldParser, object>>()
+                new SymbolDict<(FieldParser, object)>()
                 {
                     { "bottom", fdd(SFBool, true) },
                     { "height", fdd(SFFloat, 2.0f) },
@@ -315,7 +307,7 @@ namespace Aardvark.Data.Vrml97
 
             // CylinderSensor
             m_parseInfoMap["CylinderSensor"] = new NodeParseInfo(
-                new SymbolDict<Tup<FieldParser, object>>()
+                new SymbolDict<(FieldParser, object)>()
                 {
                     { "autoOffset", fdd(SFBool, true) },
                     { "diskAngle", fdd(SFFloat, 0.262f) },
@@ -327,7 +319,7 @@ namespace Aardvark.Data.Vrml97
 
             // DirectionalLight
             m_parseInfoMap["DirectionalLight"] = new NodeParseInfo(
-                new SymbolDict<Tup<FieldParser, object>>()
+                new SymbolDict<(FieldParser, object)>()
                 {
                     { "ambientIntensity", fdd(SFFloat, 0.0f) },
                     { "color", fdd(SFColor, C3f.White) },
@@ -338,7 +330,7 @@ namespace Aardvark.Data.Vrml97
 
             // ElevationGrid
             m_parseInfoMap["ElevationGrid"] = new NodeParseInfo(
-                new SymbolDict<Tup<FieldParser, object>>()
+                new SymbolDict<(FieldParser, object)>()
                 {
                     { "color", fd(SFNode) },
                     { "normal", fd(SFNode) },
@@ -357,7 +349,7 @@ namespace Aardvark.Data.Vrml97
      
             // Extrusion
             m_parseInfoMap["Extrusion"] = new NodeParseInfo(
-                new SymbolDict<Tup<FieldParser, object>>()
+                new SymbolDict<(FieldParser, object)>()
                 {
                     { "beginCap", fdd(SFBool, true) },
                     { "ccw", fdd(SFBool, true) },
@@ -373,7 +365,7 @@ namespace Aardvark.Data.Vrml97
 
             // Fog
             m_parseInfoMap["Fog"] = new NodeParseInfo(
-                new SymbolDict<Tup<FieldParser, object>>()
+                new SymbolDict<(FieldParser, object)>()
                 {
                     { "color", fdd(SFColor, C3f.White) },
                     { "fogType", fdd(SFString, "LINEAR") },
@@ -382,7 +374,7 @@ namespace Aardvark.Data.Vrml97
 
             // FontStyle
             m_parseInfoMap["FontStyle"] = new NodeParseInfo(
-                new SymbolDict<Tup<FieldParser, object>>()
+                new SymbolDict<(FieldParser, object)>()
                 {
                     { "family", fdd(MFString, "SERIF") },
                     { "horizontal", fdd(SFBool, true) },
@@ -397,7 +389,7 @@ namespace Aardvark.Data.Vrml97
 
             // Group
             m_parseInfoMap["Group"] = new NodeParseInfo(
-                new SymbolDict<Tup<FieldParser, object>>()
+                new SymbolDict<(FieldParser, object)>()
                 {
                     { "children", fd(MFNode) },
                     { "bboxCenter", defaultBBoxCenter },
@@ -406,7 +398,7 @@ namespace Aardvark.Data.Vrml97
 
             // ImageTexture
             m_parseInfoMap["ImageTexture"] = new NodeParseInfo(
-                new SymbolDict<Tup<FieldParser, object>>()
+                new SymbolDict<(FieldParser, object)>()
                 {
                     { "url", fd(MFString) },
                     { "repeatS", fdd(SFBool, true) },
@@ -415,7 +407,7 @@ namespace Aardvark.Data.Vrml97
 
             // IndexedFaceSet
             m_parseInfoMap["IndexedFaceSet"] = new NodeParseInfo(
-                new SymbolDict<Tup<FieldParser, object>>()
+                new SymbolDict<(FieldParser, object)>()
                 {
                     { "color", fd(SFNode) },
                     { "coord", fd(SFNode) },
@@ -443,7 +435,7 @@ namespace Aardvark.Data.Vrml97
 
             // IndexedLineSet
             m_parseInfoMap["IndexedLineSet"] = new NodeParseInfo(
-                new SymbolDict<Tup<FieldParser, object>>()
+                new SymbolDict<(FieldParser, object)>()
                 {
                     { "color", fd(SFNode) },
                     { "coord", fd(SFNode) },
@@ -454,7 +446,7 @@ namespace Aardvark.Data.Vrml97
 
             // Inline
             m_parseInfoMap["Inline"] = new NodeParseInfo(
-                new SymbolDict<Tup<FieldParser, object>>()
+                new SymbolDict<(FieldParser, object)>()
                 {
                     { "url", fd(MFString) },
                     { "bboxCenter", defaultBBoxCenter },
@@ -463,7 +455,7 @@ namespace Aardvark.Data.Vrml97
 
             // LOD
             m_parseInfoMap["LOD"] = new NodeParseInfo(
-                new SymbolDict<Tup<FieldParser, object>>()
+                new SymbolDict<(FieldParser, object)>()
                 {
                     { "level", fd(MFNode) },
                     { "center", defaultBBoxCenter },
@@ -472,7 +464,7 @@ namespace Aardvark.Data.Vrml97
 
             // Material
             m_parseInfoMap["Material"] = new NodeParseInfo(
-                new SymbolDict<Tup<FieldParser, object>>()
+                new SymbolDict<(FieldParser, object)>()
                 {
                     { "ambientIntensity", fdd(SFFloat, 0.2f) },
                     { "diffuseColor", fdd(SFColor, new C3f(0.8f, 0.8f, 0.8f)) },
@@ -484,7 +476,7 @@ namespace Aardvark.Data.Vrml97
 
             // MovieTexture
             m_parseInfoMap["MovieTexture"] = new NodeParseInfo(
-                new SymbolDict<Tup<FieldParser, object>>()
+                new SymbolDict<(FieldParser, object)>()
                 {
                     { "loop", fdd(SFBool, false) },
                     { "speed", fdd(SFFloat, 1.0f) },
@@ -497,7 +489,7 @@ namespace Aardvark.Data.Vrml97
 
             // NavigationInfo
             m_parseInfoMap["NavigationInfo"] = new NodeParseInfo(
-                new SymbolDict<Tup<FieldParser, object>>()
+                new SymbolDict<(FieldParser, object)>()
                 {
                     { "avatarSize", fdd(MFFloat, new List<float>() {0.25f, 1.6f, 0.75f}) },
                     { "headlight", fdd(SFBool, true) },
@@ -508,14 +500,14 @@ namespace Aardvark.Data.Vrml97
 
             // Normal
             m_parseInfoMap["Normal"] = new NodeParseInfo(
-                new SymbolDict<Tup<FieldParser, object>>()
+                new SymbolDict<(FieldParser, object)>()
                 {
                     { "vector", fd(MFVec3f) }
                 });
 
             // NormalInterpolator
             m_parseInfoMap["NormalInterpolator"] = new NodeParseInfo(
-                new SymbolDict<Tup<FieldParser, object>>()
+                new SymbolDict<(FieldParser, object)>()
                 {
                     { "key", fd(MFFloat) },
                     { "keyValue", fd(MFVec3f) }
@@ -523,7 +515,7 @@ namespace Aardvark.Data.Vrml97
 
             // OrientationInterpolator
             m_parseInfoMap["OrientationInterpolator"] = new NodeParseInfo(
-                new SymbolDict<Tup<FieldParser, object>>()
+                new SymbolDict<(FieldParser, object)>()
                 {
                     { "key", fd(MFFloat) },
                     { "keyValue", fd(MFRotation) }
@@ -531,7 +523,7 @@ namespace Aardvark.Data.Vrml97
 
             // PixelTexture
             m_parseInfoMap["PixelTexture"] = new NodeParseInfo(
-                new SymbolDict<Tup<FieldParser, object>>()
+                new SymbolDict<(FieldParser, object)>()
                 {
                     { "image", fdd(SFImage, new List<uint>() {0, 0, 0}) },
                     { "repeatS", fdd(SFBool, true) },
@@ -540,7 +532,7 @@ namespace Aardvark.Data.Vrml97
 
             // PlaneSensor
             m_parseInfoMap["PlaneSensor"] = new NodeParseInfo(
-                new SymbolDict<Tup<FieldParser, object>>()
+                new SymbolDict<(FieldParser, object)>()
                 {
                     { "autoOffset", fdd(SFBool, true) },
                     { "enabled", fdd(SFBool, true) },
@@ -551,7 +543,7 @@ namespace Aardvark.Data.Vrml97
 
             // PointLight
             m_parseInfoMap["PointLight"] = new NodeParseInfo(
-                new SymbolDict<Tup<FieldParser, object>>()
+                new SymbolDict<(FieldParser, object)>()
                 {
                     { "ambientIntensity", fdd(SFFloat, 0.0f) },
                     { "attenuation", fdd(SFVec3f, new V3f(1.0f, 0.0f, 0.0f)) },
@@ -564,7 +556,7 @@ namespace Aardvark.Data.Vrml97
 
             // PointSet
             m_parseInfoMap["PointSet"] = new NodeParseInfo(
-                new SymbolDict<Tup<FieldParser, object>>()
+                new SymbolDict<(FieldParser, object)>()
                 {
                     { "color", fd(SFNode) },
                     { "coord", fd(SFNode) }
@@ -572,7 +564,7 @@ namespace Aardvark.Data.Vrml97
 
             // PositionInterpolator
             m_parseInfoMap["PositionInterpolator"] = new NodeParseInfo(
-                new SymbolDict<Tup<FieldParser, object>>()
+                new SymbolDict<(FieldParser, object)>()
                 {
                     { "key", fd(MFFloat) },
                     { "keyValue", fd(MFVec3f) }
@@ -580,7 +572,7 @@ namespace Aardvark.Data.Vrml97
 
             // ProximitySensor
             m_parseInfoMap["ProximitySensor"] = new NodeParseInfo(
-                new SymbolDict<Tup<FieldParser, object>>()
+                new SymbolDict<(FieldParser, object)>()
                 {
                     { "center", defaultBBoxCenter },
                     { "size", defaultBBoxCenter },
@@ -589,7 +581,7 @@ namespace Aardvark.Data.Vrml97
 
             // ScalarInterpolator
             m_parseInfoMap["ScalarInterpolator"] = new NodeParseInfo(
-                new SymbolDict<Tup<FieldParser, object>>()
+                new SymbolDict<(FieldParser, object)>()
                 {
                     { "key", fd(MFFloat) },
                     { "keyValue", fd(MFFloat) }
@@ -600,7 +592,7 @@ namespace Aardvark.Data.Vrml97
 
             // Shape
             m_parseInfoMap["Shape"] = new NodeParseInfo(
-                new SymbolDict<Tup<FieldParser, object>>()
+                new SymbolDict<(FieldParser, object)>()
                 {
                     { "appearance", fd(SFNode) },
                     { "geometry", fd(SFNode) },
@@ -608,7 +600,7 @@ namespace Aardvark.Data.Vrml97
 
             // Sound
             m_parseInfoMap["Sound"] = new NodeParseInfo(
-                new SymbolDict<Tup<FieldParser, object>>()
+                new SymbolDict<(FieldParser, object)>()
                 {
                     { "direction", fdd(SFVec3f, new V3f(0.0f, 0.0f, 1.0f)) },
                     { "intensity", fdd(SFFloat, 1.0f) },
@@ -624,14 +616,14 @@ namespace Aardvark.Data.Vrml97
 
             // Sphere
             m_parseInfoMap["Sphere"] = new NodeParseInfo(
-                new SymbolDict<Tup<FieldParser, object>>()
+                new SymbolDict<(FieldParser, object)>()
                 {
                     { "radius", fdd(SFFloat, 1.0f) }
                 });
 
             // SphereSensor
             m_parseInfoMap["SphereSensor"] = new NodeParseInfo(
-                new SymbolDict<Tup<FieldParser, object>>()
+                new SymbolDict<(FieldParser, object)>()
                 {
                     { "autoOffset", fdd(SFBool, true) },
                     { "enabled", fdd(SFBool, true) },
@@ -640,7 +632,7 @@ namespace Aardvark.Data.Vrml97
 
             // SpotLight
             m_parseInfoMap["SpotLight"] = new NodeParseInfo(
-                new SymbolDict<Tup<FieldParser, object>>()
+                new SymbolDict<(FieldParser, object)>()
                 {
                     { "ambientIntensity", fdd(SFFloat, 0.0f) },
                     { "attenuation", fdd(SFVec3f, new V3f(1.0f, 0.0f, 0.0f)) },
@@ -656,7 +648,7 @@ namespace Aardvark.Data.Vrml97
 
             // Switch
             m_parseInfoMap["Switch"] = new NodeParseInfo(
-                new SymbolDict<Tup<FieldParser, object>>()
+                new SymbolDict<(FieldParser, object)>()
                 {
                     { "choice", fd(MFNode) },
                     { "whichChoice", fdd(SFInt32, -1) }
@@ -664,7 +656,7 @@ namespace Aardvark.Data.Vrml97
 
             // Text
             m_parseInfoMap["Text"] = new NodeParseInfo(
-                new SymbolDict<Tup<FieldParser, object>>()
+                new SymbolDict<(FieldParser, object)>()
                 {
                     { "string", fd(MFString) },
                     { "fontStyle", fd(SFNode) },
@@ -674,14 +666,14 @@ namespace Aardvark.Data.Vrml97
 
             // TextureCoordinate
             m_parseInfoMap["TextureCoordinate"] = new NodeParseInfo(
-                new SymbolDict<Tup<FieldParser, object>>()
+                new SymbolDict<(FieldParser, object)>()
                 {
                     { "point", fd(MFVec2f) }
                 });
 
             // TextureTransform
             m_parseInfoMap["TextureTransform"] = new NodeParseInfo(
-                new SymbolDict<Tup<FieldParser, object>>()
+                new SymbolDict<(FieldParser, object)>()
                 {
                     { "center", fdd(SFVec2f, V2f.Zero) },
                     { "rotation", fdd(SFFloat, 0.0f) },
@@ -691,7 +683,7 @@ namespace Aardvark.Data.Vrml97
 
             // TimeSensor
             m_parseInfoMap["TimeSensor"] = new NodeParseInfo(
-                new SymbolDict<Tup<FieldParser, object>>()
+                new SymbolDict<(FieldParser, object)>()
                 {
                     { "cycleInterval", fdd(SFTime, 1.0f) },
                     { "enabled", fdd(SFBool, true) },
@@ -702,14 +694,14 @@ namespace Aardvark.Data.Vrml97
 
             // TouchSensor
             m_parseInfoMap["TouchSensor"] = new NodeParseInfo(
-                new SymbolDict<Tup<FieldParser, object>>()
+                new SymbolDict<(FieldParser, object)>()
                 {
                     { "enabled", fdd(SFBool, true) }
                 });
 
             // Transform
             m_parseInfoMap["Transform"] = new NodeParseInfo(
-                new SymbolDict<Tup<FieldParser, object>>()
+                new SymbolDict<(FieldParser, object)>()
                 {
                     { "center", defaultBBoxCenter },
                     { "children", fd(MFNode) },
@@ -723,7 +715,7 @@ namespace Aardvark.Data.Vrml97
 
             // Viewpoint
             m_parseInfoMap["Viewpoint"] = new NodeParseInfo(
-                new SymbolDict<Tup<FieldParser, object>>()
+                new SymbolDict<(FieldParser, object)>()
                 {
                     { "fieldOfView", fdd(SFFloat, 0.785398f) },
                     { "jump", fdd(SFBool, true) },
@@ -734,7 +726,7 @@ namespace Aardvark.Data.Vrml97
 
             // VisibilitySensor
             m_parseInfoMap["VisibilitySensor"] = new NodeParseInfo(
-                new SymbolDict<Tup<FieldParser, object>>()
+                new SymbolDict<(FieldParser, object)>()
                 {
                     { "center", defaultBBoxCenter },
                     { "enabled", fdd(SFBool, true) },
@@ -743,7 +735,7 @@ namespace Aardvark.Data.Vrml97
 
             // WorldInfo
             m_parseInfoMap["WorldInfo"] = new NodeParseInfo(
-                new SymbolDict<Tup<FieldParser, object>>()
+                new SymbolDict<(FieldParser, object)>()
                 {
                     { "title", fd(SFString) },
                     { "info", fd(MFString) }
@@ -752,7 +744,7 @@ namespace Aardvark.Data.Vrml97
 
         private static SymMapBase ParseDEF(Tokenizer t)
         {
-            SymMapBase result = new SymMapBase();
+            var result = new SymMapBase();
             result["name"] = t.NextNameToken().ToString();
             result["node"] = ParseNode(t);
             return result;
@@ -760,14 +752,14 @@ namespace Aardvark.Data.Vrml97
 
         private static SymMapBase ParseUSE(Tokenizer t)
         {
-            SymMapBase result = new SymMapBase();
+            var result = new SymMapBase();
             result["name"] = t.NextNameToken().ToString();
             return result;
         }
 
         private static SymMapBase ParseROUTE(Tokenizer t)
         {
-            SymMapBase result = new SymMapBase();
+            var result = new SymMapBase();
 
             // nodeNameId.eventOutId
             result["out"] = t.NextNameToken().ToString();
@@ -779,26 +771,19 @@ namespace Aardvark.Data.Vrml97
             return result;
         }
 
-        private static SymMapBase ParseNULL(Tokenizer t)
-        {
-            return null;
-        }
+        private static SymMapBase ParseNULL(Tokenizer t) => null;
 
         #endregion
 
         #region Helper functions.
 
-        private static object ParseSFBool(Tokenizer t)
-        {
-            Tokenizer.Token token = t.NextToken();
-            return token.ToBool();
-        }
+        private static object ParseSFBool(Tokenizer t) => t.NextToken().ToBool();
 
         private static List<bool> ParseMFBool(Tokenizer t)
         {
-            List<bool> result = new List<bool>();
+            var result = new List<bool>();
 
-            Tokenizer.Token token = t.NextToken();
+            var token = t.NextToken();
             if (token.IsBracketOpen)
             {
                 token = t.NextToken();
@@ -816,17 +801,13 @@ namespace Aardvark.Data.Vrml97
             return result;
         }
 
-        private static object ParseSFFloat(Tokenizer t)
-        {
-            Tokenizer.Token token = t.NextToken();
-            return token.ToFloat();
-        }
+        private static object ParseSFFloat(Tokenizer t) => t.NextToken().ToFloat();
 
         private static List<float> ParseMFFloat(Tokenizer t)
         {
-            List<float> result = new List<float>();
+            var result = new List<float>();
 
-            Tokenizer.Token token = t.NextToken();
+            var token = t.NextToken();
             if (token.IsBracketOpen)
             {
                 token = t.NextToken();
@@ -846,11 +827,12 @@ namespace Aardvark.Data.Vrml97
 
         private static List<uint> ParseSFImage(Tokenizer t)
         {
-            List<uint> result = new List<uint>();
-
-            result.Add(t.NextToken().ToUInt32());   // width
-            result.Add(t.NextToken().ToUInt32());   // height
-            result.Add(t.NextToken().ToUInt32());   // num components
+            var result = new List<uint>
+            {
+                t.NextToken().ToUInt32(),   // width
+                t.NextToken().ToUInt32(),   // height
+                t.NextToken().ToUInt32()   // num components
+            };
 
             uint imax = result[0] * result[1];
             for (uint i = 0; i < imax; i++)
@@ -861,17 +843,13 @@ namespace Aardvark.Data.Vrml97
             return result;
         }
 
-        private static object ParseSFInt32(Tokenizer t)
-        {
-            Tokenizer.Token token = t.NextToken();
-            return token.ToInt32();
-        }
+        private static object ParseSFInt32(Tokenizer t) => t.NextToken().ToInt32();
 
         private static List<int> ParseMFInt32(Tokenizer t)
         {
-            List<int> result = new List<int>();
+            var result = new List<int>();
 
-            Tokenizer.Token token = t.NextToken();
+            var token = t.NextToken();
             if (token.IsBracketOpen)
             {
                 token = t.NextToken();
@@ -889,16 +867,13 @@ namespace Aardvark.Data.Vrml97
             return result;
         }
 
-        private static SymMapBase ParseSFNode(Tokenizer t)
-        {
-            return ParseNode(t);
-        }
+        private static SymMapBase ParseSFNode(Tokenizer t) => ParseNode(t);
 
         private static List<SymMapBase> ParseMFNode(Tokenizer t)
         {
-            List<SymMapBase> result = new List<SymMapBase>();
+            var result = new List<SymMapBase>();
 
-            Tokenizer.Token token = t.NextToken();
+            var token = t.NextToken();
             if (token.IsBracketOpen)
             {
                 token = t.NextToken();
@@ -920,27 +895,27 @@ namespace Aardvark.Data.Vrml97
 
         private static object ParseSFRotation(Tokenizer t)
         {
-            float x = t.NextToken().ToFloat();
-            float y = t.NextToken().ToFloat();
-            float z = t.NextToken().ToFloat();
-            float w = t.NextToken().ToFloat();
+            var x = t.NextToken().ToFloat();
+            var y = t.NextToken().ToFloat();
+            var z = t.NextToken().ToFloat();
+            var w = t.NextToken().ToFloat();
             return new V4f(x, y, z, w);
         }
 
         private static List<V4f> ParseMFRotation(Tokenizer t)
         {
-            List<V4f> result = new List<V4f>();
+            var result = new List<V4f>();
 
-            Tokenizer.Token token = t.NextToken();
+            var token = t.NextToken();
             if (token.IsBracketOpen)
             {
                 token = t.NextToken();
                 while (!token.IsBracketClose)
                 {
-                    float x = token.ToFloat();
-                    float y = t.NextToken().ToFloat();
-                    float z = t.NextToken().ToFloat();
-                    float w = t.NextToken().ToFloat();
+                    var x = token.ToFloat();
+                    var y = t.NextToken().ToFloat();
+                    var z = t.NextToken().ToFloat();
+                    var w = t.NextToken().ToFloat();
                     result.Add(new V4f(x, y, z, w));
 
                     token = t.NextToken();
@@ -948,10 +923,10 @@ namespace Aardvark.Data.Vrml97
             }
             else
             {
-                float x = token.ToFloat();
-                float y = t.NextToken().ToFloat();
-                float z = t.NextToken().ToFloat();
-                float w = t.NextToken().ToFloat();
+                var x = token.ToFloat();
+                var y = t.NextToken().ToFloat();
+                var z = t.NextToken().ToFloat();
+                var w = t.NextToken().ToFloat();
                 result.Add(new V4f(x, y, z, w));
             }
 
@@ -959,16 +934,13 @@ namespace Aardvark.Data.Vrml97
         }
 
         private static string ParseSFString(Tokenizer t)
-        {
-            Tokenizer.Token token = t.NextToken();
-            return token.GetCheckedUnquotedString();
-        }
+            => t.NextToken().GetCheckedUnquotedString();
 
         private static List<string> ParseMFString(Tokenizer t)
         {
-            List<string> result = new List<string>();
+            var result = new List<string>();
 
-            Tokenizer.Token token = t.NextToken();
+            var token = t.NextToken();
             if (token.IsBracketOpen)
             {
                 token = t.NextToken();
@@ -988,16 +960,16 @@ namespace Aardvark.Data.Vrml97
 
         private static object ParseSFVec2f(Tokenizer t)
         {
-            float x = t.NextToken().ToFloat();
-            float y = t.NextToken().ToFloat();
+            var x = t.NextToken().ToFloat();
+            var y = t.NextToken().ToFloat();
             return new V2f(x, y);
         }
 
         private static List<V2f> ParseMFVec2f(Tokenizer t)
         {
-            List<V2f> result = new List<V2f>();
+            var result = new List<V2f>();
 
-            Tokenizer.Token token = t.NextToken();
+            var token = t.NextToken();
             if (token.IsBracketOpen)
             {
                 token = t.NextToken();
@@ -1022,25 +994,25 @@ namespace Aardvark.Data.Vrml97
 
         private static object ParseSFVec3f(Tokenizer t)
         {
-            float x = t.NextToken().ToFloat();
-            float y = t.NextToken().ToFloat();
-            float z = t.NextToken().ToFloat();
+            var x = t.NextToken().ToFloat();
+            var y = t.NextToken().ToFloat();
+            var z = t.NextToken().ToFloat();
             return new V3f(x, y, z);
         }
 
         private static List<V3f> ParseMFVec3f(Tokenizer t)
         {
-            List<V3f> result = new List<V3f>();
+            var result = new List<V3f>();
 
-            Tokenizer.Token token = t.NextToken();
+            var token = t.NextToken();
             if (token.IsBracketOpen)
             {
                 token = t.NextToken();
                 while (!token.IsBracketClose)
                 {
-                    float x = token.ToFloat();
-                    float y = t.NextToken().ToFloat();
-                    float z = t.NextToken().ToFloat();
+                    var x = token.ToFloat();
+                    var y = t.NextToken().ToFloat();
+                    var z = t.NextToken().ToFloat();
                     result.Add(new V3f(x, y, z));
 
                     token = t.NextToken();
@@ -1048,9 +1020,9 @@ namespace Aardvark.Data.Vrml97
             }
             else
             {
-                float x = token.ToFloat();
-                float y = t.NextToken().ToFloat();
-                float z = t.NextToken().ToFloat();
+                var x = token.ToFloat();
+                var y = t.NextToken().ToFloat();
+                var z = t.NextToken().ToFloat();
                 result.Add(new V3f(x, y, z));
             }
 
@@ -1059,25 +1031,25 @@ namespace Aardvark.Data.Vrml97
 
         private static object ParseSFColor(Tokenizer t)
         {
-            float r = t.NextToken().ToFloat();
-            float g = t.NextToken().ToFloat();
-            float b = t.NextToken().ToFloat();
+            var r = t.NextToken().ToFloat();
+            var g = t.NextToken().ToFloat();
+            var b = t.NextToken().ToFloat();
             return new C3f(r, g, b);
         }
 
         private static List<C3f> ParseMFColor(Tokenizer t)
         {
-            List<C3f> result = new List<C3f>();
+            var result = new List<C3f>();
 
-            Tokenizer.Token token = t.NextToken();
+            var token = t.NextToken();
             if (token.IsBracketOpen)
             {
                 token = t.NextToken();
                 while (!token.IsBracketClose)
                 {
-                    float r = token.ToFloat();
-                    float g = t.NextToken().ToFloat();
-                    float b = t.NextToken().ToFloat();
+                    var r = token.ToFloat();
+                    var g = t.NextToken().ToFloat();
+                    var b = t.NextToken().ToFloat();
                     result.Add(new C3f(r, g, b));
 
                     token = t.NextToken();
@@ -1085,9 +1057,9 @@ namespace Aardvark.Data.Vrml97
             }
             else
             {
-                float r = token.ToFloat();
-                float g = t.NextToken().ToFloat();
-                float b = t.NextToken().ToFloat();
+                var r = token.ToFloat();
+                var g = t.NextToken().ToFloat();
+                var b = t.NextToken().ToFloat();
                 result.Add(new C3f(r, g, b));
             }
 
@@ -1100,18 +1072,17 @@ namespace Aardvark.Data.Vrml97
 
         private static void ExpectBraceOpen(Tokenizer t)
         {
-            Tokenizer.Token token = t.NextToken();
+            var token = t.NextToken();
             if (token.IsBraceOpen) return;
 
             throw new ParseException(
                 "Token '{' expected. Found " + token.ToString() + " instead!"
                 );
-
         }
 
         private static void ExpectBraceClose(Tokenizer t)
         {
-            Tokenizer.Token token = t.NextToken();
+            var token = t.NextToken();
             if (token.IsBraceClose) return;
 
             throw new ParseException(
@@ -1126,7 +1097,7 @@ namespace Aardvark.Data.Vrml97
         private static SymMapBase ParseNode(Tokenizer t)
         {
             // Next token is expected to be a Vrml97 node type.
-            string nodeType = t.NextToken().ToString();
+            var nodeType = t.NextToken().ToString();
             if (nodeType == null) return null;
 
             SymMapBase node;
@@ -1160,20 +1131,20 @@ namespace Aardvark.Data.Vrml97
         private struct NodeParseInfo
         {
             private NodeParser m_parseFunction;
-            public readonly SymbolDict<Tup<FieldParser, object>> FieldDefs;
+            public readonly SymbolDict<(FieldParser, object)> FieldDefs;
 
             public NodeParseInfo(NodeParser parseFunction)
                 : this(parseFunction, null)
             { }
 
             public NodeParseInfo(
-                SymbolDict<Tup<FieldParser, object>> fields)
+                SymbolDict<(FieldParser, object)> fields)
                 : this(null, fields)
             { }
 
             public NodeParseInfo(
                 NodeParser parseFunction,
-                SymbolDict<Tup<FieldParser, object>> fields)
+                SymbolDict<(FieldParser, object)> fields)
             {
                 m_parseFunction = parseFunction;
                 FieldDefs = fields;
@@ -1183,11 +1154,11 @@ namespace Aardvark.Data.Vrml97
             public FieldParser FieldParser(string fieldName)
             {
                 if (fieldName == "ROUTE") return new FieldParser(ParseROUTE);
-                return FieldDefs[fieldName].E0;
+                return FieldDefs[fieldName].Item1;
             }
             public object DefaultValue(string fieldName)
             {
-                return FieldDefs[fieldName].E1;
+                return FieldDefs[fieldName].Item2;
             }
         }
 
@@ -1196,14 +1167,14 @@ namespace Aardvark.Data.Vrml97
             NodeParseInfo info
             )
         {
-            SymMapBase result = new SymMapBase();
+            var result = new SymMapBase();
             ExpectBraceOpen(t);
 
             // populate fields with default values
             foreach (var kvp in info.FieldDefs)
             {
-                if (kvp.Value.E1 == null) continue;
-                result[kvp.Key] = kvp.Value.E1;
+                if (kvp.Value.Item2 == null) continue;
+                result[kvp.Key] = kvp.Value.Item2;
             }
 
             Tokenizer.Token token = t.NextToken();
@@ -1222,13 +1193,13 @@ namespace Aardvark.Data.Vrml97
         private static SymMapBase ParseUnknownNode(Tokenizer t)
         {
             ExpectBraceOpen(t);
-            int level = 1;
+            var level = 1;
 
-            StringBuilder sb = new StringBuilder("{");
+            var sb = new StringBuilder("{");
 
             do
             {
-                Tokenizer.Token token = t.NextToken();
+                var token = t.NextToken();
                 sb.Append(" " + token);
 
                 if (token.IsBraceOpen) level++;
@@ -1236,7 +1207,7 @@ namespace Aardvark.Data.Vrml97
             }
             while (level > 0);
 
-            SymMapBase result = new SymMapBase();
+            var result = new SymMapBase();
             result["unknownNode"] = true;
             result["content"] = sb.ToString();
             return result;
@@ -1251,7 +1222,5 @@ namespace Aardvark.Data.Vrml97
         private Tokenizer m_tokenizer;
 
         #endregion
-
     }
-
 }

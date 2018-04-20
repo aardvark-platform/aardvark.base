@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Runtime.InteropServices;
 
 namespace Aardvark.Base
 {
@@ -57,10 +55,7 @@ namespace Aardvark.Base
             set { m_data[GetIndex(vec.X, vec.Y)] = value; }
         }
 
-        public V2l Size
-        {
-            get { return new V2l(m_size, m_size); }
-        }
+        public V2l Size => new V2l(m_size, m_size);
 
         #endregion
 
@@ -95,8 +90,7 @@ namespace Aardvark.Base
                 }
             }
         }
-
-
+        
         public void ForeachIndex(Action<long> action)
         {
             for (long i = 0; i < m_data.Length; i++) action(i);
@@ -116,8 +110,7 @@ namespace Aardvark.Base
                 }
             }
         }
-
-
+        
         public void ForeachY(int x, Action<long, V2l> action)
         {
             long index = GetIndex(x, 0);
@@ -178,8 +171,7 @@ namespace Aardvark.Base
 
         #endregion
     }
-
-
+    
     public abstract class AbstractGraph<TVertex, TCost> where TCost : struct, IComparable<TCost>
     {
         protected List<TVertex> m_nodes;
@@ -208,54 +200,36 @@ namespace Aardvark.Base
 
             #region Properties
 
-            public TVertex Node0
-            {
-                get { return m_graph.m_nodes[Index0]; }
-            }
+            public TVertex Node0 => m_graph.m_nodes[Index0];
 
-            public TVertex Node1
-            {
-                get { return m_graph.m_nodes[Index1]; }
-            }
+            public TVertex Node1 => m_graph.m_nodes[Index1]; 
 
-            public TCost Cost
-            {
-                get { return m_graph.GetCost(Index0, Index1); }
-            }
+            public TCost Cost => m_graph.GetCost(Index0, Index1);
 
             #endregion
 
             #region Overrides
 
             public override int GetHashCode()
-            {
-                return m_graph.GetHashCode() ^ ((Index0.GetHashCode() << 12) ^ Index1.GetHashCode());
-            }
+                => m_graph.GetHashCode() ^ ((Index0.GetHashCode() << 12) ^ Index1.GetHashCode());
 
             public override bool Equals(object obj)
             {
-                if (obj is Edge)
+                if (obj is Edge e)
                 {
-                    var e = (Edge)obj;
                     if (!e.m_graph.Equals(m_graph)) return false;
                     else return Index0 == e.Index0 && Index1 == e.Index1;
                 }
                 else return false;
             }
 
-            public override string ToString()
-            {
-                return string.Format("[{0},{1}]", Index0, Index1);
-            }
+            public override string ToString() => string.Format("[{0},{1}]", Index0, Index1);
 
             #endregion
 
             #region IComparable<Edge> Members
 
-            public int CompareTo(Edge other)
-            {
-                return Cost.CompareTo(other.Cost);
-            }
+            public int CompareTo(Edge other) => Cost.CompareTo(other.Cost);
 
             #endregion
         }
@@ -329,9 +303,7 @@ namespace Aardvark.Base
                 {
                     m_edges.Add(new Tup<int, int>(-1, -1));
                 }
-
-
-
+                
                 m_visited = new bool[m_graph.m_nodes.Count].SetByIndex(i => false);
                 m_edgeCount = 0;
             }
@@ -361,7 +333,6 @@ namespace Aardvark.Base
                     m_edges[index] = tup;
                     m_edges.Add(new Tup<int, int>(r, -1));
                 }
-
             }
 
             internal void AddEdge(Edge edge)
@@ -388,8 +359,7 @@ namespace Aardvark.Base
                 int edgeIndex = n;
                 edgeAction(new Edge(m_graph, n, tup.E0));
                 TraverseAux(tup.E0, nodeAction, edgeAction);
-
-
+                
                 while (tup.E1 >= 0)
                 {
                     edgeIndex = tup.E1;
@@ -440,20 +410,11 @@ namespace Aardvark.Base
 
             #region Properties
 
-            public int VertexCount
-            {
-                get { return m_graph.VertexCount; }
-            }
+            public int VertexCount => m_graph.VertexCount;
 
-            public int EdgeCount
-            {
-                get { return m_edgeCount; }
-            }
+            public int EdgeCount => m_edgeCount;
 
-            public TCost Cost
-            {
-                get { return GetCost<TCost>(GraphHelpers.Add<TCost>, default(TCost)); }
-            }
+            public TCost Cost => GetCost<TCost>(GraphHelpers.Add<TCost>, default(TCost));
 
             public TAccumulate GetCost<TAccumulate>(Func<TAccumulate, TCost, TAccumulate> addition, TAccumulate seed)
             {
@@ -551,25 +512,13 @@ namespace Aardvark.Base
                 return sum;
             }
 
-            public TCost Cost
-            {
-                get { return GetCost<TCost>(GraphHelpers.Add<TCost>, default(TCost)); }
-            }
+            public TCost Cost => GetCost<TCost>(GraphHelpers.Add<TCost>, default(TCost));
 
-            public int Count
-            {
-                get { return m_permutation.Length; }
-            }
+            public int Count => m_permutation.Length;
 
-            public int[] Permutation
-            {
-                get { return m_permutation; }
-            }
+            public int[] Permutation => m_permutation;
 
-            public TVertex this[int index]
-            {
-                get { return m_graph.m_nodes[m_permutation[index]]; }
-            }
+            public TVertex this[int index] => m_graph.m_nodes[m_permutation[index]];
 
             #endregion
 
@@ -590,8 +539,6 @@ namespace Aardvark.Base
             }
 
             #endregion
-
-    
         }
 
         public struct Vertex
@@ -611,35 +558,22 @@ namespace Aardvark.Base
 
             #region Properties
 
-            public TVertex Value
-            {
-                get { return m_graph.m_nodes[m_index]; }
-            }
+            public TVertex Value => m_graph.m_nodes[m_index]; 
 
-            public int Index
-            {
-                get { return m_index; }
-            }
+            public int Index => m_index;
 
             #endregion
 
             #region Overrides
 
-            public override string ToString()
-            {
-                return string.Format("[{0}: {1}]", m_index, Value);
-            }
+            public override string ToString() => string.Format("[{0}: {1}]", m_index, Value);
 
-            public override int GetHashCode()
-            {
-                return m_graph.GetHashCode() ^ m_index.GetHashCode();
-            }
+            public override int GetHashCode() => m_graph.GetHashCode() ^ m_index.GetHashCode();
 
             public override bool Equals(object obj)
             {
-                if (obj is Vertex)
+                if (obj is Vertex v)
                 {
-                    var v = (Vertex)obj;
                     return v.m_graph.Equals(m_graph) && v.m_index == m_index;
                 }
                 else return false;
@@ -661,17 +595,11 @@ namespace Aardvark.Base
 
         #region Properties
 
-        public int VertexCount
-        {
-            get { return m_nodes.Count; }
-        }
+        public int VertexCount => m_nodes.Count;
 
         #endregion
 
-        public Vertex GetVertex(int index)
-        {
-            return new Vertex(this, index);
-        }
+        public Vertex GetVertex(int index) => new Vertex(this, index);
 
         public IEnumerable<Vertex> GetVertices(TVertex value)
         {
@@ -797,8 +725,6 @@ namespace Aardvark.Base
                             alternativeIndex = 5;
                         }
 
-
-
                         if (alternativeIndex > 0)
                         {
                             if (alternativeIndex == 1)
@@ -807,7 +733,6 @@ namespace Aardvark.Base
 
                             }
                         }
-
                     }
                 }
             }
@@ -854,8 +779,7 @@ namespace Aardvark.Base
                 }
                 else distances[i] = default(TCost);
             }
-
-
+            
             for (int i = 0; i < m_nodes.Count; i++)
             {
                 nodes.Add(i);
@@ -878,8 +802,7 @@ namespace Aardvark.Base
                 }
             }
 
-            var path = new List<int>();
-            path.Add(end);
+            var path = new List<int> { end };
             var current = end;
 
             while (parent[current] >= 0)
@@ -958,10 +881,7 @@ namespace Aardvark.Base
             }
         }
 
-        public override int EdgeCount
-        {
-            get { return m_nodes.Count * (m_nodes.Count - 1) / 2; }
-        }
+        public override int EdgeCount => m_nodes.Count * (m_nodes.Count - 1) / 2;
 
         /// <summary>
         /// Returns the minimum-spanning-tree for the Graph
@@ -1015,8 +935,7 @@ namespace Aardvark.Base
             //O(|V| + |E|*log|E|)
             return tree;
         }
-
-
+        
         /// <summary>
         /// Builds the minimum-spanning-tree using Prim's algorithm in O(|V|^2)
         /// where |V| is the number of vertices (nodes) in the Graph
@@ -1112,8 +1031,7 @@ namespace Aardvark.Base
             {typeof(short), (a,b) => (short)a + (short)b},
             {typeof(ushort), (a,b) => (ushort)a + (ushort)b},
         };
-
-
+        
         public static TWeight Add<TWeight>(TWeight v0, TWeight v1)
         {
             return (TWeight)m_additions[typeof(TWeight)](v0, v1);

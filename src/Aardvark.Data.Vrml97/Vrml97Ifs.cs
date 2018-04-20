@@ -12,15 +12,12 @@ namespace Aardvark.Data.Vrml97
         /// <summary>
         /// Constructor.
         /// </summary>
-        public Vrml97Ifs(SymMapBase parseTree)
-        {
-            m_parseTree = parseTree;
-        }
+        public Vrml97Ifs(SymMapBase parseTree) => m_parseTree = parseTree;
 
         /// <summary>
         /// Raw parse tree.
         /// </summary>
-        public SymMapBase ParseTree { get { return m_parseTree; } }
+        public SymMapBase ParseTree => m_parseTree;
 
         /// <summary>
         /// Single texture.

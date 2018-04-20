@@ -107,7 +107,15 @@ namespace Aardvark.Base.Coder
             public Array structs;
         }
 
-        private static IntPtr s_byteId = ArrayFun.GetTypeIdUncached<byte>(); 
+        private static IntPtr s_byteId = GetTypeIdUncached<byte>();
+        private static IntPtr GetTypeIdUncached<T>() where T : struct
+        {
+            var gcHandle = GCHandle.Alloc(new T[1], GCHandleType.Pinned);
+            var typeField = gcHandle.AddrOfPinnedObject() - 2 * IntPtr.Size;
+            var typeId = Marshal.ReadIntPtr(typeField);
+            gcHandle.Free();
+            return typeId;
+        }
 
         public long ReadArray<T>(T[] array, long index, long count)
             where T : struct

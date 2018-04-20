@@ -65,6 +65,7 @@ type UndirectedGraph<'e> =
 
 [<CompilationRepresentation(CompilationRepresentationFlags.ModuleSuffix)>]
 module UndirectedGraph =
+    open Aardvark.Base.Sorting
     open System.Collections.Generic
 
     type private UnionNode(id : int) as this =

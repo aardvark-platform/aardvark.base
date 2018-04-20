@@ -1,3 +1,5 @@
+using Aardvark.Base.Sorting;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -359,7 +361,7 @@ namespace Aardvark.Base
                 this T[] array, long subsetCount, IRandomUniform rnd)
         {
             long count = array.LongLength;
-            Requires.That(subsetCount >= 0 && subsetCount <= count);
+            if (!(subsetCount >= 0 && subsetCount <= count)) throw new ArgumentOutOfRangeException(nameof(subsetCount));
             var subset = new T[subsetCount];
             long si = 0;
             for (int ai = 0; ai < count && si < subsetCount; ai++)
@@ -383,7 +385,7 @@ namespace Aardvark.Base
         public static long[] CreateSmallRandomSubsetIndexArrayLong(
                 this IRandomUniform rnd, long subsetCount, long count)
         {
-            Requires.That(subsetCount >= 0 && subsetCount <= count);
+            if (!(subsetCount >= 0 && subsetCount <= count)) throw new ArgumentOutOfRangeException(nameof(subsetCount));
             var subsetIndices = new LongSet(subsetCount);
             for (int i = 0; i < subsetCount; i++)
             {
@@ -425,7 +427,7 @@ namespace Aardvark.Base
         public static int[] CreateSmallRandomSubsetIndexArray(
                 this IRandomUniform rnd, int subsetCount, int count)
         {
-            Requires.That(subsetCount >= 0 && subsetCount <= count);
+            if (!(subsetCount >= 0 && subsetCount <= count)) throw new ArgumentOutOfRangeException(nameof(subsetCount));
             var subsetIndices = new IntSet(subsetCount);
             for (int i = 0; i < subsetCount; i++)
             {

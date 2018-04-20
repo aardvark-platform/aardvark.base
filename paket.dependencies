@@ -1,28 +1,25 @@
-framework: net45
+framework: netstandard2.0, net471, netcoreapp2.0
 source https://api.nuget.org/v3/index.json
 source https://vrvis.myget.org/F/aardvark_public/api/v3/index.json
 
-nuget FSharp.Core                   ~> 4.0.0
+nuget FSharp.Core                   ~> 4.3.0
+nuget System.Collections.Immutable  >= 1.4.0
 
-nuget System.Collections.Immutable >= 1.2.0
+nuget System.Reactive               ~> 4.0.0-preview00001
+nuget System.Dynamic.Runtime        ~> 4.3.0
+nuget DevILSharp                    ~> 0.2.4
 
-nuget System.Reactive.Linq       ~> 3.0.0
-nuget System.Reactive.Core       ~> 3.0.0
-nuget System.Reactive.Interfaces ~> 3.0.0
+nuget Unofficial.LibTessDotNet     ~> 2.0.0
 
-nuget DevILSharp             ~> 0.1.1
-
-nuget Unofficial.LibTessDotNet          ~> 1.0.2
-
-nuget NUnit                  ~> 3.6.0
-nuget FsUnit                 ~> 2.4.0-alpha-2
-nuget FsCheck                ~> 2.7.1
-nuget FsCheck.NUnit          ~> 2.7.1
+nuget NUnit                        ~> 3.9.0
+nuget FsUnit                       ~> 3.1.0
+nuget FsCheck                      ~> 2.10.8
+nuget FsCheck.NUnit                ~> 2.10.8
 
 group Build
-framework: net45
+framework: net471
 content: none
 source https://vrvis.myget.org/F/aardvark_public/api/v3/index.json
 source https://api.nuget.org/v3/index.json
 
-github aardvark-platform/aardvark.fake:standalone
+github aardvark-platform/aardvark.fake:v4

@@ -55,7 +55,7 @@ module AMap =
         
             override x.ToString() = content.Value.ToString()
 
-            new(content : hmap<'a, 'b>) = ConstantMap<'a, 'b>(Lazy.CreateFromValue content)
+            new(content : hmap<'a, 'b>) = ConstantMap<'a, 'b>(System.Lazy<hmap<'a, 'b>>.CreateFromValue content)
 
         type AdaptiveMap<'a, 'b>(newReader : unit -> IOpReader<hdeltamap<'a, 'b>>) =
             let h = History.ofReader HMap.trace newReader

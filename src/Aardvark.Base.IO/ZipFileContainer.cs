@@ -93,7 +93,7 @@ namespace Aardvark.Base.Coder.Legacy
         /// <returns></returns>
         public bool Init(string containerPath)
         {
-            Requires.NotEmpty(containerPath);
+            if (string.IsNullOrWhiteSpace(containerPath)) throw new ArgumentNullException(nameof(containerPath));
             Report.BeginTimed("Init Zip container '" + containerPath + "'.");
 
             FileStream mainFileStream = null;
@@ -190,7 +190,7 @@ namespace Aardvark.Base.Coder.Legacy
 
         public static bool IsZipFile(string fileName)
         {
-            Requires.NotEmpty(fileName);
+            if (string.IsNullOrWhiteSpace(fileName)) throw new ArgumentNullException(nameof(fileName));
 
             using (var fileStream = File.Open(fileName, FileMode.Open, FileAccess.Read, FileShare.None))
             {

@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
-namespace Aardvark.Base
+﻿namespace Aardvark.Base
 {
     /// <summary>
     /// Maintain multiple independent series of random or quasi-random
@@ -34,6 +29,5 @@ namespace Aardvark.Base
             double s = System.Math.Sqrt(1.0 - z * z);
             return new V3d(System.Math.Cos(phi) * s, System.Math.Sin(phi) * s, z);
         }
-
     }
 }

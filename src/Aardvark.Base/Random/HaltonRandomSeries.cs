@@ -1,4 +1,3 @@
-
 namespace Aardvark.Base
 {
     /// <summary>
@@ -32,5 +31,4 @@ namespace Aardvark.Base
 	    private double [] m_haltonStateArray;
         private IRandomUniform m_randomUniform;
     }
-
 }

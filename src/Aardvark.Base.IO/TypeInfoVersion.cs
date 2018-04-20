@@ -30,11 +30,11 @@ namespace Aardvark.Base.Coder
                     s_oldTypeListOfType.Remove(typeInfo.Type);
                 }
 
-                Tup<string, Action<Convertible, Convertible>> conversion;
+                (string, Action<Convertible, Convertible>) conversion;
                 if (s_conversionOfTargetType.TryGetValue(typeInfo.Type,
                                                          out conversion))
                 {
-                    Converter.Global.Register(conversion.E0, typeInfo.Name, conversion.E1);
+                    Converter.Global.Register(conversion.Item1, typeInfo.Name, conversion.Item2);
                     s_conversionOfTargetType.Remove(typeInfo.Type);
                 }
 
@@ -56,8 +56,7 @@ namespace Aardvark.Base.Coder
 
                 TypeInfo targetTypeInfo;
                 if (!TypeInfo.OfType.TryGetValue(targetType, out targetTypeInfo))
-                    s_conversionOfTargetType.Add(targetType,
-                        Tup.Create(typeInfo.Name, converter));
+                    s_conversionOfTargetType.Add(targetType, (typeInfo.Name, converter));
                 else
                     Converter.Global.Register(typeInfo.Name, targetTypeInfo.Name, converter);
             }
@@ -66,9 +65,9 @@ namespace Aardvark.Base.Coder
         private static Dictionary<Type, List<Type>> s_oldTypeListOfType =
             new Dictionary<Type, List<Type>>();
 
-        private static Dictionary<Type, Tup<string, Action<Convertible, Convertible>>>
+        private static Dictionary<Type, (string, Action<Convertible, Convertible>)>
             s_conversionOfTargetType
-            = new Dictionary<Type, Tup<string, Action<Convertible, Convertible>>>();
+            = new Dictionary<Type, (string, Action<Convertible, Convertible>)>();
 
         private static object s_lock = new object();
     }

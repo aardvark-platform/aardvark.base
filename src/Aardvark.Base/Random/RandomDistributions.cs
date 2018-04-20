@@ -1,7 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
 namespace Aardvark.Base
 {
@@ -43,7 +40,7 @@ namespace Aardvark.Base
                     w = x1 * x1 + x2 * x2;
                 } while (w >= 1.0);
 
-                w = System.Math.Sqrt((-2.0 * System.Math.Log(w)) / w);
+                w = Math.Sqrt((-2.0 * Math.Log(w)) / w);
                 value = x1 * w;
                 m_cachedValue = x2 * w;
             }
@@ -59,9 +56,7 @@ namespace Aardvark.Base
         /// Returns a gaussian distributed double given a mean and standard deviation.
         /// </summary>
         public double GetDouble(double mean, double standardDeviation)
-        {
-            return GetDouble() * standardDeviation + mean;
-        }
+            => GetDouble() * standardDeviation + mean;
 
         #endregion
     }

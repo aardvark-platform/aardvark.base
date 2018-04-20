@@ -60,11 +60,11 @@ namespace Aardvark.Base.Coder
                         var typeInfos = Introspection.GetAllTypesWithAttribute<RegisterTypeInfoAttribute>(assembly).ToArray();
                         foreach (var x in typeInfos)
                         {
-                            Report.Line(4, "[RegisterTypeInfo] {0}", x.E0.FullName);
+                            Report.Line(4, "[RegisterTypeInfo] {0}", x.Item1.FullName);
                             try
                             {
-                                foreach (var a in x.E1)
-                                    TypeInfo.Add(x.E0, a.Version);
+                                foreach (var a in x.Item2)
+                                    TypeInfo.Add(x.Item1, a.Version);
                             }
                             catch (Exception e)
                             {

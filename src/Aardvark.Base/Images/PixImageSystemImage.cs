@@ -37,33 +37,33 @@ namespace Aardvark.Base
             return null;
         }
 
-        protected static Dictionary<PixFormat, Tup<PixelFormat, Col.Format>> s_pixelFormatOfFormat =
-            new Dictionary<PixFormat, Tup<PixelFormat, Col.Format>>()
+        protected static Dictionary<PixFormat, (PixelFormat, Col.Format)> s_pixelFormatOfFormat =
+            new Dictionary<PixFormat, (PixelFormat, Col.Format)>()
             {
-                { new PixFormat(typeof(byte), Col.Format.BW), Tup.Create(PixelFormats.BlackWhite, Col.Format.BW) },
-                { new PixFormat(typeof(byte), Col.Format.Gray), Tup.Create(PixelFormats.Gray8, Col.Format.Gray) },
-                { new PixFormat(typeof(byte), Col.Format.RGB), Tup.Create(PixelFormats.Bgr24, Col.Format.BGR) },
-                { new PixFormat(typeof(byte), Col.Format.BGR), Tup.Create(PixelFormats.Bgr24, Col.Format.BGR) },
-                { new PixFormat(typeof(byte), Col.Format.RGBA), Tup.Create(PixelFormats.Bgra32, Col.Format.BGRA) },
-                { new PixFormat(typeof(byte), Col.Format.BGRA), Tup.Create(PixelFormats.Bgra32, Col.Format.BGRA) },
-                { new PixFormat(typeof(byte), Col.Format.RGBP), Tup.Create(PixelFormats.Pbgra32, Col.Format.BGRP) },
-                { new PixFormat(typeof(byte), Col.Format.BGRP), Tup.Create(PixelFormats.Pbgra32, Col.Format.BGRP) },
+                { new PixFormat(typeof(byte), Col.Format.BW), (PixelFormats.BlackWhite, Col.Format.BW) },
+                { new PixFormat(typeof(byte), Col.Format.Gray), (PixelFormats.Gray8, Col.Format.Gray) },
+                { new PixFormat(typeof(byte), Col.Format.RGB), (PixelFormats.Bgr24, Col.Format.BGR) },
+                { new PixFormat(typeof(byte), Col.Format.BGR), (PixelFormats.Bgr24, Col.Format.BGR) },
+                { new PixFormat(typeof(byte), Col.Format.RGBA), (PixelFormats.Bgra32, Col.Format.BGRA) },
+                { new PixFormat(typeof(byte), Col.Format.BGRA), (PixelFormats.Bgra32, Col.Format.BGRA) },
+                { new PixFormat(typeof(byte), Col.Format.RGBP), (PixelFormats.Pbgra32, Col.Format.BGRP) },
+                { new PixFormat(typeof(byte), Col.Format.BGRP), (PixelFormats.Pbgra32, Col.Format.BGRP) },
 
-                { new PixFormat(typeof(ushort), Col.Format.Gray), Tup.Create(PixelFormats.Gray16, Col.Format.Gray) },
-                { new PixFormat(typeof(ushort), Col.Format.RGB), Tup.Create(PixelFormats.Rgb48, Col.Format.RGB) },
-                { new PixFormat(typeof(ushort), Col.Format.BGR), Tup.Create(PixelFormats.Rgb48, Col.Format.RGB) },
-                { new PixFormat(typeof(ushort), Col.Format.RGBA), Tup.Create(PixelFormats.Rgba64, Col.Format.RGBA) },
-                { new PixFormat(typeof(ushort), Col.Format.BGRA), Tup.Create(PixelFormats.Rgba64, Col.Format.RGBA) },
-                { new PixFormat(typeof(ushort), Col.Format.RGBP), Tup.Create(PixelFormats.Prgba64, Col.Format.RGBP) },
-                { new PixFormat(typeof(ushort), Col.Format.BGRP), Tup.Create(PixelFormats.Prgba64, Col.Format.RGBP) },
+                { new PixFormat(typeof(ushort), Col.Format.Gray), (PixelFormats.Gray16, Col.Format.Gray) },
+                { new PixFormat(typeof(ushort), Col.Format.RGB), (PixelFormats.Rgb48, Col.Format.RGB) },
+                { new PixFormat(typeof(ushort), Col.Format.BGR), (PixelFormats.Rgb48, Col.Format.RGB) },
+                { new PixFormat(typeof(ushort), Col.Format.RGBA), (PixelFormats.Rgba64, Col.Format.RGBA) },
+                { new PixFormat(typeof(ushort), Col.Format.BGRA), (PixelFormats.Rgba64, Col.Format.RGBA) },
+                { new PixFormat(typeof(ushort), Col.Format.RGBP), (PixelFormats.Prgba64, Col.Format.RGBP) },
+                { new PixFormat(typeof(ushort), Col.Format.BGRP), (PixelFormats.Prgba64, Col.Format.RGBP) },
 
-                { new PixFormat(typeof(float), Col.Format.Gray), Tup.Create(PixelFormats.Gray32Float, Col.Format.Gray) },
-                { new PixFormat(typeof(float), Col.Format.RGB), Tup.Create(PixelFormats.Rgb128Float, Col.Format.RGBA) },
-                { new PixFormat(typeof(float), Col.Format.BGR), Tup.Create(PixelFormats.Rgb128Float, Col.Format.RGBA) },
-                { new PixFormat(typeof(float), Col.Format.RGBA), Tup.Create(PixelFormats.Rgba128Float, Col.Format.RGBA) },
-                { new PixFormat(typeof(float), Col.Format.BGRA), Tup.Create(PixelFormats.Rgba128Float, Col.Format.RGBA) },
-                { new PixFormat(typeof(float), Col.Format.RGBP), Tup.Create(PixelFormats.Prgba128Float, Col.Format.RGBP) },
-                { new PixFormat(typeof(float), Col.Format.BGRP), Tup.Create(PixelFormats.Prgba128Float, Col.Format.RGBP) },
+                { new PixFormat(typeof(float), Col.Format.Gray), (PixelFormats.Gray32Float, Col.Format.Gray) },
+                { new PixFormat(typeof(float), Col.Format.RGB), (PixelFormats.Rgb128Float, Col.Format.RGBA) },
+                { new PixFormat(typeof(float), Col.Format.BGR), (PixelFormats.Rgb128Float, Col.Format.RGBA) },
+                { new PixFormat(typeof(float), Col.Format.RGBA), (PixelFormats.Rgba128Float, Col.Format.RGBA) },
+                { new PixFormat(typeof(float), Col.Format.BGRA), (PixelFormats.Rgba128Float, Col.Format.RGBA) },
+                { new PixFormat(typeof(float), Col.Format.RGBP), (PixelFormats.Prgba128Float, Col.Format.RGBP) },
+                { new PixFormat(typeof(float), Col.Format.BGRP), (PixelFormats.Prgba128Float, Col.Format.RGBP) },
             };
 
         protected static Tup<PixelFormat, Col.Format> GetStoreFormats(Type type, Col.Format format)
@@ -78,23 +78,23 @@ namespace Aardvark.Base
         protected static Dictionary<Tup<Type, int>, Tup<PixelFormat, Col.Format>> s_pixelFormatOfChannelCount =
             new Dictionary<Tup<Type, int>, Tup<PixelFormat, Col.Format>>()
             {
-                { Tup.Create(typeof(byte), 1), Tup.Create(PixelFormats.Gray8, Col.Format.Gray) },
-                { Tup.Create(typeof(byte), 3), Tup.Create(PixelFormats.Bgr24, Col.Format.BGR) },
-                { Tup.Create(typeof(byte), 4), Tup.Create(PixelFormats.Bgra32, Col.Format.BGRA) },
+                { (typeof(byte), 1), (PixelFormats.Gray8, Col.Format.Gray) },
+                { (typeof(byte), 3), (PixelFormats.Bgr24, Col.Format.BGR) },
+                { (typeof(byte), 4), (PixelFormats.Bgra32, Col.Format.BGRA) },
 
-                { Tup.Create(typeof(ushort), 1), Tup.Create(PixelFormats.Gray16, Col.Format.Gray) },
-                { Tup.Create(typeof(ushort), 3), Tup.Create(PixelFormats.Rgb48, Col.Format.RGB) },
-                { Tup.Create(typeof(ushort), 4), Tup.Create(PixelFormats.Rgba64, Col.Format.RGBA) },
+                { (typeof(ushort), 1), (PixelFormats.Gray16, Col.Format.Gray) },
+                { (typeof(ushort), 3), (PixelFormats.Rgb48, Col.Format.RGB) },
+                { (typeof(ushort), 4), (PixelFormats.Rgba64, Col.Format.RGBA) },
 
-                { Tup.Create(typeof(float), 1), Tup.Create(PixelFormats.Gray32Float, Col.Format.Gray) },
-                { Tup.Create(typeof(float), 3), Tup.Create(PixelFormats.Rgb128Float, Col.Format.RGBA) },
-                { Tup.Create(typeof(float), 4), Tup.Create(PixelFormats.Rgba128Float, Col.Format.RGBA) },
+                { (typeof(float), 1), (PixelFormats.Gray32Float, Col.Format.Gray) },
+                { (typeof(float), 3), (PixelFormats.Rgb128Float, Col.Format.RGBA) },
+                { (typeof(float), 4), (PixelFormats.Rgba128Float, Col.Format.RGBA) },
             };
 
         protected static Tup<PixelFormat, Col.Format> GetStoreFormats(Type type, int channelCount)
         {
             Tup<PixelFormat, Col.Format> format;
-            if (s_pixelFormatOfChannelCount.TryGetValue(Tup.Create(type, channelCount), out format))
+            if (s_pixelFormatOfChannelCount.TryGetValue((type, channelCount), out format))
                 return format;
             throw new ArgumentException("unsupported pixel type");
         }
@@ -118,42 +118,42 @@ namespace Aardvark.Base
         protected static Dictionary<SdiPixelFormat, Tup<PixFormat, int>> s_pixFormatAndCountOfSdiPixelFormat =
             new Dictionary<SdiPixelFormat, Tup<PixFormat, int>>()
             {
-                { SdiPixelFormat.Format1bppIndexed, Tup.Create(PixFormat.ByteBW, 1) },
+                { SdiPixelFormat.Format1bppIndexed, (PixFormat.ByteBW, 1) },
 
-                { SdiPixelFormat.Format16bppGrayScale, Tup.Create(PixFormat.UShortGray, 1) },
+                { SdiPixelFormat.Format16bppGrayScale, (PixFormat.UShortGray, 1) },
  
-                { SdiPixelFormat.Format24bppRgb, Tup.Create(PixFormat.ByteBGR, 3) },
-                { SdiPixelFormat.Format32bppRgb, Tup.Create(PixFormat.ByteBGR, 4) },
-                { SdiPixelFormat.Format32bppArgb, Tup.Create(PixFormat.ByteBGRA, 4) },
-                { SdiPixelFormat.Format32bppPArgb, Tup.Create(PixFormat.ByteBGRP, 4) },
+                { SdiPixelFormat.Format24bppRgb, (PixFormat.ByteBGR, 3) },
+                { SdiPixelFormat.Format32bppRgb, (PixFormat.ByteBGR, 4) },
+                { SdiPixelFormat.Format32bppArgb, (PixFormat.ByteBGRA, 4) },
+                { SdiPixelFormat.Format32bppPArgb, (PixFormat.ByteBGRP, 4) },
 
-                { SdiPixelFormat.Format48bppRgb, Tup.Create(PixFormat.UShortBGR, 3) },
-                { SdiPixelFormat.Format64bppArgb, Tup.Create(PixFormat.UShortBGRA, 4) },
-                { SdiPixelFormat.Format64bppPArgb, Tup.Create(PixFormat.UShortBGRP, 4) },
+                { SdiPixelFormat.Format48bppRgb, (PixFormat.UShortBGR, 3) },
+                { SdiPixelFormat.Format64bppArgb, (PixFormat.UShortBGRA, 4) },
+                { SdiPixelFormat.Format64bppPArgb, (PixFormat.UShortBGRP, 4) },
             };
 
         protected static Dictionary<PixelFormat, Tup<PixFormat, int>> s_pixFormatAndCountOfPixelFormat =
             new Dictionary<PixelFormat, Tup<PixFormat, int>>()
             {
-                { PixelFormats.BlackWhite, Tup.Create(PixFormat.ByteBW, 1) },
+                { PixelFormats.BlackWhite, (PixFormat.ByteBW, 1) },
 
-                { PixelFormats.Gray8, Tup.Create(PixFormat.ByteGray, 1) },
-                { PixelFormats.Bgr24, Tup.Create(PixFormat.ByteBGR, 3) },
-                { PixelFormats.Bgr32, Tup.Create(PixFormat.ByteBGR, 4) },
-                { PixelFormats.Bgra32, Tup.Create(PixFormat.ByteBGRA, 4) },
-                { PixelFormats.Pbgra32, Tup.Create(PixFormat.ByteBGRP, 4) },
+                { PixelFormats.Gray8, (PixFormat.ByteGray, 1) },
+                { PixelFormats.Bgr24, (PixFormat.ByteBGR, 3) },
+                { PixelFormats.Bgr32, (PixFormat.ByteBGR, 4) },
+                { PixelFormats.Bgra32, (PixFormat.ByteBGRA, 4) },
+                { PixelFormats.Pbgra32, (PixFormat.ByteBGRP, 4) },
 
-                { PixelFormats.Rgb24, Tup.Create(PixFormat.ByteRGB, 3) },
+                { PixelFormats.Rgb24, (PixFormat.ByteRGB, 3) },
 
-                { PixelFormats.Gray16, Tup.Create(PixFormat.UShortGray, 1) },
-                { PixelFormats.Rgb48, Tup.Create(PixFormat.UShortRGB, 3) },
-                { PixelFormats.Rgba64, Tup.Create(PixFormat.UShortRGBA, 4) },
-                { PixelFormats.Prgba64, Tup.Create(PixFormat.UShortRGBP, 4) },
+                { PixelFormats.Gray16, (PixFormat.UShortGray, 1) },
+                { PixelFormats.Rgb48, (PixFormat.UShortRGB, 3) },
+                { PixelFormats.Rgba64, (PixFormat.UShortRGBA, 4) },
+                { PixelFormats.Prgba64, (PixFormat.UShortRGBP, 4) },
 
-                { PixelFormats.Gray32Float, Tup.Create(PixFormat.FloatGray, 1) },
-                { PixelFormats.Rgb128Float, Tup.Create(PixFormat.FloatRGB, 4) },
-                { PixelFormats.Rgba128Float, Tup.Create(PixFormat.FloatRGBA, 4) },
-                { PixelFormats.Prgba128Float, Tup.Create(PixFormat.FloatRGBP, 4) }, 
+                { PixelFormats.Gray32Float, (PixFormat.FloatGray, 1) },
+                { PixelFormats.Rgb128Float, (PixFormat.FloatRGB, 4) },
+                { PixelFormats.Rgba128Float, (PixFormat.FloatRGBA, 4) },
+                { PixelFormats.Prgba128Float, (PixFormat.FloatRGBP, 4) }, 
             };
 
         public static PixFormat PixFormatOfPixelFormat(PixelFormat pixelFormat)
