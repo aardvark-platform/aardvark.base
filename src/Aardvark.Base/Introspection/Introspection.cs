@@ -7,6 +7,7 @@ using System.IO.Compression;
 using System.Linq;
 using System.Reflection;
 using System.Runtime.Serialization.Formatters.Binary;
+using System.Xml.Linq;
 
 namespace Aardvark.Base
 {
@@ -667,12 +668,92 @@ namespace Aardvark.Base
             }
         }
 
+        private enum OS
+        {
+            Unknown = 0,
+            Win32 = 1,
+            Linux = 2,
+            MacOS = 3
+        }
+
+        private static bool TryParseOS(string os, out OS value)
+        {
+            os = os.ToLower();
+            if (os == "win" || os == "windows" || os == "win32" || os == "win64")
+            {
+                value = OS.Win32;
+                return true;
+            }
+            else if (os == "linux" || os == "nix" || os == "unix")
+            {
+                value = OS.Linux;
+                return true;
+            }
+            else if (os == "mac" || os == "macos" || os == "macosx")
+            {
+                value = OS.MacOS;
+                return true;
+            }
+            else
+            {
+                value = OS.Unknown;
+                return false;
+            }
+
+        }
+
+        private static OS GetOS()
+        {
+            switch(Environment.OSVersion.Platform)
+            {
+                case PlatformID.Unix: return OS.Linux;
+                case PlatformID.MacOSX: return OS.MacOS;
+                default: return OS.Win32;
+            }
+
+        }
+
+        private static Dictionary<string, string> GetSymlinks(XDocument document)
+        {
+            var dict = new Dictionary<string, string>();
+            var myOs = GetOS();
+            var root = document.Element(XName.Get("configuration"));
+            if(root != null)
+            {
+                foreach(var e in root.Elements(XName.Get("dllmap")))
+                {
+                    var src     = e.Attribute(XName.Get("dll"));
+                    var os      = e.Attribute(XName.Get("os"));
+                    var dst     = e.Attribute(XName.Get("target"));
+
+                    if(src != null && dst != null && os != null)
+                    {
+                        var srcStr  = src.Value;
+                        var osStr   = os.Value;
+                        var dstStr  = dst.Value;
+
+                        if(!String.IsNullOrWhiteSpace(srcStr) && !String.IsNullOrWhiteSpace(osStr) && !String.IsNullOrWhiteSpace(dstStr) && TryParseOS(osStr, out var osVal))
+                        {
+                            if(myOs == osVal)
+                            {
+                                dict[srcStr] = dstStr;
+                            }
+                        }
+                    }
+
+                }
+            }
+
+            return dict;
+
+        }
         public static void UnpackNativeDependencies(Assembly a)
         {
             if (a.IsDynamic) return;
 
             try
             {
+                var symlinks = new Dictionary<string, string>();
                 var info = a.GetManifestResourceInfo("native.zip");
                 if (info == null) return;
 
@@ -689,11 +770,19 @@ namespace Aardvark.Base
 
                         var copyPaths = platform + "/" + arch;
 
+                        var remapFile = "remap.xml";
+
+
                         foreach (var e in archive.Entries)
                         {
                             var name = e.FullName.Replace('\\', '/');
 
-                            if (name.StartsWith(copyPaths))
+                            if (e.FullName == remapFile)
+                            {
+                                var doc = System.Xml.Linq.XDocument.Load(e.Open());
+                                symlinks = GetSymlinks(doc);
+                            }
+                            else if (name.StartsWith(copyPaths))
                             {
                                 name = name.Substring(copyPaths.Length);
                                 var localComponents = name.Split(new[] { '/', '\\' }, StringSplitOptions.RemoveEmptyEntries);
