@@ -14,31 +14,19 @@ namespace Aardvark.Base
         /// DO NOT USE THIS CONSTRUCTOR!
         /// Use Create(...) instead.
         /// </summary>
-        internal Symbol(int id)
-        {
-            Id = id;
-        }
+        internal Symbol(int id) => Id = id;
 
         #endregion
 
         #region Static Creators
 
-        public static Symbol Create(string str)
-        {
-            return SymbolManager.GetSymbol(str);
-        }
+        public static Symbol Create(string str) => SymbolManager.GetSymbol(str);
 
-        public static Symbol CreateNewGuid()
-        {
-            return SymbolManager.GetSymbol(Guid.NewGuid());
-        }
+        public static Symbol CreateNewGuid() => SymbolManager.GetSymbol(Guid.NewGuid());
 
-        public static Symbol Create(Guid guid)
-        {
-            return SymbolManager.GetSymbol(guid);
-        }
+        public static Symbol Create(Guid guid) => SymbolManager.GetSymbol(guid);
 
-        public static readonly Symbol Empty = default(Symbol);
+        public static readonly Symbol Empty = default;
 
         #endregion
 
@@ -49,68 +37,36 @@ namespace Aardvark.Base
         /// For details on negative symbols see the
         /// unary minus operator.
         /// </summary>
-        public bool IsNegative
-        {
-            get { return Id < 0; }
-        }
+        public bool IsNegative => Id < 0;
 
         /// <summary>
         /// Returns true if the Symbol is not negative.
         /// For details on negative symbols see the
         /// unary minus operator.
         /// </summary>
-        public bool IsPositive
-        {
-            get { return Id > 0; }
-        }
+        public bool IsPositive => Id > 0;
 
-        public bool IsNotEmpty
-        {
-            get { return Id != 0; }
-        }
+        public bool IsNotEmpty => Id != 0;
 
-        public bool IsEmpty
-        {
-            get { return Id == 0; }
-        }
+        public bool IsEmpty => Id == 0;
 
         #endregion
 
         #region Overrides
 
-        public override int GetHashCode()
-        {
-            return Id;
-        }
+        public override int GetHashCode() => Id;
 
-        public override bool Equals(object obj)
-        {
-            if (obj is Symbol)
-            {
-                var symbol = (Symbol)obj;
-                return (Id == symbol.Id);
-            }
-            return false;
-        }
+        public override bool Equals(object obj) => (obj is Symbol symbol) ? (Id == symbol.Id) : false;
 
-        public override string ToString()
-        {
-            return SymbolManager.GetString(Id);
-        }
+        public override string ToString() => SymbolManager.GetString(Id);
 
-        public Guid ToGuid()
-        {
-            return SymbolManager.GetGuid(Id);
-        }
+        public Guid ToGuid() => SymbolManager.GetGuid(Id);
 
         #endregion
 
         #region IEquatable<Symbol> Members
 
-        public bool Equals(Symbol other)
-        {
-            return Id == other.Id;
-        }
+        public bool Equals(Symbol other) => Id == other.Id;
 
         #endregion
 
@@ -126,24 +82,15 @@ namespace Aardvark.Base
 
         #region IComparable<Symbol> Members
 
-        public int CompareTo(Symbol other)
-        {
-            return Id.CompareTo(other.Id);
-        }
+        public int CompareTo(Symbol other) => Id.CompareTo(other.Id);
 
         #endregion
 
         #region Operators
 
-        public static bool operator ==(Symbol a, Symbol b)
-        {
-            return a.Id == b.Id;
-        }
+        public static bool operator ==(Symbol a, Symbol b) => a.Id == b.Id;
 
-        public static bool operator !=(Symbol a, Symbol b)
-        {
-            return a.Id != b.Id;
-        }
+        public static bool operator !=(Symbol a, Symbol b) => a.Id != b.Id;
 
         /// <summary>
         /// Creates a negative symbol from an ordinary symbol.
@@ -151,19 +98,13 @@ namespace Aardvark.Base
         /// are however useful to store a second value in a
         /// dictionary.
         /// </summary>
-        public static Symbol operator -(Symbol symbol)
-        {
-            return new Symbol(-symbol.Id);
-        }
+        public static Symbol operator -(Symbol symbol) => new Symbol(-symbol.Id);
 
         #endregion
 
         #region Conversion
 
-        public static implicit operator Symbol(string str)
-        {
-            return Create(str);
-        }
+        public static implicit operator Symbol(string str) => Create(str);
 
         #endregion
     }
@@ -185,61 +126,37 @@ namespace Aardvark.Base
 
         #region Constructor
 
-        public TypedSymbol(string str)
-        {
-            Symbol = str;
-        }
+        public TypedSymbol(string str) => Symbol = str;
 
-        public TypedSymbol(Symbol symbol)
-        {
-            Symbol = symbol;
-        }
+        public TypedSymbol(Symbol symbol) => Symbol = symbol;
 
         #endregion
 
         #region ITypedSymbol Members
 
-        public Symbol GetSymbol()
-        {
-            return Symbol;
-        }
+        public Symbol GetSymbol() => Symbol;
 
-        public Type GetSymbolType()
-        {
-            return typeof(T);
-        }
+        public Type GetSymbolType() => typeof(T);
 
         #endregion
 
         #region Conversion
 
-        public static implicit operator TypedSymbol<T>(string str)
-        {
-            return new TypedSymbol<T>(str);
-        }
+        public static implicit operator TypedSymbol<T>(string str) => new TypedSymbol<T>(str);
 
         #endregion
     }
 
     public static class SymbolExtensions
     {
-        public static Symbol ToSymbol(this string str)
-        {
-            return Symbol.Create(str);
-        }
+        public static Symbol ToSymbol(this string str) => Symbol.Create(str);
 
-        public static TypedSymbol<T> WithType<T>(this Symbol symbol)
-        {
-            return new TypedSymbol<T>(symbol);
-        }
+        public static TypedSymbol<T> WithType<T>(this Symbol symbol) => new TypedSymbol<T>(symbol);
 
         /// <summary>
         /// Returns the result of .ToString() of an objects as Symbol.
         /// </summary>
-        public static Symbol ToSymbol(this object self)
-        {
-            return Symbol.Create(self.ToString());
-        }
+        public static Symbol ToSymbol(this object self) => Symbol.Create(self.ToString());
     }
     
     internal static class SymbolManager
@@ -249,8 +166,7 @@ namespace Aardvark.Base
         private static List<string> s_allStrings = new List<string>(1024);
         private static List<Guid> s_allGuids = new List<Guid>(1024);
         private static SpinLock s_lock = new SpinLock();
-
-
+        
         static SymbolManager()
         {
             s_allStrings.Add(string.Empty);
@@ -281,7 +197,7 @@ namespace Aardvark.Base
         internal static Symbol GetSymbol(string str)
         {
             if (string.IsNullOrEmpty(str))
-                return default(Symbol);
+                return default;
 
             int id;
             int hash = str.GetHashCode(); // hashcode computation outside spinlock

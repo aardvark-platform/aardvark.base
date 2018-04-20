@@ -1,13 +1,5 @@
-﻿
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Aardvark.Base.Rendering
+﻿namespace Aardvark.Base.Rendering
 {
-
     // Details taken from:
     // http://msdn.microsoft.com/en-us/library/windows/desktop/bb172415(v=vs.85).aspx
 
@@ -64,9 +56,7 @@ namespace Aardvark.Base.Rendering
 
         public static readonly TextureFilter MinMagLinear =
             new TextureFilter(TextureFilterMode.Linear, TextureFilterMode.Linear, TextureFilterMode.None);
-
-
-
+        
 
         public static readonly TextureFilter MinMagMipPoint = 
             new TextureFilter(TextureFilterMode.Point, TextureFilterMode.Point, TextureFilterMode.Point);
@@ -110,8 +100,7 @@ namespace Aardvark.Base.Rendering
 
         public SamplerComparisonFunction ComparisonFunction;
         public C4f BorderColor;
-
-
+        
         public SamplerStateDescription()
         {
             Filter = TextureFilter.MinMagMipPoint;
@@ -127,6 +116,5 @@ namespace Aardvark.Base.Rendering
             ComparisonFunction = SamplerComparisonFunction.None;
             BorderColor = C4f.Black;
         }
-
     }
 }

@@ -1,9 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading;
-using System.Threading.Tasks;
 
 namespace Aardvark.Base
 {
@@ -19,34 +15,24 @@ namespace Aardvark.Base
         /// <summary>
         /// Initialize using the time of day in milliseconds as seed.
         /// </summary>
-        public RandomSystem()
-        {
-            Generator = new Random();
-        }
+        public RandomSystem() => Generator = new Random();
 
-        public RandomSystem(int seed)
-        {
-            Generator = new Random(seed);
-        }
+        /// <summary>
+        /// Initialize using custom seed.
+        /// </summary>
+        public RandomSystem(int seed) => Generator = new Random(seed);
 
         #endregion
 
         #region IRandomUniform Members
 
-        public int RandomBits { get { return 31; } }
+        public int RandomBits => 31;
 
-        public bool GeneratesFullDoubles { get { return false; } }
+        public bool GeneratesFullDoubles => false;
 
-        public void ReSeed(int seed)
-        {
-            Generator = new Random(seed);
-        }
+        public void ReSeed(int seed) => Generator = new Random(seed);
 
-        public int UniformInt()
-        {
-            return Generator.Next();
-        }
-
+        public int UniformInt() => Generator.Next();
 
         public static ThreadLocal<byte[]> s_buffer4 = new ThreadLocal<byte[]>(() => new byte[4]);
         /// <summary>
@@ -82,15 +68,9 @@ namespace Aardvark.Base
             return BitConverter.ToUInt64(array, 0);
         }
 
-        public float UniformFloat()
-        {
-            return (UniformInt() >> 7) * (float)(1.0 / 16777216.0);
-        }
+        public float UniformFloat() => (UniformInt() >> 7) * (float)(1.0 / 16777216.0);
 
-        public float UniformFloatClosed()
-        {
-            return (float)((UniformInt() - 1) * (1.0 / 2147483645.0));
-        }
+        public float UniformFloatClosed() => (float)((UniformInt() - 1) * (1.0 / 2147483645.0));
 
         public float UniformFloatOpen()
         {
@@ -98,22 +78,12 @@ namespace Aardvark.Base
             return r * (float)(1.0 / 16777216.0);
         }
 
-        public double UniformDouble()
-        {
-            return Generator.NextDouble();
-        }
+        public double UniformDouble() => Generator.NextDouble();
 
-        public double UniformDoubleClosed()
-        {
-            return (UniformInt() - 1) * (1.0 / 2147483645.0);
-        }
+        public double UniformDoubleClosed() => (UniformInt() - 1) * (1.0 / 2147483645.0);
 
-        public double UniformDoubleOpen()
-        {
-            return UniformInt() * (1.0 / 2147483647.0);
-        }
+        public double UniformDoubleOpen() => UniformInt() * (1.0 / 2147483647.0);
 
         #endregion
-
     }
 }

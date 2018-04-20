@@ -1,12 +1,7 @@
-using System;
-using System.Collections.Generic;
-using System.Text;
-
 namespace Aardvark.Base
 {
     public static class Quasi
     {
-
         /// <summary>
         /// Generates a new number in the halton sequence
         /// with the given inverse base, and the previous
@@ -43,8 +38,7 @@ namespace Aardvark.Base
             }
             return value;
         }
-
-
+        
         /// <summary>
         /// Generates a new number in the halton sequence
         /// with the 'index'th prime as base.
@@ -54,7 +48,5 @@ namespace Aardvark.Base
         {
             return QuasiHalton(Prime.InverseWithIndex(index), value);
         }
-
     }
-
 }

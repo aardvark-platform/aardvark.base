@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Globalization;
-using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 
@@ -58,44 +57,23 @@ namespace Aardvark.Base
 
         #region Properties
 
-        public int Count
-        {
-            get { return End - Start; }
-        }
+        public int Count => End - Start;
 
-        public bool IsEmpty
-        {
-            get { return Count <= 0; }
-        }
+        public bool IsEmpty => Count <= 0;
 
-        public bool IsWhiteSpace
-        {
-            get { return IsOnly(CharFun.IsWhiteSpace); }
-        }
+        public bool IsWhiteSpace => IsOnly(CharFun.IsWhiteSpace);
 
-        public Text WhiteSpaceAtStartTrimmed
-        {
-            get { return TrimmedAtStart(CharFun.IsWhiteSpace); }
-        }
+        public Text WhiteSpaceAtStartTrimmed => TrimmedAtStart(CharFun.IsWhiteSpace);
 
-        public Text WhiteSpaceAtEndTrimmed
-        {
-            get { return TrimmedAtEnd(CharFun.IsWhiteSpace); }
-        }
+        public Text WhiteSpaceAtEndTrimmed => TrimmedAtEnd(CharFun.IsWhiteSpace);
 
-        public Text WhiteSpaceTrimmed
-        {
-            get { return Trimmed(CharFun.IsWhiteSpace); }
-        }
+        public Text WhiteSpaceTrimmed => Trimmed(CharFun.IsWhiteSpace);
 
         #endregion
 
         #region Indexer
 
-        public char this[int index]
-        {
-            get { return String[Start + index]; }
-        }
+        public char this[int index] => String[Start + index];
 
         #endregion
 
@@ -307,8 +285,7 @@ namespace Aardvark.Base
             }
             return Empty;
         }
-
-
+        
         /// <summary>
         /// Returns the text without the caracters at the start and at the
         /// end, for which the supplied predicate is true.
@@ -332,10 +309,7 @@ namespace Aardvark.Base
 
         #region Overrides
 
-        public override string ToString()
-        {
-            return String.Substring(Start, Count);
-        }
+        public override string ToString() => String.Substring(Start, Count);
 
         public override int GetHashCode()
         {
@@ -345,10 +319,7 @@ namespace Aardvark.Base
             return hc;
         }
 
-        public override bool Equals(object obj)
-        {
-            return obj is Text ? this == (Text)obj : false;
-        }
+        public override bool Equals(object obj) => obj is Text ? this == (Text)obj : false;
 
         #endregion
 
@@ -400,15 +371,12 @@ namespace Aardvark.Base
 
         public static Regex IdentifierRegex = new Regex(@"\b[A-Za-z_][0-9A-Za-z_]*\b");
 
-        public Text ReplaceIdentifiers(
-                Dictionary<string, string> changeMap)
-        {
-            return ReplaceParts(IdentifierRegex, changeMap);
-        }
+        public Text ReplaceIdentifiers(Dictionary<string, string> changeMap)
+             => ReplaceParts(IdentifierRegex, changeMap);
 
         public Text ReplaceParts(
-                Regex partRegex,
-                Dictionary<string, string> changeMap)
+            Regex partRegex,
+            Dictionary<string, string> changeMap)
         {
             StringBuilder newText = new StringBuilder();
             var str = String;
@@ -418,9 +386,8 @@ namespace Aardvark.Base
             {
                 Group group = match.Groups[1];
                 newText.Append(str, pos, match.Index - pos);
-                string changed = null;
                 var unchanged = match.Value;
-                if (changeMap.TryGetValue(unchanged, out changed))
+                if (changeMap.TryGetValue(unchanged, out string changed))
                     newText.Append(changed);
                 else
                     newText.Append(unchanged);
@@ -513,20 +480,14 @@ namespace Aardvark.Base
         /// Get the line of the current position without knowledge of any
         /// pervious line.
         /// </summary>
-        public Line GetLineOfPos(int pos)
-        {
-            return GetLineOfPos(new Line(0, 0), pos);
-        }
+        public Line GetLineOfPos(int pos) => GetLineOfPos(new Line(0, 0), pos);
 
         /// <summary>
         /// Returns the first position after position start in the text, that
         /// does not contain a whitespace character, or the length of the text
         /// if it is all whitespace.
         /// </summary>
-        public int SkipWhiteSpace(int start = 0)
-        {
-            return Skip(CharFun.IsWhiteSpace, start);
-        }
+        public int SkipWhiteSpace(int start = 0) => Skip(CharFun.IsWhiteSpace, start);
 
         public int Skip(Func<char, bool> skipFun, int start = 0)
         {
@@ -1050,10 +1011,7 @@ namespace Aardvark.Base
 
         #region IEquatable<Text> Members
 
-        public bool Equals(Text other)
-        {
-            return this == other;
-        }
+        public bool Equals(Text other) => this == other;
 
         #endregion
     }
@@ -1131,15 +1089,15 @@ namespace Aardvark.Base
 
         public ParsedValue(ParseError error, int count)
         {
-            Value = default(T); Error = error; Length = count;
+            Value = default; Error = error; Length = count;
         }
 
         #endregion
 
         #region Properties
 
-        public bool IsValid { get { return Error == ParseError.None; } }
-        public bool IsInValid { get { return Error != ParseError.None; } }
+        public bool IsValid => Error == ParseError.None;
+        public bool IsInValid => Error != ParseError.None;
 
         #endregion
     }
@@ -1212,64 +1170,44 @@ namespace Aardvark.Base
     {
         #region String Extension
 
-        public static Text ToText(this String str)
-        {
-            return new Text(str);
-        }
+        public static Text ToText(this String str) => new Text(str);
 
         public static string ReplaceIdentifiers(this string str, Dictionary<string, string> changeMap)
-        {
-            return str.ToText().ReplaceIdentifiers(changeMap).ToString();
-        }
+             => str.ToText().ReplaceIdentifiers(changeMap).ToString();
 
         #endregion
 
         #region StringBuilder Extension
 
         public static StringBuilder Append(this StringBuilder builder, Text text)
-        {
-            return builder.Append(text.String, text.Start, text.Count);
-        }
+             => builder.Append(text.String, text.Start, text.Count);
 
         public static Text ToText(this StringBuilder builder)
-        {
-            return new Text(builder.ToString());
-        }
+             => new Text(builder.ToString());
 
         #endregion
 
         #region List<Text> Extensions
 
         public static List<string> ToListOfString(this List<Text> textList)
-        {
-            return textList.Map(t => t.ToString());
-        }
+             => textList.Map(t => t.ToString());
 
         public static string[] ToStringArray(this List<Text> textList)
-        {
-            return textList.MapToArray(t => t.ToString());
-        }
+             => textList.MapToArray(t => t.ToString());
 
         public static string JoinToString(this List<Text> textList, string delimiter)
-        {
-            return textList.Map(t => t.ToString()).Join(delimiter);
-        }
+             => textList.Map(t => t.ToString()).Join(delimiter);
 
         #endregion
 
         #region TextArray Extensions
 
         public static string[] ToStringArray(this Text[] textArray)
-        {
-            return textArray.Map(t => t.ToString());
-        }
+             => textArray.Map(t => t.ToString());
 
         public static List<string> ToListOfString(this Text[] textArray)
-        {
-            return textArray.MapToList(t => t.ToString());
-        }
-
-
+            => textArray.MapToList(t => t.ToString());
+        
         public static int NestedBracketSplitCount(this Text text, int splitLevel)
         {
             int count = 0;
@@ -1419,5 +1357,4 @@ namespace Aardvark.Base
    
         #endregion
     }
-
 }

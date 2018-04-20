@@ -1,7 +1,4 @@
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Reflection;
 
 namespace Aardvark.Base
 {
@@ -101,37 +98,17 @@ namespace Aardvark.Base
 
         #region Typed Access
 
-        public T Get<T>(TypedSymbol<T> key)
-        {
-            return m_ht.Get(key);
-        }
+        public T Get<T>(TypedSymbol<T> key) => m_ht.Get(key);
 
-        public T GetOrDefault<T>(TypedSymbol<T> key)
-        {
-            return m_ht.GetOrDefault(key);
-        }
+        public T GetOrDefault<T>(TypedSymbol<T> key) => m_ht.GetOrDefault(key);
 
-        public T Get<T>(TypedSymbol<T> key, T defaultValue)
-        {
-            return m_ht.Get(key, defaultValue);
-        }
+        public T Get<T>(TypedSymbol<T> key, T defaultValue) => m_ht.Get(key, defaultValue);
 
-        public T Get<T>(Symbol key)
-        {
-            object r;
-            return m_ht.TryGetValue(key, out r) ? (T)r : default(T);
-        }
+        public T Get<T>(Symbol key) => m_ht.TryGetValue(key, out object r) ? (T)r : default;
 
-        public T Get<T>(Symbol key, T defaultValue)
-        {
-            object r;
-            return m_ht.TryGetValue(key, out r) ? (T)r : defaultValue;
-        }
+        public T Get<T>(Symbol key, T defaultValue) => m_ht.TryGetValue(key, out object r) ? (T)r : defaultValue;
 
-        public void Set<T>(TypedSymbol<T> key, T value)
-        {
-            m_ht.Set(key, value);
-        }
+        public void Set<T>(TypedSymbol<T> key, T value) => m_ht.Set(key, value);
 
         #endregion
 
@@ -140,10 +117,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Checks if key exists.
         /// </summary>
-        public bool Contains(Symbol key)
-        {
-            return m_ht.Contains(key);
-        }
+        public bool Contains(Symbol key) => m_ht.Contains(key);
 
         #endregion
     }
