@@ -844,10 +844,16 @@ namespace Aardvark.Base
 
                 Report.Begin(3, "Unpacking native dependencies for {0}", a.FullName);
 
+                var baseDir = 
+                    IntrospectionProperties.CustomEntryAssembly != null 
+                    ? Path.GetDirectoryName(IntrospectionProperties.CustomEntryAssembly.Location) 
+                    : AppDomain.CurrentDomain.BaseDirectory;
+
                 using (var s = a.GetManifestResourceStream("native.zip"))
                 {
                     using (var archive = new ZipArchive(s))
                     {
+
                         var arch = IntPtr.Size == 8 ? "AMD64" : "x86";
                         var platform = "windows";
                         if (Environment.OSVersion.Platform == PlatformID.MacOSX) platform = "mac";
@@ -875,7 +881,6 @@ namespace Aardvark.Base
                                 if (localComponents.Length != 0)
                                 {
                                     var localTarget = Path.Combine(localComponents);
-                                    var baseDir = IntrospectionProperties.CustomEntryAssembly != null ? Path.GetDirectoryName(IntrospectionProperties.CustomEntryAssembly.Location) : AppDomain.CurrentDomain.BaseDirectory;
                                     var outputPath = Path.Combine(baseDir, localTarget);
 
                                     var d = Path.GetDirectoryName(outputPath);
@@ -914,29 +919,36 @@ namespace Aardvark.Base
                     }
                     else
                     {
-                        string path;
-                        if(!LdConfig.TryGetPath(kvp.Value, out path))
+                        string targetName;
+                        string targetPath;
+                        if(LdConfig.TryGetPath(kvp.Value, out targetPath))
                         {
-                            path = kvp.Value;
+                            targetName = targetPath;
+                        }
+                        else {
+                            targetName = kvp.Value;
+                            targetPath = Path.Combine(baseDir, targetName);
                         }
 
-                        if (File.Exists(path))
+                        if (File.Exists(targetPath))
                         {
-                            Report.Line(3, "creating symlink {0} -> {1}", linkName, path);
-                            if (File.Exists(linkName))
+                            var linkPath = Path.Combine(baseDir, linkName);
+
+                            Report.Line(3, "creating symlink {0} -> {1}", linkName, targetName);
+                            if (File.Exists(linkPath))
                             {
                                 Report.Line(3, "deleting old symlink {0}", linkName);
-                                File.Delete(linkName);
+                                File.Delete(linkPath);
                             }
 
-                            if (symlink(path, linkName) != 0)
+                            if (symlink(targetName, linkPath) != 0)
                             {
                                 Report.Warn("could not create symlink {0}", linkName);
                             }
                         }
                         else
                         {
-                            Report.Warn("could not create symlink to {0} (does not exist)", path);
+                            Report.Warn("could not create symlink to {0} (does not exist)", targetName);
                         }
 
                     }
