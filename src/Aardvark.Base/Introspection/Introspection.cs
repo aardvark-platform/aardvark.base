@@ -6,6 +6,7 @@ using System.IO;
 using System.IO.Compression;
 using System.Linq;
 using System.Reflection;
+using System.Runtime.InteropServices;
 using System.Runtime.Serialization.Formatters.Binary;
 using System.Xml.Linq;
 
@@ -668,6 +669,9 @@ namespace Aardvark.Base
             }
         }
 
+
+        #region DllMap
+
         private enum OS
         {
             Unknown = 0,
@@ -747,6 +751,20 @@ namespace Aardvark.Base
             return dict;
 
         }
+
+        #endregion
+
+        #region Symlink
+
+        [DllImport("libc")]
+        private static extern int symlink(string src, string linkName);
+
+
+        [DllImport("kernel32")]
+        private static extern bool CreateSymbolicLink(string lpSymlinkFileName, string lpTargetFileName, int flags);
+
+        #endregion
+
         public static void UnpackNativeDependencies(Assembly a)
         {
             if (a.IsDynamic) return;
@@ -814,6 +832,28 @@ namespace Aardvark.Base
                         }
                     }
                 }
+
+                var myOS = GetOS();
+                foreach(var kvp in symlinks)
+                {
+                    if (myOS == OS.Win32)
+                    {
+                        if (!CreateSymbolicLink(kvp.Key, kvp.Value, 0x2))
+                        {
+                            Report.Warn("could not create symlink {0}", kvp.Key);
+                        }
+                    }
+                    else
+                    {
+                        if(symlink(kvp.Value, kvp.Key) != 0)
+                        {
+                            Report.Warn("could not create symlink {0}", kvp.Key);
+
+                        }
+                    }
+                }
+
+
                 Report.End(3);
             }
             catch (Exception e)
