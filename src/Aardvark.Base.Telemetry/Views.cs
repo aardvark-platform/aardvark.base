@@ -16,7 +16,7 @@ namespace Aardvark.Base
                 m_baseValue = baseValue;
                 m_stopwatch.Start();
 
-                Telemetry.OnReset += (s, e) =>
+                OnReset += (s, e) =>
                 {
                     m_stopwatch.Restart();
                 };
@@ -27,14 +27,9 @@ namespace Aardvark.Base
             {
             }
 
-            public double Value
-            {
-                get
-                {
-                    return m_baseValue().Ticks / m_stopwatch.Elapsed.Ticks;
-                }
-            }
-            public double ValueDouble { get { return Value; } }
+            public double Value => m_baseValue().Ticks / m_stopwatch.Elapsed.Ticks;
+
+            public double ValueDouble => Value;
         }
 
         public class RatePerSecondView : IProbe<double>
@@ -83,7 +78,8 @@ namespace Aardvark.Base
                     return m_result;
                 }
             }
-            public double ValueDouble { get { return Value; } }
+
+            public double ValueDouble => Value;
         }
 
         public class RatioView : IProbe<double>
@@ -107,8 +103,9 @@ namespace Aardvark.Base
             /// <summary>
             /// Ratio.
             /// </summary>
-            public double Value { get { return m_f(); } }
-            public double ValueDouble { get { return Value; } }
+            public double Value => m_f();
+
+            public double ValueDouble => Value;
         }
 
         public class SumView : IProbe<double>
@@ -133,8 +130,9 @@ namespace Aardvark.Base
             /// <summary>
             /// Ratio.
             /// </summary>
-            public double Value { get { return m_f(); } }
-            public double ValueDouble { get { return Value; } }
+            public double Value => m_f();
+
+            public double ValueDouble => Value;
         }
 
         public class SubtractView : IProbe<double>
@@ -159,8 +157,9 @@ namespace Aardvark.Base
             /// <summary>
             /// Ratio.
             /// </summary>
-            public double Value { get { return m_f(); } }
-            public double ValueDouble { get { return Value; } }
+            public double Value => m_f();
+
+            public double ValueDouble => Value;
         }
 
         public class MultiplyView : IProbe<double>
@@ -183,8 +182,9 @@ namespace Aardvark.Base
             /// <summary>
             /// Ratio.
             /// </summary>
-            public double Value { get { return m_f(); } }
-            public double ValueDouble { get { return Value; } }
+            public double Value => m_f();
+
+            public double ValueDouble => Value;
         }
 
         public class MinView : IProbe<double>
@@ -209,8 +209,9 @@ namespace Aardvark.Base
             /// <summary>
             /// Ratio.
             /// </summary>
-            public double Value { get { return m_f(); } }
-            public double ValueDouble { get { return Value; } }
+            public double Value => m_f();
+
+            public double ValueDouble => Value;
         }
 
         public class MaxView : IProbe<double>
@@ -235,8 +236,9 @@ namespace Aardvark.Base
             /// <summary>
             /// Ratio.
             /// </summary>
-            public double Value { get { return m_f(); } }
-            public double ValueDouble { get { return Value; } }
+            public double Value => m_f();
+
+            public double ValueDouble => Value;
         }
 
         public class AvgView : IProbe<double>
@@ -265,8 +267,9 @@ namespace Aardvark.Base
             /// <summary>
             /// Ratio.
             /// </summary>
-            public double Value { get { return m_f(); } }
-            public double ValueDouble { get { return Value; } }
+            public double Value => m_f();
+
+            public double ValueDouble => Value;
         }
     }
 }

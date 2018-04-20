@@ -7,55 +7,40 @@ namespace Aardvark.Base
 {
     public static partial class Telemetry
     {
-        public class Env : DynamicObject, IEnumerable<Telemetry.NamedProbe>
+        public class Env : DynamicObject, IEnumerable<NamedProbe>
         {
-            private Dictionary<string, Telemetry.NamedProbe> m_probes =
-                new Dictionary<string, Telemetry.NamedProbe>();
+            private Dictionary<string, NamedProbe> m_probes =
+                new Dictionary<string, NamedProbe>();
 
-            public void SetMember(string name, Telemetry.IProbe probe)
+            public void SetMember(string name, IProbe probe)
             {
                 if (probe == null) throw new ArgumentNullException();
-                m_probes[name] = new Telemetry.NamedProbe(name, probe);
-            }
-            public Telemetry.IProbe GetMember(string name)
-            {
-                Telemetry.NamedProbe x;
-                if (m_probes.TryGetValue(name, out x))
-                {
-                    return x.Probe;
-                }
-                else
-                {
-                    return null;
-                }
+                m_probes[name] = new NamedProbe(name, probe);
             }
 
-            public override IEnumerable<string> GetDynamicMemberNames()
-            {
-                return m_probes.Keys;
-            }
+            public IProbe GetMember(string name)
+                => m_probes.TryGetValue(name, out NamedProbe x) ? x.Probe : null;
+
+            public override IEnumerable<string> GetDynamicMemberNames() => m_probes.Keys;
+
             public override bool TryGetMember(GetMemberBinder binder, out object result)
             {
                 result = GetMember(binder.Name);
                 return result != null;
             }
+
             public override bool TrySetMember(SetMemberBinder binder, object value)
             {
-                var probe = value as Telemetry.IProbe;
+                var probe = value as IProbe;
                 if (probe == null) throw new ArgumentException();
                 SetMember(binder.Name, probe);
                 return true;
             }
 
-            public IEnumerator<Telemetry.NamedProbe> GetEnumerator()
-            {
-                var result = (IEnumerable<Telemetry.NamedProbe>)m_probes.Values;
-                return result.GetEnumerator();
-            }
-            IEnumerator IEnumerable.GetEnumerator()
-            {
-                return GetEnumerator();
-            }
+            public IEnumerator<NamedProbe> GetEnumerator()
+                => ((IEnumerable<NamedProbe>)m_probes.Values).GetEnumerator();
+
+            IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
         }
     }
 }
