@@ -1,8 +1,10 @@
 RESTRICTION: || (== net471) (== netcoreapp2.0) (== netstandard2.0)
 NUGET
-  remote: https://api.nuget.org/v3/index.json
-    DevILSharp (0.2.1)
+  remote: https://vrvis.myget.org/F/aardvark_public/api/v3/index.json
+    DevILSharp (0.2.4)
       FSharp.Core (>= 4.3 < 4.4)
+    Unofficial.LibTessDotNet (2.0.0)
+  remote: https://api.nuget.org/v3/index.json
     FsCheck (2.10.9)
       FSharp.Core (>= 4.0.0.1) - restriction: || (== net471) (&& (== netcoreapp2.0) (>= net452)) (&& (== netcoreapp2.0) (< netstandard1.6)) (&& (== netcoreapp2.0) (< portable-net45+win8+wp8)) (&& (== netstandard2.0) (>= net452)) (&& (== netstandard2.0) (< netstandard1.6)) (&& (== netstandard2.0) (< portable-net45+win8+wp8))
       FSharp.Core (>= 4.2.3) - restriction: || (&& (== net471) (< net452)) (== netcoreapp2.0) (== netstandard2.0)
@@ -186,8 +188,6 @@ NUGET
       System.Runtime (>= 4.3) - restriction: || (&& (== net471) (< net46)) (== netcoreapp2.0) (== netstandard2.0)
       System.Runtime.Handles (>= 4.3) - restriction: || (&& (== net471) (< net46)) (== netcoreapp2.0) (== netstandard2.0)
     System.ValueTuple (4.4) - restriction: || (&& (== net471) (< net452)) (== netcoreapp2.0) (== netstandard2.0)
-  remote: https://vrvis.myget.org/F/aardvark_public/api/v3/index.json
-    Unofficial.LibTessDotNet (2.0.0)
 
 GROUP Build
 CONTENT: NONE

@@ -6,7 +6,10 @@ using System.IO;
 using System.IO.Compression;
 using System.Linq;
 using System.Reflection;
+using System.Runtime.InteropServices;
 using System.Runtime.Serialization.Formatters.Binary;
+using System.Xml.Linq;
+using System.Text.RegularExpressions;
 
 namespace Aardvark.Base
 {
@@ -269,8 +272,7 @@ namespace Aardvark.Base
             Report.End();
         }
         
-        private static Telemetry.CpuTime s_telemetryEnumerateAssembliesCheckTime1 = new Telemetry.CpuTime();
-        private static Telemetry.CpuTime s_telemetryEnumerateAssembliesCheckTime2 = new Telemetry.CpuTime();
+        
 
         /// <summary>
         /// Note by hs: Since this function throws and catches exceptions in non exceptional cases we
@@ -283,52 +285,46 @@ namespace Aardvark.Base
         [DebuggerNonUserCode]
         private static void EnumerateAssemblies(string name, Assembly customAssembly = null)
         {
-            using (s_telemetryEnumerateAssembliesCheckTime1.Timer)
-            {
-                if (string.IsNullOrEmpty(name)) return;
-                if (s_assembliesThatFailedToLoad.Contains(name)) return;
-                if (s_assemblies.ContainsKey(name)) return;
-            }
+            if (string.IsNullOrEmpty(name)) return;
+            if (s_assembliesThatFailedToLoad.Contains(name)) return;
+            if (s_assemblies.ContainsKey(name)) return;
             
-            using (s_telemetryEnumerateAssembliesCheckTime2.Timer)
+            if (name.StartsWith("System.") ||
+                name.StartsWith("VRLib.CLI") ||
+                name.StartsWith("Microsoft") ||
+                name.StartsWith("LidorSystems") ||
+                name.StartsWith("WeifenLuo.") ||
+                name.StartsWith("OpenCV") ||
+                name.StartsWith("nunit.") ||
+                name.StartsWith("Extreme.Numerics") ||
+                name.StartsWith("fftwlib") ||
+                name.StartsWith("GraphCutsCLI") ||
+                name.StartsWith("Interop.MLApp") ||
+                name.StartsWith("IPP") ||
+                name.StartsWith("IronRuby") ||
+                name.StartsWith("MapTools") ||
+                name.StartsWith("MetaDataExtractor") ||
+                name.StartsWith("mscorlib") ||
+                name.StartsWith("SlimDX") ||
+                name.StartsWith("TDx.TDxInput") ||
+                name.StartsWith("WiimoteLib") ||
+                name.StartsWith("OpenTK") ||
+                name.StartsWith("Kitware") ||
+                name.StartsWith("ICSharpCode") ||
+                name.StartsWith("WindowsFormsIntegration") ||
+                name.StartsWith("Roslyn") ||
+                name.StartsWith("SharpDX") ||
+                name.StartsWith("Aardvark.Jynx.Native") ||
+                name.StartsWith("SurfaceQueueInteropHelper") ||
+                name.StartsWith("ScintillaNET") ||
+                name.StartsWith("IKVM") ||
+                name.StartsWith("Super") ||
+                name.StartsWith("Java") ||
+                name.StartsWith("OpenTK")
+                )
             {
-                if (name.StartsWith("System.") ||
-                    name.StartsWith("VRLib.CLI") ||
-                    name.StartsWith("Microsoft") ||
-                    name.StartsWith("LidorSystems") ||
-                    name.StartsWith("WeifenLuo.") ||
-                    name.StartsWith("OpenCV") ||
-                    name.StartsWith("nunit.") ||
-                    name.StartsWith("Extreme.Numerics") ||
-                    name.StartsWith("fftwlib") ||
-                    name.StartsWith("GraphCutsCLI") ||
-                    name.StartsWith("Interop.MLApp") ||
-                    name.StartsWith("IPP") ||
-                    name.StartsWith("IronRuby") ||
-                    name.StartsWith("MapTools") ||
-                    name.StartsWith("MetaDataExtractor") ||
-                    name.StartsWith("mscorlib") ||
-                    name.StartsWith("SlimDX") ||
-                    name.StartsWith("TDx.TDxInput") ||
-                    name.StartsWith("WiimoteLib") ||
-                    name.StartsWith("OpenTK") ||
-                    name.StartsWith("Kitware") ||
-                    name.StartsWith("ICSharpCode") ||
-                    name.StartsWith("WindowsFormsIntegration") ||
-                    name.StartsWith("Roslyn") ||
-                    name.StartsWith("SharpDX") ||
-                    name.StartsWith("Aardvark.Jynx.Native") ||
-                    name.StartsWith("SurfaceQueueInteropHelper") ||
-                    name.StartsWith("ScintillaNET") ||
-                    name.StartsWith("IKVM") ||
-                    name.StartsWith("Super") ||
-                    name.StartsWith("Java") ||
-                    name.StartsWith("OpenTK")
-                    )
-                {
-                    s_assembliesThatFailedToLoad.Add(name);
-                    return;
-                }
+                s_assembliesThatFailedToLoad.Add(name);
+                return;
             }
 
             try
@@ -667,12 +663,182 @@ namespace Aardvark.Base
             }
         }
 
+
+        #region LdConfig
+
+
+        private static class LdConfig
+        {
+            static Regex rx = new Regex(@"[ \t]*(?<name>[^ \t]+)[ \t]+\((?<libc>[^,]+)\,(?<arch>[^\)]+)\)[ \t]*\=\>[ \t]*(?<path>.*)");
+            static Dictionary<string, string> result = new Dictionary<string, string>();
+            static bool loaded = false;
+
+            static void Load()
+            {
+
+                var myArch = IntPtr.Size == 8 ? "x86-64" : "x86";
+
+                var info = new ProcessStartInfo("/bin/sh", "-c \"ldconfig -p\"")
+                {
+                    RedirectStandardOutput = true,
+                    UseShellExecute = false
+                };
+
+                using (var proc = Process.Start(info))
+                {
+                    proc.OutputDataReceived += (s, e) =>
+                    {
+                        if (!String.IsNullOrWhiteSpace(e.Data))
+                        {
+                            var m = rx.Match(e.Data);
+                            if (m.Success)
+                            {
+                                var name = m.Groups["name"].Value;
+                                var arch = m.Groups["arch"].Value;
+                                var path = m.Groups["path"].Value;
+                                if (arch == myArch)
+                                {
+                                    result[name] = path;
+                                }
+                            }
+                        }
+                    };
+
+                    proc.BeginOutputReadLine();
+                    proc.WaitForExit();
+                }
+            }
+
+            public static Dictionary<string, string> Paths
+            {
+                get
+                {
+                    lock(result)
+                    {
+                        if(!loaded)
+                        {
+                            Load();
+                            loaded = true;
+                        }
+                        return result;
+                    }
+                }
+            }
+
+            public static bool TryGetPath(string name, out string path)
+            {
+                return Paths.TryGetValue(name, out path);
+            }
+
+        }
+
+        #endregion
+
+        #region DllMap
+
+        private enum OS
+        {
+            Unknown = 0,
+            Win32 = 1,
+            Linux = 2,
+            MacOS = 3
+        }
+
+        private static bool TryParseOS(string os, out OS value)
+        {
+            os = os.ToLower();
+            if (os == "win" || os == "windows" || os == "win32" || os == "win64")
+            {
+                value = OS.Win32;
+                return true;
+            }
+            else if (os == "linux" || os == "nix" || os == "unix")
+            {
+                value = OS.Linux;
+                return true;
+            }
+            else if (os == "mac" || os == "macos" || os == "macosx")
+            {
+                value = OS.MacOS;
+                return true;
+            }
+            else
+            {
+                value = OS.Unknown;
+                return false;
+            }
+
+        }
+
+        private static OS GetOS()
+        {
+            switch(Environment.OSVersion.Platform)
+            {
+                case PlatformID.Unix: return OS.Linux;
+                case PlatformID.MacOSX: return OS.MacOS;
+                default: return OS.Win32;
+            }
+
+        }
+
+        private static Dictionary<string, string> GetSymlinks(XDocument document)
+        {
+            var dict = new Dictionary<string, string>();
+            var myOs = GetOS();
+            var root = document.Element(XName.Get("configuration"));
+            if(root != null)
+            {
+                foreach(var e in root.Elements(XName.Get("dllmap")))
+                {
+                    var src     = e.Attribute(XName.Get("dll"));
+                    var os      = e.Attribute(XName.Get("os"));
+                    var dst     = e.Attribute(XName.Get("target"));
+
+                    if(src != null && dst != null && os != null)
+                    {
+                        var srcStr  = src.Value;
+                        var osStr   = os.Value;
+                        var dstStr  = dst.Value;
+
+
+
+
+                        if(!String.IsNullOrWhiteSpace(srcStr) && !String.IsNullOrWhiteSpace(osStr) && !String.IsNullOrWhiteSpace(dstStr) && TryParseOS(osStr, out var osVal))
+                        {
+                            if(myOs == osVal)
+                            {
+                                dict[srcStr] = dstStr;
+                            }
+                        }
+                    }
+
+                }
+            }
+
+            return dict;
+
+        }
+
+        #endregion
+
+        #region Symlink
+
+        [DllImport("libc")]
+        private static extern int symlink(string src, string linkName);
+
+
+        [DllImport("kernel32")]
+        private static extern bool CreateSymbolicLink(string lpSymlinkFileName, string lpTargetFileName, int flags);
+
+        #endregion
+
         public static void UnpackNativeDependencies(Assembly a)
         {
             if (a.IsDynamic) return;
 
             try
             {
+                var symlinks = new Dictionary<string, string>();
                 var info = a.GetManifestResourceInfo("native.zip");
                 if (info == null) return;
 
@@ -689,11 +855,19 @@ namespace Aardvark.Base
 
                         var copyPaths = platform + "/" + arch;
 
+                        var remapFile = "remap.xml";
+
+
                         foreach (var e in archive.Entries)
                         {
                             var name = e.FullName.Replace('\\', '/');
 
-                            if (name.StartsWith(copyPaths))
+                            if (e.FullName == remapFile)
+                            {
+                                var doc = System.Xml.Linq.XDocument.Load(e.Open());
+                                symlinks = GetSymlinks(doc);
+                            }
+                            else if (name.StartsWith(copyPaths))
                             {
                                 name = name.Substring(copyPaths.Length);
                                 var localComponents = name.Split(new[] { '/', '\\' }, StringSplitOptions.RemoveEmptyEntries);
@@ -725,6 +899,50 @@ namespace Aardvark.Base
                         }
                     }
                 }
+
+                var myOS = GetOS();
+                foreach(var kvp in symlinks)
+                {
+                    var linkName = kvp.Key;
+                    if (myOS == OS.Win32)
+                    {
+                        Report.Warn("could not create symlink {0}", linkName);
+                        //if (!CreateSymbolicLink(kvp.Key, kvp.Value, 0x2))
+                        //{
+                        //    Report.Warn("could not create symlink {0}", kvp.Key);
+                        //}
+                    }
+                    else
+                    {
+                        string path;
+                        if(!LdConfig.TryGetPath(kvp.Value, out path))
+                        {
+                            path = kvp.Value;
+                        }
+
+                        if (File.Exists(path))
+                        {
+                            Report.Line(3, "creating symlink {0} -> {1}", linkName, path);
+                            if (File.Exists(linkName))
+                            {
+                                Report.Line(3, "deleting old symlink {0}", linkName);
+                                File.Delete(linkName);
+                            }
+
+                            if (symlink(path, linkName) != 0)
+                            {
+                                Report.Warn("could not create symlink {0}", linkName);
+                            }
+                        }
+                        else
+                        {
+                            Report.Warn("could not create symlink to {0} (does not exist)", path);
+                        }
+
+                    }
+                }
+
+
                 Report.End(3);
             }
             catch (Exception e)
