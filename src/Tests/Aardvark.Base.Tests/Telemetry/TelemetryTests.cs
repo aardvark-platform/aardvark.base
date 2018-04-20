@@ -1,9 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using Aardvark.Base;
+﻿using Aardvark.Base;
 using NUnit.Framework;
+using System;
+using System.IO;
+using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace Aardvark.Tests
 {
@@ -11,7 +12,7 @@ namespace Aardvark.Tests
     public class TelemetryTests : TestSuite
     {
         public TelemetryTests() : base() { }
-        public TelemetryTests(TestSuite.Options options) : base(options) { }
+        public TelemetryTests(Options options) : base(options) { }
 
         public void NUnitRun()
         {
@@ -25,6 +26,7 @@ namespace Aardvark.Tests
             Test.End();
         }
 
+        #region Snapshot probes
 
         [Test]
         public void SnapshotProbeLong_CanBeCreated()
@@ -45,7 +47,7 @@ namespace Aardvark.Tests
             Test.Begin("SnapshotProbeLong works");
             var a = new Telemetry.Counter();
             a.Set(100);
-
+            
             var s = new Telemetry.SnapshotProbeLong(a);
             
             a.Increment();
@@ -127,5 +129,73 @@ namespace Aardvark.Tests
             Test.IsTrue(s.Value == TimeSpan.FromSeconds(-60.0));
             Test.End();
         }
+
+        #endregion
+
+        #region Timing probes
+
+        [Test]
+        public void StopwatchTime_Works()
+        {
+            var t = new Telemetry.StopWatchTime();
+            using (t.Timer)
+            {
+                Thread.Sleep(1000);
+            }
+
+            Assert.IsTrue(t.Value.TotalSeconds >= 1.0);
+        }
+
+        [Test]
+        public void WallclockTime_Works()
+        {
+            var t = new Telemetry.WallClockTime();
+
+            Task.WaitAll(Enumerable.Range(0, 2).Select(_ => Task.Run(() =>
+                {
+                    using (t.Timer)
+                    {
+                        Thread.Sleep(1000);
+                    }
+                })
+            ).ToArray());
+            
+            Assert.IsTrue(t.Value.TotalSeconds >= 1.0 && t.Value.TotalSeconds < 1.1);
+        }
+
+        [Test]
+        public void CpuTime_Works()
+        {
+            var t0 = new Telemetry.CpuTime();
+            using (t0.Timer) for (var i = 0; i < 100000000; i++) ;
+
+            var t = new Telemetry.CpuTime();
+            Task.WaitAll(Enumerable.Range(0, 2).Select(_ => Task.Run(() =>
+            {
+                using (t.Timer)
+                {
+                    for (var i = 0; i < 100000000; i++) ;
+                    Thread.Sleep(100);
+                }
+            })
+            ).ToArray());
+
+            Assert.IsTrue(t.Value.TotalSeconds >= t0.Value.TotalSeconds * 2);
+        }
+
+        [Test]
+        public void CpuTimePrivileged_Works()
+        {
+            var t = new Telemetry.CpuTime();
+            var tUser = t.UserTime;
+            var tPriv = t.PrivilegedTime;
+            using (t.Timer) for (var i = 0; i < 100; i++) Directory.GetFiles(".");
+
+            Assert.IsTrue(t.Value.TotalSeconds > 0.0);
+            Assert.IsTrue(tUser.Value.TotalSeconds > 0.0);
+            Assert.IsTrue(tPriv.Value.TotalSeconds > 0.0);
+        }
+
+        #endregion
     }
 }

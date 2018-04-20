@@ -14,34 +14,21 @@ namespace Aardvark.Base
         {
             private long m_value = 0;
 
-            public Counter()
-            {
-                Telemetry.OnReset += (s, e) => Interlocked.Exchange(ref m_value, 0);
-            }
+            public Counter() => OnReset += (s, e) => Interlocked.Exchange(ref m_value, 0);
 
-            public void Increment()
-            {
-                Interlocked.Increment(ref m_value);
-            }
-            public void Increment(long x)
-            {
-                Interlocked.Add(ref m_value, x);
-            }
-            public void Decrement()
-            {
-                Interlocked.Decrement(ref m_value);
-            }
-            public void Decrement(long x)
-            {
-                Interlocked.Add(ref m_value, -x);
-            }
-            public void Set(long x)
-            {
-                m_value = x;
-            }
+            public void Increment() => Interlocked.Increment(ref m_value);
 
-            public long Value { get { return m_value; } }
-            public double ValueDouble { get { return m_value; } }
+            public void Increment(long x) => Interlocked.Add(ref m_value, x);
+
+            public void Decrement() => Interlocked.Decrement(ref m_value);
+
+            public void Decrement(long x) => Interlocked.Add(ref m_value, -x);
+
+            public void Set(long x) => m_value = x;
+            
+            public long Value => m_value;
+
+            public double ValueDouble => m_value;
         }
 
         #endregion
@@ -56,10 +43,7 @@ namespace Aardvark.Base
         {
             private long m_sum = 0;
 
-            public StopWatchTime()
-            {
-                Telemetry.OnReset += (s, e) => Interlocked.Exchange(ref m_sum, 0);
-            }
+            public StopWatchTime() => OnReset += (s, e) => Interlocked.Exchange(ref m_sum, 0);
 
             public IDisposable Timer
             {
@@ -75,11 +59,9 @@ namespace Aardvark.Base
                 }
             }
 
-            public TimeSpan Value
-            {
-                get { return TimeSpan.FromTicks(m_sum); }
-            }
-            public double ValueDouble { get { return Value.TotalSeconds; } }
+            public TimeSpan Value => TimeSpan.FromTicks(m_sum);
+
+            public double ValueDouble => Value.TotalSeconds;
         }
 
         /// <summary>
@@ -93,11 +75,8 @@ namespace Aardvark.Base
             private int m_actives = 0;
             private Stopwatch m_stopwatch = new Stopwatch();
 
-            public WallClockTime()
-            {
-                Telemetry.OnReset += (s, e) => m_stopwatch.Reset();
-            }
-
+            public WallClockTime() => OnReset += (s, e) => m_stopwatch.Reset();
+            
             public IDisposable Timer
             {
                 get
@@ -117,19 +96,14 @@ namespace Aardvark.Base
                 }
             }
 
-            public TimeSpan Value
-            {
-                get
-                {
-                    return m_stopwatch.Elapsed;
-                }
-            }
-            public double ValueDouble { get { return Value.TotalSeconds; } }
+            public TimeSpan Value => m_stopwatch.Elapsed;
+
+            public double ValueDouble => Value.TotalSeconds;
         }
 
         /// <summary>
-        /// Measures the amount of time that the thread has spent running
-        /// code (application code + operating system code).
+        /// Measures the amount of time that the thread has spent using
+        /// the processor (application code + operating system code).
         /// </summary>
         public class CpuTime : IProbe<TimeSpan>
         {
@@ -161,15 +135,12 @@ namespace Aardvark.Base
             private long m_sumPrivileged = 0;
             private IProbe<TimeSpan> m_probePrivileged = null;
 
-            public CpuTime()
+            public CpuTime() => OnReset += (s, e) =>
             {
-                Telemetry.OnReset += (s, e) =>
-                {
-                    Interlocked.Exchange(ref m_sum, 0);
-                    Interlocked.Exchange(ref m_sumUser, 0);
-                    Interlocked.Exchange(ref m_sumPrivileged, 0);
-                };
-            }
+                Interlocked.Exchange(ref m_sum, 0);
+                Interlocked.Exchange(ref m_sumUser, 0);
+                Interlocked.Exchange(ref m_sumPrivileged, 0);
+            };
 
             public IDisposable Timer
             {
@@ -240,16 +211,14 @@ namespace Aardvark.Base
                 }
             }
 
-            public TimeSpan Value
-            {
-                get { return TimeSpan.FromTicks(m_sum); }
-            }
-            public double ValueDouble { get { return Value.TotalSeconds; } }
+            public TimeSpan Value => TimeSpan.FromTicks(m_sum);
+
+            public double ValueDouble => Value.TotalSeconds;
         }
 
         /// <summary>
-        /// Measures the amount of time that the thread has spent running
-        /// code inside the application.
+        /// Measures the amount of time that the thread has spent using
+        /// the processor inside the application.
         /// </summary>
         public class CpuTimeUser : IProbe<TimeSpan>
         {
@@ -272,11 +241,8 @@ namespace Aardvark.Base
             private HashSet<int> m_threadIds = new HashSet<int>();
             private TimeSpan m_sum = TimeSpan.Zero;
 
-            public CpuTimeUser()
-            {
-                Telemetry.OnReset += (s, e) => { lock (m_threadIds) m_sum = TimeSpan.Zero; };
-            }
-
+            public CpuTimeUser() => OnReset += (s, e) => { lock (m_threadIds) m_sum = TimeSpan.Zero; };
+            
             public IDisposable Timer
             {
                 get
@@ -319,18 +285,16 @@ namespace Aardvark.Base
             {
                 get
                 {
-                    lock (m_threadIds)
-                    {
-                        return m_sum;
-                    }
+                    lock (m_threadIds) return m_sum;
                 }
             }
-            public double ValueDouble { get { return Value.TotalSeconds; } }
+
+            public double ValueDouble => Value.TotalSeconds;
         }
 
         /// <summary>
-        /// Measures the amount of time that the thread has spent running
-        /// code inside the operating system core.
+        /// Measures the amount of time that the thread has spent using
+        /// the processor inside the operating system core.
         /// </summary>
         public class CpuTimePrivileged : IProbe<TimeSpan>
         {
@@ -354,7 +318,7 @@ namespace Aardvark.Base
 
             public CpuTimePrivileged()
             {
-                Telemetry.OnReset += (s, e) => { lock (m_threadIds) m_sum = TimeSpan.Zero; };
+                OnReset += (s, e) => { lock (m_threadIds) m_sum = TimeSpan.Zero; };
             }
 
             public IDisposable Timer
@@ -400,13 +364,10 @@ namespace Aardvark.Base
             {
                 get
                 {
-                    lock (m_threadIds)
-                    {
-                        return m_sum;
-                    }
+                    lock (m_threadIds) return m_sum;
                 }
             }
-            public double ValueDouble { get { return Value.TotalSeconds; } }
+            public double ValueDouble => Value.TotalSeconds;
         }
 
         #endregion
@@ -417,164 +378,119 @@ namespace Aardvark.Base
         {
             private Func<double> m_value;
 
-            public CustomProbeDouble(Func<double> valueFunc)
-            {
-                m_value = valueFunc;
-            }
+            public CustomProbeDouble(Func<double> valueFunc) => m_value = valueFunc;
 
-            public double Value
-            {
-                get { return m_value(); }
-            }
-
-            public double ValueDouble
-            {
-                get { return m_value(); }
-            }
+            public double Value => m_value();
+            
+            public double ValueDouble => m_value();
         }
 
         public class CustomProbeLong : IProbe<long>
         {
             private Func<long> m_value;
 
-            public CustomProbeLong(Func<long> valueFunc)
-            {
-                m_value = valueFunc;
-            }
+            public CustomProbeLong(Func<long> valueFunc) => m_value = valueFunc;
 
-            public long Value
-            {
-                get { return m_value(); }
-            }
+            public long Value => m_value();
 
-            public double ValueDouble
-            {
-                get { return m_value(); }
-            }
+            public double ValueDouble => m_value();
         }
 
         public class CustomProbeTimeSpan : IProbe<TimeSpan>
         {
             private Func<TimeSpan> m_value;
 
-            public CustomProbeTimeSpan(Func<TimeSpan> valueFunc)
-            {
-                m_value = valueFunc;
-            }
+            public CustomProbeTimeSpan(Func<TimeSpan> valueFunc) => m_value = valueFunc;
 
-            public TimeSpan Value
-            {
-                get { return m_value(); }
-            }
+            public TimeSpan Value => m_value();
 
-            public Func<TimeSpan> Getter
-            {
-                set { m_value = value; }
-            }
+            public Func<TimeSpan> Getter { set { m_value = value; } }
 
-            public double ValueDouble
-            {
-                get { return m_value().TotalSeconds; }
-            }
+            public double ValueDouble => m_value().TotalSeconds;
         }
 
         public class CustomProbeString : IProbe<string>
         {
             private Func<string> m_value;
 
-            public CustomProbeString(Func<string> valueFunc)
-            {
-                m_value = valueFunc;
-            }
+            public CustomProbeString(Func<string> valueFunc) => m_value = valueFunc;
 
-            public string Value
-            {
-                get { return m_value(); }
-            }
+            public string Value => m_value();
 
-            public double ValueDouble
-            {
-                get { return 0.0; }
-            }
+            public double ValueDouble => 0.0;
         }
 
         #endregion
 
         #region Snapshot probes
 
+        /// <summary>
+        /// Reports difference to current value of probe.
+        /// </summary>
         public class SnapshotProbeLong : IProbe<long>
         {
             private IProbe<long> m_probe;
             private long m_base;
 
+            /// <summary>
+            /// Reports difference to current value of probe.
+            /// </summary>
             public SnapshotProbeLong(IProbe<long> probe)
             {
-                if (probe == null) throw new ArgumentNullException();
-                m_probe = probe;
+                m_probe = probe ?? throw new ArgumentNullException();
                 m_base = -probe.Value;
-
-                Telemetry.OnReset += (s, e) => m_base = 0;
+                OnReset += (s, e) => m_base = 0;
             }
 
-            public long Value
-            {
-                get { return m_base + m_probe.Value; }
-            }
+            public long Value => m_base + m_probe.Value;
 
-            public double ValueDouble
-            {
-                get { return m_base + m_probe.Value; }
-            }
+            public double ValueDouble => m_base + m_probe.Value;
         }
 
+        /// <summary>
+        /// Reports difference to current value of probe.
+        /// </summary>
         public class SnapshotProbeDouble : IProbe<double>
         {
             private IProbe<double> m_probe;
             private double m_base;
 
+            /// <summary>
+            /// Reports difference to current value of probe.
+            /// </summary>
             public SnapshotProbeDouble(IProbe<double> probe)
             {
-                if (probe == null) throw new ArgumentNullException();
-                m_probe = probe;
+                m_probe = probe ?? throw new ArgumentNullException();
                 m_base = -probe.Value;
-
-                Telemetry.OnReset += (s, e) => m_base = 0;
+                OnReset += (s, e) => m_base = 0;
             }
 
-            public double Value
-            {
-                get { return m_base + m_probe.Value; }
-            }
+            public double Value => m_base + m_probe.Value;
 
-            public double ValueDouble
-            {
-                get { return m_base + m_probe.Value; }
-            }
+            public double ValueDouble => m_base + m_probe.Value;
         }
 
+        /// <summary>
+        /// Reports difference to current value of probe.
+        /// </summary>
         public class SnapshotProbeTimeSpan : IProbe<TimeSpan>
         {
             private IProbe<TimeSpan> m_probe;
             private long m_base;
 
+            /// <summary>
+            /// Reports difference to current value of probe.
+            /// </summary>
             public SnapshotProbeTimeSpan(IProbe<TimeSpan> probe)
             {
-                if (probe == null) throw new ArgumentNullException();
-                m_probe = probe;
+                m_probe = probe ?? throw new ArgumentNullException();
                 m_base = -probe.Value.Ticks;
-
-                Telemetry.OnReset += (s, e) => m_base = 0;
+                OnReset += (s, e) => m_base = 0;
             }
 
-            public TimeSpan Value
-            {
-                get { return TimeSpan.FromTicks(m_base + m_probe.Value.Ticks); }
-            }
+            public TimeSpan Value => TimeSpan.FromTicks(m_base + m_probe.Value.Ticks);
 
-            public double ValueDouble
-            {
-                get { return Value.TotalSeconds; }
-            }
+            public double ValueDouble => Value.TotalSeconds;
         }
 
         #endregion
@@ -585,15 +501,9 @@ namespace Aardvark.Base
         {
             public Action Action;
 
-            public void Dispose()
-            {
-                Action();
-            }
+            public void Dispose() => Action();
 
-            public static ProbeDisposable Create(Action a)
-            {
-                return new ProbeDisposable { Action = a };
-            }
+            public static ProbeDisposable Create(Action a) => new ProbeDisposable { Action = a };
         }
 
         #endregion

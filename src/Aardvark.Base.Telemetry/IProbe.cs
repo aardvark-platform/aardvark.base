@@ -6,26 +6,31 @@ namespace Aardvark.Base
     {
         public interface IProbe
         {
+            /// <summary>
+            /// Current value of probe.
+            /// </summary>
             double ValueDouble { get; }
         }
 
         public interface IProbe<T> : IProbe
         {
+            /// <summary>
+            /// Current typed value of probe.
+            /// </summary>
             T Value { get; }
         }
 
         public class NamedProbe
         {
             public readonly string Name;
-            public readonly Telemetry.IProbe Probe;
+            public readonly IProbe Probe;
 
-            public NamedProbe(string name, Telemetry.IProbe probe)
+            public NamedProbe(string name, IProbe probe)
             {
-                if (probe == null) throw new ArgumentNullException();
                 if (string.IsNullOrWhiteSpace(name)) throw new ArgumentNullException();
 
                 Name = name;
-                Probe = probe;
+                Probe = probe ?? throw new ArgumentNullException();
             }
         }
 
@@ -35,11 +40,7 @@ namespace Aardvark.Base
         /// after a warm up phase or before a new benchmark iteration.
         /// Custom IProbe implementations must handle the Telemetry.OnReset event.
         /// </summary>
-        public static void ResetTelemetrySystem()
-        {
-            var eh = OnReset;
-            if (eh != null) eh(null, EventArgs.Empty);
-        }
+        public static void ResetTelemetrySystem() => OnReset?.Invoke(null, EventArgs.Empty);
 
         /// <summary>
         /// Signals that ResetTelemetrySystem has been called.

@@ -9,7 +9,7 @@
     <OutputType>Exe</OutputType>
     <RootNamespace>Aardvark.Base.FSharp.Tests</RootNamespace>
     <AssemblyName>Aardvark.Base.FSharp.Tests</AssemblyName>
-    <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.7.1</TargetFrameworkVersion>
     <TargetFSharpCoreVersion>4.4.0.0</TargetFSharpCoreVersion>
     <Name>Aardvark.Base.FSharp.Tests</Name>
     <TargetFrameworkProfile />
@@ -95,7 +95,7 @@
     </ProjectReference>
   </ItemGroup>
   <Choose>
-    <When Condition="$(TargetFrameworkIdentifier) == '.NETFramework' And $(TargetFrameworkVersion) == 'v4.6.1'">
+    <When Condition="$(TargetFrameworkIdentifier) == '.NETFramework' And $(TargetFrameworkVersion) == 'v4.7.1'">
       <ItemGroup>
         <Reference Include="FsCheck">
           <HintPath>..\..\..\packages\FsCheck\lib\net452\FsCheck.dll</HintPath>
@@ -115,7 +115,7 @@
     </When>
   </Choose>
   <Choose>
-    <When Condition="$(TargetFrameworkIdentifier) == '.NETFramework' And $(TargetFrameworkVersion) == 'v4.6.1'">
+    <When Condition="$(TargetFrameworkIdentifier) == '.NETFramework' And $(TargetFrameworkVersion) == 'v4.7.1'">
       <ItemGroup>
         <Reference Include="FsCheck.NUnit">
           <HintPath>..\..\..\packages\FsCheck.NUnit\lib\net452\FsCheck.NUnit.dll</HintPath>
@@ -135,7 +135,7 @@
     </When>
   </Choose>
   <Choose>
-    <When Condition="$(TargetFrameworkIdentifier) == '.NETFramework' And $(TargetFrameworkVersion) == 'v4.6.1'">
+    <When Condition="$(TargetFrameworkIdentifier) == '.NETFramework' And $(TargetFrameworkVersion) == 'v4.7.1'">
       <ItemGroup>
         <Reference Include="FSharp.Core">
           <HintPath>..\..\..\packages\FSharp.Core\lib\net45\FSharp.Core.dll</HintPath>
@@ -155,7 +155,7 @@
     </When>
   </Choose>
   <Choose>
-    <When Condition="$(TargetFrameworkIdentifier) == '.NETFramework' And $(TargetFrameworkVersion) == 'v4.6.1'">
+    <When Condition="$(TargetFrameworkIdentifier) == '.NETFramework' And $(TargetFrameworkVersion) == 'v4.7.1'">
       <ItemGroup>
         <Reference Include="FsUnit.NUnit">
           <HintPath>..\..\..\packages\FsUnit\lib\net46\FsUnit.NUnit.dll</HintPath>
@@ -175,7 +175,7 @@
     </When>
   </Choose>
   <Choose>
-    <When Condition="$(TargetFrameworkIdentifier) == '.NETFramework' And $(TargetFrameworkVersion) == 'v4.6.1'">
+    <When Condition="$(TargetFrameworkIdentifier) == '.NETFramework' And $(TargetFrameworkVersion) == 'v4.7.1'">
       <ItemGroup>
         <Reference Include="nunit.framework">
           <HintPath>..\..\..\packages\NUnit\lib\net45\nunit.framework.dll</HintPath>
@@ -379,7 +379,7 @@
     </When>
   </Choose>
   <Choose>
-    <When Condition="$(TargetFrameworkIdentifier) == '.NETFramework' And $(TargetFrameworkVersion) == 'v4.6.1'">
+    <When Condition="$(TargetFrameworkIdentifier) == '.NETFramework' And $(TargetFrameworkVersion) == 'v4.7.1'">
       <ItemGroup>
         <Reference Include="System.Reactive">
           <HintPath>..\..\..\packages\System.Reactive\lib\net46\System.Reactive.dll</HintPath>

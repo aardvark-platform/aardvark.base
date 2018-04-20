@@ -8,7 +8,7 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>Aardvark.Tests</RootNamespace>
     <AssemblyName>Aardvark.Base.Tests</AssemblyName>
-    <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.7.1</TargetFrameworkVersion>
     <TargetFSharpCoreVersion>4.3.1.0</TargetFSharpCoreVersion>
     <FileAlignment>512</FileAlignment>
     <SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">..\..\Solutions\</SolutionDir>
@@ -79,6 +79,10 @@
     <Service Include="{82A7F48D-3B50-4B1E-B82E-3ADA8210C358}" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\Aardvark.Base.Telemetry\Aardvark.Base.Telemetry.csproj">
+      <Project>{b1593a50-6412-401f-ac89-433f426a8fd5}</Project>
+      <Name>Aardvark.Base.Telemetry</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\Aardvark.Base\Aardvark.Base.csproj">
       <Project>{377da721-c821-45f6-b803-9c8724c7b37f}</Project>
       <Name>Aardvark.Base</Name>
@@ -92,7 +96,7 @@
   </Target>
   -->
   <Choose>
-    <When Condition="($(TargetFrameworkIdentifier) == '.NETCoreApp' And $(TargetFrameworkVersion) == 'v2.0') Or ($(TargetFrameworkIdentifier) == '.NETStandard' And $(TargetFrameworkVersion) == 'v2.0')">
+    <When Condition="($(TargetFrameworkIdentifier) == '.NETFramework' And $(TargetFrameworkVersion) == 'v4.7.1') Or ($(TargetFrameworkIdentifier) == '.NETCoreApp' And $(TargetFrameworkVersion) == 'v2.0') Or ($(TargetFrameworkIdentifier) == '.NETStandard' And $(TargetFrameworkVersion) == 'v2.0')">
       <ItemGroup>
         <Reference Include="DevILSharp">
           <HintPath>..\..\..\packages\DevILSharp\lib\netstandard2.0\DevILSharp.dll</HintPath>
@@ -103,7 +107,7 @@
     </When>
   </Choose>
   <Choose>
-    <When Condition="$(TargetFrameworkIdentifier) == '.NETFramework' And $(TargetFrameworkVersion) == 'v4.6.1'">
+    <When Condition="$(TargetFrameworkIdentifier) == '.NETFramework' And $(TargetFrameworkVersion) == 'v4.7.1'">
       <ItemGroup>
         <Reference Include="FSharp.Core">
           <HintPath>..\..\..\packages\FSharp.Core\lib\net45\FSharp.Core.dll</HintPath>
@@ -123,7 +127,7 @@
     </When>
   </Choose>
   <Choose>
-    <When Condition="$(TargetFrameworkIdentifier) == '.NETFramework' And $(TargetFrameworkVersion) == 'v4.6.1'">
+    <When Condition="$(TargetFrameworkIdentifier) == '.NETFramework' And $(TargetFrameworkVersion) == 'v4.7.1'">
       <ItemGroup>
         <Reference Include="nunit.framework">
           <HintPath>..\..\..\packages\NUnit\lib\net45\nunit.framework.dll</HintPath>

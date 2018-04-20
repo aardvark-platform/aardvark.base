@@ -8,7 +8,7 @@
     <OutputType>Exe</OutputType>
     <RootNamespace>CodeGenerator</RootNamespace>
     <AssemblyName>CodeGenerator</AssemblyName>
-    <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.7.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
   </PropertyGroup>

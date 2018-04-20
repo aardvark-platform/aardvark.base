@@ -34,26 +34,19 @@ namespace Aardvark.Base
                 s_registrationActions.Add(action);
             }
 
-            static Debug()
-            {
-                AddCustomRegistrationAction(
-                    (name, probe) => Register(name + "/s", probe.RatePerSecond())
-                    );
-            }
+            static Debug() => AddCustomRegistrationAction(
+                (name, probe) => Register(name + "/s", probe.RatePerSecond())
+                );
 
             private class DynamicCpuTimeProvider : DynamicObject
             {
                 private Dictionary<string, CpuTime> m_probes = new Dictionary<string, CpuTime>();
 
-                public override IEnumerable<string> GetDynamicMemberNames()
-                {
-                    return m_probes.Keys;
-                }
+                public override IEnumerable<string> GetDynamicMemberNames() => m_probes.Keys;
 
                 public override bool TryGetMember(GetMemberBinder binder, out object result)
                 {
-                    CpuTime x;
-                    if (m_probes.TryGetValue(binder.Name, out x))
+                    if (m_probes.TryGetValue(binder.Name, out CpuTime x))
                     {
                         result = x.Timer;
                     }
@@ -74,15 +67,11 @@ namespace Aardvark.Base
             {
                 private Dictionary<string, Counter> m_probes = new Dictionary<string, Counter>();
 
-                public override IEnumerable<string> GetDynamicMemberNames()
-                {
-                    return m_probes.Keys;
-                }
+                public override IEnumerable<string> GetDynamicMemberNames() => m_probes.Keys;
 
                 public override bool TryGetMember(GetMemberBinder binder, out object result)
                 {
-                    Counter x;
-                    if (m_probes.TryGetValue(binder.Name, out x))
+                    if (m_probes.TryGetValue(binder.Name, out Counter x))
                     {
                         result = x;
                     }

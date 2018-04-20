@@ -47,7 +47,7 @@ namespace Aardvark.Base
         #endregion
 
         #region Telemetry
-
+        
         public static Telemetry.Counter CountCallsToBeginTimed = new Telemetry.Counter();
         public static Telemetry.Counter CountCallsToBegin = new Telemetry.Counter();
         public static Telemetry.Counter CountCallsToEnd = new Telemetry.Counter();
@@ -292,7 +292,7 @@ namespace Aardvark.Base
         /// </summary>
         public static ILogTarget RootTarget = Targets;
 
-        #endregion
+#endregion
 
         #region Static Reporting Methods
 
@@ -1039,7 +1039,6 @@ namespace Aardvark.Base
             s_reporter.RemoveReporter(reporter);
         }
 
-        #endregion
-
+#endregion
     }
 }

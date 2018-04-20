@@ -472,6 +472,21 @@ module NiceUtilities =
                     | _ -> failwithf "unsupported %A: %A" typeof<'a> key
 
 
+        let lookupTable' (l : list<'a * 'b>) =
+            let d = Dictionary()
+            for (k,v) in l do
+                match d.TryGetValue k with
+                    | (true, vo) -> failwithf "duplicated lookup-entry: %A (%A vs %A)" k vo v
+                    | _ -> ()
+
+                d.[k] <- v
+
+            fun (key : 'a) ->
+                match d.TryGetValue key with
+                    | (true, v) -> Some v
+                    | _ -> None
+
+
 [<CompilationRepresentation(CompilationRepresentationFlags.ModuleSuffix)>]
 module IO =
     open System.IO
