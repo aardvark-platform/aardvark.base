@@ -1,7 +1,7 @@
 RESTRICTION: || (== net471) (== netcoreapp2.0) (== netstandard2.0)
 NUGET
   remote: https://vrvis.myget.org/F/aardvark_public/api/v3/index.json
-    DevILSharp (0.2.2)
+    DevILSharp (0.2.4)
       FSharp.Core (>= 4.3 < 4.4)
     Unofficial.LibTessDotNet (2.0.0)
   remote: https://api.nuget.org/v3/index.json
