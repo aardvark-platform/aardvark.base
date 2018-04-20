@@ -1,12 +1,9 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.IO;
-using System.Text;
 
 namespace Aardvark.Base
 {
-
     public delegate SymMapBase SymMapBaseVisitor(SymMapBase map, SymMapBaseTraversal.Visit visit);
 
     public class SymMapBaseTraversal
@@ -25,11 +22,6 @@ namespace Aardvark.Base
             PreAndPost = Pre | Post,
         }
 
-        private SymbolDict<SymMapBaseVisitor> m_perTypenameVisitors =
-            new SymbolDict<SymMapBaseVisitor>();
-        private Mode m_mode;
-        private Visit m_visit;
-
         /// <summary>
         /// This event fires once for each node, .
         /// </summary>
@@ -39,48 +31,37 @@ namespace Aardvark.Base
 
         public SymMapBaseTraversal()
         {
-            m_mode = Mode.Modifying;
-            m_visit = Visit.Pre;
+            ModifyMode = Mode.Modifying;
+            VisitMode = Visit.Pre;
         }
 
         public SymMapBaseTraversal(Mode mode)
         {
-            m_mode = mode;
-            m_visit = Visit.Pre;
+            ModifyMode = mode;
+            VisitMode = Visit.Pre;
         }
 
         public SymMapBaseTraversal(Visit visit)
         {
-            m_mode = Mode.NonModifying;
-            m_visit = visit;
+            ModifyMode = Mode.NonModifying;
+            VisitMode = visit;
         }
 
         public SymMapBaseTraversal(Mode mode, Visit visit)
         {
-            m_mode = mode;
-            m_visit = visit;
+            ModifyMode = mode;
+            VisitMode = visit;
         }
 
         #endregion
 
         #region Properties
 
-        public Mode ModifyMode
-        {
-            get { return m_mode; }
-            set { m_mode = value; }
-        }
+        public Mode ModifyMode { get; set; }
 
-        public Visit VisitMode
-        {
-            get { return m_visit; }
-            set { m_visit = value; }
-        }
+        public Visit VisitMode { get; set; }
 
-        public SymbolDict<SymMapBaseVisitor> PerNameVisitors
-        {
-            get { return m_perTypenameVisitors; }
-        }
+        public SymbolDict<SymMapBaseVisitor> PerNameVisitors { get; } = new SymbolDict<SymMapBaseVisitor>();
 
         #endregion
 
@@ -88,17 +69,17 @@ namespace Aardvark.Base
         {
             // choose visitor
             SymMapBaseVisitor visitor = OnDefaultVisit;
-            if (map.TypeName != null && m_perTypenameVisitors.ContainsKey(map.TypeName))
+            if (map.TypeName != null && PerNameVisitors.ContainsKey(map.TypeName))
             {
-                visitor = m_perTypenameVisitors[map.TypeName];
+                visitor = PerNameVisitors[map.TypeName];
             }
 
             // pre visit
-            if ((m_visit & Visit.Pre) != 0)
+            if ((VisitMode & Visit.Pre) != 0)
             {
                 if (visitor != null)
                 {
-                    if (m_mode == Mode.Modifying)
+                    if (ModifyMode == Mode.Modifying)
                     {
                         map = visitor(map, Visit.Pre);
                     }
@@ -118,7 +99,7 @@ namespace Aardvark.Base
             }
 
             // traverse children
-            if (m_mode == Mode.Modifying)
+            if (ModifyMode == Mode.Modifying)
             {
                 SymbolDict<object> tmp = new SymbolDict<object>();
                 foreach (var e in map.MapItems)
@@ -131,16 +112,14 @@ namespace Aardvark.Base
                     object o = e.Value;
                     if (o is SymMapBase)
                         map[e.Key] = Traverse((SymMapBase)o);
-                    else if (o is SymMapBase[])
+                    else if (o is SymMapBase[] array)
                     {
-                        SymMapBase[] array = (SymMapBase[])o;
                         for (int i = 0; i < array.Length; i++)
                             array[i] = Traverse(array[i]);
 
                     }
-                    else if (o is List<SymMapBase>)
+                    else if (o is List<SymMapBase> list)
                     {
-                        List<SymMapBase> list = (List<SymMapBase>)o;
                         for (int i = 0; i < list.Count; i++)
                             list[i] = Traverse(list[i]);
                     }
@@ -209,11 +188,11 @@ namespace Aardvark.Base
             }
 
             // post visit
-            if ((m_visit & Visit.Post) != 0)
+            if ((VisitMode & Visit.Post) != 0)
             {
                 if (visitor != null)
                 {
-                    if (m_mode == Mode.Modifying)
+                    if (ModifyMode == Mode.Modifying)
                     {
                         map = visitor(map, Visit.Post);
                     }
@@ -238,16 +217,10 @@ namespace Aardvark.Base
 
     public class SymMapBaseCollectionTraversal
     {
-
         public static List<SymMapBase> Collect(SymMapBase root, string typenameToCollect)
-        {
-            return new SymMapBaseCollectionTraversal(root).Collect(typenameToCollect);
-        }
+             => new SymMapBaseCollectionTraversal(root).Collect(typenameToCollect);
 
-        public SymMapBaseCollectionTraversal(SymMapBase root)
-        {
-            m_root = root;
-        }
+        public SymMapBaseCollectionTraversal(SymMapBase root) => m_root = root;
 
         public SymMapBaseCollectionTraversal(SymMapBase root, TextWriter debugOutput)
         {
@@ -313,6 +286,5 @@ namespace Aardvark.Base
         private string m_name;
         private List<SymMapBase> m_result;
         private Dictionary<SymMapBase, int> m_visited;
-
     }
 }

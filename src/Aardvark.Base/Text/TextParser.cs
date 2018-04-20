@@ -108,19 +108,13 @@ namespace Aardvark.Base
 
         #region IEnumerable implementation
 
-        public IEnumerator<Case<TPar, TNode>> GetEnumerator()
-        {
-            return Items.GetEnumerator();
-        }
+        public IEnumerator<Case<TPar, TNode>> GetEnumerator() => Items.GetEnumerator();
 
         #endregion
 
         #region IEnumerable implementation
 
-        System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
-        {
-            return Items.GetEnumerator();
-        }
+        System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator() => Items.GetEnumerator();
 
         #endregion
     }
@@ -188,15 +182,9 @@ namespace Aardvark.Base
     {
         private List<Case<TPar, TNode>> CaseList;
 
-        public Case<TPar, TNode>[] Array
-        {
-            get { return CaseList.ToArray(); }
-        }
+        public Case<TPar, TNode>[] Array => CaseList.ToArray();
 
-        public Cases()
-        {
-            CaseList = new List<Case<TPar, TNode>>();
-        }
+        public Cases() => CaseList = new List<Case<TPar, TNode>>();
 
         public Cases(Rx[] rxs, Func<TPar, TNode, State<TPar, TNode>> matchedFun)
             : this()
@@ -205,10 +193,7 @@ namespace Aardvark.Base
                 CaseList.Add(new Case<TPar, TNode>(rx, matchedFun));
         }
 
-        public void Add(Case<TPar, TNode> singleCase)
-        {
-            CaseList.Add(singleCase);
-        }
+        public void Add(Case<TPar, TNode> singleCase) => CaseList.Add(singleCase);
 
         public void Add(Case<TPar, TNode>[] caseArray)
         {
@@ -245,26 +230,17 @@ namespace Aardvark.Base
         }
 
         public State<TPar, TNode> ToState(Action<TPar, TNode, Text> textAct = null)
-        {
-            return new State<TPar, TNode>(this, textAct);
-        }
-
-
+             => new State<TPar, TNode>(this, textAct);
+    
         #region IEnumerable<Case<TPar,TNode>> Members
 
-        public IEnumerator<Case<TPar, TNode>> GetEnumerator()
-        {
-            return CaseList.GetEnumerator();
-        }
+        public IEnumerator<Case<TPar, TNode>> GetEnumerator() => CaseList.GetEnumerator();
 
         #endregion
 
         #region IEnumerable Members
 
-        System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
-        {
-            return CaseList.GetEnumerator();
-        }
+        System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator() => CaseList.GetEnumerator();
 
         #endregion
     }
@@ -371,19 +347,13 @@ namespace Aardvark.Base
 
         #region IEnumerable implementation
 
-        public IEnumerator<ParserCase<TNode>> GetEnumerator()
-        {
-            return Items.GetEnumerator();
-        }
+        public IEnumerator<ParserCase<TNode>> GetEnumerator() => Items.GetEnumerator();
 
         #endregion
 
         #region IEnumerable implementation
 
-        System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
-        {
-            return Items.GetEnumerator();
-        }
+        System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator() => Items.GetEnumerator();
 
         #endregion
     }
@@ -448,15 +418,9 @@ namespace Aardvark.Base
     {
         private List<ParserCase<TNode>> CaseList;
 
-        public ParserCase<TNode>[] Array
-        {
-            get { return CaseList.ToArray(); }
-        }
+        public ParserCase<TNode>[] Array => CaseList.ToArray(); 
 
-        public ParserCases()
-        {
-            CaseList = new List<ParserCase<TNode>>();
-        }
+        public ParserCases() => CaseList = new List<ParserCase<TNode>>();
 
         public ParserCases(Rx[] rxs, Func<TextParser, TNode, ParserState<TNode>> matchedFun)
             : this()
@@ -465,10 +429,7 @@ namespace Aardvark.Base
                 CaseList.Add(new ParserCase<TNode>(rx, matchedFun));
         }
 
-        public void Add(ParserCase<TNode> singleCase)
-        {
-            CaseList.Add(singleCase);
-        }
+        public void Add(ParserCase<TNode> singleCase) => CaseList.Add(singleCase);
 
         public void Add(ParserCase<TNode>[] caseArray)
         {
@@ -508,23 +469,16 @@ namespace Aardvark.Base
         {
             return new ParserState<TNode>(this, textAct);
         }
-
-
+        
         #region IEnumerable<Case<TPar,TNode>> Members
 
-        public IEnumerator<ParserCase<TNode>> GetEnumerator()
-        {
-            return CaseList.GetEnumerator();
-        }
+        public IEnumerator<ParserCase<TNode>> GetEnumerator() => CaseList.GetEnumerator();
 
         #endregion
 
         #region IEnumerable Members
 
-        System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
-        {
-            return CaseList.GetEnumerator();
-        }
+        System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator() => CaseList.GetEnumerator();
 
         #endregion
     }
@@ -602,30 +556,24 @@ namespace Aardvark.Base
         /// <summary>
         /// True if parsing has consumed all input.
         /// </summary>
-        public bool EndOfText
-        {
-            get { return Pos == Text.End; }
-        }
+        public bool EndOfText => Pos == Text.End;
 
         /// <summary>
         /// Users start counting at 1.
         /// </summary>
-        public int UserLine { get { return 1 + Line.Index; } }
+        public int UserLine => 1 + Line.Index;
 
         /// <summary>
         /// Users start counting at 1.
         /// </summary>
-        public int UserColumn { get { return Pos - Line.Start; } }
+        public int UserColumn => Pos - Line.Start;
 
         /// <summary>
         /// The index of the current case within the state table.
         /// This is only valid as long as no recursive parse function
         /// has been called.
         /// </summary>
-        public int CurrentCaseIndex
-        {
-            get { return m_currentCaseIndex; }
-        }
+        public int CurrentCaseIndex => m_currentCaseIndex;
 
         #endregion
 
@@ -636,57 +584,36 @@ namespace Aardvark.Base
         /// This is only valid as long as no recursive parse function
         /// has been called.
         /// </summary>
-        public Case<TPar, TNode> CurrentCase<TNode>(State<TPar, TNode> state)
-        {
-            return state.Cases[m_currentCaseIndex];
-        }
+        public Case<TPar, TNode> CurrentCase<TNode>(State<TPar, TNode> state) => state.Cases[m_currentCaseIndex];
 
         /// <summary>
         /// The current pattern within the supplied state table.
         /// This is only valid as long as no recursive parse function
         /// has been called.
         /// </summary>
-        public string CurrentPattern<TNode>(State<TPar, TNode> state)
-        {
-            return state.Cases[m_currentCaseIndex].Pattern;
-        }
+        public string CurrentPattern<TNode>(State<TPar, TNode> state) => state.Cases[m_currentCaseIndex].Pattern;
 
         #endregion
 
         #region Skipping Text
 
-        public void SkipToEnd()
-        {
-            Pos = Text.End;
-        }
+        public void SkipToEnd() => Pos = Text.End;
 
         /// <summary>
         /// Skip the last pattern that was matched up to its start. This can
         /// either be the pattern of the case, or the pattern that is left
         /// by one of the GetToStartOf(...) methods.
         /// </summary>
-        public void Skip()
-        {
-            Pos = LastEnd;
-        }
+        public void Skip() => Pos = LastEnd;
 
         /// <summary>
         /// Skip exactly count characters.
         /// </summary>
-        public void Skip(int count)
-        {
-            Pos += count;
-        }
+        public void Skip(int count) => Pos += count;
 
-        public void SkipAndCountLines()
-        {
-            SetPosAndCountLines(LastEnd);
-        }
+        public void SkipAndCountLines() => SetPosAndCountLines(LastEnd);
 
-        public void SkipAndCountLines(int count)
-        {
-            SetPosAndCountLines(Pos + count);
-        }
+        public void SkipAndCountLines(int count) => SetPosAndCountLines(Pos + count);
 
         public bool TrySkip(int count)
         {
@@ -976,12 +903,9 @@ namespace Aardvark.Base
         /// Get text [pos, pos + offset) if offset is greater than 0, and
         /// text [pos, end + offset) if offset is lower or equal to 0.
         /// </summary>
-        public Text GetTo(int offset)
-        {
-            return GetToPos(offset <= 0
-                            ? Math.Max(Pos, Text.End + offset)
-                            : Math.Min(Pos + offset, Text.End));
-        }
+        public Text GetTo(int offset) => GetToPos(offset <= 0
+            ? Math.Max(Pos, Text.End + offset)
+            : Math.Min(Pos + offset, Text.End));
 
         public Text GetToPos(int pos)
         {
@@ -990,10 +914,7 @@ namespace Aardvark.Base
             return text;
         }
 
-        public Text GetToEnd()
-        {
-            return GetToPos(Text.End);
-        }
+        public Text GetToEnd() => GetToPos(Text.End);
 
         public List<Text> GetList(Rx item, Rx sep)
         {
@@ -1024,12 +945,9 @@ namespace Aardvark.Base
             return list;
         }
 
-        public Text GetToStartOf(char searchChar)
-        {
-            return GetToStartOf(searchChar,
-                        p => p.ThrowCouldNotFind(
-                                "'" + searchChar + "'"));
-        }
+        public Text GetToStartOf(char searchChar) => GetToStartOf(
+            searchChar, p => p.ThrowCouldNotFind("'" + searchChar + "'")
+            );
 
         public Text GetToStartOf(char searchChar, Func<TPar, Text> notFoundAction)
         {
@@ -1041,12 +959,9 @@ namespace Aardvark.Base
             return text;
         }
 
-        public Text GetToStartOf(string searchString)
-        {
-            return GetToStartOf(searchString,
-                        p => p.ThrowCouldNotFind(
-                                '"' + searchString + '"'));
-        }
+        public Text GetToStartOf(string searchString) => GetToStartOf(
+            searchString, p => p.ThrowCouldNotFind('"' + searchString + '"')
+            );
 
         public Text GetToStartOf(string searchString, Func<TPar, Text> notFoundAction)
         {
@@ -1058,12 +973,9 @@ namespace Aardvark.Base
             return text;
         }
 
-        public Text GetToStartOf(Rx searchRx)
-        {
-            return GetToStartOf(searchRx,
-                    p => p.ThrowCouldNotFind("pattern \""
-                            + searchRx.Pattern + '"'));
-        }
+        public Text GetToStartOf(Rx searchRx) => GetToStartOf(
+            searchRx, p => p.ThrowCouldNotFind("pattern \"" + searchRx.Pattern + '"')
+            );
 
         public Text GetToStartOf(Rx searchRx, Func<TPar, Text> notFoundAction)
         {
@@ -1076,12 +988,9 @@ namespace Aardvark.Base
             return text;
         }
 
-        public Text GetToEndOf(char searchChar)
-        {
-            return GetToEndOf(searchChar,
-                        p => p.ThrowCouldNotFind(
-                                "'" + searchChar + "'"));
-        }
+        public Text GetToEndOf(char searchChar) => GetToEndOf(
+            searchChar, p => p.ThrowCouldNotFind("'" + searchChar + "'")
+            );
 
         public Text GetToEndOf(char searchChar, Func<TPar, Text> notFoundFun)
         {
@@ -1094,12 +1003,9 @@ namespace Aardvark.Base
             return text;
         }
 
-        public Text GetToEndOf(string searchString)
-        {
-            return GetToEndOf(searchString,
-                        p => p.ThrowCouldNotFind(
-                                '"' + searchString + '"'));
-        }
+        public Text GetToEndOf(string searchString) => GetToEndOf(
+            searchString, p => p.ThrowCouldNotFind('"' + searchString + '"')
+            );
 
         public Text GetToEndOf(string searchString, Func<TPar, Text> notFoundFun)
         {
@@ -1112,12 +1018,9 @@ namespace Aardvark.Base
             return text;
         }
 
-        public Text GetToEndOf(Rx searchRx)
-        {
-            return GetToEndOf(searchRx,
-                        p => p.ThrowCouldNotFind("pattern \""
-                                + searchRx.Pattern + '"'));
-        }
+        public Text GetToEndOf(Rx searchRx) => GetToEndOf(
+            searchRx, p => p.ThrowCouldNotFind("pattern \"" + searchRx.Pattern + '"')
+            );
 
         public Text GetToEndOf(Rx searchRx, Func<TPar, Text> notFoundFun)
         {
@@ -1130,35 +1033,17 @@ namespace Aardvark.Base
             return text;
         }
 
-        public Text GetToStartOfOrEnd(char searchChar)
-        {
-            return GetToStartOf(searchChar, p => p.GetToPos(Text.End));
-        }
+        public Text GetToStartOfOrEnd(char searchChar) => GetToStartOf(searchChar, p => p.GetToPos(Text.End));
 
-        public Text GetToStartOfOrEnd(string searchString)
-        {
-            return GetToStartOf(searchString, p => p.GetToPos(Text.End));
-        }
+        public Text GetToStartOfOrEnd(string searchString) => GetToStartOf(searchString, p => p.GetToPos(Text.End));
 
-        public Text GetToStartOfOrEnd(Rx searchRx)
-        {
-            return GetToStartOf(searchRx, p => p.GetToPos(Text.End));
-        }
+        public Text GetToStartOfOrEnd(Rx searchRx) => GetToStartOf(searchRx, p => p.GetToPos(Text.End));
 
-        public Text GetToEndOfOrEnd(char searchChar)
-        {
-            return GetToEndOf(searchChar, p => p.GetToPos(Text.End));
-        }
+        public Text GetToEndOfOrEnd(char searchChar) => GetToEndOf(searchChar, p => p.GetToPos(Text.End));
 
-        public Text GetToEndOfOrEnd(string searchString)
-        {
-            return GetToEndOf(searchString, p => p.GetToPos(Text.End));
-        }
+        public Text GetToEndOfOrEnd(string searchString) => GetToEndOf(searchString, p => p.GetToPos(Text.End));
 
-        public Text GetToEndOfOrEnd(Rx searchRx)
-        {
-            return GetToEndOf(searchRx, p => p.GetToPos(Text.End));
-        }
+        public Text GetToEndOfOrEnd(Rx searchRx) => GetToEndOf(searchRx, p => p.GetToPos(Text.End));
 
         public Text GetToWhiteSpace()
         {
@@ -1254,64 +1139,36 @@ namespace Aardvark.Base
 
         #region Peeking
 
-        public char Peek
-        {
-            get { return Text.String[Pos]; }
-        }
+        public char Peek => Text.String[Pos];
 
-        public Text PeekGet()
-        {
-            var text = new Text(Pos, LastEnd, Text.String);
-            return text;
-        }
+        public Text PeekGet() => new Text(Pos, LastEnd, Text.String);
 
-        public Text PeekFromStart
-        {
-            get { return PeekFromPos(Text.Start); }
-        }
+        public Text PeekFromStart => PeekFromPos(Text.Start);
 
-        public Text PeekLastLine
-        {
-            get { return PeekFromPos(Line.Start); }
-        }
+        public Text PeekLastLine => PeekFromPos(Line.Start);
 
-        public Text PeekToEnd
-        {
-            get { return PeekToPos(Text.End); }
-        }
+        public Text PeekToEnd => PeekToPos(Text.End);
 
         /// <summary>
         /// Returns the text [pos + offset, pos) if offset is lower than 0,
         /// and the text [start + offset, pos) if offset is greater or equal
         /// to 0.
         /// </summary>
-        public Text PeekFrom(int offset)
-        {
-            return PeekFromPos(offset < 0
+        public Text PeekFrom(int offset) => PeekFromPos(offset < 0
                                 ? Math.Max(Text.Start, Pos + offset)
                                 : Math.Min(Text.Start + offset, Pos));
-        }
 
         /// <summary>
         /// Returns the text [pos, pos + offset) if offset is greater than 0,
         /// and the text [pos, end + offset) if offset is lower or equal to 0.
         /// </summary>
-        public Text PeekTo(int offset)
-        {
-            return PeekToPos(offset <= 0
+        public Text PeekTo(int offset) => PeekToPos(offset <= 0
                                 ? Math.Max(Pos, Text.End + offset)
                                 : Math.Min(Pos + offset, Text.End));
-        }
 
-        public Text PeekFromPos(int pos)
-        {
-            return new Text(pos, Pos, Text.String);
-        }
+        public Text PeekFromPos(int pos) => new Text(pos, Pos, Text.String);
 
-        public Text PeekToPos(int pos)
-        {
-            return new Text(Pos, pos, Text.String);
-        }
+        public Text PeekToPos(int pos) => new Text(Pos, pos, Text.String);
 
         #endregion
 
@@ -1335,27 +1192,16 @@ namespace Aardvark.Base
         #region Throwing Exceptions
 
         public void ThrowEndOfText()
-        {
-            throw new ParserException<TPar>((TPar)this, "end of text");
-        }
+             => throw new ParserException<TPar>((TPar)this, "end of text");
 
         public void ThrowOutOfRange(string typeName)
-        {
-            throw new ParserException<TPar>((TPar)this,
-                "value out of " + typeName + " range");
-        }
+             => throw new ParserException<TPar>((TPar)this, "value out of " + typeName + " range");
 
         public Text ThrowCouldNotFind(string str)
-        {
-            throw new ParserException<TPar>((TPar)this,
-                "could not find " + str);
-        }
+            => throw new ParserException<TPar>((TPar)this, "could not find " + str);
 
         public Text ThrowCouldNotSkip(string str)
-        {
-            throw new ParserException<TPar>((TPar)this,
-                "could not skip " + str);
-        }
+             => throw new ParserException<TPar>((TPar)this, "could not skip " + str);
 
         #endregion
     }
@@ -1449,8 +1295,7 @@ namespace Aardvark.Base
 
         #endregion
     }
-
-
+    
     #endregion
 
     #region VerbatimString TextParser Extension

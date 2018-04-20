@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Aardvark.Base.Rendering
+﻿namespace Aardvark.Base.Rendering
 {
     public struct StencilFunction
     {
@@ -37,19 +31,11 @@ namespace Aardvark.Base.Rendering
         #region Overrides
 
         public override int GetHashCode()
-        {
-            return Function.GetHashCode() ^ Reference.GetHashCode() ^ Mask.GetHashCode();
-        }
+            => Function.GetHashCode() ^ Reference.GetHashCode() ^ Mask.GetHashCode();
 
-        public override bool Equals(object obj)
-        {
-            if (obj is StencilFunction)
-            {
-                var f = (StencilFunction)obj;
-                return f.Function == Function && f.Reference == Reference && f.Mask == Mask;
-            }
-            else return false;
-        }
+        public override bool Equals(object obj) => (obj is StencilFunction f)
+            ? (f.Function == Function && f.Reference == Reference && f.Mask == Mask)
+            : false;
 
         #endregion
     }
@@ -85,19 +71,11 @@ namespace Aardvark.Base.Rendering
         #region Overrides
 
         public override int GetHashCode()
-        {
-            return StencilFail.GetHashCode() ^ DepthFail.GetHashCode() ^ DepthPass.GetHashCode();
-        }
+            => StencilFail.GetHashCode() ^ DepthFail.GetHashCode() ^ DepthPass.GetHashCode();
 
-        public override bool Equals(object obj)
-        {
-            if (obj is StencilOperation)
-            {
-                var o = (StencilOperation)obj;
-                return o.StencilFail == StencilFail && o.DepthFail == DepthFail && o.DepthPass == DepthPass;
-            }
-            else return false;
-        }
+        public override bool Equals(object obj) => (obj is StencilOperation o)
+            ? (o.StencilFail == StencilFail && o.DepthFail == DepthFail && o.DepthPass == DepthPass)
+            : false;
 
         #endregion
     }
@@ -162,15 +140,12 @@ namespace Aardvark.Base.Rendering
         #region Overrides
 
         public override int GetHashCode()
-        {
-            return IsEnabled.GetHashCode() ^ CompareFront.GetHashCode() ^ CompareBack.GetHashCode() ^ OperationFront.GetHashCode() ^ OperationBack.GetHashCode();
-        }
-
+            => IsEnabled.GetHashCode() ^ CompareFront.GetHashCode() ^ CompareBack.GetHashCode() ^ OperationFront.GetHashCode() ^ OperationBack.GetHashCode();
+       
         public override bool Equals(object obj)
         {
-            if (obj is StencilMode)
+            if (obj is StencilMode m)
             {
-                var m = (StencilMode)obj;
                 if (IsEnabled != m.IsEnabled) return false;
 
                 return m.CompareFront.Equals(CompareFront) && m.CompareBack.Equals(CompareBack) &&

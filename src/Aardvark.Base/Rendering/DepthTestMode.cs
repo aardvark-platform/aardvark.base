@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Aardvark.Base.Rendering
+﻿namespace Aardvark.Base.Rendering
 {
     public struct DepthTestMode
     {
@@ -29,15 +23,9 @@ namespace Aardvark.Base.Rendering
             Bounds = range;
         }
 
-        public bool Clamp
-        {
-            get { return !Bounds.IsInfinite; }
-        }
+        public bool Clamp => !Bounds.IsInfinite;
 
-        public bool IsEnabled
-        {
-            get { return Comparison != DepthTestComparison.None || !Bounds.IsInfinite; }
-        }
+        public bool IsEnabled => Comparison != DepthTestComparison.None || !Bounds.IsInfinite;
 
         public static readonly DepthTestMode None = new DepthTestMode(DepthTestComparison.None);
         public static readonly DepthTestMode Less = new DepthTestMode(DepthTestComparison.Less);
@@ -49,34 +37,18 @@ namespace Aardvark.Base.Rendering
         public static readonly DepthTestMode Never = new DepthTestMode(DepthTestComparison.Never);
         public static readonly DepthTestMode Always = new DepthTestMode(DepthTestComparison.Always);
 
-        public override int GetHashCode()
-        {
-            return HashCode.Combine(Comparison.GetHashCode(), Bounds.GetHashCode());
-        }
+        public override int GetHashCode() => HashCode.Combine(Comparison.GetHashCode(), Bounds.GetHashCode());
 
         public override bool Equals(object obj)
-        {
-            if (obj is DepthTestMode)
-            {
-                var o = (DepthTestMode)obj;
-                return Comparison == o.Comparison && Bounds == o.Bounds;
-            }
-            else return false;
-        }
+            => (obj is DepthTestMode o) ? Comparison == o.Comparison && Bounds == o.Bounds : false;
 
         public override string ToString()
-        {
-            if (Bounds.IsInfinite) return Comparison.ToString();
-            else return string.Format("{0}/{1}", Comparison, Bounds);
-        }
+            => Bounds.IsInfinite ? Comparison.ToString() : string.Format("{0}/{1}", Comparison, Bounds);
 
         public static bool operator ==(DepthTestMode l, DepthTestMode r)
-        {
-            return l.Comparison == r.Comparison && l.Bounds == r.Bounds;
-        }
+            => l.Comparison == r.Comparison && l.Bounds == r.Bounds;
+
         public static bool operator !=(DepthTestMode l, DepthTestMode r)
-        {
-            return l.Comparison != r.Comparison || l.Bounds != r.Bounds;
-        }
+            => l.Comparison != r.Comparison || l.Bounds != r.Bounds;
     }
 }

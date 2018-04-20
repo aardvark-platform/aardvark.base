@@ -1,18 +1,13 @@
 using System;
-using System.ComponentModel;
-using System.Diagnostics;
-using System.Linq;
 
 namespace Aardvark.Base
 {
-
-	/// <summary>
-	/// Perlin noise generation class.
-	/// Contains functions for 1D, 2D and 3D perlin noise generation.
-	/// </summary>
-	public class PerlinNoise
+    /// <summary>
+    /// Perlin noise generation class.
+    /// Contains functions for 1D, 2D and 3D perlin noise generation.
+    /// </summary>
+    public class PerlinNoise
 	{
-
 		private int m_PrimeOne;
 		private int m_PrimeTwo;
 		private int m_PrimeThree;
@@ -77,6 +72,7 @@ namespace Aardvark.Base
 			double d = (double)((N * (N * N * m_PrimeOne+m_PrimeTwo )+m_PrimeThree) & 0x7fffffff);
 			return(1.0f - (float)(d / 1073741824.0));
 		}
+
 		/// <summary>
 		/// Generates a pseudo-random number based upon three value(dimensions).
 		/// </summary>
@@ -96,12 +92,10 @@ namespace Aardvark.Base
 			double d = (double)((N * (N * N * m_PrimeOne+m_PrimeTwo )+m_PrimeThree ) & 0x7fffffff);
 			return(1.0f - (float)(d / 1073741824.0));
 		}
-
-
+        
 		public float SmoothNoise(int x)
-		{
-			return (Noise(x)/2.0f)+(Noise(x-1)/4.0f)+(Noise(x+1)/4.0f);
-		}
+            => (Noise(x)/2.0f)+(Noise(x-1)/4.0f)+(Noise(x+1)/4.0f);
+
 		public float SmoothNoise(int x, int y)
 		{
 			float corners = (Noise(x-1, y-1) + Noise(x+1, y-1) + Noise(x-1, y+1) + Noise(x+1, y+1)) / 16.0f;
@@ -109,6 +103,7 @@ namespace Aardvark.Base
 			float center  =  Noise(x, y)/4.0f;
 			return(corners+sides+center);
 		}
+
 		public float SmoothNoise(int x, int y, int z)
 		{
 			float corners, sides, center;
@@ -134,8 +129,7 @@ namespace Aardvark.Base
 
 			return((averageZM1 / 4.0f)+(averageZ / 2.0f)+(averageZP1 / 4.0f));
 		}
-
-		
+        
 		public float InterpolateNoise(float x)
 		{
 			int integerX = (int)x;
@@ -146,6 +140,7 @@ namespace Aardvark.Base
 
 			return m_interpolate(v1, v2, fracX);
 		}
+
 		public float InterpolateNoise(float x, float y)
 		{
 			int integerX = (int)x;
@@ -165,6 +160,7 @@ namespace Aardvark.Base
 			return m_interpolate(i1, i2, fracY);
 
 		}
+
 		public float InterpolateNoise(float x, float y, float z)
 		{
 			int integerX = (int)x;
@@ -195,42 +191,41 @@ namespace Aardvark.Base
 
 			return m_interpolate(i5, i6, fracZ);
 		}
-
-
+        
 		public float PerlinNoise1F(float x, float amplitude, float frequencyX)
 		{
 			return InterpolateNoise(x*frequencyX) * amplitude;
 		}
+
 		public float PerlinNoise2F(float x, float y, float amplitude, float frequencyX, float frequencyY)
 		{
 			return InterpolateNoise(x*frequencyX, y*frequencyY ) * amplitude;
 		}
+
 		public float PerlinNoise3F(float x, float y, float z, float amplitude, float frequencyX, float frequencyY, float frequencyZ)
 		{
 			return InterpolateNoise(x*frequencyX, y*frequencyY, z*frequencyZ) * amplitude;
-		}
-
-
-		/**
-		* Generates the 1d noise and stores it in the lookup table (for faster processing).
-		* \param uiMaxX                 max x value (generates noise from 0 to uiMaxX)
-		*/
-		void GenerateLookup(int maxX)
+        }
+        
+        /// <summary>
+        /// Generates the 1d noise and stores it in the lookup table(for faster processing).
+        /// </summary>
+        /// <param name="maxX">max x value (generates noise from 0 to uiMaxX)</param>
+        void GenerateLookup(int maxX)
 		{
 			m_maxX = maxX;
 			m_lookup = new float[maxX];
 
 			for (int x = 0; x < maxX; x++)
 				m_lookup[x] = Noise(x);
-		}
+        }
 	
-
-		/**
-		* Generates the 2d noise and stores it in the lookup table (for faster processing).
-		* \param uiMaxX                 max x value (generates noise from 0 to uiMaxX)
-		* \param uiMaxY                 max y value (generates noise from 0 to uiMaxY)
-		*/
-		void GenerateLookup(int maxX, int maxY)
+        /// <summary>
+        /// Generates the 2d noise and stores it in the lookup table (for faster processing).
+        /// </summary>
+        /// <param name="maxX">max x value (generates noise from 0 to uiMaxX)</param>
+        /// <param name="maxY">max y value (generates noise from 0 to uiMaxY)</param>
+        void GenerateLookup(int maxX, int maxY)
 		{
 			m_maxX = maxX;
 			m_maxY = maxY;
@@ -247,13 +242,13 @@ namespace Aardvark.Base
 			}
 		}
 
-		/**
-		* Generates the 3d noise and stores it in the lookup table (for faster processing).
-		* \param uiMaxX                 max x value (generates noise from 0 to uiMaxX)
-		* \param uiMaxY                 max y value (generates noise from 0 to uiMaxY)
-		* \param uiMaxZ                 max z value (generates noise from 0 to uiMaxZ)
-		*/
-		void GenerateLookup(int maxX, int maxY, int maxZ)
+        /// <summary>
+        /// Generates the 3d noise and stores it in the lookup table (for faster processing).
+        /// </summary>
+        /// <param name="maxX">max x value (generates noise from 0 to uiMaxX)</param>
+        /// <param name="maxY">max y value (generates noise from 0 to uiMaxY)</param>
+        /// <param name="maxZ">max z value (generates noise from 0 to uiMaxZ)</param>
+        void GenerateLookup(int maxX, int maxY, int maxZ)
 		{
 			m_maxX = maxX;
 			m_maxY = maxY;
@@ -278,7 +273,6 @@ namespace Aardvark.Base
 				offsetZ += stepZ;
 			}
 		}
-
 	}
 
     public static class ImprovedNoise
@@ -291,7 +285,7 @@ namespace Aardvark.Base
             x -= Fun.Floor(x);                          // Find relative x,y,z
             y -= Fun.Floor(y);                          // of point in cube.
             z -= Fun.Floor(z);
-            double  u = Fade(x), v = Fade(y), w = Fade(z);
+            double u = Fade(x), v = Fade(y), w = Fade(z);
                     
             int a = p[xc  ]+yc, aa = p[a]+zc, ab = p[a+1]+zc, // hash of cube 
                 b = p[xc+1]+yc, ba = p[b]+zc, bb = p[b+1]+zc; // corners
@@ -306,15 +300,9 @@ namespace Aardvark.Base
                                            Grad(p[bb+1], x-1, y-1, z-1))));
         }
 
-        static double Fade(double t)
-        {
-            return t * t * t * (t * (t * 6 - 15) + 10);
-        }
+        static double Fade(double t) => t * t * t * (t * (t * 6 - 15) + 10);
 
-        static double Lerp(double t, double a, double b)
-        {
-            return a + t * (b - a);
-        }
+        static double Lerp(double t, double a, double b) => a + t * (b - a);
 
         static double Grad(int hash, double x, double y, double z)
         {

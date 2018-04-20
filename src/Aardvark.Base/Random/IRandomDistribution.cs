@@ -1,4 +1,3 @@
-
 namespace Aardvark.Base
 {
     public interface IRandomDistribution
