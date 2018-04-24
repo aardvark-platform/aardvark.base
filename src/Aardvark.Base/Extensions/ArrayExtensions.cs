@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.InteropServices;
+using System.Security.Cryptography;
 using static System.Math;
 
 namespace Aardvark.Base
@@ -2252,7 +2253,90 @@ namespace Aardvark.Base
 
 		}
 
-		#endregion
-	}
+        #endregion
 
+        #region Hashes
+
+        /// <summary>
+        /// Computes the MD5 hash of the data array.
+        /// </summary>
+        /// <returns>128bit/16byte data hash</returns>
+        public static byte[] ComputeMD5Hash(this byte[] data)
+        {
+            return MD5.Create().ComputeHash(data);
+        }
+
+        /// <summary>
+        /// Computes the MD5 hash of the data array.
+        /// </summary>
+        /// <returns>128bit/16byte data hash</returns>
+        public static byte[] ComputeMD5Hash(this Array data)
+        {
+            byte[] hash = null;
+            data.UnsafeCoercedApply<byte>(array => hash = array.ComputeMD5Hash());
+            return hash;
+        }
+
+        /// <summary>
+        /// Computes the SHA1 hash of the data array.
+        /// </summary>
+        /// <returns>160bit/20byte data hash</returns>
+        public static byte[] ComputeSHA1Hash(this byte[] data)
+        {
+            return SHA1.Create().ComputeHash(data);
+        }
+
+        /// <summary>
+        /// Computes the SHA1 hash of the data array.
+        /// </summary>
+        /// <returns>160bit/20byte data hash</returns>
+        public static byte[] ComputeSHA1Hash(this Array data)
+        {
+            byte[] hash = null;
+            data.UnsafeCoercedApply<byte>(array => hash = array.ComputeSHA1Hash());
+            return hash;
+        }
+
+        /// <summary>
+        /// Computes the SHA256 hash of the data array.
+        /// </summary>
+        /// <returns>256bit/32byte data hash</returns>
+        public static byte[] ComputeSHA256Hash(this byte[] data)
+        {
+            return SHA256.Create().ComputeHash(data);
+        }
+
+        /// <summary>
+        /// Computes the SHA256 hash of the data array.
+        /// </summary>
+        /// <returns>256bit/32byte data hash</returns>
+        public static byte[] ComputeSHA256Hash(this Array data)
+        {
+            byte[] hash = null;
+            data.UnsafeCoercedApply<byte>(array => hash = array.ComputeSHA256Hash());
+            return hash;
+        }
+
+        /// <summary>
+        /// Computes the SHA512 hash of the data array.
+        /// </summary>
+        /// <returns>512bit/64byte data hash</returns>
+        public static byte[] ComputeSHA512Hash(this byte[] data)
+        {
+            return SHA512.Create().ComputeHash(data);
+        }
+
+        /// <summary>
+        /// Computes the SHA512 hash of the data array.
+        /// </summary>
+        /// <returns>512bit/64byte data hash</returns>
+        public static byte[] ComputeSHA512Hash(this Array data)
+        {
+            byte[] hash = null;
+            data.UnsafeCoercedApply<byte>(array => hash = array.ComputeSHA512Hash());
+            return hash;
+        }
+
+        #endregion
+    }
 }

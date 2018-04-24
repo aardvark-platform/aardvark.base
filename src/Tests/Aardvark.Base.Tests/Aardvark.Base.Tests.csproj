@@ -58,6 +58,7 @@
     <Compile Include="AlgoDat\DictTests.cs" />
     <Compile Include="AlgoDat\HigherOrderFunctionsTests.cs" />
     <Compile Include="AlgoDat\SortingTests.cs" />
+    <Compile Include="Extensions\Hashes.cs" />
     <Compile Include="Extensions\ListHeapTests.cs" />
     <Compile Include="Geometry\Hull2dTests.cs" />
     <Compile Include="Geometry\Hull3dTests.cs" />
