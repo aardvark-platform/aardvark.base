@@ -85,7 +85,7 @@
         public static TextureFilter Anisotropic =
             new TextureFilter(TextureFilterMode.Linear, TextureFilterMode.Linear, TextureFilterMode.Linear, true);
     }
-
+    
     public class SamplerStateDescription
     {
         public TextureFilter Filter;
@@ -115,6 +115,39 @@
 
             ComparisonFunction = SamplerComparisonFunction.None;
             BorderColor = C4f.Black;
+        }
+
+        public override int GetHashCode()
+        {
+            return HashCode.Combine(
+                Filter.GetHashCode(),
+                AddressU.GetHashCode(),
+                AddressV.GetHashCode(),
+                AddressW.GetHashCode(),
+                MaxAnisotropy.GetHashCode(),
+                MipLodBias.GetHashCode(),
+                MinLod.GetHashCode(),
+                MaxLod.GetHashCode(),
+                ComparisonFunction.GetHashCode(),
+                BorderColor.GetHashCode());
+        }
+
+        public override bool Equals(object obj)
+        {
+            if (object.ReferenceEquals(this, obj)) return true;
+            var sd = obj as SamplerStateDescription;
+            return sd != null 
+                && Filter.Equals(sd.Filter)
+                && AddressU == sd.AddressU
+                && AddressV == sd.AddressV
+                && AddressW == sd.AddressW
+                && MaxAnisotropy == sd.MaxAnisotropy
+                && MipLodBias == sd.MipLodBias
+                && MinLod == sd.MinLod
+                && MaxLod == sd.MaxLod
+                && MipLodBias == sd.MipLodBias
+                && ComparisonFunction == sd.ComparisonFunction
+                && BorderColor == sd.BorderColor;
         }
     }
 }
