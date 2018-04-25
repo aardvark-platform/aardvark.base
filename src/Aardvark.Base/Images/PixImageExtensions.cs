@@ -8,12 +8,10 @@ namespace Aardvark.Base
 
         public static PixImage<T> ToPixImage<T>(this IPixImage2d image)
         {
-            var pixImage = image as PixImage<T>;
-            if (pixImage != null) return pixImage;
+            if (image is PixImage<T> pixImage) return pixImage;
             var size = image.Size;
             var pixFormat = image.PixFormat;
-            var data = image.Data as T[];
-            if (data != null)
+            if (image.Data is T[] data)
             {
                 if (data.GetType().GetElementType() != pixFormat.Type)
                     throw new ArgumentException("type mismatch in supplied IPixImage2d");
@@ -25,8 +23,7 @@ namespace Aardvark.Base
 
         public static PixImage ToPixImage(this IPixImage2d image)
         {
-            var pixImage = image as PixImage;
-            if (pixImage != null) return pixImage;
+            if (image is PixImage pixImage) return pixImage;
             var size = image.Size;
             var pixFormat = image.PixFormat;
             if (image.Data.GetType().GetElementType() != pixFormat.Type)
@@ -40,8 +37,7 @@ namespace Aardvark.Base
 
         public static PixImageMipMap ToPixImageMipMap(this IPixMipMap2d mipmap)
         {
-            var pixImageMipMap = mipmap as PixImageMipMap;
-            if (pixImageMipMap != null) return pixImageMipMap;
+            if (mipmap is PixImageMipMap pixImageMipMap) return pixImageMipMap;
             var count = mipmap.LevelCount;
             var pixImageArray = new PixImage[count].SetByIndex(i => mipmap[i].ToPixImage());
             return new PixImageMipMap(pixImageArray);

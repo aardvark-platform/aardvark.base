@@ -24,6 +24,8 @@ namespace Aardvark.Base
     /// </summary>
     public static class PixImageBitmap
     {
+        #region Private
+
         /// <summary>
         /// </summary>
         private static Dictionary<PixelFormat, (PixFormat, int)> s_pixFormatAndCountOfPixelFormatBitmap =
@@ -58,6 +60,7 @@ namespace Aardvark.Base
         private static Dictionary<PixFormat, PixelFormat> s_pixelFormats =
             new Dictionary<PixFormat, PixelFormat>()
         {
+            { PixFormat.ByteRGB, PixelFormat.Format24bppRgb },
             { PixFormat.ByteBGR, PixelFormat.Format24bppRgb },
             { PixFormat.ByteBGRA, PixelFormat.Format32bppArgb },
             { PixFormat.ByteBW, PixelFormat.Format8bppIndexed },
@@ -146,11 +149,11 @@ namespace Aardvark.Base
                 return null;
             }
         }
-
+        
         /// <summary>
-        /// Creates PixImage from System.Drawing.Image.
+        /// Creates PixImage from System.Drawing.Bitmap.
         /// </summary>
-        public static PixImage Create(Bitmap bitmap)
+        private static PixImage Create(Bitmap bitmap)
         {
             var loadImage = CreateRawBitmap(bitmap);
             return loadImage.ToPixImage(loadImage.Format);
@@ -159,12 +162,30 @@ namespace Aardvark.Base
         /// <summary>
         /// Creates PixImage from System.Drawing.Image.
         /// </summary>
-        public static PixImage ToPixImage(Bitmap bitmap) => Create(bitmap);
+        private static PixImage Create(Image image) => Create((Bitmap)image);
+
+        #endregion
 
         /// <summary>
-        /// Saves image to stream via System.Drawing.
+        /// Creates PixImage from System.Drawing.Bitmap.
         /// </summary>
-        /// <returns>True if the file was successfully saved.</returns>
+        public static PixImage ToPixImage(this Bitmap bitmap) => Create(bitmap);
+
+        /// <summary>
+        /// Creates PixImage from System.Drawing.Image.
+        /// </summary>
+        public static PixImage ToPixImage(this Image image) => Create(image);
+        
+        /// <summary>
+        /// Converts image to System.Drawing.Image.
+        /// </summary>
+        public static Bitmap ToSystemDrawingBitmap(this PixImage self)
+            => new Bitmap(self.ToMemoryStream(PixFileFormat.Png), false);
+
+        /// <summary>
+        /// Saves image to stream via System.Drawing and
+        /// return true if the file was successfully saved.
+        /// </summary>
         public static bool SaveViaSystemDrawing(this PixImage self,
             Stream stream, PixFileFormat format,
             PixSaveOptions options, int qualityLevel
@@ -173,10 +194,12 @@ namespace Aardvark.Base
             try
             {
                 self = self.ToCanonicalDenseLayout();
-                var size = self.Size;
-                var pixelFormat = s_pixelFormats[self.PixFormat];
+                if (!s_pixelFormats.TryGetValue(self.PixFormat, out PixelFormat pixelFormat))
+                    Report.Error($"Unknown PixelFormat {self.PixFormat.Format}.");
+
                 var imageFormat = s_imageFormats[format];
-                
+
+                var size = self.Size;
                 using (var bmp = new Bitmap(size.X, size.Y, pixelFormat))
                 {
                     var bdata = bmp.LockBits(new Rectangle(0, 0, size.X, size.Y), ImageLockMode.ReadOnly, pixelFormat);
@@ -206,9 +229,9 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Saves image to file via System.Drawing.
+        /// Saves image to file via System.Drawing and
+        /// return true if the file was successfully saved.
         /// </summary>
-        /// <returns>True if the file was successfully saved.</returns>
         public static bool SaveViaSystemDrawing(this PixImage self,
             string filename, PixFileFormat format,
             PixSaveOptions options, int qualityLevel)
@@ -218,12 +241,6 @@ namespace Aardvark.Base
                 return SaveViaSystemDrawing(self, stream, format, options, qualityLevel);
             }
         }
-
-        /// <summary>
-        /// Converts image to System.Drawing.Image.
-        /// </summary>
-        public static Bitmap ToBitmap(this PixImage self)
-            => new Bitmap(self.ToMemoryStream(PixFileFormat.Png), false);
 
         /// <summary>
         /// Gets info about a PixImage without loading the entire image into memory.
