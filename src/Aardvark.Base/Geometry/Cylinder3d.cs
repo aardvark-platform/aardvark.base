@@ -42,35 +42,23 @@ namespace Aardvark.Base
 
         #region Properties
 
-        public double Height { get { return (P0 - P1).Length; } }
+        public double Height => (P0 - P1).Length;
 
-        public V3d Center { get { return (P0 + P1) * 0.5; } }
+        public V3d Center => (P0 + P1) * 0.5;
 
-        public Line3d Axis { get { return new Line3d(P0, P1); } }
+        public Line3d Axis => new Line3d(P0, P1);
 
-        public bool IsValid { get { return Radius >= 0.0; } }
+        public bool IsValid => Radius >= 0.0;
 
-        public bool IsInvalid { get { return Radius < 0.0; } }
+        public bool IsInvalid => Radius < 0.0;
 
-        public Circle3d Circle0 { get { return new Circle3d(P0, (P0 - P1).Normalized, Radius); } }
+        public Circle3d Circle0 => new Circle3d(P0, (P0 - P1).Normalized, Radius);
 
-        public Circle3d Circle1 { get { return new Circle3d(P1, (P1 - P0).Normalized, Radius); } }
+        public Circle3d Circle1 => new Circle3d(P1, (P1 - P0).Normalized, Radius);
 
-        public double Area
-        {
-            get
-            {
-                return Radius * Constant.PiTimesTwo * (Radius + Height);
-            }
-        }
+        public double Area => Radius * Constant.PiTimesTwo * (Radius + Height);
 
-        public double Volume
-        {
-            get
-            {
-                return Radius * Radius * Constant.Pi * Height;
-            }
-        }
+        public double Volume => Radius * Radius * Constant.Pi * Height;
 
         #endregion
 
@@ -98,13 +86,7 @@ namespace Aardvark.Base
 
         #region IBoundingBox3d Members
 
-        public Box3d BoundingBox3d
-        {
-            get 
-            {
-                return new Box3d(Circle0.BoundingBox3d, Circle1.BoundingBox3d);
-            }
-        }
+        public Box3d BoundingBox3d => new Box3d(Circle0.BoundingBox3d, Circle1.BoundingBox3d);
 
         #endregion
     }

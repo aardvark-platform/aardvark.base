@@ -28,18 +28,15 @@ namespace Aardvark.Base
 
         #region Properties
 
-        public Circle3d MajorCircle { get { return GetMajorCircle(); } }
-        public double Area { get { return 4 * Constant.PiSquared * MajorRadius * MinorRadius; } }
-        public double Volume { get { return 2 * Constant.PiSquared * MajorRadius * MinorRadius * MinorRadius; } }
+        public Circle3d MajorCircle => GetMajorCircle();
+        public double Area => 4 * Constant.PiSquared * MajorRadius * MinorRadius;
+        public double Volume => 2 * Constant.PiSquared * MajorRadius * MinorRadius * MinorRadius;
 
         #endregion
 
         #region Operations
 
-        public Circle3d GetMajorCircle ()
-        {   
-            return new Circle3d(Position, Direction, MajorRadius); 
-        } 
+        public Circle3d GetMajorCircle() => new Circle3d(Position, Direction, MajorRadius); 
 
         public Circle3d GetMinorCircle(double angle)
         {
@@ -49,10 +46,7 @@ namespace Aardvark.Base
             return new Circle3d(p, dir, MinorRadius);
         }
 
-        public double GetMinimalDistance(V3d p)
-        {
-            return GetMinimalDistance(p, Position, Direction, MajorRadius, MinorRadius);
-        }
+        public double GetMinimalDistance(V3d p) => GetMinimalDistance(p, Position, Direction, MajorRadius, MinorRadius);
 
         public static double GetMinimalDistance(V3d p, V3d position, V3d direction, double majorRadius, double minorRadius)
         {
@@ -67,13 +61,7 @@ namespace Aardvark.Base
 
         #region IBoundingBox3d Members
 
-        Box3d IBoundingBox3d.BoundingBox3d
-        {
-            get
-            {
-                return GetMajorCircle().BoundingBox3d.EnlargedBy(MinorRadius);
-            }
-        }
+        Box3d IBoundingBox3d.BoundingBox3d => GetMajorCircle().BoundingBox3d.EnlargedBy(MinorRadius);
 
         #endregion
     }

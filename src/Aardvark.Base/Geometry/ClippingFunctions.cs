@@ -48,8 +48,7 @@ namespace Aardvark.Base
             p = point;
             return intersects;
         }
-
-
+        
         internal static double Closest(this List<V2d> points, V2d p)
         {
             double temp;
@@ -110,8 +109,7 @@ namespace Aardvark.Base
             for (int pi = 0; pi < pc; pi++) yield return poly[pi];
             yield return poly[0];
         }
-
-
+        
         #endregion
 
         #region Intersections
@@ -128,10 +126,9 @@ namespace Aardvark.Base
 
             i0 = poly.Contains(line.P0);
             i1 = poly.Contains(line.P1);
-
-
-            List<V2d> resulting = new List<V2d>();
-            List<bool> enter = new List<bool>();
+            
+            var resulting = new List<V2d>();
+            var enter = new List<bool>();
 
             if (i0)
             {
@@ -144,15 +141,15 @@ namespace Aardvark.Base
                 enter.Add(false);
             }
 
-            V2d p = V2d.NaN;
-            V2d direction = line.Direction;
+            var p = V2d.NaN;
+            var direction = line.Direction;
 
             foreach (var l in poly.EdgeLines)
             {
                 if (line.Intersects(l, out p))
                 {
-                    V2d d = l.Direction;
-                    V2d n = new V2d(-d.Y, d.X);
+                    var d = l.Direction;
+                    var n = new V2d(-d.Y, d.X);
 
                     if (!p.IsNaN)
                     {
@@ -182,13 +179,12 @@ namespace Aardvark.Base
                     }
                 }
             }
-
-
-            V2d dir = line.P1 - line.P0;
+            
+            var dir = line.P1 - line.P0;
             resulting = (from r in resulting select r).OrderBy(x => x.Dot(dir)).ToList();
 
-            int counter = resulting.Count;
-            List<Line2d> lines = new List<Line2d>();
+            var counter = resulting.Count;
+            var lines = new List<Line2d>();
             for (int i = 0; i < counter - 1; i += 2)
             {
                 lines.Add(new Line2d(resulting[i], resulting[i + 1]));
@@ -202,7 +198,7 @@ namespace Aardvark.Base
         /// </summary>
         public static Line2d ClipWithConvex(this Line2d line, Polygon2d poly)
         {
-            V2d p = V2d.NaN;
+            var p = V2d.NaN;
             bool i0, i1;
 
             i0 = poly.Contains(line.P0);
@@ -325,8 +321,6 @@ namespace Aardvark.Base
 
 
             return new Polygon2d(points);
-
-
         }
 
         /// <summary>
@@ -357,8 +351,7 @@ namespace Aardvark.Base
         }
 
         #endregion
-
-
+        
         #endregion
 
         #region Unions

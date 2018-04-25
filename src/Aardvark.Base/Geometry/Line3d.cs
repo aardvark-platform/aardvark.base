@@ -22,27 +22,18 @@ namespace Aardvark.Base
             set { P1 = P0 + value; }
         }
 
-        public Ray3d Ray3d
-        {
-            get { return new Ray3d(P0, P1 - P0); }
-        }
+        public Ray3d Ray3d => new Ray3d(P0, P1 - P0);
 
-        public bool IsDegenerated
-        {
-            get { return !Direction.Abs.AnyGreater(Constant<double>.PositiveTinyValue); }
-        }
+        public bool IsDegenerated => !Direction.Abs.AnyGreater(Constant<double>.PositiveTinyValue);
 
         #endregion
 
         #region IBoundingSphere3d Members
 
-        public Sphere3d BoundingSphere3d
-        {
-            get { return new Sphere3d(this.ComputeCentroid(), 0.5 * Direction.Length); }
-        }
+        public Sphere3d BoundingSphere3d => new Sphere3d(this.ComputeCentroid(), 0.5 * Direction.Length);
 
         #endregion
 
-        public Line3d Flipped { get { return new Line3d(P1, P0); } }
+        public Line3d Flipped => new Line3d(P1, P0);
     }
 }

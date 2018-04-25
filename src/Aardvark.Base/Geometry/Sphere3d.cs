@@ -59,51 +59,27 @@ namespace Aardvark.Base
         #region Static Factories
 
         public static Sphere3d FromRadius(double radius)
-        {
-            return new Sphere3d(V3d.Zero, radius);
-        }
+            => new Sphere3d(V3d.Zero, radius);
 
         public static Sphere3d FromCenterAndRadius(V3d center, double radius)
-        {
-            return new Sphere3d(center, radius);
-        }
+            => new Sphere3d(center, radius);
 
         public static Sphere3d FromPoints(IEnumerable<V3d> points)
-        {
-            return new Sphere3d(points);
-        }
+            => new Sphere3d(points);
 
         #endregion
 
         #region Properties
 
-        public bool IsInvalid
-        {
-            get { return Radius < 0.0; }
-        }
+        public bool IsInvalid => Radius < 0.0;
 
-        public bool IsValid
-        {
-            get { return Radius >= 0.0; }
-        }
+        public bool IsValid => Radius >= 0.0;
 
-        public double RadiusSquared
-        {
-            get { return Radius * Radius; }
-        }
+        public double RadiusSquared => Radius * Radius;
 
-        public double SurfaceArea
-        {
-            get { return (4.0 * RadiusSquared * System.Math.PI); }
-        }
+        public double SurfaceArea => (4.0 * RadiusSquared * System.Math.PI);
 
-        public double Volume
-        {
-            get
-            {
-                return (4.0 / 3.0) * System.Math.PI * Radius * Radius * Radius;
-            }
-        }
+        public double Volume => (4.0 / 3.0) * System.Math.PI * Radius * Radius * Radius;
 
         #endregion
 
@@ -133,14 +109,14 @@ namespace Aardvark.Base
         /// </summary>
         public static bool operator ==(Sphere3d a, Sphere3d b)
         {
-            if (Object.Equals(a, null) == true)
+            if (Equals(a, null) == true)
             {
-                return Object.Equals(b, null);
+                return Equals(b, null);
             }
 
-            if (Object.Equals(b, null) == true)
+            if (Equals(b, null) == true)
             {
-                return Object.Equals(a, null);
+                return Equals(a, null);
             }
 
             return (a.Center == b.Center) && (a.Radius == b.Radius);
@@ -151,13 +127,13 @@ namespace Aardvark.Base
         /// </summary>
         public static bool operator !=(Sphere3d a, Sphere3d b)
         {
-            if (Object.Equals(a, null) == true)
+            if (Equals(a, null) == true)
             {
-                return !Object.Equals(b, null);
+                return !Equals(b, null);
             }
-            else if (Object.Equals(b, null) == true)
+            else if (Equals(b, null) == true)
             {
-                return !Object.Equals(a, null);
+                return !Equals(a, null);
             }
             return !((a.Center == b.Center) && (a.Radius == b.Radius));
         }
@@ -166,29 +142,18 @@ namespace Aardvark.Base
 
         #region Overrides
 
-        public override int GetHashCode()
-        {
-            return HashCode.GetCombined(Center, Radius);
-        }
+        public override int GetHashCode() => HashCode.GetCombined(Center, Radius);
 
-        public override bool Equals(object other)
-        {
-            if (other is Sphere3d)
-            {
-                var value = (Sphere3d)other;
-                return (Center == value.Center && Radius == value.Radius);
-            }
-            return false;
-        }
+        public override bool Equals(object other) => (other is Sphere3d value)
+            ? (Center == value.Center && Radius == value.Radius)
+            : false;
 
         /// <summary>
         /// Writes a sphere to String.
         /// </summary>
         /// <returns>String representing the sphere.</returns>
         public override string ToString()
-        {
-            return string.Format("[{0}, {1}]", Center, Radius);
-        }
+            => string.Format("[{0}, {1}]", Center, Radius);
 
         public static Sphere3d Parse(string s)
         {
@@ -200,10 +165,7 @@ namespace Aardvark.Base
 
         #region IBoundingBox3d Members
 
-        public Box3d BoundingBox3d
-        {
-            get { return new Box3d(Center - Radius, Center + Radius); }
-        }
+        public Box3d BoundingBox3d => new Box3d(Center - Radius, Center + Radius);
 
         #endregion
     }
@@ -212,9 +174,6 @@ namespace Aardvark.Base
     {
 
         public static Sphere3d GetBoundingSphere3d(this Box3d box)
-        {
-            return box.IsInvalid ? Sphere3d.Invalid
-                : new Sphere3d(box.Center, 0.5 * box.Size.Length);
-        }
+            => box.IsInvalid ? Sphere3d.Invalid : new Sphere3d(box.Center, 0.5 * box.Size.Length);
     }
 }

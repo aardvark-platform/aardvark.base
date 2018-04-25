@@ -349,12 +349,9 @@ namespace Aardvark.Base
         /// </summary>
         private static int[] Triangulate2d(V2d[] pa)
         {
-            Triangle1i[] tri;
-            int tc;
-            Triangulate2d(pa, out tri, out tc);
-            int[] ia = new int[3 * tc];
-            int i = 0;
-            for (int ti = 0; ti < tc; ti++)
+            Triangulate2d(pa, out Triangle1i[] tri, out int tc);
+            var ia = new int[3 * tc];
+            for (int ti = 0, i = 0; ti < tc; ti++)
             {
                 var tr = tri[ti];
                 ia[i++] = tr.I0; ia[i++] = tr.I1; ia[i++] = tr.I2;

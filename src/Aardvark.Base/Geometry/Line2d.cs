@@ -1,5 +1,4 @@
-﻿
-namespace Aardvark.Base
+﻿namespace Aardvark.Base
 {
     /// <summary>
     /// A two dimensional line with specified start and end points.
@@ -8,10 +7,7 @@ namespace Aardvark.Base
     {
         #region Geometric Properties
 
-        public V2d Center
-        {
-            get { return (P0 + P1) * 0.5; }
-        }
+        public V2d Center => (P0 + P1) * 0.5;
 
         public V2d Origin
         {
@@ -25,49 +21,27 @@ namespace Aardvark.Base
             set { P1 = P0 + value; }
         }
 
-        public Ray2d Ray2d
-        {
-            get { return new Ray2d(P0, P1 - P0); }
-        }
+        public Ray2d Ray2d => new Ray2d(P0, P1 - P0);
 
-        public Plane2d Plane2d
-        {
-            get { return Ray2d.Plane2d; }
-        }
+        public Plane2d Plane2d => Ray2d.Plane2d;
 
-        public double LeftValueOfDir(V2d v)
-        {
-            return v.X * (P0.Y - P1.Y) + v.Y * (P1.X - P0.X);
-        }
+        public double LeftValueOfDir(V2d v) => v.X * (P0.Y - P1.Y) + v.Y * (P1.X - P0.X);
 
-        public double RightValueOfDir(V2d v)
-        {
-            return v.X * (P1.Y - P0.Y) + v.Y * (P0.X - P1.X);
-        }
+        public double RightValueOfDir(V2d v) => v.X * (P1.Y - P0.Y) + v.Y * (P0.X - P1.X);
 
         public double LeftValueOfPos(V2d p)
-        {
-            return (p.X - P0.X) * (P0.Y - P1.Y) + (p.Y - P0.Y) * (P1.X - P0.X);
-        }
+            => (p.X - P0.X) * (P0.Y - P1.Y) + (p.Y - P0.Y) * (P1.X - P0.X);
 
         public double RightValueOfPos(V2d p)
-        {
-            return (p.X - P0.X) * (P1.Y - P0.Y) + (p.Y - P0.Y) * (P0.X - P1.X);
-        }
+            => (p.X - P0.X) * (P1.Y - P0.Y) + (p.Y - P0.Y) * (P0.X - P1.X);
 
-        public bool IsDegenerated
-        {
-            get { return Direction.AllTiny; }
-        }
+        public bool IsDegenerated => Direction.AllTiny;
 
         #endregion
 
         #region IBoundingCircle2d Members
 
-        public Circle2d BoundingCircle2d
-        {
-            get { return new Circle2d(Center, 0.5 * Direction.Length); }
-        }
+        public Circle2d BoundingCircle2d => new Circle2d(Center, 0.5 * Direction.Length);
 
         #endregion
 
@@ -103,9 +77,8 @@ namespace Aardvark.Base
             return GetDistanceToLine(p) <= maxDist;
         }
 
-        public Line2d Flipped { get { return new Line2d(P1, P0); } }
+        public Line2d Flipped => new Line2d(P1, P0);
 
         #endregion
     }
-
 }

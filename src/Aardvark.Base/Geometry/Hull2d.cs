@@ -53,10 +53,10 @@ namespace Aardvark.Base
 
         #region Properties
 
-        public bool IsValid { get { return PlaneArray != null; } }
-        public bool IsInvalid { get { return PlaneArray == null; } }
+        public bool IsValid => PlaneArray != null;
+        public bool IsInvalid => PlaneArray == null;
 
-        public int PlaneCount { get { return PlaneArray.Length; } }
+        public int PlaneCount => PlaneArray.Length;
 
         #endregion
 
@@ -86,15 +86,9 @@ namespace Aardvark.Base
                             trafo.Forward.TransformPos(PlaneArray[i].Point));
         }
 
-        public Hull2d Reversed()
-        {
-            return new Hull2d(PlaneArray.Map(p => p.Reversed));
-        }
+        public Hull2d Reversed() => new Hull2d(PlaneArray.Map(p => p.Reversed));
 
-        public void Reverse()
-        {
-            PlaneArray.Apply(p => p.Reversed);
-        }
+        public void Reverse() => PlaneArray.Apply(p => p.Reversed);
 
         #endregion
     }

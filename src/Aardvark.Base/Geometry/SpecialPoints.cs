@@ -73,22 +73,13 @@ namespace Aardvark.Base
 
         #region V2d - Line2d
 
-        public static V2d GetClosestPointOn(
-            this V2d query, Line2d line)
-        {
-            double t;
-            return GetClosestPointOn(query, line, out t);
-        }
+        public static V2d GetClosestPointOn(this V2d query, Line2d line)
+            => GetClosestPointOn(query, line, out double t);
 
-        public static V2d GetClosestPointOn(
-            this Line2d line, V2d query)
-        {
-            return query.GetClosestPointOn(line);
-        }
+        public static V2d GetClosestPointOn(this Line2d line, V2d query)
+            => query.GetClosestPointOn(line);
 
-        public static V2d GetClosestPointOn(
-            this V2d query, Line2d line, out double t
-            )
+        public static V2d GetClosestPointOn(this V2d query, Line2d line, out double t)
         {
             var p0q = query - line.P0;
             t = V2d.Dot(p0q, line.Direction);
@@ -99,31 +90,18 @@ namespace Aardvark.Base
             return line.P0 + t * line.Direction;
         }
 
-        public static V2d GetClosestPointOn(
-            this Line2d line, V2d query, out double t
-            )
-        {
-            return query.GetClosestPointOn(line, out t);
-        }
+        public static V2d GetClosestPointOn(this Line2d line, V2d query, out double t)
+            => query.GetClosestPointOn(line, out t);
 
         #endregion
 
         #region V2d - Ray2d
 
-        public static V2d GetClosestPointOn(
-            this V2d query, Ray2d ray
-            )
-        {
-            double t;
-            return GetClosestPointOn(query, ray, out t);
-        }
+        public static V2d GetClosestPointOn(this V2d query, Ray2d ray)
+            => GetClosestPointOn(query, ray, out double t);
 
-        public static V2d GetClosestPointOn(
-            this Ray2d ray, V2d query
-            )
-        {
-            return query.GetClosestPointOn(ray);
-        }
+        public static V2d GetClosestPointOn(this Ray2d ray, V2d query)
+            => query.GetClosestPointOn(ray);
 
         /// <summary>
         /// Returns the t-parameter along <paramref name="ray"/> at which the closest point to <paramref name="query"/> is.
@@ -131,25 +109,16 @@ namespace Aardvark.Base
         /// <param name="query">Find the closest point on the ray to this point.</param>
         /// <param name="ray">Find the closest point on this ray.</param>
         public static double GetClosestPointTOn(this V2d query, Ray2d ray)
-        {
-            return V2d.Dot(query - ray.Origin, ray.Direction)
-                        / ray.Direction.LengthSquared;
-        }
+            => V2d.Dot(query - ray.Origin, ray.Direction) / ray.Direction.LengthSquared;
 
-        public static V2d GetClosestPointOn(
-            this V2d query, Ray2d ray, out double t
-            )
+        public static V2d GetClosestPointOn(this V2d query, Ray2d ray, out double t)
         {
             t = GetClosestPointTOn(query, ray);
             return ray.Origin + t * ray.Direction;
         }
 
-        public static V2d GetClosestPointOn(
-            this Ray2d ray, V2d query, out double t
-            )
-        {
-            return query.GetClosestPointOn(ray, out t);
-        }
+        public static V2d GetClosestPointOn(this Ray2d ray, V2d query, out double t)
+            => query.GetClosestPointOn(ray, out t);
 
         /// <summary>
         /// Returns the t-parameter along <paramref name="ray"/> at which the closest point to <paramref name="query"/> is.
@@ -157,9 +126,7 @@ namespace Aardvark.Base
         /// <param name="query">Find the closest point on the ray to this point.</param>
         /// <param name="ray">Find the closest point on this ray.</param>
         public static double GetClosestPointTOn(this Ray2d ray, V2d query)
-        {
-            return query.GetClosestPointTOn(ray);
-        }
+            => query.GetClosestPointTOn(ray);
 
         #endregion
 
@@ -172,17 +139,13 @@ namespace Aardvark.Base
         }
 
         public static V2d GetClosestPointOn(this Plane2d line, V2d point)
-        {
-            return point.GetClosestPointOn(line);
-        }
+            => point.GetClosestPointOn(line);
 
         #endregion
 
         #region V2d - Box2d
 
-        public static V2d GetClosestPointOn(
-            this V2d query, Box2d box
-            )
+        public static V2d GetClosestPointOn(this V2d query, Box2d box)
         {
             var closest = query;
             for (int i = 0; i < 2; i++)
@@ -193,12 +156,8 @@ namespace Aardvark.Base
             return closest;
         }
 
-        public static V2d GetClosestPointOn(
-            this Box2d box, V2d query
-            )
-        {
-            return query.GetClosestPointOn(box);
-        }
+        public static V2d GetClosestPointOn(this Box2d box, V2d query)
+            => query.GetClosestPointOn(box);
 
         #endregion
 
@@ -223,9 +182,7 @@ namespace Aardvark.Base
         }
 
         public static V2d GetClosestPointOn(this Quad2d quad, V2d vec)
-        {
-            return vec.GetClosestPointOn(quad);
-        }
+            => vec.GetClosestPointOn(quad);
 
         #endregion
 
@@ -247,36 +204,23 @@ namespace Aardvark.Base
         }
 
         public static V2d GetClosestPointOn(this Polygon2d poly, V2d vec)
-        {
-            return vec.GetClosestPointOn(poly);
-        }
+            => vec.GetClosestPointOn(poly);
 
         #endregion
 
         #region V2d - Circle2d
 
-        public static V2d GetClosestPointOn(
-            this V2d query, Circle2d circle
-            )
-        {
-            return circle.Center
-                   + circle.Radius * (query - circle.Center).Normalized;
-        }
+        public static V2d GetClosestPointOn(this V2d query, Circle2d circle)
+            => circle.Center + circle.Radius * (query - circle.Center).Normalized;
 
-        public static V2d GetClosestPointOn(
-            this Circle2d circle, V2d query
-            )
-        {
-            return query.GetClosestPointOn(circle);
-        }
+        public static V2d GetClosestPointOn(this Circle2d circle, V2d query)
+            => query.GetClosestPointOn(circle);
 
         #endregion
 
         #region V2d - Triangle2d
 
-        public static V2d GetClosestPointOn(
-            this V2d query, Triangle2d triangle
-            )
+        public static V2d GetClosestPointOn(this V2d query, Triangle2d triangle)
         {
             var e01 = triangle.Edge01;
             var e02 = triangle.Edge02;
@@ -324,12 +268,8 @@ namespace Aardvark.Base
             return query;
         }
 
-        public static V2d GetClosestPointOn(
-            this Triangle2d triangle, V2d query
-            )
-        {
-            return query.GetClosestPointOn(triangle);
-        }
+        public static V2d GetClosestPointOn(this Triangle2d triangle, V2d query)
+            => query.GetClosestPointOn(triangle);
 
         #endregion
 
@@ -1272,9 +1212,7 @@ namespace Aardvark.Base
     }
 
 #if NEVERMORE
-
-
-
+    
         /// <summary>
         /// Determines the closest points on a frustum to the query point.
         /// Calculated point is passed as out parameter.

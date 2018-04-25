@@ -9,21 +9,13 @@ namespace Aardvark.Base
         #region Conversions
 
         public static Polygon2d ToPolygon2dCCW(this Box2d self)
-        {
-            return new Polygon2d(self.Min, new V2d(self.Max.X, self.Min.Y), self.Max, new V2d(self.Min.X, self.Max.Y));
-        }
+            => new Polygon2d(self.Min, new V2d(self.Max.X, self.Min.Y), self.Max, new V2d(self.Min.X, self.Max.Y));
 
-        public static Polygon3d ToPolygon3d(
-                this Polygon2d polygon, Func<V2d, V3d> point_copyFun)
-        {
-            return new Polygon3d(polygon.GetPointArray(point_copyFun));
-        }
+        public static Polygon3d ToPolygon3d(this Polygon2d polygon, Func<V2d, V3d> point_copyFun)
+            => new Polygon3d(polygon.GetPointArray(point_copyFun));
 
-        public static Polygon3d ToPolygon3d(
-                this Polygon2d polygon, Func<V2d, int, V3d> point_index_copyFun)
-        {
-            return new Polygon3d(polygon.GetPointArray(point_index_copyFun));
-        }
+        public static Polygon3d ToPolygon3d(this Polygon2d polygon, Func<V2d, int, V3d> point_index_copyFun)
+            => new Polygon3d(polygon.GetPointArray(point_index_copyFun));
 
         #endregion
 
@@ -76,9 +68,7 @@ namespace Aardvark.Base
         ///  absolute value is returned (i.e. area >= 0.0).
         /// </summary>
         public static double ComputeArea(this Polygon2d polygon)
-        {
-            return polygon.ComputeSignedArea().Abs();
-        }
+            => polygon.ComputeSignedArea().Abs();
 
         /// <summary>
         /// Returns the rotation of the supplied counter clockwise enumerated
@@ -244,20 +234,11 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns true if polygon points are oriented in counter-clockwise order.
         /// </summary>
-        public static bool IsCcw(this Polygon2d polygon)
-        {
-            return polygon.ComputeWindingNumber() >= 0;
-        }
+        public static bool IsCcw(this Polygon2d polygon) => polygon.ComputeWindingNumber() >= 0;
 
-        public static bool IsConcave(this Polygon2d polygon)
-        {
-            return polygon.HasWinding(Winding.CW);
-        }
+        public static bool IsConcave(this Polygon2d polygon) => polygon.HasWinding(Winding.CW);
 
-        public static bool IsConvex(this Polygon2d polygon)
-        {
-            return polygon.HasWinding(Winding.CCW);
-        }
+        public static bool IsConvex(this Polygon2d polygon) => polygon.HasWinding(Winding.CCW);
 
         #endregion
 
@@ -267,9 +248,7 @@ namespace Aardvark.Base
         /// Returns convex hull of this polygon.
         /// </summary>
         public static IndexPolygon2d ComputeConvexHullIndexPolygon(this Polygon2d polygon)
-        {
-            return polygon.m_pointArray.ConvexHullIndexPolygon(polygon.m_pointCount);
-        }
+            => polygon.m_pointArray.ConvexHullIndexPolygon(polygon.m_pointCount);
 
         #endregion
 
@@ -377,14 +356,13 @@ namespace Aardvark.Base
         public static void RasterizePolygon(Polygon2d polygon, Matrix<int> intoMatrix, int value)
         {
             var lines = polygon.GetEdgeLineArray();
-            V2d p;
             for (int y = 0; y < intoMatrix.Size.Y; y++)
             {
                 var scanLine = new Line2d(new V2d(0, y), new V2d(intoMatrix.Size.X, y));
                 var intersections = new List<int>();
                 foreach (var l in lines)
                 {
-                    if (scanLine.Intersects(l, out p))
+                    if (scanLine.Intersects(l, out V2d p))
                         intersections.Add((int)(p.X + 0.5));
                 }
                 intersections.Sort();
@@ -407,10 +385,7 @@ namespace Aardvark.Base
         /// other supplied polygon. O(n).
         /// </summary>
         public static double MinDistanceTo(this Polygon2d polygon, Polygon2d polygon1)
-        {
-            int pi0, pi1; bool lineOnThis;
-            return polygon.MinDistanceTo(polygon1, out pi0, out pi1, out lineOnThis);
-        }
+            => polygon.MinDistanceTo(polygon1, out int pi0, out int pi1, out bool lineOnThis);
 
         /// <summary>
         /// Returns the minimal distance between the polygon and the non-
@@ -499,14 +474,10 @@ namespace Aardvark.Base
         #region Conversions
 
         public static Polygon3d ToPolygon3d(this IndexPolygon2d polygon, V3d[] pointArray)
-        {
-            return new Polygon3d(polygon.GetPointArray(pointArray));
-        }
+            => new Polygon3d(polygon.GetPointArray(pointArray));
 
         public static Polygon3d ToPolygon3d(this IndexPolygon2d polygon, List<V3d> pointList)
-        {
-            return new Polygon3d(polygon.GetPointArray(pointList));
-        }
+            => new Polygon3d(polygon.GetPointArray(pointList));
 
         #endregion
     }

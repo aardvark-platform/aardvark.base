@@ -45,41 +45,20 @@ namespace Aardvark.Base
 
         #region Properties
 
-        public double RadiusSquared
-        {
-            get { return Radius.Square(); }
-        }
+        public double RadiusSquared => Radius.Square();
 
-        public double Circumference
-        {
-            get { return 2.0 * Radius * Constant.Pi; }
-        }
+        public double Circumference => 2.0 * Radius * Constant.Pi;
 
-        public double Area
-        {
-            get { return RadiusSquared * Constant.Pi; }
-        }
+        public double Area => RadiusSquared * Constant.Pi;
 
-        public bool IsValid
-        {
-            get { return Radius >= 0.0; }
-        }
+        public bool IsValid => Radius >= 0.0;
 
-        public bool IsInvalid
-        {
-            get { return Radius < 0.0; }
-        }
+        public bool IsInvalid => Radius < 0.0;
 
         /// <summary>
         /// Returns a point on the circumference (AxisU).
         /// </summary>
-        public V3d Point
-        {
-            get
-            {
-                return Center + AxisU * Radius;
-            }
-        }
+        public V3d Point => Center + AxisU * Radius;
 
         /// <summary>
         /// Returns an axis aligned vector pointing from the center to the circumference.
@@ -127,27 +106,16 @@ namespace Aardvark.Base
 			}
 		}
 
-        public Plane3d Plane
-        {
-            get
-            {
-                return new Plane3d(Normal, Center);
-            }
-        }
+        public Plane3d Plane => new Plane3d(Normal, Center);
 
-        public V3d GetPoint(double angle)
-        {
-            return Center + AxisU * angle.Cos() + AxisV * angle.Sin();
-        }
+        public V3d GetPoint(double angle) => Center + AxisU * angle.Cos() + AxisV * angle.Sin();
 
         #endregion
 
         #region Overrides
 
         public override string ToString()
-        {
-            return string.Format("[{0}, {1}, {2}]", Center, Normal, Radius);
-        }
+            => string.Format("[{0}, {1}, {2}]", Center, Normal, Radius);
 
         public static Circle3d Parse(string s)
         {

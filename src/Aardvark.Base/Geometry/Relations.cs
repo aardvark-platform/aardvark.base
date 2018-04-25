@@ -14,15 +14,12 @@ namespace Aardvark.Base
         #region V2d - V2d
 
         public static bool IsParallelTo(this V2d u, V2d v)
-        {
-            return Fun.IsTiny(u.X * v.Y - u.Y * v.X);
-        }
+            => Fun.IsTiny(u.X * v.Y - u.Y * v.X);
 
         public static bool IsParallelTo(this V2d u, V2d v, double epsilon = 1e-6)
         {
             var un = u.Normalized;
             var vn = v.Normalized;
-
             return (un - vn).Length < epsilon || (un + vn).Length < epsilon;
         }
 
@@ -31,42 +28,30 @@ namespace Aardvark.Base
         #region Ray2d - V2d
 
         public static bool IsParallelTo(this Ray2d ray, V2d v)
-        {
-            return ray.Direction.IsParallelTo(v);
-        }
+            => ray.Direction.IsParallelTo(v);
 
         public static bool IsParallelTo(this Ray2d ray, V2d v, double epsilon = 1e-6)
-        {
-            return ray.Direction.IsParallelTo(v, epsilon);
-        }
+            => ray.Direction.IsParallelTo(v, epsilon);
 
         #endregion
 
         #region Ray2d - Ray2d
 
         public static bool IsParallelTo(this Ray2d r0, Ray2d r1)
-        {
-            return r0.Direction.IsParallelTo(r1.Direction);
-        }
+            => r0.Direction.IsParallelTo(r1.Direction);
 
         public static bool IsParallelTo(this Ray2d r0, Ray2d r1, double epsilon = 1e-6)
-        {
-            return r0.Direction.IsParallelTo(r1.Direction, epsilon);
-        }
+            => r0.Direction.IsParallelTo(r1.Direction, epsilon);
 
         #endregion
 
         #region Line2d - Line2d
 
         public static bool IsParallelTo(this Line2d l0, Line2d l1)
-        {
-            return l0.Direction.IsParallelTo(l1.Direction);
-        }
+            => l0.Direction.IsParallelTo(l1.Direction);
 
         public static bool IsParallelTo(this Line2d l0, Line2d l1, double epsilon = 1e-6)
-        {
-            return l0.Direction.IsParallelTo(l1.Direction, epsilon);
-        }
+            => l0.Direction.IsParallelTo(l1.Direction, epsilon);
 
         #endregion
 
@@ -75,9 +60,7 @@ namespace Aardvark.Base
         #region V3d - V3d
 
         public static bool IsParallelTo(this V3d u, V3d v)
-        {
-            return Fun.IsTiny(u.Cross(v).Norm1);
-        }
+            => Fun.IsTiny(u.Cross(v).Norm1);
 
         public static bool IsParallelTo(this V3d u, V3d v, double epsilon = 1e-6)
         {
@@ -92,70 +75,50 @@ namespace Aardvark.Base
         #region Ray3d - V3d
 
         public static bool IsParallelTo(this Ray3d ray, V3d vec)
-        {
-            return ray.Direction.IsParallelTo(vec);
-        }
+            => ray.Direction.IsParallelTo(vec);
 
         public static bool IsParallelTo(this Ray3d ray, V3d vec, double epsilon = 1e-6)
-        {
-            return ray.Direction.IsParallelTo(vec, epsilon);
-        }
+            => ray.Direction.IsParallelTo(vec, epsilon);
 
         #endregion
 
         #region Ray3d - Ray3d
 
         public static bool IsParallelTo(this Ray3d r0, Ray3d r1)
-        {
-            return r0.Direction.IsParallelTo(r1.Direction);
-        }
+            => r0.Direction.IsParallelTo(r1.Direction);
 
         public static bool IsParallelTo(this Ray3d r0, Ray3d r1, double epsilon = 1e-6)
-        {
-            return r0.Direction.IsParallelTo(r1.Direction, epsilon);
-        }
+            => r0.Direction.IsParallelTo(r1.Direction, epsilon);
 
         #endregion
 
         #region Plane3d - Plane3d
 
         public static bool IsParallelTo(this Plane3d p0, Plane3d p1)
-        {
-            return p0.Normal.IsParallelTo(p1.Normal);
-        }
+            => p0.Normal.IsParallelTo(p1.Normal);
 
         public static bool IsParallelTo(this Plane3d p0, Plane3d p1, double epsilon = 1e-6)
-        {
-            return p0.Normal.IsParallelTo(p1.Normal, epsilon);
-        }
+            => p0.Normal.IsParallelTo(p1.Normal, epsilon);
 
         #endregion
 
         #region Ray3d - Plane3d
 
         public static bool IsParallelTo(this Ray3d ray, Plane3d plane)
-        {
-            return ray.Direction.IsOrthogonalTo(plane.Normal);
-        }
+            => ray.Direction.IsOrthogonalTo(plane.Normal);
 
         public static bool IsParallelTo(this Plane3d plane, Ray3d ray)
-        {
-            return ray.Direction.IsOrthogonalTo(plane.Normal);
-        }
+            => ray.Direction.IsOrthogonalTo(plane.Normal);
 
         #endregion
 
         #region Line3d - Line3d
 
         public static bool IsParallelTo(this Line3d l0, Line3d l1)
-        {
-            return l0.Direction.IsParallelTo(l1.Direction);
-        }
+            => l0.Direction.IsParallelTo(l1.Direction);
 
         public static bool IsParallelTo(this Line3d l0, Line3d l1, double epsilon = 1e-6)
-        {
-            return l0.Direction.IsParallelTo(l1.Direction, epsilon);
-        }
+            => l0.Direction.IsParallelTo(l1.Direction, epsilon);
 
         #endregion
     }
@@ -169,28 +132,19 @@ namespace Aardvark.Base
 
         #region V2d - V2d
 
-        public static bool IsOrthogonalTo(this V2d u, V2d v)
-        {
-            return Fun.IsTiny(u.Dot(v));
-        }
+        public static bool IsOrthogonalTo(this V2d u, V2d v) => Fun.IsTiny(u.Dot(v));
 
         #endregion
 
         #region Ray2d - V2d
 
-        public static bool IsOrthogonalTo(this Ray2d ray, V2d v)
-        {
-            return ray.Direction.IsOrthogonalTo(v);
-        }
+        public static bool IsOrthogonalTo(this Ray2d ray, V2d v) => ray.Direction.IsOrthogonalTo(v);
 
         #endregion
 
         #region Ray2d - Ray2d
 
-        public static bool IsOrthogonalTo(this Ray2d r0, Ray2d r1)
-        {
-            return r0.Direction.IsOrthogonalTo(r1.Direction);
-        }
+        public static bool IsOrthogonalTo(this Ray2d r0, Ray2d r1) => r0.Direction.IsOrthogonalTo(r1.Direction);
 
         #endregion
 
@@ -198,51 +152,35 @@ namespace Aardvark.Base
 
         #region V3d - V3d
 
-        public static bool IsOrthogonalTo(this V3d u, V3d v)
-        {
-            return Fun.IsTiny(u.Dot(v));
-        }
+        public static bool IsOrthogonalTo(this V3d u, V3d v)=> Fun.IsTiny(u.Dot(v));
 
         #endregion
 
         #region Ray3d - V3d
 
-        public static bool IsOrthogonalTo(this Ray3d ray, V3d vec)
-        {
-            return ray.Direction.IsOrthogonalTo(vec);
-        }
+        public static bool IsOrthogonalTo(this Ray3d ray, V3d vec) => ray.Direction.IsOrthogonalTo(vec);
 
         #endregion
 
         #region Ray3d - Ray3d
 
-        public static bool IsOrthogonalTo(this Ray3d r0, Ray3d r1)
-        {
-            return r0.Direction.IsOrthogonalTo(r1.Direction);
-        }
+        public static bool IsOrthogonalTo(this Ray3d r0, Ray3d r1) => r0.Direction.IsOrthogonalTo(r1.Direction);
 
         #endregion
 
         #region Plane3d - Plane3d
 
-        public static bool IsOrthogonalTo(this Plane3d p0, Plane3d p1)
-        {
-            return p0.Normal.IsOrthogonalTo(p1.Normal);
-        }
+        public static bool IsOrthogonalTo(this Plane3d p0, Plane3d p1) => p0.Normal.IsOrthogonalTo(p1.Normal);
 
         #endregion
 
         #region Ray3d - Plane3d
 
         public static bool IsOrthogonalTo(this Ray3d ray, Plane3d plane)
-        {
-            return ray.Direction.IsParallelTo(plane.Normal);
-        }
+            => ray.Direction.IsParallelTo(plane.Normal);
 
         public static bool IsNormalTo(this Plane3d plane, Ray3d ray)
-        {
-            return ray.Direction.IsParallelTo(plane.Normal);
-        }
+            => ray.Direction.IsParallelTo(plane.Normal);
 
         #endregion
     }
@@ -257,10 +195,7 @@ namespace Aardvark.Base
             return n.IsOrthogonalTo(x);
         }
 
-        public static bool IsLinearCombinationOf(this V3d x, V3d u)
-        {
-            return x.IsParallelTo(u);
-        }
+        public static bool IsLinearCombinationOf(this V3d x, V3d u) => x.IsParallelTo(u);
 
         public static bool IsLinearCombinationOf(this V3d x, V3d u, V3d v, out double t0, out double t1)
         { 
@@ -310,17 +245,13 @@ namespace Aardvark.Base
         /// Returns true if the Polygon contains a degenerated part
         /// </summary>
         public static bool HasDegeneratedPart(this Polygon2d poly)
-        {
-            return poly.PolygonHasDegeneratedPart();
-        }
+            => poly.PolygonHasDegeneratedPart();
 
         /// <summary>
         /// Returns true if the Polygon contains a degenerated part
         /// </summary>
         public static bool HasDegeneratedPart(this Polygon2d poly, double absoluteEpsilon)
-        {
-            return poly.PolygonHasDegeneratedPart(absoluteEpsilon);
-        }
+            => poly.PolygonHasDegeneratedPart(absoluteEpsilon);
 
         /// <summary>
         /// Returns true if the Polygon contains a degenerated part
@@ -328,9 +259,7 @@ namespace Aardvark.Base
         /// </summary>
         public static bool HasDegeneratedPart(this Polygon2d poly, out Polygon2d NonDegenerated)
         {
-            int[] temp;
-            bool result = poly.PolygonHasDegeneratedPart(out temp);
-
+            bool result = poly.PolygonHasDegeneratedPart(out int[] temp);
             NonDegenerated = new Polygon2d((from i in temp select poly[i]).ToArray<V2d>());
             return result;
         }
@@ -340,18 +269,14 @@ namespace Aardvark.Base
         /// NonDegenerated holds the Non-Degenerated part of the polygon
         /// </summary>
         public static bool HasDegeneratedPart(this Polygon2d poly, out int[] NonDegenerated)
-        {
-            return poly.PolygonHasDegeneratedPart(out NonDegenerated);
-        }
+            => poly.PolygonHasDegeneratedPart(out NonDegenerated);
 
         /// <summary>
         /// Returns true if the Polygon contains a degenerated part
         /// NonDegenerated holds the Non-Degenerated part of the polygon
         /// </summary>
         public static bool HasDegeneratedPart(this Polygon2d poly, double absoluteEpsilon, out int[] NonDegenerated)
-        {
-            return poly.PolygonHasDegeneratedPart(absoluteEpsilon, out NonDegenerated);
-        }
+            => poly.PolygonHasDegeneratedPart(absoluteEpsilon, out NonDegenerated);
 
         #endregion
 
@@ -361,9 +286,7 @@ namespace Aardvark.Base
         /// Returns true if the Polygon contains a degenerated part
         /// </summary>
         public static bool PolygonHasDegeneratedPart(this Polygon2d poly)
-        {
-            return poly.PolygonHasDegeneratedPart(4.0 * double.Epsilon);
-        }
+            => poly.PolygonHasDegeneratedPart(4.0 * double.Epsilon);
 
         /// <summary>
         /// Returns true if the Polygon contains a degenerated part
@@ -405,9 +328,7 @@ namespace Aardvark.Base
         /// NonDegenerated holds the Non-Degenerated part of the polygon
         /// </summary>
         public static bool PolygonHasDegeneratedPart(this Polygon2d poly, out int[] NonDegenerated)
-        {
-            return poly.PolygonHasDegeneratedPart(4.0 * double.Epsilon, out NonDegenerated);
-        }
+            => poly.PolygonHasDegeneratedPart(4.0 * double.Epsilon, out NonDegenerated);
 
         /// <summary>
         /// Returns true if the Polygon contains a degenerated part
@@ -429,16 +350,13 @@ namespace Aardvark.Base
             newPoints.Add(0);
 
             double l0 = 0.0;
-
-
+            
             while (i < count - 1)
             {
                 e0 = (poly[i + 1] - poly[i]);
                 l0 = e0.Length;
 
                 e0 = e0 / l0;
-
-
                 
                 u = i + 1;
                 V2d e = poly[(u + 1) % count] - poly[u];
@@ -666,8 +584,7 @@ namespace Aardvark.Base
             if (len2 < absoluteEpsilon * absoluteEpsilon)
                 return new int[polygon.PointCount].SetByIndex(i => i).IntoList();
 
-            M44d local2global, global2local;
-            M44d.NormalFrame(V3d.Zero, normal * (1.0/Fun.Sqrt(len2)), out local2global, out global2local);
+            M44d.NormalFrame(V3d.Zero, normal * (1.0 / Fun.Sqrt(len2)), out M44d local2global, out M44d global2local);
             var polygon2d = polygon.ToPolygon2d(p => global2local.TransformPos(p).XY);
             return polygon2d.ComputeNonConcaveSubPolygons(absoluteEpsilon);
         }
@@ -694,8 +611,7 @@ namespace Aardvark.Base
                     fvi = fve;
                     continue;
                 }
-                M44d local2global, global2local;
-                M44d.NormalFrame(V3d.Zero, n, out local2global, out global2local);
+                M44d.NormalFrame(V3d.Zero, n, out M44d local2global, out M44d global2local);
                 var polygon = new Polygon2d(fvc,
                         i => global2local.TransformPos(vertexArray[vertexIndices[fvi + i]]).XY);
                 var subPolyList = polygon.ComputeNonConcaveSubPolygons(absoluteEpsilon);
@@ -970,5 +886,4 @@ namespace Aardvark.Base
 
         #endregion
     }
-
 }

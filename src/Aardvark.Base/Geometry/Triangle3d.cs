@@ -1,4 +1,3 @@
-
 namespace Aardvark.Base
 {
     /// <summary>
@@ -8,28 +7,13 @@ namespace Aardvark.Base
     {
         #region Geometric Properties
 
-        public double Area
-        {
-            get { return (P1 - P0).Cross(P2 - P0).Length * 0.5; }
-        }
+        public double Area => (P1 - P0).Cross(P2 - P0).Length * 0.5;
 
-        public bool IsDegenerated
-        {
-            get
-            {
-                return (P1 - P0).Cross(P2 - P0).AllTiny; // area == 0 => degenerated 
-            }
-        }
+        public bool IsDegenerated => (P1 - P0).Cross(P2 - P0).AllTiny; // area == 0 => degenerated 
 
-        public V3d Normal
-        {
-            get { return (P1 - P0).Cross(P2 - P0).Normalized; }
-        }
+        public V3d Normal => (P1 - P0).Cross(P2 - P0).Normalized;
 
-        public Plane3d Plane
-        {
-            get { return new Plane3d(Normal, P0); }
-        }
+        public Plane3d Plane => new Plane3d(Normal, P0);
 
         #endregion
 

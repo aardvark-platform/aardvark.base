@@ -75,7 +75,7 @@ namespace Aardvark.Base
 
         public static Quadric operator +(Quadric lhs, Quadric rhs)
         {
-            Quadric result = new Quadric
+            var result = new Quadric
             {
                 ErrorQuadric = lhs.ErrorQuadric + rhs.ErrorQuadric,
                 Normal = lhs.Normal + rhs.Normal

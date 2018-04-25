@@ -39,26 +39,20 @@ namespace Aardvark.Base
 
         #region Properties
 
-        public bool IsValid { get { return Radius >= 0.0; } }
-        public bool IsInvalid { get { return Radius < 0.0; } }
+        public bool IsValid => Radius >= 0.0;
+        public bool IsInvalid => Radius < 0.0;
 
-        public Line3d Axis { get { return new Line3d(P0, P1); } }
+        public Line3d Axis => new Line3d(P0, P1);
 
-        public Cylinder3d Cylider { get { return new Cylinder3d(P0, P1, Radius); } }
+        public Cylinder3d Cylider => new Cylinder3d(P0, P1, Radius);
 
         #endregion
 
         #region IBoundingBox3d Members
 
-        public Box3d BoundingBox3d
-        {
-            get 
-            {
-                return new Box3d(
-                    new Sphere3d(P0, Radius).BoundingBox3d,
-                    new Sphere3d(P1, Radius).BoundingBox3d);
-            }
-        }
+        public Box3d BoundingBox3d => new Box3d(
+            new Sphere3d(P0, Radius).BoundingBox3d,
+            new Sphere3d(P1, Radius).BoundingBox3d);
 
         #endregion
     }

@@ -8,27 +8,15 @@ namespace Aardvark.Base
     {
         #region Geometric Properties
 
-        public double Area
-        {
-            get
-            {
-                return 0.5 * ((P1.X - P0.X) * (P2.Y - P0.Y) - (P2.X - P0.X) * (P1.Y - P0.Y)).Abs();
-            }
-        }
+        public double Area => 0.5 * ((P1.X - P0.X) * (P2.Y - P0.Y) - (P2.X - P0.X) * (P1.Y - P0.Y)).Abs();
 
-        public bool IsDegenerated
-        {
-            get { return WindingOrder.IsTiny(); }
-        }
+        public bool IsDegenerated => WindingOrder.IsTiny();
 
         /// <summary>
         /// Returns a value less than zero for ccw and greater than zero for cw.
         /// The magnitude is twice the area.
         /// </summary>
-        public double WindingOrder
-        {
-            get { return (P1.X - P0.X) * (P2.Y - P0.Y) - (P2.X - P0.X) * (P1.Y - P0.Y); }
-        }
+        public double WindingOrder => (P1.X - P0.X) * (P2.Y - P0.Y) - (P2.X - P0.X) * (P1.Y - P0.Y);
 
         #endregion
 
@@ -38,10 +26,7 @@ namespace Aardvark.Base
         {
             get
             {
-                V2d center;
-                double radiusSquared;
-                ComputeCircumCircleSquared(P0, P1, P2,
-                                    out center, out radiusSquared);
+                ComputeCircumCircleSquared(P0, P1, P2, out V2d center, out double radiusSquared);
                 return new Circle2d(center, radiusSquared.Sqrt());
             }
         }
@@ -50,10 +35,7 @@ namespace Aardvark.Base
         {
             get
             {
-                V2d center;
-                double radiusSquared;
-                ComputeCircumCircleSquared(P0, P1, P2,
-                                    out center, out radiusSquared);
+                ComputeCircumCircleSquared(P0, P1, P2, out V2d center, out double radiusSquared);
                 return new Circle2d(center, radiusSquared);
             }
         }

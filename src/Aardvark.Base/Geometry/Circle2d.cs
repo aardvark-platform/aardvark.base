@@ -32,30 +32,15 @@ namespace Aardvark.Base
 
         #region Properties
 
-        public bool IsInvalid
-        {
-            get { return Radius < 0.0; }
-        }
+        public bool IsInvalid => Radius < 0.0;
 
-        public bool IsValid
-        {
-            get { return Radius >= 0.0; }
-        }
+        public bool IsValid => Radius >= 0.0;
 
-        public double RadiusSquared
-        {
-            get { return Radius * Radius; }
-        }
+        public double RadiusSquared => Radius * Radius;
 
-        public double Circumference
-        {
-            get { return 2.0 * Radius * Constant.Pi; }
-        }
+        public double Circumference => 2.0 * Radius * Constant.Pi;
 
-        public double Area
-        {
-            get { return Radius.Square() * Constant.Pi; }
-        }
+        public double Area => Radius.Square() * Constant.Pi;
 
         #endregion
 
@@ -65,29 +50,18 @@ namespace Aardvark.Base
         /// Calculates Hash-code of the given circle.
         /// </summary>
         /// <returns>Hash-code.</returns>
-        public override int GetHashCode()
-        {
-            return HashCode.GetCombined(Center, Radius);
-        }
+        public override int GetHashCode() => HashCode.GetCombined(Center, Radius);
 
         /// <summary>
         /// Checks if 2 objects are equal.
         /// </summary>
         /// <returns>Result of comparison.</returns>
-        public override bool Equals(object other)
-        {
-            if (other is Circle2d)
-            {
-                var value = (Circle2d)other;
-                return (Center == value.Center) && (Radius == value.Radius);
-            }
-            return false;
-        }
+        public override bool Equals(object other) => (other is Circle2d value)
+            ? (Center == value.Center) && (Radius == value.Radius)
+            : false;
 
         public override string ToString()
-        {
-            return string.Format(CultureInfo.InvariantCulture, "[{0}, {1}]", Center, Radius);
-        }
+            => string.Format(CultureInfo.InvariantCulture, "[{0}, {1}]", Center, Radius);
 
         public static Circle2d Parse(string s)
         {
@@ -99,28 +73,17 @@ namespace Aardvark.Base
 
         #region IBoundingBox2d Members
 
-        public Box2d BoundingBox2d
-        {
-            get
-            {
-                return new Box2d(
-                    new V2d(Center.X - Radius, Center.Y - Radius),
-                    new V2d(Center.X + Radius, Center.Y + Radius)
-                    );
-            }
-        }
+        public Box2d BoundingBox2d => new Box2d(
+            new V2d(Center.X - Radius, Center.Y - Radius),
+            new V2d(Center.X + Radius, Center.Y + Radius)
+            );
 
         #endregion
     }
 
     public static class Box2dExtensions
     {
-
         public static Circle2d GetBoundingCircle2d(this Box2d box)
-        {
-            return (box.IsInvalid ? Circle2d.Invalid
-                : new Circle2d(box.Center, 0.5 * box.Size.Length));
-        }
-
+            => box.IsInvalid ? Circle2d.Invalid : new Circle2d(box.Center, 0.5 * box.Size.Length);
     }
 }

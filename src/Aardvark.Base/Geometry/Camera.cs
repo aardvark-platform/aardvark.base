@@ -33,14 +33,10 @@ namespace Aardvark.Base
         }
 
         public V3d CameraPointFromWorldPoint(V3d worldPoint)
-        {
-            return Rotation.TransposedTransform(worldPoint - Translation);
-        }
+            => Rotation.TransposedTransform(worldPoint - Translation);
 
         public V3d WorldPointFromCameraPoint(V3d cameraPoint)
-        {
-            return Rotation.Transform(cameraPoint) + Translation;
-        }
+            => Rotation.Transform(cameraPoint) + Translation;
 
         public M33d Camera2WorldRotation => Rotation;
         public V3d Camera2WorldTranslation => Translation;
@@ -49,25 +45,16 @@ namespace Aardvark.Base
         public V3d World2CameraRotationAngleAxis => Rot3d.FromM33d(Rotation.Transposed).ToAngleAxis();
 
         public static CameraExtrinsics FromWorld2Camera(M33d rotation, V3d translation)
-        {
-            return new CameraExtrinsics(rotation.Transposed, -rotation.TransposedTransform(translation));
-        }
+            => new CameraExtrinsics(rotation.Transposed, -rotation.TransposedTransform(translation));
 
         public static CameraExtrinsics FromWorld2Camera(V3d angleAxis, V3d translation)
-        {
-            return FromWorld2Camera((M33d)Rot3d.FromAngleAxis(angleAxis), translation);
-        }
+            => FromWorld2Camera((M33d)Rot3d.FromAngleAxis(angleAxis), translation);
 
-        public M44d Camera2World
-        {
-            get
-            {
-                return new M44d(Rotation.M00, Rotation.M01, Rotation.M02, Translation.X,
-                                Rotation.M10, Rotation.M11, Rotation.M12, Translation.Y,
-                                Rotation.M20, Rotation.M21, Rotation.M22, Translation.Z,
-                                0.0, 0.0, 0.0, 1.0);
-            }
-        }
+        public M44d Camera2World => new M44d(
+            Rotation.M00, Rotation.M01, Rotation.M02, Translation.X,
+            Rotation.M10, Rotation.M11, Rotation.M12, Translation.Y,
+            Rotation.M20, Rotation.M21, Rotation.M22, Translation.Z,
+            0.0, 0.0, 0.0, 1.0);
 
         public M44d World2Camera
         {
@@ -128,9 +115,8 @@ namespace Aardvark.Base
             double y = p.Y / p.Z;
 
             // undo distortion here
-            double rd, tx, ty;
-            ComputeUndistortionParamsForCameraPoint(x, y, out rd, out tx, out ty);
-            
+            ComputeUndistortionParamsForCameraPoint(x, y, out double rd, out double tx, out double ty);
+
             // undistorted point:
             double xd = x * rd + tx;
             double yd = y * rd + ty;
@@ -165,8 +151,7 @@ namespace Aardvark.Base
             var y = (p2.Y - PrincipalPoint.Y * imageSize.Y) / (FocalLength.Y * maxSize);
             var x = (p2.X - PrincipalPoint.X * imageSize.X - Skew * maxSize * y) / (FocalLength.X * maxSize);
 
-            double rd, tx, ty;
-            ComputeUndistortionParamsForCameraPoint(x, y, out rd, out tx, out ty);
+            ComputeUndistortionParamsForCameraPoint(x, y, out double rd, out double tx, out double ty);
             double xd = x * rd + tx;
             double yd = y * rd + ty;
 
@@ -191,6 +176,5 @@ namespace Aardvark.Base
             grid.SetByCoord((x, y) => self.UndistortPixel(new V2d(x * delta.X, y * delta.Y), imageSize).ToV2f());
             return grid;
         }
-
     }
 }

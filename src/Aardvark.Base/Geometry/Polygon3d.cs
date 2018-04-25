@@ -8,17 +8,13 @@ namespace Aardvark.Base
     {
         #region Conversions
 
-        public static Polygon2d ToPolygon2d(
-                this Polygon3d polygon, Func<V3d, V2d> point_copyFun)
-        {
-            return new Polygon2d(polygon.GetPointArray(point_copyFun));
-        }
+        public static Polygon2d ToPolygon2d(this Polygon3d polygon, Func<V3d, V2d> point_copyFun)
+            => new Polygon2d(polygon.GetPointArray(point_copyFun));
 
         public static Polygon2d ToPolygon2d(
-                this Polygon3d polygon, Func<V3d, int, V2d> point_index_copyFun)
-        {
-            return new Polygon2d(polygon.GetPointArray(point_index_copyFun));
-        }
+            this Polygon3d polygon, Func<V3d, int, V2d> point_index_copyFun
+            )
+            => new Polygon2d(polygon.GetPointArray(point_index_copyFun));
 
         #endregion
 
@@ -32,9 +28,7 @@ namespace Aardvark.Base
         /// (see Math.Tests/GeometryTests, rft 2013-05-04).
         /// </summary>
         public static double ComputeArea(this Polygon3d polygon)
-        {
-            return 0.5 * polygon.ComputeDoubleAreaNormal().Length;
-        }
+            => 0.5 * polygon.ComputeDoubleAreaNormal().Length;
 
         /// <summary>
         /// Computes the normalized normal as the sum of  the simple
@@ -44,9 +38,7 @@ namespace Aardvark.Base
         /// (see Math.Tests/GeometryTests, rft 2013-05-04).
         /// </summary>
         public static V3d ComputeNormal(this Polygon3d polygon)
-        {
-            return polygon.ComputeDoubleAreaNormal().Normalized;
-        }
+            => polygon.ComputeDoubleAreaNormal().Normalized;
 
         /// <summary>
         /// The geometric center of a 3-dimensional, flat polygon.
@@ -112,17 +104,13 @@ namespace Aardvark.Base
         /// (see Math.Tests/GeometryTests, rft 2013-05-04).
         /// </summary>
         public static Plane3d ComputePlane3d(this Polygon3d polygon)
-        {
-            return new Plane3d(polygon.ComputeNormal(), polygon.ComputeVertexCentroid());
-        }
+            => new Plane3d(polygon.ComputeNormal(), polygon.ComputeVertexCentroid());
 
         /// <summary>
         /// Returns the plane through the first 3 points of the polygon.
         /// </summary>
         public static Plane3d GetPlane3d(this Polygon3d polygon)
-        {
-            return new Plane3d(polygon[0], polygon[1], polygon[2]);
-        }
+            => new Plane3d(polygon[0], polygon[1], polygon[2]);
 
         #endregion
 
@@ -291,16 +279,11 @@ namespace Aardvark.Base
         #region Conversions
 
         public static Polygon2d ToPolygon3d(this IndexPolygon3d polygon, V2d[] pointArray)
-        {
-            return new Polygon2d(polygon.GetPointArray(pointArray));
-        }
+            => new Polygon2d(polygon.GetPointArray(pointArray));
 
         public static Polygon2d ToPolygon3d(this IndexPolygon3d polygon, List<V2d> pointList)
-        {
-            return new Polygon2d(polygon.GetPointArray(pointList));
-        }
+            => new Polygon2d(polygon.GetPointArray(pointList));
 
         #endregion
     }
-
 }

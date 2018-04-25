@@ -66,39 +66,30 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns true if the normal of the plane is not the zero-vector.
         /// </summary>
-        public bool IsValid {  get { return Normal != V2d.Zero; } }
+        public bool IsValid => Normal != V2d.Zero;
 
         /// <summary>
         /// Returns true if the normal of the plane is the zero-vector.
         /// </summary>
-        public bool IsInvalid { get { return Normal == V2d.Zero; } }
+        public bool IsInvalid => Normal == V2d.Zero;
 
         /// <summary>
         /// Returns a Plane3d whose cutting-line with the XY-Plane 
         /// is represented by the Plane2d
         /// </summary>
-        public Plane3d PlaneXY
-        {
-            get { return new Plane3d(Normal.XYO, Distance); }
-        }
+        public Plane3d PlaneXY => new Plane3d(Normal.XYO, Distance);
 
         /// <summary>
         /// Returns a Plane3d whose cutting-line with the XZ-Plane 
         /// is represented by the Plane2d
         /// </summary>
-        public Plane3d PlaneXZ
-        {
-            get { return new Plane3d(Normal.XOY, Distance); }
-        }
+        public Plane3d PlaneXZ => new Plane3d(Normal.XOY, Distance);
 
         /// <summary>
         /// Returns a Plane3d whose cutting-line with the YZ-Plane 
         /// is represented by the Plane2d
         /// </summary>
-        public Plane3d PlaneYZ
-        {
-            get { return new Plane3d(Normal.OXY, Distance); }
-        }
+        public Plane3d PlaneYZ => new Plane3d(Normal.OXY, Distance);
 
         #endregion
 
@@ -139,26 +130,17 @@ namespace Aardvark.Base
         /// Returns <see cref="Plane2d"/> with normal vector in opposing direction.
         /// </summary>
         /// <returns></returns>
-        public Plane2d Reversed
-        {
-            get { return new Plane2d(-Normal, -Distance); }
-        }
+        public Plane2d Reversed => new Plane2d(-Normal, -Distance);
 
         /// <summary>
         /// The signed height of the supplied point over the plane.
         /// </summary>
-        public double Height(V2d p)
-        {
-            return V2d.Dot(Normal, p) - Distance;
-        }
+        public double Height(V2d p) => V2d.Dot(Normal, p) - Distance;
 
         /// <summary>
         /// The sign of the height of the point over the plane.
         /// </summary>
-        public int Sign(V2d p)
-        {
-            return Height(p).Sign();
-        }
+        public int Sign(V2d p) => Height(p).Sign();
 
         /// <summary>
         /// Projets the given point x perpendicular on the plane
@@ -173,35 +155,20 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns the coefficients (a, b, c, d) of the normal equation.
         /// </summary>
-        public V3d Coefficients
-        {
-            get { return new V3d(Normal, -Distance); }
-        }
+        public V3d Coefficients => new V3d(Normal, -Distance);
 
         #endregion
 
         #region Overrides
 
-        public override int GetHashCode()
-        {
-            return HashCode.GetCombined(Normal, Distance);
-        }
+        public override int GetHashCode() => HashCode.GetCombined(Normal, Distance);
 
-        public override bool Equals(object other)
-        {
-            if (other is Plane2d)
-            {
-                var value = (Plane2d)other;
-                return (Normal == value.Normal) && (Distance == value.Distance);
-            }
-            return false;
-        }
+        public override bool Equals(object other) => (other is Plane2d value)
+            ? (Normal == value.Normal) && (Distance == value.Distance)
+            : false;
 
-        public override string ToString()
-        {
-            return string.Format(CultureInfo.InvariantCulture,
-                                 "[{0}, {1}]", Normal, Distance);
-        }
+        public override string ToString() => 
+            string.Format(CultureInfo.InvariantCulture, "[{0}, {1}]", Normal, Distance);
 
         public static Plane2d Parse(string s)
         {

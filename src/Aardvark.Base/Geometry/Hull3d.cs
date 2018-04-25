@@ -122,10 +122,10 @@ namespace Aardvark.Base
 
         #region Properties
 
-        public bool IsValid { get { return PlaneArray != null; } }
-        public bool IsInvalid { get { return PlaneArray == null; } }
+        public bool IsValid => PlaneArray != null;
+        public bool IsInvalid => PlaneArray == null;
 
-        public int PlaneCount { get { return PlaneArray.Length; } }
+        public int PlaneCount => PlaneArray.Length;
 
         #endregion
 
@@ -159,15 +159,9 @@ namespace Aardvark.Base
 
         #region Reversal
 
-        public Hull3d Reversed()
-        {
-            return new Hull3d(PlaneArray.Map(p => p.Reversed));
-        }
+        public Hull3d Reversed() => new Hull3d(PlaneArray.Map(p => p.Reversed));
 
-        public void Reverse()
-        {
-            PlaneArray.Apply(p => p.Reversed);
-        }
+        public void Reverse() => PlaneArray.Apply(p => p.Reversed);
 
         #endregion
     }

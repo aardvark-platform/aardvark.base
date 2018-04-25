@@ -79,12 +79,12 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns true if the normal of the plane is not the zero-vector.
         /// </summary>
-        public bool IsValid {  get { return Normal != V3d.Zero; } }
+        public bool IsValid => Normal != V3d.Zero;
 
         /// <summary>
         /// Returns true if the normal of the plane is the zero-vector.
         /// </summary>
-        public bool IsInvalid  { get { return Normal == V3d.Zero; } }
+        public bool IsInvalid => Normal == V3d.Zero;
 
         /// <summary>
         /// Returns the normalized <see cref="Plane3d"/> as new <see cref="Plane3d"/>.
@@ -101,10 +101,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns the coefficients (a, b, c, d) of the normal equation.
         /// </summary>
-        public V4d Coefficients
-        {
-            get { return new V4d(Normal, -Distance); }
-        }
+        public V4d Coefficients => new V4d(Normal, -Distance);
 
         #endregion
 
@@ -133,26 +130,17 @@ namespace Aardvark.Base
         /// Returns <see cref="Plane3d"/> with normal vector in opposing direction.
         /// </summary>
         /// <returns></returns>
-        public Plane3d Reversed
-        {
-            get { return new Plane3d(-Normal, -Distance); }
-        }
+        public Plane3d Reversed => new Plane3d(-Normal, -Distance);
 
         /// <summary>
         /// The signed height of the supplied point over the plane.
         /// </summary>
-        public double Height(V3d p)
-        {
-            return V3d.Dot(Normal, p) - Distance;
-        }
+        public double Height(V3d p) => V3d.Dot(Normal, p) - Distance;
 
         /// <summary>
         /// The sign of the height of the point over the plane.
         /// </summary>
-        public int Sign(V3d p)
-        {
-            return Height(p).Sign();
-        }
+        public int Sign(V3d p) => Height(p).Sign();
 
         /// <summary>
         /// Projets the given point x perpendicular on the plane
@@ -168,12 +156,9 @@ namespace Aardvark.Base
         /// Transforms the plane with a given trafo using the inverse
         /// transposed matrix.
         /// </summary>
-        public Plane3d Transformed(Trafo3d trafo)
-        {
-            return new Plane3d(
-                trafo.Backward.TransposedTransformDir(Normal),
-                trafo.Forward.TransformPos(Point));
-        }
+        public Plane3d Transformed(Trafo3d trafo) => new Plane3d(
+            trafo.Backward.TransposedTransformDir(Normal),
+            trafo.Forward.TransformPos(Point));
 
         /// <summary>
         /// Transforms the plane with a given matrix. The matrix is assumed
@@ -191,39 +176,23 @@ namespace Aardvark.Base
         #region Operators
 
         public static bool operator ==(Plane3d a, Plane3d b)
-        {
-            return a.Normal == b.Normal && a.Distance == b.Distance;
-        }
+            => a.Normal == b.Normal && a.Distance == b.Distance;
 
         public static bool operator !=(Plane3d a, Plane3d b)
-        {
-            return a.Normal != b.Normal || a.Distance != b.Distance;
-        }
+            => a.Normal != b.Normal || a.Distance != b.Distance;
 
         #endregion
 
         #region Overrides
 
-        public override int GetHashCode()
-        {
-            return HashCode.GetCombined(Normal, Distance);
-        }
+        public override int GetHashCode() => HashCode.GetCombined(Normal, Distance);
 
-        public override bool Equals(object other)
-        {
-            if (other is Plane3d)
-            {
-                var value = (Plane3d)other;
-                return (Normal == value.Normal) && (Distance == value.Distance);
-            }
-            return false;
-        }
+        public override bool Equals(object other) => (other is Plane3d value)
+            ? (Normal == value.Normal) && (Distance == value.Distance)
+            : false;
 
-        public override string ToString()
-        {
-            return string.Format(CultureInfo.InvariantCulture,
-                                 "[{0}, {1}]", Normal, Distance);
-        }
+        public override string ToString() => 
+            string.Format(CultureInfo.InvariantCulture, "[{0}, {1}]", Normal, Distance);
 
         public static Plane3d Parse(string s)
         {
@@ -300,80 +269,44 @@ namespace Aardvark.Base
 
         #region Properties
 
-        public PlaneWithPoint3d Normalized
-        {
-            get { return new PlaneWithPoint3d(Normal.Normalized, Point); }
-        }
+        public PlaneWithPoint3d Normalized => new PlaneWithPoint3d(Normal.Normalized, Point);
 
-        public Plane3d Plane3d
-        {
-            get { return new Plane3d(Normal, Point); }
-        }
+        public Plane3d Plane3d => new Plane3d(Normal, Point);
 
-        public bool IsInvalid
-        {
-            get { return Normal == V3d.Zero; }
-        }
+        public bool IsInvalid => Normal == V3d.Zero;
 
-        public PlaneWithPoint3d Reversed
-        {
-            get { return new PlaneWithPoint3d(-Normal, Point); }
-        }
+        public PlaneWithPoint3d Reversed => new PlaneWithPoint3d(-Normal, Point);
 
         #endregion
 
         #region Arithmetics
 
-        public void Normalize()
-        {
-            Normal.Normalize();
-        }
+        public void Normalize() => Normal.Normalize();
 
-        public void Reverse()
-        {
-            Normal = -Normal;
-        }
+        public void Reverse() => Normal = -Normal;
 
         /// <summary>
         /// The signed height of the supplied point over the plane.
         /// </summary>
-        public double Height(V3d p)
-        {
-            return V3d.Dot(Normal, p - Point);
-        }
+        public double Height(V3d p) => V3d.Dot(Normal, p - Point);
 
         /// <summary>
         /// The sign of the height of the point over the plane.
         /// </summary>
-        public int Sign(V3d p)
-        {
-            return Height(p).Sign();
-        }
+        public int Sign(V3d p) => Height(p).Sign();
 
         #endregion
 
         #region Overrides
 
-        public override int GetHashCode()
-        {
-            return HashCode.GetCombined(Normal, Point);
-        }
+        public override int GetHashCode() => HashCode.GetCombined(Normal, Point);
 
-        public override bool Equals(object other)
-        {
-            if (other is PlaneWithPoint3d)
-            {
-                var value = (PlaneWithPoint3d)other;
-                return (Normal == value.Normal) && (Point == value.Point);
-            }
-            return false;
-        }
+        public override bool Equals(object other) => (other is PlaneWithPoint3d value)
+            ? (Normal == value.Normal) && (Point == value.Point)
+            : false;
 
         public override string ToString()
-        {
-            return string.Format(CultureInfo.InvariantCulture,
-                                 "[{0}, {1}]", Normal, Point);
-        }
+            => string.Format(CultureInfo.InvariantCulture, "[{0}, {1}]", Normal, Point);
 
         public static PlaneWithPoint3d Parse(string s)
         {
@@ -435,8 +368,7 @@ namespace Aardvark.Base
 
         public Ray3d GetRay3d()
         {
-            Ray3d ray;
-            Plane0.Intersects(Plane1, out ray);
+            Plane0.Intersects(Plane1, out Ray3d ray);
             return ray;
         }
 
@@ -463,12 +395,12 @@ namespace Aardvark.Base
 
         #region Properties
 
-        PlanePair3d Pair01 { get { return new PlanePair3d(Plane0, Plane1); } }
-        PlanePair3d Pair02 { get { return new PlanePair3d(Plane0, Plane2); } }
-        PlanePair3d Pair12 { get { return new PlanePair3d(Plane1, Plane2); } }
-        PlanePair3d Pair10 { get { return new PlanePair3d(Plane1, Plane0); } }
-        PlanePair3d Pair20 { get { return new PlanePair3d(Plane2, Plane0); } }
-        PlanePair3d Pair21 { get { return new PlanePair3d(Plane2, Plane1); } }
+        PlanePair3d Pair01 => new PlanePair3d(Plane0, Plane1);
+        PlanePair3d Pair02 => new PlanePair3d(Plane0, Plane2);
+        PlanePair3d Pair12 => new PlanePair3d(Plane1, Plane2);
+        PlanePair3d Pair10 => new PlanePair3d(Plane1, Plane0);
+        PlanePair3d Pair20 => new PlanePair3d(Plane2, Plane0);
+        PlanePair3d Pair21 => new PlanePair3d(Plane2, Plane1);    
 
         #endregion
 
@@ -476,8 +408,7 @@ namespace Aardvark.Base
 
         public V3d GetPoint()
         {
-            V3d point;
-            Plane0.Intersects(Plane1, Plane2, out point);
+            Plane0.Intersects(Plane1, Plane2, out V3d point);
             return point;
         }
 
@@ -490,9 +421,7 @@ namespace Aardvark.Base
         /// Returns a transformation of an orthonormal basis in Plane- to WorldSpace.
         /// </summary>
         public static Trafo3d GetPlaneSpaceTransform(this Plane3d self)
-        {
-            return Trafo3d.FromNormalFrame(self.Point, self.Normal);
-        }
+            => Trafo3d.FromNormalFrame(self.Point, self.Normal);
 
         /// <summary>
         /// 3D world space to 2D plane space.
@@ -500,8 +429,7 @@ namespace Aardvark.Base
         /// </summary>
         public static M44d GetWorldToPlane(this Plane3d self)
         {
-            M44d _, global2local;
-            M44d.NormalFrame(self.Point, self.Normal, out _, out global2local);
+            M44d.NormalFrame(self.Point, self.Normal, out M44d _, out M44d global2local);
             return global2local;
         }
 
@@ -511,27 +439,22 @@ namespace Aardvark.Base
         /// </summary>
         public static M44d GetPlaneToWorld(this Plane3d self)
         {
-            M44d local2global, _;
-            M44d.NormalFrame(self.Point, self.Normal, out local2global, out _);
+            M44d.NormalFrame(self.Point, self.Normal, out M44d local2global, out M44d _);
             return local2global;
         }
 
         /// <summary>
         /// Projects a point onto the plane (shortest distance).
         /// </summary>
-        public static V3d Project(this Plane3d plane, V3d p)
-        {
-            return p - plane.Height(p) * plane.Normal;
-        }
+        public static V3d Project(this Plane3d plane, V3d p) => p - plane.Height(p) * plane.Normal;
 
         /// <summary>
         /// Projects a point onto the plane along given direction.
         /// </summary>
         public static V3d Project(this Plane3d plane, V3d p, V3d direction)
         {
-            double t = 0.0;
             var r = new Ray3d(p, direction);
-            if (r.Intersects(plane, out t))
+            if (r.Intersects(plane, out double t))
             {
                 return r.GetPointOnRay(t);
             }
@@ -577,9 +500,8 @@ namespace Aardvark.Base
             var result = new V3d[count];
             for (int i = startIndex, j = 0; j < count; i++, j++)
             {
-                double t = 0.0;
                 var r = new Ray3d(pointArray[i], direction);
-                if (r.Intersects(plane, out t))
+                if (r.Intersects(plane, out double t))
                 {
                     result[j] = r.GetPointOnRay(t);
                 }
@@ -597,9 +519,7 @@ namespace Aardvark.Base
         /// Projects a point from world space to plane space (shortest distance).
         /// </summary>
         public static V2d ProjectToPlaneSpace(this Plane3d plane, V3d p)
-        {
-            return plane.GetWorldToPlane().TransformPos(p).XY;
-        }
+            => plane.GetWorldToPlane().TransformPos(p).XY;
 
         /// <summary>
         /// Projects points from world space to plane space (shortest distance).
@@ -628,16 +548,6 @@ namespace Aardvark.Base
             return points.Map(p => local2global.TransformPos(p.XYO));
         }
 
-#if NET40
-        /// <summary>
-        /// Transforms points from plane space to world space.
-        /// </summary>
-        public static V3d[] Unproject(this Plane3d plane, IEnumerable<V2d> points)
-        {
-            var local2global = plane.GetPlaneToWorld();
-            return points.Select(x => local2global.TransformPos(x.XYO)).ToArray();
-        }
-#else
         /// <summary>
         /// Transforms points from plane space to world space.
         /// </summary>
@@ -649,6 +559,5 @@ namespace Aardvark.Base
                 xs[i] = local2global.TransformPos(points[i].XYO);
             return xs;
         }
-#endif
     }
 }

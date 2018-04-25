@@ -23,12 +23,8 @@ namespace Aardvark.Base
             Origin = origin;
             Direction = direction;
         }
-
-
-        public static Ray3d FromEndPoints(V3d origin, V3d target)
-        {
-            return new Ray3d(origin, target - origin);
-        }
+        
+        public static Ray3d FromEndPoints(V3d origin, V3d target) => new Ray3d(origin, target - origin);
             
         #endregion
 
@@ -58,15 +54,15 @@ namespace Aardvark.Base
         /// </summary>
         public bool AnyNaN { get { return Origin.AnyNaN || Direction.AnyNaN; } }
 
-        public Line3d Line3d
-        {
-            get { return new Line3d(Origin, Origin + Direction); }
-        }
+        /// <summary>
+        /// Line segment from origin to origin + direction.
+        /// </summary>
+        public Line3d Line3d => new Line3d(Origin, Origin + Direction);
 
-        public Ray3d Reversed
-        {
-            get { return new Ray3d(Origin, -Direction); }
-        }
+        /// <summary>
+        /// Returns new ray with flipped direction.
+        /// </summary>
+        public Ray3d Reversed => new Ray3d(Origin, -Direction);
 
         #endregion
 
@@ -75,10 +71,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Gets the point on the ray that is t * Direction from Origin.
         /// </summary>
-        public V3d GetPointOnRay(double t)
-        {
-            return Origin + Direction * t;
-        }
+        public V3d GetPointOnRay(double t) => Origin + Direction * t;
 
         /// <summary>
         /// Gets the t for a point p on this ray. 
@@ -108,37 +101,23 @@ namespace Aardvark.Base
         /// value contained in the supplied hit. Detailed information about
         /// the hit is returned in the supplied hit.
         /// </summary>
-        public bool Hits(
-            Ray3d ray, ref RayHit3d hit
-            )
-        {
-            return HitsRay(ray, double.MinValue, double.MaxValue, ref hit);
-        }
+        public bool Hits(Ray3d ray, ref RayHit3d hit)
+            => HitsRay(ray, double.MinValue, double.MaxValue, ref hit);
 
         /// <summary>
         /// Returns true if the ray hits the other ray before the parameter
         /// value contained in the supplied hit. Detailed information about
         /// the hit is returned in the supplied hit.
         /// </summary>
-        public bool Hits(
-            Ray3d ray,
-            double tmin, double tmax,
-            ref RayHit3d hit
-            )
-        {
-            return HitsRay(ray, tmin, tmax, ref hit);
-        }
+        public bool Hits(Ray3d ray, double tmin, double tmax, ref RayHit3d hit)
+            => HitsRay(ray, tmin, tmax, ref hit);
 
         /// <summary>
         /// Returns true if the ray hits the other ray before the parameter
         /// value contained in the supplied hit. Detailed information about
         /// the hit is returned in the supplied hit.
         /// </summary>
-        public bool HitsRay(
-            Ray3d ray,
-            double tmin, double tmax,
-            ref RayHit3d hit
-            )
+        public bool HitsRay(Ray3d ray, double tmin, double tmax, ref RayHit3d hit)
         {
             V3d d = Origin - ray.Origin;
             V3d u = Direction;
@@ -154,10 +133,12 @@ namespace Aardvark.Base
                 //M*{t0,t1,t2}T == d
                 //{t0,t1,t2}T == M^-1 * d
 
-                M33d M = new M33d();
-                M.C0 = -u;
-                M.C1 = v;
-                M.C2 = n;
+                M33d M = new M33d
+                {
+                    C0 = -u,
+                    C1 = v,
+                    C2 = n
+                };
 
                 if (M.Invertible)
                 {
@@ -178,14 +159,10 @@ namespace Aardvark.Base
         /// value contained in the supplied hit. Detailed information about
         /// the hit is returned in the supplied hit.
         /// </summary>
-        public bool Hits(
-            Triangle3d triangle, ref RayHit3d hit
-            )
-        {
-            return HitsTrianglePointAndEdges(
-                        triangle.P0, triangle.Edge01, triangle.Edge02,
-                        double.MinValue, double.MaxValue, ref hit);
-        }
+        public bool Hits(Triangle3d triangle, ref RayHit3d hit)
+            => HitsTrianglePointAndEdges(
+                triangle.P0, triangle.Edge01, triangle.Edge02,
+                double.MinValue, double.MaxValue, ref hit);
 
         /// <summary>
         /// Returns true if the ray hits the triangle within the supplied
@@ -194,16 +171,10 @@ namespace Aardvark.Base
         /// returned in the supplied hit. In order to obtain all potential
         /// hits, the supplied hit can be initialized with RayHit3d.MaxRange.
         /// </summary>
-        public bool Hits(
-            Triangle3d triangle,
-            double tmin, double tmax,
-            ref RayHit3d hit
-            )
-        {
-            return HitsTrianglePointAndEdges(
-                        triangle.P0, triangle.Edge01, triangle.Edge02,
-                        tmin, tmax, ref hit);
-        }
+        public bool Hits(Triangle3d triangle, double tmin, double tmax, ref RayHit3d hit)
+            => HitsTrianglePointAndEdges(
+                triangle.P0, triangle.Edge01, triangle.Edge02,
+                tmin, tmax, ref hit);
 
         /// <summary>
         /// Returns true if the ray hits the triangle within the supplied
@@ -280,13 +251,9 @@ namespace Aardvark.Base
         /// potential hits, the supplied hit can be initialized with
         /// RayHit3d.MaxRange.
         /// </summary>
-        public bool Hits(
-            Quad3d quad, ref RayHit3d hit
-            )
-        {
-            return HitsQuad(quad.P0, quad.P1, quad.P2, quad.P3,
-                            double.MinValue, double.MaxValue, ref hit);
-        }
+        public bool Hits(Quad3d quad, ref RayHit3d hit) => HitsQuad(
+            quad.P0, quad.P1, quad.P2, quad.P3,
+            double.MinValue, double.MaxValue, ref hit);
 
         /// <summary>
         /// Returns true if the ray hits the quad within the supplied
@@ -295,16 +262,10 @@ namespace Aardvark.Base
         /// returned in the supplied hit. In order to obtain all potential
         /// hits, the supplied hit can be initialized with RayHit3d.MaxRange.
         /// </summary>
-        public bool Hits(
-            Quad3d quad,
-            double tmin, double tmax,
-            ref RayHit3d hit
-            )
-        {
-            return HitsQuad(quad.P0, quad.P1, quad.P2, quad.P3,
-                            tmin, tmax, ref hit);
-        }
-
+        public bool Hits(Quad3d quad, double tmin, double tmax, ref RayHit3d hit) => HitsQuad(
+            quad.P0, quad.P1, quad.P2, quad.P3,
+            tmin, tmax, ref hit);
+        
         /// <summary>
         /// Returns true if the ray hits the quad within the supplied
         /// parameter interval and before the parameter value contained
@@ -442,13 +403,8 @@ namespace Aardvark.Base
         /// registered if the front or the backsurface is encountered
         /// within the interval.
         /// </summary>
-        public bool Hits(
-                Sphere3d sphere,
-                double tmin, double tmax,
-                ref RayHit3d hit)
-        {
-            return HitsSphere(sphere.Center, sphere.Radius, tmin, tmax, ref hit);
-        }
+        public bool Hits(Sphere3d sphere, double tmin, double tmax, ref RayHit3d hit)
+            => HitsSphere(sphere.Center, sphere.Radius, tmin, tmax, ref hit);
 
         public bool HitsPlane(Plane3d plane, double tmin, double tmax, ref RayHit3d hit)
         {
@@ -561,32 +517,25 @@ namespace Aardvark.Base
                 ref RayHit3d hit)
         {
             var intersects = HitsCylinder(cylinder, tmin, tmax, ref hit);
-
             return intersects;
         }
 
         /// <summary>
         /// Returns the ray transformed with the given matrix.
         /// </summary>
-        public Ray3d Transformed(M44d mat)
-        {
-            return new Ray3d(mat.TransformPos(Origin),
-                             mat.TransformDir(Direction));
-        }
+        public Ray3d Transformed(M44d mat) => new Ray3d(
+            mat.TransformPos(Origin), mat.TransformDir(Direction)
+            );
 
         #endregion
 
         #region Comparison Operators
 
         public static bool operator ==(Ray3d a, Ray3d b)
-        {
-            return (a.Origin == b.Origin) && (a.Direction == b.Direction);
-        }
+            => (a.Origin == b.Origin) && (a.Direction == b.Direction);
 
         public static bool operator !=(Ray3d a, Ray3d b)
-        {
-            return !((a.Origin == b.Origin) && (a.Direction == b.Direction));
-        }
+            => !((a.Origin == b.Origin) && (a.Direction == b.Direction));
 
         public int LexicalCompare(Ray3d other)
         {
@@ -603,29 +552,18 @@ namespace Aardvark.Base
         /// Calculates Hash-code of the given ray.
         /// </summary>
         /// <returns>Hash-code.</returns>
-        public override int GetHashCode()
-        {
-            return HashCode.GetCombined(Origin, Direction);
-        }
+        public override int GetHashCode() => HashCode.GetCombined(Origin, Direction);
 
         /// <summary>
         /// Checks if 2 objects are equal.
         /// </summary>
         /// <returns>Result of comparison.</returns>
-        public override bool Equals(object other)
-        {
-            if (other is Ray3d)
-            {
-                var value = (Ray3d)other;
-                return (Origin == value.Origin) && (Direction == value.Direction);
-            }
-            return false;
-        }
+        public override bool Equals(object other) => (other is Ray3d value)
+            ? (Origin == value.Origin) && (Direction == value.Direction)
+            : false;
 
         public override string ToString()
-        {
-            return string.Format(CultureInfo.InvariantCulture, "[{0}, {1}]", Origin, Direction);
-        }
+            => string.Format(CultureInfo.InvariantCulture, "[{0}, {1}]", Origin, Direction);
 
         public static Ray3d Parse(string s)
         {
@@ -637,10 +575,7 @@ namespace Aardvark.Base
 
         #region IBoundingBox3d
 
-        public Box3d BoundingBox3d
-        {
-            get { return Box3d.FromPoints(Origin, Direction + Origin); }
-        }
+        public Box3d BoundingBox3d => Box3d.FromPoints(Origin, Direction + Origin);
 
         #endregion
     }
@@ -1200,5 +1135,4 @@ namespace Aardvark.Base
 
         #endregion
     }
-
 }

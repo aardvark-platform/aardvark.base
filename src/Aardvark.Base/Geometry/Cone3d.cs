@@ -30,8 +30,8 @@ namespace Aardvark.Base
 
         #region Properties
 
-        public bool IsValid { get { return Circle.Radius >= 0.0; } }
-        public bool IsInvalid { get { return Circle.Radius < 0.0; } }
+        public bool IsValid => Circle.Radius >= 0.0;
+        public bool IsInvalid => Circle.Radius < 0.0;
 
         #endregion
 
@@ -80,8 +80,8 @@ namespace Aardvark.Base
 
         #region Properties
 
-        public bool IsValid { get { return Direction != V3d.Zero; } }
-        public bool IsInvalid { get { return Direction == V3d.Zero; } }
+        public bool IsValid => Direction != V3d.Zero;
+        public bool IsInvalid => Direction == V3d.Zero;
 
         #endregion
 
@@ -90,10 +90,7 @@ namespace Aardvark.Base
         /// <summary>
         /// if zero, point is located on cone
         /// </summary>
-        public double GetDistance(V3d point)
-        {
-            return V3d.Distance(point, GetClosestPoint(point));
-        }
+        public double GetDistance(V3d point) => V3d.Distance(point, GetClosestPoint(point));
 
         public Circle3d GetCircle(double height)
         {
@@ -101,25 +98,15 @@ namespace Aardvark.Base
             var dirLength = height;
             var radius = GetRadius(height);
             var dir = Direction.Normalized * dirLength;
-            Circle3d circle = new Circle3d(Origin + dir, dir.Normalized, radius);
-            return circle;
+            return new Circle3d(Origin + dir, dir.Normalized, radius);
         }
 
-        public Ray3d GetAxis()
-        {
-            return new Ray3d(Origin, Direction);
-        }
+        public Ray3d GetAxis() => new Ray3d(Origin, Direction);
 
         public double GetHeight(V3d position)
-        {
-            var ray = new Ray3d(Origin, Direction);
-            return ray.GetTOfProjectedPoint(position);
-        }
+            => new Ray3d(Origin, Direction).GetTOfProjectedPoint(position);
 
-        public double GetRadius(double height)
-        {
-            return height * Angle.Sin() / Angle.Cos();
-        }
+        public double GetRadius(double height) => height * Angle.Sin() / Angle.Cos();
 
         public V3d GetClosestPoint(V3d point)
         {
@@ -131,9 +118,7 @@ namespace Aardvark.Base
             var p0 = cp + dir;
             var p1 = point.GetClosestPointOn(new Ray3d(Origin, (p0 - Origin).Normalized));
 
-            if (V3d.Distance(point, p1) < V3d.Distance(point, p0))
-                return p1;
-            return p0;
+            return (V3d.Distance(point, p1) < V3d.Distance(point, p0)) ? p1 : p0;
         }
 
         #endregion

@@ -25,9 +25,7 @@ namespace Aardvark.Base
         }
 
         public static Ray2d FromEndPoints(V2d origin, V2d target)
-        {
-            return new Ray2d(origin, target - origin);
-        }
+            => new Ray2d(origin, target - origin);
 
         #endregion
 
@@ -45,36 +43,23 @@ namespace Aardvark.Base
         /// <summary>
         /// A ray is valid if its direction is non-zero.
         /// </summary>
-        public bool IsValid { get { return Direction != V2d.Zero; } }
+        public bool IsValid => Direction != V2d.Zero;
 
         /// <summary>
         /// A ray is invalid if its direction is zero.
         /// </summary>
-        public bool IsInvalid { get { return Direction == V2d.Zero; } }
+        public bool IsInvalid => Direction == V2d.Zero;
 
         /// <summary>
         /// Returns true if either the origin or the direction contains any NaN value.
         /// </summary>
-        public bool AnyNaN { get { return Origin.AnyNaN || Direction.AnyNaN; } }
+        public bool AnyNaN => Origin.AnyNaN || Direction.AnyNaN;
 
-        public Line2d Line2d
-        {
-            get { return new Line2d(Origin, Origin + Direction); }
-        }
+        public Line2d Line2d => new Line2d(Origin, Origin + Direction);
 
-        public Plane2d Plane2d
-        {
-            get 
-            {
-                V2d n = new V2d(-Direction.Y, Direction.X);
-                return new Plane2d(n, Origin);
-            }
-        }
+        public Plane2d Plane2d => new Plane2d(new V2d(-Direction.Y, Direction.X), Origin);
 
-        public Ray2d Reversed
-        {
-            get { return new Ray2d(Origin, -Direction); }
-        }
+        public Ray2d Reversed => new Ray2d(Origin, -Direction);
 
         #endregion
 
@@ -83,28 +68,21 @@ namespace Aardvark.Base
         /// <summary>
         /// Gets the point on the ray that is t * direction from origin.
         /// </summary>
-        public V2d GetPointOnRay(double t)
-        {
-            return (Origin + Direction * t);
-        }
+        public V2d GetPointOnRay(double t) => (Origin + Direction * t);
 
         /// <summary>
         /// Gets segment on the ray starting at range.Min * direction from origin
         /// and ending at range.Max * direction from origin.
         /// </summary>
         public Line2d GetLine2dOnRay(Range1d range)
-        {
-            return new Line2d(Origin + Direction * range.Min, Origin + Direction * range.Max);
-        }
+            => new Line2d(Origin + Direction * range.Min, Origin + Direction * range.Max);
 
         /// <summary>
         /// Gets segment on the ray starting at tMin * direction from origin
         /// and ending at tMax * direction from origin.
         /// </summary>
         public Line2d GetLine2dOnRay(double tMin, double tMax)
-        {
-            return new Line2d(Origin + Direction * tMin, Origin + Direction * tMax);
-        }
+            => new Line2d(Origin + Direction * tMin, Origin + Direction * tMax);
 
         /// <summary>
         /// Gets the t for a point p on this ray. 
@@ -122,9 +100,7 @@ namespace Aardvark.Base
         /// Ray direction must be normalized (length 1).
         /// </summary>
         public V2d GetClosestPointOnRay(V2d p)
-        {
-            return Origin + Direction * Direction.Dot(p - Origin);
-        }
+            => Origin + Direction * Direction.Dot(p - Origin);
 
         public double GetDistanceToRay(V2d p)
         {
@@ -161,24 +137,17 @@ namespace Aardvark.Base
         /// Returns a signed value where left is negative and right positive.
         /// The magnitude is equal to the double size of the triangle the ray + direction and p.
         /// </summary>
-        public double GetPointSide(V2d p)
-        {
-            return Direction.Dot90(p - Origin);
-        }
+        public double GetPointSide(V2d p) => Direction.Dot90(p - Origin);
 
         #endregion
 
         #region Comparison Operators
 
         public static bool operator ==(Ray2d a, Ray2d b)
-        {
-            return (a.Origin == b.Origin) && (a.Direction == b.Direction);
-        }
+            => (a.Origin == b.Origin) && (a.Direction == b.Direction);
 
         public static bool operator !=(Ray2d a, Ray2d b)
-        {
-            return !((a.Origin == b.Origin) && (a.Direction == b.Direction));
-        }
+            => !((a.Origin == b.Origin) && (a.Direction == b.Direction));
 
         public int LexicalCompare(Ray2d other)
         {
@@ -195,29 +164,18 @@ namespace Aardvark.Base
         /// Calculates Hash-code of the given ray.
         /// </summary>
         /// <returns>Hash-code.</returns>
-        public override int GetHashCode()
-        {
-            return HashCode.GetCombined(Origin, Direction);
-        }
+        public override int GetHashCode() => HashCode.GetCombined(Origin, Direction);
 
         /// <summary>
         /// Checks if 2 objects are equal.
         /// </summary>
         /// <returns>Result of comparison.</returns>
-        public override bool Equals(object other)
-        {
-            if (other is Ray2d)
-            {
-                var value = (Ray2d)other;
-                return (Origin == value.Origin) && (Direction == value.Direction);
-            }
-            return false;
-        }
+        public override bool Equals(object other) => (other is Ray2d value)
+             ? (Origin == value.Origin) && (Direction == value.Direction)
+             : false;
 
         public override string ToString()
-        {
-            return string.Format(CultureInfo.InvariantCulture, "[{0}, {1}]", Origin, Direction);
-        }
+            => string.Format(CultureInfo.InvariantCulture, "[{0}, {1}]", Origin, Direction);
 
         public static Ray2d Parse(string s)
         {
@@ -229,13 +187,7 @@ namespace Aardvark.Base
 
         #region IBoundingBox2d
 
-        public Box2d BoundingBox2d
-        {
-            get
-            {
-                return Box2d.FromPoints(Origin, Direction + Origin);
-            }
-        }
+        public Box2d BoundingBox2d => Box2d.FromPoints(Origin, Direction + Origin);
 
         #endregion
     }
@@ -432,6 +384,4 @@ namespace Aardvark.Base
 
         #endregion
     }
-
-
 }
