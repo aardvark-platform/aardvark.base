@@ -4,6 +4,7 @@ using System.ComponentModel;
 using System.Diagnostics;
 using System.Globalization;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Runtime.Serialization;
 
@@ -1165,38 +1166,41 @@ namespace Aardvark.Base
 
         #region Comparisons
 
-        public bool IsNaN
-        {
 #pragma warning disable 1718
-            get { return this != this; }
+        public bool IsNaN => this != this;
 #pragma warning restore 1718
-        }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool operator ==(__vtype__ a, __vtype__ b)
         {
             return /*# fields.ForEach(f => { */a.__f__ == b.__f__/*# }, andand); */;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool operator ==(__vtype__ v, __ftype__ s)
         {
             return /*# fields.ForEach(f => { */v.__f__ == s/*# }, andand); */;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool operator ==(__ftype__ s, __vtype__ v)
         {
             return /*# fields.ForEach(f => { */s == v.__f__/*# }, andand); */;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool operator !=(__vtype__ a, __vtype__ b)
         {
             return /*# fields.ForEach(f => { */a.__f__ != b.__f__/*# }, oror); */;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool operator !=(__vtype__ v, __ftype__ s)
         {
             return /*# fields.ForEach(f => { */v.__f__ != s/*# }, oror); */;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool operator !=(__ftype__ s, __vtype__ v)
         {
             return /*# fields.ForEach(f => { */s != v.__f__/*# }, oror); */;
@@ -1205,14 +1209,16 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns whether the given vectors are equal within the given tolerance.
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool ApproxEqual(__vtype__ a, __vtype__ b, __ftype__ tolerance)
         {
             return /*# fields.ForEach(f => { */(a.__f__ - b.__f__).Abs() <= tolerance/*# }, andand); */;
         }
-        
+
         /// <summary>
         /// Returns whether this vector is equal to the specified vector within the given tolerance.
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public bool ApproxEqual(__vtype__ v, __ftype__ tolerance)
         {
             return /*# fields.ForEach(f => { */(__f__ - v.__f__).Abs() <= tolerance/*# }, andand); */;
@@ -1223,6 +1229,7 @@ namespace Aardvark.Base
         /// Returns whether the given vectors are equal within
         /// Constant{__ftype__}.PositiveTinyValue.
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool ApproxEqual(__vtype__ a, __vtype__ b)
         {
             return ApproxEqual(a, b, Constant<__ftype__>.PositiveTinyValue);
@@ -1240,6 +1247,7 @@ namespace Aardvark.Base
         /// Returns whether ALL elements of a are __opName__ the corresponding element of b.
         /// __attention1__
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool All__opName__(__vtype__ a, __vtype__ b)
         {
             return (/*# fields.ForEach(f => { */a.__f____bop__b.__f__/*# }, andand); */);
@@ -1249,6 +1257,7 @@ namespace Aardvark.Base
         /// Returns whether ALL elements of this are __opName__ the corresponding element of v.
         /// __attention2__
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public bool All__opName__(__vtype__ v)
         {
             return (/*# fields.ForEach(f => { */this.__f____bop__v.__f__/*# }, andand); */);
@@ -1258,6 +1267,7 @@ namespace Aardvark.Base
         /// Returns whether ALL elements of v are __opName__ s.
         /// __attention1__
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool All__opName__(__vtype__ v, __ftype__ s)
         {
             return (/*# fields.ForEach(f => { */v.__f____bop__s/*# }, andand); */);
@@ -1267,6 +1277,7 @@ namespace Aardvark.Base
         /// Returns whether ALL elements of v are __opName__ s.
         /// __attention2__
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public bool All__opName__(__ftype__ s)
         {
             return (/*# fields.ForEach(f => { */this.__f____bop__s/*# }, andand); */);
@@ -1276,6 +1287,7 @@ namespace Aardvark.Base
         /// Returns whether a is __opName__ ALL elements of v.
         /// __attention1__
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool All__opName__(__ftype__ s, __vtype__ v)
         {
             return (/*# fields.ForEach(f => { */s__bop__v.__f__/*# }, andand); */);
@@ -1285,6 +1297,7 @@ namespace Aardvark.Base
         /// Returns whether AT LEAST ONE element of a is __opName__ the corresponding element of b.
         /// __attention1__
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool Any__opName__(__vtype__ a, __vtype__ b)
         {
             return (/*# fields.ForEach(f => { */a.__f____bop__b.__f__/*# }, oror); */);
@@ -1294,6 +1307,7 @@ namespace Aardvark.Base
         /// Returns whether AT LEAST ONE element of a is __opName__ the corresponding element of b.
         /// __attention2__
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public bool Any__opName__(__vtype__ v)
         {
             return (/*# fields.ForEach(f => { */this.__f____bop__v.__f__/*# }, oror); */);
@@ -1303,6 +1317,7 @@ namespace Aardvark.Base
         /// Returns whether AT LEAST ONE element of v is __opName__ s.
         /// __attention1__
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool Any__opName__(__vtype__ v, __ftype__ s)
         {
             return (/*# fields.ForEach(f => { */v.__f____bop__s/*# }, oror); */);
@@ -1312,6 +1327,7 @@ namespace Aardvark.Base
         /// Returns whether AT LEAST ONE element of v is __opName__ s.
         /// __attention1__
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public bool Any__opName__(__ftype__ s)
         {
             return (/*# fields.ForEach(f => { */this.__f____bop__s/*# }, oror); */);
@@ -1321,6 +1337,7 @@ namespace Aardvark.Base
         /// Returns whether a is __opName__ AT LEAST ONE element of v.
         /// __attention1__
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool Any__opName__(__ftype__ s, __vtype__ v)
         {
             return (/*# fields.ForEach(f => { */s__bop__v.__f__/*# }, oror); */);
@@ -1330,6 +1347,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns the componentwise minimum vector.
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static __vtype__ Min(__vtype__ v0, __vtype__ v1)
         {
             return new __vtype__(/*# fields.ForEach(f => { */Fun.Min(v0.__f__, v1.__f__)/*# }, comma); */);
@@ -1338,6 +1356,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns the componentwise maximum vector.
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static __vtype__ Max(__vtype__ v0, __vtype__ v1)
         {
             return new __vtype__(/*# fields.ForEach(f => { */Fun.Max(v0.__f__, v1.__f__)/*# }, comma); */);
@@ -1346,6 +1365,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Compare x-coordinate before y-coordinate, aso.
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static int LexicalCompare(__vtype__ v0, __vtype__ v1)
         {
             //# fields.ForEach(f => {
@@ -1358,6 +1378,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Compare x-coordinate before y-coordinate, aso.
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public int LexicalCompare(__vtype__ v1)
         {
             //# fields.ForEach(f => {

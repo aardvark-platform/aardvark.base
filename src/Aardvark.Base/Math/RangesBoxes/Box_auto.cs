@@ -7344,7 +7344,7 @@ namespace Aardvark.Base
         /// </summary>
         public bool IsInvalid
         {
-            get { return Min.AnyGreater(Max); }
+            get { return Min.AnyGreater(Max) || Min.IsNaN || Max.IsNaN; }
         }
 
         /// <summary>
@@ -8569,7 +8569,7 @@ namespace Aardvark.Base
         /// </summary>
         public bool IsInvalid
         {
-            get { return Min.AnyGreater(Max); }
+            get { return Min.AnyGreater(Max) || Min.IsNaN || Max.IsNaN; }
         }
 
         /// <summary>
@@ -9794,7 +9794,7 @@ namespace Aardvark.Base
         /// </summary>
         public bool IsInvalid
         {
-            get { return Min.AnyGreater(Max); }
+            get { return Min.AnyGreater(Max) || Min.IsNaN || Max.IsNaN; }
         }
 
         /// <summary>
@@ -11109,7 +11109,7 @@ namespace Aardvark.Base
         /// </summary>
         public bool IsInvalid
         {
-            get { return Min.AnyGreater(Max); }
+            get { return Min.AnyGreater(Max) || Min.IsNaN || Max.IsNaN; }
         }
 
         /// <summary>
@@ -12428,7 +12428,7 @@ namespace Aardvark.Base
         /// </summary>
         public bool IsInvalid
         {
-            get { return Min.AnyGreater(Max); }
+            get { return Min.AnyGreater(Max) || Min.IsNaN || Max.IsNaN; }
         }
 
         /// <summary>
@@ -13673,7 +13673,7 @@ namespace Aardvark.Base
         /// </summary>
         public bool IsInvalid
         {
-            get { return Min.AnyGreater(Max); }
+            get { return Min.AnyGreater(Max) || Min.IsNaN || Max.IsNaN; }
         }
 
         /// <summary>
@@ -14918,7 +14918,7 @@ namespace Aardvark.Base
         /// </summary>
         public bool IsInvalid
         {
-            get { return Min.AnyGreater(Max); }
+            get { return Min.AnyGreater(Max) || Min.IsNaN || Max.IsNaN; }
         }
 
         /// <summary>
@@ -16258,7 +16258,7 @@ namespace Aardvark.Base
         /// </summary>
         public bool IsInvalid
         {
-            get { return Min.AnyGreater(Max); }
+            get { return Min.AnyGreater(Max) || Min.IsNaN || Max.IsNaN; }
         }
 
         /// <summary>

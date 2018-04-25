@@ -60,6 +60,7 @@
     <Compile Include="AlgoDat\SortingTests.cs" />
     <Compile Include="Extensions\Hashes.cs" />
     <Compile Include="Extensions\ListHeapTests.cs" />
+    <Compile Include="Geometry\Circle2dTests.cs" />
     <Compile Include="Geometry\Hull2dTests.cs" />
     <Compile Include="Geometry\Hull3dTests.cs" />
     <Compile Include="Geometry\PolygonClipping.cs" />
@@ -75,6 +76,7 @@
     <Compile Include="TestSuite\TestSuite.cs" />
     <Compile Include="Trafos\MatrixTests.cs" />
     <Compile Include="Trafos\TrafoTests.cs" />
+    <Compile Include="Vectors\VectorTests.cs" />
     <Compile Include="Vectors\V3fCoderTests.cs" />
   </ItemGroup>
   <ItemGroup>

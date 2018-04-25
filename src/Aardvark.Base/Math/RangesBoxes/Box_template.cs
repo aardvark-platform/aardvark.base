@@ -279,7 +279,7 @@ namespace Aardvark.Base
         /// </summary>
         public bool IsInvalid
         {
-            get { return /*# if (dim == 1) { */Min > Max;/*# } else { */Min.AnyGreater(Max);/*# } */ }
+            get { return /*# if (dim == 1) { */Min > Max;/*# } else { */Min.AnyGreater(Max) || Min.IsNaN || Max.IsNaN;/*# } */ }
         }
 
         /// <summary>

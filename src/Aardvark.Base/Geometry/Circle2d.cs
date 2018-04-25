@@ -1,6 +1,7 @@
 using System.Globalization;
 using System.Linq;
 using System.Runtime.InteropServices;
+using static System.Math;
 
 namespace Aardvark.Base
 {
@@ -27,20 +28,21 @@ namespace Aardvark.Base
 
         public static readonly Circle2d Zero = new Circle2d(V2d.Zero, 0.0);
         public static readonly Circle2d Invalid = new Circle2d(V2d.NaN, -1.0);
+        public static readonly Circle2d Unit = new Circle2d(V2d.Zero, 1.0);
 
         #endregion
 
         #region Properties
 
-        public bool IsInvalid => Radius < 0.0;
+        public bool IsInvalid => Radius < 0.0 || double.IsNaN(Radius) || Center.IsNaN;
 
-        public bool IsValid => Radius >= 0.0;
+        public bool IsValid => Radius >= 0.0 && !Center.IsNaN;
 
         public double RadiusSquared => Radius * Radius;
 
-        public double Circumference => 2.0 * Radius * Constant.Pi;
+        public double Circumference => 2.0 * Radius * PI;
 
-        public double Area => Radius.Square() * Constant.Pi;
+        public double Area => Radius * Radius * PI;
 
         #endregion
 
@@ -66,7 +68,7 @@ namespace Aardvark.Base
         public static Circle2d Parse(string s)
         {
             var x = s.NestedBracketSplitLevelOne().ToArray();
-            return new Circle2d(V2d.Parse(x[0]), double.Parse(x[1]));
+            return new Circle2d(V2d.Parse(x[0]), double.Parse(x[1], CultureInfo.InvariantCulture));
         }
 
         #endregion
