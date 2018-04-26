@@ -91,6 +91,15 @@ namespace Aardvark.Base
 
         public double Area => Radius * Radius * PI;
 
+        public Box2d InscribedSquare
+        {
+            get
+            {
+                var a = Sqrt(RadiusSquared * 0.5);
+                return new Box2d(new V2d(-a), new V2d(a));
+            }
+        }
+
         #endregion
 
         #region Contains

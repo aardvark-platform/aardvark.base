@@ -954,13 +954,22 @@ namespace Aardvark.Base
 
         #endregion
 
+        #region Circle2d intersects Circle2d
+
+        /// <summary>
+        /// Returns true if the circles intersect, or one contains the other.
+        /// </summary>
+        public static bool Intersects(this Circle2d c0, Circle2d c1)
+            => (c0.Center - c1.Center).LengthSquared <= (c0.Radius + c1.Radius).Square();
+
+        #endregion
 
         #region Triangle2d intersects Line2d
 
-        /// <summary>
-        /// Returns true if the triangle and the line intersect or the triangle contains the line
-        /// </summary>
-        public static bool Intersects(
+            /// <summary>
+            /// Returns true if the triangle and the line intersect or the triangle contains the line
+            /// </summary>
+            public static bool Intersects(
             this Triangle2d triangle, 
             Line2d line
             )
@@ -1031,14 +1040,11 @@ namespace Aardvark.Base
         #region Triangle2d intersects Triangle2d
 
         /// <summary>
-        /// Returns true if the Triangles intersect or one contains the other
+        /// Returns true if the triangles intersect or one contains the other.
         /// </summary>
-        public static bool Intersects(
-            this Triangle2d t0, 
-            Triangle2d t1
-            )
+        public static bool Intersects(this Triangle2d t0, Triangle2d t1)
         {
-            Line2d l = t0.Line01;
+            var l = t0.Line01;
             if (l.IntersectsLine(t1.P0, t1.P1)) return true;
             if (l.IntersectsLine(t1.P1, t1.P2)) return true;
             if (l.IntersectsLine(t1.P2, t1.P0)) return true;
@@ -3090,18 +3096,14 @@ namespace Aardvark.Base
         /// The plane will intersect the cylinder in two rays or in one tangent line.
         /// </summary>
         public static bool IsParallelToAxis(this Plane3d plane, Cylinder3d cylinder)
-        {
-            return plane.Normal.IsOrthogonalTo(cylinder.Axis.Direction.Normalized);
-        }
+            => plane.Normal.IsOrthogonalTo(cylinder.Axis.Direction.Normalized);
 
         /// <summary>
         /// Tests if the given plane is orthogonal to the cylinder axis (i.e. the plane's normal is parallel to the axis).
         /// The plane will intersect the cylinder in a circle.
         /// </summary>
         public static bool IsOrthogonalToAxis(this Plane3d plane, Cylinder3d cylinder)
-        {
-            return plane.Normal.IsParallelTo(cylinder.Axis.Direction.Normalized);
-        }
+            => plane.Normal.IsParallelTo(cylinder.Axis.Direction.Normalized);
 
         /// <summary>
         /// Returns true if the given plane and cylinder intersect in an ellipse. 
@@ -3119,9 +3121,7 @@ namespace Aardvark.Base
             }
 
             var dir = cylinder.Axis.Direction.Normalized;
-            V3d center;
-            double t;
-            cylinder.Axis.Ray3d.Intersects(plane, out t, out center);
+            cylinder.Axis.Ray3d.Intersects(plane, out double t, out V3d center);
             var cosTheta = dir.Dot(plane.Normal);
 
             var eNormal = plane.Normal;

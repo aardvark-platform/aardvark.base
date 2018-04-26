@@ -127,6 +127,16 @@ namespace Aardvark.Tests.Geometry
         }
 
         [Test]
+        public void Circle2d_InscribedSquare()
+        {
+            var a = new Circle2d(V2d.Zero, Constant.Sqrt2);
+            var s = a.InscribedSquare;
+            Assert.IsTrue(s.Center == V2d.Zero);
+            Assert.IsTrue(s.Min == new V2d(-1));
+            Assert.IsTrue(s.Max == new V2d(+1));
+        }
+
+        [Test]
         public void Circle2d_HashCode1()
         {
             var a = new Circle2d(V2d.Zero, 1.0);

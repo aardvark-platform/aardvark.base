@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics.Contracts;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Text;
 
 namespace Aardvark.Base
@@ -13,394 +14,394 @@ namespace Aardvark.Base
         #region Min and Max
 
         [Pure]
-        public static byte Min(byte a, byte b) { return a < b ? a : b; }
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static byte Min(byte a, byte b)
+            => a < b ? a : b;
         
         [Pure]
-        public static byte Max(byte a, byte b) { return a > b ? a : b; }
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static byte Max(byte a, byte b)
+            => a > b ? a : b;
 
         [Pure]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static byte Min(byte a, byte b, byte c)
-        {
-            return a < b ? (a < c ? a : c) : (b < c ? b : c);
-        }
+            => a < b ? (a < c ? a : c) : (b < c ? b : c);
 
         [Pure]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static byte Max(byte a, byte b, byte c)
-        {
-            return a > b ? (a > c ? a : c) : (b > c ? b : c);
-        }
+            => a > b ? (a > c ? a : c) : (b > c ? b : c);
 
         [Pure]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static byte Min(byte a, byte b, byte c, byte d)
-        {
-            return Min(Min(a, b), Min(c, d));
-        }
+            => Min(Min(a, b), Min(c, d));
 
         [Pure]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static byte Max(byte a, byte b, byte c, byte d)
-        {
-            return Max(Max(a, b), Max(c, d));
-        }
+            => Max(Max(a, b), Max(c, d));
 
         [Pure]
-        public static sbyte Min(sbyte a, sbyte b) { return a < b ? a : b; }
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static sbyte Min(sbyte a, sbyte b)
+            => a < b ? a : b;
         
         [Pure]
-        public static sbyte Max(sbyte a, sbyte b) { return a > b ? a : b; }
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static sbyte Max(sbyte a, sbyte b)
+            => a > b ? a : b;
 
         [Pure]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static sbyte Min(sbyte a, sbyte b, sbyte c)
-        {
-            return a < b ? (a < c ? a : c) : (b < c ? b : c);
-        }
+            => a < b ? (a < c ? a : c) : (b < c ? b : c);
 
         [Pure]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static sbyte Max(sbyte a, sbyte b, sbyte c)
-        {
-            return a > b ? (a > c ? a : c) : (b > c ? b : c);
-        }
+            => a > b ? (a > c ? a : c) : (b > c ? b : c);
 
         [Pure]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static sbyte Min(sbyte a, sbyte b, sbyte c, sbyte d)
-        {
-            return Min(Min(a, b), Min(c, d));
-        }
+            => Min(Min(a, b), Min(c, d));
 
         [Pure]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static sbyte Max(sbyte a, sbyte b, sbyte c, sbyte d)
-        {
-            return Max(Max(a, b), Max(c, d));
-        }
+            => Max(Max(a, b), Max(c, d));
 
         [Pure]
-        public static short Min(short a, short b) { return a < b ? a : b; }
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static short Min(short a, short b)
+            => a < b ? a : b;
         
         [Pure]
-        public static short Max(short a, short b) { return a > b ? a : b; }
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static short Max(short a, short b)
+            => a > b ? a : b;
 
         [Pure]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static short Min(short a, short b, short c)
-        {
-            return a < b ? (a < c ? a : c) : (b < c ? b : c);
-        }
+            => a < b ? (a < c ? a : c) : (b < c ? b : c);
 
         [Pure]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static short Max(short a, short b, short c)
-        {
-            return a > b ? (a > c ? a : c) : (b > c ? b : c);
-        }
+            => a > b ? (a > c ? a : c) : (b > c ? b : c);
 
         [Pure]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static short Min(short a, short b, short c, short d)
-        {
-            return Min(Min(a, b), Min(c, d));
-        }
+            => Min(Min(a, b), Min(c, d));
 
         [Pure]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static short Max(short a, short b, short c, short d)
-        {
-            return Max(Max(a, b), Max(c, d));
-        }
+            => Max(Max(a, b), Max(c, d));
 
         [Pure]
-        public static ushort Min(ushort a, ushort b) { return a < b ? a : b; }
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static ushort Min(ushort a, ushort b)
+            => a < b ? a : b;
         
         [Pure]
-        public static ushort Max(ushort a, ushort b) { return a > b ? a : b; }
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static ushort Max(ushort a, ushort b)
+            => a > b ? a : b;
 
         [Pure]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static ushort Min(ushort a, ushort b, ushort c)
-        {
-            return a < b ? (a < c ? a : c) : (b < c ? b : c);
-        }
+            => a < b ? (a < c ? a : c) : (b < c ? b : c);
 
         [Pure]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static ushort Max(ushort a, ushort b, ushort c)
-        {
-            return a > b ? (a > c ? a : c) : (b > c ? b : c);
-        }
+            => a > b ? (a > c ? a : c) : (b > c ? b : c);
 
         [Pure]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static ushort Min(ushort a, ushort b, ushort c, ushort d)
-        {
-            return Min(Min(a, b), Min(c, d));
-        }
+            => Min(Min(a, b), Min(c, d));
 
         [Pure]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static ushort Max(ushort a, ushort b, ushort c, ushort d)
-        {
-            return Max(Max(a, b), Max(c, d));
-        }
+            => Max(Max(a, b), Max(c, d));
 
         [Pure]
-        public static int Min(int a, int b) { return a < b ? a : b; }
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static int Min(int a, int b)
+            => a < b ? a : b;
         
         [Pure]
-        public static int Max(int a, int b) { return a > b ? a : b; }
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static int Max(int a, int b)
+            => a > b ? a : b;
 
         [Pure]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static int Min(int a, int b, int c)
-        {
-            return a < b ? (a < c ? a : c) : (b < c ? b : c);
-        }
+            => a < b ? (a < c ? a : c) : (b < c ? b : c);
 
         [Pure]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static int Max(int a, int b, int c)
-        {
-            return a > b ? (a > c ? a : c) : (b > c ? b : c);
-        }
+            => a > b ? (a > c ? a : c) : (b > c ? b : c);
 
         [Pure]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static int Min(int a, int b, int c, int d)
-        {
-            return Min(Min(a, b), Min(c, d));
-        }
+            => Min(Min(a, b), Min(c, d));
 
         [Pure]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static int Max(int a, int b, int c, int d)
-        {
-            return Max(Max(a, b), Max(c, d));
-        }
+            => Max(Max(a, b), Max(c, d));
 
         [Pure]
-        public static uint Min(uint a, uint b) { return a < b ? a : b; }
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static uint Min(uint a, uint b)
+            => a < b ? a : b;
         
         [Pure]
-        public static uint Max(uint a, uint b) { return a > b ? a : b; }
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static uint Max(uint a, uint b)
+            => a > b ? a : b;
 
         [Pure]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static uint Min(uint a, uint b, uint c)
-        {
-            return a < b ? (a < c ? a : c) : (b < c ? b : c);
-        }
+            => a < b ? (a < c ? a : c) : (b < c ? b : c);
 
         [Pure]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static uint Max(uint a, uint b, uint c)
-        {
-            return a > b ? (a > c ? a : c) : (b > c ? b : c);
-        }
+            => a > b ? (a > c ? a : c) : (b > c ? b : c);
 
         [Pure]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static uint Min(uint a, uint b, uint c, uint d)
-        {
-            return Min(Min(a, b), Min(c, d));
-        }
+            => Min(Min(a, b), Min(c, d));
 
         [Pure]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static uint Max(uint a, uint b, uint c, uint d)
-        {
-            return Max(Max(a, b), Max(c, d));
-        }
+            => Max(Max(a, b), Max(c, d));
 
         [Pure]
-        public static long Min(long a, long b) { return a < b ? a : b; }
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static long Min(long a, long b)
+            => a < b ? a : b;
         
         [Pure]
-        public static long Max(long a, long b) { return a > b ? a : b; }
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static long Max(long a, long b)
+            => a > b ? a : b;
 
         [Pure]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static long Min(long a, long b, long c)
-        {
-            return a < b ? (a < c ? a : c) : (b < c ? b : c);
-        }
+            => a < b ? (a < c ? a : c) : (b < c ? b : c);
 
         [Pure]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static long Max(long a, long b, long c)
-        {
-            return a > b ? (a > c ? a : c) : (b > c ? b : c);
-        }
+            => a > b ? (a > c ? a : c) : (b > c ? b : c);
 
         [Pure]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static long Min(long a, long b, long c, long d)
-        {
-            return Min(Min(a, b), Min(c, d));
-        }
+            => Min(Min(a, b), Min(c, d));
 
         [Pure]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static long Max(long a, long b, long c, long d)
-        {
-            return Max(Max(a, b), Max(c, d));
-        }
+            => Max(Max(a, b), Max(c, d));
 
         [Pure]
-        public static ulong Min(ulong a, ulong b) { return a < b ? a : b; }
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static ulong Min(ulong a, ulong b)
+            => a < b ? a : b;
         
         [Pure]
-        public static ulong Max(ulong a, ulong b) { return a > b ? a : b; }
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static ulong Max(ulong a, ulong b)
+            => a > b ? a : b;
 
         [Pure]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static ulong Min(ulong a, ulong b, ulong c)
-        {
-            return a < b ? (a < c ? a : c) : (b < c ? b : c);
-        }
+            => a < b ? (a < c ? a : c) : (b < c ? b : c);
 
         [Pure]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static ulong Max(ulong a, ulong b, ulong c)
-        {
-            return a > b ? (a > c ? a : c) : (b > c ? b : c);
-        }
+            => a > b ? (a > c ? a : c) : (b > c ? b : c);
 
         [Pure]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static ulong Min(ulong a, ulong b, ulong c, ulong d)
-        {
-            return Min(Min(a, b), Min(c, d));
-        }
+            => Min(Min(a, b), Min(c, d));
 
         [Pure]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static ulong Max(ulong a, ulong b, ulong c, ulong d)
-        {
-            return Max(Max(a, b), Max(c, d));
-        }
+            => Max(Max(a, b), Max(c, d));
 
         [Pure]
-        public static float Min(float a, float b) { return a < b ? a : b; }
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static float Min(float a, float b)
+            => a < b ? a : b;
         
         [Pure]
-        public static float Max(float a, float b) { return a > b ? a : b; }
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static float Max(float a, float b)
+            => a > b ? a : b;
 
         [Pure]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static float Min(float a, float b, float c)
-        {
-            return a < b ? (a < c ? a : c) : (b < c ? b : c);
-        }
+            => a < b ? (a < c ? a : c) : (b < c ? b : c);
 
         [Pure]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static float Max(float a, float b, float c)
-        {
-            return a > b ? (a > c ? a : c) : (b > c ? b : c);
-        }
+            => a > b ? (a > c ? a : c) : (b > c ? b : c);
 
         [Pure]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static float Min(float a, float b, float c, float d)
-        {
-            return Min(Min(a, b), Min(c, d));
-        }
+            => Min(Min(a, b), Min(c, d));
 
         [Pure]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static float Max(float a, float b, float c, float d)
-        {
-            return Max(Max(a, b), Max(c, d));
-        }
+            => Max(Max(a, b), Max(c, d));
 
         [Pure]
-        public static double Min(double a, double b) { return a < b ? a : b; }
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static double Min(double a, double b)
+            => a < b ? a : b;
         
         [Pure]
-        public static double Max(double a, double b) { return a > b ? a : b; }
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static double Max(double a, double b)
+            => a > b ? a : b;
 
         [Pure]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static double Min(double a, double b, double c)
-        {
-            return a < b ? (a < c ? a : c) : (b < c ? b : c);
-        }
+            => a < b ? (a < c ? a : c) : (b < c ? b : c);
 
         [Pure]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static double Max(double a, double b, double c)
-        {
-            return a > b ? (a > c ? a : c) : (b > c ? b : c);
-        }
+            => a > b ? (a > c ? a : c) : (b > c ? b : c);
 
         [Pure]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static double Min(double a, double b, double c, double d)
-        {
-            return Min(Min(a, b), Min(c, d));
-        }
+            => Min(Min(a, b), Min(c, d));
 
         [Pure]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static double Max(double a, double b, double c, double d)
-        {
-            return Max(Max(a, b), Max(c, d));
-        }
+            => Max(Max(a, b), Max(c, d));
 
         [Pure]
-        public static Fraction Min(Fraction a, Fraction b) { return a < b ? a : b; }
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Fraction Min(Fraction a, Fraction b)
+            => a < b ? a : b;
         
         [Pure]
-        public static Fraction Max(Fraction a, Fraction b) { return a > b ? a : b; }
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Fraction Max(Fraction a, Fraction b)
+            => a > b ? a : b;
 
         [Pure]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Fraction Min(Fraction a, Fraction b, Fraction c)
-        {
-            return a < b ? (a < c ? a : c) : (b < c ? b : c);
-        }
+            => a < b ? (a < c ? a : c) : (b < c ? b : c);
 
         [Pure]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Fraction Max(Fraction a, Fraction b, Fraction c)
-        {
-            return a > b ? (a > c ? a : c) : (b > c ? b : c);
-        }
+            => a > b ? (a > c ? a : c) : (b > c ? b : c);
 
         [Pure]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Fraction Min(Fraction a, Fraction b, Fraction c, Fraction d)
-        {
-            return Min(Min(a, b), Min(c, d));
-        }
+            => Min(Min(a, b), Min(c, d));
 
         [Pure]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Fraction Max(Fraction a, Fraction b, Fraction c, Fraction d)
-        {
-            return Max(Max(a, b), Max(c, d));
-        }
+            => Max(Max(a, b), Max(c, d));
 
         [Pure]
-        public static DateTime Min(DateTime a, DateTime b) { return a < b ? a : b; }
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static DateTime Min(DateTime a, DateTime b)
+            => a < b ? a : b;
         
         [Pure]
-        public static DateTime Max(DateTime a, DateTime b) { return a > b ? a : b; }
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static DateTime Max(DateTime a, DateTime b)
+            => a > b ? a : b;
 
         [Pure]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static DateTime Min(DateTime a, DateTime b, DateTime c)
-        {
-            return a < b ? (a < c ? a : c) : (b < c ? b : c);
-        }
+            => a < b ? (a < c ? a : c) : (b < c ? b : c);
 
         [Pure]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static DateTime Max(DateTime a, DateTime b, DateTime c)
-        {
-            return a > b ? (a > c ? a : c) : (b > c ? b : c);
-        }
+            => a > b ? (a > c ? a : c) : (b > c ? b : c);
 
         [Pure]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static DateTime Min(DateTime a, DateTime b, DateTime c, DateTime d)
-        {
-            return Min(Min(a, b), Min(c, d));
-        }
+            => Min(Min(a, b), Min(c, d));
 
         [Pure]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static DateTime Max(DateTime a, DateTime b, DateTime c, DateTime d)
-        {
-            return Max(Max(a, b), Max(c, d));
-        }
+            => Max(Max(a, b), Max(c, d));
 
         [Pure]
-        public static TimeSpan Min(TimeSpan a, TimeSpan b) { return a < b ? a : b; }
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static TimeSpan Min(TimeSpan a, TimeSpan b)
+            => a < b ? a : b;
         
         [Pure]
-        public static TimeSpan Max(TimeSpan a, TimeSpan b) { return a > b ? a : b; }
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static TimeSpan Max(TimeSpan a, TimeSpan b)
+            => a > b ? a : b;
 
         [Pure]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static TimeSpan Min(TimeSpan a, TimeSpan b, TimeSpan c)
-        {
-            return a < b ? (a < c ? a : c) : (b < c ? b : c);
-        }
+            => a < b ? (a < c ? a : c) : (b < c ? b : c);
 
         [Pure]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static TimeSpan Max(TimeSpan a, TimeSpan b, TimeSpan c)
-        {
-            return a > b ? (a > c ? a : c) : (b > c ? b : c);
-        }
+            => a > b ? (a > c ? a : c) : (b > c ? b : c);
 
         [Pure]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static TimeSpan Min(TimeSpan a, TimeSpan b, TimeSpan c, TimeSpan d)
-        {
-            return Min(Min(a, b), Min(c, d));
-        }
+            => Min(Min(a, b), Min(c, d));
 
         [Pure]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static TimeSpan Max(TimeSpan a, TimeSpan b, TimeSpan c, TimeSpan d)
-        {
-            return Max(Max(a, b), Max(c, d));
-        }
+            => Max(Max(a, b), Max(c, d));
 
         #endregion
 
@@ -410,64 +411,50 @@ namespace Aardvark.Base
         /// Returns the absolute value of the specified number.
         /// </summary>
         [Pure]
-        public static sbyte Abs(this sbyte x)
-        {
-            return System.Math.Abs(x);
-        }
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static sbyte Abs(this sbyte x) => Math.Abs(x);
 
         /// <summary>
         /// Returns the absolute value of the specified number.
         /// </summary>
         [Pure]
-        public static short Abs(this short x)
-        {
-            return System.Math.Abs(x);
-        }
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static short Abs(this short x) => Math.Abs(x);
 
         /// <summary>
         /// Returns the absolute value of the specified number.
         /// </summary>
         [Pure]
-        public static int Abs(this int x)
-        {
-            return System.Math.Abs(x);
-        }
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static int Abs(this int x) => Math.Abs(x);
 
         /// <summary>
         /// Returns the absolute value of the specified number.
         /// </summary>
         [Pure]
-        public static long Abs(this long x)
-        {
-            return System.Math.Abs(x);
-        }
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static long Abs(this long x) => Math.Abs(x);
 
         /// <summary>
         /// Returns the absolute value of the specified number.
         /// </summary>
         [Pure]
-        public static float Abs(this float x)
-        {
-            return System.Math.Abs(x);
-        }
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static float Abs(this float x) => Math.Abs(x);
 
         /// <summary>
         /// Returns the absolute value of the specified number.
         /// </summary>
         [Pure]
-        public static double Abs(this double x)
-        {
-            return System.Math.Abs(x);
-        }
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static double Abs(this double x) => Math.Abs(x);
 
         /// <summary>
         /// Returns the absolute value of the specified number.
         /// </summary>
         [Pure]
-        public static decimal Abs(this decimal x)
-        {
-            return System.Math.Abs(x);
-        }
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static decimal Abs(this decimal x) => Math.Abs(x);
 
         #endregion
 
@@ -477,64 +464,57 @@ namespace Aardvark.Base
         /// Returns whether the distance between x and y is not more than epsilon.
         /// </summary>
         [Pure]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool ApproximateEquals(this sbyte x, sbyte y, sbyte epsilon)
-        {
-            return Abs(x - y) <= epsilon;
-        }
+            => Abs(x - y) <= epsilon;
 
         /// <summary>
         /// Returns whether the distance between x and y is not more than epsilon.
         /// </summary>
         [Pure]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool ApproximateEquals(this short x, short y, short epsilon)
-        {
-            return Abs(x - y) <= epsilon;
-        }
+            => Abs(x - y) <= epsilon;
 
         /// <summary>
         /// Returns whether the distance between x and y is not more than epsilon.
         /// </summary>
         [Pure]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool ApproximateEquals(this int x, int y, int epsilon)
-        {
-            return Abs(x - y) <= epsilon;
-        }
+            => Abs(x - y) <= epsilon;
 
         /// <summary>
         /// Returns whether the distance between x and y is not more than epsilon.
         /// </summary>
         [Pure]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool ApproximateEquals(this long x, long y, long epsilon)
-        {
-            return Abs(x - y) <= epsilon;
-        }
+            => Abs(x - y) <= epsilon;
 
         /// <summary>
         /// Returns whether the distance between x and y is not more than epsilon.
         /// </summary>
         [Pure]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool ApproximateEquals(this float x, float y, float epsilon)
-        {
-            return Abs(x - y) <= epsilon;
-        }
+            => Abs(x - y) <= epsilon;
 
         /// <summary>
         /// Returns whether the distance between x and y is not more than epsilon.
         /// </summary>
         [Pure]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool ApproximateEquals(this double x, double y, double epsilon)
-        {
-            return Abs(x - y) <= epsilon;
-        }
+            => Abs(x - y) <= epsilon;
 
         /// <summary>
         /// Returns whether the distance between x and y is not more than epsilon.
         /// </summary>
         [Pure]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool ApproximateEquals(this decimal x, decimal y, decimal epsilon)
-        {
-            return Abs(x - y) <= epsilon;
-        }
+            => Abs(x - y) <= epsilon;
 
         #endregion
 
@@ -544,19 +524,17 @@ namespace Aardvark.Base
         /// Returns the largest integer less than or equal to the specified number.
         /// </summary>
         [Pure]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static float Floor(this float x)
-        {
-            return (float)System.Math.Floor(x);
-        }
+            => (float)Math.Floor(x);
 
         /// <summary>
         /// Returns the largest integer less than or equal to the specified number.
         /// </summary>
         [Pure]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static double Floor(this double x)
-        {
-            return System.Math.Floor(x);
-        }
+            => Math.Floor(x);
 
         #endregion
 
@@ -566,19 +544,17 @@ namespace Aardvark.Base
         /// Returns the smallest integer greater than or equal to the specified number.
         /// </summary>
         [Pure]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static float Ceiling(this float x)
-        {
-            return (float)System.Math.Ceiling(x);
-        }
+            => (float)System.Math.Ceiling(x);
 
         /// <summary>
         /// Returns the smallest integer greater than or equal to the specified number.
         /// </summary>
         [Pure]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static double Ceiling(this double x)
-        {
-            return System.Math.Ceiling(x);
-        }
+            => System.Math.Ceiling(x);
 
         #endregion
 
@@ -588,19 +564,17 @@ namespace Aardvark.Base
         /// Rounds a float-point value to the nearest integral value.
         /// </summary>
         [Pure]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static float Round(this float x)
-        {
-            return (float)System.Math.Round(x);
-        }
+            => (float)System.Math.Round(x);
 
         /// <summary>
         /// Rounds a float-point value to the nearest integral value.
         /// </summary>
         [Pure]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static double Round(this double x)
-        {
-            return System.Math.Round(x);
-        }
+            => System.Math.Round(x);
 
         #endregion
 
@@ -610,6 +584,7 @@ namespace Aardvark.Base
         /// Clamps value to interval [a,b].
         /// </summary>
         [Pure]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static byte Clamp(this byte x, byte a, byte b)
         {
             if (x < a) return a;
@@ -621,6 +596,7 @@ namespace Aardvark.Base
         /// Clamps value to interval [a,b].
         /// </summary>
         [Pure]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static sbyte Clamp(this sbyte x, sbyte a, sbyte b)
         {
             if (x < a) return a;
@@ -632,6 +608,7 @@ namespace Aardvark.Base
         /// Clamps value to interval [a,b].
         /// </summary>
         [Pure]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static short Clamp(this short x, short a, short b)
         {
             if (x < a) return a;
@@ -643,6 +620,7 @@ namespace Aardvark.Base
         /// Clamps value to interval [a,b].
         /// </summary>
         [Pure]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static ushort Clamp(this ushort x, ushort a, ushort b)
         {
             if (x < a) return a;
@@ -654,6 +632,7 @@ namespace Aardvark.Base
         /// Clamps value to interval [a,b].
         /// </summary>
         [Pure]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static int Clamp(this int x, int a, int b)
         {
             if (x < a) return a;
@@ -665,6 +644,7 @@ namespace Aardvark.Base
         /// Clamps value to interval [a,b].
         /// </summary>
         [Pure]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static uint Clamp(this uint x, uint a, uint b)
         {
             if (x < a) return a;
@@ -676,6 +656,7 @@ namespace Aardvark.Base
         /// Clamps value to interval [a,b].
         /// </summary>
         [Pure]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static long Clamp(this long x, long a, long b)
         {
             if (x < a) return a;
@@ -687,6 +668,7 @@ namespace Aardvark.Base
         /// Clamps value to interval [a,b].
         /// </summary>
         [Pure]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static ulong Clamp(this ulong x, ulong a, ulong b)
         {
             if (x < a) return a;
@@ -698,6 +680,7 @@ namespace Aardvark.Base
         /// Clamps value to interval [a,b].
         /// </summary>
         [Pure]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static float Clamp(this float x, float a, float b)
         {
             if (x < a) return a;
@@ -709,6 +692,7 @@ namespace Aardvark.Base
         /// Clamps value to interval [a,b].
         /// </summary>
         [Pure]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static double Clamp(this double x, double a, double b)
         {
             if (x < a) return a;
@@ -720,6 +704,7 @@ namespace Aardvark.Base
         /// Clamps value to interval [a,b].
         /// </summary>
         [Pure]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static decimal Clamp(this decimal x, decimal a, decimal b)
         {
             if (x < a) return a;
@@ -731,6 +716,7 @@ namespace Aardvark.Base
         /// Clamps value to interval [a,b].
         /// </summary>
         [Pure]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static int Clamp(this int x, Range1i range)
         {
             if (x < range.Min) return range.Min;
@@ -742,6 +728,7 @@ namespace Aardvark.Base
         /// Clamps value to interval [a,b].
         /// </summary>
         [Pure]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static long Clamp(this long x, Range1l range)
         {
             if (x < range.Min) return range.Min;
@@ -753,6 +740,7 @@ namespace Aardvark.Base
         /// Clamps value to interval [a,b].
         /// </summary>
         [Pure]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static float Clamp(this float x, Range1f range)
         {
             if (x < range.Min) return range.Min;
@@ -764,6 +752,7 @@ namespace Aardvark.Base
         /// Clamps value to interval [a,b].
         /// </summary>
         [Pure]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static double Clamp(this double x, Range1d range)
         {
             if (x < range.Min) return range.Min;
@@ -779,6 +768,7 @@ namespace Aardvark.Base
         /// Clamps value to interval [a,b[.
         /// </summary>
         [Pure]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static byte ClampExcl(this byte x, byte a, byte b)
         {
             if (x < a) return a;
@@ -790,6 +780,7 @@ namespace Aardvark.Base
         /// Clamps value to interval [a,b[.
         /// </summary>
         [Pure]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static sbyte ClampExcl(this sbyte x, sbyte a, sbyte b)
         {
             if (x < a) return a;
@@ -801,6 +792,7 @@ namespace Aardvark.Base
         /// Clamps value to interval [a,b[.
         /// </summary>
         [Pure]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static short ClampExcl(this short x, short a, short b)
         {
             if (x < a) return a;
@@ -812,6 +804,7 @@ namespace Aardvark.Base
         /// Clamps value to interval [a,b[.
         /// </summary>
         [Pure]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static ushort ClampExcl(this ushort x, ushort a, ushort b)
         {
             if (x < a) return a;
@@ -823,6 +816,7 @@ namespace Aardvark.Base
         /// Clamps value to interval [a,b[.
         /// </summary>
         [Pure]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static int ClampExcl(this int x, int a, int b)
         {
             if (x < a) return a;
@@ -834,6 +828,7 @@ namespace Aardvark.Base
         /// Clamps value to interval [a,b[.
         /// </summary>
         [Pure]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static uint ClampExcl(this uint x, uint a, uint b)
         {
             if (x < a) return a;
@@ -845,6 +840,7 @@ namespace Aardvark.Base
         /// Clamps value to interval [a,b[.
         /// </summary>
         [Pure]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static long ClampExcl(this long x, long a, long b)
         {
             if (x < a) return a;
@@ -856,6 +852,7 @@ namespace Aardvark.Base
         /// Clamps value to interval [a,b[.
         /// </summary>
         [Pure]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static ulong ClampExcl(this ulong x, ulong a, ulong b)
         {
             if (x < a) return a;
@@ -867,6 +864,7 @@ namespace Aardvark.Base
         /// Clamps value to interval [a,b[.
         /// </summary>
         [Pure]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static decimal ClampExcl(this decimal x, decimal a, decimal b)
         {
             if (x < a) return a;
@@ -878,6 +876,7 @@ namespace Aardvark.Base
         /// Clamps value to interval [a,b[.
         /// </summary>
         [Pure]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static int ClampExcl(this int x, Range1i range)
         {
             if (x < range.Min) return range.Min;
@@ -889,6 +888,7 @@ namespace Aardvark.Base
         /// Clamps value to interval [a,b[.
         /// </summary>
         [Pure]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static long ClampExcl(this long x, Range1l range)
         {
             if (x < range.Min) return range.Min;
@@ -904,127 +904,113 @@ namespace Aardvark.Base
         /// Clamps value to interval [a,b[ and cyclically wraps around values outside this interval.
         /// </summary>
         [Pure]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static byte ClampWrap(this byte x, byte a, byte b)
-        {
-            return (byte)(ModP(x - a, b - a) + a);
-        }
+            => (byte)(ModP(x - a, b - a) + a);
 
         /// <summary>
         /// Clamps value to interval [a,b[ and cyclically wraps around values outside this interval.
         /// </summary>
         [Pure]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static sbyte ClampWrap(this sbyte x, sbyte a, sbyte b)
-        {
-            return (sbyte)(ModP(x - a, b - a) + a);
-        }
+            => (sbyte)(ModP(x - a, b - a) + a);
 
         /// <summary>
         /// Clamps value to interval [a,b[ and cyclically wraps around values outside this interval.
         /// </summary>
         [Pure]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static short ClampWrap(this short x, short a, short b)
-        {
-            return (short)(ModP(x - a, b - a) + a);
-        }
+            => (short)(ModP(x - a, b - a) + a);
 
         /// <summary>
         /// Clamps value to interval [a,b[ and cyclically wraps around values outside this interval.
         /// </summary>
         [Pure]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static ushort ClampWrap(this ushort x, ushort a, ushort b)
-        {
-            return (ushort)(ModP(x - a, b - a) + a);
-        }
+            => (ushort)(ModP(x - a, b - a) + a);
 
         /// <summary>
         /// Clamps value to interval [a,b[ and cyclically wraps around values outside this interval.
         /// </summary>
         [Pure]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static int ClampWrap(this int x, int a, int b)
-        {
-            return (int)(ModP(x - a, b - a) + a);
-        }
+            => (int)(ModP(x - a, b - a) + a);
 
         /// <summary>
         /// Clamps value to interval [a,b[ and cyclically wraps around values outside this interval.
         /// </summary>
         [Pure]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static uint ClampWrap(this uint x, uint a, uint b)
-        {
-            return (uint)(ModP(x - a, b - a) + a);
-        }
+            => (uint)(ModP(x - a, b - a) + a);
 
         /// <summary>
         /// Clamps value to interval [a,b[ and cyclically wraps around values outside this interval.
         /// </summary>
         [Pure]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static long ClampWrap(this long x, long a, long b)
-        {
-            return (long)(ModP(x - a, b - a) + a);
-        }
+            => (long)(ModP(x - a, b - a) + a);
 
         /// <summary>
         /// Clamps value to interval [a,b[ and cyclically wraps around values outside this interval.
         /// </summary>
         [Pure]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static float ClampWrap(this float x, float a, float b)
-        {
-            return (float)(ModP(x - a, b - a) + a);
-        }
+            => (float)(ModP(x - a, b - a) + a);
 
         /// <summary>
         /// Clamps value to interval [a,b[ and cyclically wraps around values outside this interval.
         /// </summary>
         [Pure]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static double ClampWrap(this double x, double a, double b)
-        {
-            return (double)(ModP(x - a, b - a) + a);
-        }
+            => (double)(ModP(x - a, b - a) + a);
 
         /// <summary>
         /// Clamps value to interval [a,b[ and cyclically wraps around values outside this interval.
         /// </summary>
         [Pure]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static decimal ClampWrap(this decimal x, decimal a, decimal b)
-        {
-            return (decimal)(ModP(x - a, b - a) + a);
-        }
+            => (decimal)(ModP(x - a, b - a) + a);
 
         /// <summary>
         /// Clamps value to interval [a,b[ and cyclically wraps around values outside this interval.
         /// </summary>
         [Pure]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static int ClampWrap(this int x, Range1i range)
-        {
-            return (int)(ModP(x - range.Min, range.Max - range.Min) + range.Min);
-        }
+            => (int)(ModP(x - range.Min, range.Max - range.Min) + range.Min);
 
         /// <summary>
         /// Clamps value to interval [a,b[ and cyclically wraps around values outside this interval.
         /// </summary>
         [Pure]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static long ClampWrap(this long x, Range1l range)
-        {
-            return (long)(ModP(x - range.Min, range.Max - range.Min) + range.Min);
-        }
+            => (long)(ModP(x - range.Min, range.Max - range.Min) + range.Min);
 
         /// <summary>
         /// Clamps value to interval [a,b[ and cyclically wraps around values outside this interval.
         /// </summary>
         [Pure]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static float ClampWrap(this float x, Range1f range)
-        {
-            return (float)(ModP(x - range.Min, range.Max - range.Min) + range.Min);
-        }
+            => (float)(ModP(x - range.Min, range.Max - range.Min) + range.Min);
 
         /// <summary>
         /// Clamps value to interval [a,b[ and cyclically wraps around values outside this interval.
         /// </summary>
         [Pure]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static double ClampWrap(this double x, Range1d range)
-        {
-            return (double)(ModP(x - range.Min, range.Max - range.Min) + range.Min);
-        }
+            => (double)(ModP(x - range.Min, range.Max - range.Min) + range.Min);
 
         #endregion
 
@@ -1054,12 +1040,12 @@ namespace Aardvark.Base
             }
             if (mirror)
             {
-                t = t - System.Math.Floor(t * 0.5) * 2;
+                t = t - Math.Floor(t * 0.5) * 2;
                 return t < 1 ? t : 2 - t;
             }
             else
             {
-                return t - System.Math.Floor(t);
+                return t - Math.Floor(t);
             }
         }
 
@@ -1077,7 +1063,7 @@ namespace Aardvark.Base
                 if (t >= 1) return 1;
                 if (t <= 0) return 0;
             }
-            return t - System.Math.Floor(t);
+            return t - Math.Floor(t);
         }
 
         /// <summary>
@@ -1112,64 +1098,57 @@ namespace Aardvark.Base
         /// Returns either -1, 0, or +1, indicating the sign of the specified value .
         /// </summary>
         [Pure]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static int Sign(this sbyte x)
-        {
-            return System.Math.Sign(x);
-        }
+            => Math.Sign(x);
 
         /// <summary>
         /// Returns either -1, 0, or +1, indicating the sign of the specified value .
         /// </summary>
         [Pure]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static int Sign(this short x)
-        {
-            return System.Math.Sign(x);
-        }
+            => Math.Sign(x);
 
         /// <summary>
         /// Returns either -1, 0, or +1, indicating the sign of the specified value .
         /// </summary>
         [Pure]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static int Sign(this int x)
-        {
-            return System.Math.Sign(x);
-        }
+            => Math.Sign(x);
 
         /// <summary>
         /// Returns either -1, 0, or +1, indicating the sign of the specified value .
         /// </summary>
         [Pure]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static int Sign(this long x)
-        {
-            return System.Math.Sign(x);
-        }
+            => Math.Sign(x);
 
         /// <summary>
         /// Returns either -1, 0, or +1, indicating the sign of the specified value .
         /// </summary>
         [Pure]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static int Sign(this float x)
-        {
-            return System.Math.Sign(x);
-        }
+            => Math.Sign(x);
 
         /// <summary>
         /// Returns either -1, 0, or +1, indicating the sign of the specified value .
         /// </summary>
         [Pure]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static int Sign(this double x)
-        {
-            return System.Math.Sign(x);
-        }
+            => Math.Sign(x);
 
         /// <summary>
         /// Returns either -1, 0, or +1, indicating the sign of the specified value .
         /// </summary>
         [Pure]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static int Sign(this decimal x)
-        {
-            return System.Math.Sign(x);
-        }
+            => Math.Sign(x);
 
         #endregion
 
@@ -1180,40 +1159,36 @@ namespace Aardvark.Base
         /// smaller than 4 times the machine epsilon.
         /// </summary>
         [Pure]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool IsTiny(this float x)
-        {
-            return x.Abs() < Constant<float>.PositiveTinyValue;
-        }
+            => x.Abs() < Constant<float>.PositiveTinyValue;
 
         /// <summary>
         /// Returns true if the absolulte value of the supplied float <paramref name="x"/> is
         /// smaller than the supplied <paramref name="epsilon"/> .
         /// </summary>
         [Pure]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool IsTiny(this float x, float epsilon)
-        {
-            return x.Abs() < epsilon;
-        }
+            => x.Abs() < epsilon;
 
         /// <summary>
         /// Returns true if the absolulte value of the supplied float is
         /// smaller than 4 times the machine epsilon.
         /// </summary>
         [Pure]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool IsTiny(this double x)
-        {
-            return x.Abs() < Constant<double>.PositiveTinyValue;
-        }
+            => x.Abs() < Constant<double>.PositiveTinyValue;
 
         /// <summary>
         /// Returns true if the absolulte value of the supplied float <paramref name="x"/> is
         /// smaller than the supplied <paramref name="epsilon"/> .
         /// </summary>
         [Pure]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool IsTiny(this double x, double epsilon)
-        {
-            return x.Abs() < epsilon;
-        }
+            => x.Abs() < epsilon;
 
         #endregion
 
@@ -1301,18 +1276,16 @@ namespace Aardvark.Base
         #region Cbrt
 
         [Pure]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static double Cbrt(this float x)
-        {
-            return x < 0 ? -(float)System.Math.Pow(-x, Constant.OneThird)
-                         : (float)System.Math.Pow(x, Constant.OneThird);
-        }
+            => x < 0 ? -(float)Math.Pow(-x, Constant.OneThird)
+                         : (float)Math.Pow(x, Constant.OneThird);
 
         [Pure]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static double Cbrt(this double x)
-        {
-            return x < 0 ? -System.Math.Pow(-x, Constant.OneThird)
-                         : System.Math.Pow(x, Constant.OneThird);
-        }
+            => x < 0 ? -Math.Pow(-x, Constant.OneThird)
+                         : Math.Pow(x, Constant.OneThird);
 
         #endregion
 
@@ -1322,100 +1295,78 @@ namespace Aardvark.Base
         /// Returns the square of the specified number.
         /// </summary>
         [Pure]
-        public static int Square(this byte x)
-        {
-            return x * x;
-        }
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static int Square(this byte x) => x * x;
 
         /// <summary>
         /// Returns the square of the specified number.
         /// </summary>
         [Pure]
-        public static int Square(this sbyte x)
-        {
-            return x * x;
-        }
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static int Square(this sbyte x) => x * x;
 
         /// <summary>
         /// Returns the square of the specified number.
         /// </summary>
         [Pure]
-        public static long Square(this short x)
-        {
-            return x * x;
-        }
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static long Square(this short x) => x * x;
 
         /// <summary>
         /// Returns the square of the specified number.
         /// </summary>
         [Pure]
-        public static long Square(this ushort x)
-        {
-            return x * x;
-        }
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static long Square(this ushort x) => x * x;
 
         /// <summary>
         /// Returns the square of the specified number.
         /// </summary>
         [Pure]
-        public static long Square(this int x)
-        {
-            return x * x;
-        }
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static long Square(this int x) => x * x;
 
         /// <summary>
         /// Returns the square of the specified number.
         /// </summary>
         [Pure]
-        public static long Square(this uint x)
-        {
-            return x * x;
-        }
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static long Square(this uint x) => x * x;
 
         /// <summary>
         /// Returns the square of the specified number.
         /// </summary>
         [Pure]
-        public static long Square(this long x)
-        {
-            return x * x;
-        }
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static long Square(this long x) => x * x;
 
         /// <summary>
         /// Returns the square of the specified number.
         /// </summary>
         [Pure]
-        public static ulong Square(this ulong x)
-        {
-            return x * x;
-        }
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static ulong Square(this ulong x) => x * x;
 
         /// <summary>
         /// Returns the square of the specified number.
         /// </summary>
         [Pure]
-        public static double Square(this float x)
-        {
-            return x * x;
-        }
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static double Square(this float x) => x * x;
 
         /// <summary>
         /// Returns the square of the specified number.
         /// </summary>
         [Pure]
-        public static double Square(this double x)
-        {
-            return x * x;
-        }
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static double Square(this double x) => x * x;
 
         /// <summary>
         /// Returns the square of the specified number.
         /// </summary>
         [Pure]
-        public static decimal Square(this decimal x)
-        {
-            return x * x;
-        }
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static decimal Square(this decimal x) => x * x;
 
         #endregion 
 
@@ -1425,91 +1376,71 @@ namespace Aardvark.Base
         /// Returns the square root of the specified number.
         /// </summary>
         [Pure]
-        public static double Sqrt(this byte x)
-        {
-            return System.Math.Sqrt(x);
-        }
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static double Sqrt(this byte x) => Math.Sqrt(x);
 
         /// <summary>
         /// Returns the square root of the specified number.
         /// </summary>
         [Pure]
-        public static double Sqrt(this sbyte x)
-        {
-            return System.Math.Sqrt(x);
-        }
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static double Sqrt(this sbyte x) => Math.Sqrt(x);
 
         /// <summary>
         /// Returns the square root of the specified number.
         /// </summary>
         [Pure]
-        public static double Sqrt(this short x)
-        {
-            return System.Math.Sqrt(x);
-        }
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static double Sqrt(this short x) => Math.Sqrt(x);
 
         /// <summary>
         /// Returns the square root of the specified number.
         /// </summary>
         [Pure]
-        public static double Sqrt(this ushort x)
-        {
-            return System.Math.Sqrt(x);
-        }
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static double Sqrt(this ushort x) => Math.Sqrt(x);
 
         /// <summary>
         /// Returns the square root of the specified number.
         /// </summary>
         [Pure]
-        public static double Sqrt(this int x)
-        {
-            return System.Math.Sqrt(x);
-        }
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static double Sqrt(this int x) => Math.Sqrt(x);
 
         /// <summary>
         /// Returns the square root of the specified number.
         /// </summary>
         [Pure]
-        public static double Sqrt(this uint x)
-        {
-            return System.Math.Sqrt(x);
-        }
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static double Sqrt(this uint x) => Math.Sqrt(x);
 
         /// <summary>
         /// Returns the square root of the specified number.
         /// </summary>
         [Pure]
-        public static double Sqrt(this long x)
-        {
-            return System.Math.Sqrt(x);
-        }
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static double Sqrt(this long x) => Math.Sqrt(x);
 
         /// <summary>
         /// Returns the square root of the specified number.
         /// </summary>
         [Pure]
-        public static double Sqrt(this ulong x)
-        {
-            return System.Math.Sqrt(x);
-        }
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static double Sqrt(this ulong x) => Math.Sqrt(x);
 
         /// <summary>
         /// Returns the square root of the specified number.
         /// </summary>
         [Pure]
-        public static double Sqrt(this double x)
-        {
-            return System.Math.Sqrt(x);
-        }
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static double Sqrt(this double x) => Math.Sqrt(x);
 
         /// <summary>
         /// Returns the square root of the specified number.
         /// </summary>
         [Pure]
-        public static float Sqrt(this float x)
-        {
-            return (float)System.Math.Sqrt(x);
-        }
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static float Sqrt(this float x) => (float)System.Math.Sqrt(x);
 
         #endregion 
 
@@ -1519,37 +1450,33 @@ namespace Aardvark.Base
         /// Returns the number raised to the specified power.
         /// </summary>
         [Pure]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static double Pow(this int x, double y)
-        {
-            return System.Math.Pow(x, y);
-        }
+            => System.Math.Pow(x, y);
 
         /// <summary>
         /// Returns the number raised to the specified power.
         /// </summary>
         [Pure]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static double Pow(this long x, double y)
-        {
-            return System.Math.Pow(x, y);
-        }
+            => System.Math.Pow(x, y);
 
         /// <summary>
         /// Returns the number raised to the specified power.
         /// </summary>
         [Pure]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static float Pow(this float x, float y)
-        {
-            return (float)System.Math.Pow(x, y);
-        }
+            => (float)System.Math.Pow(x, y);
 
         /// <summary>
         /// Returns the number raised to the specified power.
         /// </summary>
         [Pure]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static double Pow(this double x, double y)
-        {
-            return System.Math.Pow(x, y);
-        }
+            => System.Math.Pow(x, y);
 
         #endregion
         
@@ -1559,19 +1486,17 @@ namespace Aardvark.Base
         /// Returns e raised to the specified number.
         /// </summary>
         [Pure]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static float Exp(this float x)
-        {
-            return (float)System.Math.Exp(x);
-        }
+            => (float)System.Math.Exp(x);
 
         /// <summary>
         /// Returns e raised to the specified number.
         /// </summary>
         [Pure]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static double Exp(this double x)
-        {
-            return System.Math.Exp(x);
-        }
+            => System.Math.Exp(x);
 
 
         #endregion
@@ -1582,361 +1507,281 @@ namespace Aardvark.Base
         /// Returns the natural (base e) logarithm of the specified number.
         /// </summary>
         [Pure]
-        public static double Log(this byte x)
-        {
-            return System.Math.Log(x);
-        }
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static double Log(this byte x) => Math.Log(x);
 
         /// <summary>
         /// Returns the base 10 logarithm of the specified number.
         /// </summary>
         [Pure]
-        public static double Log10(this byte x)
-        {
-            return System.Math.Log10(x);
-        }
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static double Log10(this byte x) => Math.Log10(x);
 
         /// <summary>
         /// Returns the base 2 logarithm of the specified number.
         /// </summary>
         [Pure]
-        public static double Log2(this byte x)
-        {
-            return x.Log() * Constant.Ln2Inv;
-        }
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static double Log2(this byte x) => x.Log() * Constant.Ln2Inv;
 
         /// <summary>
         /// Returns the values logarithm of the specified basis.
         /// </summary>
         [Pure]
-        public static double Log(this byte x, double basis)
-        {
-            return x.Log() / basis.Log();
-        }
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static double Log(this byte x, double basis) => x.Log() / basis.Log();
 
         /// <summary>
         /// Returns the natural (base e) logarithm of the specified number.
         /// </summary>
         [Pure]
-        public static double Log(this sbyte x)
-        {
-            return System.Math.Log(x);
-        }
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static double Log(this sbyte x) => Math.Log(x);
 
         /// <summary>
         /// Returns the base 10 logarithm of the specified number.
         /// </summary>
         [Pure]
-        public static double Log10(this sbyte x)
-        {
-            return System.Math.Log10(x);
-        }
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static double Log10(this sbyte x) => Math.Log10(x);
 
         /// <summary>
         /// Returns the base 2 logarithm of the specified number.
         /// </summary>
         [Pure]
-        public static double Log2(this sbyte x)
-        {
-            return x.Log() * Constant.Ln2Inv;
-        }
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static double Log2(this sbyte x) => x.Log() * Constant.Ln2Inv;
 
         /// <summary>
         /// Returns the values logarithm of the specified basis.
         /// </summary>
         [Pure]
-        public static double Log(this sbyte x, double basis)
-        {
-            return x.Log() / basis.Log();
-        }
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static double Log(this sbyte x, double basis) => x.Log() / basis.Log();
 
         /// <summary>
         /// Returns the natural (base e) logarithm of the specified number.
         /// </summary>
         [Pure]
-        public static double Log(this short x)
-        {
-            return System.Math.Log(x);
-        }
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static double Log(this short x) => Math.Log(x);
 
         /// <summary>
         /// Returns the base 10 logarithm of the specified number.
         /// </summary>
         [Pure]
-        public static double Log10(this short x)
-        {
-            return System.Math.Log10(x);
-        }
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static double Log10(this short x) => Math.Log10(x);
 
         /// <summary>
         /// Returns the base 2 logarithm of the specified number.
         /// </summary>
         [Pure]
-        public static double Log2(this short x)
-        {
-            return x.Log() * Constant.Ln2Inv;
-        }
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static double Log2(this short x) => x.Log() * Constant.Ln2Inv;
 
         /// <summary>
         /// Returns the values logarithm of the specified basis.
         /// </summary>
         [Pure]
-        public static double Log(this short x, double basis)
-        {
-            return x.Log() / basis.Log();
-        }
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static double Log(this short x, double basis) => x.Log() / basis.Log();
 
         /// <summary>
         /// Returns the natural (base e) logarithm of the specified number.
         /// </summary>
         [Pure]
-        public static double Log(this ushort x)
-        {
-            return System.Math.Log(x);
-        }
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static double Log(this ushort x) => Math.Log(x);
 
         /// <summary>
         /// Returns the base 10 logarithm of the specified number.
         /// </summary>
         [Pure]
-        public static double Log10(this ushort x)
-        {
-            return System.Math.Log10(x);
-        }
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static double Log10(this ushort x) => Math.Log10(x);
 
         /// <summary>
         /// Returns the base 2 logarithm of the specified number.
         /// </summary>
         [Pure]
-        public static double Log2(this ushort x)
-        {
-            return x.Log() * Constant.Ln2Inv;
-        }
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static double Log2(this ushort x) => x.Log() * Constant.Ln2Inv;
 
         /// <summary>
         /// Returns the values logarithm of the specified basis.
         /// </summary>
         [Pure]
-        public static double Log(this ushort x, double basis)
-        {
-            return x.Log() / basis.Log();
-        }
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static double Log(this ushort x, double basis) => x.Log() / basis.Log();
 
         /// <summary>
         /// Returns the natural (base e) logarithm of the specified number.
         /// </summary>
         [Pure]
-        public static double Log(this int x)
-        {
-            return System.Math.Log(x);
-        }
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static double Log(this int x) => Math.Log(x);
 
         /// <summary>
         /// Returns the base 10 logarithm of the specified number.
         /// </summary>
         [Pure]
-        public static double Log10(this int x)
-        {
-            return System.Math.Log10(x);
-        }
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static double Log10(this int x) => Math.Log10(x);
 
         /// <summary>
         /// Returns the base 2 logarithm of the specified number.
         /// </summary>
         [Pure]
-        public static double Log2(this int x)
-        {
-            return x.Log() * Constant.Ln2Inv;
-        }
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static double Log2(this int x) => x.Log() * Constant.Ln2Inv;
 
         /// <summary>
         /// Returns the values logarithm of the specified basis.
         /// </summary>
         [Pure]
-        public static double Log(this int x, double basis)
-        {
-            return x.Log() / basis.Log();
-        }
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static double Log(this int x, double basis) => x.Log() / basis.Log();
 
         /// <summary>
         /// Returns the natural (base e) logarithm of the specified number.
         /// </summary>
         [Pure]
-        public static double Log(this uint x)
-        {
-            return System.Math.Log(x);
-        }
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static double Log(this uint x) => Math.Log(x);
 
         /// <summary>
         /// Returns the base 10 logarithm of the specified number.
         /// </summary>
         [Pure]
-        public static double Log10(this uint x)
-        {
-            return System.Math.Log10(x);
-        }
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static double Log10(this uint x) => Math.Log10(x);
 
         /// <summary>
         /// Returns the base 2 logarithm of the specified number.
         /// </summary>
         [Pure]
-        public static double Log2(this uint x)
-        {
-            return x.Log() * Constant.Ln2Inv;
-        }
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static double Log2(this uint x) => x.Log() * Constant.Ln2Inv;
 
         /// <summary>
         /// Returns the values logarithm of the specified basis.
         /// </summary>
         [Pure]
-        public static double Log(this uint x, double basis)
-        {
-            return x.Log() / basis.Log();
-        }
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static double Log(this uint x, double basis) => x.Log() / basis.Log();
 
         /// <summary>
         /// Returns the natural (base e) logarithm of the specified number.
         /// </summary>
         [Pure]
-        public static double Log(this long x)
-        {
-            return System.Math.Log(x);
-        }
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static double Log(this long x) => Math.Log(x);
 
         /// <summary>
         /// Returns the base 10 logarithm of the specified number.
         /// </summary>
         [Pure]
-        public static double Log10(this long x)
-        {
-            return System.Math.Log10(x);
-        }
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static double Log10(this long x) => Math.Log10(x);
 
         /// <summary>
         /// Returns the base 2 logarithm of the specified number.
         /// </summary>
         [Pure]
-        public static double Log2(this long x)
-        {
-            return x.Log() * Constant.Ln2Inv;
-        }
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static double Log2(this long x) => x.Log() * Constant.Ln2Inv;
 
         /// <summary>
         /// Returns the values logarithm of the specified basis.
         /// </summary>
         [Pure]
-        public static double Log(this long x, double basis)
-        {
-            return x.Log() / basis.Log();
-        }
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static double Log(this long x, double basis) => x.Log() / basis.Log();
 
         /// <summary>
         /// Returns the natural (base e) logarithm of the specified number.
         /// </summary>
         [Pure]
-        public static double Log(this ulong x)
-        {
-            return System.Math.Log(x);
-        }
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static double Log(this ulong x) => Math.Log(x);
 
         /// <summary>
         /// Returns the base 10 logarithm of the specified number.
         /// </summary>
         [Pure]
-        public static double Log10(this ulong x)
-        {
-            return System.Math.Log10(x);
-        }
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static double Log10(this ulong x) => Math.Log10(x);
 
         /// <summary>
         /// Returns the base 2 logarithm of the specified number.
         /// </summary>
         [Pure]
-        public static double Log2(this ulong x)
-        {
-            return x.Log() * Constant.Ln2Inv;
-        }
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static double Log2(this ulong x) => x.Log() * Constant.Ln2Inv;
 
         /// <summary>
         /// Returns the values logarithm of the specified basis.
         /// </summary>
         [Pure]
-        public static double Log(this ulong x, double basis)
-        {
-            return x.Log() / basis.Log();
-        }
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static double Log(this ulong x, double basis) => x.Log() / basis.Log();
 
         /// <summary>
         /// Returns the natural (base e) logarithm of the specified number.
         /// </summary>
         [Pure]
-        public static double Log(this float x)
-        {
-            return System.Math.Log(x);
-        }
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static double Log(this float x) => Math.Log(x);
 
         /// <summary>
         /// Returns the base 10 logarithm of the specified number.
         /// </summary>
         [Pure]
-        public static double Log10(this float x)
-        {
-            return System.Math.Log10(x);
-        }
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static double Log10(this float x) => Math.Log10(x);
 
         /// <summary>
         /// Returns the base 2 logarithm of the specified number.
         /// </summary>
         [Pure]
-        public static double Log2(this float x)
-        {
-            return x.Log() * Constant.Ln2Inv;
-        }
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static double Log2(this float x) => x.Log() * Constant.Ln2Inv;
 
         /// <summary>
         /// Returns the values logarithm of the specified basis.
         /// </summary>
         [Pure]
-        public static double Log(this float x, double basis)
-        {
-            return x.Log() / basis.Log();
-        }
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static double Log(this float x, double basis) => x.Log() / basis.Log();
 
         /// <summary>
         /// Returns the natural (base e) logarithm of the specified number.
         /// </summary>
         [Pure]
-        public static double Log(this double x)
-        {
-            return System.Math.Log(x);
-        }
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static double Log(this double x) => Math.Log(x);
 
         /// <summary>
         /// Returns the base 10 logarithm of the specified number.
         /// </summary>
         [Pure]
-        public static double Log10(this double x)
-        {
-            return System.Math.Log10(x);
-        }
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static double Log10(this double x) => Math.Log10(x);
 
         /// <summary>
         /// Returns the base 2 logarithm of the specified number.
         /// </summary>
         [Pure]
-        public static double Log2(this double x)
-        {
-            return x.Log() * Constant.Ln2Inv;
-        }
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static double Log2(this double x) => x.Log() * Constant.Ln2Inv;
 
         /// <summary>
         /// Returns the values logarithm of the specified basis.
         /// </summary>
         [Pure]
-        public static double Log(this double x, double basis)
-        {
-            return x.Log() / basis.Log();
-        }
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static double Log(this double x, double basis) => x.Log() / basis.Log();
 
         #endregion
 
@@ -2395,6 +2240,7 @@ namespace Aardvark.Base
         /// instead of a % b giving values between ]-b,b[.
         /// </summary>
         [Pure]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static sbyte ModP(this sbyte a, sbyte b)
         {
             var m = a % b;
@@ -2408,6 +2254,7 @@ namespace Aardvark.Base
         /// instead of a % b giving values between ]-b,b[.
         /// </summary>
         [Pure]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static short ModP(this short a, short b)
         {
             var m = a % b;
@@ -2421,6 +2268,7 @@ namespace Aardvark.Base
         /// instead of a % b giving values between ]-b,b[.
         /// </summary>
         [Pure]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static int ModP(this int a, int b)
         {
             var m = a % b;
@@ -2434,6 +2282,7 @@ namespace Aardvark.Base
         /// instead of a % b giving values between ]-b,b[.
         /// </summary>
         [Pure]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static long ModP(this long a, long b)
         {
             var m = a % b;
@@ -2447,6 +2296,7 @@ namespace Aardvark.Base
         /// instead of a % b giving values between ]-b,b[.
         /// </summary>
         [Pure]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static float ModP(this float a, float b)
         {
             var m = a % b;
@@ -2460,6 +2310,7 @@ namespace Aardvark.Base
         /// instead of a % b giving values between ]-b,b[.
         /// </summary>
         [Pure]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static double ModP(this double a, double b)
         {
             var m = a % b;
@@ -2473,6 +2324,7 @@ namespace Aardvark.Base
         /// instead of a % b giving values between ]-b,b[.
         /// </summary>
         [Pure]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static decimal ModP(this decimal a, decimal b)
         {
             var m = a % b;
@@ -2490,47 +2342,39 @@ namespace Aardvark.Base
         /// or a power of two.
         /// </summary>
         [Pure]
-        public static bool IsPowerOfTwo(this int x)
-        {
-            return (x & (x - 1)) == 0;
-        }
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool IsPowerOfTwo(this int x) => (x & (x - 1)) == 0;
 
         /// <summary>
         /// Returns true if the supplied number is 0
         /// or a power of two.
         /// </summary>
         [Pure]
-        public static bool IsPowerOfTwo(this long x)
-        {
-            return (x & (x - 1)) == 0;
-        }
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool IsPowerOfTwo(this long x) => (x & (x - 1)) == 0;
 
         /// <summary>
         /// Returns 2 raised to the power of the value.
         /// </summary>
         [Pure]
-        public static long PowerOfTwo(this long x)
-        {
-            return 1L << (int)x;
-        }
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static long PowerOfTwo(this long x) => 1L << (int)x;
 
         /// <summary>
         /// Returns 2 raised to the power of the value.
         /// </summary>
         [Pure]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static float PowerOfTwo(this float x)
-        {
-            return (float)System.Math.Pow(2, x);
-        }
+            => (float)System.Math.Pow(2, x);
 
         /// <summary>
         /// Returns 2 raised to the power of the value.
         /// </summary>
         [Pure]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static double PowerOfTwo(this double x)
-        {
-            return System.Math.Pow(2, x);
-        }
+            => System.Math.Pow(2, x);
 
         /// <summary>
         /// Returns the nearest superior power of two of the value.
@@ -2612,83 +2456,65 @@ namespace Aardvark.Base
         /// Returns the cosine of the specified angle in radians.
         /// </summary>
         [Pure]
-        public static float Sin(this float x)
-        {
-            return (float)System.Math.Sin(x);
-        }
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static float Sin(this float x) => (float)System.Math.Sin(x);
 
         /// <summary>
         /// Returns the cosine of the specified angle in radians.
         /// </summary>
         [Pure]
-        public static float Cos(this float x)
-        {
-            return (float)System.Math.Cos(x);
-        }
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static float Cos(this float x) => (float)System.Math.Cos(x);
 
         /// <summary>
         /// Returns the tangent of the specified angle in radians.
         /// </summary>
         [Pure]
-        public static float Tan(this float x)
-        {
-            return (float)System.Math.Tan(x);
-        }
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static float Tan(this float x) => (float)System.Math.Tan(x);
 
         /// <summary>
         /// Returns the angle in radians whose sine is the specified number.
         /// </summary>
         [Pure]
-        public static float Asin(this float x)
-        {
-            return (float)System.Math.Asin(x);
-        }
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static float Asin(this float x) => (float)System.Math.Asin(x);
 
         /// <summary>
         /// Returns the angle in radians whose sine is the specified number while clamping the input to [-1, 1] in order to avoid numerical problems.
         /// </summary>
         [Pure]
-        public static float AsinC(this float x)
-        {
-            return (float)System.Math.Asin(Clamp(x, -1, 1));
-        }
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static float AsinC(this float x) => (float)System.Math.Asin(Clamp(x, -1, 1));
 
         /// <summary>
         /// Returns the angle in radians whose cosine is the specified number.
         /// </summary>
         [Pure]
-        public static float Acos(this float x)
-        {
-            return (float)System.Math.Acos(x);
-        }
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static float Acos(this float x) => (float)System.Math.Acos(x);
 
         /// <summary>
         /// Returns the angle in radians whose cosine is the specified number while clamping the input to [-1, 1] in order to avoid numerical problems.
         /// </summary>
         [Pure]
-        public static float AcosC(this float x)
-        {
-            return (float)System.Math.Acos(Clamp(x, -1, 1));
-        }
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static float AcosC(this float x) => (float)System.Math.Acos(Clamp(x, -1, 1));
 
         /// <summary>
         /// Returns the angle in radians whose tangent is the specified number.
         /// </summary>
         [Pure]
-        public static float Atan(this float x)
-        {
-            return (float)System.Math.Atan(x);
-        }
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static float Atan(this float x) => (float)System.Math.Atan(x);
 
         /// <summary>
         /// Returns the angle in radians whose tangent is
         /// the quotient of the two specified number.
         /// </summary>
         [Pure]
-        public static float Atan2(float y, float x)
-        {
-            return (float)System.Math.Atan2(y, x);
-        }
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static float Atan2(float y, float x) => (float)System.Math.Atan2(y, x);
 
         /// <summary>
         /// Returns the angle in radians whose tangent is
@@ -2720,138 +2546,111 @@ namespace Aardvark.Base
         /// Returns the hyperbolic sine of the specified number.
         /// </summary>
         [Pure]
-        public static float Sinh(this float x)
-        {
-            return (float)System.Math.Sinh(x);
-        }
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static float Sinh(this float x) => (float)System.Math.Sinh(x);
 
         /// <summary>
         /// Returns the hyperbolic cosine of the specified number.
         /// </summary>
         [Pure]
-        public static float Cosh(this float x)
-        {
-            return (float)System.Math.Cosh(x);
-        }
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static float Cosh(this float x) => (float)System.Math.Cosh(x);
 
         /// <summary>
         /// Returns the hyperbolic tangent of the specified number.
         /// </summary>
         [Pure]
-        public static float Tanh(this float x)
-        {
-            return (float)System.Math.Tanh(x);
-        }
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static float Tanh(this float x) => (float)System.Math.Tanh(x);
 
         /// <summary>
         /// Returns the inverse hyperbolic sine of the specified number.
         /// </summary>
         [Pure]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static float Asinh(this float x)
-        {
-            return (float)System.Math.Log(x + System.Math.Sqrt(x * x + 1.0));
-        }
+            => (float)System.Math.Log(x + System.Math.Sqrt(x * x + 1.0));
 
         /// <summary>
         /// Returns the inverse hyperbolic cosine of the specified number.
         /// </summary>
         [Pure]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static float Acosh(this float x)
-        {
-            return (float)System.Math.Log(x + System.Math.Sqrt(x * x - 1.0));
-        }
+            => (float)System.Math.Log(x + System.Math.Sqrt(x * x - 1.0));
 
         /// <summary>
         /// Returns the inverse hyperbolic tangent of the specified number.
         /// Note that the absolute value of the argument must be smaller than 1.
         /// </summary>
         [Pure]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static float Atanh(this float x)
-        {
-            return (float)(0.5 * System.Math.Log((1.0 + x)/(1.0 - x)));
-        }
+            => (float)(0.5 * System.Math.Log((1.0 + x)/(1.0 - x)));
 
         /// <summary>
         /// Returns the cosine of the specified angle in radians.
         /// </summary>
         [Pure]
-        public static double Sin(this double x)
-        {
-            return System.Math.Sin(x);
-        }
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static double Sin(this double x) => System.Math.Sin(x);
 
         /// <summary>
         /// Returns the cosine of the specified angle in radians.
         /// </summary>
         [Pure]
-        public static double Cos(this double x)
-        {
-            return System.Math.Cos(x);
-        }
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static double Cos(this double x) => System.Math.Cos(x);
 
         /// <summary>
         /// Returns the tangent of the specified angle in radians.
         /// </summary>
         [Pure]
-        public static double Tan(this double x)
-        {
-            return System.Math.Tan(x);
-        }
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static double Tan(this double x) => System.Math.Tan(x);
 
         /// <summary>
         /// Returns the angle in radians whose sine is the specified number.
         /// </summary>
         [Pure]
-        public static double Asin(this double x)
-        {
-            return System.Math.Asin(x);
-        }
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static double Asin(this double x) => System.Math.Asin(x);
 
         /// <summary>
         /// Returns the angle in radians whose sine is the specified number while clamping the input to [-1, 1] in order to avoid numerical problems.
         /// </summary>
         [Pure]
-        public static double AsinC(this double x)
-        {
-            return System.Math.Asin(Clamp(x, -1, 1));
-        }
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static double AsinC(this double x) => System.Math.Asin(Clamp(x, -1, 1));
 
         /// <summary>
         /// Returns the angle in radians whose cosine is the specified number.
         /// </summary>
         [Pure]
-        public static double Acos(this double x)
-        {
-            return System.Math.Acos(x);
-        }
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static double Acos(this double x) => System.Math.Acos(x);
 
         /// <summary>
         /// Returns the angle in radians whose cosine is the specified number while clamping the input to [-1, 1] in order to avoid numerical problems.
         /// </summary>
         [Pure]
-        public static double AcosC(this double x)
-        {
-            return System.Math.Acos(Clamp(x, -1, 1));
-        }
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static double AcosC(this double x) => System.Math.Acos(Clamp(x, -1, 1));
 
         /// <summary>
         /// Returns the angle in radians whose tangent is the specified number.
         /// </summary>
         [Pure]
-        public static double Atan(this double x)
-        {
-            return System.Math.Atan(x);
-        }
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static double Atan(this double x) => System.Math.Atan(x);
 
         /// <summary>
         /// Returns the angle in radians whose tangent is
         /// the quotient of the two specified number.
         /// </summary>
         [Pure]
-        public static double Atan2(double y, double x)
-        {
-            return System.Math.Atan2(y, x);
-        }
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static double Atan2(double y, double x) => System.Math.Atan2(y, x);
 
         /// <summary>
         /// Returns the angle in radians whose tangent is
@@ -2883,56 +2682,47 @@ namespace Aardvark.Base
         /// Returns the hyperbolic sine of the specified number.
         /// </summary>
         [Pure]
-        public static double Sinh(this double x)
-        {
-            return System.Math.Sinh(x);
-        }
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static double Sinh(this double x) => System.Math.Sinh(x);
 
         /// <summary>
         /// Returns the hyperbolic cosine of the specified number.
         /// </summary>
         [Pure]
-        public static double Cosh(this double x)
-        {
-            return System.Math.Cosh(x);
-        }
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static double Cosh(this double x) => System.Math.Cosh(x);
 
         /// <summary>
         /// Returns the hyperbolic tangent of the specified number.
         /// </summary>
         [Pure]
-        public static double Tanh(this double x)
-        {
-            return System.Math.Tanh(x);
-        }
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static double Tanh(this double x) => System.Math.Tanh(x);
 
         /// <summary>
         /// Returns the inverse hyperbolic sine of the specified number.
         /// </summary>
         [Pure]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static double Asinh(this double x)
-        {
-            return System.Math.Log(x + System.Math.Sqrt(x * x + 1.0));
-        }
+            => System.Math.Log(x + System.Math.Sqrt(x * x + 1.0));
 
         /// <summary>
         /// Returns the inverse hyperbolic cosine of the specified number.
         /// </summary>
         [Pure]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static double Acosh(this double x)
-        {
-            return System.Math.Log(x + System.Math.Sqrt(x * x - 1.0));
-        }
+            => System.Math.Log(x + System.Math.Sqrt(x * x - 1.0));
 
         /// <summary>
         /// Returns the inverse hyperbolic tangent of the specified number.
         /// Note that the absolute value of the argument must be smaller than 1.
         /// </summary>
         [Pure]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static double Atanh(this double x)
-        {
-            return (0.5 * System.Math.Log((1.0 + x)/(1.0 - x)));
-        }
+            => (0.5 * System.Math.Log((1.0 + x)/(1.0 - x)));
 
         #endregion
 
@@ -3106,10 +2896,8 @@ namespace Aardvark.Base
         /// Calculates the standard deviation of given elements.
         /// </summary>
         [Pure]
-        public static double StandardDeviation(this IEnumerable<int> data)
-        {
-            return data.Variance().Sqrt();
-        }
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static double StandardDeviation(this IEnumerable<int> data) => data.Variance().Sqrt();
 
         /// <summary>
         /// Calculates the variance of given elements.
@@ -3133,10 +2921,8 @@ namespace Aardvark.Base
         /// Calculates the standard deviation of given elements.
         /// </summary>
         [Pure]
-        public static double StandardDeviation(this IEnumerable<long> data)
-        {
-            return data.Variance().Sqrt();
-        }
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static double StandardDeviation(this IEnumerable<long> data) => data.Variance().Sqrt();
 
         /// <summary>
         /// Calculates the variance of given elements.
@@ -3160,10 +2946,8 @@ namespace Aardvark.Base
         /// Calculates the standard deviation of given elements.
         /// </summary>
         [Pure]
-        public static double StandardDeviation(this IEnumerable<float> data)
-        {
-            return data.Variance().Sqrt();
-        }
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static double StandardDeviation(this IEnumerable<float> data) => data.Variance().Sqrt();
 
         /// <summary>
         /// Calculates the variance of given elements.
@@ -3187,10 +2971,8 @@ namespace Aardvark.Base
         /// Calculates the standard deviation of given elements.
         /// </summary>
         [Pure]
-        public static double StandardDeviation(this IEnumerable<double> data)
-        {
-            return data.Variance().Sqrt();
-        }
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static double StandardDeviation(this IEnumerable<double> data) => data.Variance().Sqrt();
 
         /// <summary>
         /// Calculates the variance of given elements.
@@ -3217,12 +2999,9 @@ namespace Aardvark.Base
         /// Calculates the standard deviation of given elements.
         /// </summary>
         [Pure]
-        public static double StandardDeviation<T>(
-            this IEnumerable<T> data,
-            Func<T, double> selector)
-        {
-            return data.Variance(selector).Sqrt();
-        }
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static double StandardDeviation<T>(this IEnumerable<T> data, Func<T, double> selector)
+            => data.Variance(selector).Sqrt();
 
         #endregion
 
@@ -3395,28 +3174,22 @@ namespace Aardvark.Base
         /// Returns fractional part of t. Calculated as t - floor(t).
         /// </summary>
         [Pure]
-        public static double Frac(this double t)
-        {
-            return t - System.Math.Floor(t);
-        }
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static double Frac(this double t) => t - System.Math.Floor(t);
 
         /// <summary>
         /// Returns fractional part of t. Calculated as t - floor(t).
         /// </summary>
         [Pure]
-        public static float Frac(this float t)
-        {
-            return (float)(t - System.Math.Floor(t));
-        }
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static float Frac(this float t) => (float)(t - System.Math.Floor(t));
 
         /// <summary>
         /// Returns fractional part of t. Calculated as t - floor(t).
         /// </summary>
         [Pure]
-        public static decimal Frac(this decimal t)
-        {
-            return t - System.Math.Floor(t);
-        }
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static decimal Frac(this decimal t) => t - System.Math.Floor(t);
 
         #endregion
         
@@ -3454,7 +3227,7 @@ namespace Aardvark.Base
             return true;
         }
 
-        
+
         #endregion
 
         #region Swap
@@ -3463,17 +3236,17 @@ namespace Aardvark.Base
         /// Swaps <paramref name="a"/> and <paramref name="b"/>,
         /// so that afterwards a=b and b=a.
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static void Swap<T>(ref T a, ref T b)
         {
-            T t = a;
-            a = b;
-            b = t;
+            T t = a; a = b; b = t;
         }
 
         /// <summary>
         /// Rotates left <paramref name="a"/>, <paramref name="b"/>, and <paramref name="c"/>,
         /// so that afterwards a=b, b=c and c=a.
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static void Rotate<T>(ref T a, ref T b, ref T c)
         {
             T t = a; a = b; b = c; c = t;
@@ -3483,6 +3256,7 @@ namespace Aardvark.Base
         /// Rotates left <paramref name="a"/>, <paramref name="b"/>, <paramref name="c"/>, and <paramref name="d"/>,
         /// so that afterwards a=b, b=c, c=b and d=a.
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static void Rotate<T>(ref T a, ref T b, ref T c, ref T d)
         {
             T t = a; a = b; b = c; c = d; d = t;
@@ -3492,6 +3266,7 @@ namespace Aardvark.Base
         /// Rotates left <paramref name="a"/>, <paramref name="b"/>, <paramref name="c"/>, <paramref name="d"/>, and <paramref name="e"/>,
         /// so that afterwards a=b, b=c, c=b and d=c and e=a.
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static void Rotate<T>(ref T a, ref T b, ref T c, ref T d, ref T e)
         {
             T t = a; a = b; b = c; c = d; d = e; e = t;
@@ -3502,44 +3277,34 @@ namespace Aardvark.Base
         #region Common Divisor and Multiple
 
         [Pure]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static long GreatestCommonDivisor(long a, long b)
-        {
-            return b == 0 ? a : GreatestCommonDivisor(b, a % b);
-        }
+            => b == 0 ? a : GreatestCommonDivisor(b, a % b);
 
         [Pure]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static long LeastCommonMultiple(long a, long b)
-        {
-            return a * b / GreatestCommonDivisor(a, b);
-        }
+            => a * b / GreatestCommonDivisor(a, b);
 
         #endregion
 
         #region Conversion
 
         [Pure]
-        public static int ToInt(this float x)
-        {
-            return (int)x;
-        }
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static int ToInt(this float x) => (int)x;
 
         [Pure]
-        public static long ToLong(this float x)
-        {
-            return (long)x;
-        }
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static long ToLong(this float x) => (long)x;
 
         [Pure]
-        public static int ToInt(this double x)
-        {
-            return (int)x;
-        }
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static int ToInt(this double x) => (int)x;
 
         [Pure]
-        public static long ToLong(this double x)
-        {
-            return (long)x;
-        }
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static long ToLong(this double x) => (long)x;
 
         #endregion
 

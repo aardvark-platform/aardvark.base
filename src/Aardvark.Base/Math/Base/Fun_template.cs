@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics.Contracts;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Text;
 
 namespace Aardvark.Base
@@ -22,34 +23,34 @@ namespace Aardvark.Base
 
         //# Meta.ComparableTypes.ForEach(t => { var type = t.Name;
         [Pure]
-        public static __type__ Min(__type__ a, __type__ b) { return a < b ? a : b; }
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static __type__ Min(__type__ a, __type__ b)
+            => a < b ? a : b;
         
         [Pure]
-        public static __type__ Max(__type__ a, __type__ b) { return a > b ? a : b; }
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static __type__ Max(__type__ a, __type__ b)
+            => a > b ? a : b;
 
         [Pure]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static __type__ Min(__type__ a, __type__ b, __type__ c)
-        {
-            return a < b ? (a < c ? a : c) : (b < c ? b : c);
-        }
+            => a < b ? (a < c ? a : c) : (b < c ? b : c);
 
         [Pure]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static __type__ Max(__type__ a, __type__ b, __type__ c)
-        {
-            return a > b ? (a > c ? a : c) : (b > c ? b : c);
-        }
+            => a > b ? (a > c ? a : c) : (b > c ? b : c);
 
         [Pure]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static __type__ Min(__type__ a, __type__ b, __type__ c, __type__ d)
-        {
-            return Min(Min(a, b), Min(c, d));
-        }
+            => Min(Min(a, b), Min(c, d));
 
         [Pure]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static __type__ Max(__type__ a, __type__ b, __type__ c, __type__ d)
-        {
-            return Max(Max(a, b), Max(c, d));
-        }
+            => Max(Max(a, b), Max(c, d));
 
         //# });
         #endregion
@@ -61,10 +62,8 @@ namespace Aardvark.Base
         /// Returns the absolute value of the specified number.
         /// </summary>
         [Pure]
-        public static __t.Name__ Abs(this __t.Name__ x)
-        {
-            return System.Math.Abs(x);
-        }
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static __t.Name__ Abs(this __t.Name__ x) => Math.Abs(x);
 
         //# });
         #endregion
@@ -76,10 +75,9 @@ namespace Aardvark.Base
         /// Returns whether the distance between x and y is not more than epsilon.
         /// </summary>
         [Pure]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool ApproximateEquals(this __t.Name__ x, __t.Name__ y, __t.Name__ epsilon)
-        {
-            return Abs(x - y) <= epsilon;
-        }
+            => Abs(x - y) <= epsilon;
 
         //# });
         #endregion
@@ -91,10 +89,9 @@ namespace Aardvark.Base
         /// Returns the largest integer less than or equal to the specified number.
         /// </summary>
         [Pure]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static __t.Name__ Floor(this __t.Name__ x)
-        {
-            return /*# if (t != Meta.DoubleType) { */(__t.Name__)/*# } */System.Math.Floor(x);
-        }
+            => /*# if (t != Meta.DoubleType) { */(__t.Name__)/*# } */Math.Floor(x);
 
         //# });
         #endregion
@@ -106,10 +103,9 @@ namespace Aardvark.Base
         /// Returns the smallest integer greater than or equal to the specified number.
         /// </summary>
         [Pure]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static __t.Name__ Ceiling(this __t.Name__ x)
-        {
-            return /*# if (t != Meta.DoubleType) { */(__t.Name__)/*# } */System.Math.Ceiling(x);
-        }
+            => /*# if (t != Meta.DoubleType) { */(__t.Name__)/*# } */System.Math.Ceiling(x);
 
         //# });
         #endregion
@@ -121,10 +117,9 @@ namespace Aardvark.Base
         /// Rounds a float-point value to the nearest integral value.
         /// </summary>
         [Pure]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static __t.Name__ Round(this __t.Name__ x)
-        {
-            return /*# if (t != Meta.DoubleType) { */(__t.Name__)/*# } */System.Math.Round(x);
-        }
+            => /*# if (t != Meta.DoubleType) { */(__t.Name__)/*# } */System.Math.Round(x);
 
         //# });
         #endregion
@@ -136,6 +131,7 @@ namespace Aardvark.Base
         /// Clamps value to interval [a,b].
         /// </summary>
         [Pure]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static __t.Name__ Clamp(this __t.Name__ x, __t.Name__ a, __t.Name__ b)
         {
             if (x < a) return a;
@@ -149,6 +145,7 @@ namespace Aardvark.Base
         /// Clamps value to interval [a,b].
         /// </summary>
         [Pure]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static __t.Name__ Clamp(this __t.Name__ x, Range1__t.Char__ range)
         {
             if (x < range.Min) return range.Min;
@@ -166,6 +163,7 @@ namespace Aardvark.Base
         /// Clamps value to interval [a,b[.
         /// </summary>
         [Pure]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static __t.Name__ ClampExcl(this __t.Name__ x, __t.Name__ a, __t.Name__ b)
         {
             if (x < a) return a;
@@ -179,6 +177,7 @@ namespace Aardvark.Base
         /// Clamps value to interval [a,b[.
         /// </summary>
         [Pure]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static __t.Name__ ClampExcl(this __t.Name__ x, Range1__t.Char__ range)
         {
             if (x < range.Min) return range.Min;
@@ -196,10 +195,9 @@ namespace Aardvark.Base
         /// Clamps value to interval [a,b[ and cyclically wraps around values outside this interval.
         /// </summary>
         [Pure]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static __t.Name__ ClampWrap(this __t.Name__ x, __t.Name__ a, __t.Name__ b)
-        {
-            return (__t.Name__)(ModP(x - a, b - a) + a);
-        }
+            => (__t.Name__)(ModP(x - a, b - a) + a);
 
         //# });
         //# ilfdtypes.Where(t => t.Name != "ulong").ForEach(t => { //ulong cannot be wrapped in a larger integer variable for subtraction
@@ -207,10 +205,9 @@ namespace Aardvark.Base
         /// Clamps value to interval [a,b[ and cyclically wraps around values outside this interval.
         /// </summary>
         [Pure]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static __t.Name__ ClampWrap(this __t.Name__ x, Range1__t.Char__ range)
-        {
-            return (__t.Name__)(ModP(x - range.Min, range.Max - range.Min) + range.Min);
-        }
+            => (__t.Name__)(ModP(x - range.Min, range.Max - range.Min) + range.Min);
 
         //# });
         #endregion
@@ -241,12 +238,12 @@ namespace Aardvark.Base
             }
             if (mirror)
             {
-                t = t - System.Math.Floor(t * 0.5) * 2;
+                t = t - Math.Floor(t * 0.5) * 2;
                 return t < 1 ? t : 2 - t;
             }
             else
             {
-                return t - System.Math.Floor(t);
+                return t - Math.Floor(t);
             }
         }
 
@@ -264,7 +261,7 @@ namespace Aardvark.Base
                 if (t >= 1) return 1;
                 if (t <= 0) return 0;
             }
-            return t - System.Math.Floor(t);
+            return t - Math.Floor(t);
         }
 
         /// <summary>
@@ -300,10 +297,9 @@ namespace Aardvark.Base
         /// Returns either -1, 0, or +1, indicating the sign of the specified value .
         /// </summary>
         [Pure]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static int Sign(this __t.Name__ x)
-        {
-            return System.Math.Sign(x);
-        }
+            => Math.Sign(x);
 
         //# });
         #endregion
@@ -316,20 +312,18 @@ namespace Aardvark.Base
         /// smaller than 4 times the machine epsilon.
         /// </summary>
         [Pure]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool IsTiny(this __t.Name__ x)
-        {
-            return x.Abs() < Constant<__t.Name__>.PositiveTinyValue;
-        }
+            => x.Abs() < Constant<__t.Name__>.PositiveTinyValue;
 
         /// <summary>
         /// Returns true if the absolulte value of the supplied float <paramref name="x"/> is
         /// smaller than the supplied <paramref name="epsilon"/> .
         /// </summary>
         [Pure]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool IsTiny(this __t.Name__ x, __t.Name__ epsilon)
-        {
-            return x.Abs() < epsilon;
-        }
+            => x.Abs() < epsilon;
 
         //# });
         #endregion
@@ -355,11 +349,10 @@ namespace Aardvark.Base
 
         //# fdtypes.ForEach(t => {
         [Pure]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static double Cbrt(this __t.Name__ x)
-        {
-            return x < 0 ? -/*# if (t != Meta.DoubleType) { */(__t.Name__)/*# } */System.Math.Pow(-x, Constant.OneThird)
-                         : /*# if (t != Meta.DoubleType) { */(__t.Name__)/*# } */System.Math.Pow(x, Constant.OneThird);
-        }
+            => x < 0 ? -/*# if (t != Meta.DoubleType) { */(__t.Name__)/*# } */Math.Pow(-x, Constant.OneThird)
+                         : /*# if (t != Meta.DoubleType) { */(__t.Name__)/*# } */Math.Pow(x, Constant.OneThird);
 
         //# });
         #endregion
@@ -371,10 +364,8 @@ namespace Aardvark.Base
         /// Returns the square of the specified number.
         /// </summary>
         [Pure]
-        public static __st.Name__ Square(this __t.Name__ x)
-        {
-            return x * x;
-        }
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static __st.Name__ Square(this __t.Name__ x) => x * x;
 
         //# });
         #endregion 
@@ -386,20 +377,16 @@ namespace Aardvark.Base
         /// Returns the square root of the specified number.
         /// </summary>
         [Pure]
-        public static double Sqrt(this __t.Name__ x)
-        {
-            return System.Math.Sqrt(x);
-        }
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static double Sqrt(this __t.Name__ x) => Math.Sqrt(x);
 
         //# }
         /// <summary>
         /// Returns the square root of the specified number.
         /// </summary>
         [Pure]
-        public static float Sqrt(this float x)
-        {
-            return (float)System.Math.Sqrt(x);
-        }
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static float Sqrt(this float x) => (float)System.Math.Sqrt(x);
 
         #endregion 
 
@@ -410,10 +397,9 @@ namespace Aardvark.Base
         /// Returns the number raised to the specified power.
         /// </summary>
         [Pure]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static __ct.Name__ Pow(this __t.Name__ x, __ct.Name__ y)
-        {
-            return /*# if (ct != Meta.DoubleType) {*/(__t.Name__)/*# } */System.Math.Pow(x, y);
-        }
+            => /*# if (ct != Meta.DoubleType) {*/(__t.Name__)/*# } */System.Math.Pow(x, y);
 
         //# });
         #endregion
@@ -425,10 +411,9 @@ namespace Aardvark.Base
         /// Returns e raised to the specified number.
         /// </summary>
         [Pure]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static __t.Name__ Exp(this __t.Name__ x)
-        {
-            return /*# if (t != Meta.DoubleType) { */(__t.Name__)/*# } */System.Math.Exp(x);
-        }
+            => /*# if (t != Meta.DoubleType) { */(__t.Name__)/*# } */System.Math.Exp(x);
 
         //# });
 
@@ -441,37 +426,29 @@ namespace Aardvark.Base
         /// Returns the natural (base e) logarithm of the specified number.
         /// </summary>
         [Pure]
-        public static double Log(this __t.Name__ x)
-        {
-            return System.Math.Log(x);
-        }
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static double Log(this __t.Name__ x) => Math.Log(x);
 
         /// <summary>
         /// Returns the base 10 logarithm of the specified number.
         /// </summary>
         [Pure]
-        public static double Log10(this __t.Name__ x)
-        {
-            return System.Math.Log10(x);
-        }
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static double Log10(this __t.Name__ x) => Math.Log10(x);
 
         /// <summary>
         /// Returns the base 2 logarithm of the specified number.
         /// </summary>
         [Pure]
-        public static double Log2(this __t.Name__ x)
-        {
-            return x.Log() * Constant.Ln2Inv;
-        }
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static double Log2(this __t.Name__ x) => x.Log() * Constant.Ln2Inv;
 
         /// <summary>
         /// Returns the values logarithm of the specified basis.
         /// </summary>
         [Pure]
-        public static double Log(this __t.Name__ x, double basis)
-        {
-            return x.Log() / basis.Log();
-        }
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static double Log(this __t.Name__ x, double basis) => x.Log() / basis.Log();
 
         //# });
         #endregion
@@ -515,6 +492,7 @@ namespace Aardvark.Base
         /// instead of a % b giving values between ]-b,b[.
         /// </summary>
         [Pure]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static __t.Name__ ModP(this __t.Name__ a, __t.Name__ b)
         {
             var m = a % b;
@@ -534,30 +512,25 @@ namespace Aardvark.Base
         /// or a power of two.
         /// </summary>
         [Pure]
-        public static bool IsPowerOfTwo(this __t.Name__ x)
-        {
-            return (x & (x - 1)) == 0;
-        }
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool IsPowerOfTwo(this __t.Name__ x) => (x & (x - 1)) == 0;
 
         //# });
         /// <summary>
         /// Returns 2 raised to the power of the value.
         /// </summary>
         [Pure]
-        public static long PowerOfTwo(this long x)
-        {
-            return 1L << (int)x;
-        }
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static long PowerOfTwo(this long x) => 1L << (int)x;
 
         //# fdtypes.ForEach(t => {
         /// <summary>
         /// Returns 2 raised to the power of the value.
         /// </summary>
         [Pure]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static __t.Name__ PowerOfTwo(this __t.Name__ x)
-        {
-            return /*# if (t != Meta.DoubleType) { */(__t.Name__)/*# } */System.Math.Pow(2, x);
-        }
+            => /*# if (t != Meta.DoubleType) { */(__t.Name__)/*# } */System.Math.Pow(2, x);
 
         //# });
         //# iltypes.ForEach(t => {
@@ -612,83 +585,65 @@ namespace Aardvark.Base
         /// Returns the cosine of the specified angle in radians.
         /// </summary>
         [Pure]
-        public static __t.Name__ Sin(this __t.Name__ x)
-        {
-            return __cast__System.Math.Sin(x);
-        }
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static __t.Name__ Sin(this __t.Name__ x) => __cast__System.Math.Sin(x);
 
         /// <summary>
         /// Returns the cosine of the specified angle in radians.
         /// </summary>
         [Pure]
-        public static __t.Name__ Cos(this __t.Name__ x)
-        {
-            return __cast__System.Math.Cos(x);
-        }
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static __t.Name__ Cos(this __t.Name__ x) => __cast__System.Math.Cos(x);
 
         /// <summary>
         /// Returns the tangent of the specified angle in radians.
         /// </summary>
         [Pure]
-        public static __t.Name__ Tan(this __t.Name__ x)
-        {
-            return __cast__System.Math.Tan(x);
-        }
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static __t.Name__ Tan(this __t.Name__ x) => __cast__System.Math.Tan(x);
 
         /// <summary>
         /// Returns the angle in radians whose sine is the specified number.
         /// </summary>
         [Pure]
-        public static __t.Name__ Asin(this __t.Name__ x)
-        {
-            return __cast__System.Math.Asin(x);
-        }
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static __t.Name__ Asin(this __t.Name__ x) => __cast__System.Math.Asin(x);
 
         /// <summary>
         /// Returns the angle in radians whose sine is the specified number while clamping the input to [-1, 1] in order to avoid numerical problems.
         /// </summary>
         [Pure]
-        public static __t.Name__ AsinC(this __t.Name__ x)
-        {
-            return __cast__System.Math.Asin(Clamp(x, -1, 1));
-        }
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static __t.Name__ AsinC(this __t.Name__ x) => __cast__System.Math.Asin(Clamp(x, -1, 1));
 
         /// <summary>
         /// Returns the angle in radians whose cosine is the specified number.
         /// </summary>
         [Pure]
-        public static __t.Name__ Acos(this __t.Name__ x)
-        {
-            return __cast__System.Math.Acos(x);
-        }
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static __t.Name__ Acos(this __t.Name__ x) => __cast__System.Math.Acos(x);
 
         /// <summary>
         /// Returns the angle in radians whose cosine is the specified number while clamping the input to [-1, 1] in order to avoid numerical problems.
         /// </summary>
         [Pure]
-        public static __t.Name__ AcosC(this __t.Name__ x)
-        {
-            return __cast__System.Math.Acos(Clamp(x, -1, 1));
-        }
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static __t.Name__ AcosC(this __t.Name__ x) => __cast__System.Math.Acos(Clamp(x, -1, 1));
 
         /// <summary>
         /// Returns the angle in radians whose tangent is the specified number.
         /// </summary>
         [Pure]
-        public static __t.Name__ Atan(this __t.Name__ x)
-        {
-            return __cast__System.Math.Atan(x);
-        }
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static __t.Name__ Atan(this __t.Name__ x) => __cast__System.Math.Atan(x);
 
         /// <summary>
         /// Returns the angle in radians whose tangent is
         /// the quotient of the two specified number.
         /// </summary>
         [Pure]
-        public static __t.Name__ Atan2(__t.Name__ y, __t.Name__ x)
-        {
-            return __cast__System.Math.Atan2(y, x);
-        }
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static __t.Name__ Atan2(__t.Name__ y, __t.Name__ x) => __cast__System.Math.Atan2(y, x);
 
         /// <summary>
         /// Returns the angle in radians whose tangent is
@@ -720,56 +675,47 @@ namespace Aardvark.Base
         /// Returns the hyperbolic sine of the specified number.
         /// </summary>
         [Pure]
-        public static __t.Name__ Sinh(this __t.Name__ x)
-        {
-            return __cast__System.Math.Sinh(x);
-        }
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static __t.Name__ Sinh(this __t.Name__ x) => __cast__System.Math.Sinh(x);
 
         /// <summary>
         /// Returns the hyperbolic cosine of the specified number.
         /// </summary>
         [Pure]
-        public static __t.Name__ Cosh(this __t.Name__ x)
-        {
-            return __cast__System.Math.Cosh(x);
-        }
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static __t.Name__ Cosh(this __t.Name__ x) => __cast__System.Math.Cosh(x);
 
         /// <summary>
         /// Returns the hyperbolic tangent of the specified number.
         /// </summary>
         [Pure]
-        public static __t.Name__ Tanh(this __t.Name__ x)
-        {
-            return __cast__System.Math.Tanh(x);
-        }
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static __t.Name__ Tanh(this __t.Name__ x) => __cast__System.Math.Tanh(x);
 
         /// <summary>
         /// Returns the inverse hyperbolic sine of the specified number.
         /// </summary>
         [Pure]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static __t.Name__ Asinh(this __t.Name__ x)
-        {
-            return __cast__System.Math.Log(x + System.Math.Sqrt(x * x + 1.0));
-        }
+            => __cast__System.Math.Log(x + System.Math.Sqrt(x * x + 1.0));
 
         /// <summary>
         /// Returns the inverse hyperbolic cosine of the specified number.
         /// </summary>
         [Pure]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static __t.Name__ Acosh(this __t.Name__ x)
-        {
-            return __cast__System.Math.Log(x + System.Math.Sqrt(x * x - 1.0));
-        }
+            => __cast__System.Math.Log(x + System.Math.Sqrt(x * x - 1.0));
 
         /// <summary>
         /// Returns the inverse hyperbolic tangent of the specified number.
         /// Note that the absolute value of the argument must be smaller than 1.
         /// </summary>
         [Pure]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static __t.Name__ Atanh(this __t.Name__ x)
-        {
-            return __cast__(0.5 * System.Math.Log((1.0 + x)/(1.0 - x)));
-        }
+            => __cast__(0.5 * System.Math.Log((1.0 + x)/(1.0 - x)));
 
         //# });
         #endregion
@@ -839,10 +785,8 @@ namespace Aardvark.Base
         /// Calculates the standard deviation of given elements.
         /// </summary>
         [Pure]
-        public static double StandardDeviation(this IEnumerable<__type__> data)
-        {
-            return data.Variance().Sqrt();
-        }
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static double StandardDeviation(this IEnumerable<__type__> data) => data.Variance().Sqrt();
 
         //# });
         /// <summary>
@@ -870,12 +814,9 @@ namespace Aardvark.Base
         /// Calculates the standard deviation of given elements.
         /// </summary>
         [Pure]
-        public static double StandardDeviation<T>(
-            this IEnumerable<T> data,
-            Func<T, double> selector)
-        {
-            return data.Variance(selector).Sqrt();
-        }
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static double StandardDeviation<T>(this IEnumerable<T> data, Func<T, double> selector)
+            => data.Variance(selector).Sqrt();
 
         #endregion
 
@@ -920,28 +861,22 @@ namespace Aardvark.Base
         /// Returns fractional part of t. Calculated as t - floor(t).
         /// </summary>
         [Pure]
-        public static double Frac(this double t)
-        {
-            return t - System.Math.Floor(t);
-        }
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static double Frac(this double t) => t - System.Math.Floor(t);
 
         /// <summary>
         /// Returns fractional part of t. Calculated as t - floor(t).
         /// </summary>
         [Pure]
-        public static float Frac(this float t)
-        {
-            return (float)(t - System.Math.Floor(t));
-        }
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static float Frac(this float t) => (float)(t - System.Math.Floor(t));
 
         /// <summary>
         /// Returns fractional part of t. Calculated as t - floor(t).
         /// </summary>
         [Pure]
-        public static decimal Frac(this decimal t)
-        {
-            return t - System.Math.Floor(t);
-        }
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static decimal Frac(this decimal t) => t - System.Math.Floor(t);
 
         #endregion
         
@@ -965,7 +900,7 @@ namespace Aardvark.Base
         }
 
         //# });
-        
+
         #endregion
 
         #region Swap
@@ -974,17 +909,17 @@ namespace Aardvark.Base
         /// Swaps <paramref name="a"/> and <paramref name="b"/>,
         /// so that afterwards a=b and b=a.
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static void Swap<T>(ref T a, ref T b)
         {
-            T t = a;
-            a = b;
-            b = t;
+            T t = a; a = b; b = t;
         }
 
         /// <summary>
         /// Rotates left <paramref name="a"/>, <paramref name="b"/>, and <paramref name="c"/>,
         /// so that afterwards a=b, b=c and c=a.
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static void Rotate<T>(ref T a, ref T b, ref T c)
         {
             T t = a; a = b; b = c; c = t;
@@ -994,6 +929,7 @@ namespace Aardvark.Base
         /// Rotates left <paramref name="a"/>, <paramref name="b"/>, <paramref name="c"/>, and <paramref name="d"/>,
         /// so that afterwards a=b, b=c, c=b and d=a.
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static void Rotate<T>(ref T a, ref T b, ref T c, ref T d)
         {
             T t = a; a = b; b = c; c = d; d = t;
@@ -1003,6 +939,7 @@ namespace Aardvark.Base
         /// Rotates left <paramref name="a"/>, <paramref name="b"/>, <paramref name="c"/>, <paramref name="d"/>, and <paramref name="e"/>,
         /// so that afterwards a=b, b=c, c=b and d=c and e=a.
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static void Rotate<T>(ref T a, ref T b, ref T c, ref T d, ref T e)
         {
             T t = a; a = b; b = c; c = d; d = e; e = t;
@@ -1013,44 +950,34 @@ namespace Aardvark.Base
         #region Common Divisor and Multiple
 
         [Pure]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static long GreatestCommonDivisor(long a, long b)
-        {
-            return b == 0 ? a : GreatestCommonDivisor(b, a % b);
-        }
+            => b == 0 ? a : GreatestCommonDivisor(b, a % b);
 
         [Pure]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static long LeastCommonMultiple(long a, long b)
-        {
-            return a * b / GreatestCommonDivisor(a, b);
-        }
+            => a * b / GreatestCommonDivisor(a, b);
 
         #endregion
 
         #region Conversion
 
         [Pure]
-        public static int ToInt(this float x)
-        {
-            return (int)x;
-        }
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static int ToInt(this float x) => (int)x;
 
         [Pure]
-        public static long ToLong(this float x)
-        {
-            return (long)x;
-        }
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static long ToLong(this float x) => (long)x;
 
         [Pure]
-        public static int ToInt(this double x)
-        {
-            return (int)x;
-        }
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static int ToInt(this double x) => (int)x;
 
         [Pure]
-        public static long ToLong(this double x)
-        {
-            return (long)x;
-        }
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static long ToLong(this double x) => (long)x;
 
         #endregion
 
