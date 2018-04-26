@@ -80,5 +80,17 @@
         public Line2d Flipped => new Line2d(P1, P0);
 
         #endregion
+
+        /// <summary>
+        /// Returns true if points a, b and c are exactly collinear.
+        /// </summary>
+        public static bool IsCollinear(V2d a, V2d b, V2d c)
+            => (b.Y - a.Y) * (c.X - b.X) == (c.Y - b.Y) * (b.X - a.X);
+
+        /// <summary>
+        /// Returns true if points a, b and c are collinear within eps.
+        /// </summary>
+        public static bool IsCollinear(V2d a, V2d b, V2d c, double eps = 1e-9)
+            => Fun.ApproximateEquals((b.Y - a.Y) * (c.X - b.X), (c.Y - b.Y) * (b.X - a.X), eps);
     }
 }

@@ -13,14 +13,21 @@ namespace Aardvark.Base
     /// </summary>
     public struct Plane3d : IValidity, IBoundingBox3d
     {
+        /// <summary>
+        /// Plane normal.
+        /// </summary>
         public V3d Normal;
+
+        /// <summary>
+        /// Distance from origin to plane.
+        /// </summary>
         public double Distance;
 
         #region Constructors
 
         /// <summary>
-        /// Creates plane from normal vector and constant. IMPORTANT: The
-        /// supplied vector has to be normalized in order for all methods
+        /// Creates plane from normal vector and distance to origin.
+        /// IMPORTANT: The normal has to be normalized in order for all methods
         /// to work correctly, however if only relative height computations
         /// using the <see cref="Height"/> method are necessary, the normal
         /// vector need not be normalized.
@@ -32,8 +39,8 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Creates plane from point and normal vector. IMPORTANT: The
-        /// supplied vector has to be normalized in order for all methods
+        /// Creates plane from normal vector and point.
+        /// IMPORTANT: The normal has to be normalized in order for all methods
         /// to work correctly, however if only relative height computations
         /// using the <see cref="Height"/> method are necessary, the normal
         /// vector need not be normalized.
@@ -45,8 +52,8 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Creates a plane from 3 independent points. A normalized normal
-        /// vector is computed and stored.
+        /// Creates a plane from 3 independent points.
+        /// A normalized normal vector is computed and stored.
         /// </summary>
         public Plane3d(V3d p0, V3d p1, V3d p2)
         {
@@ -58,9 +65,13 @@ namespace Aardvark.Base
 
         #region Constants
 
+        /// <summary>YZ plane.</summary>
         public static readonly Plane3d XPlane = new Plane3d(V3d.XAxis, V3d.Zero);
+        /// <summary>XZ plane.</summary>
         public static readonly Plane3d YPlane = new Plane3d(V3d.YAxis, V3d.Zero);
+        /// <summary>XY plane.</summary>
         public static readonly Plane3d ZPlane = new Plane3d(V3d.ZAxis, V3d.Zero);
+        /// <summary>Invalid plane.</summary>
         public static readonly Plane3d Invalid = new Plane3d(V3d.Zero, 0.0);
 
         #endregion
@@ -99,7 +110,7 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Returns the coefficients (a, b, c, d) of the normal equation.
+        /// Returns the coefficients (a, b, c, d) of the normal equation: ax + by + cz + d = 0
         /// </summary>
         public V4d Coefficients => new V4d(Normal, -Distance);
 
@@ -108,17 +119,17 @@ namespace Aardvark.Base
         #region Arithmetics
 
         /// <summary>
-        /// Calculates the nomalized plane of this <see cref="Plane3d"/>.
+        /// Normalizes this <see cref="Plane3d"/>.
         /// </summary>
         public void Normalize()
         {
-            double scale =  Normal.Length;
+            double scale = Normal.Length;
             Normal /= scale;
             Distance /= scale;
         }
 
         /// <summary>
-        /// Changes sign of normal vector
+        /// Changes sign of normal vector.
         /// </summary>
         public void Reverse()
         {
@@ -129,7 +140,6 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns <see cref="Plane3d"/> with normal vector in opposing direction.
         /// </summary>
-        /// <returns></returns>
         public Plane3d Reversed => new Plane3d(-Normal, -Distance);
 
         /// <summary>

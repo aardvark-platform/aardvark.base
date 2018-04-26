@@ -1,3 +1,21 @@
+/*
+    Copyright 2006-2018. The Aardvark Platform Team.
+    
+        https://aardvark.graphics
+    
+    Licensed under the Apache License, Version 2.0 (the "License");
+    you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
+    
+        http://www.apache.org/licenses/LICENSE-2.0
+    
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+*/
+using System;
 using System.Globalization;
 using System.Linq;
 using System.Runtime.InteropServices;
@@ -16,10 +34,39 @@ namespace Aardvark.Base
 
         #region Constructors
 
+        /// <summary>
+        /// Creates circle from center and radius.
+        /// </summary>
         public Circle2d(V2d center, double radius)
         {
             Center = center;
             Radius = radius;
+        }
+
+        /// <summary>
+        /// Creates circle from center and point on circle.
+        /// </summary>
+        public Circle2d(V2d center, V2d pointOnCircle)
+        {
+            Center = center;
+            Radius = (pointOnCircle - center).Length;
+        }
+
+        /// <summary>
+        /// Creates circle from three points.
+        /// </summary>
+        public Circle2d(V2d a, V2d b, V2d c)
+        {
+            var l0 = new Plane2d((b - a).Normalized, (a + b) * 0.5);
+            var l1 = new Plane2d((c - b).Normalized, (b + c) * 0.5);
+            if (l0.Intersects(l1, out Center))
+            {
+                Radius = (a - Center).Length;
+            }
+            else
+            {
+                throw new Exception("Cannot construct circle because given points are collinear.");
+            }
         }
 
         #endregion
@@ -46,25 +93,29 @@ namespace Aardvark.Base
 
         #endregion
 
+        #region Contains
+
+        /// <summary>
+        /// True if point p is contained in this circle.
+        /// </summary>
+        public bool Contains(V2d p) => (p - Center).LengthSquared <= RadiusSquared;
+
+        #endregion
+
         #region Overrides
 
-        /// <summary>
-        /// Calculates Hash-code of the given circle.
-        /// </summary>
-        /// <returns>Hash-code.</returns>
         public override int GetHashCode() => HashCode.GetCombined(Center, Radius);
-
-        /// <summary>
-        /// Checks if 2 objects are equal.
-        /// </summary>
-        /// <returns>Result of comparison.</returns>
-        public override bool Equals(object other) => (other is Circle2d value)
-            ? (Center == value.Center) && (Radius == value.Radius)
+        
+        public override bool Equals(object other) => (other is Circle2d o)
+            ? (Center == o.Center) && (Radius == o.Radius)
             : false;
 
         public override string ToString()
             => string.Format(CultureInfo.InvariantCulture, "[{0}, {1}]", Center, Radius);
 
+        /// <summary>
+        /// Parses Circle2d from a string created with Circle2d.ToString().
+        /// </summary>
         public static Circle2d Parse(string s)
         {
             var x = s.NestedBracketSplitLevelOne().ToArray();
@@ -85,6 +136,9 @@ namespace Aardvark.Base
 
     public static class Box2dExtensions
     {
+        /// <summary>
+        /// Computes bounding circle of box.
+        /// </summary>
         public static Circle2d GetBoundingCircle2d(this Box2d box)
             => box.IsInvalid ? Circle2d.Invalid : new Circle2d(box.Center, 0.5 * box.Size.Length);
     }

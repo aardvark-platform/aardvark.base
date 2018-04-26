@@ -9,6 +9,36 @@ namespace Aardvark.Tests.Geometry
     public class Circle2dTests
     {
         [Test]
+        public void Circle2d_Constructor1()
+        {
+            var a = new Circle2d(new V2d(1.2, 4.7), 3.14);
+            Assert.IsTrue(a.Center == new V2d(1.2, 4.7));
+            Assert.IsTrue(a.Radius == 3.14);
+            Assert.IsTrue(!a.IsInvalid);
+            Assert.IsTrue(a.IsValid);
+        }
+
+        [Test]
+        public void Circle2d_Constructor2()
+        {
+            var a = new Circle2d(new V2d(1.2, 4.7), new V2d(1.2, 6.7));
+            Assert.IsTrue(a.Center == new V2d(1.2, 4.7));
+            Assert.IsTrue(a.Radius == 2);
+            Assert.IsTrue(!a.IsInvalid);
+            Assert.IsTrue(a.IsValid);
+        }
+
+        [Test]
+        public void Circle2d_Constructor3()
+        {
+            var a = new Circle2d(new V2d(1, 0), new V2d(2, 1), new V2d(3, 0));
+            Assert.IsTrue(a.Center == new V2d(2, 0));
+            Assert.IsTrue(a.Radius == 1);
+            Assert.IsTrue(!a.IsInvalid);
+            Assert.IsTrue(a.IsValid);
+        }
+
+        [Test]
         public void Circle2d_Zero()
         {
             var a = Circle2d.Zero;
@@ -83,6 +113,17 @@ namespace Aardvark.Tests.Geometry
         {
             var a = new Circle2d(V2d.Zero, 3.0);
             Assert.IsTrue(a.Area == 9 * PI);
+        }
+
+        [Test]
+        public void Circle2d_Contains()
+        {
+            var a = new Circle2d(new V2d(5, 0), 3);
+            Assert.IsTrue(a.Contains(new V2d(7, 2)));
+            Assert.IsTrue(a.Contains(new V2d(8, 0)));
+            Assert.IsTrue(!a.Contains(new V2d(0, 0)));
+            Assert.IsTrue(!a.Contains(new V2d(5, 9)));
+            Assert.IsTrue(!a.Contains(new V2d(8.000001, 0)));
         }
 
         [Test]

@@ -37,6 +37,8 @@ namespace Aardvark.Base
 
         public static V2f FromPolar(float angleInRadians)
             => new V2f(Cos(angleInRadians), Sin(angleInRadians));
+
+        public V2f Orthogonal => new V2f(-Y, X);
     }
 
     #endregion
@@ -50,6 +52,8 @@ namespace Aardvark.Base
 
         public static V2d FromPolar(double angleInRadians)
             => new V2d(Cos(angleInRadians), Sin(angleInRadians));
+
+        public V2d Orthogonal => new V2d(-Y, X);
     }
 
     #endregion
@@ -58,6 +62,7 @@ namespace Aardvark.Base
 
     public partial struct V2i
     {
+        public V2i Orthogonal => new V2i(-Y, X);
     }
 
     #endregion
@@ -66,6 +71,7 @@ namespace Aardvark.Base
 
     public partial struct V2l
     {
+        public V2l Orthogonal => new V2l(-Y, X);
     }
 
     #endregion

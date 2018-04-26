@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 
@@ -268,72 +269,40 @@ namespace Aardvark.Base
         /// Returns true if the two Lines intersect
         /// If the lines overlap and are parallel there is no intersection returned
         /// </summary>
-        public static bool Intersects(
-                this Line2d l0, 
-                Line2d l1
-            )
-        {
-            V2d dummy;
-            return l0.IntersectsLine(l1.P0, l1.P1, out dummy);
-        }
+        public static bool Intersects(this Line2d l0, Line2d l1)
+            => l0.IntersectsLine(l1.P0, l1.P1, out V2d dummy);
 
         /// <summary>
         /// Returns true if the two Lines intersect
         /// p holds the Intersection Point
         /// If the lines overlap and are parallel there is no intersection returned
         /// </summary>
-        public static bool Intersects(
-                this Line2d l0, 
-                Line2d l1, 
-                out V2d p
-            )
-        {
-            return l0.IntersectsLine(l1.P0, l1.P1, out p);
-        }
+        public static bool Intersects(this Line2d l0, Line2d l1, out V2d p)
+            => l0.IntersectsLine(l1.P0, l1.P1, out p);
 
         /// <summary>
         /// Returns true if the two Lines intersect with an absolute Tolerance
         /// p holds the Intersection Point
         /// If the lines overlap and are parallel there is no intersection returned
         /// </summary>
-        public static bool Intersects(
-                this Line2d l0, 
-                Line2d l1, 
-                double absoluteEpsilon, 
-                out V2d p
-            )
-        {
-            return l0.IntersectsLine(l1.P0, l1.P1, absoluteEpsilon, out p);
-        }
+        public static bool Intersects(this Line2d l0, Line2d l1, double absoluteEpsilon, out V2d p)
+            => l0.IntersectsLine(l1.P0, l1.P1, absoluteEpsilon, out p);
 
         /// <summary>
         /// Returns true if the Line intersects the Line between p0 and p1
         /// If the lines overlap and are parallel there is no intersection returned
         /// </summary>
-        public static bool IntersectsLine(
-                this Line2d line, 
-                V2d p0, V2d p1
-            )
-        {
-            V2d dummy;
-            return line.IntersectsLine(p0, p1, out dummy);
-        }
-
-
+        public static bool IntersectsLine(this Line2d line, V2d p0, V2d p1)
+            => line.IntersectsLine(p0, p1, out V2d dummy);
+        
         /// <summary>
         /// Returns true if the Line intersects the Line between p0 and p1
         /// point holds the Intersection Point
         /// If the lines overlap and are parallel there is no intersection returned
         /// </summary>
-        public static bool IntersectsLine(
-                this Line2d line,
-                V2d p0, V2d p1,
-                out V2d point)
-        {
-            return line.IntersectsLine(p0, p1, false, out point);
-        }
-
-
+        public static bool IntersectsLine(this Line2d line, V2d p0, V2d p1, out V2d point)
+            => line.IntersectsLine(p0, p1, false, out point);
+        
         /// <summary>
         /// Returns true if the Line intersects the Line between p0 and p1
         /// point holds the Intersection Point
@@ -341,13 +310,13 @@ namespace Aardvark.Base
         /// point holds the Closest Point to p0 of the Intersection-Range
         /// </summary>
         public static bool IntersectsLine(
-                this Line2d line, 
-                V2d p0, V2d p1,
-                bool overlapping,
-                out V2d point
+            this Line2d line,
+            V2d p0, V2d p1,
+            bool overlapping,
+            out V2d point
             )
         {
-            V2d a = line.P0 - p0;
+            var a = line.P0 - p0;
 
             if (Fun.IsTiny(a.LengthSquared))
             {
@@ -355,17 +324,16 @@ namespace Aardvark.Base
                 return true;
             }
 
-            V2d u = line.P1 - line.P0;
-            V2d v = p1 - p0;
-            double lu = u.Length;
+            var u = line.P1 - line.P0;
+            var v = p1 - p0;
+            var lu = u.Length;
 
-            double cross = u.X * v.Y - u.Y * v.X;
+            var cross = u.X * v.Y - u.Y * v.X;
             if (!Fun.IsTiny(cross))
             {
-                //Non-parallel Lines
-
+                // non-parallel lines
                 cross = 1.0 / cross;
-                double t0 = (a.Y * v.X - a.X * v.Y) * cross;
+                var t0 = (a.Y * v.X - a.X * v.Y) * cross;
                 if (t0 > 1 || t0 < 0)
                 {
                     point = V2d.NaN;
@@ -384,23 +352,20 @@ namespace Aardvark.Base
             }
             else
             {
-                //Parallel Lines
-
+                // pParallel lines
                 if (!overlapping)
                 {
                     point = V2d.NaN;
                     return false;
                 }
 
-                V2d normalizedDirection = u / lu;
+                var normalizedDirection = u / lu;
 
-                Range1d r0 = new Range1d(0, lu);
-                Range1d r1 = new Range1d((p0 - line.P0).Dot(normalizedDirection), (p1 - line.P0).Dot(normalizedDirection));
+                var r0 = new Range1d(0, lu);
+                var r1 = new Range1d((p0 - line.P0).Dot(normalizedDirection), (p1 - line.P0).Dot(normalizedDirection));
                 r1.Repair();
-
-
-                Range1d result;
-                if (r0.Intersects(r1, 0.0, out result))
+                
+                if (r0.Intersects(r1, 0.0, out Range1d result))
                 {
                     point = line.P0 + normalizedDirection * result.Min;
                     return true;
@@ -410,23 +375,14 @@ namespace Aardvark.Base
                 return false;
             }
         }
-
-
-
+        
         /// <summary>
         /// Returns true if the Line intersects the Line between p0 and p1 with an absolute Tolerance
         /// point holds the Intersection Point
         /// If the lines overlap and are parallel there is no intersection returned
         /// </summary>
-        public static bool IntersectsLine(
-                this Line2d line,
-                V2d p0, V2d p1,
-                double absoluteEpsilon,
-                out V2d point
-            )
-        {
-            return line.IntersectsLine(p0, p1, absoluteEpsilon, false, out point);
-        }
+        public static bool IntersectsLine(this Line2d line, V2d p0, V2d p1, double absoluteEpsilon, out V2d point)
+            => line.IntersectsLine(p0, p1, absoluteEpsilon, false, out point);
 
         /// <summary>
         /// Returns true if the Line intersects the Line between p0 and p1 with an absolute Tolerance
@@ -435,14 +391,14 @@ namespace Aardvark.Base
         /// point holds the Closest Point to p0 of the Intersection-Range
         /// </summary>
         public static bool IntersectsLine(
-                this Line2d line,
-                V2d p0, V2d p1,
-                double absoluteEpsilon,
-                bool overlapping,
-                out V2d point
+            this Line2d line,
+            V2d p0, V2d p1,
+            double absoluteEpsilon,
+            bool overlapping,
+            out V2d point
             )
         {
-            V2d a = line.P0 - p0;
+            var a = line.P0 - p0;
 
             if (Fun.IsTiny(a.LengthSquared))
             {
@@ -450,28 +406,27 @@ namespace Aardvark.Base
                 return true;
             }
 
-            V2d u = line.P1 - line.P0;
-            V2d v = p1 - p0;
+            var u = line.P1 - line.P0;
+            var v = p1 - p0;
 
-            double lu = u.Length;
-            double lv = v.Length;
-            double relativeEpsilonU = absoluteEpsilon / lu;
-            double RelativeEpsilonV = absoluteEpsilon / lv;
+            var lu = u.Length;
+            var lv = v.Length;
+            var relativeEpsilonU = absoluteEpsilon / lu;
+            var RelativeEpsilonV = absoluteEpsilon / lv;
 
-            double cross = u.X * v.Y - u.Y * v.X;
+            var cross = u.X * v.Y - u.Y * v.X;
             if (!Fun.IsTiny(cross))
             {
-                //Non-parallel Lines
-
+                // non-parallel lines
                 cross = 1.0 / cross;
-                double t0 = (a.Y * v.X - a.X * v.Y) * cross;
+                var t0 = (a.Y * v.X - a.X * v.Y) * cross;
                 if (t0 > 1 + relativeEpsilonU || t0 < -relativeEpsilonU)
                 {
                     point = V2d.NaN;
                     return false;
                 }
 
-                double t1 = (a.Y * u.X - a.X * u.Y) * cross;
+                var t1 = (a.Y * u.X - a.X * u.Y) * cross;
                 if (t1 > 1 + RelativeEpsilonV || t1 < -RelativeEpsilonV)
                 {
                     point = V2d.NaN;
@@ -483,23 +438,20 @@ namespace Aardvark.Base
             }
             else
             {
-                //Parallel Lines
-
+                // parallel lines
                 if (!overlapping)
                 {
                     point = V2d.NaN;
                     return false;
                 }
 
-                V2d normalizedDirection = u / lu;
+                var normalizedDirection = u / lu;
 
-                Range1d r0 = new Range1d(0, lu);
-                Range1d r1 = new Range1d((p0 - line.P0).Dot(normalizedDirection), (p1 - line.P0).Dot(normalizedDirection));
+                var r0 = new Range1d(0, lu);
+                var r1 = new Range1d((p0 - line.P0).Dot(normalizedDirection), (p1 - line.P0).Dot(normalizedDirection));
                 r1.Repair();
 
-
-                Range1d result;
-                if (r0.Intersects(r1, absoluteEpsilon, out result))
+                if (r0.Intersects(r1, absoluteEpsilon, out Range1d result))
                 {
                     point = line.P0 + normalizedDirection * result.Min;
                     return true;
@@ -515,8 +467,9 @@ namespace Aardvark.Base
         #region Line2d intersects Line2d (Deprecated)
         
         /// <summary>
-        /// Deprecated: use Plane2d.Intersects(Plane2d) or Ray2d.Intersects(Ray2d) instead
+        /// Deprecated: use Plane2d.Intersects(Plane2d) or Ray2d.Intersects(Ray2d) instead.
         /// </summary>
+        [Obsolete]
         public static bool Intersects(
             this Line2d line0,
             Line2d line1,
@@ -951,26 +904,19 @@ namespace Aardvark.Base
         #region Plane2d intersects Plane2d
 
         /// <summary>
-        /// Returns true if the two Plane2ds intersect
+        /// Returns true if the two Plane2ds intersect.
         /// </summary>
-        public static bool Intersects(
-            this Plane2d p0, 
-            Plane2d p1
-            )
+        public static bool Intersects(this Plane2d p0, Plane2d p1)
         {
             var hit = p0.Coefficients.Cross(p1.Coefficients);
             return !hit.Z.IsTiny();
         }
 
         /// <summary>
-        /// Returns true if the two Plane2ds intersect
-        /// point holds the Intersection-Point if an Intersection is found (else V2d.NaN)
+        /// Returns true if the two Plane2ds intersect.
+        /// Point holds the intersection point if an intersection is found.
         /// </summary>
-        public static bool Intersects(
-            this Plane2d p0, 
-            Plane2d p1, 
-            out V2d point
-            )
+        public static bool Intersects(this Plane2d p0, Plane2d p1, out V2d point)
         {
             var hit = p0.Coefficients.Cross(p1.Coefficients);
             point = hit.XY / hit.Z;
