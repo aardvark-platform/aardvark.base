@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using static System.Math;
 
 namespace Aardvark.Base
 {
@@ -11,9 +12,7 @@ namespace Aardvark.Base
 
         #region Ray3d - Ray3d
 
-        public static V3d GetMiddlePoint(
-            this Ray3d ray0, Ray3d ray1
-            )
+        public static V3d GetMiddlePoint(this Ray3d ray0, Ray3d ray1)
         {
             /*RayHit3d hit = new RayHit3d(double.MaxValue);
             if (ray0.Hits(ray1, ref hit))
@@ -22,16 +21,16 @@ namespace Aardvark.Base
             }
             else
             {*/
-                V3d a = ray0.Origin - ray1.Origin;
-                V3d u = ray0.Direction.Normalized;
-                V3d v = ray1.Direction.Normalized;
+                var a = ray0.Origin - ray1.Origin;
+                var u = ray0.Direction.Normalized;
+                var v = ray1.Direction.Normalized;
 
-                double uDotv = u.Dot(v);
-                double my = (a.Dot(u) * uDotv - a.Dot(v)) / (uDotv * uDotv - 1.0);
-                double la = (my * uDotv - a.Dot(u));
+                var uDotv = u.Dot(v);
+                var my = (a.Dot(u) * uDotv - a.Dot(v)) / (uDotv * uDotv - 1.0);
+                var la = (my * uDotv - a.Dot(u));
 
-                V3d p0 = ray0.Origin + la * u;
-                V3d p1 = ray1.Origin + my * v;
+                var p0 = ray0.Origin + la * u;
+                var p1 = ray1.Origin + my * v;
 
                 //double d = (p1 - p0).Length;
 
@@ -45,11 +44,11 @@ namespace Aardvark.Base
 
         public static V3d GetMiddlePoint(this IEnumerable<Ray3d> rays)
         {
-            V3d center = V3d.Zero;
-            int count = 0;
+            var center = V3d.Zero;
+            var count = 0;
 
-            foreach(Ray3d r0 in rays)
-                foreach (Ray3d r1 in rays)
+            foreach(var r0 in rays)
+                foreach (var r1 in rays)
                     if (r0.LexicalCompare(r1) < 0)
                     {
                         center += r0.GetMiddlePoint(r1);
@@ -84,7 +83,7 @@ namespace Aardvark.Base
             var p0q = query - line.P0;
             t = V2d.Dot(p0q, line.Direction);
             if (t <= 0.0) { t = 0.0; return line.P0; }
-            double denom = line.Direction.LengthSquared;
+            var denom = line.Direction.LengthSquared;
             if (t >= denom) { t = 1.0; return line.P1; }
             t /= denom;
             return line.P0 + t * line.Direction;
@@ -134,7 +133,7 @@ namespace Aardvark.Base
 
         public static V2d GetClosestPointOn(this V2d point, Plane2d line)
         {
-            double lengthOfNormal2 = line.Normal.LengthSquared;
+            var lengthOfNormal2 = line.Normal.LengthSquared;
             return (point - (line.Normal.Dot(point - line.Point) / lengthOfNormal2) * line.Normal);
         }
 
@@ -148,7 +147,7 @@ namespace Aardvark.Base
         public static V2d GetClosestPointOn(this V2d query, Box2d box)
         {
             var closest = query;
-            for (int i = 0; i < 2; i++)
+            for (var i = 0; i < 2; i++)
             {
                 if (query[i] < box.Min[i]) closest[i] = box.Min[i];
                 if (query[i] > box.Max[i]) closest[i] = box.Max[i];
@@ -166,7 +165,7 @@ namespace Aardvark.Base
         public static V2d GetClosestPointOn(this V2d vec, Quad2d quad)
         {
             V2d closestPoint;
-            V2d temp = vec.GetClosestPointOn(new Line2d(quad.P0,quad.P1));
+            var temp = vec.GetClosestPointOn(new Line2d(quad.P0,quad.P1));
             closestPoint = temp;
 
             temp = vec.GetClosestPointOn(new Line2d(quad.P1, quad.P2));
@@ -190,12 +189,11 @@ namespace Aardvark.Base
 
         public static V2d GetClosestPointOn(this V2d vec, Polygon2d poly)
         {
-            V2d closestPoint = V2d.PositiveInfinity;
-            V2d temp;
-            int i = 0;
+            var closestPoint = V2d.PositiveInfinity;
+            var i = 0;
             foreach (var line in poly.EdgeLines)
             {
-                temp = vec.GetClosestPointOn(line);
+                var temp = vec.GetClosestPointOn(line);
                 if (i++ == 0) closestPoint = temp;
                 else if ((temp - vec).LengthSquared < (closestPoint - vec).LengthSquared) closestPoint = temp;
             }
@@ -226,44 +224,44 @@ namespace Aardvark.Base
             var e02 = triangle.Edge02;
 
             var p0q = query - triangle.P0;
-            double d1 = V2d.Dot(e01, p0q);
-            double d2 = V2d.Dot(e02, p0q);
+            var d1 = V2d.Dot(e01, p0q);
+            var d2 = V2d.Dot(e02, p0q);
             if (d1 <= 0.0 && d2 <= 0.0) return triangle.P0; // bary (1,0,0)
 
             var p1q = query - triangle.P1;
-            double d3 = V2d.Dot(e01, p1q);
-            double d4 = V2d.Dot(e02, p1q);
+            var d3 = V2d.Dot(e01, p1q);
+            var d4 = V2d.Dot(e02, p1q);
             if (d3 >= 0.0 && d4 <= d3) return triangle.P1; // bary (0,1,0)
 
-            double vc = d1 * d4 - d3 * d2;
+            var vc = d1 * d4 - d3 * d2;
             if (vc <= 0.0 && d1 >= 0.0 && d3 <= 0.0)
             {
-                double t = d1 / (d1 - d3);
+                var t = d1 / (d1 - d3);
                 return triangle.P0 + t * e01;   // bary (1-t,t,0) 
             }
 
             var p2q = query - triangle.P2;
-            double d5 = V2d.Dot(e01, p2q);
-            double d6 = V2d.Dot(e02, p2q);
+            var d5 = V2d.Dot(e01, p2q);
+            var d6 = V2d.Dot(e02, p2q);
             if (d6 >= 0.0 && d5 <= d6) return triangle.P2; // bary (0,0,1)
 
-            double vb = d5 * d2 - d1 * d6;
+            var vb = d5 * d2 - d1 * d6;
             if (vb <= 0.0 && d2 >= 0.0 && d6 <= 0.0)
             {
-                double t = d2 / (d2 - d6);
+                var t = d2 / (d2 - d6);
                 return triangle.P0 + t * e02; // bary (1-t,0,t)
             }
 
-            double va = d3 * d6 - d5 * d4;
+            var va = d3 * d6 - d5 * d4;
             if (va <= 0.0 && (d4 - d3) >= 0.0 && (d5 - d6) >= 0.0)
             {
-                double t = (d4 - d3) / ((d4 - d3) + (d5 - d6));
+                var t = (d4 - d3) / ((d4 - d3) + (d5 - d6));
                 return triangle.P1 + t * triangle.Edge12; // bary (0, 1-t, t)
             }
 
-            // double denom = 1.0 / (va + vb + vc);
-            // double v = vb * denom;
-            // double w = vc * denom;
+            // var denom = 1.0 / (va + vb + vc);
+            // var v = vb * denom;
+            // var w = vc * denom;
             // return triangle.P0 + v * e01 + w * e02; // bary (1-v-w, v, w)
             return query;
         }
@@ -277,14 +275,10 @@ namespace Aardvark.Base
 
         #region V3d - Box3d
 
-        public static double GetDistanceSquared(
-            this V3d q, Box3d b
-            )
-        {
-            return (q.X < b.Min.X ? Fun.Square(b.Min.X - q.X) : q.X > b.Max.X ? Fun.Square(q.X - b.Max.X) : 0.0)
-                 + (q.Y < b.Min.Y ? Fun.Square(b.Min.Y - q.Y) : q.Y > b.Max.Y ? Fun.Square(q.Y - b.Max.Y) : 0.0)
-                 + (q.Z < b.Min.Z ? Fun.Square(b.Min.Z - q.Z) : q.Z > b.Max.Z ? Fun.Square(q.Z - b.Max.Z) : 0.0);
-        }
+        public static double GetDistanceSquared(this V3d q, Box3d b)
+            => (q.X < b.Min.X ? Fun.Square(b.Min.X - q.X) : q.X > b.Max.X ? Fun.Square(q.X - b.Max.X) : 0.0)
+             + (q.Y < b.Min.Y ? Fun.Square(b.Min.Y - q.Y) : q.Y > b.Max.Y ? Fun.Square(q.Y - b.Max.Y) : 0.0)
+             + (q.Z < b.Min.Z ? Fun.Square(b.Min.Z - q.Z) : q.Z > b.Max.Z ? Fun.Square(q.Z - b.Max.Z) : 0.0);
 
         public static (double, double) GetDistanceSquared(
             this V3d q, Box3dAndFlags boxAndFlags, Box.Flags d2Flags, V3d d2v,
@@ -354,11 +348,8 @@ namespace Aardvark.Base
             
             return (d0, d1);
         }
-
-
-        public static V3d GetClosestPointOn(
-            this V3d query, Box3d box
-            )
+        
+        public static V3d GetClosestPointOn(this V3d query, Box3d box)
         {
             var closest = query;
             for (int i = 0; i < 3; i++)
@@ -369,60 +360,35 @@ namespace Aardvark.Base
             return closest;
         }
 
-        public static V3d GetClosestPointOn(
-            this Box3d box, V3d query
-            )
-        {
-            return query.GetClosestPointOn(box);
-        }
+        public static V3d GetClosestPointOn(this Box3d box, V3d query)
+            => query.GetClosestPointOn(box);
 
         #endregion
 
         #region V3d - Line3d
 
-        public static V3d GetClosestPointOn(
-            this V3d query, Line3d line)
-        {
-            double t;
-            return query.GetClosestPointOnLine(line.P0, line.P1, out t);
-        }
+        public static V3d GetClosestPointOn(this V3d query, Line3d line)
+            => query.GetClosestPointOnLine(line.P0, line.P1, out double t);
 
-        public static V3d GetClosestPointOn(
-            this Line3d line, V3d query)
-        {
-            return query.GetClosestPointOn(line);
-        }
+        public static V3d GetClosestPointOn(this Line3d line, V3d query)
+            => query.GetClosestPointOn(line);
 
-        public static V3d GetClosestPointOn(
-            this V3d query, Line3d line, out double t
-            )
-        {
-            return query.GetClosestPointOnLine(line.P0, line.P1, out t);
-        }
+        public static V3d GetClosestPointOn(this V3d query, Line3d line, out double t)
+            => query.GetClosestPointOnLine(line.P0, line.P1, out t);
 
-        public static V3d GetClosestPointOn(
-            this Line3d line, V3d query, out double t
-            )
-        {
-            return query.GetClosestPointOn(line, out t);
-        }
+        public static V3d GetClosestPointOn(this Line3d line, V3d query, out double t)
+            => query.GetClosestPointOn(line, out t);
 
-        public static V3d GetClosestPointOnLine(
-            this V3d query, V3d p0, V3d p1)
-        {
-            double t;
-            return query.GetClosestPointOnLine(p0, p1, out t);
-        }
+        public static V3d GetClosestPointOnLine(this V3d query, V3d p0, V3d p1)
+            => query.GetClosestPointOnLine(p0, p1, out double t);
 
-        public static V3d GetClosestPointOnLine(
-            this V3d query, V3d p0, V3d p1, out double t
-            )
+        public static V3d GetClosestPointOnLine(this V3d query, V3d p0, V3d p1, out double t)
         {
             var dir = p1 - p0;
             var p0q = query - p0;
             t = V3d.Dot(p0q, dir);
             if (t <= 0.0) { t = 0.0; return p0; }
-            double denom = dir.LengthSquared;
+            var denom = dir.LengthSquared;
             if (t >= denom) { t = 1.0; return p1; }
             t /= denom;
             return p0 + t * dir;
@@ -432,73 +398,41 @@ namespace Aardvark.Base
 
         #region V3d - Plane3d
 
-        public static V3d GetClosestPointOn(
-            this V3d query, Plane3d plane
-            )
-        {
-            return query - plane.Height(query) * plane.Normal;
-        }
+        public static V3d GetClosestPointOn(this V3d query, Plane3d plane)
+            => query - plane.Height(query) * plane.Normal;
 
-        public static V3d GetClosestPointOn(
-            this Plane3d plane, V3d query
-            )
-        {
-            return query.GetClosestPointOn(plane);
-        }
+        public static V3d GetClosestPointOn(this Plane3d plane, V3d query)
+            => query.GetClosestPointOn(plane);
 
         #endregion
 
         #region V3d - Ray3d
 
-        public static V3d GetClosestPointOn(
-            this V3d query, Ray3d ray
-            )
-        {
-            double t;
-            return GetClosestPointOn(query, ray, out t);
-        }
+        public static V3d GetClosestPointOn(this V3d query, Ray3d ray)
+            => GetClosestPointOn(query, ray, out double t);
 
-        public static V3d GetClosestPointOn(
-            this Ray3d ray, V3d query
-            )
-        {
-            return query.GetClosestPointOn(ray);
-        }
+        public static V3d GetClosestPointOn(this Ray3d ray, V3d query)
+            => query.GetClosestPointOn(ray);
 
-        public static V3d GetClosestPointOn(
-            this V3d query, Ray3d ray, out double t
-            )
+        public static V3d GetClosestPointOn(this V3d query, Ray3d ray, out double t)
         {
             t = V3d.Dot(query - ray.Origin, ray.Direction)
                         / ray.Direction.LengthSquared;
             return ray.Origin + t * ray.Direction;
         }
 
-        public static V3d GetClosestPointOn(
-            this Ray3d ray, V3d query, out double t
-            )
-        {
-            return query.GetClosestPointOn(ray, out t);
-        }
+        public static V3d GetClosestPointOn(this Ray3d ray, V3d query, out double t)
+            => query.GetClosestPointOn(ray, out t);
 
         #endregion
 
         #region V3d - Sphere3d
 
-        public static V3d GetClosestPointOn(
-            this V3d query, Sphere3d sphere
-            )
-        {
-            return sphere.Center
-                   + sphere.Radius * (query - sphere.Center).Normalized;
-        }
+        public static V3d GetClosestPointOn(this V3d query, Sphere3d sphere)
+            => sphere.Center + sphere.Radius * (query - sphere.Center).Normalized;
 
-        public static V3d GetClosestPointOn(
-            this Sphere3d sphere, V3d query
-            )
-        {
-            return query.GetClosestPointOn(sphere);
-        }
+        public static V3d GetClosestPointOn(this Sphere3d sphere, V3d query)
+            => query.GetClosestPointOn(sphere);
 
         #endregion
 
@@ -507,9 +441,7 @@ namespace Aardvark.Base
         /// <summary>
         /// get closest point on cylinder with infinite length
         /// </summary>
-        public static V3d GetClosestPointOn(
-            this V3d query, Cylinder3d cylinder
-            )
+        public static V3d GetClosestPointOn(this V3d query, Cylinder3d cylinder)
         {
             var p = query.GetClosestPointOn(cylinder.Axis.Ray3d);
             var dir = (query - p).Normalized;
@@ -519,12 +451,8 @@ namespace Aardvark.Base
         /// <summary>
         /// get closest point on cylinder with infinite length
         /// </summary>
-        public static V3d GetClosestPointOn(
-            this Cylinder3d cylinder, V3d query
-            )
-        {
-            return query.GetClosestPointOn(cylinder);
-        }
+        public static V3d GetClosestPointOn(this Cylinder3d cylinder, V3d query)
+            => query.GetClosestPointOn(cylinder);
 
         #endregion
 
@@ -533,69 +461,59 @@ namespace Aardvark.Base
         /// <summary>
         /// Tested by rft on 2008-08-06.
         /// </summary>
-        public static V3d GetClosestPointOn(
-            this V3d query, Triangle3d triangle
-            )
-        {
-            return GetClosestPointOnTriangle(query, triangle.P0, triangle.P1, triangle.P2);
-        }
+        public static V3d GetClosestPointOn(this V3d query, Triangle3d triangle)
+            => GetClosestPointOnTriangle(query, triangle.P0, triangle.P1, triangle.P2);
 
-        public static V3d GetClosestPointOn(
-            this Triangle3d triangle, V3d query
-            )
-        {
-            return query.GetClosestPointOn(triangle);
-        }
+        public static V3d GetClosestPointOn(this Triangle3d triangle, V3d query)
+            => query.GetClosestPointOn(triangle);
 
         /// <summary>
         /// Tested by rft on 2008-08-06.
         /// </summary>
-        public static V3d GetClosestPointOnTriangle(
-            this V3d query, V3d p0, V3d p1, V3d p2
-            )
+        public static V3d GetClosestPointOnTriangle(this V3d query, V3d p0, V3d p1, V3d p2)
         {
             var e01 = p1 - p0;
             var e02 = p2 - p0;
 
             var p0q = query - p0;
-            double d1 = V3d.Dot(e01, p0q);
-            double d2 = V3d.Dot(e02, p0q);
+            var d1 = V3d.Dot(e01, p0q);
+            var d2 = V3d.Dot(e02, p0q);
             if (d1 <= 0.0 && d2 <= 0.0) return p0; // bary (1,0,0)
 
             var p1q = query - p1;
-            double d3 = V3d.Dot(e01, p1q);
-            double d4 = V3d.Dot(e02, p1q);
+            var d3 = V3d.Dot(e01, p1q);
+            var d4 = V3d.Dot(e02, p1q);
             if (d3 >= 0.0 && d4 <= d3) return p1; // bary (0,1,0)
 
-            double vc = d1 * d4 - d3 * d2;
+            var vc = d1 * d4 - d3 * d2;
             if (vc <= 0.0 && d1 >= 0.0 && d3 <= 0.0)
             {
-                double t = d1 / (d1 - d3);
+                var t = d1 / (d1 - d3);
                 return p0 + t * e01;   // bary (1-t,t,0) 
             }
 
             var p2q = query - p2;
-            double d5 = V3d.Dot(e01, p2q);
-            double d6 = V3d.Dot(e02, p2q);
+            var d5 = V3d.Dot(e01, p2q);
+            var d6 = V3d.Dot(e02, p2q);
             if (d6 >= 0.0 && d5 <= d6) return p2; // bary (0,0,1)
 
-            double vb = d5 * d2 - d1 * d6;
+            var vb = d5 * d2 - d1 * d6;
             if (vb <= 0.0 && d2 >= 0.0 && d6 <= 0.0)
             {
-                double t = d2 / (d2 - d6);
+                var t = d2 / (d2 - d6);
                 return p0 + t * e02; // bary (1-t,0,t)
             }
 
-            double va = d3 * d6 - d5 * d4;
+            var va = d3 * d6 - d5 * d4;
             if (va <= 0.0 && (d4 - d3) >= 0.0 && (d5 - d6) >= 0.0)
             {
-                double t = (d4 - d3) / ((d4 - d3) + (d5 - d6));
+                var t = (d4 - d3) / ((d4 - d3) + (d5 - d6));
                 return p1 + t * (p2 - p1); // bary (0, 1-t, t)
             }
 
-            double denom = 1.0 / (va + vb + vc);
-            double v = vb * denom;
-            double w = vc * denom;
+            var denom = 1.0 / (va + vb + vc);
+            var v = vb * denom;
+            var w = vc * denom;
             return p0 + v * e01 + w * e02; // bary (1-v-w, v, w)
         }
 
@@ -607,16 +525,16 @@ namespace Aardvark.Base
 
         public static V3d GetClosestPointOn(this Ray3d ray0, Ray3d ray1)
         {
-            V3d a = ray0.Origin - ray1.Origin;
-            V3d u = ray0.Direction.Normalized;
-            V3d v = ray1.Direction.Normalized;
+            var a = ray0.Origin - ray1.Origin;
+            var u = ray0.Direction.Normalized;
+            var v = ray1.Direction.Normalized;
 
-            double uDotv = u.Dot(v);
-            double n = (uDotv * uDotv - 1.0);
+            var uDotv = u.Dot(v);
+            var n = (uDotv * uDotv - 1.0);
             // make sure rays are not parallel
             if (!n.Abs().IsTiny())
             {
-                double my = (a.Dot(u) * uDotv - a.Dot(v)) / n;
+                var my = (a.Dot(u) * uDotv - a.Dot(v)) / n;
                 return ray1.Origin + my * v;
             }
 
@@ -628,13 +546,14 @@ namespace Aardvark.Base
         /* Line3d */
 
         #region Line3d - Line3d
+
         /// <summary>
         /// Returns the point on line1 which is closest to line0.
         /// </summary>
         public static V3d GetClosestPointOn(this Line3d line0, Line3d line1)
         {
-            Ray3d r0 = line0.Ray3d;
-            Ray3d r1 = line1.Ray3d;
+            var r0 = line0.Ray3d;
+            var r1 = line1.Ray3d;
 
             if (r0.IsParallelTo(r1)) // t1 and t0 of following computation are invalid if lines are parallel
             {
@@ -644,8 +563,8 @@ namespace Aardvark.Base
                     return line0.P1.GetClosestPointOn(line1);
             }
 
-            double t0, t1;
-            /* var distance = */ r0.GetMinimalDistanceTo(r1, out t0, out t1);
+            /* var distance = */
+            r0.GetMinimalDistanceTo(r1, out double t0, out double t1);
             if (t0 >= 0 && t0 <= 1 && t1 >= 0 && t1 <= 1)
                 return r1.GetPointOnRay(t1);
 
@@ -669,17 +588,18 @@ namespace Aardvark.Base
                     return d2 < d3 ? line1.P0 : line1.P1;
             }
         }
+
         #endregion
 
         #region Line3d - Plane3d
+
         /// <summary>
         /// Returns the closest point from a line to a plane (point on line).
         /// </summary>
         public static V3d GetClosestPointOn(this Plane3d plane, Line3d line)
         {
             var ray = line.Ray3d;
-            double t;
-            if (ray.Intersects(plane, out t))
+            if (ray.Intersects(plane, out double t))
             {
                 var tClamped = t.Clamp(0, 1); // clamp point to line range
                 return ray.GetPointOnRay(tClamped);
@@ -690,9 +610,11 @@ namespace Aardvark.Base
             }
         }
         //note: reverse method is not the same (closest point on line)
+
         #endregion
 
         #region Line3d - Triangle3d
+
         /// <summary>
         /// Returns the closest point from a triangle to a line (point on triangle).
         /// Note: untested
@@ -725,6 +647,7 @@ namespace Aardvark.Base
             return line.GetClosestPointOn(closestEdge);
         }
         //note: reverse method is not the same (closest point on line)
+
         #endregion
     }
 
@@ -732,15 +655,18 @@ namespace Aardvark.Base
     public static partial class GeometryFun
     {
         #region Range1d - Range1d
+
         public static double GetMinimalDistanceTo(this Range1d range0, Range1d range1)
         {
             if (range0.Min > range1.Max) return range0.Min - range1.Max;
             if (range0.Max < range1.Min) return range1.Min - range0.Max;
             return 0;
         }
+
         #endregion
 
         #region Box2d - Box2d
+
         public static double GetMinimalDistanceTo(this Box2d box0, Box2d box1)
         {
             var distX = box0.RangeX.GetMinimalDistanceTo(box1.RangeX);
@@ -768,11 +694,11 @@ namespace Aardvark.Base
                     return (box0.Corner(3) - box1.Corner(0)).Length;
             }
         }
+
         #endregion
 
         #region V3d - Line3d
-
-
+        
         /*  Performance Test .........................................................................
                 Faster Method:                                      V3d.MinimalDistanceTo(Line3d)
                 V3d.MinimalDistanceTo(Line3d):                      2,418s
@@ -786,28 +712,25 @@ namespace Aardvark.Base
         /// <summary>
         /// returns the minimal distance between the point and the Line
         /// </summary>
-        public static double GetMinimalDistanceTo(
-            this V3d point, 
-            Line3d line
-            )
+        public static double GetMinimalDistanceTo(this V3d point, Line3d line)
         {
-            V3d a = point - line.P0;
-            V3d u = line.P1 - line.P0;
+            var a = point - line.P0;
+            var u = line.P1 - line.P0;
 
-            double lu2 = u.LengthSquared;
-            double adu = V3d.Dot(a, u);
+            var lu2 = u.LengthSquared;
+            var adu = V3d.Dot(a, u);
 
             if (adu > lu2)
             {
-                double acu2 = V3d.Cross(a, u).LengthSquared;
-                double s1 = (adu * adu - 2.0 * adu * lu2 + lu2 * lu2);
+                var acu2 = V3d.Cross(a, u).LengthSquared;
+                var s1 = (adu * adu - 2.0 * adu * lu2 + lu2 * lu2);
 
-                return System.Math.Sqrt((acu2 + s1) / lu2);
+                return Sqrt((acu2 + s1) / lu2);
             }
             else if (adu >= 0.0)
             {
-                double acu2 = V3d.Cross(a, u).LengthSquared;
-                return System.Math.Sqrt(acu2 / lu2);
+                var acu2 = V3d.Cross(a, u).LengthSquared;
+                return Sqrt(acu2 / lu2);
             }
             else
             {
@@ -818,19 +741,13 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns the minimal distance between the point and the Line.
         /// </summary>
-        public static double GetMinimalDistanceTo(
-            this Line3d line, 
-            V3d point
-            )
-        {
-            return point.GetMinimalDistanceTo(line);
-        }
+        public static double GetMinimalDistanceTo(this Line3d line, V3d point)
+            => point.GetMinimalDistanceTo(line);
 
         #endregion
 
         #region V3d - Ray3d
-
-
+        
         /*  Performance Test .........................................................................
                 Faster Method:                                      V3d.MinimalDistanceTo(Ray3d)
                 V3d.MinimalDistanceTo(Ray3d):                       1,841s
@@ -842,62 +759,46 @@ namespace Aardvark.Base
          */
 
         /// <summary>
-        /// returns the minimal distance between the point and the Ray.
+        /// Returns the minimal distance between the point and the ray.
         /// </summary>
-        public static double GetMinimalDistanceTo(
-            this V3d point, 
-            Ray3d ray
-            )
+        public static double GetMinimalDistanceTo(this V3d point, Ray3d ray)
         {
-            V3d a = point - ray.Origin;
+            var a = point - ray.Origin;
             double lu2 = ray.Direction.LengthSquared;
             double acu2 = V3d.Cross(a, ray.Direction).LengthSquared;
 
-            return System.Math.Sqrt(acu2 / lu2);
+            return Sqrt(acu2 / lu2);
         }
 
         /// <summary>
         /// returns the minimal distance between the point and the Ray.
         /// </summary>
-        public static double GetMinimalDistanceTo(
-            this Ray3d ray,
-            V3d point
-            )
+        public static double GetMinimalDistanceTo(this Ray3d ray, V3d point)
+            => point.GetMinimalDistanceTo(ray);
+
+        /// <summary>
+        /// returns the minimal distance between the point and the Ray.
+        /// t holds the ray parameter for the closest point.
+        /// </summary>
+        public static double GetMinimalDistanceTo(this V3d point, Ray3d ray, out double t)
         {
-            return point.GetMinimalDistanceTo(ray);
+            var a = point - ray.Origin;
+            var lu2 = ray.Direction.LengthSquared;
+            var acu2 = V3d.Cross(a, ray.Direction).LengthSquared;
+
+            var NormalPart2 = acu2 / lu2;
+            var ParallelPart2 = lu2 - NormalPart2;
+
+            t = Sqrt(ParallelPart2 / lu2);
+            return Sqrt(NormalPart2);
         }
 
         /// <summary>
         /// returns the minimal distance between the point and the Ray.
         /// t holds the ray parameter for the closest point.
         /// </summary>
-        public static double GetMinimalDistanceTo(
-            this V3d point, 
-            Ray3d ray, out double t
-            )
-        {
-            V3d a = point - ray.Origin;
-            double lu2 = ray.Direction.LengthSquared;
-            double acu2 = V3d.Cross(a, ray.Direction).LengthSquared;
-
-            double NormalPart2 = acu2 / lu2;
-            double ParallelPart2 = lu2 - NormalPart2;
-
-            t = System.Math.Sqrt(ParallelPart2 / lu2 );
-            return System.Math.Sqrt(NormalPart2);
-        }
-
-        /// <summary>
-        /// returns the minimal distance between the point and the Ray.
-        /// t holds the ray parameter for the closest point.
-        /// </summary>
-        public static double GetMinimalDistanceTo(
-            this Ray3d ray, 
-            V3d point, out double t
-            )
-        {
-            return point.GetMinimalDistanceTo(ray, out t);
-        }
+        public static double GetMinimalDistanceTo(this Ray3d ray, V3d point, out double t)
+            => point.GetMinimalDistanceTo(ray, out t);
 
         #endregion
 
@@ -907,25 +808,15 @@ namespace Aardvark.Base
         /// Returns the minimal distance (unsigned) between the point and the plane.
         /// Use Plane3d.Height to compute the signed height of the point over the plane.
         /// </summary>
-        public static double GetMinimalDistanceTo(
-            this V3d point, 
-            Plane3d plane
-            )
-        {
-            return plane.Height(point).Abs();
-        }
+        public static double GetMinimalDistanceTo(this V3d point, Plane3d plane)
+            => plane.Height(point).Abs();
 
         /// <summary>
         /// Returns the minimal distance (unsigned) between the point and the plane.
         /// Use Plane3d.Height to compute the signed height of the point over the plane.
         /// </summary>
-        public static double GetMinimalDistanceTo(
-            this Plane3d plane,
-            V3d point
-            )
-        {
-            return point.GetMinimalDistanceTo(plane);
-        }
+        public static double GetMinimalDistanceTo(this Plane3d plane, V3d point)
+            => point.GetMinimalDistanceTo(plane);
 
         #endregion
 
@@ -934,14 +825,11 @@ namespace Aardvark.Base
         /// <summary>
         /// returns the minimal distance between the point and the box.
         /// </summary>
-        public static double GetMinimalDistanceTo(
-            this V3d point, 
-            Box3d box
-            )
+        public static double GetMinimalDistanceTo(this V3d point, Box3d box)
         {
-            Box.Flags outside = box.OutsideFlags(point); if (outside == 0) return 0.0;
+            var outside = box.OutsideFlags(point); if (outside == 0) return 0.0;
             
-            V3d d = V3d.Zero;
+            var d = V3d.Zero;
 
             if ((outside & Box.Flags.X) != 0)
             {
@@ -967,13 +855,8 @@ namespace Aardvark.Base
         /// <summary>
         /// returns the minimal distance between the point and the box.
         /// </summary>
-        public static double GetMinimalDistanceTo(
-            this Box3d box,
-            V3d point
-            )
-        {
-            return point.GetMinimalDistanceTo(box);
-        }
+        public static double GetMinimalDistanceTo(this Box3d box, V3d point)
+            => point.GetMinimalDistanceTo(box);
 
         #endregion
 
@@ -982,18 +865,14 @@ namespace Aardvark.Base
         /// <summary>
         /// returns the minimal distance between the given lines.
         /// </summary>
-        public static double GetMinimalDistanceTo(
-            this Line3d l0, 
-            Line3d l1
-            )
+        public static double GetMinimalDistanceTo(this Line3d l0, Line3d l1)
         {
-            Ray3d r0 = l0.Ray3d;
-            Ray3d r1 = l1.Ray3d;
+            var r0 = l0.Ray3d;
+            var r1 = l1.Ray3d;
 
             if (!r0.IsParallelTo(r1)) // t1 and t0 of following computation are invalid if lines are parallel
             {
-                double t0, t1;
-                var distance = r0.GetMinimalDistanceTo(r1, out t0, out t1);
+                var distance = r0.GetMinimalDistanceTo(r1, out double t0, out double t1);
 
                 if (t0 >= 0 && t0 <= 1 && t1 >= 0 && t1 <= 1)
                     return distance;
@@ -1008,17 +887,12 @@ namespace Aardvark.Base
         /// returns the minimal distance between the given lines.
         /// points holds the centroid of the shortest connection between the lines
         /// </summary>
-        public static double GetMinimalDistanceTo(
-            this Line3d l0,
-            Line3d l1,
-            out V3d point
-            )
+        public static double GetMinimalDistanceTo(this Line3d l0, Line3d l1, out V3d point)
         {
-            Ray3d r0 = l0.Ray3d;
-            Ray3d r1 = l1.Ray3d;
+            var r0 = l0.Ray3d;
+            var r1 = l1.Ray3d;
 
-            double t0, t1;
-            double distance = r0.GetMinimalDistanceTo(r1, out t0, out t1);
+            var distance = r0.GetMinimalDistanceTo(r1, out double t0, out double t1);
 
             if (t0 >= 0.0 && t0 <= 1.0 && t1 >= 0.0 && t1 <= 1.0)
             {
@@ -1041,7 +915,7 @@ namespace Aardvark.Base
                     }
                 }
                 
-                if(t1 < 0.0 || t1 > 1.0)
+                if (t1 < 0.0 || t1 > 1.0)
                 {
                     if (t1 < 0.0) t1 = 0.0;
                     else t1 = 1.0;
@@ -1054,26 +928,21 @@ namespace Aardvark.Base
                     }
                 }
 
-                }
-                
-
-                point = 0.5 * (r0.GetPointOnRay(t0) + r1.GetPointOnRay(t1));
-                return (r0.GetPointOnRay(t0) - r1.GetPointOnRay(t1)).Length;
             }
+                
+            point = 0.5 * (r0.GetPointOnRay(t0) + r1.GetPointOnRay(t1));
+            return (r0.GetPointOnRay(t0) - r1.GetPointOnRay(t1)).Length;
+        }
   
-
         #endregion
 
         #region Line3d - Plane3d
+
         public static double GetMinimalDistanceTo(this Line3d line, Plane3d plane)
-        {
-            return plane.Height(GeometryFun.GetClosestPointOn(plane, line)).Abs();
-        }
+            => plane.Height(GeometryFun.GetClosestPointOn(plane, line)).Abs();
 
         public static double GetMinimalDistanceTo(this Plane3d plane, Line3d line)
-        {
-            return line.GetMinimalDistanceTo(plane);
-        }
+            => line.GetMinimalDistanceTo(plane);
 
         #endregion
 
@@ -1082,15 +951,11 @@ namespace Aardvark.Base
         /// <summary>
         /// returns the minimal distance between the ray and the line.
         /// </summary>
-        public static double GetMinimalDistanceTo(
-            this Ray3d ray, 
-            Line3d line
-            )
+        public static double GetMinimalDistanceTo(this Ray3d ray, Line3d line)
         {
-            Ray3d r1 = line.Ray3d;
+            var r1 = line.Ray3d;
 
-            double t0, t1;
-            double distance = ray.GetMinimalDistanceTo(r1, out t0, out t1);
+            var distance = ray.GetMinimalDistanceTo(r1, out double t0, out double t1);
 
             if (t1 >= 0.0 && t1 <= 1.0) return distance;
             else
@@ -1098,7 +963,7 @@ namespace Aardvark.Base
                 if (t1 < 0.0) t1 = 0.0;
                 if (t1 > 1.0) t1 = 1.0;
 
-                V3d p1 = r1.GetPointOnRay(t1);
+                var p1 = r1.GetPointOnRay(t1);
                 return p1.GetMinimalDistanceTo(ray);
             }
         }
@@ -1106,28 +971,18 @@ namespace Aardvark.Base
         /// <summary>
         /// returns the minimal distance between the ray and the line.
         /// </summary>
-        public static double GetMinimalDistanceTo(
-            this Line3d line,
-            Ray3d ray
-            )
-        {
-            return ray.GetMinimalDistanceTo(line);
-        }
+        public static double GetMinimalDistanceTo(this Line3d line, Ray3d ray)
+            => ray.GetMinimalDistanceTo(line);
 
         /// <summary>
         /// returns the minimal distance between the ray and the line.
         /// t holds the correspoinding ray parameter.
         /// </summary>
-        public static double GetMinimalDistanceTo(
-            this Ray3d ray, 
-            Line3d line, 
-            out double t
-            )
+        public static double GetMinimalDistanceTo(this Ray3d ray, Line3d line, out double t)
         {
-            Ray3d r1 = line.Ray3d;
+            var r1 = line.Ray3d;
 
-            double t0, t1;
-            double distance = ray.GetMinimalDistanceTo(r1, out t0, out t1);
+            var distance = ray.GetMinimalDistanceTo(r1, out double t0, out double t1);
 
             if (t1 >= 0.0 && t1 <= 1.0)
             {
@@ -1139,7 +994,7 @@ namespace Aardvark.Base
                 if (t1 < 0.0) t1 = 0.0;
                 if (t1 > 1.0) t1 = 1.0;
 
-                V3d p1 = r1.GetPointOnRay(t1);
+                var p1 = r1.GetPointOnRay(t1);
                 return p1.GetMinimalDistanceTo(ray, out t);
             }
         }
@@ -1148,14 +1003,8 @@ namespace Aardvark.Base
         /// returns the minimal distance between the ray and the line.
         /// t holds the correspoinding ray parameter.
         /// </summary>
-        public static double GetMinimalDistanceTo(
-            this Line3d line,
-            Ray3d ray,
-            out double t
-            )
-        {
-            return ray.GetMinimalDistanceTo(line, out t);
-        }
+        public static double GetMinimalDistanceTo(this Line3d line, Ray3d ray, out double t)
+            => ray.GetMinimalDistanceTo(line, out t);
 
         #endregion
 
@@ -1164,33 +1013,23 @@ namespace Aardvark.Base
         /// <summary>
         /// returns the minimal distance between the given rays.
         /// </summary>
-        public static double GetMinimalDistanceTo(
-            this Ray3d ray0, 
-            Ray3d ray1
-            )
-        {
-            double t0, t1;
-            return ray0.GetMinimalDistanceTo(ray1, out t0, out t1);
-        }
+        public static double GetMinimalDistanceTo(this Ray3d ray0, Ray3d ray1)
+            => ray0.GetMinimalDistanceTo(ray1, out double t0, out double t1);
 
         /// <summary>
         /// returns the minimal distance between the given rays.
         /// t0 and t1 hold the correspunding ray parameters.
         /// if both rays are parallel the t0 and t1 are from the origin of ray1
         /// </summary>
-        public static double GetMinimalDistanceTo(
-            this Ray3d ray0, 
-            Ray3d ray1, 
-            out double t0, out double t1
-            )
+        public static double GetMinimalDistanceTo(this Ray3d ray0, Ray3d ray1, out double t0, out double t1)
         {
             // TODO: computation probalby possible without Direction.Normalized and Direction.Length
 
-            V3d a = ray0.Origin - ray1.Origin;
-            V3d u = ray0.Direction.Normalized;
-            V3d v = ray1.Direction.Normalized;
+            var a = ray0.Origin - ray1.Origin;
+            var u = ray0.Direction.Normalized;
+            var v = ray1.Direction.Normalized;
 
-            double uDotv = u.Dot(v);
+            var uDotv = u.Dot(v);
             if (uDotv.Abs().ApproximateEquals(1, Constant<double>.PositiveTinyValue)) // rays are parallel
             {
                 // return origin of ray 1

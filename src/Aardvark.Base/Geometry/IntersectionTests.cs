@@ -47,6 +47,9 @@ namespace Aardvark.Base
 
         #region Triangle2d contains Circle2d - TODO
 
+        public static bool Contains(this Triangle2d triangle, Circle2d circle)
+            => throw new NotImplementedException();
+
         #endregion
 
 
@@ -97,6 +100,65 @@ namespace Aardvark.Base
         /// </summary>
         public static bool Contains(this Circle2d circle, Circle2d other)
             => (other.Center - circle.Center).Length + other.Radius <= circle.Radius;
+
+        #endregion
+
+
+        #region Quad2d contains V2d (haaser)
+
+        /// <summary>
+        /// True if point is contained in this quad.
+        /// </summary>
+        public static bool Contains(this Quad2d quad, V2d point)
+        {
+            return LeftValOfPos(0, 1, ref point) >= 0.0 &&
+                    LeftValOfPos(1, 2, ref point) >= 0.0 &&
+                    LeftValOfPos(2, 3, ref point) >= 0.0 &&
+                    LeftValOfPos(3, 0, ref point) >= 0.0;
+
+            double LeftValOfPos(int i0, int i1, ref V2d p)
+                => (p.X - quad[i0].X) * (quad[i0].Y - quad[i1].Y) + (p.Y - quad[i0].Y) * (quad[i1].X - quad[i0].X);
+        }
+
+        #endregion
+
+        #region Quad2d contains Line2d - TODO
+
+        /// <summary>
+        /// True if line segment is contained in this quad.
+        /// </summary>
+        public static bool Contains(this Quad2d quad, Line2d l)
+            => throw new NotImplementedException();
+
+        #endregion
+        
+        #region Quad2d contains Triangle2d - TODO
+
+        /// <summary>
+        /// True if triangle is contained in this quad.
+        /// </summary>
+        public static bool Contains(this Quad2d quad, Triangle2d t)
+            => throw new NotImplementedException();
+
+        #endregion
+        
+        #region Quad2d contains Quad2d - TODO
+
+        /// <summary>
+        /// True if other quad is contained in this quad.
+        /// </summary>
+        public static bool Contains(this Quad2d quad, Quad2d q)
+            => throw new NotImplementedException();
+
+        #endregion
+
+        #region Quad2d contains Circle2d - TODO
+
+        /// <summary>
+        /// True if circle is contained in this quad.
+        /// </summary>
+        public static bool Contains(this Quad2d quad, Circle2d other)
+            => throw new NotImplementedException();
 
         #endregion
 
@@ -161,7 +223,7 @@ namespace Aardvark.Base
         public static bool Contains(this Hull3d hull, V3d point)
         {
             var planes = hull.PlaneArray;
-            for (int i = planes.Length - 1; i >= 0; i--)
+            for (var i = 0; i < planes.Length; i++)
             {
                 if (planes[i].Height(point) > 0)
                     return false;
@@ -171,27 +233,25 @@ namespace Aardvark.Base
 
         #endregion
 
-
-        #region Quad2d contains V2d (haaser)
-
-        internal static double LeftValOfPos(ref Quad2d quad, int i0, int i1, ref V2d p)
-        {
-            return (p.X - quad[i0].X) * (quad[i0].Y - quad[i1].Y) + (p.Y - quad[i0].Y) * (quad[i1].X - quad[i0].X);
-        }
+        #region Hull3d contains Sphere3d (sm)
 
         /// <summary>
-        /// returns true if the Quad2d contains the Point
+        /// Hull normals are expected to point outside.
         /// </summary>
-        public static bool Contains(this Quad2d quad, V2d point)
+        public static bool Contains(this Hull3d hull, Sphere3d sphere)
         {
-            return  LeftValOfPos(ref quad, 0, 1, ref point) >= 0.0 &&
-                    LeftValOfPos(ref quad, 1, 2, ref point) >= 0.0 &&
-                    LeftValOfPos(ref quad, 2, 3, ref point) >= 0.0 &&
-                    LeftValOfPos(ref quad, 3, 0, ref point) >= 0.0;
+            var planes = hull.PlaneArray;
+            var negativeRadius = -sphere.Radius;
+            for (var i = 0; i < planes.Length; i++)
+            {
+                if (planes[i].Height(sphere.Center) > negativeRadius)
+                    return false;
+            }
+            return true;
         }
 
         #endregion
-
+        
 
         #region Polygon2d contains V2d (haaser)
 
@@ -343,60 +403,60 @@ namespace Aardvark.Base
 
         /// <summary>
         /// Returns true if the two line segments intersect.
-        /// If the segments are parallel and overlap, there is no intersection returned.
+        /// If the segments are parallel and overlap, then no intersection is returned.
         /// </summary>
         public static bool Intersects(this Line2d l0, Line2d l1)
             => l0.IntersectsLine(l1.P0, l1.P1, out V2d _);
 
         /// <summary>
-        /// Returns true if the two Lines intersect
-        /// p holds the Intersection Point
-        /// If the lines overlap and are parallel there is no intersection returned
+        /// Returns true if the two line segments intersect.
+        /// The intersection point is returned in p.
+        /// If the segments are parallel and overlap, then no intersection is returned.
         /// </summary>
         public static bool Intersects(this Line2d l0, Line2d l1, out V2d p)
             => l0.IntersectsLine(l1.P0, l1.P1, out p);
 
         /// <summary>
-        /// Returns true if the two Lines intersect with an absolute Tolerance
-        /// p holds the Intersection Point
-        /// If the lines overlap and are parallel there is no intersection returned
+        /// Returns true if the two line segments intersect within given tolerance.
+        /// The intersection point is returned in p.
+        /// If the segments are parallel and overlap, then no intersection is returned.
         /// </summary>
         public static bool Intersects(this Line2d l0, Line2d l1, double absoluteEpsilon, out V2d p)
             => l0.IntersectsLine(l1.P0, l1.P1, absoluteEpsilon, out p);
 
         /// <summary>
-        /// Returns true if the Line intersects the Line between p0 and p1
-        /// If the lines overlap and are parallel there is no intersection returned
+        /// Returns true if the line segment intersects the line segment between p0 and p1.
+        /// If the segments are parallel and overlap, then no intersection is returned.
         /// </summary>
         public static bool IntersectsLine(this Line2d line, V2d p0, V2d p1)
             => line.IntersectsLine(p0, p1, out V2d dummy);
-        
+
         /// <summary>
-        /// Returns true if the Line intersects the Line between p0 and p1
-        /// point holds the Intersection Point
-        /// If the lines overlap and are parallel there is no intersection returned
+        /// Returns true if the line segment intersects the line segment between p0 and p1.
+        /// The intersection point is returned in p.
+        /// If the segments are parallel and overlap, then no intersection is returned.
         /// </summary>
-        public static bool IntersectsLine(this Line2d line, V2d p0, V2d p1, out V2d point)
-            => line.IntersectsLine(p0, p1, false, out point);
-        
+        public static bool IntersectsLine(this Line2d line, V2d p0, V2d p1, out V2d p)
+            => line.IntersectsLine(p0, p1, false, out p);
+
         /// <summary>
-        /// Returns true if the Line intersects the Line between p0 and p1
-        /// point holds the Intersection Point
-        /// If the Overlapping-flag is true, the given Lines are parallel and intersect,
-        /// point holds the Closest Point to p0 of the Intersection-Range
+        /// Returns true if the line segment intersects the line segment between p0 and p1.
+        /// The intersection point is returned in p.
+        /// If overlapping is true and the segments are parallel, then 
+        /// the closest point to p0 of the intersection range is returned in p.
         /// </summary>
         public static bool IntersectsLine(
             this Line2d line,
             V2d p0, V2d p1,
             bool overlapping,
-            out V2d point
+            out V2d p
             )
         {
             var a = line.P0 - p0;
 
             if (Fun.IsTiny(a.LengthSquared))
             {
-                point = p0;
+                p = p0;
                 return true;
             }
 
@@ -412,18 +472,18 @@ namespace Aardvark.Base
                 var t0 = (a.Y * v.X - a.X * v.Y) * cross;
                 if (t0 > 1 || t0 < 0)
                 {
-                    point = V2d.NaN;
+                    p = V2d.NaN;
                     return false;
                 }
 
                 double t1 = (a.Y * u.X - a.X * u.Y) * cross;
                 if (t1 > 1 || t1 < 0)
                 {
-                    point = V2d.NaN;
+                    p = V2d.NaN;
                     return false;
                 }
 
-                point = line.P0 + u * t0;
+                p = line.P0 + u * t0;
                 return true;
             }
             else
@@ -431,7 +491,7 @@ namespace Aardvark.Base
                 // parallel lines
                 if (!overlapping)
                 {
-                    point = V2d.NaN;
+                    p = V2d.NaN;
                     return false;
                 }
 
@@ -443,42 +503,42 @@ namespace Aardvark.Base
                 
                 if (r0.Intersects(r1, 0.0, out Range1d result))
                 {
-                    point = line.P0 + normalizedDirection * result.Min;
+                    p = line.P0 + normalizedDirection * result.Min;
                     return true;
                 }
 
-                point = V2d.NaN;
+                p = V2d.NaN;
                 return false;
             }
         }
-        
-        /// <summary>
-        /// Returns true if the Line intersects the Line between p0 and p1 with an absolute Tolerance
-        /// point holds the Intersection Point
-        /// If the lines overlap and are parallel there is no intersection returned
-        /// </summary>
-        public static bool IntersectsLine(this Line2d line, V2d p0, V2d p1, double absoluteEpsilon, out V2d point)
-            => line.IntersectsLine(p0, p1, absoluteEpsilon, false, out point);
 
         /// <summary>
-        /// Returns true if the Line intersects the Line between p0 and p1 with an absolute Tolerance
-        /// point holds the Intersection Point
-        /// If the Overlapping-flag is true, the given Lines are parallel and intersect,
-        /// point holds the Closest Point to p0 of the Intersection-Range
+        /// Returns true if the line segment intersects the line segment between p0 and p1 within given tolerance.
+        /// The intersection point is returned in p.
+        /// If the segments are parallel and overlap, then no intersection is returned.
+        /// </summary>
+        public static bool IntersectsLine(this Line2d line, V2d p0, V2d p1, double absoluteEpsilon, out V2d p)
+            => line.IntersectsLine(p0, p1, absoluteEpsilon, false, out p);
+
+        /// <summary>
+        /// Returns true if the line segment intersects the line segment between p0 and p1 within given tolerance.
+        /// The intersection point is returned in p.
+        /// If overlapping is true and the segments are parallel, then 
+        /// the closest point to p0 of the intersection range is returned in p.
         /// </summary>
         public static bool IntersectsLine(
             this Line2d line,
             V2d p0, V2d p1,
             double absoluteEpsilon,
             bool overlapping,
-            out V2d point
+            out V2d p
             )
         {
             var a = line.P0 - p0;
 
             if (Fun.IsTiny(a.LengthSquared))
             {
-                point = p0;
+                p = p0;
                 return true;
             }
 
@@ -498,18 +558,18 @@ namespace Aardvark.Base
                 var t0 = (a.Y * v.X - a.X * v.Y) * cross;
                 if (t0 > 1 + relativeEpsilonU || t0 < -relativeEpsilonU)
                 {
-                    point = V2d.NaN;
+                    p = V2d.NaN;
                     return false;
                 }
 
                 var t1 = (a.Y * u.X - a.X * u.Y) * cross;
                 if (t1 > 1 + RelativeEpsilonV || t1 < -RelativeEpsilonV)
                 {
-                    point = V2d.NaN;
+                    p = V2d.NaN;
                     return false;
                 }
 
-                point = line.P0 + u * t0;
+                p = line.P0 + u * t0;
                 return true;
             }
             else
@@ -517,7 +577,7 @@ namespace Aardvark.Base
                 // parallel lines
                 if (!overlapping)
                 {
-                    point = V2d.NaN;
+                    p = V2d.NaN;
                     return false;
                 }
 
@@ -529,11 +589,11 @@ namespace Aardvark.Base
 
                 if (r0.Intersects(r1, absoluteEpsilon, out Range1d result))
                 {
-                    point = line.P0 + normalizedDirection * result.Min;
+                    p = line.P0 + normalizedDirection * result.Min;
                     return true;
                 }
 
-                point = V2d.NaN;
+                p = V2d.NaN;
                 return false;
             }
         }
@@ -546,12 +606,7 @@ namespace Aardvark.Base
         /// Deprecated: use Plane2d.Intersects(Plane2d) or Ray2d.Intersects(Ray2d) instead.
         /// </summary>
         [Obsolete]
-        public static bool Intersects(
-            this Line2d line0,
-            Line2d line1,
-            bool infiniteLines,
-            out V2d p
-            )
+        public static bool Intersects(this Line2d line0, Line2d line1, bool infiniteLines, out V2d p)
         {
             if (!infiniteLines)
                 return Intersects(line0, line1, out p);
@@ -1030,6 +1085,7 @@ namespace Aardvark.Base
 
         #endregion
 
+
         #region Circle2d intersects Circle2d (sm)
 
         /// <summary>
@@ -1039,6 +1095,7 @@ namespace Aardvark.Base
             => (c0.Center - c1.Center).LengthSquared <= (c0.Radius + c1.Radius).Square();
 
         #endregion
+
 
         #region Triangle2d intersects Line2d
 
@@ -2044,31 +2101,20 @@ namespace Aardvark.Base
         /// Returns true if the ray and the triangle intersect. If you need
         /// information about the hit point see the Ray3d.Hits method.
         /// </summary>
-        public static bool Intersects(
-            this Ray3d ray,
-            Triangle3d triangle
-            )
-        {
-            return ray.IntersectsTrianglePointAndEdges(
-                        triangle.P0, triangle.Edge01, triangle.Edge02,
-                        double.MinValue, double.MaxValue);
-        }
+        public static bool Intersects(this Ray3d ray, Triangle3d triangle)
+            => ray.IntersectsTrianglePointAndEdges(
+                triangle.P0, triangle.Edge01, triangle.Edge02,
+                double.MinValue, double.MaxValue);
 
         /// <summary>
         /// Returns true if the ray and the triangle intersect within the
         /// supplied parameter interval of the ray. If you need information
         /// about the hit point see the Ray3d.Hits method.
         /// </summary>
-        public static bool Intersects(
-            this Ray3d ray,
-            Triangle3d triangle,
-            double tmin, double tmax
-            )
-        {
-            return ray.IntersectsTrianglePointAndEdges(
-                        triangle.P0, triangle.Edge01, triangle.Edge02,
-                        tmin, tmax);
-        }
+        public static bool Intersects(this Ray3d ray, Triangle3d triangle, double tmin, double tmax)
+            => ray.IntersectsTrianglePointAndEdges(
+                triangle.P0, triangle.Edge01, triangle.Edge02,
+                tmin, tmax);
 
         /// <summary>
         /// Returns true if the ray and the triangle intersect within the
@@ -2076,32 +2122,18 @@ namespace Aardvark.Base
         /// about the hit point see the Ray3d.Hits method.
         /// t holds the corresponding ray-parameter
         /// </summary>
-        public static bool Intersects(
-            this Ray3d ray,
-            Triangle3d triangle,
-            double tmin, double tmax,
-            out double t
-            )
-        {
-            return ray.IntersectsTrianglePointAndEdges(
-                        triangle.P0, triangle.Edge01, triangle.Edge02,
-                        tmin, tmax, out t);
-        }
+        public static bool Intersects(this Ray3d ray, Triangle3d triangle, double tmin, double tmax, out double t)
+            => ray.IntersectsTrianglePointAndEdges(
+                triangle.P0, triangle.Edge01, triangle.Edge02,
+                tmin, tmax, out t);
 
         /// <summary>
         /// Returns true if the ray and the triangle intersect within the
         /// supplied parameter interval of the ray. If you need information
         /// about the hit point see the Ray3d.Hits method.
         /// </summary>
-        public static bool IntersectsTriangle(
-            this Ray3d ray,
-            V3d p0, V3d p1, V3d p2,
-            double tmin, double tmax
-            )
-        {
-            double temp;
-            return ray.IntersectsTriangle(p0, p1, p2, tmin, tmax, out temp);
-        }
+        public static bool IntersectsTriangle(this Ray3d ray, V3d p0, V3d p1, V3d p2, double tmin, double tmax)
+            => ray.IntersectsTriangle(p0, p1, p2, tmin, tmax, out double temp);
 
         /// <summary>
         /// Returns true if the ray and the triangle intersect within the
@@ -2109,27 +2141,22 @@ namespace Aardvark.Base
         /// about the hit point see the Ray3d.Hits method.
         /// t holds the corresponding ray-parameter
         /// </summary>
-        public static bool IntersectsTriangle(
-            this Ray3d ray,
-            V3d p0, V3d p1, V3d p2,
-            double tmin, double tmax,
-            out double t
-            )
+        public static bool IntersectsTriangle(this Ray3d ray, V3d p0, V3d p1, V3d p2, double tmin, double tmax, out double t)
         {
-            V3d edge01 = p1 - p0;
-            V3d edge02 = p2 - p0;
-            V3d plane = V3d.Cross(ray.Direction, edge02);
-            double det = V3d.Dot(edge01, plane);
+            var edge01 = p1 - p0;
+            var edge02 = p2 - p0;
+            var plane = V3d.Cross(ray.Direction, edge02);
+            var det = V3d.Dot(edge01, plane);
             if (det > -0.0000001 && det < 0.0000001) { t = double.NaN; return false; }
             //ray ~= parallel / Triangle
-            V3d tv = ray.Origin - p0;
+            var tv = ray.Origin - p0;
             det = 1.0 / det;  // det is now inverse det
-            double u = V3d.Dot(tv, plane) * det;
+            var u = V3d.Dot(tv, plane) * det;
             if (u < 0.0 || u > 1.0) { t = double.NaN; return false; }
             plane = V3d.Cross(tv, edge01); // plane is now qv
-            double v = V3d.Dot(ray.Direction, plane) * det;
+            var v = V3d.Dot(ray.Direction, plane) * det;
             if (v < 0.0 || u + v > 1.0) { t = double.NaN; return false; }
-            double temp_t = V3d.Dot(edge02, plane) * det;
+            var temp_t = V3d.Dot(edge02, plane) * det;
             if (temp_t < tmin || temp_t >= tmax) { t = double.NaN; return false; }
 
             t = temp_t;
@@ -2142,15 +2169,8 @@ namespace Aardvark.Base
         /// supplied parameter interval of the ray. If you need information
         /// about the hit point see the Ray3d.Hits method.
         /// </summary>
-        public static bool IntersectsTrianglePointAndEdges(
-            this Ray3d ray,
-            V3d p0, V3d edge01, V3d edge02,
-            double tmin, double tmax
-            )
-        {
-            double temp;
-            return ray.IntersectsTrianglePointAndEdges(p0, edge01, edge02, tmin, tmax, out temp);
-        }
+        public static bool IntersectsTrianglePointAndEdges(this Ray3d ray, V3d p0, V3d edge01, V3d edge02, double tmin, double tmax)
+            => ray.IntersectsTrianglePointAndEdges(p0, edge01, edge02, tmin, tmax, out double temp);
 
         /// <summary>
         /// Returns true if the ray and the triangle intersect within the
@@ -2158,25 +2178,20 @@ namespace Aardvark.Base
         /// about the hit point see the Ray3d.Hits method.
         /// t holds the corresponding ray-parameter
         /// </summary>
-        public static bool IntersectsTrianglePointAndEdges(
-            this Ray3d ray,
-            V3d p0, V3d edge01, V3d edge02,
-            double tmin, double tmax,
-            out double t
-            )
+        public static bool IntersectsTrianglePointAndEdges(this Ray3d ray, V3d p0, V3d edge01, V3d edge02, double tmin, double tmax, out double t)
         {
-            V3d plane = V3d.Cross(ray.Direction, edge02);
-            double det = V3d.Dot(edge01, plane);
+            var plane = V3d.Cross(ray.Direction, edge02);
+            var det = V3d.Dot(edge01, plane);
             if (det > -0.0000001 && det < 0.0000001) { t = double.NaN; return false; }
             //ray ~= parallel / Triangle
-            V3d tv = ray.Origin - p0;
+            var tv = ray.Origin - p0;
             det = 1.0 / det;  // det is now inverse det
-            double u = V3d.Dot(tv, plane) * det;
+            var u = V3d.Dot(tv, plane) * det;
             if (u < 0.0 || u > 1.0) { t = double.NaN; return false; }
             plane = V3d.Cross(tv, edge01); // plane is now qv
-            double v = V3d.Dot(ray.Direction, plane) * det;
+            var v = V3d.Dot(ray.Direction, plane) * det;
             if (v < 0.0 || u + v > 1.0) { t = double.NaN; return false; }
-            double temp_t = V3d.Dot(edge02, plane) * det;
+            var temp_t = V3d.Dot(edge02, plane) * det;
             if (temp_t < tmin || temp_t >= tmax) { t = double.NaN; return false; }
 
             t = temp_t;
@@ -2192,12 +2207,19 @@ namespace Aardvark.Base
         /// Returns true if the ray and the triangle intersect. If you need
         /// information about the hit point see the Ray3d.Hits method.
         /// </summary>
-        public static bool Intersects(
-            this Ray3d ray,
-            Quad3d quad
-            )
+        public static bool Intersects(this Ray3d ray, Quad3d quad)
+            => ray.Intersects(quad, double.MinValue, double.MaxValue);
+
+        /// <summary>
+        /// Returns true if the ray and the quad intersect within the
+        /// supplied parameter interval of the ray. If you need information
+        /// about the hit point see the Ray3d.Hits method.
+        /// </summary>
+        public static bool Intersects(this Ray3d ray, Quad3d quad, double tmin, double tmax)
         {
-            return ray.Intersects(quad, double.MinValue, double.MaxValue);
+            var edge02 = quad.P2 - quad.P0;
+            return ray.IntersectsTrianglePointAndEdges(quad.P0, quad.Edge01, edge02, tmin, tmax)
+                || ray.IntersectsTrianglePointAndEdges(quad.P0, edge02, quad.Edge03, tmin, tmax);
         }
 
         /// <summary>
@@ -2205,35 +2227,11 @@ namespace Aardvark.Base
         /// supplied parameter interval of the ray. If you need information
         /// about the hit point see the Ray3d.Hits method.
         /// </summary>
-        public static bool Intersects(
-            this Ray3d ray,
-            Quad3d quad,
-            double tmin, double tmax
-            )
+        public static bool IntersectsQuad(this Ray3d ray, V3d p0, V3d p1, V3d p2, V3d p3, double tmin, double tmax)
         {
-            V3d edge02 = quad.P2 - quad.P0;
-            return ray.IntersectsTrianglePointAndEdges(
-                        quad.P0, quad.Edge01, edge02, tmin, tmax)
-                    || ray.IntersectsTrianglePointAndEdges(
-                        quad.P0, edge02, quad.Edge03, tmin, tmax);
-        }
-
-        /// <summary>
-        /// Returns true if the ray and the quad intersect within the
-        /// supplied parameter interval of the ray. If you need information
-        /// about the hit point see the Ray3d.Hits method.
-        /// </summary>
-        public static bool IntersectsQuad(
-            this Ray3d ray,
-            V3d p0, V3d p1, V3d p2, V3d p3,
-            double tmin, double tmax
-            )
-        {
-            V3d edge02 = p2 - p0;
-            return ray.IntersectsTrianglePointAndEdges(
-                        p0, p1 - p0, edge02, tmin, tmax)
-                    || ray.IntersectsTrianglePointAndEdges(
-                        p0, edge02, p3 - p0, tmin, tmax);
+            var edge02 = p2 - p0;
+            return ray.IntersectsTrianglePointAndEdges(p0, p1 - p0, edge02, tmin, tmax)
+                || ray.IntersectsTrianglePointAndEdges(p0, edge02, p3 - p0, tmin, tmax);
         }
 
         #endregion
@@ -2244,32 +2242,20 @@ namespace Aardvark.Base
         /// Returns true if the ray and the polygon intersect within the
         /// supplied parameter interval of the ray.
         /// </summary>
-        public static bool Intersects(
-            this Ray3d ray,
-            Polygon3d poly,
-            double tmin, double tmax
-            )
-        {
-            double temp;
-            return ray.Intersects(poly, tmin, tmax, out temp);
-        }
+        public static bool Intersects(this Ray3d ray, Polygon3d poly, double tmin, double tmax)
+            => ray.Intersects(poly, tmin, tmax, out double temp);
 
         /// <summary>
         /// Returns true if the ray and the polygon intersect within the
         /// supplied parameter interval of the ray.
         /// t holds the correspoinding paramter.
         /// </summary>
-        public static bool Intersects(
-            this Ray3d ray,
-            Polygon3d poly,
-            double tmin, double tmax,
-            out double t
-            )
+        public static bool Intersects(this Ray3d ray, Polygon3d poly, double tmin, double tmax, out double t)
         {
-            int[] tris = poly.ComputeTriangulationOfConcavePolygon(1E-5);
-            int count = tris.Length;
+            var tris = poly.ComputeTriangulationOfConcavePolygon(1E-5);
+            var count = tris.Length;
 
-            for (int i = 0; i < count; i += 3)
+            for (var i = 0; i < count; i += 3)
             {
                 if (ray.IntersectsTriangle(poly[tris[i + 0]], poly[tris[i + 1]], poly[tris[i + 2]],
                                            tmin, tmax, out t))
@@ -2287,14 +2273,8 @@ namespace Aardvark.Base
         /// supplied parameter interval of the ray.
         /// (The Method triangulates the polygon)
         /// </summary>
-        public static bool IntersectsPolygon(
-            this Ray3d ray,
-            V3d[] vertices,
-            double tmin, double tmax
-            )
-        {
-            return ray.Intersects(new Polygon3d(vertices), tmin, tmax);
-        }
+        public static bool IntersectsPolygon(this Ray3d ray, V3d[] vertices, double tmin, double tmax)
+            => ray.Intersects(new Polygon3d(vertices), tmin, tmax);
 
         /// <summary>
         /// Returns true if the ray and the polygon, which is given by vertices and triangulation, intersect within the
@@ -2307,9 +2287,11 @@ namespace Aardvark.Base
             double tmin, double tmax
             )
         {
-            for (int i = 0; i < triangulation.Length; i += 3)
+            for (var i = 0; i < triangulation.Length; i += 3)
             {
-                if (ray.IntersectsTriangle(vertices[triangulation[i + 0]], vertices[triangulation[i + 1]], vertices[triangulation[i + 2]], tmin, tmax)) return true;
+                if (ray.IntersectsTriangle(vertices[triangulation[i + 0]],
+                                           vertices[triangulation[i + 1]],
+                                           vertices[triangulation[i + 2]], tmin, tmax)) return true;
             }
             return false;
         }
@@ -2325,7 +2307,7 @@ namespace Aardvark.Base
             double tmin, double tmax
             )
         {
-            for (int i = 0; i < triangulation.Length; i += 3)
+            for (var i = 0; i < triangulation.Length; i += 3)
             {
                 if (ray.IntersectsTriangle(polygon[triangulation[i + 0]],
                                            polygon[triangulation[i + 1]],
@@ -2342,36 +2324,25 @@ namespace Aardvark.Base
         /// Returns true if the ray and the triangle intersect. If you need
         /// information about the hit point see the Ray3d.Hits method.
         /// </summary>
-        public static bool Intersects(
-            this Ray3d ray,
-            Sphere3d sphere
-            )
-        {
-            return ray.Intersects(
-                        sphere,
-                        double.MinValue, double.MaxValue);
-        }
+        public static bool Intersects(this Ray3d ray, Sphere3d sphere)
+            => ray.Intersects(sphere, double.MinValue, double.MaxValue);
 
         /// <summary>
         /// Returns true if the ray and the triangle intersect within the
         /// supplied parameter interval of the ray. If you need information
         /// about the hit point see the Ray3d.Hits method.
         /// </summary>
-        public static bool Intersects(
-            this Ray3d ray,
-            Sphere3d sphere,
-            double tmin, double tmax
-            )
+        public static bool Intersects(this Ray3d ray, Sphere3d sphere, double tmin, double tmax)
         {
             // calculate closest point
-            double t = ray.Direction.Dot(sphere.Center - ray.Origin) / ray.Direction.LengthSquared;
+            var t = ray.Direction.Dot(sphere.Center - ray.Origin) / ray.Direction.LengthSquared;
             if (t < 0) t = 0;
             if (t < tmin) t = tmin;
             if (t > tmax) t = tmax;
             V3d p = ray.Origin + t * ray.Direction;
 
             // distance to sphere?
-            double d = (p - sphere.Center).LengthSquared;
+            var d = (p - sphere.Center).LengthSquared;
             if (d <= sphere.RadiusSquared)
                 return true;
 
@@ -3267,7 +3238,18 @@ namespace Aardvark.Base
         }
 
         #endregion
+        
 
+        #region Sphere3d intersects Sphere3d (sm)
+
+        /// <summary>
+        /// Returns true if the spheres intersect, or one contains the other.
+        /// </summary>
+        public static bool Intersects(this Sphere3d s0, Sphere3d s1)
+            => (s0.Center - s1.Center).LengthSquared <= (s0.Radius + s1.Radius).Square();
+
+        #endregion
+        
 
         #region Box3d intersects Line3d
 
@@ -4368,18 +4350,7 @@ namespace Aardvark.Base
             return false;
 
         }
-
-        /// <summary>
-        /// Returns whether the given spheres intersect.
-        /// </summary>
-        public static bool Intersects(
-             this Sphere3d sphere1, Sphere3d sphere2
-             )
-        {
-            if (V3d.Distance(sphere2.Center, sphere1.Center) <= (sphere1.Radius + sphere2.Radius)) return true;
-            else return false;
-        }
-
+    
         /// <summary>
         /// Returns whether the given boxes intersect.
         /// </summary>
