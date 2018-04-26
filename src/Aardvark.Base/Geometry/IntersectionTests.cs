@@ -6,8 +6,8 @@ namespace Aardvark.Base
 {
     public static partial class GeometryFun
     {
-        // Contains Tests should return true if the contained object is 
-        // either entirely indside the containing object or lies on the
+        // Contains-tests should return true if the contained object is 
+        // either entirely inside the containing object or lies on the
         // boundary of the containing object.
 
         #region Triangle2d contains V2d
@@ -21,6 +21,82 @@ namespace Aardvark.Base
                     && triangle.Line02.RightValueOfDir(v0p) >= 0.0
                     && triangle.Line12.LeftValueOfPos(point) >= 0.0;
         }
+
+        #endregion
+
+        #region Triangle2d contains Line2d (sm)
+
+        public static bool Contains(this Triangle2d triangle, Line2d linesegment)
+            => triangle.Contains(linesegment.P0) && triangle.Contains(linesegment.P1);
+
+        #endregion
+
+        #region Triangle2d contains Triangle2d (sm)
+
+        public static bool Contains(this Triangle2d triangle, Triangle2d other)
+            => triangle.Contains(other.P0) && triangle.Contains(other.P1) && triangle.Contains(other.P2);
+
+        #endregion
+
+        #region Triangle2d contains Quad2d (sm)
+
+        public static bool Contains(this Triangle2d triangle, Quad2d q)
+            => triangle.Contains(q.P0) && triangle.Contains(q.P1) && triangle.Contains(q.P2) && triangle.Contains(q.P3);
+
+        #endregion
+
+        #region Triangle2d contains Circle2d - TODO
+
+        #endregion
+
+
+        #region Circle2d contains V2d (sm)
+
+        /// <summary>
+        /// True if point p is contained in this circle.
+        /// </summary>
+        public static bool Contains(this Circle2d circle, V2d p)
+            => (p - circle.Center).LengthSquared <= circle.RadiusSquared;
+
+        #endregion
+
+        #region Circle2d contains Line2d (sm)
+
+        /// <summary>
+        /// True if line segment is contained in this circle.
+        /// </summary>
+        public static bool Contains(this Circle2d circle, Line2d l)
+            => circle.Contains(l.P0) && circle.Contains(l.P1);
+
+        #endregion
+
+        #region Circle2d contains Triangle2d (sm)
+
+        /// <summary>
+        /// True if triangle is contained in this circle.
+        /// </summary>
+        public static bool Contains(this Circle2d circle, Triangle2d t)
+            => circle.Contains(t.P0) && circle.Contains(t.P1) && circle.Contains(t.P2);
+
+        #endregion
+
+        #region Circle2d contains Quad2d (sm)
+
+        /// <summary>
+        /// True if quad is contained in this circle.
+        /// </summary>
+        public static bool Contains(this Circle2d circle, Quad2d q)
+            => circle.Contains(q.P0) && circle.Contains(q.P1) && circle.Contains(q.P2) && circle.Contains(q.P3);
+
+        #endregion
+
+        #region Circle2d contains Circle2d (sm)
+
+        /// <summary>
+        /// True if other circle is contained in this circle.
+        /// </summary>
+        public static bool Contains(this Circle2d circle, Circle2d other)
+            => (other.Center - circle.Center).Length + other.Radius <= circle.Radius;
 
         #endregion
 
@@ -266,11 +342,11 @@ namespace Aardvark.Base
         #region Line2d intersects Line2d
 
         /// <summary>
-        /// Returns true if the two Lines intersect
-        /// If the lines overlap and are parallel there is no intersection returned
+        /// Returns true if the two line segments intersect.
+        /// If the segments are parallel and overlap, there is no intersection returned.
         /// </summary>
         public static bool Intersects(this Line2d l0, Line2d l1)
-            => l0.IntersectsLine(l1.P0, l1.P1, out V2d dummy);
+            => l0.IntersectsLine(l1.P0, l1.P1, out V2d _);
 
         /// <summary>
         /// Returns true if the two Lines intersect
@@ -352,7 +428,7 @@ namespace Aardvark.Base
             }
             else
             {
-                // pParallel lines
+                // parallel lines
                 if (!overlapping)
                 {
                     point = V2d.NaN;
@@ -954,7 +1030,7 @@ namespace Aardvark.Base
 
         #endregion
 
-        #region Circle2d intersects Circle2d
+        #region Circle2d intersects Circle2d (sm)
 
         /// <summary>
         /// Returns true if the circles intersect, or one contains the other.

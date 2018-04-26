@@ -101,16 +101,7 @@ namespace Aardvark.Base
         }
 
         #endregion
-
-        #region Contains
-
-        /// <summary>
-        /// True if point p is contained in this circle.
-        /// </summary>
-        public bool Contains(V2d p) => (p - Center).LengthSquared <= RadiusSquared;
-
-        #endregion
-
+        
         #region Overrides
 
         public override int GetHashCode() => HashCode.GetCombined(Center, Radius);
