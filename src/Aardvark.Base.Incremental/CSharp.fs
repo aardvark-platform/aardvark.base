@@ -14,6 +14,9 @@ type Mod private() =
 
     static member Init(v : 'a) = Mod.init v
 
+    /// <summary>
+    /// Mod.delay
+    /// </summary>
     static member LazyConstant (f : Func<'a>) : IMod<'a> =
         Mod.delay f.Invoke
 
@@ -33,7 +36,25 @@ type Mod private() =
     static member LazyAsync(f : Func<'a>, defaultValue : 'a) : IMod<'a> =
         let a = async { return f.Invoke() }
         Mod.asyncWithDefault defaultValue a
-        
+
+[<Extension; AbstractClass; Sealed>]
+type ASet private() =
+    static member Empty<'a> () = ASet.empty<'a>
+
+    static member Single (v : 'a) = ASet.single v
+
+    static member OfSeq (s : seq<'a>) = ASet.ofSeq s
+
+    static member OfArray (a : 'a[]) = ASet.ofArray a
+
+    static member OfList (l : List<'a>) = ASet.ofSeq l
+
+    static member Custom (f : Func<AdaptiveToken, Func<hrefset<'a>, hdeltaset<'a>>>) : aset<'a> =
+        ASet.custom (fun t -> f.Invoke(t).Invoke)
+
+/// <summary> 
+/// Represents a constant aset (using ASet.ofSeq) that allows to use the c# initializer syntax for construction
+/// </summary>
 type AdaptiveSet<'a>(content : seq<'a>) =
     let content = HashSet content
     let s = lazy (ASet.ofSeq content)
@@ -63,13 +84,19 @@ type AdaptiveSet<'a>(content : seq<'a>) =
     new([<ParamArray>] values : 'a[]) = AdaptiveSet(values :> seq<_>)
     new() = AdaptiveSet Seq.empty
 
-//[<Extension; AbstractClass; Sealed>]
-//type AdaptiveSet private() =
-//
-//    static member Empty<'a>() : aset<'a> = ASet.empty
-//
-//    static member Single (v : 'a) = ASet.single v
 
+[<Extension; AbstractClass; Sealed>]
+type AList private() =
+    static member Empty<'a> () = AList.empty<'a>
+
+    static member Single (v : 'a) = AList.single v
+
+    static member OfSeq (s : seq<'a>) = AList.ofSeq s
+
+    static member OfArray (a : 'a[]) = AList.ofArray a
+
+    static member OfList (l : List<'a>) = AList.ofSeq l
+    
 
 [<AbstractClass; Sealed>]
 type Adaptive private() =
@@ -115,6 +142,8 @@ module private ImplicitConversionHate =
 
 
 open CallbackExtensions
+open Aardvark.Base.Geometry
+
 [<Extension; AbstractClass; Sealed>]
 type AdaptiveObjectExtensions private() =
 
@@ -258,60 +287,103 @@ type ModExtensions private() =
         this |> Mod.unsafeRegisterCallbackNoGcRoot callback.Invoke
 
 [<Extension; AbstractClass; Sealed>]
+
 type AdaptiveSetExtensions private() =
 
+    /// <summary>
+    /// ASet.map
+    /// </summary>
     [<Extension>]
     static member Select (this : aset<'a>, f : Func<'a, 'b>) =
         ASet.map f.Invoke this
 
+    /// <summary>
+    /// ASet.map
+    /// </summary>
     [<Extension>]
     static member Select (this : aset<'a>, f : Func<'a, IMod<'b>>) =
         ASet.mapM f.Invoke this
 
+    /// <summary>
+    /// ASet.collect
+    /// </summary>
     [<Extension>]
     static member SelectMany (this : aset<'a>, f : Func<'a, aset<'b>>) =
         ASet.collect f.Invoke this
 
+    /// <summary>
+    /// ASet.collect'
+    /// </summary>
     [<Extension>]
     static member SelectMany (this : aset<'a>, f : Func<'a, seq<'b>>) =
         ASet.collect' f.Invoke this
 
+    /// <summary>
+    /// ASet.choose
+    /// </summary>
     [<Extension>]
     static member Choose (this : aset<'a>, f : Func<'a, Option<'b>>) =
         ASet.choose f.Invoke this
 
+    /// <summary>
+    /// ASet.chooseM
+    /// </summary>
     [<Extension>]
     static member Choose (this : aset<'a>, f : Func<'a, IMod<Option<'b>>>) =
         ASet.chooseM f.Invoke this
 
+    /// <summary>
+    /// ASet.mapUse
+    /// </summary>
     [<Extension>]
     static member MapUse (this : aset<'a>, f : Func<'a, 'b>) =
         ASet.mapUse f.Invoke this
 
+    /// <summary>
+    /// ASet.union
+    /// </summary>
     [<Extension>]
     static member Flatten (this : seq<aset<'a>>) =
         ASet.union (ASet.ofSeq this)
 
+    /// <summary>
+    /// ASet.unionMany
+    /// </summary>
     [<Extension>]
     static member Flatten (this : aset<aset<'a>>) =
         ASet.unionMany this
 
+    /// <summary>
+    /// ASet.collect
+    /// </summary>
     [<Extension>]
     static member Flatten (this : aset<seq<'a>>) =
         ASet.collect ASet.ofSeq this
 
+    /// <summary>
+    /// ASet.flattenM
+    /// </summary>
     [<Extension>]
     static member Flatten (this : aset<IMod<'a>>) =
         ASet.flattenM this
 
+    /// <summary>
+    /// ASet.filter
+    /// </summary>
     [<Extension>]
     static member Where (this : aset<'a>, f : Func<'a, bool>) =
         ASet.filter f.Invoke this
 
+    /// <summary>
+    /// ASet.filterM
+    /// </summary>
     [<Extension>]
     static member Where (this : aset<'a>, f : Func<'a, IMod<bool>>) =
         ASet.filterM f.Invoke this
 
+    /// <summary>
+    /// ASet.union
+    /// </summary>
     [<Extension>]
     static member Union (this : aset<'a>, other : aset<'a>) =
         ASet.union this other
@@ -319,6 +391,14 @@ type AdaptiveSetExtensions private() =
     [<Extension>]
     static member ToMod (this : aset<'a>) =
         ASet.toMod this
+
+    [<Extension>]
+    static member ToSeq (this : aset<'a>) =
+        ASet.toSeq this
+
+    [<Extension>]
+    static member ToArray (this : aset<'a>) =
+        ASet.toArray this
 
     [<Extension>]
     static member MapSet (this : aset<'a>, valueSelector : Func<'a, 'v>) =
@@ -437,6 +517,14 @@ type ChangeableSetExtensions private() =
     static member AsAdaptiveSet(this : cset<'a>) =
         this :> aset<'a>
 
+    /// <summary>
+    /// Copies the ChangeableSet to an array.
+    /// This extension avoid errors of resolving the ambigious extensions IAdaptiveSet<T>.ToArray and IEnumerable<T>.ToArray.
+    /// </summary>
+    [<Extension>]
+    static member ToArray (this : cset<'a>) =
+        Seq.toArray this
+
     [<Extension>]
     static member Select (this : cset<'a>, f : Func<'a, 'b>) =
         ASet.map f.Invoke this
@@ -503,47 +591,86 @@ type AdaptiveListExtensions private() =
         AList.toMod this
 
     [<Extension>]
+    static member ToSeq (this : alist<'a>) =
+        AList.toSeq this
+
+    [<Extension>]
+    static member ToArray (this : alist<'a>) =
+        AList.toArray this
+
+    /// <summary>
+    /// AList.map
+    /// <summary>
+    [<Extension>]
     static member Select (this : alist<'a>, f : Func<'a, 'b>) =
         AList.map f.Invoke this
-        
+    
+    /// <summary>
+    /// AList.collect
+    /// <summary>
     [<Extension>]
     static member SelectMany (this : alist<'a>, f : Func<'a, alist<'b>>) =
         AList.collect f.Invoke this
 
+    /// <summary>
+    /// AList.collect
+    /// <summary>
     [<Extension>]
     static member SelectMany (this : seq<'a>, f : Func<'a, alist<'b>>) =
         AList.collect f.Invoke (AList.ofSeq this)
 
+    /// <summary>
+    /// AList.concat
+    /// <summary>
     [<Extension>]
     static member Concat (this : seq<alist<'a>>) =
         AList.concat (AList.ofSeq this)
 
+    /// <summary>
+    /// AList.concat
+    /// <summary>
     [<Extension>]
     static member Concat (this : alist<alist<'a>>) =
         AList.concat this
 
+    /// <summary>
+    /// AList.choose
+    /// <summary>
     [<Extension>]
     static member Choose (this : alist<'a>, f : Func<'a, Option<'b>>) =
         AList.choose f.Invoke this
 
+    /// <summary>
+    /// AList.chooseM
+    /// <summary>
     [<Extension>]
     static member Choose (this : alist<'a>, f : Func<'a, IMod<Option<'b>>>) =
         AList.chooseM f.Invoke this
 
+    /// <summary>
+    /// AList.filter
+    /// <summary>
     [<Extension>]
     static member Where (this : alist<'a>, f : Func<'a, bool>) =
         AList.filter f.Invoke this
 
+    /// <summary>
+    /// AList.filterM
+    /// <summary>
     [<Extension>]
     static member Where (this : alist<'a>, f : Func<'a, IMod<bool>>) =
         AList.filterM f.Invoke this
 
+    /// <summary>
+    /// AList.append
+    /// <summary>
     [<Extension>]
     static member Concat (this : alist<'a>, other : alist<'a>) =
         AList.append this other
 
     /// <summary>
     /// Converts the adaptive list to a set.
+    /// Extension to manually fix conflicts of ambigious extensions of IAdaptiveList and IEnumerable
     /// </summary>
     [<Extension>]
     static member ToAdaptiveSet (this : alist<'a>) =
@@ -573,6 +700,14 @@ type CListExtensions private() =
     [<Extension>]
     static member AsAdaptiveList(this : clist<'a>) =
         this :> alist<'a>
+
+    /// <summary>
+    /// Copies the ChangeableList to an array.
+    /// This extension avoid errors of resolving the ambigious extensions IAdaptiveList<T>.ToArray and IEnumerable<T>.ToArray.
+    /// </summary>
+    [<Extension>]
+    static member ToArray(this : clist<'a>) =
+        Seq.toArray this
                 
 
 [<Extension; AbstractClass; Sealed>]
@@ -580,6 +715,7 @@ type COrderedSetExtensions private() =
 
     /// <summary>
     /// Returns ChangeableOrderedSet cast to <cref=IAdaptiveSet{T}/>
+    /// Extension to manually fix conflicts of ambigious extensions of IAdaptiveSet and IEnumerable
     /// </summary>
     [<Extension>]
     static member AsAdaptiveSet(this : corderedset<'a>) =
@@ -587,10 +723,19 @@ type COrderedSetExtensions private() =
 
     /// <summary>
     /// Returns ChangeableOrderedSet cast to <cref=IAdaptiveList{T}/>
+    /// Extension to manually fix conflicts of ambigious extensions of IAdaptiveSet and IEnumerable
     /// </summary>
     [<Extension>]
     static member AsAdaptiveList(this : corderedset<'a>) =
         this :> alist<'a>
+
+    /// <summary>
+    /// Copies the ChangeableOrderedSet to an array.
+    /// This extension avoid errors of resolving the ambigious extensions IAdaptiveSet<T>.ToArray and IEnumerable<T>.ToArray.
+    /// </summary>
+    [<Extension>]
+    static member ToArray(this : corderedset<'a>) =
+        Seq.toArray this
         
 
 [<Extension; AbstractClass; Sealed>]
