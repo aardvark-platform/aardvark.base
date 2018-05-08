@@ -1515,9 +1515,11 @@ namespace Aardvark.Base
         //#                 for (int wi = 0; wi < s; wi++) { var w = svalues[wi];
         //#                     var name = snames[xi] + snames[yi] + snames[zi] + snames[wi];
         //#                     if (xi < 4 && yi < 4 && zi < 4 && wi < 4) {
+        //#                         if (d == 4) {
         [EditorBrowsable(EditorBrowsableState.Never)]
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
         public static readonly __v4type__ __name__ = new __v4type__(__x__, __y__, __z__, __w__);
+        //#                         }
         //#                     }
         //#                     else {
         [EditorBrowsable(EditorBrowsableState.Never)]
