@@ -48,6 +48,10 @@ type ASet private() =
     static member OfArray (a : 'a[]) = ASet.ofArray a
 
     static member OfList (l : List<'a>) = ASet.ofSeq l
+    
+    static member Create (s : seq<'a>) = ASet.ofSeq s
+
+    static member Create (a : 'a[]) = ASet.ofArray a
 
     static member Custom (f : Func<AdaptiveToken, Func<hrefset<'a>, hdeltaset<'a>>>) : aset<'a> =
         ASet.custom (fun t -> f.Invoke(t).Invoke)
@@ -96,6 +100,10 @@ type AList private() =
     static member OfArray (a : 'a[]) = AList.ofArray a
 
     static member OfList (l : List<'a>) = AList.ofSeq l
+
+    static member Create (s : seq<'a>) = AList.ofSeq s
+
+    static member Create (a : 'a[]) = AList.ofArray a
     
 
 [<AbstractClass; Sealed>]
