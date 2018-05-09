@@ -1475,9 +1475,11 @@ namespace Aardvark.Base
         //# for (int xi = 0; xi < s; xi++) { var x = svalues[xi];
         //#     for (int yi = 0; yi < s; yi++) { var y = svalues[yi];
         //#         var name = snames[xi] + snames[yi];
-        //#         if (xi != 1 && yi != 1 || xi != 2 && yi != 2) {
-        //#             if (xi < 4 && yi < 4) {
-        //#                 if (d == 2) {
+        //#         if ((xi != 1 && yi != 1 || xi != 2 && yi != 2) && // check for mixing I and P
+        //#             (xi != 2 && yi != 2 || xi == 3 || yi == 3) && // check for only P if any N
+        //#             (xi != 1 && yi != 1 || xi != 3 && yi != 3)) { // check for mixing I and N
+        //#             if (xi < 4 && yi < 4) { // check for constant -> otherwise property
+        //#                 if (d == 2) { // only constants of matching size
         [EditorBrowsable(EditorBrowsableState.Never)]
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
         public static readonly __v2type__ __name__ = new __v2type__(__x__, __y__);
@@ -1495,9 +1497,11 @@ namespace Aardvark.Base
         //#     for (int yi = 0; yi < s; yi++) { var y = svalues[yi];
         //#         for (int zi = 0; zi < s; zi++) { var z = svalues[zi];
         //#             var name = snames[xi] + snames[yi] + snames[zi];
-        //#             if (xi != 1 && yi != 1 && zi != 1 || xi != 2 && yi != 2 && zi != 2) {
-        //#                 if (xi < 4 && yi < 4 && zi < 4) {
-        //#                     if (d == 3) {
+        //#             if ((xi != 1 && yi != 1 && zi != 1 || xi != 2 && yi != 2 && zi != 2) && // check for mixing I and P
+        //#                 (xi != 2 && yi != 2 && zi != 2 || xi == 3 || yi == 3 || zi == 3) && // check for only P if any N
+        //#                 (xi != 1 && yi != 1 && zi != 1 || xi != 3 && yi != 3 && zi != 3)) { // check for mixing I and N
+        //#                 if (xi < 4 && yi < 4 && zi < 4) { // check for constant -> otherwise property
+        //#                     if (d == 3) { // only constants of matching size
         [EditorBrowsable(EditorBrowsableState.Never)]
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
         public static readonly __v3type__ __name__ = new __v3type__(__x__, __y__, __z__);   
@@ -1518,9 +1522,11 @@ namespace Aardvark.Base
         //#             for (int zi = 0; zi < s; zi++) { var z = svalues[zi];
         //#                 for (int wi = 0; wi < s; wi++) { var w = svalues[wi];
         //#                     var name = snames[xi] + snames[yi] + snames[zi] + snames[wi];
-        //#                     if (xi != 1 && yi != 1 && zi != 1 && wi != 1 || xi != 2 && yi != 2 && zi != 2 && wi != 2) {
-        //#                         if (xi < 4 && yi < 4 && zi < 4 && wi < 4) {
-        //#                             if (d == 4) {
+        //#                     if ((xi != 1 && yi != 1 && zi != 1 && wi != 1 || xi != 2 && yi != 2 && zi != 2 && wi != 2) && // check for mixing I and P
+        //#                         (xi != 2 && yi != 2 && zi != 2 && wi != 2 || xi == 3 || yi == 3 || zi == 3 || wi == 3) && // check for only P if any N
+        //#                         (xi != 1 && yi != 1 && zi != 1 && wi != 1 || xi != 3 && yi != 3 && zi != 3 && wi != 3)) { // check for mixing I and N
+        //#                         if (xi < 4 && yi < 4 && zi < 4 && wi < 4) { // check for constant -> otherwise property
+        //#                             if (d == 4) { // only constants of matching size
         [EditorBrowsable(EditorBrowsableState.Never)]
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
         public static readonly __v4type__ __name__ = new __v4type__(__x__, __y__, __z__, __w__);
