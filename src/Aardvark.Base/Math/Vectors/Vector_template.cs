@@ -1475,17 +1475,19 @@ namespace Aardvark.Base
         //# for (int xi = 0; xi < s; xi++) { var x = svalues[xi];
         //#     for (int yi = 0; yi < s; yi++) { var y = svalues[yi];
         //#         var name = snames[xi] + snames[yi];
-        //#         if (xi < 4 && yi < 4) {
-        //#             if (d == 2) {
+        //#         if (xi != 1 && yi != 1 || xi != 2 && yi != 2) {
+        //#             if (xi < 4 && yi < 4) {
+        //#                 if (d == 2) {
         [EditorBrowsable(EditorBrowsableState.Never)]
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
         public static readonly __v2type__ __name__ = new __v2type__(__x__, __y__);
+        //#                 }
         //#             }
-        //#         }
-        //#         else {
+        //#             else {
         [EditorBrowsable(EditorBrowsableState.Never)]
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
-        public __v2type__ __name__ { get { return new __v2type__(__x__, __y__); } }      
+        public __v2type__ __name__ { get { return new __v2type__(__x__, __y__); } }
+        //#             }
         //#         }
         //#     }
         //# }
@@ -1493,17 +1495,19 @@ namespace Aardvark.Base
         //#     for (int yi = 0; yi < s; yi++) { var y = svalues[yi];
         //#         for (int zi = 0; zi < s; zi++) { var z = svalues[zi];
         //#             var name = snames[xi] + snames[yi] + snames[zi];
-        //#             if (xi < 4 && yi < 4 && zi < 4) {
-        //#                 if (d == 3) {
+        //#             if (xi != 1 && yi != 1 && zi != 1 || xi != 2 && yi != 2 && zi != 2) {
+        //#                 if (xi < 4 && yi < 4 && zi < 4) {
+        //#                     if (d == 3) {
         [EditorBrowsable(EditorBrowsableState.Never)]
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
         public static readonly __v3type__ __name__ = new __v3type__(__x__, __y__, __z__);   
+        //#                     } 
         //#                 }
-        //#             }
-        //#             else {
+        //#                 else {
         [EditorBrowsable(EditorBrowsableState.Never)]
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
-        public __v3type__ __name__ { get { return new __v3type__(__x__, __y__, __z__); } }      
+        public __v3type__ __name__ { get { return new __v3type__(__x__, __y__, __z__); } }
+        //#                 }
         //#             }
         //#         }
         //#     }
@@ -1514,17 +1518,19 @@ namespace Aardvark.Base
         //#             for (int zi = 0; zi < s; zi++) { var z = svalues[zi];
         //#                 for (int wi = 0; wi < s; wi++) { var w = svalues[wi];
         //#                     var name = snames[xi] + snames[yi] + snames[zi] + snames[wi];
-        //#                     if (xi < 4 && yi < 4 && zi < 4 && wi < 4) {
-        //#                         if (d == 4) {
+        //#                     if (xi != 1 && yi != 1 && zi != 1 && wi != 1 || xi != 2 && yi != 2 && zi != 2 && wi != 2) {
+        //#                         if (xi < 4 && yi < 4 && zi < 4 && wi < 4) {
+        //#                             if (d == 4) {
         [EditorBrowsable(EditorBrowsableState.Never)]
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
         public static readonly __v4type__ __name__ = new __v4type__(__x__, __y__, __z__, __w__);
+        //#                             } 
         //#                         }
-        //#                     }
-        //#                     else {
+        //#                         else {
         [EditorBrowsable(EditorBrowsableState.Never)]
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
         public __v4type__ __name__ { get { return new __v4type__(__x__, __y__, __z__, __w__); } }      
+        //#                         }
         //#                     }
         //#                 }
         //#             }
