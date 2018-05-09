@@ -80,7 +80,7 @@ module SimplePerfTests =
         let mods = List.init 500 (fun i -> Mod.init i)
 
         let sum = 
-            mods |> List.map (fun m -> m :> IAdaptiveObject) |> Mod.mapCustom (fun self ->
+            Mod.custom (fun self ->
                 mods |> List.map (fun s -> s.GetValue self) |> List.sum
             )
         // warmup
@@ -88,7 +88,7 @@ module SimplePerfTests =
 
 
         let sum = 
-            mods |> List.map (fun m -> m :> IAdaptiveObject) |> Mod.mapCustom (fun self ->
+            Mod.custom (fun self ->
                 mods |> List.map (fun s -> s.GetValue self) |> List.sum
             )
 

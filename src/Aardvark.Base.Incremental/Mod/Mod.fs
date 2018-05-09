@@ -801,6 +801,7 @@ module Mod =
     /// compute function and adds all given inputs to the
     /// resulting cell.
     /// </summary>
+    [<Obsolete("Use Mod.custom insteand: explicit input tracking is no longer neccesary")>]
     let mapCustom (f : AdaptiveToken -> 'a) (inputs : list<#IAdaptiveObject>) =
         LazyMod(List.map (fun a -> a :> IAdaptiveObject) inputs, f) :> IMod<_>
 

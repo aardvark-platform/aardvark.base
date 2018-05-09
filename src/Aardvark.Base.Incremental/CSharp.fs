@@ -22,10 +22,7 @@ type Mod private() =
 
     static member Custom (f : Func<AdaptiveToken, 'a>) : IMod<'a> =
         Mod.custom f.Invoke
-
-    static member MapCustom (f : Func<AdaptiveToken, 'a>,  [<ParamArray>] inputs : IAdaptiveObject[] ) : IMod<'a> =
-        Mod.mapCustom f.Invoke (List.ofArray(inputs))
-
+        
     static member Async(t : System.Threading.Tasks.Task<'a>, defaultValue : 'a) : IMod<'a> =
         Mod.asyncWithDefault defaultValue (Async.AwaitTask t)
 
