@@ -19,6 +19,19 @@ namespace Aardvark.Base
 
         #endregion
 
+        #region Trnsformations
+
+        /// <summary>
+        /// Transforms a 2d polygon into 3d.
+        /// The z-coordinate is assumed to be zero.
+        /// </summary>
+        public static Polygon3d Transformed(this Polygon2d polygon, M44d transform)
+        {
+            return new Polygon3d(polygon.GetPointArray(p => transform.TransformPos(p.XYO)));
+        }
+
+        #endregion
+
         #region Geometric Properties
 
         /// <summary>
