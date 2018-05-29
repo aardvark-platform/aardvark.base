@@ -13,6 +13,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="PolyRegion2d.fs" />
+    <Compile Include="Region3d.fs" />
     <None Include="paket.references" />
   </ItemGroup>
   <ItemGroup>
