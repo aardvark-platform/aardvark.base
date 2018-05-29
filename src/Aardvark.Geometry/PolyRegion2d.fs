@@ -84,6 +84,7 @@ module private LibTess =
         if isNull t.Elements || isNull t.Vertices then 
             []
         else
+       
             let indices = t.Elements
             let vertices = t.Vertices |> Array.map (fun p -> V2d(p.Position.X, p.Position.Y))
 
@@ -587,6 +588,24 @@ module PolyRegion =
     let inline isEmpty (r : PolyRegion) = r.IsEmpty
 
     let private viewVolume = Box3d(-V3d.III, V3d.III)
+    
+    let internal toHull3d (viewProj : Trafo3d) =
+        let r0 = viewProj.Forward.R0
+        let r1 = viewProj.Forward.R1
+        let r2 = viewProj.Forward.R2
+        let r3 = viewProj.Forward.R3
+
+        let inline toPlane (v : V4d) =
+            Plane3d(-v.XYZ, v.W)
+
+        Hull3d [|
+            r3 - r0 |> toPlane  // right
+            r3 + r0 |> toPlane  // left
+            r3 + r1 |> toPlane  // bottom
+            r3 - r1 |> toPlane  // top
+            r3 + r2 |> toPlane  // near
+            //r3 - r2 |> toPlane  // far
+        |]
 
     let ofProjectedBox (viewProj : Trafo3d) (b : Box3d) =
         let p000 = V3d(b.Min.X, b.Min.Y, b.Min.Z)
@@ -598,6 +617,8 @@ module PolyRegion =
         let p110 = V3d(b.Max.X, b.Max.Y, b.Min.Z)
         let p111 = V3d(b.Max.X, b.Max.Y, b.Max.Z)
                 
+        let hull = toHull3d viewProj
+
         let clippedByPlane (eps : float) (plane : Plane3d) (poly : V3d[]) =
             let cnt = poly.Length
             if cnt < 3 then
@@ -637,32 +658,32 @@ module PolyRegion =
                 else
                     [||]
 
-        let clippedByBox (eps : float) (box : Box3d) (polygon : V3d[]) =
-            polygon
-                |> clippedByPlane eps (Plane3d(-V3d.XAxis, box.Min))
-                |> clippedByPlane eps (Plane3d(-V3d.YAxis, box.Min))
-                |> clippedByPlane eps (Plane3d(-V3d.ZAxis, box.Min))
-                |> clippedByPlane eps (Plane3d(V3d.XAxis, box.Max))
-                |> clippedByPlane eps (Plane3d(V3d.YAxis, box.Max))
-                |> clippedByPlane eps (Plane3d(V3d.ZAxis, box.Max))
+        let clippedByHull (eps : float) (hull : Hull3d) (polygon : V3d[]) =
+            hull.PlaneArray |> Array.fold (flip (clippedByPlane eps)) polygon
 
         let projectConvex (arr : V3d[]) =
-            arr 
-                |> Array.map viewProj.Forward.TransformPosProj
-                |> clippedByBox Constant.PositiveTinyValue viewVolume
-                |> Array.map Vec.xy
-                |> ofArray
 
-                
-        unionMany [
-            [| p000; p001; p011; p010|] |> projectConvex
-            [| p100; p101; p111; p110|] |> projectConvex
+            let poly =
+                arr |> clippedByHull Constant.PositiveTinyValue hull
+                    |> Array.map (viewProj.Forward.TransformPosProj >> Vec.xy)
+                    |> (fun a -> if a.Length = 0 then None else Some a)
+            
+            match poly with
+            | None -> empty
+            | Some poly ->
+                let center = (poly |> Array.fold (+) V2d.Zero) / float poly.Length
+                poly |> Array.map (fun p -> 1.000001 * (p - center) + center)
+                     |> ofArray
+
+        unionMany 
+            [
+                [| p000; p001; p011; p010|] |> projectConvex
+                [| p100; p101; p111; p110|] |> projectConvex
                         
-            [| p000; p001; p101; p100|] |> projectConvex
-            [| p010; p011; p111; p110|] |> projectConvex
+                [| p000; p001; p101; p100|] |> projectConvex
+                [| p010; p011; p111; p110|] |> projectConvex
 
-            [| p000; p100; p110; p010|] |> projectConvex
-            [| p001; p101; p111; p011|] |> projectConvex
-        ]
-
-                    
+                [| p000; p100; p110; p010|] |> projectConvex
+                [| p001; p101; p111; p011|] |> projectConvex
+            ]
+            

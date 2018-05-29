@@ -38,32 +38,8 @@ module Intersectable3d =
         }
 
     let ofNearPlanePolygon (viewProj : Trafo3d) (npp : PolyRegion) =
-        let bw = viewProj.Backward
 
-        let x = bw.M02 / bw.M32
-        let y = bw.M12 / bw.M32
-        let z = bw.M22 / bw.M32  
-        let cam = V3d(x,y,z)
-        
-        let inline toPlane (v : V4d) =
-            Plane3d(-v.XYZ, v.W)
-
-        let toHull3d (viewProj : Trafo3d) =
-            let r0 = viewProj.Forward.R0
-            let r1 = viewProj.Forward.R1
-            let r2 = viewProj.Forward.R2
-            let r3 = viewProj.Forward.R3
-            
-            Hull3d [|
-                r3 - r0 |> toPlane  // right
-                r3 + r0 |> toPlane  // left
-                r3 + r1 |> toPlane  // bottom
-                r3 - r1 |> toPlane  // top
-                r3 + r2 |> toPlane  // near
-                //r3 - r2 |> toPlane  // far
-            |]
-
-        let hull = toHull3d viewProj
+        let hull = PolyRegion.toHull3d viewProj
 
         let intersectsBox (box : Box3d) =
             if hull.Intersects box then
@@ -95,6 +71,10 @@ module Region3d =
 
     let empty = Region3d.Empty
     let inline ofIntersectable x = Region3d.Single x
+    let inline ofBox3d b = Region3d.Single (Intersectable3d.ofBox3d b)
+    let inline ofSphere3d s = Region3d.Single (Intersectable3d.ofSphere3d s)
+    let inline ofNearPlanePolygon viewProj p = Region3d.Single (Intersectable3d.ofNearPlanePolygon viewProj p)
+
     let inline intersect l r = Region3d.And(l,r)
     let inline union l r = Region3d.Or(l,r)
     let inline xor l r = Region3d.Xor(l,r)
