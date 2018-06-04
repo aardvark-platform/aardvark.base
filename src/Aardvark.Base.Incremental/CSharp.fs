@@ -242,6 +242,10 @@ type ModExtensions private() =
         AList.bind2 (fun l r -> f.Invoke(l,r)) this other
 
     [<Extension>]
+    static member Bind(this : IMod<'a>, f : Func<'a, amap<'b, 'c>>) =
+        AMap.bind f.Invoke this
+
+    [<Extension>]
     static member Eager(this : IMod<'a>) =
         Mod.onPush this
 
@@ -303,7 +307,7 @@ type AdaptiveSetExtensions private() =
         ASet.map f.Invoke this
 
     /// <summary>
-    /// ASet.map
+    /// ASet.mapM
     /// </summary>
     [<Extension>]
     static member Select (this : aset<'a>, f : Func<'a, IMod<'b>>) =
