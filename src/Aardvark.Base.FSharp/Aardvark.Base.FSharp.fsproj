@@ -28,6 +28,9 @@
     <Compile Include="Interop\CSharpList.fs" />
     <Compile Include="Interop\Tensors.fs" />
     <Compile Include="Interop\NativeTensors.fs" />
+    <None Include="Datastructures\Mutable\NativeTensorGenerator.fsx" />
+    <Compile Include="Datastructures\Mutable\NativeTensorGenerated.fs" />
+    <Compile Include="Datastructures\Mutable\NativeTensorExtensions.fs" />
     <Compile Include="Datastructures\Mutable\FixedSizeArray.fs" />
     <Compile Include="Datastructures\Mutable\Order.fs" />
     <Compile Include="Datastructures\Mutable\OrderMaintenance.fs" />
@@ -51,6 +54,7 @@
     <Compile Include="Datastructures\Geometry\Boundable.fs" />
     <Compile Include="Datastructures\Geometry\KdTree.fs" />
     <Compile Include="Datastructures\Geometry\Bvh.fs" />
+    <Compile Include="Algorithms\QR.fs" />
     <Compile Include="Reflection\TypeInfo.fs" />
     <Compile Include="Reflection\FunctionReflection.fs" />
     <Compile Include="Reflection\Formatf.fs" />
