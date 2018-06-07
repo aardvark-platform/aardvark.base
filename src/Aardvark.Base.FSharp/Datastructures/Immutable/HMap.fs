@@ -441,7 +441,7 @@ type hmap<'k, 'v>(cnt : int, store : intmap<list<'k * 'v>>) =
 
     static member OfList (list : list<'k * 'v>) =
         hmap.OfSeq list
-
+        
     static member OfArray (list : array<'k * 'v>) =
         hmap.OfSeq list
 
@@ -545,6 +545,21 @@ module HMap =
     /// </summary>
     let inline ofSeq (seq : seq<'k * 'v>) = 
         hmap.OfSeq seq
+
+    /// <summary>
+    /// Returns a new map made from the given bindings. <para />
+    /// O(n * min(n,32))
+    /// </summary>
+    let inline ofMap (map : Map<'k, 'v>) = 
+        map |> Map.toSeq |> ofSeq
+
+    /// <summary>
+    /// Returns a new map made from the given bindings. <para />
+    /// O(n * min(n,32))
+    /// </summary>
+    let inline ofMapExt (map : MapExt<'k, 'v>) = 
+        map |> MapExt.toSeq |> ofSeq
+        
         
     /// <summary>
     /// Returns a new map made from the given bindings. <para />
@@ -581,6 +596,26 @@ module HMap =
     /// </summary>
     let inline toArray (map : hmap<'k, 'v>) = 
         map.ToArray()
+
+    /// <summary>
+    /// Returns a map of all key-value pairs in the mapping. <para />
+    /// O(n)
+    /// </summary>
+    let inline toMap (map : hmap<'k, 'v>) = 
+        let mutable res = Map.empty
+        for (k,v) in map do
+            res <- Map.add k v res
+        res
+
+    /// <summary>
+    /// Returns a map of all key-value pairs in the mapping. <para />
+    /// O(n)
+    /// </summary>
+    let inline toMapExt (map : hmap<'k, 'v>) = 
+        let mutable res = MapExt.empty
+        for (k,v) in map do
+            res <- MapExt.add k v res
+        res
 
 
     /// <summary>

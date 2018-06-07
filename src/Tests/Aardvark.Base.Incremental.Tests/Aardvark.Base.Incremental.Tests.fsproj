@@ -80,6 +80,7 @@
     <Compile Include="SizeOfVariousAdaptiveObjects.fs" />
     <Compile Include="ASetPerformanceTests.fs" />
     <Compile Include="Program.fs" />
+    <Compile Include="Mutables.fs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\Aardvark.Base.Essentials\Aardvark.Base.Essentials.csproj">
