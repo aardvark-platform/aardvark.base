@@ -55,6 +55,7 @@
     <Compile Include="Datastructures\Geometry\KdTree.fs" />
     <Compile Include="Datastructures\Geometry\Bvh.fs" />
     <Compile Include="Algorithms\QR.fs" />
+    <Compile Include="Algorithms\SVD.fs" />
     <Compile Include="Reflection\TypeInfo.fs" />
     <Compile Include="Reflection\FunctionReflection.fs" />
     <Compile Include="Reflection\Formatf.fs" />
