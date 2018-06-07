@@ -229,6 +229,25 @@ type QR private() =
     static let doubleEps = 1E-20
     static let floatEps = 1E-15f
 
+
+    static member DecomposeInPlace(Q : float[,], R : float[,]) =
+        let mutable Q = Q
+        let mutable R = R
+        tensor {
+            let! pQ = &Q
+            let! pR = &R
+            qrDecomposeNative doubleEps pQ pR
+        }
+
+    static member DecomposeInPlace(Q : float32[,], R : float32[,]) =
+        let mutable Q = Q
+        let mutable R = R
+        tensor {
+            let! pQ = &Q
+            let! pR = &R
+            qrDecomposeNative floatEps pQ pR
+        }
+
     static member DecomposeInPlace(Q : NativeMatrix<float>, R : NativeMatrix<float>) =
         qrDecomposeNative doubleEps Q R
         
@@ -252,7 +271,14 @@ type QR private() =
             let! pR = &R
             qrDecomposeNative floatEps pQ pR
         }
-
+        
+    static member Decompose (m : float[,]) =
+        let rows = m.GetLength(0)
+        let R = Array2D.copy m
+        let Q = Array2D.zeroCreate rows rows
+        QR.DecomposeInPlace(Q, R)
+        Q, R
+        
     static member Decompose (m : Matrix<float>) =
         let R = m.Copy()
         let Q = Matrix<float>(m.SY, m.SY)
@@ -307,6 +333,13 @@ type QR private() =
             let! pQ = &Q
             QR.DecomposeInPlace(pQ, pR)
         }
+        Q, R
+        
+    static member Decompose (m : float32[,]) =
+        let rows = m.GetLength(0)
+        let R = Array2D.copy m
+        let Q = Array2D.zeroCreate rows rows
+        QR.DecomposeInPlace(Q, R)
         Q, R
         
     static member Decompose (m : Matrix<float32>) =
@@ -396,14 +429,47 @@ type QR private() =
             return qrBidiagonalizeNative floatEps pU pB pVt |> ignore
         }
 
+    static member BidiagonalizeInPlace(U : float[,], B : float[,], Vt : float[,]) =
+        let mutable U = U
+        let mutable B = B
+        let mutable Vt = Vt
 
+        tensor {
+            let! pU = &U
+            let! pB = &B
+            let! pVt = &Vt
+            return qrBidiagonalizeNative doubleEps pU pB pVt |> ignore
+        }
+
+    static member BidiagonalizeInPlace(U : float32[,], B : float32[,], Vt : float32[,]) =
+        let mutable U = U
+        let mutable B = B
+        let mutable Vt = Vt
+
+        tensor {
+            let! pU = &U
+            let! pB = &B
+            let! pVt = &Vt
+            return qrBidiagonalizeNative floatEps pU pB pVt |> ignore
+        }
+
+   
     static member Bidiagonalize(m : Matrix<float>) =
         let U = Matrix<float>(m.SY, m.SY)
         let B = m.Copy()
         let Vt = Matrix<float>(m.SX, m.SX)
         QR.BidiagonalizeInPlace(U, B, Vt) |> ignore
         U, B, Vt
-        
+
+    static member Bidiagonalize(m : float[,]) =
+        let r = m.GetLength(0)
+        let c = m.GetLength(1)
+        let U = Array2D.zeroCreate r r
+        let B = Array2D.copy m
+        let Vt = Array2D.zeroCreate c c
+        QR.BidiagonalizeInPlace(U, B, Vt) |> ignore
+        U, B, Vt       
+
     static member Bidiagonalize (m : M22d) =
         let mutable U = M22d()
         let mutable B = m
@@ -470,7 +536,16 @@ type QR private() =
         let Vt = Matrix<float32>(m.SX, m.SX)
         QR.BidiagonalizeInPlace(U, B, Vt) |> ignore
         U, B, Vt
-        
+
+    static member Bidiagonalize(m : float32[,]) =
+        let r = m.GetLength(0)
+        let c = m.GetLength(1)
+        let U = Array2D.zeroCreate r r
+        let B = Array2D.copy m
+        let Vt = Array2D.zeroCreate c c
+        QR.BidiagonalizeInPlace(U, B, Vt) |> ignore
+        U, B, Vt       
+       
     static member Bidiagonalize (m : M22f) =
         let mutable U = M22f()
         let mutable B = m
@@ -530,3 +605,38 @@ type QR private() =
             QR.BidiagonalizeInPlace(pU, pB, pVt)
         }
         U, B, Vt
+
+module QR =
+    let inline private dec< ^a, ^c, ^d when (^a or ^d) : (static member Decompose : ^a -> ^c) > (d : ^d) (m : ^a) : ^c =
+        ((^a or ^d) : (static member Decompose : ^a -> ^c) (m))
+        
+    let inline private decip< ^a, ^b, ^c, ^d when (^a or ^d) : (static member DecomposeInPlace : ^a * ^b -> ^c) > (d : ^d) (m1 : ^a) (m2 : ^b) : ^c =
+        ((^a or ^d) : (static member DecomposeInPlace : ^a * ^b -> ^c) (m1, m2))
+        
+    let inline private bidiag< ^a, ^c, ^d when (^a or ^d) : (static member Bidiagonalize : ^a -> ^c) > (d : ^d) (m : ^a) : ^c =
+        ((^a or ^d) : (static member Bidiagonalize : ^a -> ^c) (m))
+        
+    let inline private bidiagip< ^a, ^b, ^c, ^d, ^x when (^a or ^d) : (static member BidiagonalizeInPlace : ^a * ^b * ^c -> ^x) > (d : ^d) (m1 : ^a) (m2 : ^b) (m3 : ^c) : ^x =
+        ((^a or ^d) : (static member BidiagonalizeInPlace : ^a * ^b * ^c -> ^x) (m1, m2, m3))
+        
+    let inline decompose m = dec Unchecked.defaultof<QR> m
+    let inline decomposeInPlace a b  = decip Unchecked.defaultof<QR> a b
+    let inline bidiagonalize m = bidiag Unchecked.defaultof<QR> m
+    let inline bidiagonalizeInPlace a b c = bidiagip Unchecked.defaultof<QR> a b c
+
+module private QROverloadTest = 
+    let test() =
+        let a = QR.bidiagonalize M34d.Identity
+        let a = QR.decompose M44d.Identity
+
+        let a = Matrix<float>()
+        let b = Matrix<float>()
+        let c = Matrix<float>()
+
+        QR.decomposeInPlace a b
+        QR.bidiagonalizeInPlace a b c
+
+        let arr = Array2D.init 10 10 (fun i j -> 0.1)
+        let (U, B, Vt) = QR.bidiagonalize arr
+
+        ()
