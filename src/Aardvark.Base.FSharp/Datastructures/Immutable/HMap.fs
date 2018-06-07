@@ -125,6 +125,33 @@ module private HMapList =
 
         newL @ newR
 
+    let rec mergeWithOption' (f : 'k -> Option<'a> -> Option<'b> -> Option<'c>) (l : list<'k * 'a>) (r : list<'k * 'b>) =
+        let newL = 
+            l |> List.choose (fun (lk,lv) ->
+                let other = r |> List.tryFind (fun (rk,_) -> Unchecked.equals rk lk) |> Option.map snd
+ 
+                match f lk (Some lv) other with
+                    | Some r -> Some (lk, r)
+                    | None -> None
+            )
+        let newR =
+            r |> List.choose (fun (rk, rv) ->
+                if l |> List.forall (fun (lk,_) -> not (Unchecked.equals lk rk)) then
+                    match f rk None (Some rv) with
+                        | Some r -> Some(rk, r)
+                        | None -> None
+                else 
+                    None
+            )
+        match newL with
+            | [] -> 
+                match newR with
+                    | [] -> None
+                    | _ -> Some newR
+            | _ ->
+                match newR with
+                    | [] -> Some newL
+                    | _ -> Some (newL @ newR)
 [<Struct>]
 [<StructuredFormatDisplay("{AsString}")>]
 type hmap<'k, 'v>(cnt : int, store : intmap<list<'k * 'v>>) =
@@ -132,7 +159,7 @@ type hmap<'k, 'v>(cnt : int, store : intmap<list<'k * 'v>>) =
 
     static member Empty = empty
 
-    member private x.Store = store
+    member internal x.Store = store
 
     member x.IsEmpty = cnt = 0
 
