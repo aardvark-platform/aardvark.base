@@ -15,12 +15,6 @@ type intmap<'T> =
     | Tip of int * 'T
     | Bin of int * int * intmap<'T> * intmap<'T>
 
-//    member x.Count =
-//        match x with
-//            | Nil -> 0
-//            | Tip _ -> 1
-//            | Bin(_,_,_,_,c) -> c
-
     member x.FoldBackWithKey f z =
         let rec go z =
             function
@@ -348,7 +342,7 @@ module IntMap =
         | Tip(ky, y) ->
             match f None with
             | Some x -> join k (Tip(k, x)) ky t
-            | None -> Tip(ky, y)
+            | None -> t
         | Nil ->
             match f None with
             | Some x -> Tip(k, x)
@@ -844,3 +838,66 @@ module IntMap =
 
     ///O(n+m). Is this a proper submap? (ie. a submap but not equal). Defined as (isProperSubmapOf = isProperSubmapOfBy (==)). Credit: Haskell.org
     let isProperSubmapOf m1 m2 = isProperSubmapOfBy (=) m1 m2
+
+
+    ///Compares two UIntMaps and calls back:
+    ///del for any key-value-pair that is in m1 and not in m2, and
+    ///add for any key-value-pair that is in m2 and not in m1, and
+    ///mod for any key-value-pair is in both, but has changed.
+    ///Untouched sub-trees that are reference-equal are not touched.
+    let computeDelta (change : int -> 'a -> 'a -> Option<'b>) (del : intmap<'a> -> intmap<'b>) (add : intmap<'a> -> intmap<'b>) =
+        
+        let inline ifChanged (Tip(k1, x1)) (Tip(_, x2)) =
+            match change k1 x1 x2 with
+            | None -> Nil
+            | Some x -> Tip(k1, x)
+
+        let inline maybe_join p1 t1 p2 t2  =
+            match t1, t2 with
+            | Nil, t2 -> t2
+            | t1, Nil -> t1
+            | _ ->  join p1 t1 p2 t2
+     
+        let rec merge1 p1 m1 t1 l1 r1 p2 m2 t2 =
+            if nomatch p2 p1 m1 then maybe_join p1 (del t1) p2 (add t2)
+            elif zero p2 m1 then bin p1 m1 (go l1 t2) (del r1)
+            else bin p1 m1 (del l1) (go r1 t2)
+
+        and merge2 p1 m1 t1 p2 m2 t2 l2 r2 =
+            if nomatch p1 p2 m2 then maybe_join p1 (del t1) p2 (add t2)
+            elif zero p1 m2 then bin p2 m2 (go t1 l2) (add r2)
+            else bin p2 m2 (add l2) (go t1 r2)
+
+        and go t1 t2 =
+            if t1 == t2 then
+                Nil
+            else
+                match t1, t2 with
+                | Bin(p1, m1, l1, r1), Bin(p2, m2, l2, r2) when shorter m1 m2 -> merge1 p1 m1 t1 l1 r1 p2 m2 t2
+                | Bin(p1, m1, l1, r1), Bin(p2, m2, l2, r2) when shorter m2 m1 -> merge2 p1 m1 t1 p2 m2 t2 l2 r2
+                | Bin(p1, m1, l1, r1), Bin(p2, m2, l2, r2) when p1 = p2 -> bin p1 m1 (go l1 l2) (go r1 r2)
+                | Bin(p1, m1, l1, r1), Bin(p2, m2, l2, r2) -> maybe_join p1 (del t1) p2 (add t2)
+                | Bin(_, _, _, _), Tip( k2', _) ->
+                    let rec merge t2 k2 t1 =
+                        match t1 with
+                        | Bin(p1, m1, l1, r1) when nomatch k2 p1 m1 -> maybe_join p1 (del t1) k2 (add t2)
+                        | Bin(p1, m1, l1, r1) when zero k2 m1 -> bin p1 m1 (merge t2 k2 l1) (del r1)
+                        | Bin(p1, m1, l1, r1) -> bin p1 m1 (del l1) (merge t2 k2 r1)
+                        | Tip(k1, _) when k1 = k2 -> ifChanged t1 t2
+                        | Tip(k1, _) -> maybe_join k1 (del t1) k2 (add t2)
+                        | Nil -> add t2
+                    merge t2 k2' t1
+                | Bin(_, _, _, _), Nil -> del t1
+                | Tip(k1', _), t2' -> 
+                    let rec merge t1 k1 t2 =
+                        match t2 with
+                        | Bin(p2, m2, l2, r2) when nomatch k1 p2 m2 -> maybe_join k1 (del t1) p2 (add t2)
+                        | Bin(p2, m2, l2, r2) when zero k1 m2 -> bin p2 m2 (merge t1 k1 l2) (add r2)
+                        | Bin(p2, m2, l2, r2) -> bin p2 m2 (add l2) (merge t1 k1 r2)
+                        | Tip(k2, _) when k1 = k2 -> ifChanged t1 t2
+                        | Tip(k2, _) -> maybe_join k1 (del t1) k2 (add t2)
+                        | Nil -> del t1
+                    merge t1 k1' t2'
+                | Nil, t2 -> add t2
+        go
+

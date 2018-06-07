@@ -6,11 +6,37 @@ open NUnit.Framework
 open FsCheck
 open FsCheck.NUnit
 open Aardvark.Base
+open System.Diagnostics
 
 module List =
     let all (l : list<bool>) =
         l |> List.fold (&&) true
 
+
+[<Property(Verbose = true)>]
+let ``[HSet] compute delta`` (l : Set<int>) (r : Set<int>) (b : bool) =
+    let a = 10
+    let l, r =
+        if b then
+            HRefSet.ofSeq l, HRefSet.ofSeq r
+        else
+            let l = HRefSet.ofSeq (Set.remove a l)
+            let r = HRefSet.ofSeq (Set.add a r)
+            l, r
+
+    List.all [
+        HRefSet.applyDelta l (HRefSet.computeDelta l r) |> fst |> Set.ofSeq |> ((=) (Set.ofSeq r))
+        HRefSet.applyDelta r (HRefSet.computeDelta r l) |> fst |> Set.ofSeq |> ((=) (Set.ofSeq l))
+
+        b || HRefSet.computeDelta l (HRefSet.add a l) |> HDeltaSet.toList |> ((=) [Add a])
+        b || HRefSet.computeDelta r (HRefSet.remove a r) |> HDeltaSet.toList |> ((=) [Rem a])
+
+        b || HRefSet.computeDelta r (HRefSet.add a r) |> HDeltaSet.toList |> ((=) [])
+        b || HRefSet.computeDelta l (HRefSet.remove a l) |> HDeltaSet.toList |> ((=) [])
+
+        HDeltaSet.toList (HRefSet.computeDelta l r) = (HRefSet.computeDelta r l |> HDeltaSet.toList |> List.map (fun op -> op.Inverse))
+
+    ]
 
 [<Property(Verbose = true)>]
 let ``[HSet] count`` (l : Set<int>) (a : int)  =

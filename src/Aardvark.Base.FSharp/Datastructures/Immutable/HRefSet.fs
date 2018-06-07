@@ -197,21 +197,34 @@ type hrefset<'a>(store : hmap<'a, int>) =
         hrefset map
 
     member x.ComputeDelta(other : hrefset<'a>) =
+        // O(other)
         if store.IsEmpty then 
             other.Store |> HMap.map (fun _ _ -> 1) |> HDeltaSet.ofHMap
 
+        // O(N)
         elif other.IsEmpty then
             store |> HMap.map (fun _ _ -> -1) |> HDeltaSet.ofHMap
-
+        
+        // O(N + other)
         else
-            HMap.choose2 (fun k l r -> 
-                match l, r with
-                    | None, Some _ -> Some 1
-                    | Some _, None -> Some -1
-                    | None, None -> None
-                    | Some l, Some r -> None
-               ) store other.Store
-            |> HDeltaSet.ofHMap
+            let mutable cnt = 0
+
+            let del (l : list<'a * int>) =
+                l |> List.map (fun (v,_) -> inc &cnt; v, -1)
+            
+            let add (l : list<'a * int>) =
+                l |> List.map (fun (v,_) -> inc &cnt; v, 1)
+
+            let both (hash : int) (l : list<'a * int>) (r : list<'a * int>) =
+                HMapList.mergeWithOption' (fun v l r ->
+                    match l, r with
+                        | Some l, None ->  inc &cnt; Some -1
+                        | None, Some r ->  inc &cnt; Some 1
+                        | _ -> None
+                ) l r
+
+            let store = IntMap.computeDelta both (IntMap.map del) (IntMap.map add) store.Store other.Store.Store
+            hdeltaset (hmap(cnt, store))
 
     member x.ApplyDelta (deltas : hdeltaset<'a>) =
         // O(1)
