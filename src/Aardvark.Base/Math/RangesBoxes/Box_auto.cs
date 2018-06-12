@@ -10171,18 +10171,24 @@ namespace Aardvark.Base
                         p.Y < Min.Y ? Min.Y : (p.Y > Max.Y ? Max.Y : p.Y));
         }
 
+        /// <summary>
+        /// Returns the squared distance to the supplied point.
+        /// </summary>
         public double DistanceSquared(V2f p)
         {
             return 
-                p.X < Min.X ? (Min.X - p.X) * (Min.X - p.X) : (p.X > Max.X ? (p.X - Max.X) * (p.X - Max.X) : 0.0) + 
-                p.Y < Min.Y ? (Min.Y - p.Y) * (Min.Y - p.Y) : (p.Y > Max.Y ? (p.Y - Max.Y) * (p.Y - Max.Y) : 0.0);
+                (p.X < Min.X ? (Min.X - p.X) * (Min.X - p.X) : (p.X > Max.X ? (p.X - Max.X) * (p.X - Max.X) : 0.0)) + 
+                (p.Y < Min.Y ? (Min.Y - p.Y) * (Min.Y - p.Y) : (p.Y > Max.Y ? (p.Y - Max.Y) * (p.Y - Max.Y) : 0.0));
         }
 
+        /// <summary>
+        /// Returns the distance to the supplied point.
+        /// </summary
         public double Distance(V2f p)
         {
             return Fun.Sqrt(
-                p.X < Min.X ? (Min.X - p.X) * (Min.X - p.X) : (p.X > Max.X ? (p.X - Max.X) * (p.X - Max.X) : 0.0) + 
-                p.Y < Min.Y ? (Min.Y - p.Y) * (Min.Y - p.Y) : (p.Y > Max.Y ? (p.Y - Max.Y) * (p.Y - Max.Y) : 0.0));
+                (p.X < Min.X ? (Min.X - p.X) * (Min.X - p.X) : (p.X > Max.X ? (p.X - Max.X) * (p.X - Max.X) : 0.0)) + 
+                (p.Y < Min.Y ? (Min.Y - p.Y) * (Min.Y - p.Y) : (p.Y > Max.Y ? (p.Y - Max.Y) * (p.Y - Max.Y) : 0.0)));
         }
 
         /// <summary>
@@ -11504,18 +11510,24 @@ namespace Aardvark.Base
                         p.Y < Min.Y ? Min.Y : (p.Y > Max.Y ? Max.Y : p.Y));
         }
 
+        /// <summary>
+        /// Returns the squared distance to the supplied point.
+        /// </summary>
         public double DistanceSquared(V2d p)
         {
             return 
-                p.X < Min.X ? (Min.X - p.X) * (Min.X - p.X) : (p.X > Max.X ? (p.X - Max.X) * (p.X - Max.X) : 0.0) + 
-                p.Y < Min.Y ? (Min.Y - p.Y) * (Min.Y - p.Y) : (p.Y > Max.Y ? (p.Y - Max.Y) * (p.Y - Max.Y) : 0.0);
+                (p.X < Min.X ? (Min.X - p.X) * (Min.X - p.X) : (p.X > Max.X ? (p.X - Max.X) * (p.X - Max.X) : 0.0)) + 
+                (p.Y < Min.Y ? (Min.Y - p.Y) * (Min.Y - p.Y) : (p.Y > Max.Y ? (p.Y - Max.Y) * (p.Y - Max.Y) : 0.0));
         }
 
+        /// <summary>
+        /// Returns the distance to the supplied point.
+        /// </summary
         public double Distance(V2d p)
         {
             return Fun.Sqrt(
-                p.X < Min.X ? (Min.X - p.X) * (Min.X - p.X) : (p.X > Max.X ? (p.X - Max.X) * (p.X - Max.X) : 0.0) + 
-                p.Y < Min.Y ? (Min.Y - p.Y) * (Min.Y - p.Y) : (p.Y > Max.Y ? (p.Y - Max.Y) * (p.Y - Max.Y) : 0.0));
+                (p.X < Min.X ? (Min.X - p.X) * (Min.X - p.X) : (p.X > Max.X ? (p.X - Max.X) * (p.X - Max.X) : 0.0)) + 
+                (p.Y < Min.Y ? (Min.Y - p.Y) * (Min.Y - p.Y) : (p.Y > Max.Y ? (p.Y - Max.Y) * (p.Y - Max.Y) : 0.0)));
         }
 
         /// <summary>
@@ -15394,20 +15406,26 @@ namespace Aardvark.Base
                         p.Z < Min.Z ? Min.Z : (p.Z > Max.Z ? Max.Z : p.Z));
         }
 
+        /// <summary>
+        /// Returns the squared distance to the supplied point.
+        /// </summary>
         public double DistanceSquared(V3f p)
         {
             return 
-                p.X < Min.X ? (Min.X - p.X) * (Min.X - p.X) : (p.X > Max.X ? (p.X - Max.X) * (p.X - Max.X) : 0.0) + 
-                p.Y < Min.Y ? (Min.Y - p.Y) * (Min.Y - p.Y) : (p.Y > Max.Y ? (p.Y - Max.Y) * (p.Y - Max.Y) : 0.0) + 
-                p.Z < Min.Z ? (Min.Z - p.Z) * (Min.Z - p.Z) : (p.Z > Max.Z ? (p.Z - Max.Z) * (p.Z - Max.Z) : 0.0);
+                (p.X < Min.X ? (Min.X - p.X) * (Min.X - p.X) : (p.X > Max.X ? (p.X - Max.X) * (p.X - Max.X) : 0.0)) + 
+                (p.Y < Min.Y ? (Min.Y - p.Y) * (Min.Y - p.Y) : (p.Y > Max.Y ? (p.Y - Max.Y) * (p.Y - Max.Y) : 0.0)) + 
+                (p.Z < Min.Z ? (Min.Z - p.Z) * (Min.Z - p.Z) : (p.Z > Max.Z ? (p.Z - Max.Z) * (p.Z - Max.Z) : 0.0));
         }
 
+        /// <summary>
+        /// Returns the distance to the supplied point.
+        /// </summary
         public double Distance(V3f p)
         {
             return Fun.Sqrt(
-                p.X < Min.X ? (Min.X - p.X) * (Min.X - p.X) : (p.X > Max.X ? (p.X - Max.X) * (p.X - Max.X) : 0.0) + 
-                p.Y < Min.Y ? (Min.Y - p.Y) * (Min.Y - p.Y) : (p.Y > Max.Y ? (p.Y - Max.Y) * (p.Y - Max.Y) : 0.0) + 
-                p.Z < Min.Z ? (Min.Z - p.Z) * (Min.Z - p.Z) : (p.Z > Max.Z ? (p.Z - Max.Z) * (p.Z - Max.Z) : 0.0));
+                (p.X < Min.X ? (Min.X - p.X) * (Min.X - p.X) : (p.X > Max.X ? (p.X - Max.X) * (p.X - Max.X) : 0.0)) + 
+                (p.Y < Min.Y ? (Min.Y - p.Y) * (Min.Y - p.Y) : (p.Y > Max.Y ? (p.Y - Max.Y) * (p.Y - Max.Y) : 0.0)) + 
+                (p.Z < Min.Z ? (Min.Z - p.Z) * (Min.Z - p.Z) : (p.Z > Max.Z ? (p.Z - Max.Z) * (p.Z - Max.Z) : 0.0)));
         }
 
         /// <summary>
@@ -16740,20 +16758,26 @@ namespace Aardvark.Base
                         p.Z < Min.Z ? Min.Z : (p.Z > Max.Z ? Max.Z : p.Z));
         }
 
+        /// <summary>
+        /// Returns the squared distance to the supplied point.
+        /// </summary>
         public double DistanceSquared(V3d p)
         {
             return 
-                p.X < Min.X ? (Min.X - p.X) * (Min.X - p.X) : (p.X > Max.X ? (p.X - Max.X) * (p.X - Max.X) : 0.0) + 
-                p.Y < Min.Y ? (Min.Y - p.Y) * (Min.Y - p.Y) : (p.Y > Max.Y ? (p.Y - Max.Y) * (p.Y - Max.Y) : 0.0) + 
-                p.Z < Min.Z ? (Min.Z - p.Z) * (Min.Z - p.Z) : (p.Z > Max.Z ? (p.Z - Max.Z) * (p.Z - Max.Z) : 0.0);
+                (p.X < Min.X ? (Min.X - p.X) * (Min.X - p.X) : (p.X > Max.X ? (p.X - Max.X) * (p.X - Max.X) : 0.0)) + 
+                (p.Y < Min.Y ? (Min.Y - p.Y) * (Min.Y - p.Y) : (p.Y > Max.Y ? (p.Y - Max.Y) * (p.Y - Max.Y) : 0.0)) + 
+                (p.Z < Min.Z ? (Min.Z - p.Z) * (Min.Z - p.Z) : (p.Z > Max.Z ? (p.Z - Max.Z) * (p.Z - Max.Z) : 0.0));
         }
 
+        /// <summary>
+        /// Returns the distance to the supplied point.
+        /// </summary
         public double Distance(V3d p)
         {
             return Fun.Sqrt(
-                p.X < Min.X ? (Min.X - p.X) * (Min.X - p.X) : (p.X > Max.X ? (p.X - Max.X) * (p.X - Max.X) : 0.0) + 
-                p.Y < Min.Y ? (Min.Y - p.Y) * (Min.Y - p.Y) : (p.Y > Max.Y ? (p.Y - Max.Y) * (p.Y - Max.Y) : 0.0) + 
-                p.Z < Min.Z ? (Min.Z - p.Z) * (Min.Z - p.Z) : (p.Z > Max.Z ? (p.Z - Max.Z) * (p.Z - Max.Z) : 0.0));
+                (p.X < Min.X ? (Min.X - p.X) * (Min.X - p.X) : (p.X > Max.X ? (p.X - Max.X) * (p.X - Max.X) : 0.0)) + 
+                (p.Y < Min.Y ? (Min.Y - p.Y) * (Min.Y - p.Y) : (p.Y > Max.Y ? (p.Y - Max.Y) * (p.Y - Max.Y) : 0.0)) + 
+                (p.Z < Min.Z ? (Min.Z - p.Z) * (Min.Z - p.Z) : (p.Z > Max.Z ? (p.Z - Max.Z) * (p.Z - Max.Z) : 0.0)));
         }
 
         /// <summary>

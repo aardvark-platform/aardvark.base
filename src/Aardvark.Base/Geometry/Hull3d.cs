@@ -75,6 +75,10 @@ namespace Aardvark.Base
             PlaneArray = new Plane3d[count];
         }
 
+        /// <summary>
+        /// Creates a Hull3d from the given planes.
+        /// The plane normals are expected to point outside.
+        /// </summary>
         public Hull3d(Plane3d[] planes)
         {
             PlaneArray = planes;
@@ -94,6 +98,9 @@ namespace Aardvark.Base
             };
         }
 
+        /// <summary>
+        /// Creates a Hull3d from the given box where plane normals point outside.
+        /// </summary>
         public static Hull3d Create(Box3d box)
         {
             return new Hull3d(new[]

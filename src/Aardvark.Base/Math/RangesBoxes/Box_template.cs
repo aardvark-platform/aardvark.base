@@ -634,16 +634,22 @@ namespace Aardvark.Base
         }
 
         //# if (ft.IsReal) {
+        /// <summary>
+        /// Returns the squared distance to the supplied point.
+        /// </summary>
         public double DistanceSquared(__ltype__ p)
         {
             return /*# fields.ForEach(f => { */
-                p.__f__ < Min.__f__ ? (Min.__f__ - p.__f__) * (Min.__f__ - p.__f__) : (p.__f__ > Max.__f__ ? (p.__f__ - Max.__f__) * (p.__f__ - Max.__f__) : 0.0)/*# }, add); */;
+                (p.__f__ < Min.__f__ ? (Min.__f__ - p.__f__) * (Min.__f__ - p.__f__) : (p.__f__ > Max.__f__ ? (p.__f__ - Max.__f__) * (p.__f__ - Max.__f__) : 0.0))/*# }, add); */;
         }
 
+        /// <summary>
+        /// Returns the distance to the supplied point.
+        /// </summary
         public double Distance(__ltype__ p)
         {
             return Fun.Sqrt(/*# fields.ForEach(f => { */
-                p.__f__ < Min.__f__ ? (Min.__f__ - p.__f__) * (Min.__f__ - p.__f__) : (p.__f__ > Max.__f__ ? (p.__f__ - Max.__f__) * (p.__f__ - Max.__f__) : 0.0)/*# }, add); */);
+                (p.__f__ < Min.__f__ ? (Min.__f__ - p.__f__) * (Min.__f__ - p.__f__) : (p.__f__ > Max.__f__ ? (p.__f__ - Max.__f__) * (p.__f__ - Max.__f__) : 0.0))/*# }, add); */);
         }
 
         //# } // ft.IsReal
