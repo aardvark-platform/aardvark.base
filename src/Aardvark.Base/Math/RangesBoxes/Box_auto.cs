@@ -314,6 +314,9 @@ namespace Aardvark.Base
         }
 
 
+        /// <summary>
+        /// Returns the range with Min value clamped to splitValue.
+        /// </summary>
         public Range1b SplitRight(byte splitValue)
         {
             if (splitValue > Max) return Range1b.Invalid;
@@ -321,6 +324,9 @@ namespace Aardvark.Base
             return new Range1b(splitValue, Max);
         }
 
+        /// <summary>
+        /// Returns the range with Max value clamped to splitValue.
+        /// </summary>
         public Range1b SplitLeft(byte splitValue)
         {
             if (splitValue < Min) return Range1b.Invalid;
@@ -1023,6 +1029,9 @@ namespace Aardvark.Base
         }
 
 
+        /// <summary>
+        /// Returns the range with Min value clamped to splitValue.
+        /// </summary>
         public Range1sb SplitRight(sbyte splitValue)
         {
             if (splitValue > Max) return Range1sb.Invalid;
@@ -1030,6 +1039,9 @@ namespace Aardvark.Base
             return new Range1sb(splitValue, Max);
         }
 
+        /// <summary>
+        /// Returns the range with Max value clamped to splitValue.
+        /// </summary>
         public Range1sb SplitLeft(sbyte splitValue)
         {
             if (splitValue < Min) return Range1sb.Invalid;
@@ -1732,6 +1744,9 @@ namespace Aardvark.Base
         }
 
 
+        /// <summary>
+        /// Returns the range with Min value clamped to splitValue.
+        /// </summary>
         public Range1s SplitRight(short splitValue)
         {
             if (splitValue > Max) return Range1s.Invalid;
@@ -1739,6 +1754,9 @@ namespace Aardvark.Base
             return new Range1s(splitValue, Max);
         }
 
+        /// <summary>
+        /// Returns the range with Max value clamped to splitValue.
+        /// </summary>
         public Range1s SplitLeft(short splitValue)
         {
             if (splitValue < Min) return Range1s.Invalid;
@@ -2441,6 +2459,9 @@ namespace Aardvark.Base
         }
 
 
+        /// <summary>
+        /// Returns the range with Min value clamped to splitValue.
+        /// </summary>
         public Range1us SplitRight(ushort splitValue)
         {
             if (splitValue > Max) return Range1us.Invalid;
@@ -2448,6 +2469,9 @@ namespace Aardvark.Base
             return new Range1us(splitValue, Max);
         }
 
+        /// <summary>
+        /// Returns the range with Max value clamped to splitValue.
+        /// </summary>
         public Range1us SplitLeft(ushort splitValue)
         {
             if (splitValue < Min) return Range1us.Invalid;
@@ -3150,6 +3174,9 @@ namespace Aardvark.Base
         }
 
 
+        /// <summary>
+        /// Returns the range with Min value clamped to splitValue.
+        /// </summary>
         public Range1i SplitRight(int splitValue)
         {
             if (splitValue > Max) return Range1i.Invalid;
@@ -3157,6 +3184,9 @@ namespace Aardvark.Base
             return new Range1i(splitValue, Max);
         }
 
+        /// <summary>
+        /// Returns the range with Max value clamped to splitValue.
+        /// </summary>
         public Range1i SplitLeft(int splitValue)
         {
             if (splitValue < Min) return Range1i.Invalid;
@@ -3859,6 +3889,9 @@ namespace Aardvark.Base
         }
 
 
+        /// <summary>
+        /// Returns the range with Min value clamped to splitValue.
+        /// </summary>
         public Range1ui SplitRight(uint splitValue)
         {
             if (splitValue > Max) return Range1ui.Invalid;
@@ -3866,6 +3899,9 @@ namespace Aardvark.Base
             return new Range1ui(splitValue, Max);
         }
 
+        /// <summary>
+        /// Returns the range with Max value clamped to splitValue.
+        /// </summary>
         public Range1ui SplitLeft(uint splitValue)
         {
             if (splitValue < Min) return Range1ui.Invalid;
@@ -4568,6 +4604,9 @@ namespace Aardvark.Base
         }
 
 
+        /// <summary>
+        /// Returns the range with Min value clamped to splitValue.
+        /// </summary>
         public Range1l SplitRight(long splitValue)
         {
             if (splitValue > Max) return Range1l.Invalid;
@@ -4575,6 +4614,9 @@ namespace Aardvark.Base
             return new Range1l(splitValue, Max);
         }
 
+        /// <summary>
+        /// Returns the range with Max value clamped to splitValue.
+        /// </summary>
         public Range1l SplitLeft(long splitValue)
         {
             if (splitValue < Min) return Range1l.Invalid;
@@ -5277,6 +5319,9 @@ namespace Aardvark.Base
         }
 
 
+        /// <summary>
+        /// Returns the range with Min value clamped to splitValue.
+        /// </summary>
         public Range1ul SplitRight(ulong splitValue)
         {
             if (splitValue > Max) return Range1ul.Invalid;
@@ -5284,6 +5329,9 @@ namespace Aardvark.Base
             return new Range1ul(splitValue, Max);
         }
 
+        /// <summary>
+        /// Returns the range with Max value clamped to splitValue.
+        /// </summary>
         public Range1ul SplitLeft(ulong splitValue)
         {
             if (splitValue < Min) return Range1ul.Invalid;
@@ -6003,6 +6051,9 @@ namespace Aardvark.Base
         }
 
 
+        /// <summary>
+        /// Returns the range with Min value clamped to splitValue.
+        /// </summary>
         public Range1f SplitRight(float splitValue)
         {
             if (splitValue > Max) return Range1f.Invalid;
@@ -6010,6 +6061,9 @@ namespace Aardvark.Base
             return new Range1f(splitValue, Max);
         }
 
+        /// <summary>
+        /// Returns the range with Max value clamped to splitValue.
+        /// </summary>
         public Range1f SplitLeft(float splitValue)
         {
             if (splitValue < Min) return Range1f.Invalid;
@@ -6729,6 +6783,9 @@ namespace Aardvark.Base
         }
 
 
+        /// <summary>
+        /// Returns the range with Min value clamped to splitValue.
+        /// </summary>
         public Range1d SplitRight(double splitValue)
         {
             if (splitValue > Max) return Range1d.Invalid;
@@ -6736,6 +6793,9 @@ namespace Aardvark.Base
             return new Range1d(splitValue, Max);
         }
 
+        /// <summary>
+        /// Returns the range with Max value clamped to splitValue.
+        /// </summary>
         public Range1d SplitLeft(double splitValue)
         {
             if (splitValue < Min) return Range1d.Invalid;
@@ -7588,6 +7648,9 @@ namespace Aardvark.Base
         }
 
 
+        /// <summary>
+        /// Returns the box with Min value clamped to splitValue.
+        /// </summary>
         public Box2i SplitRight(V2i splitValue)
         {
             var result = new Box2i(Min, Max);
@@ -7596,6 +7659,9 @@ namespace Aardvark.Base
             return result;
         }
 
+        /// <summary>
+        /// Returns the box with Max value clamped to splitValue.
+        /// </summary>
         public Box2i SplitLeft(V2i splitValue)
         {
             var result = new Box2i(Min, Max);
@@ -7604,6 +7670,9 @@ namespace Aardvark.Base
             return result;
         }
 
+        /// <summary>
+        /// Returns the box with Min.X clamped to splitValue.
+        /// </summary>
         public Box2i SplitRight(int splitAtX)
         {
             if (splitAtX > Max.X) return Box2i.Invalid;
@@ -7611,6 +7680,9 @@ namespace Aardvark.Base
             return new Box2i(new V2i(splitAtX, Min.Y), Max);
         }
 
+        /// <summary>
+        /// Returns a box with Max.X clamped to splitValue.
+        /// </summary>
         public Box2i SplitLeft(int splitAtX)
         {
             if (splitAtX < Min.X) return Box2i.Invalid;
@@ -7618,6 +7690,9 @@ namespace Aardvark.Base
             return new Box2i(Min, new V2i(splitAtX, Max.Y));
         }
 
+        /// <summary>
+        /// Returns the box with Min.Y clamped to splitValue.
+        /// </summary>
         public Box2i SplitTop(int splitAtY)
         {
             if (splitAtY > Max.Y) return Box2i.Invalid;
@@ -7625,6 +7700,9 @@ namespace Aardvark.Base
             return new Box2i(new V2i(Min.X, splitAtY), Max);
         }
 
+        /// <summary>
+        /// Returns the box with Max.Y clamped to splitValue.
+        /// </summary>
         public Box2i SplitBottom(int splitAtY)
         {
             if (splitAtY < Min.Y) return Box2i.Invalid;
@@ -8813,6 +8891,9 @@ namespace Aardvark.Base
         }
 
 
+        /// <summary>
+        /// Returns the box with Min value clamped to splitValue.
+        /// </summary>
         public Box2l SplitRight(V2l splitValue)
         {
             var result = new Box2l(Min, Max);
@@ -8821,6 +8902,9 @@ namespace Aardvark.Base
             return result;
         }
 
+        /// <summary>
+        /// Returns the box with Max value clamped to splitValue.
+        /// </summary>
         public Box2l SplitLeft(V2l splitValue)
         {
             var result = new Box2l(Min, Max);
@@ -8829,6 +8913,9 @@ namespace Aardvark.Base
             return result;
         }
 
+        /// <summary>
+        /// Returns the box with Min.X clamped to splitValue.
+        /// </summary>
         public Box2l SplitRight(long splitAtX)
         {
             if (splitAtX > Max.X) return Box2l.Invalid;
@@ -8836,6 +8923,9 @@ namespace Aardvark.Base
             return new Box2l(new V2l(splitAtX, Min.Y), Max);
         }
 
+        /// <summary>
+        /// Returns a box with Max.X clamped to splitValue.
+        /// </summary>
         public Box2l SplitLeft(long splitAtX)
         {
             if (splitAtX < Min.X) return Box2l.Invalid;
@@ -8843,6 +8933,9 @@ namespace Aardvark.Base
             return new Box2l(Min, new V2l(splitAtX, Max.Y));
         }
 
+        /// <summary>
+        /// Returns the box with Min.Y clamped to splitValue.
+        /// </summary>
         public Box2l SplitTop(long splitAtY)
         {
             if (splitAtY > Max.Y) return Box2l.Invalid;
@@ -8850,6 +8943,9 @@ namespace Aardvark.Base
             return new Box2l(new V2l(Min.X, splitAtY), Max);
         }
 
+        /// <summary>
+        /// Returns the box with Max.Y clamped to splitValue.
+        /// </summary>
         public Box2l SplitBottom(long splitAtY)
         {
             if (splitAtY < Min.Y) return Box2l.Invalid;
@@ -10139,6 +10235,9 @@ namespace Aardvark.Base
         }
 
 
+        /// <summary>
+        /// Returns the box with Min value clamped to splitValue.
+        /// </summary>
         public Box2f SplitRight(V2f splitValue)
         {
             var result = new Box2f(Min, Max);
@@ -10147,6 +10246,9 @@ namespace Aardvark.Base
             return result;
         }
 
+        /// <summary>
+        /// Returns the box with Max value clamped to splitValue.
+        /// </summary>
         public Box2f SplitLeft(V2f splitValue)
         {
             var result = new Box2f(Min, Max);
@@ -10155,6 +10257,9 @@ namespace Aardvark.Base
             return result;
         }
 
+        /// <summary>
+        /// Returns the box with Min.X clamped to splitValue.
+        /// </summary>
         public Box2f SplitRight(float splitAtX)
         {
             if (splitAtX > Max.X) return Box2f.Invalid;
@@ -10162,6 +10267,9 @@ namespace Aardvark.Base
             return new Box2f(new V2f(splitAtX, Min.Y), Max);
         }
 
+        /// <summary>
+        /// Returns a box with Max.X clamped to splitValue.
+        /// </summary>
         public Box2f SplitLeft(float splitAtX)
         {
             if (splitAtX < Min.X) return Box2f.Invalid;
@@ -10169,6 +10277,9 @@ namespace Aardvark.Base
             return new Box2f(Min, new V2f(splitAtX, Max.Y));
         }
 
+        /// <summary>
+        /// Returns the box with Min.Y clamped to splitValue.
+        /// </summary>
         public Box2f SplitTop(float splitAtY)
         {
             if (splitAtY > Max.Y) return Box2f.Invalid;
@@ -10176,6 +10287,9 @@ namespace Aardvark.Base
             return new Box2f(new V2f(Min.X, splitAtY), Max);
         }
 
+        /// <summary>
+        /// Returns the box with Max.Y clamped to splitValue.
+        /// </summary>
         public Box2f SplitBottom(float splitAtY)
         {
             if (splitAtY < Min.Y) return Box2f.Invalid;
@@ -11454,6 +11568,9 @@ namespace Aardvark.Base
         }
 
 
+        /// <summary>
+        /// Returns the box with Min value clamped to splitValue.
+        /// </summary>
         public Box2d SplitRight(V2d splitValue)
         {
             var result = new Box2d(Min, Max);
@@ -11462,6 +11579,9 @@ namespace Aardvark.Base
             return result;
         }
 
+        /// <summary>
+        /// Returns the box with Max value clamped to splitValue.
+        /// </summary>
         public Box2d SplitLeft(V2d splitValue)
         {
             var result = new Box2d(Min, Max);
@@ -11470,6 +11590,9 @@ namespace Aardvark.Base
             return result;
         }
 
+        /// <summary>
+        /// Returns the box with Min.X clamped to splitValue.
+        /// </summary>
         public Box2d SplitRight(double splitAtX)
         {
             if (splitAtX > Max.X) return Box2d.Invalid;
@@ -11477,6 +11600,9 @@ namespace Aardvark.Base
             return new Box2d(new V2d(splitAtX, Min.Y), Max);
         }
 
+        /// <summary>
+        /// Returns a box with Max.X clamped to splitValue.
+        /// </summary>
         public Box2d SplitLeft(double splitAtX)
         {
             if (splitAtX < Min.X) return Box2d.Invalid;
@@ -11484,6 +11610,9 @@ namespace Aardvark.Base
             return new Box2d(Min, new V2d(splitAtX, Max.Y));
         }
 
+        /// <summary>
+        /// Returns the box with Min.Y clamped to splitValue.
+        /// </summary>
         public Box2d SplitTop(double splitAtY)
         {
             if (splitAtY > Max.Y) return Box2d.Invalid;
@@ -11491,6 +11620,9 @@ namespace Aardvark.Base
             return new Box2d(new V2d(Min.X, splitAtY), Max);
         }
 
+        /// <summary>
+        /// Returns the box with Max.Y clamped to splitValue.
+        /// </summary>
         public Box2d SplitBottom(double splitAtY)
         {
             if (splitAtY < Min.Y) return Box2d.Invalid;
@@ -12723,6 +12855,9 @@ namespace Aardvark.Base
         }
 
 
+        /// <summary>
+        /// Returns the box with Min value clamped to splitValue.
+        /// </summary>
         public Box3i SplitRight(V3i splitValue)
         {
             var result = new Box3i(Min, Max);
@@ -12732,6 +12867,9 @@ namespace Aardvark.Base
             return result;
         }
 
+        /// <summary>
+        /// Returns the box with Max value clamped to splitValue.
+        /// </summary>
         public Box3i SplitLeft(V3i splitValue)
         {
             var result = new Box3i(Min, Max);
@@ -13968,6 +14106,9 @@ namespace Aardvark.Base
         }
 
 
+        /// <summary>
+        /// Returns the box with Min value clamped to splitValue.
+        /// </summary>
         public Box3l SplitRight(V3l splitValue)
         {
             var result = new Box3l(Min, Max);
@@ -13977,6 +14118,9 @@ namespace Aardvark.Base
             return result;
         }
 
+        /// <summary>
+        /// Returns the box with Max value clamped to splitValue.
+        /// </summary>
         public Box3l SplitLeft(V3l splitValue)
         {
             var result = new Box3l(Min, Max);
@@ -15320,6 +15464,9 @@ namespace Aardvark.Base
         }
 
 
+        /// <summary>
+        /// Returns the box with Min value clamped to splitValue.
+        /// </summary>
         public Box3f SplitRight(V3f splitValue)
         {
             var result = new Box3f(Min, Max);
@@ -15329,6 +15476,9 @@ namespace Aardvark.Base
             return result;
         }
 
+        /// <summary>
+        /// Returns the box with Max value clamped to splitValue.
+        /// </summary>
         public Box3f SplitLeft(V3f splitValue)
         {
             var result = new Box3f(Min, Max);
@@ -16660,6 +16810,9 @@ namespace Aardvark.Base
         }
 
 
+        /// <summary>
+        /// Returns the box with Min value clamped to splitValue.
+        /// </summary>
         public Box3d SplitRight(V3d splitValue)
         {
             var result = new Box3d(Min, Max);
@@ -16669,6 +16822,9 @@ namespace Aardvark.Base
             return result;
         }
 
+        /// <summary>
+        /// Returns the box with Max value clamped to splitValue.
+        /// </summary>
         public Box3d SplitLeft(V3d splitValue)
         {
             var result = new Box3d(Min, Max);
