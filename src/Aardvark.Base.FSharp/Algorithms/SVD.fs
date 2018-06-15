@@ -8,11 +8,12 @@ open Microsoft.FSharp.NativeInterop
 module private SVDHelpers =
     let inline pythag a b = sqrt (a*a + b*b)
 
-    let inline svdBidiagonalNative (anorm : ^a) (U : NativeMatrix< ^a >) (B : NativeMatrix< ^a >) (Vt : NativeMatrix< ^a >) : unit =
+    let inline svdBidiagonalNative (anorm : ^a) (U : NativeMatrix< ^a >) (B : NativeMatrix< ^a >) (Vt : NativeMatrix< ^a >) : bool =
         let two = LanguagePrimitives.GenericOne + LanguagePrimitives.GenericOne
         let mutable c : ^a = LanguagePrimitives.GenericZero
         let mutable s = LanguagePrimitives.GenericZero
         let mutable rvl0 = LanguagePrimitives.GenericZero
+        let mutable suc = true
 
         let n = int B.SY
         let m = int B.SX
@@ -91,13 +92,14 @@ module private SVDHelpers =
                 else
 
                     if (iterations >= 30) then
-                        failwith "no convergence after 30 iterations"
+                        //failwith "no convergence after 30 iterations"
+                        suc <- false
 
                     // shift from bottom 2 x 2 minor
                     x <- w l //B.[l,l];
                     nm <- k - 1;
                     y <- w nm //B.[nm, nm];
-
+                    
                     g <- rvl nm;
                     h <- rvl k;
                     f <- ((y - z) * (y + z) + (g - h) * (g + h)) / (two * h * y)
@@ -197,6 +199,8 @@ module private SVDHelpers =
                 setw i1 (-w i1)
                 applyGivensTransposedMat Vt i0 i1 -LanguagePrimitives.GenericOne LanguagePrimitives.GenericZero
 
+        suc
+
 [<AbstractClass; Sealed>]
 type SVD private() =
 
@@ -233,45 +237,53 @@ type SVD private() =
         let mutable U = U
         let mutable S = S
         let mutable Vt = Vt
+        let mutable suc = false
         tensor {
             let! pU = &U
             let! pS = &S
             let! pVt = &Vt
-            SVD.DecomposeInPlace(pU, pS, pVt)
-        }      
+            suc <- SVD.DecomposeInPlace(pU, pS, pVt)
+        }
+        suc
         
     static member DecomposeInPlace(U : Matrix<float32>, S : Matrix<float32>, Vt : Matrix<float32>) =
         let mutable U = U
         let mutable S = S
         let mutable Vt = Vt
+        let mutable suc = false
         tensor {
             let! pU = &U
             let! pS = &S
             let! pVt = &Vt
-            SVD.DecomposeInPlace(pU, pS, pVt)
+            suc <- SVD.DecomposeInPlace(pU, pS, pVt)
         }
+        suc
         
     static member DecomposeInPlace(U : float[,], S : float[,], Vt : float[,]) =
         let mutable U = U
         let mutable S = S
         let mutable Vt = Vt
+        let mutable suc = false
         tensor {
             let! pU = &U
             let! pS = &S
             let! pVt = &Vt
-            SVD.DecomposeInPlace(pU, pS, pVt)
-        }         
+            suc <- SVD.DecomposeInPlace(pU, pS, pVt)
+        }    
+        suc     
 
     static member DecomposeInPlace(U : float32[,], S : float32[,], Vt : float32[,]) =
         let mutable U = U
         let mutable S = S
         let mutable Vt = Vt
+        let mutable suc = false
         tensor {
             let! pU = &U
             let! pS = &S
             let! pVt = &Vt
-            SVD.DecomposeInPlace(pU, pS, pVt)
-        }      
+            suc <- SVD.DecomposeInPlace(pU, pS, pVt)
+        }
+        suc
    
 
     static member Decompose(m : Matrix<float>) =
@@ -280,8 +292,10 @@ type SVD private() =
         let U = Matrix<float>(r,r)
         let S = m.Copy()
         let Vt = Matrix<float>(c,c)
-        SVD.DecomposeInPlace(U, S, Vt)
-        U, S, Vt
+        if SVD.DecomposeInPlace(U, S, Vt) then
+            Some (U, S, Vt)
+        else
+            None
 
     static member Decompose(m : Matrix<float32>) =
         let r = m.SY
@@ -289,8 +303,10 @@ type SVD private() =
         let U = Matrix<float32>(r,r)
         let S = m.Copy()
         let Vt = Matrix<float32>(c,c)
-        SVD.DecomposeInPlace(U, S, Vt)
-        U, S, Vt
+        if SVD.DecomposeInPlace(U, S, Vt) then
+            Some (U, S, Vt)
+        else
+            None
 
     static member Decompose(m : float[,]) =
         let r = m.GetLength(0)
@@ -298,8 +314,10 @@ type SVD private() =
         let U = Array2D.zeroCreate r r
         let S = Array2D.copy m
         let Vt = Array2D.zeroCreate c c
-        SVD.DecomposeInPlace(U, S, Vt)
-        U, S, Vt
+        if SVD.DecomposeInPlace(U, S, Vt) then
+            Some (U, S, Vt)
+        else
+            None
         
     static member Decompose(m : float32[,]) =
         let r = m.GetLength(0)
@@ -307,130 +325,172 @@ type SVD private() =
         let U = Array2D.zeroCreate r r
         let S = Array2D.copy m
         let Vt = Array2D.zeroCreate c c
-        SVD.DecomposeInPlace(U, S, Vt)
-        U, S, Vt
+        if SVD.DecomposeInPlace(U, S, Vt) then
+            Some (U, S, Vt)
+        else
+            None
         
 
     static member Decompose(m : M22d) =
         let mutable S = m
         let mutable U = M22d()
         let mutable Vt = M22d()
+        let mutable suc = false
         tensor {
             let! pS = &S
             let! pU = &U
             let! pVt = &Vt
-            SVD.DecomposeInPlace(pU, pS, pVt)
+            suc <- SVD.DecomposeInPlace(pU, pS, pVt)
         }
-        U, S, Vt
+        if suc then
+            Some (U, S, Vt)
+        else
+            None
 
     static member Decompose(m : M23d) =
         let mutable S = m
         let mutable U = M22d()
         let mutable Vt = M33d()
+        let mutable suc = false
         tensor {
             let! pS = &S
             let! pU = &U
             let! pVt = &Vt
-            SVD.DecomposeInPlace(pU, pS, pVt)
+            suc <- SVD.DecomposeInPlace(pU, pS, pVt)
         }
-        U, S, Vt
+        if suc then
+            Some (U, S, Vt)
+        else
+            None
 
     static member Decompose(m : M33d) =
         let mutable S = m
         let mutable U = M33d()
         let mutable Vt = M33d()
+        let mutable suc = false
         tensor {
             let! pS = &S
             let! pU = &U
             let! pVt = &Vt
-            SVD.DecomposeInPlace(pU, pS, pVt)
+            suc <- SVD.DecomposeInPlace(pU, pS, pVt)
         }
-        U, S, Vt
+        if suc then
+            Some (U, S, Vt)
+        else
+            None
 
     static member Decompose(m : M34d) =
         let mutable S = m
         let mutable U = M33d()
         let mutable Vt = M44d()
+        let mutable suc = false
         tensor {
             let! pS = &S
             let! pU = &U
             let! pVt = &Vt
-            SVD.DecomposeInPlace(pU, pS, pVt)
+            suc <- SVD.DecomposeInPlace(pU, pS, pVt)
         }
-        U, S, Vt
+        if suc then
+            Some (U, S, Vt)
+        else
+            None
 
     static member Decompose(m : M44d) =
         let mutable S = m
         let mutable U = M44d()
         let mutable Vt = M44d()
+        let mutable suc = false
         tensor {
             let! pS = &S
             let! pU = &U
             let! pVt = &Vt
-            SVD.DecomposeInPlace(pU, pS, pVt)
+            suc <- SVD.DecomposeInPlace(pU, pS, pVt)
         }
-        U, S, Vt
+        if suc then
+            Some (U, S, Vt)
+        else
+            None
 
 
     static member Decompose(m : M22f) =
         let mutable S = m
         let mutable U = M22f()
         let mutable Vt = M22f()
+        let mutable suc = false
         tensor {
             let! pS = &S
             let! pU = &U
             let! pVt = &Vt
-            SVD.DecomposeInPlace(pU, pS, pVt)
+            suc <- SVD.DecomposeInPlace(pU, pS, pVt)
         }
-        U, S, Vt
+        if suc then
+            Some (U, S, Vt)
+        else
+            None
 
     static member Decompose(m : M23f) =
         let mutable S = m
         let mutable U = M22f()
         let mutable Vt = M33f()
+        let mutable suc = false
         tensor {
             let! pS = &S
             let! pU = &U
             let! pVt = &Vt
-            SVD.DecomposeInPlace(pU, pS, pVt)
+            suc <- SVD.DecomposeInPlace(pU, pS, pVt)
         }
-        U, S, Vt
+        if suc then
+            Some (U, S, Vt)
+        else
+            None
 
     static member Decompose(m : M33f) =
         let mutable S = m
         let mutable U = M33f()
         let mutable Vt = M33f()
+        let mutable suc = false
         tensor {
             let! pS = &S
             let! pU = &U
             let! pVt = &Vt
-            SVD.DecomposeInPlace(pU, pS, pVt)
+            suc <- SVD.DecomposeInPlace(pU, pS, pVt)
         }
-        U, S, Vt
+        if suc then
+            Some (U, S, Vt)
+        else
+            None
 
     static member Decompose(m : M34f) =
         let mutable S = m
         let mutable U = M33f()
         let mutable Vt = M44f()
+        let mutable suc = false
         tensor {
             let! pS = &S
             let! pU = &U
             let! pVt = &Vt
-            SVD.DecomposeInPlace(pU, pS, pVt)
+            suc <- SVD.DecomposeInPlace(pU, pS, pVt)
         }
-        U, S, Vt
+        if suc then
+            Some (U, S, Vt)
+        else
+            None
 
     static member Decompose(m : M44f) =
         let mutable S = m
         let mutable U = M44f()
         let mutable Vt = M44f()
+        let mutable suc = false
         tensor {
             let! pS = &S
             let! pU = &U
             let! pVt = &Vt
-            SVD.DecomposeInPlace(pU, pS, pVt)
+            suc <- SVD.DecomposeInPlace(pU, pS, pVt)
         }
-        U, S, Vt
+        if suc then
+            Some (U, S, Vt)
+        else
+            None
         
 
 
@@ -458,6 +518,6 @@ module private SVDOverloadTest =
         SVD.decomposeInPlace a b c
 
         let arr = Array2D.init 10 10 (fun i j -> 0.1)
-        let (U, B, Vt) = SVD.decompose arr
+        let a = SVD.decompose arr
 
         ()
