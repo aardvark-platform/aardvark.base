@@ -645,7 +645,7 @@ namespace Aardvark.Base
 
         /// <summary>
         /// Returns the distance to the supplied point.
-        /// </summary
+        /// </summary>
         public double Distance(__ltype__ p)
         {
             return Fun.Sqrt(/*# fields.ForEach(f => { */

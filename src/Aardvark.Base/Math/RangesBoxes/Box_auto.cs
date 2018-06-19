@@ -10183,7 +10183,7 @@ namespace Aardvark.Base
 
         /// <summary>
         /// Returns the distance to the supplied point.
-        /// </summary
+        /// </summary>
         public double Distance(V2f p)
         {
             return Fun.Sqrt(
@@ -11522,7 +11522,7 @@ namespace Aardvark.Base
 
         /// <summary>
         /// Returns the distance to the supplied point.
-        /// </summary
+        /// </summary>
         public double Distance(V2d p)
         {
             return Fun.Sqrt(
@@ -15419,7 +15419,7 @@ namespace Aardvark.Base
 
         /// <summary>
         /// Returns the distance to the supplied point.
-        /// </summary
+        /// </summary>
         public double Distance(V3f p)
         {
             return Fun.Sqrt(
@@ -16771,7 +16771,7 @@ namespace Aardvark.Base
 
         /// <summary>
         /// Returns the distance to the supplied point.
-        /// </summary
+        /// </summary>
         public double Distance(V3d p)
         {
             return Fun.Sqrt(
