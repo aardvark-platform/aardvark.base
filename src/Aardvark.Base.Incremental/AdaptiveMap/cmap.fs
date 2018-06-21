@@ -38,7 +38,7 @@ type cmap<'k, 'v>(initial : seq<'k * 'v>) =
     member x.Add(key : 'k, value : 'v) =
         lock x (fun () ->
             if history.State.ContainsKey key then
-                raise <| System.Collections.Generic.KeyNotFoundException()
+                raise <| System.ArgumentException("A value with the same key already exists.")
 
             history.Perform(HMap.single key (Set value)) |> ignore
         )
