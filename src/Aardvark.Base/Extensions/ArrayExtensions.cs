@@ -528,11 +528,23 @@ namespace Aardvark.Base
 			return result;
 		}
 
-		#endregion
+        /// <summary>
+        /// Concatenates two arrays.
+        /// </summary>
+        /// <returns>A new array with content of <paramref name="first"/> concatenated with content of <paramref name="second"/>.</returns>
+        public static T[] Concat<T>(this T[] first, T[] second)
+        {
+            var conArray = new T[first.Length + second.Length];
+            first.CopyTo(conArray, 0);
+            second.CopyTo(conArray, first.Length);
+            return conArray;
+        }
 
-		#region Generic Array Operations
+        #endregion
 
-		public static long LongSum<T>(this T[] array, Func<T, long> selector)
+        #region Generic Array Operations
+
+        public static long LongSum<T>(this T[] array, Func<T, long> selector)
 		{
 			long sum = 0;
 			for (long i = 0; i < array.LongLength; i++) sum += selector(array[i]);
