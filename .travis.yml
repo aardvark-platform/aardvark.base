@@ -12,4 +12,5 @@ before_install:
   - mono .paket/paket.bootstrapper.exe
   - mono .paket/paket.exe restore
 script:
+  - msbuild /t:Restore src/Aardvark.sln
   - msbuild /t:Rebuild /p:DefineConstants="TRAVIS_CI" src/Aardvark.sln 
