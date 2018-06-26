@@ -68,6 +68,7 @@ namespace Aardvark.Base
             return value;
         }
 
+#if !TRAVIS_CI
         /// <summary>
         /// Return the real roots of the supplied polynomial, that is stored
         /// with ascending coefficients:
@@ -117,6 +118,7 @@ namespace Aardvark.Base
                 default: throw new NotImplementedException();
             }
         }
+#endif
 
         private static double[] NonNanToArray(this double root)
         {
@@ -330,7 +332,7 @@ namespace Aardvark.Base
             d = Fun.Sqrt(d);  // one triple root or a single and a double root
             return Fun.Cbrt(d - q2) - Fun.Cbrt(d + q2) - 1/3.0 * c2;
         }
-
+#if !TRAVIS_CI
         /// <summary>
         /// Return real roots of: a x^4 + b x^3 + c x^2 + d x + e = 0
         /// Double and triple solutions are returned as replicated values.
@@ -383,7 +385,7 @@ namespace Aardvark.Base
                                RealRootsOfNormed(-q1, z + u),
                                -1/4.0 * c3);
         }
-
+        
         static (double, double, double, double) MergeSortedAndShift(
                 (double, double, double) t, double d, double shift)
         {
@@ -424,6 +426,7 @@ namespace Aardvark.Base
             while (i < 4) q.Set(i++, double.NaN);
             return q;
         }
+#endif
 
         /// <summary>
         /// Returns a copy of an array of roots without any double roots with

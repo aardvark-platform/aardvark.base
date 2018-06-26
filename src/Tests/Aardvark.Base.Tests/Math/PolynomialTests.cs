@@ -11,7 +11,9 @@ namespace Aardvark.Tests
     public class PolynomialTests : TestSuite
     {
         public PolynomialTests() : base() { }
-        public PolynomialTests(TestSuite.Options options) : base(options) { }
+        public PolynomialTests(Options options) : base(options) { }
+
+#if !TRAVIS_CI
 
         [Test]
         public void TestPolynomial()
@@ -198,6 +200,9 @@ namespace Aardvark.Tests
             Report.Value("multiple residual error", multipleResidualStats);
             Test.End();
         }
+
+#endif
+
         static int CountDoubles(double[] a, double eps)
         {
             int len = a.Length;
