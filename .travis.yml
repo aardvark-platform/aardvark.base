@@ -1,5 +1,4 @@
 language: csharp
-solution: src/Aardvark.sln
 before_install: 
   # Make sure mono is installed,
   # pipe stdout to dev/null because qq is still too chatty
@@ -12,4 +11,5 @@ before_install:
   - mcs --version
   - mono .paket/paket.bootstrapper.exe
   - mono .paket/paket.exe restore
-
+script:
+  - msbuild /t:Rebuild /p:DefineConstants="TRAVIS_CI" src/Aardvark.sln 
