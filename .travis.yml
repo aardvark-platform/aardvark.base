@@ -8,6 +8,7 @@ before_install:
   - sudo apt-get update -qq > /dev/null
   - sudo apt-get install -qq mono-devel dotnet-sdk-2.1 > /dev/null
   - mozroots --import --sync 
+  - mcs --version
 script:
   - mono .paket/paket.bootstrapper.exe
   - mono .paket/paket.exe restore
