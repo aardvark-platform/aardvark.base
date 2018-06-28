@@ -802,6 +802,25 @@ namespace Aardvark.Base
         }
 
         #endregion
+
+        #region Random Distributions
+
+        /// <summary>
+        /// Generates normal distributed random variable with given mean and standard deviation.
+        /// Uses the Box-Muller Transformation to transform two uniform distributed random variables to one normal distributed value.
+        /// NOTE: If multiple normal distributed random values are required, consider using <see cref="RandomGaussian"/>.
+        /// </summary>
+        public static double Gaussian(this IRandomUniform rnd, double mean = 0.0, double stdDev = 1.0)
+        {
+            // Box-Muller Transformation
+            var u1 = 1.0 - rnd.UniformDouble();   // uniform (0,1] -> log requires > 0
+            var u2 = rnd.UniformDouble();         // uniform [0,1)
+            var randStdNormal = Fun.Sqrt(-2.0 * Fun.Log(u1)) *
+                                Fun.Sin(Constant.PiTimesTwo * u2);
+            return mean + stdDev * randStdNormal;
+        }
+
+        #endregion
     }
 
     public static class IRandomEnumerableExtensions

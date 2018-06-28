@@ -9,8 +9,11 @@ namespace Aardvark.Base
     {
         V2i m_index = V2i.OO;
         V2i[] m_series;
+        int m_matrixSize; 
         double m_norm;
+        IRandomUniform m_rnd;
         V2i m_seed;
+        bool m_jitter;
 
         /// <summary>
         /// Reads a file that contains a raw V2i binary array as V2i[].
@@ -19,10 +22,10 @@ namespace Aardvark.Base
         public static V2i[] ReadSeries(string frsSqFile)
         {
             var bytes = File.ReadAllBytes(frsSqFile);
-            var matSize = (int)(bytes.Length / 8).Sqrt();
+            var matrixSize = (int)(bytes.Length / 8).Sqrt();
 
             // V2i[] encoded in byte array must be NxN and a multiple of 8.
-            if (matSize * matSize * 8 != bytes.Length)
+            if (matrixSize * matrixSize * 8 != bytes.Length)
                 throw new InvalidDataException("Forced Random series data has invalid length.");
 
             return bytes.UnsafeCoerce<V2i>();
@@ -32,29 +35,23 @@ namespace Aardvark.Base
         /// Create a ForcedRandomSeries with the given sample sequence and the seed as offset.
         /// The sequence is supposed to contain NxN points in random order.
         /// </summary>
-        public ForcedRandomSeries(V2i[] series, V2i seed)
+        public ForcedRandomSeries(V2i[] series, int matrixSize, IRandomUniform rnd, bool jitter = true)
         {
             m_series = series;
-            m_norm = 1.0 / m_series.Length.Sqrt(); // [0, 1) 
-            m_seed = seed;
+            m_matrixSize = matrixSize;
+            m_norm = 1.0 / m_matrixSize; // [0, 1) 
+            m_rnd = rnd;
+            m_jitter = jitter;
+            // random offset of sample pattern
+            m_seed = new V2i(rnd.UniformInt(m_matrixSize), rnd.UniformInt(m_matrixSize)); 
         }
 
         /// <summary>
-        /// Create a ForcedRandomSeries from the given sequence data file 
-        /// and the seed as offset.
-        /// </summary>
-        public ForcedRandomSeries(string frsSqFile, V2i seed)
-            : this(ReadSeries(frsSqFile), seed)
-        {
-        }
-
-        /// <summary>
-        /// Create a ForcedRandomSeries from the given sample sequence
-        /// and a random generator that is used to generate a seed.
+        /// Create a ForcedRandomSeries with the given sample sequence and the seed as offset.
         /// The sequence is supposed to contain NxN points in random order.
         /// </summary>
-        public ForcedRandomSeries(V2i[] series, IRandomUniform rndSeed)
-            : this(series, new V2i(rndSeed.UniformInt(), rndSeed.UniformInt()))
+        public ForcedRandomSeries(V2i[] series, IRandomUniform rnd, bool jitter = true)
+            : this(series, (int)series.Length.Sqrt(), rnd, jitter)
         {
         }
 
@@ -62,8 +59,8 @@ namespace Aardvark.Base
         /// Create a ForcedRandomSeries from the given sequence data file
         /// and a random generator that is used to generate a seed.
         /// </summary>
-        public ForcedRandomSeries(string frsSqFile, IRandomUniform rndSeed)
-            : this(ReadSeries(frsSqFile), rndSeed)
+        public ForcedRandomSeries(string frsSqFile, IRandomUniform rndSeed, bool jitter = true)
+            : this(ReadSeries(frsSqFile), rndSeed, jitter)
         {
         }
 
@@ -71,8 +68,8 @@ namespace Aardvark.Base
         {
             var ind = m_index[seriesIndex]++;
             var rnd = m_series[ind++ % m_series.Length][seriesIndex];
-            rnd += m_seed[seriesIndex];
-            return (rnd * m_norm).Frac();
+            rnd += m_seed[seriesIndex]; // shift complete pattern by seed
+            return ((rnd + (m_jitter ? m_rnd.UniformDouble() : 0.0)) * m_norm).Frac(); // optionally add sub-pixel jittering
         }
     }
 }
