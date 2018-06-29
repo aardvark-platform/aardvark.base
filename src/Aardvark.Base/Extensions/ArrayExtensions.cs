@@ -1949,14 +1949,65 @@ namespace Aardvark.Base
 			return sum;
 		}
 
-		#endregion
+        /// <summary>
+        /// Creates an array that contains the integrated sum up to each element of input array. 
+        /// The length of the integrated array is +1 of the input array and contains the total
+        /// sum in the last element.
+        /// </summary>
+        public static int[] Integrated(this int[] array, int sum = 0)
+        {
+            var integrated = new int[array.Length + 1];
+            integrated[0] = sum;
+            for (long i = 0; i < array.LongLength;)
+            {
+                sum += array[i];
+                integrated[++i] = sum;
+            }
+            return integrated;
+        }
 
-		#region Dense Forward Maps
+        /// <summary>
+        /// Creates an array that contains the integrated sum up to each element of input array. 
+        /// The length of the integrated array is +1 of the input array and contains the total
+        /// sum in the last element.
+        /// </summary>
+        public static long[] Integrated(this long[] array, long sum = 0)
+        {
+            var integrated = new long[array.Length + 1];
+            integrated[0] = sum;
+            for (long i = 0; i < array.LongLength;)
+            {
+                sum += array[i];
+                integrated[++i] = sum;
+            }
+            return integrated;
+        }
 
-		/// <summary>
-		/// Count the indices in an index array that are actually used.
-		/// </summary>
-		static public int DenseCount(
+        /// <summary>
+        /// Creates an array that contains the integrated sum up to each element of input array. 
+        /// The length of the integrated array is +1 of the input array and contains the total
+        /// sum in the last element.
+        /// </summary>
+        public static double[] Integrated(this double[] array, double sum = 0)
+        {
+            var integrated = new double[array.Length + 1];
+            integrated[0] = sum;
+            for (long i = 0; i < array.LongLength;)
+            {
+                sum += array[i];
+                integrated[++i] = sum;
+            }
+            return integrated;
+        }
+
+        #endregion
+
+        #region Dense Forward Maps
+
+        /// <summary>
+        /// Count the indices in an index array that are actually used.
+        /// </summary>
+        static public int DenseCount(
 				this int[] indexArray, int indexCount, int maxIndex)
 		{
 			int[] forwardMap = new int[maxIndex].Set(-1);
@@ -2347,6 +2398,26 @@ namespace Aardvark.Base
             byte[] hash = null;
             data.UnsafeCoercedApply<byte>(array => hash = array.ComputeSHA512Hash());
             return hash;
+        }
+
+        /// <summary>
+        /// Computes a checksum of the data array using the Adler-32 algorithm (<see cref="Adler32"/>).
+        /// </summary>
+        public static uint ComputeAdler32Checksum(this byte[] data)
+        {
+            var a = new Adler32();
+            a.Update(data);
+            return a.Checksum;
+        }
+
+        /// <summary>
+        /// Computes a checksum of the data array using the Adler-32 algorithm (<see cref="Adler32"/>).
+        /// </summary>
+        public static uint ComputeAdler32Checksum(this Array data)
+        {
+            var a = new Adler32();
+            data.UnsafeCoercedApply<byte>(array => a.Update(array));
+            return a.Checksum;            
         }
 
         #endregion

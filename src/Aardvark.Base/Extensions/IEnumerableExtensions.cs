@@ -2401,7 +2401,7 @@ namespace Aardvark.Base
         /// Converts a sequence that contains numbers of elements
         /// into a sequence that represents the indices of the
         /// first element if the elements are stored in consecutive 
-        /// order and is closed by the total count elemtns.
+        /// order and is closed by the total count elements.
         /// The length of the integrated sequence is +1 of the input.
         /// </summary>
         public static IEnumerable<int> Integrated(this IEnumerable<int> counts, int sum = 0)

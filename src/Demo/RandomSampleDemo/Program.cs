@@ -68,7 +68,7 @@ namespace RandomSampleDemo
             {
                 var img = new PixImage<byte>(size, size, 4);
                 DrawTriangles(triangles, img);
-                var samples = GenerateTriangleSamples2(triangles, sampleCount / 3, rnd, rndSeries.Item2);
+                var samples = GenerateTriangleSamples(triangles, sampleCount / 3, rnd, rndSeries.Item2);
                 DrawSamples(samples, img);
                 img.SaveAsImage(String.Format("C:\\Debug\\TriangleSamples_{0}.bmp", rndSeries.Item1));
                 return img;
@@ -83,44 +83,22 @@ namespace RandomSampleDemo
             var pdf = new double[pdfSize].SetByIndex(i =>
             {
                 var x = (i - pdfSize / 2) / gaussStretch;
-                return Gauss(x, 1.0);
+                return Fun.Gauss(x, 1.0);
             });
 
-            var cdf = new DiscreteFunction(pdf);
-            var test = cdf.Norm.ApproximateEquals(gaussStretch, 1e-4);
-            Report.Line("TEST: Gauss PDF Normalized = {0}", test);
+            var cdf = new DistributionFunction(pdf);
 
-            rnd.ReSeed(0);
-            var sc1 = new int[pdf.Length];
+            var sc = new int[pdf.Length];
             Report.BeginTimed("CDF.Sample (Binary Search)");
             for (int i = 0; i < cdfSampleTestCount; i++)
             {
                 var ind = cdf.Sample(rnd.UniformDouble());
-                sc1[ind]++;
+                sc[ind]++;
             }
             Report.End();
-            var cdfSampling1 = DrawSampleDistributionCounts(sc1, 1024);
-            DrawGauss(cdfSampling1, gaussStretch);
-            cdfSampling1.SaveAsImage("C:\\Debug\\CDFSampling1.bmp");
-
-            var sc2 = new int[pdf.Length];
-
-            rnd.ReSeed(0);
-            Report.BeginTimed("CDF.Sample (Linear Search)");
-            for (int i = 0; i < cdfSampleTestCount; i++)
-            {
-                var ind = cdf.SampleLinear(rnd.UniformDouble());
-                sc2[ind]++;
-            }
-            Report.End();
-            var cdfSampling2 = DrawSampleDistributionCounts(sc2, 1024);
-            DrawGauss(cdfSampling2, gaussStretch);
-            cdfSampling2.SaveAsImage("C:\\Debug\\CDFSampling2.bmp");
-
-            var test2 = 0.UpToExclusive(sc1.Length).All(i => sc1[i] == sc2[i]);
-            Report.Line("TEST: Sampling Equal = {0}", test2);
-
-            SaveStiched(new[] { cdfSampling1, cdfSampling1 }, "C:\\Debug\\Compare_CDFSampling.bmp");
+            var cdfSampling = DrawSampleDistributionCounts(sc, 1024);
+            DrawGauss(cdfSampling, gaussStretch);
+            cdfSampling.SaveAsImage("C:\\Debug\\CDFSampling.bmp");
 
             var rndSampleTestCount = 10000000;
             var counts = new int[size];
@@ -154,26 +132,16 @@ namespace RandomSampleDemo
 
             SaveStiched(new [] { rndGaussImg, rndGaussImg2 }, "C:\\Debug\\Compare_RandomGaussian.bmp");
         }
-
-        static double Gauss(double x, double s)
-        {
-            return 1 / (s * Constant.SqrtPiTimesTwo) * Fun.Exp(-0.5 * (x / s).Square());
-        }
-
-        static double Gauss(double x, double y, double sx, double sy)
-        {
-            return 1 / (sx * sy * Constant.PiTimesTwo) * Fun.Exp(-0.5 * ((x / sx).Square() + (y / sy).Square()));
-        }
-
+        
         static void DrawGauss(PixImage<byte> img, double gaussStretch)
         {
             var imgMat = img.GetMatrix<C4b>();
-            var max = Gauss(0, 1.0);
+            var max = Fun.Gauss(0, 1.0);
             var lastY = 0;
             for(int x = 0; x < img.Size.X; x++)
             {
                 var gx = (x - (img.Size.X - 1) / 2.0) / gaussStretch * 0.25;
-                var gy = (int)(Gauss(gx, 1.0) / max * (img.Size.Y - 1));
+                var gy = (int)(Fun.Gauss(gx, 1.0) / max * (img.Size.Y - 1));
                 if (x > 0)
                 {
                     var last = new V2i(x - 1, img.Size.Y - 1 - lastY);
@@ -233,6 +201,7 @@ namespace RandomSampleDemo
         static Triangle2d[] GenerateTriangles(int cnt, IRandomUniform rnd)
         {
             // generate triangles in 2d area [0, 1]
+            var gaussRnd = new RandomGaussian(rnd);
             
             var ta = 1.5 / cnt; // area of triangle
             var tr = Fun.Sqrt(ta * 0.5); // edge length of right angled triangle with area ta
@@ -245,14 +214,14 @@ namespace RandomSampleDemo
             while(triangles.Count < cnt && fails < maxFails)
             {
                 var p0 = rnd.UniformV2d();
-                var r1 = Normal(rnd, tr, tr * 0.5);
+                var r1 = gaussRnd.GetDouble(tr, tr * 0.5);
                 var p1 = p0 + rnd.UniformV2dDirection() * r1;
                 if (p1.AnySmaller(0.0) || p1.AnyGreater(1.0))
                 {
                     fails++;
                     continue;
                 }
-                var r2 = Normal(rnd, tr, tr * 0.5);
+                var r2 = gaussRnd.GetDouble(tr, tr * 0.5);
                 var p2 = p0 + rnd.UniformV2dDirection() * r2;
                 if (p2.AnySmaller(0.0) || p2.AnyGreater(1.0))
                 {
@@ -333,18 +302,6 @@ namespace RandomSampleDemo
 
         static V2d[] GenerateTriangleSamples(Triangle2d[] ta, int count, IRandomUniform rnd, IRandomSeries rndSeries)
         {
-            var cdf = new DiscreteFunction(ta.Select(t => t.Area).ToArray());
-            return new V2d[count].SetByIndex(i =>
-            {
-                var ti = cdf.Sample(rnd.UniformDouble());
-                var t = ta[ti];
-                var s = RandomSample.Triangle(t, rndSeries, 0);
-                return s.XY;
-            });
-        }
-
-        static V2d[] GenerateTriangleSamples2(Triangle2d[] ta, int count, IRandomUniform rnd, IRandomSeries rndSeries)
-        {
             var areas = ta.Map(t => t.Area);
             var total = areas.Sum();
             var samples = new List<V2d>(count);
@@ -355,113 +312,6 @@ namespace RandomSampleDemo
                     samples.Add(RandomSample.Triangle(t, rndSeries, 0));
             });
             return samples.ToArray();
-        }
-
-        /// <summary>
-        /// Represents a discrete function that is represented by a probability density function (PDF)
-        /// and a cumulative density function (CDF).
-        /// </summary>
-        public class DiscreteFunction
-        {
-            double[] m_pdf;
-            double[] m_cdf;
-
-            /// <summary>
-            /// Gets the input probability density function.
-            /// It is not necessarily normalized.
-            /// </summary>
-            public double[] PDF { get { return m_pdf; } }
-
-            /// <summary>
-            /// Gets the calculated cumulative density function with +1 elements than the PDF.
-            /// It is not necessarily normalized.
-            /// </summary>
-            public double[] CDF { get { return m_cdf; } }
-
-            /// <summary>
-            /// Returns the normalization factor of the PDF and CDF.
-            /// In case the supplied PDF is not normalized this factor will be != 1.0 and
-            /// needs to be considered when interpreting the raw PDF or CDF values.
-            /// </summary>
-            public double Norm { get { return m_cdf[m_cdf.Length - 1]; } }
-            
-            /// <summary>
-            /// Create distribution from discrete probability distribution function (PDF).
-            /// The PDF does not need to be normalized.
-            /// </summary>
-            public DiscreteFunction(double[] pdf)
-            {
-                m_pdf = pdf;
-                m_cdf = m_pdf.Integrated().ToArray();
-            }
-
-            /// <summary>
-            /// O(log n) binary search
-            /// </summary>
-            public int Sample(double rnd)
-            {
-                var valueToFind = rnd * m_cdf.Last();
-
-                var i0 = 0;
-                var range = m_cdf.Length;
-                // binary search
-                while (range > 0)
-                {
-                    var halfRange = range >> 1;
-                    var center = i0 + halfRange;
-
-                    // check if value is left or right
-                    if (m_cdf[center] <= valueToFind)
-                    {
-                        // right half
-                        i0 = center + 1;
-                        range -= halfRange + 1;
-                    }
-                    else
-                    {
-                        // left half
-                        range = halfRange;
-                    }
-                }
-                return Fun.Clamp(i0 - 1, 0, m_cdf.Length - 2);
-            }
-
-            /// <summary>
-            /// O(n) linear search
-            /// </summary>
-            public int SampleLinear(double rnd)
-            {
-                var sum = m_cdf.Last();
-                var valueToFind = rnd * sum;
-                int index = 0;
-                double aggregate = 0;
-                // Linear Search
-                for (; index < m_pdf.Length; index++)
-                {
-                    aggregate += m_pdf[index];
-                    if (valueToFind <= aggregate)
-                        break;
-                }
-                return index;
-            }
-
-            /// <summary>
-            /// Gets the normalized probability density function value at the supplied index.
-            /// The function is normalized to integrate to a value of 1.
-            /// </summary>
-            public double PDFValue(int index)
-            {
-                return m_pdf[index] / this.Norm;
-            }
-
-            /// <summary>
-            /// Gets the normalized cumulative distribution function value at the supplied index.
-            /// The function is normalized to integrate to a value of 1.
-            /// </summary>
-            public double CDFValue(int index)
-            {
-                return m_cdf[index] / this.Norm;
-            }
         }
     }
 }

@@ -850,6 +850,110 @@ namespace Aardvark.Base
         }
 
         #endregion
+
+        #region Gaussian
+
+        /// <summary>
+        /// Returns the function value of the normalized Gaussian distribution
+        /// with the given standard deviation.
+        /// </summary>
+        public static double Gauss(double x, double stdDev)
+        {
+            var rcpS = 1.0 / stdDev;
+            return rcpS / Constant.SqrtPiTimesTwo * Fun.Exp(-0.5 * (x * stdDev).Square());
+        }
+
+        /// <summary>
+        /// Returns the function value of the normalized elliptical 2d Gaussian distribution
+        /// with different standard deviations in x and y.
+        /// </summary>
+        public static double Gauss2d(double x, double y, double sx, double sy)
+        {
+            return 1.0 / (sx * sy * Constant.PiTimesTwo) * Fun.Exp(-0.5 * ((x / sx).Square() + (y / sy).Square()));
+        }
+
+        /// <summary>
+        /// Returns the function value of the normalized elliptical 2d Gaussian distribution
+        /// with different standard deviations in x and y.
+        /// </summary>
+        public static double Gauss2d(V2d p, double sx, double sy)
+        {
+            return 1.0 / (sx * sy * Constant.PiTimesTwo) * Fun.Exp(-0.5 * ((p.X / sx).Square() + (p.Y / sy).Square()));
+        }
+
+        /// <summary>
+        /// Returns the function value of the normalized 2d Gaussian distribution with 
+        /// given symmetrical standard deviation.
+        /// </summary>
+        public static double Gauss2d(double x, double y, double s)
+        {
+            var halfRcpS2 = 0.5 / s.Square();
+            return halfRcpS2 * Constant.PiInv * Fun.Exp(-(x * x + y * y) * halfRcpS2);
+        }
+
+        /// <summary>
+        /// Returns the function value of the normalized 2d Gaussian distribution with 
+        /// given symmetrical standard deviation.
+        /// </summary>
+        public static double Gauss2d(V2d p, double s)
+        {
+            var halfRcpS2 = 0.5 / s.Square();
+            return halfRcpS2 * Constant.PiInv * Fun.Exp(-p.LengthSquared * halfRcpS2);
+        }
+
+        /// <summary>
+        /// Gaussian error function using a numerical approximation
+        /// https://www.johndcook.com/blog/csharp_erf/
+        /// </summary>
+        public static double Erf(double x)
+        {
+            // constants
+            double a1 =  0.254829592;
+            double a2 = -0.284496736;
+            double a3 =  1.421413741;
+            double a4 = -1.453152027;
+            double a5 =  1.061405429;
+            double p  =  0.3275911;
+
+            // Save the sign of x
+            int sign = 1;
+            if (x < 0)
+                sign = -1;
+            x = Math.Abs(x);
+
+            // A&S formula 7.1.26
+            double t = 1.0 / (1.0 + p * x);
+            double y = 1.0 - (((((a5 * t + a4) * t) + a3) * t + a2) * t + a1) * t * Math.Exp(-x * x);
+
+            return sign * y;
+        }
+
+        /// <summary>
+        /// Gaussian error function using a numerical approximation with 
+        /// a maximum error of 1.2e-7
+        /// Wikipedia https://en.wikipedia.org/wiki/Error_function#Numerical_approximations
+        /// </summary>
+        public static double Erf2(double x)
+        {
+            // constants
+            double a = -1.26551223;
+            double b =  1.00002368;
+            double c =  0.37409196;
+            double d =  0.09678418;
+            double e = -0.18628806;
+            double f =  0.27886807;
+            double g = -1.13520398;
+            double h =  1.48851587;
+            double j = -0.82215223;
+            double k =  0.17087277;
+
+            var t = 1.0 / (1.0 + 0.5 * x.Abs());
+            var r = t * Fun.Exp(-x.Square() + a + t * (b + t * (c + t * (d + t * (e + t * (f + t * (g + t * (h + t * (j + t * k)))))))));
+
+            return x >= 0 ? 1 - r : r - 1;
+        }
+
+        #endregion
     }
 
     #region KahanSum
