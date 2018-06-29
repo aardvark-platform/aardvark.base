@@ -76,6 +76,10 @@ namespace Aardvark.Base
                            r * Fun.Sin(phi));
         }
 
+        /// <summary>
+        /// Generates a uniform distributed random sample on the given triangle using 
+        /// two random series (seriesIndex,  seriesIndex + 1).
+        /// </summary>
         public static V2d Triangle(Triangle2d t, IRandomSeries rnd, int seriesIndex)
         {
             return Triangle(t.P0, t.P1, t.P2,
@@ -83,11 +87,19 @@ namespace Aardvark.Base
                         rnd.UniformDouble(seriesIndex + 1));
         }
 
+        /// <summary>
+        /// Generates a uniform distributed random sample on the given triangle using 
+        /// two random variables x1 and x2.
+        /// </summary>
         public static V2d Triangle(Triangle2d t, double x1, double x2)
         {
             return Triangle(t.P0, t.P1, t.P2, x1, x2);
         }
 
+        /// <summary>
+        /// Generates a uniform distributed random sample on the given triangle using 
+        /// two random series (seriesIndex,  seriesIndex + 1).
+        /// </summary>
         public static V2d Triangle(V2d p0, V2d p1, V2d p2, IRandomSeries rnd, int seriesIndex)
         {
             return Triangle(p0, p1, p2,
@@ -95,12 +107,20 @@ namespace Aardvark.Base
                         rnd.UniformDouble(seriesIndex + 1));
         }
 
+        /// <summary>
+        /// Generates a uniform distributed random sample on the given triangle using 
+        /// two random variables x1 and x2.
+        /// </summary>
         public static V2d Triangle(V2d p0, V2d p1, V2d p2, double x1, double x2)
         {
             var x1sq = x1.Sqrt();
             return (1 - x1sq) * p0 + (x1sq * (1 - x2)) * p1 + (x1sq * x2) * p2;
         }
 
+        /// <summary>
+        /// Generates a uniform distributed random sample on the given triangle using 
+        /// two random series (seriesIndex,  seriesIndex + 1).
+        /// </summary>
         public static V3d Triangle(Triangle3d t, IRandomSeries rnd, int seriesIndex)
         {
             return Triangle(t.P0, t.P1, t.P2,
@@ -108,11 +128,19 @@ namespace Aardvark.Base
                         rnd.UniformDouble(seriesIndex + 1));
         }
 
+        /// <summary>
+        /// Generates a uniform distributed random sample on the given triangle using 
+        /// two random variables x1 and x2.
+        /// </summary>
         public static V3d Triangle(Triangle3d t, double x1, double x2)
         {
             return Triangle(t.P0, t.P1, t.P2, x1, x2);
         }
 
+        /// <summary>
+        /// Generates a uniform distributed random sample on the given triangle using 
+        /// two random series (seriesIndex,  seriesIndex + 1).
+        /// </summary>
         public static V3d Triangle(V3d p0, V3d p1, V3d p2, IRandomSeries rnd, int seriesIndex)
         {
             return Triangle(p0, p1, p2, 
@@ -120,6 +148,10 @@ namespace Aardvark.Base
                         rnd.UniformDouble(seriesIndex + 1));
         }
 
+        /// <summary>
+        /// Generates a uniform distributed random sample on the given triangle using 
+        /// two random variables x1 and x2.
+        /// </summary>
         public static V3d Triangle(V3d p0, V3d p1, V3d p2, double x1, double x2)
         {
             var x1sq = x1.Sqrt();
