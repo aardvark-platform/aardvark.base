@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 
 namespace Aardvark.Base
 {
@@ -216,6 +217,131 @@ namespace Aardvark.Base
         {
             pixImage.Volume.Apply(d => 1.0 - d);
             return pixImage;
+        }
+
+        #endregion
+
+        #region Stitching
+
+        /// <summary>
+        /// Stitches the images provided in the 2D array into one large image according to the position in the array. 
+        /// The array is treated as column-major. Therefore, the array
+        /// {{1, 2, 3}}                    
+        /// {{4, 5, 6}} 
+        /// produces the image 
+        /// 1 2 3
+        /// 4 6 7
+        /// Null-items are allowed an result in black spot at the corresponding position. 
+        /// The color format of all images must be equal and have byte format.
+        /// </summary>
+        /// <param name="images">The 2D image array that should be stitched.</param>
+        /// <returns>Stitched image</returns>
+        public static PixImage<T> Stitch<T>(this PixImage<T>[][] images)
+        {
+            if (images.IsEmptyOrNull())
+            {
+                return null;
+            }
+            // Find largest extensions
+            var numRows = images.Length;
+            var numColumns = images.Max(img => img.Length);
+
+            // Find largest X Y
+            var sizesX = new int[numColumns].SetByIndex(c => images.Max(ic => (ic[c] == null) ? 0 : ic[c].Size.X));
+            var sizesY = images.Map(img => img.Max(img2 => (img2 == null) ? 0 : img2.Size.Y));
+            var width = sizesX.Sum();
+            var height = sizesY.Sum();
+
+            // The first image in the array, used to determine the color format
+            var fst = images.First(img => img.Length > 0).First(img => img != null);
+
+            if (fst == null)
+            {
+                Report.Line("Empty image array!");
+                return null;
+            }
+
+            // Assure that the color format fits
+            if (images.TrueForAny(imgs => imgs.Where(i => i != null).TrueForAny(img => img.Format != fst.Format)))
+            {
+                Report.Line("Color format not matching!");
+                return null;
+            }
+
+            // Allocate new image
+            var target = new PixImage<T>(fst.Format, new V2i(width, height));
+
+            for (int r = 0, y = 0; r < numRows; r++)
+            {
+                for (int c = 0, x = 0; c < Fun.Max(numColumns, images[r].Length); c++)
+                {
+                    var source = images[r][c];
+                    if (source != null)
+                        target.Set(x, y, source);
+                    x += sizesX[c];
+                }
+                y += sizesY[r];
+            }
+            return target;
+        }
+
+        /// <summary>
+        /// Stitches the images provided in the 2D array into one large image according to the position in the array. 
+        /// The array is treated as column-major. Therefore, the array
+        /// {{1, 2, 3}}                    
+        /// {{4, 5, 6}} 
+        /// produces the image 
+        /// 1 2 3
+        /// 4 6 7
+        /// Null-items are allowed an result in black spot at the corresponding position. 
+        /// The color format of all images must be equal and have byte format.
+        /// </summary>
+        /// <param name="images">The 2D image array that should be stitched.</param>
+        /// <returns>Stitched image</returns>
+        public static PixImage Stitch(this PixImage[][] images)
+        {
+            var first = images.SelectMany(ia => ia).WhereNotNull().First();
+            if (first.PixFormat.Type == typeof(byte))
+                return images.Map(ia => ia.Map(pi => pi?.ToPixImage<byte>())).Stitch().ToPixImage();
+            if (first.PixFormat.Type == typeof(ushort))
+                return images.Map(ia => ia.Map(pi => pi?.ToPixImage<ushort>())).Stitch().ToPixImage();
+            if (first.PixFormat.Type == typeof(float))
+                return images.Map(ia => ia.Map(pi => pi?.ToPixImage<float>())).Stitch().ToPixImage();
+            throw new NotImplementedException();
+        }
+
+        /// <summary>
+        /// Stitches the images provided to a new image with next best square size. 
+        /// {1, 2}         {1, 2, 3}             {1, 2, 3, 4, 5 }
+        /// produces the image 
+        /// 1               1 2                   1, 2, 3
+        ///                 3 X                   4, 5
+        /// The color format of all images must be equal and have byte format.
+        /// </summary>
+        /// <param name="images">The image array that should be stitched.</param>
+        /// <returns>Stitched image</returns>
+        public static PixImage StitchSquare(this PixImage[] images)
+        {
+            var squareSize = (int)Fun.Ceiling(images.Length.Sqrt());
+            var array = new PixImage[squareSize][].SetByIndex(
+                            row => new PixImage[squareSize].SetByIndex(
+                                col => { var ii = squareSize * row + col; return ii < images.Length ? images[ii] : null; }));
+            return array.Stitch();
+        }
+
+        /// <summary>
+        /// Stitches the images provided to a new image with next best square size. 
+        /// {1, 2, 3}      {1, 2}       {1, 2, 3, 4, 5 }
+        /// produces the image 
+        /// 1 2             1            1, 2, 3
+        /// 3 X                          4, 5
+        /// The color format of all images must be equal and have byte format.
+        /// </summary>
+        /// <param name="images">The image array that should be stitched.</param>
+        /// <returns>Stitched image</returns>
+        public static PixImage<T> StitchSquare<T>(this PixImage<T>[] images)
+        {
+            return images.Map(pi => pi.ToPixImage()).StitchSquare().ToPixImage<T>();
         }
 
         #endregion

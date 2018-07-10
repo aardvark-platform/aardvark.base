@@ -757,6 +757,14 @@ module OtherASetTests =
 
         printfn "%A" (flatSet |> ASet.toArray)
 
+        let stuff2 = stuff |> ASet.map (fun x -> x |> Mod.map (fun v -> v * 2))
+        let flatStuff2 = stuff2 |> ASet.flattenM
+
+        flatStuff2 |> ASet.toArray |> Array.length |> should equal 2
+
+        let sum = flatStuff2 |> ASet.sum |> Mod.force
+        sum |> should equal ((2 + 3) * 2)
+
 
 //
 //        

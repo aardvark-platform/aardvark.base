@@ -179,8 +179,6 @@ namespace Aardvark.Base
         /// </summary>
         public static int[] GetOutlineCornerIndicesCW(this Box3d box, V3d fromPosition)
         {
-            var cs = box.ComputeCorners();
-
             if (fromPosition.X < box.Min.X)
             { //-X
                 if (fromPosition.Y < box.Min.Y)
@@ -334,7 +332,7 @@ namespace Aardvark.Base
         public static V3d[] GetOutlineCornersCCW(this Box3d box, V3d fromPosition)
         {
             var cs = box.ComputeCorners();
-            return GetOutlineCornerIndicesCCW(box, fromPosition).Map(i => cs[i]);
+            return GetOutlineCornerIndicesCCW(box, fromPosition)?.Map(i => cs[i]);
         }
 
         /// <summary>
@@ -344,7 +342,7 @@ namespace Aardvark.Base
         public static V3d[] GetOutlineCornersCW(this Box3d box, V3d fromPosition)
         {
             var cs = box.ComputeCorners();
-            return GetOutlineCornerIndicesCW(box, fromPosition).Map(i => cs[i]);
+            return GetOutlineCornerIndicesCW(box, fromPosition)?.Map(i => cs[i]);
         }
     }
 }

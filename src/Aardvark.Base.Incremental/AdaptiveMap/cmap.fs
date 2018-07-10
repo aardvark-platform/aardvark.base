@@ -35,12 +35,24 @@ type cmap<'k, 'v>(initial : seq<'k * 'v>) =
             history.Perform(HMap.single key Remove)
         )
 
+    member x.RemoveRange(key : seq<'k>) =
+        lock x (fun () ->
+            let ops = HMap.ofSeq (key |> Seq.map (fun k -> (k, Remove)))
+            history.Perform(ops)
+        )
+
     member x.Add(key : 'k, value : 'v) =
         lock x (fun () ->
             if history.State.ContainsKey key then
-                raise <| System.Collections.Generic.KeyNotFoundException()
+                raise <| System.ArgumentException("A value with the same key already exists.")
 
             history.Perform(HMap.single key (Set value)) |> ignore
+        )
+
+    member x.AddRange(items : seq<('k * 'v)>) =
+        lock x (fun () ->
+            let ops = HMap.ofSeq (items |> Seq.map (fun (k,v) -> (k, (Set v))))
+            history.Perform(ops) |> ignore
         )
 
     member x.Clear() =

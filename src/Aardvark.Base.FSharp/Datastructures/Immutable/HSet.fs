@@ -82,6 +82,34 @@ module private HSetList =
 
         newL @ newR
 
+    let rec mergeWithOption' (f : 'a -> bool -> bool -> Option<'c>) (l : list<'a>) (r : list<'a>) =
+        let newL = 
+            l |> List.choose (fun lk ->
+                let other = r |> List.exists (fun rk -> Unchecked.equals rk lk)
+ 
+                match f lk true other with
+                    | Some r -> Some (lk, r)
+                    | None -> None
+            )
+        let newR =
+            r |> List.choose (fun rk ->
+                if l |> List.forall (fun lk -> not (Unchecked.equals lk rk)) then
+                    match f rk false true with
+                        | Some r -> Some(rk, r)
+                        | None -> None
+                else 
+                    None
+            )
+        match newL with
+            | [] -> 
+                match newR with
+                    | [] -> None
+                    | _ -> Some newR
+            | _ ->
+                match newR with
+                    | [] -> Some newL
+                    | _ -> Some (newL @ newR)
+
 [<StructuredFormatDisplay("{AsString}")>]
 type hset<'a>(cnt : int, store : intmap<list<'a>>) =
     static let empty = hset(0, IntMap.empty)
@@ -291,13 +319,32 @@ type hset<'a>(cnt : int, store : intmap<list<'a>>) =
 
 
     member x.ComputeDelta(other : hset<'a>) =
-        x.Choose2 (other, fun k l r -> 
-            match l, r with
-                | false, true -> Some 1
-                | true, false -> Some -1
-                | _ -> None
-        )
-        |> hdeltaset
+
+        let mutable cnt = 0
+
+        let del (l : list<'a>) =
+            l |> List.map (fun v -> inc &cnt; v, -1)
+            
+        let add (l : list<'a>) =
+            l |> List.map (fun v -> inc &cnt; v, 1)
+
+        let both (hash : int) (l : list<'a>) (r : list<'a>) =
+            HSetList.mergeWithOption' (fun v l r ->
+                if l && not r then inc &cnt; Some -1
+                elif r && not l then inc &cnt; Some 1
+                else None
+            ) l r
+
+        let store = IntMap.computeDelta both (IntMap.map del) (IntMap.map add) store other.Store
+        hdeltaset (hmap(cnt, store))
+
+        //x.Choose2 (other, fun k l r -> 
+        //    match l, r with
+        //        | false, true -> Some 1
+        //        | true, false -> Some -1
+        //        | _ -> None
+        //)
+        //|> hdeltaset
 
     static member OfSeq (seq : seq<'a>) =
         let mutable res = empty

@@ -82,6 +82,8 @@ namespace Aardvark.Base
             }
         }
 
+#if !TRAVIS_CI
+
         /// <summary>
         /// Sets i-th value in tuple (in-place).
         /// </summary>
@@ -123,6 +125,8 @@ namespace Aardvark.Base
                 default: throw new IndexOutOfRangeException();
             }
         }
+
+#endif
 
         /// <summary>
         /// Creates tuple from given values with values in ascending order. 

@@ -7,9 +7,11 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
     <OutputPath>..\..\bin\Debug\</OutputPath>
+    <DocumentationFile>..\..\bin\Debug\netstandard2.0\Aardvark.Base.Incremental.xml</DocumentationFile>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
     <OutputPath>..\..\bin\Release</OutputPath>
+    <DocumentationFile>..\..\bin\Release\netstandard2.0\Aardvark.Base.Incremental.xml</DocumentationFile>
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="Core\Utilities.fs" />
@@ -24,12 +26,15 @@
     <Compile Include="Mod\History.fs" />
     <Compile Include="AdaptiveSet\asetcore.fs" />
     <Compile Include="AdaptiveSet\cset.fs" />
+    <Compile Include="AdaptiveSet\mset.fs" />
     <Compile Include="AdaptiveSet\aset.fs" />
     <Compile Include="AdaptiveList\alistcore.fs" />
     <Compile Include="AdaptiveList\clist.fs" />
     <Compile Include="AdaptiveList\corderedset.fs" />
+    <Compile Include="AdaptiveList\mlist.fs" />
     <Compile Include="AdaptiveList\alist.fs" />
     <Compile Include="AdaptiveMap\amapcore.fs" />
+    <Compile Include="AdaptiveMap\mmap.fs" />
     <Compile Include="AdaptiveMap\cmap.fs" />
     <Compile Include="AdaptiveMap\amap.fs" />
     <Compile Include="AdaptiveFunc\AdaptiveFunc.fs" />

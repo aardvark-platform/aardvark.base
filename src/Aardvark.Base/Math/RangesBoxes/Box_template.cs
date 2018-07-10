@@ -634,16 +634,22 @@ namespace Aardvark.Base
         }
 
         //# if (ft.IsReal) {
+        /// <summary>
+        /// Returns the squared distance to the supplied point.
+        /// </summary>
         public double DistanceSquared(__ltype__ p)
         {
             return /*# fields.ForEach(f => { */
-                p.__f__ < Min.__f__ ? (Min.__f__ - p.__f__) * (Min.__f__ - p.__f__) : (p.__f__ > Max.__f__ ? (p.__f__ - Max.__f__) * (p.__f__ - Max.__f__) : 0.0)/*# }, add); */;
+                (p.__f__ < Min.__f__ ? (Min.__f__ - p.__f__) * (Min.__f__ - p.__f__) : (p.__f__ > Max.__f__ ? (p.__f__ - Max.__f__) * (p.__f__ - Max.__f__) : 0.0))/*# }, add); */;
         }
 
+        /// <summary>
+        /// Returns the distance to the supplied point.
+        /// </summary>
         public double Distance(__ltype__ p)
         {
             return Fun.Sqrt(/*# fields.ForEach(f => { */
-                p.__f__ < Min.__f__ ? (Min.__f__ - p.__f__) * (Min.__f__ - p.__f__) : (p.__f__ > Max.__f__ ? (p.__f__ - Max.__f__) * (p.__f__ - Max.__f__) : 0.0)/*# }, add); */);
+                (p.__f__ < Min.__f__ ? (Min.__f__ - p.__f__) * (Min.__f__ - p.__f__) : (p.__f__ > Max.__f__ ? (p.__f__ - Max.__f__) * (p.__f__ - Max.__f__) : 0.0))/*# }, add); */);
         }
 
         //# } // ft.IsReal
@@ -708,6 +714,9 @@ namespace Aardvark.Base
         //# } // ftype == "float" || ftype == "double"
 
         //# if (dim > 1) {
+        /// <summary>
+        /// Returns the __bname__ with Min value clamped to splitValue.
+        /// </summary>
         public __type__ SplitRight(__ltype__ splitValue)
         {
             var result = new __type__(Min, Max);
@@ -717,6 +726,9 @@ namespace Aardvark.Base
             return result;
         }
 
+        /// <summary>
+        /// Returns the __bname__ with Max value clamped to splitValue.
+        /// </summary>
         public __type__ SplitLeft(__ltype__ splitValue)
         {
             var result = new __type__(Min, Max);
@@ -728,6 +740,9 @@ namespace Aardvark.Base
 
         //# }
         //# if (dim == 1) {
+        /// <summary>
+        /// Returns the __bname__ with Min value clamped to splitValue.
+        /// </summary>
         public __type__ SplitRight(__ftype__ splitValue)
         {
             if (splitValue > Max) return __type__.Invalid;
@@ -735,6 +750,9 @@ namespace Aardvark.Base
             return new __type__(splitValue, Max);
         }
 
+        /// <summary>
+        /// Returns the __bname__ with Max value clamped to splitValue.
+        /// </summary>
         public __type__ SplitLeft(__ftype__ splitValue)
         {
             if (splitValue < Min) return __type__.Invalid;
@@ -744,6 +762,9 @@ namespace Aardvark.Base
 
         //# }
         //# if (dim == 2) {
+        /// <summary>
+        /// Returns the __bname__ with Min.X clamped to splitValue.
+        /// </summary>
         public __type__ SplitRight(__ftype__ splitAtX)
         {
             if (splitAtX > Max.X) return __type__.Invalid;
@@ -751,6 +772,9 @@ namespace Aardvark.Base
             return new __type__(new __ltype__(splitAtX, Min.Y), Max);
         }
 
+        /// <summary>
+        /// Returns a __bname__ with Max.X clamped to splitValue.
+        /// </summary>
         public __type__ SplitLeft(__ftype__ splitAtX)
         {
             if (splitAtX < Min.X) return __type__.Invalid;
@@ -758,6 +782,9 @@ namespace Aardvark.Base
             return new __type__(Min, new __ltype__(splitAtX, Max.Y));
         }
 
+        /// <summary>
+        /// Returns the __bname__ with Min.Y clamped to splitValue.
+        /// </summary>
         public __type__ SplitTop(__ftype__ splitAtY)
         {
             if (splitAtY > Max.Y) return __type__.Invalid;
@@ -765,6 +792,9 @@ namespace Aardvark.Base
             return new __type__(new __ltype__(Min.X, splitAtY), Max);
         }
 
+        /// <summary>
+        /// Returns the __bname__ with Max.Y clamped to splitValue.
+        /// </summary>
         public __type__ SplitBottom(__ftype__ splitAtY)
         {
             if (splitAtY < Min.Y) return __type__.Invalid;

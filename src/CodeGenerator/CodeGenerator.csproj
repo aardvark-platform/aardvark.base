@@ -48,7 +48,7 @@
     <Compile Include="TemplateProcessor.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="App.config" />
+    <None Include="app.config" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Aardvark.Base\Aardvark.Base.csproj">
