@@ -112,9 +112,9 @@ namespace Aardvark.Base
         public static bool Contains(this Quad2d quad, V2d point)
         {
             return LeftValOfPos(0, 1, ref point) >= 0.0 &&
-                    LeftValOfPos(1, 2, ref point) >= 0.0 &&
-                    LeftValOfPos(2, 3, ref point) >= 0.0 &&
-                    LeftValOfPos(3, 0, ref point) >= 0.0;
+                   LeftValOfPos(1, 2, ref point) >= 0.0 &&
+                   LeftValOfPos(2, 3, ref point) >= 0.0 &&
+                   LeftValOfPos(3, 0, ref point) >= 0.0;
 
             double LeftValOfPos(int i0, int i1, ref V2d p)
                 => (p.X - quad[i0].X) * (quad[i0].Y - quad[i1].Y) + (p.Y - quad[i0].Y) * (quad[i1].X - quad[i0].X);

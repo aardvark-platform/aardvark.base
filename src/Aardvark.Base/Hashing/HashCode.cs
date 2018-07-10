@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using static System.Math;
 
 namespace Aardvark.Base
@@ -30,41 +31,52 @@ namespace Aardvark.Base
             DEALINGS IN THE SOFTWARE.
         */
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static uint UCombine(int a, int b)
             => (uint)a ^ (uint)b + 0x9e3779b9 + ((uint)a << 6) + ((uint)a >> 2);
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static uint UCombine(uint a, int b)
             => a ^ (uint)b + 0x9e3779b9 + (a << 6) + (a >> 2);
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static uint UCombine(int a, uint b)
             => (uint)a ^ (uint)b + 0x9e3779b9 + ((uint)a << 6) + ((uint)a >> 2);
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static uint UCombine(uint a, uint b)
             => a ^ b + 0x9e3779b9 + (a << 6) + (a >> 2);
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static int Combine(uint a, uint b)
             => (int)(a ^ b + 0x9e3779b9 + (a << 6) + (a >> 2));
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static int Combine(int a, uint b)
             => (int)((uint)a ^ b + 0x9e3779b9 + ((uint)a << 6) + ((uint)a >> 2));
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static int Combine(uint a, int b)
             => (int)(a ^ (uint)b + 0x9e3779b9 + (a << 6) + (a >> 2));
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static int Combine(int a, int b)
             => (int)((uint)a ^ (uint)b + 0x9e3779b9 + ((uint)a << 6) + ((uint)a >> 2));
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static int Combine(long a, int b)
             => Combine(UCombine((int)(a >> 32), (int)a), b);
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static int Combine(int a, long b)
             => Combine(a, UCombine((int)(b >> 32), (int)b));
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static int Combine(long a, long b)
             => Combine(UCombine((int)(a >> 32), (int)a),
                        UCombine((int)(b >> 32), (int)b));
-
-
+        
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static int Combine(int a, int b, params int[] rest)
         {
             uint h = UCombine(a, b);
@@ -72,17 +84,20 @@ namespace Aardvark.Base
             return (int)h;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static int GetCombined<T0, T1>(T0 e0, T1 e1)
             where T0 : struct
             where T1 : struct
             => Combine(e0.GetHashCode(), e1.GetHashCode());
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static int GetCombined<T0, T1, T2>(T0 e0, T1 e1, T2 e2)
             where T0 : struct
             where T1 : struct
             where T2 : struct
             => Combine(UCombine(e0.GetHashCode(), e1.GetHashCode()), e2.GetHashCode());
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static int GetCombined<T0, T1, T2, T3>(T0 e0, T1 e1, T2 e2, T3 e3)
             where T0 : struct
             where T1 : struct
@@ -90,6 +105,7 @@ namespace Aardvark.Base
             where T3 : struct
             => Combine(UCombine(UCombine(e0.GetHashCode(), e1.GetHashCode()), e2.GetHashCode()), e3.GetHashCode());
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static int GetCombined<T0, T1, T2, T3, T4>(T0 e0, T1 e1, T2 e2, T3 e3, T4 e4)
             where T0 : struct
             where T1 : struct
@@ -102,6 +118,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Compute the combined hash code of an IEnumerable of items.
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static int GetCombinedHashCode<T>(this IEnumerable<T> items)
             where T : struct
             => (int)items.Aggregate(0U, (h, i) => UCombine(h, i.GetHashCode()));
@@ -110,6 +127,7 @@ namespace Aardvark.Base
         /// Compute the combined hash code of an array of items (explicit
         /// implementation in order to be faster than IEnumerable version).
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static int GetCombinedHashCode<T>(this T[] array)
             where T : struct
             => array.GetCombinedHashCode(array.LongLength);
@@ -118,6 +136,7 @@ namespace Aardvark.Base
         /// Compute the combined hash code of an array of items (explicit
         /// implementation in order to be faster than IEnumerable version).
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static int GetCombinedHashCode<T>(this T[] array, long count)
             where T : struct
         {
@@ -132,6 +151,7 @@ namespace Aardvark.Base
         /// Compute the combined hash code of an array of items (explicit
         /// implementation in order to be faster than IEnumerable version).
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static int GetCombinedHashCode<T>(this T[] array, long first, long count)
             where T : struct
         {
@@ -142,16 +162,18 @@ namespace Aardvark.Base
             return (int)h;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static int GetCombinedWithDefaultZero<T0, T1>(T0 e0, T1 e1)
             => Combine(e0.Equals(default(T0)) ? 0 : e0.GetHashCode(),
                        e1.Equals(default(T1)) ? 0 : e1.GetHashCode());
-
-
+        
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static int GetCombinedWithDefaultZero<T0, T1, T2>(T0 e0, T1 e1, T2 e2)
             => Combine(UCombine(e0.Equals(default(T0)) ? 0 : e0.GetHashCode(),
                                 e1.Equals(default(T1)) ? 0 : e1.GetHashCode()),
                                 e2.Equals(default(T2)) ? 0 : e2.GetHashCode());
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static int GetCombinedWithDefaultZero<T0, T1, T2, T3>(T0 e0, T1 e1, T2 e2, T3 e3)
             => Combine(UCombine(UCombine(e0.Equals(default(T0)) ? 0 : e0.GetHashCode(),
                                          e1.Equals(default(T1)) ? 0 : e1.GetHashCode()),
@@ -163,6 +185,7 @@ namespace Aardvark.Base
         /// unit grid. Add items with this function, retrieve with function
         /// HashCode.Get2.
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static int Get1of2(double x)
         {
             var xi = (long)Floor(x);
@@ -175,6 +198,7 @@ namespace Aardvark.Base
         /// array. Items need to be added just with the first of the two
         /// hashcodes (also computed by function HashCodeGet1of2).
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static void Get2(double x, int[] hca)
         {
             var xi = (long)Floor(x);
@@ -190,6 +214,7 @@ namespace Aardvark.Base
         /// unit grid. Add items with this function, retrieve with function
         /// HashCode.Get4.
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static int Get1of4(double x, double y)
         {
             var xi = (long)Floor(x);
@@ -204,6 +229,7 @@ namespace Aardvark.Base
         /// array. Items need to be added just with the first of the four
         /// hashcodes (also computed by function HashCodeGet1of4).
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static void Get4(double x, double y, int[] hca)
         {
             var xi = (long)Floor(x);
@@ -223,6 +249,7 @@ namespace Aardvark.Base
         /// unit grid. Add items with this function, retrieve with function
         /// HashCode.Get8.
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static int Get1of8(double x, double y, double z)
         {
             var xi = (long)Floor(x);
@@ -238,6 +265,7 @@ namespace Aardvark.Base
         /// array. Items need to be added just with the first of the eight
         /// hashcodes (also computed by function HashCodeGet1of2).
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static void Get8(double x, double y, double z, int[] hca)
         {
             var xi = (long)Floor(x);
@@ -263,6 +291,7 @@ namespace Aardvark.Base
         /// unit grid. Add items with this function, retrieve with function
         /// HashCode.Get16.
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static int Get1of16(double x, double y, double z, double w)
         {
             var xi = (long)Floor(x);
@@ -279,6 +308,7 @@ namespace Aardvark.Base
         /// array. Items need to be added just with the first of the 16
         /// hashcodes (also computed by function HashCodeGet1of16).
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static void Get16(double x, double y, double z, double w, int[] hca)
         {
             var xi = (long)Floor(x);

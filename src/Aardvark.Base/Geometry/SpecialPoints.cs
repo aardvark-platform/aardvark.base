@@ -650,8 +650,7 @@ namespace Aardvark.Base
 
         #endregion
     }
-
-
+    
     public static partial class GeometryFun
     {
         #region Range1d - Range1d
