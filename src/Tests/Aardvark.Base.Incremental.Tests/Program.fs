@@ -4,7 +4,7 @@ open Aardvark.Base.Incremental
 open Aardvark.Base.Incremental.Tests
 open System.Threading
 
-//[<EntryPoint>]
+[<EntryPoint>]
 let main args =
 
 
