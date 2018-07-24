@@ -9,7 +9,7 @@
     <NoWarn>1701;1702;1705;1591</NoWarn>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
-    <OutputPath>..\..\bin\Release\netstandard2.0\</OutputPath>
+    <OutputPath>..\..\bin\Release</OutputPath>
     <DocumentationFile>..\..\bin\Release\netstandard2.0\Aardvark.Base.Telemetry.xml</DocumentationFile>
     <NoWarn>1701;1702;1705;1591</NoWarn>
   </PropertyGroup>
