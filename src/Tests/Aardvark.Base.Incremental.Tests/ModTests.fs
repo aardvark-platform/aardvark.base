@@ -732,6 +732,31 @@ module ``Basic Mod Tests`` =
 
 
     [<Test>]
+    let ``[Mod] exception during evaluation`` () =
+
+        let input = Mod.init 10
+        let input2 = Mod.init 2
+        
+        let res = input |> Mod.map (fun v -> if (v &&& 0x1) <> 0 then failwith "does not divide by 2" else v >>> 1)
+        //let res = res |> Mod.map (fun v -> v * 2)
+        
+        transact(fun () -> Mod.change input 6)
+        try
+            printfn "%d" (Mod.force res) 
+        with e -> printfn "%A" e
+
+        transact(fun () -> Mod.change input 5)
+        try
+            printfn "%d" (Mod.force res)  // evaluation will throw exception -> AdaptiveObject locks are not release
+        with e -> printfn "%A" e
+
+        transact(fun () -> Mod.change input 4) // marking will block as AdaptiveObject locks have not been release due to exception
+        try
+            printfn "%d" (Mod.force res) 
+        with e -> printfn "%A" e
+        
+
+    [<Test>]
     let ``[Mod] parallel consistent concurrency test``() =
         let a = Mod.init 10
         let b = Mod.init -10
