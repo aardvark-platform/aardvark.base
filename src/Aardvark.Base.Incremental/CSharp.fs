@@ -413,6 +413,13 @@ type AdaptiveSetExtensions private() =
     static member MapSet (this : aset<'a>, valueSelector : Func<'a, 'v>) =
         this |> AMap.mapSet valueSelector.Invoke 
 
+    /// <summary>
+    /// Statically test if an items is contained in the AdaptiveSet
+    /// </summary>
+    [<Extension>]
+    static member Contains (this : aset<'a>, item : 'a) =
+        this.Content |> Mod.force |> HRefSet.contains item
+
     [<Extension>]
     static member ContainsMod (this : aset<'a>, [<ParamArray>] item : 'a[]) =
         this |> ASet.containsAll item
@@ -438,10 +445,22 @@ type AdaptiveSetExtensions private() =
     static member ContainsAll (this : aset<'a>, item : seq<'a>) =
         this |> ASet.containsAll item
 
-
+    /// <summary> Provides direct access to IAdaptiveSet.GetReader as interface implementation is explicit and would requires cast. </summary>
     [<Extension>]
     static member GetReader (this : aset<'a>) =
         this.GetReader()
+
+    [<Extension>]
+    static member Count (this : aset<'a>) =
+        ASet.count this
+
+    [<Extension>]
+    static member IsEmpty (this : aset<'a>) =
+        this.Content |> Mod.map (fun x -> x.Count = 0)
+
+    [<Extension>]
+    static member Any (this : aset<'a>) =
+        this.Content |> Mod.map (fun x -> x.Count > 0)
 
     [<Extension>]
     static member GetOperations (this : ISetReader<'a>) =
