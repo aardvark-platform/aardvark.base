@@ -442,9 +442,17 @@ module Mod =
 
         member x.Input = input
 
+
         override x.Mark() =
             base.Mark() |> ignore
+
+            let oldState = AdaptiveObject.UnsaveEvaluationDepth
+            AdaptiveObject.UnsaveEvaluationDepth <- 0
+
             let newValue = x.GetValue(AdaptiveToken.Top)
+
+            AdaptiveObject.UnsaveEvaluationDepth <- oldState
+
             x.OutOfDate <- false
 
             if hasChanged newValue then

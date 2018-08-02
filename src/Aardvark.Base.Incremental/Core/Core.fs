@@ -562,7 +562,6 @@ type AdaptiveObject =
         [<DefaultValue; ThreadStatic>]
         static val mutable private EvaluationDepthValue : int
 
-
         val mutable public Id : int
         val mutable public OutOfDateValue : bool
         val mutable public LevelValue : int 
@@ -570,6 +569,11 @@ type AdaptiveObject =
         val mutable public WeakThis : WeakReference<IAdaptiveObject>
         val mutable public ReaderCountValue : int
         val mutable public Reevaluate : bool
+
+        /// used for reseting EvaluationDepth in eager evaluation
+        static member internal UnsaveEvaluationDepth
+            with get() = AdaptiveObject.EvaluationDepthValue
+            and set v = AdaptiveObject.EvaluationDepthValue <- v
 
         member x.Level
             with inline get() = if x.Reevaluate then 0 else x.LevelValue

@@ -194,9 +194,9 @@ CONTENT: NONE
 RESTRICTION: == net471
 NUGET
   remote: https://api.nuget.org/v3/index.json
-    FAKE (4.63.2) - content: none
-    Mono.Cecil (0.10) - content: none
-    SourceLink.Fake (1.1) - content: none
+    FAKE (4.63.2)
+    Mono.Cecil (0.10)
+    SourceLink.Fake (1.1)
 GITHUB
   remote: aardvark-platform/aardvark.fake
     FULLPROJECT (bfae10520868567c41bfa9196a7ac7ef79bb50f6)
