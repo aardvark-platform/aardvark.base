@@ -212,7 +212,6 @@ type AdaptiveToken =
         val mutable public Caller : IAdaptiveObject
         val mutable public Locked : HashSet<IAdaptiveObject>
         val mutable public Tag : obj
-        val mutable public EvaluationDepth : int
 
         member inline x.EnterRead(o : IAdaptiveObject) =
             Monitor.Enter o
@@ -245,24 +244,23 @@ type AdaptiveToken =
 
 
         member inline x.WithCaller (c : IAdaptiveObject) =
-            AdaptiveToken(c, x.Locked, x.Tag, x.EvaluationDepth + 1)
+            AdaptiveToken(c, x.Locked, x.Tag)
 
         member inline x.WithTag (t : obj) =
-            AdaptiveToken(x.Caller, x.Locked, t, x.EvaluationDepth)
+            AdaptiveToken(x.Caller, x.Locked, t)
 
 
         member inline x.Isolated =
-            AdaptiveToken(x.Caller, HashSet(), x.Tag, x.EvaluationDepth)
+            AdaptiveToken(x.Caller, HashSet(), x.Tag)
 
-        static member inline Top = AdaptiveToken(null, HashSet(), null, 0)
+        static member inline Top = AdaptiveToken(null, HashSet(), null)
         static member inline Empty = Unchecked.defaultof<AdaptiveToken>
 
-        new(caller : IAdaptiveObject, locked : HashSet<IAdaptiveObject>, tag : obj, evaluationDepth : int) =
+        new(caller : IAdaptiveObject, locked : HashSet<IAdaptiveObject>, tag : obj) =
             {
                 Caller = caller
                 Locked = locked
                 Tag = tag
-                EvaluationDepth = evaluationDepth
             }
     end
 
@@ -561,8 +559,8 @@ type AdaptiveObject =
         [<DefaultValue>]
         static val mutable private time : IAdaptiveObject 
 
-        //[<DefaultValue; ThreadStatic>]
-        //static val mutable private EvaluationDepthValue : int
+        [<DefaultValue; ThreadStatic>]
+        static val mutable private EvaluationDepthValue : int
 
 
         val mutable public Id : int
@@ -609,7 +607,7 @@ type AdaptiveObject =
 
         member this.evaluate (token : AdaptiveToken) (f : AdaptiveToken -> 'a) =
             let caller = token.Caller
-            let depth = token.EvaluationDepth
+            let depth = AdaptiveObject.EvaluationDepthValue
 
             let mutable res = Unchecked.defaultof<_>
             token.EnterRead this
@@ -617,6 +615,8 @@ type AdaptiveObject =
             this.Reevaluate <- false
 
             try
+                AdaptiveObject.EvaluationDepthValue <- depth + 1
+
                 // this evaluation is performed optimistically
                 // meaning that the "top-level" object needs to be allowed to
                 // pull at least one value on every path.
@@ -641,6 +641,7 @@ type AdaptiveObject =
                                                                      
                 res <- r
 
+
                 if not (isNull caller) then
                     if this.Reevaluate then
                         caller.Reevaluate <- true
@@ -650,10 +651,12 @@ type AdaptiveObject =
                         this.Outputs.Add caller |> ignore
                         caller.Level <- max caller.Level (this.Level + 1)
 
-            with :? LevelChangedException as e ->
+            with _ ->
+                AdaptiveObject.EvaluationDepthValue <- depth
                 token.ExitFaultedRead this
                 reraise()
                 
+            AdaptiveObject.EvaluationDepthValue <- depth
             // downgrade to read
             token.Downgrade this
 

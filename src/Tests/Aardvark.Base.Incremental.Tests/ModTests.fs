@@ -113,19 +113,6 @@ module ``Basic Mod Tests`` =
         derived2.OutOfDate |> should equal true
         derived2 |> Mod.force |> should equal 3
 
-    [<Test>]
-    let ``[Mod] transaction with onPush``() =
-        let a0 = Mod.init 0
-        let a1 = a0 |> Mod.onPush
-
-        let b0 = Mod.init 1
-        let b1 = b0 |> Mod.map (fun x -> 
-            transact (fun () -> Mod.change a0 10)
-            x + a1.GetValue())
-        let b2 = b1 |> Mod.map (fun x -> x + 1 )
-        let b3 = b2 |> Mod.map (fun x -> x + 1)
-
-        b3.GetValue() |> should equal 13
 
     [<Test>]
     let ``[Mod] basic bind test``() =
