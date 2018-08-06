@@ -166,7 +166,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns those indices of the supplied index array to the supplied
         /// points set that constitute the convex hull. The returned indices
-        /// emumerate the convex hull in counter-clockwise fashion.
+        /// enumerate the convex hull in counter-clockwise fashion.
         /// Implemented via Andrew's monotone chain 2d convex hull algorithm.
         /// </summary>
         public static IndexPolygon2d ConvexHullIndexPolygon(
@@ -179,7 +179,7 @@ namespace Aardvark.Base
 
         /// <summary>
         /// Returns the indices of the points of the supplied point set that
-        /// constitute the convex hull. The returned indices emumerate the
+        /// constitute the convex hull. The returned indices enumerate the
         /// convex hull in counter-clockwise fashion. Implemented via Andrew's
         /// monotone chain 2d convex hull algorithm.
         /// </summary>
