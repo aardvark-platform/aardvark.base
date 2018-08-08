@@ -797,8 +797,19 @@ namespace Aardvark.Base
             }
         }
 
+        /// <summary>
+        /// Vector rotated 90° counter clockwise: (-Y, X)
+        /// </summary>
         public __vtype__ Rot90 { get { return new __vtype__(-Y, X); } }
+
+        /// <summary>
+        /// Vector rotated 180° counter clockwise: (-X, -Y)
+        /// </summary>
         public __vtype__ Rot180 { get { return new __vtype__(-X, -Y); } }
+
+        /// <summary>
+        /// Vector rotated 270° counter clockwise: (Y, -X)
+        /// </summary>
         public __vtype__ Rot270 { get { return new __vtype__(Y, -X); } }
 
         //# } // d == 2

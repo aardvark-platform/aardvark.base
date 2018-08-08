@@ -961,11 +961,29 @@ namespace Aardvark.Base
         public bool IsValid { get { return true; } }
         public bool IsInvalid { get { return false; } }
 
+        /// <summary>
+        /// Edge P1 - P0
+        /// </summary>
         public V2d Edge01 { get { return P1 - P0; } }
+        /// <summary>
+        /// Edge P2 - P0
+        /// </summary>
         public V2d Edge02 { get { return P2 - P0; } }
+        /// <summary>
+        /// Edge P2 - P1
+        /// </summary>
         public V2d Edge12 { get { return P2 - P1; } }
+        /// <summary>
+        /// Edge P0 - P1
+        /// </summary>
         public V2d Edge10 { get { return P0 - P1; } }
+        /// <summary>
+        /// Edge P0 - P2
+        /// </summary>
         public V2d Edge20 { get { return P0 - P2; } }
+        /// <summary>
+        /// Edge P1 - P2
+        /// </summary>
         public V2d Edge21 { get { return P1 - P2; } }
 
         public IEnumerable<V2d> Edges
@@ -1207,13 +1225,37 @@ namespace Aardvark.Base
         public bool IsValid { get { return true; } }
         public bool IsInvalid { get { return false; } }
 
+        /// <summary>
+        /// Edge P1 - P0
+        /// </summary>
         public V2d Edge01 { get { return P1 - P0; } }
+        /// <summary>
+        /// Edge P3 - P0
+        /// </summary>
         public V2d Edge03 { get { return P3 - P0; } }
+        /// <summary>
+        /// Edge P2 - P1
+        /// </summary>
         public V2d Edge12 { get { return P2 - P1; } }
+        /// <summary>
+        /// Edge P0 - P1
+        /// </summary>
         public V2d Edge10 { get { return P0 - P1; } }
+        /// <summary>
+        /// Edge P3 - P2
+        /// </summary>
         public V2d Edge23 { get { return P3 - P2; } }
+        /// <summary>
+        /// Edge P1 - P2
+        /// </summary>
         public V2d Edge21 { get { return P1 - P2; } }
+        /// <summary>
+        /// Edge P0 - P3
+        /// </summary>
         public V2d Edge30 { get { return P0 - P3; } }
+        /// <summary>
+        /// Edge P2 - P3
+        /// </summary>
         public V2d Edge32 { get { return P2 - P3; } }
 
         public IEnumerable<V2d> Edges
@@ -2376,11 +2418,29 @@ namespace Aardvark.Base
         public bool IsValid { get { return true; } }
         public bool IsInvalid { get { return false; } }
 
+        /// <summary>
+        /// Edge P1 - P0
+        /// </summary>
         public V3d Edge01 { get { return P1 - P0; } }
+        /// <summary>
+        /// Edge P2 - P0
+        /// </summary>
         public V3d Edge02 { get { return P2 - P0; } }
+        /// <summary>
+        /// Edge P2 - P1
+        /// </summary>
         public V3d Edge12 { get { return P2 - P1; } }
+        /// <summary>
+        /// Edge P0 - P1
+        /// </summary>
         public V3d Edge10 { get { return P0 - P1; } }
+        /// <summary>
+        /// Edge P0 - P2
+        /// </summary>
         public V3d Edge20 { get { return P0 - P2; } }
+        /// <summary>
+        /// Edge P1 - P2
+        /// </summary>
         public V3d Edge21 { get { return P1 - P2; } }
 
         public IEnumerable<V3d> Edges
@@ -2622,13 +2682,37 @@ namespace Aardvark.Base
         public bool IsValid { get { return true; } }
         public bool IsInvalid { get { return false; } }
 
+        /// <summary>
+        /// Edge P1 - P0
+        /// </summary>
         public V3d Edge01 { get { return P1 - P0; } }
+        /// <summary>
+        /// Edge P3 - P0
+        /// </summary>
         public V3d Edge03 { get { return P3 - P0; } }
+        /// <summary>
+        /// Edge P2 - P1
+        /// </summary>
         public V3d Edge12 { get { return P2 - P1; } }
+        /// <summary>
+        /// Edge P0 - P1
+        /// </summary>
         public V3d Edge10 { get { return P0 - P1; } }
+        /// <summary>
+        /// Edge P3 - P2
+        /// </summary>
         public V3d Edge23 { get { return P3 - P2; } }
+        /// <summary>
+        /// Edge P1 - P2
+        /// </summary>
         public V3d Edge21 { get { return P1 - P2; } }
+        /// <summary>
+        /// Edge P0 - P3
+        /// </summary>
         public V3d Edge30 { get { return P0 - P3; } }
+        /// <summary>
+        /// Edge P2 - P3
+        /// </summary>
         public V3d Edge32 { get { return P2 - P3; } }
 
         public IEnumerable<V3d> Edges

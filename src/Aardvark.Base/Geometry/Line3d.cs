@@ -10,12 +10,18 @@ namespace Aardvark.Base
     {
         #region Geometric Properties
 
+        /// <summary>
+        /// P0
+        /// </summary>
         public V3d Origin
         {
             get { return P0; }
             set { P0 = value; }
         }
 
+        /// <summary>
+        /// P1 - P0
+        /// </summary>
         public V3d Direction
         {
             get { return P1 - P0; }

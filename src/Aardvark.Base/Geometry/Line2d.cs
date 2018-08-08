@@ -9,12 +9,18 @@
 
         public V2d Center => (P0 + P1) * 0.5;
 
+        /// <summary>
+        /// P0
+        /// </summary>
         public V2d Origin
         {
             get { return P0; }
             set { P0 = value; }
         }
 
+        /// <summary>
+        /// P1 - P0
+        /// </summary>
         public V2d Direction
         {
             get { return P1 - P0; }

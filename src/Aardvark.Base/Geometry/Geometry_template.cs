@@ -833,6 +833,9 @@ namespace Aardvark.Base
 
         //# if (pc > 2) {
         //# pc.ForEach(i => { foreach (var j in new[] { (i + 1) % pc, (i + pcsub1) % pc }) {
+        /// <summary>
+        /// Edge P__j__ - P__i__
+        /// </summary>
         public __tvec__ Edge__i____j__ { get { return P__j__ - P__i__; } }
         //# } });
 
