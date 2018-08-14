@@ -713,7 +713,11 @@ module Mod =
 
         let set = callbackTable.GetOrCreateValue(m)
         set.Add result |> ignore
-        result
+        { new IDisposable with
+            member x.Dispose() =
+                result.Dispose()
+                set.Remove result |> ignore
+        }
 
     [<Obsolete("use unsafeRegisterCallbackNoGcRoot or unsafeRegisterCallbackKeepDisposable instead")>]
     let registerCallback f m = unsafeRegisterCallbackNoGcRoot f m

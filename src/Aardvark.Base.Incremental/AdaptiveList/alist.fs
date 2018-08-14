@@ -1158,10 +1158,13 @@ module AList =
                 m.GetOperations(self) |> PDeltaList.toList |> f
             )
 
-
         let callbackSet = callbackTable.GetOrCreateValue(list)
         callbackSet.Add result |> ignore
-        result
+        { new IDisposable with
+            member x.Dispose() =
+                result.Dispose()
+                callbackSet.Remove result |> ignore
+        }
 
     [<Obsolete("use unsafeRegisterCallbackNoGcRoot or unsafeRegisterCallbackKeepDisposable instead")>]
     let registerCallback f set = unsafeRegisterCallbackNoGcRoot f set
