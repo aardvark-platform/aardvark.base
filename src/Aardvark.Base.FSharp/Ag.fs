@@ -76,6 +76,52 @@ module Ag =
                           p
 
 
+    #if DEBUGSCOPES
+    type Node (scope : Scope) =
+
+        let children = List<Node>()
+
+        member x.Scope = scope
+
+        member x.Children = children
+        
+
+    let mutable strong : HashSet<Node> = Unchecked.defaultof<_>
+                    
+    let makeStrongReferences() =
+        let roots =  HashSet<Node>()
+        let nodes = Dictionary<Scope, Node>()
+
+        for x in allScopes do
+            let wr = x :?> System.WeakReference<obj>
+            match wr.TryGetTarget() with
+                | (true, sr) -> 
+                    let scope = sr :?> Scope
+                                                    
+                    let n = match nodes.TryGetValue scope with
+                            | (true, n) -> n
+                            | _ -> let n = Node(scope)
+                                   nodes.Add(scope, n)
+                                   n
+
+                    match scope.parent with 
+                        | Some p -> 
+                            let pn = match nodes.TryGetValue p with
+                                       | (true, pn) -> pn
+                                       | _ -> let n = Node(p)
+                                              nodes.Add(p, n)
+                                              n
+                            pn.Children.Add(n)
+
+                        | _ ->  roots.Add(n) |> ignore
+                    ()
+                | _ -> ()
+            ()
+        strong <- roots
+
+    let clearStrongReferences() =
+        strong <- Unchecked.defaultof<_>
+    #endif
     
     type Root<'a>(child : obj) =
         member x.Child = child
