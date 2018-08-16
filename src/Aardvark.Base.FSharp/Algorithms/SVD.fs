@@ -193,7 +193,7 @@ module private SVDHelpers =
 
     
         for i0 in 0..m-2 do
-            if w i0 < LanguagePrimitives.GenericOne then
+            if w i0 < LanguagePrimitives.GenericZero then
                 let i1 = m-1
                 setw i0 (-w i0)
                 setw i1 (-w i1)
