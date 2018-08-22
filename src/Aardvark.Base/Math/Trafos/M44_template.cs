@@ -572,6 +572,45 @@ namespace Aardvark.Base
                 0, 0, 0, 1);
         }
 
+        /// <summary>
+        /// Creates a view tranformation from the given vectors.
+        /// Transformation from world- into view-space.
+        /// </summary>
+        /// <param name="location">Origin of the view</param>
+        /// <param name="right">Right vector of the view-plane</param>
+        /// <param name="up">Up vector of the view-plane</param>
+        /// <param name="normal">Normal vector of the view-plane. This vector is suppsoed to point in view-direction for a left-handed view transformation and in opposit direction in the right-handed case.</param>
+        /// <returns>The view transformation</returns>
+        public static M4__x4t__ ViewTrafo(V__x3t__ location, V__x3t__ right, V__x3t__ up, V__x3t__ normal)
+        {
+            return new M4__x4t__(
+                    right.X,  right.Y,  right.Z,  -location.Dot(right),
+                    up.X,     up.Y,     up.Z,     -location.Dot(up),
+                    normal.X, normal.Y, normal.Z, -location.Dot(normal),
+                    0,        0,        0,         1
+                );
+        }
+
+        /// <summary>
+        /// Creates a inverse view tranformation from the given vectors.
+        /// Transformation from view- into world-space.
+        /// The implementation is the same as FromBasis(right, up, normal, location)
+        /// </summary>
+        /// <param name="location">Origin of the view</param>
+        /// <param name="right">Right vector of the view-plane</param>
+        /// <param name="up">Up vector of the view-plane</param>
+        /// <param name="normal">Normal vector of the view-plane. This vector is suppsoed to point in view-direction for a left-handed view transformation and in opposit direction in the right-handed case.</param>
+        /// <returns>The inverse view transformation</returns>
+        public static M4__x4t__ InvViewTrafo(V__x3t__ location, V__x3t__ right, V__x3t__ up, V__x3t__ normal)
+        {
+            return new M4__x4t__(
+                    right.X, up.X, normal.X, location.X,
+                    right.Y, up.Y, normal.Y, location.Y,
+                    right.Z, up.Z, normal.Z, location.Z,
+                    0, 0, 0, 1
+                );
+        }
+
         #endregion
 
         #region ITransform<V__x3t__> implementation.

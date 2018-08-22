@@ -567,6 +567,45 @@ namespace Aardvark.Base
                 0, 0, 0, 1);
         }
 
+        /// <summary>
+        /// Creates a view tranformation from the given vectors.
+        /// Transformation from world- into view-space.
+        /// </summary>
+        /// <param name="location">Origin of the view</param>
+        /// <param name="right">Right vector of the view-plane</param>
+        /// <param name="up">Up vector of the view-plane</param>
+        /// <param name="normal">Normal vector of the view-plane. This vector is suppsoed to point in view-direction for a left-handed view transformation and in opposit direction in the right-handed case.</param>
+        /// <returns>The view transformation</returns>
+        public static M44f ViewTrafo(V3f location, V3f right, V3f up, V3f normal)
+        {
+            return new M44f(
+                    right.X,  right.Y,  right.Z,  -location.Dot(right),
+                    up.X,     up.Y,     up.Z,     -location.Dot(up),
+                    normal.X, normal.Y, normal.Z, -location.Dot(normal),
+                    0,        0,        0,         1
+                );
+        }
+
+        /// <summary>
+        /// Creates a inverse view tranformation from the given vectors.
+        /// Transformation from view- into world-space.
+        /// The implementation is the same as FromBasis(right, up, normal, location)
+        /// </summary>
+        /// <param name="location">Origin of the view</param>
+        /// <param name="right">Right vector of the view-plane</param>
+        /// <param name="up">Up vector of the view-plane</param>
+        /// <param name="normal">Normal vector of the view-plane. This vector is suppsoed to point in view-direction for a left-handed view transformation and in opposit direction in the right-handed case.</param>
+        /// <returns>The inverse view transformation</returns>
+        public static M44f InvViewTrafo(V3f location, V3f right, V3f up, V3f normal)
+        {
+            return new M44f(
+                    right.X, up.X, normal.X, location.X,
+                    right.Y, up.Y, normal.Y, location.Y,
+                    right.Z, up.Z, normal.Z, location.Z,
+                    0, 0, 0, 1
+                );
+        }
+
         #endregion
 
         #region ITransform<V3f> implementation.
@@ -1201,6 +1240,45 @@ namespace Aardvark.Base
                 xAxis.Y, yAxis.Y, zAxis.Y, orign.Y,
                 xAxis.Z, yAxis.Z, zAxis.Z, orign.Z,
                 0, 0, 0, 1);
+        }
+
+        /// <summary>
+        /// Creates a view tranformation from the given vectors.
+        /// Transformation from world- into view-space.
+        /// </summary>
+        /// <param name="location">Origin of the view</param>
+        /// <param name="right">Right vector of the view-plane</param>
+        /// <param name="up">Up vector of the view-plane</param>
+        /// <param name="normal">Normal vector of the view-plane. This vector is suppsoed to point in view-direction for a left-handed view transformation and in opposit direction in the right-handed case.</param>
+        /// <returns>The view transformation</returns>
+        public static M44d ViewTrafo(V3d location, V3d right, V3d up, V3d normal)
+        {
+            return new M44d(
+                    right.X,  right.Y,  right.Z,  -location.Dot(right),
+                    up.X,     up.Y,     up.Z,     -location.Dot(up),
+                    normal.X, normal.Y, normal.Z, -location.Dot(normal),
+                    0,        0,        0,         1
+                );
+        }
+
+        /// <summary>
+        /// Creates a inverse view tranformation from the given vectors.
+        /// Transformation from view- into world-space.
+        /// The implementation is the same as FromBasis(right, up, normal, location)
+        /// </summary>
+        /// <param name="location">Origin of the view</param>
+        /// <param name="right">Right vector of the view-plane</param>
+        /// <param name="up">Up vector of the view-plane</param>
+        /// <param name="normal">Normal vector of the view-plane. This vector is suppsoed to point in view-direction for a left-handed view transformation and in opposit direction in the right-handed case.</param>
+        /// <returns>The inverse view transformation</returns>
+        public static M44d InvViewTrafo(V3d location, V3d right, V3d up, V3d normal)
+        {
+            return new M44d(
+                    right.X, up.X, normal.X, location.X,
+                    right.Y, up.Y, normal.Y, location.Y,
+                    right.Z, up.Z, normal.Z, location.Z,
+                    0, 0, 0, 1
+                );
         }
 
         #endregion
