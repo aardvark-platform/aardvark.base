@@ -6,7 +6,9 @@ using System.Threading.Tasks;
 
 namespace Aardvark.Base
 {
-    [Flags]
+    /// <summary>
+    /// Enumeration of cube faces. The integer value of the enum also gives the index of the face in a texture array representing a cubemap.
+    /// </summary>
     public enum CubeSide
     {
         PositiveX = 0,
@@ -15,6 +17,21 @@ namespace Aardvark.Base
         NegativeY = 3,
         PositiveZ = 4,
         NegativeZ = 5,
+    }
+
+    /// <summary>
+    /// Bit field of cube face sides. The index of a bit represents the index of the face in a texture array representing a cubemap.
+    /// </summary>
+    [Flags]
+    public enum CubeSideFlags
+    {
+        PositiveX = 0x1,
+        NegativeX = 0x2,
+        PositiveY = 0x4,
+        NegativeY = 0x8,
+        PositiveZ = 0x10,
+        NegativeZ = 0x20,
+        All = 0x3f,
     }
 
     public class PixImageCube : IPix
