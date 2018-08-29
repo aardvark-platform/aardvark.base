@@ -344,7 +344,12 @@ module Threading =
                 return res
             }
             
-            
+     
+    let startThread (f : unit -> unit) =
+        let t = new Thread(ThreadStart f)
+        t.IsBackground <- true
+        t.Start()
+        t
         
                  
     [<CompilationRepresentation(CompilationRepresentationFlags.ModuleSuffix)>]
