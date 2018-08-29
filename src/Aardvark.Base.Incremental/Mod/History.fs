@@ -100,15 +100,12 @@ type AbstractDirtyReader<'t, 'ops when 't :> IAdaptiveObject>(scope : Ag.Scope, 
 type DisposeThread private() =
     static let queue = new Concurrent.BlockingCollection<IDisposable>()
     static let runner =
-        async {
-            do! Async.SwitchToNewThread()
+        startThread (fun () -> 
             while true do
                 let v = queue.Take()
                 try v.Dispose()
                 with e -> Log.warn "disposal of %A faulted: %A" v e
-        }
-
-    static do Async.Start runner
+        )
 
     static member Dispose(d : 'a) =
         queue.Add(d :> IDisposable)

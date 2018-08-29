@@ -161,13 +161,11 @@ module Index =
 
         static let queue = new System.Collections.Concurrent.BlockingCollection<Value>()
         static let runner =
-            async {
-                do! Async.SwitchToNewThread()
+            startThread (fun () -> 
                 while true do
                     let e = queue.Take()
                     e.Delete()
-            }
-        static do Async.Start runner
+            )
 
         member private x.Value = real
 
