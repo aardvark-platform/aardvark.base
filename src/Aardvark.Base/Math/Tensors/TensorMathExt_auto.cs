@@ -165,7 +165,7 @@ namespace Aardvark.Base
         /// </summary>
         public static Vector<float> Multiply(this Matrix<float> mat, Vector<float> vec)
         {
-            if (mat.Dim.X != vec.Dim) throw new InvalidOperationException(String.Format("Cannot multiply matrix {0} with vector of size {2}", mat.Dim, vec.Dim));
+            if (mat.Dim.X != vec.Dim) throw new InvalidOperationException(String.Format("Cannot multiply matrix {0} with vector of size {1}", mat.Dim, vec.Dim));
             
             var result = new float[mat.Dim.Y];
 
@@ -426,7 +426,7 @@ namespace Aardvark.Base
         /// </summary>
         public static Vector<double> Multiply(this Matrix<double> mat, Vector<double> vec)
         {
-            if (mat.Dim.X != vec.Dim) throw new InvalidOperationException(String.Format("Cannot multiply matrix {0} with vector of size {2}", mat.Dim, vec.Dim));
+            if (mat.Dim.X != vec.Dim) throw new InvalidOperationException(String.Format("Cannot multiply matrix {0} with vector of size {1}", mat.Dim, vec.Dim));
             
             var result = new double[mat.Dim.Y];
 

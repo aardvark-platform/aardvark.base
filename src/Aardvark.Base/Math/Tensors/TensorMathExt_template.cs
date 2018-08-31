@@ -168,7 +168,7 @@ namespace Aardvark.Base
         /// </summary>
         public static Vector<__ft__> Multiply(this Matrix<__ft__> mat, Vector<__ft__> vec)
         {
-            if (mat.Dim.X != vec.Dim) throw new InvalidOperationException(String.Format("Cannot multiply matrix {0} with vector of size {2}", mat.Dim, vec.Dim));
+            if (mat.Dim.X != vec.Dim) throw new InvalidOperationException(String.Format("Cannot multiply matrix {0} with vector of size {1}", mat.Dim, vec.Dim));
             
             var result = new __ft__[mat.Dim.Y];
 
