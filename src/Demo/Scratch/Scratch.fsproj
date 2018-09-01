@@ -97,6 +97,11 @@
       <Project>{c90c041e-e076-4bbc-bbcd-b29367f649a2}</Project>
       <Private>True</Private>
     </ProjectReference>
+    <ProjectReference Include="..\..\Aardvark.Geometry\Aardvark.Geometry.fsproj">
+      <Name>Aardvark.Geometry</Name>
+      <Project>{97f4d5bb-9f48-454b-b6a5-536ae172ce50}</Project>
+      <Private>True</Private>
+    </ProjectReference>
   </ItemGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
@@ -594,6 +599,17 @@
         <Reference Include="System.Threading.ThreadPool">
           <HintPath>..\..\..\packages\System.Threading.ThreadPool\ref\netstandard1.3\System.Threading.ThreadPool.dll</HintPath>
           <Private>False</Private>
+          <Paket>True</Paket>
+        </Reference>
+      </ItemGroup>
+    </When>
+  </Choose>
+  <Choose>
+    <When Condition="($(TargetFrameworkIdentifier) == '.NETFramework' And $(TargetFrameworkVersion) == 'v4.7.1') Or ($(TargetFrameworkIdentifier) == '.NETCoreApp' And $(TargetFrameworkVersion) == 'v2.0') Or ($(TargetFrameworkIdentifier) == '.NETStandard' And $(TargetFrameworkVersion) == 'v2.0')">
+      <ItemGroup>
+        <Reference Include="LibTessDotNet">
+          <HintPath>..\..\..\packages\Unofficial.LibTessDotNet\lib\netstandard2.0\LibTessDotNet.dll</HintPath>
+          <Private>True</Private>
           <Paket>True</Paket>
         </Reference>
       </ItemGroup>

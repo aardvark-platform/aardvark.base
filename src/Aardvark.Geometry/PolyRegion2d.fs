@@ -40,11 +40,9 @@ module private LibTess =
         if p.Length < 3 then
             None
         else
-            let inline angle (a : V2d) (b : V2d) =
-                let d = Vec.dot a b
-                let c = a.X * b.Y - a.Y * b.X
-                if d > 0.0 then asin c
-                else Constant.Pi - asin c
+            let inline angleTiny (eps : float) (a : V2d) (b : V2d) =
+                Vec.dot a b >= 0.0 && 
+                abs (a.X * b.Y - a.Y * b.X) < eps
                     
             
             let mutable pl = p.[p.Length - 1]
@@ -54,10 +52,9 @@ module private LibTess =
             let mutable dlc = pc - pl |> Vec.normalize
             let mutable dcn = pn - pc |> Vec.normalize
 
-            let points = System.Collections.Generic.List<int>()
+            let points = System.Collections.Generic.List<int>(p.Length)
             for i in 0 .. p.Length - 1 do
-                let a = angle dlc dcn
-                if abs a > angleEps then
+                if not (angleTiny angleEps dlc dcn) then
                     points.Add(i)
 
                 pl <- pc

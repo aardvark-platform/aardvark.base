@@ -361,12 +361,30 @@ let testUnion (n : int) (m : int) =
 
 
 
-
+open Aardvark.Geometry
 
 
 [<EntryPoint; STAThread>]
 let main argv = 
     
+
+    let shapeVertices1 = 
+        [| 
+            V2d(5.13737496260736, 1.65204532553747)
+            V2d(5.88809174207466, 1.16673346810404)
+            V2d(5.59715606644129, 0.71669234485868)
+            V2d(4.84643928697398, 1.20200420229211)
+            V2d(5.13737496260736, 1.65204532553747) 
+        |]
+
+    let r = PolyRegion.ofArray shapeVertices1
+    //let res = PolygonTessellator.Combine([shapeVertices1], TessellationRule.EvenOdd)
+    
+    match r.Polygons with
+        | [l] -> printfn "%A" l.PointCount
+        | _ -> printfn "error"
+    Environment.Exit 0
+
     let set = CSet.ofList [1;2;3]
 
     let m = Mod.init (Some 10)
