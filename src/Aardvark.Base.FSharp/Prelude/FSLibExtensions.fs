@@ -321,11 +321,21 @@ module CSharpCollectionExtensions =
 module Threading =
     open System.Threading
 
+    /// Please note that Aardvark.Base.FSharp's MVar implementation is different from Haskell's MVar introduced in
+    ///  "Concurrent Haskell" by Simon Peyton Jones, Andrew Gordon and Sigbjorn Finne. 
+    /// seealso: http://hackage.haskell.org/package/base-4.11.1.0/docs/Control-Concurrent-MVar.html
+    /// In our 'wrong' implementation put does not block but overrides the old value.
+    /// We use it typically for synchrononized sampling use cases.
     type MVar<'a>() =
         let mutable content = Unchecked.defaultof<ref<'a>>
         // feel free to replace atomic + sem by appropriate .net synchronization data type
         let sem = new SemaphoreSlim(0)
         let mutable cnt = 0
+        /// Please note that Aardvark.Base.FSharp's MVar implementation is different from Haskell's MVar introduced in
+        ///  "Concurrent Haskell" by Simon Peyton Jones, Andrew Gordon and Sigbjorn Finne. 
+        /// seealso: http://hackage.haskell.org/package/base-4.11.1.0/docs/Control-Concurrent-MVar.html
+        /// In our 'wrong' implementation put does not block but overrides the old value.
+        /// We use it typically for synchrononized sampling use cases.
         member x.Put v = 
             content <- ref v
             if Interlocked.Exchange(&cnt, 1) = 0 then
