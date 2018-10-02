@@ -14,6 +14,12 @@ open System.Runtime.CompilerServices
 module ``NativeTensor Pinning`` =
     [<CompilerMessage("use NativeTensor.using instead", 1337, IsHidden = true)>]
     type Pinning private() =
+
+        static let pin (a : 'a) (f : nativeint -> 'r) =
+            let gc = GCHandle.Alloc(a, GCHandleType.Pinned)
+            try f (gc.AddrOfPinnedObject())
+            finally gc.Free()
+
         // =======================================================================================
         // ARRAYS and TENSORS
         // =======================================================================================
@@ -37,25 +43,26 @@ module ``NativeTensor Pinning`` =
             NativeMatrix.using m action
             
         static member Using(m : byref<'a[,]>, action : NativeMatrix<'a> -> 'r) =
-            let gc = GCHandle.Alloc(m, GCHandleType.Pinned)
             let r = m.GetLongLength(0)
             let c = m.GetLongLength(1)
-
-            let matrix =
-                NativeMatrix<'a>(
-                    NativePtr.ofNativeInt (gc.AddrOfPinnedObject()),
-                    MatrixInfo(
-                        0L,
-                        V2l(c, r),
-                        V2l(1L, c)
+            pin m (fun pM ->
+                let matrix =
+                    NativeMatrix<'a>(
+                        NativePtr.ofNativeInt pM,
+                        MatrixInfo(
+                            0L,
+                            V2l(c, r),
+                            V2l(1L, c)
+                        )
                     )
-                )
-            action matrix
+                action matrix
+            )
 
         // =======================================================================================
         // VECTORS
         // =======================================================================================
 
+        [<MethodImpl(MethodImplOptions.NoInlining)>]
         static member Using(m : byref<V2i>, action : NativeVector<int> -> 'r) =
             let vector =
                 NativeVector<int>(
@@ -68,6 +75,7 @@ module ``NativeTensor Pinning`` =
                 )
             action vector
  
+        [<MethodImpl(MethodImplOptions.NoInlining)>]
         static member Using(m : byref<V3i>, action : NativeVector<int> -> 'r) =
             let vector =
                 NativeVector<int>(
@@ -79,7 +87,8 @@ module ``NativeTensor Pinning`` =
                     )
                 )
             action vector
-
+            
+        [<MethodImpl(MethodImplOptions.NoInlining)>]
         static member Using(m : byref<V4i>, action : NativeVector<int> -> 'r) =
             let vector =
                 NativeVector<int>(
@@ -92,6 +101,7 @@ module ``NativeTensor Pinning`` =
                 )
             action vector
  
+        [<MethodImpl(MethodImplOptions.NoInlining)>]
         static member Using(m : byref<V2l>, action : NativeVector<int64> -> 'r) =
             let vector =
                 NativeVector<int64>(
@@ -104,6 +114,7 @@ module ``NativeTensor Pinning`` =
                 )
             action vector
  
+        [<MethodImpl(MethodImplOptions.NoInlining)>]
         static member Using(m : byref<V3l>, action : NativeVector<int64> -> 'r) =
             let vector =
                 NativeVector<int64>(
@@ -115,7 +126,8 @@ module ``NativeTensor Pinning`` =
                     )
                 )
             action vector
-
+            
+        [<MethodImpl(MethodImplOptions.NoInlining)>]
         static member Using(m : byref<V4l>, action : NativeVector<int64> -> 'r) =
             let vector =
                 NativeVector<int64>(
@@ -128,6 +140,7 @@ module ``NativeTensor Pinning`` =
                 )
             action vector
    
+        [<MethodImpl(MethodImplOptions.NoInlining)>]
         static member Using(m : byref<V2f>, action : NativeVector<float32> -> 'r) =
             let vector =
                 NativeVector<float32>(
@@ -140,6 +153,7 @@ module ``NativeTensor Pinning`` =
                 )
             action vector
  
+        [<MethodImpl(MethodImplOptions.NoInlining)>]
         static member Using(m : byref<V3f>, action : NativeVector<float32> -> 'r) =
             let vector =
                 NativeVector<float32>(
@@ -151,7 +165,8 @@ module ``NativeTensor Pinning`` =
                     )
                 )
             action vector
-
+            
+        [<MethodImpl(MethodImplOptions.NoInlining)>]
         static member Using(m : byref<V4f>, action : NativeVector<float32> -> 'r) =
             let vector =
                 NativeVector<float32>(
@@ -164,6 +179,7 @@ module ``NativeTensor Pinning`` =
                 )
             action vector
  
+        [<MethodImpl(MethodImplOptions.NoInlining)>]
         static member Using(m : byref<V2d>, action : NativeVector<float> -> 'r) =
             let vector =
                 NativeVector<float>(
@@ -176,6 +192,7 @@ module ``NativeTensor Pinning`` =
                 )
             action vector
  
+        [<MethodImpl(MethodImplOptions.NoInlining)>]
         static member Using(m : byref<V3d>, action : NativeVector<float> -> 'r) =
             let vector =
                 NativeVector<float>(
@@ -187,7 +204,8 @@ module ``NativeTensor Pinning`` =
                     )
                 )
             action vector
-
+            
+        [<MethodImpl(MethodImplOptions.NoInlining)>]
         static member Using(m : byref<V4d>, action : NativeVector<float> -> 'r) =
             let vector =
                 NativeVector<float>(
@@ -203,7 +221,8 @@ module ``NativeTensor Pinning`` =
         // =======================================================================================
         // COLORS
         // =======================================================================================
-
+        
+        [<MethodImpl(MethodImplOptions.NoInlining)>]
         static member Using(m : byref<C3b>, action : NativeVector<byte> -> 'r) =
             let vector =
                 NativeVector<byte>(
@@ -215,7 +234,8 @@ module ``NativeTensor Pinning`` =
                     )
                 )
             action vector
-
+            
+        [<MethodImpl(MethodImplOptions.NoInlining)>]
         static member Using(m : byref<C4b>, action : NativeVector<byte> -> 'r) =
             let vector =
                 NativeVector<byte>(
@@ -228,6 +248,7 @@ module ``NativeTensor Pinning`` =
                 )
             action vector
  
+        [<MethodImpl(MethodImplOptions.NoInlining)>]
         static member Using(m : byref<C3us>, action : NativeVector<uint16> -> 'r) =
             let vector =
                 NativeVector<uint16>(
@@ -239,7 +260,8 @@ module ``NativeTensor Pinning`` =
                     )
                 )
             action vector
-
+            
+        [<MethodImpl(MethodImplOptions.NoInlining)>]
         static member Using(m : byref<C4us>, action : NativeVector<uint16> -> 'r) =
             let vector =
                 NativeVector<uint16>(
@@ -251,7 +273,8 @@ module ``NativeTensor Pinning`` =
                     )
                 )
             action vector
-
+            
+        [<MethodImpl(MethodImplOptions.NoInlining)>]
         static member Using(m : byref<C3ui>, action : NativeVector<uint32> -> 'r) =
             let vector =
                 NativeVector<uint32>(
@@ -263,7 +286,8 @@ module ``NativeTensor Pinning`` =
                     )
                 )
             action vector
-
+            
+        [<MethodImpl(MethodImplOptions.NoInlining)>]
         static member Using(m : byref<C4ui>, action : NativeVector<uint32> -> 'r) =
             let vector =
                 NativeVector<uint32>(
@@ -279,7 +303,8 @@ module ``NativeTensor Pinning`` =
         // =======================================================================================
         // MATRICES
         // =======================================================================================
-
+        
+        [<MethodImpl(MethodImplOptions.NoInlining)>]
         static member Using(m : byref<M22d>, action : NativeMatrix<float> -> 'r) =
             let matrix =
                 NativeMatrix<float>(
@@ -292,6 +317,7 @@ module ``NativeTensor Pinning`` =
                 )
             action matrix
  
+        [<MethodImpl(MethodImplOptions.NoInlining)>]
         static member Using(m : byref<M23d>, action : NativeMatrix<float> -> 'r) =
             let matrix =
                 NativeMatrix<float>(
@@ -304,6 +330,7 @@ module ``NativeTensor Pinning`` =
                 )
             action matrix
  
+        [<MethodImpl(MethodImplOptions.NoInlining)>]
         static member Using(m : byref<M33d>, action : NativeMatrix<float> -> 'r) =
             let matrix =
                 NativeMatrix<float>(
@@ -316,6 +343,7 @@ module ``NativeTensor Pinning`` =
                 )
             action matrix
         
+        [<MethodImpl(MethodImplOptions.NoInlining)>]
         static member Using(m : byref<M34d>, action : NativeMatrix<float> -> 'r) =
             let matrix =
                 NativeMatrix<float>(
@@ -328,6 +356,7 @@ module ``NativeTensor Pinning`` =
                 )
             action matrix
         
+        [<MethodImpl(MethodImplOptions.NoInlining)>]
         static member Using(m : byref<M44d>, action : NativeMatrix<float> -> 'r) =
             let matrix =
                 NativeMatrix<float>(
@@ -340,7 +369,8 @@ module ``NativeTensor Pinning`` =
                 )
             action matrix
 
-
+            
+        [<MethodImpl(MethodImplOptions.NoInlining)>]
         static member Using(m : byref<M22f>, action : NativeMatrix<float32> -> 'r) =
             let matrix =
                 NativeMatrix<float32>(
@@ -353,6 +383,7 @@ module ``NativeTensor Pinning`` =
                 )
             action matrix
  
+        [<MethodImpl(MethodImplOptions.NoInlining)>]
         static member Using(m : byref<M23f>, action : NativeMatrix<float32> -> 'r) =
             let matrix =
                 NativeMatrix<float32>(
@@ -365,6 +396,7 @@ module ``NativeTensor Pinning`` =
                 )
             action matrix
  
+        [<MethodImpl(MethodImplOptions.NoInlining)>]
         static member Using(m : byref<M33f>, action : NativeMatrix<float32> -> 'r) =
             let matrix =
                 NativeMatrix<float32>(
@@ -377,6 +409,7 @@ module ``NativeTensor Pinning`` =
                 )
             action matrix
         
+        [<MethodImpl(MethodImplOptions.NoInlining)>]
         static member Using(m : byref<M34f>, action : NativeMatrix<float32> -> 'r) =
             let matrix =
                 NativeMatrix<float32>(
@@ -389,6 +422,7 @@ module ``NativeTensor Pinning`` =
                 )
             action matrix
         
+        [<MethodImpl(MethodImplOptions.NoInlining)>]
         static member Using(m : byref<M44f>, action : NativeMatrix<float32> -> 'r) =
             let matrix =
                 NativeMatrix<float32>(
