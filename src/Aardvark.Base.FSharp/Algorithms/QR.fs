@@ -103,6 +103,70 @@ module internal QRHelpers =
             pc0 <- pc0 + drR
             pcc <- pcc + drR + dcR
 
+    let inline rqDecomposeNative (eps : ^a) (pR : NativeMatrix< ^a >) (pQ : NativeMatrix< ^a >) =
+        let rows = int pR.SY
+        let cols = int pR.SX
+
+        if rows > cols then failwithf "cannot RQ decompose matrix with %d rows and %d cols" rows cols
+
+
+        // pQ <- identity
+        pQ.SetByCoord (fun (v : V2i) -> if v.X = v.Y then LanguagePrimitives.GenericOne else LanguagePrimitives.GenericZero)
+        
+        let sa = nativeint sizeof< ^a >
+        let drR = nativeint pR.DY * sa
+        let dcR = nativeint pR.DX * sa
+
+        let pr = NativePtr.toNativeInt pR.Pointer
+
+
+        let diag = min cols rows
+        let mutable pdd = pr + (dcR + drR) * nativeint (diag - 1)   //ptr (diag - 1) (diag - 1)
+        let mutable pd0 = pr + drR * nativeint (diag - 1)           //ptr (diag - 1) 0
+        let mutable p0d = pr + dcR * nativeint (diag - 1)           //ptr 0 (diag - 1)
+
+        for d in 1 .. diag - 1 do
+            let d = diag - d
+
+            let mutable pdc = pd0
+            let mutable p0c = pr
+            for c in 0 .. d - 1 do
+                let vcc : ^a = NativeInt.read pdd // important since R.[d,d] changes
+                let vrc : ^a = NativeInt.read pdc
+                
+                // if the dst-element is not already zero then make it zero
+                if not (tiny eps vrc) then
+
+                    // find givens rotation
+                    let rho = sgn vcc * sqrt (vcc * vcc + vrc * vrc)
+                    let cos = vcc / rho
+                    let sin = vrc / rho
+                    
+                    let mutable p0 = p0d
+                    let mutable p1 = p0c
+
+                    // adjust affected elements
+                    for ri in 0 .. d do
+                        //let p0 = ptr ri d
+                        //let p1 = ptr ri c
+                        let A = NativeInt.read< ^a > p0
+                        let B = NativeInt.read< ^a > p1
+                        
+                        NativeInt.write p0 ( cos * A + sin * B )
+                        NativeInt.write p1 (-sin * A + cos * B )
+                        p0 <- p0 + drR
+                        p1 <- p1 + drR
+                        
+                    // adjust the resulting Q matrix
+                    applyGivensTransposedMat pQ d c cos sin
+           
+                pdc <- pdc + dcR
+                p0c <- p0c + dcR
+
+            pdd <- pdd - drR - dcR
+            pd0 <- pd0 - drR
+            p0d <- p0d - dcR
+
 
     /// creates a (in-place) decomposition B = U * B' * Vt where
     /// U and V a orthonormal rotations and B' is upper bidiagonal
@@ -624,6 +688,196 @@ module QR =
     let inline bidiagonalize m = bidiag Unchecked.defaultof<QR> m
     let inline bidiagonalizeInPlace a b c = bidiagip Unchecked.defaultof<QR> a b c
 
+
+
+[<AbstractClass; Sealed>]
+type RQ private() =
+
+    static let doubleEps = 1E-20
+    static let floatEps = 1E-15f
+
+
+    static member DecomposeInPlace(R : float[,], Q : float[,]) =
+        let mutable R = R
+        let mutable Q = Q
+        tensor {
+            let! pQ = &Q
+            let! pR = &R
+            rqDecomposeNative doubleEps pR pQ
+        }
+
+    static member DecomposeInPlace(R : float32[,], Q : float32[,]) =
+        let mutable R = R
+        let mutable Q = Q
+        tensor {
+            let! pQ = &Q
+            let! pR = &R
+            rqDecomposeNative floatEps pR pQ
+        }
+
+    static member DecomposeInPlace(R : NativeMatrix<float>, Q : NativeMatrix<float>) =
+        rqDecomposeNative doubleEps R Q
+        
+    static member DecomposeInPlace(R : NativeMatrix<float32>, Q : NativeMatrix<float32>) =
+        rqDecomposeNative floatEps R Q
+        
+    static member DecomposeInPlace(R : Matrix<float>, Q : Matrix<float>) =
+        let mutable R = R
+        let mutable Q = Q
+        tensor {
+            let! pR = &R
+            let! pQ = &Q
+            rqDecomposeNative doubleEps pR pQ
+        }
+        
+    static member DecomposeInPlace(R : Matrix<float32>, Q : Matrix<float32>) =
+        let mutable R = R
+        let mutable Q = Q
+        tensor {
+            let! pR = &R
+            let! pQ = &Q
+            qrDecomposeNative floatEps pR pQ
+        }
+        
+    static member Decompose (m : float[,]) =
+        let cols = m.GetLength(1)
+        let R = Array2D.copy m
+        let Q = Array2D.zeroCreate cols cols
+        RQ.DecomposeInPlace(R, Q)
+        R, Q
+        
+    static member Decompose (m : Matrix<float>) =
+        let R = m.Copy()
+        let Q = Matrix<float>(m.SX, m.SX)
+        RQ.DecomposeInPlace(R, Q)
+        R, Q
+        
+    static member Decompose (m : M22d) =
+        let mutable R = m
+        let mutable Q = M22d()
+        tensor {
+            let! pR = &R
+            let! pQ = &Q
+            RQ.DecomposeInPlace(pR, pQ)
+        }
+        R, Q
+        
+    static member Decompose (m : M23d) =
+        let mutable R = m
+        let mutable Q = M33d()
+        tensor {
+            let! pR = &R
+            let! pQ = &Q
+            RQ.DecomposeInPlace(pR, pQ)
+        }
+        R, Q
+        
+    static member Decompose (m : M33d) =
+        let mutable R = m
+        let mutable Q = M33d()
+        tensor {
+            let! pR = &R
+            let! pQ = &Q
+            RQ.DecomposeInPlace(pR, pQ)
+        }
+        R, Q
+
+    static member Decompose (m : M34d) =
+        let mutable R = m
+        let mutable Q = M44d()
+        tensor {
+            let! pR = &R
+            let! pQ = &Q
+            RQ.DecomposeInPlace(pR, pQ)
+        }
+        R, Q
+
+    static member Decompose (m : M44d) =
+        let mutable R = m
+        let mutable Q = M44d()
+        tensor {
+            let! pR = &R
+            let! pQ = &Q
+            RQ.DecomposeInPlace(pR, pQ)
+        }
+        R, Q
+        
+    static member Decompose (m : float32[,]) =
+        let cols = m.GetLength(1)
+        let R = Array2D.copy m
+        let Q = Array2D.zeroCreate cols cols
+        RQ.DecomposeInPlace(R, Q)
+        R, Q
+        
+    static member Decompose (m : Matrix<float32>) =
+        let R = m.Copy()
+        let Q = Matrix<float32>(m.SX, m.SX)
+        RQ.DecomposeInPlace(R, Q)
+        R, Q
+        
+    static member Decompose (m : M22f) =
+        let mutable R = m
+        let mutable Q = M22f()
+        tensor {
+            let! pR = &R
+            let! pQ = &Q
+            RQ.DecomposeInPlace(pR, pQ)
+        }
+        R, Q
+        
+    static member Decompose (m : M23f) =
+        let mutable R = m
+        let mutable Q = M33f()
+        tensor {
+            let! pR = &R
+            let! pQ = &Q
+            RQ.DecomposeInPlace(pR, pQ)
+        }
+        R, Q
+        
+    static member Decompose (m : M33f) =
+        let mutable R = m
+        let mutable Q = M33f()
+        tensor {
+            let! pR = &R
+            let! pQ = &Q
+            RQ.DecomposeInPlace(pR, pQ)
+        }
+        R, Q
+
+    static member Decompose (m : M34f) =
+        let mutable R = m
+        let mutable Q = M44f()
+        tensor {
+            let! pR = &R
+            let! pQ = &Q
+            RQ.DecomposeInPlace(pR, pQ)
+        }
+        R, Q
+
+    static member Decompose (m : M44f) =
+        let mutable R = m
+        let mutable Q = M44f()
+        tensor {
+            let! pR = &R
+            let! pQ = &Q
+            RQ.DecomposeInPlace(pR, pQ)
+        }
+        R, Q
+        
+        
+
+module RQ =
+    let inline private dec< ^a, ^c, ^d when (^a or ^d) : (static member Decompose : ^a -> ^c) > (d : ^d) (m : ^a) : ^c =
+        ((^a or ^d) : (static member Decompose : ^a -> ^c) (m))
+        
+    let inline private decip< ^a, ^b, ^c, ^d when (^a or ^d) : (static member DecomposeInPlace : ^a * ^b -> ^c) > (d : ^d) (m1 : ^a) (m2 : ^b) : ^c =
+        ((^a or ^d) : (static member DecomposeInPlace : ^a * ^b -> ^c) (m1, m2))
+        
+    let inline decompose m = dec Unchecked.defaultof<RQ> m
+    let inline decomposeInPlace a b  = decip Unchecked.defaultof<RQ> a b
+
+
 module private QROverloadTest = 
     let test() =
         let a = QR.bidiagonalize M34d.Identity
@@ -635,6 +889,8 @@ module private QROverloadTest =
 
         QR.decomposeInPlace a b
         QR.bidiagonalizeInPlace a b c
+
+        let (R, Q) = RQ.decompose (M23d())
 
         let arr = Array2D.init 10 10 (fun i j -> 0.1)
         let (U, B, Vt) = QR.bidiagonalize arr

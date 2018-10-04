@@ -504,20 +504,4 @@ module SVD =
     let inline decompose m = dec Unchecked.defaultof<SVD> m
     let inline decomposeInPlace a b  = decip Unchecked.defaultof<SVD> a b
 
-        
 
-module private SVDOverloadTest = 
-    let test() =
-        let a = SVD.decompose M34d.Identity
-        let a = SVD.decompose M44d.Identity
-
-        let a = Matrix<float>()
-        let b = Matrix<float>()
-        let c = Matrix<float>()
-
-        SVD.decomposeInPlace a b c
-
-        let arr = Array2D.init 10 10 (fun i j -> 0.1)
-        let a = SVD.decompose arr
-
-        ()
