@@ -1,10 +1,9 @@
 RESTRICTION: || (== net471) (== netcoreapp2.0) (== netstandard2.0)
 NUGET
-  remote: https://vrvis.myget.org/F/aardvark_public/api/v3/index.json
+  remote: https://api.nuget.org/v3/index.json
     DevILSharp (0.2.4)
       FSharp.Core (>= 4.3 < 4.4)
     Unofficial.LibTessDotNet (2.0.0)
-  remote: https://api.nuget.org/v3/index.json
     FsCheck (2.10.9)
       FSharp.Core (>= 4.0.0.1) - restriction: || (== net471) (&& (== netcoreapp2.0) (>= net452)) (&& (== netcoreapp2.0) (< netstandard1.6)) (&& (== netcoreapp2.0) (< portable-net45+win8+wp8)) (&& (== netstandard2.0) (>= net452)) (&& (== netstandard2.0) (< netstandard1.6)) (&& (== netstandard2.0) (< portable-net45+win8+wp8))
       FSharp.Core (>= 4.2.3) - restriction: || (&& (== net471) (< net452)) (== netcoreapp2.0) (== netstandard2.0)
@@ -199,7 +198,7 @@ NUGET
     SourceLink.Fake (1.1)
 GITHUB
   remote: aardvark-platform/aardvark.fake
-    FULLPROJECT (bfae10520868567c41bfa9196a7ac7ef79bb50f6)
+    FULLPROJECT (7bebbfdb07cbf4ec6426be3f813dc367a0614e6a)
       FAKE (>= 4.63 < 4.64)
       Mono.Cecil (>= 0.10.0-beta6 < 0.11)
       SourceLink.Fake (>= 1.1 < 1.2)
