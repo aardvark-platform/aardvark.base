@@ -503,7 +503,17 @@ module MapExtImplementation =
                         neighboursAux comparer k l r r2
 
                     elif c = 0 then
-                        tryMax l2, Some(k2, v2), tryMin r2
+                        let l =
+                            match tryMax l2 with
+                                | None -> l
+                                | l -> l
+
+                        let r =
+                            match tryMin r2 with
+                                | None -> r
+                                | r -> r
+
+                        l,Some(k2, v2),r
 
                     else
                         let r = Some(k2, v2)
@@ -534,7 +544,17 @@ module MapExtImplementation =
                             neighboursiAux idx l r l2
 
                         elif idx = lc then
-                            tryMax l2, Some(k2, v2), tryMin r2
+                            let l =
+                                match tryMax l2 with
+                                    | None -> l
+                                    | l -> l
+
+                            let r =
+                                match tryMin r2 with
+                                    | None -> r
+                                    | r -> r
+
+                            l, Some(k2, v2), r
                         else
                             let l = Some(k2, v2)
                             neighboursiAux (idx-lc-1) l r r2
