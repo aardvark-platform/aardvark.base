@@ -37,15 +37,14 @@ module AFun =
             member x.Evaluate (token, v) = x.Evaluate (token, v)
 
     let run (v : 'a) (f : afun<'a, 'b>) =
-        [f] |> Mod.mapCustom (fun s -> 
+        Mod.custom (fun s -> 
             f.Evaluate (s, v)
         )
 
     let apply (v : IMod<'a>) (f : afun<'a, 'b>) =
-        [v :> IAdaptiveObject; f :> _]
-            |> Mod.mapCustom (fun s -> 
-                f.Evaluate (s, v.GetValue s)
-            )
+        Mod.custom (fun s -> 
+            f.Evaluate (s, v.GetValue s)
+        )
 
     let create (f : 'a -> 'b) =
         AdaptiveFun(fun _ -> f) :> afun<_,_>
@@ -102,17 +101,16 @@ module AFun =
         initial |> inputChanged |> ignore
 
         let ti = AdaptiveObject.Time
-        [f :> IAdaptiveObject; input :> _] 
-            |> Mod.mapCustom (fun s -> 
-                lock ti (fun () -> ti.Outputs.Remove input |> ignore)
-                let v = input.GetValue s
-                let res = f.Evaluate(s, v)
-                if inputChanged res then
-                    input.UnsafeCache <- res
-                    lock ti (fun () -> ti.Outputs.Add input |> ignore)
+        Mod.custom (fun s -> 
+            lock ti (fun () -> ti.Outputs.Remove input |> ignore)
+            let v = input.GetValue s
+            let res = f.Evaluate(s, v)
+            if inputChanged res then
+                input.UnsafeCache <- res
+                lock ti (fun () -> ti.Outputs.Add input |> ignore)
 
-                res
-               )
+            res
+        )
 
 [<AutoOpen>]
 module ``AFun Builder`` =
