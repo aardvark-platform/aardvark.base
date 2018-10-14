@@ -321,6 +321,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Gets centroid of this polygon's vertices.
         /// </summary>
+        [Obsolete("Use VectorIEnumerableExtensions.ComputeCentroid instead.")]
         public static V2d ComputeCentroid(this V2d[] points)
         {
             var sum = points[0];
@@ -348,7 +349,7 @@ namespace Aardvark.Base
         /// </summary>
         public static V2d[] ScaledAboutCentroid(this V2d[] pointArray, double s)
         {
-            return pointArray.Scaled(pointArray.ComputeCentroid(), s);
+            return pointArray.Scaled(VectorIEnumerableExtensions.ComputeCentroid(pointArray), s);
         }
 
         /// <summary>

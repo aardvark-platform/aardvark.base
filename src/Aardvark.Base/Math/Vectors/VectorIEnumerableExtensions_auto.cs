@@ -10,7 +10,7 @@ namespace Aardvark.Base
         #region Centroid
 
         /// <summary>
-        /// Calculates the Centroid for a given set of V2is
+        /// Calculates the centroid for a given set of V2is.
         /// </summary>
         public static V2d ComputeCentroid(this IEnumerable<V2i> vectors)
         { 
@@ -26,9 +26,23 @@ namespace Aardvark.Base
             return sum / (double)count;
         }
 
+        /// <summary>
+        /// Calculates the centroid for a given set of V2is.
+        /// </summary>
+        public static V2d ComputeCentroid(this V2i[] vectors)
+        {
+            V2d sum = V2d.Zero;
+
+            for (var i = 0; i < vectors.Length; i++)
+            {
+                sum += (V2d)vectors[i];
+            }
+
+            return sum / (double)vectors.Length;
+        }
 
         /// <summary>
-        /// Calculates a weighted Centroid for a given array of V2is
+        /// Calculates a weighted centroid for a given array of V2is.
         /// </summary>
         public static V2d ComputeCentroid(this V2i[] vectors, double[] weights)
         {
@@ -45,7 +59,7 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Calculates the Centroid for a given set of V3is
+        /// Calculates the centroid for a given set of V3is.
         /// </summary>
         public static V3d ComputeCentroid(this IEnumerable<V3i> vectors)
         { 
@@ -61,9 +75,23 @@ namespace Aardvark.Base
             return sum / (double)count;
         }
 
+        /// <summary>
+        /// Calculates the centroid for a given set of V3is.
+        /// </summary>
+        public static V3d ComputeCentroid(this V3i[] vectors)
+        {
+            V3d sum = V3d.Zero;
+
+            for (var i = 0; i < vectors.Length; i++)
+            {
+                sum += (V3d)vectors[i];
+            }
+
+            return sum / (double)vectors.Length;
+        }
 
         /// <summary>
-        /// Calculates a weighted Centroid for a given array of V3is
+        /// Calculates a weighted centroid for a given array of V3is.
         /// </summary>
         public static V3d ComputeCentroid(this V3i[] vectors, double[] weights)
         {
@@ -80,7 +108,7 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Calculates the Centroid for a given set of V4is
+        /// Calculates the centroid for a given set of V4is.
         /// </summary>
         public static V4d ComputeCentroid(this IEnumerable<V4i> vectors)
         { 
@@ -96,9 +124,23 @@ namespace Aardvark.Base
             return sum / (double)count;
         }
 
+        /// <summary>
+        /// Calculates the centroid for a given set of V4is.
+        /// </summary>
+        public static V4d ComputeCentroid(this V4i[] vectors)
+        {
+            V4d sum = V4d.Zero;
+
+            for (var i = 0; i < vectors.Length; i++)
+            {
+                sum += (V4d)vectors[i];
+            }
+
+            return sum / (double)vectors.Length;
+        }
 
         /// <summary>
-        /// Calculates a weighted Centroid for a given array of V4is
+        /// Calculates a weighted centroid for a given array of V4is.
         /// </summary>
         public static V4d ComputeCentroid(this V4i[] vectors, double[] weights)
         {
@@ -115,7 +157,7 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Calculates the Centroid for a given set of V2ls
+        /// Calculates the centroid for a given set of V2ls.
         /// </summary>
         public static V2d ComputeCentroid(this IEnumerable<V2l> vectors)
         { 
@@ -131,9 +173,23 @@ namespace Aardvark.Base
             return sum / (double)count;
         }
 
+        /// <summary>
+        /// Calculates the centroid for a given set of V2ls.
+        /// </summary>
+        public static V2d ComputeCentroid(this V2l[] vectors)
+        {
+            V2d sum = V2d.Zero;
+
+            for (var i = 0; i < vectors.Length; i++)
+            {
+                sum += (V2d)vectors[i];
+            }
+
+            return sum / (double)vectors.Length;
+        }
 
         /// <summary>
-        /// Calculates a weighted Centroid for a given array of V2ls
+        /// Calculates a weighted centroid for a given array of V2ls.
         /// </summary>
         public static V2d ComputeCentroid(this V2l[] vectors, double[] weights)
         {
@@ -150,7 +206,7 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Calculates the Centroid for a given set of V3ls
+        /// Calculates the centroid for a given set of V3ls.
         /// </summary>
         public static V3d ComputeCentroid(this IEnumerable<V3l> vectors)
         { 
@@ -166,9 +222,23 @@ namespace Aardvark.Base
             return sum / (double)count;
         }
 
+        /// <summary>
+        /// Calculates the centroid for a given set of V3ls.
+        /// </summary>
+        public static V3d ComputeCentroid(this V3l[] vectors)
+        {
+            V3d sum = V3d.Zero;
+
+            for (var i = 0; i < vectors.Length; i++)
+            {
+                sum += (V3d)vectors[i];
+            }
+
+            return sum / (double)vectors.Length;
+        }
 
         /// <summary>
-        /// Calculates a weighted Centroid for a given array of V3ls
+        /// Calculates a weighted centroid for a given array of V3ls.
         /// </summary>
         public static V3d ComputeCentroid(this V3l[] vectors, double[] weights)
         {
@@ -185,7 +255,7 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Calculates the Centroid for a given set of V4ls
+        /// Calculates the centroid for a given set of V4ls.
         /// </summary>
         public static V4d ComputeCentroid(this IEnumerable<V4l> vectors)
         { 
@@ -201,9 +271,23 @@ namespace Aardvark.Base
             return sum / (double)count;
         }
 
+        /// <summary>
+        /// Calculates the centroid for a given set of V4ls.
+        /// </summary>
+        public static V4d ComputeCentroid(this V4l[] vectors)
+        {
+            V4d sum = V4d.Zero;
+
+            for (var i = 0; i < vectors.Length; i++)
+            {
+                sum += (V4d)vectors[i];
+            }
+
+            return sum / (double)vectors.Length;
+        }
 
         /// <summary>
-        /// Calculates a weighted Centroid for a given array of V4ls
+        /// Calculates a weighted centroid for a given array of V4ls.
         /// </summary>
         public static V4d ComputeCentroid(this V4l[] vectors, double[] weights)
         {
@@ -220,7 +304,7 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Calculates the Centroid for a given set of V2fs
+        /// Calculates the centroid for a given set of V2fs.
         /// </summary>
         public static V2f ComputeCentroid(this IEnumerable<V2f> vectors)
         { 
@@ -236,9 +320,23 @@ namespace Aardvark.Base
             return sum / (float)count;
         }
 
+        /// <summary>
+        /// Calculates the centroid for a given set of V2fs.
+        /// </summary>
+        public static V2f ComputeCentroid(this V2f[] vectors)
+        {
+            V2f sum = V2f.Zero;
+
+            for (var i = 0; i < vectors.Length; i++)
+            {
+                sum += vectors[i];
+            }
+
+            return sum / (float)vectors.Length;
+        }
 
         /// <summary>
-        /// Calculates a weighted Centroid for a given array of V2fs
+        /// Calculates a weighted centroid for a given array of V2fs.
         /// </summary>
         public static V2f ComputeCentroid(this V2f[] vectors, float[] weights)
         {
@@ -255,7 +353,7 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Calculates the Centroid for a given set of V3fs
+        /// Calculates the centroid for a given set of V3fs.
         /// </summary>
         public static V3f ComputeCentroid(this IEnumerable<V3f> vectors)
         { 
@@ -271,9 +369,23 @@ namespace Aardvark.Base
             return sum / (float)count;
         }
 
+        /// <summary>
+        /// Calculates the centroid for a given set of V3fs.
+        /// </summary>
+        public static V3f ComputeCentroid(this V3f[] vectors)
+        {
+            V3f sum = V3f.Zero;
+
+            for (var i = 0; i < vectors.Length; i++)
+            {
+                sum += vectors[i];
+            }
+
+            return sum / (float)vectors.Length;
+        }
 
         /// <summary>
-        /// Calculates a weighted Centroid for a given array of V3fs
+        /// Calculates a weighted centroid for a given array of V3fs.
         /// </summary>
         public static V3f ComputeCentroid(this V3f[] vectors, float[] weights)
         {
@@ -290,7 +402,7 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Calculates the Centroid for a given set of V4fs
+        /// Calculates the centroid for a given set of V4fs.
         /// </summary>
         public static V4f ComputeCentroid(this IEnumerable<V4f> vectors)
         { 
@@ -306,9 +418,23 @@ namespace Aardvark.Base
             return sum / (float)count;
         }
 
+        /// <summary>
+        /// Calculates the centroid for a given set of V4fs.
+        /// </summary>
+        public static V4f ComputeCentroid(this V4f[] vectors)
+        {
+            V4f sum = V4f.Zero;
+
+            for (var i = 0; i < vectors.Length; i++)
+            {
+                sum += vectors[i];
+            }
+
+            return sum / (float)vectors.Length;
+        }
 
         /// <summary>
-        /// Calculates a weighted Centroid for a given array of V4fs
+        /// Calculates a weighted centroid for a given array of V4fs.
         /// </summary>
         public static V4f ComputeCentroid(this V4f[] vectors, float[] weights)
         {
@@ -325,7 +451,7 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Calculates the Centroid for a given set of V2ds
+        /// Calculates the centroid for a given set of V2ds.
         /// </summary>
         public static V2d ComputeCentroid(this IEnumerable<V2d> vectors)
         { 
@@ -341,9 +467,23 @@ namespace Aardvark.Base
             return sum / (double)count;
         }
 
+        /// <summary>
+        /// Calculates the centroid for a given set of V2ds.
+        /// </summary>
+        public static V2d ComputeCentroid(this V2d[] vectors)
+        {
+            V2d sum = V2d.Zero;
+
+            for (var i = 0; i < vectors.Length; i++)
+            {
+                sum += vectors[i];
+            }
+
+            return sum / (double)vectors.Length;
+        }
 
         /// <summary>
-        /// Calculates a weighted Centroid for a given array of V2ds
+        /// Calculates a weighted centroid for a given array of V2ds.
         /// </summary>
         public static V2d ComputeCentroid(this V2d[] vectors, double[] weights)
         {
@@ -360,7 +500,7 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Calculates the Centroid for a given set of V3ds
+        /// Calculates the centroid for a given set of V3ds.
         /// </summary>
         public static V3d ComputeCentroid(this IEnumerable<V3d> vectors)
         { 
@@ -376,9 +516,23 @@ namespace Aardvark.Base
             return sum / (double)count;
         }
 
+        /// <summary>
+        /// Calculates the centroid for a given set of V3ds.
+        /// </summary>
+        public static V3d ComputeCentroid(this V3d[] vectors)
+        {
+            V3d sum = V3d.Zero;
+
+            for (var i = 0; i < vectors.Length; i++)
+            {
+                sum += vectors[i];
+            }
+
+            return sum / (double)vectors.Length;
+        }
 
         /// <summary>
-        /// Calculates a weighted Centroid for a given array of V3ds
+        /// Calculates a weighted centroid for a given array of V3ds.
         /// </summary>
         public static V3d ComputeCentroid(this V3d[] vectors, double[] weights)
         {
@@ -395,7 +549,7 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Calculates the Centroid for a given set of V4ds
+        /// Calculates the centroid for a given set of V4ds.
         /// </summary>
         public static V4d ComputeCentroid(this IEnumerable<V4d> vectors)
         { 
@@ -411,9 +565,23 @@ namespace Aardvark.Base
             return sum / (double)count;
         }
 
+        /// <summary>
+        /// Calculates the centroid for a given set of V4ds.
+        /// </summary>
+        public static V4d ComputeCentroid(this V4d[] vectors)
+        {
+            V4d sum = V4d.Zero;
+
+            for (var i = 0; i < vectors.Length; i++)
+            {
+                sum += vectors[i];
+            }
+
+            return sum / (double)vectors.Length;
+        }
 
         /// <summary>
-        /// Calculates a weighted Centroid for a given array of V4ds
+        /// Calculates a weighted centroid for a given array of V4ds.
         /// </summary>
         public static V4d ComputeCentroid(this V4d[] vectors, double[] weights)
         {

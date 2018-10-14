@@ -18,7 +18,7 @@ namespace Aardvark.Base
         //#     var scalarType = scalar.IsReal ? scalar.Name :  Meta.DoubleType.Name;
         //#     var cast = scalar.IsReal ? "" : "(" + outputVecType + ")";
         /// <summary>
-        /// Calculates the Centroid for a given set of __inputVecType__s
+        /// Calculates the centroid for a given set of __inputVecType__s.
         /// </summary>
         public static __outputVecType__ ComputeCentroid(this IEnumerable<__inputVecType__> vectors)
         { 
@@ -34,9 +34,23 @@ namespace Aardvark.Base
             return sum / (__scalarType__)count;
         }
 
+        /// <summary>
+        /// Calculates the centroid for a given set of __inputVecType__s.
+        /// </summary>
+        public static __outputVecType__ ComputeCentroid(this __inputVecType__[] vectors)
+        {
+            __outputVecType__ sum = __outputVecType__.Zero;
+
+            for (var i = 0; i < vectors.Length; i++)
+            {
+                sum += __cast__vectors[i];
+            }
+
+            return sum / (__scalarType__)vectors.Length;
+        }
 
         /// <summary>
-        /// Calculates a weighted Centroid for a given array of __inputVecType__s
+        /// Calculates a weighted centroid for a given array of __inputVecType__s.
         /// </summary>
         public static __outputVecType__ ComputeCentroid(this __inputVecType__[] vectors, __scalarType__[] weights)
         {
