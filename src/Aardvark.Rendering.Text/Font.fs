@@ -259,6 +259,13 @@ type private FontImpl(file : string) =
     
     let lineHeight = float (f.Ascender - f.Descender + f.LineGap) * scale
     let spacing = float (f.GetAdvanceWidth(f.LookupIndex(int ' ') |> int)) * scale
+    
+    // https://docs.microsoft.com/en-us/windows/desktop/gdi/string-widths-and-heights
+    let ascent = float f.Ascender * scale
+    let descent = float -f.Descender * scale
+    let lineGap = float f.LineGap * scale 
+    let internalLeading = float ((f.Bounds.YMax - f.Bounds.YMin) - (f.Ascender - f.Descender) - f.LineGap) * scale
+    let externalLeading = lineGap - internalLeading
 
     let get (c : char) =
         lock glyphCache (fun () ->
@@ -282,8 +289,15 @@ type private FontImpl(file : string) =
 
     member x.Family = f.Name
     member x.LineHeight = lineHeight
+    member x.Descent = descent
+    member x.Ascent = ascent
+    member x.LineGap = lineGap
+    member x.InternalLeading = internalLeading
+    member x.ExternalLeading = externalLeading
     member x.Style = FontStyle.Regular
     member x.Spacing = spacing
+
+
 
     member x.GetGlyph(c : char) =
         get c
@@ -305,6 +319,11 @@ type Font(family : string, style : FontStyle) =
 
     member x.Family = family
     member x.LineHeight = impl.LineHeight
+    member x.Descent = impl.Descent
+    member x.Ascent = impl.Ascent
+    member x.LineGap = impl.LineGap
+    member x.InternalLeading = impl.InternalLeading
+    member x.ExternalLeading = impl.ExternalLeading
     member x.Style = style
     member x.Spacing = impl.Spacing
     member x.GetGlyph(c : char) = impl.GetGlyph c
@@ -333,14 +352,13 @@ type ShapeCache(r : IRuntime) =
     let effect =
         FShade.Effect.compose [
             Path.Shader.pathVertex      |> toEffect
-            Path.Shader.pathTrafo       |> toEffect
+            //Path.Shader.pathTrafo       |> toEffect
             Path.Shader.pathFragment    |> toEffect
         ]
         
     let instancedEffect =
         FShade.Effect.compose [
-            DefaultSurfaces.instanceTrafo   |> toEffect
-            Path.Shader.pathTrafo           |> toEffect
+            Path.Shader.pathVertexInstanced |> toEffect
             Path.Shader.pathFragment        |> toEffect
         ]
 
@@ -356,7 +374,6 @@ type ShapeCache(r : IRuntime) =
             r.PrepareEffect(
                 s, [
                     Path.Shader.pathVertex      |> toEffect
-                    Path.Shader.pathTrafo       |> toEffect
                     Path.Shader.pathFragment    |> toEffect
                 ]
             )

@@ -14,10 +14,12 @@ module Path =
         let KLMKind = Symbol.Create "KLMKind"
         let PathOffsetAndScale = Symbol.Create "PathOffsetAndScale"
         let PathColor = Symbol.Create "PathColor"
+        let TrafoOffsetAndScale = Symbol.Create "PathTrafoOffsetAndScale"
 
     type KLMKindAttribute() = inherit FShade.SemanticAttribute(Attributes.KLMKind |> string)
     type PathOffsetAndScaleAttribute() = inherit FShade.SemanticAttribute(Attributes.PathOffsetAndScale |> string)
     type PathColorAttribute() = inherit FShade.SemanticAttribute(Attributes.PathColor |> string)
+    type TrafoOffsetAndScaleAttribute() = inherit FShade.SemanticAttribute(Attributes.TrafoOffsetAndScale |> string)
 
     [<ReflectedDefinition>]
     module Shader = 
@@ -38,6 +40,8 @@ module Path =
                 [<SamplePosition>] samplePos : V2d
                 [<SampleId>] sampleId : int
                 [<SampleMask>] sampleMask : Arr<1 N, int>
+
+                [<TrafoOffsetAndScale>] instanceTrafo : M34d
             }
 
         type Fragment =
@@ -48,18 +52,62 @@ module Path =
 
         let pathVertex (v : Vertex) =
             vertex {
-                let pi = v.offset.XY + v.p.XY * v.offset.ZW
-                let p = V4d(pi.X, pi.Y, v.p.Z, v.p.W)
+                let trafo = uniform.ModelViewTrafo
+                let scale = v.offset.ZW
+                let flip = scale.X < 0.0
+                let scale = V2d(abs scale.X, abs scale.Y)
+                let offset = v.offset.XY
 
-                return { v with p = p }
+                let mutable p = V4d.Zero
+                let pm = offset + v.p.XY * scale
+
+                if flip then
+                    let t = V3d(trafo.M03, trafo.M13, trafo.M23)
+                    let z = V3d(trafo.M02, trafo.M12, trafo.M22)
+ 
+                    if Vec.dot t z <= 0.0 then
+                        p <- trafo * V4d( pm.X, pm.Y, v.p.Z, v.p.W)
+                    else
+                        p <- trafo * V4d(-pm.X, pm.Y, v.p.Z, v.p.W)
+                else
+                    p <- trafo * V4d(pm.X, pm.Y, v.p.Z, v.p.W)
+                    
+                return { v with p = uniform.ProjTrafo * p }
+            }
+            
+        let pathVertexInstanced (v : Vertex) =
+            vertex {
+                let instanceTrafo = M44d.op_Explicit v.instanceTrafo //M44d.FromRows(v.instanceTrafo.R0, v.instanceTrafo.R1, v.instanceTrafo.R2, V4d.OOOI)
+                let trafo = uniform.ModelViewTrafo * instanceTrafo
+
+                let scale = v.offset.ZW
+                let flip = scale.X < 0.0
+                let scale = V2d(abs scale.X, abs scale.Y)
+                let offset = v.offset.XY
+
+                let mutable p = V4d.Zero
+                let pm = offset + v.p.XY * scale
+
+                if flip then
+                    let t = V3d(trafo.M03, trafo.M13, trafo.M23)
+                    let z = V3d(trafo.M02, trafo.M12, trafo.M22)
+ 
+                    if Vec.dot t z <= 0.0 then
+                        p <- trafo * V4d( pm.X, pm.Y, v.p.Z, v.p.W)
+                    else
+                        p <- trafo * V4d(-pm.X, pm.Y, v.p.Z, v.p.W)
+                else
+                    p <- trafo * V4d(pm.X, pm.Y, v.p.Z, v.p.W)
+                    
+                return { v with p = uniform.ProjTrafo * p }
             }
             
 
-        let pathTrafo (v : Vertex) =
-            vertex {
-                let p = uniform.ModelViewProjTrafo * v.p
-                return { v with p = p }
-            }
+        //let pathTrafo (v : Vertex) =
+        //    vertex {
+        //        let p = uniform.ModelViewProjTrafo * v.p
+        //        return { v with p = p }
+        //    }
 
         let samplePattern =
             Array.map (fun v -> v / 16.0) [|
