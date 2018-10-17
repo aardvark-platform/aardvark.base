@@ -53,6 +53,7 @@ module Path =
 
                 return { v with p = p }
             }
+            
 
         let pathTrafo (v : Vertex) =
             vertex {
@@ -137,6 +138,7 @@ module Path =
 
                 return v.color
             }
+        
         let boundaryVertex (v : Vertex) =
             vertex {
                 return { v with p = uniform.ModelViewProjTrafo * v.p }
@@ -144,7 +146,6 @@ module Path =
 
         let boundary (v : Vertex) =
             fragment {
-
                 return uniform.BoundaryColor
             }
 

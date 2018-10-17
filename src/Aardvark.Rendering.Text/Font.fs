@@ -324,18 +324,11 @@ type ShapeCache(r : IRuntime) =
     let pool = r.CreateGeometryPool(types)
     let ranges = ConcurrentDictionary<Shape, Range1i>()
 
-//    let signature =
-//        r.CreateFramebufferSignature(
-//            1, 
-//            [
-//                DefaultSemantic.Colors, RenderbufferFormat.Rgba8
-//                //Path.Src1Color, RenderbufferFormat.Rgba8
-//                DefaultSemantic.Depth, RenderbufferFormat.Depth24Stencil8
-//            ]
-//        )
 
     let surfaceCache = ConcurrentDictionary<IFramebufferSignature, IBackendSurface>()
     let boundarySurfaceCache = ConcurrentDictionary<IFramebufferSignature, IBackendSurface>()
+
+
 
     let effect =
         FShade.Effect.compose [
@@ -344,6 +337,13 @@ type ShapeCache(r : IRuntime) =
             Path.Shader.pathFragment    |> toEffect
         ]
         
+    let instancedEffect =
+        FShade.Effect.compose [
+            DefaultSurfaces.instanceTrafo   |> toEffect
+            Path.Shader.pathTrafo           |> toEffect
+            Path.Shader.pathFragment        |> toEffect
+        ]
+
     let boundaryEffect =
         FShade.Effect.compose [
             Path.Shader.boundaryVertex  |> toEffect
@@ -387,7 +387,6 @@ type ShapeCache(r : IRuntime) =
             member x.TryGetAttribute(sem) =
                 match pool.TryGetBufferView sem with
                     | Some bufferView ->
-                        //bufferView.Buffer.Level <- max bufferView.Buffer.Level 3000
                         Some bufferView
                     | None ->
                         None
@@ -402,6 +401,7 @@ type ShapeCache(r : IRuntime) =
         )
 
     member x.Effect = effect
+    member x.InstancedEffect = instancedEffect
     member x.BoundaryEffect = boundaryEffect
     member x.Surface s = surface s :> ISurface
     member x.BoundarySurface s = boundarySurface s :> ISurface
