@@ -20,6 +20,9 @@ module Path =
     type PathOffsetAndScaleAttribute() = inherit FShade.SemanticAttribute(Attributes.PathOffsetAndScale |> string)
     type PathColorAttribute() = inherit FShade.SemanticAttribute(Attributes.PathColor |> string)
     type TrafoOffsetAndScaleAttribute() = inherit FShade.SemanticAttribute(Attributes.TrafoOffsetAndScale |> string)
+    type KindAttribute() = inherit FShade.SemanticAttribute("Kind")
+    type KLMAttribute() = inherit FShade.SemanticAttribute("KLM")
+    type DepthLayerAttribute() = inherit FShade.SemanticAttribute("DepthLayer")
 
     [<ReflectedDefinition>]
     module Shader = 
@@ -33,22 +36,18 @@ module Path =
         type Vertex =
             {
                 [<Position>] p : V4d
-                [<Interpolation(InterpolationMode.Sample); KLMKind>] klm : V4d
+                [<Interpolation(InterpolationMode.Sample); KLMKind>] klmKind : V4d
                 [<PathOffsetAndScale>] offset : V4d
                 [<PathColor>] color : V4d
-                [<VertexId>] vertexId : int
+
                 [<SamplePosition>] samplePos : V2d
-                [<SampleId>] sampleId : int
-                [<SampleMask>] sampleMask : Arr<1 N, int>
+                
+                [<DepthLayer>] layer : float
+
 
                 [<TrafoOffsetAndScale>] instanceTrafo : M34d
             }
-
-        type Fragment =
-            {
-                [<Color>] color : V4d
-                [<SampleMask>] sampleMask : Arr<1 N, int>
-            }
+            
 
         let pathVertex (v : Vertex) =
             vertex {
@@ -72,7 +71,14 @@ module Path =
                 else
                     p <- trafo * V4d(pm.X, pm.Y, v.p.Z, v.p.W)
                     
-                return { v with p = uniform.ProjTrafo * p }
+                return { 
+                    v with 
+                        p = uniform.ProjTrafo * p
+                        //kind = v.klmKind.W
+                        layer = 0.0
+                        //klm = v.klmKind.XYZ 
+                        color = v.color
+                    }
             }
             
         let pathVertexInstanced (v : Vertex) =
@@ -98,97 +104,53 @@ module Path =
                         p <- trafo * V4d(-pm.X, pm.Y, v.p.Z, v.p.W)
                 else
                     p <- trafo * V4d(pm.X, pm.Y, v.p.Z, v.p.W)
-                    
-                return { v with p = uniform.ProjTrafo * p }
+                
+                return { 
+                    v with 
+                        p = uniform.ProjTrafo * p 
+                        //kind = v.klmKind.W
+                        layer = v.color.W
+                        //klm = v.klmKind.XYZ
+                        color = V4d(v.color.XYZ, 1.0)
+                }
             }
-            
 
-        //let pathTrafo (v : Vertex) =
-        //    vertex {
-        //        let p = uniform.ModelViewProjTrafo * v.p
-        //        return { v with p = p }
-        //    }
-
-        let samplePattern =
-            Array.map (fun v -> v / 16.0) [|
-                V2d(1,1);   V2d(-1,-3); V2d(-3,2);  V2d(4,-1);
-                V2d(-5,-2); V2d(2,5);   V2d(5,3);   V2d(3,-5); 
-                V2d(-2,6);  V2d(0,-7);  V2d(-4,-6); V2d(-6,4); 
-                V2d(-8,0);  V2d(7,-4);  V2d(6,7);   V2d(-7,-8)
-            |] |> Arr<16 N, _>
-
-//            Array.map (fun v -> v - V2d(0.5, 0.5)) [|
-//                V2d(0.5625, 0.3125); V2d(0.4375, 0.6875); V2d(0.8125, 0.5625); V2d(0.3125, 0.1875);
-//                V2d(0.1875, 0.8125); V2d(0.0625, 0.4375); V2d(0.6875, 0.9375); V2d(0.9375, 0.0625)
-//
-//            |] |> Arr<8 N, _>
-
-        let pathFragmentAA (v : Vertex) =
-            fragment {
-                //let pos = v.samplePos
-                let kind = v.klm.W
-
-                let c = v.klm.XYZ
-                let mutable alpha = 1.0
-                let cx = ddx(v.klm.XYZ)
-                let cy = ddy(v.klm.XYZ)
-
-                if kind < 0.5 then
-                    if uniform.Antialias then
-                        let mutable sum = 0.0
-                        for s in samplePattern do
-                            let ci = c + s.X * cx + s.Y * cy
-                            if ci.X >= 0.0 && ci.Y >= 0.0 && ci.Z >= 0.0 then
-                                sum <- sum + 1.0
-            
-                        alpha <- sum / 16.0
-
-                elif kind > 0.5 && kind < 1.5 then 
-                    // outside triangle
-                    alpha <- 0.0
-
-                elif kind > 1.5 && kind < 3.5 then
-                    // quadratic bezier
-                    if uniform.Antialias then
-                        let mutable sum = 0.0
-                        for s in samplePattern do
-                            let ci = c + s.X * cx + s.Y * cy
-                            let f = (ci.X * ci.X - ci.Y) * ci.Z
-                            if f <= 0.0 then
-                                sum <- sum + 1.0
-
-                        alpha <- sum / 16.0
-                    else
-                        let f = (c.X * c.X - c.Y) * c.Z
-                        if f > 0.0 then alpha <- 0.0
-                        
-
-
-                return V4d(v.color.XYZ, alpha)
+        type Frag =
+            {
+                [<Color>] color : V4d
+                [<Depth>] d : float
             }
 
         let pathFragment(v : Vertex) =
             fragment {
-                let kind = v.klm.W  + 0.001 * v.samplePos.X
-                
+                let kind = v.klmKind.W + 0.001 * v.samplePos.X
+   
                 if uniform.FillGlyphs then
                     if kind > 1.5 && kind < 3.5 then
                         // bezier2
-                        let ci = v.klm.XYZ
+                        let ci = v.klmKind.XYZ
                         let f = (ci.X * ci.X - ci.Y) * ci.Z
                         if f > 0.0 then
                             discard()
                         
                     elif kind > 3.5 && kind < 5.5 then
                         // arc
-                        let ci = v.klm.XYZ
+                        let ci = v.klmKind.XYZ
                         let f = ((ci.X * ci.X + ci.Y*ci.Y) - 1.0) * ci.Z
                     
                         if f > 0.0 then
                             discard()
-                     
 
-                return v.color
+                     elif kind > 5.5 && kind < 8.5 then
+                        let ci = v.klmKind.XYZ
+                        let f = ci.X * ci.X * ci.X - ci.Y * ci.Z
+                        if f > 0.0 then
+                            discard()
+
+
+                let sp = 0.5 * v.p.Z / v.p.W + 0.5
+                let bias = v.layer * 0.00001
+                return { color = v.color; d = sp - bias }
                     
             }
         
@@ -202,6 +164,9 @@ module Path =
                 return uniform.BoundaryColor
             }
 
+
+    let empty =
+        { bounds = Box2d.Invalid; outline = [||] }
 
     /// create a path using a single segment
     let single (seg : PathSegment) =
@@ -853,14 +818,19 @@ module Path =
                                 let pi0, pi1 = subdivide components.[i]
                                 let pj0, pj1 = subdivide components.[j]
 
-                                pi <- toPolygon pi0 |> Option.get
+                                //pi <- toPolygon pi0 |> Option.get
                                 components.[i] <- pi0
                                 components.Insert(i+1, pi1)
 
                                 components.[j+1] <- pj0
                                 components.Insert(j+2, pj1)
                                 
-                                j <- j + 1
+                                match toPolygon pi0 with
+                                    | Some p -> 
+                                        pi <- p
+                                        j <- j + 1
+                                    | None -> 
+                                        j <- components.Count
 
                             | _ ->
                                 j <- j + 1
@@ -949,11 +919,11 @@ module Path =
                         if p1Inside && p2Inside then
                             add p1
                             add p2
-                            4.0
-                        elif not p1Inside && not p2Inside then
-                            5.0
-                        else
                             6.0
+                        elif not p1Inside && not p2Inside then
+                            7.0
+                        else
+                            8.0
                             
 
                         

@@ -368,6 +368,13 @@ type ShapeCache(r : IRuntime) =
             Path.Shader.boundary        |> toEffect
         ]
 
+    let instancedBoundaryEffect =
+        FShade.Effect.compose [
+            DefaultSurfaces.instanceTrafo   |> toEffect
+            Path.Shader.boundaryVertex      |> toEffect
+            Path.Shader.boundary            |> toEffect
+        ]
+
 
     let surface (s : IFramebufferSignature) =
         surfaceCache.GetOrAdd(s, fun s -> 
@@ -420,6 +427,7 @@ type ShapeCache(r : IRuntime) =
     member x.Effect = effect
     member x.InstancedEffect = instancedEffect
     member x.BoundaryEffect = boundaryEffect
+    member x.InstancedBoundaryEffect = instancedBoundaryEffect
     member x.Surface s = surface s :> ISurface
     member x.BoundarySurface s = boundarySurface s :> ISurface
     member x.VertexBuffers = vertexBuffers

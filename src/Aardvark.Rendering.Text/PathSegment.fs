@@ -9,9 +9,14 @@ module Helpers =
     let internal angleDifference (a0 : float) (a1 : float) =
         let d1 = a1 - a0
         let d2 = d1 - Constant.PiTimesTwo
+        let d3 = d1 + Constant.PiTimesTwo
 
-        if abs d1 < abs d2 then d1
-        else d2
+        if abs d1 < abs d2 then 
+            if abs d1 < abs d3 then d1
+            else d3
+        else 
+            if abs d2 < abs d3 then d2
+            else d3
 
     let internal arcCoords (p0 : V2d) (p1 : V2d) (p2 : V2d) =
         let p01 = Plane2d(Vec.normalize (p1 - p0), p0)
@@ -128,18 +133,18 @@ module PathSegment =
         ArcSeg(alpha0, alpha1, ellipse)
 
 
-    let arcSegment (p0 : V2d) (p1 : V2d) (p2 : V2d) =
-        let n0 = Plane2d(Vec.normalize (p1 - p0), p0)
-        let n1 = Plane2d(Vec.normalize (p2 - p0), p2)
+
+    //let circleSegment (p0 : V2d) (p1 : V2d) (p2 : V2d) =
+    //    let n0 = Plane2d(Vec.normalize (p1 - p0), p0)
+    //    let n1 = Plane2d(Vec.normalize (p2 - p0), p2)
         
-        let mutable center = V2d.Zero
-        n0.Intersects(n1, &center) |> ignore
+    //    let mutable center = V2d.Zero
+    //    n0.Intersects(n1, &center) |> ignore
 
-        let ellipse = Ellipse2d.FromConjugateDiameters(center, p2 - center, p0 - center)
-        let a0 = ellipse.GetAlpha p0
-        let a1 = ellipse.GetAlpha p1
-        ArcSeg(a0, a1, ellipse)
-
+    //    let ellipse = Ellipse2d(center, p2 - center, p1 - center)
+    //    let a0 = ellipse.GetAlpha p0
+    //    let a1 = ellipse.GetAlpha p1
+    //    ArcSeg(a0, a1, ellipse)
 
 
 
@@ -172,8 +177,13 @@ module PathSegment =
 
     /// creates an arc
     let tryArc (alpha0 : float) (alpha1 : float) (ellipse : Ellipse2d) =
-        // check if the spline is actually a line
-        ArcSeg(alpha0, alpha1, ellipse) |> Some
+        let p0 = ellipse.GetPoint alpha0
+        let p1 = ellipse.GetPoint alpha1
+        if V2d.ApproxEqual(p0, p1, 1E-9) then
+            None
+        else
+            // check if the spline is actually a line
+            ArcSeg(alpha0, alpha1, ellipse) |> Some
 
  
 
