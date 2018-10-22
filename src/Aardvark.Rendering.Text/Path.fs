@@ -32,6 +32,7 @@ module Path =
             member x.FillGlyphs : bool = uniform?FillGlyphs
             member x.Antialias : bool = uniform?Antialias
             member x.BoundaryColor : V4d = uniform?BoundaryColor
+            member x.DepthBias : float = uniform?DepthBias
 
         type Vertex =
             {
@@ -149,7 +150,7 @@ module Path =
 
 
                 let sp = 0.5 * v.p.Z / v.p.W + 0.5
-                let bias = v.layer * 0.00001
+                let bias = 255.0 * v.layer * uniform.DepthBias
                 return { color = v.color; d = sp - bias }
                     
             }
