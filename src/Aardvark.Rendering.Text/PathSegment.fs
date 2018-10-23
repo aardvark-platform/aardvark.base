@@ -132,22 +132,61 @@ module PathSegment =
         // check if the spline is actually a line
         ArcSeg(alpha0, alpha1, ellipse)
 
+    let tryArcSegment (p0 : V2d) (p1 : V2d) (p2 : V2d) =
+        // see: https://math.stackexchange.com/questions/2204258/roundest-ellipse-with-specified-tangents
+        let m = 0.5 * (p0 + p2)
+        let am = m - p0
+        let vm = m - p1
+        let va = p1 - p0
 
+        let lam = Vec.length am
+        let lvm = Vec.length vm
+        let lva = Vec.length va
 
-    //let circleSegment (p0 : V2d) (p1 : V2d) (p2 : V2d) =
-    //    let n0 = Plane2d(Vec.normalize (p1 - p0), p0)
-    //    let n1 = Plane2d(Vec.normalize (p2 - p0), p2)
+        let lam2 = lam * lam
+        let lmd = (lam2 + lam*sqrt (lam2 + lvm*lvm)) / lvm
+        let d = m + vm * (lmd / lvm)
+
+        let inline left (v : V2d) = V2d(-v.Y, v.X)
         
-    //    let mutable center = V2d.Zero
-    //    n0.Intersects(n1, &center) |> ignore
+        let pd = Plane2d(left (am / lam), d)
+        let pv = Plane2d(left (va / lva), p0)
+        let mutable e = V2d.Zero
+        if pd.Intersects(pv, &e) then
+            let f = 0.5 * (d + p0)
+            let ef = f - e
+            let lef = Vec.length ef
+            let pef = Plane2d(left (ef / lef), e)
+            let pvm = Plane2d(left (vm / lvm), d)
 
-    //    let ellipse = Ellipse2d(center, p2 - center, p1 - center)
-    //    let a0 = ellipse.GetAlpha p0
-    //    let a1 = ellipse.GetAlpha p1
-    //    ArcSeg(a0, a1, ellipse)
+            let mutable c = V2d.Zero
+            if pef.Intersects(pvm, &c) then
+                let lcd = Vec.length (d - c)
+                let g = c - am * (lcd/lam)
+                
+                let e = Ellipse2d.FromConjugateDiameters(c, d - c, g - c)
+                let ellipse = 
+                    let aa0 = e.Axis0.Normalized
+                    let aa1 = e.Axis1.Normalized
+                    let d = Vec.dot (left aa0) aa1 
+                    if d < 0.0 then Ellipse2d(e.Center, e.Axis1, e.Axis0)
+                    else e
+                    
+                let a0 = ellipse.GetAlpha p0
+                let a1 = ellipse.GetAlpha p2
+                ArcSeg(a0, a1, ellipse) |> Some
 
+            else
+                None
 
+        else
+            None
 
+            
+    let arcSegment (p0 : V2d) (p1 : V2d) (p2 : V2d) =
+        tryArcSegment p0 p1 p2 |> Option.get
+
+        
     /// creates a line segment (if not degenerate)
     let tryLine (p0 : V2d) (p1 : V2d) =
         if p0 = p1 then None
