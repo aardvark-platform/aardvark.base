@@ -20,6 +20,9 @@ module Path =
     type PathOffsetAndScaleAttribute() = inherit FShade.SemanticAttribute(Attributes.PathOffsetAndScale |> string)
     type PathColorAttribute() = inherit FShade.SemanticAttribute(Attributes.PathColor |> string)
     type TrafoOffsetAndScaleAttribute() = inherit FShade.SemanticAttribute(Attributes.TrafoOffsetAndScale |> string)
+    type KindAttribute() = inherit FShade.SemanticAttribute("Kind")
+    type KLMAttribute() = inherit FShade.SemanticAttribute("KLM")
+    type DepthLayerAttribute() = inherit FShade.SemanticAttribute("DepthLayer")
 
     [<ReflectedDefinition>]
     module Shader = 
@@ -29,26 +32,23 @@ module Path =
             member x.FillGlyphs : bool = uniform?FillGlyphs
             member x.Antialias : bool = uniform?Antialias
             member x.BoundaryColor : V4d = uniform?BoundaryColor
+            member x.DepthBias : float = uniform?DepthBias
 
         type Vertex =
             {
                 [<Position>] p : V4d
-                [<Interpolation(InterpolationMode.Sample); KLMKind>] klm : V4d
+                [<Interpolation(InterpolationMode.Sample); KLMKind>] klmKind : V4d
                 [<PathOffsetAndScale>] offset : V4d
                 [<PathColor>] color : V4d
-                [<VertexId>] vertexId : int
+
                 [<SamplePosition>] samplePos : V2d
-                [<SampleId>] sampleId : int
-                [<SampleMask>] sampleMask : Arr<1 N, int>
+                
+                [<DepthLayer>] layer : float
+
 
                 [<TrafoOffsetAndScale>] instanceTrafo : M34d
             }
-
-        type Fragment =
-            {
-                [<Color>] color : V4d
-                [<SampleMask>] sampleMask : Arr<1 N, int>
-            }
+            
 
         let pathVertex (v : Vertex) =
             vertex {
@@ -72,7 +72,14 @@ module Path =
                 else
                     p <- trafo * V4d(pm.X, pm.Y, v.p.Z, v.p.W)
                     
-                return { v with p = uniform.ProjTrafo * p }
+                return { 
+                    v with 
+                        p = uniform.ProjTrafo * p
+                        //kind = v.klmKind.W
+                        layer = 0.0
+                        //klm = v.klmKind.XYZ 
+                        color = v.color
+                    }
             }
             
         let pathVertexInstanced (v : Vertex) =
@@ -98,93 +105,54 @@ module Path =
                         p <- trafo * V4d(-pm.X, pm.Y, v.p.Z, v.p.W)
                 else
                     p <- trafo * V4d(pm.X, pm.Y, v.p.Z, v.p.W)
-                    
-                return { v with p = uniform.ProjTrafo * p }
+                
+                return { 
+                    v with 
+                        p = uniform.ProjTrafo * p 
+                        //kind = v.klmKind.W
+                        layer = v.color.W
+                        //klm = v.klmKind.XYZ
+                        color = V4d(v.color.XYZ, 1.0)
+                }
             }
-            
 
-        //let pathTrafo (v : Vertex) =
-        //    vertex {
-        //        let p = uniform.ModelViewProjTrafo * v.p
-        //        return { v with p = p }
-        //    }
-
-        let samplePattern =
-            Array.map (fun v -> v / 16.0) [|
-                V2d(1,1);   V2d(-1,-3); V2d(-3,2);  V2d(4,-1);
-                V2d(-5,-2); V2d(2,5);   V2d(5,3);   V2d(3,-5); 
-                V2d(-2,6);  V2d(0,-7);  V2d(-4,-6); V2d(-6,4); 
-                V2d(-8,0);  V2d(7,-4);  V2d(6,7);   V2d(-7,-8)
-            |] |> Arr<16 N, _>
-
-//            Array.map (fun v -> v - V2d(0.5, 0.5)) [|
-//                V2d(0.5625, 0.3125); V2d(0.4375, 0.6875); V2d(0.8125, 0.5625); V2d(0.3125, 0.1875);
-//                V2d(0.1875, 0.8125); V2d(0.0625, 0.4375); V2d(0.6875, 0.9375); V2d(0.9375, 0.0625)
-//
-//            |] |> Arr<8 N, _>
-
-        let pathFragmentAA (v : Vertex) =
-            fragment {
-                //let pos = v.samplePos
-                let kind = v.klm.W
-
-                let c = v.klm.XYZ
-                let mutable alpha = 1.0
-                let cx = ddx(v.klm.XYZ)
-                let cy = ddy(v.klm.XYZ)
-
-                if kind < 0.5 then
-                    if uniform.Antialias then
-                        let mutable sum = 0.0
-                        for s in samplePattern do
-                            let ci = c + s.X * cx + s.Y * cy
-                            if ci.X >= 0.0 && ci.Y >= 0.0 && ci.Z >= 0.0 then
-                                sum <- sum + 1.0
-            
-                        alpha <- sum / 16.0
-
-                elif kind > 0.5 && kind < 1.5 then 
-                    // outside triangle
-                    alpha <- 0.0
-
-                elif kind > 1.5 && kind < 3.5 then
-                    // quadratic bezier
-                    if uniform.Antialias then
-                        let mutable sum = 0.0
-                        for s in samplePattern do
-                            let ci = c + s.X * cx + s.Y * cy
-                            let f = (ci.X * ci.X - ci.Y) * ci.Z
-                            if f <= 0.0 then
-                                sum <- sum + 1.0
-
-                        alpha <- sum / 16.0
-                    else
-                        let f = (c.X * c.X - c.Y) * c.Z
-                        if f > 0.0 then alpha <- 0.0
-                        
-
-
-                return V4d(v.color.XYZ, alpha)
+        type Frag =
+            {
+                [<Color>] color : V4d
+                [<Depth>] d : float
             }
 
         let pathFragment(v : Vertex) =
             fragment {
-                //let pos = v.samplePos
-                let kind = v.klm.W  + 0.001 * v.samplePos.X
+                let kind = v.klmKind.W + 0.001 * v.samplePos.X
+   
+                if uniform.FillGlyphs then
+                    if kind > 1.5 && kind < 3.5 then
+                        // bezier2
+                        let ci = v.klmKind.XYZ
+                        let f = (ci.X * ci.X - ci.Y) * ci.Z
+                        if f > 0.0 then
+                            discard()
+                        
+                    elif kind > 3.5 && kind < 5.5 then
+                        // arc
+                        let ci = v.klmKind.XYZ
+                        let f = ((ci.X * ci.X + ci.Y*ci.Y) - 1.0) * ci.Z
+                    
+                        if f > 0.0 then
+                            discard()
+
+                     elif kind > 5.5 && kind < 8.5 then
+                        let ci = v.klmKind.XYZ
+                        let f = ci.X * ci.X * ci.X - ci.Y * ci.Z
+                        if f > 0.0 then
+                            discard()
 
 
-                if kind > 1.5 && kind < 3.5 then
-                    let ci = v.klm.XYZ
-                    let f = (ci.X * ci.X - ci.Y) * ci.Z
-                    if f > 0.0 then
-                        discard()
-//
-//                if kind > 1.5 && kind < 3.5 then
-//                    let f = (uv.X * uv.X - uv.Y) * uv.Z
-//                    if f > 0.0 then
-//                        discard()
-
-                return v.color
+                let sp = 0.5 * v.p.Z / v.p.W + 0.5
+                let bias = 255.0 * v.layer * uniform.DepthBias
+                return { color = v.color; d = sp - bias }
+                    
             }
         
         let boundaryVertex (v : Vertex) =
@@ -197,6 +165,9 @@ module Path =
                 return uniform.BoundaryColor
             }
 
+
+    let empty =
+        { bounds = Box2d.Invalid; outline = [||] }
 
     /// create a path using a single segment
     let single (seg : PathSegment) =
@@ -260,7 +231,97 @@ module Path =
     /// applies the given transformation to all points used by the path
     let transform (f : V2d -> V2d) (p : Path) =
         p.outline |> Array.map (PathSegment.transform f) |> ofArray
+        
+    type PathBuilderState =
+        {
+            currentStart : Option<V2d>
+            current : Option<V2d>
+            segments : list<PathSegment>
+        }
 
+    type PathBuilder() =
+        member x.Yield(()) =
+            {
+                currentStart = None
+                current = None
+                segments = []
+            }
+
+        [<CustomOperation("start")>]
+        member x.Start(s : PathBuilderState, pt : V2d) = 
+            { s with current = Some pt; currentStart = Some pt }
+            
+        [<CustomOperation("lineTo")>]
+        member x.LineTo(s : PathBuilderState, p1 : V2d) = 
+            match s.current with
+                | Some p0 ->
+                    match PathSegment.tryLine p0 p1 with
+                        | Some seg -> 
+                            { s with current = Some p1; segments = seg :: s.segments }
+                        | None ->
+                            s
+                | None ->
+                    failwith "cannot use lineTo without starting the path"
+
+        [<CustomOperation("bezierTo")>]
+        member x.BezierTo(s : PathBuilderState, pc : V2d, p1 : V2d) = 
+            match s.current with
+                | Some p0 ->
+                    match PathSegment.tryBezier2 p0 pc p1 with
+                        | Some seg -> 
+                            { s with current = Some p1; segments = seg :: s.segments }
+                        | None ->
+                            s
+                | None ->
+                    failwith "cannot use lineTo without starting the path"
+            
+        [<CustomOperation("arc")>]
+        member x.Arc(s : PathBuilderState, p1 : V2d, e : Ellipse2d) = 
+            match s.current with
+                | Some p0 ->
+                    let a0 = e.GetAlpha p0
+                    let a1 = e.GetAlpha p1
+                    match PathSegment.tryArc a0 a1 e with
+                        | Some seg -> 
+                            { s with current = Some p1; segments = seg :: s.segments }
+                        | None ->
+                            s
+                | None ->
+                    failwith "cannot use lineTo without starting the path"
+                            
+        [<CustomOperation("bezierTo3")>]
+        member x.BezierTo3(s : PathBuilderState, pc0 : V2d, pc1 : V2d, p1 : V2d) = 
+            match s.current with
+                | Some p0 ->
+                    match PathSegment.tryBezier3 p0 pc0 pc1 p1 with
+                        | Some seg -> 
+                            { s with current = Some p1; segments = seg :: s.segments }
+                        | None ->
+                            s
+                | None ->
+                    failwith "cannot use lineTo without starting the path"
+                    
+        [<CustomOperation("stop")>]
+        member x.Stop(s : PathBuilderState) =
+            { s with current = None; currentStart = None }
+            
+        [<CustomOperation("close")>]
+        member x.CloseLine(s : PathBuilderState) =
+            match s.current, s.currentStart with
+                | Some current, Some start ->
+                    let s = { s with current = None; currentStart = None }     
+                    
+                    match PathSegment.tryLine current start with
+                        | Some seg -> { s with segments = seg :: s.segments }
+                        | None -> s
+                | _ ->
+                    failwith "cannot close without starting the path"
+      
+        member x.Run(s : PathBuilderState) =
+            ofList (List.rev s.segments)
+
+    let build = PathBuilder()
+    
 
     type private Triangle2dBound(p0 : V2d, p1 : V2d, p2 : V2d, b0 : bool, b1 : bool, b2 : bool) =
         member x.P0 = p0
@@ -381,7 +442,6 @@ module Path =
             else
                 [||], [||]
 
-    
     type LibTess private() =
         static member TessellateIndexed(polys : seq<Polygon2d>, evenOdd : bool) =
             let points = polys |> Seq.map (fun p -> p.Points |> Seq.toArray |> Array.map (fun v -> V3d(v, 0.0)))
@@ -670,37 +730,21 @@ module Path =
     let toGeometry (p : Path) =
         let bounds = bounds p
         let innerPoints = List<List<V2d>>()
-        let outerPoints = List<List<V2d>>()
-        let boundaryEdges = HashSet<V2d * V2d>()
-        let boundaryPoints = HashSet<V2d>()
+        let mutable current = V2d.NaN
+        
         let boundaryTriangles = List<V2d>()
         let boundaryCoords = List<V4d>()
 
-        let mutable current = V2d.NaN
-        let mutable currentOuter = V2d.NaN
-
         let start (p : V2d) =
-            if current <> p then
+            if not (V2d.ApproxEqual(current, p, 1E-8)) then
                 innerPoints.Add(List())
                 current <- V2d.NaN
-
-        let startOuter (p : V2d) =
-            if currentOuter <> p then
-                outerPoints.Add(List())
-                current <- V2d.NaN
-            
-
+                
         let add (p : V2d) =
-            if current <> p then 
+            if not (V2d.ApproxEqual(current, p, 1E-8)) then 
                 innerPoints.[innerPoints.Count-1].Add p
                 current <- p
-
-        let addOuter (p : V2d) =
-            if currentOuter <> p then 
-                outerPoints.[outerPoints.Count-1].Add p
-                currentOuter <- p
-            
-
+                
         let overlap (q0 : Polygon2d) (q1 : Polygon2d) =
             let realIntersections =
                 seq {
@@ -713,226 +757,222 @@ module Path =
                                 | _ -> ()
                 }
             realIntersections |> Seq.isEmpty |> not
-        
-        let allSplines = 
-            p.outline |> Array.choose (fun s ->
-                match s with
-                    | Bezier3(p0, p1, p2, p3) -> Some(Polygon2d(p0, p1, p2, p3))
-                    | Bezier2(p0, p1, p2) -> Some(Polygon2d(p0, p1, p2))
-                    | _ -> None
-            )
+            
+        let components = System.Collections.Generic.List<PathSegment>(p.outline)
 
+        let toPolygon (l : PathSegment) =
+            match l with
+                | Arc(a0, a1, e) -> 
+                    let p0 = e.GetPoint(a0)
+                    let p1 = e.GetPoint(a1)
+                    let pc = e.GetControlPoint(a0, a1)
+                    Polygon2d [| p0; pc; p1 |] |> Some
+                | Bezier2(p0, p1, p2) -> Polygon2d [| p0; p1; p2 |] |> Some
+                | Bezier3(p0, p1, p2, p3) -> Polygon2d [| p0; p1; p2; p3 |] |> Some
+                | _ -> None
+
+        let overlapping (l : PathSegment) (r : PathSegment) =
+            let lpoly = toPolygon l
+            let rpoly = toPolygon r
+            match lpoly, rpoly with
+                | Some l, Some r -> overlap l r
+                | _ -> false
+
+        let subdivide (segment : PathSegment) =
+            match segment with
+                | Bezier2(p0, p1, p2) ->
+                    let m0 = 0.5 * (p0 + p1)
+                    let m1 = 0.5 * (p1 + p2)
+                    let pp = 0.5 * (m0 + m1)
+                    Bezier2(p0,m0,pp), Bezier2(pp, m1, p2)
+
+                | Bezier3(p0, p1, p2, p3) ->
+                    let m0 = 0.5 * (p1 + p0)
+                    let m1 = 0.5 * (p1 + p2)
+                    let m2 = 0.5 * (p2 + p3)
+                    let q0 = 0.5 * (m0 + m1)
+                    let q1 = 0.5 * (m1 + m2)
+                    let p = 0.5 * (q0 + q1)
+
+                    let s0 = Bezier3(p0, m0, q0, p)
+                    let s1 = Bezier3(p, q1, m2, p3)
+                    s0, s1
+
+                | Arc(a0, a1, ellipse) ->
+                    let da = angleDifference a0 a1
+                    let an = a0 + 0.5 * da
+                    ArcSeg(a0, an, ellipse), ArcSeg(an, a1, ellipse)
+
+                | Line(p0, p1) ->
+                    let m = 0.5 * (p0 + p1)
+                    Line(p0,m), Line(m, p1)
+
+        let mutable i = 0
+        while i < components.Count do
+            match toPolygon components.[i] with
+                | Some pi ->
+                    let mutable pi = pi
+                    let mutable j = i + 1
+                    while j < components.Count do
+                        match toPolygon components.[j] with
+                            | Some pj when overlap pi pj ->
+                                let pi0, pi1 = subdivide components.[i]
+                                let pj0, pj1 = subdivide components.[j]
+
+                                //pi <- toPolygon pi0 |> Option.get
+                                components.[i] <- pi0
+                                components.Insert(i+1, pi1)
+
+                                components.[j+1] <- pj0
+                                components.Insert(j+2, pj1)
+                                
+                                match toPolygon pi0 with
+                                    | Some p -> 
+                                        pi <- p
+                                        j <- j + 1
+                                    | None -> 
+                                        j <- components.Count
+
+                            | _ ->
+                                j <- j + 1
+
+                | _ ->
+                    ()
+                    
+            i <- i + 1
+
+
+
+        let arcCoords (p0 : V2d) (p1 : V2d) (p2 : V2d) (ellipse : Ellipse2d) =
+            let uv2World = M33d.FromCols(V3d(ellipse.Axis0, 0.0), V3d(ellipse.Axis1, 0.0), V3d(ellipse.Center, 1.0))
+            let world2UV = uv2World.Inverse
+
+            let uv0 = world2UV.TransformPos p0
+            let uv1 = world2UV.TransformPos p1
+            let uv2 = world2UV.TransformPos p2
+
+            (uv0, uv1, uv2)
+            
+            
         let rec run (l : list<PathSegment>) =
             match l with
                 | Line(p0, p1) :: rest ->
                     start p0
-                    startOuter p0
                     add p0
-                    addOuter p0
-                    boundaryEdges.Add(p0, p1) |> ignore
-                    boundaryPoints.Add(p0) |> ignore
-                    boundaryPoints.Add(p1) |> ignore
                     add p1
-                    addOuter p1
+                    run rest
+
+                | (Arc(a0, a2, ellipse) as a) :: rest ->
+                    let p0 = ellipse.GetPoint a0
+                    let p2 = ellipse.GetPoint a2
+                    let p1 = ellipse.GetControlPoint(a0, a2)
+                    let p1Inside = p1.PosLeftOfLineValue(p0, p2) < 0.0
+                    
+                    start p0
+                    add p0
+
+                    if p1Inside then 
+                        add p1
+
+                    boundaryTriangles.AddRange [p0; p1; p2]
+                    let c0, c1, c2 = arcCoords p0 p1 p2 ellipse
+                    if p1Inside then
+                        boundaryCoords.AddRange [V4d(c0.X, c0.Y,-1.0, 4.0); V4d(c1.X, c1.Y,-1.0, 4.0); V4d(c2.X, c2.Y,-1.0,4.0)]
+                    else 
+                        boundaryCoords.AddRange [V4d(c0.X, c0.Y,1.0, 5.0); V4d(c1.X, c1.Y,1.0, 5.0); V4d(c2.X, c2.Y,1.0,5.0)]
+                            
+                    add p2
+
+                    current <- p2
                     run rest
 
                 | Bezier2(p0, p1, p2) :: rest ->
                     let q = Polygon2d(p0, p1, p2)
                     let p1Inside = p1.PosLeftOfLineValue(p0, p2) < 0.0
-
-                    let overlapping = allSplines |> Seq.exists (overlap q)
-                    if overlapping then
-                        let m0 = 0.5 * (p0 + p1)
-                        let m1 = 0.5 * (p1 + p2)
-                        let pp = 0.5 * (m0 + m1)
-
-                        run (Bezier2(p0,m0,pp)::Bezier2(pp, m1, p2)::rest)
-
-                    else
-                        start p0
-                        add p0
-
-                        startOuter p0
-                        addOuter p0
-
-                        if p1Inside then 
-                            add p1
-                        else
-                            addOuter p1
-
-                        boundaryTriangles.AddRange [p0; p1; p2]
-                        boundaryPoints.Add(p0) |> ignore
-                        boundaryPoints.Add(p2) |> ignore
-
-                        if p1Inside then
-                            boundaryCoords.AddRange [V4d(0,0,-1,2); V4d(-0.5, 0.0,-1.0, 2.0); V4d(-1,1,-1,2)]
-                        else
-                            boundaryCoords.AddRange [V4d(0,0,1,3); V4d(0.5, 0.0, 1.0,3.0); V4d(1,1,1,3)]
-
-                        add p2
-                        addOuter p2
-
-                        current <- p2
-                        run rest
-
-                | (Bezier3(p0, p1, p2, p3) as s) :: rest ->
+                    
+                    start p0
+                    add p0
                         
 
+                    if p1Inside then 
+                        add p1
+
+                    boundaryTriangles.AddRange [p0; p1; p2]
+                    if p1Inside then
+                        boundaryCoords.AddRange [V4d(0,0,-1,2); V4d(-0.5, 0.0,-1.0, 2.0); V4d(-1,1,-1,2)]
+                    else
+                        boundaryCoords.AddRange [V4d(0,0,1,3); V4d(0.5, 0.0, 1.0,3.0); V4d(1,1,1,3)]
+
+                    add p2
+
+                    current <- p2
+                    run rest
+
+                | (Bezier3(p0, p1, p2, p3) as s) :: rest ->
                     let q = Polygon2d(p0, p1, p2, p3)
                     let p1Inside = p1.PosLeftOfLineValue(p0, p3) < 0.0
                     let p2Inside = p2.PosLeftOfLineValue(p0, p3) < 0.0
 
-                    let overlapping = allSplines |> Seq.exists (overlap q)
-                    if overlapping then
-
-                        let m0 = 0.5 * (p1 + p0)
-                        let m1 = 0.5 * (p1 + p2)
-                        let m2 = 0.5 * (p2 + p3)
-                        let q0 = 0.5 * (m0 + m1)
-                        let q1 = 0.5 * (m1 + m2)
-                        let p = 0.5 * (q0 + q1)
-
-                        let s0 = Bezier3(p0, m0, q0, p)
-                        let s1 = Bezier3(p, q1, m2, p3)
-
-                        run (s0::s1::rest)
-
-                    else
-                        start p0
-                        add p0
-
-                        startOuter p0
-                        addOuter p0
-
-                        let kind = 
-                            if p1Inside && p2Inside then
-                                add p1
-                                add p2
-                                4.0
-                            elif not p1Inside && not p2Inside then
-                                addOuter p1
-                                addOuter p2
-                                5.0
-                            else
-                                6.0
+                    start p0
+                    add p0
+                        
+                    let kind = 
+                        if p1Inside && p2Inside then
+                            add p1
+                            add p2
+                            6.0
+                        elif not p1Inside && not p2Inside then
+                            7.0
+                        else
+                            8.0
                             
 
                         
 
-                        let w0,w1,w2,w3 = texCoords(p0, p1, p2, p3)
-                        boundaryTriangles.AddRange [p0; p1; p2]
-                        boundaryCoords.AddRange [V4d(w0, kind); V4d(w1, kind); V4d(w2, kind)]
-                        boundaryTriangles.AddRange [p0; p2; p3]
-                        boundaryCoords.AddRange [V4d(w0, kind); V4d(w2, kind); V4d(w3, kind)]
-                        
-                        boundaryPoints.Add(p0) |> ignore
-                        boundaryPoints.Add(p3) |> ignore
+                    let w0,w1,w2,w3 = texCoords(p0, p1, p2, p3)
+                    boundaryTriangles.AddRange [p0; p1; p2]
+                    boundaryCoords.AddRange [V4d(w0, kind); V4d(w1, kind); V4d(w2, kind)]
+                    boundaryTriangles.AddRange [p0; p2; p3]
+                    boundaryCoords.AddRange [V4d(w0, kind); V4d(w2, kind); V4d(w3, kind)]
 
-                        add p3
-                        addOuter p3
-                        current <- p3
+                    add p3
+                    current <- p3
 
-                        run rest
+                    run rest
 
 
                 | [] -> ()
 
-        run (Array.toList p.outline)
+        let components = CSharpList.toList components
+        //let components = 
+        //    CSharpList.toList components |> List.collect (fun s ->
+        //        match s with
+        //            | Arc _ -> 
+        //                let (b0, b1) = subdivide s
+        //                let (a0, a1) = subdivide b0
+        //                let (a2, a3) = subdivide b1
+        //                [a0; a1; a2; a3]
+        //            | _ -> 
+        //                [s]
+        //    )
+
+        run components
 
         // merge the interior polygons (respecting holes)
         let innerPoints = 
             innerPoints |> Seq.map (fun l -> 
-                let p = l |> CSharpList.toArray |> Array.take (l.Count-1) |> Polygon2d
-                p //Clipper.clip p
+                l |> CSharpList.toArray |> Array.take (l.Count-1) |> Polygon2d
             ) |> Seq.toArray
 
-        let isBoundary (p0 : V2d) (p1 : V2d) =
-            boundaryEdges.Contains(p0, p1) || boundaryEdges.Contains(p1, p0)
-
-        let isBoundaryPoint (p : V2d) =
-            boundaryPoints.Contains p
-
-
         let index, positions = LibTess.TessellateIndexed(innerPoints, false)
-        let boundaryPoint = positions |> Array.map isBoundaryPoint
-        
+
         let trianglePositions = List<V3d>(positions.Length * 2)
         let triangleCoords = List<V4d>(positions.Length * 2)
 
         let rec appendTriangle (i0 : int) (i1 : int) (i2 : int) (p0 : V2d) (p1 : V2d) (p2 : V2d) =
             let kind = 0
-//            let border u v w = V4d(u, v, w, kind)
             trianglePositions.AddRange [ V3d(p0, 0.0); V3d(p1, 0.0); V3d(p2, 0.0) ]
             triangleCoords.AddRange [ V4d(1,0,0,0); V4d(0,1,0,0); V4d(0,0,1,0) ]
-//
-//            let b0 = if i0 >= 0 then boundaryPoint.[i0] else false
-//            let b1 = if i1 >= 0 then boundaryPoint.[i1] else false
-//            let b2 = if i2 >= 0 then boundaryPoint.[i2] else false
-//            
-//            let insideCoord = V4d(-1,0,0,kind)
-//            let borderCoord = V4d(0,0,0,kind)
-//
-//            let insideCoord = V4d(-1,-1,-1,kind)
-//            let borderCoord = V4d(0,0,0,kind)
-//
-//            let border u v w = V4d(u, v, w, float kind)
-//
-//            let full = V4d(1,0,0,kind)
-//
-//            let coord (pi : int) (isBorder : bool) =
-//                if isBorder then V4d(0,0,0,kind)
-//                else V4d(-1,0,0,kind)
-//
-//            match b0, b1, b2 with
-//                | false, false, false -> 
-//                    trianglePositions.AddRange [ V3d(p0, 0.0); V3d(p1, 0.0); V3d(p2, 0.0) ]
-//                    triangleCoords.AddRange [ full; full; full ]
-//
-//                | true, false, false ->
-//                    trianglePositions.AddRange [ V3d(p0, 0.0); V3d(p1, 0.0); V3d(p2, 0.0) ]
-//                    triangleCoords.AddRange [ coord 0 false; coord 1 false; coord 2 false ]
-//
-//                | false, true, false ->
-//                    trianglePositions.AddRange [ V3d(p0, 0.0); V3d(p1, 0.0); V3d(p2, 0.0) ]
-//                    triangleCoords.AddRange [ coord 0 false; coord 1 false; coord 2 false ]
-//
-//                | false, false, true ->
-//                    trianglePositions.AddRange [ V3d(p0, 0.0); V3d(p1, 0.0); V3d(p2, 0.0) ]
-//                    triangleCoords.AddRange [ coord 0 false; coord 1 false; coord 2 false ]
-//
-//
-//                | true, false, true ->
-//                    if isBoundary p0 p2 then
-//                        trianglePositions.AddRange [ V3d(p0, 0.0); V3d(p1, 0.0); V3d(p2, 0.0) ]
-//                        triangleCoords.AddRange [ coord 0 true; coord 1 false; coord 2 true ]
-//                    else
-//                        let p = 0.5 * (p0 + p2)
-//                        appendTriangle i0 i1 -1 p0 p1 p
-//                        appendTriangle -1 i1 i2 p p1 p2
-//
-//                | true, true, false ->
-//                    if isBoundary p0 p1 then
-//                        trianglePositions.AddRange [ V3d(p0, 0.0); V3d(p1, 0.0); V3d(p2, 0.0) ]
-//                        triangleCoords.AddRange [ coord 0 true; coord 1 true; coord 2 false ]
-//                    else
-//                        let p = 0.5 * (p0 + p1)
-//                        appendTriangle i0 -1 i2 p0 p p2
-//                        appendTriangle -1 i1 i2 p p1 p2
-//
-//                | false, true, true ->
-//                    if isBoundary p1 p2 then
-//                        trianglePositions.AddRange [ V3d(p0, 0.0); V3d(p1, 0.0); V3d(p2, 0.0) ]
-//                        triangleCoords.AddRange [ coord 0 false; coord 1 true; coord 2 true ]
-//                    else
-//                        let p = 0.5 * (p1 + p2)
-//                        appendTriangle i0 i1 -1 p0 p1 p
-//                        appendTriangle i0 -1 i2 p0 p p2
-//
-//                | true, true, true ->
-//                    let c = (p0 + p1 + p2) / 3.0
-//                    appendTriangle i0 i1 -1 p0 p1 c
-//                    appendTriangle i1 i2 -1 p1 p2 c
-//                    appendTriangle i2 i0 -1 p2 p0 c
 
         for ti in 0 .. index.Length/3 - 1 do
             let i0 = index.[3 * ti + 0]
@@ -942,187 +982,10 @@ module Path =
             let p0 = positions.[i0]
             let p1 = positions.[i1]
             let p2 = positions.[i2]
-
             appendTriangle i0 i1 i2 p0 p1 p2
 
 
-        let triangles =
-            innerPoints
-                |> LibTess.Tessellate
-                |> Array.map (fun t -> true, t)
-
-
-//        let trianglePositions = List<V3d>(3 * triangles.Length)
-//        let triangleCoords = List<V4d>(3 * triangles.Length)
-//
-//        let spikeCount = Dict<V2d, HashSet<int>>()
-//
-//        let addSpike (pt : V2d) = 
-//            let index = trianglePositions.Count / 3
-//            let r = spikeCount.GetOrCreate(pt, fun _ -> HashSet())
-//            r.Add index |> ignore
-//
-//        let rec appendTriangle (inside : bool) (t : Triangle2d) =
-//            let kind = if inside then 0 else 1
-//
-//            let b0 = isBoundaryPoint t.P0
-//            let b1 = isBoundaryPoint t.P1
-//            let b2 = isBoundaryPoint t.P2
-//            
-//            let insideCoord = V4d(-1,0,0,kind)
-//            let borderCoord = V4d(0,0,0,kind)
-//
-//            let insideCoord = V4d(-1,-1,-1,kind)
-//            let borderCoord = V4d(0,0,0,kind)
-//
-//            let border u v w = V4d(u, v, w, kind)
-//
-//
-//
-//            match b0, b1, b2 with
-//                | false, false, false -> 
-//                    trianglePositions.AddRange [ V3d(t.P0, 0.0); V3d(t.P1, 0.0); V3d(t.P2, 0.0) ]
-//                    triangleCoords.AddRange [ insideCoord; insideCoord; insideCoord ]
-//
-//                | true, false, false ->
-//                    addSpike t.P0
-//                    trianglePositions.AddRange [ V3d(t.P0, 0.0); V3d(t.P1, 0.0); V3d(t.P2, 0.0) ]
-//                    triangleCoords.AddRange [ border 1 0 10; border 0 1 10; border 0 1 10 ]
-//
-//                | false, true, false ->
-//                    addSpike t.P1
-//                    trianglePositions.AddRange [ V3d(t.P0, 0.0); V3d(t.P1, 0.0); V3d(t.P2, 0.0) ]
-//                    triangleCoords.AddRange [ border 0 1 10; border 1 0 10; border 0 1 10 ]
-//
-//                | false, false, true ->
-//                    addSpike t.P2
-//                    trianglePositions.AddRange [ V3d(t.P0, 0.0); V3d(t.P1, 0.0); V3d(t.P2, 0.0) ]
-//                    triangleCoords.AddRange [ border 0 1 10; border 0 1 10; border 1 0 10 ]
-//
-//
-//                | true, false, true ->
-//                    if isBoundary t.P0 t.P2 then
-//                        trianglePositions.AddRange [ V3d(t.P0, 0.0); V3d(t.P1, 0.0); V3d(t.P2, 0.0) ]
-//                        triangleCoords.AddRange [ border 1 0 0; border 0 1 0; border 0 0 1 ]
-//                    else
-//                        let p = 0.5 * (t.P0 + t.P2)
-//                        appendTriangle inside (Triangle2d(t.P0, t.P1, p))
-//                        appendTriangle inside (Triangle2d(p, t.P1, t.P2))
-//
-//                | true, true, false ->
-//                    if isBoundary t.P0 t.P1 then
-//                        trianglePositions.AddRange [ V3d(t.P0, 0.0); V3d(t.P1, 0.0); V3d(t.P2, 0.0) ]
-//                        triangleCoords.AddRange [ border 1 0 0; border 0 0 1; border 0 1 0 ]
-//                    else
-//                        let p = 0.5 * (t.P0 + t.P1)
-//                        appendTriangle inside (Triangle2d(t.P0, p, t.P2))
-//                        appendTriangle inside (Triangle2d(p, t.P1, t.P2))
-//
-//                | false, true, true ->
-//                    if isBoundary t.P1 t.P2 then
-//                        trianglePositions.AddRange [ V3d(t.P0, 0.0); V3d(t.P1, 0.0); V3d(t.P2, 0.0) ]
-//                        triangleCoords.AddRange [ border 0 1 0; border 1 0 0; border 0 0 1 ]
-//                    else
-//                        let p = 0.5 * (t.P1 + t.P2)
-//                        appendTriangle inside (Triangle2d(t.P0, t.P1, p))
-//                        appendTriangle inside (Triangle2d(t.P0, p, t.P2))
-//
-//                | true, true, true ->
-//                    let c = (t.P0 + t.P1 + t.P2) / 3.0
-//                    appendTriangle inside (Triangle2d(t.P0, t.P1, c))
-//                    appendTriangle inside (Triangle2d(t.P1, t.P2, c))
-//                    appendTriangle inside (Triangle2d(t.P2, t.P0, c))
-//
-//        for inside, t in triangles do
-//            appendTriangle inside t
-//          
-//        for indices in spikeCount.Values do
-//            let count = float indices.Count
-//
-//            for ti in indices do
-//                for pi in 0 .. 2 do
-//                    let i = 3 * ti + pi
-//                    let c = triangleCoords.[i]
-//                    triangleCoords.[i] <- V4d(c.X, c.Y, 5.0 + count, c.W)
-//
-
-        let triangles = ()
-                    
-
-//        for inside, t in triangles do
-//            let kind = if inside then 0 else 1
-//
-//            let b01 = isBoundary t.P0 t.P1
-//            let b12 = isBoundary t.P1 t.P2
-//            let b20 = isBoundary t.P2 t.P0
-//
-//            let divide = (b01 && b12) || (b12 && b20) || (b20 && b01)
-//
-//            let insideCoord = V4d(-1,0,0,kind)
-//            let borderCoord = V4d(0,0,0,kind)
-//
-//            match b01, b12, b20 with
-//                | false,    false,      false -> 
-//                    trianglePositions.AddRange [ V3d(t.P0, 0.0); V3d(t.P1, 0.0); V3d(t.P2, 0.0) ]
-//                    triangleCoords.AddRange [ insideCoord; insideCoord; insideCoord ]
-//                        
-//                | true,     false,      false -> 
-//                    trianglePositions.AddRange [ V3d(t.P0, 0.0); V3d(t.P1, 0.0); V3d(t.P2, 0.0) ]
-//                    triangleCoords.AddRange [ borderCoord; borderCoord; insideCoord ]
-//
-//                | false,    true,       false ->  
-//                    trianglePositions.AddRange [ V3d(t.P0, 0.0); V3d(t.P1, 0.0); V3d(t.P2, 0.0) ]
-//                    triangleCoords.AddRange [ insideCoord; borderCoord; borderCoord ]
-//
-//                | false,    false,      true  ->  
-//                    trianglePositions.AddRange [ V3d(t.P0, 0.0); V3d(t.P1, 0.0); V3d(t.P2, 0.0) ]
-//                    triangleCoords.AddRange [ borderCoord; insideCoord; borderCoord ]
-//
-//                | true,     true,       false -> 
-//                    //01 and 12 edges
-//                    let c = (t.P0 + t.P2) * 0.5
-//
-//                    trianglePositions.AddRange [ V3d(t.P0, 0.0); V3d(t.P1, 0.0); V3d(c, 0.0) ]
-//                    triangleCoords.AddRange [ borderCoord; borderCoord; insideCoord ]
-//                    trianglePositions.AddRange [ V3d(c, 0.0); V3d(t.P1, 0.0); V3d(t.P2, 0.0) ]
-//                    triangleCoords.AddRange [ insideCoord; borderCoord; borderCoord ]
-//
-//                | true,     false,      true  -> 
-//                    // 01 and 20 edges
-//                    let c = (t.P1 + t.P2) * 0.5
-//
-//                    trianglePositions.AddRange [ V3d(t.P0, 0.0); V3d(t.P1, 0.0); V3d(c, 0.0) ]
-//                    triangleCoords.AddRange [ borderCoord; borderCoord; insideCoord ]
-//                    trianglePositions.AddRange [ V3d(c, 0.0); V3d(t.P2, 0.0); V3d(t.P0, 0.0) ]
-//                    triangleCoords.AddRange [ insideCoord; borderCoord; borderCoord ]
-//
-//                | false,    true,       true  -> 
-//                    // 12 and 20 edges
-//                    let c = (t.P0 + t.P1) * 0.5
-//                    trianglePositions.AddRange [ V3d(t.P0, 0.0); V3d(c, 0.0); V3d(t.P2, 0.0) ]
-//                    triangleCoords.AddRange [ borderCoord; insideCoord; borderCoord ]
-//                    trianglePositions.AddRange [ V3d(c, 0.0); V3d(t.P1, 0.0); V3d(t.P2, 0.0) ]
-//                    triangleCoords.AddRange [ insideCoord; borderCoord; borderCoord ]
-//
-//
-//                | true,     true,       true  -> 
-//                    let c = (t.P0 + t.P1 + t.P2) / 3.0
-//
-//                    trianglePositions.AddRange [ V3d(t.P0, 0.0); V3d(t.P1, 0.0); V3d(c, 0.0) ]
-//                    triangleCoords.AddRange [ borderCoord; borderCoord; insideCoord ]
-//
-//                    trianglePositions.AddRange [ V3d(t.P1, 0.0); V3d(t.P2, 0.0); V3d(c, 0.0) ]
-//                    triangleCoords.AddRange [ borderCoord; borderCoord; insideCoord ]
-//
-//                    trianglePositions.AddRange [ V3d(t.P2, 0.0); V3d(t.P0, 0.0); V3d(c, 0.0) ]
-//                    triangleCoords.AddRange [ borderCoord; borderCoord; insideCoord ]
-//
-//
-//
-//            ()
-
-
-
+                  
         // union the interior with the bounary triangles
         let boundaryTriangles = boundaryTriangles |> Seq.map (fun v -> V3d(v.X, v.Y, 0.0)) |> Seq.toArray
         let boundaryCoords = boundaryCoords |> CSharpList.toArray
