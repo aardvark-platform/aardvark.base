@@ -48,8 +48,21 @@ module Path =
 
                 [<TrafoOffsetAndScale>] instanceTrafo : M34d
             }
-            
 
+        let eps = 0.00001
+        let keepsWinding (isOrtho : bool) (t : M44d) =
+            if isOrtho then
+                t.M00 > 0.0
+            else
+                let c = V3d(t.M03, t.M13, t.M23)
+                let z = V3d(t.M02, t.M12, t.M22)
+                Vec.dot c z < 0.0
+
+        let isOrtho (proj : M44d) = 
+            abs proj.M30 < eps &&
+            abs proj.M31 < eps &&
+            abs proj.M32 < eps
+            
         let pathVertex (v : Vertex) =
             vertex {
                 let trafo = uniform.ModelViewTrafo
@@ -62,10 +75,7 @@ module Path =
                 let pm = offset + v.p.XY * scale
 
                 if flip then
-                    let t = V3d(trafo.M03, trafo.M13, trafo.M23)
-                    let z = V3d(trafo.M02, trafo.M12, trafo.M22)
- 
-                    if Vec.dot t z <= 0.0 then
+                    if keepsWinding (isOrtho uniform.ProjTrafo) trafo then
                         p <- trafo * V4d( pm.X, pm.Y, v.p.Z, v.p.W)
                     else
                         p <- trafo * V4d(-pm.X, pm.Y, v.p.Z, v.p.W)
@@ -96,10 +106,7 @@ module Path =
                 let pm = offset + v.p.XY * scale
 
                 if flip then
-                    let t = V3d(trafo.M03, trafo.M13, trafo.M23)
-                    let z = V3d(trafo.M02, trafo.M12, trafo.M22)
- 
-                    if Vec.dot t z <= 0.0 then
+                    if keepsWinding (isOrtho uniform.ProjTrafo) trafo then
                         p <- trafo * V4d( pm.X, pm.Y, v.p.Z, v.p.W)
                     else
                         p <- trafo * V4d(-pm.X, pm.Y, v.p.Z, v.p.W)
