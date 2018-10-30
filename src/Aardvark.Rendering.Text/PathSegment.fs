@@ -34,7 +34,7 @@ module Helpers =
             
         let r0 = Plane2d(Vec.normalize (V2d.IO - cuv), V2d.IO)
         let r2 = Plane2d(Vec.normalize (V2d.OI - cuv), V2d.OI)
-        let uv1 = V2d.Zero
+        let mutable uv1 = V2d.Zero
         r0.Intersects(r2, &uv1) |> ignore
 
         (V2d.IO - cuv) / ruv, (uv1 - cuv) / ruv, (V2d.OI - cuv) / ruv
