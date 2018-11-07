@@ -39,6 +39,16 @@ namespace Aardvark.Base
         }
 
         /// <summary>
+        /// Computes covariance matrix for points given by indices into points array.
+        /// </summary>
+        public static M33d ComputeCovarianceMatrix(this V3d[] points, int[] indices)
+        {
+            var cvm = M33d.Zero;
+            for (var i = 0; i < indices.Length; i++) cvm.AddOuterProduct(points[indices[i]]);
+            return cvm / indices.Length;
+        }
+
+        /// <summary>
         /// Computes covariance matrix from points relative to given center.
         /// </summary>
         public static M33d ComputeCovarianceMatrix(this V3d[] points, V3d center)
@@ -46,6 +56,16 @@ namespace Aardvark.Base
             var cvm = M33d.Zero;
             for (var i = 0; i < points.Length; i++) cvm.AddOuterProduct(points[i] - center);
             return cvm / points.Length;
+        }
+
+        /// <summary>
+        /// Computes covariance matrix for points given by indices into points array, relative to given center.
+        /// </summary>
+        public static M33d ComputeCovarianceMatrix(this V3d[] points, int[] indices, V3d center)
+        {
+            var cvm = M33d.Zero;
+            for (var i = 0; i < indices.Length; i++) cvm.AddOuterProduct(points[indices[i]] - center);
+            return cvm / indices.Length;
         }
 
         /// <summary>
@@ -102,7 +122,17 @@ namespace Aardvark.Base
             for (var i = 0; i < points.Length; i++) cvm.AddOuterProduct(points[i]);
             return cvm / points.Length;
         }
-
+        
+        /// <summary>
+        /// Computes covariance matrix for points given by indices into points array.
+        /// </summary>
+        public static M33f ComputeCovarianceMatrix(this V3f[] points, int[] indices)
+        {
+            var cvm = M33f.Zero;
+            for (var i = 0; i < indices.Length; i++) cvm.AddOuterProduct(points[indices[i]]);
+            return cvm / indices.Length;
+        }
+        
         /// <summary>
         /// Computes covariance matrix from points relative to given center.
         /// </summary>
@@ -111,6 +141,16 @@ namespace Aardvark.Base
             var cvm = M33f.Zero;
             for (var i = 0; i < points.Length; i++) cvm.AddOuterProduct(points[i] - center);
             return cvm / points.Length;
+        }
+
+        /// <summary>
+        /// Computes covariance matrix for points given by indices into points array, relative to given center.
+        /// </summary>
+        public static M33f ComputeCovarianceMatrix(this V3f[] points, int[] indices, V3f center)
+        {
+            var cvm = M33f.Zero;
+            for (var i = 0; i < indices.Length; i++) cvm.AddOuterProduct(points[indices[i]] - center);
+            return cvm / indices.Length;
         }
 
         /// <summary>

@@ -50,6 +50,21 @@ namespace Aardvark.Base
         }
 
         /// <summary>
+        /// Calculates the centroid for a given set of __inputVecType__s.
+        /// </summary>
+        public static __outputVecType__ ComputeCentroid(this __inputVecType__[] vectors, int[] indices)
+        {
+            __outputVecType__ sum = __outputVecType__.Zero;
+
+            for (var i = 0; i < indices.Length; i++)
+            {
+                sum += __cast__vectors[indices[i]];
+            }
+
+            return sum / (__scalarType__)indices.Length;
+        }
+
+        /// <summary>
         /// Calculates a weighted centroid for a given array of __inputVecType__s.
         /// </summary>
         public static __outputVecType__ ComputeCentroid(this __inputVecType__[] vectors, __scalarType__[] weights)
@@ -61,6 +76,25 @@ namespace Aardvark.Base
             {
                 sum += weights[i] * __cast__vectors[i];
                 weightSum += weights[i];
+            }
+
+            return sum / weightSum;
+        }
+
+        /// <summary>
+        /// Calculates a weighted centroid for vectors and weights given by indices.
+        /// Sum(vectors[indices[i]] * weights[indices[i]]) / Sum(weights[indices[i]].
+        /// </summary>
+        public static __outputVecType__ ComputeCentroid(this __inputVecType__[] vectors, __scalarType__[] weights, int[] indices)
+        {
+            __outputVecType__ sum = __outputVecType__.Zero;
+            __scalarType__ weightSum = 0;
+
+            for (int i = 0; i < indices.Length; i++)
+            {
+                var w = weights[indices[i]];
+                sum += w * __cast__vectors[indices[i]];
+                weightSum += w;
             }
 
             return sum / weightSum;
