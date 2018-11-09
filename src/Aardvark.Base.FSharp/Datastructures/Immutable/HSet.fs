@@ -109,7 +109,16 @@ module private HSetList =
                 match newR with
                     | [] -> Some newL
                     | _ -> Some (newL @ newR)
+                    
+    let rec equals (l : list<'a>) (r : list<'a>) =
+        if List.length l = List.length r then
+            l |> List.forall (fun l ->
+                r |> List.exists (fun r -> Unchecked.equals l r)
+            )
+        else
+            false
 
+[<Struct; NoComparison; CustomEquality>]
 [<StructuredFormatDisplay("{AsString}")>]
 type hset<'a>(cnt : int, store : intmap<list<'a>>) =
     static let empty = hset(0, IntMap.empty)
@@ -357,6 +366,16 @@ type hset<'a>(cnt : int, store : intmap<list<'a>>) =
 
     static member OfArray (arr : array<'a>) =
         hset.OfSeq arr
+
+    override x.GetHashCode() =
+        store |> Seq.fold (fun s (h,l) -> HashCode.Combine(s,h)) 0
+
+    override x.Equals(o) =
+        match o with
+            | :? hset<'a> as o -> 
+                IntMap.equals HSetList.equals store o.Store
+            | _ ->
+                false
 
     override x.ToString() =
         let suffix =

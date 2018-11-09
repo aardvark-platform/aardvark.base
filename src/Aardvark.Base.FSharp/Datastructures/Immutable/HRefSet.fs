@@ -10,7 +10,7 @@ type SetCmp =
     | Overlap           = 3
     | Equal             = 4
 
-[<Struct>]
+[<Struct; StructuralEquality; NoComparison>]
 [<StructuredFormatDisplay("{AsString}")>]
 type hrefset<'a>(store : hmap<'a, int>) =
     

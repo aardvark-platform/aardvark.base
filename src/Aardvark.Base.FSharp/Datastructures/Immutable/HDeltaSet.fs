@@ -5,7 +5,7 @@ open System.Collections
 open System.Collections.Generic
 open Aardvark.Base
 
-[<Struct>]
+[<Struct; CustomEquality; NoComparison>]
 [<StructuredFormatDisplay("{AsString}")>]
 type hdeltaset<'a>(store : hmap<'a, int>) =
 
@@ -131,6 +131,13 @@ type hdeltaset<'a>(store : hmap<'a, int>) =
     static member OfArray (arr : array<SetOperation<'a>>) =
         arr |> hdeltaset.OfSeq
         
+
+    override x.GetHashCode() = store.GetHashCode()
+    override x.Equals o =
+        match o with
+            | :? hdeltaset<'a> as o -> store.Equals(o.Store)
+            | _ -> false
+            
 
     override x.ToString() =
         let suffix =

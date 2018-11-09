@@ -901,3 +901,18 @@ module IntMap =
                 | Nil, t2 -> add t2
         go
 
+    
+
+    let rec equals (valueEqual : 'a -> 'a -> bool) (l : intmap<'a>) (r : intmap<'a>) =
+        match l, r with
+            | Nil, Nil -> 
+                true
+
+            | Tip(lh,l), Tip(rh,r) -> 
+                lh = rh && valueEqual l r
+
+            | Bin(lp, lm, ll, lr), Bin(rp, rm, rl, rr) ->
+                lp = rp && lm = rm && equals valueEqual ll rl && equals valueEqual lr rr
+
+            | _ ->
+                false

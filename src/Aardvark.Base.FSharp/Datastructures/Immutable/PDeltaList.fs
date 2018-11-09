@@ -4,8 +4,8 @@ open System.Collections
 open System.Collections.Generic
 
 [<StructuredFormatDisplay("{AsString}")>]
-[<Struct>]
-type pdeltalist<'a> internal(content : MapExt<Index, ElementOperation<'a>>) =
+[<Struct; StructuralEquality; NoComparison>]
+type pdeltalist< [<EqualityConditionalOn>] 'a> internal(content : MapExt<Index, ElementOperation<'a>>) =
 
     static let monoid : Monoid<pdeltalist<'a>> =
         {
@@ -51,7 +51,7 @@ type pdeltalist<'a> internal(content : MapExt<Index, ElementOperation<'a>>) =
 
     member x.Filter(f : Index -> ElementOperation<'a> -> bool) =
         pdeltalist(MapExt.filter f content)
-
+        
     override x.ToString() =
         let suffix =
             if content.Count > 4 then "; ..."

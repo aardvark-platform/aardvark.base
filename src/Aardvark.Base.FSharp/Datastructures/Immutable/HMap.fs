@@ -152,9 +152,21 @@ module private HMapList =
                 match newR with
                     | [] -> Some newL
                     | _ -> Some (newL @ newR)
-[<Struct>]
+
+    let rec equals (l : list<'k * 'a>) (r : list<'k * 'a>) =
+        if List.length l = List.length r then
+            l |> List.forall (fun (lk,lv) ->
+                r |> List.exists (fun (rk,rv) -> Unchecked.equals lk rk && Unchecked.equals lv rv)
+            )
+        else
+            false
+            
+
+
+
+[<Struct; CustomEquality; NoComparison>]
 [<StructuredFormatDisplay("{AsString}")>]
-type hmap<'k, 'v>(cnt : int, store : intmap<list<'k * 'v>>) =
+type hmap<'k, [<EqualityConditionalOn>] 'v>(cnt : int, store : intmap<list<'k * 'v>>) =
     static let empty = hmap<'k, 'v>(0, IntMap.empty)
 
     static member Empty = empty
@@ -454,6 +466,16 @@ type hmap<'k, 'v>(cnt : int, store : intmap<list<'k * 'v>>) =
             x.ToSeq() |> Seq.truncate 5 |> Seq.map (sprintf "%A") |> String.concat "; "
 
         "hmap [" + content + suffix + "]"
+
+    override x.GetHashCode() =
+        store |> Seq.fold (fun s (h,vs) -> vs |> List.fold (fun s (_,v) -> HashCode.Combine(s,Unchecked.hash v)) h) 0
+
+    override x.Equals o =
+        match o with
+            | :? hmap<'k, 'v> as o ->
+                IntMap.equals HMapList.equals store o.Store
+            | _ ->
+                false
 
     member private x.AsString = x.ToString()
 

@@ -6,8 +6,9 @@ open System.Collections
 open System.Collections.Generic
 
 
+[<Struct; StructuralEquality; NoComparison>]
 [<StructuredFormatDisplay("{AsString}")>]
-type plist<'a>(l : Index, h : Index, content : MapExt<Index, 'a>) =
+type plist< [<EqualityConditionalOn>] 'a>(l : Index, h : Index, content : MapExt<Index, 'a>) =
     
     static let empty = plist<'a>(Index.zero, Index.zero, MapExt.empty)
 
