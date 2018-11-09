@@ -2,6 +2,7 @@
 
 open System.Collections
 open System.Collections.Generic
+open MBrace.FsPickler
 
 module private HMapList =
     let rec alter (k : 'k) (f : Option<'v> -> Option<'v>) (l : list<'k * 'v>) =
@@ -154,22 +155,65 @@ module private HMapList =
                     | _ -> Some (newL @ newR)
 
     let rec equals (l : list<'k * 'a>) (r : list<'k * 'a>) =
-        if List.length l = List.length r then
-            l |> List.forall (fun (lk,lv) ->
-                r |> List.exists (fun (rk,rv) -> Unchecked.equals lk rk && Unchecked.equals lv rv)
-            )
-        else
-            false
+        let mutable r = r
+        let mutable eq = true
+        
+        use e = (l :> seq<_>).GetEnumerator()
+        while eq && e.MoveNext() do
+            let (lk, lv) = e.Current
+            match tryRemove lk r with
+                | Some(rv, nr) ->
+                    r <- nr
+                    eq <- Unchecked.equals lv rv
+                | _ ->
+                    eq <- false
+
+        eq && List.isEmpty r
+
+
+        //if List.length l = List.length r then
+        //    l |> List.forall (fun (lk,lv) ->
+        //        r |> List.exists (fun (rk,rv) -> Unchecked.equals lk rk && Unchecked.equals lv rv)
+        //    )
+        //else
+        //    false
             
 
 
 
-[<Struct; CustomEquality; NoComparison>]
+[<Struct; CustomEquality; NoComparison; CustomPickler>]
 [<StructuredFormatDisplay("{AsString}")>]
 type hmap<'k, [<EqualityConditionalOn>] 'v>(cnt : int, store : intmap<list<'k * 'v>>) =
     static let empty = hmap<'k, 'v>(0, IntMap.empty)
 
     static member Empty = empty
+    
+    static member private CreatePickler (r : IPicklerResolver) =
+        let pint = r.Resolve<int>()
+        let parr = r.Resolve<array<'k * 'v>>()
+        let kp = r.Resolve<'k>()
+        let vp = r.Resolve<'v>()
+
+        let read (rs : ReadState) =
+            let cnt = pint.Read rs "count"
+            let arr = parr.Read rs "items"
+            hmap<'k, 'v>.OfArray arr
+
+        let write (ws : WriteState) (m : hmap<'k, 'v>) =
+            pint.Write ws "count" m.Count
+            parr.Write ws "items" (m.ToArray())
+
+        let clone (cs : CloneState) (m : hmap<'k, 'v>) =
+            let mutable res = hmap<'k, 'v>.Empty
+            for (k,v) in m do
+                res <- res.Add(kp.Clone cs k, vp.Clone cs v)
+            res
+
+        let accept (vs : VisitState) (m : hmap<'k, 'v>) =
+            for (k,v) in m do kp.Accept vs k; vp.Accept vs v
+
+        Pickler.FromPrimitives(read, write, clone, accept)
+
 
     member internal x.Store = store
 
@@ -260,6 +304,7 @@ type hmap<'k, [<EqualityConditionalOn>] 'v>(cnt : int, store : intmap<list<'k * 
             store 
                 |> IntMap.map (fun l -> l |> List.map (fun (k,v) -> (k, mapping k v)))
         hmap(cnt, newStore)
+
 
     member x.Choose(mapping : 'k -> 'v -> Option<'b>) =
         let mutable cnt = 0
@@ -468,7 +513,7 @@ type hmap<'k, [<EqualityConditionalOn>] 'v>(cnt : int, store : intmap<list<'k * 
         "hmap [" + content + suffix + "]"
 
     override x.GetHashCode() =
-        store |> Seq.fold (fun s (h,vs) -> vs |> List.fold (fun s (_,v) -> HashCode.Combine(s,Unchecked.hash v)) h) 0
+        store |> Seq.fold (fun s (h,vs) -> vs |> List.fold (fun s (_,v) -> s ^^^ (Unchecked.hash v)) h) 0
 
     override x.Equals o =
         match o with

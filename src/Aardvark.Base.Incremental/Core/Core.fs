@@ -1173,10 +1173,11 @@ type AdaptiveDecorator(o : IAdaptiveObject) =
             and set c = readerCount <- c
  
 type VolatileDirtySet<'a, 'b when 'a :> IAdaptiveObject and 'a : equality and 'a : not struct>(eval : 'a -> 'b) =
-    let mutable set : hset<'a> = HSet.empty
+    static let empty = ref HSet.empty
+    let mutable set : ref<hset<'a>> = ref HSet.empty
 
     member x.Evaluate() =
-        let local = Interlocked.Exchange(&set, HSet.empty) 
+        let local = !Interlocked.Exchange(&set, empty) 
         try
             local 
                 |> HSet.toList
@@ -1184,23 +1185,23 @@ type VolatileDirtySet<'a, 'b when 'a :> IAdaptiveObject and 'a : equality and 'a
                 |> List.map (fun o -> eval o)
 
         with :? LevelChangedException as l ->
-            Interlocked.Change(&set, HSet.union local) |> ignore
+            Interlocked.Change(&set, fun s -> ref (HSet.union local !s)) |> ignore
             raise l
 
     member x.Push(i : 'a) =
         lock i (fun () ->
             if i.OutOfDate then
-                Interlocked.Change(&set, HSet.add i) |> ignore
+                Interlocked.Change(&set, fun s -> ref (HSet.add i !s)) |> ignore
         )
 
     member x.Add(i : 'a) =
         x.Push(i)
 
     member x.Remove(i : 'a) =
-        Interlocked.Change(&set, HSet.remove i) |> ignore
+        Interlocked.Change(&set, fun s -> ref (HSet.remove i !s)) |> ignore
  
     member x.Clear() =
-        Interlocked.Exchange(&set, HSet.empty) |> ignore
+        Interlocked.Exchange(&set, empty) |> ignore
 
 type MutableVolatileDirtySet<'a, 'b when 'a :> IAdaptiveObject and 'a : equality and 'a : not struct>(eval : 'a -> 'b) =
     let lockObj = obj()
@@ -1237,12 +1238,13 @@ type MutableVolatileDirtySet<'a, 'b when 'a :> IAdaptiveObject and 'a : equality
 
 
 type VolatileTaggedDirtySet<'a, 'b, 't when 'a :> IAdaptiveObject and 'a : equality and 'a : not struct>(eval : 'a -> 'b) =
-    let mutable set : hset<'a> = HSet.empty
+    static let empty = ref HSet.empty
+    let mutable set : ref<hset<'a>> = empty
     let tagDict = Dictionary<'a, HashSet<'t>>()
 
     member x.Evaluate() =
         lock tagDict (fun () ->
-            let local = Interlocked.Exchange(&set, HSet.empty) 
+            let local = !Interlocked.Exchange(&set, empty) 
             try
                 local |> HSet.toList
                       |> List.filter (fun o -> lock o (fun () -> o.OutOfDate))
@@ -1254,7 +1256,7 @@ type VolatileTaggedDirtySet<'a, 'b, 't when 'a :> IAdaptiveObject and 'a : equal
                       |> List.map (fun (o, tags) -> eval o, tags)
 
             with :? LevelChangedException as l ->
-                Interlocked.Change(&set, HSet.union local) |> ignore
+                Interlocked.Change(&set, fun s -> ref (HSet.union local !s)) |> ignore
                 raise l
         )
 
@@ -1262,7 +1264,7 @@ type VolatileTaggedDirtySet<'a, 'b, 't when 'a :> IAdaptiveObject and 'a : equal
         lock tagDict (fun () ->
             lock i (fun () ->
                 if i.OutOfDate && tagDict.ContainsKey i then
-                    Interlocked.Change(&set, HSet.add i) |> ignore
+                    Interlocked.Change(&set, fun s -> ref (HSet.add i !s)) |> ignore
             )
         )
 
@@ -1284,7 +1286,7 @@ type VolatileTaggedDirtySet<'a, 'b, 't when 'a :> IAdaptiveObject and 'a : equal
                 | (true, tags) -> 
                     if tags.Remove tag then
                         if tags.Count = 0 then
-                            Interlocked.Change(&set, HSet.remove i) |> ignore
+                            Interlocked.Change(&set, fun s -> ref (HSet.remove i !s)) |> ignore
                             true
                         else
                             false
@@ -1298,7 +1300,7 @@ type VolatileTaggedDirtySet<'a, 'b, 't when 'a :> IAdaptiveObject and 'a : equal
     member x.Clear() =
         lock tagDict (fun () ->
             tagDict.Clear()
-            Interlocked.Exchange(&set, HSet.empty) |> ignore
+            Interlocked.Exchange(&set, empty) |> ignore
         )
 
 type MutableVolatileTaggedDirtySet<'a, 'b, 't when 'a :> IAdaptiveObject and 'a : equality and 'a : not struct>(eval : 'a -> 'b) =

@@ -15,6 +15,9 @@ nuget FsUnit                       ~> 3.1.0
 nuget FsCheck                      ~> 2.10.8
 nuget FsCheck.NUnit                ~> 2.10.8
 
+nuget FsPickler                    ~> 5.2.0
+nuget FsPickler.Json               ~> 5.2.0
+
 group Build
 framework: net471
 content: none

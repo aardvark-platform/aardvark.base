@@ -1,15 +1,18 @@
-﻿namespace Aardvark.Base
+﻿namespace rec Aardvark.Base
 
 // Ported from http://hackage.haskell.org/packages/archive/containers/latest/doc/html/src/Data-intmap-Base.html
 
 open System.Collections
 open System.Collections.Generic
+open MBrace.FsPickler
 
 #nowarn "25" // incomplete pattern match
 #nowarn "61"
 
 
+
 [<CompilationRepresentation(CompilationRepresentationFlags.UseNullAsTrueValue)>]
+[<CustomPickler>]
 type intmap<'T> =
     | Nil
     | Tip of int * 'T
@@ -33,6 +36,34 @@ type intmap<'T> =
             | Nil -> Seq.empty
             | Tip(k,v) -> Seq.singleton (k,v)
             | Bin(_,_,l,r) -> Seq.append (l.ToSeq()) (Seq.delay r.ToSeq)
+        
+    member x.Count =
+        match x with
+            | Nil -> 0
+            | Tip _ -> 1
+            | Bin(_,_,l,r) -> l.Count + r.Count
+
+    static member private CreatePickler(r : IPicklerResolver) =
+        let pint = r.Resolve<int>()
+        let parr = r.Resolve<array<int * 'T>>()
+        let vp = r.Resolve<'T>()
+
+        let read (rs : ReadState) =
+            let cnt = pint.Read rs "count"
+            let arr = parr.Read rs "items"
+            IntMap.ofArray arr
+
+        let write (ws : WriteState) (m : intmap<'T>) =
+            pint.Write ws "count" m.Count
+            parr.Write ws "items" (IntMap.toArray m)
+
+        let clone (cs : CloneState) (m : intmap<'T>) =
+            m |> IntMap.map (fun v -> vp.Clone cs v)
+
+        let accept (vs : VisitState) (m : intmap<'T>) =
+            for (k,v) in m do pint.Accept vs k; vp.Accept vs v
+
+        Pickler.FromPrimitives(read, write, clone, accept)
         
 
     interface IEnumerable<int * 'T> with
@@ -561,8 +592,8 @@ module IntMap =
         | Nil -> Nil
 
     ///O(n). Map a function over all values in the map. Credit: Haskell.org
-    let rec map f =
-        function
+    let rec map<'a, 'b> (f : 'a -> 'b) (m : intmap<'a>) : intmap<'b> =
+        match m with
         | Bin(p, m, l, r) -> Bin(p, m, map f l, map f r)
         | Tip(k, x) -> Tip(k, f x)
         | Nil -> Nil

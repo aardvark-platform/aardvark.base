@@ -2,6 +2,7 @@
 
 open System.Collections
 open System.Collections.Generic
+open MBrace.FsPickler
 
 module private HSetList =
     let rec add (cnt : byref<int>) (value : 'a) (list : list<'a>) =
@@ -111,20 +112,51 @@ module private HSetList =
                     | _ -> Some (newL @ newR)
                     
     let rec equals (l : list<'a>) (r : list<'a>) =
-        if List.length l = List.length r then
-            l |> List.forall (fun l ->
-                r |> List.exists (fun r -> Unchecked.equals l r)
-            )
-        else
-            false
+        let mutable r = r
+        let mutable c = 0
+        
+        use e = (l :> seq<_>).GetEnumerator()
+        while c = 0 && e.MoveNext() do
+            let l = e.Current
+            c <- 1
+            r <- remove &c l r
 
-[<Struct; NoComparison; CustomEquality>]
+        c = 0 && List.isEmpty r
+
+
+[<Struct; NoComparison; CustomEquality; CustomPickler>]
 [<StructuredFormatDisplay("{AsString}")>]
 type hset<'a>(cnt : int, store : intmap<list<'a>>) =
     static let empty = hset(0, IntMap.empty)
 
     static member Empty : hset<'a> = empty
     
+    static member private CreatePickler (r : IPicklerResolver) =
+        let pint = r.Resolve<int>()
+        let pv = r.Resolve<'a>()
+        let parr = r.Resolve<'a[]>()
+        let read (rs : ReadState) =
+            let cnt = pint.Read rs "count"
+            let elements = parr.Read rs "elements"
+            hset<'a>.OfArray elements
+
+        let write (ws : WriteState) (s : hset<'a>) =
+            pint.Write ws "count" s.Count
+            parr.Write ws "elements" (s.ToArray())
+
+        
+        let clone (cs : CloneState) (m : hset<'a>) =
+            let mutable res = empty
+            for e in m do res <- res.Add(pv.Clone cs e)
+            res
+
+        let accept (vs : VisitState) (m : hset<'a>) =
+            for v in m do pv.Accept vs v
+            
+        Pickler.FromPrimitives(read, write, clone, accept)
+
+
+
     member private x.Store = store
 
     member x.Count = cnt
@@ -346,15 +378,7 @@ type hset<'a>(cnt : int, store : intmap<list<'a>>) =
 
         let store = IntMap.computeDelta both (IntMap.map del) (IntMap.map add) store other.Store
         hdeltaset (hmap(cnt, store))
-
-        //x.Choose2 (other, fun k l r -> 
-        //    match l, r with
-        //        | false, true -> Some 1
-        //        | true, false -> Some -1
-        //        | _ -> None
-        //)
-        //|> hdeltaset
-
+        
     static member OfSeq (seq : seq<'a>) =
         let mutable res = empty
         for e in seq do
@@ -389,11 +413,16 @@ type hset<'a>(cnt : int, store : intmap<list<'a>>) =
 
     member private x.AsString = x.ToString()
 
+
+
+
     interface IEnumerable with
         member x.GetEnumerator() = new HSetEnumerator<_>(store) :> _
 
     interface IEnumerable<'a> with
         member x.GetEnumerator() = new HSetEnumerator<_>(store) :> _
+
+
 
 and private HSetEnumerator<'a>(store : intmap<list<'a>>) =
     let mutable stack = [store]

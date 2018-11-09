@@ -618,9 +618,10 @@ module Mod =
 
     type internal Bind2Mod<'a, 'b, 'c>(ma : IMod<'a>, mb : IMod<'b>, f : 'a -> 'b -> IMod<'c>) =
         inherit AbstractMod<'c>()
+        static let empty = ref HSet.empty
 
         let mutable inner : Option<'a * 'b * IMod<'c>> = None
-        let mutable changedInputs = HSet.empty
+        let mutable changedInputs = empty
 
         override x.Inputs =
             seq {
@@ -632,10 +633,10 @@ module Mod =
             }
 
         override x.InputChanged(t, i) =
-            System.Threading.Interlocked.Change(&changedInputs, HSet.add i) |> ignore
+            System.Threading.Interlocked.Change(&changedInputs, fun s -> ref (HSet.add i !s)) |> ignore
 
         override x.Compute(token) =
-            let changed = System.Threading.Interlocked.Exchange(&changedInputs, HSet.empty)
+            let changed = !System.Threading.Interlocked.Exchange(&changedInputs, empty)
             let a = ma.GetValue token
             let b = mb.GetValue token
 

@@ -12,6 +12,22 @@ module List =
     let all (l : list<bool>) =
         l |> List.fold (&&) true
 
+[<CustomEquality; CustomComparison>]
+type StupidHash = { value : int } with
+    
+    interface IComparable with
+        member x.CompareTo o =
+            match o with
+                | :? StupidHash as o -> compare x.value o.value
+                | _ -> failwith "cannot compare"
+
+    override x.GetHashCode() = x.value % 2
+    override x.Equals o =   
+        match o with
+            | :? StupidHash as o -> x.value = o.value
+            | _ -> false
+
+
 
 [<Property(Verbose = true)>]
 let ``[HSet] compute delta`` (l : Set<int>) (r : Set<int>) (b : bool) =
@@ -149,3 +165,37 @@ let ``[HSet] performance``() =
 
     finally
         System.Runtime.GCSettings.LatencyMode <- old
+
+
+[<Property>]
+let ``[HSet] equality`` (h0 : StupidHash) =
+    let h1 = { value = h0.value + 1 }
+    let h2 = { value = h0.value + 2 }
+    let h3 = { value = h0.value + 3 }
+
+    let a = HSet.empty |> HSet.add h0 |> HSet.add h1 |> HSet.add h2 |> HSet.add h3
+    let b = HSet.empty |> HSet.add h1 |> HSet.add h2 |> HSet.add h3 |> HSet.add h0
+    let c = HSet.empty |> HSet.add h2 |> HSet.add h3 |> HSet.add h0 |> HSet.add h1
+    let d = HSet.empty |> HSet.add h3 |> HSet.add h0 |> HSet.add h1 |> HSet.add h2
+    let e = d |> HSet.add h3
+    
+    let x = d |> HSet.add { value = h0.value + 4 }
+
+    let ah = a.GetHashCode()
+    let bh = b.GetHashCode()
+    let ch = c.GetHashCode()
+    let dh = d.GetHashCode()
+    let eh = e.GetHashCode()
+
+    a = a && b = b && c = c && d = d && x = x && e = e &&
+
+    a = b && a = c && a = d && a = e && b = c && b = d && b = e && c = d && c = e && d = e &&
+    b = a && c = a && d = a && e = a && c = b && d = b && e = b && d = c && e = c && e = d &&
+
+    ah = bh && bh = ch && ch = dh && dh = eh &&
+
+    x <> a && x <> b && x <> c && x <> d && x <> e &&
+
+    a.Count = 4 && b.Count = 4 && c.Count = 4 && d.Count = 4 && e.Count = 4 &&
+    x.Count = 5
+    
