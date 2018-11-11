@@ -2,3 +2,4 @@ FsUnit
 FSharp.Core
 NUnit
 System.Reactive
+FsPickler

@@ -4,3 +4,4 @@ FsCheck.NUnit
 FSharp.Core
 NUnit
 System.Reactive
+FsPickler
