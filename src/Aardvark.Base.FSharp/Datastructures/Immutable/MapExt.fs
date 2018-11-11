@@ -1174,7 +1174,7 @@ module MapExt =
     [<CompiledName("TryPick")>]
     let tryPick f (m:MapExt<_,_>) = m.TryPick(f)
 
-    [<CompiledName("TryPick")>]
+    [<CompiledName("TryPickBack")>]
     let tryPickBack f (m:MapExt<_,_>) = m.TryPickBack(f)
 
     [<CompiledName("Pick")>]
