@@ -369,6 +369,13 @@ open MBrace.FsPickler.Json
 [<EntryPoint; STAThread>]
 let main argv = 
     
+    let a : intmap<int> = IntMap.empty
+
+    let r = a :> seq<_> |> Seq.toList
+    printfn "%A" r
+    Environment.Exit 0
+
+
     let s = MapExt.ofList [1,1;2,2;3,2;4,4]
    
     let pickler = FsPickler.CreateJsonSerializer(true, false)

@@ -513,7 +513,9 @@ type hmap<'k, [<EqualityConditionalOn>] 'v>(cnt : int, store : intmap<list<'k * 
         "hmap [" + content + suffix + "]"
 
     override x.GetHashCode() =
-        store |> Seq.fold (fun s (h,vs) -> vs |> List.fold (fun s (_,v) -> s ^^^ (Unchecked.hash v)) h) 0
+        match store with
+            | Nil -> 0
+            | _ -> store |> Seq.fold (fun s (h,vs) -> vs |> List.fold (fun s (_,v) -> s ^^^ (Unchecked.hash v)) h) 0
 
     override x.Equals o =
         match o with

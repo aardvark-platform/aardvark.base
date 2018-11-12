@@ -11,7 +11,6 @@ open MBrace.FsPickler
 
 
 
-[<CompilationRepresentation(CompilationRepresentationFlags.UseNullAsTrueValue)>]
 [<CustomPickler>]
 type intmap<'T> =
     | Nil
@@ -64,7 +63,6 @@ type intmap<'T> =
             for (k,v) in m do pint.Accept vs k; vp.Accept vs v
 
         Pickler.FromPrimitives(read, write, clone, accept)
-        
 
     interface IEnumerable<int * 'T> with
         member x.GetEnumerator() =

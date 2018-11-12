@@ -392,7 +392,9 @@ type hset<'a>(cnt : int, store : intmap<list<'a>>) =
         hset.OfSeq arr
 
     override x.GetHashCode() =
-        store |> Seq.fold (fun s (h,l) -> HashCode.Combine(s,h)) 0
+        match store with
+            | Nil -> 0
+            | _ -> store |> Seq.fold (fun s (h,l) -> HashCode.Combine(s,h)) 0
 
     override x.Equals(o) =
         match o with
