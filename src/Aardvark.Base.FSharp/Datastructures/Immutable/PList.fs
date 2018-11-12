@@ -510,6 +510,9 @@ module PList =
         for e in seq do res <- append e res
         res
 
+    let collecti (mapping : Index -> 'a -> plist<'b>) (l : plist<'a>) = l.Map(mapping) |> concat
+    let collect (mapping : 'a -> plist<'b>) (l : plist<'a>) = l.Map(fun _ v -> mapping v) |> concat
+
     let inline ofList (list : list<'a>) = ofSeq list
     let inline ofArray (arr : 'a[]) = ofSeq arr
 
@@ -522,6 +525,15 @@ module PList =
     let inline filteri (predicate : Index -> 'a -> bool) (list : plist<'a>) = list.Filter predicate
     let inline filter (predicate : 'a -> bool) (list : plist<'a>) = list.Filter (fun _ v -> predicate v)
 
+    let sortBy (mapping : 'a -> 'b) (l : plist<'a>) =
+        let arr = l.AsArray
+        Array.sortInPlaceBy mapping arr
+        ofArray arr
+        
+    let sortWith (compare : 'a -> 'a -> int) (l : plist<'a>) =
+        let arr = l.AsArray
+        Array.sortInPlaceWith compare arr
+        ofArray arr
 
     let inline computeDelta (l : plist<'a>) (r : plist<'a>) = plist.ComputeDeltas(l, r)
     let inline applyDelta (l : plist<'a>) (d : pdeltalist<'a>) = l.Apply(d)
