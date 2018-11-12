@@ -10,6 +10,7 @@ open System.Collections.Generic
 open System.Diagnostics
 open Microsoft.FSharp.Core
 open Microsoft.FSharp.Core.LanguagePrimitives.IntrinsicOperators
+open MBrace.FsPickler
 
 module MapExtImplementation = 
     [<CompilationRepresentation(CompilationRepresentationFlags.UseNullAsTrueValue)>]
@@ -25,6 +26,15 @@ module MapExtImplementation =
         | NonExisting of index : int
         | Existing of index : int * value : 'v
 
+
+    type internal EnumeratorEnumerable<'a>(get : unit -> IEnumerator<'a>) =
+        interface System.Collections.IEnumerable with
+            member x.GetEnumerator() = get() :> System.Collections.IEnumerator
+
+        interface IEnumerable<'a> with
+            member x.GetEnumerator() = get()
+
+    
 
     [<CompilationRepresentation(CompilationRepresentationFlags.ModuleSuffix)>]
     module MapTree = 
@@ -393,6 +403,22 @@ module MapExtImplementation =
                 tryPickOpt f r
 
         let tryPick f m = tryPickOpt (OptimizedClosures.FSharpFunc<_,_,_>.Adapt(f)) m
+
+        let rec tryPickOptBack (f:OptimizedClosures.FSharpFunc<_,_,_>) m =
+            match m with 
+            | MapEmpty -> None
+            | MapOne(k2,v2) -> f.Invoke(k2, v2) 
+            | MapNode(k2,v2,l,r,_,_) -> 
+                match tryPickOptBack f r with 
+                | Some _ as res -> res 
+                | None -> 
+                match f.Invoke(k2, v2) with 
+                | Some _ as res -> res 
+                | None -> 
+                tryPickOptBack f l
+
+        let tryPickBack f m = tryPickOptBack (OptimizedClosures.FSharpFunc<_,_,_>.Adapt(f)) m
+
 
         let rec existsOpt (f:OptimizedClosures.FSharpFunc<_,_,_>) m = 
             match m with 
@@ -820,20 +846,113 @@ module MapExtImplementation =
                 member __.Dispose() = ()}
 
 
+        type MapTreeEnumerator<'k, 'v when 'k : comparison>(m : MapTree<'k, 'v>) =
+            let mutable stack = [m]
+            let mutable current = Unchecked.defaultof<'k * 'v>
+            
+            let rec move () =
+                match stack with
+                    | [] ->
+                        false
+                    | MapEmpty :: rest ->
+                        stack <- rest
+                        move()
+
+                    | MapOne(key,value) :: rest ->
+                        stack <- rest
+                        current <- (key, value)
+                        true
+
+                    | MapNode(k,v,l,r,_,_) :: rest ->
+                        stack <- l :: (MapOne(k,v)) :: r :: rest
+                        move()
+                        
+            interface System.Collections.IEnumerator with
+                member x.MoveNext() = move()
+                member x.Reset() =
+                    stack <- [m]
+                    current <- Unchecked.defaultof<'k * 'v>
+
+                member x.Current = current :> obj
+                
+            interface IEnumerator<'k * 'v> with
+                member x.Dispose() =
+                    stack <- []
+                    current <- Unchecked.defaultof<'k * 'v>
+                member x.Current = current
+
+        type MapTreeBackwardEnumerator<'k, 'v when 'k : comparison>(m : MapTree<'k, 'v>) =
+            let mutable stack = [m]
+            let mutable current = Unchecked.defaultof<'k * 'v>
+            
+            let rec move () =
+                match stack with
+                    | [] ->
+                        false
+                    | MapEmpty :: rest ->
+                        stack <- rest
+                        move()
+
+                    | MapOne(key,value) :: rest ->
+                        stack <- rest
+                        current <- (key, value)
+                        true
+
+                    | MapNode(k,v,l,r,_,_) :: rest ->
+                        stack <- r :: (MapOne(k,v)) :: l :: rest
+                        move()
+                        
+            interface System.Collections.IEnumerator with
+                member x.MoveNext() = move()
+                member x.Reset() =
+                    stack <- [m]
+                    current <- Unchecked.defaultof<'k * 'v>
+
+                member x.Current = current :> obj
+                
+            interface IEnumerator<'k * 'v> with
+                member x.Dispose() =
+                    stack <- []
+                    current <- Unchecked.defaultof<'k * 'v>
+                member x.Current = current
+
 open MapExtImplementation
 
 
 [<System.Diagnostics.DebuggerTypeProxy(typedefof<MapDebugView<_,_>>)>]
 [<System.Diagnostics.DebuggerDisplay("Count = {Count}")>]
-[<Sealed>]
+[<Sealed; CustomPickler>]
 [<StructuredFormatDisplay("{AsString}")>]
 type MapExt<[<EqualityConditionalOn>]'Key,[<EqualityConditionalOn;ComparisonConditionalOn>]'Value when 'Key : comparison >(comparer: IComparer<'Key>, tree: MapTree<'Key,'Value>) =
 
+    static let defaultComparer = LanguagePrimitives.FastGenericComparer<'Key> 
     // We use .NET generics per-instantiation static fields to avoid allocating a new object for each empty
     // set (it is just a lookup into a .NET table of type-instantiation-indexed static fields).
-    static let empty = 
-        let comparer = LanguagePrimitives.FastGenericComparer<'Key> 
-        new MapExt<'Key,'Value>(comparer,MapTree<_,_>.MapEmpty)
+    static let empty = new MapExt<'Key,'Value>(defaultComparer, MapTree<_,_>.MapEmpty)
+
+
+    static member private CreatePickler (r : IPicklerResolver) =
+        let pint = r.Resolve<int>()
+        let parr = r.Resolve<array<'Key * 'Value>>()
+        let kp = r.Resolve<'Key>()
+        let vp = r.Resolve<'Value>()
+
+        let read (rs : ReadState) =
+            let cnt = pint.Read rs "count"
+            let arr = parr.Read rs "items"
+            MapExt<'Key, 'Value>(defaultComparer, MapTree.ofArray defaultComparer arr)
+
+        let write (ws : WriteState) (m : MapExt<'Key, 'Value>) =
+            pint.Write ws "count" m.Count
+            parr.Write ws "items" (m.ToArray())
+
+        let clone (cs : CloneState) (m : MapExt<'Key, 'Value>) =
+            m.MapMonotonic (fun k v -> kp.Clone cs k, vp.Clone cs v)
+
+        let accept (vs : VisitState) (m : MapExt<'Key, 'Value>) =
+            for kv in m do kp.Accept vs kv.Key; vp.Accept vs kv.Value
+
+        Pickler.FromPrimitives(read, write, clone, accept)
 
     static member Empty : MapExt<'Key,'Value> = empty
 
@@ -864,6 +983,7 @@ type MapExt<[<EqualityConditionalOn>]'Key,[<EqualityConditionalOn;ComparisonCond
     member x.NeighboursAt i = MapTree.neighboursi i tree
 
     member m.TryPick(f) = MapTree.tryPick f tree 
+    member m.TryPickBack(f) = MapTree.tryPickBack f tree 
     member m.Exists(f) = MapTree.exists f tree 
     member m.Filter(f)  : MapExt<'Key,'Value> = new MapExt<'Key,'Value>(comparer ,MapTree.filter comparer f tree)
     member m.ForAll(f) = MapTree.forall f tree 
@@ -877,7 +997,7 @@ type MapExt<[<EqualityConditionalOn>]'Key,[<EqualityConditionalOn;ComparisonCond
 
     member m.MapExt f  = new MapExt<'Key,'b>(comparer,MapTree.mapi f tree)
     
-    member m.MapMonotonic f  = new MapExt<'Key2,'Value2>(LanguagePrimitives.FastGenericComparer<'Key2>, MapTree.mapiMonotonic f tree)
+    member m.MapMonotonic<'Key2, 'Value2 when 'Key2 : comparison> (f : 'Key -> 'Value -> 'Key2 * 'Value2) : MapExt<'Key2,'Value2> = new MapExt<'Key2,'Value2>(LanguagePrimitives.FastGenericComparer<'Key2>, MapTree.mapiMonotonic f tree)
    
     member x.GetReference key =
         MapTree.getReference comparer 0 key tree
@@ -908,6 +1028,9 @@ type MapExt<[<EqualityConditionalOn>]'Key,[<EqualityConditionalOn;ComparisonCond
 
     member x.TryMinKey = MapTree.tryMin tree |> Option.map fst
     member x.TryMaxKey = MapTree.tryMax tree |> Option.map fst
+    
+    member x.TryMinValue = MapTree.tryMin tree |> Option.map snd
+    member x.TryMaxValue = MapTree.tryMax tree |> Option.map snd
 
     member x.Split (k) =
         let l, self, r = MapTree.split comparer k tree
@@ -961,6 +1084,9 @@ type MapExt<[<EqualityConditionalOn>]'Key,[<EqualityConditionalOn;ComparisonCond
         | _ -> false
 
     override this.GetHashCode() = this.ComputeHashCode()
+
+    member x.GetForwardEnumerator() = new MapTree.MapTreeEnumerator<'Key, 'Value>(tree) :> IEnumerator<_> 
+    member x.GetBackwardEnumerator() = new MapTree.MapTreeBackwardEnumerator<'Key, 'Value>(tree) :> IEnumerator<_> 
 
     interface IEnumerable<KeyValuePair<'Key, 'Value>> with
         member __.GetEnumerator() = MapTree.mkIEnumerator tree
@@ -1048,6 +1174,9 @@ module MapExt =
     [<CompiledName("TryPick")>]
     let tryPick f (m:MapExt<_,_>) = m.TryPick(f)
 
+    [<CompiledName("TryPickBack")>]
+    let tryPickBack f (m:MapExt<_,_>) = m.TryPickBack(f)
+
     [<CompiledName("Pick")>]
     let pick f (m:MapExt<_,_>) = match tryPick f m with None -> raise (KeyNotFoundException()) | Some res -> res
 
@@ -1076,6 +1205,9 @@ module MapExt =
         
     [<CompiledName("ToSeq")>]
     let toSeq (m:MapExt<_,_>) = m |> Seq.map (fun kvp -> kvp.Key, kvp.Value)
+    
+    [<CompiledName("ToSeqBack")>]
+    let toSeqBack (m : MapExt<_,_>) = new EnumeratorEnumerable<_>(m.GetBackwardEnumerator) :> seq<_> 
 
     [<CompiledName("FindKey")>]
     let findKey f (m : MapExt<_,_>) = m |> toSeq |> Seq.pick (fun (k,v) -> if f k v then Some(k) else None)

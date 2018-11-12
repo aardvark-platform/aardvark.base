@@ -362,11 +362,25 @@ let testUnion (n : int) (m : int) =
 
 
 open Aardvark.Geometry
-
+open System.Runtime.Serialization.Formatters.Binary
+open MBrace.FsPickler
+open MBrace.FsPickler.Json
 
 [<EntryPoint; STAThread>]
 let main argv = 
     
+    let s = MapExt.ofList [1,1;2,2;3,2;4,4]
+   
+    let pickler = FsPickler.CreateJsonSerializer(true, false)
+
+    let str = pickler.PickleToString(s)
+    printfn "%s" str
+    let test = pickler.UnPickleOfString<MapExt<int, int>> str
+    printfn "%A" test
+    
+    Environment.Exit 0
+
+
 
     let shapeVertices1 = 
         [| 

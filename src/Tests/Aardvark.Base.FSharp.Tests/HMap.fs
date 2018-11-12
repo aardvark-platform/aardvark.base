@@ -10,6 +10,22 @@ module List =
     let all (l : list<bool>) =
         l |> List.fold (&&) true
 
+[<CustomEquality; CustomComparison>]
+type StupidHash = { value : int } with
+    
+    interface IComparable with
+        member x.CompareTo o =
+            match o with
+                | :? StupidHash as o -> compare x.value o.value
+                | _ -> failwith "cannot compare"
+
+    override x.GetHashCode() = abs x.value % 2
+    override x.Equals o =   
+        match o with
+            | :? StupidHash as o -> x.value = o.value
+            | _ -> false
+
+
 [<Property(Verbose = true)>]
 let ``[HMap] count`` (l : Map<int, int>) (a : int)  =
     not (Map.containsKey a l) ==> lazy (
@@ -68,10 +84,8 @@ let ``[HMap] containsKey`` (l : Map<int, int>) (a : int)  =
 [<Property(Verbose = true)>]
 let ``[HMap] find`` (l : Map<int, int>) (a : int)  =
     let map = l |> Map.toList |> HMap.ofList
-    let res = HMap.tryFind a map
-    Option.isSome res ==> lazy (
-        HMap.find a map = res.Value
-    )
+    let map = map |> HMap.add a a
+    HMap.find a map = a
 
 [<Property(Verbose = true)>]
 let ``[HMap] ofList`` (l : list<int * int>) =
@@ -163,3 +177,40 @@ let ``[HMap] choose`` (m : Map<int, int>) (f : int -> int -> Option<int>) =
     let th = HMap.choose f h |> Map.ofSeq
 
     tm = th
+
+
+
+[<Property>]
+let ``[HMap] equality`` (h0 : StupidHash) =
+    let h1 = { value = h0.value + 1 }
+    let h2 = { value = h0.value + 2 }
+    let h3 = { value = h0.value + 3 }
+    let a = HMap.empty |> HMap.add h0 0 |> HMap.add h1 1 |> HMap.add h2 2 |> HMap.add h3 3
+    let b = HMap.empty |> HMap.add h1 1 |> HMap.add h2 2 |> HMap.add h3 3 |> HMap.add h0 0
+    let c = HMap.empty |> HMap.add h2 2 |> HMap.add h3 3 |> HMap.add h0 0 |> HMap.add h1 1
+    let d = HMap.empty |> HMap.add h3 3 |> HMap.add h0 0 |> HMap.add h1 1 |> HMap.add h2 2
+    
+    let x = d |> HMap.add h3 4
+    let y = d |> HMap.add { value = h0.value + 4 } 4
+
+    let ah = a.GetHashCode()
+    let bh = b.GetHashCode()
+    let ch = c.GetHashCode()
+    let dh = d.GetHashCode()
+
+    a = a && b = b && c = c && d = d && x = x && y = y &&
+
+    a = b && a = c && a = d && b = c && b = d && c = d && 
+    b = a && c = a && d = a && c = b && d = b && d = c && 
+
+    ah = bh && bh = ch && ch = dh &&
+
+    x <> a && x <> b && x <> c && x <> d &&
+    y <> a && y <> b && y <> c && y <> d &&
+    x <> y &&
+
+    a.Count = 4 && b.Count = 4 && c.Count = 4 && d.Count = 4 && 
+    x.Count = 4 && y.Count = 5
+
+
+    

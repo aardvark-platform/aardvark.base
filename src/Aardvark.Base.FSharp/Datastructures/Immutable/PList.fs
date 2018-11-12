@@ -4,10 +4,11 @@ open System
 open System.Threading
 open System.Collections
 open System.Collections.Generic
+open MBrace.FsPickler
 
 
 [<Struct; StructuralEquality; NoComparison>]
-[<StructuredFormatDisplay("{AsString}")>]
+[<StructuredFormatDisplay("{AsString}"); CustomPickler>]
 type plist< [<EqualityConditionalOn>] 'a>(l : Index, h : Index, content : MapExt<Index, 'a>) =
     
     static let empty = plist<'a>(Index.zero, Index.zero, MapExt.empty)
@@ -23,6 +24,31 @@ type plist< [<EqualityConditionalOn>] 'a>(l : Index, h : Index, content : MapExt
 
     static member Empty = empty
     static member Trace = trace
+
+    static member private CreatePickler(r : IPicklerResolver) =
+        let pint = r.Resolve<int>()
+        let pv = r.Resolve<'a>()
+        let parr = r.Resolve<'a[]>()
+
+        let read (rs : ReadState) =
+            let cnt = pint.Read rs "count"
+            let elements = parr.Read rs "elements"
+            let mutable res = empty
+            for e in elements do res <- res.Append(e)
+            res
+
+        let write (ws : WriteState) (s : plist<'a>) =
+            pint.Write ws "count" s.Count
+            parr.Write ws "elements" (s.AsArray)
+
+        let clone (cs : CloneState) (s : plist<'a>) =
+            s.Map(fun _ v -> pv.Clone cs v)
+
+        let accept (vs : VisitState) (s : plist<'a>) =
+            s |> Seq.iter (pv.Accept vs)
+
+        Pickler.FromPrimitives(read, write, clone, accept)
+        
 
     member x.MinIndex = l
     member x.MaxIndex = h
@@ -195,7 +221,7 @@ type plist< [<EqualityConditionalOn>] 'a>(l : Index, h : Index, content : MapExt
             | Some (id, _) -> x.Remove id
             | _ -> x
 
-    member x.Map(mapping : Index -> 'a -> 'b) =
+    member x.Map<'b>(mapping : Index -> 'a -> 'b) : plist<'b> =
         plist(l, h, MapExt.map mapping content)
         
     member x.Choose(mapping : Index -> 'a -> Option<'b>) =
@@ -224,6 +250,15 @@ type plist< [<EqualityConditionalOn>] 'a>(l : Index, h : Index, content : MapExt
         | Some index -> x.Remove(index)
         | None -> x
           
+    member x.AsSeqBackward =
+        content |> MapExt.toSeqBack |> Seq.map snd
+        
+    member x.AsListBackward =
+        x.AsSeqBackward |> Seq.toList
+
+    member x.AsArrayBackward =
+        x.AsSeqBackward |> Seq.toArray
+
     member x.AsSeq =
         content |> MapExt.toSeq |> Seq.map snd
 
@@ -249,8 +284,8 @@ type plist< [<EqualityConditionalOn>] 'a>(l : Index, h : Index, content : MapExt
         x |> Seq.tryFindIndex (Unchecked.equals item) |> Option.defaultValue -1
 
     member x.IndexOf(index : Index) =
-        MapExt.tryMax
-
+        MapExt.tryIndexOf index content |> Option.defaultValue -1
+        
     interface ICollection<'a> with 
         member x.Add(v) = raise (NotSupportedException("plist cannot be mutated"))
         member x.Clear() = raise (NotSupportedException("plist cannot be mutated"))
@@ -292,38 +327,194 @@ and private PListEnumerator<'a>(r : IEnumerator<KeyValuePair<Index, 'a>>) =
 module PList =
     let empty<'a> = plist<'a>.Empty
 
+    let inline isEmpty (list : plist<'a>) = list.Count = 0
     let inline count (list : plist<'a>) = list.Count
     let inline append (v : 'a) (list : plist<'a>) = list.Append v
     let inline prepend (v : 'a) (list : plist<'a>) = list.Prepend v
+
     let inline set (id : Index) (v : 'a) (list : plist<'a>) = list.Set(id, v)
     let inline setAt (index : int) (v : 'a) (list : plist<'a>) = list.Set(index, v)
     let inline remove (id : Index) (list : plist<'a>) = list.Remove(id)
     let inline removeAt (index : int) (list : plist<'a>) = list.RemoveAt(index)
     let inline insertAt (index : int) (value : 'a) (list : plist<'a>) = list.InsertAt(index, value)
-    let inline toSeq (list : plist<'a>) = list :> seq<_>
-    let inline toList (list : plist<'a>) = list.AsList
-    let inline toArray (list : plist<'a>) = list.AsArray
-    let inline toMap (list : plist<'a>) = list.AsMap
+
 
     let inline insertAfter (index : Index) (value : 'a) (list : plist<'a>) = list.InsertAfter(index, value)
     let inline insertBefore (index : Index) (value : 'a) (list : plist<'a>) = list.InsertBefore(index, value)
     let inline tryAt (index : int) (list : plist<'a>) = list.TryGet index
     let inline tryGet (index : Index) (list : plist<'a>) = list.TryGet index
+    
+    let inline tryFirstIndex (list : plist<'a>) = list.Content.TryMinKey
+    let inline tryLastIndex (list : plist<'a>) = list.Content.TryMaxKey
+    let inline firstIndex (list : plist<'a>) = tryFirstIndex list |> Option.get
+    let inline lastIndex (list : plist<'a>) = tryLastIndex list |> Option.get
+
+    let inline tryFirst (list : plist<'a>) = list.Content.TryMinValue
+    let inline tryLast (list : plist<'a>) = list.Content.TryMaxValue
+    let inline first (list : plist<'a>) = tryFirst list |> Option.get
+    let inline last (list : plist<'a>) = tryLast list |> Option.get
+
+    let tryFindIndex (element : 'a) (list : plist<'a>) = list.Content |> MapExt.tryPick (fun k v -> if v = element then Some k else None)
+    let tryFindIndexBack (element : 'a) (list : plist<'a>) = list.Content |> MapExt.tryPickBack (fun k v -> if v = element then Some k else None)
+    let findIndex (element : 'a) (list : plist<'a>) = tryFindIndex element list |> Option.get
+    let findIndexBack (element : 'a) (list : plist<'a>) = tryFindIndexBack element list |> Option.get
+
+    let exists (f : Index -> 'a -> bool) (list : plist<'a>) = list.Content |> Seq.exists (fun kv -> f kv.Key kv.Value)
+    let forall (f : Index -> 'a -> bool) (list : plist<'a>) = list.Content |> Seq.forall (fun kv -> f kv.Key kv.Value)
+    
+    let tryFind (predicate : Index -> 'a -> bool) (list : plist<'a>) = list.Content |> MapExt.tryPick (fun k v -> if predicate k v then Some v else None)
+    let tryFindBack (predicate : Index -> 'a -> bool) (list : plist<'a>) = list.Content |> MapExt.tryPickBack (fun k v -> if predicate k v then Some v else None)
+    let find (predicate : Index -> 'a -> bool) (list : plist<'a>) = tryFind predicate list |> Option.get
+    let findBack (predicate : Index -> 'a -> bool) (list : plist<'a>) = tryFindBack predicate list |> Option.get
+    
+    let tryPick (predicate : Index -> 'a -> Option<'b>) (list : plist<'a>) = list.Content |> MapExt.tryPick predicate
+    let tryPickBack (predicate : Index -> 'a -> Option<'b>) (list : plist<'a>) = list.Content |> MapExt.tryPickBack predicate
+    
+    let concat2 (l : plist<'a>) (r : plist<'a>) =
+        if l.Count = 0 then r
+        elif r.Count = 0 then l
+
+        elif l.MaxIndex < r.MinIndex then
+            plist<'a>(l.MinIndex, r.MaxIndex, MapExt.union l.Content r.Content)
+            
+        elif r.MaxIndex < l.MinIndex then
+            plist<'a>(r.MinIndex, l.MaxIndex, MapExt.union l.Content r.Content)
+
+        elif l.Count < r.Count then
+            let mutable res = r
+            for lv in l.AsSeqBackward do
+                res <- res.Prepend(lv)
+            res
+        else
+            let mutable res = l
+            for rv in r.AsSeq do
+                res <- res.Append(rv)
+            res
+
+    let concat (s : #seq<plist<'a>>) =
+        s |> Seq.fold concat2 empty
+        
+    let ofMap (m : MapExt<Index, 'a>) =
+        if MapExt.isEmpty m then
+            empty
+        else
+            let min = m.TryMinKey
+            let max = m.TryMaxKey
+            plist<'a>(min.Value, max.Value, m)
+        
+
+    let alter (index : Index) (mapping : Option<'a> -> Option<'a>) (l : plist<'a>) =
+        MapExt.alter index mapping l.Content |> ofMap
+
+    let alterAt (i : int) (mapping : Option<'a> -> Option<'a>) (list : plist<'a>) =
+        if i < -1 || i > list.Count then
+            list
+        else
+            let l, s, r = MapExt.neighboursAt i list.Content
+            match s with
+            | Some (si, sv) ->
+                match mapping (Some sv) with
+                | Some r ->
+                    plist<'a>(list.MinIndex, list.MaxIndex, MapExt.add si r list.Content)
+                | None ->
+                    let m = MapExt.remove si list.Content
+                    let min = match l with | None -> MapExt.tryMin m |> Option.get | Some _ -> list.MinIndex
+                    let max = match r with | None -> MapExt.tryMax m |> Option.get | Some _ -> list.MaxIndex
+                    plist<'a>(min, max, m)
+            | None ->
+                match mapping None with
+                | Some res ->
+                    let mutable minChanged = false
+                    let mutable maxChanged = false
+                    let idx =
+                        match l, r with
+                        | None, None -> 
+                            minChanged <- true
+                            maxChanged <- true
+                            Index.zero
+                        | Some (l,_), None -> 
+                            maxChanged <- true
+                            Index.after l
+                        | None, Some (r,_) -> 
+                            minChanged <- true
+                            Index.before r
+                        | Some (l,_), Some (r,_) -> 
+                            Index.between l r
+
+                    let min = if minChanged then idx else list.MinIndex
+                    let max = if maxChanged then idx else list.MaxIndex
+                    plist<'a>(min, max, MapExt.add idx res list.Content)
+                | None ->
+                    list
+      
+    let update (index : Index) (mapping : 'a -> 'a) (l : plist<'a>) =
+        alter index (Option.map mapping) l
+        
+    let updateAt (index : int) (mapping : 'a -> 'a) (l : plist<'a>) =
+        alterAt index (Option.map mapping) l
+
+    let split (index : Index) (list : plist<'a>) =
+        let (l,s,r) = list.Content.Split(index)
+
+        match MapExt.isEmpty l, MapExt.isEmpty r with
+        | true, true -> empty, s, empty
+        | true, false -> 
+            let rmin = r.TryMinKey |> Option.defaultValue Index.zero
+            empty, s, plist<'a>(rmin, list.MaxIndex, r)
+        | false, true ->
+            let lmax = l.TryMaxKey |> Option.defaultValue Index.zero
+            plist<'a>(list.MinIndex, lmax, l), s, empty
+        | false, false ->
+            let lmax = l.TryMaxKey |> Option.defaultValue Index.zero
+            let rmin = r.TryMinKey |> Option.defaultValue Index.zero
+            plist<'a>(list.MinIndex, lmax, l), s, plist<'a>(rmin, list.MaxIndex, r)
+       
+    let splitAt (index : int) (list : plist<'a>) =
+        if index < 0 then
+            empty, None, list
+        elif index >= list.Count then
+            list, None, empty
+        else
+            let index,_ = list.Content.TryAt(index) |> Option.get
+            split index list
+          
+    let take (n : int) (list : plist<'a>) =
+        if n <= 0 then empty
+        elif n > list.Count then list
+        else
+            let l,_,_ = splitAt n list
+            l
+
+    let skip (n : int) (list : plist<'a>) =
+        if n <= 0 then list
+        elif n > list.Count then empty
+        else
+            let _,_,r = splitAt (n - 1) list
+            r
 
     let single (v : 'a) =
         let t = Index.after Index.zero
         plist(t, t, MapExt.ofList [t, v])
 
+    let inline toSeq (list : plist<'a>) = list :> seq<_>
+    let inline toList (list : plist<'a>) = list.AsList
+    let inline toArray (list : plist<'a>) = list.AsArray
+
+    let inline toSeqBack (list : plist<'a>) = list.AsSeqBackward :> seq<_>
+    let inline toListBack (list : plist<'a>) = list.AsListBackward
+    let inline toArrayBack (list : plist<'a>) = list.AsArrayBackward
+
+    let inline toMap (list : plist<'a>) = list.AsMap
     let ofSeq (seq : seq<'a>) =
         let mutable res = empty
         for e in seq do res <- append e res
         res
 
-    let ofList (list : list<'a>) =
-        ofSeq list
+    let collecti (mapping : Index -> 'a -> plist<'b>) (l : plist<'a>) = l.Map(mapping) |> concat
+    let collect (mapping : 'a -> plist<'b>) (l : plist<'a>) = l.Map(fun _ v -> mapping v) |> concat
 
-    let ofArray (arr : 'a[]) =
-        ofSeq arr
+    let inline ofList (list : list<'a>) = ofSeq list
+    let inline ofArray (arr : 'a[]) = ofSeq arr
 
     let inline mapi (mapping : Index -> 'a -> 'b) (list : plist<'a>) = list.Map mapping
     let inline map (mapping : 'a -> 'b) (list : plist<'a>) = list.Map (fun _ v -> mapping v)
@@ -334,6 +525,15 @@ module PList =
     let inline filteri (predicate : Index -> 'a -> bool) (list : plist<'a>) = list.Filter predicate
     let inline filter (predicate : 'a -> bool) (list : plist<'a>) = list.Filter (fun _ v -> predicate v)
 
+    let sortBy (mapping : 'a -> 'b) (l : plist<'a>) =
+        let arr = l.AsArray
+        Array.sortInPlaceBy mapping arr
+        ofArray arr
+        
+    let sortWith (compare : 'a -> 'a -> int) (l : plist<'a>) =
+        let arr = l.AsArray
+        Array.sortInPlaceWith compare arr
+        ofArray arr
 
     let inline computeDelta (l : plist<'a>) (r : plist<'a>) = plist.ComputeDeltas(l, r)
     let inline applyDelta (l : plist<'a>) (d : pdeltalist<'a>) = l.Apply(d)
