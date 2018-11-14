@@ -1373,9 +1373,18 @@ namespace Aardvark.Base
 
         public Box__dim__d Transformed(M__dplus1____dplus1__d trafo)
         {
-            return IsInvalid ? Box__dim__d.Invalid
-                             : new Box__dim__d(ComputeCorners().Map(
-                                            p => trafo.TransformPos((V__dim__d)p)));
+            var res = Box__dim__d.Invalid;
+            if (!IsInvalid)
+            {
+                res.ExtendBy(trafo.TransformPos((V__dim__d)Min));
+                //# for (int i = 1; i < (1 << dim) - 1; i++) {
+                res.ExtendBy(trafo.TransformPos((V__dim__d)new __ltype__(/*#
+                fields.ForEach((f, b) => { var bf = ((i & (1<<b)) == 0) ? "Min" : "Max";
+                                          */__bf__.__f__/*# }, comma); */)));
+                //# }
+                res.ExtendBy(trafo.TransformPos((V__dim__d)Max));
+            }
+            return res;
         }
 
         public Box__dim__d Transformed(Trafo__dim__d trafo)
@@ -1416,6 +1425,23 @@ namespace Aardvark.Base
                 //# }
                 Max
             };
+        }
+
+        /// <summary>
+        /// Enumeration of the corners of the box.
+        /// </summary>
+        public IEnumerable<__ltype__> Corners
+        {
+            get
+            {
+                yield return Min;
+                //# for (int i = 1; i < (1 << dim) - 1; i++) {
+                yield return new __ltype__(/*#
+                fields.ForEach((f, b) => { var bf = ((i & (1<<b)) == 0) ? "Min" : "Max";
+                                          */__bf__.__f__/*# }, comma); */);
+                //# }
+                yield return Max;
+            }
         }
 
         #endregion

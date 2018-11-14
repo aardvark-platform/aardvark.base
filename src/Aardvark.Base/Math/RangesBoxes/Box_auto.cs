@@ -8193,9 +8193,15 @@ namespace Aardvark.Base
 
         public Box2d Transformed(M33d trafo)
         {
-            return IsInvalid ? Box2d.Invalid
-                             : new Box2d(ComputeCorners().Map(
-                                            p => trafo.TransformPos((V2d)p)));
+            var res = Box2d.Invalid;
+            if (!IsInvalid)
+            {
+                res.ExtendBy(trafo.TransformPos((V2d)Min));
+                res.ExtendBy(trafo.TransformPos((V2d)new V2i(Max.X, Min.Y)));
+                res.ExtendBy(trafo.TransformPos((V2d)new V2i(Min.X, Max.Y)));
+                res.ExtendBy(trafo.TransformPos((V2d)Max));
+            }
+            return res;
         }
 
         public Box2d Transformed(Trafo2d trafo)
@@ -8234,6 +8240,20 @@ namespace Aardvark.Base
                 new V2i(Min.X, Max.Y),
                 Max
             };
+        }
+
+        /// <summary>
+        /// Enumeration of the corners of the box.
+        /// </summary>
+        public IEnumerable<V2i> Corners
+        {
+            get
+            {
+                yield return Min;
+                yield return new V2i(Max.X, Min.Y);
+                yield return new V2i(Min.X, Max.Y);
+                yield return Max;
+            }
         }
 
         #endregion
@@ -9436,9 +9456,15 @@ namespace Aardvark.Base
 
         public Box2d Transformed(M33d trafo)
         {
-            return IsInvalid ? Box2d.Invalid
-                             : new Box2d(ComputeCorners().Map(
-                                            p => trafo.TransformPos((V2d)p)));
+            var res = Box2d.Invalid;
+            if (!IsInvalid)
+            {
+                res.ExtendBy(trafo.TransformPos((V2d)Min));
+                res.ExtendBy(trafo.TransformPos((V2d)new V2l(Max.X, Min.Y)));
+                res.ExtendBy(trafo.TransformPos((V2d)new V2l(Min.X, Max.Y)));
+                res.ExtendBy(trafo.TransformPos((V2d)Max));
+            }
+            return res;
         }
 
         public Box2d Transformed(Trafo2d trafo)
@@ -9477,6 +9503,20 @@ namespace Aardvark.Base
                 new V2l(Min.X, Max.Y),
                 Max
             };
+        }
+
+        /// <summary>
+        /// Enumeration of the corners of the box.
+        /// </summary>
+        public IEnumerable<V2l> Corners
+        {
+            get
+            {
+                yield return Min;
+                yield return new V2l(Max.X, Min.Y);
+                yield return new V2l(Min.X, Max.Y);
+                yield return Max;
+            }
         }
 
         #endregion
@@ -10786,9 +10826,15 @@ namespace Aardvark.Base
 
         public Box2d Transformed(M33d trafo)
         {
-            return IsInvalid ? Box2d.Invalid
-                             : new Box2d(ComputeCorners().Map(
-                                            p => trafo.TransformPos((V2d)p)));
+            var res = Box2d.Invalid;
+            if (!IsInvalid)
+            {
+                res.ExtendBy(trafo.TransformPos((V2d)Min));
+                res.ExtendBy(trafo.TransformPos((V2d)new V2f(Max.X, Min.Y)));
+                res.ExtendBy(trafo.TransformPos((V2d)new V2f(Min.X, Max.Y)));
+                res.ExtendBy(trafo.TransformPos((V2d)Max));
+            }
+            return res;
         }
 
         public Box2d Transformed(Trafo2d trafo)
@@ -10827,6 +10873,20 @@ namespace Aardvark.Base
                 new V2f(Min.X, Max.Y),
                 Max
             };
+        }
+
+        /// <summary>
+        /// Enumeration of the corners of the box.
+        /// </summary>
+        public IEnumerable<V2f> Corners
+        {
+            get
+            {
+                yield return Min;
+                yield return new V2f(Max.X, Min.Y);
+                yield return new V2f(Min.X, Max.Y);
+                yield return Max;
+            }
         }
 
         #endregion
@@ -12125,9 +12185,15 @@ namespace Aardvark.Base
 
         public Box2d Transformed(M33d trafo)
         {
-            return IsInvalid ? Box2d.Invalid
-                             : new Box2d(ComputeCorners().Map(
-                                            p => trafo.TransformPos((V2d)p)));
+            var res = Box2d.Invalid;
+            if (!IsInvalid)
+            {
+                res.ExtendBy(trafo.TransformPos((V2d)Min));
+                res.ExtendBy(trafo.TransformPos((V2d)new V2d(Max.X, Min.Y)));
+                res.ExtendBy(trafo.TransformPos((V2d)new V2d(Min.X, Max.Y)));
+                res.ExtendBy(trafo.TransformPos((V2d)Max));
+            }
+            return res;
         }
 
         public Box2d Transformed(Trafo2d trafo)
@@ -12166,6 +12232,20 @@ namespace Aardvark.Base
                 new V2d(Min.X, Max.Y),
                 Max
             };
+        }
+
+        /// <summary>
+        /// Enumeration of the corners of the box.
+        /// </summary>
+        public IEnumerable<V2d> Corners
+        {
+            get
+            {
+                yield return Min;
+                yield return new V2d(Max.X, Min.Y);
+                yield return new V2d(Min.X, Max.Y);
+                yield return Max;
+            }
         }
 
         #endregion
@@ -13359,9 +13439,19 @@ namespace Aardvark.Base
 
         public Box3d Transformed(M44d trafo)
         {
-            return IsInvalid ? Box3d.Invalid
-                             : new Box3d(ComputeCorners().Map(
-                                            p => trafo.TransformPos((V3d)p)));
+            var res = Box3d.Invalid;
+            if (!IsInvalid)
+            {
+                res.ExtendBy(trafo.TransformPos((V3d)Min));
+                res.ExtendBy(trafo.TransformPos((V3d)new V3i(Max.X, Min.Y, Min.Z)));
+                res.ExtendBy(trafo.TransformPos((V3d)new V3i(Min.X, Max.Y, Min.Z)));
+                res.ExtendBy(trafo.TransformPos((V3d)new V3i(Max.X, Max.Y, Min.Z)));
+                res.ExtendBy(trafo.TransformPos((V3d)new V3i(Min.X, Min.Y, Max.Z)));
+                res.ExtendBy(trafo.TransformPos((V3d)new V3i(Max.X, Min.Y, Max.Z)));
+                res.ExtendBy(trafo.TransformPos((V3d)new V3i(Min.X, Max.Y, Max.Z)));
+                res.ExtendBy(trafo.TransformPos((V3d)Max));
+            }
+            return res;
         }
 
         public Box3d Transformed(Trafo3d trafo)
@@ -13405,6 +13495,24 @@ namespace Aardvark.Base
                 new V3i(Min.X, Max.Y, Max.Z),
                 Max
             };
+        }
+
+        /// <summary>
+        /// Enumeration of the corners of the box.
+        /// </summary>
+        public IEnumerable<V3i> Corners
+        {
+            get
+            {
+                yield return Min;
+                yield return new V3i(Max.X, Min.Y, Min.Z);
+                yield return new V3i(Min.X, Max.Y, Min.Z);
+                yield return new V3i(Max.X, Max.Y, Min.Z);
+                yield return new V3i(Min.X, Min.Y, Max.Z);
+                yield return new V3i(Max.X, Min.Y, Max.Z);
+                yield return new V3i(Min.X, Max.Y, Max.Z);
+                yield return Max;
+            }
         }
 
         #endregion
@@ -14610,9 +14718,19 @@ namespace Aardvark.Base
 
         public Box3d Transformed(M44d trafo)
         {
-            return IsInvalid ? Box3d.Invalid
-                             : new Box3d(ComputeCorners().Map(
-                                            p => trafo.TransformPos((V3d)p)));
+            var res = Box3d.Invalid;
+            if (!IsInvalid)
+            {
+                res.ExtendBy(trafo.TransformPos((V3d)Min));
+                res.ExtendBy(trafo.TransformPos((V3d)new V3l(Max.X, Min.Y, Min.Z)));
+                res.ExtendBy(trafo.TransformPos((V3d)new V3l(Min.X, Max.Y, Min.Z)));
+                res.ExtendBy(trafo.TransformPos((V3d)new V3l(Max.X, Max.Y, Min.Z)));
+                res.ExtendBy(trafo.TransformPos((V3d)new V3l(Min.X, Min.Y, Max.Z)));
+                res.ExtendBy(trafo.TransformPos((V3d)new V3l(Max.X, Min.Y, Max.Z)));
+                res.ExtendBy(trafo.TransformPos((V3d)new V3l(Min.X, Max.Y, Max.Z)));
+                res.ExtendBy(trafo.TransformPos((V3d)Max));
+            }
+            return res;
         }
 
         public Box3d Transformed(Trafo3d trafo)
@@ -14656,6 +14774,24 @@ namespace Aardvark.Base
                 new V3l(Min.X, Max.Y, Max.Z),
                 Max
             };
+        }
+
+        /// <summary>
+        /// Enumeration of the corners of the box.
+        /// </summary>
+        public IEnumerable<V3l> Corners
+        {
+            get
+            {
+                yield return Min;
+                yield return new V3l(Max.X, Min.Y, Min.Z);
+                yield return new V3l(Min.X, Max.Y, Min.Z);
+                yield return new V3l(Max.X, Max.Y, Min.Z);
+                yield return new V3l(Min.X, Min.Y, Max.Z);
+                yield return new V3l(Max.X, Min.Y, Max.Z);
+                yield return new V3l(Min.X, Max.Y, Max.Z);
+                yield return Max;
+            }
         }
 
         #endregion
@@ -15974,9 +16110,19 @@ namespace Aardvark.Base
 
         public Box3d Transformed(M44d trafo)
         {
-            return IsInvalid ? Box3d.Invalid
-                             : new Box3d(ComputeCorners().Map(
-                                            p => trafo.TransformPos((V3d)p)));
+            var res = Box3d.Invalid;
+            if (!IsInvalid)
+            {
+                res.ExtendBy(trafo.TransformPos((V3d)Min));
+                res.ExtendBy(trafo.TransformPos((V3d)new V3f(Max.X, Min.Y, Min.Z)));
+                res.ExtendBy(trafo.TransformPos((V3d)new V3f(Min.X, Max.Y, Min.Z)));
+                res.ExtendBy(trafo.TransformPos((V3d)new V3f(Max.X, Max.Y, Min.Z)));
+                res.ExtendBy(trafo.TransformPos((V3d)new V3f(Min.X, Min.Y, Max.Z)));
+                res.ExtendBy(trafo.TransformPos((V3d)new V3f(Max.X, Min.Y, Max.Z)));
+                res.ExtendBy(trafo.TransformPos((V3d)new V3f(Min.X, Max.Y, Max.Z)));
+                res.ExtendBy(trafo.TransformPos((V3d)Max));
+            }
+            return res;
         }
 
         public Box3d Transformed(Trafo3d trafo)
@@ -16020,6 +16166,24 @@ namespace Aardvark.Base
                 new V3f(Min.X, Max.Y, Max.Z),
                 Max
             };
+        }
+
+        /// <summary>
+        /// Enumeration of the corners of the box.
+        /// </summary>
+        public IEnumerable<V3f> Corners
+        {
+            get
+            {
+                yield return Min;
+                yield return new V3f(Max.X, Min.Y, Min.Z);
+                yield return new V3f(Min.X, Max.Y, Min.Z);
+                yield return new V3f(Max.X, Max.Y, Min.Z);
+                yield return new V3f(Min.X, Min.Y, Max.Z);
+                yield return new V3f(Max.X, Min.Y, Max.Z);
+                yield return new V3f(Min.X, Max.Y, Max.Z);
+                yield return Max;
+            }
         }
 
         #endregion
@@ -17326,9 +17490,19 @@ namespace Aardvark.Base
 
         public Box3d Transformed(M44d trafo)
         {
-            return IsInvalid ? Box3d.Invalid
-                             : new Box3d(ComputeCorners().Map(
-                                            p => trafo.TransformPos((V3d)p)));
+            var res = Box3d.Invalid;
+            if (!IsInvalid)
+            {
+                res.ExtendBy(trafo.TransformPos((V3d)Min));
+                res.ExtendBy(trafo.TransformPos((V3d)new V3d(Max.X, Min.Y, Min.Z)));
+                res.ExtendBy(trafo.TransformPos((V3d)new V3d(Min.X, Max.Y, Min.Z)));
+                res.ExtendBy(trafo.TransformPos((V3d)new V3d(Max.X, Max.Y, Min.Z)));
+                res.ExtendBy(trafo.TransformPos((V3d)new V3d(Min.X, Min.Y, Max.Z)));
+                res.ExtendBy(trafo.TransformPos((V3d)new V3d(Max.X, Min.Y, Max.Z)));
+                res.ExtendBy(trafo.TransformPos((V3d)new V3d(Min.X, Max.Y, Max.Z)));
+                res.ExtendBy(trafo.TransformPos((V3d)Max));
+            }
+            return res;
         }
 
         public Box3d Transformed(Trafo3d trafo)
@@ -17372,6 +17546,24 @@ namespace Aardvark.Base
                 new V3d(Min.X, Max.Y, Max.Z),
                 Max
             };
+        }
+
+        /// <summary>
+        /// Enumeration of the corners of the box.
+        /// </summary>
+        public IEnumerable<V3d> Corners
+        {
+            get
+            {
+                yield return Min;
+                yield return new V3d(Max.X, Min.Y, Min.Z);
+                yield return new V3d(Min.X, Max.Y, Min.Z);
+                yield return new V3d(Max.X, Max.Y, Min.Z);
+                yield return new V3d(Min.X, Min.Y, Max.Z);
+                yield return new V3d(Max.X, Min.Y, Max.Z);
+                yield return new V3d(Min.X, Max.Y, Max.Z);
+                yield return Max;
+            }
         }
 
         #endregion
