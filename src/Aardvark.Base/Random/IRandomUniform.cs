@@ -350,7 +350,7 @@ namespace Aardvark.Base
         /// elements (subsetCount). The elements in the subset are in the
         /// same order as in the original array. O(count).
         /// NOTE: this method needs to generate one random number for each
-        /// element of the original array. If subsetCount is signficantly
+        /// element of the original array. If subsetCount is significantly
         /// smaller than count, it is more efficient to use
         /// <see cref="CreateSmallRandomSubsetIndexArray"/> or
         /// <see cref="CreateSmallRandomSubsetIndexArrayLong"/> or
@@ -358,8 +358,9 @@ namespace Aardvark.Base
         /// <see cref="CreateSmallRandomOrderedSubsetIndexArrayLong"/>.
         /// </summary>
         public static T[] CreateRandomSubsetOfSize<T>(
-                this T[] array, long subsetCount, IRandomUniform rnd)
+                this T[] array, long subsetCount, IRandomUniform rnd = null)
         {
+            if (rnd == null) rnd = new RandomSystem();
             long count = array.LongLength;
             if (!(subsetCount >= 0 && subsetCount <= count)) throw new ArgumentOutOfRangeException(nameof(subsetCount));
             var subset = new T[subsetCount];
@@ -368,6 +369,34 @@ namespace Aardvark.Base
             {
                 var p = (double)(subsetCount - si) / (double)(count - ai);
                 if (rnd.UniformDouble() <= p) subset[si++] = array[ai];
+            }
+            return subset;
+        }
+
+        /// <summary>
+        /// Returns a random subset of the enumeration with a supplied number of
+        /// elements (subsetCount). The elements in the subset are in the
+        /// same order as in the input. O(count).
+        /// NOTE: The number of elements of the Enumerable need to be calculated, in case of true enumerations
+        ///       the implementation of .Count() results in a second evaluation of the enumerable.
+        /// </summary>
+        public static T[] CreateRandomSubsetOfSize<T>(
+                this IEnumerable<T> input, int subsetCount, IRandomUniform rnd = null)
+        {
+            if (rnd == null) rnd = new RandomSystem();
+            var count = input.Count();
+            if (!(subsetCount >= 0 && subsetCount <= count)) throw new ArgumentOutOfRangeException(nameof(subsetCount));
+            var subset = new T[subsetCount];
+            int si = 0, ai = 0;
+            foreach (var a in input)
+            {
+                if (ai < count && si < subsetCount)
+                {
+                    var p = (double)(subsetCount - si) / (double)(count - ai);
+                    if (rnd.UniformDouble() <= p) subset[si++] = a;
+                }
+                else
+                    break;
             }
             return subset;
         }
