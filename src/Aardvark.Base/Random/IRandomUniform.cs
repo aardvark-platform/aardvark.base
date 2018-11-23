@@ -381,13 +381,13 @@ namespace Aardvark.Base
         ///       the implementation of .Count() results in a second evaluation of the enumerable.
         /// </summary>
         public static T[] CreateRandomSubsetOfSize<T>(
-                this IEnumerable<T> input, int subsetCount, IRandomUniform rnd = null)
+                this IEnumerable<T> input, long subsetCount, IRandomUniform rnd = null)
         {
             if (rnd == null) rnd = new RandomSystem();
-            var count = input.Count();
+            long count = input.Count();
             if (!(subsetCount >= 0 && subsetCount <= count)) throw new ArgumentOutOfRangeException(nameof(subsetCount));
             var subset = new T[subsetCount];
-            int si = 0, ai = 0;
+            long si = 0, ai = 0;
             foreach (var a in input)
             {
                 if (ai < count && si < subsetCount)
