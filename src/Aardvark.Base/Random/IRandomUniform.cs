@@ -392,7 +392,7 @@ namespace Aardvark.Base
             {
                 if (ai < count && si < subsetCount)
                 {
-                    var p = (double)(subsetCount - si) / (double)(count - ai);
+                    var p = (double)(subsetCount - si) / (double)(count - ai++);
                     if (rnd.UniformDouble() <= p) subset[si++] = a;
                 }
                 else
