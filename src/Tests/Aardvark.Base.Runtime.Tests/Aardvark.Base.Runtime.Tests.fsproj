@@ -67,16 +67,21 @@
     <Compile Include="Program.fs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\Aardvark.Base.Essentials\Aardvark.Base.Essentials.csproj">
+      <Name>Aardvark.Base.Essentials</Name>
+      <Project>{2e887670-5bc3-44fa-97a3-389917b27beb}</Project>
+      <Private>True</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Aardvark.Base\Aardvark.Base.csproj">
+      <Name>Aardvark.Base</Name>
+      <Project>{c90c041e-e076-4bbc-bbcd-b29367f649a2}</Project>
+      <Private>True</Private>
+    </ProjectReference>
     <Reference Include="mscorlib" />
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Drawing" />
     <Reference Include="System.Numerics" />
-    <ProjectReference Include="..\..\Aardvark.Base.Essentials\Aardvark.Base.Essentials.csproj">
-      <Name>Aardvark.Base.Essentials</Name>
-      <Project>{7fef0693-efc3-4b85-8f42-933b25f353a8}</Project>
-      <Private>True</Private>
-    </ProjectReference>
     <ProjectReference Include="..\..\Aardvark.Base.FSharp\Aardvark.Base.FSharp.fsproj">
       <Name>Aardvark.Base.FSharp</Name>
       <Project>{692a3617-719b-4ea2-abc1-407ae20094ae}</Project>
@@ -95,11 +100,6 @@
     <ProjectReference Include="..\..\Aardvark.Base.TypeProviders\Aardvark.Base.TypeProviders.fsproj">
       <Name>Aardvark.Base.TypeProviders</Name>
       <Project>{8bfea4ef-bf0a-4c1a-b7ac-cbdd930306fd}</Project>
-      <Private>True</Private>
-    </ProjectReference>
-    <ProjectReference Include="..\..\Aardvark.Base\Aardvark.Base.csproj">
-      <Name>Aardvark.Base</Name>
-      <Project>{377da721-c821-45f6-b803-9c8724c7b37f}</Project>
       <Private>True</Private>
     </ProjectReference>
   </ItemGroup>

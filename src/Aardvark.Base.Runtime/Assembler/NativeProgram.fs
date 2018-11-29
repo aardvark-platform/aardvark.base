@@ -416,3 +416,88 @@ module NativeProgram =
 
     let simple (compile : 'a -> IAssemblerStream -> unit) (values : alist<'a>) =
         new NativeProgram<'a>(values, compile)
+
+type ChangeableNativeProgram<'a>(compile : 'a -> IAssemblerStream -> unit) =
+    
+    let manager = MemoryManager.createExecutable()
+
+    let entryPointer = NativePtr.alloc 1
+    let jumpDistance = ref 0L
+    let mutable prolog = 
+        let f = new Fragment<'a>(jumpDistance, manager, Unchecked.defaultof<'a>)
+        use s = f.AssemblerStream
+        s.BeginFunction()
+        f
+
+    let mutable lastEntry = 0n
+    let mutable run : unit -> unit = id
+
+    let updateEntry() = 
+        if prolog.EntryPointer <> lastEntry then
+            lastEntry <- prolog.EntryPointer
+            NativePtr.write entryPointer lastEntry
+            run <- UnmanagedFunctions.wrap lastEntry
+
+    do prolog.Next <- null; updateEntry()
+
+    let mutable last = prolog
+    let entries = Dict<'a, Fragment<'a>>()
+
+    member x.Add(value : 'a) =
+        if isNull prolog then raise <| ObjectDisposedException("NativeProgram")
+
+        if entries.ContainsKey value then
+            false
+        else
+            let f = new Fragment<'a>(jumpDistance, manager, value)
+            using f.AssemblerStream (fun s -> compile value s)
+
+            last.Next <- f
+            f.Next <- null
+            last <- f
+            entries.[value] <- f
+            updateEntry()
+            true
+
+    member x.Remove(value : 'a) =
+        if isNull prolog then raise <| ObjectDisposedException("NativeProgram")
+
+        match entries.TryRemove value with
+            | (true, f) ->
+                let prev = f.Prev
+                let next = f.Next
+                prev.Next <- next
+                if isNull next then last <- prev
+                f.Dispose()
+                updateEntry()
+                true
+            | _ ->
+                false
+        
+    member x.EntryPointer = 
+        if isNull prolog then raise <| ObjectDisposedException("NativeProgram")
+        entryPointer
+
+    member x.Clear() =
+        if not (isNull prolog) then
+            for f in entries.Values do f.Dispose()
+            entries.Clear()
+            prolog.Next <- null
+            last <- prolog
+            updateEntry()
+
+    member x.Run() = run()
+
+    member x.Dispose() =
+        if not (isNull prolog) then
+            manager.Dispose()
+            run <- id
+            lastEntry <- 0n
+            entries.Clear()
+            prolog <- null
+            NativePtr.free entryPointer
+            last <- null
+            jumpDistance := 0L
+
+    interface IDisposable with
+        member x.Dispose() = x.Dispose()

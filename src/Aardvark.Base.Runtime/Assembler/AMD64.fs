@@ -4,6 +4,8 @@ open System
 open System.Collections.Generic
 open System.IO
 open Aardvark.Base
+open Aardvark.Base.Incremental
+open System.Runtime.InteropServices
 open Microsoft.FSharp.NativeInterop
 
 #nowarn "9"
@@ -747,6 +749,43 @@ module AMD64 =
                     failwith "[AMD64] some labels have not been defined"
 
             writer.Dispose()
+
+
+        member x.ConditionalCall(condition : IMod<'a>, callback : 'a -> unit) =
+            let outOfDate : nativeptr<int> = NativePtr.alloc 1
+            NativePtr.write outOfDate (if condition.OutOfDate then 1 else 0)
+            let sub = condition.AddMarkingCallback(fun () -> NativePtr.write outOfDate 1)
+        
+
+            let callback () =
+                let value = 
+                    lock condition (fun () ->
+                        let res = condition.GetValue(AdaptiveToken.Top)
+                        NativePtr.write outOfDate 0
+                        res
+                    )
+                callback value
+                
+            let del = Marshal.PinDelegate(System.Action callback)
+            
+            let noEval = x.NewLabel()
+            x.Load(Register.Rax, outOfDate)
+            x.Cmp(Register.Rax, 0u)
+            x.Jump(JumpCondition.Equal,noEval)
+            x.BeginCall(0)
+            x.Call(localConvention, del.Pointer)
+            x.Mark noEval
+
+            { new IDisposable with
+                member x.Dispose() =
+                    sub.Dispose()
+                    NativePtr.write outOfDate 0
+                    NativePtr.free outOfDate
+                    del.Dispose()
+            }
+
+
+
 
         member x.Dispose() = x.Dispose(true)
         override x.Finalize() = x.Dispose(false)

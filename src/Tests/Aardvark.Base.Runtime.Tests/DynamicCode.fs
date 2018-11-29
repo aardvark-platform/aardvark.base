@@ -171,9 +171,46 @@ module DynamicCodeTests =
         sprintf "(%A,%A,%A,%A,%A)" a b c d e |> Console.WriteLine
 
     type TestDel = delegate of int * int * int * int * int -> unit
-
+    type SimpleDel = delegate of int -> unit
     let dTest = TestDel testF
     let pTest = System.Runtime.InteropServices.Marshal.GetFunctionPointerForDelegate(dTest)
+
+    let simpleOut = List<int>()
+    let dSimple = SimpleDel (fun v -> printfn "%d" v; simpleOut.Add v)
+    let pSimple = System.Runtime.InteropServices.Marshal.GetFunctionPointerForDelegate(dSimple)
+
+
+
+    [<Test>] 
+    let ``[DynamicCode] imperative``() =
+        use prog = new ChangeableNativeProgram<int>(fun i s -> s.BeginCall(1); s.PushArg(i); s.Call(pSimple))
+
+        let run() =
+            simpleOut.Clear()
+            prog.Run()
+            let res = simpleOut |> Seq.toList
+            simpleOut.Clear()
+            res
+
+        run() |> should equal []
+
+        prog.Add(1) |> ignore
+        run() |> should equal [1]
+        
+        prog.Add(2) |> ignore
+        run() |> should equal [1;2]
+        
+        prog.Remove(1) |> ignore
+        run() |> should equal [2]
+
+        prog.Remove(2) |> ignore
+        run() |> should equal []
+
+        prog.Clear()
+        run() |> should equal []
+
+
+        ()
 
     [<Test>]
     let ``[DynamicCode] lots of args``() =
