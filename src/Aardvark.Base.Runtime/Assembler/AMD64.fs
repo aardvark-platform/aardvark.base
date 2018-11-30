@@ -486,6 +486,7 @@ module AMD64 =
         member inline x.Load(target : Register, ptr : nativeint, wide : bool) =
             x.Mov(target, uint64 ptr)
             x.Load(target, target, wide)
+            
 
         member inline x.Load(target : Register, ptr : nativeptr<'a>) =
             x.Load(target, NativePtr.toNativeInt ptr, sizeof<'a> = 8)
@@ -814,6 +815,12 @@ module AMD64 =
             member x.Mark(l) = x.Mark(l)
             member x.Jump(cond : JumpCondition, label : AssemblerLabel) = x.Jump(cond, label)
             member x.Jump(label : AssemblerLabel) = x.Jump(label)
+
+            member x.Copy(srcPtr : nativeint, dstPtr : nativeint, wide : bool) =
+                let temp = localConvention.registers.[0]
+                x.Load(Register.Rax, srcPtr, wide)
+                x.Mov(temp, dstPtr)
+                x.Store(temp, Register.Rax, wide)
 
             member x.Cmp(location : nativeint, value : int) =
                 x.Load(Register.Rax, location, false)

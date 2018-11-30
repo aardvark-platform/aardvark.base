@@ -72,6 +72,8 @@ type IAssemblerStream =
     abstract member Jump : JumpCondition * AssemblerLabel -> unit
     abstract member Jump : AssemblerLabel -> unit
 
+    abstract member Copy : srcPtr : nativeint * dstPtr : nativeint * wide : bool -> unit
+
 
     /// emits a function-preamble (typically pushing the base-pointer, etc.)
     abstract member BeginFunction : unit -> unit
