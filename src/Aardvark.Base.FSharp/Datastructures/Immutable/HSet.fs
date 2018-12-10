@@ -19,13 +19,17 @@ module private HSetList =
     let rec remove (cnt : byref<int>) (value : 'a) (list : list<'a>) =
         match list with
             | [] ->
-                []
+                None
             | h :: tail ->
                 if Unchecked.equals h value then
                     cnt <- cnt - 1
-                    tail
+                    match tail with
+                        | [] -> None
+                        | _ -> Some tail
                 else
-                    h :: remove &cnt value tail
+                    match remove &cnt value tail with
+                        | Some t -> Some (h :: t)
+                        | None -> Some [h]
 
     let rec union (dupl : byref<int>) (l : list<'a>) (r : list<'a>) =
         let mutable d = dupl
@@ -43,21 +47,28 @@ module private HSetList =
 
     let rec difference (cnt : byref<int>) (l : list<'a>) (r : list<'a>) =
         match l with
-            | [] -> []
+            | [] -> 
+                None
             | h :: tail ->
                 if List.exists (Unchecked.equals h) r then
                     difference &cnt tail r
                 else
                     cnt <- cnt + 1
-                    h :: difference &cnt tail r
+                    match difference &cnt tail r with
+                        | Some t -> Some (h :: t)
+                        | None -> Some [h]
+                    
 
     let rec intersect (cnt : byref<int>) (l : list<'a>) (r : list<'a>) =
         match l with
-            | [] -> []
+            | [] ->
+                None
             | h :: tail ->
                 if List.exists (Unchecked.equals h) r then
                     cnt <- cnt + 1
-                    h :: intersect &cnt tail r
+                    match intersect &cnt tail r with
+                        | Some t -> Some (h :: t)
+                        | None -> Some [h]
                 else
                     intersect &cnt tail r
 
@@ -81,36 +92,16 @@ module private HSetList =
                     None
             )
 
-        newL @ newR
-
-    let rec mergeWithOption' (f : 'a -> bool -> bool -> Option<'c>) (l : list<'a>) (r : list<'a>) =
-        let newL = 
-            l |> List.choose (fun lk ->
-                let other = r |> List.exists (fun rk -> Unchecked.equals rk lk)
- 
-                match f lk true other with
-                    | Some r -> Some (lk, r)
-                    | None -> None
-            )
-        let newR =
-            r |> List.choose (fun rk ->
-                if l |> List.forall (fun lk -> not (Unchecked.equals lk rk)) then
-                    match f rk false true with
-                        | Some r -> Some(rk, r)
-                        | None -> None
-                else 
-                    None
-            )
         match newL with
-            | [] -> 
-                match newR with
-                    | [] -> None
-                    | _ -> Some newR
-            | _ ->
-                match newR with
-                    | [] -> Some newL
-                    | _ -> Some (newL @ newR)
-                    
+        | [] ->
+            match newR with
+            | [] -> None
+            | _ -> Some newR
+        | _ ->
+            match newR with
+                | [] -> Some newL
+                | _ -> Some (newL @ newR)
+          
     let rec equals (l : list<'a>) (r : list<'a>) =
         let mutable r = r
         let mutable c = 0
@@ -119,7 +110,7 @@ module private HSetList =
         while c = 0 && e.MoveNext() do
             let l = e.Current
             c <- 1
-            r <- remove &c l r
+            r <- remove &c l r |> Option.defaultValue []
 
         c = 0 && List.isEmpty r
 
@@ -187,7 +178,7 @@ type hset<'a>(cnt : int, store : intmap<list<'a>>) =
             store |> IntMap.alter (fun o ->
                 match o with
                     | None -> None
-                    | Some old -> HSetList.remove &cnt value old |> Some
+                    | Some old -> HSetList.remove &cnt value old
             ) hash
 
         hset(cnt, newStore)
@@ -293,7 +284,7 @@ type hset<'a>(cnt : int, store : intmap<list<'a>>) =
         let mutable cnt = 0
         let newStore =
             IntMap.mergeWithKey 
-                (fun k ll rl -> match HSetList.difference &cnt ll rl with [] -> None | l -> Some l) 
+                (fun k ll rl -> HSetList.difference &cnt ll rl) 
                 (fun l -> cnt <- l |> IntMap.fold (fun s l -> s + List.length l) cnt; l)
                 (fun r -> IntMap.empty) 
                 store 
@@ -305,7 +296,7 @@ type hset<'a>(cnt : int, store : intmap<list<'a>>) =
         let mutable cnt = 0
         let newStore =
             IntMap.mergeWithKey 
-                (fun k ll rl -> match HSetList.intersect &cnt ll rl with [] -> None | l -> Some l) 
+                (fun k ll rl -> HSetList.intersect &cnt ll rl) 
                 (fun l -> IntMap.empty)
                 (fun r -> IntMap.empty) 
                 store 
@@ -335,9 +326,7 @@ type hset<'a>(cnt : int, store : intmap<list<'a>>) =
                     None
 
         let both (hash : int) (l : list<'a>) (r : list<'a>) =
-            match HSetList.mergeWithOption f l r with
-                | [] -> None
-                | l -> Some l
+            HSetList.mergeWithOption f l r
 
         let onlyLeft (l : intmap<list<'a>>) =
             l |> IntMap.mapOption (fun l -> 
@@ -370,7 +359,7 @@ type hset<'a>(cnt : int, store : intmap<list<'a>>) =
             l |> List.map (fun v -> inc &cnt; v, 1)
 
         let both (hash : int) (l : list<'a>) (r : list<'a>) =
-            HSetList.mergeWithOption' (fun v l r ->
+            HSetList.mergeWithOption (fun v l r ->
                 if l && not r then inc &cnt; Some -1
                 elif r && not l then inc &cnt; Some 1
                 else None

@@ -191,6 +191,34 @@ module MapExtImplementation =
                 else rebalance l k2 v2 (remove comparer k r) 
 
 
+        let rec tryRemove (comparer: IComparer<'Value>) k m = 
+            match m with 
+            | MapEmpty -> None
+            | MapOne(k2,v) -> 
+                let c = comparer.Compare(k,k2) 
+                if c = 0 then Some (v, MapEmpty) else None
+            | MapNode(k2,v2,l,r,_,_) -> 
+                let c = comparer.Compare(k,k2) 
+                if c < 0 then 
+                    match tryRemove comparer k l with
+                    | Some (v,l) ->
+                        Some (v, rebalance l k2 v2 r)
+                    | None ->
+                        None
+                elif c = 0 then 
+                    match l,r with 
+                    | MapEmpty,_ -> Some(v2, r)
+                    | _,MapEmpty -> Some(v2, l)
+                    | _ -> 
+                        let sk,sv,r' = spliceOutSuccessor r 
+                        Some(v2, mk l sk sv r')
+                else 
+                    match tryRemove comparer k r with
+                    | Some (v,r) ->
+                        Some (v, rebalance l k2 v2 r)
+                    | None ->
+                        None
+
         let rec alter (comparer : IComparer<'Value>) k f m =
             match m with   
             | MapEmpty ->
@@ -1051,6 +1079,13 @@ type MapExt<[<EqualityConditionalOn>]'Key,[<EqualityConditionalOn;ComparisonCond
 
     member m.Remove(k)  : MapExt<'Key,'Value> = 
         new MapExt<'Key,'Value>(comparer,MapTree.remove comparer k tree)
+        
+    member m.TryRemove(k)  : Option<'Value * MapExt<'Key,'Value>> = 
+        match MapTree.tryRemove comparer k tree with
+        | Some (v, t) -> 
+            Some(v, new MapExt<'Key,'Value>(comparer, t))
+        | None ->
+            None
 
     member m.TryFind(k) = 
         MapTree.tryFind comparer k tree
@@ -1164,6 +1199,9 @@ module MapExt =
 
     [<CompiledName("Remove")>]
     let remove k (m:MapExt<_,_>) = m.Remove(k)
+    
+    [<CompiledName("TryRemove")>]
+    let tryRemove k (m:MapExt<_,_>) = m.TryRemove(k)
 
     [<CompiledName("ContainsKey")>]
     let containsKey k (m:MapExt<_,_>) = m.ContainsKey(k)
