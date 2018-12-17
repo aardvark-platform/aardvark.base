@@ -225,6 +225,25 @@ type hset<'a>(cnt : int, store : intmap<list<'a>>) =
             res <- res.Add(mapping e)
         res
 
+    member x.ChooseHMap(mapping : 'a -> Option<'b>) =
+        let mutable cnt = 0
+        let mapStore = 
+            store |> IntMap.mapOption (fun k ->
+                let store = 
+                    k |> List.choose (fun k -> 
+                        match mapping k with
+                        | Some v -> inc &cnt; Some (k,v)
+                        | None -> None
+                    )
+                if List.isEmpty store then None
+                else Some store
+            )
+        hmap<'a, 'b>(cnt, mapStore)
+        
+    member x.MapHMap(mapping : 'a -> 'b) =
+        let mapStore = store |> IntMap.map (List.map (fun k -> (k, mapping k)))
+        hmap<'a, 'b>(cnt, mapStore)
+
     member x.Choose (mapping : 'a -> Option<'b>) =
         let mutable res = hset.Empty
         for e in x.ToSeq() do
@@ -517,6 +536,12 @@ module HSet =
 
     let inline choose (mapping : 'a -> Option<'b>) (set : hset<'a>) =
         set.Choose mapping
+        
+    let inline mapHMap (mapping : 'a -> 'b) (set : hset<'a>) =
+        set.MapHMap mapping
+
+    let inline chooseHMap (mapping : 'a -> Option<'b>) (set : hset<'a>) =
+        set.ChooseHMap mapping
 
     let inline filter (predicate : 'a -> bool) (set : hset<'a>) =
         set.Filter predicate
@@ -564,3 +589,14 @@ module HSet =
                 member x.Update(s,f) =
                     alter key f s
             }  
+
+[<AutoOpen>]
+module ``HMap Extensions`` =
+    type hmap<'k, 'v> with
+        member x.Keys = hset<'k>(x.Count, x.Store |> IntMap.map (List.map fst))
+        member x.Values = x |> Seq.map snd
+
+    [<CompilationRepresentation(CompilationRepresentationFlags.ModuleSuffix)>]
+    module HMap =
+        let inline keys (m : hmap<'k, 'v>) = m.Keys
+        let inline values (m : hmap<'k, 'v>) = m.Values

@@ -182,13 +182,16 @@ module MapExtImplementation =
                 let c = comparer.Compare(k,k2) 
                 if c < 0 then rebalance (remove comparer k l) k2 v2 r
                 elif c = 0 then 
-                    match l,r with 
-                    | MapEmpty,_ -> r
-                    | _,MapEmpty -> l
-                    | _ -> 
-                        let sk,sv,r' = spliceOutSuccessor r 
-                        mk l sk sv r'
-                else rebalance l k2 v2 (remove comparer k r) 
+                    match l with
+                    | MapEmpty -> r
+                    | _ ->
+                        match r with
+                        | MapEmpty -> l
+                        | _ -> 
+                            let sk,sv,r' = spliceOutSuccessor r 
+                            mk l sk sv r'
+                else 
+                    rebalance l k2 v2 (remove comparer k r) 
 
 
         let rec tryRemove (comparer: IComparer<'Value>) k m = 
@@ -206,18 +209,55 @@ module MapExtImplementation =
                     | None ->
                         None
                 elif c = 0 then 
-                    match l,r with 
-                    | MapEmpty,_ -> Some(v2, r)
-                    | _,MapEmpty -> Some(v2, l)
-                    | _ -> 
-                        let sk,sv,r' = spliceOutSuccessor r 
-                        Some(v2, mk l sk sv r')
+                    match l with
+                    | MapEmpty -> Some(v2, r)
+                    | _ ->
+                        match r with
+                        | MapEmpty -> Some(v2, l)
+                        | _ -> 
+                            let sk,sv,r' = spliceOutSuccessor r 
+                            Some(v2, mk l sk sv r')
                 else 
                     match tryRemove comparer k r with
                     | Some (v,r) ->
                         Some (v, rebalance l k2 v2 r)
                     | None ->
                         None
+
+
+        let rec tryRemoveMin m = 
+            match m with 
+            | MapEmpty -> 
+                None
+
+            | MapOne(k2,v) ->
+                Some (k2, v, MapEmpty)
+
+            | MapNode(k2,v2,l,r,_,_) -> 
+                match tryRemoveMin l with
+                | Some (k,v,rest) ->
+                    match rest with
+                    | MapEmpty -> Some (k,v,r)
+                    | _ -> Some (k,v, rebalance rest k2 v2 r)
+                | None ->
+                    Some(k2, v2, r)
+
+        let rec tryRemoveMax m = 
+            match m with 
+            | MapEmpty -> 
+                None
+
+            | MapOne(k2,v) ->
+                Some (k2, v, MapEmpty)
+
+            | MapNode(k2,v2,l,r,_,_) -> 
+                match tryRemoveMax r with
+                | Some (k,v,rest) ->
+                    match rest with
+                    | MapEmpty -> Some (k,v,l)
+                    | _ -> Some (k,v, rebalance l k2 v2 rest)
+                | None ->
+                    Some(k2, v2, l)
 
         let rec alter (comparer : IComparer<'Value>) k f m =
             match m with   
@@ -250,12 +290,14 @@ module MapExtImplementation =
                             MapNode(k2, v3, l, r, h, cnt)
 
                         | None ->
-                            match l,r with 
-                            | MapEmpty,_ -> r
-                            | _,MapEmpty -> l
-                            | _ -> 
-                                let sk,sv,r' = spliceOutSuccessor r 
-                                mk l sk sv r'
+                            match l with
+                            | MapEmpty -> r
+                            | _ ->
+                                match r with
+                                | MapEmpty -> l
+                                | _ -> 
+                                    let sk,sv,r' = spliceOutSuccessor r 
+                                    mk l sk sv r'
                 elif c > 0 then
                     rebalance l k2 v2 (alter comparer k f r) 
                 else
@@ -514,9 +556,11 @@ module MapExtImplementation =
                     let r' = chooseiOpt f r
                     match s' with
                         | None -> 
-                            match l', r' with
-                                | MapEmpty, r -> r
-                                | l, MapEmpty -> l
+                            match l' with
+                            | MapEmpty -> r'
+                            | _ ->
+                                match r' with
+                                | MapEmpty -> l'
                                 | _ ->
                                     let k,v,r' = spliceOutSuccessor r'
                                     join l' k v r'
@@ -730,12 +774,51 @@ module MapExtImplementation =
                         | Some v -> 
                             join l k v r
                         | None -> 
-                            match l, r with
-                                | MapEmpty, r -> r
-                                | l, MapEmpty -> l
-                                | l, r ->
+                            match l with
+                            | MapEmpty -> r
+                            | _ ->
+                                match r with
+                                | MapEmpty -> l
+                                | _ -> 
                                     let k,v,r = spliceOutSuccessor r
                                     join l k v r
+
+        let rec intersectWithAux (f:OptimizedClosures.FSharpFunc<'a,'b,'c>) (comparer: IComparer<'k>) (l : MapTree<'k, 'a>) (r : MapTree<'k, 'b>) : MapTree<'k, 'c> =
+            match l with
+            | MapEmpty -> 
+                MapEmpty
+
+            | MapOne(k,lv) ->
+                match tryFind comparer k r with
+                | Some rv -> MapOne(k, f.Invoke(lv, rv))
+                | None -> MapEmpty
+
+            | MapNode(k,v,l1,r1,_,_) ->
+                let a, s, b = split comparer k r
+                match s with
+                | Some s ->
+                    let v = f.Invoke(v,s)
+                    rebalance (intersectWithAux f comparer l1 a) k v (intersectWithAux f comparer r1 b)
+                | None ->
+                    let l = intersectWithAux f comparer l1 a
+                    let r = intersectWithAux f comparer r1 b
+                    match l with
+                    | MapEmpty -> r
+                    | _ ->
+                        match r with
+                        | MapEmpty -> l
+                        | _ ->
+                            let k,v,r' = spliceOutSuccessor r
+                            rebalance l k v r'
+
+        let intersectWith (f : 'a -> 'b -> 'c) (comparer : IComparer<'k>) (l : MapTree<'k, 'a>) (r : MapTree<'k, 'b>) =
+            let lc = size l
+            let rc = size r
+            if lc <= rc then
+                intersectWithAux (OptimizedClosures.FSharpFunc<_,_,_>.Adapt f) comparer l r
+            else
+                intersectWithAux (OptimizedClosures.FSharpFunc<_,_,_>.Adapt(fun a b -> f b a)) comparer r l
+
 
                       
         let rec foldBackOpt (f:OptimizedClosures.FSharpFunc<_,_,_,_>) m x = 
@@ -1006,6 +1089,15 @@ type MapExt<[<EqualityConditionalOn>]'Key,[<EqualityConditionalOn;ComparisonCond
     member m.Item 
         with get(k : 'Key) = MapTree.find comparer k tree
 
+
+    member x.Keys = 
+        let mutable s = Set.empty
+        for (KeyValue(k,_)) in x do s <- s.Add k
+        s
+
+    member x.Values =
+        x |> Seq.map (fun (KeyValue(_,v)) -> v)
+
     member x.TryAt i = MapTree.tryAt i tree
     member x.Neighbours k = MapTree.neighbours comparer k tree
     member x.NeighboursAt i = MapTree.neighboursi i tree
@@ -1035,7 +1127,15 @@ type MapExt<[<EqualityConditionalOn>]'Key,[<EqualityConditionalOn;ComparisonCond
             | Existing(i,_) -> Some i
             | _ -> None
 
-        
+    member x.TryRemoveMin() = 
+        match MapTree.tryRemoveMin tree with
+        | Some (k,v,t) -> Some(k,v, MapExt(comparer, t))
+        | None -> None
+
+    member x.TryRemoveMax() = 
+        match MapTree.tryRemoveMax tree with
+        | Some (k,v,t) -> Some(k,v, MapExt(comparer, t))
+        | None -> None
 
     member m.Map2(other:MapExt<'Key,'Value2>, f)  = 
         new MapExt<'Key,'Result>(comparer, MapTree.map2 comparer f tree other.Tree)
@@ -1069,6 +1169,14 @@ type MapExt<[<EqualityConditionalOn>]'Key,[<EqualityConditionalOn;ComparisonCond
         elif other.IsEmpty then x
         else new MapExt<'Key, 'Value>(comparer, MapTree.unionWith comparer resolve tree other.Tree)
         
+    member x.IntersectWith(other : MapExt<_,_>, resolve) =
+        if x.IsEmpty || other.IsEmpty then MapExt<_,_>.Empty
+        else new MapExt<'Key, _>(comparer, MapTree.intersectWith resolve comparer tree other.Tree)
+        
+    member x.Intersect(other : MapExt<_,_>) =
+        if x.IsEmpty || other.IsEmpty then MapExt<_,_>.Empty
+        else new MapExt<'Key, _>(comparer, MapTree.intersectWith (fun l r -> (l,r)) comparer tree other.Tree)
+
     member x.Validate() =
         MapTree.validate comparer tree
 
@@ -1086,7 +1194,7 @@ type MapExt<[<EqualityConditionalOn>]'Key,[<EqualityConditionalOn;ComparisonCond
             Some(v, new MapExt<'Key,'Value>(comparer, t))
         | None ->
             None
-
+            
     member m.TryFind(k) = 
         MapTree.tryFind comparer k tree
 
@@ -1187,6 +1295,12 @@ module MapExt =
 
     [<CompiledName("IsEmpty")>]
     let isEmpty (m:MapExt<_,_>) = m.IsEmpty
+    
+    [<CompiledName("Keys")>]
+    let keys (m:MapExt<_,_>) = m.Keys
+    
+    [<CompiledName("Values")>]
+    let values (m:MapExt<_,_>) = m.Values
 
     [<CompiledName("Add")>]
     let add k v (m:MapExt<_,_>) = m.Add(k,v)
@@ -1202,6 +1316,12 @@ module MapExt =
     
     [<CompiledName("TryRemove")>]
     let tryRemove k (m:MapExt<_,_>) = m.TryRemove(k)
+    
+    [<CompiledName("TryRemoveMin")>]
+    let tryRemoveMin (m:MapExt<_,_>) = m.TryRemoveMin()
+
+    [<CompiledName("TryRemoveMax")>]
+    let tryRemoveMax (m:MapExt<_,_>) = m.TryRemoveMax()
 
     [<CompiledName("ContainsKey")>]
     let containsKey k (m:MapExt<_,_>) = m.ContainsKey(k)
@@ -1328,6 +1448,12 @@ module MapExt =
 
     [<CompiledName("UnionWith")>]
     let unionWith f (l:MapExt<_,_>) r = l.UnionWith (r, f)
+    
+    [<CompiledName("IntersectWith")>]
+    let intersectWith f (l:MapExt<_,_>) r = l.IntersectWith (r, f)
+    
+    [<CompiledName("Intersect")>]
+    let intersect (l:MapExt<_,_>) r = l.Intersect r
 
     [<CompiledName("Map2")>]
     let map2 f (l:MapExt<_,_>) r = l.Map2 (r, f)
