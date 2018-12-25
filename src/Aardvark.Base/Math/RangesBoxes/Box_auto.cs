@@ -8191,16 +8191,31 @@ namespace Aardvark.Base
                              : new Box2i(Min * factor, Max * factor);
         }
 
+        /// <summary>
+        /// Transforms the box by the given transformation matrix.
+        /// NOTE: Does not perform IsValid (+10% CPU time) or IsInvalid (+25% CPU Time) check.
+        /// </summary>
         public Box2d Transformed(M33d trafo)
         {
-            var res = Box2d.Invalid;
-            if (!IsInvalid)
-            {
-                res.ExtendBy(trafo.TransformPos((V2d)Min));
-                res.ExtendBy(trafo.TransformPos((V2d)new V2i(Max.X, Min.Y)));
-                res.ExtendBy(trafo.TransformPos((V2d)new V2i(Min.X, Max.Y)));
-                res.ExtendBy(trafo.TransformPos((V2d)Max));
-            }
+            var t = new V2d(trafo.M02, trafo.M12);
+            var res = new Box2d(t, t);
+            double av, bv;
+            av = trafo.M00 * Min.X;
+            bv = trafo.M00 * Max.X;
+            if (av < bv) { res.Min.X += av; res.Max.X += bv; }
+            else { res.Min.X += bv; res.Max.X += av; }
+            av = trafo.M01 * Min.Y;
+            bv = trafo.M01 * Max.Y;
+            if (av < bv) { res.Min.X += av; res.Max.X += bv; }
+            else { res.Min.X += bv; res.Max.X += av; }
+            av = trafo.M10 * Min.X;
+            bv = trafo.M10 * Max.X;
+            if (av < bv) { res.Min.Y += av; res.Max.Y += bv; }
+            else { res.Min.Y += bv; res.Max.Y += av; }
+            av = trafo.M11 * Min.Y;
+            bv = trafo.M11 * Max.Y;
+            if (av < bv) { res.Min.Y += av; res.Max.Y += bv; }
+            else { res.Min.Y += bv; res.Max.Y += av; }
             return res;
         }
 
@@ -9454,16 +9469,31 @@ namespace Aardvark.Base
                              : new Box2l(Min * factor, Max * factor);
         }
 
+        /// <summary>
+        /// Transforms the box by the given transformation matrix.
+        /// NOTE: Does not perform IsValid (+10% CPU time) or IsInvalid (+25% CPU Time) check.
+        /// </summary>
         public Box2d Transformed(M33d trafo)
         {
-            var res = Box2d.Invalid;
-            if (!IsInvalid)
-            {
-                res.ExtendBy(trafo.TransformPos((V2d)Min));
-                res.ExtendBy(trafo.TransformPos((V2d)new V2l(Max.X, Min.Y)));
-                res.ExtendBy(trafo.TransformPos((V2d)new V2l(Min.X, Max.Y)));
-                res.ExtendBy(trafo.TransformPos((V2d)Max));
-            }
+            var t = new V2d(trafo.M02, trafo.M12);
+            var res = new Box2d(t, t);
+            double av, bv;
+            av = trafo.M00 * Min.X;
+            bv = trafo.M00 * Max.X;
+            if (av < bv) { res.Min.X += av; res.Max.X += bv; }
+            else { res.Min.X += bv; res.Max.X += av; }
+            av = trafo.M01 * Min.Y;
+            bv = trafo.M01 * Max.Y;
+            if (av < bv) { res.Min.X += av; res.Max.X += bv; }
+            else { res.Min.X += bv; res.Max.X += av; }
+            av = trafo.M10 * Min.X;
+            bv = trafo.M10 * Max.X;
+            if (av < bv) { res.Min.Y += av; res.Max.Y += bv; }
+            else { res.Min.Y += bv; res.Max.Y += av; }
+            av = trafo.M11 * Min.Y;
+            bv = trafo.M11 * Max.Y;
+            if (av < bv) { res.Min.Y += av; res.Max.Y += bv; }
+            else { res.Min.Y += bv; res.Max.Y += av; }
             return res;
         }
 
@@ -10824,16 +10854,31 @@ namespace Aardvark.Base
                              : new Box2f(Min * factor, Max * factor);
         }
 
+        /// <summary>
+        /// Transforms the box by the given transformation matrix.
+        /// NOTE: Does not perform IsValid (+10% CPU time) or IsInvalid (+25% CPU Time) check.
+        /// </summary>
         public Box2d Transformed(M33d trafo)
         {
-            var res = Box2d.Invalid;
-            if (!IsInvalid)
-            {
-                res.ExtendBy(trafo.TransformPos((V2d)Min));
-                res.ExtendBy(trafo.TransformPos((V2d)new V2f(Max.X, Min.Y)));
-                res.ExtendBy(trafo.TransformPos((V2d)new V2f(Min.X, Max.Y)));
-                res.ExtendBy(trafo.TransformPos((V2d)Max));
-            }
+            var t = new V2d(trafo.M02, trafo.M12);
+            var res = new Box2d(t, t);
+            double av, bv;
+            av = trafo.M00 * Min.X;
+            bv = trafo.M00 * Max.X;
+            if (av < bv) { res.Min.X += av; res.Max.X += bv; }
+            else { res.Min.X += bv; res.Max.X += av; }
+            av = trafo.M01 * Min.Y;
+            bv = trafo.M01 * Max.Y;
+            if (av < bv) { res.Min.X += av; res.Max.X += bv; }
+            else { res.Min.X += bv; res.Max.X += av; }
+            av = trafo.M10 * Min.X;
+            bv = trafo.M10 * Max.X;
+            if (av < bv) { res.Min.Y += av; res.Max.Y += bv; }
+            else { res.Min.Y += bv; res.Max.Y += av; }
+            av = trafo.M11 * Min.Y;
+            bv = trafo.M11 * Max.Y;
+            if (av < bv) { res.Min.Y += av; res.Max.Y += bv; }
+            else { res.Min.Y += bv; res.Max.Y += av; }
             return res;
         }
 
@@ -12183,16 +12228,31 @@ namespace Aardvark.Base
                              : new Box2d(Min * factor, Max * factor);
         }
 
+        /// <summary>
+        /// Transforms the box by the given transformation matrix.
+        /// NOTE: Does not perform IsValid (+10% CPU time) or IsInvalid (+25% CPU Time) check.
+        /// </summary>
         public Box2d Transformed(M33d trafo)
         {
-            var res = Box2d.Invalid;
-            if (!IsInvalid)
-            {
-                res.ExtendBy(trafo.TransformPos((V2d)Min));
-                res.ExtendBy(trafo.TransformPos((V2d)new V2d(Max.X, Min.Y)));
-                res.ExtendBy(trafo.TransformPos((V2d)new V2d(Min.X, Max.Y)));
-                res.ExtendBy(trafo.TransformPos((V2d)Max));
-            }
+            var t = new V2d(trafo.M02, trafo.M12);
+            var res = new Box2d(t, t);
+            double av, bv;
+            av = trafo.M00 * Min.X;
+            bv = trafo.M00 * Max.X;
+            if (av < bv) { res.Min.X += av; res.Max.X += bv; }
+            else { res.Min.X += bv; res.Max.X += av; }
+            av = trafo.M01 * Min.Y;
+            bv = trafo.M01 * Max.Y;
+            if (av < bv) { res.Min.X += av; res.Max.X += bv; }
+            else { res.Min.X += bv; res.Max.X += av; }
+            av = trafo.M10 * Min.X;
+            bv = trafo.M10 * Max.X;
+            if (av < bv) { res.Min.Y += av; res.Max.Y += bv; }
+            else { res.Min.Y += bv; res.Max.Y += av; }
+            av = trafo.M11 * Min.Y;
+            bv = trafo.M11 * Max.Y;
+            if (av < bv) { res.Min.Y += av; res.Max.Y += bv; }
+            else { res.Min.Y += bv; res.Max.Y += av; }
             return res;
         }
 
@@ -13437,20 +13497,51 @@ namespace Aardvark.Base
                              : new Box3i(Min * factor, Max * factor);
         }
 
+        /// <summary>
+        /// Transforms the box by the given transformation matrix.
+        /// NOTE: Does not perform IsValid (+10% CPU time) or IsInvalid (+25% CPU Time) check.
+        /// </summary>
         public Box3d Transformed(M44d trafo)
         {
-            var res = Box3d.Invalid;
-            if (!IsInvalid)
-            {
-                res.ExtendBy(trafo.TransformPos((V3d)Min));
-                res.ExtendBy(trafo.TransformPos((V3d)new V3i(Max.X, Min.Y, Min.Z)));
-                res.ExtendBy(trafo.TransformPos((V3d)new V3i(Min.X, Max.Y, Min.Z)));
-                res.ExtendBy(trafo.TransformPos((V3d)new V3i(Max.X, Max.Y, Min.Z)));
-                res.ExtendBy(trafo.TransformPos((V3d)new V3i(Min.X, Min.Y, Max.Z)));
-                res.ExtendBy(trafo.TransformPos((V3d)new V3i(Max.X, Min.Y, Max.Z)));
-                res.ExtendBy(trafo.TransformPos((V3d)new V3i(Min.X, Max.Y, Max.Z)));
-                res.ExtendBy(trafo.TransformPos((V3d)Max));
-            }
+            var t = new V3d(trafo.M03, trafo.M13, trafo.M23);
+            var res = new Box3d(t, t);
+            double av, bv;
+            av = trafo.M00 * Min.X;
+            bv = trafo.M00 * Max.X;
+            if (av < bv) { res.Min.X += av; res.Max.X += bv; }
+            else { res.Min.X += bv; res.Max.X += av; }
+            av = trafo.M01 * Min.Y;
+            bv = trafo.M01 * Max.Y;
+            if (av < bv) { res.Min.X += av; res.Max.X += bv; }
+            else { res.Min.X += bv; res.Max.X += av; }
+            av = trafo.M02 * Min.Z;
+            bv = trafo.M02 * Max.Z;
+            if (av < bv) { res.Min.X += av; res.Max.X += bv; }
+            else { res.Min.X += bv; res.Max.X += av; }
+            av = trafo.M10 * Min.X;
+            bv = trafo.M10 * Max.X;
+            if (av < bv) { res.Min.Y += av; res.Max.Y += bv; }
+            else { res.Min.Y += bv; res.Max.Y += av; }
+            av = trafo.M11 * Min.Y;
+            bv = trafo.M11 * Max.Y;
+            if (av < bv) { res.Min.Y += av; res.Max.Y += bv; }
+            else { res.Min.Y += bv; res.Max.Y += av; }
+            av = trafo.M12 * Min.Z;
+            bv = trafo.M12 * Max.Z;
+            if (av < bv) { res.Min.Y += av; res.Max.Y += bv; }
+            else { res.Min.Y += bv; res.Max.Y += av; }
+            av = trafo.M20 * Min.X;
+            bv = trafo.M20 * Max.X;
+            if (av < bv) { res.Min.Z += av; res.Max.Z += bv; }
+            else { res.Min.Z += bv; res.Max.Z += av; }
+            av = trafo.M21 * Min.Y;
+            bv = trafo.M21 * Max.Y;
+            if (av < bv) { res.Min.Z += av; res.Max.Z += bv; }
+            else { res.Min.Z += bv; res.Max.Z += av; }
+            av = trafo.M22 * Min.Z;
+            bv = trafo.M22 * Max.Z;
+            if (av < bv) { res.Min.Z += av; res.Max.Z += bv; }
+            else { res.Min.Z += bv; res.Max.Z += av; }
             return res;
         }
 
@@ -14716,20 +14807,51 @@ namespace Aardvark.Base
                              : new Box3l(Min * factor, Max * factor);
         }
 
+        /// <summary>
+        /// Transforms the box by the given transformation matrix.
+        /// NOTE: Does not perform IsValid (+10% CPU time) or IsInvalid (+25% CPU Time) check.
+        /// </summary>
         public Box3d Transformed(M44d trafo)
         {
-            var res = Box3d.Invalid;
-            if (!IsInvalid)
-            {
-                res.ExtendBy(trafo.TransformPos((V3d)Min));
-                res.ExtendBy(trafo.TransformPos((V3d)new V3l(Max.X, Min.Y, Min.Z)));
-                res.ExtendBy(trafo.TransformPos((V3d)new V3l(Min.X, Max.Y, Min.Z)));
-                res.ExtendBy(trafo.TransformPos((V3d)new V3l(Max.X, Max.Y, Min.Z)));
-                res.ExtendBy(trafo.TransformPos((V3d)new V3l(Min.X, Min.Y, Max.Z)));
-                res.ExtendBy(trafo.TransformPos((V3d)new V3l(Max.X, Min.Y, Max.Z)));
-                res.ExtendBy(trafo.TransformPos((V3d)new V3l(Min.X, Max.Y, Max.Z)));
-                res.ExtendBy(trafo.TransformPos((V3d)Max));
-            }
+            var t = new V3d(trafo.M03, trafo.M13, trafo.M23);
+            var res = new Box3d(t, t);
+            double av, bv;
+            av = trafo.M00 * Min.X;
+            bv = trafo.M00 * Max.X;
+            if (av < bv) { res.Min.X += av; res.Max.X += bv; }
+            else { res.Min.X += bv; res.Max.X += av; }
+            av = trafo.M01 * Min.Y;
+            bv = trafo.M01 * Max.Y;
+            if (av < bv) { res.Min.X += av; res.Max.X += bv; }
+            else { res.Min.X += bv; res.Max.X += av; }
+            av = trafo.M02 * Min.Z;
+            bv = trafo.M02 * Max.Z;
+            if (av < bv) { res.Min.X += av; res.Max.X += bv; }
+            else { res.Min.X += bv; res.Max.X += av; }
+            av = trafo.M10 * Min.X;
+            bv = trafo.M10 * Max.X;
+            if (av < bv) { res.Min.Y += av; res.Max.Y += bv; }
+            else { res.Min.Y += bv; res.Max.Y += av; }
+            av = trafo.M11 * Min.Y;
+            bv = trafo.M11 * Max.Y;
+            if (av < bv) { res.Min.Y += av; res.Max.Y += bv; }
+            else { res.Min.Y += bv; res.Max.Y += av; }
+            av = trafo.M12 * Min.Z;
+            bv = trafo.M12 * Max.Z;
+            if (av < bv) { res.Min.Y += av; res.Max.Y += bv; }
+            else { res.Min.Y += bv; res.Max.Y += av; }
+            av = trafo.M20 * Min.X;
+            bv = trafo.M20 * Max.X;
+            if (av < bv) { res.Min.Z += av; res.Max.Z += bv; }
+            else { res.Min.Z += bv; res.Max.Z += av; }
+            av = trafo.M21 * Min.Y;
+            bv = trafo.M21 * Max.Y;
+            if (av < bv) { res.Min.Z += av; res.Max.Z += bv; }
+            else { res.Min.Z += bv; res.Max.Z += av; }
+            av = trafo.M22 * Min.Z;
+            bv = trafo.M22 * Max.Z;
+            if (av < bv) { res.Min.Z += av; res.Max.Z += bv; }
+            else { res.Min.Z += bv; res.Max.Z += av; }
             return res;
         }
 
@@ -16108,20 +16230,51 @@ namespace Aardvark.Base
                              : new Box3f(Min * factor, Max * factor);
         }
 
+        /// <summary>
+        /// Transforms the box by the given transformation matrix.
+        /// NOTE: Does not perform IsValid (+10% CPU time) or IsInvalid (+25% CPU Time) check.
+        /// </summary>
         public Box3d Transformed(M44d trafo)
         {
-            var res = Box3d.Invalid;
-            if (!IsInvalid)
-            {
-                res.ExtendBy(trafo.TransformPos((V3d)Min));
-                res.ExtendBy(trafo.TransformPos((V3d)new V3f(Max.X, Min.Y, Min.Z)));
-                res.ExtendBy(trafo.TransformPos((V3d)new V3f(Min.X, Max.Y, Min.Z)));
-                res.ExtendBy(trafo.TransformPos((V3d)new V3f(Max.X, Max.Y, Min.Z)));
-                res.ExtendBy(trafo.TransformPos((V3d)new V3f(Min.X, Min.Y, Max.Z)));
-                res.ExtendBy(trafo.TransformPos((V3d)new V3f(Max.X, Min.Y, Max.Z)));
-                res.ExtendBy(trafo.TransformPos((V3d)new V3f(Min.X, Max.Y, Max.Z)));
-                res.ExtendBy(trafo.TransformPos((V3d)Max));
-            }
+            var t = new V3d(trafo.M03, trafo.M13, trafo.M23);
+            var res = new Box3d(t, t);
+            double av, bv;
+            av = trafo.M00 * Min.X;
+            bv = trafo.M00 * Max.X;
+            if (av < bv) { res.Min.X += av; res.Max.X += bv; }
+            else { res.Min.X += bv; res.Max.X += av; }
+            av = trafo.M01 * Min.Y;
+            bv = trafo.M01 * Max.Y;
+            if (av < bv) { res.Min.X += av; res.Max.X += bv; }
+            else { res.Min.X += bv; res.Max.X += av; }
+            av = trafo.M02 * Min.Z;
+            bv = trafo.M02 * Max.Z;
+            if (av < bv) { res.Min.X += av; res.Max.X += bv; }
+            else { res.Min.X += bv; res.Max.X += av; }
+            av = trafo.M10 * Min.X;
+            bv = trafo.M10 * Max.X;
+            if (av < bv) { res.Min.Y += av; res.Max.Y += bv; }
+            else { res.Min.Y += bv; res.Max.Y += av; }
+            av = trafo.M11 * Min.Y;
+            bv = trafo.M11 * Max.Y;
+            if (av < bv) { res.Min.Y += av; res.Max.Y += bv; }
+            else { res.Min.Y += bv; res.Max.Y += av; }
+            av = trafo.M12 * Min.Z;
+            bv = trafo.M12 * Max.Z;
+            if (av < bv) { res.Min.Y += av; res.Max.Y += bv; }
+            else { res.Min.Y += bv; res.Max.Y += av; }
+            av = trafo.M20 * Min.X;
+            bv = trafo.M20 * Max.X;
+            if (av < bv) { res.Min.Z += av; res.Max.Z += bv; }
+            else { res.Min.Z += bv; res.Max.Z += av; }
+            av = trafo.M21 * Min.Y;
+            bv = trafo.M21 * Max.Y;
+            if (av < bv) { res.Min.Z += av; res.Max.Z += bv; }
+            else { res.Min.Z += bv; res.Max.Z += av; }
+            av = trafo.M22 * Min.Z;
+            bv = trafo.M22 * Max.Z;
+            if (av < bv) { res.Min.Z += av; res.Max.Z += bv; }
+            else { res.Min.Z += bv; res.Max.Z += av; }
             return res;
         }
 
@@ -17488,20 +17641,51 @@ namespace Aardvark.Base
                              : new Box3d(Min * factor, Max * factor);
         }
 
+        /// <summary>
+        /// Transforms the box by the given transformation matrix.
+        /// NOTE: Does not perform IsValid (+10% CPU time) or IsInvalid (+25% CPU Time) check.
+        /// </summary>
         public Box3d Transformed(M44d trafo)
         {
-            var res = Box3d.Invalid;
-            if (!IsInvalid)
-            {
-                res.ExtendBy(trafo.TransformPos((V3d)Min));
-                res.ExtendBy(trafo.TransformPos((V3d)new V3d(Max.X, Min.Y, Min.Z)));
-                res.ExtendBy(trafo.TransformPos((V3d)new V3d(Min.X, Max.Y, Min.Z)));
-                res.ExtendBy(trafo.TransformPos((V3d)new V3d(Max.X, Max.Y, Min.Z)));
-                res.ExtendBy(trafo.TransformPos((V3d)new V3d(Min.X, Min.Y, Max.Z)));
-                res.ExtendBy(trafo.TransformPos((V3d)new V3d(Max.X, Min.Y, Max.Z)));
-                res.ExtendBy(trafo.TransformPos((V3d)new V3d(Min.X, Max.Y, Max.Z)));
-                res.ExtendBy(trafo.TransformPos((V3d)Max));
-            }
+            var t = new V3d(trafo.M03, trafo.M13, trafo.M23);
+            var res = new Box3d(t, t);
+            double av, bv;
+            av = trafo.M00 * Min.X;
+            bv = trafo.M00 * Max.X;
+            if (av < bv) { res.Min.X += av; res.Max.X += bv; }
+            else { res.Min.X += bv; res.Max.X += av; }
+            av = trafo.M01 * Min.Y;
+            bv = trafo.M01 * Max.Y;
+            if (av < bv) { res.Min.X += av; res.Max.X += bv; }
+            else { res.Min.X += bv; res.Max.X += av; }
+            av = trafo.M02 * Min.Z;
+            bv = trafo.M02 * Max.Z;
+            if (av < bv) { res.Min.X += av; res.Max.X += bv; }
+            else { res.Min.X += bv; res.Max.X += av; }
+            av = trafo.M10 * Min.X;
+            bv = trafo.M10 * Max.X;
+            if (av < bv) { res.Min.Y += av; res.Max.Y += bv; }
+            else { res.Min.Y += bv; res.Max.Y += av; }
+            av = trafo.M11 * Min.Y;
+            bv = trafo.M11 * Max.Y;
+            if (av < bv) { res.Min.Y += av; res.Max.Y += bv; }
+            else { res.Min.Y += bv; res.Max.Y += av; }
+            av = trafo.M12 * Min.Z;
+            bv = trafo.M12 * Max.Z;
+            if (av < bv) { res.Min.Y += av; res.Max.Y += bv; }
+            else { res.Min.Y += bv; res.Max.Y += av; }
+            av = trafo.M20 * Min.X;
+            bv = trafo.M20 * Max.X;
+            if (av < bv) { res.Min.Z += av; res.Max.Z += bv; }
+            else { res.Min.Z += bv; res.Max.Z += av; }
+            av = trafo.M21 * Min.Y;
+            bv = trafo.M21 * Max.Y;
+            if (av < bv) { res.Min.Z += av; res.Max.Z += bv; }
+            else { res.Min.Z += bv; res.Max.Z += av; }
+            av = trafo.M22 * Min.Z;
+            bv = trafo.M22 * Max.Z;
+            if (av < bv) { res.Min.Z += av; res.Max.Z += bv; }
+            else { res.Min.Z += bv; res.Max.Z += av; }
             return res;
         }
 

@@ -1371,19 +1371,23 @@ namespace Aardvark.Base
                              : new __type__(Min * factor, Max * factor);
         }
 
+        /// <summary>
+        /// Transforms the box by the given transformation matrix.
+        /// NOTE: Does not perform IsValid (+10% CPU time) or IsInvalid (+25% CPU Time) check.
+        /// </summary>
         public Box__dim__d Transformed(M__dplus1____dplus1__d trafo)
         {
-            var res = Box__dim__d.Invalid;
-            if (!IsInvalid)
-            {
-                res.ExtendBy(trafo.TransformPos((V__dim__d)Min));
-                //# for (int i = 1; i < (1 << dim) - 1; i++) {
-                res.ExtendBy(trafo.TransformPos((V__dim__d)new __ltype__(/*#
-                fields.ForEach((f, b) => { var bf = ((i & (1<<b)) == 0) ? "Min" : "Max";
-                                          */__bf__.__f__/*# }, comma); */)));
-                //# }
-                res.ExtendBy(trafo.TransformPos((V__dim__d)Max));
-            }
+            var t = new V__dim__d(/*# fields.ForEach((f, i) => {*/trafo.M__i____dim__/*#}, comma);*/);
+            var res = new Box__dim__d(t, t);
+            double av, bv;
+            //# for (int i = 0; i < dim; i++) { var fi = vt.Fields[i];
+            //# for (int j = 0; j < dim; j++) { var fj = vt.Fields[j];
+            av = trafo.M__i____j__ * Min.__fj__;
+            bv = trafo.M__i____j__ * Max.__fj__;
+            if (av < bv) { res.Min.__fi__ += av; res.Max.__fi__ += bv; }
+            else { res.Min.__fi__ += bv; res.Max.__fi__ += av; }
+            //# }
+            //# }
             return res;
         }
 
