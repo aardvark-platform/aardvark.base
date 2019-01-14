@@ -900,7 +900,7 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Write an error. Erors are at level 0 and cannot be
+        /// Write an error. Errors are at level 0 and cannot be
         /// suppressed. More serious than a Warning, the program commences.
         /// </summary>
         public static void Error([Localizable(true)] string line, params object[] args)
