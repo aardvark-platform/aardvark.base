@@ -181,6 +181,8 @@ namespace Aardvark.Tests
 
         static Box3d Transform4(Box3d box, M44d trafo)
         {
+            //if (!box.IsValid) return Box3d.Invalid;
+            //if (box.IsInvalid) return Box3d.Invalid;
             var t = new V3d(trafo.M03, trafo.M13, trafo.M23);
             var res = new Box3d(t, t);
             // unrolled
