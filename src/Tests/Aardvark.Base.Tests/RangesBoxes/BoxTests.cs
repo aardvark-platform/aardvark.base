@@ -364,6 +364,34 @@ namespace Aardvark.Tests
             }
 
         }
+
+        [Test]
+        public void TransformedEmpty()
+        {
+            var rnd = new RandomSystem(123);
+            for (int i = 0; i < 1000; i++)
+            {
+                var mat = new M44d(rnd.CreateUniformDoubleArray(16));
+                var test = Box3d.Invalid.Transformed(mat);
+                Assert.True(test.IsEmpty);
+                Assert.False(test.Max.AnyNaN || test.Min.AnyNaN || test.IsNonEmpty);
+                if (test.Min.AnyInfinity || test.Max.AnyInfinity) Report.Line("Max -> Infinite");
+            }
+        }
+
+        [Test]
+        public void TransformedInfinite()
+        {
+            var rnd = new RandomSystem(123);
+            for (int i = 0; i < 1000; i++)
+            {
+                var mat = new M44d(rnd.CreateUniformDoubleArray(16));
+                var test = Box3d.Infinite.Transformed(mat);
+                if (test.Min.AnyInfinity || test.Max.AnyInfinity) Report.Line("Max -> Infinite"); // NOTE: some max values will be infinite
+                Assert.False(test.Max.AnyNaN || test.Min.AnyNaN || test.IsEmpty);
+            }
+        }
+
         #endregion
     }
 }
