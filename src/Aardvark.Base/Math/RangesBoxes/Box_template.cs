@@ -12,6 +12,7 @@ namespace Aardvark.Base
     //# Action comma = () => Out(", ");
     //# Action add = () => Out(" + ");
     //# Action andand = () => Out(" && ");
+    //# Action oror = () => Out(" || ");
     //# foreach (var t in Meta.RangeAndBoxTypes) {
     //#     var lt = t.LimitType; var vt = lt as Meta.VecType;
     //#     int dim = vt != null ? vt.Len : 1;
@@ -1373,10 +1374,12 @@ namespace Aardvark.Base
 
         /// <summary>
         /// Transforms the box by the given transformation matrix.
-        /// NOTE: Does not perform IsValid (+10% CPU time) or IsInvalid (+25% CPU Time) check.
+        /// NOTE: Performs IsValid check at 10% CPU time overhead.
+        ///       -> Empty bounds (crossed min and max) will remain empty.
         /// </summary>
         public Box__dim__d Transformed(M__dplus1____dplus1__d trafo)
         {
+            if (/*# fields.ForEach((f, i) => {*/Min.__f__ > Max.__f__/*#}, oror);*/) return Box__dim__d.Invalid; 
             var t = new V__dim__d(/*# fields.ForEach((f, i) => {*/trafo.M__i____dim__/*#}, comma);*/);
             var res = new Box__dim__d(t, t);
             double av, bv;

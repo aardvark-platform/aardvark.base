@@ -8193,10 +8193,12 @@ namespace Aardvark.Base
 
         /// <summary>
         /// Transforms the box by the given transformation matrix.
-        /// NOTE: Does not perform IsValid (+10% CPU time) or IsInvalid (+25% CPU Time) check.
+        /// NOTE: Performs IsValid check at 10% CPU time overhead.
+        ///       -> Empty bounds (crossed min and max) will remain empty.
         /// </summary>
         public Box2d Transformed(M33d trafo)
         {
+            if (Min.X > Max.X || Min.Y > Max.Y) return Box2d.Invalid; 
             var t = new V2d(trafo.M02, trafo.M12);
             var res = new Box2d(t, t);
             double av, bv;
@@ -9471,10 +9473,12 @@ namespace Aardvark.Base
 
         /// <summary>
         /// Transforms the box by the given transformation matrix.
-        /// NOTE: Does not perform IsValid (+10% CPU time) or IsInvalid (+25% CPU Time) check.
+        /// NOTE: Performs IsValid check at 10% CPU time overhead.
+        ///       -> Empty bounds (crossed min and max) will remain empty.
         /// </summary>
         public Box2d Transformed(M33d trafo)
         {
+            if (Min.X > Max.X || Min.Y > Max.Y) return Box2d.Invalid; 
             var t = new V2d(trafo.M02, trafo.M12);
             var res = new Box2d(t, t);
             double av, bv;
@@ -10856,10 +10860,12 @@ namespace Aardvark.Base
 
         /// <summary>
         /// Transforms the box by the given transformation matrix.
-        /// NOTE: Does not perform IsValid (+10% CPU time) or IsInvalid (+25% CPU Time) check.
+        /// NOTE: Performs IsValid check at 10% CPU time overhead.
+        ///       -> Empty bounds (crossed min and max) will remain empty.
         /// </summary>
         public Box2d Transformed(M33d trafo)
         {
+            if (Min.X > Max.X || Min.Y > Max.Y) return Box2d.Invalid; 
             var t = new V2d(trafo.M02, trafo.M12);
             var res = new Box2d(t, t);
             double av, bv;
@@ -12230,10 +12236,12 @@ namespace Aardvark.Base
 
         /// <summary>
         /// Transforms the box by the given transformation matrix.
-        /// NOTE: Does not perform IsValid (+10% CPU time) or IsInvalid (+25% CPU Time) check.
+        /// NOTE: Performs IsValid check at 10% CPU time overhead.
+        ///       -> Empty bounds (crossed min and max) will remain empty.
         /// </summary>
         public Box2d Transformed(M33d trafo)
         {
+            if (Min.X > Max.X || Min.Y > Max.Y) return Box2d.Invalid; 
             var t = new V2d(trafo.M02, trafo.M12);
             var res = new Box2d(t, t);
             double av, bv;
@@ -13499,10 +13507,12 @@ namespace Aardvark.Base
 
         /// <summary>
         /// Transforms the box by the given transformation matrix.
-        /// NOTE: Does not perform IsValid (+10% CPU time) or IsInvalid (+25% CPU Time) check.
+        /// NOTE: Performs IsValid check at 10% CPU time overhead.
+        ///       -> Empty bounds (crossed min and max) will remain empty.
         /// </summary>
         public Box3d Transformed(M44d trafo)
         {
+            if (Min.X > Max.X || Min.Y > Max.Y || Min.Z > Max.Z) return Box3d.Invalid; 
             var t = new V3d(trafo.M03, trafo.M13, trafo.M23);
             var res = new Box3d(t, t);
             double av, bv;
@@ -14809,10 +14819,12 @@ namespace Aardvark.Base
 
         /// <summary>
         /// Transforms the box by the given transformation matrix.
-        /// NOTE: Does not perform IsValid (+10% CPU time) or IsInvalid (+25% CPU Time) check.
+        /// NOTE: Performs IsValid check at 10% CPU time overhead.
+        ///       -> Empty bounds (crossed min and max) will remain empty.
         /// </summary>
         public Box3d Transformed(M44d trafo)
         {
+            if (Min.X > Max.X || Min.Y > Max.Y || Min.Z > Max.Z) return Box3d.Invalid; 
             var t = new V3d(trafo.M03, trafo.M13, trafo.M23);
             var res = new Box3d(t, t);
             double av, bv;
@@ -16232,10 +16244,12 @@ namespace Aardvark.Base
 
         /// <summary>
         /// Transforms the box by the given transformation matrix.
-        /// NOTE: Does not perform IsValid (+10% CPU time) or IsInvalid (+25% CPU Time) check.
+        /// NOTE: Performs IsValid check at 10% CPU time overhead.
+        ///       -> Empty bounds (crossed min and max) will remain empty.
         /// </summary>
         public Box3d Transformed(M44d trafo)
         {
+            if (Min.X > Max.X || Min.Y > Max.Y || Min.Z > Max.Z) return Box3d.Invalid; 
             var t = new V3d(trafo.M03, trafo.M13, trafo.M23);
             var res = new Box3d(t, t);
             double av, bv;
@@ -17643,10 +17657,12 @@ namespace Aardvark.Base
 
         /// <summary>
         /// Transforms the box by the given transformation matrix.
-        /// NOTE: Does not perform IsValid (+10% CPU time) or IsInvalid (+25% CPU Time) check.
+        /// NOTE: Performs IsValid check at 10% CPU time overhead.
+        ///       -> Empty bounds (crossed min and max) will remain empty.
         /// </summary>
         public Box3d Transformed(M44d trafo)
         {
+            if (Min.X > Max.X || Min.Y > Max.Y || Min.Z > Max.Z) return Box3d.Invalid; 
             var t = new V3d(trafo.M03, trafo.M13, trafo.M23);
             var res = new Box3d(t, t);
             double av, bv;
