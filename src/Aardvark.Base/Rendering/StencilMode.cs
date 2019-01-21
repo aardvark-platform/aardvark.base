@@ -130,8 +130,24 @@
             OperationBack = operation;
         }
 
+        public StencilMode(StencilOperation frontOperation, StencilFunction frontCompare, StencilOperation backOperation, StencilFunction backCompare)
+        {
+            IsEnabled = true;
+            CompareFront = frontCompare;
+            CompareBack = backCompare;
+            OperationFront = frontOperation;
+            OperationBack = backOperation;
+        }
+
         public StencilMode(StencilOperationFunction depthPass, StencilOperationFunction depthFail, StencilOperationFunction stencilFail, StencilCompareFunction compare, int reference, uint mask)
             : this (new StencilOperation(depthPass, depthFail, stencilFail), new StencilFunction(compare, reference, mask))
+        {
+        }
+
+        public StencilMode(StencilOperationFunction frontDepthPass, StencilOperationFunction frontDepthFail, StencilOperationFunction frontStencilFail, StencilCompareFunction frontCompare, int frontReference, uint frontMask,
+                           StencilOperationFunction backDepthPass,  StencilOperationFunction backDepthFail,  StencilOperationFunction backStencilFail,  StencilCompareFunction backCompare,  int backReference,  uint backMask)
+            : this(new StencilOperation(frontDepthPass, frontDepthFail, frontStencilFail), new StencilFunction(frontCompare, frontReference, frontMask),
+                  new StencilOperation(backDepthPass, backDepthFail, backStencilFail), new StencilFunction(backCompare, backReference, backMask))
         {
         }
 
