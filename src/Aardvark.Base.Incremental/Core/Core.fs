@@ -14,59 +14,83 @@ type IWeakable<'a when 'a : not struct> =
 
 
 type VolatileCollection<'a when 'a :> IWeakable<'a> and 'a : not struct>() =
-    let mutable set : HashSet<WeakReference<'a>> = null
-    let mutable pset : List<WeakReference<'a>> = List()
-
-    let mutable v = Unchecked.defaultof<_>
+    let mutable p : Object = Unchecked.defaultof<_>
 
     member x.IsEmpty = 
-        if isNull set then pset.Count = 0
-        else set.Count = 0
+        match p with
+        | null -> true
+        | :? WeakReference<'a> -> false
+        | :? ICollection<WeakReference<'a>> as c -> c.Count = 0
+        | _ -> failwith "fail"
 
+    member x.Count = 
+        match p with
+        | null -> 0
+        | :? WeakReference<'a> -> 1
+        | :? ICollection<WeakReference<'a>> as c -> c.Count
+        | _ -> failwith "fail"
+            
     member x.Consume(length : byref<int>) : array<'a> =
-        if isNull set then
-            let res = Array.zeroCreate pset.Count
+        let mutable v : 'a = Unchecked.defaultof<_>
+        match p with
+        | null -> 
             length <- 0
-            for i in 0 .. pset.Count - 1 do
-                if pset.[i].TryGetTarget(&v) then
-                    res.[length] <- v; 
-                    length <- length + 1
-            v <- Unchecked.defaultof<_>
-            pset.Clear()
-            res
-        else
-            let res = Array.zeroCreate set.Count
-            length <- 0
-            for e in set do
-                if e.TryGetTarget(&v) then
-                    res.[length] <- v; 
-                    length <- length + 1
-            v <- Unchecked.defaultof<_>
-            set.Clear()
-            res
+            Array.zeroCreate 0
+        | :? WeakReference<'a> as single -> 
+                        let res = Array.zeroCreate 1
+                        if single.TryGetTarget(&v) then
+                            res.[0] <- v
+                            length <- 1
+                        else
+                            length <- 0
+                        p <- Unchecked.defaultof<_>
+                        res
+        | :? ICollection<WeakReference<'a>> as col -> 
+                        let res = Array.zeroCreate col.Count
+                        length <- 0
+                        for ref in col do 
+                            if ref.TryGetTarget(&v) then
+                                res.[length] <- v
+                                length <- length + 1
+                        col.Clear()
+                        res
+        | _ -> failwith "fail"
 
     member x.Add(value : 'a) : bool =
         let value = value.Weak
-        if isNull set then 
-            let id = pset.IndexOf(value)
-            if id < 0 then 
-                pset.Add(value)
-                if pset.Count > 8 then
-                    set <- HashSet pset
-                    pset <- null
-                true
-            else 
+        if isNull p then
+            p <- value
+            true
+        else if p :? WeakReference<'a> then
+            if Object.ReferenceEquals(p, value) then
                 false
+            else
+                let list = List<WeakReference<'a>>(8)
+                list.Add(p :?> WeakReference<'a>)
+                list.Add(value)
+                p <- list
+                true
         else
-            set.Add value
-        
+            let mutable col = p :?> ICollection<WeakReference<'a>>
+            if col.Contains(value) then
+                false
+            else
+                if col :? IList<WeakReference<'a>> && col.Count >= 8 then
+                    col <- HashSet col
+                    p <- col
+                col.Add(value)
+                true
 
     member x.Remove(value : 'a) : bool =
         let value = value.Weak
-        if isNull set then 
-            pset.Remove(value)
-        else
-            set.Remove value
+        if Object.ReferenceEquals(p, value) then
+            p <- null
+            true
+        else 
+            match p with
+            | :? ICollection<WeakReference<'a>> as col -> col.Remove(value)
+            | _ -> false
+            
 
 type VolatileCollectionStrong<'a>() =
     let mutable set : HashSet<'a> = null
