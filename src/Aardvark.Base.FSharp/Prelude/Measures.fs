@@ -133,7 +133,7 @@ type MicroTime =
         static member Minute = MicroTime(60000000000L)
         
         new (ns : int64) = { TotalNanoseconds = ns }
-        new (ts : TimeSpan) = { TotalNanoseconds = (ts.Ticks * 1000000000L) / TimeSpan.TicksPerSecond}
+        new (ts : TimeSpan) = { TotalNanoseconds = ts.Ticks * (1000000000L / TimeSpan.TicksPerSecond) }
     end
 
 [<CompilationRepresentation(CompilationRepresentationFlags.ModuleSuffix)>]
