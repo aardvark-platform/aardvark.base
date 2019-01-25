@@ -9,6 +9,7 @@ open System.Threading.Tasks
 
 module ``Basic Mod Tests`` =
     open System.Collections.Generic
+    open System.Diagnostics
 
     type ExecutionTracker() =
         let ops = List<string>()
@@ -830,6 +831,67 @@ module ``Basic Mod Tests`` =
 
         t.IsNone |> should be True
         y |> Mod.force |> should equal 3
+
+    [<Test>]
+    let ``[Mod] eval and mark performance`` () =
+
+        let mutable garbage = [ ]
+
+        for j in 0..100 do
+            let mutable totalMarkTime = 0.0
+            let mutable totalEvalTime = 0.0
+            let iter = 10
+            for k in 1..iter do
+                let root = Mod.init Trafo3d.Identity
+                let mutable leafs = [ root :> IMod<_> ]
+                let rnd = RandomSystem(1)
+
+                let depth = int (10.0 * pow 1.1 (float k))
+                let stdWidth = 1.2
+                let mutable nodeCount = 0
+                //Log.startTimed "Create Tree: Depth=%d StdWidth=%.2f" depth stdWidth
+                for i in 1..depth do
+                    let mutable nextLevel = [ ]
+                    for l in leafs do
+                        let subCnt = rnd.Gaussian(0.0, stdWidth)
+                        let refine = (abs subCnt) |> int
+                        for r in 0..refine do
+                            //let n = l |> Mod.map (fun x -> x * 2)
+                            let xx = Mod.init Trafo3d.Identity
+                            let n = Mod.map2 (fun a b -> a * b) xx l
+                            nextLevel <- nextLevel @ [n]
+                            nodeCount <- nodeCount + 1 
+                        ()
+                    leafs <- nextLevel
+                //Log.stop ""
+
+                let leafCount = List.length leafs
+                let runs = 10 + 2000000 / nodeCount 
+                let swMark = Stopwatch()
+                let swEval = Stopwatch()
+            
+                Log.start "Depth=%-3d StdWidth=%.2f Nodes/Leafs=%-11s" depth stdWidth (sprintf "%d/%d" nodeCount leafCount)
+                for i in 1..runs do
+                    if i > 5 then swMark.Start()
+                    transact(fun () -> Mod.change root (Trafo3d.Translation(V3d(i, i, i))))
+                    if i > 5 then swMark.Stop()
+
+                    if i > 5 then swEval.Start()
+                    for l in leafs do
+                        l |> Mod.force |> ignore
+                    if i > 5 then swEval.Stop()
+
+                let markTime = (float swMark.ElapsedTicks / float Stopwatch.Frequency)
+                let evalTime = (float swEval.ElapsedTicks / float Stopwatch.Frequency)
+                Log.stop " MarkTime=%.2fs EvalTime=%.2fs" markTime evalTime
+
+                totalMarkTime <- totalMarkTime + markTime
+                totalEvalTime <- totalEvalTime + evalTime
+            
+                garbage <- garbage @ leafs
+
+            Log.line "Total: MarkTime=%.2fs EvalTime=%.2fs" totalMarkTime totalEvalTime
+        
 
 
     [<AutoOpen>]

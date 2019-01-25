@@ -25,10 +25,10 @@ let main args =
     //Aardvark.Base.Incremental.Tests.AgTests.``[Ag] Leaky leaky test``()
     //Aardvark.Base.Incremental.Tests.ASetPerformance.``[ASet Performance] map``()
     //Aardvark.Base.Incremental.Tests.InstancingTest.test()
-    SimListTest.``[AList] validation``()
+    //SimListTest.``[AList] validation``()
 
     //AListTestsNew.testMapUse()
-    System.Environment.Exit 0
-    ``Basic Mod Tests``.``[Mod] consistent concurrency test``()
+    //System.Environment.Exit 0
+    ``Basic Mod Tests``.``[Mod] eval and mark performance``()
     //Aardvark.Base.Incremental.Tests.ConcurrentDeltaQueueTests.``[ASet ConcurrentDeltaQueue] concurrent delta queue test``()
     0
