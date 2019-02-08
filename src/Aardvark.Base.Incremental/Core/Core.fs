@@ -96,52 +96,44 @@ type VolatileCollection<'a when 'a :> IWeakable<'a> and 'a : not struct>() =
             | :? ICollection<WeakReference<'a>> as col -> col.Count
             | _ -> 0
             
-    member x.Consume(length : byref<int>) : array<'a> =
+    member x.Consume(arr : byref<array<'a>>) : int =
         let mutable v : 'a = Unchecked.defaultof<_>
-        if isNull p then
-            length <- 0
-            Array.zeroCreate 0
-        else if mode = 0uy then
-            let res = Array.zeroCreate 1
+        let mutable length = 0
+        // NOTE: using mode int allows to directly perform typecast of matching implementation
+        //       using match instead of downcast is less expensive and code cannot throw exception
+        if mode = 0uy then
             match p with
             | :? WeakReference<'a> as single -> 
+                if arr.Length < 1 then
+                    arr <- Array.zeroCreate 8
+                p <- Unchecked.defaultof<_>
                 if single.TryGetTarget(&v) then
-                    res.[0] <- v
+                    arr.[0] <- v
                     length <- 1
-                else
-                    length <- 0
-            | _ -> length <- 0
-            p <- Unchecked.defaultof<_>
-            res
-        // NOTE: possible to use ICollection if mode >= 1, but directly using List or HashSet has best performance
+            | _ -> ()
         elif mode = 1uy then
             match p with
             | :? List<WeakReference<'a>> as list -> 
-                let res = Array.zeroCreate list.Count
-                length <- 0
+                if arr.Length < list.Count then
+                    arr <- Array.zeroCreate 8
                 for i in 0..list.Count-1 do // NOTE: using indexer seems to be faster than foreach
                     if list.[i].TryGetTarget(&v) then
-                        res.[length] <- v; 
+                        arr.[length] <- v 
                         length <- length + 1
                 list.Clear()
-                res
-            | _ -> 
-                length <- 0
-                Array.zeroCreate 0
+            | _ -> ()
         else
-            match p with
+            match p with 
             | :? HashSet<WeakReference<'a>> as set -> 
-                let res = Array.zeroCreate set.Count
-                length <- 0
+                if arr.Length < set.Count then
+                    arr <- Array.zeroCreate (set.Count * 3 / 2)
                 for ref in set do 
                     if ref.TryGetTarget(&v) then
-                        res.[length] <- v
+                        arr.[length] <- v
                         length <- length + 1
                 set.Clear()
-                res
-            | _ -> 
-                length <- 0
-                Array.zeroCreate 0
+            | _ -> ()
+        length
 
     member x.Add(value : 'a) : bool =
         let value = value.Weak
@@ -178,7 +170,7 @@ type VolatileCollection<'a when 'a :> IWeakable<'a> and 'a : not struct>() =
             | _ -> false
         else
             match p with
-            | :? HashSet<WeakReference<'a>> as set ->  set.Add(value)
+            | :? HashSet<WeakReference<'a>> as set -> set.Add(value)
             | _ -> false
 
     member x.Remove(value : 'a) : bool =
@@ -192,6 +184,10 @@ type VolatileCollection<'a when 'a :> IWeakable<'a> and 'a : not struct>() =
             | _ -> false
         else
             false
+
+    member x.Clear() =
+        p <- null
+        mode <- 0uy
             
 
 type VolatileCollectionStrong<'a>() =
@@ -434,7 +430,6 @@ type Transaction() =
     static let EnqueueProbe = Symbol.Create "[Transaction] Enqueue"
     static let CommitProbe = Symbol.Create "[Transaction] Commit"
     static let emptyArray : IAdaptiveObject[] = Array.empty
-    let mutable outputs = emptyArray
 
     // each thread may have its own running transaction
     [<ThreadStatic; DefaultValue>]
@@ -547,24 +542,25 @@ type Transaction() =
 
 
         // cache the currently running transaction (if any)
-        // and make tourselves current.
+        // and make ourselves current.
         let old = Transaction.RunningTransaction
         Transaction.RunningTransaction <- Some x
         let mutable level = 0
         let myCauses = ref null
         
-        let markCount = ref 0
-        let traverseCount = ref 0
-        let levelChangeCount = ref 0
-        let outputCount = ref 0
+        let mutable markCount = 0
+        let mutable traverseCount = 0
+        let mutable levelChangeCount = 0
+        let mutable outputCount = 0
+        let mutable outputs = Array.zeroCreate 8
         while q.Count > 0 do
             // dequeue the next element (having the minimal level)
             let e = q.Dequeue(&currentLevel)
             current <- e
 
-            traverseCount := !traverseCount + 1
+            traverseCount <- traverseCount + 1
 
-            outputCount := 0
+            outputCount <- 0
 
 
             // since we're about to access the outOfDate flag
@@ -582,7 +578,6 @@ type Transaction() =
                     // if the element is already outOfDate we
                     // do not traverse the graph further.
                     if e.OutOfDate then
-                        outputCount := 0
                         e.AllInputsProcessed(x)
 
                     else
@@ -596,7 +591,6 @@ type Transaction() =
                         // it is relatively simple to implement.
                         if currentLevel <> e.Level then
                             q.Enqueue e
-                            outputCount := 0
                         else
                             if causes.TryRemove(e, &myCauses.contents) then
                                 !myCauses |> Seq.iter (fun i -> e.InputChanged(x,i))
@@ -605,7 +599,7 @@ type Transaction() =
                             // by marking the object as outOfDate
                             e.OutOfDate <- true
                             e.AllInputsProcessed(x)
-                            markCount := !markCount + 1
+                            markCount <- markCount + 1
                 
                             try 
                                 // here mark and the callbacks are allowed to evaluate
@@ -614,11 +608,11 @@ type Transaction() =
                                 if e.Mark() then
                                     // if everything succeeded we return all current outputs
                                     // which will cause them to be enqueued 
-                                    outputs <- e.Outputs.Consume(outputCount)
+                                    outputCount <- e.Outputs.Consume(&outputs)
 
                                 else
                                     // if Mark told us not to continue we're done here
-                                    outputCount := 0
+                                    ()
 
                             with LevelChangedException(obj, objLevel, distance) ->
                                 // if the level was changed either by a callback
@@ -627,16 +621,15 @@ type Transaction() =
                                 e.Level <- max e.Level (objLevel + distance)
                                 e.OutOfDate <- false
 
-                                levelChangeCount := !levelChangeCount + 1
+                                levelChangeCount <- levelChangeCount + 1
 
                                 q.Enqueue e
-                                outputCount := 0
                 
                 finally 
                     e.ExitWrite()
 
                 // finally we enqueue all returned outputs
-                for i in 0..!outputCount - 1 do
+                for i in 0..outputCount - 1 do
                     let o = outputs.[i]
                     o.InputChanged(x,e)
                     x.Enqueue o
@@ -722,8 +715,8 @@ type AdaptiveObject =
             if not (isNull time) then
                 Monitor.Enter time
                 if not time.Outputs.IsEmpty then
-                    let mutable outputCount = 0
-                    let outputs = time.Outputs.Consume(&outputCount)
+                    let mutable outputs = Array.zeroCreate 8
+                    let outputCount = time.Outputs.Consume(&outputs)
                     Monitor.Exit time
 
                     let t = new Transaction()

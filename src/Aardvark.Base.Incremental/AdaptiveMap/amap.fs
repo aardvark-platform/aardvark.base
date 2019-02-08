@@ -235,8 +235,7 @@ module AMap =
                                 if not worked then
                                     None
                                 else
-                                    let mutable foo = 0
-                                    o.Outputs.Consume(&foo) |> ignore
+                                    o.Outputs.Clear()
                                     dirty.Remove o |> ignore
                                     Some Remove
                     )
