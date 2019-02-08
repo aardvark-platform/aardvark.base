@@ -12,84 +12,186 @@ open System.Linq
 type IWeakable<'a when 'a : not struct> =
     abstract member Weak : WeakReference<'a>
 
+/// <summary>
+/// Collection of WeakReferences using a switching collection of either a List (0-8) or HashSet (>8) depending on number of nodes for best performance
+/// </summary>
+type VolatileCollectionOld<'a when 'a :> IWeakable<'a> and 'a : not struct>() =
+    let mutable set : HashSet<WeakReference<'a>> = null
+    let mutable pset : List<WeakReference<'a>> = List()
 
-type VolatileCollection<'a when 'a :> IWeakable<'a> and 'a : not struct>() =
-    let mutable p : Object = Unchecked.defaultof<_>
+    let mutable v = Unchecked.defaultof<_>
 
     member x.IsEmpty = 
-        match p with
-        | null -> true
-        | :? WeakReference<'a> -> false
-        | :? ICollection<WeakReference<'a>> as c -> c.Count = 0
-        | _ -> failwith "fail"
+        if isNull set then pset.Count = 0
+        else set.Count = 0
 
-    member x.Count = 
-        match p with
-        | null -> 0
-        | :? WeakReference<'a> -> 1
-        | :? ICollection<WeakReference<'a>> as c -> c.Count
-        | _ -> failwith "fail"
-            
     member x.Consume(length : byref<int>) : array<'a> =
-        let mutable v : 'a = Unchecked.defaultof<_>
-        match p with
-        | null -> 
+        if isNull set then
+            let res = Array.zeroCreate pset.Count
             length <- 0
-            Array.zeroCreate 0
-        | :? WeakReference<'a> as single -> 
-                        let res = Array.zeroCreate 1
-                        if single.TryGetTarget(&v) then
-                            res.[0] <- v
-                            length <- 1
-                        else
-                            length <- 0
-                        p <- Unchecked.defaultof<_>
-                        res
-        | :? ICollection<WeakReference<'a>> as col -> 
-                        let res = Array.zeroCreate col.Count
-                        length <- 0
-                        for ref in col do 
-                            if ref.TryGetTarget(&v) then
-                                res.[length] <- v
-                                length <- length + 1
-                        col.Clear()
-                        res
-        | _ -> failwith "fail"
+            for i in 0 .. pset.Count - 1 do
+                if pset.[i].TryGetTarget(&v) then
+                    res.[length] <- v; 
+                    length <- length + 1
+            v <- Unchecked.defaultof<_>
+            pset.Clear()
+            res
+        else
+            let res = Array.zeroCreate set.Count
+            length <- 0
+            for e in set do
+                if e.TryGetTarget(&v) then
+                    res.[length] <- v; 
+                    length <- length + 1
+            v <- Unchecked.defaultof<_>
+            set.Clear()
+            res
 
     member x.Add(value : 'a) : bool =
         let value = value.Weak
+        if isNull set then 
+            let id = pset.IndexOf(value)
+            if id < 0 then 
+                pset.Add(value)
+                if pset.Count > 8 then
+                    set <- HashSet pset
+                    pset <- null
+                true
+            else 
+                false
+        else
+            set.Add value
+        
+
+    member x.Remove(value : 'a) : bool =
+        let value = value.Weak
+        if isNull set then 
+            pset.Remove(value)
+        else
+            set.Remove value
+
+/// <summary>
+/// Collection of WeakReferences using a switching internal representation: Single(0-1), List (2-8), HashSet(>8)
+/// This collection has improved performance to VolatileCollectionOld in cases where there are 0 or 1 references
+/// NOTE: using mode switch omits using types checks to determine used implementation
+///       using matches instead of downcasts uses OpCode "isinst" instead of "unbox.any" and avoids code to be able to throw exception
+/// </summary>
+type VolatileCollection<'a when 'a :> IWeakable<'a> and 'a : not struct>() =
+    let mutable p : Object = Unchecked.defaultof<_>
+    let mutable mode : byte = 0uy // using mode to avoid "expensive" type checks
+
+    member x.IsEmpty = 
+        if isNull p then true
+        elif mode = 0uy then false
+        else 
+            match p with 
+            | :? ICollection<WeakReference<'a>> as col -> col.Count = 0
+            | _ -> true
+        
+    member x.Count = 
+        if isNull p then 0
+        elif mode = 0uy then 1
+        else
+            match p with 
+            | :? ICollection<WeakReference<'a>> as col -> col.Count
+            | _ -> 0
+            
+    member x.Consume(length : byref<int>) : array<'a> =
+        let mutable v : 'a = Unchecked.defaultof<_>
         if isNull p then
-            p <- value
-            true
-        else if p :? WeakReference<'a> then
-            if Object.ReferenceEquals(p, value) then
+            length <- 0
+            Array.zeroCreate 0
+        else if mode = 0uy then
+            let res = Array.zeroCreate 1
+            match p with
+            | :? WeakReference<'a> as single -> 
+                if single.TryGetTarget(&v) then
+                    res.[0] <- v
+                    length <- 1
+                else
+                    length <- 0
+            | _ -> length <- 0
+            p <- Unchecked.defaultof<_>
+            res
+        // NOTE: possible to use ICollection if mode >= 1, but directly using List or HashSet has best performance
+        elif mode = 1uy then
+            match p with
+            | :? List<WeakReference<'a>> as list -> 
+                let res = Array.zeroCreate list.Count
+                length <- 0
+                for i in 0..list.Count-1 do // NOTE: using indexer seems to be faster than foreach
+                    if list.[i].TryGetTarget(&v) then
+                        res.[length] <- v; 
+                        length <- length + 1
+                list.Clear()
+                res
+            | _ -> 
+                length <- 0
+                Array.zeroCreate 0
+        else
+            match p with
+            | :? HashSet<WeakReference<'a>> as set -> 
+                let res = Array.zeroCreate set.Count
+                length <- 0
+                for ref in set do 
+                    if ref.TryGetTarget(&v) then
+                        res.[length] <- v
+                        length <- length + 1
+                set.Clear()
+                res
+            | _ -> 
+                length <- 0
+                Array.zeroCreate 0
+
+    member x.Add(value : 'a) : bool =
+        let value = value.Weak
+        if mode = 0uy then
+            if isNull p then
+                p <- value
+                true
+            elif Object.ReferenceEquals(p, value) then
                 false
             else
-                let list = List<WeakReference<'a>>(8)
-                list.Add(p :?> WeakReference<'a>)
+                let list = List<WeakReference<'a>>(4)
+                match p with
+                | :? WeakReference<'a> as single -> list.Add(single)
+                | _ -> ()
                 list.Add(value)
                 p <- list
+                mode <- 1uy
                 true
+        // NOTE: possible to use ICollection if mode >= 1, but directly using List or HashSet has best performance
+        elif mode = 1uy then 
+            match p with
+            | :? List<WeakReference<'a>> as list -> 
+                if list.Contains(value) then
+                    false
+                elif list.Count >= 8 then
+                    let set = HashSet list
+                    set.Add(value) |> ignore
+                    p <- set
+                    mode <- 2uy
+                    true
+                else
+                    list.Add(value)
+                    true
+            | _ -> false
         else
-            let mutable col = p :?> ICollection<WeakReference<'a>>
-            if col.Contains(value) then
-                false
-            else
-                if col :? IList<WeakReference<'a>> && col.Count >= 8 then
-                    col <- HashSet col
-                    p <- col
-                col.Add(value)
-                true
+            match p with
+            | :? HashSet<WeakReference<'a>> as set ->  set.Add(value)
+            | _ -> false
 
     member x.Remove(value : 'a) : bool =
         let value = value.Weak
         if Object.ReferenceEquals(p, value) then
             p <- null
             true
-        else 
+        elif mode > 0uy then
             match p with
             | :? ICollection<WeakReference<'a>> as col -> col.Remove(value)
             | _ -> false
+        else
+            false
             
 
 type VolatileCollectionStrong<'a>() =
