@@ -1,4 +1,4 @@
-﻿namespace Aardvark.Base.Incremental
+﻿namespace rec Aardvark.Base.Incremental
 
 open System
 open System.Collections.Generic
@@ -7,6 +7,7 @@ open Aardvark.Base
 open System.Collections.Concurrent
 open System.Threading
 open System.Linq
+open System.Runtime.InteropServices
 
 [<AllowNullLiteral>]
 type IWeakable<'a when 'a : not struct> =
@@ -70,50 +71,52 @@ type VolatileCollectionOld<'a when 'a :> IWeakable<'a> and 'a : not struct>() =
         else
             set.Remove value
 
+[<StructLayout(LayoutKind.Explicit)>]
+type MultiPtr =
+    struct
+        [<FieldOffset(0)>]
+        val mutable public Single : WeakReference<IAdaptiveObject>
+        [<FieldOffset(0)>]
+        val mutable public List : List<WeakReference<IAdaptiveObject>>
+        [<FieldOffset(0)>]
+        val mutable public Set : HashSet<WeakReference<IAdaptiveObject>>
+        [<FieldOffset(0)>]
+        val mutable public Collection : ICollection<WeakReference<IAdaptiveObject>>
+    end
+
 /// <summary>
 /// Collection of WeakReferences using a switching internal representation: Single(0-1), List (2-8), HashSet(>8)
 /// This collection has improved performance to VolatileCollectionOld in cases where there are 0 or 1 references
 /// NOTE: using mode switch omits using types checks to determine used implementation
 ///       using matches instead of downcasts uses OpCode "isinst" instead of "unbox.any" and avoids code to be able to throw exception
 /// </summary>
-type VolatileCollection<'a when 'a :> IWeakable<'a> and 'a : not struct>() =
-    let mutable p : Object = Unchecked.defaultof<_>
+type VolatileCollection() =
+    let mutable handles : MultiPtr = Unchecked.defaultof<_>
     let mutable mode : byte = 0uy // using mode to avoid "expensive" type checks
 
     member x.IsEmpty = 
-        if isNull p then true
+        if isNull handles.Single then true
         elif mode = 0uy then false
-        else 
-            match p with 
-            | :? ICollection<WeakReference<'a>> as col -> col.Count = 0
-            | _ -> true
+        else handles.Collection.Count = 0
         
     member x.Count = 
-        if isNull p then 0
+        if isNull handles.Single then 0
         elif mode = 0uy then 1
-        else
-            match p with 
-            | :? ICollection<WeakReference<'a>> as col -> col.Count
-            | _ -> 0
+        else handles.Collection.Count
             
-    member x.Consume(arr : byref<array<'a>>) : int =
-        let mutable v : 'a = Unchecked.defaultof<_>
+    member x.Consume(arr : byref<array<IAdaptiveObject>>) : int =
         let mutable length = 0
-        // NOTE: using mode int allows to directly perform typecast of matching implementation
-        //       using match instead of downcast is less expensive and code cannot throw exception
-        if mode = 0uy then
-            match p with
-            | :? WeakReference<'a> as single -> 
+        if not (isNull handles.Single) then 
+            let mutable v : IAdaptiveObject = Unchecked.defaultof<_>
+            if mode = 0uy then
                 if arr.Length < 1 then
                     arr <- Array.zeroCreate 8
-                p <- Unchecked.defaultof<_>
-                if single.TryGetTarget(&v) then
+                if handles.Single.TryGetTarget(&v) then
                     arr.[0] <- v
                     length <- 1
-            | _ -> ()
-        elif mode = 1uy then
-            match p with
-            | :? List<WeakReference<'a>> as list -> 
+                handles.Single <- Unchecked.defaultof<_>
+            elif mode = 1uy then
+                let list = handles.List
                 if arr.Length < list.Count then
                     arr <- Array.zeroCreate 8
                 for i in 0..list.Count-1 do // NOTE: using indexer seems to be faster than foreach
@@ -121,10 +124,8 @@ type VolatileCollection<'a when 'a :> IWeakable<'a> and 'a : not struct>() =
                         arr.[length] <- v 
                         length <- length + 1
                 list.Clear()
-            | _ -> ()
-        else
-            match p with 
-            | :? HashSet<WeakReference<'a>> as set -> 
+            else
+                let set = handles.Set
                 if arr.Length < set.Count then
                     arr <- Array.zeroCreate (set.Count * 3 / 2)
                 for ref in set do 
@@ -132,61 +133,52 @@ type VolatileCollection<'a when 'a :> IWeakable<'a> and 'a : not struct>() =
                         arr.[length] <- v
                         length <- length + 1
                 set.Clear()
-            | _ -> ()
         length
 
-    member x.Add(value : 'a) : bool =
+    member x.Add(value : IAdaptiveObject) : bool =
         let value = value.Weak
         if mode = 0uy then
-            if isNull p then
-                p <- value
+            if isNull handles.Single then
+                handles.Single <- value
                 true
-            elif Object.ReferenceEquals(p, value) then
+            elif Object.ReferenceEquals(handles.Single, value) then
                 false
             else
-                let list = List<WeakReference<'a>>(4)
-                match p with
-                | :? WeakReference<'a> as single -> list.Add(single)
-                | _ -> ()
+                let list = List<WeakReference<IAdaptiveObject>>(4)
+                list.Add(handles.Single)
                 list.Add(value)
-                p <- list
+                handles.List <- list
                 mode <- 1uy
                 true
         // NOTE: possible to use ICollection if mode >= 1, but directly using List or HashSet has best performance
         elif mode = 1uy then 
-            match p with
-            | :? List<WeakReference<'a>> as list -> 
-                if list.Contains(value) then
-                    false
-                elif list.Count >= 8 then
-                    let set = HashSet list
-                    set.Add(value) |> ignore
-                    p <- set
-                    mode <- 2uy
-                    true
-                else
-                    list.Add(value)
-                    true
-            | _ -> false
+            let list = handles.List
+            if list.Contains(value) then
+                false
+            elif list.Count >= 8 then
+                let set = HashSet list
+                set.Add(value) |> ignore
+                handles.Set <- set
+                mode <- 2uy
+                true
+            else
+                list.Add(value)
+                true
         else
-            match p with
-            | :? HashSet<WeakReference<'a>> as set -> set.Add(value)
-            | _ -> false
+            handles.Set.Add(value)
 
-    member x.Remove(value : 'a) : bool =
+    member x.Remove(value : IAdaptiveObject) : bool =
         let value = value.Weak
-        if Object.ReferenceEquals(p, value) then
-            p <- null
+        if Object.ReferenceEquals(handles.Single, value) then
+            handles.Single <- null
             true
         elif mode > 0uy then
-            match p with
-            | :? ICollection<WeakReference<'a>> as col -> col.Remove(value)
-            | _ -> false
+            handles.Collection.Remove(value)
         else
             false
 
     member x.Clear() =
-        p <- null
+        handles.Single <- null
         mode <- 0uy
             
 
@@ -292,7 +284,7 @@ type IAdaptiveObject =
     /// to be represented by Weak references in order to allow for
     /// unused parts of the graph to be garbage collected.
     /// </summary>
-    abstract member Outputs : VolatileCollection<IAdaptiveObject>
+    abstract member Outputs : VolatileCollection
 
 
     abstract member InputChanged : obj * IAdaptiveObject -> unit
@@ -684,7 +676,7 @@ type AdaptiveObject =
         val mutable public Id : int
         val mutable public OutOfDateValue : bool
         val mutable public LevelValue : int 
-        val mutable public Outputs : VolatileCollection<IAdaptiveObject>
+        val mutable public Outputs : VolatileCollection
         val mutable public WeakThis : WeakReference<IAdaptiveObject>
         val mutable public ReaderCountValue : int
         val mutable public Reevaluate : bool
@@ -707,7 +699,7 @@ type AdaptiveObject =
 
         new() =
             { Id = newId(); OutOfDateValue = true; 
-              LevelValue = 0; Outputs = VolatileCollection<IAdaptiveObject>(); WeakThis = null;
+              LevelValue = 0; Outputs = VolatileCollection(); WeakThis = null;
               ReaderCountValue = 0; Reevaluate = false }
 
         static member inline private markTime() =
@@ -1225,9 +1217,7 @@ module CallbackExtensions =
             res :> IDisposable //{ new IDisposable with member __.Dispose() = live := false; x.MarkingCallbacks.Remove !self |> ignore}
  
 
-
-open System.Threading
- 
+  
 /// <summary>
 /// defines a base class for all decorated mods
 /// </summary>
