@@ -1,4 +1,4 @@
-﻿namespace rec Aardvark.Base.Incremental
+﻿namespace Aardvark.Base.Incremental
 
 open System
 open System.Collections.Generic
@@ -13,66 +13,76 @@ open System.Runtime.InteropServices
 type IWeakable<'a when 'a : not struct> =
     abstract member Weak : WeakReference<'a>
 
+#nowarn "9"
 /// <summary>
-/// Collection of WeakReferences using a switching collection of either a List (0-8) or HashSet (>8) depending on number of nodes for best performance
+/// IAdaptiveObject represents the core interface for all
+/// adaptive objects and contains everything necessary for
+/// tracking OutOfDate flags and managing in-/outputs in the
+/// dependency tree.
+///
+/// Since eager evalutation might be desirable in some scenarios
+/// the interface also contains a Level representing the execution
+/// order when evaluating inside a transaction and a function called
+/// Mark allowing implementations to actually perform the evaluation.
+/// Mark returns a bool since eager evaluation might cause the change
+/// propagation process to exit early (if the actual value was unchanged)
+/// In order to make adaptive objects easily identifiable all adaptive
+/// objects must also provide a globally unique id (Id)
 /// </summary>
-type VolatileCollectionOld<'a when 'a :> IWeakable<'a> and 'a : not struct>() =
-    let mutable set : HashSet<WeakReference<'a>> = null
-    let mutable pset : List<WeakReference<'a>> = List()
+[<AllowNullLiteral>]
+type IAdaptiveObject =
+    inherit IWeakable<IAdaptiveObject>
 
-    let mutable v = Unchecked.defaultof<_>
+    /// <summary>
+    /// the globally unique id for the adaptive object
+    /// </summary>
+    abstract member Id : int
 
-    member x.IsEmpty = 
-        if isNull set then pset.Count = 0
-        else set.Count = 0
+    /// <summary>
+    /// the level for an adaptive object represents the
+    /// maximal distance from an input cell in the depdency graph
+    /// Note that this level is entirely managed by the system 
+    /// and shall not be accessed directly by users of the system.
+    /// </summary>
+    abstract member Level : int with get, set
 
-    member x.Consume(length : byref<int>) : array<'a> =
-        if isNull set then
-            let res = Array.zeroCreate pset.Count
-            length <- 0
-            for i in 0 .. pset.Count - 1 do
-                if pset.[i].TryGetTarget(&v) then
-                    res.[length] <- v; 
-                    length <- length + 1
-            v <- Unchecked.defaultof<_>
-            pset.Clear()
-            res
-        else
-            let res = Array.zeroCreate set.Count
-            length <- 0
-            for e in set do
-                if e.TryGetTarget(&v) then
-                    res.[length] <- v; 
-                    length <- length + 1
-            v <- Unchecked.defaultof<_>
-            set.Clear()
-            res
+    /// <summary>
+    /// Mark allows a specific implementation to
+    /// evaluate the cell during the change propagation process.
+    /// </summary>
+    abstract member Mark : unit -> bool
 
-    member x.Add(value : 'a) : bool =
-        let value = value.Weak
-        if isNull set then 
-            let id = pset.IndexOf(value)
-            if id < 0 then 
-                pset.Add(value)
-                if pset.Count > 8 then
-                    set <- HashSet pset
-                    pset <- null
-                true
-            else 
-                false
-        else
-            set.Add value
-        
+    /// <summary>
+    /// the outOfDate flag for the object is true
+    /// whenever the object has been marked and shall
+    /// be set to false by specific implementations.
+    /// Note that this flag shall only be accessed when holding
+    /// a lock on the adaptive object (allowing for concurrency)
+    /// </summary>
+    abstract member OutOfDate : bool with get, set
 
-    member x.Remove(value : 'a) : bool =
-        let value = value.Weak
-        if isNull set then 
-            pset.Remove(value)
-        else
-            set.Remove value
+    abstract member Reevaluate : bool with get, set
 
-[<StructLayout(LayoutKind.Explicit)>]
-type MultiPtr =
+    /// <summary>
+    /// the adaptive inputs for the object
+    /// </summary>
+    abstract member Inputs : seq<IAdaptiveObject>
+
+    /// <summary>
+    /// the adaptive outputs for the object which are recommended
+    /// to be represented by Weak references in order to allow for
+    /// unused parts of the graph to be garbage collected.
+    /// </summary>
+    abstract member Outputs : VolatileCollection
+
+
+    abstract member InputChanged : obj * IAdaptiveObject -> unit
+    abstract member AllInputsProcessed : obj -> unit
+
+    abstract member ReaderCount : int with get, set
+
+
+and [<StructLayout(LayoutKind.Explicit)>] MultiPtr =
     struct
         [<FieldOffset(0)>]
         val mutable public Single : WeakReference<IAdaptiveObject>
@@ -90,7 +100,8 @@ type MultiPtr =
 /// NOTE: using mode switch omits using types checks to determine used implementation
 ///       using matches instead of downcasts uses OpCode "isinst" instead of "unbox.any" and avoids code to be able to throw exception
 /// </summary>
-type VolatileCollection() =
+and VolatileCollection() =
+    
     let mutable handles : MultiPtr = Unchecked.defaultof<_>
     let mutable mode : byte = 0uy // using mode to avoid "expensive" type checks
 
@@ -180,118 +191,8 @@ type VolatileCollection() =
     member x.Clear() =
         handles.Single <- null
         mode <- 0uy
-            
-
-type VolatileCollectionStrong<'a>() =
-    let mutable set : HashSet<'a> = null
-    let mutable pset : List<'a> = List()
-
-    member x.IsEmpty = 
-        if isNull set then pset.Count = 0
-        else set.Count = 0
-
-    member x.Consume(length : byref<int>) : array<'a> =
-        if isNull set then
-            let res = pset.ToArray()
-            length <- res.Length
-            pset.Clear()
-            res
-        else
-            let res = set.ToArray()
-            length <- res.Length
-            set.Clear()
-            res
-
-    member x.Add(value : 'a) : bool =
-        if isNull set then 
-            let id = pset.IndexOf(value)
-            if id < 0 then 
-                pset.Add(value)
-                if pset.Count > 8 then
-                    set <- HashSet pset
-                    pset <- null
-                true
-            else 
-                false
-        else
-            set.Add value
-        
-
-    member x.Remove(value : 'a) : bool =
-        if isNull set then 
-            pset.Remove(value)
-        else
-            set.Remove value
-
-
-
-/// <summary>
-/// IAdaptiveObject represents the core interface for all
-/// adaptive objects and contains everything necessary for
-/// tracking OutOfDate flags and managing in-/outputs in the
-/// dependency tree.
-///
-/// Since eager evalutation might be desirable in some scenarios
-/// the interface also contains a Level representing the execution
-/// order when evaluating inside a transaction and a function called
-/// Mark allowing implementations to actually perform the evaluation.
-/// Mark returns a bool since eager evaluation might cause the change
-/// propagation process to exit early (if the actual value was unchanged)
-/// In order to make adaptive objects easily identifiable all adaptive
-/// objects must also provide a globally unique id (Id)
-/// </summary>
-[<AllowNullLiteral>]
-type IAdaptiveObject =
-    inherit IWeakable<IAdaptiveObject>
-
-    /// <summary>
-    /// the globally unique id for the adaptive object
-    /// </summary>
-    abstract member Id : int
-
-    /// <summary>
-    /// the level for an adaptive object represents the
-    /// maximal distance from an input cell in the depdency graph
-    /// Note that this level is entirely managed by the system 
-    /// and shall not be accessed directly by users of the system.
-    /// </summary>
-    abstract member Level : int with get, set
-
-    /// <summary>
-    /// Mark allows a specific implementation to
-    /// evaluate the cell during the change propagation process.
-    /// </summary>
-    abstract member Mark : unit -> bool
-
-    /// <summary>
-    /// the outOfDate flag for the object is true
-    /// whenever the object has been marked and shall
-    /// be set to false by specific implementations.
-    /// Note that this flag shall only be accessed when holding
-    /// a lock on the adaptive object (allowing for concurrency)
-    /// </summary>
-    abstract member OutOfDate : bool with get, set
-
-    abstract member Reevaluate : bool with get, set
-
-    /// <summary>
-    /// the adaptive inputs for the object
-    /// </summary>
-    abstract member Inputs : seq<IAdaptiveObject>
-
-    /// <summary>
-    /// the adaptive outputs for the object which are recommended
-    /// to be represented by Weak references in order to allow for
-    /// unused parts of the graph to be garbage collected.
-    /// </summary>
-    abstract member Outputs : VolatileCollection
-
-
-    abstract member InputChanged : obj * IAdaptiveObject -> unit
-    abstract member AllInputsProcessed : obj -> unit
-
-    abstract member ReaderCount : int with get, set
-
+     
+#endnowarn "9"
 
 [<AbstractClass; Sealed; Extension>]
 type AdaptiveObjectExtensions private() =
