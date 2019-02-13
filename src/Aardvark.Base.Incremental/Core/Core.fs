@@ -226,7 +226,6 @@ type AdaptiveToken =
     struct
         val mutable public Caller : IAdaptiveObject
         val mutable public Locked : HashSet<IAdaptiveObject>
-        val mutable public Tag : obj
 
         member inline x.EnterRead(o : IAdaptiveObject) =
             Monitor.Enter o
@@ -259,23 +258,22 @@ type AdaptiveToken =
 
 
         member inline x.WithCaller (c : IAdaptiveObject) =
-            AdaptiveToken(c, x.Locked, x.Tag)
+            AdaptiveToken(c, x.Locked)
 
         member inline x.WithTag (t : obj) =
-            AdaptiveToken(x.Caller, x.Locked, t)
+            AdaptiveToken(x.Caller, x.Locked)
 
 
         member inline x.Isolated =
-            AdaptiveToken(x.Caller, HashSet(), x.Tag)
+            AdaptiveToken(x.Caller, HashSet())
 
-        static member inline Top = AdaptiveToken(null, HashSet(), null)
+        static member inline Top = AdaptiveToken(null, HashSet())
         static member inline Empty = Unchecked.defaultof<AdaptiveToken>
 
-        new(caller : IAdaptiveObject, locked : HashSet<IAdaptiveObject>, tag : obj) =
+        new(caller : IAdaptiveObject, locked : HashSet<IAdaptiveObject>) =
             {
                 Caller = caller
                 Locked = locked
-                Tag = tag
             }
     end
 
