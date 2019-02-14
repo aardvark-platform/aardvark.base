@@ -87,11 +87,9 @@ and [<StructLayout(LayoutKind.Explicit)>] MultiPtr =
         [<FieldOffset(0)>]
         val mutable public Single : WeakReference<IAdaptiveObject>
         [<FieldOffset(0)>]
-        val mutable public List : List<WeakReference<IAdaptiveObject>>
+        val mutable public Array : WeakReference<IAdaptiveObject>[]
         [<FieldOffset(0)>]
         val mutable public Set : HashSet<WeakReference<IAdaptiveObject>>
-        [<FieldOffset(0)>]
-        val mutable public Collection : ICollection<WeakReference<IAdaptiveObject>>
     end
 
 /// <summary>
@@ -103,47 +101,59 @@ and [<StructLayout(LayoutKind.Explicit)>] MultiPtr =
 and VolatileCollection() =
     
     let mutable handles : MultiPtr = Unchecked.defaultof<_>
+    let mutable count : int = 0 // Note: could replace mode, but would require Array or HashSet to be dropped on Consume
     let mutable mode : byte = 0uy // using mode to avoid "expensive" type checks
 
+    // NOTE: myIndexOf > Array.IndexOf<_>(arr, value, 0, count) > Array.IndexOf(arr, value, 0, count)
+    let myIndexOf(arr : WeakReference<_>[], v : WeakReference<_>, count : int) : int =
+        let mutable i = 0
+        let mutable search = true
+        while search && i < count do
+            if Object.ReferenceEquals(arr.[i], v) then
+                search <- false
+            else
+                i <- i + 1
+        if search then
+            -1
+        else
+            i
+
     member x.IsEmpty = 
-        if isNull handles.Single then true
-        elif mode = 0uy then false
-        else handles.Collection.Count = 0
+        count = 0
         
     member x.Count = 
-        if isNull handles.Single then 0
-        elif mode = 0uy then 1
-        else handles.Collection.Count
+        count
             
-    member x.Consume(arr : byref<array<IAdaptiveObject>>) : int =
+    member x.Consume(res : byref<array<IAdaptiveObject>>) : int =
         let mutable length = 0
         if not (isNull handles.Single) then 
             let mutable v : IAdaptiveObject = Unchecked.defaultof<_>
             if mode = 0uy then
-                if arr.Length < 1 then
-                    arr <- Array.zeroCreate 8
+                if res.Length < 1 then
+                    res <- Array.zeroCreate 8
                 if handles.Single.TryGetTarget(&v) then
-                    arr.[0] <- v
+                    res.[0] <- v
                     length <- 1
                 handles.Single <- Unchecked.defaultof<_>
             elif mode = 1uy then
-                let list = handles.List
-                if arr.Length < list.Count then
-                    arr <- Array.zeroCreate 8
-                for i in 0..list.Count-1 do // NOTE: using indexer seems to be faster than foreach
-                    if list.[i].TryGetTarget(&v) then
-                        arr.[length] <- v 
+                let arr = handles.Array
+                if res.Length < count then
+                    res <- Array.zeroCreate 8
+                for i in 0..count-1 do
+                    if arr.[i].TryGetTarget(&v) then
+                        res.[length] <- v 
                         length <- length + 1
-                list.Clear()
+                    arr.[i] <- Unchecked.defaultof<_>
             else
                 let set = handles.Set
-                if arr.Length < set.Count then
-                    arr <- Array.zeroCreate (set.Count * 3 / 2)
+                if res.Length < set.Count then
+                    res <- Array.zeroCreate (set.Count * 3 / 2)
                 for ref in set do 
                     if ref.TryGetTarget(&v) then
-                        arr.[length] <- v
+                        res.[length] <- v
                         length <- length + 1
                 set.Clear()
+        count <- 0
         length
 
     member x.Add(value : IAdaptiveObject) : bool =
@@ -151,45 +161,66 @@ and VolatileCollection() =
         if mode = 0uy then
             if isNull handles.Single then
                 handles.Single <- value
+                count <- 1
                 true
             elif Object.ReferenceEquals(handles.Single, value) then
                 false
             else
-                let list = List<WeakReference<IAdaptiveObject>>(4)
-                list.Add(handles.Single)
-                list.Add(value)
-                handles.List <- list
+                let arr = Array.zeroCreate 8
+                arr.[0] <- handles.Single
+                arr.[1] <- value
+                handles.Array <- arr
                 mode <- 1uy
+                count <- 2
                 true
-        // NOTE: possible to use ICollection if mode >= 1, but directly using List or HashSet has best performance
         elif mode = 1uy then 
-            let list = handles.List
-            if list.Contains(value) then
+            let arr = handles.Array
+            if myIndexOf(arr, value, count) >= 0 then
                 false
-            elif list.Count >= 8 then
-                let set = HashSet list
+            elif count = 8 then
+                let set = HashSet arr
                 set.Add(value) |> ignore
                 handles.Set <- set
                 mode <- 2uy
+                count <- 9
                 true
             else
-                list.Add(value)
+                arr.[count] <- value
+                count <- count + 1
                 true
         else
-            handles.Set.Add(value)
+            if handles.Set.Add(value) then
+                count <- count + 1
+                true
+            else
+                false
 
     member x.Remove(value : IAdaptiveObject) : bool =
-        let value = value.Weak
-        if Object.ReferenceEquals(handles.Single, value) then
-            handles.Single <- null
-            true
-        elif mode > 0uy then
-            handles.Collection.Remove(value)
-        else
-            false
+        let mutable res = false
+        if count > 0 then
+            let value = value.Weak
+            if mode = 0uy then
+                if Object.ReferenceEquals(handles.Single, value) then
+                    handles.Single <- null
+                    count <- 0
+                    res <- true
+            elif mode = 1uy then
+                let arr = handles.Array;
+                let i = myIndexOf(arr, value, count)
+                if i >= 0 then
+                    for j in i..count-2 do
+                        arr.[j] <- arr.[j+1]
+                    count <- count - 1
+                    res <- true
+            else
+                if handles.Set.Remove value then
+                    count <- count - 1
+                    res <- true
+        res
 
     member x.Clear() =
         handles.Single <- null
+        count <- 0
         mode <- 0uy
      
 #endnowarn "9"
