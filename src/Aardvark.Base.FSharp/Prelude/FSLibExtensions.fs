@@ -327,31 +327,35 @@ module Threading =
     /// In our 'wrong' implementation put does not block but overrides the old value.
     /// We use it typically for synchrononized sampling use cases.
     type MVar<'a>() =
-        let mutable content = Unchecked.defaultof<ref<'a>>
-        // feel free to replace atomic + sem by appropriate .net synchronization data type
-        let sem = new SemaphoreSlim(0)
-        let mutable cnt = 0
-        /// Please note that Aardvark.Base.FSharp's MVar implementation is different from Haskell's MVar introduced in
-        ///  "Concurrent Haskell" by Simon Peyton Jones, Andrew Gordon and Sigbjorn Finne. 
-        /// seealso: http://hackage.haskell.org/package/base-4.11.1.0/docs/Control-Concurrent-MVar.html
-        /// In our 'wrong' implementation put does not block but overrides the old value.
-        /// We use it typically for synchrononized sampling use cases.
+        let l = obj()
+
+        let mutable hasValue = false
+        let mutable content = Unchecked.defaultof<'a>
+
         member x.Put v = 
-            content <- ref v
-            if Interlocked.Exchange(&cnt, 1) = 0 then
-                sem.Release() |> ignore
+            lock l (fun () ->
+                content <- v
+                if not hasValue then
+                    hasValue <- true
+                    Monitor.PulseAll l 
+            )
+
         member x.Take () =
-            sem.Wait()
-            let res = !Interlocked.Exchange(&content,Unchecked.defaultof<_>)
-            cnt <- 0
-            res
+            lock l (fun () ->
+                while not hasValue do
+                    Monitor.Wait l |> ignore
+                let v = content
+                content <- Unchecked.defaultof<_>
+                hasValue <- false
+                v
+            )
+
+        [<Obsolete>]
         member x.TakeAsync () =
             async {
                 let! ct = Async.CancellationToken
-                do! Async.AwaitTask(sem.WaitAsync(ct))
-                let res = !Interlocked.Exchange(&content,Unchecked.defaultof<_>)
-                cnt <- 0
-                return res
+                do! Async.SwitchToThreadPool()
+                return x.Take()
             }
             
      
@@ -371,6 +375,7 @@ module Threading =
             v
         let put (m : MVar<'a>) v = m.Put v
         let take (m : MVar<'a>) = m.Take()
+        [<Obsolete>]
         let takeAsync (m : MVar<'a>) = m.TakeAsync ()
 
     type Interlocked with
