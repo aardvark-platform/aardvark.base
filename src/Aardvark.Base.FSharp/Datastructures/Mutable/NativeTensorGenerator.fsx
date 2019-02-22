@@ -186,6 +186,9 @@ module Generator =
             step    : string -> string
             set     : string -> string -> string -> string
             get     : string -> string -> string
+            integral : bool
+            compInit : string -> string -> string
+            compStep  : string -> string -> string
         }
 
     [<CompilationRepresentation(CompilationRepresentationFlags.ModuleSuffix)>]
@@ -201,6 +204,9 @@ module Generator =
                     step = fun _ -> sprintf "%s.One" lv
                     get = fun v i -> sprintf "%s.%s" v i
                     set = fun v i r -> sprintf "%s.%s <- %s" v i r
+                    integral = true
+                    compInit = fun _ _ -> "0L"
+                    compStep = fun _ _ -> "1L"
                 }
 
             else
@@ -211,6 +217,9 @@ module Generator =
                     step = fun _ -> "1L"
                     get = fun v _ -> v
                     set = fun v _ r -> sprintf "%s <- %s" v r
+                    integral = true
+                    compInit = fun _ _ -> "0L"
+                    compStep = fun _ _ -> "1L"
                 }
 
         let int (dim : int) =
@@ -223,6 +232,9 @@ module Generator =
                     step = fun _ -> sprintf "%s.One" iv
                     get = fun v i -> sprintf "%s.%s" v i
                     set = fun v i r -> sprintf "%s.%s <- %s" v i r
+                    integral = true
+                    compInit = fun _ _ -> "0"
+                    compStep = fun _ _ -> "1"
                 }
 
             else
@@ -233,6 +245,9 @@ module Generator =
                     step = fun _ -> "1"
                     get = fun v _ -> v
                     set = fun v _ r -> sprintf "%s <- %s" v r
+                    integral = true
+                    compInit = fun _ _ -> "0"
+                    compStep = fun _ _ -> "1"
                 }
 
         let float (dim : int) =
@@ -250,6 +265,10 @@ module Generator =
                     step = fun s -> sprintf "%s.One / %s(%s)" (dv) dv s 
                     get = fun v i -> sprintf "%s.%s" v i
                     set = fun v i r -> sprintf "%s.%s <- %s" v i r
+                    integral = false
+                    
+                    compInit = fun s d -> sprintf "0.5 / %s.%s" s d
+                    compStep = fun s d -> sprintf "1.0 / %s.%s" s d
                 }
 
             else
@@ -260,6 +279,9 @@ module Generator =
                     step = fun s -> sprintf "1.0 / float(%s)" s 
                     get = fun v _ -> v
                     set = fun v _ r -> sprintf "%s <- %s" v r
+                    integral = false
+                    compInit = fun s _ -> sprintf "0.5 / float(%s)" s 
+                    compStep = fun s _ -> sprintf "1.0 / float(%s)" s 
                 }
 
         let all (dim : int) =
@@ -268,6 +290,56 @@ module Generator =
                 int dim
                 float dim
             ]
+
+
+
+    let iter (coord : CoordDescription) (components : string[]) =
+        let suffix = components |> String.concat ""
+
+        start "member inline private x.Iter%s(action : %s -> 'a -> unit) = " suffix coord.typ
+        line "let action = OptimizedClosures.FSharpFunc<%s, 'a, unit>.Adapt(action)" coord.typ
+        line "let sa = nativeint (sizeof<'a>)"
+        line "let mutable ptr = ptr |> NativePtr.toNativeInt"
+        line "ptr <- ptr + nativeint info.Origin * sa"
+
+        for d in 0 .. components.Length-2 do
+            let mine = components.[d]
+            let next = components.[d + 1]
+            line "let s%s = nativeint (info.S%s * info.D%s) * sa" mine mine mine
+            line "let j%s = nativeint (info.D%s - info.S%s * info.D%s) * sa" mine mine next next
+
+
+        let mine = components.[components.Length-1]
+        line "let s%s = nativeint (info.S%s * info.D%s) * sa" mine mine mine
+        line "let j%s = nativeint (info.D%s) * sa" mine mine
+        
+        if not coord.integral then
+            line "let initialCoord = %s" (coord.init "x.Size")
+            line "let step = %s" (coord.step "x.Size")
+            line "let mutable coord = initialCoord"
+        else
+            line "let mutable coord = %s" (coord.init "x.Size")
+
+        let rec buildLoop (index : int) =
+            if index >= components.Length then
+                //line "let c = %s" (coord.view "coord" "x.Size")
+                line "action.Invoke(coord, NativePtr.read (NativePtr.ofNativeInt<'a> ptr))"
+                //line "NativePtr.write (NativePtr.ofNativeInt<'a> ptr) (getValue coord)"
+            else
+                let mine = components.[index]
+                line "let e%s = ptr + s%s" mine mine
+                if index <> 0 then 
+                    if coord.integral then line "%s" (coord.set "coord" mine (coord.compInit "x.Size" mine))
+                    else line "%s" (coord.set "coord" mine (coord.get "initialCoord" mine))
+                start "while ptr <> e%s do" mine 
+                buildLoop (index + 1)
+                if coord.integral then line "%s" (coord.set "coord" mine (sprintf "%s + %s" (coord.get "coord" mine) (coord.compStep "x.Size" mine)))
+                else line "%s" (coord.set "coord" mine (sprintf "%s + %s" (coord.get "coord" mine) (coord.get "step" mine)))
+                line "ptr <- ptr + j%s" mine
+                stop()
+
+        buildLoop 0
+        stop()
 
     let coordSetter (coord : CoordDescription) (components : string[]) =
         let suffix = components |> String.concat ""
@@ -969,6 +1041,11 @@ module Generator =
             for perm in allPermutations componentNames do coordSetter coord (List.toArray perm)
             dispatcher id componentNames "SetByCoord" ["value", sprintf "%s -> 'a" coord.typ]
 
+        // Iter (value)
+        for coord in CoordDescription.all dim do
+            for perm in allPermutations componentNames do iter coord (List.toArray perm)
+            dispatcher id componentNames "Iter" ["action", sprintf "%s -> 'a -> unit" coord.typ]
+
         // BlitTo(other, lerp) 
         for perm in allPermutations componentNames do 
             blitInternal (List.toArray perm)
@@ -1080,8 +1157,12 @@ module Generator =
         line "let inline copyWith (f : 'a -> 'b) (src : %s<'a>) (dst : %s<'b>) = src.CopyTo(dst, f)" name name 
         line ""
         line "/// temporarily pins a %s making it available as %s" managedName name
-        start "let using (m : %s<'a>) (f : %s<'a> -> 'b) = %s<'a>.Using(m, f)" managedName name  name
-        stop()
+        line "let using (m : %s<'a>) (f : %s<'a> -> 'b) = %s<'a>.Using(m, f)" managedName name  name
+        line ""
+        line "/// iterates over all entries of the given %s and executes the given action" name
+        start "let inline iter (action : %s -> 'a -> unit) (m : %s<'a>) = m.Iter(action)" lv name 
+
+        
         stop()
 
         line ""
