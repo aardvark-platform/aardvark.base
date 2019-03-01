@@ -1,5 +1,11 @@
 ﻿using Aardvark.Base;
 using NUnit.Framework;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Reflection.Emit;
+using System.Runtime.InteropServices;
+using System.Security.Cryptography;
 
 namespace Aardvark.Tests.Extensions
 {
@@ -77,6 +83,108 @@ namespace Aardvark.Tests.Extensions
             Report.BeginTimed("Computing Adler-32 Checksum of {0}MB data array", mb);
             huge.ComputeAdler32Checksum();
             Report.End();
+        }
+
+        /// <summary>
+        /// Would be nice utils but are not .net standard compatible
+        /// </summary>
+        public static class CLRUtils
+        {
+            public static int SizeOf<T>(T obj)
+            {
+                return SizeOfCache<T>.SizeOf;
+            }
+
+            private static class SizeOfCache<T>
+            {
+                public static readonly int SizeOf;
+
+                static SizeOfCache()
+                {
+                    var dm = new DynamicMethod("func", typeof(int),
+                                               Type.EmptyTypes, typeof(CLRUtils));
+
+                    ILGenerator il = dm.GetILGenerator();
+                    il.Emit(OpCodes.Sizeof, typeof(T));
+                    il.Emit(OpCodes.Ret);
+
+                    var func = (Func<int>)dm.CreateDelegate(typeof(Func<int>));
+                    SizeOf = func();
+                }
+            }
+
+            private static Dictionary<Type, int> _sizeCache = new Dictionary<Type, int>();
+            public static int SizeOf(Type type)
+            {
+                return _sizeCache.GetCreate(type, t =>
+                {
+                    var dm = new DynamicMethod("func", typeof(int),
+                                                   Type.EmptyTypes, typeof(CLRUtils));
+
+                    ILGenerator il = dm.GetILGenerator();
+                    il.Emit(OpCodes.Sizeof, t);
+                    il.Emit(OpCodes.Ret);
+
+                    var func = (Func<int>)dm.CreateDelegate(typeof(Func<int>));
+                    return func();
+                });
+            }
+        }
+
+        [Test]
+        public static void HashEquality()
+        {   // -> scroll                                                                                                                                                                                                                                                                   //######################//
+            var a = "PFDMHE3qf5BD2GVXHSb7Pw==Xu6fEt3zjgNOhgcgU6P3VA==hrptgTUY1q95BRjYpBlcuA==rKx+IsdlT3wMNiC1su/Ciw==yWz34lIfOgRXNbbCM2Xg6Q==OkYVqxAg1+r/xOoNgTzO5w==jHm9kCMmSmFskgSQYae3EA==9osN2zSiH4XFSOdNoQq7Yg==xhvrPfi5l7GYy0Ka4pwp7w==aWze5ohFCFkxZMZPqTLfsA==iUU+2nRevMAYlHQgrjKfyQ==74FhaizLzpPAPHZ0h/Emsw==KbzIWiTHRlFG5Whs3YYzyA==M/G8RpD5bp9kRKLDFHy9qg==Wv+3r9IY0lfPq+LUAtNPsQ==j8/23gUX4FzrEOPzcpAhcA==";
+            var b = "PFDMHE3qf5BD2GVXHSb7Pw==Xu6fEt3zjgNOhgcgU6P3VA==hrptgTUY1q95BRjYpBlcuA==rKx+IsdlT3wMNiC1su/Ciw==yWz34lIfOgRXNbbCM2Xg6Q==OkYVqxAg1+r/xOoNgTzO5w==jHm9kCMmSmFskgSQYae3EA==9osN2zSiH4XFSOdNoQq7Yg==xhvrPfi5l7GYy0Ka4pwp7w==aWze5ohFCFkxZMZPqTLfsA==iUU+2nRevMAYlHQgrjKfyQ==dqrZpWI5/PzQhFpHLVPaKw==KbzIWiTHRlFG5Whs3YYzyA==M/G8RpD5bp9kRKLDFHy9qg==Wv+3r9IY0lfPq+LUAtNPsQ==j8/23gUX4FzrEOPzcpAhcA==";
+
+            var arrayA = a.ToArray();
+            var arrayB = b.ToArray();
+
+            var md5A = arrayA.ComputeMD5Hash().ToHex();
+            var md5B = arrayB.ComputeMD5Hash().ToHex();
+
+            if (md5A == md5B)
+                Assert.Fail("MD5 BAD -> actually UnsafeCoerce char to byte fails due to Marshal.SizeOf != sizeof()");
+
+            var etA = arrayA.GetType().GetElementType();
+            var clrSizeA = CLRUtils.SizeOf(etA); // 2
+            var marshalSizeA = Marshal.SizeOf(etA); // 1
+            
+            var bytesA = arrayA.Map(x => (short)x);
+            var bytesB = arrayB.Map(x => (short)x);
+
+            var byteHashA = bytesA.ComputeMD5Hash().ToHex();
+            var byteHashB = bytesB.ComputeMD5Hash().ToHex();
+
+            if (byteHashA == byteHashB)
+                Assert.Fail("MD5 REAL BAD");
+
+            if (byteHashA != md5A)
+                Assert.Fail("HASH A BAD");
+
+            if (byteHashB != md5B)
+                Assert.Fail("HASH B BAD");
+        }
+
+        public static void SizeOfTest()
+        {
+            TestSize<byte>();
+            TestSize<short>();;
+            TestSize<int>();
+            TestSize<long>();
+            TestSize<char>();
+            TestSize<float>();
+            TestSize<double>();
+            TestSize<decimal>();
+            TestSize<bool>();
+        }
+
+        static void TestSize<T>()
+        {
+            var clrSize = CLRUtils.SizeOf(typeof(T));
+            var marshalSize = Marshal.SizeOf<T>();
+            if (clrSize != marshalSize)
+                Report.Line("{0} size {1} != {2}", typeof(T).Name, clrSize, marshalSize);
         }
     }
 }

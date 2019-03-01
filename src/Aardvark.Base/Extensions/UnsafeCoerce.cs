@@ -30,11 +30,19 @@ namespace Aardvark.Base
             return typeId;
         }
 
+        internal static int GetCLRSize(Type t)
+        {
+            // TODO: somehow make use of sizeof operator -> requires compile time type -> cannot use ILGenerator in .net standard
+            if (t == typeof(char)) return 2; // Marshal.SizeOf = 1
+            if (t == typeof(bool)) return 1; // Marshal.SizeOf = 4
+            return Marshal.SizeOf(t);
+        }
+
         internal static TR[] UnsafeCoerce<TR>(this Array input, IntPtr targetId)
             where TR : struct
         {
-            var inputSize = Marshal.SizeOf(input.GetType().GetElementType());
-            var outputSize = Marshal.SizeOf(typeof(TR));
+            var inputSize = GetCLRSize(input.GetType().GetElementType());
+            var outputSize = GetCLRSize(typeof(TR));
             var newLength = (input.Length * inputSize) / outputSize;
 
             var gcHandle = GCHandle.Alloc(input, GCHandleType.Pinned);
@@ -64,8 +72,8 @@ namespace Aardvark.Base
         internal static void UnsafeCoercedApply<TR>(this Array input, Action<TR[]> action, IntPtr targetId)
             where TR : struct
         {
-            var inputSize = Marshal.SizeOf(input.GetType().GetElementType());
-            var outputSize = Marshal.SizeOf(typeof(TR));
+            var inputSize = GetCLRSize(input.GetType().GetElementType());
+            var outputSize = GetCLRSize(typeof(TR));
             var originalLength = input.Length;
             var targetLength = (originalLength * inputSize) / outputSize;
 
