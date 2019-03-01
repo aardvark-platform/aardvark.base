@@ -145,7 +145,7 @@ namespace Aardvark.Tests.Extensions
 
             if (md5A == md5B)
                 Assert.Fail("MD5 BAD -> actually UnsafeCoerce char to byte fails due to Marshal.SizeOf != sizeof()");
-
+            
             var etA = arrayA.GetType().GetElementType();
             var clrSizeA = CLRUtils.SizeOf(etA); // 2
             var marshalSizeA = Marshal.SizeOf(etA); // 1
@@ -166,6 +166,30 @@ namespace Aardvark.Tests.Extensions
                 Assert.Fail("HASH B BAD");
         }
 
+        public struct MyStruct1
+        {
+            public bool fun1;
+            public bool fun2;
+        }
+
+        public struct MyStruct2
+        {
+            public char fun1;
+            public char fun2;
+        }
+
+        public struct MyStruct3
+        {
+            public bool fun1;
+            public char fun2;
+        }
+
+        public struct MyStruct4
+        {
+            public MyStruct2 fun1;
+            public MyStruct1 fun2;
+        }
+
         public static void SizeOfTest()
         {
             TestSize<byte>();
@@ -177,6 +201,10 @@ namespace Aardvark.Tests.Extensions
             TestSize<double>();
             TestSize<decimal>();
             TestSize<bool>();
+            TestSize<MyStruct1>();
+            TestSize<MyStruct2>();
+            TestSize<MyStruct3>();
+            TestSize<MyStruct4>();
         }
 
         static void TestSize<T>()
