@@ -11,7 +11,7 @@ namespace Aardvark.Tests
         static void Main(string[] args)
         {
             //new BoxTests().BoxTransformTest();
-            Extensions.Hashes.SizeOfTest();
+            Extensions.DateTimeTests.JulinaDay();
         }
     }
 }
