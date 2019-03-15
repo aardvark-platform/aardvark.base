@@ -11,6 +11,7 @@ open AgHelpers
 // Implementation of an embedded domain specific language for attribute grammars. The library works with any types,
 // semantic functions can be added by defining modules annotated with [<Semantic>] attributes.
 module Ag =
+    open System
 
     type Semantic() =
         inherit System.Attribute()
@@ -196,10 +197,13 @@ module Ag =
     //scope and restores everything afterwards.
     let inline useScope (s : Scope) (f : unit -> 'a) : 'a =
         let oldScope = currentScope.Value
-        currentScope.Value <- s
-        let r = f()
-        currentScope.Value <- oldScope
-        r
+        if Object.ReferenceEquals(oldScope, s) then
+            f()
+        else
+            currentScope.Value <- s
+            let r = f()
+            currentScope.Value <- oldScope
+            r
 
     let unscoped f = useScope rootScope.Value f
 

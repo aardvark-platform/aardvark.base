@@ -40,8 +40,7 @@ type AbstractReader<'ops>(scope : Ag.Scope, t : Monoid<'ops>) =
 
     member x.Dispose() =
         x.Release()
-        let mutable foo = 0
-        x.Outputs.Consume(&foo) |> ignore
+        x.Outputs.Clear()
 
     interface IDisposable with
         member x.Dispose() = x.Dispose()
@@ -86,8 +85,7 @@ type AbstractDirtyReader<'t, 'ops when 't :> IAdaptiveObject>(scope : Ag.Scope, 
 
     member x.Dispose() =
         x.Release()
-        let mutable foo = 0
-        x.Outputs.Consume(&foo) |> ignore
+        x.Outputs.Clear()
 
     interface IDisposable with
         member x.Dispose() = x.Dispose()
