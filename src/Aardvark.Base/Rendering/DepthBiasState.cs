@@ -10,8 +10,8 @@ namespace Aardvark.Base.Rendering
         public readonly double SlopeScale;
         public readonly double Clamp;
 
-        public bool BiasEnabled => Constant != 0 && SlopeScale != 0;
-        public bool UseClamp => Clamp == 0;
+        public bool BiasEnabled => Constant != 0 || SlopeScale != 0;
+        public bool UseClamp => Clamp != 0;
 
         public DepthBiasState(double constantBias, double slopeScaleBias, double depthBiasClamp = 0)
         {
