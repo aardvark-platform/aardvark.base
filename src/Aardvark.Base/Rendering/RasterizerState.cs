@@ -3,9 +3,9 @@
     public struct RasterizerState
     {
         public DepthTestMode DepthTest { get; set; }
-        public DepthBiasValues DepthBias { get; set; }
+        public DepthBiasState DepthBias { get; set; }
         public CullMode CullMode { get; set; }
-        public Face FrontFace { get; set; }
+        public WindingOrder FrontFace { get; set; }
         public BlendMode BlendMode { get; set; }
         public FillMode FillMode { get; set; }
         public StencilMode StencilMode { get; set; }
