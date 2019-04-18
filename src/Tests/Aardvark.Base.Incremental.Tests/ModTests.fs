@@ -840,7 +840,7 @@ module ``Basic Mod Tests`` =
         for j in 0..0 do // loop used for repeated testing in standalone executable
             let mutable totalMarkTime = 0.0
             let mutable totalEvalTime = 0.0
-            let iter = 10
+            let iter = 1
             for k in 1..iter do
                 //let root = Mod.init Trafo3d.Identity
                 let root = Mod.init 10
