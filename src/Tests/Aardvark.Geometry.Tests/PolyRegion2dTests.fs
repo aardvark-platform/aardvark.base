@@ -67,9 +67,9 @@ module PolyRegion2dTests =
         
         let B = PolyRegion.ofList ([ V2d(7.5, 2.5); V2d(-4.0, 2.5); V2d(-4, -4); V2d(7.5, -4.0) ])
         let C = PolyRegion.ofList ([ V2d(14.0, 7.5); V2d(0.4, 7.5); V2d(0.4, 0.3); V2d(14.0, 0.3)])
-
-        let Diff = (A - (A * (B + C)))
         
+        let Diff = (A - (A * (B + C)))
+
         let Diff0 = (Diff.Polygons.Item 0).Points |> Seq.toList
         let Diff1 = (Diff.Polygons.Item 1).Points |> Seq.toList
 
