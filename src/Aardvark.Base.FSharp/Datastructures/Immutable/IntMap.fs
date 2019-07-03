@@ -646,6 +646,20 @@ module IntMap =
             | Some y -> Tip(k, y)
             | None -> Nil
         | Nil -> Nil
+        
+    ///O(n). Map keys/values and collect the Just results. Credit: Haskell.org
+    let rec mapOptionWithKey2 (f : int -> 'a -> Option<'b * 'c>) : intmap<'a> -> intmap<'b> * intmap<'c>  =
+        function
+        | Bin(p, m, l, r) -> 
+            let la, lb = mapOptionWithKey2 f l
+            let ra, rb = mapOptionWithKey2 f r
+            bin p m la ra,
+            bin p m lb rb
+        | Tip(k, x) ->
+            match f k x with
+            | Some (a,b) -> Tip(k, a), Tip(k, b)
+            | None -> Nil, Nil
+        | Nil -> Nil, Nil
 
     ///O(n). Map values and collect the Just results. Credit: Haskell.org
     let mapOption f = mapOptionWithKey (fun _ x -> f x)

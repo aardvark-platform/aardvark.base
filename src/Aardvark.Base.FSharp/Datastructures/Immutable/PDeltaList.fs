@@ -5,7 +5,7 @@ open System.Collections.Generic
 
 [<StructuredFormatDisplay("{AsString}")>]
 [<Struct; StructuralEquality; NoComparison>]
-type pdeltalist< [<EqualityConditionalOn>] 'a> internal(content : MapExt<Index, ElementOperation<'a>>) =
+type pdeltalist< [<EqualityConditionalOn>] 'a>(content : MapExt<Index, ElementOperation<'a>>) =
 
     static let monoid : Monoid<pdeltalist<'a>> =
         {

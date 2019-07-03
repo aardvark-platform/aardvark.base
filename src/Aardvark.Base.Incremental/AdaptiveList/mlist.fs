@@ -18,7 +18,7 @@ type mlist<'a>(initial : plist<'a>) =
     let mutable current = initial
 
     member x.Update(values : plist<'a>) =
-        if not (Object.ReferenceEquals(values, current)) then
+        if not (Object.Equals(values, current)) then
             let delta = plist.ComputeDeltas(current, values)
             current <- values
             if not (PDeltaList.isEmpty delta) then

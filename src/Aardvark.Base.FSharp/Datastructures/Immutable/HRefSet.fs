@@ -197,8 +197,12 @@ type hrefset<'a>(store : hmap<'a, int>) =
         hrefset map
 
     member x.ComputeDelta(other : hrefset<'a>) =
+        // O(1)
+        if store.Store == other.Store.Store then
+            HDeltaSet.empty
+
         // O(other)
-        if store.IsEmpty then 
+        elif store.IsEmpty then 
             other.Store |> HMap.map (fun _ _ -> 1) |> HDeltaSet.ofHMap
 
         // O(N)

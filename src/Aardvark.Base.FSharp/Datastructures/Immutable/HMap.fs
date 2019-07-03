@@ -215,7 +215,7 @@ type hmap<'k, [<EqualityConditionalOn>] 'v>(cnt : int, store : intmap<list<'k * 
         Pickler.FromPrimitives(read, write, clone, accept)
 
 
-    member internal x.Store = store
+    member x.Store = store
 
     member x.IsEmpty = cnt = 0
 
@@ -305,6 +305,28 @@ type hmap<'k, [<EqualityConditionalOn>] 'v>(cnt : int, store : intmap<list<'k * 
                 |> IntMap.map (fun l -> l |> List.map (fun (k,v) -> (k, mapping k v)))
         hmap(cnt, newStore)
 
+
+    member x.ChooseTup(mapping : 'k -> 'v -> Option<'b * 'c>) =
+        let mutable cnt = 0
+        let mapping (k : 'k, v : 'v) =
+            match mapping k v with
+                | Some b -> 
+                    cnt <- cnt + 1
+                    Some (k,b)
+                | None -> 
+                    None
+
+        let a, b = 
+            store
+                |> IntMap.mapOptionWithKey2 (fun _ l ->
+                    match List.choose mapping l with
+                        | [] -> None
+                        | l ->  
+                            let ll = l |> List.map (fun (k,(l,_)) -> k, l)
+                            let rl = l |> List.map (fun (k,(_,r)) -> k, r)
+                            Some (ll, rl)
+                   )
+        hmap(cnt, a), hmap(cnt, b)
 
     member x.Choose(mapping : 'k -> 'v -> Option<'b>) =
         let mutable cnt = 0

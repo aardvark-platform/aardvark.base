@@ -12,6 +12,26 @@ module List =
     let all (l : list<bool>) =
         l |> List.fold (&&) true
 
+
+[<Property>]
+let ``[PList] equality`` (l : list<int>)  =
+    let list1 = l |> PList.ofList
+    let list2 = l |> PList.ofList
+    let list3 = PList.append 4 list1
+
+    List.all [
+        list1 = list1
+        list1 = list2
+        list2 = list2
+        PList.computeDelta list1 list2 = PDeltaList.empty
+        PList.computeDelta list2 list1 = PDeltaList.empty
+        PList.computeDelta PList.empty list1 = (list1.Content |> MapExt.map (fun _ v -> Set v) |> PDeltaList.ofMap)
+        PList.computeDelta list1 PList.empty = (list1.Content |> MapExt.map (fun _ v -> Remove) |> PDeltaList.ofMap)
+        list3 <> list1
+        (match PDeltaList.toList (PList.computeDelta list1 list3) with | [_,Set 4] -> true | _ -> false)
+    ]
+
+
 [<Property>]
 let ``[PList] count`` (l : list<int>) (a : int)  =
     let list = l |> PList.ofList

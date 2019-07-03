@@ -84,7 +84,7 @@ type Time =
                     | _ -> failwithf "cannot compare time to %A" o
 
         override x.GetHashCode() = System.Runtime.CompilerServices.RuntimeHelpers.GetHashCode(x)
-        override x.Equals o = System.Object.ReferenceEquals(x,o)
+        override x.Equals o = System.Object.ReferenceEquals(x, o)
         override x.ToString() = sprintf "%.5f" ((float x.Time) / (float System.UInt64.MaxValue))
         internal new (h) = { Representant = null; m_time = 0UL; NextArray = Array.zeroCreate h; PrevArray = Array.zeroCreate h; Count = 1 }
 

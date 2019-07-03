@@ -18,12 +18,11 @@ type mmap<'k, 'v>(initial : hmap<'k, 'v>) =
     let mutable current = initial
 
     member x.Update(values : hmap<'k, 'v>) =
-        if not (Object.ReferenceEquals(values, current)) then
-            let delta = HMap.computeDelta current values
-            current <- values
+        let delta = HMap.computeDelta current values
+        current <- values
 
-            if not (HMap.isEmpty delta) then
-                history.Perform delta |> ignore
+        if not (HMap.isEmpty delta) then
+            history.Perform delta |> ignore
 
     member private x.AsString = x.ToString()
     override x.ToString() = current.ToString()
