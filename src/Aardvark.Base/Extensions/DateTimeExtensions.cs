@@ -7,6 +7,15 @@ namespace Aardvark.Base
     public static class DateTimeExtensions
     {
         /// <summary>
+        /// Calculates the UTC Julian day from the given DateTime and time zone.
+        /// Julian days start at 12h noon January 1, 4713 BC (day 0). The fractional part contains the fraction of a day since the last noon. 
+        /// </summary>
+        public static double ComputeJulianDayUTC(this DateTime date, double timeZone)
+        {
+            return date.ComputeJulianDay() - (timeZone / 24.0);
+        }
+
+        /// <summary>
         /// Calculates the Julian day from the given DateTime.
         /// Julian days start at 12h noon January 1, 4713 BC (day 0). The fractional part contains the fraction of a day since the last noon. 
         /// </summary>
