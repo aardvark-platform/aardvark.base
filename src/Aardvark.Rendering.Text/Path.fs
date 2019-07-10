@@ -62,7 +62,7 @@ module Path =
             abs proj.M30 < eps &&
             abs proj.M31 < eps &&
             abs proj.M32 < eps
-            
+
         let pathVertex (v : Vertex) =
             vertex {
                 let trafo = uniform.ModelViewTrafo
@@ -119,6 +119,62 @@ module Path =
                         //kind = v.klmKind.W
                         layer = v.color.W
                         //klm = v.klmKind.XYZ
+                        color = V4d(v.color.XYZ, 1.0)
+                }
+            }
+            
+        let pathVertexBillboard (v : Vertex) =
+            vertex {
+                let trafo = uniform.ModelViewTrafo
+
+                let mvi = trafo.Transposed
+                let right = mvi.C0.XYZ |> Vec.normalize
+                let up = mvi.C1.XYZ |> Vec.normalize
+
+                let scale = v.offset.ZW
+                let flip = scale.X < 0.0
+                let scale = V2d(abs scale.X, abs scale.Y)
+                let offset = v.offset.XY
+
+                let mutable p = V4d.Zero
+                let pm = offset + v.p.XY * scale
+
+
+                let pm = right * pm.X + up * pm.Y + V3d(0.0, 0.0, v.p.Z)
+
+                p <- trafo * V4d(pm, 1.0)
+                    
+                return { 
+                    v with 
+                        p = uniform.ProjTrafo * p
+                        layer = 0.0
+                        color = v.color
+                    }
+            }
+            
+        let pathVertexInstancedBillboard (v : Vertex) =
+            vertex {
+                let instanceTrafo = M44d.op_Explicit v.instanceTrafo
+                let trafo = uniform.ModelViewTrafo * instanceTrafo
+                
+                let mvi = trafo.Transposed
+                let right = mvi.C0.XYZ |> Vec.normalize
+                let up = mvi.C1.XYZ |> Vec.normalize
+
+
+                let scale = v.offset.ZW
+                let flip = scale.X < 0.0
+                let scale = V2d(abs scale.X, abs scale.Y)
+                let offset = v.offset.XY
+                
+                let pm = offset + v.p.XY * scale
+
+                let p = trafo * V4d(right * pm.X + up * pm.Y + V3d(0.0, 0.0, v.p.Z), v.p.W)
+                
+                return { 
+                    v with 
+                        p = uniform.ProjTrafo * p 
+                        layer = v.color.W
                         color = V4d(v.color.XYZ, 1.0)
                 }
             }

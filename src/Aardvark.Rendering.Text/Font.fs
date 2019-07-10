@@ -346,8 +346,7 @@ type ShapeCache(r : IRuntime) =
 
     let surfaceCache = ConcurrentDictionary<IFramebufferSignature, IBackendSurface>()
     let boundarySurfaceCache = ConcurrentDictionary<IFramebufferSignature, IBackendSurface>()
-
-
+    let billboardSurfaceCache = ConcurrentDictionary<IFramebufferSignature, IBackendSurface>()
 
     let effect =
         FShade.Effect.compose [
@@ -375,6 +374,17 @@ type ShapeCache(r : IRuntime) =
             Path.Shader.boundary            |> toEffect
         ]
 
+    let billboardEffect =
+        FShade.Effect.compose [
+            Path.Shader.pathVertexBillboard |> toEffect
+            Path.Shader.pathFragment    |> toEffect
+        ]
+        
+    let instancedBillboardEffect =
+        FShade.Effect.compose [
+            Path.Shader.pathVertexInstancedBillboard |> toEffect
+            Path.Shader.pathFragment        |> toEffect
+        ]
 
     let surface (s : IFramebufferSignature) =
         surfaceCache.GetOrAdd(s, fun s -> 
@@ -390,17 +400,28 @@ type ShapeCache(r : IRuntime) =
         boundarySurfaceCache.GetOrAdd(s, fun s ->
             r.PrepareEffect(
                 s, [
-                    //DefaultSurfaces.trafo |> toEffect
                     Path.Shader.boundaryVertex  |> toEffect
                     Path.Shader.boundary        |> toEffect
                 ]
             )
         )
 
+    let billboardSurface (s : IFramebufferSignature) =
+        billboardSurfaceCache.GetOrAdd(s, fun s ->
+            r.PrepareEffect(
+                s, [
+                    Path.Shader.pathVertexBillboard  |> toEffect
+                    Path.Shader.boundary        |> toEffect
+                ]
+            )
+        )
+        
+
     do 
         r.OnDispose.Add(fun () ->
             boundarySurfaceCache.Values |> Seq.iter r.DeleteSurface
             surfaceCache.Values |> Seq.iter r.DeleteSurface
+            billboardSurfaceCache.Values |> Seq.iter r.DeleteSurface
             pool.Dispose()
             ranges.Clear()
             cache.Clear()
@@ -428,8 +449,11 @@ type ShapeCache(r : IRuntime) =
     member x.InstancedEffect = instancedEffect
     member x.BoundaryEffect = boundaryEffect
     member x.InstancedBoundaryEffect = instancedBoundaryEffect
+    member x.BillboardEffect = billboardEffect
+    member x.InstancedBillboardEffect = instancedBillboardEffect
     member x.Surface s = surface s :> ISurface
     member x.BoundarySurface s = boundarySurface s :> ISurface
+    member x.BillboardSurface s = billboardSurface s :> ISurface
     member x.VertexBuffers = vertexBuffers
 
     member x.GetBufferRange(shape : Shape) =
