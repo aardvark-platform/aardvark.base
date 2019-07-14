@@ -74,6 +74,7 @@
     <Compile Include="Math\ColorTests.cs" />
     <Compile Include="Math\PolynomialTests.cs" />
     <Compile Include="Math\Distributions.cs" />
+    <Compile Include="Other\SamplerStateTest.cs" />
     <Compile Include="Plane\PlaneTest.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
