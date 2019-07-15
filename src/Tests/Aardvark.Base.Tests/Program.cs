@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Aardvark.Tests.Geometry;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -13,7 +14,8 @@ namespace Aardvark.Tests
             //new BoxTests().BoxTransformTest();
             //Extensions.DateTimeTests.JulinaDay();
             //new SamplerStateTest().SamplerStateTestHashCollision();
-            new ReportingTests().MultiThread();
+            //new ReportingTests().MultiThread();
+            new Hull3dTests().VisualHullTest();
         }
     }
 }

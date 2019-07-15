@@ -457,6 +457,35 @@ namespace Aardvark.Base
             => trafo.Forward.C3.XYZ;
 
         /// <summary>
+        /// Builds a hull from the given view-projection transformation (left, right, bottom, top, near, far).
+        /// The view volume is assumed to be [-1, -1, -1] [1, 1, 1].
+        /// The normals of the hull planes point to the outside and are normalized. 
+        /// A point inside the visual hull will has negative height to all planes.
+        /// </summary>
+        public static Hull3d GetVisualHull(this M44d viewProj)
+        {
+            var r0 = viewProj.R0;
+            var r1 = viewProj.R1;
+            var r2 = viewProj.R2;
+            var r3 = viewProj.R3;
+
+            return new Hull3d(new[]
+            {
+                new Plane3d(-(r3 + r0)).Normalized, // left
+                new Plane3d(-(r3 - r0)).Normalized, // right
+                new Plane3d(-(r3 + r1)).Normalized, // bottom
+                new Plane3d(-(r3 - r1)).Normalized, // top
+                new Plane3d(-(r3 + r2)).Normalized, // near
+                new Plane3d(-(r3 - r2)).Normalized, // far
+            });
+        }
+
+        public static Hull3d GetVisualHull(this Trafo3d viewProj)
+        {
+            return viewProj.Forward.GetVisualHull();
+        }
+
+        /// <summary>
         /// Builds an ortho-normal orientation transformation form the given transform.
         /// Scale and Translation will be removed and basis vectors will be ortho-normalized.
         /// NOTE: The X-Axis is untouched and Y/Z are forced to a normal-angle.

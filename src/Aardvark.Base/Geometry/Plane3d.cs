@@ -61,6 +61,16 @@ namespace Aardvark.Base
             Distance = V3d.Dot(Normal, p0);
         }
 
+        /// <summary>
+        /// Create a plane from coefficients (a, b, c, d) of the normal equation: ax + by + cz + d = 0
+        /// Normal = [a, b, c]; Distance = -d
+        /// </summary>
+        public Plane3d(V4d coefficients)
+        {
+            Normal = coefficients.XYZ;
+            Distance = -coefficients.W;
+        }
+        
         #endregion
 
         #region Constants
