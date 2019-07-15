@@ -32,18 +32,42 @@
         Never,
         Always
     }
-
-    public enum Face
+    
+    /// <summary>
+    /// Winding order types
+    /// </summary>
+    public enum WindingOrder
     {
-        Front = 0x00001,
-        Back = 0x00002,
-        FrontAndBack = Front | Back
+        /// <summary>
+        /// Clockwise
+        /// </summary>
+        Clockwise,
+        /// <summary>
+        /// CounterClockwise
+        /// </summary>
+        CounterClockwise
     }
 
+    /// <summary>
+    /// CullMode options
+    /// </summary>
     public enum CullMode
     {
+        /// <summary>
+        /// No culling / draw all faces
+        /// </summary>
         None,
-        Clockwise,
-        CounterClockwise
+        /// <summary>
+        /// Draw only back faces
+        /// </summary>
+        Front,
+        /// <summary>
+        /// Draw only front faces
+        /// </summary>
+        Back,
+        /// <summary>
+        /// Cull all faces / lines and points will be drawn
+        /// </summary>
+        FrontAndBack
     }
 }

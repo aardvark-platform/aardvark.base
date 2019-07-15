@@ -59,23 +59,26 @@ type plist< [<EqualityConditionalOn>] 'a>(l : Index, h : Index, content : MapExt
 
 
     member x.Apply(deltas : pdeltalist<'a>) : plist<'a> * pdeltalist<'a> =
-        let mutable res = x
-        let finalDeltas =
-            deltas |> PDeltaList.filter (fun i op ->
-                match op with
-                    | Remove -> 
-                        res <- res.Remove i
-                        true
-                    | Set v -> 
-                        match res.TryGet i with
-                            | Some o when Object.Equals(o,v) -> 
-                                false
-                            | _ -> 
-                                res <- res.Set(i,v)
-                                true
-            )
+        if deltas.Count = 0 then
+            x, deltas
+        else
+            let mutable res = x
+            let finalDeltas =
+                deltas |> PDeltaList.filter (fun i op ->
+                    match op with
+                        | Remove -> 
+                            res <- res.Remove i
+                            true
+                        | Set v -> 
+                            match res.TryGet i with
+                                | Some o when Object.Equals(o,v) -> 
+                                    false
+                                | _ -> 
+                                    res <- res.Set(i,v)
+                                    true
+                )
 
-        res, finalDeltas
+            res, finalDeltas
 
     static member ComputeDeltas(l : plist<'a>, r : plist<'a>) : pdeltalist<'a> =
         match l.Count, r.Count with
@@ -89,18 +92,22 @@ type plist< [<EqualityConditionalOn>] 'a>(l : Index, h : Index, content : MapExt
                 l.Content |> MapExt.map (fun i v -> Remove) |> PDeltaList.ofMap
 
             | _, _ ->
-                let merge (k : Index) (l : Option<'a>) (r : Option<'a>) =
-                    match l, r with
-                        | Some l, Some r when Unchecked.equals l r -> 
-                            None
-                        | _, Some r -> 
-                            Some (Set r)
-                        | Some l, None -> 
-                            Some Remove
-                        | None, None ->
-                            None
+                if l.Content == r.Content then
+                    PDeltaList.empty
+                else
+                    // TODO: one small???
+                    let merge (k : Index) (l : Option<'a>) (r : Option<'a>) =
+                        match l, r with
+                            | Some l, Some r when Unchecked.equals l r -> 
+                                None
+                            | _, Some r -> 
+                                Some (Set r)
+                            | Some l, None -> 
+                                Some Remove
+                            | None, None ->
+                                None
 
-                MapExt.choose2 merge l.Content r.Content |> PDeltaList.ofMap
+                    MapExt.choose2 merge l.Content r.Content |> PDeltaList.ofMap
 
     member x.TryGet (i : Index) =
         MapExt.tryFind i content

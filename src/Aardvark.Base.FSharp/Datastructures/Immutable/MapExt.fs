@@ -1215,16 +1215,19 @@ type MapExt<[<EqualityConditionalOn>]'Key,[<EqualityConditionalOn;ComparisonCond
         abs res
 
     override this.Equals(that) = 
-        match that with 
-        | :? MapExt<'Key,'Value> as that -> 
-            use e1 = (this :> seq<_>).GetEnumerator() 
-            use e2 = (that :> seq<_>).GetEnumerator() 
-            let rec loop () = 
-                let m1 = e1.MoveNext() 
-                let m2 = e2.MoveNext()
-                (m1 = m2) && (not m1 || let e1c, e2c = e1.Current, e2.Current in ((e1c.Key = e2c.Key) && (Unchecked.equals e1c.Value e2c.Value) && loop()))
-            loop()
-        | _ -> false
+        if System.Object.ReferenceEquals(this, that) then
+            true
+        else
+            match that with 
+            | :? MapExt<'Key,'Value> as that -> 
+                use e1 = (this :> seq<_>).GetEnumerator() 
+                use e2 = (that :> seq<_>).GetEnumerator() 
+                let rec loop () = 
+                    let m1 = e1.MoveNext() 
+                    let m2 = e2.MoveNext()
+                    (m1 = m2) && (not m1 || let e1c, e2c = e1.Current, e2.Current in ((e1c.Key = e2c.Key) && (Unchecked.equals e1c.Value e2c.Value) && loop()))
+                loop()
+            | _ -> false
 
     override this.GetHashCode() = this.ComputeHashCode()
 

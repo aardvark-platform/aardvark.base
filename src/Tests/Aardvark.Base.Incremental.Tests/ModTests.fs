@@ -837,17 +837,24 @@ module ``Basic Mod Tests`` =
 
         let mutable garbage = [ ]
 
-        for j in 0..100 do
+        for j in 0..0 do // loop used for repeated testing in standalone executable
             let mutable totalMarkTime = 0.0
             let mutable totalEvalTime = 0.0
-            let iter = 10
+            let iter = 1
             for k in 1..iter do
-                let root = Mod.init Trafo3d.Identity
+                //let root = Mod.init Trafo3d.Identity
+                let root = Mod.init 10
                 let mutable leafs = [ root :> IMod<_> ]
                 let rnd = RandomSystem(1)
 
+                // configuration 1: average of 2-3 outputs, less depth
                 let depth = int (10.0 * pow 1.1 (float k))
                 let stdWidth = 1.2
+
+                // configuration 2: average 1-2 outputs, deeper tree
+                //let depth = int (10.0 * pow 1.5 (float k))
+                //let stdWidth = 0.3
+
                 let mutable nodeCount = 0
                 //Log.startTimed "Create Tree: Depth=%d StdWidth=%.2f" depth stdWidth
                 for i in 1..depth do
@@ -856,9 +863,9 @@ module ``Basic Mod Tests`` =
                         let subCnt = rnd.Gaussian(0.0, stdWidth)
                         let refine = (abs subCnt) |> int
                         for r in 0..refine do
-                            //let n = l |> Mod.map (fun x -> x * 2)
-                            let xx = Mod.init Trafo3d.Identity
-                            let n = Mod.map2 (fun a b -> a * b) xx l
+                            let n = l |> Mod.map (fun x -> x * 2)
+                            //let xx = Mod.init Trafo3d.Identity
+                            //let n = Mod.map2 (fun a b -> a * b) xx l
                             nextLevel <- nextLevel @ [n]
                             nodeCount <- nodeCount + 1 
                         ()
@@ -870,10 +877,11 @@ module ``Basic Mod Tests`` =
                 let swMark = Stopwatch()
                 let swEval = Stopwatch()
             
-                Log.start "Depth=%-3d StdWidth=%.2f Nodes/Leafs=%-11s" depth stdWidth (sprintf "%d/%d" nodeCount leafCount)
+                //Log.start "Depth=%-3d StdWidth=%.2f Nodes/Leafs=%-11s" depth stdWidth (sprintf "%d/%d" nodeCount leafCount)
                 for i in 1..runs do
                     if i > 5 then swMark.Start()
-                    transact(fun () -> Mod.change root (Trafo3d.Translation(V3d(i, i, i))))
+                    //transact(fun () -> Mod.change root (Trafo3d.Translation(V3d(i, i, i))))
+                    transact(fun () -> Mod.change root i)
                     if i > 5 then swMark.Stop()
 
                     if i > 5 then swEval.Start()
@@ -883,7 +891,7 @@ module ``Basic Mod Tests`` =
 
                 let markTime = (float swMark.ElapsedTicks / float Stopwatch.Frequency)
                 let evalTime = (float swEval.ElapsedTicks / float Stopwatch.Frequency)
-                Log.stop " MarkTime=%.2fs EvalTime=%.2fs" markTime evalTime
+                //Log.stop " MarkTime=%.2fs EvalTime=%.2fs" markTime evalTime
 
                 totalMarkTime <- totalMarkTime + markTime
                 totalEvalTime <- totalEvalTime + evalTime

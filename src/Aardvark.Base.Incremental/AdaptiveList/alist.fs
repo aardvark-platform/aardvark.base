@@ -863,8 +863,7 @@ module AList =
             member x.LastValue = lastValue
 
             member x.Dispose() =
-                let mutable foo = 0
-                x.Outputs.Consume(&foo) |> ignore
+                x.Outputs.Clear()
 
             override x.Compute(token) =
                 let v = m.GetValue token

@@ -76,7 +76,7 @@ module private LibTess =
                 let contour = closed (Seq.toArray p.Points)
                 t.AddContour(contour)
 
-        t.Tessellate(rule, ElementType.BoundaryContours, 3)
+        t.Tessellate(rule, ElementType.BoundaryContours, 3, null, Vec3(0.0, 0.0, 1.0))
 
         if isNull t.Elements || isNull t.Vertices then 
             []
@@ -104,7 +104,7 @@ module private LibTess =
             let contour = closed (Seq.toArray p.Points)
             t.AddContour(contour)
 
-        t.Tessellate(rule, ElementType.Polygons, 3)
+        t.Tessellate(rule, ElementType.Polygons, 3, null, Vec3(0.0, 0.0, 1.0))
 
         if isNull t.Elements || isNull t.Vertices then 
             [||]
@@ -183,7 +183,7 @@ type PolygonTessellator private() =
         let combine (pos : Vec3) (data : obj[]) (weights : float[]) =
             interpolate weights (data |> Array.map unbox) :> obj
 
-        t.Tessellate(unbox (int rule), ElementType.BoundaryContours, 2, CombineCallback(combine))
+        t.Tessellate(unbox (int rule), ElementType.BoundaryContours, 2, CombineCallback(combine), Vec3(0.0, 0.0, 1.0))
         
         if isNull t.Elements || isNull t.Vertices then
             []
@@ -216,7 +216,7 @@ type PolygonTessellator private() =
             let contour = LibTess.closed pts
             t.AddContour(contour)
 
-        t.Tessellate(unbox (int rule), ElementType.BoundaryContours, 2)
+        t.Tessellate(unbox (int rule), ElementType.BoundaryContours, 2, null, Vec3(0.0, 0.0, 1.0))
         
         if isNull t.Elements || isNull t.Vertices then
             []
@@ -257,7 +257,7 @@ type PolygonTessellator private() =
         let combine (pos : Vec3) (data : obj[]) (weights : float[]) =
             interpolate weights (data |> Array.map unbox) :> obj
 
-        t.Tessellate(unbox (int rule), ElementType.Polygons, 3, CombineCallback(combine))
+        t.Tessellate(unbox (int rule), ElementType.Polygons, 3, CombineCallback(combine), Vec3(0.0, 0.0, 1.0))
         
         if isNull t.Elements || isNull t.Vertices then
             []
@@ -289,7 +289,7 @@ type PolygonTessellator private() =
             let contour = LibTess.closed pts
             t.AddContour(contour)
 
-        t.Tessellate(unbox (int rule), ElementType.Polygons, 3)
+        t.Tessellate(unbox (int rule), ElementType.Polygons, 3, null, Vec3(0.0, 0.0, 1.0))
         
         if isNull t.Elements || isNull t.Vertices then
             []
@@ -338,7 +338,7 @@ type PolygonTessellator private() =
         let combine (pos : Vec3) (data : obj[]) (weights : float[]) =
             interpolate weights (data |> Array.map unbox) :> obj
 
-        t.Tessellate(unbox (int rule), ElementType.BoundaryContours, 2, CombineCallback(combine))
+        t.Tessellate(unbox (int rule), ElementType.BoundaryContours, 2, CombineCallback(combine), Vec3(0.0, 0.0, 1.0))
         
         if isNull t.Elements || isNull t.Vertices then
             []
@@ -371,7 +371,7 @@ type PolygonTessellator private() =
             let contour = LibTess.closed3 pts
             t.AddContour(contour)
 
-        t.Tessellate(unbox (int rule), ElementType.BoundaryContours, 2)
+        t.Tessellate(unbox (int rule), ElementType.BoundaryContours, 2, null, Vec3(0.0, 0.0, 1.0))
         
         if isNull t.Elements || isNull t.Vertices then
             []
@@ -412,7 +412,7 @@ type PolygonTessellator private() =
         let combine (pos : Vec3) (data : obj[]) (weights : float[]) =
             interpolate weights (data |> Array.map unbox) :> obj
 
-        t.Tessellate(unbox (int rule), ElementType.Polygons, 3, CombineCallback(combine))
+        t.Tessellate(unbox (int rule), ElementType.Polygons, 3, CombineCallback(combine), Vec3(0.0, 0.0, 1.0))
         
         if isNull t.Elements || isNull t.Vertices then
             []
@@ -444,7 +444,7 @@ type PolygonTessellator private() =
             let contour = LibTess.closed3 pts
             t.AddContour(contour)
 
-        t.Tessellate(unbox (int rule), ElementType.Polygons, 3)
+        t.Tessellate(unbox (int rule), ElementType.Polygons, 3, null, Vec3(0.0, 0.0, 1.0))
         
         if isNull t.Elements || isNull t.Vertices then
             []

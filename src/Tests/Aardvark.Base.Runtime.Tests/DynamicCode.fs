@@ -183,7 +183,7 @@ module DynamicCodeTests =
 
     [<Test>] 
     let ``[DynamicCode] imperative``() =
-        use prog = new ChangeableNativeProgram<int>(fun i s -> s.BeginCall(1); s.PushArg(i); s.Call(pSimple))
+        use prog = new ChangeableNativeProgram<int, int>((fun i s -> s.BeginCall(1); s.PushArg(i); s.Call(pSimple); 0), 0, (fun a b -> a + b), (fun a b -> a - b))
 
         let run() =
             simpleOut.Clear()

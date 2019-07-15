@@ -53,6 +53,8 @@ Project("{6EC3EE1D-3C4E-46DD-8F32-0CC8E7565705}") = "CoreTest", "Demo\CoreTest\C
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RandomSampleDemo", "Demo\RandomSampleDemo\RandomSampleDemo.csproj", "{ED85304F-6D46-409B-AD2F-175522A54444}"
 EndProject
+Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "Aardvark.Geometry.Tests", "Tests\Aardvark.Geometry.Tests\Aardvark.Geometry.Tests.fsproj", "{EE0834BA-89F1-4099-8FAD-CC31AA8914E9}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -147,6 +149,10 @@ Global
 		{ED85304F-6D46-409B-AD2F-175522A54444}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{ED85304F-6D46-409B-AD2F-175522A54444}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{ED85304F-6D46-409B-AD2F-175522A54444}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EE0834BA-89F1-4099-8FAD-CC31AA8914E9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EE0834BA-89F1-4099-8FAD-CC31AA8914E9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EE0834BA-89F1-4099-8FAD-CC31AA8914E9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EE0834BA-89F1-4099-8FAD-CC31AA8914E9}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -172,6 +178,7 @@ Global
 		{B1593A50-6412-401F-AC89-433F426A8FD5} = {C557CE9D-81EE-4EB3-AB94-B9F9CB2FA19A}
 		{0EC60544-E12C-4400-BB89-BCAF059A5FBD} = {864A9013-93AC-4073-BB2A-348CE1B00010}
 		{ED85304F-6D46-409B-AD2F-175522A54444} = {864A9013-93AC-4073-BB2A-348CE1B00010}
+		{EE0834BA-89F1-4099-8FAD-CC31AA8914E9} = {A79411F9-60B3-46C8-8981-6905D9B9F74C}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {1537AED0-2BB3-4EC3-B2CB-06E22C23B002}

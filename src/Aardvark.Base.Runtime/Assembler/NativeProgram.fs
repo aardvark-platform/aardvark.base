@@ -29,15 +29,16 @@ module private Helpers =
     let jumpSize = nativeint jumpInt.Length + 4n
     
 [<AllowNullLiteral>]
-type private Fragment<'a> =
+type private Fragment<'a, 'b> =
     class
-        val mutable prev : Fragment<'a>
-        val mutable next : Fragment<'a>
+        val mutable prev : Fragment<'a, 'b>
+        val mutable next : Fragment<'a, 'b>
         val mutable public TotalJumpDistance : ref<int64>
         val mutable public Manager : MemoryManager
         val mutable public Pointer : managedptr
         val mutable public Tag : 'a
         val mutable public JumpDistance : int64
+        val mutable public Stats : 'b
 
         member x.Dispose() =
             x.Manager.Free x.Pointer
@@ -100,15 +101,15 @@ type private Fragment<'a> =
                 x.writeJump()
 
         member x.GetStream() : Stream =
-            new FragmentStream<'a>(x) :> Stream
+            new FragmentStream<'a, 'b>(x) :> Stream
 
         member x.AssemblerStream =
             AssemblerStream.ofStream (x.GetStream())
 
-        new(totalJumps, manager, tag) = { TotalJumpDistance = totalJumps; JumpDistance = 0L; Manager = manager; Tag = tag; Pointer = manager.Alloc(jumpSize); prev = null; next = null }
+        new(totalJumps, manager, tag, stats) = { TotalJumpDistance = totalJumps; JumpDistance = 0L; Manager = manager; Tag = tag; Pointer = manager.Alloc(jumpSize); prev = null; next = null; Stats = stats }
     end
 
-and private FragmentStream<'a>(f : Fragment<'a>) =
+and private FragmentStream<'a, 'b>(f : Fragment<'a, 'b>) =
     inherit Stream()
 
     let mutable capacity = f.Capacity
@@ -230,7 +231,7 @@ type NativeProgramUpdateStatistics =
         static member Zero = NativeProgramUpdateStatistics()
     end
 
-type NativeProgram<'a> private(data : alist<'a>, isDifferential : bool, compileDelta : Option<'a> -> 'a -> IAssemblerStream -> unit) =
+type NativeProgram<'a, 'b> private(data : alist<'a>, isDifferential : bool, compileDelta : Option<'a> -> 'a -> IAssemblerStream -> 'b, zero : 'b, add : 'b -> 'b -> 'b, sub : 'b -> 'b -> 'b) =
     inherit AdaptiveObject()
     let compileDelta = OptimizedClosures.FSharpFunc<_,_,_,_>.Adapt(compileDelta)
         
@@ -239,15 +240,16 @@ type NativeProgram<'a> private(data : alist<'a>, isDifferential : bool, compileD
 
     let jumpDistance = ref 0L
     let mutable count = 0
+    let mutable stats : 'b = zero
 
     let mutable prolog = 
-        let f = new Fragment<'a>(jumpDistance, manager, Unchecked.defaultof<'a>)
+        let f = new Fragment<'a, 'b>(jumpDistance, manager, Unchecked.defaultof<'a>, zero)
         use s = f.AssemblerStream
         s.BeginFunction()
         f
 
     let reader = data.GetReader()
-    let cache : SortedDictionaryExt<Index, Fragment<'a>> = SortedDictionary.empty
+    let cache : SortedDictionaryExt<Index, Fragment<'a, 'b>> = SortedDictionary.empty
 
         
     let mutable lastEntryPointer = prolog.EntryPointer
@@ -266,8 +268,11 @@ type NativeProgram<'a> private(data : alist<'a>, isDifferential : bool, compileD
             run <- id
             jumpDistance := 0L
             count <- 0
+            stats <- zero
 
     member x.FragmentCount = count
+
+    member x.Stats = stats
 
     member x.EntryPointer = entryPointerStore
 
@@ -285,7 +290,7 @@ type NativeProgram<'a> private(data : alist<'a>, isDifferential : bool, compileD
             let ops = reader.GetOperations token
 
             let dirty = 
-                if isDifferential then HashSet<Fragment<'a>>()
+                if isDifferential then HashSet<Fragment<'a, 'b>>()
                 else null
 
             let mutable added = 0
@@ -306,6 +311,8 @@ type NativeProgram<'a> private(data : alist<'a>, isDifferential : bool, compileD
                                     dirty.Remove f |> ignore
                                 count <- count - 1
                                 removed <- removed + 1
+                                stats <- sub stats f.Stats
+                                f.Stats <- zero
                             | _ ->
                                 ()
 
@@ -328,17 +335,21 @@ type NativeProgram<'a> private(data : alist<'a>, isDifferential : bool, compileD
                             match s with
                                 | Some f ->
                                     f.Tag <- v
-                                    using f.AssemblerStream (fun s -> compileDelta.Invoke(prev, v, s))
+                                    let o = f.Stats
+                                    let s = using f.AssemblerStream (fun s -> compileDelta.Invoke(prev, v, s))
                                     if isDifferential && not (isNull f.next) then dirty.Add f.next |> ignore
+                                    stats <- add (sub stats o) s
                                     updated <- updated + 1
                                     compiled <- compiled + 1
+                                    f.Stats <- s
                                     f
 
                                 | None ->
-                                    let f = new Fragment<'a>(jumpDistance, manager, v)
-                                    using f.AssemblerStream (fun s -> compileDelta.Invoke(prev, v, s))
-                                        
+                                    let f = new Fragment<'a, 'b>(jumpDistance, manager, v, zero)
+                                    let s = using f.AssemblerStream (fun s -> compileDelta.Invoke(prev, v, s))
+                                    stats <- add stats s
                                     count <- count + 1
+                                    f.Stats <- s
                                     match l with
                                         | None -> prolog.Next <- f
                                         | Some(p) -> p.Next <- f
@@ -362,8 +373,11 @@ type NativeProgram<'a> private(data : alist<'a>, isDifferential : bool, compileD
                         if d.Prev = prolog then None
                         else Some d.Prev.Tag
 
-                    using d.AssemblerStream (fun s -> compileDelta.Invoke(prev, d.Tag, s))
+                    let o = d.Stats
+                    let s = using d.AssemblerStream (fun s -> compileDelta.Invoke(prev, d.Tag, s))
                     compiled <- compiled + 1
+                    stats <- add (sub stats o) s
+                    d.Stats <- s
 
             let ptr = prolog.EntryPointer
             if ptr <> lastEntryPointer then
@@ -406,31 +420,32 @@ type NativeProgram<'a> private(data : alist<'a>, isDifferential : bool, compileD
     interface IDisposable with
         member x.Dispose() = x.Dispose()
 
-    new(data : alist<'a>, compile : Option<'a> -> 'a -> IAssemblerStream -> unit) = new NativeProgram<'a>(data, true, compile)
-    new(data : alist<'a>, compile : 'a -> IAssemblerStream -> unit) = new NativeProgram<'a>(data, false, fun _ v s -> compile v s)
+    new(data : alist<'a>, compile : Option<'a> -> 'a -> IAssemblerStream -> 'b, zero, add, sub) = new NativeProgram<'a, 'b>(data, true, compile, zero, add, sub)
+    new(data : alist<'a>, compile : 'a -> IAssemblerStream -> 'b, zero, add, sub) = new NativeProgram<'a, 'b>(data, false, (fun _ v s -> compile v s), zero, add, sub)
     
 [<CompilationRepresentation(CompilationRepresentationFlags.ModuleSuffix)>]
 module NativeProgram =
-    let differential (compile : Option<'a> -> 'a -> IAssemblerStream -> unit) (values : alist<'a>) =
-        new NativeProgram<'a>(values, compile)
+    let differential (compile : Option<'a> -> 'a -> IAssemblerStream -> 'b, zero, add, sub) (values : alist<'a>) =
+        new NativeProgram<'a, 'b>(values, compile, zero, add, sub)
 
-    let simple (compile : 'a -> IAssemblerStream -> unit) (values : alist<'a>) =
-        new NativeProgram<'a>(values, compile)
+    let simple (compile : 'a -> IAssemblerStream -> 'b, zero, add, sub) (values : alist<'a>) =
+        new NativeProgram<'a, 'b>(values, compile, zero, add, sub)
 
-type ChangeableNativeProgram<'a>(compile : 'a -> IAssemblerStream -> unit) =
+type ChangeableNativeProgram<'a, 'b>(compile : 'a -> IAssemblerStream -> 'b, zero, add, sub) =
     
     let manager = MemoryManager.createExecutable()
 
     let entryPointer = NativePtr.alloc 1
     let jumpDistance = ref 0L
     let mutable prolog = 
-        let f = new Fragment<'a>(jumpDistance, manager, Unchecked.defaultof<'a>)
+        let f = new Fragment<'a, 'b>(jumpDistance, manager, Unchecked.defaultof<'a>, zero)
         use s = f.AssemblerStream
         s.BeginFunction()
         f
 
     let mutable lastEntry = 0n
     let mutable run : unit -> unit = id
+    let mutable stats = zero
 
     let updateEntry() = 
         if prolog.EntryPointer <> lastEntry then
@@ -441,7 +456,9 @@ type ChangeableNativeProgram<'a>(compile : 'a -> IAssemblerStream -> unit) =
     do prolog.Next <- null; updateEntry()
 
     let mutable last = prolog
-    let entries = Dict<'a, Fragment<'a>>()
+    let entries = Dict<'a, Fragment<'a, 'b>>()
+
+    member x.Stats = stats
 
     member x.Add(value : 'a) =
         if isNull prolog then raise <| ObjectDisposedException("NativeProgram")
@@ -449,11 +466,12 @@ type ChangeableNativeProgram<'a>(compile : 'a -> IAssemblerStream -> unit) =
         if entries.ContainsKey value then
             false
         else
-            let f = new Fragment<'a>(jumpDistance, manager, value)
-            using f.AssemblerStream (fun s -> compile value s)
-
+            let f = new Fragment<'a, 'b>(jumpDistance, manager, value, zero)
+            let s = using f.AssemblerStream (fun s -> compile value s)
+            stats <- add stats s
             last.Next <- f
             f.Next <- null
+            f.Stats <- s
             last <- f
             entries.[value] <- f
             updateEntry()
@@ -469,6 +487,8 @@ type ChangeableNativeProgram<'a>(compile : 'a -> IAssemblerStream -> unit) =
                 prev.Next <- next
                 if isNull next then last <- prev
                 f.Dispose()
+                stats <- sub stats f.Stats
+                f.Stats <- zero
                 updateEntry()
                 true
             | _ ->
@@ -484,6 +504,7 @@ type ChangeableNativeProgram<'a>(compile : 'a -> IAssemblerStream -> unit) =
             entries.Clear()
             prolog.Next <- null
             last <- prolog
+            stats <- zero
             updateEntry()
 
     member x.Run() = run()
@@ -497,6 +518,7 @@ type ChangeableNativeProgram<'a>(compile : 'a -> IAssemblerStream -> unit) =
             prolog <- null
             NativePtr.free entryPointer
             last <- null
+            stats <- zero
             jumpDistance := 0L
 
     interface IDisposable with

@@ -44,6 +44,20 @@
             Min = min; Mag = mag; Mip = mip; IsAnisotropic = anisotropic;
         }
 
+        public override int GetHashCode()
+        {
+            return HashCode.Combine(
+                Min.GetHashCode(),
+                Mag.GetHashCode(),
+                Mip.GetHashCode(),
+                IsAnisotropic.GetHashCode());
+        }
+
+        public override string ToString()
+        {
+            return string.Format("{{Min={0}; Mag={1}; Mip={2}; IsAnisotropic={3}}}", Min, Mag, Mip, IsAnisotropic);
+        }
+
 
         public static readonly TextureFilter MinMagPoint =
             new TextureFilter(TextureFilterMode.Point, TextureFilterMode.Point, TextureFilterMode.None);
@@ -145,9 +159,23 @@
                 && MipLodBias == sd.MipLodBias
                 && MinLod == sd.MinLod
                 && MaxLod == sd.MaxLod
-                && MipLodBias == sd.MipLodBias
                 && ComparisonFunction == sd.ComparisonFunction
                 && BorderColor == sd.BorderColor;
+        }
+
+        public override string ToString()
+        {
+            return string.Format("{{Filter={0}; AddressU={1}; AddressV={2}; AddressW={3}; MaxAnisotropy={4}; MipLodBias={5}; MinLod={6}; MaxLod={7}; ComparisonFunction={8}; BorderColor={9}}}",
+                Filter,
+                AddressU,
+                AddressV,
+                AddressW,
+                MaxAnisotropy,
+                MipLodBias,
+                MinLod,
+                MaxLod,
+                ComparisonFunction,
+                BorderColor);
         }
     }
 }

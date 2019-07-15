@@ -7,134 +7,13 @@ open Aardvark.Base
 open System.Collections.Concurrent
 open System.Threading
 open System.Linq
+open System.Runtime.InteropServices
 
 [<AllowNullLiteral>]
 type IWeakable<'a when 'a : not struct> =
     abstract member Weak : WeakReference<'a>
 
-
-type VolatileCollection<'a when 'a :> IWeakable<'a> and 'a : not struct>() =
-    let mutable p : Object = Unchecked.defaultof<_>
-
-    member x.IsEmpty = 
-        match p with
-        | null -> true
-        | :? WeakReference<'a> -> false
-        | :? ICollection<WeakReference<'a>> as c -> c.Count = 0
-        | _ -> failwith "fail"
-
-    member x.Count = 
-        match p with
-        | null -> 0
-        | :? WeakReference<'a> -> 1
-        | :? ICollection<WeakReference<'a>> as c -> c.Count
-        | _ -> failwith "fail"
-            
-    member x.Consume(length : byref<int>) : array<'a> =
-        let mutable v : 'a = Unchecked.defaultof<_>
-        match p with
-        | null -> 
-            length <- 0
-            Array.zeroCreate 0
-        | :? WeakReference<'a> as single -> 
-                        let res = Array.zeroCreate 1
-                        if single.TryGetTarget(&v) then
-                            res.[0] <- v
-                            length <- 1
-                        else
-                            length <- 0
-                        p <- Unchecked.defaultof<_>
-                        res
-        | :? ICollection<WeakReference<'a>> as col -> 
-                        let res = Array.zeroCreate col.Count
-                        length <- 0
-                        for ref in col do 
-                            if ref.TryGetTarget(&v) then
-                                res.[length] <- v
-                                length <- length + 1
-                        col.Clear()
-                        res
-        | _ -> failwith "fail"
-
-    member x.Add(value : 'a) : bool =
-        let value = value.Weak
-        if isNull p then
-            p <- value
-            true
-        else if p :? WeakReference<'a> then
-            if Object.ReferenceEquals(p, value) then
-                false
-            else
-                let list = List<WeakReference<'a>>(8)
-                list.Add(p :?> WeakReference<'a>)
-                list.Add(value)
-                p <- list
-                true
-        else
-            let mutable col = p :?> ICollection<WeakReference<'a>>
-            if col.Contains(value) then
-                false
-            else
-                if col :? IList<WeakReference<'a>> && col.Count >= 8 then
-                    col <- HashSet col
-                    p <- col
-                col.Add(value)
-                true
-
-    member x.Remove(value : 'a) : bool =
-        let value = value.Weak
-        if Object.ReferenceEquals(p, value) then
-            p <- null
-            true
-        else 
-            match p with
-            | :? ICollection<WeakReference<'a>> as col -> col.Remove(value)
-            | _ -> false
-            
-
-type VolatileCollectionStrong<'a>() =
-    let mutable set : HashSet<'a> = null
-    let mutable pset : List<'a> = List()
-
-    member x.IsEmpty = 
-        if isNull set then pset.Count = 0
-        else set.Count = 0
-
-    member x.Consume(length : byref<int>) : array<'a> =
-        if isNull set then
-            let res = pset.ToArray()
-            length <- res.Length
-            pset.Clear()
-            res
-        else
-            let res = set.ToArray()
-            length <- res.Length
-            set.Clear()
-            res
-
-    member x.Add(value : 'a) : bool =
-        if isNull set then 
-            let id = pset.IndexOf(value)
-            if id < 0 then 
-                pset.Add(value)
-                if pset.Count > 8 then
-                    set <- HashSet pset
-                    pset <- null
-                true
-            else 
-                false
-        else
-            set.Add value
-        
-
-    member x.Remove(value : 'a) : bool =
-        if isNull set then 
-            pset.Remove(value)
-        else
-            set.Remove value
-
-
-
+#nowarn "9"
 /// <summary>
 /// IAdaptiveObject represents the core interface for all
 /// adaptive objects and contains everything necessary for
@@ -194,7 +73,7 @@ type IAdaptiveObject =
     /// to be represented by Weak references in order to allow for
     /// unused parts of the graph to be garbage collected.
     /// </summary>
-    abstract member Outputs : VolatileCollection<IAdaptiveObject>
+    abstract member Outputs : VolatileCollection
 
 
     abstract member InputChanged : obj * IAdaptiveObject -> unit
@@ -202,6 +81,149 @@ type IAdaptiveObject =
 
     abstract member ReaderCount : int with get, set
 
+
+and [<StructLayout(LayoutKind.Explicit)>] MultiPtr =
+    struct
+        [<FieldOffset(0)>]
+        val mutable public Single : WeakReference<IAdaptiveObject>
+        [<FieldOffset(0)>]
+        val mutable public Array : WeakReference<IAdaptiveObject>[]
+        [<FieldOffset(0)>]
+        val mutable public Set : HashSet<WeakReference<IAdaptiveObject>>
+    end
+
+/// <summary>
+/// Collection of WeakReferences using a switching internal representation: Single(0-1), List (2-8), HashSet(>8)
+/// This collection has improved performance to VolatileCollectionOld in cases where there are 0 or 1 references
+/// NOTE: using mode switch omits using types checks to determine used implementation
+///       using matches instead of downcasts uses OpCode "isinst" instead of "unbox.any" and avoids code to be able to throw exception
+/// </summary>
+and VolatileCollection() =
+    
+    let mutable handles : MultiPtr = Unchecked.defaultof<_>
+    let mutable count : int = 0 // Note: could replace mode, but would require Array or HashSet to be dropped on Consume
+    let mutable mode : byte = 0uy // using mode to avoid "expensive" type checks
+
+    // NOTE: myIndexOf > Array.IndexOf<_>(arr, value, 0, count) > Array.IndexOf(arr, value, 0, count)
+    let myIndexOf(arr : WeakReference<_>[], v : WeakReference<_>, count : int) : int =
+        let mutable i = 0
+        let mutable search = true
+        while search && i < count do
+            if Object.ReferenceEquals(arr.[i], v) then
+                search <- false
+            else
+                i <- i + 1
+        if search then
+            -1
+        else
+            i
+
+    member x.IsEmpty = 
+        count = 0
+        
+    member x.Count = 
+        count
+            
+    member x.Consume(res : byref<array<IAdaptiveObject>>) : int =
+        let mutable length = 0
+        if not (isNull handles.Single) then 
+            let mutable v : IAdaptiveObject = Unchecked.defaultof<_>
+            if mode = 0uy then
+                if res.Length < 1 then
+                    res <- Array.zeroCreate 8
+                if handles.Single.TryGetTarget(&v) then
+                    res.[0] <- v
+                    length <- 1
+                handles.Single <- Unchecked.defaultof<_>
+            elif mode = 1uy then
+                let arr = handles.Array
+                if res.Length < count then
+                    res <- Array.zeroCreate 8
+                for i in 0..count-1 do
+                    if arr.[i].TryGetTarget(&v) then
+                        res.[length] <- v 
+                        length <- length + 1
+                    arr.[i] <- Unchecked.defaultof<_>
+            else
+                let set = handles.Set
+                if res.Length < set.Count then
+                    res <- Array.zeroCreate (set.Count * 3 / 2)
+                for ref in set do 
+                    if ref.TryGetTarget(&v) then
+                        res.[length] <- v
+                        length <- length + 1
+                set.Clear()
+        count <- 0
+        length
+
+    member x.Add(value : IAdaptiveObject) : bool =
+        let value = value.Weak
+        if mode = 0uy then
+            if isNull handles.Single then
+                handles.Single <- value
+                count <- 1
+                true
+            elif Object.ReferenceEquals(handles.Single, value) then
+                false
+            else
+                let arr = Array.zeroCreate 8
+                arr.[0] <- handles.Single
+                arr.[1] <- value
+                handles.Array <- arr
+                mode <- 1uy
+                count <- 2
+                true
+        elif mode = 1uy then 
+            let arr = handles.Array
+            if myIndexOf(arr, value, count) >= 0 then
+                false
+            elif count = 8 then
+                let set = HashSet arr
+                set.Add(value) |> ignore
+                handles.Set <- set
+                mode <- 2uy
+                count <- 9
+                true
+            else
+                arr.[count] <- value
+                count <- count + 1
+                true
+        else
+            if handles.Set.Add(value) then
+                count <- count + 1
+                true
+            else
+                false
+
+    member x.Remove(value : IAdaptiveObject) : bool =
+        let mutable res = false
+        if count > 0 then
+            let value = value.Weak
+            if mode = 0uy then
+                if Object.ReferenceEquals(handles.Single, value) then
+                    handles.Single <- null
+                    count <- 0
+                    res <- true
+            elif mode = 1uy then
+                let arr = handles.Array;
+                let i = myIndexOf(arr, value, count)
+                if i >= 0 then
+                    for j in i..count-2 do
+                        arr.[j] <- arr.[j+1]
+                    count <- count - 1
+                    res <- true
+            else
+                if handles.Set.Remove value then
+                    count <- count - 1
+                    res <- true
+        res
+
+    member x.Clear() =
+        handles.Single <- null
+        count <- 0
+        mode <- 0uy
+     
+#endnowarn "9"
 
 [<AbstractClass; Sealed; Extension>]
 type AdaptiveObjectExtensions private() =
@@ -235,7 +257,6 @@ type AdaptiveToken =
     struct
         val mutable public Caller : IAdaptiveObject
         val mutable public Locked : HashSet<IAdaptiveObject>
-        val mutable public Tag : obj
 
         member inline x.EnterRead(o : IAdaptiveObject) =
             Monitor.Enter o
@@ -268,23 +289,22 @@ type AdaptiveToken =
 
 
         member inline x.WithCaller (c : IAdaptiveObject) =
-            AdaptiveToken(c, x.Locked, x.Tag)
+            AdaptiveToken(c, x.Locked)
 
         member inline x.WithTag (t : obj) =
-            AdaptiveToken(x.Caller, x.Locked, t)
+            AdaptiveToken(x.Caller, x.Locked)
 
 
         member inline x.Isolated =
-            AdaptiveToken(x.Caller, HashSet(), x.Tag)
+            AdaptiveToken(x.Caller, HashSet())
 
-        static member inline Top = AdaptiveToken(null, HashSet(), null)
+        static member inline Top = AdaptiveToken(null, HashSet())
         static member inline Empty = Unchecked.defaultof<AdaptiveToken>
 
-        new(caller : IAdaptiveObject, locked : HashSet<IAdaptiveObject>, tag : obj) =
+        new(caller : IAdaptiveObject, locked : HashSet<IAdaptiveObject>) =
             {
                 Caller = caller
                 Locked = locked
-                Tag = tag
             }
     end
 
@@ -332,7 +352,6 @@ type Transaction() =
     static let EnqueueProbe = Symbol.Create "[Transaction] Enqueue"
     static let CommitProbe = Symbol.Create "[Transaction] Commit"
     static let emptyArray : IAdaptiveObject[] = Array.empty
-    let mutable outputs = emptyArray
 
     // each thread may have its own running transaction
     [<ThreadStatic; DefaultValue>]
@@ -445,24 +464,25 @@ type Transaction() =
 
 
         // cache the currently running transaction (if any)
-        // and make tourselves current.
+        // and make ourselves current.
         let old = Transaction.RunningTransaction
         Transaction.RunningTransaction <- Some x
         let mutable level = 0
         let myCauses = ref null
         
-        let markCount = ref 0
-        let traverseCount = ref 0
-        let levelChangeCount = ref 0
-        let outputCount = ref 0
+        let mutable markCount = 0
+        let mutable traverseCount = 0
+        let mutable levelChangeCount = 0
+        let mutable outputCount = 0
+        let mutable outputs = Array.zeroCreate 8
         while q.Count > 0 do
             // dequeue the next element (having the minimal level)
             let e = q.Dequeue(&currentLevel)
             current <- e
 
-            traverseCount := !traverseCount + 1
+            traverseCount <- traverseCount + 1
 
-            outputCount := 0
+            outputCount <- 0
 
 
             // since we're about to access the outOfDate flag
@@ -480,7 +500,6 @@ type Transaction() =
                     // if the element is already outOfDate we
                     // do not traverse the graph further.
                     if e.OutOfDate then
-                        outputCount := 0
                         e.AllInputsProcessed(x)
 
                     else
@@ -494,7 +513,6 @@ type Transaction() =
                         // it is relatively simple to implement.
                         if currentLevel <> e.Level then
                             q.Enqueue e
-                            outputCount := 0
                         else
                             if causes.TryRemove(e, &myCauses.contents) then
                                 !myCauses |> Seq.iter (fun i -> e.InputChanged(x,i))
@@ -503,7 +521,7 @@ type Transaction() =
                             // by marking the object as outOfDate
                             e.OutOfDate <- true
                             e.AllInputsProcessed(x)
-                            markCount := !markCount + 1
+                            markCount <- markCount + 1
                 
                             try 
                                 // here mark and the callbacks are allowed to evaluate
@@ -512,11 +530,11 @@ type Transaction() =
                                 if e.Mark() then
                                     // if everything succeeded we return all current outputs
                                     // which will cause them to be enqueued 
-                                    outputs <- e.Outputs.Consume(outputCount)
+                                    outputCount <- e.Outputs.Consume(&outputs)
 
                                 else
                                     // if Mark told us not to continue we're done here
-                                    outputCount := 0
+                                    ()
 
                             with LevelChangedException(obj, objLevel, distance) ->
                                 // if the level was changed either by a callback
@@ -525,16 +543,15 @@ type Transaction() =
                                 e.Level <- max e.Level (objLevel + distance)
                                 e.OutOfDate <- false
 
-                                levelChangeCount := !levelChangeCount + 1
+                                levelChangeCount <- levelChangeCount + 1
 
                                 q.Enqueue e
-                                outputCount := 0
                 
                 finally 
                     e.ExitWrite()
 
                 // finally we enqueue all returned outputs
-                for i in 0..!outputCount - 1 do
+                for i in 0..outputCount - 1 do
                     let o = outputs.[i]
                     o.InputChanged(x,e)
                     x.Enqueue o
@@ -589,7 +606,7 @@ type AdaptiveObject =
         val mutable public Id : int
         val mutable public OutOfDateValue : bool
         val mutable public LevelValue : int 
-        val mutable public Outputs : VolatileCollection<IAdaptiveObject>
+        val mutable public Outputs : VolatileCollection
         val mutable public WeakThis : WeakReference<IAdaptiveObject>
         val mutable public ReaderCountValue : int
         val mutable public Reevaluate : bool
@@ -612,7 +629,7 @@ type AdaptiveObject =
 
         new() =
             { Id = newId(); OutOfDateValue = true; 
-              LevelValue = 0; Outputs = VolatileCollection<IAdaptiveObject>(); WeakThis = null;
+              LevelValue = 0; Outputs = VolatileCollection(); WeakThis = null;
               ReaderCountValue = 0; Reevaluate = false }
 
         static member inline private markTime() =
@@ -620,8 +637,8 @@ type AdaptiveObject =
             if not (isNull time) then
                 Monitor.Enter time
                 if not time.Outputs.IsEmpty then
-                    let mutable outputCount = 0
-                    let outputs = time.Outputs.Consume(&outputCount)
+                    let mutable outputs = Array.zeroCreate 8
+                    let outputCount = time.Outputs.Consume(&outputs)
                     Monitor.Exit time
 
                     let t = new Transaction()
@@ -1130,9 +1147,7 @@ module CallbackExtensions =
             res :> IDisposable //{ new IDisposable with member __.Dispose() = live := false; x.MarkingCallbacks.Remove !self |> ignore}
  
 
-
-open System.Threading
- 
+  
 /// <summary>
 /// defines a base class for all decorated mods
 /// </summary>

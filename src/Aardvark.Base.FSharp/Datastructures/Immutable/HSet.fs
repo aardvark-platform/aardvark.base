@@ -368,24 +368,26 @@ type hset<'a>(cnt : int, store : intmap<list<'a>>) =
 
 
     member x.ComputeDelta(other : hset<'a>) =
+        if store == other.Store then
+            HDeltaSet.empty
+        else
+            let mutable cnt = 0
 
-        let mutable cnt = 0
-
-        let del (l : list<'a>) =
-            l |> List.map (fun v -> inc &cnt; v, -1)
+            let del (l : list<'a>) =
+                l |> List.map (fun v -> inc &cnt; v, -1)
             
-        let add (l : list<'a>) =
-            l |> List.map (fun v -> inc &cnt; v, 1)
+            let add (l : list<'a>) =
+                l |> List.map (fun v -> inc &cnt; v, 1)
 
-        let both (hash : int) (l : list<'a>) (r : list<'a>) =
-            HSetList.mergeWithOption (fun v l r ->
-                if l && not r then inc &cnt; Some -1
-                elif r && not l then inc &cnt; Some 1
-                else None
-            ) l r
+            let both (hash : int) (l : list<'a>) (r : list<'a>) =
+                HSetList.mergeWithOption (fun v l r ->
+                    if l && not r then inc &cnt; Some -1
+                    elif r && not l then inc &cnt; Some 1
+                    else None
+                ) l r
 
-        let store = IntMap.computeDelta both (IntMap.map del) (IntMap.map add) store other.Store
-        hdeltaset (hmap(cnt, store))
+            let store = IntMap.computeDelta both (IntMap.map del) (IntMap.map add) store other.Store
+            hdeltaset (hmap(cnt, store))
         
     static member OfSeq (seq : seq<'a>) =
         let mutable res = empty

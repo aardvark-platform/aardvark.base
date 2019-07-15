@@ -175,10 +175,13 @@ type ConstantMod<'a> =
             else v.GetHashCode()
 
         override x.Equals o =
-            match o with
-                | :? IMod<'a> as o when o.IsConstant ->
-                    System.Object.Equals(x.value.Value, o.GetValue(Unchecked.defaultof<AdaptiveToken>))
-                | _ -> false
+            if Object.ReferenceEquals(x, o) then 
+                true
+            else
+                match o with
+                    | :? IMod<'a> as o when o.IsConstant ->
+                        System.Object.Equals(x.value.Value, o.GetValue(Unchecked.defaultof<AdaptiveToken>))
+                    | _ -> false
 
         override x.ToString() =
             x.value.Value.ToString()

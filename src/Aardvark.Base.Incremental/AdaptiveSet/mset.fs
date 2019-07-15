@@ -15,7 +15,7 @@ type mset<'a>(initial : hset<'a>) =
     let mutable current = initial
     
     member x.Update(values : hset<'a>) =
-        if not (Object.ReferenceEquals(values, current)) then
+        if not (Object.Equals(values, current)) then
             let ops = HSet.computeDelta current values
             current <- values
             if not (HDeltaSet.isEmpty ops) then

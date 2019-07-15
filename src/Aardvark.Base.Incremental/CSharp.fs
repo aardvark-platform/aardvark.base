@@ -676,6 +676,13 @@ type AdaptiveListExtensions private() =
         AList.chooseM f.Invoke this
 
     /// <summary>
+    /// AList.mapUse
+    /// </summary>
+    [<Extension>]
+    static member MapUse (this : alist<'a>, f : Func<'a, 'b>) =
+        AList.mapUse f.Invoke this
+
+    /// <summary>
     /// AList.filter
     /// <summary>
     [<Extension>]

@@ -3,7 +3,9 @@
     public struct RasterizerState
     {
         public DepthTestMode DepthTest { get; set; }
+        public DepthBiasState DepthBias { get; set; }
         public CullMode CullMode { get; set; }
+        public WindingOrder FrontFace { get; set; }
         public BlendMode BlendMode { get; set; }
         public FillMode FillMode { get; set; }
         public StencilMode StencilMode { get; set; }
@@ -14,9 +16,11 @@
         {
             DepthTest = old.DepthTest;
             CullMode = old.CullMode;
+            FrontFace = old.FrontFace;
             BlendMode = old.BlendMode;
             FillMode = old.FillMode;
             StencilMode = old.StencilMode;
+            DepthBias = old.DepthBias;
         }
 
         #endregion
@@ -54,14 +58,20 @@
 
         public override int GetHashCode()
         {
-            return DepthTest.GetHashCode() ^ CullMode.GetHashCode() ^ BlendMode.GetHashCode() ^ FillMode.GetHashCode() ^ StencilMode.GetHashCode();
+            return DepthTest.GetHashCode() ^ DepthBias.GetHashCode() ^ FrontFace.GetHashCode() ^ CullMode.GetHashCode() ^ BlendMode.GetHashCode() ^ FillMode.GetHashCode() ^ StencilMode.GetHashCode();
         }
 
         public override bool Equals(object obj)
         {
             if (obj is RasterizerState rs)
             {
-                return rs.DepthTest == DepthTest && rs.CullMode == CullMode && rs.BlendMode.Equals(BlendMode) && rs.StencilMode.Equals(StencilMode) && rs.FillMode == FillMode;
+                return rs.DepthTest == DepthTest 
+                    && rs.DepthBias == DepthBias
+                    && rs.FrontFace == FrontFace 
+                    && rs.CullMode == CullMode
+                    && rs.BlendMode.Equals(BlendMode) 
+                    && rs.StencilMode.Equals(StencilMode)
+                    && rs.FillMode == FillMode;
             }
             else return false;
         }
