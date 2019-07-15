@@ -12,7 +12,8 @@ namespace Aardvark.Tests
         {
             //new BoxTests().BoxTransformTest();
             //Extensions.DateTimeTests.JulinaDay();
-            new SamplerStateTest().SamplerStateTestHashCollision();
+            //new SamplerStateTest().SamplerStateTestHashCollision();
+            new ReportingTests().MultiThread();
         }
     }
 }

@@ -105,6 +105,14 @@ namespace Aardvark.Base
         public double End(int level, ILogTarget target, string text, bool addTimeToParent)
         {
             var parentJob = m_job.ParentJob;
+            if (m_jobStack.Count == 0)
+            {
+                Report.Warn("superfluous Report.End() encountered");
+                if (text != null) // still report message if some
+                    target.Log(m_ti, new LogMsg(LogType.End, LogOpt.NewText, level, 0,
+                                                text, -2, null));
+                return 0.0;
+            }
             double seconds; string time; LogOpt opt;
             if (m_job.Timer != null)
             {
@@ -128,12 +136,7 @@ namespace Aardvark.Base
             if (m_job.ReportTests == true)
             {
                 var testInfo = m_job.TestInfo;
-                if (m_jobStack.Count > 0)
-                {
-                    m_job = m_jobStack.Pop(); m_job.TestInfo += testInfo;
-                }
-                else
-                    Report.Warn("superfluous Report.End() encountered");
+                m_job = m_jobStack.Pop(); m_job.TestInfo += testInfo;
                 var passed = String.Format(CultureInfo.InvariantCulture,
                              "[{0}/{1} OK]", testInfo.PassedCount, testInfo.TestCount);
                 time = time != null ? passed + ' ' + time : passed;
@@ -156,10 +159,7 @@ namespace Aardvark.Base
                 {
                     lock (parentJob) parentJob.ChildrenTime += seconds;
                 }
-                if (m_jobStack.Count > 0)
-                    m_job = m_jobStack.Pop();
-                else
-                    Report.Warn("superfluous Report.End() encountered");
+                m_job = m_jobStack.Pop();
                 target.Log(m_ti, new LogMsg(LogType.End, opt, level, parentJob.HierarchyLevel * m_indent,
                                             text, -2, time));
             }
