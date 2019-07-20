@@ -133,7 +133,7 @@ type hrefset<'a>(store : hmap<'a, int>) =
         store.ToList() |> List.map fst
 
     member x.ToArray() =
-        store.ToSeq() |> Seq.map fst |> Seq.toArray
+        x.ToSeq().ToArray(store.Count)
 
 
     member x.Map(mapping : 'a -> 'b) =

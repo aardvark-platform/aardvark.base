@@ -510,7 +510,7 @@ type hmap<'k, [<EqualityConditionalOn>] 'v>(cnt : int, store : intmap<list<'k * 
         store |> IntMap.toList |> List.collect snd 
 
     member x.ToArray() =
-        store |> IntMap.toSeq |> Seq.collect snd |> Seq.toArray
+        x.ToSeq().ToArray(cnt)
 
     static member OfSeq (seq : seq<'k * 'v>) =
         let mutable res = empty
