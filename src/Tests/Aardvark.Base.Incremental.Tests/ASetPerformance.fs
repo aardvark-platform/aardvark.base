@@ -7,6 +7,7 @@ open Aardvark.Base.Incremental
 open NUnit.Framework
 open FsUnit
 open System.Diagnostics
+open Aardvark.Base
 
 module ``performance tests`` =
 
@@ -31,15 +32,14 @@ module ``performance tests`` =
             if n <= 0 then s
             else stepN (n-1) (step s)
             
-                
+           
 
-        let test = stepN 50 input
+        let test = stepN 100 input
         let r = test.GetReader()
-
         r.GetOperations() |> ignore
 
 
-        for i in 0..100 do
+        for i in 0..200 do
             transact (fun () ->
                 input.UnionWith [i]
             )
@@ -49,11 +49,12 @@ module ``performance tests`` =
             input.Clear()
         )
         r.GetOperations() |> ignore
+  
 
 
         let changeTime = Stopwatch()
         let evalTime = Stopwatch()
-        let iter = 1000
+        let iter = 200
         for i in 1..iter do
             changeTime.Start()
             transact (fun () ->
@@ -65,8 +66,9 @@ module ``performance tests`` =
             r.GetOperations() |> ignore
             evalTime.Stop()
 
-        Console.WriteLine("change: {0}ms", changeTime.Elapsed.TotalMilliseconds / float iter )
-        Console.WriteLine("eval:   {0}ms", evalTime.Elapsed.TotalMilliseconds / float iter)
+        Console.WriteLine("Aset.collect change: {0:0.00000}ms eval: {1:0.00000}ms", 
+            changeTime.Elapsed.TotalMilliseconds / float iter, 
+            evalTime.Elapsed.TotalMilliseconds / float iter)
         ()
 
     [<Test>]
@@ -82,14 +84,13 @@ module ``performance tests`` =
             else stepN (n-1) (step s)
             
                 
-
-        let test = stepN 50 input
+        let test = stepN 100 input
         let r = test.GetReader()
 
         r.GetOperations() |> ignore
 
 
-        for i in 0..100 do
+        for i in 0..400 do
             transact (fun () ->
                 input.UnionWith [i]
             )
@@ -103,7 +104,7 @@ module ``performance tests`` =
 
         let changeTime = Stopwatch()
         let evalTime = Stopwatch()
-        let iter = 1000
+        let iter = 400
         for i in 1..iter do
             changeTime.Start()
             transact (fun () ->
@@ -115,8 +116,9 @@ module ``performance tests`` =
             r.GetOperations() |> ignore
             evalTime.Stop()
 
-        Console.WriteLine("change: {0}ms", changeTime.Elapsed.TotalMilliseconds / float iter )
-        Console.WriteLine("eval:   {0}ms", evalTime.Elapsed.TotalMilliseconds / float iter)
+        Console.WriteLine("ASet.map     change: {0:0.00000}ms eval: {1:0.00000}ms", 
+            changeTime.Elapsed.TotalMilliseconds / float iter, 
+            evalTime.Elapsed.TotalMilliseconds / float iter)
         ()
 
     [<Test>]
@@ -163,8 +165,9 @@ module ``performance tests`` =
             Mod.force test |> ignore
             evalTime.Stop()
 
-        Console.WriteLine("change: {0}ms", changeTime.Elapsed.TotalMilliseconds / float iter )
-        Console.WriteLine("eval:   {0}ms", evalTime.Elapsed.TotalMilliseconds / float iter)
+        Console.WriteLine("Mod.bind     change: {0:0.00000}ms eval: {1:0.00000}ms", 
+            changeTime.Elapsed.TotalMilliseconds / float iter, 
+            evalTime.Elapsed.TotalMilliseconds / float iter)
         ()
 
     [<Test>]
@@ -211,6 +214,7 @@ module ``performance tests`` =
             Mod.force test |> ignore
             evalTime.Stop()
 
-        Console.WriteLine("change: {0}ms", changeTime.Elapsed.TotalMilliseconds / float iter )
-        Console.WriteLine("eval:   {0}ms", evalTime.Elapsed.TotalMilliseconds / float iter)
+        Console.WriteLine("Mod.map      change: {0:0.00000}ms eval: {1:0.00000}ms", 
+            changeTime.Elapsed.TotalMilliseconds / float iter, 
+            evalTime.Elapsed.TotalMilliseconds / float iter)
         ()
