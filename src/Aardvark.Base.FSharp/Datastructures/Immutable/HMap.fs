@@ -512,6 +512,10 @@ type hmap<'k, [<EqualityConditionalOn>] 'v>(cnt : int, store : intmap<list<'k * 
     member x.ToArray() =
         x.ToSeq().ToArray(cnt)
 
+    static member Single (k : 'k) (v : 'v) =
+        let hash = Unchecked.hash k
+        hmap(1, IntMap.single hash [(k, v)])
+        
     static member OfSeq (seq : seq<'k * 'v>) =
         let mutable res = empty
         for (k,v) in seq do
@@ -628,7 +632,7 @@ module HMap =
     let empty<'k, 'v> = hmap<'k, 'v>.Empty
     
     let inline single (k : 'k) (v : 'v) = 
-        hmap.OfList [k,v]
+        hmap.Single k v
 
     /// <summary>
     /// Returns a new map made from the given bindings. <para />

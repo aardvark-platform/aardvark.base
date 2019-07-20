@@ -796,6 +796,9 @@ module IntMap =
     ///O(n*min(n,W)). Create a map from a list of key/value pairs with a combining function. See also fromAscListWith. Credit: Haskell.org
     let ofListWith f xs = ofListWithKey (fun _ x y -> f x y) xs
 
+    ///O(1). Create a map from a single key/value pair.
+    let single k x = Tip(k, x)
+
     ///O(n*min(n,W)). Create a map from a seq of key/value pairs. Credit: Haskell.org
     let ofSeq xs = xs |> List.ofSeq |> ofList
 
