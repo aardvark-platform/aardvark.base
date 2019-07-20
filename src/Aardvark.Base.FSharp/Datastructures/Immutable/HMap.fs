@@ -221,6 +221,7 @@ type hmap<'k, [<EqualityConditionalOn>] 'v>(cnt : int, store : intmap<list<'k * 
 
     member x.Count = cnt
 
+    // Add or Replace or Delete
     member x.Alter (key : 'k, f : Option<'v> -> Option<'v>) =
         let hash = Unchecked.hash key
         let mutable cnt = cnt
@@ -246,28 +247,22 @@ type hmap<'k, [<EqualityConditionalOn>] 'v>(cnt : int, store : intmap<list<'k * 
 
         hmap(cnt, newMap)
 
+    // Add or Replace
     member x.Update (key : 'k, f : Option<'v> -> 'v) =
-        let mutable cnt = cnt
-        let f old =
-            if Option.isNone old then cnt <- cnt + 1
-            f old
 
         let hash = Unchecked.hash key
-        let newMap = 
-            store |> IntMap.alter (fun l ->
-                match l with
-                    | Some l -> 
-                        match HMapList.update key f l with
-                            | [] -> None
-                            | l -> Some l
-
-                    | None ->
-                        let v = f None
-                        Some [key, v]
-            ) hash
-
-        hmap(cnt, newMap)
-
+        
+        match store |> IntMap.tryFind hash with
+        | Some old ->
+            let newList = HMapList.update key f old
+            if Unchecked.equals newList old then
+                x // if same -> Nop
+            else
+                hmap(cnt, store |> IntMap.insert hash newList )
+        | None ->
+            let v = f None
+            hmap(cnt + 1, IntMap.insert hash [key, v] store)
+            
     member x.Add (key : 'k, value : 'v) =
         let hash = Unchecked.hash key
         let mutable cnt = cnt
