@@ -14,57 +14,22 @@ open Microsoft.FSharp.Core.Printf
 open Microsoft.FSharp.Quotations
 open Microsoft.FSharp.Quotations.Patterns
 open Microsoft.FSharp.Reflection
-open ProviderImplementation.ProvidedTypes
 
 [<AutoOpen>]
 module Utils = 
     let isNull x = match x with null -> true | _ -> false
 
-
-/// Simulate a real host of TypeProviderConfig
-type internal DllInfo(path: string) =
-    member __.FileName = path
-
-/// Simulate a real host of TypeProviderConfig
-type internal TcImports(bas: TcImports option, dllInfos: DllInfo list) =
-    member __.Base = bas
-    member __.DllInfos = dllInfos
-
-
 type internal Testing() =
 
     /// Simulates a real instance of TypeProviderConfig
     static member MakeSimulatedTypeProviderConfig (resolutionFolder: string, runtimeAssembly: string, runtimeAssemblyRefs: string list, ?isHostedExecution, ?isInvalidationSupported) =
-
-        let cfg = TypeProviderConfig(fun _ -> false)
+        let runtimeAssemblyRefs = (runtimeAssembly :: runtimeAssemblyRefs) |> List.distinct
+        let cfg = TypeProviderConfig(fun _ -> failwith "SystemRuntimeContainsType is deprecated and should never be called")
         cfg.IsHostedExecution <- defaultArg isHostedExecution false
         cfg.IsInvalidationSupported <- defaultArg isInvalidationSupported true
-        let (?<-) cfg prop value =
-            let ty = cfg.GetType()
-            match ty.GetProperty(prop,BindingFlags.Instance ||| BindingFlags.Public ||| BindingFlags.NonPublic) with
-            | null -> 
-                let fld = ty.GetField(prop,BindingFlags.Instance ||| BindingFlags.Public ||| BindingFlags.NonPublic)
-                if fld = null then failwith ("expected TypeProviderConfig to have a property or field "+prop)
-                fld.SetValue(cfg, value)|> ignore
-            | p -> 
-                p.GetSetMethod(nonPublic = true).Invoke(cfg, [| box value |]) |> ignore
-        cfg?ResolutionFolder <- resolutionFolder
-        cfg?RuntimeAssembly <- runtimeAssembly
-        cfg?ReferencedAssemblies <- Array.zeroCreate<string> 0
-
-        // Fake an implementation of SystemRuntimeContainsType the shape expected by AssemblyResolver.fs.
-        let dllInfos = [yield DllInfo(runtimeAssembly); for r in runtimeAssemblyRefs do yield DllInfo(r)]
-        let tcImports = TcImports(Some(TcImports(None,[])),dllInfos)
-        let systemRuntimeContainsType = (fun (_s:string) -> if tcImports.DllInfos.Length = 1 then true else true)
-        cfg?systemRuntimeContainsType <- systemRuntimeContainsType
-
-        //Diagnostics.Debugger.Launch() |> ignore
-        Diagnostics.Debug.Assert(cfg.GetType().GetField("systemRuntimeContainsType",BindingFlags.NonPublic ||| BindingFlags.Public ||| BindingFlags.Instance) |> isNull |> not)
-        Diagnostics.Debug.Assert(systemRuntimeContainsType.GetType().GetField("tcImports",BindingFlags.NonPublic ||| BindingFlags.Public ||| BindingFlags.Instance) |> isNull |> not)
-        Diagnostics.Debug.Assert(typeof<TcImports>.GetField("dllInfos",BindingFlags.NonPublic ||| BindingFlags.Public ||| BindingFlags.Instance) |> isNull |> not)
-        Diagnostics.Debug.Assert(typeof<TcImports>.GetProperty("Base",BindingFlags.NonPublic ||| BindingFlags.Public ||| BindingFlags.Instance) |> isNull |> not)
-        Diagnostics.Debug.Assert(typeof<DllInfo>.GetProperty("FileName",BindingFlags.NonPublic ||| BindingFlags.Public ||| BindingFlags.Instance) |> isNull |> not)
-
+        cfg.ResolutionFolder <- resolutionFolder
+        cfg.RuntimeAssembly <- runtimeAssembly
+        cfg.ReferencedAssemblies <- Array.ofList runtimeAssemblyRefs
         cfg
 
     /// Simulates a real instance of TypeProviderConfig and then creates an instance of the last
@@ -72,37 +37,51 @@ type internal Testing() =
     static member GenerateProvidedTypeInstantiation (resolutionFolder: string, runtimeAssembly: string, runtimeAssemblyRefs: string list, typeProviderForNamespacesConstructor, args: obj[]) =
         let cfg = Testing.MakeSimulatedTypeProviderConfig (resolutionFolder, runtimeAssembly, runtimeAssemblyRefs)
 
-        let tp = typeProviderForNamespacesConstructor cfg :> TypeProviderForNamespaces
+        let tp = typeProviderForNamespacesConstructor cfg :> ITypeProvider
 
-        let providedNamespace = tp.Namespaces.[0] 
+        let providedNamespace = tp.GetNamespaces().[0] 
         let providedTypes  = providedNamespace.GetTypes()
         let providedType = 
             providedTypes 
-            |> Array.tryFind (fun ty -> (tp :> ITypeProvider).GetStaticParameters(ty).Length = args.Length ) 
+            |> Array.tryFind (fun ty -> tp.GetStaticParameters(ty).Length = args.Length ) 
             |> function None -> failwithf "couldn't find a type in type provider with %d static args " args.Length | Some ty -> ty
-        let providedTypeDefinition = providedType :?> ProvidedTypeDefinition
 
-        match args with
-        | [||] -> providedTypeDefinition
-        | args ->
-            let typeName =
-                if providedTypeDefinition.IsErased then
-                    providedTypeDefinition.Name + (args |> Seq.map (fun s -> ",\"" + (if s = null then "" else s.ToString()) + "\"") |> Seq.reduce (+))
-                else
-                    // The type name ends up quite mangled in the dll output if we combine the name using static parameters, so for generated types we don't do that
-                    providedTypeDefinition.Name
-            providedTypeDefinition.ApplyStaticArguments(typeName, args)
+        let providedType = 
+            match args with
+            | [||] -> providedType
+            | args ->
+                let typeName =
+                    if (providedType.Attributes &&& enum (int32 TypeProviderTypeAttributes.IsErased)) <> enum 0 then
+                        providedType.Name + (args |> Seq.map (fun s -> ",\"" + (if s = null then "" else s.ToString()) + "\"") |> Seq.reduce (+))
+                    else
+                        // The type name ends up quite mangled in the dll output if we combine the name using static parameters, so for generated types we don't do that
+                        providedType.Name
+                tp.ApplyStaticArguments(providedType, [| typeName |], args)
+        tp, providedType
 
     /// Returns a string representation of the signature (and optionally also the body) of all the
     /// types generated by the type provider up to a certain depth and width
     /// If ignoreOutput is true, this will still visit the full graph, but it will output an empty string to be faster
-    static member FormatProvidedType (t: ProvidedTypeDefinition, ?signatureOnly, ?ignoreOutput, ?maxDepth, ?maxWidth, ?useQualifiedNames) =
+    static member FormatProvidedType (tp: ITypeProvider, t: Type, ?signatureOnly, ?ignoreOutput, ?maxDepth, ?maxWidth, ?useQualifiedNames) =
 
         let signatureOnly = defaultArg signatureOnly false
         let ignoreOutput = defaultArg ignoreOutput false
         let maxDepth = defaultArg maxDepth 10
         let maxWidth = defaultArg maxWidth 100
         let useQualifiedNames = defaultArg useQualifiedNames false
+
+        let hasUnitOfMeasure (t: System.Type) = 
+            t.IsGenericType && 
+            (t.Namespace = "System") &&
+            (t.Name = typeof<bool>.Name ||
+             t.Name = typeof<obj>.Name ||
+             t.Name = typeof<int>.Name ||
+             t.Name = typeof<int64>.Name ||
+             t.Name = typeof<float>.Name ||
+             t.Name = typeof<float32>.Name ||
+             t.Name = typeof<decimal>.Name)
+
+        let isFSharpUnitAnnotated (t:System.Type) = t.IsGenericType && not (t.GetGenericTypeDefinition().IsGenericTypeDefinition)
 
         let knownNamespaces =
             [ t.Namespace
@@ -122,7 +101,7 @@ type internal Testing() =
 
         let fullName (t: Type) =
             let fullName =
-                if useQualifiedNames && not (t :? ProvidedTypeDefinition) then
+                if useQualifiedNames && not (t.GetType().Name = "ProvidedTypeDefinition") then
                     t.AssemblyQualifiedName
                 else t.Namespace + "." + t.Name
             if fullName.StartsWith "FSI_" then
@@ -132,29 +111,29 @@ type internal Testing() =
 
         let rec toString useFullName (t: Type) =
 
-            let hasUnitOfMeasure = (match t with :? ProvidedTypeSymbol as p -> p.IsFSharpUnitAnnotated | _ -> false) 
+            let hasUnit =  hasUnitOfMeasure t
 
             let innerToString (t: Type) =
                 match t with
-                | _ when t.Name = typeof<bool>.Name && not hasUnitOfMeasure -> "bool"
-                | _ when t.Name = typeof<obj>.Name && not hasUnitOfMeasure  -> "obj"
-                | _ when t.Name = typeof<int>.Name && not hasUnitOfMeasure  -> "int"
-                | _ when t.Name = typeof<int64>.Name && not hasUnitOfMeasure  -> "int64"
-                | _ when t.Name = typeof<float>.Name && not hasUnitOfMeasure  -> "float"
-                | _ when t.Name = typeof<float32>.Name && not hasUnitOfMeasure  -> "float32"
-                | _ when t.Name = typeof<decimal>.Name && not hasUnitOfMeasure  -> "decimal"
-                | _ when t.Name = typeof<string>.Name && not hasUnitOfMeasure  -> "string"
+                | _ when t.Name = typeof<bool>.Name && not hasUnit -> "bool"
+                | _ when t.Name = typeof<obj>.Name && not hasUnit  -> "obj"
+                | _ when t.Name = typeof<int>.Name && not hasUnit  -> "int"
+                | _ when t.Name = typeof<int64>.Name && not hasUnit  -> "int64"
+                | _ when t.Name = typeof<float>.Name && not hasUnit  -> "float"
+                | _ when t.Name = typeof<float32>.Name && not hasUnit  -> "float32"
+                | _ when t.Name = typeof<decimal>.Name && not hasUnit  -> "decimal"
+                | _ when t.Name = typeof<string>.Name && not hasUnit  -> "string"
                 | _ when t.Name = typeof<Void>.Name -> "()"
                 | _ when t.Name = typeof<unit>.Name -> "()"
                 | t when t.IsArray -> (t.GetElementType() |> toString useFullName) + "[]"
-                | :? ProvidedTypeDefinition as t ->
+                | _ when t.GetType().Name = "ProvidedTypeDefinition" ->
                     add t
                     t.Name.Split(',').[0]
                 | t when t.IsGenericType ->
                     let args =
                         if useFullName then
                             t.GetGenericArguments()
-                            |> Seq.map (if hasUnitOfMeasure then (fun t -> t.Name) else toString useFullName)
+                            |> Seq.map (if hasUnit then (fun t -> t.Name) else toString useFullName)
                         else
                             t.GetGenericArguments()
                             |> Seq.map (fun _ -> "_")
@@ -166,7 +145,7 @@ type internal Testing() =
                         let args = String.concat "," args
                         let name, reverse =
                             match t with
-                            | t when hasUnitOfMeasure -> toString useFullName t.UnderlyingSystemType, false
+                            | t when hasUnit -> toString useFullName t.UnderlyingSystemType, false
                             // Short names for some known generic types
                             | t when not useQualifiedNames && t.GetGenericTypeDefinition().Name = typeof<int seq>.GetGenericTypeDefinition().Name -> "seq", true
                             | t when not useQualifiedNames && t.GetGenericTypeDefinition().Name = typeof<int list>.GetGenericTypeDefinition().Name -> "list", true
@@ -189,14 +168,14 @@ type internal Testing() =
 
             let rec warnIfWrongAssembly (t:Type) =
                 match t with
-                | :? ProvidedTypeDefinition -> ""
+                | t when t.GetType().Name = "ProvidedTypeDefinition" -> ""
                 | t when t.IsGenericType -> defaultArg (t.GetGenericArguments() |> Seq.map warnIfWrongAssembly |> Seq.tryFind (fun s -> s <> "")) ""
                 | t when t.IsArray -> warnIfWrongAssembly <| t.GetElementType()
                 | t -> if not t.IsGenericParameter && t.Assembly = Assembly.GetExecutingAssembly() then " [DESIGNTIME]" else ""
 
             if ignoreOutput then
                 ""
-            elif hasUnitOfMeasure || t.IsGenericParameter || t.DeclaringType = null then
+            elif hasUnit || t.IsGenericParameter || t.DeclaringType = null then
                 innerToString t + (warnIfWrongAssembly t)
             else
                 (toString useFullName t.DeclaringType) + "+" + (innerToString t) + (warnIfWrongAssembly t)
@@ -472,18 +451,32 @@ type internal Testing() =
                 print str
                 println()
 
-            let getMethodBody (m: ProvidedMethod) =
-                let vs = 
-                    [ if not m.IsStatic then yield ("this", ProvidedTypeDefinition.EraseType m.DeclaringType)
-                      for p in m.GetParameters() do yield (p.Name, ProvidedTypeDefinition.EraseType p.ParameterType) ]
-                    |> List.map (Var.Global >> Expr.Var)
-                m.GetInvokeCode  vs
+            let rec eraseType(typ:Type): Type =
+                match typ with
+                | t when t.Attributes &&& enum (int32 TypeProviderTypeAttributes.IsErased) <> enum 0 -> eraseType typ.BaseType
+                | t when isFSharpUnitAnnotated t -> eraseType typ.UnderlyingSystemType
+                | t when t.IsArray ->
+                    let rank = t.GetArrayRank()
+                    let et = eraseType (t.GetElementType())
+                    if rank = 0 then et.MakeArrayType() else et.MakeArrayType(rank)
+                | t when t.IsGenericType && not t.IsGenericTypeDefinition ->
+                    let genericTypeDefinition = t.GetGenericTypeDefinition()
+                    let genericArguments = t.GetGenericArguments() |> Array.map eraseType
+                    genericTypeDefinition.MakeGenericType(genericArguments)
+                | t -> t
 
-            let getConstructorBody (c: ProvidedConstructor) =
+            let getMethodBody (m: MethodInfo) =
                 let vs = 
-                    [ for p in c.GetParameters() do yield (p.Name, ProvidedTypeDefinition.EraseType p.ParameterType) ]
+                    [ if not m.IsStatic then yield ("this", eraseType m.DeclaringType)
+                      for p in m.GetParameters() do yield (p.Name, eraseType p.ParameterType) ]
                     |> List.map (Var.Global >> Expr.Var)
-                c.GetInvokeCode vs
+                tp.GetInvokerExpression(m, List.toArray vs)
+
+            let getConstructorBody (c: ConstructorInfo) =
+                let vs = 
+                    [ for p in c.GetParameters() do yield (p.Name, eraseType p.ParameterType) ]
+                    |> List.map (Var.Global >> Expr.Var)
+                tp.GetInvokerExpression(c, List.toArray vs)
 
             let printExpr x =
                 if not ignoreOutput then
@@ -509,7 +502,7 @@ type internal Testing() =
 
             match memberInfo with
 
-            | :? ProvidedConstructor as cons ->
+            | (:? ConstructorInfo as cons) when cons.GetType().Name = "ProvidedConstructor" ->
                 if not ignoreOutput then
                     print <| "new : " +
                              (toSignature <| cons.GetParameters()) + " -> " +
@@ -517,7 +510,7 @@ type internal Testing() =
                 if not signatureOnly then
                     cons |> getConstructorBody |> printExpr
 
-            | :? ProvidedField as field ->
+            | (:? FieldInfo as field) when field.GetType().Name = "ProvidedField" ->
                 let value =
                     if signatureOnly then ""
                     else field.GetRawConstantValue() |> printObj
@@ -526,18 +519,18 @@ type internal Testing() =
                              (toString true field.FieldType) +
                              value
 
-            | :? ProvidedProperty as prop ->
+            | (:? PropertyInfo as prop) when prop.GetType().Name = "ProvidedProperty" ->
                 if not ignoreOutput then
-                    print <| (if prop.IsStatic then "static " else "") + "member " +
+                    print <| (if (prop.CanRead && prop.GetGetMethod().IsStatic || prop.CanWrite && prop.GetSetMethod().IsStatic) then "static " else "") + "member " +
                              (getName prop) + ": " + (toString true prop.PropertyType) +
                              " with " + (if prop.CanRead && prop.CanWrite then "get, set" else if prop.CanRead then "get" else "set")
                 if not signatureOnly then
                     if prop.CanRead then
-                        getMethodBody (prop.GetGetMethod() :?> ProvidedMethod) |> printExpr
+                        getMethodBody (prop.GetGetMethod()) |> printExpr
                     if prop.CanWrite then
-                        getMethodBody (prop.GetSetMethod() :?> ProvidedMethod) |> printExpr
+                        getMethodBody (prop.GetSetMethod()) |> printExpr
 
-            | :? ProvidedMethod as m ->
+            | (:? MethodInfo as m) when m.GetType().Name = "ProvidedMethod" ->
                 if m.Attributes &&& MethodAttributes.SpecialName <> MethodAttributes.SpecialName then
                     if not ignoreOutput then
                         print <| (if m.IsStatic then "static " else "") + "member " +
@@ -585,7 +578,6 @@ type internal Testing() =
             currentDepth := !currentDepth + 1
 
         sb.ToString()
-
 
 module internal Targets =
 
@@ -683,13 +675,16 @@ module internal Targets =
            | "3.1" -> "fs31"
            | "4.0" -> "fs40"
            | "4.1" -> "fs41"
+           | "4.5" -> "fs45"
            | _ -> failwith ("unimplemented F# version" + fsharp)
         let compatProfiles =
             match profile with
             | "net45"    -> ["net45";"net40" ]
             | "netstandard1.6"    -> [ "netstandard1.6" ]
             | "netstandard2.0"    -> [ "netstandard2.0"; "netstandard1.6" ]
+            | "netstandard2.1"    -> [ "netstandard2.1"; "netstandard2.0"; "netstandard1.6" ]
             | "netcoreapp2.0"    -> [ "netcoreapp2.0"; "netstandard2.0"; "netstandard1.6" ]
+            | "netcoreapp2.1"    -> [ "netcoreapp2.1"; "netcoreapp2.0"; "netstandard2.0"; "netstandard1.6" ]
             | "portable47"    -> ["portable-net45+sl5+netcore45"]
             | "portable7"     -> ["portable-net45+netcore45"]
             | "portable78"    -> ["portable-net45+netcore45+wp8"]
@@ -1048,9 +1043,13 @@ module internal Targets =
     let Portable7FSharp41Refs() = FSharpRefs "4.1" "portable7"
     let Portable78FSharp41Refs() = FSharpRefs "4.1" "portable78"
     let Portable259FSharp41Refs() = FSharpRefs "4.1" "portable259"
-
     let DotNetStandard20FSharp41Refs() = FSharpRefs "4.1" "netstandard2.0"
     let DotNetCoreApp20FSharp41Refs() = FSharpRefs "4.1" "netcoreapp2.0"
+    
+    let FSharpCore45Ref() = FSharpCoreRef "4.5" "net45"
+    let DotNet45FSharp45Refs() = FSharpRefs "4.5" "net45"
+    let DotNetStandard20FSharp45Refs() = FSharpRefs "4.5" "netstandard2.0"
+    let DotNetCoreApp20FSharp45Refs() = FSharpRefs "4.5" "netcoreapp2.0"
     
     let supportsFSharp31() = (try File.Exists (FSharpCore31Ref()) with _ -> false)
     let supportsFSharp40() = (try File.Exists (FSharpCore40Ref()) with _ -> false)

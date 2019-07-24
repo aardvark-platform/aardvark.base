@@ -1,8 +1,8 @@
 RESTRICTION: || (== net471) (== netcoreapp2.0) (== netstandard2.0)
 NUGET
   remote: https://api.nuget.org/v3/index.json
-    DevILSharp (0.2.4)
-      FSharp.Core (>= 4.3 < 4.4)
+    DevILSharp (0.2.5)
+      FSharp.Core (>= 4.6.2 < 4.7)
     FsCheck (2.10.10)
       FSharp.Core (>= 4.0.0.1) - restriction: || (== net471) (&& (== netcoreapp2.0) (>= net452)) (&& (== netcoreapp2.0) (< netstandard1.6)) (&& (== netcoreapp2.0) (< portable-net45+win8+wp8)) (&& (== netstandard2.0) (>= net452)) (&& (== netstandard2.0) (< netstandard1.6)) (&& (== netstandard2.0) (< portable-net45+win8+wp8))
       FSharp.Core (>= 4.3.4) - restriction: || (&& (== net471) (< net452)) (== netcoreapp2.0) (== netstandard2.0)
@@ -16,7 +16,7 @@ NUGET
       NUnit (>= 3.9) - restriction: || (&& (== net471) (< net452)) (== netcoreapp2.0) (== netstandard2.0)
       NUnit (>= 3.8.1 < 4.0) - restriction: || (== net471) (&& (== netcoreapp2.0) (>= net452)) (&& (== netstandard2.0) (>= net452))
       System.ValueTuple (>= 4.4) - restriction: || (&& (== net471) (< net452)) (== netcoreapp2.0) (== netstandard2.0)
-    FSharp.Core (4.3.4)
+    FSharp.Core (4.6.2)
     FsPickler (5.2)
       FSharp.Core (>= 3.1.2) - restriction: || (== net471) (&& (== netcoreapp2.0) (>= net45)) (&& (== netstandard2.0) (>= net45))
       FSharp.Core (>= 4.3.2) - restriction: || (&& (== net471) (< net45)) (== netcoreapp2.0) (== netstandard2.0)
