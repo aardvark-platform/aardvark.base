@@ -86,7 +86,7 @@ type hdeltaset<'a>(store : hmap<'a, int>) =
 
     member x.Collect (f : SetOperation<'a> -> hdeltaset<'b>) =
         let mutable res = hdeltaset<'b>.Empty
-        for (k,v) in store.ToSeq() do
+        for (k,v) in store do
             res <- res.Combine (f (SetOperation(k,v)))
         res
 

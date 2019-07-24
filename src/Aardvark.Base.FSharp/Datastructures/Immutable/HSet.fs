@@ -330,7 +330,7 @@ type hset<'a>(cnt : int, store : intmap<list<'a>>) =
         store |> IntMap.toList |> List.collect snd
 
     member x.ToArray() =
-        x.ToSeq() |> Seq.toArray
+        x.ToSeq().ToArray(cnt)
 
 
 

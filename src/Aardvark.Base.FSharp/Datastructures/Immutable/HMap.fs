@@ -20,6 +20,25 @@ module private HMapList =
                 else
                     (k1, v1) :: alter k f rest
 
+    let rec alter' (cnt : byref<int>) (k : 'k) (f : Option<'v> -> Option<'v>) (l : list<'k * 'v>) =
+        match l with
+            | [] ->
+                match f None with
+                    | None -> []
+                    | Some v -> 
+                        cnt <- cnt + 1
+                        [k,v]
+
+            | (k1, v1) :: rest ->
+                if Unchecked.equals k k1 then
+                    match f (Some v1) with
+                        | None -> 
+                            cnt <- cnt - 1
+                            rest
+                        | Some v2 -> (k1, v2) :: rest
+                else
+                    (k1, v1) :: alter' &cnt k f rest
+
     let rec update (k : 'k) (f : Option<'v> -> 'v) (l : list<'k * 'v>) =
         match l with
             | [] -> 
@@ -221,53 +240,41 @@ type hmap<'k, [<EqualityConditionalOn>] 'v>(cnt : int, store : intmap<list<'k * 
 
     member x.Count = cnt
 
+    // Add or Replace or Delete
     member x.Alter (key : 'k, f : Option<'v> -> Option<'v>) =
         let hash = Unchecked.hash key
-        let mutable cnt = cnt
-        let f old =
-            let res = f old
-            if Option.isNone old && Option.isSome res then cnt <- cnt + 1
-            elif Option.isSome old && Option.isNone res then cnt <- cnt - 1
-            res
 
-        let newMap = 
-            store |> IntMap.alter (fun l ->
-                match l with
-                    | Some l -> 
-                        match HMapList.alter key f l with
-                            | [] -> None
-                            | l -> Some l
+        match store |> IntMap.tryFind hash with
+        | Some old ->
+            let mutable cnt = cnt
+            let newList = HMapList.alter' &cnt key f old
+            if Unchecked.equals newList old then
+                x // if same -> Nop
+            else
+                match newList with
+                | [] -> hmap(cnt, store |> IntMap.delete hash)
+                | l ->  hmap(cnt, store |> IntMap.insert hash l)
+        | None ->
+            match f None with
+            | Some res -> hmap(cnt + 1, IntMap.insert hash [key, res] store)
+            | None -> x // nop 
 
-                    | None ->
-                        match f None with
-                            | None -> None
-                            | Some v -> Some [key,v]
-            ) hash
-
-        hmap(cnt, newMap)
-
+    // Add or Replace
     member x.Update (key : 'k, f : Option<'v> -> 'v) =
-        let mutable cnt = cnt
-        let f old =
-            if Option.isNone old then cnt <- cnt + 1
-            f old
 
         let hash = Unchecked.hash key
-        let newMap = 
-            store |> IntMap.alter (fun l ->
-                match l with
-                    | Some l -> 
-                        match HMapList.update key f l with
-                            | [] -> None
-                            | l -> Some l
-
-                    | None ->
-                        let v = f None
-                        Some [key, v]
-            ) hash
-
-        hmap(cnt, newMap)
-
+        
+        match store |> IntMap.tryFind hash with
+        | Some old ->
+            let newList = HMapList.update key f old
+            if Unchecked.equals newList old then
+                x // if same -> Nop
+            else
+                hmap(cnt, store |> IntMap.insert hash newList )
+        | None ->
+            let v = f None
+            hmap(cnt + 1, IntMap.insert hash [key, v] store)
+            
     member x.Add (key : 'k, value : 'v) =
         let hash = Unchecked.hash key
         let mutable cnt = cnt
@@ -510,8 +517,12 @@ type hmap<'k, [<EqualityConditionalOn>] 'v>(cnt : int, store : intmap<list<'k * 
         store |> IntMap.toList |> List.collect snd 
 
     member x.ToArray() =
-        store |> IntMap.toSeq |> Seq.collect snd |> Seq.toArray
+        x.ToSeq().ToArray(cnt)
 
+    static member Single (k : 'k) (v : 'v) =
+        let hash = Unchecked.hash k
+        hmap(1, IntMap.single hash [(k, v)])
+        
     static member OfSeq (seq : seq<'k * 'v>) =
         let mutable res = empty
         for (k,v) in seq do
@@ -628,7 +639,7 @@ module HMap =
     let empty<'k, 'v> = hmap<'k, 'v>.Empty
     
     let inline single (k : 'k) (v : 'v) = 
-        hmap.OfList [k,v]
+        hmap.Single k v
 
     /// <summary>
     /// Returns a new map made from the given bindings. <para />

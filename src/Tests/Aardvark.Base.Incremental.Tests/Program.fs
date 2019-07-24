@@ -4,6 +4,20 @@ open Aardvark.Base.Incremental
 open Aardvark.Base.Incremental.Tests
 open System.Threading
 
+let performanceTest() =
+    SimSetTest.``[ASet] validation``()
+
+    Log.startTimed "time\r\n"
+    for i in 0..49 do
+        ``performance tests``.``[ASet] collect performance``()
+    Log.stop()
+
+    Log.startTimed "time\r\n"
+    for i in 0..49 do
+        ``performance tests``.``[ASet] map performance``()
+    Log.stop()
+
+
 [<EntryPoint>]
 let main args =
 
@@ -17,7 +31,7 @@ let main args =
 //    res.GetValue() |> printfn "%A"
 //    res.GetValue() |> printfn "%A"
 
-
+    performanceTest()
 
     //Aardvark.Base.Incremental.Tests.SimpleTest.run()
     //Aardvark.Base.Incremental.Tests.``collect tests``.``[ASet] memory leak test``()
@@ -29,6 +43,6 @@ let main args =
 
     //AListTestsNew.testMapUse()
     //System.Environment.Exit 0
-    ``Basic Mod Tests``.``[Mod] eval and mark performance``()
+    //``Basic Mod Tests``.``[Mod] eval and mark performance``()
     //Aardvark.Base.Incremental.Tests.ConcurrentDeltaQueueTests.``[ASet ConcurrentDeltaQueue] concurrent delta queue test``()
     0
