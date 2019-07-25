@@ -19,8 +19,5 @@ nuget FsPickler                    ~> 5.2.0
 nuget FsPickler.Json               ~> 5.2.0
 
 group Build
-framework: net471
-content: none
 source https://api.nuget.org/v3/index.json
-
-github aardvark-platform/aardvark.fake:v4-temp
+github aardvark-platform/aardvark.fake:v5

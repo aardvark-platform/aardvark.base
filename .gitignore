@@ -29,3 +29,4 @@ tmp
 /.paket/Paket.Restore.targets
 *.fsproj.user
 Aardvark.log
+/build.fsx.lock
