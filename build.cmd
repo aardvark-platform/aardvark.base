@@ -2,10 +2,8 @@
 SETLOCAL
 PUSHD %~dp0
 
-
-.paket\paket.bootstrapper.exe
-if errorlevel 1 (
-  exit /b %errorlevel%
+IF NOT exist .paket\paket.exe (
+	dotnet tool install Paket --tool-path .paket
 )
 
 if NOT exist paket.lock (
@@ -13,13 +11,12 @@ if NOT exist paket.lock (
     .paket\paket.exe install
 )
 
-.paket\paket.exe restore --group Build
+.paket\paket.exe restore
 if errorlevel 1 (
   exit /b %errorlevel%
 )
 
-SET FSI_PATH=packages\build\FAKE\tools\Fake.exe
-"%FSI_PATH%" "build.fsx" Dummy --fsiargs build.fsx --shadowcopyreferences+ %* 
+dotnet packages\build\fake-cli\tools\netcoreapp2.1\any\fake-cli.dll build %* 
 
 
 

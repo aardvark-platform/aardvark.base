@@ -1,6 +1,9 @@
 #!/bin/bash
 
-mono .paket/paket.bootstrapper.exe
-mono .paket/paket.exe restore --group Build
+if [ ! -f .paket/paket ]; then
+    dotnet tool install Paket --tool-path .paket
+fi
 
-mono packages/build/FAKE/tools/FAKE.exe "build.fsx" Dummy --fsiargs build.fsx $@
+./.paket/paket restore 
+
+dotnet packages/build/fake-cli/tools/netcoreapp2.1/any/fake-cli.dll build $@

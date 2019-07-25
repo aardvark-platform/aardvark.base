@@ -26,6 +26,7 @@ tmp
 /src/Aardvark.Base/Tensors/TensorMathExt_generator.cs
 **/*.csproj.user
 **/*_generator.cs
-/.paket/Paket.Restore.targets
+/.paket
 *.fsproj.user
 Aardvark.log
+/build.fsx.lock
