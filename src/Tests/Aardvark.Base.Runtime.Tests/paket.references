@@ -3,3 +3,4 @@ FSharp.Core
 NUnit
 System.Reactive
 FsPickler
+Aardvark.Base.TypeProviders

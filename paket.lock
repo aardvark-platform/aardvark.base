@@ -1,6 +1,8 @@
 RESTRICTION: || (== net471) (== netcoreapp2.0) (== netstandard2.0)
 NUGET
   remote: https://api.nuget.org/v3/index.json
+    Aardvark.Base.TypeProviders (4.5.8)
+      FSharp.Core (>= 4.3)
     DevILSharp (0.2.5)
       FSharp.Core (>= 4.6.2 < 4.7)
     FsCheck (2.10.10)

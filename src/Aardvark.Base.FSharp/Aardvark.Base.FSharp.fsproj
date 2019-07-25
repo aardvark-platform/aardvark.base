@@ -87,7 +87,6 @@
     <Compile Include="Native\Store.fs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Aardvark.Base.TypeProviders\Aardvark.Base.TypeProviders.fsproj" />
     <ProjectReference Include="..\Aardvark.Base\Aardvark.Base.csproj" />
   </ItemGroup>
   <Import Project="..\..\.paket\Paket.Restore.targets" />

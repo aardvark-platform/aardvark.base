@@ -54,16 +54,23 @@
       <Project>{9623ae28-1f72-46e9-a3a7-85fc1a321a73}</Project>
       <Name>Aardvark.Base.Incremental</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\Aardvark.Base.TypeProviders\Aardvark.Base.TypeProviders.fsproj">
-      <Project>{8bfea4ef-bf0a-4c1a-b7ac-cbdd930306fd}</Project>
-      <Name>Aardvark.Base.TypeProviders</Name>
-    </ProjectReference>
     <ProjectReference Include="..\..\Aardvark.Base\Aardvark.Base.csproj">
       <Project>{c90c041e-e076-4bbc-bbcd-b29367f649a2}</Project>
       <Name>Aardvark.Base</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <Choose>
+    <When Condition="($(TargetFrameworkIdentifier) == '.NETFramework' And $(TargetFrameworkVersion) == 'v4.7.1') Or ($(TargetFrameworkIdentifier) == '.NETCoreApp' And $(TargetFrameworkVersion) == 'v2.0') Or ($(TargetFrameworkIdentifier) == '.NETStandard' And $(TargetFrameworkVersion) == 'v2.0')">
+      <ItemGroup>
+        <Reference Include="Aardvark.Base.TypeProviders">
+          <HintPath>..\..\..\packages\Aardvark.Base.TypeProviders\lib\netstandard2.0\Aardvark.Base.TypeProviders.dll</HintPath>
+          <Private>True</Private>
+          <Paket>True</Paket>
+        </Reference>
+      </ItemGroup>
+    </When>
+  </Choose>
   <Choose>
     <When Condition="$(TargetFrameworkIdentifier) == '.NETFramework' And $(TargetFrameworkVersion) == 'v4.7.1'">
       <ItemGroup>
