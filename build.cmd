@@ -2,9 +2,8 @@
 SETLOCAL
 PUSHD %~dp0
 
-.paket\paket.bootstrapper.exe
-if errorlevel 1 (
-  exit /b %errorlevel%
+IF NOT exist .paket\paket.exe (
+	dotnet tool install Paket --tool-path .paket
 )
 
 if NOT exist paket.lock (
