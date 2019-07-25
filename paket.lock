@@ -186,6 +186,7 @@ NUGET
     BlackFox.VsWhere (1.0) - restriction: || (>= net462) (>= netstandard2.0)
       FSharp.Core (>= 4.0.0.1) - restriction: >= net45
       FSharp.Core (>= 4.2.3) - restriction: && (< net45) (>= netstandard2.0)
+    fake-cli (5.15.4)
     Fake.Core.CommandLineParsing (5.15.4) - restriction: || (>= net46) (>= netstandard2.0)
       FParsec (>= 1.0.3) - restriction: || (>= net46) (>= netstandard1.6)
       FSharp.Core (>= 4.3.4) - restriction: || (>= net46) (>= netstandard1.6)
@@ -991,8 +992,9 @@ NUGET
       System.Xml.ReaderWriter (>= 4.3) - restriction: || (&& (< monoandroid) (< monotouch) (< net45) (>= netstandard1.3) (< win8) (< wpa81) (< xamarinios) (< xamarinmac) (< xamarintvos) (< xamarinwatchos)) (&& (< monoandroid) (< net45) (>= netstandard1.0) (< netstandard1.3) (< win8) (< wp8) (< wpa81))
 GITHUB
   remote: aardvark-platform/aardvark.fake
-    FULLPROJECT (dbe28aef2fc610ef380918eda45d4147a3f95479)
+    FULLPROJECT (0ea8010175a16996ede4a05b3ee5341324992942)
       Argu (>= 5.5 < 5.6)
+      fake-cli (>= 5.15.4 < 5.16)
       Fake.Core.Target (>= 5.15.4 < 5.16)
       Fake.DotNet.MSBuild (>= 5.15.4 < 5.16)
       Fake.IO.FileSystem (>= 5.15.4 < 5.16)
