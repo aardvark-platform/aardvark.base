@@ -2,3 +2,4 @@ DevILSharp
 FSharp.Core
 System.Dynamic.Runtime
 FsPickler
+Aardvark.Base.TypeProviders

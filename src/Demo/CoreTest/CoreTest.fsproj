@@ -16,7 +16,6 @@
   <ItemGroup>
     <ProjectReference Include="..\..\Aardvark.Base.FSharp\Aardvark.Base.FSharp.fsproj" />
     <ProjectReference Include="..\..\Aardvark.Base.Incremental\Aardvark.Base.Incremental.fsproj" />
-    <ProjectReference Include="..\..\Aardvark.Base.TypeProviders\Aardvark.Base.TypeProviders.fsproj" />
     <ProjectReference Include="..\..\Aardvark.Base\Aardvark.Base.csproj" />
   </ItemGroup>
   <Import Project="..\..\..\.paket\Paket.Restore.targets" />

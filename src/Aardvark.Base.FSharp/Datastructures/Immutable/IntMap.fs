@@ -664,7 +664,7 @@ module IntMap =
 
     ///O(n). partition the map according to some predicate. The first map contains all elements that satisfy the predicate, the second all elements that fail the predicate. See also split. Credit: Haskell.org
     let rec partitionWithKey predicate t =
-         match t with
+        match t with
         | Bin(p, m, l, r)  ->
             let (l1, l2) = partitionWithKey predicate l
             let (r1, r2) = partitionWithKey predicate r

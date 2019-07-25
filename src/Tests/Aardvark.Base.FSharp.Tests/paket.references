@@ -5,3 +5,4 @@ FsUnit
 NUnit
 System.Reactive
 FsPickler
+Aardvark.Base.TypeProviders

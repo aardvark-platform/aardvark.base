@@ -1,6 +1,7 @@
 framework: netstandard2.0, net471, netcoreapp2.0
 source https://api.nuget.org/v3/index.json
 
+nuget Aardvark.Base.TypeProviders  ~> 4.5.8
 nuget FSharp.Core                  ~> 4.3.0
 nuget System.Collections.Immutable ~> 1.5.0
 
