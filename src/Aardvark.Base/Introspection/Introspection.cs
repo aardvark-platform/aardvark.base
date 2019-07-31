@@ -832,7 +832,7 @@ namespace Aardvark.Base
 
         #endregion
 
-        public static void UnpackNativeDependencies(Assembly a)
+        public static void UnpackNativeDependenciesToBaseDir(Assembly a, string baseDir)
         {
             if (a.IsDynamic) return;
 
@@ -844,10 +844,6 @@ namespace Aardvark.Base
 
                 Report.Begin(3, "Unpacking native dependencies for {0}", a.FullName);
 
-                var baseDir = 
-                    IntrospectionProperties.CustomEntryAssembly != null 
-                    ? Path.GetDirectoryName(IntrospectionProperties.CustomEntryAssembly.Location) 
-                    : AppDomain.CurrentDomain.BaseDirectory;
 
                 using (var s = a.GetManifestResourceStream("native.zip"))
                 {
@@ -962,6 +958,15 @@ namespace Aardvark.Base
                 Report.Warn("could not unpack native dependencies for {0}: {1}", a.FullName, e);
                 Report.End(3);
             }
+        }
+
+        public static void UnpackNativeDependencies(Assembly a)
+        {
+            var baseDir =
+                IntrospectionProperties.CustomEntryAssembly != null
+                ? Path.GetDirectoryName(IntrospectionProperties.CustomEntryAssembly.Location)
+                : AppDomain.CurrentDomain.BaseDirectory;
+            UnpackNativeDependenciesToBaseDir(a,baseDir);
         }
 
         public static void Init()
