@@ -5,6 +5,7 @@
 
 [The Aardvark Platform](https://aardvarkians.com/) |
 [Wiki](https://github.com/aardvarkplatform/aardvark.docs/wiki) | 
+[The Platform Walkthrough Repository](https://github.com/aardvark-platform/walkthrough) |
 [Gallery](https://github.com/aardvarkplatform/aardvark.docs/wiki/Gallery) | 
 [Quickstart](https://github.com/aardvarkplatform/aardvark.docs/wiki/Quickstart-Windows) | 
 [Status](https://github.com/aardvarkplatform/aardvark.docs/wiki/Status)
