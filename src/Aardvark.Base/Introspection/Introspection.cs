@@ -969,7 +969,7 @@ namespace Aardvark.Base
             UnpackNativeDependenciesToBaseDir(a,baseDir);
         }
 
-        public static void Init()
+        public static void Init(string basePath)
         {
             Report.BeginTimed("initializing aardvark");
 
@@ -982,7 +982,7 @@ namespace Aardvark.Base
             Report.BeginTimed("Unpacking native dependencies");
             foreach(var a in AppDomain.CurrentDomain.GetAssemblies())
             {
-                UnpackNativeDependencies(a);
+                UnpackNativeDependenciesToBaseDir(a,basePath);
             }
             AppDomain.CurrentDomain.AssemblyLoad += (s, e) =>
             {
@@ -996,6 +996,16 @@ namespace Aardvark.Base
             Report.End();
             LoadAll(pluginsList);
             Report.End();
+        }
+
+
+        public static void Init()
+        {
+            var baseDir =
+                IntrospectionProperties.CustomEntryAssembly != null
+                ? Path.GetDirectoryName(IntrospectionProperties.CustomEntryAssembly.Location)
+                : AppDomain.CurrentDomain.BaseDirectory;
+            Init(baseDir);
         }
 
         private static void CurrentDomain_AssemblyLoad(object sender, AssemblyLoadEventArgs args)
