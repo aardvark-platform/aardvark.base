@@ -4,7 +4,7 @@ open Aardvark.Base
 
 module Main =
 
-    [<EntryPoint>]
+    //[<EntryPoint>]
     let main args = 
         let prin (m : M33f) name =
             printfn "%s" name

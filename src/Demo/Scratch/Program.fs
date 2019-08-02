@@ -10,9 +10,6 @@ open Aardvark.Base.Runtime
 open Aardvark.Base.Incremental
 open Aardvark.Base.Monads.State
 
-
-open System.Drawing
-open System.Windows.Forms
 open System.IO
 open System.Runtime.InteropServices
 open Microsoft.FSharp.NativeInterop
@@ -368,12 +365,7 @@ open MBrace.FsPickler.Json
 
 [<EntryPoint; STAThread>]
 let main argv = 
-    
-    let a : intmap<int> = IntMap.empty
 
-    let r = a :> seq<_> |> Seq.toList
-    printfn "%A" r
-    Environment.Exit 0
 
 
     let s = MapExt.ofList [1,1;2,2;3,2;4,4]

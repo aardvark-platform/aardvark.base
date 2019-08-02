@@ -2,6 +2,7 @@
 #nowarn "44"
 
 open System
+open System.Reflection
 open Aardvark.Base
 open FsUnit
 open NUnit.Framework
@@ -31,7 +32,8 @@ module ``Ag Tests`` =
 
     [<Test>]
     let ``[Ag] simple semantic root test``() =
-        Aardvark.Init()
+        Introspection.RegisterAssembly(typeof<F>.Assembly)
+        Ag.initialize(); Aardvark.Init()
 
         let f = FA()
 
@@ -41,7 +43,8 @@ module ``Ag Tests`` =
 
     [<Test>]
     let ``[Ag] simple multiple syntactic families``() =
-        Aardvark.Init()
+        Introspection.RegisterAssembly(typeof<F>.Assembly)
+        Ag.initialize(); Aardvark.Init()
 
         let f = FA()
         let g = GA()
@@ -88,7 +91,8 @@ module ``Ag Tests`` =
         
     [<Test>]
     let ``[Ag] same attrib inh and syn``() =
-        Aardvark.Init()
+        Introspection.RegisterAssembly(typeof<F>.Assembly)
+        Ag.initialize(); Aardvark.Init()
 
         let t = Trafo(ref 1, Trafo (ref 2, Trafo (ref 3, Leaf ())))
 

@@ -4,3 +4,5 @@ NUnit
 System.Reactive
 FsPickler
 Aardvark.Base.TypeProviders
+NUnit3TestAdapter
+Microsoft.NET.Test.Sdk
