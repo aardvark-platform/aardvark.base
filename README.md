@@ -12,7 +12,7 @@
 
 Aardvark.Base is part of the open-source [Aardvark platform](https://github.com/aardvark-platform/aardvark.docs/wiki) for visual computing, real-time graphics and visualization. Base is the base for the rendering engine, functional application libaries and many projects:
 
-[![Alt text](./data/context.svg)
+![Alt text](./data/context.svg)
 
 
 Some highlighted (netstandard 2.0 compatible) packages of this repository are:
