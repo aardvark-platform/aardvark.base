@@ -11,4 +11,5 @@ environment:
 
 build_script:
     - sh ./build.sh Restore
-    - msbuild src/Aardvark.sln
+    - dotnet msbuild -p:Configuration=Release src/Aardvark.sln
+    - VERSION=`git describe --abbrev=0` && .paket/paket pack --build-config Release --version $VERSION bin/
