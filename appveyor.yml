@@ -1,0 +1,23 @@
+image:
+  - Visual Studio 2017
+  - Ubuntu
+platform:
+  - Any CPU
+skip_branch_with_pr: true
+configuration:
+  - Release
+environment:
+  DOTNET_SKIP_FIRST_TIME_EXPERIENCE: 1
+  DOTNET_CLI_TELEMETRY_OPTOUT: 1
+
+build_script:
+  - .\build.cmd
+
+for:
+-
+  matrix:
+    only:
+      - image: Ubuntu
+
+  build_script:
+    - sh ./build.sh
