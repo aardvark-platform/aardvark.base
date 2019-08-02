@@ -236,6 +236,7 @@ module ``Basic Mod Tests`` =
 
 
     [<Test>]
+    [<Ignore("takes way too long")>]
     let ``[Mod] mod concurrency test``() =
         
         let pulledValues = List<int>()
@@ -288,6 +289,7 @@ module ``Basic Mod Tests`` =
 
 
     [<Test>]
+    [<Ignore("takes way too long")>]
     let ``[Mod] mod concurrency test super crazy callbacks``() =
         
         let pulledValues = List<int>()
@@ -470,6 +472,7 @@ module ``Basic Mod Tests`` =
 
 
     [<Test>]
+    [<Ignore("takes way too long")>]
     let ``[Mod] consistent concurrency test``() =
         let i = Mod.init 10
 
@@ -553,6 +556,7 @@ module ``Basic Mod Tests`` =
         printfn "changes: %A" changes
     
     [<Test>]
+    [<Ignore("takes way too long")>]
     let ``[Mod] consistent concurrency dirty set``() =
         //let i = Mod.init 10
 
@@ -632,6 +636,7 @@ module ``Basic Mod Tests`` =
         printfn "evals:    %A" iterations
 
     [<Test>]
+    [<Ignore("takes way too long")>]
     let ``[Mod] consistent concurrency multiple evaluators test``() =
         let i = Mod.init 10
 
@@ -759,6 +764,7 @@ module ``Basic Mod Tests`` =
         
 
     [<Test>]
+    [<Ignore("takes way too long")>]
     let ``[Mod] parallel consistent concurrency test``() =
         let a = Mod.init 10
         let b = Mod.init -10

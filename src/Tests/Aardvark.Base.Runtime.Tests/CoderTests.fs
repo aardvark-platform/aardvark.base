@@ -72,40 +72,41 @@ module CoderTests =
                     gc.Free()
 
 
-            static member Coerce (a : 'a[]) : 'b[] =
-                let newLength = (a.Length * sa) / sb |> nativeint
+            static member Copy (a : 'a[]) : 'b[] =
+                let bytes = (a.Length * sa) |> nativeint
                 let gc = GCHandle.Alloc(a, GCHandleType.Pinned)
+                let res : 'b[] = Array.zeroCreate (int (bytes / nativeint sb))
+                let gcDst = GCHandle.Alloc(res, GCHandleType.Pinned)
+
                 try
-                    let ptr = gc.AddrOfPinnedObject() |> NativePtr.ofNativeInt<nativeint>
-
-                    NativePtr.set ptr -1 newLength
-                    NativePtr.set ptr -2 idb
-
-                    a |> unbox<'b[]>
+                    Marshal.Copy(gc.AddrOfPinnedObject(), gcDst.AddrOfPinnedObject(), bytes)
+                    res
 
                 finally
                     gc.Free()
+                    gcDst.Free()
 
-            static member CoercedApply (f : 'b[] -> 'r) (a : 'a[]) : 'r =
-                let newLength = (a.Length * sa) / sb |> nativeint
-                let gc = GCHandle.Alloc(a, GCHandleType.Pinned)
-                try
-                    let ptr = gc.AddrOfPinnedObject() |> NativePtr.ofNativeInt<nativeint>
+            //static member CoercedApply (f : 'b[] -> 'r) (a : 'a[]) : 'r =
+                
+            //    let newLength = (a.Length * sa) / sb |> nativeint
+            //    let gc = GCHandle.Alloc(a, GCHandleType.Pinned)
+            //    try
+            //        let ptr = gc.AddrOfPinnedObject() |> NativePtr.ofNativeInt<nativeint>
 
-                    let oldLength = NativePtr.get ptr -1
-                    let oldType = NativePtr.get ptr -2
+            //        let oldLength = NativePtr.get ptr -1
+            //        let oldType = NativePtr.get ptr -2
 
-                    NativePtr.set ptr -1 newLength
-                    NativePtr.set ptr -2 idb
+            //        NativePtr.set ptr -1 newLength
+            //        NativePtr.set ptr -2 idb
 
-                    try
-                        a |> unbox<'b[]> |> f
-                    finally
-                        NativePtr.set ptr -1 oldLength
-                        NativePtr.set ptr -2 oldType
+            //        try
+            //            a |> unbox<'b[]> |> f
+            //        finally
+            //            NativePtr.set ptr -1 oldLength
+            //            NativePtr.set ptr -2 oldType
 
-                finally
-                    gc.Free()
+            //    finally
+            //        gc.Free()
 
 
         type StreamWriter(stream : Stream) =
@@ -124,7 +125,8 @@ module CoderTests =
                             do! x.WritePrimitive -1
                         else
                             do! x.WritePrimitive data.Length
-                            data |> ArrayCoerce<'a, byte>.CoercedApply bin.Write
+                            let bytes = data |> ArrayCoerce<'a, byte>.Copy 
+                            bin.Write bytes
                     }
 
                 member x.WriteBool(v : bool) =
@@ -167,7 +169,7 @@ module CoderTests =
                             return null
                         else
                             let data = bin.ReadBytes(sizeof<'a> * length)
-                            return ArrayCoerce<byte, 'a>.Coerce data
+                            return ArrayCoerce<byte, 'a>.Copy data
                     }
 
                 member x.ReadBool() =
@@ -202,7 +204,7 @@ module CoderTests =
             let arr = toArray value
             ofArray arr
 
-        let inline simpletest a =
+        let simpletest a =
             let res = roundtrip a
             res |> should equal a
 

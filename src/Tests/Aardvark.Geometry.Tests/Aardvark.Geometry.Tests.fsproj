@@ -15,7 +15,6 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="PolyRegion2dTests.fs" />
-    <Compile Include="Program.fs" />
     <Reference Include="mscorlib" />
     <Reference Include="System" />
     <Reference Include="System.Core" />

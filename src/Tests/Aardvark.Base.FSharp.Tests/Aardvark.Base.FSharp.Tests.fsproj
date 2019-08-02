@@ -24,7 +24,6 @@
     <Compile Include="HSet.fs" />
     <Compile Include="PList.fs" />
     <Compile Include="MapExt.fs" />
-    <Compile Include="Entry.fs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\Aardvark.Base.FSharp\Aardvark.Base.FSharp.fsproj" />

@@ -12,6 +12,7 @@ module ``Control tests`` =
     open Aardvark.Base.Cancellable.StatefulStepVar
     
     [<Test>]
+    [<Ignore("nondeterministic")>]
     let ``[Control] stateful step var cancellation test``() =
 
         let r = System.Random()

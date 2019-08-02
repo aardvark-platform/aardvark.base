@@ -183,7 +183,7 @@ namespace Aardvark.Tests
             Assert.IsTrue(t.Value.TotalSeconds >= t0.Value.TotalSeconds * 2);
         }
 
-        [Test]
+        [Test, Ignore("not working non-privileged")]
         public void CpuTimePrivileged_Works()
         {
             var t = new Telemetry.CpuTime();
