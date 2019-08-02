@@ -1,5 +1,4 @@
 image:
-  - Visual Studio 2017
   - Ubuntu
 platform:
   - Any CPU
@@ -11,7 +10,8 @@ environment:
   DOTNET_CLI_TELEMETRY_OPTOUT: 1
 
 build_script:
-  - .\build.cmd
+  - .\build.cmd Restore
+  - msbuild src\Aardvark.sln
 
 for:
 -
@@ -20,4 +20,5 @@ for:
       - image: Ubuntu
 
   build_script:
-    - sh ./build.sh
+    - sh ./build.sh Restore
+    - msbuild src/Aardvark.sln
