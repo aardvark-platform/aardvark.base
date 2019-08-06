@@ -8,17 +8,17 @@
   </g>
  </g>
  <g>
-  <rect stroke="#000" id="svg_3" height="61" width="409.999987" y="0.75" x="0.75" stroke-width="1.5" fill="#c4ffc8"/>
+  <rect stroke="#000" id="svg_3" height="61" width="409.999987" y="0.75" x="0.75" stroke-width="1.5" fill="#f1f1f1"/>
   <a href="https://github.com/aardvark-platform/aardvark.media" style="cursor: pointer" target="_blank">
   <text style="cursor: pointer;" xml:space="preserve" text-anchor="start" font-family="'Shadows Into Light', serif" font-size="24" id="svg_4" y="26.75" x="8.75" fill-opacity="null" stroke-opacity="null" stroke-width="0" stroke="#000" fill="#000000">aardvark.media</text>
   </a>
   <text style="cursor: default;" stroke="#000" xml:space="preserve" text-anchor="start" font-family="'Shadows Into Light', serif" font-size="15" id="svg_5" y="51.75" x="8.75" stroke-opacity="null" stroke-width="0" fill="#000000">ELM style, purely functional UI and 3D graphics</text>
-  <rect stroke="#000" id="svg_7" height="61" width="409.999987" y="122.749397" x="0.75" stroke-width="1.5" fill="#f97070"/>
+  <rect stroke="#000" id="svg_7" height="61" width="409.999987" y="122.749397" x="0.75" stroke-width="1.5" fill="#f1f1f1"/>
     <a href="https://github.com/aardvark-platform/aardvark.base" style="cursor: pointer" target="_blank">
-  <text xml:space="preserve" text-anchor="start" font-family="'Shadows Into Light', serif" font-size="24" id="svg_8" y="148.749397" x="8.75" fill-opacity="null" stroke-opacity="null" stroke-width="0" stroke="#000" fill="#000000">aardvark.base</text>
+  <text xml:space="preserve" text-anchor="start" font-family="'Shadows Into Light', serif" font-size="24" font-weight="bold" id="svg_8" y="148.749397" x="8.75" fill-opacity="null" stroke-opacity="null" stroke-width="0" stroke="#000" fill="#000000">aardvark.base</text>
   </a>
   <text style="cursor: default;" stroke="#000" xml:space="preserve" text-anchor="start" font-family="'Shadows Into Light', serif" font-size="15" id="svg_9" y="173.749397" x="8.75" stroke-opacity="null" stroke-width="0" fill="#000000">Math, incremental evaluation, algorithms,...</text>
-  <rect stroke="#000" id="svg_10" height="61" width="409.999987" y="61.624596" x="0.75" stroke-width="1.5" fill="#c4ffc8"/>
+  <rect stroke="#000" id="svg_10" height="61" width="409.999987" y="61.624596" x="0.75" stroke-width="1.5" fill="#f1f1f1"/>
   <a href="https://github.com/aardvark-platform/aardvark.rendering" style="cursor: pointer" target="_blank">
   <text style="cursor: pointer;" xml:space="preserve" text-anchor="start" font-family="'Shadows Into Light', serif" font-size="24" id="svg_11" y="87.624596" x="8.75" fill-opacity="null" stroke-opacity="null" stroke-width="0" stroke="#000" fill="#000000">aardvark.rendering</text>
   </a>
