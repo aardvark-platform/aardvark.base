@@ -906,7 +906,43 @@ module ``Basic Mod Tests`` =
 
             Log.line "Total: MarkTime=%.2fs EvalTime=%.2fs" totalMarkTime totalEvalTime
         
+    [<Test>]
+    let ``[AdaptiveObject] callback dispose test``() =
 
+        let a = Mod.init true
+        let b = Mod.init 1
+
+        let mutable registered = false
+        let mutable rx = Unchecked.defaultof<System.IDisposable>
+        let cb1 = a |> Mod.unsafeRegisterCallbackNoGcRoot (fun x -> 
+                            Log.line "outer Callback %A" x
+                            if rx <> null then
+                                rx.Dispose()
+                                rx <- null
+                                registered <- false
+
+                            if x then
+                                registered <- true
+                                rx <- b |> Mod.unsafeRegisterCallbackNoGcRoot(fun x -> Log.line "inner Callback %d" x; if not registered then failwith "invoked disposed callback")
+                        )
+
+        transact(fun () ->
+            b.Value <- 2)
+        
+        transact(fun () ->
+            a.Value <- false)
+
+        transact(fun () ->
+            a.Value <- true)
+
+        // this transaction will push both callbacks to marking queue  
+        // the evaluation will first trigger the outer callback then disposes the inner
+        // as it is already on the marking queue, it will be still invoked -> this should not happen
+        transact(fun () ->
+            a.Value <- false
+            b.Value <- 3)
+
+        ()
 
     [<AutoOpen>]
     module Validation =

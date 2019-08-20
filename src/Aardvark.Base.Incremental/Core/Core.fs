@@ -1027,9 +1027,10 @@ module CallbackExtensions =
         member x.Mark() =
 //            let old = AdaptiveSystemState.pushReadLocks()
 //            try
-            Ag.useScope scope (fun () ->
-                callback x
-            )
+            if live = 1 then
+                Ag.useScope scope (fun () ->
+                    callback x
+                )
 //            finally
 //                AdaptiveSystemState.popReadLocks old
 
