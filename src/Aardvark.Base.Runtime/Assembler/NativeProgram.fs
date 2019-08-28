@@ -239,7 +239,7 @@ type NativeProgram<'a, 'b> private(data : alist<'a>, isDifferential : bool, comp
     let manager = MemoryManager.createExecutable()
 
     let jumpDistance = ref 0L
-    let mutable count = 0
+    let mutable count = 0 // FragmentCount
     let mutable stats : 'b = zero
 
     let mutable prolog = 

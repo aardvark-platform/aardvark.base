@@ -71,6 +71,7 @@
     <Compile Include="Runtime\NativeMemory.fs" />
     <Compile Include="Runtime\Fragments.fs" />
     <Compile Include="Runtime\CustomSchedulers.fs" />
+    <Compile Include="Runtime\Caches.fs" />
     <Compile Include="SVDM33f.fs" />
     <Compile Include="Reflection.fs" />
     <Compile Include="Runtime.fs" />

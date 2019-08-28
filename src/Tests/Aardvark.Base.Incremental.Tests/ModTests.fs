@@ -6,6 +6,8 @@ open NUnit.Framework
 open FsUnit
 open System.Threading
 open System.Threading.Tasks
+open System.Runtime.CompilerServices
+open System.Diagnostics
 
 module ``Basic Mod Tests`` =
     open System.Collections.Generic
@@ -962,3 +964,59 @@ module ``Basic Mod Tests`` =
             let z = Mod.map2 ((+)) x y
             let path = System.IO.Path.GetTempFileName()
             z.DumpDgml (1000, path) |> ignore
+
+            
+    type RuntimeObject(name : string) =
+
+        static let mutable objCount = 0
+
+        let data = Array.zeroCreate 100000
+
+        let number = Interlocked.Increment &objCount
+
+        do
+            Log.line "Create %s %d" name number
+
+        static member ObjCount = objCount
+
+        member x.Name 
+            with get() = name
+
+        override x.Finalize() = 
+            Interlocked.Decrement &objCount |> ignore
+            Log.line "Collect %s %d" name number
+
+    [<Test>]
+    [<Ignore("not fully understood issue")>]
+    let ``[Caches] BinaryCache Mod``() =
+    
+        let a = Mod.init "hugo" 
+
+        let funf : IMod<string> -> IMod<string> -> IMod<string> = 
+            //BinaryCache<IMod<string>, IMod<string>, IMod<string>>(Mod.map2 (+)).Invoke
+            BinaryCache<IMod<string>, IMod<string>, IMod<string>>(Mod.map2 (fun a b -> a + b)).Invoke
+
+        let sw = Stopwatch.StartNew()
+        let mutable i = 0
+        while sw.Elapsed.TotalSeconds < 10.0 do
+        
+            let temp = Mod.init (RuntimeObject(sprintf "run-%i" i))
+            let str = temp |> Mod.map (fun r -> r.Name)
+        
+            let cacheFun = funf str // creates function closure that holds str ? // function will be used as key ???
+            let result = cacheFun a
+
+            Log.line "created: %s" (result.GetValue())
+
+            i <- i + 1 
+
+            System.GC.Collect(3)
+            System.GC.WaitForFullGCComplete() |> ignore
+
+        System.GC.Collect(3)
+        System.GC.WaitForFullGCComplete() |> ignore
+
+        Log.line "RuntimeObject Count=%d" RuntimeObject.ObjCount
+
+        if RuntimeObject.ObjCount > 100 then
+            failwith "leak"

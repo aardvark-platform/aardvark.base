@@ -546,7 +546,7 @@ module Mod =
         inherit AbstractMod<'c>()
 
         member x.Left = a
-        member x.Right = a
+        member x.Right = b
         member x.F = f
 
         override x.Inputs = 
