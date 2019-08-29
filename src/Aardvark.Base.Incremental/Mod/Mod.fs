@@ -806,9 +806,9 @@ module Mod =
             | (true, true) -> 
                 delay (fun () -> f (m1.GetValue(AdaptiveToken.Empty)) (m2.GetValue(AdaptiveToken.Empty))) 
             | (true, false) -> 
-                map (fun b -> f (m1.GetValue(AdaptiveToken.Empty)) b) m2
+                MapMod(m2, fun b -> f (m1.GetValue(AdaptiveToken.Empty)) b) :> IMod<_>
             | (false, true) -> 
-                map (fun a -> f a (m2.GetValue(AdaptiveToken.Empty))) m1
+                MapMod(m1, fun a -> f a (m2.GetValue(AdaptiveToken.Empty))) :> IMod<_>
             | (false, false) ->
                 Map2Mod(m1, m2, f) :> IMod<_>
 
