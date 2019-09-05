@@ -161,7 +161,7 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Builds a transformation matrix using the scale, rotation and translation componets.
+        /// Builds a transformation matrix using the scale, rotation and translation components.
         /// NOTE: Uses the Scale * Rotation * Translation notion. 
         ///       The rotation is in Euler-Angles (yaw, pitch, roll).
         /// </summary>
@@ -226,12 +226,12 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Creates a view tranformation from the given vectors.
+        /// Creates a view transformation from the given vectors.
         /// </summary>
         /// <param name="location">Origin of the view</param>
         /// <param name="u">Right vector of the view-plane</param>
         /// <param name="v">Up vector of the view-plane</param>
-        /// <param name="z">Normal vector of the view-plane. This vector is suppsoed to point in view-direction for a left-handed view transformation and in opposit direction in the right-handed case.</param>
+        /// <param name="z">Normal vector of the view-plane. This vector is supposed to point in view-direction for a left-handed view transformation and in opposite direction in the right-handed case.</param>
         /// <returns>The view transformation</returns>
         public static Trafo3d ViewTrafo(V3d location, V3d u, V3d v, V3d z)
         {
