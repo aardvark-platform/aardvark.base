@@ -308,21 +308,6 @@ namespace Aardvark.Tests
             Assert.IsTrue(xs[7] == new Cell(-3, 1, 21, 0));
         }
 
-        [Test]
-        public void Cell_GetOctant()
-        {
-            var c = new Cell(-2, 0, 10, 1);
-            var xs = new[] { c.GetOctant(0), c.GetOctant(1), c.GetOctant(2), c.GetOctant(3), c.GetOctant(4), c.GetOctant(5), c.GetOctant(6), c.GetOctant(7) };
-            Assert.IsTrue(xs[0] == new Cell(-4, 0, 20, 0));
-            Assert.IsTrue(xs[1] == new Cell(-3, 0, 20, 0));
-            Assert.IsTrue(xs[2] == new Cell(-4, 1, 20, 0));
-            Assert.IsTrue(xs[3] == new Cell(-3, 1, 20, 0));
-            Assert.IsTrue(xs[4] == new Cell(-4, 0, 21, 0));
-            Assert.IsTrue(xs[5] == new Cell(-3, 0, 21, 0));
-            Assert.IsTrue(xs[6] == new Cell(-4, 1, 21, 0));
-            Assert.IsTrue(xs[7] == new Cell(-3, 1, 21, 0));
-        }
-
         #endregion
 
         #region parent
@@ -612,6 +597,211 @@ namespace Aardvark.Tests
             var b = new Cell(12345678910111213, 2000, 4000, -100);
             Assert.IsTrue(!a.Intersects(b));
         }
+
+        #endregion
+
+        #region octant
+        
+        [Test]
+        public void Cell_GetOctant()
+        {
+            var c = new Cell(-2, 0, 10, 1);
+            var xs = new[] { c.GetOctant(0), c.GetOctant(1), c.GetOctant(2), c.GetOctant(3), c.GetOctant(4), c.GetOctant(5), c.GetOctant(6), c.GetOctant(7) };
+            Assert.IsTrue(xs[0] == new Cell(-4, 0, 20, 0));
+            Assert.IsTrue(xs[1] == new Cell(-3, 0, 20, 0));
+            Assert.IsTrue(xs[2] == new Cell(-4, 1, 20, 0));
+            Assert.IsTrue(xs[3] == new Cell(-3, 1, 20, 0));
+            Assert.IsTrue(xs[4] == new Cell(-4, 0, 21, 0));
+            Assert.IsTrue(xs[5] == new Cell(-3, 0, 21, 0));
+            Assert.IsTrue(xs[6] == new Cell(-4, 1, 21, 0));
+            Assert.IsTrue(xs[7] == new Cell(-3, 1, 21, 0));
+        }
+
+        [Test]
+        public void Cell_GetOctantOfCell_TooBig()
+        {
+            var c = new Cell(0, 0, 0, 1);
+
+            Assert.IsTrue(c.GetOctant(new Cell(0, 0, 0, 1)) == null);
+            Assert.IsTrue(c.GetOctant(new Cell(0, 0, 0, 2)) == null);
+        }
+
+        [Test]
+        public void Cell_GetOctantOfCell_Centered()
+        {
+            var c = new Cell(1);
+
+            Assert.IsTrue(c.GetOctant(new Cell(0)) == null);
+            Assert.IsTrue(c.GetOctant(new Cell(1)) == null);
+            Assert.IsTrue(c.GetOctant(new Cell(2)) == null);
+            Assert.IsTrue(c.GetOctant(new Cell(0, 0, 0, 1)) == null);
+            Assert.IsTrue(c.GetOctant(new Cell(0, 0, 0, 2)) == null);
+
+            Assert.IsTrue(c.GetOctant(new Cell(-1, -1, -1, 0)) == 0);
+            var foo = c.GetOctant(new Cell(0, -1, -1, 0));
+            Assert.IsTrue(c.GetOctant(new Cell( 0, -1, -1, 0)) == 1);
+            Assert.IsTrue(c.GetOctant(new Cell(-1,  0, -1, 0)) == 2);
+            Assert.IsTrue(c.GetOctant(new Cell( 0,  0, -1, 0)) == 3);
+            Assert.IsTrue(c.GetOctant(new Cell(-1, -1,  0, 0)) == 4);
+            Assert.IsTrue(c.GetOctant(new Cell( 0, -1,  0, 0)) == 5);
+            Assert.IsTrue(c.GetOctant(new Cell(-1,  0,  0, 0)) == 6);
+            Assert.IsTrue(c.GetOctant(new Cell( 0,  0,  0, 0)) == 7);
+
+            Assert.IsTrue(c.GetOctant(new Cell(-2, -1, -1, 0)) == null);
+            Assert.IsTrue(c.GetOctant(new Cell( 1, -1, -1, 0)) == null);
+            Assert.IsTrue(c.GetOctant(new Cell(-1, -2, -1, 0)) == null);
+            Assert.IsTrue(c.GetOctant(new Cell(-1,  1, -1, 0)) == null);
+            Assert.IsTrue(c.GetOctant(new Cell(-1, -1, -2, 0)) == null);
+            Assert.IsTrue(c.GetOctant(new Cell(-1, -1,  1, 0)) == null);
+        }
+
+        [Test]
+        public void Cell_GetOctantOfCell_1()
+        {
+            var c = new Cell(0, 0, 0, 1);
+
+            Assert.IsTrue(c.GetOctant(new Cell(0, 0, 0, 0)) == 0);
+            Assert.IsTrue(c.GetOctant(new Cell(1, 0, 0, 0)) == 1);
+            Assert.IsTrue(c.GetOctant(new Cell(0, 1, 0, 0)) == 2);
+            Assert.IsTrue(c.GetOctant(new Cell(0, 0, 1, 0)) == 4);
+        }
+
+        [Test]
+        public void Cell_GetOctantOfCell_1_Outside()
+        {
+            var c = new Cell(0, 0, 0, 1);
+
+            Assert.IsTrue(c.GetOctant(new Cell(-1, 0, 0, 0)) == null);
+            Assert.IsTrue(c.GetOctant(new Cell(0, -1, 0, 0)) == null);
+            Assert.IsTrue(c.GetOctant(new Cell(0, 0, -1, 0)) == null);
+            Assert.IsTrue(c.GetOctant(new Cell(2, 0, 0, 0)) == null);
+            Assert.IsTrue(c.GetOctant(new Cell(0, 2, 0, 0)) == null);
+            Assert.IsTrue(c.GetOctant(new Cell(0, 0, 2, 0)) == null);
+        }
+
+        #endregion
+
+        #region operators
+
+        #region operator >>
+
+        [Test]
+        public void Cell_RightShift_0()
+        {
+            var c = new Cell(1, -2, 3, 4) >> 0;
+            Assert.IsTrue(c == new Cell(1, -2, 3, 4));
+            Assert.IsTrue(new Cell(1, -2, 3, 4).BoundingBox.Min == c.BoundingBox.Min);
+        }
+
+        [Test]
+        public void Cell_RightShift_1()
+        {
+            var c = new Cell(1, -2, 3, 4) >> 1;
+            Assert.IsTrue(c == new Cell(2, -4, 6, 3));
+            Assert.IsTrue(new Cell(1, -2, 3, 4).BoundingBox.Min == c.BoundingBox.Min);
+        }
+
+        [Test]
+        public void Cell_RightShift_2()
+        {
+            var c = new Cell(1, -2, 3, 4) >> 2;
+            Assert.IsTrue(c == new Cell(4, -8, 12, 2));
+            Assert.IsTrue(new Cell(1, -2, 3, 4).BoundingBox.Min == c.BoundingBox.Min);
+        }
+
+        [Test]
+        public void Cell_RightShift_m1()
+        {
+            var c = new Cell(1, -2, 3, 4) >> -1;
+            Assert.IsTrue(c == new Cell(1, -2, 3, 4));
+            Assert.IsTrue(new Cell(1, -2, 3, 4).BoundingBox.Min == c.BoundingBox.Min);
+        }
+
+        [Test]
+        public void Cell_RightShift_c0()
+        {
+            var c = new Cell(4) >> 0;
+            Assert.IsTrue(c == new Cell(4));
+            Assert.IsTrue(c.IsCenteredAtOrigin);
+        }
+
+        [Test]
+        public void Cell_RightShift_c1()
+        {
+            var c = new Cell(4) >> 1;
+            Assert.IsTrue(c == new Cell(3));
+            Assert.IsTrue(c.IsCenteredAtOrigin);
+        }
+
+        [Test]
+        public void Cell_RightShift_cm1()
+        {
+            var c = new Cell(4) >> -1;
+            Assert.IsTrue(c == new Cell(4));
+            Assert.IsTrue(c.IsCenteredAtOrigin);
+        }
+
+        #endregion
+
+        #region operator <<
+
+        [Test]
+        public void Cell_LeftShift_0()
+        {
+            var c = new Cell(1, -2, 3, 4) << 0;
+            Assert.IsTrue(c == new Cell(1, -2, 3, 4));
+            Assert.IsTrue(new Cell(1, -2, 3, 4).BoundingBox.Min == c.BoundingBox.Min);
+        }
+
+        [Test]
+        public void Cell_LeftShift_1()
+        {
+            var c = new Cell(1, -2, 3, 4) << 1;
+            Assert.IsTrue(c == new Cell(0, -1, 1, 5));
+            Assert.IsTrue(new Cell(0, -2, 2, 4).BoundingBox.Min == c.BoundingBox.Min);
+        }
+
+        [Test]
+        public void Cell_LeftShift_2()
+        {
+            var c = new Cell(1, -2, 3, 4) << 2;
+            Assert.IsTrue(c == new Cell(0, -1, 0, 6));
+            Assert.IsTrue(new Cell(0, -4, 0, 4).BoundingBox.Min == c.BoundingBox.Min);
+        }
+
+        [Test]
+        public void Cell_LeftShift_m1()
+        {
+            var c = new Cell(1, -2, 3, 4) << -1;
+            Assert.IsTrue(c == new Cell(1, -2, 3, 4));
+            Assert.IsTrue(new Cell(1, -2, 3, 4).BoundingBox.Min == c.BoundingBox.Min);
+        }
+
+        [Test]
+        public void Cell_LeftShift_c0()
+        {
+            var c = new Cell(4) << 0;
+            Assert.IsTrue(c == new Cell(4));
+            Assert.IsTrue(c.IsCenteredAtOrigin);
+        }
+
+        [Test]
+        public void Cell_LeftShift_c1()
+        {
+            var c = new Cell(4) << 1;
+            Assert.IsTrue(c == new Cell(5));
+            Assert.IsTrue(c.IsCenteredAtOrigin);
+        }
+
+        [Test]
+        public void Cell_LeftShift_cm1()
+        {
+            var c = new Cell(4) << -1;
+            Assert.IsTrue(c == new Cell(4));
+            Assert.IsTrue(c.IsCenteredAtOrigin);
+        }
+
+        #endregion
 
         #endregion
     }

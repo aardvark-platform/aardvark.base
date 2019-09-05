@@ -42,7 +42,6 @@ namespace Aardvark.Base
         public Cell(long x, long y, long z, int exponent)
         {
             X = x; Y = y; Z = z; Exponent = exponent;
-            BoundingBox = ComputeBoundingBox(X, Y, Z, Exponent);
         }
 
         /// <summary>
@@ -117,8 +116,6 @@ namespace Aardvark.Base
                 Y = (long)Math.Floor(a.Y / s);
                 Z = (long)Math.Floor(a.Z / s);
             }
-
-            BoundingBox = ComputeBoundingBox(X, Y, Z, Exponent);
         }
 
         /// <summary>
@@ -253,7 +250,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Gets cell's bounds.
         /// </summary>
-        public Box3d BoundingBox { get; }
+        public Box3d BoundingBox => ComputeBoundingBox(X, Y, Z, Exponent);
 
         /// <summary>
         /// Computes cell's center.
@@ -271,7 +268,6 @@ namespace Aardvark.Base
 
             if (IsCenteredAtOrigin)
             {
-                var e = Exponent - 1;
                 return new Cell(
                     (i & 1) == 0 ? -1 : 0,
                     (i & 2) == 0 ? -1 : 0,
@@ -279,14 +275,94 @@ namespace Aardvark.Base
                     Exponent - 1
                     );
             }
-
-            return new Cell(
-                (X << 1) + ((i & 1) == 0 ? 0 : 1),
-                (Y << 1) + ((i & 2) == 0 ? 0 : 1),
-                (Z << 1) + ((i & 4) == 0 ? 0 : 1),
-                Exponent - 1
-                );
+            else
+            {
+                return new Cell(
+                    (X << 1) + ((i & 1) == 0 ? 0 : 1),
+                    (Y << 1) + ((i & 2) == 0 ? 0 : 1),
+                    (Z << 1) + ((i & 4) == 0 ? 0 : 1),
+                    Exponent - 1
+                    );
+            }
         }
+
+        /// <summary>
+        /// Returns the octant of this cell, in which the other cell is contained.
+        /// If the other cell is not contained in any octant, then no value is returned.
+        /// </summary>
+        public int? GetOctant(Cell other)
+        {
+            // if other cell is bigger or same size, 
+            // then it cannot be contained in any octant
+            if (other.Exponent >= Exponent) return null;
+
+            if (IsCenteredAtOrigin)
+            {
+                if (other.IsCenteredAtOrigin) return null;
+
+                // scale up other to scale of this cell's octants
+                // where coord values 0 or 1 mean left or right,
+                // and all other values mean that the other cell is outside
+                other <<= Exponent - other.Exponent - 1;
+                var o = 0;
+                if (other.X == 0) o = 1; else if (other.X != -1) return null;
+                if (other.Y == 0) o |= 2; else if (other.Y != -1) return null;
+                if (other.Z == 0) o |= 4; else if (other.Z != -1) return null;
+                return o;
+            }
+            else
+            {
+                if (other.IsCenteredAtOrigin) return null;
+
+                // scale up other to scale of this cell's octants,
+                // where coord values -1 or 0 mean left or right,
+                // and all other values mean that the other cell is outside
+                other <<= Exponent - other.Exponent - 1;
+                var o = 0;
+                if (other.X == 1) o = 1; else if (other.X != 0) return null;
+                if (other.Y == 1) o |= 2; else if (other.Y != 0) return null;
+                if (other.Z == 1) o |= 4; else if (other.Z != 0) return null;
+                return o;
+            }
+        }
+
+        #region operators
+
+        /// <summary>
+        /// Scales down cell by 'd' powers of two.
+        /// BoundingBox.Min stays the same, except for cells centered at origin, which stay centered.
+        /// </summary>
+        public static Cell operator >>(Cell a, int d)
+        {
+            if (d < 1) return a;
+
+            if (a.IsCenteredAtOrigin) return new Cell(a.Exponent - d);
+
+            // right-shift with long argument only uses low-order 6 bits
+            // https://docs.microsoft.com/en-us/dotnet/articles/csharp/language-reference/operators/right-shift-operator
+            if (d > 63) d = 63;
+
+            return new Cell(a.X << d, a.Y << d, a.Z << d, a.Exponent - d);
+        }
+
+        /// <summary>
+        /// Scales up cell by 'd' powers of two.
+        /// BoundingBox.Min will snap to the next smaller or equal position allowed by the new cell size, except for cells centered at origin, which stay centered.
+        /// </summary>
+        public static Cell operator <<(Cell a, int d)
+        {
+            if (d < 1) return a;
+
+            if (a.IsCenteredAtOrigin) return new Cell(a.Exponent + d);
+
+            // right-shift with long argument only uses low-order 6 bits
+            // https://docs.microsoft.com/en-us/dotnet/articles/csharp/language-reference/operators/right-shift-operator
+            if (d > 63) d = 63;
+
+            return new Cell(a.X >> d, a.Y >> d, a.Z >> d, a.Exponent + d);
+        }
+
+        #endregion
 
         #region equality and hashing
 
@@ -341,8 +417,7 @@ namespace Aardvark.Base
 
         #endregion
 
-        /// <summary>
-        /// </summary>
+        /// <summary></summary>
         public override string ToString()
         {
             return $"[{X}, {Y}, {Z}, {Exponent}]";
