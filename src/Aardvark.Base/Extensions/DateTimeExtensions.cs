@@ -55,20 +55,7 @@ namespace Aardvark.Base
             double d = e + J - p + 0.5;
             return d;
         }
-
-        public static double ComputeJulianCentury(this DateTime date)
-        {
-            var jd = date.ComputeJulianDay();
-            return JuilanDayToCentury(jd);
-        }
-
-        // TODO: move following functions to conversions ?
-
-        public static double JuilanDayToCentury(double jd)
-        {
-            return (jd - 2451545.0) / 36525.0;
-        }
-
+        
         /// <summary>
         /// Calculates date of a Julian day.
         /// NOTE: A Julian day starts at 12h noon
