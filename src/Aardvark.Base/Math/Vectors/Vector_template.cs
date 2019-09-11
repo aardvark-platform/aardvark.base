@@ -1759,7 +1759,7 @@ namespace Aardvark.Base
         #region Elementwise Fun
 
         /// <summary>
-        /// Returns element-wise minimum of given vectors.
+        /// Returns element-wise pow of vector and value.
         /// </summary>
         public static __vtype__ Pow(__vtype__ x, __htype__ y)
         {
@@ -1768,12 +1768,48 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Returns element-wise minimum of given vectors.
+        /// Returns element-wise pow of given vectors.
         /// </summary>
         public static __vtype__ Pow(__vtype__ x, __vtype__ y)
         {
             return new __vtype__(/*# fields.ForEach(f => { */
                         Fun.Pow(x.__f__, y.__f__)/*# }, comma); */);
+        }
+
+        /// <summary>
+        /// Returns element-wise exp of given vector.
+        /// </summary>
+        public static __vtype__ Exp(__vtype__ x)
+        {
+            return new __vtype__(/*# fields.ForEach(f => { */
+                        Fun.Exp(x.__f__)/*# }, comma); */);
+        }
+
+        /// <summary>
+        /// Returns element-wise natural log of given vector.
+        /// </summary>
+        public static __vtype__ Log(__vtype__ x)
+        {
+            return new __vtype__(/*# fields.ForEach(f => { */
+                        Fun.Log(x.__f__)/*# }, comma); */);
+        }
+
+        /// <summary>
+        /// Returns element-wise clamped vector.
+        /// </summary>
+        public static __vtype__ Clamp(__vtype__ x, __ftype__ a, __ftype__ b)
+        {
+            return new __vtype__(/*# fields.ForEach(f => { */
+                        Fun.Clamp(x.__f__, a, b)/*# }, comma); */);
+        }
+
+        /// <summary>
+        /// Returns element-wise clamped vector.
+        /// </summary>
+        public static __vtype__ Clamp(__vtype__ x, __vtype__ a, __vtype__ b)
+        {
+            return new __vtype__(/*# fields.ForEach(f => { */
+                        Fun.Clamp(x.__f__, a.__f__, b.__f__)/*# }, comma); */);
         }
 
         #endregion
@@ -1792,7 +1828,7 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Returns element-wise minimum of given vectors.
+        /// Returns element-wise maximum of given vectors.
         /// </summary>
         public static __vtype__ Max(/*# k.ForEach(i => {*/__vtype__ v__i__/*#}, comma);*/)
         {
