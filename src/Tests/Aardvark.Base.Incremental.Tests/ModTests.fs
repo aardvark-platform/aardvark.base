@@ -1034,10 +1034,17 @@ module ``Basic Mod Tests`` =
                                         res) a b
 
         // if marking callback is registered to "comp" instead of "a" it works fine
-        let foo = a.AddMarkingCallback (fun () -> 
-                                                let res = comp |> Mod.force
-                                                Log.line "mark: %d" res)
+        //  -> not allowed to do this !!
+        //let foo = a.AddMarkingCallback (fun () -> 
+        //                                        let res = comp |> Mod.force
+        //                                        Log.line "mark: %d" res)
 
+        // safe way of realizing similar functionality
+        let foo = a.AddMarkingCallback (fun () -> 
+                                Transaction.Running.Value.AddFinalizer(fun () ->
+                                                let res = comp |> Mod.force
+                                                Log.line "mark: %d" res))
+                                                
         let mutable updateCount = 0
         let mutable running = true
 
