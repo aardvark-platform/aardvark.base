@@ -1020,3 +1020,57 @@ module ``Basic Mod Tests`` =
 
         if RuntimeObject.ObjCount > 100 then
             failwith "leak"
+
+
+    [<Test>]
+    let ``[Mod] Concurrency + callback + GetValue``() =
+        let a = Mod.init 4
+        let b = Mod.init 13
+
+        let comp = Mod.map2 (fun a b -> let mutable res = 0 
+                                        for i in 0..a do
+                                             for j in 0..b do
+                                                 res <- res ^^^ (i * j)
+                                        res) a b
+
+        // if marking callback is registered to "comp" instead of "a" it works fine
+        let foo = a.AddMarkingCallback (fun () -> 
+                                                let res = comp |> Mod.force
+                                                Log.line "mark: %d" res)
+
+        let mutable updateCount = 0
+        let mutable running = true
+
+        let readerThread = System.Threading.Thread(ThreadStart(fun _ ->
+            while running do
+                let res = comp |> Mod.force
+                Log.line "read: %d" res
+                ()
+            ()
+        ))
+
+        let updateThread = System.Threading.Thread(ThreadStart(fun _ ->
+            let rnd = System.Random(55)
+            while running do
+                transact(fun () ->
+                    a.Value <- rnd.Next(19999)
+                )
+                Log.line "update"
+                updateCount <- updateCount + 1
+            ()
+        ))
+
+        updateThread.Start()
+        readerThread.Start()
+
+        // run for 10 sec
+        let mutable lastCount = -1
+        Thread.Sleep(100)
+        for i in 0..100 do 
+            if lastCount = updateCount then
+                failwith "deadlock"
+            lastCount <- updateCount
+            Thread.Sleep(100)
+        ()
+
+        running <- false
