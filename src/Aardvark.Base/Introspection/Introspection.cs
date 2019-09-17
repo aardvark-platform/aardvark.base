@@ -1024,6 +1024,10 @@ namespace Aardvark.Base
         private static Regex soRx = new Regex(@"\.so(\.[0-9\-]+)?$");
         private static Regex dllRx = new Regex(@"\.(dll|exe)$");
         private static Regex dylibRx = new Regex(@"\.dylib$");
+        
+        /// the path native dlls will be extracted to...
+        public static string NativeLibraryPath = Path.Combine(Path.GetTempPath(), "aardvark-native");
+
         public static void LoadNativeDependencies(Assembly a)
         {
             if (a.IsDynamic) return;
@@ -1051,7 +1055,7 @@ namespace Aardvark.Base
                         var hash = new Guid(md5.ComputeHash(s));
                         s.Seek(0, SeekOrigin.Begin);
                         var folderName = string.Format("{0}-{1}", a.GetName().Name, hash.ToString());
-                        var dstFolder = Path.Combine(Path.GetTempPath(), "aardvark-native", folderName);
+                        var dstFolder = Path.Combine(NativeLibraryPath, folderName);
                         if (!Directory.Exists(dstFolder)) Directory.CreateDirectory(dstFolder);
 
                         var extensions = dllRx;
