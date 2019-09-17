@@ -1131,6 +1131,59 @@ module AList =
     let mapUse<'a,'b when 'b : equality and 'b :> IDisposable> (mapping : 'a -> 'b) (list : alist<'a>) =
         mapDispose mapping (fun b -> b.Dispose()) list
 
+    // =====================================================================================
+    // FOLDS
+    // =====================================================================================
+    let foldHalfGroup (add : 's -> 'a -> 's) (trySub : 's -> 'a -> Option<'s>) (zero : 's) (l : alist<'a>) =
+        let r = l.GetReader()
+        let mutable res = zero
+        Mod.custom (fun token ->
+            let old = r.State
+            let ops = r.GetOperations token
+
+            use e = (PDeltaList.toSeq ops).GetEnumerator()
+            let mutable working = true
+
+            while working && e.MoveNext() do
+                let (idx, op) = e.Current
+                match op with
+                | Remove ->
+                    match PList.tryGet idx old with
+                    | Some o -> 
+                        match trySub res o with
+                        | Some r -> res <- r
+                        | None -> working <- false
+                    | None -> 
+                        Log.warn "[alist] removing unknown entry"
+                | Set v ->
+                    match PList.tryGet idx old with
+                    | Some o ->
+                        match trySub res o with
+                        | Some r -> res <- add r v
+                        | None -> working <- false
+                    | None -> 
+                        res <- add res v
+               
+            if not working then
+                res <- r.State |> Seq.fold add zero
+
+            res
+
+        )
+
+    let fold (f : 's -> 'a -> 's) (seed : 's) (s : alist<'a>) = 
+        foldHalfGroup f (fun _ _ -> None) seed s
+
+    let foldGroup (add : 's -> 'a -> 's) (sub : 's -> 'a -> 's) (zero : 's) (s : alist<'a>) =
+        foldHalfGroup add (fun a b -> Some (sub a b)) zero s
+
+    /// Adaptively calculates the sum of all elements in the set
+    let inline sum (s : alist<'a>) = foldGroup (+) (-) LanguagePrimitives.GenericZero s
+
+    /// Adaptively calculates the product of all elements in the set
+    let inline product (s : alist<'a>) = foldGroup (*) (/) LanguagePrimitives.GenericOne s
+
+
     open System.Collections.Concurrent
     open System.Runtime.CompilerServices
     /// <summary>
