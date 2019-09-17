@@ -1096,16 +1096,17 @@ namespace Aardvark.Base
 
                                 if (found)
                                 {
+                                    var localName = Path.Combine(rest.Split(new[] { '/' }, StringSplitOptions.RemoveEmptyEntries));
                                     var file =
                                         Path.Combine(
                                             dstFolder,
-                                            Path.Combine(rest.Split(new[] { '/' }, StringSplitOptions.RemoveEmptyEntries))
+                                            localName
                                         );
                                     var dir = Path.GetDirectoryName(file);
                                     if (!Directory.Exists(dir)) Directory.CreateDirectory(dir);
 
                                     if (!File.Exists(file)) e.ExtractToFile(file);
-                                    if (extensions.IsMatch(fullName)) toLoad.Add(file);
+                                    if (extensions.IsMatch(fullName)) toLoad.Add(Path.Combine(".", localName));
                                 }
                             }
                         }
@@ -1115,25 +1116,35 @@ namespace Aardvark.Base
                             CreateSymlink(dstFolder, kvp.Key, kvp.Value);
                             if (extensions.IsMatch(kvp.Key))
                             {
-                                toLoad.Add(Path.Combine(dstFolder, kvp.Key));
+                                toLoad.Add(Path.Combine(".", kvp.Key));
                             }
                         }
 
-                        foreach (var file in toLoad)
-                        {
-                            try
-                            {
-                                var ptr = IntPtr.Zero;
-                                if (platform == "windows") ptr = Kernel32.LoadLibrary(file);
-                                else ptr = Dl.dlopen(file, 1);
+                        var oldDir = Environment.CurrentDirectory;
+                        Environment.CurrentDirectory = dstFolder;
 
-                                if (ptr == IntPtr.Zero) Report.Warn("could not load native library: {0}", file);
-                                else Report.Line(3, "loaded {0}", file);
-                            }
-                            catch (Exception ex)
+                        try
+                        {
+                            foreach (var file in toLoad)
                             {
-                                Report.Warn("could not load native library {0}: {1}", file, ex);
+                                try
+                                {
+                                    var ptr = IntPtr.Zero;
+                                    if (platform == "windows") ptr = Kernel32.LoadLibrary(file);
+                                    else ptr = Dl.dlopen(file, 1);
+
+                                    if (ptr == IntPtr.Zero) Report.Warn("could not load native library: {0}", file);
+                                    else Report.Line(3, "loaded {0}", file);
+                                }
+                                catch (Exception ex)
+                                {
+                                    Report.Warn("could not load native library {0}: {1}", file, ex);
+                                }
                             }
+                        }
+                        finally
+                        {
+                            Environment.CurrentDirectory = oldDir;
                         }
 
                     }
