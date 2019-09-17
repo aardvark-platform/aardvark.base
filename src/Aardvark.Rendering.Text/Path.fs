@@ -50,6 +50,7 @@ module Path =
             }
 
         let eps = 0.00001
+        [<Inline>]
         let keepsWinding (isOrtho : bool) (t : M44d) =
             if isOrtho then
                 t.M00 > 0.0
@@ -57,7 +58,8 @@ module Path =
                 let c = V3d(t.M03, t.M13, t.M23)
                 let z = V3d(t.M02, t.M12, t.M22)
                 Vec.dot c z < 0.0
-
+                
+        [<Inline>]
         let isOrtho (proj : M44d) = 
             abs proj.M30 < eps &&
             abs proj.M31 < eps &&
