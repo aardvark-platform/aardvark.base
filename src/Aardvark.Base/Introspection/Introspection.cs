@@ -442,6 +442,20 @@ namespace Aardvark.Base
         public OnAardvarkInitAttribute() { }
     }
 
+    internal static class Kernel32
+    {
+        [DllImport("Kernel32.dll", SetLastError = false, CharSet = CharSet.Ansi)]
+        public static extern IntPtr LoadLibrary(string path);
+    }
+
+    internal static class Dl
+    {
+
+        [DllImport("libdl", SetLastError = false, CharSet = CharSet.Ansi)]
+        public static extern IntPtr dlopen(string path, int flag);
+
+    }
+
     [Serializable]
     public class Aardvark
     {
@@ -800,9 +814,6 @@ namespace Aardvark.Base
                         var osStr   = os.Value;
                         var dstStr  = dst.Value;
 
-
-
-
                         if(!String.IsNullOrWhiteSpace(srcStr) && !String.IsNullOrWhiteSpace(osStr) && !String.IsNullOrWhiteSpace(dstStr) && TryParseOS(osStr, out var osVal))
                         {
                             if(myOs == osVal)
@@ -829,6 +840,46 @@ namespace Aardvark.Base
 
         [DllImport("kernel32")]
         private static extern bool CreateSymbolicLink(string lpSymlinkFileName, string lpTargetFileName, int flags);
+
+        private static void CreateSymlink(string baseDir, string src, string dst)
+        {
+            if (Environment.OSVersion.Platform != PlatformID.Unix) return;
+
+            string targetName;
+            string targetPath;
+            if (LdConfig.TryGetPath(dst, out targetPath))
+            {
+                targetName = targetPath;
+            }
+            else
+            {
+                targetName = dst;
+                targetPath = Path.Combine(baseDir, targetName);
+            }
+
+            if (File.Exists(targetPath))
+            {
+                var linkPath = Path.Combine(baseDir, src);
+
+                Report.Line(3, "creating symlink {0} -> {1}", src, targetName);
+                if (File.Exists(linkPath))
+                {
+                    Report.Line(3, "deleting old symlink {0}", src);
+                    File.Delete(linkPath);
+                }
+
+                if (symlink(targetName, linkPath) != 0)
+                {
+                    Report.Warn("could not create symlink {0}", src);
+                }
+            }
+            else
+            {
+                Report.Warn("could not create symlink to {0} (does not exist)", targetName);
+            }
+
+        }
+
 
         #endregion
 
@@ -969,6 +1020,132 @@ namespace Aardvark.Base
             UnpackNativeDependenciesToBaseDir(a,baseDir);
         }
 
+        private static System.Security.Cryptography.MD5 md5 = System.Security.Cryptography.MD5.Create();
+        private static Regex soRx = new Regex(@"\.so(\.[0-9\-]+)?$");
+        private static Regex dllRx = new Regex(@"\.(dll|exe)$");
+        private static Regex dylibRx = new Regex(@"\.dylib$");
+        public static void LoadNativeDependencies(Assembly a)
+        {
+            if (a.IsDynamic) return;
+            
+            try
+            {
+                var symlinks = new Dictionary<string, string>();
+                var info = a.GetManifestResourceInfo("native.zip");
+                if (info == null) return;
+
+                Report.Begin(3, "Loading native dependencies for {0}", a.FullName);
+                try
+                {
+                    var arch = IntPtr.Size == 8 ? "AMD64" : "x86";
+                    var platform = "windows";
+                    if (Environment.OSVersion.Platform == PlatformID.MacOSX) platform = "mac";
+                    else if (Environment.OSVersion.Platform == PlatformID.Unix) platform = "linux";
+
+                    var copyPaths = new string[] { platform + "/" + arch + "/", arch + "/" };
+                    var toLoad = new List<string>();
+
+
+                    using (var s = a.GetManifestResourceStream("native.zip"))
+                    {
+                        var hash = new Guid(md5.ComputeHash(s));
+                        s.Seek(0, SeekOrigin.Begin);
+                        var folderName = string.Format("{0}-{1}", a.GetName().Name, hash.ToString());
+                        var dstFolder = Path.Combine(Path.GetTempPath(), "aardvark-native", folderName);
+                        if (!Directory.Exists(dstFolder)) Directory.CreateDirectory(dstFolder);
+
+                        var extensions = dllRx;
+                        if (platform == "linux") extensions = soRx;
+                        else if (platform == "mac") extensions = dylibRx;
+
+                        var remap = new Dictionary<string, string>();
+
+                        using (var archive = new ZipArchive(s))
+                        {
+                            foreach (var e in archive.Entries)
+                            {
+                                var fullName = e.FullName;
+                                fullName = fullName.Replace('\\', '/');
+
+                                Report.Line(4, "found: {0}", fullName);
+
+                                if (fullName == "remap.xml")
+                                {
+                                    var doc = System.Xml.Linq.XDocument.Load(e.Open());
+                                    remap = GetSymlinks(doc);
+                                    continue;
+                                }
+
+                                var rest = "";
+                                var found = false;
+                                foreach (var p in copyPaths)
+                                {
+                                    if (fullName.StartsWith(p))
+                                    {
+                                        rest = fullName.Substring(p.Length);
+                                        found = true;
+                                        break;
+                                    }
+                                }
+
+
+
+                                if (found)
+                                {
+                                    var file =
+                                        Path.Combine(
+                                            dstFolder,
+                                            Path.Combine(rest.Split(new[] { '/' }, StringSplitOptions.RemoveEmptyEntries))
+                                        );
+                                    var dir = Path.GetDirectoryName(file);
+                                    if (!Directory.Exists(dir)) Directory.CreateDirectory(dir);
+
+                                    if (!File.Exists(file)) e.ExtractToFile(file);
+                                    if (extensions.IsMatch(fullName)) toLoad.Add(file);
+                                }
+                            }
+                        }
+
+                        foreach (var kvp in remap)
+                        {
+                            CreateSymlink(dstFolder, kvp.Key, kvp.Value);
+                            if (extensions.IsMatch(kvp.Key))
+                            {
+                                toLoad.Add(Path.Combine(dstFolder, kvp.Key));
+                            }
+                        }
+
+                        foreach (var file in toLoad)
+                        {
+                            try
+                            {
+                                var ptr = IntPtr.Zero;
+                                if (platform == "windows") ptr = Kernel32.LoadLibrary(file);
+                                else ptr = Dl.dlopen(file, 1);
+
+                                if (ptr == IntPtr.Zero) Report.Warn("could not load native library: {0}", file);
+                                else Report.Line(3, "loaded {0}", file);
+                            }
+                            catch (Exception ex)
+                            {
+                                Report.Warn("could not load native library {0}: {1}", file, ex);
+                            }
+                        }
+
+                    }
+                }
+                finally
+                {
+                    Report.End(3);
+                }
+            }
+            catch (Exception e)
+            {
+                Report.Warn("could not load native dependencies for {0}: {1}", a.FullName, e);
+
+            }
+            
+        }
         public static void Init(string basePath)
         {
             Report.BeginTimed("initializing aardvark");
@@ -982,11 +1159,13 @@ namespace Aardvark.Base
             Report.BeginTimed("Unpacking native dependencies");
             foreach(var a in AppDomain.CurrentDomain.GetAssemblies())
             {
-                UnpackNativeDependenciesToBaseDir(a,basePath);
+                LoadNativeDependencies(a);
+                //UnpackNativeDependenciesToBaseDir(a,basePath);
             }
             AppDomain.CurrentDomain.AssemblyLoad += (s, e) =>
             {
-                UnpackNativeDependencies(e.LoadedAssembly);
+                LoadNativeDependencies(e.LoadedAssembly);
+                //UnpackNativeDependencies(e.LoadedAssembly);
             };
             Report.End();
 
