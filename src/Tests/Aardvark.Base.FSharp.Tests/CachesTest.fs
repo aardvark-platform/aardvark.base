@@ -186,11 +186,9 @@ let ``[Caches] BinaryCache forward with ResultObject``() =
         failwith "leak"
 
 [<Test>]
-[<Ignore("not fully understood issue")>]
 let ``[Caches] BinaryCache backward with ResultObject``() =
     
     let a = "hugo"
-
     let cache = BinaryCache<_, _, _>((fun a b -> ResultObject(a, b)))
 
     let sw = Stopwatch.StartNew()
@@ -227,6 +225,11 @@ let ``[Caches] BinaryCache backward with ResultObject``() =
 
     if RuntimeObject.ObjCount > 100 then
         failwith "leak"
+
+    
+    let x = cache.Invoke(temp, a)
+    let y = cache.Invoke(temp, a)
+    if not (System.Object.ReferenceEquals(x,y)) then failwith "not caching"
         
 [<Test>]
 let ``[Caches] ConditionalWeakTable: input holding output``() =

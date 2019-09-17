@@ -987,7 +987,6 @@ module ``Basic Mod Tests`` =
             Log.line "Collect %s %d" name number
 
     [<Test>]
-    [<Ignore("not fully understood issue")>]
     let ``[Caches] BinaryCache Mod``() =
     
         let a = Mod.init "hugo" 
