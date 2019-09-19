@@ -1020,7 +1020,6 @@ namespace Aardvark.Base
             UnpackNativeDependenciesToBaseDir(a,baseDir);
         }
 
-        private static System.Security.Cryptography.MD5 md5 = System.Security.Cryptography.MD5.Create();
         private static Regex soRx = new Regex(@"\.so(\.[0-9\-]+)?$");
         private static Regex dllRx = new Regex(@"\.(dll|exe)$");
         private static Regex dylibRx = new Regex(@"\.dylib$");
@@ -1049,10 +1048,12 @@ namespace Aardvark.Base
                     var copyPaths = new string[] { platform + "/" + arch + "/", arch + "/" };
                     var toLoad = new List<string>();
 
-
                     using (var s = a.GetManifestResourceStream("native.zip"))
                     {
+                        var md5 = System.Security.Cryptography.MD5.Create();
                         var hash = new Guid(md5.ComputeHash(s));
+                        md5.Dispose();
+
                         s.Seek(0, SeekOrigin.Begin);
                         var folderName = string.Format("{0}-{1}", a.GetName().Name, hash.ToString());
                         var dstFolder = Path.Combine(NativeLibraryPath, folderName);
@@ -1171,18 +1172,16 @@ namespace Aardvark.Base
             Report.Line("Environment.Version: {0}", Environment.Version);
             Report.End();
 
-            Report.BeginTimed("Unpacking native dependencies");
-            foreach(var a in AppDomain.CurrentDomain.GetAssemblies())
-            {
-                LoadNativeDependencies(a);
-                //UnpackNativeDependenciesToBaseDir(a,basePath);
-            }
+
             AppDomain.CurrentDomain.AssemblyLoad += (s, e) =>
             {
                 LoadNativeDependencies(e.LoadedAssembly);
-                //UnpackNativeDependencies(e.LoadedAssembly);
             };
-            Report.End();
+
+            foreach(var a in AppDomain.CurrentDomain.GetAssemblies())
+            {
+                LoadNativeDependencies(a);
+            }
 
             Report.BeginTimed("Loading plugins");
             var pluginsList = LoadPlugins();
