@@ -1066,7 +1066,7 @@ namespace Aardvark.Base
 
             var currentMinValue = e.Current;
             var currentMinIndex = 0;
-            var index = 0;
+            var index = 1;
             while (e.MoveNext())
             {
                 if (lessThan(e.Current, currentMinValue))
@@ -1092,7 +1092,7 @@ namespace Aardvark.Base
 
             var currentMaxValue = e.Current;
             var currentMaxIndex = 0;
-            var index = 0;
+            var index = 1;
             while (e.MoveNext())
             {
                 if (greaterThan(e.Current, currentMaxValue))
