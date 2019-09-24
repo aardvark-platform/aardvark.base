@@ -10,6 +10,7 @@ using System.Runtime.InteropServices;
 using System.Runtime.Serialization.Formatters.Binary;
 using System.Xml.Linq;
 using System.Text.RegularExpressions;
+using System.Text;
 
 namespace Aardvark.Base
 {
@@ -444,14 +445,43 @@ namespace Aardvark.Base
 
     internal static class Kernel32
     {
-        [DllImport("Kernel32.dll", SetLastError = false, CharSet = CharSet.Ansi)]
+        public const uint DONT_RESOLVE_DLL_REFERENCES = 0x00000001;
+        public const uint LOAD_IGNORE_CODE_AUTHZ_LEVEL = 0x00000010;
+        public const uint LOAD_LIBRARY_SEARCH_DLL_LOAD_DIR = 0x00000100;
+        public const uint LOAD_LIBRARY_SEARCH_APPLICATION_DIR = 0x00000200;
+        public const uint LOAD_LIBRARY_SEARCH_USER_DIRS = 0x00000400;
+        public const uint LOAD_LIBRARY_SEARCH_SYSTEM32 = 0x00000800;
+        public const uint LOAD_LIBRARY_SEARCH_DEFAULT_DIRS = 0x00001000;
+
+        public const uint LOAD_WITH_ALTERED_SEARCH_PATH = 0x00000008;
+
+
+        [DllImport("Kernel32.dll", SetLastError = true, CharSet = CharSet.Auto)]
         public static extern IntPtr LoadLibrary(string path);
+
+        [DllImport("Kernel32.dll", SetLastError = true, CharSet = CharSet.Auto)]
+        public static extern IntPtr LoadLibraryEx(string path, IntPtr handle, uint dwFlags);
+
+        [DllImport("Kernel32.dll", SetLastError = true, CharSet = CharSet.Auto)]
+        public static extern IntPtr AddDllDirectory(string path);
+
+        [DllImport("kernel32.dll", SetLastError = true)]
+        public static extern uint GetLastError();
+
+        [DllImport("Kernel32.dll", SetLastError = true, CharSet = CharSet.Auto)]
+        public static extern bool SetCurrentDirectory(string pathName);
+
+        [DllImport("Kernel32.dll", SetLastError = true, CharSet = CharSet.Auto)]
+        public static extern bool SetDllDirectory(string pathName);
+
+        [DllImport("Kernel32.dll", SetLastError = true, CharSet = CharSet.Auto)]
+        public static extern uint GetDllDirectory(int nBufferLength, StringBuilder lpPathName);
     }
 
     internal static class Dl
     {
 
-        [DllImport("libdl", SetLastError = false, CharSet = CharSet.Ansi)]
+        [DllImport("libdl", SetLastError = true, CharSet = CharSet.Ansi)]
         public static extern IntPtr dlopen(string path, int flag);
 
     }
@@ -1023,9 +1053,19 @@ namespace Aardvark.Base
         private static Regex soRx = new Regex(@"\.so(\.[0-9\-]+)?$");
         private static Regex dllRx = new Regex(@"\.(dll|exe)$");
         private static Regex dylibRx = new Regex(@"\.dylib$");
-        
-        /// the path native dlls will be extracted to...
+
+        /// The path native dlls will be extracted to, each either each library to a separate folder or directly to the NativeLibraryPath 
+        /// directory (depending on the configuration of SeparateLibraryDirectories).
+        /// 
+        /// The default configuration extract native libraries to shared temp path with each library in its unique versioned directory.
+        /// 
+        /// Setting NativeLibraryPath to the application path and SeparateLibraryDirectories to false will result in the "old" style of 
+        /// loading native libs, that is not compatible if the application does not have write permission to the directory (e.g. ProgramFiles).
         public static string NativeLibraryPath = Path.Combine(Path.GetTempPath(), "aardvark-native");
+
+        /// Specify if native libraries should be extracted each to its own sub folder or directory to the NativeLibraryPath
+        /// NOTE: When using global shared NativeLibraryPath, SeparateLibraryDirectories should not be set to false, as this there might be version conflicts
+        public static bool SeparateLibraryDirectories = true;
 
         public static void LoadNativeDependencies(Assembly a)
         {
@@ -1037,7 +1077,7 @@ namespace Aardvark.Base
                 var info = a.GetManifestResourceInfo("native.zip");
                 if (info == null) return;
 
-                Report.Begin(3, "Loading native dependencies for {0}", a.FullName);
+                Report.BeginTimed(3, "Loading native dependencies for {0}", a.FullName);
                 try
                 {
                     var arch = IntPtr.Size == 8 ? "AMD64" : "x86";
@@ -1050,13 +1090,18 @@ namespace Aardvark.Base
 
                     using (var s = a.GetManifestResourceStream("native.zip"))
                     {
-                        var md5 = System.Security.Cryptography.MD5.Create();
-                        var hash = new Guid(md5.ComputeHash(s));
-                        md5.Dispose();
+                        string dstFolder = NativeLibraryPath;
+                        if (SeparateLibraryDirectories)
+                        {
+                            var md5 = System.Security.Cryptography.MD5.Create();
+                            var hash = new Guid(md5.ComputeHash(s));
+                            md5.Dispose();
 
-                        s.Seek(0, SeekOrigin.Begin);
-                        var folderName = string.Format("{0}-{1}", a.GetName().Name, hash.ToString());
-                        var dstFolder = Path.Combine(NativeLibraryPath, folderName);
+                            s.Seek(0, SeekOrigin.Begin);
+                            var folderName = string.Format("{0}-{1}", a.GetName().Name, hash.ToString());
+                            dstFolder = Path.Combine(NativeLibraryPath, folderName);
+                        }
+
                         if (!Directory.Exists(dstFolder)) Directory.CreateDirectory(dstFolder);
 
                         var extensions = dllRx;
@@ -1093,8 +1138,6 @@ namespace Aardvark.Base
                                     }
                                 }
 
-
-
                                 if (found)
                                 {
                                     var localName = Path.Combine(rest.Split(new[] { '/' }, StringSplitOptions.RemoveEmptyEntries));
@@ -1107,7 +1150,7 @@ namespace Aardvark.Base
                                     if (!Directory.Exists(dir)) Directory.CreateDirectory(dir);
 
                                     if (!File.Exists(file)) e.ExtractToFile(file);
-                                    if (extensions.IsMatch(fullName)) toLoad.Add(Path.Combine(".", localName));
+                                    if (extensions.IsMatch(fullName)) toLoad.Add(localName);
                                 }
                             }
                         }
@@ -1117,37 +1160,40 @@ namespace Aardvark.Base
                             CreateSymlink(dstFolder, kvp.Key, kvp.Value);
                             if (extensions.IsMatch(kvp.Key))
                             {
-                                toLoad.Add(Path.Combine(".", kvp.Key));
+                                toLoad.Add(kvp.Key);
                             }
                         }
 
-                        var oldDir = Environment.CurrentDirectory;
-                        Environment.CurrentDirectory = dstFolder;
-
-                        try
+                        // NOTE: libraries such as IPP are spread over multiple dlls that will now get loaded in an undeterministic order -> make sure native depenendies between them can be resolved
+                        //        - for some reason SetDllDirectory is required even LOAD_LIBRARY_SEARCH_DLL_LOAD_DIR is used that will include the directoy of the library that should be loaded
+                        //        - for some other reason AddDllDirectory does not help loading libraries, even it should provide similar behavior than SetDllDirectory
+                        if (platform == "windows")
+                            Kernel32.SetDllDirectory(dstFolder); 
+                        
+                        foreach (var file in toLoad)
                         {
-                            foreach (var file in toLoad)
+                            try
                             {
-                                try
-                                {
-                                    var ptr = IntPtr.Zero;
-                                    if (platform == "windows") ptr = Kernel32.LoadLibrary(file);
-                                    else ptr = Dl.dlopen(file, 1);
+                                var ptr = IntPtr.Zero;
+                                var filePath = Path.Combine(dstFolder, file);
+                                if (platform == "windows") ptr = Kernel32.LoadLibraryEx(filePath, IntPtr.Zero, Kernel32.LOAD_LIBRARY_SEARCH_DEFAULT_DIRS | Kernel32.LOAD_LIBRARY_SEARCH_DLL_LOAD_DIR);
+                                else ptr = Dl.dlopen(file, 1);
 
-                                    if (ptr == IntPtr.Zero) Report.Warn("could not load native library: {0}", file);
-                                    else Report.Line(3, "loaded {0}", file);
-                                }
-                                catch (Exception ex)
+                                if (ptr == IntPtr.Zero)
                                 {
-                                    Report.Warn("could not load native library {0}: {1}", file, ex);
+                                    var err = Kernel32.GetLastError(); // so far always returned 0, NOTE: check documentation of SetErrorMode
+                                    Report.Warn("could not load native library: {0} Error={1}", file, err);
+                                }
+                                else
+                                {
+                                    Report.Line(3, "loaded {0}", file);
                                 }
                             }
+                            catch (Exception ex)
+                            {
+                                Report.Warn("could not load native library {0}: {1}", file, ex);
+                            }
                         }
-                        finally
-                        {
-                            Environment.CurrentDirectory = oldDir;
-                        }
-
                     }
                 }
                 finally
@@ -1158,7 +1204,6 @@ namespace Aardvark.Base
             catch (Exception e)
             {
                 Report.Warn("could not load native dependencies for {0}: {1}", a.FullName, e);
-
             }
             
         }
