@@ -323,9 +323,9 @@ module Threading =
 
     /// Please note that Aardvark.Base.FSharp's MVar implementation is different from Haskell's MVar introduced in
     ///  "Concurrent Haskell" by Simon Peyton Jones, Andrew Gordon and Sigbjorn Finne. 
-    /// seealso: http://hackage.haskell.org/package/base-4.11.1.0/docs/Control-Concurrent-MVar.html
+    /// see also: http://hackage.haskell.org/package/base-4.11.1.0/docs/Control-Concurrent-MVar.html
     /// In our 'wrong' implementation put does not block but overrides the old value.
-    /// We use it typically for synchrononized sampling use cases.
+    /// We use it typically for synchronized sampling use cases.
     type MVar<'a>() =
         let l = obj()
 
