@@ -1901,17 +1901,49 @@ namespace Aardvark.Base
 			return backMap;
 		}
 
-		#endregion
+        #endregion
 
-		#region Integration
+        #region Integration
 
-		/// <summary>
-		/// Converts an array that contains the number of elements
-		/// at each index into an array that holds the indices of
-		/// the first element if the elements are stored in
-		/// consecutive order. Returns the sum of all elements.
-		/// </summary>
-		public static int Integrate(this int[] array, int sum = 0)
+        /// <summary>
+        /// Converts an array that contains the number of elements
+        /// at each index into an array that holds the indices of
+        /// the first element if the elements are stored in
+        /// consecutive order. Returns the sum of all elements.
+        /// Using double precision during integration.
+        /// </summary>
+        public static double Integrate(this float[] array, double sum = 0)
+        {
+            for (long i = 0; i < array.LongLength; i++)
+            {
+                var delta = array[i]; array[i] = (float)sum; sum += delta;
+            }
+            return sum;
+        }
+
+        /// <summary>
+        /// Converts an array that contains the number of elements
+        /// at each index into an array that holds the indices of
+        /// the first element if the elements are stored in
+        /// consecutive order. Returns the sum of all elements.
+        /// Using single precision during integration.
+        /// </summary>
+        public static float Integrate(this float[] array, float sum = 0)
+        {
+            for (long i = 0; i < array.LongLength; i++)
+            {
+                var delta = array[i]; array[i] = sum; sum += delta;
+            }
+            return sum;
+        }
+
+        /// <summary>
+        /// Converts an array that contains the number of elements
+        /// at each index into an array that holds the indices of
+        /// the first element if the elements are stored in
+        /// consecutive order. Returns the sum of all elements.
+        /// </summary>
+        public static int Integrate(this int[] array, int sum = 0)
 		{
 			for (long i = 0; i < array.LongLength; i++)
 			{
@@ -1948,6 +1980,42 @@ namespace Aardvark.Base
 			}
 			return sum;
 		}
+
+        /// <summary>
+        /// Creates an array that contains the integrated sum up to each element of input array. 
+        /// The length of the integrated array is +1 of the input array and contains the total
+        /// sum in the last element.
+        /// Using double precision during integration.
+        /// </summary>
+        public static float[] Integrated(this float[] array, double sum = 0)
+        {
+            var integrated = new float[array.Length + 1];
+            integrated[0] = (float)sum;
+            for (long i = 0; i < array.LongLength;)
+            {
+                sum += array[i];
+                integrated[++i] = (float)sum;
+            }
+            return integrated;
+        }
+
+        /// <summary>
+        /// Creates an array that contains the integrated sum up to each element of input array. 
+        /// The length of the integrated array is +1 of the input array and contains the total
+        /// sum in the last element.
+        /// Using single precision during integration.
+        /// </summary>
+        public static float[] Integrated(this float[] array, float sum = 0)
+        {
+            var integrated = new float[array.Length + 1];
+            integrated[0] = sum;
+            for (long i = 0; i < array.LongLength;)
+            {
+                sum += array[i];
+                integrated[++i] = sum;
+            }
+            return integrated;
+        }
 
         /// <summary>
         /// Creates an array that contains the integrated sum up to each element of input array. 
