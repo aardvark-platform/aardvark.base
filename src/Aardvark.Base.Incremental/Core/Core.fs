@@ -9,6 +9,11 @@ open System.Threading
 open System.Linq
 open System.Runtime.InteropServices
 
+[<AutoOpen>]
+module VolatileCollection = 
+    [<Literal>]
+    let SetThreshold = 8
+
 [<AllowNullLiteral>]
 type IWeakable<'a when 'a : not struct> =
     abstract member Weak : WeakReference<'a>
@@ -130,7 +135,7 @@ and VolatileCollection() =
             let mutable v : IAdaptiveObject = Unchecked.defaultof<_>
             if mode = 0uy then
                 if res.Length < 1 then
-                    res <- Array.zeroCreate 8
+                    res <- Array.zeroCreate SetThreshold
                 if handles.Single.TryGetTarget(&v) then
                     res.[0] <- v
                     length <- 1
@@ -138,7 +143,7 @@ and VolatileCollection() =
             elif mode = 1uy then
                 let arr = handles.Array
                 if res.Length < count then
-                    res <- Array.zeroCreate 8
+                    res <- Array.zeroCreate SetThreshold
                 for i in 0..count-1 do
                     if arr.[i].TryGetTarget(&v) then
                         res.[length] <- v 
@@ -166,7 +171,7 @@ and VolatileCollection() =
             elif Object.ReferenceEquals(handles.Single, value) then
                 false
             else
-                let arr = Array.zeroCreate 8
+                let arr = Array.zeroCreate SetThreshold
                 arr.[0] <- handles.Single
                 arr.[1] <- value
                 handles.Array <- arr
@@ -177,12 +182,12 @@ and VolatileCollection() =
             let arr = handles.Array
             if myIndexOf(arr, value, count) >= 0 then
                 false
-            elif count = 8 then
+            elif count = SetThreshold then
                 let set = HashSet arr
                 set.Add(value) |> ignore
                 handles.Set <- set
                 mode <- 2uy
-                count <- 9
+                count <- SetThreshold + 1
                 true
             else
                 arr.[count] <- value
@@ -637,7 +642,7 @@ type AdaptiveObject =
             if not (isNull time) then
                 Monitor.Enter time
                 if not time.Outputs.IsEmpty then
-                    let mutable outputs = Array.zeroCreate 8
+                    let mutable outputs = Array.zeroCreate (VolatileCollection.SetThreshold)
                     let outputCount = time.Outputs.Consume(&outputs)
                     Monitor.Exit time
 
@@ -651,7 +656,6 @@ type AdaptiveObject =
                      Monitor.Exit time
 
         member this.evaluate (token : AdaptiveToken) (f : AdaptiveToken -> 'a) =
-            let caller = token.Caller
             let depth = AdaptiveObject.EvaluationDepthValue
 
             let mutable res = Unchecked.defaultof<_>
@@ -667,7 +671,7 @@ type AdaptiveObject =
                 // pull at least one value on every path.
                 // This property must therefore be maintained for every
                 // path in the entire system.
-                let r = f(token.WithCaller this)
+                res <- f(token.WithCaller this)
                 this.OutOfDate <- false
 
                 // if the object's level just got greater than or equal to
@@ -683,10 +687,8 @@ type AdaptiveObject =
                     //printfn "%A tried to pull from level %A but has level %A" top.Id level top.Level
                     // all greater pulls would be from the future
                     raise <| LevelChangedException(this, this.Level, depth - 1)
-                                                                     
-                res <- r
-
-
+                        
+                let caller = token.Caller
                 if not (isNull caller) then
                     if this.Reevaluate then
                         caller.Reevaluate <- true
@@ -705,7 +707,7 @@ type AdaptiveObject =
             // downgrade to read
             token.Downgrade this
 
-            if isNull caller then
+            if isNull token.Caller then
                 token.Release()
 
                 if depth = 0 && not Transaction.HasRunning then 
