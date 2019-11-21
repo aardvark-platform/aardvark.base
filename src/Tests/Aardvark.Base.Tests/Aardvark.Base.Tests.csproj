@@ -12,6 +12,7 @@
   </PropertyGroup>
   <PropertyGroup>
 	<RunWorkingDirectory>$(OutputPath)\netcoreapp2.0</RunWorkingDirectory>
+	<GenerateProgramFile>false</GenerateProgramFile>
   </PropertyGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\Aardvark.Base.Telemetry\Aardvark.Base.Telemetry.csproj" />
