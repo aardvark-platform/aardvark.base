@@ -620,6 +620,17 @@ namespace Aardvark.Base
             return pv.Value;
         }
 
+        public decimal ParseDecimal()
+        {
+            int i = SkipWhiteSpace(), c = Count;
+            if (i == c) throw new ArgumentException();
+            var pv = ParsedValueOfDecimalAt(i);
+            if (pv.Error != ParseError.None) throw new ArgumentException();
+            i += pv.Length;
+            if (i < c && SkipWhiteSpace(i) < c) throw new ArgumentException();
+            return pv.Value;
+        }
+
         private static readonly Regex s_boolRegex
                 = new Regex(@"(?<1>false|f)|(?<2>true|t)|(?<3>.|\r)",
                             RegexOptions.Singleline | RegexOptions.IgnoreCase
@@ -1007,6 +1018,37 @@ namespace Aardvark.Base
             }
         }
 
+        public ParsedValue<decimal> ParsedValueOfDecimalAt(int start)
+        {
+            start += Start;
+            int pos = start;
+            int end = End;
+            if (pos >= end) return new ParsedValue<decimal>(ParseError.EndOfText, 0);
+            char ch;
+            if ((ch = String[pos]) == '-' || ch == '+')
+            {
+                pos++;
+                if (pos == end) return new ParsedValue<decimal>(ParseError.EndOfText, pos - start);
+            }
+            if ((ch = String[pos]) < '0' || ch > '9')
+                return new ParsedValue<decimal>(ParseError.IllegalCharacter, pos - start);
+            while (pos < end && (ch = String[pos]) >= '0' && ch <= '9') pos++;
+            if (pos < end && ch == '.')
+            {
+                ++pos;
+                while (pos < end && (ch = String[pos]) >= '0' && ch <= '9') pos++;
+            }
+            int len = pos - start;
+            try
+            {
+                return new ParsedValue<decimal>(decimal.Parse(String.Substring(start, len), CultureInfo.InvariantCulture), len);
+            }
+            catch
+            {
+                return new ParsedValue<decimal>(ParseError.OutOfRange, len);
+            }
+        }
+
         #endregion
 
         #region IEquatable<Text> Members
@@ -1160,6 +1202,11 @@ namespace Aardvark.Base
             {
                 Parse = (Func<Text, T>)(object)(Func<Text, double>)(t => t.ParseDouble());
                 ParsedValueAt = (Func<Text, int, ParsedValue<T>>)(object)(Func<Text, int, ParsedValue<double>>)((t, i) => t.ParsedValueOfDoubleAt(i));
+            }
+            else if (typeof(T) == typeof(decimal))
+            {
+                Parse = (Func<Text, T>)(object)(Func<Text, decimal>)(t => t.ParseDecimal());
+                ParsedValueAt = (Func<Text, int, ParsedValue<T>>)(object)(Func<Text, int, ParsedValue<decimal>>)((t, i) => t.ParsedValueOfDecimalAt(i));
             }
         }
 

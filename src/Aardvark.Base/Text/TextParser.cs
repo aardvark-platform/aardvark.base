@@ -1135,6 +1135,14 @@ namespace Aardvark.Base
             return true;
         }
 
+        public bool TryGetDecimal(ref ParsedValue<decimal> parsedValue)
+        {
+            parsedValue = Text.ParsedValueOfDecimalAt(Pos - Text.Start);
+            if (parsedValue.Error != ParseError.None) return false;
+            Pos += parsedValue.Length;
+            return true;
+        }
+
         #endregion
 
         #region Peeking
