@@ -2,3 +2,4 @@ FSharp.Core
 DevILSharp
 FsPickler
 Aardvark.Base.TypeProviders
+FSharp.Data.Adaptive

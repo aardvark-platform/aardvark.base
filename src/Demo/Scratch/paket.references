@@ -4,3 +4,4 @@ System.Reactive
 Unofficial.LibTessDotNet
 FsPickler
 FsPickler.Json 
+FSharp.Data.Adaptive
