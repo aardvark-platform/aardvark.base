@@ -40,7 +40,7 @@ namespace Aardvark.Base.Coder
         }
 
         public BinaryReadingCoder(string fileName)
-            : this(File.Open(fileName, FileMode.Open))
+            : this(File.OpenRead(fileName))
         {
             m_fileName = fileName;
             m_disposeStream = true;
