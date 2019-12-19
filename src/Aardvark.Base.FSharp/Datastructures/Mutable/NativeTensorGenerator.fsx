@@ -478,8 +478,10 @@ module Generator =
                 sprintf "%s" v
 
         let floor (v : string) =
+            sprintf "floor %s" v
+            (*
             if dim = 1 then sprintf "floor(%s)" v
-            else sprintf "%s.Floor" v
+            else sprintf "%s.Floor()" v*)
 
         start "member inline private x.BlitToInternal%s(y : %s<'a>, srcOffset : %s, srcSize : %s, lerp : float -> 'a -> 'a -> 'a) = " suffix selfType tFloat tFloat
 

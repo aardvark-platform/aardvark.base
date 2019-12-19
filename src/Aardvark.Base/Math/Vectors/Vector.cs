@@ -1,5 +1,4 @@
 using System;
-using static System.Math;
 
 namespace Aardvark.Base
 {
@@ -33,10 +32,10 @@ namespace Aardvark.Base
     public partial struct V2f
     {
         public static V2f FromPolar(float angleInRadians, float radius)
-            => new V2f(Cos(angleInRadians) * radius, Sin(angleInRadians) * radius);
+            => new V2f(Math.Cos(angleInRadians) * radius, Math.Sin(angleInRadians) * radius);
 
         public static V2f FromPolar(float angleInRadians)
-            => new V2f(Cos(angleInRadians), Sin(angleInRadians));
+            => new V2f(Math.Cos(angleInRadians), Math.Sin(angleInRadians));
 
         public V2f Orthogonal => new V2f(-Y, X);
     }
@@ -48,10 +47,10 @@ namespace Aardvark.Base
     public partial struct V2d
     {
         public static V2d FromPolar(double angleInRadians, double radius)
-            => new V2d(Cos(angleInRadians) * radius, Sin(angleInRadians) * radius);
+            => new V2d(Math.Cos(angleInRadians) * radius, Math.Sin(angleInRadians) * radius);
 
         public static V2d FromPolar(double angleInRadians)
-            => new V2d(Cos(angleInRadians), Sin(angleInRadians));
+            => new V2d(Math.Cos(angleInRadians), Math.Sin(angleInRadians));
 
         public V2d Orthogonal => new V2d(-Y, X);
     }

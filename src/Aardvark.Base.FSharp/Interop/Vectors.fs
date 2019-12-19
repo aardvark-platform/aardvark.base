@@ -18,26 +18,20 @@ module Vec =
     let inline normalize< ^a, ^b when ^a : (member Normalized : ^b )> (v : ^a) =
         (^a : (member Normalized : ^b ) v)
 
-    let inline lerp (v0 : ^a) (v1 : ^a) (t : ^b) =
-        (LanguagePrimitives.GenericOne - t)*v0 + t*v1
+    let inline reflect< ^a, ^b when ^a : (member Reflected : ^a -> ^a)> (v : ^a) (n : ^a) : ^a =
+        (^a : (member Reflected : ^a -> ^a ) (v, n))
 
-    let inline reflect (v : ^a) (n : ^a) : ^a =
-        let t = (^a : (static member Dot : ^a -> ^a -> ^b) (v,n))
-        v - (t + t) * n
+    let inline refract< ^a, ^b when ^a : (member Refracted : ^a * ^b -> ^a)> (v : ^a) (n : ^a) (eta : ^b) =
+        (^a : (member Refracted : ^a * ^b -> ^a ) (v, n, eta))
 
-    let inline zero< ^a when ^a : (static member (-) : ^a -> ^a -> ^a)> =
-        let t = typeof< ^a> 
-        t.GetField("Zero").GetValue(null) |> unbox< ^a>
+    let inline x< ^a, ^b when ^a : (member X : ^b)> (v : ^a) =
+        (^a : (member X : ^b) v)
 
-    let inline refract (v : ^a) (n : ^a) (eta : ^b) =
-        let t = (^a : (static member Dot : ^a -> ^a -> ^b) (v,n))
+    let inline y< ^a, ^b when ^a : (member Y : ^b)> (v : ^a) =
+        (^a : (member Y : ^b) v)
 
-        let one = LanguagePrimitives.GenericOne
-        let k = one - eta * eta * (one - t*t)
-        if k < LanguagePrimitives.GenericZero then
-            zero
-        else
-            eta * v - (eta * t + sqrt k) * n
+    let inline z< ^a, ^b when ^a : (member Z : ^b)> (v : ^a) =
+        (^a : (member Z : ^b) v)
 
     let inline xy< ^a, ^b when ^a : (member XY : ^b)> (v : ^a) =
         (^a : (member XY : ^b) v)
@@ -53,7 +47,6 @@ module Vec =
 
     let inline yzw< ^a, ^b when ^a : (member YZW : ^b)> (v : ^a) =
         (^a : (member YZW : ^b) v)
-
 
     let inline anySmaller< ^a, ^b when ^a : (member AnySmaller : ^b -> bool)> (v : ^a) (value : ^b) =
         (^a : (member AnySmaller : ^b -> bool) (v,value))
@@ -78,5 +71,3 @@ module Vec =
 
     let inline allGreaterOrEqual< ^a, ^b when ^a : (member AllGreaterOrEqual : ^b -> bool)> (v : ^a) (value : ^b) =
         (^a : (member AllGreaterOrEqual : ^b -> bool) (v,value))
-
-
