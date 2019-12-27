@@ -305,7 +305,7 @@ namespace Aardvark.Base
                 // and all other values mean that the other cell is outside
                 other <<= Exponent - other.Exponent - 1;
                 var o = 0;
-                if (other.X == 0) o = 1; else if (other.X != -1) return null;
+                if (other.X == 0) o  = 1; else if (other.X != -1) return null;
                 if (other.Y == 0) o |= 2; else if (other.Y != -1) return null;
                 if (other.Z == 0) o |= 4; else if (other.Z != -1) return null;
                 return o;
@@ -318,10 +318,13 @@ namespace Aardvark.Base
                 // where coord values -1 or 0 mean left or right,
                 // and all other values mean that the other cell is outside
                 other <<= Exponent - other.Exponent - 1;
+                var x = X << 1;
+                var y = Y << 1;
+                var z = Z << 1;
                 var o = 0;
-                if (other.X == 1) o = 1; else if (other.X != 0) return null;
-                if (other.Y == 1) o |= 2; else if (other.Y != 0) return null;
-                if (other.Z == 1) o |= 4; else if (other.Z != 0) return null;
+                if (other.X == x + 1) o  = 1; else if (other.X != x) return null;
+                if (other.Y == y + 1) o |= 2; else if (other.Y != y) return null;
+                if (other.Z == z + 1) o |= 4; else if (other.Z != z) return null;
                 return o;
             }
         }
