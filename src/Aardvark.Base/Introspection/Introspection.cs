@@ -1177,7 +1177,7 @@ namespace Aardvark.Base
                                 var ptr = IntPtr.Zero;
                                 var filePath = Path.Combine(dstFolder, file);
                                 if (platform == "windows") ptr = Kernel32.LoadLibraryEx(filePath, IntPtr.Zero, Kernel32.LOAD_LIBRARY_SEARCH_DEFAULT_DIRS | Kernel32.LOAD_LIBRARY_SEARCH_DLL_LOAD_DIR);
-                                else ptr = Dl.dlopen(filePath, 1);
+                                else ptr = Dl.dlopen(filePath, 0x01102);
 
                                 if (ptr == IntPtr.Zero)
                                 {
