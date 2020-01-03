@@ -10,7 +10,7 @@
 obj
 /src/Aardvark.sln.ide
 *.swp
-Bin
+bin
 *.*~
 /buildLog.log
 /src/.vs
@@ -30,3 +30,4 @@ tmp
 *.fsproj.user
 Aardvark.log
 /build.fsx.lock
+.ionide

@@ -1177,12 +1177,19 @@ namespace Aardvark.Base
                                 var ptr = IntPtr.Zero;
                                 var filePath = Path.Combine(dstFolder, file);
                                 if (platform == "windows") ptr = Kernel32.LoadLibraryEx(filePath, IntPtr.Zero, Kernel32.LOAD_LIBRARY_SEARCH_DEFAULT_DIRS | Kernel32.LOAD_LIBRARY_SEARCH_DLL_LOAD_DIR);
-                                else ptr = Dl.dlopen(file, 1);
+                                else ptr = Dl.dlopen(filePath, 1);
 
                                 if (ptr == IntPtr.Zero)
                                 {
-                                    var err = Kernel32.GetLastError(); // so far always returned 0, NOTE: check documentation of SetErrorMode
-                                    Report.Warn("could not load native library: {0} Error={1}", file, err);
+                                    if (platform == "windows")
+                                    {
+                                        var err = Kernel32.GetLastError(); // so far always returned 0, NOTE: check documentation of SetErrorMode
+                                        Report.Warn("could not load native library: {0} Error={1}", file, err);
+                                    }
+                                    else
+                                    {
+                                        Report.Warn("could not load native library: {0}", filePath);
+                                    }
                                 }
                                 else
                                 {
