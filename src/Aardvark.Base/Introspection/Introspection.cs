@@ -476,6 +476,9 @@ namespace Aardvark.Base
 
         [DllImport("Kernel32.dll", SetLastError = true, CharSet = CharSet.Auto)]
         public static extern uint GetDllDirectory(int nBufferLength, StringBuilder lpPathName);
+
+        [DllImport("Kernel32.dll", SetLastError = true, CharSet = CharSet.Auto)]
+        public static extern IntPtr GetProcAddress(IntPtr handle, string name);
     }
 
     internal static class Dl
@@ -483,8 +486,13 @@ namespace Aardvark.Base
 
         [DllImport("libdl", SetLastError = true, CharSet = CharSet.Ansi)]
         public static extern IntPtr dlopen(string path, int flag);
+        
+        [DllImport("libdl", SetLastError = true, CharSet = CharSet.Ansi)]
+        public static extern IntPtr dlsym(IntPtr handle, string name);
 
     }
+
+
 
     [Serializable]
     public class Aardvark
@@ -708,7 +716,7 @@ namespace Aardvark.Base
         }
 
 
-        #region LdConfig
+#region LdConfig
 
 
         private static class LdConfig
@@ -776,9 +784,9 @@ namespace Aardvark.Base
 
         }
 
-        #endregion
+#endregion
 
-        #region DllMap
+#region DllMap
 
         private enum OS
         {
@@ -860,9 +868,9 @@ namespace Aardvark.Base
 
         }
 
-        #endregion
+#endregion
 
-        #region Symlink
+#region Symlink
 
         [DllImport("libc")]
         private static extern int symlink(string src, string linkName);
@@ -911,7 +919,7 @@ namespace Aardvark.Base
         }
 
 
-        #endregion
+#endregion
 
         public static void UnpackNativeDependenciesToBaseDir(Assembly a, string baseDir)
         {
@@ -1067,109 +1075,264 @@ namespace Aardvark.Base
         /// NOTE: When using global shared NativeLibraryPath, SeparateLibraryDirectories should not be set to false, as this there might be version conflicts
         public static bool SeparateLibraryDirectories = true;
 
+        private static Dictionary<Assembly, string>  s_nativePaths = new Dictionary<Assembly, string>();
+
+
+        public static bool TryGetNativeLibraryPath(Assembly assembly, out string path)
+        {
+            if (assembly.IsDynamic) { path = null; return false; }
+
+            lock (s_nativePaths)
+            {
+                if (s_nativePaths.TryGetValue(assembly, out path))
+                {
+                    if (path == null) return false;
+                    else return true;
+                }
+                else
+                {
+                    var info = assembly.GetManifestResourceInfo("native.zip");
+                    if (info == null)
+                    {
+                        s_nativePaths[assembly] = null;
+                        return false;
+                    }
+                    else
+                    {
+                        using (var s = assembly.GetManifestResourceStream("native.zip"))
+                        {
+                            string dstFolder = NativeLibraryPath;
+                            if (SeparateLibraryDirectories)
+                            {
+                                var md5 = System.Security.Cryptography.MD5.Create();
+                                var hash = new Guid(md5.ComputeHash(s));
+                                md5.Dispose();
+
+                                var folderName = string.Format("{0}-{1}", assembly.GetName().Name, hash.ToString());
+                                dstFolder = Path.Combine(NativeLibraryPath, folderName);
+                            }
+
+                            s_nativePaths[assembly] = dstFolder;
+                            path = dstFolder;
+                            return true;
+                        }
+                    }
+                }
+            }
+        }
+
+        public static IntPtr LoadLibrary(Assembly assembly, string nativeName)
+        {
+
+            string[] formats = new string[0];
+            bool windows = true;
+            if (Environment.OSVersion.Platform == PlatformID.Unix)
+            {
+                windows = false;
+                formats = new[] { "{0}.so", "lib{0}.so", "lib{0}.so.1" };
+            }
+            else formats = new[] { "{0}.dll" };
+            IntPtr ptr;
+
+            string[] paths;
+            if (assembly != null)
+            {
+                if (TryGetNativeLibraryPath(assembly, out var dstFolder))
+                {
+                    paths = new[] { dstFolder };
+                }
+                else
+                {
+                    paths = new[] { Environment.CurrentDirectory };
+                }
+            }
+            else
+            {
+                lock (s_nativePaths)
+                {
+                    paths = s_nativePaths.Values.ToArray();
+                }
+            }
+
+#if NETCOREAPP3_0
+
+            if (assembly != null && NativeLibrary.TryLoad(nativeName, assembly, null, out ptr)) return ptr;
+            else if (NativeLibrary.TryLoad(nativeName, out ptr)) return ptr;
+
+            var realName = Path.GetFileNameWithoutExtension(nativeName);
+            foreach (var fmt in formats)
+            {
+                var libName = string.Format(fmt, realName);
+
+                if (assembly != null && NativeLibrary.TryLoad(libName, assembly, null, out ptr)) return ptr;
+                else if (NativeLibrary.TryLoad(libName, out ptr)) return ptr;
+
+                foreach (var p in paths)
+                {
+                    var libPath = Path.Combine(p, libName);
+                    if (File.Exists(libPath))
+                    {
+                        if (assembly != null && NativeLibrary.TryLoad(libPath, assembly, null, out ptr)) return ptr;
+                        else if (NativeLibrary.TryLoad(libPath, out ptr)) return ptr;
+                    }
+                }
+            }
+
+            if (windows) return IntPtr.Zero;
+            else return IntPtr.Zero;
+#else
+
+            Func<string, IntPtr> loadLibrary;
+            if (windows) loadLibrary = (a) => Kernel32.LoadLibrary(a);
+            else loadLibrary = (a) => Dl.dlopen(a, 1);
+
+
+            ptr = loadLibrary(nativeName);
+            if(ptr != IntPtr.Zero) return ptr;
+
+            var realName = Path.GetFileNameWithoutExtension(nativeName);
+            foreach (var fmt in formats)
+            {
+                var libName = string.Format(fmt, realName);
+
+                ptr = loadLibrary(libName);
+                if (ptr != IntPtr.Zero) return ptr;
+
+                foreach (var p in paths)
+                {
+                    var libPath = Path.Combine(p, libName);
+                    if (File.Exists(libPath))
+                    {
+                        ptr = loadLibrary(libPath);
+                        if (ptr != IntPtr.Zero) return ptr;
+                    }
+                }
+            }
+
+            return IntPtr.Zero;
+#endif
+        }
+
+        public static IntPtr GetProcAddress(IntPtr handle, string name)
+        {
+            if (handle == IntPtr.Zero) return IntPtr.Zero;
+
+#if NETCOREAPP3_0
+            IntPtr ptr;
+            if (NativeLibrary.TryGetExport(handle, name, out ptr)) return ptr;
+            else return IntPtr.Zero;
+#else
+            if (Environment.OSVersion.Platform == PlatformID.Unix) return Dl.dlsym(handle, name);
+            else return Kernel32.GetProcAddress(handle, name);
+#endif
+        }
+
         public static void LoadNativeDependencies(Assembly a)
         {
-            if (a.IsDynamic) return;
-            
-            try
+            string dstFolder;
+            if(TryGetNativeLibraryPath(a, out dstFolder))
             {
-                var symlinks = new Dictionary<string, string>();
-                var info = a.GetManifestResourceInfo("native.zip");
-                if (info == null) return;
-
-                Report.BeginTimed(3, "Loading native dependencies for {0}", a.FullName);
                 try
                 {
-                    var arch = IntPtr.Size == 8 ? "AMD64" : "x86";
-                    var platform = "windows";
-                    if (Environment.OSVersion.Platform == PlatformID.MacOSX) platform = "mac";
-                    else if (Environment.OSVersion.Platform == PlatformID.Unix) platform = "linux";
-
-                    var copyPaths = new string[] { platform + "/" + arch + "/", arch + "/" };
-                    var toLoad = new List<string>();
-
-                    using (var s = a.GetManifestResourceStream("native.zip"))
+                    var symlinks = new Dictionary<string, string>();
+                    Report.BeginTimed(3, "Loading native dependencies for {0}", a.FullName);
+                    try
                     {
-                        string dstFolder = NativeLibraryPath;
-                        if (SeparateLibraryDirectories)
+                        var arch = IntPtr.Size == 8 ? "AMD64" : "x86";
+                        var platform = "windows";
+                        if (Environment.OSVersion.Platform == PlatformID.MacOSX) platform = "mac";
+                        else if (Environment.OSVersion.Platform == PlatformID.Unix) platform = "linux";
+
+                        var copyPaths = new string[] { platform + "/" + arch + "/", arch + "/" };
+                        var toLoad = new List<string>();
+
+                        using (var s = a.GetManifestResourceStream("native.zip"))
                         {
-                            var md5 = System.Security.Cryptography.MD5.Create();
-                            var hash = new Guid(md5.ComputeHash(s));
-                            md5.Dispose();
+                            if (!Directory.Exists(dstFolder)) Directory.CreateDirectory(dstFolder);
 
-                            s.Seek(0, SeekOrigin.Begin);
-                            var folderName = string.Format("{0}-{1}", a.GetName().Name, hash.ToString());
-                            dstFolder = Path.Combine(NativeLibraryPath, folderName);
-                        }
+                            var extensions = dllRx;
+                            if (platform == "linux") extensions = soRx;
+                            else if (platform == "mac") extensions = dylibRx;
 
-                        if (!Directory.Exists(dstFolder)) Directory.CreateDirectory(dstFolder);
+                            var remap = new Dictionary<string, string>();
 
-                        var extensions = dllRx;
-                        if (platform == "linux") extensions = soRx;
-                        else if (platform == "mac") extensions = dylibRx;
-
-                        var remap = new Dictionary<string, string>();
-
-                        using (var archive = new ZipArchive(s))
-                        {
-                            foreach (var e in archive.Entries)
+                            using (var archive = new ZipArchive(s))
                             {
-                                var fullName = e.FullName;
-                                fullName = fullName.Replace('\\', '/');
-
-                                Report.Line(4, "found: {0}", fullName);
-
-                                if (fullName == "remap.xml")
+                                foreach (var e in archive.Entries)
                                 {
-                                    var doc = System.Xml.Linq.XDocument.Load(e.Open());
-                                    remap = GetSymlinks(doc);
-                                    continue;
-                                }
+                                    var fullName = e.FullName;
+                                    fullName = fullName.Replace('\\', '/');
 
-                                var rest = "";
-                                var found = false;
-                                foreach (var p in copyPaths)
-                                {
-                                    if (fullName.StartsWith(p))
+                                    Report.Line(4, "found: {0}", fullName);
+
+                                    if (fullName == "remap.xml")
                                     {
-                                        rest = fullName.Substring(p.Length);
-                                        found = true;
-                                        break;
+                                        var doc = System.Xml.Linq.XDocument.Load(e.Open());
+                                        remap = GetSymlinks(doc);
+                                        continue;
+                                    }
+
+                                    var rest = "";
+                                    var found = false;
+                                    foreach (var p in copyPaths)
+                                    {
+                                        if (fullName.StartsWith(p))
+                                        {
+                                            rest = fullName.Substring(p.Length);
+                                            found = true;
+                                            break;
+                                        }
+                                    }
+
+                                    if (found)
+                                    {
+                                        var localName = Path.Combine(rest.Split(new[] { '/' }, StringSplitOptions.RemoveEmptyEntries));
+                                        var file =
+                                            Path.Combine(
+                                                dstFolder,
+                                                localName
+                                            );
+                                        var dir = Path.GetDirectoryName(file);
+                                        if (!Directory.Exists(dir)) Directory.CreateDirectory(dir);
+
+                                        if (!File.Exists(file)) e.ExtractToFile(file);
+                                        if (extensions.IsMatch(fullName)) toLoad.Add(localName);
                                     }
                                 }
+                            }
 
-                                if (found)
+                            foreach (var kvp in remap)
+                            {
+                                CreateSymlink(dstFolder, kvp.Key, kvp.Value);
+                                if (extensions.IsMatch(kvp.Key))
                                 {
-                                    var localName = Path.Combine(rest.Split(new[] { '/' }, StringSplitOptions.RemoveEmptyEntries));
-                                    var file =
-                                        Path.Combine(
-                                            dstFolder,
-                                            localName
-                                        );
-                                    var dir = Path.GetDirectoryName(file);
-                                    if (!Directory.Exists(dir)) Directory.CreateDirectory(dir);
-
-                                    if (!File.Exists(file)) e.ExtractToFile(file);
-                                    if (extensions.IsMatch(fullName)) toLoad.Add(localName);
+                                    toLoad.Add(kvp.Key);
                                 }
                             }
+
                         }
 
-                        foreach (var kvp in remap)
+
+#if NETCOREAPP3_0
+
+                        string[] formats = new string[0];
+                        if (Environment.OSVersion.Platform == PlatformID.Unix) formats = new[] { "{0}.so", "lib{0}.so", "lib{0}.so.1" };
+                        else formats = new[] { "{0}.dll" };
+
+
+                        NativeLibrary.SetDllImportResolver(a, (name, ass, searchPath) =>
                         {
-                            CreateSymlink(dstFolder, kvp.Key, kvp.Value);
-                            if (extensions.IsMatch(kvp.Key))
-                            {
-                                toLoad.Add(kvp.Key);
-                            }
-                        }
+                            return LoadLibrary(ass, name);
+                        });
+
+#else
 
                         // NOTE: libraries such as IPP are spread over multiple dlls that will now get loaded in an undeterministic order -> make sure native depenendies between them can be resolved
                         //        - for some reason SetDllDirectory is required even LOAD_LIBRARY_SEARCH_DLL_LOAD_DIR is used that will include the directoy of the library that should be loaded
                         //        - for some other reason AddDllDirectory does not help loading libraries, even it should provide similar behavior than SetDllDirectory
                         if (platform == "windows")
-                            Kernel32.SetDllDirectory(dstFolder); 
-                        
+                            Kernel32.SetDllDirectory(dstFolder);
+
                         foreach (var file in toLoad)
                         {
                             try
@@ -1201,16 +1364,18 @@ namespace Aardvark.Base
                                 Report.Warn("could not load native library {0}: {1}", file, ex);
                             }
                         }
+#endif
+
+                    }
+                    finally
+                    {
+                        Report.End(3);
                     }
                 }
-                finally
+                catch (Exception e)
                 {
-                    Report.End(3);
+                    Report.Warn("could not load native dependencies for {0}: {1}", a.FullName, e);
                 }
-            }
-            catch (Exception e)
-            {
-                Report.Warn("could not load native dependencies for {0}: {1}", a.FullName, e);
             }
             
         }
