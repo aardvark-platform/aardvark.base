@@ -1150,7 +1150,7 @@ namespace Aardvark.Base
             {
                 lock (s_nativePaths)
                 {
-                    paths = s_nativePaths.Values.ToArray();
+                    paths = s_nativePaths.Values.Where((p) => p != null).ToArray();
                 }
             }
 
