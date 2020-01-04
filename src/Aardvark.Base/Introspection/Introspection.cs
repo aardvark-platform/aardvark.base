@@ -477,7 +477,7 @@ namespace Aardvark.Base
         [DllImport("Kernel32.dll", SetLastError = true, CharSet = CharSet.Auto)]
         public static extern uint GetDllDirectory(int nBufferLength, StringBuilder lpPathName);
 
-        [DllImport("Kernel32.dll", SetLastError = true, CharSet = CharSet.Auto)]
+        [DllImport("Kernel32.dll", SetLastError = true, CharSet = CharSet.Ansi)]
         public static extern IntPtr GetProcAddress(IntPtr handle, string name);
     }
 
