@@ -87,7 +87,7 @@
 //        override x.Finalize() =
 //            s.Dispose()
 
-//    type private AdapterEvent<'a>(m : IMod<'a>, value : 'a) =
+//    type private AdapterEvent<'a>(m : aval<'a>, value : 'a) =
 //        inherit EventSource<'a>(value)
 //        let mutable s : IDisposable = null
 
@@ -113,10 +113,10 @@
 //                None
 
 //    let (|ModOf|_|) (t : Type) =
-//        if t.IsGenericType && t.GetGenericTypeDefinition() = typedefof<IMod<_>> then
+//        if t.IsGenericType && t.GetGenericTypeDefinition() = typedefof<aval<_>> then
 //            Some (t.GetGenericArguments().[0])
 //        else
-//            let iface = t.GetInterface(typedefof<IMod<_>>.FullName)
+//            let iface = t.GetInterface(typedefof<aval<_>>.FullName)
 //            if not (isNull iface) then
 //                Some (iface.GetGenericArguments().[0])
 //            else
@@ -161,21 +161,21 @@
 
 //        subscribe, d
 
-//    let toMod (e : Aardvark.Base.IEvent<'a>) : IMod<'a> =
+//    let toMod (e : Aardvark.Base.IEvent<'a>) : aval<'a> =
 //        match e with
 //            | :? AdapterEvent<'a> as a -> a.Mod
 //            | _ ->
 //                match modCache.TryGetValue e with
-//                    | (true, m) -> m |> unbox<IMod<_>>
+//                    | (true, m) -> m |> unbox<aval<_>>
 //                    | _ ->
 //                        let r = ref <| Unchecked.defaultof<_>
 //                        let re,s = volatileSubscribe e (fun () -> mark !r)
 //                        r := AdapterMod(e, s, re)
 //                        modCache.Add(e, !r)
 
-//                        !r :> IMod<_>
+//                        !r :> aval<_>
 
-//    let toEvent (m : IMod<'a>) : IEvent<'a> =
+//    let toEvent (m : aval<'a>) : IEvent<'a> =
 //        match m with
 //            | :? AdapterMod<'a> as m -> m.Event
 //            | _ ->
@@ -227,9 +227,9 @@
 
 //            res.RegisterFinalizer(fun () -> s.Dispose())
 
-//            res :> IMod<_>
+//            res :> aval<_>
 
-//    type IMod<'a> with
+//    type aval<'a> with
 //        member x.Event =
 //            EventAdapters.toEvent x
 
@@ -246,13 +246,13 @@
 //        let fromEvent (e : IEvent<'a>) =
 //            EventAdapters.toMod e
 
-//        let toEvent (m : IMod<'a>) =
+//        let toEvent (m : aval<'a>) =
 //            EventAdapters.toEvent m
 
 //[<AbstractClass; Sealed; Extension>]
 //type CSharpEventExtensions private() =
 //    [<Extension>]
-//    static member ToMod(this : IEvent<'a>) : IMod<'a> =
+//    static member ToMod(this : IEvent<'a>) : aval<'a> =
 //        EventAdapters.toMod this
 
 //    [<Extension>]
@@ -269,7 +269,7 @@
 
 
 //    [<Extension>]
-//    static member ToEvent(this : IMod<'a>) : IEvent<'a> =
+//    static member ToEvent(this : aval<'a>) : IEvent<'a> =
 //        EventAdapters.toEvent this
 
 //    [<Extension>]

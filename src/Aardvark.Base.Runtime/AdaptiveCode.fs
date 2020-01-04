@@ -7,6 +7,10 @@ open System.Runtime.InteropServices
 open System.Collections.Generic
 open Aardvark.Base
 open Aardvark.Base.Incremental
+open FSharp.Data.Adaptive
+
+module internal Unchecked =
+    let inline isNull<'a when 'a : not struct>(value : 'a) = isNull (value :> obj)
 
 
 type NativeCalls = list<NativeCall>
@@ -113,9 +117,9 @@ type IAdaptiveProgram<'i> =
 [<AllowNullLiteral>]
 type IAdaptiveCode<'instruction> =
     inherit IDisposable
-    abstract member Content : list<IMod<list<'instruction>>>
+    abstract member Content : list<aval<list<'instruction>>>
 
-type AdaptiveCode<'instruction>(content : list<IMod<list<'instruction>>>) =
+type AdaptiveCode<'instruction>(content : list<aval<list<'instruction>>>) =
     interface IDisposable with
         member x.Dispose() = ()
 
@@ -155,7 +159,6 @@ type FragmentHandler<'i, 'value, 'instruction, 'fragment> =
 
 module internal GenericProgram =
 
-    [<AllowNullLiteral>]
     type Fragment<'i, 'a, 'instruction, 'fragment> =
         class
             inherit AdaptiveObject
@@ -225,7 +228,7 @@ module internal GenericProgram =
 
             member x.LinkNext(token : AdaptiveToken) =
                 x.EvaluateAlways token (fun token ->
-                    if isNull x.Next && isNull x.Prev then
+                    if Unchecked.isNull x.Next && Unchecked.isNull x.Prev then
                         Log.warn "[AdaptiveCode] tried to link detached fragment { prev = %A; next = %A }" x.Prev x.Next
                     elif x.IsDisposed then
                         Log.warn "[AdaptiveCode] tried to link disposed fragment"
@@ -246,8 +249,8 @@ module internal GenericProgram =
                 )
 
             member x.Dispose() =
-                x.Prev <- null
-                x.Next <- null
+                x.Prev <- Unchecked.defaultof<_>
+                x.Next <- Unchecked.defaultof<_>
                 x.IsDisposed <- true
 
                 Interlocked.Add(x.Context.jumpDistance, -x.JumpDistance) |> ignore
@@ -271,15 +274,15 @@ module internal GenericProgram =
 
             new(context, tag) = 
                 { Context = context
-                  Storage = None; Next = null; 
-                  Prev = null; Tag = Some tag; 
+                  Storage = None; Next = Unchecked.defaultof<_>; 
+                  Prev = Unchecked.defaultof<_>; Tag = Some tag; 
                   Code = null; CodePrevTag = None
                   CallCount = 0; JumpDistance = 0; IsDisposed = false }
 
             new(context, storage) = 
                 { Context = context
-                  Storage = Some storage; Next = null; 
-                  Prev = null; Tag = None; 
+                  Storage = Some storage; Next = Unchecked.defaultof<_>; 
+                  Prev = Unchecked.defaultof<_>; Tag = None; 
                   Code = null; CodePrevTag = None
                   CallCount = 0; JumpDistance = 0; IsDisposed = false }
         end
@@ -313,7 +316,7 @@ module internal GenericProgram =
         let writeWatch = System.Diagnostics.Stopwatch()
 
         let dirtyLock = obj()
-        let mutable dirtySet = HashSet<Fragment<'i, 'a, 'instruction, 'fragment>>()
+        let mutable dirtySet = System.Collections.Generic.HashSet<Fragment<'i, 'a, 'instruction, 'fragment>>()
 
         let mutable autoDefragmentation = 1
 
@@ -364,9 +367,9 @@ module internal GenericProgram =
                         | Rem (k,v) -> Log.warn "Rem %A" k
                 failwith "[AdaptiveCode] validation failed"
         #else
-        let validateCurrentState(deltas : hdeltaset<'k * 'v>) = ()
+        let validateCurrentState(deltas : HashSetDelta<'k * 'v>) = ()
         #endif
-        override x.InputChanged(t, o : IAdaptiveObject) =
+        override x.InputChangedObject(t, o : IAdaptiveObject) =
             match o with
                 | :? Fragment<'i, 'a, 'instruction, 'fragment> as o ->
                     if not o.IsDisposed then
@@ -426,20 +429,20 @@ module internal GenericProgram =
                     Interlocked.Increment(version) |> ignore
 
                     // start by getting the deltas from our input-set
-                    let deltas = reader.GetOperations token
+                    let deltas = reader.GetChanges token
 
                     // get all fragments whose inner code-representation changed. 
                     let dirtySet = 
                         lock dirtyLock (fun () ->
                             let set = dirtySet
-                            dirtySet <- HashSet()
+                            dirtySet <- System.Collections.Generic.HashSet()
                             set
                         )
 
                     // TODO: move to class-fields
-                    let deadSet = HashSet()
-                    let recompileSet = HashSet()
-                    let relinkSet = HashSet()
+                    let deadSet = System.Collections.Generic.HashSet()
+                    let recompileSet = System.Collections.Generic.HashSet()
+                    let relinkSet = System.Collections.Generic.HashSet()
 
                     let mutable added = 0
                     let mutable removed = 0
@@ -660,7 +663,7 @@ module internal GenericProgram =
                         with _ ->
                             let mutable index = -1
                             let mutable current = prolog
-                            while current <> null && current <> d do
+                            while not (Unchecked.isNull current) && current <> d do
                                 current <- current.Next
                                 index <- index + 1
                             let reachable = current = d
@@ -703,7 +706,6 @@ module internal GenericProgram =
 
             fragments.Clear()
             dirtySet.Clear()
-            reader.Dispose()
             handler.dispose()
             cache.Clear()
 
@@ -1010,129 +1012,3 @@ module AdaptiveProgram =
     let inline fragmentCount (p : IAdaptiveProgram<'i>) = p.FragmentCount
     let inline programSizeInBytes (p : IAdaptiveProgram<'i>) = p.ProgramSizeInBytes
     let inline totalJumpDistanceInBytes (p : IAdaptiveProgram<'i>) = p.TotalJumpDistanceInBytes
-
-
-module internal Tests =
-    
-    let calls = List<int * int>()
-
-    let read() =
-        let arr = calls |> Seq.toArray
-        calls.Clear()
-        arr
-
-    let printFunction (last : int) (v : int) =
-        calls.Add(last, v)
-
-    type Print = delegate of int * int -> unit
-    let dPrint = Print printFunction
-    let pPrint = Marshal.GetFunctionPointerForDelegate dPrint
-
-    let run() =
-        let calls  = 
-            CSet.ofList [
-                0, Mod.constant 0
-                3, Mod.constant 3
-                2, Mod.constant 6
-                1, Mod.constant 9
-            ]
-
-
-        let compile =
-            let compileDelta prev self =
-                let prev =
-                    match prev with
-                        | Some p -> p
-                        | None -> Mod.constant 0
-
-                let call = 
-                    if prev = self then 
-                        self |> Mod.map (fun s -> [pPrint, [|s :> obj; s :> obj|]])
-                    else 
-                        Mod.map2 (fun s p -> [pPrint, [|p :> obj; s :> obj|]]) self prev
-
-                new AdaptiveCode<_>([call]) :> IAdaptiveCode<_>
-
-            AdaptiveProgram.nativeDifferential 1 Comparer.Default compileDelta
-
-        let prog = calls |> compile
-        prog.AutoDefragmentation <- false
-
-        prog.Update(AdaptiveToken.Top) |> printfn "update: %A"
-        prog.Run();
-        read() |> printfn "%A"
-
-        transact (fun () ->
-            calls |> CSet.remove (0,Mod.constant 0) |> ignore
-        )
-
-        prog.Update(AdaptiveToken.Top) |> printfn "update: %A"
-        prog.Run();
-        read() |> printfn "%A"
-
-
-        transact (fun () ->
-            calls |> CSet.add (1,Mod.constant 10) |> ignore
-        )
-        prog.Update(AdaptiveToken.Top) |> printfn "update: %A"
-        prog.Run();
-        read() |> printfn "%A"
-
-
-        transact (fun () ->
-            calls |> CSet.unionWith (List.init 10000 (fun i -> (-1, Mod.constant i)))
-        )
-
-
-        prog.Update(AdaptiveToken.Top) |> printfn "update: %A"
-        prog.Run(); 
-        read() |> printfn "%A"
-
-
-        printfn "fragments:         %A" prog.FragmentCount
-        printfn "calls:             %A" prog.NativeCallCount
-        printfn "jump distance:     %A" prog.TotalJumpDistanceInBytes
-        printfn "program size:      %A" prog.ProgramSizeInBytes
-
-
-
-        transact (fun () ->
-            calls |> CSet.exceptWith (List.init 10000 (fun i -> (-1, Mod.constant i)))
-        )
-
-
-        prog.Update(AdaptiveToken.Top) |> printfn "update: %A"
-        prog.Run(); 
-        read() |> printfn "%A"
-
-        printfn "fragments:         %A" prog.FragmentCount
-        printfn "calls:             %A" prog.NativeCallCount
-        printfn "jump distance:     %A" prog.TotalJumpDistanceInBytes
-        printfn "program size:      %A" prog.ProgramSizeInBytes
-
-        let last = Mod.init 1000
-        transact (fun () ->
-            calls |> CSet.unionWith [(10000, last :> IMod<_>); (10001, last :> IMod<_>)] |> ignore
-        )
-
-        prog.Update(AdaptiveToken.Top) |> printfn "%A"
-        prog.Run(); 
-        read() |> printfn "%A"
-
-        prog.StartDefragmentation().Result.TotalMilliseconds |> printfn "defrag took: %A"
-
-        transact (fun () ->
-            Mod.change last 1001
-        )
-
-        prog.Update(AdaptiveToken.Top) |> printfn "%A"
-        prog.Run();
-        read() |> printfn "%A"
-
-        prog.StartDefragmentation().Result.TotalMilliseconds |> printfn "defrag took: %A"
-        prog.Run();
-        read() |> printfn "%A"
-        printfn "fragments:         %A" prog.FragmentCount
-        printfn "calls:             %A" prog.NativeCallCount
-        printfn "jump distance:     %A" prog.TotalJumpDistanceInBytes
-        printfn "program size:      %A" prog.ProgramSizeInBytes

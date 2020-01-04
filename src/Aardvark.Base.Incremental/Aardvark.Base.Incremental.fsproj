@@ -1,53 +1,15 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <TargetFramework>netstandard2.0</TargetFramework>
     <AssemblyName>Aardvark.Base.Incremental</AssemblyName>
     <OutputType>Library</OutputType>
+    <TargetFramework>netstandard2.0</TargetFramework>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
     <OutputPath>..\..\bin\Debug\</OutputPath>
-    <DocumentationFile>..\..\bin\Debug\netstandard2.0\Aardvark.Base.Incremental.xml</DocumentationFile>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
     <OutputPath>..\..\bin\Release</OutputPath>
-    <DocumentationFile>..\..\bin\Release\netstandard2.0\Aardvark.Base.Incremental.xml</DocumentationFile>
   </PropertyGroup>
-  <ItemGroup>
-    <Compile Include="Core\Utilities.fs" />
-    <Compile Include="Core\PriorityQueue.fs" />
-    <Compile Include="Core\WeakSet.fs" />
-    <Compile Include="Core\Delta.fs" />
-    <Compile Include="Core\ReferenceCountingSet.fs" />
-    <Compile Include="Core\Cache.fs" />
-    <Compile Include="Core\Core.fs" />
-    <Compile Include="Core\Validation.fs" />
-    <Compile Include="Mod\Mod.fs" />
-    <Compile Include="Mod\History.fs" />
-    <Compile Include="AdaptiveSet\asetcore.fs" />
-    <Compile Include="AdaptiveSet\cset.fs" />
-    <Compile Include="AdaptiveSet\mset.fs" />
-    <Compile Include="AdaptiveSet\aset.fs" />
-    <Compile Include="AdaptiveList\alistcore.fs" />
-    <Compile Include="AdaptiveList\clist.fs" />
-    <Compile Include="AdaptiveList\corderedset.fs" />
-    <Compile Include="AdaptiveList\mlist.fs" />
-    <Compile Include="AdaptiveList\alist.fs" />
-    <Compile Include="AdaptiveMap\amapcore.fs" />
-    <Compile Include="AdaptiveMap\mmap.fs" />
-    <Compile Include="AdaptiveMap\cmap.fs" />
-    <Compile Include="AdaptiveMap\amap.fs" />
-    <Compile Include="AdaptiveFunc\AdaptiveFunc.fs" />
-    <Compile Include="Builders.fs" />
-    <Compile Include="CSharp.fs" />
-    <Compile Include="Adapters\EventAdapter.fs" />
-    <Compile Include="IncrementalBvh.fs" />
-	<Compile Include="Proc\Proc.fs" />
-	<Compile Include="Proc\ProcList.fs" />
-	<Compile Include="Proc\ThreadPool.fs" />
-    <None Include="paket.references" />
-    <None Include="paket.template" />
-  </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="../Aardvark.Base.FSharp/Aardvark.Base.FSharp.fsproj">
       <Name>Aardvark.Base.FSharp</Name>
@@ -55,6 +17,19 @@
       <Private>False</Private>
     </ProjectReference>
     <ProjectReference Include="..\Aardvark.Base\Aardvark.Base.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="ChangeTracker.fs" />
+    <Compile Include="AdaptiveFunc/AdaptiveFunc.fs" />
+    <Compile Include="Builders.fs" />
+    <Compile Include="CSharp.fs" />
+    <Compile Include="Adapters/EventAdapter.fs" />
+    <Compile Include="IncrementalBvh.fs" />
+    <Compile Include="Proc/Proc.fs" />
+    <Compile Include="Proc/ProcList.fs" />
+    <Compile Include="Proc/ThreadPool.fs" />
+    <None Include="paket.references" />
+    <None Include="paket.template" />
   </ItemGroup>
   <Import Project="..\..\.paket\Paket.Restore.targets" />
 </Project>

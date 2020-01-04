@@ -9,21 +9,19 @@ Project("{6EC3EE1D-3C4E-46DD-8F32-0CC8E7565705}") = "Aardvark.Base.Incremental",
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Demo", "Demo", "{864A9013-93AC-4073-BB2A-348CE1B00010}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IncrementalDemo.CSharp", "Demo\IncrementalDemo.CSharp\IncrementalDemo.CSharp.csproj", "{4BFAAF2F-BB67-471E-A956-F533F13EA643}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "IncrementalDemo.CSharp", "Demo\IncrementalDemo.CSharp\IncrementalDemo.CSharp.csproj", "{4BFAAF2F-BB67-471E-A956-F533F13EA643}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Aardvark.Base.Tests", "Tests\Aardvark.Base.Tests\Aardvark.Base.Tests.csproj", "{90054DAF-8E70-467A-AF80-3B06EEC527F5}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Aardvark.Base.Tests", "Tests\Aardvark.Base.Tests\Aardvark.Base.Tests.csproj", "{90054DAF-8E70-467A-AF80-3B06EEC527F5}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{A79411F9-60B3-46C8-8981-6905D9B9F74C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PixImageDemo", "Demo\PixImageDemo\PixImageDemo.csproj", "{B4F29FFC-FBA2-4222-AD47-B12B962A14B0}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PixImageDemo", "Demo\PixImageDemo\PixImageDemo.csproj", "{B4F29FFC-FBA2-4222-AD47-B12B962A14B0}"
 EndProject
-Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "Aardvark.Base.Incremental.Tests", "Tests\Aardvark.Base.Incremental.Tests\Aardvark.Base.Incremental.Tests.fsproj", "{B5958171-888E-46A0-BEC9-00FEBA41147F}"
-EndProject
-Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "Aardvark.Base.FSharp.Tests", "Tests\Aardvark.Base.FSharp.Tests\Aardvark.Base.FSharp.Tests.fsproj", "{1B4BEB6E-96A1-4B86-9AC5-F9F5824382AE}"
+Project("{6EC3EE1D-3C4E-46DD-8F32-0CC8E7565705}") = "Aardvark.Base.FSharp.Tests", "Tests\Aardvark.Base.FSharp.Tests\Aardvark.Base.FSharp.Tests.fsproj", "{1B4BEB6E-96A1-4B86-9AC5-F9F5824382AE}"
 EndProject
 Project("{6EC3EE1D-3C4E-46DD-8F32-0CC8E7565705}") = "Aardvark.Base.Runtime", "Aardvark.Base.Runtime\Aardvark.Base.Runtime.fsproj", "{04E146C2-1C4C-432F-922C-351D0F4CED67}"
 EndProject
-Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "Aardvark.Base.Runtime.Tests", "Tests\Aardvark.Base.Runtime.Tests\Aardvark.Base.Runtime.Tests.fsproj", "{CE9B55FF-2D3E-4E13-BA0A-69FD82F0B29B}"
+Project("{6EC3EE1D-3C4E-46DD-8F32-0CC8E7565705}") = "Aardvark.Base.Runtime.Tests", "Tests\Aardvark.Base.Runtime.Tests\Aardvark.Base.Runtime.Tests.fsproj", "{CE9B55FF-2D3E-4E13-BA0A-69FD82F0B29B}"
 EndProject
 Project("{6EC3EE1D-3C4E-46DD-8F32-0CC8E7565705}") = "Aardvark.Geometry", "Aardvark.Geometry\Aardvark.Geometry.fsproj", "{97F4D5BB-9F48-454B-B6A5-536AE172CE50}"
 EndProject
@@ -41,17 +39,17 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Aardvark.Data.Vrml97", "Aar
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Aardvark.Base.Essentials", "Aardvark.Base.Essentials\Aardvark.Base.Essentials.csproj", "{2E887670-5BC3-44FA-97A3-389917B27BEB}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ExamplesCSharp", "Demo\ExamplesCSharp\ExamplesCSharp.csproj", "{6C6850B4-FDE7-4D75-9113-DCF9779145A6}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ExamplesCSharp", "Demo\ExamplesCSharp\ExamplesCSharp.csproj", "{6C6850B4-FDE7-4D75-9113-DCF9779145A6}"
 EndProject
-Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "Scratch", "Demo\Scratch\Scratch.fsproj", "{39EC0F23-19DF-46FD-8273-E931D26B7209}"
+Project("{6EC3EE1D-3C4E-46DD-8F32-0CC8E7565705}") = "Scratch", "Demo\Scratch\Scratch.fsproj", "{39EC0F23-19DF-46FD-8273-E931D26B7209}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Aardvark.Base.Telemetry", "Aardvark.Base.Telemetry\Aardvark.Base.Telemetry.csproj", "{B1593A50-6412-401F-AC89-433F426A8FD5}"
 EndProject
 Project("{6EC3EE1D-3C4E-46DD-8F32-0CC8E7565705}") = "CoreTest", "Demo\CoreTest\CoreTest.fsproj", "{0EC60544-E12C-4400-BB89-BCAF059A5FBD}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RandomSampleDemo", "Demo\RandomSampleDemo\RandomSampleDemo.csproj", "{ED85304F-6D46-409B-AD2F-175522A54444}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RandomSampleDemo", "Demo\RandomSampleDemo\RandomSampleDemo.csproj", "{ED85304F-6D46-409B-AD2F-175522A54444}"
 EndProject
-Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "Aardvark.Geometry.Tests", "Tests\Aardvark.Geometry.Tests\Aardvark.Geometry.Tests.fsproj", "{EE0834BA-89F1-4099-8FAD-CC31AA8914E9}"
+Project("{6EC3EE1D-3C4E-46DD-8F32-0CC8E7565705}") = "Aardvark.Geometry.Tests", "Tests\Aardvark.Geometry.Tests\Aardvark.Geometry.Tests.fsproj", "{EE0834BA-89F1-4099-8FAD-CC31AA8914E9}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -79,10 +77,6 @@ Global
 		{B4F29FFC-FBA2-4222-AD47-B12B962A14B0}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B4F29FFC-FBA2-4222-AD47-B12B962A14B0}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B4F29FFC-FBA2-4222-AD47-B12B962A14B0}.Release|Any CPU.Build.0 = Release|Any CPU
-		{B5958171-888E-46A0-BEC9-00FEBA41147F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{B5958171-888E-46A0-BEC9-00FEBA41147F}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{B5958171-888E-46A0-BEC9-00FEBA41147F}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{B5958171-888E-46A0-BEC9-00FEBA41147F}.Release|Any CPU.Build.0 = Release|Any CPU
 		{1B4BEB6E-96A1-4B86-9AC5-F9F5824382AE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{1B4BEB6E-96A1-4B86-9AC5-F9F5824382AE}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1B4BEB6E-96A1-4B86-9AC5-F9F5824382AE}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -157,7 +151,6 @@ Global
 		{4BFAAF2F-BB67-471E-A956-F533F13EA643} = {864A9013-93AC-4073-BB2A-348CE1B00010}
 		{90054DAF-8E70-467A-AF80-3B06EEC527F5} = {A79411F9-60B3-46C8-8981-6905D9B9F74C}
 		{B4F29FFC-FBA2-4222-AD47-B12B962A14B0} = {864A9013-93AC-4073-BB2A-348CE1B00010}
-		{B5958171-888E-46A0-BEC9-00FEBA41147F} = {A79411F9-60B3-46C8-8981-6905D9B9F74C}
 		{1B4BEB6E-96A1-4B86-9AC5-F9F5824382AE} = {A79411F9-60B3-46C8-8981-6905D9B9F74C}
 		{04E146C2-1C4C-432F-922C-351D0F4CED67} = {C557CE9D-81EE-4EB3-AB94-B9F9CB2FA19A}
 		{CE9B55FF-2D3E-4E13-BA0A-69FD82F0B29B} = {A79411F9-60B3-46C8-8981-6905D9B9F74C}

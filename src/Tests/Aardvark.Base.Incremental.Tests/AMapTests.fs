@@ -9,7 +9,7 @@ open NUnit.Framework
 open FsUnit
 
 module ``simple cmap tests`` =
-    open Aardvark.Base.HMap
+    open Aardvark.Base.HashMap
 
 //
 //    let dictEqual (xs : list<'k * 'v>) (set : IVersionedDictionary<'k,IVersionedSet<'v>>) =

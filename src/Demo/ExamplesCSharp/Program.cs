@@ -47,7 +47,7 @@ namespace ExamplesCSharp
             // not what we expected. Since mods are lazy and tostring does not force them we need
             // to pull the value out of it.
 
-            Console.WriteLine($"output was: {output.GetValue()}"); // F# equivalent: Mod.force : IMod<'a> -> 'a
+            Console.WriteLine($"output was: {output.GetValue()}"); // F# equivalent: Mod.force : aval<'a> -> 'a
             // output was: 20
 
             using (Adaptive.Transaction)

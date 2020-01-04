@@ -752,7 +752,7 @@ module AMD64 =
             writer.Dispose()
 
 
-        member x.ConditionalCall(condition : IMod<'a>, callback : 'a -> unit) =
+        member x.ConditionalCall(condition : aval<'a>, callback : 'a -> unit) =
             let outOfDate : nativeptr<int> = NativePtr.alloc 1
             NativePtr.write outOfDate (if condition.OutOfDate then 1 else 0)
             let sub = condition.AddMarkingCallback(fun () -> NativePtr.write outOfDate 1)

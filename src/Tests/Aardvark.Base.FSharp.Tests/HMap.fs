@@ -1,4 +1,4 @@
-﻿module HMap
+﻿module HashMap
 
 open System
 open NUnit
@@ -27,74 +27,74 @@ type StupidHash = { value : int } with
 
 
 [<Property(Verbose = true)>]
-let ``[HMap] count`` (l : Map<int, int>) (a : int)  =
+let ``[HashMap] count`` (l : Map<int, int>) (a : int)  =
     not (Map.containsKey a l) ==> lazy (
-        let map = l |> Map.toList |> HMap.ofList
-        let mapWithA = HMap.add a a map
+        let map = l |> Map.toList |> HashMap.ofList
+        let mapWithA = HashMap.add a a map
 
         List.all [
-            HMap.count HMap.empty = 0
-            HMap.count mapWithA = HMap.count map + 1
-            HMap.count (HMap.remove a mapWithA) = HMap.count map
-            HMap.count map = l.Count
-            HMap.count (HMap.union map map) = HMap.count map
-            HMap.count (HMap.map (fun _ v -> v) map) = HMap.count map
-            HMap.count (HMap.filter (fun _ _ -> true) map) = HMap.count map
-            HMap.count (HMap.filter (fun _ _ -> false) map) = 0
-            HMap.count (HMap.choose (fun _ v -> Some v) map) = HMap.count map
-            HMap.count (HMap.choose (fun _ _ -> None) map) = 0
-            HMap.count (HMap.alter a (fun _ -> None) mapWithA) = HMap.count map
-            HMap.count (HMap.alter a (fun _ -> Some 5) mapWithA) = HMap.count mapWithA
-            HMap.count (HMap.update a (fun _ -> 5) mapWithA) = HMap.count mapWithA
+            HashMap.count HashMap.empty = 0
+            HashMap.count mapWithA = HashMap.count map + 1
+            HashMap.count (HashMap.remove a mapWithA) = HashMap.count map
+            HashMap.count map = l.Count
+            HashMap.count (HashMap.union map map) = HashMap.count map
+            HashMap.count (HashMap.map (fun _ v -> v) map) = HashMap.count map
+            HashMap.count (HashMap.filter (fun _ _ -> true) map) = HashMap.count map
+            HashMap.count (HashMap.filter (fun _ _ -> false) map) = 0
+            HashMap.count (HashMap.choose (fun _ v -> Some v) map) = HashMap.count map
+            HashMap.count (HashMap.choose (fun _ _ -> None) map) = 0
+            HashMap.count (HashMap.alter a (fun _ -> None) mapWithA) = HashMap.count map
+            HashMap.count (HashMap.alter a (fun _ -> Some 5) mapWithA) = HashMap.count mapWithA
+            HashMap.count (HashMap.update a (fun _ -> 5) mapWithA) = HashMap.count mapWithA
         ]
     )
 
 [<Property(Verbose = true)>]
-let ``[HMap] tryFind`` (l : Map<int, int>) (a : int)  =
+let ``[HashMap] tryFind`` (l : Map<int, int>) (a : int)  =
     not (Map.containsKey a l) ==> lazy (
-        let map = l |> Map.toList |> HMap.ofList
-        let mapWithA = HMap.add a a map
+        let map = l |> Map.toList |> HashMap.ofList
+        let mapWithA = HashMap.add a a map
         
         List.all [
-            HMap.tryFind a mapWithA = Some a
-            HMap.tryFind a map = None
-            HMap.tryFind a (HMap.add a 7 mapWithA) = Some 7
-            HMap.tryFind a (HMap.add a 7 map) = Some 7
-            HMap.tryFind a (HMap.remove a mapWithA) = None
-            HMap.tryFind a (HMap.union map mapWithA) = Some a
-            HMap.tryFind a (HMap.alter a (fun o -> Some 100) mapWithA) = Some 100
-            HMap.tryFind a (HMap.alter a (fun o -> None) mapWithA) = None
-            HMap.tryFind a (HMap.update a (fun o -> 123) mapWithA) = Some 123
-            HMap.tryFind a (HMap.update a (fun o -> 123) map) = Some 123
-            HMap.tryFind a (HMap.choose (fun _ v -> Some v) mapWithA) = Some a
-            HMap.tryFind a (HMap.choose (fun _ v -> None) mapWithA) = None
-            HMap.tryFind a (HMap.choose (fun _ v -> Some 7) mapWithA) = Some 7
-            HMap.tryFind a (HMap.filter (fun _ v -> true) mapWithA) = Some a
-            HMap.tryFind a (HMap.filter (fun _ v -> false) mapWithA) = None
+            HashMap.tryFind a mapWithA = Some a
+            HashMap.tryFind a map = None
+            HashMap.tryFind a (HashMap.add a 7 mapWithA) = Some 7
+            HashMap.tryFind a (HashMap.add a 7 map) = Some 7
+            HashMap.tryFind a (HashMap.remove a mapWithA) = None
+            HashMap.tryFind a (HashMap.union map mapWithA) = Some a
+            HashMap.tryFind a (HashMap.alter a (fun o -> Some 100) mapWithA) = Some 100
+            HashMap.tryFind a (HashMap.alter a (fun o -> None) mapWithA) = None
+            HashMap.tryFind a (HashMap.update a (fun o -> 123) mapWithA) = Some 123
+            HashMap.tryFind a (HashMap.update a (fun o -> 123) map) = Some 123
+            HashMap.tryFind a (HashMap.choose (fun _ v -> Some v) mapWithA) = Some a
+            HashMap.tryFind a (HashMap.choose (fun _ v -> None) mapWithA) = None
+            HashMap.tryFind a (HashMap.choose (fun _ v -> Some 7) mapWithA) = Some 7
+            HashMap.tryFind a (HashMap.filter (fun _ v -> true) mapWithA) = Some a
+            HashMap.tryFind a (HashMap.filter (fun _ v -> false) mapWithA) = None
 
         ]
 
     )
 
 [<Property(Verbose = true)>]
-let ``[HMap] containsKey`` (l : Map<int, int>) (a : int)  =
-    let map = l |> Map.toList |> HMap.ofList
-    HMap.containsKey a map = Option.isSome (HMap.tryFind a map)
+let ``[HashMap] containsKey`` (l : Map<int, int>) (a : int)  =
+    let map = l |> Map.toList |> HashMap.ofList
+    HashMap.containsKey a map = Option.isSome (HashMap.tryFind a map)
 
 [<Property(Verbose = true)>]
-let ``[HMap] find`` (l : Map<int, int>) (a : int)  =
-    let map = l |> Map.toList |> HMap.ofList
-    let map = map |> HMap.add a a
-    HMap.find a map = a
+let ``[HashMap] find`` (l : Map<int, int>) (a : int)  =
+    let map = l |> Map.toList |> HashMap.ofList
+    let map = map |> HashMap.add a a
+    HashMap.find a map = a
 
 [<Property(Verbose = true)>]
-let ``[HMap] ofList`` (l : list<int * int>) =
-    List.sortBy fst (HMap.toList (HMap.ofList l)) = Map.toList (Map.ofList l)
+let ``[HashMap] ofList`` (l : list<int * int>) =
+    List.sortBy fst (HashMap.toList (HashMap.ofList l)) = Map.toList (Map.ofList l)
 
 [<Property(Verbose = true)>]
-let ``[HMap] map2/choose2`` (lm : Map<int, int>) (rm : Map<int, int>) =
-    let l = lm |> Map.toList |> HMap.ofList
-    let r = rm |> Map.toList |> HMap.ofList
+let ``[HashMap] map2/choose2`` (lm : Map<int, int>) (rm : Map<int, int>) =
+    let l = lm |> Map.toList |> HashMap.ofList
+    let r = rm |> Map.toList |> HashMap.ofList
 
     let map2 (f : 'k -> Option<'a> -> Option<'b> -> 'c) (l : Map<'k, 'a>) (r : Map<'k, 'b>) =
         let mutable res = Map.empty
@@ -138,7 +138,7 @@ let ``[HMap] map2/choose2`` (lm : Map<int, int>) (rm : Map<int, int>) =
         res
 
     let equal (l : hmap<'k, 'v>) (r : Map<'k, 'v>) =
-        let l = l |> HMap.toList |> List.sortBy fst
+        let l = l |> HashMap.toList |> List.sortBy fst
         let r = r |> Map.toList
         l = r
 
@@ -157,14 +157,14 @@ let ``[HMap] map2/choose2`` (lm : Map<int, int>) (rm : Map<int, int>) =
             | None, None -> failwith "that's bad (Map invented a key)"
 
     List.all [
-        equal (HMap.map2 add l r) (map2 add lm rm)
-        equal (HMap.choose2 (fun k l r -> add k l r |> Some) l r) (map2 add lm rm)
-        equal (HMap.choose2 (fun k l r -> add2 k l r) l r) (choose2 add2 lm rm)
+        equal (HashMap.map2 add l r) (map2 add lm rm)
+        equal (HashMap.choose2 (fun k l r -> add k l r |> Some) l r) (map2 add lm rm)
+        equal (HashMap.choose2 (fun k l r -> add2 k l r) l r) (choose2 add2 lm rm)
     ]
 
 [<Property>]
-let ``[HMap] choose`` (m : Map<int, int>) (f : int -> int -> Option<int>) =
-    let h = HMap.ofSeq (Map.toSeq m)
+let ``[HashMap] choose`` (m : Map<int, int>) (f : int -> int -> Option<int>) =
+    let h = HashMap.ofSeq (Map.toSeq m)
 
     let tm =
         let mutable res = Map.empty
@@ -174,24 +174,24 @@ let ``[HMap] choose`` (m : Map<int, int>) (f : int -> int -> Option<int>) =
                 | _ -> ()
         res
 
-    let th = HMap.choose f h |> Map.ofSeq
+    let th = HashMap.choose f h |> Map.ofSeq
 
     tm = th
 
 
 
 [<Property>]
-let ``[HMap] equality`` (h0 : StupidHash) =
+let ``[HashMap] equality`` (h0 : StupidHash) =
     let h1 = { value = h0.value + 1 }
     let h2 = { value = h0.value + 2 }
     let h3 = { value = h0.value + 3 }
-    let a = HMap.empty |> HMap.add h0 0 |> HMap.add h1 1 |> HMap.add h2 2 |> HMap.add h3 3
-    let b = HMap.empty |> HMap.add h1 1 |> HMap.add h2 2 |> HMap.add h3 3 |> HMap.add h0 0
-    let c = HMap.empty |> HMap.add h2 2 |> HMap.add h3 3 |> HMap.add h0 0 |> HMap.add h1 1
-    let d = HMap.empty |> HMap.add h3 3 |> HMap.add h0 0 |> HMap.add h1 1 |> HMap.add h2 2
+    let a = HashMap.empty |> HashMap.add h0 0 |> HashMap.add h1 1 |> HashMap.add h2 2 |> HashMap.add h3 3
+    let b = HashMap.empty |> HashMap.add h1 1 |> HashMap.add h2 2 |> HashMap.add h3 3 |> HashMap.add h0 0
+    let c = HashMap.empty |> HashMap.add h2 2 |> HashMap.add h3 3 |> HashMap.add h0 0 |> HashMap.add h1 1
+    let d = HashMap.empty |> HashMap.add h3 3 |> HashMap.add h0 0 |> HashMap.add h1 1 |> HashMap.add h2 2
     
-    let x = d |> HMap.add h3 4
-    let y = d |> HMap.add { value = h0.value + 4 } 4
+    let x = d |> HashMap.add h3 4
+    let y = d |> HashMap.add { value = h0.value + 4 } 4
 
     let ah = a.GetHashCode()
     let bh = b.GetHashCode()

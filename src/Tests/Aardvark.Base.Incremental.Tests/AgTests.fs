@@ -179,7 +179,7 @@
 //        
 //    let leakCnt = ref 0
 //
-//    type LS = Leak * Ag.Scope * IMod<int>* int
+//    type LS = Leak * Ag.Scope * aval<int>* int
 //
 //    [<Semantic>]
 //    type LSemantics() =
@@ -198,7 +198,7 @@
 //        member x.Flatten2(n : LNode) : aset<LS>=
 //            aset {
 //                for i in n.Children do
-//                    let a : IMod<int> = n?SomeInhValue
+//                    let a : aval<int> = n?SomeInhValue
 //                    let! ab = a
 //                    printfn "AB:%A" ab
 //                    yield! i?Flatten2()
@@ -206,7 +206,7 @@
 //
 //        member x.Flatten2(l : LLeaf) : aset<LS> =
 //            aset {
-//                let vm : IMod<int> = l?SomeInhValue
+//                let vm : aval<int> = l?SomeInhValue
 //                let! v = vm
 //                yield Leak leakCnt, Ag.getContext(), l?SomeInhValue, v
 //            }

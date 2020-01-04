@@ -1,6 +1,7 @@
 ﻿namespace Aardvark.Base
 #nowarn "9"
 #nowarn "51"
+#nowarn "44"
 
 open System
 

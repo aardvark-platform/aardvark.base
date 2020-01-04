@@ -6,7 +6,8 @@ using System.Threading.Tasks;
 using Aardvark.Base;
 using Aardvark.Base.Incremental;
 using Aardvark.Base.Incremental.CSharp;
-using Aardvark.Base.Incremental.Validation;
+using FSharp.Data.Adaptive;
+using FSharp.Data.Traceable;
 
 namespace IncrementalDemo.CSharp
 {
@@ -14,14 +15,16 @@ namespace IncrementalDemo.CSharp
     {
         static void SimpleCallbackTest()
         {
-            var m = new ModRef<int>(0);
+            var m = new ChangeableValue<int>(0);
             var d = m.Map(a => 2 * a);
 
             Report.Begin("m = 0");
-            var s = d.UnsafeRegisterCallbackNoGcRoot(v =>
+
+            void print ()
             {
-                Report.Line("m * 2 = {0}", v);
-            });
+                Report.Line("m * 2 = {0}", d.GetValue());
+            }
+
             Report.End();
 
             Report.Begin("m = 3");
@@ -29,6 +32,7 @@ namespace IncrementalDemo.CSharp
             {
                 m.Value = 3;
             }
+            print();
             Report.End();
 
 
@@ -38,33 +42,31 @@ namespace IncrementalDemo.CSharp
                 m.Value = 1;
                 m.Value = 2;
             }
+            print();
             Report.End();
 
         }
 
         static void SetContainmentTest()
         {
-            var set = new ChangeableSet<int> { 1, 2, 3, 4 };
+            var set = new ChangeableHashSet<int>(new [] { 1, 2, 3, 4 });
 
 
             var greater1 = from i in set where i > 1 select i;
-            var contains5 = greater1.ContainsMod(5);
-            var contains2And4 = greater1.ContainsAll(2, 4);
 
 
+            var reader = greater1.GetReader();
 
             Report.Begin("set = {1,2,3,4}");
-            greater1.UnsafeRegisterCallbackNoGcRoot(deltas =>
+            void print()
             {
-                foreach(var d in deltas)
+                var deltas = reader.GetChanges(AdaptiveToken.Top);
+                foreach (var d in deltas)
                 {
                     if (d.Count > 0) Report.Line("add {0}", d.Value);
                     else Report.Line("rem {0}", d.Value);
                 }
-            });
-
-            contains5.UnsafeRegisterCallbackNoGcRoot(c => Report.Line("contains 5 = {0}", c));
-            contains2And4.UnsafeRegisterCallbackNoGcRoot(c => Report.Line("contains [2,4] = {0}", c));
+            }
             Report.End();
 
             
@@ -74,6 +76,7 @@ namespace IncrementalDemo.CSharp
             {
                 set.Add(5); set.Add(6);
             }
+            print();
             Report.End();
 
             Report.Begin("set = {2,4,6}");
@@ -81,6 +84,7 @@ namespace IncrementalDemo.CSharp
             {
                 set.Remove(1); set.Remove(3); set.Remove(5);
             }
+            print();
             Report.End();
 
             Report.Begin("set = {4,6}");
@@ -88,6 +92,7 @@ namespace IncrementalDemo.CSharp
             {
                 set.Remove(2);
             }
+            print();
             Report.End();
 
             Report.Begin("set = {4,5,6}");
@@ -95,6 +100,7 @@ namespace IncrementalDemo.CSharp
             {
                 set.Add(5);
             }
+            print();
             Report.End();
 
             
@@ -104,7 +110,7 @@ namespace IncrementalDemo.CSharp
 
         static void AdvancedASetTest()
         {
-            Action<IOpReader<hrefset<int>, hdeltaset<int>>> print = (r) =>
+            Action<FSharp.Data.Traceable.IOpReader<CountingHashSet<int>, HashSetDelta<int>>> print = (r) =>
             {
                 var deltas = r.GetOperations();
                 var content = r.State;
@@ -116,10 +122,10 @@ namespace IncrementalDemo.CSharp
                 Report.Line("content = [{0}]", contentStr);
             };
 
-            var i0 = new ChangeableSet<int> { 1, 2, 3 };
-            var i1 = new ChangeableSet<int> { 4, 5 };
-            var i2 = new ChangeableSet<int> { 6, 7 };
-            var input = new ChangeableSet<IAdaptiveSet<int>> { i0, i1 };
+            var i0 = new ChangeableHashSet<int>(new [] { 1, 2, 3 });
+            var i1 = new ChangeableHashSet<int>(new [] { 4, 5 });
+            var i2 = new ChangeableHashSet<int>(new [] { 6, 7 });
+            var input = new ChangeableHashSet<AdaptiveHashSet<int>>(new [] { i0, i1 });
 
             var flat = input.SelectMany(a => a);
 
@@ -162,8 +168,6 @@ namespace IncrementalDemo.CSharp
             print(reader);
             Report.End();
 
-
-            reader.Dump();
         }
 
 

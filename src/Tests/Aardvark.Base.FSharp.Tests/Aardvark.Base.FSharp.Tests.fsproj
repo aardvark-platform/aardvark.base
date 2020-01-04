@@ -21,7 +21,7 @@
     <Compile Include="Fragments.fs" />
     <Compile Include="ControlTests.fs" />
     <Compile Include="SortedSetExt.fs" />
-    <Compile Include="HMap.fs" />
+    <Compile Include="HashMap.fs" />
     <Compile Include="HSet.fs" />
     <Compile Include="PList.fs" />
     <Compile Include="MapExt.fs" />

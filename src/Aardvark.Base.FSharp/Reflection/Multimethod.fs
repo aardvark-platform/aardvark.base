@@ -6,10 +6,11 @@ open System.Collections.Generic
 open System.Runtime.InteropServices
 open System.Threading
 open Microsoft.FSharp.Reflection
+open FSharp.Data.Adaptive
 
 module private Helpers =
     
-    type State = { assignment : hmap<Type, Type> }
+    type State = { assignment : HashMap<Type, Type> }
     type Result<'a> = { run : State -> Option<State * 'a> }
 
     type ResultBuilder() =
@@ -71,11 +72,11 @@ module private Helpers =
 
     let assign (t : Type) (o : Type) =
         { run = fun s ->
-            match HMap.tryFind t s.assignment with
+            match HashMap.tryFind t s.assignment with
                 | Some(old) when old <> o ->
                     None
                 | _ ->
-                    Some({ s with assignment = HMap.add t o s.assignment }, ())
+                    Some({ s with assignment = HashMap.add t o s.assignment }, ())
         }
 
     let fail<'a> : Result<'a> = { run = fun s -> None }
@@ -147,9 +148,9 @@ module private Helpers =
             if mi.IsGenericMethod then
                 let mi = mi.GetGenericMethodDefinition()
                 let m = tryInstantiateMethodInfo mi args
-                match m.run { assignment = HMap.empty } with
+                match m.run { assignment = HashMap.empty } with
                     | Some (s,()) ->
-                        let args = mi.GetGenericArguments() |> Array.map (fun a -> HMap.find a s.assignment)
+                        let args = mi.GetGenericArguments() |> Array.map (fun a -> HashMap.find a s.assignment)
                         mi.MakeGenericMethod(args) |> Some
 
                     | None -> 

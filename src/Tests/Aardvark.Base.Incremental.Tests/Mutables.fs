@@ -65,8 +65,8 @@ module MutableTests =
 
         let sets = generator |> Gen.eval 100 seed
         for set in sets do
-            transact (fun () -> dst.Value <- HMap.ofMap set)
+            transact (fun () -> dst.Value <- HashMap.ofMap set)
             printfn "%A" set
             let ops = reader.GetOperations()
-            let content = reader.State |> HMap.toMap
+            let content = reader.State |> HashMap.toMap
             content |> should equal set

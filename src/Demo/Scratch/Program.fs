@@ -9,7 +9,7 @@ open Aardvark.Base
 open Aardvark.Base.Runtime
 open Aardvark.Base.Incremental
 open Aardvark.Base.Monads.State
-
+open FSharp.Data.Adaptive
 open System.IO
 open System.Runtime.InteropServices
 open Microsoft.FSharp.NativeInterop
@@ -248,7 +248,7 @@ type MyDelegate = delegate of int * int * int * int64 * int64 -> unit // * int64
 open AMD64
 
 let testAdd (n : int) =
-    let set = HDeltaSet.ofList (List.map Add [ 1 .. n ])
+    let set = HashSetDelta.ofList (List.map Add [ 1 .. n ])
 
     let iter = 100000
     let results = Array.zeroCreate iter
@@ -278,7 +278,7 @@ let testAdd (n : int) =
     sw.MicroTime / iter
 
 let testAddMany (n : int) (m : int) =
-    let set = HDeltaSet.ofList (List.map Add [ 1 .. n ])
+    let set = HashSetDelta.ofList (List.map Add [ 1 .. n ])
 
     let iter = 10000
     let results = Array.zeroCreate iter
@@ -323,14 +323,14 @@ let testUnion (n : int) (m : int) =
         else
             SetOperation(rand.UniformInt(n) + n + 1, delta)
 
-    let a = HDeltaSet.ofList (List.map Add [ 1 .. n ]) |> HDeltaSet.toHMap
-    let b = HDeltaSet.ofList (List.init m (fun _ -> randomOp())) |> HDeltaSet.toHMap
+    let a = HashSetDelta.ofList (List.map Add [ 1 .. n ]) |> HashSetDelta.toHashMap
+    let b = HashSetDelta.ofList (List.init m (fun _ -> randomOp())) |> HashSetDelta.toHashMap
     
     let iter = 100
     let results = Array.zeroCreate iter
     let rand = RandomSystem()
     let inline res() =
-        HMap.choose2 (fun _ l r -> 
+        HashMap.choose2 (fun _ l r -> 
             match l, r with
                 | None, r -> r
                 | l, None -> l
@@ -339,7 +339,7 @@ let testUnion (n : int) (m : int) =
                     if r <> 0 then Some r
                     else None
         ) a b
-        |> hdeltaset
+        |> HashSetDelta.ofHashMap
 
     // warmup
     for i in 0 .. iter / 10 do
@@ -398,27 +398,27 @@ let main argv =
         | _ -> printfn "error"
     Environment.Exit 0
 
-    let set = CSet.ofList [1;2;3]
+    let set = cset [1;2;3]
 
-    let m = Mod.init (Some 10)
-    let d = m |> Mod.map (fun v -> printfn "eval %A" v; v)
-    let b = set |> ASet.chooseM (fun _ -> d)
+    let m = cval (Some 10)
+    let d = m |> AVal.map (fun v -> printfn "eval %A" v; v)
+    let b = set |> ASet.chooseA (fun _ -> d)
 
     
     let r = b.GetReader()
-    r.GetOperations() |> printfn "%A"
+    r.GetChanges(AdaptiveToken.Top) |> printfn "%A"
 
     transact (fun () -> set.Remove 1 |> ignore)
-    r.GetOperations() |> printfn "%A"
+    r.GetChanges(AdaptiveToken.Top) |> printfn "%A"
 
     transact (fun () -> set.Remove 2 |> ignore)
-    r.GetOperations() |> printfn "%A"
+    r.GetChanges(AdaptiveToken.Top) |> printfn "%A"
 
     transact (fun () -> m.Value <- Some 1000)
-    r.GetOperations() |> printfn "%A"
+    r.GetChanges(AdaptiveToken.Top) |> printfn "%A"
     
     transact (fun () -> set.Remove 3 |> ignore; m.Value <- Some 100)
-    r.GetOperations() |> printfn "%A"
+    r.GetChanges(AdaptiveToken.Top) |> printfn "%A"
 
 
     System.Environment.Exit 0
@@ -463,7 +463,7 @@ let main argv =
     let sw = System.Diagnostics.Stopwatch.StartNew()
     for iter in 1..50 do
         let cnt = iter * 1000
-        let arr = ASet.ofArray(Array.init(cnt) (fun i -> Mod.init(i) :> IMod<_>))
+        let arr = ASet.ofArray(Array.init(cnt) (fun i -> cval i :> aval<_>))
 
         let arrr = arr |> ASet.collect (fun x -> 
                             x |> ASet.bind (fun y -> ASet.single y))
@@ -477,7 +477,7 @@ let main argv =
 //        let worked = System.GC.TryStartNoGCRegion(1L <<< 30)
 
         let sw = System.Diagnostics.Stopwatch.StartNew()
-        r.GetOperations AdaptiveToken.Top |> ignore
+        r.GetChanges AdaptiveToken.Top |> ignore
         sw.Stop()
 //
 //        if worked then
@@ -487,7 +487,6 @@ let main argv =
 
         printfn "took: %A" sw.MicroTime
 
-        r.Dispose()
         System.GC.Collect()
         System.GC.WaitForFullGCComplete() |> ignore
 
@@ -496,10 +495,10 @@ let main argv =
 //    Program.test()
 
     
-    let m = Mod.init 10
+    let m = cval 10
     
     let sw = System.Diagnostics.Stopwatch.StartNew()
-    let set = CSet.ofList [1 .. 100000]
+    let set = cset [1 .. 100000]
     sw.Stop()
     Log.line "build: %A" sw.MicroTime
 
@@ -521,7 +520,7 @@ let main argv =
     let r = op.GetReader()
 
     let sw = System.Diagnostics.Stopwatch.StartNew()
-    r.GetOperations AdaptiveToken.Top |> ignore
+    r.GetChanges AdaptiveToken.Top |> ignore
     sw.Stop()
     Log.line "took: %A" sw.MicroTime
 
@@ -532,7 +531,7 @@ let main argv =
     Log.line "transact: %A" sw.MicroTime
     
     let sw = System.Diagnostics.Stopwatch.StartNew()
-    r.GetOperations AdaptiveToken.Top |> ignore
+    r.GetChanges AdaptiveToken.Top |> ignore
     sw.Stop()
     Log.line "took: %A" sw.MicroTime
     
@@ -543,7 +542,7 @@ let main argv =
     Log.line "transact: %A" sw.MicroTime
     
     let sw = System.Diagnostics.Stopwatch.StartNew()
-    r.GetOperations AdaptiveToken.Top |> ignore
+    r.GetChanges AdaptiveToken.Top |> ignore
     sw.Stop()
 
 
