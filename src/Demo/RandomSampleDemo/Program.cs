@@ -179,7 +179,7 @@ namespace RandomSampleDemo
             // interleave the sample images with an image for empty space
             // -> Zip with stitch images + remove last
             var cnt = images.Count();
-            var array = images.Zip(offsetImage.Repeat(cnt)).Take(cnt * 2 - 1).ToArray().IntoArray();
+            var array = Aardvark.Base.EnumerableEx.Zip(images, offsetImage.Repeat(cnt)).Take(cnt * 2 - 1).ToArray().IntoArray();
             array.Stitch().SaveAsImage(filename);
         }
 

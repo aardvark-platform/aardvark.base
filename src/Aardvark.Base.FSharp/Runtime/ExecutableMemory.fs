@@ -6,6 +6,60 @@ open Aardvark.Base
 namespace Aardvark.Base
 #endif
 
+
+
+module private Kernel32 =
+    open System
+    open System.Runtime.InteropServices
+
+    type AllocationType =
+        | Commit=0x1000u
+
+    type MemoryProtection =
+        | ExecuteReadWrite = 0x40u
+
+    type FreeType =
+        | Decommit = 0x4000u
+
+    
+    module Imports = 
+        [<DllImport("kernel32.dll", SetLastError=true)>]
+        extern IntPtr private VirtualAlloc(IntPtr lpAddress, UIntPtr dwSize, AllocationType flAllocationType, MemoryProtection flProtect);
+
+        [<DllImport("kernel32.dll", SetLastError=true)>]
+        extern bool private VirtualFree(IntPtr lpAddress, UIntPtr dwSize, FreeType freeType);
+
+
+module private Dl =
+    open System
+    open System.Runtime.InteropServices
+
+    type Protection = None    = 0x00
+                    | Read    = 0x01
+                    | Write   = 0x02
+                    | Execute = 0x04
+                    | ReadWriteExecute = 0x07
+
+    
+    module Imports =
+        [<DllImport("libc", SetLastError=true)>]
+        extern int getpagesize()
+
+        [<DllImport("libc", SetLastError=true)>]
+        extern int posix_memalign(nativeint* ptr, nativeint p, nativeint size)
+
+        [<DllImport("libc", SetLastError=true)>]
+        extern int mprotect(IntPtr addr, nativeint size, Protection prot);
+
+        [<DllImport("libc", SetLastError=false)>]
+        extern IntPtr malloc(nativeint size)
+
+        [<DllImport("libc", SetLastError=false)>]
+        extern void free(nativeint ptr)
+
+
+
+
 module ExecutableMemory =
     open System
     let private os = System.Environment.OSVersion

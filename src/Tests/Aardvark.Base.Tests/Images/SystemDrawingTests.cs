@@ -4,7 +4,7 @@
 //using System.IO;
 //using System.Net;
 
-//namespace Aardvark.Tests.Geometry
+//namespace Aardvark.Tests.Images
 //{
 //    [TestFixture]
 //    public class SystemDrawingTests

@@ -9,7 +9,8 @@ namespace Aardvark.Tests
         [STAThread]
         public static void Main(string[] args)
         {
-            new DictTests().Run();
+            //new DictTests().Run();
+            new Aardvark.Tests.Images.PixImageTests().MipMapCreate1x1();
         }
     }
 }
