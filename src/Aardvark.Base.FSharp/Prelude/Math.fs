@@ -47,6 +47,16 @@ module Math =
             static member inline Power(x : float32, y : float32) = x ** y
             static member inline Power(x : decimal, y : decimal) = Math.Pow(float x, float y) |> decimal
 
+        type Log2() =
+            static member inline Log2(x : float) = Fun.Log2 x
+            static member inline Log2(x : float32) = Fun.Log2 x
+            static member inline Log2(x : decimal) = Fun.Log2(float x) |> decimal
+
+        type Cbrt() =
+            static member inline Cbrt(x : float) = Fun.Cbrt x
+            static member inline Cbrt(x : float32) = Fun.Cbrt x
+            static member inline Cbrt(x : decimal) = Fun.Cbrt(float x) |> decimal
+
         type Min() =
             static member inline Min(x : sbyte, y : sbyte) = min x y
             static member inline Min(x : int16, y : int16) = min x y
@@ -89,6 +99,12 @@ module Math =
 
         let inline powerAux (_ : ^z) (x : ^a) (y : ^a) =
             ((^z or ^a) : (static member Power : ^a * ^a -> ^a) (x, y))
+
+        let inline log2Aux (_ : ^z) (x : ^a) =
+            ((^z or ^a) : (static member Log2 : ^a  -> ^a) x)
+
+        let inline cbrtAux (_ : ^z) (x : ^a) =
+            ((^z or ^a) : (static member Cbrt : ^a  -> ^a) x)
         
         let inline minAux (_ : ^z) (x : ^a) (y : ^b) =
             ((^z or ^a or ^b) : (static member Min : ^a * ^b -> ^a) (x, y))
@@ -119,6 +135,18 @@ module Math =
     let inline pow x y =
         powerAux Unchecked.defaultof<Helpers.Power> x y
 
+    /// Returns the base 2 logarithm of x.
+    let inline log2 x =
+        log2Aux Unchecked.defaultof<Helpers.Log2> x
+
+    /// Returns x raised by the power of 2.
+    let inline sqr x =
+        x * x
+
+    /// Returns the cubic root of x.
+    let inline cbrt x =
+        cbrtAux Unchecked.defaultof<Helpers.Cbrt> x
+
     /// Returns the smaller of x and y.
     let inline min (y : ^b) (x : ^a) : ^a =
         minAux Unchecked.defaultof<Helpers.Min> x y
@@ -127,19 +155,19 @@ module Math =
     let inline max (y : ^b) (x : ^a) : ^a =
         maxAux Unchecked.defaultof<Helpers.Max> x y
 
-    /// Clamps x to the interval [a, b]
+    /// Clamps x to the interval [a, b].
     let inline clamp (a : ^b) (b : ^b) (x : ^a) : ^a =
         x |> max a |> min b
 
-    /// Clamps x to the interval [0, 1]
+    /// Clamps x to the interval [0, 1].
     let inline saturate (x : ^a) =
         x |> clamp zero<'a> one<'a>
 
-    /// Linearly interpolates between x and y
+    /// Linearly interpolates between x and y.
     let inline lerp (x : ^a) (y : ^a) (t : ^b) =
         (one - t) * x + t * y
 
-    /// Performs Hermite interpolation between a and b
+    /// Performs Hermite interpolation between a and b.
     let inline smoothstep (a : ^a) (b : ^a) (x : ^b) =
         let two : ^b = one + one
         let three : ^b = two + one

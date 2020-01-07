@@ -1277,6 +1277,14 @@ namespace Aardvark.Base
         }
 
         /// <summary>
+        /// Returns a copy of the given vector, taking the cubic root of each element.
+        /// </summary>
+        public static __vtype__ Cbrt(__vtype__ v)
+        {
+            return new __vtype__(/*# fields.ForEach(f => { */Fun.Cbrt(v.__f__)/*# }, comma); */);
+        }
+
+        /// <summary>
         /// Returns a copy of the given vector, with exp() applied to each element.
         /// </summary>
         public static __vtype__ Exp(__vtype__ v)
@@ -1290,6 +1298,14 @@ namespace Aardvark.Base
         public static __vtype__ Log(__vtype__ v)
         {
             return new __vtype__(/*# fields.ForEach(f => { */Math.Log(v.__f__)/*# }, comma); */);
+        }
+
+        /// <summary>
+        /// Returns a copy of the given vector, with log2() applied to each element.
+        /// </summary>
+        public static __vtype__ Log2(__vtype__ v)
+        {
+            return new __vtype__(/*# fields.ForEach(f => { */Fun.Log2(v.__f__)/*# }, comma); */);
         }
 
         /// <summary>

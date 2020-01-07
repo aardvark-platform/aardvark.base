@@ -601,7 +601,7 @@ namespace Aardvark.Base
             return new V3d(
                         Fun.Atan2(2 * (W * X + Y * Z),
                                   1 - 2 * (X * X + Y * Y)),
-                        Fun.AsinC(2 * test),
+                        Fun.AsinClamped(2 * test),
                         Fun.Atan2(2 * (W * Z + X * Y),
                                   1 - 2 * (Y * Y + Z * Z)));
         }

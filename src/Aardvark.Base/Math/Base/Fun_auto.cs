@@ -1102,6 +1102,11 @@ namespace Aardvark.Base
         public static int Sign(this sbyte x)
             => Math.Sign(x);
 
+        [Pure]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static sbyte Signum(this sbyte x)
+            => (sbyte) Math.Sign(x);
+
         /// <summary>
         /// Returns either -1, 0, or +1, indicating the sign of the specified value .
         /// </summary>
@@ -1109,6 +1114,11 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static int Sign(this short x)
             => Math.Sign(x);
+
+        [Pure]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static short Signum(this short x)
+            => (short) Math.Sign(x);
 
         /// <summary>
         /// Returns either -1, 0, or +1, indicating the sign of the specified value .
@@ -1118,6 +1128,11 @@ namespace Aardvark.Base
         public static int Sign(this int x)
             => Math.Sign(x);
 
+        [Pure]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static int Signum(this int x)
+            => (int) Math.Sign(x);
+
         /// <summary>
         /// Returns either -1, 0, or +1, indicating the sign of the specified value .
         /// </summary>
@@ -1125,6 +1140,11 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static int Sign(this long x)
             => Math.Sign(x);
+
+        [Pure]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static long Signum(this long x)
+            => (long) Math.Sign(x);
 
         /// <summary>
         /// Returns either -1, 0, or +1, indicating the sign of the specified value .
@@ -1134,6 +1154,11 @@ namespace Aardvark.Base
         public static int Sign(this float x)
             => Math.Sign(x);
 
+        [Pure]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static float Signum(this float x)
+            => (float) Math.Sign(x);
+
         /// <summary>
         /// Returns either -1, 0, or +1, indicating the sign of the specified value .
         /// </summary>
@@ -1142,6 +1167,11 @@ namespace Aardvark.Base
         public static int Sign(this double x)
             => Math.Sign(x);
 
+        [Pure]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static double Signum(this double x)
+            => (double) Math.Sign(x);
+
         /// <summary>
         /// Returns either -1, 0, or +1, indicating the sign of the specified value .
         /// </summary>
@@ -1149,6 +1179,11 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static int Sign(this decimal x)
             => Math.Sign(x);
+
+        [Pure]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static decimal Signum(this decimal x)
+            => (decimal) Math.Sign(x);
 
         #endregion
 
@@ -2485,7 +2520,7 @@ namespace Aardvark.Base
         /// </summary>
         [Pure]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static float AsinC(this float x) => (float)System.Math.Asin(Clamp(x, -1, 1));
+        public static float AsinClamped(this float x) => (float)System.Math.Asin(Clamp(x, -1, 1));
 
         /// <summary>
         /// Returns the angle in radians whose cosine is the specified number.
@@ -2499,7 +2534,7 @@ namespace Aardvark.Base
         /// </summary>
         [Pure]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static float AcosC(this float x) => (float)System.Math.Acos(Clamp(x, -1, 1));
+        public static float AcosClamped(this float x) => (float)System.Math.Acos(Clamp(x, -1, 1));
 
         /// <summary>
         /// Returns the angle in radians whose tangent is the specified number.
@@ -2621,7 +2656,7 @@ namespace Aardvark.Base
         /// </summary>
         [Pure]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static double AsinC(this double x) => System.Math.Asin(Clamp(x, -1, 1));
+        public static double AsinClamped(this double x) => System.Math.Asin(Clamp(x, -1, 1));
 
         /// <summary>
         /// Returns the angle in radians whose cosine is the specified number.
@@ -2635,7 +2670,7 @@ namespace Aardvark.Base
         /// </summary>
         [Pure]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static double AcosC(this double x) => System.Math.Acos(Clamp(x, -1, 1));
+        public static double AcosClamped(this double x) => System.Math.Acos(Clamp(x, -1, 1));
 
         /// <summary>
         /// Returns the angle in radians whose tangent is the specified number.

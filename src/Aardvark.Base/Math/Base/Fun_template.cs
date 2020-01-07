@@ -301,6 +301,11 @@ namespace Aardvark.Base
         public static int Sign(this __t.Name__ x)
             => Math.Sign(x);
 
+        [Pure]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static __t.Name__ Signum(this __t.Name__ x)
+            => (__t.Name__) Math.Sign(x);
+
         //# });
         #endregion
 
@@ -614,7 +619,7 @@ namespace Aardvark.Base
         /// </summary>
         [Pure]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static __t.Name__ AsinC(this __t.Name__ x) => __cast__System.Math.Asin(Clamp(x, -1, 1));
+        public static __t.Name__ AsinClamped(this __t.Name__ x) => __cast__System.Math.Asin(Clamp(x, -1, 1));
 
         /// <summary>
         /// Returns the angle in radians whose cosine is the specified number.
@@ -628,7 +633,7 @@ namespace Aardvark.Base
         /// </summary>
         [Pure]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static __t.Name__ AcosC(this __t.Name__ x) => __cast__System.Math.Acos(Clamp(x, -1, 1));
+        public static __t.Name__ AcosClamped(this __t.Name__ x) => __cast__System.Math.Acos(Clamp(x, -1, 1));
 
         /// <summary>
         /// Returns the angle in radians whose tangent is the specified number.
