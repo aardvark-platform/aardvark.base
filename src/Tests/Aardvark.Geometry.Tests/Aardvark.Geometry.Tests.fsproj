@@ -15,10 +15,6 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="PolyRegion2dTests.fs" />
-    <Reference Include="mscorlib" />
-    <Reference Include="System" />
-    <Reference Include="System.Core" />
-    <Reference Include="System.Numerics" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\Aardvark.Base\Aardvark.Base.csproj" />
