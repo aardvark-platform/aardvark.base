@@ -6,6 +6,7 @@ before_install:
   - sudo dpkg -i packages-microsoft-prod.deb
   - sudo apt-get install apt-transport-https -qq > /dev/null
   - sudo apt-get update -qq > /dev/null
+  - sudo apt-get install -qq msbuild mono-devel dotnet-sdk-2.1 > /dev/null
   - sudo apt-get install -qq msbuild mono-devel dotnet-sdk-3.1 > /dev/null
   - sudo apt-get install -qq fsharp > /dev/null
   - mozroots --import --sync 
