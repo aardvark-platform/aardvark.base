@@ -10,7 +10,7 @@
 [Quickstart](https://github.com/aardvarkplatform/aardvark.docs/wiki/Quickstart-Windows) | 
 [Status](https://github.com/aardvarkplatform/aardvark.docs/wiki/Status)
 
-Aardvark.Base, which provides multiple, standalone (netstandard2.0 compatible) nuget packages is a collection of essential datatypes (e.g. vectors), algorithms, datastructures (e.g. Maps) as well as a pull-based incremental evaluation system.
+Aardvark.Base provides multiple standalone nuget packages constituting a set of essential tools often required in computer graphics and functional programming such as vectors, matrices as well as algorithms and datastructures.
 Aardvark.Base is part of the open-source [Aardvark platform](https://github.com/aardvark-platform/aardvark.docs/wiki) for visual computing, real-time graphics and visualization. Base is the base for the rendering engine, functional application libraries and many projects:
 
 
