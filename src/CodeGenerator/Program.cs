@@ -80,7 +80,7 @@ namespace CodeGenerator
                     tasks.Add(new Task { TemplateFileName = args[0], OutputFileName = args[1] });
             }
             else
-                dir = @"..\..";
+                dir = @"..\..\..";
 
             if (dir != null)
             {
