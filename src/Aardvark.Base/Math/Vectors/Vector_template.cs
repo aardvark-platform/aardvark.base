@@ -94,6 +94,55 @@ namespace Aardvark.Base
             //# });
         }
 
+        //# if (d > 2) { for (int i = 1; i < d; i++) { var j = d - i;
+        //# var fsttype = (i > 1) ? Meta.VecTypeOf(i, ft1) : ft1;
+        //# var sndtype = (j > 1) ? Meta.VecTypeOf(j, ft1) : ft1;
+        /// <summary>
+        /// Creates a new vector from the given __fsttype.Name__ and __sndtype.Name__.
+        /// </summary>
+        public __vtype__(__fsttype.Name__ a, __sndtype.Name__ b)
+        {
+            //# if (i == 1) {
+            __f0__ = /*# if (ft != ft1) {*/(__ftype__)/*# }*/a;
+            //# } else { for (int k = 0; k < i; k++) { var fk = Meta.VecFields[k];
+            __fk__ = /*# if (ft != ft1) {*/(__ftype__)/*# }*/a.__fk__;
+            //# } }
+            //# if (j == 1) { var fj = Meta.VecFields[i];
+            __fj__ = /*# if (ft != ft1) {*/(__ftype__)/*# }*/b;
+            //# } else { for (int k = 0; k < j; k++) { var fj = Meta.VecFields[i + k]; var fk = Meta.VecFields[k];
+            __fj__ = /*# if (ft != ft1) {*/(__ftype__)/*# }*/b.__fk__;
+            //# } }
+        }
+        //# } }
+
+        //# if (d > 3) { for (int i = 0; i < 3; i++) {
+        //# var types = new Meta.SimpleType[3];
+        //# for (int j = 0; j < types.Length; j++) {
+        //#     types[j] = (i == j) ? Meta.VecTypeOf(2, ft1) : ft1;
+        //# }
+        /// <summary>
+        /// Creates a new vector from the given __types[0].Name__, __types[1].Name__, and __types[2].Name__.
+        /// </summary>
+        public __vtype__(__types[0].Name__ a, __types[1].Name__ b, __types[2].Name__ c)
+        {
+            //# if (i != 0) {
+            __f0__ = /*# if (ft != ft1) {*/(__ftype__)/*# }*/a;
+            //# } else { for (int k = 0; k < 2; k++) { var fk = Meta.VecFields[k];
+            __fk__ = /*# if (ft != ft1) {*/(__ftype__)/*# }*/a.__fk__;
+            //# } }
+            //# if (i != 1) { var fj = Meta.VecFields[(i < 1) ? 2 : 1];
+            __fj__ = /*# if (ft != ft1) {*/(__ftype__)/*# }*/b;
+            //# } else { for (int k = 0; k < 2; k++) { var fj = Meta.VecFields[((i < 1) ? 2 : 1) + k]; var fk = Meta.VecFields[k];
+            __fj__ = /*# if (ft != ft1) {*/(__ftype__)/*# }*/b.__fk__;
+            //# } }
+            //# if (i != 2) {
+            __f3__ = /*# if (ft != ft1) {*/(__ftype__)/*# }*/c;
+            //# } else { for (int k = 0; k < 2; k++) { var fj = Meta.VecFields[2 + k]; var fk = Meta.VecFields[k];
+            __fj__ = /*# if (ft != ft1) {*/(__ftype__)/*# }*/c.__fk__;
+            //# } }
+        }
+        //# } }
+
         //# }
         /// <summary>
         /// Creates a vector from the results of the supplied function of the index.
@@ -125,16 +174,7 @@ namespace Aardvark.Base
 
         //#     }
         //# }
-        //# if (d > 2) { var vt1 = Meta.VecTypeOf(d-1, ft); var fm = fields[d-1];
-        public __vtype__(__vt1.Name__ v, __ftype__ w)
-        {
-            //# vt1.Fields.ForEach(f => {
-            __f__ = v.__f__;
-            //# });
-            __fm__ = w;
-        }
 
-        //# }
         //# if (d == 3 || d == 4) {
         //#     foreach (var t1 in Meta.ColorTypes) {
         //#         var ft1 = t1.FieldType;
